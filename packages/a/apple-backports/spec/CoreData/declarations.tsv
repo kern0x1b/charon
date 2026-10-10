@@ -1,0 +1,1006 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+var	c:@NSCoreDataVersionNumber	-			-	-	98b25552a7191429
+var	c:@NSDetailedErrorsKey	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	e1352267c7a696d6
+var	c:@NSValidationObjectErrorKey	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	137c70455d96a415
+var	c:@NSValidationKeyErrorKey	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	b3a94f4854a949c7
+var	c:@NSValidationPredicateErrorKey	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	fcf95623e04af993
+var	c:@NSValidationValueErrorKey	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	9e9706b605dd0a9a
+var	c:@NSAffectedStoresErrorKey	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	5fa86e5b39e295bc
+var	c:@NSAffectedObjectsErrorKey	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	17f4d0711ddb11b8
+var	c:@NSPersistentStoreSaveConflictsErrorKey	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	a37faa3c004ce81f
+var	c:@NSSQLiteErrorDomain	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	d599e58921be6608
+enum	c:@Ea@NSManagedObjectValidationError	-	-		-	-	d280cd102db8a42b
+enumconst	c:@Ea@NSManagedObjectValidationError@NSManagedObjectValidationError	-			-	-	88da445fb88c08f3
+enumconst	c:@Ea@NSManagedObjectValidationError@NSManagedObjectConstraintValidationError	-			-	-	e2daf2fb5efc9832
+enumconst	c:@Ea@NSManagedObjectValidationError@NSValidationMultipleErrorsError	-			-	-	e615faa0e787c478
+enumconst	c:@Ea@NSManagedObjectValidationError@NSValidationMissingMandatoryPropertyError	-			-	-	b8c1e20dadf5a619
+enumconst	c:@Ea@NSManagedObjectValidationError@NSValidationRelationshipLacksMinimumCountError	-			-	-	a159b6c09553e2d5
+enumconst	c:@Ea@NSManagedObjectValidationError@NSValidationRelationshipExceedsMaximumCountError	-			-	-	f36e51e1c4515855
+enumconst	c:@Ea@NSManagedObjectValidationError@NSValidationRelationshipDeniedDeleteError	-			-	-	4b3754cae100418d
+enumconst	c:@Ea@NSManagedObjectValidationError@NSValidationNumberTooLargeError	-			-	-	565ccea41870df53
+enumconst	c:@Ea@NSManagedObjectValidationError@NSValidationNumberTooSmallError	-			-	-	2f199053ba2f8414
+enumconst	c:@Ea@NSManagedObjectValidationError@NSValidationDateTooLateError	-			-	-	63f184baf84d2acd
+enumconst	c:@Ea@NSManagedObjectValidationError@NSValidationDateTooSoonError	-			-	-	5fbd83d916675796
+enumconst	c:@Ea@NSManagedObjectValidationError@NSValidationInvalidDateError	-			-	-	6eb09bf75d135386
+enumconst	c:@Ea@NSManagedObjectValidationError@NSValidationStringTooLongError	-			-	-	abecaa44a313fa4f
+enumconst	c:@Ea@NSManagedObjectValidationError@NSValidationStringTooShortError	-			-	-	d004147ec42e3774
+enumconst	c:@Ea@NSManagedObjectValidationError@NSValidationStringPatternMatchingError	-			-	-	4865a34c69af53a0
+enumconst	c:@Ea@NSManagedObjectValidationError@NSValidationInvalidURIError	-			-	-	18fb2fa0f1133313
+enumconst	c:@Ea@NSManagedObjectValidationError@NSManagedObjectContextLockingError	-			-	-	9aa60f01d9ba2720
+enumconst	c:@Ea@NSManagedObjectValidationError@NSPersistentStoreCoordinatorLockingError	-			-	-	e5260b3b5092b2ef
+enumconst	c:@Ea@NSManagedObjectValidationError@NSManagedObjectReferentialIntegrityError	-			-	-	3c2b2eb9354f9844
+enumconst	c:@Ea@NSManagedObjectValidationError@NSManagedObjectExternalRelationshipError	-			-	-	f022f2dc5c813178
+enumconst	c:@Ea@NSManagedObjectValidationError@NSManagedObjectMergeError	-			-	-	7bf17be2c64b6753
+enumconst	c:@Ea@NSManagedObjectValidationError@NSManagedObjectConstraintMergeError	-			-	-	1d26e1985c33a6e8
+enumconst	c:@Ea@NSManagedObjectValidationError@NSPersistentStoreInvalidTypeError	-			-	-	d50c0136f46f9f82
+enumconst	c:@Ea@NSManagedObjectValidationError@NSPersistentStoreTypeMismatchError	-			-	-	7e22313d733ee947
+enumconst	c:@Ea@NSManagedObjectValidationError@NSPersistentStoreIncompatibleSchemaError	-			-	-	9996f70632823d45
+enumconst	c:@Ea@NSManagedObjectValidationError@NSPersistentStoreSaveError	-			-	-	42e28415c93ec269
+enumconst	c:@Ea@NSManagedObjectValidationError@NSPersistentStoreIncompleteSaveError	-			-	-	848faf6d38e12017
+enumconst	c:@Ea@NSManagedObjectValidationError@NSPersistentStoreSaveConflictsError	-			-	-	2f8f18cfb69793d6
+enumconst	c:@Ea@NSManagedObjectValidationError@NSCoreDataError	-			-	-	e650174e68e98fff
+enumconst	c:@Ea@NSManagedObjectValidationError@NSPersistentStoreOperationError	-			-	-	1eafe6a5705738f1
+enumconst	c:@Ea@NSManagedObjectValidationError@NSPersistentStoreOpenError	-			-	-	34bb6e68b780232d
+enumconst	c:@Ea@NSManagedObjectValidationError@NSPersistentStoreTimeoutError	-			-	-	1e3d4bbd2a3f2e2f
+enumconst	c:@Ea@NSManagedObjectValidationError@NSPersistentStoreUnsupportedRequestTypeError	-			-	-	5745ed1137700d88
+enumconst	c:@Ea@NSManagedObjectValidationError@NSPersistentStoreIncompatibleVersionHashError	-			-	-	fec06a57b260b862
+enumconst	c:@Ea@NSManagedObjectValidationError@NSMigrationError	-			-	-	c919e38fd2fed802
+enumconst	c:@Ea@NSManagedObjectValidationError@NSMigrationConstraintViolationError	-			-	-	52fbf7958d34137f
+enumconst	c:@Ea@NSManagedObjectValidationError@NSMigrationCancelledError	-			-	-	9f79d6a2d3eda447
+enumconst	c:@Ea@NSManagedObjectValidationError@NSMigrationMissingSourceModelError	-			-	-	36d80c2b98ef4060
+enumconst	c:@Ea@NSManagedObjectValidationError@NSMigrationMissingMappingModelError	-			-	-	683d81372c27dca4
+enumconst	c:@Ea@NSManagedObjectValidationError@NSMigrationManagerSourceStoreError	-			-	-	e854d5c1966e3d47
+enumconst	c:@Ea@NSManagedObjectValidationError@NSMigrationManagerDestinationStoreError	-			-	-	9a285db1bac9f1bf
+enumconst	c:@Ea@NSManagedObjectValidationError@NSEntityMigrationPolicyError	-			-	-	4ca1ac6f552b9d7e
+enumconst	c:@Ea@NSManagedObjectValidationError@NSSQLiteError	-			-	-	e7a077a528cfb78a
+enumconst	c:@Ea@NSManagedObjectValidationError@NSInferredMappingModelError	-			-	-	a458dc879c263c6d
+enumconst	c:@Ea@NSManagedObjectValidationError@NSExternalRecordImportError	-			-	-	93cfe06bc0bf04f3
+enumconst	c:@Ea@NSManagedObjectValidationError@NSPersistentHistoryTokenExpiredError	-			-	-	25f127a2582b6cb1
+enumconst	c:@Ea@NSManagedObjectValidationError@NSManagedObjectModelReferenceNotFoundError	-			-	-	27358e628b12a31c
+enumconst	c:@Ea@NSManagedObjectValidationError@NSStagedMigrationFrameworkVersionMismatchError	-			-	-	af1b46b6369ce615
+enumconst	c:@Ea@NSManagedObjectValidationError@NSStagedMigrationBackwardMigrationError	-			-	-	4907fe417ddec664
+interface	c:objc(cs)NSPropertyDescription	-			ios=3.0/-/-/0,macos=10.4/-/-/0	deprecated: Use NSEntityDescription.indexes instead	84d6f05b51c862b6
+super	-	NSPropertyDescription	NSObject		-	-	8dfc7ce0cecd24ae
+conforms	-	NSPropertyDescription	NSCoding		-	-	7a8728448e263ae1
+conforms	-	NSPropertyDescription	NSCopying		-	-	476d58e7e1a63e84
+property	c:objc(cs)NSPropertyDescription(py)entity	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	b854325abb872a2e
+property	c:objc(cs)NSPropertyDescription(py)name	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	4da8ca1d6c01d0c1
+property	c:objc(cs)NSPropertyDescription(py)optional	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	73b3f01b589b835c
+property	c:objc(cs)NSPropertyDescription(py)transient	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	b2bc3f345051c003
+property	c:objc(cs)NSPropertyDescription(py)validationPredicates	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	bc9260080dda2664
+property	c:objc(cs)NSPropertyDescription(py)validationWarnings	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	81c437a8956e7c4d
+method	c:objc(cs)NSPropertyDescription(im)setValidationPredicates:withValidationWarnings:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	9a0c844311b60f0a
+property	c:objc(cs)NSPropertyDescription(py)userInfo	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	db4cceae1b9c519a
+property	c:objc(cs)NSPropertyDescription(py)indexed	-			ios=3.0/11.0/-/0,macos=10.5/10.13/-/0,tvos=9.0/11.0/-/0,watchos=2.0/4.0/-/0	-	928ef63e491d29e7
+property	c:objc(cs)NSPropertyDescription(py)versionHash	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	4401cd327ef8350d
+property	c:objc(cs)NSPropertyDescription(py)versionHashModifier	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	ec7ade82dfd307e6
+property	c:objc(cs)NSPropertyDescription(py)indexedBySpotlight	-			ios=3.0/-/-/0,macos=10.6/-/-/0	-	f733cd07607b6b97
+property	c:objc(cs)NSPropertyDescription(py)storedInExternalRecord	-			ios=3.0/11.0/-/0,macos=10.6/10.13/-/0	-	284bb3aa3a5ac4d1
+property	c:objc(cs)NSPropertyDescription(py)renamingIdentifier	-			ios=3.0/-/-/0,macos=10.6/-/-/0	-	bfb5c805063886f4
+typedef	c:@T@NSAttributeType	-			-	-	31d49e5dbffbcaad
+enum	c:@E@NSAttributeType	-			-	-	bd49298e721adaf4
+enumconst	c:@E@NSAttributeType@NSUndefinedAttributeType	NSAttributeType			-	-	6c58a3f3e32d3ec0
+enumconst	c:@E@NSAttributeType@NSInteger16AttributeType	NSAttributeType			-	-	ff5f024caa42caf5
+enumconst	c:@E@NSAttributeType@NSInteger32AttributeType	NSAttributeType			-	-	c839e62d3eaae394
+enumconst	c:@E@NSAttributeType@NSInteger64AttributeType	NSAttributeType			-	-	791cba531fd99731
+enumconst	c:@E@NSAttributeType@NSDecimalAttributeType	NSAttributeType			-	-	8f5b099d9542a4f8
+enumconst	c:@E@NSAttributeType@NSDoubleAttributeType	NSAttributeType			-	-	ae53cffeee109cf7
+enumconst	c:@E@NSAttributeType@NSFloatAttributeType	NSAttributeType			-	-	d2c3cb55391cc45b
+enumconst	c:@E@NSAttributeType@NSStringAttributeType	NSAttributeType			-	-	7f1252ed489cc51d
+enumconst	c:@E@NSAttributeType@NSBooleanAttributeType	NSAttributeType			-	-	873d77f1c06f523f
+enumconst	c:@E@NSAttributeType@NSDateAttributeType	NSAttributeType			-	-	da8c980490ee732d
+enumconst	c:@E@NSAttributeType@NSBinaryDataAttributeType	NSAttributeType			-	-	3d092fca87ddbae9
+enumconst	c:@E@NSAttributeType@NSUUIDAttributeType	NSAttributeType			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	6e8aca7f04ab5e32
+enumconst	c:@E@NSAttributeType@NSURIAttributeType	NSAttributeType			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	3f7f54eef4bb2e4a
+enumconst	c:@E@NSAttributeType@NSTransformableAttributeType	NSAttributeType			ios=3.0/-/-/0,macos=10.5/-/-/0	-	8502a7a6c3fd2d24
+enumconst	c:@E@NSAttributeType@NSObjectIDAttributeType	NSAttributeType			ios=3.0/-/-/0,macos=10.6/-/-/0	-	48dcaf314c9e8942
+enumconst	c:@E@NSAttributeType@NSCompositeAttributeType	NSAttributeType			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	000a4b53caaaa45c
+interface	c:objc(cs)NSAttributeDescription	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	4ed966240cf69400
+super	-	NSAttributeDescription	NSPropertyDescription		-	-	012a9073371e68fe
+property	c:objc(cs)NSAttributeDescription(py)attributeType	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	5d76d225624d1073
+property	c:objc(cs)NSAttributeDescription(py)attributeValueClassName	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	106fd77be288d23a
+property	c:objc(cs)NSAttributeDescription(py)defaultValue	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	338eb3e1669b120f
+property	c:objc(cs)NSAttributeDescription(py)versionHash	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	6690a77b8e2c9f5f
+property	c:objc(cs)NSAttributeDescription(py)valueTransformerName	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	f2fd2dc8b2f28a31
+property	c:objc(cs)NSAttributeDescription(py)allowsExternalBinaryDataStorage	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	3ba5f58544ad0bde
+property	c:objc(cs)NSAttributeDescription(py)preservesValueInHistoryOnDeletion	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	361967037d0b8477
+property	c:objc(cs)NSAttributeDescription(py)allowsCloudEncryption	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	85a7209f938f3859
+interface	c:objc(cs)NSDerivedAttributeDescription	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	f81f18f7e387c75b
+super	-	NSDerivedAttributeDescription	NSAttributeDescription		-	-	d9d4475281cb813c
+property	c:objc(cs)NSDerivedAttributeDescription(py)derivationExpression	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	c2b49a2ea7185f2b
+interface	c:objc(cs)NSCompositeAttributeDescription	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	9c8e2dbdcbef78d3
+super	-	NSCompositeAttributeDescription	NSAttributeDescription		-	-	4d9189700dc39d43
+property	c:objc(cs)NSCompositeAttributeDescription(py)elements	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	498ff21058b47a2a
+interface	c:objc(cs)NSEntityDescription	-			ios=3.0/-/-/0,macos=10.4/-/-/0	deprecated: Use NSEntityDescription.indexes instead	c89f329ed57a96e8
+super	-	NSEntityDescription	NSObject		-	-	0a79137253a59353
+conforms	-	NSEntityDescription	NSCoding		-	-	2e40695d71e6e170
+conforms	-	NSEntityDescription	NSCopying		-	-	f81e9d818a0a22cd
+conforms	-	NSEntityDescription	NSFastEnumeration		-	-	2f1ddb3b3e57b6b3
+method	c:objc(cs)NSEntityDescription(cm)entityForName:inManagedObjectContext:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	ba0a2afa470af825
+method	c:objc(cs)NSEntityDescription(cm)insertNewObjectForEntityForName:inManagedObjectContext:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	48291914c196ed14
+property	c:objc(cs)NSEntityDescription(py)managedObjectModel	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	754a246ab079c2b2
+property	c:objc(cs)NSEntityDescription(py)managedObjectClassName	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	e362af68baa5b84a
+property	c:objc(cs)NSEntityDescription(py)name	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	be85a6e751cf09d9
+property	c:objc(cs)NSEntityDescription(py)abstract	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	7de5b95bd27f8b47
+property	c:objc(cs)NSEntityDescription(py)subentitiesByName	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	e2a7af1841e0a78f
+property	c:objc(cs)NSEntityDescription(py)subentities	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	adf7364fe7366952
+property	c:objc(cs)NSEntityDescription(py)superentity	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	9792e2078dcac7fa
+property	c:objc(cs)NSEntityDescription(py)propertiesByName	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	fd584b0cd6de3978
+property	c:objc(cs)NSEntityDescription(py)properties	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	a80cb70d2c6ff441
+property	c:objc(cs)NSEntityDescription(py)userInfo	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	b1e95d91a45d80ac
+property	c:objc(cs)NSEntityDescription(py)attributesByName	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	ebbded49cf50066b
+property	c:objc(cs)NSEntityDescription(py)relationshipsByName	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	9ed0536c3bb181d3
+method	c:objc(cs)NSEntityDescription(im)relationshipsWithDestinationEntity:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	effd363361bb3791
+method	c:objc(cs)NSEntityDescription(im)isKindOfEntity:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	fc9751ccf553f6cc
+property	c:objc(cs)NSEntityDescription(py)versionHash	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	5ae1d2267043e7ee
+property	c:objc(cs)NSEntityDescription(py)versionHashModifier	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	70b24e5b28aac9ce
+property	c:objc(cs)NSEntityDescription(py)renamingIdentifier	-			ios=3.0/-/-/0,macos=10.6/-/-/0	-	f0f57629591abb70
+property	c:objc(cs)NSEntityDescription(py)indexes	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0f96f5372c25149d
+property	c:objc(cs)NSEntityDescription(py)uniquenessConstraints	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	522a6cd6da11ccf3
+property	c:objc(cs)NSEntityDescription(py)compoundIndexes	-			ios=3.0/11.0/-/0,macos=10.5/10.13/-/0,tvos=9.0/11.0/-/0,watchos=2.0/4.0/-/0	-	d4f2dbc079dfe636
+property	c:objc(cs)NSEntityDescription(py)coreSpotlightDisplayNameExpression	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	1c97ff700eb0644c
+interface	c:objc(cs)NSFetchedPropertyDescription	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	d25c96054e1355fd
+super	-	NSFetchedPropertyDescription	NSPropertyDescription		-	-	0e1639c673da2e4b
+property	c:objc(cs)NSFetchedPropertyDescription(py)fetchRequest	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	8dcf321e91e462e4
+interface	c:objc(cs)NSExpressionDescription	-			ios=3.0/-/-/0,macos=10.6/-/-/0	-	f9e9d642cc74653a
+super	-	NSExpressionDescription	NSPropertyDescription		-	-	6bdc2379b19753c5
+property	c:objc(cs)NSExpressionDescription(py)expression	-			ios=3.0/-/-/0,macos=10.6/-/-/0	-	2929c1e887b15dc7
+property	c:objc(cs)NSExpressionDescription(py)expressionResultType	-			ios=3.0/-/-/0,macos=10.6/-/-/0	-	9677d0bd5fbe7235
+typedef	c:@T@NSDeleteRule	-			-	-	7a174f6fd0196108
+enum	c:@E@NSDeleteRule	-			-	-	616d5c4049add111
+enumconst	c:@E@NSDeleteRule@NSNoActionDeleteRule	NSDeleteRule			-	-	56d5c6482ec4ae9d
+enumconst	c:@E@NSDeleteRule@NSNullifyDeleteRule	NSDeleteRule			-	-	de476bbbec8f6123
+enumconst	c:@E@NSDeleteRule@NSCascadeDeleteRule	NSDeleteRule			-	-	952d4352ec5f47cc
+enumconst	c:@E@NSDeleteRule@NSDenyDeleteRule	NSDeleteRule			-	-	247000538f85b182
+interface	c:objc(cs)NSRelationshipDescription	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	bcfc55ea0a88813f
+super	-	NSRelationshipDescription	NSPropertyDescription		-	-	a517700b8d91b175
+property	c:objc(cs)NSRelationshipDescription(py)destinationEntity	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	13bb2374254f8bf5
+property	c:objc(cs)NSRelationshipDescription(py)inverseRelationship	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	ad299e435ac14bd8
+property	c:objc(cs)NSRelationshipDescription(py)maxCount	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	d19df303a6298bbe
+property	c:objc(cs)NSRelationshipDescription(py)minCount	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	503d3bc808c73ffc
+property	c:objc(cs)NSRelationshipDescription(py)deleteRule	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	7c84ecdb5f65c15b
+property	c:objc(cs)NSRelationshipDescription(py)toMany	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	25360d8eb6e2f215
+property	c:objc(cs)NSRelationshipDescription(py)versionHash	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	1dfcb92862b22870
+property	c:objc(cs)NSRelationshipDescription(py)ordered	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	8faa3da0e095a431
+interface	c:objc(cs)NSFetchIndexDescription	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a37e3c18f626b0b2
+super	-	NSFetchIndexDescription	NSObject		-	-	a7550307e3b6d669
+conforms	-	NSFetchIndexDescription	NSCoding		-	-	9c97d452ab98fd2c
+conforms	-	NSFetchIndexDescription	NSCopying		-	-	dd26298a4eb193d6
+method	c:objc(cs)NSFetchIndexDescription(im)initWithName:elements:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4fb6256d6330e4fd
+property	c:objc(cs)NSFetchIndexDescription(py)name	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0dd0b813630d6550
+property	c:objc(cs)NSFetchIndexDescription(py)elements	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	6693397a84c7251e
+property	c:objc(cs)NSFetchIndexDescription(py)entity	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5b0f5489b252c02b
+property	c:objc(cs)NSFetchIndexDescription(py)partialIndexPredicate	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a39f075877543378
+typedef	c:@T@NSFetchIndexElementType	-			-	-	bc254ea44d640acc
+enum	c:@E@NSFetchIndexElementType	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	81ca24f6a937b6b9
+enumconst	c:@E@NSFetchIndexElementType@NSFetchIndexElementTypeBinary	NSFetchIndexElementType			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4122e36827d2f6cb
+enumconst	c:@E@NSFetchIndexElementType@NSFetchIndexElementTypeRTree	NSFetchIndexElementType			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	9e96b1e3bba1e248
+interface	c:objc(cs)NSFetchIndexElementDescription	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	bf304ee14aa8434b
+super	-	NSFetchIndexElementDescription	NSObject		-	-	699d0cd414af4de1
+conforms	-	NSFetchIndexElementDescription	NSCoding		-	-	d8ab09715e07840e
+conforms	-	NSFetchIndexElementDescription	NSCopying		-	-	b8ea1198a6b9987c
+method	c:objc(cs)NSFetchIndexElementDescription(im)initWithProperty:collationType:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ed3ec9102d45afc3
+property	c:objc(cs)NSFetchIndexElementDescription(py)property	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f51de0e19f710093
+property	c:objc(cs)NSFetchIndexElementDescription(py)propertyName	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d00225d1ef077002
+property	c:objc(cs)NSFetchIndexElementDescription(py)collationType	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d22fb7db8e21bc7b
+property	c:objc(cs)NSFetchIndexElementDescription(py)ascending	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	797412d352c2b755
+property	c:objc(cs)NSFetchIndexElementDescription(py)indexDescription	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	19aff40af6f7a05e
+typedef	c:@T@NSPersistentStoreRequestType	-			-	-	82b9e4db847b4548
+enum	c:@E@NSPersistentStoreRequestType	-			-	-	2e4b04917b59bad8
+enumconst	c:@E@NSPersistentStoreRequestType@NSFetchRequestType	NSPersistentStoreRequestType			-	-	8fa5660e59fa3558
+enumconst	c:@E@NSPersistentStoreRequestType@NSSaveRequestType	NSPersistentStoreRequestType			-	-	4035c6fd0c1d3147
+enumconst	c:@E@NSPersistentStoreRequestType@NSBatchInsertRequestType	NSPersistentStoreRequestType			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	e08293f4ca12a484
+enumconst	c:@E@NSPersistentStoreRequestType@NSBatchUpdateRequestType	NSPersistentStoreRequestType			ios=8.0/-/-/0,macos=10.10/-/-/0	-	38ac2e07457ad9fd
+enumconst	c:@E@NSPersistentStoreRequestType@NSBatchDeleteRequestType	NSPersistentStoreRequestType			ios=9.0/-/-/0,macos=10.11/-/-/0	-	79ca3e1fe0c04fc5
+interface	c:objc(cs)NSPersistentStoreRequest	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	f7c88125b26fac90
+super	-	NSPersistentStoreRequest	NSObject		-	-	343c42218e74d583
+conforms	-	NSPersistentStoreRequest	NSCopying		-	-	820a50eb0b8a3658
+property	c:objc(cs)NSPersistentStoreRequest(py)affectedStores	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	1bde3906ab6602b6
+property	c:objc(cs)NSPersistentStoreRequest(py)requestType	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	8dfb6da0a6ad9f19
+typedef	c:@T@NSSnapshotEventType	-			-	-	415eaa12e401134e
+enum	c:@E@NSSnapshotEventType	-			-	-	21abb113250e4711
+enumconst	c:@E@NSSnapshotEventType@NSSnapshotEventUndoInsertion	NSSnapshotEventType			-	-	21d315d72a47ec5a
+enumconst	c:@E@NSSnapshotEventType@NSSnapshotEventUndoDeletion	NSSnapshotEventType			-	-	edb11ace5d624c38
+enumconst	c:@E@NSSnapshotEventType@NSSnapshotEventUndoUpdate	NSSnapshotEventType			-	-	bf48d20bab0661fe
+enumconst	c:@E@NSSnapshotEventType@NSSnapshotEventRollback	NSSnapshotEventType			-	-	dc155a433a654353
+enumconst	c:@E@NSSnapshotEventType@NSSnapshotEventRefresh	NSSnapshotEventType			-	-	2889a48209eb9a76
+enumconst	c:@E@NSSnapshotEventType@NSSnapshotEventMergePolicy	NSSnapshotEventType			-	-	b01a1f181613606e
+interface	c:objc(cs)NSManagedObject	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	9c0c1d2a258e525f
+super	-	NSManagedObject	NSObject		-	-	c44cfe6103828e2a
+property	c:objc(cs)NSManagedObject(cpy)contextShouldIgnoreUnmodeledPropertyChanges	-			ios=3.0/-/-/0,macos=10.6/-/-/0	-	63255e960765654a
+method	c:objc(cs)NSManagedObject(cm)entity	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	11535b9e71111fd9
+method	c:objc(cs)NSManagedObject(cm)fetchRequest	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	286a925aa0ac3bf3
+method	c:objc(cs)NSManagedObject(im)initWithEntity:insertIntoManagedObjectContext:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	9132a938ca6b396c
+method	c:objc(cs)NSManagedObject(im)initWithContext:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	f2933d459afc4fd7
+property	c:objc(cs)NSManagedObject(py)managedObjectContext	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	2814d0b2178dff40
+property	c:objc(cs)NSManagedObject(py)entity	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	1f2f6251f5ea6cd3
+property	c:objc(cs)NSManagedObject(py)objectID	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	ec33f053f8c42590
+property	c:objc(cs)NSManagedObject(py)inserted	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	a0733b5d3bff2e85
+property	c:objc(cs)NSManagedObject(py)updated	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	ccb69cf26a8dc15a
+property	c:objc(cs)NSManagedObject(py)deleted	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	fbc91644d903c1cc
+property	c:objc(cs)NSManagedObject(py)hasChanges	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	b80311005d91ed25
+property	c:objc(cs)NSManagedObject(py)hasPersistentChangedValues	-			ios=7.0/-/-/0,macos=10.9/-/-/0	-	ffafdff8ac07b7bb
+property	c:objc(cs)NSManagedObject(py)fault	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	7e37b3c07d106e74
+method	c:objc(cs)NSManagedObject(im)hasFaultForRelationshipNamed:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	236f015ae2c28a52
+method	c:objc(cs)NSManagedObject(im)objectIDsForRelationshipNamed:	-			ios=8.3/-/-/0,macos=10.11/-/-/0	-	908059c93fe734ec
+property	c:objc(cs)NSManagedObject(py)faultingState	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	705a52d2dfc9aac2
+method	c:objc(cs)NSManagedObject(im)willAccessValueForKey:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	91ba8b0d2607883d
+method	c:objc(cs)NSManagedObject(im)didAccessValueForKey:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	4652841dc75725fd
+method	c:objc(cs)NSManagedObject(im)willChangeValueForKey:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	1c194f94a0808aa4
+method	c:objc(cs)NSManagedObject(im)didChangeValueForKey:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	24dc13414e303f3c
+method	c:objc(cs)NSManagedObject(im)willChangeValueForKey:withSetMutation:usingObjects:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	e3ca7c59490bad67
+method	c:objc(cs)NSManagedObject(im)didChangeValueForKey:withSetMutation:usingObjects:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	2493a6371760d602
+method	c:objc(cs)NSManagedObject(im)awakeFromFetch	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	aae8c5a5283cc248
+method	c:objc(cs)NSManagedObject(im)awakeFromInsert	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	39817e7c07f44bc8
+method	c:objc(cs)NSManagedObject(im)awakeFromSnapshotEvents:	-			ios=3.0/-/-/0,macos=10.6/-/-/0	-	1c25935a99eb35ce
+method	c:objc(cs)NSManagedObject(im)prepareForDeletion	-			ios=3.0/-/-/0,macos=10.6/-/-/0	-	c0bcddc0d43a8fba
+method	c:objc(cs)NSManagedObject(im)willSave	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	ae70b8fff02e154a
+method	c:objc(cs)NSManagedObject(im)didSave	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	7af78a57c610064e
+method	c:objc(cs)NSManagedObject(im)willTurnIntoFault	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	c147a358d93ca001
+method	c:objc(cs)NSManagedObject(im)didTurnIntoFault	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	658b1d5549cb79dc
+method	c:objc(cs)NSManagedObject(im)valueForKey:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	27d52a80eee45909
+method	c:objc(cs)NSManagedObject(im)setValue:forKey:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	7cbcdbe3e2462671
+method	c:objc(cs)NSManagedObject(im)primitiveValueForKey:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	9c08919b56aad465
+method	c:objc(cs)NSManagedObject(im)setPrimitiveValue:forKey:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	693d23fc8e62a565
+method	c:objc(cs)NSManagedObject(im)committedValuesForKeys:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	94ac2348b2a39beb
+method	c:objc(cs)NSManagedObject(im)changedValues	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	084b36444be1c39b
+method	c:objc(cs)NSManagedObject(im)changedValuesForCurrentEvent	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	07c8af59db75862e
+method	c:objc(cs)NSManagedObject(im)validateValue:forKey:error:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	08d5db67c43b2eea
+method	c:objc(cs)NSManagedObject(im)validateForDelete:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	2297e7181caa3e02
+method	c:objc(cs)NSManagedObject(im)validateForInsert:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	6e665bd31c5659dd
+method	c:objc(cs)NSManagedObject(im)validateForUpdate:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	2cc4636cd6284739
+interface	c:objc(cs)NSManagedObjectID	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	d2ec6246f01ea24e
+super	-	NSManagedObjectID	NSObject		-	-	1178d642d3e506d1
+conforms	-	NSManagedObjectID	NSCopying		-	-	280830916763741c
+property	c:objc(cs)NSManagedObjectID(py)entity	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	7b245df1fa9c53d1
+property	c:objc(cs)NSManagedObjectID(py)persistentStore	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	1b2905056506de91
+property	c:objc(cs)NSManagedObjectID(py)temporaryID	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	2b7c6db70b8f3a9b
+method	c:objc(cs)NSManagedObjectID(im)URIRepresentation	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	c6f760e2d0901a24
+typedef	c:@T@NSFetchRequestResultType	-			-	-	fc178d372e24a642
+enum	c:@E@NSFetchRequestResultType	-			-	-	56afab9b7317354c
+enumconst	c:@E@NSFetchRequestResultType@NSManagedObjectResultType	NSFetchRequestResultType			-	-	b75ef27857b68833
+enumconst	c:@E@NSFetchRequestResultType@NSManagedObjectIDResultType	NSFetchRequestResultType			-	-	cfaf336b04d3da5a
+enumconst	c:@E@NSFetchRequestResultType@NSDictionaryResultType	NSFetchRequestResultType			ios=3.0/-/-/0,macos=10.6/-/-/0	-	40b3446523f81949
+enumconst	c:@E@NSFetchRequestResultType@NSCountResultType	NSFetchRequestResultType			ios=3.0/-/-/0,macos=10.6/-/-/0	-	11081c1d9d44ce39
+protocol	c:objc(pl)NSFetchRequestResult	-			-	-	564d28c147cc2a5e
+conforms	-	NSFetchRequestResult	NSObject		-	-	1a36b979d73f9040
+category	c:objc(cy)NSNumber@NSFetchedResultSupport	-			-	-	234b314b84e79c35
+conforms	-	NSNumber	NSFetchRequestResult		-	-	c322aead71997f98
+category	c:objc(cy)NSDictionary@NSFetchedResultSupport	-			-	-	87640864e0b23461
+conforms	-	NSDictionary	NSFetchRequestResult		-	-	cee6462e02fff13a
+category	c:objc(cy)NSManagedObject@NSFetchedResultSupport	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	c34b4aa57d79c301
+conforms	-	NSManagedObject	NSFetchRequestResult		-	-	622e579347726b36
+category	c:objc(cy)NSManagedObjectID@NSFetchedResultSupport	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	fdc6c24c65836c5b
+conforms	-	NSManagedObjectID	NSFetchRequestResult		-	-	5892748996332156
+interface	c:objc(cs)NSFetchRequest	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	1ebd15999336acc1
+super	-	NSFetchRequest	NSPersistentStoreRequest		-	-	ccb2f8fef1a9e877
+conforms	-	NSFetchRequest	NSCoding		-	-	df2ab2ad114a3112
+conforms	-	NSFetchRequest	NSCopying		-	-	462c7c2a988caccd
+method	c:objc(cs)NSFetchRequest(cm)fetchRequestWithEntityName:	-			ios=4.0/-/-/0,macos=10.7/-/-/0	-	15ad2361b014a0e2
+method	c:objc(cs)NSFetchRequest(im)init	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	7df9fc281f35440a
+method	c:objc(cs)NSFetchRequest(im)initWithEntityName:	-			ios=4.0/-/-/0,macos=10.7/-/-/0	-	4c689367aa357ad1
+method	c:objc(cs)NSFetchRequest(im)execute:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	0257a5d68331affd
+property	c:objc(cs)NSFetchRequest(py)entity	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	93d9972a1960f2ca
+property	c:objc(cs)NSFetchRequest(py)entityName	-			ios=4.0/-/-/0,macos=10.7/-/-/0	-	439248f474f7aed6
+property	c:objc(cs)NSFetchRequest(py)predicate	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	6465ab3a8914afa6
+property	c:objc(cs)NSFetchRequest(py)sortDescriptors	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	87b3c85456b540dd
+property	c:objc(cs)NSFetchRequest(py)fetchLimit	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	7c74e999b66c40fd
+property	c:objc(cs)NSFetchRequest(py)affectedStores	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	1efa2072ba18c45b
+property	c:objc(cs)NSFetchRequest(py)resultType	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	3f8ab82ef7088591
+property	c:objc(cs)NSFetchRequest(py)includesSubentities	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	53e021ffde746dcf
+property	c:objc(cs)NSFetchRequest(py)includesPropertyValues	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	3d13135af1eabc64
+property	c:objc(cs)NSFetchRequest(py)returnsObjectsAsFaults	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	d89feacfda103962
+property	c:objc(cs)NSFetchRequest(py)relationshipKeyPathsForPrefetching	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	f3642aceddd4d251
+property	c:objc(cs)NSFetchRequest(py)includesPendingChanges	-			ios=3.0/-/-/0,macos=10.6/-/-/0	-	e8c19e73719091a1
+property	c:objc(cs)NSFetchRequest(py)returnsDistinctResults	-			ios=3.0/-/-/0,macos=10.6/-/-/0	-	cbd73dcabcf0a7f2
+property	c:objc(cs)NSFetchRequest(py)propertiesToFetch	-			ios=3.0/-/-/0,macos=10.6/-/-/0	-	1286ffb5567fee5f
+property	c:objc(cs)NSFetchRequest(py)fetchOffset	-			ios=3.0/-/-/0,macos=10.6/-/-/0	-	58dc15422cac43d9
+property	c:objc(cs)NSFetchRequest(py)fetchBatchSize	-			ios=3.0/-/-/0,macos=10.6/-/-/0	-	b1b8dc15559ca292
+property	c:objc(cs)NSFetchRequest(py)shouldRefreshRefetchedObjects	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	a0ff447632a51a53
+property	c:objc(cs)NSFetchRequest(py)propertiesToGroupBy	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	5f91920d8e568f99
+property	c:objc(cs)NSFetchRequest(py)havingPredicate	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	f956627b481135df
+typedef	c:@T@NSPersistentStoreAsynchronousFetchResultCompletionBlock	-			-	-	fe24dece0db7e767
+interface	c:objc(cs)NSAsynchronousFetchRequest	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	6c538bd5ed91b241
+super	-	NSAsynchronousFetchRequest	NSPersistentStoreRequest		-	-	71158c5164afcf4c
+property	c:objc(cs)NSAsynchronousFetchRequest(py)fetchRequest	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	275e06c3b30fa1ae
+property	c:objc(cs)NSAsynchronousFetchRequest(py)completionBlock	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	1e1b180f639b4182
+property	c:objc(cs)NSAsynchronousFetchRequest(py)estimatedResultCount	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	2dab2cafe002a5f8
+method	c:objc(cs)NSAsynchronousFetchRequest(im)initWithFetchRequest:completionBlock:	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	6f792e3326c4e4a2
+interface	c:objc(cs)NSFetchRequestExpression	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	41540a042e3bd9c6
+super	-	NSFetchRequestExpression	NSExpression		-	-	e4916b4d0a18b7a8
+method	c:objc(cs)NSFetchRequestExpression(cm)expressionForFetch:context:countOnly:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	8c1ffb3d3749d396
+property	c:objc(cs)NSFetchRequestExpression(py)requestExpression	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	497a16d98e0d8f71
+property	c:objc(cs)NSFetchRequestExpression(py)contextExpression	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	04634df05baceec2
+property	c:objc(cs)NSFetchRequestExpression(py)countOnlyRequest	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	a16fa2457c23f528
+interface	c:objc(cs)NSManagedObjectModel	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	b318864e73135896
+super	-	NSManagedObjectModel	NSObject		-	-	a9fa92a7ea749c14
+conforms	-	NSManagedObjectModel	NSCoding		-	-	f581f3242c24b1b3
+conforms	-	NSManagedObjectModel	NSCopying		-	-	01e4370809436698
+conforms	-	NSManagedObjectModel	NSFastEnumeration		-	-	9efaaf430759a4b8
+method	c:objc(cs)NSManagedObjectModel(cm)mergedModelFromBundles:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	0ca74f98371779be
+method	c:objc(cs)NSManagedObjectModel(cm)modelByMergingModels:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	12b4610b05f6692d
+method	c:objc(cs)NSManagedObjectModel(im)init	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	9638bf4b4901e9d9
+method	c:objc(cs)NSManagedObjectModel(im)initWithContentsOfURL:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	f10afa6efa211b91
+property	c:objc(cs)NSManagedObjectModel(py)entitiesByName	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	b02c9aa410cb92bc
+property	c:objc(cs)NSManagedObjectModel(py)entities	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	cf2153863bb62e69
+property	c:objc(cs)NSManagedObjectModel(py)configurations	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	d9e96997a2bd8aaf
+method	c:objc(cs)NSManagedObjectModel(im)entitiesForConfiguration:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	8ef80e2b87acb4d2
+method	c:objc(cs)NSManagedObjectModel(im)setEntities:forConfiguration:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	a09c8087c2dd46ef
+method	c:objc(cs)NSManagedObjectModel(im)setFetchRequestTemplate:forName:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	f28cf023ebddb4ce
+method	c:objc(cs)NSManagedObjectModel(im)fetchRequestTemplateForName:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	8aab8f20c876e135
+method	c:objc(cs)NSManagedObjectModel(im)fetchRequestFromTemplateWithName:substitutionVariables:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	a98544e06b812a8f
+property	c:objc(cs)NSManagedObjectModel(py)localizationDictionary	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	05ece26adfd22337
+method	c:objc(cs)NSManagedObjectModel(cm)mergedModelFromBundles:forStoreMetadata:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	deb0313bd896cc21
+method	c:objc(cs)NSManagedObjectModel(cm)modelByMergingModels:forStoreMetadata:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	cf260929060de0ba
+property	c:objc(cs)NSManagedObjectModel(py)fetchRequestTemplatesByName	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	3551ddd36dd3cf32
+property	c:objc(cs)NSManagedObjectModel(py)versionIdentifiers	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	9d4ee84ac8853683
+method	c:objc(cs)NSManagedObjectModel(im)isConfiguration:compatibleWithStoreMetadata:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	f2b4471607d181c0
+property	c:objc(cs)NSManagedObjectModel(py)entityVersionHashesByName	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	761481fb0d4d6ac4
+property	c:objc(cs)NSManagedObjectModel(py)versionChecksum	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	e5b42a31e23c7ba1
+method	c:objc(cs)NSManagedObjectModel(cm)checksumsForVersionedModelAtURL:error:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	2895ec81107b2b69
+var	c:@NSManagedObjectContextWillSaveNotification	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	d9ae68aa8cd71b63
+var	c:@NSManagedObjectContextDidSaveNotification	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	963a9bd3d06d24bd
+var	c:@NSManagedObjectContextObjectsDidChangeNotification	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	e92bacafa1f86969
+var	c:@NSManagedObjectContextDidSaveObjectIDsNotification	-			ios=10.3/-/-/0,macos=10.12.4/-/-/0,tvos=10.2/-/-/0,watchos=3.2/-/-/0	-	867d9b8051569c8c
+var	c:@NSManagedObjectContextDidMergeChangesObjectIDsNotification	-			ios=10.3/-/-/0,macos=10.12.4/-/-/0,tvos=10.2/-/-/0,watchos=3.2/-/-/0	-	796385ab45e740ac
+var	c:@NSInsertedObjectsKey	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	bf1e6bbe405252f8
+var	c:@NSUpdatedObjectsKey	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	fc4b09d9951042e9
+var	c:@NSDeletedObjectsKey	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	bfa3840436878b82
+var	c:@NSRefreshedObjectsKey	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	62c6b7c5652b6441
+var	c:@NSInvalidatedObjectsKey	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	952d614c41905996
+var	c:@NSManagedObjectContextQueryGenerationKey	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	0ae47b21608e3f3a
+var	c:@NSInvalidatedAllObjectsKey	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	c8612e41639081de
+var	c:@NSInsertedObjectIDsKey	-			ios=10.3/-/-/0,macos=10.12.4/-/-/0,tvos=10.2/-/-/0,watchos=3.2/-/-/0	-	d96b3f08ce531a85
+var	c:@NSUpdatedObjectIDsKey	-			ios=10.3/-/-/0,macos=10.12.4/-/-/0,tvos=10.2/-/-/0,watchos=3.2/-/-/0	-	35cadada6c999ec3
+var	c:@NSDeletedObjectIDsKey	-			ios=10.3/-/-/0,macos=10.12.4/-/-/0,tvos=10.2/-/-/0,watchos=3.2/-/-/0	-	3fd2e405a5d67027
+var	c:@NSRefreshedObjectIDsKey	-			ios=10.3/-/-/0,macos=10.12.4/-/-/0,tvos=10.2/-/-/0,watchos=3.2/-/-/0	-	4b5172c84905b689
+var	c:@NSInvalidatedObjectIDsKey	-			ios=10.3/-/-/0,macos=10.12.4/-/-/0,tvos=10.2/-/-/0,watchos=3.2/-/-/0	-	df70e29928136128
+var	c:@NSErrorMergePolicy	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	8b45b60b9da5a3f4
+var	c:@NSMergeByPropertyStoreTrumpMergePolicy	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	54db50cb4f91f6d5
+var	c:@NSMergeByPropertyObjectTrumpMergePolicy	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	bc0dfdbcb9b0058d
+var	c:@NSOverwriteMergePolicy	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	33356ef506db1685
+var	c:@NSRollbackMergePolicy	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	c39d95b96258e79c
+typedef	c:@T@NSManagedObjectContextConcurrencyType	-			-	-	5e0860b638b2fb8a
+enum	c:@E@NSManagedObjectContextConcurrencyType	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	1c476f016b805029
+enumconst	c:@E@NSManagedObjectContextConcurrencyType@NSConfinementConcurrencyType	NSManagedObjectContextConcurrencyType			ios=3.0/9.0/-/0,macos=10.4/10.11/-/0	deprecated: Use another NSManagedObjectContextConcurrencyType	44071049c6d27b86
+enumconst	c:@E@NSManagedObjectContextConcurrencyType@NSPrivateQueueConcurrencyType	NSManagedObjectContextConcurrencyType			ios=5.0/-/-/0,macos=10.7/-/-/0	-	dc38acad3ad2d0e5
+enumconst	c:@E@NSManagedObjectContextConcurrencyType@NSMainQueueConcurrencyType	NSManagedObjectContextConcurrencyType			ios=5.0/-/-/0,macos=10.7/-/-/0	-	c7a9b822c2f0ab7e
+interface	c:objc(cs)NSManagedObjectContext	-			ios=3.0/-/-/0,macos=10.4/-/-/0	deprecated: Use -initWithConcurrencyType: instead	1bb5fb6bc1aafb8a
+super	-	NSManagedObjectContext	NSObject		-	-	06fcff0fec19187a
+conforms	-	NSManagedObjectContext	NSCoding		-	-	1224c9faeb77836e
+conforms	-	NSManagedObjectContext	NSLocking		-	-	e97ce71a32f8d6d5
+method	c:objc(cs)NSManagedObjectContext(cm)new	-			ios=3.0/9.0/-/0,macos=10.4/10.11/-/0	deprecated: Use -initWithConcurrencyType: instead	f877f157f8531deb
+method	c:objc(cs)NSManagedObjectContext(im)init	-			ios=3.0/9.0/-/0,macos=10.4/10.11/-/0	deprecated: Use -initWithConcurrencyType: instead	5b7332f641e13082
+method	c:objc(cs)NSManagedObjectContext(im)initWithConcurrencyType:	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	cbda37d7f176a34b
+method	c:objc(cs)NSManagedObjectContext(im)performBlock:	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	92f32f598b8432a9
+method	c:objc(cs)NSManagedObjectContext(im)performBlockAndWait:	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	456f4f6226f834ee
+property	c:objc(cs)NSManagedObjectContext(py)persistentStoreCoordinator	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	1bb3684e6ca15364
+property	c:objc(cs)NSManagedObjectContext(py)parentContext	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	07cd042538835ce1
+property	c:objc(cs)NSManagedObjectContext(py)name	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	abab080c571c25da
+property	c:objc(cs)NSManagedObjectContext(py)undoManager	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	fa6cf1b1abfa4531
+property	c:objc(cs)NSManagedObjectContext(py)hasChanges	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	b66d98a865927310
+property	c:objc(cs)NSManagedObjectContext(py)userInfo	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	19cf94d2bf8a9732
+property	c:objc(cs)NSManagedObjectContext(py)concurrencyType	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	d410c77709db3af9
+method	c:objc(cs)NSManagedObjectContext(im)objectRegisteredForID:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	6ba4ed6dfe7c0447
+method	c:objc(cs)NSManagedObjectContext(im)objectWithID:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	eb045489b98f2a8f
+method	c:objc(cs)NSManagedObjectContext(im)existingObjectWithID:error:	-			ios=3.0/-/-/0,macos=10.6/-/-/0	-	19b531c3b0338ce1
+method	c:objc(cs)NSManagedObjectContext(im)executeFetchRequest:error:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	25d6f63bd834419f
+method	c:objc(cs)NSManagedObjectContext(im)countForFetchRequest:error:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	042177c65af735dc
+method	c:objc(cs)NSManagedObjectContext(im)executeRequest:error:	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	017f6548161996f3
+method	c:objc(cs)NSManagedObjectContext(im)insertObject:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	143d606607922ea4
+method	c:objc(cs)NSManagedObjectContext(im)deleteObject:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	7e3ad9742d02a35c
+method	c:objc(cs)NSManagedObjectContext(im)refreshObject:mergeChanges:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	d3dc03a2cf836bbe
+method	c:objc(cs)NSManagedObjectContext(im)detectConflictsForObject:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	31890e6f38d66796
+method	c:objc(cs)NSManagedObjectContext(im)observeValueForKeyPath:ofObject:change:context:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	a54709ac833b7729
+method	c:objc(cs)NSManagedObjectContext(im)processPendingChanges	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	ab32b88e014e17dc
+method	c:objc(cs)NSManagedObjectContext(im)assignObject:toPersistentStore:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	0a0886f28a8e0208
+property	c:objc(cs)NSManagedObjectContext(py)insertedObjects	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	b0be8a0140a1d2f8
+property	c:objc(cs)NSManagedObjectContext(py)updatedObjects	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	a77fa4fef8f070fc
+property	c:objc(cs)NSManagedObjectContext(py)deletedObjects	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	c2f492541e2dfcdc
+property	c:objc(cs)NSManagedObjectContext(py)registeredObjects	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	242ecce8e6c5992f
+method	c:objc(cs)NSManagedObjectContext(im)undo	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	e299f922f4fa13d1
+method	c:objc(cs)NSManagedObjectContext(im)redo	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	8ad64e94a72e9f2e
+method	c:objc(cs)NSManagedObjectContext(im)reset	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	57bd84d345b32f79
+method	c:objc(cs)NSManagedObjectContext(im)rollback	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	3b05129e24438085
+method	c:objc(cs)NSManagedObjectContext(im)save:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	3af70ec66b2d39c4
+method	c:objc(cs)NSManagedObjectContext(im)refreshAllObjects	-			ios=8.3/-/-/0,macos=10.11/-/-/0	-	ba6111643d8ea694
+method	c:objc(cs)NSManagedObjectContext(im)lock	-			ios=3.0/8.0/-/0,macos=10.4/10.10/-/0	deprecated: Use a queue style context and -performBlockAndWait: instead	d7cfd358a82466b6
+method	c:objc(cs)NSManagedObjectContext(im)unlock	-			ios=3.0/8.0/-/0,macos=10.4/10.10/-/0	deprecated: Use a queue style context and -performBlockAndWait: instead	3c051d0c603f5c65
+method	c:objc(cs)NSManagedObjectContext(im)tryLock	-			ios=3.0/8.0/-/0,macos=10.4/10.10/-/0	deprecated: Use a queue style context and -performBlock: instead	fad4be77b6b633f2
+property	c:objc(cs)NSManagedObjectContext(py)propagatesDeletesAtEndOfEvent	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	6af7ad341f117edf
+property	c:objc(cs)NSManagedObjectContext(py)retainsRegisteredObjects	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	908675445ccd799b
+property	c:objc(cs)NSManagedObjectContext(py)shouldDeleteInaccessibleFaults	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	ef358ca1648411b9
+method	c:objc(cs)NSManagedObjectContext(im)shouldHandleInaccessibleFault:forObjectID:triggeredByProperty:	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	1d249935397233ef
+property	c:objc(cs)NSManagedObjectContext(py)stalenessInterval	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	facecbac8552b6f4
+property	c:objc(cs)NSManagedObjectContext(py)mergePolicy	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	ab090059d32d5289
+method	c:objc(cs)NSManagedObjectContext(im)obtainPermanentIDsForObjects:error:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	7ce9722636c78b3f
+method	c:objc(cs)NSManagedObjectContext(im)mergeChangesFromContextDidSaveNotification:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	25bfa12369b2da34
+method	c:objc(cs)NSManagedObjectContext(cm)mergeChangesFromRemoteContextSave:intoContexts:	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	ff77249eac1e8b81
+property	c:objc(cs)NSManagedObjectContext(py)queryGenerationToken	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	8e7455ccb549f4ad
+method	c:objc(cs)NSManagedObjectContext(im)setQueryGenerationFromToken:error:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	4aefa5f1641f54ec
+property	c:objc(cs)NSManagedObjectContext(py)automaticallyMergesChangesFromParent	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	d1dd358baa423d44
+property	c:objc(cs)NSManagedObjectContext(py)transactionAuthor	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a54f74fc0c270b37
+var	c:@NSSQLiteStoreType	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	80a8a1f2a63caa2a
+var	c:@NSXMLStoreType	-			ios=-/-/-/1,macos=10.4/-/-/0	-	270e2f60c4730f89
+var	c:@NSBinaryStoreType	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	2fcead0581a81410
+var	c:@NSInMemoryStoreType	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	1f2925a5c04415f2
+var	c:@NSStoreTypeKey	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	39d01ac9a7f8d90c
+var	c:@NSStoreUUIDKey	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	181815c684814843
+var	c:@NSPersistentStoreCoordinatorStoresWillChangeNotification	-			ios=7.0/-/-/0,macos=10.9/-/-/0	-	7f98eaf4cab77df0
+var	c:@NSPersistentStoreCoordinatorStoresDidChangeNotification	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	995d298a1c64b833
+var	c:@NSPersistentStoreCoordinatorWillRemoveStoreNotification	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	bfd4abdc07acb1c1
+var	c:@NSAddedPersistentStoresKey	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	e2bc51b10097609c
+var	c:@NSRemovedPersistentStoresKey	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	01725954402bc93f
+var	c:@NSUUIDChangedPersistentStoresKey	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	9252dd100b30a22d
+var	c:@NSReadOnlyPersistentStoreOption	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	d7355eeb60538585
+var	c:@NSValidateXMLStoreOption	-			ios=-/-/-/1,macos=10.4/-/-/0	-	6307c467c74eebb5
+var	c:@NSPersistentStoreTimeoutOption	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	70743a583d634a44
+var	c:@NSSQLitePragmasOption	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	b029ea9f96ad16f1
+var	c:@NSSQLiteAnalyzeOption	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	4b83d6a3caa835d6
+var	c:@NSSQLiteManualVacuumOption	-			ios=3.0/-/-/0,macos=10.6/-/-/0	-	3c096949e0563b34
+var	c:@NSIgnorePersistentStoreVersioningOption	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	7d9db9fcd9f723a1
+var	c:@NSMigratePersistentStoresAutomaticallyOption	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	9781e674d23c5b19
+var	c:@NSInferMappingModelAutomaticallyOption	-			ios=3.0/-/-/0,macos=10.6/-/-/0	-	8116cd08a5652215
+var	c:@NSStoreModelVersionHashesKey	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	211add94b609ec88
+var	c:@NSStoreModelVersionIdentifiersKey	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	ac9d7e5806f79acd
+var	c:@NSPersistentStoreOSCompatibility	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	b6a4f4f6014fd06e
+var	c:@NSPersistentStoreConnectionPoolMaxSizeKey	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	f42628eb3a87f6e4
+var	c:@NSCoreDataCoreSpotlightExporter	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ea70a55cd92b01fa
+var	c:@NSPersistentStoreStagedMigrationManagerOptionKey	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	700d87420d34dcd7
+var	c:@NSPersistentStoreForceDestroyOption	-			ios=6.0/-/-/0,macos=10.8/-/-/0	-	52e880e9a5fb5e2d
+var	c:@NSPersistentStoreFileProtectionKey	-			ios=5.0/-/-/0,macos=-/-/-/1	-	148d4541991e8110
+var	c:@NSPersistentHistoryTrackingKey	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	dfbbb1c074444c2d
+var	c:@NSBinaryStoreSecureDecodingClasses	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c059c7cdee4b5b22
+var	c:@NSBinaryStoreInsecureDecodingCompatibilityOption	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	df53b87584b60368
+var	c:@NSPersistentStoreRemoteChangeNotificationPostOptionKey	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	da2759e5f38ff84c
+var	c:@NSPersistentStoreRemoteChangeNotification	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	ddfd37b39ea767ab
+var	c:@NSPersistentStoreURLKey	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	4907567e5ba6b844
+var	c:@NSPersistentHistoryTokenKey	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	2c65be13a091d9e2
+var	c:@NSPersistentStoreDeferredLightweightMigrationOptionKey	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	e8c821b709c944cd
+var	c:@NSPersistentStoreModelVersionChecksumKey	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	0f1260b3183e427c
+interface	c:objc(cs)NSPersistentStoreCoordinator	-			ios=3.0/-/-/0,macos=10.4/-/-/0	deprecated: Use -performBlockAndWait: instead	0e8150840d350291
+super	-	NSPersistentStoreCoordinator	NSObject		-	-	8109b808541d393c
+conforms	-	NSPersistentStoreCoordinator	NSLocking		-	-	b31ec780f8cd1159
+method	c:objc(cs)NSPersistentStoreCoordinator(im)initWithManagedObjectModel:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	b1a5721caa27945f
+property	c:objc(cs)NSPersistentStoreCoordinator(py)managedObjectModel	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	fb25e9ecb9f40fbb
+property	c:objc(cs)NSPersistentStoreCoordinator(py)persistentStores	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	5641ef83489b5ddc
+property	c:objc(cs)NSPersistentStoreCoordinator(py)name	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	2c1b02b0441633ce
+method	c:objc(cs)NSPersistentStoreCoordinator(im)persistentStoreForURL:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	e3d0613bc5a5aa8c
+method	c:objc(cs)NSPersistentStoreCoordinator(im)URLForPersistentStore:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	7dafeccf4b2bfa23
+method	c:objc(cs)NSPersistentStoreCoordinator(im)setURL:forPersistentStore:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	1251c6a49f81f464
+method	c:objc(cs)NSPersistentStoreCoordinator(im)addPersistentStoreWithType:configuration:URL:options:error:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	851c2f798a1373d0
+method	c:objc(cs)NSPersistentStoreCoordinator(im)addPersistentStoreWithDescription:completionHandler:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	8bb1d278d7fb9ed4
+method	c:objc(cs)NSPersistentStoreCoordinator(im)removePersistentStore:error:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	93988665a6ad6e99
+method	c:objc(cs)NSPersistentStoreCoordinator(im)setMetadata:forPersistentStore:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	54556effa510a3bd
+method	c:objc(cs)NSPersistentStoreCoordinator(im)metadataForPersistentStore:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	2231e35ca4a390ca
+method	c:objc(cs)NSPersistentStoreCoordinator(im)managedObjectIDForURIRepresentation:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	96f637e89b0a4c12
+method	c:objc(cs)NSPersistentStoreCoordinator(im)executeRequest:withContext:error:	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	65b0a582ecea6276
+property	c:objc(cs)NSPersistentStoreCoordinator(cpy)registeredStoreTypes	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	61abdfd784f52f6d
+method	c:objc(cs)NSPersistentStoreCoordinator(cm)registerStoreClass:forStoreType:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	48987cf3c7da69b4
+method	c:objc(cs)NSPersistentStoreCoordinator(cm)metadataForPersistentStoreOfType:URL:options:error:	-			ios=7.0/-/-/0,macos=10.9/-/-/0	-	b32467c945f19046
+method	c:objc(cs)NSPersistentStoreCoordinator(cm)setMetadata:forPersistentStoreOfType:URL:options:error:	-			ios=7.0/-/-/0,macos=10.9/-/-/0	-	4f0825ec95e81a93
+method	c:objc(cs)NSPersistentStoreCoordinator(im)migratePersistentStore:toURL:options:withType:error:	-			ios=3.0/-/-/0,macos=10.4/-/-/0	-	40507b0aecf84583
+method	c:objc(cs)NSPersistentStoreCoordinator(im)destroyPersistentStoreAtURL:withType:options:error:	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	46a8b8528a813341
+method	c:objc(cs)NSPersistentStoreCoordinator(im)replacePersistentStoreAtURL:destinationOptions:withPersistentStoreFromURL:sourceOptions:storeType:error:	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	eebb0c06f446f9ad
+method	c:objc(cs)NSPersistentStoreCoordinator(im)performBlock:	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	e0b2d149ed45b7c4
+method	c:objc(cs)NSPersistentStoreCoordinator(im)performBlockAndWait:	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	d65486bc1dee1c49
+method	c:objc(cs)NSPersistentStoreCoordinator(im)currentPersistentHistoryTokenFromStores:	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	f2e18b37b3133b79
+method	c:objc(cs)NSPersistentStoreCoordinator(im)finishDeferredLightweightMigration:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	255bc348920764b0
+method	c:objc(cs)NSPersistentStoreCoordinator(im)finishDeferredLightweightMigrationTask:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	71624b510457b920
+method	c:objc(cs)NSPersistentStoreCoordinator(im)managedObjectIDFromUTF8String:length:	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b13b70d935de0f5b
+method	c:objc(cs)NSPersistentStoreCoordinator(im)lock	-			ios=3.0/8.0/-/0,macos=10.4/10.10/-/0	deprecated: Use -performBlockAndWait: instead	83786fcd45b03153
+method	c:objc(cs)NSPersistentStoreCoordinator(im)unlock	-			ios=3.0/8.0/-/0,macos=10.4/10.10/-/0	deprecated: Use -performBlockAndWait: instead	4db4bb5e1e979d85
+method	c:objc(cs)NSPersistentStoreCoordinator(im)tryLock	-			ios=3.0/8.0/-/0,macos=10.4/10.10/-/0	deprecated: Use -performBlock: instead	3fd14df41616c741
+method	c:objc(cs)NSPersistentStoreCoordinator(cm)metadataForPersistentStoreOfType:URL:error:	-			ios=3.0/9.0/-/0,macos=10.5/10.11/-/0	deprecated: Use -metadataForPersistentStoreOfType:URL:options:error: and pass in an options dictionary matching addPersistentStoreWithType	caff26f311baef13
+method	c:objc(cs)NSPersistentStoreCoordinator(cm)setMetadata:forPersistentStoreOfType:URL:error:	-			ios=3.0/9.0/-/0,macos=10.5/10.11/-/0	deprecated: Use  -setMetadata:forPersistentStoreOfType:URL:options:error: and pass in an options dictionary matching addPersistentStoreWithType	78c5cf97cdb457f9
+method	c:objc(cs)NSPersistentStoreCoordinator(cm)removeUbiquitousContentAndPersistentStoreAtURL:options:error:	-			ios=5.0/10.0/-/0,macos=10.7/10.12/-/0	deprecated: Please see the release notes and Core Data documentation.	68a42de561610407
+typedef	c:@T@NSPersistentStoreUbiquitousTransitionType	-			-	-	64870fba67ce36a1
+enum	c:@E@NSPersistentStoreUbiquitousTransitionType	-			ios=7.0/10.0/-/0,macos=10.9/10.12/-/0	-	0e503482d2b57103
+enumconst	c:@E@NSPersistentStoreUbiquitousTransitionType@NSPersistentStoreUbiquitousTransitionTypeAccountAdded	NSPersistentStoreUbiquitousTransitionType			ios=7.0/10.0/-/0,macos=10.9/10.12/-/0	-	bec36cdc12cfecf3
+enumconst	c:@E@NSPersistentStoreUbiquitousTransitionType@NSPersistentStoreUbiquitousTransitionTypeAccountRemoved	NSPersistentStoreUbiquitousTransitionType			ios=7.0/10.0/-/0,macos=10.9/10.12/-/0	-	07df8731c60e50ba
+enumconst	c:@E@NSPersistentStoreUbiquitousTransitionType@NSPersistentStoreUbiquitousTransitionTypeContentRemoved	NSPersistentStoreUbiquitousTransitionType			ios=7.0/10.0/-/0,macos=10.9/10.12/-/0	-	cbe8b42ed516b104
+enumconst	c:@E@NSPersistentStoreUbiquitousTransitionType@NSPersistentStoreUbiquitousTransitionTypeInitialImportCompleted	NSPersistentStoreUbiquitousTransitionType			ios=7.0/10.0/-/0,macos=10.9/10.12/-/0	-	8ca176579b3d4d15
+var	c:@NSPersistentStoreUbiquitousContentNameKey	-			ios=5.0/10.0/-/0,macos=10.7/10.12/-/0	-	7a1b2c93007459f3
+var	c:@NSPersistentStoreUbiquitousContentURLKey	-			ios=5.0/10.0/-/0,macos=10.7/10.12/-/0	-	99003a3c54db9a73
+var	c:@NSPersistentStoreDidImportUbiquitousContentChangesNotification	-			ios=5.0/10.0/-/0,macos=10.7/10.12/-/0	-	5734232ee107649d
+var	c:@NSPersistentStoreUbiquitousTransitionTypeKey	-			ios=7.0/10.0/-/0,macos=10.9/10.12/-/0	-	7a07fac74e89613e
+var	c:@NSPersistentStoreUbiquitousPeerTokenOption	-			ios=7.0/10.0/-/0,macos=10.9/10.12/-/0	-	d2323f2390910dec
+var	c:@NSPersistentStoreRemoveUbiquitousMetadataOption	-			ios=7.0/10.0/-/0,macos=10.9/10.12/-/0	-	c86c36761732f8a2
+var	c:@NSPersistentStoreUbiquitousContainerIdentifierKey	-			ios=7.0/10.0/-/0,macos=10.9/10.12/-/0	-	b764187f87855536
+var	c:@NSPersistentStoreRebuildFromUbiquitousContentOption	-			ios=7.0/10.0/-/0,macos=10.9/10.12/-/0	-	e7db3ae45ba8d17d
+interface	c:objc(cs)NSPersistentStore	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	eea9c826affc9344
+super	-	NSPersistentStore	NSObject		-	-	496c9490d1eda657
+method	c:objc(cs)NSPersistentStore(cm)metadataForPersistentStoreWithURL:error:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	43b56ba71c53f33c
+method	c:objc(cs)NSPersistentStore(cm)setMetadata:forPersistentStoreWithURL:error:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	fa7006ce3bd2d78c
+method	c:objc(cs)NSPersistentStore(cm)migrationManagerClass	-			ios=3.0/-/-/0,macos=10.6/-/-/0	-	5ecdd062a588d639
+method	c:objc(cs)NSPersistentStore(im)initWithPersistentStoreCoordinator:configurationName:URL:options:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	72a1f0b545a70a0d
+method	c:objc(cs)NSPersistentStore(im)init	-			*unavailable ios=3.0/-/-/0,macos=10.5/-/-/0	-	00e67f6b31e14e8e
+method	c:objc(cs)NSPersistentStore(im)loadMetadata:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	4224388c6e8ac939
+property	c:objc(cs)NSPersistentStore(py)persistentStoreCoordinator	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	4202d8c0fc44badc
+property	c:objc(cs)NSPersistentStore(py)configurationName	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	7ea8994d0cf3de43
+property	c:objc(cs)NSPersistentStore(py)options	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	db030ac89d91e4c2
+property	c:objc(cs)NSPersistentStore(py)URL	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	91f30eed65725ebf
+property	c:objc(cs)NSPersistentStore(py)identifier	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	6d10f6d3e8cdf85c
+property	c:objc(cs)NSPersistentStore(py)type	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	e389ef8ddd36a351
+property	c:objc(cs)NSPersistentStore(py)readOnly	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	969b16d42a7be3ad
+property	c:objc(cs)NSPersistentStore(py)metadata	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	c2f214668b95043d
+method	c:objc(cs)NSPersistentStore(im)didAddToPersistentStoreCoordinator:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	fdef6aec9d9047d8
+method	c:objc(cs)NSPersistentStore(im)willRemoveFromPersistentStoreCoordinator:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	c6bf9392c92b3929
+property	c:objc(cs)NSPersistentStore(py)coreSpotlightExporter	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d9d44438cadbbdb6
+interface	c:objc(cs)NSAtomicStoreCacheNode	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	f19de6f3130a2e87
+super	-	NSAtomicStoreCacheNode	NSObject		-	-	3d3121f599002701
+method	c:objc(cs)NSAtomicStoreCacheNode(im)initWithObjectID:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	71e5595781847081
+property	c:objc(cs)NSAtomicStoreCacheNode(py)objectID	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	5c2b6b716ec9ff6d
+property	c:objc(cs)NSAtomicStoreCacheNode(py)propertyCache	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	669de65294079c63
+method	c:objc(cs)NSAtomicStoreCacheNode(im)valueForKey:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	d7490300d5e175db
+method	c:objc(cs)NSAtomicStoreCacheNode(im)setValue:forKey:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	cf26772dd8494458
+interface	c:objc(cs)NSAtomicStore	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	7bbd3a9d267c63c5
+super	-	NSAtomicStore	NSPersistentStore		-	-	5428f07019997c39
+method	c:objc(cs)NSAtomicStore(im)initWithPersistentStoreCoordinator:configurationName:URL:options:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	308800983faf0f5f
+method	c:objc(cs)NSAtomicStore(im)load:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	11dc04cbfec2e11c
+method	c:objc(cs)NSAtomicStore(im)save:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	c4714285b4c4d38c
+method	c:objc(cs)NSAtomicStore(im)newCacheNodeForManagedObject:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	60cefdc156cb92a8
+method	c:objc(cs)NSAtomicStore(im)updateCacheNode:fromManagedObject:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	c01949b95f4ce5ae
+method	c:objc(cs)NSAtomicStore(im)cacheNodes	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	0a1833113b2ac7e8
+method	c:objc(cs)NSAtomicStore(im)addCacheNodes:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	5bc5a554d28e769f
+method	c:objc(cs)NSAtomicStore(im)willRemoveCacheNodes:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	ccf3c6545e15994a
+method	c:objc(cs)NSAtomicStore(im)cacheNodeForObjectID:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	6426ba3028b4de4f
+method	c:objc(cs)NSAtomicStore(im)objectIDForEntity:referenceObject:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	eb677a48df3787ef
+method	c:objc(cs)NSAtomicStore(im)newReferenceObjectForManagedObject:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	b7fe92a628aaad02
+method	c:objc(cs)NSAtomicStore(im)referenceObjectForObjectID:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	2ac484482823fac8
+var	c:@NSMigrationManagerKey	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	26fac1ccaf5fe489
+var	c:@NSMigrationSourceObjectKey	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	0b72dacf1faead4b
+var	c:@NSMigrationDestinationObjectKey	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	7bf906fa4abf3c40
+var	c:@NSMigrationEntityMappingKey	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	8193df729d971a86
+var	c:@NSMigrationPropertyMappingKey	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	a116e2274bd782dc
+var	c:@NSMigrationEntityPolicyKey	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	0b0c1ac7e833d091
+interface	c:objc(cs)NSEntityMigrationPolicy	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	401e2887b04e783b
+super	-	NSEntityMigrationPolicy	NSObject		-	-	25e0a9b11243185e
+method	c:objc(cs)NSEntityMigrationPolicy(im)beginEntityMapping:manager:error:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	c380a70f97e72b4f
+method	c:objc(cs)NSEntityMigrationPolicy(im)createDestinationInstancesForSourceInstance:entityMapping:manager:error:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	3dcb405c5dfe8bfa
+method	c:objc(cs)NSEntityMigrationPolicy(im)endInstanceCreationForEntityMapping:manager:error:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	0e0790f0cdb79c76
+method	c:objc(cs)NSEntityMigrationPolicy(im)createRelationshipsForDestinationInstance:entityMapping:manager:error:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	68381bfb34c86b41
+method	c:objc(cs)NSEntityMigrationPolicy(im)endRelationshipCreationForEntityMapping:manager:error:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	9899892070161a30
+method	c:objc(cs)NSEntityMigrationPolicy(im)performCustomValidationForEntityMapping:manager:error:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	d5e10149ed66255d
+method	c:objc(cs)NSEntityMigrationPolicy(im)endEntityMapping:manager:error:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	c4b60e9307a1c29f
+interface	c:objc(cs)NSMappingModel	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	c4601da8ce920ec7
+super	-	NSMappingModel	NSObject		-	-	e39c00da625b5300
+method	c:objc(cs)NSMappingModel(cm)mappingModelFromBundles:forSourceModel:destinationModel:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	a7c6bfa134611461
+method	c:objc(cs)NSMappingModel(cm)inferredMappingModelForSourceModel:destinationModel:error:	-			ios=3.0/-/-/0,macos=10.6/-/-/0	-	b753062c1c12f3cb
+method	c:objc(cs)NSMappingModel(im)initWithContentsOfURL:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	34552a46bcb4eb67
+property	c:objc(cs)NSMappingModel(py)entityMappings	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	66b04a17e4960a6e
+property	c:objc(cs)NSMappingModel(py)entityMappingsByName	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	5e7f7a420e897735
+typedef	c:@T@NSEntityMappingType	-			-	-	3ab1798f296facb9
+enum	c:@E@NSEntityMappingType	-			-	-	98556af00d18d95b
+enumconst	c:@E@NSEntityMappingType@NSUndefinedEntityMappingType	NSEntityMappingType			-	-	18366b3178f825f1
+enumconst	c:@E@NSEntityMappingType@NSCustomEntityMappingType	NSEntityMappingType			-	-	eaf89758bb0742b4
+enumconst	c:@E@NSEntityMappingType@NSAddEntityMappingType	NSEntityMappingType			-	-	993f2c6df396665b
+enumconst	c:@E@NSEntityMappingType@NSRemoveEntityMappingType	NSEntityMappingType			-	-	c664e45d462d52cf
+enumconst	c:@E@NSEntityMappingType@NSCopyEntityMappingType	NSEntityMappingType			-	-	4a12d70cb5bb64f1
+enumconst	c:@E@NSEntityMappingType@NSTransformEntityMappingType	NSEntityMappingType			-	-	5c296dce5241f40c
+interface	c:objc(cs)NSEntityMapping	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	2df04c63b60ce8a8
+super	-	NSEntityMapping	NSObject		-	-	f637c7d47e21aa19
+property	c:objc(cs)NSEntityMapping(py)name	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	e7a8097aec5fabb4
+property	c:objc(cs)NSEntityMapping(py)mappingType	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	92ff8e4aabc16495
+property	c:objc(cs)NSEntityMapping(py)sourceEntityName	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	b2d245ae83e85bee
+property	c:objc(cs)NSEntityMapping(py)sourceEntityVersionHash	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	abb06ff11ad1ffb3
+property	c:objc(cs)NSEntityMapping(py)destinationEntityName	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	009749c9859b7d97
+property	c:objc(cs)NSEntityMapping(py)destinationEntityVersionHash	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	e946e669e89a88e9
+property	c:objc(cs)NSEntityMapping(py)attributeMappings	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	e3ca57beb46e7175
+property	c:objc(cs)NSEntityMapping(py)relationshipMappings	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	d951bfe66db84ea9
+property	c:objc(cs)NSEntityMapping(py)sourceExpression	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	8f8357cedb1b8778
+property	c:objc(cs)NSEntityMapping(py)userInfo	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	7fd338f4a722031d
+property	c:objc(cs)NSEntityMapping(py)entityMigrationPolicyClassName	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	39ff1ddfe776a48b
+interface	c:objc(cs)NSPropertyMapping	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	785502bf3a5d0d2e
+super	-	NSPropertyMapping	NSObject		-	-	22f2c771cb3df044
+property	c:objc(cs)NSPropertyMapping(py)name	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	7caac3c3b9f49f32
+property	c:objc(cs)NSPropertyMapping(py)valueExpression	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	a358fd2e4fa73682
+property	c:objc(cs)NSPropertyMapping(py)userInfo	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	a74bd40a4fe0adf3
+interface	c:objc(cs)NSMigrationManager	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	e5c564fa028ac0f7
+super	-	NSMigrationManager	NSObject		-	-	029364fd99a06481
+method	c:objc(cs)NSMigrationManager(im)initWithSourceModel:destinationModel:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	e61349595a9cb04d
+method	c:objc(cs)NSMigrationManager(im)migrateStoreFromURL:type:options:withMappingModel:toDestinationURL:destinationType:destinationOptions:error:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	b656e23ce1b697b0
+property	c:objc(cs)NSMigrationManager(py)usesStoreSpecificMigrationManager	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	fed24234e75cee8c
+method	c:objc(cs)NSMigrationManager(im)reset	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	459318ea51d8c815
+property	c:objc(cs)NSMigrationManager(py)mappingModel	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	0c7516d104a71caa
+property	c:objc(cs)NSMigrationManager(py)sourceModel	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	fb23ed12214a736c
+property	c:objc(cs)NSMigrationManager(py)destinationModel	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	b9157eb6002d57dc
+property	c:objc(cs)NSMigrationManager(py)sourceContext	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	6e4eb02b565bcfb7
+property	c:objc(cs)NSMigrationManager(py)destinationContext	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	2f68a55c3404f8e2
+method	c:objc(cs)NSMigrationManager(im)sourceEntityForEntityMapping:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	9cd0ba5a48efdf69
+method	c:objc(cs)NSMigrationManager(im)destinationEntityForEntityMapping:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	df3e159aea9119d8
+method	c:objc(cs)NSMigrationManager(im)associateSourceInstance:withDestinationInstance:forEntityMapping:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	8f7c99ee34c3ea9b
+method	c:objc(cs)NSMigrationManager(im)destinationInstancesForEntityMappingNamed:sourceInstances:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	ef831681f77ab7ce
+method	c:objc(cs)NSMigrationManager(im)sourceInstancesForEntityMappingNamed:destinationInstances:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	5cb6cf7dfa1af0f0
+property	c:objc(cs)NSMigrationManager(py)currentEntityMapping	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	381a976cf92aea9b
+property	c:objc(cs)NSMigrationManager(py)migrationProgress	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	04720e384af80928
+property	c:objc(cs)NSMigrationManager(py)userInfo	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	d2173326b7d7569d
+method	c:objc(cs)NSMigrationManager(im)cancelMigrationWithError:	-			ios=3.0/-/-/0,macos=10.5/-/-/0	-	de7861e7b5278a20
+interface	c:objc(cs)NSIncrementalStore	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	2c0c85183c96b9ab
+super	-	NSIncrementalStore	NSPersistentStore		-	-	e5394dc32bebddc2
+method	c:objc(cs)NSIncrementalStore(im)loadMetadata:	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	2a038a77ef0066bc
+method	c:objc(cs)NSIncrementalStore(im)executeRequest:withContext:error:	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	c55dc0f2bad95d53
+method	c:objc(cs)NSIncrementalStore(im)newValuesForObjectWithID:withContext:error:	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	bef1371096bcdd67
+method	c:objc(cs)NSIncrementalStore(im)newValueForRelationship:forObjectWithID:withContext:error:	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	cdeb1cd3b614d25b
+method	c:objc(cs)NSIncrementalStore(cm)identifierForNewStoreAtURL:	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	87a5e2527133e097
+method	c:objc(cs)NSIncrementalStore(im)obtainPermanentIDsForObjects:error:	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	e75e7ba6c45b88c3
+method	c:objc(cs)NSIncrementalStore(im)managedObjectContextDidRegisterObjectsWithIDs:	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	d5e57a2a5480ea16
+method	c:objc(cs)NSIncrementalStore(im)managedObjectContextDidUnregisterObjectsWithIDs:	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	2fc81605a03df78e
+method	c:objc(cs)NSIncrementalStore(im)newObjectIDForEntity:referenceObject:	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	0d108b4fe764ea54
+method	c:objc(cs)NSIncrementalStore(im)referenceObjectForObjectID:	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	871889880e7f7507
+interface	c:objc(cs)NSIncrementalStoreNode	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	f3f142f58f5d56ed
+super	-	NSIncrementalStoreNode	NSObject		-	-	7413bc387637d8a9
+method	c:objc(cs)NSIncrementalStoreNode(im)initWithObjectID:withValues:version:	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	d9389d9169c42d9d
+method	c:objc(cs)NSIncrementalStoreNode(im)updateWithValues:version:	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	b2cf10804e1038f9
+property	c:objc(cs)NSIncrementalStoreNode(py)objectID	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	83389da8552ec510
+property	c:objc(cs)NSIncrementalStoreNode(py)version	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	bfced013a2f45126
+method	c:objc(cs)NSIncrementalStoreNode(im)valueForPropertyDescription:	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	e490082809e5bc11
+typedef	c:@T@NSBatchInsertRequestResultType	-			-	-	67f61554f62cb493
+enum	c:@E@NSBatchInsertRequestResultType	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	766c6ebd67ade65c
+enumconst	c:@E@NSBatchInsertRequestResultType@NSBatchInsertRequestResultTypeStatusOnly	NSBatchInsertRequestResultType			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	f7f7e079c9ebb11d
+enumconst	c:@E@NSBatchInsertRequestResultType@NSBatchInsertRequestResultTypeObjectIDs	NSBatchInsertRequestResultType			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	f99df05e8266608b
+enumconst	c:@E@NSBatchInsertRequestResultType@NSBatchInsertRequestResultTypeCount	NSBatchInsertRequestResultType			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	b564f1a1c0d26e95
+typedef	c:@T@NSBatchUpdateRequestResultType	-			-	-	08e155e57cd798fe
+enum	c:@E@NSBatchUpdateRequestResultType	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	5ca89f579f0ba500
+enumconst	c:@E@NSBatchUpdateRequestResultType@NSStatusOnlyResultType	NSBatchUpdateRequestResultType			ios=8.0/-/-/0,macos=10.10/-/-/0	-	2bd9b0b402560131
+enumconst	c:@E@NSBatchUpdateRequestResultType@NSUpdatedObjectIDsResultType	NSBatchUpdateRequestResultType			ios=8.0/-/-/0,macos=10.10/-/-/0	-	3e5607ca6ae37fc8
+enumconst	c:@E@NSBatchUpdateRequestResultType@NSUpdatedObjectsCountResultType	NSBatchUpdateRequestResultType			ios=8.0/-/-/0,macos=10.10/-/-/0	-	534fbd9145f9bdd6
+typedef	c:@T@NSBatchDeleteRequestResultType	-			-	-	6c815ac5431632e3
+enum	c:@E@NSBatchDeleteRequestResultType	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	7876d1487387c620
+enumconst	c:@E@NSBatchDeleteRequestResultType@NSBatchDeleteResultTypeStatusOnly	NSBatchDeleteRequestResultType			ios=9.0/-/-/0,macos=10.11/-/-/0	-	fbd301b3c46c0936
+enumconst	c:@E@NSBatchDeleteRequestResultType@NSBatchDeleteResultTypeObjectIDs	NSBatchDeleteRequestResultType			ios=9.0/-/-/0,macos=10.11/-/-/0	-	1a6a672090c78f35
+enumconst	c:@E@NSBatchDeleteRequestResultType@NSBatchDeleteResultTypeCount	NSBatchDeleteRequestResultType			ios=9.0/-/-/0,macos=10.11/-/-/0	-	b9f69c6c5a867168
+typedef	c:@T@NSPersistentHistoryResultType	-			-	-	f15edafebdf5adfc
+enum	c:@E@NSPersistentHistoryResultType	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ae996671ece1d373
+enumconst	c:@E@NSPersistentHistoryResultType@NSPersistentHistoryResultTypeStatusOnly	NSPersistentHistoryResultType			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	fb5f7e9b09f3e856
+enumconst	c:@E@NSPersistentHistoryResultType@NSPersistentHistoryResultTypeObjectIDs	NSPersistentHistoryResultType			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	eadc9b46937bc53f
+enumconst	c:@E@NSPersistentHistoryResultType@NSPersistentHistoryResultTypeCount	NSPersistentHistoryResultType			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a82f31b3e3897878
+enumconst	c:@E@NSPersistentHistoryResultType@NSPersistentHistoryResultTypeTransactionsOnly	NSPersistentHistoryResultType			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	af8ae908a95cd5ce
+enumconst	c:@E@NSPersistentHistoryResultType@NSPersistentHistoryResultTypeChangesOnly	NSPersistentHistoryResultType			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	34406949d0b6c259
+enumconst	c:@E@NSPersistentHistoryResultType@NSPersistentHistoryResultTypeTransactionsAndChanges	NSPersistentHistoryResultType			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	183218093884335f
+interface	c:objc(cs)NSPersistentStoreResult	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	c5acf41c8494b2a2
+super	-	NSPersistentStoreResult	NSObject		-	-	f8471f9af4a00a48
+interface	c:objc(cs)NSPersistentStoreAsynchronousResult	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	cce93932b82067a3
+super	-	NSPersistentStoreAsynchronousResult	NSPersistentStoreResult		-	-	e7026566e64942c0
+property	c:objc(cs)NSPersistentStoreAsynchronousResult(py)managedObjectContext	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	785d74be0cd78ddd
+property	c:objc(cs)NSPersistentStoreAsynchronousResult(py)operationError	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	2e3e7fe3d3697a34
+property	c:objc(cs)NSPersistentStoreAsynchronousResult(py)progress	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	d4e0d8eba74bb623
+method	c:objc(cs)NSPersistentStoreAsynchronousResult(im)cancel	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	a5d8c54d420c67b1
+interface	c:objc(cs)NSAsynchronousFetchResult	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	b333609c7becc164
+super	-	NSAsynchronousFetchResult	NSPersistentStoreAsynchronousResult		-	-	8e495027dc7674e1
+property	c:objc(cs)NSAsynchronousFetchResult(py)fetchRequest	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	d25a1c215c944acf
+property	c:objc(cs)NSAsynchronousFetchResult(py)finalResult	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	bdb7de5c2b6237cf
+interface	c:objc(cs)NSBatchInsertResult	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	fac6c23d76813fa5
+super	-	NSBatchInsertResult	NSPersistentStoreResult		-	-	99a525002edccec7
+property	c:objc(cs)NSBatchInsertResult(py)result	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	ba034f4a174cef0a
+property	c:objc(cs)NSBatchInsertResult(py)resultType	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	4c529a8603572be1
+interface	c:objc(cs)NSBatchUpdateResult	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	9bc6bcc865aecea9
+super	-	NSBatchUpdateResult	NSPersistentStoreResult		-	-	c3b620dd2d8fd2af
+property	c:objc(cs)NSBatchUpdateResult(py)result	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	4ce269e1e7058640
+property	c:objc(cs)NSBatchUpdateResult(py)resultType	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	ace5286b83f8de9c
+interface	c:objc(cs)NSBatchDeleteResult	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	3383af82040138d1
+super	-	NSBatchDeleteResult	NSPersistentStoreResult		-	-	30f777861027b131
+property	c:objc(cs)NSBatchDeleteResult(py)result	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	3a47cab56960b0c1
+property	c:objc(cs)NSBatchDeleteResult(py)resultType	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	2bab164be0c93708
+interface	c:objc(cs)NSPersistentHistoryResult	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ea594d55f03f0e1f
+super	-	NSPersistentHistoryResult	NSPersistentStoreResult		-	-	8c8b6c0c244068a1
+property	c:objc(cs)NSPersistentHistoryResult(py)result	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	fc9bd81f3d51b7ee
+property	c:objc(cs)NSPersistentHistoryResult(py)resultType	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	00b61c20df883acd
+typedef	c:@T@NSPersistentCloudKitContainerEventResultType	-			-	-	92a6a312430e7157
+enum	c:@E@NSPersistentCloudKitContainerEventResultType	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	7c29ce7947523e63
+enumconst	c:@E@NSPersistentCloudKitContainerEventResultType@NSPersistentCloudKitContainerEventResultTypeEvents	NSPersistentCloudKitContainerEventResultType			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	83236712f931340e
+enumconst	c:@E@NSPersistentCloudKitContainerEventResultType@NSPersistentCloudKitContainerEventResultTypeCountEvents	NSPersistentCloudKitContainerEventResultType			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	6546ccae27673c58
+interface	c:objc(cs)NSPersistentCloudKitContainerEventResult	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	158332c6c4c8529a
+super	-	NSPersistentCloudKitContainerEventResult	NSPersistentStoreResult		-	-	07b1ba6996452a69
+property	c:objc(cs)NSPersistentCloudKitContainerEventResult(py)result	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	a1ac9cdfe28f94db
+property	c:objc(cs)NSPersistentCloudKitContainerEventResult(py)resultType	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	a271b5d662790b3f
+method	c:objc(cs)NSPersistentCloudKitContainerEventResult(im)init	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	3e0a5707208254a3
+method	c:objc(cs)NSPersistentCloudKitContainerEventResult(cm)new	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	b3e2100c8cd2fb4f
+interface	c:objc(cs)NSSaveChangesRequest	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	1efe0f8576bc5151
+super	-	NSSaveChangesRequest	NSPersistentStoreRequest		-	-	646c810d8f6fe394
+method	c:objc(cs)NSSaveChangesRequest(im)initWithInsertedObjects:updatedObjects:deletedObjects:lockedObjects:	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	eb70bc2ff9200cde
+property	c:objc(cs)NSSaveChangesRequest(py)insertedObjects	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	801fac882bf5fff2
+property	c:objc(cs)NSSaveChangesRequest(py)updatedObjects	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	7f44a5819e692dc8
+property	c:objc(cs)NSSaveChangesRequest(py)deletedObjects	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	8b6b8344db28cb1b
+property	c:objc(cs)NSSaveChangesRequest(py)lockedObjects	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	b9173de6616db499
+interface	c:objc(cs)NSBatchUpdateRequest	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	fd4d38c49232b577
+super	-	NSBatchUpdateRequest	NSPersistentStoreRequest		-	-	683e0b4ee89d2f06
+method	c:objc(cs)NSBatchUpdateRequest(cm)batchUpdateRequestWithEntityName:	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	f8af6db1e4a82a89
+method	c:objc(cs)NSBatchUpdateRequest(im)initWithEntityName:	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	19af28e6df53ead0
+method	c:objc(cs)NSBatchUpdateRequest(im)initWithEntity:	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	c9d3cdd65cbacc75
+property	c:objc(cs)NSBatchUpdateRequest(py)entityName	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	e8d596f34367df36
+property	c:objc(cs)NSBatchUpdateRequest(py)entity	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	fa5acb763123d28e
+property	c:objc(cs)NSBatchUpdateRequest(py)predicate	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	556c32fadda202f7
+property	c:objc(cs)NSBatchUpdateRequest(py)includesSubentities	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	04273b29d1049c18
+property	c:objc(cs)NSBatchUpdateRequest(py)resultType	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	6bb8cf2778570018
+property	c:objc(cs)NSBatchUpdateRequest(py)propertiesToUpdate	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	f2162e7382360693
+interface	c:objc(cs)NSBatchDeleteRequest	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	ada7932cc872ec99
+super	-	NSBatchDeleteRequest	NSPersistentStoreRequest		-	-	70ec9f1e74128f27
+method	c:objc(cs)NSBatchDeleteRequest(im)init	-			*unavailable ios=9.0/-/-/0,macos=10.11/-/-/0	-	014f8c1058d38bf6
+method	c:objc(cs)NSBatchDeleteRequest(im)initWithFetchRequest:	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	f028fb5884c2dc5c
+method	c:objc(cs)NSBatchDeleteRequest(im)initWithObjectIDs:	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	9961f93af51174c2
+property	c:objc(cs)NSBatchDeleteRequest(py)resultType	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	248361c483a31c83
+property	c:objc(cs)NSBatchDeleteRequest(py)fetchRequest	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	633055ef8c4f3d2c
+interface	c:objc(cs)NSBatchInsertRequest	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	deprecated: Use initWithEntityName instead	a77d074a916ca270
+super	-	NSBatchInsertRequest	NSPersistentStoreRequest		-	-	4caa1997c5cd46ff
+property	c:objc(cs)NSBatchInsertRequest(py)entityName	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	028143f7f10588c5
+property	c:objc(cs)NSBatchInsertRequest(py)entity	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	30caee980f5c96a7
+property	c:objc(cs)NSBatchInsertRequest(py)objectsToInsert	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	887e29b4e224a686
+property	c:objc(cs)NSBatchInsertRequest(py)dictionaryHandler	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	2a0db0e15f852227
+property	c:objc(cs)NSBatchInsertRequest(py)managedObjectHandler	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	c553770cbc75b028
+property	c:objc(cs)NSBatchInsertRequest(py)resultType	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	2a46a844af578d8d
+method	c:objc(cs)NSBatchInsertRequest(cm)batchInsertRequestWithEntityName:objects:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	1d362b69b4e8e4d6
+method	c:objc(cs)NSBatchInsertRequest(cm)batchInsertRequestWithEntityName:dictionaryHandler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	bd994d40b6feee84
+method	c:objc(cs)NSBatchInsertRequest(cm)batchInsertRequestWithEntityName:managedObjectHandler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	906b2dd2747465c6
+method	c:objc(cs)NSBatchInsertRequest(im)init	-			ios=13.0/14.0/-/0,macos=10.15/11.0/-/0,tvos=13.0/14.0/-/0,watchos=6.0/7.0/-/0	deprecated: Use initWithEntityName instead	a68d3543b1edc58c
+method	c:objc(cs)NSBatchInsertRequest(im)initWithEntityName:objects:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	35767dfcc6623986
+method	c:objc(cs)NSBatchInsertRequest(im)initWithEntity:objects:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	3e01b63290a787ee
+method	c:objc(cs)NSBatchInsertRequest(im)initWithEntity:dictionaryHandler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	b7ab418ee8539463
+method	c:objc(cs)NSBatchInsertRequest(im)initWithEntity:managedObjectHandler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	f6cfc2d11ba3501c
+method	c:objc(cs)NSBatchInsertRequest(im)initWithEntityName:dictionaryHandler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	899ac39d6de0b592
+method	c:objc(cs)NSBatchInsertRequest(im)initWithEntityName:managedObjectHandler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	8ba7764c362aac4b
+typedef	c:@T@NSMergePolicyType	-			-	-	08549fbf568057df
+enum	c:@E@NSMergePolicyType	-			-	-	a6368ea115c6fd37
+enumconst	c:@E@NSMergePolicyType@NSErrorMergePolicyType	NSMergePolicyType			-	-	6e6524c1013ae5c4
+enumconst	c:@E@NSMergePolicyType@NSMergeByPropertyStoreTrumpMergePolicyType	NSMergePolicyType			-	-	74bd9db8c291df34
+enumconst	c:@E@NSMergePolicyType@NSMergeByPropertyObjectTrumpMergePolicyType	NSMergePolicyType			-	-	8663eb43883ee98a
+enumconst	c:@E@NSMergePolicyType@NSOverwriteMergePolicyType	NSMergePolicyType			-	-	688980f51808e7d6
+enumconst	c:@E@NSMergePolicyType@NSRollbackMergePolicyType	NSMergePolicyType			-	-	689d06e79640c502
+interface	c:objc(cs)NSMergeConflict	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	bdccd468537fa46a
+super	-	NSMergeConflict	NSObject		-	-	4b7f608fc0bea684
+property	c:objc(cs)NSMergeConflict(py)sourceObject	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	e89e6c1ec9699126
+property	c:objc(cs)NSMergeConflict(py)objectSnapshot	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	3e21e089be8e2a19
+property	c:objc(cs)NSMergeConflict(py)cachedSnapshot	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	725784d0a2356a69
+property	c:objc(cs)NSMergeConflict(py)persistedSnapshot	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	ecf600414796a1c7
+property	c:objc(cs)NSMergeConflict(py)newVersionNumber	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	b39a0bac0676b8a7
+property	c:objc(cs)NSMergeConflict(py)oldVersionNumber	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	633a0c8e2df4d7ac
+method	c:objc(cs)NSMergeConflict(im)initWithSource:newVersion:oldVersion:cachedSnapshot:persistedSnapshot:	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	af64a75930b8357d
+method	c:objc(cs)NSMergeConflict(im)init	-			*unavailable ios=5.0/-/-/0,macos=10.7/-/-/0	-	6ad590edb68ad60a
+interface	c:objc(cs)NSConstraintConflict	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	d49028d814602017
+super	-	NSConstraintConflict	NSObject		-	-	e8d29de5313bb47d
+property	c:objc(cs)NSConstraintConflict(py)constraint	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	932d4bb438573cac
+property	c:objc(cs)NSConstraintConflict(py)constraintValues	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	cb8b43badc8ef817
+property	c:objc(cs)NSConstraintConflict(py)databaseObject	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	fa005c14700a04c0
+property	c:objc(cs)NSConstraintConflict(py)databaseSnapshot	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	aecedf1c27f0e0a7
+property	c:objc(cs)NSConstraintConflict(py)conflictingObjects	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	708e36df39ae514e
+property	c:objc(cs)NSConstraintConflict(py)conflictingSnapshots	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	d1a578d65414d857
+method	c:objc(cs)NSConstraintConflict(im)initWithConstraint:databaseObject:databaseSnapshot:conflictingObjects:conflictingSnapshots:	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	2100779dabdc78ea
+interface	c:objc(cs)NSMergePolicy	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	983ef8172c4ce7f5
+super	-	NSMergePolicy	NSObject		-	-	8f78792e4dbd92d2
+property	c:objc(cs)NSMergePolicy(cpy)errorMergePolicy	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	e48ec944276548d1
+property	c:objc(cs)NSMergePolicy(cpy)rollbackMergePolicy	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	a2a397f49987e7d5
+property	c:objc(cs)NSMergePolicy(cpy)overwriteMergePolicy	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	fa6eb3c7f3174c6b
+property	c:objc(cs)NSMergePolicy(cpy)mergeByPropertyObjectTrumpMergePolicy	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	827dd69c77546162
+property	c:objc(cs)NSMergePolicy(cpy)mergeByPropertyStoreTrumpMergePolicy	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	7facddd3d84dadab
+property	c:objc(cs)NSMergePolicy(py)mergeType	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	ceb280e292043725
+method	c:objc(cs)NSMergePolicy(im)initWithMergeType:	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	034803e02123b93c
+method	c:objc(cs)NSMergePolicy(im)init	-			*unavailable ios=5.0/-/-/0,macos=10.7/-/-/0	-	4f93c009897f5cc7
+method	c:objc(cs)NSMergePolicy(im)resolveConflicts:error:	-			ios=5.0/-/-/0,macos=10.7/-/-/0	-	0b5cf2a4dd01ba46
+method	c:objc(cs)NSMergePolicy(im)resolveOptimisticLockingVersionConflicts:error:	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	0f031ebf2a74d118
+method	c:objc(cs)NSMergePolicy(im)resolveConstraintConflicts:error:	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	6f32da57dcb4fcf7
+interface	c:objc(cs)NSFetchedResultsController	-			ios=3.0/-/-/0,macos=10.12/-/-/0	-	67aed193f91381e6
+super	-	NSFetchedResultsController	NSObject		-	-	c1a6e60123a4f63c
+method	c:objc(cs)NSFetchedResultsController(im)initWithFetchRequest:managedObjectContext:sectionNameKeyPath:cacheName:	-			ios=3.0/-/-/0,macos=10.12/-/-/0	-	3e5a47e3040b6c4b
+method	c:objc(cs)NSFetchedResultsController(im)performFetch:	-			ios=3.0/-/-/0,macos=10.12/-/-/0	-	7320149780d7759a
+property	c:objc(cs)NSFetchedResultsController(py)fetchRequest	-			ios=3.0/-/-/0,macos=10.12/-/-/0	-	69b1af97befb17dc
+property	c:objc(cs)NSFetchedResultsController(py)managedObjectContext	-			ios=3.0/-/-/0,macos=10.12/-/-/0	-	aadf48dd344a93c2
+property	c:objc(cs)NSFetchedResultsController(py)sectionNameKeyPath	-			ios=3.0/-/-/0,macos=10.12/-/-/0	-	8ca5f2fae5fee128
+property	c:objc(cs)NSFetchedResultsController(py)cacheName	-			ios=3.0/-/-/0,macos=10.12/-/-/0	-	1571af8b5f488dcf
+property	c:objc(cs)NSFetchedResultsController(py)delegate	-			ios=3.0/-/-/0,macos=10.12/-/-/0	-	e1d8165bd3c867df
+method	c:objc(cs)NSFetchedResultsController(cm)deleteCacheWithName:	-			ios=3.0/-/-/0,macos=10.12/-/-/0	-	e8b4305345772d9f
+property	c:objc(cs)NSFetchedResultsController(py)fetchedObjects	-			ios=3.0/-/-/0,macos=10.12/-/-/0	-	13dd26472caea3b2
+method	c:objc(cs)NSFetchedResultsController(im)objectAtIndexPath:	-			ios=3.0/-/-/0,macos=10.12/-/-/0	-	cf9563a9284cbd32
+method	c:objc(cs)NSFetchedResultsController(im)indexPathForObject:	-			ios=3.0/-/-/0,macos=10.12/-/-/0	-	cf458651deb8e1b7
+method	c:objc(cs)NSFetchedResultsController(im)sectionIndexTitleForSectionName:	-			ios=3.0/-/-/0,macos=10.12/-/-/0	-	64fa60d35c1de790
+property	c:objc(cs)NSFetchedResultsController(py)sectionIndexTitles	-			ios=3.0/-/-/0,macos=10.12/-/-/0	-	a4de42c1208b0c94
+property	c:objc(cs)NSFetchedResultsController(py)sections	-			ios=3.0/-/-/0,macos=10.12/-/-/0	-	92054f9dfad2f4cf
+method	c:objc(cs)NSFetchedResultsController(im)sectionForSectionIndexTitle:atIndex:	-			ios=3.0/-/-/0,macos=10.12/-/-/0	-	deaa02502af0818a
+protocol	c:objc(pl)NSFetchedResultsSectionInfo	-			-	-	87112bf14139e57e
+property	c:objc(pl)NSFetchedResultsSectionInfo(py)name	-			-	-	6f5820b13d06dc04
+property	c:objc(pl)NSFetchedResultsSectionInfo(py)indexTitle	-			-	-	4e8d5b83b4c64ba4
+property	c:objc(pl)NSFetchedResultsSectionInfo(py)numberOfObjects	-			-	-	d23a6f07fd79329b
+property	c:objc(pl)NSFetchedResultsSectionInfo(py)objects	-			-	-	2f1506ab6dc4b8aa
+typedef	c:@T@NSFetchedResultsChangeType	-			-	-	8e3897aed6708420
+enum	c:@E@NSFetchedResultsChangeType	-			ios=3.0/-/-/0,macos=10.12/-/-/0	-	ef94e77e09caf8d2
+enumconst	c:@E@NSFetchedResultsChangeType@NSFetchedResultsChangeInsert	NSFetchedResultsChangeType			ios=3.0/-/-/0,macos=10.12/-/-/0	-	a2470438918d782e
+enumconst	c:@E@NSFetchedResultsChangeType@NSFetchedResultsChangeDelete	NSFetchedResultsChangeType			ios=3.0/-/-/0,macos=10.12/-/-/0	-	87fae79d35c2d67d
+enumconst	c:@E@NSFetchedResultsChangeType@NSFetchedResultsChangeMove	NSFetchedResultsChangeType			ios=3.0/-/-/0,macos=10.12/-/-/0	-	d9cb7eb5786c0ad9
+enumconst	c:@E@NSFetchedResultsChangeType@NSFetchedResultsChangeUpdate	NSFetchedResultsChangeType			ios=3.0/-/-/0,macos=10.12/-/-/0	-	050bea1bef12e348
+protocol	c:objc(pl)NSFetchedResultsControllerDelegate	-			-	-	1553b8f7cddaf1c7
+conforms	-	NSFetchedResultsControllerDelegate	NSObject		-	-	538a9c32c2a82dd1
+method	c:objc(pl)NSFetchedResultsControllerDelegate(im)controller:didChangeContentWithSnapshot:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	c4f7ff7ba019064e
+method	c:objc(pl)NSFetchedResultsControllerDelegate(im)controller:didChangeContentWithDifference:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	f20f6d4d5e99fd41
+method	c:objc(pl)NSFetchedResultsControllerDelegate(im)controller:didChangeObject:atIndexPath:forChangeType:newIndexPath:	-			-	-	72af1f4886d9d169
+method	c:objc(pl)NSFetchedResultsControllerDelegate(im)controller:didChangeSection:atIndex:forChangeType:	-			-	-	d75d1d614483f15f
+method	c:objc(pl)NSFetchedResultsControllerDelegate(im)controllerWillChangeContent:	-			-	-	4f6046ccfc1306a9
+method	c:objc(pl)NSFetchedResultsControllerDelegate(im)controllerDidChangeContent:	-			-	-	4af9d9efe9433774
+method	c:objc(pl)NSFetchedResultsControllerDelegate(im)controller:sectionIndexTitleForSectionName:	-			ios=4.0/-/-/0,macos=10.12/-/-/0	-	972ee631c0fb66f1
+interface	c:objc(cs)NSQueryGenerationToken	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	af4553f1e2ff2af3
+super	-	NSQueryGenerationToken	NSObject		-	-	39f12f0e92d037d7
+conforms	-	NSQueryGenerationToken	NSCopying		-	-	54bbb784ff275582
+conforms	-	NSQueryGenerationToken	NSSecureCoding		-	-	c93d32282f4a5996
+property	c:objc(cs)NSQueryGenerationToken(cpy)currentQueryGenerationToken	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	2a3970b241009fff
+interface	c:objc(cs)NSPersistentStoreDescription	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	6b7b68fae03b4631
+super	-	NSPersistentStoreDescription	NSObject		-	-	6df04ba35f381aa0
+conforms	-	NSPersistentStoreDescription	NSCopying		-	-	f931922cfc5b01dd
+method	c:objc(cs)NSPersistentStoreDescription(cm)persistentStoreDescriptionWithURL:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	0526800d482f4961
+property	c:objc(cs)NSPersistentStoreDescription(py)type	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	079c4492682a95b3
+property	c:objc(cs)NSPersistentStoreDescription(py)configuration	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	6b2bc0aa27fcf0d8
+property	c:objc(cs)NSPersistentStoreDescription(py)URL	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	6c236a1618236b4c
+property	c:objc(cs)NSPersistentStoreDescription(py)options	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	e73671fba7679227
+method	c:objc(cs)NSPersistentStoreDescription(im)setOption:forKey:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	35a4664dee6e8d7e
+property	c:objc(cs)NSPersistentStoreDescription(py)readOnly	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	593671499756d56f
+property	c:objc(cs)NSPersistentStoreDescription(py)timeout	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	b4a82b631b9bed80
+property	c:objc(cs)NSPersistentStoreDescription(py)sqlitePragmas	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	593f91ebcb8051be
+method	c:objc(cs)NSPersistentStoreDescription(im)setValue:forPragmaNamed:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	5b7af805b902f9e2
+property	c:objc(cs)NSPersistentStoreDescription(py)shouldAddStoreAsynchronously	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	c3ac9ba3ef883d24
+property	c:objc(cs)NSPersistentStoreDescription(py)shouldMigrateStoreAutomatically	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	2934a67319cda96d
+property	c:objc(cs)NSPersistentStoreDescription(py)shouldInferMappingModelAutomatically	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	154cbd2e646eaa37
+method	c:objc(cs)NSPersistentStoreDescription(im)initWithURL:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	ddbd4db9dfb1450c
+category	c:objc(cy)NSPersistentStoreDescription@NSPersistentCloudKitContainerAdditions	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	90b0813be7865df3
+property	c:objc(cs)NSPersistentStoreDescription(py)cloudKitContainerOptions	NSPersistentCloudKitContainerAdditions			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	ab82598465bee736
+interface	c:objc(cs)NSPersistentContainer	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	04971b62da2cb9c5
+super	-	NSPersistentContainer	NSObject		-	-	43c4c16c59d1a37b
+method	c:objc(cs)NSPersistentContainer(cm)persistentContainerWithName:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	b4aa0c9943763b7a
+method	c:objc(cs)NSPersistentContainer(cm)persistentContainerWithName:managedObjectModel:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	f65618eff48abafd
+method	c:objc(cs)NSPersistentContainer(cm)defaultDirectoryURL	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	5d9f66d479c6ee4e
+property	c:objc(cs)NSPersistentContainer(py)name	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	c2d4b668cea60a62
+property	c:objc(cs)NSPersistentContainer(py)viewContext	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	f28fc78d1bf7c4aa
+property	c:objc(cs)NSPersistentContainer(py)managedObjectModel	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	cbbf620f60cb24e2
+property	c:objc(cs)NSPersistentContainer(py)persistentStoreCoordinator	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	96b84a1fdcc71867
+property	c:objc(cs)NSPersistentContainer(py)persistentStoreDescriptions	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	5f99d0552e69cf1b
+method	c:objc(cs)NSPersistentContainer(im)initWithName:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	1127cd16f8385823
+method	c:objc(cs)NSPersistentContainer(im)initWithName:managedObjectModel:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	da5b43815a4390bd
+method	c:objc(cs)NSPersistentContainer(im)loadPersistentStoresWithCompletionHandler:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	566e758f30008101
+method	c:objc(cs)NSPersistentContainer(im)newBackgroundContext	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	7c47436f76e6a63f
+method	c:objc(cs)NSPersistentContainer(im)performBackgroundTask:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	d66e601f55b51551
+typedef	c:@T@NSPersistentHistoryChangeType	-			-	-	66ff1187865c61ff
+enum	c:@E@NSPersistentHistoryChangeType	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	206d15cf32a507eb
+enumconst	c:@E@NSPersistentHistoryChangeType@NSPersistentHistoryChangeTypeInsert	NSPersistentHistoryChangeType			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	940215b432389684
+enumconst	c:@E@NSPersistentHistoryChangeType@NSPersistentHistoryChangeTypeUpdate	NSPersistentHistoryChangeType			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	40b860a89c01b4b8
+enumconst	c:@E@NSPersistentHistoryChangeType@NSPersistentHistoryChangeTypeDelete	NSPersistentHistoryChangeType			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	6385cd5bb85b6f08
+interface	c:objc(cs)NSPersistentHistoryChange	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	3c6d9de657bfa212
+super	-	NSPersistentHistoryChange	NSObject		-	-	06b22eb8b5fda3e4
+conforms	-	NSPersistentHistoryChange	NSCopying		-	-	c5b93011631182ba
+method	c:objc(cs)NSPersistentHistoryChange(cm)entityDescriptionWithContext:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	8526050d46ff5a15
+property	c:objc(cs)NSPersistentHistoryChange(cpy)entityDescription	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	fd035f78277cc346
+property	c:objc(cs)NSPersistentHistoryChange(cpy)fetchRequest	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	b48a5d000a4a67e2
+property	c:objc(cs)NSPersistentHistoryChange(py)changeID	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e487923856e3121a
+property	c:objc(cs)NSPersistentHistoryChange(py)changedObjectID	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c495e7fc017d75fb
+property	c:objc(cs)NSPersistentHistoryChange(py)changeType	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	402899a6c03d0abf
+property	c:objc(cs)NSPersistentHistoryChange(py)tombstone	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	674536a6b1a6ef69
+property	c:objc(cs)NSPersistentHistoryChange(py)transaction	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	6d24257485fa0a3d
+property	c:objc(cs)NSPersistentHistoryChange(py)updatedProperties	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	cce2d06516015a9d
+interface	c:objc(cs)NSPersistentHistoryChangeRequest	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e24b552789097fd5
+super	-	NSPersistentHistoryChangeRequest	NSPersistentStoreRequest		-	-	7c3787fd2bb2535d
+method	c:objc(cs)NSPersistentHistoryChangeRequest(cm)fetchHistoryAfterDate:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	858b433f9a051f86
+method	c:objc(cs)NSPersistentHistoryChangeRequest(cm)fetchHistoryAfterToken:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	464b3e7e4b7d3d0c
+method	c:objc(cs)NSPersistentHistoryChangeRequest(cm)fetchHistoryAfterTransaction:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a395e9db963bdcb7
+method	c:objc(cs)NSPersistentHistoryChangeRequest(cm)fetchHistoryWithFetchRequest:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	b9a10070294e07a3
+method	c:objc(cs)NSPersistentHistoryChangeRequest(cm)deleteHistoryBeforeDate:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	fbfc8b7b8b388933
+method	c:objc(cs)NSPersistentHistoryChangeRequest(cm)deleteHistoryBeforeToken:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a4f1817bf800f1af
+method	c:objc(cs)NSPersistentHistoryChangeRequest(cm)deleteHistoryBeforeTransaction:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	26df25dbd25f5d8a
+property	c:objc(cs)NSPersistentHistoryChangeRequest(py)resultType	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	73e69d14c51fff3d
+property	c:objc(cs)NSPersistentHistoryChangeRequest(py)token	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b9a1143d40b0b84b
+property	c:objc(cs)NSPersistentHistoryChangeRequest(py)fetchRequest	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	dd5b182fd517b765
+interface	c:objc(cs)NSPersistentHistoryToken	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5ff5b3509f493d00
+super	-	NSPersistentHistoryToken	NSObject		-	-	fccb234049b24fc7
+conforms	-	NSPersistentHistoryToken	NSCopying		-	-	7aad25ca5e3dda16
+conforms	-	NSPersistentHistoryToken	NSSecureCoding		-	-	a86b43cd8da6936e
+interface	c:objc(cs)NSPersistentHistoryTransaction	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	52da3c37c1adabcc
+super	-	NSPersistentHistoryTransaction	NSObject		-	-	c4cfa53515f6127a
+conforms	-	NSPersistentHistoryTransaction	NSCopying		-	-	369e2ef582a803a5
+method	c:objc(cs)NSPersistentHistoryTransaction(cm)entityDescriptionWithContext:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	bf13581351e4da81
+property	c:objc(cs)NSPersistentHistoryTransaction(cpy)entityDescription	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	94432adff48f5de0
+property	c:objc(cs)NSPersistentHistoryTransaction(cpy)fetchRequest	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	abc54c86f56ee0df
+property	c:objc(cs)NSPersistentHistoryTransaction(py)timestamp	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0be49e93032b7bd5
+property	c:objc(cs)NSPersistentHistoryTransaction(py)changes	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	3666981a163f246b
+property	c:objc(cs)NSPersistentHistoryTransaction(py)transactionNumber	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	9d89c01e6914e4b7
+property	c:objc(cs)NSPersistentHistoryTransaction(py)storeID	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c1d4e74cd8181a6d
+property	c:objc(cs)NSPersistentHistoryTransaction(py)bundleID	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	bbe98e18c3e13f06
+property	c:objc(cs)NSPersistentHistoryTransaction(py)processID	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	dd9be4fa75f450ac
+property	c:objc(cs)NSPersistentHistoryTransaction(py)contextName	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	8b14efccfca60d84
+property	c:objc(cs)NSPersistentHistoryTransaction(py)author	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d334c7d895bba4f6
+property	c:objc(cs)NSPersistentHistoryTransaction(py)token	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	8f18d8146a0265f4
+method	c:objc(cs)NSPersistentHistoryTransaction(im)objectIDNotification	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	437d8047b9ff0125
+typedef	c:@T@NSPersistentCloudKitContainerSchemaInitializationOptions	-			-	-	38d49eeba0e8a0b9
+enum	c:@E@NSPersistentCloudKitContainerSchemaInitializationOptions	-			-	-	3d83a7ce83384c72
+enumconst	c:@E@NSPersistentCloudKitContainerSchemaInitializationOptions@NSPersistentCloudKitContainerSchemaInitializationOptionsNone	NSPersistentCloudKitContainerSchemaInitializationOptions			-	-	6ee88c05d6f67b63
+enumconst	c:@E@NSPersistentCloudKitContainerSchemaInitializationOptions@NSPersistentCloudKitContainerSchemaInitializationOptionsDryRun	NSPersistentCloudKitContainerSchemaInitializationOptions			-	-	0d1a750ab2d46083
+enumconst	c:@E@NSPersistentCloudKitContainerSchemaInitializationOptions@NSPersistentCloudKitContainerSchemaInitializationOptionsPrintSchema	NSPersistentCloudKitContainerSchemaInitializationOptions			-	-	3e02b4a5a3357393
+interface	c:objc(cs)NSPersistentCloudKitContainer	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	b235702ae501cdbe
+super	-	NSPersistentCloudKitContainer	NSPersistentContainer		-	-	05bf7d6c5edf19c2
+method	c:objc(cs)NSPersistentCloudKitContainer(im)initializeCloudKitSchemaWithOptions:error:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	914014455e4aa799
+method	c:objc(cs)NSPersistentCloudKitContainer(im)recordForManagedObjectID:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	35c209b29d2c7bdb
+method	c:objc(cs)NSPersistentCloudKitContainer(im)recordsForManagedObjectIDs:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	c718a0c160bedf3c
+method	c:objc(cs)NSPersistentCloudKitContainer(im)recordIDForManagedObjectID:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	795a84d9d9fcced3
+method	c:objc(cs)NSPersistentCloudKitContainer(im)recordIDsForManagedObjectIDs:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	0fe66f3982d90aea
+method	c:objc(cs)NSPersistentCloudKitContainer(im)canUpdateRecordForManagedObjectWithID:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	7e23b82e2ddb7a05
+method	c:objc(cs)NSPersistentCloudKitContainer(im)canDeleteRecordForManagedObjectWithID:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	55a2bcf904527df9
+method	c:objc(cs)NSPersistentCloudKitContainer(im)canModifyManagedObjectsInStore:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	2778c6a0d3dc4aa1
+interface	c:objc(cs)NSPersistentCloudKitContainerOptions	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	8f567a4b88b415f0
+super	-	NSPersistentCloudKitContainerOptions	NSObject		-	-	3d10fc947742a10b
+property	c:objc(cs)NSPersistentCloudKitContainerOptions(py)containerIdentifier	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	6cae54d0037495ba
+property	c:objc(cs)NSPersistentCloudKitContainerOptions(py)databaseScope	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	937a5f55f1d0af8d
+method	c:objc(cs)NSPersistentCloudKitContainerOptions(im)init	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	2bb0cfd12b11a893
+method	c:objc(cs)NSPersistentCloudKitContainerOptions(im)initWithContainerIdentifier:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	05cae22dac5a35e0
+typedef	c:@T@NSPersistentCloudKitContainerEventType	-			-	-	2cfa166540a6ae06
+enum	c:@E@NSPersistentCloudKitContainerEventType	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	4318e30377fa805d
+enumconst	c:@E@NSPersistentCloudKitContainerEventType@NSPersistentCloudKitContainerEventTypeSetup	NSPersistentCloudKitContainerEventType			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	859f769944d53a4f
+enumconst	c:@E@NSPersistentCloudKitContainerEventType@NSPersistentCloudKitContainerEventTypeImport	NSPersistentCloudKitContainerEventType			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	80179d0390d00cc4
+enumconst	c:@E@NSPersistentCloudKitContainerEventType@NSPersistentCloudKitContainerEventTypeExport	NSPersistentCloudKitContainerEventType			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	81a3edabb85cc139
+var	c:@NSPersistentCloudKitContainerEventChangedNotification	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	54ce3f8f7a33875c
+var	c:@NSPersistentCloudKitContainerEventUserInfoKey	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	79b589d3f79efdec
+interface	c:objc(cs)NSPersistentCloudKitContainerEvent	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	63930bcc07028de4
+super	-	NSPersistentCloudKitContainerEvent	NSObject		-	-	8e5574a1d502a539
+conforms	-	NSPersistentCloudKitContainerEvent	NSCopying		-	-	e55dcf0e63f8cae6
+property	c:objc(cs)NSPersistentCloudKitContainerEvent(py)identifier	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	97237e5b2a3baa2f
+property	c:objc(cs)NSPersistentCloudKitContainerEvent(py)storeIdentifier	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	cb234d7233e7b24d
+property	c:objc(cs)NSPersistentCloudKitContainerEvent(py)type	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	72744c387d5d0125
+property	c:objc(cs)NSPersistentCloudKitContainerEvent(py)startDate	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	3d7850a3be07660a
+property	c:objc(cs)NSPersistentCloudKitContainerEvent(py)endDate	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	422914954c8facfb
+property	c:objc(cs)NSPersistentCloudKitContainerEvent(py)succeeded	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	f424486b5eded5ca
+property	c:objc(cs)NSPersistentCloudKitContainerEvent(py)error	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	10d19796df6b512a
+method	c:objc(cs)NSPersistentCloudKitContainerEvent(cm)new	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	fa8d86a8a45eb6cb
+method	c:objc(cs)NSPersistentCloudKitContainerEvent(im)init	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	cd40538dd457cfbd
+interface	c:objc(cs)NSPersistentCloudKitContainerEventRequest	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ad152354abdaa2ce
+super	-	NSPersistentCloudKitContainerEventRequest	NSPersistentStoreRequest		-	-	517ed99fc1a8ce7e
+property	c:objc(cs)NSPersistentCloudKitContainerEventRequest(py)resultType	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	5c8911a54d8eae5c
+method	c:objc(cs)NSPersistentCloudKitContainerEventRequest(cm)fetchEventsAfterDate:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	0ad7deef77890f1a
+method	c:objc(cs)NSPersistentCloudKitContainerEventRequest(cm)fetchEventsAfterEvent:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ca15014179dc806c
+method	c:objc(cs)NSPersistentCloudKitContainerEventRequest(cm)fetchEventsMatchingFetchRequest:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	a19910c32e1a9fef
+method	c:objc(cs)NSPersistentCloudKitContainerEventRequest(cm)fetchRequestForEvents	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1a72e4614b96af24
+interface	c:objc(cs)NSStagedMigrationManager	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	d9dd2a8b28f195a9
+super	-	NSStagedMigrationManager	NSObject		-	-	a46a8094a0de7b83
+property	c:objc(cs)NSStagedMigrationManager(py)stages	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	fedbac241a713187
+property	c:objc(cs)NSStagedMigrationManager(py)container	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	52ebb432bf83b7ac
+method	c:objc(cs)NSStagedMigrationManager(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	9d07aae0bb713b08
+method	c:objc(cs)NSStagedMigrationManager(im)initWithMigrationStages:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	8b90096e167f4188
+interface	c:objc(cs)NSMigrationStage	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	1ae6be914fa86028
+super	-	NSMigrationStage	NSObject		-	-	3b79a46062916ff3
+property	c:objc(cs)NSMigrationStage(py)label	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	f9de525cb86922e0
+interface	c:objc(cs)NSCustomMigrationStage	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	6ae7fc7dd06daaaf
+super	-	NSCustomMigrationStage	NSMigrationStage		-	-	cf29104e078fdba9
+property	c:objc(cs)NSCustomMigrationStage(py)currentModel	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	f68419ce62ca1197
+property	c:objc(cs)NSCustomMigrationStage(py)nextModel	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	14ed2a9f61c1f584
+property	c:objc(cs)NSCustomMigrationStage(py)willMigrateHandler	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	b7dfff610e8d5cae
+property	c:objc(cs)NSCustomMigrationStage(py)didMigrateHandler	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	85c55bdee285c70d
+method	c:objc(cs)NSCustomMigrationStage(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	93bada33aa5fbd5a
+method	c:objc(cs)NSCustomMigrationStage(im)initWithCurrentModelReference:nextModelReference:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	e9e413d753a98e71
+interface	c:objc(cs)NSLightweightMigrationStage	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	ddf25d371e22c0ba
+super	-	NSLightweightMigrationStage	NSMigrationStage		-	-	bb65d0fd70d33f18
+property	c:objc(cs)NSLightweightMigrationStage(py)versionChecksums	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	b10a60c4897b80f4
+method	c:objc(cs)NSLightweightMigrationStage(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	cb1b5384525b91fa
+method	c:objc(cs)NSLightweightMigrationStage(im)initWithVersionChecksums:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	350ca72a2d844a54
+interface	c:objc(cs)NSManagedObjectModelReference	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	d810800e6e74cfb5
+super	-	NSManagedObjectModelReference	NSObject		-	-	b7fed3e42c02e735
+property	c:objc(cs)NSManagedObjectModelReference(py)resolvedModel	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	ff04e876f71efb1e
+property	c:objc(cs)NSManagedObjectModelReference(py)versionChecksum	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	8ddc66a706c73779
+method	c:objc(cs)NSManagedObjectModelReference(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	bdf52a1ee1965dac
+method	c:objc(cs)NSManagedObjectModelReference(im)initWithModel:versionChecksum:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	291403cb04e0247e
+method	c:objc(cs)NSManagedObjectModelReference(im)initWithFileURL:versionChecksum:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	6749bcd6dc6a291d
+method	c:objc(cs)NSManagedObjectModelReference(im)initWithEntityVersionHashes:inBundle:versionChecksum:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	c26167218222a0a5
+method	c:objc(cs)NSManagedObjectModelReference(im)initWithName:inBundle:versionChecksum:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	ef120103b63d6e00
+var	c:@NSCoreDataCoreSpotlightDelegateIndexDidUpdateNotification	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	aac84105d0c54689
+interface	c:objc(cs)NSCoreDataCoreSpotlightDelegate	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use initForStoreWithDescription:coordinator: instead	67c9216ae3862d58
+super	-	NSCoreDataCoreSpotlightDelegate	NSObject		-	-	39e6260903fc41e0
+property	c:objc(cs)NSCoreDataCoreSpotlightDelegate(py)indexingEnabled	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a157491efd24ca5b
+method	c:objc(cs)NSCoreDataCoreSpotlightDelegate(im)domainIdentifier	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9779a13dbaa756bd
+method	c:objc(cs)NSCoreDataCoreSpotlightDelegate(im)indexName	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bbeef4ef60003367
+method	c:objc(cs)NSCoreDataCoreSpotlightDelegate(im)init	-			*unavailable ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	33637fd81864aeb1
+method	c:objc(cs)NSCoreDataCoreSpotlightDelegate(im)initForStoreWithDescription:coordinator:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	85387d318540f174
+method	c:objc(cs)NSCoreDataCoreSpotlightDelegate(im)initForStoreWithDescription:model:	-			ios=11.0/15.0/-/0,macos=10.13/12.0/-/0	deprecated: Use initForStoreWithDescription:coordinator: instead	0b55679d55e4e439
+method	c:objc(cs)NSCoreDataCoreSpotlightDelegate(im)startSpotlightIndexing	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	143de39c272a80be
+method	c:objc(cs)NSCoreDataCoreSpotlightDelegate(im)stopSpotlightIndexing	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f48257f61d872014
+method	c:objc(cs)NSCoreDataCoreSpotlightDelegate(im)deleteSpotlightIndexWithCompletionHandler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1812d5edfc149be6
+method	c:objc(cs)NSCoreDataCoreSpotlightDelegate(im)attributeSetForObject:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	700d8e1d7d09b11c
+method	c:objc(cs)NSCoreDataCoreSpotlightDelegate(im)searchableIndex:reindexAllSearchableItemsWithAcknowledgementHandler:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	baa9da8ae90cbab5
+method	c:objc(cs)NSCoreDataCoreSpotlightDelegate(im)searchableIndex:reindexSearchableItemsWithIdentifiers:acknowledgementHandler:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	631f92fe6570ae09
+category	c:objc(cy)NSPersistentCloudKitContainer@Sharing	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	0e4efb862dce3191
+method	c:objc(cs)NSPersistentCloudKitContainer(im)acceptShareInvitationsFromMetadata:intoPersistentStore:completion:	Sharing			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	36242d2faef582e2
+method	c:objc(cs)NSPersistentCloudKitContainer(im)purgeObjectsAndRecordsInZoneWithID:inPersistentStore:completion:	Sharing			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	06cfa6543637b242
+method	c:objc(cs)NSPersistentCloudKitContainer(im)persistUpdatedShare:inPersistentStore:completion:	Sharing			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	0aff51395e56fdb4
+method	c:objc(cs)NSPersistentCloudKitContainer(im)fetchParticipantsMatchingLookupInfos:intoPersistentStore:completion:	Sharing			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	fa2b71286438450b
+method	c:objc(cs)NSPersistentCloudKitContainer(im)fetchSharesMatchingObjectIDs:error:	Sharing			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	430b55b2cf1b7c44
+method	c:objc(cs)NSPersistentCloudKitContainer(im)fetchSharesInPersistentStore:error:	Sharing			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	2386aa6de202b094
+method	c:objc(cs)NSPersistentCloudKitContainer(im)shareManagedObjects:toShare:completion:	Sharing			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	1385b2fa6cc35ee6

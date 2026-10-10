@@ -1,0 +1,4 @@
+# the frameworks of the SDK with no declaration the extractor reads, and why: one line each
+Broken	'Missing.h' file not found
+NoHeader	no public header in Headers/ and no module map header
+Swiftonly	no Objective-C or C header; Swift interface only

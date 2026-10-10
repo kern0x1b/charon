@@ -1,0 +1,645 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+typedef	c:@T@PHImageContentMode	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	fe66375e7b787b87
+enum	c:@E@PHImageContentMode	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	db1eb90c5a0f925c
+enumconst	c:@E@PHImageContentMode@PHImageContentModeAspectFit	PHImageContentMode			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	cd2baf7e2cdfc495
+enumconst	c:@E@PHImageContentMode@PHImageContentModeAspectFill	PHImageContentMode			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	951e732a7e42069d
+enumconst	c:@E@PHImageContentMode@PHImageContentModeDefault	PHImageContentMode			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	b64676ad9c0e4e05
+typedef	c:@T@PHCollectionListType	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	958d6cc67be6ff1b
+enum	c:@E@PHCollectionListType	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	f9566b41b34d95a1
+enumconst	c:@E@PHCollectionListType@PHCollectionListTypeMomentList	PHCollectionListType			ios=8/13/-/0,macos=-/-/-/1,tvos=10/13/-/0	deprecated: Will be removed in a future release	6eb8f8582afb7f08
+enumconst	c:@E@PHCollectionListType@PHCollectionListTypeFolder	PHCollectionListType			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	e2903221377e75e0
+enumconst	c:@E@PHCollectionListType@PHCollectionListTypeSmartFolder	PHCollectionListType			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	7063fdbb7b969890
+typedef	c:@T@PHCollectionListSubtype	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	81ff208502c33d04
+enum	c:@E@PHCollectionListSubtype	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	01539900a1a572d4
+enumconst	c:@E@PHCollectionListSubtype@PHCollectionListSubtypeMomentListCluster	PHCollectionListSubtype			ios=8/13/-/0,macos=-/-/-/1,tvos=10/13/-/0	deprecated: Will be removed in a future release	60e13d49177f6780
+enumconst	c:@E@PHCollectionListSubtype@PHCollectionListSubtypeMomentListYear	PHCollectionListSubtype			ios=8/13/-/0,macos=-/-/-/1,tvos=10/13/-/0	deprecated: Will be removed in a future release	ccff606750e70930
+enumconst	c:@E@PHCollectionListSubtype@PHCollectionListSubtypeRegularFolder	PHCollectionListSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	4de9bb15b6aeb64f
+enumconst	c:@E@PHCollectionListSubtype@PHCollectionListSubtypeSmartFolderEvents	PHCollectionListSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	2438360ae3753d82
+enumconst	c:@E@PHCollectionListSubtype@PHCollectionListSubtypeSmartFolderFaces	PHCollectionListSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	af32139dc8f602e8
+enumconst	c:@E@PHCollectionListSubtype@PHCollectionListSubtypeAny	PHCollectionListSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	4de76b5f8f250e2e
+typedef	c:@T@PHCollectionEditOperation	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	9d95194817073bba
+enum	c:@E@PHCollectionEditOperation	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	a3a52a9d2b6f4767
+enumconst	c:@E@PHCollectionEditOperation@PHCollectionEditOperationDeleteContent	PHCollectionEditOperation			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	7d486fbbfc9e3a55
+enumconst	c:@E@PHCollectionEditOperation@PHCollectionEditOperationRemoveContent	PHCollectionEditOperation			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	7fa80a910bf80804
+enumconst	c:@E@PHCollectionEditOperation@PHCollectionEditOperationAddContent	PHCollectionEditOperation			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	6cea4e48166210ad
+enumconst	c:@E@PHCollectionEditOperation@PHCollectionEditOperationCreateContent	PHCollectionEditOperation			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	1851c14fae07d3ca
+enumconst	c:@E@PHCollectionEditOperation@PHCollectionEditOperationRearrangeContent	PHCollectionEditOperation			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	4e654fabc0fb8c94
+enumconst	c:@E@PHCollectionEditOperation@PHCollectionEditOperationDelete	PHCollectionEditOperation			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	1f4f44953cc93dba
+enumconst	c:@E@PHCollectionEditOperation@PHCollectionEditOperationRename	PHCollectionEditOperation			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	10ae9c69c0e2d7e2
+typedef	c:@T@PHAssetCollectionType	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	1ef1fa748efa4fc3
+enum	c:@E@PHAssetCollectionType	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	5e09bce001ba806e
+enumconst	c:@E@PHAssetCollectionType@PHAssetCollectionTypeAlbum	PHAssetCollectionType			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	33cabadd5204eeca
+enumconst	c:@E@PHAssetCollectionType@PHAssetCollectionTypeSmartAlbum	PHAssetCollectionType			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	69fa7fbf1a930e77
+enumconst	c:@E@PHAssetCollectionType@PHAssetCollectionTypeMoment	PHAssetCollectionType			ios=8/13/-/0,macos=-/-/-/1,tvos=10/13/-/0	deprecated: Will be removed in a future release	41ba45f42a0acae9
+typedef	c:@T@PHAssetCollectionSubtype	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	d47540b82f1ba71c
+enum	c:@E@PHAssetCollectionSubtype	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	d609eb027e2544c8
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeAlbumRegular	PHAssetCollectionSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	c373ea42af04d285
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeAlbumSyncedEvent	PHAssetCollectionSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	4be798f411c82d8e
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeAlbumSyncedFaces	PHAssetCollectionSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	42868985ee95ada7
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeAlbumSyncedAlbum	PHAssetCollectionSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	a2e5d4c69e25c217
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeAlbumImported	PHAssetCollectionSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	2d7e131caf5eb0a9
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeAlbumMyPhotoStream	PHAssetCollectionSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	5ca4966e9b558b62
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeAlbumCloudShared	PHAssetCollectionSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	d6351141b9006d2f
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeSmartAlbumGeneric	PHAssetCollectionSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	0af57a811032bcb3
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeSmartAlbumPanoramas	PHAssetCollectionSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	8adb1251c39ed9e5
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeSmartAlbumVideos	PHAssetCollectionSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	462d8a8d5dd44c80
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeSmartAlbumFavorites	PHAssetCollectionSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	16002e8e55da1a99
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeSmartAlbumTimelapses	PHAssetCollectionSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	2bc365c11bd1dd7f
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeSmartAlbumAllHidden	PHAssetCollectionSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	37ff57f4152e8d97
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeSmartAlbumRecentlyAdded	PHAssetCollectionSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	5ab9c285935db1c6
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeSmartAlbumBursts	PHAssetCollectionSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	def967f2a99507f0
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeSmartAlbumSlomoVideos	PHAssetCollectionSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	54327dabe6cc1a50
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeSmartAlbumUserLibrary	PHAssetCollectionSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	3836aa3272ab9196
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeSmartAlbumSelfPortraits	PHAssetCollectionSubtype			ios=9/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	562d36c0bc14e004
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeSmartAlbumScreenshots	PHAssetCollectionSubtype			ios=9/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	933362cbfdb24e62
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeSmartAlbumDepthEffect	PHAssetCollectionSubtype			ios=10.2/-/-/0,macos=10.13/-/-/0,tvos=10.1/-/-/0	-	a9de224b48e83edf
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeSmartAlbumLivePhotos	PHAssetCollectionSubtype			ios=10.3/-/-/0,macos=10.13/-/-/0,tvos=10.2/-/-/0	-	806b76a8cb511eff
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeSmartAlbumAnimated	PHAssetCollectionSubtype			ios=11/-/-/0,macos=10.15/-/-/0,tvos=11/-/-/0	-	25206e874189f42a
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeSmartAlbumLongExposures	PHAssetCollectionSubtype			ios=11/-/-/0,macos=10.15/-/-/0,tvos=11/-/-/0	-	98ebc82ab63ca3f9
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeSmartAlbumUnableToUpload	PHAssetCollectionSubtype			ios=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	0b1f96af1e77cefa
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeSmartAlbumRAW	PHAssetCollectionSubtype			ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	fe96fd8fb45fd187
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeSmartAlbumCinematic	PHAssetCollectionSubtype			ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	1437bb035e2a0beb
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeSmartAlbumSpatial	PHAssetCollectionSubtype			ios=18/-/-/0,macos=15/-/-/0,tvos=18/-/-/0	-	bf3c8002b063bcbf
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeSmartAlbumScreenRecordings	PHAssetCollectionSubtype			ios=14/-/-/0,macos=11/-/-/0,tvos=14/-/-/0	-	b323aac4edc09122
+enumconst	c:@E@PHAssetCollectionSubtype@PHAssetCollectionSubtypeAny	PHAssetCollectionSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	a83d899ae527f7f2
+typedef	c:@T@PHAssetEditOperation	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	ad9efe5056fbdeba
+enum	c:@E@PHAssetEditOperation	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	75cbb70d42cee0a3
+enumconst	c:@E@PHAssetEditOperation@PHAssetEditOperationDelete	PHAssetEditOperation			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	bc7e1e754c7c1163
+enumconst	c:@E@PHAssetEditOperation@PHAssetEditOperationContent	PHAssetEditOperation			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	bba5ecd0e8f48189
+enumconst	c:@E@PHAssetEditOperation@PHAssetEditOperationProperties	PHAssetEditOperation			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	39baa0e2df357c39
+typedef	c:@T@PHAssetPlaybackStyle	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	5b09c629ed3667e9
+enum	c:@E@PHAssetPlaybackStyle	-			ios=11/-/-/0,macos=10.13/-/-/0,tvos=11/-/-/0	-	538791a4ff80d46b
+enumconst	c:@E@PHAssetPlaybackStyle@PHAssetPlaybackStyleUnsupported	PHAssetPlaybackStyle			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	88f9afd73ff44c37
+enumconst	c:@E@PHAssetPlaybackStyle@PHAssetPlaybackStyleImage	PHAssetPlaybackStyle			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	26d208cb070cff30
+enumconst	c:@E@PHAssetPlaybackStyle@PHAssetPlaybackStyleImageAnimated	PHAssetPlaybackStyle			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	85af157bbdad7f27
+enumconst	c:@E@PHAssetPlaybackStyle@PHAssetPlaybackStyleLivePhoto	PHAssetPlaybackStyle			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	b41b7ae9639af81a
+enumconst	c:@E@PHAssetPlaybackStyle@PHAssetPlaybackStyleVideo	PHAssetPlaybackStyle			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	64d32e44d0930b90
+enumconst	c:@E@PHAssetPlaybackStyle@PHAssetPlaybackStyleVideoLooping	PHAssetPlaybackStyle			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	bb8d617d81b5104e
+typedef	c:@T@PHAssetMediaType	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	24adf665194e7a2e
+enum	c:@E@PHAssetMediaType	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	625427b53f3a73e4
+enumconst	c:@E@PHAssetMediaType@PHAssetMediaTypeUnknown	PHAssetMediaType			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	e5c8b63c02667cb7
+enumconst	c:@E@PHAssetMediaType@PHAssetMediaTypeImage	PHAssetMediaType			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	546e357825bfa540
+enumconst	c:@E@PHAssetMediaType@PHAssetMediaTypeVideo	PHAssetMediaType			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	49dd28d02ffd6186
+enumconst	c:@E@PHAssetMediaType@PHAssetMediaTypeAudio	PHAssetMediaType			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	0876463455c270fd
+typedef	c:@T@PHAssetMediaSubtype	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	73f0a222d3b49b01
+enum	c:@E@PHAssetMediaSubtype	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	7649b0a30b63f277
+enumconst	c:@E@PHAssetMediaSubtype@PHAssetMediaSubtypeNone	PHAssetMediaSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	1e09ea6817970a40
+enumconst	c:@E@PHAssetMediaSubtype@PHAssetMediaSubtypePhotoPanorama	PHAssetMediaSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	b9cbf7c8cd5550f3
+enumconst	c:@E@PHAssetMediaSubtype@PHAssetMediaSubtypePhotoHDR	PHAssetMediaSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	91b487a021f16d7d
+enumconst	c:@E@PHAssetMediaSubtype@PHAssetMediaSubtypePhotoScreenshot	PHAssetMediaSubtype			ios=9/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	cd2e19075cb6b102
+enumconst	c:@E@PHAssetMediaSubtype@PHAssetMediaSubtypePhotoLive	PHAssetMediaSubtype			ios=9.1/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	8feabd416ac9766a
+enumconst	c:@E@PHAssetMediaSubtype@PHAssetMediaSubtypePhotoDepthEffect	PHAssetMediaSubtype			ios=10.2/-/-/0,macos=10.12.2/-/-/0,tvos=10.1/-/-/0	-	bd462fd4c068122a
+enumconst	c:@E@PHAssetMediaSubtype@PHAssetMediaSubtypeSpatialMedia	PHAssetMediaSubtype			ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	d2beafc2609f417c
+enumconst	c:@E@PHAssetMediaSubtype@PHAssetMediaSubtypeVideoStreamed	PHAssetMediaSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	1cd78ea8d40129d9
+enumconst	c:@E@PHAssetMediaSubtype@PHAssetMediaSubtypeVideoHighFrameRate	PHAssetMediaSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	9a8c388f67705dc7
+enumconst	c:@E@PHAssetMediaSubtype@PHAssetMediaSubtypeVideoTimelapse	PHAssetMediaSubtype			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	7199bfba3505fa80
+enumconst	c:@E@PHAssetMediaSubtype@PHAssetMediaSubtypeVideoScreenRecording	PHAssetMediaSubtype			ios=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	7faf2c29a9219f20
+enumconst	c:@E@PHAssetMediaSubtype@PHAssetMediaSubtypeVideoCinematic	PHAssetMediaSubtype			ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	32c588e6f291b827
+typedef	c:@T@PHAssetBurstSelectionType	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	4b1be8e4902208be
+enum	c:@E@PHAssetBurstSelectionType	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	7bdcfaf3f8ab10e7
+enumconst	c:@E@PHAssetBurstSelectionType@PHAssetBurstSelectionTypeNone	PHAssetBurstSelectionType			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	f8985ce44ddda80c
+enumconst	c:@E@PHAssetBurstSelectionType@PHAssetBurstSelectionTypeAutoPick	PHAssetBurstSelectionType			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	3f5f176436f0c5cd
+enumconst	c:@E@PHAssetBurstSelectionType@PHAssetBurstSelectionTypeUserPick	PHAssetBurstSelectionType			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	f0bea237992893ae
+typedef	c:@T@PHAssetSourceType	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	034b98ba4a498645
+enum	c:@E@PHAssetSourceType	-			ios=9/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	441008a13f4ccbf5
+enumconst	c:@E@PHAssetSourceType@PHAssetSourceTypeNone	PHAssetSourceType			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	0c53c6d4215d07e4
+enumconst	c:@E@PHAssetSourceType@PHAssetSourceTypeUserLibrary	PHAssetSourceType			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	1b9cf0debbfa2bdf
+enumconst	c:@E@PHAssetSourceType@PHAssetSourceTypeCloudShared	PHAssetSourceType			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	8b49b28f2d4822c7
+enumconst	c:@E@PHAssetSourceType@PHAssetSourceTypeiTunesSynced	PHAssetSourceType			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	c17486e1d792e905
+typedef	c:@T@PHAssetResourceType	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	cb13d8f0ec87f636
+enum	c:@E@PHAssetResourceType	-			ios=9/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	c78b4239e3128816
+enumconst	c:@E@PHAssetResourceType@PHAssetResourceTypePhoto	PHAssetResourceType			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	5040ef61119c14ff
+enumconst	c:@E@PHAssetResourceType@PHAssetResourceTypeVideo	PHAssetResourceType			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	3210f243b19890c9
+enumconst	c:@E@PHAssetResourceType@PHAssetResourceTypeAudio	PHAssetResourceType			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	f6b6b2cb9f9ebf4c
+enumconst	c:@E@PHAssetResourceType@PHAssetResourceTypeAlternatePhoto	PHAssetResourceType			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	ffc3fe3a37ef8b91
+enumconst	c:@E@PHAssetResourceType@PHAssetResourceTypeFullSizePhoto	PHAssetResourceType			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	3f27f1fd35e4aa05
+enumconst	c:@E@PHAssetResourceType@PHAssetResourceTypeFullSizeVideo	PHAssetResourceType			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	c91fa6089f92646e
+enumconst	c:@E@PHAssetResourceType@PHAssetResourceTypeAdjustmentData	PHAssetResourceType			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	44a72c44a430fbd6
+enumconst	c:@E@PHAssetResourceType@PHAssetResourceTypeAdjustmentBasePhoto	PHAssetResourceType			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	7db9fb33ec3bd453
+enumconst	c:@E@PHAssetResourceType@PHAssetResourceTypePairedVideo	PHAssetResourceType			ios=9.1/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	9e636e2acc91befd
+enumconst	c:@E@PHAssetResourceType@PHAssetResourceTypeFullSizePairedVideo	PHAssetResourceType			ios=10/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	18ebc4d557162bc8
+enumconst	c:@E@PHAssetResourceType@PHAssetResourceTypeAdjustmentBasePairedVideo	PHAssetResourceType			ios=10/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	699225249be7c180
+enumconst	c:@E@PHAssetResourceType@PHAssetResourceTypeAdjustmentBaseVideo	PHAssetResourceType			ios=13/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	7de1d7421386bd51
+enumconst	c:@E@PHAssetResourceType@PHAssetResourceTypePhotoProxy	PHAssetResourceType			ios=17/-/-/0,macos=14/-/-/0,tvos=10/-/-/0	-	a142a3725a67b718
+typedef	c:@T@PHAssetResourceUploadJobState	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	0b2e0b4dcc93d7c8
+enum	c:@E@PHAssetResourceUploadJobState	-			ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	2868d8098af5151b
+enumconst	c:@E@PHAssetResourceUploadJobState@PHAssetResourceUploadJobStateRegistered	PHAssetResourceUploadJobState			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	217ebc20d1f50988
+enumconst	c:@E@PHAssetResourceUploadJobState@PHAssetResourceUploadJobStatePending	PHAssetResourceUploadJobState			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	ac66cfae09e86f20
+enumconst	c:@E@PHAssetResourceUploadJobState@PHAssetResourceUploadJobStateFailed	PHAssetResourceUploadJobState			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	04c596517cfc61d4
+enumconst	c:@E@PHAssetResourceUploadJobState@PHAssetResourceUploadJobStateSucceeded	PHAssetResourceUploadJobState			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	875874c8d3ee212a
+typedef	c:@T@PHAssetResourceUploadJobAction	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	b57e68ed0a980dbc
+enum	c:@E@PHAssetResourceUploadJobAction	-			ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	4ba99d7855fd619b
+enumconst	c:@E@PHAssetResourceUploadJobAction@PHAssetResourceUploadJobActionAcknowledge	PHAssetResourceUploadJobAction			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	988e6431fb120b64
+enumconst	c:@E@PHAssetResourceUploadJobAction@PHAssetResourceUploadJobActionRetry	PHAssetResourceUploadJobAction			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	d12e36f8e1714b5c
+typedef	c:@T@PHObjectType	-			-	-	fb530b20f361822c
+enum	c:@E@PHObjectType	-			ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	043efd0f48910178
+enumconst	c:@E@PHObjectType@PHObjectTypeAsset	PHObjectType			ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	3f014741eba3e279
+enumconst	c:@E@PHObjectType@PHObjectTypeAssetCollection	PHObjectType			ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	ebe36dfa2b33b1ba
+enumconst	c:@E@PHObjectType@PHObjectTypeCollectionList	PHObjectType			ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	98b8cfd4ff9631a5
+typedef	c:@T@PHAuthorizationStatus	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	34dc76cde182a4db
+enum	c:@E@PHAuthorizationStatus	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	7f7fbbd7b994937c
+enumconst	c:@E@PHAuthorizationStatus@PHAuthorizationStatusNotDetermined	PHAuthorizationStatus			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	83fd4c8ab796998a
+enumconst	c:@E@PHAuthorizationStatus@PHAuthorizationStatusRestricted	PHAuthorizationStatus			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	8019551e570fbac3
+enumconst	c:@E@PHAuthorizationStatus@PHAuthorizationStatusDenied	PHAuthorizationStatus			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	0433b15dec3e5cdb
+enumconst	c:@E@PHAuthorizationStatus@PHAuthorizationStatusAuthorized	PHAuthorizationStatus			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	c84d8b82cb77a495
+enumconst	c:@E@PHAuthorizationStatus@PHAuthorizationStatusLimited	PHAuthorizationStatus			ios=14/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	19bd64d6ede2415a
+typedef	c:@T@PHAccessLevel	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	a0470315d378fdcc
+enum	c:@E@PHAccessLevel	-			ios=14/-/-/0,macos=11/-/-/0,tvos=14/-/-/0	-	9b0f901038e0b093
+enumconst	c:@E@PHAccessLevel@PHAccessLevelAddOnly	PHAccessLevel			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	0cfe516ee1de2e11
+enumconst	c:@E@PHAccessLevel@PHAccessLevelReadWrite	PHAccessLevel			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	afe36b034f64f831
+protocol	c:objc(pl)PHPhotoLibraryChangeObserver	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	37d90fc148be36a0
+conforms	-	PHPhotoLibraryChangeObserver	NSObject		-	-	db5e10a20fa88b04
+method	c:objc(pl)PHPhotoLibraryChangeObserver(im)photoLibraryDidChange:	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	9eb6c0f980139c55
+protocol	c:objc(pl)PHPhotoLibraryAvailabilityObserver	-			ios=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	724ac6d12dd59d8f
+conforms	-	PHPhotoLibraryAvailabilityObserver	NSObject		-	-	b7cf30160912cc96
+method	c:objc(pl)PHPhotoLibraryAvailabilityObserver(im)photoLibraryDidBecomeUnavailable:	-			ios=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	f37e888721bc3b5d
+interface	c:objc(cs)PHPhotoLibrary	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	deprecated: Use +authorizationStatusForAccessLevel: instead	19232428cd72ffd6
+super	-	PHPhotoLibrary	NSObject		-	-	d24d150d15f586ce
+method	c:objc(cs)PHPhotoLibrary(cm)sharedPhotoLibrary	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	297aa5c5d5014557
+method	c:objc(cs)PHPhotoLibrary(cm)authorizationStatusForAccessLevel:	-			ios=14/-/-/0,macos=11/-/-/0,tvos=14/-/-/0	-	c30a82b163fe6681
+method	c:objc(cs)PHPhotoLibrary(cm)requestAuthorizationForAccessLevel:handler:	-			ios=14/-/-/0,macos=11/-/-/0,tvos=14/-/-/0	-	02a00b67849bc23b
+method	c:objc(cs)PHPhotoLibrary(cm)authorizationStatus	-			ios=8/100000/-/0,macos=10.13/100000/-/0,tvos=10/100000/-/0	deprecated: Use +authorizationStatusForAccessLevel: instead	229f4f46dce15ee5
+method	c:objc(cs)PHPhotoLibrary(cm)requestAuthorization:	-			ios=8/100000/-/0,macos=10.13/100000/-/0,tvos=10/100000/-/0	deprecated: Use +requestAuthorizationForAccessLevel:handler: instead	26bb881f12393fc3
+property	c:objc(cs)PHPhotoLibrary(py)uploadJobExtensionEnabled	-			ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	126704a53ae98882
+method	c:objc(cs)PHPhotoLibrary(im)setUploadJobExtensionEnabled:error:	-			ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	0b9547ba9ebd8fbb
+property	c:objc(cs)PHPhotoLibrary(py)unavailabilityReason	-			ios=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	4313e9aaf547a2a4
+method	c:objc(cs)PHPhotoLibrary(im)registerAvailabilityObserver:	-			ios=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	f6f2db4e1741fe2c
+method	c:objc(cs)PHPhotoLibrary(im)unregisterAvailabilityObserver:	-			ios=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	3d49f502d3195d04
+method	c:objc(cs)PHPhotoLibrary(im)performChanges:completionHandler:	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	e356ac51c6d472ab
+method	c:objc(cs)PHPhotoLibrary(im)performChangesAndWait:error:	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	1330b0b15fceca2f
+method	c:objc(cs)PHPhotoLibrary(im)registerChangeObserver:	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	bc70cbf1a5f40035
+method	c:objc(cs)PHPhotoLibrary(im)unregisterChangeObserver:	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	107d4ba3bdfa2c67
+method	c:objc(cs)PHPhotoLibrary(im)fetchPersistentChangesSinceToken:error:	-			ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	da32357efa20c7ac
+property	c:objc(cs)PHPhotoLibrary(py)currentChangeToken	-			ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	f6a8dc0a6b431ab6
+var	c:@PHPhotosErrorDomain	-			ios=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	37d56177cf3e6741
+var	c:@PHLocalIdentifiersErrorKey	-			ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	c9732113dc3d3e9e
+typedef	c:@T@PHPhotosError	-			ios=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	056015ceaa5cb553
+enum	c:@E@PHPhotosError	-			ios=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	5c2cc59659f482f4
+enumconst	c:@E@PHPhotosError@PHPhotosErrorInternalError	PHPhotosError			ios=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	b5b0e55f45ec1ab9
+enumconst	c:@E@PHPhotosError@PHPhotosErrorUserCancelled	PHPhotosError			ios=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	1e16c0afb205d456
+enumconst	c:@E@PHPhotosError@PHPhotosErrorLibraryVolumeOffline	PHPhotosError			ios=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	4e78a1be19f252e9
+enumconst	c:@E@PHPhotosError@PHPhotosErrorRelinquishingLibraryBundleToWriter	PHPhotosError			ios=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	722c1bce17577453
+enumconst	c:@E@PHPhotosError@PHPhotosErrorSwitchingSystemPhotoLibrary	PHPhotosError			ios=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	2bdcc961dcbaf46f
+enumconst	c:@E@PHPhotosError@PHPhotosErrorNetworkAccessRequired	PHPhotosError			ios=14/-/-/0,macos=11/-/-/0,tvos=14/-/-/0	-	db65460e69695ed1
+enumconst	c:@E@PHPhotosError@PHPhotosErrorNetworkError	PHPhotosError			ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	e61a308ec19a4800
+enumconst	c:@E@PHPhotosError@PHPhotosErrorIdentifierNotFound	PHPhotosError			ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	5691a45dac99e292
+enumconst	c:@E@PHPhotosError@PHPhotosErrorMultipleIdentifiersFound	PHPhotosError			ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	73dd3ae60514f26d
+enumconst	c:@E@PHPhotosError@PHPhotosErrorChangeNotSupported	PHPhotosError			ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	8cbceb5b02bcd35d
+enumconst	c:@E@PHPhotosError@PHPhotosErrorOperationInterrupted	PHPhotosError			ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	0d0b217411794595
+enumconst	c:@E@PHPhotosError@PHPhotosErrorInvalidResource	PHPhotosError			ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	a0d7ab943a1ced30
+enumconst	c:@E@PHPhotosError@PHPhotosErrorMissingResource	PHPhotosError			ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	5adee60679904a77
+enumconst	c:@E@PHPhotosError@PHPhotosErrorNotEnoughSpace	PHPhotosError			ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	7f85f3dcf0c0ccde
+enumconst	c:@E@PHPhotosError@PHPhotosErrorRequestNotSupportedForAsset	PHPhotosError			ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	982944621ad961af
+enumconst	c:@E@PHPhotosError@PHPhotosErrorLimitExceeded	PHPhotosError			ios=26.1/-/-/0,macos=26.1/-/-/0,tvos=26.1/-/-/0	-	6d4c53312b6d69d3
+enumconst	c:@E@PHPhotosError@PHPhotosErrorAccessRestricted	PHPhotosError			ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	022a5657085c5f92
+enumconst	c:@E@PHPhotosError@PHPhotosErrorAccessUserDenied	PHPhotosError			ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	a4930d80975ea1c9
+enumconst	c:@E@PHPhotosError@PHPhotosErrorLibraryInFileProviderSyncRoot	PHPhotosError			ios=15.4/-/-/0,macos=12.3/-/-/0,tvos=15.4/-/-/0	-	c3fe35e3ca08d71f
+enumconst	c:@E@PHPhotosError@PHPhotosErrorPersistentChangeTokenExpired	PHPhotosError			ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	78dc007bde42861e
+enumconst	c:@E@PHPhotosError@PHPhotosErrorPersistentChangeDetailsUnavailable	PHPhotosError			ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	1f5d5839174b0211
+enumconst	c:@E@PHPhotosError@PHPhotosErrorInvalid	PHPhotosError			ios=13/15/-/0,macos=10.15/12/-/0,tvos=13/15/-/0	deprecated: Use PHPhotosErrorInternalError instead	96e4364621add055
+interface	c:objc(cs)PHObject	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	3ad17eb1176524d9
+super	-	PHObject	NSObject		-	-	0caff51861b0459e
+conforms	-	PHObject	NSCopying		-	-	f7537bb86dc45b86
+property	c:objc(cs)PHObject(py)localIdentifier	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	a5522b3f2b28b53e
+interface	c:objc(cs)PHObjectPlaceholder	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	aeea707943fd29dd
+super	-	PHObjectPlaceholder	PHObject		-	-	338d072800fac774
+interface	c:objc(cs)PHFetchResult	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	7e0ff0e3701543a0
+super	-	PHFetchResult	NSObject		-	-	aca569087ab9c2b7
+conforms	-	PHFetchResult	NSCopying		-	-	8e3564b39c72603a
+conforms	-	PHFetchResult	NSFastEnumeration		-	-	ad7500c3820313b1
+property	c:objc(cs)PHFetchResult(py)count	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	7edf2c51c3a542ca
+method	c:objc(cs)PHFetchResult(im)objectAtIndex:	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	f68d0f99eae9784a
+method	c:objc(cs)PHFetchResult(im)objectAtIndexedSubscript:	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	d16a149c3c2b933d
+method	c:objc(cs)PHFetchResult(im)containsObject:	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	eb49e983db55c87b
+method	c:objc(cs)PHFetchResult(im)indexOfObject:	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	37e4e6dd5e24c7ca
+method	c:objc(cs)PHFetchResult(im)indexOfObject:inRange:	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	9f1c10544693a997
+property	c:objc(cs)PHFetchResult(py)firstObject	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	7e81c70d204025f1
+property	c:objc(cs)PHFetchResult(py)lastObject	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	cfbc756db148f7f2
+method	c:objc(cs)PHFetchResult(im)objectsAtIndexes:	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	7d66ccfa2099b2c3
+method	c:objc(cs)PHFetchResult(im)enumerateObjectsUsingBlock:	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	8eb0e0d3da076841
+method	c:objc(cs)PHFetchResult(im)enumerateObjectsWithOptions:usingBlock:	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	8d28e531447ebab7
+method	c:objc(cs)PHFetchResult(im)enumerateObjectsAtIndexes:options:usingBlock:	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	f54463ec2ee353ce
+method	c:objc(cs)PHFetchResult(im)countOfAssetsWithMediaType:	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	424e8fc8ec1953bf
+interface	c:objc(cs)PHAsset	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	deprecated: No longer supported	35b976887cefbad7
+super	-	PHAsset	PHObject		-	-	a3236a5f21277047
+property	c:objc(cs)PHAsset(py)playbackStyle	-			ios=11/-/-/0,macos=10.15/-/-/0,tvos=11/-/-/0	-	fb2c219105049920
+property	c:objc(cs)PHAsset(py)mediaType	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	14b66f305b0b0f59
+property	c:objc(cs)PHAsset(py)mediaSubtypes	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	1a24323abb6b1196
+property	c:objc(cs)PHAsset(py)contentType	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,xros=26.0/-/-/0	-	7fdba6791f19563c
+property	c:objc(cs)PHAsset(py)pixelWidth	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	273c75bb85340d43
+property	c:objc(cs)PHAsset(py)pixelHeight	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	6fc0581a0eb82393
+property	c:objc(cs)PHAsset(py)creationDate	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	3cd2bc407bbd168f
+property	c:objc(cs)PHAsset(py)modificationDate	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	5fc6486af412432d
+property	c:objc(cs)PHAsset(py)addedDate	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,xros=26.0/-/-/0	-	426c99c58222cb71
+property	c:objc(cs)PHAsset(py)location	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	24672d36b9f9585a
+property	c:objc(cs)PHAsset(py)duration	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	908352f3d7d37d8e
+property	c:objc(cs)PHAsset(py)hidden	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	a8c17b0b7dc16d84
+property	c:objc(cs)PHAsset(py)favorite	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	04f87fff9d6e4280
+property	c:objc(cs)PHAsset(py)syncFailureHidden	-			ios=-/-/-/1,macos=10.14/10.15/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	631579096c103480
+property	c:objc(cs)PHAsset(py)burstIdentifier	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	81ef7475085d960b
+property	c:objc(cs)PHAsset(py)burstSelectionTypes	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	8bbfa8db1e06ce1f
+property	c:objc(cs)PHAsset(py)representsBurst	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	21bc1cee1da7ac2b
+property	c:objc(cs)PHAsset(py)sourceType	-			ios=9/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	88aa312aecb01db0
+property	c:objc(cs)PHAsset(py)hasAdjustments	-			ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	04f278ab3f17f847
+property	c:objc(cs)PHAsset(py)adjustmentFormatIdentifier	-			ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	4d37f9f52ed75737
+method	c:objc(cs)PHAsset(im)canPerformEditOperation:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	7c147562953514f3
+method	c:objc(cs)PHAsset(cm)fetchAssetsInAssetCollection:options:	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	e33d13d145abc366
+method	c:objc(cs)PHAsset(cm)fetchAssetsWithLocalIdentifiers:options:	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	aa08a437235893e1
+method	c:objc(cs)PHAsset(cm)fetchKeyAssetsInAssetCollection:options:	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	2dc5960f21bb8217
+method	c:objc(cs)PHAsset(cm)fetchAssetsWithBurstIdentifier:options:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	575fa521c69c1286
+method	c:objc(cs)PHAsset(cm)fetchAssetsWithOptions:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	fa9076328d310b7f
+method	c:objc(cs)PHAsset(cm)fetchAssetsWithMediaType:options:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	2fb466d3a53b5742
+method	c:objc(cs)PHAsset(cm)fetchAssetsWithALAssetURLs:options:	-			ios=8/11/-/0,macos=-/-/-/1,tvos=8/11/-/0	deprecated: Will be removed in a future release	f2d80ea76e258550
+typedef	c:@T@PHLivePhotoRequestID	-			ios=9.1/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	246c42d3d36b945e
+var	c:@PHLivePhotoInfoErrorKey	-			ios=9.1/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	a90f3e7d696c55f3
+var	c:@PHLivePhotoInfoIsDegradedKey	-			ios=9.1/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	c53ee645d7044145
+var	c:@PHLivePhotoInfoCancelledKey	-			ios=9.1/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	acd06f3024cd4491
+interface	c:objc(cs)PHLivePhoto	-			ios=9.1/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	046004ce884cc2ff
+super	-	PHLivePhoto	NSObject		-	-	4f25a0b5e7107603
+conforms	-	PHLivePhoto	NSCopying		-	-	b9d9143076558d44
+conforms	-	PHLivePhoto	NSSecureCoding		-	-	04a2a8c19330043e
+method	c:objc(cs)PHLivePhoto(im)init	-			*unavailable ios=9.1/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	5101b622e1028854
+property	c:objc(cs)PHLivePhoto(py)size	-			ios=9.1/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	3fea9876eb9895c2
+method	c:objc(cs)PHLivePhoto(cm)requestLivePhotoWithResourceFileURLs:placeholderImage:targetSize:contentMode:resultHandler:	-			ios=9.1/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	b568617f32595d09
+method	c:objc(cs)PHLivePhoto(cm)cancelLivePhotoRequestWithRequestID:	-			ios=9.1/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	3cd422da4c8a2e70
+category	c:objc(cy)PHLivePhoto@NSItemProvider	-			ios=14/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0e72f0f58eb89a5f
+conforms	-	PHLivePhoto	NSItemProviderReading		-	-	7c25742e4bee63b4
+interface	c:objc(cs)PHCollection	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	398006a36e5de9d6
+super	-	PHCollection	PHObject		-	-	599cc50c2926c0d3
+property	c:objc(cs)PHCollection(py)canContainAssets	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	93028b5f7bbb5bf5
+property	c:objc(cs)PHCollection(py)canContainCollections	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	b190341c7bccced8
+property	c:objc(cs)PHCollection(py)localizedTitle	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	c3e36be848042273
+method	c:objc(cs)PHCollection(im)canPerformEditOperation:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	d535ca4193da0556
+method	c:objc(cs)PHCollection(cm)fetchCollectionsInCollectionList:options:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	80fe2acbe25c76c8
+method	c:objc(cs)PHCollection(cm)fetchTopLevelUserCollectionsWithOptions:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	0b520a549de90b93
+interface	c:objc(cs)PHAssetCollection	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	deprecated: Will be removed in a future release	783a7837de35d3db
+super	-	PHAssetCollection	PHCollection		-	-	cd1b0ba346e20e28
+property	c:objc(cs)PHAssetCollection(py)assetCollectionType	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	7a79280d6ff77881
+property	c:objc(cs)PHAssetCollection(py)assetCollectionSubtype	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	6ba8b5f996669ca0
+property	c:objc(cs)PHAssetCollection(py)estimatedAssetCount	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	e35a9894b72f9074
+property	c:objc(cs)PHAssetCollection(py)startDate	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	d517e9ae95945fb9
+property	c:objc(cs)PHAssetCollection(py)endDate	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	35cd6628dd4b0f55
+property	c:objc(cs)PHAssetCollection(py)approximateLocation	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	635805af1d26ad6f
+property	c:objc(cs)PHAssetCollection(py)localizedLocationNames	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	9b62b8351d9626e8
+method	c:objc(cs)PHAssetCollection(cm)fetchAssetCollectionsWithLocalIdentifiers:options:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	9ab5650da016816f
+method	c:objc(cs)PHAssetCollection(cm)fetchAssetCollectionsWithType:subtype:options:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	dde084e95ed91352
+method	c:objc(cs)PHAssetCollection(cm)fetchAssetCollectionsContainingAsset:withType:options:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	bbf147f2519dc279
+method	c:objc(cs)PHAssetCollection(cm)fetchAssetCollectionsWithALAssetGroupURLs:options:	-			ios=8/16/-/0,macos=10.15/13/-/0,tvos=10/16/-/0	deprecated: Will be removed in a future release	d301421b698efd95
+method	c:objc(cs)PHAssetCollection(cm)fetchMomentsInMomentList:options:	-			ios=8/13/-/0,macos=-/-/-/1,tvos=10/13/-/0	deprecated: Will be removed in a future release	72c03b89427789f7
+method	c:objc(cs)PHAssetCollection(cm)fetchMomentsWithOptions:	-			ios=8/13/-/0,macos=-/-/-/1,tvos=10/13/-/0	deprecated: Will be removed in a future release	40849f8885f9d919
+method	c:objc(cs)PHAssetCollection(cm)transientAssetCollectionWithAssets:title:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	db5a0f446d54842e
+method	c:objc(cs)PHAssetCollection(cm)transientAssetCollectionWithAssetFetchResult:title:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	8b10d056035638b0
+interface	c:objc(cs)PHCollectionList	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	deprecated: Will be removed in a future release	17ff0e4410264f27
+super	-	PHCollectionList	PHCollection		-	-	e2c430bb60efcd57
+property	c:objc(cs)PHCollectionList(py)collectionListType	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	3151d44f376ff53a
+property	c:objc(cs)PHCollectionList(py)collectionListSubtype	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	f8c16274fdc7a743
+property	c:objc(cs)PHCollectionList(py)startDate	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	63304a3b439010dd
+property	c:objc(cs)PHCollectionList(py)endDate	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	f82d34a8fe4d0041
+property	c:objc(cs)PHCollectionList(py)localizedLocationNames	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	458632ec61279171
+method	c:objc(cs)PHCollectionList(cm)fetchCollectionListsContainingCollection:options:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	491ae17d9ce76420
+method	c:objc(cs)PHCollectionList(cm)fetchCollectionListsWithLocalIdentifiers:options:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	7ff0c07d301b8f82
+method	c:objc(cs)PHCollectionList(cm)fetchCollectionListsWithType:subtype:options:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	63f5c169469db7b6
+method	c:objc(cs)PHCollectionList(cm)fetchMomentListsWithSubtype:containingMoment:options:	-			ios=8/13/-/0,macos=-/-/-/1,tvos=10/13/-/0	deprecated: Will be removed in a future release	21ae465d7e0e2cd9
+method	c:objc(cs)PHCollectionList(cm)fetchMomentListsWithSubtype:options:	-			ios=8/13/-/0,macos=-/-/-/1,tvos=10/13/-/0	deprecated: Will be removed in a future release	28466f321bede229
+method	c:objc(cs)PHCollectionList(cm)transientCollectionListWithCollections:title:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	805b5525c1b32ec1
+method	c:objc(cs)PHCollectionList(cm)transientCollectionListWithCollectionsFetchResult:title:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	170dbfd4f4952e8d
+interface	c:objc(cs)PHFetchOptions	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	113b653576a59537
+super	-	PHFetchOptions	NSObject		-	-	1aa67dc543c2c0c3
+conforms	-	PHFetchOptions	NSCopying		-	-	aa8c8b838789883a
+property	c:objc(cs)PHFetchOptions(py)predicate	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	7b0ebb67b2c31622
+property	c:objc(cs)PHFetchOptions(py)sortDescriptors	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	bb755bcffd175ba9
+property	c:objc(cs)PHFetchOptions(py)includeHiddenAssets	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	ea582824063f87d2
+property	c:objc(cs)PHFetchOptions(py)includeAllBurstAssets	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	3efc863f64e58d47
+property	c:objc(cs)PHFetchOptions(py)includeAssetSourceTypes	-			ios=9/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	9064f324b568415e
+property	c:objc(cs)PHFetchOptions(py)fetchLimit	-			ios=9/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	ab51f0f517d981dd
+property	c:objc(cs)PHFetchOptions(py)wantsIncrementalChangeDetails	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	2729a5d5de9c995f
+interface	c:objc(cs)PHChange	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	95fc8f587715c8fb
+super	-	PHChange	NSObject		-	-	afc92ad288e9e87f
+method	c:objc(cs)PHChange(im)changeDetailsForObject:	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	e50ce4e40444682a
+method	c:objc(cs)PHChange(im)changeDetailsForFetchResult:	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	f6fbfdbeaba538e7
+interface	c:objc(cs)PHObjectChangeDetails	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	0172fa2f06b5ad15
+super	-	PHObjectChangeDetails	NSObject		-	-	d8ddd3e1dceb7ebc
+property	c:objc(cs)PHObjectChangeDetails(py)objectBeforeChanges	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	de0956a06a004411
+property	c:objc(cs)PHObjectChangeDetails(py)objectAfterChanges	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	875264ee68bf4757
+property	c:objc(cs)PHObjectChangeDetails(py)assetContentChanged	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	7b594b9f4a312d81
+property	c:objc(cs)PHObjectChangeDetails(py)objectWasDeleted	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	254c435311d91f12
+interface	c:objc(cs)PHFetchResultChangeDetails	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	05593f53ab28a627
+super	-	PHFetchResultChangeDetails	NSObject		-	-	5dbefdb8506564ea
+property	c:objc(cs)PHFetchResultChangeDetails(py)fetchResultBeforeChanges	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	5d5d1029035e43f5
+property	c:objc(cs)PHFetchResultChangeDetails(py)fetchResultAfterChanges	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	d2392315cfdf4ade
+property	c:objc(cs)PHFetchResultChangeDetails(py)hasIncrementalChanges	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	541b86a5c34f471d
+property	c:objc(cs)PHFetchResultChangeDetails(py)removedIndexes	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	e0af0140bb95488d
+property	c:objc(cs)PHFetchResultChangeDetails(py)removedObjects	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	ab41952c4a9342aa
+property	c:objc(cs)PHFetchResultChangeDetails(py)insertedIndexes	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	aa5078f973e2159d
+property	c:objc(cs)PHFetchResultChangeDetails(py)insertedObjects	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	88ec8fef8dc3536f
+property	c:objc(cs)PHFetchResultChangeDetails(py)changedIndexes	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	bcf65a2f4bc99f0a
+property	c:objc(cs)PHFetchResultChangeDetails(py)changedObjects	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	0fd9e7fe048d6b37
+method	c:objc(cs)PHFetchResultChangeDetails(im)enumerateMovesWithBlock:	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	2803675826fa04f8
+property	c:objc(cs)PHFetchResultChangeDetails(py)hasMoves	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	996ae108fde05b57
+method	c:objc(cs)PHFetchResultChangeDetails(cm)changeDetailsFromFetchResult:toFetchResult:changedObjects:	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	4825a7456371d4e2
+interface	c:objc(cs)PHPersistentChange	-			ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	f036fcdae174fb87
+super	-	PHPersistentChange	NSObject		-	-	e936f2292c447c78
+method	c:objc(cs)PHPersistentChange(cm)new	-			*unavailable ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	69b38ede2b719311
+method	c:objc(cs)PHPersistentChange(im)init	-			*unavailable ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	766cb3b6783841ed
+property	c:objc(cs)PHPersistentChange(py)changeToken	-			ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	dade50a7f51fa2a8
+method	c:objc(cs)PHPersistentChange(im)changeDetailsForObjectType:error:	-			ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	259982fb0534427e
+interface	c:objc(cs)PHPersistentChangeToken	-			ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	86f3e265d9a16de1
+super	-	PHPersistentChangeToken	NSObject		-	-	fbf1f4b51e19ee99
+conforms	-	PHPersistentChangeToken	NSCopying		-	-	61dbe963c4732098
+conforms	-	PHPersistentChangeToken	NSSecureCoding		-	-	1e07264f824b9204
+method	c:objc(cs)PHPersistentChangeToken(cm)new	-			*unavailable ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	84017ad7690786c0
+method	c:objc(cs)PHPersistentChangeToken(im)init	-			*unavailable ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	c226106a42cd81d7
+interface	c:objc(cs)PHPersistentChangeFetchResult	-			ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	8b1ef6839edac184
+super	-	PHPersistentChangeFetchResult	NSObject		-	-	2c5868ab4ff0ed6e
+method	c:objc(cs)PHPersistentChangeFetchResult(cm)new	-			*unavailable ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	526d6bbc174711ce
+method	c:objc(cs)PHPersistentChangeFetchResult(im)init	-			*unavailable ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	fbe50e42a4e2b71d
+method	c:objc(cs)PHPersistentChangeFetchResult(im)enumerateChangesWithBlock:	-			ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	8ab2c0bdd0e6a9b1
+interface	c:objc(cs)PHPersistentObjectChangeDetails	-			ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	1c128d30df9c05d5
+super	-	PHPersistentObjectChangeDetails	NSObject		-	-	40f7597cc2588ee2
+property	c:objc(cs)PHPersistentObjectChangeDetails(py)objectType	-			ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	632d2f464e437de5
+property	c:objc(cs)PHPersistentObjectChangeDetails(py)insertedLocalIdentifiers	-			ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	4fcd702a3158f168
+property	c:objc(cs)PHPersistentObjectChangeDetails(py)updatedLocalIdentifiers	-			ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	80622c7442368b26
+property	c:objc(cs)PHPersistentObjectChangeDetails(py)deletedLocalIdentifiers	-			ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	47c28d83d8b27267
+method	c:objc(cs)PHPersistentObjectChangeDetails(cm)new	-			*unavailable ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	faae405e27c43ce3
+method	c:objc(cs)PHPersistentObjectChangeDetails(im)init	-			*unavailable ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	a23f6c6239a4c2ff
+interface	c:objc(cs)PHChangeRequest	-			ios=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	ee16f079d5821650
+super	-	PHChangeRequest	NSObject		-	-	a3d4eb8ec2267691
+interface	c:objc(cs)PHContentEditingOutput	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	4bfed0eed398c6dc
+super	-	PHContentEditingOutput	NSObject		-	-	5f376a568ff30b8d
+method	c:objc(cs)PHContentEditingOutput(im)initWithContentEditingInput:	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	46b53c013aaa7460
+property	c:objc(cs)PHContentEditingOutput(py)adjustmentData	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	83c235313e0381d5
+property	c:objc(cs)PHContentEditingOutput(py)renderedContentURL	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	37683722e1d29958
+property	c:objc(cs)PHContentEditingOutput(py)defaultRenderedContentType	-			ios=17/-/-/0,macos=14/-/-/0,tvos=17/-/-/0	-	60241c632baf41d0
+property	c:objc(cs)PHContentEditingOutput(py)supportedRenderedContentTypes	-			ios=17/-/-/0,macos=14/-/-/0,tvos=17/-/-/0	-	dfc5415ed6092f36
+method	c:objc(cs)PHContentEditingOutput(im)renderedContentURLForType:error:	-			ios=17/-/-/0,macos=14/-/-/0,tvos=17/-/-/0	-	e5a77d4ce7bbc030
+interface	c:objc(cs)PHAssetChangeRequest	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	795a5876c176f100
+super	-	PHAssetChangeRequest	PHChangeRequest		-	-	6dd6837790126499
+method	c:objc(cs)PHAssetChangeRequest(cm)creationRequestForAssetFromImage:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	66c5c9e007cdadb0
+method	c:objc(cs)PHAssetChangeRequest(cm)creationRequestForAssetFromImageAtFileURL:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	0ebcd4b59d7d1321
+method	c:objc(cs)PHAssetChangeRequest(cm)creationRequestForAssetFromVideoAtFileURL:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	4fa66e395864b2df
+property	c:objc(cs)PHAssetChangeRequest(py)placeholderForCreatedAsset	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	49d5a278508ac220
+method	c:objc(cs)PHAssetChangeRequest(cm)deleteAssets:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	50cee8bfe30b49fc
+method	c:objc(cs)PHAssetChangeRequest(cm)changeRequestForAsset:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	8b73c859386d8aff
+property	c:objc(cs)PHAssetChangeRequest(py)creationDate	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	8dbc7a7479935e6e
+property	c:objc(cs)PHAssetChangeRequest(py)location	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	1eeeadefff0cb2c7
+property	c:objc(cs)PHAssetChangeRequest(py)favorite	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	09173796ca77af3a
+property	c:objc(cs)PHAssetChangeRequest(py)hidden	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	e325300068e681f8
+property	c:objc(cs)PHAssetChangeRequest(py)contentEditingOutput	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	ac261a92fc1ed7b4
+method	c:objc(cs)PHAssetChangeRequest(im)revertAssetContentToOriginal	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	d9d0de05565fa331
+typedef	c:@T@PHContentEditingInputRequestID	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	5bfd24cb5b1016a0
+interface	c:objc(cs)PHContentEditingInputRequestOptions	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	f73bc0ea01d5712b
+super	-	PHContentEditingInputRequestOptions	NSObject		-	-	287b025ff7015fd9
+property	c:objc(cs)PHContentEditingInputRequestOptions(py)canHandleAdjustmentData	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	a430c4b384228cc7
+property	c:objc(cs)PHContentEditingInputRequestOptions(py)networkAccessAllowed	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	907e534837a15c31
+property	c:objc(cs)PHContentEditingInputRequestOptions(py)progressHandler	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	11289018dd0b3c5d
+category	c:objc(cy)PHAsset@PHContentEditingInput	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	5d52b756fceacfbc
+method	c:objc(cs)PHAsset(im)requestContentEditingInputWithOptions:completionHandler:	PHContentEditingInput			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	a77f9d064e5da80c
+method	c:objc(cs)PHAsset(im)cancelContentEditingInputRequest:	PHContentEditingInput			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	371a38b5bf273466
+var	c:@PHContentEditingInputResultIsInCloudKey	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	e238b3d39d8fbde3
+var	c:@PHContentEditingInputCancelledKey	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	18863e771b3f9394
+var	c:@PHContentEditingInputErrorKey	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	1373fe73497afa71
+category	c:objc(cy)PHContentEditingOutput@PHAssetChangeRequest	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	c798fcd570bceefe
+method	c:objc(cs)PHContentEditingOutput(im)initWithPlaceholderForCreatedAsset:	PHAssetChangeRequest			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	32d1adc31fdc06aa
+interface	c:objc(cs)PHAssetResourceCreationOptions	-			ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	deprecated: Use contentType instead	4a64e51ef2a68da9
+super	-	PHAssetResourceCreationOptions	NSObject		-	-	6bec2351284cb932
+conforms	-	PHAssetResourceCreationOptions	NSCopying		-	-	3601b822230b098d
+property	c:objc(cs)PHAssetResourceCreationOptions(py)originalFilename	-			ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	a14e053fd5e71a06
+property	c:objc(cs)PHAssetResourceCreationOptions(py)contentType	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,xros=26.0/-/-/0	-	5100ea473efa618b
+property	c:objc(cs)PHAssetResourceCreationOptions(py)uniformTypeIdentifier	-			ios=9/100000/-/0,macos=10.15/100000/-/0,tvos=10/100000/-/0,xros=1/100000/-/0	-	2cc468ee5dbaf5be
+property	c:objc(cs)PHAssetResourceCreationOptions(py)shouldMoveFile	-			ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	69284dd2679cf359
+interface	c:objc(cs)PHAssetCreationRequest	-			ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	82677fca8098f2ac
+super	-	PHAssetCreationRequest	PHAssetChangeRequest		-	-	393a2b43691e3315
+method	c:objc(cs)PHAssetCreationRequest(cm)creationRequestForAsset	-			ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	be7960f9ec62693e
+method	c:objc(cs)PHAssetCreationRequest(cm)supportsAssetResourceTypes:	-			ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	db80a08eb65c5eb6
+method	c:objc(cs)PHAssetCreationRequest(im)addResourceWithType:fileURL:options:	-			ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	a323b10e5481fb64
+method	c:objc(cs)PHAssetCreationRequest(im)addResourceWithType:data:options:	-			ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	26392eebefcc5173
+interface	c:objc(cs)PHAssetCollectionChangeRequest	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	372103e02b0e5d09
+super	-	PHAssetCollectionChangeRequest	PHChangeRequest		-	-	ce9bd02b94f77445
+method	c:objc(cs)PHAssetCollectionChangeRequest(cm)creationRequestForAssetCollectionWithTitle:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	43351ab536c98ff4
+property	c:objc(cs)PHAssetCollectionChangeRequest(py)placeholderForCreatedAssetCollection	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	c8f05267204fa9b0
+method	c:objc(cs)PHAssetCollectionChangeRequest(cm)deleteAssetCollections:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	baa6fb716a8e82f4
+method	c:objc(cs)PHAssetCollectionChangeRequest(cm)changeRequestForAssetCollection:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	f24d25a644ff1f22
+method	c:objc(cs)PHAssetCollectionChangeRequest(cm)changeRequestForAssetCollection:assets:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	cc8899f05fe178dc
+property	c:objc(cs)PHAssetCollectionChangeRequest(py)title	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	16f9e83cad21e64a
+method	c:objc(cs)PHAssetCollectionChangeRequest(im)addAssets:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	46b02b9305dd4975
+method	c:objc(cs)PHAssetCollectionChangeRequest(im)insertAssets:atIndexes:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	dea9b6076b347308
+method	c:objc(cs)PHAssetCollectionChangeRequest(im)removeAssets:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	8364d72b6e206068
+method	c:objc(cs)PHAssetCollectionChangeRequest(im)removeAssetsAtIndexes:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	7f362ac192a6c2bc
+method	c:objc(cs)PHAssetCollectionChangeRequest(im)replaceAssetsAtIndexes:withAssets:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	e999e467c4933b83
+method	c:objc(cs)PHAssetCollectionChangeRequest(im)moveAssetsAtIndexes:toIndex:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	95df1c4728b17f16
+interface	c:objc(cs)PHAssetResourceUploadJob	-			ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	440a596a9f599b29
+super	-	PHAssetResourceUploadJob	PHObject		-	-	5ff9e86e9e897755
+property	c:objc(cs)PHAssetResourceUploadJob(cpy)jobLimit	-			ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d2e9f37b44a47f7e
+property	c:objc(cs)PHAssetResourceUploadJob(py)resource	-			ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fb0676f10a5c93de
+property	c:objc(cs)PHAssetResourceUploadJob(py)destination	-			ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a0001d16b174fbe0
+property	c:objc(cs)PHAssetResourceUploadJob(py)state	-			ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d59f5fede75d7349
+method	c:objc(cs)PHAssetResourceUploadJob(cm)fetchJobsWithAction:options:	-			ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a0984f2e4e5811da
+interface	c:objc(cs)PHAssetResourceUploadJobChangeRequest	-			ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	06d681050e3666ee
+super	-	PHAssetResourceUploadJobChangeRequest	PHChangeRequest		-	-	bd6a8b5fb8e3d416
+method	c:objc(cs)PHAssetResourceUploadJobChangeRequest(cm)createJobWithDestination:resource:	-			ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6e2bf5905e992417
+method	c:objc(cs)PHAssetResourceUploadJobChangeRequest(cm)changeRequestForUploadJob:	-			ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	edd1dcc041367777
+method	c:objc(cs)PHAssetResourceUploadJobChangeRequest(im)acknowledge	-			ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cecd58132f5f939c
+method	c:objc(cs)PHAssetResourceUploadJobChangeRequest(im)retryWithDestination:	-			ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1593a81c0f04f937
+interface	c:objc(cs)PHCollectionListChangeRequest	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	a9d0bb2ac789022d
+super	-	PHCollectionListChangeRequest	PHChangeRequest		-	-	b2937439c913bdda
+method	c:objc(cs)PHCollectionListChangeRequest(cm)creationRequestForCollectionListWithTitle:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	b006720e8ee28c72
+property	c:objc(cs)PHCollectionListChangeRequest(py)placeholderForCreatedCollectionList	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	fa7c06bff2f63a10
+method	c:objc(cs)PHCollectionListChangeRequest(cm)deleteCollectionLists:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	647089dd6171f074
+method	c:objc(cs)PHCollectionListChangeRequest(cm)changeRequestForCollectionList:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	714d8f5f1135b508
+method	c:objc(cs)PHCollectionListChangeRequest(cm)changeRequestForCollectionList:childCollections:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	065ee906168539b8
+method	c:objc(cs)PHCollectionListChangeRequest(cm)changeRequestForTopLevelCollectionListUserCollections:	-			ios=14.2/-/-/0,macos=11/-/-/0,tvos=14/-/-/0	-	28bc5d1f517f6edf
+property	c:objc(cs)PHCollectionListChangeRequest(py)title	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	f5ef3a7ec9cacf4b
+method	c:objc(cs)PHCollectionListChangeRequest(im)addChildCollections:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	71a424d7ce738c33
+method	c:objc(cs)PHCollectionListChangeRequest(im)insertChildCollections:atIndexes:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	c00ececf057435d0
+method	c:objc(cs)PHCollectionListChangeRequest(im)removeChildCollections:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	03f9b08d504c6a53
+method	c:objc(cs)PHCollectionListChangeRequest(im)removeChildCollectionsAtIndexes:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	e8ab0e764631d0b3
+method	c:objc(cs)PHCollectionListChangeRequest(im)replaceChildCollectionsAtIndexes:withChildCollections:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	122b04344f351147
+method	c:objc(cs)PHCollectionListChangeRequest(im)moveChildCollectionsAtIndexes:toIndex:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	a29c3afcc37e77b7
+typedef	c:@T@PHLivePhotoFrameProcessingBlock	-			ios=10/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	0086877f4e8e7fcb
+typedef	c:@T@PHLivePhotoEditingOption	-			ios=10/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	c005efc2fc2a14c1
+interface	c:objc(cs)PHLivePhotoEditingContext	-			ios=10/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	3b0989a95ec6ea9e
+super	-	PHLivePhotoEditingContext	NSObject		-	-	591f9883515fafb5
+method	c:objc(cs)PHLivePhotoEditingContext(im)initWithLivePhotoEditingInput:	-			ios=10/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	3e4c58f984a5ea86
+method	c:objc(cs)PHLivePhotoEditingContext(im)init	-			*unavailable ios=10/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	f10d9c632ab97153
+property	c:objc(cs)PHLivePhotoEditingContext(py)fullSizeImage	-			ios=10/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	094cbabb54d667b7
+property	c:objc(cs)PHLivePhotoEditingContext(py)duration	-			ios=10/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	08648b43804aad29
+property	c:objc(cs)PHLivePhotoEditingContext(py)photoTime	-			ios=10/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	4526c5bb7f9f9dcc
+property	c:objc(cs)PHLivePhotoEditingContext(py)frameProcessor	-			ios=10/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	723b0eda161cec3c
+property	c:objc(cs)PHLivePhotoEditingContext(py)audioVolume	-			ios=10/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	89e4086c07d281e5
+property	c:objc(cs)PHLivePhotoEditingContext(py)orientation	-			ios=10/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	f0c61863d2ca81d6
+method	c:objc(cs)PHLivePhotoEditingContext(im)prepareLivePhotoForPlaybackWithTargetSize:options:completionHandler:	-			ios=10/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	1efa8728e1421bb6
+method	c:objc(cs)PHLivePhotoEditingContext(im)saveLivePhotoToOutput:options:completionHandler:	-			ios=10/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	1e21e12d8b630a1a
+method	c:objc(cs)PHLivePhotoEditingContext(im)cancel	-			ios=10/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	847652947c024444
+typedef	c:@T@PHLivePhotoFrameType	-			ios=10/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	18dda0b4c90a311f
+enum	c:@E@PHLivePhotoFrameType	-			ios=10/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	d4fa2b5ace96570b
+enumconst	c:@E@PHLivePhotoFrameType@PHLivePhotoFrameTypePhoto	PHLivePhotoFrameType			ios=10/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	da36cce08ab1328c
+enumconst	c:@E@PHLivePhotoFrameType@PHLivePhotoFrameTypeVideo	PHLivePhotoFrameType			ios=10/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	fb767eaa95216cf8
+protocol	c:objc(pl)PHLivePhotoFrame	-			ios=10/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	04b1c1b7787a05f2
+property	c:objc(pl)PHLivePhotoFrame(py)image	-			ios=10/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	9806c15eca0d1b77
+property	c:objc(pl)PHLivePhotoFrame(py)time	-			ios=10/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	62a5c6f47f24856e
+property	c:objc(pl)PHLivePhotoFrame(py)type	-			ios=10/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	67eb4a9c2f072dd9
+property	c:objc(pl)PHLivePhotoFrame(py)renderScale	-			ios=10/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	fa4956c1ccf240d9
+var	c:@PHLivePhotoShouldRenderAtPlaybackTime	-			ios=11/-/-/0,macos=10.12/-/-/0,tvos=11/-/-/0	-	7dbff4016b0e3534
+var	c:@PHLivePhotoEditingErrorDomain	-			ios=-/-/-/1,maccatalyst=-/-/-/1,macos=10.12/10.15/-/0,tvos=-/-/-/1	-	e2aaeadad8013793
+typedef	c:@T@PHLivePhotoEditingErrorCode	-			ios=10/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	86fb3993bc629528
+enum	c:@E@PHLivePhotoEditingErrorCode	-			ios=-/-/-/1,maccatalyst=-/-/-/1,macos=10.12/-/-/0,tvos=-/-/-/1	-	6dc9e316f7a153f1
+enumconst	c:@E@PHLivePhotoEditingErrorCode@PHLivePhotoEditingErrorCodeUnknown	PHLivePhotoEditingErrorCode			ios=10/-/-/0,macos=10.12/10.15/-/0,tvos=10/-/-/0	-	8c8159e325edf85f
+enumconst	c:@E@PHLivePhotoEditingErrorCode@PHLivePhotoEditingErrorCodeAborted	PHLivePhotoEditingErrorCode			ios=10/-/-/0,macos=10.12/10.15/-/0,tvos=10/-/-/0	-	199f0ae8471bee98
+enum	c:@E@UIImageOrientation	-			-	-	ef3fd37ab3296339
+typedef	c:@T@UIImageOrientation	-			-	-	8951933c4524e01a
+typedef	c:@T@PHImageRequestOptionsVersion	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	6a0c928dd9279864
+enum	c:@E@PHImageRequestOptionsVersion	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	bbeee6ec52535e9f
+enumconst	c:@E@PHImageRequestOptionsVersion@PHImageRequestOptionsVersionCurrent	PHImageRequestOptionsVersion			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	d4678903b5f29d74
+enumconst	c:@E@PHImageRequestOptionsVersion@PHImageRequestOptionsVersionUnadjusted	PHImageRequestOptionsVersion			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	03adf3527b1657c4
+enumconst	c:@E@PHImageRequestOptionsVersion@PHImageRequestOptionsVersionOriginal	PHImageRequestOptionsVersion			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	6b5b0f8fd25d1a8c
+typedef	c:@T@PHImageRequestOptionsDeliveryMode	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	0ed52e988c6650df
+enum	c:@E@PHImageRequestOptionsDeliveryMode	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	01a3961e439276c4
+enumconst	c:@E@PHImageRequestOptionsDeliveryMode@PHImageRequestOptionsDeliveryModeOpportunistic	PHImageRequestOptionsDeliveryMode			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	ff59f15b65cba4c6
+enumconst	c:@E@PHImageRequestOptionsDeliveryMode@PHImageRequestOptionsDeliveryModeHighQualityFormat	PHImageRequestOptionsDeliveryMode			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	c963fb3c4facf6c0
+enumconst	c:@E@PHImageRequestOptionsDeliveryMode@PHImageRequestOptionsDeliveryModeFastFormat	PHImageRequestOptionsDeliveryMode			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	cdf7b99b974757fd
+typedef	c:@T@PHImageRequestOptionsResizeMode	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	88f1aab0f22f8af8
+enum	c:@E@PHImageRequestOptionsResizeMode	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	c4427e40ab87d1f9
+enumconst	c:@E@PHImageRequestOptionsResizeMode@PHImageRequestOptionsResizeModeNone	PHImageRequestOptionsResizeMode			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	adb0920c4f017101
+enumconst	c:@E@PHImageRequestOptionsResizeMode@PHImageRequestOptionsResizeModeFast	PHImageRequestOptionsResizeMode			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	4d75f4f0adceff4e
+enumconst	c:@E@PHImageRequestOptionsResizeMode@PHImageRequestOptionsResizeModeExact	PHImageRequestOptionsResizeMode			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	0e66348679c79b79
+typedef	c:@T@PHAssetImageProgressHandler	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	ed33992bed4e00ef
+interface	c:objc(cs)PHImageRequestOptions	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	163b387e50621c97
+super	-	PHImageRequestOptions	NSObject		-	-	6a3e7c1db3225dc7
+conforms	-	PHImageRequestOptions	NSCopying		-	-	90fab324658de1eb
+property	c:objc(cs)PHImageRequestOptions(py)version	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	066301d01df3e733
+property	c:objc(cs)PHImageRequestOptions(py)deliveryMode	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	514cf0cd336c64cf
+property	c:objc(cs)PHImageRequestOptions(py)resizeMode	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	de9b99136ff4bbe5
+property	c:objc(cs)PHImageRequestOptions(py)normalizedCropRect	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	b44f09dcc83ce859
+property	c:objc(cs)PHImageRequestOptions(py)networkAccessAllowed	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	8f6efce3bab0a34e
+property	c:objc(cs)PHImageRequestOptions(py)synchronous	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	9cd8ce17401064fc
+property	c:objc(cs)PHImageRequestOptions(py)progressHandler	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	9ed5326748b1033c
+property	c:objc(cs)PHImageRequestOptions(py)allowSecondaryDegradedImage	-			ios=17/-/-/0,macos=14/-/-/0,tvos=17/-/-/0	-	414506c073992166
+interface	c:objc(cs)PHLivePhotoRequestOptions	-			ios=9.1/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	fe9c22818d9556ef
+super	-	PHLivePhotoRequestOptions	NSObject		-	-	3f0165f5195a6973
+conforms	-	PHLivePhotoRequestOptions	NSCopying		-	-	0762404443fc812f
+property	c:objc(cs)PHLivePhotoRequestOptions(py)version	-			ios=9.1/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	3debae02feaaff4e
+property	c:objc(cs)PHLivePhotoRequestOptions(py)deliveryMode	-			ios=9.1/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	f7c82d9a1b6a16d5
+property	c:objc(cs)PHLivePhotoRequestOptions(py)networkAccessAllowed	-			ios=9.1/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	fc68368ed151d356
+property	c:objc(cs)PHLivePhotoRequestOptions(py)progressHandler	-			ios=9.1/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	ea32824045704525
+typedef	c:@T@PHVideoRequestOptionsVersion	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	2d07b28cdc962d0d
+enum	c:@E@PHVideoRequestOptionsVersion	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	d13e9d89e738474a
+enumconst	c:@E@PHVideoRequestOptionsVersion@PHVideoRequestOptionsVersionCurrent	PHVideoRequestOptionsVersion			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	2ba6612ffc3bf428
+enumconst	c:@E@PHVideoRequestOptionsVersion@PHVideoRequestOptionsVersionOriginal	PHVideoRequestOptionsVersion			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	35c8f192dba34ffb
+typedef	c:@T@PHVideoRequestOptionsDeliveryMode	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	cbc673d99cffa991
+enum	c:@E@PHVideoRequestOptionsDeliveryMode	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	7d280abe544e468a
+enumconst	c:@E@PHVideoRequestOptionsDeliveryMode@PHVideoRequestOptionsDeliveryModeAutomatic	PHVideoRequestOptionsDeliveryMode			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	80507a0f91bcaba5
+enumconst	c:@E@PHVideoRequestOptionsDeliveryMode@PHVideoRequestOptionsDeliveryModeHighQualityFormat	PHVideoRequestOptionsDeliveryMode			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	2af993d2107c5ff9
+enumconst	c:@E@PHVideoRequestOptionsDeliveryMode@PHVideoRequestOptionsDeliveryModeMediumQualityFormat	PHVideoRequestOptionsDeliveryMode			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	1a7b02e05a1e76dc
+enumconst	c:@E@PHVideoRequestOptionsDeliveryMode@PHVideoRequestOptionsDeliveryModeFastFormat	PHVideoRequestOptionsDeliveryMode			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	e4b959e76fcc312d
+typedef	c:@T@PHAssetVideoProgressHandler	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	772b85e0b3632274
+interface	c:objc(cs)PHVideoRequestOptions	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	27062e2f9bc2ca4b
+super	-	PHVideoRequestOptions	NSObject		-	-	24666bd37b12c32c
+conforms	-	PHVideoRequestOptions	NSCopying		-	-	90f9391cd8d4d944
+property	c:objc(cs)PHVideoRequestOptions(py)networkAccessAllowed	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	24f0060dd390d6bf
+property	c:objc(cs)PHVideoRequestOptions(py)version	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	24f8550431a9da5c
+property	c:objc(cs)PHVideoRequestOptions(py)deliveryMode	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	5d7f07b797530c37
+property	c:objc(cs)PHVideoRequestOptions(py)progressHandler	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	2061324f01debe90
+typedef	c:@T@PHImageRequestID	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	d0f73607a4b21aef
+var	c:@PHImageManagerMaximumSize	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	0c59049a6f40902b
+var	c:@PHImageResultIsInCloudKey	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	6c130bc978ee7ed8
+var	c:@PHImageResultIsDegradedKey	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	8be38d422d5e2b55
+var	c:@PHImageResultRequestIDKey	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	1c622f30ca91b2f3
+var	c:@PHImageCancelledKey	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	8baf7ccc1a10a33c
+var	c:@PHImageErrorKey	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	b64fb8e9bf04b87b
+interface	c:objc(cs)PHImageManager	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	deprecated: Use -requestImageDataAndOrientationForAsset:options:resultHandler: instead	0b7ff79e6ecc0667
+super	-	PHImageManager	NSObject		-	-	765ea4bfb6c8f1a3
+method	c:objc(cs)PHImageManager(cm)defaultManager	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	37a645e0d46110a0
+method	c:objc(cs)PHImageManager(im)requestImageForAsset:targetSize:contentMode:options:resultHandler:	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	dd49b33d41add826
+method	c:objc(cs)PHImageManager(im)requestImageDataForAsset:options:resultHandler:	-			ios=8/13/-/0,macos=-/-/-/1,tvos=8/13/-/0	deprecated: Use -requestImageDataAndOrientationForAsset:options:resultHandler: instead	b1a62157b02e8284
+method	c:objc(cs)PHImageManager(im)requestImageDataAndOrientationForAsset:options:resultHandler:	-			ios=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	93f98a41df9c8fb0
+method	c:objc(cs)PHImageManager(im)cancelImageRequest:	-			ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	22c13c4cc3936dac
+method	c:objc(cs)PHImageManager(im)requestLivePhotoForAsset:targetSize:contentMode:options:resultHandler:	-			ios=9.1/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	f99fd3e811e1c115
+method	c:objc(cs)PHImageManager(im)requestPlayerItemForVideo:options:resultHandler:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	d299e50e1a698d1f
+method	c:objc(cs)PHImageManager(im)requestExportSessionForVideo:options:exportPreset:resultHandler:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	14dc02e104add794
+method	c:objc(cs)PHImageManager(im)requestAVAssetForVideo:options:resultHandler:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	1b7158b1a61316fc
+interface	c:objc(cs)PHCachingImageManager	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	deprecated: This property is unused and will be removed in a future release	95aff61af1f34e90
+super	-	PHCachingImageManager	PHImageManager		-	-	bb8850cd60847508
+property	c:objc(cs)PHCachingImageManager(py)allowsCachingHighQualityImages	-			ios=8/26.0/-/0,macos=10.15/26.0/-/0,tvos=10/26.0/-/0,xros=1/26.0/-/0	-	67d8f45b9fc3389b
+method	c:objc(cs)PHCachingImageManager(im)startCachingImagesForAssets:targetSize:contentMode:options:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	a682948adfbc5ac0
+method	c:objc(cs)PHCachingImageManager(im)stopCachingImagesForAssets:targetSize:contentMode:options:	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	d9f86be7afcbe5d6
+method	c:objc(cs)PHCachingImageManager(im)stopCachingImagesForAllAssets	-			ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	72f6997b06944ba8
+typedef	c:@T@PHAssetResourceDataRequestID	-			ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	8ca76e2965f0b2f9
+typedef	c:@T@PHAssetResourceProgressHandler	-			ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	d8225f38670afb97
+interface	c:objc(cs)PHAssetResourceRequestOptions	-			ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	deaaf692f9f114f1
+super	-	PHAssetResourceRequestOptions	NSObject		-	-	e5a40f2c3a00dc56
+conforms	-	PHAssetResourceRequestOptions	NSCopying		-	-	d0eec95f8fa1e3f6
+property	c:objc(cs)PHAssetResourceRequestOptions(py)networkAccessAllowed	-			ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	e9c11b12ff1011f1
+property	c:objc(cs)PHAssetResourceRequestOptions(py)progressHandler	-			ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	29a2c6e75b130613
+interface	c:objc(cs)PHAssetResourceManager	-			ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	d1c0dae6dd97bcf9
+super	-	PHAssetResourceManager	NSObject		-	-	8dd3fbbe08e6c64b
+method	c:objc(cs)PHAssetResourceManager(cm)defaultManager	-			ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	ef1f02ea807d4ae4
+method	c:objc(cs)PHAssetResourceManager(im)requestDataForAssetResource:options:dataReceivedHandler:completionHandler:	-			ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	b911667c2bfe8a40
+method	c:objc(cs)PHAssetResourceManager(im)writeDataForAssetResource:toFile:options:completionHandler:	-			ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	6da5a04fafb84af2
+method	c:objc(cs)PHAssetResourceManager(im)cancelDataRequest:	-			ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	c368d0623679fb88
+interface	c:objc(cs)PHAssetResource	-			ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	deprecated: Use contentType instead	e59cfe13786fc7c2
+super	-	PHAssetResource	NSObject		-	-	706fe81cdeefda38
+property	c:objc(cs)PHAssetResource(py)type	-			ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	ab8a33e3cde1593c
+property	c:objc(cs)PHAssetResource(py)assetLocalIdentifier	-			ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	393d2375efbe6101
+property	c:objc(cs)PHAssetResource(py)originalFilename	-			ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	ee52c9591804befa
+property	c:objc(cs)PHAssetResource(py)contentType	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,xros=26.0/-/-/0	-	78dd3710c5d32755
+property	c:objc(cs)PHAssetResource(py)uniformTypeIdentifier	-			ios=9/100000/-/0,macos=10.15/100000/-/0,tvos=10/100000/-/0,xros=1/100000/-/0	-	80acf14bda21569d
+property	c:objc(cs)PHAssetResource(py)pixelWidth	-			ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	1f20877c4efa422a
+property	c:objc(cs)PHAssetResource(py)pixelHeight	-			ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	a475b6fe4943994f
+method	c:objc(cs)PHAssetResource(cm)assetResourcesForAsset:	-			ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	76287f0f0b18fd14
+method	c:objc(cs)PHAssetResource(cm)assetResourcesForLivePhoto:	-			ios=9.1/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	d7f8504152932ee4
+interface	c:objc(cs)PHAdjustmentData	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	8cc9dc27af075c03
+super	-	PHAdjustmentData	NSObject		-	-	b7e28672c8d31749
+method	c:objc(cs)PHAdjustmentData(im)initWithFormatIdentifier:formatVersion:data:	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	e3142ab4490e3815
+property	c:objc(cs)PHAdjustmentData(py)formatIdentifier	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	ba6f304d2c5c7633
+property	c:objc(cs)PHAdjustmentData(py)formatVersion	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	b1528eef60513b32
+property	c:objc(cs)PHAdjustmentData(py)data	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	335ef2f965b696f1
+interface	c:objc(cs)PHContentEditingInput	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	deprecated: Use contentType instead	8d35c36609be23c9
+super	-	PHContentEditingInput	NSObject		-	-	529648dad89afd57
+property	c:objc(cs)PHContentEditingInput(py)mediaType	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	0deb648646d90af4
+property	c:objc(cs)PHContentEditingInput(py)mediaSubtypes	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	1668d61723269337
+property	c:objc(cs)PHContentEditingInput(py)creationDate	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	6a9d230cc77abdc8
+property	c:objc(cs)PHContentEditingInput(py)location	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	c753a89f7ccbcfaa
+property	c:objc(cs)PHContentEditingInput(py)contentType	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,xros=26.0/-/-/0	-	d1ee7f5f9d26ba41
+property	c:objc(cs)PHContentEditingInput(py)uniformTypeIdentifier	-			ios=8/100000/-/0,macos=10.11/100000/-/0,tvos=10/100000/-/0,xros=1/100000/-/0	-	36c3f25c8f28d030
+property	c:objc(cs)PHContentEditingInput(py)playbackStyle	-			ios=11/-/-/0,macos=10.13/-/-/0,tvos=11/-/-/0	-	bbe1072a1d5563e6
+property	c:objc(cs)PHContentEditingInput(py)adjustmentData	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	73bd6795964b32d8
+property	c:objc(cs)PHContentEditingInput(py)displaySizeImage	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	995ea05cb8190f9c
+property	c:objc(cs)PHContentEditingInput(py)fullSizeImageURL	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	fd25f62467a6ebf7
+property	c:objc(cs)PHContentEditingInput(py)fullSizeImageOrientation	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	c221480f1a0fa801
+property	c:objc(cs)PHContentEditingInput(py)avAsset	-			ios=8/9/-/0,macos=-/-/-/1,tvos=10/-/-/0	-	3286ab524a5da6c5
+property	c:objc(cs)PHContentEditingInput(py)audiovisualAsset	-			ios=9/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	3cc727bd8fc3f58b
+property	c:objc(cs)PHContentEditingInput(py)livePhoto	-			ios=10/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	9a1cb5cbf1c72e03
+interface	c:objc(cs)PHProject	-			ios=-/-/-/1,maccatalyst=-/-/-/1,macos=10.13/-/-/0,tvos=-/-/-/1	-	48a535228bdcd0b4
+super	-	PHProject	PHAssetCollection		-	-	3cd72428479192f6
+property	c:objc(cs)PHProject(py)projectExtensionData	-			ios=-/-/-/1,maccatalyst=-/-/-/1,macos=10.13/-/-/0,tvos=-/-/-/1	-	f9ad6ba5f9a209e8
+property	c:objc(cs)PHProject(py)hasProjectPreview	-			ios=-/-/-/1,maccatalyst=-/-/-/1,macos=10.13/-/-/0,tvos=-/-/-/1	-	b6ba2dd8faf62a39
+interface	c:objc(cs)PHProjectChangeRequest	-			ios=-/-/-/1,maccatalyst=-/-/-/1,macos=10.13/-/-/0,tvos=-/-/-/1	deprecated: Use -setProjectPreviewImage: instead	34eb882fc4a7b9d9
+super	-	PHProjectChangeRequest	PHChangeRequest		-	-	21abc75681fe9048
+method	c:objc(cs)PHProjectChangeRequest(im)initWithProject:	-			ios=-/-/-/1,maccatalyst=-/-/-/1,macos=10.13/-/-/0,tvos=-/-/-/1	-	8625edca72c427a4
+property	c:objc(cs)PHProjectChangeRequest(py)title	-			ios=-/-/-/1,maccatalyst=-/-/-/1,macos=10.13/-/-/0,tvos=-/-/-/1	-	f62ce57a0d7f61f8
+property	c:objc(cs)PHProjectChangeRequest(py)projectExtensionData	-			ios=-/-/-/1,maccatalyst=-/-/-/1,macos=10.13/-/-/0,tvos=-/-/-/1	-	3ea0df90ab695fe3
+method	c:objc(cs)PHProjectChangeRequest(im)setKeyAsset:	-			ios=-/-/-/1,maccatalyst=-/-/-/1,macos=10.13/10.14/-/0,tvos=-/-/-/1	deprecated: Use -setProjectPreviewImage: instead	c51dc9332ab8865d
+method	c:objc(cs)PHProjectChangeRequest(im)setProjectPreviewImage:	-			ios=-/-/-/1,maccatalyst=-/-/-/1,macos=10.13/-/-/0,tvos=-/-/-/1	-	6ce08d27c850fbdf
+method	c:objc(cs)PHProjectChangeRequest(im)removeAssets:	-			ios=-/-/-/1,maccatalyst=-/-/-/1,macos=10.14/-/-/0,tvos=-/-/-/1	-	a88e17f327661c6a
+interface	c:objc(cs)PHCloudIdentifier	-			ios=15/-/-/0,macos=10.13/-/-/0,tvos=15/-/-/0	deprecated: Use Check for PHPhotosErrorIdentifierNotFound in PHCloudIdentifierMapping.error instead	724bc1be059783e0
+super	-	PHCloudIdentifier	NSObject		-	-	973cadae3cd17a5f
+conforms	-	PHCloudIdentifier	NSSecureCoding		-	-	65ead92ca09a7ce9
+property	c:objc(cs)PHCloudIdentifier(cpy)notFoundIdentifier	-			ios=-/-/-/1,maccatalyst=-/-/-/1,macos=10.13/12/-/0,tvos=-/-/-/1	-	e7eec6975dae2ad7
+property	c:objc(cs)PHCloudIdentifier(py)stringValue	-			ios=15/-/-/0,macos=10.13/-/-/0,tvos=15/-/-/0	-	e30dc106e1e5d4fb
+method	c:objc(cs)PHCloudIdentifier(im)initWithStringValue:	-			ios=15/-/-/0,macos=10.13/-/-/0,tvos=15/-/-/0	-	22e7e5f210a08fc7
+interface	c:objc(cs)PHCloudIdentifierMapping	-			ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	daab102aa2bd70dd
+super	-	PHCloudIdentifierMapping	NSObject		-	-	620c6a22fe645856
+property	c:objc(cs)PHCloudIdentifierMapping(py)cloudIdentifier	-			ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	87d5e59101dfd832
+property	c:objc(cs)PHCloudIdentifierMapping(py)error	-			ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	c40cbf61acd6203a
+interface	c:objc(cs)PHLocalIdentifierMapping	-			ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	b5aa863bcab1d197
+super	-	PHLocalIdentifierMapping	NSObject		-	-	75cab38ca55d68bf
+property	c:objc(cs)PHLocalIdentifierMapping(py)localIdentifier	-			ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	d7eea2155d78858e
+property	c:objc(cs)PHLocalIdentifierMapping(py)error	-			ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	43f2986dc8668c4f
+category	c:objc(ext)PHCloudIdentifier	-	-		ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	8b40738ae7b34981
+conforms	-	PHCloudIdentifier	NSCopying		-	-	3cd47cccb05c0254
+category	c:objc(cy)PHPhotoLibrary@CloudIdentifiers	-			ios=15/-/-/0,macos=10.13/-/-/0,tvos=15/-/-/0	deprecated: Use -localIdentifierMappingsForCloudIdentifiers: instead	0af77b566e240692
+method	c:objc(cs)PHPhotoLibrary(im)localIdentifierMappingsForCloudIdentifiers:	CloudIdentifiers			ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	0c5d13a0d495879f
+method	c:objc(cs)PHPhotoLibrary(im)cloudIdentifierMappingsForLocalIdentifiers:	CloudIdentifiers			ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	3ab2f5d4bde4c3a8
+method	c:objc(cs)PHPhotoLibrary(im)localIdentifiersForCloudIdentifiers:	CloudIdentifiers			ios=-/-/-/1,maccatalyst=-/-/-/1,macos=10.13/12/-/0,tvos=-/-/-/1	deprecated: Use -localIdentifierMappingsForCloudIdentifiers: instead	fae2f4a10a613e03
+method	c:objc(cs)PHPhotoLibrary(im)cloudIdentifiersForLocalIdentifiers:	CloudIdentifiers			ios=-/-/-/1,maccatalyst=-/-/-/1,macos=10.13/12/-/0,tvos=-/-/-/1	deprecated: Use -cloudIdentifierMappingsForLocalIdentifiers: instead	15fb46b4b694c744
+var	c:@PHLocalIdentifierNotFound	-			ios=-/-/-/1,maccatalyst=-/-/-/1,macos=10.13/12/-/0,tvos=-/-/-/1	-	3e81bb5d96395a80

@@ -1,0 +1,1004 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+typedef	c:@T@PKEncryptionScheme	-			-	-	5f0031cd98b4f14d
+var	c:@PKEncryptionSchemeECC_V2	-			ios=9.0/-/-/0	-	f2c2ef41c64d04ef
+var	c:@PKEncryptionSchemeRSA_V2	-			ios=10.0/-/-/0	-	85a71bd17dd2a8f8
+typedef	c:@T@PKPaymentNetwork	-			-	-	2981f4c1f9adc58b
+var	c:@PKPaymentNetworkAmex	-			ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	3868437489c035e2
+var	c:@PKPaymentNetworkBancomat	-			ios=16.0/17.0/-/0,macos=12.0/14.0/-/0,watchos=9.0/10.0/-/0	-	4c15c4a882cb7973
+var	c:@PKPaymentNetworkPagoBancomat	-			ios=17.0/-/-/0,macos=14.0/-/-/0,watchos=10.0/-/-/0	-	fad329ec57938bfb
+var	c:@PKPaymentNetworkBancontact	-			ios=16.0/-/-/0,macos=12.0/-/-/0,watchos=9.0/-/-/0	-	d5e6a370638a2828
+var	c:@PKPaymentNetworkCarteBancaire	-			ios=10.3/11.0/-/0,macos=10.13/11.0/-/0,watchos=3.2/4.0/-/0	-	e485c145943976f5
+var	c:@PKPaymentNetworkCarteBancaires	-			ios=11.0/11.2/-/0,macos=10.13/11.0/-/0,watchos=4.0/4.2/-/0	-	668513bda2bfe219
+var	c:@PKPaymentNetworkCartesBancaires	-			ios=11.2/-/-/0,macos=11.0/-/-/0,watchos=4.2/-/-/0	-	7a43d497fc42ef48
+var	c:@PKPaymentNetworkChinaUnionPay	-			ios=9.2/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	5960b11fb266f670
+var	c:@PKPaymentNetworkDankort	-			ios=15.1/-/-/0,macos=12.1/-/-/0,watchos=8.1/-/-/0	-	3b49532f73c79b76
+var	c:@PKPaymentNetworkDiscover	-			ios=9.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	d86a5ffa5d3571c8
+var	c:@PKPaymentNetworkEftpos	-			ios=12.0/-/-/0,macos=11.0/-/-/0,watchos=5.0/-/-/0	-	735c82aa936cc557
+var	c:@PKPaymentNetworkElectron	-			ios=12.0/-/-/0,macos=11.0/-/-/0,watchos=5.0/-/-/0	-	a4a922c430ff26a0
+var	c:@PKPaymentNetworkElo	-			ios=12.1.1/-/-/0,macos=11.0/-/-/0,watchos=5.1.2/-/-/0	-	a13bec19400ad8da
+var	c:@PKPaymentNetworkIDCredit	-			ios=10.3/-/-/0,macos=11.0/-/-/0,watchos=3.2/-/-/0	-	8f4670e23c994515
+var	c:@PKPaymentNetworkInterac	-			ios=9.2/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	83b0ff83aa2c43b3
+var	c:@PKPaymentNetworkJCB	-			ios=10.1/-/-/0,macos=11.0/-/-/0,watchos=3.1/-/-/0	-	0a55228295058dd4
+var	c:@PKPaymentNetworkMada	-			ios=12.1.1/-/-/0,macos=11.0/-/-/0,watchos=5.1.2/-/-/0	-	122fc31b74f97499
+var	c:@PKPaymentNetworkMaestro	-			ios=12.0/-/-/0,macos=11.0/-/-/0,watchos=5.0/-/-/0	-	6c4364f9747d7ef1
+var	c:@PKPaymentNetworkMasterCard	-			ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	d9c7082619fc8a4c
+var	c:@PKPaymentNetworkMir	-			ios=14.5/-/-/0,macos=11.5/-/-/0,watchos=7.5/-/-/0	-	e945c946f529cdb4
+var	c:@PKPaymentNetworkPrivateLabel	-			ios=9.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	ce888921d34b9251
+var	c:@PKPaymentNetworkQuicPay	-			ios=10.3/-/-/0,macos=11.0/-/-/0,watchos=3.2/-/-/0	-	8e49833482618c68
+var	c:@PKPaymentNetworkSuica	-			ios=10.1/-/-/0,macos=11.0/-/-/0,watchos=3.1/-/-/0	-	4140dcc2805ecbad
+var	c:@PKPaymentNetworkVisa	-			ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	da0500123d5e5cbb
+var	c:@PKPaymentNetworkVPay	-			ios=12.0/-/-/0,macos=11.0/-/-/0,watchos=5.0/-/-/0	-	412f7b91817ec7f4
+var	c:@PKPaymentNetworkBarcode	-			ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0	-	0f1f72b706d7b2eb
+var	c:@PKPaymentNetworkGirocard	-			ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0	-	c152ddbad53d5a3e
+var	c:@PKPaymentNetworkWaon	-			ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=8.0/-/-/0	-	7bbd5c18a32b4b30
+var	c:@PKPaymentNetworkNanaco	-			ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=8.0/-/-/0	-	b652cac8d3ef9bd0
+var	c:@PKPaymentNetworkPostFinance	-			ios=16.4/-/-/0,macos=13.3/-/-/0,watchos=9.4/-/-/0	-	d9c2c6a6e99dd5f8
+var	c:@PKPaymentNetworkTmoney	-			ios=17.0/-/-/0,macos=14.0/-/-/0,watchos=10.0/-/-/0	-	616543f09ab69581
+var	c:@PKPaymentNetworkMeeza	-			ios=17.4/-/-/0,macos=14.4/-/-/0,watchos=10.4/-/-/0	-	4949ca1fdec30d7e
+var	c:@PKPaymentNetworkNAPAS	-			ios=17.5/-/-/0,macos=14.5/-/-/0,watchos=10.5/-/-/0	-	b62a0173c6289225
+var	c:@PKPaymentNetworkBankAxept	-			ios=17.5/-/-/0,macos=14.5/-/-/0,watchos=10.5/-/-/0	-	62ad126f92ab1ea1
+var	c:@PKPaymentNetworkHimyan	-			ios=18.4/-/-/0,macos=15.4/-/-/0,watchos=11.4/-/-/0	-	cef17d7ead104c47
+var	c:@PKPaymentNetworkJaywan	-			ios=18.4/-/-/0,macos=15.4/-/-/0,watchos=11.4/-/-/0	-	ac09b0f2286d6f23
+var	c:@PKPaymentNetworkMyDebit	-			ios=26.0/-/-/0,macos=26.0/-/-/0,watchos=26.0/-/-/0	-	7636cb30a4ad09a3
+var	c:@PKPaymentNetworkConecs	-			ios=26.2/-/-/0,macos=26.2/-/-/0,watchos=26.2/-/-/0	-	027e2efc1400fe99
+typedef	c:@T@PKContactField	-			-	-	e01e689dfc3d0ada
+var	c:@PKContactFieldPostalAddress	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	d67541052125937a
+var	c:@PKContactFieldEmailAddress	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	216e4da2c54c8814
+var	c:@PKContactFieldPhoneNumber	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	84a92a0bc135c84e
+var	c:@PKContactFieldName	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	c2c1bb2504e3b117
+var	c:@PKContactFieldPhoneticName	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	4d5c0f7b5c059b96
+typedef	c:@T@PKPaymentAuthorizationStatus	-			-	-	1602ff0cec89cea7
+enum	c:@E@PKPaymentAuthorizationStatus	-			ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	e29270de11682f25
+enumconst	c:@E@PKPaymentAuthorizationStatus@PKPaymentAuthorizationStatusSuccess	PKPaymentAuthorizationStatus			ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	4dee2e48ca46921c
+enumconst	c:@E@PKPaymentAuthorizationStatus@PKPaymentAuthorizationStatusFailure	PKPaymentAuthorizationStatus			ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	a5af3ba01f570011
+enumconst	c:@E@PKPaymentAuthorizationStatus@PKPaymentAuthorizationStatusInvalidBillingPostalAddress	PKPaymentAuthorizationStatus			ios=8.0/11.0/-/0,watchos=3.0/4.0/-/0	-	1ce585798b4f0a83
+enumconst	c:@E@PKPaymentAuthorizationStatus@PKPaymentAuthorizationStatusInvalidShippingPostalAddress	PKPaymentAuthorizationStatus			ios=8.0/11.0/-/0,watchos=3.0/4.0/-/0	-	9031c1dbc7622aa7
+enumconst	c:@E@PKPaymentAuthorizationStatus@PKPaymentAuthorizationStatusInvalidShippingContact	PKPaymentAuthorizationStatus			ios=8.0/11.0/-/0,watchos=3.0/4.0/-/0	-	6d2462b9b84eb20c
+enumconst	c:@E@PKPaymentAuthorizationStatus@PKPaymentAuthorizationStatusPINRequired	PKPaymentAuthorizationStatus			ios=9.2/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	7c24060d3d229935
+enumconst	c:@E@PKPaymentAuthorizationStatus@PKPaymentAuthorizationStatusPINIncorrect	PKPaymentAuthorizationStatus			ios=9.2/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	453cb44b0fa509f6
+enumconst	c:@E@PKPaymentAuthorizationStatus@PKPaymentAuthorizationStatusPINLockout	PKPaymentAuthorizationStatus			ios=9.2/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	95089a84a6025777
+typedef	c:@T@PKPaymentButtonStyle	-			-	-	d0850c8bcf78ded8
+enum	c:@E@PKPaymentButtonStyle	-			ios=8.3/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	d7d180a3a3bc45b3
+enumconst	c:@E@PKPaymentButtonStyle@PKPaymentButtonStyleWhite	PKPaymentButtonStyle			ios=8.3/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	db02cbba31c9f1ed
+enumconst	c:@E@PKPaymentButtonStyle@PKPaymentButtonStyleWhiteOutline	PKPaymentButtonStyle			ios=8.3/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	1cda5d38d1e523cf
+enumconst	c:@E@PKPaymentButtonStyle@PKPaymentButtonStyleBlack	PKPaymentButtonStyle			ios=8.3/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	04205f83adc81a2d
+enumconst	c:@E@PKPaymentButtonStyle@PKPaymentButtonStyleAutomatic	PKPaymentButtonStyle			ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0	-	40d860b25592239f
+typedef	c:@T@PKPaymentButtonType	-			-	-	abb970d3926a712d
+enum	c:@E@PKPaymentButtonType	-			ios=8.3/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	af62ad0d6193f940
+enumconst	c:@E@PKPaymentButtonType@PKPaymentButtonTypePlain	PKPaymentButtonType			ios=8.3/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	cfdd1f6842b592a5
+enumconst	c:@E@PKPaymentButtonType@PKPaymentButtonTypeBuy	PKPaymentButtonType			ios=8.3/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	bb284338bde57675
+enumconst	c:@E@PKPaymentButtonType@PKPaymentButtonTypeSetUp	PKPaymentButtonType			ios=9.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	f88dab9f593b3ee6
+enumconst	c:@E@PKPaymentButtonType@PKPaymentButtonTypeInStore	PKPaymentButtonType			ios=10.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	bf0b66d2d11e401a
+enumconst	c:@E@PKPaymentButtonType@PKPaymentButtonTypeDonate	PKPaymentButtonType			ios=10.2/-/-/0,macos=11.0/-/-/0,watchos=3.2/-/-/0	-	1fdf0fc24b9f4684
+enumconst	c:@E@PKPaymentButtonType@PKPaymentButtonTypeCheckout	PKPaymentButtonType			ios=12.0/-/-/0,macos=11.0/-/-/0,watchos=5.0/-/-/0	-	55db844073200d62
+enumconst	c:@E@PKPaymentButtonType@PKPaymentButtonTypeBook	PKPaymentButtonType			ios=12.0/-/-/0,macos=11.0/-/-/0,watchos=5.0/-/-/0	-	7cc9fb96cdaee689
+enumconst	c:@E@PKPaymentButtonType@PKPaymentButtonTypeSubscribe	PKPaymentButtonType			ios=12.0/-/-/0,macos=11.0/-/-/0,watchos=5.0/-/-/0	-	5e7507b10743cb9d
+enumconst	c:@E@PKPaymentButtonType@PKPaymentButtonTypeReload	PKPaymentButtonType			ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0	-	e7502ca895c177a4
+enumconst	c:@E@PKPaymentButtonType@PKPaymentButtonTypeAddMoney	PKPaymentButtonType			ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0	-	4c8f33976ef64f3b
+enumconst	c:@E@PKPaymentButtonType@PKPaymentButtonTypeTopUp	PKPaymentButtonType			ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0	-	134f2dea10e8d5aa
+enumconst	c:@E@PKPaymentButtonType@PKPaymentButtonTypeOrder	PKPaymentButtonType			ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0	-	47f006347a5d0958
+enumconst	c:@E@PKPaymentButtonType@PKPaymentButtonTypeRent	PKPaymentButtonType			ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0	-	1da4a0f16ebf5494
+enumconst	c:@E@PKPaymentButtonType@PKPaymentButtonTypeSupport	PKPaymentButtonType			ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0	-	864f762056d91ab8
+enumconst	c:@E@PKPaymentButtonType@PKPaymentButtonTypeContribute	PKPaymentButtonType			ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0	-	90701186925bccfc
+enumconst	c:@E@PKPaymentButtonType@PKPaymentButtonTypeTip	PKPaymentButtonType			ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0	-	7b15ec86c9650c39
+enumconst	c:@E@PKPaymentButtonType@PKPaymentButtonTypeContinue	PKPaymentButtonType			ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=8.0/-/-/0	-	117092cbd922485c
+typedef	c:@T@PKRadioTechnology	-			-	-	ca664f99557822d1
+enum	c:@E@PKRadioTechnology	-			ios=14.5/-/-/0,watchos=7.3/-/-/0	-	d0a76a3555939051
+enumconst	c:@E@PKRadioTechnology@PKRadioTechnologyNone	PKRadioTechnology			ios=14.5/-/-/0,watchos=7.3/-/-/0	-	283cb72a54e856b9
+enumconst	c:@E@PKRadioTechnology@PKRadioTechnologyNFC	PKRadioTechnology			ios=14.5/-/-/0,watchos=7.3/-/-/0	-	e3be701156028711
+enumconst	c:@E@PKRadioTechnology@PKRadioTechnologyBluetooth	PKRadioTechnology			ios=14.5/-/-/0,watchos=7.3/-/-/0	-	81a5dd70cb58d6d6
+interface	c:objc(cs)PKObject	-			-	-	4cf0293ba0a2c611
+super	-	PKObject	NSObject		-	-	2bc47c098995872b
+typedef	c:@T@PKPassType	-			-	-	eee3954d900cf4e9
+enum	c:@E@PKPassType	-			ios=8.0/-/-/0,watchos=3.0/-/-/0	-	c0476df3e622ff81
+enumconst	c:@E@PKPassType@PKPassTypeBarcode	PKPassType			ios=8.0/-/-/0,watchos=3.0/-/-/0	-	a0e65662f55d62ab
+enumconst	c:@E@PKPassType@PKPassTypeSecureElement	PKPassType			ios=13.4/-/-/0,watchos=6.2/-/-/0	-	0fb2ea33477c9199
+enumconst	c:@E@PKPassType@PKPassTypePayment	PKPassType			ios=8.0/100000/-/0,macos=10.12/100000/-/0,watchos=3.0/100000/-/0	deprecated: Use PKPassTypeSecureElement instead	f240ea50a4c10a85
+enumconst	c:@E@PKPassType@PKPassTypeAny	PKPassType			ios=8.0/-/-/0,watchos=3.0/-/-/0	-	b74052b539ca149f
+interface	c:objc(cs)PKPass	-			-	deprecated: Use -[PKPass secureElementPass] instead	b09d4124e35e127d
+super	-	PKPass	PKObject		-	-	5668cbffbaca4aea
+method	c:objc(cs)PKPass(im)initWithData:error:	-			-	-	08eb69fcb23032d4
+property	c:objc(cs)PKPass(py)passType	-			ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	f588356376dbce33
+property	c:objc(cs)PKPass(py)paymentPass	-			ios=8.0/100000/-/0,macos=11.0/100000/-/0,watchos=3.0/100000/-/0	-	4e70bde4aef59195
+property	c:objc(cs)PKPass(py)secureElementPass	-			ios=13.4/-/-/0,macos=11.0/-/-/0,watchos=6.2/-/-/0	-	e1da5ecb2d89a8d2
+property	c:objc(cs)PKPass(py)serialNumber	-			-	-	7502c80558a0ed29
+property	c:objc(cs)PKPass(py)passTypeIdentifier	-			-	-	25db45c4d0b0a804
+property	c:objc(cs)PKPass(py)webServiceURL	-			-	-	4eeeac4ee638d0b8
+property	c:objc(cs)PKPass(py)authenticationToken	-			-	-	b07a0fad1fa6de62
+property	c:objc(cs)PKPass(py)icon	-			watchos=-/-/-/1	-	e5a9f4a6671923ce
+property	c:objc(cs)PKPass(py)localizedName	-			-	-	ad021b8ceb2df032
+property	c:objc(cs)PKPass(py)localizedDescription	-			-	-	7c31a6258c91969f
+property	c:objc(cs)PKPass(py)organizationName	-			-	-	bede62daf2936486
+property	c:objc(cs)PKPass(py)relevantDate	-			ios=6.0/18.0/-/0,macos=11.0/15.0/-/0,watchos=2.0/11.0/-/0	-	cece64f6d0138886
+property	c:objc(cs)PKPass(py)relevantDates	-			ios=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0	-	2adc2395874d3950
+property	c:objc(cs)PKPass(py)userInfo	-			ios=7.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	68548fcc02da3e66
+property	c:objc(cs)PKPass(py)passURL	-			-	-	5415b4bb69dfa5f6
+property	c:objc(cs)PKPass(py)remotePass	-			ios=9.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	80194acb7b4b8807
+property	c:objc(cs)PKPass(py)deviceName	-			ios=9.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	f1ac41a9b8e5a935
+method	c:objc(cs)PKPass(im)localizedValueForFieldKey:	-			-	-	359747c9524a5f3f
+typedef	c:@T@PKSecureElementPassActivationState	-			-	-	168e8d6896a036f3
+enum	c:@E@PKSecureElementPassActivationState	-			ios=13.4/-/-/0,macos=11.0/-/-/0,watchos=6.2/-/-/0	-	1b300da49fb484ac
+enumconst	c:@E@PKSecureElementPassActivationState@PKSecureElementPassActivationStateActivated	PKSecureElementPassActivationState			ios=13.4/-/-/0,macos=11.0/-/-/0,watchos=6.2/-/-/0	-	11f029142439deec
+enumconst	c:@E@PKSecureElementPassActivationState@PKSecureElementPassActivationStateRequiresActivation	PKSecureElementPassActivationState			ios=13.4/-/-/0,macos=11.0/-/-/0,watchos=6.2/-/-/0	-	572d3e75e53efeac
+enumconst	c:@E@PKSecureElementPassActivationState@PKSecureElementPassActivationStateActivating	PKSecureElementPassActivationState			ios=13.4/-/-/0,macos=11.0/-/-/0,watchos=6.2/-/-/0	-	2659bba43575f821
+enumconst	c:@E@PKSecureElementPassActivationState@PKSecureElementPassActivationStateSuspended	PKSecureElementPassActivationState			ios=13.4/-/-/0,macos=11.0/-/-/0,watchos=6.2/-/-/0	-	96854c9b40fb6e87
+enumconst	c:@E@PKSecureElementPassActivationState@PKSecureElementPassActivationStateDeactivated	PKSecureElementPassActivationState			ios=13.4/-/-/0,macos=11.0/-/-/0,watchos=6.2/-/-/0	-	11b368c0e892ef43
+interface	c:objc(cs)PKSecureElementPass	-			ios=13.4/-/-/0,macos=11.0/-/-/0,watchos=6.2/-/-/0	-	b6be2aa5370717f6
+super	-	PKSecureElementPass	PKPass		-	-	e12e4ec00b37530f
+property	c:objc(cs)PKSecureElementPass(py)primaryAccountIdentifier	-			ios=13.4/-/-/0,macos=11.0/-/-/0,watchos=6.2/-/-/0	-	7d7defa0722c5be0
+property	c:objc(cs)PKSecureElementPass(py)primaryAccountNumberSuffix	-			ios=13.4/-/-/0,macos=11.0/-/-/0,watchos=6.2/-/-/0	-	4d8bcea2212534d7
+property	c:objc(cs)PKSecureElementPass(py)deviceAccountIdentifier	-			ios=13.4/-/-/0,macos=11.0/-/-/0,watchos=6.2/-/-/0	-	2e47340453811342
+property	c:objc(cs)PKSecureElementPass(py)deviceAccountNumberSuffix	-			ios=13.4/-/-/0,macos=11.0/-/-/0,watchos=6.2/-/-/0	-	555987c53eeda1f3
+property	c:objc(cs)PKSecureElementPass(py)passActivationState	-			ios=13.4/-/-/0,macos=11.0/-/-/0,watchos=6.2/-/-/0	-	ed8a050a2327c91e
+property	c:objc(cs)PKSecureElementPass(py)devicePassIdentifier	-			ios=13.4/-/-/0,macos=11.0/-/-/0,watchos=6.2/-/-/0	-	52eafbef141b65db
+property	c:objc(cs)PKSecureElementPass(py)pairedTerminalIdentifier	-			ios=13.4/-/-/0,macos=11.0/-/-/0,watchos=6.2/-/-/0	-	e57456b4f40f07e0
+typedef	c:@T@PKPaymentPassActivationState	-			-	-	d5f4950a3fb08ff3
+enum	c:@E@PKPaymentPassActivationState	-			ios=8.0/100000/-/0,macos=11.0/100000/-/0,watchos=3.0/100000/-/0	-	943c784de3f29fe1
+enumconst	c:@E@PKPaymentPassActivationState@PKPaymentPassActivationStateActivated	PKPaymentPassActivationState			ios=8.0/100000/-/0,macos=11.0/100000/-/0,watchos=3.0/100000/-/0	-	5634af788b422e00
+enumconst	c:@E@PKPaymentPassActivationState@PKPaymentPassActivationStateRequiresActivation	PKPaymentPassActivationState			ios=8.0/100000/-/0,macos=11.0/100000/-/0,watchos=3.0/100000/-/0	-	8f06cdd754acf24a
+enumconst	c:@E@PKPaymentPassActivationState@PKPaymentPassActivationStateActivating	PKPaymentPassActivationState			ios=8.0/100000/-/0,macos=11.0/100000/-/0,watchos=3.0/100000/-/0	-	8d4ed0cacf56ade7
+enumconst	c:@E@PKPaymentPassActivationState@PKPaymentPassActivationStateSuspended	PKPaymentPassActivationState			ios=8.0/100000/-/0,macos=11.0/100000/-/0,watchos=3.0/100000/-/0	-	94b9cba6ecad72e0
+enumconst	c:@E@PKPaymentPassActivationState@PKPaymentPassActivationStateDeactivated	PKPaymentPassActivationState			ios=8.0/100000/-/0,macos=11.0/100000/-/0,watchos=3.0/100000/-/0	-	b28cb5d3b885c9fa
+interface	c:objc(cs)PKPaymentPass	-			ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	deprecated: Use [PKSecureElementPass passActivationState] instead	576562de709c7aee
+super	-	PKPaymentPass	PKSecureElementPass		-	-	ef7b4571860c9f03
+property	c:objc(cs)PKPaymentPass(py)activationState	-			ios=8.0/100000/-/0,macos=11.0/100000/-/0,watchos=3.0/100000/-/0	-	edd53639fc6031a4
+var	c:@PKPassKitErrorDomain	-			ios=6.0/-/-/0,watchos=3.0/-/-/0	-	d49991be7185955c
+typedef	c:@T@PKPassKitErrorCode	-			-	-	a27829aa9cc7f8a0
+enum	c:@E@PKPassKitErrorCode	-			ios=6.0/-/-/0,watchos=3.0/-/-/0	-	060bbacc70207d16
+enumconst	c:@E@PKPassKitErrorCode@PKUnknownError	PKPassKitErrorCode			ios=6.0/-/-/0,watchos=3.0/-/-/0	-	18b8c6a5ea9ca1d6
+enumconst	c:@E@PKPassKitErrorCode@PKInvalidDataError	PKPassKitErrorCode			ios=6.0/-/-/0,watchos=3.0/-/-/0	-	5d8dfa5df89e542c
+enumconst	c:@E@PKPassKitErrorCode@PKUnsupportedVersionError	PKPassKitErrorCode			ios=6.0/-/-/0,watchos=3.0/-/-/0	-	c837ff336042a45b
+enumconst	c:@E@PKPassKitErrorCode@PKInvalidSignature	PKPassKitErrorCode			ios=6.0/-/-/0,watchos=3.0/-/-/0	-	a4079227f3ae5efb
+enumconst	c:@E@PKPassKitErrorCode@PKNotEntitledError	PKPassKitErrorCode			ios=6.0/-/-/0,watchos=3.0/-/-/0	-	85628b1bf0fabecf
+var	c:@PKPaymentErrorDomain	-			ios=11.0/-/-/0,watchos=4.0/-/-/0	-	5902854e99f1a653
+typedef	c:@T@PKPaymentErrorCode	-			-	-	2da50e467fea352d
+enum	c:@E@PKPaymentErrorCode	-			ios=11.0/-/-/0,watchos=4.0/-/-/0	-	90f654d97b144031
+enumconst	c:@E@PKPaymentErrorCode@PKPaymentUnknownError	PKPaymentErrorCode			ios=11.0/-/-/0,watchos=4.0/-/-/0	-	a6a35eeaf89333d3
+enumconst	c:@E@PKPaymentErrorCode@PKPaymentShippingContactInvalidError	PKPaymentErrorCode			ios=11.0/-/-/0,watchos=4.0/-/-/0	-	98c986ba67157ddd
+enumconst	c:@E@PKPaymentErrorCode@PKPaymentBillingContactInvalidError	PKPaymentErrorCode			ios=11.0/-/-/0,watchos=4.0/-/-/0	-	9cec45f636ef6aa8
+enumconst	c:@E@PKPaymentErrorCode@PKPaymentShippingAddressUnserviceableError	PKPaymentErrorCode			ios=11.0/-/-/0,watchos=4.0/-/-/0	-	ed95025ac257f55f
+enumconst	c:@E@PKPaymentErrorCode@PKPaymentCouponCodeInvalidError	PKPaymentErrorCode			ios=15.0/-/-/0,watchos=-/-/-/1	-	ea9acc774be38f03
+enumconst	c:@E@PKPaymentErrorCode@PKPaymentCouponCodeExpiredError	PKPaymentErrorCode			ios=15.0/-/-/0,watchos=-/-/-/1	-	5b056617528d2107
+typedef	c:@T@PKPaymentErrorKey	-			-	-	ecc71d24b5176d03
+var	c:@PKPaymentErrorContactFieldUserInfoKey	-			ios=11.0/-/-/0,watchos=4.0/-/-/0	-	04971f5214d5c714
+var	c:@PKPaymentErrorPostalAddressUserInfoKey	-			ios=11.0/-/-/0,watchos=4.0/-/-/0	-	5fc4f271f42e2cee
+var	c:@PKDisbursementErrorDomain	-			ios=17.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e96617de68cb3c24
+typedef	c:@T@PKDisbursementErrorCode	-			-	-	2b45bcabe057efc9
+enum	c:@E@PKDisbursementErrorCode	-			ios=17.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1c5726ee44659be2
+enumconst	c:@E@PKDisbursementErrorCode@PKDisbursementUnknownError	PKDisbursementErrorCode			ios=17.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9d1646d0e9cf6126
+enumconst	c:@E@PKDisbursementErrorCode@PKDisbursementUnsupportedCardError	PKDisbursementErrorCode			ios=17.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	be0a39c8b3ca5c1c
+enumconst	c:@E@PKDisbursementErrorCode@PKDisbursementRecipientContactInvalidError	PKDisbursementErrorCode			ios=17.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	35e61b033de89063
+typedef	c:@T@PKDisbursementErrorKey	-			-	-	63d54099390f2645
+var	c:@PKDisbursementErrorContactFieldUserInfoKey	-			ios=17.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6e2eab75cdd8019a
+typedef	c:@T@PKAddPaymentPassError	-			-	-	2da4f920b8c30ef8
+enum	c:@E@PKAddPaymentPassError	-			ios=9.0/-/-/0,watchos=6.0/-/-/0	-	6e71f93f5e3a69cd
+enumconst	c:@E@PKAddPaymentPassError@PKAddPaymentPassErrorUnsupported	PKAddPaymentPassError			ios=9.0/-/-/0,watchos=6.0/-/-/0	-	fef950e8eedf81c2
+enumconst	c:@E@PKAddPaymentPassError@PKAddPaymentPassErrorUserCancelled	PKAddPaymentPassError			ios=9.0/-/-/0,watchos=6.0/-/-/0	-	4e4f1ea231f5c843
+enumconst	c:@E@PKAddPaymentPassError@PKAddPaymentPassErrorSystemCancelled	PKAddPaymentPassError			ios=9.0/-/-/0,watchos=6.0/-/-/0	-	d5b30c4cfecc32ad
+var	c:@PKAddSecureElementPassErrorDomain	-			ios=13.4/-/-/0	-	38a6c3c6b0794484
+typedef	c:@T@PKAddSecureElementPassErrorCode	-			-	-	e8763d71e5314174
+enum	c:@E@PKAddSecureElementPassErrorCode	-			ios=13.4/-/-/0	-	d6410905180f082e
+enumconst	c:@E@PKAddSecureElementPassErrorCode@PKAddSecureElementPassGenericError	PKAddSecureElementPassErrorCode			ios=18.0/-/-/0	-	90fe449e06313a96
+enumconst	c:@E@PKAddSecureElementPassErrorCode@PKAddSecureElementPassUnknownError	PKAddSecureElementPassErrorCode			ios=13.4/18.0/-/0	deprecated: Use PKAddSecureElementPassGenericError instead.	4a7a41e953b59fe9
+enumconst	c:@E@PKAddSecureElementPassErrorCode@PKAddSecureElementPassUserCanceledError	PKAddSecureElementPassErrorCode			ios=13.4/-/-/0	-	2bcd46724df30a01
+enumconst	c:@E@PKAddSecureElementPassErrorCode@PKAddSecureElementPassUnavailableError	PKAddSecureElementPassErrorCode			ios=13.4/-/-/0	-	98ab31de8f390035
+enumconst	c:@E@PKAddSecureElementPassErrorCode@PKAddSecureElementPassInvalidConfigurationError	PKAddSecureElementPassErrorCode			ios=13.4/-/-/0	-	4bd35c0899fcc775
+enumconst	c:@E@PKAddSecureElementPassErrorCode@PKAddSecureElementPassDeviceNotSupportedError	PKAddSecureElementPassErrorCode			ios=13.4/-/-/0	-	3ae26403ec4a8b34
+enumconst	c:@E@PKAddSecureElementPassErrorCode@PKAddSecureElementPassDeviceNotReadyError	PKAddSecureElementPassErrorCode			ios=13.4/-/-/0	-	c71f00b58aedb9a6
+enumconst	c:@E@PKAddSecureElementPassErrorCode@PKAddSecureElementPassOSVersionNotSupportedError	PKAddSecureElementPassErrorCode			ios=13.4/-/-/0	-	52b60c345c3a500d
+var	c:@PKShareSecureElementPassErrorDomain	-			ios=16.0/-/-/0	-	351ec652d4aa6b2c
+typedef	c:@T@PKShareSecureElementPassErrorCode	-			-	-	c237a0424a2c2b43
+enum	c:@E@PKShareSecureElementPassErrorCode	-			ios=16.0/-/-/0	-	a4e611714cd52661
+enumconst	c:@E@PKShareSecureElementPassErrorCode@PKShareSecureElementPassUnknownError	PKShareSecureElementPassErrorCode			ios=16.0/-/-/0	-	97b3402f9b12918d
+enumconst	c:@E@PKShareSecureElementPassErrorCode@PKShareSecureElementPassSetupError	PKShareSecureElementPassErrorCode			ios=16.0/-/-/0	-	0db865fc801c0ced
+typedef	c:@T@PKPassLibraryAddPassesStatus	-			-	-	505b38f8b776ed12
+enum	c:@E@PKPassLibraryAddPassesStatus	-			ios=7.0/-/-/0,watchos=3.0/-/-/0	-	6320c46a239730d5
+enumconst	c:@E@PKPassLibraryAddPassesStatus@PKPassLibraryDidAddPasses	PKPassLibraryAddPassesStatus			ios=7.0/-/-/0,watchos=3.0/-/-/0	-	3a0795563e426ca2
+enumconst	c:@E@PKPassLibraryAddPassesStatus@PKPassLibraryShouldReviewPasses	PKPassLibraryAddPassesStatus			ios=7.0/-/-/0,watchos=3.0/-/-/0	-	15451801036f86d4
+enumconst	c:@E@PKPassLibraryAddPassesStatus@PKPassLibraryDidCancelAddPasses	PKPassLibraryAddPassesStatus			ios=7.0/-/-/0,watchos=3.0/-/-/0	-	dfbada6a3a62de22
+typedef	c:@T@PKAutomaticPassPresentationSuppressionResult	-			-	-	b0f546f0c14b9d56
+enum	c:@E@PKAutomaticPassPresentationSuppressionResult	-			ios=9.0/-/-/0,watchos=10.2/-/-/0	-	b0563ee99cc2f20f
+enumconst	c:@E@PKAutomaticPassPresentationSuppressionResult@PKAutomaticPassPresentationSuppressionResultNotSupported	PKAutomaticPassPresentationSuppressionResult			ios=9.0/-/-/0,watchos=10.2/-/-/0	-	cf4642391ba3efa1
+enumconst	c:@E@PKAutomaticPassPresentationSuppressionResult@PKAutomaticPassPresentationSuppressionResultAlreadyPresenting	PKAutomaticPassPresentationSuppressionResult			ios=9.0/-/-/0,watchos=10.2/-/-/0	-	c448078c413b0c8b
+enumconst	c:@E@PKAutomaticPassPresentationSuppressionResult@PKAutomaticPassPresentationSuppressionResultDenied	PKAutomaticPassPresentationSuppressionResult			ios=9.0/-/-/0,watchos=10.2/-/-/0	-	e1162e081bf829fa
+enumconst	c:@E@PKAutomaticPassPresentationSuppressionResult@PKAutomaticPassPresentationSuppressionResultCancelled	PKAutomaticPassPresentationSuppressionResult			ios=9.0/-/-/0,watchos=10.2/-/-/0	-	fd1964467b3bb506
+enumconst	c:@E@PKAutomaticPassPresentationSuppressionResult@PKAutomaticPassPresentationSuppressionResultSuccess	PKAutomaticPassPresentationSuppressionResult			ios=9.0/-/-/0,watchos=10.2/-/-/0	-	ae69664714688cb2
+typedef	c:@T@PKPassLibraryCapability	-			-	-	07704184e6271bbd
+enum	c:@E@PKPassLibraryCapability	-			ios=26.0/-/-/0,watchos=26.0/-/-/0	-	0641d0bc651e52e5
+enumconst	c:@E@PKPassLibraryCapability@PKPassLibraryCapabilityBackgroundAddPasses	PKPassLibraryCapability			ios=26.0/-/-/0,watchos=26.0/-/-/0	-	26773873190343b4
+typedef	c:@T@PKPassLibraryAuthorizationStatus	-			-	-	c3593a5ace6a558c
+enum	c:@E@PKPassLibraryAuthorizationStatus	-			ios=26.0/-/-/0,watchos=26.0/-/-/0	-	ecbd687f6e39edcf
+enumconst	c:@E@PKPassLibraryAuthorizationStatus@PKPassLibraryAuthorizationStatusNotDetermined	PKPassLibraryAuthorizationStatus			ios=26.0/-/-/0,watchos=26.0/-/-/0	-	7dc598c157ea6e7d
+enumconst	c:@E@PKPassLibraryAuthorizationStatus@PKPassLibraryAuthorizationStatusDenied	PKPassLibraryAuthorizationStatus			ios=26.0/-/-/0,watchos=26.0/-/-/0	-	5512233a44f031aa
+enumconst	c:@E@PKPassLibraryAuthorizationStatus@PKPassLibraryAuthorizationStatusAuthorized	PKPassLibraryAuthorizationStatus			ios=26.0/-/-/0,watchos=26.0/-/-/0	-	d84431690e983cb4
+enumconst	c:@E@PKPassLibraryAuthorizationStatus@PKPassLibraryAuthorizationStatusRestricted	PKPassLibraryAuthorizationStatus			ios=26.0/-/-/0,watchos=26.0/-/-/0	-	dc9596275fe5da3b
+typedef	c:@T@PKSuppressionRequestToken	-			-	-	f004cd03b3a51b13
+interface	c:objc(cs)PKPassLibrary	-			ios=6.0/-/-/0,watchos=3.0/-/-/0	deprecated: Use -[PKPassLibrary isPaymentPassActivationAvailable] instead	a045ad1be2781f85
+super	-	PKPassLibrary	NSObject		-	-	5da406f061480938
+method	c:objc(cs)PKPassLibrary(cm)isPassLibraryAvailable	-			ios=6.0/-/-/0,watchos=3.0/-/-/0	-	ec4b9cbd11ae83e2
+method	c:objc(cs)PKPassLibrary(cm)requestAutomaticPassPresentationSuppressionWithResponseHandler:	-			ios=9.0/-/-/0,ios_app_extension=-/-/-/1,macos_app_extension=-/-/-/1,watchos=10.2/-/-/0	-	77bfdcf57a82af7c
+method	c:objc(cs)PKPassLibrary(cm)endAutomaticPassPresentationSuppressionWithRequestToken:	-			ios=9.0/-/-/0,ios_app_extension=-/-/-/1,macos_app_extension=-/-/-/1,watchos=10.2/-/-/0	-	6ab5fe33d5c158d4
+method	c:objc(cs)PKPassLibrary(cm)isSuppressingAutomaticPassPresentation	-			ios=9.0/-/-/0,ios_app_extension=-/-/-/1,macos_app_extension=-/-/-/1,watchos=10.2/-/-/0	-	ad09fc46672688ae
+method	c:objc(cs)PKPassLibrary(cm)isPaymentPassActivationAvailable	-			ios=8.0/9.0/-/0	deprecated: Use -[PKPassLibrary isPaymentPassActivationAvailable] instead	fc717741f929c075
+method	c:objc(cs)PKPassLibrary(im)isPaymentPassActivationAvailable	-			ios=9.0/100000/-/0	deprecated: Use -[PKPassLibrary isSecureElementPassActivationAvailable] instead	39462000d78281cb
+property	c:objc(cs)PKPassLibrary(py)secureElementPassActivationAvailable	-			ios=13.4/-/-/0	-	ce59bff89efb117a
+method	c:objc(cs)PKPassLibrary(im)passes	-			ios=6.0/-/-/0,watchos=3.0/-/-/0	-	4fb50251db176e06
+method	c:objc(cs)PKPassLibrary(im)passWithPassTypeIdentifier:serialNumber:	-			ios=6.0/-/-/0,watchos=3.0/-/-/0	-	285b717b0abdafc6
+method	c:objc(cs)PKPassLibrary(im)passesWithReaderIdentifier:	-			ios=6.0/-/-/0,watchos=3.0/-/-/0	-	ee3fcdc8d7e71eec
+method	c:objc(cs)PKPassLibrary(im)passesOfType:	-			ios=8.0/-/-/0,watchos=3.0/-/-/0	-	85ebc522cbc91959
+method	c:objc(cs)PKPassLibrary(im)remotePaymentPasses	-			ios=9.0/100000/-/0	deprecated: Use -[PKPassLibrary remoteSecureElementPasses] instead	a2c29f6d0b59fa78
+property	c:objc(cs)PKPassLibrary(py)remoteSecureElementPasses	-			ios=13.4/-/-/0	-	72e02fe69133dfa3
+method	c:objc(cs)PKPassLibrary(im)removePass:	-			ios=6.0/-/-/0,watchos=3.0/-/-/0	-	4c8b9d697e96c8ea
+method	c:objc(cs)PKPassLibrary(im)containsPass:	-			ios=6.0/-/-/0,watchos=3.0/-/-/0	-	59668e64989e9828
+method	c:objc(cs)PKPassLibrary(im)replacePassWithPass:	-			ios=6.0/-/-/0,watchos=3.0/-/-/0	-	d7f95312570493a4
+method	c:objc(cs)PKPassLibrary(im)addPasses:withCompletionHandler:	-			ios=7.0/-/-/0,watchos=3.0/-/-/0	-	4f5721cb0d507ef4
+method	c:objc(cs)PKPassLibrary(im)openPaymentSetup	-			ios=8.3/-/-/0,watchos=-/-/-/1	-	0586acae5fdc55f3
+method	c:objc(cs)PKPassLibrary(im)presentPaymentPass:	-			ios=10.0/100000/-/0,watchos=-/-/-/1	deprecated: Use -[PKPassLibrary presentSecureElementPass:] instead	096e498a1abadd40
+method	c:objc(cs)PKPassLibrary(im)presentSecureElementPass:	-			ios=13.4/-/-/0,watchos=-/-/-/1	-	0d59ea3b88e1026f
+method	c:objc(cs)PKPassLibrary(im)canAddPaymentPassWithPrimaryAccountIdentifier:	-			ios=9.0/100000/-/0	deprecated: Use -[PKPassLibrary canAddSecureElementPassWithPrimaryAccountIdentifier] instead	40db48f15863c4e1
+method	c:objc(cs)PKPassLibrary(im)canAddSecureElementPassWithPrimaryAccountIdentifier:	-			ios=13.4/-/-/0	-	a18ce25869582940
+method	c:objc(cs)PKPassLibrary(im)canAddFelicaPass	-			ios=10.1/-/-/0,watchos=3.1/-/-/0	-	564de367881ba67b
+method	c:objc(cs)PKPassLibrary(im)activatePaymentPass:withActivationData:completion:	-			ios=8.0/100000/-/0	deprecated: Use activateSecureElementPass:withActivationData:completion: instead	b92e322505c67671
+method	c:objc(cs)PKPassLibrary(im)activatePaymentPass:withActivationCode:completion:	-			ios=8.0/9.0/-/0,watchos=-/-/-/1	deprecated: Use activatePaymentPass:withActivationData:completion: instead	8ee198d12a64e1bb
+method	c:objc(cs)PKPassLibrary(im)activateSecureElementPass:withActivationData:completion:	-			ios=13.4/-/-/0,watchos=-/-/-/1	-	835aadc976191d0a
+method	c:objc(cs)PKPassLibrary(im)signData:withSecureElementPass:completion:	-			ios=13.4/-/-/0,watchos=6.2/-/-/0	-	6864068e322e361a
+method	c:objc(cs)PKPassLibrary(im)encryptedServiceProviderDataForSecureElementPass:completion:	-			ios=16.0/-/-/0,watchos=9.0/-/-/0	-	9452cbb5e22894ab
+method	c:objc(cs)PKPassLibrary(im)serviceProviderDataForSecureElementPass:completion:	-			ios=15.0/-/-/0,watchos=8.0/-/-/0	-	5e30202d5fad411c
+method	c:objc(cs)PKPassLibrary(im)authorizationStatusForCapability:	-			ios=26.0/-/-/0,watchos=26.0/-/-/0	-	f58fe58037a5d96b
+method	c:objc(cs)PKPassLibrary(im)requestAuthorizationForCapability:completion:	-			ios=26.0/-/-/0,watchos=26.0/-/-/0	-	fa731a9613fd09b5
+typedef	c:@T@PKPassLibraryNotificationName	-			-	-	2f4e2e39fb4a3e2c
+var	c:@PKPassLibraryDidChangeNotification	-			ios=6.0/-/-/0,watchos=3.0/-/-/0	-	d2c2b05f0fe0cf9a
+var	c:@PKPassLibraryRemotePaymentPassesDidChangeNotification	-			ios=9.0/-/-/0,watchos=3.0/-/-/0	-	367f1f41d74fb3dc
+typedef	c:@T@PKPassLibraryNotificationKey	-			-	-	637b1826e93f3176
+var	c:@PKPassLibraryAddedPassesUserInfoKey	-			ios=6.0/-/-/0,watchos=3.0/-/-/0	-	851144ec78c9fe7a
+var	c:@PKPassLibraryReplacementPassesUserInfoKey	-			ios=6.0/-/-/0,watchos=3.0/-/-/0	-	05db95894fd4b06f
+var	c:@PKPassLibraryRemovedPassInfosUserInfoKey	-			ios=6.0/-/-/0,watchos=3.0/-/-/0	-	ce08b5d15ff85aef
+var	c:@PKPassLibraryPassTypeIdentifierUserInfoKey	-			ios=6.0/-/-/0,watchos=3.0/-/-/0	-	700cd7996ee173bf
+var	c:@PKPassLibrarySerialNumberUserInfoKey	-			ios=6.0/-/-/0,watchos=3.0/-/-/0	-	26a48b430a6a3bd1
+var	c:@PKPassLibraryRecoveredPassesUserInfoKey	-			ios=15.0/-/-/0,watchos=8.0/-/-/0	-	f9b17fb76e2a886a
+interface	c:objc(cs)PKLabeledValue	-			ios=10.1/-/-/0	-	e7a092ac040e9acc
+super	-	PKLabeledValue	NSObject		-	-	8ed17c1825dc8639
+method	c:objc(cs)PKLabeledValue(im)initWithLabel:value:	-			ios=10.1/-/-/0	-	feeb4440604b13ac
+property	c:objc(cs)PKLabeledValue(py)label	-			ios=10.1/-/-/0	-	d520da2b01f4aacf
+property	c:objc(cs)PKLabeledValue(py)value	-			ios=10.1/-/-/0	-	a794c91c28c161ca
+interface	c:objc(cs)PKContact	-			ios=9.0/-/-/0,macos=10.12/-/-/0,watchos=3.0/-/-/0	deprecated: Use subLocality and subAdministrativeArea on -postalAddress instead	f1a6f1004bf25ef1
+super	-	PKContact	NSObject		-	-	07eee50cde4ff7bc
+property	c:objc(cs)PKContact(py)name	-			ios=9.0/-/-/0,macos=10.12/-/-/0,watchos=3.0/-/-/0	-	a9757c6525b6a23b
+property	c:objc(cs)PKContact(py)postalAddress	-			ios=9.0/-/-/0,macos=10.12/-/-/0,watchos=3.0/-/-/0	-	cca41254dbc00fc2
+property	c:objc(cs)PKContact(py)phoneNumber	-			ios=9.0/-/-/0,macos=10.12/-/-/0,watchos=3.0/-/-/0	-	17b5e9ac8bf32832
+property	c:objc(cs)PKContact(py)emailAddress	-			ios=9.0/-/-/0,macos=10.12/-/-/0,watchos=3.0/-/-/0	-	76f06074fd63d09c
+property	c:objc(cs)PKContact(py)supplementarySubLocality	-			ios=9.2/10.3/-/0,watchos=3.0/3.2/-/0	-	bcf372a4d575e22d
+interface	c:objc(cs)PKStoredValuePassProperties	-			ios=15.0/-/-/0,watchos=8.0/-/-/0	deprecated: Use isBlocked instead	0def0b0212a218bb
+super	-	PKStoredValuePassProperties	NSObject		-	-	ee6e00c33eb78ae1
+method	c:objc(cs)PKStoredValuePassProperties(cm)passPropertiesForPass:	-			ios=15.0/-/-/0,watchos=8.0/-/-/0	-	93ac47b40aded651
+property	c:objc(cs)PKStoredValuePassProperties(py)blacklisted	-			ios=15.0/15.0/-/0,macos=12.0/12.0/-/0,watchos=8.0/8.0/-/0	-	51beb1a4e63229c2
+property	c:objc(cs)PKStoredValuePassProperties(py)blocked	-			ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=8.0/-/-/0	-	936ca204e3396912
+property	c:objc(cs)PKStoredValuePassProperties(py)expirationDate	-			ios=15.0/-/-/0,watchos=8.0/-/-/0	-	2aa47c9745e55080
+property	c:objc(cs)PKStoredValuePassProperties(py)balances	-			ios=15.0/-/-/0,watchos=8.0/-/-/0	-	4374b0af607adad6
+typedef	c:@T@PKStoredValuePassBalanceType	-			-	-	0b5e5e41a9c6b7f2
+var	c:@PKStoredValuePassBalanceTypeCash	-			ios=15.0/-/-/0,watchos=8.0/-/-/0	-	23b479dcb2e59bfc
+var	c:@PKStoredValuePassBalanceTypeLoyaltyPoints	-			ios=15.0/-/-/0,watchos=8.0/-/-/0	-	407eff102fea767d
+interface	c:objc(cs)PKStoredValuePassBalance	-			ios=15.0/-/-/0,watchos=8.0/-/-/0	-	55f44c849482832f
+super	-	PKStoredValuePassBalance	NSObject		-	-	84bfe7a857eafe40
+property	c:objc(cs)PKStoredValuePassBalance(py)amount	-			ios=15.0/-/-/0,watchos=8.0/-/-/0	-	3e0587427e4f1fe2
+property	c:objc(cs)PKStoredValuePassBalance(py)currencyCode	-			ios=15.0/-/-/0,watchos=8.0/-/-/0	-	f698bffc4cd0d0aa
+property	c:objc(cs)PKStoredValuePassBalance(py)balanceType	-			ios=15.0/-/-/0,watchos=8.0/-/-/0	-	04aa39367a992d0c
+property	c:objc(cs)PKStoredValuePassBalance(py)expiryDate	-			ios=15.0/-/-/0,watchos=8.0/-/-/0	-	b7097e2ee679a3d9
+method	c:objc(cs)PKStoredValuePassBalance(im)init	-			*unavailable ios=15.0/-/-/0,watchos=8.0/-/-/0	-	651ee311f52415a3
+method	c:objc(cs)PKStoredValuePassBalance(cm)new	-			*unavailable ios=15.0/-/-/0,watchos=8.0/-/-/0	-	7a0bd7563bffcb41
+method	c:objc(cs)PKStoredValuePassBalance(im)isEqualToBalance:	-			ios=15.0/-/-/0,watchos=8.0/-/-/0	-	828619975661113b
+interface	c:objc(cs)PKTransitPassProperties	-			ios=11.3/-/-/0,watchos=4.3/-/-/0	deprecated: Use balances instead	c7d0aa8d13159ce3
+super	-	PKTransitPassProperties	PKStoredValuePassProperties		-	-	34c090b67e391427
+property	c:objc(cs)PKTransitPassProperties(py)transitBalance	-			ios=11.3/15.0/-/0,macos=11.0/12.0/-/0,watchos=4.3/8.0/-/0	-	82e222cb689b3727
+property	c:objc(cs)PKTransitPassProperties(py)transitBalanceCurrencyCode	-			ios=11.3/15.0/-/0,macos=11.0/12.0/-/0,watchos=4.3/8.0/-/0	-	a384bc9fb4744850
+property	c:objc(cs)PKTransitPassProperties(py)blacklisted	-			ios=11.3/15.0/-/0,macos=11.0/12.0/-/0,watchos=4.3/8.0/-/0	-	5838309076a8eda9
+property	c:objc(cs)PKTransitPassProperties(py)expirationDate	-			ios=11.3/-/-/0,macos=11.0/-/-/0,watchos=4.3/-/-/0	-	30aae63a0060205a
+property	c:objc(cs)PKTransitPassProperties(py)blocked	-			ios=14.5/-/-/0,macos=11.3/-/-/0,watchos=7.5/-/-/0	-	4235208d972d8093
+property	c:objc(cs)PKTransitPassProperties(py)inStation	-			ios=11.3/-/-/0,watchos=4.3/-/-/0	-	d85eb93d9032326e
+interface	c:objc(cs)PKSuicaPassProperties	-			ios=10.1/-/-/0,watchos=3.1/-/-/0	deprecated: Use isBlocked instead	16cd913560c198d7
+super	-	PKSuicaPassProperties	PKTransitPassProperties		-	-	d25256ed5a28b227
+method	c:objc(cs)PKSuicaPassProperties(cm)passPropertiesForPass:	-			ios=10.1/-/-/0,watchos=3.1/-/-/0	-	9d36e348d71db888
+property	c:objc(cs)PKSuicaPassProperties(py)transitBalance	-			ios=10.1/-/-/0,watchos=3.1/-/-/0	-	54912f6ba8705464
+property	c:objc(cs)PKSuicaPassProperties(py)transitBalanceCurrencyCode	-			ios=10.1/-/-/0,watchos=3.1/-/-/0	-	68b66a9f40fca64a
+property	c:objc(cs)PKSuicaPassProperties(py)inStation	-			ios=10.1/-/-/0,watchos=3.1/-/-/0	-	4d3668ef54df98dc
+property	c:objc(cs)PKSuicaPassProperties(py)inShinkansenStation	-			ios=10.1/-/-/0,watchos=3.1/-/-/0	-	07bd495b5c0e740d
+property	c:objc(cs)PKSuicaPassProperties(py)balanceAllowedForCommute	-			ios=11.3/-/-/0,watchos=4.3/-/-/0	-	0834eb09ef875365
+property	c:objc(cs)PKSuicaPassProperties(py)lowBalanceGateNotificationEnabled	-			ios=11.3/-/-/0,watchos=4.3/-/-/0	-	475855881a7a99fc
+property	c:objc(cs)PKSuicaPassProperties(py)greenCarTicketUsed	-			ios=10.1/-/-/0,watchos=3.1/-/-/0	-	885b0b56b9514a1d
+property	c:objc(cs)PKSuicaPassProperties(py)blacklisted	-			ios=10.1/15.0/-/0,watchos=3.1/8.0/-/0	-	3df30ce65f23624f
+typedef	c:@T@PKPaymentSummaryItemType	-			-	-	0adf3997c2227b23
+enum	c:@E@PKPaymentSummaryItemType	-			ios=9.0/-/-/0,watchos=3.0/-/-/0	-	d2ee5b46a18ed3a0
+enumconst	c:@E@PKPaymentSummaryItemType@PKPaymentSummaryItemTypeFinal	PKPaymentSummaryItemType			ios=9.0/-/-/0,watchos=3.0/-/-/0	-	fa8e116def627025
+enumconst	c:@E@PKPaymentSummaryItemType@PKPaymentSummaryItemTypePending	PKPaymentSummaryItemType			ios=9.0/-/-/0,watchos=3.0/-/-/0	-	5473699e52856f3f
+interface	c:objc(cs)PKPaymentSummaryItem	-			ios=8.0/-/-/0,watchos=3.0/-/-/0	-	459154e4f4df086c
+super	-	PKPaymentSummaryItem	NSObject		-	-	dae4c2a555dc9d9e
+method	c:objc(cs)PKPaymentSummaryItem(cm)summaryItemWithLabel:amount:	-			ios=8.0/-/-/0,watchos=3.0/-/-/0	-	84e5afa2cfce1350
+method	c:objc(cs)PKPaymentSummaryItem(cm)summaryItemWithLabel:amount:type:	-			ios=9.0/-/-/0,watchos=3.0/-/-/0	-	d265d90bdc465e72
+property	c:objc(cs)PKPaymentSummaryItem(py)label	-			ios=8.0/-/-/0,watchos=3.0/-/-/0	-	3c2f3227d47bc34f
+property	c:objc(cs)PKPaymentSummaryItem(py)amount	-			ios=8.0/-/-/0,watchos=3.0/-/-/0	-	b665fcbe16afc54c
+property	c:objc(cs)PKPaymentSummaryItem(py)type	-			ios=9.0/-/-/0,watchos=3.0/-/-/0	-	357d495d80f017c7
+interface	c:objc(cs)PKDeferredPaymentSummaryItem	-			ios=15.0/-/-/0,watchos=8.0/-/-/0	-	0da47e30a0a73af5
+super	-	PKDeferredPaymentSummaryItem	PKPaymentSummaryItem		-	-	049b27d292110632
+property	c:objc(cs)PKDeferredPaymentSummaryItem(py)deferredDate	-			ios=15.0/-/-/0,watchos=8.0/-/-/0	-	7653f52218b88dd2
+interface	c:objc(cs)PKRecurringPaymentSummaryItem	-			ios=15.0/-/-/0,watchos=8.0/-/-/0	-	407950b095316e2b
+super	-	PKRecurringPaymentSummaryItem	PKPaymentSummaryItem		-	-	19ec44b2f9094437
+property	c:objc(cs)PKRecurringPaymentSummaryItem(py)startDate	-			ios=15.0/-/-/0,watchos=8.0/-/-/0	-	f7e91a66347c39e0
+property	c:objc(cs)PKRecurringPaymentSummaryItem(py)intervalUnit	-			ios=15.0/-/-/0,watchos=8.0/-/-/0	-	157c6b36e87f9cce
+property	c:objc(cs)PKRecurringPaymentSummaryItem(py)intervalCount	-			ios=15.0/-/-/0,watchos=8.0/-/-/0	-	a0282da219aea825
+property	c:objc(cs)PKRecurringPaymentSummaryItem(py)endDate	-			ios=15.0/-/-/0,watchos=8.0/-/-/0	-	af991668e3f463ae
+interface	c:objc(cs)PKDateComponentsRange	-			ios=15.0/-/-/0,watchos=8.0/-/-/0	-	4f3d60e0889c5664
+super	-	PKDateComponentsRange	NSObject		-	-	ad1ff94f79ed0fe3
+conforms	-	PKDateComponentsRange	NSCopying		-	-	550894a82a4ee02d
+conforms	-	PKDateComponentsRange	NSSecureCoding		-	-	f1bbecc92daa4923
+method	c:objc(cs)PKDateComponentsRange(im)init	-			*unavailable ios=15.0/-/-/0,watchos=8.0/-/-/0	-	d4eeefa638402200
+method	c:objc(cs)PKDateComponentsRange(im)initWithStartDateComponents:endDateComponents:	-			ios=15.0/-/-/0,watchos=8.0/-/-/0	-	dbb3c0b32e68ffb6
+property	c:objc(cs)PKDateComponentsRange(py)startDateComponents	-			ios=15.0/-/-/0,watchos=8.0/-/-/0	-	e05d638f5afda863
+property	c:objc(cs)PKDateComponentsRange(py)endDateComponents	-			ios=15.0/-/-/0,watchos=8.0/-/-/0	-	ebe499612db9fe2c
+interface	c:objc(cs)PKShippingMethod	-			ios=8.0/-/-/0,watchos=3.0/-/-/0	-	e179c38adefbfc78
+super	-	PKShippingMethod	PKPaymentSummaryItem		-	-	27463512a30e68ce
+property	c:objc(cs)PKShippingMethod(py)identifier	-			ios=8.0/-/-/0,watchos=3.0/-/-/0	-	0acc34f7906ee746
+property	c:objc(cs)PKShippingMethod(py)detail	-			ios=8.0/-/-/0,watchos=3.0/-/-/0	-	e5e087c8acbfbd6d
+property	c:objc(cs)PKShippingMethod(py)dateComponentsRange	-			ios=15.0/-/-/0,watchos=8.0/-/-/0	-	1c81bea1df06125b
+interface	c:objc(cs)PKAutomaticReloadPaymentRequest	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	97d2a51a0bfea740
+super	-	PKAutomaticReloadPaymentRequest	NSObject		-	-	6b45d1ade6416a7e
+property	c:objc(cs)PKAutomaticReloadPaymentRequest(py)paymentDescription	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	078c48edef6ef85f
+property	c:objc(cs)PKAutomaticReloadPaymentRequest(py)automaticReloadBilling	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	a10c5d61493f81e6
+property	c:objc(cs)PKAutomaticReloadPaymentRequest(py)billingAgreement	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	d593ce62c129a550
+property	c:objc(cs)PKAutomaticReloadPaymentRequest(py)managementURL	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	293ff5b12174caa9
+property	c:objc(cs)PKAutomaticReloadPaymentRequest(py)tokenNotificationURL	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	d6810205f4e6fa49
+method	c:objc(cs)PKAutomaticReloadPaymentRequest(im)init	-			*unavailable ios=16.0/-/-/0,watchos=-/-/-/1	-	d4dbe2d6e4a862fb
+method	c:objc(cs)PKAutomaticReloadPaymentRequest(im)initWithPaymentDescription:automaticReloadBilling:managementURL:	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	d6aac7caf5b4ace3
+interface	c:objc(cs)PKRecurringPaymentRequest	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	57d1882167bdd501
+super	-	PKRecurringPaymentRequest	NSObject		-	-	a0f667d897a45f92
+property	c:objc(cs)PKRecurringPaymentRequest(py)paymentDescription	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	e5c50bb6dd36adf8
+property	c:objc(cs)PKRecurringPaymentRequest(py)regularBilling	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	866836266289809a
+property	c:objc(cs)PKRecurringPaymentRequest(py)trialBilling	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	4bccf52dd4e3c46e
+property	c:objc(cs)PKRecurringPaymentRequest(py)billingAgreement	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	528ba8cb59f0d95e
+property	c:objc(cs)PKRecurringPaymentRequest(py)managementURL	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	4a6ef48e1221eb06
+property	c:objc(cs)PKRecurringPaymentRequest(py)tokenNotificationURL	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	038fe636b42d281a
+method	c:objc(cs)PKRecurringPaymentRequest(im)init	-			*unavailable ios=16.0/-/-/0,watchos=-/-/-/1	-	a5f5e5bc570a5948
+method	c:objc(cs)PKRecurringPaymentRequest(im)initWithPaymentDescription:regularBilling:managementURL:	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	5cd8ffe8de3ff9e7
+interface	c:objc(cs)PKDeferredPaymentRequest	-			ios=16.4/-/-/0,watchos=-/-/-/1	-	36f102aa2491befa
+super	-	PKDeferredPaymentRequest	NSObject		-	-	72476af1c9f6c3eb
+property	c:objc(cs)PKDeferredPaymentRequest(py)paymentDescription	-			ios=16.4/-/-/0,watchos=-/-/-/1	-	e8627e0a61345824
+property	c:objc(cs)PKDeferredPaymentRequest(py)deferredBilling	-			ios=16.4/-/-/0,watchos=-/-/-/1	-	b19051e404f07003
+property	c:objc(cs)PKDeferredPaymentRequest(py)billingAgreement	-			ios=16.4/-/-/0,watchos=-/-/-/1	-	3a57486fa9b21419
+property	c:objc(cs)PKDeferredPaymentRequest(py)managementURL	-			ios=16.4/-/-/0,watchos=-/-/-/1	-	1f44e03a0d3723d3
+property	c:objc(cs)PKDeferredPaymentRequest(py)tokenNotificationURL	-			ios=16.4/-/-/0,watchos=-/-/-/1	-	eb80c03389b219a2
+property	c:objc(cs)PKDeferredPaymentRequest(py)freeCancellationDate	-			ios=16.4/-/-/0,watchos=-/-/-/1	-	471193918d298396
+property	c:objc(cs)PKDeferredPaymentRequest(py)freeCancellationDateTimeZone	-			ios=16.4/-/-/0,watchos=-/-/-/1	-	665ac6c9a18b0510
+method	c:objc(cs)PKDeferredPaymentRequest(im)init	-			*unavailable ios=16.4/-/-/0,watchos=-/-/-/1	-	5250628d9c285362
+method	c:objc(cs)PKDeferredPaymentRequest(im)initWithPaymentDescription:deferredBilling:managementURL:	-			ios=16.4/-/-/0,watchos=-/-/-/1	-	98ece75cdee7d32d
+typedef	c:@T@PKMerchantCapability	-			-	-	134e29e4f187a068
+enum	c:@E@PKMerchantCapability	-			ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	9a22483c88c416d8
+enumconst	c:@E@PKMerchantCapability@PKMerchantCapability3DS	PKMerchantCapability			ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	8d9f58a70d569198
+enumconst	c:@E@PKMerchantCapability@PKMerchantCapabilityEMV	PKMerchantCapability			ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	bdc25fec22367d73
+enumconst	c:@E@PKMerchantCapability@PKMerchantCapabilityCredit	PKMerchantCapability			ios=9.0/-/-/0	-	c4c11d04c95ee060
+enumconst	c:@E@PKMerchantCapability@PKMerchantCapabilityDebit	PKMerchantCapability			ios=9.0/-/-/0	-	58806133b5fef7b5
+enumconst	c:@E@PKMerchantCapability@PKMerchantCapabilityInstantFundsOut	PKMerchantCapability			ios=17.0/-/-/0	-	b4136f542c4fde02
+typedef	c:@T@PKMerchantCategoryCode	-			ios=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0	-	475f6695346d924f
+var	c:@PKMerchantCategoryCodeNone	-			ios=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0	-	263f88bfe8157e8a
+typedef	c:@T@PKAddressField	-			-	-	ab5efa5a0e0f5eb2
+enum	c:@E@PKAddressField	-			ios=8.0/11.0/-/0,watchos=3.0/4.0/-/0	-	286c95bf37c4a413
+enumconst	c:@E@PKAddressField@PKAddressFieldNone	PKAddressField			ios=8.0/11.0/-/0,watchos=3.0/4.0/-/0	-	8fb268e9c05f0371
+enumconst	c:@E@PKAddressField@PKAddressFieldPostalAddress	PKAddressField			ios=8.0/11.0/-/0,watchos=3.0/4.0/-/0	-	1c51f3eb3cda49c3
+enumconst	c:@E@PKAddressField@PKAddressFieldPhone	PKAddressField			ios=8.0/11.0/-/0,watchos=3.0/4.0/-/0	-	be8b5a9f703b1b4c
+enumconst	c:@E@PKAddressField@PKAddressFieldEmail	PKAddressField			ios=8.0/11.0/-/0,watchos=3.0/4.0/-/0	-	3f0c788db34839e1
+enumconst	c:@E@PKAddressField@PKAddressFieldName	PKAddressField			ios=8.3/-/-/0	-	f566e1ce393d7494
+enumconst	c:@E@PKAddressField@PKAddressFieldAll	PKAddressField			ios=8.0/11.0/-/0,watchos=3.0/4.0/-/0	-	605d41fa6dece77a
+typedef	c:@T@PKShippingType	-			-	-	0310a10b47a9c398
+enum	c:@E@PKShippingType	-			ios=8.3/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	0c7519f906a0536d
+enumconst	c:@E@PKShippingType@PKShippingTypeShipping	PKShippingType			ios=8.3/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	c87f2ec0dbadea72
+enumconst	c:@E@PKShippingType@PKShippingTypeDelivery	PKShippingType			ios=8.3/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	b9b2770ce24e18bb
+enumconst	c:@E@PKShippingType@PKShippingTypeStorePickup	PKShippingType			ios=8.3/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	335ae5635081bd9e
+enumconst	c:@E@PKShippingType@PKShippingTypeServicePickup	PKShippingType			ios=8.3/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	16bc25a8b56b97eb
+typedef	c:@T@PKShippingContactEditingMode	-			-	-	0ac442dc35d0b293
+enum	c:@E@PKShippingContactEditingMode	-			ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=8.0/-/-/0	-	996e3a094e1bf828
+enumconst	c:@E@PKShippingContactEditingMode@PKShippingContactEditingModeAvailable	PKShippingContactEditingMode			ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=8.0/-/-/0	-	9e7a2479ca2a7939
+enumconst	c:@E@PKShippingContactEditingMode@PKShippingContactEditingModeStorePickup	PKShippingContactEditingMode			ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=8.0/-/-/0	-	e816e27b14b65222
+enumconst	c:@E@PKShippingContactEditingMode@PKShippingContactEditingModeEnabled	PKShippingContactEditingMode			*deprecated	deprecated: Use PKShippingContactEditingModeAvailable instead	37c999445cfdcab9
+typedef	c:@T@PKApplePayLaterAvailability	-			-	-	ebfbe7b62e351f06
+enum	c:@E@PKApplePayLaterAvailability	-			ios=17.0/-/-/0,macos=14.0/-/-/0,watchos=10.0/-/-/0	-	7764ac4f346be9ec
+enumconst	c:@E@PKApplePayLaterAvailability@PKApplePayLaterAvailable	PKApplePayLaterAvailability			ios=17.0/-/-/0,macos=14.0/-/-/0,watchos=10.0/-/-/0	-	ad6dc18cdd37395b
+enumconst	c:@E@PKApplePayLaterAvailability@PKApplePayLaterUnavailableItemIneligible	PKApplePayLaterAvailability			ios=17.0/-/-/0,macos=14.0/-/-/0,watchos=10.0/-/-/0	-	eb409b88e76ca1a3
+enumconst	c:@E@PKApplePayLaterAvailability@PKApplePayLaterUnavailableRecurringTransaction	PKApplePayLaterAvailability			ios=17.0/-/-/0,macos=14.0/-/-/0,watchos=10.0/-/-/0	-	bd32fe1111f91451
+interface	c:objc(cs)PKPaymentRequest	-			ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	deprecated: Use requiredBillingContactFields instead	2a9669d89bb1b38c
+super	-	PKPaymentRequest	NSObject		-	-	bea010dbb97a4439
+method	c:objc(cs)PKPaymentRequest(cm)availableNetworks	-			ios=10.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	d0a01869cd9b4178
+method	c:objc(cs)PKPaymentRequest(cm)paymentContactInvalidErrorWithContactField:localizedDescription:	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	7d8af091b2dc433b
+method	c:objc(cs)PKPaymentRequest(cm)paymentShippingAddressInvalidErrorWithKey:localizedDescription:	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	5a9a14c917fc0ad2
+method	c:objc(cs)PKPaymentRequest(cm)paymentBillingAddressInvalidErrorWithKey:localizedDescription:	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	f93d526a8e4ff8be
+method	c:objc(cs)PKPaymentRequest(cm)paymentShippingAddressUnserviceableErrorWithLocalizedDescription:	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	57c36af13a7b8bf8
+method	c:objc(cs)PKPaymentRequest(cm)paymentCouponCodeInvalidErrorWithLocalizedDescription:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=-/-/-/1	-	110ceb585d2e03a8
+method	c:objc(cs)PKPaymentRequest(cm)paymentCouponCodeExpiredErrorWithLocalizedDescription:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=-/-/-/1	-	01f191fa2cb9c698
+property	c:objc(cs)PKPaymentRequest(py)merchantIdentifier	-			ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	9dc97ea4b8d7ad86
+property	c:objc(cs)PKPaymentRequest(py)attributionIdentifier	-			ios=26.0/-/-/0	-	728ef6d7ab1fbaef
+property	c:objc(cs)PKPaymentRequest(py)countryCode	-			ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	bbe7ed8618155cc2
+property	c:objc(cs)PKPaymentRequest(py)supportedNetworks	-			ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	1997448ff83ced06
+property	c:objc(cs)PKPaymentRequest(py)merchantCapabilities	-			ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	930d8bc7cfbe9963
+property	c:objc(cs)PKPaymentRequest(py)supportsCouponCode	-			ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=-/-/-/1	-	198d8010bf0cbf7f
+property	c:objc(cs)PKPaymentRequest(py)couponCode	-			ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=-/-/-/1	-	4f8686a5042e828b
+property	c:objc(cs)PKPaymentRequest(py)merchantCategoryCode	-			ios=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0	-	6372c9187636f765
+property	c:objc(cs)PKPaymentRequest(py)paymentSummaryItems	-			ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	062817b3fb45c896
+property	c:objc(cs)PKPaymentRequest(py)currencyCode	-			ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	b9a52248a78a4aba
+property	c:objc(cs)PKPaymentRequest(py)requiredBillingContactFields	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	8703dfe9a6944841
+property	c:objc(cs)PKPaymentRequest(py)requiredBillingAddressFields	-			ios=8.0/11.0/-/0,watchos=2.0/4.0/-/0	-	abcc07207ea85b2e
+property	c:objc(cs)PKPaymentRequest(py)billingContact	-			ios=9.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	a675cc88eb197697
+property	c:objc(cs)PKPaymentRequest(py)requiredShippingContactFields	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	f58038f5323c8213
+property	c:objc(cs)PKPaymentRequest(py)requiredShippingAddressFields	-			ios=8.0/11.0/-/0,watchos=2.0/4.0/-/0	-	5ec2f6fecf01fa98
+property	c:objc(cs)PKPaymentRequest(py)shippingContact	-			ios=9.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	bbc98f8c627c51d0
+property	c:objc(cs)PKPaymentRequest(py)shippingMethods	-			ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	5a457ca249ddc2b3
+property	c:objc(cs)PKPaymentRequest(py)shippingType	-			ios=8.3/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	a829b55cebcfc876
+property	c:objc(cs)PKPaymentRequest(py)shippingContactEditingMode	-			ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=8.0/-/-/0	-	ba29817de8ec05ad
+property	c:objc(cs)PKPaymentRequest(py)applicationData	-			ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	3d544b5d6a4a1b6b
+property	c:objc(cs)PKPaymentRequest(py)supportedCountries	-			ios=11.0/-/-/0,macos=10.13/-/-/0,watchos=4.0/-/-/0	-	a8f06ceb02d9f944
+property	c:objc(cs)PKPaymentRequest(py)shippingAddress	-			ios=8.0/9.0/-/0,watchos=-/-/-/1	-	2f9f05792a61e0f6
+property	c:objc(cs)PKPaymentRequest(py)billingAddress	-			ios=8.0/9.0/-/0,watchos=-/-/-/1	-	860cfa32fa388fdd
+property	c:objc(cs)PKPaymentRequest(py)multiTokenContexts	-			ios=16.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	71c3096110f817c0
+property	c:objc(cs)PKPaymentRequest(py)recurringPaymentRequest	-			ios=16.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	ba56478a47d708fc
+property	c:objc(cs)PKPaymentRequest(py)automaticReloadPaymentRequest	-			ios=16.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	515734ac71a2e8e4
+property	c:objc(cs)PKPaymentRequest(py)deferredPaymentRequest	-			ios=16.4/-/-/0,macos=13.3/-/-/0,watchos=-/-/-/1	-	654687f9e9d55b86
+property	c:objc(cs)PKPaymentRequest(py)applePayLaterAvailability	-			ios=17.0/-/-/0,macos=14.0/-/-/0,watchos=10.0/-/-/0	-	6e6b37c87e72db1a
+interface	c:objc(cs)PKAutomaticReloadPaymentSummaryItem	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	d00fdf66d0228d68
+super	-	PKAutomaticReloadPaymentSummaryItem	PKPaymentSummaryItem		-	-	bf688fc6eb23f127
+property	c:objc(cs)PKAutomaticReloadPaymentSummaryItem(py)thresholdAmount	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	1f188dd489cb9e2e
+interface	c:objc(cs)PKPaymentTokenContext	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	35ea2aa33eb4510c
+super	-	PKPaymentTokenContext	NSObject		-	-	004eaed3f678b857
+property	c:objc(cs)PKPaymentTokenContext(py)merchantIdentifier	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	339de8cf62d45a75
+property	c:objc(cs)PKPaymentTokenContext(py)externalIdentifier	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	9718e9a6144b7406
+property	c:objc(cs)PKPaymentTokenContext(py)merchantName	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	5d13d1497add216e
+property	c:objc(cs)PKPaymentTokenContext(py)merchantDomain	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	224cc36e026e5408
+property	c:objc(cs)PKPaymentTokenContext(py)amount	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	00aa2ce2a2ec370a
+method	c:objc(cs)PKPaymentTokenContext(im)init	-			*unavailable ios=16.0/-/-/0,watchos=-/-/-/1	-	095a9270d1e6ccb0
+method	c:objc(cs)PKPaymentTokenContext(im)initWithMerchantIdentifier:externalIdentifier:merchantName:merchantDomain:amount:	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	4502443ab8e72c6f
+interface	c:objc(cs)PKPaymentAuthorizationResult	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	c9994229a27e96ee
+super	-	PKPaymentAuthorizationResult	NSObject		-	-	b5545f6b67981fad
+method	c:objc(cs)PKPaymentAuthorizationResult(im)initWithStatus:errors:	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	3c9a7302830acf45
+property	c:objc(cs)PKPaymentAuthorizationResult(py)status	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	7f1f8a184cb159e9
+property	c:objc(cs)PKPaymentAuthorizationResult(py)errors	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	6b032b8e381293f3
+property	c:objc(cs)PKPaymentAuthorizationResult(py)orderDetails	-			ios=16.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	76054382d0575b2d
+interface	c:objc(cs)PKPaymentRequestUpdate	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	3ff0ed7696997a72
+super	-	PKPaymentRequestUpdate	NSObject		-	-	08b242fa618a26b8
+method	c:objc(cs)PKPaymentRequestUpdate(im)initWithPaymentSummaryItems:	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	9af566a9133b0608
+property	c:objc(cs)PKPaymentRequestUpdate(py)status	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	07d6284500cfea54
+property	c:objc(cs)PKPaymentRequestUpdate(py)paymentSummaryItems	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	69ab670731758cfe
+property	c:objc(cs)PKPaymentRequestUpdate(py)shippingMethods	-			ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=8.0/-/-/0	-	f301e9234899c9f1
+property	c:objc(cs)PKPaymentRequestUpdate(py)multiTokenContexts	-			ios=16.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	44b3e391cff845ba
+property	c:objc(cs)PKPaymentRequestUpdate(py)recurringPaymentRequest	-			ios=16.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	0d9fcf7812128043
+property	c:objc(cs)PKPaymentRequestUpdate(py)automaticReloadPaymentRequest	-			ios=16.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	b1f72e703805dcb3
+property	c:objc(cs)PKPaymentRequestUpdate(py)deferredPaymentRequest	-			ios=16.4/-/-/0,macos=13.3/-/-/0,watchos=-/-/-/1	-	8b0708b22938e115
+interface	c:objc(cs)PKPaymentRequestShippingContactUpdate	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	b1a6318602f42e67
+super	-	PKPaymentRequestShippingContactUpdate	PKPaymentRequestUpdate		-	-	b41028fbf4d09dcd
+method	c:objc(cs)PKPaymentRequestShippingContactUpdate(im)initWithErrors:paymentSummaryItems:shippingMethods:	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	bc1b7269c808bf74
+property	c:objc(cs)PKPaymentRequestShippingContactUpdate(py)shippingMethods	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	3a95485cc545d848
+property	c:objc(cs)PKPaymentRequestShippingContactUpdate(py)errors	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	b45686ed7a4f8cbe
+interface	c:objc(cs)PKPaymentRequestShippingMethodUpdate	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	32565c89d4de3ec7
+super	-	PKPaymentRequestShippingMethodUpdate	PKPaymentRequestUpdate		-	-	d254f36884f95437
+interface	c:objc(cs)PKPaymentRequestPaymentMethodUpdate	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	48d7630371ddb3bc
+super	-	PKPaymentRequestPaymentMethodUpdate	PKPaymentRequestUpdate		-	-	08cafd78cf91a6ab
+method	c:objc(cs)PKPaymentRequestPaymentMethodUpdate(im)initWithErrors:paymentSummaryItems:	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	2a80dfb66e3a2b4c
+property	c:objc(cs)PKPaymentRequestPaymentMethodUpdate(py)errors	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	cd1747f148168971
+interface	c:objc(cs)PKPaymentRequestMerchantSessionUpdate	-			ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0	-	816a682546768bc2
+super	-	PKPaymentRequestMerchantSessionUpdate	NSObject		-	-	84c6267726e8e7f8
+method	c:objc(cs)PKPaymentRequestMerchantSessionUpdate(im)initWithStatus:merchantSession:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0	-	2e695ce349c31b79
+property	c:objc(cs)PKPaymentRequestMerchantSessionUpdate(py)status	-			ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0	-	23d21522762d77a1
+property	c:objc(cs)PKPaymentRequestMerchantSessionUpdate(py)session	-			ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0	-	04edb84b56009ebd
+interface	c:objc(cs)PKPaymentRequestCouponCodeUpdate	-			ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=-/-/-/1	-	ccfe4a9df02c2b8f
+super	-	PKPaymentRequestCouponCodeUpdate	PKPaymentRequestUpdate		-	-	bca3493af45eb62a
+method	c:objc(cs)PKPaymentRequestCouponCodeUpdate(im)initWithErrors:paymentSummaryItems:shippingMethods:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=-/-/-/1	-	a635531c26ed4973
+property	c:objc(cs)PKPaymentRequestCouponCodeUpdate(py)errors	-			ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=-/-/-/1	-	8b711d3ff8432da0
+interface	c:objc(cs)PKPaymentOrderDetails	-			ios=16.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	94cbef5364115063
+super	-	PKPaymentOrderDetails	NSObject		-	-	c01e452eb27bd654
+method	c:objc(cs)PKPaymentOrderDetails(cm)new	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	75df24f9c70460d1
+method	c:objc(cs)PKPaymentOrderDetails(im)init	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	bcc34ebde2ad8458
+method	c:objc(cs)PKPaymentOrderDetails(im)initWithOrderTypeIdentifier:orderIdentifier:webServiceURL:authenticationToken:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	50de7a3fe0b8cd59
+property	c:objc(cs)PKPaymentOrderDetails(py)orderTypeIdentifier	-			ios=16.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	f1c5fa1c3db484d1
+property	c:objc(cs)PKPaymentOrderDetails(py)orderIdentifier	-			ios=16.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	6187451427555932
+property	c:objc(cs)PKPaymentOrderDetails(py)webServiceURL	-			ios=16.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	55b000ae8ecb68c4
+property	c:objc(cs)PKPaymentOrderDetails(py)authenticationToken	-			ios=16.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	1fb9d5d0c922e6bf
+interface	c:objc(cs)PKPaymentToken	-			ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	deprecated: Use paymentMethod instead	c61fe592de19b35a
+super	-	PKPaymentToken	NSObject		-	-	0e1dfcf7ed9b74e7
+property	c:objc(cs)PKPaymentToken(py)paymentMethod	-			ios=9.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	7205eab626a9fead
+property	c:objc(cs)PKPaymentToken(py)paymentInstrumentName	-			ios=8.0/9.0/-/0,watchos=-/-/-/1	-	6a5474171359b577
+property	c:objc(cs)PKPaymentToken(py)paymentNetwork	-			ios=8.0/9.0/-/0,watchos=-/-/-/1	-	d807778ec56698f1
+property	c:objc(cs)PKPaymentToken(py)transactionIdentifier	-			ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	74cab5b62715c9de
+property	c:objc(cs)PKPaymentToken(py)paymentData	-			ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	76e7f64c6bf7f989
+interface	c:objc(cs)PKPayment	-			ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	deprecated: Use billingContact instead	d325b4b1a1355b1e
+super	-	PKPayment	NSObject		-	-	0be6625ce73fa8e9
+property	c:objc(cs)PKPayment(py)token	-			ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	5ff15e6c99361144
+property	c:objc(cs)PKPayment(py)billingContact	-			ios=9.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	0ab683e19ab8f96e
+property	c:objc(cs)PKPayment(py)billingAddress	-			ios=8.0/9.0/-/0,watchos=-/-/-/1	-	e32f8f0cf7798dcf
+property	c:objc(cs)PKPayment(py)shippingContact	-			ios=9.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	437a3cfc6daba862
+property	c:objc(cs)PKPayment(py)shippingAddress	-			ios=8.0/9.0/-/0,watchos=-/-/-/1	-	13094f52a9959c41
+property	c:objc(cs)PKPayment(py)shippingMethod	-			ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	2d7a2791929dea67
+interface	c:objc(cs)PKPaymentMethod	-			ios=9.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	deprecated: Use -[PKPass secureElementPass] instead	1c6392169c8cb41e
+super	-	PKPaymentMethod	NSObject		-	-	0be7da13eaca3e7d
+property	c:objc(cs)PKPaymentMethod(py)displayName	-			ios=9.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	fb99bbcae5f09a7b
+property	c:objc(cs)PKPaymentMethod(py)network	-			ios=9.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	cbc16bb2e7b97efc
+property	c:objc(cs)PKPaymentMethod(py)type	-			ios=9.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	b0f131edbd87c224
+property	c:objc(cs)PKPaymentMethod(py)paymentPass	-			ios=8.0/100000/-/0,macos=11.0/100000/-/0,watchos=3.0/100000/-/0	-	a62292046d2185fb
+property	c:objc(cs)PKPaymentMethod(py)secureElementPass	-			ios=13.4/-/-/0,macos=11.0/-/-/0,watchos=6.2/-/-/0	-	f7710a015507798c
+property	c:objc(cs)PKPaymentMethod(py)billingAddress	-			ios=13.0/-/-/0,macos=11.0/-/-/0,watchos=6.0/-/-/0	-	3156d042d2143e75
+typedef	c:@T@PKPaymentMethodType	-			-	-	de510f8e860122f2
+enum	c:@E@PKPaymentMethodType	-			ios=9.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	f1ba0b97e3511ea0
+enumconst	c:@E@PKPaymentMethodType@PKPaymentMethodTypeUnknown	PKPaymentMethodType			ios=9.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	43a2c316a8ce5222
+enumconst	c:@E@PKPaymentMethodType@PKPaymentMethodTypeDebit	PKPaymentMethodType			ios=9.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	9fa4f0a176ac43ab
+enumconst	c:@E@PKPaymentMethodType@PKPaymentMethodTypeCredit	PKPaymentMethodType			ios=9.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	d25b1bbfe8338b24
+enumconst	c:@E@PKPaymentMethodType@PKPaymentMethodTypePrepaid	PKPaymentMethodType			ios=9.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	be6732fd8ed89d27
+enumconst	c:@E@PKPaymentMethodType@PKPaymentMethodTypeStore	PKPaymentMethodType			ios=9.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	961e129a49213bbd
+enumconst	c:@E@PKPaymentMethodType@PKPaymentMethodTypeEMoney	PKPaymentMethodType			ios=9.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	a1db207da3c668b8
+protocol	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate	-			-	deprecated: Use paymentAuthorizationViewController:didAuthorizePayment:handler: instead to provide more granular errors	61fe618c94e8d6c9
+conforms	-	PKPaymentAuthorizationViewControllerDelegate	NSObject		-	-	ecd34fad75d0a91f
+method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewControllerDidFinish:	-			-	-	642d883ebf613bcb
+method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didAuthorizePayment:handler:	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	6e7f12800b6760bc
+method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewControllerWillAuthorizePayment:	-			ios=8.3/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	1d1de0ba5f2c1cfa
+method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didRequestMerchantSessionUpdate:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0	-	9c8b73edf7a8a57a
+method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didChangeCouponCode:handler:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=-/-/-/1	-	f941b265236599fb
+method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didSelectShippingMethod:handler:	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	6a0b62830d6bbeee
+method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didSelectShippingContact:handler:	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	b7a4b8a4b3a1b893
+method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didSelectPaymentMethod:handler:	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	830e2ea59b5b8a47
+method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didAuthorizePayment:completion:	-			ios=8.0/11.0/-/0	deprecated: Use paymentAuthorizationViewController:didAuthorizePayment:handler: instead to provide more granular errors	ec0e0caabc056fdc
+method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didSelectShippingMethod:completion:	-			ios=8.0/11.0/-/0	deprecated: Use paymentAuthorizationViewController:didSelectShippingMethod:handler: instead to provide more granular errors	eca2882881df5457
+method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didSelectShippingAddress:completion:	-			ios=8.0/9.0/-/0	deprecated: ABRecordRef has been deprecated. Please migrate away from this delegate callback as soon as possible.	1e22ea1fc0a457ca
+method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didSelectShippingContact:completion:	-			ios=9.0/11.0/-/0	deprecated: Use paymentAuthorizationViewController:didSelectShippingContact:handler: instead to provide more granular errors	6e07c9eef543b4eb
+method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didSelectPaymentMethod:completion:	-			ios=9.0/11.0/-/0	deprecated: Use paymentAuthorizationViewController:didSelectPaymentMethod:handler: instead to provide more granular errors	6a8917fac9c52dee
+interface	c:objc(cs)PKPaymentAuthorizationViewController	-			ios=8.0/-/-/0	-	17c92841e2a9240b
+super	-	PKPaymentAuthorizationViewController	UIViewController		-	-	f2c888ccbc51f17e
+method	c:objc(cs)PKPaymentAuthorizationViewController(cm)canMakePayments	-			ios=8.0/-/-/0	-	20dee58b02e02a4c
+method	c:objc(cs)PKPaymentAuthorizationViewController(cm)canMakePaymentsUsingNetworks:	-			ios=8.0/-/-/0	-	379e604c5a6640c4
+method	c:objc(cs)PKPaymentAuthorizationViewController(cm)canMakePaymentsUsingNetworks:capabilities:	-			ios=9.0/-/-/0,macos=11.0/-/-/0	-	734053580c0d6b5e
+property	c:objc(cs)PKPaymentAuthorizationViewController(py)delegate	-			ios=8.0/-/-/0	-	85961a094e957706
+method	c:objc(cs)PKPaymentAuthorizationViewController(im)initWithPaymentRequest:	-			ios=8.0/-/-/0	-	7aff482edb89077a
+method	c:objc(cs)PKPaymentAuthorizationViewController(cm)supportsDisbursements	-			ios=17.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9e2f20e7b4628891
+method	c:objc(cs)PKPaymentAuthorizationViewController(cm)supportsDisbursementsUsingNetworks:	-			ios=17.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d316fe8468ff0302
+method	c:objc(cs)PKPaymentAuthorizationViewController(cm)supportsDisbursementsUsingNetworks:capabilities:	-			ios=17.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0b4c689ceb10a82e
+method	c:objc(cs)PKPaymentAuthorizationViewController(im)initWithDisbursementRequest:	-			ios=17.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b9a63e273b5727da
+protocol	c:objc(pl)PKPaymentAuthorizationControllerDelegate	-			-	deprecated: Use paymentAuthorizationController:didAuthorizePayment:handler: instead to provide more granular errors	ad3fe8026d8c6264
+conforms	-	PKPaymentAuthorizationControllerDelegate	NSObject		-	-	395619efc1728bc6
+method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationControllerDidFinish:	-			-	-	5c613f21363ea3a8
+method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didAuthorizePayment:handler:	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	0cc854df0ab867b1
+method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didAuthorizePayment:completion:	-			ios=10.0/11.0/-/0,watchos=3.0/4.0/-/0	deprecated: Use paymentAuthorizationController:didAuthorizePayment:handler: instead to provide more granular errors	61c39fa39692adbb
+method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationControllerWillAuthorizePayment:	-			-	-	c049e06aebb21714
+method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didRequestMerchantSessionUpdate:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0	-	487a6583fb6a963d
+method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didChangeCouponCode:handler:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=-/-/-/1	-	2eb15907fbb1c322
+method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didSelectShippingMethod:handler:	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	0c2449ca03f686c1
+method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didSelectShippingContact:handler:	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	db464578acd63c5f
+method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didSelectPaymentMethod:handler:	-			ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	568e17707154297e
+method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didSelectShippingMethod:completion:	-			ios=10.0/11.0/-/0,watchos=3.0/4.0/-/0	deprecated: Use paymentAuthorizationController:didSelectShippingMethod:handler: instead to provide more granular errors	5679f0523cbd8f8e
+method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didSelectShippingContact:completion:	-			ios=10.0/11.0/-/0,watchos=3.0/4.0/-/0	deprecated: Use paymentAuthorizationController:didSelectShippingContact:handler: instead to provide more granular errors	f8ed5eee49b10e72
+method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didSelectPaymentMethod:completion:	-			ios=10.0/11.0/-/0,watchos=3.0/4.0/-/0	deprecated: Use paymentAuthorizationController:didSelectPaymentMethod:handler: instead to provide more granular errors	3436b695394e733e
+method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)presentationWindowForPaymentAuthorizationController:	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	16eab35c864cd882
+interface	c:objc(cs)PKPaymentAuthorizationController	-			ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	b29115f940f3b95d
+super	-	PKPaymentAuthorizationController	NSObject		-	-	c94282b2dc46a7aa
+method	c:objc(cs)PKPaymentAuthorizationController(cm)canMakePayments	-			ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	8b38f1b10cdf3cc8
+method	c:objc(cs)PKPaymentAuthorizationController(cm)canMakePaymentsUsingNetworks:	-			ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	db0c3feed058e316
+method	c:objc(cs)PKPaymentAuthorizationController(cm)canMakePaymentsUsingNetworks:capabilities:	-			ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	0b5646c046d8abdd
+property	c:objc(cs)PKPaymentAuthorizationController(py)delegate	-			ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	a80276487e6ee1e5
+method	c:objc(cs)PKPaymentAuthorizationController(im)initWithPaymentRequest:	-			ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	cba11b80e64f9639
+method	c:objc(cs)PKPaymentAuthorizationController(im)presentWithCompletion:	-			ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	79dae056cffbf9af
+method	c:objc(cs)PKPaymentAuthorizationController(im)dismissWithCompletion:	-			ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	4426c2fd548726c8
+method	c:objc(cs)PKPaymentAuthorizationController(cm)supportsDisbursements	-			ios=17.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ac7a4cd99f515549
+method	c:objc(cs)PKPaymentAuthorizationController(cm)supportsDisbursementsUsingNetworks:	-			ios=17.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	02262e9d21f35c0f
+method	c:objc(cs)PKPaymentAuthorizationController(cm)supportsDisbursementsUsingNetworks:capabilities:	-			ios=17.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	331e3b00c16b09c0
+method	c:objc(cs)PKPaymentAuthorizationController(im)initWithDisbursementRequest:	-			ios=17.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6679115539ab358a
+typedef	c:@T@PKAddPassButtonStyle	-			-	-	bc36e2ef96cafe00
+enum	c:@E@PKAddPassButtonStyle	-			ios=9.0/-/-/0	-	9831128c8704e6ca
+enumconst	c:@E@PKAddPassButtonStyle@PKAddPassButtonStyleBlack	PKAddPassButtonStyle			ios=9.0/-/-/0	-	2f3497c649eb585d
+enumconst	c:@E@PKAddPassButtonStyle@PKAddPassButtonStyleBlackOutline	PKAddPassButtonStyle			ios=9.0/-/-/0	-	badc8d8a28789468
+interface	c:objc(cs)PKAddPassButton	-			ios=9.0/-/-/0	-	bca191b37e5d7d92
+super	-	PKAddPassButton	UIButton		-	-	7fee7f31d50a7b1a
+method	c:objc(cs)PKAddPassButton(cm)addPassButtonWithStyle:	-			ios=9.0/-/-/0	-	a6d8bad5dd6cd92c
+method	c:objc(cs)PKAddPassButton(im)initWithAddPassButtonStyle:	-			ios=9.0/-/-/0	-	5e9c5d301f3ff969
+property	c:objc(cs)PKAddPassButton(py)addPassButtonStyle	-			ios=9.0/-/-/0	-	339eb3605ab4a9c8
+interface	c:objc(cs)PKPaymentButton	-			ios=8.3/-/-/0,macos=11.0/-/-/0	-	28d2954ce2c0b85f
+super	-	PKPaymentButton	UIButton		-	-	259a08e3381d6477
+method	c:objc(cs)PKPaymentButton(cm)buttonWithType:style:	-			ios=8.3/-/-/0,macos=11.0/-/-/0	-	18258bce3e2546f4
+method	c:objc(cs)PKPaymentButton(im)initWithPaymentButtonType:paymentButtonStyle:	-			ios=9.0/-/-/0,macos=11.0/-/-/0	-	f8ac6cc74378879e
+method	c:objc(cs)PKPaymentButton(cm)buttonWithType:style:disableCardArt:	-			ios=26.0/-/-/0,macos=-/-/-/1,swift=-/-/-/1	-	390cc6686ef109e4
+method	c:objc(cs)PKPaymentButton(im)initWithPaymentButtonType:paymentButtonStyle:disableCardArt:	-			ios=26.0/-/-/0,macos=-/-/-/1	-	406cf15dfa56dbcb
+property	c:objc(cs)PKPaymentButton(py)cornerRadius	-			ios=12.0/-/-/0,macos=11.0/-/-/0	-	cb84a03309aae2c0
+protocol	c:objc(pl)PKAddPassesViewControllerDelegate	-			-	-	da63ee5c5bebc817
+conforms	-	PKAddPassesViewControllerDelegate	NSObject		-	-	fb57f1315e64ea6b
+method	c:objc(pl)PKAddPassesViewControllerDelegate(im)addPassesViewControllerDidFinish:	-			-	-	43832476702ed4e6
+interface	c:objc(cs)PKAddPassesViewController	-			ios=6.0/-/-/0	-	9f7b155f28712266
+super	-	PKAddPassesViewController	UIViewController		-	-	7e3ab853816b42f3
+method	c:objc(cs)PKAddPassesViewController(im)initWithPass:	-			ios=6.0/-/-/0	-	62caeaf96972c399
+method	c:objc(cs)PKAddPassesViewController(im)initWithPasses:	-			ios=7.0/-/-/0	-	96d51f9a2f437882
+method	c:objc(cs)PKAddPassesViewController(im)initWithIssuerData:signature:error:	-			ios=16.4/-/-/0	-	b7481e523e4b849d
+method	c:objc(cs)PKAddPassesViewController(cm)canAddPasses	-			ios=8.0/-/-/0	-	44a19039859768e6
+property	c:objc(cs)PKAddPassesViewController(py)delegate	-			ios=6.0/-/-/0	-	f80bca59b82286d2
+typedef	c:@T@PKAddPaymentPassStyle	-			-	-	390c87d859675f7e
+enum	c:@E@PKAddPaymentPassStyle	-			ios=12.0/-/-/0,watchos=5.0/-/-/0	-	10e4cd57f6e51cb9
+enumconst	c:@E@PKAddPaymentPassStyle@PKAddPaymentPassStylePayment	PKAddPaymentPassStyle			ios=12.0/-/-/0,watchos=5.0/-/-/0	-	9ffb768fc27e67c7
+enumconst	c:@E@PKAddPaymentPassStyle@PKAddPaymentPassStyleAccess	PKAddPaymentPassStyle			ios=12.0/-/-/0,watchos=5.0/-/-/0	-	2e7d2bc6f4222512
+interface	c:objc(cs)PKAddPaymentPassRequestConfiguration	-			ios=9.0/-/-/0,watchos=2.0/-/-/0	-	f95a0da3953c529f
+super	-	PKAddPaymentPassRequestConfiguration	NSObject		-	-	adc9f7387fc4b900
+method	c:objc(cs)PKAddPaymentPassRequestConfiguration(im)initWithEncryptionScheme:	-			ios=9.0/-/-/0,watchos=2.0/-/-/0	-	47fbc3339a3e0c18
+property	c:objc(cs)PKAddPaymentPassRequestConfiguration(py)encryptionScheme	-			ios=9.0/-/-/0,watchos=2.0/-/-/0	-	ca6a809af5955eb2
+property	c:objc(cs)PKAddPaymentPassRequestConfiguration(py)style	-			ios=12.0/-/-/0,watchos=5.0/-/-/0	-	08f20e798aba2390
+property	c:objc(cs)PKAddPaymentPassRequestConfiguration(py)cardholderName	-			ios=9.0/-/-/0,watchos=2.0/-/-/0	-	7f31d74cdd83e9c7
+property	c:objc(cs)PKAddPaymentPassRequestConfiguration(py)primaryAccountSuffix	-			ios=9.0/-/-/0,watchos=2.0/-/-/0	-	13903eff25fbe44a
+property	c:objc(cs)PKAddPaymentPassRequestConfiguration(py)cardDetails	-			ios=10.1/-/-/0,watchos=3.1/-/-/0	-	8eaa47d9b4f69656
+property	c:objc(cs)PKAddPaymentPassRequestConfiguration(py)localizedDescription	-			ios=9.0/-/-/0,watchos=2.0/-/-/0	-	de91c58cb1fb1ffa
+property	c:objc(cs)PKAddPaymentPassRequestConfiguration(py)primaryAccountIdentifier	-			ios=9.0/-/-/0,watchos=2.0/-/-/0	-	c38670042054b0c2
+property	c:objc(cs)PKAddPaymentPassRequestConfiguration(py)paymentNetwork	-			ios=9.0/-/-/0,watchos=2.0/-/-/0	-	dae1968b121461c0
+property	c:objc(cs)PKAddPaymentPassRequestConfiguration(py)productIdentifiers	-			ios=12.3/-/-/0,watchos=5.3/-/-/0	-	b93936969c01485a
+property	c:objc(cs)PKAddPaymentPassRequestConfiguration(py)requiresFelicaSecureElement	-			ios=10.1/-/-/0,watchos=3.1/-/-/0	-	135cf0118a5eb2d3
+interface	c:objc(cs)PKAddPaymentPassRequest	-			ios=9.0/-/-/0,watchos=2.0/-/-/0	-	677891528b837356
+super	-	PKAddPaymentPassRequest	NSObject		-	-	a274313e8f4a712d
+method	c:objc(cs)PKAddPaymentPassRequest(im)init	-			ios=9.0/-/-/0,watchos=2.0/-/-/0	-	7a4772c2642a4932
+property	c:objc(cs)PKAddPaymentPassRequest(py)encryptedPassData	-			ios=9.0/-/-/0,watchos=2.0/-/-/0	-	faeb5d1d76302b94
+property	c:objc(cs)PKAddPaymentPassRequest(py)activationData	-			ios=9.0/-/-/0,watchos=2.0/-/-/0	-	d0a4f202b02fc831
+property	c:objc(cs)PKAddPaymentPassRequest(py)ephemeralPublicKey	-			ios=9.0/-/-/0,watchos=2.0/-/-/0	-	eef5f6be4ffbde8e
+property	c:objc(cs)PKAddPaymentPassRequest(py)wrappedKey	-			ios=9.0/-/-/0,watchos=2.0/-/-/0	-	fc53a9eb7f90bb07
+protocol	c:objc(pl)PKAddPaymentPassViewControllerDelegate	-			ios=9.0/-/-/0	-	d18a2a0bb329e79f
+conforms	-	PKAddPaymentPassViewControllerDelegate	NSObject		-	-	b10a1dfc8036667b
+method	c:objc(pl)PKAddPaymentPassViewControllerDelegate(im)addPaymentPassViewController:generateRequestWithCertificateChain:nonce:nonceSignature:completionHandler:	-			ios=9.0/-/-/0	-	580ad28ba430c6c7
+method	c:objc(pl)PKAddPaymentPassViewControllerDelegate(im)addPaymentPassViewController:didFinishAddingPaymentPass:error:	-			ios=9.0/-/-/0	-	e379defa045d8f64
+interface	c:objc(cs)PKAddPaymentPassViewController	-			ios=9.0/-/-/0	-	2b102159c01d2fdb
+super	-	PKAddPaymentPassViewController	UIViewController		-	-	dcbf792cf628beb3
+method	c:objc(cs)PKAddPaymentPassViewController(cm)canAddPaymentPass	-			ios=9.0/-/-/0	-	4a3e42dc24deb2e6
+method	c:objc(cs)PKAddPaymentPassViewController(im)initWithRequestConfiguration:delegate:	-			ios=9.0/-/-/0	-	d7c354ac37be928f
+property	c:objc(cs)PKAddPaymentPassViewController(py)delegate	-			ios=9.0/-/-/0	-	a8844eb659877873
+interface	c:objc(cs)PKDisbursementRequest	-			ios=17.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1441d1101c178ab9
+super	-	PKDisbursementRequest	NSObject		-	-	f3930f27d78bac26
+property	c:objc(cs)PKDisbursementRequest(py)merchantIdentifier	-			ios=17.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e5fe927a27847e48
+property	c:objc(cs)PKDisbursementRequest(py)regionCode	-			ios=17.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2cd0da281797899f
+property	c:objc(cs)PKDisbursementRequest(py)supportedNetworks	-			ios=17.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4ff1eff0242e05cd
+property	c:objc(cs)PKDisbursementRequest(py)merchantCapabilities	-			ios=17.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	14951a044ae643fc
+property	c:objc(cs)PKDisbursementRequest(py)summaryItems	-			ios=17.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e8efaa47ad13ce93
+property	c:objc(cs)PKDisbursementRequest(py)currencyCode	-			ios=17.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5374a2003f3d13ce
+property	c:objc(cs)PKDisbursementRequest(py)requiredRecipientContactFields	-			ios=17.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7fe108b7745d03de
+property	c:objc(cs)PKDisbursementRequest(py)recipientContact	-			ios=17.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	444e7b2d08e3be1e
+property	c:objc(cs)PKDisbursementRequest(py)supportedRegions	-			ios=17.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f092431c23aa4fe2
+property	c:objc(cs)PKDisbursementRequest(py)applicationData	-			ios=17.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	140a3dc7fafb9609
+method	c:objc(cs)PKDisbursementRequest(im)initWithMerchantIdentifier:currencyCode:regionCode:supportedNetworks:merchantCapabilities:summaryItems:	-			ios=17.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	08fdc3c61bee7370
+method	c:objc(cs)PKDisbursementRequest(cm)disbursementContactInvalidErrorWithContactField:localizedDescription:	-			ios=17.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9996fb7d49b42132
+method	c:objc(cs)PKDisbursementRequest(cm)disbursementCardUnsupportedError	-			ios=17.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e97ffc093e0582e0
+interface	c:objc(cs)PKInstantFundsOutFeeSummaryItem	-			ios=17.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c06af53c1c0d23e3
+super	-	PKInstantFundsOutFeeSummaryItem	PKPaymentSummaryItem		-	-	910faf66d389755a
+interface	c:objc(cs)PKDisbursementSummaryItem	-			ios=17.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4f5d665349cbf808
+super	-	PKDisbursementSummaryItem	PKPaymentSummaryItem		-	-	c5c6349d8f5b3c38
+interface	c:objc(cs)PKBarcodeEventMetadataRequest	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	2180e01ed85cf81c
+super	-	PKBarcodeEventMetadataRequest	NSObject		-	-	a3e80135b1b26d7f
+property	c:objc(cs)PKBarcodeEventMetadataRequest(py)deviceAccountIdentifier	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	0e18d5c66861e826
+property	c:objc(cs)PKBarcodeEventMetadataRequest(py)lastUsedBarcodeIdentifier	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	42f9404d007013fb
+interface	c:objc(cs)PKBarcodeEventMetadataResponse	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	b34a2a439301c9f3
+super	-	PKBarcodeEventMetadataResponse	NSObject		-	-	42de8e818a23d72f
+method	c:objc(cs)PKBarcodeEventMetadataResponse(im)initWithPaymentInformation:	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	8761ba2efb6c7b81
+property	c:objc(cs)PKBarcodeEventMetadataResponse(py)paymentInformation	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	9c9dc7b4a36364ac
+interface	c:objc(cs)PKBarcodeEventSignatureRequest	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	c3d4d3b3b4bc8919
+super	-	PKBarcodeEventSignatureRequest	NSObject		-	-	1a67ed4128678697
+property	c:objc(cs)PKBarcodeEventSignatureRequest(py)deviceAccountIdentifier	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	1d666b719ae21c60
+property	c:objc(cs)PKBarcodeEventSignatureRequest(py)transactionIdentifier	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	3d1320a9b29458d1
+property	c:objc(cs)PKBarcodeEventSignatureRequest(py)barcodeIdentifier	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	b4899ed0b3370970
+property	c:objc(cs)PKBarcodeEventSignatureRequest(py)rawMerchantName	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	051db2940c6bd906
+property	c:objc(cs)PKBarcodeEventSignatureRequest(py)merchantName	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	0cb6035c973335c8
+property	c:objc(cs)PKBarcodeEventSignatureRequest(py)transactionDate	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	888c82b017772ef3
+property	c:objc(cs)PKBarcodeEventSignatureRequest(py)currencyCode	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	4f92fbe3ca524960
+property	c:objc(cs)PKBarcodeEventSignatureRequest(py)amount	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	67c16537d75153b7
+property	c:objc(cs)PKBarcodeEventSignatureRequest(py)transactionStatus	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	50e144d959247375
+property	c:objc(cs)PKBarcodeEventSignatureRequest(py)partialSignature	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	d2e379fd7140202c
+interface	c:objc(cs)PKBarcodeEventSignatureResponse	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	e0e45183c7814858
+super	-	PKBarcodeEventSignatureResponse	NSObject		-	-	8d46cc4265afbda6
+method	c:objc(cs)PKBarcodeEventSignatureResponse(im)initWithSignedData:	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	6bdd041fd1e7fd6c
+property	c:objc(cs)PKBarcodeEventSignatureResponse(py)signedData	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	54e6a72bce5ff578
+typedef	c:@T@PKBarcodeEventConfigurationDataType	-			-	-	6e8093443907be99
+enum	c:@E@PKBarcodeEventConfigurationDataType	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	0e72fa48b29b1f33
+enumconst	c:@E@PKBarcodeEventConfigurationDataType@PKBarcodeEventConfigurationDataTypeUnknown	PKBarcodeEventConfigurationDataType			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	f05ca4b48bfe88f8
+enumconst	c:@E@PKBarcodeEventConfigurationDataType@PKBarcodeEventConfigurationDataTypeSigningKeyMaterial	PKBarcodeEventConfigurationDataType			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	7820e8fcb0063d64
+enumconst	c:@E@PKBarcodeEventConfigurationDataType@PKBarcodeEventConfigurationDataTypeSigningCertificate	PKBarcodeEventConfigurationDataType			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	596b2947c36a8a55
+interface	c:objc(cs)PKBarcodeEventConfigurationRequest	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	48b6e863a3d46503
+super	-	PKBarcodeEventConfigurationRequest	NSObject		-	-	26b75f3a5ccd9da1
+property	c:objc(cs)PKBarcodeEventConfigurationRequest(py)deviceAccountIdentifier	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	bcd49b84c8d858b0
+property	c:objc(cs)PKBarcodeEventConfigurationRequest(py)configurationData	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	99161c4b9e2eaa43
+property	c:objc(cs)PKBarcodeEventConfigurationRequest(py)configurationDataType	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	0934f8c6011c2d2f
+typedef	c:@T@PKInformationRequestCompletionBlock	-			-	-	b87be6209637590a
+typedef	c:@T@PKSignatureRequestCompletionBlock	-			-	-	5abce5e1b50bd7a8
+interface	c:objc(cs)PKPaymentInformationEventExtension	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	941640dbe4d0fe13
+super	-	PKPaymentInformationEventExtension	NSObject		-	-	146f0a9a93f73b45
+protocol	c:objc(pl)PKPaymentInformationRequestHandling	-			-	-	0a0a859bba1af8b9
+method	c:objc(pl)PKPaymentInformationRequestHandling(im)handleInformationRequest:completion:	-			-	-	eb9b181eb650036c
+method	c:objc(pl)PKPaymentInformationRequestHandling(im)handleSignatureRequest:completion:	-			-	-	e17ee509d3ee18f5
+method	c:objc(pl)PKPaymentInformationRequestHandling(im)handleConfigurationRequest:completion:	-			-	-	72232f60c47fa45e
+protocol	c:objc(pl)PKAddSecureElementPassViewControllerDelegate	-			ios=13.4/-/-/0	deprecated: Use addSecureElementPassViewController:didFinishAddingSecureElementPasses:error: instead	fa9342205aa1568d
+conforms	-	PKAddSecureElementPassViewControllerDelegate	NSObject		-	-	3d87ebc238bc0f56
+method	c:objc(pl)PKAddSecureElementPassViewControllerDelegate(im)addSecureElementPassViewController:didFinishAddingSecureElementPass:error:	-			ios=13.4/14.0/-/0	deprecated: Use addSecureElementPassViewController:didFinishAddingSecureElementPasses:error: instead	9be99f5ceb2e6542
+method	c:objc(pl)PKAddSecureElementPassViewControllerDelegate(im)addSecureElementPassViewController:didFinishAddingSecureElementPasses:error:	-			ios=13.4/-/-/0	-	dfad1d92a7f56651
+interface	c:objc(cs)PKAddSecureElementPassViewController	-			ios=13.4/-/-/0	-	e71211763eb4d9d9
+super	-	PKAddSecureElementPassViewController	UIViewController		-	-	d91ac4b9e60c2da9
+method	c:objc(cs)PKAddSecureElementPassViewController(cm)canAddSecureElementPassWithConfiguration:	-			ios=13.4/-/-/0	-	086939b2770d9b40
+method	c:objc(cs)PKAddSecureElementPassViewController(im)initWithConfiguration:delegate:	-			ios=13.4/-/-/0	-	2d78aed3ff08e6c3
+property	c:objc(cs)PKAddSecureElementPassViewController(py)delegate	-			ios=13.4/-/-/0	-	05a7260edbcf2e30
+interface	c:objc(cs)PKAddPassMetadataPreview	-			ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cfeed565777f7b5b
+super	-	PKAddPassMetadataPreview	NSObject		-	-	51509c3e657c89a1
+method	c:objc(cs)PKAddPassMetadataPreview(im)initWithPassThumbnail:localizedDescription:	-			ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	96390ec39e459bb6
+method	c:objc(cs)PKAddPassMetadataPreview(cm)previewWithPassThumbnail:localizedDescription:	-			ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4bbc96e316d3c002
+method	c:objc(cs)PKAddPassMetadataPreview(im)init	-			*unavailable ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b0950858bbc8b4a4
+method	c:objc(cs)PKAddPassMetadataPreview(cm)new	-			*unavailable ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cb7bd3ec543be0b9
+property	c:objc(cs)PKAddPassMetadataPreview(py)passThumbnailImage	-			ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ad6fa67e56e9edb2
+property	c:objc(cs)PKAddPassMetadataPreview(py)localizedDescription	-			ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d0f1ede9f6908cc5
+interface	c:objc(cs)PKAddSecureElementPassConfiguration	-			ios=13.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	42b460c911c98a92
+super	-	PKAddSecureElementPassConfiguration	NSObject		-	-	f9dce6ab903d02d7
+method	c:objc(cs)PKAddSecureElementPassConfiguration(im)init	-			*unavailable ios=13.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f7573518982f3475
+method	c:objc(cs)PKAddSecureElementPassConfiguration(cm)new	-			*unavailable ios=13.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c29c8334a82442e6
+property	c:objc(cs)PKAddSecureElementPassConfiguration(py)issuerIdentifier	-			ios=13.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a5d5674638632b8d
+property	c:objc(cs)PKAddSecureElementPassConfiguration(py)localizedDescription	-			ios=13.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	352aeadf051ec697
+interface	c:objc(cs)PKAddCarKeyPassConfiguration	-			ios=13.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1cf34d412d52ac99
+super	-	PKAddCarKeyPassConfiguration	PKAddSecureElementPassConfiguration		-	-	7d82db17c184fb94
+method	c:objc(cs)PKAddCarKeyPassConfiguration(im)init	-			ios=13.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	70c29ee72d4f656b
+property	c:objc(cs)PKAddCarKeyPassConfiguration(py)password	-			ios=13.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2496373f7052408f
+property	c:objc(cs)PKAddCarKeyPassConfiguration(py)supportedRadioTechnologies	-			ios=14.5/-/-/0,watchos=7.3/-/-/0	-	f53005d077373e75
+property	c:objc(cs)PKAddCarKeyPassConfiguration(py)manufacturerIdentifier	-			ios=16.0/-/-/0,watchos=9.0/-/-/0	-	e3db0bdba31e0a90
+property	c:objc(cs)PKAddCarKeyPassConfiguration(py)provisioningTemplateIdentifier	-			ios=16.0/-/-/0,watchos=9.0/-/-/0	-	70162c737267e413
+interface	c:objc(cs)PKPaymentMerchantSession	-			ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0	-	4291bbe0ff238b3c
+super	-	PKPaymentMerchantSession	NSObject		-	-	f8e7491cd8470711
+method	c:objc(cs)PKPaymentMerchantSession(im)initWithDictionary:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0	-	ca2aff9bb1a741fe
+interface	c:objc(cs)PKShareablePassMetadataPreview	-			ios=16.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	964546cc761cd81b
+super	-	PKShareablePassMetadataPreview	PKAddPassMetadataPreview		-	-	6b4b714299815a7f
+method	c:objc(cs)PKShareablePassMetadataPreview(im)initWithTemplateIdentifier:	-			ios=16.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f259af51e2656946
+method	c:objc(cs)PKShareablePassMetadataPreview(cm)previewWithTemplateIdentifier:	-			ios=16.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bd2240023469c430
+property	c:objc(cs)PKShareablePassMetadataPreview(py)ownerDisplayName	-			ios=16.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5ddc93308c5edacb
+property	c:objc(cs)PKShareablePassMetadataPreview(py)provisioningTemplateIdentifier	-			ios=16.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4f8c1d7b366d3462
+interface	c:objc(cs)PKShareablePassMetadata	-			ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use initWithProvisioningCredentialIdentifier:sharingInstanceIdentifier:cardConfigurationIdentifier:passPreviewMetadata:	3f945f77871f3fc3
+super	-	PKShareablePassMetadata	NSObject		-	-	79c32d5fc53eb11d
+method	c:objc(cs)PKShareablePassMetadata(im)initWithProvisioningCredentialIdentifier:cardConfigurationIdentifier:sharingInstanceIdentifier:passThumbnailImage:ownerDisplayName:localizedDescription:	-			ios=14.0/16.0/-/0	deprecated: Use initWithProvisioningCredentialIdentifier:sharingInstanceIdentifier:cardConfigurationIdentifier:passPreviewMetadata:	d2efcc3829d66053
+method	c:objc(cs)PKShareablePassMetadata(im)initWithProvisioningCredentialIdentifier:sharingInstanceIdentifier:passThumbnailImage:ownerDisplayName:localizedDescription:accountHash:templateIdentifier:relyingPartyIdentifier:requiresUnifiedAccessCapableDevice:	-			ios=15.0/16.0/-/0	deprecated: Use initWithProvisioningCredentialIdentifier:sharingInstanceIdentifier:cardTemplateIdentifier:passPreviewMetadata:	7ecba353d9f4d275
+method	c:objc(cs)PKShareablePassMetadata(im)initWithProvisioningCredentialIdentifier:sharingInstanceIdentifier:cardTemplateIdentifier:preview:	-			ios=16.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	96fb1f919244eefd
+method	c:objc(cs)PKShareablePassMetadata(im)initWithProvisioningCredentialIdentifier:sharingInstanceIdentifier:cardConfigurationIdentifier:preview:	-			ios=16.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f36565425bd3b80d
+property	c:objc(cs)PKShareablePassMetadata(py)credentialIdentifier	-			ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f2470ce0b226c558
+property	c:objc(cs)PKShareablePassMetadata(py)sharingInstanceIdentifier	-			ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5b196f52a9d3873f
+property	c:objc(cs)PKShareablePassMetadata(py)templateIdentifier	-			ios=15.0/16.0/-/0	-	0083e6ce34193c29
+property	c:objc(cs)PKShareablePassMetadata(py)cardTemplateIdentifier	-			ios=16.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5ff2070dd146de82
+property	c:objc(cs)PKShareablePassMetadata(py)cardConfigurationIdentifier	-			ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fa35d09f10b841f5
+property	c:objc(cs)PKShareablePassMetadata(py)requiresUnifiedAccessCapableDevice	-			ios=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1008f51ec51eeebe
+property	c:objc(cs)PKShareablePassMetadata(py)serverEnvironmentIdentifier	-			ios=16.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	68e42a9784be258e
+property	c:objc(cs)PKShareablePassMetadata(py)preview	-			ios=16.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1d5e4cd781db9d9d
+property	c:objc(cs)PKShareablePassMetadata(py)passThumbnailImage	-			ios=14.0/16.0/-/0,watchos=8.0/9.0/-/0	-	713921c1bad26cfc
+property	c:objc(cs)PKShareablePassMetadata(py)localizedDescription	-			ios=14.0/16.0/-/0,watchos=8.0/9.0/-/0	-	c534e36c8487b3e7
+property	c:objc(cs)PKShareablePassMetadata(py)ownerDisplayName	-			ios=14.0/16.0/-/0,watchos=8.0/9.0/-/0	-	76212668cc6fb6a7
+property	c:objc(cs)PKShareablePassMetadata(py)accountHash	-			ios=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6a2d2f6c8d615404
+property	c:objc(cs)PKShareablePassMetadata(py)relyingPartyIdentifier	-			ios=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	34531843e171ffa5
+typedef	c:@T@PKAddShareablePassConfigurationPrimaryAction	-			-	-	8dfd1e2a851c2e5b
+enum	c:@E@PKAddShareablePassConfigurationPrimaryAction	-			ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8a1a15ecef1e7089
+enumconst	c:@E@PKAddShareablePassConfigurationPrimaryAction@PKAddShareablePassConfigurationPrimaryActionAdd	PKAddShareablePassConfigurationPrimaryAction			ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cf05762fbb6a42bf
+enumconst	c:@E@PKAddShareablePassConfigurationPrimaryAction@PKAddShareablePassConfigurationPrimaryActionShare	PKAddShareablePassConfigurationPrimaryAction			ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cf7c8f20f0bd8792
+interface	c:objc(cs)PKAddShareablePassConfiguration	-			ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use configurationForPassMetadata:primaryAction:completion:	1d9aba6bf700cded
+super	-	PKAddShareablePassConfiguration	PKAddSecureElementPassConfiguration		-	-	93770aa3212d50ee
+method	c:objc(cs)PKAddShareablePassConfiguration(cm)configurationForPassMetadata:provisioningPolicyIdentifier:primaryAction:completion:	-			ios=14.0/16.0/-/0,watchos=7.0/9.0/-/0	deprecated: Use configurationForPassMetadata:primaryAction:completion:	8f3fa7155e232189
+method	c:objc(cs)PKAddShareablePassConfiguration(cm)configurationForPassMetadata:primaryAction:completion:	-			ios=16.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5c9fb99c1cc06732
+property	c:objc(cs)PKAddShareablePassConfiguration(py)primaryAction	-			ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b670a0049667f143
+property	c:objc(cs)PKAddShareablePassConfiguration(py)credentialsMetadata	-			ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c7172f34e47b7e44
+property	c:objc(cs)PKAddShareablePassConfiguration(py)provisioningPolicyIdentifier	-			ios=14.0/16.0/-/0,watchos=7.0/9.0/-/0	-	51d4224cea9f1db1
+typedef	c:@T@PKAddIdentityDocumentType	-			-	-	147db7c6703b350b
+enum	c:@E@PKAddIdentityDocumentType	-			-	-	210bdcf7ffca9013
+enumconst	c:@E@PKAddIdentityDocumentType@PKAddIdentityDocumentTypeIDCard	PKAddIdentityDocumentType			-	-	5bcb5a184b30b4b8
+enumconst	c:@E@PKAddIdentityDocumentType@PKAddIdentityDocumentTypeMDL	PKAddIdentityDocumentType			-	-	346c1a421af41b8b
+enumconst	c:@E@PKAddIdentityDocumentType@PKAddIdentityDocumentTypePhotoID	PKAddIdentityDocumentType			-	-	d79cabda9b1583ab
+interface	c:objc(cs)PKIdentityDocumentMetadata	-			ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f1ed26874a66b03a
+super	-	PKIdentityDocumentMetadata	NSObject		-	-	8af48a2931f0fd0a
+method	c:objc(cs)PKIdentityDocumentMetadata(im)init	-			*unavailable ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8357d2c5d748d4ad
+method	c:objc(cs)PKIdentityDocumentMetadata(cm)new	-			*unavailable ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	27344a2aeb024201
+property	c:objc(cs)PKIdentityDocumentMetadata(py)credentialIdentifier	-			ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	be1c54ac1f5cfae5
+property	c:objc(cs)PKIdentityDocumentMetadata(py)sharingInstanceIdentifier	-			ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	80a2c75ae1a45dfa
+property	c:objc(cs)PKIdentityDocumentMetadata(py)cardTemplateIdentifier	-			ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	553a936006dfc8e7
+property	c:objc(cs)PKIdentityDocumentMetadata(py)cardConfigurationIdentifier	-			ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ccbb996f394133cd
+property	c:objc(cs)PKIdentityDocumentMetadata(py)serverEnvironmentIdentifier	-			ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8c3971bcb2cad3f3
+property	c:objc(cs)PKIdentityDocumentMetadata(py)issuingCountryCode	-			ios=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ce34a75426c9fa2b
+property	c:objc(cs)PKIdentityDocumentMetadata(py)documentType	-			ios=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	763f892e7ba63562
+interface	c:objc(cs)PKAddIdentityDocumentMetadata	-			ios=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	be99e70fe719e104
+super	-	PKAddIdentityDocumentMetadata	PKIdentityDocumentMetadata		-	-	d8336798450b6471
+method	c:objc(cs)PKAddIdentityDocumentMetadata(im)initWithProvisioningCredentialIdentifier:sharingInstanceIdentifier:cardTemplateIdentifier:issuingCountryCode:documentType:preview:	-			ios=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0bc88b8b8ae38a31
+property	c:objc(cs)PKAddIdentityDocumentMetadata(py)preview	-			ios=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4a91d6e14631dc5c
+interface	c:objc(cs)PKJapanIndividualNumberCardMetadata	-			ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d649c4cf09736c9e
+super	-	PKJapanIndividualNumberCardMetadata	PKIdentityDocumentMetadata		-	-	9aedb30b41ad635f
+method	c:objc(cs)PKJapanIndividualNumberCardMetadata(im)initWithProvisioningCredentialIdentifier:sharingInstanceIdentifier:cardTemplateIdentifier:preview:	-			ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	477d8bd4c9be49b7
+method	c:objc(cs)PKJapanIndividualNumberCardMetadata(im)initWithProvisioningCredentialIdentifier:sharingInstanceIdentifier:cardConfigurationIdentifier:preview:	-			ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	765dd864d913578c
+property	c:objc(cs)PKJapanIndividualNumberCardMetadata(py)authenticationPassword	-			ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b27b574e4273675c
+property	c:objc(cs)PKJapanIndividualNumberCardMetadata(py)signingPassword	-			ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8dc82c18ca3fc8cd
+property	c:objc(cs)PKJapanIndividualNumberCardMetadata(py)preview	-			ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c6f18b287610aa07
+interface	c:objc(cs)PKAddIdentityDocumentConfiguration	-			ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8b3e112847e1b1c9
+super	-	PKAddIdentityDocumentConfiguration	PKAddSecureElementPassConfiguration		-	-	99e6fa82708055c7
+method	c:objc(cs)PKAddIdentityDocumentConfiguration(cm)configurationForMetadata:completion:	-			ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f0030158a24dc3b8
+property	c:objc(cs)PKAddIdentityDocumentConfiguration(py)metadata	-			ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4c3a2b4fc1bd541d
+typedef	c:@T@PKIssuerProvisioningExtensionAuthorizationResult	-			-	-	8103a1bdb5426f87
+enum	c:@E@PKIssuerProvisioningExtensionAuthorizationResult	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6b1288d0501e1783
+enumconst	c:@E@PKIssuerProvisioningExtensionAuthorizationResult@PKIssuerProvisioningExtensionAuthorizationResultCanceled	PKIssuerProvisioningExtensionAuthorizationResult			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5eb6cd8fc07adf6a
+enumconst	c:@E@PKIssuerProvisioningExtensionAuthorizationResult@PKIssuerProvisioningExtensionAuthorizationResultAuthorized	PKIssuerProvisioningExtensionAuthorizationResult			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2954383f2a3c9ae2
+protocol	c:objc(pl)PKIssuerProvisioningExtensionAuthorizationProviding	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1e5e05853177aa76
+conforms	-	PKIssuerProvisioningExtensionAuthorizationProviding	NSObject		-	-	066bd0004b10631f
+property	c:objc(pl)PKIssuerProvisioningExtensionAuthorizationProviding(py)completionHandler	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c8a82b3feee3ebb6
+interface	c:objc(cs)PKIssuerProvisioningExtensionHandler	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0dac95e2073b8da8
+super	-	PKIssuerProvisioningExtensionHandler	NSObject		-	-	91fad10bdf8adf8e
+method	c:objc(cs)PKIssuerProvisioningExtensionHandler(im)statusWithCompletion:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2ba62f330fa7c35f
+method	c:objc(cs)PKIssuerProvisioningExtensionHandler(im)passEntriesWithCompletion:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6065e0e53aef5aae
+method	c:objc(cs)PKIssuerProvisioningExtensionHandler(im)remotePassEntriesWithCompletion:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	08f93a89c5fcd9fc
+method	c:objc(cs)PKIssuerProvisioningExtensionHandler(im)generateAddPaymentPassRequestForPassEntryWithIdentifier:configuration:certificateChain:nonce:nonceSignature:completionHandler:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	09eafb9ae7e52b40
+interface	c:objc(cs)PKIssuerProvisioningExtensionStatus	-			ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bee7d8a40fea2209
+super	-	PKIssuerProvisioningExtensionStatus	NSObject		-	-	876da9e584e3328d
+method	c:objc(cs)PKIssuerProvisioningExtensionStatus(im)init	-			ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	86a1853720cbe687
+property	c:objc(cs)PKIssuerProvisioningExtensionStatus(py)requiresAuthentication	-			ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ccc6e492d056b8a4
+property	c:objc(cs)PKIssuerProvisioningExtensionStatus(py)passEntriesAvailable	-			ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	414130b5e23589f4
+property	c:objc(cs)PKIssuerProvisioningExtensionStatus(py)remotePassEntriesAvailable	-			ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a069f4284f2105b1
+interface	c:objc(cs)PKIssuerProvisioningExtensionPassEntry	-			ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ce83a108ae32eab9
+super	-	PKIssuerProvisioningExtensionPassEntry	NSObject		-	-	fc96896ed73e3c03
+method	c:objc(cs)PKIssuerProvisioningExtensionPassEntry(im)init	-			*unavailable ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3ca6022f2e33adfa
+property	c:objc(cs)PKIssuerProvisioningExtensionPassEntry(py)identifier	-			ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	95c69fd4a5dc4598
+property	c:objc(cs)PKIssuerProvisioningExtensionPassEntry(py)title	-			ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cac073fa357105b3
+property	c:objc(cs)PKIssuerProvisioningExtensionPassEntry(py)art	-			ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	db505f7b625975c8
+interface	c:objc(cs)PKIssuerProvisioningExtensionPaymentPassEntry	-			ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	994e4238f3f15256
+super	-	PKIssuerProvisioningExtensionPaymentPassEntry	PKIssuerProvisioningExtensionPassEntry		-	-	79d6ed2283eeeac7
+method	c:objc(cs)PKIssuerProvisioningExtensionPaymentPassEntry(im)initWithIdentifier:title:art:addRequestConfiguration:	-			ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5886064fefe39e8e
+property	c:objc(cs)PKIssuerProvisioningExtensionPaymentPassEntry(py)addRequestConfiguration	-			ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6d55853cfb558968
+typedef	c:@T@PKShareSecureElementPassResult	-			-	-	0fec009211df77bc
+enum	c:@E@PKShareSecureElementPassResult	-			ios=16.0/-/-/0	-	db7a0517b82d56fa
+enumconst	c:@E@PKShareSecureElementPassResult@PKShareSecureElementPassResultCanceled	PKShareSecureElementPassResult			ios=16.0/-/-/0	-	fd084e990f737332
+enumconst	c:@E@PKShareSecureElementPassResult@PKShareSecureElementPassResultShared	PKShareSecureElementPassResult			ios=16.0/-/-/0	-	da7b0d850988ae7e
+enumconst	c:@E@PKShareSecureElementPassResult@PKShareSecureElementPassResultFailed	PKShareSecureElementPassResult			ios=16.0/-/-/0	-	a0eba0039f8983f8
+protocol	c:objc(pl)PKShareSecureElementPassViewControllerDelegate	-			ios=16.0/-/-/0	-	a4e127241331efbb
+conforms	-	PKShareSecureElementPassViewControllerDelegate	NSObject		-	-	119aee7844f01f31
+method	c:objc(pl)PKShareSecureElementPassViewControllerDelegate(im)shareSecureElementPassViewController:didFinishWithResult:	-			ios=16.0/-/-/0	-	2c4d8d57eca08ec7
+method	c:objc(pl)PKShareSecureElementPassViewControllerDelegate(im)shareSecureElementPassViewController:didCreateShareURL:activationCode:	-			ios=16.0/-/-/0	-	f7f72981d9ddf0ee
+interface	c:objc(cs)PKShareSecureElementPassViewController	-			ios=16.0/-/-/0	-	fcf6b086036583b8
+super	-	PKShareSecureElementPassViewController	UIViewController		-	-	d87314a08aa15c8d
+method	c:objc(cs)PKShareSecureElementPassViewController(im)init	-			*unavailable ios=16.0/-/-/0	-	ae591138875ba99b
+method	c:objc(cs)PKShareSecureElementPassViewController(im)initWithSecureElementPass:delegate:	-			ios=16.0/-/-/0	-	a8e7820d91e5650f
+property	c:objc(cs)PKShareSecureElementPassViewController(py)delegate	-			ios=16.0/-/-/0	-	e4f8e802a31e611d
+property	c:objc(cs)PKShareSecureElementPassViewController(py)promptToShareURL	-			ios=16.0/-/-/0	-	530442e19f5d50e4
+typedef	c:@T@PKVehicleConnectionErrorCode	-			ios=15.4/-/-/0	-	e153ad0b6d5370a6
+enum	c:@E@PKVehicleConnectionErrorCode	-			-	-	f47932c4cec4026c
+enumconst	c:@E@PKVehicleConnectionErrorCode@PKVehicleConnectionErrorCodeUnknown	PKVehicleConnectionErrorCode			-	-	4652f1ba8efc2d71
+enumconst	c:@E@PKVehicleConnectionErrorCode@PKVehicleConnectionErrorCodeSessionUnableToStart	PKVehicleConnectionErrorCode			-	-	41aa0e288230b88c
+enumconst	c:@E@PKVehicleConnectionErrorCode@PKVehicleConnectionErrorCodeSessionNotActive	PKVehicleConnectionErrorCode			-	-	a854b84df375f313
+typedef	c:@T@PKVehicleConnectionSessionConnectionState	-			ios=15.4/-/-/0	-	979ea6c2cd9237b0
+enum	c:@E@PKVehicleConnectionSessionConnectionState	-			-	-	8070b9945b4ec5e6
+enumconst	c:@E@PKVehicleConnectionSessionConnectionState@PKVehicleConnectionSessionConnectionStateDisconnected	PKVehicleConnectionSessionConnectionState			-	-	fccfff9b7cf8fa2e
+enumconst	c:@E@PKVehicleConnectionSessionConnectionState@PKVehicleConnectionSessionConnectionStateConnected	PKVehicleConnectionSessionConnectionState			-	-	a9edcd0b5a96be90
+enumconst	c:@E@PKVehicleConnectionSessionConnectionState@PKVehicleConnectionSessionConnectionStateConnecting	PKVehicleConnectionSessionConnectionState			-	-	411e3dee0b0caaba
+enumconst	c:@E@PKVehicleConnectionSessionConnectionState@PKVehicleConnectionSessionConnectionStateFailedToConnect	PKVehicleConnectionSessionConnectionState			-	-	c31ff9104c9424d0
+protocol	c:objc(pl)PKVehicleConnectionDelegate	-			ios=15.4/-/-/0	-	d27e753284ffaeaf
+conforms	-	PKVehicleConnectionDelegate	NSObject		-	-	297d5ba6c1ba0d95
+method	c:objc(pl)PKVehicleConnectionDelegate(im)sessionDidChangeConnectionState:	-			ios=15.4/-/-/0	-	f0bac74f0fbf168a
+method	c:objc(pl)PKVehicleConnectionDelegate(im)sessionDidReceiveData:	-			ios=15.4/-/-/0	-	18c79303e2a2339b
+interface	c:objc(cs)PKVehicleConnectionSession	-			ios=15.4/-/-/0	-	a189c64de01fd646
+super	-	PKVehicleConnectionSession	NSObject		-	-	7db87b222bfcfac9
+method	c:objc(cs)PKVehicleConnectionSession(im)init	-			*unavailable ios=15.4/-/-/0	-	786aa958424c2eec
+method	c:objc(cs)PKVehicleConnectionSession(cm)new	-			*unavailable ios=15.4/-/-/0	-	7747b44f5709c98c
+property	c:objc(cs)PKVehicleConnectionSession(py)delegate	-			ios=15.4/-/-/0	-	124c21c9f185618a
+property	c:objc(cs)PKVehicleConnectionSession(py)connectionStatus	-			ios=15.4/-/-/0	-	64394223193c87bc
+method	c:objc(cs)PKVehicleConnectionSession(cm)sessionForPass:delegate:completion:	-			ios=15.4/-/-/0	-	4d34196e98bb0233
+method	c:objc(cs)PKVehicleConnectionSession(im)sendData:error:	-			ios=15.4/-/-/0	-	b4f3450853bc7f1e
+method	c:objc(cs)PKVehicleConnectionSession(im)invalidate	-			ios=15.4/-/-/0	-	41e661e72502f43e
+interface	c:objc(cs)PKIdentityAuthorizationController	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6b927d50247ae44e
+super	-	PKIdentityAuthorizationController	NSObject		-	-	f3e14246d209a06d
+method	c:objc(cs)PKIdentityAuthorizationController(im)checkCanRequestDocument:completion:	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ca417c6bfa9c0963
+method	c:objc(cs)PKIdentityAuthorizationController(im)requestDocument:completion:	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	44d8363a8887d3d9
+method	c:objc(cs)PKIdentityAuthorizationController(im)cancelRequest	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	02f543d58553237d
+interface	c:objc(cs)PKIdentityDocument	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2776b34d1616fa9f
+super	-	PKIdentityDocument	NSObject		-	-	d6056d9171836d5b
+property	c:objc(cs)PKIdentityDocument(py)encryptedData	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	001b2f0345277646
+method	c:objc(cs)PKIdentityDocument(im)init	-			*unavailable ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c2f0341d1fe2cef0
+method	c:objc(cs)PKIdentityDocument(cm)new	-			*unavailable ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	19605cef7b5be008
+protocol	c:objc(pl)PKIdentityDocumentDescriptor	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2e85315c69067c93
+conforms	-	PKIdentityDocumentDescriptor	NSObject		-	-	242d73d9dbfe1ca3
+property	c:objc(pl)PKIdentityDocumentDescriptor(py)elements	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	621f7ffde7edb7e3
+method	c:objc(pl)PKIdentityDocumentDescriptor(im)intentToStoreForElement:	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	866e078b2d373d71
+method	c:objc(pl)PKIdentityDocumentDescriptor(im)addElements:withIntentToStore:	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fb975f7fe8b870d1
+interface	c:objc(cs)PKIdentityDriversLicenseDescriptor	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fab6b68ddf193ae8
+super	-	PKIdentityDriversLicenseDescriptor	NSObject		-	-	2cf72578f9717aa4
+conforms	-	PKIdentityDriversLicenseDescriptor	PKIdentityDocumentDescriptor		-	-	8e2815b703776d86
+interface	c:objc(cs)PKIdentityNationalIDCardDescriptor	-			ios=18.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fb24b8e6d5c2813f
+super	-	PKIdentityNationalIDCardDescriptor	NSObject		-	-	1804774b2e1c6dd8
+conforms	-	PKIdentityNationalIDCardDescriptor	PKIdentityDocumentDescriptor		-	-	80c1a228dd037b4d
+property	c:objc(cs)PKIdentityNationalIDCardDescriptor(py)regionCode	-			ios=18.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f9397f2f4a37bb7e
+interface	c:objc(cs)PKIdentityPhotoIDDescriptor	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ab4acd2701686af3
+super	-	PKIdentityPhotoIDDescriptor	NSObject		-	-	5a9bb735b24592ce
+conforms	-	PKIdentityPhotoIDDescriptor	PKIdentityDocumentDescriptor		-	-	abd2fe004da94630
+interface	c:objc(cs)PKIdentityAnyOfDescriptor	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1dd3ad585c2d933f
+super	-	PKIdentityAnyOfDescriptor	NSObject		-	-	504fb3f4c1845654
+conforms	-	PKIdentityAnyOfDescriptor	PKIdentityDocumentDescriptor		-	-	0eeea2248de7a559
+property	c:objc(cs)PKIdentityAnyOfDescriptor(py)descriptors	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c56a189b19b1c241
+method	c:objc(cs)PKIdentityAnyOfDescriptor(im)initWithDescriptors:	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f250bb11fd8e5ae9
+method	c:objc(cs)PKIdentityAnyOfDescriptor(im)init	-			*unavailable ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3a5fed1625f7550c
+method	c:objc(cs)PKIdentityAnyOfDescriptor(cm)new	-			*unavailable ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d506d965ebdf2506
+interface	c:objc(cs)PKIdentityElement	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7df6617ade763664
+super	-	PKIdentityElement	NSObject		-	-	5aad38bdbc2dd7ea
+conforms	-	PKIdentityElement	NSCopying		-	-	d68e623951f37f9d
+property	c:objc(cs)PKIdentityElement(cpy)givenNameElement	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7a305a362536e891
+property	c:objc(cs)PKIdentityElement(cpy)familyNameElement	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ef3f79e581fc1479
+property	c:objc(cs)PKIdentityElement(cpy)portraitElement	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8f5ccc6ada2b1142
+property	c:objc(cs)PKIdentityElement(cpy)addressElement	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a4d4683820a2f5df
+property	c:objc(cs)PKIdentityElement(cpy)heightElement	-			ios=26.0/-/-/0	-	c42470f2f1660000
+property	c:objc(cs)PKIdentityElement(cpy)weightElement	-			ios=26.0/-/-/0	-	ab364cbdd7bcdae3
+property	c:objc(cs)PKIdentityElement(cpy)eyeColorElement	-			ios=26.0/-/-/0	-	c595ecc4213755c3
+property	c:objc(cs)PKIdentityElement(cpy)hairColorElement	-			ios=26.0/-/-/0	-	1538918935f77c9c
+property	c:objc(cs)PKIdentityElement(cpy)organDonorStatusElement	-			ios=26.0/-/-/0	-	1733442828dab29b
+property	c:objc(cs)PKIdentityElement(cpy)veteranStatusElement	-			ios=26.0/-/-/0	-	01908d19c36443b2
+property	c:objc(cs)PKIdentityElement(cpy)issuingAuthorityElement	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6d19597804004101
+property	c:objc(cs)PKIdentityElement(cpy)documentIssueDateElement	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	56a362531e0f6287
+property	c:objc(cs)PKIdentityElement(cpy)documentExpirationDateElement	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	eaa8d12cbbfa8ce4
+property	c:objc(cs)PKIdentityElement(cpy)documentDHSComplianceStatusElement	-			ios=17.2/-/-/0	-	ba9ec5dac2e57b09
+property	c:objc(cs)PKIdentityElement(cpy)documentNumberElement	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9aaa301c54fd9590
+property	c:objc(cs)PKIdentityElement(cpy)drivingPrivilegesElement	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4706824685e0ce3d
+property	c:objc(cs)PKIdentityElement(cpy)ageElement	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2ed2923018675c92
+property	c:objc(cs)PKIdentityElement(cpy)dateOfBirthElement	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d4998b75e0c13e0c
+property	c:objc(cs)PKIdentityElement(cpy)sexElement	-			ios=17.2/-/-/0	-	0e412eaeee2f48a2
+method	c:objc(cs)PKIdentityElement(cm)ageThresholdElementWithAge:	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	139184717bdb4579
+method	c:objc(cs)PKIdentityElement(im)init	-			*unavailable ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d9147aa36722351f
+method	c:objc(cs)PKIdentityElement(cm)new	-			*unavailable ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fe1cdc797544e9ff
+var	c:@PKIdentityErrorDomain	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	fc828c24a8c68921
+typedef	c:@T@PKIdentityError	-			-	-	e9e46ad0ab06a24a
+enum	c:@E@PKIdentityError	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	08282c599250610a
+enumconst	c:@E@PKIdentityError@PKIdentityErrorUnknown	PKIdentityError			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	d9a8a8292730851d
+enumconst	c:@E@PKIdentityError@PKIdentityErrorNotSupported	PKIdentityError			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	6dca1746efdbe699
+enumconst	c:@E@PKIdentityError@PKIdentityErrorCancelled	PKIdentityError			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	b69eab9f119dafe9
+enumconst	c:@E@PKIdentityError@PKIdentityErrorNetworkUnavailable	PKIdentityError			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	af68a24356d1feb0
+enumconst	c:@E@PKIdentityError@PKIdentityErrorNoElementsRequested	PKIdentityError			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	e60747788f2b726c
+enumconst	c:@E@PKIdentityError@PKIdentityErrorRequestAlreadyInProgress	PKIdentityError			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	de58a42fa6aa7945
+enumconst	c:@E@PKIdentityError@PKIdentityErrorInvalidNonce	PKIdentityError			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	c87e9a41334f46c7
+enumconst	c:@E@PKIdentityError@PKIdentityErrorInvalidElement	PKIdentityError			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	c0516220967d718f
+enumconst	c:@E@PKIdentityError@PKIdentityErrorRegionNotSupported	PKIdentityError			ios=18.0/-/-/0	-	b9ef038ae4790aa1
+interface	c:objc(cs)PKIdentityIntentToStore	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c556f308e3056fd1
+super	-	PKIdentityIntentToStore	NSObject		-	-	9e8e7023d473de7c
+conforms	-	PKIdentityIntentToStore	NSCopying		-	-	619f1855d1eccf4b
+property	c:objc(cs)PKIdentityIntentToStore(cpy)willNotStoreIntent	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e90b91a4265d9c15
+property	c:objc(cs)PKIdentityIntentToStore(cpy)mayStoreIntent	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	764016479562de19
+method	c:objc(cs)PKIdentityIntentToStore(cm)mayStoreIntentForDays:	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	188d5f1fb52339f0
+method	c:objc(cs)PKIdentityIntentToStore(im)init	-			*unavailable ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	73da3b56594851c1
+method	c:objc(cs)PKIdentityIntentToStore(cm)new	-			*unavailable ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	086e7cc7d6bfd103
+interface	c:objc(cs)PKIdentityRequest	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0528304453813c20
+super	-	PKIdentityRequest	NSObject		-	-	f111a1c97beecf66
+property	c:objc(cs)PKIdentityRequest(py)descriptor	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3b77ed7b567aeda2
+property	c:objc(cs)PKIdentityRequest(py)nonce	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0e313ca66dc1c509
+property	c:objc(cs)PKIdentityRequest(py)merchantIdentifier	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	314bfd7a2057b620
+property	c:objc(cs)PKIdentityRequest(py)usageDescriptionKey	-			ios=26.2/-/-/0,xros=26.2/-/-/0	-	8f3b430d9a26244b
+typedef	c:@T@PKIdentityButtonStyle	-			-	-	8eb7b5d03f504dc3
+enum	c:@E@PKIdentityButtonStyle	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	41b28cf65b5e1827
+enumconst	c:@E@PKIdentityButtonStyle@PKIdentityButtonStyleBlack	PKIdentityButtonStyle			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f266deb37aa3317d
+enumconst	c:@E@PKIdentityButtonStyle@PKIdentityButtonStyleBlackOutline	PKIdentityButtonStyle			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	eeba9197c5c38b42
+typedef	c:@T@PKIdentityButtonLabel	-			-	-	b6201cc85aea3947
+enum	c:@E@PKIdentityButtonLabel	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	92af2b34b219227e
+enumconst	c:@E@PKIdentityButtonLabel@PKIdentityButtonLabelVerifyIdentity	PKIdentityButtonLabel			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f53f1ef7a67de1d5
+enumconst	c:@E@PKIdentityButtonLabel@PKIdentityButtonLabelVerify	PKIdentityButtonLabel			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3ddeb0cba77a971c
+enumconst	c:@E@PKIdentityButtonLabel@PKIdentityButtonLabelVerifyAge	PKIdentityButtonLabel			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	09ea8d77985aca4d
+enumconst	c:@E@PKIdentityButtonLabel@PKIdentityButtonLabelContinue	PKIdentityButtonLabel			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	85573472efa39097
+interface	c:objc(cs)PKIdentityButton	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5bd94ae30064036c
+super	-	PKIdentityButton	UIControl		-	-	6f5549a3f72f4697
+method	c:objc(cs)PKIdentityButton(cm)buttonWithLabel:style:	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ff1773a76fa613b2
+method	c:objc(cs)PKIdentityButton(im)initWithLabel:style:	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	25b0e863147636a8
+method	c:objc(cs)PKIdentityButton(im)initWithFrame:	-			*unavailable ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	39ae43007e5b670a
+method	c:objc(cs)PKIdentityButton(im)initWithFrame:primaryAction:	-			*unavailable ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2c196d2aa4a07245
+property	c:objc(cs)PKIdentityButton(py)cornerRadius	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ba781f64399f7b74
+typedef	c:@T@PKPayLaterDisplayStyle	-			-	-	0843ad59c36acb5c
+enum	c:@E@PKPayLaterDisplayStyle	-			ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	498cbedc4d132f1c
+enumconst	c:@E@PKPayLaterDisplayStyle@PKPayLaterDisplayStyleStandard	PKPayLaterDisplayStyle			ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a8258443f96546f0
+enumconst	c:@E@PKPayLaterDisplayStyle@PKPayLaterDisplayStyleBadge	PKPayLaterDisplayStyle			ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fa3932a04d2619d3
+enumconst	c:@E@PKPayLaterDisplayStyle@PKPayLaterDisplayStyleCheckout	PKPayLaterDisplayStyle			ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3a0726b619820138
+enumconst	c:@E@PKPayLaterDisplayStyle@PKPayLaterDisplayStylePrice	PKPayLaterDisplayStyle			ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	58c56cfd47c92d60
+typedef	c:@T@PKPayLaterAction	-			-	-	810236974984672a
+enum	c:@E@PKPayLaterAction	-			ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	80db9de6ab9c0fdc
+enumconst	c:@E@PKPayLaterAction@PKPayLaterActionLearnMore	PKPayLaterAction			ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4ae6248adc9aa28f
+enumconst	c:@E@PKPayLaterAction@PKPayLaterActionCalculator	PKPayLaterAction			ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3e91a516488f635f
+function	c:@F@PKPayLaterValidateAmount	-			ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b74b6e121dd587b3
+protocol	c:objc(pl)PKPayLaterViewDelegate	-			ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6f4d72e536786e39
+conforms	-	PKPayLaterViewDelegate	NSObject		-	-	a319ad4c8193af09
+method	c:objc(pl)PKPayLaterViewDelegate(im)payLaterViewDidUpdateHeight:	-			ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5045657ff0e0975c
+interface	c:objc(cs)PKPayLaterView	-			ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	21ef18572bfbe93c
+super	-	PKPayLaterView	UIView		-	-	a097da192ac3ace7
+method	c:objc(cs)PKPayLaterView(im)init	-			*unavailable ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	33d57ab87608d4ff
+method	c:objc(cs)PKPayLaterView(cm)new	-			*unavailable ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6f485a1c065e9e1a
+method	c:objc(cs)PKPayLaterView(im)initWithFrame:	-			*unavailable ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1e63b9f0c9f7fa10
+method	c:objc(cs)PKPayLaterView(im)initWithCoder:	-			*unavailable ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	169170fb9c4d4c3e
+method	c:objc(cs)PKPayLaterView(im)initWithAmount:currencyCode:	-			ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e596cc4e0ffd8ba7
+property	c:objc(cs)PKPayLaterView(py)delegate	-			ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6b72021b3ddf00ae
+property	c:objc(cs)PKPayLaterView(py)amount	-			ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b823dcea80d68519
+property	c:objc(cs)PKPayLaterView(py)currencyCode	-			ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3a17282aa244fbc7
+property	c:objc(cs)PKPayLaterView(py)displayStyle	-			ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	577658ad90c36c41
+property	c:objc(cs)PKPayLaterView(py)action	-			ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b776be2e80edbd1a
+interface	c:objc(cs)PKPassRelevantDate	-			-	-	bbb0b19c270baab4
+super	-	PKPassRelevantDate	NSObject		-	-	3ab4033298c14a4f
+property	c:objc(cs)PKPassRelevantDate(py)interval	-			-	-	8dca79fd9d459abb
+property	c:objc(cs)PKPassRelevantDate(py)date	-			-	-	6209fc1d70b884ef
+category	c:objc(ext)PKPassRelevantDate	-	-		-	-	c982124c307095c3
+method	c:objc(cs)PKPassRelevantDate(cm)new	-			*unavailable	-	7849678c4ce91bf1
+method	c:objc(cs)PKPassRelevantDate(im)init	-			*unavailable	-	50167dc9e189dddb

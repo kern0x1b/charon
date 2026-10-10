@@ -1,0 +1,173 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+var	c:@CLSErrorCodeDomain	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	48204f9af0497c89
+typedef	c:@T@CLSErrorCode	-			-	-	5784e949afbd18a6
+enum	c:@E@CLSErrorCode	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	67559ff492ae7dd8
+enumconst	c:@E@CLSErrorCode@CLSErrorCodeNone	CLSErrorCode			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b78b2e5f414e6e33
+enumconst	c:@E@CLSErrorCode@CLSErrorCodeClassKitUnavailable	CLSErrorCode			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	12056326f8f9bf23
+enumconst	c:@E@CLSErrorCode@CLSErrorCodeInvalidArgument	CLSErrorCode			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cee9e79e35d96a1a
+enumconst	c:@E@CLSErrorCode@CLSErrorCodeInvalidModification	CLSErrorCode			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ec626065cf0cb355
+enumconst	c:@E@CLSErrorCode@CLSErrorCodeAuthorizationDenied	CLSErrorCode			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fe616e18a5a5437e
+enumconst	c:@E@CLSErrorCode@CLSErrorCodeDatabaseInaccessible	CLSErrorCode			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	58a1c47839e7351d
+enumconst	c:@E@CLSErrorCode@CLSErrorCodeLimits	CLSErrorCode			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7288c5cd7a57e7a2
+enumconst	c:@E@CLSErrorCode@CLSErrorCodeInvalidCreate	CLSErrorCode			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	648b3505002bdac4
+enumconst	c:@E@CLSErrorCode@CLSErrorCodeInvalidUpdate	CLSErrorCode			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	81256181038c2b9e
+enumconst	c:@E@CLSErrorCode@CLSErrorCodePartialFailure	CLSErrorCode			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a12d9009f60d3dae
+enumconst	c:@E@CLSErrorCode@CLSErrorCodeInvalidAccountCredentials	CLSErrorCode			ios=15.1/-/-/0,maccatalyst=15.1/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a52ff19a84e490f5
+typedef	c:@T@CLSErrorUserInfoKey	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	faa538bfbaf66946
+var	c:@CLSErrorObjectKey	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	70210ba7a72ee224
+var	c:@CLSErrorUnderlyingErrorsKey	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	aefd8754554cbb5e
+var	c:@CLSErrorSuccessfulObjectsKey	-			ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b7b4860067c5672b
+typedef	c:@T@CLSPredicateKeyPath	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	61179d78b8fbe123
+var	c:@CLSPredicateKeyPathDateCreated	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6f80da0235fb812a
+var	c:@CLSPredicateKeyPathIdentifier	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cf44a1a2f3d37401
+var	c:@CLSPredicateKeyPathTitle	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8ec723726b465546
+var	c:@CLSPredicateKeyPathUniversalLinkURL	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	113830881b6eb88f
+var	c:@CLSPredicateKeyPathTopic	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f10d5522391e87de
+var	c:@CLSPredicateKeyPathParent	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b49124393124a480
+interface	c:objc(cs)CLSObject	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e1afdf2bb56cd1a7
+super	-	CLSObject	NSObject		-	-	0634cdf4c3194947
+conforms	-	CLSObject	NSSecureCoding		-	-	362b555441d939cc
+property	c:objc(cs)CLSObject(py)dateCreated	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bcaaa302963704e8
+property	c:objc(cs)CLSObject(py)dateLastModified	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7596741a7a52c022
+method	c:objc(cs)CLSObject(cm)new	-			*unavailable ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1d49c1b359cafef9
+method	c:objc(cs)CLSObject(im)init	-			*unavailable ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1f3fa43cbd02f1dd
+typedef	c:@T@CLSProgressReportingCapabilityKind	-			-	-	741f8481f5407801
+enum	c:@E@CLSProgressReportingCapabilityKind	-			ios=14/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	04495e83b762bcc8
+enumconst	c:@E@CLSProgressReportingCapabilityKind@CLSProgressReportingCapabilityKindDuration	CLSProgressReportingCapabilityKind			ios=14/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	843604acfeab46f7
+enumconst	c:@E@CLSProgressReportingCapabilityKind@CLSProgressReportingCapabilityKindPercent	CLSProgressReportingCapabilityKind			ios=14/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5cc56d957af2582b
+enumconst	c:@E@CLSProgressReportingCapabilityKind@CLSProgressReportingCapabilityKindBinary	CLSProgressReportingCapabilityKind			ios=14/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c7c12e6a9636d2fc
+enumconst	c:@E@CLSProgressReportingCapabilityKind@CLSProgressReportingCapabilityKindQuantity	CLSProgressReportingCapabilityKind			ios=14/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	64fe3416b0d95cbb
+enumconst	c:@E@CLSProgressReportingCapabilityKind@CLSProgressReportingCapabilityKindScore	CLSProgressReportingCapabilityKind			ios=14/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	736b794f85701de1
+interface	c:objc(cs)CLSProgressReportingCapability	-			ios=14/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	195ac17536fe6e76
+super	-	CLSProgressReportingCapability	CLSObject		-	-	03f5506ec724c66f
+property	c:objc(cs)CLSProgressReportingCapability(py)kind	-			ios=14/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a1166083d2772fa7
+property	c:objc(cs)CLSProgressReportingCapability(py)details	-			ios=14/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	119558e0ec1430fc
+method	c:objc(cs)CLSProgressReportingCapability(im)initWithKind:details:	-			ios=14/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0806339aa4027c67
+typedef	c:@T@CLSContextType	-			-	-	f2228aae70ea8fcc
+enum	c:@E@CLSContextType	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	56169dfb0335be36
+enumconst	c:@E@CLSContextType@CLSContextTypeNone	CLSContextType			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0451f026ec839055
+enumconst	c:@E@CLSContextType@CLSContextTypeApp	CLSContextType			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	983c44710fce6813
+enumconst	c:@E@CLSContextType@CLSContextTypeChapter	CLSContextType			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fd5289d541933f35
+enumconst	c:@E@CLSContextType@CLSContextTypeSection	CLSContextType			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	948ca766bcda366f
+enumconst	c:@E@CLSContextType@CLSContextTypeLevel	CLSContextType			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	75dbbff9897adaf2
+enumconst	c:@E@CLSContextType@CLSContextTypePage	CLSContextType			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	607325b1813fafe3
+enumconst	c:@E@CLSContextType@CLSContextTypeTask	CLSContextType			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a0e340d0ff9ed770
+enumconst	c:@E@CLSContextType@CLSContextTypeChallenge	CLSContextType			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6d3a1d253d372cd6
+enumconst	c:@E@CLSContextType@CLSContextTypeQuiz	CLSContextType			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c697d10032ab0515
+enumconst	c:@E@CLSContextType@CLSContextTypeExercise	CLSContextType			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6d3ad1e10ced23ed
+enumconst	c:@E@CLSContextType@CLSContextTypeLesson	CLSContextType			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c1cc8923a499cacf
+enumconst	c:@E@CLSContextType@CLSContextTypeBook	CLSContextType			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6dbdf7451434717b
+enumconst	c:@E@CLSContextType@CLSContextTypeGame	CLSContextType			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	134a763dea015816
+enumconst	c:@E@CLSContextType@CLSContextTypeDocument	CLSContextType			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	845166fb8e41194e
+enumconst	c:@E@CLSContextType@CLSContextTypeAudio	CLSContextType			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7db0ad6b61beecb1
+enumconst	c:@E@CLSContextType@CLSContextTypeVideo	CLSContextType			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	de0820493bf8114d
+enumconst	c:@E@CLSContextType@CLSContextTypeCourse	CLSContextType			ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0767bf87e0fe358b
+enumconst	c:@E@CLSContextType@CLSContextTypeCustom	CLSContextType			ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e52955932e1fd825
+typedef	c:@T@CLSContextTopic	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d078f60112d6cd5e
+var	c:@CLSContextTopicMath	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	eef74a19c37f10c8
+var	c:@CLSContextTopicScience	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	995c376469971f37
+var	c:@CLSContextTopicLiteracyAndWriting	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6d112b3bb9ef2f8d
+var	c:@CLSContextTopicWorldLanguage	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0d878cf2117f1555
+var	c:@CLSContextTopicSocialScience	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	98563094121e4042
+var	c:@CLSContextTopicComputerScienceAndEngineering	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6ba186921a4bbd95
+var	c:@CLSContextTopicArtsAndMusic	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1c9569dedc8d26a5
+var	c:@CLSContextTopicHealthAndFitness	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ff35c299ffcd4d81
+interface	c:objc(cs)CLSContext	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5d49eb0d025f8d91
+super	-	CLSContext	CLSObject		-	-	a08e7c6c160fdca8
+method	c:objc(cs)CLSContext(cm)new	-			*unavailable ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f0f008b2c40293b1
+method	c:objc(cs)CLSContext(im)init	-			*unavailable ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a9bbc6045d183560
+property	c:objc(cs)CLSContext(py)identifierPath	-			ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4ee48a750fd7dcfa
+property	c:objc(cs)CLSContext(py)identifier	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d79d2144a7bb0a4c
+property	c:objc(cs)CLSContext(py)universalLinkURL	-			ios=11.4/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	02d169574dd95e87
+property	c:objc(cs)CLSContext(py)type	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	66aab64b56f6e87f
+property	c:objc(cs)CLSContext(py)customTypeName	-			ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c73c33f8f90120b0
+property	c:objc(cs)CLSContext(py)title	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	081b209fa2a5324f
+property	c:objc(cs)CLSContext(py)displayOrder	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	185d69774b87c171
+property	c:objc(cs)CLSContext(py)topic	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ba897b4c76e1a497
+property	c:objc(cs)CLSContext(py)assignable	-			ios=14/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7748a615e2beea6d
+property	c:objc(cs)CLSContext(py)suggestedAge	-			ios=14/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0ff10123bb1f858c
+property	c:objc(cs)CLSContext(py)suggestedCompletionTime	-			ios=14/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d3ba77baca2781f1
+property	c:objc(cs)CLSContext(py)progressReportingCapabilities	-			ios=14/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	69c76033c9718a90
+property	c:objc(cs)CLSContext(py)summary	-			ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2d6594c3e7f2dde8
+property	c:objc(cs)CLSContext(py)thumbnail	-			ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0521640c0fd09323
+method	c:objc(cs)CLSContext(im)initWithType:identifier:title:	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1a10d5b90f5be66f
+property	c:objc(cs)CLSContext(py)active	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	432b694893734122
+method	c:objc(cs)CLSContext(im)becomeActive	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7d167e9b12bce9af
+method	c:objc(cs)CLSContext(im)resignActive	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	da3048e32fd320bd
+method	c:objc(cs)CLSContext(im)setType:	-			ios=14/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	04b591f4dc475dc5
+method	c:objc(cs)CLSContext(im)addProgressReportingCapabilities:	-			ios=14/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	86b5e38f6c5a9a52
+method	c:objc(cs)CLSContext(im)resetProgressReportingCapabilities	-			ios=14/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8d3e310b78658b03
+category	c:objc(cy)CLSContext@Hierarchy	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	36cd09277429d2b6
+property	c:objc(cs)CLSContext(py)parent	Hierarchy			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c87d97dad7c64d27
+method	c:objc(cs)CLSContext(im)removeFromParent	Hierarchy			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2661bc672f7cbd1b
+method	c:objc(cs)CLSContext(im)addChildContext:	Hierarchy			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f7202e5fb559e808
+method	c:objc(cs)CLSContext(im)descendantMatchingIdentifierPath:completion:	Hierarchy			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6f041666dd0530c2
+property	c:objc(cs)CLSContext(py)navigationChildContexts	Hierarchy			ios=14.5/-/-/0,maccatalyst=14.5/-/-/0,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ce147e3eff272e3f
+method	c:objc(cs)CLSContext(im)addNavigationChildContext:	Hierarchy			ios=14.5/-/-/0,maccatalyst=14.5/-/-/0,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f8ebcbeb232f2c6f
+method	c:objc(cs)CLSContext(im)removeNavigationChildContext:	Hierarchy			ios=14.5/-/-/0,maccatalyst=14.5/-/-/0,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8e94e79510a4545b
+interface	c:objc(cs)CLSActivityItem	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	346e1506221d9c28
+super	-	CLSActivityItem	CLSObject		-	-	a72c2cc754301a68
+property	c:objc(cs)CLSActivityItem(py)title	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	26d7c8e2dd836bfb
+property	c:objc(cs)CLSActivityItem(py)identifier	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5789c9c7b8a54a0f
+method	c:objc(cs)CLSActivityItem(cm)new	-			*unavailable ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f832d0a5322dd5a2
+method	c:objc(cs)CLSActivityItem(im)init	-			*unavailable ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4117ba3c3ec33fc3
+interface	c:objc(cs)CLSActivity	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1ba7291ded5527d7
+super	-	CLSActivity	CLSObject		-	-	bddcf018a1183946
+property	c:objc(cs)CLSActivity(py)progress	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c79511d00afb83a8
+property	c:objc(cs)CLSActivity(py)duration	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b90d105825cb7aee
+property	c:objc(cs)CLSActivity(py)primaryActivityItem	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8a0e4053d670b5f8
+method	c:objc(cs)CLSActivity(im)addProgressRangeFromStart:toEnd:	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cec238ee73d00239
+method	c:objc(cs)CLSActivity(im)addAdditionalActivityItem:	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7400697988b62910
+property	c:objc(cs)CLSActivity(py)additionalActivityItems	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2f1882e732ce2e93
+category	c:objc(cy)CLSActivity@Activation	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7f3b886f2e51b587
+property	c:objc(cs)CLSActivity(py)started	Activation			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	65321fea2e9928cb
+method	c:objc(cs)CLSActivity(im)start	Activation			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9277afdea4f5390d
+method	c:objc(cs)CLSActivity(im)stop	Activation			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	81477f3b476dfa67
+method	c:objc(cs)CLSActivity(im)removeAllActivityItems	Activation			ios=14.5/-/-/0,maccatalyst=14.5/-/-/0,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0560af5523f02d33
+category	c:objc(cy)CLSContext@Activity	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bfb1160d05ea48f9
+property	c:objc(cs)CLSContext(py)currentActivity	Activity			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b8950105bf241a9a
+method	c:objc(cs)CLSContext(im)createNewActivity	Activity			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d446ded29fea6ff2
+interface	c:objc(cs)CLSScoreItem	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	83fe1a41a99869d8
+super	-	CLSScoreItem	CLSActivityItem		-	-	2164e1a2a1106e9a
+property	c:objc(cs)CLSScoreItem(py)score	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	24b18f2368d73a45
+property	c:objc(cs)CLSScoreItem(py)maxScore	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3fce436825c984eb
+method	c:objc(cs)CLSScoreItem(im)initWithIdentifier:title:score:maxScore:	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	05e1919d59a505ae
+typedef	c:@T@CLSBinaryValueType	-			-	-	175ae01585bbf08c
+enum	c:@E@CLSBinaryValueType	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d4beaa47c8588c32
+enumconst	c:@E@CLSBinaryValueType@CLSBinaryValueTypeTrueFalse	CLSBinaryValueType			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5c26a7d676d0b973
+enumconst	c:@E@CLSBinaryValueType@CLSBinaryValueTypePassFail	CLSBinaryValueType			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0ceff701603c4ae9
+enumconst	c:@E@CLSBinaryValueType@CLSBinaryValueTypeYesNo	CLSBinaryValueType			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	197361cd3c3631b6
+enumconst	c:@E@CLSBinaryValueType@CLSBinaryValueTypeCorrectIncorrect	CLSBinaryValueType			ios=12.2/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	82e012a43b591e98
+interface	c:objc(cs)CLSBinaryItem	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a451a3338838d5e6
+super	-	CLSBinaryItem	CLSActivityItem		-	-	056167556b4c76a1
+property	c:objc(cs)CLSBinaryItem(py)value	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	568231379a8ccbd4
+property	c:objc(cs)CLSBinaryItem(py)valueType	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1300c09cb246ef85
+method	c:objc(cs)CLSBinaryItem(im)initWithIdentifier:title:type:	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2c25abeecd3a1d89
+interface	c:objc(cs)CLSQuantityItem	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6e7f08ff9a3649f7
+super	-	CLSQuantityItem	CLSActivityItem		-	-	ae13c9b85e6cc87d
+property	c:objc(cs)CLSQuantityItem(py)quantity	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f9c0a5fa8619ac40
+method	c:objc(cs)CLSQuantityItem(im)initWithIdentifier:title:	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8cce0fc2df4ba647
+protocol	c:objc(pl)CLSDataStoreDelegate	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e482ee83dff08c43
+conforms	-	CLSDataStoreDelegate	NSObject		-	-	494520416d469de2
+method	c:objc(pl)CLSDataStoreDelegate(im)createContextForIdentifier:parentContext:parentIdentifierPath:	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6263ccd66e4ae4c1
+interface	c:objc(cs)CLSDataStore	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4974be176cb12259
+super	-	CLSDataStore	NSObject		-	-	267387109f42f124
+property	c:objc(cs)CLSDataStore(cpy)shared	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	df3ff181e0df2302
+property	c:objc(cs)CLSDataStore(py)mainAppContext	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e93e1a879067a5ae
+property	c:objc(cs)CLSDataStore(py)activeContext	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d4d75004a3cd1503
+property	c:objc(cs)CLSDataStore(py)runningActivity	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c90172c759dc4287
+property	c:objc(cs)CLSDataStore(py)delegate	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fc102bdfa8423f0e
+method	c:objc(cs)CLSDataStore(cm)new	-			*unavailable ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e79f1bcfac9316a6
+method	c:objc(cs)CLSDataStore(im)init	-			*unavailable ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2dd8f5c14955a4b6
+method	c:objc(cs)CLSDataStore(im)saveWithCompletion:	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	22f6ac1ccb80fe20
+method	c:objc(cs)CLSDataStore(im)completeAllAssignedActivitiesMatching:	-			ios=12.2/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c18fbddffe281528
+category	c:objc(cy)CLSDataStore@Contexts	-			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f13118d452144a55
+method	c:objc(cs)CLSDataStore(im)contextsMatchingPredicate:completion:	Contexts			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1fc2aa67f5882a80
+method	c:objc(cs)CLSDataStore(im)contextsMatchingIdentifierPath:completion:	Contexts			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e17620ab5407b783
+method	c:objc(cs)CLSDataStore(im)removeContext:	Contexts			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4b31293af3edc57e
+method	c:objc(cs)CLSDataStore(im)fetchActivityForURL:completion:	Contexts			ios=14.5/-/-/0,maccatalyst=14.5/-/-/0,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d93c9da9ef5571a5
+category	c:objc(cy)NSUserActivity@CLSDeepLinks	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	8cbfcfa1946a8894
+property	c:objc(cs)NSUserActivity(py)isClassKitDeepLink	CLSDeepLinks			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3fe8c84f1624edfc
+property	c:objc(cs)NSUserActivity(py)contextIdentifierPath	CLSDeepLinks			ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	75509c5aaa2942e2
+protocol	c:objc(pl)CLSContextProvider	-			ios=12.2/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f03acec64fb3312b
+method	c:objc(pl)CLSContextProvider(im)updateDescendantsOfContext:completion:	-			ios=12.2/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	119d6cf070ccb5c1

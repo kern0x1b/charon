@@ -1,0 +1,62 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+typedef	c:@T@MessageComposeResult	-			-	-	2393784050d85f3c
+enum	c:@E@MessageComposeResult	-			ios=4.0/-/-/0	-	9e76d24b4c2367e6
+enumconst	c:@E@MessageComposeResult@MessageComposeResultCancelled	MessageComposeResult			ios=4.0/-/-/0	-	53d3d1c3606c6406
+enumconst	c:@E@MessageComposeResult@MessageComposeResultSent	MessageComposeResult			ios=4.0/-/-/0	-	d03c1f1066e0f695
+enumconst	c:@E@MessageComposeResult@MessageComposeResultFailed	MessageComposeResult			ios=4.0/-/-/0	-	16b1f831e7a5a0e8
+var	c:@MFMessageComposeViewControllerAttachmentURL	-			-	-	209d05e895218bfc
+var	c:@MFMessageComposeViewControllerAttachmentAlternateFilename	-			-	-	4a5e1d251c405d25
+var	c:@MFMessageComposeViewControllerTextMessageAvailabilityDidChangeNotification	-			ios=5.0/-/-/0	-	e91a90dea4922130
+var	c:@MFMessageComposeViewControllerTextMessageAvailabilityKey	-			ios=5.0/-/-/0	-	0d2f1f7cac55b500
+interface	c:objc(cs)MFMessageComposeViewController	-			ios=4.0/-/-/0	-	231d587bd9d81e01
+super	-	MFMessageComposeViewController	UINavigationController		-	-	80bbbb0517ffc401
+method	c:objc(cs)MFMessageComposeViewController(cm)canSendText	-			ios=4.0/-/-/0	-	717e6e41ce648aac
+method	c:objc(cs)MFMessageComposeViewController(cm)canSendSubject	-			ios=7.0/-/-/0	-	61a7dc452e533dfb
+method	c:objc(cs)MFMessageComposeViewController(cm)canSendAttachments	-			ios=7.0/-/-/0	-	5f62d10163f8a19b
+method	c:objc(cs)MFMessageComposeViewController(cm)isSupportedAttachmentUTI:	-			ios=7.0/-/-/0	-	f8c513a5947f0873
+property	c:objc(cs)MFMessageComposeViewController(py)messageComposeDelegate	-			ios=4.0/-/-/0	-	0170b506e08a43aa
+method	c:objc(cs)MFMessageComposeViewController(im)disableUserAttachments	-			ios=7.0/-/-/0	-	99f8201578924863
+property	c:objc(cs)MFMessageComposeViewController(py)recipients	-			ios=4.0/-/-/0	-	ae1fe9ca118730ea
+property	c:objc(cs)MFMessageComposeViewController(py)body	-			ios=4.0/-/-/0	-	e96fc3c0fdd8a1af
+property	c:objc(cs)MFMessageComposeViewController(py)subject	-			ios=7.0/-/-/0	-	b57c95f8541aa57a
+property	c:objc(cs)MFMessageComposeViewController(py)attachments	-			ios=7.0/-/-/0	-	cd4d04c07d6bb06e
+property	c:objc(cs)MFMessageComposeViewController(py)message	-			ios=10.0/-/-/0,xros=-/-/-/1	-	e2eb65b3c5f550a7
+method	c:objc(cs)MFMessageComposeViewController(im)addAttachmentURL:withAlternateFilename:	-			ios=7.0/-/-/0	-	a6223c77cb7efc72
+method	c:objc(cs)MFMessageComposeViewController(im)addAttachmentData:typeIdentifier:filename:	-			ios=7.0/-/-/0	-	c8c919121ae53d61
+method	c:objc(cs)MFMessageComposeViewController(im)insertCollaborationItemProvider:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	06ed328dbb2f83e3
+protocol	c:objc(pl)MFMessageComposeViewControllerDelegate	-			-	-	8cf25649d8116da0
+conforms	-	MFMessageComposeViewControllerDelegate	NSObject		-	-	3891ea360ced8c0b
+method	c:objc(pl)MFMessageComposeViewControllerDelegate(im)messageComposeViewController:didFinishWithResult:	-			-	-	74dea4d612fe11ed
+category	c:objc(cy)MFMessageComposeViewController@UPI	-			ios=4.0/-/-/0	-	e4deb15925541d6e
+method	c:objc(cs)MFMessageComposeViewController(im)setUPIVerificationCodeSendCompletion:	UPI			ios=17.0/-/-/0	-	6f1dd5618471eed2
+typedef	c:@T@MFMailComposeControllerDeferredAction	-			-	-	baf25c81cfee7c41
+enum	c:@E@MFMailComposeControllerDeferredAction	-			-	-	e8c408203191cdd2
+enumconst	c:@E@MFMailComposeControllerDeferredAction@MFMailComposeControllerDeferredActionNone	MFMailComposeControllerDeferredAction			-	-	1251d4885507dee6
+enumconst	c:@E@MFMailComposeControllerDeferredAction@MFMailComposeControllerDeferredActionAdjustInsertionPoint	MFMailComposeControllerDeferredAction			-	-	39200cedc6c475e6
+enumconst	c:@E@MFMailComposeControllerDeferredAction@MFMailComposeControllerDeferredActionAddMissingRecipients	MFMailComposeControllerDeferredAction			-	-	f429d80801c862ac
+typedef	c:@T@MFMailComposeResult	-			-	-	035f90eb5c201065
+enum	c:@E@MFMailComposeResult	-			ios=3.0/-/-/0	-	404c1e28d268b9b7
+enumconst	c:@E@MFMailComposeResult@MFMailComposeResultCancelled	MFMailComposeResult			ios=3.0/-/-/0	-	4226d17db0a77386
+enumconst	c:@E@MFMailComposeResult@MFMailComposeResultSaved	MFMailComposeResult			ios=3.0/-/-/0	-	86b1f6e32ea5a8d0
+enumconst	c:@E@MFMailComposeResult@MFMailComposeResultSent	MFMailComposeResult			ios=3.0/-/-/0	-	7de6d99e91f4f1cc
+enumconst	c:@E@MFMailComposeResult@MFMailComposeResultFailed	MFMailComposeResult			ios=3.0/-/-/0	-	ba2067f6433bf584
+var	c:@MFMailComposeErrorDomain	-			ios=3.0/-/-/0	-	798af6a6b947748b
+typedef	c:@T@MFMailComposeErrorCode	-			-	-	9f706e774e407fce
+enum	c:@E@MFMailComposeErrorCode	-			ios=3.0/-/-/0	-	bc418ec4edb3edf5
+enumconst	c:@E@MFMailComposeErrorCode@MFMailComposeErrorCodeSaveFailed	MFMailComposeErrorCode			ios=3.0/-/-/0	-	225bf2f7b35ff43c
+enumconst	c:@E@MFMailComposeErrorCode@MFMailComposeErrorCodeSendFailed	MFMailComposeErrorCode			ios=3.0/-/-/0	-	ed927e3915d8c3e1
+interface	c:objc(cs)MFMailComposeViewController	-			ios=3.0/-/-/0	-	b67c69ad516507c8
+super	-	MFMailComposeViewController	UINavigationController		-	-	8fce79dd6f521e58
+method	c:objc(cs)MFMailComposeViewController(cm)canSendMail	-			ios=3.0/-/-/0	-	160769465a8f4442
+property	c:objc(cs)MFMailComposeViewController(py)mailComposeDelegate	-			ios=3.0/-/-/0	-	4781968ca67b4fdb
+method	c:objc(cs)MFMailComposeViewController(im)setSubject:	-			ios=3.0/-/-/0	-	b0a15e1e29e94a09
+method	c:objc(cs)MFMailComposeViewController(im)setToRecipients:	-			ios=3.0/-/-/0	-	e23180662de0a1c2
+method	c:objc(cs)MFMailComposeViewController(im)setCcRecipients:	-			ios=3.0/-/-/0	-	92eb308a907c25d3
+method	c:objc(cs)MFMailComposeViewController(im)setBccRecipients:	-			ios=3.0/-/-/0	-	a904165d1951c65c
+method	c:objc(cs)MFMailComposeViewController(im)setMessageBody:isHTML:	-			ios=3.0/-/-/0	-	d4b5b76905c31bf0
+method	c:objc(cs)MFMailComposeViewController(im)addAttachmentData:mimeType:fileName:	-			ios=3.0/-/-/0	-	a9a4ae7ffbe872e8
+method	c:objc(cs)MFMailComposeViewController(im)setPreferredSendingEmailAddress:	-			ios=11.0/-/-/0	-	c13235ab35a6940f
+method	c:objc(cs)MFMailComposeViewController(im)insertCollaborationItemProvider:completionHandler:	-			ios=18.4/-/-/0	-	26d0ecc6fe261fd0
+protocol	c:objc(pl)MFMailComposeViewControllerDelegate	-			-	-	5566a563686f0551
+conforms	-	MFMailComposeViewControllerDelegate	NSObject		-	-	ee6fc591db693a8d
+method	c:objc(pl)MFMailComposeViewControllerDelegate(im)mailComposeController:didFinishWithResult:error:	-			-	-	edf1e779b25807b9

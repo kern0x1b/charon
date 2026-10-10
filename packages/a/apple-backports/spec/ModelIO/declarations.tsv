@@ -1,0 +1,1012 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+protocol	c:objc(pl)MDLAssetResolver	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	2a7deea9c976f1c3
+conforms	-	MDLAssetResolver	NSObject		-	-	776fbd5f1fa06748
+method	c:objc(pl)MDLAssetResolver(im)canResolveAssetNamed:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	9667e64cfbe21b9c
+method	c:objc(pl)MDLAssetResolver(im)resolveAssetNamed:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	24349ae71745d2b1
+interface	c:objc(cs)MDLRelativeAssetResolver	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	342dbdb3d02aed7b
+super	-	MDLRelativeAssetResolver	NSObject		-	-	f5e3ccee6cb6d8c2
+conforms	-	MDLRelativeAssetResolver	MDLAssetResolver		-	-	806b83205ab5f29e
+method	c:objc(cs)MDLRelativeAssetResolver(im)initWithAsset:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	ecf30111c95849f4
+property	c:objc(cs)MDLRelativeAssetResolver(py)asset	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	178ded6bf63e5fd1
+interface	c:objc(cs)MDLPathAssetResolver	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	fbf7f21b6e091419
+super	-	MDLPathAssetResolver	NSObject		-	-	48fa09c0a789302e
+conforms	-	MDLPathAssetResolver	MDLAssetResolver		-	-	f03399e8009081e2
+method	c:objc(cs)MDLPathAssetResolver(im)initWithPath:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	6d2606fd40273789
+property	c:objc(cs)MDLPathAssetResolver(py)path	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	b45c5a6e44957c02
+interface	c:objc(cs)MDLBundleAssetResolver	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	9062fd2c07a54f5f
+super	-	MDLBundleAssetResolver	NSObject		-	-	646e3ba4148871d9
+conforms	-	MDLBundleAssetResolver	MDLAssetResolver		-	-	dcba634719239ed1
+method	c:objc(cs)MDLBundleAssetResolver(im)initWithBundle:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	83cd43c82dbf0937
+property	c:objc(cs)MDLBundleAssetResolver(py)path	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	ced48528e98b8b62
+var	c:@kUTTypeAlembic	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	c929cf29fb4908d0
+var	c:@kUTType3dObject	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	193802e525c4a85f
+var	c:@kUTTypePolygon	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	d97df11fc1e571b9
+var	c:@kUTTypeStereolithography	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	4b0189ac2e75d046
+var	c:@kUTTypeUniversalSceneDescription	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=9.0/-/-/0	-	b5d0b36a1211fc99
+var	c:@kUTTypeUniversalSceneDescriptionMobile	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	bd03c63c24f614b1
+typedef	c:@T@MDLIndexBitDepth	-			-	-	5373d34bd83ac74c
+enum	c:@E@MDLIndexBitDepth	-			-	-	12604e9945a67c2e
+enumconst	c:@E@MDLIndexBitDepth@MDLIndexBitDepthInvalid	MDLIndexBitDepth			-	-	19d0f768ddbb8f13
+enumconst	c:@E@MDLIndexBitDepth@MDLIndexBitDepthUInt8	MDLIndexBitDepth			-	-	d187fda23ea474bb
+enumconst	c:@E@MDLIndexBitDepth@MDLIndexBitDepthUint8	MDLIndexBitDepth			-	-	ff4d0163e15258eb
+enumconst	c:@E@MDLIndexBitDepth@MDLIndexBitDepthUInt16	MDLIndexBitDepth			-	-	6a8316f8b055a726
+enumconst	c:@E@MDLIndexBitDepth@MDLIndexBitDepthUint16	MDLIndexBitDepth			-	-	41d38164727ad571
+enumconst	c:@E@MDLIndexBitDepth@MDLIndexBitDepthUInt32	MDLIndexBitDepth			-	-	82ea1ca8f8c6fe26
+enumconst	c:@E@MDLIndexBitDepth@MDLIndexBitDepthUint32	MDLIndexBitDepth			-	-	887cdfec97b1ed5b
+typedef	c:@T@MDLGeometryType	-			-	-	481d851b823abe29
+enum	c:@E@MDLGeometryType	-			-	-	cf8473b95b35d1e4
+enumconst	c:@E@MDLGeometryType@MDLGeometryTypePoints	MDLGeometryType			-	-	3a9531dcbd86852b
+enumconst	c:@E@MDLGeometryType@MDLGeometryTypeLines	MDLGeometryType			-	-	4cb320ef49af1b9a
+enumconst	c:@E@MDLGeometryType@MDLGeometryTypeTriangles	MDLGeometryType			-	-	ad76a0a775f44bcc
+enumconst	c:@E@MDLGeometryType@MDLGeometryTypeTriangleStrips	MDLGeometryType			-	-	e92239f50b400e97
+enumconst	c:@E@MDLGeometryType@MDLGeometryTypeQuads	MDLGeometryType			-	-	f188a8740ab6f6c9
+enumconst	c:@E@MDLGeometryType@MDLGeometryTypeVariableTopology	MDLGeometryType			-	-	93095a75efbe3b5e
+typedef	c:@T@MDLProbePlacement	-			-	-	cb3d1e1ec07710a4
+enum	c:@E@MDLProbePlacement	-			-	-	d42ca74f87db900f
+enumconst	c:@E@MDLProbePlacement@MDLProbePlacementUniformGrid	MDLProbePlacement			-	-	a318f40c2895d689
+enumconst	c:@E@MDLProbePlacement@MDLProbePlacementIrradianceDistribution	MDLProbePlacement			-	-	e28f2a61582a9347
+typedef	c:@T@MDLDataPrecision	-			-	-	8d3be06d4024b8c5
+enum	c:@E@MDLDataPrecision	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	84e4111e3211157c
+enumconst	c:@E@MDLDataPrecision@MDLDataPrecisionUndefined	MDLDataPrecision			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	5a4ac4c758311543
+enumconst	c:@E@MDLDataPrecision@MDLDataPrecisionFloat	MDLDataPrecision			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	3b8f07a373c1c0ec
+enumconst	c:@E@MDLDataPrecision@MDLDataPrecisionDouble	MDLDataPrecision			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	f674a74ce5f637d9
+protocol	c:objc(pl)MDLNamed	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f3ce047498ed89f7
+property	c:objc(pl)MDLNamed(py)name	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	edaaeeb01c6e6359
+protocol	c:objc(pl)MDLComponent	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	6f14298248e43d1d
+conforms	-	MDLComponent	NSObject		-	-	3823a184806ac508
+protocol	c:objc(pl)MDLObjectContainerComponent	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	72d0de22517246e1
+conforms	-	MDLObjectContainerComponent	MDLComponent		-	-	a4521b50a98724e0
+conforms	-	MDLObjectContainerComponent	NSFastEnumeration		-	-	2d3ae2f6370a8d88
+method	c:objc(pl)MDLObjectContainerComponent(im)addObject:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	b95dcc651f1d0f78
+method	c:objc(pl)MDLObjectContainerComponent(im)removeObject:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f4d7cd820df476a7
+method	c:objc(pl)MDLObjectContainerComponent(im)objectAtIndexedSubscript:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	d3bca0b9393d670e
+property	c:objc(pl)MDLObjectContainerComponent(py)count	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	10ece528c69a1556
+property	c:objc(pl)MDLObjectContainerComponent(py)objects	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	6ae46551d07ee903
+struct	c:@SA@MDLAxisAlignedBoundingBox	-			-	-	4dd8abc0d08de589
+field	c:@SA@MDLAxisAlignedBoundingBox@FI@maxBounds	MDLAxisAlignedBoundingBox			-	-	f45d015f6edde64e
+field	c:@SA@MDLAxisAlignedBoundingBox@FI@minBounds	MDLAxisAlignedBoundingBox			-	-	45abd8d9ea3516d4
+typedef	c:@T@MDLAxisAlignedBoundingBox	-			-	-	3276179809a993ea
+protocol	c:objc(pl)MDLTransformComponent	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	0b507276fcaa298d
+conforms	-	MDLTransformComponent	MDLComponent		-	-	523d6a24ab97943f
+property	c:objc(pl)MDLTransformComponent(py)matrix	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	eb4e8f6772ed4fd1
+property	c:objc(pl)MDLTransformComponent(py)resetsTransform	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	8419df351750b68c
+property	c:objc(pl)MDLTransformComponent(py)minimumTime	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	fece93fc2d9f7445
+property	c:objc(pl)MDLTransformComponent(py)maximumTime	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	5b16af8ffc3954b9
+property	c:objc(pl)MDLTransformComponent(py)keyTimes	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	fdd833fdafd96d9d
+method	c:objc(pl)MDLTransformComponent(im)setLocalTransform:forTime:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	4d5a6269bd415c97
+method	c:objc(pl)MDLTransformComponent(im)setLocalTransform:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	69e4cec85339ae8d
+method	c:objc(pl)MDLTransformComponent(im)localTransformAtTime:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	2cefb722455d6904
+method	c:objc(pl)MDLTransformComponent(cm)globalTransformWithObject:atTime:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	fa720bd96faf57a9
+interface	c:objc(cs)MDLTransform	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	deprecated: Use init instead	450eab566721de91
+super	-	MDLTransform	NSObject		-	-	6d904bec7fa72e8e
+conforms	-	MDLTransform	NSCopying		-	-	802aa39b9c87174a
+conforms	-	MDLTransform	MDLTransformComponent		-	-	108663088a194da1
+method	c:objc(cs)MDLTransform(im)init	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	01f2f514b6f2f72b
+method	c:objc(cs)MDLTransform(im)initWithIdentity	-			ios=9.0/11.0/-/0,macos=10.11/10.13/-/0,tvos=9.0/11.0/-/0	deprecated: Use init instead	d06ff06b4ad6360e
+method	c:objc(cs)MDLTransform(im)initWithTransformComponent:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	bdcfd97e2874b8df
+method	c:objc(cs)MDLTransform(im)initWithTransformComponent:resetsTransform:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	7c2b11992333a785
+method	c:objc(cs)MDLTransform(im)initWithMatrix:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	4fc65d4c30acc40d
+method	c:objc(cs)MDLTransform(im)initWithMatrix:resetsTransform:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	6cfd1d1b80d85f5c
+method	c:objc(cs)MDLTransform(im)setIdentity	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	48ed6a1165f07d5c
+method	c:objc(cs)MDLTransform(im)translationAtTime:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	8df5b9331a03e910
+method	c:objc(cs)MDLTransform(im)rotationAtTime:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	642b792d32d52723
+method	c:objc(cs)MDLTransform(im)shearAtTime:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	88e90d73e0605d24
+method	c:objc(cs)MDLTransform(im)scaleAtTime:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	13bc393fcccf1c5f
+method	c:objc(cs)MDLTransform(im)setMatrix:forTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	93c9757a729dada3
+method	c:objc(cs)MDLTransform(im)setTranslation:forTime:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	4529433e98b370d8
+method	c:objc(cs)MDLTransform(im)setRotation:forTime:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	960c62b8eb4dac41
+method	c:objc(cs)MDLTransform(im)setShear:forTime:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	168e5e6e68220d40
+method	c:objc(cs)MDLTransform(im)setScale:forTime:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	80425d6868beadc4
+method	c:objc(cs)MDLTransform(im)rotationMatrixAtTime:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	fc8c1d6522ac62ae
+property	c:objc(cs)MDLTransform(py)translation	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	b9e2f377f6216509
+property	c:objc(cs)MDLTransform(py)rotation	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	ac2994264b5dfb11
+property	c:objc(cs)MDLTransform(py)shear	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f59bb3e8ed9969d7
+property	c:objc(cs)MDLTransform(py)scale	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	e87a3e013f041eb1
+interface	c:objc(cs)MDLObject	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	23f5ff5a83b98f8e
+super	-	MDLObject	NSObject		-	-	4f10483301d610a3
+conforms	-	MDLObject	MDLNamed		-	-	758c1d60edb7b7db
+property	c:objc(cs)MDLObject(py)components	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	bb9856bc67bfc90c
+method	c:objc(cs)MDLObject(im)setComponent:forProtocol:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	adf8eff0f9fd598e
+method	c:objc(cs)MDLObject(im)componentConformingToProtocol:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	10cc6676e418cc26
+method	c:objc(cs)MDLObject(im)objectForKeyedSubscript:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	17f75ecb3bfd00a1
+method	c:objc(cs)MDLObject(im)setObject:forKeyedSubscript:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	db872dddc67fbded
+property	c:objc(cs)MDLObject(py)parent	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	d75edcc13f1268c3
+property	c:objc(cs)MDLObject(py)instance	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f81010ecc60201c1
+property	c:objc(cs)MDLObject(py)path	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	6a1df883276e70f3
+method	c:objc(cs)MDLObject(im)objectAtPath:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	d168e9e028ddc003
+method	c:objc(cs)MDLObject(im)enumerateChildObjectsOfClass:root:usingBlock:stopPointer:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	cdc57348fa106632
+property	c:objc(cs)MDLObject(py)transform	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	243dfbe73357f8ce
+property	c:objc(cs)MDLObject(py)children	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	a665d8d8cb47a342
+property	c:objc(cs)MDLObject(py)hidden	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	a8bec96b9b3e7578
+method	c:objc(cs)MDLObject(im)addChild:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	7db240e29aa4004a
+method	c:objc(cs)MDLObject(im)boundingBoxAtTime:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	c4d3b29ef747d4ff
+interface	c:objc(cs)MDLObjectContainer	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	fc2f94195fa0ccfd
+super	-	MDLObjectContainer	NSObject		-	-	61257949fcff052f
+conforms	-	MDLObjectContainer	MDLObjectContainerComponent		-	-	194f27e2b3f40dcb
+typedef	c:@T@MDLMeshBufferType	-			-	-	c0f20e0c2d1e798f
+enum	c:@E@MDLMeshBufferType	-			-	-	de2f9cadaa7e467e
+enumconst	c:@E@MDLMeshBufferType@MDLMeshBufferTypeVertex	MDLMeshBufferType			-	-	e622026aba121f94
+enumconst	c:@E@MDLMeshBufferType@MDLMeshBufferTypeIndex	MDLMeshBufferType			-	-	f72abffd1162ccd7
+enumconst	c:@E@MDLMeshBufferType@MDLMeshBufferTypeCustom	MDLMeshBufferType			-	-	0782d6aea4dd44ff
+interface	c:objc(cs)MDLMeshBufferMap	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	89dc17b1f1aa72c3
+super	-	MDLMeshBufferMap	NSObject		-	-	df8c5f59413e0aaa
+method	c:objc(cs)MDLMeshBufferMap(im)initWithBytes:deallocator:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f2e0510e346fe4ca
+property	c:objc(cs)MDLMeshBufferMap(py)bytes	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	0410b873101f8a8b
+protocol	c:objc(pl)MDLMeshBuffer	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	23db7915bd76313f
+conforms	-	MDLMeshBuffer	NSObject		-	-	cac3b414a272a3c7
+conforms	-	MDLMeshBuffer	NSCopying		-	-	19244d4d763a293a
+method	c:objc(pl)MDLMeshBuffer(im)fillData:offset:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	2790719b75789146
+method	c:objc(pl)MDLMeshBuffer(im)map	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f6cd2ab5dc920e45
+property	c:objc(pl)MDLMeshBuffer(py)length	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	14832e903d7dc81b
+property	c:objc(pl)MDLMeshBuffer(py)allocator	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	484e8c62c130e283
+property	c:objc(pl)MDLMeshBuffer(py)zone	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	fd6b4ce8113daf32
+property	c:objc(pl)MDLMeshBuffer(py)type	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	ae1757978110e32a
+interface	c:objc(cs)MDLMeshBufferData	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	170876f2a5aa0847
+super	-	MDLMeshBufferData	NSObject		-	-	3a61bf93017fea42
+conforms	-	MDLMeshBufferData	MDLMeshBuffer		-	-	ff44130a62fc1fc3
+method	c:objc(cs)MDLMeshBufferData(im)initWithType:length:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	a91dde6eab706120
+method	c:objc(cs)MDLMeshBufferData(im)initWithType:data:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	c35db2a03c01fc96
+property	c:objc(cs)MDLMeshBufferData(py)data	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	c8cd8d2b518c34eb
+protocol	c:objc(pl)MDLMeshBufferZone	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	ad6b1b300fdfc101
+conforms	-	MDLMeshBufferZone	NSObject		-	-	bfbdf6346a114e9f
+property	c:objc(pl)MDLMeshBufferZone(py)capacity	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	e376dcfc425099a4
+property	c:objc(pl)MDLMeshBufferZone(py)allocator	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	a1da1bfb9025239a
+protocol	c:objc(pl)MDLMeshBufferAllocator	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	88b58323f0470a66
+conforms	-	MDLMeshBufferAllocator	NSObject		-	-	e4ca4b3716f71a4f
+method	c:objc(pl)MDLMeshBufferAllocator(im)newZone:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	a33904e30b279d17
+method	c:objc(pl)MDLMeshBufferAllocator(im)newZoneForBuffersWithSize:andType:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f6e0d2a5131a88c1
+method	c:objc(pl)MDLMeshBufferAllocator(im)newBuffer:type:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	1b7bae4d80ebd641
+method	c:objc(pl)MDLMeshBufferAllocator(im)newBufferWithData:type:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	476e6aacbc90239d
+method	c:objc(pl)MDLMeshBufferAllocator(im)newBufferFromZone:length:type:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	5ecf3f623fad56b3
+method	c:objc(pl)MDLMeshBufferAllocator(im)newBufferFromZone:data:type:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	3c88368753679f8b
+interface	c:objc(cs)MDLMeshBufferDataAllocator	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	e3ca18994f599666
+super	-	MDLMeshBufferDataAllocator	NSObject		-	-	bc5b3742224b93ab
+conforms	-	MDLMeshBufferDataAllocator	MDLMeshBufferAllocator		-	-	0b68ae91b0abb973
+interface	c:objc(cs)MDLMeshBufferZoneDefault	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	6aca4d05891eafd6
+super	-	MDLMeshBufferZoneDefault	NSObject		-	-	371c382efde94e68
+conforms	-	MDLMeshBufferZoneDefault	MDLMeshBufferZone		-	-	a3f18c35b576cad5
+property	c:objc(cs)MDLMeshBufferZoneDefault(py)capacity	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	e68f62deeb629d4d
+property	c:objc(cs)MDLMeshBufferZoneDefault(py)allocator	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	f4d4a5567a80ba8c
+var	c:@MDLVertexAttributeAnisotropy	-			-	-	9e6f17bf896247a2
+var	c:@MDLVertexAttributeBinormal	-			-	-	9f47285a7bd83802
+var	c:@MDLVertexAttributeBitangent	-			-	-	83cffbe2024fe35b
+var	c:@MDLVertexAttributeColor	-			-	-	8902ac8b6bc1d357
+var	c:@MDLVertexAttributeEdgeCrease	-			-	-	daa412e0d998dd15
+var	c:@MDLVertexAttributeJointIndices	-			-	-	4f550b587e6e15b6
+var	c:@MDLVertexAttributeJointWeights	-			-	-	8f9c95c3408f5314
+var	c:@MDLVertexAttributeNormal	-			-	-	01128a8f400f2572
+var	c:@MDLVertexAttributeOcclusionValue	-			-	-	cba329adc3468fc5
+var	c:@MDLVertexAttributePosition	-			-	-	a6dd659744e812b1
+var	c:@MDLVertexAttributeShadingBasisU	-			-	-	18bc52d428d72d82
+var	c:@MDLVertexAttributeShadingBasisV	-			-	-	baddbad5b6993c16
+var	c:@MDLVertexAttributeSubdivisionStencil	-			-	-	fe7f857b4a796a97
+var	c:@MDLVertexAttributeTangent	-			-	-	d010adc6250bc20a
+var	c:@MDLVertexAttributeTextureCoordinate	-			-	-	3fea8b73e7e7b261
+typedef	c:@T@MDLVertexFormat	-			-	-	5ea8b3c177d1e86c
+enum	c:@E@MDLVertexFormat	-			-	-	e0438428c496caca
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatInvalid	MDLVertexFormat			-	-	db5d8304065dc89c
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatPackedBit	MDLVertexFormat			-	-	8a715c2339bd7df7
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatUCharBits	MDLVertexFormat			-	-	507575068f76632a
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatCharBits	MDLVertexFormat			-	-	fa73c889cfa741f0
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatUCharNormalizedBits	MDLVertexFormat			-	-	09c40d2b5d72f4fb
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatCharNormalizedBits	MDLVertexFormat			-	-	611ca56957861b52
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatUShortBits	MDLVertexFormat			-	-	ff36d0902a4537e7
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatShortBits	MDLVertexFormat			-	-	79110d30a7f5d76d
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatUShortNormalizedBits	MDLVertexFormat			-	-	824fc16ae00b6a13
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatShortNormalizedBits	MDLVertexFormat			-	-	7ed8e6af1bcabe3d
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatUIntBits	MDLVertexFormat			-	-	3b20530ba80b3838
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatIntBits	MDLVertexFormat			-	-	e10a19cc0dbd4a6a
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatHalfBits	MDLVertexFormat			-	-	d45268fb8ca10e39
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatFloatBits	MDLVertexFormat			-	-	05b0a1e7cef36fbf
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatUChar	MDLVertexFormat			-	-	447bd2b1f1e64a13
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatUChar2	MDLVertexFormat			-	-	7333118137f45bc6
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatUChar3	MDLVertexFormat			-	-	e17b957031ac4ae4
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatUChar4	MDLVertexFormat			-	-	56bed40f9281becc
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatChar	MDLVertexFormat			-	-	4dafd6048a086aee
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatChar2	MDLVertexFormat			-	-	8bc16e026d25a48b
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatChar3	MDLVertexFormat			-	-	00775188c46428a3
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatChar4	MDLVertexFormat			-	-	46f8c030b9a19e0e
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatUCharNormalized	MDLVertexFormat			-	-	7df6d62494245b59
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatUChar2Normalized	MDLVertexFormat			-	-	d3c624361f766547
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatUChar3Normalized	MDLVertexFormat			-	-	adb43ac9cd2cf81b
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatUChar4Normalized	MDLVertexFormat			-	-	b1b6c430c7918973
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatCharNormalized	MDLVertexFormat			-	-	53651a2d7083cf89
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatChar2Normalized	MDLVertexFormat			-	-	2971d54b4664bbd9
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatChar3Normalized	MDLVertexFormat			-	-	3f66e6b034a8e724
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatChar4Normalized	MDLVertexFormat			-	-	4c2eb3480d6e53b4
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatUShort	MDLVertexFormat			-	-	002bc95f08e105c8
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatUShort2	MDLVertexFormat			-	-	fd8f1974a77c0e1e
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatUShort3	MDLVertexFormat			-	-	23f2e58642e922f7
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatUShort4	MDLVertexFormat			-	-	83419d7109a64b86
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatShort	MDLVertexFormat			-	-	00b4f861bc06df0e
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatShort2	MDLVertexFormat			-	-	341917d7633ab6d7
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatShort3	MDLVertexFormat			-	-	b253db23456a960f
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatShort4	MDLVertexFormat			-	-	a78b68405f1281ae
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatUShortNormalized	MDLVertexFormat			-	-	8e5a75944d35f9de
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatUShort2Normalized	MDLVertexFormat			-	-	784b5d4235f9aff2
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatUShort3Normalized	MDLVertexFormat			-	-	277df8968edac52a
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatUShort4Normalized	MDLVertexFormat			-	-	e753816f52ebd2e7
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatShortNormalized	MDLVertexFormat			-	-	470ef30d9140cbe2
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatShort2Normalized	MDLVertexFormat			-	-	b9c4ac89e586e580
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatShort3Normalized	MDLVertexFormat			-	-	e7aff25881807a53
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatShort4Normalized	MDLVertexFormat			-	-	3b0080f2cbd838e8
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatUInt	MDLVertexFormat			-	-	97d73b159cc4e3ef
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatUInt2	MDLVertexFormat			-	-	ecdab3ce7431db42
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatUInt3	MDLVertexFormat			-	-	40002e32041db27a
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatUInt4	MDLVertexFormat			-	-	2f160baf8ab556a8
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatInt	MDLVertexFormat			-	-	be32d204116eede1
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatInt2	MDLVertexFormat			-	-	e3d7e22316215ad6
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatInt3	MDLVertexFormat			-	-	9d523cadd774f544
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatInt4	MDLVertexFormat			-	-	e22f614a8db030a1
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatHalf	MDLVertexFormat			-	-	bb3b08fdbc53c52e
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatHalf2	MDLVertexFormat			-	-	212f0b53b8c1ec24
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatHalf3	MDLVertexFormat			-	-	4ce26004e7059d27
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatHalf4	MDLVertexFormat			-	-	ff63f319f539e9df
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatFloat	MDLVertexFormat			-	-	421cfb7c7fc420b8
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatFloat2	MDLVertexFormat			-	-	2f8f28167f6bbb0d
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatFloat3	MDLVertexFormat			-	-	25dea49ad6d0a115
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatFloat4	MDLVertexFormat			-	-	37cfdfc04fe8d44f
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatInt1010102Normalized	MDLVertexFormat			-	-	223e4cffcc2c7900
+enumconst	c:@E@MDLVertexFormat@MDLVertexFormatUInt1010102Normalized	MDLVertexFormat			-	-	03243b39921ace83
+interface	c:objc(cs)MDLVertexBufferLayout	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	9f283dcbc430ccfa
+super	-	MDLVertexBufferLayout	NSObject		-	-	eb91238833d75cb6
+conforms	-	MDLVertexBufferLayout	NSCopying		-	-	ed509cb403e0d0fb
+method	c:objc(cs)MDLVertexBufferLayout(im)initWithStride:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	6cf05d26bc47ca67
+property	c:objc(cs)MDLVertexBufferLayout(py)stride	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	083e6c2832e0f54a
+interface	c:objc(cs)MDLVertexAttribute	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	06b77f8e2e291eb7
+super	-	MDLVertexAttribute	NSObject		-	-	5e3e087f91db8121
+conforms	-	MDLVertexAttribute	NSCopying		-	-	c8f7b4d674cb942f
+method	c:objc(cs)MDLVertexAttribute(im)initWithName:format:offset:bufferIndex:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	bfbd8b67afb6e669
+property	c:objc(cs)MDLVertexAttribute(py)name	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	e0d9a16bf6f1e1be
+property	c:objc(cs)MDLVertexAttribute(py)format	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	7f77fc4ccbc946cc
+property	c:objc(cs)MDLVertexAttribute(py)offset	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f162a6e1a03544fb
+property	c:objc(cs)MDLVertexAttribute(py)bufferIndex	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	951eed3531a38af3
+property	c:objc(cs)MDLVertexAttribute(py)time	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	069394e5cb0521c3
+property	c:objc(cs)MDLVertexAttribute(py)initializationValue	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	b754b51baa082845
+interface	c:objc(cs)MDLVertexDescriptor	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	01430db9157d8ee7
+super	-	MDLVertexDescriptor	NSObject		-	-	cd2b09b0cd970be6
+conforms	-	MDLVertexDescriptor	NSCopying		-	-	0390d3dfd89fdd95
+method	c:objc(cs)MDLVertexDescriptor(im)initWithVertexDescriptor:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	3273442f271bc876
+method	c:objc(cs)MDLVertexDescriptor(im)attributeNamed:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	09b25f18322f2477
+method	c:objc(cs)MDLVertexDescriptor(im)addOrReplaceAttribute:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	22814f42d992e333
+method	c:objc(cs)MDLVertexDescriptor(im)removeAttributeNamed:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	c78f4155b7708a89
+property	c:objc(cs)MDLVertexDescriptor(py)attributes	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	7926540e1338c3c0
+property	c:objc(cs)MDLVertexDescriptor(py)layouts	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	8f067ce75650784d
+method	c:objc(cs)MDLVertexDescriptor(im)reset	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	df055ac16dac412f
+method	c:objc(cs)MDLVertexDescriptor(im)setPackedStrides	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f9f91bae3150b159
+method	c:objc(cs)MDLVertexDescriptor(im)setPackedOffsets	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	1a2389552fdd565f
+interface	c:objc(cs)MDLMatrix4x4Array	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	95606b1af8970592
+super	-	MDLMatrix4x4Array	NSObject		-	-	4a870f9ac2153502
+conforms	-	MDLMatrix4x4Array	NSCopying		-	-	7e6b4802232b4af7
+property	c:objc(cs)MDLMatrix4x4Array(py)elementCount	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	a7855f527a784465
+property	c:objc(cs)MDLMatrix4x4Array(py)precision	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	309d8613ae649b66
+method	c:objc(cs)MDLMatrix4x4Array(im)clear	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	af6b90cdd4104d8a
+method	c:objc(cs)MDLMatrix4x4Array(im)initWithElementCount:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	16e10defa9c6d9de
+method	c:objc(cs)MDLMatrix4x4Array(im)setFloat4x4Array:count:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	701d796b07ac9cf7
+method	c:objc(cs)MDLMatrix4x4Array(im)setDouble4x4Array:count:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	44d99acf47326e5b
+method	c:objc(cs)MDLMatrix4x4Array(im)getFloat4x4Array:maxCount:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	080a50d42bdfc43d
+method	c:objc(cs)MDLMatrix4x4Array(im)getDouble4x4Array:maxCount:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	ac37553d27f3d7fa
+typedef	c:@T@MDLAnimatedValueInterpolation	-			-	-	9c5f928b76f6290f
+enum	c:@E@MDLAnimatedValueInterpolation	-			-	-	20c00a11f3f35276
+enumconst	c:@E@MDLAnimatedValueInterpolation@MDLAnimatedValueInterpolationConstant	MDLAnimatedValueInterpolation			-	-	53f6a2d845330876
+enumconst	c:@E@MDLAnimatedValueInterpolation@MDLAnimatedValueInterpolationLinear	MDLAnimatedValueInterpolation			-	-	e021a7ec69d92b55
+interface	c:objc(cs)MDLAnimatedValue	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	f9f69ac8e92adfc0
+super	-	MDLAnimatedValue	NSObject		-	-	db08c766b99be424
+conforms	-	MDLAnimatedValue	NSCopying		-	-	b74660eb8cb67492
+method	c:objc(cs)MDLAnimatedValue(im)isAnimated	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	8c4117d1c70906e5
+property	c:objc(cs)MDLAnimatedValue(py)precision	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	2d62a31c7ff6136b
+property	c:objc(cs)MDLAnimatedValue(py)timeSampleCount	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	1593570115b20203
+property	c:objc(cs)MDLAnimatedValue(py)minimumTime	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	418dfb25b2c36dfc
+property	c:objc(cs)MDLAnimatedValue(py)maximumTime	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	65134b39b8f0aa21
+property	c:objc(cs)MDLAnimatedValue(py)interpolation	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	0e4a9952bd9914a8
+property	c:objc(cs)MDLAnimatedValue(py)keyTimes	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	b01315fcd15ae22e
+method	c:objc(cs)MDLAnimatedValue(im)clear	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	e4fab5c08cbde2f3
+method	c:objc(cs)MDLAnimatedValue(im)getTimes:maxCount:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	848366613009d6a5
+interface	c:objc(cs)MDLAnimatedScalarArray	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	1d964dc114176e91
+super	-	MDLAnimatedScalarArray	MDLAnimatedValue		-	-	7a753fbad4440266
+property	c:objc(cs)MDLAnimatedScalarArray(py)elementCount	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	fdd83066406702a7
+method	c:objc(cs)MDLAnimatedScalarArray(im)initWithElementCount:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	a1930801863168d4
+method	c:objc(cs)MDLAnimatedScalarArray(im)setFloatArray:count:atTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	edad28e7e09ffed3
+method	c:objc(cs)MDLAnimatedScalarArray(im)setDoubleArray:count:atTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	99bce8073dcb5bf9
+method	c:objc(cs)MDLAnimatedScalarArray(im)getFloatArray:maxCount:atTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	51766bb38b16d3f5
+method	c:objc(cs)MDLAnimatedScalarArray(im)getDoubleArray:maxCount:atTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	69b29ff5a13d7f36
+method	c:objc(cs)MDLAnimatedScalarArray(im)resetWithFloatArray:count:atTimes:count:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	a01f73e846060667
+method	c:objc(cs)MDLAnimatedScalarArray(im)resetWithDoubleArray:count:atTimes:count:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	a4f76560aebbae58
+method	c:objc(cs)MDLAnimatedScalarArray(im)getFloatArray:maxCount:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	92d85f5b737d7f78
+method	c:objc(cs)MDLAnimatedScalarArray(im)getDoubleArray:maxCount:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	7896e32c55941759
+interface	c:objc(cs)MDLAnimatedVector3Array	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	65c2e48da27285aa
+super	-	MDLAnimatedVector3Array	MDLAnimatedValue		-	-	01c2427f5266f2d4
+property	c:objc(cs)MDLAnimatedVector3Array(py)elementCount	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	1e41514a385f595c
+method	c:objc(cs)MDLAnimatedVector3Array(im)initWithElementCount:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	78a96f952680e632
+method	c:objc(cs)MDLAnimatedVector3Array(im)setFloat3Array:count:atTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	7f98270f1a985640
+method	c:objc(cs)MDLAnimatedVector3Array(im)setDouble3Array:count:atTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	5280a8aebc8cd5ae
+method	c:objc(cs)MDLAnimatedVector3Array(im)getFloat3Array:maxCount:atTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	8fcca6363f42d8ac
+method	c:objc(cs)MDLAnimatedVector3Array(im)getDouble3Array:maxCount:atTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	c1750879524dde90
+method	c:objc(cs)MDLAnimatedVector3Array(im)resetWithFloat3Array:count:atTimes:count:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	4dc8e7c111f76e56
+method	c:objc(cs)MDLAnimatedVector3Array(im)resetWithDouble3Array:count:atTimes:count:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	bea720d9d49d55c1
+method	c:objc(cs)MDLAnimatedVector3Array(im)getFloat3Array:maxCount:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	f553ad200f9db4b9
+method	c:objc(cs)MDLAnimatedVector3Array(im)getDouble3Array:maxCount:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	c4577c3401d512be
+interface	c:objc(cs)MDLAnimatedQuaternionArray	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	7b6f704363790a60
+super	-	MDLAnimatedQuaternionArray	MDLAnimatedValue		-	-	b1bcdfb68f68ac34
+property	c:objc(cs)MDLAnimatedQuaternionArray(py)elementCount	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	1b3c484e38996cb8
+method	c:objc(cs)MDLAnimatedQuaternionArray(im)initWithElementCount:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	49908a18c4710bb9
+method	c:objc(cs)MDLAnimatedQuaternionArray(im)setFloatQuaternionArray:count:atTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	35b050ee9884bd80
+method	c:objc(cs)MDLAnimatedQuaternionArray(im)setDoubleQuaternionArray:count:atTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	dc20efe2d9f9ff81
+method	c:objc(cs)MDLAnimatedQuaternionArray(im)getFloatQuaternionArray:maxCount:atTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	cbeb1338c9c7f830
+method	c:objc(cs)MDLAnimatedQuaternionArray(im)getDoubleQuaternionArray:maxCount:atTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	bfb7c6ae48c455d0
+method	c:objc(cs)MDLAnimatedQuaternionArray(im)resetWithFloatQuaternionArray:count:atTimes:count:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	3f36d677a3eb2bf6
+method	c:objc(cs)MDLAnimatedQuaternionArray(im)resetWithDoubleQuaternionArray:count:atTimes:count:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	6de6b73ba47a22d4
+method	c:objc(cs)MDLAnimatedQuaternionArray(im)getFloatQuaternionArray:maxCount:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	efec168b4abf2cc7
+method	c:objc(cs)MDLAnimatedQuaternionArray(im)getDoubleQuaternionArray:maxCount:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	5ab22ef29e3e5632
+interface	c:objc(cs)MDLAnimatedScalar	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	64281bcb8045f7b8
+super	-	MDLAnimatedScalar	MDLAnimatedValue		-	-	44713c35435cc061
+method	c:objc(cs)MDLAnimatedScalar(im)setFloat:atTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	882d421b8cd1556a
+method	c:objc(cs)MDLAnimatedScalar(im)setDouble:atTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	e8b660be3c4bf211
+method	c:objc(cs)MDLAnimatedScalar(im)floatAtTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	9206eccb38701a0d
+method	c:objc(cs)MDLAnimatedScalar(im)doubleAtTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	5dc2299a45e0416e
+method	c:objc(cs)MDLAnimatedScalar(im)resetWithFloatArray:atTimes:count:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	fdd566a8648d9c55
+method	c:objc(cs)MDLAnimatedScalar(im)resetWithDoubleArray:atTimes:count:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	074d5c831d938fe6
+method	c:objc(cs)MDLAnimatedScalar(im)getFloatArray:maxCount:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	47fad155282bb649
+method	c:objc(cs)MDLAnimatedScalar(im)getDoubleArray:maxCount:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	324e390421bc1c62
+interface	c:objc(cs)MDLAnimatedVector2	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	6f6f1a67cf387ca2
+super	-	MDLAnimatedVector2	MDLAnimatedValue		-	-	85906a5fc8e38a0a
+method	c:objc(cs)MDLAnimatedVector2(im)setFloat2:atTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	e334a9b1c6ea62a1
+method	c:objc(cs)MDLAnimatedVector2(im)setDouble2:atTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	fd42c659ca5b6744
+method	c:objc(cs)MDLAnimatedVector2(im)float2AtTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	9567d217916ba66d
+method	c:objc(cs)MDLAnimatedVector2(im)double2AtTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	c7e52021d27cb35b
+method	c:objc(cs)MDLAnimatedVector2(im)resetWithFloat2Array:atTimes:count:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	205d2e1100093b7d
+method	c:objc(cs)MDLAnimatedVector2(im)resetWithDouble2Array:atTimes:count:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	24e1284910ff9c01
+method	c:objc(cs)MDLAnimatedVector2(im)getFloat2Array:maxCount:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	ba2c3ffae09726d6
+method	c:objc(cs)MDLAnimatedVector2(im)getDouble2Array:maxCount:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	1fbd12ccf5461dd1
+interface	c:objc(cs)MDLAnimatedVector3	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	40c1398718422e14
+super	-	MDLAnimatedVector3	MDLAnimatedValue		-	-	15bcd6e34dc0aa74
+method	c:objc(cs)MDLAnimatedVector3(im)setFloat3:atTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	ff545cfb48034c4b
+method	c:objc(cs)MDLAnimatedVector3(im)setDouble3:atTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	f7fe11bf2407eefe
+method	c:objc(cs)MDLAnimatedVector3(im)float3AtTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	66f991e478d8f95a
+method	c:objc(cs)MDLAnimatedVector3(im)double3AtTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	d1ada08b1c6f17d9
+method	c:objc(cs)MDLAnimatedVector3(im)resetWithFloat3Array:atTimes:count:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	cc62b7239775b591
+method	c:objc(cs)MDLAnimatedVector3(im)resetWithDouble3Array:atTimes:count:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	0c39b47946052af8
+method	c:objc(cs)MDLAnimatedVector3(im)getFloat3Array:maxCount:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	c3ba3d1e4eeaf5c0
+method	c:objc(cs)MDLAnimatedVector3(im)getDouble3Array:maxCount:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	fb97c39db53c7e0c
+interface	c:objc(cs)MDLAnimatedVector4	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	a48436832be3bbc9
+super	-	MDLAnimatedVector4	MDLAnimatedValue		-	-	b21da204b4f2e6e4
+method	c:objc(cs)MDLAnimatedVector4(im)setFloat4:atTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	42c753195224f058
+method	c:objc(cs)MDLAnimatedVector4(im)setDouble4:atTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	6eafbea07d08d0b2
+method	c:objc(cs)MDLAnimatedVector4(im)float4AtTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	523689fdb09db025
+method	c:objc(cs)MDLAnimatedVector4(im)double4AtTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	dc65274b05206ab7
+method	c:objc(cs)MDLAnimatedVector4(im)resetWithFloat4Array:atTimes:count:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	ee45de1f73c11a2d
+method	c:objc(cs)MDLAnimatedVector4(im)resetWithDouble4Array:atTimes:count:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	1581a295657beac0
+method	c:objc(cs)MDLAnimatedVector4(im)getFloat4Array:maxCount:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	d47d84629689ad80
+method	c:objc(cs)MDLAnimatedVector4(im)getDouble4Array:maxCount:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	24b9807ea624efb6
+interface	c:objc(cs)MDLAnimatedQuaternion	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	bf3c955ed9f41b17
+super	-	MDLAnimatedQuaternion	MDLAnimatedValue		-	-	9752c2850d5e2efd
+method	c:objc(cs)MDLAnimatedQuaternion(im)setFloatQuaternion:atTime:	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	e8bace98c78c639e
+method	c:objc(cs)MDLAnimatedQuaternion(im)setDoubleQuaternion:atTime:	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	27eaaf9a8e177a07
+method	c:objc(cs)MDLAnimatedQuaternion(im)floatQuaternionAtTime:	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	809c708187b19642
+method	c:objc(cs)MDLAnimatedQuaternion(im)doubleQuaternionAtTime:	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	25af5d18cc576acc
+method	c:objc(cs)MDLAnimatedQuaternion(im)resetWithFloatQuaternionArray:atTimes:count:	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	71a4fa3f18f3cd4a
+method	c:objc(cs)MDLAnimatedQuaternion(im)resetWithDoubleQuaternionArray:atTimes:count:	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	f03484ac4d3d2d67
+method	c:objc(cs)MDLAnimatedQuaternion(im)getFloatQuaternionArray:maxCount:	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	048aead9e825e638
+method	c:objc(cs)MDLAnimatedQuaternion(im)getDoubleQuaternionArray:maxCount:	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	1760f28bd372a188
+interface	c:objc(cs)MDLAnimatedMatrix4x4	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	d2efd75b12ebc32e
+super	-	MDLAnimatedMatrix4x4	MDLAnimatedValue		-	-	d1c31e744f7a5625
+method	c:objc(cs)MDLAnimatedMatrix4x4(im)setFloat4x4:atTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	933465345ffc0511
+method	c:objc(cs)MDLAnimatedMatrix4x4(im)setDouble4x4:atTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	e0d3d0e72387da1d
+method	c:objc(cs)MDLAnimatedMatrix4x4(im)float4x4AtTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	ebd2693c18df74f0
+method	c:objc(cs)MDLAnimatedMatrix4x4(im)double4x4AtTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	33d8d15d3024d654
+method	c:objc(cs)MDLAnimatedMatrix4x4(im)resetWithFloat4x4Array:atTimes:count:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	1b1e5eae3195de67
+method	c:objc(cs)MDLAnimatedMatrix4x4(im)resetWithDouble4x4Array:atTimes:count:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	a63c5a6c5c409e3c
+method	c:objc(cs)MDLAnimatedMatrix4x4(im)getFloat4x4Array:maxCount:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	5f8ba36d37a8ed7f
+method	c:objc(cs)MDLAnimatedMatrix4x4(im)getDouble4x4Array:maxCount:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	950463213689b5b6
+interface	c:objc(cs)MDLSkeleton	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	144b3733119011be
+super	-	MDLSkeleton	MDLObject		-	-	343e8d5f3ffb865f
+conforms	-	MDLSkeleton	NSCopying		-	-	5fb639fc26b82831
+property	c:objc(cs)MDLSkeleton(py)jointPaths	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	fafdbdd4e4bc36f0
+property	c:objc(cs)MDLSkeleton(py)jointBindTransforms	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	35d41a65a53264a3
+property	c:objc(cs)MDLSkeleton(py)jointRestTransforms	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	7f133c561b29576c
+method	c:objc(cs)MDLSkeleton(im)initWithName:jointPaths:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	8091b185263022d7
+protocol	c:objc(pl)MDLJointAnimation	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	9395f81c04442809
+interface	c:objc(cs)MDLPackedJointAnimation	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	7a09231a531b59d4
+super	-	MDLPackedJointAnimation	MDLObject		-	-	3ed5ec0a7e45e42d
+conforms	-	MDLPackedJointAnimation	NSCopying		-	-	75840e845996fb9f
+conforms	-	MDLPackedJointAnimation	MDLJointAnimation		-	-	9d19aad4dd8d550c
+property	c:objc(cs)MDLPackedJointAnimation(py)jointPaths	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	c12113d2fd2f47c3
+property	c:objc(cs)MDLPackedJointAnimation(py)translations	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	18716a810c6ec379
+property	c:objc(cs)MDLPackedJointAnimation(py)rotations	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	31414ba54a04b66e
+property	c:objc(cs)MDLPackedJointAnimation(py)scales	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	22d292cb5ff14a07
+method	c:objc(cs)MDLPackedJointAnimation(im)initWithName:jointPaths:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	1761ca39e494c459
+interface	c:objc(cs)MDLAnimationBindComponent	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	0c63a59e1131b68c
+super	-	MDLAnimationBindComponent	NSObject		-	-	a68c68adbd4923a5
+conforms	-	MDLAnimationBindComponent	NSCopying		-	-	0e0403d3475f51aa
+conforms	-	MDLAnimationBindComponent	MDLComponent		-	-	6a96fb6e0220979e
+property	c:objc(cs)MDLAnimationBindComponent(py)skeleton	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	985496af9ae92fee
+property	c:objc(cs)MDLAnimationBindComponent(py)jointAnimation	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	8d0b5ada9c0b570b
+property	c:objc(cs)MDLAnimationBindComponent(py)jointPaths	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	5a7cc81378b402d3
+property	c:objc(cs)MDLAnimationBindComponent(py)geometryBindTransform	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	1ab335a2a2299f10
+interface	c:objc(cs)MDLAsset	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	deprecated: Use originals instead	d271271c594c7cc0
+super	-	MDLAsset	NSObject		-	-	1fa720058d686cdc
+conforms	-	MDLAsset	NSCopying		-	-	5aff05e5d5c87f44
+conforms	-	MDLAsset	NSFastEnumeration		-	-	a4d8838053d6035d
+method	c:objc(cs)MDLAsset(im)initWithURL:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	8b016a2fb046a9f6
+method	c:objc(cs)MDLAsset(im)initWithURL:vertexDescriptor:bufferAllocator:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	a90d45323cdac73e
+method	c:objc(cs)MDLAsset(im)initWithBufferAllocator:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	6912b239d0706382
+method	c:objc(cs)MDLAsset(im)initWithURL:vertexDescriptor:bufferAllocator:preserveTopology:error:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	ba4c8cb447586f31
+method	c:objc(cs)MDLAsset(im)exportAssetToURL:	-			swift=-/-/-/1	-	594f2e0be2f7226f
+method	c:objc(cs)MDLAsset(im)exportAssetToURL:error:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	34c4b767c82d16ec
+method	c:objc(cs)MDLAsset(im)objectAtPath:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	87da9f199f9853aa
+method	c:objc(cs)MDLAsset(cm)canImportFileExtension:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	5d1f7476070fd9c6
+method	c:objc(cs)MDLAsset(cm)canExportFileExtension:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	93541b02ae1bb908
+method	c:objc(cs)MDLAsset(im)childObjectsOfClass:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	8fb824eb52eaa3b9
+method	c:objc(cs)MDLAsset(im)loadTextures	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	95e65f6587fb8aef
+method	c:objc(cs)MDLAsset(im)boundingBoxAtTime:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	bc5c2d9e5fc03989
+property	c:objc(cs)MDLAsset(py)boundingBox	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	d2bd436b55f1ab61
+property	c:objc(cs)MDLAsset(py)frameInterval	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	b78e4ad229c09372
+property	c:objc(cs)MDLAsset(py)startTime	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	de381894a6fded94
+property	c:objc(cs)MDLAsset(py)endTime	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	845de144e0d008d5
+property	c:objc(cs)MDLAsset(py)upAxis	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	5d4d1a0d8d312e9b
+property	c:objc(cs)MDLAsset(py)URL	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	ede33ae8884ed086
+property	c:objc(cs)MDLAsset(py)resolver	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	6f2471d9a5a45967
+property	c:objc(cs)MDLAsset(py)bufferAllocator	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	7b49dc7ba5c45134
+property	c:objc(cs)MDLAsset(py)vertexDescriptor	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	ac63adc1160322e6
+method	c:objc(cs)MDLAsset(im)addObject:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	8431e5059004f5ca
+method	c:objc(cs)MDLAsset(im)removeObject:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	fec7200d3cb940ab
+property	c:objc(cs)MDLAsset(py)count	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	6fdfec79f20fe075
+method	c:objc(cs)MDLAsset(im)objectAtIndexedSubscript:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	8a7091648383cfc3
+method	c:objc(cs)MDLAsset(im)objectAtIndex:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	aaaab26316edc57a
+property	c:objc(cs)MDLAsset(py)masters	-			ios=10.0/15.0/-/0,macos=10.12/12.0/-/0,tvos=10.0/15.0/-/0	-	0861ff64f508e3fb
+property	c:objc(cs)MDLAsset(py)originals	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	7a4b4e4ebc88283c
+property	c:objc(cs)MDLAsset(py)animations	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	3bc4c8faa0939f70
+protocol	c:objc(pl)MDLLightProbeIrradianceDataSource	-			-	-	8a7bd334c65d8b53
+conforms	-	MDLLightProbeIrradianceDataSource	NSObject		-	-	feea879d37f385a5
+property	c:objc(pl)MDLLightProbeIrradianceDataSource(py)boundingBox	-			-	-	6c2a18e1812d3feb
+property	c:objc(pl)MDLLightProbeIrradianceDataSource(py)sphericalHarmonicsLevel	-			-	-	f43efd9872a9d245
+method	c:objc(pl)MDLLightProbeIrradianceDataSource(im)sphericalHarmonicsCoefficientsAtPosition:	-			-	-	de6075147003c1a6
+category	c:objc(cy)MDLAsset@MDLLightBaking	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	d617e5d92a2f0aa0
+method	c:objc(cs)MDLAsset(cm)placeLightProbesWithDensity:heuristic:usingIrradianceDataSource:	MDLLightBaking			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	79c92aa05413b57f
+typedef	c:@T@MDLCameraProjection	-			-	-	5885befff93dc1d9
+enum	c:@E@MDLCameraProjection	-			-	-	66f63a9b004e7133
+enumconst	c:@E@MDLCameraProjection@MDLCameraProjectionPerspective	MDLCameraProjection			-	-	f1fa884b5dcfb971
+enumconst	c:@E@MDLCameraProjection@MDLCameraProjectionOrthographic	MDLCameraProjection			-	-	c4c2fcc0c475a222
+interface	c:objc(cs)MDLCamera	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	726f1e4c317ebc73
+super	-	MDLCamera	MDLObject		-	-	64d73a934245f310
+property	c:objc(cs)MDLCamera(py)projectionMatrix	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	a9f893892c0fb1ca
+property	c:objc(cs)MDLCamera(py)projection	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	cfbed9fbb38f29d1
+method	c:objc(cs)MDLCamera(im)frameBoundingBox:setNearAndFar:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	fc164ca9a91b3e6d
+method	c:objc(cs)MDLCamera(im)lookAt:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	fe6e4b13edd4d0c0
+method	c:objc(cs)MDLCamera(im)lookAt:from:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	6805f89e46e94311
+method	c:objc(cs)MDLCamera(im)rayTo:forViewPort:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	9203d5e47d4ff839
+property	c:objc(cs)MDLCamera(py)nearVisibilityDistance	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	53a85579a9eefa2f
+property	c:objc(cs)MDLCamera(py)farVisibilityDistance	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	71dc88d0a2953155
+property	c:objc(cs)MDLCamera(py)worldToMetersConversionScale	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f0d2fc97ad6fc4cd
+property	c:objc(cs)MDLCamera(py)barrelDistortion	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	9be2e8563fd2e4fc
+property	c:objc(cs)MDLCamera(py)fisheyeDistortion	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	d5ec0a29b38ebf68
+property	c:objc(cs)MDLCamera(py)opticalVignetting	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	b975d568bb66d22f
+property	c:objc(cs)MDLCamera(py)chromaticAberration	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	37a9ba078b82d739
+property	c:objc(cs)MDLCamera(py)focalLength	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	0299c7473cee240b
+property	c:objc(cs)MDLCamera(py)focusDistance	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	28e9b0352b115417
+property	c:objc(cs)MDLCamera(py)fieldOfView	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	14b4d824e6005fef
+property	c:objc(cs)MDLCamera(py)fStop	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	a6aeac04f3de4de9
+property	c:objc(cs)MDLCamera(py)apertureBladeCount	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	8861081dbe8d035b
+property	c:objc(cs)MDLCamera(py)maximumCircleOfConfusion	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	71045c52d90dab6e
+method	c:objc(cs)MDLCamera(im)bokehKernelWithSize:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	b25021ea7eb4b806
+property	c:objc(cs)MDLCamera(py)shutterOpenInterval	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	77f80528107b9cfc
+property	c:objc(cs)MDLCamera(py)sensorVerticalAperture	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	33248cc49cde4a35
+property	c:objc(cs)MDLCamera(py)sensorAspect	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	8895c22d442cc37c
+property	c:objc(cs)MDLCamera(py)sensorEnlargement	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	1aaf90c303184ea2
+property	c:objc(cs)MDLCamera(py)sensorShift	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	aa57363044f6e3c2
+property	c:objc(cs)MDLCamera(py)flash	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	799ec38aa7eb353f
+property	c:objc(cs)MDLCamera(py)exposureCompression	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	40a5ffe79b42fa9d
+property	c:objc(cs)MDLCamera(py)exposure	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	1fe1be875a307194
+interface	c:objc(cs)MDLStereoscopicCamera	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	55c583aae00bc669
+super	-	MDLStereoscopicCamera	MDLCamera		-	-	7cd533311872c25a
+property	c:objc(cs)MDLStereoscopicCamera(py)interPupillaryDistance	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	b70d40c828c5cec2
+property	c:objc(cs)MDLStereoscopicCamera(py)leftVergence	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	4bd9b06f595a04dc
+property	c:objc(cs)MDLStereoscopicCamera(py)rightVergence	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	37079bdd3844d371
+property	c:objc(cs)MDLStereoscopicCamera(py)overlap	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	1b6a35823ef4042a
+property	c:objc(cs)MDLStereoscopicCamera(py)leftViewMatrix	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	b00748484a2f01aa
+property	c:objc(cs)MDLStereoscopicCamera(py)rightViewMatrix	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	6efbedacd6ad18d3
+property	c:objc(cs)MDLStereoscopicCamera(py)leftProjectionMatrix	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	1f4f8c600cc8c141
+property	c:objc(cs)MDLStereoscopicCamera(py)rightProjectionMatrix	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	253ef4a6909ac0dc
+typedef	c:@T@MDLLightType	-			-	-	5b15d0dea42b2b62
+enum	c:@E@MDLLightType	-			-	-	9571994d3380b187
+enumconst	c:@E@MDLLightType@MDLLightTypeUnknown	MDLLightType			-	-	99cbac3531309beb
+enumconst	c:@E@MDLLightType@MDLLightTypeAmbient	MDLLightType			-	-	7f69d930b2f308d4
+enumconst	c:@E@MDLLightType@MDLLightTypeDirectional	MDLLightType			-	-	b125430c73a0c987
+enumconst	c:@E@MDLLightType@MDLLightTypeSpot	MDLLightType			-	-	c667ae87a9dafe2f
+enumconst	c:@E@MDLLightType@MDLLightTypePoint	MDLLightType			-	-	92732d4f9d4b9fbc
+enumconst	c:@E@MDLLightType@MDLLightTypeLinear	MDLLightType			-	-	dd66f4637103b638
+enumconst	c:@E@MDLLightType@MDLLightTypeDiscArea	MDLLightType			-	-	5f90ff497668e8c7
+enumconst	c:@E@MDLLightType@MDLLightTypeRectangularArea	MDLLightType			-	-	8206503d218f9180
+enumconst	c:@E@MDLLightType@MDLLightTypeSuperElliptical	MDLLightType			-	-	ff414c378f4015ba
+enumconst	c:@E@MDLLightType@MDLLightTypePhotometric	MDLLightType			-	-	8059dab203dd7e77
+enumconst	c:@E@MDLLightType@MDLLightTypeProbe	MDLLightType			-	-	a839bcc5d6fd0bcc
+enumconst	c:@E@MDLLightType@MDLLightTypeEnvironment	MDLLightType			-	-	361d967291a2d9c0
+interface	c:objc(cs)MDLLight	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	ea7755fc8f56ae1e
+super	-	MDLLight	MDLObject		-	-	8deb790fa1767e3c
+method	c:objc(cs)MDLLight(im)irradianceAtPoint:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	958346322a9e171d
+method	c:objc(cs)MDLLight(im)irradianceAtPoint:colorSpace:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	752b0492746080b8
+property	c:objc(cs)MDLLight(py)lightType	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	80bc5671b5df67da
+property	c:objc(cs)MDLLight(py)colorSpace	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	4eb0f851ac6db0b5
+interface	c:objc(cs)MDLPhysicallyPlausibleLight	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	990f903d8a90c46e
+super	-	MDLPhysicallyPlausibleLight	MDLLight		-	-	ab99595e71ec44ba
+method	c:objc(cs)MDLPhysicallyPlausibleLight(im)setColorByTemperature:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	3bf5ff341f569fe5
+property	c:objc(cs)MDLPhysicallyPlausibleLight(py)color	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	1e4a62fce25ba6bb
+property	c:objc(cs)MDLPhysicallyPlausibleLight(py)lumens	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	7a4a0374b73c7436
+property	c:objc(cs)MDLPhysicallyPlausibleLight(py)innerConeAngle	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	92b321559f6588e1
+property	c:objc(cs)MDLPhysicallyPlausibleLight(py)outerConeAngle	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	12f73460b5ede32d
+property	c:objc(cs)MDLPhysicallyPlausibleLight(py)attenuationStartDistance	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	3802f72476c5e97c
+property	c:objc(cs)MDLPhysicallyPlausibleLight(py)attenuationEndDistance	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	612a42a997bf2eec
+interface	c:objc(cs)MDLAreaLight	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	29af30a7120f7435
+super	-	MDLAreaLight	MDLPhysicallyPlausibleLight		-	-	f84ca272f3433210
+property	c:objc(cs)MDLAreaLight(py)areaRadius	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	d254b431e9fa974b
+property	c:objc(cs)MDLAreaLight(py)superEllipticPower	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	6952b2ce0aa2a0a3
+property	c:objc(cs)MDLAreaLight(py)aspect	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	5dec6259ad7f212d
+interface	c:objc(cs)MDLPhotometricLight	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	10f436beed811297
+super	-	MDLPhotometricLight	MDLPhysicallyPlausibleLight		-	-	7e77ab100c792096
+method	c:objc(cs)MDLPhotometricLight(im)initWithIESProfile:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	d94dc9677ac054f4
+method	c:objc(cs)MDLPhotometricLight(im)generateSphericalHarmonicsFromLight:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f0b6dcddb04274f4
+method	c:objc(cs)MDLPhotometricLight(im)generateCubemapFromLight:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	28628115dd7e5c65
+method	c:objc(cs)MDLPhotometricLight(im)generateTexture:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	5ad05588d013f75d
+property	c:objc(cs)MDLPhotometricLight(py)lightCubeMap	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	6b71ae847b4e5b15
+property	c:objc(cs)MDLPhotometricLight(py)sphericalHarmonicsLevel	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	e2ca38d3a75c3146
+property	c:objc(cs)MDLPhotometricLight(py)sphericalHarmonicsCoefficients	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	4773f2478ea4e285
+interface	c:objc(cs)MDLLightProbe	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	0069d31b593635e5
+super	-	MDLLightProbe	MDLLight		-	-	590e7e5a8dda78d3
+method	c:objc(cs)MDLLightProbe(im)initWithReflectiveTexture:irradianceTexture:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	791adde1b99625b3
+method	c:objc(cs)MDLLightProbe(im)generateSphericalHarmonicsFromIrradiance:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	73bbf07ce6b7cac1
+property	c:objc(cs)MDLLightProbe(py)reflectiveTexture	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	4eaabb0236b3a839
+property	c:objc(cs)MDLLightProbe(py)irradianceTexture	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	d183e3f0258e181f
+property	c:objc(cs)MDLLightProbe(py)sphericalHarmonicsLevel	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	8a8a95438454b9e0
+property	c:objc(cs)MDLLightProbe(py)sphericalHarmonicsCoefficients	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	c024be5f46b50386
+category	c:objc(cy)MDLLightProbe@MDLLightBaking	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	deaf1fcaae44937f
+method	c:objc(cs)MDLLightProbe(cm)lightProbeWithTextureSize:forLocation:lightsToConsider:objectsToConsider:reflectiveCubemap:irradianceCubemap:	MDLLightBaking			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	3fe6c2494168d1e3
+typedef	c:@T@MDLMaterialSemantic	-			-	-	58c235d1dbd2d8a4
+enum	c:@E@MDLMaterialSemantic	-			-	-	a4a90172a7a1f5dc
+enumconst	c:@E@MDLMaterialSemantic@MDLMaterialSemanticBaseColor	MDLMaterialSemantic			-	-	e9bcf6ea0e12b39b
+enumconst	c:@E@MDLMaterialSemantic@MDLMaterialSemanticSubsurface	MDLMaterialSemantic			-	-	3edf7374dfd2b581
+enumconst	c:@E@MDLMaterialSemantic@MDLMaterialSemanticMetallic	MDLMaterialSemantic			-	-	af4723a74b403a2c
+enumconst	c:@E@MDLMaterialSemantic@MDLMaterialSemanticSpecular	MDLMaterialSemantic			-	-	9f9069631fa61e1a
+enumconst	c:@E@MDLMaterialSemantic@MDLMaterialSemanticSpecularExponent	MDLMaterialSemantic			-	-	a46c16b7845c790d
+enumconst	c:@E@MDLMaterialSemantic@MDLMaterialSemanticSpecularTint	MDLMaterialSemantic			-	-	de18d3726564422a
+enumconst	c:@E@MDLMaterialSemantic@MDLMaterialSemanticRoughness	MDLMaterialSemantic			-	-	a664fc030095de01
+enumconst	c:@E@MDLMaterialSemantic@MDLMaterialSemanticAnisotropic	MDLMaterialSemantic			-	-	5c1877fa0a38f923
+enumconst	c:@E@MDLMaterialSemantic@MDLMaterialSemanticAnisotropicRotation	MDLMaterialSemantic			-	-	fa551ada7e9b94b2
+enumconst	c:@E@MDLMaterialSemantic@MDLMaterialSemanticSheen	MDLMaterialSemantic			-	-	00261b2feb999530
+enumconst	c:@E@MDLMaterialSemantic@MDLMaterialSemanticSheenTint	MDLMaterialSemantic			-	-	f1bc38b3e9352b04
+enumconst	c:@E@MDLMaterialSemantic@MDLMaterialSemanticClearcoat	MDLMaterialSemantic			-	-	853f96f17d69e1f6
+enumconst	c:@E@MDLMaterialSemantic@MDLMaterialSemanticClearcoatGloss	MDLMaterialSemantic			-	-	f31a015e9fcc8a6d
+enumconst	c:@E@MDLMaterialSemantic@MDLMaterialSemanticEmission	MDLMaterialSemantic			-	-	802f52411bfac312
+enumconst	c:@E@MDLMaterialSemantic@MDLMaterialSemanticBump	MDLMaterialSemantic			-	-	438b168de4ae338b
+enumconst	c:@E@MDLMaterialSemantic@MDLMaterialSemanticOpacity	MDLMaterialSemantic			-	-	cc2a4c9142ca324e
+enumconst	c:@E@MDLMaterialSemantic@MDLMaterialSemanticInterfaceIndexOfRefraction	MDLMaterialSemantic			-	-	d728e990995c8a01
+enumconst	c:@E@MDLMaterialSemantic@MDLMaterialSemanticMaterialIndexOfRefraction	MDLMaterialSemantic			-	-	a0a7511d0c90d670
+enumconst	c:@E@MDLMaterialSemantic@MDLMaterialSemanticObjectSpaceNormal	MDLMaterialSemantic			-	-	6f033fa0c671b341
+enumconst	c:@E@MDLMaterialSemantic@MDLMaterialSemanticTangentSpaceNormal	MDLMaterialSemantic			-	-	03b83624737be6cd
+enumconst	c:@E@MDLMaterialSemantic@MDLMaterialSemanticDisplacement	MDLMaterialSemantic			-	-	f81fab2404d34ae9
+enumconst	c:@E@MDLMaterialSemantic@MDLMaterialSemanticDisplacementScale	MDLMaterialSemantic			-	-	25b4097bbfb4af1c
+enumconst	c:@E@MDLMaterialSemantic@MDLMaterialSemanticAmbientOcclusion	MDLMaterialSemantic			-	-	56f46d3903020fc9
+enumconst	c:@E@MDLMaterialSemantic@MDLMaterialSemanticAmbientOcclusionScale	MDLMaterialSemantic			-	-	84e2ffc49af5b055
+enumconst	c:@E@MDLMaterialSemantic@MDLMaterialSemanticNone	MDLMaterialSemantic			-	-	03108fea30c79d2f
+enumconst	c:@E@MDLMaterialSemantic@MDLMaterialSemanticUserDefined	MDLMaterialSemantic			-	-	58500dafa45e74b7
+typedef	c:@T@MDLMaterialPropertyType	-			-	-	b356de3cc44e0c66
+enum	c:@E@MDLMaterialPropertyType	-			-	-	6a4661b5fa8e19f6
+enumconst	c:@E@MDLMaterialPropertyType@MDLMaterialPropertyTypeNone	MDLMaterialPropertyType			-	-	847f1d435060c0be
+enumconst	c:@E@MDLMaterialPropertyType@MDLMaterialPropertyTypeString	MDLMaterialPropertyType			-	-	a3e0862a72615bfa
+enumconst	c:@E@MDLMaterialPropertyType@MDLMaterialPropertyTypeURL	MDLMaterialPropertyType			-	-	1682437e21e61bbd
+enumconst	c:@E@MDLMaterialPropertyType@MDLMaterialPropertyTypeTexture	MDLMaterialPropertyType			-	-	4205b893c8d5f235
+enumconst	c:@E@MDLMaterialPropertyType@MDLMaterialPropertyTypeColor	MDLMaterialPropertyType			-	-	ce36d4d563ad312a
+enumconst	c:@E@MDLMaterialPropertyType@MDLMaterialPropertyTypeFloat	MDLMaterialPropertyType			-	-	8801c4aca1c528b2
+enumconst	c:@E@MDLMaterialPropertyType@MDLMaterialPropertyTypeFloat2	MDLMaterialPropertyType			-	-	fc8b87e42c556fff
+enumconst	c:@E@MDLMaterialPropertyType@MDLMaterialPropertyTypeFloat3	MDLMaterialPropertyType			-	-	8802571da7e7eb87
+enumconst	c:@E@MDLMaterialPropertyType@MDLMaterialPropertyTypeFloat4	MDLMaterialPropertyType			-	-	32eea8b62602edd4
+enumconst	c:@E@MDLMaterialPropertyType@MDLMaterialPropertyTypeMatrix44	MDLMaterialPropertyType			-	-	d07c1652a738b137
+enumconst	c:@E@MDLMaterialPropertyType@MDLMaterialPropertyTypeBuffer	MDLMaterialPropertyType			-	-	e4bd10bf5ca83f62
+typedef	c:@T@MDLMaterialTextureWrapMode	-			-	-	eb821381d4342014
+enum	c:@E@MDLMaterialTextureWrapMode	-			-	-	b7858d020860b2ee
+enumconst	c:@E@MDLMaterialTextureWrapMode@MDLMaterialTextureWrapModeClamp	MDLMaterialTextureWrapMode			-	-	b32323739c31d99e
+enumconst	c:@E@MDLMaterialTextureWrapMode@MDLMaterialTextureWrapModeRepeat	MDLMaterialTextureWrapMode			-	-	01793c982fc7c74e
+enumconst	c:@E@MDLMaterialTextureWrapMode@MDLMaterialTextureWrapModeMirror	MDLMaterialTextureWrapMode			-	-	6d4f7073d756a7bc
+typedef	c:@T@MDLMaterialTextureFilterMode	-			-	-	ca7835a30eb243ee
+enum	c:@E@MDLMaterialTextureFilterMode	-			-	-	a66f65b890a2f096
+enumconst	c:@E@MDLMaterialTextureFilterMode@MDLMaterialTextureFilterModeNearest	MDLMaterialTextureFilterMode			-	-	a1ee02fbabe835b2
+enumconst	c:@E@MDLMaterialTextureFilterMode@MDLMaterialTextureFilterModeLinear	MDLMaterialTextureFilterMode			-	-	8dd26e2a8ad23806
+typedef	c:@T@MDLMaterialMipMapFilterMode	-			-	-	c362367b6ba62796
+enum	c:@E@MDLMaterialMipMapFilterMode	-			-	-	63a5f75c53615dec
+enumconst	c:@E@MDLMaterialMipMapFilterMode@MDLMaterialMipMapFilterModeNearest	MDLMaterialMipMapFilterMode			-	-	b73cb6b3016255cf
+enumconst	c:@E@MDLMaterialMipMapFilterMode@MDLMaterialMipMapFilterModeLinear	MDLMaterialMipMapFilterMode			-	-	29fb20d91077f62d
+interface	c:objc(cs)MDLTextureFilter	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	06b6a2b78eecf177
+super	-	MDLTextureFilter	NSObject		-	-	40a7b2bf0891b428
+property	c:objc(cs)MDLTextureFilter(py)sWrapMode	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	91ce608bcf43039c
+property	c:objc(cs)MDLTextureFilter(py)tWrapMode	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	a017f96c00086934
+property	c:objc(cs)MDLTextureFilter(py)rWrapMode	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f5576cd2d9185909
+property	c:objc(cs)MDLTextureFilter(py)minFilter	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	a7eb5db58a8b7fbe
+property	c:objc(cs)MDLTextureFilter(py)magFilter	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	dc1f5ee359c81993
+property	c:objc(cs)MDLTextureFilter(py)mipFilter	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	509d0dd5ad8c1603
+interface	c:objc(cs)MDLTextureSampler	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	e3d26fa86929195b
+super	-	MDLTextureSampler	NSObject		-	-	5516867647b006e6
+property	c:objc(cs)MDLTextureSampler(py)texture	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	21b04c1fcfbb9e4c
+property	c:objc(cs)MDLTextureSampler(py)hardwareFilter	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	4f167af86fc7721b
+property	c:objc(cs)MDLTextureSampler(py)transform	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f20c880022c13fa4
+interface	c:objc(cs)MDLMaterialProperty	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	7b3e026f3b8b66a7
+super	-	MDLMaterialProperty	NSObject		-	-	e9cd8f4f328182fa
+conforms	-	MDLMaterialProperty	MDLNamed		-	-	e58f5a3465ae5440
+conforms	-	MDLMaterialProperty	NSCopying		-	-	8e041c3b35770df3
+method	c:objc(cs)MDLMaterialProperty(im)init	-			*unavailable ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	47c47cc5fe0dfa81
+method	c:objc(cs)MDLMaterialProperty(im)initWithName:semantic:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	b921f54cbf5fa732
+method	c:objc(cs)MDLMaterialProperty(im)initWithName:semantic:float:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	bd6e631085a9ed95
+method	c:objc(cs)MDLMaterialProperty(im)initWithName:semantic:float2:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	108c14d89c1f5095
+method	c:objc(cs)MDLMaterialProperty(im)initWithName:semantic:float3:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	e1771f7f40b4271a
+method	c:objc(cs)MDLMaterialProperty(im)initWithName:semantic:float4:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	e0571209de9b781b
+method	c:objc(cs)MDLMaterialProperty(im)initWithName:semantic:matrix4x4:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	2207095516a962e5
+method	c:objc(cs)MDLMaterialProperty(im)initWithName:semantic:URL:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	ec27429368dd367a
+method	c:objc(cs)MDLMaterialProperty(im)initWithName:semantic:string:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	7e6e33cbc9a18b79
+method	c:objc(cs)MDLMaterialProperty(im)initWithName:semantic:textureSampler:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	667f8a9eca86ba8c
+method	c:objc(cs)MDLMaterialProperty(im)initWithName:semantic:color:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	445a02ea081617e9
+method	c:objc(cs)MDLMaterialProperty(im)setProperties:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	5a09a996063b14e5
+property	c:objc(cs)MDLMaterialProperty(py)semantic	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	ca08e4f432c7cf59
+property	c:objc(cs)MDLMaterialProperty(py)type	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	a6d2d59d51e57a46
+property	c:objc(cs)MDLMaterialProperty(py)name	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	870fafd6cf6bf5e8
+property	c:objc(cs)MDLMaterialProperty(py)stringValue	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	2c8df7ebb9faa488
+property	c:objc(cs)MDLMaterialProperty(py)URLValue	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	852eee255afa3031
+property	c:objc(cs)MDLMaterialProperty(py)textureSamplerValue	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	ee03658e23fe0e22
+property	c:objc(cs)MDLMaterialProperty(py)color	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f55ee559dac3c05e
+property	c:objc(cs)MDLMaterialProperty(py)floatValue	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	aebb4c922aac5d3f
+property	c:objc(cs)MDLMaterialProperty(py)float2Value	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	185ef9dfd01e13fe
+property	c:objc(cs)MDLMaterialProperty(py)float3Value	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	fdfac036177dc8f4
+property	c:objc(cs)MDLMaterialProperty(py)float4Value	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f4d8e4f0f2dbdf7a
+property	c:objc(cs)MDLMaterialProperty(py)matrix4x4	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	068932d5f248ddd4
+property	c:objc(cs)MDLMaterialProperty(py)luminance	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f2eb3dde5b7c57e4
+interface	c:objc(cs)MDLMaterialPropertyConnection	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	d6bf3c3da0f9cc00
+super	-	MDLMaterialPropertyConnection	NSObject		-	-	93ea9eb1c6726220
+conforms	-	MDLMaterialPropertyConnection	MDLNamed		-	-	08e8d26e079f8083
+method	c:objc(cs)MDLMaterialPropertyConnection(im)init	-			*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	891a78a8120654db
+method	c:objc(cs)MDLMaterialPropertyConnection(im)initWithOutput:input:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	32f10298ddc9bcb3
+property	c:objc(cs)MDLMaterialPropertyConnection(py)output	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	7f1fcb4024a8465f
+property	c:objc(cs)MDLMaterialPropertyConnection(py)input	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	82276753eee9f2bd
+interface	c:objc(cs)MDLMaterialPropertyNode	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	46d7f0a11ca8abee
+super	-	MDLMaterialPropertyNode	NSObject		-	-	71bdaefb43713cd2
+conforms	-	MDLMaterialPropertyNode	MDLNamed		-	-	a126faffda3c5b75
+method	c:objc(cs)MDLMaterialPropertyNode(im)init	-			*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	5eaf4532a280b452
+method	c:objc(cs)MDLMaterialPropertyNode(im)initWithInputs:outputs:evaluationFunction:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	71b49dbfdee895a5
+property	c:objc(cs)MDLMaterialPropertyNode(py)evaluationFunction	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	adc418a93e442bbf
+property	c:objc(cs)MDLMaterialPropertyNode(py)inputs	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	3543c5cc1bbec335
+property	c:objc(cs)MDLMaterialPropertyNode(py)outputs	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	c932196899e3650e
+interface	c:objc(cs)MDLMaterialPropertyGraph	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	db9e15bb04cc7ac8
+super	-	MDLMaterialPropertyGraph	MDLMaterialPropertyNode		-	-	9282c533de4d5af7
+method	c:objc(cs)MDLMaterialPropertyGraph(im)init	-			*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	246f2199740917e6
+method	c:objc(cs)MDLMaterialPropertyGraph(im)initWithNodes:connections:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	286493082abba2d2
+method	c:objc(cs)MDLMaterialPropertyGraph(im)evaluate	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	0af2952716db35b4
+property	c:objc(cs)MDLMaterialPropertyGraph(py)nodes	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	b47a69c984111359
+property	c:objc(cs)MDLMaterialPropertyGraph(py)connections	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	ce31b588bc6beee2
+interface	c:objc(cs)MDLScatteringFunction	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	03c833237e5d5b4e
+super	-	MDLScatteringFunction	NSObject		-	-	64969a0470d45d0f
+conforms	-	MDLScatteringFunction	MDLNamed		-	-	6d7a944589feafd7
+property	c:objc(cs)MDLScatteringFunction(py)name	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	2a5427c2f3410895
+property	c:objc(cs)MDLScatteringFunction(py)baseColor	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	741206c622bd8e81
+property	c:objc(cs)MDLScatteringFunction(py)emission	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	918982d5cfa19db2
+property	c:objc(cs)MDLScatteringFunction(py)specular	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	64af237c7269e114
+property	c:objc(cs)MDLScatteringFunction(py)materialIndexOfRefraction	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f4a0eab254078e6e
+property	c:objc(cs)MDLScatteringFunction(py)interfaceIndexOfRefraction	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	d0838e594c33fe0f
+property	c:objc(cs)MDLScatteringFunction(py)normal	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	bf9f206008d009b6
+property	c:objc(cs)MDLScatteringFunction(py)ambientOcclusion	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	4557f39e0b5474a0
+property	c:objc(cs)MDLScatteringFunction(py)ambientOcclusionScale	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	631a9030f54bb32b
+interface	c:objc(cs)MDLPhysicallyPlausibleScatteringFunction	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	4cf6db5f6ebeb4d2
+super	-	MDLPhysicallyPlausibleScatteringFunction	MDLScatteringFunction		-	-	4353e714f28df454
+property	c:objc(cs)MDLPhysicallyPlausibleScatteringFunction(py)version	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	8f18e229d219b0b5
+property	c:objc(cs)MDLPhysicallyPlausibleScatteringFunction(py)subsurface	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f9e377db9f175b16
+property	c:objc(cs)MDLPhysicallyPlausibleScatteringFunction(py)metallic	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	5fec74b20e355d19
+property	c:objc(cs)MDLPhysicallyPlausibleScatteringFunction(py)specularAmount	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f03be78a4b200fb8
+property	c:objc(cs)MDLPhysicallyPlausibleScatteringFunction(py)specularTint	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	ac72b87022ae173a
+property	c:objc(cs)MDLPhysicallyPlausibleScatteringFunction(py)roughness	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	5729bef3f74997c5
+property	c:objc(cs)MDLPhysicallyPlausibleScatteringFunction(py)anisotropic	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	10d85e43e514bdf3
+property	c:objc(cs)MDLPhysicallyPlausibleScatteringFunction(py)anisotropicRotation	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	bee24d2e28656a97
+property	c:objc(cs)MDLPhysicallyPlausibleScatteringFunction(py)sheen	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	d5b484dc4011972c
+property	c:objc(cs)MDLPhysicallyPlausibleScatteringFunction(py)sheenTint	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	373b7e2008e3c43c
+property	c:objc(cs)MDLPhysicallyPlausibleScatteringFunction(py)clearcoat	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	70b42db3a059f7a6
+property	c:objc(cs)MDLPhysicallyPlausibleScatteringFunction(py)clearcoatGloss	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	e858255547cd6ae7
+typedef	c:@T@MDLMaterialFace	-			-	-	4277a7a4bcbf9eb9
+enum	c:@E@MDLMaterialFace	-			-	-	070f870581c7b6fa
+enumconst	c:@E@MDLMaterialFace@MDLMaterialFaceFront	MDLMaterialFace			-	-	ac178e5907b97470
+enumconst	c:@E@MDLMaterialFace@MDLMaterialFaceBack	MDLMaterialFace			-	-	f55299578a5448c3
+enumconst	c:@E@MDLMaterialFace@MDLMaterialFaceDoubleSided	MDLMaterialFace			-	-	292c0ca7f10ddef0
+interface	c:objc(cs)MDLMaterial	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	51f3222f7d6c8ba6
+super	-	MDLMaterial	NSObject		-	-	24bc791d257c89d8
+conforms	-	MDLMaterial	MDLNamed		-	-	c3b120888c28dda9
+conforms	-	MDLMaterial	NSFastEnumeration		-	-	fe593e226e8e686a
+method	c:objc(cs)MDLMaterial(im)initWithName:scatteringFunction:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	e8f33f3c2fcf7360
+method	c:objc(cs)MDLMaterial(im)setProperty:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	b7e8b9de5309af08
+method	c:objc(cs)MDLMaterial(im)removeProperty:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	b1305df38a8baa0b
+method	c:objc(cs)MDLMaterial(im)propertyNamed:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	de62d1feb919e67a
+method	c:objc(cs)MDLMaterial(im)propertyWithSemantic:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	8cb237b8872f8a90
+method	c:objc(cs)MDLMaterial(im)propertiesWithSemantic:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	815a9e1716304892
+method	c:objc(cs)MDLMaterial(im)removeAllProperties	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	5a301a90f42812a4
+method	c:objc(cs)MDLMaterial(im)resolveTexturesWithResolver:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	6749cead125bbe94
+method	c:objc(cs)MDLMaterial(im)loadTexturesUsingResolver:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	0c60b166db7c7f4a
+property	c:objc(cs)MDLMaterial(py)scatteringFunction	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	c03e0c41c953d067
+property	c:objc(cs)MDLMaterial(py)name	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	05c9107ed9efc710
+property	c:objc(cs)MDLMaterial(py)baseMaterial	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	371884f8742435c2
+method	c:objc(cs)MDLMaterial(im)objectAtIndexedSubscript:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	36590211bf1b860f
+method	c:objc(cs)MDLMaterial(im)objectForKeyedSubscript:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	e49ff3e32d394269
+property	c:objc(cs)MDLMaterial(py)count	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	2e4512595e2c116a
+property	c:objc(cs)MDLMaterial(py)materialFace	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	b29b909cee9c2e98
+interface	c:objc(cs)MDLSubmeshTopology	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	173e3983d5a6e2b6
+super	-	MDLSubmeshTopology	NSObject		-	-	17832a6d8fb85c31
+method	c:objc(cs)MDLSubmeshTopology(im)initWithSubmesh:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	4c1ea37741e55582
+property	c:objc(cs)MDLSubmeshTopology(py)faceTopology	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	67fb96aee695a77c
+property	c:objc(cs)MDLSubmeshTopology(py)faceCount	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	16cf44eddcc23c79
+property	c:objc(cs)MDLSubmeshTopology(py)vertexCreaseIndices	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	1e6d0fcf551a751a
+property	c:objc(cs)MDLSubmeshTopology(py)vertexCreases	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	5bcb631b7825db2d
+property	c:objc(cs)MDLSubmeshTopology(py)vertexCreaseCount	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	b512795a3e29b25d
+property	c:objc(cs)MDLSubmeshTopology(py)edgeCreaseIndices	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	eb8d36f883907e4c
+property	c:objc(cs)MDLSubmeshTopology(py)edgeCreases	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	abb138901c91c5b0
+property	c:objc(cs)MDLSubmeshTopology(py)edgeCreaseCount	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	a62aed7848720e6c
+property	c:objc(cs)MDLSubmeshTopology(py)holes	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	4864d809744449a8
+property	c:objc(cs)MDLSubmeshTopology(py)holeCount	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	c08e99abb3b74d00
+interface	c:objc(cs)MDLSubmesh	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	72f94b18aa1f0346
+super	-	MDLSubmesh	NSObject		-	-	5fec7425dfb127f6
+conforms	-	MDLSubmesh	MDLNamed		-	-	06c16c08b2cc54ab
+method	c:objc(cs)MDLSubmesh(im)initWithName:indexBuffer:indexCount:indexType:geometryType:material:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	8b3572b754b34c6a
+method	c:objc(cs)MDLSubmesh(im)initWithIndexBuffer:indexCount:indexType:geometryType:material:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	848be01335c4f198
+method	c:objc(cs)MDLSubmesh(im)initWithName:indexBuffer:indexCount:indexType:geometryType:material:topology:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	11a577b462b3f5f8
+method	c:objc(cs)MDLSubmesh(im)initWithMDLSubmesh:indexType:geometryType:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	52a977bb147d1625
+property	c:objc(cs)MDLSubmesh(py)indexBuffer	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	bbdd1ef4e10252f0
+method	c:objc(cs)MDLSubmesh(im)indexBufferAsIndexType:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	1403ad92aa79cc86
+property	c:objc(cs)MDLSubmesh(py)indexCount	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	d83f3cc66da24a34
+property	c:objc(cs)MDLSubmesh(py)indexType	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	45166d1d3b27a4f9
+property	c:objc(cs)MDLSubmesh(py)geometryType	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	b5604dee85e05452
+property	c:objc(cs)MDLSubmesh(py)material	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	83e092cbe7cd2a0a
+property	c:objc(cs)MDLSubmesh(py)topology	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	63e8d2b3f455415f
+property	c:objc(cs)MDLSubmesh(py)name	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	c06a679542dab3f6
+interface	c:objc(cs)MDLVertexAttributeData	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	2b564fa57e0f4514
+super	-	MDLVertexAttributeData	NSObject		-	-	bc27d37694301192
+property	c:objc(cs)MDLVertexAttributeData(py)map	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	e9c2636414975f78
+property	c:objc(cs)MDLVertexAttributeData(py)dataStart	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	012e88c126f6a8cb
+property	c:objc(cs)MDLVertexAttributeData(py)stride	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	9005373681f3573a
+property	c:objc(cs)MDLVertexAttributeData(py)format	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	8c6bfe1d38946e6f
+property	c:objc(cs)MDLVertexAttributeData(py)bufferSize	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	877ea78d899ca442
+interface	c:objc(cs)MDLMesh	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	a5ae51a4e569c6fd
+super	-	MDLMesh	MDLObject		-	-	f2ffd1cc8e3147ea
+method	c:objc(cs)MDLMesh(im)initWithBufferAllocator:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	87b9f44af710535e
+method	c:objc(cs)MDLMesh(im)initWithVertexBuffer:vertexCount:descriptor:submeshes:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	39dbbb23fb2b6046
+method	c:objc(cs)MDLMesh(im)initWithVertexBuffers:vertexCount:descriptor:submeshes:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	00766fa15f48ef2d
+method	c:objc(cs)MDLMesh(im)vertexAttributeDataForAttributeNamed:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	a7e33dfe47a8504d
+method	c:objc(cs)MDLMesh(im)vertexAttributeDataForAttributeNamed:asFormat:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	59fe6137ed2508cc
+property	c:objc(cs)MDLMesh(py)boundingBox	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	4db737b66cac6ca5
+property	c:objc(cs)MDLMesh(py)vertexDescriptor	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	5e77188b6574acbb
+property	c:objc(cs)MDLMesh(py)vertexCount	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	537187de13189e60
+property	c:objc(cs)MDLMesh(py)vertexBuffers	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	aaa5752287fd6b9b
+property	c:objc(cs)MDLMesh(py)submeshes	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	1bf64f7f0dbee479
+property	c:objc(cs)MDLMesh(py)allocator	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	2f65d67a619c3169
+category	c:objc(cy)MDLMesh@Modifiers	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	851892dc2207e615
+method	c:objc(cs)MDLMesh(im)addAttributeWithName:format:	Modifiers			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	53e47e610f00d4af
+method	c:objc(cs)MDLMesh(im)addAttributeWithName:format:type:data:stride:	Modifiers			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	cd021745ef630c15
+method	c:objc(cs)MDLMesh(im)addAttributeWithName:format:type:data:stride:time:	Modifiers			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f15fb06872091b4b
+method	c:objc(cs)MDLMesh(im)addNormalsWithAttributeNamed:creaseThreshold:	Modifiers			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	d248d533e5d89343
+method	c:objc(cs)MDLMesh(im)addTangentBasisForTextureCoordinateAttributeNamed:tangentAttributeNamed:bitangentAttributeNamed:	Modifiers			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	0c584557e49beed6
+method	c:objc(cs)MDLMesh(im)addTangentBasisForTextureCoordinateAttributeNamed:normalAttributeNamed:tangentAttributeNamed:	Modifiers			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f11dd816b180b6f6
+method	c:objc(cs)MDLMesh(im)addOrthTanBasisForTextureCoordinateAttributeNamed:normalAttributeNamed:tangentAttributeNamed:	Modifiers			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	24e077409d59b6e5
+method	c:objc(cs)MDLMesh(im)addUnwrappedTextureCoordinatesForAttributeNamed:	Modifiers			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	5e8488e77a614a11
+method	c:objc(cs)MDLMesh(im)flipTextureCoordinatesInAttributeNamed:	Modifiers			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	8db088403ff422cb
+method	c:objc(cs)MDLMesh(im)makeVerticesUnique	Modifiers			ios=9.0/11.0/-/0	-	bbd26d1dcc62f27d
+method	c:objc(cs)MDLMesh(im)makeVerticesUniqueAndReturnError:	Modifiers			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	6c14901cfc7c78a9
+method	c:objc(cs)MDLMesh(im)replaceAttributeNamed:withData:	Modifiers			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	5a876eb3e02f9167
+method	c:objc(cs)MDLMesh(im)updateAttributeNamed:withData:	Modifiers			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	080a1c5dfcd6f742
+method	c:objc(cs)MDLMesh(im)removeAttributeNamed:	Modifiers			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	4b20da102ab84c2b
+category	c:objc(cy)MDLMesh@Generators	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	4cca3a568097bd11
+method	c:objc(cs)MDLMesh(im)initBoxWithExtent:segments:inwardNormals:geometryType:allocator:	Generators			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	a9c8d2757b2a0248
+method	c:objc(cs)MDLMesh(im)initSphereWithExtent:segments:inwardNormals:geometryType:allocator:	Generators			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	2f16d24526eddbaa
+method	c:objc(cs)MDLMesh(im)initHemisphereWithExtent:segments:inwardNormals:cap:geometryType:allocator:	Generators			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	73bbef6861217afb
+method	c:objc(cs)MDLMesh(im)initCylinderWithExtent:segments:inwardNormals:topCap:bottomCap:geometryType:allocator:	Generators			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	693089abb2878d16
+method	c:objc(cs)MDLMesh(im)initCapsuleWithExtent:cylinderSegments:hemisphereSegments:inwardNormals:geometryType:allocator:	Generators			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	fb548d1b5b9b1ebf
+method	c:objc(cs)MDLMesh(im)initConeWithExtent:segments:inwardNormals:cap:geometryType:allocator:	Generators			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	a87e3c1b126c2634
+method	c:objc(cs)MDLMesh(im)initPlaneWithExtent:segments:geometryType:allocator:	Generators			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	97542f4fa63c2a8e
+method	c:objc(cs)MDLMesh(im)initIcosahedronWithExtent:inwardNormals:geometryType:allocator:	Generators			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	00cbb7e211fe6f39
+method	c:objc(cs)MDLMesh(im)initMeshBySubdividingMesh:submeshIndex:subdivisionLevels:allocator:	Generators			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	ae9143810acf5a55
+method	c:objc(cs)MDLMesh(cm)newBoxWithDimensions:segments:geometryType:inwardNormals:allocator:	Generators			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	63b721eaa372251f
+method	c:objc(cs)MDLMesh(cm)newEllipsoidWithRadii:radialSegments:verticalSegments:geometryType:inwardNormals:hemisphere:allocator:	Generators			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	bef040b9c5892c4f
+method	c:objc(cs)MDLMesh(cm)newCylinderWithHeight:radii:radialSegments:verticalSegments:geometryType:inwardNormals:allocator:	Generators			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	ecf80f4d0cb137d4
+method	c:objc(cs)MDLMesh(cm)newCapsuleWithHeight:radii:radialSegments:verticalSegments:hemisphereSegments:geometryType:inwardNormals:allocator:	Generators			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	f9f3767380811a47
+method	c:objc(cs)MDLMesh(cm)newEllipticalConeWithHeight:radii:radialSegments:verticalSegments:geometryType:inwardNormals:allocator:	Generators			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	9ce3b114bc0442e3
+method	c:objc(cs)MDLMesh(cm)newPlaneWithDimensions:segments:geometryType:allocator:	Generators			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	1ce7ddb5d9c35fd0
+method	c:objc(cs)MDLMesh(cm)newIcosahedronWithRadius:inwardNormals:geometryType:allocator:	Generators			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	4c9fdad85e394fc4
+method	c:objc(cs)MDLMesh(cm)newIcosahedronWithRadius:inwardNormals:allocator:	Generators			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	3653c19a76465748
+method	c:objc(cs)MDLMesh(cm)newSubdividedMesh:submeshIndex:subdivisionLevels:	Generators			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	e8b58b9322ac7129
+category	c:objc(cy)MDLMesh@MDLLightBaking	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f5c1de7d76aa3f33
+method	c:objc(cs)MDLMesh(im)generateAmbientOcclusionTextureWithSize:raysPerSample:attenuationFactor:objectsToConsider:vertexAttributeNamed:materialPropertyNamed:	MDLLightBaking			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	221448594d6e4d67
+method	c:objc(cs)MDLMesh(im)generateAmbientOcclusionTextureWithQuality:attenuationFactor:objectsToConsider:vertexAttributeNamed:materialPropertyNamed:	MDLLightBaking			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	a56d6cabde1d4b8f
+method	c:objc(cs)MDLMesh(im)generateAmbientOcclusionVertexColorsWithRaysPerSample:attenuationFactor:objectsToConsider:vertexAttributeNamed:	MDLLightBaking			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	64952d8b01ef02a9
+method	c:objc(cs)MDLMesh(im)generateAmbientOcclusionVertexColorsWithQuality:attenuationFactor:objectsToConsider:vertexAttributeNamed:	MDLLightBaking			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	39fe13fa29173356
+method	c:objc(cs)MDLMesh(im)generateLightMapTextureWithTextureSize:lightsToConsider:objectsToConsider:vertexAttributeNamed:materialPropertyNamed:	MDLLightBaking			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	6c40083bd221410f
+method	c:objc(cs)MDLMesh(im)generateLightMapTextureWithQuality:lightsToConsider:objectsToConsider:vertexAttributeNamed:materialPropertyNamed:	MDLLightBaking			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	806c3444938cfa63
+method	c:objc(cs)MDLMesh(im)generateLightMapVertexColorsWithLightsToConsider:objectsToConsider:vertexAttributeNamed:	MDLLightBaking			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	1fc7ec8b17cbb556
+typedef	c:@T@MDLTextureChannelEncoding	-			-	-	ad5909af03e9318b
+enum	c:@E@MDLTextureChannelEncoding	-			-	-	7ebb8eecf4703bea
+enumconst	c:@E@MDLTextureChannelEncoding@MDLTextureChannelEncodingUInt8	MDLTextureChannelEncoding			-	-	32baa24018cf2fd7
+enumconst	c:@E@MDLTextureChannelEncoding@MDLTextureChannelEncodingUint8	MDLTextureChannelEncoding			-	-	6d8c3ae9507fe889
+enumconst	c:@E@MDLTextureChannelEncoding@MDLTextureChannelEncodingUInt16	MDLTextureChannelEncoding			-	-	89021725c9b1fc3d
+enumconst	c:@E@MDLTextureChannelEncoding@MDLTextureChannelEncodingUint16	MDLTextureChannelEncoding			-	-	f444dda70358903a
+enumconst	c:@E@MDLTextureChannelEncoding@MDLTextureChannelEncodingUInt24	MDLTextureChannelEncoding			-	-	7ee21dfb5bfecd82
+enumconst	c:@E@MDLTextureChannelEncoding@MDLTextureChannelEncodingUint24	MDLTextureChannelEncoding			-	-	194af56517833588
+enumconst	c:@E@MDLTextureChannelEncoding@MDLTextureChannelEncodingUInt32	MDLTextureChannelEncoding			-	-	14aad9424b34a011
+enumconst	c:@E@MDLTextureChannelEncoding@MDLTextureChannelEncodingUint32	MDLTextureChannelEncoding			-	-	8917528b74362cf2
+enumconst	c:@E@MDLTextureChannelEncoding@MDLTextureChannelEncodingFloat16	MDLTextureChannelEncoding			-	-	00ce8df7e7e410e8
+enumconst	c:@E@MDLTextureChannelEncoding@MDLTextureChannelEncodingFloat16SR	MDLTextureChannelEncoding			-	-	ce82e8ce683b6497
+enumconst	c:@E@MDLTextureChannelEncoding@MDLTextureChannelEncodingFloat32	MDLTextureChannelEncoding			-	-	86c4265fb4413cbf
+interface	c:objc(cs)MDLTexture	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	cd763917f29dc6ba
+super	-	MDLTexture	NSObject		-	-	42e8e13c7dbafc46
+conforms	-	MDLTexture	MDLNamed		-	-	7acfc4e721add434
+method	c:objc(cs)MDLTexture(im)init	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f83218a6b562e3ee
+method	c:objc(cs)MDLTexture(cm)textureNamed:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	4e668866e0879a48
+method	c:objc(cs)MDLTexture(cm)textureNamed:bundle:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	3e61dc44e20e1124
+method	c:objc(cs)MDLTexture(cm)textureNamed:assetResolver:	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	c77b9c7b1e38f512
+method	c:objc(cs)MDLTexture(cm)textureCubeWithImagesNamed:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	066bd3840bb3815b
+method	c:objc(cs)MDLTexture(cm)textureCubeWithImagesNamed:bundle:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	8298a64683f0c7ae
+method	c:objc(cs)MDLTexture(cm)irradianceTextureCubeWithTexture:name:dimensions:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	3e96b2deec2c3951
+method	c:objc(cs)MDLTexture(cm)irradianceTextureCubeWithTexture:name:dimensions:roughness:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	4a937d13c1f5cd15
+method	c:objc(cs)MDLTexture(im)initWithData:topLeftOrigin:name:dimensions:rowStride:channelCount:channelEncoding:isCube:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	0b7241ac34faa7f7
+method	c:objc(cs)MDLTexture(im)writeToURL:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	81e45c7dfb0a90ea
+method	c:objc(cs)MDLTexture(im)writeToURL:level:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	c9e39bfc8abd2a9a
+method	c:objc(cs)MDLTexture(im)writeToURL:type:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	fb058fdb7028ee7f
+method	c:objc(cs)MDLTexture(im)writeToURL:type:level:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	a75c395789fb1c3a
+method	c:objc(cs)MDLTexture(im)imageFromTexture	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	eda63d15ac87aabe
+method	c:objc(cs)MDLTexture(im)imageFromTextureAtLevel:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	5f4813047904499e
+method	c:objc(cs)MDLTexture(im)texelDataWithTopLeftOrigin	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	3dbfc510cf480560
+method	c:objc(cs)MDLTexture(im)texelDataWithBottomLeftOrigin	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	cb77b96519272949
+method	c:objc(cs)MDLTexture(im)texelDataWithTopLeftOriginAtMipLevel:create:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	ef548b24b20da9bf
+method	c:objc(cs)MDLTexture(im)texelDataWithBottomLeftOriginAtMipLevel:create:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	2dd117eed323cd52
+property	c:objc(cs)MDLTexture(py)dimensions	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	a763897aa661a1a5
+property	c:objc(cs)MDLTexture(py)rowStride	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	3eab8b695058aad9
+property	c:objc(cs)MDLTexture(py)channelCount	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	392d865c59deebb4
+property	c:objc(cs)MDLTexture(py)mipLevelCount	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	876ac4f6540108d0
+property	c:objc(cs)MDLTexture(py)channelEncoding	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f7f2a1e87fa4ec52
+property	c:objc(cs)MDLTexture(py)isCube	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	47d648c7b4e21fc5
+property	c:objc(cs)MDLTexture(py)hasAlphaValues	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	c617be89f70f5f43
+interface	c:objc(cs)MDLURLTexture	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	6ce897fb9ca9dd29
+super	-	MDLURLTexture	MDLTexture		-	-	48406e0e758d2bc5
+method	c:objc(cs)MDLURLTexture(im)initWithURL:name:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	8d6b92bc3de27861
+property	c:objc(cs)MDLURLTexture(py)URL	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	3bc87f8f1abe0680
+interface	c:objc(cs)MDLCheckerboardTexture	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	127420f3193bee27
+super	-	MDLCheckerboardTexture	MDLTexture		-	-	28345844f2a56d59
+method	c:objc(cs)MDLCheckerboardTexture(im)initWithDivisions:name:dimensions:channelCount:channelEncoding:color1:color2:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	fbffe5a7d8c8bae7
+property	c:objc(cs)MDLCheckerboardTexture(py)divisions	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	19eb68a49bc5fafd
+property	c:objc(cs)MDLCheckerboardTexture(py)color1	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	97617ecfdb15e44b
+property	c:objc(cs)MDLCheckerboardTexture(py)color2	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	a09628fc6ad763f7
+interface	c:objc(cs)MDLSkyCubeTexture	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	e8adf7517b0a8238
+super	-	MDLSkyCubeTexture	MDLTexture		-	-	3b8ecec535c96192
+method	c:objc(cs)MDLSkyCubeTexture(im)initWithName:channelEncoding:textureDimensions:turbidity:sunElevation:upperAtmosphereScattering:groundAlbedo:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f73591b441b8eab6
+method	c:objc(cs)MDLSkyCubeTexture(im)initWithName:channelEncoding:textureDimensions:turbidity:sunElevation:sunAzimuth:upperAtmosphereScattering:groundAlbedo:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	8264a3c0e464f767
+method	c:objc(cs)MDLSkyCubeTexture(im)updateTexture	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	9dabb29e7500929b
+property	c:objc(cs)MDLSkyCubeTexture(py)turbidity	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	11740c604eeaa6f4
+property	c:objc(cs)MDLSkyCubeTexture(py)sunElevation	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	cacef7ad6494133e
+property	c:objc(cs)MDLSkyCubeTexture(py)sunAzimuth	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	8d5edddd9993fa4a
+property	c:objc(cs)MDLSkyCubeTexture(py)upperAtmosphereScattering	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	95a9ad7f3404565e
+property	c:objc(cs)MDLSkyCubeTexture(py)groundAlbedo	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	275773d3bbbe9716
+property	c:objc(cs)MDLSkyCubeTexture(py)horizonElevation	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	4ed5817f6f7c35a8
+property	c:objc(cs)MDLSkyCubeTexture(py)groundColor	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	a0ae93439735e2cd
+property	c:objc(cs)MDLSkyCubeTexture(py)gamma	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	5a3e6350235037b2
+property	c:objc(cs)MDLSkyCubeTexture(py)exposure	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	20b854d28c987150
+property	c:objc(cs)MDLSkyCubeTexture(py)brightness	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	4547b6e4bae3cc9d
+property	c:objc(cs)MDLSkyCubeTexture(py)contrast	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	26c725c5e60450a1
+property	c:objc(cs)MDLSkyCubeTexture(py)saturation	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f34167f8c8f73974
+property	c:objc(cs)MDLSkyCubeTexture(py)highDynamicRangeCompression	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	aff71003647a8730
+interface	c:objc(cs)MDLColorSwatchTexture	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	967798305cd9fc0c
+super	-	MDLColorSwatchTexture	MDLTexture		-	-	b1cf06f5e61152a8
+method	c:objc(cs)MDLColorSwatchTexture(im)initWithColorTemperatureGradientFrom:toColorTemperature:name:textureDimensions:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	b102f86f57612431
+method	c:objc(cs)MDLColorSwatchTexture(im)initWithColorGradientFrom:toColor:name:textureDimensions:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	d2499293ab25be2a
+interface	c:objc(cs)MDLNoiseTexture	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	dea6befb0b4d27fb
+super	-	MDLNoiseTexture	MDLTexture		-	-	ee8a113d8b37a51b
+method	c:objc(cs)MDLNoiseTexture(im)initVectorNoiseWithSmoothness:name:textureDimensions:channelEncoding:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	1c02c8d33c8be589
+method	c:objc(cs)MDLNoiseTexture(im)initScalarNoiseWithSmoothness:name:textureDimensions:channelCount:channelEncoding:grayscale:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	e2fc47be4aa380dc
+method	c:objc(cs)MDLNoiseTexture(im)initCellularNoiseWithFrequency:name:textureDimensions:channelEncoding:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	998ec805ab40355e
+interface	c:objc(cs)MDLNormalMapTexture	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	6559be66b8542b4c
+super	-	MDLNormalMapTexture	MDLTexture		-	-	77c342a27d0db868
+method	c:objc(cs)MDLNormalMapTexture(im)initByGeneratingNormalMapWithTexture:name:smoothness:contrast:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	4941c41e958a354e
+typedef	c:@T@MDLTransformOpRotationOrder	-			-	-	bcf9f8e8f63bb98b
+enum	c:@E@MDLTransformOpRotationOrder	-			-	-	607b2fcf2ed97667
+enumconst	c:@E@MDLTransformOpRotationOrder@MDLTransformOpRotationOrderXYZ	MDLTransformOpRotationOrder			-	-	4de7b6e7d5cb1aa2
+enumconst	c:@E@MDLTransformOpRotationOrder@MDLTransformOpRotationOrderXZY	MDLTransformOpRotationOrder			-	-	de9ff91097e3c73a
+enumconst	c:@E@MDLTransformOpRotationOrder@MDLTransformOpRotationOrderYXZ	MDLTransformOpRotationOrder			-	-	fe5bfae5d3c0082c
+enumconst	c:@E@MDLTransformOpRotationOrder@MDLTransformOpRotationOrderYZX	MDLTransformOpRotationOrder			-	-	ee0c50c985bae63e
+enumconst	c:@E@MDLTransformOpRotationOrder@MDLTransformOpRotationOrderZXY	MDLTransformOpRotationOrder			-	-	608cf36c17fa35c7
+enumconst	c:@E@MDLTransformOpRotationOrder@MDLTransformOpRotationOrderZYX	MDLTransformOpRotationOrder			-	-	5fdb2270e39f30c0
+protocol	c:objc(pl)MDLTransformOp	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	9eaad54a57f579ec
+property	c:objc(pl)MDLTransformOp(py)name	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	122e89cc7452819c
+method	c:objc(pl)MDLTransformOp(im)float4x4AtTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	23e135c04866fcc4
+method	c:objc(pl)MDLTransformOp(im)double4x4AtTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	4aa61bd2dd36924c
+method	c:objc(pl)MDLTransformOp(im)IsInverseOp	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	bf21a78745d5ca69
+interface	c:objc(cs)MDLTransformRotateXOp	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	d802efca9a01ff82
+super	-	MDLTransformRotateXOp	NSObject		-	-	2de62cdefc108ba3
+conforms	-	MDLTransformRotateXOp	MDLTransformOp		-	-	a636cc0d4b915e49
+property	c:objc(cs)MDLTransformRotateXOp(py)name	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	525c15b125b36f6e
+property	c:objc(cs)MDLTransformRotateXOp(py)animatedValue	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	ba1363bf3d44bbe4
+interface	c:objc(cs)MDLTransformRotateYOp	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	c38882367f3dbcce
+super	-	MDLTransformRotateYOp	NSObject		-	-	d70b4a5a2ccdda9a
+conforms	-	MDLTransformRotateYOp	MDLTransformOp		-	-	019acddcb1b95fdf
+property	c:objc(cs)MDLTransformRotateYOp(py)name	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	c8d69c9b577b0da6
+property	c:objc(cs)MDLTransformRotateYOp(py)animatedValue	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	2c544c2d91193732
+interface	c:objc(cs)MDLTransformRotateZOp	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	c2fb431b6af2a931
+super	-	MDLTransformRotateZOp	NSObject		-	-	fb08585727cd541a
+conforms	-	MDLTransformRotateZOp	MDLTransformOp		-	-	2bb1bb5f26b775de
+property	c:objc(cs)MDLTransformRotateZOp(py)name	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	c87bcae6471ea1a0
+property	c:objc(cs)MDLTransformRotateZOp(py)animatedValue	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	6504320d6f9719e2
+interface	c:objc(cs)MDLTransformRotateOp	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	d03a9ca63bfbc9f0
+super	-	MDLTransformRotateOp	NSObject		-	-	2e2e01df854fbbee
+conforms	-	MDLTransformRotateOp	MDLTransformOp		-	-	5eacadffbc125aff
+property	c:objc(cs)MDLTransformRotateOp(py)name	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	cc59007a1c740874
+property	c:objc(cs)MDLTransformRotateOp(py)animatedValue	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	ba29fac22a33c431
+interface	c:objc(cs)MDLTransformTranslateOp	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	50d7f434bdf42f87
+super	-	MDLTransformTranslateOp	NSObject		-	-	ea1d318947554def
+conforms	-	MDLTransformTranslateOp	MDLTransformOp		-	-	2a5dbdea3ea5303c
+property	c:objc(cs)MDLTransformTranslateOp(py)name	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	218dca2b4459d35c
+property	c:objc(cs)MDLTransformTranslateOp(py)animatedValue	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	1134d0214e14a891
+interface	c:objc(cs)MDLTransformScaleOp	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	c14bcfa6251addb9
+super	-	MDLTransformScaleOp	NSObject		-	-	0f73bd40053c2511
+conforms	-	MDLTransformScaleOp	MDLTransformOp		-	-	edc549478787853f
+property	c:objc(cs)MDLTransformScaleOp(py)name	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	9b90e71f7b708b35
+property	c:objc(cs)MDLTransformScaleOp(py)animatedValue	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	ea9b7cc08d7ce5f3
+interface	c:objc(cs)MDLTransformMatrixOp	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	f5a880c80ce5273e
+super	-	MDLTransformMatrixOp	NSObject		-	-	48a223ce5772fccc
+conforms	-	MDLTransformMatrixOp	MDLTransformOp		-	-	ae7aa82aac49b35f
+property	c:objc(cs)MDLTransformMatrixOp(py)name	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	dc78237bfe607e9c
+property	c:objc(cs)MDLTransformMatrixOp(py)animatedValue	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	41ab8049d8a5b944
+interface	c:objc(cs)MDLTransformOrientOp	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	4be31f010acd7742
+super	-	MDLTransformOrientOp	NSObject		-	-	1034627c90e14503
+conforms	-	MDLTransformOrientOp	MDLTransformOp		-	-	3041ad21714ba729
+property	c:objc(cs)MDLTransformOrientOp(py)name	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	33c6ee7031c41c1b
+property	c:objc(cs)MDLTransformOrientOp(py)animatedValue	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	f7580142b6a64848
+interface	c:objc(cs)MDLTransformStack	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	673b18c70abc2e0e
+super	-	MDLTransformStack	NSObject		-	-	7fdf9ad5355cf2f5
+conforms	-	MDLTransformStack	NSCopying		-	-	af2d37c00f9bc988
+conforms	-	MDLTransformStack	MDLTransformComponent		-	-	5d4d835b604383b0
+method	c:objc(cs)MDLTransformStack(im)init	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	b938ccc5abc9fe8a
+method	c:objc(cs)MDLTransformStack(im)addTranslateOp:inverse:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	cdea29ec4deacafa
+method	c:objc(cs)MDLTransformStack(im)addRotateXOp:inverse:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	ab0025c231279caa
+method	c:objc(cs)MDLTransformStack(im)addRotateYOp:inverse:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	6da008743f2ac8b2
+method	c:objc(cs)MDLTransformStack(im)addRotateZOp:inverse:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	3b6ac05ff94e88e8
+method	c:objc(cs)MDLTransformStack(im)addRotateOp:order:inverse:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	05429e8ede5fba44
+method	c:objc(cs)MDLTransformStack(im)addScaleOp:inverse:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	4069df0b3bd42b85
+method	c:objc(cs)MDLTransformStack(im)addMatrixOp:inverse:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	8ea2d86d55d65766
+method	c:objc(cs)MDLTransformStack(im)addOrientOp:inverse:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	e7f0c6320d33c932
+method	c:objc(cs)MDLTransformStack(im)animatedValueWithName:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	02b712c684dae482
+method	c:objc(cs)MDLTransformStack(im)float4x4AtTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	42edf5791dbddd5c
+method	c:objc(cs)MDLTransformStack(im)double4x4AtTime:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	7d4f537c957c3caa
+method	c:objc(cs)MDLTransformStack(im)count	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	6866b1b25de5322e
+property	c:objc(cs)MDLTransformStack(py)keyTimes	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	10440647a333570d
+property	c:objc(cs)MDLTransformStack(py)transformOps	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	8352fac44d484540
+typedef	c:@T@MDLVoxelIndex	-			-	-	59e21ff7f93a6f13
+struct	c:@SA@MDLVoxelIndexExtent	-			-	-	a946ce20a4a2155f
+field	c:@SA@MDLVoxelIndexExtent@FI@minimumExtent	MDLVoxelIndexExtent			-	-	b238f63ac2deb797
+field	c:@SA@MDLVoxelIndexExtent@FI@maximumExtent	MDLVoxelIndexExtent			-	-	415dc66ab746dc2e
+typedef	c:@T@MDLVoxelIndexExtent	-			-	-	10a94c9e7ebfc63a
+interface	c:objc(cs)MDLVoxelArray	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	7c4af268b568bd16
+super	-	MDLVoxelArray	MDLObject		-	-	7151c8af6bbb6e1a
+method	c:objc(cs)MDLVoxelArray(im)initWithAsset:divisions:patchRadius:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	0c8c68852d39785a
+method	c:objc(cs)MDLVoxelArray(im)initWithData:boundingBox:voxelExtent:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f1cec929498f9f6c
+method	c:objc(cs)MDLVoxelArray(im)initWithAsset:divisions:interiorShells:exteriorShells:patchRadius:	-			ios=-/-/-/1	-	c8223df0863f4bc3
+method	c:objc(cs)MDLVoxelArray(im)initWithAsset:divisions:interiorNBWidth:exteriorNBWidth:patchRadius:	-			ios=-/-/-/1	-	92d0398b1dcec12d
+property	c:objc(cs)MDLVoxelArray(py)count	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	a852ef18700d963e
+property	c:objc(cs)MDLVoxelArray(py)voxelIndexExtent	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	8b468ee991d0a5b0
+method	c:objc(cs)MDLVoxelArray(im)voxelExistsAtIndex:allowAnyX:allowAnyY:allowAnyZ:allowAnyShell:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	9f38307b092b8b69
+method	c:objc(cs)MDLVoxelArray(im)voxelsWithinExtent:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	a1c9bdf2b4333b41
+method	c:objc(cs)MDLVoxelArray(im)voxelIndices	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	3d76180bad3c4ad6
+method	c:objc(cs)MDLVoxelArray(im)setVoxelAtIndex:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	354d9ea8a2c92a58
+method	c:objc(cs)MDLVoxelArray(im)setVoxelsForMesh:divisions:patchRadius:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	d07f07bcfef7c18e
+method	c:objc(cs)MDLVoxelArray(im)setVoxelsForMesh:divisions:interiorShells:exteriorShells:patchRadius:	-			ios=-/-/-/1	-	2e015567ab9dd0e0
+method	c:objc(cs)MDLVoxelArray(im)setVoxelsForMesh:divisions:interiorNBWidth:exteriorNBWidth:patchRadius:	-			ios=-/-/-/1	-	8c480ec126c9e078
+method	c:objc(cs)MDLVoxelArray(im)unionWithVoxels:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	30170652bf59d88b
+method	c:objc(cs)MDLVoxelArray(im)intersectWithVoxels:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	925412abef6a11da
+method	c:objc(cs)MDLVoxelArray(im)differenceWithVoxels:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	da5282867b0e14ce
+property	c:objc(cs)MDLVoxelArray(py)boundingBox	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	a0db8dd503245495
+method	c:objc(cs)MDLVoxelArray(im)indexOfSpatialLocation:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	e9512735a171bf23
+method	c:objc(cs)MDLVoxelArray(im)spatialLocationOfIndex:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	8ad78cd5a8c6fb4c
+method	c:objc(cs)MDLVoxelArray(im)voxelBoundingBoxAtIndex:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	f9977e3f300070b7
+method	c:objc(cs)MDLVoxelArray(im)convertToSignedShellField	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	74aa8b54b199d6cc
+property	c:objc(cs)MDLVoxelArray(py)isValidSignedShellField	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	b0d78c1c1021d5ec
+property	c:objc(cs)MDLVoxelArray(py)shellFieldInteriorThickness	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	900473d1defcdeff
+property	c:objc(cs)MDLVoxelArray(py)shellFieldExteriorThickness	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	4c80cb0ed5c71831
+method	c:objc(cs)MDLVoxelArray(im)coarseMesh	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	99f28683db48f0f8
+method	c:objc(cs)MDLVoxelArray(im)coarseMeshUsingAllocator:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	6df0cab0b4834f7d
+method	c:objc(cs)MDLVoxelArray(im)meshUsingAllocator:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	201d257a1943ec4f
+interface	c:objc(cs)MDLUtility	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0	-	771b9048efe0cb80
+super	-	MDLUtility	NSObject		-	-	14b0e5f56b4abcf8
+method	c:objc(cs)MDLUtility(cm)convertToUSDZ:writeToURL:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0	-	4b5c387bf19660e8

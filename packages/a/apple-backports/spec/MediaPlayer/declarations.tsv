@@ -1,0 +1,824 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+category	c:objc(cy)AVMediaSelectionOption@MPNowPlayingInfoLanguageOptionAdditions	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	f0d1d844f929ac2a
+method	c:objc(cs)AVMediaSelectionOption(im)makeNowPlayingInfoLanguageOption	MPNowPlayingInfoLanguageOptionAdditions			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	147354daa9aeeb74
+category	c:objc(cy)AVMediaSelectionGroup@MPNowPlayingInfoLanguageOptionAdditions	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	3831c7b96acc9a79
+method	c:objc(cs)AVMediaSelectionGroup(im)makeNowPlayingInfoLanguageOptionGroup	MPNowPlayingInfoLanguageOptionAdditions			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	73efe727f793010b
+interface	c:objc(cs)MPContentItem	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=-/-/-/1	-	7a3cb0ae8ea8b367
+super	-	MPContentItem	NSObject		-	-	2e0bce7fcd3971d1
+method	c:objc(cs)MPContentItem(im)initWithIdentifier:	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=-/-/-/1	-	50a09a1491fb7a2f
+property	c:objc(cs)MPContentItem(py)identifier	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=-/-/-/1	-	b1a7284a63ee9300
+property	c:objc(cs)MPContentItem(py)title	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=-/-/-/1	-	4d3b0608c3391be4
+property	c:objc(cs)MPContentItem(py)subtitle	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=-/-/-/1	-	b3fd190220a59553
+property	c:objc(cs)MPContentItem(py)artwork	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=-/-/-/1	-	5dcc39e3039720de
+property	c:objc(cs)MPContentItem(py)playbackProgress	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=-/-/-/1	-	c06fbf4d46b654bf
+property	c:objc(cs)MPContentItem(py)streamingContent	-			ios=10.0/-/-/0,macos=10.12.2/-/-/0,tvos=10.0/-/-/0	-	66dbe741abc10d20
+property	c:objc(cs)MPContentItem(py)explicitContent	-			ios=10.0/-/-/0,macos=10.12.2/-/-/0,tvos=10.0/-/-/0	-	e8bc60932e6c3897
+property	c:objc(cs)MPContentItem(py)container	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=-/-/-/1	-	25a9db510e76871a
+property	c:objc(cs)MPContentItem(py)playable	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=-/-/-/1	-	44fd27140acf2fa5
+var	c:@MPErrorDomain	-			ios=9.3/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	37ca56f16da77356
+typedef	c:@T@MPErrorCode	-			-	-	66b826768b99b4cd
+enum	c:@E@MPErrorCode	-			ios=9.3/-/-/0,macos=10.14.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	cfa4a4ed97d64a75
+enumconst	c:@E@MPErrorCode@MPErrorUnknown	MPErrorCode			ios=9.3/-/-/0,macos=10.14.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	949a2bce1927c7b1
+enumconst	c:@E@MPErrorCode@MPErrorPermissionDenied	MPErrorCode			ios=9.3/-/-/0,macos=10.14.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	5713dce9b769320c
+enumconst	c:@E@MPErrorCode@MPErrorCloudServiceCapabilityMissing	MPErrorCode			ios=9.3/-/-/0,macos=10.14.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	9c683320316107e5
+enumconst	c:@E@MPErrorCode@MPErrorNetworkConnectionFailed	MPErrorCode			ios=9.3/-/-/0,macos=10.14.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	3bf6f9c7ae082d99
+enumconst	c:@E@MPErrorCode@MPErrorNotFound	MPErrorCode			ios=9.3/-/-/0,macos=10.14.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	f1ca849e2ac8f4db
+enumconst	c:@E@MPErrorCode@MPErrorNotSupported	MPErrorCode			ios=9.3/-/-/0,macos=10.14.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	9abd70a91abd5365
+enumconst	c:@E@MPErrorCode@MPErrorCancelled	MPErrorCode			ios=10.1/-/-/0,macos=10.14.2/-/-/0,tvos=10.1/-/-/0,watchos=5.0/-/-/0	-	9aab9f5321204891
+enumconst	c:@E@MPErrorCode@MPErrorRequestTimedOut	MPErrorCode			ios=10.3/-/-/0,macos=10.14.2/-/-/0,tvos=10.3/-/-/0,watchos=5.0/-/-/0	-	5ad18a06f2ca790f
+typedef	c:@T@MPMediaEntityPersistentID	-			-	-	2dd0e0cfc1762c76
+interface	c:objc(cs)MPMediaEntity	-			ios=4.2/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	25f0426ddaf69190
+super	-	MPMediaEntity	NSObject		-	-	f2213901f7d297ef
+conforms	-	MPMediaEntity	NSSecureCoding		-	-	62536bb9686f7d43
+method	c:objc(cs)MPMediaEntity(cm)canFilterByProperty:	-			ios=4.2/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	81046a5d2e12a20b
+method	c:objc(cs)MPMediaEntity(im)enumerateValuesForProperties:usingBlock:	-			ios=4.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2578044acdd542a2
+method	c:objc(cs)MPMediaEntity(im)objectForKeyedSubscript:	-			ios=8.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	ba4b0b2db34a7e3d
+method	c:objc(cs)MPMediaEntity(im)valueForProperty:	-			ios=4.2/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	39ea562ec8831d79
+property	c:objc(cs)MPMediaEntity(py)persistentID	-			ios=7.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	20d86d8a79971dfe
+var	c:@MPMediaEntityPropertyPersistentID	-			ios=4.2/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	65a5e67b7d2a121b
+typedef	c:@T@MPMediaType	-			-	-	2c90b407cd7e1e62
+enum	c:@E@MPMediaType	-			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	64785f50bb080c3d
+enumconst	c:@E@MPMediaType@MPMediaTypeMusic	MPMediaType			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	dcb0968a236ecaa3
+enumconst	c:@E@MPMediaType@MPMediaTypePodcast	MPMediaType			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	a5349ff676be7662
+enumconst	c:@E@MPMediaType@MPMediaTypeAudioBook	MPMediaType			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	c611ad190724ddbf
+enumconst	c:@E@MPMediaType@MPMediaTypeAudioITunesU	MPMediaType			ios=5.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	f22db4a3a5c8183d
+enumconst	c:@E@MPMediaType@MPMediaTypeAnyAudio	MPMediaType			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	1133d9fcf5338b87
+enumconst	c:@E@MPMediaType@MPMediaTypeMovie	MPMediaType			ios=5.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	ab7a33f801a66850
+enumconst	c:@E@MPMediaType@MPMediaTypeTVShow	MPMediaType			ios=5.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	c49363b5ee3dd212
+enumconst	c:@E@MPMediaType@MPMediaTypeVideoPodcast	MPMediaType			ios=5.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	d22e89246c532a19
+enumconst	c:@E@MPMediaType@MPMediaTypeMusicVideo	MPMediaType			ios=5.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	5da3787820c7b34a
+enumconst	c:@E@MPMediaType@MPMediaTypeVideoITunesU	MPMediaType			ios=5.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	61ba571025b38256
+enumconst	c:@E@MPMediaType@MPMediaTypeHomeVideo	MPMediaType			ios=7.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	5714d499182fbaf0
+enumconst	c:@E@MPMediaType@MPMediaTypeAnyVideo	MPMediaType			ios=5.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	f064f77b490e6bcb
+enumconst	c:@E@MPMediaType@MPMediaTypeAny	MPMediaType			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	2ad6393880da3641
+interface	c:objc(cs)MPMediaItem	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	f70d7faaed228f70
+super	-	MPMediaItem	MPMediaEntity		-	-	d6a97b4b493ea9c7
+property	c:objc(cs)MPMediaItem(py)persistentID	-			ios=5.0/-/-/0	-	e66141e097f1b501
+property	c:objc(cs)MPMediaItem(py)mediaType	-			ios=7.0/-/-/0	-	9a530987f2836e42
+property	c:objc(cs)MPMediaItem(py)title	-			ios=7.0/-/-/0	-	b9d7e4ded453d031
+property	c:objc(cs)MPMediaItem(py)albumTitle	-			ios=7.0/-/-/0	-	7d1ed9cb8786146d
+property	c:objc(cs)MPMediaItem(py)albumPersistentID	-			ios=8.0/-/-/0	-	2352f901a8264182
+property	c:objc(cs)MPMediaItem(py)artist	-			ios=7.0/-/-/0	-	7618dde7220e4937
+property	c:objc(cs)MPMediaItem(py)artistPersistentID	-			ios=8.0/-/-/0	-	0549a42120183cac
+property	c:objc(cs)MPMediaItem(py)albumArtist	-			ios=7.0/-/-/0	-	6f5d6b076bb61dd4
+property	c:objc(cs)MPMediaItem(py)albumArtistPersistentID	-			ios=8.0/-/-/0	-	8c0ea0aeaefb5c8c
+property	c:objc(cs)MPMediaItem(py)genre	-			ios=7.0/-/-/0	-	19be58d385f9e9c2
+property	c:objc(cs)MPMediaItem(py)genrePersistentID	-			ios=8.0/-/-/0	-	fc3ea7a9115c6614
+property	c:objc(cs)MPMediaItem(py)composer	-			ios=7.0/-/-/0	-	c756d0936646731f
+property	c:objc(cs)MPMediaItem(py)composerPersistentID	-			ios=8.0/-/-/0	-	de4f5cb774ae3bdc
+property	c:objc(cs)MPMediaItem(py)playbackDuration	-			ios=7.0/-/-/0	-	557f1bee02286746
+property	c:objc(cs)MPMediaItem(py)albumTrackNumber	-			ios=7.0/-/-/0	-	0db7e97b2b2b2196
+property	c:objc(cs)MPMediaItem(py)albumTrackCount	-			ios=8.0/-/-/0	-	bf96641819ab78b6
+property	c:objc(cs)MPMediaItem(py)discNumber	-			ios=7.0/-/-/0	-	64cf44f48b98da88
+property	c:objc(cs)MPMediaItem(py)discCount	-			ios=8.0/-/-/0	-	7fefbb5e93f51d6d
+property	c:objc(cs)MPMediaItem(py)artwork	-			ios=7.0/-/-/0	-	59c79884563ef069
+property	c:objc(cs)MPMediaItem(py)explicitItem	-			ios=10.0/-/-/0	-	19395205d53f6dd7
+property	c:objc(cs)MPMediaItem(py)lyrics	-			ios=8.0/-/-/0	-	b200e07da7c7fb5f
+property	c:objc(cs)MPMediaItem(py)compilation	-			ios=8.0/-/-/0	-	6401ea2cb514de80
+property	c:objc(cs)MPMediaItem(py)releaseDate	-			ios=7.0/-/-/0	-	a89c7ab46bcf32a8
+property	c:objc(cs)MPMediaItem(py)beatsPerMinute	-			ios=8.0/-/-/0	-	2aec8c41c5f22080
+property	c:objc(cs)MPMediaItem(py)comments	-			ios=8.0/-/-/0	-	266f452928719041
+property	c:objc(cs)MPMediaItem(py)assetURL	-			ios=8.0/-/-/0	-	ddb8482f546b52b2
+property	c:objc(cs)MPMediaItem(py)cloudItem	-			ios=8.0/-/-/0	-	272b1440fbede1f2
+property	c:objc(cs)MPMediaItem(py)protectedAsset	-			ios=9.2/-/-/0	-	617614c73ab31cec
+property	c:objc(cs)MPMediaItem(py)podcastTitle	-			ios=7.0/-/-/0	-	b5f1826ab17ab8be
+property	c:objc(cs)MPMediaItem(py)podcastPersistentID	-			ios=8.0/-/-/0	-	f3e543be09212aae
+property	c:objc(cs)MPMediaItem(py)playCount	-			ios=7.0/-/-/0	-	5b038ebe2132f708
+property	c:objc(cs)MPMediaItem(py)skipCount	-			ios=7.0/-/-/0	-	1b26a8907f5c6c69
+property	c:objc(cs)MPMediaItem(py)rating	-			ios=7.0/-/-/0	-	e767e6f4945866ff
+property	c:objc(cs)MPMediaItem(py)lastPlayedDate	-			ios=7.0/-/-/0	-	fbc5fa2b2bd05f56
+property	c:objc(cs)MPMediaItem(py)userGrouping	-			ios=8.0/-/-/0	-	2bdb89fd9f6ee76f
+property	c:objc(cs)MPMediaItem(py)bookmarkTime	-			ios=7.0/-/-/0	-	e1ada2b7575923da
+property	c:objc(cs)MPMediaItem(py)dateAdded	-			ios=10.0/-/-/0	-	a957cc2b2f028f94
+property	c:objc(cs)MPMediaItem(py)playbackStoreID	-			ios=10.3/-/-/0	-	556f829149f993fd
+property	c:objc(cs)MPMediaItem(py)preorder	-			ios=10.3/-/-/0	-	9390410e674c962c
+var	c:@MPMediaItemPropertyPersistentID	-			ios=4.2/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	b75ccd29807ef01d
+var	c:@MPMediaItemPropertyMediaType	-			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	98666cac5f49f4d5
+var	c:@MPMediaItemPropertyTitle	-			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	3e53efd2a97422b3
+var	c:@MPMediaItemPropertyAlbumTitle	-			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	efd24dc888520d96
+var	c:@MPMediaItemPropertyAlbumPersistentID	-			ios=4.2/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	666a46e1c8dd9b9a
+var	c:@MPMediaItemPropertyArtist	-			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	ccf6fa060aa7bb59
+var	c:@MPMediaItemPropertyArtistPersistentID	-			ios=4.2/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	77fe702172b45a77
+var	c:@MPMediaItemPropertyAlbumArtist	-			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	117897bc95c1b7df
+var	c:@MPMediaItemPropertyAlbumArtistPersistentID	-			ios=4.2/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	4961f38fda0276d5
+var	c:@MPMediaItemPropertyGenre	-			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	62cf3ff83469d979
+var	c:@MPMediaItemPropertyGenrePersistentID	-			ios=4.2/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	c5cea2bda8e82e74
+var	c:@MPMediaItemPropertyComposer	-			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	d3d62f0442d47604
+var	c:@MPMediaItemPropertyComposerPersistentID	-			ios=4.2/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	d55d3f70faf942d8
+var	c:@MPMediaItemPropertyPlaybackDuration	-			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	6c12971b5fb15be6
+var	c:@MPMediaItemPropertyAlbumTrackNumber	-			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	ec540067e186a52a
+var	c:@MPMediaItemPropertyAlbumTrackCount	-			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	a051cae2b01b3598
+var	c:@MPMediaItemPropertyDiscNumber	-			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	24a2e6da3ec33aa4
+var	c:@MPMediaItemPropertyDiscCount	-			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	dce3bd58df4ebcc1
+var	c:@MPMediaItemPropertyArtwork	-			ios=3.0/-/-/0,macos=10.13.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	a6cb022c3bad3abc
+var	c:@MPMediaItemPropertyIsExplicit	-			ios=7.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	c7a2c5dac7586fab
+var	c:@MPMediaItemPropertyLyrics	-			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	a4fe30246c7078b2
+var	c:@MPMediaItemPropertyIsCompilation	-			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	50b600af56d0c0fd
+var	c:@MPMediaItemPropertyReleaseDate	-			ios=4.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	79eca012307c64b6
+var	c:@MPMediaItemPropertyBeatsPerMinute	-			ios=4.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	23ed3cb2d5392baf
+var	c:@MPMediaItemPropertyComments	-			ios=4.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	59a198bec01daa71
+var	c:@MPMediaItemPropertyAssetURL	-			ios=4.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	7666a4045e8aba98
+var	c:@MPMediaItemPropertyIsCloudItem	-			ios=6.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	e39832286758a26d
+var	c:@MPMediaItemPropertyHasProtectedAsset	-			ios=9.2/-/-/0,macos=10.12.2/-/-/0,tvos=9.2/-/-/0,watchos=5.0/-/-/0	-	795b41134a3cc866
+var	c:@MPMediaItemPropertyPodcastTitle	-			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	8643b4a148d1edcd
+var	c:@MPMediaItemPropertyPodcastPersistentID	-			ios=4.2/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	969636deb4f8c8fb
+var	c:@MPMediaItemPropertyPlayCount	-			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	44908940f2a817d1
+var	c:@MPMediaItemPropertySkipCount	-			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	3b0880cb3ee689b1
+var	c:@MPMediaItemPropertyRating	-			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	9094de88a7a690a0
+var	c:@MPMediaItemPropertyLastPlayedDate	-			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	f6c066a89d2e4b50
+var	c:@MPMediaItemPropertyUserGrouping	-			ios=4.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	551a8688f33c21e2
+var	c:@MPMediaItemPropertyBookmarkTime	-			ios=6.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	275afc20afcf2e53
+var	c:@MPMediaItemPropertyDateAdded	-			ios=10.0/-/-/0,macos=10.12.2/-/-/0,tvos=10.0/-/-/0,watchos=5.0/-/-/0	-	af39d6e85405cab9
+var	c:@MPMediaItemPropertyPlaybackStoreID	-			ios=10.3/-/-/0,macos=10.13/-/-/0,tvos=10.3/-/-/0,watchos=5.0/-/-/0	-	4c405e49f85a730f
+var	c:@MPMediaItemPropertyIsPreorder	-			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.3/-/-/0	-	deee17685c126816
+interface	c:objc(cs)MPMediaItemArtwork	-			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	f819c79ebaffb7ba
+super	-	MPMediaItemArtwork	NSObject		-	-	383d43918a3725dd
+method	c:objc(cs)MPMediaItemArtwork(cm)new	-			*unavailable ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	5f7879ad11f2c75d
+method	c:objc(cs)MPMediaItemArtwork(im)init	-			*unavailable ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	8d1f6c916d52c047
+method	c:objc(cs)MPMediaItemArtwork(im)initWithBoundsSize:requestHandler:	-			ios=10.0/-/-/0,tvos=10.0/-/-/0,watchos=5.0/-/-/0	-	c226331a37b7ff3b
+method	c:objc(cs)MPMediaItemArtwork(im)imageWithSize:	-			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	27ef6337a7b2445e
+property	c:objc(cs)MPMediaItemArtwork(py)bounds	-			ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	71938209e38cfac6
+property	c:objc(cs)MPMediaItemArtwork(py)imageCropRect	-			ios=3.0/10.0/-/0	-	d9ce5ad6f9983d48
+method	c:objc(cs)MPMediaItemArtwork(im)initWithImage:	-			ios=5.0/10.0/-/0	-	83642fddf0311670
+interface	c:objc(cs)MPMediaItemAnimatedArtwork	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	3423f87a31bce280
+super	-	MPMediaItemAnimatedArtwork	NSObject		-	-	0cbe6d5e43380434
+method	c:objc(cs)MPMediaItemAnimatedArtwork(cm)new	-			*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	d3795b5221ce55d2
+method	c:objc(cs)MPMediaItemAnimatedArtwork(im)init	-			*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	bad890e63f4075d3
+method	c:objc(cs)MPMediaItemAnimatedArtwork(im)initWithArtworkID:previewImageRequestHandler:videoAssetFileURLRequestHandler:	-			ios=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	e0f2327b13464c6d
+interface	c:objc(cs)MPMediaItemCollection	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8a4c6a142dac6055
+super	-	MPMediaItemCollection	MPMediaEntity		-	-	ee439bc166c82150
+method	c:objc(cs)MPMediaItemCollection(cm)collectionWithItems:	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f53bf4a9409f89ef
+method	c:objc(cs)MPMediaItemCollection(im)initWithItems:	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	93f689b005d915ad
+property	c:objc(cs)MPMediaItemCollection(py)items	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	188ba7396cacf05a
+property	c:objc(cs)MPMediaItemCollection(py)representativeItem	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	edc9f656f9cc69cf
+property	c:objc(cs)MPMediaItemCollection(py)count	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5c8d4e624d43c6c5
+property	c:objc(cs)MPMediaItemCollection(py)mediaTypes	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	331f49380d3de448
+typedef	c:@T@MPMediaLibraryAuthorizationStatus	-			-	-	e3c2f1499b858235
+enum	c:@E@MPMediaLibraryAuthorizationStatus	-			ios=9.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d8ce8ebf5ca6199f
+enumconst	c:@E@MPMediaLibraryAuthorizationStatus@MPMediaLibraryAuthorizationStatusNotDetermined	MPMediaLibraryAuthorizationStatus			ios=9.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f3c18129ef6fa84e
+enumconst	c:@E@MPMediaLibraryAuthorizationStatus@MPMediaLibraryAuthorizationStatusDenied	MPMediaLibraryAuthorizationStatus			ios=9.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f2f539978da6b105
+enumconst	c:@E@MPMediaLibraryAuthorizationStatus@MPMediaLibraryAuthorizationStatusRestricted	MPMediaLibraryAuthorizationStatus			ios=9.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b5f43c0b4ee48617
+enumconst	c:@E@MPMediaLibraryAuthorizationStatus@MPMediaLibraryAuthorizationStatusAuthorized	MPMediaLibraryAuthorizationStatus			ios=9.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f118159ea8176d3d
+interface	c:objc(cs)MPMediaLibrary	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	bd844bd5d28517ad
+super	-	MPMediaLibrary	NSObject		-	-	097a0d006eede381
+conforms	-	MPMediaLibrary	NSSecureCoding		-	-	8bc4e84307de8f60
+method	c:objc(cs)MPMediaLibrary(cm)defaultMediaLibrary	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2c5f6110827e1407
+property	c:objc(cs)MPMediaLibrary(py)lastModifiedDate	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0a458f4ef4362a5b
+method	c:objc(cs)MPMediaLibrary(im)beginGeneratingLibraryChangeNotifications	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	62a1883339035b23
+method	c:objc(cs)MPMediaLibrary(im)endGeneratingLibraryChangeNotifications	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	723a080c65242f67
+method	c:objc(cs)MPMediaLibrary(cm)authorizationStatus	-			ios=9.3/-/-/0	-	6f4437bbb22ed184
+method	c:objc(cs)MPMediaLibrary(cm)requestAuthorization:	-			ios=9.3/-/-/0	-	599b2f4e95bdfc39
+method	c:objc(cs)MPMediaLibrary(im)addItemWithProductID:completionHandler:	-			ios=9.3/-/-/0	-	5a2ec7a89f50c68d
+method	c:objc(cs)MPMediaLibrary(im)getPlaylistWithUUID:creationMetadata:completionHandler:	-			ios=9.3/-/-/0	-	4a34e768369aa3d7
+var	c:@MPMediaLibraryDidChangeNotification	-			macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0146a445e514fab4
+interface	c:objc(cs)MPMediaPickerController	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	37df8197aec11901
+super	-	MPMediaPickerController	UIViewController		-	-	ac5ad010feab979d
+method	c:objc(cs)MPMediaPickerController(im)initWithMediaTypes:	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2fe1fb66bccd4768
+property	c:objc(cs)MPMediaPickerController(py)mediaTypes	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	644d353a6052eade
+property	c:objc(cs)MPMediaPickerController(py)delegate	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	efbd922d591fadb8
+property	c:objc(cs)MPMediaPickerController(py)allowsPickingMultipleItems	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9abd6627411f2f7f
+property	c:objc(cs)MPMediaPickerController(py)showsCloudItems	-			ios=6.0/-/-/0	-	06450369f5ce9aa6
+property	c:objc(cs)MPMediaPickerController(py)showsItemsWithProtectedAssets	-			ios=9.2/-/-/0	-	d126d74ea68ad2be
+property	c:objc(cs)MPMediaPickerController(py)prompt	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	cbeb035b97e0ebb4
+protocol	c:objc(pl)MPMediaPickerControllerDelegate	-			macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f0e0c52175ea1e68
+conforms	-	MPMediaPickerControllerDelegate	NSObject		-	-	9dded1c44e23e675
+method	c:objc(pl)MPMediaPickerControllerDelegate(im)mediaPicker:didPickMediaItems:	-			macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	cb806bb6819bf6b9
+method	c:objc(pl)MPMediaPickerControllerDelegate(im)mediaPickerDidCancel:	-			macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ebc33ef68fabfa8f
+typedef	c:@T@MPMediaPlaylistAttribute	-			-	-	e5177cc5d56c3dd9
+enum	c:@E@MPMediaPlaylistAttribute	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	940682a88d18f096
+enumconst	c:@E@MPMediaPlaylistAttribute@MPMediaPlaylistAttributeNone	MPMediaPlaylistAttribute			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2f2ac1759de7648d
+enumconst	c:@E@MPMediaPlaylistAttribute@MPMediaPlaylistAttributeOnTheGo	MPMediaPlaylistAttribute			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	aedf9b90ed4c2278
+enumconst	c:@E@MPMediaPlaylistAttribute@MPMediaPlaylistAttributeSmart	MPMediaPlaylistAttribute			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8a01b0080f922cbe
+enumconst	c:@E@MPMediaPlaylistAttribute@MPMediaPlaylistAttributeGenius	MPMediaPlaylistAttribute			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ea3c49f280431d0b
+interface	c:objc(cs)MPMediaPlaylist	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	847dc2732ac41446
+super	-	MPMediaPlaylist	MPMediaItemCollection		-	-	9f3d0e5047a99393
+property	c:objc(cs)MPMediaPlaylist(py)persistentID	-			ios=7.0/-/-/0	-	972b52d9cda01c3c
+property	c:objc(cs)MPMediaPlaylist(py)cloudGlobalID	-			ios=14.0/-/-/0	-	231382046ef9b2de
+property	c:objc(cs)MPMediaPlaylist(py)name	-			ios=7.0/-/-/0	-	a838716134e98c2c
+property	c:objc(cs)MPMediaPlaylist(py)playlistAttributes	-			ios=7.0/-/-/0	-	67595566ad739d3b
+property	c:objc(cs)MPMediaPlaylist(py)seedItems	-			ios=8.0/-/-/0	-	cd6bf31747bbbe7a
+property	c:objc(cs)MPMediaPlaylist(py)descriptionText	-			ios=9.3/-/-/0	-	f3d5b163d318a17f
+property	c:objc(cs)MPMediaPlaylist(py)authorDisplayName	-			ios=9.3/-/-/0	-	aaaaae709441e1aa
+method	c:objc(cs)MPMediaPlaylist(im)addItemWithProductID:completionHandler:	-			ios=9.3/-/-/0,macos=-/-/-/1	-	39e5b06c400b6a8f
+method	c:objc(cs)MPMediaPlaylist(im)addMediaItems:completionHandler:	-			ios=9.3/-/-/0,macos=-/-/-/1	-	d906d7aedfd97c09
+var	c:@MPMediaPlaylistPropertyPersistentID	-			-	-	5f91f25cc5619562
+var	c:@MPMediaPlaylistPropertyCloudGlobalID	-			ios=9.0/-/-/0	-	2edaa51dfb896bf0
+var	c:@MPMediaPlaylistPropertyName	-			-	-	2636769e232bc53d
+var	c:@MPMediaPlaylistPropertyPlaylistAttributes	-			-	-	61f73ce62f28d390
+var	c:@MPMediaPlaylistPropertySeedItems	-			-	-	ce59d9709bcac568
+var	c:@MPMediaPlaylistPropertyDescriptionText	-			ios=9.3/-/-/0	-	78bd96684d684d15
+var	c:@MPMediaPlaylistPropertyAuthorDisplayName	-			ios=9.3/-/-/0	-	a40f6ec9bc7f5446
+interface	c:objc(cs)MPMediaPlaylistCreationMetadata	-			ios=9.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3bef41ab5019f12e
+super	-	MPMediaPlaylistCreationMetadata	NSObject		-	-	1034293ab64baada
+method	c:objc(cs)MPMediaPlaylistCreationMetadata(cm)new	-			*unavailable ios=9.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	91a0abe22ec2b1eb
+method	c:objc(cs)MPMediaPlaylistCreationMetadata(im)init	-			*unavailable ios=9.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	855f88812ddf1444
+method	c:objc(cs)MPMediaPlaylistCreationMetadata(im)initWithName:	-			ios=9.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ca42920f3d7778f8
+property	c:objc(cs)MPMediaPlaylistCreationMetadata(py)name	-			ios=9.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0b562cc5ca3ba92d
+property	c:objc(cs)MPMediaPlaylistCreationMetadata(py)authorDisplayName	-			ios=9.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ede7e863c14fcf05
+property	c:objc(cs)MPMediaPlaylistCreationMetadata(py)descriptionText	-			ios=9.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ed0eb1ff58080b3c
+typedef	c:@T@MPMediaGrouping	-			-	-	46692c9b7504bc4d
+enum	c:@E@MPMediaGrouping	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4327304eaa3483e1
+enumconst	c:@E@MPMediaGrouping@MPMediaGroupingTitle	MPMediaGrouping			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	cd0b5115c8cca689
+enumconst	c:@E@MPMediaGrouping@MPMediaGroupingAlbum	MPMediaGrouping			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fbf9bdb301b3600c
+enumconst	c:@E@MPMediaGrouping@MPMediaGroupingArtist	MPMediaGrouping			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ef971237057d004f
+enumconst	c:@E@MPMediaGrouping@MPMediaGroupingAlbumArtist	MPMediaGrouping			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ca7523e209f3d6a1
+enumconst	c:@E@MPMediaGrouping@MPMediaGroupingComposer	MPMediaGrouping			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d7049f8659211fad
+enumconst	c:@E@MPMediaGrouping@MPMediaGroupingGenre	MPMediaGrouping			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	389b36c75699dbc5
+enumconst	c:@E@MPMediaGrouping@MPMediaGroupingPlaylist	MPMediaGrouping			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	62b8d5bb139526e3
+enumconst	c:@E@MPMediaGrouping@MPMediaGroupingPodcastTitle	MPMediaGrouping			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f610eee3a45fc087
+interface	c:objc(cs)MPMediaQuery	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	14fcd2eb73f64ede
+super	-	MPMediaQuery	NSObject		-	-	cf0c2c7f19a07312
+conforms	-	MPMediaQuery	NSSecureCoding		-	-	a6270cd112ba07c4
+conforms	-	MPMediaQuery	NSCopying		-	-	e44aad11818390f6
+method	c:objc(cs)MPMediaQuery(im)initWithFilterPredicates:	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	333103eba5eac7da
+property	c:objc(cs)MPMediaQuery(py)filterPredicates	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	13479cf5a3134c07
+method	c:objc(cs)MPMediaQuery(im)addFilterPredicate:	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d52f45ce08689980
+method	c:objc(cs)MPMediaQuery(im)removeFilterPredicate:	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d9493c9c55f9a2e2
+property	c:objc(cs)MPMediaQuery(py)items	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4b5642d9623d1339
+property	c:objc(cs)MPMediaQuery(py)collections	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7197c08c0ac5ec1b
+property	c:objc(cs)MPMediaQuery(py)groupingType	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5aa8ef1d8cad2d9e
+property	c:objc(cs)MPMediaQuery(py)itemSections	-			ios=4.2/-/-/0	-	8992a60acd96b6d9
+property	c:objc(cs)MPMediaQuery(py)collectionSections	-			ios=4.2/-/-/0	-	630a43e28edf1580
+method	c:objc(cs)MPMediaQuery(cm)albumsQuery	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9694803cd76c8b9f
+method	c:objc(cs)MPMediaQuery(cm)artistsQuery	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0556f7b7f1dfd2da
+method	c:objc(cs)MPMediaQuery(cm)songsQuery	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1bf63134cf9f359b
+method	c:objc(cs)MPMediaQuery(cm)playlistsQuery	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8c01460fedc9619c
+method	c:objc(cs)MPMediaQuery(cm)podcastsQuery	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2c826e9fa90eee0e
+method	c:objc(cs)MPMediaQuery(cm)audiobooksQuery	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c13449ef383b73c9
+method	c:objc(cs)MPMediaQuery(cm)compilationsQuery	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	06f3c061f4f08543
+method	c:objc(cs)MPMediaQuery(cm)composersQuery	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	73a7e19396d924be
+method	c:objc(cs)MPMediaQuery(cm)genresQuery	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	79643f30d8d76bcc
+interface	c:objc(cs)MPMediaPredicate	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	86157458ad11c1e9
+super	-	MPMediaPredicate	NSObject		-	-	6807feba23fc82a0
+conforms	-	MPMediaPredicate	NSSecureCoding		-	-	bb03b92fafcd36f6
+typedef	c:@T@MPMediaPredicateComparison	-			-	-	536f32c653d52e1e
+enum	c:@E@MPMediaPredicateComparison	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fee4e2a87662be4a
+enumconst	c:@E@MPMediaPredicateComparison@MPMediaPredicateComparisonEqualTo	MPMediaPredicateComparison			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9f04afe82ef7589a
+enumconst	c:@E@MPMediaPredicateComparison@MPMediaPredicateComparisonContains	MPMediaPredicateComparison			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	59d9e4430ea01f7c
+interface	c:objc(cs)MPMediaPropertyPredicate	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1ba0ae99e71309f4
+super	-	MPMediaPropertyPredicate	MPMediaPredicate		-	-	7f3be0345bb4fdf0
+method	c:objc(cs)MPMediaPropertyPredicate(cm)predicateWithValue:forProperty:	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8057b232d061acea
+method	c:objc(cs)MPMediaPropertyPredicate(cm)predicateWithValue:forProperty:comparisonType:	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	92fa051620d3e054
+property	c:objc(cs)MPMediaPropertyPredicate(py)property	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6f3012bac4e8eee2
+property	c:objc(cs)MPMediaPropertyPredicate(py)value	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6ab771f0878d3f0c
+property	c:objc(cs)MPMediaPropertyPredicate(py)comparisonType	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7a8f10865fb1b933
+category	c:objc(cy)MPMediaItem@MPMediaQueryAdditions	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	dc71d2e37e0552a1
+method	c:objc(cs)MPMediaItem(cm)persistentIDPropertyForGroupingType:	MPMediaQueryAdditions			ios=4.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9dea45c5ca92c348
+method	c:objc(cs)MPMediaItem(cm)titlePropertyForGroupingType:	MPMediaQueryAdditions			ios=4.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b65100fd2ca05fef
+interface	c:objc(cs)MPMediaQuerySection	-			ios=4.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	36f05ca85b93f74a
+super	-	MPMediaQuerySection	NSObject		-	-	31f6d26b25422f21
+conforms	-	MPMediaQuerySection	NSSecureCoding		-	-	637fafc548dc6add
+conforms	-	MPMediaQuerySection	NSCopying		-	-	7a66bbb4939d6367
+property	c:objc(cs)MPMediaQuerySection(py)title	-			ios=4.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	409e3bc481502c65
+property	c:objc(cs)MPMediaQuerySection(py)range	-			ios=4.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f3b06364b5d7d1e2
+protocol	c:objc(pl)MPMediaPlayback	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	1e80c3992e77cc6e
+method	c:objc(pl)MPMediaPlayback(im)prepareToPlay	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	f8ad67dd2f480515
+property	c:objc(pl)MPMediaPlayback(py)isPreparedToPlay	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	61fbe4877668b1f2
+method	c:objc(pl)MPMediaPlayback(im)play	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	98cc6e59f9822242
+method	c:objc(pl)MPMediaPlayback(im)pause	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	5ba179121e945187
+method	c:objc(pl)MPMediaPlayback(im)stop	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	c145d2e583b42ce2
+property	c:objc(pl)MPMediaPlayback(py)currentPlaybackTime	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	ac75d869b2539efd
+property	c:objc(pl)MPMediaPlayback(py)currentPlaybackRate	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	a2144578da04287c
+method	c:objc(pl)MPMediaPlayback(im)beginSeekingForward	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	d26bc010de014216
+method	c:objc(pl)MPMediaPlayback(im)beginSeekingBackward	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	426b665d75258bd4
+method	c:objc(pl)MPMediaPlayback(im)endSeeking	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	ca39f99dd8ffac53
+var	c:@MPMediaPlaybackIsPreparedToPlayDidChangeNotification	-			ios=3.2/9.0/-/0	-	00e4d11561f9db87
+typedef	c:@T@MPMovieScalingMode	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	5c3e2491e2bec475
+enum	c:@E@MPMovieScalingMode	-			ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c2f17ac45d231314
+enumconst	c:@E@MPMovieScalingMode@MPMovieScalingModeNone	MPMovieScalingMode			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	b107dcf7b0e261b6
+enumconst	c:@E@MPMovieScalingMode@MPMovieScalingModeAspectFit	MPMovieScalingMode			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	4a9cdcd674e23626
+enumconst	c:@E@MPMovieScalingMode@MPMovieScalingModeAspectFill	MPMovieScalingMode			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	c4cfe74af64206fa
+enumconst	c:@E@MPMovieScalingMode@MPMovieScalingModeFill	MPMovieScalingMode			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	1bbff68ae801dfc1
+typedef	c:@T@MPMoviePlaybackState	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	9e8a8f89c76b3d69
+enum	c:@E@MPMoviePlaybackState	-			ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	74b6fac8bcf023ae
+enumconst	c:@E@MPMoviePlaybackState@MPMoviePlaybackStateStopped	MPMoviePlaybackState			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	4692676a92a08ff0
+enumconst	c:@E@MPMoviePlaybackState@MPMoviePlaybackStatePlaying	MPMoviePlaybackState			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	f38ed58d364863ca
+enumconst	c:@E@MPMoviePlaybackState@MPMoviePlaybackStatePaused	MPMoviePlaybackState			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	2a52e70cfe61884b
+enumconst	c:@E@MPMoviePlaybackState@MPMoviePlaybackStateInterrupted	MPMoviePlaybackState			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	5f148ceafafff041
+enumconst	c:@E@MPMoviePlaybackState@MPMoviePlaybackStateSeekingForward	MPMoviePlaybackState			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	87041402491cec3e
+enumconst	c:@E@MPMoviePlaybackState@MPMoviePlaybackStateSeekingBackward	MPMoviePlaybackState			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	65298ad63dc3767c
+typedef	c:@T@MPMovieLoadState	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	ecc89c5b441fbfa6
+enum	c:@E@MPMovieLoadState	-			ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9ae0328ea47cdcff
+enumconst	c:@E@MPMovieLoadState@MPMovieLoadStateUnknown	MPMovieLoadState			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	81de7e66f40d01e6
+enumconst	c:@E@MPMovieLoadState@MPMovieLoadStatePlayable	MPMovieLoadState			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	7f65f090fd68f705
+enumconst	c:@E@MPMovieLoadState@MPMovieLoadStatePlaythroughOK	MPMovieLoadState			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	3b91fe3adb458afa
+enumconst	c:@E@MPMovieLoadState@MPMovieLoadStateStalled	MPMovieLoadState			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	7e07bd67d8e0d2cd
+typedef	c:@T@MPMovieRepeatMode	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	465e836540bae67d
+enum	c:@E@MPMovieRepeatMode	-			ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0ff55425627a8df5
+enumconst	c:@E@MPMovieRepeatMode@MPMovieRepeatModeNone	MPMovieRepeatMode			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	d67fb41544fa53b8
+enumconst	c:@E@MPMovieRepeatMode@MPMovieRepeatModeOne	MPMovieRepeatMode			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	d4ada8256d289a16
+typedef	c:@T@MPMovieControlStyle	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	b7c7a71567c4a8c0
+enum	c:@E@MPMovieControlStyle	-			ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	382949c91f6439e5
+enumconst	c:@E@MPMovieControlStyle@MPMovieControlStyleNone	MPMovieControlStyle			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	bff3d88bc2a1a6ef
+enumconst	c:@E@MPMovieControlStyle@MPMovieControlStyleEmbedded	MPMovieControlStyle			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	9f77cb0210add052
+enumconst	c:@E@MPMovieControlStyle@MPMovieControlStyleFullscreen	MPMovieControlStyle			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	3ada74bb65d732a7
+enumconst	c:@E@MPMovieControlStyle@MPMovieControlStyleDefault	MPMovieControlStyle			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	e01e102e5edc5763
+typedef	c:@T@MPMovieFinishReason	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	dc382801fd228982
+enum	c:@E@MPMovieFinishReason	-			ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6891b021b8ec23af
+enumconst	c:@E@MPMovieFinishReason@MPMovieFinishReasonPlaybackEnded	MPMovieFinishReason			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	6bf24bb24fa079df
+enumconst	c:@E@MPMovieFinishReason@MPMovieFinishReasonPlaybackError	MPMovieFinishReason			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	83b40be48e61edba
+enumconst	c:@E@MPMovieFinishReason@MPMovieFinishReasonUserExited	MPMovieFinishReason			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	7fd11aebf30a62ed
+typedef	c:@T@MPMovieMediaTypeMask	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	165f567cf18d792a
+enum	c:@E@MPMovieMediaTypeMask	-			ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	748bf80a958a971f
+enumconst	c:@E@MPMovieMediaTypeMask@MPMovieMediaTypeMaskNone	MPMovieMediaTypeMask			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	92cc396130fd0c4c
+enumconst	c:@E@MPMovieMediaTypeMask@MPMovieMediaTypeMaskVideo	MPMovieMediaTypeMask			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	a415ea42cb28c91f
+enumconst	c:@E@MPMovieMediaTypeMask@MPMovieMediaTypeMaskAudio	MPMovieMediaTypeMask			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	c94ea7830ed6e73a
+typedef	c:@T@MPMovieSourceType	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	d43967e11275fbd2
+enum	c:@E@MPMovieSourceType	-			ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	52d50f2a8bbd985b
+enumconst	c:@E@MPMovieSourceType@MPMovieSourceTypeUnknown	MPMovieSourceType			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	dab010c378208824
+enumconst	c:@E@MPMovieSourceType@MPMovieSourceTypeFile	MPMovieSourceType			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	3b96fe2af6aa99d5
+enumconst	c:@E@MPMovieSourceType@MPMovieSourceTypeStreaming	MPMovieSourceType			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	2759fb887566e3fd
+interface	c:objc(cs)MPMoviePlayerController	-			ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	255ca6d3b48966ef
+super	-	MPMoviePlayerController	NSObject		-	-	8fb7d567f93cc059
+conforms	-	MPMoviePlayerController	MPMediaPlayback		-	-	47eacf903e348859
+method	c:objc(cs)MPMoviePlayerController(im)initWithContentURL:	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	1fddad76eb84b2ee
+property	c:objc(cs)MPMoviePlayerController(py)contentURL	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	195e7c69565be0f9
+property	c:objc(cs)MPMoviePlayerController(py)view	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	a05e6ff6b2e22096
+property	c:objc(cs)MPMoviePlayerController(py)backgroundView	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	0c3ecb49b30331d4
+property	c:objc(cs)MPMoviePlayerController(py)playbackState	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	d768d49619192c54
+property	c:objc(cs)MPMoviePlayerController(py)loadState	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	fc9502d32f513cdf
+property	c:objc(cs)MPMoviePlayerController(py)controlStyle	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	159155fb33526ec0
+property	c:objc(cs)MPMoviePlayerController(py)repeatMode	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	70ca89b021ca4f5d
+property	c:objc(cs)MPMoviePlayerController(py)shouldAutoplay	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	a9a1f72751d633ff
+property	c:objc(cs)MPMoviePlayerController(py)fullscreen	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	803e3a3888b3aa98
+method	c:objc(cs)MPMoviePlayerController(im)setFullscreen:animated:	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	e5fd98ad05b011f4
+property	c:objc(cs)MPMoviePlayerController(py)scalingMode	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	f1dbea51e0567e5c
+property	c:objc(cs)MPMoviePlayerController(py)readyForDisplay	-			ios=6.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	5fceba6b8f22af6d
+property	c:objc(cs)MPMoviePlayerController(py)movieMediaTypes	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	e2b4824d99ed9ae1
+property	c:objc(cs)MPMoviePlayerController(py)movieSourceType	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	b4fa791850009bac
+property	c:objc(cs)MPMoviePlayerController(py)duration	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	1193fef08241ba7e
+property	c:objc(cs)MPMoviePlayerController(py)playableDuration	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	4a557c84a0e7c2af
+property	c:objc(cs)MPMoviePlayerController(py)naturalSize	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	308b906e14651e93
+property	c:objc(cs)MPMoviePlayerController(py)initialPlaybackTime	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	38058691a466447c
+property	c:objc(cs)MPMoviePlayerController(py)endPlaybackTime	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	70c5b41285910dfb
+property	c:objc(cs)MPMoviePlayerController(py)allowsAirPlay	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	026c28f75dbcb3d3
+property	c:objc(cs)MPMoviePlayerController(py)airPlayVideoActive	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	349b1e3e03eed69f
+var	c:@MPMoviePlayerScalingModeDidChangeNotification	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6a286ecab4fb2a07
+var	c:@MPMoviePlayerPlaybackDidFinishNotification	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4f11d9a96e21d64b
+var	c:@MPMoviePlayerPlaybackDidFinishReasonUserInfoKey	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	352083c3a8c871a0
+var	c:@MPMoviePlayerPlaybackStateDidChangeNotification	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8137adc0fd9f371c
+var	c:@MPMoviePlayerLoadStateDidChangeNotification	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	90748f84ab243178
+var	c:@MPMoviePlayerNowPlayingMovieDidChangeNotification	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fb37c16c27776035
+var	c:@MPMoviePlayerWillEnterFullscreenNotification	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5ece2ec86b8dcf8e
+var	c:@MPMoviePlayerDidEnterFullscreenNotification	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0c2bb4457a1da7bd
+var	c:@MPMoviePlayerWillExitFullscreenNotification	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f28b57b12285f9e9
+var	c:@MPMoviePlayerDidExitFullscreenNotification	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	597a27b9a8e7f130
+var	c:@MPMoviePlayerFullscreenAnimationDurationUserInfoKey	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	044ce0c579099eb9
+var	c:@MPMoviePlayerFullscreenAnimationCurveUserInfoKey	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	72541062ea17595b
+var	c:@MPMoviePlayerIsAirPlayVideoActiveDidChangeNotification	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ecb9d43ebe1666b9
+var	c:@MPMoviePlayerReadyForDisplayDidChangeNotification	-			ios=6.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1f6c1fb2936dc0b6
+var	c:@MPMovieMediaTypesAvailableNotification	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	87fb01def433d9c9
+var	c:@MPMovieSourceTypeAvailableNotification	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9aa66fd5b3386b56
+var	c:@MPMovieDurationAvailableNotification	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0b629155e40c7003
+var	c:@MPMovieNaturalSizeAvailableNotification	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	22aa2ab3edc09fb7
+typedef	c:@T@MPMovieTimeOption	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	f837273a4dd230ac
+enum	c:@E@MPMovieTimeOption	-			ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3c63662077c83d26
+enumconst	c:@E@MPMovieTimeOption@MPMovieTimeOptionNearestKeyFrame	MPMovieTimeOption			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	e2cba5368708f1ce
+enumconst	c:@E@MPMovieTimeOption@MPMovieTimeOptionExact	MPMovieTimeOption			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	af6dc9065fe354aa
+category	c:objc(cy)MPMoviePlayerController@MPMoviePlayerThumbnailGeneration	-			ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b751ff409bb481e6
+method	c:objc(cs)MPMoviePlayerController(im)thumbnailImageAtTime:timeOption:	MPMoviePlayerThumbnailGeneration			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	f4636c5027bd1596
+method	c:objc(cs)MPMoviePlayerController(im)requestThumbnailImagesAtTimes:timeOption:	MPMoviePlayerThumbnailGeneration			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	6efdc68e66bb4e40
+method	c:objc(cs)MPMoviePlayerController(im)cancelAllThumbnailImageRequests	MPMoviePlayerThumbnailGeneration			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	c8f9a5df92412501
+var	c:@MPMoviePlayerThumbnailImageRequestDidFinishNotification	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	dd3da525ba2af7c3
+var	c:@MPMoviePlayerThumbnailImageKey	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	464dce5b9720cdfe
+var	c:@MPMoviePlayerThumbnailTimeKey	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cdd9354154e75ecc
+var	c:@MPMoviePlayerThumbnailErrorKey	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5af4e3baa31e6ecc
+category	c:objc(cy)MPMoviePlayerController@MPMoviePlayerTimedMetadataAdditions	-			ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c1258198d9b5093e
+property	c:objc(cs)MPMoviePlayerController(py)timedMetadata	MPMoviePlayerTimedMetadataAdditions			ios=4.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c096a4618f34752b
+interface	c:objc(cs)MPTimedMetadata	-			ios=4.0/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	74bb5af58259b839
+super	-	MPTimedMetadata	NSObject		-	-	5945d34a95b458f6
+property	c:objc(cs)MPTimedMetadata(py)key	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	9e88b844dbc57ccc
+property	c:objc(cs)MPTimedMetadata(py)keyspace	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	cdcb118ddc6b0618
+property	c:objc(cs)MPTimedMetadata(py)value	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	383af3c5fb564ebf
+property	c:objc(cs)MPTimedMetadata(py)timestamp	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	1098f7895c696c22
+property	c:objc(cs)MPTimedMetadata(py)allMetadata	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	bf7442aa1cdf5ae4
+var	c:@MPMoviePlayerTimedMetadataUpdatedNotification	-			ios=4.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	19f9783d81d33295
+var	c:@MPMoviePlayerTimedMetadataUserInfoKey	-			ios=4.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5a718450daf6cbca
+var	c:@MPMoviePlayerTimedMetadataKeyName	-			ios=4.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5387615e88be0d27
+var	c:@MPMoviePlayerTimedMetadataKeyInfo	-			ios=4.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	69193f9e7762350d
+var	c:@MPMoviePlayerTimedMetadataKeyMIMEType	-			ios=4.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f08f4e17b50747e4
+var	c:@MPMoviePlayerTimedMetadataKeyDataType	-			ios=4.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1ef6c0e6831b2b8f
+var	c:@MPMoviePlayerTimedMetadataKeyLanguageCode	-			ios=4.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2614f8770ab4596a
+category	c:objc(cy)MPMoviePlayerController@MPMovieLogging	-			ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0cc093b9edb03cd5
+property	c:objc(cs)MPMoviePlayerController(py)accessLog	MPMovieLogging			ios=4.3/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	a8331d79d1918f55
+property	c:objc(cs)MPMoviePlayerController(py)errorLog	MPMovieLogging			ios=4.3/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	7b7bc88c166606b5
+interface	c:objc(cs)MPMovieAccessLog	-			ios=4.3/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	57ca381f406e6f07
+super	-	MPMovieAccessLog	NSObject		-	-	0a29b364233fb4ab
+conforms	-	MPMovieAccessLog	NSCopying		-	-	c6df9b2e33f9a113
+property	c:objc(cs)MPMovieAccessLog(py)extendedLogData	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	7ad8625ced19abf0
+property	c:objc(cs)MPMovieAccessLog(py)extendedLogDataStringEncoding	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	684752285878e91f
+property	c:objc(cs)MPMovieAccessLog(py)events	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	5505fdddf532287e
+interface	c:objc(cs)MPMovieErrorLog	-			ios=4.3/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	94e171d91964eb44
+super	-	MPMovieErrorLog	NSObject		-	-	86f229dd9882f22f
+conforms	-	MPMovieErrorLog	NSCopying		-	-	4b890fe9a4071a0e
+property	c:objc(cs)MPMovieErrorLog(py)extendedLogData	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	7d0ffc846d6376e0
+property	c:objc(cs)MPMovieErrorLog(py)extendedLogDataStringEncoding	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	1694ae66fd863b4b
+property	c:objc(cs)MPMovieErrorLog(py)events	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	4b0d35b2d68ad1f2
+interface	c:objc(cs)MPMovieAccessLogEvent	-			ios=4.3/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	043b745d817668cf
+super	-	MPMovieAccessLogEvent	NSObject		-	-	d7a3ed23e7f1650b
+conforms	-	MPMovieAccessLogEvent	NSCopying		-	-	84e8afec97b57d6a
+property	c:objc(cs)MPMovieAccessLogEvent(py)numberOfSegmentsDownloaded	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	d37bba8c5c863cc5
+property	c:objc(cs)MPMovieAccessLogEvent(py)playbackStartDate	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	00047940eaf49bea
+property	c:objc(cs)MPMovieAccessLogEvent(py)URI	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	d6c1f60e4aa00396
+property	c:objc(cs)MPMovieAccessLogEvent(py)serverAddress	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	64c9426a247cf50b
+property	c:objc(cs)MPMovieAccessLogEvent(py)numberOfServerAddressChanges	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	d047cf3a2d4959c6
+property	c:objc(cs)MPMovieAccessLogEvent(py)playbackSessionID	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	50d563a57a870b9f
+property	c:objc(cs)MPMovieAccessLogEvent(py)playbackStartOffset	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	d90fdd46561ab40f
+property	c:objc(cs)MPMovieAccessLogEvent(py)segmentsDownloadedDuration	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	fa1cca1b4bf9215f
+property	c:objc(cs)MPMovieAccessLogEvent(py)durationWatched	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	1ae389ed782319d5
+property	c:objc(cs)MPMovieAccessLogEvent(py)numberOfStalls	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	e12147829745cc18
+property	c:objc(cs)MPMovieAccessLogEvent(py)numberOfBytesTransferred	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	820a2833769dfef4
+property	c:objc(cs)MPMovieAccessLogEvent(py)observedBitrate	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	59d19eb0ef370045
+property	c:objc(cs)MPMovieAccessLogEvent(py)indicatedBitrate	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	f790e4aa464ae8ff
+property	c:objc(cs)MPMovieAccessLogEvent(py)numberOfDroppedVideoFrames	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	cf97588c7389b76f
+interface	c:objc(cs)MPMovieErrorLogEvent	-			ios=4.3/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7940803fe7ea168b
+super	-	MPMovieErrorLogEvent	NSObject		-	-	0b4056da1b900b92
+conforms	-	MPMovieErrorLogEvent	NSCopying		-	-	3c20deea53a4b106
+property	c:objc(cs)MPMovieErrorLogEvent(py)date	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	a8346fa8715cee62
+property	c:objc(cs)MPMovieErrorLogEvent(py)URI	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	6ff6cab36087f8c9
+property	c:objc(cs)MPMovieErrorLogEvent(py)serverAddress	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	97817bf3efdf8673
+property	c:objc(cs)MPMovieErrorLogEvent(py)playbackSessionID	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	862a5ba7bc4d8111
+property	c:objc(cs)MPMovieErrorLogEvent(py)errorStatusCode	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	cf77a101f1e8f180
+property	c:objc(cs)MPMovieErrorLogEvent(py)errorDomain	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	bd300f2fd90f457c
+property	c:objc(cs)MPMovieErrorLogEvent(py)errorComment	-			ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	8b50e2eda9778ceb
+category	c:objc(cy)MPMoviePlayerController@MPMoviePlayerDeprecated	-			ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d3543874f243c5a9
+property	c:objc(cs)MPMoviePlayerController(py)useApplicationAudioSession	MPMoviePlayerDeprecated			ios=6.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	294e33ee227f114b
+interface	c:objc(cs)MPMoviePlayerViewController	-			ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	18040d6e1b7e19e7
+super	-	MPMoviePlayerViewController	UIViewController		-	-	9d12ce53e6b11b5a
+method	c:objc(cs)MPMoviePlayerViewController(im)initWithContentURL:	-			ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4f4a05625f178848
+property	c:objc(cs)MPMoviePlayerViewController(py)moviePlayer	-			ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e4b59dc0bda132a6
+category	c:objc(cy)UIViewController@MPMoviePlayerViewController	-			ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	76d040bbca69b35e
+method	c:objc(cs)UIViewController(im)presentMoviePlayerViewControllerAnimated:	MPMoviePlayerViewController			ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	81194aa1f0604304
+method	c:objc(cs)UIViewController(im)dismissMoviePlayerViewControllerAnimated	MPMoviePlayerViewController			ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	49c0ee62a12e695e
+interface	c:objc(cs)MPMusicPlayerQueueDescriptor	-			ios=10.1/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	5808859c61aaf7a5
+super	-	MPMusicPlayerQueueDescriptor	NSObject		-	-	d919cf07e623e7ee
+method	c:objc(cs)MPMusicPlayerQueueDescriptor(cm)new	-			*unavailable ios=10.1/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	eab74be5094065ba
+method	c:objc(cs)MPMusicPlayerQueueDescriptor(im)init	-			*unavailable ios=10.1/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	fd0d740479e280d5
+interface	c:objc(cs)MPMusicPlayerMediaItemQueueDescriptor	-			ios=10.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8c51c06cc07d2bf0
+super	-	MPMusicPlayerMediaItemQueueDescriptor	MPMusicPlayerQueueDescriptor		-	-	382baa72893e7f30
+method	c:objc(cs)MPMusicPlayerMediaItemQueueDescriptor(im)initWithQuery:	-			ios=10.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	73749893188de369
+method	c:objc(cs)MPMusicPlayerMediaItemQueueDescriptor(im)initWithItemCollection:	-			ios=10.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	902f07452404970a
+property	c:objc(cs)MPMusicPlayerMediaItemQueueDescriptor(py)query	-			ios=10.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	45c253700f6c813b
+property	c:objc(cs)MPMusicPlayerMediaItemQueueDescriptor(py)itemCollection	-			ios=10.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3f97ac311d471d62
+property	c:objc(cs)MPMusicPlayerMediaItemQueueDescriptor(py)startItem	-			ios=10.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	938d68c80d6d2d4e
+method	c:objc(cs)MPMusicPlayerMediaItemQueueDescriptor(im)setStartTime:forItem:	-			ios=10.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6ff61bfb5bd1b9c7
+method	c:objc(cs)MPMusicPlayerMediaItemQueueDescriptor(im)setEndTime:forItem:	-			ios=10.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ae4e7ec956c5129b
+interface	c:objc(cs)MPMusicPlayerStoreQueueDescriptor	-			ios=10.1/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	ab88fff6abde20e8
+super	-	MPMusicPlayerStoreQueueDescriptor	MPMusicPlayerQueueDescriptor		-	-	b5f71de4b6cf55c0
+method	c:objc(cs)MPMusicPlayerStoreQueueDescriptor(im)initWithStoreIDs:	-			ios=10.1/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	eb126a4668f0a7b6
+property	c:objc(cs)MPMusicPlayerStoreQueueDescriptor(py)storeIDs	-			ios=10.1/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	0f88c373ff30511f
+property	c:objc(cs)MPMusicPlayerStoreQueueDescriptor(py)startItemID	-			ios=10.1/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	409480f81dc453ac
+method	c:objc(cs)MPMusicPlayerStoreQueueDescriptor(im)setStartTime:forItemWithStoreID:	-			ios=10.1/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	12112efcdbe7de25
+method	c:objc(cs)MPMusicPlayerStoreQueueDescriptor(im)setEndTime:forItemWithStoreID:	-			ios=10.1/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	817b1bbc074dd2ea
+interface	c:objc(cs)MPMusicPlayerPlayParameters	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	ce1a57125581130c
+super	-	MPMusicPlayerPlayParameters	NSObject		-	-	9151bc34b9cea136
+method	c:objc(cs)MPMusicPlayerPlayParameters(im)initWithDictionary:	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	33f8660c0ed5773f
+property	c:objc(cs)MPMusicPlayerPlayParameters(py)dictionary	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	d2d2509cf0e1d15f
+interface	c:objc(cs)MPMusicPlayerPlayParametersQueueDescriptor	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	7c69fe492d165d17
+super	-	MPMusicPlayerPlayParametersQueueDescriptor	MPMusicPlayerQueueDescriptor		-	-	78c7dbd90d1ac950
+method	c:objc(cs)MPMusicPlayerPlayParametersQueueDescriptor(im)initWithPlayParametersQueue:	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	bf395dfb3f7915b7
+property	c:objc(cs)MPMusicPlayerPlayParametersQueueDescriptor(py)playParametersQueue	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	014c053916ec5cd3
+property	c:objc(cs)MPMusicPlayerPlayParametersQueueDescriptor(py)startItemPlayParameters	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	2f66dd24e3b8d645
+method	c:objc(cs)MPMusicPlayerPlayParametersQueueDescriptor(im)setStartTime:forItemWithPlayParameters:	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	db75f21930dde6b3
+method	c:objc(cs)MPMusicPlayerPlayParametersQueueDescriptor(im)setEndTime:forItemWithPlayParameters:	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	c6f30daded0e2bf4
+typedef	c:@T@MPMusicPlaybackState	-			-	-	0141c2f1111809ef
+enum	c:@E@MPMusicPlaybackState	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	9a7bcc479cf4f5e0
+enumconst	c:@E@MPMusicPlaybackState@MPMusicPlaybackStateStopped	MPMusicPlaybackState			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	f139690e5d0b656a
+enumconst	c:@E@MPMusicPlaybackState@MPMusicPlaybackStatePlaying	MPMusicPlaybackState			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	88bfa4562c2bb17d
+enumconst	c:@E@MPMusicPlaybackState@MPMusicPlaybackStatePaused	MPMusicPlaybackState			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	7c06f30800d5f64d
+enumconst	c:@E@MPMusicPlaybackState@MPMusicPlaybackStateInterrupted	MPMusicPlaybackState			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	59aebc798d1fc63f
+enumconst	c:@E@MPMusicPlaybackState@MPMusicPlaybackStateSeekingForward	MPMusicPlaybackState			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	48d1a3b7a4e9deae
+enumconst	c:@E@MPMusicPlaybackState@MPMusicPlaybackStateSeekingBackward	MPMusicPlaybackState			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	3208cbb1cf013e80
+typedef	c:@T@MPMusicRepeatMode	-			-	-	07c5897d18df1788
+enum	c:@E@MPMusicRepeatMode	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	74aee2f7f6ff4aa4
+enumconst	c:@E@MPMusicRepeatMode@MPMusicRepeatModeDefault	MPMusicRepeatMode			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	7e19eb300a603ee5
+enumconst	c:@E@MPMusicRepeatMode@MPMusicRepeatModeNone	MPMusicRepeatMode			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	eae7c7b4b833cfbc
+enumconst	c:@E@MPMusicRepeatMode@MPMusicRepeatModeOne	MPMusicRepeatMode			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	91c284a6aa763bfd
+enumconst	c:@E@MPMusicRepeatMode@MPMusicRepeatModeAll	MPMusicRepeatMode			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	737abcfc77bab2fa
+typedef	c:@T@MPMusicShuffleMode	-			-	-	7365d7d8b4ff87f4
+enum	c:@E@MPMusicShuffleMode	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	9266e4bfe10cb0e9
+enumconst	c:@E@MPMusicShuffleMode@MPMusicShuffleModeDefault	MPMusicShuffleMode			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	0ee0be14b8dc7938
+enumconst	c:@E@MPMusicShuffleMode@MPMusicShuffleModeOff	MPMusicShuffleMode			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	4d992a831bc8e211
+enumconst	c:@E@MPMusicShuffleMode@MPMusicShuffleModeSongs	MPMusicShuffleMode			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	ed9fc34417b1ee7b
+enumconst	c:@E@MPMusicShuffleMode@MPMusicShuffleModeAlbums	MPMusicShuffleMode			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	8155066cfcacf816
+protocol	c:objc(pl)MPSystemMusicPlayerController	-			-	-	24671d75687d2efb
+conforms	-	MPSystemMusicPlayerController	NSObject		-	-	2ef817a2ab626d26
+method	c:objc(pl)MPSystemMusicPlayerController(im)openToPlayQueueDescriptor:	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	af1f87c07a7afa89
+interface	c:objc(cs)MPMusicPlayerController	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	283f1c5f5d1741cb
+super	-	MPMusicPlayerController	NSObject		-	-	dc2e00ca5060df09
+conforms	-	MPMusicPlayerController	MPMediaPlayback		-	-	c69b79a3dd3ebadb
+property	c:objc(cs)MPMusicPlayerController(cpy)applicationMusicPlayer	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	9e9657ad1984d7a5
+property	c:objc(cs)MPMusicPlayerController(cpy)applicationQueuePlayer	-			ios=10.3/-/-/0,tvos=14.0/-/-/0	-	bcb6bdfdbe0f9eba
+property	c:objc(cs)MPMusicPlayerController(cpy)systemMusicPlayer	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	b786f5b5f8925fe8
+method	c:objc(cs)MPMusicPlayerController(cm)new	-			*unavailable ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	b412d2246dea9f5a
+method	c:objc(cs)MPMusicPlayerController(im)init	-			*unavailable ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	3abac1bd9d942a9d
+property	c:objc(cs)MPMusicPlayerController(py)playbackState	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	9ce92072b5a15d9a
+property	c:objc(cs)MPMusicPlayerController(py)repeatMode	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	720c670e98a0d8a3
+property	c:objc(cs)MPMusicPlayerController(py)shuffleMode	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	d06e1e4c35af60f7
+property	c:objc(cs)MPMusicPlayerController(py)volume	-			ios=3.0/7.0/-/0,tvos=-/-/-/1	-	0c1639a106e9028f
+property	c:objc(cs)MPMusicPlayerController(py)nowPlayingItem	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	0efdabd946e8700b
+property	c:objc(cs)MPMusicPlayerController(py)indexOfNowPlayingItem	-			ios=5.0/-/-/0,tvos=14.0/-/-/0	-	664628c098095ced
+method	c:objc(cs)MPMusicPlayerController(im)setQueueWithQuery:	-			tvos=-/-/-/1	-	768db60cf3f70a37
+method	c:objc(cs)MPMusicPlayerController(im)setQueueWithItemCollection:	-			tvos=-/-/-/1	-	ac146abe3c6cef09
+method	c:objc(cs)MPMusicPlayerController(im)setQueueWithStoreIDs:	-			ios=9.3/-/-/0,tvos=14.0/-/-/0	-	fef8f47404d3f6e6
+method	c:objc(cs)MPMusicPlayerController(im)setQueueWithDescriptor:	-			ios=10.1/-/-/0,tvos=14.0/-/-/0	-	39feb771428612cb
+method	c:objc(cs)MPMusicPlayerController(im)prependQueueDescriptor:	-			ios=10.3/-/-/0,tvos=14.0/-/-/0	-	ed453c97fccca1ca
+method	c:objc(cs)MPMusicPlayerController(im)appendQueueDescriptor:	-			ios=10.3/-/-/0,tvos=14.0/-/-/0	-	b69b9beaa2063f73
+method	c:objc(cs)MPMusicPlayerController(im)prepareToPlayWithCompletionHandler:	-			ios=10.1/-/-/0,tvos=14.0/-/-/0	-	8af8096a49e5508e
+method	c:objc(cs)MPMusicPlayerController(im)skipToNextItem	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	95f0804f8b0d39f9
+method	c:objc(cs)MPMusicPlayerController(im)skipToBeginning	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	efb516174648f8c5
+method	c:objc(cs)MPMusicPlayerController(im)skipToPreviousItem	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	8101ae715fc0ac62
+method	c:objc(cs)MPMusicPlayerController(im)beginGeneratingPlaybackNotifications	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	468b1a74888282d7
+method	c:objc(cs)MPMusicPlayerController(im)endGeneratingPlaybackNotifications	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	490aa1f97a5f7f9f
+property	c:objc(cs)MPMusicPlayerController(cpy)iPodMusicPlayer	-			ios=3.0/8.0/-/0,tvos=-/-/-/1	-	61669998445223c9
+var	c:@MPMusicPlayerControllerPlaybackStateDidChangeNotification	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	adb5e92f5067516f
+var	c:@MPMusicPlayerControllerNowPlayingItemDidChangeNotification	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	473427a31ef70880
+var	c:@MPMusicPlayerControllerVolumeDidChangeNotification	-			ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5b330232d5424e07
+interface	c:objc(cs)MPMusicPlayerControllerQueue	-			ios=10.3/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	a8fe3236e4b25d0b
+super	-	MPMusicPlayerControllerQueue	NSObject		-	-	f1653b7d0de847ba
+method	c:objc(cs)MPMusicPlayerControllerQueue(cm)new	-			*unavailable ios=10.3/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	dac48820bb6700ae
+method	c:objc(cs)MPMusicPlayerControllerQueue(im)init	-			*unavailable ios=10.3/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	77bb922701a08098
+property	c:objc(cs)MPMusicPlayerControllerQueue(py)items	-			ios=10.3/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	2ca2488d183ff024
+interface	c:objc(cs)MPMusicPlayerControllerMutableQueue	-			ios=10.3/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	543eb713a34542c7
+super	-	MPMusicPlayerControllerMutableQueue	MPMusicPlayerControllerQueue		-	-	18a2134c29165d19
+method	c:objc(cs)MPMusicPlayerControllerMutableQueue(im)insertQueueDescriptor:afterItem:	-			ios=10.3/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	dcd3e5b2834cbbf2
+method	c:objc(cs)MPMusicPlayerControllerMutableQueue(im)removeItem:	-			ios=10.3/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	8bea849cc5253677
+interface	c:objc(cs)MPMusicPlayerApplicationController	-			ios=10.3/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	a4e326904b34c6f8
+super	-	MPMusicPlayerApplicationController	MPMusicPlayerController		-	-	5bdc7532e58df703
+method	c:objc(cs)MPMusicPlayerApplicationController(im)performQueueTransaction:completionHandler:	-			ios=10.3/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	b3676abcd87ded4f
+var	c:@MPMusicPlayerControllerQueueDidChangeNotification	-			ios=10.3/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	829b822b7d6df35d
+typedef	c:@T@MPNowPlayingInfoMediaType	-			-	-	8e9be5b7684b23a8
+enum	c:@E@MPNowPlayingInfoMediaType	-			ios=10.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	af50dcb15caf3f90
+enumconst	c:@E@MPNowPlayingInfoMediaType@MPNowPlayingInfoMediaTypeNone	MPNowPlayingInfoMediaType			ios=10.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	783721b6fe930dc3
+enumconst	c:@E@MPNowPlayingInfoMediaType@MPNowPlayingInfoMediaTypeAudio	MPNowPlayingInfoMediaType			ios=10.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	cbfdfd3f4e382dc8
+enumconst	c:@E@MPNowPlayingInfoMediaType@MPNowPlayingInfoMediaTypeVideo	MPNowPlayingInfoMediaType			ios=10.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	16edb783fdd0a11a
+typedef	c:@T@MPNowPlayingPlaybackState	-			-	-	80c550b809671f88
+enum	c:@E@MPNowPlayingPlaybackState	-			ios=11.0/-/-/0,macos=10.12.2/-/-/0,tvos=11.0/-/-/0,watchos=5.0/-/-/0	-	94ab34b3a9760496
+enumconst	c:@E@MPNowPlayingPlaybackState@MPNowPlayingPlaybackStateUnknown	MPNowPlayingPlaybackState			ios=11.0/-/-/0,macos=10.12.2/-/-/0,tvos=11.0/-/-/0,watchos=5.0/-/-/0	-	d77f6b232bb86d5c
+enumconst	c:@E@MPNowPlayingPlaybackState@MPNowPlayingPlaybackStatePlaying	MPNowPlayingPlaybackState			ios=11.0/-/-/0,macos=10.12.2/-/-/0,tvos=11.0/-/-/0,watchos=5.0/-/-/0	-	d8f3bd98387878e9
+enumconst	c:@E@MPNowPlayingPlaybackState@MPNowPlayingPlaybackStatePaused	MPNowPlayingPlaybackState			ios=11.0/-/-/0,macos=10.12.2/-/-/0,tvos=11.0/-/-/0,watchos=5.0/-/-/0	-	26d0ec86f6390ff9
+enumconst	c:@E@MPNowPlayingPlaybackState@MPNowPlayingPlaybackStateStopped	MPNowPlayingPlaybackState			ios=11.0/-/-/0,macos=10.12.2/-/-/0,tvos=11.0/-/-/0,watchos=5.0/-/-/0	-	8f9858e42b1d0b9e
+enumconst	c:@E@MPNowPlayingPlaybackState@MPNowPlayingPlaybackStateInterrupted	MPNowPlayingPlaybackState			ios=11.0/-/-/0,macos=10.12.2/-/-/0,tvos=11.0/-/-/0,watchos=5.0/-/-/0	-	a56240f6f4ea185c
+interface	c:objc(cs)MPNowPlayingInfoCenter	-			ios=5.0/-/-/0,macos=10.12.2/-/-/0,tvos=5.0/-/-/0,watchos=5.0/-/-/0	-	f57e4486c4ba4086
+super	-	MPNowPlayingInfoCenter	NSObject		-	-	a12f30fda489b776
+method	c:objc(cs)MPNowPlayingInfoCenter(cm)defaultCenter	-			ios=5.0/-/-/0,macos=10.12.2/-/-/0,tvos=5.0/-/-/0,watchos=5.0/-/-/0	-	81e1374fd41ad7f4
+method	c:objc(cs)MPNowPlayingInfoCenter(cm)new	-			*unavailable ios=5.0/-/-/0,macos=10.12.2/-/-/0,tvos=5.0/-/-/0,watchos=5.0/-/-/0	-	625ba6dfa595dd58
+method	c:objc(cs)MPNowPlayingInfoCenter(im)init	-			*unavailable ios=5.0/-/-/0,macos=10.12.2/-/-/0,tvos=5.0/-/-/0,watchos=5.0/-/-/0	-	506a88ba53aa70e7
+property	c:objc(cs)MPNowPlayingInfoCenter(py)nowPlayingInfo	-			ios=5.0/-/-/0,macos=10.12.2/-/-/0,tvos=5.0/-/-/0,watchos=5.0/-/-/0	-	e51b938651686959
+property	c:objc(cs)MPNowPlayingInfoCenter(py)playbackState	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.12.2/-/-/0	-	6e489ab92350ae0f
+property	c:objc(cs)MPNowPlayingInfoCenter(cpy)supportedAnimatedArtworkKeys	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	3db85ef11a771a90
+var	c:@MPNowPlayingInfoPropertyElapsedPlaybackTime	-			ios=5.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	d18f24f986407676
+var	c:@MPNowPlayingInfoPropertyPlaybackRate	-			ios=5.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	648a95162a145544
+var	c:@MPNowPlayingInfoPropertyDefaultPlaybackRate	-			ios=8.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	e7e4ca456e3e7b19
+var	c:@MPNowPlayingInfoPropertyPlaybackQueueIndex	-			ios=5.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	77c43311419ef1da
+var	c:@MPNowPlayingInfoPropertyPlaybackQueueCount	-			ios=5.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	798d1766f2ee9dcb
+var	c:@MPNowPlayingInfoPropertyChapterNumber	-			ios=5.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	f162b8e9b5023d86
+var	c:@MPNowPlayingInfoPropertyChapterCount	-			ios=5.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	d8f767abb5bee738
+var	c:@MPNowPlayingInfoPropertyIsLiveStream	-			ios=10.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	92328860d49dd24f
+var	c:@MPNowPlayingInfoPropertyAvailableLanguageOptions	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	01d6bc6ea8f08f57
+var	c:@MPNowPlayingInfoPropertyCurrentLanguageOptions	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	ef23132c824db30f
+var	c:@MPNowPlayingInfoCollectionIdentifier	-			ios=9.3/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	059aa8d2111883a9
+var	c:@MPNowPlayingInfoPropertyExternalContentIdentifier	-			ios=10.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	887cda8059b3089a
+var	c:@MPNowPlayingInfoPropertyExternalUserProfileIdentifier	-			ios=10.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	d4b3d6b93eb56ffc
+var	c:@MPNowPlayingInfoPropertyServiceIdentifier	-			ios=11.0/-/-/0,macos=10.13/-/-/0,watchos=5.0/-/-/0	-	f87b329565a87700
+var	c:@MPNowPlayingInfoPropertyPlaybackProgress	-			ios=10.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	955863cc1532a18b
+var	c:@MPNowPlayingInfoPropertyMediaType	-			ios=10.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	9559ee09e31a5027
+var	c:@MPNowPlayingInfoPropertyAssetURL	-			ios=10.3/-/-/0,macos=10.12.3/-/-/0,watchos=5.0/-/-/0	-	2f6bf71ad2e13f39
+var	c:@MPNowPlayingInfoPropertyCurrentPlaybackDate	-			ios=11.1/-/-/0,macos=10.13.1/-/-/0,watchos=5.0/-/-/0	-	6d8f5ef9d68904bc
+var	c:@MPNowPlayingInfoPropertyAdTimeRanges	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	fada2f42580a686f
+var	c:@MPNowPlayingInfoPropertyCreditsStartTime	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	33a58e7a47494e0f
+var	c:@MPNowPlayingInfoPropertyInternationalStandardRecordingCode	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0	-	22dcb461864ca982
+var	c:@MPNowPlayingInfoPropertyExcludeFromSuggestions	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0	-	a8726f3f4e4fb63a
+var	c:@MPNowPlayingInfoProperty1x1AnimatedArtwork	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	93b52d12c0fa4c25
+var	c:@MPNowPlayingInfoProperty3x4AnimatedArtwork	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	3ce813530cec3f49
+var	c:@MPLanguageOptionCharacteristicIsMainProgramContent	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	033ba89e841aa044
+var	c:@MPLanguageOptionCharacteristicIsAuxiliaryContent	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	140414893291092d
+var	c:@MPLanguageOptionCharacteristicContainsOnlyForcedSubtitles	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	79c1f14225ca75cd
+var	c:@MPLanguageOptionCharacteristicTranscribesSpokenDialog	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	58e2463b1b639bee
+var	c:@MPLanguageOptionCharacteristicDescribesMusicAndSound	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	9acbac76ead133a4
+var	c:@MPLanguageOptionCharacteristicEasyToRead	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	a6ec7c3f652f835f
+var	c:@MPLanguageOptionCharacteristicDescribesVideo	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	d5cebbf1fdc346aa
+var	c:@MPLanguageOptionCharacteristicLanguageTranslation	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	8e37ee398a495202
+var	c:@MPLanguageOptionCharacteristicDubbedTranslation	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	25d2d4035fef0758
+var	c:@MPLanguageOptionCharacteristicVoiceOverTranslation	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	5abfa56d06fb018c
+typedef	c:@T@MPNowPlayingInfoLanguageOptionType	-			-	-	5be3345bac0a1ff7
+enum	c:@E@MPNowPlayingInfoLanguageOptionType	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	f947b26bbca5a4c7
+enumconst	c:@E@MPNowPlayingInfoLanguageOptionType@MPNowPlayingInfoLanguageOptionTypeAudible	MPNowPlayingInfoLanguageOptionType			ios=9.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	cb2a41dddcb965a6
+enumconst	c:@E@MPNowPlayingInfoLanguageOptionType@MPNowPlayingInfoLanguageOptionTypeLegible	MPNowPlayingInfoLanguageOptionType			ios=9.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	c8e76fa302d5ece0
+interface	c:objc(cs)MPNowPlayingInfoLanguageOption	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	16a7babec8d16efd
+super	-	MPNowPlayingInfoLanguageOption	NSObject		-	-	592cd4d8ddabcf2f
+method	c:objc(cs)MPNowPlayingInfoLanguageOption(im)initWithType:languageTag:characteristics:displayName:identifier:	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	39d3d1ab46edda05
+method	c:objc(cs)MPNowPlayingInfoLanguageOption(im)isAutomaticLegibleLanguageOption	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	442742b8623dac97
+method	c:objc(cs)MPNowPlayingInfoLanguageOption(im)isAutomaticAudibleLanguageOption	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	fd24f24f7137732f
+property	c:objc(cs)MPNowPlayingInfoLanguageOption(py)languageOptionType	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	004cd3ceb2019337
+property	c:objc(cs)MPNowPlayingInfoLanguageOption(py)languageTag	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	bc04ea353b134637
+property	c:objc(cs)MPNowPlayingInfoLanguageOption(py)languageOptionCharacteristics	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	35099381c53c9ad6
+property	c:objc(cs)MPNowPlayingInfoLanguageOption(py)displayName	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	dc2f9efea149440d
+property	c:objc(cs)MPNowPlayingInfoLanguageOption(py)identifier	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	395c736614c1bd8b
+interface	c:objc(cs)MPNowPlayingInfoLanguageOptionGroup	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	740823901d56af3a
+super	-	MPNowPlayingInfoLanguageOptionGroup	NSObject		-	-	056fdbe63980e99f
+method	c:objc(cs)MPNowPlayingInfoLanguageOptionGroup(im)initWithLanguageOptions:defaultLanguageOption:allowEmptySelection:	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	7cd67ce14043ca4a
+property	c:objc(cs)MPNowPlayingInfoLanguageOptionGroup(py)languageOptions	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	83326af4cca08a75
+property	c:objc(cs)MPNowPlayingInfoLanguageOptionGroup(py)defaultLanguageOption	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	cb10e9a33c01708c
+property	c:objc(cs)MPNowPlayingInfoLanguageOptionGroup(py)allowEmptySelection	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	494e80b073eb8024
+interface	c:objc(cs)MPAdTimeRange	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=16.0/-/-/0,watchos=-/-/-/1	-	50c9d36ae99c61c2
+super	-	MPAdTimeRange	NSObject		-	-	34329853f59fc560
+conforms	-	MPAdTimeRange	NSCopying		-	-	2a8506debe35a9bd
+property	c:objc(cs)MPAdTimeRange(py)timeRange	-			macos=-/-/-/1,watchos=-/-/-/1	-	398318522b4f0d58
+method	c:objc(cs)MPAdTimeRange(cm)new	-			*unavailable macos=-/-/-/1,watchos=-/-/-/1	-	5c7d67e26982d2fb
+method	c:objc(cs)MPAdTimeRange(im)init	-			*unavailable macos=-/-/-/1,watchos=-/-/-/1	-	d40499fd3c378c5b
+method	c:objc(cs)MPAdTimeRange(im)initWithTimeRange:	-			macos=-/-/-/1,watchos=-/-/-/1	-	355b8cc789c13677
+interface	c:objc(cs)MPNowPlayingSession	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	3f5acd10a90baf04
+super	-	MPNowPlayingSession	NSObject		-	-	377f69fd68af725c
+method	c:objc(cs)MPNowPlayingSession(im)initWithPlayers:	-			macos=-/-/-/1,watchos=-/-/-/1	-	05f4c69986bc17b0
+method	c:objc(cs)MPNowPlayingSession(cm)new	-			*unavailable macos=-/-/-/1,watchos=-/-/-/1	-	f98a0223bc00b4d1
+method	c:objc(cs)MPNowPlayingSession(im)init	-			*unavailable macos=-/-/-/1,watchos=-/-/-/1	-	972254b2601f9ab7
+property	c:objc(cs)MPNowPlayingSession(py)players	-			macos=-/-/-/1,watchos=-/-/-/1	-	88f0c6e324236dd6
+property	c:objc(cs)MPNowPlayingSession(py)delegate	-			macos=-/-/-/1,watchos=-/-/-/1	-	5b63e26d8cd9330b
+property	c:objc(cs)MPNowPlayingSession(py)automaticallyPublishesNowPlayingInfo	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=16.0/-/-/0,watchos=-/-/-/1	-	c9f9152427e172bc
+property	c:objc(cs)MPNowPlayingSession(py)nowPlayingInfoCenter	-			macos=-/-/-/1,watchos=-/-/-/1	-	2043878be0f6799f
+property	c:objc(cs)MPNowPlayingSession(py)remoteCommandCenter	-			macos=-/-/-/1,watchos=-/-/-/1	-	955aa2aead1496a0
+property	c:objc(cs)MPNowPlayingSession(py)canBecomeActive	-			macos=-/-/-/1,watchos=-/-/-/1	-	b648d7c6ee5f0316
+property	c:objc(cs)MPNowPlayingSession(py)active	-			macos=-/-/-/1,watchos=-/-/-/1	-	5489ebe9cff9c426
+method	c:objc(cs)MPNowPlayingSession(im)becomeActiveIfPossibleWithCompletion:	-			macos=-/-/-/1,watchos=-/-/-/1	-	9027433012212522
+method	c:objc(cs)MPNowPlayingSession(im)addPlayer:	-			macos=-/-/-/1,watchos=-/-/-/1	-	923c3c7118e23905
+method	c:objc(cs)MPNowPlayingSession(im)removePlayer:	-			macos=-/-/-/1,watchos=-/-/-/1	-	e37f21975fa4c9b6
+protocol	c:objc(pl)MPNowPlayingSessionDelegate	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	555071a745d63fe9
+conforms	-	MPNowPlayingSessionDelegate	NSObject		-	-	8a9e3739e1eec93b
+method	c:objc(pl)MPNowPlayingSessionDelegate(im)nowPlayingSessionDidChangeActive:	-			macos=-/-/-/1,watchos=-/-/-/1	-	c2e78c97450dea21
+method	c:objc(pl)MPNowPlayingSessionDelegate(im)nowPlayingSessionDidChangeCanBecomeActive:	-			macos=-/-/-/1,watchos=-/-/-/1	-	5adaba4c26c0007c
+protocol	c:objc(pl)MPPlayableContentDataSource	-			ios=7.1/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	afc87e1e253db2b4
+conforms	-	MPPlayableContentDataSource	NSObject		-	-	2d5b8b6ec289ce23
+method	c:objc(pl)MPPlayableContentDataSource(im)beginLoadingChildItemsAtIndexPath:completionHandler:	-			ios=7.1/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c07543829da9f3a7
+method	c:objc(pl)MPPlayableContentDataSource(im)childItemsDisplayPlaybackProgressAtIndexPath:	-			ios=7.1/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c8ee261017ec1a69
+method	c:objc(pl)MPPlayableContentDataSource(im)contentItemForIdentifier:completionHandler:	-			ios=10.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	75ee498f36b66cb7
+method	c:objc(pl)MPPlayableContentDataSource(im)numberOfChildItemsAtIndexPath:	-			ios=7.1/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b784db48218813e9
+method	c:objc(pl)MPPlayableContentDataSource(im)contentItemAtIndexPath:	-			ios=7.1/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a643ae18a85e067a
+protocol	c:objc(pl)MPPlayableContentDelegate	-			ios=7.1/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9d49c18b12a83a7f
+conforms	-	MPPlayableContentDelegate	NSObject		-	-	6b47d2fab93cfd47
+method	c:objc(pl)MPPlayableContentDelegate(im)playableContentManager:initiatePlaybackOfContentItemAtIndexPath:completionHandler:	-			ios=7.1/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	142d0481f433dda6
+method	c:objc(pl)MPPlayableContentDelegate(im)playableContentManager:initializePlaybackQueueWithCompletionHandler:	-			ios=9.0/9.3/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ee0df100fb69faad
+method	c:objc(pl)MPPlayableContentDelegate(im)playableContentManager:initializePlaybackQueueWithContentItems:completionHandler:	-			ios=9.3/12.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5725d26781b18548
+method	c:objc(pl)MPPlayableContentDelegate(im)playableContentManager:didUpdateContext:	-			ios=8.4/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	eec5c728cf3c958e
+interface	c:objc(cs)MPPlayableContentManager	-			ios=7.1/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0ff0292edcab3bcc
+super	-	MPPlayableContentManager	NSObject		-	-	b596a35827032859
+property	c:objc(cs)MPPlayableContentManager(py)dataSource	-			ios=7.1/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	45c450a19f6d553f
+property	c:objc(cs)MPPlayableContentManager(py)delegate	-			ios=7.1/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5a3652dcecda2255
+property	c:objc(cs)MPPlayableContentManager(py)context	-			ios=8.4/14.0/-/0	-	c6fb60777f74fd8a
+property	c:objc(cs)MPPlayableContentManager(py)nowPlayingIdentifiers	-			ios=10.0/14.0/-/0	-	353914b94c76ebea
+method	c:objc(cs)MPPlayableContentManager(cm)sharedContentManager	-			ios=7.1/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5bcae5ebd0b1c950
+method	c:objc(cs)MPPlayableContentManager(im)reloadData	-			ios=7.1/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9ac7f2eb8daf0c67
+method	c:objc(cs)MPPlayableContentManager(im)beginUpdates	-			ios=7.1/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d32af778275257ed
+method	c:objc(cs)MPPlayableContentManager(im)endUpdates	-			ios=7.1/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e6df1689084cede4
+interface	c:objc(cs)MPPlayableContentManagerContext	-			ios=8.4/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	648f4fed7d8b9ba7
+super	-	MPPlayableContentManagerContext	NSObject		-	-	8e33a85d0f89b5f5
+property	c:objc(cs)MPPlayableContentManagerContext(py)enforcedContentItemsCount	-			ios=8.4/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	64fdd2714e195d30
+property	c:objc(cs)MPPlayableContentManagerContext(py)enforcedContentTreeDepth	-			ios=8.4/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	73e2a941060f0c41
+property	c:objc(cs)MPPlayableContentManagerContext(py)contentLimitsEnforced	-			ios=8.4/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f68aac81efcdae15
+property	c:objc(cs)MPPlayableContentManagerContext(py)contentLimitsEnabled	-			ios=8.4/9.0/-/0	-	7b4be36abec1880f
+property	c:objc(cs)MPPlayableContentManagerContext(py)endpointAvailable	-			ios=8.4/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f90637ab0880d929
+typedef	c:@T@MPShuffleType	-			-	-	9cd60e8262b322d2
+enum	c:@E@MPShuffleType	-			ios=3.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	0141b1e377abd327
+enumconst	c:@E@MPShuffleType@MPShuffleTypeOff	MPShuffleType			ios=3.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	cf36015a5972659b
+enumconst	c:@E@MPShuffleType@MPShuffleTypeItems	MPShuffleType			ios=3.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	693761736af58191
+enumconst	c:@E@MPShuffleType@MPShuffleTypeCollections	MPShuffleType			ios=3.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	54e5f024994f08f2
+typedef	c:@T@MPRepeatType	-			-	-	2ebcbd6f6e24a129
+enum	c:@E@MPRepeatType	-			ios=3.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	8d7c19979a6d0676
+enumconst	c:@E@MPRepeatType@MPRepeatTypeOff	MPRepeatType			ios=3.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	05e7e7c1d035b65e
+enumconst	c:@E@MPRepeatType@MPRepeatTypeOne	MPRepeatType			ios=3.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	23e8a7f6ac51ec0e
+enumconst	c:@E@MPRepeatType@MPRepeatTypeAll	MPRepeatType			ios=3.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	6f17953f0c50d757
+typedef	c:@T@MPChangeLanguageOptionSetting	-			-	-	45077e8a1f5806dd
+enum	c:@E@MPChangeLanguageOptionSetting	-			ios=9.3/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	e2626bfd6c18bcc4
+enumconst	c:@E@MPChangeLanguageOptionSetting@MPChangeLanguageOptionSettingNone	MPChangeLanguageOptionSetting			ios=9.3/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	f628ee78e92b7ab1
+enumconst	c:@E@MPChangeLanguageOptionSetting@MPChangeLanguageOptionSettingNowPlayingItemOnly	MPChangeLanguageOptionSetting			ios=9.3/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	98ecf4e77d0630bf
+enumconst	c:@E@MPChangeLanguageOptionSetting@MPChangeLanguageOptionSettingPermanent	MPChangeLanguageOptionSetting			ios=9.3/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	40a71408430596ea
+typedef	c:@T@MPRemoteCommandHandlerStatus	-			-	-	4ca76df26b9dc412
+enum	c:@E@MPRemoteCommandHandlerStatus	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	44bcd9bfa62a5e96
+enumconst	c:@E@MPRemoteCommandHandlerStatus@MPRemoteCommandHandlerStatusSuccess	MPRemoteCommandHandlerStatus			ios=7.1/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	1b5476bcf42f39b9
+enumconst	c:@E@MPRemoteCommandHandlerStatus@MPRemoteCommandHandlerStatusNoSuchContent	MPRemoteCommandHandlerStatus			ios=7.1/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	72bb1d07f035ab9e
+enumconst	c:@E@MPRemoteCommandHandlerStatus@MPRemoteCommandHandlerStatusNoActionableNowPlayingItem	MPRemoteCommandHandlerStatus			ios=9.1/-/-/0,macos=10.12.2/-/-/0	-	a06c02a20af3f245
+enumconst	c:@E@MPRemoteCommandHandlerStatus@MPRemoteCommandHandlerStatusDeviceNotFound	MPRemoteCommandHandlerStatus			ios=11.0/-/-/0,macos=10.13/-/-/0	-	5ff65e61dffe1390
+enumconst	c:@E@MPRemoteCommandHandlerStatus@MPRemoteCommandHandlerStatusCommandFailed	MPRemoteCommandHandlerStatus			ios=7.1/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	ea87714136263f4d
+interface	c:objc(cs)MPRemoteCommand	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	a275478a74ef3ac7
+super	-	MPRemoteCommand	NSObject		-	-	42519764bc133856
+method	c:objc(cs)MPRemoteCommand(cm)new	-			*unavailable ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	93ff3010cdb6d095
+method	c:objc(cs)MPRemoteCommand(im)init	-			*unavailable ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	ac4f260274862a8d
+property	c:objc(cs)MPRemoteCommand(py)enabled	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	2c50dc8bd367da04
+method	c:objc(cs)MPRemoteCommand(im)addTarget:action:	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	81abc869f802d7d5
+method	c:objc(cs)MPRemoteCommand(im)removeTarget:action:	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	df3cae8304ffac59
+method	c:objc(cs)MPRemoteCommand(im)removeTarget:	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	cff681377190443c
+method	c:objc(cs)MPRemoteCommand(im)addTargetWithHandler:	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	c31a1286678300b0
+interface	c:objc(cs)MPSkipIntervalCommand	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	8f7239a9a4450bd6
+super	-	MPSkipIntervalCommand	MPRemoteCommand		-	-	2d474fde12d7e827
+property	c:objc(cs)MPSkipIntervalCommand(py)preferredIntervals	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	2ea26f6600a1594a
+interface	c:objc(cs)MPFeedbackCommand	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	94991d9a2cf6f99b
+super	-	MPFeedbackCommand	MPRemoteCommand		-	-	1aad4a15bf261a89
+property	c:objc(cs)MPFeedbackCommand(py)active	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	0af9ee70ddbdac58
+property	c:objc(cs)MPFeedbackCommand(py)localizedTitle	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	f38df056db5bcc0d
+property	c:objc(cs)MPFeedbackCommand(py)localizedShortTitle	-			ios=8.0/-/-/0	-	b9881efeaf32b497
+interface	c:objc(cs)MPRatingCommand	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	e09201cf3bc0d83a
+super	-	MPRatingCommand	MPRemoteCommand		-	-	af1434bf38a42d6c
+property	c:objc(cs)MPRatingCommand(py)minimumRating	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	f26d1fd336040d93
+property	c:objc(cs)MPRatingCommand(py)maximumRating	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	228a6389b51cc8a6
+interface	c:objc(cs)MPChangePlaybackRateCommand	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	a015f2a550c8ad7b
+super	-	MPChangePlaybackRateCommand	MPRemoteCommand		-	-	85081c593b5f0160
+property	c:objc(cs)MPChangePlaybackRateCommand(py)supportedPlaybackRates	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	14dc00122582dc22
+interface	c:objc(cs)MPChangePlaybackPositionCommand	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	ff9ab4a8d784bef8
+super	-	MPChangePlaybackPositionCommand	MPRemoteCommand		-	-	c1a0009d5748c65e
+interface	c:objc(cs)MPChangeShuffleModeCommand	-			ios=8.0/-/-/0,macos=10.12.2/-/-/0,tvos=8.0/-/-/0,watchos=5.0/-/-/0	-	884fd2e704b1ed28
+super	-	MPChangeShuffleModeCommand	MPRemoteCommand		-	-	6ac6e39d8938d439
+property	c:objc(cs)MPChangeShuffleModeCommand(py)currentShuffleType	-			ios=8.0/-/-/0,macos=10.12.2/-/-/0,tvos=8.0/-/-/0,watchos=5.0/-/-/0	-	4f411d287920d6aa
+interface	c:objc(cs)MPChangeRepeatModeCommand	-			ios=8.0/-/-/0,macos=10.12.2/-/-/0,tvos=8.0/-/-/0,watchos=5.0/-/-/0	-	ce437f0393509528
+super	-	MPChangeRepeatModeCommand	MPRemoteCommand		-	-	c12ef39adacd353d
+property	c:objc(cs)MPChangeRepeatModeCommand(py)currentRepeatType	-			ios=8.0/-/-/0,macos=10.12.2/-/-/0,tvos=8.0/-/-/0,watchos=5.0/-/-/0	-	5ddb0d1dd98eac3c
+interface	c:objc(cs)MPRemoteCommandCenter	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	9cf27bb6661e4056
+super	-	MPRemoteCommandCenter	NSObject		-	-	2597c1331c17b5aa
+property	c:objc(cs)MPRemoteCommandCenter(py)pauseCommand	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	2a207985082acee9
+property	c:objc(cs)MPRemoteCommandCenter(py)playCommand	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	ec3fe8243e2beb15
+property	c:objc(cs)MPRemoteCommandCenter(py)stopCommand	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	9c240142e80bd1b5
+property	c:objc(cs)MPRemoteCommandCenter(py)togglePlayPauseCommand	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	41995ce78a21d2b6
+property	c:objc(cs)MPRemoteCommandCenter(py)enableLanguageOptionCommand	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0	-	85c7d75e2f782934
+property	c:objc(cs)MPRemoteCommandCenter(py)disableLanguageOptionCommand	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0	-	995aa12a8812d55b
+property	c:objc(cs)MPRemoteCommandCenter(py)changePlaybackRateCommand	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	c47fc5de7fa08fe4
+property	c:objc(cs)MPRemoteCommandCenter(py)changeRepeatModeCommand	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	6f87a28acb82a969
+property	c:objc(cs)MPRemoteCommandCenter(py)changeShuffleModeCommand	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	46eb8f8ff55078ab
+property	c:objc(cs)MPRemoteCommandCenter(py)nextTrackCommand	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	85494c34af60862c
+property	c:objc(cs)MPRemoteCommandCenter(py)previousTrackCommand	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	307e8e0a4f596a58
+property	c:objc(cs)MPRemoteCommandCenter(py)skipForwardCommand	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	ae2ef727c3bce357
+property	c:objc(cs)MPRemoteCommandCenter(py)skipBackwardCommand	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	b847adf52f36fced
+property	c:objc(cs)MPRemoteCommandCenter(py)seekForwardCommand	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	81d4e51ee6ce294c
+property	c:objc(cs)MPRemoteCommandCenter(py)seekBackwardCommand	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	c5be012d63e4d51b
+property	c:objc(cs)MPRemoteCommandCenter(py)changePlaybackPositionCommand	-			ios=9.1/-/-/0,macos=10.12.2/-/-/0	-	c2050c51d8508441
+property	c:objc(cs)MPRemoteCommandCenter(py)ratingCommand	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	b2e622f6724858ad
+property	c:objc(cs)MPRemoteCommandCenter(py)likeCommand	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	eeef2f7b67d6cf42
+property	c:objc(cs)MPRemoteCommandCenter(py)dislikeCommand	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	f94a8eb4ef137b7a
+property	c:objc(cs)MPRemoteCommandCenter(py)bookmarkCommand	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	1570788e1057b114
+method	c:objc(cs)MPRemoteCommandCenter(cm)sharedCommandCenter	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	488a9f9f8e3bdd5a
+method	c:objc(cs)MPRemoteCommandCenter(cm)new	-			*unavailable ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	174ed528e8d47799
+method	c:objc(cs)MPRemoteCommandCenter(im)init	-			*unavailable ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	303ab64bae852f98
+interface	c:objc(cs)MPRemoteCommandEvent	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	1586d28299030738
+super	-	MPRemoteCommandEvent	NSObject		-	-	9f346670ddf5ceaf
+property	c:objc(cs)MPRemoteCommandEvent(py)command	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	c0903da3217850d1
+property	c:objc(cs)MPRemoteCommandEvent(py)timestamp	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	92b5cbf46220c3d2
+interface	c:objc(cs)MPSkipIntervalCommandEvent	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	8addb24dc5c1f1fc
+super	-	MPSkipIntervalCommandEvent	MPRemoteCommandEvent		-	-	45669cebd2cefb85
+property	c:objc(cs)MPSkipIntervalCommandEvent(py)interval	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	c7b73a031a09bee2
+typedef	c:@T@MPSeekCommandEventType	-			-	-	d67737b6bfdc1ef8
+enum	c:@E@MPSeekCommandEventType	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	96f056fea092cf2d
+enumconst	c:@E@MPSeekCommandEventType@MPSeekCommandEventTypeBeginSeeking	MPSeekCommandEventType			ios=7.1/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	612179a691078d71
+enumconst	c:@E@MPSeekCommandEventType@MPSeekCommandEventTypeEndSeeking	MPSeekCommandEventType			ios=7.1/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	53f48818cb29bbcf
+interface	c:objc(cs)MPSeekCommandEvent	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	31b0b8d081e0d396
+super	-	MPSeekCommandEvent	MPRemoteCommandEvent		-	-	d17f3bb44d6bfab0
+property	c:objc(cs)MPSeekCommandEvent(py)type	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	fedce5c32c5f33b5
+interface	c:objc(cs)MPRatingCommandEvent	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	6e842121a6cca2fe
+super	-	MPRatingCommandEvent	MPRemoteCommandEvent		-	-	3e88540e18fa097d
+property	c:objc(cs)MPRatingCommandEvent(py)rating	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	4dd9644447835db8
+interface	c:objc(cs)MPChangePlaybackRateCommandEvent	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	46ba8bc237ad638d
+super	-	MPChangePlaybackRateCommandEvent	MPRemoteCommandEvent		-	-	b65053602cef26b7
+property	c:objc(cs)MPChangePlaybackRateCommandEvent(py)playbackRate	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	dd76f72fd2dff416
+interface	c:objc(cs)MPFeedbackCommandEvent	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	bb37a896fc1b4c75
+super	-	MPFeedbackCommandEvent	MPRemoteCommandEvent		-	-	5f0b263e4f492ac0
+property	c:objc(cs)MPFeedbackCommandEvent(py)negative	-			ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	da4f21d2e4e38bed
+interface	c:objc(cs)MPChangeLanguageOptionCommandEvent	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	637ff6916f3cfe6f
+super	-	MPChangeLanguageOptionCommandEvent	MPRemoteCommandEvent		-	-	a50aff6011d1cf31
+property	c:objc(cs)MPChangeLanguageOptionCommandEvent(py)languageOption	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	cf41ac42df00565c
+property	c:objc(cs)MPChangeLanguageOptionCommandEvent(py)setting	-			ios=9.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	e5ea03137d2031ce
+interface	c:objc(cs)MPChangePlaybackPositionCommandEvent	-			ios=8.0/-/-/0,macos=10.12.2/-/-/0,tvos=8.0/-/-/0,watchos=5.0/-/-/0	-	bc76cea1eefcee53
+super	-	MPChangePlaybackPositionCommandEvent	MPRemoteCommandEvent		-	-	2527de0cb23f4a4c
+property	c:objc(cs)MPChangePlaybackPositionCommandEvent(py)positionTime	-			ios=8.0/-/-/0,macos=10.12.2/-/-/0,tvos=8.0/-/-/0,watchos=5.0/-/-/0	-	4ca46cdeb31d3234
+interface	c:objc(cs)MPChangeShuffleModeCommandEvent	-			ios=8.0/-/-/0,macos=10.12.2/-/-/0,tvos=8.0/-/-/0,watchos=5.0/-/-/0	-	4cc3a9067cfd8d4d
+super	-	MPChangeShuffleModeCommandEvent	MPRemoteCommandEvent		-	-	36a19221a8e4a519
+property	c:objc(cs)MPChangeShuffleModeCommandEvent(py)shuffleType	-			ios=8.0/-/-/0,macos=10.12.2/-/-/0,tvos=8.0/-/-/0,watchos=5.0/-/-/0	-	2bf5131c88c31f69
+property	c:objc(cs)MPChangeShuffleModeCommandEvent(py)preservesShuffleMode	-			ios=8.0/-/-/0,macos=10.12.2/-/-/0,tvos=8.0/-/-/0,watchos=5.0/-/-/0	-	f8fd9f922c802044
+interface	c:objc(cs)MPChangeRepeatModeCommandEvent	-			ios=8.0/-/-/0,macos=10.12.2/-/-/0,tvos=8.0/-/-/0,watchos=5.0/-/-/0	-	05328bbc576a118f
+super	-	MPChangeRepeatModeCommandEvent	MPRemoteCommandEvent		-	-	d7c2a171bca3d797
+property	c:objc(cs)MPChangeRepeatModeCommandEvent(py)repeatType	-			ios=8.0/-/-/0,macos=10.12.2/-/-/0,tvos=8.0/-/-/0,watchos=5.0/-/-/0	-	2623da81e6bff649
+property	c:objc(cs)MPChangeRepeatModeCommandEvent(py)preservesRepeatMode	-			ios=8.0/-/-/0,macos=10.12.2/-/-/0,tvos=8.0/-/-/0,watchos=5.0/-/-/0	-	fd08f9f4796163eb
+function	c:@F@MPVolumeSettingsAlertShow	-			ios=2.0/11.3/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e3a750a0a7157d14
+function	c:@F@MPVolumeSettingsAlertHide	-			ios=2.0/11.3/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	827c45043ca140e8
+function	c:@F@MPVolumeSettingsAlertIsVisible	-			ios=2.0/11.3/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	084aa37152642bfe
+interface	c:objc(cs)MPVolumeView	-			ios=2.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	8dfa482929462e83
+super	-	MPVolumeView	UIView		-	-	e16403c72c216231
+conforms	-	MPVolumeView	NSCoding		-	-	2d6a199123448f79
+property	c:objc(cs)MPVolumeView(py)showsVolumeSlider	-			ios=4.2/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	69772259d1797a98
+property	c:objc(cs)MPVolumeView(py)showsRouteButton	-			ios=4.2/13.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0be87faaa6da4016
+property	c:objc(cs)MPVolumeView(py)wirelessRoutesAvailable	-			ios=7.0/13.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a77bb866b944392b
+property	c:objc(cs)MPVolumeView(py)wirelessRouteActive	-			ios=7.0/13.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3636d29524a7b150
+method	c:objc(cs)MPVolumeView(im)setMinimumVolumeSliderImage:forState:	-			ios=6.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	7f67e15598e41eea
+method	c:objc(cs)MPVolumeView(im)setMaximumVolumeSliderImage:forState:	-			ios=6.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	e05ac3cef04f7e65
+method	c:objc(cs)MPVolumeView(im)setVolumeThumbImage:forState:	-			ios=6.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	90990dc3ab7e5b99
+method	c:objc(cs)MPVolumeView(im)minimumVolumeSliderImageForState:	-			ios=6.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	92531919e88e4f8d
+method	c:objc(cs)MPVolumeView(im)maximumVolumeSliderImageForState:	-			ios=6.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	d7ceef19d5e3fbd1
+method	c:objc(cs)MPVolumeView(im)volumeThumbImageForState:	-			ios=6.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	6d8243d430967140
+property	c:objc(cs)MPVolumeView(py)volumeWarningSliderImage	-			ios=7.0/17.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b7ee6a72e89cd8f1
+method	c:objc(cs)MPVolumeView(im)volumeSliderRectForBounds:	-			ios=6.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	3e878596cc6db69d
+method	c:objc(cs)MPVolumeView(im)volumeThumbRectForBounds:volumeSliderRect:value:	-			ios=6.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	04bc9eebc94cdc28
+method	c:objc(cs)MPVolumeView(im)setRouteButtonImage:forState:	-			ios=6.0/13.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0751c47d8181af67
+method	c:objc(cs)MPVolumeView(im)routeButtonImageForState:	-			ios=6.0/13.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	155864a088345bfe
+method	c:objc(cs)MPVolumeView(im)routeButtonRectForBounds:	-			ios=6.0/13.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	05d6f890ccb659b1
+var	c:@MPVolumeViewWirelessRoutesAvailableDidChangeNotification	-			ios=7.0/13.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	368fc83b57ff80d9
+var	c:@MPVolumeViewWirelessRouteActiveDidChangeNotification	-			ios=7.0/13.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6067084171d421d7
+category	c:objc(cy)NSUserActivity@MediaPlayerAdditions	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	9d0e5447da5ec734
+property	c:objc(cs)NSUserActivity(py)externalMediaContentIdentifier	MediaPlayerAdditions			ios=10.1/-/-/0,macos=-/-/-/1,tvos=10.0.1/-/-/0,watchos=-/-/-/1	-	d41e9e7623c0f845
+category	c:objc(cy)AVPlayerItem@MPAdditions	-			macos=-/-/-/1,watchos=-/-/-/1	-	b20c6c7f79ac3df1
+property	c:objc(cs)AVPlayerItem(py)nowPlayingInfo	MPAdditions			ios=16.0/-/-/0,macos=-/-/-/1,tvos=16.0/-/-/0,watchos=-/-/-/1	-	ab9e626e53a3a2fb

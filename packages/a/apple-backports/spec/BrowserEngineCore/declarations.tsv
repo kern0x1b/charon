@@ -1,0 +1,14 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+interface	c:objc(cs)BEAudioSession	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fe79c40f437c9c74
+super	-	BEAudioSession	NSObject		-	-	486741213fce9738
+method	c:objc(cs)BEAudioSession(im)initWithAudioSession:	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2c1011702096a91d
+property	c:objc(cs)BEAudioSession(py)availableOutputs	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e36d65ed045b626f
+method	c:objc(cs)BEAudioSession(im)setPreferredOutput:error:	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f42878a6f487a5fd
+property	c:objc(cs)BEAudioSession(py)preferredOutput	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	82417f12c60c46d1
+function	c:@F@be_memory_inline_jit_restrict_rwx_to_rw_with_witness_impl	-			driverkit=-/-/-/1,ios=17.4/-/-/0,maccatalyst=-/-/-/1,macos=14.3/-/-/0,swift=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	315af84c775b3a4c
+function	c:@F@be_memory_inline_jit_restrict_rwx_to_rx_with_witness_impl	-			driverkit=-/-/-/1,ios=17.4/-/-/0,maccatalyst=-/-/-/1,macos=14.3/-/-/0,swift=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	72ff35a05f99db2a
+function	c:@F@be_memory_inline_jit_restrict_with_witness_supported	-			driverkit=-/-/-/1,ios=17.4/-/-/0,maccatalyst=-/-/-/1,macos=14.3/-/-/0,swift=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	40d8101f2acf7b89
+function	c:@F@be_memory_inline_jit_restrict_rwx_to_rw_with_witness	-			driverkit=-/-/-/1,ios=17.4/-/-/0,maccatalyst=-/-/-/1,macos=14.3/-/-/0,swift=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	51955af29a1ed284
+function	c:@F@be_memory_inline_jit_restrict_rwx_to_rx_with_witness	-			driverkit=-/-/-/1,ios=17.4/-/-/0,maccatalyst=-/-/-/1,macos=14.3/-/-/0,swift=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9d73131fa9811318
+function	c:@F@be_kevent	-			driverkit=-/-/-/1,ios=18.4/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	476158a46c0319f7
+function	c:@F@be_kevent64	-			driverkit=-/-/-/1,ios=18.4/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	037c16f134a9dbd0

@@ -1,0 +1,42 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+interface	c:objc(cs)DDMatch	-			ios=15.0/-/-/0	-	87f4813c3ed0bb1a
+super	-	DDMatch	NSObject		-	-	a3877c745732ccba
+property	c:objc(cs)DDMatch(py)matchedString	-			ios=15.0/-/-/0	-	32fdca1cae23dbf0
+method	c:objc(cs)DDMatch(im)init	-			*unavailable ios=15.0/-/-/0	-	df78c1b7dbbf74ed
+interface	c:objc(cs)DDMatchLink	-			ios=15.0/-/-/0	-	939e5219111edcbe
+super	-	DDMatchLink	DDMatch		-	-	d7511d870d4b52f4
+property	c:objc(cs)DDMatchLink(py)URL	-			ios=15.0/-/-/0	-	06ec4e9ca1e0abe3
+interface	c:objc(cs)DDMatchPhoneNumber	-			ios=15.0/-/-/0	-	300aabb7df28faaa
+super	-	DDMatchPhoneNumber	DDMatch		-	-	843f02b19dae0c9b
+property	c:objc(cs)DDMatchPhoneNumber(py)phoneNumber	-			ios=15.0/-/-/0	-	503f5d4660b41d2e
+property	c:objc(cs)DDMatchPhoneNumber(py)label	-			ios=15.0/-/-/0	-	cc7f692482dcfffb
+interface	c:objc(cs)DDMatchEmailAddress	-			ios=15.0/-/-/0	-	7402762a350fe83a
+super	-	DDMatchEmailAddress	DDMatch		-	-	7459a3a917a5d718
+property	c:objc(cs)DDMatchEmailAddress(py)emailAddress	-			ios=15.0/-/-/0	-	e600e68e99f42a29
+property	c:objc(cs)DDMatchEmailAddress(py)label	-			ios=15.0/-/-/0	-	935379de7c76811a
+interface	c:objc(cs)DDMatchPostalAddress	-			ios=15.0/-/-/0	-	ac3ad71d602a61f4
+super	-	DDMatchPostalAddress	DDMatch		-	-	518db1bb81244631
+property	c:objc(cs)DDMatchPostalAddress(py)street	-			ios=15.0/-/-/0	-	3a96c3b6863ab182
+property	c:objc(cs)DDMatchPostalAddress(py)city	-			ios=15.0/-/-/0	-	d9e74a0850a27b08
+property	c:objc(cs)DDMatchPostalAddress(py)state	-			ios=15.0/-/-/0	-	452cc8a97b4938b9
+property	c:objc(cs)DDMatchPostalAddress(py)postalCode	-			ios=15.0/-/-/0	-	5d67e5e8ab168fff
+property	c:objc(cs)DDMatchPostalAddress(py)country	-			ios=15.0/-/-/0	-	d7d1f9b6c112e0e5
+interface	c:objc(cs)DDMatchCalendarEvent	-			ios=15.0/-/-/0	-	114de4a8a940a73a
+super	-	DDMatchCalendarEvent	DDMatch		-	-	a93636b58e4d73b0
+property	c:objc(cs)DDMatchCalendarEvent(py)allDay	-			ios=15.0/-/-/0	-	1a1e51d404b476f3
+property	c:objc(cs)DDMatchCalendarEvent(py)startDate	-			ios=15.0/-/-/0	-	680b9da5f44f34bd
+property	c:objc(cs)DDMatchCalendarEvent(py)startTimeZone	-			ios=15.0/-/-/0	-	2087c4cd11735079
+property	c:objc(cs)DDMatchCalendarEvent(py)endDate	-			ios=15.0/-/-/0	-	69c95aab91851a42
+property	c:objc(cs)DDMatchCalendarEvent(py)endTimeZone	-			ios=15.0/-/-/0	-	8a57475d6f09252b
+interface	c:objc(cs)DDMatchShipmentTrackingNumber	-			ios=15.0/-/-/0	-	27af318832c456c0
+super	-	DDMatchShipmentTrackingNumber	DDMatch		-	-	b81f6828940ee8a1
+property	c:objc(cs)DDMatchShipmentTrackingNumber(py)carrier	-			ios=15.0/-/-/0	-	f861fc195278fabe
+property	c:objc(cs)DDMatchShipmentTrackingNumber(py)trackingNumber	-			ios=15.0/-/-/0	-	06d318c40e50a4ca
+interface	c:objc(cs)DDMatchFlightNumber	-			ios=15.0/-/-/0	-	593d4b2ab0b2676a
+super	-	DDMatchFlightNumber	DDMatch		-	-	c9f0319057a52b5b
+property	c:objc(cs)DDMatchFlightNumber(py)airline	-			ios=15.0/-/-/0	-	bfd18c8c701bddd3
+property	c:objc(cs)DDMatchFlightNumber(py)flightNumber	-			ios=15.0/-/-/0	-	8f8408e7fa408f85
+interface	c:objc(cs)DDMatchMoneyAmount	-			ios=15.0/-/-/0	-	b0b3136be7058900
+super	-	DDMatchMoneyAmount	DDMatch		-	-	5c1a314ce75c1262
+property	c:objc(cs)DDMatchMoneyAmount(py)currency	-			ios=15.0/-/-/0	-	7c9a189fdc4b3e28
+property	c:objc(cs)DDMatchMoneyAmount(py)amount	-			ios=15.0/-/-/0	-	2ba6fd6ee99513a7

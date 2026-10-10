@@ -1,0 +1,534 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+typedef	c:@T@MLFeatureType	-			-	-	38a8d375831a82bd
+enum	c:@E@MLFeatureType	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	628bae974d355e0c
+enumconst	c:@E@MLFeatureType@MLFeatureTypeInvalid	MLFeatureType			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	bea851539d46f692
+enumconst	c:@E@MLFeatureType@MLFeatureTypeInt64	MLFeatureType			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	8c6de624cda2e4b2
+enumconst	c:@E@MLFeatureType@MLFeatureTypeDouble	MLFeatureType			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4724fc9c4a53ca39
+enumconst	c:@E@MLFeatureType@MLFeatureTypeString	MLFeatureType			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	edb7f185edb76054
+enumconst	c:@E@MLFeatureType@MLFeatureTypeImage	MLFeatureType			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	345d95f184ca3a11
+enumconst	c:@E@MLFeatureType@MLFeatureTypeMultiArray	MLFeatureType			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5ec9f1cf124b24d4
+enumconst	c:@E@MLFeatureType@MLFeatureTypeDictionary	MLFeatureType			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	077b9cde1867184e
+enumconst	c:@E@MLFeatureType@MLFeatureTypeSequence	MLFeatureType			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	5159cbbd55d620ca
+enumconst	c:@E@MLFeatureType@MLFeatureTypeState	MLFeatureType			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	78a26fecb62f796d
+typedef	c:@T@MLMultiArrayDataType	-			-	-	7ebc656632723c9f
+enum	c:@E@MLMultiArrayDataType	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a916a9ec0d2b8dc2
+enumconst	c:@E@MLMultiArrayDataType@MLMultiArrayDataTypeDouble	MLMultiArrayDataType			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	20fda8bdcb34cb27
+enumconst	c:@E@MLMultiArrayDataType@MLMultiArrayDataTypeFloat64	MLMultiArrayDataType			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	083e7f585a561540
+enumconst	c:@E@MLMultiArrayDataType@MLMultiArrayDataTypeFloat32	MLMultiArrayDataType			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	8887e75388ce9600
+enumconst	c:@E@MLMultiArrayDataType@MLMultiArrayDataTypeFloat16	MLMultiArrayDataType			ios=16.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	879eb6db6b3fb98b
+enumconst	c:@E@MLMultiArrayDataType@MLMultiArrayDataTypeFloat	MLMultiArrayDataType			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	6d55941722109fa9
+enumconst	c:@E@MLMultiArrayDataType@MLMultiArrayDataTypeInt32	MLMultiArrayDataType			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	9a57e3b32d87e512
+enumconst	c:@E@MLMultiArrayDataType@MLMultiArrayDataTypeInt8	MLMultiArrayDataType			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	b1b195c1ef1cc9c8
+interface	c:objc(cs)MLMultiArray	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	deprecated: Use getBytesWithHandler or getMutableBytesWithHandler instead. For Swift, use withUnsafeBytes or withUnsafeMutableBytes.	8c4bb80f38b98959
+super	-	MLMultiArray	NSObject		-	-	397522c9d0353987
+conforms	-	MLMultiArray	NSSecureCoding		-	-	d8e137612b74cf32
+property	c:objc(cs)MLMultiArray(py)dataPointer	-			ios=11.0/100000/-/0,macos=10.13/100000/-/0,tvos=11.0/100000/-/0,watchos=4.0/100000/-/0	-	53d173d82afa061c
+property	c:objc(cs)MLMultiArray(py)dataType	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e9c982c24a0b63e0
+property	c:objc(cs)MLMultiArray(py)shape	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	6b771d33007ab30e
+property	c:objc(cs)MLMultiArray(py)strides	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	35b49a5b70697bc5
+property	c:objc(cs)MLMultiArray(py)count	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	9b67c7d7b8c05e98
+property	c:objc(cs)MLMultiArray(py)pixelBuffer	-			ios=16.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	4b37ecc4b528569f
+category	c:objc(cy)MLMultiArray@Creation	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5d6b196fb91495d6
+method	c:objc(cs)MLMultiArray(im)initWithShape:dataType:error:	Creation			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5c253fb71ef07ed0
+method	c:objc(cs)MLMultiArray(im)initWithShape:dataType:strides:	Creation			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	db0fbb6e3ea8f510
+method	c:objc(cs)MLMultiArray(im)initWithDataPointer:shape:dataType:strides:deallocator:error:	Creation			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	03707e0ce0cf39a9
+method	c:objc(cs)MLMultiArray(im)initWithPixelBuffer:shape:	Creation			ios=16.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	16dd52d1f05cb331
+category	c:objc(cy)MLMultiArray@ScopedBufferAccess	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	7ab46cd26cc4cce8
+method	c:objc(cs)MLMultiArray(im)getBytesWithHandler:	ScopedBufferAccess			ios=15.4/-/-/0,macos=12.3/-/-/0,tvos=15.4/-/-/0,watchos=8.5/-/-/0	-	d9c58d698e3951f7
+method	c:objc(cs)MLMultiArray(im)getMutableBytesWithHandler:	ScopedBufferAccess			ios=15.4/-/-/0,macos=12.3/-/-/0,tvos=15.4/-/-/0,watchos=8.5/-/-/0	-	6c45319b18cb9aea
+category	c:objc(cy)MLMultiArray@Concatenating	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f8cd300df5d273e4
+method	c:objc(cs)MLMultiArray(cm)multiArrayByConcatenatingMultiArrays:alongAxis:dataType:	Concatenating			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	fba05cfe7dc1fde2
+category	c:objc(cy)MLMultiArray@NSNumberDataAccess	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	73dd6c13aecfb897
+method	c:objc(cs)MLMultiArray(im)objectAtIndexedSubscript:	NSNumberDataAccess			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	8eaddaf97dce5f9a
+method	c:objc(cs)MLMultiArray(im)objectForKeyedSubscript:	NSNumberDataAccess			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ffd5b766816a1f69
+method	c:objc(cs)MLMultiArray(im)setObject:atIndexedSubscript:	NSNumberDataAccess			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0d2c9d603c23a6d4
+method	c:objc(cs)MLMultiArray(im)setObject:forKeyedSubscript:	NSNumberDataAccess			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	027e090c90358eba
+category	c:objc(cy)MLMultiArray@Transferring	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	1dc15b0d49a5139c
+method	c:objc(cs)MLMultiArray(im)transferToMultiArray:	Transferring			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	d6b5d4eec4bc52f8
+interface	c:objc(cs)MLSequence	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	74faf5ffccd6af2b
+super	-	MLSequence	NSObject		-	-	623685c178fdc709
+conforms	-	MLSequence	NSSecureCoding		-	-	95c597f1a0656661
+property	c:objc(cs)MLSequence(py)type	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	ff31965ccc39312a
+method	c:objc(cs)MLSequence(cm)emptySequenceWithType:	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	0f86e61e973a0e99
+method	c:objc(cs)MLSequence(cm)sequenceWithStringArray:	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	dc31c24a7f4434e8
+property	c:objc(cs)MLSequence(py)stringValues	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	6a9259e240e9ddf4
+method	c:objc(cs)MLSequence(cm)sequenceWithInt64Array:	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	7eb9323bed93bdbf
+property	c:objc(cs)MLSequence(py)int64Values	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	f575df4aaea3ece0
+interface	c:objc(cs)MLState	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	2ca5722dea3169ed
+super	-	MLState	NSObject		-	-	6b1110eb14a413ff
+method	c:objc(cs)MLState(im)getMultiArrayForStateNamed:handler:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	e1e3e87f827ab0da
+method	c:objc(cs)MLState(im)init	-			*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	0c9aa75c50414a81
+method	c:objc(cs)MLState(cm)new	-			*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	1c98e89fa861a320
+interface	c:objc(cs)MLFeatureValue	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	069214b54dc43322
+super	-	MLFeatureValue	NSObject		-	-	2a649f5a2d0b5c30
+conforms	-	MLFeatureValue	NSCopying		-	-	abdf03bdfe38ddb7
+conforms	-	MLFeatureValue	NSSecureCoding		-	-	77f6b0c8c056f809
+property	c:objc(cs)MLFeatureValue(py)type	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	7067dd1f036005da
+property	c:objc(cs)MLFeatureValue(py)undefined	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d3c49bc509459e5c
+property	c:objc(cs)MLFeatureValue(py)int64Value	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4a16657ad2f3ba08
+property	c:objc(cs)MLFeatureValue(py)doubleValue	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	6b04486cfb0d40f7
+property	c:objc(cs)MLFeatureValue(py)stringValue	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	2c8532889e2ebdf8
+property	c:objc(cs)MLFeatureValue(py)multiArrayValue	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c3109c9de03f43ea
+property	c:objc(cs)MLFeatureValue(py)dictionaryValue	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	3949642facbe0782
+property	c:objc(cs)MLFeatureValue(py)imageBufferValue	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b76155731a35923e
+property	c:objc(cs)MLFeatureValue(py)sequenceValue	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	e32dab264d17f480
+method	c:objc(cs)MLFeatureValue(cm)featureValueWithInt64:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	8692aa1b3dd870b3
+method	c:objc(cs)MLFeatureValue(cm)featureValueWithDouble:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0090713e3361968c
+method	c:objc(cs)MLFeatureValue(cm)featureValueWithString:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	653d705d0911c14c
+method	c:objc(cs)MLFeatureValue(cm)featureValueWithMultiArray:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	afe0e16adb640c28
+method	c:objc(cs)MLFeatureValue(cm)featureValueWithPixelBuffer:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	1dee49b31377eac3
+method	c:objc(cs)MLFeatureValue(cm)featureValueWithSequence:	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	e2bb555055257912
+method	c:objc(cs)MLFeatureValue(cm)undefinedFeatureValueWithType:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e8d1f70b49665d96
+method	c:objc(cs)MLFeatureValue(cm)featureValueWithDictionary:error:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	1d951076135ac09b
+method	c:objc(cs)MLFeatureValue(im)isEqualToFeatureValue:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	dd4cb3ffd4204535
+interface	c:objc(cs)MLImageSize	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	b6db0232da12b488
+super	-	MLImageSize	NSObject		-	-	83ad978185ce65f1
+conforms	-	MLImageSize	NSSecureCoding		-	-	01ed55d03688fe4c
+property	c:objc(cs)MLImageSize(py)pixelsWide	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	960048b0a5246850
+property	c:objc(cs)MLImageSize(py)pixelsHigh	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	dfd529668bad4931
+typedef	c:@T@MLImageSizeConstraintType	-			-	-	46fb554e36a6f63c
+enum	c:@E@MLImageSizeConstraintType	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	295c5e1c42b727f7
+enumconst	c:@E@MLImageSizeConstraintType@MLImageSizeConstraintTypeUnspecified	MLImageSizeConstraintType			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	fedf267f6c70a3c2
+enumconst	c:@E@MLImageSizeConstraintType@MLImageSizeConstraintTypeEnumerated	MLImageSizeConstraintType			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	f682e691bc9187f9
+enumconst	c:@E@MLImageSizeConstraintType@MLImageSizeConstraintTypeRange	MLImageSizeConstraintType			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	638f85bcd59f9509
+interface	c:objc(cs)MLImageSizeConstraint	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	89582c473195c364
+super	-	MLImageSizeConstraint	NSObject		-	-	8b40a45ccb6eb788
+conforms	-	MLImageSizeConstraint	NSSecureCoding		-	-	1b4cfc0c68c190d7
+property	c:objc(cs)MLImageSizeConstraint(py)type	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	4d40590eb79e82f4
+property	c:objc(cs)MLImageSizeConstraint(py)pixelsWideRange	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	80ac3d321a3f9906
+property	c:objc(cs)MLImageSizeConstraint(py)pixelsHighRange	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	c81647c04757ef8c
+property	c:objc(cs)MLImageSizeConstraint(py)enumeratedImageSizes	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	26d7740c64af20de
+interface	c:objc(cs)MLImageConstraint	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c58647bc789fe9a7
+super	-	MLImageConstraint	NSObject		-	-	53f9177ec4a901a3
+conforms	-	MLImageConstraint	NSSecureCoding		-	-	6caa2d192f8a3d27
+property	c:objc(cs)MLImageConstraint(py)pixelsHigh	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	6de7e64cf8b20584
+property	c:objc(cs)MLImageConstraint(py)pixelsWide	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	3f7666d052c28cc0
+property	c:objc(cs)MLImageConstraint(py)pixelFormatType	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	da88cbc876825018
+property	c:objc(cs)MLImageConstraint(py)sizeConstraint	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	747a2ed2e9d8bce3
+method	c:objc(cs)MLImageConstraint(im)init	-			*unavailable swift=-/-/-/1	-	218795e4da959533
+typedef	c:@T@MLFeatureValueImageOption	-			-	-	6e797d28944d6f45
+var	c:@MLFeatureValueImageOptionCropRect	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	bb374cac6f8c250a
+var	c:@MLFeatureValueImageOptionCropAndScale	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	3c2c1e16bbabca6e
+category	c:objc(cy)MLFeatureValue@MLImageConversion	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	704440db953c1512
+method	c:objc(cs)MLFeatureValue(cm)featureValueWithImageAtURL:pixelsWide:pixelsHigh:pixelFormatType:options:error:	MLImageConversion			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	52f702a43ed88cbc
+method	c:objc(cs)MLFeatureValue(cm)featureValueWithImageAtURL:constraint:options:error:	MLImageConversion			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	1b12a2deff945c0c
+method	c:objc(cs)MLFeatureValue(cm)featureValueWithCGImage:pixelsWide:pixelsHigh:pixelFormatType:options:error:	MLImageConversion			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	9d0d5ad14e0e6819
+method	c:objc(cs)MLFeatureValue(cm)featureValueWithCGImage:constraint:options:error:	MLImageConversion			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	63de5dabb3452bc6
+method	c:objc(cs)MLFeatureValue(cm)featureValueWithImageAtURL:orientation:pixelsWide:pixelsHigh:pixelFormatType:options:error:	MLImageConversion			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	1d83484409dcc233
+method	c:objc(cs)MLFeatureValue(cm)featureValueWithImageAtURL:orientation:constraint:options:error:	MLImageConversion			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	b4de22efae904b50
+method	c:objc(cs)MLFeatureValue(cm)featureValueWithCGImage:orientation:pixelsWide:pixelsHigh:pixelFormatType:options:error:	MLImageConversion			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	034bd7adf8151b14
+method	c:objc(cs)MLFeatureValue(cm)featureValueWithCGImage:orientation:constraint:options:error:	MLImageConversion			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	2d94f34c4faeeb44
+interface	c:objc(cs)MLDictionaryConstraint	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	08650aa676a084b1
+super	-	MLDictionaryConstraint	NSObject		-	-	fb006ae03959601a
+conforms	-	MLDictionaryConstraint	NSSecureCoding		-	-	6573e40f58477014
+property	c:objc(cs)MLDictionaryConstraint(py)keyType	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	bc26f43cba5923d4
+typedef	c:@T@MLMultiArrayShapeConstraintType	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	e2a5b2e7e5fd9587
+enum	c:@E@MLMultiArrayShapeConstraintType	-			-	-	184842b2d8b52f92
+enumconst	c:@E@MLMultiArrayShapeConstraintType@MLMultiArrayShapeConstraintTypeUnspecified	MLMultiArrayShapeConstraintType			-	-	31bd715e5161e7cc
+enumconst	c:@E@MLMultiArrayShapeConstraintType@MLMultiArrayShapeConstraintTypeEnumerated	MLMultiArrayShapeConstraintType			-	-	bc3c95ec85e1b598
+enumconst	c:@E@MLMultiArrayShapeConstraintType@MLMultiArrayShapeConstraintTypeRange	MLMultiArrayShapeConstraintType			-	-	11cb63b019d67b89
+interface	c:objc(cs)MLMultiArrayShapeConstraint	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	d0fedcaaf7bff51a
+super	-	MLMultiArrayShapeConstraint	NSObject		-	-	fa10ef350c8606db
+conforms	-	MLMultiArrayShapeConstraint	NSSecureCoding		-	-	03b36552c22c976e
+property	c:objc(cs)MLMultiArrayShapeConstraint(py)type	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	214e7fc72ff70bfe
+property	c:objc(cs)MLMultiArrayShapeConstraint(py)sizeRangeForDimension	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	0f0c2a176e901bc1
+property	c:objc(cs)MLMultiArrayShapeConstraint(py)enumeratedShapes	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	6361ce6e014b4b21
+interface	c:objc(cs)MLMultiArrayConstraint	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	89e561978de59bc6
+super	-	MLMultiArrayConstraint	NSObject		-	-	3053aea9dedffde1
+conforms	-	MLMultiArrayConstraint	NSSecureCoding		-	-	cc57b558f205ef06
+property	c:objc(cs)MLMultiArrayConstraint(py)shape	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	6ee5a45c80891eee
+property	c:objc(cs)MLMultiArrayConstraint(py)dataType	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	191d6c0b6abbbed7
+property	c:objc(cs)MLMultiArrayConstraint(py)shapeConstraint	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	19e4fc7958dcff25
+interface	c:objc(cs)MLSequenceConstraint	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	c1b9ef01e1bc08d3
+super	-	MLSequenceConstraint	NSObject		-	-	bd0cb50b3fc1a83a
+conforms	-	MLSequenceConstraint	NSSecureCoding		-	-	4692d9997b6af87e
+property	c:objc(cs)MLSequenceConstraint(py)valueDescription	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	e6cc3d7db8bb0dc2
+property	c:objc(cs)MLSequenceConstraint(py)countRange	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	e8ce9842d3246205
+interface	c:objc(cs)MLStateConstraint	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	39a307e60b5b374a
+super	-	MLStateConstraint	NSObject		-	-	7f4ddee9123039ae
+conforms	-	MLStateConstraint	NSSecureCoding		-	-	ae20868c8eb8d595
+property	c:objc(cs)MLStateConstraint(py)bufferShape	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	aee006c28eb18edf
+property	c:objc(cs)MLStateConstraint(py)dataType	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	231fdbfab061dae6
+interface	c:objc(cs)MLFeatureDescription	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0f2c6251294de240
+super	-	MLFeatureDescription	NSObject		-	-	866f5b69aeb219fd
+conforms	-	MLFeatureDescription	NSCopying		-	-	9a89d152837bc942
+conforms	-	MLFeatureDescription	NSSecureCoding		-	-	a42491424327fdb4
+property	c:objc(cs)MLFeatureDescription(py)name	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	6e8fe9eca5b88e1a
+property	c:objc(cs)MLFeatureDescription(py)type	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b1ece99b2137d432
+property	c:objc(cs)MLFeatureDescription(py)optional	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c9441cda84363370
+method	c:objc(cs)MLFeatureDescription(im)isAllowedValue:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	7a4c86d0800d18a6
+category	c:objc(cy)MLFeatureDescription@MLFeatureValueConstraints	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	949eb17217630ae6
+property	c:objc(cs)MLFeatureDescription(py)multiArrayConstraint	MLFeatureValueConstraints			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	fc390f8097becd54
+property	c:objc(cs)MLFeatureDescription(py)imageConstraint	MLFeatureValueConstraints			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	880d9c2a4bbae1e6
+property	c:objc(cs)MLFeatureDescription(py)dictionaryConstraint	MLFeatureValueConstraints			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	75101e635d5468f6
+property	c:objc(cs)MLFeatureDescription(py)sequenceConstraint	MLFeatureValueConstraints			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	4695456eb5594147
+property	c:objc(cs)MLFeatureDescription(py)stateConstraint	MLFeatureValueConstraints			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	885a6fd8d5748060
+protocol	c:objc(pl)MLFeatureProvider	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b2abf7040c81ea49
+property	c:objc(pl)MLFeatureProvider(py)featureNames	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5fb84a3b2b9f68b4
+method	c:objc(pl)MLFeatureProvider(im)featureValueForName:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4127f5b1dd516a25
+interface	c:objc(cs)MLDictionaryFeatureProvider	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	91d0d2b03ac77947
+super	-	MLDictionaryFeatureProvider	NSObject		-	-	14bb9d777200adc7
+conforms	-	MLDictionaryFeatureProvider	MLFeatureProvider		-	-	d57e3e5f211e4464
+conforms	-	MLDictionaryFeatureProvider	NSFastEnumeration		-	-	378d5ea767a6c435
+conforms	-	MLDictionaryFeatureProvider	NSSecureCoding		-	-	2468253c826712f6
+property	c:objc(cs)MLDictionaryFeatureProvider(py)dictionary	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	6e34ce4ead1a2b2b
+method	c:objc(cs)MLDictionaryFeatureProvider(im)initWithDictionary:error:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	abebfcb785517518
+method	c:objc(cs)MLDictionaryFeatureProvider(im)objectForKeyedSubscript:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	04310e00b18c218c
+protocol	c:objc(pl)MLBatchProvider	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	f1a227c1c4fa761f
+property	c:objc(pl)MLBatchProvider(py)count	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	f3d66e0d82666d9a
+method	c:objc(pl)MLBatchProvider(im)featuresAtIndex:	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	1b0b31ff01c5dc99
+interface	c:objc(cs)MLArrayBatchProvider	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	631962d7060cf9e8
+super	-	MLArrayBatchProvider	NSObject		-	-	3ba050bb972d71fa
+conforms	-	MLArrayBatchProvider	MLBatchProvider		-	-	b778ce46833310cb
+property	c:objc(cs)MLArrayBatchProvider(py)array	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	31f1202bad93a7ab
+method	c:objc(cs)MLArrayBatchProvider(im)initWithFeatureProviderArray:	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	cfaf4f5d40cd54da
+method	c:objc(cs)MLArrayBatchProvider(im)initWithDictionary:error:	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	2deb04aecda77933
+typedef	c:@T@MLModelMetadataKey	-			-	-	79e20dc869765a8d
+var	c:@MLModelDescriptionKey	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	072d37c3ba3fd6f5
+var	c:@MLModelVersionStringKey	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	1d4e982ff82684a7
+var	c:@MLModelAuthorKey	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	273f4ed60e82c188
+var	c:@MLModelLicenseKey	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f9c4635e653c9823
+var	c:@MLModelCreatorDefinedKey	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	cf7b97bf3495a042
+interface	c:objc(cs)MLModelDescription	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	dc837509b5383ac4
+super	-	MLModelDescription	NSObject		-	-	2c0534f180a72f3d
+conforms	-	MLModelDescription	NSSecureCoding		-	-	1adc57bf33f31b89
+property	c:objc(cs)MLModelDescription(py)inputDescriptionsByName	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	1898420c10402029
+property	c:objc(cs)MLModelDescription(py)outputDescriptionsByName	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	03d8842fa3171768
+property	c:objc(cs)MLModelDescription(py)stateDescriptionsByName	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	5d81938116b7ab8d
+property	c:objc(cs)MLModelDescription(py)predictedFeatureName	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a814f82a353ff4e4
+property	c:objc(cs)MLModelDescription(py)predictedProbabilitiesName	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b7f27d09486eea72
+property	c:objc(cs)MLModelDescription(py)metadata	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d36b8eb5b80e2358
+property	c:objc(cs)MLModelDescription(py)classLabels	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	193cff3a0889ae5b
+category	c:objc(cy)MLModelDescription@MLUpdateAdditions	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	53f041a6b58cd021
+property	c:objc(cs)MLModelDescription(py)isUpdatable	MLUpdateAdditions			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	af83fbf16d92625b
+property	c:objc(cs)MLModelDescription(py)trainingInputDescriptionsByName	MLUpdateAdditions			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	a6552573f33aea82
+category	c:objc(cy)MLModelDescription@MLParameters	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	3be5027267e01b75
+property	c:objc(cs)MLModelDescription(py)parameterDescriptionsByKey	MLParameters			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	4ef9f742c5a1773c
+interface	c:objc(cs)MLPredictionOptions	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	deprecated: Use Use -[MLModelConfiguration computeUnits] instead. instead	3e8d334121e37e4f
+super	-	MLPredictionOptions	NSObject		-	-	9b22c38a00538fa5
+property	c:objc(cs)MLPredictionOptions(py)usesCPUOnly	-			ios=11.0/15.0/-/0,macos=10.13/12.0/-/0,tvos=11.0/15.0/-/0,watchos=4.0/8.0/-/0	-	83897bb9e990b087
+property	c:objc(cs)MLPredictionOptions(py)outputBackings	-			ios=16.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	9dd2f846e3c6fec2
+typedef	c:@T@MLReshapeFrequencyHint	-			-	-	a0f0c478e111acf9
+enum	c:@E@MLReshapeFrequencyHint	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	4d8a1d55177b4657
+enumconst	c:@E@MLReshapeFrequencyHint@MLReshapeFrequencyHintFrequent	MLReshapeFrequencyHint			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	1990f0c1e66ba13b
+enumconst	c:@E@MLReshapeFrequencyHint@MLReshapeFrequencyHintInfrequent	MLReshapeFrequencyHint			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	ff213167bb4840f2
+typedef	c:@T@MLSpecializationStrategy	-			-	-	e1e7c4aaaa68a5f2
+enum	c:@E@MLSpecializationStrategy	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	3bf9b122d6f2f581
+enumconst	c:@E@MLSpecializationStrategy@MLSpecializationStrategyDefault	MLSpecializationStrategy			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	37c434cb3b372749
+enumconst	c:@E@MLSpecializationStrategy@MLSpecializationStrategyFastPrediction	MLSpecializationStrategy			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	3ceb3f929080e1d2
+interface	c:objc(cs)MLOptimizationHints	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	7e74d277ae031eec
+super	-	MLOptimizationHints	NSObject		-	-	411637afda90c508
+conforms	-	MLOptimizationHints	NSCopying		-	-	8402b726f6274773
+conforms	-	MLOptimizationHints	NSSecureCoding		-	-	b4d0acecd65ba598
+property	c:objc(cs)MLOptimizationHints(py)reshapeFrequency	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	ef978e626277fca0
+property	c:objc(cs)MLOptimizationHints(py)specializationStrategy	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	1b448806ea2a75e5
+typedef	c:@T@MLComputeUnits	-			-	-	68eaae5f7ab7d48e
+enum	c:@E@MLComputeUnits	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	3ce95d44f6d8576f
+enumconst	c:@E@MLComputeUnits@MLComputeUnitsCPUOnly	MLComputeUnits			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	fdaef6b444f4bee1
+enumconst	c:@E@MLComputeUnits@MLComputeUnitsCPUAndGPU	MLComputeUnits			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	f59a22035987ca86
+enumconst	c:@E@MLComputeUnits@MLComputeUnitsAll	MLComputeUnits			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	da721365d2b7391a
+enumconst	c:@E@MLComputeUnits@MLComputeUnitsCPUAndNeuralEngine	MLComputeUnits			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	740f8ad05b222473
+interface	c:objc(cs)MLModelConfiguration	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	e9399ab5bcd53540
+super	-	MLModelConfiguration	NSObject		-	-	8fde052bdadd9dd8
+conforms	-	MLModelConfiguration	NSCopying		-	-	1e1b08125309e51f
+conforms	-	MLModelConfiguration	NSSecureCoding		-	-	eb10a12e0eba40c9
+property	c:objc(cs)MLModelConfiguration(py)modelDisplayName	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	5b3d830313849105
+property	c:objc(cs)MLModelConfiguration(py)computeUnits	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	361b5d76049fd5dd
+property	c:objc(cs)MLModelConfiguration(py)optimizationHints	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	16470dc11bd51324
+category	c:objc(cy)MLModelConfiguration@MLGPUConfigurationOptions	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	aea9bf94686fead5
+property	c:objc(cs)MLModelConfiguration(py)allowLowPrecisionAccumulationOnGPU	MLGPUConfigurationOptions			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	d05aba3ec6eaec45
+property	c:objc(cs)MLModelConfiguration(py)preferredMetalDevice	MLGPUConfigurationOptions			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	45cfae938ed31d33
+category	c:objc(cy)MLModelConfiguration@MLModelParameterAdditions	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	82182bba9d0d4290
+property	c:objc(cs)MLModelConfiguration(py)parameters	MLModelParameterAdditions			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	6329b5e2cae9d825
+category	c:objc(cy)MLModelConfiguration@MultiFunctions	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	4db7d29c5cbbd831
+property	c:objc(cs)MLModelConfiguration(py)functionName	MultiFunctions			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	d3ffdb8825fcf750
+interface	c:objc(cs)MLModelAsset	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	579d205b6eadfba6
+super	-	MLModelAsset	NSObject		-	-	706d21df8ab27350
+method	c:objc(cs)MLModelAsset(cm)modelAssetWithSpecificationData:error:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	40d2d3e12dcdd0f4
+method	c:objc(cs)MLModelAsset(cm)modelAssetWithSpecificationData:blobMapping:error:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1	-	db2ea91e03409f29
+method	c:objc(cs)MLModelAsset(cm)modelAssetWithURL:error:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	1de5e9b269cf33bb
+method	c:objc(cs)MLModelAsset(im)modelDescriptionWithCompletionHandler:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	3b016ddf1664c8bd
+method	c:objc(cs)MLModelAsset(im)modelDescriptionOfFunctionNamed:completionHandler:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	046493c0af5eba84
+method	c:objc(cs)MLModelAsset(im)functionNamesWithCompletionHandler:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	906bbbb16fa9701b
+method	c:objc(cs)MLModelAsset(im)init	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	664362a6c9496fc6
+method	c:objc(cs)MLModelAsset(cm)new	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	e148a4dd19169d91
+interface	c:objc(cs)MLModel	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	fccdfc1ef1bb225c
+super	-	MLModel	NSObject		-	-	4451e7b26050a600
+property	c:objc(cs)MLModel(py)modelDescription	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	fcc7f05fa3189094
+property	c:objc(cs)MLModel(py)configuration	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	9b149fb28053c9f4
+method	c:objc(cs)MLModel(cm)modelWithContentsOfURL:error:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	39d73e72015af020
+method	c:objc(cs)MLModel(cm)modelWithContentsOfURL:configuration:error:	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	9fd9b061bcddb081
+method	c:objc(cs)MLModel(cm)loadContentsOfURL:configuration:completionHandler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	339c1a5acb7af104
+method	c:objc(cs)MLModel(im)predictionFromFeatures:error:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5d4c4400edac9b7f
+method	c:objc(cs)MLModel(im)predictionFromFeatures:options:error:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f5899df5e56b3f60
+method	c:objc(cs)MLModel(im)predictionFromFeatures:completionHandler:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	5100e7f760acdce3
+method	c:objc(cs)MLModel(im)predictionFromFeatures:options:completionHandler:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	dc3965b7a19c20ec
+method	c:objc(cs)MLModel(im)predictionsFromBatch:error:	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	a1cb64fe628d008c
+method	c:objc(cs)MLModel(im)predictionsFromBatch:options:error:	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	7d45eefee259d99a
+method	c:objc(cs)MLModel(im)parameterValueForKey:error:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	7d6341037b457029
+method	c:objc(cs)MLModel(cm)loadModelAsset:configuration:completionHandler:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	2329e47c1db7807f
+category	c:objc(cy)MLModel@MLModelCompilation	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	deprecated: Use the asynchronous interface compileModelAtURL:completionHandler:error: instead.	ef5eb7881108fa17
+method	c:objc(cs)MLModel(cm)compileModelAtURL:error:	MLModelCompilation			ios=11.0/100000/-/0,macos=10.13/100000/-/0,tvos=11.0/100000/-/0,watchos=-/-/-/1	deprecated: Use the asynchronous interface compileModelAtURL:completionHandler:error: instead.	514e063a524ba653
+method	c:objc(cs)MLModel(cm)compileModelAtURL:completionHandler:	MLModelCompilation			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	2b17396fa6a808c2
+category	c:objc(cy)MLModel@MLComputeDevice	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	32d7ea9d61fcd73d
+property	c:objc(cs)MLModel(cpy)availableComputeDevices	MLComputeDevice			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	fb72d6c40f0abb6e
+category	c:objc(cy)MLModel@MLState	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	03d18d7d16abda6f
+method	c:objc(cs)MLModel(im)newState	MLState			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	e10ffe7392758f11
+method	c:objc(cs)MLModel(im)predictionFromFeatures:usingState:error:	MLState			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	cd44550a286b7eac
+method	c:objc(cs)MLModel(im)predictionFromFeatures:usingState:options:error:	MLState			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	7b46edb6199fc016
+method	c:objc(cs)MLModel(im)predictionFromFeatures:usingState:options:completionHandler:	MLState			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	564f5c6446e1d0d5
+var	c:@MLModelErrorDomain	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a037c828e73f8f77
+typedef	c:@T@MLModelError	-			-	-	d44cc60756764c1b
+enum	c:@E@MLModelError	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	6dc0ff2c59f0d085
+enumconst	c:@E@MLModelError@MLModelErrorGeneric	MLModelError			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	aadd47b67e8f2b70
+enumconst	c:@E@MLModelError@MLModelErrorFeatureType	MLModelError			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	92ab88cca219d255
+enumconst	c:@E@MLModelError@MLModelErrorIO	MLModelError			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	41dbd81248c50c14
+enumconst	c:@E@MLModelError@MLModelErrorCustomLayer	MLModelError			ios=11.2/-/-/0,macos=10.13.2/-/-/0,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	385e98540321bda6
+enumconst	c:@E@MLModelError@MLModelErrorCustomModel	MLModelError			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	f6ddccc58d56981b
+enumconst	c:@E@MLModelError@MLModelErrorUpdate	MLModelError			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	0eedefb5d25dbb7e
+enumconst	c:@E@MLModelError@MLModelErrorParameters	MLModelError			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	bcb62b460b763f12
+enumconst	c:@E@MLModelError@MLModelErrorModelDecryptionKeyFetch	MLModelError			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	982cd5ac6fcd9584
+enumconst	c:@E@MLModelError@MLModelErrorModelDecryption	MLModelError			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	2ca873db85f88848
+enumconst	c:@E@MLModelError@MLModelErrorModelCollection	MLModelError			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	0ee324850fe4b362
+enumconst	c:@E@MLModelError@MLModelErrorPredictionCancelled	MLModelError			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	52874e3b99816054
+protocol	c:objc(pl)MLCustomLayer	-			ios=11.2/-/-/0,macos=10.13.2/-/-/0,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	b149050eac36856c
+method	c:objc(pl)MLCustomLayer(im)initWithParameterDictionary:error:	-			ios=11.2/-/-/0,macos=10.13.2/-/-/0,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	737e98b3368ffe0a
+method	c:objc(pl)MLCustomLayer(im)setWeightData:error:	-			ios=11.2/-/-/0,macos=10.13.2/-/-/0,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	15269da2b1ee23cb
+method	c:objc(pl)MLCustomLayer(im)outputShapesForInputShapes:error:	-			ios=11.2/-/-/0,macos=10.13.2/-/-/0,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	71d36bf23f0e71a4
+method	c:objc(pl)MLCustomLayer(im)evaluateOnCPUWithInputs:outputs:error:	-			ios=11.2/-/-/0,macos=10.13.2/-/-/0,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	e7fdc4181e7c8285
+method	c:objc(pl)MLCustomLayer(im)encodeToCommandBuffer:inputs:outputs:error:	-			ios=11.2/-/-/0,macos=10.13.2/-/-/0,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	011e9d4d7567070e
+protocol	c:objc(pl)MLCustomModel	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	5460925d0f9d64c7
+method	c:objc(pl)MLCustomModel(im)initWithModelDescription:parameterDictionary:error:	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	3008444d35cb6442
+method	c:objc(pl)MLCustomModel(im)predictionFromFeatures:options:error:	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	16e31a69a72c1a2e
+method	c:objc(pl)MLCustomModel(im)predictionsFromBatch:options:error:	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	e40d7ab1c0e9d4ba
+interface	c:objc(cs)MLKey	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	6597d7eaecfbf306
+super	-	MLKey	NSObject		-	-	7b3f42c36eb86cfb
+conforms	-	MLKey	NSCopying		-	-	f9bd52306aa219a4
+conforms	-	MLKey	NSSecureCoding		-	-	f238be1cecc3f462
+property	c:objc(cs)MLKey(py)name	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	8fa677dc3647ee07
+property	c:objc(cs)MLKey(py)scope	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	fb09cf87a9a2b830
+method	c:objc(cs)MLKey(im)init	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	5e8539a843d7d67c
+method	c:objc(cs)MLKey(cm)new	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	68f267e37f841881
+typedef	c:@T@MLTaskState	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	94a8e6c1e7e98314
+enum	c:@E@MLTaskState	-			-	-	4ed6811cf40ae870
+enumconst	c:@E@MLTaskState@MLTaskStateSuspended	MLTaskState			-	-	bc30a5e5875f2e85
+enumconst	c:@E@MLTaskState@MLTaskStateRunning	MLTaskState			-	-	2b4e73ac0ff8e6da
+enumconst	c:@E@MLTaskState@MLTaskStateCancelling	MLTaskState			-	-	5bc82f9965920333
+enumconst	c:@E@MLTaskState@MLTaskStateCompleted	MLTaskState			-	-	8d506ee01da0d5db
+enumconst	c:@E@MLTaskState@MLTaskStateFailed	MLTaskState			-	-	71b524f10230808c
+interface	c:objc(cs)MLTask	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	effdd3869c1a2c6f
+super	-	MLTask	NSObject		-	-	aecafb7ff860875a
+property	c:objc(cs)MLTask(py)taskIdentifier	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	ab7ac6723464aa3f
+property	c:objc(cs)MLTask(py)state	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	ff7d41e17c31f90b
+property	c:objc(cs)MLTask(py)error	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	de273ef1d59f4982
+method	c:objc(cs)MLTask(im)resume	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	1c09cfe81e380153
+method	c:objc(cs)MLTask(im)cancel	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	04fe72c237b34c42
+method	c:objc(cs)MLTask(im)init	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	8388155d9e261114
+method	c:objc(cs)MLTask(cm)new	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	6461fd976a3eb900
+interface	c:objc(cs)MLUpdateTask	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	0462de2797e8f860
+super	-	MLUpdateTask	MLTask		-	-	c9a684f1b53b352a
+method	c:objc(cs)MLUpdateTask(cm)updateTaskForModelAtURL:trainingData:configuration:completionHandler:error:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	0ce9b6a40f18bf61
+method	c:objc(cs)MLUpdateTask(cm)updateTaskForModelAtURL:trainingData:completionHandler:error:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	8d4f5e348a69d2d1
+method	c:objc(cs)MLUpdateTask(cm)updateTaskForModelAtURL:trainingData:configuration:progressHandlers:error:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	616da2c52a925bf4
+method	c:objc(cs)MLUpdateTask(cm)updateTaskForModelAtURL:trainingData:progressHandlers:error:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	f23d582b17af4232
+method	c:objc(cs)MLUpdateTask(im)resumeWithParameters:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	ebffd6c639711f1f
+method	c:objc(cs)MLUpdateTask(im)init	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	e801c922188a0742
+method	c:objc(cs)MLUpdateTask(cm)new	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	685fab69b0831539
+protocol	c:objc(pl)MLWritable	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	1706aa6fda7285bc
+conforms	-	MLWritable	NSObject		-	-	4d173782c2224d78
+method	c:objc(pl)MLWritable(im)writeToURL:error:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	5d45af19806fb9b6
+typedef	c:@T@MLUpdateProgressEvent	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	4d1195a5533f2666
+enum	c:@E@MLUpdateProgressEvent	-			-	-	8565084f3366b2a5
+enumconst	c:@E@MLUpdateProgressEvent@MLUpdateProgressEventTrainingBegin	MLUpdateProgressEvent			-	-	b64c3d9c0063e9a3
+enumconst	c:@E@MLUpdateProgressEvent@MLUpdateProgressEventEpochEnd	MLUpdateProgressEvent			-	-	ec1fcbb657648ab5
+enumconst	c:@E@MLUpdateProgressEvent@MLUpdateProgressEventMiniBatchEnd	MLUpdateProgressEvent			-	-	eb4a8696ebc9df8b
+interface	c:objc(cs)MLUpdateContext	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	ab6fc96795599c24
+super	-	MLUpdateContext	NSObject		-	-	167fbdde6f0a4136
+property	c:objc(cs)MLUpdateContext(py)task	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	305528a9b18c801b
+property	c:objc(cs)MLUpdateContext(py)model	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	ad5c60140eb91652
+property	c:objc(cs)MLUpdateContext(py)event	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	9e81fe0cae97d048
+property	c:objc(cs)MLUpdateContext(py)metrics	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	b541b131a5838385
+property	c:objc(cs)MLUpdateContext(py)parameters	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	b0f8dc28abb94f5d
+interface	c:objc(cs)MLUpdateProgressHandlers	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	5411f2ecbfb450ee
+super	-	MLUpdateProgressHandlers	NSObject		-	-	1f51cf5d95317ae1
+method	c:objc(cs)MLUpdateProgressHandlers(im)initForEvents:progressHandler:completionHandler:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	ebe1c2dc20a829b3
+method	c:objc(cs)MLUpdateProgressHandlers(im)init	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	37369c3e809756b3
+method	c:objc(cs)MLUpdateProgressHandlers(cm)new	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	9aab9dcb0e90f9bf
+interface	c:objc(cs)MLMetricKey	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	88e7808d98fa9ab2
+super	-	MLMetricKey	MLKey		-	-	345b1e2ba6d4cc14
+property	c:objc(cs)MLMetricKey(cpy)lossValue	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	6d958d6659a0d86d
+property	c:objc(cs)MLMetricKey(cpy)epochIndex	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	f5ee2159606b5611
+property	c:objc(cs)MLMetricKey(cpy)miniBatchIndex	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	b330622afbbb959c
+method	c:objc(cs)MLMetricKey(im)init	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	33edd89b050e76c5
+method	c:objc(cs)MLMetricKey(cm)new	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	588884ca843d7092
+interface	c:objc(cs)MLNumericConstraint	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	53c1753cdb94d319
+super	-	MLNumericConstraint	NSObject		-	-	b2de125cf5b0e537
+conforms	-	MLNumericConstraint	NSSecureCoding		-	-	2557dce67b52c13b
+property	c:objc(cs)MLNumericConstraint(py)minNumber	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	dee968d388228efe
+property	c:objc(cs)MLNumericConstraint(py)maxNumber	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	dc0aa930b383922e
+property	c:objc(cs)MLNumericConstraint(py)enumeratedNumbers	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	714f91332712a33c
+interface	c:objc(cs)MLParameterDescription	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	4d432ad5cb2a240f
+super	-	MLParameterDescription	NSObject		-	-	793d5a0469940995
+conforms	-	MLParameterDescription	NSSecureCoding		-	-	1ee4b4bb68023091
+property	c:objc(cs)MLParameterDescription(py)key	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	9de5070a3b4adf83
+property	c:objc(cs)MLParameterDescription(py)defaultValue	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	26599d2e43eb5a11
+property	c:objc(cs)MLParameterDescription(py)numericConstraint	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	70706409d43d8371
+interface	c:objc(cs)MLParameterKey	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	2ccc501e7c27d927
+super	-	MLParameterKey	MLKey		-	-	50cd00fc55fbc73d
+property	c:objc(cs)MLParameterKey(cpy)learningRate	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	c749fa84ec610388
+property	c:objc(cs)MLParameterKey(cpy)momentum	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	c1db5d294fc5de99
+property	c:objc(cs)MLParameterKey(cpy)miniBatchSize	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	26a63bb25df5a38d
+property	c:objc(cs)MLParameterKey(cpy)beta1	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	434e86be6ed817ea
+property	c:objc(cs)MLParameterKey(cpy)beta2	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	b109abc8bf6a5776
+property	c:objc(cs)MLParameterKey(cpy)eps	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	2f031955779219d3
+property	c:objc(cs)MLParameterKey(cpy)epochs	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	312901d3bf92247a
+property	c:objc(cs)MLParameterKey(cpy)shuffle	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	b4188f3bfb11ab93
+property	c:objc(cs)MLParameterKey(cpy)seed	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	355e8867b039257d
+property	c:objc(cs)MLParameterKey(cpy)numberOfNeighbors	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	a10465f4c883d027
+method	c:objc(cs)MLParameterKey(im)init	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	a3d5e4e3c0786dcd
+method	c:objc(cs)MLParameterKey(cm)new	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	ca80cf8e6394b4a2
+category	c:objc(cy)MLParameterKey@MLLinkedModelParameters	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	3ccf59a6b2e27b11
+property	c:objc(cs)MLParameterKey(cpy)linkedModelFileName	MLLinkedModelParameters			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	9ac68e5def128465
+property	c:objc(cs)MLParameterKey(cpy)linkedModelSearchPath	MLLinkedModelParameters			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	6132bc37f85ff416
+category	c:objc(cy)MLParameterKey@MLNeuralNetworkParameters	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	4b7d1d56be4fa610
+property	c:objc(cs)MLParameterKey(cpy)weights	MLNeuralNetworkParameters			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	3ed293781f863987
+property	c:objc(cs)MLParameterKey(cpy)biases	MLNeuralNetworkParameters			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	15832dfa11e1905e
+category	c:objc(cy)MLParameterKey@MLScopedParameters	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	100384b99fb6fd88
+method	c:objc(cs)MLParameterKey(im)scopedTo:	MLScopedParameters			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	7cabe941fbe24d20
+interface	c:objc(cs)MLModelCollectionEntry	-			ios=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	45583634f235e410
+super	-	MLModelCollectionEntry	NSObject		-	-	f4450f81d60e50b7
+property	c:objc(cs)MLModelCollectionEntry(py)modelIdentifier	-			ios=-/-/-/1	-	6f2bc92a35df01c4
+property	c:objc(cs)MLModelCollectionEntry(py)modelURL	-			ios=-/-/-/1	-	c8c39b27e10d2fd9
+method	c:objc(cs)MLModelCollectionEntry(im)isEqualToModelCollectionEntry:	-			ios=-/-/-/1	-	d3ba53f90b9d8112
+method	c:objc(cs)MLModelCollectionEntry(im)init	-			*unavailable ios=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	62cc80c739b0b17a
+method	c:objc(cs)MLModelCollectionEntry(cm)new	-			*unavailable ios=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d24a7cad88f0761b
+interface	c:objc(cs)MLModelCollection	-			ios=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	869c52bf3a16afc4
+super	-	MLModelCollection	NSObject		-	-	d927137cad32bffb
+property	c:objc(cs)MLModelCollection(py)identifier	-			ios=-/-/-/1	-	1f680019d4dcf86e
+property	c:objc(cs)MLModelCollection(py)entries	-			ios=-/-/-/1	-	d6640e3c975c6b51
+property	c:objc(cs)MLModelCollection(py)deploymentID	-			ios=-/-/-/1	-	49f4069942dd8727
+method	c:objc(cs)MLModelCollection(cm)beginAccessingModelCollectionWithIdentifier:completionHandler:	-			ios=-/-/-/1	-	8f42a9071f8e5d8a
+method	c:objc(cs)MLModelCollection(cm)endAccessingModelCollectionWithIdentifier:completionHandler:	-			ios=-/-/-/1	-	b157eead42b1000f
+method	c:objc(cs)MLModelCollection(im)init	-			*unavailable ios=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9e7d54f336719ab4
+method	c:objc(cs)MLModelCollection(cm)new	-			*unavailable ios=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	609bda7ce1c4709f
+var	c:@MLModelCollectionDidChangeNotification	-			ios=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	423af22a0d8e0680
+function	c:@F@MLAllComputeDevices	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	b96f9860c01404e2
+protocol	c:objc(pl)MLComputeDeviceProtocol	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	aebd55e0a7408864
+conforms	-	MLComputeDeviceProtocol	NSObject		-	-	c77d390f2fbb576e
+interface	c:objc(cs)MLCPUComputeDevice	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	8af51f6fd368bc92
+super	-	MLCPUComputeDevice	NSObject		-	-	8eb87023e5ff40c5
+conforms	-	MLCPUComputeDevice	MLComputeDeviceProtocol		-	-	34ecc83bce360771
+method	c:objc(cs)MLCPUComputeDevice(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	d2058705b6f39671
+method	c:objc(cs)MLCPUComputeDevice(cm)new	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	413a09236e716dc9
+interface	c:objc(cs)MLGPUComputeDevice	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	aa3bb09a95d7b761
+super	-	MLGPUComputeDevice	NSObject		-	-	2f73f9345d0bf556
+conforms	-	MLGPUComputeDevice	MLComputeDeviceProtocol		-	-	3be6838b0539e49b
+method	c:objc(cs)MLGPUComputeDevice(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	37c90ab8dbbdb4d1
+method	c:objc(cs)MLGPUComputeDevice(cm)new	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	705a917f0b83cba9
+property	c:objc(cs)MLGPUComputeDevice(py)metalDevice	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	77815b093f381a29
+interface	c:objc(cs)MLNeuralEngineComputeDevice	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	0eca1acb75373e92
+super	-	MLNeuralEngineComputeDevice	NSObject		-	-	a652c729ae11b465
+conforms	-	MLNeuralEngineComputeDevice	MLComputeDeviceProtocol		-	-	a638180c69107d62
+method	c:objc(cs)MLNeuralEngineComputeDevice(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	5b76dbd234f39793
+method	c:objc(cs)MLNeuralEngineComputeDevice(cm)new	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	bf3cd89fe92bc2a1
+property	c:objc(cs)MLNeuralEngineComputeDevice(py)totalCoreCount	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	1175abc1c23b3636
+interface	c:objc(cs)MLModelStructure	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	0161b26015ac33ac
+super	-	MLModelStructure	NSObject		-	-	36b0222d1d6868aa
+method	c:objc(cs)MLModelStructure(im)init	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	1b3cb55ff167acee
+method	c:objc(cs)MLModelStructure(cm)new	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	ad103d122dd48311
+method	c:objc(cs)MLModelStructure(cm)loadContentsOfURL:completionHandler:	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	2adbb08eb4237fa1
+method	c:objc(cs)MLModelStructure(cm)loadModelAsset:completionHandler:	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	ccbe5adcc2975aa9
+property	c:objc(cs)MLModelStructure(py)neuralNetwork	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	f180a3c5dbdbd20d
+property	c:objc(cs)MLModelStructure(py)program	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	8e8f73d6d5e3758c
+property	c:objc(cs)MLModelStructure(py)pipeline	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	627434a1d5cf3427
+interface	c:objc(cs)MLModelStructureNeuralNetwork	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	d5ee37ea497f7ede
+super	-	MLModelStructureNeuralNetwork	NSObject		-	-	00dc8057dfedcf88
+method	c:objc(cs)MLModelStructureNeuralNetwork(im)init	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	7fbcbf5196275dd4
+method	c:objc(cs)MLModelStructureNeuralNetwork(cm)new	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	058f2135052aaef6
+property	c:objc(cs)MLModelStructureNeuralNetwork(py)layers	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	086ea632bbdd7442
+interface	c:objc(cs)MLModelStructureNeuralNetworkLayer	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	9915cc6ca46a18ce
+super	-	MLModelStructureNeuralNetworkLayer	NSObject		-	-	b59441e2b1b57423
+method	c:objc(cs)MLModelStructureNeuralNetworkLayer(im)init	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	bc9f559238f46e42
+method	c:objc(cs)MLModelStructureNeuralNetworkLayer(cm)new	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	cbb79418ed4a0fa5
+property	c:objc(cs)MLModelStructureNeuralNetworkLayer(py)name	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	610282e805822553
+property	c:objc(cs)MLModelStructureNeuralNetworkLayer(py)type	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	91c54689bd4f35ca
+property	c:objc(cs)MLModelStructureNeuralNetworkLayer(py)inputNames	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	8e676313f6001a83
+property	c:objc(cs)MLModelStructureNeuralNetworkLayer(py)outputNames	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	3295c5b79840ce05
+interface	c:objc(cs)MLModelStructurePipeline	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	2f3b372a927046e1
+super	-	MLModelStructurePipeline	NSObject		-	-	d4e3583e5857271f
+method	c:objc(cs)MLModelStructurePipeline(im)init	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	66afb61e31634de5
+method	c:objc(cs)MLModelStructurePipeline(cm)new	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	bcab6d7e3d8b5c03
+property	c:objc(cs)MLModelStructurePipeline(py)subModelNames	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	27c1474be5eba533
+property	c:objc(cs)MLModelStructurePipeline(py)subModels	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	73a7ade968c0248d
+interface	c:objc(cs)MLModelStructureProgram	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	eb3b648ad0f32a33
+super	-	MLModelStructureProgram	NSObject		-	-	5d2a64ccc695d249
+method	c:objc(cs)MLModelStructureProgram(im)init	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	79d4b565aa73d110
+method	c:objc(cs)MLModelStructureProgram(cm)new	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	64871abd3e8f3244
+property	c:objc(cs)MLModelStructureProgram(py)functions	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	bdeece0bcc9db1ec
+interface	c:objc(cs)MLModelStructureProgramArgument	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	a71d1c09a38f4e08
+super	-	MLModelStructureProgramArgument	NSObject		-	-	799b22540166e669
+method	c:objc(cs)MLModelStructureProgramArgument(im)init	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	1c91480e2019e250
+method	c:objc(cs)MLModelStructureProgramArgument(cm)new	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	98ce595a9b1c2dbe
+property	c:objc(cs)MLModelStructureProgramArgument(py)bindings	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	89a0287d18255a03
+interface	c:objc(cs)MLModelStructureProgramBinding	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	00c1027aebc19ba0
+super	-	MLModelStructureProgramBinding	NSObject		-	-	3c0a9535a99d835d
+method	c:objc(cs)MLModelStructureProgramBinding(im)init	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	5636769d21ce51c2
+method	c:objc(cs)MLModelStructureProgramBinding(cm)new	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	3ca8492167a7808d
+property	c:objc(cs)MLModelStructureProgramBinding(py)name	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	ebbdc9c2c9af2ffc
+property	c:objc(cs)MLModelStructureProgramBinding(py)value	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	4910d55a1d15c6cf
+interface	c:objc(cs)MLModelStructureProgramBlock	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	3f15536d226f40fa
+super	-	MLModelStructureProgramBlock	NSObject		-	-	4d169a231bf5dba6
+method	c:objc(cs)MLModelStructureProgramBlock(im)init	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	ffe7dcace57b530c
+method	c:objc(cs)MLModelStructureProgramBlock(cm)new	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	06c1ed1479012692
+property	c:objc(cs)MLModelStructureProgramBlock(py)inputs	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	9c4a9b2c2630cb58
+property	c:objc(cs)MLModelStructureProgramBlock(py)outputNames	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	d4c2479908fba4f1
+property	c:objc(cs)MLModelStructureProgramBlock(py)operations	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	0f97a73b185a34b2
+interface	c:objc(cs)MLModelStructureProgramFunction	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	eab28e1641079b42
+super	-	MLModelStructureProgramFunction	NSObject		-	-	5d9b272320eb0f5e
+method	c:objc(cs)MLModelStructureProgramFunction(im)init	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	3736ed9ecf166f92
+method	c:objc(cs)MLModelStructureProgramFunction(cm)new	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	7c616e21fff79309
+property	c:objc(cs)MLModelStructureProgramFunction(py)inputs	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	8387714911a229b8
+property	c:objc(cs)MLModelStructureProgramFunction(py)block	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	0dd390db0b56f949
+interface	c:objc(cs)MLModelStructureProgramNamedValueType	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	0c5e33050657731d
+super	-	MLModelStructureProgramNamedValueType	NSObject		-	-	81b6535716c025aa
+method	c:objc(cs)MLModelStructureProgramNamedValueType(im)init	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	9feeee80f27e456c
+method	c:objc(cs)MLModelStructureProgramNamedValueType(cm)new	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	1ec7b7347e904660
+property	c:objc(cs)MLModelStructureProgramNamedValueType(py)name	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	2e934a878a70d4e5
+property	c:objc(cs)MLModelStructureProgramNamedValueType(py)type	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	6982ed874eb3017d
+interface	c:objc(cs)MLModelStructureProgramOperation	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	cd70b9ea9e23dec8
+super	-	MLModelStructureProgramOperation	NSObject		-	-	e0a7ad4cf4df25a5
+method	c:objc(cs)MLModelStructureProgramOperation(im)init	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	a64b3437e3cff141
+method	c:objc(cs)MLModelStructureProgramOperation(cm)new	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	6ab01a778c79c28f
+property	c:objc(cs)MLModelStructureProgramOperation(py)operatorName	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	c6b9e05bbf82972d
+property	c:objc(cs)MLModelStructureProgramOperation(py)inputs	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	added64b80f62808
+property	c:objc(cs)MLModelStructureProgramOperation(py)outputs	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	f5919dc7cc6a00da
+property	c:objc(cs)MLModelStructureProgramOperation(py)blocks	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	bc65ffd4f98b8669
+interface	c:objc(cs)MLModelStructureProgramValue	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	f4a23398006e883e
+super	-	MLModelStructureProgramValue	NSObject		-	-	59c6708411955efc
+method	c:objc(cs)MLModelStructureProgramValue(im)init	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	0bab05db2e9e9dca
+method	c:objc(cs)MLModelStructureProgramValue(cm)new	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	d96c1d9eb3dbca1a
+interface	c:objc(cs)MLModelStructureProgramValueType	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	8f0394fd1df6b8e9
+super	-	MLModelStructureProgramValueType	NSObject		-	-	95cdff5e0bb20544
+method	c:objc(cs)MLModelStructureProgramValueType(im)init	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	39021cda20226b3c
+method	c:objc(cs)MLModelStructureProgramValueType(cm)new	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	1958d54f40bc2999
+interface	c:objc(cs)MLComputePlan	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	1897fd2bfbcecf46
+super	-	MLComputePlan	NSObject		-	-	ba659a2360caac27
+method	c:objc(cs)MLComputePlan(im)init	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	9c52aa64dc23b2ee
+method	c:objc(cs)MLComputePlan(cm)new	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	fe751aac829c3ef7
+method	c:objc(cs)MLComputePlan(cm)loadContentsOfURL:configuration:completionHandler:	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	159f05d6a546a799
+method	c:objc(cs)MLComputePlan(cm)loadModelAsset:configuration:completionHandler:	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	e9208fb55e5a03e9
+method	c:objc(cs)MLComputePlan(im)estimatedCostOfMLProgramOperation:	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	b321266a1906d6eb
+method	c:objc(cs)MLComputePlan(im)computeDeviceUsageForNeuralNetworkLayer:	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	5181660f3b5f2a92
+method	c:objc(cs)MLComputePlan(im)computeDeviceUsageForMLProgramOperation:	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	1743d0bb0026e30e
+property	c:objc(cs)MLComputePlan(py)modelStructure	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	5c8960dc57424599
+interface	c:objc(cs)MLComputePlanCost	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	a2d2a23099aa0308
+super	-	MLComputePlanCost	NSObject		-	-	e929c4bb8ec4785b
+method	c:objc(cs)MLComputePlanCost(im)init	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	273af98dca9c7285
+method	c:objc(cs)MLComputePlanCost(cm)new	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	3aff6e1f9e3dc378
+property	c:objc(cs)MLComputePlanCost(py)weight	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	2d58c0a8052a18b0
+interface	c:objc(cs)MLComputePlanDeviceUsage	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	cd57c8f051d5230f
+super	-	MLComputePlanDeviceUsage	NSObject		-	-	da8659867612dc67
+method	c:objc(cs)MLComputePlanDeviceUsage(im)init	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	35def1260c492dfc
+method	c:objc(cs)MLComputePlanDeviceUsage(cm)new	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	6250482db71360a5
+property	c:objc(cs)MLComputePlanDeviceUsage(py)supportedComputeDevices	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	eac0a88b4f1fd6ee
+property	c:objc(cs)MLComputePlanDeviceUsage(py)preferredComputeDevice	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	2b7d658195c61c3d

@@ -1,0 +1,362 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+var	c:@NFCErrorDomain	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bcb62e3e5e1626c8
+typedef	c:@T@NFCReaderError	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	839728392308568a
+enum	c:@E@NFCReaderError	-			-	-	9063aa7ce1e17b31
+enumconst	c:@E@NFCReaderError@NFCReaderErrorUnsupportedFeature	NFCReaderError			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	752c6ff86b46bf77
+enumconst	c:@E@NFCReaderError@NFCReaderErrorSecurityViolation	NFCReaderError			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8f681f6644b29643
+enumconst	c:@E@NFCReaderError@NFCReaderErrorInvalidParameter	NFCReaderError			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3b5e8ccd953e24e6
+enumconst	c:@E@NFCReaderError@NFCReaderErrorInvalidParameterLength	NFCReaderError			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	010fe4051bcde623
+enumconst	c:@E@NFCReaderError@NFCReaderErrorParameterOutOfBound	NFCReaderError			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	372f72e2def44d94
+enumconst	c:@E@NFCReaderError@NFCReaderErrorRadioDisabled	NFCReaderError			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	034437a8d0ea1fde
+enumconst	c:@E@NFCReaderError@NFCReaderErrorIneligible	NFCReaderError			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c581d83124df51ac
+enumconst	c:@E@NFCReaderError@NFCReaderErrorAccessNotAccepted	NFCReaderError			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	281a6d840c2cfbcd
+enumconst	c:@E@NFCReaderError@NFCReaderTransceiveErrorTagConnectionLost	NFCReaderError			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2811f98c915b3fd9
+enumconst	c:@E@NFCReaderError@NFCReaderTransceiveErrorRetryExceeded	NFCReaderError			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d2f4d33a9faf1389
+enumconst	c:@E@NFCReaderError@NFCReaderTransceiveErrorTagResponseError	NFCReaderError			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0ee3308166954ec7
+enumconst	c:@E@NFCReaderError@NFCReaderTransceiveErrorSessionInvalidated	NFCReaderError			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ef55d418f1411254
+enumconst	c:@E@NFCReaderError@NFCReaderTransceiveErrorTagNotConnected	NFCReaderError			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2e2f30ae65b880a6
+enumconst	c:@E@NFCReaderError@NFCReaderTransceiveErrorPacketTooLong	NFCReaderError			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cfbf3ee650805c0a
+enumconst	c:@E@NFCReaderError@NFCReaderSessionInvalidationErrorUserCanceled	NFCReaderError			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	079bf3863bb420ac
+enumconst	c:@E@NFCReaderError@NFCReaderSessionInvalidationErrorSessionTimeout	NFCReaderError			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ae4f66f9be693919
+enumconst	c:@E@NFCReaderError@NFCReaderSessionInvalidationErrorSessionTerminatedUnexpectedly	NFCReaderError			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8c4ffd516eda0e45
+enumconst	c:@E@NFCReaderError@NFCReaderSessionInvalidationErrorSystemIsBusy	NFCReaderError			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	882469b2e1689190
+enumconst	c:@E@NFCReaderError@NFCReaderSessionInvalidationErrorFirstNDEFTagRead	NFCReaderError			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1b5fe23ad62112cc
+enumconst	c:@E@NFCReaderError@NFCTagCommandConfigurationErrorInvalidParameters	NFCReaderError			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8f95f8d686aa520c
+enumconst	c:@E@NFCReaderError@NFCNdefReaderSessionErrorTagNotWritable	NFCReaderError			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2073c5a0c397176e
+enumconst	c:@E@NFCReaderError@NFCNdefReaderSessionErrorTagUpdateFailure	NFCReaderError			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c2db55fac3ede8f1
+enumconst	c:@E@NFCReaderError@NFCNdefReaderSessionErrorTagSizeTooSmall	NFCReaderError			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cb9748e7a5dcb899
+enumconst	c:@E@NFCReaderError@NFCNdefReaderSessionErrorZeroLengthMessage	NFCReaderError			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a32e77f849e5d1d4
+var	c:@NFCISO15693TagResponseErrorKey	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fee102772f72c6c6
+var	c:@NFCTagResponseUnexpectedLengthErrorKey	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0064cfd8e8206b59
+protocol	c:objc(pl)NFCReaderSession	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	13010163720585ae
+conforms	-	NFCReaderSession	NSObject		-	-	e19b4819a42a7132
+property	c:objc(pl)NFCReaderSession(py)ready	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8d6c40405747df1e
+property	c:objc(pl)NFCReaderSession(py)alertMessage	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	baa7c7cdd181136c
+method	c:objc(pl)NFCReaderSession(im)beginSession	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8e82cc8cfbb2a9eb
+method	c:objc(pl)NFCReaderSession(im)invalidateSession	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	700372db7a7c221d
+method	c:objc(pl)NFCReaderSession(im)invalidateSessionWithErrorMessage:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	36423de213e7a0c4
+protocol	c:objc(pl)NFCReaderSessionDelegate	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b638040cea42a98c
+conforms	-	NFCReaderSessionDelegate	NSObject		-	-	7c9fc90ac9b0cb9d
+method	c:objc(pl)NFCReaderSessionDelegate(im)readerSessionDidBecomeActive:	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5828010bcd5cf3b8
+method	c:objc(pl)NFCReaderSessionDelegate(im)readerSession:didInvalidateWithError:	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8a1fafa0a711d659
+method	c:objc(pl)NFCReaderSessionDelegate(im)readerSession:didDetectTags:	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0927ca4ff6d17ade
+interface	c:objc(cs)NFCReaderSession	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	91262bfaa8b7f75d
+super	-	NFCReaderSession	NSObject		-	-	328b2a7bdb083b64
+conforms	-	NFCReaderSession	NFCReaderSession		-	-	d504afb2144d5fbf
+property	c:objc(cs)NFCReaderSession(py)delegate	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f4bd8e3f850cb960
+property	c:objc(cs)NFCReaderSession(cpy)readingAvailable	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ace8641763295382
+property	c:objc(cs)NFCReaderSession(py)sessionQueue	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1a5553fc8a35a512
+method	c:objc(cs)NFCReaderSession(im)init	-			*unavailable ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	88561d5b2ec47ee5
+typedef	c:@T@NFCTagType	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cbd1b10499be0138
+enum	c:@E@NFCTagType	-			-	-	34d9ce19bd6ec0bd
+enumconst	c:@E@NFCTagType@NFCTagTypeISO15693	NFCTagType			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	42ded0bcc102dfe9
+enumconst	c:@E@NFCTagType@NFCTagTypeFeliCa	NFCTagType			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2f72fae8ff4ace87
+enumconst	c:@E@NFCTagType@NFCTagTypeISO7816Compatible	NFCTagType			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2ffc0d95a966fa4e
+enumconst	c:@E@NFCTagType@NFCTagTypeMiFare	NFCTagType			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5b38dc5ef6a6a86f
+protocol	c:objc(pl)NFCTag	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3b921add2f41245e
+conforms	-	NFCTag	NSObject		-	-	b3a2e76d61243200
+conforms	-	NFCTag	NSSecureCoding		-	-	ed6f065f509d6f30
+conforms	-	NFCTag	NSCopying		-	-	bcb43e447d5bcad2
+property	c:objc(pl)NFCTag(py)type	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	98b1de7af64867b8
+property	c:objc(pl)NFCTag(py)session	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	48910f1105bf536a
+property	c:objc(pl)NFCTag(py)available	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0df77d5b786b5f47
+method	c:objc(pl)NFCTag(im)asNFCISO15693Tag	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6af7f79f3bec0de9
+method	c:objc(pl)NFCTag(im)asNFCISO7816Tag	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	646835623abef562
+method	c:objc(pl)NFCTag(im)asNFCFeliCaTag	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	48ef68dc04f6fafe
+method	c:objc(pl)NFCTag(im)asNFCMiFareTag	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ee310983e083dc19
+interface	c:objc(cs)NFCTagCommandConfiguration	-			ios=11.0/-/-/0,ios_app_extension=-/-/-/1,macos=-/-/-/1,macos_app_extension=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4886bb3b2a7668c1
+super	-	NFCTagCommandConfiguration	NSObject		-	-	61d4de4563bbf6d5
+conforms	-	NFCTagCommandConfiguration	NSCopying		-	-	265f78d1e3a25b12
+property	c:objc(cs)NFCTagCommandConfiguration(py)maximumRetries	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5f1841341200ca35
+property	c:objc(cs)NFCTagCommandConfiguration(py)retryInterval	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bf7675b8c38fd788
+protocol	c:objc(pl)NFCTagReaderSessionDelegate	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	61a971ab52184399
+conforms	-	NFCTagReaderSessionDelegate	NSObject		-	-	5076d79545416511
+method	c:objc(pl)NFCTagReaderSessionDelegate(im)tagReaderSession:didInvalidateWithError:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fbd236562ed2d8b4
+method	c:objc(pl)NFCTagReaderSessionDelegate(im)tagReaderSessionDidBecomeActive:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8a3126593990b051
+method	c:objc(pl)NFCTagReaderSessionDelegate(im)tagReaderSession:didDetectTags:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	615052b2a41c8709
+interface	c:objc(cs)NFCTagReaderSession	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	07417d41afbc11c8
+super	-	NFCTagReaderSession	NFCReaderSession		-	-	55d7cd2ccf6b11cd
+property	c:objc(cs)NFCTagReaderSession(py)connectedTag	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4377bc1a983f8962
+method	c:objc(cs)NFCTagReaderSession(im)init	-			*unavailable ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	aaa7a4d1f3f55f1a
+method	c:objc(cs)NFCTagReaderSession(im)initWithPollingOption:delegate:queue:	-			ios=13.0/-/-/0,ios_app_extension=-/-/-/1,macos=-/-/-/1,macos_app_extension=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	495cb98d80118c05
+method	c:objc(cs)NFCTagReaderSession(im)restartPolling	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fcc94503eb84227f
+method	c:objc(cs)NFCTagReaderSession(im)connectToTag:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e9ffd64a82dcceb2
+typedef	c:@T@NFCPollingOption	-			-	-	6ef0e12ed6114ea9
+enum	c:@E@NFCPollingOption	-			-	-	893b9c3a64bf6567
+enumconst	c:@E@NFCPollingOption@NFCPollingISO14443	NFCPollingOption			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	08938a909ceb855d
+enumconst	c:@E@NFCPollingOption@NFCPollingISO15693	NFCPollingOption			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f4b12f94ed563269
+enumconst	c:@E@NFCPollingOption@NFCPollingISO18092	NFCPollingOption			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bb826d60241d04cc
+enumconst	c:@E@NFCPollingOption@NFCPollingPACE	NFCPollingOption			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1563077c775c7cb5
+protocol	c:objc(pl)NFCNDEFReaderSessionDelegate	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ad66a3e417651cb1
+conforms	-	NFCNDEFReaderSessionDelegate	NSObject		-	-	79e87d337d8b5020
+method	c:objc(pl)NFCNDEFReaderSessionDelegate(im)readerSession:didInvalidateWithError:	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a6751cc64e4f3886
+method	c:objc(pl)NFCNDEFReaderSessionDelegate(im)readerSession:didDetectNDEFs:	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	707909522bfe1621
+method	c:objc(pl)NFCNDEFReaderSessionDelegate(im)readerSession:didDetectTags:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a581ee3780769073
+method	c:objc(pl)NFCNDEFReaderSessionDelegate(im)readerSessionDidBecomeActive:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9421889b28d51f11
+interface	c:objc(cs)NFCNDEFReaderSession	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ffd04e11a8758971
+super	-	NFCNDEFReaderSession	NFCReaderSession		-	-	43f087bbb5ef40e9
+method	c:objc(cs)NFCNDEFReaderSession(im)init	-			*unavailable ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	329119ef0b5870ef
+method	c:objc(cs)NFCNDEFReaderSession(im)initWithDelegate:queue:invalidateAfterFirstRead:	-			ios=11.0/-/-/0,ios_app_extension=-/-/-/1,macos=-/-/-/1,macos_app_extension=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1547530626102b2f
+method	c:objc(cs)NFCNDEFReaderSession(im)restartPolling	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f70981306e54d65e
+method	c:objc(cs)NFCNDEFReaderSession(im)connectToTag:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8d9ff504b907ff33
+category	c:objc(cy)NSUserActivity@CoreNFC	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	edbb286c559fc401
+property	c:objc(cs)NSUserActivity(py)ndefMessagePayload	CoreNFC			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	971465b71edc5786
+typedef	c:@T@NFCISO15693RequestFlag	-			-	-	8aea97a59b8a9735
+enum	c:@E@NFCISO15693RequestFlag	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b6c225586f1e6f86
+enumconst	c:@E@NFCISO15693RequestFlag@NFCISO15693RequestFlagDualSubCarriers	NFCISO15693RequestFlag			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e6f4b03e5a266c86
+enumconst	c:@E@NFCISO15693RequestFlag@NFCISO15693RequestFlagHighDataRate	NFCISO15693RequestFlag			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4a64063566038324
+enumconst	c:@E@NFCISO15693RequestFlag@NFCISO15693RequestFlagProtocolExtension	NFCISO15693RequestFlag			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	71f060484afa9967
+enumconst	c:@E@NFCISO15693RequestFlag@NFCISO15693RequestFlagSelect	NFCISO15693RequestFlag			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	24e1a24c67d522df
+enumconst	c:@E@NFCISO15693RequestFlag@NFCISO15693RequestFlagAddress	NFCISO15693RequestFlag			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	53afe63a17b8c15a
+enumconst	c:@E@NFCISO15693RequestFlag@NFCISO15693RequestFlagOption	NFCISO15693RequestFlag			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4b6b4bd99a48a9c3
+enumconst	c:@E@NFCISO15693RequestFlag@NFCISO15693RequestFlagCommandSpecificBit8	NFCISO15693RequestFlag			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b78fd9766eebc897
+enumconst	c:@E@NFCISO15693RequestFlag@RequestFlagDualSubCarriers	NFCISO15693RequestFlag			ios=11.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use NFCISO15693RequestFlagDualSubCarriers instead	1c3b4437e36a4a5b
+enumconst	c:@E@NFCISO15693RequestFlag@RequestFlagHighDataRate	NFCISO15693RequestFlag			ios=11.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use NFCISO15693RequestFlagHighDataRate instead	a1978ab842c96d92
+enumconst	c:@E@NFCISO15693RequestFlag@RequestFlagProtocolExtension	NFCISO15693RequestFlag			ios=11.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use NFCISO15693RequestFlagProtocolExtension instead	80ad7eb247cc7131
+enumconst	c:@E@NFCISO15693RequestFlag@RequestFlagSelect	NFCISO15693RequestFlag			ios=11.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use NFCISO15693RequestFlagSelect instead	10c7da4facfb921e
+enumconst	c:@E@NFCISO15693RequestFlag@RequestFlagAddress	NFCISO15693RequestFlag			ios=11.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use NFCISO15693RequestFlagAddress instead	d67a4fa4b21a06b6
+enumconst	c:@E@NFCISO15693RequestFlag@RequestFlagOption	NFCISO15693RequestFlag			ios=11.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use NFCISO15693RequestFlagOption instead	1617b38e71254a0e
+typedef	c:@T@RequestFlag	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fe566742924698c0
+typedef	c:@T@NFCISO15693ResponseFlag	-			-	-	060a954928a6c997
+enum	c:@E@NFCISO15693ResponseFlag	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1a1dafb4a2a0e4b7
+enumconst	c:@E@NFCISO15693ResponseFlag@NFCISO15693ResponseFlagError	NFCISO15693ResponseFlag			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	810a79009dbe5162
+enumconst	c:@E@NFCISO15693ResponseFlag@NFCISO15693ResponseFlagResponseBufferValid	NFCISO15693ResponseFlag			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3e3fbf43b7cd6fe6
+enumconst	c:@E@NFCISO15693ResponseFlag@NFCISO15693ResponseFlagFinalResponse	NFCISO15693ResponseFlag			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e942cd851eec6218
+enumconst	c:@E@NFCISO15693ResponseFlag@NFCISO15693ResponseFlagProtocolExtension	NFCISO15693ResponseFlag			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a7cc54178a3ec551
+enumconst	c:@E@NFCISO15693ResponseFlag@NFCISO15693ResponseFlagBlockSecurityStatusBit5	NFCISO15693ResponseFlag			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	883118c6bd4d5a52
+enumconst	c:@E@NFCISO15693ResponseFlag@NFCISO15693ResponseFlagBlockSecurityStatusBit6	NFCISO15693ResponseFlag			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d4785483ba56665c
+enumconst	c:@E@NFCISO15693ResponseFlag@NFCISO15693ResponseFlagWaitTimeExtension	NFCISO15693ResponseFlag			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3205d2f324e40dbd
+interface	c:objc(cs)NFCISO15693CustomCommandConfiguration	-			ios=11.0/-/-/0,ios_app_extension=-/-/-/1,macos=-/-/-/1,macos_app_extension=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9ca896e2d3caafc7
+super	-	NFCISO15693CustomCommandConfiguration	NFCTagCommandConfiguration		-	-	0ab1e182fc0d7ef5
+property	c:objc(cs)NFCISO15693CustomCommandConfiguration(py)manufacturerCode	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b908a7ed34cd114b
+property	c:objc(cs)NFCISO15693CustomCommandConfiguration(py)customCommandCode	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e4c38698baeb36ca
+property	c:objc(cs)NFCISO15693CustomCommandConfiguration(py)requestParameters	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	947f573b265c29f0
+method	c:objc(cs)NFCISO15693CustomCommandConfiguration(im)initWithManufacturerCode:customCommandCode:requestParameters:	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c5371c021dca2e40
+method	c:objc(cs)NFCISO15693CustomCommandConfiguration(im)initWithManufacturerCode:customCommandCode:requestParameters:maximumRetries:retryInterval:	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b21cf57f2f97fd4b
+interface	c:objc(cs)NFCISO15693ReadMultipleBlocksConfiguration	-			ios=11.0/-/-/0,ios_app_extension=-/-/-/1,macos=-/-/-/1,macos_app_extension=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ca8e9476432cac6b
+super	-	NFCISO15693ReadMultipleBlocksConfiguration	NFCTagCommandConfiguration		-	-	1c4334ffdd993c0a
+property	c:objc(cs)NFCISO15693ReadMultipleBlocksConfiguration(py)range	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a0f83a8b3b15c0cd
+property	c:objc(cs)NFCISO15693ReadMultipleBlocksConfiguration(py)chunkSize	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3708a954dc9c3bff
+method	c:objc(cs)NFCISO15693ReadMultipleBlocksConfiguration(im)initWithRange:chunkSize:	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	af5ecc5aff24fa1f
+method	c:objc(cs)NFCISO15693ReadMultipleBlocksConfiguration(im)initWithRange:chunkSize:maximumRetries:retryInterval:	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b32eda6eea397cd2
+protocol	c:objc(pl)NFCISO15693Tag	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use lockDSFIDWithRequestFlag:completionHandler: instead	1d13920f17d592fe
+conforms	-	NFCISO15693Tag	NFCTag		-	-	94053ce41c204fa1
+conforms	-	NFCISO15693Tag	NFCNDEFTag		-	-	aa6c21d4f562f324
+property	c:objc(pl)NFCISO15693Tag(py)identifier	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6e87367435587041
+property	c:objc(pl)NFCISO15693Tag(py)icManufacturerCode	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cb7aed4be7d30a6b
+property	c:objc(pl)NFCISO15693Tag(py)icSerialNumber	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e15c500decb48645
+method	c:objc(pl)NFCISO15693Tag(im)sendCustomCommandWithConfiguration:completionHandler:	-			ios=11.0/-/-/0,ios_app_extension=-/-/-/1,macos=-/-/-/1,macos_app_extension=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	26f815e05564b847
+method	c:objc(pl)NFCISO15693Tag(im)readMultipleBlocksWithConfiguration:completionHandler:	-			ios=11.0/-/-/0,ios_app_extension=-/-/-/1,macos=-/-/-/1,macos_app_extension=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ae7c872e0def6d59
+method	c:objc(pl)NFCISO15693Tag(im)stayQuietWithCompletionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	91b09174c94d1303
+method	c:objc(pl)NFCISO15693Tag(im)readSingleBlockWithRequestFlags:blockNumber:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c455c280b1c1dd21
+method	c:objc(pl)NFCISO15693Tag(im)writeSingleBlockWithRequestFlags:blockNumber:dataBlock:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2520fecb5ec4b5f8
+method	c:objc(pl)NFCISO15693Tag(im)lockBlockWithRequestFlags:blockNumber:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3eb39c98325f9609
+method	c:objc(pl)NFCISO15693Tag(im)readMultipleBlocksWithRequestFlags:blockRange:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b5d4b638b8bf490f
+method	c:objc(pl)NFCISO15693Tag(im)writeMultipleBlocksWithRequestFlags:blockRange:dataBlocks:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ba68c63cb4ff2e58
+method	c:objc(pl)NFCISO15693Tag(im)selectWithRequestFlags:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5afb47ebea631745
+method	c:objc(pl)NFCISO15693Tag(im)resetToReadyWithRequestFlags:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	36f23487451f6c8d
+method	c:objc(pl)NFCISO15693Tag(im)writeAFIWithRequestFlag:afi:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ca88fa48326b8c2f
+method	c:objc(pl)NFCISO15693Tag(im)lockAFIWithRequestFlag:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e0e7adcb9d139ad3
+method	c:objc(pl)NFCISO15693Tag(im)writeDSFIDWithRequestFlag:dsfid:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7c1e085fdc6fa0bb
+method	c:objc(pl)NFCISO15693Tag(im)lockDFSIDWithRequestFlag:completionHandler:	-			ios=13.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use lockDSFIDWithRequestFlag:completionHandler: instead	f1f1a4b7911ea812
+method	c:objc(pl)NFCISO15693Tag(im)lockDSFIDWithRequestFlag:completionHandler:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c9ab631df8336fd4
+method	c:objc(pl)NFCISO15693Tag(im)getSystemInfoWithRequestFlag:completionHandler:	-			ios=13.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use getSystemInfoAndUIDWithRequestFlag:completionHandler: instead	8b1a7d2111768d0c
+method	c:objc(pl)NFCISO15693Tag(im)getSystemInfoAndUIDWithRequestFlag:completionHandler:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0a5346aead7fdc01
+method	c:objc(pl)NFCISO15693Tag(im)getMultipleBlockSecurityStatusWithRequestFlag:blockRange:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f12a188f84db7d3d
+method	c:objc(pl)NFCISO15693Tag(im)fastReadMultipleBlocksWithRequestFlag:blockRange:completionHandler:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bd1c17790c2e68d1
+method	c:objc(pl)NFCISO15693Tag(im)customCommandWithRequestFlag:customCommandCode:customRequestParameters:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a13215c65b70feb6
+method	c:objc(pl)NFCISO15693Tag(im)extendedReadSingleBlockWithRequestFlags:blockNumber:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fa11cc26ca8c2c4b
+method	c:objc(pl)NFCISO15693Tag(im)extendedWriteSingleBlockWithRequestFlags:blockNumber:dataBlock:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6822716def70e0e1
+method	c:objc(pl)NFCISO15693Tag(im)extendedLockBlockWithRequestFlags:blockNumber:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b11302bc30fbe4fa
+method	c:objc(pl)NFCISO15693Tag(im)extendedReadMultipleBlocksWithRequestFlags:blockRange:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0af38d61ad049201
+method	c:objc(pl)NFCISO15693Tag(im)extendedWriteMultipleBlocksWithRequestFlags:blockRange:dataBlocks:completionHandler:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8f781579d3d5cff8
+method	c:objc(pl)NFCISO15693Tag(im)authenticateWithRequestFlags:cryptoSuiteIdentifier:message:completionHandler:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b873bf91033bf193
+method	c:objc(pl)NFCISO15693Tag(im)keyUpdateWithRequestFlags:keyIdentifier:message:completionHandler:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	39ec640bc6fc01a0
+method	c:objc(pl)NFCISO15693Tag(im)challengeWithRequestFlags:cryptoSuiteIdentifier:message:completionHandler:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	18cb3457fcc78c7d
+method	c:objc(pl)NFCISO15693Tag(im)readBufferWithRequestFlags:completionHandler:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	22a67beb062de8a6
+method	c:objc(pl)NFCISO15693Tag(im)extendedGetMultipleBlockSecurityStatusWithRequestFlag:blockRange:completionHandler:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a4410218cd48458b
+method	c:objc(pl)NFCISO15693Tag(im)extendedFastReadMultipleBlocksWithRequestFlag:blockRange:completionHandler:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a29259f9b5810b0e
+method	c:objc(pl)NFCISO15693Tag(im)sendRequestWithFlag:commandCode:data:completionHandler:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2981bb511d809d47
+interface	c:objc(cs)NFCISO15693ReaderSession	-			ios=11.0/17.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: No longer supported	359d0a078c7020ca
+super	-	NFCISO15693ReaderSession	NFCReaderSession		-	-	2469f67c87151ae7
+method	c:objc(cs)NFCISO15693ReaderSession(im)init	-			*unavailable ios=11.0/17.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	78de88d36157216a
+method	c:objc(cs)NFCISO15693ReaderSession(im)initWithDelegate:queue:	-			ios=11.0/17.0/-/0,ios_app_extension=-/-/-/1,macos_app_extension=-/-/-/1	deprecated: No longer supported	f89ae5569cf1e08a
+method	c:objc(cs)NFCISO15693ReaderSession(im)restartPolling	-			ios=11.0/17.0/-/0	deprecated: No longer supported	f1da5c67726d5a82
+typedef	c:@T@NFCNDEFStatus	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d6bf73cfe7528f77
+enum	c:@E@NFCNDEFStatus	-			-	-	c1edde05b147bac8
+enumconst	c:@E@NFCNDEFStatus@NFCNDEFStatusNotSupported	NFCNDEFStatus			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ef9a90bc204afe0f
+enumconst	c:@E@NFCNDEFStatus@NFCNDEFStatusReadWrite	NFCNDEFStatus			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	839559020d4da07e
+enumconst	c:@E@NFCNDEFStatus@NFCNDEFStatusReadOnly	NFCNDEFStatus			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	14d7b4a20e2000cd
+protocol	c:objc(pl)NFCNDEFTag	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1f51fde25a5f6426
+conforms	-	NFCNDEFTag	NSObject		-	-	e256fac63ef8520a
+conforms	-	NFCNDEFTag	NSSecureCoding		-	-	a1f0b959c9e36693
+conforms	-	NFCNDEFTag	NSCopying		-	-	5bfe15a84b88b569
+property	c:objc(pl)NFCNDEFTag(py)available	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3b1a3b9716d349d8
+method	c:objc(pl)NFCNDEFTag(im)queryNDEFStatusWithCompletionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f45a0f35d60c8253
+method	c:objc(pl)NFCNDEFTag(im)readNDEFWithCompletionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	41c7f3f4760c34c4
+method	c:objc(pl)NFCNDEFTag(im)writeNDEF:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e8909273b847140a
+method	c:objc(pl)NFCNDEFTag(im)writeLockWithCompletionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	67a280b82a33b2f9
+typedef	c:@T@NFCFeliCaPollingRequestCode	-			-	-	ddd5b9811014451a
+enum	c:@E@NFCFeliCaPollingRequestCode	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bdeee9621d9f45f9
+enumconst	c:@E@NFCFeliCaPollingRequestCode@NFCFeliCaPollingRequestCodeNoRequest	NFCFeliCaPollingRequestCode			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d0e2edcb2091df29
+enumconst	c:@E@NFCFeliCaPollingRequestCode@NFCFeliCaPollingRequestCodeSystemCode	NFCFeliCaPollingRequestCode			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4ffd8761d5906a08
+enumconst	c:@E@NFCFeliCaPollingRequestCode@NFCFeliCaPollingRequestCodeCommunicationPerformance	NFCFeliCaPollingRequestCode			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c8dab48428a14952
+enumconst	c:@E@NFCFeliCaPollingRequestCode@PollingRequestCodeNoRequest	NFCFeliCaPollingRequestCode			ios=13.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use NFCFeliCaPollingRequestCodeNoRequest instead	c736c5aa67adfc8f
+enumconst	c:@E@NFCFeliCaPollingRequestCode@PollingRequestCodeSystemCode	NFCFeliCaPollingRequestCode			ios=13.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use NFCFeliCaPollingRequestCodeSystemCode instead	fe769e161e1d57cb
+enumconst	c:@E@NFCFeliCaPollingRequestCode@PollingRequestCodeCommunicationPerformance	NFCFeliCaPollingRequestCode			ios=13.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use NFCFeliCaPollingRequestCodeCommunicationPerformance instead	24abbac742df32c0
+typedef	c:@T@PollingRequestCode	-			ios=13.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	77e4925c6410ec60
+typedef	c:@T@NFCFeliCaPollingTimeSlot	-			-	-	40c181dd9f534ce9
+enum	c:@E@NFCFeliCaPollingTimeSlot	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	09191d35df6e54c3
+enumconst	c:@E@NFCFeliCaPollingTimeSlot@NFCFeliCaPollingTimeSlotMax1	NFCFeliCaPollingTimeSlot			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	65b4812115737fcf
+enumconst	c:@E@NFCFeliCaPollingTimeSlot@NFCFeliCaPollingTimeSlotMax2	NFCFeliCaPollingTimeSlot			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	75744c8ed8defd8c
+enumconst	c:@E@NFCFeliCaPollingTimeSlot@NFCFeliCaPollingTimeSlotMax4	NFCFeliCaPollingTimeSlot			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bb48d9bea47421b5
+enumconst	c:@E@NFCFeliCaPollingTimeSlot@NFCFeliCaPollingTimeSlotMax8	NFCFeliCaPollingTimeSlot			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4c1f8e750d33d900
+enumconst	c:@E@NFCFeliCaPollingTimeSlot@NFCFeliCaPollingTimeSlotMax16	NFCFeliCaPollingTimeSlot			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c562d97496129d6f
+enumconst	c:@E@NFCFeliCaPollingTimeSlot@PollingTimeSlotMax1	NFCFeliCaPollingTimeSlot			ios=13.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use NFCFeliCaPollingTimeSlotMax1 instead	09eb275fafcac71b
+enumconst	c:@E@NFCFeliCaPollingTimeSlot@PollingTimeSlotMax2	NFCFeliCaPollingTimeSlot			ios=13.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use NFCFeliCaPollingTimeSlotMax2 instead	ad4447e24ccdd1e5
+enumconst	c:@E@NFCFeliCaPollingTimeSlot@PollingTimeSlotMax4	NFCFeliCaPollingTimeSlot			ios=13.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use NFCFeliCaPollingTimeSlotMax4 instead	322c6671009a7279
+enumconst	c:@E@NFCFeliCaPollingTimeSlot@PollingTimeSlotMax8	NFCFeliCaPollingTimeSlot			ios=13.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use NFCFeliCaPollingTimeSlotMax18 instead	17cf9c9e432128da
+enumconst	c:@E@NFCFeliCaPollingTimeSlot@PollingTimeSlotMax16	NFCFeliCaPollingTimeSlot			ios=13.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use NFCFeliCaPollingTimeSlotMax16 instead	63aac25f6fa3c98b
+typedef	c:@T@PollingTimeSlot	-			ios=13.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	97932ae012a532b9
+typedef	c:@T@NFCFeliCaEncryptionId	-			-	-	0b0145b2e2133931
+enum	c:@E@NFCFeliCaEncryptionId	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	06ce84069c61bbb3
+enumconst	c:@E@NFCFeliCaEncryptionId@NFCFeliCaEncryptionIdAES	NFCFeliCaEncryptionId			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c9a76f511b39cf2a
+enumconst	c:@E@NFCFeliCaEncryptionId@NFCFeliCaEncryptionIdAES_DES	NFCFeliCaEncryptionId			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b25a3a5e69295e35
+enumconst	c:@E@NFCFeliCaEncryptionId@EncryptionIdAES	NFCFeliCaEncryptionId			ios=13.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use NFCFeliCaEncryptionIdAES instead	f89383bb57d69821
+enumconst	c:@E@NFCFeliCaEncryptionId@EncryptionIdAES_DES	NFCFeliCaEncryptionId			ios=13.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use NFCFeliCaEncryptionIdAES_DES instead	a65ccf8137daf1f8
+typedef	c:@T@EncryptionId	-			ios=13.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	12fe87d04648bf0c
+protocol	c:objc(pl)NFCFeliCaTag	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3dc8e628bad396ef
+conforms	-	NFCFeliCaTag	NFCTag		-	-	2e4c0a55f995775d
+conforms	-	NFCFeliCaTag	NFCNDEFTag		-	-	4f3e5d1f3c13d745
+property	c:objc(pl)NFCFeliCaTag(py)currentSystemCode	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0645f4312482a7c7
+property	c:objc(pl)NFCFeliCaTag(py)currentIDm	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	25b57a8937577001
+method	c:objc(pl)NFCFeliCaTag(im)pollingWithSystemCode:requestCode:timeSlot:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	90cb1b06372b6e64
+method	c:objc(pl)NFCFeliCaTag(im)requestServiceWithNodeCodeList:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	00a5bc36273a8417
+method	c:objc(pl)NFCFeliCaTag(im)requestResponseWithCompletionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8e8414402e7bd3d0
+method	c:objc(pl)NFCFeliCaTag(im)readWithoutEncryptionWithServiceCodeList:blockList:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	525923c2df1c199b
+method	c:objc(pl)NFCFeliCaTag(im)writeWithoutEncryptionWithServiceCodeList:blockList:blockData:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cd9af39b151e0be0
+method	c:objc(pl)NFCFeliCaTag(im)requestSystemCodeWithCompletionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a28f8c42ebca22f2
+method	c:objc(pl)NFCFeliCaTag(im)requestServiceV2WithNodeCodeList:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	26f69e9f935550d8
+method	c:objc(pl)NFCFeliCaTag(im)requestSpecificationVersionWithCompletionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bf2c7f73da47f051
+method	c:objc(pl)NFCFeliCaTag(im)resetModeWithCompletionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	86e8bde73466b121
+method	c:objc(pl)NFCFeliCaTag(im)sendFeliCaCommandPacket:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	067e938bba92d3ed
+interface	c:objc(cs)NFCISO7816APDU	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	88c536e63b4aedd3
+super	-	NFCISO7816APDU	NSObject		-	-	fd8e7825bcc72584
+conforms	-	NFCISO7816APDU	NSCopying		-	-	748c8166f2b15db5
+property	c:objc(cs)NFCISO7816APDU(py)instructionClass	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1a65b77ea56100be
+property	c:objc(cs)NFCISO7816APDU(py)instructionCode	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6677b078914eb20c
+property	c:objc(cs)NFCISO7816APDU(py)p1Parameter	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1e69ed4619f3d183
+property	c:objc(cs)NFCISO7816APDU(py)p2Parameter	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b6eb530e12a6e511
+property	c:objc(cs)NFCISO7816APDU(py)data	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f48da8393cf863a6
+property	c:objc(cs)NFCISO7816APDU(py)expectedResponseLength	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3c1e85becd16e660
+method	c:objc(cs)NFCISO7816APDU(im)init	-			*unavailable ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	872498a3ae55865a
+method	c:objc(cs)NFCISO7816APDU(im)initWithInstructionClass:instructionCode:p1Parameter:p2Parameter:data:expectedResponseLength:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	662bf948631ab9f7
+method	c:objc(cs)NFCISO7816APDU(im)initWithData:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f1be3d14dfb0c163
+protocol	c:objc(pl)NFCISO7816Tag	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	20eec00e757a685e
+conforms	-	NFCISO7816Tag	NFCTag		-	-	8f33fe753b0e97f9
+conforms	-	NFCISO7816Tag	NFCNDEFTag		-	-	42e945e437d5d4a2
+property	c:objc(pl)NFCISO7816Tag(py)initialSelectedAID	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	660e84f82bf63e3b
+property	c:objc(pl)NFCISO7816Tag(py)identifier	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	96bab0571d24b94f
+property	c:objc(pl)NFCISO7816Tag(py)historicalBytes	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d6abaa66286bf476
+property	c:objc(pl)NFCISO7816Tag(py)applicationData	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	70a92e260c056eaf
+property	c:objc(pl)NFCISO7816Tag(py)proprietaryApplicationDataCoding	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b67012bad25e7059
+method	c:objc(pl)NFCISO7816Tag(im)sendCommandAPDU:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0e9e70714e916af3
+typedef	c:@T@NFCMiFareFamily	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d5173f89a0ea308a
+enum	c:@E@NFCMiFareFamily	-			-	-	57d80d93ffb7191d
+enumconst	c:@E@NFCMiFareFamily@NFCMiFareUnknown	NFCMiFareFamily			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ec870491b1996c14
+enumconst	c:@E@NFCMiFareFamily@NFCMiFareUltralight	NFCMiFareFamily			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2a3fd13a79b6dab4
+enumconst	c:@E@NFCMiFareFamily@NFCMiFarePlus	NFCMiFareFamily			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	70a76b4a8c683a45
+enumconst	c:@E@NFCMiFareFamily@NFCMiFareDESFire	NFCMiFareFamily			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4eff518c22b102bd
+protocol	c:objc(pl)NFCMiFareTag	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d6ce7921c776a395
+conforms	-	NFCMiFareTag	NFCTag		-	-	f9c5617da1e3b514
+conforms	-	NFCMiFareTag	NFCNDEFTag		-	-	dac44f66091b480c
+property	c:objc(pl)NFCMiFareTag(py)mifareFamily	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a321a16e8fc46445
+property	c:objc(pl)NFCMiFareTag(py)identifier	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	da9d0b83ad680c58
+property	c:objc(pl)NFCMiFareTag(py)historicalBytes	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	99c8a67420d8c428
+method	c:objc(pl)NFCMiFareTag(im)sendMiFareCommand:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	85f7878615b93aa2
+method	c:objc(pl)NFCMiFareTag(im)sendMiFareISO7816Command:completionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4e9d016897174772
+typedef	c:@T@NFCTypeNameFormat	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0bd085ad616419e6
+enum	c:@E@NFCTypeNameFormat	-			-	-	f50d1907aaa906a6
+enumconst	c:@E@NFCTypeNameFormat@NFCTypeNameFormatEmpty	NFCTypeNameFormat			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	84f975dad0260b9f
+enumconst	c:@E@NFCTypeNameFormat@NFCTypeNameFormatNFCWellKnown	NFCTypeNameFormat			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2328fae1bff16a82
+enumconst	c:@E@NFCTypeNameFormat@NFCTypeNameFormatMedia	NFCTypeNameFormat			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f5cc910837c15528
+enumconst	c:@E@NFCTypeNameFormat@NFCTypeNameFormatAbsoluteURI	NFCTypeNameFormat			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ed84fb0f493fba7a
+enumconst	c:@E@NFCTypeNameFormat@NFCTypeNameFormatNFCExternal	NFCTypeNameFormat			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a27dd6aeed04dabb
+enumconst	c:@E@NFCTypeNameFormat@NFCTypeNameFormatUnknown	NFCTypeNameFormat			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3bcefbadba8d8228
+enumconst	c:@E@NFCTypeNameFormat@NFCTypeNameFormatUnchanged	NFCTypeNameFormat			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6c2b711c532f28b7
+interface	c:objc(cs)NFCNDEFPayload	-			ios=11.0/-/-/0,ios_app_extension=-/-/-/1,macos=-/-/-/1,macos_app_extension=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1d81a81e98768653
+super	-	NFCNDEFPayload	NSObject		-	-	63002cc4a9bdb98f
+conforms	-	NFCNDEFPayload	NSSecureCoding		-	-	b5c9ca64045b8a21
+property	c:objc(cs)NFCNDEFPayload(py)typeNameFormat	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	072e8cf233ab7089
+property	c:objc(cs)NFCNDEFPayload(py)type	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	18fe2bc6b476d640
+property	c:objc(cs)NFCNDEFPayload(py)identifier	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	04d02ed405d5baf0
+property	c:objc(cs)NFCNDEFPayload(py)payload	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	20f0bc737f018043
+method	c:objc(cs)NFCNDEFPayload(im)init	-			*unavailable ios=11.0/-/-/0,ios_app_extension=-/-/-/1,macos=-/-/-/1,macos_app_extension=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	512ce97f803a10b0
+method	c:objc(cs)NFCNDEFPayload(im)initWithFormat:type:identifier:payload:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1a5e6b09ca9d2715
+method	c:objc(cs)NFCNDEFPayload(im)initWithFormat:type:identifier:payload:chunkSize:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fce4b2619a6dbbe3
+category	c:objc(cy)NFCNDEFPayload@ConvenienceHelpers	-			ios=11.0/-/-/0,ios_app_extension=-/-/-/1,macos=-/-/-/1,macos_app_extension=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use -wellKnownTypeTextPayloadWithString:locale instead	f821559159b17db8
+method	c:objc(cs)NFCNDEFPayload(cm)wellKnownTypeURIPayloadWithString:	ConvenienceHelpers			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c54172f44e07d671
+method	c:objc(cs)NFCNDEFPayload(cm)wellKnownTypeURIPayloadWithURL:	ConvenienceHelpers			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7414e26f431876fa
+method	c:objc(cs)NFCNDEFPayload(cm)wellKnownTypeTextPayloadWithString:locale:	ConvenienceHelpers			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8528fbd56ecbb640
+method	c:objc(cs)NFCNDEFPayload(cm)wellKnowTypeTextPayloadWithString:locale:	ConvenienceHelpers			ios=13.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use -wellKnownTypeTextPayloadWithString:locale instead	0c7f2403f28cba8c
+method	c:objc(cs)NFCNDEFPayload(im)wellKnownTypeURIPayload	ConvenienceHelpers			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	75a375195210e338
+method	c:objc(cs)NFCNDEFPayload(im)wellKnownTypeTextPayloadWithLocale:	ConvenienceHelpers			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f6bcc5bf59db045d
+interface	c:objc(cs)NFCNDEFMessage	-			ios=11.0/-/-/0,ios_app_extension=-/-/-/1,macos=-/-/-/1,macos_app_extension=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d88aef683f816a7e
+super	-	NFCNDEFMessage	NSObject		-	-	973874d72ca20a5a
+conforms	-	NFCNDEFMessage	NSSecureCoding		-	-	c37865fd7ade5845
+property	c:objc(cs)NFCNDEFMessage(py)records	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4718a29f23f8cf39
+property	c:objc(cs)NFCNDEFMessage(py)length	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f21e35d6562d5f68
+method	c:objc(cs)NFCNDEFMessage(im)init	-			*unavailable ios=11.0/-/-/0,ios_app_extension=-/-/-/1,macos=-/-/-/1,macos_app_extension=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a64716bb512eb51f
+method	c:objc(cs)NFCNDEFMessage(im)initWithNDEFRecords:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2e2b245a7d6dc645
+method	c:objc(cs)NFCNDEFMessage(cm)ndefMessageWithData:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8916beec7e664daa
+typedef	c:@T@NFCVASMode	-			-	-	0b3074cd1cf15a75
+enum	c:@E@NFCVASMode	-			ios=13.0/-/-/0	-	e1bfcf724c1c0b39
+enumconst	c:@E@NFCVASMode@NFCVASModeURLOnly	NFCVASMode			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c598268ddaca22fd
+enumconst	c:@E@NFCVASMode@NFCVASModeNormal	NFCVASMode			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d280b08e2ea9140a
+enumconst	c:@E@NFCVASMode@VASModeURLOnly	NFCVASMode			ios=13.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use NFCVASModeURLOnly instead	92d35b6ac38823a2
+enumconst	c:@E@NFCVASMode@VASModeNormal	NFCVASMode			ios=13.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use NFCVASModeNormal instead	5b364e6b7c940bd8
+typedef	c:@T@VASMode	-			ios=13.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9ac2e3d76ed9b92a
+interface	c:objc(cs)NFCVASCommandConfiguration	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d68b033fdd156300
+super	-	NFCVASCommandConfiguration	NSObject		-	-	1cf27a2948b0b643
+conforms	-	NFCVASCommandConfiguration	NSCopying		-	-	8d6429c8c3973fd1
+property	c:objc(cs)NFCVASCommandConfiguration(py)mode	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ce010d7190265aa7
+property	c:objc(cs)NFCVASCommandConfiguration(py)passTypeIdentifier	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	dcbb9a3283373d54
+property	c:objc(cs)NFCVASCommandConfiguration(py)url	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cc38a2bd39242d65
+method	c:objc(cs)NFCVASCommandConfiguration(im)initWithVASMode:passTypeIdentifier:url:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5c1aead660792116
+typedef	c:@T@NFCVASErrorCode	-			-	-	70867213aeb3fab5
+enum	c:@E@NFCVASErrorCode	-			ios=13.0/-/-/0	-	5d7d9961f29f2ef6
+enumconst	c:@E@NFCVASErrorCode@NFCVASErrorCodeSuccess	NFCVASErrorCode			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1b14becc54081a08
+enumconst	c:@E@NFCVASErrorCode@NFCVASErrorCodeDataNotFound	NFCVASErrorCode			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3a492700c934d76a
+enumconst	c:@E@NFCVASErrorCode@NFCVASErrorCodeDataNotActivated	NFCVASErrorCode			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	250e65e3a38a9ed6
+enumconst	c:@E@NFCVASErrorCode@NFCVASErrorCodeWrongParameters	NFCVASErrorCode			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3f3af5ae7e70969a
+enumconst	c:@E@NFCVASErrorCode@NFCVASErrorCodeWrongLCField	NFCVASErrorCode			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f75f9311b61f945e
+enumconst	c:@E@NFCVASErrorCode@NFCVASErrorCodeUserIntervention	NFCVASErrorCode			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	342593a396156860
+enumconst	c:@E@NFCVASErrorCode@NFCVASErrorCodeIncorrectData	NFCVASErrorCode			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9a93204bd031345f
+enumconst	c:@E@NFCVASErrorCode@NFCVASErrorCodeUnsupportedApplicationVersion	NFCVASErrorCode			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	50c0ddfef637f034
+enumconst	c:@E@NFCVASErrorCode@VASErrorCodeSuccess	NFCVASErrorCode			ios=13.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use NFCVASErrorCodeSuccess instead	ce8e20c8caea747e
+enumconst	c:@E@NFCVASErrorCode@VASErrorCodeDataNotFound	NFCVASErrorCode			ios=13.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use NFCVASErrorCodeDataNotFound instead	af4c7b5e9afd6fbf
+enumconst	c:@E@NFCVASErrorCode@VASErrorCodeDataNotActivated	NFCVASErrorCode			ios=13.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use NFCVASErrorCodeDataNotActivated instead	1f7ec60fee0c0e29
+enumconst	c:@E@NFCVASErrorCode@VASErrorCodeWrongParameters	NFCVASErrorCode			ios=13.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use NFCVASErrorCodeWrongParameters instead	eab477590cb4b031
+enumconst	c:@E@NFCVASErrorCode@VASErrorCodeWrongLCField	NFCVASErrorCode			ios=13.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use NFCVASErrorCodeWrongLCField instead	c2e3ef5a19e3042e
+enumconst	c:@E@NFCVASErrorCode@VASErrorCodeUserIntervention	NFCVASErrorCode			ios=13.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use NFCVASErrorCodeUserIntervention instead	f8da77d345808248
+enumconst	c:@E@NFCVASErrorCode@VASErrorCodeIncorrectData	NFCVASErrorCode			ios=13.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use NFCVASErrorCodeIncorrectData instead	836c9246c2e92bd3
+enumconst	c:@E@NFCVASErrorCode@VASErrorCodeUnsupportedApplicationVersion	NFCVASErrorCode			ios=13.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use NFCVASErrorCodeUnsupportedApplicationVersion instead	3b6ca9f487858da0
+typedef	c:@T@VASErrorCode	-			ios=13.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	de5a3d3a6eaadaa2
+interface	c:objc(cs)NFCVASResponse	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	71fa4cd2fbc60ea3
+super	-	NFCVASResponse	NSObject		-	-	19e6f866c912477e
+conforms	-	NFCVASResponse	NSCopying		-	-	415b2e43d6debe7f
+property	c:objc(cs)NFCVASResponse(py)status	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	20f9995fbcfc3dcc
+property	c:objc(cs)NFCVASResponse(py)vasData	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	93c40b00a58becce
+property	c:objc(cs)NFCVASResponse(py)mobileToken	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d0acd652f99d16ee
+protocol	c:objc(pl)NFCVASReaderSessionDelegate	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	20d4cebb0a96c5cf
+conforms	-	NFCVASReaderSessionDelegate	NSObject		-	-	b776d6c120bd3e26
+method	c:objc(pl)NFCVASReaderSessionDelegate(im)readerSessionDidBecomeActive:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fc9f246c445310e3
+method	c:objc(pl)NFCVASReaderSessionDelegate(im)readerSession:didInvalidateWithError:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9d00c32ffd16b7ac
+method	c:objc(pl)NFCVASReaderSessionDelegate(im)readerSession:didReceiveVASResponses:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cf0f78970e7b9ed0
+interface	c:objc(cs)NFCVASReaderSession	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	88302d0e26a56c9d
+super	-	NFCVASReaderSession	NFCReaderSession		-	-	cbe2147b493a4757
+method	c:objc(cs)NFCVASReaderSession(im)init	-			*unavailable ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9e597740725d6c08
+method	c:objc(cs)NFCVASReaderSession(im)initWithVASCommandConfigurations:delegate:queue:	-			ios=13.0/-/-/0,ios_app_extension=-/-/-/1,macos=-/-/-/1,macos_app_extension=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e6f78282e613bba9
+interface	c:objc(cs)NFCPaymentTagReaderSession	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6de491dfbfe3d9a6
+super	-	NFCPaymentTagReaderSession	NFCTagReaderSession		-	-	4d9412019e1427df
+method	c:objc(cs)NFCPaymentTagReaderSession(im)initWithDelegate:queue:	-			ios=26.0/-/-/0,ios_app_extension=-/-/-/1,macos=-/-/-/1,macos_app_extension=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0ed719d0fa5abb51

@@ -1,0 +1,28 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+interface	c:objc(cs)THCredentials	-			ios=15.0/-/-/0	-	3f73b9e4c5d64bfb
+super	-	THCredentials	NSObject		-	-	06224d02846dc77b
+conforms	-	THCredentials	NSSecureCoding		-	-	ffdb5501972c1040
+property	c:objc(cs)THCredentials(py)networkName	-			ios=15.0/-/-/0	-	e7b7ecff0e84dfc5
+property	c:objc(cs)THCredentials(py)extendedPANID	-			ios=15.0/-/-/0	-	3d243c515dc9a78c
+property	c:objc(cs)THCredentials(py)borderAgentID	-			ios=15.0/-/-/0	-	3f9fb235d6966819
+property	c:objc(cs)THCredentials(py)activeOperationalDataSet	-			ios=15.0/-/-/0	-	52c8683d34cad210
+property	c:objc(cs)THCredentials(py)networkKey	-			ios=15.0/-/-/0	-	f5e59a440839e422
+property	c:objc(cs)THCredentials(py)PSKC	-			ios=15.0/-/-/0	-	dccea565d8547a62
+property	c:objc(cs)THCredentials(py)channel	-			ios=15.0/-/-/0	-	1a02ea723e44586d
+property	c:objc(cs)THCredentials(py)panID	-			ios=15.0/-/-/0	-	7137542bdcc126e9
+property	c:objc(cs)THCredentials(py)creationDate	-			ios=15.0/-/-/0	-	2f944d4a4a021c39
+property	c:objc(cs)THCredentials(py)lastModificationDate	-			ios=15.0/-/-/0	-	a736bfe666c622bf
+method	c:objc(cs)THCredentials(im)init	-			*unavailable ios=15.0/-/-/0	-	27185c4780419811
+method	c:objc(cs)THCredentials(cm)new	-			*unavailable ios=15.0/-/-/0	-	c6a47f586d65599d
+interface	c:objc(cs)THClient	-			ios=15.0/-/-/0	-	af0f09d034949880
+super	-	THClient	NSObject		-	-	7f6d9f84f1bde313
+method	c:objc(cs)THClient(im)init	-			ios=15.0/-/-/0	-	27440b420947ff08
+method	c:objc(cs)THClient(im)retrieveAllCredentials:	-			ios=15.0/-/-/0	-	de4990bddb18cdd4
+method	c:objc(cs)THClient(im)retrieveAllActiveCredentials:	-			ios=16.4/-/-/0	-	183802528afce372
+method	c:objc(cs)THClient(im)deleteCredentialsForBorderAgent:completion:	-			ios=15.0/-/-/0	-	16ecb814e9e47d59
+method	c:objc(cs)THClient(im)retrieveCredentialsForBorderAgent:completion:	-			ios=15.0/-/-/0	-	bfcf32fdf45c2c18
+method	c:objc(cs)THClient(im)storeCredentialsForBorderAgent:activeOperationalDataSet:completion:	-			ios=15.0/-/-/0	-	49d9541c14dc3607
+method	c:objc(cs)THClient(im)retrievePreferredCredentials:	-			ios=15.0/-/-/0	-	880a0dfea536a7ba
+method	c:objc(cs)THClient(im)retrieveCredentialsForExtendedPANID:completion:	-			ios=15.0/-/-/0	-	5bd58872abf2af0b
+method	c:objc(cs)THClient(im)checkPreferredNetworkForActiveOperationalDataset:completion:	-			ios=15.5/-/-/0	-	740718b6ded68b8c
+method	c:objc(cs)THClient(im)isPreferredNetworkAvailableWithCompletion:	-			ios=16.4/-/-/0	-	b85136c47dfbf093

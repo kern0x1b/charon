@@ -1,0 +1,39 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+interface	c:objc(cs)CNContactPickerViewController	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	928d47f778f9f9a8
+super	-	CNContactPickerViewController	UIViewController		-	-	a057521a1f83e290
+property	c:objc(cs)CNContactPickerViewController(py)displayedPropertyKeys	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	c141379e2a616a4f
+property	c:objc(cs)CNContactPickerViewController(py)delegate	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	6a3daa2a21b4d97b
+property	c:objc(cs)CNContactPickerViewController(py)predicateForEnablingContact	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	2a928b6d3b95da59
+property	c:objc(cs)CNContactPickerViewController(py)predicateForSelectionOfContact	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	8ad32cc954ac4e5c
+property	c:objc(cs)CNContactPickerViewController(py)predicateForSelectionOfProperty	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	05767b770ccefe44
+protocol	c:objc(pl)CNContactPickerDelegate	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	ed4e675003c77cf4
+conforms	-	CNContactPickerDelegate	NSObject		-	-	d3d2d607fcd6f611
+method	c:objc(pl)CNContactPickerDelegate(im)contactPickerDidCancel:	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	9fdf4c0b0813b9d3
+method	c:objc(pl)CNContactPickerDelegate(im)contactPicker:didSelectContact:	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	5fd2ade7b8526b45
+method	c:objc(pl)CNContactPickerDelegate(im)contactPicker:didSelectContactProperty:	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	b105fe7b6b66ccef
+method	c:objc(pl)CNContactPickerDelegate(im)contactPicker:didSelectContacts:	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	373fef06d15149d0
+method	c:objc(pl)CNContactPickerDelegate(im)contactPicker:didSelectContactProperties:	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	e7655e126ef84e89
+interface	c:objc(cs)CNContactViewController	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	4118bfdd6e249e5c
+super	-	CNContactViewController	UIViewController		-	-	d4bae1265e53f7b5
+method	c:objc(cs)CNContactViewController(cm)descriptorForRequiredKeys	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	1cbe8ffbce2d85c4
+method	c:objc(cs)CNContactViewController(cm)viewControllerForContact:	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	8862b5839ba1c44d
+method	c:objc(cs)CNContactViewController(cm)viewControllerForUnknownContact:	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	50557d3c93ce1e0a
+method	c:objc(cs)CNContactViewController(cm)viewControllerForNewContact:	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	6f7048fa7f85a254
+property	c:objc(cs)CNContactViewController(py)contact	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	9ccc040259469b82
+property	c:objc(cs)CNContactViewController(py)displayedPropertyKeys	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	e7498eec40f596c4
+property	c:objc(cs)CNContactViewController(py)delegate	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	18c4adb7ddffc123
+property	c:objc(cs)CNContactViewController(py)contactStore	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	156007a01dbcbeb8
+property	c:objc(cs)CNContactViewController(py)parentGroup	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	0d0dc364538bf80a
+property	c:objc(cs)CNContactViewController(py)parentContainer	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	d79f93eb752935e6
+property	c:objc(cs)CNContactViewController(py)alternateName	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	ad86a86047f844ef
+property	c:objc(cs)CNContactViewController(py)message	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	7647505bc10da09c
+property	c:objc(cs)CNContactViewController(py)allowsEditing	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	e2d9e0fdbf299048
+property	c:objc(cs)CNContactViewController(py)allowsActions	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	f7608ad36761e8a6
+property	c:objc(cs)CNContactViewController(py)shouldShowLinkedContacts	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	5d7091ba19699541
+method	c:objc(cs)CNContactViewController(im)highlightPropertyWithKey:identifier:	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	76fd501e4b9ba8a2
+protocol	c:objc(pl)CNContactViewControllerDelegate	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	799dab71c0361b70
+conforms	-	CNContactViewControllerDelegate	NSObject		-	-	060ab8321cedb85c
+method	c:objc(pl)CNContactViewControllerDelegate(im)contactViewController:shouldPerformDefaultActionForContactProperty:	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	2ae5d6287637a590
+method	c:objc(pl)CNContactViewControllerDelegate(im)contactViewController:didCompleteWithContact:	-			ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	03bef611208eed87
+category	c:objc(cy)UIApplicationShortcutIcon@ContactsUI	-			ios=9.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1	-	ea8cc636febc2c67
+method	c:objc(cs)UIApplicationShortcutIcon(cm)iconWithContact:	ContactsUI			ios=9.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1	-	aa2f8961e286cf50

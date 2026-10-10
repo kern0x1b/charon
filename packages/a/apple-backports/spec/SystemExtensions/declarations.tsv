@@ -1,0 +1,73 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+var	c:@OSSystemExtensionErrorDomain	-			ios=18.4/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1ea07f915a06b7da
+var	c:@OSBundleUsageDescriptionKey	-			ios=18.4/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	451943cc2e7cdc88
+var	c:@NSSystemExtensionUsageDescriptionKey	-			ios=18.4/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3cfc4fd8bf235058
+var	c:@OSRelatedKernelExtensionKey	-			ios=-/-/-/1,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	17e295cd66ba11df
+typedef	c:SystemExtensions.h@T@OSSystemExtensionErrorCode	-			-	-	b91797e73277743d
+enum	c:@E@OSSystemExtensionErrorCode	-			ios=18.4/-/-/0	-	4f75cd48115250ca
+enumconst	c:@E@OSSystemExtensionErrorCode@OSSystemExtensionErrorUnknown	OSSystemExtensionErrorCode			ios=18.4/-/-/0	-	92aa24c7cc134fb3
+enumconst	c:@E@OSSystemExtensionErrorCode@OSSystemExtensionErrorMissingEntitlement	OSSystemExtensionErrorCode			ios=18.4/-/-/0	-	0a7b8e6781059a6a
+enumconst	c:@E@OSSystemExtensionErrorCode@OSSystemExtensionErrorUnsupportedParentBundleLocation	OSSystemExtensionErrorCode			ios=18.4/-/-/0	-	cd5b2715d9835baa
+enumconst	c:@E@OSSystemExtensionErrorCode@OSSystemExtensionErrorExtensionNotFound	OSSystemExtensionErrorCode			ios=18.4/-/-/0	-	84c69a59054c80fc
+enumconst	c:@E@OSSystemExtensionErrorCode@OSSystemExtensionErrorExtensionMissingIdentifier	OSSystemExtensionErrorCode			ios=18.4/-/-/0	-	f60cb8efa71e356d
+enumconst	c:@E@OSSystemExtensionErrorCode@OSSystemExtensionErrorDuplicateExtensionIdentifer	OSSystemExtensionErrorCode			ios=18.4/-/-/0	-	ca33b14e3c59f880
+enumconst	c:@E@OSSystemExtensionErrorCode@OSSystemExtensionErrorUnknownExtensionCategory	OSSystemExtensionErrorCode			ios=18.4/-/-/0	-	3a42f614b4e69eaa
+enumconst	c:@E@OSSystemExtensionErrorCode@OSSystemExtensionErrorCodeSignatureInvalid	OSSystemExtensionErrorCode			ios=18.4/-/-/0	-	620249cbcd8da7db
+enumconst	c:@E@OSSystemExtensionErrorCode@OSSystemExtensionErrorValidationFailed	OSSystemExtensionErrorCode			ios=18.4/-/-/0	-	a1ac97c6285e389d
+enumconst	c:@E@OSSystemExtensionErrorCode@OSSystemExtensionErrorForbiddenBySystemPolicy	OSSystemExtensionErrorCode			ios=18.4/-/-/0	-	17edbbd937de5110
+enumconst	c:@E@OSSystemExtensionErrorCode@OSSystemExtensionErrorRequestCanceled	OSSystemExtensionErrorCode			ios=18.4/-/-/0	-	efb373f218133690
+enumconst	c:@E@OSSystemExtensionErrorCode@OSSystemExtensionErrorRequestSuperseded	OSSystemExtensionErrorCode			ios=18.4/-/-/0	-	7534187e9138dd92
+enumconst	c:@E@OSSystemExtensionErrorCode@OSSystemExtensionErrorAuthorizationRequired	OSSystemExtensionErrorCode			ios=18.4/-/-/0	-	ff71e8b6472a8a8c
+typedef	c:SystemExtensions.h@T@OSSystemExtensionReplacementAction	-			-	-	39db26cce7c574d5
+enum	c:@E@OSSystemExtensionReplacementAction	-			ios=-/-/-/1	-	25e9950a4c713ae0
+enumconst	c:@E@OSSystemExtensionReplacementAction@OSSystemExtensionReplacementActionCancel	OSSystemExtensionReplacementAction			ios=-/-/-/1	-	1d8e95e906588274
+enumconst	c:@E@OSSystemExtensionReplacementAction@OSSystemExtensionReplacementActionReplace	OSSystemExtensionReplacementAction			ios=-/-/-/1	-	63161cc08b9f22f6
+typedef	c:SystemExtensions.h@T@OSSystemExtensionRequestResult	-			-	-	28fe153c8781dc42
+enum	c:@E@OSSystemExtensionRequestResult	-			ios=-/-/-/1	-	94588ed56ff343ec
+enumconst	c:@E@OSSystemExtensionRequestResult@OSSystemExtensionRequestCompleted	OSSystemExtensionRequestResult			ios=-/-/-/1	-	3c239b3d63b26800
+enumconst	c:@E@OSSystemExtensionRequestResult@OSSystemExtensionRequestWillCompleteAfterReboot	OSSystemExtensionRequestResult			ios=-/-/-/1	-	ca9a3528b0068e1a
+interface	c:objc(cs)OSSystemExtensionRequest	-			ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a570a8798548695e
+super	-	OSSystemExtensionRequest	NSObject		-	-	62e616844e39f09d
+method	c:objc(cs)OSSystemExtensionRequest(cm)activationRequestForExtension:queue:	-			ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ff0321a6e5c93a4c
+method	c:objc(cs)OSSystemExtensionRequest(cm)deactivationRequestForExtension:queue:	-			ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e16c4e145fcb8f22
+method	c:objc(cs)OSSystemExtensionRequest(cm)propertiesRequestForExtension:queue:	-			ios=-/-/-/1,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	72588bee96c4354b
+property	c:objc(cs)OSSystemExtensionRequest(py)delegate	-			ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	33964a2cf8cabcf0
+property	c:objc(cs)OSSystemExtensionRequest(py)identifier	-			ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8f14a12758ca2bf5
+interface	c:objc(cs)OSSystemExtensionProperties	-			ios=18.4/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e836b530af3f30a3
+super	-	OSSystemExtensionProperties	NSObject		-	-	a2548e23fa569c07
+property	c:objc(cs)OSSystemExtensionProperties(py)URL	-			ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cef103e8ec67e084
+property	c:objc(cs)OSSystemExtensionProperties(py)bundleIdentifier	-			ios=18.4/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5d4181d3910c2d93
+property	c:objc(cs)OSSystemExtensionProperties(py)bundleVersion	-			ios=18.4/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	10b32988d2664edd
+property	c:objc(cs)OSSystemExtensionProperties(py)bundleShortVersion	-			ios=18.4/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5fb9572c58584a9f
+property	c:objc(cs)OSSystemExtensionProperties(py)isEnabled	-			ios=18.4/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d5a066f9dcf37c0e
+property	c:objc(cs)OSSystemExtensionProperties(py)isAwaitingUserApproval	-			ios=-/-/-/1,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	85c9796743b9634d
+property	c:objc(cs)OSSystemExtensionProperties(py)isUninstalling	-			ios=-/-/-/1,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f81700a9c9b5264a
+protocol	c:objc(pl)OSSystemExtensionRequestDelegate	-			ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	28950cbec81f3dbb
+conforms	-	OSSystemExtensionRequestDelegate	NSObject		-	-	93d53268c286ef38
+method	c:objc(pl)OSSystemExtensionRequestDelegate(im)request:actionForReplacingExtension:withExtension:	-			ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	567218ebf6fc09cb
+method	c:objc(pl)OSSystemExtensionRequestDelegate(im)requestNeedsUserApproval:	-			ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b8ce342c6ad0133c
+method	c:objc(pl)OSSystemExtensionRequestDelegate(im)request:didFinishWithResult:	-			ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8e694f9a79257a7a
+method	c:objc(pl)OSSystemExtensionRequestDelegate(im)request:didFailWithError:	-			ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	438ca7a2662cea74
+method	c:objc(pl)OSSystemExtensionRequestDelegate(im)request:foundProperties:	-			ios=-/-/-/1,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9a31c61c18605907
+interface	c:objc(cs)OSSystemExtensionManager	-			ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fd80c2e0f43318ae
+super	-	OSSystemExtensionManager	NSObject		-	-	8d63a19ae284c7f4
+method	c:objc(cs)OSSystemExtensionManager(im)init	-			*unavailable ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	90fab4fab4826f48
+method	c:objc(cs)OSSystemExtensionManager(im)new	-			*unavailable ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	79510d7db0776c5f
+property	c:objc(cs)OSSystemExtensionManager(cpy)sharedManager	-			ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	247b6ac72ce60443
+method	c:objc(cs)OSSystemExtensionManager(im)submitRequest:	-			ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e1a9ce1465c644dd
+interface	c:objc(cs)OSSystemExtensionInfo	-			ios=-/-/-/1,macos=15.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2c470324da55c80e
+super	-	OSSystemExtensionInfo	NSObject		-	-	33bc26bbaf8be304
+property	c:objc(cs)OSSystemExtensionInfo(py)bundleIdentifier	-			ios=-/-/-/1,macos=15.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	834faaaacbc0ce05
+property	c:objc(cs)OSSystemExtensionInfo(py)bundleVersion	-			ios=-/-/-/1,macos=15.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	472d747cb46bce37
+property	c:objc(cs)OSSystemExtensionInfo(py)bundleShortVersion	-			ios=-/-/-/1,macos=15.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	54c67f8d35ebcc3c
+protocol	c:objc(pl)OSSystemExtensionsWorkspaceObserver	-			ios=-/-/-/1,macos=15.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b2406ed88fb95925
+conforms	-	OSSystemExtensionsWorkspaceObserver	NSObject		-	-	22087f6572ba20f4
+method	c:objc(pl)OSSystemExtensionsWorkspaceObserver(im)systemExtensionWillBecomeEnabled:	-			ios=-/-/-/1,macos=15.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c961ec2d0b3c72f2
+method	c:objc(pl)OSSystemExtensionsWorkspaceObserver(im)systemExtensionWillBecomeDisabled:	-			ios=-/-/-/1,macos=15.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9b545e65b8f7f4a6
+method	c:objc(pl)OSSystemExtensionsWorkspaceObserver(im)systemExtensionWillBecomeInactive:	-			ios=-/-/-/1,macos=15.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1323708d5a7aa4b9
+interface	c:objc(cs)OSSystemExtensionsWorkspace	-			ios=18.4/-/-/0,macos=15.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	aefc2b5c353898d0
+super	-	OSSystemExtensionsWorkspace	NSObject		-	-	eeb40f4e64124e33
+property	c:objc(cs)OSSystemExtensionsWorkspace(cpy)sharedWorkspace	-			ios=18.4/-/-/0,macos=15.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c527852f0dac016e
+method	c:objc(cs)OSSystemExtensionsWorkspace(im)addObserver:error:	-			ios=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	21d4aa02cb78af41
+method	c:objc(cs)OSSystemExtensionsWorkspace(im)removeObserver:	-			ios=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	49be4a1498358790
+method	c:objc(cs)OSSystemExtensionsWorkspace(im)systemExtensionsForApplicationWithBundleID:error:	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	60b2f72fadfd9554

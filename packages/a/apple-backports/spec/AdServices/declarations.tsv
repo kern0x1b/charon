@@ -1,0 +1,10 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+var	c:@AAAttributionErrorDomain	-			ios=14.3/-/-/0,macos=11.1/-/-/0,tvos=14.3/-/-/0	-	2476aa2d752f6031
+typedef	c:@T@AAAttributionErrorCode	-			-	-	ed4cf2bcf603d234
+enum	c:@E@AAAttributionErrorCode	-			ios=14.3/-/-/0,macos=11.1/-/-/0,tvos=14.3/-/-/0	-	1ab2e06ea19e7011
+enumconst	c:@E@AAAttributionErrorCode@AAAttributionErrorCodeNetworkError	AAAttributionErrorCode			ios=14.3/-/-/0,macos=11.1/-/-/0,tvos=14.3/-/-/0	-	3a703c150f87ea9d
+enumconst	c:@E@AAAttributionErrorCode@AAAttributionErrorCodeInternalError	AAAttributionErrorCode			ios=14.3/-/-/0,macos=11.1/-/-/0,tvos=14.3/-/-/0	-	37d3300ec7a8a343
+enumconst	c:@E@AAAttributionErrorCode@AAAttributionErrorCodePlatformNotSupported	AAAttributionErrorCode			ios=14.3/-/-/0,macos=11.1/-/-/0,tvos=14.3/-/-/0	-	417e3b499e5ed937
+interface	c:objc(cs)AAAttribution	-			ios=14.3/-/-/0,macos=11.1/-/-/0,tvos=14.3/-/-/0	-	45c4c5b4215fcf0c
+super	-	AAAttribution	NSObject		-	-	70009c59966aa01a
+method	c:objc(cs)AAAttribution(cm)attributionTokenWithError:	-			ios=14.3/-/-/0,macos=11.1/-/-/0,tvos=14.3/-/-/0	-	9bbfb712b9634f55

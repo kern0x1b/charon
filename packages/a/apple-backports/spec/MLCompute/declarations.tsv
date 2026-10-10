@@ -1,0 +1,841 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+typedef	c:@T@MLCGraphCompletionHandler	-			-	-	3d918b4f43a85936
+typedef	c:@T@MLCDataType	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a1fa2f0d74b6b0bb
+enum	c:@E@MLCDataType	-			-	-	0e16969d53c4c336
+enumconst	c:@E@MLCDataType@MLCDataTypeInvalid	MLCDataType			swift=-/-/-/1	-	9bb1846377f0a9fa
+enumconst	c:@E@MLCDataType@MLCDataTypeFloat32	MLCDataType			-	-	e5b6515c52e14141
+enumconst	c:@E@MLCDataType@MLCDataTypeFloat16	MLCDataType			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	93d9b01407919b1f
+enumconst	c:@E@MLCDataType@MLCDataTypeBoolean	MLCDataType			-	-	b949563412746c94
+enumconst	c:@E@MLCDataType@MLCDataTypeInt64	MLCDataType			-	-	ebeca742346b33f8
+enumconst	c:@E@MLCDataType@MLCDataTypeInt32	MLCDataType			-	-	b5f2911bbf27555c
+enumconst	c:@E@MLCDataType@MLCDataTypeInt8	MLCDataType			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	f0abc4fe9cbebbee
+enumconst	c:@E@MLCDataType@MLCDataTypeUInt8	MLCDataType			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	99621cbe71de0671
+enumconst	c:@E@MLCDataType@MLCDataTypeCount	MLCDataType			swift=-/-/-/1	-	8b7c51163a4f9fbc
+typedef	c:@T@MLCRandomInitializerType	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	39e37b1e55039f0a
+enum	c:@E@MLCRandomInitializerType	-			-	-	ab0a5cc9a29e19bd
+enumconst	c:@E@MLCRandomInitializerType@MLCRandomInitializerTypeInvalid	MLCRandomInitializerType			swift=-/-/-/1	-	65efda3f31d54b6b
+enumconst	c:@E@MLCRandomInitializerType@MLCRandomInitializerTypeUniform	MLCRandomInitializerType			-	-	31c3031aae44bd2f
+enumconst	c:@E@MLCRandomInitializerType@MLCRandomInitializerTypeGlorotUniform	MLCRandomInitializerType			-	-	2c7787cb3d2af9e1
+enumconst	c:@E@MLCRandomInitializerType@MLCRandomInitializerTypeXavier	MLCRandomInitializerType			-	-	7961207593cfb4c5
+enumconst	c:@E@MLCRandomInitializerType@MLCRandomInitializerTypeCount	MLCRandomInitializerType			swift=-/-/-/1	-	391948ffa4241183
+typedef	c:@T@MLCDeviceType	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	9d4886a54eae0fa9
+enum	c:@E@MLCDeviceType	-			-	-	a8029c7b5c99b425
+enumconst	c:@E@MLCDeviceType@MLCDeviceTypeCPU	MLCDeviceType			-	-	5a1ee548542521c8
+enumconst	c:@E@MLCDeviceType@MLCDeviceTypeGPU	MLCDeviceType			-	-	97cb325e40a93c15
+enumconst	c:@E@MLCDeviceType@MLCDeviceTypeAny	MLCDeviceType			-	-	38c5938eec14ab67
+enumconst	c:@E@MLCDeviceType@MLCDeviceTypeANE	MLCDeviceType			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	9f5f574712820b3e
+enumconst	c:@E@MLCDeviceType@MLCDeviceTypeCount	MLCDeviceType			swift=-/-/-/1	-	44c2e8cea55e8f64
+typedef	c:@T@MLCGraphCompilationOptions	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	116c6e599e8dd057
+enum	c:@E@MLCGraphCompilationOptions	-			-	-	265126d33878e24f
+enumconst	c:@E@MLCGraphCompilationOptions@MLCGraphCompilationOptionsNone	MLCGraphCompilationOptions			-	-	57b25e481a546e3d
+enumconst	c:@E@MLCGraphCompilationOptions@MLCGraphCompilationOptionsDebugLayers	MLCGraphCompilationOptions			-	-	cd8bf389c7a485b7
+enumconst	c:@E@MLCGraphCompilationOptions@MLCGraphCompilationOptionsDisableLayerFusion	MLCGraphCompilationOptions			-	-	8cd26a70243c4e6c
+enumconst	c:@E@MLCGraphCompilationOptions@MLCGraphCompilationOptionsLinkGraphs	MLCGraphCompilationOptions			-	-	6caf8e6d805b5738
+enumconst	c:@E@MLCGraphCompilationOptions@MLCGraphCompilationOptionsComputeAllGradients	MLCGraphCompilationOptions			-	-	a6c33a484ff6d014
+typedef	c:@T@MLCExecutionOptions	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	9158e4fbd3d685cd
+enum	c:@E@MLCExecutionOptions	-			-	-	bb1b29bca0300029
+enumconst	c:@E@MLCExecutionOptions@MLCExecutionOptionsNone	MLCExecutionOptions			-	-	2c80cf732e41189c
+enumconst	c:@E@MLCExecutionOptions@MLCExecutionOptionsSkipWritingInputDataToDevice	MLCExecutionOptions			-	-	c33e483138875b40
+enumconst	c:@E@MLCExecutionOptions@MLCExecutionOptionsSynchronous	MLCExecutionOptions			-	-	570de9a076478453
+enumconst	c:@E@MLCExecutionOptions@MLCExecutionOptionsProfiling	MLCExecutionOptions			-	-	2952d675c05a2c28
+enumconst	c:@E@MLCExecutionOptions@MLCExecutionOptionsForwardForInference	MLCExecutionOptions			-	-	0cb60a00815c223d
+enumconst	c:@E@MLCExecutionOptions@MLCExecutionOptionsPerLayerProfiling	MLCExecutionOptions			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	4a142cfa8e33d127
+typedef	c:@T@MLCArithmeticOperation	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	476ed391a7b45920
+enum	c:@E@MLCArithmeticOperation	-			-	-	1e8325b013a5cc9a
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationAdd	MLCArithmeticOperation			-	-	474d92d0ec676a3d
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationSubtract	MLCArithmeticOperation			-	-	a21b84c8f88520d3
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationMultiply	MLCArithmeticOperation			-	-	257a5107073a58c9
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationDivide	MLCArithmeticOperation			-	-	7dfcd58250c37f0e
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationFloor	MLCArithmeticOperation			-	-	365a019625300e64
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationRound	MLCArithmeticOperation			-	-	3ab46e60a7175cd4
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationCeil	MLCArithmeticOperation			-	-	b76bf188bf45370e
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationSqrt	MLCArithmeticOperation			-	-	8b69671b528e1c63
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationRsqrt	MLCArithmeticOperation			-	-	74379a49464ca967
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationSin	MLCArithmeticOperation			-	-	056bd28cc66be97c
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationCos	MLCArithmeticOperation			-	-	50f7fe26055c7016
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationTan	MLCArithmeticOperation			-	-	c1ff4990400600a1
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationAsin	MLCArithmeticOperation			-	-	46c8b09e802a46c3
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationAcos	MLCArithmeticOperation			-	-	f207e236315b86d8
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationAtan	MLCArithmeticOperation			-	-	5848f1375d029b16
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationSinh	MLCArithmeticOperation			-	-	5322c1808a5ead08
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationCosh	MLCArithmeticOperation			-	-	5dd3651382f64e2d
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationTanh	MLCArithmeticOperation			-	-	7d193d63d0bc6170
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationAsinh	MLCArithmeticOperation			-	-	89620ace743f1b5d
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationAcosh	MLCArithmeticOperation			-	-	1544adc37dbec63a
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationAtanh	MLCArithmeticOperation			-	-	5f36c9e86dbf43c3
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationPow	MLCArithmeticOperation			-	-	6174f7db07d171ef
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationExp	MLCArithmeticOperation			-	-	bcd1e6be48f18186
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationExp2	MLCArithmeticOperation			-	-	186780bf9943ab2e
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationLog	MLCArithmeticOperation			-	-	5a10ea21eab191fe
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationLog2	MLCArithmeticOperation			-	-	c27194a2160ad2e8
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationMultiplyNoNaN	MLCArithmeticOperation			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	8903cc1b742acc71
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationDivideNoNaN	MLCArithmeticOperation			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	65ffc8f39e1d4938
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationMin	MLCArithmeticOperation			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	1e3f7b06ec9789cc
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationMax	MLCArithmeticOperation			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	24d18f6941431350
+enumconst	c:@E@MLCArithmeticOperation@MLCArithmeticOperationCount	MLCArithmeticOperation			swift=-/-/-/1	-	7df999726dbc6b8a
+typedef	c:@T@MLCLossType	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	5f83d357ce749112
+enum	c:@E@MLCLossType	-			-	-	a9fe290bb694cea7
+enumconst	c:@E@MLCLossType@MLCLossTypeMeanAbsoluteError	MLCLossType			-	-	48d86fdb946c2f09
+enumconst	c:@E@MLCLossType@MLCLossTypeMeanSquaredError	MLCLossType			-	-	d56b221c86ad3b4c
+enumconst	c:@E@MLCLossType@MLCLossTypeSoftmaxCrossEntropy	MLCLossType			-	-	84cfaf250006cc4f
+enumconst	c:@E@MLCLossType@MLCLossTypeSigmoidCrossEntropy	MLCLossType			-	-	f5fd9127bef06a3b
+enumconst	c:@E@MLCLossType@MLCLossTypeCategoricalCrossEntropy	MLCLossType			-	-	d8be387ceb9d77db
+enumconst	c:@E@MLCLossType@MLCLossTypeHinge	MLCLossType			-	-	59c186575154d18b
+enumconst	c:@E@MLCLossType@MLCLossTypeHuber	MLCLossType			-	-	9f069e63af4f65b2
+enumconst	c:@E@MLCLossType@MLCLossTypeCosineDistance	MLCLossType			-	-	36fa0b4d39a409e5
+enumconst	c:@E@MLCLossType@MLCLossTypeLog	MLCLossType			-	-	e07b26eacb5d4187
+enumconst	c:@E@MLCLossType@MLCLossTypeCount	MLCLossType			swift=-/-/-/1	-	e55a7f3ca9dcf6cd
+typedef	c:@T@MLCActivationType	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	92fb4661f1ff1e6c
+enum	c:@E@MLCActivationType	-			-	-	512af10f500cff84
+enumconst	c:@E@MLCActivationType@MLCActivationTypeNone	MLCActivationType			-	-	ec17ff0ab130b228
+enumconst	c:@E@MLCActivationType@MLCActivationTypeReLU	MLCActivationType			-	-	4f351a276a9044d1
+enumconst	c:@E@MLCActivationType@MLCActivationTypeLinear	MLCActivationType			-	-	447d657c85e141fa
+enumconst	c:@E@MLCActivationType@MLCActivationTypeSigmoid	MLCActivationType			-	-	34a247bd84853372
+enumconst	c:@E@MLCActivationType@MLCActivationTypeHardSigmoid	MLCActivationType			-	-	2e64a2d72027d67f
+enumconst	c:@E@MLCActivationType@MLCActivationTypeTanh	MLCActivationType			-	-	71f4bde996fd103d
+enumconst	c:@E@MLCActivationType@MLCActivationTypeAbsolute	MLCActivationType			-	-	722ecc0a6b5de80b
+enumconst	c:@E@MLCActivationType@MLCActivationTypeSoftPlus	MLCActivationType			-	-	92f0cf48d228f9e4
+enumconst	c:@E@MLCActivationType@MLCActivationTypeSoftSign	MLCActivationType			-	-	9c448fdf6505b8ce
+enumconst	c:@E@MLCActivationType@MLCActivationTypeELU	MLCActivationType			-	-	3ca8159b59363827
+enumconst	c:@E@MLCActivationType@MLCActivationTypeReLUN	MLCActivationType			-	-	199a5a55f2dad5cf
+enumconst	c:@E@MLCActivationType@MLCActivationTypeLogSigmoid	MLCActivationType			-	-	c6cc77d83003257e
+enumconst	c:@E@MLCActivationType@MLCActivationTypeSELU	MLCActivationType			-	-	590d132dddb112d8
+enumconst	c:@E@MLCActivationType@MLCActivationTypeCELU	MLCActivationType			-	-	bb66d0a4e13b178e
+enumconst	c:@E@MLCActivationType@MLCActivationTypeHardShrink	MLCActivationType			-	-	eb82472e42cd3be2
+enumconst	c:@E@MLCActivationType@MLCActivationTypeSoftShrink	MLCActivationType			-	-	1c0e4ee0b50a1208
+enumconst	c:@E@MLCActivationType@MLCActivationTypeTanhShrink	MLCActivationType			-	-	2d56ee67baf391b8
+enumconst	c:@E@MLCActivationType@MLCActivationTypeThreshold	MLCActivationType			-	-	e19c9b002b834070
+enumconst	c:@E@MLCActivationType@MLCActivationTypeGELU	MLCActivationType			-	-	688a618950066a08
+enumconst	c:@E@MLCActivationType@MLCActivationTypeHardSwish	MLCActivationType			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	5b84faf37df25765
+enumconst	c:@E@MLCActivationType@MLCActivationTypeClamp	MLCActivationType			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	2d4969bd7b5a8cdd
+enumconst	c:@E@MLCActivationType@MLCActivationTypeCount	MLCActivationType			swift=-/-/-/1	-	59a37953a3d6b319
+typedef	c:@T@MLCConvolutionType	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	72f20cd5b43c860c
+enum	c:@E@MLCConvolutionType	-			-	-	725aa54421cdac82
+enumconst	c:@E@MLCConvolutionType@MLCConvolutionTypeStandard	MLCConvolutionType			-	-	5c07a2f1d4526bbb
+enumconst	c:@E@MLCConvolutionType@MLCConvolutionTypeTransposed	MLCConvolutionType			-	-	46bed28b3b658a6a
+enumconst	c:@E@MLCConvolutionType@MLCConvolutionTypeDepthwise	MLCConvolutionType			-	-	2662af876b164e9a
+typedef	c:@T@MLCPaddingPolicy	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	0d1a975fdec7014a
+enum	c:@E@MLCPaddingPolicy	-			-	-	c29c03a990b657ac
+enumconst	c:@E@MLCPaddingPolicy@MLCPaddingPolicySame	MLCPaddingPolicy			-	-	5c4a3c578273aff2
+enumconst	c:@E@MLCPaddingPolicy@MLCPaddingPolicyValid	MLCPaddingPolicy			-	-	75dba3170dfae19b
+enumconst	c:@E@MLCPaddingPolicy@MLCPaddingPolicyUsePaddingSize	MLCPaddingPolicy			-	-	7a9911acdb6ffb51
+typedef	c:@T@MLCPaddingType	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	c5e2340828c6d961
+enum	c:@E@MLCPaddingType	-			-	-	30762159bb27bdfa
+enumconst	c:@E@MLCPaddingType@MLCPaddingTypeZero	MLCPaddingType			-	-	3d4744eaa19f3b45
+enumconst	c:@E@MLCPaddingType@MLCPaddingTypeReflect	MLCPaddingType			-	-	bf7e53ec46d58988
+enumconst	c:@E@MLCPaddingType@MLCPaddingTypeSymmetric	MLCPaddingType			-	-	e562b7bfe43adfa4
+enumconst	c:@E@MLCPaddingType@MLCPaddingTypeConstant	MLCPaddingType			-	-	0f279b694db46612
+typedef	c:@T@MLCPoolingType	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	0da3f6928803e3ed
+enum	c:@E@MLCPoolingType	-			-	-	80508a6c175d216c
+enumconst	c:@E@MLCPoolingType@MLCPoolingTypeMax	MLCPoolingType			-	-	e7f44c129e92551d
+enumconst	c:@E@MLCPoolingType@MLCPoolingTypeAverage	MLCPoolingType			-	-	135919e6b263cfcf
+enumconst	c:@E@MLCPoolingType@MLCPoolingTypeL2Norm	MLCPoolingType			-	-	f25c384686172d43
+enumconst	c:@E@MLCPoolingType@MLCPoolingTypeCount	MLCPoolingType			swift=-/-/-/1	-	3f0606cf8596340d
+typedef	c:@T@MLCReductionType	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7aaf6a4b6c84c6f0
+enum	c:@E@MLCReductionType	-			-	-	3cfa861dfd992abd
+enumconst	c:@E@MLCReductionType@MLCReductionTypeNone	MLCReductionType			-	-	5b23b5b9ffc21737
+enumconst	c:@E@MLCReductionType@MLCReductionTypeSum	MLCReductionType			-	-	d0ff17b483d080c7
+enumconst	c:@E@MLCReductionType@MLCReductionTypeMean	MLCReductionType			-	-	f26860be8b3ec47f
+enumconst	c:@E@MLCReductionType@MLCReductionTypeMax	MLCReductionType			-	-	a39b90bb4b3194c7
+enumconst	c:@E@MLCReductionType@MLCReductionTypeMin	MLCReductionType			-	-	d103d142d87d0525
+enumconst	c:@E@MLCReductionType@MLCReductionTypeArgMax	MLCReductionType			-	-	5461aaf571052806
+enumconst	c:@E@MLCReductionType@MLCReductionTypeArgMin	MLCReductionType			-	-	4278aedca7be0e3c
+enumconst	c:@E@MLCReductionType@MLCReductionTypeL1Norm	MLCReductionType			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	b144d7d1330859d5
+enumconst	c:@E@MLCReductionType@MLCReductionTypeAny	MLCReductionType			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	5ac727c207f33612
+enumconst	c:@E@MLCReductionType@MLCReductionTypeAll	MLCReductionType			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	c45b5d0a0fc785b8
+enumconst	c:@E@MLCReductionType@MLCReductionTypeCount	MLCReductionType			swift=-/-/-/1	-	6c7416dde6bb5674
+typedef	c:@T@MLCRegularizationType	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	ee637af6cbaaf675
+enum	c:@E@MLCRegularizationType	-			-	-	ddb188dcdf4384d1
+enumconst	c:@E@MLCRegularizationType@MLCRegularizationTypeNone	MLCRegularizationType			-	-	68cf9d76c8e36a1e
+enumconst	c:@E@MLCRegularizationType@MLCRegularizationTypeL1	MLCRegularizationType			-	-	56a0e369b4f87145
+enumconst	c:@E@MLCRegularizationType@MLCRegularizationTypeL2	MLCRegularizationType			-	-	041ade88782412c4
+typedef	c:@T@MLCSampleMode	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	c18ccdc3631224c6
+enum	c:@E@MLCSampleMode	-			-	-	80d19e49c80bd213
+enumconst	c:@E@MLCSampleMode@MLCSampleModeNearest	MLCSampleMode			-	-	3ce182eef66dd145
+enumconst	c:@E@MLCSampleMode@MLCSampleModeLinear	MLCSampleMode			-	-	a1b08a1fd6b8b253
+typedef	c:@T@MLCSoftmaxOperation	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e7984bd0f54332fa
+enum	c:@E@MLCSoftmaxOperation	-			-	-	2fdf34ad7d688a9b
+enumconst	c:@E@MLCSoftmaxOperation@MLCSoftmaxOperationSoftmax	MLCSoftmaxOperation			-	-	7fd169b1a616d928
+enumconst	c:@E@MLCSoftmaxOperation@MLCSoftmaxOperationLogSoftmax	MLCSoftmaxOperation			-	-	9d57495b690e2140
+typedef	c:@T@MLCLSTMResultMode	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	2a6d4faee2f3ab4f
+enum	c:@E@MLCLSTMResultMode	-			-	-	35780852ca7759a7
+enumconst	c:@E@MLCLSTMResultMode@MLCLSTMResultModeOutput	MLCLSTMResultMode			-	-	bd1db66762cbcb5c
+enumconst	c:@E@MLCLSTMResultMode@MLCLSTMResultModeOutputAndStates	MLCLSTMResultMode			-	-	f038c526c83b0418
+typedef	c:@T@MLCComparisonOperation	-			ios=14.5/17.4/-/0,macos=11.3/14.3/-/0,tvos=14.5/17.4/-/0	-	8f271057674c3394
+enum	c:@E@MLCComparisonOperation	-			-	-	fc5f30e432351aba
+enumconst	c:@E@MLCComparisonOperation@MLCComparisonOperationEqual	MLCComparisonOperation			-	-	0dd510d281c69822
+enumconst	c:@E@MLCComparisonOperation@MLCComparisonOperationNotEqual	MLCComparisonOperation			-	-	0e5fbe55592295d7
+enumconst	c:@E@MLCComparisonOperation@MLCComparisonOperationLess	MLCComparisonOperation			-	-	a039295a3737715a
+enumconst	c:@E@MLCComparisonOperation@MLCComparisonOperationGreater	MLCComparisonOperation			-	-	c71626fb5bd4f80e
+enumconst	c:@E@MLCComparisonOperation@MLCComparisonOperationLessOrEqual	MLCComparisonOperation			-	-	86c8efd240e7b4b3
+enumconst	c:@E@MLCComparisonOperation@MLCComparisonOperationGreaterOrEqual	MLCComparisonOperation			-	-	c3ba2c0e74500f9f
+enumconst	c:@E@MLCComparisonOperation@MLCComparisonOperationLogicalAND	MLCComparisonOperation			-	-	0e5e13cb7dd18b2a
+enumconst	c:@E@MLCComparisonOperation@MLCComparisonOperationLogicalOR	MLCComparisonOperation			-	-	8bc20595a7adeab6
+enumconst	c:@E@MLCComparisonOperation@MLCComparisonOperationLogicalNOT	MLCComparisonOperation			-	-	2a19fb9690e4e463
+enumconst	c:@E@MLCComparisonOperation@MLCComparisonOperationLogicalNAND	MLCComparisonOperation			-	-	1aa21395832de390
+enumconst	c:@E@MLCComparisonOperation@MLCComparisonOperationLogicalNOR	MLCComparisonOperation			-	-	86c5f4915f1716af
+enumconst	c:@E@MLCComparisonOperation@MLCComparisonOperationLogicalXOR	MLCComparisonOperation			-	-	3041cf070fd5ce46
+enumconst	c:@E@MLCComparisonOperation@MLCComparisonOperationCount	MLCComparisonOperation			swift=-/-/-/1	-	d0cd106215dc6454
+typedef	c:@T@MLCGradientClippingType	-			ios=15.0/17.4/-/0,macos=12.0/14.3/-/0,tvos=15.0/17.4/-/0	-	f7e206a826281f5c
+enum	c:@E@MLCGradientClippingType	-			-	-	6959104b6b5d475a
+enumconst	c:@E@MLCGradientClippingType@MLCGradientClippingTypeByValue	MLCGradientClippingType			-	-	eff9b627599bc4b5
+enumconst	c:@E@MLCGradientClippingType@MLCGradientClippingTypeByNorm	MLCGradientClippingType			-	-	af262b05aee885cf
+enumconst	c:@E@MLCGradientClippingType@MLCGradientClippingTypeByGlobalNorm	MLCGradientClippingType			-	-	0db73aa143925e48
+function	c:@F@MLCActivationTypeDebugDescription	-			-	-	890eb3a5f6a30d4d
+function	c:@F@MLCArithmeticOperationDebugDescription	-			-	-	39cb58f5f84ba63b
+function	c:@F@MLCPaddingPolicyDebugDescription	-			-	-	a688e50e6e0e2a95
+function	c:@F@MLCLossTypeDebugDescription	-			-	-	cfc57b024c1c1b1b
+function	c:@F@MLCReductionTypeDebugDescription	-			-	-	201f19d5f7f41d90
+function	c:@F@MLCPaddingTypeDebugDescription	-			-	-	a2ae01d7dafd3578
+function	c:@F@MLCConvolutionTypeDebugDescription	-			-	-	307d0e0afb0d9aaf
+function	c:@F@MLCPoolingTypeDebugDescription	-			-	-	b3dd6ef918650937
+function	c:@F@MLCSoftmaxOperationDebugDescription	-			-	-	d462ad967841cc65
+function	c:@F@MLCSampleModeDebugDescription	-			-	-	47b51c0ca0e9abb3
+function	c:@F@MLCLSTMResultModeDebugDescription	-			-	-	eccef88933574e27
+function	c:@F@MLCComparisonOperationDebugDescription	-			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	4e8ef714e1c49d16
+function	c:@F@MLCGradientClippingTypeDebugDescription	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	083835756b893500
+interface	c:objc(cs)MLCDevice	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	d1f5e56cf9be8b69
+super	-	MLCDevice	NSObject		-	-	b60a2763438e6e43
+conforms	-	MLCDevice	NSCopying		-	-	5dd97f3c2d9ab2ee
+property	c:objc(cs)MLCDevice(py)type	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	917bed37592ccf54
+property	c:objc(cs)MLCDevice(py)actualDeviceType	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	a3c9c764cd994154
+property	c:objc(cs)MLCDevice(py)gpuDevices	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	c6d0134bfe13ec2b
+method	c:objc(cs)MLCDevice(cm)cpuDevice	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	73c69822b84adf2a
+method	c:objc(cs)MLCDevice(cm)gpuDevice	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7392a72a80c1b5ce
+method	c:objc(cs)MLCDevice(cm)aneDevice	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	3e633948aa6008b6
+method	c:objc(cs)MLCDevice(cm)deviceWithType:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	16cc473985ac3ee1
+method	c:objc(cs)MLCDevice(cm)deviceWithType:selectsMultipleComputeDevices:	-			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	29757819d7b63d6a
+method	c:objc(cs)MLCDevice(cm)deviceWithGPUDevices:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	41a8c641e32cae9b
+interface	c:objc(cs)MLCTensor	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a903581b36a795ef
+super	-	MLCTensor	NSObject		-	-	ff3c555b13439c1c
+conforms	-	MLCTensor	NSCopying		-	-	4c2f2ab148da4e3c
+property	c:objc(cs)MLCTensor(py)tensorID	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a5b42c83480044a6
+property	c:objc(cs)MLCTensor(py)descriptor	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	38cf12dd4aa8e67a
+property	c:objc(cs)MLCTensor(py)data	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	2ccaca4bb8bd05b0
+property	c:objc(cs)MLCTensor(py)label	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3251296ac8b49215
+property	c:objc(cs)MLCTensor(py)device	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	919a3c588260d378
+property	c:objc(cs)MLCTensor(py)optimizerData	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7a1d84854bc09a95
+property	c:objc(cs)MLCTensor(py)optimizerDeviceData	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	bb469e7c037cfd18
+method	c:objc(cs)MLCTensor(cm)new	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	1cce7b2c4c60af9c
+method	c:objc(cs)MLCTensor(im)init	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	afc5390251f21f41
+method	c:objc(cs)MLCTensor(cm)tensorWithDescriptor:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	1b5d0d709db8b23a
+method	c:objc(cs)MLCTensor(cm)tensorWithDescriptor:randomInitializerType:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3522eda3dfbdbf32
+method	c:objc(cs)MLCTensor(cm)tensorWithDescriptor:fillWithData:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	6fc140a6f3615b45
+method	c:objc(cs)MLCTensor(cm)tensorWithDescriptor:data:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f0f7cb9ae361714c
+method	c:objc(cs)MLCTensor(cm)tensorWithShape:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	8d80568d024092a7
+method	c:objc(cs)MLCTensor(cm)tensorWithShape:randomInitializerType:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	942a8b89d341e710
+method	c:objc(cs)MLCTensor(cm)tensorWithShape:randomInitializerType:dataType:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3f6debe166ff0197
+method	c:objc(cs)MLCTensor(cm)tensorWithShape:dataType:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3d6e11a4f7d05603
+method	c:objc(cs)MLCTensor(cm)tensorWithShape:data:dataType:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	eef31229924b2aba
+method	c:objc(cs)MLCTensor(cm)tensorWithShape:fillWithData:dataType:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	d233c09f2599bf04
+method	c:objc(cs)MLCTensor(cm)tensorWithWidth:height:featureChannelCount:batchSize:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	96db339676f90e0b
+method	c:objc(cs)MLCTensor(cm)tensorWithWidth:height:featureChannelCount:batchSize:fillWithData:dataType:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	c53f52dfbcd7e9d4
+method	c:objc(cs)MLCTensor(cm)tensorWithWidth:height:featureChannelCount:batchSize:randomInitializerType:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	94f4b3d55c8db906
+method	c:objc(cs)MLCTensor(cm)tensorWithWidth:height:featureChannelCount:batchSize:data:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7b7cfc4ad35344fb
+method	c:objc(cs)MLCTensor(cm)tensorWithWidth:height:featureChannelCount:batchSize:data:dataType:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	c229b60dbc91cdd4
+method	c:objc(cs)MLCTensor(cm)tensorWithSequenceLength:featureChannelCount:batchSize:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	b06a21e6aa1a019f
+method	c:objc(cs)MLCTensor(cm)tensorWithSequenceLength:featureChannelCount:batchSize:randomInitializerType:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	4e1064554993d82b
+method	c:objc(cs)MLCTensor(cm)tensorWithSequenceLength:featureChannelCount:batchSize:data:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	fa38ebca6a75fc5d
+method	c:objc(cs)MLCTensor(cm)tensorWithSequenceLengths:sortedSequences:featureChannelCount:batchSize:randomInitializerType:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	bdb44dc57f06ef09
+method	c:objc(cs)MLCTensor(cm)tensorWithSequenceLengths:sortedSequences:featureChannelCount:batchSize:data:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	b3a6eab02e658594
+property	c:objc(cs)MLCTensor(py)hasValidNumerics	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	93832ffa9e87bb01
+method	c:objc(cs)MLCTensor(im)synchronizeData	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	b271a1c729ffb994
+method	c:objc(cs)MLCTensor(im)synchronizeOptimizerData	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	54f4d46435438ada
+method	c:objc(cs)MLCTensor(im)copyDataFromDeviceMemoryToBytes:length:synchronizeWithDevice:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	666da64f205591c8
+method	c:objc(cs)MLCTensor(im)bindAndWriteData:toDevice:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	57486ea73372c3d0
+method	c:objc(cs)MLCTensor(im)bindOptimizerData:deviceData:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e2770fd227fee5a5
+method	c:objc(cs)MLCTensor(im)tensorByQuantizingToType:scale:bias:	-			ios=15/-/-/0,macos=12.0/-/-/0,tvos=15/-/-/0	-	368eae2328ab9e35
+method	c:objc(cs)MLCTensor(im)tensorByQuantizingToType:scale:bias:axis:	-			ios=15/-/-/0,macos=12.0/-/-/0,tvos=15/-/-/0	-	66a93de125da5aad
+method	c:objc(cs)MLCTensor(im)tensorByDequantizingToType:scale:bias:	-			ios=15/-/-/0,macos=12.0/-/-/0,tvos=15/-/-/0	-	e79aec3cfe4ccab6
+method	c:objc(cs)MLCTensor(im)tensorByDequantizingToType:scale:bias:axis:	-			ios=15/-/-/0,macos=12.0/-/-/0,tvos=15/-/-/0	-	77c743f9c3f468b5
+interface	c:objc(cs)MLCTensorData	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	0575c9d07451055f
+super	-	MLCTensorData	NSObject		-	-	c125b726216a84f1
+property	c:objc(cs)MLCTensorData(py)bytes	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	21cfd3668636bde3
+property	c:objc(cs)MLCTensorData(py)length	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	596caa4b767e22f6
+method	c:objc(cs)MLCTensorData(cm)new	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	312cb367cf67475f
+method	c:objc(cs)MLCTensorData(im)init	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	685a53fb891abba5
+method	c:objc(cs)MLCTensorData(cm)dataWithBytesNoCopy:length:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	82264bc04699ccbc
+method	c:objc(cs)MLCTensorData(cm)dataWithImmutableBytesNoCopy:length:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	acb54ef246bf6db1
+method	c:objc(cs)MLCTensorData(cm)dataWithBytesNoCopy:length:deallocator:	-			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	67006e5197ed29d4
+interface	c:objc(cs)MLCTensorParameter	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	540022ca3d0fb1da
+super	-	MLCTensorParameter	NSObject		-	-	3e1248edf07de4ca
+property	c:objc(cs)MLCTensorParameter(py)tensor	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	8b279885e7f626ae
+property	c:objc(cs)MLCTensorParameter(py)isUpdatable	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	59d8d1f9a78f09d3
+method	c:objc(cs)MLCTensorParameter(cm)new	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e25aac5642a2dd25
+method	c:objc(cs)MLCTensorParameter(im)init	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e3be7f0480eff196
+method	c:objc(cs)MLCTensorParameter(cm)parameterWithTensor:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	2d951cd6be0695a4
+method	c:objc(cs)MLCTensorParameter(cm)parameterWithTensor:optimizerData:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	c11c9771cd5675f7
+interface	c:objc(cs)MLCTensorOptimizerDeviceData	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e00c30ff59735e64
+super	-	MLCTensorOptimizerDeviceData	NSObject		-	-	c508911706c61616
+conforms	-	MLCTensorOptimizerDeviceData	NSCopying		-	-	b8f1aadab67d059b
+method	c:objc(cs)MLCTensorOptimizerDeviceData(cm)new	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3fb929e4ec6b3681
+interface	c:objc(cs)MLCGraph	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e57ea87ac65f8dee
+super	-	MLCGraph	NSObject		-	-	d61c3995458e52e0
+property	c:objc(cs)MLCGraph(py)device	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	57cd610b6dd94713
+property	c:objc(cs)MLCGraph(py)layers	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	fcb5b994cee3209c
+method	c:objc(cs)MLCGraph(cm)graph	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	20c07665245548ed
+property	c:objc(cs)MLCGraph(py)summarizedDOTDescription	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	b6e21bac33cf2cf2
+method	c:objc(cs)MLCGraph(im)nodeWithLayer:source:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a8a47058a38f3770
+method	c:objc(cs)MLCGraph(im)nodeWithLayer:sources:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	8ab6fe59b83b1814
+method	c:objc(cs)MLCGraph(im)nodeWithLayer:sources:disableUpdate:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	8df62010d4cca14c
+method	c:objc(cs)MLCGraph(im)nodeWithLayer:sources:lossLabels:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	6e9ca737fa8ec637
+method	c:objc(cs)MLCGraph(im)splitWithSource:splitCount:dimension:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e42ca90ce626a6f6
+method	c:objc(cs)MLCGraph(im)splitWithSource:splitSectionLengths:dimension:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	0b1e57f93f8d6222
+method	c:objc(cs)MLCGraph(im)concatenateWithSources:dimension:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	557cf1f698e6c590
+method	c:objc(cs)MLCGraph(im)reshapeWithShape:source:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	035c469ff8701574
+method	c:objc(cs)MLCGraph(im)transposeWithDimensions:source:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7e44135192667570
+method	c:objc(cs)MLCGraph(im)selectWithSources:condition:	-			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	8d1df92ea0d237d3
+method	c:objc(cs)MLCGraph(im)scatterWithDimension:source:indices:copyFrom:reductionType:	-			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	8aef979de799ac7a
+method	c:objc(cs)MLCGraph(im)gatherWithDimension:source:indices:	-			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	aacc61b9ff49afe4
+method	c:objc(cs)MLCGraph(im)bindAndWriteData:forInputs:toDevice:batchSize:synchronous:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f760acb252ccc7ea
+method	c:objc(cs)MLCGraph(im)bindAndWriteData:forInputs:toDevice:synchronous:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7b9aa0582465d626
+method	c:objc(cs)MLCGraph(im)sourceTensorsForLayer:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	730ce960f248e08f
+method	c:objc(cs)MLCGraph(im)resultTensorsForLayer:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	5d4694c8f5ecc982
+interface	c:objc(cs)MLCTrainingGraph	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e1fdcd6112aaacbd
+super	-	MLCTrainingGraph	MLCGraph		-	-	86eb4273702f1d2a
+property	c:objc(cs)MLCTrainingGraph(py)optimizer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a16ff2319f2f49f5
+property	c:objc(cs)MLCTrainingGraph(py)deviceMemorySize	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	0b8012a1699ba233
+method	c:objc(cs)MLCTrainingGraph(cm)graphWithGraphObjects:lossLayer:optimizer:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a856eefa39a3db7a
+method	c:objc(cs)MLCTrainingGraph(im)addInputs:lossLabels:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	de0c2bfe2afc3002
+method	c:objc(cs)MLCTrainingGraph(im)addInputs:lossLabels:lossLabelWeights:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	ad8857da9176ed8b
+method	c:objc(cs)MLCTrainingGraph(im)addOutputs:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	cec4e12fecc82b9d
+method	c:objc(cs)MLCTrainingGraph(im)stopGradientForTensors:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	9d5a68429a024f2f
+method	c:objc(cs)MLCTrainingGraph(im)compileWithOptions:device:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	352deb2719f8c3e0
+method	c:objc(cs)MLCTrainingGraph(im)compileWithOptions:device:inputTensors:inputTensorsData:	-			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	b22c7245d1afb40b
+method	c:objc(cs)MLCTrainingGraph(im)compileOptimizer:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	24674941d23196aa
+method	c:objc(cs)MLCTrainingGraph(im)linkWithGraphs:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	70ee3ae7555f3409
+method	c:objc(cs)MLCTrainingGraph(im)gradientTensorForInput:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	bfe76b1d2af61fe1
+method	c:objc(cs)MLCTrainingGraph(im)sourceGradientTensorsForLayer:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	9e3519a879bdc6ca
+method	c:objc(cs)MLCTrainingGraph(im)resultGradientTensorsForLayer:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a686397a34f443a8
+method	c:objc(cs)MLCTrainingGraph(im)gradientDataForParameter:layer:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7424cb9cc376c500
+method	c:objc(cs)MLCTrainingGraph(im)allocateUserGradientForTensor:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	d5dd06401563399f
+method	c:objc(cs)MLCTrainingGraph(im)executeWithInputsData:lossLabelsData:lossLabelWeightsData:batchSize:options:completionHandler:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	06f42ada6cc9a2f4
+method	c:objc(cs)MLCTrainingGraph(im)executeWithInputsData:lossLabelsData:lossLabelWeightsData:outputsData:batchSize:options:completionHandler:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	c5da35f205c50f39
+method	c:objc(cs)MLCTrainingGraph(im)executeForwardWithBatchSize:options:completionHandler:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f2c8f6404b5a5be7
+method	c:objc(cs)MLCTrainingGraph(im)executeForwardWithBatchSize:options:outputsData:completionHandler:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	5c9995deb20a1451
+method	c:objc(cs)MLCTrainingGraph(im)executeGradientWithBatchSize:options:completionHandler:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	2ac9bae94ab53be7
+method	c:objc(cs)MLCTrainingGraph(im)executeGradientWithBatchSize:options:outputsData:completionHandler:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	d3ecbee54d3a1df3
+method	c:objc(cs)MLCTrainingGraph(im)executeOptimizerUpdateWithOptions:completionHandler:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	656ffe00240774bd
+method	c:objc(cs)MLCTrainingGraph(im)synchronizeUpdates	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f85c28b385a05f78
+method	c:objc(cs)MLCTrainingGraph(im)setTrainingTensorParameters:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	2652a5119a1930d9
+method	c:objc(cs)MLCTrainingGraph(im)bindOptimizerData:deviceData:withTensor:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	ac7cd122d46a0ff8
+interface	c:objc(cs)MLCInferenceGraph	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	1b3decb3eb1cc0f0
+super	-	MLCInferenceGraph	MLCGraph		-	-	32c5b473bf462c8b
+property	c:objc(cs)MLCInferenceGraph(py)deviceMemorySize	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	640e961a586f4287
+method	c:objc(cs)MLCInferenceGraph(cm)new	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	ef0343f5cdfd681a
+method	c:objc(cs)MLCInferenceGraph(im)init	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	46d1ec9709916a09
+method	c:objc(cs)MLCInferenceGraph(cm)graphWithGraphObjects:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	72b2830656363ed6
+method	c:objc(cs)MLCInferenceGraph(im)addInputs:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f0e5104fa15d5918
+method	c:objc(cs)MLCInferenceGraph(im)addInputs:lossLabels:lossLabelWeights:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	ea7d1d21f7a7c4cd
+method	c:objc(cs)MLCInferenceGraph(im)addOutputs:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f93922a1122b6819
+method	c:objc(cs)MLCInferenceGraph(im)compileWithOptions:device:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	479798eed746ee81
+method	c:objc(cs)MLCInferenceGraph(im)compileWithOptions:device:inputTensors:inputTensorsData:	-			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	1535f20fe32d108f
+method	c:objc(cs)MLCInferenceGraph(im)linkWithGraphs:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	8e14648ce46047d3
+method	c:objc(cs)MLCInferenceGraph(im)executeWithInputsData:batchSize:options:completionHandler:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3a5ed6da7a447691
+method	c:objc(cs)MLCInferenceGraph(im)executeWithInputsData:outputsData:batchSize:options:completionHandler:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	00febf602eb9bb2c
+method	c:objc(cs)MLCInferenceGraph(im)executeWithInputsData:lossLabelsData:lossLabelWeightsData:batchSize:options:completionHandler:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a1b0d105f72b9186
+method	c:objc(cs)MLCInferenceGraph(im)executeWithInputsData:lossLabelsData:lossLabelWeightsData:outputsData:batchSize:options:completionHandler:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	1144876a390c35a4
+interface	c:objc(cs)MLCPlatform	-			ios=15.0/17.4/-/0,macos=12.0/14.3/-/0,tvos=15.0/17.4/-/0	-	c3e7c8cf8d7f2abc
+super	-	MLCPlatform	NSObject		-	-	a63f0af3765c0c65
+method	c:objc(cs)MLCPlatform(cm)setRNGSeedTo:	-			ios=15.0/17.4/-/0,macos=12.0/14.3/-/0,tvos=15.0/17.4/-/0	-	8d895016c3414b6d
+method	c:objc(cs)MLCPlatform(cm)getRNGseed	-			ios=15.0/17.4/-/0,macos=12.0/14.3/-/0,tvos=15.0/17.4/-/0	-	c700b74a93022f42
+interface	c:objc(cs)MLCActivationDescriptor	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	555366d68bc14231
+super	-	MLCActivationDescriptor	NSObject		-	-	2dc8edea2e7d0990
+conforms	-	MLCActivationDescriptor	NSCopying		-	-	95434676a1ac8bcb
+property	c:objc(cs)MLCActivationDescriptor(py)activationType	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	9644f7070fdc64d4
+property	c:objc(cs)MLCActivationDescriptor(py)a	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	d38771d180ffee69
+property	c:objc(cs)MLCActivationDescriptor(py)b	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7cd994f90acd1d78
+property	c:objc(cs)MLCActivationDescriptor(py)c	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	9a69351199b9bf09
+method	c:objc(cs)MLCActivationDescriptor(cm)new	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	296a13e62b784f1f
+method	c:objc(cs)MLCActivationDescriptor(im)init	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3e5239ac8bfeecbd
+method	c:objc(cs)MLCActivationDescriptor(cm)descriptorWithType:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	477c9b80af5421c4
+method	c:objc(cs)MLCActivationDescriptor(cm)descriptorWithType:a:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e552cc652701d70b
+method	c:objc(cs)MLCActivationDescriptor(cm)descriptorWithType:a:b:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	29eb8255372cdac1
+method	c:objc(cs)MLCActivationDescriptor(cm)descriptorWithType:a:b:c:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	56337784ed03cb02
+interface	c:objc(cs)MLCPoolingDescriptor	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	c0f9af607185231f
+super	-	MLCPoolingDescriptor	NSObject		-	-	b4f0859f3bf51b2c
+conforms	-	MLCPoolingDescriptor	NSCopying		-	-	e9eeab519c66f981
+property	c:objc(cs)MLCPoolingDescriptor(py)poolingType	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	d58c5a69f7a4648d
+property	c:objc(cs)MLCPoolingDescriptor(py)kernelWidth	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	bcf4a1230adc31b5
+property	c:objc(cs)MLCPoolingDescriptor(py)kernelHeight	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	bd66fa7d771e1169
+property	c:objc(cs)MLCPoolingDescriptor(py)strideInX	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	89f8b2b09063632f
+property	c:objc(cs)MLCPoolingDescriptor(py)strideInY	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	acc7d0c89060fb05
+property	c:objc(cs)MLCPoolingDescriptor(py)dilationRateInX	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	299723aa93774951
+property	c:objc(cs)MLCPoolingDescriptor(py)dilationRateInY	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	cd6e9aa5d8d7d752
+property	c:objc(cs)MLCPoolingDescriptor(py)paddingPolicy	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f7bb655b4be988b8
+property	c:objc(cs)MLCPoolingDescriptor(py)paddingSizeInX	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	60a7e39d573f5776
+property	c:objc(cs)MLCPoolingDescriptor(py)paddingSizeInY	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	8072e28bb7ca69f9
+property	c:objc(cs)MLCPoolingDescriptor(py)countIncludesPadding	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	c0b8c56e072eae58
+method	c:objc(cs)MLCPoolingDescriptor(cm)new	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7f3871c34bcb89fd
+method	c:objc(cs)MLCPoolingDescriptor(im)init	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	6b52961ca97d6bfe
+method	c:objc(cs)MLCPoolingDescriptor(cm)poolingDescriptorWithType:kernelSize:stride:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	06b655c407d69cb7
+method	c:objc(cs)MLCPoolingDescriptor(cm)maxPoolingDescriptorWithKernelSizes:strides:paddingPolicy:paddingSizes:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	5515cae05ff0260f
+method	c:objc(cs)MLCPoolingDescriptor(cm)maxPoolingDescriptorWithKernelSizes:strides:dilationRates:paddingPolicy:paddingSizes:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	bd279a9467538b8c
+method	c:objc(cs)MLCPoolingDescriptor(cm)averagePoolingDescriptorWithKernelSizes:strides:paddingPolicy:paddingSizes:countIncludesPadding:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a330d97b832f046d
+method	c:objc(cs)MLCPoolingDescriptor(cm)averagePoolingDescriptorWithKernelSizes:strides:dilationRates:paddingPolicy:paddingSizes:countIncludesPadding:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	91c6e766b63b6d79
+method	c:objc(cs)MLCPoolingDescriptor(cm)l2NormPoolingDescriptorWithKernelSizes:strides:paddingPolicy:paddingSizes:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	275118dc1ca909a3
+method	c:objc(cs)MLCPoolingDescriptor(cm)l2NormPoolingDescriptorWithKernelSizes:strides:dilationRates:paddingPolicy:paddingSizes:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	0a0b4f6188376dc1
+interface	c:objc(cs)MLCConvolutionDescriptor	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	cbcb39342c54a876
+super	-	MLCConvolutionDescriptor	NSObject		-	-	8a4cbdcb313116e7
+conforms	-	MLCConvolutionDescriptor	NSCopying		-	-	ffbcd876c208cc8a
+property	c:objc(cs)MLCConvolutionDescriptor(py)convolutionType	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	6e7894cd7faa00d6
+property	c:objc(cs)MLCConvolutionDescriptor(py)kernelWidth	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f4cb771a3872c97e
+property	c:objc(cs)MLCConvolutionDescriptor(py)kernelHeight	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	40baf83341c50ece
+property	c:objc(cs)MLCConvolutionDescriptor(py)inputFeatureChannelCount	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	0ab7ab2145cf192f
+property	c:objc(cs)MLCConvolutionDescriptor(py)outputFeatureChannelCount	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	aed0023dc22bcadd
+property	c:objc(cs)MLCConvolutionDescriptor(py)strideInX	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	403a2d40c0d4b4eb
+property	c:objc(cs)MLCConvolutionDescriptor(py)strideInY	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	97ceb002792a66d2
+property	c:objc(cs)MLCConvolutionDescriptor(py)dilationRateInX	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3aa63704e080f11a
+property	c:objc(cs)MLCConvolutionDescriptor(py)dilationRateInY	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	d3fbf056c935eaa7
+property	c:objc(cs)MLCConvolutionDescriptor(py)groupCount	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	ff40f526903485a0
+property	c:objc(cs)MLCConvolutionDescriptor(py)paddingPolicy	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	967ec8508eba6fe9
+property	c:objc(cs)MLCConvolutionDescriptor(py)paddingSizeInX	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	add9dd9cbf931aed
+property	c:objc(cs)MLCConvolutionDescriptor(py)paddingSizeInY	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7c6c4d57bb61bb94
+property	c:objc(cs)MLCConvolutionDescriptor(py)isConvolutionTranspose	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	573c623793f6e822
+property	c:objc(cs)MLCConvolutionDescriptor(py)usesDepthwiseConvolution	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e75359c6e248cda5
+method	c:objc(cs)MLCConvolutionDescriptor(cm)descriptorWithType:kernelSizes:inputFeatureChannelCount:outputFeatureChannelCount:groupCount:strides:dilationRates:paddingPolicy:paddingSizes:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	37e4e0690acd2fef
+method	c:objc(cs)MLCConvolutionDescriptor(cm)descriptorWithKernelWidth:kernelHeight:inputFeatureChannelCount:outputFeatureChannelCount:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	ef366dae03b93334
+method	c:objc(cs)MLCConvolutionDescriptor(cm)descriptorWithKernelSizes:inputFeatureChannelCount:outputFeatureChannelCount:strides:paddingPolicy:paddingSizes:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	de144c33ef5fc488
+method	c:objc(cs)MLCConvolutionDescriptor(cm)descriptorWithKernelSizes:inputFeatureChannelCount:outputFeatureChannelCount:groupCount:strides:dilationRates:paddingPolicy:paddingSizes:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	4d2ee0c75000c27c
+method	c:objc(cs)MLCConvolutionDescriptor(cm)convolutionTransposeDescriptorWithKernelWidth:kernelHeight:inputFeatureChannelCount:outputFeatureChannelCount:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	b4f6a3c93d1c477b
+method	c:objc(cs)MLCConvolutionDescriptor(cm)convolutionTransposeDescriptorWithKernelSizes:inputFeatureChannelCount:outputFeatureChannelCount:strides:paddingPolicy:paddingSizes:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	fd991c3b4245ae7f
+method	c:objc(cs)MLCConvolutionDescriptor(cm)convolutionTransposeDescriptorWithKernelSizes:inputFeatureChannelCount:outputFeatureChannelCount:groupCount:strides:dilationRates:paddingPolicy:paddingSizes:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	600a7edd03a80b2e
+method	c:objc(cs)MLCConvolutionDescriptor(cm)depthwiseConvolutionDescriptorWithKernelWidth:kernelHeight:inputFeatureChannelCount:channelMultiplier:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	018da14311c9aea0
+method	c:objc(cs)MLCConvolutionDescriptor(cm)depthwiseConvolutionDescriptorWithKernelSizes:inputFeatureChannelCount:channelMultiplier:strides:paddingPolicy:paddingSizes:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	46bdded39cfc47e5
+method	c:objc(cs)MLCConvolutionDescriptor(cm)depthwiseConvolutionDescriptorWithKernelSizes:inputFeatureChannelCount:channelMultiplier:strides:dilationRates:paddingPolicy:paddingSizes:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	0d7e0fcc2f84cb26
+interface	c:objc(cs)MLCLossDescriptor	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	78fdad03077f9f25
+super	-	MLCLossDescriptor	NSObject		-	-	a9dab7fd86186692
+conforms	-	MLCLossDescriptor	NSCopying		-	-	3b51e2057f1e604d
+property	c:objc(cs)MLCLossDescriptor(py)lossType	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3b7fdd1b0cb4df88
+property	c:objc(cs)MLCLossDescriptor(py)reductionType	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	ccb449088c2bf991
+property	c:objc(cs)MLCLossDescriptor(py)weight	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	cb9f98a713630504
+property	c:objc(cs)MLCLossDescriptor(py)labelSmoothing	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f6e4670d78bbfa40
+property	c:objc(cs)MLCLossDescriptor(py)classCount	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	10bf1f134c9a27ea
+property	c:objc(cs)MLCLossDescriptor(py)epsilon	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	725709fc7b45ba5b
+property	c:objc(cs)MLCLossDescriptor(py)delta	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	70fa5029d5889863
+method	c:objc(cs)MLCLossDescriptor(cm)new	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	60b84b7e6df4d67f
+method	c:objc(cs)MLCLossDescriptor(im)init	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7b93e794fd2e7911
+method	c:objc(cs)MLCLossDescriptor(cm)descriptorWithType:reductionType:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	b6d262f8a65f2433
+method	c:objc(cs)MLCLossDescriptor(cm)descriptorWithType:reductionType:weight:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	97f582c5f7ea3520
+method	c:objc(cs)MLCLossDescriptor(cm)descriptorWithType:reductionType:weight:labelSmoothing:classCount:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	77b666cf3d56e6ff
+method	c:objc(cs)MLCLossDescriptor(cm)descriptorWithType:reductionType:weight:labelSmoothing:classCount:epsilon:delta:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	069960432f373e51
+interface	c:objc(cs)MLCYOLOLossDescriptor	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3dea02a9b551017a
+super	-	MLCYOLOLossDescriptor	NSObject		-	-	ca0e0d33df17b4a4
+conforms	-	MLCYOLOLossDescriptor	NSCopying		-	-	e196a3c5e7fddd2a
+property	c:objc(cs)MLCYOLOLossDescriptor(py)anchorBoxCount	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7eeeb266cd157b86
+property	c:objc(cs)MLCYOLOLossDescriptor(py)anchorBoxes	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	de963db83df2b5dd
+property	c:objc(cs)MLCYOLOLossDescriptor(py)shouldRescore	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	bf812b6f2ec17992
+property	c:objc(cs)MLCYOLOLossDescriptor(py)scaleSpatialPositionLoss	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	cc47c8d9106c4de9
+property	c:objc(cs)MLCYOLOLossDescriptor(py)scaleSpatialSizeLoss	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	cf5fce9925f520f6
+property	c:objc(cs)MLCYOLOLossDescriptor(py)scaleNoObjectConfidenceLoss	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	2fb66d8f463be032
+property	c:objc(cs)MLCYOLOLossDescriptor(py)scaleObjectConfidenceLoss	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	c86aa25ee26a653f
+property	c:objc(cs)MLCYOLOLossDescriptor(py)scaleClassLoss	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	9a10fbce5f041817
+property	c:objc(cs)MLCYOLOLossDescriptor(py)minimumIOUForObjectPresence	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	32258f9633d53fbf
+property	c:objc(cs)MLCYOLOLossDescriptor(py)maximumIOUForObjectAbsence	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	4312337af07932ab
+method	c:objc(cs)MLCYOLOLossDescriptor(cm)new	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	698609c13f1f0b10
+method	c:objc(cs)MLCYOLOLossDescriptor(im)init	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	0c264bde4ed9ff8a
+method	c:objc(cs)MLCYOLOLossDescriptor(cm)descriptorWithAnchorBoxes:anchorBoxCount:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a2bf03eb86df77ac
+interface	c:objc(cs)MLCLSTMDescriptor	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e082421f298410e1
+super	-	MLCLSTMDescriptor	NSObject		-	-	2b3f10d63df0fc03
+conforms	-	MLCLSTMDescriptor	NSCopying		-	-	97b7a5d7cdb692f7
+method	c:objc(cs)MLCLSTMDescriptor(cm)new	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	5223744caca6b675
+method	c:objc(cs)MLCLSTMDescriptor(im)init	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7306a880490f8389
+property	c:objc(cs)MLCLSTMDescriptor(py)inputSize	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	d1ad8f8ef8933e75
+property	c:objc(cs)MLCLSTMDescriptor(py)hiddenSize	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a340545bdbda7ead
+property	c:objc(cs)MLCLSTMDescriptor(py)layerCount	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	9f38da2a9a273e1f
+property	c:objc(cs)MLCLSTMDescriptor(py)usesBiases	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	d12c1af7a81643d9
+property	c:objc(cs)MLCLSTMDescriptor(py)batchFirst	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7ae8f981bf1e6a31
+property	c:objc(cs)MLCLSTMDescriptor(py)isBidirectional	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	1a2fd371aeb25a29
+property	c:objc(cs)MLCLSTMDescriptor(py)returnsSequences	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	679080439357523a
+property	c:objc(cs)MLCLSTMDescriptor(py)dropout	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	ba1c9de914384818
+property	c:objc(cs)MLCLSTMDescriptor(py)resultMode	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	01a92a47c6460adc
+method	c:objc(cs)MLCLSTMDescriptor(cm)descriptorWithInputSize:hiddenSize:layerCount:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	ac5abf6c815dd6de
+method	c:objc(cs)MLCLSTMDescriptor(cm)descriptorWithInputSize:hiddenSize:layerCount:usesBiases:isBidirectional:dropout:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	da30b8d1a982ff8c
+method	c:objc(cs)MLCLSTMDescriptor(cm)descriptorWithInputSize:hiddenSize:layerCount:usesBiases:batchFirst:isBidirectional:dropout:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	9aca85e56427feae
+method	c:objc(cs)MLCLSTMDescriptor(cm)descriptorWithInputSize:hiddenSize:layerCount:usesBiases:batchFirst:isBidirectional:returnsSequences:dropout:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	44d0ef40f727916f
+method	c:objc(cs)MLCLSTMDescriptor(cm)descriptorWithInputSize:hiddenSize:layerCount:usesBiases:batchFirst:isBidirectional:returnsSequences:dropout:resultMode:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e16b601e7f00fde9
+interface	c:objc(cs)MLCTensorDescriptor	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	46de60a6df6c7564
+super	-	MLCTensorDescriptor	NSObject		-	-	3a30e361e99df67b
+conforms	-	MLCTensorDescriptor	NSCopying		-	-	b93c362a21fd0e3f
+property	c:objc(cs)MLCTensorDescriptor(py)dataType	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	056e19dc59b484c2
+property	c:objc(cs)MLCTensorDescriptor(py)dimensionCount	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f984d1547fb7ae9c
+property	c:objc(cs)MLCTensorDescriptor(py)shape	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	9851ab87778c19d9
+property	c:objc(cs)MLCTensorDescriptor(py)stride	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	1e00a2ddfc32b2d7
+property	c:objc(cs)MLCTensorDescriptor(py)tensorAllocationSizeInBytes	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	65e39d04758d6eba
+property	c:objc(cs)MLCTensorDescriptor(py)sequenceLengths	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	6f5ebba769a0be06
+property	c:objc(cs)MLCTensorDescriptor(py)sortedSequences	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	2a04e59a4f8eb035
+property	c:objc(cs)MLCTensorDescriptor(py)batchSizePerSequenceStep	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	32385c7fb3961fc7
+method	c:objc(cs)MLCTensorDescriptor(cm)new	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	77bb73ac92f686d0
+method	c:objc(cs)MLCTensorDescriptor(im)init	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	0e699474a8115687
+property	c:objc(cs)MLCTensorDescriptor(cpy)maxTensorDimensions	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	fb23a0004ff8514f
+method	c:objc(cs)MLCTensorDescriptor(cm)descriptorWithShape:dataType:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	5d88ee9c724c7a35
+method	c:objc(cs)MLCTensorDescriptor(cm)descriptorWithShape:sequenceLengths:sortedSequences:dataType:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f72031c6e2047233
+method	c:objc(cs)MLCTensorDescriptor(cm)descriptorWithWidth:height:featureChannelCount:batchSize:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	bdde8007bca39900
+method	c:objc(cs)MLCTensorDescriptor(cm)descriptorWithWidth:height:featureChannelCount:batchSize:dataType:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	396314edd2162bc4
+method	c:objc(cs)MLCTensorDescriptor(cm)convolutionWeightsDescriptorWithWidth:height:inputFeatureChannelCount:outputFeatureChannelCount:dataType:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	74bc095572832893
+method	c:objc(cs)MLCTensorDescriptor(cm)convolutionWeightsDescriptorWithInputFeatureChannelCount:outputFeatureChannelCount:dataType:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e21b40ebdae494ea
+method	c:objc(cs)MLCTensorDescriptor(cm)convolutionBiasesDescriptorWithFeatureChannelCount:dataType:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e4c16fc1ec13e5ca
+interface	c:objc(cs)MLCOptimizerDescriptor	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e101e2d70f93e107
+super	-	MLCOptimizerDescriptor	NSObject		-	-	86aa9e095e58d712
+conforms	-	MLCOptimizerDescriptor	NSCopying		-	-	9c7c2340d46f7d6f
+property	c:objc(cs)MLCOptimizerDescriptor(py)learningRate	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	afbc13610c5669a5
+property	c:objc(cs)MLCOptimizerDescriptor(py)gradientRescale	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	199aa9a142fe81e0
+property	c:objc(cs)MLCOptimizerDescriptor(py)appliesGradientClipping	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	0d073a5ab5cdaa84
+property	c:objc(cs)MLCOptimizerDescriptor(py)gradientClipMax	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	640ed595eda4bcdb
+property	c:objc(cs)MLCOptimizerDescriptor(py)gradientClipMin	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	8b8e4596643a05b9
+property	c:objc(cs)MLCOptimizerDescriptor(py)regularizationScale	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	b0c8cbb0ca943460
+property	c:objc(cs)MLCOptimizerDescriptor(py)regularizationType	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	ab0216cefe742e6d
+property	c:objc(cs)MLCOptimizerDescriptor(py)gradientClippingType	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	97d747d7e3f41595
+property	c:objc(cs)MLCOptimizerDescriptor(py)maximumClippingNorm	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	38dcdfc2e16beede
+property	c:objc(cs)MLCOptimizerDescriptor(py)customGlobalNorm	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	4f778b3f56a330bd
+method	c:objc(cs)MLCOptimizerDescriptor(cm)descriptorWithLearningRate:gradientRescale:regularizationType:regularizationScale:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	c1bfd844fd5ecccc
+method	c:objc(cs)MLCOptimizerDescriptor(cm)descriptorWithLearningRate:gradientRescale:appliesGradientClipping:gradientClipMax:gradientClipMin:regularizationType:regularizationScale:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	06ff1893a1ab0d39
+method	c:objc(cs)MLCOptimizerDescriptor(cm)descriptorWithLearningRate:gradientRescale:appliesGradientClipping:gradientClippingType:gradientClipMax:gradientClipMin:maximumClippingNorm:customGlobalNorm:regularizationType:regularizationScale:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	9a2e6f3e31aa3e24
+interface	c:objc(cs)MLCMatMulDescriptor	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	2cf26933d88f6a92
+super	-	MLCMatMulDescriptor	NSObject		-	-	324b8ccdc60a2c8c
+conforms	-	MLCMatMulDescriptor	NSCopying		-	-	c642e5a241bf88bf
+method	c:objc(cs)MLCMatMulDescriptor(cm)new	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	0d816dce295d6361
+method	c:objc(cs)MLCMatMulDescriptor(im)init	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	5fa6e7157c153eff
+property	c:objc(cs)MLCMatMulDescriptor(py)alpha	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3a9a38ced6793c06
+property	c:objc(cs)MLCMatMulDescriptor(py)transposesX	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e3a9fff387b0ce6e
+property	c:objc(cs)MLCMatMulDescriptor(py)transposesY	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	b6c9bec10842e88d
+method	c:objc(cs)MLCMatMulDescriptor(cm)descriptorWithAlpha:transposesX:transposesY:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	c34e48fd27919a82
+method	c:objc(cs)MLCMatMulDescriptor(cm)descriptor	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	cd76b13404b9b1c5
+interface	c:objc(cs)MLCMultiheadAttentionDescriptor	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a145082f3c1fbd29
+super	-	MLCMultiheadAttentionDescriptor	NSObject		-	-	1c84c4d5f19c6c8a
+conforms	-	MLCMultiheadAttentionDescriptor	NSCopying		-	-	b15ee73306f947b7
+method	c:objc(cs)MLCMultiheadAttentionDescriptor(cm)new	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	10a091e7f2133763
+method	c:objc(cs)MLCMultiheadAttentionDescriptor(im)init	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	06704fdfe3a8b80c
+property	c:objc(cs)MLCMultiheadAttentionDescriptor(py)modelDimension	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e9dad20a55b875c9
+property	c:objc(cs)MLCMultiheadAttentionDescriptor(py)keyDimension	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	0d2c6ce060dca58d
+property	c:objc(cs)MLCMultiheadAttentionDescriptor(py)valueDimension	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7b13015c2b44b6d2
+property	c:objc(cs)MLCMultiheadAttentionDescriptor(py)headCount	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	98d22d780ff1a14c
+property	c:objc(cs)MLCMultiheadAttentionDescriptor(py)dropout	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	9482e8d237d35e87
+property	c:objc(cs)MLCMultiheadAttentionDescriptor(py)hasBiases	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	c0210773e015b6eb
+property	c:objc(cs)MLCMultiheadAttentionDescriptor(py)hasAttentionBiases	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	b9964a5fd3c3ab23
+property	c:objc(cs)MLCMultiheadAttentionDescriptor(py)addsZeroAttention	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	12a813fab6cfac44
+method	c:objc(cs)MLCMultiheadAttentionDescriptor(cm)descriptorWithModelDimension:keyDimension:valueDimension:headCount:dropout:hasBiases:hasAttentionBiases:addsZeroAttention:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	ecc18bb856228d89
+method	c:objc(cs)MLCMultiheadAttentionDescriptor(cm)descriptorWithModelDimension:headCount:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	97129e47e319f00d
+interface	c:objc(cs)MLCEmbeddingDescriptor	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a01bb6a228be1269
+super	-	MLCEmbeddingDescriptor	NSObject		-	-	0aea9abc575ffb92
+conforms	-	MLCEmbeddingDescriptor	NSCopying		-	-	eebbf58cdf8c2bc0
+method	c:objc(cs)MLCEmbeddingDescriptor(cm)new	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	42c6ad9aff37e003
+method	c:objc(cs)MLCEmbeddingDescriptor(im)init	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	65e1e9191d2ffc41
+property	c:objc(cs)MLCEmbeddingDescriptor(py)embeddingCount	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	34d897cd958dcf27
+property	c:objc(cs)MLCEmbeddingDescriptor(py)embeddingDimension	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a0b9b4018eb65c3d
+property	c:objc(cs)MLCEmbeddingDescriptor(py)paddingIndex	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	11e06717759f028e
+property	c:objc(cs)MLCEmbeddingDescriptor(py)maximumNorm	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	6dec12d51d9724a0
+property	c:objc(cs)MLCEmbeddingDescriptor(py)pNorm	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	2553ba339af15dfa
+property	c:objc(cs)MLCEmbeddingDescriptor(py)scalesGradientByFrequency	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	9d59fb71da912ec3
+method	c:objc(cs)MLCEmbeddingDescriptor(cm)descriptorWithEmbeddingCount:embeddingDimension:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	ba410f2847ba1906
+method	c:objc(cs)MLCEmbeddingDescriptor(cm)descriptorWithEmbeddingCount:embeddingDimension:paddingIndex:maximumNorm:pNorm:scalesGradientByFrequency:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	09d819312628b8f8
+interface	c:objc(cs)MLCLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	ef8e2a914bd6b4bf
+super	-	MLCLayer	NSObject		-	-	ef8ffb2cfba1f5a4
+property	c:objc(cs)MLCLayer(py)layerID	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	0cf37453dfb92465
+property	c:objc(cs)MLCLayer(py)label	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e8add62e8db28c16
+property	c:objc(cs)MLCLayer(py)isDebuggingEnabled	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e57c4ea1359a0811
+method	c:objc(cs)MLCLayer(cm)supportsDataType:onDevice:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	6e2f5e7587aef7d5
+property	c:objc(cs)MLCLayer(py)deviceType	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	1c20dcd9832834ad
+method	c:objc(cs)MLCLayer(cm)new	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	b91109ccf906ef1b
+method	c:objc(cs)MLCLayer(im)init	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	dad09f387cfd46a9
+interface	c:objc(cs)MLCArithmeticLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	fd7d48a08e12e4ac
+super	-	MLCArithmeticLayer	MLCLayer		-	-	bfee3ac69f5b1f7a
+property	c:objc(cs)MLCArithmeticLayer(py)operation	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3a12926420d451ad
+method	c:objc(cs)MLCArithmeticLayer(cm)layerWithOperation:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	672dc1f1402e13bf
+interface	c:objc(cs)MLCComparisonLayer	-			ios=14.5/17.4/-/0,macos=11.3/14.3/-/0,tvos=14.5/17.4/-/0	-	57c70751b3d8025d
+super	-	MLCComparisonLayer	MLCLayer		-	-	afd7ce2685a6bc20
+property	c:objc(cs)MLCComparisonLayer(py)operation	-			ios=14.5/17.4/-/0,macos=11.3/14.3/-/0,tvos=14.5/17.4/-/0	-	03112567bd2f41c2
+method	c:objc(cs)MLCComparisonLayer(cm)layerWithOperation:	-			ios=14.5/17.4/-/0,macos=11.3/14.3/-/0,tvos=14.5/17.4/-/0	-	24475f2858e21218
+interface	c:objc(cs)MLCConvolutionLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	6d0a6616e0270654
+super	-	MLCConvolutionLayer	MLCLayer		-	-	9f7a8fad54148489
+property	c:objc(cs)MLCConvolutionLayer(py)descriptor	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	2be760dab771cd14
+property	c:objc(cs)MLCConvolutionLayer(py)weights	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	8147aed791d401e6
+property	c:objc(cs)MLCConvolutionLayer(py)biases	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	187612163d491a24
+property	c:objc(cs)MLCConvolutionLayer(py)weightsParameter	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	2f3287204d7a2fa1
+property	c:objc(cs)MLCConvolutionLayer(py)biasesParameter	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	9542b9ef2fce8cb4
+method	c:objc(cs)MLCConvolutionLayer(cm)layerWithWeights:biases:descriptor:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	b77607f9330b298c
+interface	c:objc(cs)MLCFullyConnectedLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e550141049f78f3b
+super	-	MLCFullyConnectedLayer	MLCLayer		-	-	4217133035ab22d6
+property	c:objc(cs)MLCFullyConnectedLayer(py)descriptor	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	c81990105010b406
+property	c:objc(cs)MLCFullyConnectedLayer(py)weights	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a3b0df7bdeba7481
+property	c:objc(cs)MLCFullyConnectedLayer(py)biases	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	966f0d9f4e499a92
+property	c:objc(cs)MLCFullyConnectedLayer(py)weightsParameter	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	98e67f186d43a944
+property	c:objc(cs)MLCFullyConnectedLayer(py)biasesParameter	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3dc37d76d3750407
+method	c:objc(cs)MLCFullyConnectedLayer(cm)layerWithWeights:biases:descriptor:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	b35e63a5acaa6cbd
+interface	c:objc(cs)MLCDropoutLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	62c1f686340d2e21
+super	-	MLCDropoutLayer	MLCLayer		-	-	b469311596a14bac
+property	c:objc(cs)MLCDropoutLayer(py)rate	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f13a82e26ec3e67e
+property	c:objc(cs)MLCDropoutLayer(py)seed	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3f22efe3cddf1676
+method	c:objc(cs)MLCDropoutLayer(cm)layerWithRate:seed:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	5c232153d35ec01b
+interface	c:objc(cs)MLCGramMatrixLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	6ac322674bcaef83
+super	-	MLCGramMatrixLayer	MLCLayer		-	-	298129325babd122
+property	c:objc(cs)MLCGramMatrixLayer(py)scale	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	5c639da00b86b5c5
+method	c:objc(cs)MLCGramMatrixLayer(cm)layerWithScale:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	1ca5be17f1807c10
+interface	c:objc(cs)MLCActivationLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	12a1191a158a4d08
+super	-	MLCActivationLayer	MLCLayer		-	-	b8b9cbe30fa156fd
+property	c:objc(cs)MLCActivationLayer(py)descriptor	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f6155865a85cc201
+method	c:objc(cs)MLCActivationLayer(cm)layerWithDescriptor:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	25ae0966ae4cf33f
+property	c:objc(cs)MLCActivationLayer(cpy)reluLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	71d73bf9f05152cd
+property	c:objc(cs)MLCActivationLayer(cpy)relu6Layer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	38af5a1fae49d85c
+property	c:objc(cs)MLCActivationLayer(cpy)leakyReLULayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7b8d69f432518020
+method	c:objc(cs)MLCActivationLayer(cm)leakyReLULayerWithNegativeSlope:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	4d9e06006172626e
+method	c:objc(cs)MLCActivationLayer(cm)linearLayerWithScale:bias:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	36e8e86b0ca4f156
+property	c:objc(cs)MLCActivationLayer(cpy)sigmoidLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	000f8fc3d459f676
+property	c:objc(cs)MLCActivationLayer(cpy)hardSigmoidLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	52306bbe54f1fbb1
+property	c:objc(cs)MLCActivationLayer(cpy)tanhLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	df214163addcdc7d
+property	c:objc(cs)MLCActivationLayer(cpy)absoluteLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	1e1d7858690e0e09
+property	c:objc(cs)MLCActivationLayer(cpy)softPlusLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	b0bc2fc465824a83
+method	c:objc(cs)MLCActivationLayer(cm)softPlusLayerWithBeta:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	61f1dedd66a84683
+property	c:objc(cs)MLCActivationLayer(cpy)softSignLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	47ff9b9b43743f53
+property	c:objc(cs)MLCActivationLayer(cpy)eluLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	42add840bf1f6027
+method	c:objc(cs)MLCActivationLayer(cm)eluLayerWithA:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3bdf127ed254e1ac
+method	c:objc(cs)MLCActivationLayer(cm)relunLayerWithA:b:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	b67cc5ba75f4bb01
+property	c:objc(cs)MLCActivationLayer(cpy)logSigmoidLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3696dc618fb51b34
+property	c:objc(cs)MLCActivationLayer(cpy)seluLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	66a0f27971e4752a
+property	c:objc(cs)MLCActivationLayer(cpy)celuLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	dd188614178d45ea
+method	c:objc(cs)MLCActivationLayer(cm)celuLayerWithA:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	41a2abb8836648d2
+property	c:objc(cs)MLCActivationLayer(cpy)hardShrinkLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	45673e42af22f47d
+method	c:objc(cs)MLCActivationLayer(cm)hardShrinkLayerWithA:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	bc844359dc5183fb
+property	c:objc(cs)MLCActivationLayer(cpy)softShrinkLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	8a6295caab983560
+method	c:objc(cs)MLCActivationLayer(cm)softShrinkLayerWithA:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	54d484bfe5203e61
+property	c:objc(cs)MLCActivationLayer(cpy)tanhShrinkLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	643fb595dbe0abe8
+method	c:objc(cs)MLCActivationLayer(cm)thresholdLayerWithThreshold:replacement:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	92b22f9a4d06e8db
+property	c:objc(cs)MLCActivationLayer(cpy)geluLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3136f2cc4ef8544a
+property	c:objc(cs)MLCActivationLayer(cpy)hardSwishLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	d4a8ea0016aa10f9
+method	c:objc(cs)MLCActivationLayer(cm)clampLayerWithMinValue:maxValue:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	64c9619e3831036f
+interface	c:objc(cs)MLCPoolingLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	252ea5558ade44d6
+super	-	MLCPoolingLayer	MLCLayer		-	-	3f674de48e8f91b7
+property	c:objc(cs)MLCPoolingLayer(py)descriptor	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	d268cb3476446414
+method	c:objc(cs)MLCPoolingLayer(cm)layerWithDescriptor:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	744f3412aafa4200
+interface	c:objc(cs)MLCBatchNormalizationLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	878e240033bdd1df
+super	-	MLCBatchNormalizationLayer	MLCLayer		-	-	953a0f29b9beb919
+property	c:objc(cs)MLCBatchNormalizationLayer(py)featureChannelCount	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	5ff2510b5e6679d7
+property	c:objc(cs)MLCBatchNormalizationLayer(py)mean	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	00c7734bc62c04b3
+property	c:objc(cs)MLCBatchNormalizationLayer(py)variance	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	6abd3750a0f2f750
+property	c:objc(cs)MLCBatchNormalizationLayer(py)beta	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e073b3ddb9682f17
+property	c:objc(cs)MLCBatchNormalizationLayer(py)gamma	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	8bcb1944b3178f57
+property	c:objc(cs)MLCBatchNormalizationLayer(py)betaParameter	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	b60783063953a975
+property	c:objc(cs)MLCBatchNormalizationLayer(py)gammaParameter	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	48e436f606e7916c
+property	c:objc(cs)MLCBatchNormalizationLayer(py)varianceEpsilon	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	8ba17a9ae6bfdc57
+property	c:objc(cs)MLCBatchNormalizationLayer(py)momentum	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	c8d3944aa0c2c01b
+method	c:objc(cs)MLCBatchNormalizationLayer(cm)layerWithFeatureChannelCount:mean:variance:beta:gamma:varianceEpsilon:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	8e04f3d5b22c1256
+method	c:objc(cs)MLCBatchNormalizationLayer(cm)layerWithFeatureChannelCount:mean:variance:beta:gamma:varianceEpsilon:momentum:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3f8e91390f8ad722
+interface	c:objc(cs)MLCInstanceNormalizationLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	5e3365ae7bd37d5b
+super	-	MLCInstanceNormalizationLayer	MLCLayer		-	-	b71b55965f5b3fbc
+property	c:objc(cs)MLCInstanceNormalizationLayer(py)featureChannelCount	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	08cbd68811b9b6cd
+property	c:objc(cs)MLCInstanceNormalizationLayer(py)mean	-			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	06833541056deed1
+property	c:objc(cs)MLCInstanceNormalizationLayer(py)variance	-			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	97c703e1018b3fbc
+property	c:objc(cs)MLCInstanceNormalizationLayer(py)beta	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	9108fbeafc8a835c
+property	c:objc(cs)MLCInstanceNormalizationLayer(py)gamma	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	6cd3494a51c1caec
+property	c:objc(cs)MLCInstanceNormalizationLayer(py)betaParameter	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7bf6feeec2bf340d
+property	c:objc(cs)MLCInstanceNormalizationLayer(py)gammaParameter	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	913e7ea28da6cd51
+property	c:objc(cs)MLCInstanceNormalizationLayer(py)varianceEpsilon	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e30e842598aa0912
+property	c:objc(cs)MLCInstanceNormalizationLayer(py)momentum	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	9520d531af5a2e3b
+method	c:objc(cs)MLCInstanceNormalizationLayer(cm)layerWithFeatureChannelCount:beta:gamma:varianceEpsilon:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a7b684855c99b83b
+method	c:objc(cs)MLCInstanceNormalizationLayer(cm)layerWithFeatureChannelCount:beta:gamma:varianceEpsilon:momentum:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	16985d2210f4a0dd
+method	c:objc(cs)MLCInstanceNormalizationLayer(cm)layerWithFeatureChannelCount:mean:variance:beta:gamma:varianceEpsilon:momentum:	-			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	fbe7d0f22f690496
+interface	c:objc(cs)MLCConcatenationLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	4222d2c3876057ff
+super	-	MLCConcatenationLayer	MLCLayer		-	-	30068b04d4a57378
+property	c:objc(cs)MLCConcatenationLayer(py)dimension	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	04a7eab5ab698f69
+method	c:objc(cs)MLCConcatenationLayer(cm)layer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	0cda814ddfa0014e
+method	c:objc(cs)MLCConcatenationLayer(cm)layerWithDimension:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	6efc5dd5bdc4e639
+interface	c:objc(cs)MLCLayerNormalizationLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	85b5d1e6262f4d66
+super	-	MLCLayerNormalizationLayer	MLCLayer		-	-	80ca941d8924b0b5
+property	c:objc(cs)MLCLayerNormalizationLayer(py)normalizedShape	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	08cd189ed7901650
+property	c:objc(cs)MLCLayerNormalizationLayer(py)beta	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a8ee4027dd942e35
+property	c:objc(cs)MLCLayerNormalizationLayer(py)gamma	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7abceb086b83fc0f
+property	c:objc(cs)MLCLayerNormalizationLayer(py)betaParameter	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	34dea157732ae154
+property	c:objc(cs)MLCLayerNormalizationLayer(py)gammaParameter	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f94e335275e15e52
+property	c:objc(cs)MLCLayerNormalizationLayer(py)varianceEpsilon	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	158a2eccfb17d1bb
+method	c:objc(cs)MLCLayerNormalizationLayer(cm)layerWithNormalizedShape:beta:gamma:varianceEpsilon:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7beba31d32d3aa4b
+interface	c:objc(cs)MLCGroupNormalizationLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	157d92cb706365a5
+super	-	MLCGroupNormalizationLayer	MLCLayer		-	-	45d8cb60613b02bc
+property	c:objc(cs)MLCGroupNormalizationLayer(py)featureChannelCount	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	79b596bd822011f3
+property	c:objc(cs)MLCGroupNormalizationLayer(py)groupCount	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	85f40c488f48f206
+property	c:objc(cs)MLCGroupNormalizationLayer(py)beta	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	86ba65ec23c3f766
+property	c:objc(cs)MLCGroupNormalizationLayer(py)gamma	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	233fa7445305d1ec
+property	c:objc(cs)MLCGroupNormalizationLayer(py)betaParameter	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	bdbd8d5753405cf5
+property	c:objc(cs)MLCGroupNormalizationLayer(py)gammaParameter	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f27504ee03aa8c36
+property	c:objc(cs)MLCGroupNormalizationLayer(py)varianceEpsilon	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	5a20792016465ca0
+method	c:objc(cs)MLCGroupNormalizationLayer(cm)layerWithFeatureChannelCount:groupCount:beta:gamma:varianceEpsilon:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	d3249f6c389328c6
+interface	c:objc(cs)MLCReshapeLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	25de1316f1574c6d
+super	-	MLCReshapeLayer	MLCLayer		-	-	ba67c9fcf41c94b5
+property	c:objc(cs)MLCReshapeLayer(py)shape	-			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	180d050a5abeae2c
+method	c:objc(cs)MLCReshapeLayer(cm)layerWithShape:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	62767347ba494d7d
+interface	c:objc(cs)MLCSoftmaxLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	1e79489fd00d9f87
+super	-	MLCSoftmaxLayer	MLCLayer		-	-	4fbb2b5c271340ad
+property	c:objc(cs)MLCSoftmaxLayer(py)operation	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	456ca91df00bc6f0
+property	c:objc(cs)MLCSoftmaxLayer(py)dimension	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a55ceeb23920f80b
+method	c:objc(cs)MLCSoftmaxLayer(cm)layerWithOperation:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	61d4eb1446657bf8
+method	c:objc(cs)MLCSoftmaxLayer(cm)layerWithOperation:dimension:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	31ef1caf4f8d865a
+interface	c:objc(cs)MLCLossLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	d6468edbd3edf62d
+super	-	MLCLossLayer	MLCLayer		-	-	94a4925689facfb5
+property	c:objc(cs)MLCLossLayer(py)descriptor	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	1c7f1c3959adb531
+property	c:objc(cs)MLCLossLayer(py)weights	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3a90ffb44c61f42b
+method	c:objc(cs)MLCLossLayer(cm)layerWithDescriptor:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	9343323d059f811d
+method	c:objc(cs)MLCLossLayer(cm)layerWithDescriptor:weights:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f1cbf6079419e740
+method	c:objc(cs)MLCLossLayer(cm)softmaxCrossEntropyLossWithReductionType:labelSmoothing:classCount:weight:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	cd948c8b09b20db2
+method	c:objc(cs)MLCLossLayer(cm)softmaxCrossEntropyLossWithReductionType:labelSmoothing:classCount:weights:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	c168ca09ca4023ca
+method	c:objc(cs)MLCLossLayer(cm)categoricalCrossEntropyLossWithReductionType:labelSmoothing:classCount:weight:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	85c6bbe71a8ca3c2
+method	c:objc(cs)MLCLossLayer(cm)categoricalCrossEntropyLossWithReductionType:labelSmoothing:classCount:weights:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a748fa0d89b3a324
+method	c:objc(cs)MLCLossLayer(cm)sigmoidCrossEntropyLossWithReductionType:labelSmoothing:weight:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	9ed0e10afecce1d9
+method	c:objc(cs)MLCLossLayer(cm)sigmoidCrossEntropyLossWithReductionType:labelSmoothing:weights:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	8a1587046dd517be
+method	c:objc(cs)MLCLossLayer(cm)logLossWithReductionType:epsilon:weight:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	fc0a0b3c3b772a04
+method	c:objc(cs)MLCLossLayer(cm)logLossWithReductionType:epsilon:weights:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	8ff6018c0196c6f5
+method	c:objc(cs)MLCLossLayer(cm)huberLossWithReductionType:delta:weight:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	d2d07e97c9c16f07
+method	c:objc(cs)MLCLossLayer(cm)huberLossWithReductionType:delta:weights:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	64418cfa35d97266
+method	c:objc(cs)MLCLossLayer(cm)meanAbsoluteErrorLossWithReductionType:weight:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	0c65db3e4721e673
+method	c:objc(cs)MLCLossLayer(cm)meanAbsoluteErrorLossWithReductionType:weights:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	44da8ad9b93f93ef
+method	c:objc(cs)MLCLossLayer(cm)meanSquaredErrorLossWithReductionType:weight:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	040f0af86389e4f9
+method	c:objc(cs)MLCLossLayer(cm)meanSquaredErrorLossWithReductionType:weights:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	04d58cc198c3596d
+method	c:objc(cs)MLCLossLayer(cm)hingeLossWithReductionType:weight:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	b72037af7730c2ab
+method	c:objc(cs)MLCLossLayer(cm)hingeLossWithReductionType:weights:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	16bd9780d9c52845
+method	c:objc(cs)MLCLossLayer(cm)cosineDistanceLossWithReductionType:weight:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	dd5834dd71b949d6
+method	c:objc(cs)MLCLossLayer(cm)cosineDistanceLossWithReductionType:weights:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	9a71bccd8b77e7f3
+interface	c:objc(cs)MLCYOLOLossLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	ad1ac6a2fa35984a
+super	-	MLCYOLOLossLayer	MLCLossLayer		-	-	677118c0da064669
+property	c:objc(cs)MLCYOLOLossLayer(py)yoloLossDescriptor	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7f9abb157fb17a74
+method	c:objc(cs)MLCYOLOLossLayer(cm)layerWithDescriptor:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a16acc0ff549b1ba
+interface	c:objc(cs)MLCLSTMLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	44b8d7dc87b0e1a1
+super	-	MLCLSTMLayer	MLCLayer		-	-	69baa2c0dab44b9d
+property	c:objc(cs)MLCLSTMLayer(py)descriptor	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3ba93e5c6d5412b3
+property	c:objc(cs)MLCLSTMLayer(py)gateActivations	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	6321d652847192a7
+property	c:objc(cs)MLCLSTMLayer(py)outputResultActivation	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	01f42f9711748a79
+property	c:objc(cs)MLCLSTMLayer(py)inputWeights	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7b405e25d50dd08d
+property	c:objc(cs)MLCLSTMLayer(py)hiddenWeights	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	c59314b4bc12d958
+property	c:objc(cs)MLCLSTMLayer(py)peepholeWeights	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	6a2a11f6374a562a
+property	c:objc(cs)MLCLSTMLayer(py)biases	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7702e546d96b9821
+property	c:objc(cs)MLCLSTMLayer(py)inputWeightsParameters	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e3190590d50df1bb
+property	c:objc(cs)MLCLSTMLayer(py)hiddenWeightsParameters	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	41fcc90255d8e4a4
+property	c:objc(cs)MLCLSTMLayer(py)peepholeWeightsParameters	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	6332e03ecb80605f
+property	c:objc(cs)MLCLSTMLayer(py)biasesParameters	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	b92f4ef3ac15edfb
+method	c:objc(cs)MLCLSTMLayer(cm)layerWithDescriptor:inputWeights:hiddenWeights:biases:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	055b9983c7b3b7e6
+method	c:objc(cs)MLCLSTMLayer(cm)layerWithDescriptor:inputWeights:hiddenWeights:peepholeWeights:biases:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	def1183ce741a99e
+method	c:objc(cs)MLCLSTMLayer(cm)layerWithDescriptor:inputWeights:hiddenWeights:peepholeWeights:biases:gateActivations:outputResultActivation:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	1ff8748178f5312c
+interface	c:objc(cs)MLCUpsampleLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	46ed36bc3c2cb2e1
+super	-	MLCUpsampleLayer	MLCLayer		-	-	f24bf7e19dc7212f
+property	c:objc(cs)MLCUpsampleLayer(py)shape	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	6bfa5c6c6f800574
+property	c:objc(cs)MLCUpsampleLayer(py)sampleMode	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	95165aeb994b21ea
+property	c:objc(cs)MLCUpsampleLayer(py)alignsCorners	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	9e32111ff3fd21c4
+method	c:objc(cs)MLCUpsampleLayer(cm)layerWithShape:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	d60ea61071cce50f
+method	c:objc(cs)MLCUpsampleLayer(cm)layerWithShape:sampleMode:alignsCorners:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	1dd5f3d684bc3945
+interface	c:objc(cs)MLCPaddingLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	002e428ca0dd2c2c
+super	-	MLCPaddingLayer	MLCLayer		-	-	2fff1acdaf05f997
+conforms	-	MLCPaddingLayer	NSCopying		-	-	a6b49b90c13bd497
+property	c:objc(cs)MLCPaddingLayer(py)paddingType	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	32a9d3a13c158cd5
+property	c:objc(cs)MLCPaddingLayer(py)paddingLeft	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	6e6ac00c221cb8ff
+property	c:objc(cs)MLCPaddingLayer(py)paddingRight	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	034adcdec3a609d1
+property	c:objc(cs)MLCPaddingLayer(py)paddingTop	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e03a1c66338b7870
+property	c:objc(cs)MLCPaddingLayer(py)paddingBottom	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	d0c3aa6977209602
+property	c:objc(cs)MLCPaddingLayer(py)constantValue	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	9cc8ac71f51f0efb
+method	c:objc(cs)MLCPaddingLayer(cm)layerWithReflectionPadding:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	ab9c6ce9d68715f7
+method	c:objc(cs)MLCPaddingLayer(cm)layerWithSymmetricPadding:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	bd0a5b09df242589
+method	c:objc(cs)MLCPaddingLayer(cm)layerWithZeroPadding:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	c3c39a4ccfd76d1f
+method	c:objc(cs)MLCPaddingLayer(cm)layerWithConstantPadding:constantValue:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f82b0ebcb9e12f2d
+interface	c:objc(cs)MLCTransposeLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	0070339791db1830
+super	-	MLCTransposeLayer	MLCLayer		-	-	e15693028a9866b3
+property	c:objc(cs)MLCTransposeLayer(py)dimensions	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	6b2d2b0fb8ea222e
+method	c:objc(cs)MLCTransposeLayer(cm)layerWithDimensions:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	12aac62ecc069c56
+interface	c:objc(cs)MLCReductionLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3b3a2dcade1e43cb
+super	-	MLCReductionLayer	MLCLayer		-	-	0809e7d8b03f2508
+property	c:objc(cs)MLCReductionLayer(py)reductionType	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	53236cfa974d71b4
+property	c:objc(cs)MLCReductionLayer(py)dimension	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	cfc57b0193240a82
+property	c:objc(cs)MLCReductionLayer(py)dimensions	-			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	f45bde38d856bc41
+method	c:objc(cs)MLCReductionLayer(cm)layerWithReductionType:dimension:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	fd9df5fbede73d1b
+method	c:objc(cs)MLCReductionLayer(cm)layerWithReductionType:dimensions:	-			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	b3d2c2ae32ef0d2b
+interface	c:objc(cs)MLCMultiheadAttentionLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7a05619b8af9b3d5
+super	-	MLCMultiheadAttentionLayer	MLCLayer		-	-	4e54de4b6b781e89
+property	c:objc(cs)MLCMultiheadAttentionLayer(py)descriptor	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	14d2e47cd1230da0
+property	c:objc(cs)MLCMultiheadAttentionLayer(py)weights	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	bf7d0ac302e3138e
+property	c:objc(cs)MLCMultiheadAttentionLayer(py)biases	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7b035d464956dfc4
+property	c:objc(cs)MLCMultiheadAttentionLayer(py)attentionBiases	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	d2deb00286e53d92
+property	c:objc(cs)MLCMultiheadAttentionLayer(py)weightsParameters	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3294db89e9cde135
+property	c:objc(cs)MLCMultiheadAttentionLayer(py)biasesParameters	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	35e68872443974fd
+method	c:objc(cs)MLCMultiheadAttentionLayer(cm)layerWithDescriptor:weights:biases:attentionBiases:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	9890239a3578becd
+interface	c:objc(cs)MLCSplitLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	d4d2e7ecca51b15f
+super	-	MLCSplitLayer	MLCLayer		-	-	8f55b0c80d1900cd
+property	c:objc(cs)MLCSplitLayer(py)dimension	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	41078d69b6c24559
+property	c:objc(cs)MLCSplitLayer(py)splitCount	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	039120da744ab639
+property	c:objc(cs)MLCSplitLayer(py)splitSectionLengths	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	bc86eb396fdca896
+method	c:objc(cs)MLCSplitLayer(cm)layerWithSplitCount:dimension:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	18557ddeec790668
+method	c:objc(cs)MLCSplitLayer(cm)layerWithSplitSectionLengths:dimension:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	8579c25883335968
+interface	c:objc(cs)MLCMatMulLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	6232e1a2329f00cc
+super	-	MLCMatMulLayer	MLCLayer		-	-	49f29a2d2e6b5d6a
+property	c:objc(cs)MLCMatMulLayer(py)descriptor	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	0c1b18229f1af1e0
+method	c:objc(cs)MLCMatMulLayer(cm)layerWithDescriptor:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f5790a4ba930ce5f
+interface	c:objc(cs)MLCSliceLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	ae75fb52bf1d7eb9
+super	-	MLCSliceLayer	MLCLayer		-	-	78a6c7f9421b453c
+property	c:objc(cs)MLCSliceLayer(py)start	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	49377939d0608e46
+property	c:objc(cs)MLCSliceLayer(py)end	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	87c9d9bfb65fa8e0
+property	c:objc(cs)MLCSliceLayer(py)stride	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	d11787e3cf4ece45
+method	c:objc(cs)MLCSliceLayer(cm)sliceLayerWithStart:end:stride:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	042d4570d5b3143d
+interface	c:objc(cs)MLCEmbeddingLayer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	fc049944aa4ead7b
+super	-	MLCEmbeddingLayer	MLCLayer		-	-	1ee9e4cd9ebd257b
+property	c:objc(cs)MLCEmbeddingLayer(py)descriptor	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	02e380d8a803c3c5
+property	c:objc(cs)MLCEmbeddingLayer(py)weights	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7b3985f88abfa5ee
+property	c:objc(cs)MLCEmbeddingLayer(py)weightsParameter	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	faf48c0da4a3031e
+method	c:objc(cs)MLCEmbeddingLayer(cm)layerWithDescriptor:weights:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	b96c49f6f2128f41
+interface	c:objc(cs)MLCSelectionLayer	-			ios=14.5/17.4/-/0,macos=11.3/14.3/-/0,tvos=14.5/17.4/-/0	-	c951c321076ec5d6
+super	-	MLCSelectionLayer	MLCLayer		-	-	d5589ba154401593
+method	c:objc(cs)MLCSelectionLayer(cm)layer	-			ios=14.5/17.4/-/0,macos=11.3/14.3/-/0,tvos=14.5/17.4/-/0	-	1bf8a7403d00dd8f
+interface	c:objc(cs)MLCGatherLayer	-			ios=14.5/17.4/-/0,macos=11.3/14.3/-/0,tvos=14.5/17.4/-/0	-	99e6352d0d805e87
+super	-	MLCGatherLayer	MLCLayer		-	-	8a404ae61021f59c
+property	c:objc(cs)MLCGatherLayer(py)dimension	-			ios=14.5/17.4/-/0,macos=11.3/14.3/-/0,tvos=14.5/17.4/-/0	-	fcf82daad681e639
+method	c:objc(cs)MLCGatherLayer(cm)layerWithDimension:	-			ios=14.5/17.4/-/0,macos=11.3/14.3/-/0,tvos=14.5/17.4/-/0	-	afa0aa7c1da24d5e
+interface	c:objc(cs)MLCScatterLayer	-			ios=14.5/17.4/-/0,macos=11.3/14.3/-/0,tvos=14.5/17.4/-/0	-	024747260a0bb853
+super	-	MLCScatterLayer	MLCLayer		-	-	b21c8282075751fe
+property	c:objc(cs)MLCScatterLayer(py)dimension	-			ios=14.5/17.4/-/0,macos=11.3/14.3/-/0,tvos=14.5/17.4/-/0	-	a7d1aa192fc222b5
+property	c:objc(cs)MLCScatterLayer(py)reductionType	-			ios=14.5/17.4/-/0,macos=11.3/14.3/-/0,tvos=14.5/17.4/-/0	-	4cd901cf8e1d7b1a
+method	c:objc(cs)MLCScatterLayer(cm)layerWithDimension:reductionType:	-			ios=14.5/17.4/-/0,macos=11.3/14.3/-/0,tvos=14.5/17.4/-/0	-	bed80e2a2e4efa70
+interface	c:objc(cs)MLCOptimizer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e2ee580bd7333e03
+super	-	MLCOptimizer	NSObject		-	-	9131971955a22ace
+conforms	-	MLCOptimizer	NSCopying		-	-	f298e5ad2619f8c7
+property	c:objc(cs)MLCOptimizer(py)learningRate	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f9cb3c0a59df0071
+property	c:objc(cs)MLCOptimizer(py)gradientRescale	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e0c6b9cd36af834a
+property	c:objc(cs)MLCOptimizer(py)appliesGradientClipping	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	af0da94af6b54a88
+property	c:objc(cs)MLCOptimizer(py)gradientClipMax	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e4794bf548b93c24
+property	c:objc(cs)MLCOptimizer(py)gradientClipMin	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	046ecbad7bfad613
+property	c:objc(cs)MLCOptimizer(py)regularizationScale	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	29d27d434cb45209
+property	c:objc(cs)MLCOptimizer(py)regularizationType	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	86c9a8d052de086d
+property	c:objc(cs)MLCOptimizer(py)gradientClippingType	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	19a2815286868a74
+property	c:objc(cs)MLCOptimizer(py)maximumClippingNorm	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	60598f5e4724e237
+property	c:objc(cs)MLCOptimizer(py)customGlobalNorm	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	2c912fc2aa8002f0
+method	c:objc(cs)MLCOptimizer(cm)new	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	ec16d8aa59d40c50
+method	c:objc(cs)MLCOptimizer(im)init	-			*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e77367093643a2b1
+interface	c:objc(cs)MLCSGDOptimizer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	070bb90e939b508c
+super	-	MLCSGDOptimizer	MLCOptimizer		-	-	39dcf7dfe45d9ad9
+conforms	-	MLCSGDOptimizer	NSCopying		-	-	256b2a9a64d7134d
+property	c:objc(cs)MLCSGDOptimizer(py)momentumScale	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	67f3177878b14168
+property	c:objc(cs)MLCSGDOptimizer(py)usesNesterovMomentum	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a9a98bbdf3886f3d
+method	c:objc(cs)MLCSGDOptimizer(cm)optimizerWithDescriptor:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	364b4239fde13bc5
+method	c:objc(cs)MLCSGDOptimizer(cm)optimizerWithDescriptor:momentumScale:usesNesterovMomentum:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	616bcb17bcefc07b
+interface	c:objc(cs)MLCAdamOptimizer	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	4edc5eb4e6387f16
+super	-	MLCAdamOptimizer	MLCOptimizer		-	-	708daba25f6b5a2c
+conforms	-	MLCAdamOptimizer	NSCopying		-	-	3bdedc60e363d9b4
+property	c:objc(cs)MLCAdamOptimizer(py)beta1	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e44d455a3195e954
+property	c:objc(cs)MLCAdamOptimizer(py)beta2	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	96e150cf1602a846
+property	c:objc(cs)MLCAdamOptimizer(py)epsilon	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a03b8223cef5bc8b
+property	c:objc(cs)MLCAdamOptimizer(py)usesAMSGrad	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3dc54e56c1d4630b
+property	c:objc(cs)MLCAdamOptimizer(py)timeStep	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a4342b878ed930de
+method	c:objc(cs)MLCAdamOptimizer(cm)optimizerWithDescriptor:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	761d184d3c820e64
+method	c:objc(cs)MLCAdamOptimizer(cm)optimizerWithDescriptor:beta1:beta2:epsilon:timeStep:	-			ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	24a059724659b812
+method	c:objc(cs)MLCAdamOptimizer(cm)optimizerWithDescriptor:beta1:beta2:epsilon:usesAMSGrad:timeStep:	-			ios=15/-/-/0,macos=12.0/-/-/0,tvos=15/-/-/0	-	48b5b30952242d78
+interface	c:objc(cs)MLCAdamWOptimizer	-			ios=15.0/17.4/-/0,macos=12.0/14.3/-/0,tvos=15.0/17.4/-/0	-	2f1f3f0ab73039bb
+super	-	MLCAdamWOptimizer	MLCOptimizer		-	-	e4afacf5d60b952d
+conforms	-	MLCAdamWOptimizer	NSCopying		-	-	43d9a674824fe484
+property	c:objc(cs)MLCAdamWOptimizer(py)beta1	-			ios=15.0/17.4/-/0,macos=12.0/14.3/-/0,tvos=15.0/17.4/-/0	-	570f3066abc3ebe4
+property	c:objc(cs)MLCAdamWOptimizer(py)beta2	-			ios=15.0/17.4/-/0,macos=12.0/14.3/-/0,tvos=15.0/17.4/-/0	-	a3271fb722340d03
+property	c:objc(cs)MLCAdamWOptimizer(py)epsilon	-			ios=15.0/17.4/-/0,macos=12.0/14.3/-/0,tvos=15.0/17.4/-/0	-	4ee13586b160080f
+property	c:objc(cs)MLCAdamWOptimizer(py)usesAMSGrad	-			ios=15.0/17.4/-/0,macos=12.0/14.3/-/0,tvos=15.0/17.4/-/0	-	fe767163f95f5ee4
+property	c:objc(cs)MLCAdamWOptimizer(py)timeStep	-			ios=15.0/17.4/-/0,macos=12.0/14.3/-/0,tvos=15.0/17.4/-/0	-	cab78bad8c9c158e
+method	c:objc(cs)MLCAdamWOptimizer(cm)optimizerWithDescriptor:	-			ios=15.0/17.4/-/0,macos=12.0/14.3/-/0,tvos=15.0/17.4/-/0	-	a3bf8f936d18a80e
+method	c:objc(cs)MLCAdamWOptimizer(cm)optimizerWithDescriptor:beta1:beta2:epsilon:usesAMSGrad:timeStep:	-			ios=15.0/17.4/-/0,macos=12.0/14.3/-/0,tvos=15.0/17.4/-/0	-	69e20a0ca0af1637
+interface	c:objc(cs)MLCRMSPropOptimizer	-			macos=11.0/100000/-/0	-	34128c7f4b360351
+super	-	MLCRMSPropOptimizer	MLCOptimizer		-	-	4d37c11159a3f10e
+conforms	-	MLCRMSPropOptimizer	NSCopying		-	-	91292c6bb180bfc5
+property	c:objc(cs)MLCRMSPropOptimizer(py)momentumScale	-			macos=11.0/100000/-/0	-	eb2d57d6706aeaec
+property	c:objc(cs)MLCRMSPropOptimizer(py)alpha	-			macos=11.0/100000/-/0	-	1ac0fe53318a28e1
+property	c:objc(cs)MLCRMSPropOptimizer(py)epsilon	-			macos=11.0/100000/-/0	-	a18b070484782047
+property	c:objc(cs)MLCRMSPropOptimizer(py)isCentered	-			macos=11.0/100000/-/0	-	e32a37f370dca753
+method	c:objc(cs)MLCRMSPropOptimizer(cm)optimizerWithDescriptor:	-			macos=11.0/100000/-/0	-	9f6cfbabc1ce7cb3
+method	c:objc(cs)MLCRMSPropOptimizer(cm)optimizerWithDescriptor:momentumScale:alpha:epsilon:isCentered:	-			macos=11.0/100000/-/0	-	ac06a5c9d0b2c66f

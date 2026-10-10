@@ -1,0 +1,76 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+interface	c:objc(cs)QLPreviewController	-			ios=4.0/-/-/0	-	82052abdeafabea0
+super	-	QLPreviewController	UIViewController		-	-	d27399bd5f81bb00
+method	c:objc(cs)QLPreviewController(cm)canPreviewItem:	-			ios=4.0/-/-/0	-	49969c34005f395f
+property	c:objc(cs)QLPreviewController(py)dataSource	-			ios=4.0/-/-/0	-	bdf5286e40adf8a4
+method	c:objc(cs)QLPreviewController(im)reloadData	-			ios=4.0/-/-/0	-	91360260fcb897c1
+method	c:objc(cs)QLPreviewController(im)refreshCurrentPreviewItem	-			ios=4.0/-/-/0	-	821542fdb5949d37
+property	c:objc(cs)QLPreviewController(py)currentPreviewItemIndex	-			ios=4.0/-/-/0	-	5193ee7aafe92233
+property	c:objc(cs)QLPreviewController(py)currentPreviewItem	-			ios=4.0/-/-/0	-	6da81b99a982d8b5
+property	c:objc(cs)QLPreviewController(py)delegate	-			ios=4.0/-/-/0	-	7b743eab4186d6bc
+protocol	c:objc(pl)QLPreviewControllerDataSource	-			-	-	c6559d3f7c47554e
+method	c:objc(pl)QLPreviewControllerDataSource(im)numberOfPreviewItemsInPreviewController:	-			-	-	9204c7ae460da4a5
+method	c:objc(pl)QLPreviewControllerDataSource(im)previewController:previewItemAtIndex:	-			-	-	4a52992e57a5e248
+typedef	c:@T@QLPreviewItemEditingMode	-			-	-	d2086b5206b735f8
+enum	c:@E@QLPreviewItemEditingMode	-			ios=13.0/-/-/0	-	939ae01b5f17d1de
+enumconst	c:@E@QLPreviewItemEditingMode@QLPreviewItemEditingModeDisabled	QLPreviewItemEditingMode			ios=13.0/-/-/0	-	9ff1fb49dc013904
+enumconst	c:@E@QLPreviewItemEditingMode@QLPreviewItemEditingModeUpdateContents	QLPreviewItemEditingMode			ios=13.0/-/-/0	-	5d5f936c4945b976
+enumconst	c:@E@QLPreviewItemEditingMode@QLPreviewItemEditingModeCreateCopy	QLPreviewItemEditingMode			ios=13.0/-/-/0	-	b2f4587ab2dd7380
+protocol	c:objc(pl)QLPreviewControllerDelegate	-			-	-	f012725c051ce78e
+conforms	-	QLPreviewControllerDelegate	NSObject		-	-	dd380b37e898a444
+method	c:objc(pl)QLPreviewControllerDelegate(im)previewControllerWillDismiss:	-			-	-	dba0db3037b668a6
+method	c:objc(pl)QLPreviewControllerDelegate(im)previewControllerDidDismiss:	-			-	-	a35bc7f86d059404
+method	c:objc(pl)QLPreviewControllerDelegate(im)previewController:shouldOpenURL:forPreviewItem:	-			-	-	e14dd410846b39c1
+method	c:objc(pl)QLPreviewControllerDelegate(im)previewController:frameForPreviewItem:inSourceView:	-			-	-	0d53527ce133dda9
+method	c:objc(pl)QLPreviewControllerDelegate(im)previewController:transitionImageForPreviewItem:contentRect:	-			-	-	86a80e01c16eb76b
+method	c:objc(pl)QLPreviewControllerDelegate(im)previewController:transitionViewForPreviewItem:	-			ios=10.0/-/-/0	-	e8840ae59af026a7
+method	c:objc(pl)QLPreviewControllerDelegate(im)previewController:editingModeForPreviewItem:	-			ios=13.0/-/-/0	-	d8adc19cd0ddd721
+method	c:objc(pl)QLPreviewControllerDelegate(im)previewController:didUpdateContentsOfPreviewItem:	-			ios=13.0/-/-/0	-	08b4d6d08833a318
+method	c:objc(pl)QLPreviewControllerDelegate(im)previewController:didSaveEditedCopyOfPreviewItem:atURL:	-			ios=13.0/-/-/0	-	dae9b8270a809f1a
+protocol	c:objc(pl)QLPreviewItem	-			-	-	df03985b5d544314
+conforms	-	QLPreviewItem	NSObject		-	-	2a56d83f203c037d
+property	c:objc(pl)QLPreviewItem(py)previewItemURL	-			-	-	c5d9a4240dd39a18
+property	c:objc(pl)QLPreviewItem(py)previewItemTitle	-			-	-	c734a60c6fbe4239
+category	c:objc(cy)NSURL@QLPreviewConvenienceAdditions	-			-	-	25b457bc1c9d3b57
+conforms	-	NSURL	QLPreviewItem		-	-	588efb65ed7ec6f3
+interface	c:objc(cs)ARQuickLookPreviewItem	-			ios=13.0/-/-/0	-	4350cca6c19f52ad
+super	-	ARQuickLookPreviewItem	NSObject		-	-	202e2c9bc73e012e
+conforms	-	ARQuickLookPreviewItem	QLPreviewItem		-	-	82d856ac54311267
+method	c:objc(cs)ARQuickLookPreviewItem(im)initWithFileAtURL:	-			ios=13.0/-/-/0	-	69a3263fe85b5870
+property	c:objc(cs)ARQuickLookPreviewItem(py)canonicalWebPageURL	-			ios=13.0/-/-/0	-	75fa447436353df1
+property	c:objc(cs)ARQuickLookPreviewItem(py)allowsContentScaling	-			ios=13.0/-/-/0	-	4190747e5cc5ad2c
+method	c:objc(cs)ARQuickLookPreviewItem(im)init	-			*unavailable ios=13.0/-/-/0	-	a2e2a1ece92d8c04
+method	c:objc(cs)ARQuickLookPreviewItem(cm)new	-			*unavailable ios=13.0/-/-/0	-	a4c43c0c88e1b5aa
+protocol	c:objc(pl)QLPreviewingController	-			-	-	f25651d25771bd62
+conforms	-	QLPreviewingController	NSObject		-	-	36732fe8636e0468
+method	c:objc(pl)QLPreviewingController(im)preparePreviewOfSearchableItemWithIdentifier:queryString:completionHandler:	-			-	-	3878fcc9cde3e034
+method	c:objc(pl)QLPreviewingController(im)preparePreviewOfFileAtURL:completionHandler:	-			-	-	034ebfcf6dae2273
+method	c:objc(pl)QLPreviewingController(im)providePreviewForFileRequest:completionHandler:	-			-	-	6c7954a82e92e6a7
+interface	c:objc(cs)QLPreviewProvider	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5b0ec8d477d82747
+super	-	QLPreviewProvider	NSObject		-	-	6b46c9952cfdc1a4
+conforms	-	QLPreviewProvider	NSExtensionRequestHandling		-	-	fb4cf2fcd57f35ec
+interface	c:objc(cs)QLPreviewReplyAttachment	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	986a8abf87fea541
+super	-	QLPreviewReplyAttachment	NSObject		-	-	4d482705b4b981c1
+property	c:objc(cs)QLPreviewReplyAttachment(py)data	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5a102b28e78b9643
+property	c:objc(cs)QLPreviewReplyAttachment(py)contentType	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	53b2fbb1dcbbe921
+method	c:objc(cs)QLPreviewReplyAttachment(im)initWithData:contentType:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c52f859635f3dd33
+interface	c:objc(cs)QLPreviewReply	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9ba1a4ddac912de3
+super	-	QLPreviewReply	NSObject		-	-	21618e29ad9bac0d
+property	c:objc(cs)QLPreviewReply(py)stringEncoding	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2793f12e65802054
+property	c:objc(cs)QLPreviewReply(py)attachments	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	418e4b16d82ed888
+property	c:objc(cs)QLPreviewReply(py)title	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e4d94841bbbb077e
+method	c:objc(cs)QLPreviewReply(im)initWithContextSize:isBitmap:drawingBlock:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	df1f1ee3f1c45256
+method	c:objc(cs)QLPreviewReply(im)initWithFileURL:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f3d659b027a87c25
+method	c:objc(cs)QLPreviewReply(im)initWithDataOfContentType:contentSize:dataCreationBlock:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a3fd0252f83a7e08
+category	c:objc(cy)QLPreviewReply@UI	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d25dc504ede2204a
+method	c:objc(cs)QLPreviewReply(im)initForPDFWithPageSize:documentCreationBlock:	UI			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c1fce9f34f82a22f
+interface	c:objc(cs)QLFilePreviewRequest	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d116818dfef04e13
+super	-	QLFilePreviewRequest	NSObject		-	-	d8c86a96139c83d2
+property	c:objc(cs)QLFilePreviewRequest(py)fileURL	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e7049812a2d57cb6
+interface	c:objc(cs)QLPreviewSceneOptions	-			ios=15.0/-/-/0,xros=-/-/-/1	-	59d13f37720ff43e
+super	-	QLPreviewSceneOptions	NSObject		-	-	3b21a05981e59adb
+property	c:objc(cs)QLPreviewSceneOptions(py)initialPreviewIndex	-			ios=15.0/-/-/0,xros=-/-/-/1	-	4a23bbe28c7706ec
+interface	c:objc(cs)QLPreviewSceneActivationConfiguration	-			ios=15.0/-/-/0,xros=-/-/-/1	-	e4e960ae901850ea
+super	-	QLPreviewSceneActivationConfiguration	UIWindowSceneActivationConfiguration		-	-	6dc0f0b322ab464e
+method	c:objc(cs)QLPreviewSceneActivationConfiguration(im)initWithItemsAtURLs:options:	-			ios=15.0/-/-/0,xros=-/-/-/1	-	5b7379b4d59b5652
+method	c:objc(cs)QLPreviewSceneActivationConfiguration(im)initWithUserActivity:	-			*unavailable ios=15.0/-/-/0,xros=-/-/-/1	-	75065ff510dcf5ec

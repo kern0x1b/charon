@@ -1,0 +1,124 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+typedef	c:@T@PHLivePhotoBadgeOptions	-			ios=9.1/-/-/0,tvos=10/-/-/0	-	2015f1200d7da8bb
+enum	c:@E@PHLivePhotoBadgeOptions	-			ios=9.1/-/-/0,tvos=10/-/-/0	-	e80f9f83c2ec06b5
+enumconst	c:@E@PHLivePhotoBadgeOptions@PHLivePhotoBadgeOptionsOverContent	PHLivePhotoBadgeOptions			ios=9.1/-/-/0,tvos=10/-/-/0	-	810fdb8c432b4d69
+enumconst	c:@E@PHLivePhotoBadgeOptions@PHLivePhotoBadgeOptionsLiveOff	PHLivePhotoBadgeOptions			ios=9.1/-/-/0,tvos=10/-/-/0	-	98e23b21b62e5db2
+typedef	c:@T@PHLivePhotoViewPlaybackStyle	-			ios=9.1/-/-/0,tvos=10/-/-/0	-	d36b350236522753
+enum	c:@E@PHLivePhotoViewPlaybackStyle	-			ios=9.1/-/-/0,tvos=10/-/-/0	-	51f2a864a5125c72
+enumconst	c:@E@PHLivePhotoViewPlaybackStyle@PHLivePhotoViewPlaybackStyleUndefined	PHLivePhotoViewPlaybackStyle			ios=9.1/-/-/0,tvos=10/-/-/0	-	310ba0f34a6fd4a0
+enumconst	c:@E@PHLivePhotoViewPlaybackStyle@PHLivePhotoViewPlaybackStyleFull	PHLivePhotoViewPlaybackStyle			ios=9.1/-/-/0,tvos=10/-/-/0	-	d0c564c60d0929b0
+enumconst	c:@E@PHLivePhotoViewPlaybackStyle@PHLivePhotoViewPlaybackStyleHint	PHLivePhotoViewPlaybackStyle			ios=9.1/-/-/0,tvos=10/-/-/0	-	b79e8fcc6dcfb817
+interface	c:objc(cs)PHLivePhotoView	-			ios=9.1/-/-/0,tvos=10/-/-/0	-	1619daeee456ef20
+super	-	PHLivePhotoView	UIView		-	-	9a2971ec051b10e9
+method	c:objc(cs)PHLivePhotoView(cm)livePhotoBadgeImageWithOptions:	-			ios=9.1/-/-/0,tvos=10/-/-/0	-	e8e56618613ceaeb
+property	c:objc(cs)PHLivePhotoView(py)delegate	-			ios=9.1/-/-/0,tvos=10/-/-/0	-	caad80631c8a5547
+property	c:objc(cs)PHLivePhotoView(py)livePhoto	-			ios=9.1/-/-/0,tvos=10/-/-/0	-	ef1aa59769fcb666
+property	c:objc(cs)PHLivePhotoView(py)contentsRect	-			ios=17/-/-/0,macos=14/-/-/0,tvos=17/-/-/0	-	64c8ea59a39cbd20
+property	c:objc(cs)PHLivePhotoView(py)muted	-			ios=9.1/-/-/0,tvos=10/-/-/0	-	4e07894451a7d81b
+property	c:objc(cs)PHLivePhotoView(py)playbackGestureRecognizer	-			ios=9.1/-/-/0,tvos=10/-/-/0	-	df29ff3028dc432a
+method	c:objc(cs)PHLivePhotoView(im)startPlaybackWithStyle:	-			ios=9.1/-/-/0,tvos=10/-/-/0	-	6dcc648d4ce21087
+method	c:objc(cs)PHLivePhotoView(im)stopPlayback	-			ios=9.1/-/-/0,tvos=10/-/-/0	-	0331f05648885fe5
+protocol	c:objc(pl)PHLivePhotoViewDelegate	-			ios=9.1/-/-/0,tvos=10/-/-/0	-	9706d757f1f560bc
+conforms	-	PHLivePhotoViewDelegate	NSObject		-	-	3ef2c8ed9cd01f49
+method	c:objc(pl)PHLivePhotoViewDelegate(im)livePhotoView:canBeginPlaybackWithStyle:	-			ios=9.1/-/-/0,tvos=10/-/-/0	-	18263313aa4d130d
+method	c:objc(pl)PHLivePhotoViewDelegate(im)livePhotoView:willBeginPlaybackWithStyle:	-			ios=9.1/-/-/0,tvos=10/-/-/0	-	4944a863eda3553f
+method	c:objc(pl)PHLivePhotoViewDelegate(im)livePhotoView:didEndPlaybackWithStyle:	-			ios=9.1/-/-/0,tvos=10/-/-/0	-	73b04e2c5ad5bf1b
+method	c:objc(pl)PHLivePhotoViewDelegate(im)livePhotoView:extraMinimumTouchDurationForTouch:withStyle:	-			ios=9.1/-/-/0,tvos=10/-/-/0	-	69a2f709b5716855
+typedef	c:@T@PHAssetPlaybackStyle	-			ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	5b09c629ed3667e9
+enum	c:@E@PHAssetPlaybackStyle	-			ios=11/-/-/0,macos=10.13/-/-/0,tvos=11/-/-/0	-	538791a4ff80d46b
+typedef	c:@T@PHPickerConfigurationAssetRepresentationMode	-			-	-	20f732489caac6d1
+enum	c:@E@PHPickerConfigurationAssetRepresentationMode	-			ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2137dea9f7b0bb9b
+enumconst	c:@E@PHPickerConfigurationAssetRepresentationMode@PHPickerConfigurationAssetRepresentationModeAutomatic	PHPickerConfigurationAssetRepresentationMode			ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e101bcf09de59041
+enumconst	c:@E@PHPickerConfigurationAssetRepresentationMode@PHPickerConfigurationAssetRepresentationModeCurrent	PHPickerConfigurationAssetRepresentationMode			ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5f0f76ff6952e520
+enumconst	c:@E@PHPickerConfigurationAssetRepresentationMode@PHPickerConfigurationAssetRepresentationModeCompatible	PHPickerConfigurationAssetRepresentationMode			ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	abf417d79ce7239f
+typedef	c:@T@PHPickerConfigurationSelection	-			-	-	6af3a5f9757ac095
+enum	c:@E@PHPickerConfigurationSelection	-			ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ebbbad62761dfeb3
+enumconst	c:@E@PHPickerConfigurationSelection@PHPickerConfigurationSelectionDefault	PHPickerConfigurationSelection			ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2cfc2dbf2ecdde4e
+enumconst	c:@E@PHPickerConfigurationSelection@PHPickerConfigurationSelectionOrdered	PHPickerConfigurationSelection			ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ca42d2e4abcf5509
+enumconst	c:@E@PHPickerConfigurationSelection@PHPickerConfigurationSelectionContinuous	PHPickerConfigurationSelection			ios=17/-/-/0,macos=14/-/-/0,watchos=-/-/-/1	-	e1907d061da31e4a
+enumconst	c:@E@PHPickerConfigurationSelection@PHPickerConfigurationSelectionContinuousAndOrdered	PHPickerConfigurationSelection			ios=17/-/-/0,macos=14/-/-/0,watchos=-/-/-/1	-	4d1d6b4ecce20468
+typedef	c:@T@PHPickerMode	-			-	-	88e57bb2d97fdd12
+enum	c:@E@PHPickerMode	-			ios=17/-/-/0,macos=14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6b08d1184aa6324c
+enumconst	c:@E@PHPickerMode@PHPickerModeDefault	PHPickerMode			ios=17/-/-/0,macos=14/-/-/0,watchos=-/-/-/1	-	a39fad40ec0362b6
+enumconst	c:@E@PHPickerMode@PHPickerModeCompact	PHPickerMode			ios=17/-/-/0,macos=14/-/-/0,watchos=-/-/-/1	-	ca6815a5cc44aa3b
+typedef	c:@T@PHPickerCapabilities	-			-	-	f515b55d76e6c70d
+enum	c:@E@PHPickerCapabilities	-			ios=17/-/-/0,macos=14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d3fccc69a39b04c1
+enumconst	c:@E@PHPickerCapabilities@PHPickerCapabilitiesNone	PHPickerCapabilities			ios=17/-/-/0,macos=14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ef09c057c2e6e653
+enumconst	c:@E@PHPickerCapabilities@PHPickerCapabilitiesSearch	PHPickerCapabilities			ios=17/-/-/0,macos=14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	943edf485eb6c582
+enumconst	c:@E@PHPickerCapabilities@PHPickerCapabilitiesStagingArea	PHPickerCapabilities			ios=17/-/-/0,macos=14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ed46a4563b6f5b15
+enumconst	c:@E@PHPickerCapabilities@PHPickerCapabilitiesCollectionNavigation	PHPickerCapabilities			ios=17/-/-/0,macos=14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9240e83146491d63
+enumconst	c:@E@PHPickerCapabilities@PHPickerCapabilitiesSelectionActions	PHPickerCapabilities			ios=17/-/-/0,macos=14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a5e7e5835f5aac75
+enumconst	c:@E@PHPickerCapabilities@PHPickerCapabilitiesSensitivityAnalysisIntervention	PHPickerCapabilities			ios=17/-/-/0,macos=14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2c4151e766a4f755
+interface	c:objc(cs)PHPickerFilter	-			ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ccb2e91090d54125
+super	-	PHPickerFilter	NSObject		-	-	50948660adb767bc
+conforms	-	PHPickerFilter	NSCopying		-	-	0dbe03586879a666
+property	c:objc(cs)PHPickerFilter(cpy)imagesFilter	-			ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a5cbc599b85583be
+property	c:objc(cs)PHPickerFilter(cpy)videosFilter	-			ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2a1719a502306e98
+property	c:objc(cs)PHPickerFilter(cpy)livePhotosFilter	-			ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	308f4393575cc028
+property	c:objc(cs)PHPickerFilter(cpy)depthEffectPhotosFilter	-			ios=16/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7d5a46997a396e92
+property	c:objc(cs)PHPickerFilter(cpy)burstsFilter	-			ios=16/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	70d1ee2bad97a993
+property	c:objc(cs)PHPickerFilter(cpy)panoramasFilter	-			ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d9053eac6e8b7ca3
+property	c:objc(cs)PHPickerFilter(cpy)screenshotsFilter	-			ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6614f89d3e606e3f
+property	c:objc(cs)PHPickerFilter(cpy)screenRecordingsFilter	-			ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7a22fcee7f58d959
+property	c:objc(cs)PHPickerFilter(cpy)cinematicVideosFilter	-			ios=16/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c9e45e9e0bab4d41
+property	c:objc(cs)PHPickerFilter(cpy)slomoVideosFilter	-			ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	372a3c55c81f40db
+property	c:objc(cs)PHPickerFilter(cpy)timelapseVideosFilter	-			ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f38cbc22b745abac
+property	c:objc(cs)PHPickerFilter(cpy)spatialMediaFilter	-			ios=18/-/-/0,macos=15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2/-/-/0	-	ece825e061ab3118
+method	c:objc(cs)PHPickerFilter(cm)playbackStyleFilter:	-			ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	772c46910ecf57e6
+method	c:objc(cs)PHPickerFilter(cm)anyFilterMatchingSubfilters:	-			ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	60dcfaff729bc55e
+method	c:objc(cs)PHPickerFilter(cm)allFilterMatchingSubfilters:	-			ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	07949a371c0fd5c7
+method	c:objc(cs)PHPickerFilter(cm)notFilterOfSubfilter:	-			ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4155612e63e16848
+method	c:objc(cs)PHPickerFilter(cm)new	-			*unavailable ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	77da17cb4c9b4e61
+method	c:objc(cs)PHPickerFilter(im)init	-			*unavailable ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7bf97a4f35d31204
+interface	c:objc(cs)PHPickerUpdateConfiguration	-			ios=17/-/-/0,macos=14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ba8da1e799dc8b81
+super	-	PHPickerUpdateConfiguration	NSObject		-	-	5b3f6a9a5b2db590
+conforms	-	PHPickerUpdateConfiguration	NSCopying		-	-	418b01377e98fab4
+property	c:objc(cs)PHPickerUpdateConfiguration(py)selectionLimit	-			ios=17/-/-/0,macos=14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	673cd649a5a4de60
+property	c:objc(cs)PHPickerUpdateConfiguration(py)edgesWithoutContentMargins	-			ios=17/-/-/0,macos=14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3cb3add6fb8770fa
+interface	c:objc(cs)PHPickerConfiguration	-			ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	65b11992b3c4f37d
+super	-	PHPickerConfiguration	NSObject		-	-	d8ae2e14735df0ad
+conforms	-	PHPickerConfiguration	NSCopying		-	-	1477bd036c4dcc5a
+property	c:objc(cs)PHPickerConfiguration(py)preferredAssetRepresentationMode	-			ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fd5397e0d618c878
+property	c:objc(cs)PHPickerConfiguration(py)selection	-			ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0cb9e195e50bd9c6
+property	c:objc(cs)PHPickerConfiguration(py)selectionLimit	-			ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	43c57d08ffd41917
+property	c:objc(cs)PHPickerConfiguration(py)filter	-			ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6731668b4468ca42
+property	c:objc(cs)PHPickerConfiguration(py)preselectedAssetIdentifiers	-			ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b10eb558a9ad3af8
+property	c:objc(cs)PHPickerConfiguration(py)mode	-			ios=17/-/-/0,macos=14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fb1d728dd6bda324
+property	c:objc(cs)PHPickerConfiguration(py)edgesWithoutContentMargins	-			ios=17/-/-/0,macos=14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3e408572abe3139d
+property	c:objc(cs)PHPickerConfiguration(py)disabledCapabilities	-			ios=17/-/-/0,macos=14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b5e42dfd1ac47c86
+method	c:objc(cs)PHPickerConfiguration(im)initWithPhotoLibrary:	-			ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	33f2c6fb092fbe4f
+method	c:objc(cs)PHPickerConfiguration(im)init	-			ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2ea64e74bd020bb1
+interface	c:objc(cs)PHPickerResult	-			ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cdfebda0972c70d1
+super	-	PHPickerResult	NSObject		-	-	a6886e63181faeeb
+property	c:objc(cs)PHPickerResult(py)itemProvider	-			ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	98020925df845394
+property	c:objc(cs)PHPickerResult(py)assetIdentifier	-			ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a24c8dcc01a6d03a
+method	c:objc(cs)PHPickerResult(cm)new	-			*unavailable ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7a0eb1849d2485f5
+method	c:objc(cs)PHPickerResult(im)init	-			*unavailable ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	41bdedf17213b2fc
+protocol	c:objc(pl)PHPickerViewControllerDelegate	-			ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	70f73fd2d65a4d31
+conforms	-	PHPickerViewControllerDelegate	NSObject		-	-	2d6517a15479a4a9
+method	c:objc(pl)PHPickerViewControllerDelegate(im)picker:didFinishPicking:	-			ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e4785b1ccfcfd747
+interface	c:objc(cs)PHPickerViewController	-			ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2b96e066439a8241
+super	-	PHPickerViewController	UIViewController		-	-	d884ad5061327c40
+property	c:objc(cs)PHPickerViewController(py)configuration	-			ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9f1980f4cd0f1fa4
+property	c:objc(cs)PHPickerViewController(py)delegate	-			ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5c8196887fd75b13
+method	c:objc(cs)PHPickerViewController(im)initWithConfiguration:	-			ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5ae93633bfd269d1
+method	c:objc(cs)PHPickerViewController(im)updatePickerUsingConfiguration:	-			ios=17/-/-/0,macos=14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	608a46d524202ee6
+method	c:objc(cs)PHPickerViewController(im)deselectAssetsWithIdentifiers:	-			ios=16/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d5ecc33669b65cbb
+method	c:objc(cs)PHPickerViewController(im)moveAssetWithIdentifier:afterAssetWithIdentifier:	-			ios=16/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1df1db661be48039
+method	c:objc(cs)PHPickerViewController(im)scrollToInitialPosition	-			ios=17/-/-/0,macos=14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	45a4dce09a68aaa4
+method	c:objc(cs)PHPickerViewController(im)zoomIn	-			ios=17/-/-/0,macos=14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	357f6b88e5631de1
+method	c:objc(cs)PHPickerViewController(im)zoomOut	-			ios=17/-/-/0,macos=14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2775d96313fb9966
+method	c:objc(cs)PHPickerViewController(cm)new	-			*unavailable ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e76f0111068a6b89
+method	c:objc(cs)PHPickerViewController(im)init	-			*unavailable ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d9acf55143279ff6
+method	c:objc(cs)PHPickerViewController(im)initWithNibName:bundle:	-			*unavailable ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b43611e6b17e197d
+method	c:objc(cs)PHPickerViewController(im)initWithCoder:	-			*unavailable ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	146ec0cf75f7da7f
+protocol	c:objc(pl)PHContentEditingController	-			ios=8/-/-/0,maccatalyst=14/-/-/0,macos=10.11/-/-/0	-	985bab9270c804c4
+conforms	-	PHContentEditingController	NSObject		-	-	b183a12b7054bb32
+method	c:objc(pl)PHContentEditingController(im)canHandleAdjustmentData:	-			ios=8/-/-/0,maccatalyst=14/-/-/0,macos=10.11/-/-/0	-	5121fba5bb56cbd6
+method	c:objc(pl)PHContentEditingController(im)startContentEditingWithInput:placeholderImage:	-			ios=8/-/-/0,maccatalyst=14/-/-/0,macos=10.11/-/-/0	-	04229585b68dea95
+method	c:objc(pl)PHContentEditingController(im)finishContentEditingWithCompletionHandler:	-			ios=8/-/-/0,maccatalyst=14/-/-/0,macos=10.11/-/-/0	-	096f6fcfb90ccb9f
+method	c:objc(pl)PHContentEditingController(im)cancelContentEditing	-			ios=8/-/-/0,maccatalyst=14/-/-/0,macos=10.11/-/-/0	-	949e2adbb02f11a0
+property	c:objc(pl)PHContentEditingController(py)shouldShowCancelConfirmation	-			ios=8/-/-/0,maccatalyst=14/-/-/0,macos=10.11/-/-/0	-	81d847c76ec1be2f
+category	c:objc(cy)PHPhotoLibrary@PhotosUISupport	-			ios=14/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6aded581d4871e90
+method	c:objc(cs)PHPhotoLibrary(im)presentLimitedLibraryPickerFromViewController:	PhotosUISupport			ios=14/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fb7b1392e412aab9
+method	c:objc(cs)PHPhotoLibrary(im)presentLimitedLibraryPickerFromViewController:completionHandler:	PhotosUISupport			ios=15/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ca17d8c314222aa3

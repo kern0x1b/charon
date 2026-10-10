@@ -1,0 +1,157 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+typedef	c:@T@ASBluetoothCompanyIdentifier	-			-	-	b3b5e105cea00cdd
+interface	c:objc(cs)ASPropertyCompareString	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2d406999e05e476c
+super	-	ASPropertyCompareString	NSObject		-	-	5f9857c41660ba5c
+property	c:objc(cs)ASPropertyCompareString(py)string	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4e523d08c745bb31
+property	c:objc(cs)ASPropertyCompareString(py)compareOptions	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d0432ba21dcd728d
+method	c:objc(cs)ASPropertyCompareString(im)initWithString:compareOptions:	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5ffa948768fba217
+method	c:objc(cs)ASPropertyCompareString(im)init	-			*unavailable ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4ffc8ed20b3dbd24
+method	c:objc(cs)ASPropertyCompareString(im)new	-			*unavailable ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	aa36c75d02e38e4f
+var	c:@ASErrorDomain	-			-	-	caef34a7d59b2af9
+typedef	c:@T@ASErrorCode	-			-	-	08d346ffaac08afe
+enum	c:@E@ASErrorCode	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9225773c68e46c95
+enumconst	c:@E@ASErrorCode@ASErrorCodeSuccess	ASErrorCode			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9b07d4ad6d51279d
+enumconst	c:@E@ASErrorCode@ASErrorCodeUnknown	ASErrorCode			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1cb05a3cf03b38e6
+enumconst	c:@E@ASErrorCode@ASErrorCodeActivationFailed	ASErrorCode			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0aee14e9514231ce
+enumconst	c:@E@ASErrorCode@ASErrorCodeConnectionFailed	ASErrorCode			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c85aadae9c77bac7
+enumconst	c:@E@ASErrorCode@ASErrorCodeDiscoveryTimeout	ASErrorCode			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d21787175eb8ef43
+enumconst	c:@E@ASErrorCode@ASErrorCodeExtensionNotFound	ASErrorCode			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8c8182a00d2a4f96
+enumconst	c:@E@ASErrorCode@ASErrorCodeInvalidated	ASErrorCode			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4232e6f22ae8dc87
+enumconst	c:@E@ASErrorCode@ASErrorCodeInvalidRequest	ASErrorCode			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a9af139f68b5d2b7
+enumconst	c:@E@ASErrorCode@ASErrorCodePickerAlreadyActive	ASErrorCode			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	60758f1608c02d90
+enumconst	c:@E@ASErrorCode@ASErrorCodePickerRestricted	ASErrorCode			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c73a9b4cb1e9d20c
+enumconst	c:@E@ASErrorCode@ASErrorCodeUserCancelled	ASErrorCode			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8b3c44edcca165be
+enumconst	c:@E@ASErrorCode@ASErrorCodeUserRestricted	ASErrorCode			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d4a33822540099cf
+typedef	c:@T@ASAccessoryState	-			-	-	e179b0313e40775c
+enum	c:@E@ASAccessoryState	-			-	-	19a23c4e7c3fd74d
+enumconst	c:@E@ASAccessoryState@ASAccessoryStateUnauthorized	ASAccessoryState			-	-	b7c3afcb290b1181
+enumconst	c:@E@ASAccessoryState@ASAccessoryStateAwaitingAuthorization	ASAccessoryState			-	-	9d3b04e611155228
+enumconst	c:@E@ASAccessoryState@ASAccessoryStateAuthorized	ASAccessoryState			-	-	2c235c478698b136
+typedef	c:@T@ASAccessoryRenameOptions	-			-	-	fdb9f543daaa4f4a
+enum	c:@E@ASAccessoryRenameOptions	-			-	-	9bed723a2d2aee21
+enumconst	c:@E@ASAccessoryRenameOptions@ASAccessoryRenameSSID	ASAccessoryRenameOptions			-	-	c76b463a66c7beec
+typedef	c:@T@ASAccessorySupportOptions	-			-	-	6ec82d112abaf401
+enum	c:@E@ASAccessorySupportOptions	-			-	-	cb167ac4d697de3c
+enumconst	c:@E@ASAccessorySupportOptions@ASAccessorySupportBluetoothPairingLE	ASAccessorySupportOptions			-	-	0a10841151e3308b
+enumconst	c:@E@ASAccessorySupportOptions@ASAccessorySupportBluetoothTransportBridging	ASAccessorySupportOptions			-	-	b4c451422914b3e5
+enumconst	c:@E@ASAccessorySupportOptions@ASAccessorySupportBluetoothHID	ASAccessorySupportOptions			ios=18.4/-/-/0	-	6b8fb232a23cbeb6
+typedef	c:@T@ASAccessoryWiFiAwarePairedDeviceID	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d2610c585cd0df08
+interface	c:objc(cs)ASAccessory	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	896de95520c3cb9f
+super	-	ASAccessory	NSObject		-	-	1c06cd5e045b87bf
+property	c:objc(cs)ASAccessory(py)state	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5e0d3e221fba679a
+property	c:objc(cs)ASAccessory(py)bluetoothIdentifier	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8e30e7b0c289f8c0
+property	c:objc(cs)ASAccessory(py)bluetoothTransportBridgingIdentifier	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	212c22b933138389
+property	c:objc(cs)ASAccessory(py)displayName	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a38775717b32410b
+property	c:objc(cs)ASAccessory(py)SSID	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6cfa6341c5cc9742
+property	c:objc(cs)ASAccessory(py)wifiAwarePairedDeviceID	-			ios=26.0/-/-/0	-	ab7fe4c019ad3025
+property	c:objc(cs)ASAccessory(py)descriptor	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	17184d80691a01f3
+interface	c:objc(cs)ASDiscoveredAccessory	-			ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7ba64e3fea6d830c
+super	-	ASDiscoveredAccessory	ASAccessory		-	-	fb57a9aba072b539
+property	c:objc(cs)ASDiscoveredAccessory(py)bluetoothAdvertisementData	-			ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	afdfe9a5ec39b798
+property	c:objc(cs)ASDiscoveredAccessory(py)bluetoothRSSI	-			ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ab3c29c80f4cb3e8
+typedef	c:@T@ASAccessoryEventType	-			-	-	704de4f62b8c9af1
+enum	c:@E@ASAccessoryEventType	-			-	-	76250332c885a60f
+enumconst	c:@E@ASAccessoryEventType@ASAccessoryEventTypeUnknown	ASAccessoryEventType			-	-	d9e1e1200745367a
+enumconst	c:@E@ASAccessoryEventType@ASAccessoryEventTypeActivated	ASAccessoryEventType			-	-	b94a60328d2665ba
+enumconst	c:@E@ASAccessoryEventType@ASAccessoryEventTypeInvalidated	ASAccessoryEventType			-	-	f7f20a371795b8cb
+enumconst	c:@E@ASAccessoryEventType@ASAccessoryEventTypeMigrationComplete	ASAccessoryEventType			-	-	0ac3d20982d09172
+enumconst	c:@E@ASAccessoryEventType@ASAccessoryEventTypeAccessoryAdded	ASAccessoryEventType			-	-	66c9e59d989082e0
+enumconst	c:@E@ASAccessoryEventType@ASAccessoryEventTypeAccessoryRemoved	ASAccessoryEventType			-	-	f5b0d74901e46cb4
+enumconst	c:@E@ASAccessoryEventType@ASAccessoryEventTypeAccessoryChanged	ASAccessoryEventType			-	-	e56fa5ee1528dcb6
+enumconst	c:@E@ASAccessoryEventType@ASAccessoryEventTypeAccessoryDiscovered	ASAccessoryEventType			-	-	6b7f017895388d95
+enumconst	c:@E@ASAccessoryEventType@ASAccessoryEventTypePickerDidPresent	ASAccessoryEventType			-	-	821de795635df843
+enumconst	c:@E@ASAccessoryEventType@ASAccessoryEventTypePickerDidDismiss	ASAccessoryEventType			-	-	e3e6c7f5bddf9fb6
+enumconst	c:@E@ASAccessoryEventType@ASAccessoryEventTypePickerSetupBridging	ASAccessoryEventType			-	-	4a2d2ccfc1baecd6
+enumconst	c:@E@ASAccessoryEventType@ASAccessoryEventTypePickerSetupFailed	ASAccessoryEventType			-	-	9c5af49fb342f56c
+enumconst	c:@E@ASAccessoryEventType@ASAccessoryEventTypePickerSetupPairing	ASAccessoryEventType			-	-	f59118657ac2e08d
+enumconst	c:@E@ASAccessoryEventType@ASAccessoryEventTypePickerSetupRename	ASAccessoryEventType			-	-	d8f77eff0c9c2367
+interface	c:objc(cs)ASAccessoryEvent	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d832dc7490d9202d
+super	-	ASAccessoryEvent	NSObject		-	-	5e6cd6e8f5c4aa12
+property	c:objc(cs)ASAccessoryEvent(py)eventType	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	913bf4512a40ba36
+property	c:objc(cs)ASAccessoryEvent(py)accessory	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	41dda7bb4373a925
+property	c:objc(cs)ASAccessoryEvent(py)error	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c74009f9f5c4f328
+method	c:objc(cs)ASAccessoryEvent(im)init	-			*unavailable ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8b10b80d132a007d
+method	c:objc(cs)ASAccessoryEvent(im)new	-			*unavailable ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	32c7a67825e95abf
+interface	c:objc(cs)ASAccessorySession	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2fa6e070d49e9a36
+super	-	ASAccessorySession	NSObject		-	-	e6309937a9d6b1bf
+property	c:objc(cs)ASAccessorySession(py)accessories	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1cf25eefeba6de71
+property	c:objc(cs)ASAccessorySession(py)pickerDisplaySettings	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e2b13b076c350110
+method	c:objc(cs)ASAccessorySession(im)activateWithQueue:eventHandler:	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e0c7153c6ae77c52
+method	c:objc(cs)ASAccessorySession(im)invalidate	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5bde9417d7321a94
+method	c:objc(cs)ASAccessorySession(im)showPickerWithCompletionHandler:	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1cd64e2ca696297d
+method	c:objc(cs)ASAccessorySession(im)showPickerForDisplayItems:completionHandler:	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c6c5eafb6955e8a6
+method	c:objc(cs)ASAccessorySession(im)finishAuthorization:settings:completionHandler:	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	30eb51b28842f076
+method	c:objc(cs)ASAccessorySession(im)failAuthorization:completionHandler:	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	26f2e8ce4855692d
+method	c:objc(cs)ASAccessorySession(im)removeAccessory:completionHandler:	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	881a3a0b05775177
+method	c:objc(cs)ASAccessorySession(im)renameAccessory:options:completionHandler:	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1746be384489e369
+method	c:objc(cs)ASAccessorySession(im)updateAuthorization:descriptor:completionHandler:	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7eaa0b2f068d2488
+method	c:objc(cs)ASAccessorySession(im)updatePickerShowingDiscoveredDisplayItems:completionHandler:	-			ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	32db809258b5b7b3
+method	c:objc(cs)ASAccessorySession(im)finishPickerDiscovery:	-			ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a99613d5f0a7965b
+interface	c:objc(cs)ASAccessorySettings	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	760a4aa2f0c2f8f8
+super	-	ASAccessorySettings	NSObject		-	-	7624bdd0575f4b94
+property	c:objc(cs)ASAccessorySettings(cpy)defaultSettings	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	20e2d8ec879f0d8d
+property	c:objc(cs)ASAccessorySettings(py)SSID	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	92f56b849cc93ba2
+property	c:objc(cs)ASAccessorySettings(py)bluetoothTransportBridgingIdentifier	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	085346facfd85044
+typedef	c:@T@ASDiscoveryDescriptorRange	-			-	-	16063cd6d008e8cc
+enum	c:@E@ASDiscoveryDescriptorRange	-			-	-	9b70d85e2a93fc3c
+enumconst	c:@E@ASDiscoveryDescriptorRange@ASDiscoveryDescriptorRangeDefault	ASDiscoveryDescriptorRange			-	-	92d9075cba58e352
+enumconst	c:@E@ASDiscoveryDescriptorRange@ASDiscoveryDescriptorRangeImmediate	ASDiscoveryDescriptorRange			-	-	b1f890afffa604bf
+typedef	c:@T@ASDiscoveryDescriptorWiFiAwareServiceRole	-			-	-	ad9edaccb3153d49
+enum	c:@E@ASDiscoveryDescriptorWiFiAwareServiceRole	-			-	-	f7f1da788b07cb30
+enumconst	c:@E@ASDiscoveryDescriptorWiFiAwareServiceRole@ASDiscoveryDescriptorWiFiAwareServiceRoleSubscriber	ASDiscoveryDescriptorWiFiAwareServiceRole			-	-	7928322df672d3a5
+enumconst	c:@E@ASDiscoveryDescriptorWiFiAwareServiceRole@ASDiscoveryDescriptorWiFiAwareServiceRolePublisher	ASDiscoveryDescriptorWiFiAwareServiceRole			-	-	d06a99bc59d621c4
+interface	c:objc(cs)ASDiscoveryDescriptor	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	258600c9c1bdd88d
+super	-	ASDiscoveryDescriptor	NSObject		-	-	01cdac81d9032349
+property	c:objc(cs)ASDiscoveryDescriptor(py)supportedOptions	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1a893a63059d99f9
+property	c:objc(cs)ASDiscoveryDescriptor(py)bluetoothCompanyIdentifier	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	964688c86a584c8a
+property	c:objc(cs)ASDiscoveryDescriptor(py)bluetoothManufacturerDataBlob	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	35800d00ce952099
+property	c:objc(cs)ASDiscoveryDescriptor(py)bluetoothManufacturerDataMask	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b8539bdfdf4fde3c
+property	c:objc(cs)ASDiscoveryDescriptor(py)bluetoothNameSubstringCompareOptions	-			ios=18.2/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3ed18c9648866da0
+property	c:objc(cs)ASDiscoveryDescriptor(py)bluetoothNameSubstring	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	560b5cea388eb148
+property	c:objc(cs)ASDiscoveryDescriptor(py)bluetoothRange	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cc498a72a2c8ebca
+property	c:objc(cs)ASDiscoveryDescriptor(py)bluetoothServiceDataBlob	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b7024ef2fc76ec13
+property	c:objc(cs)ASDiscoveryDescriptor(py)bluetoothServiceDataMask	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e7bc4b7a839bca69
+property	c:objc(cs)ASDiscoveryDescriptor(py)bluetoothServiceUUID	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f17e0808b3aea7c6
+property	c:objc(cs)ASDiscoveryDescriptor(py)SSID	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b38b226dd17b73b1
+property	c:objc(cs)ASDiscoveryDescriptor(py)SSIDPrefix	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fc8cbc870ad0a978
+property	c:objc(cs)ASDiscoveryDescriptor(py)wifiAwareServiceName	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3b8e434bbcffc084
+property	c:objc(cs)ASDiscoveryDescriptor(py)wifiAwareServiceRole	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f9bf78a0b8728bd2
+property	c:objc(cs)ASDiscoveryDescriptor(py)wifiAwareModelNameMatch	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bbd432dbcfcdc818
+property	c:objc(cs)ASDiscoveryDescriptor(py)wifiAwareVendorNameMatch	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a6f4015c36a76019
+typedef	c:@T@ASPickerDisplayItemSetupOptions	-			-	-	2d1ab5663bfa1618
+enum	c:@E@ASPickerDisplayItemSetupOptions	-			-	-	cddcdca0a9fd08d4
+enumconst	c:@E@ASPickerDisplayItemSetupOptions@ASPickerDisplayItemSetupRename	ASPickerDisplayItemSetupOptions			-	-	2d3a83f55e269d5a
+enumconst	c:@E@ASPickerDisplayItemSetupOptions@ASPickerDisplayItemSetupConfirmAuthorization	ASPickerDisplayItemSetupOptions			-	-	561d9520e48ade0d
+enumconst	c:@E@ASPickerDisplayItemSetupOptions@ASPickerDisplayItemSetupFinishInApp	ASPickerDisplayItemSetupOptions			-	-	72d0fb470dfd92bf
+interface	c:objc(cs)ASPickerDisplayItem	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cef28f19f544e3eb
+super	-	ASPickerDisplayItem	NSObject		-	-	f58f52586e97b7d5
+property	c:objc(cs)ASPickerDisplayItem(py)name	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	12f01d3c84c5b0aa
+property	c:objc(cs)ASPickerDisplayItem(py)productImage	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8306089c94a9c717
+property	c:objc(cs)ASPickerDisplayItem(py)descriptor	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	445b1f0f39593d14
+property	c:objc(cs)ASPickerDisplayItem(py)renameOptions	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9b711b3460f6fa71
+property	c:objc(cs)ASPickerDisplayItem(py)setupOptions	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	80f2d430b63a93e3
+method	c:objc(cs)ASPickerDisplayItem(im)initWithName:productImage:descriptor:	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	054f90150a4b8b75
+method	c:objc(cs)ASPickerDisplayItem(im)init	-			*unavailable ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	189292604f66c4cc
+method	c:objc(cs)ASPickerDisplayItem(im)new	-			*unavailable ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	336a6ab433924da1
+interface	c:objc(cs)ASMigrationDisplayItem	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bb534e5bb4bc0865
+super	-	ASMigrationDisplayItem	ASPickerDisplayItem		-	-	aaca5a1b382145da
+property	c:objc(cs)ASMigrationDisplayItem(py)peripheralIdentifier	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	78ec76d391d1a29d
+property	c:objc(cs)ASMigrationDisplayItem(py)hotspotSSID	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	27544315f089d1fb
+property	c:objc(cs)ASMigrationDisplayItem(py)wifiAwarePairedDeviceID	-			ios=26.1/-/-/0	-	1909b811eb1f2bd1
+interface	c:objc(cs)ASDiscoveredDisplayItem	-			ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8c80415f09b789a0
+super	-	ASDiscoveredDisplayItem	ASPickerDisplayItem		-	-	f6af1894657ff9dd
+method	c:objc(cs)ASDiscoveredDisplayItem(im)initWithName:productImage:accessory:	-			ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f3dcea4794f4fa80
+method	c:objc(cs)ASDiscoveredDisplayItem(im)initWithName:productImage:descriptor:	-			*unavailable ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9bba3c85fedcb5e0
+typedef	c:@T@ASPickerDisplaySettingsOptions	-			-	-	b69887bb1b8ac47e
+enum	c:@E@ASPickerDisplaySettingsOptions	-			-	-	ee84e50d3e5d67fb
+enumconst	c:@E@ASPickerDisplaySettingsOptions@ASPickerDisplaySettingsOptionFilterDiscoveryResults	ASPickerDisplaySettingsOptions			-	-	70de7d7ae3db7775
+typedef	c:@T@ASPickerDisplaySettingsDiscoveryTimeout	-			ios=26.0/-/-/0	-	6e50386ddd92f267
+var	c:@ASPickerDisplaySettingsDiscoveryTimeoutShort	-			ios=26.0/-/-/0	-	a54b92026f3fdfc5
+var	c:@ASPickerDisplaySettingsDiscoveryTimeoutMedium	-			ios=26.0/-/-/0	-	a6fbda454a56adf5
+var	c:@ASPickerDisplaySettingsDiscoveryTimeoutLong	-			ios=26.0/-/-/0	-	d54f53e8502dfcf6
+var	c:@ASPickerDisplaySettingsDiscoveryTimeoutUnbounded	-			ios=26.1/-/-/0	-	c1d75c32e36f7077
+interface	c:objc(cs)ASPickerDisplaySettings	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f3f18e69ab7692db
+super	-	ASPickerDisplaySettings	NSObject		-	-	c3b8d76c6bf85808
+property	c:objc(cs)ASPickerDisplaySettings(cpy)defaultSettings	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	af0489245f8986d5
+property	c:objc(cs)ASPickerDisplaySettings(py)discoveryTimeout	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	62729862e1517753
+property	c:objc(cs)ASPickerDisplaySettings(py)options	-			ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	34a1650700713679

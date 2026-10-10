@@ -1,0 +1,16 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+var	c:@APActivationPayloadErrorDomain	-			ios=14.0/-/-/0	-	42636b844443ba4c
+typedef	c:@T@APActivationPayloadErrorCode	-			-	-	0b8788f66ef1016a
+enum	c:@E@APActivationPayloadErrorCode	-			ios=14.0/-/-/0	-	b9809e591376d522
+enumconst	c:@E@APActivationPayloadErrorCode@APActivationPayloadErrorCodeDisallowed	APActivationPayloadErrorCode			ios=14.0/-/-/0	-	b330c833c8cf5ebd
+enumconst	c:@E@APActivationPayloadErrorCode@APActivationPayloadErrorCodeDoesNotMatch	APActivationPayloadErrorCode			ios=14.0/-/-/0	-	5be0030a4c0d523b
+interface	c:objc(cs)APActivationPayload	-			ios=14.0/-/-/0	-	38b9bdf2c8bf1779
+super	-	APActivationPayload	NSObject		-	-	403fd346aa071f5b
+conforms	-	APActivationPayload	NSSecureCoding		-	-	f6ec54766f712f08
+conforms	-	APActivationPayload	NSCopying		-	-	de5b1ef45af30ec1
+method	c:objc(cs)APActivationPayload(cm)new	-			*unavailable ios=14.0/-/-/0	-	fad2ac5413d8881b
+method	c:objc(cs)APActivationPayload(im)init	-			*unavailable ios=14.0/-/-/0	-	50671285a64ef92e
+property	c:objc(cs)APActivationPayload(py)URL	-			ios=14.0/-/-/0	-	f0e8319ab36c648f
+method	c:objc(cs)APActivationPayload(im)confirmAcquiredInRegion:completionHandler:	-			ios=14.0/-/-/0	-	d0856a420f9be3ec
+category	c:objc(cy)NSUserActivity@AppClip	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	57039846b8c9bd95
+property	c:objc(cs)NSUserActivity(py)appClipActivationPayload	AppClip			ios=14.0/-/-/0	-	7a5853558487d95f

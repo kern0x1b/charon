@@ -1,0 +1,453 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+interface	c:objc(cs)CMLogItem	-			ios=4.0/-/-/0	-	4b4e38440693480c
+super	-	CMLogItem	NSObject		-	-	077ce05b854770cd
+conforms	-	CMLogItem	NSSecureCoding		-	-	44d4c2a9c2666fb7
+conforms	-	CMLogItem	NSCopying		-	-	bbca8bec55cea1cb
+property	c:objc(cs)CMLogItem(py)timestamp	-			ios=4.0/-/-/0	-	1dc4af778c340bc9
+struct	c:@SA@CMAcceleration	-			-	-	9a4c5a173acaff5d
+field	c:@SA@CMAcceleration@FI@x	CMAcceleration			-	-	5cc5dcf54cee7e32
+field	c:@SA@CMAcceleration@FI@y	CMAcceleration			-	-	531d7ebf221366ac
+field	c:@SA@CMAcceleration@FI@z	CMAcceleration			-	-	69d7b512258248e5
+typedef	c:@T@CMAcceleration	-			-	-	e07e5d02e4580341
+interface	c:objc(cs)CMAccelerometerData	-			ios=4.0/-/-/0,tvos=-/-/-/1	-	bf2912f56bbcb07a
+super	-	CMAccelerometerData	CMLogItem		-	-	bd7676ee902b1456
+property	c:objc(cs)CMAccelerometerData(py)acceleration	-			ios=4.0/-/-/0,tvos=-/-/-/1	-	f6c78c96a0081cd0
+interface	c:objc(cs)CMAltitudeData	-			ios=8.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	4600262c8007e32e
+super	-	CMAltitudeData	CMLogItem		-	-	082508852f02d41b
+property	c:objc(cs)CMAltitudeData(py)relativeAltitude	-			ios=8.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	55e6cac747ef86db
+property	c:objc(cs)CMAltitudeData(py)pressure	-			ios=8.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	07ca8a4fdc07c9fa
+typedef	c:@T@CMAuthorizationStatus	-			-	-	a548e21622e3f643
+enum	c:@E@CMAuthorizationStatus	-			ios=11.0/-/-/0,watchos=4.0/-/-/0	-	4fb8efa532cd3160
+enumconst	c:@E@CMAuthorizationStatus@CMAuthorizationStatusNotDetermined	CMAuthorizationStatus			ios=11.0/-/-/0,watchos=4.0/-/-/0	-	752e52158813038d
+enumconst	c:@E@CMAuthorizationStatus@CMAuthorizationStatusRestricted	CMAuthorizationStatus			ios=11.0/-/-/0,watchos=4.0/-/-/0	-	19b830721240ea7d
+enumconst	c:@E@CMAuthorizationStatus@CMAuthorizationStatusDenied	CMAuthorizationStatus			ios=11.0/-/-/0,watchos=4.0/-/-/0	-	7fd5b054bf055980
+enumconst	c:@E@CMAuthorizationStatus@CMAuthorizationStatusAuthorized	CMAuthorizationStatus			ios=11.0/-/-/0,watchos=4.0/-/-/0	-	76c0e71ba851d3cf
+interface	c:objc(cs)CMAbsoluteAltitudeData	-			ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	3d121d247e266a25
+super	-	CMAbsoluteAltitudeData	CMLogItem		-	-	11b611765363e599
+property	c:objc(cs)CMAbsoluteAltitudeData(py)altitude	-			ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	afeafee9cbfd643d
+property	c:objc(cs)CMAbsoluteAltitudeData(py)accuracy	-			ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	04736a6f7f809808
+property	c:objc(cs)CMAbsoluteAltitudeData(py)precision	-			ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	43a1286c914c6316
+typedef	c:@T@CMAltitudeHandler	-			ios=8.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	1c74399db7ee8e1d
+typedef	c:@T@CMAbsoluteAltitudeHandler	-			ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	f875f664b4836a29
+interface	c:objc(cs)CMAltimeter	-			ios=8.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	12867bd49aa28242
+super	-	CMAltimeter	NSObject		-	-	ef9b07992853d482
+method	c:objc(cs)CMAltimeter(cm)isRelativeAltitudeAvailable	-			ios=8.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	beeb62c22d6adafb
+method	c:objc(cs)CMAltimeter(cm)authorizationStatus	-			ios=11.0/-/-/0,macos=-/-/-/1,watchos=4.0/-/-/0	-	f88caa051dd6696a
+method	c:objc(cs)CMAltimeter(im)startRelativeAltitudeUpdatesToQueue:withHandler:	-			ios=8.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	924462364d2e0628
+method	c:objc(cs)CMAltimeter(im)stopRelativeAltitudeUpdates	-			ios=8.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	694345b4c3464ccb
+method	c:objc(cs)CMAltimeter(cm)isAbsoluteAltitudeAvailable	-			ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	01654b9b451087d3
+method	c:objc(cs)CMAltimeter(im)startAbsoluteAltitudeUpdatesToQueue:withHandler:	-			ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	bfb07c9b5a06d92c
+method	c:objc(cs)CMAltimeter(im)stopAbsoluteAltitudeUpdates	-			ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	d427439c068e414b
+struct	c:@SA@CMRotationMatrix	-			-	-	4720d35e43939e23
+field	c:@SA@CMRotationMatrix@FI@m11	CMRotationMatrix			-	-	4334dafb1a113f23
+field	c:@SA@CMRotationMatrix@FI@m12	CMRotationMatrix			-	-	7985ae18435109a0
+field	c:@SA@CMRotationMatrix@FI@m13	CMRotationMatrix			-	-	83f3d74b69308c3f
+field	c:@SA@CMRotationMatrix@FI@m21	CMRotationMatrix			-	-	2e8d88073188e70c
+field	c:@SA@CMRotationMatrix@FI@m22	CMRotationMatrix			-	-	ff25b86e309e4986
+field	c:@SA@CMRotationMatrix@FI@m23	CMRotationMatrix			-	-	e063a6e4d89a1f03
+field	c:@SA@CMRotationMatrix@FI@m31	CMRotationMatrix			-	-	75a5473c522af8d0
+field	c:@SA@CMRotationMatrix@FI@m32	CMRotationMatrix			-	-	a556aa9688bf4797
+field	c:@SA@CMRotationMatrix@FI@m33	CMRotationMatrix			-	-	a2f50a5634e833fe
+typedef	c:@T@CMRotationMatrix	-			-	-	9a2a5c2f3eba5ac3
+struct	c:@SA@CMQuaternion	-			-	-	de986955c9699dd1
+field	c:@SA@CMQuaternion@FI@x	CMQuaternion			-	-	4d9d70ac06266b6a
+field	c:@SA@CMQuaternion@FI@y	CMQuaternion			-	-	29f45d1c2bd1237f
+field	c:@SA@CMQuaternion@FI@z	CMQuaternion			-	-	6e645e027a1592dc
+field	c:@SA@CMQuaternion@FI@w	CMQuaternion			-	-	12bbbb5f8de5135f
+typedef	c:@T@CMQuaternion	-			-	-	1518e23ea5a9e86c
+typedef	c:@T@CMAttitudeReferenceFrame	-			-	-	7a55d38e649cd6fc
+enum	c:@E@CMAttitudeReferenceFrame	-			-	-	f7d7a847f4067818
+enumconst	c:@E@CMAttitudeReferenceFrame@CMAttitudeReferenceFrameXArbitraryZVertical	CMAttitudeReferenceFrame			-	-	8999e14357f66540
+enumconst	c:@E@CMAttitudeReferenceFrame@CMAttitudeReferenceFrameXArbitraryCorrectedZVertical	CMAttitudeReferenceFrame			-	-	6bbcaf53de8b1eed
+enumconst	c:@E@CMAttitudeReferenceFrame@CMAttitudeReferenceFrameXMagneticNorthZVertical	CMAttitudeReferenceFrame			-	-	9713debb3f67500c
+enumconst	c:@E@CMAttitudeReferenceFrame@CMAttitudeReferenceFrameXTrueNorthZVertical	CMAttitudeReferenceFrame			-	-	d960d85b11fba683
+interface	c:objc(cs)CMAttitude	-			ios=4.0/-/-/0,tvos=-/-/-/1	-	3b88b148ee70c1fa
+super	-	CMAttitude	NSObject		-	-	1af8053113a89103
+conforms	-	CMAttitude	NSCopying		-	-	d03c8e78cc0f3c81
+conforms	-	CMAttitude	NSSecureCoding		-	-	a52397d28cc62aaf
+property	c:objc(cs)CMAttitude(py)roll	-			ios=4.0/-/-/0,tvos=-/-/-/1	-	8ae2c8543aab71c2
+property	c:objc(cs)CMAttitude(py)pitch	-			ios=4.0/-/-/0,tvos=-/-/-/1	-	7b29ce604889ab74
+property	c:objc(cs)CMAttitude(py)yaw	-			ios=4.0/-/-/0,tvos=-/-/-/1	-	4ef7baa9939dbbdb
+property	c:objc(cs)CMAttitude(py)rotationMatrix	-			ios=4.0/-/-/0,tvos=-/-/-/1	-	6ddc0daa55651013
+property	c:objc(cs)CMAttitude(py)quaternion	-			ios=4.0/-/-/0,tvos=-/-/-/1	-	36abb2f6f43c27ff
+method	c:objc(cs)CMAttitude(im)multiplyByInverseOfAttitude:	-			ios=4.0/-/-/0,tvos=-/-/-/1	-	83d3e5b40e3a0733
+struct	c:@SA@CMRotationRate	-			-	-	bd4c49a0dee6ba32
+field	c:@SA@CMRotationRate@FI@x	CMRotationRate			-	-	eafa49e6f261693d
+field	c:@SA@CMRotationRate@FI@y	CMRotationRate			-	-	5afa006767130a61
+field	c:@SA@CMRotationRate@FI@z	CMRotationRate			-	-	49e7c8e8213a4c76
+typedef	c:@T@CMRotationRate	-			-	-	88630bf6dae74d8a
+interface	c:objc(cs)CMGyroData	-			ios=4.0/-/-/0	-	1d9c5fc8a853f0f8
+super	-	CMGyroData	CMLogItem		-	-	8031190c2102883a
+property	c:objc(cs)CMGyroData(py)rotationRate	-			ios=4.0/-/-/0	-	6a45d2d20a3cfa29
+struct	c:@SA@CMMagneticField	-			-	-	e9c069f8bfc25570
+field	c:@SA@CMMagneticField@FI@x	CMMagneticField			-	-	fc149f6f87f2e381
+field	c:@SA@CMMagneticField@FI@y	CMMagneticField			-	-	551151025a9ac0ef
+field	c:@SA@CMMagneticField@FI@z	CMMagneticField			-	-	b7baf40ff77d16e4
+typedef	c:@T@CMMagneticField	-			-	-	c89209f4cbe1dfe4
+interface	c:objc(cs)CMMagnetometerData	-			ios=5.0/-/-/0,xros=-/-/-/1	-	b0025d7fb93b2e4c
+super	-	CMMagnetometerData	CMLogItem		-	-	45b51a796cfd787e
+property	c:objc(cs)CMMagnetometerData(py)magneticField	-			ios=5.0/-/-/0,xros=-/-/-/1	-	e9e82b3230cff386
+typedef	c:@T@CMDeviceMotionSensorLocation	-			-	-	6d1ebac597197f28
+enum	c:@E@CMDeviceMotionSensorLocation	-			-	-	cd474831bb0ed6d9
+enumconst	c:@E@CMDeviceMotionSensorLocation@CMDeviceMotionSensorLocationDefault	CMDeviceMotionSensorLocation			-	-	70f6e0b3d9aa44ba
+enumconst	c:@E@CMDeviceMotionSensorLocation@CMDeviceMotionSensorLocationHeadphoneLeft	CMDeviceMotionSensorLocation			-	-	c157b5079d8f8ea8
+enumconst	c:@E@CMDeviceMotionSensorLocation@CMDeviceMotionSensorLocationHeadphoneRight	CMDeviceMotionSensorLocation			-	-	16ce4cf53fc69606
+typedef	c:@T@CMMagneticFieldCalibrationAccuracy	-			-	-	dbb221ac0cb8853f
+enum	c:@E@CMMagneticFieldCalibrationAccuracy	-			-	-	a7a69325423ce454
+enumconst	c:@E@CMMagneticFieldCalibrationAccuracy@CMMagneticFieldCalibrationAccuracyUncalibrated	CMMagneticFieldCalibrationAccuracy			-	-	5d9cd4f905dbbebc
+enumconst	c:@E@CMMagneticFieldCalibrationAccuracy@CMMagneticFieldCalibrationAccuracyLow	CMMagneticFieldCalibrationAccuracy			-	-	61b98e23d6cc05a5
+enumconst	c:@E@CMMagneticFieldCalibrationAccuracy@CMMagneticFieldCalibrationAccuracyMedium	CMMagneticFieldCalibrationAccuracy			-	-	1c862a519c0f5b0c
+enumconst	c:@E@CMMagneticFieldCalibrationAccuracy@CMMagneticFieldCalibrationAccuracyHigh	CMMagneticFieldCalibrationAccuracy			-	-	1306a0ec53d373d9
+struct	c:@SA@CMCalibratedMagneticField	-			-	-	ebf4133c84cab078
+field	c:@SA@CMCalibratedMagneticField@FI@field	CMCalibratedMagneticField			-	-	29b2bcf436608be9
+field	c:@SA@CMCalibratedMagneticField@FI@accuracy	CMCalibratedMagneticField			-	-	2b0d607c0e9299ce
+typedef	c:@T@CMCalibratedMagneticField	-			-	-	4dfbfbae4e6de65b
+interface	c:objc(cs)CMDeviceMotion	-			ios=4.0/-/-/0,tvos=-/-/-/1	-	7bcb4eb65b1a1e0c
+super	-	CMDeviceMotion	CMLogItem		-	-	7d83de3bb95a1b15
+property	c:objc(cs)CMDeviceMotion(py)attitude	-			ios=4.0/-/-/0,tvos=-/-/-/1	-	24ec8e467ff4c43d
+property	c:objc(cs)CMDeviceMotion(py)rotationRate	-			ios=4.0/-/-/0,tvos=-/-/-/1	-	c327e571b6cda39f
+property	c:objc(cs)CMDeviceMotion(py)gravity	-			ios=4.0/-/-/0,tvos=-/-/-/1	-	e345dfc07651a6c2
+property	c:objc(cs)CMDeviceMotion(py)userAcceleration	-			ios=4.0/-/-/0,tvos=-/-/-/1	-	ac5af4f44a0ff8c8
+property	c:objc(cs)CMDeviceMotion(py)magneticField	-			ios=5.0/-/-/0	-	047bcf05b9a4ad16
+property	c:objc(cs)CMDeviceMotion(py)heading	-			ios=11.0/-/-/0,xros=-/-/-/1	-	4439431443c49bb0
+property	c:objc(cs)CMDeviceMotion(py)sensorLocation	-			ios=14.0/-/-/0	-	b0f8c39efa5acf17
+enum	c:@EA@CMError	-			-	-	abc239b318671667
+enumconst	c:@EA@CMError@CMErrorNULL	CMError			-	-	e4dba13ca648508b
+enumconst	c:@EA@CMError@CMErrorDeviceRequiresMovement	CMError			-	-	350700009cb1af5c
+enumconst	c:@EA@CMError@CMErrorTrueNorthNotAvailable	CMError			-	-	8762f889ec2757a0
+enumconst	c:@EA@CMError@CMErrorUnknown	CMError			-	-	17ac61d3c9d11b4c
+enumconst	c:@EA@CMError@CMErrorMotionActivityNotAvailable	CMError			-	-	d6fc2791fe57bb93
+enumconst	c:@EA@CMError@CMErrorMotionActivityNotAuthorized	CMError			-	-	5c761c1b033272eb
+enumconst	c:@EA@CMError@CMErrorMotionActivityNotEntitled	CMError			-	-	2df353ecd740d2b1
+enumconst	c:@EA@CMError@CMErrorInvalidParameter	CMError			-	-	3687fb747ef377c4
+enumconst	c:@EA@CMError@CMErrorInvalidAction	CMError			-	-	36aae33dd4c6be58
+enumconst	c:@EA@CMError@CMErrorNotAvailable	CMError			-	-	6c7943a3ac06ae9d
+enumconst	c:@EA@CMError@CMErrorNotEntitled	CMError			-	-	2208e6723c39908e
+enumconst	c:@EA@CMError@CMErrorNotAuthorized	CMError			-	-	cdc0702720d8559c
+enumconst	c:@EA@CMError@CMErrorNilData	CMError			-	-	108e74a3ef347dd2
+enumconst	c:@EA@CMError@CMErrorSize	CMError			-	-	88e6a2ed7845cb4d
+typedef	c:@T@CMError	-			-	-	bb7d5a02262f81a7
+var	c:@CMErrorDomain	-			ios=4.0/-/-/0,macos=12.0/-/-/0	-	259cf46bc5d45e6d
+typedef	c:@T@CMFallDetectionEventUserResolution	-			ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.2/-/-/0	-	4dc080e65b587be0
+enum	c:@E@CMFallDetectionEventUserResolution	-			-	-	0adf4f1f6fe494d7
+enumconst	c:@E@CMFallDetectionEventUserResolution@CMFallDetectionEventUserResolutionConfirmed	CMFallDetectionEventUserResolution			-	-	4d83efd6a96c5457
+enumconst	c:@E@CMFallDetectionEventUserResolution@CMFallDetectionEventUserResolutionDismissed	CMFallDetectionEventUserResolution			-	-	13957ea14218de8e
+enumconst	c:@E@CMFallDetectionEventUserResolution@CMFallDetectionEventUserResolutionRejected	CMFallDetectionEventUserResolution			-	-	7c3d12e08200801f
+enumconst	c:@E@CMFallDetectionEventUserResolution@CMFallDetectionEventUserResolutionUnresponsive	CMFallDetectionEventUserResolution			-	-	0f03206f56c4ff90
+interface	c:objc(cs)CMFallDetectionEvent	-			ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.2/-/-/0	-	2157c7f937c3cd81
+super	-	CMFallDetectionEvent	NSObject		-	-	be87f57d01a912a2
+method	c:objc(cs)CMFallDetectionEvent(im)init	-			*unavailable ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.2/-/-/0	-	533a251f8d1c1ea4
+property	c:objc(cs)CMFallDetectionEvent(py)date	-			ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.2/-/-/0	-	322cec5a99728c10
+property	c:objc(cs)CMFallDetectionEvent(py)resolution	-			ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.2/-/-/0	-	bfcb739d3eb75045
+interface	c:objc(cs)CMFallDetectionManager	-			ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.2/-/-/0	-	baff57ebd185d81d
+super	-	CMFallDetectionManager	NSObject		-	-	fbfd6f4f01a4583e
+property	c:objc(cs)CMFallDetectionManager(cpy)available	-			ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.2/-/-/0	-	86b49c13916b9fa7
+property	c:objc(cs)CMFallDetectionManager(py)authorizationStatus	-			ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.2/-/-/0	-	f09a19bf50d35c7a
+property	c:objc(cs)CMFallDetectionManager(py)delegate	-			ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.2/-/-/0	-	34c0eb14326ebb7c
+method	c:objc(cs)CMFallDetectionManager(im)requestAuthorizationWithHandler:	-			ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.2/-/-/0	-	a4c13fb048a2562a
+protocol	c:objc(pl)CMFallDetectionDelegate	-			ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.2/-/-/0	-	6bf105b10acc85c2
+conforms	-	CMFallDetectionDelegate	NSObject		-	-	a0311be174cc6a91
+method	c:objc(pl)CMFallDetectionDelegate(im)fallDetectionManager:didDetectEvent:completionHandler:	-			ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.2/-/-/0	-	74576644b84c7be7
+method	c:objc(pl)CMFallDetectionDelegate(im)fallDetectionManagerDidChangeAuthorization:	-			ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.2/-/-/0	-	ca28c155b0beb5ab
+typedef	c:@T@CMMotionActivityConfidence	-			-	-	835f6042c09ab417
+enum	c:@E@CMMotionActivityConfidence	-			-	-	c2746bed34420336
+enumconst	c:@E@CMMotionActivityConfidence@CMMotionActivityConfidenceLow	CMMotionActivityConfidence			-	-	6206c68dcca7c98b
+enumconst	c:@E@CMMotionActivityConfidence@CMMotionActivityConfidenceMedium	CMMotionActivityConfidence			-	-	2fc3ab5c6507176d
+enumconst	c:@E@CMMotionActivityConfidence@CMMotionActivityConfidenceHigh	CMMotionActivityConfidence			-	-	964707be797c004d
+interface	c:objc(cs)CMMotionActivity	-			ios=7.0/-/-/0,macos=15.0/-/-/0,xros=-/-/-/1	-	1395ff2066968d4b
+super	-	CMMotionActivity	CMLogItem		-	-	2a284bfc9a946b39
+property	c:objc(cs)CMMotionActivity(py)confidence	-			ios=7.0/-/-/0,macos=15.0/-/-/0,xros=-/-/-/1	-	6eade62e677031d5
+property	c:objc(cs)CMMotionActivity(py)startDate	-			ios=7.0/-/-/0,macos=15.0/-/-/0,xros=-/-/-/1	-	9424b7b13f1eb51b
+property	c:objc(cs)CMMotionActivity(py)unknown	-			ios=7.0/-/-/0,macos=15.0/-/-/0,xros=-/-/-/1	-	acb31912fe3d4bbb
+property	c:objc(cs)CMMotionActivity(py)stationary	-			ios=7.0/-/-/0,macos=15.0/-/-/0,xros=-/-/-/1	-	ae86f5a5c34b5d6e
+property	c:objc(cs)CMMotionActivity(py)walking	-			ios=7.0/-/-/0,macos=15.0/-/-/0,xros=-/-/-/1	-	3fecf9476f6b97f5
+property	c:objc(cs)CMMotionActivity(py)running	-			ios=7.0/-/-/0,macos=15.0/-/-/0,xros=-/-/-/1	-	0ab2928dcf94a8bc
+property	c:objc(cs)CMMotionActivity(py)automotive	-			ios=7.0/-/-/0,macos=15.0/-/-/0,xros=-/-/-/1	-	7d4ed2441b1c42c6
+property	c:objc(cs)CMMotionActivity(py)cycling	-			ios=8.0/-/-/0,macos=-/-/-/1	-	dfe4a9d58d0a5cd9
+typedef	c:@T@CMMotionActivityHandler	-			ios=7.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	51fc663b38736b1c
+typedef	c:@T@CMMotionActivityQueryHandler	-			ios=7.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	d9fcd2477c5c9bcc
+interface	c:objc(cs)CMMotionActivityManager	-			ios=7.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	a0dc3fb79a6cd54b
+super	-	CMMotionActivityManager	NSObject		-	-	deb53cb02e5b48c1
+method	c:objc(cs)CMMotionActivityManager(cm)isActivityAvailable	-			ios=7.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	581b3313b74e3eb0
+method	c:objc(cs)CMMotionActivityManager(cm)authorizationStatus	-			ios=11.0/-/-/0,macos=-/-/-/1,watchos=4.0/-/-/0	-	db90974de575985a
+method	c:objc(cs)CMMotionActivityManager(im)queryActivityStartingFromDate:toDate:toQueue:withHandler:	-			ios=7.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	0f81744b151a8f65
+method	c:objc(cs)CMMotionActivityManager(im)startActivityUpdatesToQueue:withHandler:	-			ios=7.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	e369c1e494a7e820
+method	c:objc(cs)CMMotionActivityManager(im)stopActivityUpdates	-			ios=7.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	5a73d12f2f389ea6
+typedef	c:@T@CMAccelerometerHandler	-			tvos=-/-/-/1	-	0d2eb07a29da7dfb
+typedef	c:@T@CMGyroHandler	-			tvos=-/-/-/1	-	bb1ed388fa999b67
+typedef	c:@T@CMDeviceMotionHandler	-			tvos=-/-/-/1	-	f047fc49369411de
+typedef	c:@T@CMMagnetometerHandler	-			ios=5.0/-/-/0,tvos=-/-/-/1,xros=-/-/-/1	-	dfdef5c12ff2f6a2
+interface	c:objc(cs)CMMotionManager	-			ios=4.0/-/-/0,macos=-/-/-/1	-	cef2ad511b87d4cd
+super	-	CMMotionManager	NSObject		-	-	9afea41ae1d66fc4
+property	c:objc(cs)CMMotionManager(py)accelerometerUpdateInterval	-			tvos=-/-/-/1	-	ed24ca2e22241f79
+property	c:objc(cs)CMMotionManager(py)accelerometerAvailable	-			tvos=-/-/-/1	-	9999f7e783369d66
+property	c:objc(cs)CMMotionManager(py)accelerometerActive	-			tvos=-/-/-/1	-	cea267ab3a01ded4
+property	c:objc(cs)CMMotionManager(py)accelerometerData	-			tvos=-/-/-/1	-	e335d59bccf9e8bd
+method	c:objc(cs)CMMotionManager(im)startAccelerometerUpdates	-			tvos=-/-/-/1	-	559fee53ea67e2a0
+method	c:objc(cs)CMMotionManager(im)startAccelerometerUpdatesToQueue:withHandler:	-			tvos=-/-/-/1	-	70d7d654b7c16bd1
+method	c:objc(cs)CMMotionManager(im)stopAccelerometerUpdates	-			tvos=-/-/-/1	-	d811b4c8fd176f59
+property	c:objc(cs)CMMotionManager(py)gyroUpdateInterval	-			tvos=-/-/-/1	-	887bfd0150634ba2
+property	c:objc(cs)CMMotionManager(py)gyroAvailable	-			tvos=-/-/-/1	-	ce2795f3918e8ec3
+property	c:objc(cs)CMMotionManager(py)gyroActive	-			tvos=-/-/-/1	-	be41adc22febdeab
+property	c:objc(cs)CMMotionManager(py)gyroData	-			tvos=-/-/-/1	-	25af1b978e7819e0
+method	c:objc(cs)CMMotionManager(im)startGyroUpdates	-			tvos=-/-/-/1	-	cf5aab50a7a016e3
+method	c:objc(cs)CMMotionManager(im)startGyroUpdatesToQueue:withHandler:	-			tvos=-/-/-/1	-	2b8f00e8014843f0
+method	c:objc(cs)CMMotionManager(im)stopGyroUpdates	-			tvos=-/-/-/1	-	65e35cf1cd0b78fa
+property	c:objc(cs)CMMotionManager(py)magnetometerUpdateInterval	-			ios=5.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	726f262e55b2cce3
+property	c:objc(cs)CMMotionManager(py)magnetometerAvailable	-			ios=5.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	1930fe476634b0d0
+property	c:objc(cs)CMMotionManager(py)magnetometerActive	-			ios=5.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	21f9acaca5ac98ae
+property	c:objc(cs)CMMotionManager(py)magnetometerData	-			ios=5.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	7b96f305699e88ff
+method	c:objc(cs)CMMotionManager(im)startMagnetometerUpdates	-			ios=5.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	5255b8eaffc4c711
+method	c:objc(cs)CMMotionManager(im)startMagnetometerUpdatesToQueue:withHandler:	-			ios=5.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	f8ae1b6569d0b836
+method	c:objc(cs)CMMotionManager(im)stopMagnetometerUpdates	-			ios=5.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	4a58b960c05fe898
+property	c:objc(cs)CMMotionManager(py)deviceMotionUpdateInterval	-			tvos=-/-/-/1	-	f5c1c3bd275b2b72
+method	c:objc(cs)CMMotionManager(cm)availableAttitudeReferenceFrames	-			ios=5.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	211c5d4538587e81
+property	c:objc(cs)CMMotionManager(py)attitudeReferenceFrame	-			ios=5.0/-/-/0,tvos=-/-/-/1	-	2c3ce0f3ddf708e1
+property	c:objc(cs)CMMotionManager(py)deviceMotionAvailable	-			tvos=-/-/-/1	-	11402cf2c26ad7e6
+property	c:objc(cs)CMMotionManager(py)deviceMotionActive	-			tvos=-/-/-/1	-	eedc2890b12d6c8c
+property	c:objc(cs)CMMotionManager(py)deviceMotion	-			tvos=-/-/-/1	-	090c50efbcd88570
+method	c:objc(cs)CMMotionManager(im)startDeviceMotionUpdates	-			tvos=-/-/-/1	-	da978427ea19083f
+method	c:objc(cs)CMMotionManager(im)startDeviceMotionUpdatesToQueue:withHandler:	-			tvos=-/-/-/1	-	393db9452b5ef748
+method	c:objc(cs)CMMotionManager(im)startDeviceMotionUpdatesUsingReferenceFrame:	-			ios=5.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	02b7f2e4ee5112e5
+method	c:objc(cs)CMMotionManager(im)startDeviceMotionUpdatesUsingReferenceFrame:toQueue:withHandler:	-			ios=5.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	bf1d38678ab3b1f1
+method	c:objc(cs)CMMotionManager(im)stopDeviceMotionUpdates	-			tvos=-/-/-/1	-	798b11024ac6c065
+property	c:objc(cs)CMMotionManager(py)showsDeviceMovementDisplay	-			ios=5.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	5e09b6bcf16c14fe
+typedef	c:@T@CMHeadphoneDeviceMotionHandler	-			-	-	747c598fa8a1dd1e
+interface	c:objc(cs)CMHeadphoneMotionManager	-			ios=14.0/-/-/0,macos=14.0/-/-/0,watchos=7.0/-/-/0,xros=-/-/-/1	-	1f00ddfdf08fb64f
+super	-	CMHeadphoneMotionManager	NSObject		-	-	dc27fa8b4dae509a
+method	c:objc(cs)CMHeadphoneMotionManager(cm)authorizationStatus	-			ios=14.0/-/-/0,macos=14.0/-/-/0,watchos=7.0/-/-/0,xros=-/-/-/1	-	2982f9dcad86afd9
+property	c:objc(cs)CMHeadphoneMotionManager(py)delegate	-			ios=14.0/-/-/0,macos=14.0/-/-/0,watchos=7.0/-/-/0,xros=-/-/-/1	-	db4eccb01170c59d
+property	c:objc(cs)CMHeadphoneMotionManager(py)connectionStatusActive	-			ios=14.0/-/-/0,macos=14.0/-/-/0,watchos=7.0/-/-/0,xros=-/-/-/1	-	c92c7054c8e978bc
+property	c:objc(cs)CMHeadphoneMotionManager(py)deviceMotionAvailable	-			ios=14.0/-/-/0,macos=14.0/-/-/0,watchos=7.0/-/-/0,xros=-/-/-/1	-	fdedbe01b61f2eed
+property	c:objc(cs)CMHeadphoneMotionManager(py)deviceMotionActive	-			ios=14.0/-/-/0,macos=14.0/-/-/0,watchos=7.0/-/-/0,xros=-/-/-/1	-	a3264ffbec3939b2
+property	c:objc(cs)CMHeadphoneMotionManager(py)deviceMotion	-			ios=14.0/-/-/0,macos=14.0/-/-/0,watchos=7.0/-/-/0,xros=-/-/-/1	-	d198620ceff603cd
+method	c:objc(cs)CMHeadphoneMotionManager(im)startDeviceMotionUpdates	-			ios=14.0/-/-/0,macos=14.0/-/-/0,watchos=7.0/-/-/0,xros=-/-/-/1	-	272cf549782a27cc
+method	c:objc(cs)CMHeadphoneMotionManager(im)startDeviceMotionUpdatesToQueue:withHandler:	-			ios=14.0/-/-/0,macos=14.0/-/-/0,watchos=7.0/-/-/0,xros=-/-/-/1	-	81336b79d0ef195e
+method	c:objc(cs)CMHeadphoneMotionManager(im)stopDeviceMotionUpdates	-			ios=14.0/-/-/0,macos=14.0/-/-/0,watchos=7.0/-/-/0,xros=-/-/-/1	-	c93cda42fc163301
+method	c:objc(cs)CMHeadphoneMotionManager(im)startConnectionStatusUpdates	-			ios=14.0/-/-/0,macos=14.0/-/-/0,watchos=7.0/-/-/0,xros=-/-/-/1	-	91d8326c4765cd2d
+method	c:objc(cs)CMHeadphoneMotionManager(im)stopConnectionStatusUpdates	-			ios=14.0/-/-/0,macos=14.0/-/-/0,watchos=7.0/-/-/0,xros=-/-/-/1	-	0683089f240e920e
+protocol	c:objc(pl)CMHeadphoneMotionManagerDelegate	-			ios=14.0/-/-/0,macos=14.0/-/-/0,watchos=7.0/-/-/0,xros=-/-/-/1	-	f5d04e37f522c45d
+conforms	-	CMHeadphoneMotionManagerDelegate	NSObject		-	-	fe15b7cc7ac5487b
+method	c:objc(pl)CMHeadphoneMotionManagerDelegate(im)headphoneMotionManagerDidConnect:	-			ios=14.0/-/-/0,macos=14.0/-/-/0,watchos=7.0/-/-/0,xros=-/-/-/1	-	0609ce92e0046f7e
+method	c:objc(pl)CMHeadphoneMotionManagerDelegate(im)headphoneMotionManagerDidDisconnect:	-			ios=14.0/-/-/0,macos=14.0/-/-/0,watchos=7.0/-/-/0,xros=-/-/-/1	-	90ba368adcec087a
+interface	c:objc(cs)CMDyskineticSymptomResult	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0,xros=-/-/-/1	-	ad532b0c205e7d30
+super	-	CMDyskineticSymptomResult	NSObject		-	-	bc84f7ae7b503330
+conforms	-	CMDyskineticSymptomResult	NSCopying		-	-	80bf1dac3d237904
+conforms	-	CMDyskineticSymptomResult	NSSecureCoding		-	-	967b06f4cea33330
+property	c:objc(cs)CMDyskineticSymptomResult(py)startDate	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0,xros=-/-/-/1	-	71f9cb8b344a4a0d
+property	c:objc(cs)CMDyskineticSymptomResult(py)endDate	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0,xros=-/-/-/1	-	486597a815d58d8e
+property	c:objc(cs)CMDyskineticSymptomResult(py)percentUnlikely	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0,xros=-/-/-/1	-	24f54d64221cc31d
+property	c:objc(cs)CMDyskineticSymptomResult(py)percentLikely	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0,xros=-/-/-/1	-	f6f9247575c7624a
+interface	c:objc(cs)CMTremorResult	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	3535c22ae8e57da1
+super	-	CMTremorResult	NSObject		-	-	fd746ba3db20aa74
+conforms	-	CMTremorResult	NSCopying		-	-	003e1047cc6e1837
+conforms	-	CMTremorResult	NSSecureCoding		-	-	fe16390ed4135d8d
+property	c:objc(cs)CMTremorResult(py)startDate	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	d7478a1be27299f2
+property	c:objc(cs)CMTremorResult(py)endDate	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	f0154a51971f30d5
+property	c:objc(cs)CMTremorResult(py)percentUnknown	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	cd15f911e361235e
+property	c:objc(cs)CMTremorResult(py)percentNone	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	fe20a947cdd1ff4e
+property	c:objc(cs)CMTremorResult(py)percentSlight	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	d69da630ff19a0c9
+property	c:objc(cs)CMTremorResult(py)percentMild	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	8fe8760cc8cca3b3
+property	c:objc(cs)CMTremorResult(py)percentModerate	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	00f968c4591a1405
+property	c:objc(cs)CMTremorResult(py)percentStrong	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	ede1244153377639
+typedef	c:@T@CMDyskineticSymptomResultHandler	-			ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	e90ea06d88377611
+typedef	c:@T@CMTremorResultHandler	-			ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	d059ebfa460b98b0
+interface	c:objc(cs)CMMovementDisorderManager	-			ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	9f53fc2cfa7947d0
+super	-	CMMovementDisorderManager	NSObject		-	-	aacabad5d0f8c8b8
+method	c:objc(cs)CMMovementDisorderManager(cm)isAvailable	-			ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	9264d26917d2b9ba
+method	c:objc(cs)CMMovementDisorderManager(cm)version	-			ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	02477b665f92b653
+method	c:objc(cs)CMMovementDisorderManager(cm)authorizationStatus	-			ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	f902fb293dc945f8
+method	c:objc(cs)CMMovementDisorderManager(im)monitorKinesiasForDuration:	-			ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	b134f2e1e166f5d0
+method	c:objc(cs)CMMovementDisorderManager(im)queryDyskineticSymptomFromDate:toDate:withHandler:	-			ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	c3626819a542dcff
+method	c:objc(cs)CMMovementDisorderManager(im)queryTremorFromDate:toDate:withHandler:	-			ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	e83c4c848dd404ed
+method	c:objc(cs)CMMovementDisorderManager(im)lastProcessedDate	-			ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	632c217bf04d0bba
+method	c:objc(cs)CMMovementDisorderManager(im)monitorKinesiasExpirationDate	-			ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	b9633d74727a9748
+interface	c:objc(cs)CMPedometerData	-			ios=8.0/-/-/0,xros=-/-/-/1	-	518d2e050d78d2d1
+super	-	CMPedometerData	NSObject		-	-	bd2f989b6aa541fa
+conforms	-	CMPedometerData	NSSecureCoding		-	-	ce3e06f11168b0cb
+conforms	-	CMPedometerData	NSCopying		-	-	a346eb7e1f454dfd
+property	c:objc(cs)CMPedometerData(py)startDate	-			ios=8.0/-/-/0,xros=-/-/-/1	-	a2e0b519db6aa388
+property	c:objc(cs)CMPedometerData(py)endDate	-			ios=8.0/-/-/0,xros=-/-/-/1	-	198a0fc5784e32e8
+property	c:objc(cs)CMPedometerData(py)numberOfSteps	-			ios=8.0/-/-/0,xros=-/-/-/1	-	b8c8b157e56c9a4d
+property	c:objc(cs)CMPedometerData(py)distance	-			ios=8.0/-/-/0,xros=-/-/-/1	-	2b074e78b6e03bb5
+property	c:objc(cs)CMPedometerData(py)floorsAscended	-			ios=8.0/-/-/0,xros=-/-/-/1	-	dc225f05bc54428a
+property	c:objc(cs)CMPedometerData(py)floorsDescended	-			ios=8.0/-/-/0,xros=-/-/-/1	-	e37c600cc2d7fd4a
+property	c:objc(cs)CMPedometerData(py)currentPace	-			ios=9.0/-/-/0	-	ec7e53efa0f4c0bd
+property	c:objc(cs)CMPedometerData(py)currentCadence	-			ios=9.0/-/-/0	-	776a74dd9378d3a8
+property	c:objc(cs)CMPedometerData(py)averageActivePace	-			ios=10.0/-/-/0	-	9d40c50fe1ad3398
+typedef	c:@T@CMPedometerEventType	-			-	-	1c2ad5df720cfabc
+enum	c:@E@CMPedometerEventType	-			ios=10.0/-/-/0,watchos=3.0/-/-/0	-	6cb6bfd4e83bdb72
+enumconst	c:@E@CMPedometerEventType@CMPedometerEventTypePause	CMPedometerEventType			ios=10.0/-/-/0,watchos=3.0/-/-/0	-	1509599f427e345c
+enumconst	c:@E@CMPedometerEventType@CMPedometerEventTypeResume	CMPedometerEventType			ios=10.0/-/-/0,watchos=3.0/-/-/0	-	e782cd00bd367a69
+interface	c:objc(cs)CMPedometerEvent	-			ios=10.0/-/-/0,watchos=3.0/-/-/0	-	097fa96c33f5b144
+super	-	CMPedometerEvent	NSObject		-	-	8c02e9ed9e168f05
+conforms	-	CMPedometerEvent	NSSecureCoding		-	-	626186da244bf3da
+conforms	-	CMPedometerEvent	NSCopying		-	-	5dc64854c3b95983
+property	c:objc(cs)CMPedometerEvent(py)date	-			ios=10.0/-/-/0,watchos=3.0/-/-/0	-	baad5f56193f968e
+property	c:objc(cs)CMPedometerEvent(py)type	-			ios=10.0/-/-/0,watchos=3.0/-/-/0	-	6ccb7e2e749c927b
+typedef	c:@T@CMPedometerHandler	-			xros=-/-/-/1	-	c3eb7e7326144a6e
+typedef	c:@T@CMPedometerEventHandler	-			ios=10.0/-/-/0,watchos=3.0/-/-/0,xros=-/-/-/1	-	82c1b16d9743070a
+interface	c:objc(cs)CMPedometer	-			ios=8.0/-/-/0,xros=-/-/-/1	-	3b2a3e383e231de5
+super	-	CMPedometer	NSObject		-	-	10e5fe913b539711
+method	c:objc(cs)CMPedometer(cm)isStepCountingAvailable	-			ios=8.0/-/-/0,xros=-/-/-/1	-	9dfc97d3c3df2e54
+method	c:objc(cs)CMPedometer(cm)isDistanceAvailable	-			ios=8.0/-/-/0,xros=-/-/-/1	-	abde0ac506a253c8
+method	c:objc(cs)CMPedometer(cm)isFloorCountingAvailable	-			ios=8.0/-/-/0,xros=-/-/-/1	-	91423baeebb71251
+method	c:objc(cs)CMPedometer(cm)isPaceAvailable	-			ios=9.0/-/-/0	-	f782c6b122a62cc4
+method	c:objc(cs)CMPedometer(cm)isCadenceAvailable	-			ios=9.0/-/-/0,macos=-/-/-/1	-	88702899e29c952c
+method	c:objc(cs)CMPedometer(cm)isPedometerEventTrackingAvailable	-			ios=10.0/-/-/0,macos=-/-/-/1,watchos=3.0/-/-/0	-	7ceb0536c13199b5
+method	c:objc(cs)CMPedometer(cm)authorizationStatus	-			ios=11.0/-/-/0,macos=-/-/-/1,watchos=4.0/-/-/0	-	483bde7ca98d795c
+method	c:objc(cs)CMPedometer(im)queryPedometerDataFromDate:toDate:withHandler:	-			ios=8.0/-/-/0,xros=-/-/-/1	-	cde7d7bc5ea7ee88
+method	c:objc(cs)CMPedometer(im)startPedometerUpdatesFromDate:withHandler:	-			ios=8.0/-/-/0,xros=-/-/-/1	-	c082706d6b94fa87
+method	c:objc(cs)CMPedometer(im)stopPedometerUpdates	-			ios=8.0/-/-/0,xros=-/-/-/1	-	ded114252e7e47ab
+method	c:objc(cs)CMPedometer(im)startPedometerEventUpdatesWithHandler:	-			ios=10.0/-/-/0,macos=-/-/-/1,watchos=3.0/-/-/0	-	a59d234394946589
+method	c:objc(cs)CMPedometer(im)stopPedometerEventUpdates	-			ios=10.0/-/-/0,macos=-/-/-/1,watchos=3.0/-/-/0	-	5b95d687420edbfb
+interface	c:objc(cs)CMRotationRateData	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	04acbb6bb0622a32
+super	-	CMRotationRateData	CMLogItem		-	-	943375cfec668e1d
+property	c:objc(cs)CMRotationRateData(py)rotationRate	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	a0ed7128c7fae4c5
+interface	c:objc(cs)CMRecordedRotationRateData	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	40f4d19bb71f9398
+super	-	CMRecordedRotationRateData	CMRotationRateData		-	-	1be3e1719a401560
+property	c:objc(cs)CMRecordedRotationRateData(py)startDate	-			ios=14.0/-/-/0,watchos=7.0/-/-/0	-	783b7306c2e9e0f1
+typedef	c:@T@CMStepQueryHandler	-			tvos=-/-/-/1,watchos=-/-/-/1	-	9d8884814b57dd21
+typedef	c:@T@CMStepUpdateHandler	-			watchos=-/-/-/1	-	f5333e0beab55129
+interface	c:objc(cs)CMStepCounter	-			ios=7.0/8.0/-/0,watchos=-/-/-/1	-	4cf9d45c3ba0f8de
+super	-	CMStepCounter	NSObject		-	-	cb00e0307513f209
+method	c:objc(cs)CMStepCounter(cm)isStepCountingAvailable	-			ios=7.0/8.0/-/0,watchos=-/-/-/1	-	1f5f69ffbaaf7904
+method	c:objc(cs)CMStepCounter(im)queryStepCountStartingFrom:to:toQueue:withHandler:	-			ios=7.0/8.0/-/0,watchos=-/-/-/1	-	ec719f132992e7c2
+method	c:objc(cs)CMStepCounter(im)startStepCountingUpdatesToQueue:updateOn:withHandler:	-			ios=7.0/8.0/-/0,watchos=-/-/-/1	-	01efd1094c1a857d
+method	c:objc(cs)CMStepCounter(im)stopStepCountingUpdates	-			ios=7.0/8.0/-/0,watchos=-/-/-/1	-	6331ba3baa435895
+interface	c:objc(cs)CMRecordedAccelerometerData	-			ios=9.0/-/-/0,macos=-/-/-/1,watchos=2.0/-/-/0	-	58c946b5352f7e13
+super	-	CMRecordedAccelerometerData	CMAccelerometerData		-	-	2d9b330e1092b630
+property	c:objc(cs)CMRecordedAccelerometerData(py)identifier	-			ios=9.0/-/-/0,macos=-/-/-/1,watchos=2.0/-/-/0	-	cf8f6111d4a8c3ab
+property	c:objc(cs)CMRecordedAccelerometerData(py)startDate	-			ios=9.0/-/-/0,macos=-/-/-/1,watchos=2.0/-/-/0	-	7a792f29ed78162f
+interface	c:objc(cs)CMSensorDataList	-			ios=9.0/-/-/0,macos=-/-/-/1,watchos=2.0/-/-/0,xros=-/-/-/1	-	0e19d700cf9fded2
+super	-	CMSensorDataList	NSObject		-	-	0c9eba479f2cfdd1
+conforms	-	CMSensorDataList	NSFastEnumeration		-	-	6260526dd13bacc2
+interface	c:objc(cs)CMSensorRecorder	-			ios=9.0/-/-/0,macos=-/-/-/1,watchos=2.0/-/-/0,xros=-/-/-/1	-	04541ada6ea3a249
+super	-	CMSensorRecorder	NSObject		-	-	0c25eceb911208ac
+method	c:objc(cs)CMSensorRecorder(cm)isAccelerometerRecordingAvailable	-			ios=9.0/-/-/0,macos=-/-/-/1,watchos=2.0/-/-/0,xros=-/-/-/1	-	97959ed3c4759fcf
+method	c:objc(cs)CMSensorRecorder(cm)authorizationStatus	-			ios=11.0/-/-/0,macos=-/-/-/1,watchos=4.0/-/-/0	-	305dc1b75732ee79
+method	c:objc(cs)CMSensorRecorder(cm)isAuthorizedForRecording	-			ios=9.0/11.0/-/0,watchos=2.0/4.0/-/0	-	1fdb20dd90cadc2c
+method	c:objc(cs)CMSensorRecorder(im)accelerometerDataFromDate:toDate:	-			ios=9.0/-/-/0,macos=-/-/-/1,watchos=2.0/-/-/0,xros=-/-/-/1	-	91ae1ea973d48a20
+method	c:objc(cs)CMSensorRecorder(im)recordAccelerometerForDuration:	-			ios=9.0/-/-/0,macos=-/-/-/1,watchos=2.0/-/-/0,xros=-/-/-/1	-	c68028e25f93d848
+interface	c:objc(cs)CMAmbientPressureData	-			ios=10.0/-/-/0	-	d7ba6942e4affebf
+super	-	CMAmbientPressureData	CMLogItem		-	-	6034cffa12ac4b4d
+property	c:objc(cs)CMAmbientPressureData(py)pressure	-			ios=10.0/-/-/0	-	d87ea656e52d77d4
+property	c:objc(cs)CMAmbientPressureData(py)temperature	-			ios=10.0/-/-/0	-	1d3e54bcb8d5741b
+interface	c:objc(cs)CMRecordedPressureData	-			ios=12.0/-/-/0,macos=-/-/-/1,watchos=5.0/-/-/0,xros=-/-/-/1	-	81745b446e464a89
+super	-	CMRecordedPressureData	CMAmbientPressureData		-	-	dced278398000022
+property	c:objc(cs)CMRecordedPressureData(py)identifier	-			ios=12.0/-/-/0,macos=-/-/-/1,watchos=5.0/-/-/0,xros=-/-/-/1	-	8862c011e49c0be6
+property	c:objc(cs)CMRecordedPressureData(py)startDate	-			ios=12.0/-/-/0,macos=-/-/-/1,watchos=5.0/-/-/0,xros=-/-/-/1	-	4d4f052ee9af83e9
+typedef	c:@T@CMHighFrequencyHeartRateDataConfidence	-			-	-	f0480744017d0401
+enum	c:@E@CMHighFrequencyHeartRateDataConfidence	-			ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=10.0/-/-/0	-	6a60bec945795af3
+enumconst	c:@E@CMHighFrequencyHeartRateDataConfidence@CMHighFrequencyHeartRateDataConfidenceLow	CMHighFrequencyHeartRateDataConfidence			ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=10.0/-/-/0	-	c7e05e7d27ab676e
+enumconst	c:@E@CMHighFrequencyHeartRateDataConfidence@CMHighFrequencyHeartRateDataConfidenceMedium	CMHighFrequencyHeartRateDataConfidence			ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=10.0/-/-/0	-	e67719ad2aab4434
+enumconst	c:@E@CMHighFrequencyHeartRateDataConfidence@CMHighFrequencyHeartRateDataConfidenceHigh	CMHighFrequencyHeartRateDataConfidence			ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=10.0/-/-/0	-	6b192fdcf3807568
+enumconst	c:@E@CMHighFrequencyHeartRateDataConfidence@CMHighFrequencyHeartRateDataConfidenceHighest	CMHighFrequencyHeartRateDataConfidence			ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=10.0/-/-/0	-	da0a2adcef759598
+interface	c:objc(cs)CMHighFrequencyHeartRateData	-			ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=10.0/-/-/0,xros=-/-/-/1	-	cca33e050bb4c71d
+super	-	CMHighFrequencyHeartRateData	CMLogItem		-	-	f390a76ab82c0303
+property	c:objc(cs)CMHighFrequencyHeartRateData(py)heartRate	-			ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=10.0/-/-/0,xros=-/-/-/1	-	4325d6341dd7b558
+property	c:objc(cs)CMHighFrequencyHeartRateData(py)confidence	-			ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=10.0/-/-/0,xros=-/-/-/1	-	4ecdd30db82ccd59
+property	c:objc(cs)CMHighFrequencyHeartRateData(py)date	-			ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=10.0/-/-/0,xros=-/-/-/1	-	4e1ac01d7a7649e6
+typedef	c:@T@CMOdometerOriginDevice	-			-	-	c305477dd6ba862b
+enum	c:@E@CMOdometerOriginDevice	-			ios=15.4/-/-/0,watchos=8.4/-/-/0	-	c8ed9b587ae5dd93
+enumconst	c:@E@CMOdometerOriginDevice@CMOdometerOriginDeviceUnknown	CMOdometerOriginDevice			ios=15.4/-/-/0,watchos=8.4/-/-/0	-	dc62758a557b6bf9
+enumconst	c:@E@CMOdometerOriginDevice@CMOdometerOriginDeviceLocal	CMOdometerOriginDevice			ios=15.4/-/-/0,watchos=8.4/-/-/0	-	6d4191d39e3b9a28
+enumconst	c:@E@CMOdometerOriginDevice@CMOdometerOriginDeviceRemote	CMOdometerOriginDevice			ios=15.4/-/-/0,watchos=8.4/-/-/0	-	ff2b9b489bb5bba0
+interface	c:objc(cs)CMOdometerData	-			ios=8.0/-/-/0,watchos=1.0/-/-/0	-	41d72486be9ba895
+super	-	CMOdometerData	NSObject		-	-	dd2b9fd746eb72e3
+conforms	-	CMOdometerData	NSSecureCoding		-	-	4fec980c15f3c90b
+conforms	-	CMOdometerData	NSCopying		-	-	d0e285d7a5388401
+property	c:objc(cs)CMOdometerData(py)startDate	-			ios=8.0/-/-/0,watchos=1.0/-/-/0	-	7a0964d65e0d3e58
+property	c:objc(cs)CMOdometerData(py)endDate	-			ios=8.0/-/-/0,watchos=1.0/-/-/0	-	e3229ceebebc0920
+property	c:objc(cs)CMOdometerData(py)deltaDistance	-			ios=17.0/-/-/0,watchos=10.0/-/-/0	-	6143faae99615768
+property	c:objc(cs)CMOdometerData(py)deltaDistanceAccuracy	-			ios=17.0/-/-/0,watchos=10.0/-/-/0	-	f2a0bae6a9cfaf20
+property	c:objc(cs)CMOdometerData(py)speed	-			ios=17.0/-/-/0,watchos=10.0/-/-/0	-	57cf8cb00d7cd1df
+property	c:objc(cs)CMOdometerData(py)speedAccuracy	-			ios=17.0/-/-/0,watchos=10.0/-/-/0	-	35cf98b397ade231
+property	c:objc(cs)CMOdometerData(py)gpsDate	-			ios=17.0/-/-/0,watchos=10.0/-/-/0	-	3fdfd862d00b12a0
+property	c:objc(cs)CMOdometerData(py)deltaAltitude	-			ios=17.0/-/-/0,watchos=10.0/-/-/0	-	5162d3c3981c50dd
+property	c:objc(cs)CMOdometerData(py)verticalAccuracy	-			ios=17.0/-/-/0,watchos=10.0/-/-/0	-	e0e7ce123f075bad
+property	c:objc(cs)CMOdometerData(py)originDevice	-			ios=15.4/-/-/0,watchos=8.4/-/-/0	-	8dcfb7b174383728
+property	c:objc(cs)CMOdometerData(py)slope	-			ios=17.0/-/-/0,watchos=10.0/-/-/0	-	366ca2345d8f354b
+property	c:objc(cs)CMOdometerData(py)maxAbsSlope	-			ios=17.0/-/-/0,watchos=10.0/-/-/0	-	ec5280440ad34741
+typedef	c:@T@CMWaterSubmersionState	-			-	-	f72e5121d55e313a
+enum	c:@E@CMWaterSubmersionState	-			-	-	344117101e6550ad
+enumconst	c:@E@CMWaterSubmersionState@CMWaterSubmersionStateUnknown	CMWaterSubmersionState			-	-	b871622b3b357188
+enumconst	c:@E@CMWaterSubmersionState@CMWaterSubmersionStateNotSubmerged	CMWaterSubmersionState			-	-	1eaffe233af1f0c5
+enumconst	c:@E@CMWaterSubmersionState@CMWaterSubmersionStateSubmerged	CMWaterSubmersionState			-	-	353eb912b222f9dd
+typedef	c:@T@CMWaterSubmersionDepthState	-			-	-	b5c5d0ea12bb08ce
+enum	c:@E@CMWaterSubmersionDepthState	-			-	-	ba348414795caa25
+enumconst	c:@E@CMWaterSubmersionDepthState@CMWaterSubmersionDepthStateUnknown	CMWaterSubmersionDepthState			-	-	143653f98cd904d9
+enumconst	c:@E@CMWaterSubmersionDepthState@CMWaterSubmersionDepthStateNotSubmerged	CMWaterSubmersionDepthState			-	-	1de17b028a8f1901
+enumconst	c:@E@CMWaterSubmersionDepthState@CMWaterSubmersionDepthStateSubmergedShallow	CMWaterSubmersionDepthState			-	-	0a3a4010a005ec6c
+enumconst	c:@E@CMWaterSubmersionDepthState@CMWaterSubmersionDepthStateSubmergedDeep	CMWaterSubmersionDepthState			-	-	847716e79b9c918e
+enumconst	c:@E@CMWaterSubmersionDepthState@CMWaterSubmersionDepthStateApproachingMaxDepth	CMWaterSubmersionDepthState			-	-	cd82700ab340f753
+enumconst	c:@E@CMWaterSubmersionDepthState@CMWaterSubmersionDepthStatePastMaxDepth	CMWaterSubmersionDepthState			-	-	4ad2a58047e1dcd0
+enumconst	c:@E@CMWaterSubmersionDepthState@CMWaterSubmersionDepthStateSensorDepthError	CMWaterSubmersionDepthState			-	-	eb75c6d25ef0d9a8
+interface	c:objc(cs)CMWaterSubmersionEvent	-			ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	41833adf0c794f63
+super	-	CMWaterSubmersionEvent	NSObject		-	-	56917191e4d8913e
+conforms	-	CMWaterSubmersionEvent	NSSecureCoding		-	-	e50d8995bd3d1572
+conforms	-	CMWaterSubmersionEvent	NSCopying		-	-	ea8af0fd79eef9b8
+property	c:objc(cs)CMWaterSubmersionEvent(py)date	-			ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	528dc8da3722265f
+property	c:objc(cs)CMWaterSubmersionEvent(py)state	-			ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	8b07e64e899f8349
+interface	c:objc(cs)CMWaterSubmersionMeasurement	-			ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	d765fafdeaa306b3
+super	-	CMWaterSubmersionMeasurement	NSObject		-	-	935c66815999eb82
+conforms	-	CMWaterSubmersionMeasurement	NSSecureCoding		-	-	ea73cc165020dac6
+conforms	-	CMWaterSubmersionMeasurement	NSCopying		-	-	ddc3cb51b614656c
+property	c:objc(cs)CMWaterSubmersionMeasurement(py)date	-			ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	62fbcbe198daa2a9
+property	c:objc(cs)CMWaterSubmersionMeasurement(py)depth	-			ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	690ff17e579e1bba
+property	c:objc(cs)CMWaterSubmersionMeasurement(py)pressure	-			ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	6a18b32c270a826d
+property	c:objc(cs)CMWaterSubmersionMeasurement(py)surfacePressure	-			ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	95f7ed5ae7176ba4
+property	c:objc(cs)CMWaterSubmersionMeasurement(py)submersionState	-			ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	77473d9617696006
+interface	c:objc(cs)CMWaterTemperature	-			ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	c811dcd4960980d4
+super	-	CMWaterTemperature	NSObject		-	-	eb82456e692e3fff
+conforms	-	CMWaterTemperature	NSSecureCoding		-	-	198a188b668e493e
+conforms	-	CMWaterTemperature	NSCopying		-	-	3cc784f045235604
+property	c:objc(cs)CMWaterTemperature(py)date	-			ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	151822a06d240f52
+property	c:objc(cs)CMWaterTemperature(py)temperature	-			ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	32104c35cc847469
+property	c:objc(cs)CMWaterTemperature(py)temperatureUncertainty	-			ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	6405f57420a43639
+protocol	c:objc(pl)CMWaterSubmersionManagerDelegate	-			ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	613879e1f540e9fd
+conforms	-	CMWaterSubmersionManagerDelegate	NSObject		-	-	cf669e9a18bf6447
+method	c:objc(pl)CMWaterSubmersionManagerDelegate(im)manager:didUpdateEvent:	-			ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	a5d694888849a2b3
+method	c:objc(pl)CMWaterSubmersionManagerDelegate(im)manager:didUpdateMeasurement:	-			ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	a61921ea950d89d6
+method	c:objc(pl)CMWaterSubmersionManagerDelegate(im)manager:didUpdateTemperature:	-			ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	e4ae60ac5c9a8228
+method	c:objc(pl)CMWaterSubmersionManagerDelegate(im)manager:errorOccurred:	-			ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	7fff8abe76d3293f
+interface	c:objc(cs)CMWaterSubmersionManager	-			ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	ec311e76a6e43fca
+super	-	CMWaterSubmersionManager	NSObject		-	-	5a76a4f054d837ac
+property	c:objc(cs)CMWaterSubmersionManager(py)delegate	-			ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	8e1f3d2af6eb1e34
+property	c:objc(cs)CMWaterSubmersionManager(cpy)waterSubmersionAvailable	-			ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	10a18e8cc3cddf30
+property	c:objc(cs)CMWaterSubmersionManager(cpy)authorizationStatus	-			ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	1f28589ed5469ee1
+property	c:objc(cs)CMWaterSubmersionManager(py)maximumDepth	-			ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	2c75e54a37770a01
+interface	c:objc(cs)CMBatchedSensorManager	-			macos=-/-/-/1,watchos=10.0/-/-/0	-	b1412c974a6ae599
+super	-	CMBatchedSensorManager	NSObject		-	-	72f0a525db8b3178
+property	c:objc(cs)CMBatchedSensorManager(cpy)authorizationStatus	-			macos=-/-/-/1,watchos=10.0/-/-/0	-	2979ffc792382fbc
+property	c:objc(cs)CMBatchedSensorManager(cpy)accelerometerSupported	-			macos=-/-/-/1,watchos=10.0/-/-/0	-	1768a56591937053
+property	c:objc(cs)CMBatchedSensorManager(py)accelerometerActive	-			macos=-/-/-/1,watchos=10.0/-/-/0	-	9ee43966f0d131b9
+property	c:objc(cs)CMBatchedSensorManager(py)accelerometerDataFrequency	-			macos=-/-/-/1,watchos=10.0/-/-/0	-	9a1794205ff125aa
+property	c:objc(cs)CMBatchedSensorManager(py)accelerometerBatch	-			macos=-/-/-/1,watchos=10.0/-/-/0	-	f4ea3a9b1bb3976f
+method	c:objc(cs)CMBatchedSensorManager(im)startAccelerometerUpdates	-			macos=-/-/-/1,watchos=10.0/-/-/0	-	315a8539647013f3
+method	c:objc(cs)CMBatchedSensorManager(im)startAccelerometerUpdatesWithHandler:	-			macos=-/-/-/1,watchos=10.0/-/-/0	-	a4886e63d86516b2
+method	c:objc(cs)CMBatchedSensorManager(im)stopAccelerometerUpdates	-			macos=-/-/-/1,watchos=10.0/-/-/0	-	4c6da41d79487a2f
+property	c:objc(cs)CMBatchedSensorManager(cpy)deviceMotionSupported	-			macos=-/-/-/1,watchos=10.0/-/-/0	-	75aed72bd56670aa
+property	c:objc(cs)CMBatchedSensorManager(py)deviceMotionDataFrequency	-			macos=-/-/-/1,watchos=10.0/-/-/0	-	9c30a4350c90e85e
+property	c:objc(cs)CMBatchedSensorManager(py)deviceMotionActive	-			macos=-/-/-/1,watchos=10.0/-/-/0	-	1079a3bbc71278c7
+property	c:objc(cs)CMBatchedSensorManager(py)deviceMotionBatch	-			macos=-/-/-/1,watchos=10.0/-/-/0	-	0d643a0a0eb2eabc
+method	c:objc(cs)CMBatchedSensorManager(im)startDeviceMotionUpdates	-			macos=-/-/-/1,watchos=10.0/-/-/0	-	a5cf274e5c1d2eed
+method	c:objc(cs)CMBatchedSensorManager(im)startDeviceMotionUpdatesWithHandler:	-			macos=-/-/-/1,watchos=10.0/-/-/0	-	541ecc3ab5926302
+method	c:objc(cs)CMBatchedSensorManager(im)stopDeviceMotionUpdates	-			macos=-/-/-/1,watchos=10.0/-/-/0	-	876427e4253ac313
+typedef	c:@T@CMHeadphoneActivityStatus	-			-	-	cb19caf6ec7c8b36
+enum	c:@E@CMHeadphoneActivityStatus	-			-	-	97d2710c79cf6eef
+enumconst	c:@E@CMHeadphoneActivityStatus@CMHeadphoneActivityStatusDisconnected	CMHeadphoneActivityStatus			-	-	6fe840f5d053395e
+enumconst	c:@E@CMHeadphoneActivityStatus@CMHeadphoneActivityStatusConnected	CMHeadphoneActivityStatus			-	-	a6e1200ec6c74e63
+typedef	c:@T@CMHeadphoneActivityStatusHandler	-			-	-	3247ece4721967c9
+typedef	c:@T@CMHeadphoneActivityHandler	-			xros=-/-/-/1	-	205369f82b918f6d
+interface	c:objc(cs)CMHeadphoneActivityManager	-			ios=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=-/-/-/1	-	80cef1f4ae03efcf
+super	-	CMHeadphoneActivityManager	NSObject		-	-	09452ee4b5456489
+method	c:objc(cs)CMHeadphoneActivityManager(cm)authorizationStatus	-			ios=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=-/-/-/1	-	659dd99d4c883845
+property	c:objc(cs)CMHeadphoneActivityManager(py)activityAvailable	-			ios=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=-/-/-/1	-	5cfd66307bcc5821
+property	c:objc(cs)CMHeadphoneActivityManager(py)activityActive	-			ios=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=-/-/-/1	-	1b3929d3e31d8b65
+property	c:objc(cs)CMHeadphoneActivityManager(py)statusAvailable	-			ios=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=-/-/-/1	-	7ad40396aa45ec5d
+property	c:objc(cs)CMHeadphoneActivityManager(py)statusActive	-			ios=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=-/-/-/1	-	5b29ca7db2d84e22
+method	c:objc(cs)CMHeadphoneActivityManager(im)startActivityUpdatesToQueue:withHandler:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=-/-/-/1	-	d1a92fb5e19fc22e
+method	c:objc(cs)CMHeadphoneActivityManager(im)stopActivityUpdates	-			ios=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=-/-/-/1	-	cc61f6661a732d4a
+method	c:objc(cs)CMHeadphoneActivityManager(im)startStatusUpdatesToQueue:withHandler:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=-/-/-/1	-	8896ba7a4ac54098
+method	c:objc(cs)CMHeadphoneActivityManager(im)stopStatusUpdates	-			ios=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=-/-/-/1	-	2859b20b7da1bd89

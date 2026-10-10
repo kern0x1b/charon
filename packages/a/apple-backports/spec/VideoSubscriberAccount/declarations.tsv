@@ -1,0 +1,155 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+interface	c:objc(cs)VSAccountApplicationProvider	-			ios=14.2/-/-/0,maccatalyst=-/-/-/1,tvos=14.2/-/-/0	-	6a8217059faba294
+super	-	VSAccountApplicationProvider	NSObject		-	-	ef9bc1ea611a9fa9
+method	c:objc(cs)VSAccountApplicationProvider(im)init	-			*unavailable ios=14.2/-/-/0,maccatalyst=-/-/-/1,tvos=14.2/-/-/0	-	330145d1292f7ca1
+method	c:objc(cs)VSAccountApplicationProvider(cm)new	-			*unavailable ios=14.2/-/-/0,maccatalyst=-/-/-/1,tvos=14.2/-/-/0	-	5d32c46c47b723d0
+method	c:objc(cs)VSAccountApplicationProvider(im)initWithLocalizedDisplayName:identifier:	-			ios=14.2/-/-/0,maccatalyst=-/-/-/1,tvos=14.2/-/-/0	-	8372d3a6b24d2c57
+property	c:objc(cs)VSAccountApplicationProvider(py)localizedDisplayName	-			ios=14.2/-/-/0,maccatalyst=-/-/-/1,tvos=14.2/-/-/0	-	a1c1c1abdf93c063
+property	c:objc(cs)VSAccountApplicationProvider(py)identifier	-			ios=14.2/-/-/0,maccatalyst=-/-/-/1,tvos=14.2/-/-/0	-	34f58f0b1f543a79
+var	c:@VSOpenTVProviderSettingsURLString	-			ios=13.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=13.0/-/-/0	-	40f4782b3c9e6ec8
+typedef	c:@T@VSAccountAccessStatus	-			-	-	f7f5fbbe8dcaf51b
+enum	c:@E@VSAccountAccessStatus	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	5be41c7e54c3c1d1
+enumconst	c:@E@VSAccountAccessStatus@VSAccountAccessStatusNotDetermined	VSAccountAccessStatus			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	cc3d5d766bcd0aed
+enumconst	c:@E@VSAccountAccessStatus@VSAccountAccessStatusRestricted	VSAccountAccessStatus			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	309e0b0ee0c40b30
+enumconst	c:@E@VSAccountAccessStatus@VSAccountAccessStatusDenied	VSAccountAccessStatus			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	96cc4131171342dd
+enumconst	c:@E@VSAccountAccessStatus@VSAccountAccessStatusGranted	VSAccountAccessStatus			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	78bcc4d7e71002fb
+typedef	c:@T@VSCheckAccessOption	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	9959311b2a5c4422
+var	c:@VSCheckAccessOptionPrompt	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	37ae2601dc9ce70c
+interface	c:objc(cs)VSAccountManager	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	8a353d6f50e427eb
+super	-	VSAccountManager	NSObject		-	-	9ee365c54b61d366
+property	c:objc(cs)VSAccountManager(py)delegate	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	fea5825d651ee199
+method	c:objc(cs)VSAccountManager(im)checkAccessStatusWithOptions:completionHandler:	-			maccatalyst=-/-/-/1,macos=-/-/-/1	-	969589053fe09428
+method	c:objc(cs)VSAccountManager(im)enqueueAccountMetadataRequest:completionHandler:	-			maccatalyst=-/-/-/1,macos=-/-/-/1	-	44a378858ecfea20
+protocol	c:objc(pl)VSAccountManagerDelegate	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	f073fd1f1048404b
+conforms	-	VSAccountManagerDelegate	NSObject		-	-	bf8e83b8f624b037
+method	c:objc(pl)VSAccountManagerDelegate(im)accountManager:presentViewController:	-			maccatalyst=-/-/-/1,macos=-/-/-/1	-	45d62548afb8fdc9
+method	c:objc(pl)VSAccountManagerDelegate(im)accountManager:dismissViewController:	-			maccatalyst=-/-/-/1,macos=-/-/-/1	-	f524281593849bf4
+method	c:objc(pl)VSAccountManagerDelegate(im)accountManager:shouldAuthenticateAccountProviderWithIdentifier:	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	b466fbc2ce00958d
+interface	c:objc(cs)VSAccountManagerResult	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	9994feaad32c7950
+super	-	VSAccountManagerResult	NSObject		-	-	f39ce5aa099ac086
+method	c:objc(cs)VSAccountManagerResult(im)init	-			*unavailable ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	8d6adc274e98269a
+method	c:objc(cs)VSAccountManagerResult(cm)new	-			*unavailable ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	263f42b05583e0e3
+method	c:objc(cs)VSAccountManagerResult(im)cancel	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	9054a9676242d72d
+interface	c:objc(cs)VSAccountMetadata	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	c045ae965a5a252f
+super	-	VSAccountMetadata	NSObject		-	-	1c1a100a8b9db0d2
+property	c:objc(cs)VSAccountMetadata(py)accountProviderIdentifier	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	71e7d2c596579ef3
+property	c:objc(cs)VSAccountMetadata(py)authenticationExpirationDate	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	fb8f18dfb39c25ed
+property	c:objc(cs)VSAccountMetadata(py)verificationData	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	eb9af5dd27de93ee
+property	c:objc(cs)VSAccountMetadata(py)SAMLAttributeQueryResponse	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	360ffe172d166e7d
+property	c:objc(cs)VSAccountMetadata(py)accountProviderResponse	-			ios=10.2/-/-/0,tvos=10.1/-/-/0	-	5141454742d3c7f2
+typedef	c:@T@VSAccountProviderAuthenticationScheme	-			maccatalyst=-/-/-/1	-	169e02403a90140e
+var	c:@VSAccountProviderAuthenticationSchemeSAML	-			ios=10.2/-/-/0,maccatalyst=-/-/-/1,tvos=10.1/-/-/0	-	78b090be7fe5efa7
+var	c:@VSAccountProviderAuthenticationSchemeAPI	-			ios=13.0/-/-/0,maccatalyst=-/-/-/1,tvos=13.0/-/-/0	-	7387ab669680103b
+interface	c:objc(cs)VSAccountProviderResponse	-			ios=10.2/-/-/0,maccatalyst=-/-/-/1,tvos=10.1/-/-/0	-	8924dd16fe8a2d21
+super	-	VSAccountProviderResponse	NSObject		-	-	d997d88c55ba6cce
+property	c:objc(cs)VSAccountProviderResponse(py)authenticationScheme	-			ios=10.2/-/-/0,maccatalyst=-/-/-/1,tvos=10.1/-/-/0	-	c56881b952db174a
+property	c:objc(cs)VSAccountProviderResponse(py)status	-			ios=10.2/-/-/0,maccatalyst=-/-/-/1,tvos=10.1/-/-/0	-	c7541f64a0a9ccf3
+property	c:objc(cs)VSAccountProviderResponse(py)body	-			ios=10.2/-/-/0,maccatalyst=-/-/-/1,tvos=10.1/-/-/0	-	a150147ba1398e45
+interface	c:objc(cs)VSAccountMetadataRequest	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	fb155048500eb52b
+super	-	VSAccountMetadataRequest	NSObject		-	-	9e0e45e27f9fc9f1
+property	c:objc(cs)VSAccountMetadataRequest(py)channelIdentifier	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	953c214d639cc679
+property	c:objc(cs)VSAccountMetadataRequest(py)supportedAccountProviderIdentifiers	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	06fe9ebf171d86b3
+property	c:objc(cs)VSAccountMetadataRequest(py)featuredAccountProviderIdentifiers	-			ios=11.0/-/-/0,tvos=11.0/-/-/0	-	f463668e424a12af
+property	c:objc(cs)VSAccountMetadataRequest(py)verificationToken	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	1cdcb66f88db35d5
+property	c:objc(cs)VSAccountMetadataRequest(py)includeAccountProviderIdentifier	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	afaa4a14e5657040
+property	c:objc(cs)VSAccountMetadataRequest(py)includeAuthenticationExpirationDate	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	6275a04dfbf8e850
+property	c:objc(cs)VSAccountMetadataRequest(py)localizedVideoTitle	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	becf55388b76267f
+property	c:objc(cs)VSAccountMetadataRequest(py)interruptionAllowed	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	e6f5fb601cecce8b
+property	c:objc(cs)VSAccountMetadataRequest(py)forceAuthentication	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	c0806cb396373619
+property	c:objc(cs)VSAccountMetadataRequest(py)attributeNames	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	4a4dbb422efa11fe
+property	c:objc(cs)VSAccountMetadataRequest(py)supportedAuthenticationSchemes	-			ios=10.2/-/-/0,tvos=10.1/-/-/0	-	93edc060ca558a6f
+property	c:objc(cs)VSAccountMetadataRequest(py)accountProviderAuthenticationToken	-			ios=13.0/-/-/0,tvos=13.0/-/-/0	-	b537eab02ff8e6cb
+property	c:objc(cs)VSAccountMetadataRequest(py)applicationAccountProviders	-			ios=14.2/-/-/0,tvos=14.2/-/-/0	-	ef635905c13e8139
+interface	c:objc(cs)VSAppleSubscription	-			ios=17.4/-/-/0,maccatalyst=-/-/-/1,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=-/-/-/1,xros=1.1/-/-/0	-	1c1f80fd25cef244
+super	-	VSAppleSubscription	NSObject		-	-	46fcd4a27c2ee521
+property	c:objc(cs)VSAppleSubscription(py)customerID	-			ios=17.4/-/-/0,maccatalyst=-/-/-/1,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=-/-/-/1,xros=1.1/-/-/0	-	b45157b68ef70dec
+property	c:objc(cs)VSAppleSubscription(py)productCodes	-			ios=17.4/-/-/0,maccatalyst=-/-/-/1,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=-/-/-/1,xros=1.1/-/-/0	-	528e5578fa0ff342
+method	c:objc(cs)VSAppleSubscription(im)initWithCustomerID:productCodes:	-			ios=17.4/-/-/0,maccatalyst=-/-/-/1,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=-/-/-/1,xros=1.1/-/-/0	-	565ff63fc2bab23e
+method	c:objc(cs)VSAppleSubscription(im)init	-			*unavailable ios=17.4/-/-/0,maccatalyst=-/-/-/1,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=-/-/-/1,xros=1.1/-/-/0	-	be66427384661913
+method	c:objc(cs)VSAppleSubscription(cm)new	-			*unavailable ios=17.4/-/-/0,maccatalyst=-/-/-/1,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=-/-/-/1,xros=1.1/-/-/0	-	4b05ed15bd84c234
+typedef	c:@T@VSAutoSignInAuthorization	-			-	-	9e51b4a24a03f3d7
+enum	c:@E@VSAutoSignInAuthorization	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	9e65a5e63b011ec6
+enumconst	c:@E@VSAutoSignInAuthorization@VSAutoSignInAuthorizationNotDetermined	VSAutoSignInAuthorization			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	2971d0271e21821d
+enumconst	c:@E@VSAutoSignInAuthorization@VSAutoSignInAuthorizationGranted	VSAutoSignInAuthorization			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	5898b8d1f0258863
+enumconst	c:@E@VSAutoSignInAuthorization@VSAutoSignInAuthorizationDenied	VSAutoSignInAuthorization			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	3c43700e8669f363
+interface	c:objc(cs)VSAutoSignInToken	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	364cf90ddb55b774
+super	-	VSAutoSignInToken	NSObject		-	-	93116f973407e4bd
+conforms	-	VSAutoSignInToken	NSSecureCoding		-	-	1b9cc408d0d72a90
+property	c:objc(cs)VSAutoSignInToken(py)authorization	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	d7f82f08d36bbe76
+property	c:objc(cs)VSAutoSignInToken(py)value	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	ede0e15b9d388818
+method	c:objc(cs)VSAutoSignInToken(im)init	-			*unavailable ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	4335ad3f53f0dbfc
+method	c:objc(cs)VSAutoSignInToken(cm)new	-			*unavailable ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	cd2e08a309baa21b
+interface	c:objc(cs)VSAutoSignInTokenUpdateContext	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	61a93aa7d0ad3c8c
+super	-	VSAutoSignInTokenUpdateContext	NSObject		-	-	67708ea8622536ec
+property	c:objc(cs)VSAutoSignInTokenUpdateContext(py)authorization	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	8c945d459c61fe4c
+method	c:objc(cs)VSAutoSignInTokenUpdateContext(im)init	-			*unavailable ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	2f7f50d73f27d061
+method	c:objc(cs)VSAutoSignInTokenUpdateContext(cm)new	-			*unavailable ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	0a462d027a6994aa
+typedef	c:@T@VSSubscriptionAccessLevel	-			-	-	5400d579a1dc6c00
+enum	c:@E@VSSubscriptionAccessLevel	-			ios=11.0/18.0/-/0,maccatalyst=-/-/-/1,tvos=11.0/18.0/-/0,xros=1.0/2.0/-/0	-	833c6168b8b343be
+enumconst	c:@E@VSSubscriptionAccessLevel@VSSubscriptionAccessLevelUnknown	VSSubscriptionAccessLevel			ios=11.0/18.0/-/0,maccatalyst=-/-/-/1,tvos=11.0/18.0/-/0,xros=1.0/2.0/-/0	-	e03493e4256b670b
+enumconst	c:@E@VSSubscriptionAccessLevel@VSSubscriptionAccessLevelFreeWithAccount	VSSubscriptionAccessLevel			ios=11.0/18.0/-/0,maccatalyst=-/-/-/1,tvos=11.0/18.0/-/0,xros=1.0/2.0/-/0	-	0e8a0129ecceb545
+enumconst	c:@E@VSSubscriptionAccessLevel@VSSubscriptionAccessLevelPaid	VSSubscriptionAccessLevel			ios=11.0/18.0/-/0,maccatalyst=-/-/-/1,tvos=11.0/18.0/-/0,xros=1.0/2.0/-/0	-	cf5a84a11a329d28
+interface	c:objc(cs)VSSubscription	-			ios=11.0/18.0/-/0,maccatalyst=-/-/-/1,tvos=11.0/18.0/-/0,xros=1.0/2.0/-/0	-	92868c360c138367
+super	-	VSSubscription	NSObject		-	-	3dd96dae6304209e
+property	c:objc(cs)VSSubscription(py)expirationDate	-			ios=11.0/18.0/-/0,maccatalyst=-/-/-/1,tvos=11.0/18.0/-/0,xros=1.0/2.0/-/0	-	136aac4106e9457d
+property	c:objc(cs)VSSubscription(py)accessLevel	-			ios=11.0/18.0/-/0,maccatalyst=-/-/-/1,tvos=11.0/18.0/-/0,xros=1.0/2.0/-/0	-	b12aee608c6d6e86
+property	c:objc(cs)VSSubscription(py)tierIdentifiers	-			ios=11.0/18.0/-/0,maccatalyst=-/-/-/1,tvos=11.0/18.0/-/0,xros=1.0/2.0/-/0	-	e3dc36aada9f71e5
+property	c:objc(cs)VSSubscription(py)billingIdentifier	-			ios=11.3/-/-/0,tvos=11.3/-/-/0	-	2486672281957e5e
+interface	c:objc(cs)VSSubscriptionRegistrationCenter	-			ios=11.0/18.0/-/0,maccatalyst=-/-/-/1,tvos=11.0/18.0/-/0,xros=1.0/2.0/-/0	-	53b3305ddf056371
+super	-	VSSubscriptionRegistrationCenter	NSObject		-	-	3915e00384fb32eb
+method	c:objc(cs)VSSubscriptionRegistrationCenter(cm)defaultSubscriptionRegistrationCenter	-			ios=11.0/18.0/-/0,maccatalyst=-/-/-/1,tvos=11.0/18.0/-/0,xros=1.0/2.0/-/0	-	7a2ba95230964554
+method	c:objc(cs)VSSubscriptionRegistrationCenter(im)setCurrentSubscription:	-			ios=11.0/18.0/-/0,maccatalyst=-/-/-/1,tvos=11.0/18.0/-/0,xros=1.0/2.0/-/0	-	f9a2a001df08809f
+typedef	c:@T@VSUserAccountType	-			-	-	bdf9ea20e1232cd9
+enum	c:@E@VSUserAccountType	-			ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	5e013e699b9acfe9
+enumconst	c:@E@VSUserAccountType@VSUserAccountTypeFree	VSUserAccountType			ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	12a863919f49ae79
+enumconst	c:@E@VSUserAccountType@VSUserAccountTypePaid	VSUserAccountType			ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	663abc769303bf4d
+typedef	c:@T@VSOriginatingDeviceCategory	-			-	-	cf1679b5fa259bc2
+enum	c:@E@VSOriginatingDeviceCategory	-			ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	292f2d8061e733f4
+enumconst	c:@E@VSOriginatingDeviceCategory@VSOriginatingDeviceCategoryMobile	VSOriginatingDeviceCategory			ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	7e6efe2ffd4f9ae2
+enumconst	c:@E@VSOriginatingDeviceCategory@VSOriginatingDeviceCategoryOther	VSOriginatingDeviceCategory			ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	6e1ec34c8db75418
+interface	c:objc(cs)VSUserAccount	-			ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	b03b683381743b32
+super	-	VSUserAccount	NSObject		-	-	1a4c1584d95e126c
+property	c:objc(cs)VSUserAccount(py)updateURL	-			ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	649cfe9b1658a9ea
+property	c:objc(cs)VSUserAccount(py)requiresSystemTrust	-			ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	39177061bbf400e3
+property	c:objc(cs)VSUserAccount(py)accountProviderIdentifier	-			ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	02c020c8da1aad07
+property	c:objc(cs)VSUserAccount(py)identifier	-			ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	4715dd649153accd
+property	c:objc(cs)VSUserAccount(py)accountType	-			ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	823132044c4f2725
+property	c:objc(cs)VSUserAccount(py)signedOut	-			ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	e2cef3d975770327
+property	c:objc(cs)VSUserAccount(py)subscriptionBillingCycleEndDate	-			ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	31b55b1269d8d068
+property	c:objc(cs)VSUserAccount(py)tierIdentifiers	-			ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	92cb0c3f55f6dc82
+property	c:objc(cs)VSUserAccount(py)billingIdentifier	-			ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	c81b883b6296de36
+property	c:objc(cs)VSUserAccount(py)authenticationData	-			ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	17189cce0d26c20c
+property	c:objc(cs)VSUserAccount(py)fromCurrentDevice	-			ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	020eeb592e071095
+property	c:objc(cs)VSUserAccount(py)deviceCategory	-			ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	03df90f4d102e0af
+property	c:objc(cs)VSUserAccount(py)appleSubscription	-			ios=17.4/-/-/0,maccatalyst=-/-/-/1,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=-/-/-/1,xros=1.1/-/-/0	-	0abfe54578230b81
+method	c:objc(cs)VSUserAccount(im)init	-			*unavailable ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	552574b0b7b9d6f3
+method	c:objc(cs)VSUserAccount(cm)new	-			*unavailable ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	c0d115d8f7423fab
+method	c:objc(cs)VSUserAccount(im)initWithAccountType:updateURL:	-			ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	b1490c971ac0fd93
+typedef	c:@T@VSUserAccountQueryOptions	-			-	-	4bb1e7dbeac4a3ed
+enum	c:@E@VSUserAccountQueryOptions	-			ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	76ef572f3b0733ee
+enumconst	c:@E@VSUserAccountQueryOptions@VSUserAccountQueryNone	VSUserAccountQueryOptions			ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	2273d1dc56538660
+enumconst	c:@E@VSUserAccountQueryOptions@VSUserAccountQueryAllDevices	VSUserAccountQueryOptions			ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	ba56195bc2a9c122
+interface	c:objc(cs)VSUserAccountManager	-			ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	00975aa58334997e
+super	-	VSUserAccountManager	NSObject		-	-	5c03ea77bb8949b2
+property	c:objc(cs)VSUserAccountManager(cpy)sharedUserAccountManager	-			ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	0a0b6a080c48aaab
+method	c:objc(cs)VSUserAccountManager(im)updateUserAccount:completion:	-			ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	ebc4c132eec3bb36
+method	c:objc(cs)VSUserAccountManager(im)queryUserAccountsWithOptions:completion:	-			ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	3221a8ef564535f1
+method	c:objc(cs)VSUserAccountManager(im)queryAutoSignInTokenWithCompletionHandler:	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	6b303fb5c076334f
+method	c:objc(cs)VSUserAccountManager(im)requestAutoSignInAuthorizationWithCompletionHandler:	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	4e89034ba0be50d7
+method	c:objc(cs)VSUserAccountManager(im)updateAutoSignInToken:updateContext:completionHandler:	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	ab991ae6fe96f87e
+method	c:objc(cs)VSUserAccountManager(im)deleteAutoSignInTokenWithCompletionHandler:	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	69dd9064ad8a26e2
+var	c:@VSErrorDomain	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	5975f8a2e7186f89
+var	c:@VSErrorInfoKeySAMLResponse	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	1d98be929dda2ab9
+var	c:@VSErrorInfoKeySAMLResponseStatus	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	23b766c2c4679a3a
+var	c:@VSErrorInfoKeyAccountProviderResponse	-			ios=10.2/-/-/0,maccatalyst=-/-/-/1,tvos=10.1/-/-/0	-	deb8cb9f8d4529f0
+var	c:@VSErrorInfoKeyUnsupportedProviderIdentifier	-			ios=10.2/-/-/0,maccatalyst=-/-/-/1,tvos=10.2/-/-/0	-	83bd2a519ced25f7
+typedef	c:@T@VSErrorCode	-			-	-	940a4d7ba26e4322
+enum	c:@E@VSErrorCode	-			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	b1fdf9af1ac22f81
+enumconst	c:@E@VSErrorCode@VSErrorCodeAccessNotGranted	VSErrorCode			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	89a2ca455565b551
+enumconst	c:@E@VSErrorCode@VSErrorCodeUnsupportedProvider	VSErrorCode			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	aad5c130acd06f4a
+enumconst	c:@E@VSErrorCode@VSErrorCodeUserCancelled	VSErrorCode			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	8aad4e5c8c0d7163
+enumconst	c:@E@VSErrorCode@VSErrorCodeServiceTemporarilyUnavailable	VSErrorCode			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	31ca3bb3bda4b65b
+enumconst	c:@E@VSErrorCode@VSErrorCodeProviderRejected	VSErrorCode			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	acd827b842551af5
+enumconst	c:@E@VSErrorCode@VSErrorCodeInvalidVerificationToken	VSErrorCode			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	324379f2fe27d98a
+enumconst	c:@E@VSErrorCode@VSErrorCodeRejected	VSErrorCode			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	2dbc5960ee03967e
+enumconst	c:@E@VSErrorCode@VSErrorCodeUnsupported	VSErrorCode			ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	fa08354774e1071f

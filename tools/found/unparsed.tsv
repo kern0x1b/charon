@@ -1,0 +1,85 @@
+# the frameworks of the SDK with no declaration the extractor reads, and why: one line each
+AccessoryTransportExtension	no Objective-C or C header; Swift interface only
+AutomatedDeviceEnrollment	no Objective-C or C header; Swift interface only
+AutomaticAssessmentConfiguration/AACClient	no public header in Headers/ and no module map header
+AutomaticAssessmentConfiguration/AACDependencies	no public header in Headers/ and no module map header
+CarKey	no Objective-C or C header; Swift interface only
+Charts	no Objective-C or C header; Swift interface only
+Combine	no Objective-C or C header; Swift interface only
+CoreMediaIO	no public header in Headers/ and no module map header
+CreateML	no Objective-C or C header; Swift interface only
+CreateMLComponents	no Objective-C or C header; Swift interface only
+CryptoKit	no Objective-C or C header; Swift interface only
+DeclaredAgeRange	no Objective-C or C header; Swift interface only
+DeveloperToolsSupport	no Objective-C or C header; Swift interface only
+DeviceActivity	no Objective-C or C header; Swift interface only
+DriverKit	no public header in Headers/ and no module map header
+EnergyKit	no Objective-C or C header; Swift interface only
+FamilyControls	no Objective-C or C header; Swift interface only
+FinanceKit	no Objective-C or C header; Swift interface only
+FinanceKitUI	no Objective-C or C header; Swift interface only
+FoundationModels	no Objective-C or C header; Swift interface only
+GeoToolbox	no Objective-C or C header; Swift interface only
+GroupActivities	no Objective-C or C header; Swift interface only
+IdentityDocumentServices	no Objective-C or C header; Swift interface only
+IdentityDocumentServicesUI	no Objective-C or C header; Swift interface only
+JournalingSuggestions	no Objective-C or C header; Swift interface only
+LightweightCodeRequirements	no Objective-C or C header; Swift interface only
+LiveCommunicationKit	no Objective-C or C header; Swift interface only
+ManagedApp	no Objective-C or C header; Swift interface only
+ManagedAppDistribution	no Objective-C or C header; Swift interface only
+ManagedSettings	no Objective-C or C header; Swift interface only
+ManagedSettingsUI	no Objective-C or C header; Swift interface only
+MetalPerformanceShaders/MPSBenchmarkLoop	no public header in Headers/ and no module map header
+MetalPerformanceShaders/MPSFunctions	no public header in Headers/ and no module map header
+MusicKit	no Objective-C or C header; Swift interface only
+PaperKit	no Objective-C or C header; Swift interface only
+PermissionKit	no Objective-C or C header; Swift interface only
+RealityFoundation	no Objective-C or C header; Swift interface only
+SecureElementCredential	no Objective-C or C header; Swift interface only
+SwiftData	no Objective-C or C header; Swift interface only
+TabularData	no Objective-C or C header; Swift interface only
+TelephonyMessagingKit	no Objective-C or C header; Swift interface only
+TipKit	no Objective-C or C header; Swift interface only
+VisualIntelligence	no Objective-C or C header; Swift interface only
+WatchKit	no public header in Headers/ and no module map header
+WeatherKit	no Objective-C or C header; Swift interface only
+WiFiAware	no Objective-C or C header; Swift interface only
+WiFiInfrastructure	no Objective-C or C header; Swift interface only
+WirelessInsights	no Objective-C or C header; Swift interface only
+WorkoutKit	no Objective-C or C header; Swift interface only
+_AVKit_SwiftUI	no Objective-C or C header; Swift interface only
+_AdAttributionKit_StoreKit	no Objective-C or C header; Swift interface only
+_AppIntents_SwiftUI	no Objective-C or C header; Swift interface only
+_AppIntents_UIKit	no Objective-C or C header; Swift interface only
+_AuthenticationServices_SwiftUI	no Objective-C or C header; Swift interface only
+_DeviceActivity_SwiftUI	no Objective-C or C header; Swift interface only
+_DeviceDiscoveryUI_SwiftUI	no Objective-C or C header; Swift interface only
+_GameController_SwiftUI	no Objective-C or C header; Swift interface only
+_GeoToolbox_AppIntents	no Objective-C or C header; Swift interface only
+_GroupActivities_UIKit	no Objective-C or C header; Swift interface only
+_HomeKit_SwiftUI	no Objective-C or C header; Swift interface only
+_Intents_TipKit	no Objective-C or C header; Swift interface only
+_ManagedAppDistribution_SwiftUI	no Objective-C or C header; Swift interface only
+_MapKit_SwiftUI	no Objective-C or C header; Swift interface only
+_MarketplaceKit_UIKit	no Objective-C or C header; Swift interface only
+_MusicKit_SwiftUI	no Objective-C or C header; Swift interface only
+_PassKit_SwiftUI	no Objective-C or C header; Swift interface only
+_PermissionKit_SwiftUI	no Objective-C or C header; Swift interface only
+_PermissionKit_UIKit	no Objective-C or C header; Swift interface only
+_PhotosUI_SwiftUI	no Objective-C or C header; Swift interface only
+_PhotosUI_WidgetKit	no Objective-C or C header; Swift interface only
+_Photos_AppIntents	no Objective-C or C header; Swift interface only
+_QuickLook_SwiftUI	no Objective-C or C header; Swift interface only
+_RealityKit_SwiftUI	no Objective-C or C header; Swift interface only
+_RelevanceKit_MapKit	no Objective-C or C header; Swift interface only
+_SceneKit_SwiftUI	no Objective-C or C header; Swift interface only
+_SecureElementCredential_SwiftUI	no Objective-C or C header; Swift interface only
+_SecureElementCredential_UIKit	no Objective-C or C header; Swift interface only
+_SpriteKit_SwiftUI	no Objective-C or C header; Swift interface only
+_StoreKit_SwiftUI	no Objective-C or C header; Swift interface only
+_SwiftData_CoreData	no Objective-C or C header; Swift interface only
+_SwiftData_SwiftUI	no Objective-C or C header; Swift interface only
+_Translation_SwiftUI	no Objective-C or C header; Swift interface only
+_WebKit_SwiftUI	no Objective-C or C header; Swift interface only
+_WorkoutKit_SwiftUI	no Objective-C or C header; Swift interface only

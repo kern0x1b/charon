@@ -1,0 +1,150 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+var	c:@SFSpeechErrorDomain	-			ios=17/-/-/0,macos=14/-/-/0,tvos=18/-/-/0	-	68004adf07943f88
+typedef	c:@T@SFSpeechErrorCode	-			-	-	57d1f2cd470df62f
+enum	c:@E@SFSpeechErrorCode	-			ios=17/-/-/0,macos=14/-/-/0,tvos=18/-/-/0	-	7c7baa7f925787e7
+enumconst	c:@E@SFSpeechErrorCode@SFSpeechErrorCodeInternalServiceError	SFSpeechErrorCode			ios=17/-/-/0,macos=14/-/-/0,tvos=18/-/-/0	-	e3a49e3b6bc1aa28
+enumconst	c:@E@SFSpeechErrorCode@SFSpeechErrorCodeAudioReadFailed	SFSpeechErrorCode			ios=17/-/-/0,macos=14/-/-/0,tvos=18/-/-/0	-	c86f7c5915ceda07
+enumconst	c:@E@SFSpeechErrorCode@SFSpeechErrorCodeUndefinedTemplateClassName	SFSpeechErrorCode			ios=17/-/-/0,macos=14/-/-/0,tvos=18/-/-/0	-	fe8528c300589afd
+enumconst	c:@E@SFSpeechErrorCode@SFSpeechErrorCodeMalformedSupplementalModel	SFSpeechErrorCode			ios=17/-/-/0,macos=14/-/-/0,tvos=18/-/-/0	-	c204d9c896f4accc
+enumconst	c:@E@SFSpeechErrorCode@SFSpeechErrorCodeTimeout	SFSpeechErrorCode			ios=17/-/-/0,macos=14/-/-/0,tvos=18/-/-/0	-	7ffa77c43c56633a
+enumconst	c:@E@SFSpeechErrorCode@SFSpeechErrorCodeMissingParameter	SFSpeechErrorCode			ios=17/-/-/0,macos=14/-/-/0,tvos=18/-/-/0	-	7ff575b689795d74
+interface	c:objc(cs)SFSpeechLanguageModelConfiguration	-			ios=17/-/-/0,macos=14/-/-/0,tvos=18/-/-/0	-	c1cecc7c457b66ec
+super	-	SFSpeechLanguageModelConfiguration	NSObject		-	-	b7ba37b8c194274c
+conforms	-	SFSpeechLanguageModelConfiguration	NSCopying		-	-	d86d69ce7342ddfc
+conforms	-	SFSpeechLanguageModelConfiguration	NSSecureCoding		-	-	cb459d814d3d3fcb
+property	c:objc(cs)SFSpeechLanguageModelConfiguration(py)languageModel	-			ios=17/-/-/0,macos=14/-/-/0,tvos=18/-/-/0	-	bc2d24f31aa64a6e
+property	c:objc(cs)SFSpeechLanguageModelConfiguration(py)vocabulary	-			ios=17/-/-/0,macos=14/-/-/0,tvos=18/-/-/0	-	5dbd98d98eea7041
+property	c:objc(cs)SFSpeechLanguageModelConfiguration(py)weight	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0	-	59747e8294c2adb7
+method	c:objc(cs)SFSpeechLanguageModelConfiguration(im)initWithLanguageModel:	-			ios=17/-/-/0,macos=14/-/-/0,tvos=18/-/-/0	-	11d9600669dfa5ec
+method	c:objc(cs)SFSpeechLanguageModelConfiguration(im)initWithLanguageModel:vocabulary:	-			ios=17/-/-/0,macos=14/-/-/0,tvos=18/-/-/0	-	44b2990f0289fba2
+method	c:objc(cs)SFSpeechLanguageModelConfiguration(im)initWithLanguageModel:vocabulary:weight:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0	-	30644cfa9122a4b3
+interface	c:objc(cs)SFSpeechLanguageModel	-			ios=17/-/-/0,macos=14/-/-/0,tvos=18/-/-/0	deprecated: Use +prepareCustomLanguageModelForUrl:configuration:completion: instead	08d63acccc8bd4f3
+super	-	SFSpeechLanguageModel	NSObject		-	-	949056ae19b20110
+method	c:objc(cs)SFSpeechLanguageModel(cm)prepareCustomLanguageModelForUrl:clientIdentifier:configuration:completion:	-			ios=17/26.0/-/0,macos=14/26.0/-/0,tvos=18/26.0/-/0,watchos=10/26.0/-/0	deprecated: Use +prepareCustomLanguageModelForUrl:configuration:completion: instead	b9959b41d3513fbc
+method	c:objc(cs)SFSpeechLanguageModel(cm)prepareCustomLanguageModelForUrl:clientIdentifier:configuration:ignoresCache:completion:	-			ios=17/26.0/-/0,macos=14/26.0/-/0,tvos=18/26.0/-/0,watchos=10/26.0/-/0	deprecated: Use +prepareCustomLanguageModelForUrl:configuration:ignoresCache:completion: instead	1ee8bc53c2d09f79
+method	c:objc(cs)SFSpeechLanguageModel(cm)prepareCustomLanguageModelForUrl:configuration:completion:	-			ios=17/-/-/0,macos=14/-/-/0,tvos=18/-/-/0	-	17a908d9fcee6a56
+method	c:objc(cs)SFSpeechLanguageModel(cm)prepareCustomLanguageModelForUrl:configuration:ignoresCache:completion:	-			ios=17/-/-/0,macos=14/-/-/0,tvos=18/-/-/0	-	43254d7596269a39
+interface	c:objc(cs)SFSpeechRecognitionMetadata	-			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=18/-/-/0	-	cc4a9a56a27d2bfd
+super	-	SFSpeechRecognitionMetadata	NSObject		-	-	4ade45d13ba03269
+conforms	-	SFSpeechRecognitionMetadata	NSCopying		-	-	29e4b8c7bcc6ac0a
+conforms	-	SFSpeechRecognitionMetadata	NSSecureCoding		-	-	84b471da1cd070de
+property	c:objc(cs)SFSpeechRecognitionMetadata(py)speakingRate	-			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=18/-/-/0	-	6879a94de260b297
+property	c:objc(cs)SFSpeechRecognitionMetadata(py)averagePauseDuration	-			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=18/-/-/0	-	65b73c6d2abf9add
+property	c:objc(cs)SFSpeechRecognitionMetadata(py)speechStartTimestamp	-			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=18/-/-/0	-	4fb0c258d07b1a07
+property	c:objc(cs)SFSpeechRecognitionMetadata(py)speechDuration	-			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=18/-/-/0	-	bc7a77dd0df8a420
+property	c:objc(cs)SFSpeechRecognitionMetadata(py)voiceAnalytics	-			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=18/-/-/0	-	e9ee3d52bcce9cf1
+typedef	c:@T@SFSpeechRecognitionTaskHint	-			-	-	02bc96845c733fca
+enum	c:@E@SFSpeechRecognitionTaskHint	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	a6e2c9469dc4b14c
+enumconst	c:@E@SFSpeechRecognitionTaskHint@SFSpeechRecognitionTaskHintUnspecified	SFSpeechRecognitionTaskHint			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	b6ead4e3e272cad9
+enumconst	c:@E@SFSpeechRecognitionTaskHint@SFSpeechRecognitionTaskHintDictation	SFSpeechRecognitionTaskHint			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	79079ea5fb23b794
+enumconst	c:@E@SFSpeechRecognitionTaskHint@SFSpeechRecognitionTaskHintSearch	SFSpeechRecognitionTaskHint			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	287fde2fa3e3ead8
+enumconst	c:@E@SFSpeechRecognitionTaskHint@SFSpeechRecognitionTaskHintConfirmation	SFSpeechRecognitionTaskHint			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	0f00129c6cf1cd6c
+interface	c:objc(cs)SFSpeechRecognitionRequest	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	dcf5b6efd3ddeeff
+super	-	SFSpeechRecognitionRequest	NSObject		-	-	25ac622139d88070
+property	c:objc(cs)SFSpeechRecognitionRequest(py)taskHint	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	f3549eaa231d9616
+property	c:objc(cs)SFSpeechRecognitionRequest(py)shouldReportPartialResults	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	ce0e00ec06e7ceda
+property	c:objc(cs)SFSpeechRecognitionRequest(py)contextualStrings	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	167713ed5dbe987e
+property	c:objc(cs)SFSpeechRecognitionRequest(py)interactionIdentifier	-			ios=10.0/15.0/-/0	-	921e43868a39aae3
+property	c:objc(cs)SFSpeechRecognitionRequest(py)requiresOnDeviceRecognition	-			ios=13/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	f1f06e3d0cf66721
+property	c:objc(cs)SFSpeechRecognitionRequest(py)addsPunctuation	-			ios=16/-/-/0,macos=13/-/-/0,tvos=18/-/-/0	-	b3dfd719a0d80495
+property	c:objc(cs)SFSpeechRecognitionRequest(py)customizedLanguageModel	-			ios=17/-/-/0,macos=14/-/-/0,tvos=18/-/-/0	-	052118c693d42380
+interface	c:objc(cs)SFSpeechURLRecognitionRequest	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	4e8c2d1ec18d2e94
+super	-	SFSpeechURLRecognitionRequest	SFSpeechRecognitionRequest		-	-	f058d36e45e7d958
+method	c:objc(cs)SFSpeechURLRecognitionRequest(im)init	-			*unavailable ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	4ba5769827983133
+method	c:objc(cs)SFSpeechURLRecognitionRequest(im)initWithURL:	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	71e51468b70fed54
+property	c:objc(cs)SFSpeechURLRecognitionRequest(py)URL	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	cef1fe3813ca5d90
+interface	c:objc(cs)SFSpeechAudioBufferRecognitionRequest	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	c50109c39eeaddde
+super	-	SFSpeechAudioBufferRecognitionRequest	SFSpeechRecognitionRequest		-	-	0336df86f8657c0c
+property	c:objc(cs)SFSpeechAudioBufferRecognitionRequest(py)nativeAudioFormat	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	dfddf7b22a15e5c4
+method	c:objc(cs)SFSpeechAudioBufferRecognitionRequest(im)appendAudioPCMBuffer:	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	60752759a70e8218
+method	c:objc(cs)SFSpeechAudioBufferRecognitionRequest(im)appendAudioSampleBuffer:	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	286a7e18dafeefa1
+method	c:objc(cs)SFSpeechAudioBufferRecognitionRequest(im)endAudio	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	9551ef12e41870ad
+interface	c:objc(cs)SFSpeechRecognitionResult	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	499f8f9ea5defb24
+super	-	SFSpeechRecognitionResult	NSObject		-	-	b5b1cc62f95de296
+conforms	-	SFSpeechRecognitionResult	NSCopying		-	-	91e46c4e9cf53e6e
+conforms	-	SFSpeechRecognitionResult	NSSecureCoding		-	-	3c99c9d843310296
+property	c:objc(cs)SFSpeechRecognitionResult(py)bestTranscription	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	09dc216c24b6cb27
+property	c:objc(cs)SFSpeechRecognitionResult(py)transcriptions	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	9a4f8dda03b34477
+property	c:objc(cs)SFSpeechRecognitionResult(py)final	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	d0ef9efaf5cac13a
+property	c:objc(cs)SFSpeechRecognitionResult(py)speechRecognitionMetadata	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=18/-/-/0	-	9872b4f52c41f93f
+typedef	c:@T@SFSpeechRecognitionTaskState	-			-	-	a69e343ca82e9fa0
+enum	c:@E@SFSpeechRecognitionTaskState	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	bf9c6e6bcf980129
+enumconst	c:@E@SFSpeechRecognitionTaskState@SFSpeechRecognitionTaskStateStarting	SFSpeechRecognitionTaskState			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	55df7d48d7a4ae7e
+enumconst	c:@E@SFSpeechRecognitionTaskState@SFSpeechRecognitionTaskStateRunning	SFSpeechRecognitionTaskState			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	7491730bd934acae
+enumconst	c:@E@SFSpeechRecognitionTaskState@SFSpeechRecognitionTaskStateFinishing	SFSpeechRecognitionTaskState			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	1b1e6d63fb71b5d6
+enumconst	c:@E@SFSpeechRecognitionTaskState@SFSpeechRecognitionTaskStateCanceling	SFSpeechRecognitionTaskState			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	51787267654be188
+enumconst	c:@E@SFSpeechRecognitionTaskState@SFSpeechRecognitionTaskStateCompleted	SFSpeechRecognitionTaskState			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	5bd46fd8eb6e196a
+interface	c:objc(cs)SFSpeechRecognitionTask	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	469401c70b4eb188
+super	-	SFSpeechRecognitionTask	NSObject		-	-	abad7a3438b019a2
+property	c:objc(cs)SFSpeechRecognitionTask(py)state	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	e87fb3a6af34e5b5
+property	c:objc(cs)SFSpeechRecognitionTask(py)finishing	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	a25ce2f3d14517ee
+method	c:objc(cs)SFSpeechRecognitionTask(im)finish	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	c474882c36dae034
+property	c:objc(cs)SFSpeechRecognitionTask(py)cancelled	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	a0e940e220815d9d
+method	c:objc(cs)SFSpeechRecognitionTask(im)cancel	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	3569bf5ea62f65bf
+property	c:objc(cs)SFSpeechRecognitionTask(py)error	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	3d14d91fe12b0f37
+protocol	c:objc(pl)SFSpeechRecognitionTaskDelegate	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	ffbd0d628e1abf12
+conforms	-	SFSpeechRecognitionTaskDelegate	NSObject		-	-	74ea9eb21257a1c4
+method	c:objc(pl)SFSpeechRecognitionTaskDelegate(im)speechRecognitionDidDetectSpeech:	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	1d3518215f3bcf4d
+method	c:objc(pl)SFSpeechRecognitionTaskDelegate(im)speechRecognitionTask:didHypothesizeTranscription:	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	3cacace38e01ef4f
+method	c:objc(pl)SFSpeechRecognitionTaskDelegate(im)speechRecognitionTask:didFinishRecognition:	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	24efda181e55aa99
+method	c:objc(pl)SFSpeechRecognitionTaskDelegate(im)speechRecognitionTaskFinishedReadingAudio:	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	60f4b8e6797a7698
+method	c:objc(pl)SFSpeechRecognitionTaskDelegate(im)speechRecognitionTaskWasCancelled:	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	3f5e09c7bd8d7b8c
+method	c:objc(pl)SFSpeechRecognitionTaskDelegate(im)speechRecognitionTask:didFinishSuccessfully:	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	0631325eb54459e1
+method	c:objc(pl)SFSpeechRecognitionTaskDelegate(im)speechRecognitionTask:didProcessAudioDuration:	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	d9fcdd3d2bc80cd8
+typedef	c:@T@SFSpeechRecognizerAuthorizationStatus	-			-	-	8bdb2d154bab5177
+enum	c:@E@SFSpeechRecognizerAuthorizationStatus	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	0ba57886748794ce
+enumconst	c:@E@SFSpeechRecognizerAuthorizationStatus@SFSpeechRecognizerAuthorizationStatusNotDetermined	SFSpeechRecognizerAuthorizationStatus			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	3616c737bd45c746
+enumconst	c:@E@SFSpeechRecognizerAuthorizationStatus@SFSpeechRecognizerAuthorizationStatusDenied	SFSpeechRecognizerAuthorizationStatus			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	f219a60c54912a4c
+enumconst	c:@E@SFSpeechRecognizerAuthorizationStatus@SFSpeechRecognizerAuthorizationStatusRestricted	SFSpeechRecognizerAuthorizationStatus			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	af8acb62da626581
+enumconst	c:@E@SFSpeechRecognizerAuthorizationStatus@SFSpeechRecognizerAuthorizationStatusAuthorized	SFSpeechRecognizerAuthorizationStatus			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	f9f81bd54af6d1c6
+interface	c:objc(cs)SFSpeechRecognizer	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	7f0eaca7d08ac532
+super	-	SFSpeechRecognizer	NSObject		-	-	689eb02b968316c5
+method	c:objc(cs)SFSpeechRecognizer(cm)supportedLocales	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	eee0df6a33e1c8b3
+method	c:objc(cs)SFSpeechRecognizer(cm)authorizationStatus	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	092cf769d1bd25c3
+method	c:objc(cs)SFSpeechRecognizer(cm)requestAuthorization:	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	59301b1bd3bfcd91
+method	c:objc(cs)SFSpeechRecognizer(im)init	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	8d09ad49bed5d1f6
+method	c:objc(cs)SFSpeechRecognizer(im)initWithLocale:	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	fa518520b90b3782
+property	c:objc(cs)SFSpeechRecognizer(py)available	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	667d97f20412f4e2
+property	c:objc(cs)SFSpeechRecognizer(py)locale	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	16752285c6f28f11
+property	c:objc(cs)SFSpeechRecognizer(py)supportsOnDeviceRecognition	-			ios=13/-/-/0,tvos=18/-/-/0	-	87c92fcda1f1d006
+property	c:objc(cs)SFSpeechRecognizer(py)delegate	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	230d0a16fbba0532
+property	c:objc(cs)SFSpeechRecognizer(py)defaultTaskHint	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	be948da0343ab9c0
+method	c:objc(cs)SFSpeechRecognizer(im)recognitionTaskWithRequest:resultHandler:	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	7a825ad02a09d522
+method	c:objc(cs)SFSpeechRecognizer(im)recognitionTaskWithRequest:delegate:	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	8eff97d36c3d982b
+property	c:objc(cs)SFSpeechRecognizer(py)queue	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	5e72f668b94b931e
+protocol	c:objc(pl)SFSpeechRecognizerDelegate	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	fcd99896c561c77a
+conforms	-	SFSpeechRecognizerDelegate	NSObject		-	-	df51b7bcb7cb2e33
+method	c:objc(pl)SFSpeechRecognizerDelegate(im)speechRecognizer:availabilityDidChange:	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	e215f545f37f400d
+interface	c:objc(cs)SFTranscription	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	451eb9fd1ecc2c4e
+super	-	SFTranscription	NSObject		-	-	6e8536462b3ab4e0
+conforms	-	SFTranscription	NSCopying		-	-	7f407a67ba35312c
+conforms	-	SFTranscription	NSSecureCoding		-	-	9f4a60931ea313e4
+property	c:objc(cs)SFTranscription(py)formattedString	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	eaf98f4f3d5bd509
+property	c:objc(cs)SFTranscription(py)segments	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	cfa26af94acc5fa0
+property	c:objc(cs)SFTranscription(py)speakingRate	-			ios=13.0/14.5/-/0	-	bc303512128b7966
+property	c:objc(cs)SFTranscription(py)averagePauseDuration	-			ios=13.0/14.5/-/0	-	afab3b174ca99c89
+interface	c:objc(cs)SFTranscriptionSegment	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	73f4b270a7949346
+super	-	SFTranscriptionSegment	NSObject		-	-	1f2e3393d589af43
+conforms	-	SFTranscriptionSegment	NSCopying		-	-	ccfea95b9a2e2d1a
+conforms	-	SFTranscriptionSegment	NSSecureCoding		-	-	4307cb9d13c80add
+property	c:objc(cs)SFTranscriptionSegment(py)substring	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	ed8f697fefa9402a
+property	c:objc(cs)SFTranscriptionSegment(py)substringRange	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	a5fc3f828598d3b6
+property	c:objc(cs)SFTranscriptionSegment(py)timestamp	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	bd86d55c12b43f86
+property	c:objc(cs)SFTranscriptionSegment(py)duration	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	31bcc7d9d9e6f080
+property	c:objc(cs)SFTranscriptionSegment(py)confidence	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	8b7123b0fb42b9be
+property	c:objc(cs)SFTranscriptionSegment(py)alternativeSubstrings	-			ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	43da23244e194c0e
+property	c:objc(cs)SFTranscriptionSegment(py)voiceAnalytics	-			ios=13.0/14.5/-/0	-	d2d72753472f8f81
+interface	c:objc(cs)SFAcousticFeature	-			ios=13/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	be9e622463ff5668
+super	-	SFAcousticFeature	NSObject		-	-	e71497b847a175c4
+conforms	-	SFAcousticFeature	NSCopying		-	-	a6b3158c111bd2e8
+conforms	-	SFAcousticFeature	NSSecureCoding		-	-	acbc9bb6465b9e51
+property	c:objc(cs)SFAcousticFeature(py)acousticFeatureValuePerFrame	-			ios=13/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	60ab12f0ece5381c
+property	c:objc(cs)SFAcousticFeature(py)frameDuration	-			ios=13/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	85e41a270c0cabcf
+interface	c:objc(cs)SFVoiceAnalytics	-			ios=13/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	dd25a39e77f12d2b
+super	-	SFVoiceAnalytics	NSObject		-	-	dfe8d7f20c555a82
+conforms	-	SFVoiceAnalytics	NSCopying		-	-	3c91d317a768f840
+conforms	-	SFVoiceAnalytics	NSSecureCoding		-	-	00ef0019d40c5189
+property	c:objc(cs)SFVoiceAnalytics(py)jitter	-			ios=13/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	584f5c03abf280aa
+property	c:objc(cs)SFVoiceAnalytics(py)shimmer	-			ios=13/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	909190b04d65d971
+property	c:objc(cs)SFVoiceAnalytics(py)pitch	-			ios=13/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	79bb97a18b278855
+property	c:objc(cs)SFVoiceAnalytics(py)voicing	-			ios=13/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	b772d3c5e287cfca

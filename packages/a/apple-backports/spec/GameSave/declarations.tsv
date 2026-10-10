@@ -1,0 +1,40 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+typedef	c:@T@GSSyncState	-			-	-	8cbb5ba317552a85
+enum	c:@E@GSSyncState	-			-	-	38e3c88d430dff9c
+enumconst	c:@E@GSSyncState@GSSyncStateReady	GSSyncState			-	-	627d6ecfffb073f7
+enumconst	c:@E@GSSyncState@GSSyncStateOffline	GSSyncState			-	-	d3b433213714d06e
+enumconst	c:@E@GSSyncState@GSSyncStateLocal	GSSyncState			-	-	45bdf184ad6ec98c
+enumconst	c:@E@GSSyncState@GSSyncStateSyncing	GSSyncState			-	-	7aa5dd721615cae7
+enumconst	c:@E@GSSyncState@GSSyncStateConflicted	GSSyncState			-	-	904c2cda12690060
+enumconst	c:@E@GSSyncState@GSSyncStateError	GSSyncState			-	-	70239cac0679aea3
+enumconst	c:@E@GSSyncState@GSSyncStateClosed	GSSyncState			-	-	edb8275e0ce6ae7d
+interface	c:objc(cs)GSSyncedDirectoryVersion	-			-	-	479dd51099b6ea9a
+super	-	GSSyncedDirectoryVersion	NSObject		-	-	2cdab9dda2762517
+property	c:objc(cs)GSSyncedDirectoryVersion(py)isLocal	-			-	-	2808e7c69f942a96
+property	c:objc(cs)GSSyncedDirectoryVersion(py)localizedNameOfSavingComputer	-			-	-	9272c0ec23aeed53
+property	c:objc(cs)GSSyncedDirectoryVersion(py)modifiedDate	-			-	-	5073fe525e1d266f
+property	c:objc(cs)GSSyncedDirectoryVersion(py)url	-			-	-	2315cce8d40e306a
+property	c:objc(cs)GSSyncedDirectoryVersion(py)description	-			-	-	cc143a3fac6dc297
+method	c:objc(cs)GSSyncedDirectoryVersion(im)init	-			*unavailable	-	7d12607f9793dc95
+method	c:objc(cs)GSSyncedDirectoryVersion(im)new	-			*unavailable	-	665b4b22a0d21c8b
+interface	c:objc(cs)GSSyncedDirectoryState	-			-	-	a401b3398ceb0075
+super	-	GSSyncedDirectoryState	NSObject		-	-	e0f9cf4a02282da4
+property	c:objc(cs)GSSyncedDirectoryState(py)state	-			-	-	77233889bed2eae8
+property	c:objc(cs)GSSyncedDirectoryState(py)url	-			-	-	0163b3e44a2d8a3e
+property	c:objc(cs)GSSyncedDirectoryState(py)conflictedVersions	-			-	-	d0bc0e71be74a30f
+property	c:objc(cs)GSSyncedDirectoryState(py)error	-			-	-	64c8b34c50b43119
+method	c:objc(cs)GSSyncedDirectoryState(im)init	-			*unavailable	-	63923746b942e82c
+method	c:objc(cs)GSSyncedDirectoryState(im)new	-			*unavailable	-	58bf994c9db7e57a
+interface	c:objc(cs)GSSyncedDirectory	-			-	-	b5dc39c51a9bd34c
+super	-	GSSyncedDirectory	NSObject		-	-	456f4f67fee531da
+method	c:objc(cs)GSSyncedDirectory(cm)openDirectoryForContainerIdentifier:	-			-	-	b50694179e2c2da6
+method	c:objc(cs)GSSyncedDirectory(im)close	-			-	-	3da247e5700a2e7c
+method	c:objc(cs)GSSyncedDirectory(im)triggerPendingUploadWithCompletionHandler:	-			-	-	1483e5181bc37297
+method	c:objc(cs)GSSyncedDirectory(im)resolveConflictsWithVersion:	-			-	-	92bb180465a929d7
+method	c:objc(cs)GSSyncedDirectory(im)finishSyncingWithCompletionHandler:	-			-	-	495a88eea9ade3fb
+method	c:objc(cs)GSSyncedDirectory(im)finishSyncing:completionHandler:	-			-	-	73383aed0e3975bc
+property	c:objc(cs)GSSyncedDirectory(py)directoryState	-			-	-	2da24923516456c6
+method	c:objc(cs)GSSyncedDirectory(im)init	-			*unavailable	-	cf696ff4429e5f1c
+method	c:objc(cs)GSSyncedDirectory(im)new	-			*unavailable	-	fd468dec4cfe0d22
+var	c:@GameSaveVersionNumber	-			-	-	3a6a06490eb7368d
+var	c:@GameSaveVersionString	-			-	-	8b7f9b9869f7414d

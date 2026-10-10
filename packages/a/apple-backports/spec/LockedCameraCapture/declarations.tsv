@@ -1,0 +1,4 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+var	c:@LockedCameraCaptureVersionNumber	-			-	-	f12cbbc0d480b590
+var	c:@LockedCameraCaptureVersionString	-			-	-	4477fc497be6a9df
+var	c:@NSUserActivityTypeLockedCameraCapture	-			-	-	eec37f298ac667f6

@@ -1,0 +1,77 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+interface	c:objc(cs)ABPeoplePickerNavigationController	-			ios=2.0/9.0/-/0	-	fba9972b26a320b5
+super	-	ABPeoplePickerNavigationController	UINavigationController		-	-	bbf73fd96423c167
+property	c:objc(cs)ABPeoplePickerNavigationController(py)peoplePickerDelegate	-			ios=2.0/9.0/-/0	-	a875796769cef795
+property	c:objc(cs)ABPeoplePickerNavigationController(py)displayedProperties	-			ios=2.0/9.0/-/0	-	07c1ea826b855edd
+property	c:objc(cs)ABPeoplePickerNavigationController(py)addressBook	-			ios=2.0/9.0/-/0	-	460a96f368904b28
+property	c:objc(cs)ABPeoplePickerNavigationController(py)predicateForEnablingPerson	-			ios=8.0/-/-/0	-	520637f1c441ce2a
+property	c:objc(cs)ABPeoplePickerNavigationController(py)predicateForSelectionOfPerson	-			ios=8.0/-/-/0	-	106562fe4029b675
+property	c:objc(cs)ABPeoplePickerNavigationController(py)predicateForSelectionOfProperty	-			ios=8.0/-/-/0	-	fe247c503260b9d3
+var	c:@ABPersonNamePrefixProperty	-			ios=8.0/-/-/0	-	fabd596072c74bce
+var	c:@ABPersonGivenNameProperty	-			ios=8.0/-/-/0	-	46146fc234c99e06
+var	c:@ABPersonMiddleNameProperty	-			ios=8.0/-/-/0	-	648586b2839c5898
+var	c:@ABPersonFamilyNameProperty	-			ios=8.0/-/-/0	-	7fcd24568b8a4204
+var	c:@ABPersonNameSuffixProperty	-			ios=8.0/-/-/0	-	758fb7624bf5bd1d
+var	c:@ABPersonPreviousFamilyNameProperty	-			ios=8.0/-/-/0	-	a70213a89c8c87f7
+var	c:@ABPersonNicknameProperty	-			ios=8.0/-/-/0	-	4aa6bacb7c6bbb41
+var	c:@ABPersonPhoneticGivenNameProperty	-			ios=8.0/-/-/0	-	3f6dfc95cdf64bf4
+var	c:@ABPersonPhoneticMiddleNameProperty	-			ios=8.0/-/-/0	-	70b4493b25caaa26
+var	c:@ABPersonPhoneticFamilyNameProperty	-			ios=8.0/-/-/0	-	b28ff3dd9ccc5e99
+var	c:@ABPersonOrganizationNameProperty	-			ios=8.0/-/-/0	-	c078663c24cb818c
+var	c:@ABPersonDepartmentNameProperty	-			ios=8.0/-/-/0	-	517bc910224e0bd1
+var	c:@ABPersonJobTitleProperty	-			ios=8.0/-/-/0	-	a075924179b13f56
+var	c:@ABPersonBirthdayProperty	-			ios=8.0/-/-/0	-	1de4111ad21e1b80
+var	c:@ABPersonNoteProperty	-			ios=8.0/-/-/0	-	76319c290a5ed1ed
+var	c:@ABPersonPhoneNumbersProperty	-			ios=8.0/-/-/0	-	153f55bb584f2669
+var	c:@ABPersonEmailAddressesProperty	-			ios=8.0/-/-/0	-	4d5bc089177810ea
+var	c:@ABPersonUrlAddressesProperty	-			ios=8.0/-/-/0	-	a2604444bbf37942
+var	c:@ABPersonDatesProperty	-			ios=8.0/-/-/0	-	75cd44a815995ab5
+var	c:@ABPersonInstantMessageAddressesProperty	-			ios=8.0/-/-/0	-	3886c0ba39547a84
+var	c:@ABPersonRelatedNamesProperty	-			ios=8.0/-/-/0	-	d5878edd49bec71d
+var	c:@ABPersonSocialProfilesProperty	-			ios=8.0/-/-/0	-	943f7140ae8a238a
+var	c:@ABPersonPostalAddressesProperty	-			ios=8.0/-/-/0	-	c0a586d77634afb8
+protocol	c:objc(pl)ABPeoplePickerNavigationControllerDelegate	-			-	-	4df87d37e8d25a04
+conforms	-	ABPeoplePickerNavigationControllerDelegate	NSObject		-	-	dfcf46967074385e
+method	c:objc(pl)ABPeoplePickerNavigationControllerDelegate(im)peoplePickerNavigationController:didSelectPerson:	-			ios=8.0/-/-/0	-	159683703a261762
+method	c:objc(pl)ABPeoplePickerNavigationControllerDelegate(im)peoplePickerNavigationController:didSelectPerson:property:identifier:	-			ios=8.0/-/-/0	-	f1e9e26dbb0f978c
+method	c:objc(pl)ABPeoplePickerNavigationControllerDelegate(im)peoplePickerNavigationControllerDidCancel:	-			-	-	65748525c6f6d039
+method	c:objc(pl)ABPeoplePickerNavigationControllerDelegate(im)peoplePickerNavigationController:shouldContinueAfterSelectingPerson:	-			ios=2.0/8.0/-/0	-	47b4cf717df47afe
+method	c:objc(pl)ABPeoplePickerNavigationControllerDelegate(im)peoplePickerNavigationController:shouldContinueAfterSelectingPerson:property:identifier:	-			ios=2.0/8.0/-/0	-	970ae6d4444cd78f
+interface	c:objc(cs)ABPersonViewController	-			ios=2.0/9.0/-/0	-	637b1407c8d83ad0
+super	-	ABPersonViewController	UIViewController		-	-	15187c1cae3c9139
+conforms	-	ABPersonViewController	UIViewControllerRestoration		-	-	1ddc5811c65fad97
+property	c:objc(cs)ABPersonViewController(py)personViewDelegate	-			ios=2.0/9.0/-/0	-	d18e8f77b4139716
+property	c:objc(cs)ABPersonViewController(py)addressBook	-			ios=2.0/9.0/-/0	-	2da079e1e3479680
+property	c:objc(cs)ABPersonViewController(py)displayedPerson	-			ios=2.0/9.0/-/0	-	3db152de8321fb14
+property	c:objc(cs)ABPersonViewController(py)displayedProperties	-			ios=2.0/9.0/-/0	-	6aa1226e517158ea
+property	c:objc(cs)ABPersonViewController(py)allowsEditing	-			ios=2.0/9.0/-/0	-	7216ac948c1597da
+property	c:objc(cs)ABPersonViewController(py)allowsActions	-			ios=4.0/-/-/0	-	55ba8c19e1f3e503
+property	c:objc(cs)ABPersonViewController(py)shouldShowLinkedPeople	-			ios=4.0/-/-/0	-	cce0854947166f25
+method	c:objc(cs)ABPersonViewController(im)setHighlightedItemForProperty:withIdentifier:	-			ios=2.0/9.0/-/0	-	be085164738cb80a
+protocol	c:objc(pl)ABPersonViewControllerDelegate	-			-	-	f645de4270356589
+conforms	-	ABPersonViewControllerDelegate	NSObject		-	-	668becfa8f7144ed
+method	c:objc(pl)ABPersonViewControllerDelegate(im)personViewController:shouldPerformDefaultActionForPerson:property:identifier:	-			-	-	65adb583be31c500
+interface	c:objc(cs)ABNewPersonViewController	-			ios=2.0/9.0/-/0	-	0af1f78ce46f6b04
+super	-	ABNewPersonViewController	UIViewController		-	-	03e0aa99ede474aa
+property	c:objc(cs)ABNewPersonViewController(py)newPersonViewDelegate	-			ios=2.0/9.0/-/0	-	1423b188bb370478
+method	c:objc(cs)ABNewPersonViewController(im)newPersonViewDelegate	-			ios=2.0/9.0/-/0	-	220dc024ae9af786
+property	c:objc(cs)ABNewPersonViewController(py)addressBook	-			ios=2.0/9.0/-/0	-	29dd92f0fd7c623d
+property	c:objc(cs)ABNewPersonViewController(py)displayedPerson	-			ios=2.0/9.0/-/0	-	59c76bb1a43e3881
+property	c:objc(cs)ABNewPersonViewController(py)parentGroup	-			ios=2.0/9.0/-/0	-	a0f4143cd0495366
+protocol	c:objc(pl)ABNewPersonViewControllerDelegate	-			-	-	dfbb0ef4dedc4e74
+conforms	-	ABNewPersonViewControllerDelegate	NSObject		-	-	cdf6076576c3135a
+method	c:objc(pl)ABNewPersonViewControllerDelegate(im)newPersonViewController:didCompleteWithNewPerson:	-			-	-	8623fed273401052
+interface	c:objc(cs)ABUnknownPersonViewController	-			ios=2.0/9.0/-/0	-	83243127839937f8
+super	-	ABUnknownPersonViewController	UIViewController		-	-	d18e772f2beb343b
+property	c:objc(cs)ABUnknownPersonViewController(py)unknownPersonViewDelegate	-			ios=2.0/9.0/-/0	-	e91076b12a9fda3d
+property	c:objc(cs)ABUnknownPersonViewController(py)addressBook	-			ios=2.0/9.0/-/0	-	5fffaf9207bd7db4
+property	c:objc(cs)ABUnknownPersonViewController(py)displayedPerson	-			ios=2.0/9.0/-/0	-	0498c4a85865bc5b
+property	c:objc(cs)ABUnknownPersonViewController(py)alternateName	-			ios=2.0/9.0/-/0	-	84e32f2b394a2a8f
+property	c:objc(cs)ABUnknownPersonViewController(py)message	-			ios=2.0/9.0/-/0	-	96430b0c84de3cdd
+property	c:objc(cs)ABUnknownPersonViewController(py)allowsActions	-			ios=2.0/9.0/-/0	-	40f32790e518ba92
+property	c:objc(cs)ABUnknownPersonViewController(py)allowsAddingToAddressBook	-			ios=2.0/9.0/-/0	-	b85a1a70ee2973ce
+protocol	c:objc(pl)ABUnknownPersonViewControllerDelegate	-			-	-	165958bf39f31f01
+conforms	-	ABUnknownPersonViewControllerDelegate	NSObject		-	-	43c624b3ca80d727
+method	c:objc(pl)ABUnknownPersonViewControllerDelegate(im)unknownPersonViewController:didResolveToPerson:	-			-	-	12538a5db680ce65
+method	c:objc(pl)ABUnknownPersonViewControllerDelegate(im)unknownPersonViewController:shouldPerformDefaultActionForPerson:property:identifier:	-			ios=3.0/-/-/0	-	9b360ed2dde21460
+function	c:@F@ABCreateStringWithAddressDictionary	-			ios=2.0/9.0/-/0	-	aa41a12a784fd690

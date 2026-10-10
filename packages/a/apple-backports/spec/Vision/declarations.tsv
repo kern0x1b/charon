@@ -1,0 +1,928 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+typedef	c:@T@VNConfidence	-			-	-	7560c68bbcf95220
+typedef	c:@T@VNAspectRatio	-			-	-	de0db29f54e5f071
+typedef	c:@T@VNDegrees	-			-	-	d74361c7b61ebf12
+typedef	c:@T@VNImageCropAndScaleOption	-			-	-	77177b49a373d0d1
+enum	c:@E@VNImageCropAndScaleOption	-			-	-	f319bf1c09d8c56e
+enumconst	c:@E@VNImageCropAndScaleOption@VNImageCropAndScaleOptionCenterCrop	VNImageCropAndScaleOption			-	-	fcd7ba90a33b6511
+enumconst	c:@E@VNImageCropAndScaleOption@VNImageCropAndScaleOptionScaleFit	VNImageCropAndScaleOption			-	-	def38d1abcdd1aeb
+enumconst	c:@E@VNImageCropAndScaleOption@VNImageCropAndScaleOptionScaleFill	VNImageCropAndScaleOption			-	-	0af6f400cdfb633c
+enumconst	c:@E@VNImageCropAndScaleOption@VNImageCropAndScaleOptionScaleFitRotate90CCW	VNImageCropAndScaleOption			-	-	0057b3f6f732569d
+enumconst	c:@E@VNImageCropAndScaleOption@VNImageCropAndScaleOptionScaleFillRotate90CCW	VNImageCropAndScaleOption			-	-	c789ce730ff7bc20
+typedef	c:@T@VNComputeStage	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	d508df62db879774
+var	c:@VNComputeStageMain	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	4b1b72ee26e61c0a
+var	c:@VNComputeStagePostProcessing	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	6c5410ca2a84605b
+typedef	c:@T@VNBarcodeSymbology	-			-	-	546cde75dc838059
+var	c:@VNBarcodeSymbologyAztec	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	86d30baffe39f494
+var	c:@VNBarcodeSymbologyCode39	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	345eeffb1d51d128
+var	c:@VNBarcodeSymbologyCode39Checksum	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	2cc96267549bc94e
+var	c:@VNBarcodeSymbologyCode39FullASCII	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	b6e5dccba69ad93c
+var	c:@VNBarcodeSymbologyCode39FullASCIIChecksum	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	114ab697f39cc143
+var	c:@VNBarcodeSymbologyCode93	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	e6b528b13232f822
+var	c:@VNBarcodeSymbologyCode93i	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	a115e11e28d2a133
+var	c:@VNBarcodeSymbologyCode128	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	fc2634d74c56b0da
+var	c:@VNBarcodeSymbologyDataMatrix	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	915f73c7dc45a73d
+var	c:@VNBarcodeSymbologyEAN8	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	37c85fcb96a50709
+var	c:@VNBarcodeSymbologyEAN13	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	ee40bf6e9f97fb6f
+var	c:@VNBarcodeSymbologyI2of5	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	48962ff326ddb36a
+var	c:@VNBarcodeSymbologyI2of5Checksum	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	17fdfea3432413b4
+var	c:@VNBarcodeSymbologyITF14	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	47712bf4c3fb8daa
+var	c:@VNBarcodeSymbologyPDF417	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	88bd4d991bd26c14
+var	c:@VNBarcodeSymbologyQR	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	5d598ac27dbdc7eb
+var	c:@VNBarcodeSymbologyUPCE	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	8ba7ebd2b0820e04
+var	c:@VNBarcodeSymbologyCodabar	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	4eefcce79a1c7d3e
+var	c:@VNBarcodeSymbologyGS1DataBar	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	6ef960cbdbe19a25
+var	c:@VNBarcodeSymbologyGS1DataBarExpanded	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	21e90eb2e2ea1dc1
+var	c:@VNBarcodeSymbologyGS1DataBarLimited	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	dd16371fd7a6fda7
+var	c:@VNBarcodeSymbologyMicroPDF417	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	b9e27b5d9b1a80f8
+var	c:@VNBarcodeSymbologyMicroQR	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	4af4913bf16c0a3f
+var	c:@VNBarcodeSymbologyMSIPlessey	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	a8ec10e64d9820e0
+typedef	c:@T@VNElementType	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	f6869188c8177003
+enum	c:@E@VNElementType	-			-	-	8f6fc25fec87f6d2
+enumconst	c:@E@VNElementType@VNElementTypeUnknown	VNElementType			-	-	f6ee4c18b5c61e3e
+enumconst	c:@E@VNElementType@VNElementTypeFloat	VNElementType			-	-	8e70ce285fae8d84
+enumconst	c:@E@VNElementType@VNElementTypeDouble	VNElementType			-	-	ff0bb7064c9d6573
+typedef	c:@T@VNVideoProcessingOption	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	8d9df4c9843210dc
+var	c:@VNVideoProcessingOptionFrameCadence	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	b1bcbc9fd5da1990
+var	c:@VNVideoProcessingOptionTimeInterval	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	725c2daa498e9810
+typedef	c:@T@VNChirality	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	511b1e21e84636e4
+enum	c:@E@VNChirality	-			-	-	51e181e4ac08ed07
+enumconst	c:@E@VNChirality@VNChiralityUnknown	VNChirality			-	-	ec5d6ce507a91d90
+enumconst	c:@E@VNChirality@VNChiralityLeft	VNChirality			-	-	7f5dd94c2352c71e
+enumconst	c:@E@VNChirality@VNChiralityRight	VNChirality			-	-	dc48c01e51f941ff
+typedef	c:@T@VNPointsClassification	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	7dc924b64da96c7e
+enum	c:@E@VNPointsClassification	-			-	-	da3df19b0d0165f9
+enumconst	c:@E@VNPointsClassification@VNPointsClassificationDisconnected	VNPointsClassification			-	-	128686ec272b6396
+enumconst	c:@E@VNPointsClassification@VNPointsClassificationOpenPath	VNPointsClassification			-	-	43e3dc1f37d4b1ae
+enumconst	c:@E@VNPointsClassification@VNPointsClassificationClosedPath	VNPointsClassification			-	-	e62faab744ae7a4d
+typedef	c:@T@VNBarcodeCompositeType	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	d9e70374f487b1e4
+enum	c:@E@VNBarcodeCompositeType	-			-	-	922cd2371c0ea13c
+enumconst	c:@E@VNBarcodeCompositeType@VNBarcodeCompositeTypeNone	VNBarcodeCompositeType			-	-	2bc384a48a77867a
+enumconst	c:@E@VNBarcodeCompositeType@VNBarcodeCompositeTypeLinked	VNBarcodeCompositeType			-	-	bdf006c4ab41de2f
+enumconst	c:@E@VNBarcodeCompositeType@VNBarcodeCompositeTypeGS1TypeA	VNBarcodeCompositeType			-	-	3c30b99c0c0e54cd
+enumconst	c:@E@VNBarcodeCompositeType@VNBarcodeCompositeTypeGS1TypeB	VNBarcodeCompositeType			-	-	d26bd34db8511524
+enumconst	c:@E@VNBarcodeCompositeType@VNBarcodeCompositeTypeGS1TypeC	VNBarcodeCompositeType			-	-	913d18a14b99e12d
+typedef	c:@T@VNRecognizedPointKey	-			-	-	3a5887168200db50
+typedef	c:@T@VNRecognizedPointGroupKey	-			-	-	0262ec991ba3aff4
+typedef	c:@T@VNAnimalBodyPoseObservationJointName	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	2078161bda2eeb20
+var	c:@VNAnimalBodyPoseObservationJointNameLeftEarTop	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	306cce873aa57ac5
+var	c:@VNAnimalBodyPoseObservationJointNameRightEarTop	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	e4a0c4ad18e1a056
+var	c:@VNAnimalBodyPoseObservationJointNameLeftEarMiddle	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	e545aa8a56563614
+var	c:@VNAnimalBodyPoseObservationJointNameRightEarMiddle	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	b5f8054cc66eaa72
+var	c:@VNAnimalBodyPoseObservationJointNameLeftEarBottom	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	62e69cf969787f81
+var	c:@VNAnimalBodyPoseObservationJointNameRightEarBottom	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	4e7ae8bcc0b0105e
+var	c:@VNAnimalBodyPoseObservationJointNameLeftEye	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	338645c4829557ba
+var	c:@VNAnimalBodyPoseObservationJointNameRightEye	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	a71a340b43f7d8b0
+var	c:@VNAnimalBodyPoseObservationJointNameNose	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	78a036b41b2ade6b
+var	c:@VNAnimalBodyPoseObservationJointNameNeck	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	c37d226a4d04f758
+var	c:@VNAnimalBodyPoseObservationJointNameLeftFrontElbow	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	32486a86c473158d
+var	c:@VNAnimalBodyPoseObservationJointNameRightFrontElbow	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	cb4978f058e25a4f
+var	c:@VNAnimalBodyPoseObservationJointNameLeftFrontKnee	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	a18cd894c1195f82
+var	c:@VNAnimalBodyPoseObservationJointNameRightFrontKnee	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	4198b8c90b5195fc
+var	c:@VNAnimalBodyPoseObservationJointNameLeftFrontPaw	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	86eb243a232a2998
+var	c:@VNAnimalBodyPoseObservationJointNameRightFrontPaw	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	cbecea532dfc3195
+var	c:@VNAnimalBodyPoseObservationJointNameLeftBackElbow	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	782beb2ade0a2ed6
+var	c:@VNAnimalBodyPoseObservationJointNameRightBackElbow	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	b899e3bb6cc43cd6
+var	c:@VNAnimalBodyPoseObservationJointNameLeftBackKnee	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	b63da8e2a99b2fb1
+var	c:@VNAnimalBodyPoseObservationJointNameRightBackKnee	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	8b6bb48602c66cbc
+var	c:@VNAnimalBodyPoseObservationJointNameLeftBackPaw	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	3b490f15a1c61353
+var	c:@VNAnimalBodyPoseObservationJointNameRightBackPaw	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	1c08477267dbc654
+var	c:@VNAnimalBodyPoseObservationJointNameTailTop	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	5e1ed58d65380d3a
+var	c:@VNAnimalBodyPoseObservationJointNameTailMiddle	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	b75b757ed791ed2b
+var	c:@VNAnimalBodyPoseObservationJointNameTailBottom	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	66226a2b084575b7
+typedef	c:@T@VNAnimalBodyPoseObservationJointsGroupName	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	25e55d9b8ed35d5d
+var	c:@VNAnimalBodyPoseObservationJointsGroupNameHead	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	814aad2b4279898b
+var	c:@VNAnimalBodyPoseObservationJointsGroupNameTrunk	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	7f3ab94266f2b05f
+var	c:@VNAnimalBodyPoseObservationJointsGroupNameForelegs	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	a48ca9bf889ef08a
+var	c:@VNAnimalBodyPoseObservationJointsGroupNameHindlegs	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	1a04859a6ec4d599
+var	c:@VNAnimalBodyPoseObservationJointsGroupNameTail	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	e9ef0e56181ef5a0
+var	c:@VNAnimalBodyPoseObservationJointsGroupNameAll	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	9c9e2003d3341ce9
+typedef	c:@T@VNHumanBodyPose3DObservationJointName	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	fc543230ef7787dd
+var	c:@VNHumanBodyPose3DObservationJointNameRoot	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	4170bd32929d78ab
+var	c:@VNHumanBodyPose3DObservationJointNameRightHip	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	f48659588e3abd1c
+var	c:@VNHumanBodyPose3DObservationJointNameRightKnee	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	a0db932d3d6db3ad
+var	c:@VNHumanBodyPose3DObservationJointNameRightAnkle	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	821ca53a1007e829
+var	c:@VNHumanBodyPose3DObservationJointNameLeftHip	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	ac5f3174329ee2c5
+var	c:@VNHumanBodyPose3DObservationJointNameLeftKnee	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	2dc4bc700f6f6942
+var	c:@VNHumanBodyPose3DObservationJointNameLeftAnkle	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	270cda6c15ffc64a
+var	c:@VNHumanBodyPose3DObservationJointNameSpine	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	1dfb2a98b540b417
+var	c:@VNHumanBodyPose3DObservationJointNameCenterShoulder	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	91364b28149a1cbd
+var	c:@VNHumanBodyPose3DObservationJointNameCenterHead	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	d22884f6df2144e6
+var	c:@VNHumanBodyPose3DObservationJointNameTopHead	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	37a5c2bb07b34c1b
+var	c:@VNHumanBodyPose3DObservationJointNameLeftShoulder	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	8e06d925b098c78c
+var	c:@VNHumanBodyPose3DObservationJointNameLeftElbow	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	b9c6673a691142ea
+var	c:@VNHumanBodyPose3DObservationJointNameLeftWrist	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	371998cb789c056f
+var	c:@VNHumanBodyPose3DObservationJointNameRightShoulder	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	0b13304ef9bf642c
+var	c:@VNHumanBodyPose3DObservationJointNameRightElbow	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	f4b8fd0a285a871b
+var	c:@VNHumanBodyPose3DObservationJointNameRightWrist	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	ee040b63e8d7a023
+typedef	c:@T@VNHumanBodyPose3DObservationJointsGroupName	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	4ee45d9469973f6e
+var	c:@VNHumanBodyPose3DObservationJointsGroupNameHead	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	4bf8bc87ffe348b2
+var	c:@VNHumanBodyPose3DObservationJointsGroupNameTorso	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	4736c3c10def690a
+var	c:@VNHumanBodyPose3DObservationJointsGroupNameLeftArm	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	12722feaa903e397
+var	c:@VNHumanBodyPose3DObservationJointsGroupNameRightArm	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	051743bb8610bc14
+var	c:@VNHumanBodyPose3DObservationJointsGroupNameLeftLeg	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	96d60336fc5fdf75
+var	c:@VNHumanBodyPose3DObservationJointsGroupNameRightLeg	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	dd63dd72d71fbece
+var	c:@VNHumanBodyPose3DObservationJointsGroupNameAll	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	1d8c007c1cd6ed35
+var	c:@VNErrorDomain	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	990e03c963c5a9e9
+typedef	c:@T@VNErrorCode	-			-	-	64a9e9d923c4b8aa
+enum	c:@E@VNErrorCode	-			-	-	d9c02aef0976e984
+enumconst	c:@E@VNErrorCode@VNErrorTuriCoreErrorCode	VNErrorCode			-	-	348b9f15d72f57af
+enumconst	c:@E@VNErrorCode@VNErrorOK	VNErrorCode			-	-	996f10e2bbc86cf1
+enumconst	c:@E@VNErrorCode@VNErrorRequestCancelled	VNErrorCode			-	-	a8cf8fbf0a191ccd
+enumconst	c:@E@VNErrorCode@VNErrorInvalidFormat	VNErrorCode			-	-	709267d41968167e
+enumconst	c:@E@VNErrorCode@VNErrorOperationFailed	VNErrorCode			-	-	3f78ee2ce334f313
+enumconst	c:@E@VNErrorCode@VNErrorOutOfBoundsError	VNErrorCode			-	-	7e6af86e2a779bcb
+enumconst	c:@E@VNErrorCode@VNErrorInvalidOption	VNErrorCode			-	-	e36cc939ff088cb8
+enumconst	c:@E@VNErrorCode@VNErrorIOError	VNErrorCode			-	-	7a06459bde78e6b6
+enumconst	c:@E@VNErrorCode@VNErrorMissingOption	VNErrorCode			-	-	1b5ae7396295405f
+enumconst	c:@E@VNErrorCode@VNErrorNotImplemented	VNErrorCode			-	-	52644891d3d532aa
+enumconst	c:@E@VNErrorCode@VNErrorInternalError	VNErrorCode			-	-	3790b4842d187e64
+enumconst	c:@E@VNErrorCode@VNErrorOutOfMemory	VNErrorCode			-	-	aed4b284eb33de29
+enumconst	c:@E@VNErrorCode@VNErrorUnknownError	VNErrorCode			-	-	b0bb12c4bbea2eef
+enumconst	c:@E@VNErrorCode@VNErrorInvalidOperation	VNErrorCode			-	-	93d394afd4419291
+enumconst	c:@E@VNErrorCode@VNErrorInvalidImage	VNErrorCode			-	-	d27b9ffcae803069
+enumconst	c:@E@VNErrorCode@VNErrorInvalidArgument	VNErrorCode			-	-	04f5ecd168cf708d
+enumconst	c:@E@VNErrorCode@VNErrorInvalidModel	VNErrorCode			-	-	a94457e2d2af5687
+enumconst	c:@E@VNErrorCode@VNErrorUnsupportedRevision	VNErrorCode			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	3554ade853844980
+enumconst	c:@E@VNErrorCode@VNErrorDataUnavailable	VNErrorCode			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	ed27639bfd37cf01
+enumconst	c:@E@VNErrorCode@VNErrorTimeStampNotFound	VNErrorCode			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	45e033efc0bb6309
+enumconst	c:@E@VNErrorCode@VNErrorUnsupportedRequest	VNErrorCode			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	a525650333f23b60
+enumconst	c:@E@VNErrorCode@VNErrorTimeout	VNErrorCode			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	80c0f122526bfc91
+enumconst	c:@E@VNErrorCode@VNErrorUnsupportedComputeStage	VNErrorCode			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	e3ecae0d9054c8c4
+enumconst	c:@E@VNErrorCode@VNErrorUnsupportedComputeDevice	VNErrorCode			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	6a9ab4e91e227588
+var	c:@VNNormalizedIdentityRect	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	19b1398104042926
+function	c:@F@VNNormalizedRectIsIdentityRect	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	7e58e793dcac600b
+function	c:@F@VNImagePointForNormalizedPoint	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	081ff97219253d40
+function	c:@F@VNImagePointForNormalizedPointUsingRegionOfInterest	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	54c1024ca6bcd3f8
+function	c:@F@VNNormalizedPointForImagePoint	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	8b1b52e17b3a0fff
+function	c:@F@VNNormalizedPointForImagePointUsingRegionOfInterest	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	e1be070dbba4a08f
+function	c:@F@VNImageRectForNormalizedRect	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	f7fd32a757e133fe
+function	c:@F@VNImageRectForNormalizedRectUsingRegionOfInterest	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	58425f323b414c0c
+function	c:@F@VNNormalizedRectForImageRect	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	8a6079def1f81355
+function	c:@F@VNNormalizedRectForImageRectUsingRegionOfInterest	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	24e9a0e9fef0fe1f
+function	c:@F@VNNormalizedFaceBoundingBoxPointForLandmarkPoint	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	c451ecd5322b5c91
+function	c:@F@VNImagePointForFaceLandmarkPoint	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	3c0a53eb6346f3d1
+function	c:@F@VNElementTypeSize	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	cf786c37b4678c46
+protocol	c:objc(pl)VNRequestRevisionProviding	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	7fb8d6d7b29c0cca
+property	c:objc(pl)VNRequestRevisionProviding(py)requestRevision	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	04b485682810ac1c
+interface	c:objc(cs)VNFaceLandmarkRegion	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	0367bbb7d7efc571
+super	-	VNFaceLandmarkRegion	NSObject		-	-	29a0dce70a710c85
+conforms	-	VNFaceLandmarkRegion	NSCopying		-	-	7d2b5c2f8b79411c
+conforms	-	VNFaceLandmarkRegion	NSSecureCoding		-	-	eafb250b37956a57
+conforms	-	VNFaceLandmarkRegion	VNRequestRevisionProviding		-	-	4878acbc9f3be692
+method	c:objc(cs)VNFaceLandmarkRegion(cm)new	-			*unavailable ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	79f144eda081aba9
+method	c:objc(cs)VNFaceLandmarkRegion(im)init	-			*unavailable ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	b3bc8dd2d6893c04
+property	c:objc(cs)VNFaceLandmarkRegion(py)pointCount	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	a079a6b23c2941c8
+interface	c:objc(cs)VNFaceLandmarkRegion2D	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	fe492f73eccf3102
+super	-	VNFaceLandmarkRegion2D	VNFaceLandmarkRegion		-	-	345c58346df748ab
+property	c:objc(cs)VNFaceLandmarkRegion2D(py)normalizedPoints	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	ccb242287523cebc
+method	c:objc(cs)VNFaceLandmarkRegion2D(im)pointsInImageOfSize:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	84d220234e750215
+property	c:objc(cs)VNFaceLandmarkRegion2D(py)precisionEstimatesPerPoint	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	7c815720c66bee4a
+property	c:objc(cs)VNFaceLandmarkRegion2D(py)pointsClassification	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	2f660d0e31c37b4c
+interface	c:objc(cs)VNFaceLandmarks	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	4ead1c6c517637b3
+super	-	VNFaceLandmarks	NSObject		-	-	622a28e7b88a5cbd
+conforms	-	VNFaceLandmarks	NSCopying		-	-	d0a3934475888474
+conforms	-	VNFaceLandmarks	NSSecureCoding		-	-	b154feaaf90403d1
+conforms	-	VNFaceLandmarks	VNRequestRevisionProviding		-	-	17a7d824f9253f3d
+method	c:objc(cs)VNFaceLandmarks(im)init	-			*unavailable ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	57c368e0b0b4f8e2
+property	c:objc(cs)VNFaceLandmarks(py)confidence	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	4147720532fcfdd3
+interface	c:objc(cs)VNFaceLandmarks2D	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	53eb013f46012fb2
+super	-	VNFaceLandmarks2D	VNFaceLandmarks		-	-	54c7b916a4567cd0
+property	c:objc(cs)VNFaceLandmarks2D(py)allPoints	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	d02da35efce9c8c2
+property	c:objc(cs)VNFaceLandmarks2D(py)faceContour	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	eacec54dd5c477e0
+property	c:objc(cs)VNFaceLandmarks2D(py)leftEye	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	9fe2aef13d996504
+property	c:objc(cs)VNFaceLandmarks2D(py)rightEye	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	91d7565a4a654ef6
+property	c:objc(cs)VNFaceLandmarks2D(py)leftEyebrow	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	e91494cfc4c9812a
+property	c:objc(cs)VNFaceLandmarks2D(py)rightEyebrow	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	0c3c386e4211c3fe
+property	c:objc(cs)VNFaceLandmarks2D(py)nose	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	0f3c6c31506f88ce
+property	c:objc(cs)VNFaceLandmarks2D(py)noseCrest	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	8998f1b0ae56f126
+property	c:objc(cs)VNFaceLandmarks2D(py)medianLine	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	4f68fdbf08199bfd
+property	c:objc(cs)VNFaceLandmarks2D(py)outerLips	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	ff18dba3dcac655a
+property	c:objc(cs)VNFaceLandmarks2D(py)innerLips	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	02c62d459b9f74ed
+property	c:objc(cs)VNFaceLandmarks2D(py)leftPupil	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	f7b03e1bc0db3fce
+property	c:objc(cs)VNFaceLandmarks2D(py)rightPupil	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	246fc37d2ceeb1bf
+interface	c:objc(cs)VNPoint	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	deprecated: Use -distanceToPoint: instead	2d6247a99bc847ec
+super	-	VNPoint	NSObject		-	-	ef9ca29d6a56510c
+conforms	-	VNPoint	NSCopying		-	-	e44bd7578ba0dda6
+conforms	-	VNPoint	NSSecureCoding		-	-	a89d3275dd9d635b
+property	c:objc(cs)VNPoint(cpy)zeroPoint	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	85064fd76e6dd338
+method	c:objc(cs)VNPoint(cm)pointByApplyingVector:toPoint:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	db8df2b943359194
+method	c:objc(cs)VNPoint(cm)distanceBetweenPoint:point:	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	deprecated: Use -distanceToPoint: instead	b0f79097071419dd
+method	c:objc(cs)VNPoint(im)distanceToPoint:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	43461404b732024a
+method	c:objc(cs)VNPoint(im)initWithX:y:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	9e98922e173255da
+method	c:objc(cs)VNPoint(im)initWithLocation:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	31951a4a9eb26354
+property	c:objc(cs)VNPoint(py)location	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	ba18e30d408b7313
+property	c:objc(cs)VNPoint(py)x	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	dfe567009931de4f
+property	c:objc(cs)VNPoint(py)y	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	522a944f54147dad
+interface	c:objc(cs)VNPoint3D	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	83b7c0a3586f7a8c
+super	-	VNPoint3D	NSObject		-	-	6ccd0d7672d8ffe4
+conforms	-	VNPoint3D	NSCopying		-	-	35a8d328840037ad
+conforms	-	VNPoint3D	NSSecureCoding		-	-	8bf148290a10c1d7
+method	c:objc(cs)VNPoint3D(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	068f23b9553fc12c
+method	c:objc(cs)VNPoint3D(im)initWithPosition:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	0a2c4530ad61a736
+property	c:objc(cs)VNPoint3D(py)position	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	5791b2fd701ee15f
+interface	c:objc(cs)VNVector	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	8bd2a0abeb2a502d
+super	-	VNVector	NSObject		-	-	d75c6d7d66df6ea2
+conforms	-	VNVector	NSCopying		-	-	360a3f707560ac6d
+conforms	-	VNVector	NSSecureCoding		-	-	2bdaac492cc4116e
+property	c:objc(cs)VNVector(cpy)zeroVector	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	88c9e36a2aa51256
+method	c:objc(cs)VNVector(cm)unitVectorForVector:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	a8ec79596e072fb1
+method	c:objc(cs)VNVector(cm)vectorByMultiplyingVector:byScalar:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	b45d5aeecd9a47ee
+method	c:objc(cs)VNVector(cm)vectorByAddingVector:toVector:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	78f36e00a72fd757
+method	c:objc(cs)VNVector(cm)vectorBySubtractingVector:fromVector:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	dfb4fd9a0b495b70
+method	c:objc(cs)VNVector(cm)dotProductOfVector:vector:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	5df4513198e9ef6d
+method	c:objc(cs)VNVector(im)initWithXComponent:yComponent:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	dc0d12fca9b975e5
+method	c:objc(cs)VNVector(im)initWithR:theta:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	d2f0989dd1307431
+method	c:objc(cs)VNVector(im)initWithVectorHead:tail:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	855da5f699737047
+property	c:objc(cs)VNVector(py)x	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	307fcc4e92091c2b
+property	c:objc(cs)VNVector(py)y	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	e62d42ea22ee22d7
+property	c:objc(cs)VNVector(py)r	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	515b4af893b8fe65
+property	c:objc(cs)VNVector(py)theta	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	b7be5645bc2d67a3
+property	c:objc(cs)VNVector(py)length	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	50f871b074d18726
+property	c:objc(cs)VNVector(py)squaredLength	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	0312c24e0512eca2
+interface	c:objc(cs)VNCircle	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	f74a711d52c4be4c
+super	-	VNCircle	NSObject		-	-	e751b43075858cc1
+conforms	-	VNCircle	NSCopying		-	-	bed2cc5c8586dd91
+conforms	-	VNCircle	NSSecureCoding		-	-	cc2bed4eec53386c
+property	c:objc(cs)VNCircle(cpy)zeroCircle	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	ac79934129565a24
+method	c:objc(cs)VNCircle(im)initWithCenter:radius:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	990c2dea23a1ed75
+method	c:objc(cs)VNCircle(im)initWithCenter:diameter:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	e189336679bc4907
+method	c:objc(cs)VNCircle(im)containsPoint:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	5ec9f60a47423662
+method	c:objc(cs)VNCircle(im)containsPoint:inCircumferentialRingOfWidth:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	c288c8c55bbeec92
+property	c:objc(cs)VNCircle(py)center	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	d51e43f93d6df255
+property	c:objc(cs)VNCircle(py)radius	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	3af1ce3c53289e00
+property	c:objc(cs)VNCircle(py)diameter	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	c81ad6b96e72f788
+interface	c:objc(cs)VNContour	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	c5bd2ffbd283b130
+super	-	VNContour	NSObject		-	-	92afa33fe1de3843
+conforms	-	VNContour	NSCopying		-	-	c124de61d6617764
+conforms	-	VNContour	VNRequestRevisionProviding		-	-	9dcaa6535c879ace
+method	c:objc(cs)VNContour(cm)new	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	7c56001109d3c28e
+method	c:objc(cs)VNContour(im)init	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	755d238c6f6ebab6
+property	c:objc(cs)VNContour(py)indexPath	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	78ee08fb50781ae3
+property	c:objc(cs)VNContour(py)childContourCount	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	14a50fceabe33f9d
+property	c:objc(cs)VNContour(py)childContours	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	e1a36e961db325b3
+method	c:objc(cs)VNContour(im)childContourAtIndex:error:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	df77b691f8228d9c
+property	c:objc(cs)VNContour(py)pointCount	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	6e050f565c139c71
+property	c:objc(cs)VNContour(py)normalizedPoints	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	ffae5193b8997407
+property	c:objc(cs)VNContour(py)normalizedPath	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	8e92a4d9a9fe08d2
+property	c:objc(cs)VNContour(py)aspectRatio	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	dc84746319507af5
+method	c:objc(cs)VNContour(im)polygonApproximationWithEpsilon:error:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	cfa3523705b01d02
+interface	c:objc(cs)VNDetectedPoint	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	3258ceebb9d4d842
+super	-	VNDetectedPoint	VNPoint		-	-	2ae3bdf99838e728
+method	c:objc(cs)VNDetectedPoint(cm)new	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	35313a9abfdea2ae
+method	c:objc(cs)VNDetectedPoint(im)init	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	19ae5ba39d55059e
+method	c:objc(cs)VNDetectedPoint(im)initWithX:y:	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	b2e776f550cc139a
+method	c:objc(cs)VNDetectedPoint(im)initWithLocation:	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	227a2f92f0b46b44
+property	c:objc(cs)VNDetectedPoint(py)confidence	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	1b8938eeaac3404e
+interface	c:objc(cs)VNRecognizedPoint	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	f389d39e19628388
+super	-	VNRecognizedPoint	VNDetectedPoint		-	-	3f1d013f3f6b909d
+property	c:objc(cs)VNRecognizedPoint(py)identifier	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	fea6fbb5c0bffea5
+interface	c:objc(cs)VNObservation	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	835b7d9dbb35209f
+super	-	VNObservation	NSObject		-	-	6c9962d0471f1399
+conforms	-	VNObservation	NSCopying		-	-	37e69ef6ce1384a6
+conforms	-	VNObservation	NSSecureCoding		-	-	1286a6334ba8012a
+conforms	-	VNObservation	VNRequestRevisionProviding		-	-	20cfd74e391b45a4
+property	c:objc(cs)VNObservation(py)uuid	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	4f91e9930ee37872
+property	c:objc(cs)VNObservation(py)confidence	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	e8807a7ac2e0c2b1
+property	c:objc(cs)VNObservation(py)timeRange	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	d2b2f1e232e415e8
+interface	c:objc(cs)VNDetectedObjectObservation	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	7aac6934bf542a3a
+super	-	VNDetectedObjectObservation	VNObservation		-	-	d7131a38cdc63724
+method	c:objc(cs)VNDetectedObjectObservation(cm)observationWithBoundingBox:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	661c4a9e5c129424
+method	c:objc(cs)VNDetectedObjectObservation(cm)observationWithRequestRevision:boundingBox:	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	d625046532c32277
+property	c:objc(cs)VNDetectedObjectObservation(py)boundingBox	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	3d29f550848492ba
+property	c:objc(cs)VNDetectedObjectObservation(py)globalSegmentationMask	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	c4caed0620d411e9
+interface	c:objc(cs)VNFaceObservation	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	deprecated: Use -faceObservationWithRequestRevision:boundingBox:roll:yaw: instead	eeb4fd003259b491
+super	-	VNFaceObservation	VNDetectedObjectObservation		-	-	728dfe6a9b60ef7c
+method	c:objc(cs)VNFaceObservation(cm)faceObservationWithRequestRevision:boundingBox:roll:yaw:	-			ios=12.0/15.0/-/0,macos=10.14/12.0/-/0,tvos=12.0/15.0/-/0	deprecated: Use -faceObservationWithRequestRevision:boundingBox:roll:yaw: instead	06dc84c6a3f94dba
+method	c:objc(cs)VNFaceObservation(cm)faceObservationWithRequestRevision:boundingBox:roll:yaw:pitch:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	8b2705c663d8ef85
+property	c:objc(cs)VNFaceObservation(py)landmarks	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	f90ab7d8658701f0
+property	c:objc(cs)VNFaceObservation(py)faceCaptureQuality	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	f98a42b234ab8137
+property	c:objc(cs)VNFaceObservation(py)roll	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	e1cedff3c4390063
+property	c:objc(cs)VNFaceObservation(py)yaw	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	0d4c41edaf976f9e
+property	c:objc(cs)VNFaceObservation(py)pitch	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	f489be86b4e487e3
+interface	c:objc(cs)VNClassificationObservation	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	17bd41a29e49cb5c
+super	-	VNClassificationObservation	VNObservation		-	-	2835e74c0801fbe0
+property	c:objc(cs)VNClassificationObservation(py)identifier	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	878bcbd6209d073e
+category	c:objc(cy)VNClassificationObservation@PrecisionRecallAdditions	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	87b572a6fe2ee192
+property	c:objc(cs)VNClassificationObservation(py)hasPrecisionRecallCurve	PrecisionRecallAdditions			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	d910259192132217
+method	c:objc(cs)VNClassificationObservation(im)hasMinimumRecall:forPrecision:	PrecisionRecallAdditions			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	2a0b996821fcf232
+method	c:objc(cs)VNClassificationObservation(im)hasMinimumPrecision:forRecall:	PrecisionRecallAdditions			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	06140a160868b99d
+interface	c:objc(cs)VNRecognizedObjectObservation	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	e1b7e8e2905b4ac1
+super	-	VNRecognizedObjectObservation	VNDetectedObjectObservation		-	-	9bb6ea7b00ec32c1
+property	c:objc(cs)VNRecognizedObjectObservation(py)labels	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	b7c8a4da9d5f872f
+interface	c:objc(cs)VNCoreMLFeatureValueObservation	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	b03d7b204f02312d
+super	-	VNCoreMLFeatureValueObservation	VNObservation		-	-	ef5ecb4d9ac12e6e
+property	c:objc(cs)VNCoreMLFeatureValueObservation(py)featureValue	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	9f43385b2401cef9
+property	c:objc(cs)VNCoreMLFeatureValueObservation(py)featureName	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	732b2645d13f3333
+interface	c:objc(cs)VNPixelBufferObservation	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	06f6084f1c23322d
+super	-	VNPixelBufferObservation	VNObservation		-	-	4d4a5188bff4c081
+property	c:objc(cs)VNPixelBufferObservation(py)pixelBuffer	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	12c628144399ff13
+property	c:objc(cs)VNPixelBufferObservation(py)featureName	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	4d7574cf53859b17
+interface	c:objc(cs)VNRectangleObservation	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	deprecated: Use rectangleObservationWithRequestRevision:topLeft:topRight:bottomRight:bottomLeft: instead	4416871eb34100d0
+super	-	VNRectangleObservation	VNDetectedObjectObservation		-	-	098d0d7ce56d7a0c
+method	c:objc(cs)VNRectangleObservation(cm)rectangleObservationWithRequestRevision:topLeft:bottomLeft:bottomRight:topRight:	-			ios=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	deprecated: Use rectangleObservationWithRequestRevision:topLeft:topRight:bottomRight:bottomLeft: instead	e9cb8db056d99e4b
+method	c:objc(cs)VNRectangleObservation(cm)rectangleObservationWithRequestRevision:topLeft:topRight:bottomRight:bottomLeft:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	a7c61bea227c4619
+property	c:objc(cs)VNRectangleObservation(py)topLeft	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	ba529df5ad835d81
+property	c:objc(cs)VNRectangleObservation(py)topRight	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	879fff43bd117ad9
+property	c:objc(cs)VNRectangleObservation(py)bottomLeft	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	c3d02f6e6ae9bf54
+property	c:objc(cs)VNRectangleObservation(py)bottomRight	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	965112653ed4fd64
+interface	c:objc(cs)VNTrajectoryObservation	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	b1cd53c3ee547ada
+super	-	VNTrajectoryObservation	VNObservation		-	-	43c00882e3cbf088
+property	c:objc(cs)VNTrajectoryObservation(py)detectedPoints	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	aa6089d8acd101bc
+property	c:objc(cs)VNTrajectoryObservation(py)projectedPoints	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	b81224b4139dfd3a
+property	c:objc(cs)VNTrajectoryObservation(py)equationCoefficients	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	44712274b8ac13ee
+property	c:objc(cs)VNTrajectoryObservation(py)movingAverageRadius	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	8625ed574685ee68
+interface	c:objc(cs)VNTextObservation	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	6bec8c522e91a274
+super	-	VNTextObservation	VNRectangleObservation		-	-	fa4f8561a587643e
+property	c:objc(cs)VNTextObservation(py)characterBoxes	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	9a6cee38e890e64b
+interface	c:objc(cs)VNRecognizedText	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	a0fc42f58fc0e3c3
+super	-	VNRecognizedText	NSObject		-	-	d8f45833fde0c045
+conforms	-	VNRecognizedText	NSCopying		-	-	cafc5536f045f26f
+conforms	-	VNRecognizedText	NSSecureCoding		-	-	d005924061aa0420
+conforms	-	VNRecognizedText	VNRequestRevisionProviding		-	-	dd0ae38b02686811
+property	c:objc(cs)VNRecognizedText(py)string	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	356f429866045b75
+property	c:objc(cs)VNRecognizedText(py)confidence	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	4b8a9364cce991f5
+method	c:objc(cs)VNRecognizedText(im)boundingBoxForRange:error:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	12782a89f1608e96
+interface	c:objc(cs)VNRecognizedTextObservation	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	698ec846e29b5def
+super	-	VNRecognizedTextObservation	VNRectangleObservation		-	-	28e4e0b70d9ab8c8
+method	c:objc(cs)VNRecognizedTextObservation(im)topCandidates:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	1405f2d63ec9a23a
+interface	c:objc(cs)VNBarcodeObservation	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	10bae1ee783378cf
+super	-	VNBarcodeObservation	VNRectangleObservation		-	-	1ce03e9a41541a34
+property	c:objc(cs)VNBarcodeObservation(py)symbology	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	2c34d73b3e03aa54
+property	c:objc(cs)VNBarcodeObservation(py)barcodeDescriptor	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	ddaa02a7d2a46ada
+property	c:objc(cs)VNBarcodeObservation(py)payloadStringValue	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	3266ce0a46f916e5
+property	c:objc(cs)VNBarcodeObservation(py)payloadData	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	94d1cd817b793837
+property	c:objc(cs)VNBarcodeObservation(py)isGS1DataCarrier	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	da5944e4f3f6d118
+property	c:objc(cs)VNBarcodeObservation(py)isColorInverted	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	0b2faa6b3338e249
+property	c:objc(cs)VNBarcodeObservation(py)supplementalCompositeType	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	bf21dbdd13ebe31a
+property	c:objc(cs)VNBarcodeObservation(py)supplementalPayloadString	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	d8213e74142d7b1a
+property	c:objc(cs)VNBarcodeObservation(py)supplementalPayloadData	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	7df76704ee2ccf1d
+interface	c:objc(cs)VNHorizonObservation	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	5269846ff365a198
+super	-	VNHorizonObservation	VNObservation		-	-	7774b52279700634
+property	c:objc(cs)VNHorizonObservation(py)transform	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	46668fac65eddfbf
+property	c:objc(cs)VNHorizonObservation(py)angle	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	cf3dfc0a051c0983
+method	c:objc(cs)VNHorizonObservation(im)transformForImageWidth:height:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	665c41f03fe7d25b
+interface	c:objc(cs)VNImageAlignmentObservation	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	edd92264278c9b27
+super	-	VNImageAlignmentObservation	VNObservation		-	-	b9f86cedf0b84abc
+interface	c:objc(cs)VNImageTranslationAlignmentObservation	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	cb040548ae52d839
+super	-	VNImageTranslationAlignmentObservation	VNImageAlignmentObservation		-	-	bdaeb0371adc3e17
+property	c:objc(cs)VNImageTranslationAlignmentObservation(py)alignmentTransform	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	43aa31ffaab59a3d
+interface	c:objc(cs)VNImageHomographicAlignmentObservation	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	212da775211ede4f
+super	-	VNImageHomographicAlignmentObservation	VNImageAlignmentObservation		-	-	7a36f426485c02df
+property	c:objc(cs)VNImageHomographicAlignmentObservation(py)warpTransform	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	c8595d387cfc5222
+interface	c:objc(cs)VNSaliencyImageObservation	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	73909811378e6fe0
+super	-	VNSaliencyImageObservation	VNPixelBufferObservation		-	-	4b1de3404eadb14f
+property	c:objc(cs)VNSaliencyImageObservation(py)salientObjects	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	ffbb893300ed2ea0
+interface	c:objc(cs)VNFeaturePrintObservation	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	2470afb0de5d1731
+super	-	VNFeaturePrintObservation	VNObservation		-	-	8a1745102f9e19b0
+property	c:objc(cs)VNFeaturePrintObservation(py)elementType	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	046dbb1090ebe561
+property	c:objc(cs)VNFeaturePrintObservation(py)elementCount	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	d3617f26c3e7cd52
+property	c:objc(cs)VNFeaturePrintObservation(py)data	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	d1f6694d9ce7f0e4
+method	c:objc(cs)VNFeaturePrintObservation(im)computeDistance:toFeaturePrintObservation:error:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	0ec0df5b9fb549b4
+interface	c:objc(cs)VNContoursObservation	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	56139f97f20b1df9
+super	-	VNContoursObservation	VNObservation		-	-	ed801517962c69e0
+property	c:objc(cs)VNContoursObservation(py)contourCount	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	4f22aabb8deb8d4e
+method	c:objc(cs)VNContoursObservation(im)contourAtIndex:error:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	532bcaefa30c79eb
+property	c:objc(cs)VNContoursObservation(py)topLevelContourCount	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	5619d8be4ed04ce0
+property	c:objc(cs)VNContoursObservation(py)topLevelContours	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	3652c371054084c5
+method	c:objc(cs)VNContoursObservation(im)contourAtIndexPath:error:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	622ab1f9ead7dc09
+property	c:objc(cs)VNContoursObservation(py)normalizedPath	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	1b640cdf3694b0d0
+var	c:@VNRecognizedPointGroupKeyAll	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	820915b938b9694e
+interface	c:objc(cs)VNRecognizedPointsObservation	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	cce3492ad0f14be6
+super	-	VNRecognizedPointsObservation	VNObservation		-	-	ca04cc29e81dbe3d
+method	c:objc(cs)VNRecognizedPointsObservation(cm)new	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	4f8aca6978b8aed3
+method	c:objc(cs)VNRecognizedPointsObservation(im)init	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	01d47d53a34e6a8d
+property	c:objc(cs)VNRecognizedPointsObservation(py)availableKeys	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	a7169bd8e353b7db
+property	c:objc(cs)VNRecognizedPointsObservation(py)availableGroupKeys	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	8c1b3e4bb7907071
+method	c:objc(cs)VNRecognizedPointsObservation(im)recognizedPointForKey:error:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	5be60975b3a36c3f
+method	c:objc(cs)VNRecognizedPointsObservation(im)recognizedPointsForGroupKey:error:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	6ec529735232220e
+method	c:objc(cs)VNRecognizedPointsObservation(im)keypointsMultiArrayAndReturnError:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	c6c447af027322b8
+interface	c:objc(cs)VNHumanObservation	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	13d2b436917931d9
+super	-	VNHumanObservation	VNDetectedObjectObservation		-	-	ea9bc1b65b99a3f5
+property	c:objc(cs)VNHumanObservation(py)upperBodyOnly	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	1aa7347d45ea21f1
+interface	c:objc(cs)VNInstanceMaskObservation	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	cea3be234d612a21
+super	-	VNInstanceMaskObservation	VNObservation		-	-	972616ce8ae0daed
+property	c:objc(cs)VNInstanceMaskObservation(py)instanceMask	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	37056e1bfcc4993b
+property	c:objc(cs)VNInstanceMaskObservation(py)allInstances	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	3a2cda37f6efe250
+method	c:objc(cs)VNInstanceMaskObservation(im)generateMaskForInstances:error:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	4376617adc3a2429
+method	c:objc(cs)VNInstanceMaskObservation(im)generateMaskedImageOfInstances:fromRequestHandler:croppedToInstancesExtent:error:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	f7c718e01e5207c7
+method	c:objc(cs)VNInstanceMaskObservation(im)generateScaledMaskForImageForInstances:fromRequestHandler:error:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	96b39f69f6d06f1c
+interface	c:objc(cs)VNAnimalBodyPoseObservation	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	7ab4424ed85ccfb7
+super	-	VNAnimalBodyPoseObservation	VNRecognizedPointsObservation		-	-	ac2c18c8d917ffb6
+property	c:objc(cs)VNAnimalBodyPoseObservation(py)availableJointNames	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	a29bad1721d9660d
+property	c:objc(cs)VNAnimalBodyPoseObservation(py)availableJointGroupNames	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	ca52b6ef5ad84062
+method	c:objc(cs)VNAnimalBodyPoseObservation(im)recognizedPointForJointName:error:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	52c6df7319b982bd
+method	c:objc(cs)VNAnimalBodyPoseObservation(im)recognizedPointsForJointsGroupName:error:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	69d8c5814c78b055
+var	c:@VNRecognizedPoint3DGroupKeyAll	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	e25d26520b8d876b
+interface	c:objc(cs)VNRecognizedPoints3DObservation	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	ca0469ff3c0cda29
+super	-	VNRecognizedPoints3DObservation	VNObservation		-	-	5ce9a1da2f8a54f4
+method	c:objc(cs)VNRecognizedPoints3DObservation(cm)new	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	bfaad2e19dcafafe
+method	c:objc(cs)VNRecognizedPoints3DObservation(im)init	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	308ecc958a71f1ef
+property	c:objc(cs)VNRecognizedPoints3DObservation(py)availableKeys	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	972e69a2ba7f8c76
+property	c:objc(cs)VNRecognizedPoints3DObservation(py)availableGroupKeys	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	24a7839c741f6190
+method	c:objc(cs)VNRecognizedPoints3DObservation(im)recognizedPointForKey:error:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	b1f8a7ee834b73f2
+method	c:objc(cs)VNRecognizedPoints3DObservation(im)recognizedPointsForGroupKey:error:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	328018fcc3bd7fb2
+typedef	c:@T@VNHumanBodyPose3DObservationHeightEstimation	-			-	-	1c275771f28095ff
+enum	c:@E@VNHumanBodyPose3DObservationHeightEstimation	-			-	-	ae539e7329e9b04e
+enumconst	c:@E@VNHumanBodyPose3DObservationHeightEstimation@VNHumanBodyPose3DObservationHeightEstimationReference	VNHumanBodyPose3DObservationHeightEstimation			-	-	10c924d23ac984ef
+enumconst	c:@E@VNHumanBodyPose3DObservationHeightEstimation@VNHumanBodyPose3DObservationHeightEstimationMeasured	VNHumanBodyPose3DObservationHeightEstimation			-	-	b7b6e8a4402acef7
+interface	c:objc(cs)VNHumanBodyPose3DObservation	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	ea80e3796eda6642
+super	-	VNHumanBodyPose3DObservation	VNRecognizedPoints3DObservation		-	-	1b4bfe98e0831494
+property	c:objc(cs)VNHumanBodyPose3DObservation(py)heightEstimation	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	662d1b21750a9e23
+property	c:objc(cs)VNHumanBodyPose3DObservation(py)cameraOriginMatrix	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	60e42483eb5cea03
+property	c:objc(cs)VNHumanBodyPose3DObservation(py)availableJointsGroupNames	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	f3db9a697180d547
+property	c:objc(cs)VNHumanBodyPose3DObservation(py)availableJointNames	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	056082008b2fca70
+property	c:objc(cs)VNHumanBodyPose3DObservation(py)bodyHeight	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	e2a385cd5b4b8bfa
+method	c:objc(cs)VNHumanBodyPose3DObservation(im)recognizedPointsForJointsGroupName:error:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	4f311ac42bf1a3bd
+method	c:objc(cs)VNHumanBodyPose3DObservation(im)recognizedPointForJointName:error:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	57a0fde306b6bb8f
+method	c:objc(cs)VNHumanBodyPose3DObservation(im)pointInImageForJointName:error:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	4d476d10eb9667c2
+method	c:objc(cs)VNHumanBodyPose3DObservation(im)parentJointNameForJointName:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	1dfd86d618bc20e0
+method	c:objc(cs)VNHumanBodyPose3DObservation(im)getCameraRelativePosition:forJointName:error:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	492116e35742778c
+interface	c:objc(cs)VNImageAestheticsScoresObservation	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	71c6324b323b74e0
+super	-	VNImageAestheticsScoresObservation	VNObservation		-	-	85e2db5011cfac06
+method	c:objc(cs)VNImageAestheticsScoresObservation(im)init	-			*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	fe1f53836e0ad042
+property	c:objc(cs)VNImageAestheticsScoresObservation(py)isUtility	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	5f67e520372969cb
+property	c:objc(cs)VNImageAestheticsScoresObservation(py)overallScore	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	97ea9271eada55d9
+typedef	c:@T@VNRequestCompletionHandler	-			-	-	f385f3091ebd8ba6
+interface	c:objc(cs)VNRequest	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	deprecated: Use -setComputeDevice:forComputeStage: instead	1448a85ff060598a
+super	-	VNRequest	NSObject		-	-	c1ba15a4fdcf76f8
+conforms	-	VNRequest	NSCopying		-	-	2ccb0fa0130ab403
+method	c:objc(cs)VNRequest(im)init	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	5343e425948ad51e
+method	c:objc(cs)VNRequest(im)initWithCompletionHandler:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	1696379ea018cd8a
+property	c:objc(cs)VNRequest(py)preferBackgroundProcessing	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	00b223812c96505a
+property	c:objc(cs)VNRequest(py)usesCPUOnly	-			ios=11.0/17.0/-/0,macos=10.13/14.0/-/0,tvos=11.0/17.0/-/0	-	da350bb2864c2211
+property	c:objc(cs)VNRequest(py)results	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	1bd228898afe6b39
+property	c:objc(cs)VNRequest(py)completionHandler	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	c0feea9c9e05ef0d
+property	c:objc(cs)VNRequest(py)revision	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	5831dc74e2d22039
+property	c:objc(cs)VNRequest(cpy)supportedRevisions	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	e54b319360c0f687
+property	c:objc(cs)VNRequest(cpy)defaultRevision	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	0cdd7c246c3b61aa
+property	c:objc(cs)VNRequest(cpy)currentRevision	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	cf8a5a475045f7e1
+method	c:objc(cs)VNRequest(im)cancel	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	9529fd724d22928a
+category	c:objc(ext)VNRequest	-	-		ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	c2f5c74185e12686
+method	c:objc(cs)VNRequest(im)supportedComputeStageDevicesAndReturnError:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	38cca30620b3cf1e
+method	c:objc(cs)VNRequest(im)computeDeviceForComputeStage:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	eea836396883bb69
+method	c:objc(cs)VNRequest(im)setComputeDevice:forComputeStage:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	d8ac359cd34aa935
+interface	c:objc(cs)VNImageBasedRequest	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	439f1785d4a47882
+super	-	VNImageBasedRequest	VNRequest		-	-	02f0375d35bbc416
+property	c:objc(cs)VNImageBasedRequest(py)regionOfInterest	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	f7cbd9c8f6d6b4d0
+typedef	c:@T@VNRequestProgressHandler	-			-	-	e3d0567c2856f796
+protocol	c:objc(pl)VNRequestProgressProviding	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	4ac00cfe8c2f077f
+conforms	-	VNRequestProgressProviding	NSObject		-	-	ac6c3e7513f6116e
+property	c:objc(pl)VNRequestProgressProviding(py)progressHandler	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	a07e3f8ac202798b
+property	c:objc(pl)VNRequestProgressProviding(py)indeterminate	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	5bf611354c9d6882
+protocol	c:objc(pl)VNFaceObservationAccepting	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	3bdd0a07d3ed0422
+conforms	-	VNFaceObservationAccepting	NSObject		-	-	0385610e121dee30
+property	c:objc(pl)VNFaceObservationAccepting(py)inputFaceObservations	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	0cf4182d656c88f3
+interface	c:objc(cs)VNClassifyImageRequest	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	deprecated: Use -supportedIdentifiersAndReturnError: instead	5bbd0f938283a403
+super	-	VNClassifyImageRequest	VNImageBasedRequest		-	-	4c2ace960c724cfd
+method	c:objc(cs)VNClassifyImageRequest(cm)knownClassificationsForRevision:error:	-			ios=13.0/15.0/-/0,macos=10.15/12.0/-/0,tvos=13.0/15.0/-/0	deprecated: Use -supportedIdentifiersAndReturnError: instead	a80c0aa823432378
+method	c:objc(cs)VNClassifyImageRequest(im)supportedIdentifiersAndReturnError:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	db7ffe7ecb20b91e
+property	c:objc(cs)VNClassifyImageRequest(py)results	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	b2503d42efe759b9
+interface	c:objc(cs)VNDetectBarcodesRequest	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	deprecated: Use -supportedSymbologiesAndReturnError: instead	86d259a2bbacdab5
+super	-	VNDetectBarcodesRequest	VNImageBasedRequest		-	-	fa5d36121803fe18
+property	c:objc(cs)VNDetectBarcodesRequest(cpy)supportedSymbologies	-			ios=11.0/15.0/-/0,macos=10.13/12.0/-/0,tvos=11.0/15.0/-/0	-	d07a3e48fed5d808
+method	c:objc(cs)VNDetectBarcodesRequest(im)supportedSymbologiesAndReturnError:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	5b218a40458603a9
+property	c:objc(cs)VNDetectBarcodesRequest(py)symbologies	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	8d103a5987579cfa
+property	c:objc(cs)VNDetectBarcodesRequest(py)coalesceCompositeSymbologies	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	9d56e0b19164db0f
+property	c:objc(cs)VNDetectBarcodesRequest(py)results	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	acb002efcf25080e
+interface	c:objc(cs)VNDetectFaceRectanglesRequest	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	9ce7bcdcc0a64d12
+super	-	VNDetectFaceRectanglesRequest	VNImageBasedRequest		-	-	84e66223ab34be0e
+property	c:objc(cs)VNDetectFaceRectanglesRequest(py)results	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	18cab0d4a36c3f74
+typedef	c:@T@VNRequestFaceLandmarksConstellation	-			-	-	c6aeeeca2965da61
+enum	c:@E@VNRequestFaceLandmarksConstellation	-			-	-	6c142cbba0637ce1
+enumconst	c:@E@VNRequestFaceLandmarksConstellation@VNRequestFaceLandmarksConstellationNotDefined	VNRequestFaceLandmarksConstellation			-	-	c5183a59a4ff9702
+enumconst	c:@E@VNRequestFaceLandmarksConstellation@VNRequestFaceLandmarksConstellation65Points	VNRequestFaceLandmarksConstellation			-	-	5b30371a5dbeb830
+enumconst	c:@E@VNRequestFaceLandmarksConstellation@VNRequestFaceLandmarksConstellation76Points	VNRequestFaceLandmarksConstellation			-	-	5ba3c726924b3081
+interface	c:objc(cs)VNDetectFaceLandmarksRequest	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	7393ae9e66cbf5cf
+super	-	VNDetectFaceLandmarksRequest	VNImageBasedRequest		-	-	f5432bd2e60ab5da
+conforms	-	VNDetectFaceLandmarksRequest	VNFaceObservationAccepting		-	-	1fbe187066965dfc
+method	c:objc(cs)VNDetectFaceLandmarksRequest(cm)revision:supportsConstellation:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	acb725a8a8a46bdf
+property	c:objc(cs)VNDetectFaceLandmarksRequest(py)constellation	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	5711021369a57c0f
+property	c:objc(cs)VNDetectFaceLandmarksRequest(py)results	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	26e81683c99e336a
+interface	c:objc(cs)VNDetectFaceCaptureQualityRequest	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	cc945cc340eb6142
+super	-	VNDetectFaceCaptureQualityRequest	VNImageBasedRequest		-	-	16aba767e595e77c
+conforms	-	VNDetectFaceCaptureQualityRequest	VNFaceObservationAccepting		-	-	f841ca5bbdd97c1b
+property	c:objc(cs)VNDetectFaceCaptureQualityRequest(py)results	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	b8c5350bdbf26b5e
+interface	c:objc(cs)VNDetectHorizonRequest	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	bae28ab292ae3cb1
+super	-	VNDetectHorizonRequest	VNImageBasedRequest		-	-	5a8079987bcb0690
+property	c:objc(cs)VNDetectHorizonRequest(py)results	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	a55b386e5cee295c
+interface	c:objc(cs)VNDetectRectanglesRequest	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	2f965ddef3285b1d
+super	-	VNDetectRectanglesRequest	VNImageBasedRequest		-	-	9defb2b2961eccdf
+property	c:objc(cs)VNDetectRectanglesRequest(py)minimumAspectRatio	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	6a81b350bd320818
+property	c:objc(cs)VNDetectRectanglesRequest(py)maximumAspectRatio	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	2ed9378ad3c949cb
+property	c:objc(cs)VNDetectRectanglesRequest(py)quadratureTolerance	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	fcb4456b0cc208a2
+property	c:objc(cs)VNDetectRectanglesRequest(py)minimumSize	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	e49a7b99b04070a6
+property	c:objc(cs)VNDetectRectanglesRequest(py)minimumConfidence	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	bb064d6a448ba500
+property	c:objc(cs)VNDetectRectanglesRequest(py)maximumObservations	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	0004ffe350fe09c3
+property	c:objc(cs)VNDetectRectanglesRequest(py)results	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	8cc6b3e3d35ee343
+interface	c:objc(cs)VNDetectTextRectanglesRequest	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	69515980537cbafb
+super	-	VNDetectTextRectanglesRequest	VNImageBasedRequest		-	-	83e2ad4c81935129
+property	c:objc(cs)VNDetectTextRectanglesRequest(py)reportCharacterBoxes	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	089f7b413923ac3d
+property	c:objc(cs)VNDetectTextRectanglesRequest(py)results	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	351b34f05212bc88
+typedef	c:@T@VNRequestTextRecognitionLevel	-			-	-	155b1e2fd86b8f12
+enum	c:@E@VNRequestTextRecognitionLevel	-			-	-	91fce80c17321579
+enumconst	c:@E@VNRequestTextRecognitionLevel@VNRequestTextRecognitionLevelAccurate	VNRequestTextRecognitionLevel			-	-	7f6131b80776f4f2
+enumconst	c:@E@VNRequestTextRecognitionLevel@VNRequestTextRecognitionLevelFast	VNRequestTextRecognitionLevel			-	-	47bdcd0c6e010554
+interface	c:objc(cs)VNRecognizeTextRequest	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	deprecated: Use -supportedRecognitionLanguagesAndReturnError: instead	69e5a9af9b9b743d
+super	-	VNRecognizeTextRequest	VNImageBasedRequest		-	-	963882bc3d582f01
+conforms	-	VNRecognizeTextRequest	VNRequestProgressProviding		-	-	2dc2f2820661343c
+method	c:objc(cs)VNRecognizeTextRequest(cm)supportedRecognitionLanguagesForTextRecognitionLevel:revision:error:	-			ios=13.0/15.0/-/0,macos=10.15/12.0/-/0,tvos=13.0/15.0/-/0	deprecated: Use -supportedRecognitionLanguagesAndReturnError: instead	df691b8067ac2f1f
+method	c:objc(cs)VNRecognizeTextRequest(im)supportedRecognitionLanguagesAndReturnError:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	dae67d7b9262d6c2
+property	c:objc(cs)VNRecognizeTextRequest(py)recognitionLanguages	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	29f822a3e3022eb5
+property	c:objc(cs)VNRecognizeTextRequest(py)customWords	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	e1c2155abf3256bf
+property	c:objc(cs)VNRecognizeTextRequest(py)recognitionLevel	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	83b68e9923a71876
+property	c:objc(cs)VNRecognizeTextRequest(py)usesLanguageCorrection	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	ea4d1823633741cc
+property	c:objc(cs)VNRecognizeTextRequest(py)automaticallyDetectsLanguage	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	ad5cdd99cfe211e6
+property	c:objc(cs)VNRecognizeTextRequest(py)minimumTextHeight	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	f9bd472336ee1b4d
+property	c:objc(cs)VNRecognizeTextRequest(py)results	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	8cd2d8f9f43b078f
+interface	c:objc(cs)VNGenerateAttentionBasedSaliencyImageRequest	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	158876b0b3f05c4d
+super	-	VNGenerateAttentionBasedSaliencyImageRequest	VNImageBasedRequest		-	-	dc2410b10dde6dd8
+property	c:objc(cs)VNGenerateAttentionBasedSaliencyImageRequest(py)results	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	7ebcc65434b7aa0f
+interface	c:objc(cs)VNGenerateObjectnessBasedSaliencyImageRequest	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	e331a58e30c740ff
+super	-	VNGenerateObjectnessBasedSaliencyImageRequest	VNImageBasedRequest		-	-	7b4d23c7b38b74c0
+property	c:objc(cs)VNGenerateObjectnessBasedSaliencyImageRequest(py)results	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	d649a3331e311560
+interface	c:objc(cs)VNGenerateImageFeaturePrintRequest	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	970d25742852b0ce
+super	-	VNGenerateImageFeaturePrintRequest	VNImageBasedRequest		-	-	bb63abf990623750
+property	c:objc(cs)VNGenerateImageFeaturePrintRequest(py)imageCropAndScaleOption	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	b582c33144c0162a
+property	c:objc(cs)VNGenerateImageFeaturePrintRequest(py)results	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	652dfdb16b465ed3
+interface	c:objc(cs)VNCoreMLModel	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	3df1020e1f374c6f
+super	-	VNCoreMLModel	NSObject		-	-	70eb469dc6d5a787
+method	c:objc(cs)VNCoreMLModel(im)init	-			*unavailable ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	24b8fd472d80c930
+method	c:objc(cs)VNCoreMLModel(cm)modelForMLModel:error:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	676f6438b1119360
+property	c:objc(cs)VNCoreMLModel(py)inputImageFeatureName	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	ea9c7d9bad0445e2
+property	c:objc(cs)VNCoreMLModel(py)featureProvider	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	806ad544fb0a1110
+interface	c:objc(cs)VNCoreMLRequest	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	e8059ca3b060dc2d
+super	-	VNCoreMLRequest	VNImageBasedRequest		-	-	7dd9e0522b9ef3a5
+property	c:objc(cs)VNCoreMLRequest(py)model	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	19083a6eca6c5a98
+property	c:objc(cs)VNCoreMLRequest(py)imageCropAndScaleOption	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	fe0fc74b01efe88b
+method	c:objc(cs)VNCoreMLRequest(im)initWithModel:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	a6ee4cfc59a7027f
+method	c:objc(cs)VNCoreMLRequest(im)initWithModel:completionHandler:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	5d71af3b9e47b18f
+method	c:objc(cs)VNCoreMLRequest(im)init	-			*unavailable ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	5a81c1523fd9e39f
+method	c:objc(cs)VNCoreMLRequest(im)initWithCompletionHandler:	-			*unavailable ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	2419f58fa564f168
+typedef	c:@T@VNImageOption	-			-	-	0ff9a87f04f04fd8
+var	c:@VNImageOptionProperties	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	47766731a174f522
+var	c:@VNImageOptionCameraIntrinsics	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	cb9a347c7e2529f1
+var	c:@VNImageOptionCIContext	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	83c85f96bc493566
+interface	c:objc(cs)VNImageRequestHandler	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	ea17bacb4334e335
+super	-	VNImageRequestHandler	NSObject		-	-	1ddaa5a9ca98dac7
+method	c:objc(cs)VNImageRequestHandler(im)init	-			*unavailable ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	19e14193b1b7c32e
+method	c:objc(cs)VNImageRequestHandler(im)initWithCVPixelBuffer:options:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	411ef2f891d7aded
+method	c:objc(cs)VNImageRequestHandler(im)initWithCVPixelBuffer:orientation:options:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	37f46c7b60567c3e
+method	c:objc(cs)VNImageRequestHandler(im)initWithCVPixelBuffer:depthData:orientation:options:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	5506835c4baea6a7
+method	c:objc(cs)VNImageRequestHandler(im)initWithCGImage:options:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	eceba9dc33bc0e02
+method	c:objc(cs)VNImageRequestHandler(im)initWithCGImage:orientation:options:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	cc1bb56a830eaf2b
+method	c:objc(cs)VNImageRequestHandler(im)initWithCIImage:options:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	3bd632519685d4a4
+method	c:objc(cs)VNImageRequestHandler(im)initWithCIImage:orientation:options:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	c4fb8430f2d4a521
+method	c:objc(cs)VNImageRequestHandler(im)initWithURL:options:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	d6e076fa9053069d
+method	c:objc(cs)VNImageRequestHandler(im)initWithURL:orientation:options:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	d4ad451ba8b77b09
+method	c:objc(cs)VNImageRequestHandler(im)initWithData:options:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	b1dafa89d410eb43
+method	c:objc(cs)VNImageRequestHandler(im)initWithData:orientation:options:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	30286914163762ed
+method	c:objc(cs)VNImageRequestHandler(im)initWithCMSampleBuffer:options:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	f8292c2baf54dbe6
+method	c:objc(cs)VNImageRequestHandler(im)initWithCMSampleBuffer:orientation:options:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	c0f7aacd38544bf5
+method	c:objc(cs)VNImageRequestHandler(im)initWithCMSampleBuffer:depthData:orientation:options:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	2187e84be3713f08
+method	c:objc(cs)VNImageRequestHandler(im)performRequests:error:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	b53b6d1f19b1322f
+interface	c:objc(cs)VNSequenceRequestHandler	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	75aafcb78491dcca
+super	-	VNSequenceRequestHandler	NSObject		-	-	e6e6e5d29d8a9ee1
+method	c:objc(cs)VNSequenceRequestHandler(im)init	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	7acd896e585b78ab
+method	c:objc(cs)VNSequenceRequestHandler(im)performRequests:onCVPixelBuffer:error:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	9f4ee8da64f61396
+method	c:objc(cs)VNSequenceRequestHandler(im)performRequests:onCVPixelBuffer:orientation:error:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	aff464c03903aaa2
+method	c:objc(cs)VNSequenceRequestHandler(im)performRequests:onCGImage:error:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	d4e6487e2503cc7a
+method	c:objc(cs)VNSequenceRequestHandler(im)performRequests:onCGImage:orientation:error:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	65988e58569a7c81
+method	c:objc(cs)VNSequenceRequestHandler(im)performRequests:onCIImage:error:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	2bfe259d061dadc9
+method	c:objc(cs)VNSequenceRequestHandler(im)performRequests:onCIImage:orientation:error:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	2e9b6ffefd6bbe79
+method	c:objc(cs)VNSequenceRequestHandler(im)performRequests:onImageURL:error:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	8e424dadcf339b86
+method	c:objc(cs)VNSequenceRequestHandler(im)performRequests:onImageURL:orientation:error:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	248181291b3e8799
+method	c:objc(cs)VNSequenceRequestHandler(im)performRequests:onImageData:error:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	43a09453f9f2f907
+method	c:objc(cs)VNSequenceRequestHandler(im)performRequests:onImageData:orientation:error:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	a89b6fb4b240b6ec
+method	c:objc(cs)VNSequenceRequestHandler(im)performRequests:onCMSampleBuffer:error:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	d2e1cc66646e826e
+method	c:objc(cs)VNSequenceRequestHandler(im)performRequests:onCMSampleBuffer:orientation:error:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	56fe063606646644
+interface	c:objc(cs)VNTargetedImageRequest	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	48c33d0b6e04c122
+super	-	VNTargetedImageRequest	VNImageBasedRequest		-	-	19d21c6f11104589
+method	c:objc(cs)VNTargetedImageRequest(im)init	-			*unavailable ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	b941d8c1ac4a4673
+method	c:objc(cs)VNTargetedImageRequest(im)initWithCompletionHandler:	-			*unavailable ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	5caf7c1524c227b8
+method	c:objc(cs)VNTargetedImageRequest(im)initWithTargetedCVPixelBuffer:options:	-			swift=-/-/-/1	-	2e7d22a08d3bd38c
+method	c:objc(cs)VNTargetedImageRequest(im)initWithTargetedCVPixelBuffer:options:completionHandler:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	3d2aae77285b7174
+method	c:objc(cs)VNTargetedImageRequest(im)initWithTargetedCVPixelBuffer:orientation:options:	-			swift=-/-/-/1	-	3b8c4a608447ba36
+method	c:objc(cs)VNTargetedImageRequest(im)initWithTargetedCVPixelBuffer:orientation:options:completionHandler:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	ebf9bfdf01a1ce9e
+method	c:objc(cs)VNTargetedImageRequest(im)initWithTargetedCGImage:options:	-			swift=-/-/-/1	-	c01e023e3dda9d11
+method	c:objc(cs)VNTargetedImageRequest(im)initWithTargetedCGImage:options:completionHandler:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	8846275f8b0f9f4e
+method	c:objc(cs)VNTargetedImageRequest(im)initWithTargetedCGImage:orientation:options:	-			swift=-/-/-/1	-	cacf95bb8ad5f3f9
+method	c:objc(cs)VNTargetedImageRequest(im)initWithTargetedCGImage:orientation:options:completionHandler:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	475589ed425c00e8
+method	c:objc(cs)VNTargetedImageRequest(im)initWithTargetedCIImage:options:	-			swift=-/-/-/1	-	7cb34e1de6b2adab
+method	c:objc(cs)VNTargetedImageRequest(im)initWithTargetedCIImage:options:completionHandler:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	ff6d799a35c75671
+method	c:objc(cs)VNTargetedImageRequest(im)initWithTargetedCIImage:orientation:options:	-			swift=-/-/-/1	-	538e49af7ee98a36
+method	c:objc(cs)VNTargetedImageRequest(im)initWithTargetedCIImage:orientation:options:completionHandler:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	8dd5a1f90e41d65e
+method	c:objc(cs)VNTargetedImageRequest(im)initWithTargetedImageURL:options:	-			swift=-/-/-/1	-	b86886efcbd32922
+method	c:objc(cs)VNTargetedImageRequest(im)initWithTargetedImageURL:options:completionHandler:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	8595b321b9f6d1ef
+method	c:objc(cs)VNTargetedImageRequest(im)initWithTargetedImageURL:orientation:options:	-			swift=-/-/-/1	-	855218b6e37d63ae
+method	c:objc(cs)VNTargetedImageRequest(im)initWithTargetedImageURL:orientation:options:completionHandler:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	d7ef8005a3c4bff0
+method	c:objc(cs)VNTargetedImageRequest(im)initWithTargetedImageData:options:	-			swift=-/-/-/1	-	e01c0750a5bdce4e
+method	c:objc(cs)VNTargetedImageRequest(im)initWithTargetedImageData:options:completionHandler:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	f8605f66e88f45fb
+method	c:objc(cs)VNTargetedImageRequest(im)initWithTargetedImageData:orientation:options:	-			swift=-/-/-/1	-	af6acbb6a9b15c11
+method	c:objc(cs)VNTargetedImageRequest(im)initWithTargetedImageData:orientation:options:completionHandler:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	8b526363535cd022
+method	c:objc(cs)VNTargetedImageRequest(im)initWithTargetedCMSampleBuffer:options:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,swift=-/-/-/1,tvos=14.0/-/-/0	-	a4ea17bd8990ed62
+method	c:objc(cs)VNTargetedImageRequest(im)initWithTargetedCMSampleBuffer:options:completionHandler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	9124d61cf71a4ac9
+method	c:objc(cs)VNTargetedImageRequest(im)initWithTargetedCMSampleBuffer:orientation:options:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,swift=-/-/-/1,tvos=14.0/-/-/0	-	9a84f86bd32dfb17
+method	c:objc(cs)VNTargetedImageRequest(im)initWithTargetedCMSampleBuffer:orientation:options:completionHandler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	de98a92765ee5aef
+interface	c:objc(cs)VNImageRegistrationRequest	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	3e307944cca71ad8
+super	-	VNImageRegistrationRequest	VNTargetedImageRequest		-	-	bb71985e9ea4ff13
+interface	c:objc(cs)VNTranslationalImageRegistrationRequest	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	a5e3dd242c4eb198
+super	-	VNTranslationalImageRegistrationRequest	VNImageRegistrationRequest		-	-	3fd85e0761f5b559
+property	c:objc(cs)VNTranslationalImageRegistrationRequest(py)results	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	a68645eec7b0ba81
+interface	c:objc(cs)VNHomographicImageRegistrationRequest	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	85dee379ab9bbac3
+super	-	VNHomographicImageRegistrationRequest	VNImageRegistrationRequest		-	-	413d05750cb6a088
+property	c:objc(cs)VNHomographicImageRegistrationRequest(py)results	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	caab819b59557999
+typedef	c:@T@VNRequestTrackingLevel	-			-	-	70e66fa160bbb3c1
+enum	c:@E@VNRequestTrackingLevel	-			-	-	8d07abcda7bd02e3
+enumconst	c:@E@VNRequestTrackingLevel@VNRequestTrackingLevelAccurate	VNRequestTrackingLevel			-	-	636f46e7c4a61255
+enumconst	c:@E@VNRequestTrackingLevel@VNRequestTrackingLevelFast	VNRequestTrackingLevel			-	-	0bc7050d6c4431c6
+interface	c:objc(cs)VNTrackingRequest	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	7bc4e62eb009e14b
+super	-	VNTrackingRequest	VNImageBasedRequest		-	-	0335fad4e5505eb0
+method	c:objc(cs)VNTrackingRequest(im)supportedNumberOfTrackersAndReturnError:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	4ad2012871c33396
+property	c:objc(cs)VNTrackingRequest(py)inputObservation	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	0daaa73fe09df456
+property	c:objc(cs)VNTrackingRequest(py)trackingLevel	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	4581f8caf5391175
+property	c:objc(cs)VNTrackingRequest(py)lastFrame	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	819b20300e032a28
+method	c:objc(cs)VNTrackingRequest(im)init	-			*unavailable ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	4cf7c0052e126d66
+method	c:objc(cs)VNTrackingRequest(im)initWithCompletionHandler:	-			*unavailable ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	f0de89b218daa134
+interface	c:objc(cs)VNTrackObjectRequest	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	59652688699eb45c
+super	-	VNTrackObjectRequest	VNTrackingRequest		-	-	b1ccbe669778ddae
+method	c:objc(cs)VNTrackObjectRequest(im)initWithDetectedObjectObservation:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	0dc8c76753b3ef34
+method	c:objc(cs)VNTrackObjectRequest(im)initWithDetectedObjectObservation:completionHandler:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	df55f5471eabf742
+method	c:objc(cs)VNTrackObjectRequest(im)init	-			*unavailable ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	f73b6cfc1fbe9b60
+method	c:objc(cs)VNTrackObjectRequest(im)initWithCompletionHandler:	-			*unavailable ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	b2b837569db1a854
+interface	c:objc(cs)VNTrackRectangleRequest	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	77a7b59fb9e258f7
+super	-	VNTrackRectangleRequest	VNTrackingRequest		-	-	ec3e3efb7e8d6804
+method	c:objc(cs)VNTrackRectangleRequest(im)initWithRectangleObservation:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	fc90d4a71c8a7466
+method	c:objc(cs)VNTrackRectangleRequest(im)initWithRectangleObservation:completionHandler:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	f7f71bb8be2b6535
+method	c:objc(cs)VNTrackRectangleRequest(im)init	-			*unavailable ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	2fc07102b8cc72d1
+method	c:objc(cs)VNTrackRectangleRequest(im)initWithCompletionHandler:	-			*unavailable ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	abd036cd9e25302b
+interface	c:objc(cs)VNDetectHumanRectanglesRequest	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	4cb1a09dc4691082
+super	-	VNDetectHumanRectanglesRequest	VNImageBasedRequest		-	-	87dee8386ffca4be
+property	c:objc(cs)VNDetectHumanRectanglesRequest(py)upperBodyOnly	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	8dccae74c1b0841b
+property	c:objc(cs)VNDetectHumanRectanglesRequest(py)results	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	80cc122bee56b56a
+typedef	c:@T@VNAnimalIdentifier	-			-	-	4a8e2d7ca85c5c14
+var	c:@VNAnimalIdentifierDog	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	ca170174951542d8
+var	c:@VNAnimalIdentifierCat	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	2afb95a3cd7a14e1
+interface	c:objc(cs)VNRecognizeAnimalsRequest	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	deprecated: Use -supportedIdentifiersAndReturnError: instead	2081e24668f020da
+super	-	VNRecognizeAnimalsRequest	VNImageBasedRequest		-	-	a7f4d77330399218
+method	c:objc(cs)VNRecognizeAnimalsRequest(cm)knownAnimalIdentifiersForRevision:error:	-			ios=13.0/15.0/-/0,macos=10.15/12.0/-/0,tvos=13.0/15.0/-/0	deprecated: Use -supportedIdentifiersAndReturnError: instead	78c1dbf194642541
+method	c:objc(cs)VNRecognizeAnimalsRequest(im)supportedIdentifiersAndReturnError:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	75298a9dde505935
+property	c:objc(cs)VNRecognizeAnimalsRequest(py)results	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	5f3bae2a61a8c877
+typedef	c:@T@VNGenerateOpticalFlowRequestComputationAccuracy	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	610444ff4deba1a3
+enum	c:@E@VNGenerateOpticalFlowRequestComputationAccuracy	-			-	-	bd471c57e718950e
+enumconst	c:@E@VNGenerateOpticalFlowRequestComputationAccuracy@VNGenerateOpticalFlowRequestComputationAccuracyLow	VNGenerateOpticalFlowRequestComputationAccuracy			-	-	1ddde0940725b451
+enumconst	c:@E@VNGenerateOpticalFlowRequestComputationAccuracy@VNGenerateOpticalFlowRequestComputationAccuracyMedium	VNGenerateOpticalFlowRequestComputationAccuracy			-	-	37e99e56d3d161fe
+enumconst	c:@E@VNGenerateOpticalFlowRequestComputationAccuracy@VNGenerateOpticalFlowRequestComputationAccuracyHigh	VNGenerateOpticalFlowRequestComputationAccuracy			-	-	022dd761e4820514
+enumconst	c:@E@VNGenerateOpticalFlowRequestComputationAccuracy@VNGenerateOpticalFlowRequestComputationAccuracyVeryHigh	VNGenerateOpticalFlowRequestComputationAccuracy			-	-	198bd140da09082f
+interface	c:objc(cs)VNGenerateOpticalFlowRequest	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	8673077c40441209
+super	-	VNGenerateOpticalFlowRequest	VNTargetedImageRequest		-	-	edfb3672432277ba
+property	c:objc(cs)VNGenerateOpticalFlowRequest(py)computationAccuracy	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	184bfe6c70ed3c8a
+property	c:objc(cs)VNGenerateOpticalFlowRequest(py)outputPixelFormat	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	bc8de6d2557ac215
+property	c:objc(cs)VNGenerateOpticalFlowRequest(py)keepNetworkOutput	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	0afa10d779ea96fa
+property	c:objc(cs)VNGenerateOpticalFlowRequest(py)results	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	75019c08fface443
+interface	c:objc(cs)VNVideoProcessorCadence	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	e96420b6cd9188f2
+super	-	VNVideoProcessorCadence	NSObject		-	-	97cfd598a28eb588
+conforms	-	VNVideoProcessorCadence	NSCopying		-	-	9f15c54d8e726d0a
+interface	c:objc(cs)VNVideoProcessorFrameRateCadence	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	bad36d9460d0e2bf
+super	-	VNVideoProcessorFrameRateCadence	VNVideoProcessorCadence		-	-	f0d78e59c4d564f0
+method	c:objc(cs)VNVideoProcessorFrameRateCadence(im)init	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	5f9c8a6f0f7d95eb
+method	c:objc(cs)VNVideoProcessorFrameRateCadence(im)initWithFrameRate:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	0fe65e572cee5e87
+property	c:objc(cs)VNVideoProcessorFrameRateCadence(py)frameRate	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	e04cdb7a8d6a4b68
+interface	c:objc(cs)VNVideoProcessorTimeIntervalCadence	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	0d9099ddfaf83816
+super	-	VNVideoProcessorTimeIntervalCadence	VNVideoProcessorCadence		-	-	5bd03ef4628bb61c
+method	c:objc(cs)VNVideoProcessorTimeIntervalCadence(im)init	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	2a908df038a7e720
+method	c:objc(cs)VNVideoProcessorTimeIntervalCadence(im)initWithTimeInterval:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	bbb164f4c85bdd10
+property	c:objc(cs)VNVideoProcessorTimeIntervalCadence(py)timeInterval	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	f3d59bf70c91d7c3
+interface	c:objc(cs)VNVideoProcessorRequestProcessingOptions	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	3a7dafb2f1ab3b71
+super	-	VNVideoProcessorRequestProcessingOptions	NSObject		-	-	f65277aba362c251
+conforms	-	VNVideoProcessorRequestProcessingOptions	NSCopying		-	-	3086c49c755dde05
+property	c:objc(cs)VNVideoProcessorRequestProcessingOptions(py)cadence	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	d0f028e5944a64ad
+interface	c:objc(cs)VNVideoProcessor	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	deprecated: Use -addRequest:processingOptions:error: instead	b06cfce5e4d7bc11
+super	-	VNVideoProcessor	NSObject		-	-	81208b990b702448
+method	c:objc(cs)VNVideoProcessor(im)init	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	954c40900b79afac
+method	c:objc(cs)VNVideoProcessor(im)initWithURL:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	551d024a0e9657e8
+method	c:objc(cs)VNVideoProcessor(im)addRequest:processingOptions:error:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	cc05c01209a03f14
+method	c:objc(cs)VNVideoProcessor(im)addRequest:withProcessingOptions:error:	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	deprecated: Use -addRequest:processingOptions:error: instead	047d4f2395268f39
+method	c:objc(cs)VNVideoProcessor(im)removeRequest:error:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	fcb36b9e1378ced9
+method	c:objc(cs)VNVideoProcessor(im)analyzeTimeRange:error:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	44c64ed8d2469edf
+method	c:objc(cs)VNVideoProcessor(im)analyzeWithTimeRange:error:	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	deprecated: Use -analyzeTimeRange:error: instead	bcfa237541d4eac2
+method	c:objc(cs)VNVideoProcessor(im)cancel	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	470eb5ef1374f402
+typedef	c:@T@VNHumanHandPoseObservationJointName	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	0b352be28ba1eef5
+var	c:@VNHumanHandPoseObservationJointNameWrist	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	bdb8b92c45dbe817
+var	c:@VNHumanHandPoseObservationJointNameThumbCMC	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	e82e249e073cdd4d
+var	c:@VNHumanHandPoseObservationJointNameThumbMP	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	05bcf56eee46f794
+var	c:@VNHumanHandPoseObservationJointNameThumbIP	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	a82db14a026cdfb0
+var	c:@VNHumanHandPoseObservationJointNameThumbTip	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	3f02299ca337c650
+var	c:@VNHumanHandPoseObservationJointNameIndexMCP	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	b39187b350dc5ef7
+var	c:@VNHumanHandPoseObservationJointNameIndexPIP	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	8cd5a16581295cea
+var	c:@VNHumanHandPoseObservationJointNameIndexDIP	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	def3db453721db71
+var	c:@VNHumanHandPoseObservationJointNameIndexTip	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	6a2c2cb28632e59c
+var	c:@VNHumanHandPoseObservationJointNameMiddleMCP	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	621f4b48ffd5f436
+var	c:@VNHumanHandPoseObservationJointNameMiddlePIP	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	b61d346d43489e53
+var	c:@VNHumanHandPoseObservationJointNameMiddleDIP	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	d63ee659d5989482
+var	c:@VNHumanHandPoseObservationJointNameMiddleTip	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	b1759fb47a302dca
+var	c:@VNHumanHandPoseObservationJointNameRingMCP	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	809710816dfb1a67
+var	c:@VNHumanHandPoseObservationJointNameRingPIP	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	f20fec6e36e63902
+var	c:@VNHumanHandPoseObservationJointNameRingDIP	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	19aca79b6a627d4c
+var	c:@VNHumanHandPoseObservationJointNameRingTip	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	a5db5bbc15d26758
+var	c:@VNHumanHandPoseObservationJointNameLittleMCP	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	3847911b6587687d
+var	c:@VNHumanHandPoseObservationJointNameLittlePIP	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	250289fa06a7204e
+var	c:@VNHumanHandPoseObservationJointNameLittleDIP	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	8d0ffa1bd4895ec8
+var	c:@VNHumanHandPoseObservationJointNameLittleTip	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	724197cb534e1a0d
+typedef	c:@T@VNHumanHandPoseObservationJointsGroupName	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	714220af9496834c
+var	c:@VNHumanHandPoseObservationJointsGroupNameThumb	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	c67d43faca3ec26f
+var	c:@VNHumanHandPoseObservationJointsGroupNameIndexFinger	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	cb3a2d353f4cb08d
+var	c:@VNHumanHandPoseObservationJointsGroupNameMiddleFinger	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	fbccd7bd623d156f
+var	c:@VNHumanHandPoseObservationJointsGroupNameRingFinger	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	adb40fe8c8d7f6e1
+var	c:@VNHumanHandPoseObservationJointsGroupNameLittleFinger	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	5e753c6d0adb2bdb
+var	c:@VNHumanHandPoseObservationJointsGroupNameAll	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	bf685cc26e4d6250
+interface	c:objc(cs)VNHumanHandPoseObservation	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	fe956d01ce246c91
+super	-	VNHumanHandPoseObservation	VNRecognizedPointsObservation		-	-	4e5be8af7b2f928b
+property	c:objc(cs)VNHumanHandPoseObservation(py)availableJointNames	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	62d52d2a154f911e
+property	c:objc(cs)VNHumanHandPoseObservation(py)availableJointsGroupNames	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	49196cb718ace97f
+method	c:objc(cs)VNHumanHandPoseObservation(im)recognizedPointForJointName:error:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	005546ceb29c9b6d
+method	c:objc(cs)VNHumanHandPoseObservation(im)recognizedPointsForJointsGroupName:error:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	c34a039aa4284b4c
+property	c:objc(cs)VNHumanHandPoseObservation(py)chirality	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	2880485d65f06c13
+interface	c:objc(cs)VNDetectHumanHandPoseRequest	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	deprecated: Use supportedJointNamesAndReturnError instead	05b380e9ed4593c4
+super	-	VNDetectHumanHandPoseRequest	VNImageBasedRequest		-	-	6438ef2deaf1821f
+method	c:objc(cs)VNDetectHumanHandPoseRequest(cm)supportedJointNamesForRevision:error:	-			ios=14.0/17.0/-/0,macos=11.0/14.0/-/0,tvos=14.0/17.0/-/0	deprecated: Use supportedJointNamesAndReturnError instead	41b4d848b8719ce2
+method	c:objc(cs)VNDetectHumanHandPoseRequest(im)supportedJointNamesAndReturnError:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	759d11377126c87c
+method	c:objc(cs)VNDetectHumanHandPoseRequest(cm)supportedJointsGroupNamesForRevision:error:	-			ios=14.0/17.0/-/0,macos=11.0/14.0/-/0,tvos=14.0/17.0/-/0	deprecated: Use supportedJointsGroupNamesAndReturnError instead	d5736ce0820c1204
+method	c:objc(cs)VNDetectHumanHandPoseRequest(im)supportedJointsGroupNamesAndReturnError:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	68c4f5547766c46a
+property	c:objc(cs)VNDetectHumanHandPoseRequest(py)maximumHandCount	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	766732e9964db44c
+property	c:objc(cs)VNDetectHumanHandPoseRequest(py)results	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	7e67ca94eec455a6
+var	c:@VNBodyLandmarkKeyNose	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	a72c1152400577cc
+var	c:@VNBodyLandmarkKeyLeftEye	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	02a713dd7f1a0cec
+var	c:@VNBodyLandmarkKeyRightEye	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	4c8fd5b8db6585cd
+var	c:@VNBodyLandmarkKeyLeftEar	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	ac5d1a69e42c12da
+var	c:@VNBodyLandmarkKeyRightEar	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	80db631b0313fef7
+var	c:@VNBodyLandmarkKeyLeftShoulder	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	87f865d5b7b36f5d
+var	c:@VNBodyLandmarkKeyRightShoulder	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	98c146415c7809bb
+var	c:@VNBodyLandmarkKeyNeck	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	d5f18972d9d90de6
+var	c:@VNBodyLandmarkKeyLeftElbow	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	0c2f920399a8e80d
+var	c:@VNBodyLandmarkKeyRightElbow	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	7e6f4883ca107227
+var	c:@VNBodyLandmarkKeyLeftWrist	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	2cf0d14eb768de6c
+var	c:@VNBodyLandmarkKeyRightWrist	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	6ca69f4afae07f35
+var	c:@VNBodyLandmarkKeyLeftHip	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	e9ce7a2e9f8b4ff5
+var	c:@VNBodyLandmarkKeyRightHip	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	28189af66df311e6
+var	c:@VNBodyLandmarkKeyRoot	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	583862cb2e5f4104
+var	c:@VNBodyLandmarkKeyLeftKnee	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	e428f51bdb4ef632
+var	c:@VNBodyLandmarkKeyRightKnee	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	eb6b7ed8ed763f56
+var	c:@VNBodyLandmarkKeyLeftAnkle	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	07b626757769a9c5
+var	c:@VNBodyLandmarkKeyRightAnkle	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	3f74a8d449fe16f6
+var	c:@VNBodyLandmarkRegionKeyFace	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	0dbe09afa3fbd2b1
+var	c:@VNBodyLandmarkRegionKeyTorso	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	9774e5a0d2855d81
+var	c:@VNBodyLandmarkRegionKeyLeftArm	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	05416dafa5d58b6c
+var	c:@VNBodyLandmarkRegionKeyRightArm	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	030136c378283334
+var	c:@VNBodyLandmarkRegionKeyLeftLeg	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	2b0e67331b06aa59
+var	c:@VNBodyLandmarkRegionKeyRightLeg	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	80efa1f5f3e73686
+typedef	c:@T@VNHumanBodyPoseObservationJointName	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	7c93e05ea2d44b89
+var	c:@VNHumanBodyPoseObservationJointNameNose	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	ea102656917898cd
+var	c:@VNHumanBodyPoseObservationJointNameLeftEye	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	c1d8e14b8a36bb3f
+var	c:@VNHumanBodyPoseObservationJointNameRightEye	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	542a36e183032251
+var	c:@VNHumanBodyPoseObservationJointNameLeftEar	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	33863219de719ca5
+var	c:@VNHumanBodyPoseObservationJointNameRightEar	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	c064d36b434a9550
+var	c:@VNHumanBodyPoseObservationJointNameLeftShoulder	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	1653f881e678326c
+var	c:@VNHumanBodyPoseObservationJointNameRightShoulder	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	f11a4079574acd54
+var	c:@VNHumanBodyPoseObservationJointNameNeck	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	dffa5f0d4debd6ee
+var	c:@VNHumanBodyPoseObservationJointNameLeftElbow	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	c90f15dab60edb24
+var	c:@VNHumanBodyPoseObservationJointNameRightElbow	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	a49c6d618f5b6d25
+var	c:@VNHumanBodyPoseObservationJointNameLeftWrist	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	99335035edb80181
+var	c:@VNHumanBodyPoseObservationJointNameRightWrist	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	924b233f4e6b63ff
+var	c:@VNHumanBodyPoseObservationJointNameLeftHip	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	3c410ce8c2714c14
+var	c:@VNHumanBodyPoseObservationJointNameRightHip	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	a099b75fd3490446
+var	c:@VNHumanBodyPoseObservationJointNameRoot	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	81a8e4c48efb60b3
+var	c:@VNHumanBodyPoseObservationJointNameLeftKnee	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	8faedcd0ba80f4dd
+var	c:@VNHumanBodyPoseObservationJointNameRightKnee	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	31706effd146bef8
+var	c:@VNHumanBodyPoseObservationJointNameLeftAnkle	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	58b591c5dc8147c0
+var	c:@VNHumanBodyPoseObservationJointNameRightAnkle	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	54c8325c15c3a35c
+typedef	c:@T@VNHumanBodyPoseObservationJointsGroupName	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	d631bb7071ff81cf
+var	c:@VNHumanBodyPoseObservationJointsGroupNameFace	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	8a7f1040c29f128c
+var	c:@VNHumanBodyPoseObservationJointsGroupNameTorso	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	53d53e5658460b08
+var	c:@VNHumanBodyPoseObservationJointsGroupNameLeftArm	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	a493230e9acb79e7
+var	c:@VNHumanBodyPoseObservationJointsGroupNameRightArm	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	3a7b394c11f1c425
+var	c:@VNHumanBodyPoseObservationJointsGroupNameLeftLeg	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	9e0bdae495920c73
+var	c:@VNHumanBodyPoseObservationJointsGroupNameRightLeg	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	b804b01c557d3686
+var	c:@VNHumanBodyPoseObservationJointsGroupNameAll	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	b882de7e736b57f2
+interface	c:objc(cs)VNHumanBodyPoseObservation	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	6ef042472a427b82
+super	-	VNHumanBodyPoseObservation	VNRecognizedPointsObservation		-	-	5b846e2661d2300d
+property	c:objc(cs)VNHumanBodyPoseObservation(py)availableJointNames	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	412d3ab53fe7e95b
+property	c:objc(cs)VNHumanBodyPoseObservation(py)availableJointsGroupNames	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	cfacc34de9baf8cd
+method	c:objc(cs)VNHumanBodyPoseObservation(im)recognizedPointForJointName:error:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	0b2ef81f55587e6a
+method	c:objc(cs)VNHumanBodyPoseObservation(im)recognizedPointsForJointsGroupName:error:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	732fc3141f8de2ae
+interface	c:objc(cs)VNDetectHumanBodyPoseRequest	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	deprecated: Use supportedJointNamesAndReturnError instead	5bbce3edb046feca
+super	-	VNDetectHumanBodyPoseRequest	VNImageBasedRequest		-	-	0c03ab0529698373
+method	c:objc(cs)VNDetectHumanBodyPoseRequest(cm)supportedJointNamesForRevision:error:	-			ios=14.0/17.0/-/0,macos=11.0/14.0/-/0,tvos=14.0/17.0/-/0	deprecated: Use supportedJointNamesAndReturnError instead	409e73a42d5c1e32
+method	c:objc(cs)VNDetectHumanBodyPoseRequest(im)supportedJointNamesAndReturnError:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	9d8c8c7c9f19b28b
+method	c:objc(cs)VNDetectHumanBodyPoseRequest(cm)supportedJointsGroupNamesForRevision:error:	-			ios=14.0/17.0/-/0,macos=11.0/14.0/-/0,tvos=14.0/17.0/-/0	deprecated: Use supportedJointsGroupNamesAndReturnError instead	00fbad49efec325a
+method	c:objc(cs)VNDetectHumanBodyPoseRequest(im)supportedJointsGroupNamesAndReturnError:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	e7e3cc8534b7a092
+property	c:objc(cs)VNDetectHumanBodyPoseRequest(py)results	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	71bec25787a6bdca
+interface	c:objc(cs)VNDetectContoursRequest	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	deprecated: Use -detectsDarkOnLight instead	7a63fb5acf60003e
+super	-	VNDetectContoursRequest	VNImageBasedRequest		-	-	52a919aba6c04b8f
+property	c:objc(cs)VNDetectContoursRequest(py)contrastAdjustment	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	0a81cd9ce664d67c
+property	c:objc(cs)VNDetectContoursRequest(py)contrastPivot	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	0f84c97254d05e43
+property	c:objc(cs)VNDetectContoursRequest(py)detectsDarkOnLight	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	d76b2510f98d70c8
+property	c:objc(cs)VNDetectContoursRequest(py)detectDarkOnLight	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	bb781b54e96e503f
+property	c:objc(cs)VNDetectContoursRequest(py)maximumImageDimension	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	f1108acdf5b38b94
+property	c:objc(cs)VNDetectContoursRequest(py)results	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	42e83a1314c8cb6e
+interface	c:objc(cs)VNGeometryUtils	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	c5a012af3ac3e90f
+super	-	VNGeometryUtils	NSObject		-	-	e981d22853f64d72
+method	c:objc(cs)VNGeometryUtils(cm)boundingCircleForContour:error:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	c8204fc97df04243
+method	c:objc(cs)VNGeometryUtils(cm)boundingCircleForPoints:error:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	304bf4069ba62522
+method	c:objc(cs)VNGeometryUtils(cm)boundingCircleForSIMDPoints:pointCount:error:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	c72c09e7aadfdcc8
+method	c:objc(cs)VNGeometryUtils(cm)calculateArea:forContour:orientedArea:error:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	40f9eeb94d55ee81
+method	c:objc(cs)VNGeometryUtils(cm)calculatePerimeter:forContour:error:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	a84ace9ae941b3b5
+interface	c:objc(cs)VNStatefulRequest	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	ff8ea87c8b3fed72
+super	-	VNStatefulRequest	VNImageBasedRequest		-	-	8361116f101337d3
+method	c:objc(cs)VNStatefulRequest(cm)new	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	413bb28e475dd7dc
+method	c:objc(cs)VNStatefulRequest(im)init	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	eb44d1b8cd2ea973
+method	c:objc(cs)VNStatefulRequest(im)initWithCompletionHandler:	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	62efb017498a2100
+method	c:objc(cs)VNStatefulRequest(im)initWithFrameAnalysisSpacing:completionHandler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	a76f031ace5baacd
+property	c:objc(cs)VNStatefulRequest(py)minimumLatencyFrameCount	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	2a30ce687d006b50
+property	c:objc(cs)VNStatefulRequest(py)frameAnalysisSpacing	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	50b18fd9a3edaf85
+interface	c:objc(cs)VNDetectTrajectoriesRequest	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	deprecated: Use -objectMinimumNormalizedRadius instead	2ccbe4d3d024a057
+super	-	VNDetectTrajectoriesRequest	VNStatefulRequest		-	-	0811550ff973b935
+method	c:objc(cs)VNDetectTrajectoriesRequest(im)initWithFrameAnalysisSpacing:completionHandler:	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	330c94b2c94bc619
+method	c:objc(cs)VNDetectTrajectoriesRequest(im)initWithFrameAnalysisSpacing:trajectoryLength:completionHandler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	eb3ba1439c573f07
+property	c:objc(cs)VNDetectTrajectoriesRequest(py)trajectoryLength	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	d941e8576bdb2d03
+property	c:objc(cs)VNDetectTrajectoriesRequest(py)objectMinimumNormalizedRadius	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	a1ecf87d315f4168
+property	c:objc(cs)VNDetectTrajectoriesRequest(py)minimumObjectSize	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	c80b15a578939c77
+property	c:objc(cs)VNDetectTrajectoriesRequest(py)objectMaximumNormalizedRadius	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	3faf87e6e46da208
+property	c:objc(cs)VNDetectTrajectoriesRequest(py)maximumObjectSize	-			ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	-	0a5cf6505e66eae4
+property	c:objc(cs)VNDetectTrajectoriesRequest(py)targetFrameTime	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	4ec3cda3423999be
+property	c:objc(cs)VNDetectTrajectoriesRequest(py)results	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	e465dbca92ab22c7
+typedef	c:@T@VNGeneratePersonSegmentationRequestQualityLevel	-			-	-	f26eb2b536d7fd59
+enum	c:@E@VNGeneratePersonSegmentationRequestQualityLevel	-			-	-	59075352b6aefce8
+enumconst	c:@E@VNGeneratePersonSegmentationRequestQualityLevel@VNGeneratePersonSegmentationRequestQualityLevelAccurate	VNGeneratePersonSegmentationRequestQualityLevel			-	-	2892b17bb5c5ba89
+enumconst	c:@E@VNGeneratePersonSegmentationRequestQualityLevel@VNGeneratePersonSegmentationRequestQualityLevelBalanced	VNGeneratePersonSegmentationRequestQualityLevel			-	-	4d63ad660944891b
+enumconst	c:@E@VNGeneratePersonSegmentationRequestQualityLevel@VNGeneratePersonSegmentationRequestQualityLevelFast	VNGeneratePersonSegmentationRequestQualityLevel			-	-	9a5a949b426c0f5b
+interface	c:objc(cs)VNGeneratePersonSegmentationRequest	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	8bf56bae436b3a04
+super	-	VNGeneratePersonSegmentationRequest	VNStatefulRequest		-	-	f61af163d757fa7d
+method	c:objc(cs)VNGeneratePersonSegmentationRequest(cm)new	-			swift=-/-/-/1	-	11372c72898c1438
+method	c:objc(cs)VNGeneratePersonSegmentationRequest(im)init	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	2ef2af865d87d029
+method	c:objc(cs)VNGeneratePersonSegmentationRequest(im)initWithCompletionHandler:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	635cd201e3390abf
+method	c:objc(cs)VNGeneratePersonSegmentationRequest(im)initWithFrameAnalysisSpacing:completionHandler:	-			*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	3d4d7167d983b551
+property	c:objc(cs)VNGeneratePersonSegmentationRequest(py)qualityLevel	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	1623aae4eff83a58
+method	c:objc(cs)VNGeneratePersonSegmentationRequest(im)supportedOutputPixelFormatsAndReturnError:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	d98a4de18400d879
+property	c:objc(cs)VNGeneratePersonSegmentationRequest(py)outputPixelFormat	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	36a0446ff8cde673
+property	c:objc(cs)VNGeneratePersonSegmentationRequest(py)results	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	0101b92e4ccdcdb7
+interface	c:objc(cs)VNDetectDocumentSegmentationRequest	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	76b28d61e8f0506f
+super	-	VNDetectDocumentSegmentationRequest	VNImageBasedRequest		-	-	5f848cf76f340dca
+property	c:objc(cs)VNDetectDocumentSegmentationRequest(py)results	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	938942901b5cf19d
+interface	c:objc(cs)VNGenerateForegroundInstanceMaskRequest	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	1b83cf1c1d460d51
+super	-	VNGenerateForegroundInstanceMaskRequest	VNImageBasedRequest		-	-	30003b490d40b958
+property	c:objc(cs)VNGenerateForegroundInstanceMaskRequest(py)results	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	29f855cdd10a874b
+interface	c:objc(cs)VNGeneratePersonInstanceMaskRequest	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	b59a2a076aa310c1
+super	-	VNGeneratePersonInstanceMaskRequest	VNImageBasedRequest		-	-	88a526ee6815c119
+property	c:objc(cs)VNGeneratePersonInstanceMaskRequest(py)results	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	17a95ca1960adf3b
+interface	c:objc(cs)VNTrackTranslationalImageRegistrationRequest	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	f94a13b203fcd833
+super	-	VNTrackTranslationalImageRegistrationRequest	VNStatefulRequest		-	-	e69549f3888fd1d0
+method	c:objc(cs)VNTrackTranslationalImageRegistrationRequest(im)init	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	e828f7d0eb99c9cf
+method	c:objc(cs)VNTrackTranslationalImageRegistrationRequest(im)initWithCompletionHandler:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	7117b241157552d2
+property	c:objc(cs)VNTrackTranslationalImageRegistrationRequest(py)results	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	8c22fef0f678f4ae
+interface	c:objc(cs)VNTrackHomographicImageRegistrationRequest	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	dc4965fed0e8f061
+super	-	VNTrackHomographicImageRegistrationRequest	VNStatefulRequest		-	-	4e320be30ecc7b93
+method	c:objc(cs)VNTrackHomographicImageRegistrationRequest(im)init	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	6caca0283138c705
+method	c:objc(cs)VNTrackHomographicImageRegistrationRequest(im)initWithCompletionHandler:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	2d77aa440262b590
+property	c:objc(cs)VNTrackHomographicImageRegistrationRequest(py)results	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	ec89608686206bd8
+typedef	c:@T@VNTrackOpticalFlowRequestComputationAccuracy	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	55ba1d4761220c03
+enum	c:@E@VNTrackOpticalFlowRequestComputationAccuracy	-			-	-	183f71d2537d4251
+enumconst	c:@E@VNTrackOpticalFlowRequestComputationAccuracy@VNTrackOpticalFlowRequestComputationAccuracyLow	VNTrackOpticalFlowRequestComputationAccuracy			-	-	6cc2b83a45d7fc95
+enumconst	c:@E@VNTrackOpticalFlowRequestComputationAccuracy@VNTrackOpticalFlowRequestComputationAccuracyMedium	VNTrackOpticalFlowRequestComputationAccuracy			-	-	9200d86bec01f29c
+enumconst	c:@E@VNTrackOpticalFlowRequestComputationAccuracy@VNTrackOpticalFlowRequestComputationAccuracyHigh	VNTrackOpticalFlowRequestComputationAccuracy			-	-	af56bc2e5ab1fd2c
+enumconst	c:@E@VNTrackOpticalFlowRequestComputationAccuracy@VNTrackOpticalFlowRequestComputationAccuracyVeryHigh	VNTrackOpticalFlowRequestComputationAccuracy			-	-	d42b2d3aa2188332
+interface	c:objc(cs)VNTrackOpticalFlowRequest	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	98813ecdb6796806
+super	-	VNTrackOpticalFlowRequest	VNStatefulRequest		-	-	95f4c5268fa82b73
+method	c:objc(cs)VNTrackOpticalFlowRequest(im)init	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	b5adb6b03a78bb1d
+method	c:objc(cs)VNTrackOpticalFlowRequest(im)initWithCompletionHandler:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	8991c92a32cb3ac4
+property	c:objc(cs)VNTrackOpticalFlowRequest(py)computationAccuracy	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	e674563ccc8f9176
+property	c:objc(cs)VNTrackOpticalFlowRequest(py)outputPixelFormat	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	cd2a65e5175c5ebc
+property	c:objc(cs)VNTrackOpticalFlowRequest(py)keepNetworkOutput	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	0fa3bf320356b7aa
+property	c:objc(cs)VNTrackOpticalFlowRequest(py)results	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	90d64481236bcc7d
+interface	c:objc(cs)VNDetectAnimalBodyPoseRequest	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	48f21c72c776f9d4
+super	-	VNDetectAnimalBodyPoseRequest	VNImageBasedRequest		-	-	7fdedbbae5044de7
+method	c:objc(cs)VNDetectAnimalBodyPoseRequest(im)supportedJointNamesAndReturnError:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	e57e4a85cc015893
+method	c:objc(cs)VNDetectAnimalBodyPoseRequest(im)supportedJointsGroupNamesAndReturnError:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	b40f25939727755e
+property	c:objc(cs)VNDetectAnimalBodyPoseRequest(py)results	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	0d977f67424d2203
+interface	c:objc(cs)VNDetectHumanBodyPose3DRequest	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	abd65ed2fdef6fdd
+super	-	VNDetectHumanBodyPose3DRequest	VNStatefulRequest		-	-	09b8c7dc15d3a9aa
+method	c:objc(cs)VNDetectHumanBodyPose3DRequest(im)init	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	c93408dc04e8dc57
+method	c:objc(cs)VNDetectHumanBodyPose3DRequest(im)initWithCompletionHandler:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	3e39239ad39522cd
+method	c:objc(cs)VNDetectHumanBodyPose3DRequest(im)supportedJointNamesAndReturnError:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	d215cf0e552968d6
+method	c:objc(cs)VNDetectHumanBodyPose3DRequest(im)supportedJointsGroupNamesAndReturnError:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	046e75aaa19df76e
+property	c:objc(cs)VNDetectHumanBodyPose3DRequest(py)results	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	87af7169baad1ef2
+interface	c:objc(cs)VNRecognizedPoint3D	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	24cb43b61f2ae549
+super	-	VNRecognizedPoint3D	VNPoint3D		-	-	31031c141b93dc05
+method	c:objc(cs)VNRecognizedPoint3D(cm)new	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	e31d9dcba64d3fe9
+method	c:objc(cs)VNRecognizedPoint3D(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	b32965037c896ac6
+property	c:objc(cs)VNRecognizedPoint3D(py)identifier	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	3f952a956720c26b
+interface	c:objc(cs)VNHumanBodyRecognizedPoint3D	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	9da0645890bdf714
+super	-	VNHumanBodyRecognizedPoint3D	VNRecognizedPoint3D		-	-	27ec487b37967d3d
+property	c:objc(cs)VNHumanBodyRecognizedPoint3D(py)localPosition	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	dc01bab2cb25931f
+property	c:objc(cs)VNHumanBodyRecognizedPoint3D(py)parentJoint	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	fefd17c2218c614c
+method	c:objc(cs)VNHumanBodyRecognizedPoint3D(cm)new	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	6ebe15ebff9c51b7
+method	c:objc(cs)VNHumanBodyRecognizedPoint3D(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	2f652926e3d92307
+interface	c:objc(cs)VNCalculateImageAestheticsScoresRequest	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	36ac1cafc2f033ab
+super	-	VNCalculateImageAestheticsScoresRequest	VNImageBasedRequest		-	-	11a67170aed87757
+property	c:objc(cs)VNCalculateImageAestheticsScoresRequest(py)results	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	443b8a9c91d5e86a
+var	c:@VNVisionVersionNumber	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	c07b6b4dad0faa81

@@ -1,0 +1,12 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+interface	c:objc(cs)SFCertificatePresentation	-			ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	ecd6ec0da87057ff
+super	-	SFCertificatePresentation	NSObject		-	-	189d3d599b43f44c
+method	c:objc(cs)SFCertificatePresentation(im)initWithTrust:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	fe8a674448f0e661
+method	c:objc(cs)SFCertificatePresentation(im)init	-			*unavailable ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	f64fe02ec903a2ea
+method	c:objc(cs)SFCertificatePresentation(cm)new	-			*unavailable ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	b396baa5a9a254d9
+method	c:objc(cs)SFCertificatePresentation(im)presentSheetInViewController:dismissHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	a3edb94636e7d232
+method	c:objc(cs)SFCertificatePresentation(im)dismissSheet	-			ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	dfb5aa65b27e36c0
+property	c:objc(cs)SFCertificatePresentation(py)trust	-			ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	f77d5de18d4b6912
+property	c:objc(cs)SFCertificatePresentation(py)title	-			ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	14f5ffe186884010
+property	c:objc(cs)SFCertificatePresentation(py)message	-			ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	d8d592e1b686fbaa
+property	c:objc(cs)SFCertificatePresentation(py)helpURL	-			ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	3ab2482d9b6a5147

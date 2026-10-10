@@ -1,0 +1,141 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+typedef	c:@T@SWHighlightCenterErrorCode	-			-	-	fc2669aa8dc0a9ae
+enum	c:@E@SWHighlightCenterErrorCode	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	a76d53ae2fda6b88
+enumconst	c:@E@SWHighlightCenterErrorCode@SWHighlightCenterErrorCodeNoError	SWHighlightCenterErrorCode			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	7be6a3783c0c89fa
+enumconst	c:@E@SWHighlightCenterErrorCode@SWHighlightCenterErrorCodeInternalError	SWHighlightCenterErrorCode			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	c5a2d4a52402a665
+enumconst	c:@E@SWHighlightCenterErrorCode@SWHighlightCenterErrorCodeInvalidURL	SWHighlightCenterErrorCode			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	00736cd1d66fb456
+enumconst	c:@E@SWHighlightCenterErrorCode@SWHighlightCenterErrorCodeAccessDenied	SWHighlightCenterErrorCode			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	51b6d40f4be618b0
+interface	c:objc(cs)SWHighlight	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	cb10ccd8ddb655e5
+super	-	SWHighlight	NSObject		-	-	e29a5002efaee25e
+conforms	-	SWHighlight	NSSecureCoding		-	-	ec7152093f3094a7
+conforms	-	SWHighlight	NSCopying		-	-	bef865f7d33c3712
+property	c:objc(cs)SWHighlight(py)identifier	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	d0d6a357722b9cd8
+property	c:objc(cs)SWHighlight(py)URL	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	56d5047afbf78434
+method	c:objc(cs)SWHighlight(im)init	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	6b1f1b00751a03b2
+method	c:objc(cs)SWHighlight(cm)new	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	d8b99af733e5cf4f
+interface	c:objc(cs)SWCollaborationHighlight	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	295c9e2ac9a77d72
+super	-	SWCollaborationHighlight	SWHighlight		-	-	d2d213f4d7b9c12f
+conforms	-	SWCollaborationHighlight	NSSecureCoding		-	-	71d97002608b9421
+conforms	-	SWCollaborationHighlight	NSCopying		-	-	a3982f2b0abb4c4e
+property	c:objc(cs)SWCollaborationHighlight(py)collaborationIdentifier	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	1c163b16f8b56d05
+property	c:objc(cs)SWCollaborationHighlight(py)title	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	4a5f7f0263149eb0
+property	c:objc(cs)SWCollaborationHighlight(py)creationDate	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	b48fafa76911b911
+property	c:objc(cs)SWCollaborationHighlight(py)contentType	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	f5a25dc2fff4466f
+protocol	c:objc(pl)SWHighlightEvent	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	3e980587d9efbe60
+conforms	-	SWHighlightEvent	NSObject		-	-	cb136bb35cfe9688
+conforms	-	SWHighlightEvent	NSSecureCoding		-	-	754a3b29273f488d
+conforms	-	SWHighlightEvent	NSCopying		-	-	69e9854c91152114
+property	c:objc(pl)SWHighlightEvent(py)highlightURL	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	701af605aba379a7
+protocol	c:objc(pl)SWHighlightCenterDelegate	-			-	-	52359a8468002188
+conforms	-	SWHighlightCenterDelegate	NSObject		-	-	d00d2b46319ba01e
+method	c:objc(pl)SWHighlightCenterDelegate(im)highlightCenterHighlightsDidChange:	-			-	-	a523f01a9b099a89
+interface	c:objc(cs)SWHighlightCenter	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	6f92e6dfa240b9a9
+super	-	SWHighlightCenter	NSObject		-	-	9a1222181ed3d344
+property	c:objc(cs)SWHighlightCenter(py)delegate	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	da6e4f77e40df80a
+property	c:objc(cs)SWHighlightCenter(py)highlights	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	a9b9cce348817337
+property	c:objc(cs)SWHighlightCenter(cpy)highlightCollectionTitle	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	cf6bfdccbc7ac95d
+property	c:objc(cs)SWHighlightCenter(cpy)systemCollaborationSupportAvailable	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	933fa6ceb12c6421
+method	c:objc(cs)SWHighlightCenter(im)getHighlightForURL:completionHandler:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	2aeed69d6d34cbcb
+method	c:objc(cs)SWHighlightCenter(im)collaborationHighlightForIdentifier:error:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	2b6066167771a707
+method	c:objc(cs)SWHighlightCenter(im)getCollaborationHighlightForURL:completionHandler:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	85504656a40d5f8d
+method	c:objc(cs)SWHighlightCenter(im)postNoticeForHighlightEvent:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	461f86f4eeb00893
+method	c:objc(cs)SWHighlightCenter(im)clearNoticesForHighlight:	-			ios=16.1/-/-/0,macos=13.0/-/-/0	-	88c436bbb90b558d
+method	c:objc(cs)SWHighlightCenter(im)getSignedIdentityProofForCollaborationHighlight:usingData:completionHandler:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	d4301ad4162e7854
+typedef	c:@T@SWHighlightChangeEventTrigger	-			-	-	40a9030b5746238f
+enum	c:@E@SWHighlightChangeEventTrigger	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	a1514fe4a1f846d2
+enumconst	c:@E@SWHighlightChangeEventTrigger@SWHighlightChangeEventTriggerEdit	SWHighlightChangeEventTrigger			ios=16.0/-/-/0,macos=13.0/-/-/0	-	6f858752f3899554
+enumconst	c:@E@SWHighlightChangeEventTrigger@SWHighlightChangeEventTriggerComment	SWHighlightChangeEventTrigger			ios=16.0/-/-/0,macos=13.0/-/-/0	-	c02446c5de6d0e9b
+interface	c:objc(cs)SWHighlightChangeEvent	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	be10b2b6133bb2e3
+super	-	SWHighlightChangeEvent	NSObject		-	-	06c4915aec2858c1
+conforms	-	SWHighlightChangeEvent	SWHighlightEvent		-	-	862c43c69b2f64fe
+property	c:objc(cs)SWHighlightChangeEvent(py)changeEventTrigger	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	dad578d2318b5205
+method	c:objc(cs)SWHighlightChangeEvent(im)initWithHighlight:trigger:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	b5d989fd8766d8b1
+method	c:objc(cs)SWHighlightChangeEvent(im)init	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	3f769f8ba1936af9
+method	c:objc(cs)SWHighlightChangeEvent(cm)new	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	11d673cef3de8e0c
+property	c:objc(cs)SWHighlightChangeEvent(py)highlightURL	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	c69f47e0e22e3dd6
+typedef	c:@T@SWHighlightMembershipEventTrigger	-			-	-	e2d304a25aff6e6a
+enum	c:@E@SWHighlightMembershipEventTrigger	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	b80c90ebe12f53f6
+enumconst	c:@E@SWHighlightMembershipEventTrigger@SWHighlightMembershipEventTriggerAddedCollaborator	SWHighlightMembershipEventTrigger			ios=16.0/-/-/0,macos=13.0/-/-/0	-	697f73ce835bd01b
+enumconst	c:@E@SWHighlightMembershipEventTrigger@SWHighlightMembershipEventTriggerRemovedCollaborator	SWHighlightMembershipEventTrigger			ios=16.0/-/-/0,macos=13.0/-/-/0	-	66ec5b57101041ee
+interface	c:objc(cs)SWHighlightMembershipEvent	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	065f440e37ff2b9e
+super	-	SWHighlightMembershipEvent	NSObject		-	-	46ce4e03a2583c4a
+conforms	-	SWHighlightMembershipEvent	SWHighlightEvent		-	-	2f093012c1849e96
+property	c:objc(cs)SWHighlightMembershipEvent(py)membershipEventTrigger	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	ae8e2ba6c6008381
+method	c:objc(cs)SWHighlightMembershipEvent(im)initWithHighlight:trigger:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	4a4a8342ebca1555
+method	c:objc(cs)SWHighlightMembershipEvent(im)init	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	e162ffa85a9abc27
+method	c:objc(cs)SWHighlightMembershipEvent(cm)new	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	43d2dc467d0ff366
+interface	c:objc(cs)SWHighlightMentionEvent	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	4769e2eae89d6dc9
+super	-	SWHighlightMentionEvent	NSObject		-	-	1acf11753ae2990c
+conforms	-	SWHighlightMentionEvent	SWHighlightEvent		-	-	933303cf3c54f801
+property	c:objc(cs)SWHighlightMentionEvent(py)mentionedPersonHandle	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	d7bd7ce4b1e58bca
+method	c:objc(cs)SWHighlightMentionEvent(im)initWithHighlight:mentionedPersonCloudKitShareHandle:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	9b5f15faa66afaf9
+method	c:objc(cs)SWHighlightMentionEvent(im)initWithHighlight:mentionedPersonIdentity:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	c354d8a935ee4766
+method	c:objc(cs)SWHighlightMentionEvent(im)init	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	b2666fec00ce16c5
+method	c:objc(cs)SWHighlightMentionEvent(cm)new	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	ddb9c61e5aad06db
+typedef	c:@T@SWHighlightPersistenceEventTrigger	-			-	-	b3df05337f15c766
+enum	c:@E@SWHighlightPersistenceEventTrigger	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	c1afe621c8eacf79
+enumconst	c:@E@SWHighlightPersistenceEventTrigger@SWHighlightPersistenceEventTriggerCreated	SWHighlightPersistenceEventTrigger			ios=16.0/-/-/0,macos=13.0/-/-/0	-	3259f822adeabac2
+enumconst	c:@E@SWHighlightPersistenceEventTrigger@SWHighlightPersistenceEventTriggerDeleted	SWHighlightPersistenceEventTrigger			ios=16.0/-/-/0,macos=13.0/-/-/0	-	41744da8aafdbb0f
+enumconst	c:@E@SWHighlightPersistenceEventTrigger@SWHighlightPersistenceEventTriggerRenamed	SWHighlightPersistenceEventTrigger			ios=16.0/-/-/0,macos=13.0/-/-/0	-	b288f7ad79537661
+enumconst	c:@E@SWHighlightPersistenceEventTrigger@SWHighlightPersistenceEventTriggerMoved	SWHighlightPersistenceEventTrigger			ios=16.0/-/-/0,macos=13.0/-/-/0	-	bb127e6151105f9c
+interface	c:objc(cs)SWHighlightPersistenceEvent	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	9063614af19a24c1
+super	-	SWHighlightPersistenceEvent	NSObject		-	-	786ce7a59c8f6565
+conforms	-	SWHighlightPersistenceEvent	SWHighlightEvent		-	-	81abd7931b4ad9d8
+property	c:objc(cs)SWHighlightPersistenceEvent(py)persistenceEventTrigger	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	46329333e0b74ed4
+method	c:objc(cs)SWHighlightPersistenceEvent(im)initWithHighlight:trigger:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	6755dc57dbcb3d97
+method	c:objc(cs)SWHighlightPersistenceEvent(im)init	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	521b8b846b57056b
+method	c:objc(cs)SWHighlightPersistenceEvent(cm)new	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	5a6c3cf38c070425
+typedef	c:@T@SWAttributionViewDisplayContext	-			-	-	b4bf1fe021b39d37
+enum	c:@E@SWAttributionViewDisplayContext	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	13bb47d798a033b4
+enumconst	c:@E@SWAttributionViewDisplayContext@SWAttributionViewDisplayContextSummary	SWAttributionViewDisplayContext			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	5862abf1dc13ad7c
+enumconst	c:@E@SWAttributionViewDisplayContext@SWAttributionViewDisplayContextDetail	SWAttributionViewDisplayContext			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	418260e1ad5964ba
+typedef	c:@T@SWAttributionViewHorizontalAlignment	-			-	-	7df646f2520091fb
+enum	c:@E@SWAttributionViewHorizontalAlignment	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	2ae1393a9044d1a9
+enumconst	c:@E@SWAttributionViewHorizontalAlignment@SWAttributionViewHorizontalAlignmentDefault	SWAttributionViewHorizontalAlignment			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	66603dc48941f6b2
+enumconst	c:@E@SWAttributionViewHorizontalAlignment@SWAttributionViewHorizontalAlignmentLeading	SWAttributionViewHorizontalAlignment			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	2a901c306ca33f36
+enumconst	c:@E@SWAttributionViewHorizontalAlignment@SWAttributionViewHorizontalAlignmentCenter	SWAttributionViewHorizontalAlignment			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	be682adffce92502
+enumconst	c:@E@SWAttributionViewHorizontalAlignment@SWAttributionViewHorizontalAlignmentTrailing	SWAttributionViewHorizontalAlignment			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	e1b783ab9bb9fe48
+typedef	c:@T@SWAttributionViewBackgroundStyle	-			-	-	726895603a95abb7
+enum	c:@E@SWAttributionViewBackgroundStyle	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	a11d761a5bad470a
+enumconst	c:@E@SWAttributionViewBackgroundStyle@SWAttributionViewBackgroundStyleDefault	SWAttributionViewBackgroundStyle			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	2a7e8d5ef28feb6c
+enumconst	c:@E@SWAttributionViewBackgroundStyle@SWAttributionViewBackgroundStyleColor	SWAttributionViewBackgroundStyle			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	216f5ff8dd4d6c7c
+enumconst	c:@E@SWAttributionViewBackgroundStyle@SWAttributionViewBackgroundStyleMaterial	SWAttributionViewBackgroundStyle			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	60a23df26ebdb40f
+interface	c:objc(cs)SWAttributionView	-			ios=16.0/-/-/0,tvos=16.0/-/-/0	-	5cfd839d379c8aca
+super	-	SWAttributionView	UIView		-	-	08b3fff7f195a3ab
+property	c:objc(cs)SWAttributionView(py)highlight	-			ios=16.0/-/-/0,tvos=16.0/-/-/0	-	de51643629c80ce4
+property	c:objc(cs)SWAttributionView(py)displayContext	-			ios=16.0/-/-/0,tvos=16.0/-/-/0	-	f9cb2505ef25755e
+property	c:objc(cs)SWAttributionView(py)horizontalAlignment	-			ios=16.0/-/-/0,tvos=16.0/-/-/0	-	abed25b6868bbe87
+property	c:objc(cs)SWAttributionView(py)backgroundStyle	-			ios=16.0/-/-/0,tvos=16.0/-/-/0	-	70a19d477584ac29
+property	c:objc(cs)SWAttributionView(py)preferredMaxLayoutWidth	-			ios=16.0/-/-/0,tvos=16.0/-/-/0	-	6e76dd522437d25e
+property	c:objc(cs)SWAttributionView(py)highlightMenu	-			ios=16.0/-/-/0,tvos=16.0/-/-/0	-	aacd8573c4114541
+property	c:objc(cs)SWAttributionView(py)menuTitleForHideAction	-			ios=16.0/-/-/0,tvos=16.0/-/-/0	-	bc5c3746fe2676df
+property	c:objc(cs)SWAttributionView(py)supplementalMenu	-			ios=16.0/-/-/0,tvos=16.0/-/-/0	-	5fc5d80b71af4ace
+property	c:objc(cs)SWAttributionView(py)enablesMarquee	-			ios=-/-/-/1,macos=-/-/-/1	-	a1c5ccc64c0c1e56
+protocol	c:objc(pl)SWCollaborationViewDelegate	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	09ab41717b8e8c53
+conforms	-	SWCollaborationViewDelegate	NSObject		-	-	617205dc449ea892
+method	c:objc(pl)SWCollaborationViewDelegate(im)collaborationViewShouldPresentPopover:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	cd567575ba2d4bd8
+method	c:objc(pl)SWCollaborationViewDelegate(im)collaborationViewWillPresentPopover:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	ef955fa0288fbce4
+method	c:objc(pl)SWCollaborationViewDelegate(im)collaborationViewDidDismissPopover:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	51732a58dcd0c442
+interface	c:objc(cs)SWCollaborationView	-			ios=16.0/-/-/0	-	aa9e2259dbb202d0
+super	-	SWCollaborationView	UIView		-	-	615f253ef5832232
+property	c:objc(cs)SWCollaborationView(py)cloudSharingDelegate	-			ios=16.0/-/-/0	-	bebf0f384ed662e1
+method	c:objc(cs)SWCollaborationView(im)setContentView:	-			ios=16.0/-/-/0	-	bcda4f4b9c358966
+method	c:objc(cs)SWCollaborationView(im)initWithItemProvider:	-			ios=16.0/-/-/0	-	2ce56efc84189976
+property	c:objc(cs)SWCollaborationView(py)activeParticipantCount	-			ios=16.0/-/-/0	-	bdf41b97b3cebc83
+property	c:objc(cs)SWCollaborationView(py)delegate	-			ios=16.0/-/-/0	-	a810eebb95f8a85c
+property	c:objc(cs)SWCollaborationView(py)headerTitle	-			ios=16.0/-/-/0	-	ebc6cc17beb01081
+property	c:objc(cs)SWCollaborationView(py)headerSubtitle	-			ios=16.0/-/-/0	-	f4e764d02cc5306b
+property	c:objc(cs)SWCollaborationView(py)headerImage	-			ios=16.0/-/-/0	-	12ad5213cee6e53c
+property	c:objc(cs)SWCollaborationView(py)cloudSharingControllerDelegate	-			ios=16.0/-/-/0	-	75e41d581125169c
+method	c:objc(cs)SWCollaborationView(im)dismissPopover:	-			ios=16.0/-/-/0	-	95ee8e8ed70590e1
+property	c:objc(cs)SWCollaborationView(py)manageButtonTitle	-			ios=16.0/-/-/0	-	91b67ea686b16362
+method	c:objc(cs)SWCollaborationView(im)setShowManageButton:	-			ios=16.0/-/-/0	-	081ec3f5f4d48c39
+category	c:objc(cy)SWCollaborationMetadata@NSItemProvider	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	78e462bc885948d9
+conforms	-	SWCollaborationMetadata	NSItemProviderReading		-	-	033d0cfd350827bd
+conforms	-	SWCollaborationMetadata	NSItemProviderWriting		-	-	1e9f97ff70f3bc69
+var	c:@SWCollaborationMetadataTypeIdentifier	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	3313c7a33cec666b
+interface	c:objc(cs)SWRemoveParticipantAlertController	-			ios=16.0/-/-/0	-	00785891c74cfecc
+super	-	SWRemoveParticipantAlertController	UIViewController		-	-	620c5dfbd2fe2983
+method	c:objc(cs)SWRemoveParticipantAlertController(cm)alertControllerWithParticipant:highlight:	-			ios=16.0/-/-/0	-	5bf5eb64888a6651
+method	c:objc(cs)SWRemoveParticipantAlertController(im)init	-			*unavailable ios=16.0/-/-/0	-	417e5d8409e892db
+method	c:objc(cs)SWRemoveParticipantAlertController(cm)new	-			*unavailable ios=16.0/-/-/0	-	91b8cb721bbfa4fd

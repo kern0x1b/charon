@@ -1,0 +1,1049 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+interface	c:objc(cs)CKAsset	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	f19beb623c581f4c
+super	-	CKAsset	NSObject		-	-	cd0e9a2c3107b038
+method	c:objc(cs)CKAsset(im)init	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	176a22e73fd3f35a
+method	c:objc(cs)CKAsset(cm)new	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	a3fe14e14d7ce09e
+method	c:objc(cs)CKAsset(im)initWithFileURL:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	a5fa3cae78810825
+property	c:objc(cs)CKAsset(py)fileURL	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	efbae786b3796e55
+typedef	c:@T@CKReferenceAction	-			-	-	be8741fa8168a8c6
+enum	c:@E@CKReferenceAction	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	be9b633c2bf00cf1
+enumconst	c:@E@CKReferenceAction@CKReferenceActionNone	CKReferenceAction			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	fdb01c561aee249d
+enumconst	c:@E@CKReferenceAction@CKReferenceActionDeleteSelf	CKReferenceAction			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	c0540cb215687643
+interface	c:objc(cs)CKReference	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	d87ad9c71123bfaa
+super	-	CKReference	NSObject		-	-	160f52c53ea46229
+conforms	-	CKReference	NSSecureCoding		-	-	1b81d55c5cc99c0f
+conforms	-	CKReference	NSCopying		-	-	ff090d5433b7dfd0
+method	c:objc(cs)CKReference(im)init	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	e384cbf3f9bc72bd
+method	c:objc(cs)CKReference(cm)new	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	04113029d7fa2e8e
+method	c:objc(cs)CKReference(im)initWithRecordID:action:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	89c87dbf0d9e4a18
+method	c:objc(cs)CKReference(im)initWithRecord:action:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	64937f0f362d366d
+property	c:objc(cs)CKReference(py)referenceAction	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	38e8febb0aec2f85
+property	c:objc(cs)CKReference(py)recordID	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	3bd82c2bb9fb3889
+typedef	c:@T@CKRecordType	-			-	-	16d1ad2df20456bd
+typedef	c:@T@CKRecordFieldKey	-			-	-	c011504428a2bd64
+var	c:@CKRecordTypeUserRecord	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	e5b5bc9b7e03a3b9
+var	c:@CKRecordRecordIDKey	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	b123772385e673ac
+var	c:@CKRecordCreatorUserRecordIDKey	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	2ae114c2bdbfcdd2
+var	c:@CKRecordCreationDateKey	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	0b96ec760c93c937
+var	c:@CKRecordLastModifiedUserRecordIDKey	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	c6c117bbf7ff615e
+var	c:@CKRecordModificationDateKey	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	6866ecbb2457665e
+var	c:@CKRecordParentKey	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	2856f3c81b8eb198
+var	c:@CKRecordShareKey	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	5edcba903c865e68
+protocol	c:objc(pl)CKRecordValue	-			-	-	eef7a566cb82aa47
+conforms	-	CKRecordValue	NSObject		-	-	da545a31b16c23d7
+interface	c:objc(cs)CKRecord	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	29f15447bdc81891
+super	-	CKRecord	NSObject		-	-	81c14bcf9a347fe2
+conforms	-	CKRecord	NSSecureCoding		-	-	e323b2e1592b19e3
+conforms	-	CKRecord	NSCopying		-	-	4687bd4d66dc395b
+method	c:objc(cs)CKRecord(im)init	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	f56ef261b1b25d8a
+method	c:objc(cs)CKRecord(cm)new	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	88329033a8bd0553
+method	c:objc(cs)CKRecord(im)initWithRecordType:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	d3bd2306516dd02f
+method	c:objc(cs)CKRecord(im)initWithRecordType:recordID:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	ec1639d7c8ba7de1
+method	c:objc(cs)CKRecord(im)initWithRecordType:zoneID:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	7d48537511b2362e
+property	c:objc(cs)CKRecord(py)recordType	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	a14d0351f7908b53
+property	c:objc(cs)CKRecord(py)recordID	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	3e3f4712f2367ef8
+property	c:objc(cs)CKRecord(py)recordChangeTag	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	e2e5db82df6546da
+property	c:objc(cs)CKRecord(py)creatorUserRecordID	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	5d12566200e5b79f
+property	c:objc(cs)CKRecord(py)creationDate	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	0992eca1c1ea912d
+property	c:objc(cs)CKRecord(py)lastModifiedUserRecordID	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	36f96e7a30310eae
+property	c:objc(cs)CKRecord(py)modificationDate	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	e9ccdeed7d7b9a69
+method	c:objc(cs)CKRecord(im)objectForKey:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	4c917086c8224330
+method	c:objc(cs)CKRecord(im)setObject:forKey:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	b823373ad5e8d873
+method	c:objc(cs)CKRecord(im)allKeys	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	ca9b9d0d0437aff4
+method	c:objc(cs)CKRecord(im)allTokens	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	7828900c1611c22d
+method	c:objc(cs)CKRecord(im)objectForKeyedSubscript:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	f9e86c7d27ea0442
+method	c:objc(cs)CKRecord(im)setObject:forKeyedSubscript:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	c956bb26b4b95193
+method	c:objc(cs)CKRecord(im)changedKeys	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	2764fa61796ef1c7
+method	c:objc(cs)CKRecord(im)encodeSystemFieldsWithCoder:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	c073b0dff7d620c0
+property	c:objc(cs)CKRecord(py)share	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	2a9363be698e8daf
+property	c:objc(cs)CKRecord(py)parent	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	6f5fd70e4e40948b
+method	c:objc(cs)CKRecord(im)setParentReferenceFromRecord:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	df18181eea71141c
+method	c:objc(cs)CKRecord(im)setParentReferenceFromRecordID:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	e0f19e78d1c438df
+category	c:objc(cy)NSString@CKRecordValue	-			-	-	73a68ad083d965e3
+conforms	-	NSString	CKRecordValue		-	-	bf7a53d671651249
+category	c:objc(cy)NSNumber@CKRecordValue	-			-	-	dbad8f3cebbae9cf
+conforms	-	NSNumber	CKRecordValue		-	-	60a0d1127e639b4c
+category	c:objc(cy)NSArray@CKRecordValue	-			-	-	31913f04a2909135
+conforms	-	NSArray	CKRecordValue		-	-	6a603b632da13e5c
+category	c:objc(cy)NSDate@CKRecordValue	-			-	-	71597d67555aa9e5
+conforms	-	NSDate	CKRecordValue		-	-	c94e3d505d0d10e0
+category	c:objc(cy)NSData@CKRecordValue	-			-	-	1733492e813f0646
+conforms	-	NSData	CKRecordValue		-	-	87d5e700d98060b3
+category	c:objc(cy)CKReference@CKRecordValue	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	f30236a2e1a80ad3
+conforms	-	CKReference	CKRecordValue		-	-	3efe2c6608857778
+category	c:objc(cy)CKAsset@CKRecordValue	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	e7f2e0ed7785a734
+conforms	-	CKAsset	CKRecordValue		-	-	47473970e0575608
+category	c:objc(cy)CLLocation@CKRecordValue	-			ios=2.0/-/-/0,macos=10.6/-/-/0	-	0ea5e09a7c31ca3b
+conforms	-	CLLocation	CKRecordValue		-	-	2ec07debb61e2e18
+protocol	c:objc(pl)CKRecordKeyValueSetting	-			ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=3.0/-/-/0	-	b7bf7a2fc1dba83f
+conforms	-	CKRecordKeyValueSetting	NSObject		-	-	690067f234992a9a
+method	c:objc(pl)CKRecordKeyValueSetting(im)objectForKey:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=3.0/-/-/0	-	b8f117c201e7d27e
+method	c:objc(pl)CKRecordKeyValueSetting(im)setObject:forKey:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=3.0/-/-/0	-	a86b39240ca54d3e
+method	c:objc(pl)CKRecordKeyValueSetting(im)objectForKeyedSubscript:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=3.0/-/-/0	-	aaa80f220605f939
+method	c:objc(pl)CKRecordKeyValueSetting(im)setObject:forKeyedSubscript:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=3.0/-/-/0	-	4d599dce56d28797
+method	c:objc(pl)CKRecordKeyValueSetting(im)allKeys	-			ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=3.0/-/-/0	-	0b61a04b8fff1b83
+method	c:objc(pl)CKRecordKeyValueSetting(im)changedKeys	-			ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=3.0/-/-/0	-	d514620a1e01d336
+category	c:objc(cy)CKRecord@CKRecordKeyValueSettingConformance	-			ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=3.0/-/-/0	-	d17b7610a67071fd
+conforms	-	CKRecord	CKRecordKeyValueSetting		-	-	7e04fd20e2ecac93
+property	c:objc(cs)CKRecord(py)encryptedValues	CKRecordKeyValueSettingConformance			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	4086f772d5287a5d
+typedef	c:@T@CKSubscriptionType	-			-	-	1606c5a45228ff52
+enum	c:@E@CKSubscriptionType	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=6.0/-/-/0	-	6f6285494ea5bf5d
+enumconst	c:@E@CKSubscriptionType@CKSubscriptionTypeQuery	CKSubscriptionType			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=6.0/-/-/0	-	290d2da7e83b484b
+enumconst	c:@E@CKSubscriptionType@CKSubscriptionTypeRecordZone	CKSubscriptionType			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=6.0/-/-/0	-	80842061cf8d7bfd
+enumconst	c:@E@CKSubscriptionType@CKSubscriptionTypeDatabase	CKSubscriptionType			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	69ee180d4cd67c30
+typedef	c:@T@CKSubscriptionID	-			-	-	10479b721f8509cd
+interface	c:objc(cs)CKSubscription	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	c9b034cb23c1e17d
+super	-	CKSubscription	NSObject		-	-	e8334590db45e257
+conforms	-	CKSubscription	NSSecureCoding		-	-	fb6d61a150da8081
+conforms	-	CKSubscription	NSCopying		-	-	7a31ed9cfc3d9c4f
+method	c:objc(cs)CKSubscription(im)init	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	76d1240181482f55
+method	c:objc(cs)CKSubscription(cm)new	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	61146bff90ce9077
+property	c:objc(cs)CKSubscription(py)subscriptionID	-			watchos=6.0/-/-/0	-	44ed090a99ca38d5
+property	c:objc(cs)CKSubscription(py)subscriptionType	-			watchos=6.0/-/-/0	-	364fd9eb6e96107a
+property	c:objc(cs)CKSubscription(py)notificationInfo	-			watchos=6.0/-/-/0	-	e364188c194090b6
+typedef	c:@T@CKQuerySubscriptionOptions	-			-	-	297b4831a4e2faf8
+enum	c:@E@CKQuerySubscriptionOptions	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	-	aac3f364b9a778d7
+enumconst	c:@E@CKQuerySubscriptionOptions@CKQuerySubscriptionOptionsFiresOnRecordCreation	CKQuerySubscriptionOptions			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	-	4b3d30e17be1679d
+enumconst	c:@E@CKQuerySubscriptionOptions@CKQuerySubscriptionOptionsFiresOnRecordUpdate	CKQuerySubscriptionOptions			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	-	84cf91aa6644eea7
+enumconst	c:@E@CKQuerySubscriptionOptions@CKQuerySubscriptionOptionsFiresOnRecordDeletion	CKQuerySubscriptionOptions			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	-	f459db0af276863b
+enumconst	c:@E@CKQuerySubscriptionOptions@CKQuerySubscriptionOptionsFiresOnce	CKQuerySubscriptionOptions			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	-	a08ad4edccfdc995
+interface	c:objc(cs)CKQuerySubscription	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	deprecated: Use initWithRecordType:predicate:subscriptionID:options: instead	144a49413e1963ce
+super	-	CKQuerySubscription	CKSubscription		-	-	45da8108c759f9db
+conforms	-	CKQuerySubscription	NSSecureCoding		-	-	2f815dd98ef27299
+conforms	-	CKQuerySubscription	NSCopying		-	-	fa71a0a607d5e536
+method	c:objc(cs)CKQuerySubscription(im)initWithRecordType:predicate:options:	-			ios=10.0/10.0/-/0,macos=10.12/10.12/-/0,tvos=10.0/10.0/-/0,watchos=6.0/6.0/-/0	deprecated: Use initWithRecordType:predicate:subscriptionID:options: instead	8c775327b95b70d2
+method	c:objc(cs)CKQuerySubscription(im)initWithRecordType:predicate:subscriptionID:options:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	-	2eab30891900e680
+method	c:objc(cs)CKQuerySubscription(im)initWithCoder:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	-	5c7401b13c97c6a1
+property	c:objc(cs)CKQuerySubscription(py)recordType	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	-	e42b003bae93db19
+property	c:objc(cs)CKQuerySubscription(py)predicate	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	-	6e9aba3831b4565b
+property	c:objc(cs)CKQuerySubscription(py)zoneID	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	-	b7aae2dd49dabd5e
+property	c:objc(cs)CKQuerySubscription(py)querySubscriptionOptions	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	-	9d3fefa96b02189b
+interface	c:objc(cs)CKRecordZoneSubscription	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	deprecated: Use initWithZoneID:subscriptionID: instead	2c57e7c903fd00e2
+super	-	CKRecordZoneSubscription	CKSubscription		-	-	e7876dfcf87a1cb2
+conforms	-	CKRecordZoneSubscription	NSSecureCoding		-	-	8f75e7998ec2cc65
+conforms	-	CKRecordZoneSubscription	NSCopying		-	-	b7d845127a3265a4
+method	c:objc(cs)CKRecordZoneSubscription(im)initWithZoneID:	-			ios=10.0/10.0/-/0,macos=10.12/10.12/-/0,tvos=10.0/10.0/-/0,watchos=6.0/6.0/-/0	deprecated: Use initWithZoneID:subscriptionID: instead	71c24e12986efd71
+method	c:objc(cs)CKRecordZoneSubscription(im)initWithZoneID:subscriptionID:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	-	2e2c2b39fdd59906
+method	c:objc(cs)CKRecordZoneSubscription(im)initWithCoder:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	-	7d903510f4e32c5d
+property	c:objc(cs)CKRecordZoneSubscription(py)zoneID	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	-	a77f2688adbdf8ad
+property	c:objc(cs)CKRecordZoneSubscription(py)recordType	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	-	771666eef41676dd
+interface	c:objc(cs)CKDatabaseSubscription	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	deprecated: Use initWithSubscriptionID: instead	84df770095101920
+super	-	CKDatabaseSubscription	CKSubscription		-	-	f0ebf4353dd87d4c
+conforms	-	CKDatabaseSubscription	NSSecureCoding		-	-	4774d9f61f8ce789
+conforms	-	CKDatabaseSubscription	NSCopying		-	-	53447787f8020938
+method	c:objc(cs)CKDatabaseSubscription(im)init	-			ios=10.0/10.0/-/0,macos=10.12/10.12/-/0,tvos=10.0/10.0/-/0,watchos=6.0/6.0/-/0	deprecated: Use initWithSubscriptionID: instead	10c5b8a323719202
+method	c:objc(cs)CKDatabaseSubscription(cm)new	-			swift=-/-/-/1	-	9fe37272fcb6d93d
+method	c:objc(cs)CKDatabaseSubscription(im)initWithSubscriptionID:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	-	da5e42b137462045
+method	c:objc(cs)CKDatabaseSubscription(im)initWithCoder:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	-	049e629f0d7fe6b5
+property	c:objc(cs)CKDatabaseSubscription(py)recordType	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	-	c1ec5a185483232a
+interface	c:objc(cs)CKNotificationInfo	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=6.0/-/-/0	-	67dec3f4c97bb7dd
+super	-	CKNotificationInfo	NSObject		-	-	2029c7511320f3f6
+conforms	-	CKNotificationInfo	NSSecureCoding		-	-	c49b1bd20d9d0b7a
+conforms	-	CKNotificationInfo	NSCopying		-	-	5cd018d4751e973e
+property	c:objc(cs)CKNotificationInfo(py)alertBody	-			tvos=-/-/-/1	-	b0353de9cd34005c
+property	c:objc(cs)CKNotificationInfo(py)alertLocalizationKey	-			tvos=-/-/-/1	-	3ab0fbc1a2ad5250
+property	c:objc(cs)CKNotificationInfo(py)alertLocalizationArgs	-			tvos=-/-/-/1	-	7861a0ca958b88f9
+property	c:objc(cs)CKNotificationInfo(py)title	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1	-	d8670d2793df60b5
+property	c:objc(cs)CKNotificationInfo(py)titleLocalizationKey	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1	-	927f97362bdbb2fb
+property	c:objc(cs)CKNotificationInfo(py)titleLocalizationArgs	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1	-	86588df06b0b4cd7
+property	c:objc(cs)CKNotificationInfo(py)subtitle	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1	-	bdb49706219bb943
+property	c:objc(cs)CKNotificationInfo(py)subtitleLocalizationKey	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1	-	4bf728c9c6c78942
+property	c:objc(cs)CKNotificationInfo(py)subtitleLocalizationArgs	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1	-	cd219a2086669de3
+property	c:objc(cs)CKNotificationInfo(py)alertActionLocalizationKey	-			tvos=-/-/-/1	-	c5320037f7cffe60
+property	c:objc(cs)CKNotificationInfo(py)alertLaunchImage	-			tvos=-/-/-/1	-	5073d46c3297ad13
+property	c:objc(cs)CKNotificationInfo(py)soundName	-			tvos=-/-/-/1	-	4dc0837dab8f795c
+property	c:objc(cs)CKNotificationInfo(py)desiredKeys	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=6.0/-/-/0	-	39959649ca3ad329
+property	c:objc(cs)CKNotificationInfo(py)shouldBadge	-			tvos=10.0/-/-/0	-	16dca843e3590577
+property	c:objc(cs)CKNotificationInfo(py)shouldSendContentAvailable	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=6.0/-/-/0	-	2592a6df0ca6f820
+property	c:objc(cs)CKNotificationInfo(py)shouldSendMutableContent	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	cd36467c1864d4c0
+property	c:objc(cs)CKNotificationInfo(py)category	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=-/-/-/1	-	170b48896f49166a
+property	c:objc(cs)CKNotificationInfo(py)collapseIDKey	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	d124f4c5d3d273f9
+typedef	c:@T@CKDatabaseScope	-			-	-	59e1c0ead2eb6ecc
+enum	c:@E@CKDatabaseScope	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	ccd1aaa645694133
+enumconst	c:@E@CKDatabaseScope@CKDatabaseScopePublic	CKDatabaseScope			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	a46896a81537a9f8
+enumconst	c:@E@CKDatabaseScope@CKDatabaseScopePrivate	CKDatabaseScope			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	d0acfa17a4147f79
+enumconst	c:@E@CKDatabaseScope@CKDatabaseScopeShared	CKDatabaseScope			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	4defe3d9d4b68da6
+interface	c:objc(cs)CKDatabase	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	3b4e5ea5b2e04219
+super	-	CKDatabase	NSObject		-	-	f0e0d6bbb3657078
+method	c:objc(cs)CKDatabase(im)init	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	2e711739c7f45a60
+method	c:objc(cs)CKDatabase(cm)new	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	e57d456880795d89
+method	c:objc(cs)CKDatabase(im)addOperation:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	2f002357c89dc1a2
+property	c:objc(cs)CKDatabase(py)databaseScope	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	bfab2f0b33030333
+category	c:objc(cy)CKDatabase@ConvenienceMethods	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	7b50981d6a7f8025
+method	c:objc(cs)CKDatabase(im)fetchRecordWithID:completionHandler:	ConvenienceMethods			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	770a7ca37818721e
+method	c:objc(cs)CKDatabase(im)saveRecord:completionHandler:	ConvenienceMethods			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	b79389156e0e251f
+method	c:objc(cs)CKDatabase(im)deleteRecordWithID:completionHandler:	ConvenienceMethods			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	1fd9a9e71520944a
+method	c:objc(cs)CKDatabase(im)performQuery:inZoneWithID:completionHandler:	ConvenienceMethods			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	7ce823c9f04771bb
+method	c:objc(cs)CKDatabase(im)fetchAllRecordZonesWithCompletionHandler:	ConvenienceMethods			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	b8dcd9229dd344a0
+method	c:objc(cs)CKDatabase(im)fetchRecordZoneWithID:completionHandler:	ConvenienceMethods			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	2b874863a4f273ed
+method	c:objc(cs)CKDatabase(im)saveRecordZone:completionHandler:	ConvenienceMethods			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	45b87fb824e59c79
+method	c:objc(cs)CKDatabase(im)deleteRecordZoneWithID:completionHandler:	ConvenienceMethods			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	cbe15d060cfb490a
+method	c:objc(cs)CKDatabase(im)fetchSubscriptionWithID:completionHandler:	ConvenienceMethods			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=6.0/-/-/0	-	508e212b5adfdeae
+method	c:objc(cs)CKDatabase(im)fetchAllSubscriptionsWithCompletionHandler:	ConvenienceMethods			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=6.0/-/-/0	-	d5eea848ed2ee1e6
+method	c:objc(cs)CKDatabase(im)saveSubscription:completionHandler:	ConvenienceMethods			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=6.0/-/-/0	-	d09146763e4de84e
+method	c:objc(cs)CKDatabase(im)deleteSubscriptionWithID:completionHandler:	ConvenienceMethods			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=6.0/-/-/0	-	69b8025675df9e84
+typedef	c:@T@CKOperationID	-			-	-	55cc3701419d62d3
+interface	c:objc(cs)CKOperation	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	8167a302fbba6110
+super	-	CKOperation	NSOperation		-	-	51cb042f041b4037
+method	c:objc(cs)CKOperation(im)init	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	174a3d24933a0951
+property	c:objc(cs)CKOperation(py)configuration	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d988679368d2fa61
+property	c:objc(cs)CKOperation(py)group	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a13f0d9585ece5ad
+property	c:objc(cs)CKOperation(py)operationID	-			ios=9.3/-/-/0,macos=10.12/-/-/0,tvos=9.2/-/-/0,watchos=3.0/-/-/0	-	ab51cafc3f2b191f
+property	c:objc(cs)CKOperation(py)longLivedOperationWasPersistedBlock	-			ios=9.3/-/-/0,macos=10.12/-/-/0,tvos=9.2/-/-/0,watchos=3.0/-/-/0	-	4b7ce408e116bf7c
+interface	c:objc(cs)CKOperationConfiguration	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	bcfe8a9c476c00dd
+super	-	CKOperationConfiguration	NSObject		-	-	ad48ae477fba8c4c
+property	c:objc(cs)CKOperationConfiguration(py)container	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	aead22c5c6b3105d
+property	c:objc(cs)CKOperationConfiguration(py)qualityOfService	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	86294d8052e15be0
+property	c:objc(cs)CKOperationConfiguration(py)allowsCellularAccess	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c63dd758a4c9d72f
+property	c:objc(cs)CKOperationConfiguration(py)longLived	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	9e4f2ad4b2118231
+property	c:objc(cs)CKOperationConfiguration(py)timeoutIntervalForRequest	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b84812bdea547d8b
+property	c:objc(cs)CKOperationConfiguration(py)timeoutIntervalForResource	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	bab0923f2187e2e6
+category	c:objc(cy)CKOperation@CKOperationDeprecated	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	deprecated: Use CKOperationConfiguration	0f02b1342ca80cd2
+property	c:objc(cs)CKOperation(py)container	CKOperationDeprecated			ios=8.0/11.0/-/0,macos=10.10/10.13/-/0,tvos=9.0/11.0/-/0,watchos=3.0/4.0/-/0	-	8a746f74410bc9c6
+property	c:objc(cs)CKOperation(py)allowsCellularAccess	CKOperationDeprecated			ios=8.0/11.0/-/0,macos=10.10/10.13/-/0,tvos=9.0/11.0/-/0,watchos=3.0/4.0/-/0	-	8573e81f7d108a71
+property	c:objc(cs)CKOperation(py)longLived	CKOperationDeprecated			ios=9.3/11.0/-/0,macos=10.12/10.13/-/0,tvos=9.2/11.0/-/0,watchos=3.0/4.0/-/0	-	2a22840e34965c61
+property	c:objc(cs)CKOperation(py)timeoutIntervalForRequest	CKOperationDeprecated			ios=10.0/11.0/-/0,macos=10.12/10.13/-/0,tvos=10.0/11.0/-/0,watchos=3.0/4.0/-/0	-	5696e908baf7c70c
+property	c:objc(cs)CKOperation(py)timeoutIntervalForResource	CKOperationDeprecated			ios=10.0/11.0/-/0,macos=10.12/10.13/-/0,tvos=10.0/11.0/-/0,watchos=3.0/4.0/-/0	-	64f40662d73153af
+var	c:@CKCurrentUserDefaultName	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	bfef2ed1a79a138d
+var	c:@CKOwnerDefaultName	-			ios=8.0/10.0/-/0,macos=10.10/10.12/-/0,tvos=9.0/10.0/-/0,watchos=3.0/3.0/-/0	-	79259770a29cccc2
+interface	c:objc(cs)CKContainer	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	83b7cc580d72b3f2
+super	-	CKContainer	NSObject		-	-	32be0819eb6febdd
+method	c:objc(cs)CKContainer(im)init	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	02a9fe726bc2599b
+method	c:objc(cs)CKContainer(cm)new	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	72a56888becc9ac6
+method	c:objc(cs)CKContainer(cm)defaultContainer	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	ecc5cb08e165763e
+method	c:objc(cs)CKContainer(cm)containerWithIdentifier:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	bbd2df0334cf76e5
+property	c:objc(cs)CKContainer(py)containerIdentifier	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	b901af492fa94200
+method	c:objc(cs)CKContainer(im)addOperation:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	45ec08c0e1dbd65e
+category	c:objc(cy)CKContainer@Database	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	f69aa0027946060d
+property	c:objc(cs)CKContainer(py)privateCloudDatabase	Database			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	d4a92a1881417ab0
+property	c:objc(cs)CKContainer(py)publicCloudDatabase	Database			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	514573cd7597c48d
+property	c:objc(cs)CKContainer(py)sharedCloudDatabase	Database			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	ddeed9f08ad0a3ca
+method	c:objc(cs)CKContainer(im)databaseWithDatabaseScope:	Database			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	c6c726936bf6cf2f
+typedef	c:@T@CKAccountStatus	-			-	-	9ff3c938d7e65af6
+enum	c:@E@CKAccountStatus	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	e92692dd4c33c3a6
+enumconst	c:@E@CKAccountStatus@CKAccountStatusCouldNotDetermine	CKAccountStatus			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	9235649fa2deef49
+enumconst	c:@E@CKAccountStatus@CKAccountStatusAvailable	CKAccountStatus			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	1bca2a75630b2006
+enumconst	c:@E@CKAccountStatus@CKAccountStatusRestricted	CKAccountStatus			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	89bdf566c3471ae6
+enumconst	c:@E@CKAccountStatus@CKAccountStatusNoAccount	CKAccountStatus			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	e2cbd1f8df70ee9c
+enumconst	c:@E@CKAccountStatus@CKAccountStatusTemporarilyUnavailable	CKAccountStatus			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	b3734da92328b733
+var	c:@CKAccountChangedNotification	-			ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=3.0/-/-/0	-	f6b3abf21dfe41ef
+category	c:objc(cy)CKContainer@AccountStatus	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	f4e7db3630c648eb
+method	c:objc(cs)CKContainer(im)accountStatusWithCompletionHandler:	AccountStatus			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	5a05f6163e053e39
+typedef	c:@T@CKApplicationPermissions	-			-	-	ce5eb757efdf99a6
+enum	c:@E@CKApplicationPermissions	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	e970babf896869a7
+enumconst	c:@E@CKApplicationPermissions@CKApplicationPermissionUserDiscoverability	CKApplicationPermissions			ios=8.0/17.0/-/0,macos=10.0/14.0/-/0,tvos=9.0/17.0/-/0,watchos=3.0/10.0/-/0	deprecated: No longer supported. Please see Sharing CloudKit Data with Other iCloud Users.	4990654b17ac1514
+typedef	c:@T@CKApplicationPermissionStatus	-			-	-	86f5e91fc3e376f1
+enum	c:@E@CKApplicationPermissionStatus	-			ios=8.0/17.0/-/0,macos=10.10/14.0/-/0,tvos=9.0/17.0/-/0,watchos=3.0/10.0/-/0	-	da690a1ae639e696
+enumconst	c:@E@CKApplicationPermissionStatus@CKApplicationPermissionStatusInitialState	CKApplicationPermissionStatus			ios=8.0/17.0/-/0,macos=10.10/14.0/-/0,tvos=9.0/17.0/-/0,watchos=3.0/10.0/-/0	-	f3ffec9f46028f6d
+enumconst	c:@E@CKApplicationPermissionStatus@CKApplicationPermissionStatusCouldNotComplete	CKApplicationPermissionStatus			ios=8.0/17.0/-/0,macos=10.10/14.0/-/0,tvos=9.0/17.0/-/0,watchos=3.0/10.0/-/0	-	6bcb38ab635b2bb9
+enumconst	c:@E@CKApplicationPermissionStatus@CKApplicationPermissionStatusDenied	CKApplicationPermissionStatus			ios=8.0/17.0/-/0,macos=10.10/14.0/-/0,tvos=9.0/17.0/-/0,watchos=3.0/10.0/-/0	-	416e49244b92c0a9
+enumconst	c:@E@CKApplicationPermissionStatus@CKApplicationPermissionStatusGranted	CKApplicationPermissionStatus			ios=8.0/17.0/-/0,macos=10.10/14.0/-/0,tvos=9.0/17.0/-/0,watchos=3.0/10.0/-/0	-	3a61c4a3379f7ca4
+typedef	c:@T@CKApplicationPermissionBlock	-			ios=8.0/17.0/-/0,macos=10.10/14.0/-/0,tvos=9.0/17.0/-/0,watchos=3.0/10.0/-/0	-	ca9c2ad7d4ed8832
+category	c:objc(cy)CKContainer@ApplicationPermission	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	deprecated: No longer supported. Please see Sharing CloudKit Data with Other iCloud Users.	8fc1c9dec412d968
+method	c:objc(cs)CKContainer(im)statusForApplicationPermission:completionHandler:	ApplicationPermission			ios=8.0/17.0/-/0,macos=10.0/14.0/-/0,tvos=9.0/17.0/-/0,watchos=3.0/10.0/-/0	deprecated: No longer supported. Please see Sharing CloudKit Data with Other iCloud Users.	0e71d1e357f53ec0
+method	c:objc(cs)CKContainer(im)requestApplicationPermission:completionHandler:	ApplicationPermission			ios=8.0/17.0/-/0,macos=10.0/14.0/-/0,tvos=9.0/17.0/-/0,watchos=3.0/10.0/-/0	deprecated: No longer supported. Please see Sharing CloudKit Data with Other iCloud Users.	9e1fc7373cae982d
+category	c:objc(cy)CKContainer@UserRecords	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	deprecated: No longer supported. Please see Sharing CloudKit Data with Other iCloud Users.	2340f83205217393
+method	c:objc(cs)CKContainer(im)fetchUserRecordIDWithCompletionHandler:	UserRecords			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	312ec70d25d1983e
+method	c:objc(cs)CKContainer(im)discoverAllIdentitiesWithCompletionHandler:	UserRecords			ios=10.0/17.0/-/0,macos=10.12/14.0/-/0,tvos=-/-/-/1,watchos=3.0/10.0/-/0	deprecated: No longer supported. Please see Sharing CloudKit Data with Other iCloud Users.	0cdb06e8547d2204
+method	c:objc(cs)CKContainer(im)discoverUserIdentityWithEmailAddress:completionHandler:	UserRecords			ios=10.0/17.0/-/0,macos=10.12/14.0/-/0,tvos=10.0/17.0/-/0,watchos=3.0/10.0/-/0	deprecated: No longer supported. Please see Sharing CloudKit Data with Other iCloud Users.	8baba888f23e3c98
+method	c:objc(cs)CKContainer(im)discoverUserIdentityWithPhoneNumber:completionHandler:	UserRecords			ios=10.0/17.0/-/0,macos=10.12/14.0/-/0,tvos=10.0/17.0/-/0,watchos=3.0/10.0/-/0	deprecated: No longer supported. Please see Sharing CloudKit Data with Other iCloud Users.	e3ffc6b50e1eb559
+method	c:objc(cs)CKContainer(im)discoverUserIdentityWithUserRecordID:completionHandler:	UserRecords			ios=10.0/17.0/-/0,macos=10.12/14.0/-/0,tvos=10.0/17.0/-/0,watchos=3.0/10.0/-/0	deprecated: No longer supported. Please see Sharing CloudKit Data with Other iCloud Users.	ac7e21f94b56d863
+category	c:objc(cy)CKContainer@Sharing	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	d475b4c8e4cac2d8
+method	c:objc(cs)CKContainer(im)fetchShareParticipantWithEmailAddress:completionHandler:	Sharing			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	f912a9292e22e647
+method	c:objc(cs)CKContainer(im)fetchShareParticipantWithPhoneNumber:completionHandler:	Sharing			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	9c87b5fec96007cd
+method	c:objc(cs)CKContainer(im)fetchShareParticipantWithUserRecordID:completionHandler:	Sharing			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	9f862fa730cca8fb
+method	c:objc(cs)CKContainer(im)fetchShareMetadataWithURL:completionHandler:	Sharing			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	719fa45a65f4e102
+method	c:objc(cs)CKContainer(im)acceptShareMetadata:completionHandler:	Sharing			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	57d72304d4d8e829
+category	c:objc(cy)CKContainer@CKLongLivedOperations	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	9185f91029235f00
+method	c:objc(cs)CKContainer(im)fetchAllLongLivedOperationIDsWithCompletionHandler:	CKLongLivedOperations			ios=9.3/-/-/0,macos=10.12/-/-/0,tvos=9.2/-/-/0,watchos=3.0/-/-/0	-	10957aa640768788
+method	c:objc(cs)CKContainer(im)fetchLongLivedOperationWithID:completionHandler:	CKLongLivedOperations			ios=9.3/-/-/0,macos=10.12/-/-/0,tvos=9.2/-/-/0,watchos=3.0/-/-/0	-	01c3b89363108f7b
+var	c:@CKErrorDomain	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	c4e11648252e65fa
+var	c:@CKPartialErrorsByItemIDKey	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	66eeecdee3fa1c57
+var	c:@CKRecordChangedErrorAncestorRecordKey	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	43b18bb03e890c07
+var	c:@CKRecordChangedErrorServerRecordKey	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	b733d5739f860bce
+var	c:@CKRecordChangedErrorClientRecordKey	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	51c23a03634e56bf
+var	c:@CKErrorUserDidResetEncryptedDataKey	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	759e6d2b30c5532b
+var	c:@CKErrorRetryAfterKey	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	f7475cb41e4dffc2
+typedef	c:@T@CKErrorCode	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	e1311aa9c02fd1d5
+enum	c:@E@CKErrorCode	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	8ebcee0b3f04b2a8
+enumconst	c:@E@CKErrorCode@CKErrorInternalError	CKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	3a68b19d5a354d08
+enumconst	c:@E@CKErrorCode@CKErrorPartialFailure	CKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	6fd4ec388b0c56eb
+enumconst	c:@E@CKErrorCode@CKErrorNetworkUnavailable	CKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	439f33a7ca4129a8
+enumconst	c:@E@CKErrorCode@CKErrorNetworkFailure	CKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	a30aef5bd3427498
+enumconst	c:@E@CKErrorCode@CKErrorBadContainer	CKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	7cd40b1049d749e2
+enumconst	c:@E@CKErrorCode@CKErrorServiceUnavailable	CKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	815d3acd7ddf5c41
+enumconst	c:@E@CKErrorCode@CKErrorRequestRateLimited	CKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	50cab00cabe61828
+enumconst	c:@E@CKErrorCode@CKErrorMissingEntitlement	CKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	6a562c9a2c070248
+enumconst	c:@E@CKErrorCode@CKErrorNotAuthenticated	CKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	355618727855c7ab
+enumconst	c:@E@CKErrorCode@CKErrorPermissionFailure	CKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	398b23db5f20386d
+enumconst	c:@E@CKErrorCode@CKErrorUnknownItem	CKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	48693df90c982709
+enumconst	c:@E@CKErrorCode@CKErrorInvalidArguments	CKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	08081849d252899b
+enumconst	c:@E@CKErrorCode@CKErrorResultsTruncated	CKErrorCode			ios=8.0/10.0/-/0,macos=10.10/10.12/-/0,tvos=9.0/10.0/-/0,watchos=3.0/3.0/-/0	deprecated: Will not be returned	038b1895ed4293af
+enumconst	c:@E@CKErrorCode@CKErrorServerRecordChanged	CKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	83f6f9b6162acc1d
+enumconst	c:@E@CKErrorCode@CKErrorServerRejectedRequest	CKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	f7ab2b36a172f0e7
+enumconst	c:@E@CKErrorCode@CKErrorAssetFileNotFound	CKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	a9c3e44586a3b7d1
+enumconst	c:@E@CKErrorCode@CKErrorAssetFileModified	CKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	961f3197a9012616
+enumconst	c:@E@CKErrorCode@CKErrorIncompatibleVersion	CKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	bbaf713e0ef22bcd
+enumconst	c:@E@CKErrorCode@CKErrorConstraintViolation	CKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	ecacf9e214066693
+enumconst	c:@E@CKErrorCode@CKErrorOperationCancelled	CKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	13fed227cc36017a
+enumconst	c:@E@CKErrorCode@CKErrorChangeTokenExpired	CKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	4f0bc5637dd2e9c1
+enumconst	c:@E@CKErrorCode@CKErrorBatchRequestFailed	CKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	7e28e5bfb18f254d
+enumconst	c:@E@CKErrorCode@CKErrorZoneBusy	CKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	a4dafe30dfdd9b60
+enumconst	c:@E@CKErrorCode@CKErrorBadDatabase	CKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	509d1825900df7b8
+enumconst	c:@E@CKErrorCode@CKErrorQuotaExceeded	CKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	701a6b10080feada
+enumconst	c:@E@CKErrorCode@CKErrorZoneNotFound	CKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	ac8cadd7a90effc9
+enumconst	c:@E@CKErrorCode@CKErrorLimitExceeded	CKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	69687a3f452225b5
+enumconst	c:@E@CKErrorCode@CKErrorUserDeletedZone	CKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	bd8101653c16c8c2
+enumconst	c:@E@CKErrorCode@CKErrorTooManyParticipants	CKErrorCode			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	4cf6b67aaf4a223a
+enumconst	c:@E@CKErrorCode@CKErrorAlreadyShared	CKErrorCode			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	864fbefbc8dd5762
+enumconst	c:@E@CKErrorCode@CKErrorReferenceViolation	CKErrorCode			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	27e8b1e3c4332411
+enumconst	c:@E@CKErrorCode@CKErrorManagedAccountRestricted	CKErrorCode			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	1a416ac1cea2fc5f
+enumconst	c:@E@CKErrorCode@CKErrorParticipantMayNeedVerification	CKErrorCode			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	a7a9992141a95ae5
+enumconst	c:@E@CKErrorCode@CKErrorServerResponseLost	CKErrorCode			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	9206998e9053dcd8
+enumconst	c:@E@CKErrorCode@CKErrorAssetNotAvailable	CKErrorCode			ios=11.3/-/-/0,macos=10.13/-/-/0,tvos=11.3/-/-/0,watchos=4.3/-/-/0	-	95e26efbe3fc3514
+enumconst	c:@E@CKErrorCode@CKErrorAccountTemporarilyUnavailable	CKErrorCode			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	c082f2e05cf70d27
+enumconst	c:@E@CKErrorCode@CKErrorParticipantAlreadyInvited	CKErrorCode			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	5170e4604095c198
+interface	c:objc(cs)CKLocationSortDescriptor	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	7c13e557c859bd78
+super	-	CKLocationSortDescriptor	NSSortDescriptor		-	-	6833bfddc5dae533
+conforms	-	CKLocationSortDescriptor	NSSecureCoding		-	-	d01a05fd55841dc4
+method	c:objc(cs)CKLocationSortDescriptor(im)init	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	8cbe0490a1f72ea5
+method	c:objc(cs)CKLocationSortDescriptor(cm)new	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	863133f8775204dd
+method	c:objc(cs)CKLocationSortDescriptor(im)initWithKey:relativeLocation:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	9a29738c690193ab
+method	c:objc(cs)CKLocationSortDescriptor(im)initWithCoder:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	280dd4fec402d519
+property	c:objc(cs)CKLocationSortDescriptor(py)relativeLocation	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	3aede7142a2f2fab
+interface	c:objc(cs)CKNotificationID	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	c8bbfe78d8b49202
+super	-	CKNotificationID	NSObject		-	-	811b04074b3d3187
+conforms	-	CKNotificationID	NSCopying		-	-	adb0106d17801bec
+conforms	-	CKNotificationID	NSSecureCoding		-	-	f36721332717e204
+typedef	c:@T@CKNotificationType	-			-	-	970a6f35ed5661db
+enum	c:@E@CKNotificationType	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	ad8c38be4d33fb15
+enumconst	c:@E@CKNotificationType@CKNotificationTypeQuery	CKNotificationType			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	5e296e198df14c00
+enumconst	c:@E@CKNotificationType@CKNotificationTypeRecordZone	CKNotificationType			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	5b6c0cc3a7b85107
+enumconst	c:@E@CKNotificationType@CKNotificationTypeReadNotification	CKNotificationType			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	1cecba34eb523819
+enumconst	c:@E@CKNotificationType@CKNotificationTypeDatabase	CKNotificationType			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	d584b79bb7ed3a11
+interface	c:objc(cs)CKNotification	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	3ebaac409b37b2d3
+super	-	CKNotification	NSObject		-	-	c14a2860f7323db5
+method	c:objc(cs)CKNotification(im)init	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	eac56c85cb8ebed4
+method	c:objc(cs)CKNotification(cm)new	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	d8076e73ccdd15c7
+method	c:objc(cs)CKNotification(cm)notificationFromRemoteNotificationDictionary:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	d7378135841d8609
+property	c:objc(cs)CKNotification(py)notificationType	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	f59bcdbaada68eb8
+property	c:objc(cs)CKNotification(py)notificationID	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	b0ef5bd2461e4e8e
+property	c:objc(cs)CKNotification(py)containerIdentifier	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	58cd1add465f058a
+property	c:objc(cs)CKNotification(py)subscriptionOwnerUserRecordID	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	102ff6d866feae8b
+property	c:objc(cs)CKNotification(py)isPruned	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	2bcaa48a25ea8730
+property	c:objc(cs)CKNotification(py)subscriptionID	-			ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=3.0/-/-/0	-	ad92286c64a4f490
+category	c:objc(cy)CKNotification@DeprecatedAPSProperties	-			ios=8.0/17.0/-/0,macos=10.10/14.0/-/0,tvos=9.0/17.0/-/0,watchos=3.0/10.0/-/0	-	117b26e7b6c90741
+property	c:objc(cs)CKNotification(py)alertBody	DeprecatedAPSProperties			ios=8.0/17.0/-/0,macos=10.10/14.0/-/0,tvos=-/-/-/1,watchos=3.0/10.0/-/0	-	90392e772499cbee
+property	c:objc(cs)CKNotification(py)alertLocalizationKey	DeprecatedAPSProperties			ios=8.0/17.0/-/0,macos=10.10/14.0/-/0,tvos=-/-/-/1,watchos=3.0/10.0/-/0	-	003243b9529e40f6
+property	c:objc(cs)CKNotification(py)alertLocalizationArgs	DeprecatedAPSProperties			ios=8.0/17.0/-/0,macos=10.10/14.0/-/0,tvos=-/-/-/1,watchos=3.0/10.0/-/0	-	1c934852cd87e0bc
+property	c:objc(cs)CKNotification(py)title	DeprecatedAPSProperties			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1,watchos=4.0/-/-/0	-	de8e36e813c8ac92
+property	c:objc(cs)CKNotification(py)titleLocalizationKey	DeprecatedAPSProperties			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1,watchos=4.0/-/-/0	-	ed0df251499d74dc
+property	c:objc(cs)CKNotification(py)titleLocalizationArgs	DeprecatedAPSProperties			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1,watchos=4.0/-/-/0	-	dc01b733649eab09
+property	c:objc(cs)CKNotification(py)subtitle	DeprecatedAPSProperties			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1,watchos=4.0/-/-/0	-	dbd3ee8d245aa53b
+property	c:objc(cs)CKNotification(py)subtitleLocalizationKey	DeprecatedAPSProperties			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1,watchos=4.0/-/-/0	-	8ed171e9cd93c51b
+property	c:objc(cs)CKNotification(py)subtitleLocalizationArgs	DeprecatedAPSProperties			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1,watchos=4.0/-/-/0	-	210f4884c7ac502f
+property	c:objc(cs)CKNotification(py)alertActionLocalizationKey	DeprecatedAPSProperties			ios=8.0/17.0/-/0,macos=10.10/14.0/-/0,tvos=-/-/-/1,watchos=3.0/10.0/-/0	-	1bd0e1aee07d304b
+property	c:objc(cs)CKNotification(py)alertLaunchImage	DeprecatedAPSProperties			ios=8.0/17.0/-/0,macos=10.10/14.0/-/0,tvos=-/-/-/1,watchos=3.0/10.0/-/0	-	be21b185f845fb38
+property	c:objc(cs)CKNotification(py)badge	DeprecatedAPSProperties			ios=8.0/17.0/-/0,macos=10.10/14.0/-/0,tvos=10.0/-/-/0,watchos=3.0/10.0/-/0	-	1baa69db0859beb0
+property	c:objc(cs)CKNotification(py)soundName	DeprecatedAPSProperties			ios=8.0/17.0/-/0,macos=10.10/14.0/-/0,tvos=-/-/-/1,watchos=3.0/10.0/-/0	-	c26bea06532e2900
+property	c:objc(cs)CKNotification(py)category	DeprecatedAPSProperties			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	93963bdcdb435654
+typedef	c:@T@CKQueryNotificationReason	-			-	-	1218b4a3f25a1494
+enum	c:@E@CKQueryNotificationReason	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	7f4ed24f6a7c66c3
+enumconst	c:@E@CKQueryNotificationReason@CKQueryNotificationReasonRecordCreated	CKQueryNotificationReason			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	cc58ad0108196f30
+enumconst	c:@E@CKQueryNotificationReason@CKQueryNotificationReasonRecordUpdated	CKQueryNotificationReason			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	54178c01f58648a4
+enumconst	c:@E@CKQueryNotificationReason@CKQueryNotificationReasonRecordDeleted	CKQueryNotificationReason			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	f1709bdc580e8bae
+interface	c:objc(cs)CKQueryNotification	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	48a9996085d030bb
+super	-	CKQueryNotification	CKNotification		-	-	1a9fecdc05e5863b
+property	c:objc(cs)CKQueryNotification(py)queryNotificationReason	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	2f91709cdfcc2bf7
+property	c:objc(cs)CKQueryNotification(py)recordFields	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	382b43ba1d2c0099
+property	c:objc(cs)CKQueryNotification(py)recordID	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	354087699f53bec6
+property	c:objc(cs)CKQueryNotification(py)databaseScope	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	d7bd8f311fcab0e1
+interface	c:objc(cs)CKRecordZoneNotification	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	1ecdd5d63a6b51f9
+super	-	CKRecordZoneNotification	CKNotification		-	-	2fb3250df430a216
+property	c:objc(cs)CKRecordZoneNotification(py)recordZoneID	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	54c6510f3d73907b
+property	c:objc(cs)CKRecordZoneNotification(py)databaseScope	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	081e8876ab944c4b
+interface	c:objc(cs)CKDatabaseNotification	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	857b262017c06a55
+super	-	CKDatabaseNotification	CKNotification		-	-	ad2de2d073dc304d
+property	c:objc(cs)CKDatabaseNotification(py)databaseScope	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	f7c033e3ecd157db
+interface	c:objc(cs)CKQuery	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	d587a1f55fdb93f6
+super	-	CKQuery	NSObject		-	-	b602bf5832104190
+conforms	-	CKQuery	NSSecureCoding		-	-	3852cdaa3af2df04
+conforms	-	CKQuery	NSCopying		-	-	089d6187f948ae53
+method	c:objc(cs)CKQuery(im)init	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	c93326ca892548a8
+method	c:objc(cs)CKQuery(cm)new	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	e5c9c1a51797fdde
+method	c:objc(cs)CKQuery(im)initWithCoder:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	5e236562c5ce3f36
+method	c:objc(cs)CKQuery(im)initWithRecordType:predicate:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	c92c08566c5d1379
+property	c:objc(cs)CKQuery(py)recordType	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	995b1134ea5530c6
+property	c:objc(cs)CKQuery(py)predicate	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	282d22cfbca59dc1
+property	c:objc(cs)CKQuery(py)sortDescriptors	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	75a2703382745df7
+typedef	c:@T@CKRecordZoneCapabilities	-			-	-	01113b1cfa5c9e05
+enum	c:@E@CKRecordZoneCapabilities	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	c5303d4ba663f16c
+enumconst	c:@E@CKRecordZoneCapabilities@CKRecordZoneCapabilityFetchChanges	CKRecordZoneCapabilities			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	69e85441c0784434
+enumconst	c:@E@CKRecordZoneCapabilities@CKRecordZoneCapabilityAtomic	CKRecordZoneCapabilities			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	a6db2362d46e1e43
+enumconst	c:@E@CKRecordZoneCapabilities@CKRecordZoneCapabilitySharing	CKRecordZoneCapabilities			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	708d9d64f2bdbafc
+enumconst	c:@E@CKRecordZoneCapabilities@CKRecordZoneCapabilityZoneWideSharing	CKRecordZoneCapabilities			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	7729118dcf975d1c
+typedef	c:@T@CKRecordZoneEncryptionScope	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	684e416da56593b4
+enum	c:@E@CKRecordZoneEncryptionScope	-			-	-	ffcd9b1f85f95ef5
+enumconst	c:@E@CKRecordZoneEncryptionScope@CKRecordZoneEncryptionScopePerRecord	CKRecordZoneEncryptionScope			-	-	0ed29469f44b1674
+enumconst	c:@E@CKRecordZoneEncryptionScope@CKRecordZoneEncryptionScopePerZone	CKRecordZoneEncryptionScope			-	-	ddec8a15111f6edb
+var	c:@CKRecordZoneDefaultName	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	818447e8a7c23ab2
+interface	c:objc(cs)CKRecordZone	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	9cf0598fc1b411f0
+super	-	CKRecordZone	NSObject		-	-	26b0e765cb109b59
+conforms	-	CKRecordZone	NSSecureCoding		-	-	eb4eb3bc28c8872d
+conforms	-	CKRecordZone	NSCopying		-	-	1c4c908b4dd72f5a
+method	c:objc(cs)CKRecordZone(cm)defaultRecordZone	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	b79edd6a94d58895
+method	c:objc(cs)CKRecordZone(im)init	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	d7d11387f1b4c23f
+method	c:objc(cs)CKRecordZone(cm)new	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	eb378288f1be5db8
+method	c:objc(cs)CKRecordZone(im)initWithZoneName:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	904809033b10a7e1
+method	c:objc(cs)CKRecordZone(im)initWithZoneID:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	cb6e8f2748c67ce1
+property	c:objc(cs)CKRecordZone(py)zoneID	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	685fd1a2c8952435
+property	c:objc(cs)CKRecordZone(py)capabilities	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	aba3062d378310ef
+property	c:objc(cs)CKRecordZone(py)share	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	aa6cdbde298a3cd2
+property	c:objc(cs)CKRecordZone(py)encryptionScope	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	4599dbebc468f512
+interface	c:objc(cs)CKRecordID	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	70b08399b868d343
+super	-	CKRecordID	NSObject		-	-	005b789f0741ad71
+conforms	-	CKRecordID	NSSecureCoding		-	-	431ed42c36e03ef7
+conforms	-	CKRecordID	NSCopying		-	-	e5611a5137ea10f8
+method	c:objc(cs)CKRecordID(im)init	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	7032e1f200cf6c82
+method	c:objc(cs)CKRecordID(cm)new	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	44de1fbc9eefc82b
+method	c:objc(cs)CKRecordID(im)initWithRecordName:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	d460af4b005aeea6
+method	c:objc(cs)CKRecordID(im)initWithRecordName:zoneID:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	9b9be82246bc2b0b
+property	c:objc(cs)CKRecordID(py)recordName	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	b89a3830397d0628
+property	c:objc(cs)CKRecordID(py)zoneID	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	36570f1465a8717c
+interface	c:objc(cs)CKRecordZoneID	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	c441e4556bb5b58e
+super	-	CKRecordZoneID	NSObject		-	-	7f842839dfddd125
+conforms	-	CKRecordZoneID	NSSecureCoding		-	-	7b9a8755b9c6cd6c
+conforms	-	CKRecordZoneID	NSCopying		-	-	c4ebfa355606e856
+method	c:objc(cs)CKRecordZoneID(im)init	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	a97febb34ac2bd2e
+method	c:objc(cs)CKRecordZoneID(cm)new	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	b1998edd8e475245
+method	c:objc(cs)CKRecordZoneID(im)initWithZoneName:ownerName:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	b4e046214c29f30d
+property	c:objc(cs)CKRecordZoneID(py)zoneName	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	dbc37eab81825c94
+property	c:objc(cs)CKRecordZoneID(py)ownerName	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	a01214f9e1af524d
+interface	c:objc(cs)CKDatabaseOperation	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	ed7c703bbcc9d29a
+super	-	CKDatabaseOperation	CKOperation		-	-	d4baedcc016f7bc0
+property	c:objc(cs)CKDatabaseOperation(py)database	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	174a45c7995e7363
+interface	c:objc(cs)CKServerChangeToken	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	732bfa94ea424700
+super	-	CKServerChangeToken	NSObject		-	-	fd192c28a09320c8
+conforms	-	CKServerChangeToken	NSCopying		-	-	5e0d9462d08d5881
+conforms	-	CKServerChangeToken	NSSecureCoding		-	-	cb76a6d2420a82df
+method	c:objc(cs)CKServerChangeToken(im)init	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	27faddceac4239d8
+method	c:objc(cs)CKServerChangeToken(cm)new	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	d492297435d01a4d
+typedef	c:@T@CKShareParticipantAcceptanceStatus	-			-	-	a7004f2a4ff40009
+enum	c:@E@CKShareParticipantAcceptanceStatus	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	014520081f36aff8
+enumconst	c:@E@CKShareParticipantAcceptanceStatus@CKShareParticipantAcceptanceStatusUnknown	CKShareParticipantAcceptanceStatus			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	fbac5261facdbdae
+enumconst	c:@E@CKShareParticipantAcceptanceStatus@CKShareParticipantAcceptanceStatusPending	CKShareParticipantAcceptanceStatus			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	fef939704c58a596
+enumconst	c:@E@CKShareParticipantAcceptanceStatus@CKShareParticipantAcceptanceStatusAccepted	CKShareParticipantAcceptanceStatus			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	053e2bd68f6fc3ef
+enumconst	c:@E@CKShareParticipantAcceptanceStatus@CKShareParticipantAcceptanceStatusRemoved	CKShareParticipantAcceptanceStatus			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	f4cdee35b39a0a57
+typedef	c:@T@CKShareParticipantPermission	-			-	-	4a8ef28fc2c66b24
+enum	c:@E@CKShareParticipantPermission	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	5c5b435c930846b1
+enumconst	c:@E@CKShareParticipantPermission@CKShareParticipantPermissionUnknown	CKShareParticipantPermission			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	961b907f0adead7a
+enumconst	c:@E@CKShareParticipantPermission@CKShareParticipantPermissionNone	CKShareParticipantPermission			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	d5557e029f8577cd
+enumconst	c:@E@CKShareParticipantPermission@CKShareParticipantPermissionReadOnly	CKShareParticipantPermission			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	b576622d65aa41c4
+enumconst	c:@E@CKShareParticipantPermission@CKShareParticipantPermissionReadWrite	CKShareParticipantPermission			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	eb9a2614afbcf7d1
+typedef	c:@T@CKShareParticipantRole	-			-	-	110ed83c54c312d9
+enum	c:@E@CKShareParticipantRole	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	a4ac4f2a9757322a
+enumconst	c:@E@CKShareParticipantRole@CKShareParticipantRoleUnknown	CKShareParticipantRole			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	b9b98a275bc61e90
+enumconst	c:@E@CKShareParticipantRole@CKShareParticipantRoleOwner	CKShareParticipantRole			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	509719762c67a793
+enumconst	c:@E@CKShareParticipantRole@CKShareParticipantRolePrivateUser	CKShareParticipantRole			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	97c44e54804c94ea
+enumconst	c:@E@CKShareParticipantRole@CKShareParticipantRolePublicUser	CKShareParticipantRole			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	c6f2e9405addc73a
+enumconst	c:@E@CKShareParticipantRole@CKShareParticipantRoleAdministrator	CKShareParticipantRole			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	c779d908c0d03ed6
+typedef	c:@T@CKShareParticipantType	-			-	-	3e8c0ed2d61e6bc1
+enum	c:@E@CKShareParticipantType	-			ios=10.0/12.0/26.0/0,macos=10.12/10.14/26.0/0,tvos=10.0/12.0/26.0/0,watchos=3.0/5.0/26.0/0	-	cb5f48f1ace7574c
+enumconst	c:@E@CKShareParticipantType@CKShareParticipantTypeUnknown	CKShareParticipantType			ios=10.0/12.0/26.0/0,macos=10.12/10.14/26.0/0,tvos=10.0/12.0/26.0/0,watchos=3.0/5.0/26.0/0	-	8cf3f867e16bbe6f
+enumconst	c:@E@CKShareParticipantType@CKShareParticipantTypeOwner	CKShareParticipantType			ios=10.0/12.0/26.0/0,macos=10.12/10.14/26.0/0,tvos=10.0/12.0/26.0/0,watchos=3.0/5.0/26.0/0	-	cf6d05e13f6d84ca
+enumconst	c:@E@CKShareParticipantType@CKShareParticipantTypePrivateUser	CKShareParticipantType			ios=10.0/12.0/26.0/0,macos=10.12/10.14/26.0/0,tvos=10.0/12.0/26.0/0,watchos=3.0/5.0/26.0/0	-	69d9422a6ed47c82
+enumconst	c:@E@CKShareParticipantType@CKShareParticipantTypePublicUser	CKShareParticipantType			ios=10.0/12.0/26.0/0,macos=10.12/10.14/26.0/0,tvos=10.0/12.0/26.0/0,watchos=3.0/5.0/26.0/0	-	6d2f6d0302e36f3f
+interface	c:objc(cs)CKShareParticipant	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	3084283cc6faf997
+super	-	CKShareParticipant	NSObject		-	-	1ffd49fcdf674f43
+conforms	-	CKShareParticipant	NSSecureCoding		-	-	c3724512017eef33
+conforms	-	CKShareParticipant	NSCopying		-	-	7fd8806d2eda219c
+method	c:objc(cs)CKShareParticipant(im)init	-			*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	b0c613d35a4bfc19
+method	c:objc(cs)CKShareParticipant(cm)new	-			*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	cac548f76c6dc159
+property	c:objc(cs)CKShareParticipant(py)userIdentity	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	f1edc48d25be447b
+property	c:objc(cs)CKShareParticipant(py)role	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	de4f24c1462587a7
+property	c:objc(cs)CKShareParticipant(py)type	-			ios=10.0/12.0/26.0/0,macos=10.12/10.14/26.0/0,tvos=10.0/12.0/26.0/0,watchos=3.0/5.0/26.0/0	-	df66640da02f8353
+property	c:objc(cs)CKShareParticipant(py)acceptanceStatus	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	b07ff72b42168d86
+property	c:objc(cs)CKShareParticipant(py)permission	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	523814a1c7fc04f7
+property	c:objc(cs)CKShareParticipant(py)participantID	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	0b418ba9ad43fa58
+property	c:objc(cs)CKShareParticipant(py)isApprovedRequester	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	4d3d26e68a719fac
+property	c:objc(cs)CKShareParticipant(py)dateAddedToShare	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	d4bfea3331386364
+method	c:objc(cs)CKShareParticipant(cm)oneTimeURLParticipant	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	6b7d4fceb9310c5f
+var	c:@CKRecordTypeShare	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	1ce2b445094e60fc
+var	c:@CKRecordNameZoneWideShare	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	e386e10b967213dc
+var	c:@CKShareTitleKey	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	b60ee94daee32c65
+var	c:@CKShareThumbnailImageDataKey	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	d6af580ad0edd16c
+var	c:@CKShareTypeKey	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	8244e8a94aefe3ea
+interface	c:objc(cs)CKShare	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	e99ae3d9d4672b7d
+super	-	CKShare	CKRecord		-	-	8405bf6e183c0725
+conforms	-	CKShare	NSSecureCoding		-	-	8ab68c5b1f1356e1
+conforms	-	CKShare	NSCopying		-	-	139871b5e5330946
+method	c:objc(cs)CKShare(im)initWithRootRecord:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	4da21434c76dd261
+method	c:objc(cs)CKShare(im)initWithRootRecord:shareID:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	d3ca493cc0fc554d
+method	c:objc(cs)CKShare(im)initWithRecordZoneID:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	2ee1e99d59f8eeed
+method	c:objc(cs)CKShare(im)initWithCoder:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	691a456564f22e6d
+property	c:objc(cs)CKShare(py)publicPermission	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	f922a9cc87e4b07f
+property	c:objc(cs)CKShare(py)URL	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	a52937cf43cccd0c
+property	c:objc(cs)CKShare(py)participants	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	a970e5437208be92
+property	c:objc(cs)CKShare(py)owner	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	7ace865be959c866
+property	c:objc(cs)CKShare(py)currentUserParticipant	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	2b28127c68a93e5a
+method	c:objc(cs)CKShare(im)addParticipant:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	f35ae38bcb2ad091
+method	c:objc(cs)CKShare(im)removeParticipant:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	6fb22ce976b163ad
+method	c:objc(cs)CKShare(im)oneTimeURLForParticipantID:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	cff75858bd4b9ec2
+method	c:objc(cs)CKShare(im)init	-			*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	0e4ab5e210aa5978
+method	c:objc(cs)CKShare(cm)new	-			*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	ef77c91cd1e06724
+method	c:objc(cs)CKShare(im)initWithRecordType:	-			*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	ea9e0601c894bd9e
+method	c:objc(cs)CKShare(im)initWithRecordType:recordID:	-			*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	bbf37ea3b5cd39e6
+method	c:objc(cs)CKShare(im)initWithRecordType:zoneID:	-			*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	8ed3c508d3f3a65d
+property	c:objc(cs)CKShare(py)requesters	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	fd61dfa81d5dec9a
+property	c:objc(cs)CKShare(py)blockedIdentities	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	b6afce80eaefb0f4
+property	c:objc(cs)CKShare(py)allowsAccessRequests	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	b7ca5213c7d8afd5
+method	c:objc(cs)CKShare(im)denyRequesters:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	e1c10ea5fd79d514
+method	c:objc(cs)CKShare(im)blockRequesters:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	fa0955ba62adec58
+method	c:objc(cs)CKShare(im)unblockIdentities:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	3e37da4d65ec058e
+interface	c:objc(cs)CKShareAccessRequester	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	38d06e98759b5db3
+super	-	CKShareAccessRequester	NSObject		-	-	b5b72bb9212023a0
+conforms	-	CKShareAccessRequester	NSSecureCoding		-	-	d41698e15748e5ec
+conforms	-	CKShareAccessRequester	NSCopying		-	-	13abb1b98a6be852
+method	c:objc(cs)CKShareAccessRequester(cm)new	-			*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	69b67fa9f763cdab
+method	c:objc(cs)CKShareAccessRequester(im)init	-			*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	3bc78f437c039273
+property	c:objc(cs)CKShareAccessRequester(py)userIdentity	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	402adc3399799cf1
+property	c:objc(cs)CKShareAccessRequester(py)participantLookupInfo	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	343f8961382e799e
+property	c:objc(cs)CKShareAccessRequester(py)contact	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	3d3ae1054f5444cd
+interface	c:objc(cs)CKShareBlockedIdentity	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	82e9b0071316f890
+super	-	CKShareBlockedIdentity	NSObject		-	-	65860d08009368f7
+conforms	-	CKShareBlockedIdentity	NSSecureCoding		-	-	41ceaeadadf12b4f
+conforms	-	CKShareBlockedIdentity	NSCopying		-	-	01d4d729705a5c37
+method	c:objc(cs)CKShareBlockedIdentity(cm)new	-			*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	84afe4dd98ec0acb
+method	c:objc(cs)CKShareBlockedIdentity(im)init	-			*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	29b0481ca2946195
+property	c:objc(cs)CKShareBlockedIdentity(py)userIdentity	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	f7ced3c53a76c4c3
+property	c:objc(cs)CKShareBlockedIdentity(py)contact	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	27991dafda972d9d
+interface	c:objc(cs)CKShareMetadata	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	deprecated: Use hierarchicalRootRecordID instead	3eeb1ccb4adada94
+super	-	CKShareMetadata	NSObject		-	-	fe5a8aa6c5f282be
+conforms	-	CKShareMetadata	NSCopying		-	-	0908fb58267b902c
+conforms	-	CKShareMetadata	NSSecureCoding		-	-	b80e81c3bb1bb002
+method	c:objc(cs)CKShareMetadata(im)init	-			*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	unavailable: Obtain `CKShareMetadata` from ``CKFetchShareMetadataOperation`` or platform-specific scene / app delegate callbacks.	8b5afc44ed5a07b7
+method	c:objc(cs)CKShareMetadata(cm)new	-			*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	unavailable: Obtain `CKShareMetadata` from ``CKFetchShareMetadataOperation`` or platform-specific scene / app delegate callbacks.	2667c963c734d741
+property	c:objc(cs)CKShareMetadata(py)containerIdentifier	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	aaa6a0c0b9f47da4
+property	c:objc(cs)CKShareMetadata(py)share	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	5dc2f390aa656f86
+property	c:objc(cs)CKShareMetadata(py)hierarchicalRootRecordID	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	888f441da931c849
+property	c:objc(cs)CKShareMetadata(py)participantRole	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	c2a7693510643de8
+property	c:objc(cs)CKShareMetadata(py)participantStatus	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	9d7a0c6f44d31785
+property	c:objc(cs)CKShareMetadata(py)participantPermission	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	0e6679c721ccc20b
+property	c:objc(cs)CKShareMetadata(py)ownerIdentity	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	60da730ceef6e04e
+property	c:objc(cs)CKShareMetadata(py)rootRecord	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	1bb3ce589faca120
+property	c:objc(cs)CKShareMetadata(py)participantType	-			ios=10.0/12.0/26.0/0,macos=10.12/10.14/26.0/0,tvos=10.0/12.0/26.0/0,watchos=3.0/5.0/26.0/0	-	0a2abd4a421dd27a
+property	c:objc(cs)CKShareMetadata(py)rootRecordID	-			ios=10.0/16.0/-/0,macos=10.12/13.0/-/0,tvos=10.0/16.0/-/0,watchos=3.0/9.0/-/0	-	da55c41e916db778
+interface	c:objc(cs)CKUserIdentity	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	deprecated: No longer supported. Please see Sharing CloudKit Data with Other iCloud Users.	11ee6cae4d4514ea
+super	-	CKUserIdentity	NSObject		-	-	1dd2710fae42ff9e
+conforms	-	CKUserIdentity	NSSecureCoding		-	-	c1698289c89a1a9a
+conforms	-	CKUserIdentity	NSCopying		-	-	4cde62a38ac1de23
+method	c:objc(cs)CKUserIdentity(im)init	-			*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	5c2a09a3d3909f97
+method	c:objc(cs)CKUserIdentity(cm)new	-			*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	f3c2d0fa89e74879
+property	c:objc(cs)CKUserIdentity(py)userRecordID	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	bc286bdae7a83749
+property	c:objc(cs)CKUserIdentity(py)lookupInfo	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	6d4083cda30b9a55
+property	c:objc(cs)CKUserIdentity(py)nameComponents	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	79275b74b175a6fb
+property	c:objc(cs)CKUserIdentity(py)hasiCloudAccount	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	e9cd56c27e559012
+property	c:objc(cs)CKUserIdentity(py)contactIdentifiers	-			ios=11.0/18.0/-/0,macos=10.13/15.0/-/0,watchos=4.0/11.0/-/0	-	5a9b94927c4a6671
+interface	c:objc(cs)CKUserIdentityLookupInfo	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	3764bfde3f5e4b51
+super	-	CKUserIdentityLookupInfo	NSObject		-	-	bbd5ffed57b1f968
+conforms	-	CKUserIdentityLookupInfo	NSSecureCoding		-	-	b868dddde8583f5c
+conforms	-	CKUserIdentityLookupInfo	NSCopying		-	-	d088dcd052b19675
+method	c:objc(cs)CKUserIdentityLookupInfo(im)init	-			*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	fe3f18fe2643a338
+method	c:objc(cs)CKUserIdentityLookupInfo(cm)new	-			*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	380523a526fed149
+method	c:objc(cs)CKUserIdentityLookupInfo(im)initWithEmailAddress:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	39fc31c83c617c91
+method	c:objc(cs)CKUserIdentityLookupInfo(im)initWithPhoneNumber:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	226498c4b355086f
+method	c:objc(cs)CKUserIdentityLookupInfo(im)initWithUserRecordID:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	874dd7bd733d24e3
+method	c:objc(cs)CKUserIdentityLookupInfo(cm)lookupInfosWithEmails:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	202fc7a503606521
+method	c:objc(cs)CKUserIdentityLookupInfo(cm)lookupInfosWithPhoneNumbers:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	df364eb708e3e5c6
+method	c:objc(cs)CKUserIdentityLookupInfo(cm)lookupInfosWithRecordIDs:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	2ea7f3858a85a62e
+property	c:objc(cs)CKUserIdentityLookupInfo(py)emailAddress	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	67d92956591927ce
+property	c:objc(cs)CKUserIdentityLookupInfo(py)phoneNumber	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	be34a57d1ef14215
+property	c:objc(cs)CKUserIdentityLookupInfo(py)userRecordID	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	bcbe4123c065bd65
+interface	c:objc(cs)CKAcceptSharesOperation	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	11a774e9048acc10
+super	-	CKAcceptSharesOperation	CKOperation		-	-	424e9a3e001e5793
+method	c:objc(cs)CKAcceptSharesOperation(im)init	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	44479a7a024f6881
+method	c:objc(cs)CKAcceptSharesOperation(im)initWithShareMetadatas:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	1b08043be8b0288b
+property	c:objc(cs)CKAcceptSharesOperation(py)shareMetadatas	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	0be13cd09baa3005
+property	c:objc(cs)CKAcceptSharesOperation(py)perShareCompletionBlock	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	8dbc6ba28d5b50ff
+property	c:objc(cs)CKAcceptSharesOperation(py)acceptSharesCompletionBlock	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	be5fb5ba5ca9996a
+interface	c:objc(cs)CKDiscoverAllUserIdentitiesOperation	-			ios=10.0/17.0/-/0,macos=10.12/14.0/-/0,tvos=-/-/-/1,watchos=3.0/10.0/-/0	-	d12ce5e371a6f29b
+super	-	CKDiscoverAllUserIdentitiesOperation	CKOperation		-	-	e95379c82b81204c
+method	c:objc(cs)CKDiscoverAllUserIdentitiesOperation(im)init	-			ios=10.0/17.0/-/0,macos=10.12/14.0/-/0,tvos=-/-/-/1,watchos=3.0/10.0/-/0	-	8fbe8cdf0eead271
+property	c:objc(cs)CKDiscoverAllUserIdentitiesOperation(py)userIdentityDiscoveredBlock	-			ios=10.0/17.0/-/0,macos=10.12/14.0/-/0,tvos=-/-/-/1,watchos=3.0/10.0/-/0	-	9a54dbb51fce2d0b
+property	c:objc(cs)CKDiscoverAllUserIdentitiesOperation(py)discoverAllUserIdentitiesCompletionBlock	-			ios=10.0/17.0/-/0,macos=10.12/14.0/-/0,tvos=-/-/-/1,watchos=3.0/10.0/-/0	-	61394c0847ca4d4e
+interface	c:objc(cs)CKDiscoverUserIdentitiesOperation	-			ios=10.0/17.0/-/0,macos=10.12/14.0/-/0,tvos=10.0/17.0/-/0,watchos=3.0/10.0/-/0	-	c16396fd832dc0d9
+super	-	CKDiscoverUserIdentitiesOperation	CKOperation		-	-	7333d3c82ae48319
+method	c:objc(cs)CKDiscoverUserIdentitiesOperation(im)init	-			ios=10.0/17.0/-/0,macos=10.12/14.0/-/0,tvos=10.0/17.0/-/0,watchos=3.0/10.0/-/0	-	7f2adf9725dfa207
+method	c:objc(cs)CKDiscoverUserIdentitiesOperation(im)initWithUserIdentityLookupInfos:	-			ios=10.0/17.0/-/0,macos=10.12/14.0/-/0,tvos=10.0/17.0/-/0,watchos=3.0/10.0/-/0	-	371736e1c94ffdea
+property	c:objc(cs)CKDiscoverUserIdentitiesOperation(py)userIdentityLookupInfos	-			ios=10.0/17.0/-/0,macos=10.12/14.0/-/0,tvos=10.0/17.0/-/0,watchos=3.0/10.0/-/0	-	64a5ff15365dff92
+property	c:objc(cs)CKDiscoverUserIdentitiesOperation(py)userIdentityDiscoveredBlock	-			ios=10.0/17.0/-/0,macos=10.12/14.0/-/0,tvos=10.0/17.0/-/0,watchos=3.0/10.0/-/0	-	272b136dc4b43ebd
+property	c:objc(cs)CKDiscoverUserIdentitiesOperation(py)discoverUserIdentitiesCompletionBlock	-			ios=10.0/17.0/-/0,macos=10.12/14.0/-/0,tvos=10.0/17.0/-/0,watchos=3.0/10.0/-/0	-	153255ffce96b122
+interface	c:objc(cs)CKFetchDatabaseChangesOperation	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	7ece58a74048be65
+super	-	CKFetchDatabaseChangesOperation	CKDatabaseOperation		-	-	8c39df07da0bf45c
+method	c:objc(cs)CKFetchDatabaseChangesOperation(im)init	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	7e708fdecfdda808
+method	c:objc(cs)CKFetchDatabaseChangesOperation(im)initWithPreviousServerChangeToken:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	68685c9d292d0893
+property	c:objc(cs)CKFetchDatabaseChangesOperation(py)previousServerChangeToken	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	a84b5290280f149e
+property	c:objc(cs)CKFetchDatabaseChangesOperation(py)resultsLimit	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	041c6f3e0b626812
+property	c:objc(cs)CKFetchDatabaseChangesOperation(py)fetchAllChanges	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	204a08b2c6708eed
+property	c:objc(cs)CKFetchDatabaseChangesOperation(py)recordZoneWithIDChangedBlock	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	35894db6c4f66ad1
+property	c:objc(cs)CKFetchDatabaseChangesOperation(py)recordZoneWithIDWasDeletedBlock	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	83f592e9e1b74ec2
+property	c:objc(cs)CKFetchDatabaseChangesOperation(py)recordZoneWithIDWasPurgedBlock	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a6c506e9e8f320df
+property	c:objc(cs)CKFetchDatabaseChangesOperation(py)recordZoneWithIDWasDeletedDueToUserEncryptedDataResetBlock	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	8ec5545d63d1fcfd
+property	c:objc(cs)CKFetchDatabaseChangesOperation(py)changeTokenUpdatedBlock	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	bd23c840b8e3fa67
+property	c:objc(cs)CKFetchDatabaseChangesOperation(py)fetchDatabaseChangesCompletionBlock	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	7af92241838f4f8b
+interface	c:objc(cs)CKFetchNotificationChangesOperation	-			*unavailable	unavailable: Fetching notification changes is no longer supported.  Consider using CKDatabaseSubscription, CKFetchDatabaseChangesOperation, and CKFetchRecordZoneChangesOperation	16b38097fc9931cb
+super	-	CKFetchNotificationChangesOperation	CKOperation		-	-	5ad95358f9071b6b
+interface	c:objc(cs)CKFetchRecordChangesOperation	-			ios=8.0/10.0/-/0,macos=10.10/10.12/-/0,tvos=9.0/10.0/-/0,watchos=3.0/3.0/-/0	-	b2790f8e0e1fd302
+super	-	CKFetchRecordChangesOperation	CKDatabaseOperation		-	-	61ee1f14fcc23c93
+method	c:objc(cs)CKFetchRecordChangesOperation(im)init	-			ios=8.0/10.0/-/0,macos=10.10/10.12/-/0,tvos=9.0/10.0/-/0,watchos=3.0/3.0/-/0	-	6baf477a335028b6
+method	c:objc(cs)CKFetchRecordChangesOperation(im)initWithRecordZoneID:previousServerChangeToken:	-			ios=8.0/10.0/-/0,macos=10.10/10.12/-/0,tvos=9.0/10.0/-/0,watchos=3.0/3.0/-/0	-	aa3fe080ee767ac2
+property	c:objc(cs)CKFetchRecordChangesOperation(py)recordZoneID	-			ios=8.0/10.0/-/0,macos=10.10/10.12/-/0,tvos=9.0/10.0/-/0,watchos=3.0/3.0/-/0	-	f39f75ee0e06d272
+property	c:objc(cs)CKFetchRecordChangesOperation(py)previousServerChangeToken	-			ios=8.0/10.0/-/0,macos=10.10/10.12/-/0,tvos=9.0/10.0/-/0,watchos=3.0/3.0/-/0	-	527d93b94888e246
+property	c:objc(cs)CKFetchRecordChangesOperation(py)resultsLimit	-			ios=8.0/10.0/-/0,macos=10.10/10.12/-/0,tvos=9.0/10.0/-/0,watchos=3.0/3.0/-/0	-	77ef76d1b8742787
+property	c:objc(cs)CKFetchRecordChangesOperation(py)desiredKeys	-			ios=8.0/10.0/-/0,macos=10.10/10.12/-/0,tvos=9.0/10.0/-/0,watchos=3.0/3.0/-/0	-	5164c978813c70f9
+property	c:objc(cs)CKFetchRecordChangesOperation(py)recordChangedBlock	-			ios=8.0/10.0/-/0,macos=10.10/10.12/-/0,tvos=9.0/10.0/-/0,watchos=3.0/3.0/-/0	-	74a16f3545cfb5df
+property	c:objc(cs)CKFetchRecordChangesOperation(py)recordWithIDWasDeletedBlock	-			ios=8.0/10.0/-/0,macos=10.10/10.12/-/0,tvos=9.0/10.0/-/0,watchos=3.0/3.0/-/0	-	1dd86fce1b9ee0ac
+property	c:objc(cs)CKFetchRecordChangesOperation(py)moreComing	-			ios=8.0/10.0/-/0,macos=10.10/10.12/-/0,tvos=9.0/10.0/-/0,watchos=3.0/3.0/-/0	-	dcdd85f53fc4430f
+property	c:objc(cs)CKFetchRecordChangesOperation(py)fetchRecordChangesCompletionBlock	-			ios=8.0/10.0/-/0,macos=10.10/10.12/-/0,tvos=9.0/10.0/-/0,watchos=3.0/3.0/-/0	-	98ec7d3a74ab98b6
+interface	c:objc(cs)CKFetchRecordsOperation	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	383ef6e5356cd2cb
+super	-	CKFetchRecordsOperation	CKDatabaseOperation		-	-	a5717d96ff4ad472
+method	c:objc(cs)CKFetchRecordsOperation(im)init	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	387e321af5fb5991
+method	c:objc(cs)CKFetchRecordsOperation(im)initWithRecordIDs:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	96a78196b1b8c441
+method	c:objc(cs)CKFetchRecordsOperation(cm)fetchCurrentUserRecordOperation	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	ce55b974945f4ff9
+property	c:objc(cs)CKFetchRecordsOperation(py)recordIDs	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	2bbac8f024027458
+property	c:objc(cs)CKFetchRecordsOperation(py)desiredKeys	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	327c27f5423489fb
+property	c:objc(cs)CKFetchRecordsOperation(py)perRecordProgressBlock	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	077914c43108fcb9
+property	c:objc(cs)CKFetchRecordsOperation(py)perRecordCompletionBlock	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	138a79f383db08ff
+property	c:objc(cs)CKFetchRecordsOperation(py)fetchRecordsCompletionBlock	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	947897863b2e57b3
+interface	c:objc(cs)CKFetchRecordZoneChangesOperation	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	deprecated: Use recordWasChangedBlock instead, which surfaces per-record errors	609775695e768929
+super	-	CKFetchRecordZoneChangesOperation	CKDatabaseOperation		-	-	48d083c0fde6270e
+method	c:objc(cs)CKFetchRecordZoneChangesOperation(im)init	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	2c4d3eddb8adeafe
+method	c:objc(cs)CKFetchRecordZoneChangesOperation(im)initWithRecordZoneIDs:configurationsByRecordZoneID:	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	4b5117fdda35615f
+property	c:objc(cs)CKFetchRecordZoneChangesOperation(py)recordZoneIDs	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	a9974830c9d5092c
+property	c:objc(cs)CKFetchRecordZoneChangesOperation(py)configurationsByRecordZoneID	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	7a35091c35a77e5b
+property	c:objc(cs)CKFetchRecordZoneChangesOperation(py)fetchAllChanges	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	ccd8db417959e903
+property	c:objc(cs)CKFetchRecordZoneChangesOperation(py)recordChangedBlock	-			ios=10.0/15.0/-/0,macos=10.12/12.0/-/0,tvos=10.0/15.0/-/0,watchos=3.0/8.0/-/0	-	8f2eabf6addf1ed8
+property	c:objc(cs)CKFetchRecordZoneChangesOperation(py)recordWasChangedBlock	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	5633302eb932691f
+property	c:objc(cs)CKFetchRecordZoneChangesOperation(py)recordWithIDWasDeletedBlock	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	0ee3f93c21d6c501
+property	c:objc(cs)CKFetchRecordZoneChangesOperation(py)recordZoneChangeTokensUpdatedBlock	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	43b6b39aef8f6c31
+property	c:objc(cs)CKFetchRecordZoneChangesOperation(py)recordZoneFetchCompletionBlock	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	1efcb3c6a4af8b69
+property	c:objc(cs)CKFetchRecordZoneChangesOperation(py)fetchRecordZoneChangesCompletionBlock	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	a0f5e13369f562ac
+category	c:objc(cy)CKFetchRecordZoneChangesOperation@Deprecated	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	deprecated: Use initWithRecordZoneIDs:configurationsByRecordZoneID: instead	507c81a1ca3fb58d
+method	c:objc(cs)CKFetchRecordZoneChangesOperation(im)initWithRecordZoneIDs:optionsByRecordZoneID:	Deprecated			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=3.0/5.0/-/0	deprecated: Use initWithRecordZoneIDs:configurationsByRecordZoneID: instead	331da8f21190fc68
+property	c:objc(cs)CKFetchRecordZoneChangesOperation(py)optionsByRecordZoneID	Deprecated			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=3.0/5.0/-/0	-	1f60386cc0d56ac3
+interface	c:objc(cs)CKFetchRecordZoneChangesConfiguration	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	9fa69793a46f69c7
+super	-	CKFetchRecordZoneChangesConfiguration	NSObject		-	-	99dfd4b485c4faac
+conforms	-	CKFetchRecordZoneChangesConfiguration	NSSecureCoding		-	-	3643d719820875a0
+conforms	-	CKFetchRecordZoneChangesConfiguration	NSCopying		-	-	6c88c3cfbd3824c8
+property	c:objc(cs)CKFetchRecordZoneChangesConfiguration(py)previousServerChangeToken	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	527fa2584d4199fb
+property	c:objc(cs)CKFetchRecordZoneChangesConfiguration(py)resultsLimit	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	34705c303985d1c3
+property	c:objc(cs)CKFetchRecordZoneChangesConfiguration(py)desiredKeys	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	790b112102b31210
+interface	c:objc(cs)CKFetchRecordZoneChangesOptions	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=3.0/5.0/-/0	-	3f05fd69d8be6491
+super	-	CKFetchRecordZoneChangesOptions	NSObject		-	-	f2642ee9038db4e3
+conforms	-	CKFetchRecordZoneChangesOptions	NSSecureCoding		-	-	28b074d9564a3e26
+conforms	-	CKFetchRecordZoneChangesOptions	NSCopying		-	-	92715fe364f04da8
+property	c:objc(cs)CKFetchRecordZoneChangesOptions(py)previousServerChangeToken	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=3.0/5.0/-/0	-	a9945906f66d85e0
+property	c:objc(cs)CKFetchRecordZoneChangesOptions(py)resultsLimit	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=3.0/5.0/-/0	-	4bbb8f7fe3c79592
+property	c:objc(cs)CKFetchRecordZoneChangesOptions(py)desiredKeys	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=3.0/5.0/-/0	-	59b3db9c776e92f1
+interface	c:objc(cs)CKFetchRecordZonesOperation	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	0e2e708107f0996d
+super	-	CKFetchRecordZonesOperation	CKDatabaseOperation		-	-	72da2cd5fee169ff
+method	c:objc(cs)CKFetchRecordZonesOperation(cm)fetchAllRecordZonesOperation	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	659d568f6cc2ceab
+method	c:objc(cs)CKFetchRecordZonesOperation(im)init	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	994be1b08afde19e
+method	c:objc(cs)CKFetchRecordZonesOperation(im)initWithRecordZoneIDs:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	1a3e92db1f239735
+property	c:objc(cs)CKFetchRecordZonesOperation(py)recordZoneIDs	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	908c38d733cd47e0
+property	c:objc(cs)CKFetchRecordZonesOperation(py)perRecordZoneCompletionBlock	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	0a5aa6dfbb8c4c28
+property	c:objc(cs)CKFetchRecordZonesOperation(py)fetchRecordZonesCompletionBlock	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	24f9837c4eacda8b
+interface	c:objc(cs)CKFetchShareMetadataOperation	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	4988b1e1e6212fa5
+super	-	CKFetchShareMetadataOperation	CKOperation		-	-	a9793528d4a5e72b
+method	c:objc(cs)CKFetchShareMetadataOperation(im)init	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	81f6cc888b87103a
+method	c:objc(cs)CKFetchShareMetadataOperation(im)initWithShareURLs:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	897916e6893e9b30
+property	c:objc(cs)CKFetchShareMetadataOperation(py)shareURLs	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	e8425a3c2c497c76
+property	c:objc(cs)CKFetchShareMetadataOperation(py)shouldFetchRootRecord	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	7823fb4df77e55cb
+property	c:objc(cs)CKFetchShareMetadataOperation(py)rootRecordDesiredKeys	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	01259d39cb049063
+property	c:objc(cs)CKFetchShareMetadataOperation(py)perShareMetadataBlock	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	6fd3ff8add4c6edd
+property	c:objc(cs)CKFetchShareMetadataOperation(py)fetchShareMetadataCompletionBlock	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	26e4d79f69b67228
+interface	c:objc(cs)CKFetchShareParticipantsOperation	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	deprecated: Use perShareParticipantCompletionBlock instead, which surfaces per-share-participant errors	ff672691704667d7
+super	-	CKFetchShareParticipantsOperation	CKOperation		-	-	2b010a653b509660
+method	c:objc(cs)CKFetchShareParticipantsOperation(im)init	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	d1c51e865d7752ba
+method	c:objc(cs)CKFetchShareParticipantsOperation(im)initWithUserIdentityLookupInfos:	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	0d259bcb875bdef8
+property	c:objc(cs)CKFetchShareParticipantsOperation(py)userIdentityLookupInfos	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	9570263725d6afc1
+property	c:objc(cs)CKFetchShareParticipantsOperation(py)shareParticipantFetchedBlock	-			ios=10.0/15.0/-/0,macos=10.12/12.0/-/0,tvos=10.0/15.0/-/0,watchos=3.0/8.0/-/0	-	18acd9bdd8148adf
+property	c:objc(cs)CKFetchShareParticipantsOperation(py)perShareParticipantCompletionBlock	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	da9b04a2ddf75821
+property	c:objc(cs)CKFetchShareParticipantsOperation(py)fetchShareParticipantsCompletionBlock	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	50ef7f9cacb56da8
+interface	c:objc(cs)CKFetchSubscriptionsOperation	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=6.0/-/-/0	-	747872d7b675d5a8
+super	-	CKFetchSubscriptionsOperation	CKDatabaseOperation		-	-	eabac9d6d5915d33
+method	c:objc(cs)CKFetchSubscriptionsOperation(cm)fetchAllSubscriptionsOperation	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=6.0/-/-/0	-	5b6d07aa684d90fb
+method	c:objc(cs)CKFetchSubscriptionsOperation(im)init	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=6.0/-/-/0	-	aa92d1ae963c9bda
+method	c:objc(cs)CKFetchSubscriptionsOperation(im)initWithSubscriptionIDs:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=6.0/-/-/0	-	198de7bfc038bdca
+property	c:objc(cs)CKFetchSubscriptionsOperation(py)subscriptionIDs	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=6.0/-/-/0	-	d55031218d39cb67
+property	c:objc(cs)CKFetchSubscriptionsOperation(py)perSubscriptionCompletionBlock	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	a283981b6ffe2e1e
+property	c:objc(cs)CKFetchSubscriptionsOperation(py)fetchSubscriptionCompletionBlock	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=6.0/-/-/0	-	896eac4c8410eb94
+interface	c:objc(cs)CKFetchWebAuthTokenOperation	-			ios=9.2/-/-/0,macos=10.11/-/-/0,tvos=9.1/-/-/0,watchos=3.0/-/-/0	-	80b6c81367181fd2
+super	-	CKFetchWebAuthTokenOperation	CKDatabaseOperation		-	-	0bcc0c0b7d1b84c5
+method	c:objc(cs)CKFetchWebAuthTokenOperation(im)init	-			ios=9.2/-/-/0,macos=10.11/-/-/0,tvos=9.1/-/-/0,watchos=3.0/-/-/0	-	1e72250691db606c
+method	c:objc(cs)CKFetchWebAuthTokenOperation(im)initWithAPIToken:	-			ios=9.2/-/-/0,macos=10.11/-/-/0,tvos=9.1/-/-/0,watchos=3.0/-/-/0	-	38c553afa9a6b6f9
+property	c:objc(cs)CKFetchWebAuthTokenOperation(py)APIToken	-			ios=9.2/-/-/0,macos=10.11/-/-/0,tvos=9.1/-/-/0,watchos=3.0/-/-/0	-	8c190b968d6716e3
+property	c:objc(cs)CKFetchWebAuthTokenOperation(py)fetchWebAuthTokenCompletionBlock	-			ios=9.2/-/-/0,macos=10.11/-/-/0,tvos=9.1/-/-/0,watchos=3.0/-/-/0	-	b5e968d0b3d01935
+interface	c:objc(cs)CKMarkNotificationsReadOperation	-			*unavailable	unavailable: Marking notifications read is no longer supported.  Consider using CKDatabaseSubscription, CKFetchDatabaseChangesOperation, and CKFetchRecordZoneChangesOperation	1ca66dce84285477
+super	-	CKMarkNotificationsReadOperation	CKOperation		-	-	e610108974f72405
+interface	c:objc(cs)CKModifyBadgeOperation	-			*unavailable	unavailable: Modifying badge counts is no longer supported	2e3efd55dc016e95
+super	-	CKModifyBadgeOperation	CKOperation		-	-	966d32b8814e9461
+typedef	c:@T@CKRecordSavePolicy	-			-	-	49ab724cb068fe10
+enum	c:@E@CKRecordSavePolicy	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	c272ac1166a635cd
+enumconst	c:@E@CKRecordSavePolicy@CKRecordSaveIfServerRecordUnchanged	CKRecordSavePolicy			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	577cde2600bac8b7
+enumconst	c:@E@CKRecordSavePolicy@CKRecordSaveChangedKeys	CKRecordSavePolicy			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	bfffab3402b757e5
+enumconst	c:@E@CKRecordSavePolicy@CKRecordSaveAllKeys	CKRecordSavePolicy			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	4eecf112d2c4b695
+interface	c:objc(cs)CKModifyRecordsOperation	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	deprecated: Use perRecordSaveBlock instead	b82699fd0174c78d
+super	-	CKModifyRecordsOperation	CKDatabaseOperation		-	-	6d027b67afc244e4
+method	c:objc(cs)CKModifyRecordsOperation(im)init	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	b77a7ff1eb2e85e8
+method	c:objc(cs)CKModifyRecordsOperation(im)initWithRecordsToSave:recordIDsToDelete:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	23e4ba6e176ca259
+property	c:objc(cs)CKModifyRecordsOperation(py)recordsToSave	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	ba59ff661e324743
+property	c:objc(cs)CKModifyRecordsOperation(py)recordIDsToDelete	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	dc4b88c8662b8106
+property	c:objc(cs)CKModifyRecordsOperation(py)savePolicy	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	0c0f48417d33666d
+property	c:objc(cs)CKModifyRecordsOperation(py)clientChangeTokenData	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	18586b8a649313f3
+property	c:objc(cs)CKModifyRecordsOperation(py)atomic	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	98377f701d7cebd3
+property	c:objc(cs)CKModifyRecordsOperation(py)perRecordProgressBlock	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	dc779ea46bf4b107
+property	c:objc(cs)CKModifyRecordsOperation(py)perRecordCompletionBlock	-			ios=8.0/15.0/-/0,macos=10.10/12.0/-/0,tvos=9.0/15.0/-/0,watchos=3.0/8.0/-/0	-	32f81f60c630afc0
+property	c:objc(cs)CKModifyRecordsOperation(py)perRecordSaveBlock	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	c3b2bd0b9962e4b9
+property	c:objc(cs)CKModifyRecordsOperation(py)perRecordDeleteBlock	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	edd225638fd1c697
+property	c:objc(cs)CKModifyRecordsOperation(py)modifyRecordsCompletionBlock	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	3b609564fc58e602
+interface	c:objc(cs)CKModifyRecordZonesOperation	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	941fc75b0b1c879b
+super	-	CKModifyRecordZonesOperation	CKDatabaseOperation		-	-	241d14b17d3a2ec7
+method	c:objc(cs)CKModifyRecordZonesOperation(im)init	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	13abf363d70b7d47
+method	c:objc(cs)CKModifyRecordZonesOperation(im)initWithRecordZonesToSave:recordZoneIDsToDelete:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	9e9529cd405f2570
+property	c:objc(cs)CKModifyRecordZonesOperation(py)recordZonesToSave	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	dfecc3c1daab56ad
+property	c:objc(cs)CKModifyRecordZonesOperation(py)recordZoneIDsToDelete	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	eb822a09a6b3d83c
+property	c:objc(cs)CKModifyRecordZonesOperation(py)perRecordZoneSaveBlock	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	d4684d35900c4826
+property	c:objc(cs)CKModifyRecordZonesOperation(py)perRecordZoneDeleteBlock	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	b0b4073f9a045553
+property	c:objc(cs)CKModifyRecordZonesOperation(py)modifyRecordZonesCompletionBlock	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	ff3d5a4757f90641
+interface	c:objc(cs)CKModifySubscriptionsOperation	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=6.0/-/-/0	-	129f75c816787880
+super	-	CKModifySubscriptionsOperation	CKDatabaseOperation		-	-	c6db2760f757bf5f
+method	c:objc(cs)CKModifySubscriptionsOperation(im)init	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=6.0/-/-/0	-	86929a852fe1668f
+method	c:objc(cs)CKModifySubscriptionsOperation(im)initWithSubscriptionsToSave:subscriptionIDsToDelete:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=6.0/-/-/0	-	40b0dd133a3b79ff
+property	c:objc(cs)CKModifySubscriptionsOperation(py)subscriptionsToSave	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=6.0/-/-/0	-	aefae9afb82af57d
+property	c:objc(cs)CKModifySubscriptionsOperation(py)subscriptionIDsToDelete	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=6.0/-/-/0	-	7bcba90709456660
+property	c:objc(cs)CKModifySubscriptionsOperation(py)perSubscriptionSaveBlock	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	7f14cefca97249a0
+property	c:objc(cs)CKModifySubscriptionsOperation(py)perSubscriptionDeleteBlock	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	c594536ea1c2df27
+property	c:objc(cs)CKModifySubscriptionsOperation(py)modifySubscriptionsCompletionBlock	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=6.0/-/-/0	-	8703d2f4486aea3d
+typedef	c:@T@CKOperationGroupTransferSize	-			-	-	a39f1b200b0bfb30
+enum	c:@E@CKOperationGroupTransferSize	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ac4051f5403c312b
+enumconst	c:@E@CKOperationGroupTransferSize@CKOperationGroupTransferSizeUnknown	CKOperationGroupTransferSize			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	aab7353cf3854181
+enumconst	c:@E@CKOperationGroupTransferSize@CKOperationGroupTransferSizeKilobytes	CKOperationGroupTransferSize			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	28a52443340089ce
+enumconst	c:@E@CKOperationGroupTransferSize@CKOperationGroupTransferSizeMegabytes	CKOperationGroupTransferSize			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	37881ea35e90a495
+enumconst	c:@E@CKOperationGroupTransferSize@CKOperationGroupTransferSizeTensOfMegabytes	CKOperationGroupTransferSize			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b5eb024e70edd378
+enumconst	c:@E@CKOperationGroupTransferSize@CKOperationGroupTransferSizeHundredsOfMegabytes	CKOperationGroupTransferSize			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4dcb2acbb56318ea
+enumconst	c:@E@CKOperationGroupTransferSize@CKOperationGroupTransferSizeGigabytes	CKOperationGroupTransferSize			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	db52f6158b9c9fb1
+enumconst	c:@E@CKOperationGroupTransferSize@CKOperationGroupTransferSizeTensOfGigabytes	CKOperationGroupTransferSize			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	1929d11a5e0e70ac
+enumconst	c:@E@CKOperationGroupTransferSize@CKOperationGroupTransferSizeHundredsOfGigabytes	CKOperationGroupTransferSize			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	9cf400c35e99667e
+interface	c:objc(cs)CKOperationGroup	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	6a84f065b3279801
+super	-	CKOperationGroup	NSObject		-	-	89e963d17bc26dcb
+conforms	-	CKOperationGroup	NSSecureCoding		-	-	c7b671a165e893a9
+conforms	-	CKOperationGroup	NSCopying		-	-	c79e9eea64e84823
+method	c:objc(cs)CKOperationGroup(im)init	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	83017e14688449ca
+method	c:objc(cs)CKOperationGroup(im)initWithCoder:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4b6a016783474fb8
+property	c:objc(cs)CKOperationGroup(py)operationGroupID	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c4f18528050c5295
+property	c:objc(cs)CKOperationGroup(py)defaultConfiguration	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e7ab093ba20d5553
+property	c:objc(cs)CKOperationGroup(py)name	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	92dc818c9dc5c600
+property	c:objc(cs)CKOperationGroup(py)quantity	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c74adcdf7b1e315e
+property	c:objc(cs)CKOperationGroup(py)expectedSendSize	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	38dd7bfa58c1c2b0
+property	c:objc(cs)CKOperationGroup(py)expectedReceiveSize	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	24f58ceb28bdccd8
+interface	c:objc(cs)CKQueryCursor	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	15eb786c1a05401c
+super	-	CKQueryCursor	NSObject		-	-	d9900e5a333a64e6
+conforms	-	CKQueryCursor	NSCopying		-	-	927e18be41089477
+conforms	-	CKQueryCursor	NSSecureCoding		-	-	edbff6511c9af935
+method	c:objc(cs)CKQueryCursor(im)init	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	ae6a142a7bd6aa52
+method	c:objc(cs)CKQueryCursor(cm)new	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	bac6c9908a74a053
+var	c:@CKQueryOperationMaximumResults	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	88a886ab945ffdb3
+interface	c:objc(cs)CKQueryOperation	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	deprecated: Use recordMatchedBlock instead, which surfaces per-record errors	d400cb42a312a31a
+super	-	CKQueryOperation	CKDatabaseOperation		-	-	9df1c3f44ac5529a
+method	c:objc(cs)CKQueryOperation(im)init	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	5f83ee6619b260f6
+method	c:objc(cs)CKQueryOperation(im)initWithQuery:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	e96528a789f54b54
+method	c:objc(cs)CKQueryOperation(im)initWithCursor:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	4767dedb33b9ce95
+property	c:objc(cs)CKQueryOperation(py)query	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	3523c80e771423d5
+property	c:objc(cs)CKQueryOperation(py)cursor	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	3bfc2e9ecbf13295
+property	c:objc(cs)CKQueryOperation(py)zoneID	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	493ac6814a4dd67b
+property	c:objc(cs)CKQueryOperation(py)resultsLimit	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	17adfd898bae0f52
+property	c:objc(cs)CKQueryOperation(py)desiredKeys	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	797a193c160bc60c
+property	c:objc(cs)CKQueryOperation(py)recordFetchedBlock	-			ios=8.0/15.0/-/0,macos=10.10/12.0/-/0,tvos=9.0/15.0/-/0,watchos=3.0/8.0/-/0	-	283e3f336b6d7313
+property	c:objc(cs)CKQueryOperation(py)recordMatchedBlock	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	a508f44a793b5b86
+property	c:objc(cs)CKQueryOperation(py)queryCompletionBlock	-			ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	3ee073eeff501e19
+interface	c:objc(cs)CKShareRequestAccessOperation	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	7265f75674904707
+super	-	CKShareRequestAccessOperation	CKOperation		-	-	ceadb54fd58076ee
+method	c:objc(cs)CKShareRequestAccessOperation(im)init	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	75c5d7da817bd596
+method	c:objc(cs)CKShareRequestAccessOperation(im)initWithShareURLs:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	8bca5620caf6ed71
+property	c:objc(cs)CKShareRequestAccessOperation(py)shareURLs	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	577754b84ddc1f79
+property	c:objc(cs)CKShareRequestAccessOperation(py)perShareAccessRequestCompletionBlock	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	3647499b4adc8b67
+property	c:objc(cs)CKShareRequestAccessOperation(py)shareRequestAccessCompletionBlock	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	fa29cea847c79612
+typedef	c:@T@CKSharePreparationCompletionHandler	-			swift=-/-/-/1	-	9dc701de2fa13a0b
+typedef	c:@T@CKSharePreparationHandler	-			swift=-/-/-/1	-	690003c5e3d10de8
+category	c:objc(cy)NSItemProvider@CKSharingSupport	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	cbe078d9d922f1d1
+method	c:objc(cs)NSItemProvider(im)registerCKShareWithContainer:allowedSharingOptions:preparationHandler:	CKSharingSupport			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	44cbdec46131f38a
+method	c:objc(cs)NSItemProvider(im)registerCKShare:container:allowedSharingOptions:	CKSharingSupport			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f44537b98e74bd0b
+typedef	c:@T@CKSharingParticipantAccessOption	-			-	-	6b48d6742c5b2760
+enum	c:@E@CKSharingParticipantAccessOption	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a9c31f14dcade236
+enumconst	c:@E@CKSharingParticipantAccessOption@CKSharingParticipantAccessOptionAnyoneWithLink	CKSharingParticipantAccessOption			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a819593447b78b06
+enumconst	c:@E@CKSharingParticipantAccessOption@CKSharingParticipantAccessOptionSpecifiedRecipientsOnly	CKSharingParticipantAccessOption			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2599c36ddbf2b5f9
+enumconst	c:@E@CKSharingParticipantAccessOption@CKSharingParticipantAccessOptionAny	CKSharingParticipantAccessOption			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2b8eaf216e1b46f8
+typedef	c:@T@CKSharingParticipantPermissionOption	-			-	-	34e7f808845cf438
+enum	c:@E@CKSharingParticipantPermissionOption	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c2f607205f7535d5
+enumconst	c:@E@CKSharingParticipantPermissionOption@CKSharingParticipantPermissionOptionReadOnly	CKSharingParticipantPermissionOption			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1c432a9c099c4274
+enumconst	c:@E@CKSharingParticipantPermissionOption@CKSharingParticipantPermissionOptionReadWrite	CKSharingParticipantPermissionOption			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4676eeaca5c44b69
+enumconst	c:@E@CKSharingParticipantPermissionOption@CKSharingParticipantPermissionOptionAny	CKSharingParticipantPermissionOption			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7e8d44c810cb9285
+interface	c:objc(cs)CKAllowedSharingOptions	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bf76a3d28eb25b19
+super	-	CKAllowedSharingOptions	NSObject		-	-	c46446a12a3ab912
+conforms	-	CKAllowedSharingOptions	NSSecureCoding		-	-	1bfaf4122df4ed61
+conforms	-	CKAllowedSharingOptions	NSCopying		-	-	75fe3b345b383112
+method	c:objc(cs)CKAllowedSharingOptions(im)initWithAllowedParticipantPermissionOptions:allowedParticipantAccessOptions:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f3f0872c87e68512
+property	c:objc(cs)CKAllowedSharingOptions(py)allowedParticipantPermissionOptions	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ae10dd2b8170fe1d
+property	c:objc(cs)CKAllowedSharingOptions(py)allowedParticipantAccessOptions	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3b35f1bf912aff9a
+property	c:objc(cs)CKAllowedSharingOptions(py)allowsParticipantsToInviteOthers	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	4c11aca3a884ae51
+property	c:objc(cs)CKAllowedSharingOptions(cpy)standardOptions	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	eb8137d7cbc4dc97
+property	c:objc(cs)CKAllowedSharingOptions(py)allowsAccessRequests	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	2ad1f7003d5a9c4d
+interface	c:objc(cs)CKSystemSharingUIObserver	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f23d5c74be674148
+super	-	CKSystemSharingUIObserver	NSObject		-	-	84b00481c374cc75
+method	c:objc(cs)CKSystemSharingUIObserver(im)init	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8a6538b5a801bf23
+method	c:objc(cs)CKSystemSharingUIObserver(cm)new	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	14922b8b4034ca22
+method	c:objc(cs)CKSystemSharingUIObserver(im)initWithContainer:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6e83e89505defd71
+property	c:objc(cs)CKSystemSharingUIObserver(py)systemSharingUIDidSaveShareBlock	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f73488727875098d
+property	c:objc(cs)CKSystemSharingUIObserver(py)systemSharingUIDidStopSharingBlock	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d4afe9cc5cb23638
+interface	c:objc(cs)CKSyncEngineState	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	8e98ad2b31dec81e
+super	-	CKSyncEngineState	NSObject		-	-	27516d2a86e5dec9
+method	c:objc(cs)CKSyncEngineState(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	4a4146488a659bc6
+method	c:objc(cs)CKSyncEngineState(cm)new	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	aed528cd305ac095
+property	c:objc(cs)CKSyncEngineState(py)pendingRecordZoneChanges	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	daacc9ce51890be0
+property	c:objc(cs)CKSyncEngineState(py)pendingDatabaseChanges	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	1e12166a1e63d99e
+property	c:objc(cs)CKSyncEngineState(py)hasPendingUntrackedChanges	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	9eb9f7aeaf3cadaf
+property	c:objc(cs)CKSyncEngineState(py)zoneIDsWithUnfetchedServerChanges	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	b3677987eee1544f
+method	c:objc(cs)CKSyncEngineState(im)addPendingRecordZoneChanges:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	3c18dd5d78765572
+method	c:objc(cs)CKSyncEngineState(im)removePendingRecordZoneChanges:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	9cfa4c75fd189162
+method	c:objc(cs)CKSyncEngineState(im)addPendingDatabaseChanges:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	044a6fa1d7183160
+method	c:objc(cs)CKSyncEngineState(im)removePendingDatabaseChanges:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	05e96124c41cffe6
+interface	c:objc(cs)CKSyncEngineStateSerialization	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	b9e04c9c0dbf25d4
+super	-	CKSyncEngineStateSerialization	NSObject		-	-	09f7b7a9f554f1a0
+conforms	-	CKSyncEngineStateSerialization	NSSecureCoding		-	-	cb7f63ac13005501
+method	c:objc(cs)CKSyncEngineStateSerialization(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	04ec96fd4beeaa31
+method	c:objc(cs)CKSyncEngineStateSerialization(cm)new	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	46dfaff2dfae1ca1
+typedef	c:@T@CKSyncEnginePendingRecordZoneChangeType	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	489f6b31a22c6b3d
+enum	c:@E@CKSyncEnginePendingRecordZoneChangeType	-			-	-	7043bd3e013de34b
+enumconst	c:@E@CKSyncEnginePendingRecordZoneChangeType@CKSyncEnginePendingRecordZoneChangeTypeSaveRecord	CKSyncEnginePendingRecordZoneChangeType			-	-	4d432d475c36cb2c
+enumconst	c:@E@CKSyncEnginePendingRecordZoneChangeType@CKSyncEnginePendingRecordZoneChangeTypeDeleteRecord	CKSyncEnginePendingRecordZoneChangeType			-	-	b006b4a4383bbbc7
+interface	c:objc(cs)CKSyncEnginePendingRecordZoneChange	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	31aed6efeabbd2d9
+super	-	CKSyncEnginePendingRecordZoneChange	NSObject		-	-	661ace51776940ae
+method	c:objc(cs)CKSyncEnginePendingRecordZoneChange(im)initWithRecordID:type:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	80039cd2739143be
+method	c:objc(cs)CKSyncEnginePendingRecordZoneChange(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	82e652f4c9a58ace
+method	c:objc(cs)CKSyncEnginePendingRecordZoneChange(cm)new	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	dc64694682996fef
+property	c:objc(cs)CKSyncEnginePendingRecordZoneChange(py)recordID	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	54207e9bb36ae4c3
+property	c:objc(cs)CKSyncEnginePendingRecordZoneChange(py)type	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	6be9f4138fa4c6d2
+typedef	c:@T@CKSyncEnginePendingDatabaseChangeType	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	813ffaadf32df48d
+enum	c:@E@CKSyncEnginePendingDatabaseChangeType	-			-	-	636dc23470b37094
+enumconst	c:@E@CKSyncEnginePendingDatabaseChangeType@CKSyncEnginePendingDatabaseChangeTypeSaveZone	CKSyncEnginePendingDatabaseChangeType			-	-	5cb701303d08dbea
+enumconst	c:@E@CKSyncEnginePendingDatabaseChangeType@CKSyncEnginePendingDatabaseChangeTypeDeleteZone	CKSyncEnginePendingDatabaseChangeType			-	-	4a1d46b4716211cd
+interface	c:objc(cs)CKSyncEnginePendingDatabaseChange	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	c002e4d8ceafc2d5
+super	-	CKSyncEnginePendingDatabaseChange	NSObject		-	-	793990382c4a8448
+method	c:objc(cs)CKSyncEnginePendingDatabaseChange(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	80730c8f9bfb73e1
+method	c:objc(cs)CKSyncEnginePendingDatabaseChange(cm)new	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	832ad0dfc1d4af9f
+property	c:objc(cs)CKSyncEnginePendingDatabaseChange(py)zoneID	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	4b6a281138c874e4
+property	c:objc(cs)CKSyncEnginePendingDatabaseChange(py)type	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	566a340be1134c32
+interface	c:objc(cs)CKSyncEnginePendingZoneSave	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	db89784d69762c46
+super	-	CKSyncEnginePendingZoneSave	CKSyncEnginePendingDatabaseChange		-	-	1d3c4d4a4b9d8778
+method	c:objc(cs)CKSyncEnginePendingZoneSave(im)initWithZone:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	a712303910a38672
+property	c:objc(cs)CKSyncEnginePendingZoneSave(py)zone	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	6dfc5be0e995fb3b
+interface	c:objc(cs)CKSyncEnginePendingZoneDelete	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	345477618fd22edd
+super	-	CKSyncEnginePendingZoneDelete	CKSyncEnginePendingDatabaseChange		-	-	da414586845e3430
+method	c:objc(cs)CKSyncEnginePendingZoneDelete(im)initWithZoneID:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	2c904fc4c0c8e71b
+interface	c:objc(cs)CKSyncEngineRecordZoneChangeBatch	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	7a454ce081666b33
+super	-	CKSyncEngineRecordZoneChangeBatch	NSObject		-	-	1c51b5cec83bc03c
+method	c:objc(cs)CKSyncEngineRecordZoneChangeBatch(im)initWithPendingChanges:recordProvider:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	c0a51ea93cf75376
+method	c:objc(cs)CKSyncEngineRecordZoneChangeBatch(im)initWithRecordsToSave:recordIDsToDelete:atomicByZone:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	c6cf1c616ea6e21f
+method	c:objc(cs)CKSyncEngineRecordZoneChangeBatch(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	0ee4474ee3afb33d
+method	c:objc(cs)CKSyncEngineRecordZoneChangeBatch(cm)new	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	00f9c0b3b76f39a6
+property	c:objc(cs)CKSyncEngineRecordZoneChangeBatch(py)recordsToSave	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	7441649ff22ec633
+property	c:objc(cs)CKSyncEngineRecordZoneChangeBatch(py)recordIDsToDelete	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	fe26bd28a87c4d6b
+property	c:objc(cs)CKSyncEngineRecordZoneChangeBatch(py)atomicByZone	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	62504cb49f42e453
+interface	c:objc(cs)CKSyncEngine	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	fa51a14ed8140e6a
+super	-	CKSyncEngine	NSObject		-	-	0ffe59a822f0c2c0
+method	c:objc(cs)CKSyncEngine(im)initWithConfiguration:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	5f54da7135db3bdd
+method	c:objc(cs)CKSyncEngine(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	5c0ee23f7e366d6c
+method	c:objc(cs)CKSyncEngine(cm)new	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	664d59df8199440e
+property	c:objc(cs)CKSyncEngine(py)database	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	2a3799fccf0d1a4d
+property	c:objc(cs)CKSyncEngine(py)state	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	447a616b30ede17e
+method	c:objc(cs)CKSyncEngine(im)fetchChangesWithCompletionHandler:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	0113801b8ba685a1
+method	c:objc(cs)CKSyncEngine(im)fetchChangesWithOptions:completionHandler:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	508a6bb35a8e2f6a
+method	c:objc(cs)CKSyncEngine(im)sendChangesWithCompletionHandler:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	8cbfd94f40fd062c
+method	c:objc(cs)CKSyncEngine(im)sendChangesWithOptions:completionHandler:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	f2fdc73b95ddfcc2
+method	c:objc(cs)CKSyncEngine(im)cancelOperationsWithCompletionHandler:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	deba68efd087201d
+protocol	c:objc(pl)CKSyncEngineDelegate	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	fb45c1c049c2da7c
+conforms	-	CKSyncEngineDelegate	NSObject		-	-	dba70f3b32474867
+method	c:objc(pl)CKSyncEngineDelegate(im)syncEngine:handleEvent:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	773f419929d9052c
+method	c:objc(pl)CKSyncEngineDelegate(im)syncEngine:nextRecordZoneChangeBatchForContext:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	cae41156d4b9515d
+method	c:objc(pl)CKSyncEngineDelegate(im)syncEngine:nextFetchChangesOptionsForContext:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	61e5f385a531be55
+interface	c:objc(cs)CKSyncEngineFetchChangesOptions	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	7b4f8fb01bc248ab
+super	-	CKSyncEngineFetchChangesOptions	NSObject		-	-	5edc0eb0f1e04432
+conforms	-	CKSyncEngineFetchChangesOptions	NSCopying		-	-	0123679ce9142ff3
+property	c:objc(cs)CKSyncEngineFetchChangesOptions(py)scope	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	f18569682db12d8e
+property	c:objc(cs)CKSyncEngineFetchChangesOptions(py)operationGroup	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	bd7d24f6212878d2
+property	c:objc(cs)CKSyncEngineFetchChangesOptions(py)prioritizedZoneIDs	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	f09438210015b43b
+method	c:objc(cs)CKSyncEngineFetchChangesOptions(im)initWithScope:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	d0c52a35073a7c3b
+interface	c:objc(cs)CKSyncEngineFetchChangesScope	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	69276a22ce979680
+super	-	CKSyncEngineFetchChangesScope	NSObject		-	-	b742b0548e0c46d0
+conforms	-	CKSyncEngineFetchChangesScope	NSCopying		-	-	8b387746553c826e
+property	c:objc(cs)CKSyncEngineFetchChangesScope(py)zoneIDs	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	5fd88ca24034fbda
+property	c:objc(cs)CKSyncEngineFetchChangesScope(py)excludedZoneIDs	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	5c8537fff58b65d8
+method	c:objc(cs)CKSyncEngineFetchChangesScope(im)initWithZoneIDs:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	4e10fa5e3bc4664e
+method	c:objc(cs)CKSyncEngineFetchChangesScope(im)initWithExcludedZoneIDs:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	8126214805117cbe
+method	c:objc(cs)CKSyncEngineFetchChangesScope(im)containsZoneID:	-			ios=17.2/-/-/0,maccatalyst=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=10.2/-/-/0	-	386307ae0a075dd3
+interface	c:objc(cs)CKSyncEngineSendChangesOptions	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	a6b9959ecbc3c215
+super	-	CKSyncEngineSendChangesOptions	NSObject		-	-	b7fa7341022347d2
+conforms	-	CKSyncEngineSendChangesOptions	NSCopying		-	-	8dc01d232686b6e0
+property	c:objc(cs)CKSyncEngineSendChangesOptions(py)scope	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	bf188d9b08ee8bf7
+property	c:objc(cs)CKSyncEngineSendChangesOptions(py)operationGroup	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	95bf6eb1f040c5c3
+method	c:objc(cs)CKSyncEngineSendChangesOptions(im)initWithScope:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	6338c579f2c5bde2
+interface	c:objc(cs)CKSyncEngineSendChangesScope	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	c71f89603de752ac
+super	-	CKSyncEngineSendChangesScope	NSObject		-	-	9ea17fcb4d7c4ff3
+conforms	-	CKSyncEngineSendChangesScope	NSCopying		-	-	7421bf8570ec64ee
+property	c:objc(cs)CKSyncEngineSendChangesScope(py)zoneIDs	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	611492e5f4ed73f0
+property	c:objc(cs)CKSyncEngineSendChangesScope(py)excludedZoneIDs	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	72b620718c4c5d3c
+property	c:objc(cs)CKSyncEngineSendChangesScope(py)recordIDs	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	9ca3e21af70f9b24
+method	c:objc(cs)CKSyncEngineSendChangesScope(im)initWithZoneIDs:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	505c5fb7a6756a06
+method	c:objc(cs)CKSyncEngineSendChangesScope(im)initWithExcludedZoneIDs:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	48ba8dafad052d35
+method	c:objc(cs)CKSyncEngineSendChangesScope(im)initWithRecordIDs:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	29a10296fa9e3040
+method	c:objc(cs)CKSyncEngineSendChangesScope(im)containsRecordID:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	2ef60c7cc3798223
+method	c:objc(cs)CKSyncEngineSendChangesScope(im)containsPendingRecordZoneChange:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	55e8c6898a7b6b1c
+typedef	c:@T@CKSyncEngineSyncReason	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	1f6e1c503fc14df6
+enum	c:@E@CKSyncEngineSyncReason	-			-	-	5c378a81cd5820d4
+enumconst	c:@E@CKSyncEngineSyncReason@CKSyncEngineSyncReasonScheduled	CKSyncEngineSyncReason			-	-	95ee39d9cc2c550d
+enumconst	c:@E@CKSyncEngineSyncReason@CKSyncEngineSyncReasonManual	CKSyncEngineSyncReason			-	-	2498daafbbad1af6
+interface	c:objc(cs)CKSyncEngineFetchChangesContext	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	f147eca55ba65ed1
+super	-	CKSyncEngineFetchChangesContext	NSObject		-	-	72e0e74821df29b9
+method	c:objc(cs)CKSyncEngineFetchChangesContext(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	164572c1023bb12a
+method	c:objc(cs)CKSyncEngineFetchChangesContext(cm)new	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	561a7c8010d5dd45
+property	c:objc(cs)CKSyncEngineFetchChangesContext(py)reason	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	9913bd6a7ecbf6bf
+property	c:objc(cs)CKSyncEngineFetchChangesContext(py)options	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	e0e8f6a85c9c449f
+interface	c:objc(cs)CKSyncEngineSendChangesContext	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	15fc4ab8c64fe989
+super	-	CKSyncEngineSendChangesContext	NSObject		-	-	7c058e235d0ffbd5
+method	c:objc(cs)CKSyncEngineSendChangesContext(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	e8a0528e0dc2f459
+method	c:objc(cs)CKSyncEngineSendChangesContext(cm)new	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	565767a18d2f441c
+property	c:objc(cs)CKSyncEngineSendChangesContext(py)reason	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	669cd3861bc21f5e
+property	c:objc(cs)CKSyncEngineSendChangesContext(py)options	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	dfdfac1c675f3442
+interface	c:objc(cs)CKSyncEngineConfiguration	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	f3adce0f24761bc9
+super	-	CKSyncEngineConfiguration	NSObject		-	-	217d066df4df0c90
+method	c:objc(cs)CKSyncEngineConfiguration(im)initWithDatabase:stateSerialization:delegate:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	07153050436a3987
+method	c:objc(cs)CKSyncEngineConfiguration(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	cb96089e2917ccb2
+method	c:objc(cs)CKSyncEngineConfiguration(cm)new	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	16fa97f407985506
+property	c:objc(cs)CKSyncEngineConfiguration(py)database	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	ac2c03f02182f0e1
+property	c:objc(cs)CKSyncEngineConfiguration(py)stateSerialization	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	46301959316dab5c
+property	c:objc(cs)CKSyncEngineConfiguration(py)delegate	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	e41ea22c4f2a172c
+property	c:objc(cs)CKSyncEngineConfiguration(py)automaticallySync	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	8c192640d73d5643
+property	c:objc(cs)CKSyncEngineConfiguration(py)subscriptionID	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	cdc9bc5821b46a19
+typedef	c:@T@CKSyncEngineEventType	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	a06623bb22a0e78b
+enum	c:@E@CKSyncEngineEventType	-			-	-	e24d61c3fce37c4a
+enumconst	c:@E@CKSyncEngineEventType@CKSyncEngineEventTypeStateUpdate	CKSyncEngineEventType			-	-	7a1e808f07313058
+enumconst	c:@E@CKSyncEngineEventType@CKSyncEngineEventTypeAccountChange	CKSyncEngineEventType			-	-	9ef1af5c9a95714a
+enumconst	c:@E@CKSyncEngineEventType@CKSyncEngineEventTypeFetchedDatabaseChanges	CKSyncEngineEventType			-	-	c64601e5f6d0d543
+enumconst	c:@E@CKSyncEngineEventType@CKSyncEngineEventTypeFetchedRecordZoneChanges	CKSyncEngineEventType			-	-	2728fba7e4484e34
+enumconst	c:@E@CKSyncEngineEventType@CKSyncEngineEventTypeSentDatabaseChanges	CKSyncEngineEventType			-	-	1bcb7981fa48726b
+enumconst	c:@E@CKSyncEngineEventType@CKSyncEngineEventTypeSentRecordZoneChanges	CKSyncEngineEventType			-	-	869f365b9270ccf5
+enumconst	c:@E@CKSyncEngineEventType@CKSyncEngineEventTypeWillFetchChanges	CKSyncEngineEventType			-	-	87a85d1b8080d44f
+enumconst	c:@E@CKSyncEngineEventType@CKSyncEngineEventTypeWillFetchRecordZoneChanges	CKSyncEngineEventType			-	-	ab02437c02d52228
+enumconst	c:@E@CKSyncEngineEventType@CKSyncEngineEventTypeDidFetchRecordZoneChanges	CKSyncEngineEventType			-	-	2675d62b938b5966
+enumconst	c:@E@CKSyncEngineEventType@CKSyncEngineEventTypeDidFetchChanges	CKSyncEngineEventType			-	-	5e693bcd6dd899df
+enumconst	c:@E@CKSyncEngineEventType@CKSyncEngineEventTypeWillSendChanges	CKSyncEngineEventType			-	-	4ca1db98f0a65ecd
+enumconst	c:@E@CKSyncEngineEventType@CKSyncEngineEventTypeDidSendChanges	CKSyncEngineEventType			-	-	daae140f406ac941
+interface	c:objc(cs)CKSyncEngineEvent	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	d698daed5216da39
+super	-	CKSyncEngineEvent	NSObject		-	-	5f649e2f0ee07327
+property	c:objc(cs)CKSyncEngineEvent(py)type	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	6ef503b487703915
+property	c:objc(cs)CKSyncEngineEvent(py)stateUpdateEvent	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	dc330e95a87e1373
+property	c:objc(cs)CKSyncEngineEvent(py)accountChangeEvent	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	d43fbff5e26b345a
+property	c:objc(cs)CKSyncEngineEvent(py)willFetchChangesEvent	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	7aa9653f9178d5b1
+property	c:objc(cs)CKSyncEngineEvent(py)fetchedDatabaseChangesEvent	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	c2733d2c945683cc
+property	c:objc(cs)CKSyncEngineEvent(py)didFetchChangesEvent	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	47723e1ca959cc11
+property	c:objc(cs)CKSyncEngineEvent(py)willFetchRecordZoneChangesEvent	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	093375e7f00a2b0f
+property	c:objc(cs)CKSyncEngineEvent(py)fetchedRecordZoneChangesEvent	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	01fe81a872f6e673
+property	c:objc(cs)CKSyncEngineEvent(py)didFetchRecordZoneChangesEvent	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	da83b33d163cfd86
+property	c:objc(cs)CKSyncEngineEvent(py)willSendChangesEvent	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	67e3c5b2e44be962
+property	c:objc(cs)CKSyncEngineEvent(py)sentDatabaseChangesEvent	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	d668030f27c8faa8
+property	c:objc(cs)CKSyncEngineEvent(py)sentRecordZoneChangesEvent	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	4b7343155521953b
+property	c:objc(cs)CKSyncEngineEvent(py)didSendChangesEvent	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	3ddbc8a994e2fd71
+method	c:objc(cs)CKSyncEngineEvent(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	9dae8b1379a49edc
+method	c:objc(cs)CKSyncEngineEvent(cm)new	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	9ff64cf53d38e283
+interface	c:objc(cs)CKSyncEngineStateUpdateEvent	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	c8ad483c8765ffb4
+super	-	CKSyncEngineStateUpdateEvent	CKSyncEngineEvent		-	-	ab7642f333802698
+property	c:objc(cs)CKSyncEngineStateUpdateEvent(py)stateSerialization	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	69ef7101f2a8bc68
+typedef	c:@T@CKSyncEngineAccountChangeType	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	6546f18af4a2c80d
+enum	c:@E@CKSyncEngineAccountChangeType	-			-	-	5adc80627fe23dcf
+enumconst	c:@E@CKSyncEngineAccountChangeType@CKSyncEngineAccountChangeTypeSignIn	CKSyncEngineAccountChangeType			-	-	bd2d312943abb38e
+enumconst	c:@E@CKSyncEngineAccountChangeType@CKSyncEngineAccountChangeTypeSignOut	CKSyncEngineAccountChangeType			-	-	65c17a675519288f
+enumconst	c:@E@CKSyncEngineAccountChangeType@CKSyncEngineAccountChangeTypeSwitchAccounts	CKSyncEngineAccountChangeType			-	-	6f039ad0f9671ebc
+interface	c:objc(cs)CKSyncEngineAccountChangeEvent	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	fe875224c8685fd2
+super	-	CKSyncEngineAccountChangeEvent	CKSyncEngineEvent		-	-	5a68d4ca521b30cd
+property	c:objc(cs)CKSyncEngineAccountChangeEvent(py)changeType	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	0e68f59860f6a16b
+property	c:objc(cs)CKSyncEngineAccountChangeEvent(py)previousUser	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	0f0aee82503236bc
+property	c:objc(cs)CKSyncEngineAccountChangeEvent(py)currentUser	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	6147845672947bb4
+interface	c:objc(cs)CKSyncEngineFetchedDatabaseChangesEvent	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	0327078c281eec4e
+super	-	CKSyncEngineFetchedDatabaseChangesEvent	CKSyncEngineEvent		-	-	70c865110b4d2af3
+property	c:objc(cs)CKSyncEngineFetchedDatabaseChangesEvent(py)modifications	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	400fbba28f3adc0d
+property	c:objc(cs)CKSyncEngineFetchedDatabaseChangesEvent(py)deletions	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	8c17a68f0b789645
+interface	c:objc(cs)CKSyncEngineFetchedRecordZoneChangesEvent	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	79011a0a53e0d152
+super	-	CKSyncEngineFetchedRecordZoneChangesEvent	CKSyncEngineEvent		-	-	1c0ceb7dd8e24663
+property	c:objc(cs)CKSyncEngineFetchedRecordZoneChangesEvent(py)modifications	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	6dd35c312da8ecd3
+property	c:objc(cs)CKSyncEngineFetchedRecordZoneChangesEvent(py)deletions	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	35f0e4bf7b1ae199
+interface	c:objc(cs)CKSyncEngineSentDatabaseChangesEvent	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	2f4be7e9919a6408
+super	-	CKSyncEngineSentDatabaseChangesEvent	CKSyncEngineEvent		-	-	8c269ebb7bd16f75
+property	c:objc(cs)CKSyncEngineSentDatabaseChangesEvent(py)savedZones	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	dd508e86b49c7ac4
+property	c:objc(cs)CKSyncEngineSentDatabaseChangesEvent(py)failedZoneSaves	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	803d214a874d597e
+property	c:objc(cs)CKSyncEngineSentDatabaseChangesEvent(py)deletedZoneIDs	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	05f8eebba41b138e
+property	c:objc(cs)CKSyncEngineSentDatabaseChangesEvent(py)failedZoneDeletes	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	0d1cd641e05e58e2
+interface	c:objc(cs)CKSyncEngineSentRecordZoneChangesEvent	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	8cf2aa8b00ecc635
+super	-	CKSyncEngineSentRecordZoneChangesEvent	CKSyncEngineEvent		-	-	9c960d7bb43099a3
+property	c:objc(cs)CKSyncEngineSentRecordZoneChangesEvent(py)savedRecords	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	d1ab8d0248ec4deb
+property	c:objc(cs)CKSyncEngineSentRecordZoneChangesEvent(py)failedRecordSaves	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	b7223fff6786881c
+property	c:objc(cs)CKSyncEngineSentRecordZoneChangesEvent(py)deletedRecordIDs	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	60aba317cba4a539
+property	c:objc(cs)CKSyncEngineSentRecordZoneChangesEvent(py)failedRecordDeletes	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	5a31d67bf2e0a057
+interface	c:objc(cs)CKSyncEngineWillFetchChangesEvent	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	7cdb1be7f7326301
+super	-	CKSyncEngineWillFetchChangesEvent	CKSyncEngineEvent		-	-	565a49734e2c55c8
+property	c:objc(cs)CKSyncEngineWillFetchChangesEvent(py)context	-			ios=17.2/-/-/0,maccatalyst=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=10.2/-/-/0	-	5365363d4336b870
+interface	c:objc(cs)CKSyncEngineWillFetchRecordZoneChangesEvent	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	cd55f42bbc1d4752
+super	-	CKSyncEngineWillFetchRecordZoneChangesEvent	CKSyncEngineEvent		-	-	9eade8189b0a01d1
+property	c:objc(cs)CKSyncEngineWillFetchRecordZoneChangesEvent(py)zoneID	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	8e9f110ce7040afd
+interface	c:objc(cs)CKSyncEngineDidFetchRecordZoneChangesEvent	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	82268cc3af80b7d0
+super	-	CKSyncEngineDidFetchRecordZoneChangesEvent	CKSyncEngineEvent		-	-	0f47fbe7d4e3eadb
+property	c:objc(cs)CKSyncEngineDidFetchRecordZoneChangesEvent(py)zoneID	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	66ca4fd242ec9910
+property	c:objc(cs)CKSyncEngineDidFetchRecordZoneChangesEvent(py)error	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	e4426fa34dab50cf
+interface	c:objc(cs)CKSyncEngineDidFetchChangesEvent	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	f7294039235ba40a
+super	-	CKSyncEngineDidFetchChangesEvent	CKSyncEngineEvent		-	-	8bd7c9e99cb5b358
+property	c:objc(cs)CKSyncEngineDidFetchChangesEvent(py)context	-			ios=17.2/-/-/0,maccatalyst=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=10.2/-/-/0	-	8c4dd7684f0c5a50
+interface	c:objc(cs)CKSyncEngineWillSendChangesEvent	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	893a5dad6d59f868
+super	-	CKSyncEngineWillSendChangesEvent	CKSyncEngineEvent		-	-	6dbf8b5f6d1776b1
+property	c:objc(cs)CKSyncEngineWillSendChangesEvent(py)context	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	46619326f2aa83ac
+interface	c:objc(cs)CKSyncEngineDidSendChangesEvent	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	da08fe701a8bbeaa
+super	-	CKSyncEngineDidSendChangesEvent	CKSyncEngineEvent		-	-	be3c96242e4b4968
+property	c:objc(cs)CKSyncEngineDidSendChangesEvent(py)context	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	35bb2403a8bcc76e
+interface	c:objc(cs)CKSyncEngineFetchedRecordDeletion	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	4630b547b21dafba
+super	-	CKSyncEngineFetchedRecordDeletion	NSObject		-	-	15ea8dea335cfb99
+method	c:objc(cs)CKSyncEngineFetchedRecordDeletion(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	62cc999251efbaf0
+method	c:objc(cs)CKSyncEngineFetchedRecordDeletion(cm)new	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	a5725c8e9d9f149d
+property	c:objc(cs)CKSyncEngineFetchedRecordDeletion(py)recordID	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	677253dcc3d252d3
+property	c:objc(cs)CKSyncEngineFetchedRecordDeletion(py)recordType	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	79ee29bcccad7811
+typedef	c:@T@CKSyncEngineZoneDeletionReason	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	47abb9d90280c32e
+enum	c:@E@CKSyncEngineZoneDeletionReason	-			-	-	182014adb8559967
+enumconst	c:@E@CKSyncEngineZoneDeletionReason@CKSyncEngineZoneDeletionReasonDeleted	CKSyncEngineZoneDeletionReason			-	-	34046225c846b5e1
+enumconst	c:@E@CKSyncEngineZoneDeletionReason@CKSyncEngineZoneDeletionReasonPurged	CKSyncEngineZoneDeletionReason			-	-	09e91c1a38578360
+enumconst	c:@E@CKSyncEngineZoneDeletionReason@CKSyncEngineZoneDeletionReasonEncryptedDataReset	CKSyncEngineZoneDeletionReason			-	-	4bb1ec5b8bc3a042
+interface	c:objc(cs)CKSyncEngineFetchedZoneDeletion	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	c59fef8db7ab27f5
+super	-	CKSyncEngineFetchedZoneDeletion	NSObject		-	-	e04523d732cfc66b
+method	c:objc(cs)CKSyncEngineFetchedZoneDeletion(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	d39930690069329f
+method	c:objc(cs)CKSyncEngineFetchedZoneDeletion(cm)new	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	d644b5001321f354
+property	c:objc(cs)CKSyncEngineFetchedZoneDeletion(py)zoneID	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	7ca08d076f52f00f
+property	c:objc(cs)CKSyncEngineFetchedZoneDeletion(py)reason	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	323d51abef49fa41
+interface	c:objc(cs)CKSyncEngineFailedRecordSave	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	06e553a23a603bd7
+super	-	CKSyncEngineFailedRecordSave	NSObject		-	-	b57f6ecee18b601d
+method	c:objc(cs)CKSyncEngineFailedRecordSave(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	0984cde5f72a666e
+method	c:objc(cs)CKSyncEngineFailedRecordSave(cm)new	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	03e4444b753513e1
+property	c:objc(cs)CKSyncEngineFailedRecordSave(py)record	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	226742d6640817e3
+property	c:objc(cs)CKSyncEngineFailedRecordSave(py)error	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	4a8e642d608745f7
+interface	c:objc(cs)CKSyncEngineFailedZoneSave	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	720bf5e25e8c28ca
+super	-	CKSyncEngineFailedZoneSave	NSObject		-	-	d9cefa3a7ff90568
+method	c:objc(cs)CKSyncEngineFailedZoneSave(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	ffa77cbdc5d7a964
+method	c:objc(cs)CKSyncEngineFailedZoneSave(cm)new	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	7103308441705b44
+property	c:objc(cs)CKSyncEngineFailedZoneSave(py)recordZone	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	9e1ddf5fe1dbe859
+property	c:objc(cs)CKSyncEngineFailedZoneSave(py)error	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	7860af17e419c577

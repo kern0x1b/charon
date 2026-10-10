@@ -1,0 +1,76 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+interface	c:objc(cs)AEAssessmentApplication	-			ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,xros=-/-/-/1	-	46788d0c9cb922b2
+super	-	AEAssessmentApplication	NSObject		-	-	c245b4d04132777f
+conforms	-	AEAssessmentApplication	NSCopying		-	-	04088d26ac806cd7
+property	c:objc(cs)AEAssessmentApplication(py)bundleIdentifier	-			ios=17.5/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	53d977b4aae9a052
+property	c:objc(cs)AEAssessmentApplication(py)teamIdentifier	-			ios=-/-/-/1,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	2641c8e05966a36a
+property	c:objc(cs)AEAssessmentApplication(py)requiresSignatureValidation	-			ios=-/-/-/1,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	c46b164f249904c6
+method	c:objc(cs)AEAssessmentApplication(im)initWithBundleIdentifier:	-			ios=17.5/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	280fb20b9758513d
+method	c:objc(cs)AEAssessmentApplication(im)initWithBundleIdentifier:teamIdentifier:	-			ios=-/-/-/1,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	173c89daa5d64855
+method	c:objc(cs)AEAssessmentApplication(im)init	-			*unavailable ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,xros=-/-/-/1	-	dbf9616ee5fa61c5
+method	c:objc(cs)AEAssessmentApplication(cm)new	-			*unavailable ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,xros=-/-/-/1	-	338dbadcceb2e67a
+interface	c:objc(cs)AEAssessmentConfiguration	-			ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15.4/-/-/0,xros=-/-/-/1	-	0c6a1a7f53c24216
+super	-	AEAssessmentConfiguration	NSObject		-	-	a43864e56cd74553
+conforms	-	AEAssessmentConfiguration	NSCopying		-	-	183a880c42e06ad6
+property	c:objc(cs)AEAssessmentConfiguration(py)autocorrectMode	-			ios=14.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0	-	833839d94857e0b6
+property	c:objc(cs)AEAssessmentConfiguration(py)allowsSpellCheck	-			ios=14.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0	-	ddbae237c0948e86
+property	c:objc(cs)AEAssessmentConfiguration(py)allowsPredictiveKeyboard	-			ios=14.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0	-	9fd240a99bbaf5e6
+property	c:objc(cs)AEAssessmentConfiguration(py)allowsKeyboardShortcuts	-			ios=14.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0	-	3a00c03c3e66dfdb
+property	c:objc(cs)AEAssessmentConfiguration(py)allowsActivityContinuation	-			ios=14.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1	-	390a38a891c003ac
+property	c:objc(cs)AEAssessmentConfiguration(py)allowsDictation	-			ios=14.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1	-	bb8f85d79a451246
+property	c:objc(cs)AEAssessmentConfiguration(py)allowsAccessibilityKeyboard	-			ios=-/-/-/1,maccatalyst=26.1/-/-/0,macos=26.1/-/-/0	-	7365b486c3e4814d
+property	c:objc(cs)AEAssessmentConfiguration(py)allowsAccessibilityLiveCaptions	-			ios=26.1/-/-/0,maccatalyst=26.1/-/-/0,macos=26.1/-/-/0	-	e81aa59c442549b4
+property	c:objc(cs)AEAssessmentConfiguration(py)allowsAccessibilityReader	-			ios=26.1/-/-/0,maccatalyst=26.1/-/-/0,macos=26.1/-/-/0	-	4a77aa8f7420a463
+property	c:objc(cs)AEAssessmentConfiguration(py)allowsAccessibilitySpeech	-			ios=14.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1	-	9e629b93fa900e96
+property	c:objc(cs)AEAssessmentConfiguration(py)allowsAccessibilityTypingFeedback	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1	-	4e56a11111577186
+property	c:objc(cs)AEAssessmentConfiguration(py)allowsPasswordAutoFill	-			ios=14.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1	-	3f46b0ee0f2704e8
+property	c:objc(cs)AEAssessmentConfiguration(py)allowsContinuousPathKeyboard	-			ios=14.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1	-	3c212bc225207b99
+property	c:objc(cs)AEAssessmentConfiguration(py)allowsScreenshots	-			ios=-/-/-/1,maccatalyst=26.1/-/-/0,macos=26.1/-/-/0	-	057d8100d21fc042
+property	c:objc(cs)AEAssessmentConfiguration(py)mainParticipantConfiguration	-			ios=17.5/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	d6b23421704593c3
+property	c:objc(cs)AEAssessmentConfiguration(py)configurationsByApplication	-			ios=17.5/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	b1038b3b501c42bb
+method	c:objc(cs)AEAssessmentConfiguration(im)setConfiguration:forApplication:	-			ios=17.5/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	504f2c08f4ea4bac
+method	c:objc(cs)AEAssessmentConfiguration(im)removeApplication:	-			ios=17.5/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	a9cbc54b628cac17
+typedef	c:@T@AEAutocorrectMode	-			ios=14.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,xros=-/-/-/1	-	dc11892a04ea3a38
+enum	c:@E@AEAutocorrectMode	-			-	-	55cc6fe1f2f67916
+enumconst	c:@E@AEAutocorrectMode@AEAutocorrectModeNone	AEAutocorrectMode			-	-	95e15358a0ed640c
+enumconst	c:@E@AEAutocorrectMode@AEAutocorrectModeSpelling	AEAutocorrectMode			-	-	358034d0e86faa48
+enumconst	c:@E@AEAutocorrectMode@AEAutocorrectModePunctuation	AEAutocorrectMode			-	-	50e23b3b1a6c525b
+interface	c:objc(cs)AEAssessmentParticipantConfiguration	-			ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,xros=-/-/-/1	-	e9582612e8c68cdb
+super	-	AEAssessmentParticipantConfiguration	NSObject		-	-	a81e67bf4da80f3d
+conforms	-	AEAssessmentParticipantConfiguration	NSCopying		-	-	1495ea4a5307c008
+property	c:objc(cs)AEAssessmentParticipantConfiguration(py)allowsNetworkAccess	-			ios=17.5/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	1f2bc3626edbd6b1
+property	c:objc(cs)AEAssessmentParticipantConfiguration(py)required	-			ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,xros=-/-/-/1	-	05eb9db7bba7af07
+property	c:objc(cs)AEAssessmentParticipantConfiguration(py)configurationInfo	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0	-	2eb57ea788d6fb47
+method	c:objc(cs)AEAssessmentParticipantConfiguration(im)init	-			ios=17.5/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	4f3003afcd6b1774
+method	c:objc(cs)AEAssessmentParticipantConfiguration(cm)new	-			ios=17.5/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	7b9612cffe081d87
+interface	c:objc(cs)AEAssessmentSession	-			ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15.4/-/-/0,xros=-/-/-/1	-	bdcbad0cd2ee214f
+super	-	AEAssessmentSession	NSObject		-	-	dfbe459c83fa70e4
+property	c:objc(cs)AEAssessmentSession(cpy)supportsMultipleParticipants	-			ios=17.5/-/-/0,maccatalyst=17.5/-/-/0,macos=14.5/-/-/0	-	0d683e53f0269de5
+property	c:objc(cs)AEAssessmentSession(cpy)supportsConfigurationUpdates	-			ios=17.5/-/-/0,maccatalyst=17.5/-/-/0,macos=14.5/-/-/0	-	ddb4d1bab746e746
+property	c:objc(cs)AEAssessmentSession(py)delegate	-			ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15.4/-/-/0,xros=-/-/-/1	-	4750e318730cb978
+property	c:objc(cs)AEAssessmentSession(py)configuration	-			ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	80d689e894c112f7
+property	c:objc(cs)AEAssessmentSession(py)active	-			ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15.4/-/-/0,xros=-/-/-/1	-	93967da4b9ff7d20
+method	c:objc(cs)AEAssessmentSession(im)initWithConfiguration:	-			ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15.4/-/-/0,xros=-/-/-/1	-	e50d2a29db162803
+method	c:objc(cs)AEAssessmentSession(im)init	-			*unavailable ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15.4/-/-/0,xros=-/-/-/1	-	7580933059f5f6c0
+method	c:objc(cs)AEAssessmentSession(cm)new	-			*unavailable ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15.4/-/-/0,xros=-/-/-/1	-	43b34f64fece72f9
+method	c:objc(cs)AEAssessmentSession(im)begin	-			ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15.4/-/-/0,xros=-/-/-/1	-	525e0856b5f3ae7d
+method	c:objc(cs)AEAssessmentSession(im)end	-			ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15.4/-/-/0,xros=-/-/-/1	-	1e86f6a26c546c89
+method	c:objc(cs)AEAssessmentSession(im)updateToConfiguration:	-			ios=17.5/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	a0a18f1d6c4a893a
+protocol	c:objc(pl)AEAssessmentSessionDelegate	-			ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15.4/-/-/0,xros=-/-/-/1	-	2d4ce675cafbec7c
+conforms	-	AEAssessmentSessionDelegate	NSObject		-	-	19efac483101ae20
+method	c:objc(pl)AEAssessmentSessionDelegate(im)assessmentSessionDidBegin:	-			ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15.4/-/-/0,xros=-/-/-/1	-	719f2288e2937d22
+method	c:objc(pl)AEAssessmentSessionDelegate(im)assessmentSession:failedToBeginWithError:	-			ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15.4/-/-/0,xros=-/-/-/1	-	d07286e937fe49d8
+method	c:objc(pl)AEAssessmentSessionDelegate(im)assessmentSession:wasInterruptedWithError:	-			ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15.4/-/-/0,xros=-/-/-/1	-	0fbe6bdbc9489fbd
+method	c:objc(pl)AEAssessmentSessionDelegate(im)assessmentSessionDidEnd:	-			ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15.4/-/-/0,xros=-/-/-/1	-	9850d17bfe06ad9f
+method	c:objc(pl)AEAssessmentSessionDelegate(im)assessmentSessionDidUpdate:	-			ios=17.5/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	f26d2db0feb7c589
+method	c:objc(pl)AEAssessmentSessionDelegate(im)assessmentSession:failedToUpdateToConfiguration:error:	-			ios=17.5/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	2c57a73fcbe58d44
+var	c:@AEAssessmentErrorDomain	-			ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15.4/-/-/0,xros=-/-/-/1	-	fd73e98417f7000a
+typedef	c:@T@AEAssessmentErrorCode	-			ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15.4/-/-/0,xros=-/-/-/1	-	1e7ae7c4676e9688
+enum	c:@E@AEAssessmentErrorCode	-			-	-	f48da8b4be550de4
+enumconst	c:@E@AEAssessmentErrorCode@AEAssessmentErrorUnknown	AEAssessmentErrorCode			-	-	26258ff3022197b6
+enumconst	c:@E@AEAssessmentErrorCode@AEAssessmentErrorUnsupportedPlatform	AEAssessmentErrorCode			ios=16.0/-/-/0,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0	-	6e04e6d714753d1a
+enumconst	c:@E@AEAssessmentErrorCode@AEAssessmentErrorMultipleParticipantsNotSupported	AEAssessmentErrorCode			ios=17.5/-/-/0,maccatalyst=17.5/-/-/0,macos=14.5/-/-/0	-	19a66ec12a1507c5
+enumconst	c:@E@AEAssessmentErrorCode@AEAssessmentErrorConfigurationUpdatesNotSupported	AEAssessmentErrorCode			ios=17.5/-/-/0,maccatalyst=17.5/-/-/0,macos=14.5/-/-/0	-	e431e8d5773295e0
+enumconst	c:@E@AEAssessmentErrorCode@AEAssessmentErrorRequiredParticipantsNotAvailable	AEAssessmentErrorCode			ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0	-	6eb3fbd2c11a0027
+var	c:@AENotInstalledParticipantsKey	-			ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,xros=-/-/-/1	-	63c862a2d3356554
+var	c:@AERestrictedSystemParticipantsKey	-			ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,xros=-/-/-/1	-	dda587996e5d0e99

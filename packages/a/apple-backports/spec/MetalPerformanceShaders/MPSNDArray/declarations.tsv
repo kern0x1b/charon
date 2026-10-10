@@ -1,0 +1,156 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+struct	c:@SA@MPSNDArrayOffsets	-			-	-	dd88048c2946543a
+field	c:@SA@MPSNDArrayOffsets@FI@dimensions	MPSNDArrayOffsets			-	-	5d68b2a43621cdf3
+typedef	c:@T@MPSNDArrayOffsets	-			-	-	269146c393b1b57a
+struct	c:@SA@MPSNDArraySizes	-			-	-	81ade92506142e49
+field	c:@SA@MPSNDArraySizes@FI@dimensions	MPSNDArraySizes			-	-	2545ddf6f9d2306f
+typedef	c:@T@MPSNDArraySizes	-			-	-	4c3938680357c841
+interface	c:objc(cs)MPSNDArrayMultiaryBase	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	1e07bd890debc982
+super	-	MPSNDArrayMultiaryBase	MPSKernel		-	-	088b2941f9cfe457
+method	c:objc(cs)MPSNDArrayMultiaryBase(im)offsetsAtSourceIndex:	-			ios=13.0/14.0/-/0,macos=10.15/11.0/-/0,tvos=13.0/14.0/-/0	-	926512e47631d7d2
+method	c:objc(cs)MPSNDArrayMultiaryBase(im)edgeModeAtSourceIndex:	-			ios=13.0/14.0/-/0,macos=10.15/11.0/-/0,tvos=13.0/14.0/-/0	-	51fa6eca2e2c971d
+method	c:objc(cs)MPSNDArrayMultiaryBase(im)kernelSizesForSourceIndex:	-			ios=13.0/14.0/-/0,macos=10.15/11.0/-/0,tvos=13.0/14.0/-/0	-	9c54a1c6ecd8e8cc
+method	c:objc(cs)MPSNDArrayMultiaryBase(im)stridesForSourceIndex:	-			ios=13.0/14.0/-/0,macos=10.15/11.0/-/0,tvos=13.0/14.0/-/0	-	600a7831e08785c0
+method	c:objc(cs)MPSNDArrayMultiaryBase(im)dilationRatesForSourceIndex:	-			ios=13.0/14.0/-/0,macos=10.15/11.0/-/0,tvos=13.0/14.0/-/0	-	d1a4b79144ced615
+property	c:objc(cs)MPSNDArrayMultiaryBase(py)destinationArrayAllocator	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	4856bd4ff93379c7
+method	c:objc(cs)MPSNDArrayMultiaryBase(im)initWithDevice:	-			*unavailable ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	c4620449aa3ef63d
+method	c:objc(cs)MPSNDArrayMultiaryBase(im)initWithDevice:sourceCount:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	d1622fc067afd01b
+method	c:objc(cs)MPSNDArrayMultiaryBase(im)initWithCoder:device:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	2fc1a4be7f7cd151
+method	c:objc(cs)MPSNDArrayMultiaryBase(im)encodeWithCoder:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	7fad656214e73689
+method	c:objc(cs)MPSNDArrayMultiaryBase(im)copyWithZone:device:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	58284ba91323fb1b
+method	c:objc(cs)MPSNDArrayMultiaryBase(im)resultStateForSourceArrays:sourceStates:destinationArray:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	cb15bc486b3b7bdf
+method	c:objc(cs)MPSNDArrayMultiaryBase(im)destinationArrayDescriptorForSourceArrays:sourceState:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	6ebac1567d722902
+interface	c:objc(cs)MPSNDArrayMultiaryKernel	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	4f1b3da6a6577a30
+super	-	MPSNDArrayMultiaryKernel	MPSNDArrayMultiaryBase		-	-	517537e2b16a0220
+method	c:objc(cs)MPSNDArrayMultiaryKernel(im)initWithDevice:sourceCount:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	47d1ba57eb2bdee2
+method	c:objc(cs)MPSNDArrayMultiaryKernel(im)initWithCoder:device:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	eadad4f41149fb03
+method	c:objc(cs)MPSNDArrayMultiaryKernel(im)encodeToCommandBuffer:sourceArrays:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	f70e4bbf15876849
+method	c:objc(cs)MPSNDArrayMultiaryKernel(im)encodeToCommandBuffer:sourceArrays:destinationArray:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	9a839282de26aa13
+method	c:objc(cs)MPSNDArrayMultiaryKernel(im)encodeToCommandBuffer:sourceArrays:resultState:outputStateIsTemporary:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	16f51a59fb5b0120
+method	c:objc(cs)MPSNDArrayMultiaryKernel(im)encodeToCommandBuffer:sourceArrays:resultState:destinationArray:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	c8694a4ec967371a
+method	c:objc(cs)MPSNDArrayMultiaryKernel(im)encodeToCommandEncoder:commandBuffer:sourceArrays:destinationArray:	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	f5c432dfbb59623c
+interface	c:objc(cs)MPSNDArrayMultiaryGradientKernel	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	d8fc2ead2dc9b15a
+super	-	MPSNDArrayMultiaryGradientKernel	MPSNDArrayMultiaryBase		-	-	1237a1e5c99cd3cb
+method	c:objc(cs)MPSNDArrayMultiaryGradientKernel(im)initWithDevice:sourceCount:	-			*unavailable ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	a238ba9f472b74a0
+method	c:objc(cs)MPSNDArrayMultiaryGradientKernel(im)initWithCoder:device:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	832f088c8ee7d8af
+method	c:objc(cs)MPSNDArrayMultiaryGradientKernel(im)initWithDevice:sourceCount:sourceGradientIndex:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	2a3f5a5be4913ff3
+method	c:objc(cs)MPSNDArrayMultiaryGradientKernel(im)encodeToCommandBuffer:sourceArrays:sourceGradient:gradientState:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	ed9235c99602f263
+method	c:objc(cs)MPSNDArrayMultiaryGradientKernel(im)encodeToCommandBuffer:sourceArrays:sourceGradient:gradientState:destinationArray:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	e2c04175ae2b6048
+interface	c:objc(cs)MPSNDArrayUnaryKernel	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	7929a113b79b35bf
+super	-	MPSNDArrayUnaryKernel	MPSNDArrayMultiaryKernel		-	-	df5872715d9701bb
+property	c:objc(cs)MPSNDArrayUnaryKernel(py)offsets	-			ios=13.0/14.0/-/0,macos=10.15/11.0/-/0,tvos=13.0/14.0/-/0	-	0a1ca7927af32fbd
+property	c:objc(cs)MPSNDArrayUnaryKernel(py)edgeMode	-			ios=13.0/14.0/-/0,macos=10.15/11.0/-/0,tvos=13.0/14.0/-/0	-	e7307f384f28d20c
+property	c:objc(cs)MPSNDArrayUnaryKernel(py)kernelSizes	-			ios=13.0/14.0/-/0,macos=10.15/11.0/-/0,tvos=13.0/14.0/-/0	-	c66b70f4a7155039
+property	c:objc(cs)MPSNDArrayUnaryKernel(py)strides	-			ios=13.0/14.0/-/0,macos=10.15/11.0/-/0,tvos=13.0/14.0/-/0	-	76fb00d4e64773d3
+property	c:objc(cs)MPSNDArrayUnaryKernel(py)dilationRates	-			ios=13.0/14.0/-/0,macos=10.15/11.0/-/0,tvos=13.0/14.0/-/0	-	e8e0dcc087fc2b97
+method	c:objc(cs)MPSNDArrayUnaryKernel(im)initWithDevice:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	37b2b511444198b1
+method	c:objc(cs)MPSNDArrayUnaryKernel(im)initWithDevice:sourceCount:	-			*unavailable ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	21af651951fd995c
+method	c:objc(cs)MPSNDArrayUnaryKernel(im)initWithCoder:device:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	66d3c35efb11b6d9
+method	c:objc(cs)MPSNDArrayUnaryKernel(im)encodeToCommandBuffer:sourceArray:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	919e607436bd5698
+method	c:objc(cs)MPSNDArrayUnaryKernel(im)encodeToCommandBuffer:sourceArray:destinationArray:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	8f8381142ddf7847
+method	c:objc(cs)MPSNDArrayUnaryKernel(im)encodeToCommandBuffer:sourceArray:resultState:outputStateIsTemporary:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	1e6f425aab94fbdc
+method	c:objc(cs)MPSNDArrayUnaryKernel(im)encodeToCommandBuffer:sourceArray:resultState:destinationArray:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	604d8e74b21ff515
+interface	c:objc(cs)MPSNDArrayUnaryGradientKernel	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	4a340e5ed29b9b8f
+super	-	MPSNDArrayUnaryGradientKernel	MPSNDArrayMultiaryGradientKernel		-	-	4ae347d514e58d0b
+method	c:objc(cs)MPSNDArrayUnaryGradientKernel(im)initWithDevice:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	b08a82b941b00598
+method	c:objc(cs)MPSNDArrayUnaryGradientKernel(im)initWithDevice:sourceCount:sourceGradientIndex:	-			*unavailable ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	4a3f012cd1e998e8
+method	c:objc(cs)MPSNDArrayUnaryGradientKernel(im)initWithCoder:device:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	30f40183cc155d64
+method	c:objc(cs)MPSNDArrayUnaryGradientKernel(im)encodeToCommandBuffer:sourceArray:sourceGradient:gradientState:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	8a8615f11b905f91
+method	c:objc(cs)MPSNDArrayUnaryGradientKernel(im)encodeToCommandBuffer:sourceArray:sourceGradient:gradientState:destinationArray:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	5a136870d921b0a5
+interface	c:objc(cs)MPSNDArrayBinaryKernel	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	ac6dbc71d1a62768
+super	-	MPSNDArrayBinaryKernel	MPSNDArrayMultiaryKernel		-	-	37c20f0dc7fedd3d
+property	c:objc(cs)MPSNDArrayBinaryKernel(py)primaryOffsets	-			ios=13.0/14.0/-/0,macos=10.15/11.0/-/0,tvos=13.0/14.0/-/0	-	33a3c617a4c7e0ec
+property	c:objc(cs)MPSNDArrayBinaryKernel(py)primaryEdgeMode	-			ios=13.0/14.0/-/0,macos=10.15/11.0/-/0,tvos=13.0/14.0/-/0	-	8d0e810474935942
+property	c:objc(cs)MPSNDArrayBinaryKernel(py)primaryKernelSizes	-			ios=13.0/14.0/-/0,macos=10.15/11.0/-/0,tvos=13.0/14.0/-/0	-	99225f2eae8eb7c3
+property	c:objc(cs)MPSNDArrayBinaryKernel(py)primaryStrides	-			ios=13.0/14.0/-/0,macos=10.15/11.0/-/0,tvos=13.0/14.0/-/0	-	b367d2e8f79b4ec0
+property	c:objc(cs)MPSNDArrayBinaryKernel(py)primaryDilationRates	-			ios=13.0/14.0/-/0,macos=10.15/11.0/-/0,tvos=13.0/14.0/-/0	-	67f3305ea182aa8e
+property	c:objc(cs)MPSNDArrayBinaryKernel(py)secondaryOffsets	-			ios=13.0/14.0/-/0,macos=10.15/11.0/-/0,tvos=13.0/14.0/-/0	-	cb1d55f81adc71f3
+property	c:objc(cs)MPSNDArrayBinaryKernel(py)secondaryEdgeMode	-			ios=13.0/14.0/-/0,macos=10.15/11.0/-/0,tvos=13.0/14.0/-/0	-	94f47684a46dbb3a
+property	c:objc(cs)MPSNDArrayBinaryKernel(py)secondaryKernelSizes	-			ios=13.0/14.0/-/0,macos=10.15/11.0/-/0,tvos=13.0/14.0/-/0	-	88195f02972a7c29
+property	c:objc(cs)MPSNDArrayBinaryKernel(py)secondaryStrides	-			ios=13.0/14.0/-/0,macos=10.15/11.0/-/0,tvos=13.0/14.0/-/0	-	2fd006aab35af7c1
+property	c:objc(cs)MPSNDArrayBinaryKernel(py)secondaryDilationRates	-			ios=13.0/14.0/-/0,macos=10.15/11.0/-/0,tvos=13.0/14.0/-/0	-	a9d60fa057ad5564
+method	c:objc(cs)MPSNDArrayBinaryKernel(im)initWithDevice:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	ceb92ef8c3ccbbe5
+method	c:objc(cs)MPSNDArrayBinaryKernel(im)initWithDevice:sourceCount:	-			*unavailable ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	018b45c9d79b142c
+method	c:objc(cs)MPSNDArrayBinaryKernel(im)initWithCoder:device:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	b01fc56c98ba03b7
+method	c:objc(cs)MPSNDArrayBinaryKernel(im)encodeToCommandBuffer:primarySourceArray:secondarySourceArray:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	6af50f600178b552
+method	c:objc(cs)MPSNDArrayBinaryKernel(im)encodeToCommandBuffer:primarySourceArray:secondarySourceArray:destinationArray:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	c18af15ae3d3261d
+method	c:objc(cs)MPSNDArrayBinaryKernel(im)encodeToCommandBuffer:primarySourceArray:secondarySourceArray:resultState:outputStateIsTemporary:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	d4049b55e774178a
+method	c:objc(cs)MPSNDArrayBinaryKernel(im)encodeToCommandBuffer:primarySourceArray:secondarySourceArray:resultState:destinationArray:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	9acd191d385c35b1
+interface	c:objc(cs)MPSNDArrayBinaryPrimaryGradientKernel	-			ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	d4245eb1379136ea
+super	-	MPSNDArrayBinaryPrimaryGradientKernel	MPSNDArrayMultiaryGradientKernel		-	-	3c9f787a5748d6c9
+method	c:objc(cs)MPSNDArrayBinaryPrimaryGradientKernel(im)initWithDevice:sourceCount:sourceGradientIndex:	-			*unavailable ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	d676f247b75ed1b0
+method	c:objc(cs)MPSNDArrayBinaryPrimaryGradientKernel(im)initWithDevice:	-			ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	a0ddb86314ddd8b0
+method	c:objc(cs)MPSNDArrayBinaryPrimaryGradientKernel(im)initWithCoder:device:	-			ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	da5513d9d843f1ef
+method	c:objc(cs)MPSNDArrayBinaryPrimaryGradientKernel(im)encodeToCommandBuffer:primarySourceArray:secondarySourceArray:sourceGradient:gradientState:	-			ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	b1f70b028282d438
+method	c:objc(cs)MPSNDArrayBinaryPrimaryGradientKernel(im)encodeToCommandBuffer:primarySourceArray:secondarySourceArray:sourceGradient:gradientState:destinationArray:	-			ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	cbb43f24e74b7f45
+interface	c:objc(cs)MPSNDArrayBinarySecondaryGradientKernel	-			ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	37059f73ac4163c3
+super	-	MPSNDArrayBinarySecondaryGradientKernel	MPSNDArrayMultiaryGradientKernel		-	-	500748d5f190947c
+method	c:objc(cs)MPSNDArrayBinarySecondaryGradientKernel(im)initWithDevice:sourceCount:sourceGradientIndex:	-			*unavailable ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	807866c90904663e
+method	c:objc(cs)MPSNDArrayBinarySecondaryGradientKernel(im)initWithDevice:	-			ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	1eef434e2d1ea2f2
+method	c:objc(cs)MPSNDArrayBinarySecondaryGradientKernel(im)initWithCoder:device:	-			ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	d80c3d8cd4b97f4d
+method	c:objc(cs)MPSNDArrayBinarySecondaryGradientKernel(im)encodeToCommandBuffer:primarySourceArray:secondarySourceArray:sourceGradient:gradientState:	-			ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	a0af0b85d3195041
+method	c:objc(cs)MPSNDArrayBinarySecondaryGradientKernel(im)encodeToCommandBuffer:primarySourceArray:secondarySourceArray:sourceGradient:gradientState:destinationArray:	-			ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	0a1868535cf01d96
+interface	c:objc(cs)MPSNDArrayGradientState	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	e2307f73b1d3d6b6
+super	-	MPSNDArrayGradientState	MPSState		-	-	aa8efcd025f50141
+interface	c:objc(cs)MPSNDArrayMatrixMultiplication	-			ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	ada253c7fa828ebe
+super	-	MPSNDArrayMatrixMultiplication	MPSNDArrayMultiaryKernel		-	-	cc7e439aa7ce7049
+property	c:objc(cs)MPSNDArrayMatrixMultiplication(py)alpha	-			ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	3a3f31122d8bac0a
+property	c:objc(cs)MPSNDArrayMatrixMultiplication(py)beta	-			ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	f9869827ebe1fc97
+interface	c:objc(cs)MPSNDArrayStridedSlice	-			ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	3a6838acfe7c3082
+super	-	MPSNDArrayStridedSlice	MPSNDArrayUnaryKernel		-	-	c03ff3a16061aab3
+property	c:objc(cs)MPSNDArrayStridedSlice(py)strides	-			ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	9b862a58f527ad6a
+interface	c:objc(cs)MPSNDArrayStridedSliceGradient	-			ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	64aa30d55c000edd
+super	-	MPSNDArrayStridedSliceGradient	MPSNDArrayUnaryGradientKernel		-	-	a589ab8823ca1375
+interface	c:objc(cs)MPSNDArrayGatherGradientState	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	34402784b72632b3
+super	-	MPSNDArrayGatherGradientState	MPSNDArrayGradientState		-	-	5fcb7080fb6d601e
+interface	c:objc(cs)MPSNDArrayGather	-			ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	6b12a3ba99900c40
+super	-	MPSNDArrayGather	MPSNDArrayBinaryKernel		-	-	b0bd62d36ea016af
+property	c:objc(cs)MPSNDArrayGather(py)axis	-			ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	30bfb54dfcec6148
+interface	c:objc(cs)MPSNDArrayGatherGradient	-			ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	0484eae68e665ad6
+super	-	MPSNDArrayGatherGradient	MPSNDArrayBinaryPrimaryGradientKernel		-	-	5556390c9314ff9b
+interface	c:objc(cs)MPSNDArrayIdentity	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	1b5451a261bb23ec
+super	-	MPSNDArrayIdentity	MPSNDArrayUnaryKernel		-	-	c8b7494aabb5ea38
+method	c:objc(cs)MPSNDArrayIdentity(im)initWithDevice:	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	fbf513d61be69389
+method	c:objc(cs)MPSNDArrayIdentity(im)reshapeWithCommandBuffer:sourceArray:shape:destinationArray:	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	8f4888b557b27115
+method	c:objc(cs)MPSNDArrayIdentity(im)reshapeWithCommandBuffer:sourceArray:dimensionCount:dimensionSizes:destinationArray:	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	57485700df1d8015
+method	c:objc(cs)MPSNDArrayIdentity(im)reshapeWithCommandEncoder:commandBuffer:sourceArray:shape:destinationArray:	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	9245dbc90cbbe9a0
+method	c:objc(cs)MPSNDArrayIdentity(im)reshapeWithCommandEncoder:commandBuffer:sourceArray:dimensionCount:dimensionSizes:destinationArray:	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	81bdc81465f5c43d
+typedef	c:MPSNDArrayQuantization.h@T@MPSNDArrayQuantizationScheme	-			-	-	36e87ae49e09d122
+enum	c:@E@MPSNDArrayQuantizationScheme	-			-	-	7b74bfd1e99a521e
+enumconst	c:@E@MPSNDArrayQuantizationScheme@MPSNDArrayQuantizationTypeNone	MPSNDArrayQuantizationScheme			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	40edd247cd140225
+enumconst	c:@E@MPSNDArrayQuantizationScheme@MPSNDArrayQuantizationTypeAffine	MPSNDArrayQuantizationScheme			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	e3547f05c50e4b2a
+enumconst	c:@E@MPSNDArrayQuantizationScheme@MPSNDArrayQuantizationTypeLUT	MPSNDArrayQuantizationScheme			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	1c05d0561fb37ed6
+interface	c:objc(cs)MPSNDArrayQuantizationDescriptor	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	e27cbc3529d1681a
+super	-	MPSNDArrayQuantizationDescriptor	NSObject		-	-	12ca9c0726080666
+conforms	-	MPSNDArrayQuantizationDescriptor	NSCopying		-	-	2b6f016a5659f2ca
+property	c:objc(cs)MPSNDArrayQuantizationDescriptor(py)quantizationDataType	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	d26789a86038308c
+property	c:objc(cs)MPSNDArrayQuantizationDescriptor(py)quantizationScheme	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	a8cdfb8c3702c82f
+interface	c:objc(cs)MPSNDArrayAffineQuantizationDescriptor	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	0df4e99f72cc2c3e
+super	-	MPSNDArrayAffineQuantizationDescriptor	MPSNDArrayQuantizationDescriptor		-	-	57f87b7e5b096f47
+property	c:objc(cs)MPSNDArrayAffineQuantizationDescriptor(py)hasZeroPoint	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	50d9d710d2e2a77a
+property	c:objc(cs)MPSNDArrayAffineQuantizationDescriptor(py)hasMinValue	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	94b210fe535ecacd
+property	c:objc(cs)MPSNDArrayAffineQuantizationDescriptor(py)implicitZeroPoint	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	a055213942287cde
+method	c:objc(cs)MPSNDArrayAffineQuantizationDescriptor(im)init	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	1895f471352efac7
+method	c:objc(cs)MPSNDArrayAffineQuantizationDescriptor(im)initWithDataType:hasZeroPoint:hasMinValue:	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	a0a1e99f204fcab2
+interface	c:objc(cs)MPSNDArrayLUTQuantizationDescriptor	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	884a555e2c1bbdde
+super	-	MPSNDArrayLUTQuantizationDescriptor	MPSNDArrayQuantizationDescriptor		-	-	d0726389643e2ffb
+method	c:objc(cs)MPSNDArrayLUTQuantizationDescriptor(im)initWithDataType:	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	f171a4731224df1c
+method	c:objc(cs)MPSNDArrayLUTQuantizationDescriptor(im)initWithDataType:vectorAxis:	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	2988f7b2b3d696e7
+interface	c:objc(cs)MPSNDArrayQuantizedMatrixMultiplication	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	c2496b70ab0cc9c1
+super	-	MPSNDArrayQuantizedMatrixMultiplication	MPSNDArrayMatrixMultiplication		-	-	69b60cc55100b3ff
+method	c:objc(cs)MPSNDArrayQuantizedMatrixMultiplication(im)initWithDevice:sourceCount:	-			*unavailable ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	51e6f93e4b184d68
+method	c:objc(cs)MPSNDArrayQuantizedMatrixMultiplication(im)initWithDevice:leftQuantizationDescriptor:rightQuantizationDescriptor:	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	9828fb95850dbac2
+interface	c:objc(cs)MPSNDArrayLUTDequantize	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	4b476ea5a3085b26
+super	-	MPSNDArrayLUTDequantize	MPSNDArrayMultiaryKernel		-	-	050049ccf43cc874
+method	c:objc(cs)MPSNDArrayLUTDequantize(im)initWithDevice:	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	e5feaea1b5d9dbf3
+method	c:objc(cs)MPSNDArrayLUTDequantize(im)initWithDevice:sourceCount:	-			*unavailable ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	73c55a2a0d32ccd6
+interface	c:objc(cs)MPSNDArrayVectorLUTDequantize	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	d13aa21b07a17509
+super	-	MPSNDArrayVectorLUTDequantize	MPSNDArrayMultiaryKernel		-	-	7f620b6851a3e75d
+property	c:objc(cs)MPSNDArrayVectorLUTDequantize(py)vectorAxis	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	bdf8c12901c96d52
+method	c:objc(cs)MPSNDArrayVectorLUTDequantize(im)initWithDevice:axis:	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	65d1ab05b019a9b8
+method	c:objc(cs)MPSNDArrayVectorLUTDequantize(im)initWithDevice:sourceCount:	-			*unavailable ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	5edb2245a6fe9276
+interface	c:objc(cs)MPSNDArrayAffineInt4Dequantize	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	fdd4d21ebe986c6c
+super	-	MPSNDArrayAffineInt4Dequantize	MPSNDArrayMultiaryKernel		-	-	4511b31252e69075
+method	c:objc(cs)MPSNDArrayAffineInt4Dequantize(im)initWithDevice:	-			*unavailable ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	8409472a617df5a9
+method	c:objc(cs)MPSNDArrayAffineInt4Dequantize(im)initWithDevice:quantizationDescriptor:	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	5757dabc6ccec70f
+method	c:objc(cs)MPSNDArrayAffineInt4Dequantize(im)initWithDevice:sourceCount:	-			*unavailable ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	1bdce3c8626b3f38

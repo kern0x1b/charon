@@ -1,0 +1,38 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+interface	c:objc(cs)SCSensitivityAnalysis	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	ad4a5d0e14b7a819
+super	-	SCSensitivityAnalysis	NSObject		-	-	e2f2a54bbd6a05df
+property	c:objc(cs)SCSensitivityAnalysis(py)sensitive	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	a7028550d736d660
+typedef	c:@T@SCSensitivityAnalysisPolicy	-			-	-	86c9916f08ea64bf
+enum	c:@E@SCSensitivityAnalysisPolicy	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	d49c9625402a7e16
+enumconst	c:@E@SCSensitivityAnalysisPolicy@SCSensitivityAnalysisPolicyDisabled	SCSensitivityAnalysisPolicy			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	ac2ee8f5d6a420b7
+enumconst	c:@E@SCSensitivityAnalysisPolicy@SCSensitivityAnalysisPolicySimpleInterventions	SCSensitivityAnalysisPolicy			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	6a5af75906990b70
+enumconst	c:@E@SCSensitivityAnalysisPolicy@SCSensitivityAnalysisPolicyDescriptiveInterventions	SCSensitivityAnalysisPolicy			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	fd35e77961d467ed
+interface	c:objc(cs)SCSensitivityAnalyzer	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	bfffb1ae75ac3b44
+super	-	SCSensitivityAnalyzer	NSObject		-	-	f64359650609ec9d
+method	c:objc(cs)SCSensitivityAnalyzer(im)init	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	74eac67d3447f17c
+property	c:objc(cs)SCSensitivityAnalyzer(py)analysisPolicy	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	4232d395cee40673
+method	c:objc(cs)SCSensitivityAnalyzer(im)analyzeImageFile:completionHandler:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	0aabdaf87f4937cb
+method	c:objc(cs)SCSensitivityAnalyzer(im)analyzeCGImage:completionHandler:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	5515a0897ea40ceb
+method	c:objc(cs)SCSensitivityAnalyzer(im)analyzeVideoFile:completionHandler:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	f3f282b8b7b234c6
+typedef	c:@T@SCVideoStreamAnalyzerStreamDirection	-			-	-	b7ae1f0385896445
+enum	c:@E@SCVideoStreamAnalyzerStreamDirection	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	24a2f08d12761996
+enumconst	c:@E@SCVideoStreamAnalyzerStreamDirection@SCVideoStreamAnalyzerStreamDirectionOutgoing	SCVideoStreamAnalyzerStreamDirection			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	7ecb13db688499a9
+enumconst	c:@E@SCVideoStreamAnalyzerStreamDirection@SCVideoStreamAnalyzerStreamDirectionIncoming	SCVideoStreamAnalyzerStreamDirection			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	8ef0d5e086755939
+typedef	c:@T@SCVideoStreamAnalysisChangeHandler	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,swift=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	233f898fefb92497
+interface	c:objc(cs)SCVideoStreamAnalyzer	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	194d9f4c7c3e40f8
+super	-	SCVideoStreamAnalyzer	NSObject		-	-	e2ebdc2efc61bee2
+property	c:objc(cs)SCVideoStreamAnalyzer(py)analysis	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	e32be6b2cc2f5f0b
+property	c:objc(cs)SCVideoStreamAnalyzer(py)analysisChangedHandler	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	a3e49af032476401
+method	c:objc(cs)SCVideoStreamAnalyzer(im)initWithParticipantUUID:streamDirection:error:	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	218a489eb619b3b4
+method	c:objc(cs)SCVideoStreamAnalyzer(im)init	-			*unavailable ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	d10524d36ddbe97f
+method	c:objc(cs)SCVideoStreamAnalyzer(im)new	-			*unavailable ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	912a5184fa0b49be
+method	c:objc(cs)SCVideoStreamAnalyzer(im)analyzePixelBuffer:	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	7df1ee466fe5a1f3
+category	c:objc(cy)SCVideoStreamAnalyzer@SessionManagement	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	f98c62dc37b04ba5
+method	c:objc(cs)SCVideoStreamAnalyzer(im)beginAnalysisOfDecompressionSession:error:	SessionManagement			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	6c6413da11983d42
+method	c:objc(cs)SCVideoStreamAnalyzer(im)beginAnalysisOfCaptureDeviceInput:error:	SessionManagement			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	099d9d896f801ac8
+method	c:objc(cs)SCVideoStreamAnalyzer(im)endAnalysis	SessionManagement			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	7306e266f76d9431
+method	c:objc(cs)SCVideoStreamAnalyzer(im)continueStream	SessionManagement			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	a6aa9a0f17b73aa7
+category	c:objc(cy)SCSensitivityAnalysis@VideoStreamAnalysis	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	098476d33ea74440
+property	c:objc(cs)SCSensitivityAnalysis(py)shouldInterruptVideo	VideoStreamAnalysis			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	770243f0811fe123
+property	c:objc(cs)SCSensitivityAnalysis(py)shouldIndicateSensitivity	VideoStreamAnalysis			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	a57e0b6f97a6e85a
+property	c:objc(cs)SCSensitivityAnalysis(py)shouldMuteAudio	VideoStreamAnalysis			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	f254bd11e4e8aad0

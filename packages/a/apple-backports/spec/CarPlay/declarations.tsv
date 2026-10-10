@@ -1,0 +1,1009 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+typedef	c:@T@CPAlertActionStyle	-			-	-	041cafbbc2921780
+enum	c:@E@CPAlertActionStyle	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e762e328109bb96f
+enumconst	c:@E@CPAlertActionStyle@CPAlertActionStyleDefault	CPAlertActionStyle			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	bce16a9885224a21
+enumconst	c:@E@CPAlertActionStyle@CPAlertActionStyleCancel	CPAlertActionStyle			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	56da39ad1c2cca37
+enumconst	c:@E@CPAlertActionStyle@CPAlertActionStyleDestructive	CPAlertActionStyle			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ea3db99208a721f3
+interface	c:objc(cs)CPAlertAction	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3c19c5cbc8b4fac0
+super	-	CPAlertAction	NSObject		-	-	e095cb110a3832f9
+conforms	-	CPAlertAction	NSSecureCoding		-	-	885db2b65ec29040
+method	c:objc(cs)CPAlertAction(im)init	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6a55b5cc855b015f
+method	c:objc(cs)CPAlertAction(cm)new	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ace1ecb535b122a0
+method	c:objc(cs)CPAlertAction(im)initWithTitle:style:handler:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5cd45c507b1a3db7
+method	c:objc(cs)CPAlertAction(im)initWithTitle:color:handler:	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0b2aef6b60541638
+property	c:objc(cs)CPAlertAction(py)title	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7b0ff6ee3fcebe13
+property	c:objc(cs)CPAlertAction(py)style	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6c0ddb0891527e5d
+property	c:objc(cs)CPAlertAction(py)handler	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	91723cb01d9c5f70
+property	c:objc(cs)CPAlertAction(py)color	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d3e1c37d63e3ef18
+typedef	c:@T@CPAlertActionHandler	-			-	-	32c7140218b6e61f
+interface	c:objc(cs)CPTemplate	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	68d0be42b5f0be6e
+super	-	CPTemplate	NSObject		-	-	5f02e771a19e4079
+conforms	-	CPTemplate	NSSecureCoding		-	-	8cc48df092abe8ad
+property	c:objc(cs)CPTemplate(py)userInfo	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	32f32d84bcd126e3
+property	c:objc(cs)CPTemplate(py)tabTitle	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	1d11ce31d5da7a55
+property	c:objc(cs)CPTemplate(py)tabImage	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	133516c898c43945
+property	c:objc(cs)CPTemplate(py)tabSystemItem	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	890d617ed254404c
+property	c:objc(cs)CPTemplate(py)showsTabBadge	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	af035a9cf18c03ad
+interface	c:objc(cs)CPActionSheetTemplate	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	085adf74078cbb7a
+super	-	CPActionSheetTemplate	CPTemplate		-	-	5d0980d108a0a624
+method	c:objc(cs)CPActionSheetTemplate(im)initWithTitle:message:actions:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	736781ebae8fef54
+method	c:objc(cs)CPActionSheetTemplate(im)init	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e107d879d9feb6cf
+method	c:objc(cs)CPActionSheetTemplate(cm)new	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6a499c64850f7d5c
+property	c:objc(cs)CPActionSheetTemplate(py)title	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7e06c0bf0b034d6f
+property	c:objc(cs)CPActionSheetTemplate(py)message	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c4071e12f8ecf606
+property	c:objc(cs)CPActionSheetTemplate(py)actions	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	66bb79aa8eac0672
+interface	c:objc(cs)CPAlertTemplate	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	763ef18bc00debc2
+super	-	CPAlertTemplate	CPTemplate		-	-	be9d8ef51ac26a37
+method	c:objc(cs)CPAlertTemplate(im)initWithTitleVariants:actions:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2c5253413d270e64
+method	c:objc(cs)CPAlertTemplate(im)init	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8c33932eb1385044
+method	c:objc(cs)CPAlertTemplate(cm)new	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a410234116b73c2f
+property	c:objc(cs)CPAlertTemplate(py)titleVariants	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a071c4a79af5a0ba
+property	c:objc(cs)CPAlertTemplate(cpy)maximumActionCount	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	692293263f9c27f2
+property	c:objc(cs)CPAlertTemplate(py)actions	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a5055440298b4c94
+typedef	c:@T@CPBarButtonStyle	-			-	-	52c5d0cbbeee6f65
+enum	c:@E@CPBarButtonStyle	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	67fa8660e6f1711f
+enumconst	c:@E@CPBarButtonStyle@CPBarButtonStyleNone	CPBarButtonStyle			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4594ea6d9b4d0052
+enumconst	c:@E@CPBarButtonStyle@CPBarButtonStyleRounded	CPBarButtonStyle			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d0fcab511640bd84
+typedef	c:@T@CPBarButtonType	-			-	-	c63761c1c33073c0
+enum	c:@E@CPBarButtonType	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a362eaff48724b0b
+enumconst	c:@E@CPBarButtonType@CPBarButtonTypeText	CPBarButtonType			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2c1400c4363ea91c
+enumconst	c:@E@CPBarButtonType@CPBarButtonTypeImage	CPBarButtonType			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3d880a0d2ef96237
+interface	c:objc(cs)CPBarButton	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use -[CPBarButton initWithImage:handler:] or -[CPBarButton buttonWithTitle:handler:] instead	a471c0710d0a59c0
+super	-	CPBarButton	NSObject		-	-	e949b7b62370d04d
+conforms	-	CPBarButton	NSSecureCoding		-	-	c87583ac9ff17ec9
+method	c:objc(cs)CPBarButton(cm)new	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	319b3856d82a3543
+method	c:objc(cs)CPBarButton(im)init	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e8a6a4577ea75b4f
+method	c:objc(cs)CPBarButton(im)initWithImage:handler:	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	8300f93bbb837531
+method	c:objc(cs)CPBarButton(im)initWithTitle:handler:	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	66a46b81350193dc
+property	c:objc(cs)CPBarButton(py)enabled	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	666b37b5d2ce64a5
+property	c:objc(cs)CPBarButton(py)buttonStyle	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	ed276b0e00a28d52
+property	c:objc(cs)CPBarButton(py)image	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	698d48bfbf4cf86d
+property	c:objc(cs)CPBarButton(py)title	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	51d451bac00bf72d
+method	c:objc(cs)CPBarButton(im)initWithType:handler:	-			ios=12.0/14.0/-/0	deprecated: Use -[CPBarButton initWithImage:handler:] or -[CPBarButton buttonWithTitle:handler:] instead	84c012178dc3c698
+property	c:objc(cs)CPBarButton(py)buttonType	-			ios=12.0/14.0/-/0	-	33a1f5e9bc3e499f
+typedef	c:@T@CPBarButtonHandler	-			-	-	779a2db9a76e9170
+protocol	c:objc(pl)CPBarButtonProviding	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	709976c5ae91a729
+conforms	-	CPBarButtonProviding	NSObject		-	-	32dcffb681c3c4cf
+property	c:objc(pl)CPBarButtonProviding(py)leadingNavigationBarButtons	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	871d68d02b983844
+property	c:objc(pl)CPBarButtonProviding(py)trailingNavigationBarButtons	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0cdc1863e0cf8de1
+property	c:objc(pl)CPBarButtonProviding(py)backButton	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	88cfeb6b88deef0f
+interface	c:objc(cs)CPButton	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1488e6a1ed85d0fc
+super	-	CPButton	NSObject		-	-	75e26fa5e5c2eccb
+method	c:objc(cs)CPButton(im)initWithImage:handler:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b4c35b328e906a92
+property	c:objc(cs)CPButton(py)image	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a99f1f00724424e8
+property	c:objc(cs)CPButton(py)title	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	96a8abfe887c036d
+property	c:objc(cs)CPButton(py)enabled	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b91beaaaf602635b
+method	c:objc(cs)CPButton(cm)new	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5bc5a6b15f474517
+method	c:objc(cs)CPButton(im)init	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	231ed52d066cf644
+var	c:@CPButtonMaximumImageSize	-			-	-	95a0a4bd9f640127
+interface	c:objc(cs)CPContact	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e4c80fecfbbd9064
+super	-	CPContact	NSObject		-	-	0ae4681c98a4ecd6
+conforms	-	CPContact	NSSecureCoding		-	-	802b943086aa887a
+method	c:objc(cs)CPContact(im)initWithName:image:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	66ba569a055bc361
+property	c:objc(cs)CPContact(py)name	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e97fe032517abb3c
+property	c:objc(cs)CPContact(py)image	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5d93b1b63d0e19cf
+property	c:objc(cs)CPContact(py)actions	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e84c46ef7c02621f
+property	c:objc(cs)CPContact(py)subtitle	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e1f4b830ff5480c6
+property	c:objc(cs)CPContact(py)informativeText	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b5c6d6052d0f4d35
+interface	c:objc(cs)CPContactCallButton	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	990fce364bc4bf4f
+super	-	CPContactCallButton	CPButton		-	-	f6c659386b1adb19
+method	c:objc(cs)CPContactCallButton(im)initWithHandler:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7318d345bbbb6f46
+method	c:objc(cs)CPContactCallButton(im)initWithImage:handler:	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a62e8a5df0428129
+interface	c:objc(cs)CPContactMessageButton	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	07c652a83741565c
+super	-	CPContactMessageButton	CPButton		-	-	c1d12b92fe56887e
+method	c:objc(cs)CPContactMessageButton(im)initWithPhoneOrEmail:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6dbbca8cb55a4158
+property	c:objc(cs)CPContactMessageButton(py)phoneOrEmail	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	52c73346c8ead2ec
+interface	c:objc(cs)CPContactDirectionsButton	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4e280ed5516a5ca0
+super	-	CPContactDirectionsButton	CPButton		-	-	62452fe1e16d61c9
+method	c:objc(cs)CPContactDirectionsButton(im)initWithHandler:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9ee64d63b87bf944
+method	c:objc(cs)CPContactDirectionsButton(im)initWithImage:handler:	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9ceb9f4e4626be73
+interface	c:objc(cs)CPContactTemplate	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8cff134aed286eec
+super	-	CPContactTemplate	CPTemplate		-	-	01ce685a7970b896
+conforms	-	CPContactTemplate	CPBarButtonProviding		-	-	20cb6c39333382f2
+method	c:objc(cs)CPContactTemplate(im)initWithContact:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d4d255cc867a5036
+method	c:objc(cs)CPContactTemplate(im)init	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4cdc6ac0bdcd22ad
+method	c:objc(cs)CPContactTemplate(cm)new	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f545d9bfd0982021
+property	c:objc(cs)CPContactTemplate(py)contact	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7e53033d1ca7b652
+interface	c:objc(cs)CPDashboardButton	-			ios=13.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d9f26ccd4998ab42
+super	-	CPDashboardButton	NSObject		-	-	82a731e0e6ed1cae
+conforms	-	CPDashboardButton	NSSecureCoding		-	-	16cfc40c66506376
+method	c:objc(cs)CPDashboardButton(cm)new	-			*unavailable ios=13.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b45312418c614970
+method	c:objc(cs)CPDashboardButton(im)init	-			*unavailable ios=13.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f44cc535ac1ea5c4
+method	c:objc(cs)CPDashboardButton(im)initWithTitleVariants:subtitleVariants:image:handler:	-			ios=13.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8607d5cd86ae83cd
+property	c:objc(cs)CPDashboardButton(py)image	-			ios=13.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	559785472c3b754e
+property	c:objc(cs)CPDashboardButton(py)titleVariants	-			ios=13.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9ecdf6cfc8ef9cb6
+property	c:objc(cs)CPDashboardButton(py)subtitleVariants	-			ios=13.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d7e284c220c5f2ac
+interface	c:objc(cs)CPDashboardController	-			ios=13.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4f3b4b7d29e82df5
+super	-	CPDashboardController	NSObject		-	-	dfcc61fa08df3220
+method	c:objc(cs)CPDashboardController(im)init	-			*unavailable ios=13.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	530f3341e6c69a55
+method	c:objc(cs)CPDashboardController(cm)new	-			*unavailable ios=13.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f1bcc6c12f45b87c
+property	c:objc(cs)CPDashboardController(py)shortcutButtons	-			ios=13.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	68d4e3398ef128cc
+interface	c:objc(cs)CPMessageGridItemConfiguration	-			ios=26.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	bb328b7e132610f0
+super	-	CPMessageGridItemConfiguration	NSObject		-	-	14e6f6ed14faa639
+method	c:objc(cs)CPMessageGridItemConfiguration(im)initWithConversationIdentifier:unread:	-			ios=26.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	7769b7ff2d386125
+property	c:objc(cs)CPMessageGridItemConfiguration(py)unread	-			ios=26.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	a94d2f4a3aa06164
+property	c:objc(cs)CPMessageGridItemConfiguration(py)conversationIdentifier	-			ios=26.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	0a4cbcf03cdcfa28
+interface	c:objc(cs)CPGridButton	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	48a6712049187cec
+super	-	CPGridButton	NSObject		-	-	fe246426a8f9fae0
+conforms	-	CPGridButton	NSSecureCoding		-	-	b4fe92a366fc71f3
+method	c:objc(cs)CPGridButton(cm)new	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	185c4163de34fb65
+method	c:objc(cs)CPGridButton(im)init	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	971f235e369b8bea
+method	c:objc(cs)CPGridButton(im)initWithTitleVariants:image:handler:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9f367a3769e7872a
+method	c:objc(cs)CPGridButton(im)initWithTitleVariants:image:messageConfiguration:handler:	-			ios=26.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	4315df68d6488862
+property	c:objc(cs)CPGridButton(py)enabled	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2e10d47df73a6057
+property	c:objc(cs)CPGridButton(py)messageConfiguration	-			ios=26.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	82804d8ead07abe9
+property	c:objc(cs)CPGridButton(py)image	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a3b80625cb2cf429
+method	c:objc(cs)CPGridButton(im)updateImage:	-			ios=26.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	0add4ac5046960a9
+property	c:objc(cs)CPGridButton(py)titleVariants	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	38bbf655e92ad4ad
+method	c:objc(cs)CPGridButton(im)updateTitleVariants:	-			ios=26.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	00dfbfc46c16ef6b
+var	c:@CPGridTemplateMaximumItems	-			ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0b2f1cdc5cfb2d9b
+interface	c:objc(cs)CPGridTemplate	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b2e9ca14d233307d
+super	-	CPGridTemplate	CPTemplate		-	-	92510bdfc26122db
+conforms	-	CPGridTemplate	CPBarButtonProviding		-	-	62cf574d8526a86b
+method	c:objc(cs)CPGridTemplate(im)initWithTitle:gridButtons:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6b44e3eadfe8bdc4
+method	c:objc(cs)CPGridTemplate(im)init	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6653b345f75517a8
+method	c:objc(cs)CPGridTemplate(cm)new	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	69f59eec8390a5f4
+property	c:objc(cs)CPGridTemplate(cpy)maximumGridButtonImageSize	-			ios=26.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	c04c368c19f8ce64
+property	c:objc(cs)CPGridTemplate(py)gridButtons	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9220a97d66b180bd
+method	c:objc(cs)CPGridTemplate(im)updateGridButtons:	-			ios=15.0/-/-/0,tvos=-/-/-/1	-	44e97eee0e12e613
+property	c:objc(cs)CPGridTemplate(py)title	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	41e5659c24082084
+method	c:objc(cs)CPGridTemplate(im)updateTitle:	-			ios=15.0/-/-/0	-	e0524554aa6a82ea
+interface	c:objc(cs)CPImageSet	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c1b19707752fcd33
+super	-	CPImageSet	NSObject		-	-	1f3c795a4531dde1
+conforms	-	CPImageSet	NSSecureCoding		-	-	1c7b64b40e0b4ac8
+method	c:objc(cs)CPImageSet(im)initWithLightContentImage:darkContentImage:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b46117f7c453fca7
+method	c:objc(cs)CPImageSet(im)init	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e366a7589802b563
+method	c:objc(cs)CPImageSet(cm)new	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	49fe8e1317dfcb5f
+property	c:objc(cs)CPImageSet(py)lightContentImage	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6c272d61cc0a3126
+property	c:objc(cs)CPImageSet(py)darkContentImage	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1bb0215f64636e04
+typedef	c:@T@CPTextButtonStyle	-			-	-	836807baddd10208
+enum	c:@E@CPTextButtonStyle	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0734c1c1849b5e36
+enumconst	c:@E@CPTextButtonStyle@CPTextButtonStyleNormal	CPTextButtonStyle			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d4f72c056cd0cd18
+enumconst	c:@E@CPTextButtonStyle@CPTextButtonStyleCancel	CPTextButtonStyle			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6930cb89252eff03
+enumconst	c:@E@CPTextButtonStyle@CPTextButtonStyleConfirm	CPTextButtonStyle			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e1f537edcfc9ed96
+interface	c:objc(cs)CPTextButton	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1ee7f620f72c6fb7
+super	-	CPTextButton	NSObject		-	-	a4d0ba45f215c649
+method	c:objc(cs)CPTextButton(im)initWithTitle:textStyle:handler:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c20b3a355da03f46
+property	c:objc(cs)CPTextButton(py)title	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	125122517de42fc7
+property	c:objc(cs)CPTextButton(py)textStyle	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	60026621f982bd62
+method	c:objc(cs)CPTextButton(cm)new	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b8c53c0198e44cfc
+method	c:objc(cs)CPTextButton(im)init	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2b3c813c952f9164
+interface	c:objc(cs)CPInformationItem	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	63adb22d2a228ed9
+super	-	CPInformationItem	NSObject		-	-	7dc4baf7474ff136
+conforms	-	CPInformationItem	NSSecureCoding		-	-	a7b7554a52395389
+method	c:objc(cs)CPInformationItem(im)initWithTitle:detail:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	64bf0382f1cdd8fc
+property	c:objc(cs)CPInformationItem(py)title	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	66170a9addb5a72c
+property	c:objc(cs)CPInformationItem(py)detail	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3bcdda8a62b63e41
+method	c:objc(cs)CPInformationItem(cm)new	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a68d2ee280b723c5
+method	c:objc(cs)CPInformationItem(im)init	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	89c4c5dc4fa3619e
+interface	c:objc(cs)CPInformationRatingItem	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9a6bc234fc46a88f
+super	-	CPInformationRatingItem	CPInformationItem		-	-	eb63bf3de5341c6f
+method	c:objc(cs)CPInformationRatingItem(im)initWithRating:maximumRating:title:detail:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c270d06d7cb641fe
+property	c:objc(cs)CPInformationRatingItem(py)rating	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9d5bd57c103baeba
+property	c:objc(cs)CPInformationRatingItem(py)maximumRating	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3c2e0c08bb663ce5
+method	c:objc(cs)CPInformationRatingItem(cm)new	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b076b0a5583fdeba
+method	c:objc(cs)CPInformationRatingItem(im)init	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	cd1d471c96dc6b3f
+typedef	c:@T@CPInformationTemplateLayout	-			-	-	000647c71a4385e5
+enum	c:@E@CPInformationTemplateLayout	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ac4b622a33a6d7f9
+enumconst	c:@E@CPInformationTemplateLayout@CPInformationTemplateLayoutLeading	CPInformationTemplateLayout			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	138ee2668193f2eb
+enumconst	c:@E@CPInformationTemplateLayout@CPInformationTemplateLayoutTwoColumn	CPInformationTemplateLayout			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	61baedacac184da4
+interface	c:objc(cs)CPInformationTemplate	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e51d6d660acdf355
+super	-	CPInformationTemplate	CPTemplate		-	-	4e3f144fb45a91e6
+conforms	-	CPInformationTemplate	CPBarButtonProviding		-	-	5affaa8fb83583bd
+method	c:objc(cs)CPInformationTemplate(im)initWithTitle:layout:items:actions:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fcf60e347fe0c47c
+property	c:objc(cs)CPInformationTemplate(py)layout	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b735ceba8227e1bb
+property	c:objc(cs)CPInformationTemplate(py)title	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b50d7d73749e71ae
+property	c:objc(cs)CPInformationTemplate(py)items	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9f0ad5d9fb1ea64d
+property	c:objc(cs)CPInformationTemplate(py)actions	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	624561dda15fba32
+method	c:objc(cs)CPInformationTemplate(im)init	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8545dbadcc9b4070
+method	c:objc(cs)CPInformationTemplate(cm)new	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	14823ed22a6e8448
+interface	c:objc(cs)CPWindow	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a3d56b9e3c3827da
+super	-	CPWindow	UIWindow		-	-	026954476cac5721
+property	c:objc(cs)CPWindow(py)mapButtonSafeAreaLayoutGuide	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	48c61f578cf86bfc
+property	c:objc(cs)CPWindow(py)windowScene	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6434aa7521874b52
+property	c:objc(cs)CPWindow(py)templateApplicationScene	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7bdca6d99d51f1aa
+var	c:@CarPlayErrorDomain	-			-	-	8da3fee1e1b69462
+interface	c:objc(cs)CPInterfaceController	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use -setRootTemplate:animated:completion: instead	07db2a4b38e8fb93
+super	-	CPInterfaceController	NSObject		-	-	7d4375c9248fd4bd
+method	c:objc(cs)CPInterfaceController(im)init	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fafa62d787f8bf45
+method	c:objc(cs)CPInterfaceController(cm)new	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	979a5108559b1a31
+property	c:objc(cs)CPInterfaceController(py)delegate	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	57a36a0048b911a2
+property	c:objc(cs)CPInterfaceController(py)prefersDarkUserInterfaceStyle	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	bb84bcaa7ab68ac0
+method	c:objc(cs)CPInterfaceController(im)setRootTemplate:animated:completion:	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	afbc1202b80797c9
+method	c:objc(cs)CPInterfaceController(im)pushTemplate:animated:completion:	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	8330d4666afc8450
+method	c:objc(cs)CPInterfaceController(im)popTemplateAnimated:completion:	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	37a894f2d9188864
+method	c:objc(cs)CPInterfaceController(im)popToRootTemplateAnimated:completion:	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	16e15aca48fc5399
+method	c:objc(cs)CPInterfaceController(im)popToTemplate:animated:completion:	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	e8c6ba96ec617205
+method	c:objc(cs)CPInterfaceController(im)presentTemplate:animated:completion:	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	46fb5eb0f0da1cfc
+method	c:objc(cs)CPInterfaceController(im)dismissTemplateAnimated:completion:	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	1a297766316c5383
+property	c:objc(cs)CPInterfaceController(py)presentedTemplate	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9413c7bc11b5cfe5
+property	c:objc(cs)CPInterfaceController(py)rootTemplate	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	772a58d467a7094a
+property	c:objc(cs)CPInterfaceController(py)topTemplate	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8082bc54fc44a9ac
+property	c:objc(cs)CPInterfaceController(py)templates	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	38627e18a9f9c016
+property	c:objc(cs)CPInterfaceController(py)carTraitCollection	-			ios=14.0/-/-/0	-	d4f6af59717e3079
+method	c:objc(cs)CPInterfaceController(im)setRootTemplate:animated:	-			ios=12.0/14.0/-/0	deprecated: Use -setRootTemplate:animated:completion: instead	2d60ea4ade714899
+method	c:objc(cs)CPInterfaceController(im)pushTemplate:animated:	-			ios=12.0/14.0/-/0	deprecated: Use -pushTemplate:animated:completion: instead	1ca4731cabac4402
+method	c:objc(cs)CPInterfaceController(im)popTemplateAnimated:	-			ios=12.0/14.0/-/0	deprecated: Use -popTemplateAnimated:completion: instead	7cc04413b46b001a
+method	c:objc(cs)CPInterfaceController(im)popToRootTemplateAnimated:	-			ios=12.0/14.0/-/0	deprecated: Use -popToRootTemplateAnimated:completion: instead	8366142f97209284
+method	c:objc(cs)CPInterfaceController(im)popToTemplate:animated:	-			ios=12.0/14.0/-/0	deprecated: Use -popToTemplate:animated:completion: instead	c536bae20572285c
+method	c:objc(cs)CPInterfaceController(im)presentTemplate:animated:	-			ios=12.0/14.0/-/0	deprecated: Use -presentTemplate:animated:completion: instead	851dc84f0ea71947
+method	c:objc(cs)CPInterfaceController(im)dismissTemplateAnimated:	-			ios=12.0/14.0/-/0	deprecated: Use -dismissTemplateAnimated:completion: instead	5f422f24274b4cf9
+protocol	c:objc(pl)CPInterfaceControllerDelegate	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fa84f6f4d8a89fc6
+conforms	-	CPInterfaceControllerDelegate	NSObject		-	-	6c5eacfb152e27e2
+method	c:objc(pl)CPInterfaceControllerDelegate(im)templateWillAppear:animated:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	12291b2d91dbbfaf
+method	c:objc(pl)CPInterfaceControllerDelegate(im)templateDidAppear:animated:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	68290de4c658a855
+method	c:objc(pl)CPInterfaceControllerDelegate(im)templateWillDisappear:animated:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5e0bbe5f2d85446e
+method	c:objc(pl)CPInterfaceControllerDelegate(im)templateDidDisappear:animated:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1c4ca29979c6c469
+protocol	c:objc(pl)CPApplicationDelegate	-			ios=12.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	996c1131e9697c13
+conforms	-	CPApplicationDelegate	UIApplicationDelegate		-	-	3e62f17cfc742d24
+method	c:objc(pl)CPApplicationDelegate(im)application:didConnectCarInterfaceController:toWindow:	-			ios=12.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6e8280d108b50587
+method	c:objc(pl)CPApplicationDelegate(im)application:didDisconnectCarInterfaceController:fromWindow:	-			ios=12.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8411438b9205efde
+method	c:objc(pl)CPApplicationDelegate(im)application:didSelectNavigationAlert:	-			ios=12.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	743e3805e6684cde
+method	c:objc(pl)CPApplicationDelegate(im)application:didSelectManeuver:	-			ios=12.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2c6983930672da6d
+typedef	c:@T@CPInstrumentClusterSetting	-			-	-	c4886b33cde3c1f0
+enum	c:@E@CPInstrumentClusterSetting	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	85f7dc856ff8f384
+enumconst	c:@E@CPInstrumentClusterSetting@CPInstrumentClusterSettingUnspecified	CPInstrumentClusterSetting			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	81792cdc6ae18911
+enumconst	c:@E@CPInstrumentClusterSetting@CPInstrumentClusterSettingEnabled	CPInstrumentClusterSetting			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ddf24724c91ea1e3
+enumconst	c:@E@CPInstrumentClusterSetting@CPInstrumentClusterSettingDisabled	CPInstrumentClusterSetting			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	50242d6915ab92db
+enumconst	c:@E@CPInstrumentClusterSetting@CPInstrumentClusterSettingUserPreference	CPInstrumentClusterSetting			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9d0517d413f3148d
+interface	c:objc(cs)CPInstrumentClusterController	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ad98905210752d09
+super	-	CPInstrumentClusterController	NSObject		-	-	81aad8f3d1eca0cf
+method	c:objc(cs)CPInstrumentClusterController(im)init	-			*unavailable ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	faf9c50167e435b0
+method	c:objc(cs)CPInstrumentClusterController(cm)new	-			*unavailable ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1591adcc868c74d0
+property	c:objc(cs)CPInstrumentClusterController(py)delegate	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	cf588837a15f69df
+property	c:objc(cs)CPInstrumentClusterController(py)instrumentClusterWindow	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b0f843132c79f6a6
+property	c:objc(cs)CPInstrumentClusterController(py)speedLimitSetting	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	efa4cf3b13de9d10
+property	c:objc(cs)CPInstrumentClusterController(py)compassSetting	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	cc5aa11a5f4b3544
+property	c:objc(cs)CPInstrumentClusterController(py)inactiveDescriptionVariants	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	cc064daee79bda4c
+property	c:objc(cs)CPInstrumentClusterController(py)attributedInactiveDescriptionVariants	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d36ddc5fdd9e46fb
+protocol	c:objc(pl)CPInstrumentClusterControllerDelegate	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7f0fb89144bef7f8
+conforms	-	CPInstrumentClusterControllerDelegate	NSObject		-	-	8b5e6bd6db187583
+method	c:objc(pl)CPInstrumentClusterControllerDelegate(im)instrumentClusterControllerDidConnectWindow:	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e3fa35905dcb50f5
+method	c:objc(pl)CPInstrumentClusterControllerDelegate(im)instrumentClusterControllerDidDisconnectWindow:	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	61592dfc4f9f043f
+method	c:objc(pl)CPInstrumentClusterControllerDelegate(im)instrumentClusterControllerDidZoomIn:	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b36b1b7dabb77607
+method	c:objc(pl)CPInstrumentClusterControllerDelegate(im)instrumentClusterControllerDidZoomOut:	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ff8db8bd426482cd
+method	c:objc(pl)CPInstrumentClusterControllerDelegate(im)instrumentClusterController:didChangeCompassSetting:	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	135518916312ca19
+method	c:objc(pl)CPInstrumentClusterControllerDelegate(im)instrumentClusterController:didChangeSpeedLimitSetting:	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2cfd657430d7a0c7
+interface	c:objc(cs)CPListImageRowItemElement	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1385a8c736929e6b
+super	-	CPListImageRowItemElement	NSObject		-	-	76cf6c3ac69671f9
+method	c:objc(cs)CPListImageRowItemElement(im)init	-			*unavailable ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b280dd3770b68592
+property	c:objc(cs)CPListImageRowItemElement(py)image	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	16c9b0168b2f9954
+property	c:objc(cs)CPListImageRowItemElement(cpy)maximumImageSize	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d47ee7cc10d90766
+property	c:objc(cs)CPListImageRowItemElement(py)enabled	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	db4eb554b6bd0b28
+interface	c:objc(cs)CPListImageRowItemCardElement	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8cc9ebcb7be90b1e
+super	-	CPListImageRowItemCardElement	CPListImageRowItemElement		-	-	61fbb96067576e40
+method	c:objc(cs)CPListImageRowItemCardElement(im)initWithImage:showsImageFullHeight:title:subtitle:tintColor:	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	dddaf600eed46445
+property	c:objc(cs)CPListImageRowItemCardElement(py)title	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	32f7f0b5f703cbea
+property	c:objc(cs)CPListImageRowItemCardElement(py)subtitle	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	83b38bf373128b27
+property	c:objc(cs)CPListImageRowItemCardElement(py)showsImageFullHeight	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	187720c10eecd281
+property	c:objc(cs)CPListImageRowItemCardElement(py)tintColor	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	113bc116f3ba4839
+property	c:objc(cs)CPListImageRowItemCardElement(cpy)maximumImageSize	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	87830d3378802461
+property	c:objc(cs)CPListImageRowItemCardElement(cpy)maximumFullHeightImageSize	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e60e85eedbf25f4a
+typedef	c:@T@CPListImageRowItemCondensedElementShape	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d347c5b5e9ecd8d2
+enum	c:@E@CPListImageRowItemCondensedElementShape	-			-	-	c657c05e4deb12c3
+enumconst	c:@E@CPListImageRowItemCondensedElementShape@CPListImageRowItemCondensedElementShapeCircular	CPListImageRowItemCondensedElementShape			-	-	521917f33e922eab
+enumconst	c:@E@CPListImageRowItemCondensedElementShape@CPListImageRowItemCondensedElementShapeRoundedRectangle	CPListImageRowItemCondensedElementShape			-	-	43ea4e00389f9bed
+interface	c:objc(cs)CPListImageRowItemCondensedElement	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	838eaa3f24235f80
+super	-	CPListImageRowItemCondensedElement	CPListImageRowItemElement		-	-	5f991dd99d165145
+method	c:objc(cs)CPListImageRowItemCondensedElement(im)initWithImage:imageShape:title:subtitle:accessorySymbolName:	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e460ec2afdf8c28a
+property	c:objc(cs)CPListImageRowItemCondensedElement(py)title	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d1fb8f8502d38507
+property	c:objc(cs)CPListImageRowItemCondensedElement(py)subtitle	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	02da0c89f5df21a5
+property	c:objc(cs)CPListImageRowItemCondensedElement(py)accessorySymbolName	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f12587cd1bb87073
+property	c:objc(cs)CPListImageRowItemCondensedElement(py)imageShape	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2bf32098b05fbb9f
+interface	c:objc(cs)CPListImageRowItemGridElement	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5edac518552d1777
+super	-	CPListImageRowItemGridElement	CPListImageRowItemElement		-	-	12ec086f8cb828f7
+method	c:objc(cs)CPListImageRowItemGridElement(im)initWithImage:	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fcfe188d2335ff12
+typedef	c:@T@CPListImageRowItemImageGridElementShape	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ed4a789c9e1ad8bc
+enum	c:@E@CPListImageRowItemImageGridElementShape	-			-	-	8a89aaff51ed3337
+enumconst	c:@E@CPListImageRowItemImageGridElementShape@CPListImageRowItemImageGridElementShapeCircular	CPListImageRowItemImageGridElementShape			-	-	50440bf8e12f4875
+enumconst	c:@E@CPListImageRowItemImageGridElementShape@CPListImageRowItemImageGridElementShapeRoundedRectangle	CPListImageRowItemImageGridElementShape			-	-	b4bcb91278d3df8a
+interface	c:objc(cs)CPListImageRowItemImageGridElement	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4b08db87190dbd10
+super	-	CPListImageRowItemImageGridElement	CPListImageRowItemElement		-	-	1d5bd2612268e238
+method	c:objc(cs)CPListImageRowItemImageGridElement(im)initWithImage:imageShape:title:accessorySymbolName:	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	cdad637dbb6d2530
+property	c:objc(cs)CPListImageRowItemImageGridElement(py)title	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	30c1cc3c2c4596ee
+property	c:objc(cs)CPListImageRowItemImageGridElement(py)accessorySymbolName	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	59b1e59c191c6604
+property	c:objc(cs)CPListImageRowItemImageGridElement(py)imageShape	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	624ffad7693042b7
+interface	c:objc(cs)CPListImageRowItemRowElement	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d22d6a70b06fa86b
+super	-	CPListImageRowItemRowElement	CPListImageRowItemElement		-	-	5c6d83a3ec34711b
+method	c:objc(cs)CPListImageRowItemRowElement(im)initWithImage:title:subtitle:	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	236657d1d82f93f4
+property	c:objc(cs)CPListImageRowItemRowElement(py)title	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6a1e7efa981e9503
+property	c:objc(cs)CPListImageRowItemRowElement(py)subtitle	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	925fefa2265da51b
+protocol	c:objc(pl)CPListTemplateItem	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b21b877f22a10fde
+conforms	-	CPListTemplateItem	NSObject		-	-	0370c505833951e8
+property	c:objc(pl)CPListTemplateItem(py)text	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	644006dfd70fe675
+property	c:objc(pl)CPListTemplateItem(py)userInfo	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8423da8d015ce48d
+property	c:objc(pl)CPListTemplateItem(py)enabled	-			ios=15.0/-/-/0,tvos=-/-/-/1	-	8de76d3598a35399
+protocol	c:objc(pl)CPSelectableListItem	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9f9584aaf2782746
+conforms	-	CPSelectableListItem	CPListTemplateItem		-	-	f785c1eb14426fbf
+property	c:objc(pl)CPSelectableListItem(py)handler	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8e8381af35ce5af7
+var	c:@CPMaximumListSectionImageSize	-			-	-	a6e1aba999165454
+interface	c:objc(cs)CPListSection	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e23a31ce1ef99ce3
+super	-	CPListSection	NSObject		-	-	e7110da51373af3c
+conforms	-	CPListSection	NSSecureCoding		-	-	b2883cabcadf5bf1
+method	c:objc(cs)CPListSection(im)initWithItems:header:sectionIndexTitle:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e6dc8a54816f3487
+method	c:objc(cs)CPListSection(im)initWithItems:header:headerSubtitle:headerImage:headerButton:sectionIndexTitle:	-			ios=15.0/-/-/0	-	4517bf511e2d2654
+method	c:objc(cs)CPListSection(im)initWithItems:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ba81e618871f2758
+method	c:objc(cs)CPListSection(im)init	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	200e3be387fcfc0d
+method	c:objc(cs)CPListSection(cm)new	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f792632179eca14a
+property	c:objc(cs)CPListSection(py)header	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d948e94b09449b1d
+property	c:objc(cs)CPListSection(py)headerSubtitle	-			ios=15.0/-/-/0	-	a835e72c23a914af
+property	c:objc(cs)CPListSection(py)headerImage	-			ios=15.0/-/-/0	-	d9ed18d186b752ee
+property	c:objc(cs)CPListSection(py)headerButton	-			ios=15.0/-/-/0	-	811127cbe7309230
+property	c:objc(cs)CPListSection(py)sectionIndexTitle	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6b4d14a7988179e7
+property	c:objc(cs)CPListSection(py)items	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3d6fc58b6e4659df
+method	c:objc(cs)CPListSection(im)indexOfItem:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4ddca966b2b4e021
+method	c:objc(cs)CPListSection(im)itemAtIndex:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	67f41f45868b72a1
+var	c:@CPMaximumNumberOfGridImages	-			-	-	d333c6800e8185eb
+interface	c:objc(cs)CPListImageRowItem	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use initWithText:elements:allowsMultipleLines:	4b4e46c80065533c
+super	-	CPListImageRowItem	NSObject		-	-	402b489340857391
+conforms	-	CPListImageRowItem	CPSelectableListItem		-	-	2ade221627f7c969
+method	c:objc(cs)CPListImageRowItem(im)initWithText:images:	-			ios=14.0/26.0/-/0	deprecated: Use initWithText:elements:allowsMultipleLines:	bc29230c8a861ae5
+method	c:objc(cs)CPListImageRowItem(im)initWithText:images:imageTitles:	-			ios=17.4/26.0/-/0	deprecated: Use initWithText:elements:allowsMultipleLines:	d7514459d5dbd9c6
+method	c:objc(cs)CPListImageRowItem(im)initWithText:elements:allowsMultipleLines:	-			ios=26.0/-/-/0,tvos=-/-/-/1	-	6965a23043bfd8c6
+method	c:objc(cs)CPListImageRowItem(im)initWithText:cardElements:allowsMultipleLines:	-			ios=26.0/-/-/0,tvos=-/-/-/1	-	b65eab793c6b8127
+method	c:objc(cs)CPListImageRowItem(im)initWithText:condensedElements:allowsMultipleLines:	-			ios=26.0/-/-/0,tvos=-/-/-/1	-	01bc049a463f2363
+method	c:objc(cs)CPListImageRowItem(im)initWithText:gridElements:allowsMultipleLines:	-			ios=26.0/-/-/0,tvos=-/-/-/1	-	f21d5642937933c6
+method	c:objc(cs)CPListImageRowItem(im)initWithText:imageGridElements:allowsMultipleLines:	-			ios=26.0/-/-/0,tvos=-/-/-/1	-	448663e61b4c8237
+property	c:objc(cs)CPListImageRowItem(py)text	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e265857d982d30b8
+property	c:objc(cs)CPListImageRowItem(py)userInfo	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6951cadfc61c02cc
+property	c:objc(cs)CPListImageRowItem(py)handler	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	446c0e7b0ac257d4
+property	c:objc(cs)CPListImageRowItem(py)enabled	-			ios=15.0/-/-/0	-	b1aee9be711bf078
+property	c:objc(cs)CPListImageRowItem(py)gridImages	-			ios=14.0/26.0/-/0	-	306013fb924cb011
+method	c:objc(cs)CPListImageRowItem(im)updateImages:	-			ios=14.0/26.0/-/0	deprecated: No longer supported	0a68804bbae573bb
+property	c:objc(cs)CPListImageRowItem(py)imageTitles	-			ios=17.4/26.0/-/0	-	aa662d6a0424d388
+property	c:objc(cs)CPListImageRowItem(py)elements	-			ios=26.0/-/-/0,tvos=-/-/-/1	-	1b014bdc6d0b1b30
+property	c:objc(cs)CPListImageRowItem(py)allowsMultipleLines	-			ios=26.0/-/-/0,tvos=-/-/-/1	-	ec7185c3dea349d1
+property	c:objc(cs)CPListImageRowItem(py)listImageRowHandler	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	da1068b3d837fe51
+property	c:objc(cs)CPListImageRowItem(cpy)maximumImageSize	-			ios=14.0/26.0/-/0	-	88efea33d12b09ce
+interface	c:objc(cs)CPListItem	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use CPListItemAccessoryType instead	cbcfc8a22671b6c7
+super	-	CPListItem	NSObject		-	-	e4e44ba6f3e52135
+conforms	-	CPListItem	CPSelectableListItem		-	-	30b51b288b00072c
+method	c:objc(cs)CPListItem(im)initWithText:detailText:image:accessoryImage:accessoryType:	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	c4549d034819641b
+method	c:objc(cs)CPListItem(im)initWithText:detailText:image:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	01e58c1962aa158b
+method	c:objc(cs)CPListItem(im)initWithText:detailText:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fc30747aee91eba9
+property	c:objc(cs)CPListItem(py)enabled	-			ios=15.0/-/-/0,tvos=-/-/-/1	-	5d1fababaaa3f654
+property	c:objc(cs)CPListItem(py)accessoryType	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	93a0992a15f308c7
+property	c:objc(cs)CPListItem(py)explicitContent	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	ac073094aa23c241
+property	c:objc(cs)CPListItem(py)playbackProgress	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	fda1549989bc1cc4
+property	c:objc(cs)CPListItem(py)playing	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	5325cb3fa5e40fbb
+property	c:objc(cs)CPListItem(py)playingIndicatorLocation	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	b430da332d935bd7
+property	c:objc(cs)CPListItem(cpy)maximumImageSize	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	55683aa538c26a37
+method	c:objc(cs)CPListItem(im)setDetailText:	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	39243107bc351681
+method	c:objc(cs)CPListItem(im)setImage:	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	f74bb2b3d4a18bff
+method	c:objc(cs)CPListItem(im)setAccessoryImage:	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	974d63ee8bb7aaf4
+method	c:objc(cs)CPListItem(im)setText:	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	7c764e442a836cc6
+property	c:objc(cs)CPListItem(py)handler	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	6b40699b81722df6
+property	c:objc(cs)CPListItem(py)text	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	53cbebf6580803ed
+property	c:objc(cs)CPListItem(py)userInfo	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1bc19e252bcf8b9a
+property	c:objc(cs)CPListItem(py)detailText	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ea83e2378f7eaffb
+property	c:objc(cs)CPListItem(py)image	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c928cae94f5e5647
+property	c:objc(cs)CPListItem(py)accessoryImage	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c54d5ddb25b34c3f
+property	c:objc(cs)CPListItem(py)showsDisclosureIndicator	-			ios=12.0/14.0/-/0	-	ea7d349c775f34dd
+property	c:objc(cs)CPListItem(py)showsExplicitLabel	-			ios=14.0/14.0/-/0	-	30e0fed8ed59bb7c
+typedef	c:@T@CPListItemAccessoryType	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7c34c7e4fc381115
+enum	c:@E@CPListItemAccessoryType	-			-	-	21fe96effcb952d6
+enumconst	c:@E@CPListItemAccessoryType@CPListItemAccessoryTypeNone	CPListItemAccessoryType			-	-	4e882b457a3d0f1e
+enumconst	c:@E@CPListItemAccessoryType@CPListItemAccessoryTypeDisclosureIndicator	CPListItemAccessoryType			-	-	ec6f4dc1be2db844
+enumconst	c:@E@CPListItemAccessoryType@CPListItemAccessoryTypeCloud	CPListItemAccessoryType			-	-	3ccf42f851ed2531
+typedef	c:@T@CPListItemPlayingIndicatorLocation	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	987bf5862dcea908
+enum	c:@E@CPListItemPlayingIndicatorLocation	-			-	-	2039901953bfeba9
+enumconst	c:@E@CPListItemPlayingIndicatorLocation@CPListItemPlayingIndicatorLocationLeading	CPListItemPlayingIndicatorLocation			-	-	d1759b8beb9e31c7
+enumconst	c:@E@CPListItemPlayingIndicatorLocation@CPListItemPlayingIndicatorLocationTrailing	CPListItemPlayingIndicatorLocation			-	-	16b9edfea8595857
+category	c:objc(cy)CPListItem@Deprecated	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use initWithText:detailText:image:accessoryImage:accessoryType: instead	94b03d5e94d29938
+method	c:objc(cs)CPListItem(im)initWithText:detailText:image:showsDisclosureIndicator:	Deprecated			ios=12.0/14.0/-/0	deprecated: Use initWithText:detailText:image:accessoryImage:accessoryType: instead	ab2000b5c3377e98
+typedef	c:@T@CPAssistantCellActionType	-			-	-	d8706b16629cb26d
+enum	c:@E@CPAssistantCellActionType	-			ios=15.0/-/-/0	-	c5388769f09f9835
+enumconst	c:@E@CPAssistantCellActionType@CPAssistantCellActionTypePlayMedia	CPAssistantCellActionType			ios=15.0/-/-/0	-	129d86476d9ab348
+enumconst	c:@E@CPAssistantCellActionType@CPAssistantCellActionTypeStartCall	CPAssistantCellActionType			ios=15.0/-/-/0	-	2c85c9ddb105dab4
+typedef	c:@T@CPAssistantCellVisibility	-			-	-	f937b8c6e6cb44a5
+enum	c:@E@CPAssistantCellVisibility	-			ios=15.0/-/-/0	-	0590d841be8ef627
+enumconst	c:@E@CPAssistantCellVisibility@CPAssistantCellVisibilityOff	CPAssistantCellVisibility			ios=15.0/-/-/0	-	e62c156146ede944
+enumconst	c:@E@CPAssistantCellVisibility@CPAssistantCellVisibilityWhileLimitedUIActive	CPAssistantCellVisibility			ios=15.0/-/-/0	-	c805c439ccda5372
+enumconst	c:@E@CPAssistantCellVisibility@CPAssistantCellVisibilityAlways	CPAssistantCellVisibility			ios=15.0/-/-/0	-	457d8ccefe4c7a0c
+typedef	c:@T@CPAssistantCellPosition	-			-	-	5f3bb57aad62c103
+enum	c:@E@CPAssistantCellPosition	-			ios=15.0/-/-/0	-	3d22958fe3bd94d8
+enumconst	c:@E@CPAssistantCellPosition@CPAssistantCellPositionTop	CPAssistantCellPosition			ios=15.0/-/-/0	-	6476432907ad88bc
+enumconst	c:@E@CPAssistantCellPosition@CPAssistantCellPositionBottom	CPAssistantCellPosition			ios=15.0/-/-/0	-	6a4ca6c0a07baedb
+interface	c:objc(cs)CPAssistantCellConfiguration	-			ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3a68657f778f3a29
+super	-	CPAssistantCellConfiguration	NSObject		-	-	1bebb093e5c81eb7
+conforms	-	CPAssistantCellConfiguration	NSSecureCoding		-	-	a6ce6aa1fc594291
+method	c:objc(cs)CPAssistantCellConfiguration(im)initWithPosition:visibility:assistantAction:	-			ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9429f6be1f1f90f9
+property	c:objc(cs)CPAssistantCellConfiguration(py)position	-			ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	dd53786ec97221f1
+property	c:objc(cs)CPAssistantCellConfiguration(py)visibility	-			ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	43aa4911351a9073
+property	c:objc(cs)CPAssistantCellConfiguration(py)assistantAction	-			ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1b5a8e9d5e436cbb
+interface	c:objc(cs)CPListTemplate	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use -[CPListItem handler] instead	9762515c80260f24
+super	-	CPListTemplate	CPTemplate		-	-	3af4f4c0f054c17b
+conforms	-	CPListTemplate	CPBarButtonProviding		-	-	9734b44bf9b60c54
+method	c:objc(cs)CPListTemplate(im)init	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8be7d21ff4fff975
+method	c:objc(cs)CPListTemplate(cm)new	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9dbdc7b7ce817b88
+method	c:objc(cs)CPListTemplate(im)initWithTitle:sections:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	befcc1b8ed97d60f
+method	c:objc(cs)CPListTemplate(im)initWithTitle:sections:assistantCellConfiguration:	-			ios=15.0/-/-/0,tvos=-/-/-/1	-	53430cf263b9a734
+method	c:objc(cs)CPListTemplate(im)initWithTitle:sections:assistantCellConfiguration:headerGridButtons:	-			ios=26.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	8e43eae304a58966
+property	c:objc(cs)CPListTemplate(py)delegate	-			ios=12.0/14.0/-/0	-	dfcbf9458b7c7998
+property	c:objc(cs)CPListTemplate(cpy)maximumItemCount	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	ab26a03e22598724
+property	c:objc(cs)CPListTemplate(cpy)maximumSectionCount	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	5ab84de9bf487419
+property	c:objc(cs)CPListTemplate(py)sections	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3b7fcd44683d60ea
+property	c:objc(cs)CPListTemplate(py)title	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c13ef9dd737a61b1
+method	c:objc(cs)CPListTemplate(im)updateSections:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	19be7b3f659680f3
+property	c:objc(cs)CPListTemplate(py)sectionCount	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	0450cd5fe4045c78
+property	c:objc(cs)CPListTemplate(py)itemCount	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	4770e5db9ae64863
+method	c:objc(cs)CPListTemplate(im)indexPathForItem:	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	9d5cd2266c541131
+property	c:objc(cs)CPListTemplate(py)emptyViewTitleVariants	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	1770e69222d3377a
+property	c:objc(cs)CPListTemplate(py)emptyViewSubtitleVariants	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	9bf1f98979c9a2e8
+property	c:objc(cs)CPListTemplate(py)showsSpinnerWhileEmpty	-			ios=18.4/-/-/0,tvos=-/-/-/1	-	85df1f2b6dbbb1d3
+property	c:objc(cs)CPListTemplate(py)assistantCellConfiguration	-			ios=15.0/-/-/0,tvos=-/-/-/1	-	e63e4e6bc3acaf0a
+property	c:objc(cs)CPListTemplate(cpy)maximumHeaderGridButtonCount	-			ios=26.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	62a434a7f1aeef67
+property	c:objc(cs)CPListTemplate(cpy)maximumGridButtonImageSize	-			ios=26.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	f2be4225576f238f
+property	c:objc(cs)CPListTemplate(py)headerGridButtons	-			ios=26.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	acd3a595a53d089c
+protocol	c:objc(pl)CPListTemplateDelegate	-			ios=12.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use -[CPListItem handler] instead	e325fc1559959dc6
+conforms	-	CPListTemplateDelegate	NSObject		-	-	a15ae5a8cd1c2e8a
+method	c:objc(pl)CPListTemplateDelegate(im)listTemplate:didSelectListItem:completionHandler:	-			ios=12.0/14.0/-/0	deprecated: Use -[CPListItem handler] instead	cbe0380179796509
+typedef	c:@T@CPLaneStatus	-			-	-	b209875f92cd3ff2
+enum	c:@E@CPLaneStatus	-			ios=17.4/-/-/0	-	ca42d6f9b139902b
+enumconst	c:@E@CPLaneStatus@CPLaneStatusNotGood	CPLaneStatus			ios=17.4/-/-/0	-	c94a370f8dd44365
+enumconst	c:@E@CPLaneStatus@CPLaneStatusGood	CPLaneStatus			ios=17.4/-/-/0	-	d57ec310c92d5772
+enumconst	c:@E@CPLaneStatus@CPLaneStatusPreferred	CPLaneStatus			ios=17.4/-/-/0	-	4fba36e470da5749
+interface	c:objc(cs)CPLane	-			ios=17.4/-/-/0	deprecated: -[CPLane initWithAngles:] or -[CPLane initWithHighlightedAngle:angles:isPreferred:]	dfd18fe2c649762f
+super	-	CPLane	NSObject		-	-	55c6743884456f13
+conforms	-	CPLane	NSCopying		-	-	89e4696b9b20fa25
+conforms	-	CPLane	NSSecureCoding		-	-	f069d083be7d7b33
+method	c:objc(cs)CPLane(im)init	-			ios=17.4/18.0/-/0	deprecated: -[CPLane initWithAngles:] or -[CPLane initWithHighlightedAngle:angles:isPreferred:]	e81aa232852a43ce
+method	c:objc(cs)CPLane(im)initWithAngles:	-			ios=18.0/-/-/0	-	02b7b818e5b40507
+method	c:objc(cs)CPLane(im)initWithAngles:highlightedAngle:isPreferred:	-			ios=18.0/-/-/0	-	a8269173c16a5c7f
+property	c:objc(cs)CPLane(py)status	-			ios=17.4/-/-/0	-	983b77ea90008893
+method	c:objc(cs)CPLane(im)setStatus:	-			ios=17.4/18.0/-/0	deprecated: Use -[CPLane initWithAngles:] to create a CPLane with CPLaneStatusNotGood, use -[CPLane initAngles:highlightedAngle:isPreferred:] to create a CPLane with status CPLaneStatusGood or CPLaneStatusPreferred	d4f1d222f07ce525
+property	c:objc(cs)CPLane(py)primaryAngle	-			ios=17.4/18.0/-/0	-	0e26be617e317a15
+property	c:objc(cs)CPLane(py)highlightedAngle	-			ios=18.0/-/-/0	-	15085dee00aafac3
+property	c:objc(cs)CPLane(py)secondaryAngles	-			ios=17.4/18.0/-/0	-	097cfb037ed41bfa
+property	c:objc(cs)CPLane(py)angles	-			ios=18.0/-/-/0	-	a652f412aae63ac6
+interface	c:objc(cs)CPLaneGuidance	-			ios=17.4/-/-/0	-	4baed3c384fd8255
+super	-	CPLaneGuidance	NSObject		-	-	ab24d2cd8f9b31ee
+conforms	-	CPLaneGuidance	NSCopying		-	-	fba52700d33c267b
+conforms	-	CPLaneGuidance	NSSecureCoding		-	-	895c5248604a253f
+property	c:objc(cs)CPLaneGuidance(py)lanes	-			ios=17.4/-/-/0	-	35c7006a8cb63294
+property	c:objc(cs)CPLaneGuidance(py)instructionVariants	-			ios=17.4/-/-/0	-	b2b9cd8cd09f3e5b
+interface	c:objc(cs)CPTravelEstimates	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1f601a68415993bd
+super	-	CPTravelEstimates	NSObject		-	-	be3669186ffc1890
+conforms	-	CPTravelEstimates	NSSecureCoding		-	-	ce20998501aa2102
+method	c:objc(cs)CPTravelEstimates(im)initWithDistanceRemaining:timeRemaining:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6d356779340fd8f7
+method	c:objc(cs)CPTravelEstimates(im)init	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1b976e9549a03a27
+method	c:objc(cs)CPTravelEstimates(cm)new	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	75f04398d5e8ff13
+method	c:objc(cs)CPTravelEstimates(im)initWithDistanceRemaining:distanceRemainingToDisplay:timeRemaining:	-			ios=17.4/-/-/0	-	c1dce433e1e33eef
+property	c:objc(cs)CPTravelEstimates(py)distanceRemainingToDisplay	-			ios=17.4/-/-/0	-	72ad7bd41cd8e946
+property	c:objc(cs)CPTravelEstimates(py)distanceRemaining	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	303be8cc44ee3856
+property	c:objc(cs)CPTravelEstimates(py)timeRemaining	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4169b3f8d6c84435
+typedef	c:@T@CPManeuverType	-			-	-	123664278e98ad81
+enum	c:@E@CPManeuverType	-			ios=17.4/-/-/0	-	bc56d4ace5d5d859
+enumconst	c:@E@CPManeuverType@CPManeuverTypeNoTurn	CPManeuverType			ios=17.4/-/-/0	-	e3479b47872d725a
+enumconst	c:@E@CPManeuverType@CPManeuverTypeLeftTurn	CPManeuverType			ios=17.4/-/-/0	-	705e40d07e18facd
+enumconst	c:@E@CPManeuverType@CPManeuverTypeRightTurn	CPManeuverType			ios=17.4/-/-/0	-	869928c8f7d540e3
+enumconst	c:@E@CPManeuverType@CPManeuverTypeStraightAhead	CPManeuverType			ios=17.4/-/-/0	-	94c250c674415ec5
+enumconst	c:@E@CPManeuverType@CPManeuverTypeUTurn	CPManeuverType			ios=17.4/-/-/0	-	b7f182f4b69e3f7f
+enumconst	c:@E@CPManeuverType@CPManeuverTypeFollowRoad	CPManeuverType			ios=17.4/-/-/0	-	d8e4f5aa945e5f12
+enumconst	c:@E@CPManeuverType@CPManeuverTypeEnterRoundabout	CPManeuverType			ios=17.4/-/-/0	-	93031f89c5e35c1a
+enumconst	c:@E@CPManeuverType@CPManeuverTypeExitRoundabout	CPManeuverType			ios=17.4/-/-/0	-	dbcea9c195daae43
+enumconst	c:@E@CPManeuverType@CPManeuverTypeOffRamp	CPManeuverType			ios=17.4/-/-/0	-	4b52523b482d26c4
+enumconst	c:@E@CPManeuverType@CPManeuverTypeOnRamp	CPManeuverType			ios=17.4/-/-/0	-	7cc169bf69a47c83
+enumconst	c:@E@CPManeuverType@CPManeuverTypeArriveEndOfNavigation	CPManeuverType			ios=17.4/-/-/0	-	5e9796c652b520d5
+enumconst	c:@E@CPManeuverType@CPManeuverTypeStartRoute	CPManeuverType			ios=17.4/-/-/0	-	6f1c0a8867040795
+enumconst	c:@E@CPManeuverType@CPManeuverTypeArriveAtDestination	CPManeuverType			ios=17.4/-/-/0	-	2fa41f50d2c7d1ad
+enumconst	c:@E@CPManeuverType@CPManeuverTypeKeepLeft	CPManeuverType			ios=17.4/-/-/0	-	226d0ab8fd69a40f
+enumconst	c:@E@CPManeuverType@CPManeuverTypeKeepRight	CPManeuverType			ios=17.4/-/-/0	-	c7d9554c67c1df79
+enumconst	c:@E@CPManeuverType@CPManeuverTypeEnter_Ferry	CPManeuverType			ios=17.4/-/-/0	-	bb12032c1aac2b47
+enumconst	c:@E@CPManeuverType@CPManeuverTypeExitFerry	CPManeuverType			ios=17.4/-/-/0	-	1a8c4f3d72c83100
+enumconst	c:@E@CPManeuverType@CPManeuverTypeChangeFerry	CPManeuverType			ios=17.4/-/-/0	-	fb1c7782b7f95d2b
+enumconst	c:@E@CPManeuverType@CPManeuverTypeStartRouteWithUTurn	CPManeuverType			ios=17.4/-/-/0	-	053993f36a6a0c0c
+enumconst	c:@E@CPManeuverType@CPManeuverTypeUTurnAtRoundabout	CPManeuverType			ios=17.4/-/-/0	-	fe5989d68979632b
+enumconst	c:@E@CPManeuverType@CPManeuverTypeLeftTurnAtEnd	CPManeuverType			ios=17.4/-/-/0	-	d33b7296c75dd17c
+enumconst	c:@E@CPManeuverType@CPManeuverTypeRightTurnAtEnd	CPManeuverType			ios=17.4/-/-/0	-	734153165be7b5f3
+enumconst	c:@E@CPManeuverType@CPManeuverTypeHighwayOffRampLeft	CPManeuverType			ios=17.4/-/-/0	-	44060a74101c1947
+enumconst	c:@E@CPManeuverType@CPManeuverTypeHighwayOffRampRight	CPManeuverType			ios=17.4/-/-/0	-	d1789df654392bf6
+enumconst	c:@E@CPManeuverType@CPManeuverTypeArriveAtDestinationLeft	CPManeuverType			ios=17.4/-/-/0	-	f6a1471ec8c27e38
+enumconst	c:@E@CPManeuverType@CPManeuverTypeArriveAtDestinationRight	CPManeuverType			ios=17.4/-/-/0	-	4051ca911ec2f1e1
+enumconst	c:@E@CPManeuverType@CPManeuverTypeUTurnWhenPossible	CPManeuverType			ios=17.4/-/-/0	-	4d84591c1470330e
+enumconst	c:@E@CPManeuverType@CPManeuverTypeArriveEndOfDirections	CPManeuverType			ios=17.4/-/-/0	-	e0a2569fdd68b6b0
+enumconst	c:@E@CPManeuverType@CPManeuverTypeRoundaboutExit1	CPManeuverType			ios=17.4/-/-/0	-	9e58031556c32450
+enumconst	c:@E@CPManeuverType@CPManeuverTypeRoundaboutExit2	CPManeuverType			ios=17.4/-/-/0	-	9ce2c8131cc2f6f5
+enumconst	c:@E@CPManeuverType@CPManeuverTypeRoundaboutExit3	CPManeuverType			ios=17.4/-/-/0	-	298098be6e9a088b
+enumconst	c:@E@CPManeuverType@CPManeuverTypeRoundaboutExit4	CPManeuverType			ios=17.4/-/-/0	-	3c0df5c57ea6e06a
+enumconst	c:@E@CPManeuverType@CPManeuverTypeRoundaboutExit5	CPManeuverType			ios=17.4/-/-/0	-	4f570867e4f91a55
+enumconst	c:@E@CPManeuverType@CPManeuverTypeRoundaboutExit6	CPManeuverType			ios=17.4/-/-/0	-	c72fb079b5ac9644
+enumconst	c:@E@CPManeuverType@CPManeuverTypeRoundaboutExit7	CPManeuverType			ios=17.4/-/-/0	-	dc2f8be4382fcdf9
+enumconst	c:@E@CPManeuverType@CPManeuverTypeRoundaboutExit8	CPManeuverType			ios=17.4/-/-/0	-	cafc4490abd8902f
+enumconst	c:@E@CPManeuverType@CPManeuverTypeRoundaboutExit9	CPManeuverType			ios=17.4/-/-/0	-	f5ec5f9c209114a6
+enumconst	c:@E@CPManeuverType@CPManeuverTypeRoundaboutExit10	CPManeuverType			ios=17.4/-/-/0	-	7abc29dbff696b16
+enumconst	c:@E@CPManeuverType@CPManeuverTypeRoundaboutExit11	CPManeuverType			ios=17.4/-/-/0	-	0bb076a2a2dd7979
+enumconst	c:@E@CPManeuverType@CPManeuverTypeRoundaboutExit12	CPManeuverType			ios=17.4/-/-/0	-	5a8d6e2e03d4961c
+enumconst	c:@E@CPManeuverType@CPManeuverTypeRoundaboutExit13	CPManeuverType			ios=17.4/-/-/0	-	a9507de17ee4b962
+enumconst	c:@E@CPManeuverType@CPManeuverTypeRoundaboutExit14	CPManeuverType			ios=17.4/-/-/0	-	07b6dbbb740671ee
+enumconst	c:@E@CPManeuverType@CPManeuverTypeRoundaboutExit15	CPManeuverType			ios=17.4/-/-/0	-	3286d27d79de5a36
+enumconst	c:@E@CPManeuverType@CPManeuverTypeRoundaboutExit16	CPManeuverType			ios=17.4/-/-/0	-	0dbf9fe0f962ea45
+enumconst	c:@E@CPManeuverType@CPManeuverTypeRoundaboutExit17	CPManeuverType			ios=17.4/-/-/0	-	8a0ea6ae0602ef62
+enumconst	c:@E@CPManeuverType@CPManeuverTypeRoundaboutExit18	CPManeuverType			ios=17.4/-/-/0	-	947b1934b75686e8
+enumconst	c:@E@CPManeuverType@CPManeuverTypeRoundaboutExit19	CPManeuverType			ios=17.4/-/-/0	-	326e691552d4e61e
+enumconst	c:@E@CPManeuverType@CPManeuverTypeSharpLeftTurn	CPManeuverType			ios=17.4/-/-/0	-	4d5469a0b468ea2d
+enumconst	c:@E@CPManeuverType@CPManeuverTypeSharpRightTurn	CPManeuverType			ios=17.4/-/-/0	-	3fb236998e35e98f
+enumconst	c:@E@CPManeuverType@CPManeuverTypeSlightLeftTurn	CPManeuverType			ios=17.4/-/-/0	-	626a6326e0c72868
+enumconst	c:@E@CPManeuverType@CPManeuverTypeSlightRightTurn	CPManeuverType			ios=17.4/-/-/0	-	15600e715cfa58ae
+enumconst	c:@E@CPManeuverType@CPManeuverTypeChangeHighway	CPManeuverType			ios=17.4/-/-/0	-	a361f656b486cd3b
+enumconst	c:@E@CPManeuverType@CPManeuverTypeChangeHighwayLeft	CPManeuverType			ios=17.4/-/-/0	-	5f214cb5b3a123f9
+enumconst	c:@E@CPManeuverType@CPManeuverTypeChangeHighwayRight	CPManeuverType			ios=17.4/-/-/0	-	208f533e29579599
+typedef	c:@T@CPJunctionType	-			-	-	3d0b4af82b7a6adb
+enum	c:@E@CPJunctionType	-			ios=17.4/-/-/0	-	4ca5cb79bb0f34ce
+enumconst	c:@E@CPJunctionType@CPJunctionTypeIntersection	CPJunctionType			ios=17.4/-/-/0	-	33ae32c9bb44a4eb
+enumconst	c:@E@CPJunctionType@CPJunctionTypeRoundabout	CPJunctionType			ios=17.4/-/-/0	-	041fa1444211bb45
+typedef	c:@T@CPTrafficSide	-			-	-	16c378df9ae109c0
+enum	c:@E@CPTrafficSide	-			ios=17.4/-/-/0	-	c2d9b1409b82e1a9
+enumconst	c:@E@CPTrafficSide@CPTrafficSideRight	CPTrafficSide			ios=17.4/-/-/0	-	0e8745996eda087c
+enumconst	c:@E@CPTrafficSide@CPTrafficSideLeft	CPTrafficSide			ios=17.4/-/-/0	-	e80a424ce860f56f
+typedef	c:@T@CPManeuverState	-			-	-	b221ad6449145681
+enum	c:@E@CPManeuverState	-			ios=17.4/-/-/0	-	86686de470b9626d
+enumconst	c:@E@CPManeuverState@CPManeuverStateContinue	CPManeuverState			ios=17.4/-/-/0	-	ea63dc93d391b52d
+enumconst	c:@E@CPManeuverState@CPManeuverStateInitial	CPManeuverState			ios=17.4/-/-/0	-	5ed06f80ccd95811
+enumconst	c:@E@CPManeuverState@CPManeuverStatePrepare	CPManeuverState			ios=17.4/-/-/0	-	90513ea5cfbda8be
+enumconst	c:@E@CPManeuverState@CPManeuverStateExecute	CPManeuverState			ios=17.4/-/-/0	-	6dc7659968001d56
+interface	c:objc(cs)CPManeuver	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use symbolImage instead	035dd63771fd0208
+super	-	CPManeuver	NSObject		-	-	93257975a072cbda
+conforms	-	CPManeuver	NSCopying		-	-	d53b15db4b9372df
+conforms	-	CPManeuver	NSSecureCoding		-	-	ff75e2d9e01353c8
+property	c:objc(cs)CPManeuver(py)symbolSet	-			ios=12.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3c2e2206d79dc5c4
+property	c:objc(cs)CPManeuver(py)cardBackgroundColor	-			ios=15.4/-/-/0	-	9e9f9209e9f2db26
+property	c:objc(cs)CPManeuver(py)symbolImage	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	def3d12fa43eb306
+property	c:objc(cs)CPManeuver(py)junctionImage	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a8bf61225587ba92
+property	c:objc(cs)CPManeuver(py)instructionVariants	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ab79d4ca3a620edd
+property	c:objc(cs)CPManeuver(py)initialTravelEstimates	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1d24e82ecab53af8
+property	c:objc(cs)CPManeuver(py)attributedInstructionVariants	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9d1e90ececc80d6d
+property	c:objc(cs)CPManeuver(py)dashboardSymbolImage	-			ios=14.0/-/-/0	-	6f13d78ae700c778
+property	c:objc(cs)CPManeuver(py)dashboardJunctionImage	-			ios=14.0/-/-/0	-	1ca7f077ab6ff75f
+property	c:objc(cs)CPManeuver(py)dashboardInstructionVariants	-			ios=14.0/-/-/0	-	d6b3088c8164312e
+property	c:objc(cs)CPManeuver(py)dashboardAttributedInstructionVariants	-			ios=14.0/-/-/0	-	1888de9b6eda090d
+property	c:objc(cs)CPManeuver(py)notificationSymbolImage	-			ios=14.0/-/-/0	-	af5548891f047e04
+property	c:objc(cs)CPManeuver(py)notificationInstructionVariants	-			ios=14.0/-/-/0	-	ae28053989ec2911
+property	c:objc(cs)CPManeuver(py)notificationAttributedInstructionVariants	-			ios=14.0/-/-/0	-	a7d29fcf0ee419f4
+property	c:objc(cs)CPManeuver(py)maneuverType	-			ios=17.4/-/-/0	-	a724da697e52d311
+property	c:objc(cs)CPManeuver(py)roadFollowingManeuverVariants	-			ios=17.4/-/-/0	-	de3282908fb09eb8
+property	c:objc(cs)CPManeuver(py)trafficSide	-			ios=17.4/-/-/0	-	dbcb428a24770e65
+property	c:objc(cs)CPManeuver(py)junctionType	-			ios=17.4/-/-/0	-	7dae2eac19688fd5
+property	c:objc(cs)CPManeuver(py)junctionExitAngle	-			ios=17.4/-/-/0	-	80abf9fd892c2ab1
+property	c:objc(cs)CPManeuver(py)junctionElementAngles	-			ios=17.4/-/-/0	-	ceada7ac6d33f9d7
+property	c:objc(cs)CPManeuver(py)linkedLaneGuidance	-			ios=17.4/-/-/0	-	02d5935544d77ad4
+property	c:objc(cs)CPManeuver(py)highwayExitLabel	-			ios=17.4/-/-/0	-	59a1b3731cafcc6a
+property	c:objc(cs)CPManeuver(py)userInfo	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b4a23cbe751f4322
+interface	c:objc(cs)CPMapButton	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	323c4becd9c994db
+super	-	CPMapButton	NSObject		-	-	0511ecdf9e45d065
+conforms	-	CPMapButton	NSSecureCoding		-	-	873ba24dc8db14c0
+method	c:objc(cs)CPMapButton(im)initWithHandler:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	35abc0e49edcfc66
+property	c:objc(cs)CPMapButton(py)enabled	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fc9f9f4612688c93
+property	c:objc(cs)CPMapButton(py)hidden	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	647dc5f65c3694e9
+property	c:objc(cs)CPMapButton(py)image	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7e2fa66df9bd2de9
+property	c:objc(cs)CPMapButton(py)focusedImage	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ecd2dbab40724fab
+typedef	c:@T@CPNavigationAlertDismissalContext	-			-	-	2a2588473de88717
+enum	c:@E@CPNavigationAlertDismissalContext	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c3266cc3c9ea98ff
+enumconst	c:@E@CPNavigationAlertDismissalContext@CPNavigationAlertDismissalContextTimeout	CPNavigationAlertDismissalContext			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	38510e79ccbf1231
+enumconst	c:@E@CPNavigationAlertDismissalContext@CPNavigationAlertDismissalContextUserDismissed	CPNavigationAlertDismissalContext			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9f1a2e827cc4442f
+enumconst	c:@E@CPNavigationAlertDismissalContext@CPNavigationAlertDismissalContextSystemDismissed	CPNavigationAlertDismissalContext			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2c2676b58da0c526
+interface	c:objc(cs)CPNavigationAlert	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use initWithTitleVariants:subtitleVariants:image:primaryAction:secondaryAction:duration instead	7489d675d6d2f022
+super	-	CPNavigationAlert	NSObject		-	-	c86e333d3de82bba
+conforms	-	CPNavigationAlert	NSSecureCoding		-	-	77c19de30b91cd7f
+method	c:objc(cs)CPNavigationAlert(im)initWithTitleVariants:subtitleVariants:imageSet:primaryAction:secondaryAction:duration:	-			ios=12.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use initWithTitleVariants:subtitleVariants:image:primaryAction:secondaryAction:duration instead	df011eb1e0b1f9ec
+method	c:objc(cs)CPNavigationAlert(im)initWithTitleVariants:subtitleVariants:image:primaryAction:secondaryAction:duration:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ac1828ca791df1cf
+method	c:objc(cs)CPNavigationAlert(im)updateTitleVariants:subtitleVariants:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8aa886e5e288b7d4
+property	c:objc(cs)CPNavigationAlert(py)titleVariants	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	322bd1b1c7c785ab
+property	c:objc(cs)CPNavigationAlert(py)subtitleVariants	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	cd4755ac2e0fa966
+property	c:objc(cs)CPNavigationAlert(py)imageSet	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1e4214b0ca089214
+property	c:objc(cs)CPNavigationAlert(py)image	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	cee49453e17dbced
+property	c:objc(cs)CPNavigationAlert(py)primaryAction	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9e4818c024ac6f42
+property	c:objc(cs)CPNavigationAlert(py)secondaryAction	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	eeb00bb8a3b5d577
+property	c:objc(cs)CPNavigationAlert(py)duration	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	78366992e4a41bc1
+interface	c:objc(cs)CPRouteInformation	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1cb4726b654de469
+super	-	CPRouteInformation	NSObject		-	-	3ad40fcb999acfeb
+method	c:objc(cs)CPRouteInformation(im)initWithManeuvers:laneGuidances:currentManeuvers:currentLaneGuidance:tripTravelEstimates:maneuverTravelEstimates:	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8782ae3f4bb07da4
+method	c:objc(cs)CPRouteInformation(im)init	-			*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fb6f8551a02cc6a0
+property	c:objc(cs)CPRouteInformation(py)maneuvers	-			ios=17.4/-/-/0	-	993a9583de8236e9
+property	c:objc(cs)CPRouteInformation(py)laneGuidances	-			ios=17.4/-/-/0	-	26b0086820774780
+property	c:objc(cs)CPRouteInformation(py)currentManeuvers	-			ios=17.4/-/-/0	-	a009bd2192e520d5
+property	c:objc(cs)CPRouteInformation(py)currentLaneGuidance	-			ios=17.4/-/-/0	-	ad8e764f7d783723
+property	c:objc(cs)CPRouteInformation(py)tripTravelEstimates	-			ios=17.4/-/-/0	-	9c605aa3e29b9499
+property	c:objc(cs)CPRouteInformation(py)maneuverTravelEstimates	-			ios=17.4/-/-/0	-	00663a8b13ac0f8d
+interface	c:objc(cs)CPRouteChoice	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b9a2283c9a551ca9
+super	-	CPRouteChoice	NSObject		-	-	4c62512e763f5a58
+conforms	-	CPRouteChoice	NSCopying		-	-	d6a07d36030b86a1
+conforms	-	CPRouteChoice	NSSecureCoding		-	-	d6ba81de86d1079b
+method	c:objc(cs)CPRouteChoice(im)initWithSummaryVariants:additionalInformationVariants:selectionSummaryVariants:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f9c8ca909af17fc9
+method	c:objc(cs)CPRouteChoice(im)init	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ea7b283b2208ee07
+method	c:objc(cs)CPRouteChoice(cm)new	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	efcfe8c7e79ec536
+property	c:objc(cs)CPRouteChoice(py)summaryVariants	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	eaca77826aea5690
+property	c:objc(cs)CPRouteChoice(py)selectionSummaryVariants	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	990f30cf23e56348
+property	c:objc(cs)CPRouteChoice(py)additionalInformationVariants	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	caf4823ddb2634ff
+property	c:objc(cs)CPRouteChoice(py)userInfo	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ec5453e4bf1c0529
+interface	c:objc(cs)CPTrip	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	bd3399e5166b37ba
+super	-	CPTrip	NSObject		-	-	148f0d1c9c3f09b9
+conforms	-	CPTrip	NSSecureCoding		-	-	23ae8f2c69b9b76c
+method	c:objc(cs)CPTrip(im)initWithOrigin:destination:routeChoices:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	99349b2eb9f584a9
+method	c:objc(cs)CPTrip(im)init	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3d5e82d71f65dad8
+method	c:objc(cs)CPTrip(cm)new	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	242ac17e454a4d8f
+property	c:objc(cs)CPTrip(py)origin	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0f23601ff41ba2e9
+property	c:objc(cs)CPTrip(py)destination	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ab4769e421a2cbb7
+property	c:objc(cs)CPTrip(py)routeChoices	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	cb47c77ced86697e
+property	c:objc(cs)CPTrip(py)userInfo	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	46813999efd9cc1a
+property	c:objc(cs)CPTrip(py)destinationNameVariants	-			ios=17.4/-/-/0	-	158ed858364894eb
+typedef	c:@T@CPTripPauseReason	-			-	-	409c4afb8a8776af
+enum	c:@E@CPTripPauseReason	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	de246f048709cbf7
+enumconst	c:@E@CPTripPauseReason@CPTripPauseReasonArrived	CPTripPauseReason			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	dba38e7afebaeb51
+enumconst	c:@E@CPTripPauseReason@CPTripPauseReasonLoading	CPTripPauseReason			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1221926d0ed1ef5e
+enumconst	c:@E@CPTripPauseReason@CPTripPauseReasonLocating	CPTripPauseReason			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	548fa065c915c286
+enumconst	c:@E@CPTripPauseReason@CPTripPauseReasonRerouting	CPTripPauseReason			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	33f078d15428b9ad
+enumconst	c:@E@CPTripPauseReason@CPTripPauseReasonProceedToRoute	CPTripPauseReason			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6d49d3e37c606a01
+interface	c:objc(cs)CPNavigationSession	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4329d02377111d9c
+super	-	CPNavigationSession	NSObject		-	-	2d7ff67cadbcf9c8
+method	c:objc(cs)CPNavigationSession(im)init	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0d3657076d4596d1
+method	c:objc(cs)CPNavigationSession(cm)new	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e7a314522479b897
+method	c:objc(cs)CPNavigationSession(im)pauseTripForReason:description:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f545327f975f75bf
+method	c:objc(cs)CPNavigationSession(im)pauseTripForReason:description:turnCardColor:	-			ios=15.4/-/-/0	-	dbef498ca7770837
+method	c:objc(cs)CPNavigationSession(im)resumeTripWithUpdatedRouteInformation:	-			ios=17.4/-/-/0	-	2d0a1e184aab8f44
+method	c:objc(cs)CPNavigationSession(im)finishTrip	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fe7057c39fd5eb9a
+method	c:objc(cs)CPNavigationSession(im)cancelTrip	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	560244f4c795b247
+property	c:objc(cs)CPNavigationSession(py)upcomingManeuvers	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2d50b2d10b5b8740
+property	c:objc(cs)CPNavigationSession(py)currentLaneGuidance	-			ios=17.4/-/-/0	-	8757abe41744d26b
+method	c:objc(cs)CPNavigationSession(im)addManeuvers:	-			ios=17.4/-/-/0	-	1877485b61379b19
+method	c:objc(cs)CPNavigationSession(im)addLaneGuidances:	-			ios=17.4/-/-/0	-	ac78543c2e512403
+property	c:objc(cs)CPNavigationSession(py)currentRoadNameVariants	-			ios=17.4/-/-/0	-	e1a458c5d2c6ff75
+property	c:objc(cs)CPNavigationSession(py)maneuverState	-			ios=17.4/-/-/0	-	7c80e8524c5cf80d
+property	c:objc(cs)CPNavigationSession(py)trip	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3dcfcdc09ae76804
+method	c:objc(cs)CPNavigationSession(im)updateTravelEstimates:forManeuver:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0ebf181e5cbdfb54
+interface	c:objc(cs)CPTripPreviewTextConfiguration	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d486977ad78a58db
+super	-	CPTripPreviewTextConfiguration	NSObject		-	-	6e92e32b18e49f58
+conforms	-	CPTripPreviewTextConfiguration	NSSecureCoding		-	-	7213e23686d3bfe5
+method	c:objc(cs)CPTripPreviewTextConfiguration(im)initWithStartButtonTitle:additionalRoutesButtonTitle:overviewButtonTitle:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f09832ec13415cc8
+property	c:objc(cs)CPTripPreviewTextConfiguration(py)startButtonTitle	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	db0c9d57dc7cfa61
+property	c:objc(cs)CPTripPreviewTextConfiguration(py)additionalRoutesButtonTitle	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4fa5c5732fba380a
+property	c:objc(cs)CPTripPreviewTextConfiguration(py)overviewButtonTitle	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	63629a7ac0aa9c10
+typedef	c:@T@CPPanDirection	-			-	-	0a37eaf2454b60e6
+enum	c:@E@CPPanDirection	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	cd84ccbffc5ae19a
+enumconst	c:@E@CPPanDirection@CPPanDirectionNone	CPPanDirection			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e8370c3a865bdd30
+enumconst	c:@E@CPPanDirection@CPPanDirectionLeft	CPPanDirection			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	21653decac36ff1f
+enumconst	c:@E@CPPanDirection@CPPanDirectionRight	CPPanDirection			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	71bdc87dcbff7b27
+enumconst	c:@E@CPPanDirection@CPPanDirectionUp	CPPanDirection			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	35151e6f8cc57e1a
+enumconst	c:@E@CPPanDirection@CPPanDirectionDown	CPPanDirection			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	235c165f049878c9
+typedef	c:@T@CPManeuverDisplayStyle	-			-	-	23d7f6da288691a3
+enum	c:@E@CPManeuverDisplayStyle	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	03b5936f310dd064
+enumconst	c:@E@CPManeuverDisplayStyle@CPManeuverDisplayStyleDefault	CPManeuverDisplayStyle			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	534d44355527cdb8
+enumconst	c:@E@CPManeuverDisplayStyle@CPManeuverDisplayStyleLeadingSymbol	CPManeuverDisplayStyle			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1cb5d3fcd58a9d0f
+enumconst	c:@E@CPManeuverDisplayStyle@CPManeuverDisplayStyleTrailingSymbol	CPManeuverDisplayStyle			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0bc6a23e3c16eed2
+enumconst	c:@E@CPManeuverDisplayStyle@CPManeuverDisplayStyleSymbolOnly	CPManeuverDisplayStyle			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b5ff0ab409bf16cf
+enumconst	c:@E@CPManeuverDisplayStyle@CPManeuverDisplayStyleInstructionOnly	CPManeuverDisplayStyle			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ba4d9d415953c767
+typedef	c:@T@CPTimeRemainingColor	-			-	-	2b7e4a4df48784e5
+enum	c:@E@CPTimeRemainingColor	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	87e812b20ff814b2
+enumconst	c:@E@CPTimeRemainingColor@CPTimeRemainingColorDefault	CPTimeRemainingColor			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c3f85d1ea7f517c9
+enumconst	c:@E@CPTimeRemainingColor@CPTimeRemainingColorGreen	CPTimeRemainingColor			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d72a1ccd9395a4b2
+enumconst	c:@E@CPTimeRemainingColor@CPTimeRemainingColorOrange	CPTimeRemainingColor			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	dd66727bbef41a34
+enumconst	c:@E@CPTimeRemainingColor@CPTimeRemainingColorRed	CPTimeRemainingColor			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d14e29db9e258e80
+typedef	c:@T@CPTripEstimateStyle	-			-	-	586e24bb2a397d2b
+enum	c:@E@CPTripEstimateStyle	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b0fff4a59d7d5066
+enumconst	c:@E@CPTripEstimateStyle@CPTripEstimateStyleLight	CPTripEstimateStyle			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fdebf25badbf1ef5
+enumconst	c:@E@CPTripEstimateStyle@CPTripEstimateStyleDark	CPTripEstimateStyle			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d1f7eb203737fc53
+interface	c:objc(cs)CPMapTemplate	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5c572b89d70ba7ae
+super	-	CPMapTemplate	CPTemplate		-	-	843700b3fb5ab6d0
+conforms	-	CPMapTemplate	CPBarButtonProviding		-	-	260719463f12911e
+property	c:objc(cs)CPMapTemplate(py)guidanceBackgroundColor	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	84fb5131485c798a
+property	c:objc(cs)CPMapTemplate(py)tripEstimateStyle	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6995e1c1b2c54486
+property	c:objc(cs)CPMapTemplate(py)mapButtons	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f3618411edd2873b
+method	c:objc(cs)CPMapTemplate(im)showTripPreviews:textConfiguration:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	275af74fe6e6e2f3
+method	c:objc(cs)CPMapTemplate(im)showTripPreviews:selectedTrip:textConfiguration:	-			ios=14.0/-/-/0	-	8181ce6cc8905154
+method	c:objc(cs)CPMapTemplate(im)showRouteChoicesPreviewForTrip:textConfiguration:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	50155e46755738f2
+method	c:objc(cs)CPMapTemplate(im)hideTripPreviews	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0139172e466b7cb4
+method	c:objc(cs)CPMapTemplate(im)updateTravelEstimates:forTrip:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	db397f1fa10f2336
+method	c:objc(cs)CPMapTemplate(im)updateTravelEstimates:forTrip:withTimeRemainingColor:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fa7e6902bdc52466
+method	c:objc(cs)CPMapTemplate(im)startNavigationSessionForTrip:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	bda10a65ce2dc041
+property	c:objc(cs)CPMapTemplate(py)automaticallyHidesNavigationBar	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ff4bdcf724568640
+property	c:objc(cs)CPMapTemplate(py)hidesButtonsWithNavigationBar	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d356f9ef12fdc08e
+property	c:objc(cs)CPMapTemplate(py)mapDelegate	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a910eac48304dfbf
+method	c:objc(cs)CPMapTemplate(im)showPanningInterfaceAnimated:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	49e579b9f0f500d2
+method	c:objc(cs)CPMapTemplate(im)dismissPanningInterfaceAnimated:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	83a5083d12c8bb93
+property	c:objc(cs)CPMapTemplate(py)panningInterfaceVisible	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1778017af063dbb4
+property	c:objc(cs)CPMapTemplate(py)currentNavigationAlert	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	95ced371c4683cb4
+method	c:objc(cs)CPMapTemplate(im)presentNavigationAlert:animated:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	95ce5257bff5ec63
+method	c:objc(cs)CPMapTemplate(im)dismissNavigationAlertAnimated:completion:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	89a7d85326805cdd
+protocol	c:objc(pl)CPMapTemplateDelegate	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7c42c8804204b667
+conforms	-	CPMapTemplateDelegate	NSObject		-	-	8d520430fc4bf68b
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplateShouldProvideNavigationMetadata:	-			ios=17.4/-/-/0	-	b1812e13a2719448
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplate:shouldShowNotificationForManeuver:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	cca69024a6814a41
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplate:shouldUpdateNotificationForManeuver:withTravelEstimates:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	058417ead4316170
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplate:shouldShowNotificationForNavigationAlert:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	dd86ed424c694c39
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplateDidShowPanningInterface:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c54886777261495a
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplateWillDismissPanningInterface:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	35884981908b1ec5
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplateDidDismissPanningInterface:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4296c945b7b0646e
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplate:panBeganWithDirection:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	580ec397e645ec10
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplate:panEndedWithDirection:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f9d1d08f97e2e390
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplate:panWithDirection:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	45f537cfb8d0bc86
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplateDidBeginPanGesture:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0415222ba697fb3a
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplate:didUpdatePanGestureWithTranslation:velocity:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	74b8704140d4a897
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplate:didEndPanGestureWithVelocity:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	73537e79ff0879ff
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplateDidBeginZoomGesture:	-			ios=26.0/-/-/0	-	deb285c34f9a685d
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplate:didUpdateZoomGestureWithCenter:scale:velocity:	-			ios=26.0/-/-/0	-	0e348370d7bd119a
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplate:didEndZoomGestureWithVelocity:	-			ios=26.0/-/-/0	-	42d06fc14d563c19
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplateDidBeginRotationGesture:	-			ios=26.0/-/-/0	-	41347fc34017eacd
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplate:didRotateWithCenter:rotation:velocity:	-			ios=26.0/-/-/0	-	882d6ecce031b18c
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplate:rotationDidEndWithVelocity:	-			ios=26.0/-/-/0	-	93a8002d36326062
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplateDidBeginPitchGesture:	-			ios=26.0/-/-/0	-	0b18e9e88ce4e931
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplate:pitchWithCenter:	-			ios=26.0/-/-/0	-	540602153770da1d
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplate:pitchEndedWithCenter:	-			ios=26.0/-/-/0	-	0588fc37d07092f2
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplate:willShowNavigationAlert:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a0103dcb81ce7bac
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplate:didShowNavigationAlert:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5cdc84d2bd5658e7
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplate:willDismissNavigationAlert:dismissalContext:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5463c9025854e7a5
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplate:didDismissNavigationAlert:dismissalContext:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	54f4e7c632d70d88
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplate:selectedPreviewForTrip:usingRouteChoice:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d6b2efee530e2c0f
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplate:startedTrip:usingRouteChoice:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6d061e6327f462a1
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplateDidCancelNavigation:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c74a948ac5524256
+method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplate:displayStyleForManeuver:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6dc7aae40545a4b6
+interface	c:objc(cs)CPMessageComposeBarButton	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	faab1453b14b731e
+super	-	CPMessageComposeBarButton	CPBarButton		-	-	1092b9f82c1014c0
+method	c:objc(cs)CPMessageComposeBarButton(im)init	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	74c9bb954c0190a9
+method	c:objc(cs)CPMessageComposeBarButton(cm)new	-			swift=-/-/-/1	-	f595ca970255c8b0
+method	c:objc(cs)CPMessageComposeBarButton(im)initWithImage:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5ee6add3d43091d4
+property	c:objc(cs)CPMessageComposeBarButton(py)title	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3bc5b87599933aa5
+method	c:objc(cs)CPMessageComposeBarButton(im)initWithImage:handler:	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	412b137a4d5013e6
+method	c:objc(cs)CPMessageComposeBarButton(im)initWithTitle:handler:	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9493807cd5c999a2
+var	c:@CPMaximumMessageItemImageSize	-			-	-	c7762c8577b6675a
+var	c:@CPMaximumMessageItemLeadingDetailTextImageSize	-			-	-	6c8235489faad4a4
+typedef	c:@T@CPMessageLeadingItem	-			-	-	b5b89687ea34c170
+enum	c:@E@CPMessageLeadingItem	-			-	-	8801377c6187b06a
+enumconst	c:@E@CPMessageLeadingItem@CPMessageLeadingItemNone	CPMessageLeadingItem			-	-	2790eff029c66321
+enumconst	c:@E@CPMessageLeadingItem@CPMessageLeadingItemPin	CPMessageLeadingItem			-	-	0b77781942ecbbcd
+enumconst	c:@E@CPMessageLeadingItem@CPMessageLeadingItemStar	CPMessageLeadingItem			-	-	92aa1ad3a8261ca9
+typedef	c:@T@CPMessageTrailingItem	-			-	-	ca0227cddc94c652
+enum	c:@E@CPMessageTrailingItem	-			-	-	f45cdfbbda2b805b
+enumconst	c:@E@CPMessageTrailingItem@CPMessageTrailingItemNone	CPMessageTrailingItem			-	-	d20bb0d7ad26054d
+enumconst	c:@E@CPMessageTrailingItem@CPMessageTrailingItemMute	CPMessageTrailingItem			-	-	7e22cf86d4ed0f32
+interface	c:objc(cs)CPMessageListItemLeadingConfiguration	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	99b4469aaa608f3d
+super	-	CPMessageListItemLeadingConfiguration	NSObject		-	-	12055a06084f7675
+property	c:objc(cs)CPMessageListItemLeadingConfiguration(py)unread	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f9455e3d447b4eb9
+property	c:objc(cs)CPMessageListItemLeadingConfiguration(py)leadingItem	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	edbae9c1f4731278
+property	c:objc(cs)CPMessageListItemLeadingConfiguration(py)leadingImage	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c18cd92b8240130a
+method	c:objc(cs)CPMessageListItemLeadingConfiguration(im)initWithLeadingItem:leadingImage:unread:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b6f03310d4c98da2
+interface	c:objc(cs)CPMessageListItemTrailingConfiguration	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	27d9c97907901c2f
+super	-	CPMessageListItemTrailingConfiguration	NSObject		-	-	addba355c7ed93ce
+property	c:objc(cs)CPMessageListItemTrailingConfiguration(py)trailingItem	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6867c2ef82d508d3
+property	c:objc(cs)CPMessageListItemTrailingConfiguration(py)trailingImage	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	01a82ec1755bfd22
+method	c:objc(cs)CPMessageListItemTrailingConfiguration(im)initWithTrailingItem:trailingImage:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c653af08bd66551f
+interface	c:objc(cs)CPMessageListItem	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	eb61ea77684c50f9
+super	-	CPMessageListItem	NSObject		-	-	679b43ed79a06506
+conforms	-	CPMessageListItem	CPListTemplateItem		-	-	1c387ebe6ba94e1e
+method	c:objc(cs)CPMessageListItem(im)initWithConversationIdentifier:text:leadingConfiguration:trailingConfiguration:detailText:trailingText:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	58d921611c11e141
+method	c:objc(cs)CPMessageListItem(im)initWithFullName:phoneOrEmailAddress:leadingConfiguration:trailingConfiguration:detailText:trailingText:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c73e146f90fba269
+property	c:objc(cs)CPMessageListItem(py)text	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a69b970f0a861baa
+property	c:objc(cs)CPMessageListItem(py)conversationIdentifier	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1fcb7ac2e7316d77
+property	c:objc(cs)CPMessageListItem(py)phoneOrEmailAddress	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0f2a446abf37c7ae
+property	c:objc(cs)CPMessageListItem(py)leadingConfiguration	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	749f28b72558f3a2
+property	c:objc(cs)CPMessageListItem(py)trailingConfiguration	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7cbbb4a2d1eddfb4
+property	c:objc(cs)CPMessageListItem(py)detailText	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0c0199fa273cab12
+property	c:objc(cs)CPMessageListItem(py)trailingText	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	22a3a617bb5f86b6
+property	c:objc(cs)CPMessageListItem(py)enabled	-			ios=15.0/-/-/0	-	44c26ec9434faff7
+property	c:objc(cs)CPMessageListItem(py)userInfo	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c551698c4317b0d2
+property	c:objc(cs)CPMessageListItem(py)leadingDetailTextImage	-			ios=26.0/-/-/0	-	ad2ea0c986dca5a8
+function	c:@F@NSStringFromCPManeuverType	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3072d4f376b5eb90
+function	c:@F@NSStringFromCPJunctionType	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5dc5c256dd813e18
+function	c:@F@NSStringFromCPTrafficSide	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	04375da633b1eccb
+function	c:@F@NSStringFromCPLaneStatus	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	06c2bbcf5e2833d1
+var	c:@CPNowPlayingButtonMaximumImageSize	-			-	-	eb7ad7806bd01b10
+interface	c:objc(cs)CPNowPlayingButton	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	22b30b9f4c467ddc
+super	-	CPNowPlayingButton	NSObject		-	-	6c431b95c21261a7
+conforms	-	CPNowPlayingButton	NSSecureCoding		-	-	e341da0b99d1ea9e
+method	c:objc(cs)CPNowPlayingButton(cm)new	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b2986e1e09a00235
+method	c:objc(cs)CPNowPlayingButton(im)init	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2a8532800cae8c24
+method	c:objc(cs)CPNowPlayingButton(im)initWithHandler:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	719b01c4aabcd45b
+property	c:objc(cs)CPNowPlayingButton(py)enabled	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	bcfbd851659fca0c
+property	c:objc(cs)CPNowPlayingButton(py)selected	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6b2017bc6907bb72
+interface	c:objc(cs)CPNowPlayingShuffleButton	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0aca8ee4ba4e73dc
+super	-	CPNowPlayingShuffleButton	CPNowPlayingButton		-	-	787fd04ff78cc6f3
+interface	c:objc(cs)CPNowPlayingAddToLibraryButton	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	94f439b5445f4b25
+super	-	CPNowPlayingAddToLibraryButton	CPNowPlayingButton		-	-	6d94e3907dc4aedb
+interface	c:objc(cs)CPNowPlayingMoreButton	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d29fc8c1cc638ea5
+super	-	CPNowPlayingMoreButton	CPNowPlayingButton		-	-	27e451ec4a2f00ac
+interface	c:objc(cs)CPNowPlayingPlaybackRateButton	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ceb507968a5897dc
+super	-	CPNowPlayingPlaybackRateButton	CPNowPlayingButton		-	-	e6e918371d45f90e
+interface	c:objc(cs)CPNowPlayingRepeatButton	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	30514176108e7b85
+super	-	CPNowPlayingRepeatButton	CPNowPlayingButton		-	-	e601a4203563bad8
+interface	c:objc(cs)CPNowPlayingImageButton	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f29d77e7e73c674d
+super	-	CPNowPlayingImageButton	CPNowPlayingButton		-	-	6dbf4e0c3a720c34
+method	c:objc(cs)CPNowPlayingImageButton(im)initWithImage:handler:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5a3edb0335f639e2
+property	c:objc(cs)CPNowPlayingImageButton(py)image	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f0443b4b6623a26d
+interface	c:objc(cs)CPNowPlayingMode	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7fa2c800b4c152c6
+super	-	CPNowPlayingMode	NSObject		-	-	786cd81b1f112713
+conforms	-	CPNowPlayingMode	NSSecureCoding		-	-	47fb082b0b26e949
+property	c:objc(cs)CPNowPlayingMode(cpy)defaultNowPlayingMode	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3aa3868ccc041cc7
+interface	c:objc(cs)CPNowPlayingModeSports	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7171f87dd58b20c9
+super	-	CPNowPlayingModeSports	CPNowPlayingMode		-	-	8ae2003d02e4536a
+conforms	-	CPNowPlayingModeSports	NSSecureCoding		-	-	e6d062d442615734
+method	c:objc(cs)CPNowPlayingModeSports(im)initWithLeftTeam:rightTeam:eventStatus:backgroundArtwork:	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	14c7514d0d78b1d0
+property	c:objc(cs)CPNowPlayingModeSports(py)leftTeam	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4f2307570167236a
+property	c:objc(cs)CPNowPlayingModeSports(py)rightTeam	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c88d8af2a49771ed
+property	c:objc(cs)CPNowPlayingModeSports(py)eventStatus	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b22746ed21988dbf
+property	c:objc(cs)CPNowPlayingModeSports(py)backgroundArtwork	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6a4eeae01a204ae0
+interface	c:objc(cs)CPNowPlayingSportsTeam	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	76b84d2eb9879762
+super	-	CPNowPlayingSportsTeam	NSObject		-	-	8ac253664bed27f3
+conforms	-	CPNowPlayingSportsTeam	NSSecureCoding		-	-	49cc0627e89d964c
+method	c:objc(cs)CPNowPlayingSportsTeam(im)initWithName:logo:teamStandings:eventScore:possessionIndicator:favorite:	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	59f7407a7487b7cb
+property	c:objc(cs)CPNowPlayingSportsTeam(py)name	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4e5293d25d329149
+property	c:objc(cs)CPNowPlayingSportsTeam(py)logo	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	cf0d589c937a411c
+property	c:objc(cs)CPNowPlayingSportsTeam(py)teamStandings	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	28933ca4aa36b9e3
+property	c:objc(cs)CPNowPlayingSportsTeam(py)eventScore	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6ee3ee8366d00882
+property	c:objc(cs)CPNowPlayingSportsTeam(py)possessionIndicator	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0f91e8946f064145
+property	c:objc(cs)CPNowPlayingSportsTeam(py)favorite	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c4b0304bb4ba7d8e
+method	c:objc(cs)CPNowPlayingSportsTeam(im)init	-			*unavailable ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0540411afe1dfea5
+method	c:objc(cs)CPNowPlayingSportsTeam(cm)new	-			*unavailable ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d9df615b06577691
+interface	c:objc(cs)CPNowPlayingSportsEventStatus	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4a903f15a9268758
+super	-	CPNowPlayingSportsEventStatus	NSObject		-	-	d6099d8b2c0e0241
+conforms	-	CPNowPlayingSportsEventStatus	NSSecureCoding		-	-	15beacf17414cc8a
+method	c:objc(cs)CPNowPlayingSportsEventStatus(im)initWithEventStatusText:eventStatusImage:eventClock:	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	bd44ab2856a654c7
+property	c:objc(cs)CPNowPlayingSportsEventStatus(py)eventStatusText	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	23c81fb9db8f2117
+property	c:objc(cs)CPNowPlayingSportsEventStatus(py)eventClock	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	54b540d7eeecbd2a
+property	c:objc(cs)CPNowPlayingSportsEventStatus(py)eventStatusImage	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4e30d8c70218377e
+method	c:objc(cs)CPNowPlayingSportsEventStatus(im)init	-			*unavailable ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a09ac14914b8432b
+method	c:objc(cs)CPNowPlayingSportsEventStatus(cm)new	-			*unavailable ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d192582defa4e18a
+interface	c:objc(cs)CPNowPlayingSportsClock	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f17b756b52a3b20c
+super	-	CPNowPlayingSportsClock	NSObject		-	-	0a80adcbb3416240
+conforms	-	CPNowPlayingSportsClock	NSSecureCoding		-	-	0f7ad182a0ce2ce9
+method	c:objc(cs)CPNowPlayingSportsClock(im)initWithElapsedTime:paused:	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	356b47b2db3999cd
+method	c:objc(cs)CPNowPlayingSportsClock(im)initWithTimeRemaining:paused:	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	aa01b49321386aa2
+property	c:objc(cs)CPNowPlayingSportsClock(py)timeValue	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3540d37a7f0115de
+property	c:objc(cs)CPNowPlayingSportsClock(py)paused	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	51ebd90832646896
+property	c:objc(cs)CPNowPlayingSportsClock(py)countsUp	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	dd2b370f0dcc86de
+method	c:objc(cs)CPNowPlayingSportsClock(im)init	-			*unavailable ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d3d7b77e326f8ada
+method	c:objc(cs)CPNowPlayingSportsClock(cm)new	-			*unavailable ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fa437a6402e41811
+interface	c:objc(cs)CPNowPlayingSportsTeamLogo	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ab9170c49edd2222
+super	-	CPNowPlayingSportsTeamLogo	NSObject		-	-	a0d4d35173858ab1
+conforms	-	CPNowPlayingSportsTeamLogo	NSSecureCoding		-	-	1aabe6a5a2f5d0ba
+method	c:objc(cs)CPNowPlayingSportsTeamLogo(im)initWithTeamLogo:	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c4e5865f1d5de626
+method	c:objc(cs)CPNowPlayingSportsTeamLogo(im)initWithTeamInitials:	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a771d1c79935d62b
+property	c:objc(cs)CPNowPlayingSportsTeamLogo(py)logo	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	08aa68a321d93518
+property	c:objc(cs)CPNowPlayingSportsTeamLogo(py)initials	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	cf93f2fca069b932
+method	c:objc(cs)CPNowPlayingSportsTeamLogo(im)init	-			*unavailable ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fe851ed68d5a20f7
+method	c:objc(cs)CPNowPlayingSportsTeamLogo(cm)new	-			*unavailable ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	506594fc7af14dc2
+protocol	c:objc(pl)CPNowPlayingTemplateObserver	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	cd6c607ced094f02
+conforms	-	CPNowPlayingTemplateObserver	NSObject		-	-	28cafda4630d0845
+method	c:objc(pl)CPNowPlayingTemplateObserver(im)nowPlayingTemplateUpNextButtonTapped:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6dc7310114d371f3
+method	c:objc(pl)CPNowPlayingTemplateObserver(im)nowPlayingTemplateAlbumArtistButtonTapped:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d503115b1ec78c0e
+interface	c:objc(cs)CPNowPlayingTemplate	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1fabc5903cc0c59e
+super	-	CPNowPlayingTemplate	CPTemplate		-	-	638ffd8e3df9ec68
+property	c:objc(cs)CPNowPlayingTemplate(cpy)sharedTemplate	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d6c2f017bff85b8c
+method	c:objc(cs)CPNowPlayingTemplate(im)init	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2783764d25ddb624
+method	c:objc(cs)CPNowPlayingTemplate(cm)new	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8f2181596bb258df
+method	c:objc(cs)CPNowPlayingTemplate(im)addObserver:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ead882054909cf9d
+method	c:objc(cs)CPNowPlayingTemplate(im)removeObserver:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6ee502b2fe2a45d9
+property	c:objc(cs)CPNowPlayingTemplate(py)nowPlayingButtons	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1f34c40eec086d5b
+property	c:objc(cs)CPNowPlayingTemplate(py)upNextButtonEnabled	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9d92f8ba870c0392
+property	c:objc(cs)CPNowPlayingTemplate(py)upNextTitle	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fe7e0e595c657598
+property	c:objc(cs)CPNowPlayingTemplate(py)albumArtistButtonEnabled	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e621cbaaafcf3813
+method	c:objc(cs)CPNowPlayingTemplate(im)updateNowPlayingButtons:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	257fd537c4e068de
+property	c:objc(cs)CPNowPlayingTemplate(py)nowPlayingMode	-			ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	93b2228d61363435
+interface	c:objc(cs)CPPointOfInterest	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4400ce0a7ae35b5e
+super	-	CPPointOfInterest	NSObject		-	-	c2a18c148a11abce
+conforms	-	CPPointOfInterest	NSSecureCoding		-	-	fb06dad88e6be713
+method	c:objc(cs)CPPointOfInterest(im)initWithLocation:title:subtitle:summary:detailTitle:detailSubtitle:detailSummary:pinImage:selectedPinImage:	-			ios=16.0/-/-/0,tvos=-/-/-/1	-	d7b6318a3c936b07
+method	c:objc(cs)CPPointOfInterest(im)initWithLocation:title:subtitle:summary:detailTitle:detailSubtitle:detailSummary:pinImage:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1e61f726f90e1a0c
+property	c:objc(cs)CPPointOfInterest(cpy)pinImageSize	-			ios=16.0/-/-/0,tvos=-/-/-/1	-	127d1c2c13675f2c
+property	c:objc(cs)CPPointOfInterest(cpy)selectedPinImageSize	-			ios=16.0/-/-/0,tvos=-/-/-/1	-	77fb5ea4d2d81ab7
+property	c:objc(cs)CPPointOfInterest(py)location	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3735df5406fff590
+property	c:objc(cs)CPPointOfInterest(py)title	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	14b20acd5a9cd5f7
+property	c:objc(cs)CPPointOfInterest(py)subtitle	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	cead88ad4d516a87
+property	c:objc(cs)CPPointOfInterest(py)summary	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0334489d19d89766
+property	c:objc(cs)CPPointOfInterest(py)detailTitle	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	45ebeaac798371be
+property	c:objc(cs)CPPointOfInterest(py)detailSubtitle	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3db28e1c8e9687c2
+property	c:objc(cs)CPPointOfInterest(py)detailSummary	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f3053af9226f1d8d
+property	c:objc(cs)CPPointOfInterest(py)pinImage	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	062154cf6660b1ed
+property	c:objc(cs)CPPointOfInterest(py)selectedPinImage	-			ios=16.0/-/-/0,tvos=-/-/-/1	-	005caad3d77b1dd3
+property	c:objc(cs)CPPointOfInterest(py)primaryButton	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a57649f42b19ffba
+property	c:objc(cs)CPPointOfInterest(py)secondaryButton	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	51fbbec1a191a6ce
+property	c:objc(cs)CPPointOfInterest(py)userInfo	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1a133c072074594b
+method	c:objc(cs)CPPointOfInterest(im)init	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5546e4a0b11f7cea
+method	c:objc(cs)CPPointOfInterest(cm)new	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f68ed3d08740ae38
+protocol	c:objc(pl)CPPointOfInterestTemplateDelegate	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	60243bd030bfc9a7
+conforms	-	CPPointOfInterestTemplateDelegate	NSObject		-	-	dec5433c509af11e
+method	c:objc(pl)CPPointOfInterestTemplateDelegate(im)pointOfInterestTemplate:didChangeMapRegion:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fe3aef4b4bf76f6b
+method	c:objc(pl)CPPointOfInterestTemplateDelegate(im)pointOfInterestTemplate:didSelectPointOfInterest:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	93cb1d56d4798e38
+interface	c:objc(cs)CPPointOfInterestTemplate	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0f33679668610bbb
+super	-	CPPointOfInterestTemplate	CPTemplate		-	-	022e3f7f15c765e6
+conforms	-	CPPointOfInterestTemplate	CPBarButtonProviding		-	-	9d78c12b89fdb476
+method	c:objc(cs)CPPointOfInterestTemplate(im)initWithTitle:pointsOfInterest:selectedIndex:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	adab9eadf9d46725
+method	c:objc(cs)CPPointOfInterestTemplate(im)init	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	810aac3d93248147
+method	c:objc(cs)CPPointOfInterestTemplate(cm)new	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	98374e98f7114e4b
+property	c:objc(cs)CPPointOfInterestTemplate(py)title	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	827c928378f5b1d8
+method	c:objc(cs)CPPointOfInterestTemplate(im)setPointsOfInterest:selectedIndex:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	01031719d2a7139a
+property	c:objc(cs)CPPointOfInterestTemplate(py)pointsOfInterest	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	49527836df687582
+property	c:objc(cs)CPPointOfInterestTemplate(py)selectedIndex	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0f5e105c5baaecc5
+property	c:objc(cs)CPPointOfInterestTemplate(py)pointOfInterestDelegate	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	bcae2396176ca429
+interface	c:objc(cs)CPSearchTemplate	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f5ad6ac1b6fc8776
+super	-	CPSearchTemplate	CPTemplate		-	-	9472dd9b9c327d3e
+property	c:objc(cs)CPSearchTemplate(py)delegate	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9fa508a676770c2b
+protocol	c:objc(pl)CPSearchTemplateDelegate	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b32b45af2e4a42fe
+conforms	-	CPSearchTemplateDelegate	NSObject		-	-	0344a27300af88b1
+method	c:objc(pl)CPSearchTemplateDelegate(im)searchTemplate:updatedSearchText:completionHandler:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	efb143666369e8e2
+method	c:objc(pl)CPSearchTemplateDelegate(im)searchTemplate:selectedResult:completionHandler:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	10e40c8bcc375584
+method	c:objc(pl)CPSearchTemplateDelegate(im)searchTemplateSearchButtonPressed:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	75f36edf641e9f6f
+typedef	c:@T@CPLimitableUserInterface	-			-	-	4fb5e5eeff8e59e4
+enum	c:@E@CPLimitableUserInterface	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	37cc511ffa04a63b
+enumconst	c:@E@CPLimitableUserInterface@CPLimitableUserInterfaceKeyboard	CPLimitableUserInterface			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	dffdfac9e0cde489
+enumconst	c:@E@CPLimitableUserInterface@CPLimitableUserInterfaceLists	CPLimitableUserInterface			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4131504f63cbf083
+typedef	c:@T@CPContentStyle	-			-	-	fcb85c41ad609b45
+enum	c:@E@CPContentStyle	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4ac4d61dd01d91c6
+enumconst	c:@E@CPContentStyle@CPContentStyleLight	CPContentStyle			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	434fed3bf0b59aec
+enumconst	c:@E@CPContentStyle@CPContentStyleDark	CPContentStyle			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	71551660bd8b53d7
+interface	c:objc(cs)CPSessionConfiguration	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	12518ab116c38c51
+super	-	CPSessionConfiguration	NSObject		-	-	9d9bd3f78dc765eb
+method	c:objc(cs)CPSessionConfiguration(im)initWithDelegate:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4cfe5f870e2ad9cd
+method	c:objc(cs)CPSessionConfiguration(im)init	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6101d7b15dda4e51
+method	c:objc(cs)CPSessionConfiguration(cm)new	-			*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0d2baa2903ee9327
+property	c:objc(cs)CPSessionConfiguration(py)limitedUserInterfaces	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f691b7a675101b3c
+property	c:objc(cs)CPSessionConfiguration(py)contentStyle	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9198343df3d1a736
+property	c:objc(cs)CPSessionConfiguration(py)delegate	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a5ff6694ab1ea179
+protocol	c:objc(pl)CPSessionConfigurationDelegate	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f7d958953a5eb2be
+conforms	-	CPSessionConfigurationDelegate	NSObject		-	-	aa5b52c1abbe32d1
+method	c:objc(pl)CPSessionConfigurationDelegate(im)sessionConfiguration:limitedUserInterfacesChanged:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7a7288bfa2af575c
+method	c:objc(pl)CPSessionConfigurationDelegate(im)sessionConfiguration:contentStyleChanged:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	588b5a2ba56ddf1b
+interface	c:objc(cs)CPTabBarTemplate	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ac3343e9e32a5bfe
+super	-	CPTabBarTemplate	CPTemplate		-	-	69e301a89134d240
+method	c:objc(cs)CPTabBarTemplate(im)init	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	76b30721f3e08bcc
+method	c:objc(cs)CPTabBarTemplate(cm)new	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7b4bb83a2a7035de
+method	c:objc(cs)CPTabBarTemplate(im)initWithTemplates:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fa8d8284b7a7f79c
+property	c:objc(cs)CPTabBarTemplate(py)delegate	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	05e3348e75b31dbf
+property	c:objc(cs)CPTabBarTemplate(cpy)maximumTabCount	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	95e2f033bceb7c72
+property	c:objc(cs)CPTabBarTemplate(py)templates	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	976af90c5d04301f
+property	c:objc(cs)CPTabBarTemplate(py)selectedTemplate	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	cf1ea8a7686a9bdd
+method	c:objc(cs)CPTabBarTemplate(im)updateTemplates:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	83d1abbd599766c7
+method	c:objc(cs)CPTabBarTemplate(im)selectTemplate:	-			ios=17.0/-/-/0,tvos=-/-/-/1	-	e36e6a38da49bccf
+method	c:objc(cs)CPTabBarTemplate(im)selectTemplateAtIndex:	-			ios=17.0/-/-/0,tvos=-/-/-/1	-	ddb6d97976b2d67a
+protocol	c:objc(pl)CPTabBarTemplateDelegate	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	56d07b2283b0fc24
+conforms	-	CPTabBarTemplateDelegate	NSObject		-	-	f2942d642313191c
+method	c:objc(pl)CPTabBarTemplateDelegate(im)tabBarTemplate:didSelectTemplate:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8d553de18f6f5d71
+protocol	c:objc(pl)CPTemplateApplicationDashboardSceneDelegate	-			ios=13.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	58ad29f07b583150
+conforms	-	CPTemplateApplicationDashboardSceneDelegate	UISceneDelegate		-	-	94e1e94ed3d1a4e6
+method	c:objc(pl)CPTemplateApplicationDashboardSceneDelegate(im)templateApplicationDashboardScene:didConnectDashboardController:toWindow:	-			ios=13.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1e68966ad439e45d
+method	c:objc(pl)CPTemplateApplicationDashboardSceneDelegate(im)templateApplicationDashboardScene:didDisconnectDashboardController:fromWindow:	-			ios=13.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	37858fbf337f93f6
+interface	c:objc(cs)CPTemplateApplicationDashboardScene	-			ios=13.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7b2a8e02b1535c9c
+super	-	CPTemplateApplicationDashboardScene	UIScene		-	-	eea66313b0439f81
+property	c:objc(cs)CPTemplateApplicationDashboardScene(py)delegate	-			ios=13.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	528f8e89e3114aae
+property	c:objc(cs)CPTemplateApplicationDashboardScene(py)dashboardController	-			ios=13.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f45ba000d1b630dd
+property	c:objc(cs)CPTemplateApplicationDashboardScene(py)dashboardWindow	-			ios=13.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	343e72c6185e95d3
+var	c:@CPTemplateApplicationDashboardSceneSessionRoleApplication	-			ios=13.4/-/-/0	-	831db3f62d37b2ad
+protocol	c:objc(pl)CPTemplateApplicationInstrumentClusterSceneDelegate	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a22af7c78b615aab
+conforms	-	CPTemplateApplicationInstrumentClusterSceneDelegate	UISceneDelegate		-	-	105e53347e4bd5ff
+method	c:objc(pl)CPTemplateApplicationInstrumentClusterSceneDelegate(im)templateApplicationInstrumentClusterScene:didConnectInstrumentClusterController:	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6916f467566059f6
+method	c:objc(pl)CPTemplateApplicationInstrumentClusterSceneDelegate(im)templateApplicationInstrumentClusterScene:didDisconnectInstrumentClusterController:	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9e6298611c2f0ece
+method	c:objc(pl)CPTemplateApplicationInstrumentClusterSceneDelegate(im)contentStyleDidChange:	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8e7f34088a5e0f39
+interface	c:objc(cs)CPTemplateApplicationInstrumentClusterScene	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	23044bf60268cd35
+super	-	CPTemplateApplicationInstrumentClusterScene	UIScene		-	-	af2455a18dce4ffb
+property	c:objc(cs)CPTemplateApplicationInstrumentClusterScene(py)delegate	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7bd81e3f99434bd2
+property	c:objc(cs)CPTemplateApplicationInstrumentClusterScene(py)instrumentClusterController	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6d674328df65b7f6
+property	c:objc(cs)CPTemplateApplicationInstrumentClusterScene(py)contentStyle	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b8afcf7d939bc123
+var	c:@CPTemplateApplicationInstrumentClusterSceneSessionRoleApplication	-			ios=15.4/-/-/0	-	2a0364e7a02ec9d1
+protocol	c:objc(pl)CPTemplateApplicationSceneDelegate	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8cf65d7522e1a0f3
+conforms	-	CPTemplateApplicationSceneDelegate	UISceneDelegate		-	-	df4674d543c5dd93
+method	c:objc(pl)CPTemplateApplicationSceneDelegate(im)templateApplicationScene:didConnectInterfaceController:toWindow:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	65f0ad55e9a6a165
+method	c:objc(pl)CPTemplateApplicationSceneDelegate(im)templateApplicationScene:didConnectInterfaceController:	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	437cab67d8689d0a
+method	c:objc(pl)CPTemplateApplicationSceneDelegate(im)templateApplicationScene:didDisconnectInterfaceController:fromWindow:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ce82bb0f7a4fb8f1
+method	c:objc(pl)CPTemplateApplicationSceneDelegate(im)templateApplicationScene:didDisconnectInterfaceController:	-			ios=14.0/-/-/0,tvos=-/-/-/1	-	df563b8c81ad146f
+method	c:objc(pl)CPTemplateApplicationSceneDelegate(im)templateApplicationScene:didSelectNavigationAlert:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7836e1aa0f01440a
+method	c:objc(pl)CPTemplateApplicationSceneDelegate(im)templateApplicationScene:didSelectManeuver:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	be3c7b17aafec1ed
+method	c:objc(pl)CPTemplateApplicationSceneDelegate(im)contentStyleDidChange:	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3ff5b93f656c3432
+interface	c:objc(cs)CPTemplateApplicationScene	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0341310047fef2c2
+super	-	CPTemplateApplicationScene	UIScene		-	-	378c30b761b482c8
+property	c:objc(cs)CPTemplateApplicationScene(py)delegate	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	426c3974c817a301
+property	c:objc(cs)CPTemplateApplicationScene(py)interfaceController	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e8b53a783f1a431e
+property	c:objc(cs)CPTemplateApplicationScene(py)carWindow	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	93e7b6ca169afbd4
+property	c:objc(cs)CPTemplateApplicationScene(py)contentStyle	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ff557be7e95c1cac
+var	c:@CPTemplateApplicationSceneSessionRoleApplication	-			ios=13.0/-/-/0,tvos=-/-/-/1	-	0082052f2064378c
+interface	c:objc(cs)CPVoiceControlState	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	265f1d14480419a4
+super	-	CPVoiceControlState	NSObject		-	-	34044a8db263a8db
+conforms	-	CPVoiceControlState	NSSecureCoding		-	-	94caf45eee057873
+method	c:objc(cs)CPVoiceControlState(im)initWithIdentifier:titleVariants:image:repeats:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	396a79e8e0f41a34
+property	c:objc(cs)CPVoiceControlState(py)titleVariants	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d60fddd0b927965a
+property	c:objc(cs)CPVoiceControlState(py)image	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0cc508e7f862bb86
+property	c:objc(cs)CPVoiceControlState(py)identifier	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2a01132f70db64b2
+property	c:objc(cs)CPVoiceControlState(py)repeats	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f8388b63487ca814
+interface	c:objc(cs)CPVoiceControlTemplate	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	72de1a1600ecaf64
+super	-	CPVoiceControlTemplate	CPTemplate		-	-	898666a4c1c29775
+method	c:objc(cs)CPVoiceControlTemplate(im)initWithVoiceControlStates:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c1ec867f76633b61
+property	c:objc(cs)CPVoiceControlTemplate(py)voiceControlStates	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4be270a7a9c22a1d
+method	c:objc(cs)CPVoiceControlTemplate(im)activateVoiceControlStateWithIdentifier:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8c41eab6cd001eaf
+property	c:objc(cs)CPVoiceControlTemplate(py)activeStateIdentifier	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9f5ca19b242d931d

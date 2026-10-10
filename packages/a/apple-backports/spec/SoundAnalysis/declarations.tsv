@@ -1,0 +1,77 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+typedef	c:@T@SNClassifierIdentifier	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	071b38344f23ca5d
+var	c:@SNClassifierIdentifierVersion1	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	883ffa730419f964
+var	c:@SNErrorDomain	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	5db9d8326deb654e
+typedef	c:@T@SNErrorCode	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	f691f7b83e9a8a0f
+enum	c:@E@SNErrorCode	-			-	-	5923ec1c6f623e5b
+enumconst	c:@E@SNErrorCode@SNErrorCodeUnknownError	SNErrorCode			-	-	e361474d49151dc5
+enumconst	c:@E@SNErrorCode@SNErrorCodeOperationFailed	SNErrorCode			-	-	1b0ffef62b4c4643
+enumconst	c:@E@SNErrorCode@SNErrorCodeInvalidFormat	SNErrorCode			-	-	ebcd5c46128e55f0
+enumconst	c:@E@SNErrorCode@SNErrorCodeInvalidModel	SNErrorCode			-	-	fc988e59fc90ebb9
+enumconst	c:@E@SNErrorCode@SNErrorCodeInvalidFile	SNErrorCode			-	-	616755e41e111324
+protocol	c:objc(pl)SNRequest	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	6249e87ffb2ec74b
+conforms	-	SNRequest	NSObject		-	-	fac53f82352c16df
+protocol	c:objc(pl)SNResult	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	f2df0a1d45ee414c
+conforms	-	SNResult	NSObject		-	-	a7ec33069ac7d932
+protocol	c:objc(pl)SNResultsObserving	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	efb9aa27513a59d1
+conforms	-	SNResultsObserving	NSObject		-	-	7c6b7f2bf08c623a
+method	c:objc(pl)SNResultsObserving(im)request:didProduceResult:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	eb6a554b8320abd3
+method	c:objc(pl)SNResultsObserving(im)request:didFailWithError:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	88728072dcfbf1fd
+method	c:objc(pl)SNResultsObserving(im)requestDidComplete:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	9b2d60c5aafc8348
+interface	c:objc(cs)SNAudioStreamAnalyzer	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	fa99c16a5d3e08fd
+super	-	SNAudioStreamAnalyzer	NSObject		-	-	fd29115fad62f793
+method	c:objc(cs)SNAudioStreamAnalyzer(im)initWithFormat:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	ce2096552d62c46d
+method	c:objc(cs)SNAudioStreamAnalyzer(im)init	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	daed13357efd89e2
+method	c:objc(cs)SNAudioStreamAnalyzer(im)addRequest:withObserver:error:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	4f609b352c68dffa
+method	c:objc(cs)SNAudioStreamAnalyzer(im)removeRequest:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	78a9653e0cfa1149
+method	c:objc(cs)SNAudioStreamAnalyzer(im)removeAllRequests	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	535044e60b8de28f
+method	c:objc(cs)SNAudioStreamAnalyzer(im)analyzeAudioBuffer:atAudioFramePosition:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	d9d28afcaf379e55
+method	c:objc(cs)SNAudioStreamAnalyzer(im)completeAnalysis	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	c562f19e50b86077
+interface	c:objc(cs)SNAudioFileAnalyzer	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	37bf1e894ed842bb
+super	-	SNAudioFileAnalyzer	NSObject		-	-	d47c66f1d1e5e876
+method	c:objc(cs)SNAudioFileAnalyzer(im)initWithURL:error:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	9339ce2593376547
+method	c:objc(cs)SNAudioFileAnalyzer(im)init	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	0742fe35b6c1a62b
+method	c:objc(cs)SNAudioFileAnalyzer(im)addRequest:withObserver:error:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	b78fa67a5af66389
+method	c:objc(cs)SNAudioFileAnalyzer(im)removeRequest:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	532ab332a117cdbd
+method	c:objc(cs)SNAudioFileAnalyzer(im)removeAllRequests	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	a3e7c051852a69db
+method	c:objc(cs)SNAudioFileAnalyzer(im)analyze	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	79820c0bdfe299d0
+method	c:objc(cs)SNAudioFileAnalyzer(im)analyzeWithCompletionHandler:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	f0f985670c65cd02
+method	c:objc(cs)SNAudioFileAnalyzer(im)cancelAnalysis	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	b7aacd031ce64fa2
+typedef	c:@T@SNTimeDurationConstraintType	-			-	-	673a3704a69181f5
+enum	c:@E@SNTimeDurationConstraintType	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	8ae106337dbf9065
+enumconst	c:@E@SNTimeDurationConstraintType@SNTimeDurationConstraintTypeEnumerated	SNTimeDurationConstraintType			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	9ef3d4ad4d9298f9
+enumconst	c:@E@SNTimeDurationConstraintType@SNTimeDurationConstraintTypeRange	SNTimeDurationConstraintType			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	86202a3163bb9bd2
+interface	c:objc(cs)SNTimeDurationConstraint	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	202748eec03ebe02
+super	-	SNTimeDurationConstraint	NSObject		-	-	e8d52a73e0b4a0fe
+property	c:objc(cs)SNTimeDurationConstraint(py)type	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	b1f8274b3c317b1c
+property	c:objc(cs)SNTimeDurationConstraint(py)enumeratedDurations	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	6561b5139882a190
+property	c:objc(cs)SNTimeDurationConstraint(py)durationRange	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	6d8d75f497837d6d
+method	c:objc(cs)SNTimeDurationConstraint(im)initWithEnumeratedDurations:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	5e062a0125421d5a
+method	c:objc(cs)SNTimeDurationConstraint(im)initWithDurationRange:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	5757b104c3093b72
+method	c:objc(cs)SNTimeDurationConstraint(im)init	-			*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	6ec5629193650f93
+method	c:objc(cs)SNTimeDurationConstraint(cm)new	-			*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	ac590d36b628f216
+interface	c:objc(cs)SNClassifySoundRequest	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	da518fe51eaa667f
+super	-	SNClassifySoundRequest	NSObject		-	-	43d14d025cba11ca
+conforms	-	SNClassifySoundRequest	SNRequest		-	-	0902be632c0b12d3
+property	c:objc(cs)SNClassifySoundRequest(py)overlapFactor	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	13844563c2c4d953
+property	c:objc(cs)SNClassifySoundRequest(py)windowDuration	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	070762b07256ce83
+property	c:objc(cs)SNClassifySoundRequest(py)windowDurationConstraint	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	b5786750b1f4a951
+property	c:objc(cs)SNClassifySoundRequest(py)knownClassifications	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	f7166feb8a3bd4e8
+method	c:objc(cs)SNClassifySoundRequest(im)initWithMLModel:error:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	e49867730054fa16
+method	c:objc(cs)SNClassifySoundRequest(im)initWithClassifierIdentifier:error:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	359b936684e7672a
+method	c:objc(cs)SNClassifySoundRequest(im)init	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	20c83a02237073f9
+method	c:objc(cs)SNClassifySoundRequest(cm)new	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	6b59000f5db3c3d0
+interface	c:objc(cs)SNClassification	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	a465eccc35f7994e
+super	-	SNClassification	NSObject		-	-	e1b7e24bbe429571
+property	c:objc(cs)SNClassification(py)identifier	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	a0a0f380853251a4
+property	c:objc(cs)SNClassification(py)confidence	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	fc29ec98a21a8ed6
+method	c:objc(cs)SNClassification(im)init	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	d2f07b74c939b1cf
+method	c:objc(cs)SNClassification(cm)new	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	37f4e0e88a947c87
+interface	c:objc(cs)SNClassificationResult	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	6b92be31b1df5aa6
+super	-	SNClassificationResult	NSObject		-	-	f090eefdb75c23b3
+conforms	-	SNClassificationResult	SNResult		-	-	cb5dfbcadb5c2ebb
+property	c:objc(cs)SNClassificationResult(py)classifications	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	90f64dab76b32549
+property	c:objc(cs)SNClassificationResult(py)timeRange	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	0eb906d6d19a53ea
+method	c:objc(cs)SNClassificationResult(im)init	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	518bb7432c508770
+method	c:objc(cs)SNClassificationResult(cm)new	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	fe3aa1d02c5e13dd
+method	c:objc(cs)SNClassificationResult(im)classificationForIdentifier:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	e7299f70a47f16d5

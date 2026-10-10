@@ -1,0 +1,16 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+typedef	c:@T@BCParameterName	-			-	-	144a7efed7f44269
+var	c:@BCParameterNameIntent	-			ios=11.3/16.1/-/0,macos=10.13.4/13.0/-/0	-	49879dfafb8c4a6d
+var	c:@BCParameterNameGroup	-			ios=11.3/16.1/-/0,macos=10.13.4/13.0/-/0	-	9a47518990b3b525
+var	c:@BCParameterNameBody	-			ios=11.3/16.1/-/0,macos=10.13.4/13.0/-/0	-	ca3d6334cf66de04
+interface	c:objc(cs)BCChatAction	-			ios=11.3/16.1/-/0,macos=10.13.4/13.0/-/0	-	adac08459748cec6
+super	-	BCChatAction	NSObject		-	-	d2b0fb13f4ac4431
+method	c:objc(cs)BCChatAction(cm)openTranscript:intentParameters:	-			ios=11.3/16.1/-/0,macos=10.13.4/13.0/-/0	-	f6c2e51d983d47e3
+typedef	c:@T@BCChatButtonStyle	-			-	-	d7d74b75b61fe2ce
+enum	c:@E@BCChatButtonStyle	-			ios=11.3/16.1/-/0,macos=10.13.4/13.0/-/0	-	167baf2e44247784
+enumconst	c:@E@BCChatButtonStyle@BCChatButtonStyleLight	BCChatButtonStyle			ios=11.3/16.1/-/0,macos=10.13.4/13.0/-/0	-	79a0dd80ad5a62bb
+enumconst	c:@E@BCChatButtonStyle@BCChatButtonStyleDark	BCChatButtonStyle			ios=11.3/16.1/-/0,macos=10.13.4/13.0/-/0	-	9f43a522e14192b1
+interface	c:objc(cs)BCChatButton	-			ios=11.3/16.1/-/0,macos=10.13.4/13.0/-/0	-	af93ff035546b7d0
+super	-	BCChatButton	UIControl		-	-	f6f88baa62e7042c
+method	c:objc(cs)BCChatButton(im)initWithStyle:	-			ios=11.3/16.1/-/0,macos=10.13.4/13.0/-/0	-	f4370f3ca70c562b
+method	c:objc(cs)BCChatButton(im)initWithCoder:	-			ios=11.3/16.1/-/0,macos=10.13.4/13.0/-/0	-	a9560e23de9482dc

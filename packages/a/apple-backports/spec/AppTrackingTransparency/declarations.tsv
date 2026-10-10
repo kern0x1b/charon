@@ -1,0 +1,15 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+typedef	c:@T@ATTrackingManagerAuthorizationStatus	-			-	-	c7acf7597b44ba10
+enum	c:@E@ATTrackingManagerAuthorizationStatus	-			ios=14/-/-/0,macos=11.0/-/-/0,tvos=14/-/-/0	-	ba5c9184294de2f9
+enumconst	c:@E@ATTrackingManagerAuthorizationStatus@ATTrackingManagerAuthorizationStatusNotDetermined	ATTrackingManagerAuthorizationStatus			ios=14/-/-/0,macos=11.0/-/-/0,tvos=14/-/-/0	-	96ccb844d8911e81
+enumconst	c:@E@ATTrackingManagerAuthorizationStatus@ATTrackingManagerAuthorizationStatusRestricted	ATTrackingManagerAuthorizationStatus			ios=14/-/-/0,macos=11.0/-/-/0,tvos=14/-/-/0	-	3bb8189242790636
+enumconst	c:@E@ATTrackingManagerAuthorizationStatus@ATTrackingManagerAuthorizationStatusDenied	ATTrackingManagerAuthorizationStatus			ios=14/-/-/0,macos=11.0/-/-/0,tvos=14/-/-/0	-	2d7c956a64f838ed
+enumconst	c:@E@ATTrackingManagerAuthorizationStatus@ATTrackingManagerAuthorizationStatusAuthorized	ATTrackingManagerAuthorizationStatus			ios=14/-/-/0,macos=11.0/-/-/0,tvos=14/-/-/0	-	7387aae2cb82e386
+interface	c:objc(cs)ATTrackingManager	-			ios=14/-/-/0,macos=11.0/-/-/0,tvos=14/-/-/0	-	688232d5c2af22fc
+super	-	ATTrackingManager	NSObject		-	-	62f58f21587f2211
+property	c:objc(cs)ATTrackingManager(cpy)trackingAuthorizationStatus	-			ios=14/-/-/0,macos=11.0/-/-/0,tvos=14/-/-/0	-	8d52064fcc229f97
+method	c:objc(cs)ATTrackingManager(cm)requestTrackingAuthorizationWithCompletionHandler:	-			ios=14/-/-/0,macos=11.0/-/-/0,tvos=14/-/-/0	-	6388a268f46db9c4
+method	c:objc(cs)ATTrackingManager(cm)new	-			*unavailable ios=14/-/-/0,macos=11.0/-/-/0,tvos=14/-/-/0	-	174ec2a908e86ac1
+method	c:objc(cs)ATTrackingManager(im)init	-			*unavailable ios=14/-/-/0,macos=11.0/-/-/0,tvos=14/-/-/0	-	1df936402f84f060
+var	c:@AppTrackingTransparencyVersionNumber	-			-	-	f76c9601d9379c30
+var	c:@AppTrackingTransparencyVersionString	-			-	-	79e10da884564ff2

@@ -1,0 +1,2171 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+protocol	c:objc(pl)CIFilterConstructor	-			-	-	d1b60b0581e545d2
+method	c:objc(pl)CIFilterConstructor(im)filterWithName:	-			-	-	1f193206fc47d7fc
+var	c:@kCIAttributeFilterName	-			-	-	62c29b34566f5a71
+var	c:@kCIAttributeFilterDisplayName	-			-	-	48b34f5c4538c536
+var	c:@kCIAttributeDescription	-			ios=9.0/-/-/0	-	48da479e65b5c39e
+var	c:@kCIAttributeFilterAvailable_Mac	-			ios=9.0/-/-/0	-	2a0e1a92d0b9d2eb
+var	c:@kCIAttributeFilterAvailable_iOS	-			ios=9.0/-/-/0	-	629be335ba0c491a
+var	c:@kCIAttributeReferenceDocumentation	-			ios=9.0/-/-/0	-	e2034c8c5e47d503
+var	c:@kCIAttributeFilterCategories	-			-	-	ee694462d0e94b63
+var	c:@kCIAttributeClass	-			-	-	7914edb755050590
+var	c:@kCIAttributeType	-			-	-	caf29e16c3c653df
+var	c:@kCIAttributeMin	-			-	-	724423d62c5e4c92
+var	c:@kCIAttributeMax	-			-	-	02428d5cfc8b0c3b
+var	c:@kCIAttributeSliderMin	-			-	-	b29f1f4c2ce24999
+var	c:@kCIAttributeSliderMax	-			-	-	eab4879b8eef72ef
+var	c:@kCIAttributeDefault	-			-	-	e3d169dff5fba5d1
+var	c:@kCIAttributeIdentity	-			-	-	b558991e649fe656
+var	c:@kCIAttributeName	-			-	-	f6097931674c7f67
+var	c:@kCIAttributeDisplayName	-			-	-	eb1165b9b550dfcc
+var	c:@kCIUIParameterSet	-			ios=9.0/-/-/0	-	d7528b12596260bc
+var	c:@kCIUISetBasic	-			ios=9.0/-/-/0	-	90e39edd30ccc7e3
+var	c:@kCIUISetIntermediate	-			ios=9.0/-/-/0	-	14acf913f41edf90
+var	c:@kCIUISetAdvanced	-			ios=9.0/-/-/0	-	93a96bc7e62cf73d
+var	c:@kCIUISetDevelopment	-			ios=9.0/-/-/0	-	cf6398e0a14e2ac1
+var	c:@kCIAttributeTypeTime	-			-	-	fb863fba50671378
+var	c:@kCIAttributeTypeScalar	-			-	-	cdf441548a9f2a6f
+var	c:@kCIAttributeTypeDistance	-			-	-	47605aafb73da64f
+var	c:@kCIAttributeTypeAngle	-			-	-	c78d679034adf941
+var	c:@kCIAttributeTypeBoolean	-			-	-	126e0fc9ac04f205
+var	c:@kCIAttributeTypeInteger	-			ios=5.0/-/-/0	-	c6b522f3707a8eca
+var	c:@kCIAttributeTypeCount	-			ios=5.0/-/-/0	-	93cd46af68f00c11
+var	c:@kCIAttributeTypePosition	-			-	-	a0268ac16b44e5b4
+var	c:@kCIAttributeTypeOffset	-			-	-	4e79e1f5cd659e3d
+var	c:@kCIAttributeTypePosition3	-			-	-	f729068c5c80e987
+var	c:@kCIAttributeTypeRectangle	-			-	-	29ef9c0def2d98cc
+var	c:@kCIAttributeTypeOpaqueColor	-			ios=9.0/-/-/0	-	ebfaeabcc9dac11b
+var	c:@kCIAttributeTypeColor	-			ios=5.0/-/-/0	-	dd3698e1b5e67150
+var	c:@kCIAttributeTypeGradient	-			ios=9.0/-/-/0	-	9e213c85845dbdd8
+var	c:@kCIAttributeTypeImage	-			ios=5.0/-/-/0	-	4494e93e72ab7ba3
+var	c:@kCIAttributeTypeTransform	-			ios=5.0/-/-/0	-	5d55d52baaa442ea
+var	c:@kCICategoryDistortionEffect	-			-	-	4df764088d0afa67
+var	c:@kCICategoryGeometryAdjustment	-			-	-	8f88d4afa6f99ab0
+var	c:@kCICategoryCompositeOperation	-			-	-	2833163673278bcf
+var	c:@kCICategoryHalftoneEffect	-			-	-	808784d35a355965
+var	c:@kCICategoryColorAdjustment	-			-	-	1b593b9788a88852
+var	c:@kCICategoryColorEffect	-			-	-	5ffd6b659a40703c
+var	c:@kCICategoryTransition	-			-	-	d0803d01d07cb9d4
+var	c:@kCICategoryTileEffect	-			-	-	c5c4c542faf8a66a
+var	c:@kCICategoryGenerator	-			-	-	239cadcdaf51d88a
+var	c:@kCICategoryReduction	-			ios=5.0/-/-/0	-	373823c6b4f6e895
+var	c:@kCICategoryGradient	-			-	-	75dfde0f598ca87a
+var	c:@kCICategoryStylize	-			-	-	119627140cf2ec64
+var	c:@kCICategorySharpen	-			-	-	7f56e0d9287b5660
+var	c:@kCICategoryBlur	-			-	-	a88350f24b56af1b
+var	c:@kCICategoryVideo	-			-	-	9c5358c423663966
+var	c:@kCICategoryStillImage	-			-	-	3db3d3cb886dfabb
+var	c:@kCICategoryInterlaced	-			-	-	e968e4fe375431b3
+var	c:@kCICategoryNonSquarePixels	-			-	-	a5eb81e61c3ea0f6
+var	c:@kCICategoryHighDynamicRange	-			-	-	62a95ab487a867c8
+var	c:@kCICategoryBuiltIn	-			-	-	daf22530bc89b3ad
+var	c:@kCICategoryFilterGenerator	-			ios=9.0/-/-/0	-	bc548f2d183321ea
+var	c:@kCIApplyOptionExtent	-			ios=-/-/-/1	-	232da5f6ed53fafa
+var	c:@kCIApplyOptionDefinition	-			ios=-/-/-/1	-	e4f9c93f30797945
+var	c:@kCIApplyOptionUserInfo	-			ios=-/-/-/1	-	bad12fab67dc5e21
+var	c:@kCIApplyOptionColorSpace	-			ios=-/-/-/1	-	3303a81ff7234f39
+var	c:@kCIOutputImageKey	-			ios=5.0/-/-/0	-	46270b72225c75f3
+var	c:@kCIInputBackgroundImageKey	-			ios=5.0/-/-/0	-	c8817a4dc6d1cd7f
+var	c:@kCIInputImageKey	-			ios=5.0/-/-/0	-	4624c5d689ce93ff
+var	c:@kCIInputDepthImageKey	-			ios=11.0/-/-/0	-	702e725417204617
+var	c:@kCIInputDisparityImageKey	-			ios=11.0/-/-/0	-	888966eac1abe51e
+var	c:@kCIInputAmountKey	-			ios=12.0/-/-/0	-	1666add44dda9302
+var	c:@kCIInputCountKey	-			ios=26.0/-/-/0	-	0e699dd59587ce4e
+var	c:@kCIInputThresholdKey	-			ios=26.0/-/-/0	-	76c21d260ea464fb
+var	c:@kCIInputTimeKey	-			ios=7.0/-/-/0	-	16a13fa6311c0367
+var	c:@kCIInputTransformKey	-			ios=7.0/-/-/0	-	f489c8d2a9339222
+var	c:@kCIInputScaleKey	-			ios=7.0/-/-/0	-	133928cd1e2e2ea5
+var	c:@kCIInputAspectRatioKey	-			ios=7.0/-/-/0	-	a4f0277452efef9b
+var	c:@kCIInputCenterKey	-			ios=7.0/-/-/0	-	b2bb36c9332810d1
+var	c:@kCIInputRadiusKey	-			ios=7.0/-/-/0	-	e880b528b3afc416
+var	c:@kCIInputRadius0Key	-			ios=26.0/-/-/0	-	d6e1722bca749999
+var	c:@kCIInputRadius1Key	-			ios=26.0/-/-/0	-	b0452ebbb7253c70
+var	c:@kCIInputAngleKey	-			ios=7.0/-/-/0	-	1ca26bf3cf667f18
+var	c:@kCIInputRefractionKey	-			ios=9.0/-/-/0	-	fea38266341926e7
+var	c:@kCIInputWidthKey	-			ios=7.0/-/-/0	-	096809d986abdca6
+var	c:@kCIInputSharpnessKey	-			ios=7.0/-/-/0	-	5d917f51d12e9315
+var	c:@kCIInputIntensityKey	-			ios=7.0/-/-/0	-	a3b88c00a1cb1847
+var	c:@kCIInputEVKey	-			ios=7.0/-/-/0	-	76007199ab6a6eb7
+var	c:@kCIInputSaturationKey	-			ios=7.0/-/-/0	-	507f5267e35a313d
+var	c:@kCIInputColorKey	-			ios=7.0/-/-/0	-	f9958e33c42b8651
+var	c:@kCIInputColor0Key	-			ios=26.0/-/-/0	-	7eb6b4af15c91fff
+var	c:@kCIInputColor1Key	-			ios=26.0/-/-/0	-	e0010417c0dfb2f9
+var	c:@kCIInputColorSpaceKey	-			ios=26.0/-/-/0	-	5145d20bf37a1db7
+var	c:@kCIInputBrightnessKey	-			ios=7.0/-/-/0	-	71b66fcb00607d86
+var	c:@kCIInputContrastKey	-			ios=7.0/-/-/0	-	a9d496c83d8e1418
+var	c:@kCIInputExtrapolateKey	-			ios=26.0/-/-/0	-	fac26842a9a2aa48
+var	c:@kCIInputPerceptualKey	-			ios=26.0/-/-/0	-	374d85ece44c9add
+var	c:@kCIInputBiasKey	-			ios=9.0/-/-/0	-	901920f39e432811
+var	c:@kCIInputBiasVectorKey	-			ios=26.0/-/-/0	-	327564f58fe5cdcb
+var	c:@kCIInputWeightsKey	-			ios=9.0/-/-/0	-	6fc751a8be7d53ef
+var	c:@kCIInputGradientImageKey	-			ios=9.0/-/-/0	-	60b69c61134abbe7
+var	c:@kCIInputMaskImageKey	-			ios=7.0/-/-/0	-	97b42516aeb72043
+var	c:@kCIInputMatteImageKey	-			ios=12.0/-/-/0	-	1114d857c72d9f47
+var	c:@kCIInputShadingImageKey	-			ios=9.0/-/-/0	-	e705873b10fc3587
+var	c:@kCIInputTargetImageKey	-			ios=7.0/-/-/0	-	8dfa06f3bd9495ff
+var	c:@kCIInputBacksideImageKey	-			ios=26.0/-/-/0	-	9ed157b85b7b6dc4
+var	c:@kCIInputPaletteImageKey	-			ios=26.0/-/-/0	-	8d3b1a5ca8e2396b
+var	c:@kCIInputExtentKey	-			ios=7.0/-/-/0	-	9d774d77c7ba53be
+var	c:@kCIInputPoint0Key	-			ios=26.0/-/-/0	-	2352fac49a7c9920
+var	c:@kCIInputPoint1Key	-			ios=26.0/-/-/0	-	131496660d751054
+var	c:@kCIInputVersionKey	-			ios=6.0/-/-/0	-	4f9db4f1922f2a70
+typedef	c:@T@CIDynamicRangeOption	-			-	-	f6e72353ba309e57
+var	c:@kCIDynamicRangeStandard	-			ios=26.0/-/-/0	-	9cf178e0ba3851a3
+var	c:@kCIDynamicRangeConstrainedHigh	-			ios=26.0/-/-/0	-	700ce2f88a552749
+var	c:@kCIDynamicRangeHigh	-			ios=26.0/-/-/0	-	6a9276c4a70bdbdb
+interface	c:objc(cs)CIFilter	-			ios=5.0/-/-/0	-	14dce4d3d67750c2
+super	-	CIFilter	NSObject		-	-	2a97821f41c2001e
+conforms	-	CIFilter	NSSecureCoding		-	-	be6ed53bccf8d855
+conforms	-	CIFilter	NSCopying		-	-	27da604c6314f644
+property	c:objc(cs)CIFilter(py)outputImage	-			ios=5.0/-/-/0	-	b4fd98b889d61a33
+property	c:objc(cs)CIFilter(py)name	-			ios=5.0/-/-/0	-	15bc37a45f464dff
+method	c:objc(cs)CIFilter(im)name	-			ios=5.0/-/-/0	-	bd73e98d1808e811
+method	c:objc(cs)CIFilter(im)setName:	-			ios=10.0/-/-/0	-	af905cc4e335b415
+property	c:objc(cs)CIFilter(py)enabled	-			ios=-/-/-/1	-	0f9970e78654d953
+property	c:objc(cs)CIFilter(py)inputKeys	-			ios=5.0/-/-/0	-	11a7277a2fae8c0f
+property	c:objc(cs)CIFilter(py)outputKeys	-			ios=5.0/-/-/0	-	8ee7230b3c9d4f94
+method	c:objc(cs)CIFilter(im)setDefaults	-			ios=5.0/-/-/0	-	7695a7b643ab2254
+property	c:objc(cs)CIFilter(py)attributes	-			ios=5.0/-/-/0	-	1257c9569cd9f244
+method	c:objc(cs)CIFilter(im)apply:arguments:options:	-			ios=-/-/-/1	-	92d232b5991dfa3e
+method	c:objc(cs)CIFilter(im)apply:	-			ios=-/-/-/1,swift=-/-/-/1	-	1400c90e39bc3c12
+protocol	c:objc(pl)CIFilter	-			-	-	b84e9ecd990133b3
+property	c:objc(pl)CIFilter(py)outputImage	-			-	-	1664db8c4c440a30
+method	c:objc(pl)CIFilter(cm)customAttributes	-			-	-	187a82274d38eeca
+category	c:objc(cy)CIFilter@CIFilterRegistry	-			ios=5.0/-/-/0	-	bf49c3374445aa5d
+method	c:objc(cs)CIFilter(cm)filterWithName:	CIFilterRegistry			ios=5.0/-/-/0	-	700f94585df4cb7f
+method	c:objc(cs)CIFilter(cm)filterWithName:keysAndValues:	CIFilterRegistry			swift=-/-/-/1	-	5316c0f20775496c
+method	c:objc(cs)CIFilter(cm)filterWithName:withInputParameters:	CIFilterRegistry			ios=8.0/-/-/0	-	5c91fcb44890aecd
+method	c:objc(cs)CIFilter(cm)filterNamesInCategory:	CIFilterRegistry			ios=5.0/-/-/0	-	3eec7673488ba4d4
+method	c:objc(cs)CIFilter(cm)filterNamesInCategories:	CIFilterRegistry			ios=5.0/-/-/0	-	b4a85831e39f7943
+method	c:objc(cs)CIFilter(cm)registerFilterName:constructor:classAttributes:	CIFilterRegistry			ios=9.0/-/-/0	-	79b80aca71b72d30
+method	c:objc(cs)CIFilter(cm)localizedNameForFilterName:	CIFilterRegistry			ios=9.0/-/-/0	-	4569d9ecad154b49
+method	c:objc(cs)CIFilter(cm)localizedNameForCategory:	CIFilterRegistry			ios=9.0/-/-/0	-	7a4c4136578b7ff6
+method	c:objc(cs)CIFilter(cm)localizedDescriptionForFilterName:	CIFilterRegistry			ios=9.0/-/-/0	-	968ff1a23d12c094
+method	c:objc(cs)CIFilter(cm)localizedReferenceDocumentationForFilterName:	CIFilterRegistry			ios=9.0/-/-/0	-	9575475d9078ef2e
+category	c:objc(cy)CIFilter@CIFilterXMPSerialization	-			ios=5.0/-/-/0	-	1a29cc9f74f4c688
+method	c:objc(cs)CIFilter(cm)serializedXMPFromFilters:inputImageExtent:	CIFilterXMPSerialization			ios=6.0/17.0/-/0	-	735455a8345f58b7
+method	c:objc(cs)CIFilter(cm)filterArrayFromSerializedXMP:inputImageExtent:error:	CIFilterXMPSerialization			ios=6.0/17.0/-/0	-	800bc5228ea310fa
+protocol	c:objc(pl)CIDistanceGradientFromRedMask	-			-	-	f43619b459d78cec
+conforms	-	CIDistanceGradientFromRedMask	CIFilter		-	-	ae5a13f797e90060
+property	c:objc(pl)CIDistanceGradientFromRedMask(py)inputImage	-			-	-	16a1f0a3233674dc
+property	c:objc(pl)CIDistanceGradientFromRedMask(py)maximumDistance	-			-	-	0a974cd64dfc483c
+protocol	c:objc(pl)CIGaussianGradient	-			-	-	e76a8ca17095bc7a
+conforms	-	CIGaussianGradient	CIFilter		-	-	476ff71f09126e69
+property	c:objc(pl)CIGaussianGradient(py)center	-			-	-	6e72464b6a1aaff8
+property	c:objc(pl)CIGaussianGradient(py)color0	-			-	-	42fcb691d57f0e40
+property	c:objc(pl)CIGaussianGradient(py)color1	-			-	-	ca5bbe39f32172bc
+property	c:objc(pl)CIGaussianGradient(py)radius	-			-	-	b87ff0e608dffc97
+protocol	c:objc(pl)CIHueSaturationValueGradient	-			-	-	dbc156208ac2bdd4
+conforms	-	CIHueSaturationValueGradient	CIFilter		-	-	281b6acfa2625570
+property	c:objc(pl)CIHueSaturationValueGradient(py)value	-			-	-	a98cc64fa4f87b66
+property	c:objc(pl)CIHueSaturationValueGradient(py)radius	-			-	-	9f1680c78e21d91e
+property	c:objc(pl)CIHueSaturationValueGradient(py)softness	-			-	-	4a698d7981ce8276
+property	c:objc(pl)CIHueSaturationValueGradient(py)dither	-			-	-	36ccd3dbe478bcdf
+property	c:objc(pl)CIHueSaturationValueGradient(py)colorSpace	-			-	-	351dcb1a8df8ec73
+protocol	c:objc(pl)CILinearGradient	-			-	-	fcfd9464dc00a629
+conforms	-	CILinearGradient	CIFilter		-	-	0e4bfa1eaeb0959e
+property	c:objc(pl)CILinearGradient(py)point0	-			-	-	e9c91a7316885cd2
+property	c:objc(pl)CILinearGradient(py)point1	-			-	-	9b768fad676e6b9d
+property	c:objc(pl)CILinearGradient(py)color0	-			-	-	6a4435147bb25231
+property	c:objc(pl)CILinearGradient(py)color1	-			-	-	8936b8708d37ce0d
+protocol	c:objc(pl)CIRadialGradient	-			-	-	8cda6f1970c031cd
+conforms	-	CIRadialGradient	CIFilter		-	-	a5497b0701c5e0a2
+property	c:objc(pl)CIRadialGradient(py)center	-			-	-	006a6ef123c97a35
+property	c:objc(pl)CIRadialGradient(py)radius0	-			-	-	6b10387dfd366f4d
+property	c:objc(pl)CIRadialGradient(py)radius1	-			-	-	92959944631c5edb
+property	c:objc(pl)CIRadialGradient(py)color0	-			-	-	0e2ac7adb33a71f9
+property	c:objc(pl)CIRadialGradient(py)color1	-			-	-	273043161d78c6e6
+protocol	c:objc(pl)CISignedDistanceGradientFromRedMask	-			-	-	c3ec16f9088f40a0
+conforms	-	CISignedDistanceGradientFromRedMask	CIFilter		-	-	51a50743867c243b
+property	c:objc(pl)CISignedDistanceGradientFromRedMask(py)inputImage	-			-	-	36a02bb939f2f351
+property	c:objc(pl)CISignedDistanceGradientFromRedMask(py)maximumDistance	-			-	-	042b04a89ea56175
+protocol	c:objc(pl)CISmoothLinearGradient	-			-	-	dc4def9e4a7b3456
+conforms	-	CISmoothLinearGradient	CIFilter		-	-	81b604d9c8c150d7
+property	c:objc(pl)CISmoothLinearGradient(py)point0	-			-	-	69722085e347155b
+property	c:objc(pl)CISmoothLinearGradient(py)point1	-			-	-	6d1338504498fd7b
+property	c:objc(pl)CISmoothLinearGradient(py)color0	-			-	-	9fec8298cb665277
+property	c:objc(pl)CISmoothLinearGradient(py)color1	-			-	-	b41d3f5e9ccb1d18
+protocol	c:objc(pl)CISharpenLuminance	-			-	-	6ea0b3f6465e2027
+conforms	-	CISharpenLuminance	CIFilter		-	-	685625faad6c9156
+property	c:objc(pl)CISharpenLuminance(py)inputImage	-			-	-	681bd0394d1683c9
+property	c:objc(pl)CISharpenLuminance(py)sharpness	-			-	-	f13d42208ef1f802
+property	c:objc(pl)CISharpenLuminance(py)radius	-			-	-	8659dd237becb249
+protocol	c:objc(pl)CIUnsharpMask	-			-	-	d1bfd34ed0f17026
+conforms	-	CIUnsharpMask	CIFilter		-	-	36bf71da313b128d
+property	c:objc(pl)CIUnsharpMask(py)inputImage	-			-	-	d85837b7217f1ca6
+property	c:objc(pl)CIUnsharpMask(py)radius	-			-	-	f1fb2634a6e32507
+property	c:objc(pl)CIUnsharpMask(py)intensity	-			-	-	8c16b2c9b8aabefa
+protocol	c:objc(pl)CICircularScreen	-			-	-	93d6361ea629e009
+conforms	-	CICircularScreen	CIFilter		-	-	798cab2e527b52fd
+property	c:objc(pl)CICircularScreen(py)inputImage	-			-	-	54050c2979b89200
+property	c:objc(pl)CICircularScreen(py)center	-			-	-	b188d4fb384899cd
+property	c:objc(pl)CICircularScreen(py)width	-			-	-	a141bfae7b0edeb6
+property	c:objc(pl)CICircularScreen(py)sharpness	-			-	-	5bd08b772c20ce32
+protocol	c:objc(pl)CICMYKHalftone	-			-	-	d7bbbc6f500aa09a
+conforms	-	CICMYKHalftone	CIFilter		-	-	b90aca091e141699
+property	c:objc(pl)CICMYKHalftone(py)inputImage	-			-	-	369862655f02d053
+property	c:objc(pl)CICMYKHalftone(py)center	-			-	-	f15fa53bc6c80049
+property	c:objc(pl)CICMYKHalftone(py)width	-			-	-	d8f3078e08724dc6
+property	c:objc(pl)CICMYKHalftone(py)angle	-			-	-	e1b192afc6927ee7
+property	c:objc(pl)CICMYKHalftone(py)sharpness	-			-	-	6124dd6cf592f5b0
+property	c:objc(pl)CICMYKHalftone(py)grayComponentReplacement	-			-	-	2746d0d859b19720
+property	c:objc(pl)CICMYKHalftone(py)underColorRemoval	-			-	-	56915b4a34fb3700
+protocol	c:objc(pl)CIDotScreen	-			-	-	418bcbfa14d217db
+conforms	-	CIDotScreen	CIFilter		-	-	828790295263d84c
+property	c:objc(pl)CIDotScreen(py)inputImage	-			-	-	f747da94ba5df2ea
+property	c:objc(pl)CIDotScreen(py)center	-			-	-	ba91a9ec02468738
+property	c:objc(pl)CIDotScreen(py)angle	-			-	-	cda48fff24dfb289
+property	c:objc(pl)CIDotScreen(py)width	-			-	-	339cdbec653c98db
+property	c:objc(pl)CIDotScreen(py)sharpness	-			-	-	343a58b0f6493403
+protocol	c:objc(pl)CIHatchedScreen	-			-	-	d961f61da64bd61c
+conforms	-	CIHatchedScreen	CIFilter		-	-	6231ed12f5b867fc
+property	c:objc(pl)CIHatchedScreen(py)inputImage	-			-	-	366a2462c9efca12
+property	c:objc(pl)CIHatchedScreen(py)center	-			-	-	387e24e35b5c192e
+property	c:objc(pl)CIHatchedScreen(py)angle	-			-	-	0df3a3603b6595ee
+property	c:objc(pl)CIHatchedScreen(py)width	-			-	-	9ed7c34bc952f9c0
+property	c:objc(pl)CIHatchedScreen(py)sharpness	-			-	-	04af8c072443f563
+protocol	c:objc(pl)CILineScreen	-			-	-	e6f1d1daff52ab75
+conforms	-	CILineScreen	CIFilter		-	-	593579abd5994d75
+property	c:objc(pl)CILineScreen(py)inputImage	-			-	-	6969db3d4544bd49
+property	c:objc(pl)CILineScreen(py)center	-			-	-	af0c5514ec7d3340
+property	c:objc(pl)CILineScreen(py)angle	-			-	-	a8d273f33da5c21a
+property	c:objc(pl)CILineScreen(py)width	-			-	-	a2908bb80a51c337
+property	c:objc(pl)CILineScreen(py)sharpness	-			-	-	8187e7c9f0e40eb0
+protocol	c:objc(pl)CIFourCoordinateGeometryFilter	-			-	-	96669d78ad66dda4
+conforms	-	CIFourCoordinateGeometryFilter	CIFilter		-	-	d069e9ec45b4316f
+property	c:objc(pl)CIFourCoordinateGeometryFilter(py)inputImage	-			-	-	3b7ca7f199be81eb
+property	c:objc(pl)CIFourCoordinateGeometryFilter(py)topLeft	-			-	-	83de5504659f065e
+property	c:objc(pl)CIFourCoordinateGeometryFilter(py)topRight	-			-	-	d20b24c4a4a99011
+property	c:objc(pl)CIFourCoordinateGeometryFilter(py)bottomRight	-			-	-	97a4141898c3e87e
+property	c:objc(pl)CIFourCoordinateGeometryFilter(py)bottomLeft	-			-	-	608441b931a1d206
+protocol	c:objc(pl)CIBicubicScaleTransform	-			-	-	27a940ca5139375b
+conforms	-	CIBicubicScaleTransform	CIFilter		-	-	ec7dadce5b29ed5e
+property	c:objc(pl)CIBicubicScaleTransform(py)inputImage	-			-	-	c4795f0177d004be
+property	c:objc(pl)CIBicubicScaleTransform(py)scale	-			-	-	c664a30499d75490
+property	c:objc(pl)CIBicubicScaleTransform(py)aspectRatio	-			-	-	b531c03fe407cd3d
+property	c:objc(pl)CIBicubicScaleTransform(py)parameterB	-			-	-	864478f99825420a
+property	c:objc(pl)CIBicubicScaleTransform(py)parameterC	-			-	-	436de61815d355bd
+protocol	c:objc(pl)CIEdgePreserveUpsample	-			-	-	f7b2b5542a634ca0
+conforms	-	CIEdgePreserveUpsample	CIFilter		-	-	6ac0fcfb5d13179b
+property	c:objc(pl)CIEdgePreserveUpsample(py)inputImage	-			-	-	e5d1237e2762baaa
+property	c:objc(pl)CIEdgePreserveUpsample(py)smallImage	-			-	-	6e7624f9113a7009
+property	c:objc(pl)CIEdgePreserveUpsample(py)spatialSigma	-			-	-	487e8253b9c0c172
+property	c:objc(pl)CIEdgePreserveUpsample(py)lumaSigma	-			-	-	c8802b11d39c82b3
+protocol	c:objc(pl)CIKeystoneCorrectionCombined	-			-	-	52768344e00704aa
+conforms	-	CIKeystoneCorrectionCombined	CIFourCoordinateGeometryFilter		-	-	6ff48305d5b8dee2
+property	c:objc(pl)CIKeystoneCorrectionCombined(py)focalLength	-			-	-	fea5de53a6e28a81
+protocol	c:objc(pl)CIKeystoneCorrectionHorizontal	-			-	-	845162525eceeb82
+conforms	-	CIKeystoneCorrectionHorizontal	CIFourCoordinateGeometryFilter		-	-	c31a5dadea62c416
+property	c:objc(pl)CIKeystoneCorrectionHorizontal(py)focalLength	-			-	-	8838872f15d2f8b6
+protocol	c:objc(pl)CIKeystoneCorrectionVertical	-			-	-	a83d99d8243730b2
+conforms	-	CIKeystoneCorrectionVertical	CIFourCoordinateGeometryFilter		-	-	7a21a5ac79154433
+property	c:objc(pl)CIKeystoneCorrectionVertical(py)focalLength	-			-	-	1db49c20bb4bccbb
+protocol	c:objc(pl)CILanczosScaleTransform	-			-	-	3d8ecb22d2bafb00
+conforms	-	CILanczosScaleTransform	CIFilter		-	-	781c36d358b329b3
+property	c:objc(pl)CILanczosScaleTransform(py)inputImage	-			-	-	54117f55a8b35204
+property	c:objc(pl)CILanczosScaleTransform(py)scale	-			-	-	cbeeedddca040a67
+property	c:objc(pl)CILanczosScaleTransform(py)aspectRatio	-			-	-	466e43d8d2267337
+protocol	c:objc(pl)CIMaximumScaleTransform	-			-	-	5fc99c94ab73e760
+conforms	-	CIMaximumScaleTransform	CIFilter		-	-	875aa885fa4ac06e
+property	c:objc(pl)CIMaximumScaleTransform(py)inputImage	-			-	-	e81e85b7c814cf14
+property	c:objc(pl)CIMaximumScaleTransform(py)scale	-			-	-	205b00e7c441bdd7
+property	c:objc(pl)CIMaximumScaleTransform(py)aspectRatio	-			-	-	e7ade3bbc7bc90bb
+protocol	c:objc(pl)CIPerspectiveCorrection	-			-	-	d05330a347cf3713
+conforms	-	CIPerspectiveCorrection	CIFourCoordinateGeometryFilter		-	-	f2fc7daa193c6a10
+property	c:objc(pl)CIPerspectiveCorrection(py)crop	-			-	-	1bf97343476b3cfa
+protocol	c:objc(pl)CIPerspectiveRotate	-			-	-	077841e075998ba0
+conforms	-	CIPerspectiveRotate	CIFilter		-	-	77bf6fd0a5118e0e
+property	c:objc(pl)CIPerspectiveRotate(py)inputImage	-			-	-	e8d6de46e665f890
+property	c:objc(pl)CIPerspectiveRotate(py)focalLength	-			-	-	61ae772ffd8de1c4
+property	c:objc(pl)CIPerspectiveRotate(py)pitch	-			-	-	0ec2a89fbb9f8845
+property	c:objc(pl)CIPerspectiveRotate(py)yaw	-			-	-	65c573efd074d935
+property	c:objc(pl)CIPerspectiveRotate(py)roll	-			-	-	311e43fe07253d55
+protocol	c:objc(pl)CIPerspectiveTransform	-			-	-	43e18122c0702a4c
+conforms	-	CIPerspectiveTransform	CIFourCoordinateGeometryFilter		-	-	f53a93d8ac63a0ff
+protocol	c:objc(pl)CIPerspectiveTransformWithExtent	-			-	-	72ee5a2c5cf71790
+conforms	-	CIPerspectiveTransformWithExtent	CIFourCoordinateGeometryFilter		-	-	c98c5712037c6df4
+property	c:objc(pl)CIPerspectiveTransformWithExtent(py)extent	-			-	-	ecdd2b7573f59dd8
+protocol	c:objc(pl)CIStraighten	-			-	-	ca580b1c718c47bc
+conforms	-	CIStraighten	CIFilter		-	-	6e74e1dc43c9c3e6
+property	c:objc(pl)CIStraighten(py)inputImage	-			-	-	a52f8eaff581dc2a
+property	c:objc(pl)CIStraighten(py)angle	-			-	-	1ed3c37edb495b34
+protocol	c:objc(pl)CITransitionFilter	-			-	-	a5cc6ed3c543ffc2
+conforms	-	CITransitionFilter	CIFilter		-	-	7dfb988a4b4c6d44
+property	c:objc(pl)CITransitionFilter(py)inputImage	-			-	-	3e23a7ad18269772
+property	c:objc(pl)CITransitionFilter(py)targetImage	-			-	-	120f30c4a168f86a
+property	c:objc(pl)CITransitionFilter(py)time	-			-	-	663ae88407caa117
+protocol	c:objc(pl)CIAccordionFoldTransition	-			-	-	6fce26128081cbea
+conforms	-	CIAccordionFoldTransition	CITransitionFilter		-	-	49e89738d4040c1a
+property	c:objc(pl)CIAccordionFoldTransition(py)bottomHeight	-			-	-	5f42b2973d65e2e1
+property	c:objc(pl)CIAccordionFoldTransition(py)numberOfFolds	-			-	-	763edd1696e803ed
+property	c:objc(pl)CIAccordionFoldTransition(py)foldShadowAmount	-			-	-	8cdebedebd714e80
+protocol	c:objc(pl)CIBarsSwipeTransition	-			-	-	c7ae458b35e75891
+conforms	-	CIBarsSwipeTransition	CITransitionFilter		-	-	c9b58702c33030d4
+property	c:objc(pl)CIBarsSwipeTransition(py)angle	-			-	-	6475f6e7cb71d638
+property	c:objc(pl)CIBarsSwipeTransition(py)width	-			-	-	0f3486f4be6f55e0
+property	c:objc(pl)CIBarsSwipeTransition(py)barOffset	-			-	-	107b6163df43c72f
+protocol	c:objc(pl)CICopyMachineTransition	-			-	-	c7322043243512f8
+conforms	-	CICopyMachineTransition	CITransitionFilter		-	-	57dd1e09842d327a
+property	c:objc(pl)CICopyMachineTransition(py)extent	-			-	-	863d71fc8f1b1667
+property	c:objc(pl)CICopyMachineTransition(py)color	-			-	-	c023efa45028713c
+property	c:objc(pl)CICopyMachineTransition(py)angle	-			-	-	01cfe94cd23e9d46
+property	c:objc(pl)CICopyMachineTransition(py)width	-			-	-	354cd10d91c0a60b
+property	c:objc(pl)CICopyMachineTransition(py)opacity	-			-	-	46280b7c413e5343
+protocol	c:objc(pl)CIDisintegrateWithMaskTransition	-			-	-	73fc43c05b209c53
+conforms	-	CIDisintegrateWithMaskTransition	CITransitionFilter		-	-	ae2560ee99afd43f
+property	c:objc(pl)CIDisintegrateWithMaskTransition(py)maskImage	-			-	-	a8e15cbe112a8528
+property	c:objc(pl)CIDisintegrateWithMaskTransition(py)shadowRadius	-			-	-	5d058b9c62bd2943
+property	c:objc(pl)CIDisintegrateWithMaskTransition(py)shadowDensity	-			-	-	cbfe3b3561239632
+property	c:objc(pl)CIDisintegrateWithMaskTransition(py)shadowOffset	-			-	-	80069d322a75b9b2
+protocol	c:objc(pl)CIDissolveTransition	-			-	-	c57833ea06e601d7
+conforms	-	CIDissolveTransition	CITransitionFilter		-	-	ebe3e3d13b64decc
+protocol	c:objc(pl)CIFlashTransition	-			-	-	fdef4b59c9bf216c
+conforms	-	CIFlashTransition	CITransitionFilter		-	-	e9616b93d95f884b
+property	c:objc(pl)CIFlashTransition(py)center	-			-	-	9ed6d03f9b7fce6a
+property	c:objc(pl)CIFlashTransition(py)extent	-			-	-	1a3788a64482350a
+property	c:objc(pl)CIFlashTransition(py)color	-			-	-	0aa89f253b00f3fd
+property	c:objc(pl)CIFlashTransition(py)maxStriationRadius	-			-	-	5b56faef7d5ade65
+property	c:objc(pl)CIFlashTransition(py)striationStrength	-			-	-	c1b8abec6c4e9669
+property	c:objc(pl)CIFlashTransition(py)striationContrast	-			-	-	2edcdcfb9e613421
+property	c:objc(pl)CIFlashTransition(py)fadeThreshold	-			-	-	e9ac4018d8e009b0
+protocol	c:objc(pl)CIModTransition	-			-	-	cfac264d14f01e26
+conforms	-	CIModTransition	CITransitionFilter		-	-	0391dc227d7df413
+property	c:objc(pl)CIModTransition(py)center	-			-	-	1b3c33e2c695931e
+property	c:objc(pl)CIModTransition(py)angle	-			-	-	aa0e25f6b1fe046a
+property	c:objc(pl)CIModTransition(py)radius	-			-	-	1f7c31bcf6daa51c
+property	c:objc(pl)CIModTransition(py)compression	-			-	-	32a9c797d6445ad9
+protocol	c:objc(pl)CIPageCurlTransition	-			-	-	a83928925d4ae4fc
+conforms	-	CIPageCurlTransition	CITransitionFilter		-	-	14f8a6c08a47dd31
+property	c:objc(pl)CIPageCurlTransition(py)backsideImage	-			-	-	0f261659f4d1146d
+property	c:objc(pl)CIPageCurlTransition(py)shadingImage	-			-	-	210f541cfa1d0a33
+property	c:objc(pl)CIPageCurlTransition(py)extent	-			-	-	0e21996fdef40db8
+property	c:objc(pl)CIPageCurlTransition(py)angle	-			-	-	b22dfb4dfbd91706
+property	c:objc(pl)CIPageCurlTransition(py)radius	-			-	-	c1b2b3c48a665bbe
+protocol	c:objc(pl)CIPageCurlWithShadowTransition	-			-	-	bd9583f4667e9f7c
+conforms	-	CIPageCurlWithShadowTransition	CITransitionFilter		-	-	e8e11f3e7f8a122b
+property	c:objc(pl)CIPageCurlWithShadowTransition(py)backsideImage	-			-	-	9b4c0ac49b3cb0fa
+property	c:objc(pl)CIPageCurlWithShadowTransition(py)extent	-			-	-	27f3dcd22232688c
+property	c:objc(pl)CIPageCurlWithShadowTransition(py)angle	-			-	-	59220ef70bb5c9b7
+property	c:objc(pl)CIPageCurlWithShadowTransition(py)radius	-			-	-	08edb61ff9076194
+property	c:objc(pl)CIPageCurlWithShadowTransition(py)shadowSize	-			-	-	b06a9f4613c11ad6
+property	c:objc(pl)CIPageCurlWithShadowTransition(py)shadowAmount	-			-	-	f630028545dc74ac
+property	c:objc(pl)CIPageCurlWithShadowTransition(py)shadowExtent	-			-	-	f3b8214db6ca623e
+protocol	c:objc(pl)CIRippleTransition	-			-	-	536e019333ac61b4
+conforms	-	CIRippleTransition	CITransitionFilter		-	-	3ef064c94b7d996d
+property	c:objc(pl)CIRippleTransition(py)shadingImage	-			-	-	ff92398d97c040ee
+property	c:objc(pl)CIRippleTransition(py)center	-			-	-	c30a6b84094fee9b
+property	c:objc(pl)CIRippleTransition(py)extent	-			-	-	514d3618a981e47a
+property	c:objc(pl)CIRippleTransition(py)width	-			-	-	feaa7943a1805832
+property	c:objc(pl)CIRippleTransition(py)scale	-			-	-	2fe28106dfc6d2f7
+protocol	c:objc(pl)CISwipeTransition	-			-	-	db3537964174914c
+conforms	-	CISwipeTransition	CITransitionFilter		-	-	fa370a116097f5d9
+property	c:objc(pl)CISwipeTransition(py)extent	-			-	-	088e6811b589106f
+property	c:objc(pl)CISwipeTransition(py)color	-			-	-	9a8111035fbd795a
+property	c:objc(pl)CISwipeTransition(py)angle	-			-	-	7dbe41729e044857
+property	c:objc(pl)CISwipeTransition(py)width	-			-	-	d2060cc59d47783c
+property	c:objc(pl)CISwipeTransition(py)opacity	-			-	-	11de93cd21dd51c9
+protocol	c:objc(pl)CICompositeOperation	-			-	-	80fc88a7fcd2536a
+conforms	-	CICompositeOperation	CIFilter		-	-	7c238b16a9829500
+property	c:objc(pl)CICompositeOperation(py)inputImage	-			-	-	c2b70f053b6815c0
+property	c:objc(pl)CICompositeOperation(py)backgroundImage	-			-	-	3e1c6f360be86374
+protocol	c:objc(pl)CIColorAbsoluteDifference	-			-	-	0309ccc7b6994fa3
+conforms	-	CIColorAbsoluteDifference	CIFilter		-	-	8bcea334ae152b4a
+property	c:objc(pl)CIColorAbsoluteDifference(py)inputImage	-			-	-	249819d6691bb00c
+property	c:objc(pl)CIColorAbsoluteDifference(py)inputImage2	-			-	-	817889c204e0df89
+protocol	c:objc(pl)CIColorClamp	-			-	-	5509076e828dde0c
+conforms	-	CIColorClamp	CIFilter		-	-	e78fe9b09795da9c
+property	c:objc(pl)CIColorClamp(py)inputImage	-			-	-	c7132575b04ee12a
+property	c:objc(pl)CIColorClamp(py)minComponents	-			-	-	b826e8b50f2791d8
+property	c:objc(pl)CIColorClamp(py)maxComponents	-			-	-	113e551f40e31446
+protocol	c:objc(pl)CIColorControls	-			-	-	fa1201ba973012d1
+conforms	-	CIColorControls	CIFilter		-	-	961c5d8854c6c81b
+property	c:objc(pl)CIColorControls(py)inputImage	-			-	-	0605137fdb73e615
+property	c:objc(pl)CIColorControls(py)saturation	-			-	-	7328e3de99fe0d22
+property	c:objc(pl)CIColorControls(py)brightness	-			-	-	79ae62aa41aa049e
+property	c:objc(pl)CIColorControls(py)contrast	-			-	-	fa5e1cbad0afd091
+protocol	c:objc(pl)CIColorMatrix	-			-	-	55049431280e30f5
+conforms	-	CIColorMatrix	CIFilter		-	-	51ae3651944ce795
+property	c:objc(pl)CIColorMatrix(py)inputImage	-			-	-	29502a4aca482bbe
+property	c:objc(pl)CIColorMatrix(py)RVector	-			-	-	88cc4ff60943c30e
+property	c:objc(pl)CIColorMatrix(py)GVector	-			-	-	3f9b810d59f24596
+property	c:objc(pl)CIColorMatrix(py)BVector	-			-	-	168471e6cd50cbdf
+property	c:objc(pl)CIColorMatrix(py)AVector	-			-	-	397075414f8f834d
+property	c:objc(pl)CIColorMatrix(py)biasVector	-			-	-	6a79443abad69d6e
+protocol	c:objc(pl)CIColorPolynomial	-			-	-	85796363727e961e
+conforms	-	CIColorPolynomial	CIFilter		-	-	997185c1717ae261
+property	c:objc(pl)CIColorPolynomial(py)inputImage	-			-	-	2290540858e07e08
+property	c:objc(pl)CIColorPolynomial(py)redCoefficients	-			-	-	8b4e82ed89949738
+property	c:objc(pl)CIColorPolynomial(py)greenCoefficients	-			-	-	3c84b1fe74f6cc20
+property	c:objc(pl)CIColorPolynomial(py)blueCoefficients	-			-	-	3705de1fe1a46a40
+property	c:objc(pl)CIColorPolynomial(py)alphaCoefficients	-			-	-	abeff66e102dc636
+protocol	c:objc(pl)CIColorThreshold	-			-	-	3eb3d34816c2aef7
+conforms	-	CIColorThreshold	CIFilter		-	-	d27aec8093017576
+property	c:objc(pl)CIColorThreshold(py)inputImage	-			-	-	a70031a9cc970370
+property	c:objc(pl)CIColorThreshold(py)threshold	-			-	-	06fa32d7927eafd6
+protocol	c:objc(pl)CIColorThresholdOtsu	-			-	-	4476a70134a573c8
+conforms	-	CIColorThresholdOtsu	CIFilter		-	-	27ea41bd8f17ff55
+property	c:objc(pl)CIColorThresholdOtsu(py)inputImage	-			-	-	5c215a46331e5344
+protocol	c:objc(pl)CIDepthToDisparity	-			-	-	a987630b3178ead6
+conforms	-	CIDepthToDisparity	CIFilter		-	-	97232a156b222159
+property	c:objc(pl)CIDepthToDisparity(py)inputImage	-			-	-	122492beeec83121
+protocol	c:objc(pl)CIDisparityToDepth	-			-	-	c3bb59eb7a38fa4a
+conforms	-	CIDisparityToDepth	CIFilter		-	-	41f73d99d4940cef
+property	c:objc(pl)CIDisparityToDepth(py)inputImage	-			-	-	7f6e05ec4b114b6c
+protocol	c:objc(pl)CIExposureAdjust	-			-	-	6c521a6c6dab15b0
+conforms	-	CIExposureAdjust	CIFilter		-	-	044a9ff13cee2acc
+property	c:objc(pl)CIExposureAdjust(py)inputImage	-			-	-	f09e66dfa782e24a
+property	c:objc(pl)CIExposureAdjust(py)EV	-			-	-	d999185e19ec334a
+protocol	c:objc(pl)CIGammaAdjust	-			-	-	d628a3468b3c5115
+conforms	-	CIGammaAdjust	CIFilter		-	-	0e26a69bd3b55ec9
+property	c:objc(pl)CIGammaAdjust(py)inputImage	-			-	-	e60b18b50e05c563
+property	c:objc(pl)CIGammaAdjust(py)power	-			-	-	d6c9b5d3aa5ceaf5
+protocol	c:objc(pl)CIHueAdjust	-			-	-	4d92660ff729042a
+conforms	-	CIHueAdjust	CIFilter		-	-	df383ffd3412b7cf
+property	c:objc(pl)CIHueAdjust(py)inputImage	-			-	-	ff1b7ebad8c8d2b5
+property	c:objc(pl)CIHueAdjust(py)angle	-			-	-	33dd2803491e1a2e
+protocol	c:objc(pl)CILinearToSRGBToneCurve	-			-	-	3638d03faf4f3d55
+conforms	-	CILinearToSRGBToneCurve	CIFilter		-	-	a257202c15191b3d
+property	c:objc(pl)CILinearToSRGBToneCurve(py)inputImage	-			-	-	b51a70551008d24d
+protocol	c:objc(pl)CISRGBToneCurveToLinear	-			-	-	41c7b25bdd9701be
+conforms	-	CISRGBToneCurveToLinear	CIFilter		-	-	7adb6498c4b2acd0
+property	c:objc(pl)CISRGBToneCurveToLinear(py)inputImage	-			-	-	92db1b41d23c213c
+protocol	c:objc(pl)CISystemToneMap	-			-	-	8bc7a95c03d8fb11
+conforms	-	CISystemToneMap	CIFilter		-	-	ad2140c60494995d
+property	c:objc(pl)CISystemToneMap(py)inputImage	-			-	-	05f1b904bbd95314
+property	c:objc(pl)CISystemToneMap(py)displayHeadroom	-			-	-	c6a2432fb30fc895
+property	c:objc(pl)CISystemToneMap(py)preferredDynamicRange	-			-	-	55ea72c1f9a43cef
+protocol	c:objc(pl)CITemperatureAndTint	-			-	-	e2ed6b159be1726a
+conforms	-	CITemperatureAndTint	CIFilter		-	-	b9dd0badb270a3f1
+property	c:objc(pl)CITemperatureAndTint(py)inputImage	-			-	-	8b1f0f2a2d5c6044
+property	c:objc(pl)CITemperatureAndTint(py)neutral	-			-	-	34a3110653c19d08
+property	c:objc(pl)CITemperatureAndTint(py)targetNeutral	-			-	-	36ca898f110e88c0
+protocol	c:objc(pl)CIToneCurve	-			-	-	1f294a6895fb8adf
+conforms	-	CIToneCurve	CIFilter		-	-	224cbf8b6ef494f3
+property	c:objc(pl)CIToneCurve(py)inputImage	-			-	-	1299392e3ed07980
+property	c:objc(pl)CIToneCurve(py)point0	-			-	-	c654e420c0a34ee4
+property	c:objc(pl)CIToneCurve(py)point1	-			-	-	cf03743e6db510ec
+property	c:objc(pl)CIToneCurve(py)point2	-			-	-	bbf400f6c2d72bba
+property	c:objc(pl)CIToneCurve(py)point3	-			-	-	3c150fa951b037f2
+property	c:objc(pl)CIToneCurve(py)point4	-			-	-	59674e5d8ec7b338
+property	c:objc(pl)CIToneCurve(py)extrapolate	-			ios=26.0/-/-/0	-	245177449db4d377
+protocol	c:objc(pl)CIToneMapHeadroom	-			-	-	613116e2d095d96f
+conforms	-	CIToneMapHeadroom	CIFilter		-	-	84f47ed94ca0aacc
+property	c:objc(pl)CIToneMapHeadroom(py)inputImage	-			-	-	08a12ce16be8896b
+property	c:objc(pl)CIToneMapHeadroom(py)sourceHeadroom	-			-	-	fb62ea8e393cc39c
+property	c:objc(pl)CIToneMapHeadroom(py)targetHeadroom	-			-	-	b26e3911ad918d1a
+protocol	c:objc(pl)CIVibrance	-			-	-	24ccd5e86ac87d04
+conforms	-	CIVibrance	CIFilter		-	-	2e7c597d4b1fc950
+property	c:objc(pl)CIVibrance(py)inputImage	-			-	-	42a5a0be8eddbbd8
+property	c:objc(pl)CIVibrance(py)amount	-			-	-	7131ab7de2ce0c4b
+protocol	c:objc(pl)CIWhitePointAdjust	-			-	-	de05ebaac801c738
+conforms	-	CIWhitePointAdjust	CIFilter		-	-	fde7adbfb386c051
+property	c:objc(pl)CIWhitePointAdjust(py)inputImage	-			-	-	bc1cc99a830a2fab
+property	c:objc(pl)CIWhitePointAdjust(py)color	-			-	-	72d734d28ec0cb42
+protocol	c:objc(pl)CIColorCrossPolynomial	-			-	-	78b1f69da9215b53
+conforms	-	CIColorCrossPolynomial	CIFilter		-	-	bf4357d39f778359
+property	c:objc(pl)CIColorCrossPolynomial(py)inputImage	-			-	-	2538c9f7661fa644
+property	c:objc(pl)CIColorCrossPolynomial(py)redCoefficients	-			-	-	f4a646323278c5f0
+property	c:objc(pl)CIColorCrossPolynomial(py)greenCoefficients	-			-	-	d868d9da45fee69d
+property	c:objc(pl)CIColorCrossPolynomial(py)blueCoefficients	-			-	-	f3d0eb14d7671b5f
+protocol	c:objc(pl)CIColorCube	-			-	-	d687e28734462866
+conforms	-	CIColorCube	CIFilter		-	-	48d4f16850492fcb
+property	c:objc(pl)CIColorCube(py)inputImage	-			-	-	5506c28fd3511d72
+property	c:objc(pl)CIColorCube(py)cubeDimension	-			-	-	09bd37e3bcad4643
+property	c:objc(pl)CIColorCube(py)cubeData	-			-	-	bcf3e17b836fdb65
+property	c:objc(pl)CIColorCube(py)extrapolate	-			ios=16.0/-/-/0	-	8d168c091a4b271d
+protocol	c:objc(pl)CIColorCubesMixedWithMask	-			-	-	496ac28d535e0c90
+conforms	-	CIColorCubesMixedWithMask	CIFilter		-	-	cd9e699dbfab791b
+property	c:objc(pl)CIColorCubesMixedWithMask(py)inputImage	-			-	-	6adb6a9adabd2251
+property	c:objc(pl)CIColorCubesMixedWithMask(py)maskImage	-			-	-	748a532f7fb3b896
+property	c:objc(pl)CIColorCubesMixedWithMask(py)cubeDimension	-			-	-	78c51116f24e887e
+property	c:objc(pl)CIColorCubesMixedWithMask(py)cube0Data	-			-	-	485164303638dcee
+property	c:objc(pl)CIColorCubesMixedWithMask(py)cube1Data	-			-	-	c7d888dfd2660028
+property	c:objc(pl)CIColorCubesMixedWithMask(py)colorSpace	-			-	-	d38a469223ebf74b
+property	c:objc(pl)CIColorCubesMixedWithMask(py)extrapolate	-			ios=16.0/-/-/0	-	9282fee7b9b846b4
+protocol	c:objc(pl)CIColorCubeWithColorSpace	-			-	-	247efbd28ec19a64
+conforms	-	CIColorCubeWithColorSpace	CIFilter		-	-	ec3e4005e21720b4
+property	c:objc(pl)CIColorCubeWithColorSpace(py)inputImage	-			-	-	f619c8e48e62a9f7
+property	c:objc(pl)CIColorCubeWithColorSpace(py)cubeDimension	-			-	-	1d003e8686a13aca
+property	c:objc(pl)CIColorCubeWithColorSpace(py)cubeData	-			-	-	d7b072dc125a6f63
+property	c:objc(pl)CIColorCubeWithColorSpace(py)extrapolate	-			ios=16.0/-/-/0	-	dfb5c001424aaa47
+property	c:objc(pl)CIColorCubeWithColorSpace(py)colorSpace	-			-	-	9980cbf07e63e861
+protocol	c:objc(pl)CIColorCurves	-			-	-	f7bf8ba5be8563ea
+conforms	-	CIColorCurves	CIFilter		-	-	d74a88bd887b6461
+property	c:objc(pl)CIColorCurves(py)inputImage	-			-	-	6fd6674cc065baf8
+property	c:objc(pl)CIColorCurves(py)curvesData	-			-	-	f19de9d629542819
+property	c:objc(pl)CIColorCurves(py)curvesDomain	-			-	-	5db3d3156a8c9b84
+property	c:objc(pl)CIColorCurves(py)colorSpace	-			-	-	c421d5176d5a84db
+protocol	c:objc(pl)CIColorInvert	-			-	-	1efad570671cd7a4
+conforms	-	CIColorInvert	CIFilter		-	-	2842b8d3eb60ad48
+property	c:objc(pl)CIColorInvert(py)inputImage	-			-	-	a9372adf1c8c8478
+protocol	c:objc(pl)CIColorMap	-			-	-	c9691393d70bb6b6
+conforms	-	CIColorMap	CIFilter		-	-	3e586d39d7100bcf
+property	c:objc(pl)CIColorMap(py)inputImage	-			-	-	6c6ea3aebb6d31d3
+property	c:objc(pl)CIColorMap(py)gradientImage	-			-	-	2d204ade3ce07455
+protocol	c:objc(pl)CIColorMonochrome	-			-	-	38de32e806119d5a
+conforms	-	CIColorMonochrome	CIFilter		-	-	0eaaa507055708db
+property	c:objc(pl)CIColorMonochrome(py)inputImage	-			-	-	76db51e8fca9a882
+property	c:objc(pl)CIColorMonochrome(py)color	-			-	-	f1048ab291c4b94c
+property	c:objc(pl)CIColorMonochrome(py)intensity	-			-	-	683d6463c5195ab4
+protocol	c:objc(pl)CIColorPosterize	-			-	-	c5806cbbcfabda81
+conforms	-	CIColorPosterize	CIFilter		-	-	0b3266a90f5901b1
+property	c:objc(pl)CIColorPosterize(py)inputImage	-			-	-	2a35409eec7ae1e6
+property	c:objc(pl)CIColorPosterize(py)levels	-			-	-	280b5f30114b5ddb
+protocol	c:objc(pl)CIConvertLab	-			-	-	56e9ed17be0e698c
+conforms	-	CIConvertLab	CIFilter		-	-	587ec24a6af36005
+property	c:objc(pl)CIConvertLab(py)inputImage	-			-	-	b90edbfeb8189f22
+property	c:objc(pl)CIConvertLab(py)normalize	-			-	-	7090b8935c071409
+protocol	c:objc(pl)CIDither	-			-	-	6a59a552687f6196
+conforms	-	CIDither	CIFilter		-	-	9ad3fff28a6611f2
+property	c:objc(pl)CIDither(py)inputImage	-			-	-	ab41a78a53f23b89
+property	c:objc(pl)CIDither(py)intensity	-			-	-	cfe805ba39896a5c
+protocol	c:objc(pl)CIDocumentEnhancer	-			-	-	d8e6b108df1b2d03
+conforms	-	CIDocumentEnhancer	CIFilter		-	-	52496a75b9672ec7
+property	c:objc(pl)CIDocumentEnhancer(py)inputImage	-			-	-	738c5dbba4b35dae
+property	c:objc(pl)CIDocumentEnhancer(py)amount	-			-	-	ef5126182c5613e9
+protocol	c:objc(pl)CIFalseColor	-			-	-	d3927ac509ef1162
+conforms	-	CIFalseColor	CIFilter		-	-	736abcc75e7aacc8
+property	c:objc(pl)CIFalseColor(py)inputImage	-			-	-	9dd8e02d0e3db73f
+property	c:objc(pl)CIFalseColor(py)color0	-			-	-	c8a4730369266c29
+property	c:objc(pl)CIFalseColor(py)color1	-			-	-	b2ecd53bfde335cf
+protocol	c:objc(pl)CILabDeltaE	-			-	-	1dd3bbcc1554f048
+conforms	-	CILabDeltaE	CIFilter		-	-	0c650b22bee1da4f
+property	c:objc(pl)CILabDeltaE(py)inputImage	-			-	-	d8ec5c5b81ef16e3
+property	c:objc(pl)CILabDeltaE(py)image2	-			-	-	701c80fd26f5595c
+protocol	c:objc(pl)CIMaskToAlpha	-			-	-	c6efbd879f49a355
+conforms	-	CIMaskToAlpha	CIFilter		-	-	d028e370b1171a2b
+property	c:objc(pl)CIMaskToAlpha(py)inputImage	-			-	-	98be25327cad53ab
+protocol	c:objc(pl)CIMaximumComponent	-			-	-	15a7fcf40f5c8814
+conforms	-	CIMaximumComponent	CIFilter		-	-	711a9bc0b7cafef8
+property	c:objc(pl)CIMaximumComponent(py)inputImage	-			-	-	9b73411104b2c9fb
+protocol	c:objc(pl)CIMinimumComponent	-			-	-	4cc93a22a12320c4
+conforms	-	CIMinimumComponent	CIFilter		-	-	a724b4daa26e5e07
+property	c:objc(pl)CIMinimumComponent(py)inputImage	-			-	-	57fc574ff04d3ed4
+protocol	c:objc(pl)CIPaletteCentroid	-			-	-	577783486105fd31
+conforms	-	CIPaletteCentroid	CIFilter		-	-	fd4322a540f57129
+property	c:objc(pl)CIPaletteCentroid(py)inputImage	-			-	-	f4cc0ea7c5c1938d
+property	c:objc(pl)CIPaletteCentroid(py)paletteImage	-			-	-	d5e5d4c086d60352
+property	c:objc(pl)CIPaletteCentroid(py)perceptual	-			-	-	59d1f79ec94ef64e
+protocol	c:objc(pl)CIPalettize	-			-	-	00d237a12d7e953b
+conforms	-	CIPalettize	CIFilter		-	-	33f0b2e0a86128e7
+property	c:objc(pl)CIPalettize(py)inputImage	-			-	-	877063d8551fcf7c
+property	c:objc(pl)CIPalettize(py)paletteImage	-			-	-	5ddd8509a4a1d66b
+property	c:objc(pl)CIPalettize(py)perceptual	-			-	-	d5def0990b21d810
+protocol	c:objc(pl)CIPhotoEffect	-			-	-	e1f00e04807beeb5
+conforms	-	CIPhotoEffect	CIFilter		-	-	fc64a7ae340c1e2e
+property	c:objc(pl)CIPhotoEffect(py)inputImage	-			-	-	6faec024db6ee001
+property	c:objc(pl)CIPhotoEffect(py)extrapolate	-			ios=17.0/-/-/0	-	d0ab6c3077ecb27f
+protocol	c:objc(pl)CISepiaTone	-			-	-	96bd7856fcc05434
+conforms	-	CISepiaTone	CIFilter		-	-	1e6617eb63062d61
+property	c:objc(pl)CISepiaTone(py)inputImage	-			-	-	fd17cb6c1b7b861a
+property	c:objc(pl)CISepiaTone(py)intensity	-			-	-	f2783fa2141b0cc6
+protocol	c:objc(pl)CIThermal	-			-	-	e058cb91c456ff5a
+conforms	-	CIThermal	CIFilter		-	-	8bc9344b649e7158
+property	c:objc(pl)CIThermal(py)inputImage	-			-	-	c14a4edb835538ed
+protocol	c:objc(pl)CIVignette	-			-	-	2f59eb2398788f82
+conforms	-	CIVignette	CIFilter		-	-	cd37ab193abfe7f8
+property	c:objc(pl)CIVignette(py)inputImage	-			-	-	66ef42d398d24aca
+property	c:objc(pl)CIVignette(py)intensity	-			-	-	674a8661fd8012a7
+property	c:objc(pl)CIVignette(py)radius	-			-	-	fd75232fca7c59a2
+protocol	c:objc(pl)CIVignetteEffect	-			-	-	8d2a562c03e72c3e
+conforms	-	CIVignetteEffect	CIFilter		-	-	ba6d96fa659b074e
+property	c:objc(pl)CIVignetteEffect(py)inputImage	-			-	-	a327a662b72665b4
+property	c:objc(pl)CIVignetteEffect(py)center	-			-	-	fb3c16989dedc2f1
+property	c:objc(pl)CIVignetteEffect(py)radius	-			-	-	24ac907774cdd53c
+property	c:objc(pl)CIVignetteEffect(py)intensity	-			-	-	b3afe92e55d90984
+property	c:objc(pl)CIVignetteEffect(py)falloff	-			-	-	63c8a380cfe0191e
+protocol	c:objc(pl)CIXRay	-			-	-	e3d9776d4b88ed16
+conforms	-	CIXRay	CIFilter		-	-	e70ae157df6a5536
+property	c:objc(pl)CIXRay(py)inputImage	-			-	-	fd94be59e7467aa2
+protocol	c:objc(pl)CIBumpDistortion	-			-	-	a3280270b5592dcf
+conforms	-	CIBumpDistortion	CIFilter		-	-	4ebbca91eb37977e
+property	c:objc(pl)CIBumpDistortion(py)inputImage	-			-	-	f58f029cdc68752d
+property	c:objc(pl)CIBumpDistortion(py)center	-			-	-	af63428d0ff1b7f4
+property	c:objc(pl)CIBumpDistortion(py)radius	-			-	-	59c31e9dffdfab86
+property	c:objc(pl)CIBumpDistortion(py)scale	-			-	-	105fadf5134407c0
+protocol	c:objc(pl)CIBumpDistortionLinear	-			-	-	c6af0936293f2436
+conforms	-	CIBumpDistortionLinear	CIFilter		-	-	7aa5d62ee315de16
+property	c:objc(pl)CIBumpDistortionLinear(py)inputImage	-			-	-	2d9933d1cd603da8
+property	c:objc(pl)CIBumpDistortionLinear(py)center	-			-	-	b73d5a977690bcfa
+property	c:objc(pl)CIBumpDistortionLinear(py)radius	-			-	-	e8f503de8d53d4b0
+property	c:objc(pl)CIBumpDistortionLinear(py)angle	-			-	-	ff05765c2564f5e4
+property	c:objc(pl)CIBumpDistortionLinear(py)scale	-			-	-	e5a2d641d1a8fcca
+protocol	c:objc(pl)CICircleSplashDistortion	-			-	-	d49268ccd51a714c
+conforms	-	CICircleSplashDistortion	CIFilter		-	-	ce1b8558dfa94c79
+property	c:objc(pl)CICircleSplashDistortion(py)inputImage	-			-	-	7056b99747a677ab
+property	c:objc(pl)CICircleSplashDistortion(py)center	-			-	-	b90e5ab7c8e53930
+property	c:objc(pl)CICircleSplashDistortion(py)radius	-			-	-	ef1fdbae1032b56e
+protocol	c:objc(pl)CICircularWrap	-			-	-	9a033fdf7f0c7889
+conforms	-	CICircularWrap	CIFilter		-	-	e31e4c2938731928
+property	c:objc(pl)CICircularWrap(py)inputImage	-			-	-	6105f72e0fd72a06
+property	c:objc(pl)CICircularWrap(py)center	-			-	-	51e34726f3396694
+property	c:objc(pl)CICircularWrap(py)radius	-			-	-	e80f5579647743b3
+property	c:objc(pl)CICircularWrap(py)angle	-			-	-	a10257d7726b7a94
+protocol	c:objc(pl)CIDisplacementDistortion	-			-	-	acb39411fe6e43ee
+conforms	-	CIDisplacementDistortion	CIFilter		-	-	dbd6bf5a96ea2f76
+property	c:objc(pl)CIDisplacementDistortion(py)inputImage	-			-	-	b08d15eeeefa61fb
+property	c:objc(pl)CIDisplacementDistortion(py)displacementImage	-			-	-	bef70d6f6cf69016
+property	c:objc(pl)CIDisplacementDistortion(py)scale	-			-	-	5499f534f6b8e22f
+protocol	c:objc(pl)CIDroste	-			-	-	6f5c7cc5860bf5ed
+conforms	-	CIDroste	CIFilter		-	-	4b62efedc09c0526
+property	c:objc(pl)CIDroste(py)inputImage	-			-	-	aea09e5bbe9e7ad8
+property	c:objc(pl)CIDroste(py)insetPoint0	-			-	-	ebd89614b27b5f4e
+property	c:objc(pl)CIDroste(py)insetPoint1	-			-	-	f00b2564774e1ac1
+property	c:objc(pl)CIDroste(py)strands	-			-	-	5956d8df764af655
+property	c:objc(pl)CIDroste(py)periodicity	-			-	-	ad4dd1c826d835bd
+property	c:objc(pl)CIDroste(py)rotation	-			-	-	fbf60fd026fa18d4
+property	c:objc(pl)CIDroste(py)zoom	-			-	-	cacc0a5535400a55
+protocol	c:objc(pl)CIGlassDistortion	-			-	-	c480d4a9df037ebf
+conforms	-	CIGlassDistortion	CIFilter		-	-	2d24257dfe08f16c
+property	c:objc(pl)CIGlassDistortion(py)inputImage	-			-	-	fcec7ddc3ce8b51d
+property	c:objc(pl)CIGlassDistortion(py)textureImage	-			-	-	aa2cc6de902ddf19
+property	c:objc(pl)CIGlassDistortion(py)center	-			-	-	a15cd9911702361e
+property	c:objc(pl)CIGlassDistortion(py)scale	-			-	-	cd6b2ad038d0cf7f
+protocol	c:objc(pl)CIGlassLozenge	-			-	-	9427e50a2b1af639
+conforms	-	CIGlassLozenge	CIFilter		-	-	068785632065c944
+property	c:objc(pl)CIGlassLozenge(py)inputImage	-			-	-	66eabd008d58b442
+property	c:objc(pl)CIGlassLozenge(py)point0	-			-	-	74e9f1f32ee500a7
+property	c:objc(pl)CIGlassLozenge(py)point1	-			-	-	235865979e07b5ad
+property	c:objc(pl)CIGlassLozenge(py)radius	-			-	-	5f5607f3857fa372
+property	c:objc(pl)CIGlassLozenge(py)refraction	-			-	-	b7ff639892ae97b8
+protocol	c:objc(pl)CIHoleDistortion	-			-	-	8dc9b72b2b962c14
+conforms	-	CIHoleDistortion	CIFilter		-	-	0edf178273de14db
+property	c:objc(pl)CIHoleDistortion(py)inputImage	-			-	-	5c4c685fee8883e6
+property	c:objc(pl)CIHoleDistortion(py)center	-			-	-	3de2e23214500296
+property	c:objc(pl)CIHoleDistortion(py)radius	-			-	-	3d36a5947c3435a9
+protocol	c:objc(pl)CILightTunnel	-			-	-	3ffadccbcd13a394
+conforms	-	CILightTunnel	CIFilter		-	-	5c2358523952daf5
+property	c:objc(pl)CILightTunnel(py)inputImage	-			-	-	b2efa848d2328fc4
+property	c:objc(pl)CILightTunnel(py)center	-			-	-	81a7c71c32289dee
+property	c:objc(pl)CILightTunnel(py)rotation	-			-	-	e80d0a9987e21458
+property	c:objc(pl)CILightTunnel(py)radius	-			-	-	b27efcb9ff066db6
+protocol	c:objc(pl)CINinePartStretched	-			-	-	414d89bf217f9ff2
+conforms	-	CINinePartStretched	CIFilter		-	-	83d7feaefa509ad3
+property	c:objc(pl)CINinePartStretched(py)inputImage	-			-	-	6c94c49bed17590f
+property	c:objc(pl)CINinePartStretched(py)breakpoint0	-			-	-	427def5d4e0c8625
+property	c:objc(pl)CINinePartStretched(py)breakpoint1	-			-	-	ac84a4cc70395bc6
+property	c:objc(pl)CINinePartStretched(py)growAmount	-			-	-	287aaeedf6bbae68
+protocol	c:objc(pl)CINinePartTiled	-			-	-	ce1266b34407a9a7
+conforms	-	CINinePartTiled	CIFilter		-	-	8842688d4f4078e7
+property	c:objc(pl)CINinePartTiled(py)inputImage	-			-	-	5f8cf8542d42926e
+property	c:objc(pl)CINinePartTiled(py)breakpoint0	-			-	-	c47d680347a80296
+property	c:objc(pl)CINinePartTiled(py)breakpoint1	-			-	-	1e39a73d8ea17c1c
+property	c:objc(pl)CINinePartTiled(py)growAmount	-			-	-	800d3e58ebcb7289
+property	c:objc(pl)CINinePartTiled(py)flipYTiles	-			-	-	91fad99e35d3bd20
+protocol	c:objc(pl)CIPinchDistortion	-			-	-	3cc99100ae1ef27f
+conforms	-	CIPinchDistortion	CIFilter		-	-	238161e2046737af
+property	c:objc(pl)CIPinchDistortion(py)inputImage	-			-	-	fe1b23cdd7b77d77
+property	c:objc(pl)CIPinchDistortion(py)center	-			-	-	bc649ac97917111f
+property	c:objc(pl)CIPinchDistortion(py)radius	-			-	-	6eb1c473726d9dc3
+property	c:objc(pl)CIPinchDistortion(py)scale	-			-	-	1112db55c67dfc44
+protocol	c:objc(pl)CIStretchCrop	-			-	-	e244a7f76cfec5d1
+conforms	-	CIStretchCrop	CIFilter		-	-	18c4d178318d210b
+property	c:objc(pl)CIStretchCrop(py)inputImage	-			-	-	3b441e058692344b
+property	c:objc(pl)CIStretchCrop(py)size	-			-	-	05274152fdcdc4f6
+property	c:objc(pl)CIStretchCrop(py)cropAmount	-			-	-	13f4ec9969ad9aea
+property	c:objc(pl)CIStretchCrop(py)centerStretchAmount	-			-	-	6cc0b0743e2fa5c0
+protocol	c:objc(pl)CITorusLensDistortion	-			-	-	4b66e7e87192bf34
+conforms	-	CITorusLensDistortion	CIFilter		-	-	7b1f86eb2cccf78a
+property	c:objc(pl)CITorusLensDistortion(py)inputImage	-			-	-	bd5809049ebdfb0d
+property	c:objc(pl)CITorusLensDistortion(py)center	-			-	-	2b62b1ccb53eae8a
+property	c:objc(pl)CITorusLensDistortion(py)radius	-			-	-	8d3ed8023f8a9a94
+property	c:objc(pl)CITorusLensDistortion(py)width	-			-	-	3887bd19b53ed750
+property	c:objc(pl)CITorusLensDistortion(py)refraction	-			-	-	7598f861ca56a5a7
+protocol	c:objc(pl)CITwirlDistortion	-			-	-	95e1fb960c1a7392
+conforms	-	CITwirlDistortion	CIFilter		-	-	eb37a0674b2dfd8f
+property	c:objc(pl)CITwirlDistortion(py)inputImage	-			-	-	cb31268acf247460
+property	c:objc(pl)CITwirlDistortion(py)center	-			-	-	56d611f0466c358e
+property	c:objc(pl)CITwirlDistortion(py)radius	-			-	-	9d5417425729c31b
+property	c:objc(pl)CITwirlDistortion(py)angle	-			-	-	fd5240ab9f5b6a8a
+protocol	c:objc(pl)CIVortexDistortion	-			-	-	f3f07e229e465fba
+conforms	-	CIVortexDistortion	CIFilter		-	-	6dac738283c5377d
+property	c:objc(pl)CIVortexDistortion(py)inputImage	-			-	-	f1f889bbac7ac4e4
+property	c:objc(pl)CIVortexDistortion(py)center	-			-	-	bc1ef5da55ee17be
+property	c:objc(pl)CIVortexDistortion(py)radius	-			-	-	2cb2856887ee8604
+property	c:objc(pl)CIVortexDistortion(py)angle	-			-	-	c62c0add2a0af26a
+protocol	c:objc(pl)CIAffineClamp	-			-	-	61407d100c62974b
+conforms	-	CIAffineClamp	CIFilter		-	-	5f38a8b9f12a030d
+property	c:objc(pl)CIAffineClamp(py)inputImage	-			-	-	a15ed2c7cfb3639e
+property	c:objc(pl)CIAffineClamp(py)transform	-			-	-	0f38bd012f063386
+protocol	c:objc(pl)CIAffineTile	-			-	-	6c48f1e71cb14120
+conforms	-	CIAffineTile	CIFilter		-	-	6ddda931498ea2bf
+property	c:objc(pl)CIAffineTile(py)inputImage	-			-	-	478f4a2c4e5d80fa
+property	c:objc(pl)CIAffineTile(py)transform	-			-	-	7fa29d3e4ed1fe9b
+protocol	c:objc(pl)CIEightfoldReflectedTile	-			-	-	0c9d81a856c04ddf
+conforms	-	CIEightfoldReflectedTile	CIFilter		-	-	8a0e729344ac92d9
+property	c:objc(pl)CIEightfoldReflectedTile(py)inputImage	-			-	-	4c1868a9852d7f56
+property	c:objc(pl)CIEightfoldReflectedTile(py)center	-			-	-	c8bb602a1cb5fcc7
+property	c:objc(pl)CIEightfoldReflectedTile(py)angle	-			-	-	c49f1e9a1546dcb1
+property	c:objc(pl)CIEightfoldReflectedTile(py)width	-			-	-	f823934fe401dede
+protocol	c:objc(pl)CIFourfoldReflectedTile	-			-	-	c77fbc93aa33567b
+conforms	-	CIFourfoldReflectedTile	CIFilter		-	-	6b01160d06881e58
+property	c:objc(pl)CIFourfoldReflectedTile(py)inputImage	-			-	-	01bed32eef7a6836
+property	c:objc(pl)CIFourfoldReflectedTile(py)center	-			-	-	89d2bc56fea6a2ad
+property	c:objc(pl)CIFourfoldReflectedTile(py)angle	-			-	-	6fb39e6a7361b81c
+property	c:objc(pl)CIFourfoldReflectedTile(py)width	-			-	-	9950896d4265d779
+property	c:objc(pl)CIFourfoldReflectedTile(py)acuteAngle	-			-	-	b2244841b090ad7c
+protocol	c:objc(pl)CIFourfoldRotatedTile	-			-	-	d7093a8c1494c9fc
+conforms	-	CIFourfoldRotatedTile	CIFilter		-	-	357a18597d8086dc
+property	c:objc(pl)CIFourfoldRotatedTile(py)inputImage	-			-	-	738c390ac8432823
+property	c:objc(pl)CIFourfoldRotatedTile(py)center	-			-	-	1475dc384255215e
+property	c:objc(pl)CIFourfoldRotatedTile(py)angle	-			-	-	4371c89df4412ffc
+property	c:objc(pl)CIFourfoldRotatedTile(py)width	-			-	-	10f3177ef8d444c8
+protocol	c:objc(pl)CIFourfoldTranslatedTile	-			-	-	875ba7c34bc6c24e
+conforms	-	CIFourfoldTranslatedTile	CIFilter		-	-	3acdadebe98aebce
+property	c:objc(pl)CIFourfoldTranslatedTile(py)inputImage	-			-	-	01a1e99b67ff91da
+property	c:objc(pl)CIFourfoldTranslatedTile(py)center	-			-	-	94369701e8aa3438
+property	c:objc(pl)CIFourfoldTranslatedTile(py)angle	-			-	-	806b2723b8fd0664
+property	c:objc(pl)CIFourfoldTranslatedTile(py)width	-			-	-	2bdbcbe6e0a6c030
+property	c:objc(pl)CIFourfoldTranslatedTile(py)acuteAngle	-			-	-	5526b6ab650614d6
+protocol	c:objc(pl)CIGlideReflectedTile	-			-	-	639f31f91260f3ae
+conforms	-	CIGlideReflectedTile	CIFilter		-	-	f80e0b611f4b0db1
+property	c:objc(pl)CIGlideReflectedTile(py)inputImage	-			-	-	d228aa84d7f7e15b
+property	c:objc(pl)CIGlideReflectedTile(py)center	-			-	-	b4681b30d3a4eb92
+property	c:objc(pl)CIGlideReflectedTile(py)angle	-			-	-	9d24b79b2ff061e5
+property	c:objc(pl)CIGlideReflectedTile(py)width	-			-	-	78f1430db71c038f
+protocol	c:objc(pl)CIKaleidoscope	-			-	-	46b67da2df003cdf
+conforms	-	CIKaleidoscope	CIFilter		-	-	4d9100c30522dbb3
+property	c:objc(pl)CIKaleidoscope(py)inputImage	-			-	-	4007c8678df9ba42
+property	c:objc(pl)CIKaleidoscope(py)count	-			-	-	32d040541f88f22b
+property	c:objc(pl)CIKaleidoscope(py)center	-			-	-	206ec33751bbd022
+property	c:objc(pl)CIKaleidoscope(py)angle	-			-	-	77509500a603f28d
+protocol	c:objc(pl)CIOpTile	-			-	-	5101e45e4afa0baf
+conforms	-	CIOpTile	CIFilter		-	-	d396e82717601e5e
+property	c:objc(pl)CIOpTile(py)inputImage	-			-	-	9f3f6c4fb4647606
+property	c:objc(pl)CIOpTile(py)center	-			-	-	638c2852fe9a9f86
+property	c:objc(pl)CIOpTile(py)scale	-			-	-	ed6feaf31e0c59de
+property	c:objc(pl)CIOpTile(py)angle	-			-	-	050c3a266c7c0dd1
+property	c:objc(pl)CIOpTile(py)width	-			-	-	8d5fabef9f0e991d
+protocol	c:objc(pl)CIParallelogramTile	-			-	-	c1dca719fd942705
+conforms	-	CIParallelogramTile	CIFilter		-	-	32f9104c1d9bfb14
+property	c:objc(pl)CIParallelogramTile(py)inputImage	-			-	-	569781a409577da4
+property	c:objc(pl)CIParallelogramTile(py)center	-			-	-	66a0f1541c765b9d
+property	c:objc(pl)CIParallelogramTile(py)angle	-			-	-	b2b650adf032358c
+property	c:objc(pl)CIParallelogramTile(py)acuteAngle	-			-	-	417a410e4d5447bb
+property	c:objc(pl)CIParallelogramTile(py)width	-			-	-	56d4db46fa7ede06
+protocol	c:objc(pl)CIPerspectiveTile	-			-	-	86b168325b422639
+conforms	-	CIPerspectiveTile	CIFilter		-	-	0e78313add854439
+property	c:objc(pl)CIPerspectiveTile(py)inputImage	-			-	-	b6d5ea4480496fdc
+property	c:objc(pl)CIPerspectiveTile(py)topLeft	-			-	-	6bd986d52c36f785
+property	c:objc(pl)CIPerspectiveTile(py)topRight	-			-	-	f859098d837778ed
+property	c:objc(pl)CIPerspectiveTile(py)bottomRight	-			-	-	b20e5f3e51257a87
+property	c:objc(pl)CIPerspectiveTile(py)bottomLeft	-			-	-	c042ebc707818c15
+protocol	c:objc(pl)CISixfoldReflectedTile	-			-	-	338e80c96800f081
+conforms	-	CISixfoldReflectedTile	CIFilter		-	-	9ae7ad3ca75a3870
+property	c:objc(pl)CISixfoldReflectedTile(py)inputImage	-			-	-	5b8cb051e748502e
+property	c:objc(pl)CISixfoldReflectedTile(py)center	-			-	-	2ee7969ff9d773e1
+property	c:objc(pl)CISixfoldReflectedTile(py)angle	-			-	-	6eefe0fa06e281e8
+property	c:objc(pl)CISixfoldReflectedTile(py)width	-			-	-	d2c29720d22a5075
+protocol	c:objc(pl)CISixfoldRotatedTile	-			-	-	e2503953091eaa01
+conforms	-	CISixfoldRotatedTile	CIFilter		-	-	8d9ba63a8533617d
+property	c:objc(pl)CISixfoldRotatedTile(py)inputImage	-			-	-	e934dad6f6c37f40
+property	c:objc(pl)CISixfoldRotatedTile(py)center	-			-	-	81c418f12ebecc6f
+property	c:objc(pl)CISixfoldRotatedTile(py)angle	-			-	-	1b3e22ff44af0a74
+property	c:objc(pl)CISixfoldRotatedTile(py)width	-			-	-	b0786d3865c45491
+protocol	c:objc(pl)CITriangleKaleidoscope	-			-	-	525ca2d012e2e3dc
+conforms	-	CITriangleKaleidoscope	CIFilter		-	-	fe284003ffe5c81a
+property	c:objc(pl)CITriangleKaleidoscope(py)inputImage	-			-	-	7b57b726f301de96
+property	c:objc(pl)CITriangleKaleidoscope(py)point	-			-	-	6e64cbe0cb78b42a
+property	c:objc(pl)CITriangleKaleidoscope(py)size	-			-	-	7408013994accdda
+property	c:objc(pl)CITriangleKaleidoscope(py)rotation	-			-	-	6226a2d40e136a39
+property	c:objc(pl)CITriangleKaleidoscope(py)decay	-			-	-	b843a3bcca01b03a
+protocol	c:objc(pl)CITriangleTile	-			-	-	b5c7c2dc614c7e45
+conforms	-	CITriangleTile	CIFilter		-	-	50182b6f1819873d
+property	c:objc(pl)CITriangleTile(py)inputImage	-			-	-	6aa4a37eb9c6c864
+property	c:objc(pl)CITriangleTile(py)center	-			-	-	e6b155ff7fd21332
+property	c:objc(pl)CITriangleTile(py)angle	-			-	-	67ccf495b88a521a
+property	c:objc(pl)CITriangleTile(py)width	-			-	-	f6cc416239ed2a18
+protocol	c:objc(pl)CITwelvefoldReflectedTile	-			-	-	d98007f52c3d4149
+conforms	-	CITwelvefoldReflectedTile	CIFilter		-	-	5abf256f2b1af4aa
+property	c:objc(pl)CITwelvefoldReflectedTile(py)inputImage	-			-	-	ed16aeb3469ad265
+property	c:objc(pl)CITwelvefoldReflectedTile(py)center	-			-	-	012f1fdcfa71445a
+property	c:objc(pl)CITwelvefoldReflectedTile(py)angle	-			-	-	4ba67876f7744d52
+property	c:objc(pl)CITwelvefoldReflectedTile(py)width	-			-	-	6e8caab2aef4f4db
+protocol	c:objc(pl)CIAttributedTextImageGenerator	-			-	-	47948077430ff7dc
+conforms	-	CIAttributedTextImageGenerator	CIFilter		-	-	1004c4278e9242f8
+property	c:objc(pl)CIAttributedTextImageGenerator(py)text	-			-	-	e4e0ace416ed7baf
+property	c:objc(pl)CIAttributedTextImageGenerator(py)scaleFactor	-			-	-	01eb976a6e9907d7
+property	c:objc(pl)CIAttributedTextImageGenerator(py)padding	-			ios=16.0/-/-/0	-	0bc847e787a1d2ac
+protocol	c:objc(pl)CIAztecCodeGenerator	-			-	-	11f50edd72c44649
+conforms	-	CIAztecCodeGenerator	CIFilter		-	-	ab9297146b0e05e2
+property	c:objc(pl)CIAztecCodeGenerator(py)message	-			-	-	0b4a59aa188889ef
+property	c:objc(pl)CIAztecCodeGenerator(py)correctionLevel	-			-	-	694f0d19ae65af41
+property	c:objc(pl)CIAztecCodeGenerator(py)layers	-			-	-	552be8c3e1cc9342
+property	c:objc(pl)CIAztecCodeGenerator(py)compactStyle	-			-	-	edec02f08b08e3e0
+protocol	c:objc(pl)CIBarcodeGenerator	-			-	-	bddeb1aab08ee3e8
+conforms	-	CIBarcodeGenerator	CIFilter		-	-	c88451c87041b228
+property	c:objc(pl)CIBarcodeGenerator(py)barcodeDescriptor	-			-	-	b387be2ce0cfcdb9
+protocol	c:objc(pl)CIBlurredRectangleGenerator	-			-	-	546a002fc2a2e50f
+conforms	-	CIBlurredRectangleGenerator	CIFilter		-	-	d8af6b9274f3da7e
+property	c:objc(pl)CIBlurredRectangleGenerator(py)extent	-			-	-	d995e00897cb74f4
+property	c:objc(pl)CIBlurredRectangleGenerator(py)sigma	-			-	-	b0024d54f7a2b33d
+property	c:objc(pl)CIBlurredRectangleGenerator(py)color	-			-	-	d7e63f7edf6a7aac
+protocol	c:objc(pl)CIBlurredRoundedRectangleGenerator	-			-	-	cbbcf97641198dec
+conforms	-	CIBlurredRoundedRectangleGenerator	CIFilter		-	-	5a04d4665cf65438
+property	c:objc(pl)CIBlurredRoundedRectangleGenerator(py)extent	-			-	-	13b3c18dc10cd194
+property	c:objc(pl)CIBlurredRoundedRectangleGenerator(py)radius	-			-	-	7e4b399d9a7774e0
+property	c:objc(pl)CIBlurredRoundedRectangleGenerator(py)smoothness	-			-	-	0217bdb5bc68de55
+property	c:objc(pl)CIBlurredRoundedRectangleGenerator(py)sigma	-			-	-	29631b488cd7194c
+property	c:objc(pl)CIBlurredRoundedRectangleGenerator(py)color	-			-	-	524f37ec346d671b
+protocol	c:objc(pl)CICheckerboardGenerator	-			-	-	12d7af747b769fd2
+conforms	-	CICheckerboardGenerator	CIFilter		-	-	26c636b0fb1512f1
+property	c:objc(pl)CICheckerboardGenerator(py)center	-			-	-	96c0d3233f989231
+property	c:objc(pl)CICheckerboardGenerator(py)color0	-			-	-	0171f89243caf946
+property	c:objc(pl)CICheckerboardGenerator(py)color1	-			-	-	4aa07956f4c68bc9
+property	c:objc(pl)CICheckerboardGenerator(py)width	-			-	-	b13f942246cf33f7
+property	c:objc(pl)CICheckerboardGenerator(py)sharpness	-			-	-	0806dd4fafcad9ed
+protocol	c:objc(pl)CICode128BarcodeGenerator	-			-	-	342b9b0135d03dbe
+conforms	-	CICode128BarcodeGenerator	CIFilter		-	-	631176710b75e416
+property	c:objc(pl)CICode128BarcodeGenerator(py)message	-			-	-	b9da106748ddd6d4
+property	c:objc(pl)CICode128BarcodeGenerator(py)quietSpace	-			-	-	6f37f8a7b578b1ce
+property	c:objc(pl)CICode128BarcodeGenerator(py)barcodeHeight	-			-	-	9d7e35dd8f308ced
+protocol	c:objc(pl)CILenticularHaloGenerator	-			-	-	0235fb539bf78b5e
+conforms	-	CILenticularHaloGenerator	CIFilter		-	-	6048f6547f046c6c
+property	c:objc(pl)CILenticularHaloGenerator(py)center	-			-	-	e2e9c51d459c4d39
+property	c:objc(pl)CILenticularHaloGenerator(py)color	-			-	-	e346ca6e629d565d
+property	c:objc(pl)CILenticularHaloGenerator(py)haloRadius	-			-	-	4b92c93fcaa3688c
+property	c:objc(pl)CILenticularHaloGenerator(py)haloWidth	-			-	-	4e591d98eab40e48
+property	c:objc(pl)CILenticularHaloGenerator(py)haloOverlap	-			-	-	e38a1359f9efbca8
+property	c:objc(pl)CILenticularHaloGenerator(py)striationStrength	-			-	-	a047ad4b1c3a5299
+property	c:objc(pl)CILenticularHaloGenerator(py)striationContrast	-			-	-	5a23d04b6ffce6ee
+property	c:objc(pl)CILenticularHaloGenerator(py)time	-			-	-	ef1f8091f30db4af
+protocol	c:objc(pl)CIMeshGenerator	-			-	-	64c6498750c1c240
+conforms	-	CIMeshGenerator	CIFilter		-	-	71ac7dd38fdb3a48
+property	c:objc(pl)CIMeshGenerator(py)width	-			-	-	321266c9c6a9ab88
+property	c:objc(pl)CIMeshGenerator(py)color	-			-	-	8c16f3376234bb20
+property	c:objc(pl)CIMeshGenerator(py)mesh	-			-	-	8e7f6432c72b2d67
+protocol	c:objc(pl)CIPDF417BarcodeGenerator	-			-	-	d7cb146c846e06dd
+conforms	-	CIPDF417BarcodeGenerator	CIFilter		-	-	b777641a814b9e18
+property	c:objc(pl)CIPDF417BarcodeGenerator(py)message	-			-	-	95da1bdaf3ceef55
+property	c:objc(pl)CIPDF417BarcodeGenerator(py)minWidth	-			-	-	5d5e6af83372db01
+property	c:objc(pl)CIPDF417BarcodeGenerator(py)maxWidth	-			-	-	b719a78c9dc370b7
+property	c:objc(pl)CIPDF417BarcodeGenerator(py)minHeight	-			-	-	4565d722d77f6ac6
+property	c:objc(pl)CIPDF417BarcodeGenerator(py)maxHeight	-			-	-	8eae25caee169aab
+property	c:objc(pl)CIPDF417BarcodeGenerator(py)dataColumns	-			-	-	96f065786cb48ed8
+property	c:objc(pl)CIPDF417BarcodeGenerator(py)rows	-			-	-	c2310676fed25642
+property	c:objc(pl)CIPDF417BarcodeGenerator(py)preferredAspectRatio	-			-	-	9d0f16f213a6b734
+property	c:objc(pl)CIPDF417BarcodeGenerator(py)compactionMode	-			-	-	f9cab86ec26e6793
+property	c:objc(pl)CIPDF417BarcodeGenerator(py)compactStyle	-			-	-	c70b3d0a038685e5
+property	c:objc(pl)CIPDF417BarcodeGenerator(py)correctionLevel	-			-	-	9b40b4edc75d3875
+property	c:objc(pl)CIPDF417BarcodeGenerator(py)alwaysSpecifyCompaction	-			-	-	2175cb103a28848a
+protocol	c:objc(pl)CIQRCodeGenerator	-			-	-	3109e00ab139ec0b
+conforms	-	CIQRCodeGenerator	CIFilter		-	-	8f50ebd85f184a8c
+property	c:objc(pl)CIQRCodeGenerator(py)message	-			-	-	7bb3cfd99f59779b
+property	c:objc(pl)CIQRCodeGenerator(py)correctionLevel	-			-	-	5a1acaf423563b62
+protocol	c:objc(pl)CIRandomGenerator	-			-	-	82ad82f89c4d5953
+conforms	-	CIRandomGenerator	CIFilter		-	-	65c407bbb4e9f3e3
+protocol	c:objc(pl)CIRoundedQRCodeGenerator	-			-	-	4081f1bfd7719330
+conforms	-	CIRoundedQRCodeGenerator	CIFilter		-	-	b80c6bec7e947578
+property	c:objc(pl)CIRoundedQRCodeGenerator(py)message	-			-	-	8ce2897810c51a5b
+property	c:objc(pl)CIRoundedQRCodeGenerator(py)correctionLevel	-			-	-	46accddb53d5de6c
+property	c:objc(pl)CIRoundedQRCodeGenerator(py)scale	-			-	-	aeb278eb1ecc6efc
+property	c:objc(pl)CIRoundedQRCodeGenerator(py)roundedMarkers	-			-	-	952b1c909f93ab4c
+property	c:objc(pl)CIRoundedQRCodeGenerator(py)roundedData	-			-	-	b19864fd7a5cad7c
+property	c:objc(pl)CIRoundedQRCodeGenerator(py)centerSpaceSize	-			-	-	f0eed477e26fed28
+property	c:objc(pl)CIRoundedQRCodeGenerator(py)color0	-			-	-	a54f68b0231c8f2a
+property	c:objc(pl)CIRoundedQRCodeGenerator(py)color1	-			-	-	8aec1ff5bb1714a9
+protocol	c:objc(pl)CIRoundedRectangleGenerator	-			-	-	f70664d66c00561a
+conforms	-	CIRoundedRectangleGenerator	CIFilter		-	-	4c419e8dc143ce46
+property	c:objc(pl)CIRoundedRectangleGenerator(py)extent	-			-	-	aa8fee1728ed1677
+property	c:objc(pl)CIRoundedRectangleGenerator(py)radius	-			-	-	74e662198a958f5a
+property	c:objc(pl)CIRoundedRectangleGenerator(py)smoothness	-			ios=26.0/-/-/0	-	835fec282d3f32aa
+property	c:objc(pl)CIRoundedRectangleGenerator(py)color	-			-	-	0e17bf932a77c478
+protocol	c:objc(pl)CIRoundedRectangleStrokeGenerator	-			-	-	c4df7516c8ec679b
+conforms	-	CIRoundedRectangleStrokeGenerator	CIFilter		-	-	0c81352e37b8d090
+property	c:objc(pl)CIRoundedRectangleStrokeGenerator(py)extent	-			-	-	25f706a9d690b3d4
+property	c:objc(pl)CIRoundedRectangleStrokeGenerator(py)radius	-			-	-	13e8624b82442854
+property	c:objc(pl)CIRoundedRectangleStrokeGenerator(py)smoothness	-			ios=26.0/-/-/0	-	4bb3c5ccd168c63d
+property	c:objc(pl)CIRoundedRectangleStrokeGenerator(py)color	-			-	-	a152fc9efeb854b2
+property	c:objc(pl)CIRoundedRectangleStrokeGenerator(py)width	-			-	-	bf4719c1b09fa4cd
+protocol	c:objc(pl)CIStarShineGenerator	-			-	-	6a874e8f0bd12c6a
+conforms	-	CIStarShineGenerator	CIFilter		-	-	9eab80ce15435d9c
+property	c:objc(pl)CIStarShineGenerator(py)center	-			-	-	a059d1626ef98d82
+property	c:objc(pl)CIStarShineGenerator(py)color	-			-	-	d7da7fa931172c3e
+property	c:objc(pl)CIStarShineGenerator(py)radius	-			-	-	b97ea3722c8cd75d
+property	c:objc(pl)CIStarShineGenerator(py)crossScale	-			-	-	1290036edbafee6a
+property	c:objc(pl)CIStarShineGenerator(py)crossAngle	-			-	-	615f99a7b38e8bc3
+property	c:objc(pl)CIStarShineGenerator(py)crossOpacity	-			-	-	1f2e967054e5a435
+property	c:objc(pl)CIStarShineGenerator(py)crossWidth	-			-	-	e66b0aef0ce10a70
+property	c:objc(pl)CIStarShineGenerator(py)epsilon	-			-	-	250d3930e7f3f569
+protocol	c:objc(pl)CIStripesGenerator	-			-	-	365a9183398fac55
+conforms	-	CIStripesGenerator	CIFilter		-	-	d3710e127ff538c1
+property	c:objc(pl)CIStripesGenerator(py)center	-			-	-	79bc88f0bba36c7b
+property	c:objc(pl)CIStripesGenerator(py)color0	-			-	-	75583122c80ae5ba
+property	c:objc(pl)CIStripesGenerator(py)color1	-			-	-	a32ce0b6ac63872b
+property	c:objc(pl)CIStripesGenerator(py)width	-			-	-	fadcdb0edd367c1f
+property	c:objc(pl)CIStripesGenerator(py)sharpness	-			-	-	14cc714200e4f1c4
+protocol	c:objc(pl)CISunbeamsGenerator	-			-	-	68ebe1f0e2ce993d
+conforms	-	CISunbeamsGenerator	CIFilter		-	-	3858b495c5f81603
+property	c:objc(pl)CISunbeamsGenerator(py)center	-			-	-	bf3fe0f549beff59
+property	c:objc(pl)CISunbeamsGenerator(py)color	-			-	-	9d6d1c3e5f053f0c
+property	c:objc(pl)CISunbeamsGenerator(py)sunRadius	-			-	-	e48a5c5c2cf9b047
+property	c:objc(pl)CISunbeamsGenerator(py)maxStriationRadius	-			-	-	71722a0087311503
+property	c:objc(pl)CISunbeamsGenerator(py)striationStrength	-			-	-	683c8e956ca59f90
+property	c:objc(pl)CISunbeamsGenerator(py)striationContrast	-			-	-	74f55febabafeb1f
+property	c:objc(pl)CISunbeamsGenerator(py)time	-			-	-	c216a4f267f3e0b9
+protocol	c:objc(pl)CITextImageGenerator	-			-	-	bd24fdcf5755d1ab
+conforms	-	CITextImageGenerator	CIFilter		-	-	6853d5a90112daef
+property	c:objc(pl)CITextImageGenerator(py)text	-			-	-	5f8210e00a1c46dd
+property	c:objc(pl)CITextImageGenerator(py)fontName	-			-	-	94ba284b31a7f119
+property	c:objc(pl)CITextImageGenerator(py)fontSize	-			-	-	26e8ab4bfd82ab1f
+property	c:objc(pl)CITextImageGenerator(py)scaleFactor	-			-	-	052543b42f2af760
+property	c:objc(pl)CITextImageGenerator(py)padding	-			ios=16.0/-/-/0	-	50c7eb06e2ccc168
+protocol	c:objc(pl)CIBlendWithMask	-			-	-	3fd76130b4c75be7
+conforms	-	CIBlendWithMask	CIFilter		-	-	b10d60a0dcdab5f7
+property	c:objc(pl)CIBlendWithMask(py)inputImage	-			-	-	1ec82e0b19c92682
+property	c:objc(pl)CIBlendWithMask(py)backgroundImage	-			-	-	bf11d90e20df9d34
+property	c:objc(pl)CIBlendWithMask(py)maskImage	-			-	-	48b150b03c7dd506
+protocol	c:objc(pl)CIBloom	-			-	-	850c9707ba315fb3
+conforms	-	CIBloom	CIFilter		-	-	b3e4ccc163e7a895
+property	c:objc(pl)CIBloom(py)inputImage	-			-	-	662461008590f8d7
+property	c:objc(pl)CIBloom(py)radius	-			-	-	6eb3f4b9ff5ceb97
+property	c:objc(pl)CIBloom(py)intensity	-			-	-	c3e00e773c6bac51
+protocol	c:objc(pl)CICannyEdgeDetector	-			-	-	7896616b73ae3dfa
+conforms	-	CICannyEdgeDetector	CIFilter		-	-	11705b055ef866a8
+property	c:objc(pl)CICannyEdgeDetector(py)inputImage	-			-	-	33b5a75c75dea00e
+property	c:objc(pl)CICannyEdgeDetector(py)gaussianSigma	-			-	-	eba5c9b971c216ad
+property	c:objc(pl)CICannyEdgeDetector(py)perceptual	-			-	-	c7fecf2f209ef219
+property	c:objc(pl)CICannyEdgeDetector(py)thresholdHigh	-			-	-	08fa29474d24e112
+property	c:objc(pl)CICannyEdgeDetector(py)thresholdLow	-			-	-	752d3ee5a555b1a8
+property	c:objc(pl)CICannyEdgeDetector(py)hysteresisPasses	-			-	-	26aacc77205c68d8
+protocol	c:objc(pl)CIComicEffect	-			-	-	d29ca07d6ee69467
+conforms	-	CIComicEffect	CIFilter		-	-	9ea70c76e4ccf9d8
+property	c:objc(pl)CIComicEffect(py)inputImage	-			-	-	f85498f70b25495f
+protocol	c:objc(pl)CIConvolution	-			-	-	19a62ec579a800e4
+conforms	-	CIConvolution	CIFilter		-	-	6d7ad14879926fbe
+property	c:objc(pl)CIConvolution(py)inputImage	-			-	-	a87d2b7c0b79cf09
+property	c:objc(pl)CIConvolution(py)weights	-			-	-	7c39184a1adbbe61
+property	c:objc(pl)CIConvolution(py)bias	-			-	-	a8b353ad9ae94dfc
+protocol	c:objc(pl)CICoreMLModel	-			-	-	6035b610b7aab1fe
+conforms	-	CICoreMLModel	CIFilter		-	-	704ac03134ffd8ff
+property	c:objc(pl)CICoreMLModel(py)inputImage	-			-	-	c2ffdef538e9e35c
+property	c:objc(pl)CICoreMLModel(py)model	-			-	-	b4a17e0b5b9fd0d1
+property	c:objc(pl)CICoreMLModel(py)headIndex	-			-	-	8287f23894184103
+property	c:objc(pl)CICoreMLModel(py)softmaxNormalization	-			-	-	cf6e9158000a601d
+protocol	c:objc(pl)CICrystallize	-			-	-	319cc44865dcf9e3
+conforms	-	CICrystallize	CIFilter		-	-	a7e8b9da00ae287a
+property	c:objc(pl)CICrystallize(py)inputImage	-			-	-	3d8aec73d83cca52
+property	c:objc(pl)CICrystallize(py)radius	-			-	-	340952df78e47c5f
+property	c:objc(pl)CICrystallize(py)center	-			-	-	199c1a47cecde7f0
+protocol	c:objc(pl)CIDepthOfField	-			-	-	97db3dd9c6dc29f2
+conforms	-	CIDepthOfField	CIFilter		-	-	208f36ab4aaa53ec
+property	c:objc(pl)CIDepthOfField(py)inputImage	-			-	-	039d0546752fa789
+property	c:objc(pl)CIDepthOfField(py)point0	-			-	-	c58ff37ef4f7c2e9
+property	c:objc(pl)CIDepthOfField(py)point1	-			-	-	0e9b585f9292550f
+property	c:objc(pl)CIDepthOfField(py)saturation	-			-	-	2e1c360b0705543f
+property	c:objc(pl)CIDepthOfField(py)unsharpMaskRadius	-			-	-	f93d118fbb47fa49
+property	c:objc(pl)CIDepthOfField(py)unsharpMaskIntensity	-			-	-	f5190c88a65e88b1
+property	c:objc(pl)CIDepthOfField(py)radius	-			-	-	f65573a8490c7e1b
+protocol	c:objc(pl)CIEdges	-			-	-	37e3fb53a20e8cb3
+conforms	-	CIEdges	CIFilter		-	-	28f02ff9cddb6194
+property	c:objc(pl)CIEdges(py)inputImage	-			-	-	32822e0cccfbf9c2
+property	c:objc(pl)CIEdges(py)intensity	-			-	-	22abd07fcefbf409
+protocol	c:objc(pl)CIEdgeWork	-			-	-	3857052410416f33
+conforms	-	CIEdgeWork	CIFilter		-	-	83fcb49c4324302c
+property	c:objc(pl)CIEdgeWork(py)inputImage	-			-	-	23ae67cd0122dc0c
+property	c:objc(pl)CIEdgeWork(py)radius	-			-	-	898b6ff73783147b
+protocol	c:objc(pl)CIGaborGradients	-			-	-	e7d1b7140c6be662
+conforms	-	CIGaborGradients	CIFilter		-	-	3bdf96332aa023b3
+property	c:objc(pl)CIGaborGradients(py)inputImage	-			-	-	2f0218f1d33de46a
+protocol	c:objc(pl)CIGloom	-			-	-	3e2369b8bec2730c
+conforms	-	CIGloom	CIFilter		-	-	df3b73725d948818
+property	c:objc(pl)CIGloom(py)inputImage	-			-	-	28b62d5a135276fa
+property	c:objc(pl)CIGloom(py)radius	-			-	-	144aa562b664cf1c
+property	c:objc(pl)CIGloom(py)intensity	-			-	-	97eb94d9ddeaa3cb
+protocol	c:objc(pl)CIHeightFieldFromMask	-			-	-	3131e55cb137ca5a
+conforms	-	CIHeightFieldFromMask	CIFilter		-	-	d17079cb2ddca740
+property	c:objc(pl)CIHeightFieldFromMask(py)inputImage	-			-	-	06ac2af0ed3cedef
+property	c:objc(pl)CIHeightFieldFromMask(py)radius	-			-	-	9e645267bb188790
+protocol	c:objc(pl)CIHexagonalPixellate	-			-	-	6c550f63931116a9
+conforms	-	CIHexagonalPixellate	CIFilter		-	-	b02eda04823cca91
+property	c:objc(pl)CIHexagonalPixellate(py)inputImage	-			-	-	dbbfce0644406ad8
+property	c:objc(pl)CIHexagonalPixellate(py)center	-			-	-	b6b46b22c562fde4
+property	c:objc(pl)CIHexagonalPixellate(py)scale	-			-	-	aa65b0ed31f66ca3
+protocol	c:objc(pl)CIHighlightShadowAdjust	-			-	-	7d4b79d13aed77cc
+conforms	-	CIHighlightShadowAdjust	CIFilter		-	-	cacc3e658f2441db
+property	c:objc(pl)CIHighlightShadowAdjust(py)inputImage	-			-	-	8b548eb3657bbc31
+property	c:objc(pl)CIHighlightShadowAdjust(py)radius	-			-	-	2dae0b9d8be6c406
+property	c:objc(pl)CIHighlightShadowAdjust(py)shadowAmount	-			-	-	85b38b487f454ede
+property	c:objc(pl)CIHighlightShadowAdjust(py)highlightAmount	-			-	-	aa2469b2d4a88936
+protocol	c:objc(pl)CILineOverlay	-			-	-	b724ce94cb34bd3d
+conforms	-	CILineOverlay	CIFilter		-	-	e6fb2b0bf34dd4ee
+property	c:objc(pl)CILineOverlay(py)inputImage	-			-	-	a118cd7be192c197
+property	c:objc(pl)CILineOverlay(py)NRNoiseLevel	-			-	-	2c9ee1b83cc1f012
+property	c:objc(pl)CILineOverlay(py)NRSharpness	-			-	-	4166ef9a34e69592
+property	c:objc(pl)CILineOverlay(py)edgeIntensity	-			-	-	a5e1da355cbf78ae
+property	c:objc(pl)CILineOverlay(py)threshold	-			-	-	08d3f6cf6ef82467
+property	c:objc(pl)CILineOverlay(py)contrast	-			-	-	17a98120ade5e224
+protocol	c:objc(pl)CIMix	-			-	-	0c6bf1f1ea912167
+conforms	-	CIMix	CIFilter		-	-	2c38cbc943335c8b
+property	c:objc(pl)CIMix(py)inputImage	-			-	-	97848b6757329fbf
+property	c:objc(pl)CIMix(py)backgroundImage	-			-	-	1ae526ac82a24e6b
+property	c:objc(pl)CIMix(py)amount	-			-	-	77607922df9527d7
+protocol	c:objc(pl)CIPersonSegmentation	-			-	-	404b025f14f2fe33
+conforms	-	CIPersonSegmentation	CIFilter		-	-	052ba4850e127934
+property	c:objc(pl)CIPersonSegmentation(py)inputImage	-			-	-	88622ae865d42fa4
+property	c:objc(pl)CIPersonSegmentation(py)qualityLevel	-			-	-	63fdd2d4d66b9d4e
+protocol	c:objc(pl)CIPixellate	-			-	-	c60c928bc34e8625
+conforms	-	CIPixellate	CIFilter		-	-	aaf9b64597043af1
+property	c:objc(pl)CIPixellate(py)inputImage	-			-	-	630a63b7e4ab0e5d
+property	c:objc(pl)CIPixellate(py)center	-			-	-	02a33a155abcfc61
+property	c:objc(pl)CIPixellate(py)scale	-			-	-	75a1ef9da9f4279f
+protocol	c:objc(pl)CIPointillize	-			-	-	bc761071118c7754
+conforms	-	CIPointillize	CIFilter		-	-	57e176b20ef7c156
+property	c:objc(pl)CIPointillize(py)inputImage	-			-	-	507ede4a57a0543a
+property	c:objc(pl)CIPointillize(py)radius	-			-	-	5d7120cc9074b119
+property	c:objc(pl)CIPointillize(py)center	-			-	-	0bd26135db909a09
+protocol	c:objc(pl)CISaliencyMap	-			-	-	81088ed544f803b3
+conforms	-	CISaliencyMap	CIFilter		-	-	b97d363d0fba664f
+property	c:objc(pl)CISaliencyMap(py)inputImage	-			-	-	9d835f788bf4ee74
+protocol	c:objc(pl)CIShadedMaterial	-			-	-	46deb9f2dd553aef
+conforms	-	CIShadedMaterial	CIFilter		-	-	ddc39abf648f7538
+property	c:objc(pl)CIShadedMaterial(py)inputImage	-			-	-	4783f4cfd6ac7a3c
+property	c:objc(pl)CIShadedMaterial(py)shadingImage	-			-	-	6fdfb9638fac276f
+property	c:objc(pl)CIShadedMaterial(py)scale	-			-	-	bfc1e67f9746f9ee
+protocol	c:objc(pl)CISobelGradients	-			-	-	b68a9871c4c43895
+conforms	-	CISobelGradients	CIFilter		-	-	55e03647e4fa49be
+property	c:objc(pl)CISobelGradients(py)inputImage	-			-	-	af2243709e3b88f0
+protocol	c:objc(pl)CISpotColor	-			-	-	45d620f9a1f890aa
+conforms	-	CISpotColor	CIFilter		-	-	7c07aed00a5c1db1
+property	c:objc(pl)CISpotColor(py)inputImage	-			-	-	640c80fb7f73f17e
+property	c:objc(pl)CISpotColor(py)centerColor1	-			-	-	2cf5d37022d1f6f5
+property	c:objc(pl)CISpotColor(py)replacementColor1	-			-	-	036bda1193843045
+property	c:objc(pl)CISpotColor(py)closeness1	-			-	-	d157b9e0358dfbc3
+property	c:objc(pl)CISpotColor(py)contrast1	-			-	-	c3e247f8c7a645e7
+property	c:objc(pl)CISpotColor(py)centerColor2	-			-	-	e2f4c773e28e59bb
+property	c:objc(pl)CISpotColor(py)replacementColor2	-			-	-	4ea12f4b2c3e2f95
+property	c:objc(pl)CISpotColor(py)closeness2	-			-	-	4922a8ef5458b491
+property	c:objc(pl)CISpotColor(py)contrast2	-			-	-	8ef0ce5c1c6b712e
+property	c:objc(pl)CISpotColor(py)centerColor3	-			-	-	70954fcd4cdaac68
+property	c:objc(pl)CISpotColor(py)replacementColor3	-			-	-	9fe22ecf97d031f7
+property	c:objc(pl)CISpotColor(py)closeness3	-			-	-	37c7c4b2c1e869a2
+property	c:objc(pl)CISpotColor(py)contrast3	-			-	-	9e0b747daa3f7c76
+protocol	c:objc(pl)CISpotLight	-			-	-	5351e6eb6d1de41b
+conforms	-	CISpotLight	CIFilter		-	-	ca6593790643945d
+property	c:objc(pl)CISpotLight(py)inputImage	-			-	-	81456d6b509f5f6f
+property	c:objc(pl)CISpotLight(py)lightPosition	-			-	-	5df96dfdd60d2cc7
+property	c:objc(pl)CISpotLight(py)lightPointsAt	-			-	-	d861184cac9a2f54
+property	c:objc(pl)CISpotLight(py)brightness	-			-	-	2df672556e0446b7
+property	c:objc(pl)CISpotLight(py)concentration	-			-	-	93d07abdd8ca463c
+property	c:objc(pl)CISpotLight(py)color	-			-	-	288533065201926d
+protocol	c:objc(pl)CIBokehBlur	-			-	-	0bf9d3c4288b72cb
+conforms	-	CIBokehBlur	CIFilter		-	-	9c3a81794544fe94
+property	c:objc(pl)CIBokehBlur(py)inputImage	-			-	-	dfd3be38f2188657
+property	c:objc(pl)CIBokehBlur(py)radius	-			-	-	7778e61a4288038d
+property	c:objc(pl)CIBokehBlur(py)ringAmount	-			-	-	a635050b26efe675
+property	c:objc(pl)CIBokehBlur(py)ringSize	-			-	-	b6e04339850c14ec
+property	c:objc(pl)CIBokehBlur(py)softness	-			-	-	cd3e09ba99082242
+protocol	c:objc(pl)CIBoxBlur	-			-	-	23f2adaef53301f2
+conforms	-	CIBoxBlur	CIFilter		-	-	bf221469af47b8ea
+property	c:objc(pl)CIBoxBlur(py)inputImage	-			-	-	c451761edc95b4a7
+property	c:objc(pl)CIBoxBlur(py)radius	-			-	-	ea0ce813ab127236
+protocol	c:objc(pl)CIDiscBlur	-			-	-	33e08eb1e9249180
+conforms	-	CIDiscBlur	CIFilter		-	-	a53e49e79f2f3063
+property	c:objc(pl)CIDiscBlur(py)inputImage	-			-	-	0216031c5d251b0f
+property	c:objc(pl)CIDiscBlur(py)radius	-			-	-	2e7de4a46e3ca490
+protocol	c:objc(pl)CIGaussianBlur	-			-	-	35f48068b038e279
+conforms	-	CIGaussianBlur	CIFilter		-	-	7d1da040ef0dfb22
+property	c:objc(pl)CIGaussianBlur(py)inputImage	-			-	-	bd5fec0cf4b69a46
+property	c:objc(pl)CIGaussianBlur(py)radius	-			-	-	be7ee1c2c0571213
+protocol	c:objc(pl)CIMaskedVariableBlur	-			-	-	282c04f79e5d0426
+conforms	-	CIMaskedVariableBlur	CIFilter		-	-	37e0f4ee73ec7c86
+property	c:objc(pl)CIMaskedVariableBlur(py)inputImage	-			-	-	acf65cef7c790c10
+property	c:objc(pl)CIMaskedVariableBlur(py)mask	-			-	-	d9b932eef1b08b61
+property	c:objc(pl)CIMaskedVariableBlur(py)radius	-			-	-	4a5daa57e308362a
+protocol	c:objc(pl)CIMedian	-			-	-	f7a2de1cb5b95590
+conforms	-	CIMedian	CIFilter		-	-	edc49c89f2ae2def
+property	c:objc(pl)CIMedian(py)inputImage	-			-	-	3c1b4e70e5199a75
+protocol	c:objc(pl)CIMorphologyGradient	-			-	-	674e1c3f5ffb62d6
+conforms	-	CIMorphologyGradient	CIFilter		-	-	c126a0158f9b0770
+property	c:objc(pl)CIMorphologyGradient(py)inputImage	-			-	-	4623baa68d1ace5c
+property	c:objc(pl)CIMorphologyGradient(py)radius	-			-	-	4b1bf98f67125d4e
+protocol	c:objc(pl)CIMorphologyMaximum	-			-	-	f5f832f3013a461c
+conforms	-	CIMorphologyMaximum	CIFilter		-	-	4001c884ce2d7cab
+property	c:objc(pl)CIMorphologyMaximum(py)inputImage	-			-	-	b3c2c99eab045fbb
+property	c:objc(pl)CIMorphologyMaximum(py)radius	-			-	-	3286dd74580e108f
+protocol	c:objc(pl)CIMorphologyMinimum	-			-	-	61ef5881a4a12080
+conforms	-	CIMorphologyMinimum	CIFilter		-	-	ec8115e6c556742f
+property	c:objc(pl)CIMorphologyMinimum(py)inputImage	-			-	-	35b139c346e574e9
+property	c:objc(pl)CIMorphologyMinimum(py)radius	-			-	-	8638edea0df4f2bb
+protocol	c:objc(pl)CIMorphologyRectangleMaximum	-			-	-	2f17887a22bb8a98
+conforms	-	CIMorphologyRectangleMaximum	CIFilter		-	-	17f7aa36946c8c34
+property	c:objc(pl)CIMorphologyRectangleMaximum(py)inputImage	-			-	-	66d193a79693cc4c
+property	c:objc(pl)CIMorphologyRectangleMaximum(py)width	-			-	-	205c0ab3d64e2f81
+property	c:objc(pl)CIMorphologyRectangleMaximum(py)height	-			-	-	5f6244bcdbfbd708
+protocol	c:objc(pl)CIMorphologyRectangleMinimum	-			-	-	0761d35687ae64fd
+conforms	-	CIMorphologyRectangleMinimum	CIFilter		-	-	41f69981b51c0368
+property	c:objc(pl)CIMorphologyRectangleMinimum(py)inputImage	-			-	-	51cc6496c72c5ef2
+property	c:objc(pl)CIMorphologyRectangleMinimum(py)width	-			-	-	75db713c60df086a
+property	c:objc(pl)CIMorphologyRectangleMinimum(py)height	-			-	-	3a887c051dd6b0e2
+protocol	c:objc(pl)CIMotionBlur	-			-	-	741a02a73c22bbe6
+conforms	-	CIMotionBlur	CIFilter		-	-	fc90ec787e98f912
+property	c:objc(pl)CIMotionBlur(py)inputImage	-			-	-	2c2b780b901c4211
+property	c:objc(pl)CIMotionBlur(py)radius	-			-	-	8528dcae0c4c93f9
+property	c:objc(pl)CIMotionBlur(py)angle	-			-	-	f3a1a4b439e65d77
+protocol	c:objc(pl)CINoiseReduction	-			-	-	58a8a45fdd93bbb0
+conforms	-	CINoiseReduction	CIFilter		-	-	8d1b55a673153eb1
+property	c:objc(pl)CINoiseReduction(py)inputImage	-			-	-	12357d3ec8fc45c0
+property	c:objc(pl)CINoiseReduction(py)noiseLevel	-			-	-	4ed9c83a778fff7e
+property	c:objc(pl)CINoiseReduction(py)sharpness	-			-	-	c6aa7e0906adc298
+protocol	c:objc(pl)CIZoomBlur	-			-	-	f1f034ca765b9c9f
+conforms	-	CIZoomBlur	CIFilter		-	-	f4346e01d6390218
+property	c:objc(pl)CIZoomBlur(py)inputImage	-			-	-	cbb3ae6cad2777c9
+property	c:objc(pl)CIZoomBlur(py)center	-			-	-	5353582a6430d1fc
+property	c:objc(pl)CIZoomBlur(py)amount	-			-	-	b59ae68a484fc2d0
+protocol	c:objc(pl)CIAreaReductionFilter	-			-	-	aea210d687a0a728
+conforms	-	CIAreaReductionFilter	CIFilter		-	-	64032ff5499903ed
+property	c:objc(pl)CIAreaReductionFilter(py)inputImage	-			-	-	e89b3a524b792bd1
+property	c:objc(pl)CIAreaReductionFilter(py)extent	-			-	-	3a3e9d1c0899fe0d
+protocol	c:objc(pl)CIAreaAverage	-			-	-	a493774cf93ffab9
+conforms	-	CIAreaAverage	CIAreaReductionFilter		-	-	0d1481a9c2b651cf
+protocol	c:objc(pl)CIAreaAverageMaximumRed	-			-	-	7a2d8162647451a6
+conforms	-	CIAreaAverageMaximumRed	CIAreaReductionFilter		-	-	8eb14c48bdcc5749
+protocol	c:objc(pl)CIAreaBoundsRed	-			-	-	c5e9e3da1186cf51
+conforms	-	CIAreaBoundsRed	CIAreaReductionFilter		-	-	0cf46c4e28dfb09e
+protocol	c:objc(pl)CIAreaHistogram	-			-	-	ce2a7d6024070fcf
+conforms	-	CIAreaHistogram	CIAreaReductionFilter		-	-	b6ca1c0d77d3be43
+property	c:objc(pl)CIAreaHistogram(py)scale	-			-	-	cd795d0707887637
+property	c:objc(pl)CIAreaHistogram(py)count	-			-	-	83feb5dc1976c718
+protocol	c:objc(pl)CIAreaLogarithmicHistogram	-			-	-	3f2a77a8df066bc1
+conforms	-	CIAreaLogarithmicHistogram	CIAreaReductionFilter		-	-	ad7e154fd0dd6c75
+property	c:objc(pl)CIAreaLogarithmicHistogram(py)scale	-			-	-	c6cf57d00ea09068
+property	c:objc(pl)CIAreaLogarithmicHistogram(py)count	-			-	-	7a85460078758ba4
+property	c:objc(pl)CIAreaLogarithmicHistogram(py)minimumStop	-			-	-	f19a59759e338e72
+property	c:objc(pl)CIAreaLogarithmicHistogram(py)maximumStop	-			-	-	a112daffad532945
+protocol	c:objc(pl)CIAreaMaximum	-			-	-	145ae0cf77b07a8c
+conforms	-	CIAreaMaximum	CIAreaReductionFilter		-	-	ac84561d0ffda2b3
+protocol	c:objc(pl)CIAreaMaximumAlpha	-			-	-	23c9c80230d19ed5
+conforms	-	CIAreaMaximumAlpha	CIAreaReductionFilter		-	-	a3629f8fcd423aec
+protocol	c:objc(pl)CIAreaMinimum	-			-	-	38c3ab4f771364e2
+conforms	-	CIAreaMinimum	CIAreaReductionFilter		-	-	11165de3b208c365
+protocol	c:objc(pl)CIAreaMinimumAlpha	-			-	-	ace47eb4c370c10c
+conforms	-	CIAreaMinimumAlpha	CIAreaReductionFilter		-	-	9b61d1500a7a98f1
+protocol	c:objc(pl)CIAreaMinMax	-			-	-	b71f115c6fce6c51
+conforms	-	CIAreaMinMax	CIAreaReductionFilter		-	-	cd4a9c9ab413d661
+protocol	c:objc(pl)CIAreaMinMaxRed	-			-	-	551db82ff833f378
+conforms	-	CIAreaMinMaxRed	CIAreaReductionFilter		-	-	139ee3cc1d304cde
+protocol	c:objc(pl)CIColumnAverage	-			-	-	c77ae2735e8482d3
+conforms	-	CIColumnAverage	CIAreaReductionFilter		-	-	ca782c744890e14c
+protocol	c:objc(pl)CIHistogramDisplay	-			-	-	bf4c4ea3e95a844b
+conforms	-	CIHistogramDisplay	CIFilter		-	-	baa40c61f8389d83
+property	c:objc(pl)CIHistogramDisplay(py)inputImage	-			-	-	eefe130905742d80
+property	c:objc(pl)CIHistogramDisplay(py)height	-			-	-	c9b1b4078862a944
+property	c:objc(pl)CIHistogramDisplay(py)highLimit	-			-	-	b538875f8ef392a7
+property	c:objc(pl)CIHistogramDisplay(py)lowLimit	-			-	-	cb31cf20390e1cdf
+protocol	c:objc(pl)CIKMeans	-			-	-	fc1de511dc768e0d
+conforms	-	CIKMeans	CIAreaReductionFilter		-	-	9df1e5773248a9b3
+property	c:objc(pl)CIKMeans(py)inputMeans	-			-	-	d3d428fc853d5dc5
+property	c:objc(pl)CIKMeans(py)count	-			-	-	c2fbed507f68b049
+property	c:objc(pl)CIKMeans(py)passes	-			-	-	5c1e645c982b6413
+property	c:objc(pl)CIKMeans(py)perceptual	-			-	-	79fa22795a6b1994
+protocol	c:objc(pl)CIRowAverage	-			-	-	7cb7aac8a11491c1
+conforms	-	CIRowAverage	CIAreaReductionFilter		-	-	5dd5a78a4f8d3445
+category	c:objc(cy)CIFilter@Builtins	-			ios=13.0/-/-/0	-	a4f021b7dfcbe5d8
+method	c:objc(cs)CIFilter(cm)distanceGradientFromRedMaskFilter	Builtins			ios=26.0/-/-/0	-	26da9d5acf5c9930
+method	c:objc(cs)CIFilter(cm)gaussianGradientFilter	Builtins			ios=13.0/-/-/0	-	a731b51d4a46e95e
+method	c:objc(cs)CIFilter(cm)hueSaturationValueGradientFilter	Builtins			ios=13.0/-/-/0	-	e6b59b7a5df01a36
+method	c:objc(cs)CIFilter(cm)linearGradientFilter	Builtins			ios=13.0/-/-/0	-	510cf09c6a23d505
+method	c:objc(cs)CIFilter(cm)radialGradientFilter	Builtins			ios=13.0/-/-/0	-	6c0905f190cab93c
+method	c:objc(cs)CIFilter(cm)signedDistanceGradientFromRedMaskFilter	Builtins			ios=26.0/-/-/0	-	2a5d2a9180856f7c
+method	c:objc(cs)CIFilter(cm)smoothLinearGradientFilter	Builtins			ios=13.0/-/-/0	-	a942ed38c01057e1
+method	c:objc(cs)CIFilter(cm)sharpenLuminanceFilter	Builtins			ios=13.0/-/-/0	-	b073171c7adacc83
+method	c:objc(cs)CIFilter(cm)unsharpMaskFilter	Builtins			ios=13.0/-/-/0	-	85ecd0076fe5cb3a
+method	c:objc(cs)CIFilter(cm)circularScreenFilter	Builtins			ios=13.0/-/-/0	-	ac8bd5e0de27eb28
+method	c:objc(cs)CIFilter(cm)CMYKHalftone	Builtins			ios=13.0/-/-/0	-	cf4dae32d45471fe
+method	c:objc(cs)CIFilter(cm)dotScreenFilter	Builtins			ios=13.0/-/-/0	-	a6626cbd2d29609f
+method	c:objc(cs)CIFilter(cm)hatchedScreenFilter	Builtins			ios=13.0/-/-/0	-	7defd0d59046468c
+method	c:objc(cs)CIFilter(cm)lineScreenFilter	Builtins			ios=13.0/-/-/0	-	89257e7a6bf76c39
+method	c:objc(cs)CIFilter(cm)bicubicScaleTransformFilter	Builtins			ios=13.0/-/-/0	-	3494146c3d59147b
+method	c:objc(cs)CIFilter(cm)edgePreserveUpsampleFilter	Builtins			ios=13.0/-/-/0	-	9cbd558dd929b290
+method	c:objc(cs)CIFilter(cm)keystoneCorrectionCombinedFilter	Builtins			ios=13.0/-/-/0	-	0f836220a13ba122
+method	c:objc(cs)CIFilter(cm)keystoneCorrectionHorizontalFilter	Builtins			ios=13.0/-/-/0	-	8374873b719f4d1f
+method	c:objc(cs)CIFilter(cm)keystoneCorrectionVerticalFilter	Builtins			ios=13.0/-/-/0	-	0eaa6dd50d3aa062
+method	c:objc(cs)CIFilter(cm)lanczosScaleTransformFilter	Builtins			ios=13.0/-/-/0	-	1972e29769127d4b
+method	c:objc(cs)CIFilter(cm)maximumScaleTransformFilter	Builtins			ios=18.0/-/-/0	-	4dfb0da5a677656d
+method	c:objc(cs)CIFilter(cm)perspectiveCorrectionFilter	Builtins			ios=13.0/-/-/0	-	7c81c94507a60d02
+method	c:objc(cs)CIFilter(cm)perspectiveRotateFilter	Builtins			ios=13.0/-/-/0	-	de8eb5d2de1f099a
+method	c:objc(cs)CIFilter(cm)perspectiveTransformFilter	Builtins			ios=13.0/-/-/0	-	a6d5b9d761ffae79
+method	c:objc(cs)CIFilter(cm)perspectiveTransformWithExtentFilter	Builtins			ios=13.0/-/-/0	-	ac5681b05754db33
+method	c:objc(cs)CIFilter(cm)straightenFilter	Builtins			ios=13.0/-/-/0	-	33fd8c6682af4c95
+method	c:objc(cs)CIFilter(cm)accordionFoldTransitionFilter	Builtins			ios=13.0/-/-/0	-	b13a2a4943aeb361
+method	c:objc(cs)CIFilter(cm)barsSwipeTransitionFilter	Builtins			ios=13.0/-/-/0	-	0e479838e124b294
+method	c:objc(cs)CIFilter(cm)copyMachineTransitionFilter	Builtins			ios=13.0/-/-/0	-	2e6fb2f1c590216c
+method	c:objc(cs)CIFilter(cm)disintegrateWithMaskTransitionFilter	Builtins			ios=13.0/-/-/0	-	4dd736637833de5a
+method	c:objc(cs)CIFilter(cm)dissolveTransitionFilter	Builtins			ios=13.0/-/-/0	-	0047a20f7c652209
+method	c:objc(cs)CIFilter(cm)flashTransitionFilter	Builtins			ios=13.0/-/-/0	-	ac60926ca50a5daf
+method	c:objc(cs)CIFilter(cm)modTransitionFilter	Builtins			ios=13.0/-/-/0	-	3669137ba0026fb3
+method	c:objc(cs)CIFilter(cm)pageCurlTransitionFilter	Builtins			ios=13.0/-/-/0	-	cbf76bfc6059bcf0
+method	c:objc(cs)CIFilter(cm)pageCurlWithShadowTransitionFilter	Builtins			ios=13.0/-/-/0	-	e6b59b1ced8c507c
+method	c:objc(cs)CIFilter(cm)rippleTransitionFilter	Builtins			ios=13.0/-/-/0	-	6b70c59363aaaa4a
+method	c:objc(cs)CIFilter(cm)swipeTransitionFilter	Builtins			ios=13.0/-/-/0	-	752f74b650c475a2
+method	c:objc(cs)CIFilter(cm)additionCompositingFilter	Builtins			ios=13.0/-/-/0	-	e9b892ad400ce552
+method	c:objc(cs)CIFilter(cm)colorBlendModeFilter	Builtins			ios=13.0/-/-/0	-	4a4fdd08925b8dee
+method	c:objc(cs)CIFilter(cm)colorBurnBlendModeFilter	Builtins			ios=13.0/-/-/0	-	0673f43fabf5a001
+method	c:objc(cs)CIFilter(cm)colorDodgeBlendModeFilter	Builtins			ios=13.0/-/-/0	-	a428e211d0b47ee3
+method	c:objc(cs)CIFilter(cm)darkenBlendModeFilter	Builtins			ios=13.0/-/-/0	-	06146c313d6e9c67
+method	c:objc(cs)CIFilter(cm)differenceBlendModeFilter	Builtins			ios=13.0/-/-/0	-	e0e22fdcda7c1069
+method	c:objc(cs)CIFilter(cm)divideBlendModeFilter	Builtins			ios=13.0/-/-/0	-	a8666542333cc503
+method	c:objc(cs)CIFilter(cm)exclusionBlendModeFilter	Builtins			ios=13.0/-/-/0	-	5fea72655a10dc81
+method	c:objc(cs)CIFilter(cm)hardLightBlendModeFilter	Builtins			ios=13.0/-/-/0	-	e8e450e0086cb7c0
+method	c:objc(cs)CIFilter(cm)hueBlendModeFilter	Builtins			ios=13.0/-/-/0	-	87052cdb953fa727
+method	c:objc(cs)CIFilter(cm)lightenBlendModeFilter	Builtins			ios=13.0/-/-/0	-	ac83aa2e0679e2f2
+method	c:objc(cs)CIFilter(cm)linearBurnBlendModeFilter	Builtins			ios=13.0/-/-/0	-	13f826c59c617754
+method	c:objc(cs)CIFilter(cm)linearDodgeBlendModeFilter	Builtins			ios=13.0/-/-/0	-	fe00a5ded9d5e823
+method	c:objc(cs)CIFilter(cm)linearLightBlendModeFilter	Builtins			ios=15.0/-/-/0	-	bf723b7d1b1de0e2
+method	c:objc(cs)CIFilter(cm)luminosityBlendModeFilter	Builtins			ios=13.0/-/-/0	-	2f9acd62da0849de
+method	c:objc(cs)CIFilter(cm)maximumCompositingFilter	Builtins			ios=13.0/-/-/0	-	20c24a8255cd2098
+method	c:objc(cs)CIFilter(cm)minimumCompositingFilter	Builtins			ios=13.0/-/-/0	-	15ba64904ce243fa
+method	c:objc(cs)CIFilter(cm)multiplyBlendModeFilter	Builtins			ios=13.0/-/-/0	-	f7aa7b517f8361e7
+method	c:objc(cs)CIFilter(cm)multiplyCompositingFilter	Builtins			ios=13.0/-/-/0	-	a56378578e1ba1bc
+method	c:objc(cs)CIFilter(cm)overlayBlendModeFilter	Builtins			ios=13.0/-/-/0	-	873d2695563a96cb
+method	c:objc(cs)CIFilter(cm)pinLightBlendModeFilter	Builtins			ios=13.0/-/-/0	-	f9c8c4816b625a1c
+method	c:objc(cs)CIFilter(cm)saturationBlendModeFilter	Builtins			ios=13.0/-/-/0	-	06400a23051c1f63
+method	c:objc(cs)CIFilter(cm)screenBlendModeFilter	Builtins			ios=13.0/-/-/0	-	410b3394bbb08d62
+method	c:objc(cs)CIFilter(cm)softLightBlendModeFilter	Builtins			ios=13.0/-/-/0	-	00342c56af83eb7a
+method	c:objc(cs)CIFilter(cm)sourceAtopCompositingFilter	Builtins			ios=13.0/-/-/0	-	4f7637f932fb3f71
+method	c:objc(cs)CIFilter(cm)sourceInCompositingFilter	Builtins			ios=13.0/-/-/0	-	49afec1a2ec16230
+method	c:objc(cs)CIFilter(cm)sourceOutCompositingFilter	Builtins			ios=13.0/-/-/0	-	98c2a562d67218bf
+method	c:objc(cs)CIFilter(cm)sourceOverCompositingFilter	Builtins			ios=13.0/-/-/0	-	1e3c85b76e8dfad0
+method	c:objc(cs)CIFilter(cm)subtractBlendModeFilter	Builtins			ios=13.0/-/-/0	-	739c7167bdc192ad
+method	c:objc(cs)CIFilter(cm)vividLightBlendModeFilter	Builtins			ios=15.0/-/-/0	-	9a31cc03f8de5f0a
+method	c:objc(cs)CIFilter(cm)colorAbsoluteDifferenceFilter	Builtins			ios=14.0/-/-/0	-	d3dc31940dd8fdae
+method	c:objc(cs)CIFilter(cm)colorClampFilter	Builtins			ios=13.0/-/-/0	-	c42ed11e7f18e2af
+method	c:objc(cs)CIFilter(cm)colorControlsFilter	Builtins			ios=13.0/-/-/0	-	2e19a65f72ff32e0
+method	c:objc(cs)CIFilter(cm)colorMatrixFilter	Builtins			ios=13.0/-/-/0	-	2e4fe4c943c5fec1
+method	c:objc(cs)CIFilter(cm)colorPolynomialFilter	Builtins			ios=13.0/-/-/0	-	44241513ecf64eed
+method	c:objc(cs)CIFilter(cm)colorThresholdFilter	Builtins			ios=14.0/-/-/0	-	addecd23f716eea6
+method	c:objc(cs)CIFilter(cm)colorThresholdOtsuFilter	Builtins			ios=14.0/-/-/0	-	659bbe8db72ce67a
+method	c:objc(cs)CIFilter(cm)depthToDisparityFilter	Builtins			ios=13.0/-/-/0	-	119b9a87263e1497
+method	c:objc(cs)CIFilter(cm)disparityToDepthFilter	Builtins			ios=13.0/-/-/0	-	d6745488dc203ca7
+method	c:objc(cs)CIFilter(cm)exposureAdjustFilter	Builtins			ios=13.0/-/-/0	-	e502fbf05166fe33
+method	c:objc(cs)CIFilter(cm)gammaAdjustFilter	Builtins			ios=13.0/-/-/0	-	5dbe3f64c78f4981
+method	c:objc(cs)CIFilter(cm)hueAdjustFilter	Builtins			ios=13.0/-/-/0	-	3c31064b7948d681
+method	c:objc(cs)CIFilter(cm)linearToSRGBToneCurveFilter	Builtins			ios=13.0/-/-/0	-	80afc34dd22b9509
+method	c:objc(cs)CIFilter(cm)sRGBToneCurveToLinearFilter	Builtins			ios=13.0/-/-/0	-	e16da9030c8c26dd
+method	c:objc(cs)CIFilter(cm)systemToneMapFilter	Builtins			ios=26.0/-/-/0	-	d551a8d7e4011df0
+method	c:objc(cs)CIFilter(cm)temperatureAndTintFilter	Builtins			ios=13.0/-/-/0	-	65580c759398336a
+method	c:objc(cs)CIFilter(cm)toneCurveFilter	Builtins			ios=13.0/-/-/0	-	e6559148687e1194
+method	c:objc(cs)CIFilter(cm)toneMapHeadroomFilter	Builtins			ios=18.0/-/-/0	-	4ce6b364f4fa46e3
+method	c:objc(cs)CIFilter(cm)vibranceFilter	Builtins			ios=13.0/-/-/0	-	16f67b5ee2dcfe9b
+method	c:objc(cs)CIFilter(cm)whitePointAdjustFilter	Builtins			ios=13.0/-/-/0	-	1d812b6567aec891
+method	c:objc(cs)CIFilter(cm)colorCrossPolynomialFilter	Builtins			ios=13.0/-/-/0	-	35f62d7d66c2b2da
+method	c:objc(cs)CIFilter(cm)colorCubeFilter	Builtins			ios=13.0/-/-/0	-	8ff0d0bfe109c103
+method	c:objc(cs)CIFilter(cm)colorCubesMixedWithMaskFilter	Builtins			ios=13.0/-/-/0	-	2d686458b471a159
+method	c:objc(cs)CIFilter(cm)colorCubeWithColorSpaceFilter	Builtins			ios=13.0/-/-/0	-	737f0765af1c0468
+method	c:objc(cs)CIFilter(cm)colorCurvesFilter	Builtins			ios=13.0/-/-/0	-	7db5772685fa2285
+method	c:objc(cs)CIFilter(cm)colorInvertFilter	Builtins			ios=13.0/-/-/0	-	399963d3ca2ff612
+method	c:objc(cs)CIFilter(cm)colorMapFilter	Builtins			ios=13.0/-/-/0	-	c4abd8867dab0ffa
+method	c:objc(cs)CIFilter(cm)colorMonochromeFilter	Builtins			ios=13.0/-/-/0	-	97e1a08c6a326083
+method	c:objc(cs)CIFilter(cm)colorPosterizeFilter	Builtins			ios=13.0/-/-/0	-	58a05a46d3895943
+method	c:objc(cs)CIFilter(cm)convertLabToRGBFilter	Builtins			ios=16.0/-/-/0	-	9620e71475dcc668
+method	c:objc(cs)CIFilter(cm)convertRGBtoLabFilter	Builtins			ios=16.0/-/-/0	-	14251d1e18630a5f
+method	c:objc(cs)CIFilter(cm)ditherFilter	Builtins			ios=13.0/-/-/0	-	3f7938636a8846e2
+method	c:objc(cs)CIFilter(cm)documentEnhancerFilter	Builtins			ios=13.0/-/-/0	-	57a438ba407adee6
+method	c:objc(cs)CIFilter(cm)falseColorFilter	Builtins			ios=13.0/-/-/0	-	d7164a75f6c0837b
+method	c:objc(cs)CIFilter(cm)LabDeltaE	Builtins			ios=13.0/-/-/0	-	160f5fa8a98cd5b4
+method	c:objc(cs)CIFilter(cm)maskToAlphaFilter	Builtins			ios=13.0/-/-/0	-	f8b59f93dc1a8cc5
+method	c:objc(cs)CIFilter(cm)maximumComponentFilter	Builtins			ios=13.0/-/-/0	-	ff93324ff102f8ee
+method	c:objc(cs)CIFilter(cm)minimumComponentFilter	Builtins			ios=13.0/-/-/0	-	af12025a257df10d
+method	c:objc(cs)CIFilter(cm)paletteCentroidFilter	Builtins			ios=13.0/-/-/0	-	feb7bdf022544963
+method	c:objc(cs)CIFilter(cm)palettizeFilter	Builtins			ios=13.0/-/-/0	-	d9132fc692f06a35
+method	c:objc(cs)CIFilter(cm)photoEffectChromeFilter	Builtins			ios=13.0/-/-/0	-	5512bbbf219d5a21
+method	c:objc(cs)CIFilter(cm)photoEffectFadeFilter	Builtins			ios=13.0/-/-/0	-	75017d54ef70fa0a
+method	c:objc(cs)CIFilter(cm)photoEffectInstantFilter	Builtins			ios=13.0/-/-/0	-	d29c67d39bffeb28
+method	c:objc(cs)CIFilter(cm)photoEffectMonoFilter	Builtins			ios=13.0/-/-/0	-	8918f79a6b9c1787
+method	c:objc(cs)CIFilter(cm)photoEffectNoirFilter	Builtins			ios=13.0/-/-/0	-	9160a9aaa2a45ca6
+method	c:objc(cs)CIFilter(cm)photoEffectProcessFilter	Builtins			ios=13.0/-/-/0	-	19b2608461e55efb
+method	c:objc(cs)CIFilter(cm)photoEffectTonalFilter	Builtins			ios=13.0/-/-/0	-	1732e75ccbf99ec8
+method	c:objc(cs)CIFilter(cm)photoEffectTransferFilter	Builtins			ios=13.0/-/-/0	-	ca35e764c8faf7ed
+method	c:objc(cs)CIFilter(cm)sepiaToneFilter	Builtins			ios=13.0/-/-/0	-	ef3c8ae9b22231fc
+method	c:objc(cs)CIFilter(cm)thermalFilter	Builtins			ios=13.0/-/-/0	-	f8c4a121e1d301f0
+method	c:objc(cs)CIFilter(cm)vignetteFilter	Builtins			ios=13.0/-/-/0	-	c4c78755b49b1c30
+method	c:objc(cs)CIFilter(cm)vignetteEffectFilter	Builtins			ios=13.0/-/-/0	-	9d246a5adad41ad9
+method	c:objc(cs)CIFilter(cm)xRayFilter	Builtins			ios=13.0/-/-/0	-	de0dd8eb0ab0cc6c
+method	c:objc(cs)CIFilter(cm)bumpDistortionFilter	Builtins			ios=14.0/-/-/0	-	5af5eea5c9f41b6b
+method	c:objc(cs)CIFilter(cm)bumpDistortionLinearFilter	Builtins			ios=14.0/-/-/0	-	f8a49f7d6d310217
+method	c:objc(cs)CIFilter(cm)circleSplashDistortionFilter	Builtins			ios=14.0/-/-/0	-	54803f340af9fad1
+method	c:objc(cs)CIFilter(cm)circularWrapFilter	Builtins			ios=14.0/-/-/0	-	338986080dc7d0d6
+method	c:objc(cs)CIFilter(cm)displacementDistortionFilter	Builtins			ios=14.0/-/-/0	-	b73d79041c639e50
+method	c:objc(cs)CIFilter(cm)drosteFilter	Builtins			ios=14.0/-/-/0	-	4c74b3063281de66
+method	c:objc(cs)CIFilter(cm)glassDistortionFilter	Builtins			ios=14.0/-/-/0	-	ed38a3f51df70bd6
+method	c:objc(cs)CIFilter(cm)glassLozengeFilter	Builtins			ios=14.0/-/-/0	-	13a019e6cc6e328b
+method	c:objc(cs)CIFilter(cm)holeDistortionFilter	Builtins			ios=14.0/-/-/0	-	0f5c3e5414a525ba
+method	c:objc(cs)CIFilter(cm)lightTunnelFilter	Builtins			ios=14.0/-/-/0	-	42b2ca674bf73e8f
+method	c:objc(cs)CIFilter(cm)ninePartStretchedFilter	Builtins			ios=14.0/-/-/0	-	9bc2432644601974
+method	c:objc(cs)CIFilter(cm)ninePartTiledFilter	Builtins			ios=14.0/-/-/0	-	d6d8b5767911b9b5
+method	c:objc(cs)CIFilter(cm)pinchDistortionFilter	Builtins			ios=14.0/-/-/0	-	92ac068335d00695
+method	c:objc(cs)CIFilter(cm)stretchCropFilter	Builtins			ios=14.0/-/-/0	-	fbf470606b07c38f
+method	c:objc(cs)CIFilter(cm)torusLensDistortionFilter	Builtins			ios=14.0/-/-/0	-	1b08af3ec3c57bf0
+method	c:objc(cs)CIFilter(cm)twirlDistortionFilter	Builtins			ios=14.0/-/-/0	-	06924763bfa4091c
+method	c:objc(cs)CIFilter(cm)vortexDistortionFilter	Builtins			ios=14.0/-/-/0	-	8283e3a10731365a
+method	c:objc(cs)CIFilter(cm)affineClampFilter	Builtins			ios=13.0/-/-/0	-	82a839d8441a4b2b
+method	c:objc(cs)CIFilter(cm)affineTileFilter	Builtins			ios=13.0/-/-/0	-	c585e3b1b6395eeb
+method	c:objc(cs)CIFilter(cm)eightfoldReflectedTileFilter	Builtins			ios=13.0/-/-/0	-	f71a5d8ea3bd4690
+method	c:objc(cs)CIFilter(cm)fourfoldReflectedTileFilter	Builtins			ios=13.0/-/-/0	-	7807fbe92649bb0e
+method	c:objc(cs)CIFilter(cm)fourfoldRotatedTileFilter	Builtins			ios=13.0/-/-/0	-	7bad9b33d538059e
+method	c:objc(cs)CIFilter(cm)fourfoldTranslatedTileFilter	Builtins			ios=13.0/-/-/0	-	2a9653fe4cc3c297
+method	c:objc(cs)CIFilter(cm)glideReflectedTileFilter	Builtins			ios=13.0/-/-/0	-	e69371a4fb1ab670
+method	c:objc(cs)CIFilter(cm)kaleidoscopeFilter	Builtins			ios=13.0/-/-/0	-	c9673435b191a29b
+method	c:objc(cs)CIFilter(cm)opTileFilter	Builtins			ios=13.0/-/-/0	-	1f10e1b0a59739f1
+method	c:objc(cs)CIFilter(cm)parallelogramTileFilter	Builtins			ios=13.0/-/-/0	-	bcd93f70d62e7452
+method	c:objc(cs)CIFilter(cm)perspectiveTileFilter	Builtins			ios=13.0/-/-/0	-	6f62b5a700c57e10
+method	c:objc(cs)CIFilter(cm)sixfoldReflectedTileFilter	Builtins			ios=13.0/-/-/0	-	2a2efb7619ef5dfc
+method	c:objc(cs)CIFilter(cm)sixfoldRotatedTileFilter	Builtins			ios=13.0/-/-/0	-	55ed070170dee459
+method	c:objc(cs)CIFilter(cm)triangleKaleidoscopeFilter	Builtins			ios=13.0/-/-/0	-	27ddf55f7ab11ae7
+method	c:objc(cs)CIFilter(cm)triangleTileFilter	Builtins			ios=13.0/-/-/0	-	f863146b1c99054c
+method	c:objc(cs)CIFilter(cm)twelvefoldReflectedTileFilter	Builtins			ios=13.0/-/-/0	-	0fbbc7e70f536789
+method	c:objc(cs)CIFilter(cm)attributedTextImageGeneratorFilter	Builtins			ios=13.0/-/-/0	-	c5cc2baf4eddf549
+method	c:objc(cs)CIFilter(cm)aztecCodeGeneratorFilter	Builtins			ios=13.0/-/-/0	-	a73e4b4d5a4a93be
+method	c:objc(cs)CIFilter(cm)barcodeGeneratorFilter	Builtins			ios=13.0/-/-/0	-	e752bc48c3ce9bfe
+method	c:objc(cs)CIFilter(cm)blurredRectangleGeneratorFilter	Builtins			ios=17.0/-/-/0	-	8af0e390a92b387d
+method	c:objc(cs)CIFilter(cm)blurredRoundedRectangleGeneratorFilter	Builtins			ios=26.0/-/-/0	-	f8162646d0220fc1
+method	c:objc(cs)CIFilter(cm)checkerboardGeneratorFilter	Builtins			ios=13.0/-/-/0	-	8debb0b689171ca2
+method	c:objc(cs)CIFilter(cm)code128BarcodeGeneratorFilter	Builtins			ios=13.0/-/-/0	-	a8d39bbc2b76b66b
+method	c:objc(cs)CIFilter(cm)lenticularHaloGeneratorFilter	Builtins			ios=13.0/-/-/0	-	27f9b8f70240cb29
+method	c:objc(cs)CIFilter(cm)meshGeneratorFilter	Builtins			ios=13.0/-/-/0	-	c6b04cfde87ddf83
+method	c:objc(cs)CIFilter(cm)PDF417BarcodeGenerator	Builtins			ios=13.0/-/-/0	-	f7bb509bb801f267
+method	c:objc(cs)CIFilter(cm)QRCodeGenerator	Builtins			ios=13.0/-/-/0	-	b80b1a4c3d53ff49
+method	c:objc(cs)CIFilter(cm)randomGeneratorFilter	Builtins			ios=13.0/-/-/0	-	0e6bb9ffe6764b98
+method	c:objc(cs)CIFilter(cm)roundedQRCodeGeneratorFilter	Builtins			ios=26.0/-/-/0	-	ee66166ad1094955
+method	c:objc(cs)CIFilter(cm)roundedRectangleGeneratorFilter	Builtins			ios=13.0/-/-/0	-	290ff69c5ea482b0
+method	c:objc(cs)CIFilter(cm)roundedRectangleStrokeGeneratorFilter	Builtins			ios=17.0/-/-/0	-	110aa97199422327
+method	c:objc(cs)CIFilter(cm)starShineGeneratorFilter	Builtins			ios=13.0/-/-/0	-	5fc93828f4b565d3
+method	c:objc(cs)CIFilter(cm)stripesGeneratorFilter	Builtins			ios=13.0/-/-/0	-	7945e9ace1d63210
+method	c:objc(cs)CIFilter(cm)sunbeamsGeneratorFilter	Builtins			ios=13.0/-/-/0	-	84f4d60d0a7d7c08
+method	c:objc(cs)CIFilter(cm)textImageGeneratorFilter	Builtins			ios=13.0/-/-/0	-	9848d721e3b8aff9
+method	c:objc(cs)CIFilter(cm)blendWithAlphaMaskFilter	Builtins			ios=13.0/-/-/0	-	4c3e8e450bf2177d
+method	c:objc(cs)CIFilter(cm)blendWithBlueMaskFilter	Builtins			ios=13.0/-/-/0	-	07d4accbf7c6314a
+method	c:objc(cs)CIFilter(cm)blendWithMaskFilter	Builtins			ios=13.0/-/-/0	-	5904e768b10d0088
+method	c:objc(cs)CIFilter(cm)blendWithRedMaskFilter	Builtins			ios=13.0/-/-/0	-	a7bf3ce25fe67589
+method	c:objc(cs)CIFilter(cm)bloomFilter	Builtins			ios=13.0/-/-/0	-	4da830abc426e395
+method	c:objc(cs)CIFilter(cm)cannyEdgeDetectorFilter	Builtins			ios=17.0/-/-/0	-	c0f9a32d555d5d67
+method	c:objc(cs)CIFilter(cm)comicEffectFilter	Builtins			ios=13.0/-/-/0	-	e38918754724580b
+method	c:objc(cs)CIFilter(cm)convolution3X3Filter	Builtins			ios=13.0/-/-/0	-	859c97637952935e
+method	c:objc(cs)CIFilter(cm)convolution5X5Filter	Builtins			ios=13.0/-/-/0	-	20bc3ea0d0ab51ea
+method	c:objc(cs)CIFilter(cm)convolution7X7Filter	Builtins			ios=13.0/-/-/0	-	d5fec7a54ada61c2
+method	c:objc(cs)CIFilter(cm)convolution9HorizontalFilter	Builtins			ios=13.0/-/-/0	-	a283c5d1251c5e10
+method	c:objc(cs)CIFilter(cm)convolution9VerticalFilter	Builtins			ios=13.0/-/-/0	-	c38d3aa7a10e78ce
+method	c:objc(cs)CIFilter(cm)convolutionRGB3X3Filter	Builtins			ios=15.0/-/-/0	-	ae162a97e898bbe5
+method	c:objc(cs)CIFilter(cm)convolutionRGB5X5Filter	Builtins			ios=15.0/-/-/0	-	8728d284522d263d
+method	c:objc(cs)CIFilter(cm)convolutionRGB7X7Filter	Builtins			ios=15.0/-/-/0	-	635abdb560bae936
+method	c:objc(cs)CIFilter(cm)convolutionRGB9HorizontalFilter	Builtins			ios=15.0/-/-/0	-	02e837a2556475a8
+method	c:objc(cs)CIFilter(cm)convolutionRGB9VerticalFilter	Builtins			ios=15.0/-/-/0	-	7ec1531b0c6d93ac
+method	c:objc(cs)CIFilter(cm)coreMLModelFilter	Builtins			ios=13.0/-/-/0	-	3b326bb8bc9f4de0
+method	c:objc(cs)CIFilter(cm)crystallizeFilter	Builtins			ios=13.0/-/-/0	-	03a21c2842a965b3
+method	c:objc(cs)CIFilter(cm)depthOfFieldFilter	Builtins			ios=13.0/-/-/0	-	395c2ca7b5ba71ed
+method	c:objc(cs)CIFilter(cm)edgesFilter	Builtins			ios=13.0/-/-/0	-	4b76a7af229ae2da
+method	c:objc(cs)CIFilter(cm)edgeWorkFilter	Builtins			ios=13.0/-/-/0	-	0195d1c5a6a7655b
+method	c:objc(cs)CIFilter(cm)gaborGradientsFilter	Builtins			ios=13.0/-/-/0	-	9e373579bbae8902
+method	c:objc(cs)CIFilter(cm)gloomFilter	Builtins			ios=13.0/-/-/0	-	d03f21a0a3bdc207
+method	c:objc(cs)CIFilter(cm)heightFieldFromMaskFilter	Builtins			ios=13.0/-/-/0	-	a1b74f0082fd1fa7
+method	c:objc(cs)CIFilter(cm)hexagonalPixellateFilter	Builtins			ios=13.0/-/-/0	-	870efe201b025635
+method	c:objc(cs)CIFilter(cm)highlightShadowAdjustFilter	Builtins			ios=13.0/-/-/0	-	37dddba10cd9ef57
+method	c:objc(cs)CIFilter(cm)lineOverlayFilter	Builtins			ios=13.0/-/-/0	-	f5b314eed5912e2b
+method	c:objc(cs)CIFilter(cm)mixFilter	Builtins			ios=13.0/-/-/0	-	d26632c659cba40d
+method	c:objc(cs)CIFilter(cm)personSegmentationFilter	Builtins			ios=15.0/-/-/0	-	d476d0d60f6d46a3
+method	c:objc(cs)CIFilter(cm)pixellateFilter	Builtins			ios=13.0/-/-/0	-	0442691830282c06
+method	c:objc(cs)CIFilter(cm)pointillizeFilter	Builtins			ios=13.0/-/-/0	-	031d10e26fa3c7e1
+method	c:objc(cs)CIFilter(cm)saliencyMapFilter	Builtins			ios=13.0/-/-/0	-	ecb290c3e07a20a0
+method	c:objc(cs)CIFilter(cm)shadedMaterialFilter	Builtins			ios=13.0/-/-/0	-	3356b7ebe70305a4
+method	c:objc(cs)CIFilter(cm)sobelGradientsFilter	Builtins			ios=17.0/-/-/0	-	bdf32eefcd049e93
+method	c:objc(cs)CIFilter(cm)spotColorFilter	Builtins			ios=13.0/-/-/0	-	41fb0a4053280447
+method	c:objc(cs)CIFilter(cm)spotLightFilter	Builtins			ios=13.0/-/-/0	-	2b59ccdca6b95207
+method	c:objc(cs)CIFilter(cm)bokehBlurFilter	Builtins			ios=13.0/-/-/0	-	75cabe7dae9ee723
+method	c:objc(cs)CIFilter(cm)boxBlurFilter	Builtins			ios=13.0/-/-/0	-	fe1b104611eb1ebc
+method	c:objc(cs)CIFilter(cm)discBlurFilter	Builtins			ios=13.0/-/-/0	-	ba0b780457b0fe46
+method	c:objc(cs)CIFilter(cm)gaussianBlurFilter	Builtins			ios=13.0/-/-/0	-	0f00ecfff7a0340f
+method	c:objc(cs)CIFilter(cm)maskedVariableBlurFilter	Builtins			ios=13.0/-/-/0	-	b900876d902a6e21
+method	c:objc(cs)CIFilter(cm)medianFilter	Builtins			ios=13.0/-/-/0	-	d38fd21800ab4789
+method	c:objc(cs)CIFilter(cm)morphologyGradientFilter	Builtins			ios=13.0/-/-/0	-	f5ecab68f4fe1248
+method	c:objc(cs)CIFilter(cm)morphologyMaximumFilter	Builtins			ios=13.0/-/-/0	-	08f412233e4dcbcc
+method	c:objc(cs)CIFilter(cm)morphologyMinimumFilter	Builtins			ios=13.0/-/-/0	-	ce4880759d7aa5aa
+method	c:objc(cs)CIFilter(cm)morphologyRectangleMaximumFilter	Builtins			ios=13.0/-/-/0	-	e5a4235f60d9f5a5
+method	c:objc(cs)CIFilter(cm)morphologyRectangleMinimumFilter	Builtins			ios=13.0/-/-/0	-	7f31c9119154e054
+method	c:objc(cs)CIFilter(cm)motionBlurFilter	Builtins			ios=13.0/-/-/0	-	3fa16cd948a53dd1
+method	c:objc(cs)CIFilter(cm)noiseReductionFilter	Builtins			ios=13.0/-/-/0	-	767639f7ce1a6477
+method	c:objc(cs)CIFilter(cm)zoomBlurFilter	Builtins			ios=13.0/-/-/0	-	2d0677ed792f0907
+method	c:objc(cs)CIFilter(cm)areaAlphaWeightedHistogramFilter	Builtins			ios=18.0/-/-/0	-	aa445ba639099e4d
+method	c:objc(cs)CIFilter(cm)areaAverageFilter	Builtins			ios=14.0/-/-/0	-	698f940d8c6490f7
+method	c:objc(cs)CIFilter(cm)areaAverageMaximumRedFilter	Builtins			ios=26.0/-/-/0	-	681b4f2e99db9d32
+method	c:objc(cs)CIFilter(cm)areaBoundsRedFilter	Builtins			ios=18.0/-/-/0	-	5a0f1262be0b001a
+method	c:objc(cs)CIFilter(cm)areaHistogramFilter	Builtins			ios=14.0/-/-/0	-	064ee0db8dad0b10
+method	c:objc(cs)CIFilter(cm)areaLogarithmicHistogramFilter	Builtins			ios=16.0/-/-/0	-	21294a071847b98f
+method	c:objc(cs)CIFilter(cm)areaMaximumFilter	Builtins			ios=14.0/-/-/0	-	677e7e14e7493735
+method	c:objc(cs)CIFilter(cm)areaMaximumAlphaFilter	Builtins			ios=14.0/-/-/0	-	3129a995d6e56d03
+method	c:objc(cs)CIFilter(cm)areaMinimumFilter	Builtins			ios=14.0/-/-/0	-	613f8e85ebd4efbd
+method	c:objc(cs)CIFilter(cm)areaMinimumAlphaFilter	Builtins			ios=14.0/-/-/0	-	305d03cd5f72ca6c
+method	c:objc(cs)CIFilter(cm)areaMinMaxFilter	Builtins			ios=14.0/-/-/0	-	e8aec61124a0d5b3
+method	c:objc(cs)CIFilter(cm)areaMinMaxRedFilter	Builtins			ios=14.0/-/-/0	-	a0335b880bb92fc9
+method	c:objc(cs)CIFilter(cm)columnAverageFilter	Builtins			ios=14.0/-/-/0	-	bcb21ba43252f632
+method	c:objc(cs)CIFilter(cm)histogramDisplayFilter	Builtins			ios=14.0/-/-/0	-	19d3e4e3851d1e9b
+method	c:objc(cs)CIFilter(cm)KMeansFilter	Builtins			ios=14.0/-/-/0	-	516d40f1d3bf1799
+method	c:objc(cs)CIFilter(cm)rowAverageFilter	Builtins			ios=14.0/-/-/0	-	e61d2c3ce1e580ec
+interface	c:objc(cs)CIVector	-			ios=5.0/-/-/0	-	c6065c73fbdaab99
+super	-	CIVector	NSObject		-	-	5d4c737c7e0370fe
+conforms	-	CIVector	NSCopying		-	-	29251b3908e831bf
+conforms	-	CIVector	NSSecureCoding		-	-	eeb985ba8d34533b
+union	c:objc(cs)CIVector@U@CIVector.h@999	-	-		ios=5.0/-/-/0	-	e1b2eafb22790bfd
+field	c:objc(cs)CIVector@U@CIVector.h@999@FI@vec	-			-	-	32ef48625a0d9f4b
+field	c:objc(cs)CIVector@U@CIVector.h@999@FI@ptr	-			-	-	4b19bd873ed83171
+method	c:objc(cs)CIVector(cm)vectorWithValues:count:	-			ios=5.0/-/-/0	-	17ba9cd142881fb0
+method	c:objc(cs)CIVector(cm)vectorWithX:	-			ios=5.0/-/-/0	-	b1237100ce4d6d47
+method	c:objc(cs)CIVector(cm)vectorWithX:Y:	-			ios=5.0/-/-/0	-	4865e5a6bb11cf0f
+method	c:objc(cs)CIVector(cm)vectorWithX:Y:Z:	-			ios=5.0/-/-/0	-	74c19a6ca2ac036e
+method	c:objc(cs)CIVector(cm)vectorWithX:Y:Z:W:	-			ios=5.0/-/-/0	-	03f4919b23f6eece
+method	c:objc(cs)CIVector(cm)vectorWithCGPoint:	-			ios=5.0/-/-/0	-	8035c6a7ed18630b
+method	c:objc(cs)CIVector(cm)vectorWithCGRect:	-			ios=5.0/-/-/0	-	0b18b2db0a725167
+method	c:objc(cs)CIVector(cm)vectorWithCGAffineTransform:	-			ios=5.0/-/-/0	-	8f83f6fcad6155af
+method	c:objc(cs)CIVector(cm)vectorWithString:	-			ios=5.0/-/-/0	-	173aaa21af5488cd
+method	c:objc(cs)CIVector(im)initWithValues:count:	-			ios=5.0/-/-/0	-	0e5208aa5e27f7f3
+method	c:objc(cs)CIVector(im)initWithX:	-			ios=5.0/-/-/0	-	6ef57f4cca489ea1
+method	c:objc(cs)CIVector(im)initWithX:Y:	-			ios=5.0/-/-/0	-	4ad4c7a3111e8a1f
+method	c:objc(cs)CIVector(im)initWithX:Y:Z:	-			ios=5.0/-/-/0	-	4cde8d32794169ce
+method	c:objc(cs)CIVector(im)initWithX:Y:Z:W:	-			ios=5.0/-/-/0	-	19f8171f935e74b1
+method	c:objc(cs)CIVector(im)initWithCGPoint:	-			ios=5.0/-/-/0	-	00f168160388795d
+method	c:objc(cs)CIVector(im)initWithCGRect:	-			ios=5.0/-/-/0	-	4afe8ccebd492b46
+method	c:objc(cs)CIVector(im)initWithCGAffineTransform:	-			ios=5.0/-/-/0	-	b2e5c39fd883a81e
+method	c:objc(cs)CIVector(im)initWithString:	-			ios=5.0/-/-/0	-	28f61e8254adc90f
+method	c:objc(cs)CIVector(im)valueAtIndex:	-			ios=5.0/-/-/0	-	3da1705acb24cdd9
+property	c:objc(cs)CIVector(py)count	-			ios=5.0/-/-/0	-	94a41357f0be2bb8
+property	c:objc(cs)CIVector(py)X	-			ios=5.0/-/-/0	-	26774a3d2b5d61f4
+property	c:objc(cs)CIVector(py)Y	-			ios=5.0/-/-/0	-	d14514e48e54a6a4
+property	c:objc(cs)CIVector(py)Z	-			ios=5.0/-/-/0	-	3e53f5d36fdf30aa
+property	c:objc(cs)CIVector(py)W	-			ios=5.0/-/-/0	-	d8461491a6c3b63c
+property	c:objc(cs)CIVector(py)CGPointValue	-			ios=5.0/-/-/0	-	1d56038a3d5a4fae
+property	c:objc(cs)CIVector(py)CGRectValue	-			ios=5.0/-/-/0	-	10f14e0864076743
+property	c:objc(cs)CIVector(py)CGAffineTransformValue	-			ios=5.0/-/-/0	-	669011cbbb99da28
+property	c:objc(cs)CIVector(py)stringRepresentation	-			ios=5.0/-/-/0	-	d1e0217da9fb8e36
+interface	c:objc(cs)CIColor	-			ios=5.0/-/-/0	-	a979f63a4ada56f1
+super	-	CIColor	NSObject		-	-	677d1c62dc00e951
+conforms	-	CIColor	NSSecureCoding		-	-	69b9d840b5a5213a
+conforms	-	CIColor	NSCopying		-	-	55668999c7dd5023
+method	c:objc(cs)CIColor(cm)colorWithCGColor:	-			ios=5.0/-/-/0	-	2e1c0c038d259b19
+method	c:objc(cs)CIColor(cm)colorWithRed:green:blue:alpha:	-			ios=5.0/-/-/0	-	3d4b92c595ba5177
+method	c:objc(cs)CIColor(cm)colorWithRed:green:blue:	-			ios=5.0/-/-/0	-	c73439df123d2151
+method	c:objc(cs)CIColor(cm)colorWithRed:green:blue:alpha:colorSpace:	-			ios=10.0/-/-/0	-	5508ef1ac1672d0d
+method	c:objc(cs)CIColor(cm)colorWithRed:green:blue:colorSpace:	-			ios=10.0/-/-/0	-	54a9ba48823a7003
+method	c:objc(cs)CIColor(cm)colorWithString:	-			ios=5.0/-/-/0	-	da3bd5fe81d6a021
+method	c:objc(cs)CIColor(im)initWithCGColor:	-			ios=5.0/-/-/0	-	1424780397c1c896
+method	c:objc(cs)CIColor(im)initWithRed:green:blue:alpha:	-			ios=5.0/-/-/0	-	192710a97d673e34
+method	c:objc(cs)CIColor(im)initWithRed:green:blue:	-			ios=9.0/-/-/0	-	6536fbace3dac856
+method	c:objc(cs)CIColor(im)initWithRed:green:blue:alpha:colorSpace:	-			ios=10.0/-/-/0	-	1fca025074707f45
+method	c:objc(cs)CIColor(im)initWithRed:green:blue:colorSpace:	-			ios=10.0/-/-/0	-	875e1e937f452ac9
+property	c:objc(cs)CIColor(py)numberOfComponents	-			ios=5.0/-/-/0	-	df60cedd9edf0ed2
+property	c:objc(cs)CIColor(py)components	-			ios=5.0/-/-/0	-	f55417bc99951871
+property	c:objc(cs)CIColor(py)alpha	-			ios=5.0/-/-/0	-	2612cd0733d70e3e
+property	c:objc(cs)CIColor(py)colorSpace	-			ios=5.0/-/-/0	-	f31e2366422c788e
+property	c:objc(cs)CIColor(py)red	-			ios=5.0/-/-/0	-	8f2ab63ff2eb5c09
+property	c:objc(cs)CIColor(py)green	-			ios=5.0/-/-/0	-	29f19aa37cedbfee
+property	c:objc(cs)CIColor(py)blue	-			ios=5.0/-/-/0	-	a30566a4cf226411
+property	c:objc(cs)CIColor(py)stringRepresentation	-			ios=5.0/-/-/0	-	51fd9e9b46fe16ef
+property	c:objc(cs)CIColor(cpy)blackColor	-			ios=10.0/-/-/0	-	530f228b8f990159
+property	c:objc(cs)CIColor(cpy)whiteColor	-			ios=10.0/-/-/0	-	3501fc37a9954e72
+property	c:objc(cs)CIColor(cpy)grayColor	-			ios=10.0/-/-/0	-	ce8154c6bfc5ae17
+property	c:objc(cs)CIColor(cpy)redColor	-			ios=10.0/-/-/0	-	a459ffaee82ebc16
+property	c:objc(cs)CIColor(cpy)greenColor	-			ios=10.0/-/-/0	-	95bc682fd65a3c35
+property	c:objc(cs)CIColor(cpy)blueColor	-			ios=10.0/-/-/0	-	991a6f909133e715
+property	c:objc(cs)CIColor(cpy)cyanColor	-			ios=10.0/-/-/0	-	95cb4ece1b6ed2d2
+property	c:objc(cs)CIColor(cpy)magentaColor	-			ios=10.0/-/-/0	-	4c65007398c71fcf
+property	c:objc(cs)CIColor(cpy)yellowColor	-			ios=10.0/-/-/0	-	9add2681c0a80a47
+property	c:objc(cs)CIColor(cpy)clearColor	-			ios=10.0/-/-/0	-	fb3b33093e8ea69d
+interface	c:objc(cs)CIImage	-			ios=5.0/-/-/0	-	e375fe7661fd3a85
+super	-	CIImage	NSObject		-	-	36b9964e42af3035
+conforms	-	CIImage	NSSecureCoding		-	-	3f2883e2684e382d
+conforms	-	CIImage	NSCopying		-	-	55ab9e9578ea74c4
+method	c:objc(cs)CIImage(cm)imageWithCGImage:	-			ios=5.0/-/-/0	-	41ece4284f348efa
+method	c:objc(cs)CIImage(cm)imageWithCGImage:options:	-			ios=5.0/-/-/0	-	0b527900a7acfa3a
+method	c:objc(cs)CIImage(cm)imageWithCGImageSource:index:options:	-			ios=13.0/-/-/0	-	a228499f610dc853
+method	c:objc(cs)CIImage(cm)imageWithCGLayer:	-			ios=-/-/-/1	-	1f5600dca2c7005a
+method	c:objc(cs)CIImage(cm)imageWithCGLayer:options:	-			ios=-/-/-/1	-	d74780eee33c2040
+method	c:objc(cs)CIImage(cm)imageWithBitmapData:bytesPerRow:size:format:colorSpace:	-			ios=5.0/-/-/0	-	00fbd405b667efcd
+method	c:objc(cs)CIImage(cm)imageWithTexture:size:flipped:colorSpace:	-			ios=6.0/12.0/-/0	-	c9d29a2c9c1defa9
+method	c:objc(cs)CIImage(cm)imageWithTexture:size:flipped:options:	-			ios=-/-/-/1	-	30624e2f29de7c16
+method	c:objc(cs)CIImage(cm)imageWithMTLTexture:options:	-			ios=9.0/-/-/0	-	a8b9d7850c42a3fd
+method	c:objc(cs)CIImage(cm)imageWithContentsOfURL:	-			ios=5.0/-/-/0	-	8d4a1f310eff446c
+method	c:objc(cs)CIImage(cm)imageWithContentsOfURL:options:	-			ios=5.0/-/-/0	-	467cef5b3ab4a7d4
+method	c:objc(cs)CIImage(cm)imageWithData:	-			ios=5.0/-/-/0	-	74119652c60ac27e
+method	c:objc(cs)CIImage(cm)imageWithData:options:	-			ios=5.0/-/-/0	-	ac0bba302cfec880
+method	c:objc(cs)CIImage(cm)imageWithCVImageBuffer:	-			ios=9.0/-/-/0	-	b3fce342cd19d2da
+method	c:objc(cs)CIImage(cm)imageWithCVImageBuffer:options:	-			ios=9.0/-/-/0	-	a6d99692846d7e25
+method	c:objc(cs)CIImage(cm)imageWithCVPixelBuffer:	-			ios=5.0/-/-/0	-	a142ee1fd65327a2
+method	c:objc(cs)CIImage(cm)imageWithCVPixelBuffer:options:	-			ios=5.0/-/-/0	-	c787f1ad490b1c2f
+method	c:objc(cs)CIImage(cm)imageWithIOSurface:	-			ios=5.0/-/-/0	-	028e35d103edec98
+method	c:objc(cs)CIImage(cm)imageWithIOSurface:options:	-			ios=5.0/-/-/0	-	741a4468ec6f18f0
+method	c:objc(cs)CIImage(cm)imageWithColor:	-			ios=5.0/-/-/0	-	a70acfbb1ff2938d
+method	c:objc(cs)CIImage(cm)emptyImage	-			ios=5.0/-/-/0	-	64ab0e09245046be
+property	c:objc(cs)CIImage(cpy)blackImage	-			ios=13.0/-/-/0	-	9fbeaca6f6beb4b4
+property	c:objc(cs)CIImage(cpy)whiteImage	-			ios=13.0/-/-/0	-	c252fc77316e9c5b
+property	c:objc(cs)CIImage(cpy)grayImage	-			ios=13.0/-/-/0	-	b90013ee2372c8a3
+property	c:objc(cs)CIImage(cpy)redImage	-			ios=13.0/-/-/0	-	50cb8dbfe9f60cc5
+property	c:objc(cs)CIImage(cpy)greenImage	-			ios=13.0/-/-/0	-	32b8a7c1155189d8
+property	c:objc(cs)CIImage(cpy)blueImage	-			ios=13.0/-/-/0	-	b01c65ef9af80ccb
+property	c:objc(cs)CIImage(cpy)cyanImage	-			ios=13.0/-/-/0	-	652a1b9f74860ed4
+property	c:objc(cs)CIImage(cpy)magentaImage	-			ios=13.0/-/-/0	-	1b5e069e37821e1d
+property	c:objc(cs)CIImage(cpy)yellowImage	-			ios=13.0/-/-/0	-	7c9db4e5c840008c
+property	c:objc(cs)CIImage(cpy)clearImage	-			ios=13.0/-/-/0	-	9f7192927760ae3f
+method	c:objc(cs)CIImage(im)initWithCGImage:	-			ios=5.0/-/-/0	-	365d56d45cbda63c
+method	c:objc(cs)CIImage(im)initWithCGImage:options:	-			ios=5.0/-/-/0	-	0aa953409ee95df9
+method	c:objc(cs)CIImage(im)initWithCGImageSource:index:options:	-			ios=13.0/-/-/0	-	e05498a0335a6c26
+method	c:objc(cs)CIImage(im)initWithCGLayer:	-			ios=-/-/-/1	-	eaefeef068b6b399
+method	c:objc(cs)CIImage(im)initWithCGLayer:options:	-			ios=-/-/-/1	-	a803eeea74f47611
+method	c:objc(cs)CIImage(im)initWithData:	-			ios=5.0/-/-/0	-	3819e8a24da878fd
+method	c:objc(cs)CIImage(im)initWithData:options:	-			ios=5.0/-/-/0	-	9935c4b5a0453250
+method	c:objc(cs)CIImage(im)initWithBitmapData:bytesPerRow:size:format:colorSpace:	-			ios=5.0/-/-/0	-	f037ac9a1985384b
+method	c:objc(cs)CIImage(im)initWithTexture:size:flipped:colorSpace:	-			ios=6.0/12.0/-/0	-	05566f83b84d13b1
+method	c:objc(cs)CIImage(im)initWithTexture:size:flipped:options:	-			ios=-/-/-/1	-	4be13b345d42d066
+method	c:objc(cs)CIImage(im)initWithMTLTexture:options:	-			ios=9.0/-/-/0	-	e17b24c74ddc7270
+method	c:objc(cs)CIImage(im)initWithContentsOfURL:	-			ios=5.0/-/-/0	-	0eb8d43575a0be57
+method	c:objc(cs)CIImage(im)initWithContentsOfURL:options:	-			ios=5.0/-/-/0	-	ae7fc4888d02ada7
+method	c:objc(cs)CIImage(im)initWithIOSurface:	-			ios=5.0/-/-/0	-	6ac5aa46c11f675b
+method	c:objc(cs)CIImage(im)initWithIOSurface:options:	-			ios=5.0/-/-/0	-	1215cad6e82b7ebc
+method	c:objc(cs)CIImage(im)initWithCVImageBuffer:	-			ios=9.0/-/-/0	-	ac2d310f0eda25e8
+method	c:objc(cs)CIImage(im)initWithCVImageBuffer:options:	-			ios=9.0/-/-/0	-	84d5df2ad4085ecf
+method	c:objc(cs)CIImage(im)initWithCVPixelBuffer:	-			ios=5.0/-/-/0	-	2454d04b1290015a
+method	c:objc(cs)CIImage(im)initWithCVPixelBuffer:options:	-			ios=5.0/-/-/0	-	f4751389de02e2fb
+method	c:objc(cs)CIImage(im)initWithColor:	-			ios=5.0/-/-/0	-	51f512028f29fe30
+method	c:objc(cs)CIImage(im)imageByApplyingTransform:	-			ios=5.0/-/-/0	-	939a1bf0da11d6d9
+method	c:objc(cs)CIImage(im)imageByApplyingTransform:highQualityDownsample:	-			ios=10.0/-/-/0	-	52d769c49aa63803
+method	c:objc(cs)CIImage(im)imageByApplyingOrientation:	-			ios=8.0/-/-/0	-	11e4e8eec3272a99
+method	c:objc(cs)CIImage(im)imageTransformForOrientation:	-			ios=8.0/-/-/0	-	ea98f46d342ee471
+method	c:objc(cs)CIImage(im)imageByApplyingCGOrientation:	-			ios=11.0/-/-/0	-	da03741a83870a8d
+method	c:objc(cs)CIImage(im)imageTransformForCGOrientation:	-			ios=11.0/-/-/0	-	01be936d72efab5d
+method	c:objc(cs)CIImage(im)imageByCompositingOverImage:	-			ios=8.0/-/-/0	-	ef99c14c12df34a3
+method	c:objc(cs)CIImage(im)imageByCroppingToRect:	-			ios=5.0/-/-/0	-	f76c6c6b6c147e99
+method	c:objc(cs)CIImage(im)imageByClampingToExtent	-			ios=8.0/-/-/0	-	159793720422dc34
+method	c:objc(cs)CIImage(im)imageByClampingToRect:	-			ios=10.0/-/-/0	-	1574f3bf8cfaab29
+method	c:objc(cs)CIImage(im)imageByApplyingFilter:withInputParameters:	-			ios=8.0/-/-/0	-	243268f3260c4181
+method	c:objc(cs)CIImage(im)imageByApplyingFilter:	-			ios=11.0/-/-/0	-	f57ac8ca60c58abf
+method	c:objc(cs)CIImage(im)imageByColorMatchingColorSpaceToWorkingSpace:	-			ios=10.0/-/-/0	-	839ac9d3531c81ed
+method	c:objc(cs)CIImage(im)imageByColorMatchingWorkingSpaceToColorSpace:	-			ios=10.0/-/-/0	-	405156071f2d6aff
+method	c:objc(cs)CIImage(im)imageByPremultiplyingAlpha	-			ios=10.0/-/-/0	-	e2cf223bd7c8660f
+method	c:objc(cs)CIImage(im)imageByUnpremultiplyingAlpha	-			ios=10.0/-/-/0	-	d3e0236141400c5a
+method	c:objc(cs)CIImage(im)imageBySettingAlphaOneInExtent:	-			ios=10.0/-/-/0	-	affbd8ac0226dad5
+method	c:objc(cs)CIImage(im)imageByApplyingGaussianBlurWithSigma:	-			ios=10.0/-/-/0	-	630a12d2b8e4db3a
+method	c:objc(cs)CIImage(im)imageBySettingProperties:	-			ios=10.0/-/-/0	-	65efc5df070be488
+method	c:objc(cs)CIImage(im)imageBySamplingLinear	-			ios=11.0/-/-/0	-	c52aaebccfe923ab
+method	c:objc(cs)CIImage(im)imageBySamplingNearest	-			ios=11.0/-/-/0	-	665a0bc59a5b47ed
+method	c:objc(cs)CIImage(im)imageByInsertingIntermediate	-			ios=12.0/-/-/0	-	2fd8b6f2a82567df
+method	c:objc(cs)CIImage(im)imageByInsertingIntermediate:	-			ios=12.0/-/-/0	-	838ae56b58ebcd84
+method	c:objc(cs)CIImage(im)imageByInsertingTiledIntermediate	-			ios=26.0/-/-/0	-	b715c3ff15f25fb2
+method	c:objc(cs)CIImage(im)imageByApplyingGainMap:	-			ios=18.0/-/-/0	-	e0efe190b12fc402
+method	c:objc(cs)CIImage(im)imageByApplyingGainMap:headroom:	-			ios=18.0/-/-/0	-	62a9b07d59b008b9
+method	c:objc(cs)CIImage(im)imageBySettingContentHeadroom:	-			ios=26.0/-/-/0	-	c92d19c52ea51cd3
+method	c:objc(cs)CIImage(im)imageBySettingContentAverageLightLevel:	-			ios=26.0/-/-/0	-	c318134f28cfd62a
+property	c:objc(cs)CIImage(py)extent	-			ios=5.0/-/-/0	-	bfc6a655cbc57c8e
+property	c:objc(cs)CIImage(py)opaque	-			ios=5.0/-/-/0	-	b548093ad743ab4c
+property	c:objc(cs)CIImage(py)properties	-			ios=5.0/-/-/0	-	ba12ad5239eeecdb
+property	c:objc(cs)CIImage(py)definition	-			ios=-/-/-/1	-	90280b8d00dc0232
+property	c:objc(cs)CIImage(py)url	-			ios=9.0/-/-/0	-	ae130c2e50121ffd
+property	c:objc(cs)CIImage(py)colorSpace	-			ios=9.0/-/-/0	-	2d065a9b75fcbfad
+property	c:objc(cs)CIImage(py)contentHeadroom	-			ios=18.0/-/-/0	-	658fa659a29afc5f
+property	c:objc(cs)CIImage(py)contentAverageLightLevel	-			ios=26.0/-/-/0	-	c6f9654ad6c4634b
+property	c:objc(cs)CIImage(py)pixelBuffer	-			ios=10.0/-/-/0	-	21e23fb95bce4e78
+property	c:objc(cs)CIImage(py)CGImage	-			ios=10.0/-/-/0	-	a289f018fb130b0f
+property	c:objc(cs)CIImage(py)metalTexture	-			ios=18.0/-/-/0	-	e4143a9f2bf78dab
+method	c:objc(cs)CIImage(im)regionOfInterestForImage:inRect:	-			ios=6.0/-/-/0	-	c0632b3cef0eb47c
+typedef	c:@T@CIFormat	-			-	-	b2bef5fd9a66049f
+var	c:@kCIFormatARGB8	-			ios=6.0/-/-/0	-	0249413a59c55905
+var	c:@kCIFormatBGRA8	-			-	-	77643ca982ea1b9f
+var	c:@kCIFormatRGBA8	-			-	-	b7a65b4f72640d94
+var	c:@kCIFormatRGBX8	-			-	-	0612793200d2e302
+var	c:@kCIFormatABGR8	-			ios=9.0/-/-/0	-	ec4251b3d0b2ed34
+var	c:@kCIFormatRGBAh	-			ios=6.0/-/-/0	-	edff139deb6da0a9
+var	c:@kCIFormatRGBA16	-			ios=10.0/-/-/0	-	713085ab15dfb1e0
+var	c:@kCIFormatRGBAf	-			ios=7.0/-/-/0	-	53aa8a612719559d
+var	c:@kCIFormatRGBX16	-			ios=14.2/-/-/0	-	bb8e4392e6cef2ff
+var	c:@kCIFormatRGBXh	-			ios=17.0/-/-/0	-	7d6176b8c1a6041e
+var	c:@kCIFormatRGBXf	-			ios=17.0/-/-/0	-	faa48273cf66d08c
+var	c:@kCIFormatRGB10	-			ios=17.0/-/-/0	-	1073c61cc3c8e01a
+var	c:@kCIFormatA8	-			ios=9.0/-/-/0	-	1a08e3e31ce9c476
+var	c:@kCIFormatA16	-			ios=9.0/-/-/0	-	0b23390a67eb6e10
+var	c:@kCIFormatAh	-			ios=9.0/-/-/0	-	b59cf844d6d6b2fc
+var	c:@kCIFormatAf	-			ios=9.0/-/-/0	-	798ca47685cc9119
+var	c:@kCIFormatR8	-			ios=9.0/-/-/0	-	5f172651ea67b0bd
+var	c:@kCIFormatR16	-			ios=9.0/-/-/0	-	40cef20a18ac4e71
+var	c:@kCIFormatRh	-			ios=9.0/-/-/0	-	42f3996815ee8ecc
+var	c:@kCIFormatRf	-			ios=9.0/-/-/0	-	7d6df106519864e9
+var	c:@kCIFormatRG8	-			ios=9.0/-/-/0	-	e56537e84c9a2714
+var	c:@kCIFormatRG16	-			ios=9.0/-/-/0	-	b1e2080a4d5e5894
+var	c:@kCIFormatRGh	-			ios=9.0/-/-/0	-	941ae7ca3ccd50d6
+var	c:@kCIFormatRGf	-			ios=9.0/-/-/0	-	b2fedf58c7fcab45
+var	c:@kCIFormatL8	-			ios=10.0/-/-/0	-	3163ae881a2dce19
+var	c:@kCIFormatL16	-			ios=10.0/-/-/0	-	55e6d542d6b96816
+var	c:@kCIFormatLh	-			ios=10.0/-/-/0	-	35fa21d27394f97e
+var	c:@kCIFormatLf	-			ios=10.0/-/-/0	-	247d3daae92c558a
+var	c:@kCIFormatLA8	-			ios=10.0/-/-/0	-	08ff7af3aeac98ec
+var	c:@kCIFormatLA16	-			ios=10.0/-/-/0	-	9a8569f2e66ba3c1
+var	c:@kCIFormatLAh	-			ios=10.0/-/-/0	-	b01f2a7c2c4333d0
+var	c:@kCIFormatLAf	-			ios=10.0/-/-/0	-	ee944dee6360dbb1
+typedef	c:@T@CIImageOption	-			-	-	9a58835f5d1b2ade
+var	c:@kCIImageColorSpace	-			-	-	8933cb9633c7fa49
+var	c:@kCIImageApplyCleanAperture	-			ios=26.0/-/-/0	-	735c7d3a22afd5ef
+var	c:@kCIImageToneMapHDRtoSDR	-			ios=14.1/-/-/0	-	c8f9120233dd0f04
+var	c:@kCIImageExpandToHDR	-			ios=17.0/-/-/0	-	6c6a8533234551b6
+var	c:@kCIImageContentHeadroom	-			ios=18.0/-/-/0	-	757d89d3573def31
+var	c:@kCIImageContentAverageLightLevel	-			ios=26.0/-/-/0	-	a761bd614f25a7ea
+var	c:@kCIImageNearestSampling	-			ios=11.0/-/-/0	-	7e3b058562cff000
+var	c:@kCIImageCacheImmediately	-			-	-	c7b6192b15fff74b
+var	c:@kCIImageProperties	-			ios=5.0/-/-/0	-	a833cdcb4415d7d2
+var	c:@kCIImageApplyOrientationProperty	-			ios=11.0/-/-/0	-	8765a675ae96deaa
+var	c:@kCIImageTextureTarget	-			ios=-/-/-/1	-	ab269213cd15d1c8
+var	c:@kCIImageTextureFormat	-			ios=-/-/-/1	-	be76b1f7d185773c
+var	c:@kCIImageAuxiliaryDepth	-			ios=11.0/-/-/0	-	6fe60878ffb2b5fd
+var	c:@kCIImageAuxiliaryDisparity	-			ios=11.0/-/-/0	-	c5a27a9ef8efaff8
+var	c:@kCIImageAuxiliaryPortraitEffectsMatte	-			ios=12.0/-/-/0	-	a6895ba023a668ce
+var	c:@kCIImageAuxiliarySemanticSegmentationSkinMatte	-			ios=13.0/-/-/0	-	f0110d331792ffb3
+var	c:@kCIImageAuxiliarySemanticSegmentationHairMatte	-			ios=13.0/-/-/0	-	a6908abea72f01eb
+var	c:@kCIImageAuxiliarySemanticSegmentationTeethMatte	-			ios=13.0/-/-/0	-	68503f859c1ab508
+var	c:@kCIImageAuxiliarySemanticSegmentationGlassesMatte	-			ios=14.1/-/-/0	-	fd6c73a84b0114c6
+var	c:@kCIImageAuxiliarySemanticSegmentationSkyMatte	-			ios=14.3/-/-/0	-	779b6e9e6916fd25
+var	c:@kCIImageAuxiliaryHDRGainMap	-			ios=14.1/-/-/0	-	f2a1924ccdde2346
+category	c:objc(cy)CIImage@AutoAdjustment	-			ios=5.0/-/-/0	-	a5869285714f8cbe
+method	c:objc(cs)CIImage(im)autoAdjustmentFilters	AutoAdjustment			ios=5.0/-/-/0	-	da313f44714d6298
+method	c:objc(cs)CIImage(im)autoAdjustmentFiltersWithOptions:	AutoAdjustment			ios=5.0/-/-/0	-	6d5a1e60696d2a93
+typedef	c:@T@CIImageAutoAdjustmentOption	-			-	-	7038b2b3256292a3
+var	c:@kCIImageAutoAdjustEnhance	-			ios=5.0/-/-/0	-	1a6cee7791577f42
+var	c:@kCIImageAutoAdjustRedEye	-			ios=5.0/-/-/0	-	adf6a458d7bbd706
+var	c:@kCIImageAutoAdjustFeatures	-			ios=5.0/-/-/0	-	55100beeb72438da
+var	c:@kCIImageAutoAdjustCrop	-			ios=8.0/-/-/0	-	c50db5f16a4d910f
+var	c:@kCIImageAutoAdjustLevel	-			ios=8.0/-/-/0	-	60ed5248de5e8bc9
+category	c:objc(cy)CIImage@LabConversion	-			ios=5.0/-/-/0	-	ccaa486f44aadfb3
+method	c:objc(cs)CIImage(im)imageByConvertingWorkingSpaceToLab	LabConversion			ios=16.0/-/-/0	-	ee70d081b92218c2
+method	c:objc(cs)CIImage(im)imageByConvertingLabToWorkingSpace	LabConversion			ios=16.0/-/-/0	-	625820ec0dd6343e
+category	c:objc(cy)CIImage@AVDepthData	-			ios=5.0/-/-/0	-	c121fcea9a153803
+property	c:objc(cs)CIImage(py)depthData	AVDepthData			ios=11.0/-/-/0	-	668c7493f4207ce0
+method	c:objc(cs)CIImage(im)initWithDepthData:options:	AVDepthData			ios=11.0/-/-/0	-	ff1dfc8bf08ab705
+method	c:objc(cs)CIImage(im)initWithDepthData:	AVDepthData			ios=11.0/-/-/0	-	a9815f1848ae6c5c
+method	c:objc(cs)CIImage(cm)imageWithDepthData:options:	AVDepthData			ios=11.0/-/-/0	-	1cb00867893c1d4e
+method	c:objc(cs)CIImage(cm)imageWithDepthData:	AVDepthData			ios=11.0/-/-/0	-	40a65cc112260f8e
+category	c:objc(cy)CIImage@AVPortraitEffectsMatte	-			ios=5.0/-/-/0	-	d4933f21b11cbbe2
+property	c:objc(cs)CIImage(py)portraitEffectsMatte	AVPortraitEffectsMatte			ios=12.0/-/-/0	-	360404bc5bec844a
+method	c:objc(cs)CIImage(im)initWithPortaitEffectsMatte:options:	AVPortraitEffectsMatte			ios=12.0/-/-/0	-	033a51566adf43b6
+method	c:objc(cs)CIImage(im)initWithPortaitEffectsMatte:	AVPortraitEffectsMatte			ios=11.0/-/-/0	-	8f4c01bda9599993
+method	c:objc(cs)CIImage(cm)imageWithPortaitEffectsMatte:options:	AVPortraitEffectsMatte			ios=12.0/-/-/0	-	bcea38ee2abe5a6d
+method	c:objc(cs)CIImage(cm)imageWithPortaitEffectsMatte:	AVPortraitEffectsMatte			ios=12.0/-/-/0	-	3d684a7f3d7cfdee
+category	c:objc(cy)CIImage@AVSemanticSegmentationMatte	-			ios=5.0/-/-/0	-	7d54b1afb5c7f0ad
+property	c:objc(cs)CIImage(py)semanticSegmentationMatte	AVSemanticSegmentationMatte			ios=13.0/-/-/0	-	78b00113e6996209
+method	c:objc(cs)CIImage(im)initWithSemanticSegmentationMatte:options:	AVSemanticSegmentationMatte			ios=13.0/-/-/0	-	3759720e05bfbd75
+method	c:objc(cs)CIImage(im)initWithSemanticSegmentationMatte:	AVSemanticSegmentationMatte			ios=13.0/-/-/0	-	6bb44359ca6e27a3
+method	c:objc(cs)CIImage(cm)imageWithSemanticSegmentationMatte:options:	AVSemanticSegmentationMatte			ios=13.0/-/-/0	-	460a376d87618331
+method	c:objc(cs)CIImage(cm)imageWithSemanticSegmentationMatte:	AVSemanticSegmentationMatte			ios=13.0/-/-/0	-	75c689cfd47734a5
+interface	c:objc(cs)CIContext	-			ios=5.0/-/-/0	-	8714d477085c624e
+super	-	CIContext	NSObject		-	-	977d901d32391bf6
+method	c:objc(cs)CIContext(cm)contextWithCGContext:options:	-			ios=9.0/-/-/0	-	a3794bb50d82985d
+method	c:objc(cs)CIContext(cm)contextWithOptions:	-			ios=5.0/-/-/0	-	a5b6c1cf393c76a8
+method	c:objc(cs)CIContext(cm)context	-			ios=5.0/-/-/0	-	d3a9fe02ab1bd404
+method	c:objc(cs)CIContext(im)initWithOptions:	-			ios=5.0/-/-/0	-	23c9ef2c0c9fd01c
+method	c:objc(cs)CIContext(im)init	-			ios=5.0/-/-/0	-	769887c49d539691
+method	c:objc(cs)CIContext(cm)contextWithEAGLContext:	-			ios=5.0/12.0/-/0	-	ff6c2154708e2d92
+method	c:objc(cs)CIContext(cm)contextWithEAGLContext:options:	-			ios=5.0/12.0/-/0	-	5d5a1352d63e9101
+method	c:objc(cs)CIContext(cm)contextWithMTLDevice:	-			ios=9.0/-/-/0	-	83437208300cd7af
+method	c:objc(cs)CIContext(cm)contextWithMTLDevice:options:	-			ios=9.0/-/-/0	-	1e6e6c696eff9b26
+method	c:objc(cs)CIContext(cm)contextWithMTLCommandQueue:	-			ios=13.0/-/-/0	-	7f30cc9c1af7091e
+method	c:objc(cs)CIContext(cm)contextWithMTLCommandQueue:options:	-			ios=13.0/-/-/0	-	a7b551a1c07fb63d
+property	c:objc(cs)CIContext(py)workingColorSpace	-			ios=9.0/-/-/0	-	7a1d7cf791cc0fd7
+property	c:objc(cs)CIContext(py)workingFormat	-			ios=9.0/-/-/0	-	200e643fa376a710
+method	c:objc(cs)CIContext(im)drawImage:atPoint:fromRect:	-			ios=5.0/6.0/-/0	-	a9de6112895cf7e9
+method	c:objc(cs)CIContext(im)drawImage:inRect:fromRect:	-			ios=5.0/-/-/0	-	4008e21fee83d210
+method	c:objc(cs)CIContext(im)createCGLayerWithSize:info:	-			ios=-/-/-/1	-	682a5999c57718bd
+method	c:objc(cs)CIContext(im)render:toBitmap:rowBytes:bounds:format:colorSpace:	-			ios=5.0/-/-/0	-	01bf4bec6511fd28
+method	c:objc(cs)CIContext(im)render:toIOSurface:bounds:colorSpace:	-			ios=5.0/-/-/0	-	3eff06d551472cb1
+method	c:objc(cs)CIContext(im)render:toCVPixelBuffer:	-			ios=5.0/-/-/0	-	31352b24d832601c
+method	c:objc(cs)CIContext(im)render:toCVPixelBuffer:bounds:colorSpace:	-			ios=5.0/-/-/0	-	ba79fc7d7370ea80
+method	c:objc(cs)CIContext(im)render:toMTLTexture:commandBuffer:bounds:colorSpace:	-			ios=9.0/-/-/0	-	48f7a470d015f8f8
+method	c:objc(cs)CIContext(im)reclaimResources	-			ios=-/-/-/1	-	137305ef7183d520
+method	c:objc(cs)CIContext(im)clearCaches	-			ios=10.0/-/-/0	-	e7b7960539197807
+method	c:objc(cs)CIContext(im)inputImageMaximumSize	-			ios=5.0/-/-/0	-	68da24e70fd15180
+method	c:objc(cs)CIContext(im)outputImageMaximumSize	-			ios=5.0/-/-/0	-	a57b7717d69f439a
+typedef	c:@T@CIContextOption	-			-	-	42cc27966aaf283d
+var	c:@kCIContextOutputColorSpace	-			-	-	e9f73e64976466e6
+var	c:@kCIContextWorkingColorSpace	-			-	-	9aac6bab76fbc961
+var	c:@kCIContextWorkingFormat	-			ios=8.0/-/-/0	-	960c2084d4e54da7
+var	c:@kCIContextHighQualityDownsample	-			ios=9.0/-/-/0	-	facb5934139174bd
+var	c:@kCIContextOutputPremultiplied	-			ios=7.0/-/-/0	-	28c9b7afa6fcb170
+var	c:@kCIContextCacheIntermediates	-			ios=10.0/-/-/0	-	2cdb1d330f8c4eef
+var	c:@kCIContextUseSoftwareRenderer	-			-	-	68332fb45fe62d2d
+var	c:@kCIContextPriorityRequestLow	-			ios=8.0/-/-/0	-	237f7797dbe703db
+var	c:@kCIContextAllowLowPower	-			ios=13.0/-/-/0	-	f89d60b70c1bd385
+var	c:@kCIContextName	-			ios=12.0/-/-/0	-	06f435a1fa732932
+var	c:@kCIContextCVMetalTextureCache	-			ios=26.0/-/-/0	-	339277e576d55f64
+var	c:@kCIContextMemoryLimit	-			ios=17.0/-/-/0	-	965cf654071753c8
+category	c:objc(cy)CIContext@createCGImage	-			ios=5.0/-/-/0	-	c0e637f227ca187c
+method	c:objc(cs)CIContext(im)createCGImage:fromRect:	createCGImage			ios=5.0/-/-/0	-	ff42d56cbe78b0bb
+method	c:objc(cs)CIContext(im)createCGImage:fromRect:format:colorSpace:	createCGImage			ios=5.0/-/-/0	-	e09a51ddf7f96334
+method	c:objc(cs)CIContext(im)createCGImage:fromRect:format:colorSpace:deferred:	createCGImage			ios=10.0/-/-/0	-	887bd458aaee776d
+method	c:objc(cs)CIContext(im)createCGImage:fromRect:format:colorSpace:deferred:calculateHDRStats:	createCGImage			ios=26.0/-/-/0	-	718c0db7811a2282
+category	c:objc(cy)CIContext@CalculateHDRStats	-			ios=5.0/-/-/0	-	83fb88438fd623dc
+method	c:objc(cs)CIContext(im)calculateHDRStatsForIOSurface:	CalculateHDRStats			ios=26.0/-/-/0	-	92cfd0266a3079ed
+method	c:objc(cs)CIContext(im)calculateHDRStatsForCVPixelBuffer:	CalculateHDRStats			ios=26.0/-/-/0	-	9cb5dad62f3a9c5b
+method	c:objc(cs)CIContext(im)calculateHDRStatsForCGImage:	CalculateHDRStats			ios=26.0/-/-/0	-	b4313c787e44e384
+method	c:objc(cs)CIContext(im)calculateHDRStatsForImage:	CalculateHDRStats			ios=26.0/-/-/0	-	3d36d3fe8998a36a
+category	c:objc(cy)CIContext@OfflineGPUSupport	-			ios=5.0/-/-/0	-	457757f97834ebbe
+method	c:objc(cs)CIContext(cm)offlineGPUCount	OfflineGPUSupport			ios=-/-/-/1	-	218053cf88d71f16
+typedef	c:@T@CIImageRepresentationOption	-			-	-	a70342f65cecf6f9
+category	c:objc(cy)CIContext@ImageRepresentation	-			ios=5.0/-/-/0	-	8d6d5809b4a0f3f9
+method	c:objc(cs)CIContext(im)TIFFRepresentationOfImage:format:colorSpace:options:	ImageRepresentation			ios=10.0/-/-/0	-	b6e3e0bea38987bc
+method	c:objc(cs)CIContext(im)JPEGRepresentationOfImage:colorSpace:options:	ImageRepresentation			ios=10.0/-/-/0	-	d2812a726e7830d8
+method	c:objc(cs)CIContext(im)HEIFRepresentationOfImage:format:colorSpace:options:	ImageRepresentation			ios=11.0/-/-/0	-	66ad9e2f3751e666
+method	c:objc(cs)CIContext(im)HEIF10RepresentationOfImage:colorSpace:options:error:	ImageRepresentation			ios=15.0/-/-/0	-	13057b5f08967f22
+method	c:objc(cs)CIContext(im)PNGRepresentationOfImage:format:colorSpace:options:	ImageRepresentation			ios=11.0/-/-/0	-	f746fa6777062a4b
+method	c:objc(cs)CIContext(im)OpenEXRRepresentationOfImage:options:error:	ImageRepresentation			ios=17.0/-/-/0	-	15927c561ed0bd5e
+method	c:objc(cs)CIContext(im)writeTIFFRepresentationOfImage:toURL:format:colorSpace:options:error:	ImageRepresentation			ios=10.0/-/-/0	-	28f18418a337ec76
+method	c:objc(cs)CIContext(im)writePNGRepresentationOfImage:toURL:format:colorSpace:options:error:	ImageRepresentation			ios=11.0/-/-/0	-	9e5d5ec48f3bb3c2
+method	c:objc(cs)CIContext(im)writeJPEGRepresentationOfImage:toURL:colorSpace:options:error:	ImageRepresentation			ios=10.0/-/-/0	-	f4fd62524752aa59
+method	c:objc(cs)CIContext(im)writeHEIFRepresentationOfImage:toURL:format:colorSpace:options:error:	ImageRepresentation			ios=11.0/-/-/0	-	661b3452789c9d0b
+method	c:objc(cs)CIContext(im)writeHEIF10RepresentationOfImage:toURL:colorSpace:options:error:	ImageRepresentation			ios=15.0/-/-/0	-	0048c2a050050385
+method	c:objc(cs)CIContext(im)writeOpenEXRRepresentationOfImage:toURL:options:error:	ImageRepresentation			ios=17.0/-/-/0	-	925a19175d666421
+var	c:@kCIImageRepresentationAVDepthData	-			ios=11.0/-/-/0	-	cf7129d15bacfdad
+var	c:@kCIImageRepresentationDepthImage	-			ios=11.0/-/-/0	-	59fb4903f6f7b3ab
+var	c:@kCIImageRepresentationDisparityImage	-			ios=11.0/-/-/0	-	f3020d9026d9bf93
+var	c:@kCIImageRepresentationAVPortraitEffectsMatte	-			ios=12.0/-/-/0	-	174f81da60885add
+var	c:@kCIImageRepresentationPortraitEffectsMatteImage	-			ios=12.0/-/-/0	-	cc81c5f3d37b7418
+var	c:@kCIImageRepresentationAVSemanticSegmentationMattes	-			ios=13.0/-/-/0	-	94b56aa5ecdafa3d
+var	c:@kCIImageRepresentationSemanticSegmentationSkinMatteImage	-			ios=13.0/-/-/0	-	f9bf783c3d7d5e78
+var	c:@kCIImageRepresentationSemanticSegmentationHairMatteImage	-			ios=13.0/-/-/0	-	c8afb4802f1d968b
+var	c:@kCIImageRepresentationSemanticSegmentationTeethMatteImage	-			ios=13.0/-/-/0	-	7ca6cd6ee5c51d4c
+var	c:@kCIImageRepresentationSemanticSegmentationGlassesMatteImage	-			ios=14.1/-/-/0	-	eca50b40e4f2a694
+var	c:@kCIImageRepresentationSemanticSegmentationSkyMatteImage	-			ios=14.3/-/-/0	-	19e8cc1ebfccc6e9
+var	c:@kCIImageRepresentationHDRImage	-			ios=18.0/-/-/0	-	80b92a0d42259c44
+var	c:@kCIImageRepresentationHDRGainMapImage	-			ios=14.1/-/-/0	-	91b15376dd9470fc
+var	c:@kCIImageRepresentationHDRGainMapAsRGB	-			ios=18.0/-/-/0	-	e0e294f8bd737276
+category	c:objc(cy)CIContext@CIDepthBlurEffect	-			ios=5.0/-/-/0	-	6190f772a2cf7ce9
+method	c:objc(cs)CIContext(im)depthBlurEffectFilterForImageURL:options:	CIDepthBlurEffect			ios=12.0/-/-/0	-	437634a231d2ea34
+method	c:objc(cs)CIContext(im)depthBlurEffectFilterForImageData:options:	CIDepthBlurEffect			ios=12.0/-/-/0	-	22feeed4276fb90d
+method	c:objc(cs)CIContext(im)depthBlurEffectFilterForImage:disparityImage:portraitEffectsMatte:orientation:options:	CIDepthBlurEffect			ios=12.0/-/-/0	-	0c41071d1b44a154
+method	c:objc(cs)CIContext(im)depthBlurEffectFilterForImage:disparityImage:portraitEffectsMatte:hairSemanticSegmentation:orientation:options:	CIDepthBlurEffect			ios=13.0/-/-/0	-	cbac9805bd920bb9
+method	c:objc(cs)CIContext(im)depthBlurEffectFilterForImage:disparityImage:portraitEffectsMatte:hairSemanticSegmentation:glassesMatte:gainMap:orientation:options:	CIDepthBlurEffect			ios=14.1/-/-/0	-	0ce3705cd4447312
+typedef	c:@T@CIKernelROICallback	-			-	-	1a219c86e3eb5aa9
+interface	c:objc(cs)CIKernel	-			ios=8.0/-/-/0	-	22ea6a8ad8c6117e
+super	-	CIKernel	NSObject		-	-	edc84a9eacaa2fa3
+method	c:objc(cs)CIKernel(cm)kernelsWithString:	-			ios=8.0/12.0/-/0	-	e64e93d393ca7c62
+method	c:objc(cs)CIKernel(cm)kernelsWithMetalString:error:	-			ios=15.0/-/-/0	-	07a7a9f795d887d4
+method	c:objc(cs)CIKernel(cm)kernelWithString:	-			ios=8.0/12.0/-/0	-	b35d215c8dd6c15c
+method	c:objc(cs)CIKernel(cm)kernelWithFunctionName:fromMetalLibraryData:error:	-			ios=11.0/-/-/0	-	8483c3f2276c9448
+method	c:objc(cs)CIKernel(cm)kernelWithFunctionName:fromMetalLibraryData:outputPixelFormat:error:	-			ios=11.0/-/-/0	-	53056c6e9195122b
+method	c:objc(cs)CIKernel(cm)kernelNamesFromMetalLibraryData:	-			ios=14.0/-/-/0	-	b0a50d375030e3f1
+property	c:objc(cs)CIKernel(py)name	-			ios=8.0/-/-/0	-	9438b2e1fb8cfc5a
+method	c:objc(cs)CIKernel(im)setROISelector:	-			ios=9.0/-/-/0	-	182ed89d88126209
+method	c:objc(cs)CIKernel(im)applyWithExtent:roiCallback:arguments:	-			ios=8.0/-/-/0	-	f169e70a48ddd62a
+interface	c:objc(cs)CIColorKernel	-			ios=8.0/-/-/0	-	e27d451c099363dd
+super	-	CIColorKernel	CIKernel		-	-	42ef3bf804c37ab9
+method	c:objc(cs)CIColorKernel(cm)kernelWithString:	-			ios=8.0/12.0/-/0	-	4b9b406da98af84f
+method	c:objc(cs)CIColorKernel(im)applyWithExtent:arguments:	-			ios=8.0/-/-/0	-	a150acd4614d190a
+interface	c:objc(cs)CIWarpKernel	-			ios=8.0/-/-/0	-	a5a3c6a7700364ad
+super	-	CIWarpKernel	CIKernel		-	-	d3ba6d65704b7527
+method	c:objc(cs)CIWarpKernel(cm)kernelWithString:	-			ios=8.0/12.0/-/0	-	1c0239ae47d00292
+method	c:objc(cs)CIWarpKernel(im)applyWithExtent:roiCallback:inputImage:arguments:	-			ios=8.0/-/-/0	-	5db493210c428cc0
+interface	c:objc(cs)CIBlendKernel	-			ios=11.0/-/-/0	-	5671819bb98c45a4
+super	-	CIBlendKernel	CIColorKernel		-	-	e5561d2840a056ac
+method	c:objc(cs)CIBlendKernel(cm)kernelWithString:	-			ios=8.0/12.0/-/0	-	f47196530c856d70
+method	c:objc(cs)CIBlendKernel(im)applyWithForeground:background:	-			ios=11.0/-/-/0	-	8c62ac9091287e5b
+method	c:objc(cs)CIBlendKernel(im)applyWithForeground:background:colorSpace:	-			ios=13.0/-/-/0	-	561ae6ff59fb9f95
+category	c:objc(cy)CIBlendKernel@BuiltIn	-			ios=11.0/-/-/0	-	e2d1edabc872c6d2
+property	c:objc(cs)CIBlendKernel(cpy)componentAdd	BuiltIn			ios=11.0/-/-/0	-	41f26ff7b4f81138
+property	c:objc(cs)CIBlendKernel(cpy)componentMultiply	BuiltIn			ios=11.0/-/-/0	-	56dffad2f7a3e7eb
+property	c:objc(cs)CIBlendKernel(cpy)componentMin	BuiltIn			ios=11.0/-/-/0	-	4dfdfdbcbc2aae57
+property	c:objc(cs)CIBlendKernel(cpy)componentMax	BuiltIn			ios=11.0/-/-/0	-	78ed4ffda2e394ef
+property	c:objc(cs)CIBlendKernel(cpy)clear	BuiltIn			ios=11.0/-/-/0	-	a28aeaf65caf4e62
+property	c:objc(cs)CIBlendKernel(cpy)source	BuiltIn			ios=11.0/-/-/0	-	ed701907eb44f441
+property	c:objc(cs)CIBlendKernel(cpy)destination	BuiltIn			ios=11.0/-/-/0	-	b1bafa21476fa731
+property	c:objc(cs)CIBlendKernel(cpy)sourceOver	BuiltIn			ios=11.0/-/-/0	-	28a4e580ac93af2f
+property	c:objc(cs)CIBlendKernel(cpy)destinationOver	BuiltIn			ios=11.0/-/-/0	-	59d2c8edeaa545bb
+property	c:objc(cs)CIBlendKernel(cpy)sourceIn	BuiltIn			ios=11.0/-/-/0	-	803a88a7ef9072df
+property	c:objc(cs)CIBlendKernel(cpy)destinationIn	BuiltIn			ios=11.0/-/-/0	-	2d2711b7c09a0177
+property	c:objc(cs)CIBlendKernel(cpy)sourceOut	BuiltIn			ios=11.0/-/-/0	-	7466b7ac34038dbf
+property	c:objc(cs)CIBlendKernel(cpy)destinationOut	BuiltIn			ios=11.0/-/-/0	-	c500e927ea6413e1
+property	c:objc(cs)CIBlendKernel(cpy)sourceAtop	BuiltIn			ios=11.0/-/-/0	-	fd1d9a0c9f806567
+property	c:objc(cs)CIBlendKernel(cpy)destinationAtop	BuiltIn			ios=11.0/-/-/0	-	72c72acddc7325d2
+property	c:objc(cs)CIBlendKernel(cpy)exclusiveOr	BuiltIn			ios=11.0/-/-/0	-	89e5e4341ca2e3cf
+property	c:objc(cs)CIBlendKernel(cpy)multiply	BuiltIn			ios=11.0/-/-/0	-	f5ce24e0757333c3
+property	c:objc(cs)CIBlendKernel(cpy)screen	BuiltIn			ios=11.0/-/-/0	-	26145606ceae199d
+property	c:objc(cs)CIBlendKernel(cpy)overlay	BuiltIn			ios=11.0/-/-/0	-	903ee771e5cd4a8f
+property	c:objc(cs)CIBlendKernel(cpy)darken	BuiltIn			ios=11.0/-/-/0	-	14c3272f7062fbc2
+property	c:objc(cs)CIBlendKernel(cpy)lighten	BuiltIn			ios=11.0/-/-/0	-	93bffd22309b7aff
+property	c:objc(cs)CIBlendKernel(cpy)colorDodge	BuiltIn			ios=11.0/-/-/0	-	a7924f914c8e3216
+property	c:objc(cs)CIBlendKernel(cpy)colorBurn	BuiltIn			ios=11.0/-/-/0	-	3515c9a67b30a7e3
+property	c:objc(cs)CIBlendKernel(cpy)hardLight	BuiltIn			ios=11.0/-/-/0	-	4891cfc7fa00cad4
+property	c:objc(cs)CIBlendKernel(cpy)softLight	BuiltIn			ios=11.0/-/-/0	-	fae8ed3669383895
+property	c:objc(cs)CIBlendKernel(cpy)difference	BuiltIn			ios=11.0/-/-/0	-	7d31ee5cea543c15
+property	c:objc(cs)CIBlendKernel(cpy)exclusion	BuiltIn			ios=11.0/-/-/0	-	ef3ef5cfdcf3d881
+property	c:objc(cs)CIBlendKernel(cpy)hue	BuiltIn			ios=11.0/-/-/0	-	050f253dc0cbba99
+property	c:objc(cs)CIBlendKernel(cpy)saturation	BuiltIn			ios=11.0/-/-/0	-	dadae21296ab4ebe
+property	c:objc(cs)CIBlendKernel(cpy)color	BuiltIn			ios=11.0/-/-/0	-	ad0d1094cb637711
+property	c:objc(cs)CIBlendKernel(cpy)luminosity	BuiltIn			ios=11.0/-/-/0	-	202b7e685d3275c9
+property	c:objc(cs)CIBlendKernel(cpy)subtract	BuiltIn			ios=11.0/-/-/0	-	b5c281c7c78b5edf
+property	c:objc(cs)CIBlendKernel(cpy)divide	BuiltIn			ios=11.0/-/-/0	-	0c25022881233614
+property	c:objc(cs)CIBlendKernel(cpy)linearBurn	BuiltIn			ios=11.0/-/-/0	-	b29983596fa9fc66
+property	c:objc(cs)CIBlendKernel(cpy)linearDodge	BuiltIn			ios=11.0/-/-/0	-	d4f70df8fab9e250
+property	c:objc(cs)CIBlendKernel(cpy)vividLight	BuiltIn			ios=11.0/-/-/0	-	0e1513a8d5956867
+property	c:objc(cs)CIBlendKernel(cpy)linearLight	BuiltIn			ios=11.0/-/-/0	-	ce30e65a1d0ddaea
+property	c:objc(cs)CIBlendKernel(cpy)pinLight	BuiltIn			ios=11.0/-/-/0	-	a0f152c4b74a2db2
+property	c:objc(cs)CIBlendKernel(cpy)hardMix	BuiltIn			ios=11.0/-/-/0	-	96333622593a249c
+property	c:objc(cs)CIBlendKernel(cpy)darkerColor	BuiltIn			ios=11.0/-/-/0	-	08fdd10da8739a4e
+property	c:objc(cs)CIBlendKernel(cpy)lighterColor	BuiltIn			ios=11.0/-/-/0	-	f6358b9203f27928
+interface	c:objc(cs)CIDetector	-			ios=5.0/-/-/0	-	0c196a417ee30725
+super	-	CIDetector	NSObject		-	-	b5da3e81e99e7db7
+method	c:objc(cs)CIDetector(cm)detectorOfType:context:options:	-			ios=5.0/-/-/0	-	621b84d298ee7129
+method	c:objc(cs)CIDetector(im)featuresInImage:	-			ios=5.0/-/-/0	-	90e3c9c1eaf53ed5
+method	c:objc(cs)CIDetector(im)featuresInImage:options:	-			ios=5.0/-/-/0	-	d3054880b45176a1
+var	c:@CIDetectorTypeFace	-			ios=5.0/-/-/0	-	cfbe1cdc892562a9
+var	c:@CIDetectorTypeRectangle	-			ios=8.0/-/-/0	-	8bf0c7adc0287184
+var	c:@CIDetectorTypeQRCode	-			ios=8.0/-/-/0	-	55b000c11050eb1e
+var	c:@CIDetectorTypeText	-			ios=9.0/-/-/0	-	0995cb046f95a7ab
+var	c:@CIDetectorAccuracy	-			ios=5.0/-/-/0	-	955b6e90c643080b
+var	c:@CIDetectorAccuracyLow	-			ios=5.0/-/-/0	-	a3e2b43beb810e28
+var	c:@CIDetectorAccuracyHigh	-			ios=5.0/-/-/0	-	afc2e45eeca7b00a
+var	c:@CIDetectorTracking	-			ios=6.0/-/-/0	-	bd8f4cd341f6bfeb
+var	c:@CIDetectorMinFeatureSize	-			ios=6.0/-/-/0	-	6b533e3e32e28022
+var	c:@CIDetectorMaxFeatureCount	-			ios=10.0/-/-/0	-	241c81888a0c86b3
+var	c:@CIDetectorNumberOfAngles	-			ios=9.0/-/-/0	-	529c2faf1d46210a
+var	c:@CIDetectorImageOrientation	-			ios=5.0/-/-/0	-	0dcde9105ee43d90
+var	c:@CIDetectorEyeBlink	-			ios=7.0/-/-/0	-	2dc111e74a0c6f07
+var	c:@CIDetectorSmile	-			ios=7.0/-/-/0	-	3f90f5a89b58ec8b
+var	c:@CIDetectorFocalLength	-			ios=8.0/-/-/0	-	4f24059fc7734746
+var	c:@CIDetectorAspectRatio	-			ios=8.0/-/-/0	-	d15a5013c2b7d44f
+var	c:@CIDetectorReturnSubFeatures	-			ios=9.0/-/-/0	-	28f4f374116dbadd
+interface	c:objc(cs)CIFeature	-			ios=5.0/-/-/0	-	55a4fa4d17f7ab38
+super	-	CIFeature	NSObject		-	-	2685c8c7d6c09040
+property	c:objc(cs)CIFeature(py)type	-			ios=5.0/-/-/0	-	d6de50971e471b6c
+property	c:objc(cs)CIFeature(py)bounds	-			ios=5.0/-/-/0	-	c4c94030a94a1786
+var	c:@CIFeatureTypeFace	-			-	-	4ec8cd5906fe641b
+var	c:@CIFeatureTypeRectangle	-			-	-	2bb337c6c186e3e2
+var	c:@CIFeatureTypeQRCode	-			-	-	a433060530787cde
+var	c:@CIFeatureTypeText	-			-	-	6ab4cb561c1129f5
+interface	c:objc(cs)CIFaceFeature	-			ios=5.0/-/-/0	-	62a42da88bf675c8
+super	-	CIFaceFeature	CIFeature		-	-	7f959a317d3a2355
+property	c:objc(cs)CIFaceFeature(py)bounds	-			ios=5.0/-/-/0	-	45c7da63325aa682
+property	c:objc(cs)CIFaceFeature(py)hasLeftEyePosition	-			ios=5.0/-/-/0	-	279e2df957c98167
+property	c:objc(cs)CIFaceFeature(py)leftEyePosition	-			ios=5.0/-/-/0	-	a448b48312bfeb12
+property	c:objc(cs)CIFaceFeature(py)hasRightEyePosition	-			ios=5.0/-/-/0	-	48ab613dd9403fed
+property	c:objc(cs)CIFaceFeature(py)rightEyePosition	-			ios=5.0/-/-/0	-	06597056f5888fe2
+property	c:objc(cs)CIFaceFeature(py)hasMouthPosition	-			ios=5.0/-/-/0	-	32136b03a91d0209
+property	c:objc(cs)CIFaceFeature(py)mouthPosition	-			ios=5.0/-/-/0	-	96f2f96a942a156c
+property	c:objc(cs)CIFaceFeature(py)hasTrackingID	-			ios=5.0/-/-/0	-	5644a9e3e046e9ca
+property	c:objc(cs)CIFaceFeature(py)trackingID	-			ios=5.0/-/-/0	-	683cf5e2c0ee173a
+property	c:objc(cs)CIFaceFeature(py)hasTrackingFrameCount	-			ios=5.0/-/-/0	-	d0a529c1c826c895
+property	c:objc(cs)CIFaceFeature(py)trackingFrameCount	-			ios=5.0/-/-/0	-	f3e25d4393878c45
+property	c:objc(cs)CIFaceFeature(py)hasFaceAngle	-			ios=5.0/-/-/0	-	eb38ad4885ee1bab
+property	c:objc(cs)CIFaceFeature(py)faceAngle	-			ios=5.0/-/-/0	-	b9830bfe43534f1e
+property	c:objc(cs)CIFaceFeature(py)hasSmile	-			ios=5.0/-/-/0	-	e3176c17157afd27
+property	c:objc(cs)CIFaceFeature(py)leftEyeClosed	-			ios=5.0/-/-/0	-	7ad7b7a640d79729
+property	c:objc(cs)CIFaceFeature(py)rightEyeClosed	-			ios=5.0/-/-/0	-	ab683987371f5c26
+interface	c:objc(cs)CIRectangleFeature	-			ios=8.0/-/-/0	-	148d211e2fb6b36d
+super	-	CIRectangleFeature	CIFeature		-	-	f20ad2f8afc14d06
+property	c:objc(cs)CIRectangleFeature(py)bounds	-			ios=8.0/-/-/0	-	4e3fba4e822116bc
+property	c:objc(cs)CIRectangleFeature(py)topLeft	-			ios=8.0/-/-/0	-	1639e2eba8c327f4
+property	c:objc(cs)CIRectangleFeature(py)topRight	-			ios=8.0/-/-/0	-	e5350e71f25e4a2f
+property	c:objc(cs)CIRectangleFeature(py)bottomLeft	-			ios=8.0/-/-/0	-	d613308d83cd4aed
+property	c:objc(cs)CIRectangleFeature(py)bottomRight	-			ios=8.0/-/-/0	-	3c021ad01b865b47
+interface	c:objc(cs)CIQRCodeFeature	-			ios=8.0/-/-/0	-	4711d24f929fe7ba
+super	-	CIQRCodeFeature	CIFeature		-	-	9a952d1edd6c3c1e
+conforms	-	CIQRCodeFeature	NSSecureCoding		-	-	0fbe5396fbd79bbe
+conforms	-	CIQRCodeFeature	NSCopying		-	-	85275e7d161f62fd
+property	c:objc(cs)CIQRCodeFeature(py)bounds	-			ios=8.0/-/-/0	-	4c5aad0bacac1f04
+property	c:objc(cs)CIQRCodeFeature(py)topLeft	-			ios=8.0/-/-/0	-	2a37914742f73314
+property	c:objc(cs)CIQRCodeFeature(py)topRight	-			ios=8.0/-/-/0	-	f918fd88af650ff5
+property	c:objc(cs)CIQRCodeFeature(py)bottomLeft	-			ios=8.0/-/-/0	-	eb1f05159788930c
+property	c:objc(cs)CIQRCodeFeature(py)bottomRight	-			ios=8.0/-/-/0	-	e7c734047686a6a1
+property	c:objc(cs)CIQRCodeFeature(py)messageString	-			ios=8.0/-/-/0	-	f6ce0a9454d3a29b
+property	c:objc(cs)CIQRCodeFeature(py)symbolDescriptor	-			ios=11.0/-/-/0	-	4ce9c7376a86e473
+interface	c:objc(cs)CITextFeature	-			ios=9.0/-/-/0	-	036ebd72bd8dadde
+super	-	CITextFeature	CIFeature		-	-	a5ed66a1b2f38faa
+property	c:objc(cs)CITextFeature(py)bounds	-			ios=9.0/-/-/0	-	5a622e681705ed2d
+property	c:objc(cs)CITextFeature(py)topLeft	-			ios=9.0/-/-/0	-	b281e196cbddb944
+property	c:objc(cs)CITextFeature(py)topRight	-			ios=9.0/-/-/0	-	ae269c3fbbbb3c81
+property	c:objc(cs)CITextFeature(py)bottomLeft	-			ios=9.0/-/-/0	-	eb8f06bcf9eb2499
+property	c:objc(cs)CITextFeature(py)bottomRight	-			ios=9.0/-/-/0	-	b52ecf0b9d6113c2
+property	c:objc(cs)CITextFeature(py)subFeatures	-			ios=9.0/-/-/0	-	169da98efb49d9ab
+category	c:objc(cy)CIImage@CIImageProvider	-			ios=5.0/-/-/0	-	49fd149171f9dbb7
+method	c:objc(cs)CIImage(cm)imageWithImageProvider:size::format:colorSpace:options:	CIImageProvider			ios=9.0/-/-/0	-	dabc691159b5fbb1
+method	c:objc(cs)CIImage(im)initWithImageProvider:size::format:colorSpace:options:	CIImageProvider			ios=9.0/-/-/0	-	fe07b0027e1b9438
+category	c:objc(cy)NSObject@CIImageProvider	-			ios=2.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	6c494732467aa106
+method	c:objc(cs)NSObject(im)provideImageData:bytesPerRow:origin::size::userInfo:	CIImageProvider			ios=2.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	23c4791d5bfbe6cc
+method	c:objc(cs)NSObject(im)provideImageToMTLTexture:commandBuffer:originx:originy:width:height:userInfo:	CIImageProvider			ios=26.0/-/-/0	-	c6547e8a10ab1663
+var	c:@kCIImageProviderTileSize	-			ios=9.0/-/-/0	-	b543e1cc55309411
+var	c:@kCIImageProviderUserInfo	-			ios=9.0/-/-/0	-	5427c4bc37c3c05e
+interface	c:objc(cs)CIImageProcessorKernel	-			ios=10.0/-/-/0	-	18400951767a6361
+super	-	CIImageProcessorKernel	NSObject		-	-	a1fe387836d9d8b6
+method	c:objc(cs)CIImageProcessorKernel(cm)processWithInputs:arguments:output:error:	-			ios=10.0/-/-/0	-	b3d207cda4370a7d
+method	c:objc(cs)CIImageProcessorKernel(cm)roiForInput:arguments:outputRect:	-			ios=10.0/-/-/0	-	a3162bc674fcca97
+method	c:objc(cs)CIImageProcessorKernel(cm)roiTileArrayForInput:arguments:outputRect:	-			ios=17.0/-/-/0	-	b7b8a85d03f02591
+method	c:objc(cs)CIImageProcessorKernel(cm)formatForInputAtIndex:	-			ios=10.0/-/-/0	-	8edacd39b88045f9
+property	c:objc(cs)CIImageProcessorKernel(cpy)outputFormat	-			ios=10.0/-/-/0	-	0602f349ad6840a4
+property	c:objc(cs)CIImageProcessorKernel(cpy)outputIsOpaque	-			ios=11.0/-/-/0	-	b860bcedfbda4cc0
+property	c:objc(cs)CIImageProcessorKernel(cpy)synchronizeInputs	-			ios=10.0/-/-/0	-	57d737c30a5bce14
+method	c:objc(cs)CIImageProcessorKernel(cm)applyWithExtent:inputs:arguments:error:	-			ios=10.0/-/-/0	-	b637a93b467ac330
+category	c:objc(cy)CIImageProcessorKernel@MultipleOutputSupport	-			ios=10.0/-/-/0	-	beae246a240b5e85
+method	c:objc(cs)CIImageProcessorKernel(cm)processWithInputs:arguments:outputs:error:	MultipleOutputSupport			ios=26.0/-/-/0	-	00238cea50df813b
+method	c:objc(cs)CIImageProcessorKernel(cm)outputFormatAtIndex:arguments:	MultipleOutputSupport			ios=26.0/-/-/0	-	98eff93c291e0763
+method	c:objc(cs)CIImageProcessorKernel(cm)applyWithExtents:inputs:arguments:error:	MultipleOutputSupport			ios=26.0/-/-/0	-	fa9478291012495f
+protocol	c:objc(pl)CIImageProcessorInput	-			ios=10.0/-/-/0	-	3db4d0c713b8ec68
+property	c:objc(pl)CIImageProcessorInput(py)region	-			ios=10.0/-/-/0	-	dff1cfe501e0a012
+property	c:objc(pl)CIImageProcessorInput(py)bytesPerRow	-			ios=10.0/-/-/0	-	03b1c67942553d88
+property	c:objc(pl)CIImageProcessorInput(py)format	-			ios=10.0/-/-/0	-	9cf5a40134a0e96c
+property	c:objc(pl)CIImageProcessorInput(py)baseAddress	-			ios=10.0/-/-/0	-	14d1b4eda2b86936
+property	c:objc(pl)CIImageProcessorInput(py)surface	-			ios=10.0/-/-/0	-	5d0ca4cba702adaa
+property	c:objc(pl)CIImageProcessorInput(py)pixelBuffer	-			ios=10.0/-/-/0	-	3f36cbba49fbdcf0
+property	c:objc(pl)CIImageProcessorInput(py)metalTexture	-			ios=10.0/-/-/0	-	8f1b1120cf46d920
+property	c:objc(pl)CIImageProcessorInput(py)digest	-			ios=16.0/-/-/0	-	0c1983d53cc7ac6d
+property	c:objc(pl)CIImageProcessorInput(py)roiTileIndex	-			ios=17.0/-/-/0	-	cf9163050b203d27
+property	c:objc(pl)CIImageProcessorInput(py)roiTileCount	-			ios=17.0/-/-/0	-	53ea5d19b1d7972e
+protocol	c:objc(pl)CIImageProcessorOutput	-			ios=10.0/-/-/0	-	d03d4e1f8c3e64b5
+property	c:objc(pl)CIImageProcessorOutput(py)region	-			ios=10.0/-/-/0	-	f6a040009a875d0e
+property	c:objc(pl)CIImageProcessorOutput(py)bytesPerRow	-			ios=10.0/-/-/0	-	6949231c96e9f46d
+property	c:objc(pl)CIImageProcessorOutput(py)format	-			ios=10.0/-/-/0	-	fe819f4b04bc496d
+property	c:objc(pl)CIImageProcessorOutput(py)baseAddress	-			ios=10.0/-/-/0	-	4b158cfaa37c2d77
+property	c:objc(pl)CIImageProcessorOutput(py)surface	-			ios=10.0/-/-/0	-	de284a3f74c70195
+property	c:objc(pl)CIImageProcessorOutput(py)pixelBuffer	-			ios=10.0/-/-/0	-	08236c0d9e7d17c6
+property	c:objc(pl)CIImageProcessorOutput(py)metalTexture	-			ios=10.0/-/-/0	-	6a60cb2937269ad1
+property	c:objc(pl)CIImageProcessorOutput(py)metalCommandBuffer	-			ios=10.0/-/-/0	-	7b7e85fae5ace9c4
+property	c:objc(pl)CIImageProcessorOutput(py)digest	-			ios=16.0/-/-/0	-	23aaab53440dd306
+interface	c:objc(cs)CIImageAccumulator	-			ios=9.0/-/-/0	-	1823387e8f30c219
+super	-	CIImageAccumulator	NSObject		-	-	b93ce3607d859d83
+method	c:objc(cs)CIImageAccumulator(cm)imageAccumulatorWithExtent:format:	-			ios=9.0/-/-/0	-	16a0393ffe8f6618
+method	c:objc(cs)CIImageAccumulator(cm)imageAccumulatorWithExtent:format:colorSpace:	-			ios=9.0/-/-/0	-	31cec789eb9d4d39
+method	c:objc(cs)CIImageAccumulator(im)initWithExtent:format:	-			ios=9.0/-/-/0	-	5c386131fc164c5e
+method	c:objc(cs)CIImageAccumulator(im)initWithExtent:format:colorSpace:	-			ios=9.0/-/-/0	-	dbc999272fca1673
+property	c:objc(cs)CIImageAccumulator(py)extent	-			ios=9.0/-/-/0	-	34fee69d66eaea7d
+property	c:objc(cs)CIImageAccumulator(py)format	-			ios=9.0/-/-/0	-	8f55d36570acb228
+method	c:objc(cs)CIImageAccumulator(im)image	-			ios=9.0/-/-/0	-	aa85484ae533a33d
+method	c:objc(cs)CIImageAccumulator(im)setImage:	-			ios=9.0/-/-/0	-	c13c9c6408c47602
+method	c:objc(cs)CIImageAccumulator(im)setImage:dirtyRect:	-			ios=9.0/-/-/0	-	cc59bf93334c1f94
+method	c:objc(cs)CIImageAccumulator(im)clear	-			ios=9.0/-/-/0	-	1a170ce6564f7b3e
+interface	c:objc(cs)CIFilterShape	-			ios=9.0/-/-/0	-	e0b64fdcf20c3526
+super	-	CIFilterShape	NSObject		-	-	c3c89a04be9945f5
+conforms	-	CIFilterShape	NSCopying		-	-	79bcedd0f0bfc6a6
+method	c:objc(cs)CIFilterShape(cm)shapeWithRect:	-			ios=9.0/-/-/0	-	d8f57a9b3b072d70
+method	c:objc(cs)CIFilterShape(im)initWithRect:	-			ios=9.0/-/-/0	-	aa3cf25106096f26
+method	c:objc(cs)CIFilterShape(im)transformBy:interior:	-			ios=9.0/-/-/0	-	bdbfb7494070f76a
+method	c:objc(cs)CIFilterShape(im)insetByX:Y:	-			ios=9.0/-/-/0	-	33d9770c00c853b4
+method	c:objc(cs)CIFilterShape(im)unionWith:	-			ios=9.0/-/-/0	-	d93ae142ca1e946f
+method	c:objc(cs)CIFilterShape(im)unionWithRect:	-			ios=9.0/-/-/0	-	92347bc3101e94bf
+method	c:objc(cs)CIFilterShape(im)intersectWith:	-			ios=9.0/-/-/0	-	f246fa9e5b9b1baf
+method	c:objc(cs)CIFilterShape(im)intersectWithRect:	-			ios=9.0/-/-/0	-	88e85b86bdc5cfaa
+property	c:objc(cs)CIFilterShape(py)extent	-			ios=9.0/-/-/0	-	bc5bd3edc4e1b949
+interface	c:objc(cs)CISampler	-			ios=9.0/-/-/0	-	d68f70b61939d9bb
+super	-	CISampler	NSObject		-	-	86eff5556b9a8161
+conforms	-	CISampler	NSCopying		-	-	ec2eac48ca3466f5
+method	c:objc(cs)CISampler(cm)samplerWithImage:	-			ios=9.0/-/-/0	-	3d07828c3be35100
+method	c:objc(cs)CISampler(cm)samplerWithImage:keysAndValues:	-			ios=9.0/-/-/0	-	5b96f64a68b86092
+method	c:objc(cs)CISampler(cm)samplerWithImage:options:	-			ios=9.0/-/-/0	-	1c235b15903a7b10
+method	c:objc(cs)CISampler(im)initWithImage:	-			ios=9.0/-/-/0	-	9c3337dc48dfa831
+method	c:objc(cs)CISampler(im)initWithImage:keysAndValues:	-			ios=9.0/-/-/0	-	abb0f6b9a03e3f1e
+method	c:objc(cs)CISampler(im)initWithImage:options:	-			ios=9.0/-/-/0	-	aa519d88ba4f7cac
+property	c:objc(cs)CISampler(py)definition	-			ios=9.0/-/-/0	-	15bdb628f176a0e6
+property	c:objc(cs)CISampler(py)extent	-			ios=9.0/-/-/0	-	2673b7254f96d888
+var	c:@kCISamplerAffineMatrix	-			ios=9.0/-/-/0	-	cf8e39661e8e1d4d
+var	c:@kCISamplerWrapMode	-			ios=9.0/-/-/0	-	d53f354e86bd1614
+var	c:@kCISamplerFilterMode	-			ios=9.0/-/-/0	-	30056dd8a7e03dd3
+var	c:@kCISamplerWrapBlack	-			ios=9.0/-/-/0	-	a3fdc004a815e301
+var	c:@kCISamplerWrapClamp	-			ios=9.0/-/-/0	-	04358ffd42819e9b
+var	c:@kCISamplerFilterNearest	-			ios=9.0/-/-/0	-	6a5e73797e08466e
+var	c:@kCISamplerFilterLinear	-			ios=9.0/-/-/0	-	e77c7ffe97730a2f
+var	c:@kCISamplerColorSpace	-			ios=9.0/-/-/0	-	90655139bc80792f
+typedef	c:@T@CIRAWFilterOption	-			ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	f06364bf41655540
+category	c:objc(cy)CIFilter@CIRAWFilter	-			ios=5.0/-/-/0	deprecated: Use new CIRAWFilter class instead.	3883330c28aa2c44
+method	c:objc(cs)CIFilter(cm)filterWithImageURL:options:	CIRAWFilter			ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	deprecated: Use new CIRAWFilter class instead.	47156636a658a813
+method	c:objc(cs)CIFilter(cm)filterWithImageData:options:	CIRAWFilter			ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	deprecated: Use new CIRAWFilter class instead.	81c1f2997319b316
+method	c:objc(cs)CIFilter(cm)filterWithCVPixelBuffer:properties:options:	CIRAWFilter			ios=10.0/100000/-/0,macos=10.12/100000/-/0,tvos=10.0/100000/-/0	deprecated: Use new CIRAWFilter class instead.	afe263ca8621ae40
+method	c:objc(cs)CIFilter(cm)supportedRawCameraModels	CIRAWFilter			ios=13.0/100000/-/0,macos=10.15/100000/-/0,tvos=13.0/100000/-/0	deprecated: Use new CIRAWFilter class instead.	6ebaa4b6c7649935
+var	c:@kCIInputAllowDraftModeKey	-			ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	6536cc277e31a0ac
+var	c:@kCIInputDecoderVersionKey	-			ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	3b1766b7da27680a
+var	c:@kCISupportedDecoderVersionsKey	-			ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	41a98cc1f76307fe
+var	c:@kCIInputBaselineExposureKey	-			ios=10.0/100000/-/0,macos=10.12/100000/-/0,tvos=10.0/100000/-/0	-	892572a7e8207e46
+var	c:@kCIInputBoostKey	-			ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	854cff1fb4845cb8
+var	c:@kCIInputBoostShadowAmountKey	-			ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	3f8a1b79950cc78d
+var	c:@kCIInputDisableGamutMapKey	-			ios=10.0/100000/-/0,macos=10.12/100000/-/0,tvos=10.0/100000/-/0	-	037d4a03667b88d5
+var	c:@kCIInputNeutralChromaticityXKey	-			ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	c97b3b0366b460f0
+var	c:@kCIInputNeutralChromaticityYKey	-			ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	3fddfd51176db06e
+var	c:@kCIInputNeutralTemperatureKey	-			ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	4d973f191857dc2b
+var	c:@kCIInputNeutralTintKey	-			ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	a429c7c267725143
+var	c:@kCIInputNeutralLocationKey	-			ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	6c990df90a2d80cf
+var	c:@kCIInputScaleFactorKey	-			ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	08fa1e5ee283f1ef
+var	c:@kCIInputIgnoreImageOrientationKey	-			ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	6a65774e6bbba8de
+var	c:@kCIInputImageOrientationKey	-			ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	5e85fae3fdee50f1
+var	c:@kCIInputEnableSharpeningKey	-			ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	29ede5750b7c4942
+var	c:@kCIInputEnableChromaticNoiseTrackingKey	-			ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	fdf8ae56f0689b87
+var	c:@kCIInputNoiseReductionAmountKey	-			ios=10.0/100000/-/0,macos=10.7/100000/-/0,tvos=10.0/100000/-/0	-	ec220af1309012fe
+var	c:@kCIInputMoireAmountKey	-			ios=11.0/100000/-/0,macos=10.13/100000/-/0,tvos=11.0/100000/-/0	-	4ebe43e2d233634b
+var	c:@kCIInputEnableVendorLensCorrectionKey	-			ios=10.0/100000/-/0,macos=10.10/100000/-/0,tvos=10.0/100000/-/0	-	0d449398ea70a7dd
+var	c:@kCIInputLuminanceNoiseReductionAmountKey	-			ios=10.0/100000/-/0,macos=10.10/100000/-/0,tvos=10.0/100000/-/0	-	535e6e93c0c2096f
+var	c:@kCIInputColorNoiseReductionAmountKey	-			ios=10.0/100000/-/0,macos=10.10/100000/-/0,tvos=10.0/100000/-/0	-	22d197b1495048c8
+var	c:@kCIInputNoiseReductionSharpnessAmountKey	-			ios=10.0/100000/-/0,macos=10.10/100000/-/0,tvos=10.0/100000/-/0	-	62fb760331923ce7
+var	c:@kCIInputNoiseReductionContrastAmountKey	-			ios=10.0/100000/-/0,macos=10.10/100000/-/0,tvos=10.0/100000/-/0	-	dafcb8aa5fc09fd5
+var	c:@kCIInputNoiseReductionDetailAmountKey	-			ios=10.0/100000/-/0,macos=10.10/100000/-/0,tvos=10.0/100000/-/0	-	79e07d7552bd429b
+var	c:@kCIInputEnableEDRModeKey	-			ios=12.0/100000/-/0,macos=10.14/100000/-/0,tvos=12.0/100000/-/0	-	0579b501ba4a60ac
+var	c:@kCIInputLocalToneMapAmountKey	-			ios=14.3/100000/-/0,macos=11.1/100000/-/0,tvos=14.3/100000/-/0	-	592f2b7231aed084
+var	c:@kCIInputLinearSpaceFilter	-			ios=10.0/100000/-/0,macos=10.7/100000/-/0,tvos=10.0/100000/-/0	-	251d19f5de7db0f2
+var	c:@kCIOutputNativeSizeKey	-			ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	adb9bdfe9fa91d47
+var	c:@kCIActiveKeys	-			ios=10.0/100000/-/0,macos=10.7/100000/-/0,tvos=10.0/100000/-/0	-	3b437735efd6dece
+var	c:@kCIPropertiesKey	-			ios=15.0/100000/-/0,macos=12.0/100000/-/0,tvos=15.0/100000/-/0	-	406c66e8061ecd47
+interface	c:objc(cs)CIRAWFilter	-			ios=15.0/-/-/0	-	7004dfa0e80ccd5c
+super	-	CIRAWFilter	CIFilter		-	-	805c7a749f23ea6e
+property	c:objc(cs)CIRAWFilter(cpy)supportedCameraModels	-			ios=15.0/-/-/0	-	681836c0165ae5ee
+property	c:objc(cs)CIRAWFilter(py)supportedDecoderVersions	-			ios=15.0/-/-/0	-	8bc9307bd84b6533
+property	c:objc(cs)CIRAWFilter(py)nativeSize	-			ios=15.0/-/-/0	-	54328af2ec47e6a6
+property	c:objc(cs)CIRAWFilter(py)properties	-			ios=15.0/-/-/0	-	73691ac08a3b8cab
+property	c:objc(cs)CIRAWFilter(py)orientation	-			ios=15.0/-/-/0	-	277a5d17b890c9be
+property	c:objc(cs)CIRAWFilter(py)draftModeEnabled	-			ios=15.0/-/-/0	-	f858ad3fd8170e35
+property	c:objc(cs)CIRAWFilter(py)decoderVersion	-			ios=15.0/-/-/0	-	e3c28c23032d8966
+property	c:objc(cs)CIRAWFilter(py)scaleFactor	-			ios=15.0/-/-/0	-	c8ceb246d9d57613
+property	c:objc(cs)CIRAWFilter(py)exposure	-			ios=15.0/-/-/0	-	4f4603b2ff057702
+property	c:objc(cs)CIRAWFilter(py)baselineExposure	-			ios=15.0/-/-/0	-	879dcbd3e26c60cd
+property	c:objc(cs)CIRAWFilter(py)shadowBias	-			ios=15.0/-/-/0	-	45da225ca11132df
+property	c:objc(cs)CIRAWFilter(py)boostAmount	-			ios=15.0/-/-/0	-	72eb9a11d027e7cf
+property	c:objc(cs)CIRAWFilter(py)boostShadowAmount	-			ios=15.0/-/-/0	-	eac2de142ab62a60
+property	c:objc(cs)CIRAWFilter(py)highlightRecoverySupported	-			ios=26.0/-/-/0	-	fa3fb72805aff8cd
+property	c:objc(cs)CIRAWFilter(py)highlightRecoveryEnabled	-			ios=26.0/-/-/0	-	f86f165334bdbba6
+property	c:objc(cs)CIRAWFilter(py)gamutMappingEnabled	-			ios=15.0/-/-/0	-	32dc6f8f0541ec64
+property	c:objc(cs)CIRAWFilter(py)lensCorrectionSupported	-			ios=15.0/-/-/0	-	8597dc77f2509f46
+property	c:objc(cs)CIRAWFilter(py)lensCorrectionEnabled	-			ios=15.0/-/-/0	-	a90d19be8959c6ec
+property	c:objc(cs)CIRAWFilter(py)luminanceNoiseReductionSupported	-			ios=15.0/-/-/0	-	219346d5017e50be
+property	c:objc(cs)CIRAWFilter(py)luminanceNoiseReductionAmount	-			ios=15.0/-/-/0	-	43e4406600268da7
+property	c:objc(cs)CIRAWFilter(py)colorNoiseReductionSupported	-			ios=15.0/-/-/0	-	dc6418b5c99425e0
+property	c:objc(cs)CIRAWFilter(py)colorNoiseReductionAmount	-			ios=15.0/-/-/0	-	3299fd4eb4a1c015
+property	c:objc(cs)CIRAWFilter(py)sharpnessSupported	-			ios=15.0/-/-/0	-	1a9eb1547a27b51f
+property	c:objc(cs)CIRAWFilter(py)sharpnessAmount	-			ios=15.0/-/-/0	-	b1140408bc4ce1db
+property	c:objc(cs)CIRAWFilter(py)contrastSupported	-			ios=15.0/-/-/0	-	a819a8a6e61daee0
+property	c:objc(cs)CIRAWFilter(py)contrastAmount	-			ios=15.0/-/-/0	-	c5cc35d1b7e8700d
+property	c:objc(cs)CIRAWFilter(py)detailSupported	-			ios=15.0/-/-/0	-	fdf87285067ecb74
+property	c:objc(cs)CIRAWFilter(py)detailAmount	-			ios=15.0/-/-/0	-	10e5ab6db5586fc7
+property	c:objc(cs)CIRAWFilter(py)moireReductionSupported	-			ios=15.0/-/-/0	-	7ddfa6b09a4b0df6
+property	c:objc(cs)CIRAWFilter(py)moireReductionAmount	-			ios=15.0/-/-/0	-	0ced7568967d0551
+property	c:objc(cs)CIRAWFilter(py)localToneMapSupported	-			ios=15.0/-/-/0	-	8cdc2f6fdc83515e
+property	c:objc(cs)CIRAWFilter(py)localToneMapAmount	-			ios=15.0/-/-/0	-	d8ca8a2618bcffce
+property	c:objc(cs)CIRAWFilter(py)extendedDynamicRangeAmount	-			ios=15.0/-/-/0	-	06dcb911b4833a2d
+property	c:objc(cs)CIRAWFilter(py)neutralChromaticity	-			ios=15.0/-/-/0	-	ab1efc21bfcafd5b
+property	c:objc(cs)CIRAWFilter(py)neutralLocation	-			ios=15.0/-/-/0	-	407649e1155f992d
+property	c:objc(cs)CIRAWFilter(py)neutralTemperature	-			ios=15.0/-/-/0	-	cb98c30ea5f26d93
+property	c:objc(cs)CIRAWFilter(py)neutralTint	-			ios=15.0/-/-/0	-	ba6294893a1b98ac
+property	c:objc(cs)CIRAWFilter(py)linearSpaceFilter	-			ios=15.0/-/-/0	-	db0602b8534ebb36
+property	c:objc(cs)CIRAWFilter(py)previewImage	-			ios=15.0/-/-/0	-	3a48a13646aff8a1
+property	c:objc(cs)CIRAWFilter(py)portraitEffectsMatte	-			ios=15.0/-/-/0	-	0242edcdb0a5a9c1
+property	c:objc(cs)CIRAWFilter(py)semanticSegmentationSkinMatte	-			ios=15.0/-/-/0	-	c6b1f4127a783fdf
+property	c:objc(cs)CIRAWFilter(py)semanticSegmentationHairMatte	-			ios=15.0/-/-/0	-	ee9bf2ca0435968a
+property	c:objc(cs)CIRAWFilter(py)semanticSegmentationGlassesMatte	-			ios=15.0/-/-/0	-	ee4473e47d579878
+property	c:objc(cs)CIRAWFilter(py)semanticSegmentationSkyMatte	-			ios=15.0/-/-/0	-	175014096fc97fb2
+property	c:objc(cs)CIRAWFilter(py)semanticSegmentationTeethMatte	-			ios=15.0/-/-/0	-	8aba308e8f926dcd
+method	c:objc(cs)CIRAWFilter(cm)filterWithImageURL:	-			ios=15.0/-/-/0	-	687abd8568c92ed7
+method	c:objc(cs)CIRAWFilter(cm)filterWithImageData:identifierHint:	-			ios=15.0/-/-/0	-	427df7809c59c8f4
+method	c:objc(cs)CIRAWFilter(cm)filterWithCVPixelBuffer:properties:	-			ios=15.0/-/-/0	-	f282d3f81deee5fd
+typedef	c:@T@CIRAWDecoderVersion	-			-	-	633bd1189afc0cda
+var	c:@CIRAWDecoderVersionNone	-			-	-	7b8a2ec45510a3c6
+var	c:@CIRAWDecoderVersion9	-			-	-	8aa14d26fac3d29c
+var	c:@CIRAWDecoderVersion9DNG	-			-	-	04342cea2a6849bf
+var	c:@CIRAWDecoderVersion8	-			-	-	8513828502960edd
+var	c:@CIRAWDecoderVersion8DNG	-			-	-	2f3c3adb695d450b
+var	c:@CIRAWDecoderVersion7	-			-	-	a59e987e9df85686
+var	c:@CIRAWDecoderVersion7DNG	-			-	-	a7794f5ef589e294
+var	c:@CIRAWDecoderVersion6	-			-	-	9098cf63fdba73ec
+var	c:@CIRAWDecoderVersion6DNG	-			-	-	57454e8d6d61abe4
+interface	c:objc(cs)CIRenderDestination	-			ios=11.0/-/-/0	-	df095abd533efd3d
+super	-	CIRenderDestination	NSObject		-	-	82048cf37e7b5d2f
+method	c:objc(cs)CIRenderDestination(im)initWithPixelBuffer:	-			ios=11.0/-/-/0	-	38990692baf85ef8
+method	c:objc(cs)CIRenderDestination(im)initWithIOSurface:	-			ios=11.0/-/-/0	-	1763e202f410220e
+method	c:objc(cs)CIRenderDestination(im)initWithMTLTexture:commandBuffer:	-			ios=11.0/-/-/0	-	729f7fbcb8204c6f
+method	c:objc(cs)CIRenderDestination(im)initWithWidth:height:pixelFormat:commandBuffer:mtlTextureProvider:	-			ios=11.0/-/-/0	-	91b6ec6c59c3f74d
+method	c:objc(cs)CIRenderDestination(im)initWithGLTexture:target:width:height:	-			ios=11.0/-/-/0	-	17aa2539605efc46
+method	c:objc(cs)CIRenderDestination(im)initWithBitmapData:width:height:bytesPerRow:format:	-			ios=11.0/-/-/0	-	1352af1c2e8bb322
+property	c:objc(cs)CIRenderDestination(py)width	-			ios=11.0/-/-/0	-	b7f2bf058033cb62
+property	c:objc(cs)CIRenderDestination(py)height	-			ios=11.0/-/-/0	-	b41a1d12242173b2
+property	c:objc(cs)CIRenderDestination(py)alphaMode	-			ios=11.0/-/-/0	-	432128afc21cf159
+property	c:objc(cs)CIRenderDestination(py)flipped	-			ios=11.0/-/-/0	-	4a90ccc8688cb4e7
+property	c:objc(cs)CIRenderDestination(py)dithered	-			ios=11.0/-/-/0	-	3ff2956d39a328f6
+property	c:objc(cs)CIRenderDestination(py)clamped	-			ios=11.0/-/-/0	-	5fc6208a384c71c9
+property	c:objc(cs)CIRenderDestination(py)colorSpace	-			ios=11.0/-/-/0	-	9a59b996baa1ccb3
+property	c:objc(cs)CIRenderDestination(py)blendKernel	-			ios=11.0/-/-/0	-	cc4e435d7f8d12c4
+property	c:objc(cs)CIRenderDestination(py)blendsInDestinationColorSpace	-			ios=11.0/-/-/0	-	dbeb7708e342dda6
+property	c:objc(cs)CIRenderDestination(py)captureTraceURL	-			ios=26.0/-/-/0	-	d9135d5c0bdd6ed6
+typedef	c:@T@CIRenderDestinationAlphaMode	-			-	-	a17df4835ba4817c
+enum	c:@E@CIRenderDestinationAlphaMode	-			-	-	4965a0bf86f40a94
+enumconst	c:@E@CIRenderDestinationAlphaMode@CIRenderDestinationAlphaNone	CIRenderDestinationAlphaMode			-	-	13954a3fac55ffee
+enumconst	c:@E@CIRenderDestinationAlphaMode@CIRenderDestinationAlphaPremultiplied	CIRenderDestinationAlphaMode			-	-	38e3cee39dc09395
+enumconst	c:@E@CIRenderDestinationAlphaMode@CIRenderDestinationAlphaUnpremultiplied	CIRenderDestinationAlphaMode			-	-	0eb1fb99b4a6f857
+interface	c:objc(cs)CIRenderInfo	-			ios=11.0/-/-/0	-	25d6953092309c29
+super	-	CIRenderInfo	NSObject		-	-	ce9b4cbeec8865b7
+property	c:objc(cs)CIRenderInfo(py)kernelExecutionTime	-			ios=11.0/-/-/0	-	d9da4464fef563d1
+property	c:objc(cs)CIRenderInfo(py)kernelCompileTime	-			ios=17.0/-/-/0	-	08f45f3e26a4dbf6
+property	c:objc(cs)CIRenderInfo(py)passCount	-			ios=11.0/-/-/0	-	f4130eaac438a486
+property	c:objc(cs)CIRenderInfo(py)pixelsProcessed	-			ios=11.0/-/-/0	-	c86c178951484bc8
+interface	c:objc(cs)CIRenderTask	-			ios=11.0/-/-/0	-	630fc29c6bce6925
+super	-	CIRenderTask	NSObject		-	-	b12281d668d4876d
+method	c:objc(cs)CIRenderTask(im)waitUntilCompletedAndReturnError:	-			ios=11.0/-/-/0	-	394fd6db07b35d42
+category	c:objc(cy)CIContext@CIRenderDestination	-			ios=5.0/-/-/0	-	0afa8b627d9c7890
+method	c:objc(cs)CIContext(im)startTaskToRender:fromRect:toDestination:atPoint:error:	CIRenderDestination			ios=11.0/-/-/0	-	7049c0c812729429
+method	c:objc(cs)CIContext(im)startTaskToRender:toDestination:error:	CIRenderDestination			ios=11.0/-/-/0	-	99750104f3ccf12e
+method	c:objc(cs)CIContext(im)prepareRender:fromRect:toDestination:atPoint:error:	CIRenderDestination			ios=11.0/-/-/0	-	865488facb27bde2
+method	c:objc(cs)CIContext(im)startTaskToClear:error:	CIRenderDestination			ios=11.0/-/-/0	-	037625f14d2897c9
+interface	c:objc(cs)CIBarcodeDescriptor	-			ios=11.0/-/-/0	-	e05c48f52783ffb7
+super	-	CIBarcodeDescriptor	NSObject		-	-	063a8c89f6e39481
+conforms	-	CIBarcodeDescriptor	NSSecureCoding		-	-	8813e6955951f84d
+conforms	-	CIBarcodeDescriptor	NSCopying		-	-	16f933cd5ab0f086
+typedef	c:@T@CIQRCodeErrorCorrectionLevel	-			-	-	35dfb838a5b94d15
+enum	c:@E@CIQRCodeErrorCorrectionLevel	-			-	-	7a9e109adfd26359
+enumconst	c:@E@CIQRCodeErrorCorrectionLevel@CIQRCodeErrorCorrectionLevelL	CIQRCodeErrorCorrectionLevel			-	-	ecde5ae0687857ef
+enumconst	c:@E@CIQRCodeErrorCorrectionLevel@CIQRCodeErrorCorrectionLevelM	CIQRCodeErrorCorrectionLevel			-	-	053b2e65e583ddce
+enumconst	c:@E@CIQRCodeErrorCorrectionLevel@CIQRCodeErrorCorrectionLevelQ	CIQRCodeErrorCorrectionLevel			-	-	a41bd712be5897ee
+enumconst	c:@E@CIQRCodeErrorCorrectionLevel@CIQRCodeErrorCorrectionLevelH	CIQRCodeErrorCorrectionLevel			-	-	823cf6c011701af2
+interface	c:objc(cs)CIQRCodeDescriptor	-			ios=11.0/-/-/0	-	c6fb1b5e1195030f
+super	-	CIQRCodeDescriptor	CIBarcodeDescriptor		-	-	e3d3fbdfe8f772a0
+property	c:objc(cs)CIQRCodeDescriptor(py)errorCorrectedPayload	-			ios=11.0/-/-/0	-	fba17f51271173d7
+property	c:objc(cs)CIQRCodeDescriptor(py)symbolVersion	-			ios=11.0/-/-/0	-	acdcea432fd9a7c4
+property	c:objc(cs)CIQRCodeDescriptor(py)maskPattern	-			ios=11.0/-/-/0	-	334da80a56db2689
+property	c:objc(cs)CIQRCodeDescriptor(py)errorCorrectionLevel	-			ios=11.0/-/-/0	-	0db9e9dcb16368e3
+method	c:objc(cs)CIQRCodeDescriptor(im)initWithPayload:symbolVersion:maskPattern:errorCorrectionLevel:	-			ios=11.0/-/-/0	-	d6ad094659b0c39d
+method	c:objc(cs)CIQRCodeDescriptor(cm)descriptorWithPayload:symbolVersion:maskPattern:errorCorrectionLevel:	-			ios=11.0/-/-/0	-	e996077c37ff9282
+interface	c:objc(cs)CIAztecCodeDescriptor	-			ios=11.0/-/-/0	-	85d77698cd17042f
+super	-	CIAztecCodeDescriptor	CIBarcodeDescriptor		-	-	8068d66e2e6ac704
+property	c:objc(cs)CIAztecCodeDescriptor(py)errorCorrectedPayload	-			ios=11.0/-/-/0	-	3940c712815c1a38
+property	c:objc(cs)CIAztecCodeDescriptor(py)isCompact	-			ios=11.0/-/-/0	-	5760219257e0d004
+property	c:objc(cs)CIAztecCodeDescriptor(py)layerCount	-			ios=11.0/-/-/0	-	07338d13659a0c01
+property	c:objc(cs)CIAztecCodeDescriptor(py)dataCodewordCount	-			ios=11.0/-/-/0	-	b19be81e14e83f3b
+method	c:objc(cs)CIAztecCodeDescriptor(im)initWithPayload:isCompact:layerCount:dataCodewordCount:	-			ios=11.0/-/-/0	-	818e9e54495f2a6d
+method	c:objc(cs)CIAztecCodeDescriptor(cm)descriptorWithPayload:isCompact:layerCount:dataCodewordCount:	-			ios=11.0/-/-/0	-	8af15cdd29d2d017
+interface	c:objc(cs)CIPDF417CodeDescriptor	-			ios=11.0/-/-/0	-	62cc3d5af138c6bf
+super	-	CIPDF417CodeDescriptor	CIBarcodeDescriptor		-	-	c3fba182f7326642
+property	c:objc(cs)CIPDF417CodeDescriptor(py)errorCorrectedPayload	-			ios=11.0/-/-/0	-	289c5f1067309353
+property	c:objc(cs)CIPDF417CodeDescriptor(py)isCompact	-			ios=11.0/-/-/0	-	3e4235629fea0d6f
+property	c:objc(cs)CIPDF417CodeDescriptor(py)rowCount	-			ios=11.0/-/-/0	-	d1c7a037e6655423
+property	c:objc(cs)CIPDF417CodeDescriptor(py)columnCount	-			ios=11.0/-/-/0	-	65831de9149b4150
+method	c:objc(cs)CIPDF417CodeDescriptor(im)initWithPayload:isCompact:rowCount:columnCount:	-			ios=11.0/-/-/0	-	379131f323cdfed3
+method	c:objc(cs)CIPDF417CodeDescriptor(cm)descriptorWithPayload:isCompact:rowCount:columnCount:	-			ios=11.0/-/-/0	-	1608fa4cbd5fc306
+typedef	c:@T@CIDataMatrixCodeECCVersion	-			-	-	7dc97cd9a1003c1f
+enum	c:@E@CIDataMatrixCodeECCVersion	-			-	-	cd5fc9b2371fe072
+enumconst	c:@E@CIDataMatrixCodeECCVersion@CIDataMatrixCodeECCVersion000	CIDataMatrixCodeECCVersion			-	-	4736b3052cccf586
+enumconst	c:@E@CIDataMatrixCodeECCVersion@CIDataMatrixCodeECCVersion050	CIDataMatrixCodeECCVersion			-	-	d64a5daad595def7
+enumconst	c:@E@CIDataMatrixCodeECCVersion@CIDataMatrixCodeECCVersion080	CIDataMatrixCodeECCVersion			-	-	46d27230ca03ca89
+enumconst	c:@E@CIDataMatrixCodeECCVersion@CIDataMatrixCodeECCVersion100	CIDataMatrixCodeECCVersion			-	-	1c31b04897719957
+enumconst	c:@E@CIDataMatrixCodeECCVersion@CIDataMatrixCodeECCVersion140	CIDataMatrixCodeECCVersion			-	-	30fa269b340c024b
+enumconst	c:@E@CIDataMatrixCodeECCVersion@CIDataMatrixCodeECCVersion200	CIDataMatrixCodeECCVersion			-	-	8f0bbbb94073d666
+interface	c:objc(cs)CIDataMatrixCodeDescriptor	-			ios=11.0/-/-/0	-	97e0a7d12d685cea
+super	-	CIDataMatrixCodeDescriptor	CIBarcodeDescriptor		-	-	f5e06aac4d9191b6
+property	c:objc(cs)CIDataMatrixCodeDescriptor(py)errorCorrectedPayload	-			ios=11.0/-/-/0	-	ccfbc946caeeec07
+property	c:objc(cs)CIDataMatrixCodeDescriptor(py)rowCount	-			ios=11.0/-/-/0	-	4ca749969f3837d9
+property	c:objc(cs)CIDataMatrixCodeDescriptor(py)columnCount	-			ios=11.0/-/-/0	-	6228887bb8bcdbb7
+property	c:objc(cs)CIDataMatrixCodeDescriptor(py)eccVersion	-			ios=11.0/-/-/0	-	f648bfa133341b55
+method	c:objc(cs)CIDataMatrixCodeDescriptor(im)initWithPayload:rowCount:columnCount:eccVersion:	-			ios=11.0/-/-/0	-	e8292987c2e011c7
+method	c:objc(cs)CIDataMatrixCodeDescriptor(cm)descriptorWithPayload:rowCount:columnCount:eccVersion:	-			ios=11.0/-/-/0	-	c04b700afa7be436
+category	c:objc(cy)NSUserActivity@CIBarcodeDescriptor	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	6d5c68a9d32c591e
+property	c:objc(cs)NSUserActivity(py)detectedBarcodeDescriptor	CIBarcodeDescriptor			ios=11.3/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	cf17727cf4e875f9
+var	c:@kCIFilterGeneratorExportedKey	-			ios=-/-/-/1	-	8cbcdcc22c3a2024
+var	c:@kCIFilterGeneratorExportedKeyTargetObject	-			ios=-/-/-/1	-	a33ece414da17a17
+var	c:@kCIFilterGeneratorExportedKeyName	-			ios=-/-/-/1	-	5cfb9c3c73681d76
+interface	c:objc(cs)CIFilterGenerator	-			ios=-/-/-/1	-	6acbbd9736d122bc
+super	-	CIFilterGenerator	NSObject		-	-	207e296515cf3349
+conforms	-	CIFilterGenerator	NSSecureCoding		-	-	cd0831b0ad4175c1
+conforms	-	CIFilterGenerator	NSCopying		-	-	0a73ec772fc9ce9c
+conforms	-	CIFilterGenerator	CIFilterConstructor		-	-	312f0acf0a4f5361
+struct	c:@S@CIFilterGeneratorStruct	-			-	-	5614879bb2004655
+method	c:objc(cs)CIFilterGenerator(cm)filterGenerator	-			ios=-/-/-/1	-	79aa912af8b18ed2
+method	c:objc(cs)CIFilterGenerator(cm)filterGeneratorWithContentsOfURL:	-			ios=-/-/-/1	-	258e08c0ce2d9f64
+method	c:objc(cs)CIFilterGenerator(im)initWithContentsOfURL:	-			ios=-/-/-/1	-	54948279701c268d
+method	c:objc(cs)CIFilterGenerator(im)connectObject:withKey:toObject:withKey:	-			ios=-/-/-/1	-	86b150224aa6ff6d
+method	c:objc(cs)CIFilterGenerator(im)disconnectObject:withKey:toObject:withKey:	-			ios=-/-/-/1	-	235166b99604ddca
+method	c:objc(cs)CIFilterGenerator(im)exportKey:fromObject:withName:	-			ios=-/-/-/1	-	8cab3fc821c51a78
+method	c:objc(cs)CIFilterGenerator(im)removeExportedKey:	-			ios=-/-/-/1	-	028914599dd237bf
+property	c:objc(cs)CIFilterGenerator(py)exportedKeys	-			ios=-/-/-/1	-	c76bd086786c2ddf
+method	c:objc(cs)CIFilterGenerator(im)setAttributes:forExportedKey:	-			ios=-/-/-/1	-	d0c796a87f4081e5
+property	c:objc(cs)CIFilterGenerator(py)classAttributes	-			ios=-/-/-/1	-	54b745b78a9f4cbc
+method	c:objc(cs)CIFilterGenerator(im)filter	-			ios=-/-/-/1	-	8162e2c141a29f79
+method	c:objc(cs)CIFilterGenerator(im)registerFilterName:	-			ios=-/-/-/1	-	e235a020868ceaab
+method	c:objc(cs)CIFilterGenerator(im)writeToURL:atomically:	-			ios=-/-/-/1	-	276e31d62f025932

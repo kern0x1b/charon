@@ -1,0 +1,48 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+var	c:@AVCustomRoutingControllerAuthorizedRoutesDidChangeNotification	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9dcb072d0dc477cf
+interface	c:objc(cs)AVCustomRoutingController	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	031e1869464ee13e
+super	-	AVCustomRoutingController	NSObject		-	-	0393b2adae7062f1
+property	c:objc(cs)AVCustomRoutingController(py)delegate	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b186534198a2da23
+property	c:objc(cs)AVCustomRoutingController(py)authorizedRoutes	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	069fc25f3abd1e19
+property	c:objc(cs)AVCustomRoutingController(py)knownRouteIPs	-			ios=16.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	55e2b297a09fde26
+property	c:objc(cs)AVCustomRoutingController(py)customActionItems	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d2f0452268865514
+method	c:objc(cs)AVCustomRoutingController(im)invalidateAuthorizationForRoute:	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	994dfc4b11088491
+method	c:objc(cs)AVCustomRoutingController(im)setActive:forRoute:	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	bef8bc59681fbc55
+method	c:objc(cs)AVCustomRoutingController(im)isRouteActive:	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	660e925501064858
+protocol	c:objc(pl)AVCustomRoutingControllerDelegate	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8a0f14de441fcbca
+conforms	-	AVCustomRoutingControllerDelegate	NSObject		-	-	c0372c248f63a437
+method	c:objc(pl)AVCustomRoutingControllerDelegate(im)customRoutingController:handleEvent:completionHandler:	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	02b85a79a912ed13
+method	c:objc(pl)AVCustomRoutingControllerDelegate(im)customRoutingController:eventDidTimeOut:	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1833508239a8a74f
+method	c:objc(pl)AVCustomRoutingControllerDelegate(im)customRoutingController:didSelectItem:	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1bc13af1d85af621
+interface	c:objc(cs)AVCustomRoutingPartialIP	-			ios=16.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ee290e0b1e203e04
+super	-	AVCustomRoutingPartialIP	NSObject		-	-	e41b8026fb157f00
+property	c:objc(cs)AVCustomRoutingPartialIP(py)address	-			ios=16.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0bc958f6a47fc800
+property	c:objc(cs)AVCustomRoutingPartialIP(py)mask	-			ios=16.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ec12d179c652d256
+method	c:objc(cs)AVCustomRoutingPartialIP(im)initWithAddress:mask:	-			ios=16.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	918ca5d71f58183b
+method	c:objc(cs)AVCustomRoutingPartialIP(im)init	-			*unavailable ios=16.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	57df8d32d606e877
+method	c:objc(cs)AVCustomRoutingPartialIP(cm)new	-			*unavailable ios=16.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ed1d013431d51858
+typedef	c:@T@AVCustomRoutingEventReason	-			-	-	744ba84dccf97fac
+enum	c:@E@AVCustomRoutingEventReason	-			-	-	e2ddf630902d27da
+enumconst	c:@E@AVCustomRoutingEventReason@AVCustomRoutingEventReasonActivate	AVCustomRoutingEventReason			-	-	4149f0cd28444d03
+enumconst	c:@E@AVCustomRoutingEventReason@AVCustomRoutingEventReasonDeactivate	AVCustomRoutingEventReason			-	-	26760d674c2d22da
+enumconst	c:@E@AVCustomRoutingEventReason@AVCustomRoutingEventReasonReactivate	AVCustomRoutingEventReason			-	-	741367bce3059b3d
+interface	c:objc(cs)AVCustomRoutingEvent	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	cc8bb5157653f900
+super	-	AVCustomRoutingEvent	NSObject		-	-	d57b056364676365
+property	c:objc(cs)AVCustomRoutingEvent(py)reason	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e55c64cba6d5a9cc
+property	c:objc(cs)AVCustomRoutingEvent(py)route	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c81af64736cebdb4
+interface	c:objc(cs)AVCustomRoutingActionItem	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	76a1ef99078ce686
+super	-	AVCustomRoutingActionItem	NSObject		-	-	585a168030d0d7e2
+property	c:objc(cs)AVCustomRoutingActionItem(py)type	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	974c145461174c66
+property	c:objc(cs)AVCustomRoutingActionItem(py)overrideTitle	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	50cf217d66f8331a
+interface	c:objc(cs)AVCustomDeviceRoute	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6acdbacebb79dea2
+super	-	AVCustomDeviceRoute	NSObject		-	-	88162a6a98ff5ca4
+property	c:objc(cs)AVCustomDeviceRoute(py)networkEndpoint	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	077e4889c0a0555d
+property	c:objc(cs)AVCustomDeviceRoute(py)bluetoothIdentifier	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	85c24a05c26c84a8
+interface	c:objc(cs)AVRoutingPlaybackArbiter	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	a87fe5f905ae791c
+super	-	AVRoutingPlaybackArbiter	NSObject		-	-	e2c9d38fd872fcb1
+method	c:objc(cs)AVRoutingPlaybackArbiter(cm)sharedRoutingPlaybackArbiter	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	aa5f61ea201b9cb4
+property	c:objc(cs)AVRoutingPlaybackArbiter(py)preferredParticipantForNonMixableAudioRoutes	-			ios=-/-/-/1,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	c7658de94a31aceb
+property	c:objc(cs)AVRoutingPlaybackArbiter(py)preferredParticipantForExternalPlayback	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	744360f8a328c1f2
+method	c:objc(cs)AVRoutingPlaybackArbiter(im)init	-			*unavailable ios=26.0/-/-/0,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	8daa7f87e273ccdf
+method	c:objc(cs)AVRoutingPlaybackArbiter(cm)new	-			*unavailable ios=26.0/-/-/0,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	2ae19f52c910e89b
+protocol	c:objc(pl)AVRoutingPlaybackParticipant	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	420f4721efcf0e15

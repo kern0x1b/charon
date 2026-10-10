@@ -1,0 +1,147 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+var	c:@NIErrorDomain	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	414abee90332cb23
+typedef	c:@T@NIErrorCode	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	fef02a1a23f6a52e
+enum	c:@E@NIErrorCode	-			-	-	a735c2e1b3325e5d
+enumconst	c:@E@NIErrorCode@NIErrorCodeUnsupportedPlatform	NIErrorCode			-	-	d05b8612ada4cb67
+enumconst	c:@E@NIErrorCode@NIErrorCodeInvalidConfiguration	NIErrorCode			-	-	46a3cf6b63738ee8
+enumconst	c:@E@NIErrorCode@NIErrorCodeSessionFailed	NIErrorCode			-	-	0e9f9e013944ad7e
+enumconst	c:@E@NIErrorCode@NIErrorCodeResourceUsageTimeout	NIErrorCode			-	-	488f72b354a81fb5
+enumconst	c:@E@NIErrorCode@NIErrorCodeActiveSessionsLimitExceeded	NIErrorCode			-	-	7f8101244b6e6159
+enumconst	c:@E@NIErrorCode@NIErrorCodeUserDidNotAllow	NIErrorCode			-	-	4192e4d141945115
+enumconst	c:@E@NIErrorCode@NIErrorCodeInvalidARConfiguration	NIErrorCode			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	80ab576bd6308d8a
+enumconst	c:@E@NIErrorCode@NIErrorCodeAccessoryPeerDeviceUnavailable	NIErrorCode			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	68f54af147f19004
+enumconst	c:@E@NIErrorCode@NIErrorCodeIncompatiblePeerDevice	NIErrorCode			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	0b3bd53b0bfc8640
+enumconst	c:@E@NIErrorCode@NIErrorCodeActiveExtendedDistanceSessionsLimitExceeded	NIErrorCode			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	582cebb984a77ddd
+typedef	c:@T@NIAlgorithmConvergenceStatusReason	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	bd8a3594658cb1b9
+var	c:@NIAlgorithmConvergenceStatusReasonInsufficientHorizontalSweep	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	8ea34de84518077f
+var	c:@NIAlgorithmConvergenceStatusReasonInsufficientVerticalSweep	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	e1bb77c13b4f01e9
+var	c:@NIAlgorithmConvergenceStatusReasonInsufficientMovement	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	284c685a5beb87c3
+var	c:@NIAlgorithmConvergenceStatusReasonInsufficientLighting	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	cd4d1bfb163bc4a1
+function	c:@F@NIAlgorithmConvergenceStatusReasonDescription	-			ios=16.0/-/-/0,macos=-/-/-/1,swift=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	1e32c140c16f62e7
+protocol	c:objc(pl)NIDeviceCapability	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	5bb6d679ae0d799a
+property	c:objc(pl)NIDeviceCapability(py)supportsPreciseDistanceMeasurement	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	8227b3656453d223
+property	c:objc(pl)NIDeviceCapability(py)supportsDirectionMeasurement	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	114cc19f84b212c0
+property	c:objc(pl)NIDeviceCapability(py)supportsCameraAssistance	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	4cd13a0909bba219
+property	c:objc(pl)NIDeviceCapability(py)supportsExtendedDistanceMeasurement	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	9e6422af09d20e81
+property	c:objc(pl)NIDeviceCapability(py)supportsDLTDOAMeasurement	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c47f0204932f3bd4
+interface	c:objc(cs)NIDiscoveryToken	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	eba56f66296499da
+super	-	NIDiscoveryToken	NSObject		-	-	14c008f45e2af797
+conforms	-	NIDiscoveryToken	NSCopying		-	-	62bb8cbd87c0d997
+conforms	-	NIDiscoveryToken	NSSecureCoding		-	-	971e77f31bb54c77
+property	c:objc(cs)NIDiscoveryToken(py)deviceCapabilities	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	0e72613568270fc1
+method	c:objc(cs)NIDiscoveryToken(im)init	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	d4db963df5ce36e0
+method	c:objc(cs)NIDiscoveryToken(cm)new	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	9373393f5f598078
+interface	c:objc(cs)NIConfiguration	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	e16b44599461bae9
+super	-	NIConfiguration	NSObject		-	-	188c9934914d1e28
+conforms	-	NIConfiguration	NSCopying		-	-	47079925b6c0f374
+conforms	-	NIConfiguration	NSSecureCoding		-	-	e00ff7ed73095db2
+method	c:objc(cs)NIConfiguration(im)init	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	fad2360c09f8277c
+method	c:objc(cs)NIConfiguration(cm)new	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	3aff8611dc1d6f78
+interface	c:objc(cs)NINearbyPeerConfiguration	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	2e6b0aec24d754da
+super	-	NINearbyPeerConfiguration	NIConfiguration		-	-	d862ed952b3c67ca
+property	c:objc(cs)NINearbyPeerConfiguration(py)peerDiscoveryToken	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	33103abb7d70ed50
+method	c:objc(cs)NINearbyPeerConfiguration(im)initWithPeerToken:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	83957b765efc46d8
+property	c:objc(cs)NINearbyPeerConfiguration(py)cameraAssistanceEnabled	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	febdce1e99d5fcdf
+property	c:objc(cs)NINearbyPeerConfiguration(py)extendedDistanceMeasurementEnabled	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	a4cd8ed59535012c
+method	c:objc(cs)NINearbyPeerConfiguration(im)init	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	a6799735c4b718ea
+method	c:objc(cs)NINearbyPeerConfiguration(cm)new	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	88bdceb579cefa5d
+interface	c:objc(cs)NINearbyAccessoryConfiguration	-			ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	1e88aa95d7738881
+super	-	NINearbyAccessoryConfiguration	NIConfiguration		-	-	a2eacc904b036ec3
+property	c:objc(cs)NINearbyAccessoryConfiguration(py)accessoryDiscoveryToken	-			ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	140d53f3e3891e6c
+property	c:objc(cs)NINearbyAccessoryConfiguration(py)cameraAssistanceEnabled	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	039536dd1ceea948
+method	c:objc(cs)NINearbyAccessoryConfiguration(im)initWithData:error:	-			ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	f1a3bd16a1129e42
+method	c:objc(cs)NINearbyAccessoryConfiguration(im)initWithAccessoryData:bluetoothPeerIdentifier:error:	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	22d52a75f5f79317
+method	c:objc(cs)NINearbyAccessoryConfiguration(im)init	-			*unavailable ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	e9a871e1ae791971
+method	c:objc(cs)NINearbyAccessoryConfiguration(cm)new	-			*unavailable ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	de7ec4b953efe8a0
+interface	c:objc(cs)NIDLTDOAConfiguration	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	515d0e629e9300f4
+super	-	NIDLTDOAConfiguration	NIConfiguration		-	-	3c701f165a9e722b
+property	c:objc(cs)NIDLTDOAConfiguration(py)networkIdentifier	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1489c4c3c2d23d7a
+method	c:objc(cs)NIDLTDOAConfiguration(im)initWithNetworkIdentifier:	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5dc1c9044c0626ec
+method	c:objc(cs)NIDLTDOAConfiguration(im)init	-			*unavailable ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6f13c6913a4e7d1d
+method	c:objc(cs)NIDLTDOAConfiguration(cm)new	-			*unavailable ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	502aa5e86c8736b5
+var	c:@NINearbyObjectDistanceNotAvailable	-			ios=14.0/-/-/0,macos=-/-/-/1,swift=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	ffe4e459cc048c5d
+var	c:@NINearbyObjectDirectionNotAvailable	-			ios=14.0/-/-/0,macos=-/-/-/1,swift=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	db29462ab781cd8a
+var	c:@NINearbyObjectAngleNotAvailable	-			ios=16.0/-/-/0,macos=-/-/-/1,swift=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	453abe7588a0bd96
+typedef	c:@T@NINearbyObjectVerticalDirectionEstimate	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	32f61bbc45e53c02
+enum	c:@E@NINearbyObjectVerticalDirectionEstimate	-			-	-	f5e7977048d91e5f
+enumconst	c:@E@NINearbyObjectVerticalDirectionEstimate@NINearbyObjectVerticalDirectionEstimateUnknown	NINearbyObjectVerticalDirectionEstimate			-	-	58e21460c33c664b
+enumconst	c:@E@NINearbyObjectVerticalDirectionEstimate@NINearbyObjectVerticalDirectionEstimateSame	NINearbyObjectVerticalDirectionEstimate			-	-	2b63782b004820e6
+enumconst	c:@E@NINearbyObjectVerticalDirectionEstimate@NINearbyObjectVerticalDirectionEstimateAbove	NINearbyObjectVerticalDirectionEstimate			-	-	9036cf34c8e73d7a
+enumconst	c:@E@NINearbyObjectVerticalDirectionEstimate@NINearbyObjectVerticalDirectionEstimateBelow	NINearbyObjectVerticalDirectionEstimate			-	-	729f6f5ed4c4e4e1
+enumconst	c:@E@NINearbyObjectVerticalDirectionEstimate@NINearbyObjectVerticalDirectionEstimateAboveOrBelow	NINearbyObjectVerticalDirectionEstimate			-	-	db97e30c9bb437fd
+interface	c:objc(cs)NINearbyObject	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	28c458779b7ecf25
+super	-	NINearbyObject	NSObject		-	-	b23ef1f5ce778400
+conforms	-	NINearbyObject	NSCopying		-	-	a853be9ee7f8cf81
+conforms	-	NINearbyObject	NSSecureCoding		-	-	888bbede27e23527
+property	c:objc(cs)NINearbyObject(py)discoveryToken	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	5f92711e53b5f956
+property	c:objc(cs)NINearbyObject(py)distance	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	a59f282f879f4281
+property	c:objc(cs)NINearbyObject(py)direction	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	6492a37e1bd936dd
+property	c:objc(cs)NINearbyObject(py)verticalDirectionEstimate	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	7b86a4c2263a0007
+property	c:objc(cs)NINearbyObject(py)horizontalAngle	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	b2b672e23216b1b7
+method	c:objc(cs)NINearbyObject(im)init	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	04f1fceb3951f4b5
+method	c:objc(cs)NINearbyObject(cm)new	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	84c8f9ccd87ce617
+typedef	c:@T@NIDLTDOACoordinatesType	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7e09becb1bfeeb94
+enum	c:@E@NIDLTDOACoordinatesType	-			-	-	1291276ae1ca5fcd
+enumconst	c:@E@NIDLTDOACoordinatesType@NIDLTDOACoordinatesTypeGeodetic	NIDLTDOACoordinatesType			-	-	dd607bc2265920ae
+enumconst	c:@E@NIDLTDOACoordinatesType@NIDLTDOACoordinatesTypeRelative	NIDLTDOACoordinatesType			-	-	3ade04ca1825aaa8
+typedef	c:@T@NIDLTDOAMeasurementType	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bd7b0a80ccb400b5
+enum	c:@E@NIDLTDOAMeasurementType	-			-	-	08c6e1cd55fc1a7c
+enumconst	c:@E@NIDLTDOAMeasurementType@NIDLTDOAMeasurementTypePoll	NIDLTDOAMeasurementType			-	-	a5e7ee8a75f7419e
+enumconst	c:@E@NIDLTDOAMeasurementType@NIDLTDOAMeasurementTypeResponse	NIDLTDOAMeasurementType			-	-	9dd7579dc49d7f99
+enumconst	c:@E@NIDLTDOAMeasurementType@NIDLTDOAMeasurementTypeFinal	NIDLTDOAMeasurementType			-	-	ed08658fb87e1c1f
+interface	c:objc(cs)NIDLTDOAMeasurement	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	08c65b7461b33eb1
+super	-	NIDLTDOAMeasurement	NSObject		-	-	b2d787e25657cd6d
+conforms	-	NIDLTDOAMeasurement	NSCopying		-	-	44d31a05a1cd2656
+conforms	-	NIDLTDOAMeasurement	NSSecureCoding		-	-	271420fbf14646eb
+property	c:objc(cs)NIDLTDOAMeasurement(py)address	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ba563894fe4a30fe
+property	c:objc(cs)NIDLTDOAMeasurement(py)measurementType	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cb3f8f51f57729d7
+property	c:objc(cs)NIDLTDOAMeasurement(py)transmitTime	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ec1e5e41c373b64a
+property	c:objc(cs)NIDLTDOAMeasurement(py)receiveTime	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c1f8363b9ac65ae2
+property	c:objc(cs)NIDLTDOAMeasurement(py)signalStrength	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7627cf2e3fd3278d
+property	c:objc(cs)NIDLTDOAMeasurement(py)carrierFrequencyOffset	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	23becd2ed32aa16a
+property	c:objc(cs)NIDLTDOAMeasurement(py)coordinatesType	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	abd008c6628c2158
+property	c:objc(cs)NIDLTDOAMeasurement(py)coordinates	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	94e90107fa1ea6f0
+method	c:objc(cs)NIDLTDOAMeasurement(im)init	-			*unavailable ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a0f1927c445df0f7
+method	c:objc(cs)NIDLTDOAMeasurement(cm)new	-			*unavailable ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e0ec5edf0c99914c
+var	c:@NINearbyObjectWorldTransformNotAvailable	-			ios=16.0/-/-/0,macos=-/-/-/1,swift=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	7343d0e0afd105f6
+interface	c:objc(cs)NISession	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	deprecated: Use Use deviceCapabilities property and check the supportsPreciseDistanceMeasurement property instead	0bc22fa0299fd066
+super	-	NISession	NSObject		-	-	b33c28cf5d0bdcb3
+property	c:objc(cs)NISession(cpy)supported	-			ios=14.0/16.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/9.0/-/0	-	8a59dbe7f61ea9b8
+property	c:objc(cs)NISession(cpy)deviceCapabilities	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	0e434a24b5d67ceb
+property	c:objc(cs)NISession(py)delegate	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	142acefbae013409
+property	c:objc(cs)NISession(py)delegateQueue	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	8042404df84118cc
+property	c:objc(cs)NISession(py)discoveryToken	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	e4a9e15b174e47f9
+property	c:objc(cs)NISession(py)configuration	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	e06aa53f8b3c394b
+method	c:objc(cs)NISession(im)runWithConfiguration:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	6820ddb1f6724dda
+method	c:objc(cs)NISession(im)pause	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	fb03179b14eb1b14
+method	c:objc(cs)NISession(im)invalidate	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	b05e38f3575497ff
+method	c:objc(cs)NISession(im)setARSession:	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	1ebbaa110baadae9
+method	c:objc(cs)NISession(im)worldTransformForObject:	-			ios=16.0/-/-/0,watchos=-/-/-/1	-	f07f99763ac8e548
+typedef	c:@T@NINearbyObjectRemovalReason	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	81db03635abd99c3
+enum	c:@E@NINearbyObjectRemovalReason	-			-	-	4009bd278f4cd045
+enumconst	c:@E@NINearbyObjectRemovalReason@NINearbyObjectRemovalReasonTimeout	NINearbyObjectRemovalReason			-	-	786895a85edcd6a8
+enumconst	c:@E@NINearbyObjectRemovalReason@NINearbyObjectRemovalReasonPeerEnded	NINearbyObjectRemovalReason			-	-	57ed37a8e07e6860
+typedef	c:@T@NIAlgorithmConvergenceStatus	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	d4c826922a450fb2
+enum	c:@E@NIAlgorithmConvergenceStatus	-			-	-	dd7d5a651868e910
+enumconst	c:@E@NIAlgorithmConvergenceStatus@NIAlgorithmConvergenceStatusUnknown	NIAlgorithmConvergenceStatus			-	-	9e81493621cc63f7
+enumconst	c:@E@NIAlgorithmConvergenceStatus@NIAlgorithmConvergenceStatusNotConverged	NIAlgorithmConvergenceStatus			-	-	4924124d0070583b
+enumconst	c:@E@NIAlgorithmConvergenceStatus@NIAlgorithmConvergenceStatusConverged	NIAlgorithmConvergenceStatus			-	-	6ddda37ddd24c6e1
+interface	c:objc(cs)NIAlgorithmConvergence	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	8764bffefecf3304
+super	-	NIAlgorithmConvergence	NSObject		-	-	099d0298ae016c5b
+conforms	-	NIAlgorithmConvergence	NSCopying		-	-	3b6fbd22ed12c466
+conforms	-	NIAlgorithmConvergence	NSSecureCoding		-	-	f7eb989a931e8afd
+property	c:objc(cs)NIAlgorithmConvergence(py)status	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	9a95e24bb05b16b6
+property	c:objc(cs)NIAlgorithmConvergence(py)reasons	-			swift=-/-/-/1	-	0a42bc880f0fef8b
+method	c:objc(cs)NIAlgorithmConvergence(im)init	-			*unavailable ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	f0b4b5f33af48992
+method	c:objc(cs)NIAlgorithmConvergence(cm)new	-			*unavailable ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	71e0a6d4f506e10a
+protocol	c:objc(pl)NISessionDelegate	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	00de594710acdf79
+conforms	-	NISessionDelegate	NSObject		-	-	3dd2a77e9273a7e5
+method	c:objc(pl)NISessionDelegate(im)session:didUpdateNearbyObjects:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	dcfd101b12e1ab9b
+method	c:objc(pl)NISessionDelegate(im)session:didRemoveNearbyObjects:withReason:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	a8d46bce80c4c6eb
+method	c:objc(pl)NISessionDelegate(im)sessionWasSuspended:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	6f9523e70bb01ac5
+method	c:objc(pl)NISessionDelegate(im)sessionSuspensionEnded:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	b1c982c3c499bc76
+method	c:objc(pl)NISessionDelegate(im)session:didInvalidateWithError:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	7771c4d59c4284c2
+method	c:objc(pl)NISessionDelegate(im)session:didGenerateShareableConfigurationData:forObject:	-			ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	8f3572b48fdc2e5d
+method	c:objc(pl)NISessionDelegate(im)session:didUpdateAlgorithmConvergence:forObject:	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	8420cd30452180dc
+method	c:objc(pl)NISessionDelegate(im)session:didUpdateDLTDOAMeasurements:	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	103ef05e24a18b17
+method	c:objc(pl)NISessionDelegate(im)sessionDidStartRunning:	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	7df8d011f3cac63b

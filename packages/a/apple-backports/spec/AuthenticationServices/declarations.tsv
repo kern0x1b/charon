@@ -1,0 +1,873 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+typedef	c:@T@ASPresentationAnchor	-			watchos=-/-/-/1	-	0074a10624afb14c
+typedef	c:@T@ASViewController	-			watchos=-/-/-/1	-	952a87fabbf34e41
+typedef	c:@T@ASImage	-			watchos=-/-/-/1	-	aee3563ec8e28606
+var	c:@ASWebAuthenticationSessionErrorDomain	-			ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=16.0/-/-/0,watchos=6.2/-/-/0	-	bd6143852fda4749
+typedef	c:@T@ASWebAuthenticationSessionErrorCode	-			-	-	a96d41221ae7b470
+enum	c:@E@ASWebAuthenticationSessionErrorCode	-			ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=16.0/-/-/0,watchos=6.2/-/-/0	-	533012bf6a7ba690
+enumconst	c:@E@ASWebAuthenticationSessionErrorCode@ASWebAuthenticationSessionErrorCodeCanceledLogin	ASWebAuthenticationSessionErrorCode			ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=16.0/-/-/0,watchos=6.2/-/-/0	-	540fd77e1b0bce6d
+enumconst	c:@E@ASWebAuthenticationSessionErrorCode@ASWebAuthenticationSessionErrorCodePresentationContextNotProvided	ASWebAuthenticationSessionErrorCode			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3996788a8566a2c0
+enumconst	c:@E@ASWebAuthenticationSessionErrorCode@ASWebAuthenticationSessionErrorCodePresentationContextInvalid	ASWebAuthenticationSessionErrorCode			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f27387664f79ec9f
+typedef	c:@T@ASWebAuthenticationSessionCompletionHandler	-			-	-	7e3cabb4d9a30635
+interface	c:objc(cs)ASWebAuthenticationSession	-			ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=16.0/-/-/0,watchos=6.2/-/-/0	deprecated: Use initWithURL:callback:completionHandler: instead	6589f4d224396adb
+super	-	ASWebAuthenticationSession	NSObject		-	-	117fdecf541fcaf8
+method	c:objc(cs)ASWebAuthenticationSession(im)initWithURL:callbackURLScheme:completionHandler:	-			ios=12.0/100000/-/0,maccatalyst=13.0/100000/-/0,macos=10.15/100000/-/0,tvos=16.0/100000/-/0,watchos=6.2/100000/-/0	deprecated: Use initWithURL:callback:completionHandler: instead	c67f41dd1204279b
+method	c:objc(cs)ASWebAuthenticationSession(im)initWithURL:callback:completionHandler:	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0,xros=1.1/-/-/0	-	c09d7f11d49e42d5
+property	c:objc(cs)ASWebAuthenticationSession(py)presentationContextProvider	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0206dba846779495
+property	c:objc(cs)ASWebAuthenticationSession(py)prefersEphemeralWebBrowserSession	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=6.2/-/-/0	-	e89a80239eee9ad0
+property	c:objc(cs)ASWebAuthenticationSession(py)additionalHeaderFields	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0,xros=1.1/-/-/0	-	c558410708cee3d3
+property	c:objc(cs)ASWebAuthenticationSession(py)canStart	-			ios=13.4/-/-/0,macos=10.15.4/-/-/0,watchos=6.2/-/-/0	-	5d16c9d287f8e7c0
+method	c:objc(cs)ASWebAuthenticationSession(im)start	-			ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=16.0/-/-/0,watchos=6.2/-/-/0	-	14e87d83b94daf71
+method	c:objc(cs)ASWebAuthenticationSession(im)cancel	-			tvos=-/-/-/1	-	c4a8813e15d368c3
+method	c:objc(cs)ASWebAuthenticationSession(cm)new	-			*unavailable ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=16.0/-/-/0,watchos=6.2/-/-/0	-	2cba9fad6c945c21
+method	c:objc(cs)ASWebAuthenticationSession(im)init	-			*unavailable ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=16.0/-/-/0,watchos=6.2/-/-/0	-	029e15131eec1024
+protocol	c:objc(pl)ASWebAuthenticationPresentationContextProviding	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ec9e38fe72406aeb
+conforms	-	ASWebAuthenticationPresentationContextProviding	NSObject		-	-	c6ffd8e6e90cc72a
+method	c:objc(pl)ASWebAuthenticationPresentationContextProviding(im)presentationAnchorForWebAuthenticationSession:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5ae7f0ffba6fe615
+protocol	c:objc(pl)ASWebAuthenticationSessionRequestDelegate	-			ios=-/-/-/1,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1	-	d4e01569785df942
+conforms	-	ASWebAuthenticationSessionRequestDelegate	NSObject		-	-	18cefc8de373a986
+method	c:objc(pl)ASWebAuthenticationSessionRequestDelegate(im)authenticationSessionRequest:didCompleteWithCallbackURL:	-			ios=-/-/-/1,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1	-	6e20a78bbafa32b7
+method	c:objc(pl)ASWebAuthenticationSessionRequestDelegate(im)authenticationSessionRequest:didCancelWithError:	-			ios=-/-/-/1,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1	-	0eb5b007f8ba1344
+interface	c:objc(cs)ASWebAuthenticationSessionRequest	-			ios=-/-/-/1,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1	deprecated: Use `callback` to match all callback types.	40700343bd25af43
+super	-	ASWebAuthenticationSessionRequest	NSObject		-	-	8a1861efeb33dba8
+conforms	-	ASWebAuthenticationSessionRequest	NSSecureCoding		-	-	7a1f7020667a4f04
+conforms	-	ASWebAuthenticationSessionRequest	NSCopying		-	-	c81d4d769121590f
+property	c:objc(cs)ASWebAuthenticationSessionRequest(py)UUID	-			ios=-/-/-/1,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1	-	ed971473980594e8
+property	c:objc(cs)ASWebAuthenticationSessionRequest(py)URL	-			ios=-/-/-/1,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1	-	e88512e88e0406e0
+property	c:objc(cs)ASWebAuthenticationSessionRequest(py)callbackURLScheme	-			maccatalyst=13.0/17.4/-/0,macos=10.15/14.4/-/0	-	63ffb70e20fdaeac
+property	c:objc(cs)ASWebAuthenticationSessionRequest(py)shouldUseEphemeralSession	-			ios=-/-/-/1,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1	-	7d66549c6d25de9e
+property	c:objc(cs)ASWebAuthenticationSessionRequest(py)delegate	-			ios=-/-/-/1,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1	-	9c0413484f7545d4
+property	c:objc(cs)ASWebAuthenticationSessionRequest(py)additionalHeaderFields	-			maccatalyst=17.4/-/-/0,macos=14.4/-/-/0	-	40a05f1b2beb0431
+property	c:objc(cs)ASWebAuthenticationSessionRequest(py)callback	-			maccatalyst=17.4/-/-/0,macos=14.4/-/-/0	-	52b8035f7276a254
+method	c:objc(cs)ASWebAuthenticationSessionRequest(cm)new	-			*unavailable ios=-/-/-/1,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1	-	62af3ad1a9db7144
+method	c:objc(cs)ASWebAuthenticationSessionRequest(im)init	-			*unavailable ios=-/-/-/1,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1	-	fba17f335c35f8fc
+method	c:objc(cs)ASWebAuthenticationSessionRequest(im)cancelWithError:	-			ios=-/-/-/1,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1	-	14dbe34cc11a62c1
+method	c:objc(cs)ASWebAuthenticationSessionRequest(im)completeWithCallbackURL:	-			ios=-/-/-/1,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1	-	f9a576fc882ec5cf
+protocol	c:objc(pl)ASWebAuthenticationSessionWebBrowserSessionHandling	-			ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1	-	28773dd3155f57af
+method	c:objc(pl)ASWebAuthenticationSessionWebBrowserSessionHandling(im)beginHandlingWebAuthenticationSessionRequest:	-			ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1	-	acc4844480421161
+method	c:objc(pl)ASWebAuthenticationSessionWebBrowserSessionHandling(im)cancelWebAuthenticationSessionRequest:	-			ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1	-	2390cf1ac9408d74
+interface	c:objc(cs)ASWebAuthenticationSessionWebBrowserSessionManager	-			ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1	-	3cebc81cdc9dfa71
+super	-	ASWebAuthenticationSessionWebBrowserSessionManager	NSObject		-	-	aece02d9aa85d44b
+property	c:objc(cs)ASWebAuthenticationSessionWebBrowserSessionManager(cpy)sharedManager	-			ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1	-	b88048a927602ea3
+property	c:objc(cs)ASWebAuthenticationSessionWebBrowserSessionManager(py)sessionHandler	-			ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1	-	aadbcc8fddb23f6d
+property	c:objc(cs)ASWebAuthenticationSessionWebBrowserSessionManager(py)wasLaunchedByAuthenticationServices	-			ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1	-	652f59d93596ddaf
+var	c:@ASCredentialIdentityStoreErrorDomain	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	25be13d17ec0c1f9
+typedef	c:@T@ASCredentialIdentityStoreErrorCode	-			-	-	68c932115a3bea86
+enum	c:@E@ASCredentialIdentityStoreErrorCode	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ae7060c1dc7c83bf
+enumconst	c:@E@ASCredentialIdentityStoreErrorCode@ASCredentialIdentityStoreErrorCodeInternalError	ASCredentialIdentityStoreErrorCode			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	232d2a54eeabfced
+enumconst	c:@E@ASCredentialIdentityStoreErrorCode@ASCredentialIdentityStoreErrorCodeStoreDisabled	ASCredentialIdentityStoreErrorCode			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2763e637d40033c4
+enumconst	c:@E@ASCredentialIdentityStoreErrorCode@ASCredentialIdentityStoreErrorCodeStoreBusy	ASCredentialIdentityStoreErrorCode			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1339628f338168d4
+typedef	c:@T@ASCredentialIdentityTypes	-			-	-	7c97a29132d9856a
+enum	c:@E@ASCredentialIdentityTypes	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.1/-/-/0	-	623f1fe9914c082b
+enumconst	c:@E@ASCredentialIdentityTypes@ASCredentialIdentityTypesAll	ASCredentialIdentityTypes			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.1/-/-/0	-	68730b4aa9376b8d
+enumconst	c:@E@ASCredentialIdentityTypes@ASCredentialIdentityTypesPassword	ASCredentialIdentityTypes			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.1/-/-/0	-	c742ac103a01bf07
+enumconst	c:@E@ASCredentialIdentityTypes@ASCredentialIdentityTypesPasskey	ASCredentialIdentityTypes			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.1/-/-/0	-	f79a6a6980210a00
+enumconst	c:@E@ASCredentialIdentityTypes@ASCredentialIdentityTypesOneTimeCode	ASCredentialIdentityTypes			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.1/-/-/0	-	94e5283e2bbc2ae8
+interface	c:objc(cs)ASCredentialIdentityStore	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use saveCredentialIdentityEntries:completion: instead	33c0f22e3a0fafa4
+super	-	ASCredentialIdentityStore	NSObject		-	-	5baab1bea9aa16f5
+property	c:objc(cs)ASCredentialIdentityStore(cpy)sharedStore	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	de1d305c143cd938
+method	c:objc(cs)ASCredentialIdentityStore(im)init	-			*unavailable ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8e259ca58e3a6d3c
+method	c:objc(cs)ASCredentialIdentityStore(im)getCredentialIdentityStoreStateWithCompletion:	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b180aa7377d62ef2
+method	c:objc(cs)ASCredentialIdentityStore(im)getCredentialIdentitiesForService:credentialIdentityTypes:completionHandler:	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.1/-/-/0	-	ba9ffe141b260236
+method	c:objc(cs)ASCredentialIdentityStore(im)saveCredentialIdentities:completion:	-			ios=12.0/17.0/-/0,macos=11.0/14.0/-/0	deprecated: Use saveCredentialIdentityEntries:completion: instead	9514e16cc8e7804c
+method	c:objc(cs)ASCredentialIdentityStore(im)saveCredentialIdentityEntries:completion:	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	237bbb13144f7e33
+method	c:objc(cs)ASCredentialIdentityStore(im)removeCredentialIdentities:completion:	-			ios=12.0/17.0/-/0,macos=11.0/14.0/-/0	deprecated: Use removeCredentialIdentityEntries:completion: instead	225f28b2d22b4e6f
+method	c:objc(cs)ASCredentialIdentityStore(im)removeCredentialIdentityEntries:completion:	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	5ac7cabc2d1ab308
+method	c:objc(cs)ASCredentialIdentityStore(im)removeAllCredentialIdentitiesWithCompletion:	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0689486baf617fce
+method	c:objc(cs)ASCredentialIdentityStore(im)replaceCredentialIdentitiesWithIdentities:completion:	-			ios=12.0/17.0/-/0,macos=11.0/14.0/-/0	deprecated: Use replaceCredentialIdentityEntries:completion: instead	18480611008623a2
+method	c:objc(cs)ASCredentialIdentityStore(im)replaceCredentialIdentityEntries:completion:	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	6c7ef86ee290a7a9
+interface	c:objc(cs)ASCredentialIdentityStoreState	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	88cc4af7a25b80ec
+super	-	ASCredentialIdentityStoreState	NSObject		-	-	a7faf44499c4ae3e
+property	c:objc(cs)ASCredentialIdentityStoreState(py)enabled	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	58c47eeb0bdb25ec
+property	c:objc(cs)ASCredentialIdentityStoreState(py)supportsIncrementalUpdates	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d6c0943991144b29
+var	c:@ASExtensionErrorDomain	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cd28948b1cdafae7
+typedef	c:@T@ASExtensionErrorCode	-			-	-	487fa1cc291bcb45
+enum	c:@E@ASExtensionErrorCode	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	86bf0973a6715b2d
+enumconst	c:@E@ASExtensionErrorCode@ASExtensionErrorCodeFailed	ASExtensionErrorCode			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9c0f1e9ec9641700
+enumconst	c:@E@ASExtensionErrorCode@ASExtensionErrorCodeUserCanceled	ASExtensionErrorCode			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	983b5ac01ad96d78
+enumconst	c:@E@ASExtensionErrorCode@ASExtensionErrorCodeUserInteractionRequired	ASExtensionErrorCode			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d0260374b6c7b8db
+enumconst	c:@E@ASExtensionErrorCode@ASExtensionErrorCodeCredentialIdentityNotFound	ASExtensionErrorCode			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4b6183ef45077b17
+enumconst	c:@E@ASExtensionErrorCode@ASExtensionErrorCodeMatchedExcludedCredential	ASExtensionErrorCode			ios=18.0/-/-/0,macos=15.0/-/-/0,xros=2.0/-/-/0	-	1449802655f9d47c
+var	c:@ASExtensionLocalizedFailureReasonErrorKey	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	615777ba25df26a8
+interface	c:objc(cs)ASCredentialProviderExtensionContext	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a9ac4eb0cc2e8e8a
+super	-	ASCredentialProviderExtensionContext	NSExtensionContext		-	-	28ada16982001eaf
+method	c:objc(cs)ASCredentialProviderExtensionContext(im)completeRequestWithSelectedCredential:completionHandler:	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5df714c7ba04dfc7
+method	c:objc(cs)ASCredentialProviderExtensionContext(im)completeAssertionRequestWithSelectedPasskeyCredential:completionHandler:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6ffca1c97a165029
+method	c:objc(cs)ASCredentialProviderExtensionContext(im)completeRegistrationRequestWithSelectedPasskeyCredential:completionHandler:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8b557dc4f715a798
+method	c:objc(cs)ASCredentialProviderExtensionContext(im)completeOneTimeCodeRequestWithSelectedCredential:completionHandler:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	1cbefacc2bc5b6fd
+method	c:objc(cs)ASCredentialProviderExtensionContext(im)completeRequestWithTextToInsert:completionHandler:	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f47535c3c5e3193f
+method	c:objc(cs)ASCredentialProviderExtensionContext(im)completeSavePasswordRequestWithCompletionHandler:	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	5c446e2c48a2b190
+method	c:objc(cs)ASCredentialProviderExtensionContext(im)completeGeneratePasswordRequestWithResults:completionHandler:	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	df489c4736ff7ace
+method	c:objc(cs)ASCredentialProviderExtensionContext(im)completeExtensionConfigurationRequest	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bb99eca261483311
+method	c:objc(cs)ASCredentialProviderExtensionContext(im)completeRequestReturningItems:completionHandler:	-			*unavailable ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7d78e49c9c1935e1
+method	c:objc(cs)ASCredentialProviderExtensionContext(im)cancelRequestWithError:	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7d87536a2c4f9646
+typedef	c:@T@ASCredentialServiceIdentifierType	-			-	-	b7f771066d8b588c
+enum	c:@E@ASCredentialServiceIdentifierType	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8bd414edcdbf504e
+enumconst	c:@E@ASCredentialServiceIdentifierType@ASCredentialServiceIdentifierTypeDomain	ASCredentialServiceIdentifierType			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7e02ee49249b1099
+enumconst	c:@E@ASCredentialServiceIdentifierType@ASCredentialServiceIdentifierTypeURL	ASCredentialServiceIdentifierType			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b54a55c33e390885
+enumconst	c:@E@ASCredentialServiceIdentifierType@ASCredentialServiceIdentifierTypeApp	ASCredentialServiceIdentifierType			ios=26.2/-/-/0,macos=26.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	a73cf721b0687616
+interface	c:objc(cs)ASCredentialServiceIdentifier	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	84d3e17d80d6ba7e
+super	-	ASCredentialServiceIdentifier	NSObject		-	-	e3f35565ffa9f3cf
+conforms	-	ASCredentialServiceIdentifier	NSCopying		-	-	f4d767bfd007a218
+conforms	-	ASCredentialServiceIdentifier	NSSecureCoding		-	-	ba0b26584c02f8f6
+method	c:objc(cs)ASCredentialServiceIdentifier(im)initWithIdentifier:type:	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a942945da81b1b15
+method	c:objc(cs)ASCredentialServiceIdentifier(im)initWithIdentifier:type:displayName:	-			ios=26.2/-/-/0,macos=26.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	1251f880033c5dbe
+property	c:objc(cs)ASCredentialServiceIdentifier(py)displayName	-			ios=26.2/-/-/0,macos=26.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	0b8c025d1b09fbbc
+property	c:objc(cs)ASCredentialServiceIdentifier(py)identifier	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d9d0bd7c1d6ea70b
+property	c:objc(cs)ASCredentialServiceIdentifier(py)type	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	36bfd68cdd5aa6d9
+protocol	c:objc(pl)ASAuthorizationCredential	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	b17475221197b9d9
+conforms	-	ASAuthorizationCredential	NSObject		-	-	316ed013566e7ece
+conforms	-	ASAuthorizationCredential	NSCopying		-	-	400548f312a6347b
+conforms	-	ASAuthorizationCredential	NSSecureCoding		-	-	16863e41c2aeacdf
+interface	c:objc(cs)ASPasswordCredential	-			ios=12.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=6.0/-/-/0	-	38b2869334a791ad
+super	-	ASPasswordCredential	NSObject		-	-	f21a95727126f587
+conforms	-	ASPasswordCredential	ASAuthorizationCredential		-	-	9710e9262a60558e
+method	c:objc(cs)ASPasswordCredential(im)initWithUser:password:	-			ios=12.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=6.0/-/-/0	-	07144762a11ede80
+method	c:objc(cs)ASPasswordCredential(cm)credentialWithUser:password:	-			ios=12.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=6.0/-/-/0	-	48b352ae7c732380
+property	c:objc(cs)ASPasswordCredential(py)user	-			ios=12.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=6.0/-/-/0	-	d2815b54d3e862a2
+property	c:objc(cs)ASPasswordCredential(py)password	-			ios=12.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=6.0/-/-/0	-	4b072f518ddce369
+protocol	c:objc(pl)ASCredentialIdentity	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	23adedf2580d7386
+conforms	-	ASCredentialIdentity	NSObject		-	-	d2eb159f71f9e933
+property	c:objc(pl)ASCredentialIdentity(py)serviceIdentifier	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f5a4a8ad16337908
+property	c:objc(pl)ASCredentialIdentity(py)user	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0ca59afda664376c
+property	c:objc(pl)ASCredentialIdentity(py)recordIdentifier	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8f97dc2f2fc8d524
+property	c:objc(pl)ASCredentialIdentity(py)rank	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4989f883213133b4
+interface	c:objc(cs)ASPasswordCredentialIdentity	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8f40d69d3806984a
+super	-	ASPasswordCredentialIdentity	NSObject		-	-	9dc379d61274cfc1
+conforms	-	ASPasswordCredentialIdentity	NSCopying		-	-	56b0bf886d15dae7
+conforms	-	ASPasswordCredentialIdentity	NSSecureCoding		-	-	e47781346cdc2142
+conforms	-	ASPasswordCredentialIdentity	ASCredentialIdentity		-	-	cc65d5f90b43641c
+method	c:objc(cs)ASPasswordCredentialIdentity(im)init	-			*unavailable ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	32db2d2b6ee7e9f7
+method	c:objc(cs)ASPasswordCredentialIdentity(im)initWithServiceIdentifier:user:recordIdentifier:	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8d46eb93d053eb1a
+method	c:objc(cs)ASPasswordCredentialIdentity(cm)identityWithServiceIdentifier:user:recordIdentifier:	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7885bf803b60c6af
+property	c:objc(cs)ASPasswordCredentialIdentity(py)serviceIdentifier	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0f6e899d5ef06e83
+property	c:objc(cs)ASPasswordCredentialIdentity(py)user	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	311860b9e3a01e5d
+property	c:objc(cs)ASPasswordCredentialIdentity(py)recordIdentifier	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1ad0ff2fbc33206b
+property	c:objc(cs)ASPasswordCredentialIdentity(py)rank	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a3ec57f06b27d917
+typedef	c:@T@ASAuthorizationScope	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	6d9c485ae6c5d8a7
+var	c:@ASAuthorizationScopeFullName	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	f38210696857d707
+var	c:@ASAuthorizationScopeEmail	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	92aad76302e65e4d
+interface	c:objc(cs)ASAuthorization	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	d29ae21733020a55
+super	-	ASAuthorization	NSObject		-	-	dd9baf053ddc3c06
+property	c:objc(cs)ASAuthorization(py)provider	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	dc5d8a0141e871f6
+property	c:objc(cs)ASAuthorization(py)credential	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	03e87f53d0d6d598
+method	c:objc(cs)ASAuthorization(cm)new	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	3270e47c9971fede
+method	c:objc(cs)ASAuthorization(im)init	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	9adc4197659ccd87
+typedef	c:@T@ASUserDetectionStatus	-			-	-	5ceb3e64b3dd0ce5
+enum	c:@E@ASUserDetectionStatus	-			-	-	c80a54b5e8e0e9f7
+enumconst	c:@E@ASUserDetectionStatus@ASUserDetectionStatusUnsupported	ASUserDetectionStatus			-	-	7eef78e475cd5716
+enumconst	c:@E@ASUserDetectionStatus@ASUserDetectionStatusUnknown	ASUserDetectionStatus			-	-	49da6c893ebdb243
+enumconst	c:@E@ASUserDetectionStatus@ASUserDetectionStatusLikelyReal	ASUserDetectionStatus			-	-	fa31552b5054892f
+typedef	c:@T@ASUserAgeRange	-			-	-	76a86aba10f2114a
+enum	c:@E@ASUserAgeRange	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	ba2133c80fa4f7d8
+enumconst	c:@E@ASUserAgeRange@ASUserAgeRangeUnknown	ASUserAgeRange			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	37b3ea88a3a17655
+enumconst	c:@E@ASUserAgeRange@ASUserAgeRangeChild	ASUserAgeRange			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	817c2ce4da7f3733
+enumconst	c:@E@ASUserAgeRange@ASUserAgeRangeNotChild	ASUserAgeRange			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	4a85554d213d865e
+interface	c:objc(cs)ASAuthorizationAppleIDCredential	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	87620ca00d423089
+super	-	ASAuthorizationAppleIDCredential	NSObject		-	-	d2811f39c057511f
+conforms	-	ASAuthorizationAppleIDCredential	ASAuthorizationCredential		-	-	d5a75b21fbe0ad5e
+property	c:objc(cs)ASAuthorizationAppleIDCredential(py)user	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	3c118c1ebf1f58bc
+property	c:objc(cs)ASAuthorizationAppleIDCredential(py)state	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	955a9d6f5d488292
+property	c:objc(cs)ASAuthorizationAppleIDCredential(py)authorizedScopes	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	a5db6750f6e30704
+property	c:objc(cs)ASAuthorizationAppleIDCredential(py)authorizationCode	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	bf250a56a9e704ae
+property	c:objc(cs)ASAuthorizationAppleIDCredential(py)identityToken	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	e4f53a181953aea0
+property	c:objc(cs)ASAuthorizationAppleIDCredential(py)email	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	a4bb946c6008adff
+property	c:objc(cs)ASAuthorizationAppleIDCredential(py)fullName	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	99c7ef2846939bf9
+property	c:objc(cs)ASAuthorizationAppleIDCredential(py)realUserStatus	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	525ba6447f7b35f4
+property	c:objc(cs)ASAuthorizationAppleIDCredential(py)userAgeRange	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	59a2e0b698748cd8
+method	c:objc(cs)ASAuthorizationAppleIDCredential(cm)new	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	44e2adb732919ba8
+method	c:objc(cs)ASAuthorizationAppleIDCredential(im)init	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	8c1c8e3a8f2161c3
+protocol	c:objc(pl)ASAuthorizationProvider	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	4860d2bde04f9dfa
+conforms	-	ASAuthorizationProvider	NSObject		-	-	4c357bb66d05b782
+interface	c:objc(cs)ASAuthorizationRequest	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	d732e1df360cbde1
+super	-	ASAuthorizationRequest	NSObject		-	-	b41dfa6b5da74240
+conforms	-	ASAuthorizationRequest	NSCopying		-	-	ddaf35569c779e9a
+conforms	-	ASAuthorizationRequest	NSSecureCoding		-	-	c254b9a064fdf220
+property	c:objc(cs)ASAuthorizationRequest(py)provider	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	8eb72c1502893d4c
+method	c:objc(cs)ASAuthorizationRequest(cm)new	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	0e5441455fa71f0f
+method	c:objc(cs)ASAuthorizationRequest(im)init	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	1404129adfb6ea50
+typedef	c:@T@ASAuthorizationOpenIDOperation	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	ca9546f3ec67d3ae
+var	c:@ASAuthorizationOperationImplicit	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	473f384e1436b090
+var	c:@ASAuthorizationOperationLogin	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	b54fee538ec5a12e
+var	c:@ASAuthorizationOperationRefresh	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	d0c36a566a343187
+var	c:@ASAuthorizationOperationLogout	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	fff3f35786d7a98a
+interface	c:objc(cs)ASAuthorizationOpenIDRequest	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	fdb1e8c683b01b50
+super	-	ASAuthorizationOpenIDRequest	ASAuthorizationRequest		-	-	481ba3e20c617e33
+property	c:objc(cs)ASAuthorizationOpenIDRequest(py)requestedScopes	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	d3c94da8182af722
+property	c:objc(cs)ASAuthorizationOpenIDRequest(py)state	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	d76cd310fbb56183
+property	c:objc(cs)ASAuthorizationOpenIDRequest(py)nonce	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	51e22cd28947cac9
+property	c:objc(cs)ASAuthorizationOpenIDRequest(py)requestedOperation	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	4afda277c7ea16ef
+interface	c:objc(cs)ASAuthorizationAppleIDRequest	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	d0c1e502d15ca672
+super	-	ASAuthorizationAppleIDRequest	ASAuthorizationOpenIDRequest		-	-	37a0d9dbbc34d6cf
+property	c:objc(cs)ASAuthorizationAppleIDRequest(py)user	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	83ab93735abaf355
+typedef	c:@T@ASAuthorizationAppleIDProviderCredentialState	-			-	-	1f03823b76b04c19
+enum	c:@E@ASAuthorizationAppleIDProviderCredentialState	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	5b8f9d5b628a4dd3
+enumconst	c:@E@ASAuthorizationAppleIDProviderCredentialState@ASAuthorizationAppleIDProviderCredentialRevoked	ASAuthorizationAppleIDProviderCredentialState			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	434e6b873e102220
+enumconst	c:@E@ASAuthorizationAppleIDProviderCredentialState@ASAuthorizationAppleIDProviderCredentialAuthorized	ASAuthorizationAppleIDProviderCredentialState			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	ac131b5c7e705b79
+enumconst	c:@E@ASAuthorizationAppleIDProviderCredentialState@ASAuthorizationAppleIDProviderCredentialNotFound	ASAuthorizationAppleIDProviderCredentialState			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	412c8da994415161
+enumconst	c:@E@ASAuthorizationAppleIDProviderCredentialState@ASAuthorizationAppleIDProviderCredentialTransferred	ASAuthorizationAppleIDProviderCredentialState			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	a63eb889aa390f4f
+var	c:@ASAuthorizationAppleIDProviderCredentialRevokedNotification	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	af545ca0ed2ede45
+interface	c:objc(cs)ASAuthorizationAppleIDProvider	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	3ca3f202c55ed03e
+super	-	ASAuthorizationAppleIDProvider	NSObject		-	-	0e5943053b4f91f0
+conforms	-	ASAuthorizationAppleIDProvider	ASAuthorizationProvider		-	-	cce0d1b169aaa742
+method	c:objc(cs)ASAuthorizationAppleIDProvider(im)createRequest	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	c0f22b266ef0e111
+method	c:objc(cs)ASAuthorizationAppleIDProvider(im)getCredentialStateForUserID:completion:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	6ab1f8f76f6ec251
+typedef	c:@T@ASAuthorizationCustomMethod	-			ios=-/-/-/1,macos=-/-/-/1,tvos=15.0/-/-/0,watchos=-/-/-/1	-	07921c0c88411705
+var	c:@ASAuthorizationCustomMethodVideoSubscriberAccount	-			ios=-/-/-/1,macos=-/-/-/1,tvos=15.0/-/-/0,watchos=-/-/-/1	-	cf6b12be157097df
+var	c:@ASAuthorizationCustomMethodRestorePurchase	-			ios=-/-/-/1,macos=-/-/-/1,tvos=15.0/-/-/0,watchos=-/-/-/1	-	b6c0bc254bbba7e8
+var	c:@ASAuthorizationCustomMethodOther	-			ios=-/-/-/1,macos=-/-/-/1,tvos=15.0/-/-/0,watchos=-/-/-/1	-	54cadf2c4af28fb6
+protocol	c:objc(pl)ASAuthorizationControllerDelegate	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	29d5d9a828a9405c
+conforms	-	ASAuthorizationControllerDelegate	NSObject		-	-	151ba8670121ffad
+method	c:objc(pl)ASAuthorizationControllerDelegate(im)authorizationController:didCompleteWithAuthorization:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	c4be10c594ae07f6
+method	c:objc(pl)ASAuthorizationControllerDelegate(im)authorizationController:didCompleteWithError:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	068b0f33fd14b652
+method	c:objc(pl)ASAuthorizationControllerDelegate(im)authorizationController:didCompleteWithCustomMethod:	-			ios=-/-/-/1,macos=-/-/-/1,tvos=15.0/-/-/0,watchos=-/-/-/1	-	7016b4c0eea37978
+protocol	c:objc(pl)ASAuthorizationControllerPresentationContextProviding	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	653e3245acfe1f0c
+conforms	-	ASAuthorizationControllerPresentationContextProviding	NSObject		-	-	7dd13938ac88fa56
+method	c:objc(pl)ASAuthorizationControllerPresentationContextProviding(im)presentationAnchorForAuthorizationController:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	c9125fb8f706c9f9
+typedef	c:@T@ASAuthorizationControllerRequestOptions	-			-	-	7d28c7647d96d974
+enum	c:@E@ASAuthorizationControllerRequestOptions	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	db7ae78dbb0737da
+enumconst	c:@E@ASAuthorizationControllerRequestOptions@ASAuthorizationControllerRequestOptionPreferImmediatelyAvailableCredentials	ASAuthorizationControllerRequestOptions			tvos=-/-/-/1,watchos=-/-/-/1	-	7ab2853eab95c0ab
+interface	c:objc(cs)ASAuthorizationController	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	fcfa94d0528e719f
+super	-	ASAuthorizationController	NSObject		-	-	e4ea3b2e7201c51b
+property	c:objc(cs)ASAuthorizationController(py)authorizationRequests	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	dd22421b5dfdaeb8
+property	c:objc(cs)ASAuthorizationController(py)delegate	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	1395282cd4a4a4ab
+property	c:objc(cs)ASAuthorizationController(py)presentationContextProvider	-			watchos=-/-/-/1	-	22b141ecf9b4a191
+property	c:objc(cs)ASAuthorizationController(py)customAuthorizationMethods	-			ios=-/-/-/1,macos=-/-/-/1,tvos=15.0/-/-/0,watchos=-/-/-/1	-	5836995072ff698c
+method	c:objc(cs)ASAuthorizationController(im)initWithAuthorizationRequests:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	05156c41ec610ee3
+method	c:objc(cs)ASAuthorizationController(im)performRequests	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	f1578c63eb128942
+method	c:objc(cs)ASAuthorizationController(im)performAutoFillAssistedRequests	-			ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ba3867503b6cc686
+method	c:objc(cs)ASAuthorizationController(im)performRequestsWithOptions:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	31f7955ba1fba6e0
+method	c:objc(cs)ASAuthorizationController(im)cancel	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1	-	01524b8a59024b9c
+method	c:objc(cs)ASAuthorizationController(cm)new	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	e0555b7f68b0e0de
+method	c:objc(cs)ASAuthorizationController(im)init	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	2b0f1f0751db7504
+var	c:@ASAuthorizationErrorDomain	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	1180beaf92d29ed4
+typedef	c:@T@ASAuthorizationError	-			-	-	933ae1448da804bd
+enum	c:@E@ASAuthorizationError	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	c279ace11cbd262b
+enumconst	c:@E@ASAuthorizationError@ASAuthorizationErrorUnknown	ASAuthorizationError			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	e9dc5818ce83db49
+enumconst	c:@E@ASAuthorizationError@ASAuthorizationErrorCanceled	ASAuthorizationError			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	f4cc4705c0698fa7
+enumconst	c:@E@ASAuthorizationError@ASAuthorizationErrorInvalidResponse	ASAuthorizationError			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	f4a09b9a6913d589
+enumconst	c:@E@ASAuthorizationError@ASAuthorizationErrorNotHandled	ASAuthorizationError			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	4db4a092fb823aac
+enumconst	c:@E@ASAuthorizationError@ASAuthorizationErrorFailed	ASAuthorizationError			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	92b9dac12b4a8bb2
+enumconst	c:@E@ASAuthorizationError@ASAuthorizationErrorNotInteractive	ASAuthorizationError			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	eb6c047d818383c2
+enumconst	c:@E@ASAuthorizationError@ASAuthorizationErrorMatchedExcludedCredential	ASAuthorizationError			ios=18.0/-/-/0,macos=15.0/-/-/0,xros=2.0/-/-/0	-	0d2e1e58ae1702cf
+enumconst	c:@E@ASAuthorizationError@ASAuthorizationErrorCredentialImport	ASAuthorizationError			ios=18.2/-/-/0,macos=15.2/-/-/0,xros=2.2/-/-/0	-	d0c87c670153670d
+enumconst	c:@E@ASAuthorizationError@ASAuthorizationErrorCredentialExport	ASAuthorizationError			ios=18.2/-/-/0,macos=15.2/-/-/0,xros=2.2/-/-/0	-	9d5cb52ae5521e41
+enumconst	c:@E@ASAuthorizationError@ASAuthorizationErrorPreferSignInWithApple	ASAuthorizationError			ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	5a0885c2eab35c2b
+enumconst	c:@E@ASAuthorizationError@ASAuthorizationErrorDeviceNotConfiguredForPasskeyCreation	ASAuthorizationError			ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	d8f8cea05ea86cfb
+interface	c:objc(cs)ASAuthorizationPasswordRequest	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=6.0/-/-/0	-	01c6a1fc2050565d
+super	-	ASAuthorizationPasswordRequest	ASAuthorizationRequest		-	-	76e753bf13c5efb3
+interface	c:objc(cs)ASAuthorizationPasswordProvider	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=6.0/-/-/0	-	e357b2fbdf1e78d4
+super	-	ASAuthorizationPasswordProvider	NSObject		-	-	0ac5054bd874616c
+conforms	-	ASAuthorizationPasswordProvider	ASAuthorizationProvider		-	-	cb7cfe4f08275dc2
+method	c:objc(cs)ASAuthorizationPasswordProvider(im)createRequest	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=6.0/-/-/0	-	7fe2cf7a3c27a9e8
+interface	c:objc(cs)ASAuthorizationSingleSignOnCredential	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	13b0880fad5bee80
+super	-	ASAuthorizationSingleSignOnCredential	NSObject		-	-	72d93ce5123768bc
+conforms	-	ASAuthorizationSingleSignOnCredential	ASAuthorizationCredential		-	-	d809d59851192c36
+property	c:objc(cs)ASAuthorizationSingleSignOnCredential(py)state	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2fed6985d23293a6
+property	c:objc(cs)ASAuthorizationSingleSignOnCredential(py)accessToken	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cef9675849742de7
+property	c:objc(cs)ASAuthorizationSingleSignOnCredential(py)identityToken	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e49db3cbaf3df2f6
+property	c:objc(cs)ASAuthorizationSingleSignOnCredential(py)authorizedScopes	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a436cf109b2dd10b
+property	c:objc(cs)ASAuthorizationSingleSignOnCredential(py)authenticatedResponse	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e2446b5c53fd39b9
+property	c:objc(cs)ASAuthorizationSingleSignOnCredential(py)privateKeys	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a27c9e6050decd78
+method	c:objc(cs)ASAuthorizationSingleSignOnCredential(cm)new	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2b68566a3d72a9aa
+method	c:objc(cs)ASAuthorizationSingleSignOnCredential(im)init	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5027154f35367053
+interface	c:objc(cs)ASAuthorizationSingleSignOnRequest	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	26e1b3335fb81f7a
+super	-	ASAuthorizationSingleSignOnRequest	ASAuthorizationOpenIDRequest		-	-	892720622e850915
+property	c:objc(cs)ASAuthorizationSingleSignOnRequest(py)authorizationOptions	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	53e3eb77f50dc5fa
+property	c:objc(cs)ASAuthorizationSingleSignOnRequest(py)userInterfaceEnabled	-			ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6b38e72fbdb5ad0e
+interface	c:objc(cs)ASAuthorizationSingleSignOnProvider	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1535b5a6524766fb
+super	-	ASAuthorizationSingleSignOnProvider	NSObject		-	-	433685cfdd1846bc
+conforms	-	ASAuthorizationSingleSignOnProvider	ASAuthorizationProvider		-	-	b61f0e4f93bec87f
+method	c:objc(cs)ASAuthorizationSingleSignOnProvider(cm)authorizationProviderWithIdentityProviderURL:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	90583f03ab34d4b0
+method	c:objc(cs)ASAuthorizationSingleSignOnProvider(im)createRequest	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a3fb2339d841f34c
+method	c:objc(cs)ASAuthorizationSingleSignOnProvider(cm)new	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f9ae70e7c83f3d95
+method	c:objc(cs)ASAuthorizationSingleSignOnProvider(im)init	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	00009bce0407db25
+property	c:objc(cs)ASAuthorizationSingleSignOnProvider(py)url	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a38a442e3f71d299
+property	c:objc(cs)ASAuthorizationSingleSignOnProvider(py)canPerformAuthorization	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	085d3cce0a6cb398
+typedef	c:@T@ASAuthorizationProviderAuthorizationOperation	-			ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1b92b24043e479a2
+var	c:@ASAuthorizationProviderAuthorizationOperationConfigurationRemoved	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	170683e3fa2b7bdb
+var	c:@ASAuthorizationProviderAuthorizationOperationDirectRequest	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f6faf0da52d70c9b
+protocol	c:objc(pl)ASAuthorizationProviderExtensionAuthorizationRequestHandler	-			ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0d4e24206ea869c1
+conforms	-	ASAuthorizationProviderExtensionAuthorizationRequestHandler	NSObject		-	-	71ea665358078d34
+method	c:objc(pl)ASAuthorizationProviderExtensionAuthorizationRequestHandler(im)beginAuthorizationWithRequest:	-			ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cb214f8ca3c291c6
+method	c:objc(pl)ASAuthorizationProviderExtensionAuthorizationRequestHandler(im)cancelAuthorizationWithRequest:	-			ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a166021dff2bfd6a
+interface	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationRequest	-			ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7e706f5cb5d8c310
+super	-	ASAuthorizationProviderExtensionAuthorizationRequest	NSObject		-	-	f764f738a1f6a084
+method	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationRequest(im)doNotHandle	-			ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ee2b5c5b3caeaeab
+method	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationRequest(im)cancel	-			ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	af57f6ea38bbb9c7
+method	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationRequest(im)complete	-			ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e8ddda9bad30546b
+method	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationRequest(im)completeWithHTTPAuthorizationHeaders:	-			ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f2dc3ed11ea95423
+method	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationRequest(im)completeWithHTTPResponse:httpBody:	-			ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bf6a5539a3c2f17c
+method	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationRequest(im)completeWithAuthorizationResult:	-			ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0084b8bb9a3faf41
+method	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationRequest(im)completeWithError:	-			ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	dbc4cb748d167376
+method	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationRequest(im)presentAuthorizationViewControllerWithCompletion:	-			ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c9ceeba92e3fa0c7
+property	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationRequest(py)url	-			ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b6679721209c74d9
+property	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationRequest(py)requestedOperation	-			ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	dbdad6d4136661d6
+property	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationRequest(py)httpHeaders	-			ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6cba3f97d7df6fc7
+property	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationRequest(py)httpBody	-			ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1b0dfb3e40ebe059
+property	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationRequest(py)realm	-			ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	61b44a620e24f667
+property	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationRequest(py)extensionData	-			ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0fb374f6ded164b2
+property	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationRequest(py)callerBundleIdentifier	-			ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	00c37ff062600fa0
+property	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationRequest(py)authorizationOptions	-			ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	049bb223ad749923
+property	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationRequest(py)callerManaged	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8717e05d80cf6502
+property	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationRequest(py)callerTeamIdentifier	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c2bf8ccbdb8c9e5f
+property	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationRequest(py)localizedCallerDisplayName	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3d8cd3262bb9cc54
+property	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationRequest(py)userInterfaceEnabled	-			ios=15.4/-/-/0,macos=12.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8a57974547aacae1
+interface	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationResult	-			ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	75010c4b8fe9e4c5
+super	-	ASAuthorizationProviderExtensionAuthorizationResult	NSObject		-	-	044ba53886111e9f
+method	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationResult(im)initWithHTTPAuthorizationHeaders:	-			tvos=-/-/-/1,watchos=-/-/-/1	-	c5ff838f7fb72620
+method	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationResult(im)initWithHTTPResponse:httpBody:	-			tvos=-/-/-/1,watchos=-/-/-/1	-	db751bf8f27d3a72
+property	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationResult(py)httpAuthorizationHeaders	-			ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4719cc8a8e97c798
+property	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationResult(py)httpResponse	-			ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	dde4ec1d7c5e501f
+property	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationResult(py)httpBody	-			ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4c222e1758e78024
+property	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationResult(py)privateKeys	-			ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	12a262147d96d4f1
+interface	c:objc(cs)ASOneTimeCodeCredentialIdentity	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	cc90e9a21f265663
+super	-	ASOneTimeCodeCredentialIdentity	NSObject		-	-	33c19b443134aa99
+conforms	-	ASOneTimeCodeCredentialIdentity	NSCopying		-	-	b3aaf74bb8a2f6fb
+conforms	-	ASOneTimeCodeCredentialIdentity	NSSecureCoding		-	-	1e3092a0c5a2eb7d
+conforms	-	ASOneTimeCodeCredentialIdentity	ASCredentialIdentity		-	-	cf18b78ecfac24fd
+method	c:objc(cs)ASOneTimeCodeCredentialIdentity(im)init	-			*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	5fba1a7ac1c5897e
+method	c:objc(cs)ASOneTimeCodeCredentialIdentity(im)initWithServiceIdentifier:label:recordIdentifier:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	fa62b2820b0751f4
+property	c:objc(cs)ASOneTimeCodeCredentialIdentity(py)label	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	831626060b4d0146
+typedef	c:@T@ASAuthorizationPublicKeyCredentialUserVerificationPreference	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	f637d82ed9da7030
+var	c:@ASAuthorizationPublicKeyCredentialUserVerificationPreferencePreferred	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	95ffd7216c4c845d
+var	c:@ASAuthorizationPublicKeyCredentialUserVerificationPreferenceRequired	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	0f1b7e8d399f0689
+var	c:@ASAuthorizationPublicKeyCredentialUserVerificationPreferenceDiscouraged	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	6bf83910ebd87b79
+typedef	c:@T@ASAuthorizationPublicKeyCredentialAttestationKind	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	91b20d3bdca278b7
+var	c:@ASAuthorizationPublicKeyCredentialAttestationKindNone	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b2ec590b2a86462b
+var	c:@ASAuthorizationPublicKeyCredentialAttestationKindDirect	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	eb0beb4ccaa7ac4d
+var	c:@ASAuthorizationPublicKeyCredentialAttestationKindIndirect	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a8d7058d735117f9
+var	c:@ASAuthorizationPublicKeyCredentialAttestationKindEnterprise	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1dea979a64008f37
+typedef	c:@T@ASAuthorizationPublicKeyCredentialResidentKeyPreference	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e57b2c00e8e2e7dd
+var	c:@ASAuthorizationPublicKeyCredentialResidentKeyPreferenceDiscouraged	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	de19385468925ced
+var	c:@ASAuthorizationPublicKeyCredentialResidentKeyPreferencePreferred	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	467690bfb130fc54
+var	c:@ASAuthorizationPublicKeyCredentialResidentKeyPreferenceRequired	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e9390626df9ef6cc
+typedef	c:@T@ASAuthorizationPublicKeyCredentialAttachment	-			ios=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	065dfa7c2c3d84e5
+enum	c:@E@ASAuthorizationPublicKeyCredentialAttachment	-			-	-	f6e5d80f23e0e914
+enumconst	c:@E@ASAuthorizationPublicKeyCredentialAttachment@ASAuthorizationPublicKeyCredentialAttachmentPlatform	ASAuthorizationPublicKeyCredentialAttachment			-	-	85ae28bc3df1f58c
+enumconst	c:@E@ASAuthorizationPublicKeyCredentialAttachment@ASAuthorizationPublicKeyCredentialAttachmentCrossPlatform	ASAuthorizationPublicKeyCredentialAttachment			-	-	4b820d26e5363d30
+protocol	c:objc(pl)ASAuthorizationPublicKeyCredentialRegistrationRequest	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	198d0ab6fb6448fc
+conforms	-	ASAuthorizationPublicKeyCredentialRegistrationRequest	NSObject		-	-	26c71caa150b724e
+conforms	-	ASAuthorizationPublicKeyCredentialRegistrationRequest	NSSecureCoding		-	-	e3a23643eb97f79e
+conforms	-	ASAuthorizationPublicKeyCredentialRegistrationRequest	NSCopying		-	-	b87fe551d8c008c8
+property	c:objc(pl)ASAuthorizationPublicKeyCredentialRegistrationRequest(py)relyingPartyIdentifier	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	a765e2e1e41ca635
+property	c:objc(pl)ASAuthorizationPublicKeyCredentialRegistrationRequest(py)userID	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	ddd6cafe9e28e404
+property	c:objc(pl)ASAuthorizationPublicKeyCredentialRegistrationRequest(py)name	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	5f2c8728734405ac
+property	c:objc(pl)ASAuthorizationPublicKeyCredentialRegistrationRequest(py)displayName	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	3459ce5a4174bf50
+property	c:objc(pl)ASAuthorizationPublicKeyCredentialRegistrationRequest(py)challenge	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	5d098e49bf8897d6
+property	c:objc(pl)ASAuthorizationPublicKeyCredentialRegistrationRequest(py)userVerificationPreference	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	eaf3a4bf2f3883c0
+property	c:objc(pl)ASAuthorizationPublicKeyCredentialRegistrationRequest(py)attestationPreference	-			tvos=-/-/-/1	-	8fdca173943e5b78
+typedef	c:@T@ASCredentialRequestType	-			-	-	f11101ea73b73360
+enum	c:@E@ASCredentialRequestType	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	67db47d8371677ba
+enumconst	c:@E@ASCredentialRequestType@ASCredentialRequestTypePassword	ASCredentialRequestType			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b3eddaaf2cf248aa
+enumconst	c:@E@ASCredentialRequestType@ASCredentialRequestTypePasskeyAssertion	ASCredentialRequestType			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	57234bbf122bffe9
+enumconst	c:@E@ASCredentialRequestType@ASCredentialRequestTypePasskeyRegistration	ASCredentialRequestType			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	69a4d6af3c06351e
+enumconst	c:@E@ASCredentialRequestType@ASCredentialRequestTypeOneTimeCode	ASCredentialRequestType			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	bf7e85cb707307c5
+protocol	c:objc(pl)ASCredentialRequest	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e992d7dc0baf84d1
+conforms	-	ASCredentialRequest	NSObject		-	-	b16c335fd071a039
+conforms	-	ASCredentialRequest	NSSecureCoding		-	-	a452f491a6d138e0
+conforms	-	ASCredentialRequest	NSCopying		-	-	a4bab45db6fab580
+property	c:objc(pl)ASCredentialRequest(py)type	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0380cc9bb5a21762
+property	c:objc(pl)ASCredentialRequest(py)credentialIdentity	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	96761640f070f353
+interface	c:objc(cs)ASPasskeyCredentialRequestParameters	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bd80ecffed303b2b
+super	-	ASPasskeyCredentialRequestParameters	NSObject		-	-	76dfc75b6fc37f13
+conforms	-	ASPasskeyCredentialRequestParameters	NSSecureCoding		-	-	6810060c9e1c323b
+conforms	-	ASPasskeyCredentialRequestParameters	NSCopying		-	-	7a8470ff8c639b9a
+method	c:objc(cs)ASPasskeyCredentialRequestParameters(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8011b0f55c526594
+property	c:objc(cs)ASPasskeyCredentialRequestParameters(py)relyingPartyIdentifier	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	56f020bf55af7f65
+property	c:objc(cs)ASPasskeyCredentialRequestParameters(py)clientDataHash	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	eeb7e2f64ab8f7ba
+property	c:objc(cs)ASPasskeyCredentialRequestParameters(py)userVerificationPreference	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c11c42519f7c1b69
+property	c:objc(cs)ASPasskeyCredentialRequestParameters(py)allowedCredentials	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	88f9c3110b9a0d9a
+property	c:objc(cs)ASPasskeyCredentialRequestParameters(py)extensionInput	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	3dde1fe7233339a1
+typedef	c:@T@ASGeneratedPasswordKind	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	8855538287599656
+var	c:@ASGeneratedPasswordKindStrong	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	bc4c20fdc22d3631
+var	c:@ASGeneratedPasswordKindAlphanumeric	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	4d066334bddd30a6
+var	c:@ASGeneratedPasswordKindPassphrase	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	b480b71ad98e5f96
+typedef	c:@T@ASSavePasswordRequestEvent	-			-	-	cfcd669d1dbcfaa8
+enum	c:@E@ASSavePasswordRequestEvent	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	1d59da3a92beb453
+enumconst	c:@E@ASSavePasswordRequestEvent@ASSavePasswordRequestEventUserInitiated	ASSavePasswordRequestEvent			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	ce1338849e963ff8
+enumconst	c:@E@ASSavePasswordRequestEvent@ASSavePasswordRequestEventFormDidDisappear	ASSavePasswordRequestEvent			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	3f8e45170ebb5550
+enumconst	c:@E@ASSavePasswordRequestEvent@ASSavePasswordRequestEventGeneratedPasswordFilled	ASSavePasswordRequestEvent			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	1314a71dd3da48e7
+interface	c:objc(cs)ASSavePasswordRequest	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	2a850ae206147188
+super	-	ASSavePasswordRequest	NSObject		-	-	ec4c238f3b37d1d2
+conforms	-	ASSavePasswordRequest	NSCopying		-	-	4330590051094a0b
+conforms	-	ASSavePasswordRequest	NSSecureCoding		-	-	21a6307d63e79d54
+property	c:objc(cs)ASSavePasswordRequest(py)serviceIdentifier	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	a3037c005f0889e5
+property	c:objc(cs)ASSavePasswordRequest(py)credential	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	b10d9a7dc1d592ae
+property	c:objc(cs)ASSavePasswordRequest(py)title	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	4b5dd67ae111c6fc
+property	c:objc(cs)ASSavePasswordRequest(py)sessionID	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	ea4a29e8adbadca3
+property	c:objc(cs)ASSavePasswordRequest(py)event	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	4bd8e33149d34f20
+property	c:objc(cs)ASSavePasswordRequest(py)passwordKind	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	a2d9133e6c5f3b7e
+method	c:objc(cs)ASSavePasswordRequest(im)init	-			*unavailable ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	d4145b0b03ba86b0
+method	c:objc(cs)ASSavePasswordRequest(cm)new	-			*unavailable ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	0fc324c097d5aaf2
+method	c:objc(cs)ASSavePasswordRequest(im)initWithServiceIdentifier:credential:sessionID:event:	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	de819a6ec67e61e7
+method	c:objc(cs)ASSavePasswordRequest(im)initWithServiceIdentifier:credential:title:sessionID:event:	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	ad79662dc402fd0d
+method	c:objc(cs)ASSavePasswordRequest(im)initWithServiceIdentifier:credential:sessionID:event:passwordKind:	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	3aa1cd6fe79ae096
+method	c:objc(cs)ASSavePasswordRequest(im)initWithServiceIdentifier:credential:title:sessionID:event:passwordKind:	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	d05ff529df5d0efd
+interface	c:objc(cs)ASGeneratePasswordsRequest	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	359782243e713902
+super	-	ASGeneratePasswordsRequest	NSObject		-	-	407a1488e75156c8
+conforms	-	ASGeneratePasswordsRequest	NSCopying		-	-	4fa4e6991a5cf9af
+conforms	-	ASGeneratePasswordsRequest	NSSecureCoding		-	-	02fa08577ad16ba7
+property	c:objc(cs)ASGeneratePasswordsRequest(py)serviceIdentifier	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	e7823f1308702023
+property	c:objc(cs)ASGeneratePasswordsRequest(py)passwordFieldPasswordRules	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	722c99c61060ba28
+property	c:objc(cs)ASGeneratePasswordsRequest(py)confirmPasswordFieldPasswordRules	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	b6dd6fe6abe32395
+property	c:objc(cs)ASGeneratePasswordsRequest(py)passwordRulesFromQuirks	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	f4bd2c52277e6f3e
+method	c:objc(cs)ASGeneratePasswordsRequest(im)init	-			*unavailable ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	18a9385cdab92ca2
+method	c:objc(cs)ASGeneratePasswordsRequest(cm)new	-			*unavailable ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	230cccfb6890524a
+method	c:objc(cs)ASGeneratePasswordsRequest(im)initWithServiceIdentifier:passwordFieldPasswordRules:confirmPasswordFieldPasswordRules:passwordRulesFromQuirks:	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	ea0987e8c955bdd4
+interface	c:objc(cs)ASCredentialProviderViewController	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use provideCredentialWithoutUserInteractionForRequest: instead	4a3bb968b6f40adf
+super	-	ASCredentialProviderViewController	UIViewController		-	-	1089b591c14fa94a
+property	c:objc(cs)ASCredentialProviderViewController(py)extensionContext	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6ea193571965e552
+method	c:objc(cs)ASCredentialProviderViewController(im)prepareCredentialListForServiceIdentifiers:	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f40bb9873244c842
+method	c:objc(cs)ASCredentialProviderViewController(im)prepareCredentialListForServiceIdentifiers:requestParameters:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	472f55b4b9cf4796
+method	c:objc(cs)ASCredentialProviderViewController(im)prepareOneTimeCodeCredentialListForServiceIdentifiers:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	ff62729c05b8e1c6
+method	c:objc(cs)ASCredentialProviderViewController(im)prepareInterfaceForUserChoosingTextToInsert	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	302c89340298317c
+method	c:objc(cs)ASCredentialProviderViewController(im)provideCredentialWithoutUserInteractionForIdentity:	-			ios=12.0/17.0/-/0,macos=11.0/14.0/-/0	deprecated: Use provideCredentialWithoutUserInteractionForRequest: instead	32b1e5013806a781
+method	c:objc(cs)ASCredentialProviderViewController(im)provideCredentialWithoutUserInteractionForRequest:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2d68a9a3eadf6b39
+method	c:objc(cs)ASCredentialProviderViewController(im)prepareInterfaceToProvideCredentialForIdentity:	-			ios=12.0/17.0/-/0,macos=11.0/14.0/-/0	deprecated: Use prepareInterfaceToProvideCredentialForRequest: instead	59d2358f8b6b1330
+method	c:objc(cs)ASCredentialProviderViewController(im)prepareInterfaceToProvideCredentialForRequest:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5e5275d15805cb88
+method	c:objc(cs)ASCredentialProviderViewController(im)prepareInterfaceForExtensionConfiguration	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a6a0bab9b8969095
+method	c:objc(cs)ASCredentialProviderViewController(im)prepareInterfaceForPasskeyRegistration:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	dd324f1b824f052b
+method	c:objc(cs)ASCredentialProviderViewController(im)performPasskeyRegistrationWithoutUserInteractionIfPossible:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	43545978b6eec428
+method	c:objc(cs)ASCredentialProviderViewController(im)reportPublicKeyCredentialUpdateForRelyingParty:userHandle:newName:	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c3269afcf6e762d4
+method	c:objc(cs)ASCredentialProviderViewController(im)reportUnknownPublicKeyCredentialForRelyingParty:credentialID:	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a6d8a8f818e94173
+method	c:objc(cs)ASCredentialProviderViewController(im)reportAllAcceptedPublicKeyCredentialsForRelyingParty:userHandle:acceptedCredentialIDs:	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f98b4bf402c051f6
+method	c:objc(cs)ASCredentialProviderViewController(im)reportUnusedPasswordCredentialForDomain:userName:	-			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bf7dbb692a31677d
+method	c:objc(cs)ASCredentialProviderViewController(im)performSavePasswordRequestWithoutUserInteractionIfPossible:	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	e5d7c456c6f79f2d
+method	c:objc(cs)ASCredentialProviderViewController(im)prepareInterfaceForSavePasswordRequest:	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	aeefe7aad55dd65e
+method	c:objc(cs)ASCredentialProviderViewController(im)performGeneratePasswordsRequestWithoutUserInteraction:	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	bc7cfb85b9b6a4b6
+method	c:objc(cs)ASCredentialProviderViewController(im)prepareInterfaceForGeneratePasswordsRequest:	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	56a81712c631df41
+protocol	c:objc(pl)ASAccountAuthenticationModificationControllerDelegate	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	283edd30d7caeb7a
+conforms	-	ASAccountAuthenticationModificationControllerDelegate	NSObject		-	-	d88eadc5668a9860
+method	c:objc(pl)ASAccountAuthenticationModificationControllerDelegate(im)accountAuthenticationModificationController:didSuccessfullyCompleteRequest:withUserInfo:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	91c696a9271e2585
+method	c:objc(pl)ASAccountAuthenticationModificationControllerDelegate(im)accountAuthenticationModificationController:didFailRequest:withError:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f14d8c2570947ac8
+protocol	c:objc(pl)ASAccountAuthenticationModificationControllerPresentationContextProviding	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6c3ec38afd48ea55
+conforms	-	ASAccountAuthenticationModificationControllerPresentationContextProviding	NSObject		-	-	c81772c1b72e6e33
+method	c:objc(pl)ASAccountAuthenticationModificationControllerPresentationContextProviding(im)presentationAnchorForAccountAuthenticationModificationController:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	15739096fbbfad14
+interface	c:objc(cs)ASAccountAuthenticationModificationController	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	025de27675f4e518
+super	-	ASAccountAuthenticationModificationController	NSObject		-	-	f468fee5ece0c481
+property	c:objc(cs)ASAccountAuthenticationModificationController(py)delegate	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	caa5a26e8392e8f4
+property	c:objc(cs)ASAccountAuthenticationModificationController(py)presentationContextProvider	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	65d22b6c13404d0c
+method	c:objc(cs)ASAccountAuthenticationModificationController(im)performRequest:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a9facbd5bcea26ab
+interface	c:objc(cs)ASAccountAuthenticationModificationExtensionContext	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1dacd61b12edfd68
+super	-	ASAccountAuthenticationModificationExtensionContext	NSExtensionContext		-	-	86b9119d3ab39179
+method	c:objc(cs)ASAccountAuthenticationModificationExtensionContext(im)getSignInWithAppleUpgradeAuthorizationWithState:nonce:completionHandler:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	191d9480adb101ae
+method	c:objc(cs)ASAccountAuthenticationModificationExtensionContext(im)completeUpgradeToSignInWithAppleWithUserInfo:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	53a246b8a737ca0f
+method	c:objc(cs)ASAccountAuthenticationModificationExtensionContext(im)completeChangePasswordRequestWithUpdatedCredential:userInfo:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c5d7a36fe33421e4
+method	c:objc(cs)ASAccountAuthenticationModificationExtensionContext(im)cancelRequestWithError:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	77d7f926fc22722b
+interface	c:objc(cs)ASAccountAuthenticationModificationRequest	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9baa1938fa24f4f1
+super	-	ASAccountAuthenticationModificationRequest	NSObject		-	-	d29f0b5f681ce63c
+interface	c:objc(cs)ASAccountAuthenticationModificationReplacePasswordWithSignInWithAppleRequest	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2a5fd2818758421e
+super	-	ASAccountAuthenticationModificationReplacePasswordWithSignInWithAppleRequest	ASAccountAuthenticationModificationRequest		-	-	68e5bb0c38747103
+method	c:objc(cs)ASAccountAuthenticationModificationReplacePasswordWithSignInWithAppleRequest(im)initWithUser:serviceIdentifier:userInfo:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	734c7222c1d3de70
+property	c:objc(cs)ASAccountAuthenticationModificationReplacePasswordWithSignInWithAppleRequest(py)user	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b9b82a4a78cb35eb
+property	c:objc(cs)ASAccountAuthenticationModificationReplacePasswordWithSignInWithAppleRequest(py)serviceIdentifier	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e7a4608b54dc19df
+property	c:objc(cs)ASAccountAuthenticationModificationReplacePasswordWithSignInWithAppleRequest(py)userInfo	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	15e5fb029df39ab4
+interface	c:objc(cs)ASAccountAuthenticationModificationUpgradePasswordToStrongPasswordRequest	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	50ac0b2cbbd8c929
+super	-	ASAccountAuthenticationModificationUpgradePasswordToStrongPasswordRequest	ASAccountAuthenticationModificationRequest		-	-	321cc630e9bc95e8
+method	c:objc(cs)ASAccountAuthenticationModificationUpgradePasswordToStrongPasswordRequest(im)initWithUser:serviceIdentifier:userInfo:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	239e19aebc8d0a44
+property	c:objc(cs)ASAccountAuthenticationModificationUpgradePasswordToStrongPasswordRequest(py)user	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ec6ec4de8a255cc4
+property	c:objc(cs)ASAccountAuthenticationModificationUpgradePasswordToStrongPasswordRequest(py)serviceIdentifier	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b3d1c4b23bf097c6
+property	c:objc(cs)ASAccountAuthenticationModificationUpgradePasswordToStrongPasswordRequest(py)userInfo	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	67f9e52c35c946c5
+interface	c:objc(cs)ASAccountAuthenticationModificationViewController	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	20494e4bf5f98f70
+super	-	ASAccountAuthenticationModificationViewController	UIViewController		-	-	52c3d2d08a0ee300
+property	c:objc(cs)ASAccountAuthenticationModificationViewController(py)extensionContext	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9929d9034bb9c225
+method	c:objc(cs)ASAccountAuthenticationModificationViewController(im)convertAccountToSignInWithAppleWithoutUserInteractionForServiceIdentifier:existingCredential:userInfo:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	919b93fc4ce3bd64
+method	c:objc(cs)ASAccountAuthenticationModificationViewController(im)prepareInterfaceToConvertAccountToSignInWithAppleForServiceIdentifier:existingCredential:userInfo:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f71e49e5835d8cdb
+method	c:objc(cs)ASAccountAuthenticationModificationViewController(im)changePasswordWithoutUserInteractionForServiceIdentifier:existingCredential:newPassword:userInfo:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2f620b9c76b1df6d
+method	c:objc(cs)ASAccountAuthenticationModificationViewController(im)prepareInterfaceToChangePasswordForServiceIdentifier:existingCredential:newPassword:userInfo:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1b75d07a8e5359e8
+method	c:objc(cs)ASAccountAuthenticationModificationViewController(im)cancelRequest	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0e5e5f13c379a2ee
+typedef	c:@T@ASAuthorizationAppleIDButtonType	-			-	-	7e88f9d5899715fb
+enum	c:@E@ASAuthorizationAppleIDButtonType	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	29d9647ff1f2b479
+enumconst	c:@E@ASAuthorizationAppleIDButtonType@ASAuthorizationAppleIDButtonTypeSignIn	ASAuthorizationAppleIDButtonType			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	92550d5f2f64236d
+enumconst	c:@E@ASAuthorizationAppleIDButtonType@ASAuthorizationAppleIDButtonTypeContinue	ASAuthorizationAppleIDButtonType			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	96492aac2eb45fa9
+enumconst	c:@E@ASAuthorizationAppleIDButtonType@ASAuthorizationAppleIDButtonTypeSignUp	ASAuthorizationAppleIDButtonType			ios=13.2/-/-/0,macos=10.15.1/-/-/0,tvos=13.1/-/-/0,watchos=-/-/-/1	-	f26167d9520f5385
+enumconst	c:@E@ASAuthorizationAppleIDButtonType@ASAuthorizationAppleIDButtonTypeDefault	ASAuthorizationAppleIDButtonType			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	9646437e68625101
+typedef	c:@T@ASAuthorizationAppleIDButtonStyle	-			-	-	a3c691e1fb8083b4
+enum	c:@E@ASAuthorizationAppleIDButtonStyle	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	c5a6ed396c4fc9b6
+enumconst	c:@E@ASAuthorizationAppleIDButtonStyle@ASAuthorizationAppleIDButtonStyleWhite	ASAuthorizationAppleIDButtonStyle			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	8eea46beb7043630
+enumconst	c:@E@ASAuthorizationAppleIDButtonStyle@ASAuthorizationAppleIDButtonStyleWhiteOutline	ASAuthorizationAppleIDButtonStyle			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	25bad1aaec232816
+enumconst	c:@E@ASAuthorizationAppleIDButtonStyle@ASAuthorizationAppleIDButtonStyleBlack	ASAuthorizationAppleIDButtonStyle			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	bc9381b2210c97e8
+interface	c:objc(cs)ASAuthorizationAppleIDButton	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	69fbe06cf883f930
+super	-	ASAuthorizationAppleIDButton	UIControl		-	-	ad7bd8c6311d1a43
+method	c:objc(cs)ASAuthorizationAppleIDButton(cm)buttonWithType:style:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	0e67bc8637586a6e
+method	c:objc(cs)ASAuthorizationAppleIDButton(im)initWithAuthorizationButtonType:authorizationButtonStyle:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	00de28398882724b
+property	c:objc(cs)ASAuthorizationAppleIDButton(py)cornerRadius	-			tvos=-/-/-/1	-	d49a0ee92cd6d189
+typedef	c:@T@ASCOSEAlgorithmIdentifier	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e9429e89dfa6518f
+typedef	c:@T@ASCOSEEllipticCurveIdentifier	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	22a50b3a92623953
+protocol	c:objc(pl)ASPublicKeyCredential	-			ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=-/-/-/1	-	31607a5c12b9a5bc
+conforms	-	ASPublicKeyCredential	ASAuthorizationCredential		-	-	67a481fc7f7b79dd
+property	c:objc(pl)ASPublicKeyCredential(py)rawClientDataJSON	-			ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=-/-/-/1	-	8158635741f96c1e
+property	c:objc(pl)ASPublicKeyCredential(py)credentialID	-			ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=-/-/-/1	-	22f8e53a958c5949
+protocol	c:objc(pl)ASAuthorizationPublicKeyCredentialAssertion	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	f53479d14275a202
+conforms	-	ASAuthorizationPublicKeyCredentialAssertion	ASPublicKeyCredential		-	-	6dc30243c689f39c
+property	c:objc(pl)ASAuthorizationPublicKeyCredentialAssertion(py)rawAuthenticatorData	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	074cad52e92a908b
+property	c:objc(pl)ASAuthorizationPublicKeyCredentialAssertion(py)userID	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	fa7c592a05375e07
+property	c:objc(pl)ASAuthorizationPublicKeyCredentialAssertion(py)signature	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	7eb1156b29ef66f6
+interface	c:objc(cs)ASAuthorizationPublicKeyCredentialLargeBlobAssertionOutput	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3fbf5ddd322a5e89
+super	-	ASAuthorizationPublicKeyCredentialLargeBlobAssertionOutput	NSObject		-	-	23b412f0511276a0
+method	c:objc(cs)ASAuthorizationPublicKeyCredentialLargeBlobAssertionOutput(cm)new	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e0a43f9655b5eb95
+method	c:objc(cs)ASAuthorizationPublicKeyCredentialLargeBlobAssertionOutput(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	66b69ef7fca712df
+property	c:objc(cs)ASAuthorizationPublicKeyCredentialLargeBlobAssertionOutput(py)readData	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	42b36e367a0895e2
+property	c:objc(cs)ASAuthorizationPublicKeyCredentialLargeBlobAssertionOutput(py)didWrite	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7749305227414232
+interface	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertion	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	27ab1e96a00071a0
+super	-	ASAuthorizationPlatformPublicKeyCredentialAssertion	NSObject		-	-	f7376ded33949b42
+conforms	-	ASAuthorizationPlatformPublicKeyCredentialAssertion	ASAuthorizationPublicKeyCredentialAssertion		-	-	80a79566d6158cdf
+method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertion(cm)new	-			*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	ef183321a4e08ed6
+method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertion(im)init	-			*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	a2076c036b673db7
+property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertion(py)attachment	-			ios=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2997d79ac5925417
+property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertion(py)largeBlob	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3c07f1f75849a8f7
+property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertion(py)prf	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	534d21e23ee42ce9
+protocol	c:objc(pl)ASAuthorizationPublicKeyCredentialDescriptor	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	92f0d7dc57cbcdfe
+conforms	-	ASAuthorizationPublicKeyCredentialDescriptor	NSObject		-	-	4d9f4a5e9897b4fa
+conforms	-	ASAuthorizationPublicKeyCredentialDescriptor	NSSecureCoding		-	-	8df5b1ad90986d1d
+conforms	-	ASAuthorizationPublicKeyCredentialDescriptor	NSCopying		-	-	c4e6eb3fc80df0d1
+property	c:objc(pl)ASAuthorizationPublicKeyCredentialDescriptor(py)credentialID	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	4e1f7ea8b26ca26e
+interface	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialDescriptor	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	947c9c5763f9c002
+super	-	ASAuthorizationPlatformPublicKeyCredentialDescriptor	NSObject		-	-	3dbc07e31197b9a2
+conforms	-	ASAuthorizationPlatformPublicKeyCredentialDescriptor	ASAuthorizationPublicKeyCredentialDescriptor		-	-	6afecb0c93ae2026
+method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialDescriptor(im)initWithCredentialID:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	abff8d1cbb3a6c18
+method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialDescriptor(cm)new	-			*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	383960439ac8cb0b
+method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialDescriptor(im)init	-			*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	f99b562e1079f415
+protocol	c:objc(pl)ASAuthorizationPublicKeyCredentialAssertionRequest	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	8b9ba1f6a4213cea
+conforms	-	ASAuthorizationPublicKeyCredentialAssertionRequest	NSObject		-	-	7154a874b777fb5a
+conforms	-	ASAuthorizationPublicKeyCredentialAssertionRequest	NSSecureCoding		-	-	9d0f79ddb199ec2b
+conforms	-	ASAuthorizationPublicKeyCredentialAssertionRequest	NSCopying		-	-	baca7803939e314c
+property	c:objc(pl)ASAuthorizationPublicKeyCredentialAssertionRequest(py)challenge	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	91005f0bfc04b4f3
+property	c:objc(pl)ASAuthorizationPublicKeyCredentialAssertionRequest(py)relyingPartyIdentifier	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	9ab206a5fd5cac37
+property	c:objc(pl)ASAuthorizationPublicKeyCredentialAssertionRequest(py)allowedCredentials	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	894b24ec64f5f2c4
+property	c:objc(pl)ASAuthorizationPublicKeyCredentialAssertionRequest(py)userVerificationPreference	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	b226721fb688f288
+typedef	c:@T@ASAuthorizationPublicKeyCredentialLargeBlobAssertionOperation	-			-	-	23060c51acaec404
+enum	c:@E@ASAuthorizationPublicKeyCredentialLargeBlobAssertionOperation	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fce0a20738ef7cda
+enumconst	c:@E@ASAuthorizationPublicKeyCredentialLargeBlobAssertionOperation@ASAuthorizationPublicKeyCredentialLargeBlobAssertionOperationRead	ASAuthorizationPublicKeyCredentialLargeBlobAssertionOperation			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	719248f3781fcc7b
+enumconst	c:@E@ASAuthorizationPublicKeyCredentialLargeBlobAssertionOperation@ASAuthorizationPublicKeyCredentialLargeBlobAssertionOperationWrite	ASAuthorizationPublicKeyCredentialLargeBlobAssertionOperation			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	446ef22a553daabb
+interface	c:objc(cs)ASAuthorizationPublicKeyCredentialLargeBlobAssertionInput	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f8b398110b707108
+super	-	ASAuthorizationPublicKeyCredentialLargeBlobAssertionInput	NSObject		-	-	2cfea01eef78b393
+method	c:objc(cs)ASAuthorizationPublicKeyCredentialLargeBlobAssertionInput(cm)new	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4f58f2d78d478e67
+method	c:objc(cs)ASAuthorizationPublicKeyCredentialLargeBlobAssertionInput(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	eec62bb2f586f287
+method	c:objc(cs)ASAuthorizationPublicKeyCredentialLargeBlobAssertionInput(im)initWithOperation:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2ceea1fe126fa93e
+property	c:objc(cs)ASAuthorizationPublicKeyCredentialLargeBlobAssertionInput(py)operation	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e364087aed778ca6
+property	c:objc(cs)ASAuthorizationPublicKeyCredentialLargeBlobAssertionInput(py)dataToWrite	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1d0b76baf3f522aa
+protocol	c:objc(pl)ASAuthorizationWebBrowserExternallyAuthenticatableRequest	-			ios=-/-/-/1,macos=13.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ffca5ef597dc63ec
+conforms	-	ASAuthorizationWebBrowserExternallyAuthenticatableRequest	NSObject		-	-	39a0dcc8bf75303c
+property	c:objc(pl)ASAuthorizationWebBrowserExternallyAuthenticatableRequest(py)authenticatedContext	-			ios=-/-/-/1,macos=13.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fd1ce58cf95451a7
+protocol	c:objc(pl)ASAuthorizationWebBrowserPlatformPublicKeyCredentialAssertionRequest	-			ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2bf6794ad7a4a59f
+property	c:objc(pl)ASAuthorizationWebBrowserPlatformPublicKeyCredentialAssertionRequest(py)clientData	-			ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	507d1e6497a72b89
+property	c:objc(pl)ASAuthorizationWebBrowserPlatformPublicKeyCredentialAssertionRequest(py)shouldShowHybridTransport	-			ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9fd9dc04bf913f35
+interface	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertionRequest	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	a848795a5ad25902
+super	-	ASAuthorizationPlatformPublicKeyCredentialAssertionRequest	ASAuthorizationRequest		-	-	6046746c310b9fde
+conforms	-	ASAuthorizationPlatformPublicKeyCredentialAssertionRequest	ASAuthorizationPublicKeyCredentialAssertionRequest		-	-	bd04eb4ee0809a1a
+property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertionRequest(py)allowedCredentials	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	ca73cf36f9903238
+property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertionRequest(py)largeBlob	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b1768a12769a4b2d
+property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertionRequest(py)prf	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	7ca7dd2b3d6e7fc1
+method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertionRequest(cm)new	-			*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	f66ae8868ff87473
+method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertionRequest(im)init	-			*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	ba98ac6c222d88d4
+category	c:objc(ext)ASAuthorizationPlatformPublicKeyCredentialAssertionRequest	-	-		ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1		eeffb77a9c1c7f3c
+conforms	-	ASAuthorizationPlatformPublicKeyCredentialAssertionRequest	ASAuthorizationWebBrowserExternallyAuthenticatableRequest		-	-	9ee6c0f0f4fcaa8d
+conforms	-	ASAuthorizationPlatformPublicKeyCredentialAssertionRequest	ASAuthorizationWebBrowserPlatformPublicKeyCredentialAssertionRequest		-	-	5a2e42f3d23707d7
+typedef	c:@T@ASAuthorizationPublicKeyCredentialLargeBlobSupportRequirement	-			-	-	f8bd42c6ccb63b1e
+enum	c:@E@ASAuthorizationPublicKeyCredentialLargeBlobSupportRequirement	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9160e71ffb27bd55
+enumconst	c:@E@ASAuthorizationPublicKeyCredentialLargeBlobSupportRequirement@ASAuthorizationPublicKeyCredentialLargeBlobSupportRequirementRequired	ASAuthorizationPublicKeyCredentialLargeBlobSupportRequirement			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5a2caf6863f34cb6
+enumconst	c:@E@ASAuthorizationPublicKeyCredentialLargeBlobSupportRequirement@ASAuthorizationPublicKeyCredentialLargeBlobSupportRequirementPreferred	ASAuthorizationPublicKeyCredentialLargeBlobSupportRequirement			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c8952c331be90833
+interface	c:objc(cs)ASAuthorizationPublicKeyCredentialLargeBlobRegistrationInput	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e8d0e5a214286523
+super	-	ASAuthorizationPublicKeyCredentialLargeBlobRegistrationInput	NSObject		-	-	b5783ada787c71b9
+method	c:objc(cs)ASAuthorizationPublicKeyCredentialLargeBlobRegistrationInput(im)initWithSupportRequirement:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1c938432ffbd4e67
+method	c:objc(cs)ASAuthorizationPublicKeyCredentialLargeBlobRegistrationInput(cm)new	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3de91040355e6d29
+method	c:objc(cs)ASAuthorizationPublicKeyCredentialLargeBlobRegistrationInput(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	97625da6559ea5b6
+property	c:objc(cs)ASAuthorizationPublicKeyCredentialLargeBlobRegistrationInput(py)supportRequirement	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5c1cec85cc46f19a
+protocol	c:objc(pl)ASAuthorizationWebBrowserPlatformPublicKeyCredentialRegistrationRequest	-			ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d2151a3f1671130d
+property	c:objc(pl)ASAuthorizationWebBrowserPlatformPublicKeyCredentialRegistrationRequest(py)clientData	-			ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	223d7daa976e6f8a
+property	c:objc(pl)ASAuthorizationWebBrowserPlatformPublicKeyCredentialRegistrationRequest(py)excludedCredentials	-			ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	254f7af4019b2929
+property	c:objc(pl)ASAuthorizationWebBrowserPlatformPublicKeyCredentialRegistrationRequest(py)shouldShowHybridTransport	-			ios=-/-/-/1,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	40e1c19357a2dcc1
+typedef	c:@T@ASAuthorizationPlatformPublicKeyCredentialRegistrationRequestStyle	-			-	-	6c26814e9acb7aae
+enum	c:@E@ASAuthorizationPlatformPublicKeyCredentialRegistrationRequestStyle	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	85b07966421a7e02
+enumconst	c:@E@ASAuthorizationPlatformPublicKeyCredentialRegistrationRequestStyle@ASAuthorizationPlatformPublicKeyCredentialRegistrationRequestStyleStandard	ASAuthorizationPlatformPublicKeyCredentialRegistrationRequestStyle			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	cb8c7d7ea7d54132
+enumconst	c:@E@ASAuthorizationPlatformPublicKeyCredentialRegistrationRequestStyle@ASAuthorizationPlatformPublicKeyCredentialRegistrationRequestStyleConditional	ASAuthorizationPlatformPublicKeyCredentialRegistrationRequestStyle			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	55fac9a61f36f058
+interface	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	aa1ccac89d971c59
+super	-	ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest	ASAuthorizationRequest		-	-	346d148c77d68488
+conforms	-	ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest	ASAuthorizationPublicKeyCredentialRegistrationRequest		-	-	a8264afe6ad6f7ae
+method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest(cm)new	-			*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	0fdf57c4dd44aa3a
+method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest(im)init	-			*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	0fde8444c0726d6f
+property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest(py)largeBlob	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6a518650ce0323f2
+property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest(py)prf	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	7f4e11ac5ffc88b2
+property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest(py)requestStyle	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	1b7c1b358311e5e8
+category	c:objc(ext)ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest	-	-		ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d0bccbdc9e7ecd19
+conforms	-	ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest	ASAuthorizationWebBrowserPlatformPublicKeyCredentialRegistrationRequest		-	-	84f37b887cdc7116
+protocol	c:objc(pl)ASAuthorizationWebBrowserPlatformPublicKeyCredentialProvider	-			ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	157c50d0f7c6c7af
+method	c:objc(pl)ASAuthorizationWebBrowserPlatformPublicKeyCredentialProvider(im)createCredentialRegistrationRequestWithClientData:name:userID:	-			ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	adc2c81f463d7dc6
+method	c:objc(pl)ASAuthorizationWebBrowserPlatformPublicKeyCredentialProvider(im)createCredentialRegistrationRequestWithClientData:name:userID:requestStyle:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6e79320ef36b6f75
+method	c:objc(pl)ASAuthorizationWebBrowserPlatformPublicKeyCredentialProvider(im)createCredentialAssertionRequestWithClientData:	-			ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7011fdf6cacf4fd1
+interface	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialProvider	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	560d894f6896eb4e
+super	-	ASAuthorizationPlatformPublicKeyCredentialProvider	NSObject		-	-	a72c2461a16c4d6e
+conforms	-	ASAuthorizationPlatformPublicKeyCredentialProvider	ASAuthorizationProvider		-	-	730ac360f843b886
+method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialProvider(im)initWithRelyingPartyIdentifier:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	5c1c3f95cce98373
+method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialProvider(im)createCredentialRegistrationRequestWithChallenge:name:userID:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	7eb134b69301029e
+method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialProvider(im)createCredentialRegistrationRequestWithChallenge:name:userID:requestStyle:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	dddc0c302e01165c
+method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialProvider(im)createCredentialAssertionRequestWithChallenge:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	e06a1f6d2adbc351
+property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialProvider(py)relyingPartyIdentifier	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	9f44af6742ea7702
+method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialProvider(cm)new	-			*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	f0470be6ff729826
+method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialProvider(im)init	-			*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	f979bde53ced6a07
+category	c:objc(ext)ASAuthorizationPlatformPublicKeyCredentialProvider	-	-		ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3b8afe24ead8d522
+conforms	-	ASAuthorizationPlatformPublicKeyCredentialProvider	ASAuthorizationWebBrowserPlatformPublicKeyCredentialProvider		-	-	37c930bb3be59aaa
+protocol	c:objc(pl)ASAuthorizationPublicKeyCredentialRegistration	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	e85f8ad011c2781f
+conforms	-	ASAuthorizationPublicKeyCredentialRegistration	ASPublicKeyCredential		-	-	e0649db456835d1c
+property	c:objc(pl)ASAuthorizationPublicKeyCredentialRegistration(py)rawAttestationObject	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	572e1c09915f9deb
+interface	c:objc(cs)ASAuthorizationPublicKeyCredentialLargeBlobRegistrationOutput	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d08ba18695b6fe87
+super	-	ASAuthorizationPublicKeyCredentialLargeBlobRegistrationOutput	NSObject		-	-	ced6b4354bcd4b0b
+conforms	-	ASAuthorizationPublicKeyCredentialLargeBlobRegistrationOutput	NSCopying		-	-	321a8abfc214c595
+conforms	-	ASAuthorizationPublicKeyCredentialLargeBlobRegistrationOutput	NSSecureCoding		-	-	725bd9ad169137d7
+property	c:objc(cs)ASAuthorizationPublicKeyCredentialLargeBlobRegistrationOutput(py)isSupported	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	396b86813c278632
+interface	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistration	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	f3ea8b9ce7416123
+super	-	ASAuthorizationPlatformPublicKeyCredentialRegistration	NSObject		-	-	48b0e5d37bf8aa52
+conforms	-	ASAuthorizationPlatformPublicKeyCredentialRegistration	ASAuthorizationPublicKeyCredentialRegistration		-	-	264fcb43df7d5d6f
+method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistration(cm)new	-			*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	f2d16ec40ecab7d9
+method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistration(im)init	-			*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	f2788eb2b6d989c0
+property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistration(py)attachment	-			ios=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	71b22e8dca37276c
+property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistration(py)largeBlob	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8a8ab221cfa9a0da
+property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistration(py)prf	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	63f2e2986b872267
+interface	c:objc(cs)ASAuthorizationPublicKeyCredentialParameters	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a44a04e18cb8bb36
+super	-	ASAuthorizationPublicKeyCredentialParameters	NSObject		-	-	bab606d4253ddf6c
+conforms	-	ASAuthorizationPublicKeyCredentialParameters	NSSecureCoding		-	-	8eaa35e5f677c67a
+conforms	-	ASAuthorizationPublicKeyCredentialParameters	NSCopying		-	-	b20dc11c4a70e314
+method	c:objc(cs)ASAuthorizationPublicKeyCredentialParameters(im)initWithAlgorithm:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f37158dfdb35c9b4
+property	c:objc(cs)ASAuthorizationPublicKeyCredentialParameters(py)algorithm	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3d29c585b1882238
+method	c:objc(cs)ASAuthorizationPublicKeyCredentialParameters(cm)new	-			*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	298bf48d2d0a6fd4
+method	c:objc(cs)ASAuthorizationPublicKeyCredentialParameters(im)init	-			*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	69d49c315f5fa168
+interface	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialAssertion	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	30a0d51cedc62e8e
+super	-	ASAuthorizationSecurityKeyPublicKeyCredentialAssertion	NSObject		-	-	8420552aab1c05ff
+conforms	-	ASAuthorizationSecurityKeyPublicKeyCredentialAssertion	ASAuthorizationPublicKeyCredentialAssertion		-	-	d0afdf7bfd45b75c
+property	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialAssertion(py)appID	-			ios=17.5/-/-/0,macos=14.5/-/-/0	-	178e5cbedfea8370
+method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialAssertion(cm)new	-			*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f43ed8e45e08b769
+method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialAssertion(im)init	-			*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	09028cfd05e2fc1e
+typedef	c:@T@ASAuthorizationSecurityKeyPublicKeyCredentialDescriptorTransport	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d9e4146a553bcc18
+var	c:@ASAuthorizationSecurityKeyPublicKeyCredentialDescriptorTransportUSB	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	27be43548ef3e03d
+var	c:@ASAuthorizationSecurityKeyPublicKeyCredentialDescriptorTransportNFC	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	55bcc00186a8d9de
+var	c:@ASAuthorizationSecurityKeyPublicKeyCredentialDescriptorTransportBluetooth	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	14a7fb4d11635737
+function	c:@F@ASAuthorizationAllSupportedPublicKeyCredentialDescriptorTransports	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8997f77666d10b81
+interface	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialDescriptor	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cccf05ac275fb455
+super	-	ASAuthorizationSecurityKeyPublicKeyCredentialDescriptor	NSObject		-	-	a3c4b83739081625
+conforms	-	ASAuthorizationSecurityKeyPublicKeyCredentialDescriptor	ASAuthorizationPublicKeyCredentialDescriptor		-	-	90e83925cf99a750
+method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialDescriptor(im)initWithCredentialID:transports:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	934dd4355d6ae7a3
+property	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialDescriptor(py)transports	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3cca6c08a503d019
+method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialDescriptor(cm)new	-			*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7dbee4bd97b2030b
+method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialDescriptor(im)init	-			*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1830ef51a4f220ab
+protocol	c:objc(pl)ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialAssertionRequest	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e0e4591a5adda227
+property	c:objc(pl)ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialAssertionRequest(py)clientData	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5a24d9b065b570b2
+interface	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	803876867324d5b3
+super	-	ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest	ASAuthorizationRequest		-	-	1530bbccf5480398
+conforms	-	ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest	ASAuthorizationPublicKeyCredentialAssertionRequest		-	-	7f284452dec78d0c
+property	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest(py)allowedCredentials	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9de0b85807077ffc
+property	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest(py)appID	-			ios=17.5/-/-/0,macos=14.5/-/-/0	-	14f2725146515807
+category	c:objc(ext)ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest	-	-		ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1aecaafbe6ccd7b4
+conforms	-	ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest	ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialAssertionRequest		-	-	6de9c430d1a7d9be
+protocol	c:objc(pl)ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialProvider	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f1ff79ea41aee489
+method	c:objc(pl)ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialProvider(im)createCredentialRegistrationRequestWithClientData:displayName:name:userID:	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f75766a7261e7b6c
+method	c:objc(pl)ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialProvider(im)createCredentialAssertionRequestWithClientData:	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a1c82b1a99c49d6c
+interface	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialProvider	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	095ed6e853fb612f
+super	-	ASAuthorizationSecurityKeyPublicKeyCredentialProvider	NSObject		-	-	24c462206fe599f5
+conforms	-	ASAuthorizationSecurityKeyPublicKeyCredentialProvider	ASAuthorizationProvider		-	-	fb200124e04aabc1
+method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialProvider(im)initWithRelyingPartyIdentifier:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7f4eb68a1bca0e44
+method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialProvider(im)createCredentialRegistrationRequestWithChallenge:displayName:name:userID:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4b6b8b3804b502ac
+method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialProvider(im)createCredentialAssertionRequestWithChallenge:	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ee210572460251c5
+property	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialProvider(py)relyingPartyIdentifier	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d007cfb5e3d33f79
+method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialProvider(im)init	-			*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ab28bbba51e6d696
+method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialProvider(cm)new	-			*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2ab9ded7287c1c26
+category	c:objc(ext)ASAuthorizationSecurityKeyPublicKeyCredentialProvider	-	-		ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b71534fd069084dc
+conforms	-	ASAuthorizationSecurityKeyPublicKeyCredentialProvider	ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialProvider		-	-	c0e0a4231c709fdb
+interface	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialRegistration	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	67ac723747443d3d
+super	-	ASAuthorizationSecurityKeyPublicKeyCredentialRegistration	NSObject		-	-	30f90316f48a1c1c
+conforms	-	ASAuthorizationSecurityKeyPublicKeyCredentialRegistration	ASAuthorizationPublicKeyCredentialRegistration		-	-	8f6ef0719ac5fc25
+property	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialRegistration(py)transports	-			ios=17.5/-/-/0,macos=14.5/-/-/0	-	d87eee42847897e1
+protocol	c:objc(pl)ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialRegistrationRequest	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	694f251116c44120
+property	c:objc(pl)ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialRegistrationRequest(py)clientData	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0fcf4b836b358f38
+interface	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	18682920ee35e359
+super	-	ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest	ASAuthorizationRequest		-	-	c7c5681db728d490
+conforms	-	ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest	ASAuthorizationPublicKeyCredentialRegistrationRequest		-	-	ed6410018e149a21
+property	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest(py)credentialParameters	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	73bfdca6e448cfec
+property	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest(py)excludedCredentials	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	62719c7a9791de83
+property	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest(py)residentKeyPreference	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5e8f37603f1f7c6a
+method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest(cm)new	-			*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5a3865453e1ca877
+method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest(im)init	-			*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	77ea1c03233a19ac
+category	c:objc(ext)ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest	-	-		ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0a3bc8b9b57eb634
+conforms	-	ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest	ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialRegistrationRequest		-	-	5bd06dc5b604f7a0
+interface	c:objc(cs)ASAuthorizationWebBrowserPlatformPublicKeyCredential	-			ios=17.4/-/-/0,maccatalyst=16.4/-/-/0,macos=13.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e52b3c4de6dad05e
+super	-	ASAuthorizationWebBrowserPlatformPublicKeyCredential	NSObject		-	-	2a0d71db73eb5b9b
+method	c:objc(cs)ASAuthorizationWebBrowserPlatformPublicKeyCredential(cm)new	-			*unavailable ios=17.4/-/-/0,maccatalyst=16.4/-/-/0,macos=13.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	73dc7b2f7941e26d
+method	c:objc(cs)ASAuthorizationWebBrowserPlatformPublicKeyCredential(im)init	-			*unavailable ios=17.4/-/-/0,maccatalyst=16.4/-/-/0,macos=13.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	49e3391b81341740
+property	c:objc(cs)ASAuthorizationWebBrowserPlatformPublicKeyCredential(py)name	-			ios=17.4/-/-/0,maccatalyst=16.4/-/-/0,macos=13.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	429f0d6f38db24bd
+property	c:objc(cs)ASAuthorizationWebBrowserPlatformPublicKeyCredential(py)customTitle	-			ios=17.4/-/-/0,maccatalyst=17.0/-/-/0,macos=14.0/-/-/0	-	c54ceb63a8ee9584
+property	c:objc(cs)ASAuthorizationWebBrowserPlatformPublicKeyCredential(py)relyingParty	-			ios=17.4/-/-/0,maccatalyst=16.4/-/-/0,macos=13.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c825a301a09294c8
+property	c:objc(cs)ASAuthorizationWebBrowserPlatformPublicKeyCredential(py)credentialID	-			ios=17.4/-/-/0,maccatalyst=16.4/-/-/0,macos=13.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ab4b34d0cd6c3edf
+property	c:objc(cs)ASAuthorizationWebBrowserPlatformPublicKeyCredential(py)userHandle	-			ios=17.4/-/-/0,maccatalyst=16.4/-/-/0,macos=13.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1f4c4cf432b3edce
+property	c:objc(cs)ASAuthorizationWebBrowserPlatformPublicKeyCredential(py)providerName	-			maccatalyst=17.0/-/-/0,macos=14.0/-/-/0	-	7ce37511355e883a
+typedef	c:@T@ASAuthorizationWebBrowserPublicKeyCredentialManagerAuthorizationState	-			ios=17.4/-/-/0,maccatalyst=16.4/-/-/0,macos=13.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8579de3513ef4bdf
+enum	c:@E@ASAuthorizationWebBrowserPublicKeyCredentialManagerAuthorizationState	-			-	-	ef19d8c4e13d49ae
+enumconst	c:@E@ASAuthorizationWebBrowserPublicKeyCredentialManagerAuthorizationState@ASAuthorizationWebBrowserPublicKeyCredentialManagerAuthorizationStateAuthorized	ASAuthorizationWebBrowserPublicKeyCredentialManagerAuthorizationState			-	-	8fe832b26e978135
+enumconst	c:@E@ASAuthorizationWebBrowserPublicKeyCredentialManagerAuthorizationState@ASAuthorizationWebBrowserPublicKeyCredentialManagerAuthorizationStateDenied	ASAuthorizationWebBrowserPublicKeyCredentialManagerAuthorizationState			-	-	ec3c986fe7ec1413
+enumconst	c:@E@ASAuthorizationWebBrowserPublicKeyCredentialManagerAuthorizationState@ASAuthorizationWebBrowserPublicKeyCredentialManagerAuthorizationStateNotDetermined	ASAuthorizationWebBrowserPublicKeyCredentialManagerAuthorizationState			-	-	be09290d4ed00459
+interface	c:objc(cs)ASAuthorizationWebBrowserPublicKeyCredentialManager	-			ios=17.4/-/-/0,maccatalyst=16.4/-/-/0,macos=13.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	858fda9d15fcfd79
+super	-	ASAuthorizationWebBrowserPublicKeyCredentialManager	NSObject		-	-	60854983e00a025b
+property	c:objc(cs)ASAuthorizationWebBrowserPublicKeyCredentialManager(cpy)isDeviceConfiguredForPasskeys	-			ios=26.2/-/-/0,macos=26.2/-/-/0	-	e1cb05fef8000209
+method	c:objc(cs)ASAuthorizationWebBrowserPublicKeyCredentialManager(im)init	-			ios=17.4/-/-/0,maccatalyst=16.4/-/-/0,macos=13.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	446a9a0b258efc82
+method	c:objc(cs)ASAuthorizationWebBrowserPublicKeyCredentialManager(im)requestAuthorizationForPublicKeyCredentials:	-			ios=17.4/-/-/0,maccatalyst=16.4/-/-/0,macos=13.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	064d915dfc92daf4
+method	c:objc(cs)ASAuthorizationWebBrowserPublicKeyCredentialManager(im)platformCredentialsForRelyingParty:completionHandler:	-			ios=17.4/-/-/0,maccatalyst=16.4/-/-/0,macos=13.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	20753b59cb6e3c68
+property	c:objc(cs)ASAuthorizationWebBrowserPublicKeyCredentialManager(py)authorizationStateForPlatformCredentials	-			ios=17.4/-/-/0,maccatalyst=16.4/-/-/0,macos=13.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	971ef1ad9a015762
+typedef	c:@T@ASPublicKeyCredentialClientDataCrossOriginValue	-			ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c6cace1ba0687497
+enum	c:@E@ASPublicKeyCredentialClientDataCrossOriginValue	-			-	-	104e5388d1df2879
+enumconst	c:@E@ASPublicKeyCredentialClientDataCrossOriginValue@ASPublicKeyCredentialClientDataCrossOriginValueNotSet	ASPublicKeyCredentialClientDataCrossOriginValue			-	-	20d1ad460bbab2f0
+enumconst	c:@E@ASPublicKeyCredentialClientDataCrossOriginValue@ASPublicKeyCredentialClientDataCrossOriginValueCrossOrigin	ASPublicKeyCredentialClientDataCrossOriginValue			-	-	6e45e2de60d7501d
+enumconst	c:@E@ASPublicKeyCredentialClientDataCrossOriginValue@ASPublicKeyCredentialClientDataCrossOriginValueSameOriginWithAncestors	ASPublicKeyCredentialClientDataCrossOriginValue			-	-	057642c98498cd3c
+interface	c:objc(cs)ASPublicKeyCredentialClientData	-			ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ce61afb947299905
+super	-	ASPublicKeyCredentialClientData	NSObject		-	-	fe576a58557bbb8d
+method	c:objc(cs)ASPublicKeyCredentialClientData(cm)new	-			*unavailable ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	74354675f46bcb76
+method	c:objc(cs)ASPublicKeyCredentialClientData(im)init	-			*unavailable ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f464d06dd6198019
+method	c:objc(cs)ASPublicKeyCredentialClientData(im)initWithChallenge:origin:	-			ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ab08781ca9cbff7a
+property	c:objc(cs)ASPublicKeyCredentialClientData(py)challenge	-			ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ea9ed42c9979d7e8
+property	c:objc(cs)ASPublicKeyCredentialClientData(py)origin	-			ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	063c136991c7c094
+property	c:objc(cs)ASPublicKeyCredentialClientData(py)topOrigin	-			ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	27bf751c1bc91629
+property	c:objc(cs)ASPublicKeyCredentialClientData(py)crossOrigin	-			ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	02654ce5a9f63ee0
+interface	c:objc(cs)ASOneTimeCodeCredential	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	51453e5d690e1834
+super	-	ASOneTimeCodeCredential	NSObject		-	-	2fcc969d0cabc4d3
+conforms	-	ASOneTimeCodeCredential	ASAuthorizationCredential		-	-	f8b1e20172019ec3
+method	c:objc(cs)ASOneTimeCodeCredential(im)init	-			*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	6857254f827ad801
+method	c:objc(cs)ASOneTimeCodeCredential(cm)credentialWithCode:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	5b887a96f4e50a69
+method	c:objc(cs)ASOneTimeCodeCredential(im)initWithCode:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	b6fe06dd2b611ae2
+property	c:objc(cs)ASOneTimeCodeCredential(py)code	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	3d7d1e0ebacda0f7
+interface	c:objc(cs)ASOneTimeCodeCredentialRequest	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	54b34f713e10629f
+super	-	ASOneTimeCodeCredentialRequest	NSObject		-	-	a540c34dd9f8d650
+conforms	-	ASOneTimeCodeCredentialRequest	ASCredentialRequest		-	-	0f3cf0f1813aaad4
+method	c:objc(cs)ASOneTimeCodeCredentialRequest(im)init	-			*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	1649817a377aa1b5
+method	c:objc(cs)ASOneTimeCodeCredentialRequest(im)initWithCredentialIdentity:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	4f19a00df8aa9f02
+interface	c:objc(cs)ASPasskeyAssertionCredential	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e0a4bc96584180ff
+super	-	ASPasskeyAssertionCredential	NSObject		-	-	7bf952099ee2530e
+conforms	-	ASPasskeyAssertionCredential	ASAuthorizationCredential		-	-	36dd2185f403c242
+method	c:objc(cs)ASPasskeyAssertionCredential(im)initWithUserHandle:relyingParty:signature:clientDataHash:authenticatorData:credentialID:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cc09ef6796528649
+method	c:objc(cs)ASPasskeyAssertionCredential(im)initWithUserHandle:relyingParty:signature:clientDataHash:authenticatorData:credentialID:extensionOutput:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	9dc72ad30b071ff8
+method	c:objc(cs)ASPasskeyAssertionCredential(cm)credentialWithUserHandle:relyingParty:signature:clientDataHash:authenticatorData:credentialID:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6fd449d0b4aaabfe
+property	c:objc(cs)ASPasskeyAssertionCredential(py)userHandle	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d8ac839136012587
+property	c:objc(cs)ASPasskeyAssertionCredential(py)relyingParty	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1e60f03759c79cab
+property	c:objc(cs)ASPasskeyAssertionCredential(py)signature	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7d4d5ee705c86700
+property	c:objc(cs)ASPasskeyAssertionCredential(py)clientDataHash	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a1e851254c0ed070
+property	c:objc(cs)ASPasskeyAssertionCredential(py)authenticatorData	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9dc2d7d23c094371
+property	c:objc(cs)ASPasskeyAssertionCredential(py)credentialID	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3b66dbde680c21ac
+property	c:objc(cs)ASPasskeyAssertionCredential(py)extensionOutput	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	ed76e13eee76db8b
+interface	c:objc(cs)ASPasskeyCredentialIdentity	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	86085b303b01afb8
+super	-	ASPasskeyCredentialIdentity	NSObject		-	-	35d3523fc843813a
+conforms	-	ASPasskeyCredentialIdentity	NSCopying		-	-	f45f778e7372bd4b
+conforms	-	ASPasskeyCredentialIdentity	NSSecureCoding		-	-	e173a9e9b34ea6eb
+conforms	-	ASPasskeyCredentialIdentity	ASCredentialIdentity		-	-	75658b0f864b5a2a
+method	c:objc(cs)ASPasskeyCredentialIdentity(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1360c2bdefdadf35
+method	c:objc(cs)ASPasskeyCredentialIdentity(im)initWithRelyingPartyIdentifier:userName:credentialID:userHandle:recordIdentifier:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	64650f1aef207b7c
+method	c:objc(cs)ASPasskeyCredentialIdentity(cm)identityWithRelyingPartyIdentifier:userName:credentialID:userHandle:recordIdentifier:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	54c16f0b4702e9be
+property	c:objc(cs)ASPasskeyCredentialIdentity(py)relyingPartyIdentifier	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	383e5a9b0ca93af2
+property	c:objc(cs)ASPasskeyCredentialIdentity(py)userName	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3508704e3dda664f
+property	c:objc(cs)ASPasskeyCredentialIdentity(py)credentialID	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f708ebdfa1a8dee4
+property	c:objc(cs)ASPasskeyCredentialIdentity(py)userHandle	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	24e3374da633b9da
+property	c:objc(cs)ASPasskeyCredentialIdentity(py)recordIdentifier	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b7d4c8bd2f864b52
+property	c:objc(cs)ASPasskeyCredentialIdentity(py)rank	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6b318d7073031184
+interface	c:objc(cs)ASPasskeyCredentialRequest	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	014e28257ac65179
+super	-	ASPasskeyCredentialRequest	NSObject		-	-	66693c2818966079
+conforms	-	ASPasskeyCredentialRequest	ASCredentialRequest		-	-	9266c72246ecac08
+method	c:objc(cs)ASPasskeyCredentialRequest(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1943b32eaf3dc084
+method	c:objc(cs)ASPasskeyCredentialRequest(im)initWithCredentialIdentity:clientDataHash:userVerificationPreference:supportedAlgorithms:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ccac6dd3fbea7e1d
+method	c:objc(cs)ASPasskeyCredentialRequest(im)initWithCredentialIdentity:clientDataHash:userVerificationPreference:supportedAlgorithms:assertionExtensionInput:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	f4ef15959cef2ec7
+method	c:objc(cs)ASPasskeyCredentialRequest(im)initWithCredentialIdentity:clientDataHash:userVerificationPreference:supportedAlgorithms:registrationExtensionInput:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	88bb3853b1599bc0
+method	c:objc(cs)ASPasskeyCredentialRequest(cm)requestWithCredentialIdentity:clientDataHash:userVerificationPreference:supportedAlgorithms:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2d281ea5f71ee1d3
+property	c:objc(cs)ASPasskeyCredentialRequest(py)clientDataHash	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7230324b517775ef
+property	c:objc(cs)ASPasskeyCredentialRequest(py)userVerificationPreference	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c0db23926920b371
+property	c:objc(cs)ASPasskeyCredentialRequest(py)supportedAlgorithms	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f12da0f82e45317f
+property	c:objc(cs)ASPasskeyCredentialRequest(py)excludedCredentials	-			ios=18.0/-/-/0,macos=15.0/-/-/0,xros=2.0/-/-/0	-	d11d1e44c3c271a3
+property	c:objc(cs)ASPasskeyCredentialRequest(py)assertionExtensionInput	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	3efbbbdbbbf3343e
+property	c:objc(cs)ASPasskeyCredentialRequest(py)registrationExtensionInput	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	cc5dacd120a732ce
+interface	c:objc(cs)ASPasskeyRegistrationCredential	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3f74b1b1b6dee6f8
+super	-	ASPasskeyRegistrationCredential	NSObject		-	-	10a10bce0af4cd55
+conforms	-	ASPasskeyRegistrationCredential	ASAuthorizationCredential		-	-	3a7a444e66aa4a0b
+method	c:objc(cs)ASPasskeyRegistrationCredential(im)initWithRelyingParty:clientDataHash:credentialID:attestationObject:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f46b3978529ab68f
+method	c:objc(cs)ASPasskeyRegistrationCredential(im)initWithRelyingParty:clientDataHash:credentialID:attestationObject:extensionOutput:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	76bdad10bfc20573
+method	c:objc(cs)ASPasskeyRegistrationCredential(cm)credentialWithRelyingParty:clientDataHash:credentialID:attestationObject:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f944dcaaef515794
+property	c:objc(cs)ASPasskeyRegistrationCredential(py)relyingParty	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d6b9d256fc118911
+property	c:objc(cs)ASPasskeyRegistrationCredential(py)clientDataHash	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9b5c8418e5d557d7
+property	c:objc(cs)ASPasskeyRegistrationCredential(py)credentialID	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3bdf078e28b59656
+property	c:objc(cs)ASPasskeyRegistrationCredential(py)attestationObject	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1243a0106f019013
+property	c:objc(cs)ASPasskeyRegistrationCredential(py)extensionOutput	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	fd9d3f9567ee809c
+interface	c:objc(cs)ASPasswordCredentialRequest	-			ios=17.0/-/-/0,maccatalyst=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	da84c3aa54b9faed
+super	-	ASPasswordCredentialRequest	NSObject		-	-	fd72304b440e280f
+conforms	-	ASPasswordCredentialRequest	ASCredentialRequest		-	-	f943047a69175870
+method	c:objc(cs)ASPasswordCredentialRequest(im)init	-			*unavailable ios=17.0/-/-/0,maccatalyst=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	487df70bb4a5d3be
+method	c:objc(cs)ASPasswordCredentialRequest(im)initWithCredentialIdentity:	-			ios=17.0/-/-/0,maccatalyst=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cd8eeec0ec3bb775
+method	c:objc(cs)ASPasswordCredentialRequest(cm)requestWithCredentialIdentity:	-			ios=17.0/-/-/0,maccatalyst=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a808f7a32cb0c2fd
+interface	c:objc(cs)ASSettingsHelper	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7af9e11ccc184b93
+super	-	ASSettingsHelper	NSObject		-	-	d5e19e2ac990a9ff
+method	c:objc(cs)ASSettingsHelper(cm)openCredentialProviderAppSettingsWithCompletionHandler:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	23cef88881a7456a
+method	c:objc(cs)ASSettingsHelper(cm)openVerificationCodeAppSettingsWithCompletionHandler:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c6cffdca3a765380
+method	c:objc(cs)ASSettingsHelper(cm)requestToTurnOnCredentialProviderExtensionWithCompletionHandler:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	8ae649d9783b8645
+method	c:objc(cs)ASSettingsHelper(im)init	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9f19bf71343bbded
+method	c:objc(cs)ASSettingsHelper(cm)new	-			*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	785887b35de3f5aa
+interface	c:objc(cs)ASWebAuthenticationSessionCallback	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0,xros=1.1/-/-/0	-	cea1f4f99ff1d0ca
+super	-	ASWebAuthenticationSessionCallback	NSObject		-	-	635623ce3daf2a77
+method	c:objc(cs)ASWebAuthenticationSessionCallback(cm)callbackWithCustomScheme:	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0,xros=1.1/-/-/0	-	57132346ee258082
+method	c:objc(cs)ASWebAuthenticationSessionCallback(cm)callbackWithHTTPSHost:path:	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0,xros=1.1/-/-/0	-	e3ad8816bd9ed783
+method	c:objc(cs)ASWebAuthenticationSessionCallback(im)init	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0,xros=1.1/-/-/0	-	d5e1e832142426bb
+method	c:objc(cs)ASWebAuthenticationSessionCallback(cm)new	-			*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0,xros=1.1/-/-/0	-	f74c52065d29047d
+method	c:objc(cs)ASWebAuthenticationSessionCallback(im)matchesURL:	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0,xros=1.1/-/-/0	-	adf8d87a5cc2701d
+interface	c:objc(cs)ASPasskeyAssertionCredentialExtensionOutput	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	6c28429b391e640b
+super	-	ASPasskeyAssertionCredentialExtensionOutput	NSObject		-	-	8829852f7b4a6895
+conforms	-	ASPasskeyAssertionCredentialExtensionOutput	NSCopying		-	-	3923847845fef795
+conforms	-	ASPasskeyAssertionCredentialExtensionOutput	NSSecureCoding		-	-	71391c58554b42ef
+method	c:objc(cs)ASPasskeyAssertionCredentialExtensionOutput(im)initWithLargeBlobOutput:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	e127b69101250d41
+property	c:objc(cs)ASPasskeyAssertionCredentialExtensionOutput(py)largeBlobAssertionOutput	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	a8528c46dbb6f2bf
+interface	c:objc(cs)ASPasskeyAssertionCredentialExtensionInput	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	0b0de4d7d2a9eff6
+super	-	ASPasskeyAssertionCredentialExtensionInput	NSObject		-	-	dc134e1f9de38eb4
+conforms	-	ASPasskeyAssertionCredentialExtensionInput	NSCopying		-	-	c66c5737526e5271
+conforms	-	ASPasskeyAssertionCredentialExtensionInput	NSSecureCoding		-	-	aac873ab215e5ca6
+method	c:objc(cs)ASPasskeyAssertionCredentialExtensionInput(im)init	-			*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	bbe1296e0287aa76
+method	c:objc(cs)ASPasskeyAssertionCredentialExtensionInput(cm)new	-			*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	47544bbf962c1d12
+property	c:objc(cs)ASPasskeyAssertionCredentialExtensionInput(py)largeBlob	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	ab36367ec858a11b
+interface	c:objc(cs)ASPasskeyRegistrationCredentialExtensionInput	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	a18d41cda6c0c38f
+super	-	ASPasskeyRegistrationCredentialExtensionInput	NSObject		-	-	8d015f23de68521d
+conforms	-	ASPasskeyRegistrationCredentialExtensionInput	NSCopying		-	-	bbfa35c072255f58
+conforms	-	ASPasskeyRegistrationCredentialExtensionInput	NSSecureCoding		-	-	8c426bd7bc5060e9
+method	c:objc(cs)ASPasskeyRegistrationCredentialExtensionInput(im)init	-			*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	698b5dff3f7a0f02
+method	c:objc(cs)ASPasskeyRegistrationCredentialExtensionInput(cm)new	-			*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	937d0d4fa287e58e
+property	c:objc(cs)ASPasskeyRegistrationCredentialExtensionInput(py)largeBlob	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	edac52b4994c0e40
+interface	c:objc(cs)ASPasskeyRegistrationCredentialExtensionOutput	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	17f9a92d5a44e04d
+super	-	ASPasskeyRegistrationCredentialExtensionOutput	NSObject		-	-	59dd5cd9cc2bdde8
+conforms	-	ASPasskeyRegistrationCredentialExtensionOutput	NSCopying		-	-	12b994a45c773593
+conforms	-	ASPasskeyRegistrationCredentialExtensionOutput	NSSecureCoding		-	-	0fc1fb820c7a903e
+method	c:objc(cs)ASPasskeyRegistrationCredentialExtensionOutput(im)initWithLargeBlobOutput:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	435ee863f158898a
+property	c:objc(cs)ASPasskeyRegistrationCredentialExtensionOutput(py)largeBlobRegistrationOutput	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	669936c20b343cfe
+interface	c:objc(cs)ASAuthorizationPublicKeyCredentialPRFAssertionInputValues	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	9ec96b5f1c85c1c1
+super	-	ASAuthorizationPublicKeyCredentialPRFAssertionInputValues	NSObject		-	-	e69535f55aed1365
+method	c:objc(cs)ASAuthorizationPublicKeyCredentialPRFAssertionInputValues(im)initWithSaltInput1:saltInput2:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	3d1bb3aa00e0c2cc
+property	c:objc(cs)ASAuthorizationPublicKeyCredentialPRFAssertionInputValues(py)saltInput1	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	a567d615af90a26d
+property	c:objc(cs)ASAuthorizationPublicKeyCredentialPRFAssertionInputValues(py)saltInput2	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	1b7aa2e445894ead
+interface	c:objc(cs)ASAuthorizationPublicKeyCredentialPRFAssertionInput	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	e0ee5880da76778a
+super	-	ASAuthorizationPublicKeyCredentialPRFAssertionInput	NSObject		-	-	da6040fa21039361
+method	c:objc(cs)ASAuthorizationPublicKeyCredentialPRFAssertionInput(im)initWithInputValues:perCredentialInputValues:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	3b8e56b54031d08a
+property	c:objc(cs)ASAuthorizationPublicKeyCredentialPRFAssertionInput(py)inputValues	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	0b75057b7c8c2786
+property	c:objc(cs)ASAuthorizationPublicKeyCredentialPRFAssertionInput(py)perCredentialInputValues	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	e7486e90f8298402
+interface	c:objc(cs)ASAuthorizationPublicKeyCredentialPRFAssertionOutput	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	ae787c934440ae2d
+super	-	ASAuthorizationPublicKeyCredentialPRFAssertionOutput	NSObject		-	-	7d6dbb28e651862b
+property	c:objc(cs)ASAuthorizationPublicKeyCredentialPRFAssertionOutput(py)first	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	df630b35f330c299
+property	c:objc(cs)ASAuthorizationPublicKeyCredentialPRFAssertionOutput(py)second	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	cb5f2aabcf5d09e2
+interface	c:objc(cs)ASAuthorizationPublicKeyCredentialPRFRegistrationInput	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	0575a144bd60e2ab
+super	-	ASAuthorizationPublicKeyCredentialPRFRegistrationInput	NSObject		-	-	ea0e970eae9313ce
+method	c:objc(cs)ASAuthorizationPublicKeyCredentialPRFRegistrationInput(cm)checkForSupport	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	23d6013e549a72a0
+method	c:objc(cs)ASAuthorizationPublicKeyCredentialPRFRegistrationInput(im)initWithInputValues:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	7f6223ceac3e0be4
+property	c:objc(cs)ASAuthorizationPublicKeyCredentialPRFRegistrationInput(py)shouldCheckForSupport	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	5ef78dbe58f0de66
+property	c:objc(cs)ASAuthorizationPublicKeyCredentialPRFRegistrationInput(py)inputValues	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	4e2d33a94c0b4355
+interface	c:objc(cs)ASAuthorizationPublicKeyCredentialPRFRegistrationOutput	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	34a8378789e361f6
+super	-	ASAuthorizationPublicKeyCredentialPRFRegistrationOutput	NSObject		-	-	6c8a32ea09759bcd
+property	c:objc(cs)ASAuthorizationPublicKeyCredentialPRFRegistrationOutput(py)isSupported	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	a37daf7e31cb76ce
+property	c:objc(cs)ASAuthorizationPublicKeyCredentialPRFRegistrationOutput(py)first	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	ccab98d9e6465d7b
+property	c:objc(cs)ASAuthorizationPublicKeyCredentialPRFRegistrationOutput(py)second	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	6b218c55afeec129
+interface	c:objc(cs)ASGeneratedPassword	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	705d6173421288fe
+super	-	ASGeneratedPassword	NSObject		-	-	3c82b59d4b80def9
+conforms	-	ASGeneratedPassword	NSCopying		-	-	3d30e8616f3781e1
+conforms	-	ASGeneratedPassword	NSSecureCoding		-	-	39f5ba3feaaa9fa5
+property	c:objc(cs)ASGeneratedPassword(py)kind	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	792340a681c71e97
+property	c:objc(cs)ASGeneratedPassword(py)localizedName	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	0b8494f0eed9da17
+property	c:objc(cs)ASGeneratedPassword(py)value	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	fb1ae2b97dc01598
+method	c:objc(cs)ASGeneratedPassword(im)init	-			*unavailable ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	935c1eefd8c4ee55
+method	c:objc(cs)ASGeneratedPassword(cm)new	-			*unavailable ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	4f59c1c94b2dc5d9
+method	c:objc(cs)ASGeneratedPassword(im)initWithKind:value:	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	96c279352ad05624

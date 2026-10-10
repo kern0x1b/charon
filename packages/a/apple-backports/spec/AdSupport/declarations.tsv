@@ -1,0 +1,6 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+interface	c:objc(cs)ASIdentifierManager	-			ios=6/-/-/0,macos=10.14/-/-/0,tvos=6/-/-/0	deprecated: This has been replaced by functionality in AppTrackingTransparency's ATTrackingManager class.	213c84825076d244
+super	-	ASIdentifierManager	NSObject		-	-	f7523dcdf496b67c
+method	c:objc(cs)ASIdentifierManager(cm)sharedManager	-			ios=6/-/-/0,macos=10.14/-/-/0,tvos=6/-/-/0	-	51d457f85e1d41c1
+property	c:objc(cs)ASIdentifierManager(py)advertisingIdentifier	-			ios=6/-/-/0,macos=10.14/-/-/0,tvos=6/-/-/0	-	e82b88a77b16905d
+property	c:objc(cs)ASIdentifierManager(py)advertisingTrackingEnabled	-			ios=6/14/-/0,macos=10.14/11.0/-/0,tvos=6/14/-/0	-	59a237fc3c8470dd

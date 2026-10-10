@@ -1,0 +1,714 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+interface	c:objc(cs)CNLabeledValue	-			ios=9.0/-/-/0	-	aff6fced600a1b87
+super	-	CNLabeledValue	NSObject		-	-	9ff64da8969219b5
+conforms	-	CNLabeledValue	NSCopying		-	-	b250eef073e2afae
+conforms	-	CNLabeledValue	NSSecureCoding		-	-	99e2143fa40c9c02
+property	c:objc(cs)CNLabeledValue(py)identifier	-			ios=9.0/-/-/0	-	8d9f0f5d9b689bd5
+property	c:objc(cs)CNLabeledValue(py)label	-			ios=9.0/-/-/0	-	c123f51e0a20e3c2
+property	c:objc(cs)CNLabeledValue(py)value	-			ios=9.0/-/-/0	-	71d9cf3771cc32c2
+method	c:objc(cs)CNLabeledValue(cm)labeledValueWithLabel:value:	-			ios=9.0/-/-/0	-	e39cf66cdefc9433
+method	c:objc(cs)CNLabeledValue(im)initWithLabel:value:	-			ios=9.0/-/-/0	-	ee81881189930e92
+method	c:objc(cs)CNLabeledValue(im)labeledValueBySettingLabel:	-			ios=9.0/-/-/0	-	fcc7bb51dde4098b
+method	c:objc(cs)CNLabeledValue(im)labeledValueBySettingValue:	-			ios=9.0/-/-/0	-	4d55570f37202d99
+method	c:objc(cs)CNLabeledValue(im)labeledValueBySettingLabel:value:	-			ios=9.0/-/-/0	-	6228310dcb3c8563
+method	c:objc(cs)CNLabeledValue(cm)localizedStringForLabel:	-			ios=9.0/-/-/0	-	a4d670482d9700da
+var	c:@CNLabelHome	-			ios=9.0/-/-/0	-	2401f412559667d5
+var	c:@CNLabelWork	-			ios=9.0/-/-/0	-	ac0484763182bc2a
+var	c:@CNLabelSchool	-			ios=13.0/-/-/0	-	693a8ca66fbf5490
+var	c:@CNLabelOther	-			ios=9.0/-/-/0	-	e6ad3df5bb1225ee
+var	c:@CNLabelEmailiCloud	-			ios=9.0/-/-/0	-	4aa41fd600358cf7
+var	c:@CNLabelURLAddressHomePage	-			ios=9.0/-/-/0	-	fc51c2684fa12079
+var	c:@CNLabelDateAnniversary	-			ios=9.0/-/-/0	-	f1ba4a16253992c2
+interface	c:objc(cs)CNPhoneNumber	-			ios=9.0/-/-/0	-	55d3c2478ed92a08
+super	-	CNPhoneNumber	NSObject		-	-	d4b4b82680b8b0c6
+conforms	-	CNPhoneNumber	NSCopying		-	-	2f70cb7c1b08c0c3
+conforms	-	CNPhoneNumber	NSSecureCoding		-	-	ffe102bc7c0580a9
+method	c:objc(cs)CNPhoneNumber(cm)phoneNumberWithStringValue:	-			ios=9.0/-/-/0	-	73867940fdb3810e
+method	c:objc(cs)CNPhoneNumber(im)initWithStringValue:	-			ios=9.0/-/-/0	-	64fed2b9a3598336
+method	c:objc(cs)CNPhoneNumber(im)init	-			ios=9.0/11.0/-/0	-	491e484b155425ac
+method	c:objc(cs)CNPhoneNumber(cm)new	-			ios=9.0/11.0/-/0	-	a38d7caa9e5ea5d0
+property	c:objc(cs)CNPhoneNumber(py)stringValue	-			ios=9.0/-/-/0	-	4eb18233d9bc4ebb
+var	c:@CNLabelPhoneNumberiPhone	-			ios=9.0/-/-/0	-	d08edb3286bccf9a
+var	c:@CNLabelPhoneNumberAppleWatch	-			ios=14.3/-/-/0,macos=11.1/-/-/0,watchos=7.2/-/-/0	-	04868decf9c1eafd
+var	c:@CNLabelPhoneNumberMobile	-			ios=9.0/-/-/0	-	a93677e2c28ba453
+var	c:@CNLabelPhoneNumberMain	-			ios=9.0/-/-/0	-	de4811c35f618627
+var	c:@CNLabelPhoneNumberHomeFax	-			ios=9.0/-/-/0	-	b22bc381943e89d2
+var	c:@CNLabelPhoneNumberWorkFax	-			ios=9.0/-/-/0	-	9a1879747a7d7eac
+var	c:@CNLabelPhoneNumberOtherFax	-			ios=9.0/-/-/0	-	b2765046b19f96c4
+var	c:@CNLabelPhoneNumberPager	-			ios=9.0/-/-/0	-	a866329c7aeb0562
+interface	c:objc(cs)CNPostalAddress	-			ios=9.0/-/-/0	-	658c0a2b9960e8c4
+super	-	CNPostalAddress	NSObject		-	-	e344a9024504ca72
+conforms	-	CNPostalAddress	NSCopying		-	-	a52d6456bd002696
+conforms	-	CNPostalAddress	NSMutableCopying		-	-	fc87e8e8fe3f3bc1
+conforms	-	CNPostalAddress	NSSecureCoding		-	-	95e0dd98d31bffd9
+property	c:objc(cs)CNPostalAddress(py)street	-			ios=9.0/-/-/0	-	ca1f6a982c4fa22c
+property	c:objc(cs)CNPostalAddress(py)subLocality	-			ios=10.3/-/-/0	-	54d9ce58ee927d13
+property	c:objc(cs)CNPostalAddress(py)city	-			ios=9.0/-/-/0	-	d304f1f50bd1e227
+property	c:objc(cs)CNPostalAddress(py)subAdministrativeArea	-			ios=10.3/-/-/0	-	976c79e6238c3944
+property	c:objc(cs)CNPostalAddress(py)state	-			ios=9.0/-/-/0	-	1bf6416b7d6464f8
+property	c:objc(cs)CNPostalAddress(py)postalCode	-			ios=9.0/-/-/0	-	96c1b11f04e9d0ba
+property	c:objc(cs)CNPostalAddress(py)country	-			ios=9.0/-/-/0	-	afab22d65559f4b0
+property	c:objc(cs)CNPostalAddress(py)ISOCountryCode	-			ios=9.0/-/-/0	-	ce7779ad9b9516fb
+method	c:objc(cs)CNPostalAddress(cm)localizedStringForKey:	-			ios=9.0/-/-/0	-	163f34c29565fbb0
+var	c:@CNPostalAddressStreetKey	-			ios=9.0/-/-/0	-	33561974aae78e2b
+var	c:@CNPostalAddressSubLocalityKey	-			ios=10.3/-/-/0	-	990d1a65637e42e4
+var	c:@CNPostalAddressCityKey	-			ios=9.0/-/-/0	-	4fd249a7d502ec9f
+var	c:@CNPostalAddressSubAdministrativeAreaKey	-			ios=10.3/-/-/0	-	3fd067e1f2dded0a
+var	c:@CNPostalAddressStateKey	-			ios=9.0/-/-/0	-	51402e274ef9dc69
+var	c:@CNPostalAddressPostalCodeKey	-			ios=9.0/-/-/0	-	ddfb2bd7207ef7e6
+var	c:@CNPostalAddressCountryKey	-			ios=9.0/-/-/0	-	a3a9842e5b76039c
+var	c:@CNPostalAddressISOCountryCodeKey	-			ios=9.0/-/-/0	-	de182dd0a8c94e44
+interface	c:objc(cs)CNContactRelation	-			ios=9.0/-/-/0	-	c92fffa266ce9f37
+super	-	CNContactRelation	NSObject		-	-	9053c549f8eaeffd
+conforms	-	CNContactRelation	NSCopying		-	-	002936a44fd358a1
+conforms	-	CNContactRelation	NSSecureCoding		-	-	76ebcef25ef7c79c
+method	c:objc(cs)CNContactRelation(cm)contactRelationWithName:	-			ios=9.0/-/-/0	-	0111ab705c6be66a
+method	c:objc(cs)CNContactRelation(im)initWithName:	-			ios=9.0/-/-/0	-	f3ee0c2cd330da7b
+property	c:objc(cs)CNContactRelation(py)name	-			ios=9.0/-/-/0	-	37d4afaea8f5ab2e
+var	c:@CNLabelContactRelationAssistant	-			ios=9.0/-/-/0	-	dfde5dfb8893bf6e
+var	c:@CNLabelContactRelationManager	-			ios=9.0/-/-/0	-	7032f9985a70a203
+var	c:@CNLabelContactRelationColleague	-			ios=13.0/-/-/0	-	90278ef1fe163013
+var	c:@CNLabelContactRelationTeacher	-			ios=13.0/-/-/0	-	a3f2797de34aae6a
+var	c:@CNLabelContactRelationSibling	-			ios=13.0/-/-/0	-	c569ecba878dfc60
+var	c:@CNLabelContactRelationYoungerSibling	-			ios=13.0/-/-/0	-	b1d827b520756677
+var	c:@CNLabelContactRelationElderSibling	-			ios=13.0/-/-/0	-	4a41a6f29c84d622
+var	c:@CNLabelContactRelationSister	-			ios=9.0/-/-/0	-	ac1b1753dc3cae3d
+var	c:@CNLabelContactRelationYoungerSister	-			ios=13.0/-/-/0	-	482efb6e9d3f1d3f
+var	c:@CNLabelContactRelationYoungestSister	-			ios=13.0/-/-/0	-	05918b85c52c3e2a
+var	c:@CNLabelContactRelationElderSister	-			ios=13.0/-/-/0	-	a1a345f0956cd400
+var	c:@CNLabelContactRelationEldestSister	-			ios=13.0/-/-/0	-	0cc95ff0019edef1
+var	c:@CNLabelContactRelationBrother	-			ios=9.0/-/-/0	-	a7234a6a20c32741
+var	c:@CNLabelContactRelationYoungerBrother	-			ios=13.0/-/-/0	-	fc4c0e753d880604
+var	c:@CNLabelContactRelationYoungestBrother	-			ios=13.0/-/-/0	-	e82077e027fb750b
+var	c:@CNLabelContactRelationElderBrother	-			ios=13.0/-/-/0	-	4c1ec94b8eb194d0
+var	c:@CNLabelContactRelationEldestBrother	-			ios=13.0/-/-/0	-	bc63b9a7f4653936
+var	c:@CNLabelContactRelationFriend	-			ios=9.0/-/-/0	-	2cb3d5f698071e80
+var	c:@CNLabelContactRelationMaleFriend	-			ios=13.0/-/-/0	-	079546f2003823f5
+var	c:@CNLabelContactRelationFemaleFriend	-			ios=13.0/-/-/0	-	aa2587a8f1a96e69
+var	c:@CNLabelContactRelationSpouse	-			ios=9.0/-/-/0	-	6cc2ac7328ee3880
+var	c:@CNLabelContactRelationWife	-			ios=13.0/-/-/0	-	111ada3d8d962b92
+var	c:@CNLabelContactRelationHusband	-			ios=13.0/-/-/0	-	f86d4c4e288456f2
+var	c:@CNLabelContactRelationPartner	-			ios=9.0/-/-/0	-	fa3d82fcb47b0052
+var	c:@CNLabelContactRelationMalePartner	-			ios=13.0/-/-/0	-	e83117435e17585f
+var	c:@CNLabelContactRelationFemalePartner	-			ios=13.0/-/-/0	-	7232363a0454368c
+var	c:@CNLabelContactRelationGirlfriendOrBoyfriend	-			ios=13.0/-/-/0	-	ae030a88e1571dec
+var	c:@CNLabelContactRelationGirlfriend	-			ios=13.0/-/-/0	-	0e7c7a265b14873c
+var	c:@CNLabelContactRelationBoyfriend	-			ios=13.0/-/-/0	-	8eca13a1441d8ee3
+var	c:@CNLabelContactRelationParent	-			ios=9.0/-/-/0	-	01f63cfb564dad92
+var	c:@CNLabelContactRelationMother	-			ios=9.0/-/-/0	-	ae928a47af5b8c52
+var	c:@CNLabelContactRelationFather	-			ios=9.0/-/-/0	-	c0960e85e6c9d56b
+var	c:@CNLabelContactRelationChild	-			ios=9.0/-/-/0	-	c9b309678f09ff4a
+var	c:@CNLabelContactRelationDaughter	-			ios=11.0/-/-/0	-	e690e272c38375f4
+var	c:@CNLabelContactRelationSon	-			ios=11.0/-/-/0	-	e35270ea6df4e070
+var	c:@CNLabelContactRelationGrandparent	-			ios=13.0/-/-/0	-	714ece5436025c51
+var	c:@CNLabelContactRelationGrandmother	-			ios=13.0/-/-/0	-	b9227ae83bc0d615
+var	c:@CNLabelContactRelationGrandmotherMothersMother	-			ios=13.0/-/-/0	-	b3734055271ae270
+var	c:@CNLabelContactRelationGrandmotherFathersMother	-			ios=13.0/-/-/0	-	c7b6379751d3e3a5
+var	c:@CNLabelContactRelationGrandfather	-			ios=13.0/-/-/0	-	3bfa6314a84aed3d
+var	c:@CNLabelContactRelationGrandfatherMothersFather	-			ios=13.0/-/-/0	-	5f5187f968fbc9ed
+var	c:@CNLabelContactRelationGrandfatherFathersFather	-			ios=13.0/-/-/0	-	a9eed19698cf0e8c
+var	c:@CNLabelContactRelationGreatGrandparent	-			ios=13.0/-/-/0	-	dd9e90fba797e0d1
+var	c:@CNLabelContactRelationGreatGrandmother	-			ios=13.0/-/-/0	-	53f6184d12620a62
+var	c:@CNLabelContactRelationGreatGrandfather	-			ios=13.0/-/-/0	-	d42ec9465b6506a0
+var	c:@CNLabelContactRelationGrandchild	-			ios=13.0/-/-/0	-	2c3a3a8124452330
+var	c:@CNLabelContactRelationGranddaughter	-			ios=13.0/-/-/0	-	921cce8474223d0a
+var	c:@CNLabelContactRelationGranddaughterDaughtersDaughter	-			ios=13.0/-/-/0	-	85e30c024e0062ef
+var	c:@CNLabelContactRelationGranddaughterSonsDaughter	-			ios=13.0/-/-/0	-	addd2b518e3db0e6
+var	c:@CNLabelContactRelationGrandson	-			ios=13.0/-/-/0	-	f5735a7024cc41b6
+var	c:@CNLabelContactRelationGrandsonDaughtersSon	-			ios=13.0/-/-/0	-	a9a370b5fa7a2321
+var	c:@CNLabelContactRelationGrandsonSonsSon	-			ios=13.0/-/-/0	-	f6526d2a08c09c7e
+var	c:@CNLabelContactRelationGreatGrandchild	-			ios=13.0/-/-/0	-	bcdac06544044229
+var	c:@CNLabelContactRelationGreatGranddaughter	-			ios=13.0/-/-/0	-	338324af940575c1
+var	c:@CNLabelContactRelationGreatGrandson	-			ios=13.0/-/-/0	-	0063522e342dc97b
+var	c:@CNLabelContactRelationParentInLaw	-			ios=13.0/-/-/0	-	f88cced46797d009
+var	c:@CNLabelContactRelationMotherInLaw	-			ios=13.0/-/-/0	-	3e420b10ac3a2cd5
+var	c:@CNLabelContactRelationMotherInLawWifesMother	-			ios=13.0/-/-/0	-	7279ecf0bc1ca9bc
+var	c:@CNLabelContactRelationMotherInLawHusbandsMother	-			ios=13.0/-/-/0	-	6d5132e494c822f5
+var	c:@CNLabelContactRelationFatherInLaw	-			ios=13.0/-/-/0	-	ce8dcf59cefe2d92
+var	c:@CNLabelContactRelationFatherInLawWifesFather	-			ios=13.0/-/-/0	-	a7234322379fd037
+var	c:@CNLabelContactRelationFatherInLawHusbandsFather	-			ios=13.0/-/-/0	-	03c0dcad317d6525
+var	c:@CNLabelContactRelationCoParentInLaw	-			ios=13.0/-/-/0	-	03aecc3967d29d8a
+var	c:@CNLabelContactRelationCoMotherInLaw	-			ios=13.0/-/-/0	-	dcc760fb75cbb8cc
+var	c:@CNLabelContactRelationCoFatherInLaw	-			ios=13.0/-/-/0	-	c51a402f147f12e2
+var	c:@CNLabelContactRelationSiblingInLaw	-			ios=13.0/-/-/0	-	8ce6b15ea90c0e53
+var	c:@CNLabelContactRelationYoungerSiblingInLaw	-			ios=13.0/-/-/0	-	0370c4c4caba4923
+var	c:@CNLabelContactRelationElderSiblingInLaw	-			ios=13.0/-/-/0	-	9084c8d0fcc8b2b9
+var	c:@CNLabelContactRelationSisterInLaw	-			ios=13.0/-/-/0	-	9497e8615c271d77
+var	c:@CNLabelContactRelationYoungerSisterInLaw	-			ios=13.0/-/-/0	-	468eff95b6d36211
+var	c:@CNLabelContactRelationElderSisterInLaw	-			ios=13.0/-/-/0	-	d2908f4086703fdc
+var	c:@CNLabelContactRelationSisterInLawSpousesSister	-			ios=13.0/-/-/0	-	6520ce39770fae4d
+var	c:@CNLabelContactRelationSisterInLawWifesSister	-			ios=13.0/-/-/0	-	e3bb1a798302141e
+var	c:@CNLabelContactRelationSisterInLawHusbandsSister	-			ios=13.0/-/-/0	-	51b51ac23ed7ecf5
+var	c:@CNLabelContactRelationSisterInLawBrothersWife	-			ios=13.0/-/-/0	-	39743e2869a4b24a
+var	c:@CNLabelContactRelationSisterInLawYoungerBrothersWife	-			ios=13.0/-/-/0	-	799c62e191c78cf2
+var	c:@CNLabelContactRelationSisterInLawElderBrothersWife	-			ios=13.0/-/-/0	-	fa365717c40c1683
+var	c:@CNLabelContactRelationBrotherInLaw	-			ios=13.0/-/-/0	-	5c9af5f48375fd3d
+var	c:@CNLabelContactRelationYoungerBrotherInLaw	-			ios=13.0/-/-/0	-	0da4ca1853f8ee1a
+var	c:@CNLabelContactRelationElderBrotherInLaw	-			ios=13.0/-/-/0	-	a2141fd8f50cad14
+var	c:@CNLabelContactRelationBrotherInLawSpousesBrother	-			ios=13.0/-/-/0	-	ad5efcebc225a757
+var	c:@CNLabelContactRelationBrotherInLawHusbandsBrother	-			ios=13.0/-/-/0	-	c50370e2675e64da
+var	c:@CNLabelContactRelationBrotherInLawWifesBrother	-			ios=13.0/-/-/0	-	ac7a43f4e7a38ae7
+var	c:@CNLabelContactRelationBrotherInLawSistersHusband	-			ios=13.0/-/-/0	-	90b67431ca16ee82
+var	c:@CNLabelContactRelationBrotherInLawYoungerSistersHusband	-			ios=13.0/-/-/0	-	77408fe31e7fcc94
+var	c:@CNLabelContactRelationBrotherInLawElderSistersHusband	-			ios=13.0/-/-/0	-	724a8e2dd8e95184
+var	c:@CNLabelContactRelationSisterInLawWifesBrothersWife	-			ios=13.0/-/-/0	-	586d3aa77819a286
+var	c:@CNLabelContactRelationSisterInLawHusbandsBrothersWife	-			ios=13.0/-/-/0	-	99b46e2c23ad487a
+var	c:@CNLabelContactRelationBrotherInLawWifesSistersHusband	-			ios=13.0/-/-/0	-	7c4d431f28f893d0
+var	c:@CNLabelContactRelationBrotherInLawHusbandsSistersHusband	-			ios=13.0/-/-/0	-	8ddc850f3c4ced8e
+var	c:@CNLabelContactRelationCoSiblingInLaw	-			ios=13.0/-/-/0	-	f1f9e796eae34421
+var	c:@CNLabelContactRelationCoSisterInLaw	-			ios=13.0/-/-/0	-	c1c150f91b98b139
+var	c:@CNLabelContactRelationCoBrotherInLaw	-			ios=13.0/-/-/0	-	e9dabe9def4498cb
+var	c:@CNLabelContactRelationChildInLaw	-			ios=13.0/-/-/0	-	762bc3e63b482a8b
+var	c:@CNLabelContactRelationDaughterInLaw	-			ios=13.0/-/-/0	-	41fb7ef4cad873db
+var	c:@CNLabelContactRelationSonInLaw	-			ios=13.0/-/-/0	-	9ee5e2975a4335be
+var	c:@CNLabelContactRelationCousin	-			ios=13.0/-/-/0	-	d2375a08bd0bc607
+var	c:@CNLabelContactRelationYoungerCousin	-			ios=13.0/-/-/0	-	1c08a3abd7ea9d8e
+var	c:@CNLabelContactRelationElderCousin	-			ios=13.0/-/-/0	-	0ac554c9c54c80de
+var	c:@CNLabelContactRelationMaleCousin	-			ios=13.0/-/-/0	-	4ed1dd0e65d7ec31
+var	c:@CNLabelContactRelationFemaleCousin	-			ios=13.0/-/-/0	-	9b0a52711e2714cc
+var	c:@CNLabelContactRelationCousinParentsSiblingsChild	-			ios=13.0/-/-/0	-	60f8b4c63e7d9380
+var	c:@CNLabelContactRelationCousinParentsSiblingsSon	-			ios=13.0/-/-/0	-	f908d20c53bc41cf
+var	c:@CNLabelContactRelationYoungerCousinParentsSiblingsSon	-			ios=13.0/-/-/0	-	f25b0dfb5168613b
+var	c:@CNLabelContactRelationElderCousinParentsSiblingsSon	-			ios=13.0/-/-/0	-	e2c5b15785793295
+var	c:@CNLabelContactRelationCousinParentsSiblingsDaughter	-			ios=13.0/-/-/0	-	ef2c448f2a48bedc
+var	c:@CNLabelContactRelationYoungerCousinParentsSiblingsDaughter	-			ios=13.0/-/-/0	-	1ee1415c37216365
+var	c:@CNLabelContactRelationElderCousinParentsSiblingsDaughter	-			ios=13.0/-/-/0	-	064357f91bd1a6d9
+var	c:@CNLabelContactRelationCousinMothersSistersDaughter	-			ios=13.0/-/-/0	-	b45acb51103968dc
+var	c:@CNLabelContactRelationYoungerCousinMothersSistersDaughter	-			ios=13.0/-/-/0	-	c14a09efa5e2d5e7
+var	c:@CNLabelContactRelationElderCousinMothersSistersDaughter	-			ios=13.0/-/-/0	-	8544c87ff48e2d5e
+var	c:@CNLabelContactRelationCousinMothersSistersSon	-			ios=13.0/-/-/0	-	36dd24f78077970d
+var	c:@CNLabelContactRelationYoungerCousinMothersSistersSon	-			ios=13.0/-/-/0	-	074efe3ea01351b0
+var	c:@CNLabelContactRelationElderCousinMothersSistersSon	-			ios=13.0/-/-/0	-	03034c7ddbcd9795
+var	c:@CNLabelContactRelationCousinMothersBrothersDaughter	-			ios=13.0/-/-/0	-	6c64392924d16752
+var	c:@CNLabelContactRelationYoungerCousinMothersBrothersDaughter	-			ios=13.0/-/-/0	-	4427592aeebc6709
+var	c:@CNLabelContactRelationElderCousinMothersBrothersDaughter	-			ios=13.0/-/-/0	-	7768b01b99ebc304
+var	c:@CNLabelContactRelationCousinMothersBrothersSon	-			ios=13.0/-/-/0	-	bd706f4c0d5c2e1c
+var	c:@CNLabelContactRelationYoungerCousinMothersBrothersSon	-			ios=13.0/-/-/0	-	6fc5bdce01d25905
+var	c:@CNLabelContactRelationElderCousinMothersBrothersSon	-			ios=13.0/-/-/0	-	b8d31f923dcecd0a
+var	c:@CNLabelContactRelationCousinFathersSistersDaughter	-			ios=13.0/-/-/0	-	1ae2fe85bddf1c50
+var	c:@CNLabelContactRelationYoungerCousinFathersSistersDaughter	-			ios=13.0/-/-/0	-	7502a9dd9b970d89
+var	c:@CNLabelContactRelationElderCousinFathersSistersDaughter	-			ios=13.0/-/-/0	-	cdac8662d7bfc8eb
+var	c:@CNLabelContactRelationCousinFathersSistersSon	-			ios=13.0/-/-/0	-	258399215239b4d8
+var	c:@CNLabelContactRelationYoungerCousinFathersSistersSon	-			ios=13.0/-/-/0	-	d73b777ee2fa0c7a
+var	c:@CNLabelContactRelationElderCousinFathersSistersSon	-			ios=13.0/-/-/0	-	cb723f9a0cb4126d
+var	c:@CNLabelContactRelationCousinFathersBrothersDaughter	-			ios=13.0/-/-/0	-	ce0f4e321753c374
+var	c:@CNLabelContactRelationYoungerCousinFathersBrothersDaughter	-			ios=13.0/-/-/0	-	c31ee6917cde5d45
+var	c:@CNLabelContactRelationElderCousinFathersBrothersDaughter	-			ios=13.0/-/-/0	-	aadac195e9411168
+var	c:@CNLabelContactRelationCousinFathersBrothersSon	-			ios=13.0/-/-/0	-	77ff0a1629546ef5
+var	c:@CNLabelContactRelationYoungerCousinFathersBrothersSon	-			ios=13.0/-/-/0	-	9dfea7366a6bce52
+var	c:@CNLabelContactRelationElderCousinFathersBrothersSon	-			ios=13.0/-/-/0	-	8de5d93fd8a32a0b
+var	c:@CNLabelContactRelationCousinGrandparentsSiblingsChild	-			ios=13.0/-/-/0	-	5a968b5466577c00
+var	c:@CNLabelContactRelationCousinGrandparentsSiblingsDaughter	-			ios=13.0/-/-/0	-	ddbbb82abada0928
+var	c:@CNLabelContactRelationCousinGrandparentsSiblingsSon	-			ios=13.0/-/-/0	-	f89d91068d16fac3
+var	c:@CNLabelContactRelationYoungerCousinMothersSiblingsSonOrFathersSistersSon	-			ios=13.0/-/-/0	-	60408336d31f4b1b
+var	c:@CNLabelContactRelationElderCousinMothersSiblingsSonOrFathersSistersSon	-			ios=13.0/-/-/0	-	5d01ce6205d2492c
+var	c:@CNLabelContactRelationYoungerCousinMothersSiblingsDaughterOrFathersSistersDaughter	-			ios=13.0/-/-/0	-	636ba07a8dd9b4dd
+var	c:@CNLabelContactRelationElderCousinMothersSiblingsDaughterOrFathersSistersDaughter	-			ios=13.0/-/-/0	-	ae4a5e9de54fe72d
+var	c:@CNLabelContactRelationParentsSibling	-			ios=13.0/-/-/0	-	49595142a8beb760
+var	c:@CNLabelContactRelationParentsYoungerSibling	-			ios=13.0/-/-/0	-	125883b3c1f40a4b
+var	c:@CNLabelContactRelationParentsElderSibling	-			ios=13.0/-/-/0	-	c724a08d9cfa753b
+var	c:@CNLabelContactRelationParentsSiblingMothersSibling	-			ios=13.0/-/-/0	-	9da95236b352bb19
+var	c:@CNLabelContactRelationParentsSiblingMothersYoungerSibling	-			ios=13.0/-/-/0	-	289c8e77e18d0505
+var	c:@CNLabelContactRelationParentsSiblingMothersElderSibling	-			ios=13.0/-/-/0	-	6e7de68517a7c3ae
+var	c:@CNLabelContactRelationParentsSiblingFathersSibling	-			ios=13.0/-/-/0	-	46afca028df6b707
+var	c:@CNLabelContactRelationParentsSiblingFathersYoungerSibling	-			ios=13.0/-/-/0	-	8c30a56eb7e744b2
+var	c:@CNLabelContactRelationParentsSiblingFathersElderSibling	-			ios=13.0/-/-/0	-	db607e06873e6fce
+var	c:@CNLabelContactRelationAunt	-			ios=13.0/-/-/0	-	fc2781f9a4a129a2
+var	c:@CNLabelContactRelationAuntParentsSister	-			ios=13.0/-/-/0	-	cbd39f0f7067158c
+var	c:@CNLabelContactRelationAuntParentsYoungerSister	-			ios=13.0/-/-/0	-	d41c3642c045f2db
+var	c:@CNLabelContactRelationAuntParentsElderSister	-			ios=13.0/-/-/0	-	8a5a4eafcc996d73
+var	c:@CNLabelContactRelationAuntFathersSister	-			ios=13.0/-/-/0	-	6087d092d694e2d1
+var	c:@CNLabelContactRelationAuntFathersYoungerSister	-			ios=13.0/-/-/0	-	96826053228d7583
+var	c:@CNLabelContactRelationAuntFathersElderSister	-			ios=13.0/-/-/0	-	a92ef2293a262e4d
+var	c:@CNLabelContactRelationAuntFathersBrothersWife	-			ios=13.0/-/-/0	-	d8f6a80d2b5d3975
+var	c:@CNLabelContactRelationAuntFathersYoungerBrothersWife	-			ios=13.0/-/-/0	-	863280f03c3c9792
+var	c:@CNLabelContactRelationAuntFathersElderBrothersWife	-			ios=13.0/-/-/0	-	6002753f420d5e64
+var	c:@CNLabelContactRelationAuntMothersSister	-			ios=13.0/-/-/0	-	ccd1badbcd2fda21
+var	c:@CNLabelContactRelationAuntMothersYoungerSister	-			ios=13.0/-/-/0	-	96d6e46f3d0d612b
+var	c:@CNLabelContactRelationAuntMothersElderSister	-			ios=13.0/-/-/0	-	cd1da16f2b170385
+var	c:@CNLabelContactRelationAuntMothersBrothersWife	-			ios=13.0/-/-/0	-	583f2ac596df851c
+var	c:@CNLabelContactRelationGrandaunt	-			ios=13.0/-/-/0	-	f21efea0e3167b02
+var	c:@CNLabelContactRelationUncle	-			ios=13.0/-/-/0	-	7812fa42c411d044
+var	c:@CNLabelContactRelationUncleParentsBrother	-			ios=13.0/-/-/0	-	29a459703ee43142
+var	c:@CNLabelContactRelationUncleParentsYoungerBrother	-			ios=13.0/-/-/0	-	42d0b539c9d4248e
+var	c:@CNLabelContactRelationUncleParentsElderBrother	-			ios=13.0/-/-/0	-	7ceccecdcf9bf89d
+var	c:@CNLabelContactRelationUncleMothersBrother	-			ios=13.0/-/-/0	-	31afaf6574db991c
+var	c:@CNLabelContactRelationUncleMothersYoungerBrother	-			ios=13.0/-/-/0	-	522fc44cbdf80f64
+var	c:@CNLabelContactRelationUncleMothersElderBrother	-			ios=13.0/-/-/0	-	c45c2d1e55f9e17a
+var	c:@CNLabelContactRelationUncleMothersSistersHusband	-			ios=13.0/-/-/0	-	c0906f89d9953fda
+var	c:@CNLabelContactRelationUncleFathersBrother	-			ios=13.0/-/-/0	-	6dd7cd48b368e55b
+var	c:@CNLabelContactRelationUncleFathersYoungerBrother	-			ios=13.0/-/-/0	-	978f60405cfab402
+var	c:@CNLabelContactRelationUncleFathersElderBrother	-			ios=13.0/-/-/0	-	887dc5ea4ae1552a
+var	c:@CNLabelContactRelationUncleFathersSistersHusband	-			ios=13.0/-/-/0	-	81e502469ed391ad
+var	c:@CNLabelContactRelationUncleFathersYoungerSistersHusband	-			ios=13.0/-/-/0	-	9331fada004b21f0
+var	c:@CNLabelContactRelationUncleFathersElderSistersHusband	-			ios=13.0/-/-/0	-	693b33cb6f318565
+var	c:@CNLabelContactRelationGranduncle	-			ios=13.0/-/-/0	-	bf909f1ac038c667
+var	c:@CNLabelContactRelationSiblingsChild	-			ios=13.0/-/-/0	-	d71d51f3313d7131
+var	c:@CNLabelContactRelationNiece	-			ios=13.0/-/-/0	-	9e1a28e9dfe7bad5
+var	c:@CNLabelContactRelationNieceSistersDaughter	-			ios=13.0/-/-/0	-	d2b060102b5e0d65
+var	c:@CNLabelContactRelationNieceBrothersDaughter	-			ios=13.0/-/-/0	-	c5953cada776315e
+var	c:@CNLabelContactRelationNieceSistersDaughterOrWifesSiblingsDaughter	-			ios=13.0/-/-/0	-	9189182be9b56741
+var	c:@CNLabelContactRelationNieceBrothersDaughterOrHusbandsSiblingsDaughter	-			ios=13.0/-/-/0	-	9533a71b808ada7b
+var	c:@CNLabelContactRelationNephew	-			ios=13.0/-/-/0	-	afd9c093dea8f87b
+var	c:@CNLabelContactRelationNephewSistersSon	-			ios=13.0/-/-/0	-	80ff24dc89c62ba6
+var	c:@CNLabelContactRelationNephewBrothersSon	-			ios=13.0/-/-/0	-	7be43fa1d3ac1278
+var	c:@CNLabelContactRelationNephewBrothersSonOrHusbandsSiblingsSon	-			ios=13.0/-/-/0	-	a18311f72ee7b2d1
+var	c:@CNLabelContactRelationNephewSistersSonOrWifesSiblingsSon	-			ios=13.0/-/-/0	-	c1f05887a81522bb
+var	c:@CNLabelContactRelationGrandniece	-			ios=13.0/-/-/0	-	ad5feef4fd73fac5
+var	c:@CNLabelContactRelationGrandnieceSistersGranddaughter	-			ios=13.0/-/-/0	-	b8e1bb938220ff64
+var	c:@CNLabelContactRelationGrandnieceBrothersGranddaughter	-			ios=13.0/-/-/0	-	d2816368753b407d
+var	c:@CNLabelContactRelationGrandnephew	-			ios=13.0/-/-/0	-	0bf591275fa25ab9
+var	c:@CNLabelContactRelationGrandnephewSistersGrandson	-			ios=13.0/-/-/0	-	b50fe127d2c9d8bc
+var	c:@CNLabelContactRelationGrandnephewBrothersGrandson	-			ios=13.0/-/-/0	-	2a097f8d97384b9c
+var	c:@CNLabelContactRelationStepparent	-			ios=13.0/-/-/0	-	9840cc97a97e58c0
+var	c:@CNLabelContactRelationStepmother	-			ios=13.0/-/-/0	-	136f2b947b697e3b
+var	c:@CNLabelContactRelationStepfather	-			ios=13.0/-/-/0	-	a3752612a6f01141
+var	c:@CNLabelContactRelationStepchild	-			ios=13.0/-/-/0	-	71a363471b88d510
+var	c:@CNLabelContactRelationStepdaughter	-			ios=13.0/-/-/0	-	0e101cd2219ff20d
+var	c:@CNLabelContactRelationStepson	-			ios=13.0/-/-/0	-	ec848b403eb296c3
+var	c:@CNLabelContactRelationStepsister	-			ios=13.0/-/-/0	-	52485b550cb6c447
+var	c:@CNLabelContactRelationStepbrother	-			ios=13.0/-/-/0	-	2f355d04491a40e6
+var	c:@CNLabelContactRelationMotherInLawOrStepmother	-			ios=13.0/-/-/0	-	0b3dbe9d5df4b0d2
+var	c:@CNLabelContactRelationFatherInLawOrStepfather	-			ios=13.0/-/-/0	-	e9f85aec73028846
+var	c:@CNLabelContactRelationDaughterInLawOrStepdaughter	-			ios=13.0/-/-/0	-	a6c458d0a3b2b9d2
+var	c:@CNLabelContactRelationSonInLawOrStepson	-			ios=13.0/-/-/0	-	b763569256962930
+var	c:@CNLabelContactRelationCousinOrSiblingsChild	-			ios=13.0/-/-/0	-	24c403a5813963d9
+var	c:@CNLabelContactRelationNieceOrCousin	-			ios=13.0/-/-/0	-	fc06ee43c47c55ba
+var	c:@CNLabelContactRelationNephewOrCousin	-			ios=13.0/-/-/0	-	bea27f6bac3633fe
+var	c:@CNLabelContactRelationGrandchildOrSiblingsChild	-			ios=13.0/-/-/0	-	a02233cefaa9e08a
+var	c:@CNLabelContactRelationGranddaughterOrNiece	-			ios=14.0/-/-/0	-	137d3be5128b767f
+var	c:@CNLabelContactRelationGrandsonOrNephew	-			ios=14.0/-/-/0	-	5e578b554913c565
+var	c:@CNLabelContactRelationGreatGrandchildOrSiblingsGrandchild	-			ios=13.0/-/-/0	-	a5fed97640081be7
+var	c:@CNLabelContactRelationDaughterInLawOrSisterInLaw	-			ios=13.0/-/-/0	-	a0f0c8a40c02f06e
+var	c:@CNLabelContactRelationSonInLawOrBrotherInLaw	-			ios=13.0/-/-/0	-	2eac8c3a4c5988d9
+interface	c:objc(cs)CNSocialProfile	-			ios=9.0/-/-/0	-	7e1164195dff32ae
+super	-	CNSocialProfile	NSObject		-	-	84ff0883146a81f5
+conforms	-	CNSocialProfile	NSCopying		-	-	d40a7c1fd6c3fbe5
+conforms	-	CNSocialProfile	NSSecureCoding		-	-	5e9f1bbbcfd70112
+property	c:objc(cs)CNSocialProfile(py)urlString	-			ios=9.0/-/-/0	-	0a86a20cbe7e1f68
+property	c:objc(cs)CNSocialProfile(py)username	-			ios=9.0/-/-/0	-	d641aaee09f233f7
+property	c:objc(cs)CNSocialProfile(py)userIdentifier	-			ios=9.0/-/-/0	-	76f641dd7d710124
+property	c:objc(cs)CNSocialProfile(py)service	-			ios=9.0/-/-/0	-	00c7549d47ba93da
+method	c:objc(cs)CNSocialProfile(im)initWithUrlString:username:userIdentifier:service:	-			ios=9.0/-/-/0	-	b962e41915bd76bb
+method	c:objc(cs)CNSocialProfile(cm)localizedStringForKey:	-			ios=9.0/-/-/0	-	5dc1bc67042e077f
+method	c:objc(cs)CNSocialProfile(cm)localizedStringForService:	-			ios=9.0/-/-/0	-	902b578b68a5303c
+var	c:@CNSocialProfileURLStringKey	-			ios=9.0/-/-/0	-	379b281e10b9155e
+var	c:@CNSocialProfileUsernameKey	-			ios=9.0/-/-/0	-	1a0c284de42df1b6
+var	c:@CNSocialProfileUserIdentifierKey	-			ios=9.0/-/-/0	-	a73ff26b144ca58e
+var	c:@CNSocialProfileServiceKey	-			ios=9.0/-/-/0	-	6ec46d50a727a311
+var	c:@CNSocialProfileServiceFacebook	-			ios=9.0/-/-/0	-	c7c71d171ad20384
+var	c:@CNSocialProfileServiceFlickr	-			ios=9.0/-/-/0	-	ad935dddfe63f685
+var	c:@CNSocialProfileServiceLinkedIn	-			ios=9.0/-/-/0	-	243ec931ec1d59a2
+var	c:@CNSocialProfileServiceMySpace	-			ios=9.0/-/-/0	-	21ae602f5860b92f
+var	c:@CNSocialProfileServiceSinaWeibo	-			ios=9.0/-/-/0	-	c478be81eff56551
+var	c:@CNSocialProfileServiceTencentWeibo	-			ios=9.0/-/-/0	-	af1ccc2075eb10f2
+var	c:@CNSocialProfileServiceTwitter	-			ios=9.0/-/-/0	-	50de7ac7459beafa
+var	c:@CNSocialProfileServiceYelp	-			ios=9.0/-/-/0	-	211a903edc865a4c
+var	c:@CNSocialProfileServiceGameCenter	-			ios=9.0/-/-/0	-	69b27b55094cdc79
+interface	c:objc(cs)CNInstantMessageAddress	-			ios=9.0/-/-/0	-	70ba687255f29a0e
+super	-	CNInstantMessageAddress	NSObject		-	-	190d7a2386f91bbb
+conforms	-	CNInstantMessageAddress	NSCopying		-	-	b75140f023e87aea
+conforms	-	CNInstantMessageAddress	NSSecureCoding		-	-	4a7b7d24a66d473c
+property	c:objc(cs)CNInstantMessageAddress(py)username	-			ios=9.0/-/-/0	-	0bdbd93a22520861
+property	c:objc(cs)CNInstantMessageAddress(py)service	-			ios=9.0/-/-/0	-	9e4ad37fcf8d0a87
+method	c:objc(cs)CNInstantMessageAddress(im)initWithUsername:service:	-			ios=9.0/-/-/0	-	fb683d843ab427ca
+method	c:objc(cs)CNInstantMessageAddress(cm)localizedStringForKey:	-			ios=9.0/-/-/0	-	b26d4b79379f9222
+method	c:objc(cs)CNInstantMessageAddress(cm)localizedStringForService:	-			ios=9.0/-/-/0	-	233ecf4241c2d036
+var	c:@CNInstantMessageAddressUsernameKey	-			ios=9.0/-/-/0	-	61fe74774bee728e
+var	c:@CNInstantMessageAddressServiceKey	-			ios=9.0/-/-/0	-	3de483216f7b7365
+var	c:@CNInstantMessageServiceAIM	-			ios=9.0/-/-/0	-	737997e3aa003268
+var	c:@CNInstantMessageServiceFacebook	-			ios=9.0/-/-/0	-	fdfebc92a1142a36
+var	c:@CNInstantMessageServiceGaduGadu	-			ios=9.0/-/-/0	-	04116b8f75921a4d
+var	c:@CNInstantMessageServiceGoogleTalk	-			ios=9.0/-/-/0	-	d277e4218547640c
+var	c:@CNInstantMessageServiceICQ	-			ios=9.0/-/-/0	-	8f1767cdf1a36978
+var	c:@CNInstantMessageServiceJabber	-			ios=9.0/-/-/0	-	cb045aee63a717c1
+var	c:@CNInstantMessageServiceMSN	-			ios=9.0/-/-/0	-	3a7d83272dacdf1d
+var	c:@CNInstantMessageServiceQQ	-			ios=9.0/-/-/0	-	70388be6d29ead05
+var	c:@CNInstantMessageServiceSkype	-			ios=9.0/-/-/0	-	78094bd4538b9bdf
+var	c:@CNInstantMessageServiceYahoo	-			ios=9.0/-/-/0	-	d7205aea3b4bfa7a
+typedef	c:@T@CNContactType	-			-	-	6515516da7de32a8
+enum	c:@E@CNContactType	-			ios=9.0/-/-/0	-	d9a1e18698b4395e
+enumconst	c:@E@CNContactType@CNContactTypePerson	CNContactType			ios=9.0/-/-/0	-	a41b794405dba498
+enumconst	c:@E@CNContactType@CNContactTypeOrganization	CNContactType			ios=9.0/-/-/0	-	a3d9753b64a4fc68
+typedef	c:@T@CNContactSortOrder	-			-	-	fcfccba75b5f9146
+enum	c:@E@CNContactSortOrder	-			ios=9.0/-/-/0	-	0c3458d642e8811c
+enumconst	c:@E@CNContactSortOrder@CNContactSortOrderNone	CNContactSortOrder			ios=9.0/-/-/0	-	635cd260c29f6789
+enumconst	c:@E@CNContactSortOrder@CNContactSortOrderUserDefault	CNContactSortOrder			ios=9.0/-/-/0	-	f6e9427138ed5efc
+enumconst	c:@E@CNContactSortOrder@CNContactSortOrderGivenName	CNContactSortOrder			ios=9.0/-/-/0	-	0b163245310504bb
+enumconst	c:@E@CNContactSortOrder@CNContactSortOrderFamilyName	CNContactSortOrder			ios=9.0/-/-/0	-	b9299fdd6abc46d5
+protocol	c:objc(pl)CNKeyDescriptor	-			-	-	9285a56148d49ef9
+conforms	-	CNKeyDescriptor	NSObject		-	-	625703fd15068540
+conforms	-	CNKeyDescriptor	NSSecureCoding		-	-	7ff4a663ae89e899
+conforms	-	CNKeyDescriptor	NSCopying		-	-	7bbdacafa03675b4
+category	c:objc(cy)NSString@Contacts	-			-	-	21de3253b20916c6
+conforms	-	NSString	CNKeyDescriptor		-	-	6a957710a9752518
+interface	c:objc(cs)CNContact	-			ios=9.0/-/-/0	-	4d3296f584493db2
+super	-	CNContact	NSObject		-	-	850af951cb06e0a5
+conforms	-	CNContact	NSCopying		-	-	fbff400778ea6ed9
+conforms	-	CNContact	NSMutableCopying		-	-	6e46fd11089bf0aa
+conforms	-	CNContact	NSSecureCoding		-	-	70dc368e72a7fa2a
+property	c:objc(cs)CNContact(py)identifier	-			ios=9.0/-/-/0	-	48c9ccd2cdec5494
+property	c:objc(cs)CNContact(py)contactType	-			ios=9.0/-/-/0	-	879e991b7cb0bf24
+property	c:objc(cs)CNContact(py)namePrefix	-			ios=9.0/-/-/0	-	9fd17a0d7df580b5
+property	c:objc(cs)CNContact(py)givenName	-			ios=9.0/-/-/0	-	6debe6c794141416
+property	c:objc(cs)CNContact(py)middleName	-			ios=9.0/-/-/0	-	1df02abd9f4aaee2
+property	c:objc(cs)CNContact(py)familyName	-			ios=9.0/-/-/0	-	303a34466e9598b7
+property	c:objc(cs)CNContact(py)previousFamilyName	-			ios=9.0/-/-/0	-	e23e98eaa37b1a9b
+property	c:objc(cs)CNContact(py)nameSuffix	-			ios=9.0/-/-/0	-	26fa437a9ed64250
+property	c:objc(cs)CNContact(py)nickname	-			ios=9.0/-/-/0	-	14040ce44f368092
+property	c:objc(cs)CNContact(py)organizationName	-			ios=9.0/-/-/0	-	47c0ac588f3294ec
+property	c:objc(cs)CNContact(py)departmentName	-			ios=9.0/-/-/0	-	66a895e15410b680
+property	c:objc(cs)CNContact(py)jobTitle	-			ios=9.0/-/-/0	-	a7e2bc31f03ecdb0
+property	c:objc(cs)CNContact(py)phoneticGivenName	-			ios=9.0/-/-/0	-	f05853e7e03639bd
+property	c:objc(cs)CNContact(py)phoneticMiddleName	-			ios=9.0/-/-/0	-	dfe1bae6f1c34523
+property	c:objc(cs)CNContact(py)phoneticFamilyName	-			ios=9.0/-/-/0	-	93fc06e2a396a197
+property	c:objc(cs)CNContact(py)phoneticOrganizationName	-			ios=10.0/-/-/0	-	890c67430f81ae94
+property	c:objc(cs)CNContact(py)note	-			ios=9.0/-/-/0	-	e0779d0aa4d77063
+property	c:objc(cs)CNContact(py)imageData	-			ios=9.0/-/-/0	-	7e2984b318804246
+property	c:objc(cs)CNContact(py)thumbnailImageData	-			ios=9.0/-/-/0	-	fe288d352794fa28
+property	c:objc(cs)CNContact(py)imageDataAvailable	-			ios=9.0/-/-/0	-	c9ee2789a80f935a
+property	c:objc(cs)CNContact(py)phoneNumbers	-			ios=9.0/-/-/0	-	3539baf6bac0158b
+property	c:objc(cs)CNContact(py)emailAddresses	-			ios=9.0/-/-/0	-	0f7f76475895bd89
+property	c:objc(cs)CNContact(py)postalAddresses	-			ios=9.0/-/-/0	-	0ac81d46df3e4a33
+property	c:objc(cs)CNContact(py)urlAddresses	-			ios=9.0/-/-/0	-	2b8c026389caf463
+property	c:objc(cs)CNContact(py)contactRelations	-			ios=9.0/-/-/0	-	fa8ec3a03e5d573e
+property	c:objc(cs)CNContact(py)socialProfiles	-			ios=9.0/-/-/0	-	ac710f749544b8a6
+property	c:objc(cs)CNContact(py)instantMessageAddresses	-			ios=9.0/-/-/0	-	20d3485916ce6f97
+property	c:objc(cs)CNContact(py)birthday	-			ios=9.0/-/-/0	-	5e5f35caafad3186
+property	c:objc(cs)CNContact(py)nonGregorianBirthday	-			ios=9.0/-/-/0	-	883fe35a39fc23c8
+property	c:objc(cs)CNContact(py)dates	-			ios=9.0/-/-/0	-	d2167d2eecfe6824
+method	c:objc(cs)CNContact(im)isKeyAvailable:	-			ios=9.0/-/-/0	-	71c67e21865623ae
+method	c:objc(cs)CNContact(im)areKeysAvailable:	-			ios=9.0/-/-/0	-	d498dae5d81b5c16
+method	c:objc(cs)CNContact(cm)localizedStringForKey:	-			ios=9.0/-/-/0	-	8d697d391870a052
+method	c:objc(cs)CNContact(cm)comparatorForNameSortOrder:	-			ios=9.0/-/-/0	-	36ab2f46b458cb6e
+method	c:objc(cs)CNContact(cm)descriptorForAllComparatorKeys	-			ios=9.0/-/-/0	-	830d04067d511170
+method	c:objc(cs)CNContact(im)isUnifiedWithContactWithIdentifier:	-			ios=9.0/-/-/0	-	7aac48925977fb93
+var	c:@CNContactPropertyNotFetchedExceptionName	-			-	-	af3294289ceeb057
+var	c:@CNContactIdentifierKey	-			ios=9.0/-/-/0	-	90b03bdd303fed3e
+var	c:@CNContactNamePrefixKey	-			ios=9.0/-/-/0	-	3908092fd8fff157
+var	c:@CNContactGivenNameKey	-			ios=9.0/-/-/0	-	f79db964d348db37
+var	c:@CNContactMiddleNameKey	-			ios=9.0/-/-/0	-	7d170fca845b0385
+var	c:@CNContactFamilyNameKey	-			ios=9.0/-/-/0	-	35727fa5981bf594
+var	c:@CNContactPreviousFamilyNameKey	-			ios=9.0/-/-/0	-	01997ae4e1fc4ad4
+var	c:@CNContactNameSuffixKey	-			ios=9.0/-/-/0	-	0abf2461f1325bc1
+var	c:@CNContactNicknameKey	-			ios=9.0/-/-/0	-	3f5d61d25bb59a2a
+var	c:@CNContactOrganizationNameKey	-			ios=9.0/-/-/0	-	2a4a6c8397710f5f
+var	c:@CNContactDepartmentNameKey	-			ios=9.0/-/-/0	-	065357449db7337f
+var	c:@CNContactJobTitleKey	-			ios=9.0/-/-/0	-	951a0072cb777f71
+var	c:@CNContactPhoneticGivenNameKey	-			ios=9.0/-/-/0	-	6bd85b4283a77ee8
+var	c:@CNContactPhoneticMiddleNameKey	-			ios=9.0/-/-/0	-	4e6fc4e741e576ab
+var	c:@CNContactPhoneticFamilyNameKey	-			ios=9.0/-/-/0	-	a7c3707aa6d87aa4
+var	c:@CNContactPhoneticOrganizationNameKey	-			ios=10.0/-/-/0	-	ddef6cd00dd3fd05
+var	c:@CNContactBirthdayKey	-			ios=9.0/-/-/0	-	92c504c2e3796f44
+var	c:@CNContactNonGregorianBirthdayKey	-			ios=9.0/-/-/0	-	6927c1c505843d31
+var	c:@CNContactNoteKey	-			ios=9.0/-/-/0	-	86b8f93a795e38c0
+var	c:@CNContactImageDataKey	-			ios=9.0/-/-/0	-	1e5cb1bc9b8a4b14
+var	c:@CNContactThumbnailImageDataKey	-			ios=9.0/-/-/0	-	4cb05e53b126b345
+var	c:@CNContactImageDataAvailableKey	-			ios=9.0/-/-/0	-	ddd3e12b18efb3d0
+var	c:@CNContactTypeKey	-			ios=9.0/-/-/0	-	44e0271ff4612d91
+var	c:@CNContactPhoneNumbersKey	-			ios=9.0/-/-/0	-	6c2ce6cab8b4367f
+var	c:@CNContactEmailAddressesKey	-			ios=9.0/-/-/0	-	6410e26addfd588a
+var	c:@CNContactPostalAddressesKey	-			ios=9.0/-/-/0	-	004f41a5500fddeb
+var	c:@CNContactDatesKey	-			ios=9.0/-/-/0	-	f5ea15319b1b1023
+var	c:@CNContactUrlAddressesKey	-			ios=9.0/-/-/0	-	c93c4d66bf3d5531
+var	c:@CNContactRelationsKey	-			ios=9.0/-/-/0	-	1234a8c8b2ca7b46
+var	c:@CNContactSocialProfilesKey	-			ios=9.0/-/-/0	-	472c186769cec4bb
+var	c:@CNContactInstantMessageAddressesKey	-			ios=9.0/-/-/0	-	040c00f0e913daed
+typedef	c:@T@CNEntityType	-			-	-	448384113764178f
+enum	c:@E@CNEntityType	-			ios=9.0/-/-/0	-	eb7d24c5d792affe
+enumconst	c:@E@CNEntityType@CNEntityTypeContacts	CNEntityType			ios=9.0/-/-/0	-	d8900fd4609fecef
+typedef	c:@T@CNAuthorizationStatus	-			-	-	ef357de023874307
+enum	c:@E@CNAuthorizationStatus	-			ios=9.0/-/-/0	-	90ebec001657674a
+enumconst	c:@E@CNAuthorizationStatus@CNAuthorizationStatusNotDetermined	CNAuthorizationStatus			ios=9.0/-/-/0	-	1cb86065c9901d96
+enumconst	c:@E@CNAuthorizationStatus@CNAuthorizationStatusRestricted	CNAuthorizationStatus			ios=9.0/-/-/0	-	99e6a91d84e55ada
+enumconst	c:@E@CNAuthorizationStatus@CNAuthorizationStatusDenied	CNAuthorizationStatus			ios=9.0/-/-/0	-	a852d198200db388
+enumconst	c:@E@CNAuthorizationStatus@CNAuthorizationStatusAuthorized	CNAuthorizationStatus			ios=9.0/-/-/0	-	a92e620f443dbf95
+enumconst	c:@E@CNAuthorizationStatus@CNAuthorizationStatusLimited	CNAuthorizationStatus			ios=18.0/-/-/0	-	7c0d15fb23979d20
+interface	c:objc(cs)CNContactStore	-			ios=9.0/-/-/0	-	2afb31e5e34644e0
+super	-	CNContactStore	NSObject		-	-	ac6592fb3d492ac3
+method	c:objc(cs)CNContactStore(cm)authorizationStatusForEntityType:	-			ios=9.0/-/-/0	-	a8e1285a172584b3
+method	c:objc(cs)CNContactStore(im)requestAccessForEntityType:completionHandler:	-			ios=9.0/-/-/0	-	d4de0ac39fb217c1
+method	c:objc(cs)CNContactStore(im)unifiedContactsMatchingPredicate:keysToFetch:error:	-			ios=9.0/-/-/0	-	26d95062ae01f4c4
+method	c:objc(cs)CNContactStore(im)unifiedContactWithIdentifier:keysToFetch:error:	-			ios=9.0/-/-/0	-	09692d13378291e7
+method	c:objc(cs)CNContactStore(im)unifiedMeContactWithKeysToFetch:error:	-			ios=-/-/-/1,watchos=-/-/-/1	-	f57cf3e1a8282f9a
+method	c:objc(cs)CNContactStore(im)enumeratorForContactFetchRequest:error:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,swift=-/-/-/1,watchos=6.0/-/-/0	-	408796b8ad45279c
+method	c:objc(cs)CNContactStore(im)enumeratorForChangeHistoryFetchRequest:error:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,swift=-/-/-/1,watchos=6.0/-/-/0	-	4c499fc326d450c1
+method	c:objc(cs)CNContactStore(im)enumerateContactsWithFetchRequest:error:usingBlock:	-			ios=9.0/-/-/0	-	e14356e667c697fc
+method	c:objc(cs)CNContactStore(im)groupsMatchingPredicate:error:	-			ios=9.0/-/-/0	-	b164f801fb930daa
+method	c:objc(cs)CNContactStore(im)containersMatchingPredicate:error:	-			ios=9.0/-/-/0	-	d32c45089630840d
+method	c:objc(cs)CNContactStore(im)executeSaveRequest:error:	-			watchos=-/-/-/1	-	551521e4d9eec2bd
+property	c:objc(cs)CNContactStore(py)currentHistoryToken	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	38c4b9e11d17b95c
+method	c:objc(cs)CNContactStore(im)defaultContainerIdentifier	-			ios=9.0/-/-/0	-	54eebab61da43068
+var	c:@CNContactStoreDidChangeNotification	-			ios=9.0/-/-/0	-	2b67ab4d44b1684f
+interface	c:objc(cs)CNFetchRequest	-			ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	0ce1c0f4d5c820cb
+super	-	CNFetchRequest	NSObject		-	-	5572de653e3a3707
+interface	c:objc(cs)CNContactFetchRequest	-			ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	53e45e1838b3e104
+super	-	CNContactFetchRequest	CNFetchRequest		-	-	4c2480956c6be553
+conforms	-	CNContactFetchRequest	NSSecureCoding		-	-	2a76f18ce51b637c
+method	c:objc(cs)CNContactFetchRequest(im)init	-			*unavailable ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	563e9185e3d00e97
+method	c:objc(cs)CNContactFetchRequest(cm)new	-			*unavailable ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	5028688168ec5384
+method	c:objc(cs)CNContactFetchRequest(im)initWithKeysToFetch:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	053133b5149ac19a
+property	c:objc(cs)CNContactFetchRequest(py)predicate	-			ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	7b7fe82dfc87a3af
+property	c:objc(cs)CNContactFetchRequest(py)keysToFetch	-			ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	c046b982e0b32a30
+property	c:objc(cs)CNContactFetchRequest(py)mutableObjects	-			ios=10.0/-/-/0	-	d84d17258bb61be9
+property	c:objc(cs)CNContactFetchRequest(py)unifyResults	-			ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	8c172057ca7640c6
+property	c:objc(cs)CNContactFetchRequest(py)sortOrder	-			ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	fa78ab8a2eeec292
+interface	c:objc(cs)CNFetchResult	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	6e84c21fde4d56e8
+super	-	CNFetchResult	NSObject		-	-	65e25c2ad594dea9
+method	c:objc(cs)CNFetchResult(im)init	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	8a2dd8f434abbefb
+method	c:objc(cs)CNFetchResult(cm)new	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	421fcc27262d0915
+property	c:objc(cs)CNFetchResult(py)value	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	3bc2a12a4d37b5d9
+property	c:objc(cs)CNFetchResult(py)currentHistoryToken	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	13cdaf335d571f5b
+interface	c:objc(cs)CNSaveRequest	-			ios=9/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	956e6be3a95b9984
+super	-	CNSaveRequest	NSObject		-	-	cde8f04c0c97b63f
+method	c:objc(cs)CNSaveRequest(im)addContact:toContainerWithIdentifier:	-			ios=9/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	d8260e250ea679aa
+method	c:objc(cs)CNSaveRequest(im)updateContact:	-			ios=9/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	518c462164c0bd26
+method	c:objc(cs)CNSaveRequest(im)deleteContact:	-			ios=9/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	40acd469967a37ee
+method	c:objc(cs)CNSaveRequest(im)addGroup:toContainerWithIdentifier:	-			ios=9/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	6084473191eb3080
+method	c:objc(cs)CNSaveRequest(im)updateGroup:	-			ios=9/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	a87ca01cc4ed6482
+method	c:objc(cs)CNSaveRequest(im)deleteGroup:	-			ios=9/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	521e9666e017e436
+method	c:objc(cs)CNSaveRequest(im)addSubgroup:toGroup:	-			ios=-/-/-/1,macos=10.11/-/-/0	-	e2195f5ce6612cee
+method	c:objc(cs)CNSaveRequest(im)removeSubgroup:fromGroup:	-			ios=-/-/-/1,macos=10.11/-/-/0	-	18428a5558057ab8
+method	c:objc(cs)CNSaveRequest(im)addMember:toGroup:	-			ios=9/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	5b86a1c8dbc61a67
+method	c:objc(cs)CNSaveRequest(im)removeMember:fromGroup:	-			ios=9/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	d2234ea4cb966b9b
+property	c:objc(cs)CNSaveRequest(py)transactionAuthor	-			ios=15/-/-/0,macos=12/-/-/0	-	a259b0b5b66d9a77
+property	c:objc(cs)CNSaveRequest(py)shouldRefetchContacts	-			ios=15.4/-/-/0,macos=12.3/-/-/0	-	deaa3231d283716f
+interface	c:objc(cs)CNChangeHistoryFetchRequest	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	3b3015664622c417
+super	-	CNChangeHistoryFetchRequest	CNFetchRequest		-	-	298043449016ac1f
+conforms	-	CNChangeHistoryFetchRequest	NSSecureCoding		-	-	c2da5bcedc0622d4
+property	c:objc(cs)CNChangeHistoryFetchRequest(py)startingToken	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	165079c257be3b75
+property	c:objc(cs)CNChangeHistoryFetchRequest(py)additionalContactKeyDescriptors	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	74d62dbdb2aa0a34
+property	c:objc(cs)CNChangeHistoryFetchRequest(py)shouldUnifyResults	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	2d7560d18e27cee7
+property	c:objc(cs)CNChangeHistoryFetchRequest(py)mutableObjects	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	fb91a2c099b3a6bc
+property	c:objc(cs)CNChangeHistoryFetchRequest(py)includeGroupChanges	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	2fea4e5a6d212fec
+property	c:objc(cs)CNChangeHistoryFetchRequest(py)excludedTransactionAuthors	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	acc294c076e8cf11
+interface	c:objc(cs)CNChangeHistoryEvent	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	31cfe465622121d4
+super	-	CNChangeHistoryEvent	NSObject		-	-	73a346be7fa72c31
+conforms	-	CNChangeHistoryEvent	NSCopying		-	-	4790de985da47205
+conforms	-	CNChangeHistoryEvent	NSSecureCoding		-	-	dbac3eb33227597f
+method	c:objc(cs)CNChangeHistoryEvent(im)acceptEventVisitor:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	df9b06a49c3b64ce
+interface	c:objc(cs)CNChangeHistoryDropEverythingEvent	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	65bdf696e765faa3
+super	-	CNChangeHistoryDropEverythingEvent	CNChangeHistoryEvent		-	-	9b19cf39e4ce2fb5
+interface	c:objc(cs)CNChangeHistoryAddContactEvent	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	c5ff58569486e65d
+super	-	CNChangeHistoryAddContactEvent	CNChangeHistoryEvent		-	-	70ee4d047927603b
+property	c:objc(cs)CNChangeHistoryAddContactEvent(py)contact	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	3fc272a4ede882b6
+property	c:objc(cs)CNChangeHistoryAddContactEvent(py)containerIdentifier	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	c5241ee35e79a18e
+interface	c:objc(cs)CNChangeHistoryUpdateContactEvent	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	f9aec1de16e7c989
+super	-	CNChangeHistoryUpdateContactEvent	CNChangeHistoryEvent		-	-	6eaac0b4ef9b0cb4
+property	c:objc(cs)CNChangeHistoryUpdateContactEvent(py)contact	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	c4702ae367e8d969
+interface	c:objc(cs)CNChangeHistoryDeleteContactEvent	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	4441a1fb39c4f320
+super	-	CNChangeHistoryDeleteContactEvent	CNChangeHistoryEvent		-	-	f2d2434deffa57ab
+property	c:objc(cs)CNChangeHistoryDeleteContactEvent(py)contactIdentifier	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	27801cf9c949815d
+interface	c:objc(cs)CNChangeHistoryAddGroupEvent	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	38759f3c3a985b02
+super	-	CNChangeHistoryAddGroupEvent	CNChangeHistoryEvent		-	-	f5eeaa5b3c98fcbd
+property	c:objc(cs)CNChangeHistoryAddGroupEvent(py)group	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	6b69b541083fba43
+property	c:objc(cs)CNChangeHistoryAddGroupEvent(py)containerIdentifier	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	d78815c294fc7105
+interface	c:objc(cs)CNChangeHistoryUpdateGroupEvent	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	d3c92ff762ee7887
+super	-	CNChangeHistoryUpdateGroupEvent	CNChangeHistoryEvent		-	-	50179148d1313767
+property	c:objc(cs)CNChangeHistoryUpdateGroupEvent(py)group	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	378988f84becd43c
+interface	c:objc(cs)CNChangeHistoryDeleteGroupEvent	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	4f0c00efccbbd6c5
+super	-	CNChangeHistoryDeleteGroupEvent	CNChangeHistoryEvent		-	-	24f52d8823655b89
+property	c:objc(cs)CNChangeHistoryDeleteGroupEvent(py)groupIdentifier	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	d6dc302ec9c19bac
+interface	c:objc(cs)CNChangeHistoryAddMemberToGroupEvent	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	bedacd99b710bf69
+super	-	CNChangeHistoryAddMemberToGroupEvent	CNChangeHistoryEvent		-	-	67f51a42a74dd401
+property	c:objc(cs)CNChangeHistoryAddMemberToGroupEvent(py)member	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	699670c4388855a5
+property	c:objc(cs)CNChangeHistoryAddMemberToGroupEvent(py)group	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	0897e11445d04f9b
+interface	c:objc(cs)CNChangeHistoryRemoveMemberFromGroupEvent	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	1825a3b7906ba5d6
+super	-	CNChangeHistoryRemoveMemberFromGroupEvent	CNChangeHistoryEvent		-	-	af8dc9fed1d04e93
+property	c:objc(cs)CNChangeHistoryRemoveMemberFromGroupEvent(py)member	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	0c6a9911ef9340f6
+property	c:objc(cs)CNChangeHistoryRemoveMemberFromGroupEvent(py)group	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	782e4b288a17f457
+interface	c:objc(cs)CNChangeHistoryAddSubgroupToGroupEvent	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	9d903444adea363d
+super	-	CNChangeHistoryAddSubgroupToGroupEvent	CNChangeHistoryEvent		-	-	949827ad48deaa3d
+property	c:objc(cs)CNChangeHistoryAddSubgroupToGroupEvent(py)subgroup	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	d968d95008e53e56
+property	c:objc(cs)CNChangeHistoryAddSubgroupToGroupEvent(py)group	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	1c92963221983aa9
+interface	c:objc(cs)CNChangeHistoryRemoveSubgroupFromGroupEvent	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	ced9b1debab7ca4a
+super	-	CNChangeHistoryRemoveSubgroupFromGroupEvent	CNChangeHistoryEvent		-	-	9dcf58a1be427311
+property	c:objc(cs)CNChangeHistoryRemoveSubgroupFromGroupEvent(py)subgroup	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	48b1729073502b72
+property	c:objc(cs)CNChangeHistoryRemoveSubgroupFromGroupEvent(py)group	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	44d7e1958eb6d35a
+protocol	c:objc(pl)CNChangeHistoryEventVisitor	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	c9dc9f6be414f4dd
+conforms	-	CNChangeHistoryEventVisitor	NSObject		-	-	e4555ba09a866b2d
+method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitDropEverythingEvent:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	2b7ee85f61b04975
+method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitAddContactEvent:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	72db841c5abf9aaf
+method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitUpdateContactEvent:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	5acc92ba4196774a
+method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitDeleteContactEvent:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	35155adac5e1d7c2
+method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitAddGroupEvent:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	b4b7325c965e06dc
+method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitUpdateGroupEvent:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	f2f4684b7023fd65
+method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitDeleteGroupEvent:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	c31f88703ef63bc9
+method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitAddMemberToGroupEvent:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	a7d30267267f31ab
+method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitRemoveMemberFromGroupEvent:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	993970901626ea96
+method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitAddSubgroupToGroupEvent:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	65b87731793b6b62
+method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitRemoveSubgroupFromGroupEvent:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	f7d920fa0400ac1f
+category	c:objc(cy)CNContact@Predicates	-			ios=9.0/-/-/0	-	b15cd92b7493e64f
+method	c:objc(cs)CNContact(cm)predicateForContactsMatchingName:	Predicates			ios=9.0/-/-/0	-	6a939eccc7ac0bcb
+method	c:objc(cs)CNContact(cm)predicateForContactsMatchingEmailAddress:	Predicates			ios=11.0/-/-/0,macos=10.13/-/-/0,watchos=4.0/-/-/0	-	a5b01b9608625cfc
+method	c:objc(cs)CNContact(cm)predicateForContactsMatchingPhoneNumber:	Predicates			ios=11.0/-/-/0,macos=10.13/-/-/0,watchos=4.0/-/-/0	-	ce3738a86ab5b679
+method	c:objc(cs)CNContact(cm)predicateForContactsWithIdentifiers:	Predicates			ios=9.0/-/-/0	-	95c7c4c316b1b287
+method	c:objc(cs)CNContact(cm)predicateForContactsInGroupWithIdentifier:	Predicates			ios=9.0/-/-/0	-	8ac7f4ea080c80ea
+method	c:objc(cs)CNContact(cm)predicateForContactsInContainerWithIdentifier:	Predicates			ios=9.0/-/-/0	-	3b9dc12f0ac21273
+interface	c:objc(cs)CNMutableContact	-			ios=9.0/-/-/0	-	dde14f6d6625a1e6
+super	-	CNMutableContact	CNContact		-	-	e2c9ccebb16328dc
+property	c:objc(cs)CNMutableContact(py)contactType	-			ios=9.0/-/-/0	-	cd68ffa39f523b85
+property	c:objc(cs)CNMutableContact(py)namePrefix	-			ios=9.0/-/-/0	-	0eff2583c0adf3fb
+property	c:objc(cs)CNMutableContact(py)givenName	-			ios=9.0/-/-/0	-	e3134558f8ed3ea8
+property	c:objc(cs)CNMutableContact(py)middleName	-			ios=9.0/-/-/0	-	a7f6b6db8ccd10c6
+property	c:objc(cs)CNMutableContact(py)familyName	-			ios=9.0/-/-/0	-	69fdeba3318fee58
+property	c:objc(cs)CNMutableContact(py)previousFamilyName	-			ios=9.0/-/-/0	-	d947b8c145dffb5c
+property	c:objc(cs)CNMutableContact(py)nameSuffix	-			ios=9.0/-/-/0	-	5974bb56c41d72f1
+property	c:objc(cs)CNMutableContact(py)nickname	-			ios=9.0/-/-/0	-	4e54632d85ac9967
+property	c:objc(cs)CNMutableContact(py)organizationName	-			ios=9.0/-/-/0	-	617721e52b0bd1f0
+property	c:objc(cs)CNMutableContact(py)departmentName	-			ios=9.0/-/-/0	-	9d77b65f5a56c84e
+property	c:objc(cs)CNMutableContact(py)jobTitle	-			ios=9.0/-/-/0	-	e8a586dfee27c618
+property	c:objc(cs)CNMutableContact(py)phoneticGivenName	-			ios=9.0/-/-/0	-	c67addc26bc6ea10
+property	c:objc(cs)CNMutableContact(py)phoneticMiddleName	-			ios=9.0/-/-/0	-	36e23b9b4d876616
+property	c:objc(cs)CNMutableContact(py)phoneticFamilyName	-			ios=9.0/-/-/0	-	0b6e9f6f21d1babb
+property	c:objc(cs)CNMutableContact(py)phoneticOrganizationName	-			ios=9.0/-/-/0	-	0d78d45a2e97df85
+property	c:objc(cs)CNMutableContact(py)note	-			ios=9.0/-/-/0	-	1bd5977d9443d24a
+property	c:objc(cs)CNMutableContact(py)imageData	-			ios=9.0/-/-/0	-	c22654a946f90740
+property	c:objc(cs)CNMutableContact(py)phoneNumbers	-			ios=9.0/-/-/0	-	f581edf7dcbf8102
+property	c:objc(cs)CNMutableContact(py)emailAddresses	-			ios=9.0/-/-/0	-	345656604795bba3
+property	c:objc(cs)CNMutableContact(py)postalAddresses	-			ios=9.0/-/-/0	-	3d8fddba3769c2ef
+property	c:objc(cs)CNMutableContact(py)urlAddresses	-			ios=9.0/-/-/0	-	45c94c7aeaffc425
+property	c:objc(cs)CNMutableContact(py)contactRelations	-			ios=9.0/-/-/0	-	506d488f19fa182c
+property	c:objc(cs)CNMutableContact(py)socialProfiles	-			ios=9.0/-/-/0	-	ac38efd836d75019
+property	c:objc(cs)CNMutableContact(py)instantMessageAddresses	-			ios=9.0/-/-/0	-	e5e606928a555e2e
+property	c:objc(cs)CNMutableContact(py)birthday	-			ios=9.0/-/-/0	-	fec3888edcb869ea
+property	c:objc(cs)CNMutableContact(py)nonGregorianBirthday	-			ios=9.0/-/-/0	-	b566fef02a82c87d
+property	c:objc(cs)CNMutableContact(py)dates	-			ios=9.0/-/-/0	-	fcac2e5b88ae9ba4
+category	c:objc(cy)CNContact@NSItemProvider	-			ios=9.0/-/-/0	-	56d2d0667a5f0e62
+conforms	-	CNContact	NSItemProviderReading		-	-	1ab2092b59ab2155
+conforms	-	CNContact	NSItemProviderWriting		-	-	c65c0b94ad0a0186
+interface	c:objc(cs)CNMutablePostalAddress	-			ios=9.0/-/-/0	-	8ef99d01e1523da5
+super	-	CNMutablePostalAddress	CNPostalAddress		-	-	719981969316e4f1
+property	c:objc(cs)CNMutablePostalAddress(py)street	-			ios=9.0/-/-/0	-	a3f6986deff7a44a
+property	c:objc(cs)CNMutablePostalAddress(py)subLocality	-			ios=10.3/-/-/0	-	d987282c26b79cc4
+property	c:objc(cs)CNMutablePostalAddress(py)city	-			ios=9.0/-/-/0	-	aa5b4e059a1db773
+property	c:objc(cs)CNMutablePostalAddress(py)subAdministrativeArea	-			ios=10.3/-/-/0	-	befa6bd135ae0aba
+property	c:objc(cs)CNMutablePostalAddress(py)state	-			ios=9.0/-/-/0	-	81a1eb03516589d3
+property	c:objc(cs)CNMutablePostalAddress(py)postalCode	-			ios=9.0/-/-/0	-	d4205a3eed3166c6
+property	c:objc(cs)CNMutablePostalAddress(py)country	-			ios=9.0/-/-/0	-	c2fb8213bcdbdf28
+property	c:objc(cs)CNMutablePostalAddress(py)ISOCountryCode	-			ios=9.0/-/-/0	-	d7d8bec236aa8e92
+interface	c:objc(cs)CNGroup	-			ios=9.0/-/-/0	-	7871958d67a37f09
+super	-	CNGroup	NSObject		-	-	01a5a8b51ff4ac41
+conforms	-	CNGroup	NSCopying		-	-	29541ebe723f02b6
+conforms	-	CNGroup	NSMutableCopying		-	-	d665ffc178f99da2
+conforms	-	CNGroup	NSSecureCoding		-	-	2d50c0321928c880
+property	c:objc(cs)CNGroup(py)identifier	-			ios=9.0/-/-/0	-	4245f7d0c8177a5a
+property	c:objc(cs)CNGroup(py)name	-			ios=9.0/-/-/0	-	33043e892cde1406
+var	c:@CNGroupIdentifierKey	-			ios=9.0/-/-/0	-	348fbd57284da4bd
+var	c:@CNGroupNameKey	-			ios=9.0/-/-/0	-	b9ef1ea4b999a3aa
+category	c:objc(cy)CNGroup@Predicates	-			ios=9.0/-/-/0	-	07a2dc6882dd6aec
+method	c:objc(cs)CNGroup(cm)predicateForGroupsWithIdentifiers:	Predicates			ios=9.0/-/-/0	-	6dc88c1b040a313b
+method	c:objc(cs)CNGroup(cm)predicateForSubgroupsInGroupWithIdentifier:	Predicates			ios=-/-/-/1	-	2b46b9fe812c3afb
+method	c:objc(cs)CNGroup(cm)predicateForGroupsInContainerWithIdentifier:	Predicates			ios=9.0/-/-/0	-	9cd8bfcd09685708
+interface	c:objc(cs)CNMutableGroup	-			ios=9.0/-/-/0	-	af669463b5b0ebfc
+super	-	CNMutableGroup	CNGroup		-	-	0a776b4ee843ea68
+property	c:objc(cs)CNMutableGroup(py)name	-			ios=9.0/-/-/0	-	394a2260a69b6780
+typedef	c:@T@CNContainerType	-			-	-	9e11dc6181f57cc9
+enum	c:@E@CNContainerType	-			ios=9.0/-/-/0	-	d3df80113cd8c9b4
+enumconst	c:@E@CNContainerType@CNContainerTypeUnassigned	CNContainerType			ios=9.0/-/-/0	-	0dd2dd0d86a7e315
+enumconst	c:@E@CNContainerType@CNContainerTypeLocal	CNContainerType			ios=9.0/-/-/0	-	6be1de77d604a29a
+enumconst	c:@E@CNContainerType@CNContainerTypeExchange	CNContainerType			ios=9.0/-/-/0	-	5d2aa412a02bb3fa
+enumconst	c:@E@CNContainerType@CNContainerTypeCardDAV	CNContainerType			ios=9.0/-/-/0	-	884410ddb87e95d2
+interface	c:objc(cs)CNContainer	-			ios=9.0/-/-/0	-	9e18d44b4f204438
+super	-	CNContainer	NSObject		-	-	d4a0bd5d3575731c
+conforms	-	CNContainer	NSCopying		-	-	305e2e8e3cca83fa
+conforms	-	CNContainer	NSSecureCoding		-	-	f622009f03a4093b
+property	c:objc(cs)CNContainer(py)identifier	-			ios=9.0/-/-/0	-	8c730324ceccfec6
+property	c:objc(cs)CNContainer(py)name	-			ios=9.0/-/-/0	-	64b63f7f8477b3e1
+property	c:objc(cs)CNContainer(py)type	-			ios=9.0/-/-/0	-	f2a8911f147792f2
+var	c:@CNContainerIdentifierKey	-			ios=9.0/-/-/0	-	722ab267347636a9
+var	c:@CNContainerNameKey	-			ios=9.0/-/-/0	-	13daf3d8d36ab817
+var	c:@CNContainerTypeKey	-			ios=9.0/-/-/0	-	4ebae4757fdceb5e
+category	c:objc(cy)CNContainer@Predicates	-			ios=9.0/-/-/0	-	06f6c11c111f1be9
+method	c:objc(cs)CNContainer(cm)predicateForContainersWithIdentifiers:	Predicates			ios=9.0/-/-/0	-	2fc8db0f882df91d
+method	c:objc(cs)CNContainer(cm)predicateForContainerOfContactWithIdentifier:	Predicates			ios=9.0/-/-/0	-	0bf3f70ba9b3acb5
+method	c:objc(cs)CNContainer(cm)predicateForContainerOfGroupWithIdentifier:	Predicates			ios=9.0/-/-/0	-	5488b3cc89fa91e7
+typedef	c:@T@CNContactFormatterStyle	-			-	-	fc3bbe234c81b656
+enum	c:@E@CNContactFormatterStyle	-			ios=9.0/-/-/0	-	a458cad4175a81ab
+enumconst	c:@E@CNContactFormatterStyle@CNContactFormatterStyleFullName	CNContactFormatterStyle			ios=9.0/-/-/0	-	9ebe3afae7e08e31
+enumconst	c:@E@CNContactFormatterStyle@CNContactFormatterStylePhoneticFullName	CNContactFormatterStyle			ios=9.0/-/-/0	-	e1acfeef4d178dda
+typedef	c:@T@CNContactDisplayNameOrder	-			-	-	7429e4b066af7e09
+enum	c:@E@CNContactDisplayNameOrder	-			ios=9.0/-/-/0	-	3f53f1998b25bdfc
+enumconst	c:@E@CNContactDisplayNameOrder@CNContactDisplayNameOrderUserDefault	CNContactDisplayNameOrder			ios=9.0/-/-/0	-	2d9cf854e7696091
+enumconst	c:@E@CNContactDisplayNameOrder@CNContactDisplayNameOrderGivenNameFirst	CNContactDisplayNameOrder			ios=9.0/-/-/0	-	1f8369fcb0521ff8
+enumconst	c:@E@CNContactDisplayNameOrder@CNContactDisplayNameOrderFamilyNameFirst	CNContactDisplayNameOrder			ios=9.0/-/-/0	-	4e742c589f81e320
+interface	c:objc(cs)CNContactFormatter	-			ios=9.0/-/-/0	-	8c0427fcf019c79b
+super	-	CNContactFormatter	NSFormatter		-	-	5feb8c81b2b3c2bc
+conforms	-	CNContactFormatter	NSSecureCoding		-	-	82156c5ba9392a2c
+method	c:objc(cs)CNContactFormatter(cm)descriptorForRequiredKeysForStyle:	-			ios=9.0/-/-/0	-	f1e8b868b8759a1c
+property	c:objc(cs)CNContactFormatter(cpy)descriptorForRequiredKeysForNameOrder	-			ios=9.0/-/-/0	-	490d34aa6642e265
+property	c:objc(cs)CNContactFormatter(cpy)descriptorForRequiredKeysForDelimiter	-			ios=9.0/-/-/0	-	91f7eb3137cf63bc
+method	c:objc(cs)CNContactFormatter(cm)stringFromContact:style:	-			ios=9.0/-/-/0	-	9a98e357ac348978
+method	c:objc(cs)CNContactFormatter(cm)attributedStringFromContact:style:defaultAttributes:	-			ios=9.0/-/-/0	-	7535b8fa3964833d
+method	c:objc(cs)CNContactFormatter(cm)nameOrderForContact:	-			ios=9.0/-/-/0	-	7c7d626576024fdc
+method	c:objc(cs)CNContactFormatter(cm)delimiterForContact:	-			ios=9.0/-/-/0	-	b3622b6d6ddfcb8a
+property	c:objc(cs)CNContactFormatter(py)style	-			ios=9.0/-/-/0	-	1b9e633fb5fec5c6
+method	c:objc(cs)CNContactFormatter(im)stringFromContact:	-			ios=9.0/-/-/0	-	95931f9847c9e5c3
+method	c:objc(cs)CNContactFormatter(im)attributedStringFromContact:defaultAttributes:	-			ios=9.0/-/-/0	-	9efd1fb2592bf1d4
+var	c:@CNContactPropertyAttribute	-			-	-	c3716d69af2c75b1
+typedef	c:@T@CNPostalAddressFormatterStyle	-			-	-	56a28f7e95849457
+enum	c:@E@CNPostalAddressFormatterStyle	-			ios=9.0/-/-/0	-	b72b19a2ae74cec3
+enumconst	c:@E@CNPostalAddressFormatterStyle@CNPostalAddressFormatterStyleMailingAddress	CNPostalAddressFormatterStyle			ios=9.0/-/-/0	-	6ffd15f2d64ebb59
+interface	c:objc(cs)CNPostalAddressFormatter	-			ios=9.0/-/-/0	-	15fd3dd81eb487c3
+super	-	CNPostalAddressFormatter	NSFormatter		-	-	8f5a0ce4a36906a7
+method	c:objc(cs)CNPostalAddressFormatter(cm)stringFromPostalAddress:style:	-			ios=9.0/-/-/0	-	ba524a959a8bed62
+method	c:objc(cs)CNPostalAddressFormatter(cm)attributedStringFromPostalAddress:style:withDefaultAttributes:	-			ios=9.0/-/-/0	-	86fcd1e475724613
+property	c:objc(cs)CNPostalAddressFormatter(py)style	-			ios=9.0/-/-/0	-	3a33ea35225d2ee2
+method	c:objc(cs)CNPostalAddressFormatter(im)stringFromPostalAddress:	-			ios=9.0/-/-/0	-	069683e48b1dda38
+method	c:objc(cs)CNPostalAddressFormatter(im)attributedStringFromPostalAddress:withDefaultAttributes:	-			ios=9.0/-/-/0	-	1029201637a6cff6
+var	c:@CNPostalAddressPropertyAttribute	-			-	-	f7b61d597a2737d3
+var	c:@CNPostalAddressLocalizedPropertyNameAttribute	-			-	-	1fa5ef4c58866d2f
+interface	c:objc(cs)CNContactVCardSerialization	-			ios=9.0/-/-/0	-	a06de3138fb742f1
+super	-	CNContactVCardSerialization	NSObject		-	-	d98024b243435074
+method	c:objc(cs)CNContactVCardSerialization(cm)descriptorForRequiredKeys	-			ios=9.0/-/-/0	-	9bc9885679880478
+method	c:objc(cs)CNContactVCardSerialization(cm)dataWithContacts:error:	-			ios=9.0/-/-/0	-	dd4b46aa8cade372
+method	c:objc(cs)CNContactVCardSerialization(cm)contactsWithData:error:	-			ios=9.0/-/-/0	-	19fa870d617f95f0
+interface	c:objc(cs)CNContactsUserDefaults	-			ios=9.0/-/-/0	-	0baa007a964fbd28
+super	-	CNContactsUserDefaults	NSObject		-	-	efcdb55456b4ca3c
+method	c:objc(cs)CNContactsUserDefaults(cm)sharedDefaults	-			ios=9.0/-/-/0	-	04e778b1f5f61daf
+property	c:objc(cs)CNContactsUserDefaults(py)sortOrder	-			ios=9.0/-/-/0	-	40c325627f541e72
+property	c:objc(cs)CNContactsUserDefaults(py)countryCode	-			ios=9.0/-/-/0	-	5a91418be3fd674f
+interface	c:objc(cs)CNContactProperty	-			ios=9.0/-/-/0	-	ea319f95964ea9a6
+super	-	CNContactProperty	NSObject		-	-	2523b83ed2506be8
+conforms	-	CNContactProperty	NSCopying		-	-	cb2c33b040c4bd28
+conforms	-	CNContactProperty	NSSecureCoding		-	-	c57aefbf4a07f5c9
+property	c:objc(cs)CNContactProperty(py)contact	-			ios=9.0/-/-/0	-	9e413c698d8ef168
+property	c:objc(cs)CNContactProperty(py)key	-			ios=9.0/-/-/0	-	d2ba97cfde992f82
+property	c:objc(cs)CNContactProperty(py)value	-			ios=9.0/-/-/0	-	a716d494fb7f3381
+property	c:objc(cs)CNContactProperty(py)identifier	-			ios=9.0/-/-/0	-	ed256b5ead87cace
+property	c:objc(cs)CNContactProperty(py)label	-			ios=9.0/-/-/0	-	b5382703ca3e3d9d
+var	c:@CNErrorDomain	-			ios=9.0/-/-/0	-	931d9392f242f7fa
+typedef	c:@T@CNErrorCode	-			-	-	624e889008007042
+enum	c:@E@CNErrorCode	-			ios=9.0/-/-/0	-	9d71d83056976d55
+enumconst	c:@E@CNErrorCode@CNErrorCodeCommunicationError	CNErrorCode			ios=9.0/-/-/0	-	489e2189b93a03ee
+enumconst	c:@E@CNErrorCode@CNErrorCodeDataAccessError	CNErrorCode			ios=9.0/-/-/0	-	12f3b7c007c1d98a
+enumconst	c:@E@CNErrorCode@CNErrorCodeAuthorizationDenied	CNErrorCode			ios=9.0/-/-/0	-	e28e0c5ed57c7ef5
+enumconst	c:@E@CNErrorCode@CNErrorCodeNoAccessableWritableContainers	CNErrorCode			ios=11.3/-/-/0	-	90f682b713305d8e
+enumconst	c:@E@CNErrorCode@CNErrorCodeUnauthorizedKeys	CNErrorCode			ios=13.0/-/-/0,macos=10.14/-/-/0,watchos=6.0/-/-/0	-	6fd5bbd1a2390814
+enumconst	c:@E@CNErrorCode@CNErrorCodeFeatureDisabledByUser	CNErrorCode			ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	513b9edf684d4f39
+enumconst	c:@E@CNErrorCode@CNErrorCodeFeatureNotAvailable	CNErrorCode			ios=17/-/-/0,macos=14/-/-/0,watchos=10/-/-/0	-	4ec7b8f7fc2bb0a8
+enumconst	c:@E@CNErrorCode@CNErrorCodeRecordDoesNotExist	CNErrorCode			ios=9.0/-/-/0	-	0ba9eb601146feaf
+enumconst	c:@E@CNErrorCode@CNErrorCodeInsertedRecordAlreadyExists	CNErrorCode			ios=9.0/-/-/0	-	c074e0f18dba7e13
+enumconst	c:@E@CNErrorCode@CNErrorCodeContainmentCycle	CNErrorCode			ios=9.0/-/-/0	-	87bd1ddb44824c36
+enumconst	c:@E@CNErrorCode@CNErrorCodeContainmentScope	CNErrorCode			ios=9.0/-/-/0	-	a940629bcf1275f7
+enumconst	c:@E@CNErrorCode@CNErrorCodeParentRecordDoesNotExist	CNErrorCode			ios=9.0/-/-/0	-	4a0af81734a67750
+enumconst	c:@E@CNErrorCode@CNErrorCodeRecordIdentifierInvalid	CNErrorCode			ios=9.0/-/-/0	-	8afd74cec59248d4
+enumconst	c:@E@CNErrorCode@CNErrorCodeRecordNotWritable	CNErrorCode			ios=13.0/-/-/0,macos=10.14/-/-/0,watchos=6.0/-/-/0	-	bda650f761a52046
+enumconst	c:@E@CNErrorCode@CNErrorCodeParentContainerNotWritable	CNErrorCode			ios=13.0/-/-/0,macos=10.14/-/-/0,watchos=6.0/-/-/0	-	b1e1e0c2755859fc
+enumconst	c:@E@CNErrorCode@CNErrorCodeValidationMultipleErrors	CNErrorCode			ios=9.0/-/-/0	-	304add32867807f1
+enumconst	c:@E@CNErrorCode@CNErrorCodeValidationTypeMismatch	CNErrorCode			ios=9.0/-/-/0	-	751f4b4f74967a82
+enumconst	c:@E@CNErrorCode@CNErrorCodeValidationConfigurationError	CNErrorCode			ios=9.0/-/-/0	-	084f750c254265a3
+enumconst	c:@E@CNErrorCode@CNErrorCodePredicateInvalid	CNErrorCode			ios=9.0/-/-/0	-	d5a7924f593917ae
+enumconst	c:@E@CNErrorCode@CNErrorCodePolicyViolation	CNErrorCode			ios=9.0/-/-/0	-	4a7f7c74b062ed8c
+enumconst	c:@E@CNErrorCode@CNErrorCodeClientIdentifierInvalid	CNErrorCode			ios=9.0/-/-/0	-	4b1f393c728a5b41
+enumconst	c:@E@CNErrorCode@CNErrorCodeClientIdentifierDoesNotExist	CNErrorCode			ios=9.0/-/-/0	-	8ab066d8c3a86b79
+enumconst	c:@E@CNErrorCode@CNErrorCodeClientIdentifierCollision	CNErrorCode			ios=9.0/-/-/0	-	610d53295cc5a28c
+enumconst	c:@E@CNErrorCode@CNErrorCodeChangeHistoryExpired	CNErrorCode			ios=9.0/-/-/0	-	8f05ab9eed918344
+enumconst	c:@E@CNErrorCode@CNErrorCodeChangeHistoryInvalidAnchor	CNErrorCode			ios=9.0/-/-/0	-	b3c9f6b5b56ead95
+enumconst	c:@E@CNErrorCode@CNErrorCodeChangeHistoryInvalidFetchRequest	CNErrorCode			ios=9.0/-/-/0	-	95cabc0467cc715e
+enumconst	c:@E@CNErrorCode@CNErrorCodeVCardMalformed	CNErrorCode			ios=11.0/-/-/0	-	345d4bc31e4c735b
+enumconst	c:@E@CNErrorCode@CNErrorCodeVCardSummarizationError	CNErrorCode			ios=12.0/-/-/0	-	37a8e2f4cd532f75
+var	c:@CNErrorUserInfoAffectedRecordsKey	-			ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	60b9a163d524044f
+var	c:@CNErrorUserInfoAffectedRecordIdentifiersKey	-			ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	19dadbf2bb53439d
+var	c:@CNErrorUserInfoValidationErrorsKey	-			ios=9.0/-/-/0	-	cfe499ffb426aaf9
+var	c:@CNErrorUserInfoKeyPathsKey	-			ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	a6c5c953dd1f7bef

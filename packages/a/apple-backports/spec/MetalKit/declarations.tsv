@@ -1,0 +1,123 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+interface	c:objc(cs)MTKView	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	8e9997528906f00d
+super	-	MTKView	UIView		-	-	6ebe91740eadd1c6
+conforms	-	MTKView	NSCoding		-	-	4dad13837b0d3aa2
+conforms	-	MTKView	CALayerDelegate		-	-	b521c14d7b4c5585
+method	c:objc(cs)MTKView(im)initWithFrame:device:	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	96a4b93ac2ed32c3
+method	c:objc(cs)MTKView(im)initWithCoder:	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	3eab2559224821b0
+property	c:objc(cs)MTKView(py)delegate	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	feabb50c023b41f6
+property	c:objc(cs)MTKView(py)device	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	37f6f9004559bb14
+property	c:objc(cs)MTKView(py)currentDrawable	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	dad1ff415ac694d3
+property	c:objc(cs)MTKView(py)framebufferOnly	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	48acbab7a5a775d3
+property	c:objc(cs)MTKView(py)depthStencilAttachmentTextureUsage	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	9aab6a4513f11422
+property	c:objc(cs)MTKView(py)multisampleColorAttachmentTextureUsage	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	b03489c4b84f3ded
+property	c:objc(cs)MTKView(py)presentsWithTransaction	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	c6bf0f2a6abfb855
+property	c:objc(cs)MTKView(py)colorPixelFormat	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	e46a3628503a32bf
+property	c:objc(cs)MTKView(py)depthStencilPixelFormat	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	3f7b254d0ba7eb00
+property	c:objc(cs)MTKView(py)depthStencilStorageMode	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	1c08dfa53b8b27be
+property	c:objc(cs)MTKView(py)sampleCount	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	463ebe340d3bdf26
+property	c:objc(cs)MTKView(py)clearColor	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	21eb814a201bbdad
+property	c:objc(cs)MTKView(py)clearDepth	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	520dbfbb547f6a97
+property	c:objc(cs)MTKView(py)clearStencil	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	e377f5a2af71956c
+property	c:objc(cs)MTKView(py)depthStencilTexture	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	aca17763a76b3647
+property	c:objc(cs)MTKView(py)multisampleColorTexture	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	55b18fa265339736
+method	c:objc(cs)MTKView(im)releaseDrawables	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	60b248c81c8032fb
+property	c:objc(cs)MTKView(py)currentRenderPassDescriptor	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	bb0fa148b600b010
+property	c:objc(cs)MTKView(py)currentMTL4RenderPassDescriptor	-			ios=26.0/-/-/0,macos=26.0/-/-/0	-	5f83cf66ad3a9e9f
+property	c:objc(cs)MTKView(py)preferredFramesPerSecond	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	f095a24fa22e924f
+property	c:objc(cs)MTKView(py)enableSetNeedsDisplay	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	2f6de1a9cd7e9a2b
+property	c:objc(cs)MTKView(py)autoResizeDrawable	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	c693c6f1df010aab
+property	c:objc(cs)MTKView(py)drawableSize	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	03b81b12b1faca44
+property	c:objc(cs)MTKView(py)preferredDrawableSize	-			macos=10.15/-/-/0	-	85e86d4c88ad4986
+property	c:objc(cs)MTKView(py)preferredDevice	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	0513116d14f27768
+property	c:objc(cs)MTKView(py)paused	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	b1697533e387f14e
+property	c:objc(cs)MTKView(py)colorspace	-			ios=-/-/-/1	-	e3caa4272393aa12
+method	c:objc(cs)MTKView(im)draw	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	5ca7d45d3e03fb53
+protocol	c:objc(pl)MTKViewDelegate	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	46b138503b2cb5ef
+conforms	-	MTKViewDelegate	NSObject		-	-	9c2c792772ffd64a
+method	c:objc(pl)MTKViewDelegate(im)mtkView:drawableSizeWillChange:	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	8cd8428f55685b3e
+method	c:objc(pl)MTKViewDelegate(im)drawInMTKView:	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	6bfb4ce47649294e
+typedef	c:@T@MTKTextureLoaderError	-			-	-	1adc5bd09ece6b11
+var	c:@MTKTextureLoaderErrorDomain	-			ios=9.0/-/-/0	-	2a0f23423b86a592
+var	c:@MTKTextureLoaderErrorKey	-			ios=9.0/-/-/0	-	f28812ff94f370ef
+typedef	c:@T@MTKTextureLoaderOption	-			-	-	875baa6f8b7592db
+var	c:@MTKTextureLoaderOptionAllocateMipmaps	-			ios=9.0/-/-/0	-	67c0bcc69e7ddb61
+var	c:@MTKTextureLoaderOptionGenerateMipmaps	-			ios=10.0/-/-/0	-	1d5c7f50267ecc93
+var	c:@MTKTextureLoaderOptionSRGB	-			ios=9.0/-/-/0	-	c47837eda9de05c4
+var	c:@MTKTextureLoaderOptionTextureUsage	-			ios=9.0/-/-/0	-	ece6563c7ed0a9b1
+var	c:@MTKTextureLoaderOptionTextureCPUCacheMode	-			ios=9.0/-/-/0	-	d7c02c0e5f2d2d65
+var	c:@MTKTextureLoaderOptionTextureStorageMode	-			ios=10.0/-/-/0	-	16b2aeb77698955e
+typedef	c:@T@MTKTextureLoaderCubeLayout	-			-	-	589e9eabb1f59c0f
+var	c:@MTKTextureLoaderOptionCubeLayout	-			ios=10.0/-/-/0	-	226b2dd422ac06fc
+var	c:@MTKTextureLoaderCubeLayoutVertical	-			ios=10.0/-/-/0	-	c55b47294e42d863
+typedef	c:@T@MTKTextureLoaderOrigin	-			-	-	d8b0794d8c66585c
+var	c:@MTKTextureLoaderOptionOrigin	-			ios=10.0/-/-/0	-	fff4b48cb6ed74bf
+var	c:@MTKTextureLoaderOriginTopLeft	-			ios=10.0/-/-/0	-	a24c87ed0ea6b542
+var	c:@MTKTextureLoaderOriginBottomLeft	-			ios=10.0/-/-/0	-	fef39e778b7f38f3
+var	c:@MTKTextureLoaderOriginFlippedVertically	-			ios=10.0/-/-/0	-	04199cc5f3733fe9
+var	c:@MTKTextureLoaderOptionLoadAsArray	-			ios=17.0/-/-/0	-	7fcca72e6a6efc74
+typedef	c:@T@MTKTextureLoaderCallback	-			-	-	b1cc78b51160f210
+typedef	c:@T@MTKTextureLoaderArrayCallback	-			ios=10.0/-/-/0	-	d975e1e27f264ff1
+interface	c:objc(cs)MTKTextureLoader	-			ios=9.0/-/-/0	-	32417773eeeeef1e
+super	-	MTKTextureLoader	NSObject		-	-	d1d060bc7b6a09d6
+property	c:objc(cs)MTKTextureLoader(py)device	-			ios=9.0/-/-/0	-	e37a93a5522f3b77
+method	c:objc(cs)MTKTextureLoader(im)init	-			*unavailable ios=9.0/-/-/0	-	9602db80bce8b2e4
+method	c:objc(cs)MTKTextureLoader(im)initWithDevice:	-			ios=9.0/-/-/0	-	a2f93778c0c886ec
+method	c:objc(cs)MTKTextureLoader(im)newTextureWithContentsOfURL:options:completionHandler:	-			ios=9.0/-/-/0	-	5b101e5d95607e6e
+method	c:objc(cs)MTKTextureLoader(im)newTextureWithName:scaleFactor:bundle:options:completionHandler:	-			ios=10.0/-/-/0	-	c87e97d273300869
+method	c:objc(cs)MTKTextureLoader(im)newTexturesWithContentsOfURLs:options:completionHandler:	-			ios=10.0/-/-/0	-	64e03c0089a88fb9
+method	c:objc(cs)MTKTextureLoader(im)newTexturesWithNames:scaleFactor:bundle:options:completionHandler:	-			ios=10.0/-/-/0	-	264a4dd0201fb68c
+method	c:objc(cs)MTKTextureLoader(im)newTextureWithData:options:completionHandler:	-			ios=9.0/-/-/0	-	f6162537cf09c209
+method	c:objc(cs)MTKTextureLoader(im)newTextureWithCGImage:options:completionHandler:	-			ios=9.0/-/-/0	-	55f1a19fd631d8c8
+method	c:objc(cs)MTKTextureLoader(im)newTextureWithMDLTexture:options:completionHandler:	-			ios=10.0/-/-/0	-	7fb56d45f21755ef
+method	c:objc(cs)MTKTextureLoader(im)newTextureWithContentsOfURL:options:error:	-			ios=9.0/-/-/0	-	d51bbc29db828dbf
+method	c:objc(cs)MTKTextureLoader(im)newTexturesWithContentsOfURLs:options:error:	-			ios=10.0/-/-/0	-	1d2e3379876580d4
+method	c:objc(cs)MTKTextureLoader(im)newTextureWithData:options:error:	-			ios=9.0/-/-/0	-	d1883525cbf619e3
+method	c:objc(cs)MTKTextureLoader(im)newTextureWithCGImage:options:error:	-			ios=9.0/-/-/0	-	9bc50479f2777740
+method	c:objc(cs)MTKTextureLoader(im)newTextureWithMDLTexture:options:error:	-			ios=10.0/-/-/0	-	64799895c83cd393
+method	c:objc(cs)MTKTextureLoader(im)newTextureWithName:scaleFactor:bundle:options:error:	-			ios=10.0/-/-/0	-	3aa4e2f4d8feb862
+typedef	c:@T@MTKModelError	-			-	-	8e56db31a5bcb3d4
+var	c:@MTKModelErrorDomain	-			ios=9.0/-/-/0	-	33dc51d59d0b671b
+var	c:@MTKModelErrorKey	-			ios=9.0/-/-/0	-	709ce7d778b7ab3c
+interface	c:objc(cs)MTKMeshBufferAllocator	-			ios=9.0/-/-/0	-	81cad56d1f43aa85
+super	-	MTKMeshBufferAllocator	NSObject		-	-	877de4e48b0be025
+conforms	-	MTKMeshBufferAllocator	MDLMeshBufferAllocator		-	-	217353ee368354f1
+method	c:objc(cs)MTKMeshBufferAllocator(im)init	-			*unavailable ios=9.0/-/-/0	-	641bb168d9ef4f59
+method	c:objc(cs)MTKMeshBufferAllocator(im)initWithDevice:	-			ios=9.0/-/-/0	-	b9e75db101f985eb
+property	c:objc(cs)MTKMeshBufferAllocator(py)device	-			ios=9.0/-/-/0	-	5279a0b3d471cba3
+interface	c:objc(cs)MTKMeshBuffer	-			ios=9.0/-/-/0	-	e5a3d33accf6abe7
+super	-	MTKMeshBuffer	NSObject		-	-	c4bbd3fc460f1528
+conforms	-	MTKMeshBuffer	MDLMeshBuffer		-	-	1784f1c65800d355
+conforms	-	MTKMeshBuffer	MDLNamed		-	-	644e833059c88364
+method	c:objc(cs)MTKMeshBuffer(im)init	-			*unavailable ios=9.0/-/-/0	-	e88d7e8d93df1d82
+property	c:objc(cs)MTKMeshBuffer(py)length	-			ios=9.0/-/-/0	-	1707a2477363d950
+property	c:objc(cs)MTKMeshBuffer(py)allocator	-			ios=9.0/-/-/0	-	9b35cd4ed9ecf3fd
+property	c:objc(cs)MTKMeshBuffer(py)zone	-			ios=9.0/-/-/0	-	dd9bfa8686a572f1
+property	c:objc(cs)MTKMeshBuffer(py)buffer	-			ios=9.0/-/-/0	-	5cb6f60c16daad5a
+property	c:objc(cs)MTKMeshBuffer(py)offset	-			ios=9.0/-/-/0	-	fc8fc67e640bd77e
+property	c:objc(cs)MTKMeshBuffer(py)type	-			ios=9.0/-/-/0	-	3e543e83dc3f393e
+interface	c:objc(cs)MTKSubmesh	-			ios=9.0/-/-/0	-	2b4c8bf5eaad3352
+super	-	MTKSubmesh	NSObject		-	-	6a364ea1884ec363
+method	c:objc(cs)MTKSubmesh(im)init	-			*unavailable ios=9.0/-/-/0	-	8991620df3984fd1
+property	c:objc(cs)MTKSubmesh(py)primitiveType	-			ios=9.0/-/-/0	-	3bb0a4f4e9509946
+property	c:objc(cs)MTKSubmesh(py)indexType	-			ios=9.0/-/-/0	-	294858db303ad6cd
+property	c:objc(cs)MTKSubmesh(py)indexBuffer	-			ios=9.0/-/-/0	-	bf5340b7c75ff674
+property	c:objc(cs)MTKSubmesh(py)indexCount	-			ios=9.0/-/-/0	-	e12d5db22f929c65
+property	c:objc(cs)MTKSubmesh(py)mesh	-			ios=9.0/-/-/0	-	c8acebe3cfec36d3
+property	c:objc(cs)MTKSubmesh(py)name	-			ios=9.0/-/-/0	-	40e3b69d3c6ddc3f
+interface	c:objc(cs)MTKMesh	-			ios=9.0/-/-/0	-	a622095ef024ef5e
+super	-	MTKMesh	NSObject		-	-	2fd368fa4f91dc13
+method	c:objc(cs)MTKMesh(im)init	-			*unavailable ios=9.0/-/-/0	-	7c9425da18acd989
+method	c:objc(cs)MTKMesh(im)initWithMesh:device:error:	-			ios=9.0/-/-/0	-	80dd8d094bc42491
+method	c:objc(cs)MTKMesh(cm)newMeshesFromAsset:device:sourceMeshes:error:	-			ios=9.0/-/-/0	-	12da00929b23be1d
+property	c:objc(cs)MTKMesh(py)vertexBuffers	-			ios=9.0/-/-/0	-	07589d63bfd06d03
+property	c:objc(cs)MTKMesh(py)vertexDescriptor	-			ios=9.0/-/-/0	-	d7c6e2ae036985e0
+property	c:objc(cs)MTKMesh(py)submeshes	-			ios=9.0/-/-/0	-	d52e39f5afbb320c
+property	c:objc(cs)MTKMesh(py)vertexCount	-			ios=9.0/-/-/0	-	3918e147299cdbbc
+property	c:objc(cs)MTKMesh(py)name	-			ios=9.0/-/-/0	-	84e6633626b20b4a
+function	c:@F@MTKModelIOVertexDescriptorFromMetal	-			ios=9.0/-/-/0	-	2d38b98e1e34fcc1
+function	c:@F@MTKModelIOVertexDescriptorFromMetalWithError	-			ios=10.0/-/-/0	-	9d363179944a8d29
+function	c:@F@MTKMetalVertexDescriptorFromModelIO	-			ios=9.0/-/-/0	-	135031822a13e32e
+function	c:@F@MTKMetalVertexDescriptorFromModelIOWithError	-			ios=10.0/-/-/0	-	e8618dae081f4ec4
+function	c:@F@MTKModelIOVertexFormatFromMetal	-			ios=9.0/-/-/0	-	954bbab7bf7da1b2
+function	c:@F@MTKMetalVertexFormatFromModelIO	-			ios=9.0/-/-/0	-	1db75beb09dd79ea

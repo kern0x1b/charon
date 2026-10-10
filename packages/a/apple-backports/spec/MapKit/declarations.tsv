@@ -1,0 +1,1149 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+interface	c:objc(cs)MKAddress	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	35c1894dc307c1c6
+super	-	MKAddress	NSObject		-	-	fddfb3b7d24cd2e6
+method	c:objc(cs)MKAddress(im)initWithFullAddress:shortAddress:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	d49afc7890264488
+method	c:objc(cs)MKAddress(im)init	-			*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	bbb3618e0f43a84b
+method	c:objc(cs)MKAddress(cm)new	-			*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	18aa2a258855f5d9
+property	c:objc(cs)MKAddress(py)fullAddress	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	092f94f887f18c77
+property	c:objc(cs)MKAddress(py)shortAddress	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	0e6f5d29b5b10460
+typedef	c:@T@MKAddressRepresentationsContextStyle	-			-	-	946e0306341e7222
+enum	c:@E@MKAddressRepresentationsContextStyle	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	3ae6b240f054e633
+enumconst	c:@E@MKAddressRepresentationsContextStyle@MKAddressRepresentationsContextStyleAutomatic	MKAddressRepresentationsContextStyle			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	e1f364f50b396f7f
+enumconst	c:@E@MKAddressRepresentationsContextStyle@MKAddressRepresentationsContextStyleShort	MKAddressRepresentationsContextStyle			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	28f5f87f8f9116cd
+enumconst	c:@E@MKAddressRepresentationsContextStyle@MKAddressRepresentationsContextStyleFull	MKAddressRepresentationsContextStyle			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	935b1bffec019d30
+interface	c:objc(cs)MKAddressRepresentations	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	358197f0233388e3
+super	-	MKAddressRepresentations	NSObject		-	-	22903cab7eb75a48
+method	c:objc(cs)MKAddressRepresentations(im)init	-			*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	3e3ac56db856af7c
+method	c:objc(cs)MKAddressRepresentations(cm)new	-			*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	cace5710c25844b0
+method	c:objc(cs)MKAddressRepresentations(im)fullAddressIncludingRegion:singleLine:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	348297caa3c22028
+property	c:objc(cs)MKAddressRepresentations(py)cityName	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	93b0e964a84fad50
+property	c:objc(cs)MKAddressRepresentations(py)cityWithContext	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	3c72a453edac184f
+method	c:objc(cs)MKAddressRepresentations(im)cityWithContextUsingStyle:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	2558856f713f7217
+property	c:objc(cs)MKAddressRepresentations(py)regionName	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	ff25e7b578c40ac8
+property	c:objc(cs)MKAddressRepresentations(py)regionCode	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	79294450c941a2c6
+typedef	c:@T@MKAddressFilterOption	-			-	-	bc9ff70cbb5f0858
+enum	c:@E@MKAddressFilterOption	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	4de0160e33611812
+enumconst	c:@E@MKAddressFilterOption@MKAddressFilterOptionCountry	MKAddressFilterOption			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	96b9bbba99f43c33
+enumconst	c:@E@MKAddressFilterOption@MKAddressFilterOptionAdministrativeArea	MKAddressFilterOption			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	30f13d1cd2e30c67
+enumconst	c:@E@MKAddressFilterOption@MKAddressFilterOptionSubAdministrativeArea	MKAddressFilterOption			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	22fcdfa13d3c9dbd
+enumconst	c:@E@MKAddressFilterOption@MKAddressFilterOptionLocality	MKAddressFilterOption			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	978ac1fe0f42d2c1
+enumconst	c:@E@MKAddressFilterOption@MKAddressFilterOptionSubLocality	MKAddressFilterOption			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	e98f044795a50b97
+enumconst	c:@E@MKAddressFilterOption@MKAddressFilterOptionPostalCode	MKAddressFilterOption			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	665b895c5cd4a076
+interface	c:objc(cs)MKAddressFilter	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	af12ed8f73e6c78f
+super	-	MKAddressFilter	NSObject		-	-	be6d8e14b2d14c2f
+conforms	-	MKAddressFilter	NSSecureCoding		-	-	c351157bc88fb59e
+conforms	-	MKAddressFilter	NSCopying		-	-	69b621c95e148287
+property	c:objc(cs)MKAddressFilter(cpy)filterIncludingAll	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	82696e21ba0f22dd
+property	c:objc(cs)MKAddressFilter(cpy)filterExcludingAll	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	afc5eeb79d2b2940
+method	c:objc(cs)MKAddressFilter(im)initIncludingOptions:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	12ba737c45278c37
+method	c:objc(cs)MKAddressFilter(im)initExcludingOptions:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	038cfd1cd73de8dc
+method	c:objc(cs)MKAddressFilter(im)includesOptions:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	34efb38427f524e3
+method	c:objc(cs)MKAddressFilter(im)excludesOptions:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	7f1e5f025921f59e
+protocol	c:objc(pl)MKAnnotation	-			-	-	5eaf45440d904d7b
+conforms	-	MKAnnotation	NSObject		-	-	e14f66bb2c4f3b8f
+property	c:objc(pl)MKAnnotation(py)coordinate	-			-	-	465e030fbed6de4e
+property	c:objc(pl)MKAnnotation(py)title	-			-	-	70194811c780b5b5
+property	c:objc(pl)MKAnnotation(py)subtitle	-			-	-	225ffe747da4b77e
+method	c:objc(pl)MKAnnotation(im)setCoordinate:	-			ios=4.0/-/-/0	-	4944963145f91102
+interface	c:objc(cs)MKShape	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	cd3ae33f75a91d85
+super	-	MKShape	NSObject		-	-	4598adb9e824b364
+conforms	-	MKShape	MKAnnotation		-	-	011519288ce69fbf
+property	c:objc(cs)MKShape(py)title	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	310caf21eeddd69c
+property	c:objc(cs)MKShape(py)subtitle	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	1721c171f2613d5d
+typedef	c:@T@MKMapType	-			-	-	5a8db6b4e34b5bf9
+enum	c:@E@MKMapType	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	94eb38058f7bf1a1
+enumconst	c:@E@MKMapType@MKMapTypeStandard	MKMapType			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	a3913c811cf433ed
+enumconst	c:@E@MKMapType@MKMapTypeSatellite	MKMapType			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	a29fc2e0f6bbdbcd
+enumconst	c:@E@MKMapType@MKMapTypeHybrid	MKMapType			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	0cf6b626612d54f4
+enumconst	c:@E@MKMapType@MKMapTypeSatelliteFlyover	MKMapType			ios=9.0/-/-/0	-	133d23eca806492f
+enumconst	c:@E@MKMapType@MKMapTypeHybridFlyover	MKMapType			ios=9.0/-/-/0	-	517d14e03857caf2
+enumconst	c:@E@MKMapType@MKMapTypeMutedStandard	MKMapType			ios=11.0/-/-/0,tvos=11.0/-/-/0	-	ebcecebf96f1b32c
+var	c:@MKErrorDomain	-			tvos=9.2/-/-/0	-	76adbda41774214a
+typedef	c:@T@MKErrorCode	-			-	-	eea590fae1968901
+enum	c:@E@MKErrorCode	-			ios=3.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	ef93aa00b6ed3052
+enumconst	c:@E@MKErrorCode@MKErrorUnknown	MKErrorCode			ios=3.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	e9f65a504b9a3900
+enumconst	c:@E@MKErrorCode@MKErrorServerFailure	MKErrorCode			ios=3.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	f03647113dd6363d
+enumconst	c:@E@MKErrorCode@MKErrorLoadingThrottled	MKErrorCode			ios=3.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	c847085c5ebb5aef
+enumconst	c:@E@MKErrorCode@MKErrorPlacemarkNotFound	MKErrorCode			ios=3.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	effb3be2139cb697
+enumconst	c:@E@MKErrorCode@MKErrorDirectionsNotFound	MKErrorCode			ios=7.0/-/-/0	-	e4f7701b936b958e
+enumconst	c:@E@MKErrorCode@MKErrorDecodingFailed	MKErrorCode			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	d9d884a2b75718e5
+typedef	c:@T@MKFeatureVisibility	-			-	-	7071995014550b94
+enum	c:@E@MKFeatureVisibility	-			ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	f91c06e8e5d6c33a
+enumconst	c:@E@MKFeatureVisibility@MKFeatureVisibilityAdaptive	MKFeatureVisibility			ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	8877a8ae3a10dd61
+enumconst	c:@E@MKFeatureVisibility@MKFeatureVisibilityHidden	MKFeatureVisibility			ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	2565393256448b10
+enumconst	c:@E@MKFeatureVisibility@MKFeatureVisibilityVisible	MKFeatureVisibility			ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	88b0f53f44eb0976
+typedef	c:@T@MKLocalSearchRegionPriority	-			-	-	717c3c85606841ec
+enum	c:@E@MKLocalSearchRegionPriority	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	aae89b89a8c024f5
+enumconst	c:@E@MKLocalSearchRegionPriority@MKLocalSearchRegionPriorityDefault	MKLocalSearchRegionPriority			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	10e46e47d7eba0e2
+enumconst	c:@E@MKLocalSearchRegionPriority@MKLocalSearchRegionPriorityRequired	MKLocalSearchRegionPriority			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	079206c72a489c15
+struct	c:@SA@MKCoordinateSpan	-			-	-	b38e3a23b4f720d1
+field	c:@SA@MKCoordinateSpan@FI@latitudeDelta	MKCoordinateSpan			-	-	3a15e26989df8cd3
+field	c:@SA@MKCoordinateSpan@FI@longitudeDelta	MKCoordinateSpan			-	-	5ae9214efff77f15
+typedef	c:@T@MKCoordinateSpan	-			-	-	4ce577cbc53b1bd7
+struct	c:@SA@MKCoordinateRegion	-			-	-	79029b96b7370854
+field	c:@SA@MKCoordinateRegion@FI@center	MKCoordinateRegion			-	-	9e527d4473b5e44c
+field	c:@SA@MKCoordinateRegion@FI@span	MKCoordinateRegion			-	-	669328ca74d616b5
+typedef	c:@T@MKCoordinateRegion	-			-	-	0c6e1513ca3b4259
+function	c:@F@MKCoordinateSpanMake	-			-	-	cc42e6605699b34a
+function	c:@F@MKCoordinateRegionMake	-			-	-	5668a31c48d858eb
+function	c:@F@MKCoordinateRegionMakeWithDistance	-			tvos=9.2/-/-/0	-	0d547740d3ba29c8
+struct	c:@SA@MKMapPoint	-			-	-	7e10b682044979ce
+field	c:@SA@MKMapPoint@FI@x	MKMapPoint			-	-	783cac06ebcc3a0d
+field	c:@SA@MKMapPoint@FI@y	MKMapPoint			-	-	42719aea65544eda
+typedef	c:@T@MKMapPoint	-			-	-	a8545af9741fa0c7
+struct	c:@SA@MKMapSize	-			-	-	1515b169d1246265
+field	c:@SA@MKMapSize@FI@width	MKMapSize			-	-	fb63aceb2bc9ec3b
+field	c:@SA@MKMapSize@FI@height	MKMapSize			-	-	f052424b0cc1e730
+typedef	c:@T@MKMapSize	-			-	-	781cd40d52db640b
+struct	c:@SA@MKMapRect	-			-	-	ef711543ea2888e0
+field	c:@SA@MKMapRect@FI@origin	MKMapRect			-	-	9220627ac5248d7b
+field	c:@SA@MKMapRect@FI@size	MKMapRect			-	-	f4f621c771018c6e
+typedef	c:@T@MKMapRect	-			-	-	33e2a4d22442fdd5
+typedef	c:@T@MKZoomScale	-			-	-	bbbaacf3dc607117
+var	c:@MKMapSizeWorld	-			ios=4.0/-/-/0,tvos=9.2/-/-/0	-	d360aa759f7eb008
+var	c:@MKMapRectWorld	-			ios=4.0/-/-/0,tvos=9.2/-/-/0	-	ec6073d8a04f1389
+function	c:@F@MKMapPointForCoordinate	-			ios=4.0/-/-/0,tvos=9.2/-/-/0	-	617fa4b7615d7d61
+function	c:@F@MKCoordinateForMapPoint	-			ios=4.0/-/-/0,tvos=9.2/-/-/0	-	7e60b85aac699842
+function	c:@F@MKMetersPerMapPointAtLatitude	-			ios=4.0/-/-/0,tvos=9.2/-/-/0	-	d95f5e44ed783bcb
+function	c:@F@MKMapPointsPerMeterAtLatitude	-			ios=4.0/-/-/0,tvos=9.2/-/-/0	-	b3772d15faa1b930
+function	c:@F@MKMetersBetweenMapPoints	-			ios=4.0/-/-/0,tvos=9.2/-/-/0	-	b58a0dcba9902f81
+var	c:@MKMapRectNull	-			ios=4.0/-/-/0,tvos=9.2/-/-/0	-	56bc5b5dbb5de1af
+function	c:@F@MKMapPointMake	-			-	-	4d51bd95c45024ac
+function	c:@F@MKMapSizeMake	-			-	-	465b827aa2dc0329
+function	c:@F@MKMapRectMake	-			-	-	cfd2d115c875a9a1
+function	c:@F@MKMapRectGetMinX	-			-	-	2399f933a8472aa5
+function	c:@F@MKMapRectGetMinY	-			-	-	5e1940347456d6b1
+function	c:@F@MKMapRectGetMidX	-			-	-	650c649206b81c64
+function	c:@F@MKMapRectGetMidY	-			-	-	57b6c50ee882487a
+function	c:@F@MKMapRectGetMaxX	-			-	-	73de97f1deb05fa6
+function	c:@F@MKMapRectGetMaxY	-			-	-	1ce6c82d4222ae40
+function	c:@F@MKMapRectGetWidth	-			-	-	049e800df3e1a83b
+function	c:@F@MKMapRectGetHeight	-			-	-	77d8735955c35771
+function	c:@F@MKMapPointEqualToPoint	-			-	-	2eed0a847a65da09
+function	c:@F@MKMapSizeEqualToSize	-			-	-	502b3c84ba36b188
+function	c:@F@MKMapRectEqualToRect	-			-	-	df1229054b283d86
+function	c:@F@MKMapRectIsNull	-			-	-	df807d0641266e4e
+function	c:@F@MKMapRectIsEmpty	-			-	-	35d2d2605c6cc115
+function	c:@F@MKStringFromMapPoint	-			-	-	27dbe83f0b113fd9
+function	c:@F@MKStringFromMapSize	-			-	-	f5c5db51ace15b42
+function	c:@F@MKStringFromMapRect	-			-	-	130a63baed44b1ce
+function	c:@F@MKMapRectUnion	-			ios=4.0/-/-/0,tvos=9.2/-/-/0	-	9ca15b3b8e2df063
+function	c:@F@MKMapRectIntersection	-			ios=4.0/-/-/0,tvos=9.2/-/-/0	-	f7021f6b84918440
+function	c:@F@MKMapRectInset	-			ios=4.0/-/-/0,tvos=9.2/-/-/0	-	36efff034bac1969
+function	c:@F@MKMapRectOffset	-			ios=4.0/-/-/0,tvos=9.2/-/-/0	-	721b9c01ffe8a081
+function	c:@F@MKMapRectDivide	-			ios=4.0/-/-/0,tvos=9.2/-/-/0	-	112d840b5f034f15
+function	c:@F@MKMapRectContainsPoint	-			ios=4.0/-/-/0,tvos=9.2/-/-/0	-	634de5a6c9c2fd74
+function	c:@F@MKMapRectContainsRect	-			ios=4.0/-/-/0,tvos=9.2/-/-/0	-	0cd09705c42a3347
+function	c:@F@MKMapRectIntersectsRect	-			ios=4.0/-/-/0,tvos=9.2/-/-/0	-	4aab34218629ea06
+function	c:@F@MKCoordinateRegionForMapRect	-			ios=4.0/-/-/0,tvos=9.2/-/-/0	-	afdd0df54b25d995
+function	c:@F@MKMapRectSpans180thMeridian	-			ios=4.0/-/-/0,tvos=9.2/-/-/0	-	abbd9d9c075915b6
+function	c:@F@MKMapRectRemainder	-			ios=4.0/-/-/0,tvos=9.2/-/-/0	-	19fa5c26d0c96012
+category	c:objc(cy)NSValue@NSValueMapKitGeometryExtensions	-			-	-	f3f275f1dd9b7087
+method	c:objc(cs)NSValue(cm)valueWithMKCoordinate:	NSValueMapKitGeometryExtensions			tvos=9.2/-/-/0	-	2b0ce1fb681f797f
+method	c:objc(cs)NSValue(cm)valueWithMKCoordinateSpan:	NSValueMapKitGeometryExtensions			tvos=9.2/-/-/0	-	81bcfcb9b23d8065
+property	c:objc(cs)NSValue(py)MKCoordinateValue	NSValueMapKitGeometryExtensions			tvos=9.2/-/-/0	-	49a6c568f0bb692c
+property	c:objc(cs)NSValue(py)MKCoordinateSpanValue	NSValueMapKitGeometryExtensions			tvos=9.2/-/-/0	-	7cf540cc8f0c69b5
+protocol	c:objc(pl)MKOverlay	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	1114ab728d2d66b2
+conforms	-	MKOverlay	MKAnnotation		-	-	d8936fb82b6f9075
+property	c:objc(pl)MKOverlay(py)coordinate	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	5df35b3a45583b46
+property	c:objc(pl)MKOverlay(py)boundingMapRect	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	99b2da6dfb1f83fa
+method	c:objc(pl)MKOverlay(im)intersectsMapRect:	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	5880faf7a1ea0f30
+method	c:objc(pl)MKOverlay(im)canReplaceMapContent	-			ios=7.0/-/-/0	-	041a8e72f918c055
+interface	c:objc(cs)MKCircle	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	0d0106223a649fb9
+super	-	MKCircle	MKShape		-	-	987abea51c1641b1
+conforms	-	MKCircle	MKOverlay		-	-	0a76c09f49c82869
+method	c:objc(cs)MKCircle(cm)circleWithCenterCoordinate:radius:	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	196d453f6f6b7937
+method	c:objc(cs)MKCircle(cm)circleWithMapRect:	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	951047f6cbe1ab35
+property	c:objc(cs)MKCircle(py)coordinate	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	4239b6cae8d20168
+property	c:objc(cs)MKCircle(py)radius	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	55ea8d7087286b35
+property	c:objc(cs)MKCircle(py)boundingMapRect	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	61a5a8b2bb74a971
+typedef	c:@T@MKDirectionsHandler	-			-	-	1bb220e78601467b
+typedef	c:@T@MKETAHandler	-			-	-	5c99ecc4bd3018ec
+interface	c:objc(cs)MKDirections	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	b5403612f162bbc7
+super	-	MKDirections	NSObject		-	-	a8e5a6bc8df63be1
+method	c:objc(cs)MKDirections(im)initWithRequest:	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	d96b5adc7f2bca47
+method	c:objc(cs)MKDirections(im)calculateDirectionsWithCompletionHandler:	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	75ad7043e78cdde5
+method	c:objc(cs)MKDirections(im)calculateETAWithCompletionHandler:	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	773f95fbc51f6514
+method	c:objc(cs)MKDirections(im)cancel	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	162429dd69a12b0d
+property	c:objc(cs)MKDirections(py)calculating	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	53e91167eb244c79
+interface	c:objc(cs)MKMapItemIdentifier	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	43290665d60170d3
+super	-	MKMapItemIdentifier	NSObject		-	-	3262ac44f825f47c
+conforms	-	MKMapItemIdentifier	NSCopying		-	-	e39ac91d20fd6079
+conforms	-	MKMapItemIdentifier	NSSecureCoding		-	-	1bda74eac8349155
+method	c:objc(cs)MKMapItemIdentifier(im)init	-			*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	d8eb68f9121dcc9e
+method	c:objc(cs)MKMapItemIdentifier(cm)new	-			*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	52aeb75c06b8e31f
+method	c:objc(cs)MKMapItemIdentifier(im)initWithIdentifierString:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	ae9741af2079759e
+property	c:objc(cs)MKMapItemIdentifier(py)identifierString	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	78653fc49897df21
+interface	c:objc(cs)MKPlacemark	-			ios=3.0/26.0/-/0,macos=10.9/26.0/-/0,tvos=9.2/26.0/-/0,watchos=2.0/26.0/-/0,xros=1.0/26.0/-/0	-	6dd0b2b9ac7bcb5b
+super	-	MKPlacemark	CLPlacemark		-	-	6d9747a37dbaaede
+conforms	-	MKPlacemark	MKAnnotation		-	-	27e7552f04a073f0
+method	c:objc(cs)MKPlacemark(im)initWithCoordinate:	-			ios=10.0/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	218e344863eb9860
+method	c:objc(cs)MKPlacemark(im)initWithCoordinate:addressDictionary:	-			ios=3.0/26.0/-/0,macos=10.9/26.0/-/0,tvos=9.2/26.0/-/0,watchos=2.0/26.0/-/0,xros=1.0/26.0/-/0	-	bad54b96d68e2576
+method	c:objc(cs)MKPlacemark(im)initWithCoordinate:postalAddress:	-			ios=10.0/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	9a3b1beb667f34cd
+property	c:objc(cs)MKPlacemark(py)countryCode	-			ios=3.0/26.0/-/0,macos=10.9/26.0/-/0,tvos=9.2/26.0/-/0,watchos=2.0/26.0/-/0,xros=1.0/26.0/-/0	-	a68eefe6f75343f3
+typedef	c:@T@MKPointOfInterestCategory	-			-	-	1b0540478734d3d4
+var	c:@MKPointOfInterestCategoryAnimalService	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	3d2bb42a505b226b
+var	c:@MKPointOfInterestCategoryAirport	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	0d77d77697c0e99a
+var	c:@MKPointOfInterestCategoryAmusementPark	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	df5587793dde2a01
+var	c:@MKPointOfInterestCategoryAquarium	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	4a89f5099a717e9a
+var	c:@MKPointOfInterestCategoryATM	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	59c33f249493e67a
+var	c:@MKPointOfInterestCategoryAutomotiveRepair	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	7fd81dc40f6fced0
+var	c:@MKPointOfInterestCategoryBakery	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	4d62e629c04ee786
+var	c:@MKPointOfInterestCategoryBank	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	fbb6d6b202c59c48
+var	c:@MKPointOfInterestCategoryBaseball	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	d3df4059b3937d78
+var	c:@MKPointOfInterestCategoryBasketball	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	c13c2c2a24801372
+var	c:@MKPointOfInterestCategoryBeach	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	c0fd41f3e47df390
+var	c:@MKPointOfInterestCategoryBeauty	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	9b6580bc62f05f44
+var	c:@MKPointOfInterestCategoryBowling	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	895329c178fc91ba
+var	c:@MKPointOfInterestCategoryBrewery	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	d5c158373760c98c
+var	c:@MKPointOfInterestCategoryCafe	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	46fce0e4c16dad00
+var	c:@MKPointOfInterestCategoryCampground	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	8c6a6fc5cb2b5f97
+var	c:@MKPointOfInterestCategoryCarRental	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	ccb8521be617381a
+var	c:@MKPointOfInterestCategoryCastle	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	f509f9355a489f2b
+var	c:@MKPointOfInterestCategoryConventionCenter	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	034b84d65079a101
+var	c:@MKPointOfInterestCategoryDistillery	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	3268f2ee9ae80cfd
+var	c:@MKPointOfInterestCategoryEVCharger	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	fbe78ea424cbe3da
+var	c:@MKPointOfInterestCategoryFairground	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	be52748ffaca2e3c
+var	c:@MKPointOfInterestCategoryFireStation	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	b09ad42cddba646a
+var	c:@MKPointOfInterestCategoryFishing	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	c68ace10b1eb31a9
+var	c:@MKPointOfInterestCategoryFitnessCenter	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	d9ce65e9557db655
+var	c:@MKPointOfInterestCategoryFoodMarket	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	8a7308ded3cf5e3d
+var	c:@MKPointOfInterestCategoryFortress	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	ff320b02982d9480
+var	c:@MKPointOfInterestCategoryGasStation	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	a81cbf321055fbf5
+var	c:@MKPointOfInterestCategoryGolf	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	6dfcc289ecda669f
+var	c:@MKPointOfInterestCategoryGoKart	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	6ca87ae1a70e2281
+var	c:@MKPointOfInterestCategoryHiking	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	3be120715e689129
+var	c:@MKPointOfInterestCategoryHospital	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	3a32f2fe08c714ed
+var	c:@MKPointOfInterestCategoryHotel	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	5beedaf3ea5e983a
+var	c:@MKPointOfInterestCategoryKayaking	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	0a5c2dce8292f030
+var	c:@MKPointOfInterestCategoryLandmark	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	c3e76d395f24b4d7
+var	c:@MKPointOfInterestCategoryLaundry	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	2ca9fd2ece9a82b9
+var	c:@MKPointOfInterestCategoryLibrary	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	065617ccb49a463d
+var	c:@MKPointOfInterestCategoryMailbox	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	f23901af9dcd85b9
+var	c:@MKPointOfInterestCategoryMarina	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	434290309dc0509a
+var	c:@MKPointOfInterestCategoryMiniGolf	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	18658ef18f09220f
+var	c:@MKPointOfInterestCategoryMovieTheater	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	8159995557e42316
+var	c:@MKPointOfInterestCategoryMuseum	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	f9b3e9fe404f63f7
+var	c:@MKPointOfInterestCategoryMusicVenue	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	d04b28561175793b
+var	c:@MKPointOfInterestCategoryNationalMonument	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	eb0737860fb48b9f
+var	c:@MKPointOfInterestCategoryNationalPark	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	c1c0264170bae54d
+var	c:@MKPointOfInterestCategoryNightlife	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	446cf0962bef4683
+var	c:@MKPointOfInterestCategoryPark	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	e34484fcad3e5fab
+var	c:@MKPointOfInterestCategoryParking	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	fadc8f30f1f4b794
+var	c:@MKPointOfInterestCategoryPharmacy	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	435c64fccd8e1fd5
+var	c:@MKPointOfInterestCategoryPlanetarium	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	6839174af547d84b
+var	c:@MKPointOfInterestCategoryPolice	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	5c7b259f2ad9fcdb
+var	c:@MKPointOfInterestCategoryPostOffice	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	5e0919c84a050304
+var	c:@MKPointOfInterestCategoryPublicTransport	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	a1fdec4ff6294d6c
+var	c:@MKPointOfInterestCategoryRestaurant	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	1ae6433b37235467
+var	c:@MKPointOfInterestCategoryRestroom	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	2775f31b03f8bd8d
+var	c:@MKPointOfInterestCategoryRockClimbing	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	b46742a5e292c24f
+var	c:@MKPointOfInterestCategoryRVPark	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	9ccde96363566e35
+var	c:@MKPointOfInterestCategorySchool	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	7b0b383fd2a306ad
+var	c:@MKPointOfInterestCategorySkatePark	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	511ed313d584d3e6
+var	c:@MKPointOfInterestCategorySkating	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	b5bd31a614a1c5ca
+var	c:@MKPointOfInterestCategorySkiing	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	45bab1e9eb8e1224
+var	c:@MKPointOfInterestCategorySoccer	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	0ebc8c4eae832549
+var	c:@MKPointOfInterestCategorySpa	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	3bc3d77c37fcea10
+var	c:@MKPointOfInterestCategoryStadium	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	fe54d8e6231a3cfb
+var	c:@MKPointOfInterestCategoryStore	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	904192d474f4d651
+var	c:@MKPointOfInterestCategorySurfing	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	4081b65a2d91cc6c
+var	c:@MKPointOfInterestCategorySwimming	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	a001edc0cb4482d8
+var	c:@MKPointOfInterestCategoryTennis	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	fab93f6998e81634
+var	c:@MKPointOfInterestCategoryTheater	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	cb710af723be3793
+var	c:@MKPointOfInterestCategoryUniversity	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	ab81870122050bb6
+var	c:@MKPointOfInterestCategoryWinery	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	7a7023483abc5138
+var	c:@MKPointOfInterestCategoryVolleyball	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	2b067445055eec8f
+var	c:@MKPointOfInterestCategoryZoo	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	9cb5324c28a8a396
+interface	c:objc(cs)MKMapItem	-			ios=6.0/-/-/0,tvos=9.2/-/-/0	deprecated: Use location, address and addressRepresentations instead	9d0235696bf3732a
+super	-	MKMapItem	NSObject		-	-	122349eff78d401e
+property	c:objc(cs)MKMapItem(py)identifier	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	e09450f332da4ba0
+property	c:objc(cs)MKMapItem(py)alternateIdentifiers	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	7d309849d9a4e563
+property	c:objc(cs)MKMapItem(py)placemark	-			ios=6.0/26.0/-/0,macos=10.9/26.0/-/0,tvos=9.2/26.0/-/0,watchos=2.0/26.0/-/0,xros=1.0/26.0/-/0	-	a0ceed07cf7e4cae
+property	c:objc(cs)MKMapItem(py)isCurrentLocation	-			ios=6.0/-/-/0,tvos=9.2/-/-/0	-	00233d0d1b5fc9e1
+property	c:objc(cs)MKMapItem(py)location	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	9b4dbaa9381ec6d6
+property	c:objc(cs)MKMapItem(py)address	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	7ed15dccc976dc39
+property	c:objc(cs)MKMapItem(py)addressRepresentations	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	1dd6c0f0a05285df
+property	c:objc(cs)MKMapItem(py)name	-			ios=6.0/-/-/0,tvos=9.2/-/-/0	-	c7a18aa399a291d0
+property	c:objc(cs)MKMapItem(py)phoneNumber	-			ios=6.0/-/-/0,tvos=9.2/-/-/0	-	f680e938fe1d99be
+property	c:objc(cs)MKMapItem(py)url	-			ios=6.0/-/-/0,tvos=9.2/-/-/0	-	bee8504cc0c6710a
+property	c:objc(cs)MKMapItem(py)timeZone	-			ios=9.0/-/-/0	-	9b8aa2d608894b07
+property	c:objc(cs)MKMapItem(py)pointOfInterestCategory	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	1a732da8a2acef20
+method	c:objc(cs)MKMapItem(cm)mapItemForCurrentLocation	-			ios=6.0/-/-/0,tvos=9.2/-/-/0	-	d0125439a727e38c
+method	c:objc(cs)MKMapItem(im)initWithPlacemark:	-			ios=6.0/26.0/-/0,macos=10.9/26.0/-/0,tvos=9.2/26.0/-/0,watchos=2.0/26.0/-/0,xros=1.0/26.0/-/0	deprecated: Use init(location:address:)	ef0195d2b95f4c87
+method	c:objc(cs)MKMapItem(im)initWithLocation:address:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	6900f3c3db053422
+method	c:objc(cs)MKMapItem(im)openInMapsWithLaunchOptions:	-			tvos=-/-/-/1	-	d9d948b6fc30c3c9
+method	c:objc(cs)MKMapItem(cm)openMapsWithItems:launchOptions:	-			tvos=-/-/-/1	-	4fa226b61958372e
+method	c:objc(cs)MKMapItem(im)openInMapsWithLaunchOptions:fromScene:completionHandler:	-			ios=13.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b772323c4f05cac1
+method	c:objc(cs)MKMapItem(cm)openMapsWithItems:launchOptions:fromScene:completionHandler:	-			ios=13.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f693ca0e2c4ee3a1
+var	c:@MKLaunchOptionsDirectionsModeKey	-			ios=6.0/-/-/0,tvos=-/-/-/1	-	bab06f1a45edee70
+var	c:@MKLaunchOptionsMapTypeKey	-			ios=6.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4e52ebab32930e58
+var	c:@MKLaunchOptionsShowsTrafficKey	-			ios=6.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	251a5e3fd137d7a4
+var	c:@MKLaunchOptionsDirectionsModeDefault	-			ios=10.0/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	459f67585180c0d1
+var	c:@MKLaunchOptionsDirectionsModeDriving	-			ios=6.0/-/-/0,tvos=-/-/-/1	-	d99fd1fc3f78b8c1
+var	c:@MKLaunchOptionsDirectionsModeWalking	-			ios=6.0/-/-/0,tvos=-/-/-/1	-	412ddaa6cabc21c0
+var	c:@MKLaunchOptionsDirectionsModeTransit	-			ios=9.0/-/-/0,tvos=-/-/-/1	-	1c79a824d0f51986
+var	c:@MKLaunchOptionsDirectionsModeCycling	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=7.0/-/-/0,xros=1.0/-/-/0	-	97102f2a92f41aaa
+var	c:@MKLaunchOptionsMapCenterKey	-			ios=6.0/-/-/0,tvos=-/-/-/1	-	54aa29de7e2300c9
+var	c:@MKLaunchOptionsMapSpanKey	-			ios=6.0/-/-/0,tvos=-/-/-/1	-	135b10d4da42cf72
+var	c:@MKLaunchOptionsCameraKey	-			ios=7.1/-/-/0,tvos=-/-/-/1	-	dcee1694a4e1c1f0
+category	c:objc(cy)MKMapItem@MKMapItemSerialization	-			ios=6.0/-/-/0,tvos=9.2/-/-/0	-	4fa20f2d3a900b5d
+conforms	-	MKMapItem	NSSecureCoding		-	-	932b62dc0a27c967
+var	c:@MKMapItemTypeIdentifier	-			ios=11.0/-/-/0	-	82e48f5087b545a6
+category	c:objc(cy)MKMapItem@MKMapItemDragAndDropSupport	-			ios=6.0/-/-/0,tvos=9.2/-/-/0	-	020abd7cc6582622
+conforms	-	MKMapItem	NSItemProviderReading		-	-	ea445831aef30859
+conforms	-	MKMapItem	NSItemProviderWriting		-	-	2aa38bbc2808e481
+typedef	c:@T@MKDirectionsTransportType	-			-	-	2d0975a247b86935
+enum	c:@E@MKDirectionsTransportType	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	1911a7768b68f1cc
+enumconst	c:@E@MKDirectionsTransportType@MKDirectionsTransportTypeAutomobile	MKDirectionsTransportType			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	47ed2d87d575ab2d
+enumconst	c:@E@MKDirectionsTransportType@MKDirectionsTransportTypeWalking	MKDirectionsTransportType			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	b1e9851d1bf63780
+enumconst	c:@E@MKDirectionsTransportType@MKDirectionsTransportTypeTransit	MKDirectionsTransportType			ios=9.0/-/-/0	-	735e41f1e09495b8
+enumconst	c:@E@MKDirectionsTransportType@MKDirectionsTransportTypeCycling	MKDirectionsTransportType			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0,xros=1.0/-/-/0	-	07eee51c62ce4dad
+enumconst	c:@E@MKDirectionsTransportType@MKDirectionsTransportTypeAny	MKDirectionsTransportType			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	13515dbb0ee83517
+typedef	c:@T@MKDirectionsRoutePreference	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	4caf2679b6e16de0
+enum	c:@E@MKDirectionsRoutePreference	-			-	-	cc8c5e7878ff254b
+enumconst	c:@E@MKDirectionsRoutePreference@MKDirectionsRoutePreferenceAny	MKDirectionsRoutePreference			-	-	858a444ab6216c50
+enumconst	c:@E@MKDirectionsRoutePreference@MKDirectionsRoutePreferenceAvoid	MKDirectionsRoutePreference			-	-	ac3ac105d5f36ffa
+interface	c:objc(cs)MKDirectionsRequest	-			ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	e7cd9a461b7fdb6e
+super	-	MKDirectionsRequest	NSObject		-	-	bd96606f28a059e6
+property	c:objc(cs)MKDirectionsRequest(py)source	-			ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	2815e7a909176627
+method	c:objc(cs)MKDirectionsRequest(im)setSource:	-			ios=7.0/-/-/0	-	9a50a84f86b1c753
+property	c:objc(cs)MKDirectionsRequest(py)destination	-			ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	e1aea557b038c078
+method	c:objc(cs)MKDirectionsRequest(im)setDestination:	-			ios=7.0/-/-/0	-	540d5057f38c5679
+category	c:objc(cy)MKDirectionsRequest@MKRequestOptions	-			ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	58a71b93ae484f3a
+property	c:objc(cs)MKDirectionsRequest(py)transportType	MKRequestOptions			ios=7.0/-/-/0	-	e2cb75688bc97f06
+property	c:objc(cs)MKDirectionsRequest(py)requestsAlternateRoutes	MKRequestOptions			ios=7.0/-/-/0	-	7488e38369434c12
+property	c:objc(cs)MKDirectionsRequest(py)departureDate	MKRequestOptions			ios=7.0/-/-/0	-	4f057f2bfb9bdfe2
+property	c:objc(cs)MKDirectionsRequest(py)arrivalDate	MKRequestOptions			ios=7.0/-/-/0	-	25633538a72edda7
+property	c:objc(cs)MKDirectionsRequest(py)tollPreference	MKRequestOptions			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	7a9b2fb258cafb2b
+property	c:objc(cs)MKDirectionsRequest(py)highwayPreference	MKRequestOptions			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	7dcbce422c359adc
+category	c:objc(cy)MKDirectionsRequest@MKDirectionsURL	-			ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	4489b5e3e4b70077
+method	c:objc(cs)MKDirectionsRequest(im)initWithContentsOfURL:	MKDirectionsURL			ios=6.0/-/-/0	-	4eb60fdbe65acfe5
+method	c:objc(cs)MKDirectionsRequest(cm)isDirectionsRequestURL:	MKDirectionsURL			ios=6.0/-/-/0	-	a3132217235253d9
+interface	c:objc(cs)MKDirectionsResponse	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	05e6ea7996ddf047
+super	-	MKDirectionsResponse	NSObject		-	-	dd90f688d1bbe8fd
+property	c:objc(cs)MKDirectionsResponse(py)source	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	5d807428f48799bf
+property	c:objc(cs)MKDirectionsResponse(py)destination	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	b8b249869b3c7ce0
+property	c:objc(cs)MKDirectionsResponse(py)routes	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	282b10f7e95d0581
+interface	c:objc(cs)MKRoute	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	83c5b064e0430d12
+super	-	MKRoute	NSObject		-	-	9a69f59a5ee62687
+property	c:objc(cs)MKRoute(py)name	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	96647c300ec0d7c5
+property	c:objc(cs)MKRoute(py)advisoryNotices	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	0eae041c2f935189
+property	c:objc(cs)MKRoute(py)distance	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	b00bf4f1c02a9edd
+property	c:objc(cs)MKRoute(py)expectedTravelTime	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	ac5a4fbb920adba2
+property	c:objc(cs)MKRoute(py)transportType	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	eae1c1f5857595dd
+property	c:objc(cs)MKRoute(py)polyline	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	8f5f304fde9135c3
+property	c:objc(cs)MKRoute(py)steps	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	73a68feba744318d
+property	c:objc(cs)MKRoute(py)hasTolls	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	b98e35dcbd848e13
+property	c:objc(cs)MKRoute(py)hasHighways	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	b4b229d343a30396
+interface	c:objc(cs)MKRouteStep	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	8a0cbe17f4ac1bfc
+super	-	MKRouteStep	NSObject		-	-	595f3e19c96ea058
+property	c:objc(cs)MKRouteStep(py)instructions	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	2061808c2c7b3982
+property	c:objc(cs)MKRouteStep(py)notice	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	6bf4b07b555b2f36
+property	c:objc(cs)MKRouteStep(py)polyline	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	8d14ab30a2e6720c
+property	c:objc(cs)MKRouteStep(py)distance	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	cb2a430d8e629fb4
+property	c:objc(cs)MKRouteStep(py)transportType	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	0378dbaf63aca283
+interface	c:objc(cs)MKETAResponse	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	0b763ca8680a5753
+super	-	MKETAResponse	NSObject		-	-	7837c8ddc0a5550a
+property	c:objc(cs)MKETAResponse(py)source	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	a14a3cab4ed1b122
+property	c:objc(cs)MKETAResponse(py)destination	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	f215ae05a2f8565e
+property	c:objc(cs)MKETAResponse(py)expectedTravelTime	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	311f317e34cc0b3f
+property	c:objc(cs)MKETAResponse(py)distance	-			ios=9.0/-/-/0	-	32b11260bfc1872b
+property	c:objc(cs)MKETAResponse(py)expectedArrivalDate	-			ios=9.0/-/-/0	-	0443be090787563d
+property	c:objc(cs)MKETAResponse(py)expectedDepartureDate	-			ios=9.0/-/-/0	-	5e92993bb925f683
+property	c:objc(cs)MKETAResponse(py)transportType	-			ios=9.0/-/-/0	-	46fe6be411bc6c92
+interface	c:objc(cs)MKDistanceFormatter	-			ios=7.0/-/-/0,tvos=9.2/-/-/0	-	4221dbb9020a0a81
+super	-	MKDistanceFormatter	NSFormatter		-	-	ee41ca39457bfdae
+method	c:objc(cs)MKDistanceFormatter(im)stringFromDistance:	-			ios=7.0/-/-/0,tvos=9.2/-/-/0	-	61370f211a923379
+method	c:objc(cs)MKDistanceFormatter(im)distanceFromString:	-			ios=7.0/-/-/0,tvos=9.2/-/-/0	-	a206cd20d5664c67
+property	c:objc(cs)MKDistanceFormatter(py)locale	-			ios=7.0/-/-/0,tvos=9.2/-/-/0	-	452c2ba39639899a
+property	c:objc(cs)MKDistanceFormatter(py)units	-			ios=7.0/-/-/0,tvos=9.2/-/-/0	-	cb4bf48d1b2698ab
+property	c:objc(cs)MKDistanceFormatter(py)unitStyle	-			ios=7.0/-/-/0,tvos=9.2/-/-/0	-	e1261d7a87c6fa98
+typedef	c:@T@MKDistanceFormatterUnits	-			-	-	74d9f6ec2706e02c
+enum	c:@E@MKDistanceFormatterUnits	-			ios=7.0/-/-/0,tvos=9.2/-/-/0	-	624597b0e2dc6699
+enumconst	c:@E@MKDistanceFormatterUnits@MKDistanceFormatterUnitsDefault	MKDistanceFormatterUnits			ios=7.0/-/-/0,tvos=9.2/-/-/0	-	958e2ca28d667dbd
+enumconst	c:@E@MKDistanceFormatterUnits@MKDistanceFormatterUnitsMetric	MKDistanceFormatterUnits			ios=7.0/-/-/0,tvos=9.2/-/-/0	-	579a197a57212de2
+enumconst	c:@E@MKDistanceFormatterUnits@MKDistanceFormatterUnitsImperial	MKDistanceFormatterUnits			ios=7.0/-/-/0,tvos=9.2/-/-/0	-	a6ffe2228e833719
+enumconst	c:@E@MKDistanceFormatterUnits@MKDistanceFormatterUnitsImperialWithYards	MKDistanceFormatterUnits			ios=7.0/-/-/0,tvos=9.2/-/-/0	-	1068b942d4b7c589
+typedef	c:@T@MKDistanceFormatterUnitStyle	-			-	-	f880ee288410a1be
+enum	c:@E@MKDistanceFormatterUnitStyle	-			ios=7.0/-/-/0,tvos=9.2/-/-/0	-	6e18092b4dbe77d2
+enumconst	c:@E@MKDistanceFormatterUnitStyle@MKDistanceFormatterUnitStyleDefault	MKDistanceFormatterUnitStyle			ios=7.0/-/-/0,tvos=9.2/-/-/0	-	2417e5009bf29959
+enumconst	c:@E@MKDistanceFormatterUnitStyle@MKDistanceFormatterUnitStyleAbbreviated	MKDistanceFormatterUnitStyle			ios=7.0/-/-/0,tvos=9.2/-/-/0	-	6d7a301683df9890
+enumconst	c:@E@MKDistanceFormatterUnitStyle@MKDistanceFormatterUnitStyleFull	MKDistanceFormatterUnitStyle			ios=7.0/-/-/0,tvos=9.2/-/-/0	-	4858c993f35883f0
+interface	c:objc(cs)MKGeocodingRequest	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	adbeac90db90fecd
+super	-	MKGeocodingRequest	NSObject		-	-	f9405cf64d0a80d9
+property	c:objc(cs)MKGeocodingRequest(py)cancelled	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	f62a59380b53795d
+property	c:objc(cs)MKGeocodingRequest(py)loading	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	0bbc8e8f5b90d7d0
+property	c:objc(cs)MKGeocodingRequest(py)addressString	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	115be3bba144b710
+property	c:objc(cs)MKGeocodingRequest(py)region	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	617014fe9769bf1d
+property	c:objc(cs)MKGeocodingRequest(py)preferredLocale	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	26a92b30aa29a70a
+method	c:objc(cs)MKGeocodingRequest(im)init	-			*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	28bedc12fa12f1f5
+method	c:objc(cs)MKGeocodingRequest(cm)new	-			*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	e8cdf0b3a2f2c110
+method	c:objc(cs)MKGeocodingRequest(im)initWithAddressString:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	99f0dd7541a62a9a
+method	c:objc(cs)MKGeocodingRequest(im)getMapItemsWithCompletionHandler:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	22c8cb5d4df81dad
+method	c:objc(cs)MKGeocodingRequest(im)cancel	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	cf3ab97b7e9ea5fc
+interface	c:objc(cs)MKPointAnnotation	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	829329cbdef5d367
+super	-	MKPointAnnotation	MKShape		-	-	cda3771257bb6cd3
+method	c:objc(cs)MKPointAnnotation(im)init	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	2b72fe2e0398caa2
+method	c:objc(cs)MKPointAnnotation(im)initWithCoordinate:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	995248599b14eda6
+method	c:objc(cs)MKPointAnnotation(im)initWithCoordinate:title:subtitle:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	d58644cf1705d224
+property	c:objc(cs)MKPointAnnotation(py)coordinate	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	141809b774b47f19
+interface	c:objc(cs)MKMultiPoint	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	cd59a88af47f9c25
+super	-	MKMultiPoint	MKShape		-	-	0a3225c00352936c
+method	c:objc(cs)MKMultiPoint(im)points	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	cf530f1d7aaf559a
+property	c:objc(cs)MKMultiPoint(py)pointCount	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	be0ffb9accaae413
+method	c:objc(cs)MKMultiPoint(im)getCoordinates:range:	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	9814779721773d94
+method	c:objc(cs)MKMultiPoint(im)locationAtPointIndex:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	b41645f72e087c0f
+method	c:objc(cs)MKMultiPoint(im)locationsAtPointIndexes:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1972b49cf3e63d1f
+interface	c:objc(cs)MKPolyline	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	7d8696638a3a96aa
+super	-	MKPolyline	MKMultiPoint		-	-	d8a5401d29bd17c7
+conforms	-	MKPolyline	MKOverlay		-	-	9e88743a1c81aa79
+method	c:objc(cs)MKPolyline(cm)polylineWithPoints:count:	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	d85a19c065b02986
+method	c:objc(cs)MKPolyline(cm)polylineWithCoordinates:count:	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	7a25303771689e89
+interface	c:objc(cs)MKMultiPolyline	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	3c9ed101fefcba59
+super	-	MKMultiPolyline	MKShape		-	-	f6fe1533bdbb31d2
+conforms	-	MKMultiPolyline	MKOverlay		-	-	73abe01f893ca6df
+method	c:objc(cs)MKMultiPolyline(im)initWithPolylines:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	d1b921f0678a6f44
+property	c:objc(cs)MKMultiPolyline(py)polylines	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	087a3de885cb8a74
+interface	c:objc(cs)MKPolygon	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	52e01ee85e4b2ed1
+super	-	MKPolygon	MKMultiPoint		-	-	e6b350f2d613fc0b
+conforms	-	MKPolygon	MKOverlay		-	-	9c35fa13f6891a3a
+method	c:objc(cs)MKPolygon(cm)polygonWithPoints:count:	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	c3254abc427b114a
+method	c:objc(cs)MKPolygon(cm)polygonWithPoints:count:interiorPolygons:	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	13f9c6d919e7f88d
+method	c:objc(cs)MKPolygon(cm)polygonWithCoordinates:count:	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	11d33ca6f1f22f20
+method	c:objc(cs)MKPolygon(cm)polygonWithCoordinates:count:interiorPolygons:	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	37e7037aae6d3fb0
+property	c:objc(cs)MKPolygon(py)interiorPolygons	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	fe7f88829a8d6f52
+interface	c:objc(cs)MKMultiPolygon	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	61d1dd98110d17f6
+super	-	MKMultiPolygon	MKShape		-	-	76c0545b51783684
+conforms	-	MKMultiPolygon	MKOverlay		-	-	33c9dbc89d9c2de2
+method	c:objc(cs)MKMultiPolygon(im)initWithPolygons:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	874eb51fca410a2c
+property	c:objc(cs)MKMultiPolygon(py)polygons	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	1ddacac675d2bf26
+protocol	c:objc(pl)MKGeoJSONObject	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	76810ca47b9ebee0
+conforms	-	MKGeoJSONObject	NSObject		-	-	79ae5eeee442a062
+interface	c:objc(cs)MKGeoJSONDecoder	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	c7a4bb17a8c9e832
+super	-	MKGeoJSONDecoder	NSObject		-	-	ccf1d399fdd35a63
+method	c:objc(cs)MKGeoJSONDecoder(im)geoJSONObjectsWithData:error:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	b8a85ce49fc4a782
+interface	c:objc(cs)MKGeoJSONFeature	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	72f01e691a212c26
+super	-	MKGeoJSONFeature	NSObject		-	-	c975230e05b65b1e
+conforms	-	MKGeoJSONFeature	MKGeoJSONObject		-	-	6de84289d0382aee
+property	c:objc(cs)MKGeoJSONFeature(py)identifier	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	832820eae3ee4a28
+property	c:objc(cs)MKGeoJSONFeature(py)properties	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	8fa4300a4a26ae77
+property	c:objc(cs)MKGeoJSONFeature(py)geometry	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	90aaeef4fb11dc8e
+category	c:objc(cy)MKPointAnnotation@MKGeoJSONSerialization	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	ceab62410a733dd2
+conforms	-	MKPointAnnotation	MKGeoJSONObject		-	-	34dfc755a6091c7c
+category	c:objc(cy)MKMultiPoint@MKGeoJSONSerialization	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	cb413d71f958f192
+conforms	-	MKMultiPoint	MKGeoJSONObject		-	-	434012ff9c54f9c1
+category	c:objc(cy)MKMultiPolyline@MKGeoJSONSerialization	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	c2f188a3568438c2
+conforms	-	MKMultiPolyline	MKGeoJSONObject		-	-	4b39dce98f3fd424
+category	c:objc(cy)MKMultiPolygon@MKGeoJSONSerialization	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	8031e4c3902ee2dc
+conforms	-	MKMultiPolygon	MKGeoJSONObject		-	-	47b859457c1c746d
+category	c:objc(cy)MKPolyline@MKGeoJSONSerialization	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	af105b3805e6d74c
+conforms	-	MKPolyline	MKGeoJSONObject		-	-	b0b8941b62613924
+category	c:objc(cy)MKPolygon@MKGeoJSONSerialization	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	dffe27edf1af471a
+conforms	-	MKPolygon	MKGeoJSONObject		-	-	42cc9d5c7aa86860
+interface	c:objc(cs)MKGeodesicPolyline	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	ef9e6a32ec83678c
+super	-	MKGeodesicPolyline	MKPolyline		-	-	ec992413955d2fa0
+method	c:objc(cs)MKGeodesicPolyline(cm)polylineWithPoints:count:	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	272640412258f465
+method	c:objc(cs)MKGeodesicPolyline(cm)polylineWithCoordinates:count:	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	4a5b5751899a0e38
+interface	c:objc(cs)MKPointOfInterestFilter	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	ed149c8a2b921a7b
+super	-	MKPointOfInterestFilter	NSObject		-	-	892b74d61d811833
+conforms	-	MKPointOfInterestFilter	NSSecureCoding		-	-	b8d1e682b7a01416
+conforms	-	MKPointOfInterestFilter	NSCopying		-	-	e1355c3314dab758
+property	c:objc(cs)MKPointOfInterestFilter(cpy)filterIncludingAllCategories	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	6d619c7497d08eaa
+property	c:objc(cs)MKPointOfInterestFilter(cpy)filterExcludingAllCategories	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	80713bade8eee2ba
+method	c:objc(cs)MKPointOfInterestFilter(im)initIncludingCategories:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	768a65cab4b196af
+method	c:objc(cs)MKPointOfInterestFilter(im)initExcludingCategories:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	cddf536d414158bd
+method	c:objc(cs)MKPointOfInterestFilter(im)includesCategory:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	280e7b3298b2f749
+method	c:objc(cs)MKPointOfInterestFilter(im)excludesCategory:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	cb04ffc04fc18564
+var	c:@MKPointsOfInterestRequestMaxRadius	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	9ca96452ca93d045
+interface	c:objc(cs)MKLocalPointsOfInterestRequest	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	4b41ca2f9074b4c9
+super	-	MKLocalPointsOfInterestRequest	NSObject		-	-	58fe9877811f7bb8
+conforms	-	MKLocalPointsOfInterestRequest	NSCopying		-	-	4d27743fa9bf55b6
+method	c:objc(cs)MKLocalPointsOfInterestRequest(im)init	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	86275a78a80d4f25
+method	c:objc(cs)MKLocalPointsOfInterestRequest(im)initWithCenterCoordinate:radius:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ff1857d78e729205
+method	c:objc(cs)MKLocalPointsOfInterestRequest(im)initWithCoordinateRegion:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	b375b9b0a8d78807
+property	c:objc(cs)MKLocalPointsOfInterestRequest(py)coordinate	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	2b3dec80f645cc00
+property	c:objc(cs)MKLocalPointsOfInterestRequest(py)radius	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ebfd18b554e1afef
+property	c:objc(cs)MKLocalPointsOfInterestRequest(py)region	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	12e8ceef4cac9244
+property	c:objc(cs)MKLocalPointsOfInterestRequest(py)pointOfInterestFilter	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ee03fdb1d1e340e3
+typedef	c:@T@MKLocalSearchCompletionHandler	-			-	-	316610dec50257c4
+interface	c:objc(cs)MKLocalSearch	-			ios=6.1/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	01ff5447b9c1908a
+super	-	MKLocalSearch	NSObject		-	-	2637cdca7e832d67
+method	c:objc(cs)MKLocalSearch(im)initWithRequest:	-			ios=6.1/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	66d766a799d7ef91
+method	c:objc(cs)MKLocalSearch(im)initWithPointsOfInterestRequest:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	9d195906607c39f6
+method	c:objc(cs)MKLocalSearch(im)startWithCompletionHandler:	-			ios=6.1/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	47ca3eaa47a95cfd
+method	c:objc(cs)MKLocalSearch(im)cancel	-			ios=6.1/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	bc77e801f6ee849a
+property	c:objc(cs)MKLocalSearch(py)searching	-			ios=6.1/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	5621ff28429eadf7
+typedef	c:@T@MKLocalSearchResultType	-			-	-	1e7f199ed89acfea
+enum	c:@E@MKLocalSearchResultType	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	20503eb407375bda
+enumconst	c:@E@MKLocalSearchResultType@MKLocalSearchResultTypeAddress	MKLocalSearchResultType			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	4d92b92b726279d7
+enumconst	c:@E@MKLocalSearchResultType@MKLocalSearchResultTypePointOfInterest	MKLocalSearchResultType			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	0aa4a925c17b8c5c
+enumconst	c:@E@MKLocalSearchResultType@MKLocalSearchResultTypePhysicalFeature	MKLocalSearchResultType			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	a31dc97bf714da51
+interface	c:objc(cs)MKLocalSearchRequest	-			ios=6.1/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	55ee5c6631d60434
+super	-	MKLocalSearchRequest	NSObject		-	-	0a79c3ec557a63fa
+conforms	-	MKLocalSearchRequest	NSCopying		-	-	a6935251a847dd0a
+method	c:objc(cs)MKLocalSearchRequest(im)init	-			ios=6.1/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	0621fabe9716ca47
+method	c:objc(cs)MKLocalSearchRequest(im)initWithNaturalLanguageQuery:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	f0aee085a3a740c5
+method	c:objc(cs)MKLocalSearchRequest(im)initWithNaturalLanguageQuery:region:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	459799dd211206b2
+property	c:objc(cs)MKLocalSearchRequest(py)naturalLanguageQuery	-			ios=6.1/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	fefc4a757d823eb0
+property	c:objc(cs)MKLocalSearchRequest(py)region	-			ios=6.1/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	34128a4cc05a5e4f
+property	c:objc(cs)MKLocalSearchRequest(py)regionPriority	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	e306b057ae389c4e
+property	c:objc(cs)MKLocalSearchRequest(py)resultTypes	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	031bd27e9a34c3f9
+property	c:objc(cs)MKLocalSearchRequest(py)pointOfInterestFilter	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	d41aa5d55091cd25
+property	c:objc(cs)MKLocalSearchRequest(py)addressFilter	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	e530c36401261263
+typedef	c:@T@MKSearchCompletionFilterType	-			-	-	5786c56e295d3737
+enum	c:@E@MKSearchCompletionFilterType	-			ios=9.3/13.0/-/0,macos=10.11.4/10.15/-/0,tvos=9.2/13.0/-/0,watchos=-/-/-/1	-	c023114d42ff0364
+enumconst	c:@E@MKSearchCompletionFilterType@MKSearchCompletionFilterTypeLocationsAndQueries	MKSearchCompletionFilterType			ios=9.3/13.0/-/0,macos=10.11.4/10.15/-/0,tvos=9.2/13.0/-/0,watchos=-/-/-/1	-	f8a1f089eb347311
+enumconst	c:@E@MKSearchCompletionFilterType@MKSearchCompletionFilterTypeLocationsOnly	MKSearchCompletionFilterType			ios=9.3/13.0/-/0,macos=10.11.4/10.15/-/0,tvos=9.2/13.0/-/0,watchos=-/-/-/1	-	04521d9dc5a0889d
+typedef	c:@T@MKLocalSearchCompleterResultType	-			-	-	806713cb9b72a6bc
+enum	c:@E@MKLocalSearchCompleterResultType	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	6662d3186f740cd2
+enumconst	c:@E@MKLocalSearchCompleterResultType@MKLocalSearchCompleterResultTypeAddress	MKLocalSearchCompleterResultType			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	1965803900005c62
+enumconst	c:@E@MKLocalSearchCompleterResultType@MKLocalSearchCompleterResultTypePointOfInterest	MKLocalSearchCompleterResultType			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	249b0b1d3216c60d
+enumconst	c:@E@MKLocalSearchCompleterResultType@MKLocalSearchCompleterResultTypeQuery	MKLocalSearchCompleterResultType			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	ce460cc99dab526c
+enumconst	c:@E@MKLocalSearchCompleterResultType@MKLocalSearchCompleterResultTypePhysicalFeature	MKLocalSearchCompleterResultType			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	b4e1362ba82fcfd0
+interface	c:objc(cs)MKLocalSearchCompleter	-			ios=9.3/-/-/0,macos=10.11.4/-/-/0,tvos=9.2/-/-/0,watchos=3.0/-/-/0	deprecated: Use resultTypes	cbf74e2772845e5a
+super	-	MKLocalSearchCompleter	NSObject		-	-	53d54cab88ccd021
+property	c:objc(cs)MKLocalSearchCompleter(py)queryFragment	-			ios=9.3/-/-/0,macos=10.11.4/-/-/0,tvos=9.2/-/-/0,watchos=3.0/-/-/0	-	05e6d88a729c25bf
+property	c:objc(cs)MKLocalSearchCompleter(py)region	-			ios=9.3/-/-/0,macos=10.11.4/-/-/0,tvos=9.2/-/-/0,watchos=3.0/-/-/0	-	ef0ad8825b654ac7
+property	c:objc(cs)MKLocalSearchCompleter(py)regionPriority	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	e5b982681e851c3b
+property	c:objc(cs)MKLocalSearchCompleter(py)filterType	-			ios=9.3/13.0/-/0,macos=10.11.4/10.15/-/0,tvos=9.2/13.0/-/0,watchos=-/-/-/1	-	ec9e314a29f4373f
+property	c:objc(cs)MKLocalSearchCompleter(py)resultTypes	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	8501328e860ede98
+property	c:objc(cs)MKLocalSearchCompleter(py)pointOfInterestFilter	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	9e312f816e6fed07
+property	c:objc(cs)MKLocalSearchCompleter(py)addressFilter	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	27751ee94803215e
+property	c:objc(cs)MKLocalSearchCompleter(py)delegate	-			ios=9.3/-/-/0,macos=10.11.4/-/-/0,tvos=9.2/-/-/0,watchos=3.0/-/-/0	-	e5698278b472e7bf
+property	c:objc(cs)MKLocalSearchCompleter(py)results	-			ios=9.3/-/-/0,macos=10.11.4/-/-/0,tvos=9.2/-/-/0,watchos=3.0/-/-/0	-	6d3fafb4ac9e6ec7
+property	c:objc(cs)MKLocalSearchCompleter(py)searching	-			ios=9.3/-/-/0,macos=10.11.4/-/-/0,tvos=9.2/-/-/0,watchos=3.0/-/-/0	-	79c0cd399d98f074
+method	c:objc(cs)MKLocalSearchCompleter(im)cancel	-			ios=9.3/-/-/0,macos=10.11.4/-/-/0,tvos=9.2/-/-/0,watchos=3.0/-/-/0	-	36a7358935c3d05d
+protocol	c:objc(pl)MKLocalSearchCompleterDelegate	-			ios=9.3/-/-/0,macos=10.11.4/-/-/0,tvos=9.2/-/-/0,watchos=3.0/-/-/0	-	2fe463c0285fbd9e
+conforms	-	MKLocalSearchCompleterDelegate	NSObject		-	-	afacebaae8c106cd
+method	c:objc(pl)MKLocalSearchCompleterDelegate(im)completerDidUpdateResults:	-			ios=9.3/-/-/0,macos=10.11.4/-/-/0,tvos=9.2/-/-/0,watchos=3.0/-/-/0	-	7fac67e8d71b1e8f
+method	c:objc(pl)MKLocalSearchCompleterDelegate(im)completer:didFailWithError:	-			ios=9.3/-/-/0,macos=10.11.4/-/-/0,tvos=9.2/-/-/0,watchos=3.0/-/-/0	-	6d91f6e081d0c864
+interface	c:objc(cs)MKLocalSearchCompletion	-			ios=9.3/-/-/0,macos=10.11.4/-/-/0,tvos=9.2/-/-/0,watchos=3.0/-/-/0	-	a2537e9917e692fc
+super	-	MKLocalSearchCompletion	NSObject		-	-	f9afdd7d3896c356
+property	c:objc(cs)MKLocalSearchCompletion(py)title	-			ios=9.3/-/-/0,macos=10.11.4/-/-/0,tvos=9.2/-/-/0,watchos=3.0/-/-/0	-	e3aa67805ac40f44
+property	c:objc(cs)MKLocalSearchCompletion(py)titleHighlightRanges	-			ios=9.3/-/-/0,macos=10.11.4/-/-/0,tvos=9.2/-/-/0,watchos=3.0/-/-/0	-	748abf286c8227f8
+property	c:objc(cs)MKLocalSearchCompletion(py)subtitle	-			ios=9.3/-/-/0,macos=10.11.4/-/-/0,tvos=9.2/-/-/0,watchos=3.0/-/-/0	-	d10708410746d1a7
+property	c:objc(cs)MKLocalSearchCompletion(py)subtitleHighlightRanges	-			ios=9.3/-/-/0,macos=10.11.4/-/-/0,tvos=9.2/-/-/0,watchos=3.0/-/-/0	-	adbe684a1a43cf85
+category	c:objc(ext)MKLocalSearchRequest	-	-		ios=6.1/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	101ce79ea5c46eba
+method	c:objc(cs)MKLocalSearchRequest(im)initWithCompletion:	-			ios=9.3/-/-/0,macos=10.11.4/-/-/0,tvos=9.2/-/-/0,watchos=3.0/-/-/0	-	7ad35ad5e1beb015
+interface	c:objc(cs)MKLocalSearchResponse	-			ios=6.1/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	c8cb5fb4071a6aa1
+super	-	MKLocalSearchResponse	NSObject		-	-	85ed239b5e0f618c
+property	c:objc(cs)MKLocalSearchResponse(py)mapItems	-			ios=6.1/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	362183db7b8286d1
+property	c:objc(cs)MKLocalSearchResponse(py)boundingRegion	-			ios=6.1/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	5fa1ba4e5ef80079
+interface	c:objc(cs)MKMapCamera	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	deprecated: Use centerCoordinateDistance	bb9f9832ec463a67
+super	-	MKMapCamera	NSObject		-	-	228bac6bc7cb1930
+conforms	-	MKMapCamera	NSSecureCoding		-	-	57ca132a6f997f17
+conforms	-	MKMapCamera	NSCopying		-	-	13eaeadc2206fb9d
+property	c:objc(cs)MKMapCamera(py)centerCoordinate	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	5641292502907b1f
+property	c:objc(cs)MKMapCamera(py)centerCoordinateDistance	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	df6644d6916a8dca
+property	c:objc(cs)MKMapCamera(py)heading	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	22bee2055d6126aa
+property	c:objc(cs)MKMapCamera(py)pitch	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	3913152cc9d3c7fa
+property	c:objc(cs)MKMapCamera(py)altitude	-			ios=7.0/100000/-/0,macos=10.9/100000/-/0,tvos=9.2/100000/-/0,watchos=-/-/-/1	-	3650999e349b4006
+method	c:objc(cs)MKMapCamera(cm)camera	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	2e04f4c565ed670d
+method	c:objc(cs)MKMapCamera(cm)cameraLookingAtCenterCoordinate:fromEyeCoordinate:eyeAltitude:	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	2ff36117e05873da
+method	c:objc(cs)MKMapCamera(cm)cameraLookingAtCenterCoordinate:fromDistance:pitch:heading:	-			ios=9.0/-/-/0	-	5b863301dfa31761
+method	c:objc(cs)MKMapCamera(cm)cameraLookingAtMapItem:forViewSize:allowPitch:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	b636f5470c757547
+typedef	c:@T@MKMapElevationStyle	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	b8a95f53d4be9348
+enum	c:@E@MKMapElevationStyle	-			-	-	f0cb165254ec6dfc
+enumconst	c:@E@MKMapElevationStyle@MKMapElevationStyleFlat	MKMapElevationStyle			-	-	4649fcea9198ba20
+enumconst	c:@E@MKMapElevationStyle@MKMapElevationStyleRealistic	MKMapElevationStyle			-	-	6b0f0e3acff5234b
+interface	c:objc(cs)MKMapConfiguration	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	a6e7868498f02d73
+super	-	MKMapConfiguration	NSObject		-	-	074f001fda249c2c
+conforms	-	MKMapConfiguration	NSSecureCoding		-	-	84147b5ab2949d74
+conforms	-	MKMapConfiguration	NSCopying		-	-	1df6506bfef9b5a1
+method	c:objc(cs)MKMapConfiguration(im)init	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	26ec03e0a89322f9
+method	c:objc(cs)MKMapConfiguration(cm)new	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	128d87df1c0bfc19
+property	c:objc(cs)MKMapConfiguration(py)elevationStyle	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	dfebe0a87605dedd
+interface	c:objc(cs)MKMapItemRequest	-			ios=16.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=1.0/-/-/0	deprecated: Use mapFeatureAnnotation instead	896c0fe43fd9fb26
+super	-	MKMapItemRequest	NSObject		-	-	6832a09dccbbced9
+method	c:objc(cs)MKMapItemRequest(im)init	-			*unavailable ios=16.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=1.0/-/-/0	-	44cec9bf5a02f5c4
+method	c:objc(cs)MKMapItemRequest(cm)new	-			*unavailable ios=16.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=1.0/-/-/0	-	a7ec8499c3edcd8f
+method	c:objc(cs)MKMapItemRequest(im)initWithMapItemIdentifier:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	63f3d1102a2263ba
+method	c:objc(cs)MKMapItemRequest(im)initWithMapFeatureAnnotation:	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	979e222cbe521327
+method	c:objc(cs)MKMapItemRequest(im)getMapItemWithCompletionHandler:	-			ios=16.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=1.0/-/-/0	-	a3d1c4355af9aa92
+method	c:objc(cs)MKMapItemRequest(im)cancel	-			ios=16.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=1.0/-/-/0	-	7690054a8a04b2ce
+property	c:objc(cs)MKMapItemRequest(py)mapItemIdentifier	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	2b2a6cdcbc74ca0c
+property	c:objc(cs)MKMapItemRequest(py)mapFeatureAnnotation	-			ios=18.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	70215de46507b7eb
+property	c:objc(cs)MKMapItemRequest(py)featureAnnotation	-			ios=16.0/18.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	fb0060f414c938b9
+property	c:objc(cs)MKMapItemRequest(py)cancelled	-			ios=16.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=1.0/-/-/0	-	2392acf0c58caa95
+property	c:objc(cs)MKMapItemRequest(py)loading	-			ios=16.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=1.0/-/-/0	-	1cf2e7805b81288c
+interface	c:objc(cs)MKMapSnapshot	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	f432bee110036bbc
+super	-	MKMapSnapshot	NSObject		-	-	f25ac7175ad08f20
+property	c:objc(cs)MKMapSnapshot(py)image	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	1176560361d6704c
+method	c:objc(cs)MKMapSnapshot(im)pointForCoordinate:	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	93fc9d52a3e3f831
+property	c:objc(cs)MKMapSnapshot(py)traitCollection	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	4fc3e0c93c2122b3
+var	c:@MKAnnotationCalloutInfoDidChangeNotification	-			-	-	02f99115d7a78e85
+typedef	c:@T@MKAnnotationViewDragState	-			-	-	7c4cf3523e0ce2d0
+enum	c:@E@MKAnnotationViewDragState	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	251246365621ac32
+enumconst	c:@E@MKAnnotationViewDragState@MKAnnotationViewDragStateNone	MKAnnotationViewDragState			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	865577384761ee8a
+enumconst	c:@E@MKAnnotationViewDragState@MKAnnotationViewDragStateStarting	MKAnnotationViewDragState			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	53a0007bf955d145
+enumconst	c:@E@MKAnnotationViewDragState@MKAnnotationViewDragStateDragging	MKAnnotationViewDragState			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	610d0640c90d697b
+enumconst	c:@E@MKAnnotationViewDragState@MKAnnotationViewDragStateCanceling	MKAnnotationViewDragState			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	211613357a3ddacd
+enumconst	c:@E@MKAnnotationViewDragState@MKAnnotationViewDragStateEnding	MKAnnotationViewDragState			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9721d61b5bfcc954
+typedef	c:@T@MKFeatureDisplayPriority	-			ios=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	fbfa061e0b937849
+typedef	c:@T@MKAnnotationViewZPriority	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	c486f2aaf649bcda
+typedef	c:@T@MKAnnotationViewCollisionMode	-			-	-	59813397727f17fe
+enum	c:@E@MKAnnotationViewCollisionMode	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	a542139be70356e5
+enumconst	c:@E@MKAnnotationViewCollisionMode@MKAnnotationViewCollisionModeRectangle	MKAnnotationViewCollisionMode			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	9d08a0fe516ddbcc
+enumconst	c:@E@MKAnnotationViewCollisionMode@MKAnnotationViewCollisionModeCircle	MKAnnotationViewCollisionMode			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	42a54ced78a0a593
+enumconst	c:@E@MKAnnotationViewCollisionMode@MKAnnotationViewCollisionModeNone	MKAnnotationViewCollisionMode			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	61cbd13ea8468c09
+interface	c:objc(cs)MKAnnotationView	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	9cd06a156262d2b0
+super	-	MKAnnotationView	UIView		-	-	5e0bc78d6916e333
+method	c:objc(cs)MKAnnotationView(im)initWithAnnotation:reuseIdentifier:	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	8c9638bdf048c3e4
+method	c:objc(cs)MKAnnotationView(im)initWithCoder:	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	f900b80f5daa4f8d
+property	c:objc(cs)MKAnnotationView(py)reuseIdentifier	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	1297bdbd21dc55bf
+method	c:objc(cs)MKAnnotationView(im)prepareForReuse	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	44065b51d9c7a698
+method	c:objc(cs)MKAnnotationView(im)prepareForDisplay	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	e3528d3a4a1750df
+property	c:objc(cs)MKAnnotationView(py)annotation	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	f4995d9cde91c246
+property	c:objc(cs)MKAnnotationView(py)image	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	acfa00f7687f1993
+property	c:objc(cs)MKAnnotationView(py)centerOffset	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	aea97b8e497cff4e
+property	c:objc(cs)MKAnnotationView(py)accessoryOffset	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	f438517e652eac2d
+property	c:objc(cs)MKAnnotationView(py)calloutOffset	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	faf15065bfcb88f6
+property	c:objc(cs)MKAnnotationView(py)leftCalloutOffset	-			ios=-/-/-/1,maccatalyst=13.0/-/-/0,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e23ee9dca6b8ba6f
+property	c:objc(cs)MKAnnotationView(py)rightCalloutOffset	-			ios=-/-/-/1,maccatalyst=13.0/-/-/0,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	003a0ebad7f6cd57
+property	c:objc(cs)MKAnnotationView(py)enabled	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	de389b6833bf17f7
+property	c:objc(cs)MKAnnotationView(py)highlighted	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	2fdb4f60be2d656a
+property	c:objc(cs)MKAnnotationView(py)selected	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	abfd1ad838e3cfb0
+method	c:objc(cs)MKAnnotationView(im)setSelected:animated:	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	4c824cf2807ba9f8
+property	c:objc(cs)MKAnnotationView(py)canShowCallout	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	e015683480b3ea44
+property	c:objc(cs)MKAnnotationView(py)leftCalloutAccessoryView	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	924fb70ee85319b3
+property	c:objc(cs)MKAnnotationView(py)rightCalloutAccessoryView	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	cd8f05ee73ae59b1
+property	c:objc(cs)MKAnnotationView(py)detailCalloutAccessoryView	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	f12e15078f3337b2
+property	c:objc(cs)MKAnnotationView(py)draggable	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	112e0a4f8b5df561
+property	c:objc(cs)MKAnnotationView(py)dragState	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	dfbb1e396a3955f2
+method	c:objc(cs)MKAnnotationView(im)setDragState:animated:	-			ios=4.2/-/-/0,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a9a204da248a1f5b
+property	c:objc(cs)MKAnnotationView(py)clusteringIdentifier	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	9ba1a93b049300e5
+property	c:objc(cs)MKAnnotationView(py)clusterAnnotationView	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	8fc0f354870fb831
+property	c:objc(cs)MKAnnotationView(py)displayPriority	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	80bf46efee46b23a
+property	c:objc(cs)MKAnnotationView(py)zPriority	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	337cadaabd491b58
+property	c:objc(cs)MKAnnotationView(py)selectedZPriority	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	f613d21aaa7ba4b8
+property	c:objc(cs)MKAnnotationView(py)collisionMode	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	ac2a54cc4bb516d4
+interface	c:objc(cs)MKOverlayRenderer	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	0a155768fffd8424
+super	-	MKOverlayRenderer	NSObject		-	-	c08de4912d524214
+method	c:objc(cs)MKOverlayRenderer(im)initWithOverlay:	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	c19ba451b1b57551
+property	c:objc(cs)MKOverlayRenderer(py)overlay	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	19873d04cae3d1dd
+method	c:objc(cs)MKOverlayRenderer(im)pointForMapPoint:	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	5c01f06d763abc23
+method	c:objc(cs)MKOverlayRenderer(im)mapPointForPoint:	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	b50309558f69b446
+method	c:objc(cs)MKOverlayRenderer(im)rectForMapRect:	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	6522c01eaea20d94
+method	c:objc(cs)MKOverlayRenderer(im)mapRectForRect:	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	1e5ed80222b523f3
+method	c:objc(cs)MKOverlayRenderer(im)canDrawMapRect:zoomScale:	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	df6f224d7724d3e3
+method	c:objc(cs)MKOverlayRenderer(im)drawMapRect:zoomScale:inContext:	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	92ad6fbba46575c9
+method	c:objc(cs)MKOverlayRenderer(im)setNeedsDisplay	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	caf6d79b0e8593f2
+method	c:objc(cs)MKOverlayRenderer(im)setNeedsDisplayInMapRect:	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	327a0e2eb3413030
+method	c:objc(cs)MKOverlayRenderer(im)setNeedsDisplayInMapRect:zoomScale:	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	2d46ae235dddc67c
+property	c:objc(cs)MKOverlayRenderer(py)alpha	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	bf77de7b04caaea4
+property	c:objc(cs)MKOverlayRenderer(py)contentScaleFactor	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	c7492c1fc8f63fb5
+property	c:objc(cs)MKOverlayRenderer(py)blendMode	-			ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=16.0/-/-/0,watchos=-/-/-/1	-	cb46a304a81f54ac
+function	c:@F@MKRoadWidthAtZoomScale	-			ios=4.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	50f5c7739b989583
+interface	c:objc(cs)MKOverlayView	-			ios=4.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	940f466ffc564638
+super	-	MKOverlayView	UIView		-	-	418364c870adc65e
+method	c:objc(cs)MKOverlayView(im)initWithOverlay:	-			ios=4.0/7.0/-/0	-	ceb66ee8eda8f196
+property	c:objc(cs)MKOverlayView(py)overlay	-			ios=4.0/7.0/-/0	-	c6d090a129d74587
+method	c:objc(cs)MKOverlayView(im)pointForMapPoint:	-			ios=4.0/7.0/-/0	-	4d273f67193989b3
+method	c:objc(cs)MKOverlayView(im)mapPointForPoint:	-			ios=4.0/7.0/-/0	-	3d2f2ed85bfe67f2
+method	c:objc(cs)MKOverlayView(im)rectForMapRect:	-			ios=4.0/7.0/-/0	-	928f2f6a02b1ad94
+method	c:objc(cs)MKOverlayView(im)mapRectForRect:	-			ios=4.0/7.0/-/0	-	779f574c7b407902
+method	c:objc(cs)MKOverlayView(im)canDrawMapRect:zoomScale:	-			ios=4.0/7.0/-/0	-	b08eb1da29517160
+method	c:objc(cs)MKOverlayView(im)drawMapRect:zoomScale:inContext:	-			ios=4.0/7.0/-/0	-	b64fc1ace357920d
+method	c:objc(cs)MKOverlayView(im)setNeedsDisplayInMapRect:	-			ios=4.0/7.0/-/0	-	f332234afa2ac405
+method	c:objc(cs)MKOverlayView(im)setNeedsDisplayInMapRect:zoomScale:	-			ios=4.0/7.0/-/0	-	fdac575f0ff9ead3
+interface	c:objc(cs)MKIconStyle	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5eb7399178d6937e
+super	-	MKIconStyle	NSObject		-	-	42356afd672553a2
+method	c:objc(cs)MKIconStyle(im)init	-			*unavailable ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3a9a2293fa6d456a
+method	c:objc(cs)MKIconStyle(cm)new	-			*unavailable ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f8eaca0ab53348d2
+property	c:objc(cs)MKIconStyle(py)backgroundColor	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	128d82508395056d
+property	c:objc(cs)MKIconStyle(py)image	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2746581e657c969b
+typedef	c:@T@MKMapFeatureType	-			-	-	93228613dfab24ae
+enum	c:@E@MKMapFeatureType	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	36e58490162c66c5
+enumconst	c:@E@MKMapFeatureType@MKMapFeatureTypePointOfInterest	MKMapFeatureType			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4c57b5af52eac0f0
+enumconst	c:@E@MKMapFeatureType@MKMapFeatureTypeTerritory	MKMapFeatureType			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c52d3503c94b9dbc
+enumconst	c:@E@MKMapFeatureType@MKMapFeatureTypePhysicalFeature	MKMapFeatureType			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2fb399fabdf96cac
+interface	c:objc(cs)MKMapFeatureAnnotation	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e1e7cbfbaacc8708
+super	-	MKMapFeatureAnnotation	NSObject		-	-	39b63486830f6e10
+conforms	-	MKMapFeatureAnnotation	MKAnnotation		-	-	fb5b8f70f52f71b4
+method	c:objc(cs)MKMapFeatureAnnotation(im)init	-			*unavailable ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	648e78c333b8f27b
+method	c:objc(cs)MKMapFeatureAnnotation(cm)new	-			*unavailable ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8234e7cf00f55a65
+property	c:objc(cs)MKMapFeatureAnnotation(py)featureType	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	33fe9a708cffabcf
+property	c:objc(cs)MKMapFeatureAnnotation(py)iconStyle	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4d36a245c0d21a3d
+property	c:objc(cs)MKMapFeatureAnnotation(py)pointOfInterestCategory	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b014d85bb76760d4
+interface	c:objc(cs)MKSelectionAccessory	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	1ecb044e7f7a13bd
+super	-	MKSelectionAccessory	NSObject		-	-	303b3214751a10dc
+method	c:objc(cs)MKSelectionAccessory(cm)new	-			*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	4ffd8e5ca3239d2f
+method	c:objc(cs)MKSelectionAccessory(im)init	-			*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	7b641e03e157252e
+method	c:objc(cs)MKSelectionAccessory(cm)mapItemDetailWithPresentationStyle:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	6677b090a0429939
+typedef	c:@T@MKMapItemDetailSelectionAccessoryCalloutStyle	-			-	-	d7c26dbabf669aba
+enum	c:@E@MKMapItemDetailSelectionAccessoryCalloutStyle	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	75c1517909ab6cd0
+enumconst	c:@E@MKMapItemDetailSelectionAccessoryCalloutStyle@MKMapItemDetailSelectionAccessoryCalloutStyleAutomatic	MKMapItemDetailSelectionAccessoryCalloutStyle			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	6363b72377886ad2
+enumconst	c:@E@MKMapItemDetailSelectionAccessoryCalloutStyle@MKMapItemDetailSelectionAccessoryCalloutStyleFull	MKMapItemDetailSelectionAccessoryCalloutStyle			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	68fb8a929d994fab
+enumconst	c:@E@MKMapItemDetailSelectionAccessoryCalloutStyle@MKMapItemDetailSelectionAccessoryCalloutStyleCompact	MKMapItemDetailSelectionAccessoryCalloutStyle			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	fbc16390d69cefdc
+interface	c:objc(cs)MKMapItemDetailSelectionAccessoryPresentationStyle	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	fe5a1000273e2032
+super	-	MKMapItemDetailSelectionAccessoryPresentationStyle	NSObject		-	-	3b2321ed9273baf3
+method	c:objc(cs)MKMapItemDetailSelectionAccessoryPresentationStyle(cm)new	-			*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	07000a002f1a1c9d
+method	c:objc(cs)MKMapItemDetailSelectionAccessoryPresentationStyle(im)init	-			*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	55dbb799e8fb914b
+method	c:objc(cs)MKMapItemDetailSelectionAccessoryPresentationStyle(cm)automaticWithPresentationViewController:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	4f2bef2c513a47cd
+property	c:objc(cs)MKMapItemDetailSelectionAccessoryPresentationStyle(cpy)callout	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	e4ced913be89626c
+method	c:objc(cs)MKMapItemDetailSelectionAccessoryPresentationStyle(cm)calloutWithCalloutStyle:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	9d7e23bcbb273e86
+method	c:objc(cs)MKMapItemDetailSelectionAccessoryPresentationStyle(cm)sheetPresentedFromViewController:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	5eaca9400a9e2483
+property	c:objc(cs)MKMapItemDetailSelectionAccessoryPresentationStyle(cpy)openInMaps	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	da8ece493183f826
+typedef	c:@T@MKOverlayLevel	-			-	-	16295075ca4fc5b8
+enum	c:@E@MKOverlayLevel	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=10.0/-/-/0	-	b52647ee893f68b1
+enumconst	c:@E@MKOverlayLevel@MKOverlayLevelAboveRoads	MKOverlayLevel			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=10.0/-/-/0	-	a61f8330ac9ef5cd
+enumconst	c:@E@MKOverlayLevel@MKOverlayLevelAboveLabels	MKOverlayLevel			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=10.0/-/-/0	-	94e3282ab1e5bb15
+typedef	c:@T@MKUserTrackingMode	-			-	-	e482e11e85bdaec4
+enum	c:@E@MKUserTrackingMode	-			ios=5.0/-/-/0,macos=11.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	fd9ae408eb9e2030
+enumconst	c:@E@MKUserTrackingMode@MKUserTrackingModeNone	MKUserTrackingMode			ios=5.0/-/-/0,macos=11.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	f098a54b4e05b023
+enumconst	c:@E@MKUserTrackingMode@MKUserTrackingModeFollow	MKUserTrackingMode			ios=5.0/-/-/0,macos=11.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	45307791f0079584
+enumconst	c:@E@MKUserTrackingMode@MKUserTrackingModeFollowWithHeading	MKUserTrackingMode			macos=-/-/-/1,tvos=-/-/-/1	-	0033c8b28ece5af4
+typedef	c:@T@MKMapFeatureOptions	-			-	-	55d7896b0cf2c338
+enum	c:@E@MKMapFeatureOptions	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f47d528967f3aef2
+enumconst	c:@E@MKMapFeatureOptions@MKMapFeatureOptionPointsOfInterest	MKMapFeatureOptions			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	36e2c14a6eb7d262
+enumconst	c:@E@MKMapFeatureOptions@MKMapFeatureOptionTerritories	MKMapFeatureOptions			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b773c5728aa20bdd
+enumconst	c:@E@MKMapFeatureOptions@MKMapFeatureOptionPhysicalFeatures	MKMapFeatureOptions			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	55492fc09a0a574e
+var	c:@MKMapViewDefaultAnnotationViewReuseIdentifier	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	7d0b7e382ad8112e
+var	c:@MKMapViewDefaultClusterAnnotationViewReuseIdentifier	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	5824ae9d15ba04fa
+interface	c:objc(cs)MKMapView	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	deprecated: Use respective MKMapConfiguration	0ee0970a5e8fbfa9
+super	-	MKMapView	UIView		-	-	c5cbcc089a4ff8db
+conforms	-	MKMapView	NSCoding		-	-	5645da5443c96b22
+property	c:objc(cs)MKMapView(py)delegate	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	c4e0994c90f4ec63
+property	c:objc(cs)MKMapView(py)mapType	-			ios=3.0/100000/-/0,macos=10.9/100000/-/0,tvos=9.2/100000/-/0	-	2782605f7437a0f3
+property	c:objc(cs)MKMapView(py)preferredConfiguration	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	ba563f87588b8da4
+property	c:objc(cs)MKMapView(py)selectableMapFeatures	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c7bee90135700d4c
+property	c:objc(cs)MKMapView(py)region	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	12e03059a27323fa
+method	c:objc(cs)MKMapView(im)setRegion:animated:	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	d340ef735dd2b0bf
+property	c:objc(cs)MKMapView(py)centerCoordinate	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	87a5f25e4951964b
+method	c:objc(cs)MKMapView(im)setCenterCoordinate:animated:	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	a4076451fe49822e
+method	c:objc(cs)MKMapView(im)regionThatFits:	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	525dc11f24414c72
+property	c:objc(cs)MKMapView(py)visibleMapRect	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	1a72c168dbbef9c8
+method	c:objc(cs)MKMapView(im)setVisibleMapRect:animated:	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	2057967e8bf5298e
+method	c:objc(cs)MKMapView(im)mapRectThatFits:	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	84140910f937a9aa
+method	c:objc(cs)MKMapView(im)setVisibleMapRect:edgePadding:animated:	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	30e149e13b339af4
+method	c:objc(cs)MKMapView(im)mapRectThatFits:edgePadding:	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	6cc985386dccc6bd
+property	c:objc(cs)MKMapView(py)camera	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	7074dee6b39b7da1
+method	c:objc(cs)MKMapView(im)setCamera:animated:	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	cb964490acc40761
+property	c:objc(cs)MKMapView(py)cameraZoomRange	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	694f95c73474982a
+method	c:objc(cs)MKMapView(im)setCameraZoomRange:animated:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	4a890b7057ae9ae8
+property	c:objc(cs)MKMapView(py)cameraBoundary	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	579bac21d3c7f530
+method	c:objc(cs)MKMapView(im)setCameraBoundary:animated:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	55f109e9929df512
+method	c:objc(cs)MKMapView(im)convertCoordinate:toPointToView:	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	a953cb19c27dccfc
+method	c:objc(cs)MKMapView(im)convertPoint:toCoordinateFromView:	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	209dcda1d1f139fa
+method	c:objc(cs)MKMapView(im)convertRegion:toRectToView:	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	0bf9f67375f2c6b4
+method	c:objc(cs)MKMapView(im)convertRect:toRegionFromView:	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	9f9430f24f21d4ef
+property	c:objc(cs)MKMapView(py)zoomEnabled	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	be90cc957b14b93e
+property	c:objc(cs)MKMapView(py)scrollEnabled	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	3dfae95a807418b9
+property	c:objc(cs)MKMapView(py)rotateEnabled	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1535c6df0397401b
+property	c:objc(cs)MKMapView(py)pitchEnabled	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	31bb62c0217505ff
+property	c:objc(cs)MKMapView(py)showsUserTrackingButton	-			ios=17.0/-/-/0,maccatalyst=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	c717c83f8a03828c
+property	c:objc(cs)MKMapView(py)pitchButtonVisibility	-			ios=17.0/-/-/0,maccatalyst=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	7de1cff7f19dd484
+property	c:objc(cs)MKMapView(py)showsPitchControl	-			ios=-/-/-/1,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	705eb8a0f03e49f2
+property	c:objc(cs)MKMapView(py)showsZoomControls	-			ios=-/-/-/1,maccatalyst=13.0/-/-/0,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	533f9ff2d4574f86
+property	c:objc(cs)MKMapView(py)showsCompass	-			ios=9.0/-/-/0,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fb5e1bdbf98c0424
+property	c:objc(cs)MKMapView(py)showsScale	-			ios=9.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	d13973fae8acf810
+property	c:objc(cs)MKMapView(py)pointOfInterestFilter	-			ios=13.0/100000/-/0,macos=10.15/100000/-/0,tvos=13.0/100000/-/0,watchos=-/-/-/1	-	976f74eb676cec1a
+property	c:objc(cs)MKMapView(py)showsPointsOfInterest	-			ios=7.0/13.0/-/0,macos=10.9/10.15/-/0,tvos=9.2/13.0/-/0,watchos=-/-/-/1	-	fdd4ebf70eeadfe9
+property	c:objc(cs)MKMapView(py)showsBuildings	-			ios=7.0/100000/-/0,macos=10.9/100000/-/0,tvos=9.2/100000/-/0,watchos=-/-/-/1	-	b865a248d0bd131c
+property	c:objc(cs)MKMapView(py)showsTraffic	-			ios=9.0/100000/-/0,macos=10.11/100000/-/0,tvos=9.2/100000/-/0,watchos=-/-/-/1	-	da23f1125493833c
+property	c:objc(cs)MKMapView(py)showsUserLocation	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	439ad44b160ba9c9
+property	c:objc(cs)MKMapView(py)userLocation	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	911b37187880d618
+property	c:objc(cs)MKMapView(py)userTrackingMode	-			ios=5.0/-/-/0,macos=11.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	8ebab227228c9959
+method	c:objc(cs)MKMapView(im)setUserTrackingMode:animated:	-			ios=5.0/-/-/0,macos=11.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	45c748d2e71c06a0
+property	c:objc(cs)MKMapView(py)userLocationVisible	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	749ec2010dfa1b18
+method	c:objc(cs)MKMapView(im)addAnnotation:	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	6f3e43add9b39471
+method	c:objc(cs)MKMapView(im)addAnnotations:	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	5295437f63dee187
+method	c:objc(cs)MKMapView(im)removeAnnotation:	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	d2c2c492edafe22a
+method	c:objc(cs)MKMapView(im)removeAnnotations:	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	f9aaf6da946ecb98
+property	c:objc(cs)MKMapView(py)annotations	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	1bc7d90f988a1fa6
+method	c:objc(cs)MKMapView(im)annotationsInMapRect:	-			ios=4.2/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	b1e333e1620e7f8a
+method	c:objc(cs)MKMapView(im)viewForAnnotation:	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	a5fa8a195f769ed5
+method	c:objc(cs)MKMapView(im)dequeueReusableAnnotationViewWithIdentifier:	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	2d6648d205fcc229
+method	c:objc(cs)MKMapView(im)dequeueReusableAnnotationViewWithIdentifier:forAnnotation:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	7f37f01b987b5b17
+method	c:objc(cs)MKMapView(im)registerClass:forAnnotationViewWithReuseIdentifier:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	8f4c701486fdcea1
+method	c:objc(cs)MKMapView(im)selectAnnotation:animated:	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	1d6d5007fba667c6
+method	c:objc(cs)MKMapView(im)deselectAnnotation:animated:	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	268d1a4c4329e24f
+property	c:objc(cs)MKMapView(py)selectedAnnotations	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	13005de4b19188de
+property	c:objc(cs)MKMapView(py)annotationVisibleRect	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	0b11561626fea66d
+method	c:objc(cs)MKMapView(im)showAnnotations:animated:	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	893b9d009e04f84e
+category	c:objc(cy)MKMapView@OverlaysAPI	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	deprecated: Use -rendererForOverlay:	5bf8a6f3036dbba5
+method	c:objc(cs)MKMapView(im)addOverlay:level:	OverlaysAPI			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	9bf04ac806165553
+method	c:objc(cs)MKMapView(im)addOverlays:level:	OverlaysAPI			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	44f9d46be735db63
+method	c:objc(cs)MKMapView(im)removeOverlay:	OverlaysAPI			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	c212b64816b325ad
+method	c:objc(cs)MKMapView(im)removeOverlays:	OverlaysAPI			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	f2ea7d3516b89c90
+method	c:objc(cs)MKMapView(im)insertOverlay:atIndex:level:	OverlaysAPI			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	87b25e324c2e2822
+method	c:objc(cs)MKMapView(im)insertOverlay:aboveOverlay:	OverlaysAPI			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	5dedbb88336703b9
+method	c:objc(cs)MKMapView(im)insertOverlay:belowOverlay:	OverlaysAPI			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	a4ec214b63608d07
+method	c:objc(cs)MKMapView(im)exchangeOverlay:withOverlay:	OverlaysAPI			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	e9300dd9fd7daa69
+property	c:objc(cs)MKMapView(py)overlays	OverlaysAPI			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	0a57dcc674178828
+method	c:objc(cs)MKMapView(im)overlaysInLevel:	OverlaysAPI			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	904376c9b26c3341
+method	c:objc(cs)MKMapView(im)rendererForOverlay:	OverlaysAPI			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	9000c5d1e2465c18
+method	c:objc(cs)MKMapView(im)viewForOverlay:	OverlaysAPI			ios=4.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use -rendererForOverlay:	64f4b8c408e4052b
+method	c:objc(cs)MKMapView(im)addOverlay:	OverlaysAPI			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	9d6fd2b0109a1229
+method	c:objc(cs)MKMapView(im)addOverlays:	OverlaysAPI			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	6cd447fc5b5432e3
+method	c:objc(cs)MKMapView(im)insertOverlay:atIndex:	OverlaysAPI			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	beb7de3cd503d9e6
+method	c:objc(cs)MKMapView(im)exchangeOverlayAtIndex:withOverlayAtIndex:	OverlaysAPI			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	8b0b0e281e3fde42
+protocol	c:objc(pl)MKMapViewDelegate	-			watchos=-/-/-/1	deprecated: Use -mapView:rendererForOverlay:	281d9b454a710832
+conforms	-	MKMapViewDelegate	NSObject		-	-	8e78509e3b156a7a
+method	c:objc(pl)MKMapViewDelegate(im)mapView:regionWillChangeAnimated:	-			watchos=-/-/-/1	-	e52a56b3328ff6b1
+method	c:objc(pl)MKMapViewDelegate(im)mapView:regionDidChangeAnimated:	-			watchos=-/-/-/1	-	1a77f30d99c73033
+method	c:objc(pl)MKMapViewDelegate(im)mapViewDidChangeVisibleRegion:	-			ios=11/-/-/0,macos=10.13/-/-/0,tvos=11/-/-/0,watchos=-/-/-/1	-	6d33f48e26ff530d
+method	c:objc(pl)MKMapViewDelegate(im)mapViewWillStartLoadingMap:	-			watchos=-/-/-/1	-	15d6908ea1d9f833
+method	c:objc(pl)MKMapViewDelegate(im)mapViewDidFinishLoadingMap:	-			watchos=-/-/-/1	-	507af073f3dc4bf5
+method	c:objc(pl)MKMapViewDelegate(im)mapViewDidFailLoadingMap:withError:	-			watchos=-/-/-/1	-	f06e4465443a5c66
+method	c:objc(pl)MKMapViewDelegate(im)mapViewWillStartRenderingMap:	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	eb8e68c65afb732f
+method	c:objc(pl)MKMapViewDelegate(im)mapViewDidFinishRenderingMap:fullyRendered:	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	d673cccf80f0f40b
+method	c:objc(pl)MKMapViewDelegate(im)mapView:viewForAnnotation:	-			watchos=-/-/-/1	-	56b770e863dd9d64
+method	c:objc(pl)MKMapViewDelegate(im)mapView:didAddAnnotationViews:	-			watchos=-/-/-/1	-	75d4f0fdd75db090
+method	c:objc(pl)MKMapViewDelegate(im)mapView:annotationView:calloutAccessoryControlTapped:	-			tvos=-/-/-/1,watchos=-/-/-/1	-	85c18b55afbf7e7c
+method	c:objc(pl)MKMapViewDelegate(im)mapView:didSelectAnnotationView:	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	98a85b404e65c106
+method	c:objc(pl)MKMapViewDelegate(im)mapView:didDeselectAnnotationView:	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	e8faa15f23adff4a
+method	c:objc(pl)MKMapViewDelegate(im)mapView:didSelectAnnotation:	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	dcfe5c9c9abdb352
+method	c:objc(pl)MKMapViewDelegate(im)mapView:didDeselectAnnotation:	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e544d91a1d4cf9f9
+method	c:objc(pl)MKMapViewDelegate(im)mapView:selectionAccessoryForAnnotation:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	7ccc6c4a27105cb7
+method	c:objc(pl)MKMapViewDelegate(im)mapViewWillStartLocatingUser:	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	f4d2d9cf1e31396b
+method	c:objc(pl)MKMapViewDelegate(im)mapViewDidStopLocatingUser:	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	e8b44978e5bfc083
+method	c:objc(pl)MKMapViewDelegate(im)mapView:didUpdateUserLocation:	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	0589f5c067f1f62e
+method	c:objc(pl)MKMapViewDelegate(im)mapView:didFailToLocateUserWithError:	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	50fe789f045dcd31
+method	c:objc(pl)MKMapViewDelegate(im)mapView:annotationView:didChangeDragState:fromOldState:	-			ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	08236c43dc627793
+method	c:objc(pl)MKMapViewDelegate(im)mapView:didChangeUserTrackingMode:animated:	-			ios=5.0/-/-/0,macos=11.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	c9ead53c0d8ff424
+method	c:objc(pl)MKMapViewDelegate(im)mapView:rendererForOverlay:	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	c6428644b4d7972a
+method	c:objc(pl)MKMapViewDelegate(im)mapView:didAddOverlayRenderers:	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	7fb860aae93de413
+method	c:objc(pl)MKMapViewDelegate(im)mapView:viewForOverlay:	-			ios=4.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use -mapView:rendererForOverlay:	51ddf18a265664e3
+method	c:objc(pl)MKMapViewDelegate(im)mapView:didAddOverlayViews:	-			ios=4.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use -mapView:didAddOverlayRenderers:	af3cc1892590634a
+method	c:objc(pl)MKMapViewDelegate(im)mapView:clusterAnnotationForMemberAnnotations:	-			ios=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	b13a264110c895fa
+interface	c:objc(cs)MKMapSnapshotOptions	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	deprecated: Use preferredConfiguration	1b27b281071f6fdc
+super	-	MKMapSnapshotOptions	NSObject		-	-	05b90f93d104a3dd
+conforms	-	MKMapSnapshotOptions	NSCopying		-	-	e3cdf60b0d4d4ed1
+property	c:objc(cs)MKMapSnapshotOptions(py)preferredConfiguration	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	e3fc95b482775113
+property	c:objc(cs)MKMapSnapshotOptions(py)camera	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	f2266c0ff49dd579
+property	c:objc(cs)MKMapSnapshotOptions(py)mapRect	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	31c339ca31a3d71f
+property	c:objc(cs)MKMapSnapshotOptions(py)region	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	042e822cd2700ed1
+property	c:objc(cs)MKMapSnapshotOptions(py)mapType	-			ios=7.0/100000/-/0,macos=10.9/100000/-/0,tvos=9.2/100000/-/0,watchos=-/-/-/1	-	308672b6429da030
+property	c:objc(cs)MKMapSnapshotOptions(py)pointOfInterestFilter	-			ios=13.0/100000/-/0,macos=10.15/100000/-/0,tvos=13.0/100000/-/0,watchos=-/-/-/1	-	3358a6b811e027b2
+property	c:objc(cs)MKMapSnapshotOptions(py)showsPointsOfInterest	-			ios=7.0/13.0/-/0,macos=10.9/10.15/-/0,tvos=9.2/13.0/-/0,watchos=-/-/-/1	-	ee8db1924331c7e3
+property	c:objc(cs)MKMapSnapshotOptions(py)showsBuildings	-			ios=7.0/100000/-/0,macos=10.9/100000/-/0,tvos=9.2/100000/-/0,watchos=-/-/-/1	-	f06f7f54708bfa4c
+property	c:objc(cs)MKMapSnapshotOptions(py)size	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	2c4c641feed04129
+property	c:objc(cs)MKMapSnapshotOptions(py)scale	-			ios=7.0/100000/-/0,tvos=9.2/100000/-/0	-	2337b6cbd9995c13
+property	c:objc(cs)MKMapSnapshotOptions(py)traitCollection	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	a5a32a5ca8d7230f
+typedef	c:@T@MKMapSnapshotCompletionHandler	-			-	-	a7cfce4dc378435e
+interface	c:objc(cs)MKMapSnapshotter	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	5ce8caaee199fffa
+super	-	MKMapSnapshotter	NSObject		-	-	1d50852e5856dba9
+method	c:objc(cs)MKMapSnapshotter(im)initWithOptions:	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	53a24dee9c4505da
+method	c:objc(cs)MKMapSnapshotter(im)startWithCompletionHandler:	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	c82b9b138206d944
+method	c:objc(cs)MKMapSnapshotter(im)startWithQueue:completionHandler:	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	cc12accc59baae20
+method	c:objc(cs)MKMapSnapshotter(im)cancel	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	c9ac9cd66a7612ce
+property	c:objc(cs)MKMapSnapshotter(py)loading	-			ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	1cc5ab9c0323c234
+interface	c:objc(cs)MKReverseGeocodingRequest	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	6ce5d1041aea148c
+super	-	MKReverseGeocodingRequest	NSObject		-	-	a6f17953755e6619
+property	c:objc(cs)MKReverseGeocodingRequest(py)cancelled	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	a8422afc5c013841
+property	c:objc(cs)MKReverseGeocodingRequest(py)loading	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	6f80bc698f0f338d
+property	c:objc(cs)MKReverseGeocodingRequest(py)location	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	70dec3a75119a29e
+property	c:objc(cs)MKReverseGeocodingRequest(py)preferredLocale	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	d18556928df6239b
+method	c:objc(cs)MKReverseGeocodingRequest(im)init	-			*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	f1d88e443204ffb8
+method	c:objc(cs)MKReverseGeocodingRequest(cm)new	-			*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	2c03a8a727771c17
+method	c:objc(cs)MKReverseGeocodingRequest(im)initWithLocation:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	6e227e4947ec162d
+method	c:objc(cs)MKReverseGeocodingRequest(im)getMapItemsWithCompletionHandler:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	0c0fd42890cfd7d8
+method	c:objc(cs)MKReverseGeocodingRequest(im)cancel	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	362d8ae7a415526e
+typedef	c:@T@MKStandardMapEmphasisStyle	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	1934709b93cd66f3
+enum	c:@E@MKStandardMapEmphasisStyle	-			-	-	f4536da2cf6631c5
+enumconst	c:@E@MKStandardMapEmphasisStyle@MKStandardMapEmphasisStyleDefault	MKStandardMapEmphasisStyle			-	-	41d69654543cf834
+enumconst	c:@E@MKStandardMapEmphasisStyle@MKStandardMapEmphasisStyleMuted	MKStandardMapEmphasisStyle			-	-	87c4a5e12a965587
+interface	c:objc(cs)MKStandardMapConfiguration	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	e5d7b650f48e861d
+super	-	MKStandardMapConfiguration	MKMapConfiguration		-	-	6e6efea6878b6d11
+method	c:objc(cs)MKStandardMapConfiguration(im)init	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	b5e7f202bd543227
+method	c:objc(cs)MKStandardMapConfiguration(im)initWithElevationStyle:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	7061c69c73265d9a
+method	c:objc(cs)MKStandardMapConfiguration(im)initWithElevationStyle:emphasisStyle:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	8c483a672f595cf2
+method	c:objc(cs)MKStandardMapConfiguration(im)initWithEmphasisStyle:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	9604a7035e8df92c
+property	c:objc(cs)MKStandardMapConfiguration(py)emphasisStyle	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	0b47f89c44eafbd4
+property	c:objc(cs)MKStandardMapConfiguration(py)pointOfInterestFilter	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	bce53870aa91451d
+property	c:objc(cs)MKStandardMapConfiguration(py)showsTraffic	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	42a58218cc9ba3f2
+category	c:objc(cy)NSUserActivity@MKMapItem	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	f77976823898f223
+property	c:objc(cs)NSUserActivity(py)mapItem	MKMapItem			ios=10.0/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	313256fb9bbdeacf
+interface	c:objc(cs)MKMarkerAnnotationView	-			ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	841aa8751ec5d33d
+super	-	MKMarkerAnnotationView	MKAnnotationView		-	-	8b56e5c149d482c2
+property	c:objc(cs)MKMarkerAnnotationView(py)titleVisibility	-			ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	a852a6885562b029
+property	c:objc(cs)MKMarkerAnnotationView(py)subtitleVisibility	-			ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	9771ba54e37647c5
+property	c:objc(cs)MKMarkerAnnotationView(py)markerTintColor	-			ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	de8572a37c3e1e76
+property	c:objc(cs)MKMarkerAnnotationView(py)glyphTintColor	-			ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	93005f730a23c20f
+property	c:objc(cs)MKMarkerAnnotationView(py)glyphText	-			ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	774f91aaf6247a18
+property	c:objc(cs)MKMarkerAnnotationView(py)glyphImage	-			ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	98e93cf8f84f10a7
+property	c:objc(cs)MKMarkerAnnotationView(py)selectedGlyphImage	-			ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	1a363818dd0abcc8
+property	c:objc(cs)MKMarkerAnnotationView(py)animatesWhenAdded	-			ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	241d25f67c691a8f
+typedef	c:@T@MKPinAnnotationColor	-			-	-	14f8d807d1d8bcad
+enum	c:@E@MKPinAnnotationColor	-			ios=3.0/9.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	34a00151e5786d09
+enumconst	c:@E@MKPinAnnotationColor@MKPinAnnotationColorRed	MKPinAnnotationColor			ios=3.0/9.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f09fccd327579d30
+enumconst	c:@E@MKPinAnnotationColor@MKPinAnnotationColorGreen	MKPinAnnotationColor			ios=3.0/9.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	55e613644ef6902b
+enumconst	c:@E@MKPinAnnotationColor@MKPinAnnotationColorPurple	MKPinAnnotationColor			ios=3.0/9.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e5290567957941b8
+interface	c:objc(cs)MKPinAnnotationView	-			ios=3.0/16.0/-/0,macos=10.9/13.0/-/0,tvos=9.2/16.0/-/0,watchos=-/-/-/1	-	dc738b8f813c02e8
+super	-	MKPinAnnotationView	MKAnnotationView		-	-	a96c8e64ac3f6b28
+method	c:objc(cs)MKPinAnnotationView(cm)redPinColor	-			ios=9.0/-/-/0	-	9e237c6d33e68c0a
+method	c:objc(cs)MKPinAnnotationView(cm)greenPinColor	-			ios=9.0/-/-/0	-	0d0979860708388a
+method	c:objc(cs)MKPinAnnotationView(cm)purplePinColor	-			ios=9.0/-/-/0	-	a188c437b919fc30
+property	c:objc(cs)MKPinAnnotationView(py)pinTintColor	-			ios=9.0/-/-/0	-	d7412a5e66363f25
+property	c:objc(cs)MKPinAnnotationView(py)animatesDrop	-			ios=3.0/16.0/-/0,macos=10.9/13.0/-/0,tvos=9.2/16.0/-/0,watchos=-/-/-/1	-	45e738ffcf527907
+property	c:objc(cs)MKPinAnnotationView(py)pinColor	-			ios=3.0/9.0/-/0,tvos=-/-/-/1	-	c59c00c1bfb9aa68
+interface	c:objc(cs)MKUserLocation	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	718c02d9058b7d6c
+super	-	MKUserLocation	NSObject		-	-	64f809cca42c04c0
+conforms	-	MKUserLocation	MKAnnotation		-	-	f41f6d05420257ce
+property	c:objc(cs)MKUserLocation(py)updating	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	0bd737bad2f58061
+property	c:objc(cs)MKUserLocation(py)location	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	16b6b06a6252061b
+property	c:objc(cs)MKUserLocation(py)heading	-			ios=5.0/-/-/0,tvos=-/-/-/1	-	96fca0e1d9cb9e79
+property	c:objc(cs)MKUserLocation(py)title	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	1fb039b152296a37
+property	c:objc(cs)MKUserLocation(py)subtitle	-			ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	ad52f5c69a347a25
+interface	c:objc(cs)MKUserLocationView	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	a3a9fcaed12259af
+super	-	MKUserLocationView	MKAnnotationView		-	-	6801eb0caea48ebb
+interface	c:objc(cs)MKClusterAnnotation	-			ios=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	ae8223e3a077d78d
+super	-	MKClusterAnnotation	NSObject		-	-	bbdee2d222bcd1bd
+conforms	-	MKClusterAnnotation	MKAnnotation		-	-	99bf4ea535ee33da
+property	c:objc(cs)MKClusterAnnotation(py)title	-			ios=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	f718f57bb7f006d6
+property	c:objc(cs)MKClusterAnnotation(py)subtitle	-			ios=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	3c2f8cdf21bdbeda
+property	c:objc(cs)MKClusterAnnotation(py)memberAnnotations	-			ios=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	ab77fac6156e2a90
+method	c:objc(cs)MKClusterAnnotation(im)init	-			*unavailable ios=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	9557fb3188ad391d
+method	c:objc(cs)MKClusterAnnotation(im)initWithMemberAnnotations:	-			ios=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	7db792c9842dc147
+interface	c:objc(cs)MKCompassButton	-			ios=11/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a24d42ea257cbe3d
+super	-	MKCompassButton	UIView		-	-	e0609abffdc10915
+method	c:objc(cs)MKCompassButton(cm)compassButtonWithMapView:	-			ios=11/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bf49add84676acdc
+property	c:objc(cs)MKCompassButton(py)mapView	-			ios=11/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f46bf1e27021e600
+property	c:objc(cs)MKCompassButton(py)compassVisibility	-			ios=11/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9cdf9b3593f3e422
+interface	c:objc(cs)MKMapItemAnnotation	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	b1100bbadfaad15d
+super	-	MKMapItemAnnotation	NSObject		-	-	7a5b064979d85220
+conforms	-	MKMapItemAnnotation	MKAnnotation		-	-	3ce8577417ed3e6f
+method	c:objc(cs)MKMapItemAnnotation(cm)new	-			*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	ae9fb049b7ca1ed1
+method	c:objc(cs)MKMapItemAnnotation(im)init	-			*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	de16f868051dabbe
+method	c:objc(cs)MKMapItemAnnotation(im)initWithMapItem:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	71b4626639c485a2
+property	c:objc(cs)MKMapItemAnnotation(py)mapItem	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	019978459b0f0a56
+interface	c:objc(cs)MKOverlayPathRenderer	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	2dc56a162e2adf28
+super	-	MKOverlayPathRenderer	MKOverlayRenderer		-	-	fbe6ab6d900b0830
+property	c:objc(cs)MKOverlayPathRenderer(py)fillColor	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	297dc314419de1d7
+property	c:objc(cs)MKOverlayPathRenderer(py)strokeColor	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	d46fbeb0c591f446
+property	c:objc(cs)MKOverlayPathRenderer(py)lineWidth	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	3e2de0ffcf3b41df
+property	c:objc(cs)MKOverlayPathRenderer(py)lineJoin	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	66326b12b15bec60
+property	c:objc(cs)MKOverlayPathRenderer(py)lineCap	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	1399c83a61f023fa
+property	c:objc(cs)MKOverlayPathRenderer(py)miterLimit	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	8ff4d468ddfd65fc
+property	c:objc(cs)MKOverlayPathRenderer(py)lineDashPhase	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	ed4e5bbe17b2758b
+property	c:objc(cs)MKOverlayPathRenderer(py)lineDashPattern	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	0919059953358779
+property	c:objc(cs)MKOverlayPathRenderer(py)shouldRasterize	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	4fa43f588f6eb820
+method	c:objc(cs)MKOverlayPathRenderer(im)createPath	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	9024074d98a08b65
+property	c:objc(cs)MKOverlayPathRenderer(py)path	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	a37d19c324a7cf87
+method	c:objc(cs)MKOverlayPathRenderer(im)invalidatePath	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	7c33ddeec0f9fb06
+method	c:objc(cs)MKOverlayPathRenderer(im)applyStrokePropertiesToContext:atZoomScale:	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	dea34328d1cee9c6
+method	c:objc(cs)MKOverlayPathRenderer(im)applyFillPropertiesToContext:atZoomScale:	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	77ab10ad95f2a448
+method	c:objc(cs)MKOverlayPathRenderer(im)strokePath:inContext:	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	f66dedfdba7861f6
+method	c:objc(cs)MKOverlayPathRenderer(im)fillPath:inContext:	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	65ecb6bbd245da2a
+interface	c:objc(cs)MKMultiPolygonRenderer	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	27b44ca0e6a5cdce
+super	-	MKMultiPolygonRenderer	MKOverlayPathRenderer		-	-	cf1023d1f643bf3c
+method	c:objc(cs)MKMultiPolygonRenderer(im)initWithMultiPolygon:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	11fe471ad99ba059
+property	c:objc(cs)MKMultiPolygonRenderer(py)multiPolygon	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	b3c09eb31d1932e4
+interface	c:objc(cs)MKMultiPolylineRenderer	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	bf62cebf3aacc418
+super	-	MKMultiPolylineRenderer	MKOverlayPathRenderer		-	-	dcba70cf32ed356e
+method	c:objc(cs)MKMultiPolylineRenderer(im)initWithMultiPolyline:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	2ff8607dce8c81c0
+property	c:objc(cs)MKMultiPolylineRenderer(py)multiPolyline	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	509d31405191b4fa
+interface	c:objc(cs)MKPolylineRenderer	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	61d30a9fc268f24b
+super	-	MKPolylineRenderer	MKOverlayPathRenderer		-	-	908b8a52cab8b4a1
+method	c:objc(cs)MKPolylineRenderer(im)initWithPolyline:	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	d8738734e84fa5f5
+property	c:objc(cs)MKPolylineRenderer(py)polyline	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	0e359b203d39e462
+property	c:objc(cs)MKPolylineRenderer(py)strokeStart	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	539fb57bd929a10b
+property	c:objc(cs)MKPolylineRenderer(py)strokeEnd	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	a8a0d5a5b106fde4
+interface	c:objc(cs)MKGradientPolylineRenderer	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	f46c67edf87b73b5
+super	-	MKGradientPolylineRenderer	MKPolylineRenderer		-	-	a93f7a4628f24758
+property	c:objc(cs)MKGradientPolylineRenderer(py)locations	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	1130b5fba7e27c3b
+property	c:objc(cs)MKGradientPolylineRenderer(py)colors	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	1f05846706d6d654
+method	c:objc(cs)MKGradientPolylineRenderer(im)setColors:atLocations:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	023b67bb053c5886
+interface	c:objc(cs)MKPolygonRenderer	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	9a19e3baf4ce521d
+super	-	MKPolygonRenderer	MKOverlayPathRenderer		-	-	4271ef1cb707a4c8
+method	c:objc(cs)MKPolygonRenderer(im)initWithPolygon:	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	c9b977e631b28e39
+property	c:objc(cs)MKPolygonRenderer(py)polygon	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	4b01cf22ec85ab60
+property	c:objc(cs)MKPolygonRenderer(py)strokeStart	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	c217bd80af98859b
+property	c:objc(cs)MKPolygonRenderer(py)strokeEnd	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	8eadc3e740fd47e5
+interface	c:objc(cs)MKCircleRenderer	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	008a0305e276f2b3
+super	-	MKCircleRenderer	MKOverlayPathRenderer		-	-	adf1eaf3147eed96
+method	c:objc(cs)MKCircleRenderer(im)initWithCircle:	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	fff488a3c1b8b371
+property	c:objc(cs)MKCircleRenderer(py)circle	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	fb7867037ff7f831
+property	c:objc(cs)MKCircleRenderer(py)strokeStart	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	b3b806d76511d573
+property	c:objc(cs)MKCircleRenderer(py)strokeEnd	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	df7e75606ac489ff
+interface	c:objc(cs)MKTileOverlay	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	5700c4713e9f9d05
+super	-	MKTileOverlay	NSObject		-	-	3f31a2d16399ab5b
+conforms	-	MKTileOverlay	MKOverlay		-	-	b51fabd49a7688eb
+method	c:objc(cs)MKTileOverlay(im)initWithURLTemplate:	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	cd58ca3e66e41c3a
+property	c:objc(cs)MKTileOverlay(py)tileSize	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	e5a69d14bfae1286
+property	c:objc(cs)MKTileOverlay(py)geometryFlipped	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	2070581731563706
+property	c:objc(cs)MKTileOverlay(py)minimumZ	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	166ff4a2163435a1
+property	c:objc(cs)MKTileOverlay(py)maximumZ	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	795162f0cd3fee08
+property	c:objc(cs)MKTileOverlay(py)URLTemplate	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	5a6ea8f65201423a
+property	c:objc(cs)MKTileOverlay(py)canReplaceMapContent	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	4f90f6ad9aaa5ccf
+struct	c:@SA@MKTileOverlayPath	-			-	-	cc20dd6cc6614b0f
+field	c:@SA@MKTileOverlayPath@FI@x	MKTileOverlayPath			-	-	c478339154561670
+field	c:@SA@MKTileOverlayPath@FI@y	MKTileOverlayPath			-	-	fae8fe69b58fae5d
+field	c:@SA@MKTileOverlayPath@FI@z	MKTileOverlayPath			-	-	511513cde1cdf353
+field	c:@SA@MKTileOverlayPath@FI@contentScaleFactor	MKTileOverlayPath			-	-	5310ded0feb81660
+typedef	c:@T@MKTileOverlayPath	-			-	-	d08a8d1af19dd9b9
+category	c:objc(cy)MKTileOverlay@CustomLoading	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	7fe3f10b4ec1d966
+method	c:objc(cs)MKTileOverlay(im)URLForTilePath:	CustomLoading			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	d286b6e38430ce3c
+method	c:objc(cs)MKTileOverlay(im)loadTileAtPath:result:	CustomLoading			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	432c083f3106c646
+interface	c:objc(cs)MKTileOverlayRenderer	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	ba6fcfbcdab821ac
+super	-	MKTileOverlayRenderer	MKOverlayRenderer		-	-	35cb11eeeca2e4bb
+method	c:objc(cs)MKTileOverlayRenderer(im)initWithTileOverlay:	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	bee3a3bceb9341b8
+method	c:objc(cs)MKTileOverlayRenderer(im)reloadData	-			ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	568c5c09cf7a6b35
+var	c:@MKMapCameraZoomDefault	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	1c7e50d4f359451b
+interface	c:objc(cs)MKMapCameraZoomRange	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	36b5e40bf094fc42
+super	-	MKMapCameraZoomRange	NSObject		-	-	50bc7f9998accdd5
+conforms	-	MKMapCameraZoomRange	NSSecureCoding		-	-	b99892e2bcc318c7
+conforms	-	MKMapCameraZoomRange	NSCopying		-	-	d90a99ea827835c2
+method	c:objc(cs)MKMapCameraZoomRange(im)initWithMinCenterCoordinateDistance:maxCenterCoordinateDistance:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	fa36e37aeae57846
+method	c:objc(cs)MKMapCameraZoomRange(im)initWithMinCenterCoordinateDistance:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	dd4fe8d7befe211b
+method	c:objc(cs)MKMapCameraZoomRange(im)initWithMaxCenterCoordinateDistance:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	02dc2b3398af2b5e
+property	c:objc(cs)MKMapCameraZoomRange(py)minCenterCoordinateDistance	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	7928a80778593eb2
+property	c:objc(cs)MKMapCameraZoomRange(py)maxCenterCoordinateDistance	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	da5c2fe5e5b4aeb9
+interface	c:objc(cs)MKMapCameraBoundary	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	2b87e73b932b14cd
+super	-	MKMapCameraBoundary	NSObject		-	-	91289b6a19b08f27
+conforms	-	MKMapCameraBoundary	NSSecureCoding		-	-	a4e88b679f9fcdf8
+conforms	-	MKMapCameraBoundary	NSCopying		-	-	8e37d1571025c4fc
+method	c:objc(cs)MKMapCameraBoundary(im)initWithMapRect:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	6aa271eb6cd7f5b2
+method	c:objc(cs)MKMapCameraBoundary(im)initWithCoordinateRegion:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	78ab12001b4ad0ed
+method	c:objc(cs)MKMapCameraBoundary(im)initWithCoder:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	624f98f238adaab3
+property	c:objc(cs)MKMapCameraBoundary(py)mapRect	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	0de7edf6401e7103
+property	c:objc(cs)MKMapCameraBoundary(py)region	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	860c62fa79856db6
+interface	c:objc(cs)MKPitchControl	-			ios=-/-/-/1,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	078a9563114a2eaa
+super	-	MKPitchControl	UIView		-	-	59bb3ebd1fde29ac
+method	c:objc(cs)MKPitchControl(cm)pitchControlWithMapView:	-			ios=-/-/-/1,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7586a8f92c92408e
+property	c:objc(cs)MKPitchControl(py)mapView	-			ios=-/-/-/1,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6107f79faa158f06
+interface	c:objc(cs)MKZoomControl	-			ios=-/-/-/1,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	709aaba6cf6b46d6
+super	-	MKZoomControl	UIView		-	-	d1719e8ad6382b5c
+method	c:objc(cs)MKZoomControl(cm)zoomControlWithMapView:	-			ios=-/-/-/1,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2ec0680fe3bd9514
+property	c:objc(cs)MKZoomControl(py)mapView	-			ios=-/-/-/1,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e5e8070c6f905774
+interface	c:objc(cs)MKHybridMapConfiguration	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	3c9d01499981680f
+super	-	MKHybridMapConfiguration	MKMapConfiguration		-	-	c2eee16c82eff236
+method	c:objc(cs)MKHybridMapConfiguration(im)init	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	66e248b23ac7936a
+method	c:objc(cs)MKHybridMapConfiguration(im)initWithElevationStyle:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	97cac0899edfc841
+property	c:objc(cs)MKHybridMapConfiguration(py)pointOfInterestFilter	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	4f4afc921debd7e1
+property	c:objc(cs)MKHybridMapConfiguration(py)showsTraffic	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	53b647e78d6db07b
+interface	c:objc(cs)MKImageryMapConfiguration	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	eb38ad3ee16f45dd
+super	-	MKImageryMapConfiguration	MKMapConfiguration		-	-	52e2d718212168c6
+method	c:objc(cs)MKImageryMapConfiguration(im)init	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	e216a25024187e58
+method	c:objc(cs)MKImageryMapConfiguration(im)initWithElevationStyle:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	ba4722d5c64cca83
+interface	c:objc(cs)MKReverseGeocoder	-			ios=3.0/5.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	510d5e452763f717
+super	-	MKReverseGeocoder	NSObject		-	-	26e8b362377a9fd8
+method	c:objc(cs)MKReverseGeocoder(im)initWithCoordinate:	-			ios=3.0/5.0/-/0	-	3ad3f468c6fc8c7e
+method	c:objc(cs)MKReverseGeocoder(im)start	-			ios=3.0/5.0/-/0	-	23a799f02705b98e
+method	c:objc(cs)MKReverseGeocoder(im)cancel	-			ios=3.0/5.0/-/0	-	43c33969e6c4fe01
+property	c:objc(cs)MKReverseGeocoder(py)delegate	-			ios=3.0/5.0/-/0	-	cc52b9a2c56bb4eb
+property	c:objc(cs)MKReverseGeocoder(py)coordinate	-			ios=3.0/5.0/-/0	-	c844f8941526f995
+property	c:objc(cs)MKReverseGeocoder(py)placemark	-			ios=3.2/5.0/-/0	-	d1c96560e24b5486
+property	c:objc(cs)MKReverseGeocoder(py)querying	-			ios=3.0/5.0/-/0	-	1af537dd7cf7167e
+protocol	c:objc(pl)MKReverseGeocoderDelegate	-			ios=3.0/5.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9af1e5d6086ab546
+conforms	-	MKReverseGeocoderDelegate	NSObject		-	-	f95151b5d0baea5b
+method	c:objc(pl)MKReverseGeocoderDelegate(im)reverseGeocoder:didFindPlacemark:	-			ios=3.0/5.0/-/0	-	859cbbb022b6d277
+method	c:objc(pl)MKReverseGeocoderDelegate(im)reverseGeocoder:didFailWithError:	-			ios=3.0/5.0/-/0	-	f61dcda4daca6346
+interface	c:objc(cs)MKOverlayPathView	-			ios=4.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8065f345bf041942
+super	-	MKOverlayPathView	MKOverlayView		-	-	082330b9e607855a
+property	c:objc(cs)MKOverlayPathView(py)fillColor	-			ios=4.0/7.0/-/0	-	242c670080ec1b2f
+property	c:objc(cs)MKOverlayPathView(py)strokeColor	-			ios=4.0/7.0/-/0	-	b455828550f38499
+property	c:objc(cs)MKOverlayPathView(py)lineWidth	-			ios=4.0/7.0/-/0	-	399ba0f28d2d6469
+property	c:objc(cs)MKOverlayPathView(py)lineJoin	-			ios=4.0/7.0/-/0	-	d8a9423be45388ae
+property	c:objc(cs)MKOverlayPathView(py)lineCap	-			ios=4.0/7.0/-/0	-	99b833a6ecad5335
+property	c:objc(cs)MKOverlayPathView(py)miterLimit	-			ios=4.0/7.0/-/0	-	1a0c973b4c0f2ffd
+property	c:objc(cs)MKOverlayPathView(py)lineDashPhase	-			ios=4.0/7.0/-/0	-	6ea75078e3570937
+property	c:objc(cs)MKOverlayPathView(py)lineDashPattern	-			ios=4.0/7.0/-/0	-	aa89081a4f978760
+method	c:objc(cs)MKOverlayPathView(im)createPath	-			ios=4.0/7.0/-/0	-	0487bef92423197a
+property	c:objc(cs)MKOverlayPathView(py)path	-			ios=4.0/7.0/-/0	-	a2cfeb36b4f847b8
+method	c:objc(cs)MKOverlayPathView(im)invalidatePath	-			ios=4.0/7.0/-/0	-	2ec7f8bee8fcb066
+method	c:objc(cs)MKOverlayPathView(im)applyStrokePropertiesToContext:atZoomScale:	-			ios=4.0/7.0/-/0	-	1530c88b44b2ac97
+method	c:objc(cs)MKOverlayPathView(im)applyFillPropertiesToContext:atZoomScale:	-			ios=4.0/7.0/-/0	-	ee3f73662c154d60
+method	c:objc(cs)MKOverlayPathView(im)strokePath:inContext:	-			ios=4.0/7.0/-/0	-	71eccc1cc9b53540
+method	c:objc(cs)MKOverlayPathView(im)fillPath:inContext:	-			ios=4.0/7.0/-/0	-	0555ea568a7ce630
+interface	c:objc(cs)MKPolygonView	-			ios=4.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a810bdc57c74ccb9
+super	-	MKPolygonView	MKOverlayPathView		-	-	4c5f41567e36c66a
+method	c:objc(cs)MKPolygonView(im)initWithPolygon:	-			ios=4.0/7.0/-/0	-	5d67f799fdc55785
+property	c:objc(cs)MKPolygonView(py)polygon	-			ios=4.0/7.0/-/0	-	e8a3c5e7423f4d94
+interface	c:objc(cs)MKPolylineView	-			ios=4.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e229b30cda865974
+super	-	MKPolylineView	MKOverlayPathView		-	-	efe7bfa5d8d47329
+method	c:objc(cs)MKPolylineView(im)initWithPolyline:	-			ios=4.0/7.0/-/0	-	289797b871671341
+property	c:objc(cs)MKPolylineView(py)polyline	-			ios=4.0/7.0/-/0	-	6b5336e5371e9b3f
+interface	c:objc(cs)MKCircleView	-			ios=4.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fb57ba4d7ef343cb
+super	-	MKCircleView	MKOverlayPathView		-	-	4b0f7f3f38f2edae
+method	c:objc(cs)MKCircleView(im)initWithCircle:	-			ios=4.0/7.0/-/0	-	533d1ca39ecf94b7
+property	c:objc(cs)MKCircleView(py)circle	-			ios=4.0/7.0/-/0	-	960467bc5376ca3f
+typedef	c:@T@MKScaleViewAlignment	-			-	-	7b1b9fad6984c63e
+enum	c:@E@MKScaleViewAlignment	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=-/-/-/1	-	d56b464219310a50
+enumconst	c:@E@MKScaleViewAlignment@MKScaleViewAlignmentLeading	MKScaleViewAlignment			ios=11.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=-/-/-/1	-	ef8a704a2eb40a99
+enumconst	c:@E@MKScaleViewAlignment@MKScaleViewAlignmentTrailing	MKScaleViewAlignment			ios=11.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=-/-/-/1	-	86cc1ebba78be514
+enumconst	c:@E@MKScaleViewAlignment@MKScaleViewAlignmentCenter	MKScaleViewAlignment			ios=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	aa414f40238bf9ba
+interface	c:objc(cs)MKScaleView	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=-/-/-/1	-	96ed1b02f2579e49
+super	-	MKScaleView	UIView		-	-	adf6d3cfa2b9dc97
+method	c:objc(cs)MKScaleView(cm)scaleViewWithMapView:	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=-/-/-/1	-	03f0b6f007b85888
+property	c:objc(cs)MKScaleView(py)mapView	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=-/-/-/1	-	8a8930acbb7021be
+property	c:objc(cs)MKScaleView(py)scaleVisibility	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=-/-/-/1	-	8cc29245484fa8ae
+property	c:objc(cs)MKScaleView(py)legendAlignment	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=-/-/-/1	-	5ed3cb336495a5c3
+interface	c:objc(cs)MKUserTrackingBarButtonItem	-			ios=5.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5e289301450d69f2
+super	-	MKUserTrackingBarButtonItem	UIBarButtonItem		-	-	8ed4251f8c42a02d
+method	c:objc(cs)MKUserTrackingBarButtonItem(im)initWithMapView:	-			ios=5.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	06dd1e6b375d1f2b
+property	c:objc(cs)MKUserTrackingBarButtonItem(py)mapView	-			ios=5.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c7b3d10c6e5bbf4d
+interface	c:objc(cs)MKUserTrackingButton	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	46b683b4248b8674
+super	-	MKUserTrackingButton	UIView		-	-	d85f0ec8ec5d3f39
+method	c:objc(cs)MKUserTrackingButton(cm)userTrackingButtonWithMapView:	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6428b716062ef221
+property	c:objc(cs)MKUserTrackingButton(py)mapView	-			ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	085b1ceedd2ef63f
+interface	c:objc(cs)MKLookAroundScene	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	23a1e0c83038b5b2
+super	-	MKLookAroundScene	NSObject		-	-	64c55c8f96e1f8ef
+conforms	-	MKLookAroundScene	NSCopying		-	-	c90c68b11ff378b1
+method	c:objc(cs)MKLookAroundScene(cm)new	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4d35db79acd37a86
+method	c:objc(cs)MKLookAroundScene(im)init	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3819ff5e2c451989
+interface	c:objc(cs)MKLookAroundSceneRequest	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0376b1b961d454e1
+super	-	MKLookAroundSceneRequest	NSObject		-	-	4a8ab5279d8ddc09
+method	c:objc(cs)MKLookAroundSceneRequest(cm)new	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	81672e0e453d17d7
+method	c:objc(cs)MKLookAroundSceneRequest(im)init	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1b4a63476eb384b8
+method	c:objc(cs)MKLookAroundSceneRequest(im)initWithCoordinate:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	294b405a6c8828e9
+method	c:objc(cs)MKLookAroundSceneRequest(im)initWithMapItem:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a908000e480f6ba4
+property	c:objc(cs)MKLookAroundSceneRequest(py)coordinate	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	91dfa02d754d6b43
+property	c:objc(cs)MKLookAroundSceneRequest(py)mapItem	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c347346381e43272
+property	c:objc(cs)MKLookAroundSceneRequest(py)cancelled	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b89e27ec06af7aab
+property	c:objc(cs)MKLookAroundSceneRequest(py)loading	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	90588ac77d666b3a
+method	c:objc(cs)MKLookAroundSceneRequest(im)getSceneWithCompletionHandler:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5427e0d9dff14713
+method	c:objc(cs)MKLookAroundSceneRequest(im)cancel	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	60bcd2546ee2a741
+interface	c:objc(cs)MKLookAroundSnapshot	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9312ce6fd2c99801
+super	-	MKLookAroundSnapshot	NSObject		-	-	0fe73d0d7faf9db9
+property	c:objc(cs)MKLookAroundSnapshot(py)image	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3ee8423b6c4f9583
+interface	c:objc(cs)MKLookAroundSnapshotOptions	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	00533c975ecfdac6
+super	-	MKLookAroundSnapshotOptions	NSObject		-	-	ac96880766fd70e5
+property	c:objc(cs)MKLookAroundSnapshotOptions(py)pointOfInterestFilter	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1215b9fea84f2ff3
+property	c:objc(cs)MKLookAroundSnapshotOptions(py)size	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7ac229e9c33ab136
+property	c:objc(cs)MKLookAroundSnapshotOptions(py)traitCollection	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e9d0ca9efa6bd2d8
+interface	c:objc(cs)MKLookAroundSnapshotter	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ecc6afea375c07e8
+super	-	MKLookAroundSnapshotter	NSObject		-	-	19da6fee7b902995
+method	c:objc(cs)MKLookAroundSnapshotter(cm)new	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f49b27ad3ba96169
+method	c:objc(cs)MKLookAroundSnapshotter(im)init	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d03cffcfef0b2a5f
+method	c:objc(cs)MKLookAroundSnapshotter(im)initWithScene:options:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	56b5fe8619b6ee27
+method	c:objc(cs)MKLookAroundSnapshotter(im)getSnapshotWithCompletionHandler:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e978640bdfcb27cf
+method	c:objc(cs)MKLookAroundSnapshotter(im)cancel	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d302608d6a82ffd6
+property	c:objc(cs)MKLookAroundSnapshotter(py)loading	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2ec9f7ba435c1a9c
+typedef	c:@T@MKLookAroundBadgePosition	-			-	-	15e7591e885453a6
+enum	c:@E@MKLookAroundBadgePosition	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3ad40f0dcec23389
+enumconst	c:@E@MKLookAroundBadgePosition@MKLookAroundBadgePositionTopLeading	MKLookAroundBadgePosition			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3a3dbd38ff6587c2
+enumconst	c:@E@MKLookAroundBadgePosition@MKLookAroundBadgePositionTopTrailing	MKLookAroundBadgePosition			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e1a4ec7840a95a2b
+enumconst	c:@E@MKLookAroundBadgePosition@MKLookAroundBadgePositionBottomTrailing	MKLookAroundBadgePosition			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	78ac34057ee9a9a8
+interface	c:objc(cs)MKLookAroundViewController	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3b1f56c01ee8e548
+super	-	MKLookAroundViewController	UIViewController		-	-	40ada21d9a91b1fc
+conforms	-	MKLookAroundViewController	NSSecureCoding		-	-	f821c6ea74f7699f
+conforms	-	MKLookAroundViewController	NSCoding		-	-	7ed024badec40754
+method	c:objc(cs)MKLookAroundViewController(im)initWithScene:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cf01388c5f71d71b
+method	c:objc(cs)MKLookAroundViewController(im)initWithNibName:bundle:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	09d029ce8470d1ec
+method	c:objc(cs)MKLookAroundViewController(im)initWithCoder:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9309c3c3d8eb27ce
+property	c:objc(cs)MKLookAroundViewController(py)delegate	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0aa153f8a4c63921
+property	c:objc(cs)MKLookAroundViewController(py)scene	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3dab90c20858e893
+property	c:objc(cs)MKLookAroundViewController(py)navigationEnabled	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	629d0493691bd0a1
+property	c:objc(cs)MKLookAroundViewController(py)showsRoadLabels	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c254f206f6bc83bc
+property	c:objc(cs)MKLookAroundViewController(py)pointOfInterestFilter	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7ba3858eb745ffdf
+property	c:objc(cs)MKLookAroundViewController(py)badgePosition	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9d50888f9087cc1f
+protocol	c:objc(pl)MKLookAroundViewControllerDelegate	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3f2cea9c3cd89f7e
+conforms	-	MKLookAroundViewControllerDelegate	NSObject		-	-	88fb719213788ae7
+method	c:objc(pl)MKLookAroundViewControllerDelegate(im)lookAroundViewControllerWillUpdateScene:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c08efbe12a684412
+method	c:objc(pl)MKLookAroundViewControllerDelegate(im)lookAroundViewControllerDidUpdateScene:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5243c9fbba4b71c1
+method	c:objc(pl)MKLookAroundViewControllerDelegate(im)lookAroundViewControllerWillPresentFullScreen:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	810500fa621462e7
+method	c:objc(pl)MKLookAroundViewControllerDelegate(im)lookAroundViewControllerDidPresentFullScreen:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	228357992cb19b3d
+method	c:objc(pl)MKLookAroundViewControllerDelegate(im)lookAroundViewControllerWillDismissFullScreen:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	25e3458fce6e0112
+method	c:objc(pl)MKLookAroundViewControllerDelegate(im)lookAroundViewControllerDidDismissFullScreen:	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	dccf213ee560f89d
+protocol	c:objc(pl)MKMapItemDetailViewControllerDelegate	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	bc4771d76bc31bf8
+conforms	-	MKMapItemDetailViewControllerDelegate	NSObject		-	-	b6aee192a4886f05
+method	c:objc(pl)MKMapItemDetailViewControllerDelegate(im)mapItemDetailViewControllerDidFinish:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	293b7b603d097f2e
+interface	c:objc(cs)MKMapItemDetailViewController	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	35a44ab07dad04df
+super	-	MKMapItemDetailViewController	UIViewController		-	-	55972fba1a960564
+property	c:objc(cs)MKMapItemDetailViewController(py)mapItem	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	142b99dc942c4c49
+property	c:objc(cs)MKMapItemDetailViewController(py)delegate	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	519cc873c0c4ee08
+method	c:objc(cs)MKMapItemDetailViewController(im)initWithMapItem:displaysMap:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	53e3e04bf438a4d7
+method	c:objc(cs)MKMapItemDetailViewController(im)initWithMapItem:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	13a6abb1be246638

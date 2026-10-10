@@ -1,0 +1,950 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+var	c:@NSReadAccessURLDocumentOption	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	238e8e8d3c29b269
+typedef	c:@T@NSAttributedStringCompletionHandler	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	4810150da8b49770
+category	c:objc(cy)NSAttributedString@NSAttributedStringWebKitAdditions	-			ios=3.2/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	199d36663f1d06b8
+method	c:objc(cs)NSAttributedString(cm)loadFromHTMLWithRequest:options:completionHandler:	NSAttributedStringWebKitAdditions			ios=13.0/-/-/0,macos=10.15/-/-/0	-	6370b55532d79b49
+method	c:objc(cs)NSAttributedString(cm)loadFromHTMLWithFileURL:options:completionHandler:	NSAttributedStringWebKitAdditions			ios=13.0/-/-/0,macos=10.15/-/-/0	-	b53741fe313a8ace
+method	c:objc(cs)NSAttributedString(cm)loadFromHTMLWithString:options:completionHandler:	NSAttributedStringWebKitAdditions			ios=13.0/-/-/0,macos=10.15/-/-/0	-	824ff30a045f73c7
+method	c:objc(cs)NSAttributedString(cm)loadFromHTMLWithData:options:completionHandler:	NSAttributedStringWebKitAdditions			ios=13.0/-/-/0,macos=10.15/-/-/0	-	6f86a2e7738e1097
+interface	c:objc(cs)WKBackForwardListItem	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	3400119c7fd5123b
+super	-	WKBackForwardListItem	NSObject		-	-	fb711858d7a2ac8a
+method	c:objc(cs)WKBackForwardListItem(im)init	-			*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0	-	57440415b250f011
+property	c:objc(cs)WKBackForwardListItem(py)URL	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	9642721e16281d26
+property	c:objc(cs)WKBackForwardListItem(py)title	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	4b208d48b9cb9d73
+property	c:objc(cs)WKBackForwardListItem(py)initialURL	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	dfa990e21516120c
+interface	c:objc(cs)WKBackForwardList	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	5e90f90847021f32
+super	-	WKBackForwardList	NSObject		-	-	61254e9853d67828
+property	c:objc(cs)WKBackForwardList(py)currentItem	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	50b9a2278d80dff0
+property	c:objc(cs)WKBackForwardList(py)backItem	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	5128becaa5d79726
+property	c:objc(cs)WKBackForwardList(py)forwardItem	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	950f297490b25c50
+method	c:objc(cs)WKBackForwardList(im)itemAtIndex:	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	1e93811f93b2e91a
+property	c:objc(cs)WKBackForwardList(py)backList	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	9edbbaf6e6627e37
+property	c:objc(cs)WKBackForwardList(py)forwardList	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	064d63d66f3dbceb
+interface	c:objc(cs)WKContentRuleList	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	a2756def455abd0c
+super	-	WKContentRuleList	NSObject		-	-	b49376f3f07c2659
+property	c:objc(cs)WKContentRuleList(py)identifier	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	1c508a46c0f6ba0a
+interface	c:objc(cs)WKContentRuleListStore	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	74cc22d4c5f5eb71
+super	-	WKContentRuleListStore	NSObject		-	-	fec44a8468f12f7b
+method	c:objc(cs)WKContentRuleListStore(cm)defaultStore	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	daa86cedc9e25d52
+method	c:objc(cs)WKContentRuleListStore(cm)storeWithURL:	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	7ea71f506f71cbca
+method	c:objc(cs)WKContentRuleListStore(im)compileContentRuleListForIdentifier:encodedContentRuleList:completionHandler:	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	c45d19f1eaeac91e
+method	c:objc(cs)WKContentRuleListStore(im)lookUpContentRuleListForIdentifier:completionHandler:	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	c2bd815db478041b
+method	c:objc(cs)WKContentRuleListStore(im)removeContentRuleListForIdentifier:completionHandler:	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	4b48f4f1c178a659
+method	c:objc(cs)WKContentRuleListStore(im)getAvailableContentRuleListIdentifiers:	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	681a83d4623a659e
+interface	c:objc(cs)WKContentWorld	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	6b95aa9b15241958
+super	-	WKContentWorld	NSObject		-	-	b0e1ad251b689563
+method	c:objc(cs)WKContentWorld(cm)new	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0	-	9490238d30781b2d
+method	c:objc(cs)WKContentWorld(im)init	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0	-	7a629fb7147d7887
+property	c:objc(cs)WKContentWorld(cpy)pageWorld	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	7dbed0126074142f
+property	c:objc(cs)WKContentWorld(cpy)defaultClientWorld	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	8c9f251469401065
+method	c:objc(cs)WKContentWorld(cm)worldWithName:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	c8c230692b7c81be
+property	c:objc(cs)WKContentWorld(py)name	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	fead2c4c40075a74
+interface	c:objc(cs)WKContextMenuElementInfo	-			ios=13.0/-/-/0	-	a275746a60e770db
+super	-	WKContextMenuElementInfo	NSObject		-	-	8d836712b358b237
+method	c:objc(cs)WKContextMenuElementInfo(im)init	-			*unavailable ios=13.0/-/-/0	-	dddd02de6d50f3df
+property	c:objc(cs)WKContextMenuElementInfo(py)linkURL	-			ios=13.0/-/-/0	-	a5949336a49d6119
+interface	c:objc(cs)WKDownload	-			ios=14.5/-/-/0,macos=11.3/-/-/0	-	968680d158638507
+super	-	WKDownload	NSObject		-	-	fcba97406ec3d115
+conforms	-	WKDownload	NSProgressReporting		-	-	bae73128b9b4bda9
+property	c:objc(cs)WKDownload(py)originalRequest	-			ios=14.5/-/-/0,macos=11.3/-/-/0	-	3e1488ac302b0099
+property	c:objc(cs)WKDownload(py)webView	-			ios=14.5/-/-/0,macos=11.3/-/-/0	-	25328f5663a715c2
+property	c:objc(cs)WKDownload(py)delegate	-			ios=14.5/-/-/0,macos=11.3/-/-/0	-	9f6c24af73dc9649
+property	c:objc(cs)WKDownload(py)userInitiated	-			ios=18.2/-/-/0,macos=15.2/-/-/0	-	6694edc6845fafa9
+property	c:objc(cs)WKDownload(py)originatingFrame	-			ios=18.2/-/-/0,macos=15.2/-/-/0	-	ceba1e8963de1177
+method	c:objc(cs)WKDownload(im)cancel:	-			ios=14.5/-/-/0,macos=11.3/-/-/0	-	9bbaacb7930bb04f
+typedef	c:@T@WKDownloadRedirectPolicy	-			-	-	c371423c3f4235d8
+enum	c:@E@WKDownloadRedirectPolicy	-			ios=14.5/-/-/0,macos=11.3/-/-/0	-	b598582d1263db15
+enumconst	c:@E@WKDownloadRedirectPolicy@WKDownloadRedirectPolicyCancel	WKDownloadRedirectPolicy			ios=14.5/-/-/0,macos=11.3/-/-/0	-	041e02f149fdcc75
+enumconst	c:@E@WKDownloadRedirectPolicy@WKDownloadRedirectPolicyAllow	WKDownloadRedirectPolicy			ios=14.5/-/-/0,macos=11.3/-/-/0	-	de0f6934d32685d8
+typedef	c:@T@WKDownloadPlaceholderPolicy	-			-	-	e1c16d177aff4dcd
+enum	c:@E@WKDownloadPlaceholderPolicy	-			ios=18.2/-/-/0,xros=2.2/-/-/0	-	4ed229d1acce1d08
+enumconst	c:@E@WKDownloadPlaceholderPolicy@WKDownloadPlaceholderPolicyDisable	WKDownloadPlaceholderPolicy			ios=18.2/-/-/0,xros=2.2/-/-/0	-	5063552d944ac57b
+enumconst	c:@E@WKDownloadPlaceholderPolicy@WKDownloadPlaceholderPolicyEnable	WKDownloadPlaceholderPolicy			ios=18.2/-/-/0,xros=2.2/-/-/0	-	bf9f31b5a8d651e7
+protocol	c:objc(pl)WKDownloadDelegate	-			-	-	aaeb8742a57ec1b7
+conforms	-	WKDownloadDelegate	NSObject		-	-	ceba851f821485e3
+method	c:objc(pl)WKDownloadDelegate(im)download:decideDestinationUsingResponse:suggestedFilename:completionHandler:	-			-	-	583f9e629756dd3b
+method	c:objc(pl)WKDownloadDelegate(im)download:willPerformHTTPRedirection:newRequest:decisionHandler:	-			-	-	0dee232b8fd88b53
+method	c:objc(pl)WKDownloadDelegate(im)download:didReceiveAuthenticationChallenge:completionHandler:	-			-	-	e3cf2f2acd6a205e
+method	c:objc(pl)WKDownloadDelegate(im)downloadDidFinish:	-			-	-	82e39b45d38707f7
+method	c:objc(pl)WKDownloadDelegate(im)download:didFailWithError:resumeData:	-			-	-	e728c8480f710eaa
+method	c:objc(pl)WKDownloadDelegate(im)download:decidePlaceholderPolicy:	-			ios=18.2/-/-/0,xros=2.2/-/-/0	-	0f27d96f7a0205a6
+method	c:objc(pl)WKDownloadDelegate(im)download:didReceivePlaceholderURL:completionHandler:	-			ios=18.2/-/-/0,xros=2.2/-/-/0	-	16c85107110c8f2c
+method	c:objc(pl)WKDownloadDelegate(im)download:didReceiveFinalURL:	-			ios=18.2/-/-/0,xros=2.2/-/-/0	-	83bad1a12e2b0573
+var	c:@WKErrorDomain	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	5756e1ce1d9c330f
+typedef	c:@T@WKErrorCode	-			-	-	b5e496a3b1a4769f
+enum	c:@E@WKErrorCode	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	330a0470ef0bb713
+enumconst	c:@E@WKErrorCode@WKErrorUnknown	WKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0	-	70e970aa1ca7143c
+enumconst	c:@E@WKErrorCode@WKErrorWebContentProcessTerminated	WKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0	-	ddcf7a7b2a6829e3
+enumconst	c:@E@WKErrorCode@WKErrorWebViewInvalidated	WKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0	-	ab7f01878574c804
+enumconst	c:@E@WKErrorCode@WKErrorJavaScriptExceptionOccurred	WKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0	-	cebcd16dc6724189
+enumconst	c:@E@WKErrorCode@WKErrorJavaScriptResultTypeIsUnsupported	WKErrorCode			ios=9.0/-/-/0,macos=10.11/-/-/0	-	bf5061e1890a3e11
+enumconst	c:@E@WKErrorCode@WKErrorContentRuleListStoreCompileFailed	WKErrorCode			ios=11.0/-/-/0,macos=10.13/-/-/0	-	a2952a90941671cb
+enumconst	c:@E@WKErrorCode@WKErrorContentRuleListStoreLookUpFailed	WKErrorCode			ios=11.0/-/-/0,macos=10.13/-/-/0	-	bc1dbf4995403c70
+enumconst	c:@E@WKErrorCode@WKErrorContentRuleListStoreRemoveFailed	WKErrorCode			ios=11.0/-/-/0,macos=10.13/-/-/0	-	201825dd49229dd8
+enumconst	c:@E@WKErrorCode@WKErrorContentRuleListStoreVersionMismatch	WKErrorCode			ios=11.0/-/-/0,macos=10.13/-/-/0	-	13334c5cf7b5cf19
+enumconst	c:@E@WKErrorCode@WKErrorAttributedStringContentFailedToLoad	WKErrorCode			ios=13.0/-/-/0,macos=10.15/-/-/0	-	87f276ad9891484e
+enumconst	c:@E@WKErrorCode@WKErrorAttributedStringContentLoadTimedOut	WKErrorCode			ios=13.0/-/-/0,macos=10.15/-/-/0	-	e6cdd43540039f17
+enumconst	c:@E@WKErrorCode@WKErrorJavaScriptInvalidFrameTarget	WKErrorCode			ios=14.0/-/-/0,macos=11.0/-/-/0	-	eff12659fdddc7e1
+enumconst	c:@E@WKErrorCode@WKErrorNavigationAppBoundDomain	WKErrorCode			ios=14.0/-/-/0,macos=11.0/-/-/0	-	2422fce4d63af6fe
+enumconst	c:@E@WKErrorCode@WKErrorJavaScriptAppBoundDomain	WKErrorCode			ios=14.0/-/-/0,macos=11.0/-/-/0	-	1b81c1f2b3963465
+enumconst	c:@E@WKErrorCode@WKErrorDuplicateCredential	WKErrorCode			ios=16.0/-/-/0,macos=13.0/-/-/0	-	37f9202f363fb8ad
+enumconst	c:@E@WKErrorCode@WKErrorMalformedCredential	WKErrorCode			ios=16.0/-/-/0,macos=13.0/-/-/0	-	e1bdb5c3619ea88f
+enumconst	c:@E@WKErrorCode@WKErrorCredentialNotFound	WKErrorCode			ios=16.0/-/-/0,macos=13.0/-/-/0	-	66d6b2a33733109b
+interface	c:objc(cs)WKFindConfiguration	-			ios=13.4/-/-/0,macos=10.15.4/-/-/0	-	bf594611529905ef
+super	-	WKFindConfiguration	NSObject		-	-	ae2f986dc52b1495
+conforms	-	WKFindConfiguration	NSCopying		-	-	8b141ccd561c5351
+property	c:objc(cs)WKFindConfiguration(py)backwards	-			ios=13.4/-/-/0,macos=10.15.4/-/-/0	-	1d04ec133dfc70ae
+property	c:objc(cs)WKFindConfiguration(py)caseSensitive	-			ios=13.4/-/-/0,macos=10.15.4/-/-/0	-	ff8170df97bcae68
+property	c:objc(cs)WKFindConfiguration(py)wraps	-			ios=13.4/-/-/0,macos=10.15.4/-/-/0	-	874066a259fb260e
+interface	c:objc(cs)WKFindResult	-			ios=13.4/-/-/0,macos=10.15.4/-/-/0	-	e40efe583f1229ef
+super	-	WKFindResult	NSObject		-	-	1f583a81dd9cd546
+conforms	-	WKFindResult	NSCopying		-	-	c734470d0a5c8dfa
+method	c:objc(cs)WKFindResult(im)init	-			*unavailable ios=13.4/-/-/0,macos=10.15.4/-/-/0	-	86e7df04034f1dfd
+property	c:objc(cs)WKFindResult(py)matchFound	-			ios=13.4/-/-/0,macos=10.15.4/-/-/0	-	5b8b5adb0c4a1633
+interface	c:objc(cs)WKSecurityOrigin	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	cf225057ac396078
+super	-	WKSecurityOrigin	NSObject		-	-	de549a62b0a6634b
+method	c:objc(cs)WKSecurityOrigin(im)init	-			*unavailable ios=9.0/-/-/0,macos=10.11/-/-/0	-	9f39094558297c24
+property	c:objc(cs)WKSecurityOrigin(py)protocol	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	8460609a7ae779ba
+property	c:objc(cs)WKSecurityOrigin(py)host	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	a10d838517466033
+property	c:objc(cs)WKSecurityOrigin(py)port	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	8d777666aa7d961b
+interface	c:objc(cs)WKWebView	-			ios=8.0/-/-/0,macos=10.10/-/-/0	deprecated: Use closeAllMediaPresentationsWithCompletionHandler: instead	dfdd098d079522ec
+super	-	WKWebView	UIView		-	-	893f2e5d8f89e6b2
+property	c:objc(cs)WKWebView(py)configuration	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	717f16232c56fe70
+property	c:objc(cs)WKWebView(py)navigationDelegate	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	6dc3b9bdea02013a
+property	c:objc(cs)WKWebView(py)UIDelegate	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	bcdbb54ec1c2d7d9
+property	c:objc(cs)WKWebView(py)backForwardList	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	de63bdfee46379da
+method	c:objc(cs)WKWebView(im)initWithFrame:configuration:	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	a61c87a299d1ea44
+method	c:objc(cs)WKWebView(im)initWithCoder:	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	de84761b516a503c
+method	c:objc(cs)WKWebView(im)loadRequest:	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	9fe615476ec9c900
+method	c:objc(cs)WKWebView(im)loadFileURL:allowingReadAccessToURL:	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	d924a247e3f6d720
+method	c:objc(cs)WKWebView(im)loadHTMLString:baseURL:	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	25dbe679b3d98d13
+method	c:objc(cs)WKWebView(im)loadData:MIMEType:characterEncodingName:baseURL:	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	90d7b95115e110d4
+method	c:objc(cs)WKWebView(im)goToBackForwardListItem:	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	1e24ddd4fcd4e7c2
+property	c:objc(cs)WKWebView(py)title	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	f77d5948b741ec81
+property	c:objc(cs)WKWebView(py)URL	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	1f3089e94cf1ef4b
+property	c:objc(cs)WKWebView(py)loading	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	9dc7130633e97129
+property	c:objc(cs)WKWebView(py)estimatedProgress	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	73da6a3fdac78662
+property	c:objc(cs)WKWebView(py)hasOnlySecureContent	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	7ca9c1c70dfb259b
+property	c:objc(cs)WKWebView(py)serverTrust	-			ios=10.0/-/-/0,macos=10.12/-/-/0	-	5ececcfa229971c6
+property	c:objc(cs)WKWebView(py)canGoBack	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	76215d0275a029ea
+property	c:objc(cs)WKWebView(py)canGoForward	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	cffee4dca1d98c7d
+method	c:objc(cs)WKWebView(im)goBack	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	574f8ed024f66c0e
+method	c:objc(cs)WKWebView(im)goForward	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	a03af6a238cac2d4
+method	c:objc(cs)WKWebView(im)reload	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	e55e7c20c940b526
+method	c:objc(cs)WKWebView(im)reloadFromOrigin	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	303f6176621e8d7f
+method	c:objc(cs)WKWebView(im)stopLoading	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	d65440d0fb2e2061
+method	c:objc(cs)WKWebView(im)evaluateJavaScript:completionHandler:	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	6cc5cc4190541b08
+method	c:objc(cs)WKWebView(im)evaluateJavaScript:inFrame:inContentWorld:completionHandler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	d6690fcb912ee095
+method	c:objc(cs)WKWebView(im)callAsyncJavaScript:arguments:inFrame:inContentWorld:completionHandler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	1b0c7406d3edacdf
+method	c:objc(cs)WKWebView(im)closeAllMediaPresentationsWithCompletionHandler:	-			ios=15.0/-/-/0,macos=12.0/-/-/0	-	e9e3abc3881f9473
+method	c:objc(cs)WKWebView(im)closeAllMediaPresentations	-			ios=14.5/15.0/-/0,macos=11.3/12.0/-/0	deprecated: Use closeAllMediaPresentationsWithCompletionHandler: instead	9f348b237ebd2544
+method	c:objc(cs)WKWebView(im)pauseAllMediaPlaybackWithCompletionHandler:	-			ios=15.0/-/-/0,macos=12.0/-/-/0	-	5b436a6b0e763bb7
+method	c:objc(cs)WKWebView(im)pauseAllMediaPlayback:	-			ios=14.5/15.0/-/0,macos=11.3/12.0/-/0	deprecated: Use pauseAllMediaPlaybackWithCompletionHandler: instead	a531d6f7b9dc293a
+method	c:objc(cs)WKWebView(im)setAllMediaPlaybackSuspended:completionHandler:	-			ios=15.0/-/-/0,macos=12.0/-/-/0	-	548aa2dc0b723510
+method	c:objc(cs)WKWebView(im)resumeAllMediaPlayback:	-			ios=14.5/15.0/-/0,macos=11.3/12.0/-/0	deprecated: Use setAllMediaPlaybackSuspended:completionHandler: instead	5137c520bc562a52
+method	c:objc(cs)WKWebView(im)suspendAllMediaPlayback:	-			ios=14.5/15.0/-/0,macos=11.3/12.0/-/0	deprecated: Use setAllMediaPlaybackSuspended:completionHandler: instead	b6b33ebc5fe8bd24
+method	c:objc(cs)WKWebView(im)requestMediaPlaybackStateWithCompletionHandler:	-			ios=15.0/-/-/0,macos=12.0/-/-/0	-	85e754f1efa41a2d
+method	c:objc(cs)WKWebView(im)requestMediaPlaybackState:	-			ios=14.5/15.0/-/0,macos=11.3/12.0/-/0	deprecated: Use requestMediaPlaybackStateWithCompletionHandler: instead	d906eb46791c3cf6
+property	c:objc(cs)WKWebView(py)cameraCaptureState	-			ios=15.0/-/-/0,macos=12.0/-/-/0	-	449946f767aa1755
+property	c:objc(cs)WKWebView(py)microphoneCaptureState	-			ios=15.0/-/-/0,macos=12.0/-/-/0	-	5c557f1db7b6ce1e
+method	c:objc(cs)WKWebView(im)setCameraCaptureState:completionHandler:	-			ios=15.0/-/-/0,macos=12.0/-/-/0	-	08fd19772571d99f
+method	c:objc(cs)WKWebView(im)setMicrophoneCaptureState:completionHandler:	-			ios=15.0/-/-/0,macos=12.0/-/-/0	-	0f733a340dba39ed
+method	c:objc(cs)WKWebView(im)takeSnapshotWithConfiguration:completionHandler:	-			ios=11.0/-/-/0	-	dbcc7c09dfab2d43
+method	c:objc(cs)WKWebView(im)createPDFWithConfiguration:completionHandler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	e85d7d82c00904d7
+method	c:objc(cs)WKWebView(im)createWebArchiveDataWithCompletionHandler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	f1d5b304952e911a
+property	c:objc(cs)WKWebView(py)allowsBackForwardNavigationGestures	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	c06c5825133fc601
+property	c:objc(cs)WKWebView(py)customUserAgent	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	43af93a7ef8647d0
+property	c:objc(cs)WKWebView(py)allowsLinkPreview	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	29925f8aad284b0c
+property	c:objc(cs)WKWebView(py)scrollView	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	21180343fdf8d341
+property	c:objc(cs)WKWebView(py)pageZoom	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	cd3e3d018c1595b0
+method	c:objc(cs)WKWebView(im)findString:withConfiguration:completionHandler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	a6176c3f01363530
+method	c:objc(cs)WKWebView(cm)handlesURLScheme:	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	c22a20d63dbf127d
+method	c:objc(cs)WKWebView(im)startDownloadUsingRequest:completionHandler:	-			ios=14.5/-/-/0,macos=11.3/-/-/0	-	6d7820f4c59bd9ea
+method	c:objc(cs)WKWebView(im)resumeDownloadFromResumeData:completionHandler:	-			ios=14.5/-/-/0,macos=11.3/-/-/0	-	94de491316d0cca8
+property	c:objc(cs)WKWebView(py)mediaType	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	9b786329179ac3f2
+property	c:objc(cs)WKWebView(py)interactionState	-			ios=15.0/-/-/0,macos=12.0/-/-/0	-	04d9f8c6618cdce6
+property	c:objc(cs)WKWebView(py)isBlockedByScreenTime	-			ios=26.0/-/-/0,macos=26.0/-/-/0,xros=-/-/-/1	-	5bc74d89efccb249
+method	c:objc(cs)WKWebView(im)loadSimulatedRequest:response:responseData:	-			ios=15.0/-/-/0,macos=12.0/-/-/0	-	3b65bac5b4b7cc4b
+method	c:objc(cs)WKWebView(im)loadSimulatedRequest:withResponse:responseData:	-			ios=15.0/15.0/-/0,macos=12.0/12.0/-/0	deprecated: Use loadSimulatedRequest:response:responseData: instead	69c3115f28eb880d
+method	c:objc(cs)WKWebView(im)loadFileRequest:allowingReadAccessToURL:	-			ios=15.0/-/-/0,macos=12.0/-/-/0	-	c9a9290a34fae2e6
+method	c:objc(cs)WKWebView(im)loadSimulatedRequest:responseHTMLString:	-			ios=15.0/-/-/0,macos=12.0/-/-/0	-	dde11a665deca608
+method	c:objc(cs)WKWebView(im)loadSimulatedRequest:withResponseHTMLString:	-			ios=15.0/15.0/-/0,macos=12.0/12.0/-/0	deprecated: Use loadSimulatedRequest:responseHTMLString: instead	19d0fed1672ae4c8
+property	c:objc(cs)WKWebView(py)themeColor	-			ios=15.0/-/-/0	-	40bdb3bde5afad24
+property	c:objc(cs)WKWebView(py)underPageBackgroundColor	-			ios=15.0/-/-/0	-	34377d57b55c3890
+property	c:objc(cs)WKWebView(py)fullscreenState	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	c005035a6e4def9f
+property	c:objc(cs)WKWebView(py)minimumViewportInset	-			ios=15.5/-/-/0	-	b688217159caf810
+property	c:objc(cs)WKWebView(py)maximumViewportInset	-			ios=15.5/-/-/0	-	7d4556c5bc0e4bb4
+method	c:objc(cs)WKWebView(im)setMinimumViewportInset:maximumViewportInset:	-			ios=15.5/-/-/0	-	fafd1c8b2589e700
+property	c:objc(cs)WKWebView(py)findInteractionEnabled	-			ios=16.0/-/-/0	-	3f5b2483a4594855
+property	c:objc(cs)WKWebView(py)findInteraction	-			ios=16.0/-/-/0	-	d764ddfd3600d3cb
+property	c:objc(cs)WKWebView(py)conversationContext	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9cea353b8b9b7521
+property	c:objc(cs)WKWebView(py)inspectable	-			ios=16.4/-/-/0,macos=13.3/-/-/0	-	2ccab03c3975e400
+property	c:objc(cs)WKWebView(py)writingToolsActive	-			ios=18.0/-/-/0,macos=15.0/-/-/0,xros=2.4/-/-/0	-	4aeb72c3635fcb2f
+method	c:objc(cs)WKWebView(im)fetchDataOfTypes:completionHandler:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	4131bebecacb749f
+method	c:objc(cs)WKWebView(im)restoreData:completionHandler:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	4d1cd04f165c5d82
+property	c:objc(cs)WKWebView(py)obscuredContentInsets	-			ios=26.0/-/-/0,xros=26.0/-/-/0	-	a66ed54cd9d6174f
+typedef	c:@T@WKMediaPlaybackState	-			-	-	8bf1912b058a18ec
+enum	c:@E@WKMediaPlaybackState	-			ios=14.5/-/-/0,macos=11.3/-/-/0	-	6e2c513e1d9c9894
+enumconst	c:@E@WKMediaPlaybackState@WKMediaPlaybackStateNone	WKMediaPlaybackState			ios=14.5/-/-/0,macos=11.3/-/-/0	-	2d57f24568190e64
+enumconst	c:@E@WKMediaPlaybackState@WKMediaPlaybackStatePlaying	WKMediaPlaybackState			ios=14.5/-/-/0,macos=11.3/-/-/0	-	a88a317dec007208
+enumconst	c:@E@WKMediaPlaybackState@WKMediaPlaybackStatePaused	WKMediaPlaybackState			ios=14.5/-/-/0,macos=11.3/-/-/0	-	c67576cd20389bec
+enumconst	c:@E@WKMediaPlaybackState@WKMediaPlaybackStateSuspended	WKMediaPlaybackState			ios=14.5/-/-/0,macos=11.3/-/-/0	-	501740915172f5fb
+typedef	c:@T@WKMediaCaptureState	-			-	-	624d6929355f45d1
+enum	c:@E@WKMediaCaptureState	-			ios=15.0/-/-/0,macos=12.0/-/-/0	-	eac223f8425052fc
+enumconst	c:@E@WKMediaCaptureState@WKMediaCaptureStateNone	WKMediaCaptureState			ios=15.0/-/-/0,macos=12.0/-/-/0	-	aa8f189d15ce8870
+enumconst	c:@E@WKMediaCaptureState@WKMediaCaptureStateActive	WKMediaCaptureState			ios=15.0/-/-/0,macos=12.0/-/-/0	-	2e163fbd9957df68
+enumconst	c:@E@WKMediaCaptureState@WKMediaCaptureStateMuted	WKMediaCaptureState			ios=15.0/-/-/0,macos=12.0/-/-/0	-	a62ce57b44e5b88d
+typedef	c:@T@WKFullscreenState	-			-	-	4a9fabf057112d29
+enum	c:@E@WKFullscreenState	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	4097d90f2142803e
+enumconst	c:@E@WKFullscreenState@WKFullscreenStateNotInFullscreen	WKFullscreenState			ios=16.0/-/-/0,macos=13.0/-/-/0	-	622e98d8f30910b8
+enumconst	c:@E@WKFullscreenState@WKFullscreenStateEnteringFullscreen	WKFullscreenState			ios=16.0/-/-/0,macos=13.0/-/-/0	-	84a2e14795d41eae
+enumconst	c:@E@WKFullscreenState@WKFullscreenStateInFullscreen	WKFullscreenState			ios=16.0/-/-/0,macos=13.0/-/-/0	-	bf7b398ec5bc944f
+enumconst	c:@E@WKFullscreenState@WKFullscreenStateExitingFullscreen	WKFullscreenState			ios=16.0/-/-/0,macos=13.0/-/-/0	-	c3f3a4d321ce14bc
+typedef	c:@T@WKWebViewDataType	-			-	-	709bf80ff3e9d5ff
+enum	c:@E@WKWebViewDataType	-			ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	526ea86ac38ad68f
+enumconst	c:@E@WKWebViewDataType@WKWebViewDataTypeSessionStorage	WKWebViewDataType			ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	4717ee83e05fa882
+category	c:objc(cy)WKWebView@WKDeprecated	-			ios=8.0/-/-/0,macos=10.10/-/-/0	deprecated: Use serverTrust instead	4215c44f9bf185c8
+property	c:objc(cs)WKWebView(py)certificateChain	WKDeprecated			ios=9.0/10.0/-/0,macos=10.11/10.12/-/0	-	8907c08ff1d79915
+interface	c:objc(cs)WKFrameInfo	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	d19b39ce743383ae
+super	-	WKFrameInfo	NSObject		-	-	7b10299681d1195f
+conforms	-	WKFrameInfo	NSCopying		-	-	d89608243e7a20f8
+property	c:objc(cs)WKFrameInfo(py)mainFrame	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	f57933c12fe3acba
+property	c:objc(cs)WKFrameInfo(py)request	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	f2aaabd50940cda2
+property	c:objc(cs)WKFrameInfo(py)securityOrigin	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	e057c8b288698e46
+property	c:objc(cs)WKFrameInfo(py)webView	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	12aedecf8444f8f5
+typedef	c:@T@WKCookiePolicy	-			-	-	d7399fe46df0f40d
+enum	c:@E@WKCookiePolicy	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	45473a232aedf4d0
+enumconst	c:@E@WKCookiePolicy@WKCookiePolicyAllow	WKCookiePolicy			ios=17.0/-/-/0,macos=14.0/-/-/0	-	a0d4a7396cee8b6d
+enumconst	c:@E@WKCookiePolicy@WKCookiePolicyDisallow	WKCookiePolicy			ios=17.0/-/-/0,macos=14.0/-/-/0	-	51ad7de4b4c5ddc0
+protocol	c:objc(pl)WKHTTPCookieStoreObserver	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	8b670ab8cc64602c
+conforms	-	WKHTTPCookieStoreObserver	NSObject		-	-	98b249f1ee0f2868
+method	c:objc(pl)WKHTTPCookieStoreObserver(im)cookiesDidChangeInCookieStore:	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	0140a1f448720733
+interface	c:objc(cs)WKHTTPCookieStore	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	d396636cc67f7950
+super	-	WKHTTPCookieStore	NSObject		-	-	f365f72944719724
+method	c:objc(cs)WKHTTPCookieStore(im)init	-			*unavailable ios=11.0/-/-/0,macos=10.13/-/-/0	-	bf23eea840cec3b0
+method	c:objc(cs)WKHTTPCookieStore(im)getAllCookies:	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	2e6e2a8c6f499648
+method	c:objc(cs)WKHTTPCookieStore(im)setCookie:completionHandler:	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	8d1a1ff126b08abb
+method	c:objc(cs)WKHTTPCookieStore(im)setCookies:completionHandler:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	cb640976c788cb73
+method	c:objc(cs)WKHTTPCookieStore(im)deleteCookie:completionHandler:	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	f6f425e7e5dfd439
+method	c:objc(cs)WKHTTPCookieStore(im)addObserver:	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	0571af67ed0a7bb5
+method	c:objc(cs)WKHTTPCookieStore(im)removeObserver:	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	305ffaa02f714472
+method	c:objc(cs)WKHTTPCookieStore(im)setCookiePolicy:completionHandler:	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	911ba55b436a6134
+method	c:objc(cs)WKHTTPCookieStore(im)getCookiePolicy:	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	dcf0262924bd0dae
+typedef	c:@T@WKContentMode	-			-	-	ce0701b4227ceabb
+enum	c:@E@WKContentMode	-			ios=13.0/-/-/0	-	992ca81c9b61c0c1
+enumconst	c:@E@WKContentMode@WKContentModeRecommended	WKContentMode			ios=13.0/-/-/0	-	073e5ab47033a1d3
+enumconst	c:@E@WKContentMode@WKContentModeMobile	WKContentMode			ios=13.0/-/-/0	-	3b67b5342264e389
+enumconst	c:@E@WKContentMode@WKContentModeDesktop	WKContentMode			ios=13.0/-/-/0	-	a7ee6a2fe6c94778
+typedef	c:@T@WKWebpagePreferencesUpgradeToHTTPSPolicy	-			-	-	c962481af75ef933
+enum	c:@E@WKWebpagePreferencesUpgradeToHTTPSPolicy	-			ios=18.2/-/-/0,macos=15.2/-/-/0,xros=2.2/-/-/0	-	7306e3b478474073
+enumconst	c:@E@WKWebpagePreferencesUpgradeToHTTPSPolicy@WKWebpagePreferencesUpgradeToHTTPSPolicyKeepAsRequested	WKWebpagePreferencesUpgradeToHTTPSPolicy			ios=18.2/-/-/0,macos=15.2/-/-/0,xros=2.2/-/-/0	-	9ce2d91c6b7be515
+enumconst	c:@E@WKWebpagePreferencesUpgradeToHTTPSPolicy@WKWebpagePreferencesUpgradeToHTTPSPolicyAutomaticFallbackToHTTP	WKWebpagePreferencesUpgradeToHTTPSPolicy			ios=18.2/-/-/0,macos=15.2/-/-/0,xros=2.2/-/-/0	-	0319b60896479d23
+enumconst	c:@E@WKWebpagePreferencesUpgradeToHTTPSPolicy@WKWebpagePreferencesUpgradeToHTTPSPolicyUserMediatedFallbackToHTTP	WKWebpagePreferencesUpgradeToHTTPSPolicy			ios=18.2/-/-/0,macos=15.2/-/-/0,xros=2.2/-/-/0	-	cec9b64644ad0cc7
+enumconst	c:@E@WKWebpagePreferencesUpgradeToHTTPSPolicy@WKWebpagePreferencesUpgradeToHTTPSPolicyErrorOnFailure	WKWebpagePreferencesUpgradeToHTTPSPolicy			ios=18.2/-/-/0,macos=15.2/-/-/0,xros=2.2/-/-/0	-	689b6fa9ac46b069
+interface	c:objc(cs)WKWebpagePreferences	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	3de9d9040482691d
+super	-	WKWebpagePreferences	NSObject		-	-	7c7e33dcbf17b58a
+property	c:objc(cs)WKWebpagePreferences(py)preferredContentMode	-			ios=13.0/-/-/0	-	eda2c0cdc19a2f3c
+property	c:objc(cs)WKWebpagePreferences(py)allowsContentJavaScript	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	0f1921bf78ca8c49
+property	c:objc(cs)WKWebpagePreferences(py)lockdownModeEnabled	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	e1724872272599a9
+property	c:objc(cs)WKWebpagePreferences(py)preferredHTTPSNavigationPolicy	-			ios=18.2/-/-/0,macos=15.2/-/-/0,xros=2.2/-/-/0	-	63ed881853d60c53
+interface	c:objc(cs)WKNavigation	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	09368aa5c37a637a
+super	-	WKNavigation	NSObject		-	-	1b8d855e24ef60ec
+property	c:objc(cs)WKNavigation(py)effectiveContentMode	-			ios=13.0/-/-/0	-	c2b249f09bfa01c0
+typedef	c:@T@WKNavigationType	-			-	-	b279052ef8b95448
+enum	c:@E@WKNavigationType	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	0767a5285f90fc2b
+enumconst	c:@E@WKNavigationType@WKNavigationTypeLinkActivated	WKNavigationType			ios=8.0/-/-/0,macos=10.10/-/-/0	-	ec3f4420810e31c5
+enumconst	c:@E@WKNavigationType@WKNavigationTypeFormSubmitted	WKNavigationType			ios=8.0/-/-/0,macos=10.10/-/-/0	-	72a1179735461125
+enumconst	c:@E@WKNavigationType@WKNavigationTypeBackForward	WKNavigationType			ios=8.0/-/-/0,macos=10.10/-/-/0	-	1f2425c09b0fd4b2
+enumconst	c:@E@WKNavigationType@WKNavigationTypeReload	WKNavigationType			ios=8.0/-/-/0,macos=10.10/-/-/0	-	12ecc5e99cc14076
+enumconst	c:@E@WKNavigationType@WKNavigationTypeFormResubmitted	WKNavigationType			ios=8.0/-/-/0,macos=10.10/-/-/0	-	86a6f6c777ddf2d6
+enumconst	c:@E@WKNavigationType@WKNavigationTypeOther	WKNavigationType			ios=8.0/-/-/0,macos=10.10/-/-/0	-	fb43abfebb1f7d73
+interface	c:objc(cs)WKNavigationAction	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	1668048e8d9a9284
+super	-	WKNavigationAction	NSObject		-	-	ca244366b73d53df
+property	c:objc(cs)WKNavigationAction(py)sourceFrame	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	8f262d081141f898
+property	c:objc(cs)WKNavigationAction(py)targetFrame	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	199eeacbb3938de1
+property	c:objc(cs)WKNavigationAction(py)navigationType	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	1197a97ea4bba4a3
+property	c:objc(cs)WKNavigationAction(py)request	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	d2935b7268fcd161
+property	c:objc(cs)WKNavigationAction(py)shouldPerformDownload	-			ios=14.5/-/-/0,macos=11.3/-/-/0	-	b2b4cee116823ce0
+property	c:objc(cs)WKNavigationAction(py)isContentRuleListRedirect	-			ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	5365d5a46a3c59f1
+property	c:objc(cs)WKNavigationAction(py)modifierFlags	-			ios=18.4/-/-/0,xros=2.4/-/-/0	-	4125cf72b8ba98eb
+property	c:objc(cs)WKNavigationAction(py)buttonNumber	-			ios=18.4/-/-/0,xros=2.4/-/-/0	-	497b01e1fd9dd63f
+typedef	c:@T@WKNavigationActionPolicy	-			-	-	ff53f5d48783b83c
+enum	c:@E@WKNavigationActionPolicy	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	df18da681f2bdd88
+enumconst	c:@E@WKNavigationActionPolicy@WKNavigationActionPolicyCancel	WKNavigationActionPolicy			ios=8.0/-/-/0,macos=10.10/-/-/0	-	9dab3a6a2f0b0319
+enumconst	c:@E@WKNavigationActionPolicy@WKNavigationActionPolicyAllow	WKNavigationActionPolicy			ios=8.0/-/-/0,macos=10.10/-/-/0	-	b085250b518c85d2
+enumconst	c:@E@WKNavigationActionPolicy@WKNavigationActionPolicyDownload	WKNavigationActionPolicy			ios=14.5/-/-/0,macos=11.3/-/-/0	-	1488d5fa21ea6eba
+typedef	c:@T@WKNavigationResponsePolicy	-			-	-	754384828e0cbf29
+enum	c:@E@WKNavigationResponsePolicy	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	f51402fcaa1f2e43
+enumconst	c:@E@WKNavigationResponsePolicy@WKNavigationResponsePolicyCancel	WKNavigationResponsePolicy			ios=8.0/-/-/0,macos=10.10/-/-/0	-	e83db8d8eb13e649
+enumconst	c:@E@WKNavigationResponsePolicy@WKNavigationResponsePolicyAllow	WKNavigationResponsePolicy			ios=8.0/-/-/0,macos=10.10/-/-/0	-	0739d4b50b795082
+enumconst	c:@E@WKNavigationResponsePolicy@WKNavigationResponsePolicyDownload	WKNavigationResponsePolicy			ios=14.5/-/-/0,macos=11.3/-/-/0	-	87e1b183545abe7c
+protocol	c:objc(pl)WKNavigationDelegate	-			-	-	21a7bb2712aa406f
+conforms	-	WKNavigationDelegate	NSObject		-	-	b17814e2af8553b3
+method	c:objc(pl)WKNavigationDelegate(im)webView:decidePolicyForNavigationAction:decisionHandler:	-			-	-	1d2fb62e2f7f1492
+method	c:objc(pl)WKNavigationDelegate(im)webView:decidePolicyForNavigationAction:preferences:decisionHandler:	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	7b4a4cd8dd2fd784
+method	c:objc(pl)WKNavigationDelegate(im)webView:decidePolicyForNavigationResponse:decisionHandler:	-			-	-	4151dd2c1ea6f1ea
+method	c:objc(pl)WKNavigationDelegate(im)webView:didStartProvisionalNavigation:	-			-	-	ed7a720354b547ab
+method	c:objc(pl)WKNavigationDelegate(im)webView:didReceiveServerRedirectForProvisionalNavigation:	-			-	-	99153dc3db906c8f
+method	c:objc(pl)WKNavigationDelegate(im)webView:didFailProvisionalNavigation:withError:	-			-	-	248fdebe4a38d0e4
+method	c:objc(pl)WKNavigationDelegate(im)webView:didCommitNavigation:	-			-	-	09b6b0b8264c9acd
+method	c:objc(pl)WKNavigationDelegate(im)webView:didFinishNavigation:	-			-	-	cff17f819f2fc181
+method	c:objc(pl)WKNavigationDelegate(im)webView:didFailNavigation:withError:	-			-	-	1d4d7661a9fda8d4
+method	c:objc(pl)WKNavigationDelegate(im)webView:didReceiveAuthenticationChallenge:completionHandler:	-			-	-	5e106a7bb6f85e9a
+method	c:objc(pl)WKNavigationDelegate(im)webViewWebContentProcessDidTerminate:	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	69bd202bce71bdad
+method	c:objc(pl)WKNavigationDelegate(im)webView:authenticationChallenge:shouldAllowDeprecatedTLS:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	7ad64a339ebe3fa6
+method	c:objc(pl)WKNavigationDelegate(im)webView:navigationAction:didBecomeDownload:	-			ios=14.5/-/-/0,macos=11.3/-/-/0	-	f55ec45806d79436
+method	c:objc(pl)WKNavigationDelegate(im)webView:navigationResponse:didBecomeDownload:	-			ios=14.5/-/-/0,macos=11.3/-/-/0	-	5af15cdb30e6aa0b
+method	c:objc(pl)WKNavigationDelegate(im)webView:shouldGoToBackForwardListItem:willUseInstantBack:completionHandler:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	dfea3ceda539ba5a
+interface	c:objc(cs)WKNavigationResponse	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	d0e2bfd95c6c2156
+super	-	WKNavigationResponse	NSObject		-	-	faa44473a1ded26e
+property	c:objc(cs)WKNavigationResponse(py)forMainFrame	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	99e8b9d674421155
+property	c:objc(cs)WKNavigationResponse(py)response	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	3b1be4f75cc504a1
+property	c:objc(cs)WKNavigationResponse(py)canShowMIMEType	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	9ea792389e9b69ce
+interface	c:objc(cs)WKOpenPanelParameters	-			ios=18.4/-/-/0,macos=10.12/-/-/0,xros=2.4/-/-/0	-	3837327e978423e4
+super	-	WKOpenPanelParameters	NSObject		-	-	c2cbaaa876ad62c0
+property	c:objc(cs)WKOpenPanelParameters(py)allowsMultipleSelection	-			ios=18.4/-/-/0,macos=10.12/-/-/0,xros=2.4/-/-/0	-	6deaff741e4ef3af
+property	c:objc(cs)WKOpenPanelParameters(py)allowsDirectories	-			ios=18.4/-/-/0,macos=10.13.4/-/-/0,xros=2.4/-/-/0	-	d737ba398cfdf7b2
+interface	c:objc(cs)WKPDFConfiguration	-			ios=13.4/-/-/0,macos=10.15.4/-/-/0	-	3339ac2dd427c13a
+super	-	WKPDFConfiguration	NSObject		-	-	7c463d7d40ca364e
+conforms	-	WKPDFConfiguration	NSCopying		-	-	288a8a9cd2a21535
+property	c:objc(cs)WKPDFConfiguration(py)rect	-			ios=13.4/-/-/0,macos=10.15.4/-/-/0	-	d20c4c8c04c80161
+property	c:objc(cs)WKPDFConfiguration(py)allowTransparentBackground	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	fc217026aa256ad7
+interface	c:objc(cs)WKPreferences	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	f1de437dd4406d28
+super	-	WKPreferences	NSObject		-	-	303721992db844a9
+conforms	-	WKPreferences	NSSecureCoding		-	-	980dd0bf9dd40666
+property	c:objc(cs)WKPreferences(py)minimumFontSize	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	f43aaf4a7db87c49
+property	c:objc(cs)WKPreferences(py)javaScriptCanOpenWindowsAutomatically	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	0c589cbd77d146e7
+property	c:objc(cs)WKPreferences(py)fraudulentWebsiteWarningEnabled	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	ef9f4ef302e8c228
+property	c:objc(cs)WKPreferences(py)shouldPrintBackgrounds	-			ios=16.4/-/-/0,macos=13.3/-/-/0	-	c979d9b82021f27a
+property	c:objc(cs)WKPreferences(py)textInteractionEnabled	-			ios=14.5/-/-/0,macos=11.3/-/-/0	-	dd1f4d5ea8db4869
+property	c:objc(cs)WKPreferences(py)siteSpecificQuirksModeEnabled	-			ios=15.4/-/-/0,macos=12.3/-/-/0	-	0b6b0b791c16932e
+property	c:objc(cs)WKPreferences(py)elementFullscreenEnabled	-			ios=15.4/-/-/0,macos=12.3/-/-/0,tvos=17.0/-/-/0	-	0176955d2cd16721
+property	c:objc(cs)WKPreferences(py)inactiveSchedulingPolicy	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	65e4582ce17c4a40
+typedef	c:@T@WKInactiveSchedulingPolicy	-			-	-	19c93a9d777f626b
+enum	c:@E@WKInactiveSchedulingPolicy	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	ed3a5713acbd3aa8
+enumconst	c:@E@WKInactiveSchedulingPolicy@WKInactiveSchedulingPolicySuspend	WKInactiveSchedulingPolicy			ios=17.0/-/-/0,macos=14.0/-/-/0	-	bfe2f454292bafff
+enumconst	c:@E@WKInactiveSchedulingPolicy@WKInactiveSchedulingPolicyThrottle	WKInactiveSchedulingPolicy			ios=17.0/-/-/0,macos=14.0/-/-/0	-	50d15a9b95aa244e
+enumconst	c:@E@WKInactiveSchedulingPolicy@WKInactiveSchedulingPolicyNone	WKInactiveSchedulingPolicy			ios=17.0/-/-/0,macos=14.0/-/-/0	-	a989d969a2a11c72
+category	c:objc(cy)WKPreferences@WKDeprecated	-			ios=8.0/-/-/0,macos=10.10/-/-/0	deprecated: Java is no longer supported	d54d175067372e2b
+property	c:objc(cs)WKPreferences(py)javaScriptEnabled	WKDeprecated			ios=8.0/14.0/-/0,macos=10.10/11.0/-/0	-	abd333c667d06b31
+property	c:objc(cs)WKPreferences(py)isLookToScrollEnabled	WKDeprecated			ios=-/-/-/1,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	41ec1c065a2b08b0
+protocol	c:objc(pl)WKPreviewActionItem	-			ios=10.0/13.0/-/0	-	134921c1c6722ba4
+conforms	-	WKPreviewActionItem	UIPreviewActionItem		-	-	29ed477f69266f3c
+property	c:objc(pl)WKPreviewActionItem(py)identifier	-			ios=10.0/13.0/-/0	-	6aa2494b3c352068
+var	c:@WKPreviewActionItemIdentifierOpen	-			ios=10.0/13.0/-/0	-	df22ce36dbd37c3a
+var	c:@WKPreviewActionItemIdentifierAddToReadingList	-			ios=10.0/13.0/-/0	-	3a45af094a5a8494
+var	c:@WKPreviewActionItemIdentifierCopy	-			ios=10.0/13.0/-/0	-	bc75a4b5f539bc1e
+var	c:@WKPreviewActionItemIdentifierShare	-			ios=10.0/13.0/-/0	-	d586502dcdeecde5
+interface	c:objc(cs)WKPreviewElementInfo	-			ios=10.0/13.0/-/0	-	d7ca1a21d317f112
+super	-	WKPreviewElementInfo	NSObject		-	-	8cbef6bcbf734248
+conforms	-	WKPreviewElementInfo	NSCopying		-	-	b51c583567cd8d24
+property	c:objc(cs)WKPreviewElementInfo(py)linkURL	-			ios=10.0/13.0/-/0	-	6e49332b8472cb7d
+interface	c:objc(cs)WKProcessPool	-			ios=8.0/15.0/-/0,macos=10.10/12.0/-/0,xros=1.0/1.0/-/0	-	b829c21ad854ad78
+super	-	WKProcessPool	NSObject		-	-	25a37404d1ac6b21
+conforms	-	WKProcessPool	NSSecureCoding		-	-	c06b98cbaa775caa
+interface	c:objc(cs)WKScriptMessage	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	3b7baaa606a37fee
+super	-	WKScriptMessage	NSObject		-	-	e3afdcc89d07bc26
+property	c:objc(cs)WKScriptMessage(py)body	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	35dc0054da427abd
+property	c:objc(cs)WKScriptMessage(py)webView	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	fd5208da01239a67
+property	c:objc(cs)WKScriptMessage(py)frameInfo	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	fc8366b842342bf8
+property	c:objc(cs)WKScriptMessage(py)name	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	9f9885f13274fdcd
+property	c:objc(cs)WKScriptMessage(py)world	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	14fc2d9b5a8fc05d
+protocol	c:objc(pl)WKScriptMessageHandler	-			-	-	cb8674cce51d88ef
+conforms	-	WKScriptMessageHandler	NSObject		-	-	5cd9ca80207cf36e
+method	c:objc(pl)WKScriptMessageHandler(im)userContentController:didReceiveScriptMessage:	-			-	-	1d2fc17b1e9f4f33
+protocol	c:objc(pl)WKScriptMessageHandlerWithReply	-			-	-	ae1ad6632ae8daec
+conforms	-	WKScriptMessageHandlerWithReply	NSObject		-	-	05b8c51215c107a2
+method	c:objc(pl)WKScriptMessageHandlerWithReply(im)userContentController:didReceiveScriptMessage:replyHandler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	b75f3b27dca67989
+interface	c:objc(cs)WKSnapshotConfiguration	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	85488fca8adb6f2b
+super	-	WKSnapshotConfiguration	NSObject		-	-	ae42b6bba49e7b5a
+conforms	-	WKSnapshotConfiguration	NSCopying		-	-	d890ea61e3cb03ed
+property	c:objc(cs)WKSnapshotConfiguration(py)rect	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	0e532ab61d1da1fb
+property	c:objc(cs)WKSnapshotConfiguration(py)snapshotWidth	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	c521459aa4bbd900
+property	c:objc(cs)WKSnapshotConfiguration(py)afterScreenUpdates	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	cf0ebde90127ed7f
+typedef	c:@T@WKPermissionDecision	-			-	-	d0c31fdd6dd9c96e
+enum	c:@E@WKPermissionDecision	-			ios=15.0/-/-/0,macos=12.0/-/-/0	-	703bbcf2154359db
+enumconst	c:@E@WKPermissionDecision@WKPermissionDecisionPrompt	WKPermissionDecision			ios=15.0/-/-/0,macos=12.0/-/-/0	-	0dd9f9063f636a55
+enumconst	c:@E@WKPermissionDecision@WKPermissionDecisionGrant	WKPermissionDecision			ios=15.0/-/-/0,macos=12.0/-/-/0	-	e4af6d3672bacaad
+enumconst	c:@E@WKPermissionDecision@WKPermissionDecisionDeny	WKPermissionDecision			ios=15.0/-/-/0,macos=12.0/-/-/0	-	47a86a8e9149f9ef
+typedef	c:@T@WKMediaCaptureType	-			-	-	25aa3b4e8438ed9b
+enum	c:@E@WKMediaCaptureType	-			ios=15.0/-/-/0,macos=12.0/-/-/0	-	e347dcf0e7346c46
+enumconst	c:@E@WKMediaCaptureType@WKMediaCaptureTypeCamera	WKMediaCaptureType			ios=15.0/-/-/0,macos=12.0/-/-/0	-	f408c6e80fbfcfe7
+enumconst	c:@E@WKMediaCaptureType@WKMediaCaptureTypeMicrophone	WKMediaCaptureType			ios=15.0/-/-/0,macos=12.0/-/-/0	-	e1deab443ba97b4a
+enumconst	c:@E@WKMediaCaptureType@WKMediaCaptureTypeCameraAndMicrophone	WKMediaCaptureType			ios=15.0/-/-/0,macos=12.0/-/-/0	-	22cb75fb6fc3a683
+typedef	c:@T@WKDialogResult	-			-	-	4a1c5d0439e6e942
+enum	c:@E@WKDialogResult	-			ios=16.0/-/-/0	-	c0e746cd753844ce
+enumconst	c:@E@WKDialogResult@WKDialogResultShowDefault	WKDialogResult			ios=16.0/-/-/0	-	8597dcec04202b81
+enumconst	c:@E@WKDialogResult@WKDialogResultAskAgain	WKDialogResult			ios=16.0/-/-/0	-	92c60c1a1ba6c52c
+enumconst	c:@E@WKDialogResult@WKDialogResultHandled	WKDialogResult			ios=16.0/-/-/0	-	842143db9eda5187
+protocol	c:objc(pl)WKUIDelegate	-			-	deprecated: Use webView:contextMenuConfigurationForElement:completionHandler: instead	f678c43f105ef57f
+conforms	-	WKUIDelegate	NSObject		-	-	46090acae9480e0e
+method	c:objc(pl)WKUIDelegate(im)webView:createWebViewWithConfiguration:forNavigationAction:windowFeatures:	-			-	-	a80dc4d4dca50880
+method	c:objc(pl)WKUIDelegate(im)webViewDidClose:	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	5072f51a06388c7c
+method	c:objc(pl)WKUIDelegate(im)webView:runJavaScriptAlertPanelWithMessage:initiatedByFrame:completionHandler:	-			-	-	d0a7965d2d03546e
+method	c:objc(pl)WKUIDelegate(im)webView:runJavaScriptConfirmPanelWithMessage:initiatedByFrame:completionHandler:	-			-	-	baadc6b3ab3ba3c1
+method	c:objc(pl)WKUIDelegate(im)webView:runJavaScriptTextInputPanelWithPrompt:defaultText:initiatedByFrame:completionHandler:	-			-	-	413f7e65b75d04ff
+method	c:objc(pl)WKUIDelegate(im)webView:requestMediaCapturePermissionForOrigin:initiatedByFrame:type:decisionHandler:	-			ios=15.0/-/-/0,macos=12.0/-/-/0	-	980f911da8153398
+method	c:objc(pl)WKUIDelegate(im)webView:requestDeviceOrientationAndMotionPermissionForOrigin:initiatedByFrame:decisionHandler:	-			ios=15.0/-/-/0,macos=-/-/-/1	-	0f8bf7b1d4bbf38b
+method	c:objc(pl)WKUIDelegate(im)webView:shouldPreviewElement:	-			ios=10.0/13.0/-/0	deprecated: Use webView:contextMenuConfigurationForElement:completionHandler: instead	18be762f52c748c9
+method	c:objc(pl)WKUIDelegate(im)webView:previewingViewControllerForElement:defaultActions:	-			ios=10.0/13.0/-/0	deprecated: Use webView:contextMenuConfigurationForElement:completionHandler: instead	c18f6e53117b08a4
+method	c:objc(pl)WKUIDelegate(im)webView:commitPreviewingViewController:	-			ios=10.0/13.0/-/0	deprecated: Use webView:contextMenuForElement:willCommitWithAnimator: instead	2db6e20f03d184ee
+method	c:objc(pl)WKUIDelegate(im)webView:contextMenuConfigurationForElement:completionHandler:	-			ios=13.0/-/-/0	-	943f9992bebc6793
+method	c:objc(pl)WKUIDelegate(im)webView:contextMenuWillPresentForElement:	-			ios=13.0/-/-/0	-	ab4d5023b9993a0d
+method	c:objc(pl)WKUIDelegate(im)webView:contextMenuForElement:willCommitWithAnimator:	-			ios=13.0/-/-/0	-	ad2c1c99df675f97
+method	c:objc(pl)WKUIDelegate(im)webView:contextMenuDidEndForElement:	-			ios=13.0/-/-/0	-	221dde766b082e8a
+method	c:objc(pl)WKUIDelegate(im)webView:showLockdownModeFirstUseMessage:completionHandler:	-			ios=16.0/-/-/0	-	1989cf266bcdfc5c
+method	c:objc(pl)WKUIDelegate(im)webView:willPresentEditMenuWithAnimator:	-			ios=16.4/-/-/0	-	4d47ba8dc7c1f9cb
+method	c:objc(pl)WKUIDelegate(im)webView:willDismissEditMenuWithAnimator:	-			ios=16.4/-/-/0	-	d813b7a1d1374a40
+method	c:objc(pl)WKUIDelegate(im)webView:runOpenPanelWithParameters:initiatedByFrame:completionHandler:	-			ios=18.4/-/-/0,macos=10.12/-/-/0,xros=2.4/-/-/0	-	4c6487f32fbf9657
+method	c:objc(pl)WKUIDelegate(im)webView:insertInputSuggestion:	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	29a48b66b24ea93e
+protocol	c:objc(pl)WKURLSchemeHandler	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	0e098c8363913a90
+conforms	-	WKURLSchemeHandler	NSObject		-	-	29db3158e9934b57
+method	c:objc(pl)WKURLSchemeHandler(im)webView:startURLSchemeTask:	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	de00909e98a8b36c
+method	c:objc(pl)WKURLSchemeHandler(im)webView:stopURLSchemeTask:	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	47c315c7c37876fc
+protocol	c:objc(pl)WKURLSchemeTask	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	cf87d7bd883f5135
+conforms	-	WKURLSchemeTask	NSObject		-	-	b65293e2ed69ab6b
+property	c:objc(pl)WKURLSchemeTask(py)request	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	95b6e1667c55800c
+method	c:objc(pl)WKURLSchemeTask(im)didReceiveResponse:	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	e8426047d9e237a4
+method	c:objc(pl)WKURLSchemeTask(im)didReceiveData:	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	2388d7566c41caca
+method	c:objc(pl)WKURLSchemeTask(im)didFinish	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	a93cc964dfebd040
+method	c:objc(pl)WKURLSchemeTask(im)didFailWithError:	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	f8e65f78d3890fa7
+interface	c:objc(cs)WKUserContentController	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	4d2bc85705c55a53
+super	-	WKUserContentController	NSObject		-	-	94f32eea4ad5fd41
+conforms	-	WKUserContentController	NSSecureCoding		-	-	a644db93da70f749
+property	c:objc(cs)WKUserContentController(py)userScripts	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	bc6148c7b9412244
+method	c:objc(cs)WKUserContentController(im)addUserScript:	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	781f1fef3eda8ddf
+method	c:objc(cs)WKUserContentController(im)removeAllUserScripts	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	835a9a304e7ca579
+method	c:objc(cs)WKUserContentController(im)addScriptMessageHandler:contentWorld:name:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	473d18d47479fa90
+method	c:objc(cs)WKUserContentController(im)addScriptMessageHandlerWithReply:contentWorld:name:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	88b41bd2f46e92a8
+method	c:objc(cs)WKUserContentController(im)addScriptMessageHandler:name:	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	2b89dcbf2524eee4
+method	c:objc(cs)WKUserContentController(im)removeScriptMessageHandlerForName:contentWorld:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	c730a2727fb07575
+method	c:objc(cs)WKUserContentController(im)removeScriptMessageHandlerForName:	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	f7c1bd8e9aa3b31a
+method	c:objc(cs)WKUserContentController(im)removeAllScriptMessageHandlersFromContentWorld:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	0519307b093b1518
+method	c:objc(cs)WKUserContentController(im)removeAllScriptMessageHandlers	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	417f7c223c0bcf13
+method	c:objc(cs)WKUserContentController(im)addContentRuleList:	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	c75ac52a0e9e051c
+method	c:objc(cs)WKUserContentController(im)removeContentRuleList:	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	d7660cb8b05555fb
+method	c:objc(cs)WKUserContentController(im)removeAllContentRuleLists	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	b6aa4f4e35ec73ca
+typedef	c:@T@WKUserScriptInjectionTime	-			-	-	2cbe28fe026daa8f
+enum	c:@E@WKUserScriptInjectionTime	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	19b54e09ff99a1cf
+enumconst	c:@E@WKUserScriptInjectionTime@WKUserScriptInjectionTimeAtDocumentStart	WKUserScriptInjectionTime			ios=8.0/-/-/0,macos=10.10/-/-/0	-	95f68a34693e49f4
+enumconst	c:@E@WKUserScriptInjectionTime@WKUserScriptInjectionTimeAtDocumentEnd	WKUserScriptInjectionTime			ios=8.0/-/-/0,macos=10.10/-/-/0	-	ca5a5356912370ab
+interface	c:objc(cs)WKUserScript	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	db9e183196191234
+super	-	WKUserScript	NSObject		-	-	c0c0fae35fe0d8b8
+conforms	-	WKUserScript	NSCopying		-	-	6c52246ff98e08b4
+property	c:objc(cs)WKUserScript(py)source	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	4632b20fc5976527
+property	c:objc(cs)WKUserScript(py)injectionTime	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	316aaba729fc2255
+property	c:objc(cs)WKUserScript(py)forMainFrameOnly	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	37bc7db49b096edc
+method	c:objc(cs)WKUserScript(im)initWithSource:injectionTime:forMainFrameOnly:	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	cb7fcea85a52674c
+method	c:objc(cs)WKUserScript(im)initWithSource:injectionTime:forMainFrameOnly:inContentWorld:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	1ed2d3fd05ecb6fa
+var	c:@WKWebExtensionMatchPatternErrorDomain	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	415f2732d1740a76
+typedef	c:@T@WKWebExtensionMatchPatternError	-			-	-	59653206d5239234
+enum	c:@E@WKWebExtensionMatchPatternError	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	70ab4c5fdcf9477d
+enumconst	c:@E@WKWebExtensionMatchPatternError@WKWebExtensionMatchPatternErrorUnknown	WKWebExtensionMatchPatternError			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	9a8dc3321e4f24fd
+enumconst	c:@E@WKWebExtensionMatchPatternError@WKWebExtensionMatchPatternErrorInvalidScheme	WKWebExtensionMatchPatternError			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	ff1a4cc6859f9fef
+enumconst	c:@E@WKWebExtensionMatchPatternError@WKWebExtensionMatchPatternErrorInvalidHost	WKWebExtensionMatchPatternError			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	957f1d41c779ddfa
+enumconst	c:@E@WKWebExtensionMatchPatternError@WKWebExtensionMatchPatternErrorInvalidPath	WKWebExtensionMatchPatternError			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	33f7584b9e4de59d
+typedef	c:@T@WKWebExtensionMatchPatternOptions	-			-	-	1af698dcef0a53f2
+enum	c:@E@WKWebExtensionMatchPatternOptions	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	1edeb66af723863a
+enumconst	c:@E@WKWebExtensionMatchPatternOptions@WKWebExtensionMatchPatternOptionsNone	WKWebExtensionMatchPatternOptions			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	7bc7d67181d554f0
+enumconst	c:@E@WKWebExtensionMatchPatternOptions@WKWebExtensionMatchPatternOptionsIgnoreSchemes	WKWebExtensionMatchPatternOptions			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	b978e6ef12968a5a
+enumconst	c:@E@WKWebExtensionMatchPatternOptions@WKWebExtensionMatchPatternOptionsIgnorePaths	WKWebExtensionMatchPatternOptions			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	165ea3dfb1c9c485
+enumconst	c:@E@WKWebExtensionMatchPatternOptions@WKWebExtensionMatchPatternOptionsMatchBidirectionally	WKWebExtensionMatchPatternOptions			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	c0b1592bab5ec94b
+interface	c:objc(cs)WKWebExtensionMatchPattern	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	bcbc9cb3075ec6cf
+super	-	WKWebExtensionMatchPattern	NSObject		-	-	6d6b3a57898ea16d
+conforms	-	WKWebExtensionMatchPattern	NSSecureCoding		-	-	73723d15aaaf7ef4
+conforms	-	WKWebExtensionMatchPattern	NSCopying		-	-	0309afcd3d6606aa
+method	c:objc(cs)WKWebExtensionMatchPattern(cm)new	-			*unavailable ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	30c715456957e645
+method	c:objc(cs)WKWebExtensionMatchPattern(im)init	-			*unavailable ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	69b834c98d9a814d
+method	c:objc(cs)WKWebExtensionMatchPattern(cm)registerCustomURLScheme:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	05e93dc5b718f3f0
+method	c:objc(cs)WKWebExtensionMatchPattern(cm)allURLsMatchPattern	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	a6d12aa43f0eb7ce
+method	c:objc(cs)WKWebExtensionMatchPattern(cm)allHostsAndSchemesMatchPattern	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	37a1a37d378aca4c
+method	c:objc(cs)WKWebExtensionMatchPattern(cm)matchPatternWithString:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	aeee91106a2b8173
+method	c:objc(cs)WKWebExtensionMatchPattern(cm)matchPatternWithScheme:host:path:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	0404e5f93b05b862
+method	c:objc(cs)WKWebExtensionMatchPattern(im)initWithString:error:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	fe2ce631c3b20728
+method	c:objc(cs)WKWebExtensionMatchPattern(im)initWithScheme:host:path:error:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	33f3ff820bd99524
+property	c:objc(cs)WKWebExtensionMatchPattern(py)string	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	19d317663576a862
+property	c:objc(cs)WKWebExtensionMatchPattern(py)scheme	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	1641b599c0f9b5d6
+property	c:objc(cs)WKWebExtensionMatchPattern(py)host	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	afde70f7c3b9900e
+property	c:objc(cs)WKWebExtensionMatchPattern(py)path	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	1631fee965106580
+property	c:objc(cs)WKWebExtensionMatchPattern(py)matchesAllURLs	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	adfa07a279145c73
+property	c:objc(cs)WKWebExtensionMatchPattern(py)matchesAllHosts	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	4fe6efa05eb607a3
+method	c:objc(cs)WKWebExtensionMatchPattern(im)matchesURL:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	d962e56d25189728
+method	c:objc(cs)WKWebExtensionMatchPattern(im)matchesURL:options:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	53ee831fd46aded2
+method	c:objc(cs)WKWebExtensionMatchPattern(im)matchesPattern:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	be29e1ab4a410f83
+method	c:objc(cs)WKWebExtensionMatchPattern(im)matchesPattern:options:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	733f4f1110c298b8
+typedef	c:@T@WKWebExtensionPermission	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	57b10e14c36a214f
+var	c:@WKWebExtensionPermissionActiveTab	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	a6a556e47c45edca
+var	c:@WKWebExtensionPermissionAlarms	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	0b0ed1ebae66c738
+var	c:@WKWebExtensionPermissionClipboardWrite	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	7173f48a96c8c899
+var	c:@WKWebExtensionPermissionContextMenus	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	c58efce2382b4d52
+var	c:@WKWebExtensionPermissionCookies	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	625265268bca0b1c
+var	c:@WKWebExtensionPermissionDeclarativeNetRequest	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	0add416481fe2c8d
+var	c:@WKWebExtensionPermissionDeclarativeNetRequestFeedback	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	fb4c7584dfde0a0b
+var	c:@WKWebExtensionPermissionDeclarativeNetRequestWithHostAccess	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	8e88a968260b2f8c
+var	c:@WKWebExtensionPermissionMenus	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	6ffa91bd4ce3ee23
+var	c:@WKWebExtensionPermissionNativeMessaging	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	906a8269c09b8c31
+var	c:@WKWebExtensionPermissionScripting	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	b94db902cc77aaf3
+var	c:@WKWebExtensionPermissionStorage	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	746069598c1044c3
+var	c:@WKWebExtensionPermissionTabs	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	1bec55aaaf616658
+var	c:@WKWebExtensionPermissionUnlimitedStorage	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	390d37167cb8b58d
+var	c:@WKWebExtensionPermissionWebNavigation	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	dbcaa42f55856a1e
+var	c:@WKWebExtensionPermissionWebRequest	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	09c2b28050c0ec48
+var	c:@WKWebExtensionErrorDomain	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	05a8433045fd8bee
+typedef	c:@T@WKWebExtensionError	-			-	-	50ce309d80b478ff
+enum	c:@E@WKWebExtensionError	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	c13cc101aba9cc9f
+enumconst	c:@E@WKWebExtensionError@WKWebExtensionErrorUnknown	WKWebExtensionError			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	870eba10b33b3db0
+enumconst	c:@E@WKWebExtensionError@WKWebExtensionErrorResourceNotFound	WKWebExtensionError			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	46ebdd92678188a9
+enumconst	c:@E@WKWebExtensionError@WKWebExtensionErrorInvalidResourceCodeSignature	WKWebExtensionError			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	8edff2748ff24e88
+enumconst	c:@E@WKWebExtensionError@WKWebExtensionErrorInvalidManifest	WKWebExtensionError			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	93ac4caf1fcb96a3
+enumconst	c:@E@WKWebExtensionError@WKWebExtensionErrorUnsupportedManifestVersion	WKWebExtensionError			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	d737eb878590bfb9
+enumconst	c:@E@WKWebExtensionError@WKWebExtensionErrorInvalidManifestEntry	WKWebExtensionError			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	f2ac6784f748d38e
+enumconst	c:@E@WKWebExtensionError@WKWebExtensionErrorInvalidDeclarativeNetRequestEntry	WKWebExtensionError			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	86d07f1c730d6f87
+enumconst	c:@E@WKWebExtensionError@WKWebExtensionErrorInvalidBackgroundPersistence	WKWebExtensionError			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	c1326ff1d78b8bee
+enumconst	c:@E@WKWebExtensionError@WKWebExtensionErrorInvalidArchive	WKWebExtensionError			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	69d2fd1587bc6efb
+interface	c:objc(cs)WKWebExtension	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	6b25266888726d52
+super	-	WKWebExtension	NSObject		-	-	32aff5894c7a0c7b
+method	c:objc(cs)WKWebExtension(cm)new	-			*unavailable ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	ad4702f68d570b11
+method	c:objc(cs)WKWebExtension(im)init	-			*unavailable ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	4e277de19763df8c
+method	c:objc(cs)WKWebExtension(cm)extensionWithAppExtensionBundle:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	21c5a30e2fadd369
+method	c:objc(cs)WKWebExtension(cm)extensionWithResourceBaseURL:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	ab96d44fc60d9c80
+property	c:objc(cs)WKWebExtension(py)errors	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	e929391088bc2b04
+property	c:objc(cs)WKWebExtension(py)manifest	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	bbb70360cf7d6058
+property	c:objc(cs)WKWebExtension(py)manifestVersion	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	e5fdb87f6ae9f642
+method	c:objc(cs)WKWebExtension(im)supportsManifestVersion:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	96ebbc25bc17242f
+property	c:objc(cs)WKWebExtension(py)defaultLocale	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	1752b22b86529ac6
+property	c:objc(cs)WKWebExtension(py)displayName	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	d5ce2ab93c1cf5d7
+property	c:objc(cs)WKWebExtension(py)displayShortName	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	d5e2ec0ba37fcb17
+property	c:objc(cs)WKWebExtension(py)displayVersion	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	88392d6fbdab05cc
+property	c:objc(cs)WKWebExtension(py)displayDescription	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	b88d53e3340c8246
+property	c:objc(cs)WKWebExtension(py)displayActionLabel	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	689ba96cd2dddf68
+property	c:objc(cs)WKWebExtension(py)version	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	6a819360e53005f3
+method	c:objc(cs)WKWebExtension(im)iconForSize:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	498971e72db4d13f
+method	c:objc(cs)WKWebExtension(im)actionIconForSize:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	e42f31734b076ac8
+property	c:objc(cs)WKWebExtension(py)requestedPermissions	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	415645372fdb93be
+property	c:objc(cs)WKWebExtension(py)optionalPermissions	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	65f9652f88d795e0
+property	c:objc(cs)WKWebExtension(py)requestedPermissionMatchPatterns	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	24dfece905fa2d95
+property	c:objc(cs)WKWebExtension(py)optionalPermissionMatchPatterns	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	2530fb88fc3d4811
+property	c:objc(cs)WKWebExtension(py)allRequestedMatchPatterns	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	58c6ea60a8413b09
+property	c:objc(cs)WKWebExtension(py)hasBackgroundContent	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	6bcdfb6a6465bddb
+property	c:objc(cs)WKWebExtension(py)hasPersistentBackgroundContent	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	78d1d41ae437e1af
+property	c:objc(cs)WKWebExtension(py)hasInjectedContent	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	9a3e7d98791a43d7
+property	c:objc(cs)WKWebExtension(py)hasOptionsPage	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	561aa90df89da202
+property	c:objc(cs)WKWebExtension(py)hasOverrideNewTabPage	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	1bfe44f69ec4c853
+property	c:objc(cs)WKWebExtension(py)hasCommands	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	f7e6e51c1b21e7e1
+property	c:objc(cs)WKWebExtension(py)hasContentModificationRules	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	a4be773fadd0f4d7
+interface	c:objc(cs)WKWebExtensionAction	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	93224457cd3b3cc6
+super	-	WKWebExtensionAction	NSObject		-	-	12f9f475eeb25ade
+method	c:objc(cs)WKWebExtensionAction(im)init	-			*unavailable ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	1f4ea523c9585e9b
+method	c:objc(cs)WKWebExtensionAction(im)new	-			*unavailable ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	c6deb357f77c40d4
+property	c:objc(cs)WKWebExtensionAction(py)webExtensionContext	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	e46bb12f8887086f
+property	c:objc(cs)WKWebExtensionAction(py)associatedTab	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	f3ef04225150bd79
+method	c:objc(cs)WKWebExtensionAction(im)iconForSize:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	195c40b4e088b856
+property	c:objc(cs)WKWebExtensionAction(py)label	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	b9320c7779ae5a30
+property	c:objc(cs)WKWebExtensionAction(py)badgeText	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	473e5c114af1881e
+property	c:objc(cs)WKWebExtensionAction(py)hasUnreadBadgeText	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	a01d7fd7fdda1d4f
+property	c:objc(cs)WKWebExtensionAction(py)inspectionName	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	c56c674ecc88d923
+property	c:objc(cs)WKWebExtensionAction(py)enabled	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	6d98a7e01aae17bb
+property	c:objc(cs)WKWebExtensionAction(py)menuItems	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	68142c8eb255bbe7
+property	c:objc(cs)WKWebExtensionAction(py)presentsPopup	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	4f082af8cd0172dc
+property	c:objc(cs)WKWebExtensionAction(py)popupViewController	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	454fda83cd18fd3c
+property	c:objc(cs)WKWebExtensionAction(py)popupWebView	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	539843945bc11b1b
+method	c:objc(cs)WKWebExtensionAction(im)closePopup	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	88dc740c0a7292ca
+interface	c:objc(cs)WKWebExtensionCommand	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	2a04640312ea1d5a
+super	-	WKWebExtensionCommand	NSObject		-	-	12124b99a9cdc961
+method	c:objc(cs)WKWebExtensionCommand(cm)new	-			*unavailable ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	b05018a795444066
+method	c:objc(cs)WKWebExtensionCommand(im)init	-			*unavailable ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	4cb6b9432a1f85f4
+property	c:objc(cs)WKWebExtensionCommand(py)webExtensionContext	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	8d2bec94628b7f82
+property	c:objc(cs)WKWebExtensionCommand(py)identifier	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	cdbe58f1d34e5d0d
+property	c:objc(cs)WKWebExtensionCommand(py)title	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	9dbdc2816b556ff3
+property	c:objc(cs)WKWebExtensionCommand(py)activationKey	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	e186e474c4a2c6b0
+property	c:objc(cs)WKWebExtensionCommand(py)modifierFlags	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	95610cecddfb4522
+property	c:objc(cs)WKWebExtensionCommand(py)menuItem	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	7a9cb16828b69899
+property	c:objc(cs)WKWebExtensionCommand(py)keyCommand	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	b1e5ece3a1a1b9f2
+typedef	c:@T@WKWebExtensionTabChangedProperties	-			-	-	118b415b99c752f3
+enum	c:@E@WKWebExtensionTabChangedProperties	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	09bf6f5553efd1b6
+enumconst	c:@E@WKWebExtensionTabChangedProperties@WKWebExtensionTabChangedPropertiesNone	WKWebExtensionTabChangedProperties			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	2a69a7785f37d913
+enumconst	c:@E@WKWebExtensionTabChangedProperties@WKWebExtensionTabChangedPropertiesLoading	WKWebExtensionTabChangedProperties			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	c5c40e6b95c9305e
+enumconst	c:@E@WKWebExtensionTabChangedProperties@WKWebExtensionTabChangedPropertiesMuted	WKWebExtensionTabChangedProperties			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	abfacc7f253eeb2b
+enumconst	c:@E@WKWebExtensionTabChangedProperties@WKWebExtensionTabChangedPropertiesPinned	WKWebExtensionTabChangedProperties			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	c3f82c333e2a9827
+enumconst	c:@E@WKWebExtensionTabChangedProperties@WKWebExtensionTabChangedPropertiesPlayingAudio	WKWebExtensionTabChangedProperties			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	acb0e4f74af4dfd8
+enumconst	c:@E@WKWebExtensionTabChangedProperties@WKWebExtensionTabChangedPropertiesReaderMode	WKWebExtensionTabChangedProperties			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	733b7806b4ae5dd4
+enumconst	c:@E@WKWebExtensionTabChangedProperties@WKWebExtensionTabChangedPropertiesSize	WKWebExtensionTabChangedProperties			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	49915da72fe93a62
+enumconst	c:@E@WKWebExtensionTabChangedProperties@WKWebExtensionTabChangedPropertiesTitle	WKWebExtensionTabChangedProperties			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	8748d4f4a2da085d
+enumconst	c:@E@WKWebExtensionTabChangedProperties@WKWebExtensionTabChangedPropertiesURL	WKWebExtensionTabChangedProperties			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	969bf3798947e388
+enumconst	c:@E@WKWebExtensionTabChangedProperties@WKWebExtensionTabChangedPropertiesZoomFactor	WKWebExtensionTabChangedProperties			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	ae6ead149eb1561f
+protocol	c:objc(pl)WKWebExtensionTab	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	22736e97902bd4cb
+conforms	-	WKWebExtensionTab	NSObject		-	-	03a23fa287b17a3c
+method	c:objc(pl)WKWebExtensionTab(im)windowForWebExtensionContext:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	df63b9ee163ce1cf
+method	c:objc(pl)WKWebExtensionTab(im)indexInWindowForWebExtensionContext:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	52f9c001ed93a219
+method	c:objc(pl)WKWebExtensionTab(im)parentTabForWebExtensionContext:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	9af4442a2c695b4f
+method	c:objc(pl)WKWebExtensionTab(im)setParentTab:forWebExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	8a4ff435fa2d6ce7
+method	c:objc(pl)WKWebExtensionTab(im)webViewForWebExtensionContext:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	f31834996dc0c1ed
+method	c:objc(pl)WKWebExtensionTab(im)titleForWebExtensionContext:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	ecb528066254c1cd
+method	c:objc(pl)WKWebExtensionTab(im)isPinnedForWebExtensionContext:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	bbf2b21adf7612c4
+method	c:objc(pl)WKWebExtensionTab(im)setPinned:forWebExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	cb007abb6ccd34f9
+method	c:objc(pl)WKWebExtensionTab(im)isReaderModeAvailableForWebExtensionContext:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	5adde723546ffada
+method	c:objc(pl)WKWebExtensionTab(im)isReaderModeActiveForWebExtensionContext:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	27427ba97f07ce25
+method	c:objc(pl)WKWebExtensionTab(im)setReaderModeActive:forWebExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	d8df793b96f29a85
+method	c:objc(pl)WKWebExtensionTab(im)isPlayingAudioForWebExtensionContext:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	baf1e4739326dc8b
+method	c:objc(pl)WKWebExtensionTab(im)isMutedForWebExtensionContext:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	fc09e0ea8441e284
+method	c:objc(pl)WKWebExtensionTab(im)setMuted:forWebExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	c6a19b9357169525
+method	c:objc(pl)WKWebExtensionTab(im)sizeForWebExtensionContext:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	52be92bfc7b7b29e
+method	c:objc(pl)WKWebExtensionTab(im)zoomFactorForWebExtensionContext:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	49be066737c9fc14
+method	c:objc(pl)WKWebExtensionTab(im)setZoomFactor:forWebExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	1721d6475d5e14a3
+method	c:objc(pl)WKWebExtensionTab(im)urlForWebExtensionContext:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	8ab54068c9fbe019
+method	c:objc(pl)WKWebExtensionTab(im)pendingURLForWebExtensionContext:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	a67216bba2ccc13f
+method	c:objc(pl)WKWebExtensionTab(im)isLoadingCompleteForWebExtensionContext:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	923252cc4a4922dd
+method	c:objc(pl)WKWebExtensionTab(im)detectWebpageLocaleForWebExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	8296d755d8802562
+method	c:objc(pl)WKWebExtensionTab(im)takeSnapshotUsingConfiguration:forWebExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	41363983efb446c6
+method	c:objc(pl)WKWebExtensionTab(im)loadURL:forWebExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	3d432fa686de5589
+method	c:objc(pl)WKWebExtensionTab(im)reloadFromOrigin:forWebExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	86fc4d3461c892d7
+method	c:objc(pl)WKWebExtensionTab(im)goBackForWebExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	9630f467b17cc7a8
+method	c:objc(pl)WKWebExtensionTab(im)goForwardForWebExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	64c8fd6e58cf0cde
+method	c:objc(pl)WKWebExtensionTab(im)activateForWebExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	1c45950319712875
+method	c:objc(pl)WKWebExtensionTab(im)isSelectedForWebExtensionContext:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	016ec850f6cb1b7d
+method	c:objc(pl)WKWebExtensionTab(im)setSelected:forWebExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	5ea94ff53628ec27
+method	c:objc(pl)WKWebExtensionTab(im)duplicateUsingConfiguration:forWebExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	8148f3589004e967
+method	c:objc(pl)WKWebExtensionTab(im)closeForWebExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	a252579fcb64beec
+method	c:objc(pl)WKWebExtensionTab(im)shouldGrantPermissionsOnUserGestureForWebExtensionContext:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	61241cf8d7829f35
+method	c:objc(pl)WKWebExtensionTab(im)shouldBypassPermissionsForWebExtensionContext:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	19454237d3f76c2b
+var	c:@WKWebExtensionContextErrorDomain	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	bf6f311c80c2bd6a
+typedef	c:@T@WKWebExtensionContextError	-			-	-	26c8dd47c2b385e5
+enum	c:@E@WKWebExtensionContextError	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	0ebc94102ff91ada
+enumconst	c:@E@WKWebExtensionContextError@WKWebExtensionContextErrorUnknown	WKWebExtensionContextError			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	b1315bbf8f939c95
+enumconst	c:@E@WKWebExtensionContextError@WKWebExtensionContextErrorAlreadyLoaded	WKWebExtensionContextError			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	048f0751e20a1c85
+enumconst	c:@E@WKWebExtensionContextError@WKWebExtensionContextErrorNotLoaded	WKWebExtensionContextError			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	0106fcd81196e5aa
+enumconst	c:@E@WKWebExtensionContextError@WKWebExtensionContextErrorBaseURLAlreadyInUse	WKWebExtensionContextError			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	d1d86e64b7ddc8a5
+enumconst	c:@E@WKWebExtensionContextError@WKWebExtensionContextErrorNoBackgroundContent	WKWebExtensionContextError			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	c7304137d495a3dc
+enumconst	c:@E@WKWebExtensionContextError@WKWebExtensionContextErrorBackgroundContentFailedToLoad	WKWebExtensionContextError			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	c823d075625da092
+var	c:@WKWebExtensionContextErrorsDidUpdateNotification	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	1687687d830d1103
+typedef	c:@T@WKWebExtensionContextPermissionStatus	-			-	-	18c06b072ffb9984
+enum	c:@E@WKWebExtensionContextPermissionStatus	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	dd01b75af1603cc1
+enumconst	c:@E@WKWebExtensionContextPermissionStatus@WKWebExtensionContextPermissionStatusDeniedExplicitly	WKWebExtensionContextPermissionStatus			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	b91915eacb10cfd9
+enumconst	c:@E@WKWebExtensionContextPermissionStatus@WKWebExtensionContextPermissionStatusDeniedImplicitly	WKWebExtensionContextPermissionStatus			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	5d1e953994b85627
+enumconst	c:@E@WKWebExtensionContextPermissionStatus@WKWebExtensionContextPermissionStatusRequestedImplicitly	WKWebExtensionContextPermissionStatus			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	2a42ef8e0a697c2b
+enumconst	c:@E@WKWebExtensionContextPermissionStatus@WKWebExtensionContextPermissionStatusUnknown	WKWebExtensionContextPermissionStatus			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	7d184917cee24200
+enumconst	c:@E@WKWebExtensionContextPermissionStatus@WKWebExtensionContextPermissionStatusRequestedExplicitly	WKWebExtensionContextPermissionStatus			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	04296e60bfa3bd13
+enumconst	c:@E@WKWebExtensionContextPermissionStatus@WKWebExtensionContextPermissionStatusGrantedImplicitly	WKWebExtensionContextPermissionStatus			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	42bcdc4e9fbc9455
+enumconst	c:@E@WKWebExtensionContextPermissionStatus@WKWebExtensionContextPermissionStatusGrantedExplicitly	WKWebExtensionContextPermissionStatus			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	c106f1526d7b72f0
+var	c:@WKWebExtensionContextPermissionsWereGrantedNotification	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	f2e018a118602b7b
+var	c:@WKWebExtensionContextPermissionsWereDeniedNotification	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	dd340ed6661822ba
+var	c:@WKWebExtensionContextGrantedPermissionsWereRemovedNotification	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	3653d34f04c51288
+var	c:@WKWebExtensionContextDeniedPermissionsWereRemovedNotification	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	bd70f9e8a1aa513d
+var	c:@WKWebExtensionContextPermissionMatchPatternsWereGrantedNotification	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	f715716bb1667e4e
+var	c:@WKWebExtensionContextPermissionMatchPatternsWereDeniedNotification	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	3305899f3ec66ea2
+var	c:@WKWebExtensionContextGrantedPermissionMatchPatternsWereRemovedNotification	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	0e33a1e2cb363b2f
+var	c:@WKWebExtensionContextDeniedPermissionMatchPatternsWereRemovedNotification	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	6d93f13dc98a780d
+typedef	c:@T@WKWebExtensionContextNotificationUserInfoKey	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	847ecd5f66ed475b
+var	c:@WKWebExtensionContextNotificationUserInfoKeyPermissions	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	7d4ba9b030ae2596
+var	c:@WKWebExtensionContextNotificationUserInfoKeyMatchPatterns	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	b6c1b530fac71e7a
+interface	c:objc(cs)WKWebExtensionContext	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	fa907eb39b585595
+super	-	WKWebExtensionContext	NSObject		-	-	8bce1b790237e1e5
+method	c:objc(cs)WKWebExtensionContext(cm)new	-			*unavailable ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	bb90802f45502dde
+method	c:objc(cs)WKWebExtensionContext(im)init	-			*unavailable ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	cf5e8b8e2980e58d
+method	c:objc(cs)WKWebExtensionContext(cm)contextForExtension:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	791e82ed18702c3a
+method	c:objc(cs)WKWebExtensionContext(im)initForExtension:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	4f222e179621c33f
+property	c:objc(cs)WKWebExtensionContext(py)webExtension	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	bda22367dd073055
+property	c:objc(cs)WKWebExtensionContext(py)webExtensionController	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	fe92ca6e4d4e3cbc
+property	c:objc(cs)WKWebExtensionContext(py)loaded	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	fd30a7b5748ee998
+property	c:objc(cs)WKWebExtensionContext(py)errors	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	45344b632f3322fb
+property	c:objc(cs)WKWebExtensionContext(py)baseURL	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	3cb5d898684758aa
+property	c:objc(cs)WKWebExtensionContext(py)uniqueIdentifier	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	9c09eb3fbf35f614
+property	c:objc(cs)WKWebExtensionContext(py)inspectable	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	e1c5e0539d752157
+property	c:objc(cs)WKWebExtensionContext(py)inspectionName	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	81afc93df39228b7
+property	c:objc(cs)WKWebExtensionContext(py)unsupportedAPIs	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	0d6b7504a64c041d
+property	c:objc(cs)WKWebExtensionContext(py)webViewConfiguration	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	9b55cb79de6bb120
+property	c:objc(cs)WKWebExtensionContext(py)optionsPageURL	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	c284342b16a0448e
+property	c:objc(cs)WKWebExtensionContext(py)overrideNewTabPageURL	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	f92c8785363044eb
+property	c:objc(cs)WKWebExtensionContext(py)grantedPermissions	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	28cff166782bd5f3
+property	c:objc(cs)WKWebExtensionContext(py)grantedPermissionMatchPatterns	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	7028a033f7196d2b
+property	c:objc(cs)WKWebExtensionContext(py)deniedPermissions	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	f224899eec30bdd3
+property	c:objc(cs)WKWebExtensionContext(py)deniedPermissionMatchPatterns	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	ae09de36a3a94a70
+property	c:objc(cs)WKWebExtensionContext(py)hasRequestedOptionalAccessToAllHosts	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	334fb2b43af333ad
+property	c:objc(cs)WKWebExtensionContext(py)hasAccessToPrivateData	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	ace57e32a8cfd84c
+property	c:objc(cs)WKWebExtensionContext(py)currentPermissions	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	83d85b41bd62f668
+property	c:objc(cs)WKWebExtensionContext(py)currentPermissionMatchPatterns	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	3a469f4d77963475
+method	c:objc(cs)WKWebExtensionContext(im)hasPermission:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	d049eec3d3f7b915
+method	c:objc(cs)WKWebExtensionContext(im)hasPermission:inTab:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	84cfe116475a719c
+method	c:objc(cs)WKWebExtensionContext(im)hasAccessToURL:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	09f3a4ca221e67a3
+method	c:objc(cs)WKWebExtensionContext(im)hasAccessToURL:inTab:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	db1572392af4d773
+property	c:objc(cs)WKWebExtensionContext(py)hasAccessToAllURLs	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	3cb71f8e79ba6823
+property	c:objc(cs)WKWebExtensionContext(py)hasAccessToAllHosts	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	7a52655f75def054
+property	c:objc(cs)WKWebExtensionContext(py)hasInjectedContent	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	c1f93533b9be0024
+method	c:objc(cs)WKWebExtensionContext(im)hasInjectedContentForURL:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	141fe0ae6d5299ff
+property	c:objc(cs)WKWebExtensionContext(py)hasContentModificationRules	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	407a28f508afbd43
+method	c:objc(cs)WKWebExtensionContext(im)permissionStatusForPermission:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	1f69c46b4a23d8dc
+method	c:objc(cs)WKWebExtensionContext(im)permissionStatusForPermission:inTab:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	99370d46c1de9c81
+method	c:objc(cs)WKWebExtensionContext(im)setPermissionStatus:forPermission:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	ced151649b604239
+method	c:objc(cs)WKWebExtensionContext(im)setPermissionStatus:forPermission:expirationDate:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	d8fe9ee3c3b1ef30
+method	c:objc(cs)WKWebExtensionContext(im)permissionStatusForURL:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	16c286ad345d4ab7
+method	c:objc(cs)WKWebExtensionContext(im)permissionStatusForURL:inTab:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	2768129573355022
+method	c:objc(cs)WKWebExtensionContext(im)setPermissionStatus:forURL:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	0ba19fe3fbe99a43
+method	c:objc(cs)WKWebExtensionContext(im)setPermissionStatus:forURL:expirationDate:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	754c4f2adfc7b540
+method	c:objc(cs)WKWebExtensionContext(im)permissionStatusForMatchPattern:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	d8f43f86f744d570
+method	c:objc(cs)WKWebExtensionContext(im)permissionStatusForMatchPattern:inTab:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	4308b908897b2138
+method	c:objc(cs)WKWebExtensionContext(im)setPermissionStatus:forMatchPattern:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	1ca8afd1b99b7b9b
+method	c:objc(cs)WKWebExtensionContext(im)setPermissionStatus:forMatchPattern:expirationDate:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	3a353a77a35b0e0d
+method	c:objc(cs)WKWebExtensionContext(im)loadBackgroundContentWithCompletionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	a9089853978c156a
+method	c:objc(cs)WKWebExtensionContext(im)actionForTab:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	8a988640ccec53e7
+method	c:objc(cs)WKWebExtensionContext(im)performActionForTab:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	bd3ad39f72d8f88e
+property	c:objc(cs)WKWebExtensionContext(py)commands	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	1c07fbe229935970
+method	c:objc(cs)WKWebExtensionContext(im)performCommand:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	6ec6d8f8d96314d0
+method	c:objc(cs)WKWebExtensionContext(im)performCommandForKeyCommand:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	a763a0fa59139eda
+method	c:objc(cs)WKWebExtensionContext(im)menuItemsForTab:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	00b5237f277ecb6e
+method	c:objc(cs)WKWebExtensionContext(im)userGesturePerformedInTab:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	ce97879a01a9e18b
+method	c:objc(cs)WKWebExtensionContext(im)hasActiveUserGestureInTab:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	034f7a5626587cf5
+method	c:objc(cs)WKWebExtensionContext(im)clearUserGestureInTab:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	c75389c13e4a90f7
+property	c:objc(cs)WKWebExtensionContext(py)openWindows	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	e88e78a355cef856
+property	c:objc(cs)WKWebExtensionContext(py)focusedWindow	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	e8f51b664ada84cd
+property	c:objc(cs)WKWebExtensionContext(py)openTabs	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	b79e080713764db5
+method	c:objc(cs)WKWebExtensionContext(im)didOpenWindow:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	a13d0a48a916fe6b
+method	c:objc(cs)WKWebExtensionContext(im)didCloseWindow:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	c41cc914531e9369
+method	c:objc(cs)WKWebExtensionContext(im)didFocusWindow:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	b547f43ac10a5425
+method	c:objc(cs)WKWebExtensionContext(im)didOpenTab:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	0513fd2715955b38
+method	c:objc(cs)WKWebExtensionContext(im)didCloseTab:windowIsClosing:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	e43c9f1c3f64da1e
+method	c:objc(cs)WKWebExtensionContext(im)didActivateTab:previousActiveTab:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	d58a0e36eb3e9bdd
+method	c:objc(cs)WKWebExtensionContext(im)didSelectTabs:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	2365ee3587fa40f6
+method	c:objc(cs)WKWebExtensionContext(im)didDeselectTabs:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	a860e062fc4da298
+method	c:objc(cs)WKWebExtensionContext(im)didMoveTab:fromIndex:inWindow:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	8799e056a77c6a0e
+method	c:objc(cs)WKWebExtensionContext(im)didReplaceTab:withTab:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	64c3396287ffceb5
+method	c:objc(cs)WKWebExtensionContext(im)didChangeTabProperties:forTab:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	3d763d8bf358da72
+protocol	c:objc(pl)WKWebExtensionControllerDelegate	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	b521bbf87b7e8d23
+conforms	-	WKWebExtensionControllerDelegate	NSObject		-	-	5d85e5d4d6d97a40
+method	c:objc(pl)WKWebExtensionControllerDelegate(im)webExtensionController:openWindowsForExtensionContext:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	35cba060573f4cc8
+method	c:objc(pl)WKWebExtensionControllerDelegate(im)webExtensionController:focusedWindowForExtensionContext:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	25eb457dbe6e74e5
+method	c:objc(pl)WKWebExtensionControllerDelegate(im)webExtensionController:openNewWindowUsingConfiguration:forExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	11e948495b9df979
+method	c:objc(pl)WKWebExtensionControllerDelegate(im)webExtensionController:openNewTabUsingConfiguration:forExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	86bae992ac5e8e7f
+method	c:objc(pl)WKWebExtensionControllerDelegate(im)webExtensionController:openOptionsPageForExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	f5d94d58f00515f2
+method	c:objc(pl)WKWebExtensionControllerDelegate(im)webExtensionController:promptForPermissions:inTab:forExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	29f5ca1eb2dc5c28
+method	c:objc(pl)WKWebExtensionControllerDelegate(im)webExtensionController:promptForPermissionToAccessURLs:inTab:forExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	dd6deaaaee283a40
+method	c:objc(pl)WKWebExtensionControllerDelegate(im)webExtensionController:promptForPermissionMatchPatterns:inTab:forExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	9a1d57859ee26853
+method	c:objc(pl)WKWebExtensionControllerDelegate(im)webExtensionController:didUpdateAction:forExtensionContext:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	cfb76f4acc996def
+method	c:objc(pl)WKWebExtensionControllerDelegate(im)webExtensionController:presentPopupForAction:forExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	dde3aaa2bcf7aa78
+method	c:objc(pl)WKWebExtensionControllerDelegate(im)webExtensionController:sendMessage:toApplicationWithIdentifier:forExtensionContext:replyHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	dd4551ddf6127183
+method	c:objc(pl)WKWebExtensionControllerDelegate(im)webExtensionController:connectUsingMessagePort:forExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	ffeaa95392c28272
+typedef	c:@T@WKWebExtensionDataType	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	929ccc970548d9c7
+var	c:@WKWebExtensionDataTypeLocal	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	286ec7aa49ad2965
+var	c:@WKWebExtensionDataTypeSession	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	dab60f1454959581
+var	c:@WKWebExtensionDataTypeSynchronized	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	f3c7faa14f901fb0
+typedef	c:@T@WKWebExtensionWindowType	-			-	-	0c05061cdb96c026
+enum	c:@E@WKWebExtensionWindowType	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	ef9da9e98e90a626
+enumconst	c:@E@WKWebExtensionWindowType@WKWebExtensionWindowTypeNormal	WKWebExtensionWindowType			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	9b61599b5c7c4f02
+enumconst	c:@E@WKWebExtensionWindowType@WKWebExtensionWindowTypePopup	WKWebExtensionWindowType			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	c02bc0c8c6d26e3e
+typedef	c:@T@WKWebExtensionWindowState	-			-	-	93c936e9241cdd97
+enum	c:@E@WKWebExtensionWindowState	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	5cdf1a3d886a4f2c
+enumconst	c:@E@WKWebExtensionWindowState@WKWebExtensionWindowStateNormal	WKWebExtensionWindowState			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	4d4fc2efa923980a
+enumconst	c:@E@WKWebExtensionWindowState@WKWebExtensionWindowStateMinimized	WKWebExtensionWindowState			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	f0abb4f10b4c30c1
+enumconst	c:@E@WKWebExtensionWindowState@WKWebExtensionWindowStateMaximized	WKWebExtensionWindowState			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	aed0796b4c05e560
+enumconst	c:@E@WKWebExtensionWindowState@WKWebExtensionWindowStateFullscreen	WKWebExtensionWindowState			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	db15367519ec392c
+protocol	c:objc(pl)WKWebExtensionWindow	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	f5f2c31a7766e00f
+conforms	-	WKWebExtensionWindow	NSObject		-	-	4a035f785f381dd7
+method	c:objc(pl)WKWebExtensionWindow(im)tabsForWebExtensionContext:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	59538bc90adadbdc
+method	c:objc(pl)WKWebExtensionWindow(im)activeTabForWebExtensionContext:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	df4adc06ecf68b47
+method	c:objc(pl)WKWebExtensionWindow(im)windowTypeForWebExtensionContext:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	8bdc8f8a54cbe96c
+method	c:objc(pl)WKWebExtensionWindow(im)windowStateForWebExtensionContext:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	c417e2225163c40a
+method	c:objc(pl)WKWebExtensionWindow(im)setWindowState:forWebExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	3229d9b222a4addf
+method	c:objc(pl)WKWebExtensionWindow(im)isPrivateForWebExtensionContext:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	6dcf8f71015e5031
+method	c:objc(pl)WKWebExtensionWindow(im)frameForWebExtensionContext:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	198920dddbcbdf90
+method	c:objc(pl)WKWebExtensionWindow(im)setFrame:forWebExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	3b57a0ca36087bec
+method	c:objc(pl)WKWebExtensionWindow(im)focusForWebExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	7fe3829a61bab8a6
+method	c:objc(pl)WKWebExtensionWindow(im)closeForWebExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	2f9fe2345bc074c3
+interface	c:objc(cs)WKWebExtensionController	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	dbd1de3999699181
+super	-	WKWebExtensionController	NSObject		-	-	534360d0ccb0411d
+method	c:objc(cs)WKWebExtensionController(im)init	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	eefbf9eb1be5f8fb
+method	c:objc(cs)WKWebExtensionController(im)initWithConfiguration:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	1fa388bd5941bf4e
+property	c:objc(cs)WKWebExtensionController(py)delegate	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	34e0f6877b2fda8c
+property	c:objc(cs)WKWebExtensionController(py)configuration	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	cbfc2d537984ddac
+method	c:objc(cs)WKWebExtensionController(im)loadExtensionContext:error:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	3163636bee66ccfd
+method	c:objc(cs)WKWebExtensionController(im)unloadExtensionContext:error:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	496dd1f2099fcffa
+method	c:objc(cs)WKWebExtensionController(im)extensionContextForExtension:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	2a0cd40487a009f1
+method	c:objc(cs)WKWebExtensionController(im)extensionContextForURL:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	ada7e7201d556cc5
+property	c:objc(cs)WKWebExtensionController(py)extensions	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	3ccb4e2a8aa7b016
+property	c:objc(cs)WKWebExtensionController(py)extensionContexts	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	ba11a6139379d46d
+property	c:objc(cs)WKWebExtensionController(cpy)allExtensionDataTypes	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	4f6b5d6f28833932
+method	c:objc(cs)WKWebExtensionController(im)fetchDataRecordsOfTypes:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	1720eb346b81a8ad
+method	c:objc(cs)WKWebExtensionController(im)fetchDataRecordOfTypes:forExtensionContext:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	5af04a0fb0a070b2
+method	c:objc(cs)WKWebExtensionController(im)removeDataOfTypes:fromDataRecords:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	62a29ac26252b1ef
+method	c:objc(cs)WKWebExtensionController(im)didOpenWindow:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	bd9e97e4af5f4416
+method	c:objc(cs)WKWebExtensionController(im)didCloseWindow:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	bb7edef94acd9e16
+method	c:objc(cs)WKWebExtensionController(im)didFocusWindow:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	f013287d4dbc076f
+method	c:objc(cs)WKWebExtensionController(im)didOpenTab:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	7ace0d550af79c3e
+method	c:objc(cs)WKWebExtensionController(im)didCloseTab:windowIsClosing:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	278233f937155345
+method	c:objc(cs)WKWebExtensionController(im)didActivateTab:previousActiveTab:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	f697f01781916c76
+method	c:objc(cs)WKWebExtensionController(im)didSelectTabs:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	ba990679e37fb256
+method	c:objc(cs)WKWebExtensionController(im)didDeselectTabs:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	ae4407332901f9b6
+method	c:objc(cs)WKWebExtensionController(im)didMoveTab:fromIndex:inWindow:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	cce6da3ebd9e7fb0
+method	c:objc(cs)WKWebExtensionController(im)didReplaceTab:withTab:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	1cd9295e48139e0e
+method	c:objc(cs)WKWebExtensionController(im)didChangeTabProperties:forTab:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	04cbd8be1ebc9721
+interface	c:objc(cs)WKWebExtensionControllerConfiguration	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	c32bf76cf5432d3a
+super	-	WKWebExtensionControllerConfiguration	NSObject		-	-	b3bbbbfe047b0f71
+conforms	-	WKWebExtensionControllerConfiguration	NSSecureCoding		-	-	7add5f9a9377e5ef
+conforms	-	WKWebExtensionControllerConfiguration	NSCopying		-	-	bbd8606da865f825
+method	c:objc(cs)WKWebExtensionControllerConfiguration(cm)new	-			*unavailable ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	3365f56c2c2f96e4
+method	c:objc(cs)WKWebExtensionControllerConfiguration(im)init	-			*unavailable ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	ce7a19398d669b46
+method	c:objc(cs)WKWebExtensionControllerConfiguration(cm)defaultConfiguration	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	c31e2ce2e586b3da
+method	c:objc(cs)WKWebExtensionControllerConfiguration(cm)nonPersistentConfiguration	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	53d55ce759ee1454
+method	c:objc(cs)WKWebExtensionControllerConfiguration(cm)configurationWithIdentifier:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	32e68e4032d2e320
+property	c:objc(cs)WKWebExtensionControllerConfiguration(py)persistent	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	7bdb3eaab3efd940
+property	c:objc(cs)WKWebExtensionControllerConfiguration(py)identifier	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	914b357f806cab69
+property	c:objc(cs)WKWebExtensionControllerConfiguration(py)webViewConfiguration	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	67473293e77ca2da
+property	c:objc(cs)WKWebExtensionControllerConfiguration(py)defaultWebsiteDataStore	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	3e746c717f39783f
+var	c:@WKWebExtensionDataRecordErrorDomain	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	4031e30726ed7a5b
+typedef	c:@T@WKWebExtensionDataRecordError	-			-	-	e8325b1f2772896d
+enum	c:@E@WKWebExtensionDataRecordError	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	b581d184d3b8c8ec
+enumconst	c:@E@WKWebExtensionDataRecordError@WKWebExtensionDataRecordErrorUnknown	WKWebExtensionDataRecordError			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	dc782b8593de72f5
+enumconst	c:@E@WKWebExtensionDataRecordError@WKWebExtensionDataRecordErrorLocalStorageFailed	WKWebExtensionDataRecordError			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	6b9df81ad7ab4868
+enumconst	c:@E@WKWebExtensionDataRecordError@WKWebExtensionDataRecordErrorSessionStorageFailed	WKWebExtensionDataRecordError			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	078fff58f264d1ca
+enumconst	c:@E@WKWebExtensionDataRecordError@WKWebExtensionDataRecordErrorSynchronizedStorageFailed	WKWebExtensionDataRecordError			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	a9026b49747128b5
+interface	c:objc(cs)WKWebExtensionDataRecord	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	7fdaa2c292d09fde
+super	-	WKWebExtensionDataRecord	NSObject		-	-	153aa0d464930ac4
+method	c:objc(cs)WKWebExtensionDataRecord(cm)new	-			*unavailable ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	3a0aa79a7cfc23db
+method	c:objc(cs)WKWebExtensionDataRecord(im)init	-			*unavailable ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	36bb38815413ff10
+property	c:objc(cs)WKWebExtensionDataRecord(py)displayName	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	0125afffec825632
+property	c:objc(cs)WKWebExtensionDataRecord(py)uniqueIdentifier	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	21e06033a13b3f0e
+property	c:objc(cs)WKWebExtensionDataRecord(py)containedDataTypes	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	4fa9ae7e77122613
+property	c:objc(cs)WKWebExtensionDataRecord(py)errors	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	d61118cb2b78b3cb
+property	c:objc(cs)WKWebExtensionDataRecord(py)totalSizeInBytes	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	406fc7e528522c15
+method	c:objc(cs)WKWebExtensionDataRecord(im)sizeInBytesOfTypes:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	1fdb7c969bc12292
+var	c:@WKWebExtensionMessagePortErrorDomain	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	a9c634c444e4e036
+typedef	c:@T@WKWebExtensionMessagePortError	-			-	-	2e611601879969fd
+enum	c:@E@WKWebExtensionMessagePortError	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	10185ec48f4401c3
+enumconst	c:@E@WKWebExtensionMessagePortError@WKWebExtensionMessagePortErrorUnknown	WKWebExtensionMessagePortError			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	cbccb9b58ad793a3
+enumconst	c:@E@WKWebExtensionMessagePortError@WKWebExtensionMessagePortErrorNotConnected	WKWebExtensionMessagePortError			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	70fdd3e4a0f7f054
+enumconst	c:@E@WKWebExtensionMessagePortError@WKWebExtensionMessagePortErrorMessageInvalid	WKWebExtensionMessagePortError			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	99b4d73a6e2b38a5
+interface	c:objc(cs)WKWebExtensionMessagePort	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	f461af0b6495e9be
+super	-	WKWebExtensionMessagePort	NSObject		-	-	8e3f9eafa81c378c
+method	c:objc(cs)WKWebExtensionMessagePort(cm)new	-			*unavailable ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	3738e4f5ca8161fe
+method	c:objc(cs)WKWebExtensionMessagePort(im)init	-			*unavailable ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	406bc86b9bb675fd
+property	c:objc(cs)WKWebExtensionMessagePort(py)applicationIdentifier	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	b34cf0d24993a66e
+property	c:objc(cs)WKWebExtensionMessagePort(py)messageHandler	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	c6422374f9e5ed0d
+property	c:objc(cs)WKWebExtensionMessagePort(py)disconnectHandler	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	0b07de128025e4f6
+property	c:objc(cs)WKWebExtensionMessagePort(py)disconnected	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	b8e6313597faa9df
+method	c:objc(cs)WKWebExtensionMessagePort(im)sendMessage:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	9aa59da4d5b75366
+method	c:objc(cs)WKWebExtensionMessagePort(im)disconnect	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	d6953853ef671dbb
+method	c:objc(cs)WKWebExtensionMessagePort(im)disconnectWithError:	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	b42a32f455a1e87c
+interface	c:objc(cs)WKWebExtensionTabConfiguration	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	ec43f2e4eafe3c81
+super	-	WKWebExtensionTabConfiguration	NSObject		-	-	06e2275816d0e639
+method	c:objc(cs)WKWebExtensionTabConfiguration(cm)new	-			*unavailable ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	a894536935b4c590
+method	c:objc(cs)WKWebExtensionTabConfiguration(im)init	-			*unavailable ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	c274a978936ff617
+property	c:objc(cs)WKWebExtensionTabConfiguration(py)window	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	3fb915a883b76830
+property	c:objc(cs)WKWebExtensionTabConfiguration(py)index	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	6acf8d08f504346f
+property	c:objc(cs)WKWebExtensionTabConfiguration(py)parentTab	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	df0664ff7befec69
+property	c:objc(cs)WKWebExtensionTabConfiguration(py)url	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	6a47009a328448c1
+property	c:objc(cs)WKWebExtensionTabConfiguration(py)shouldBeActive	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	8962c50f88dc3768
+property	c:objc(cs)WKWebExtensionTabConfiguration(py)shouldAddToSelection	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	8c964dec6b5f5875
+property	c:objc(cs)WKWebExtensionTabConfiguration(py)shouldBePinned	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	fde8c5ba78a0bbd1
+property	c:objc(cs)WKWebExtensionTabConfiguration(py)shouldBeMuted	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	d7989b4fc66179fc
+property	c:objc(cs)WKWebExtensionTabConfiguration(py)shouldReaderModeBeActive	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	04948a7ed7ed9798
+interface	c:objc(cs)WKWebExtensionWindowConfiguration	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	523dfb226c2456fd
+super	-	WKWebExtensionWindowConfiguration	NSObject		-	-	034477e067849906
+method	c:objc(cs)WKWebExtensionWindowConfiguration(cm)new	-			*unavailable ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	1f2100e44ac2e67b
+method	c:objc(cs)WKWebExtensionWindowConfiguration(im)init	-			*unavailable ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	1b0d229e483cc6f6
+property	c:objc(cs)WKWebExtensionWindowConfiguration(py)windowType	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	b09bbc27dcf28a94
+property	c:objc(cs)WKWebExtensionWindowConfiguration(py)windowState	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	b10318c335b823c5
+property	c:objc(cs)WKWebExtensionWindowConfiguration(py)frame	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	073d65a5b6da9d0a
+property	c:objc(cs)WKWebExtensionWindowConfiguration(py)tabURLs	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	06955b7421b1ae34
+property	c:objc(cs)WKWebExtensionWindowConfiguration(py)tabs	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	f6b9bfd4dcb5ddf4
+property	c:objc(cs)WKWebExtensionWindowConfiguration(py)shouldBeFocused	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	f566f366aa6366d9
+property	c:objc(cs)WKWebExtensionWindowConfiguration(py)shouldBePrivate	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	1f5d9ced2614efbd
+typedef	c:@T@WKDataDetectorTypes	-			-	-	76f5584bd4404311
+enum	c:@E@WKDataDetectorTypes	-			ios=10.0/-/-/0	-	6af5df202ee9b827
+enumconst	c:@E@WKDataDetectorTypes@WKDataDetectorTypeNone	WKDataDetectorTypes			ios=10.0/-/-/0	-	7ea0d87d24429434
+enumconst	c:@E@WKDataDetectorTypes@WKDataDetectorTypePhoneNumber	WKDataDetectorTypes			ios=10.0/-/-/0	-	344d28ee0156e9f1
+enumconst	c:@E@WKDataDetectorTypes@WKDataDetectorTypeLink	WKDataDetectorTypes			ios=10.0/-/-/0	-	7bf4b58a303f87f0
+enumconst	c:@E@WKDataDetectorTypes@WKDataDetectorTypeAddress	WKDataDetectorTypes			ios=10.0/-/-/0	-	7ab97771a698a457
+enumconst	c:@E@WKDataDetectorTypes@WKDataDetectorTypeCalendarEvent	WKDataDetectorTypes			ios=10.0/-/-/0	-	f5bfdcc232c82ca1
+enumconst	c:@E@WKDataDetectorTypes@WKDataDetectorTypeTrackingNumber	WKDataDetectorTypes			ios=10.0/-/-/0	-	0e835f4e0b2c756e
+enumconst	c:@E@WKDataDetectorTypes@WKDataDetectorTypeFlightNumber	WKDataDetectorTypes			ios=10.0/-/-/0	-	1bf4a003c6d420ee
+enumconst	c:@E@WKDataDetectorTypes@WKDataDetectorTypeLookupSuggestion	WKDataDetectorTypes			ios=10.0/-/-/0	-	a0f2c94bcdf3817d
+enumconst	c:@E@WKDataDetectorTypes@WKDataDetectorTypeAll	WKDataDetectorTypes			ios=10.0/-/-/0	-	d4d5c15edda85c91
+enumconst	c:@E@WKDataDetectorTypes@WKDataDetectorTypeSpotlightSuggestion	WKDataDetectorTypes			ios=10.0/10.0/-/0	deprecated: Use WKDataDetectorTypeLookupSuggestion instead	75a4b06332f536f5
+typedef	c:@T@WKSelectionGranularity	-			-	-	a2d97e4e50495289
+enum	c:@E@WKSelectionGranularity	-			ios=8.0/11.0/-/0,xros=1.0/1.0/-/0	-	e69e856db166b951
+enumconst	c:@E@WKSelectionGranularity@WKSelectionGranularityDynamic	WKSelectionGranularity			ios=8.0/11.0/-/0,xros=1.0/1.0/-/0	-	3a081cdf95cf92b1
+enumconst	c:@E@WKSelectionGranularity@WKSelectionGranularityCharacter	WKSelectionGranularity			ios=8.0/11.0/-/0,xros=1.0/1.0/-/0	-	8b449e0bd59133d9
+typedef	c:@T@WKAudiovisualMediaTypes	-			-	-	a4d727e1082ea9a1
+enum	c:@E@WKAudiovisualMediaTypes	-			ios=10.0/-/-/0,macos=10.12/-/-/0	-	1b73d22905cf3c65
+enumconst	c:@E@WKAudiovisualMediaTypes@WKAudiovisualMediaTypeNone	WKAudiovisualMediaTypes			ios=10.0/-/-/0,macos=10.12/-/-/0	-	bf74289c18ad2d9e
+enumconst	c:@E@WKAudiovisualMediaTypes@WKAudiovisualMediaTypeAudio	WKAudiovisualMediaTypes			ios=10.0/-/-/0,macos=10.12/-/-/0	-	b9ef21e4bc348fa7
+enumconst	c:@E@WKAudiovisualMediaTypes@WKAudiovisualMediaTypeVideo	WKAudiovisualMediaTypes			ios=10.0/-/-/0,macos=10.12/-/-/0	-	9daabff96f5c5633
+enumconst	c:@E@WKAudiovisualMediaTypes@WKAudiovisualMediaTypeAll	WKAudiovisualMediaTypes			ios=10.0/-/-/0,macos=10.12/-/-/0	-	c937e8d119d2bccd
+interface	c:objc(cs)WKWebViewConfiguration	-			ios=8.0/-/-/0,macos=10.10/-/-/0	deprecated: Creating and using multiple instances of WKProcessPool no longer has any effect.	4506671b05f67048
+super	-	WKWebViewConfiguration	NSObject		-	-	9715f1f3ab964b04
+conforms	-	WKWebViewConfiguration	NSSecureCoding		-	-	c799d88d3813cf77
+conforms	-	WKWebViewConfiguration	NSCopying		-	-	77ebc2c104917bc9
+property	c:objc(cs)WKWebViewConfiguration(py)processPool	-			ios=8.0/15.0/-/0,macos=10.10/12.0/-/0,xros=1.0/1.0/-/0	-	20b5578f7d664cba
+property	c:objc(cs)WKWebViewConfiguration(py)preferences	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	6818e2480abf0439
+property	c:objc(cs)WKWebViewConfiguration(py)userContentController	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	d2bddfdd7d698341
+property	c:objc(cs)WKWebViewConfiguration(py)webExtensionController	-			ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	4b9e20f4599bd311
+property	c:objc(cs)WKWebViewConfiguration(py)websiteDataStore	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	bdce12404aa014aa
+property	c:objc(cs)WKWebViewConfiguration(py)suppressesIncrementalRendering	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	ea0715af2a95c5e0
+property	c:objc(cs)WKWebViewConfiguration(py)applicationNameForUserAgent	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	0abd880548bcebb1
+property	c:objc(cs)WKWebViewConfiguration(py)allowsAirPlayForMediaPlayback	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	ba75b1a992e6f9d4
+property	c:objc(cs)WKWebViewConfiguration(py)showsSystemScreenTimeBlockingView	-			ios=26.0/-/-/0,macos=26.0/-/-/0	-	1c7e7c4ccd5b7f40
+property	c:objc(cs)WKWebViewConfiguration(py)upgradeKnownHostsToHTTPS	-			ios=14.5/-/-/0,macos=11.3/-/-/0	-	70c69737c50e254f
+property	c:objc(cs)WKWebViewConfiguration(py)mediaTypesRequiringUserActionForPlayback	-			ios=10.0/-/-/0,macos=10.12/-/-/0	-	7634bb9a1c0dc938
+property	c:objc(cs)WKWebViewConfiguration(py)defaultWebpagePreferences	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	3d9c565ff8734836
+property	c:objc(cs)WKWebViewConfiguration(py)limitsNavigationsToAppBoundDomains	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	d9457923bf803b61
+property	c:objc(cs)WKWebViewConfiguration(py)allowsInlinePredictions	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	c07cb74617364b3f
+property	c:objc(cs)WKWebViewConfiguration(py)allowsInlineMediaPlayback	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	5cc2dcf1114ed04d
+property	c:objc(cs)WKWebViewConfiguration(py)selectionGranularity	-			ios=8.0/11.0/-/0,xros=1.0/1.0/-/0	-	a661d1de3d52f1f8
+property	c:objc(cs)WKWebViewConfiguration(py)allowsPictureInPictureMediaPlayback	-			ios=9.0/-/-/0	-	78ad883f4730e97a
+property	c:objc(cs)WKWebViewConfiguration(py)dataDetectorTypes	-			ios=10.0/-/-/0	-	8ec72ead8092ab7c
+property	c:objc(cs)WKWebViewConfiguration(py)ignoresViewportScaleLimits	-			ios=10.0/-/-/0	-	2d0642ebe5ec22d2
+method	c:objc(cs)WKWebViewConfiguration(im)setURLSchemeHandler:forURLScheme:	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	c84f60ac248b2507
+method	c:objc(cs)WKWebViewConfiguration(im)urlSchemeHandlerForURLScheme:	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	dc9762df5f2082f4
+property	c:objc(cs)WKWebViewConfiguration(py)supportsAdaptiveImageGlyph	-			ios=18.0/-/-/0,macos=15.0/-/-/0,xros=2.0/-/-/0	-	60bdf9fc9c7819b5
+property	c:objc(cs)WKWebViewConfiguration(py)writingToolsBehavior	-			ios=18.0/-/-/0,xros=2.4/-/-/0	-	7cc46923c92c7369
+category	c:objc(cy)WKWebViewConfiguration@WKDeprecated	-			ios=8.0/-/-/0,macos=10.10/-/-/0	deprecated: Use mediaTypesRequiringUserActionForPlayback instead	3f6b5eab98fd2edb
+property	c:objc(cs)WKWebViewConfiguration(py)mediaPlaybackRequiresUserAction	WKDeprecated			ios=8.0/9.0/-/0	-	d8df44b8eff851ee
+property	c:objc(cs)WKWebViewConfiguration(py)mediaPlaybackAllowsAirPlay	WKDeprecated			ios=8.0/9.0/-/0	-	8384f98199cc27c0
+property	c:objc(cs)WKWebViewConfiguration(py)requiresUserActionForMediaPlayback	WKDeprecated			ios=9.0/10.0/-/0	-	4c6ff3da304577cf
+var	c:@WKWebsiteDataTypeFetchCache	-			ios=11.3/-/-/0,macos=10.13.4/-/-/0	-	c7e04377e067c362
+var	c:@WKWebsiteDataTypeDiskCache	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	77cb6a9af5e961ee
+var	c:@WKWebsiteDataTypeMemoryCache	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	4af1c187500c88bf
+var	c:@WKWebsiteDataTypeOfflineWebApplicationCache	-			ios=9.0/26.2/-/0,macos=10.11/-/-/0	-	07ff9c01ba149d4f
+var	c:@WKWebsiteDataTypeCookies	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	f8b7dc2c851f483f
+var	c:@WKWebsiteDataTypeSessionStorage	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	86b8281a1cac409a
+var	c:@WKWebsiteDataTypeLocalStorage	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	b97e6f201383625e
+var	c:@WKWebsiteDataTypeWebSQLDatabases	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	c917b3f2652427e0
+var	c:@WKWebsiteDataTypeIndexedDBDatabases	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	bea3b438bf1f992d
+var	c:@WKWebsiteDataTypeServiceWorkerRegistrations	-			ios=11.3/-/-/0,macos=10.13.4/-/-/0	-	9b2dff9d168f7a2b
+var	c:@WKWebsiteDataTypeFileSystem	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	8ffccbaf3e14c9b6
+var	c:@WKWebsiteDataTypeSearchFieldRecentSearches	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	16fdf6e69e621c91
+var	c:@WKWebsiteDataTypeMediaKeys	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	ad2897fb2d632ca1
+var	c:@WKWebsiteDataTypeHashSalt	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	bfeb761f27978d88
+var	c:@WKWebsiteDataTypeScreenTime	-			ios=26.0/-/-/0,macos=26.0/-/-/0,xros=-/-/-/1	-	111d5d0553d81c39
+interface	c:objc(cs)WKWebsiteDataRecord	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	84cb770edee36830
+super	-	WKWebsiteDataRecord	NSObject		-	-	7455b42e88997f90
+property	c:objc(cs)WKWebsiteDataRecord(py)displayName	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	39b8206d77297aa4
+property	c:objc(cs)WKWebsiteDataRecord(py)dataTypes	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	4ef77e8b557cb1d5
+interface	c:objc(cs)WKWebsiteDataStore	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	bebf6a6e1399b76e
+super	-	WKWebsiteDataStore	NSObject		-	-	d944ff7c872f14fb
+conforms	-	WKWebsiteDataStore	NSSecureCoding		-	-	4388ccbdd59d2ecb
+method	c:objc(cs)WKWebsiteDataStore(cm)defaultDataStore	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	363880665fb21ab0
+method	c:objc(cs)WKWebsiteDataStore(cm)nonPersistentDataStore	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	ceaa7e42f8042cbd
+method	c:objc(cs)WKWebsiteDataStore(im)new	-			*unavailable ios=9.0/-/-/0,macos=10.11/-/-/0	-	80a545efafde28ae
+method	c:objc(cs)WKWebsiteDataStore(im)init	-			*unavailable ios=9.0/-/-/0,macos=10.11/-/-/0	-	5704cc61e243b809
+property	c:objc(cs)WKWebsiteDataStore(py)persistent	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	e5f50b67474783cf
+method	c:objc(cs)WKWebsiteDataStore(cm)allWebsiteDataTypes	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	780e4ac3a784549e
+method	c:objc(cs)WKWebsiteDataStore(im)fetchDataRecordsOfTypes:completionHandler:	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	8a36d13958e473fd
+method	c:objc(cs)WKWebsiteDataStore(im)removeDataOfTypes:forDataRecords:completionHandler:	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	c774fbf37d55f7ea
+method	c:objc(cs)WKWebsiteDataStore(im)removeDataOfTypes:modifiedSince:completionHandler:	-			ios=9.0/-/-/0,macos=10.11/-/-/0	-	fa3574a4bf990169
+property	c:objc(cs)WKWebsiteDataStore(py)httpCookieStore	-			ios=11.0/-/-/0,macos=10.13/-/-/0	-	dfac986302b5b6ba
+property	c:objc(cs)WKWebsiteDataStore(py)identifier	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	3a697a0605480380
+method	c:objc(cs)WKWebsiteDataStore(im)fetchDataOfTypes:completionHandler:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	cc058a2f012f0cc2
+method	c:objc(cs)WKWebsiteDataStore(im)restoreData:completionHandler:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	1665cc7f74073367
+method	c:objc(cs)WKWebsiteDataStore(cm)dataStoreForIdentifier:	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	53c82db036f4b395
+method	c:objc(cs)WKWebsiteDataStore(cm)removeDataStoreForIdentifier:completionHandler:	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	a9cdb86f14beba40
+method	c:objc(cs)WKWebsiteDataStore(cm)fetchAllDataStoreIdentifiers:	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	c82e8181c9f01d2c
+property	c:objc(cs)WKWebsiteDataStore(py)proxyConfigurations	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	81a4f28515abf87a
+interface	c:objc(cs)WKWindowFeatures	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	97c837196ee9ef1c
+super	-	WKWindowFeatures	NSObject		-	-	f43c180ebba56cec
+property	c:objc(cs)WKWindowFeatures(py)menuBarVisibility	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	a1b28de1815b8736
+property	c:objc(cs)WKWindowFeatures(py)statusBarVisibility	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	f94d82ceaf8d2a75
+property	c:objc(cs)WKWindowFeatures(py)toolbarsVisibility	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	ab65c62f00629e5f
+property	c:objc(cs)WKWindowFeatures(py)allowsResizing	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	14c3f55f405b453f
+property	c:objc(cs)WKWindowFeatures(py)x	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	7e585ac4b83b4c24
+property	c:objc(cs)WKWindowFeatures(py)y	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	96d0e4d87e6e8530
+property	c:objc(cs)WKWindowFeatures(py)width	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	80f7c1fbddd91f9d
+property	c:objc(cs)WKWindowFeatures(py)height	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	0696ada89c1ea0b0

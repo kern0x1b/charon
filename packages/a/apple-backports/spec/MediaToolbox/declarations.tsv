@@ -1,0 +1,33 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+struct	c:@S@opaqueMTAudioProcessingTap	-			-	-	98e86c95c5687cba
+typedef	c:@T@MTAudioProcessingTapRef	-			-	-	1378bec5e1b9d491
+function	c:@F@MTAudioProcessingTapGetTypeID	-			ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	3ab555f26c171273
+typedef	c:@T@MTAudioProcessingTapCreationFlags	-			-	-	19c8f99d6703125b
+enum	c:@Ea@kMTAudioProcessingTapCreationFlag_PreEffects	-	-		-	-	a59c42b4380ba8ff
+enumconst	c:@Ea@kMTAudioProcessingTapCreationFlag_PreEffects@kMTAudioProcessingTapCreationFlag_PreEffects	-			-	-	87cd7f6a206e0114
+enumconst	c:@Ea@kMTAudioProcessingTapCreationFlag_PreEffects@kMTAudioProcessingTapCreationFlag_PostEffects	-			-	-	8d02f208479299cf
+typedef	c:@T@MTAudioProcessingTapFlags	-			-	-	b42976cf09bd1f44
+enum	c:@Ea@kMTAudioProcessingTapFlag_StartOfStream	-	-		-	-	54df205368d05c04
+enumconst	c:@Ea@kMTAudioProcessingTapFlag_StartOfStream@kMTAudioProcessingTapFlag_StartOfStream	-			-	-	e04f8b49c12fa1d2
+enumconst	c:@Ea@kMTAudioProcessingTapFlag_StartOfStream@kMTAudioProcessingTapFlag_EndOfStream	-			-	-	c65ae98ffc1e82fe
+typedef	c:@T@MTAudioProcessingTapInitCallback	-			-	-	4e6f7062f91930d9
+typedef	c:@T@MTAudioProcessingTapFinalizeCallback	-			-	-	25ed2bd2259bc349
+typedef	c:@T@MTAudioProcessingTapPrepareCallback	-			-	-	a654cfe3793249fd
+typedef	c:@T@MTAudioProcessingTapUnprepareCallback	-			-	-	da589819c9e1b286
+typedef	c:@T@MTAudioProcessingTapProcessCallback	-			-	-	9c436f9ccbb5dfdb
+enum	c:@Ea@kMTAudioProcessingTapCallbacksVersion_0	-	-		-	-	6a4b361dbbc0b1d9
+enumconst	c:@Ea@kMTAudioProcessingTapCallbacksVersion_0@kMTAudioProcessingTapCallbacksVersion_0	-			-	-	1c8172d65d68c930
+struct	c:@SA@MTAudioProcessingTapCallbacks	-			-	-	0587279e91bdb94c
+field	c:@SA@MTAudioProcessingTapCallbacks@FI@version	MTAudioProcessingTapCallbacks			-	-	361a16be10051f07
+field	c:@SA@MTAudioProcessingTapCallbacks@FI@clientInfo	MTAudioProcessingTapCallbacks			-	-	ca9526ef21a05c1b
+field	c:@SA@MTAudioProcessingTapCallbacks@FI@init	MTAudioProcessingTapCallbacks			-	-	c2b77116006f29ce
+field	c:@SA@MTAudioProcessingTapCallbacks@FI@finalize	MTAudioProcessingTapCallbacks			-	-	bad5d83bd41e4a61
+field	c:@SA@MTAudioProcessingTapCallbacks@FI@prepare	MTAudioProcessingTapCallbacks			-	-	c4f5b6d7de798029
+field	c:@SA@MTAudioProcessingTapCallbacks@FI@unprepare	MTAudioProcessingTapCallbacks			-	-	4b48964e75aa10f4
+field	c:@SA@MTAudioProcessingTapCallbacks@FI@process	MTAudioProcessingTapCallbacks			-	-	abb0bd5838a1a4b8
+typedef	c:@T@MTAudioProcessingTapCallbacks	-			ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	17a6db5b1e40d067
+function	c:@F@MTAudioProcessingTapCreate	-			ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	bc0ab43a64a08da6
+function	c:@F@MTAudioProcessingTapGetStorage	-			ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	e617a9c78b0427fa
+function	c:@F@MTAudioProcessingTapGetSourceAudio	-			ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	d70979d4a7589fe4
+function	c:@F@MTCopyLocalizedNameForMediaType	-			ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	a11314c2114d5be0
+function	c:@F@MTCopyLocalizedNameForMediaSubType	-			ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	80225eae918dd6f5

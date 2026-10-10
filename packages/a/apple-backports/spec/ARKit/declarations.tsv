@@ -1,0 +1,821 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+typedef	c:@T@ARConfidenceLevel	-			-	-	1d8542b07dc4dcb2
+enum	c:@E@ARConfidenceLevel	-			ios=14.0/-/-/0	-	45406e76b2b47d5b
+enumconst	c:@E@ARConfidenceLevel@ARConfidenceLevelLow	ARConfidenceLevel			ios=14.0/-/-/0	-	e4780f3e6c1261ec
+enumconst	c:@E@ARConfidenceLevel@ARConfidenceLevelMedium	ARConfidenceLevel			ios=14.0/-/-/0	-	b2128a570a4b65a3
+enumconst	c:@E@ARConfidenceLevel@ARConfidenceLevelHigh	ARConfidenceLevel			ios=14.0/-/-/0	-	d14d1a7980d49233
+interface	c:objc(cs)ARDepthData	-			ios=14.0/-/-/0	-	c330bb4fbd166cf1
+super	-	ARDepthData	NSObject		-	-	69056485d92359ae
+property	c:objc(cs)ARDepthData(py)depthMap	-			ios=14.0/-/-/0	-	5dcf5a5d7799cb58
+property	c:objc(cs)ARDepthData(py)confidenceMap	-			ios=14.0/-/-/0	-	4d6e0cebe35067b5
+protocol	c:objc(pl)ARAnchorCopying	-			ios=12.0/-/-/0	-	397d71664d2eab16
+conforms	-	ARAnchorCopying	NSCopying		-	-	4381377789219da6
+method	c:objc(pl)ARAnchorCopying(im)initWithAnchor:	-			ios=12.0/-/-/0	-	38ff18b1e58182d1
+protocol	c:objc(pl)ARTrackable	-			ios=11.0/-/-/0	-	af21f6f4033a7a5c
+conforms	-	ARTrackable	NSObject		-	-	7af8c32ba8e9a8d7
+property	c:objc(pl)ARTrackable(py)isTracked	-			ios=11.0/-/-/0	-	5bb3578f46e8b150
+interface	c:objc(cs)ARAnchor	-			ios=11.0/-/-/0	-	1ac3e64c2fdf9e7e
+super	-	ARAnchor	NSObject		-	-	e43712e8fbce24be
+conforms	-	ARAnchor	ARAnchorCopying		-	-	4a3d6862ef468909
+conforms	-	ARAnchor	NSSecureCoding		-	-	a6f4e0c4e5f7164b
+property	c:objc(cs)ARAnchor(py)identifier	-			ios=11.0/-/-/0	-	ef53cebff285df99
+property	c:objc(cs)ARAnchor(py)name	-			ios=12.0/-/-/0	-	a3b223370118f8cc
+property	c:objc(cs)ARAnchor(py)sessionIdentifier	-			ios=13.0/-/-/0	-	ddcdf01577784e6d
+property	c:objc(cs)ARAnchor(py)transform	-			ios=11.0/-/-/0	-	5c24c305e1dd231c
+method	c:objc(cs)ARAnchor(im)initWithTransform:	-			ios=11.0/-/-/0	-	a9c0e8e1fbf82405
+method	c:objc(cs)ARAnchor(im)initWithName:transform:	-			ios=12.0/-/-/0	-	08d9206138c2c863
+method	c:objc(cs)ARAnchor(im)init	-			*unavailable ios=11.0/-/-/0	-	5f59f0e3151aa75b
+method	c:objc(cs)ARAnchor(cm)new	-			*unavailable ios=11.0/-/-/0	-	44f0f8a9e3b2877a
+typedef	c:@T@ARSkeletonJointName	-			ios=13.0/-/-/0	-	2886962a63389776
+var	c:@ARSkeletonJointNameRoot	-			ios=13.0/-/-/0	-	2aa998b5ec1be312
+var	c:@ARSkeletonJointNameHead	-			ios=13.0/-/-/0	-	abf9f20eb071fb5b
+var	c:@ARSkeletonJointNameLeftHand	-			ios=13.0/-/-/0	-	d80bdd27d8121813
+var	c:@ARSkeletonJointNameRightHand	-			ios=13.0/-/-/0	-	76b3508a119e91ac
+var	c:@ARSkeletonJointNameLeftFoot	-			ios=13.0/-/-/0	-	35c7d40e4c5930fd
+var	c:@ARSkeletonJointNameRightFoot	-			ios=13.0/-/-/0	-	a2e54d351f1f5f2a
+var	c:@ARSkeletonJointNameLeftShoulder	-			ios=13.0/-/-/0	-	637d5aa82e4fbdfb
+var	c:@ARSkeletonJointNameRightShoulder	-			ios=13.0/-/-/0	-	912ea6c3ced8585a
+interface	c:objc(cs)ARSkeletonDefinition	-			ios=13.0/-/-/0	-	3a2d50d687bf3f63
+super	-	ARSkeletonDefinition	NSObject		-	-	c0abe18699f2b8b0
+property	c:objc(cs)ARSkeletonDefinition(cpy)defaultBody3DSkeletonDefinition	-			ios=13.0/-/-/0	-	1625dba609e6d1fa
+property	c:objc(cs)ARSkeletonDefinition(cpy)defaultBody2DSkeletonDefinition	-			ios=13.0/-/-/0	-	ee617a3a43d5a771
+property	c:objc(cs)ARSkeletonDefinition(py)jointCount	-			ios=13.0/-/-/0	-	b863d3b353416862
+property	c:objc(cs)ARSkeletonDefinition(py)jointNames	-			ios=13.0/-/-/0	-	1f5cad1e2bffe6fc
+property	c:objc(cs)ARSkeletonDefinition(py)parentIndices	-			ios=13.0/-/-/0	-	f262adcdef378b3e
+property	c:objc(cs)ARSkeletonDefinition(py)neutralBodySkeleton3D	-			ios=13.0/-/-/0	-	04acf421c13069ba
+method	c:objc(cs)ARSkeletonDefinition(im)indexForJointName:	-			ios=13.0/-/-/0	-	cd396ced540d656d
+method	c:objc(cs)ARSkeletonDefinition(im)init	-			*unavailable ios=13.0/-/-/0	-	afa9cc8e954b6111
+method	c:objc(cs)ARSkeletonDefinition(cm)new	-			*unavailable ios=13.0/-/-/0	-	72d205e3ec1cea3c
+interface	c:objc(cs)ARSkeleton	-			ios=13.0/-/-/0	-	919fbfa990e06177
+super	-	ARSkeleton	NSObject		-	-	b15e7d8d461a0b90
+property	c:objc(cs)ARSkeleton(py)definition	-			ios=13.0/-/-/0	-	7901d95fd2f624e9
+property	c:objc(cs)ARSkeleton(py)jointCount	-			ios=13.0/-/-/0	-	5640da11aa528d51
+method	c:objc(cs)ARSkeleton(im)isJointTracked:	-			ios=13.0/-/-/0	-	26226e2a781df814
+method	c:objc(cs)ARSkeleton(im)init	-			*unavailable ios=13.0/-/-/0	-	afda84c9a46ffa7c
+method	c:objc(cs)ARSkeleton(cm)new	-			*unavailable ios=13.0/-/-/0	-	1a98fa2bf38946be
+interface	c:objc(cs)ARSkeleton3D	-			ios=13.0/-/-/0	-	86a6f2f80717b97c
+super	-	ARSkeleton3D	ARSkeleton		-	-	a3fa63bf4de40cee
+property	c:objc(cs)ARSkeleton3D(py)jointModelTransforms	-			ios=13.0/-/-/0	-	6a1b80b695d8b4ed
+property	c:objc(cs)ARSkeleton3D(py)jointLocalTransforms	-			ios=13.0/-/-/0	-	15bd0667dbbbf887
+method	c:objc(cs)ARSkeleton3D(im)modelTransformForJointName:	-			ios=13.0/-/-/0	-	1a4ef9e6e125b585
+method	c:objc(cs)ARSkeleton3D(im)localTransformForJointName:	-			ios=13.0/-/-/0	-	ba72bb7e9ad45a59
+method	c:objc(cs)ARSkeleton3D(im)init	-			*unavailable ios=13.0/-/-/0	-	00ef63a78a1d67ff
+method	c:objc(cs)ARSkeleton3D(cm)new	-			*unavailable ios=13.0/-/-/0	-	c19a4cea26959935
+interface	c:objc(cs)ARSkeleton2D	-			ios=13.0/-/-/0	-	67f7afbae17a5f44
+super	-	ARSkeleton2D	ARSkeleton		-	-	319ebab482cee87e
+property	c:objc(cs)ARSkeleton2D(py)jointLandmarks	-			ios=13.0/-/-/0	-	41fd1329e7319244
+method	c:objc(cs)ARSkeleton2D(im)landmarkForJointNamed:	-			ios=13.0/-/-/0	-	69f2d9f11b18ff36
+method	c:objc(cs)ARSkeleton2D(im)init	-			*unavailable ios=13.0/-/-/0	-	9276df3ae95e4173
+method	c:objc(cs)ARSkeleton2D(cm)new	-			*unavailable ios=13.0/-/-/0	-	75372513ea96117c
+function	c:@F@ARSkeletonJointNameForRecognizedPointKey	-			ios=14.0/-/-/0	-	9b5ef09da5df4a15
+interface	c:objc(cs)ARBody2D	-			ios=13.0/-/-/0	-	a2d034397f014142
+super	-	ARBody2D	NSObject		-	-	cd275fb200cbf5e5
+property	c:objc(cs)ARBody2D(py)skeleton	-			ios=13.0/-/-/0	-	85dc4495ac8b5ce9
+method	c:objc(cs)ARBody2D(im)init	-			*unavailable ios=13.0/-/-/0	-	1e2daded8ad9f43e
+method	c:objc(cs)ARBody2D(cm)new	-			*unavailable ios=13.0/-/-/0	-	83e57b4a46bd844b
+interface	c:objc(cs)ARBodyAnchor	-			ios=13.0/-/-/0	-	66a5fe8e5e2f0356
+super	-	ARBodyAnchor	ARAnchor		-	-	c98b4191aac3181f
+conforms	-	ARBodyAnchor	ARTrackable		-	-	e7bf91889b19a671
+property	c:objc(cs)ARBodyAnchor(py)skeleton	-			ios=13.0/-/-/0	-	2fae883eee1fccfc
+property	c:objc(cs)ARBodyAnchor(py)estimatedScaleFactor	-			ios=13.0/-/-/0	-	4c904de78ae2978a
+method	c:objc(cs)ARBodyAnchor(im)initWithTransform:	-			*unavailable ios=13.0/-/-/0	-	05394237787b2aa4
+method	c:objc(cs)ARBodyAnchor(im)initWithName:transform:	-			*unavailable ios=13.0/-/-/0	-	3c6c8923929d5cbf
+typedef	c:@T@ARTrackingState	-			ios=11.0/-/-/0	-	7b94d6e373833162
+enum	c:@E@ARTrackingState	-			-	-	528334f47df89df5
+enumconst	c:@E@ARTrackingState@ARTrackingStateNotAvailable	ARTrackingState			-	-	e8e97853c0d273c5
+enumconst	c:@E@ARTrackingState@ARTrackingStateLimited	ARTrackingState			-	-	68636e9c5012b110
+enumconst	c:@E@ARTrackingState@ARTrackingStateNormal	ARTrackingState			-	-	426c42ba8a6cf6e4
+typedef	c:@T@ARTrackingStateReason	-			ios=11.0/-/-/0	-	77311b5c5de4607a
+enum	c:@E@ARTrackingStateReason	-			-	-	7cc55951bc59895c
+enumconst	c:@E@ARTrackingStateReason@ARTrackingStateReasonNone	ARTrackingStateReason			-	-	a793634ceebc17e6
+enumconst	c:@E@ARTrackingStateReason@ARTrackingStateReasonInitializing	ARTrackingStateReason			-	-	4844ce141fc1aafc
+enumconst	c:@E@ARTrackingStateReason@ARTrackingStateReasonExcessiveMotion	ARTrackingStateReason			-	-	813732d406c3e377
+enumconst	c:@E@ARTrackingStateReason@ARTrackingStateReasonInsufficientFeatures	ARTrackingStateReason			-	-	edb26d823c192508
+enumconst	c:@E@ARTrackingStateReason@ARTrackingStateReasonRelocalizing	ARTrackingStateReason			ios=11.3/-/-/0	-	44cc4a817eb0615d
+interface	c:objc(cs)ARCamera	-			ios=11.0/-/-/0	-	cddfbcd2a8442532
+super	-	ARCamera	NSObject		-	-	9f2222ffd530e478
+conforms	-	ARCamera	NSCopying		-	-	be9a5ea4c0c21403
+property	c:objc(cs)ARCamera(py)transform	-			ios=11.0/-/-/0	-	1a92ac94436c94ed
+property	c:objc(cs)ARCamera(py)eulerAngles	-			ios=11.0/-/-/0	-	a9cfa75acc2e320e
+property	c:objc(cs)ARCamera(py)trackingState	-			ios=11.0/-/-/0	-	cca8ecd6910b72e9
+property	c:objc(cs)ARCamera(py)trackingStateReason	-			ios=11.0/-/-/0	-	a8993a28be55ca49
+property	c:objc(cs)ARCamera(py)intrinsics	-			ios=11.0/-/-/0	-	334a760b48a1b38f
+property	c:objc(cs)ARCamera(py)imageResolution	-			ios=11.0/-/-/0	-	6749bbf800fa71d2
+property	c:objc(cs)ARCamera(py)exposureDuration	-			ios=13.0/-/-/0	-	77b2648fef2441fa
+property	c:objc(cs)ARCamera(py)exposureOffset	-			ios=13.0/-/-/0	-	6e7620f8bd9dfd4e
+property	c:objc(cs)ARCamera(py)projectionMatrix	-			ios=11.0/-/-/0	-	677ffcf3012dd11f
+method	c:objc(cs)ARCamera(im)projectionMatrixForOrientation:viewportSize:zNear:zFar:	-			ios=11.0/-/-/0	-	ad0f74bc18f63c36
+method	c:objc(cs)ARCamera(im)projectPoint:orientation:viewportSize:	-			ios=11.0/-/-/0	-	278c9503e5a2aea7
+method	c:objc(cs)ARCamera(im)unprojectPoint:ontoPlaneWithTransform:orientation:viewportSize:	-			ios=12.0/-/-/0	-	6cc04ed2fc258506
+method	c:objc(cs)ARCamera(im)viewMatrixForOrientation:	-			ios=11.0/-/-/0	-	4b8d2943f4fd446e
+method	c:objc(cs)ARCamera(im)init	-			*unavailable ios=11.0/-/-/0	-	3ec448f60f705f30
+method	c:objc(cs)ARCamera(cm)new	-			*unavailable ios=11.0/-/-/0	-	d959e3b170447a98
+enum	c:@E@UIInterfaceOrientation	-			-	-	cee6f8c7e16a5faa
+typedef	c:@T@UIInterfaceOrientation	-			-	-	c33273ac370d55a1
+typedef	c:@T@ARPlaneDetection	-			ios=11.0/-/-/0	-	a30a36f66ee5493e
+enum	c:@E@ARPlaneDetection	-			-	-	e67659b947d00e88
+enumconst	c:@E@ARPlaneDetection@ARPlaneDetectionNone	ARPlaneDetection			-	-	bbb8e314fe8683b0
+enumconst	c:@E@ARPlaneDetection@ARPlaneDetectionHorizontal	ARPlaneDetection			-	-	40e5a19e32681c7d
+enumconst	c:@E@ARPlaneDetection@ARPlaneDetectionVertical	ARPlaneDetection			ios=11.3/-/-/0	-	5f8431bd49899d71
+typedef	c:@T@ARFrameSemantics	-			ios=13.0/-/-/0	-	0a425f338dad12ba
+enum	c:@E@ARFrameSemantics	-			-	-	ba021e12f353b07e
+enumconst	c:@E@ARFrameSemantics@ARFrameSemanticNone	ARFrameSemantics			-	-	8704eaadc28a9054
+enumconst	c:@E@ARFrameSemantics@ARFrameSemanticPersonSegmentation	ARFrameSemantics			-	-	2a5d0c10ff5aae69
+enumconst	c:@E@ARFrameSemantics@ARFrameSemanticPersonSegmentationWithDepth	ARFrameSemantics			-	-	3cb02a89cf435e43
+enumconst	c:@E@ARFrameSemantics@ARFrameSemanticBodyDetection	ARFrameSemantics			-	-	862b02360f3af74f
+enumconst	c:@E@ARFrameSemantics@ARFrameSemanticSceneDepth	ARFrameSemantics			ios=14.0/-/-/0	-	cdda9ab33d4dbdb2
+enumconst	c:@E@ARFrameSemantics@ARFrameSemanticSmoothedSceneDepth	ARFrameSemantics			ios=14.0/-/-/0	-	2c11b603cc959729
+typedef	c:@T@ARWorldAlignment	-			ios=11.0/-/-/0	-	f8837a3b65776e57
+enum	c:@E@ARWorldAlignment	-			-	-	76de923c8d71b51a
+enumconst	c:@E@ARWorldAlignment@ARWorldAlignmentGravity	ARWorldAlignment			-	-	63e1d60436db9b85
+enumconst	c:@E@ARWorldAlignment@ARWorldAlignmentGravityAndHeading	ARWorldAlignment			-	-	631053eb0da48a71
+enumconst	c:@E@ARWorldAlignment@ARWorldAlignmentCamera	ARWorldAlignment			-	-	ea8dc419416f2815
+typedef	c:@T@AREnvironmentTexturing	-			ios=12.0/-/-/0	-	3db50eae4c7668c1
+enum	c:@E@AREnvironmentTexturing	-			-	-	2c55f842fb14c7ca
+enumconst	c:@E@AREnvironmentTexturing@AREnvironmentTexturingNone	AREnvironmentTexturing			-	-	096fbc01a6fbd96f
+enumconst	c:@E@AREnvironmentTexturing@AREnvironmentTexturingManual	AREnvironmentTexturing			-	-	ff861dbae88bb80a
+enumconst	c:@E@AREnvironmentTexturing@AREnvironmentTexturingAutomatic	AREnvironmentTexturing			-	-	88d15592e46073a4
+typedef	c:@T@ARSceneReconstruction	-			ios=13.4/-/-/0	-	0511b56bba41b57b
+enum	c:@E@ARSceneReconstruction	-			-	-	1b8a3234faecfe07
+enumconst	c:@E@ARSceneReconstruction@ARSceneReconstructionNone	ARSceneReconstruction			-	-	fc7667892419008c
+enumconst	c:@E@ARSceneReconstruction@ARSceneReconstructionMesh	ARSceneReconstruction			-	-	7f2286a12d8b2929
+enumconst	c:@E@ARSceneReconstruction@ARSceneReconstructionMeshWithClassification	ARSceneReconstruction			-	-	6eab95db3713cad4
+interface	c:objc(cs)ARConfiguration	-			ios=11.0/-/-/0	-	7b710cde1a694451
+super	-	ARConfiguration	NSObject		-	-	84c3972bfc95e1b7
+conforms	-	ARConfiguration	NSCopying		-	-	4ad1e791266b151c
+property	c:objc(cs)ARConfiguration(cpy)isSupported	-			ios=11.0/-/-/0	-	4756ca77f1c2e4b9
+property	c:objc(cs)ARConfiguration(cpy)supportedVideoFormats	-			ios=11.3/-/-/0	-	5b8b7548675f1b86
+property	c:objc(cs)ARConfiguration(py)videoFormat	-			ios=11.3/-/-/0	-	64a558dd535eb648
+property	c:objc(cs)ARConfiguration(py)worldAlignment	-			ios=11.0/-/-/0	-	00d8ff66a9a50fc5
+property	c:objc(cs)ARConfiguration(py)lightEstimationEnabled	-			ios=11.0/-/-/0	-	62231434927733e5
+property	c:objc(cs)ARConfiguration(py)providesAudioData	-			ios=11.0/-/-/0	-	cb04d1814fb02bfb
+property	c:objc(cs)ARConfiguration(py)frameSemantics	-			ios=13.0/-/-/0	-	de42dbf8c822ed6a
+method	c:objc(cs)ARConfiguration(cm)supportsFrameSemantics:	-			ios=13.0/-/-/0	-	6fe6ebda9feb7c5e
+property	c:objc(cs)ARConfiguration(cpy)configurableCaptureDeviceForPrimaryCamera	-			ios=16.0/-/-/0	-	a29f854d4a8ffa0a
+property	c:objc(cs)ARConfiguration(cpy)recommendedVideoFormatFor4KResolution	-			ios=16.0/-/-/0	-	dd20c6c9e8aa5414
+property	c:objc(cs)ARConfiguration(cpy)recommendedVideoFormatForHighResolutionFrameCapturing	-			ios=16.0/-/-/0	-	f46dfa8b906c28cc
+property	c:objc(cs)ARConfiguration(py)videoHDRAllowed	-			ios=16.0/-/-/0	-	564c3eb4171340f0
+method	c:objc(cs)ARConfiguration(im)init	-			*unavailable ios=11.0/-/-/0	-	5a6d261b5409aa94
+method	c:objc(cs)ARConfiguration(cm)new	-			*unavailable ios=11.0/-/-/0	-	b786073f051c597b
+interface	c:objc(cs)ARWorldTrackingConfiguration	-			ios=11.0/-/-/0	-	e0d38fc5fd8900b1
+super	-	ARWorldTrackingConfiguration	ARConfiguration		-	-	faf71cbd68452eec
+property	c:objc(cs)ARWorldTrackingConfiguration(py)autoFocusEnabled	-			ios=11.3/-/-/0	-	54c1424093816492
+property	c:objc(cs)ARWorldTrackingConfiguration(py)environmentTexturing	-			ios=12.0/-/-/0	-	4250060d2e7cc1d7
+property	c:objc(cs)ARWorldTrackingConfiguration(py)wantsHDREnvironmentTextures	-			ios=13.0/-/-/0	-	27fe6cfcd07b149a
+property	c:objc(cs)ARWorldTrackingConfiguration(py)planeDetection	-			ios=11.0/-/-/0	-	a6d4a28e3644c22e
+property	c:objc(cs)ARWorldTrackingConfiguration(py)initialWorldMap	-			ios=12.0/-/-/0	-	8f5469bd58de2114
+property	c:objc(cs)ARWorldTrackingConfiguration(py)detectionImages	-			ios=11.3/-/-/0	-	b5e25b9b3fa415cc
+property	c:objc(cs)ARWorldTrackingConfiguration(py)automaticImageScaleEstimationEnabled	-			ios=13.0/-/-/0	-	6fc982be247c9753
+property	c:objc(cs)ARWorldTrackingConfiguration(py)maximumNumberOfTrackedImages	-			ios=12.0/-/-/0	-	982afdb8e87b1c73
+property	c:objc(cs)ARWorldTrackingConfiguration(py)detectionObjects	-			ios=12.0/-/-/0	-	82ea122badedab78
+property	c:objc(cs)ARWorldTrackingConfiguration(py)collaborationEnabled	-			ios=13.0/-/-/0	-	982f81dd270a6c7b
+property	c:objc(cs)ARWorldTrackingConfiguration(cpy)supportsUserFaceTracking	-			ios=13.0/-/-/0	-	7bb2aaad3f7ea379
+property	c:objc(cs)ARWorldTrackingConfiguration(py)userFaceTrackingEnabled	-			ios=13.0/-/-/0	-	918475c6892c9fc5
+property	c:objc(cs)ARWorldTrackingConfiguration(py)appClipCodeTrackingEnabled	-			ios=14.3/-/-/0	-	d377196c5d909169
+property	c:objc(cs)ARWorldTrackingConfiguration(cpy)supportsAppClipCodeTracking	-			ios=14.3/-/-/0	-	890e0400dcc1743e
+method	c:objc(cs)ARWorldTrackingConfiguration(cm)supportsSceneReconstruction:	-			ios=13.4/-/-/0	-	15c52d974a235e09
+property	c:objc(cs)ARWorldTrackingConfiguration(py)sceneReconstruction	-			ios=13.4/-/-/0	-	89fa03ed3ee7b04a
+method	c:objc(cs)ARWorldTrackingConfiguration(im)init	-			ios=11.0/-/-/0	-	0c2cc4a01b09f363
+method	c:objc(cs)ARWorldTrackingConfiguration(cm)new	-			swift=-/-/-/1	-	794c810ec101b66f
+interface	c:objc(cs)AROrientationTrackingConfiguration	-			ios=11.0/-/-/0	-	7ac959bcd651a339
+super	-	AROrientationTrackingConfiguration	ARConfiguration		-	-	aa64a8a95e3bc934
+property	c:objc(cs)AROrientationTrackingConfiguration(py)autoFocusEnabled	-			ios=11.3/-/-/0	-	357ccad120abe847
+method	c:objc(cs)AROrientationTrackingConfiguration(im)init	-			ios=11.0/-/-/0	-	b0e6349dc06ef40f
+method	c:objc(cs)AROrientationTrackingConfiguration(cm)new	-			swift=-/-/-/1	-	3b407a4a6f468b96
+interface	c:objc(cs)ARFaceTrackingConfiguration	-			ios=11.0/-/-/0	-	3faa518b2a94893b
+super	-	ARFaceTrackingConfiguration	ARConfiguration		-	-	e04e0f58dcc42097
+property	c:objc(cs)ARFaceTrackingConfiguration(cpy)supportedNumberOfTrackedFaces	-			ios=13.0/-/-/0	-	86a07b8df0786414
+property	c:objc(cs)ARFaceTrackingConfiguration(py)maximumNumberOfTrackedFaces	-			ios=13.0/-/-/0	-	847db3626ac5b587
+property	c:objc(cs)ARFaceTrackingConfiguration(cpy)supportsWorldTracking	-			ios=13.0/-/-/0	-	c2a47d77d2536f89
+property	c:objc(cs)ARFaceTrackingConfiguration(py)worldTrackingEnabled	-			ios=13.0/-/-/0	-	da6ae53679d734fd
+method	c:objc(cs)ARFaceTrackingConfiguration(im)init	-			ios=11.0/-/-/0	-	f8e0316c0e53e275
+method	c:objc(cs)ARFaceTrackingConfiguration(cm)new	-			swift=-/-/-/1	-	f422f8da8bfe8ddd
+interface	c:objc(cs)ARImageTrackingConfiguration	-			ios=12.0/-/-/0	-	7d420670eaae4681
+super	-	ARImageTrackingConfiguration	ARConfiguration		-	-	860cd064fd9c0da2
+property	c:objc(cs)ARImageTrackingConfiguration(py)autoFocusEnabled	-			ios=12.0/-/-/0	-	872037f6f84230a6
+property	c:objc(cs)ARImageTrackingConfiguration(py)trackingImages	-			ios=12.0/-/-/0	-	41b9a0f92a512afa
+property	c:objc(cs)ARImageTrackingConfiguration(py)maximumNumberOfTrackedImages	-			ios=12.0/-/-/0	-	03a97a2c34f4259e
+method	c:objc(cs)ARImageTrackingConfiguration(im)init	-			ios=12.0/-/-/0	-	b485f53a9ceb46e2
+method	c:objc(cs)ARImageTrackingConfiguration(cm)new	-			swift=-/-/-/1	-	4f12bc672f40a6cf
+interface	c:objc(cs)ARObjectScanningConfiguration	-			ios=12.0/-/-/0	-	11d71ba811285b35
+super	-	ARObjectScanningConfiguration	ARConfiguration		-	-	7131c6ba822cb16a
+property	c:objc(cs)ARObjectScanningConfiguration(py)autoFocusEnabled	-			ios=12.0/-/-/0	-	ea790456ba29ff86
+property	c:objc(cs)ARObjectScanningConfiguration(py)planeDetection	-			ios=12.0/-/-/0	-	bc9bb3bb036bb662
+method	c:objc(cs)ARObjectScanningConfiguration(im)init	-			ios=12.0/-/-/0	-	4498dfe1ebadb4f0
+method	c:objc(cs)ARObjectScanningConfiguration(cm)new	-			swift=-/-/-/1	-	818aaffbf03f6e3d
+interface	c:objc(cs)ARBodyTrackingConfiguration	-			ios=13.0/-/-/0	-	16c577a20aefeed5
+super	-	ARBodyTrackingConfiguration	ARConfiguration		-	-	d616362090e2983d
+property	c:objc(cs)ARBodyTrackingConfiguration(py)autoFocusEnabled	-			ios=13.0/-/-/0	-	7157bdd0f79310f7
+property	c:objc(cs)ARBodyTrackingConfiguration(py)initialWorldMap	-			ios=13.0/-/-/0	-	f5a918f1eac5c63b
+property	c:objc(cs)ARBodyTrackingConfiguration(py)environmentTexturing	-			ios=13.0/-/-/0	-	a7aaa60e64c78c8d
+property	c:objc(cs)ARBodyTrackingConfiguration(py)wantsHDREnvironmentTextures	-			ios=13.0/-/-/0	-	2b89e84e7076f8ac
+property	c:objc(cs)ARBodyTrackingConfiguration(py)planeDetection	-			ios=13.0/-/-/0	-	0c01363f98d3c086
+property	c:objc(cs)ARBodyTrackingConfiguration(py)detectionImages	-			ios=13.0/-/-/0	-	d0e4db741a9fc46a
+property	c:objc(cs)ARBodyTrackingConfiguration(py)automaticImageScaleEstimationEnabled	-			ios=13.0/-/-/0	-	04f180159921dd27
+property	c:objc(cs)ARBodyTrackingConfiguration(py)automaticSkeletonScaleEstimationEnabled	-			ios=13.0/-/-/0	-	d66eca6a73b74cb0
+property	c:objc(cs)ARBodyTrackingConfiguration(py)maximumNumberOfTrackedImages	-			ios=13.0/-/-/0	-	5db62f1cb156dc11
+property	c:objc(cs)ARBodyTrackingConfiguration(py)appClipCodeTrackingEnabled	-			ios=14.3/-/-/0	-	f311efb55c5b8bd3
+property	c:objc(cs)ARBodyTrackingConfiguration(cpy)supportsAppClipCodeTracking	-			ios=14.3/-/-/0	-	5e2e0a338451d082
+method	c:objc(cs)ARBodyTrackingConfiguration(im)init	-			ios=13.0/-/-/0	-	f848c8f3b16bc645
+method	c:objc(cs)ARBodyTrackingConfiguration(cm)new	-			swift=-/-/-/1	-	25853600517d4d05
+interface	c:objc(cs)ARPositionalTrackingConfiguration	-			ios=13.0/-/-/0	-	2aebc8ba73a25892
+super	-	ARPositionalTrackingConfiguration	ARConfiguration		-	-	5ee2e85c89fa1b5e
+property	c:objc(cs)ARPositionalTrackingConfiguration(py)planeDetection	-			ios=13.0/-/-/0	-	e4ed5161ca0fadd7
+property	c:objc(cs)ARPositionalTrackingConfiguration(py)initialWorldMap	-			ios=13.0/-/-/0	-	ef23340f605c2019
+method	c:objc(cs)ARPositionalTrackingConfiguration(im)init	-			ios=13.0/-/-/0	-	2a9e1d5eac0a34f2
+method	c:objc(cs)ARPositionalTrackingConfiguration(cm)new	-			swift=-/-/-/1	-	3ccda27c2a4a9026
+interface	c:objc(cs)ARGeoTrackingConfiguration	-			ios=14.0/-/-/0	-	2a1c3ddaf451ca91
+super	-	ARGeoTrackingConfiguration	ARConfiguration		-	-	4c65ef594aea5901
+property	c:objc(cs)ARGeoTrackingConfiguration(py)worldAlignment	-			*unavailable ios=14.0/-/-/0	-	01fb788fc736a7f5
+property	c:objc(cs)ARGeoTrackingConfiguration(py)environmentTexturing	-			ios=14.0/-/-/0	-	a0a1588eab05b17c
+property	c:objc(cs)ARGeoTrackingConfiguration(py)wantsHDREnvironmentTextures	-			ios=14.0/-/-/0	-	069ebad47e824b89
+property	c:objc(cs)ARGeoTrackingConfiguration(py)planeDetection	-			ios=14.0/-/-/0	-	88be5e3183d11b39
+property	c:objc(cs)ARGeoTrackingConfiguration(py)detectionImages	-			ios=14.0/-/-/0	-	2496864499580964
+property	c:objc(cs)ARGeoTrackingConfiguration(py)automaticImageScaleEstimationEnabled	-			ios=14.0/-/-/0	-	ecae53a23ca83422
+property	c:objc(cs)ARGeoTrackingConfiguration(py)maximumNumberOfTrackedImages	-			ios=14.0/-/-/0	-	f4a798047a7be3ae
+property	c:objc(cs)ARGeoTrackingConfiguration(py)detectionObjects	-			ios=14.0/-/-/0	-	20341906785f6aed
+property	c:objc(cs)ARGeoTrackingConfiguration(py)appClipCodeTrackingEnabled	-			ios=14.3/-/-/0	-	658a536aaca6c724
+property	c:objc(cs)ARGeoTrackingConfiguration(cpy)supportsAppClipCodeTracking	-			ios=14.3/-/-/0	-	a3054b095ffbef47
+method	c:objc(cs)ARGeoTrackingConfiguration(cm)checkAvailabilityWithCompletionHandler:	-			ios=14.0/-/-/0	-	0e8cc3bdb1ce8624
+method	c:objc(cs)ARGeoTrackingConfiguration(cm)checkAvailabilityAtCoordinate:completionHandler:	-			ios=14.0/-/-/0	-	9f4f4dbe4cba9eca
+method	c:objc(cs)ARGeoTrackingConfiguration(im)init	-			ios=14.0/-/-/0	-	9506c0e6011dd0fe
+method	c:objc(cs)ARGeoTrackingConfiguration(cm)new	-			swift=-/-/-/1	-	3f47ac54769d4768
+typedef	c:@T@ARAltitudeSource	-			ios=14.0/-/-/0	-	d322a3ad9f3ffc22
+enum	c:@E@ARAltitudeSource	-			-	-	7660aebfe72c39c4
+enumconst	c:@E@ARAltitudeSource@ARAltitudeSourceUnknown	ARAltitudeSource			-	-	b661fd497c29e714
+enumconst	c:@E@ARAltitudeSource@ARAltitudeSourceCoarse	ARAltitudeSource			-	-	f68434db52bd8108
+enumconst	c:@E@ARAltitudeSource@ARAltitudeSourcePrecise	ARAltitudeSource			-	-	29c6ce3d3fa4948c
+enumconst	c:@E@ARAltitudeSource@ARAltitudeSourceUserDefined	ARAltitudeSource			-	-	5dd872ff37c5f71d
+typedef	c:@T@ARGeoTrackingState	-			ios=14.0/-/-/0	-	c4d4a3df5907deb3
+enum	c:@E@ARGeoTrackingState	-			-	-	a6643e108fabcd26
+enumconst	c:@E@ARGeoTrackingState@ARGeoTrackingStateNotAvailable	ARGeoTrackingState			-	-	543cd36ce641ede3
+enumconst	c:@E@ARGeoTrackingState@ARGeoTrackingStateInitializing	ARGeoTrackingState			-	-	a1de3f3cfb54a461
+enumconst	c:@E@ARGeoTrackingState@ARGeoTrackingStateLocalizing	ARGeoTrackingState			-	-	e350e42331539f9b
+enumconst	c:@E@ARGeoTrackingState@ARGeoTrackingStateLocalized	ARGeoTrackingState			-	-	e684dc454a275334
+typedef	c:@T@ARGeoTrackingAccuracy	-			ios=14.0/-/-/0	-	ebbba2abd10e0fdb
+enum	c:@E@ARGeoTrackingAccuracy	-			-	-	53d7044c4f2091e0
+enumconst	c:@E@ARGeoTrackingAccuracy@ARGeoTrackingAccuracyUndetermined	ARGeoTrackingAccuracy			-	-	b741ad0d67b1ff42
+enumconst	c:@E@ARGeoTrackingAccuracy@ARGeoTrackingAccuracyLow	ARGeoTrackingAccuracy			-	-	4137d9305d66b17e
+enumconst	c:@E@ARGeoTrackingAccuracy@ARGeoTrackingAccuracyMedium	ARGeoTrackingAccuracy			-	-	46692584f6394ebc
+enumconst	c:@E@ARGeoTrackingAccuracy@ARGeoTrackingAccuracyHigh	ARGeoTrackingAccuracy			-	-	78e27e8c03002c54
+typedef	c:@T@ARGeoTrackingStateReason	-			ios=14.0/-/-/0	-	46e29d3b3b591d90
+enum	c:@E@ARGeoTrackingStateReason	-			-	-	ccbae070784a810c
+enumconst	c:@E@ARGeoTrackingStateReason@ARGeoTrackingStateReasonNone	ARGeoTrackingStateReason			-	-	19016059c5fe7432
+enumconst	c:@E@ARGeoTrackingStateReason@ARGeoTrackingStateReasonNotAvailableAtLocation	ARGeoTrackingStateReason			-	-	36b7843208aa57a5
+enumconst	c:@E@ARGeoTrackingStateReason@ARGeoTrackingStateReasonNeedLocationPermissions	ARGeoTrackingStateReason			-	-	d08be329c5992e3f
+enumconst	c:@E@ARGeoTrackingStateReason@ARGeoTrackingStateReasonWorldTrackingUnstable	ARGeoTrackingStateReason			-	-	11f06977c91a6118
+enumconst	c:@E@ARGeoTrackingStateReason@ARGeoTrackingStateReasonWaitingForLocation	ARGeoTrackingStateReason			-	-	5621751d3784424c
+enumconst	c:@E@ARGeoTrackingStateReason@ARGeoTrackingStateReasonWaitingForAvailabilityCheck	ARGeoTrackingStateReason			-	-	c43231205edf7e1f
+enumconst	c:@E@ARGeoTrackingStateReason@ARGeoTrackingStateReasonGeoDataNotLoaded	ARGeoTrackingStateReason			-	-	3a52727928861594
+enumconst	c:@E@ARGeoTrackingStateReason@ARGeoTrackingStateReasonDevicePointedTooLow	ARGeoTrackingStateReason			-	-	c07651d18f3af85a
+enumconst	c:@E@ARGeoTrackingStateReason@ARGeoTrackingStateReasonVisualLocalizationFailed	ARGeoTrackingStateReason			-	-	9d65b55608c08c1f
+interface	c:objc(cs)ARGeoTrackingStatus	-			ios=14.0/-/-/0	-	c4e539adbf01c2fc
+super	-	ARGeoTrackingStatus	NSObject		-	-	eaf6da60a3915901
+conforms	-	ARGeoTrackingStatus	NSCopying		-	-	117260a4e81b5a1c
+conforms	-	ARGeoTrackingStatus	NSSecureCoding		-	-	3f7c1e74cae95578
+property	c:objc(cs)ARGeoTrackingStatus(py)state	-			ios=14.0/-/-/0	-	2b841ba7a2019eeb
+property	c:objc(cs)ARGeoTrackingStatus(py)accuracy	-			ios=14.0/-/-/0	-	e8e01e2a61897487
+property	c:objc(cs)ARGeoTrackingStatus(py)stateReason	-			ios=14.0/-/-/0	-	b13dffe1a967ca77
+method	c:objc(cs)ARGeoTrackingStatus(im)init	-			*unavailable ios=14.0/-/-/0	-	ba1ef40777526727
+method	c:objc(cs)ARGeoTrackingStatus(cm)new	-			*unavailable ios=14.0/-/-/0	-	6d6c5d812c901c80
+typedef	c:@T@ARSessionRunOptions	-			ios=11.0/-/-/0	-	c44a669680d225d2
+enum	c:@E@ARSessionRunOptions	-			-	-	b7b04060fc86b63a
+enumconst	c:@E@ARSessionRunOptions@ARSessionRunOptionResetTracking	ARSessionRunOptions			-	-	a1867f217fc23351
+enumconst	c:@E@ARSessionRunOptions@ARSessionRunOptionRemoveExistingAnchors	ARSessionRunOptions			-	-	22b0cd426b1fabb8
+enumconst	c:@E@ARSessionRunOptions@ARSessionRunOptionStopTrackedRaycasts	ARSessionRunOptions			-	-	dd163b0c8a4c4bb3
+enumconst	c:@E@ARSessionRunOptions@ARSessionRunOptionResetSceneReconstruction	ARSessionRunOptions			-	-	b995d2676c8e47e9
+interface	c:objc(cs)ARSession	-			ios=11.0/-/-/0	-	290eafe16525973c
+super	-	ARSession	NSObject		-	-	9482659f27da67b7
+property	c:objc(cs)ARSession(py)identifier	-			ios=13.0/-/-/0	-	1aca74f615ba8f63
+property	c:objc(cs)ARSession(py)delegate	-			ios=11.0/-/-/0	-	72b212b6e5cee371
+property	c:objc(cs)ARSession(py)delegateQueue	-			ios=11.0/-/-/0	-	29723285a227837e
+property	c:objc(cs)ARSession(py)currentFrame	-			ios=11.0/-/-/0	-	068ed726dfd4bfde
+property	c:objc(cs)ARSession(py)configuration	-			ios=11.0/-/-/0	-	41c404bb5f7fcfa6
+method	c:objc(cs)ARSession(im)runWithConfiguration:	-			swift=-/-/-/1	-	0dc139c75435d064
+method	c:objc(cs)ARSession(im)runWithConfiguration:options:	-			ios=11.0/-/-/0	-	c95ca0d7d919f4cd
+method	c:objc(cs)ARSession(im)pause	-			ios=11.0/-/-/0	-	c423e2841196a488
+method	c:objc(cs)ARSession(im)addAnchor:	-			ios=11.0/-/-/0	-	c416b6578f8526a8
+method	c:objc(cs)ARSession(im)removeAnchor:	-			ios=11.0/-/-/0	-	128f9b5c486890a8
+method	c:objc(cs)ARSession(im)setWorldOrigin:	-			ios=11.3/-/-/0	-	d617e8f83a85b8f1
+method	c:objc(cs)ARSession(im)getCurrentWorldMapWithCompletionHandler:	-			ios=12.0/-/-/0	-	88bf44039b36d8fb
+method	c:objc(cs)ARSession(im)createReferenceObjectWithTransform:center:extent:completionHandler:	-			ios=12.0/-/-/0	-	2fa86b4a38620410
+method	c:objc(cs)ARSession(im)raycast:	-			ios=13.0/-/-/0	-	038b67cccac7e25b
+method	c:objc(cs)ARSession(im)trackedRaycast:updateHandler:	-			ios=13.0/-/-/0	-	7d754af757e96686
+method	c:objc(cs)ARSession(im)updateWithCollaborationData:	-			ios=13.0/-/-/0	-	854a8df80a033337
+method	c:objc(cs)ARSession(im)getGeoLocationForPoint:completionHandler:	-			ios=14.0/-/-/0	-	aa250ec0ce29bbcd
+method	c:objc(cs)ARSession(im)captureHighResolutionFrameWithCompletion:	-			ios=16.0/-/-/0	-	ab4a9a86ba8290fa
+method	c:objc(cs)ARSession(im)captureHighResolutionFrameUsingPhotoSettings:completion:	-			ios=26.0/-/-/0	-	8266703409219ff6
+protocol	c:objc(pl)ARSessionObserver	-			ios=11.0/-/-/0	-	c1bebe21de2d8787
+conforms	-	ARSessionObserver	NSObject		-	-	60dc81cfcf97f397
+method	c:objc(pl)ARSessionObserver(im)session:didFailWithError:	-			ios=11.0/-/-/0	-	5d1a57df84fd35f8
+method	c:objc(pl)ARSessionObserver(im)session:cameraDidChangeTrackingState:	-			ios=11.0/-/-/0	-	379dc5e3080a88c7
+method	c:objc(pl)ARSessionObserver(im)sessionWasInterrupted:	-			ios=11.0/-/-/0	-	5f910cd5893eda71
+method	c:objc(pl)ARSessionObserver(im)sessionInterruptionEnded:	-			ios=11.0/-/-/0	-	ea8ea0bb6454f4f1
+method	c:objc(pl)ARSessionObserver(im)sessionShouldAttemptRelocalization:	-			ios=11.3/-/-/0	-	07a29d36390184aa
+method	c:objc(pl)ARSessionObserver(im)session:didOutputAudioSampleBuffer:	-			ios=11.0/-/-/0	-	52948bc38b22a3b3
+method	c:objc(pl)ARSessionObserver(im)session:didOutputCollaborationData:	-			ios=13.0/-/-/0	-	0b15b79de2f54957
+method	c:objc(pl)ARSessionObserver(im)session:didChangeGeoTrackingStatus:	-			ios=14.0/-/-/0	-	c246d3faacd980f9
+protocol	c:objc(pl)ARSessionDelegate	-			ios=11.0/-/-/0	-	75993ee9ad565880
+conforms	-	ARSessionDelegate	ARSessionObserver		-	-	1796d541339e4fa3
+method	c:objc(pl)ARSessionDelegate(im)session:didUpdateFrame:	-			ios=11.0/-/-/0	-	6c8deba142f9ffbc
+method	c:objc(pl)ARSessionDelegate(im)session:didAddAnchors:	-			ios=11.0/-/-/0	-	30b3fb24990cfe0e
+method	c:objc(pl)ARSessionDelegate(im)session:didUpdateAnchors:	-			ios=11.0/-/-/0	-	c51b2d60c0f5c52c
+method	c:objc(pl)ARSessionDelegate(im)session:didRemoveAnchors:	-			ios=11.0/-/-/0	-	e3674630d5355215
+protocol	c:objc(pl)ARSessionProviding	-			-	-	e5af5532f6e353ca
+conforms	-	ARSessionProviding	NSObject		-	-	19150726be2f01da
+property	c:objc(pl)ARSessionProviding(py)session	-			-	-	73e8de4254659690
+typedef	c:@T@ARCollaborationDataPriority	-			ios=13.0/-/-/0	-	1ebcd71775daeb22
+enum	c:@E@ARCollaborationDataPriority	-			-	-	d11670eb536bf5e0
+enumconst	c:@E@ARCollaborationDataPriority@ARCollaborationDataPriorityCritical	ARCollaborationDataPriority			-	-	b621591b773434c5
+enumconst	c:@E@ARCollaborationDataPriority@ARCollaborationDataPriorityOptional	ARCollaborationDataPriority			-	-	0e20b21f2bd6f609
+interface	c:objc(cs)ARCollaborationData	-			ios=13.0/-/-/0	-	b5baf308fb27d489
+super	-	ARCollaborationData	NSObject		-	-	8d3a9a811f9f1c71
+conforms	-	ARCollaborationData	NSSecureCoding		-	-	9594765b384b10cd
+property	c:objc(cs)ARCollaborationData(py)priority	-			ios=13.0/-/-/0	-	c6422fb1186a8d61
+method	c:objc(cs)ARCollaborationData(im)init	-			*unavailable ios=13.0/-/-/0	-	25a541da5f539d35
+method	c:objc(cs)ARCollaborationData(cm)new	-			*unavailable ios=13.0/-/-/0	-	9ad4d48bc0edc905
+interface	c:objc(cs)AREnvironmentProbeAnchor	-			ios=12.0/-/-/0	-	0343c4f442797aa7
+super	-	AREnvironmentProbeAnchor	ARAnchor		-	-	c30f40a9e4acb859
+property	c:objc(cs)AREnvironmentProbeAnchor(py)environmentTexture	-			ios=12.0/-/-/0	-	bb29a0594135da74
+property	c:objc(cs)AREnvironmentProbeAnchor(py)extent	-			ios=12.0/-/-/0	-	c2faddccbc8b18a8
+method	c:objc(cs)AREnvironmentProbeAnchor(im)initWithTransform:extent:	-			ios=12.0/-/-/0	-	e21a81e473d9033b
+method	c:objc(cs)AREnvironmentProbeAnchor(im)initWithName:transform:extent:	-			ios=12.0/-/-/0	-	3d984a767892303e
+var	c:@ARErrorDomain	-			ios=11.0/-/-/0	-	dfffe7cf5f6165f5
+typedef	c:@T@ARErrorCode	-			ios=11.0/-/-/0	-	e33a94d8eb0db370
+enum	c:@E@ARErrorCode	-			-	-	07f9e6fbf9f0e2d5
+enumconst	c:@E@ARErrorCode@ARErrorCodeUnsupportedConfiguration	ARErrorCode			-	-	0a5f9491416eb860
+enumconst	c:@E@ARErrorCode@ARErrorCodeSensorUnavailable	ARErrorCode			-	-	2f1051731ece8c5c
+enumconst	c:@E@ARErrorCode@ARErrorCodeSensorFailed	ARErrorCode			-	-	3ab89474e0cd7e27
+enumconst	c:@E@ARErrorCode@ARErrorCodeCameraUnauthorized	ARErrorCode			-	-	4a8a9f7bd15f16e6
+enumconst	c:@E@ARErrorCode@ARErrorCodeMicrophoneUnauthorized	ARErrorCode			-	-	7cb4fa403747834b
+enumconst	c:@E@ARErrorCode@ARErrorCodeLocationUnauthorized	ARErrorCode			ios=14.0/-/-/0	-	cc596b3658077473
+enumconst	c:@E@ARErrorCode@ARErrorCodeHighResolutionFrameCaptureInProgress	ARErrorCode			ios=16.0/-/-/0	-	22328abad7b8427b
+enumconst	c:@E@ARErrorCode@ARErrorCodeHighResolutionFrameCaptureFailed	ARErrorCode			ios=16.0/-/-/0	-	0461d84bef8fd05b
+enumconst	c:@E@ARErrorCode@ARErrorCodeWorldTrackingFailed	ARErrorCode			-	-	ecf3eddc2b53deab
+enumconst	c:@E@ARErrorCode@ARErrorCodeGeoTrackingNotAvailableAtLocation	ARErrorCode			ios=14.0/-/-/0	-	d41ef90a10adb4db
+enumconst	c:@E@ARErrorCode@ARErrorCodeGeoTrackingFailed	ARErrorCode			ios=14.0/-/-/0	-	1f2f859ff87440fe
+enumconst	c:@E@ARErrorCode@ARErrorCodeInvalidReferenceImage	ARErrorCode			ios=11.3/-/-/0	-	ea574818c85e543a
+enumconst	c:@E@ARErrorCode@ARErrorCodeInvalidReferenceObject	ARErrorCode			ios=12.0/-/-/0	-	91b7df065c0b7fa4
+enumconst	c:@E@ARErrorCode@ARErrorCodeInvalidWorldMap	ARErrorCode			ios=12.0/-/-/0	-	9bd1485aeb5625ca
+enumconst	c:@E@ARErrorCode@ARErrorCodeInvalidConfiguration	ARErrorCode			ios=12.0/-/-/0	-	e4774850cacd4e92
+enumconst	c:@E@ARErrorCode@ARErrorCodeInvalidCollaborationData	ARErrorCode			ios=13.2/-/-/0	-	158db5b4813dcf24
+enumconst	c:@E@ARErrorCode@ARErrorCodeInsufficientFeatures	ARErrorCode			ios=12.0/-/-/0	-	31198a7bf3e5e8c9
+enumconst	c:@E@ARErrorCode@ARErrorCodeObjectMergeFailed	ARErrorCode			ios=12.0/-/-/0	-	5e6f478b361eb9e5
+enumconst	c:@E@ARErrorCode@ARErrorCodeFileIOFailed	ARErrorCode			ios=12.0/-/-/0	-	a63f98f3d26c7d47
+enumconst	c:@E@ARErrorCode@ARErrorCodeRequestFailed	ARErrorCode			ios=14.0/-/-/0	-	082a723c2134e0c1
+typedef	c:@T@ARBlendShapeLocation	-			ios=11.0/-/-/0	-	546969628ea2bb91
+var	c:@ARBlendShapeLocationBrowDownLeft	-			ios=11.0/-/-/0	-	c1ce33af0dfda871
+var	c:@ARBlendShapeLocationBrowDownRight	-			ios=11.0/-/-/0	-	266db6035616cd3f
+var	c:@ARBlendShapeLocationBrowInnerUp	-			ios=11.0/-/-/0	-	0803d3c2ece887cf
+var	c:@ARBlendShapeLocationBrowOuterUpLeft	-			ios=11.0/-/-/0	-	97a6a14188234958
+var	c:@ARBlendShapeLocationBrowOuterUpRight	-			ios=11.0/-/-/0	-	d67afdf4e04649f6
+var	c:@ARBlendShapeLocationCheekPuff	-			ios=11.0/-/-/0	-	235d21661be46893
+var	c:@ARBlendShapeLocationCheekSquintLeft	-			ios=11.0/-/-/0	-	366d657f82ef609f
+var	c:@ARBlendShapeLocationCheekSquintRight	-			ios=11.0/-/-/0	-	52e9d1f069f7b3b6
+var	c:@ARBlendShapeLocationEyeBlinkLeft	-			ios=11.0/-/-/0	-	b2afab3d96324a16
+var	c:@ARBlendShapeLocationEyeBlinkRight	-			ios=11.0/-/-/0	-	a4707c91eceb7edf
+var	c:@ARBlendShapeLocationEyeLookDownLeft	-			ios=11.0/-/-/0	-	63edc4447de9745b
+var	c:@ARBlendShapeLocationEyeLookDownRight	-			ios=11.0/-/-/0	-	e9c668bb8190d5b4
+var	c:@ARBlendShapeLocationEyeLookInLeft	-			ios=11.0/-/-/0	-	f8864ae178c63d1d
+var	c:@ARBlendShapeLocationEyeLookInRight	-			ios=11.0/-/-/0	-	a70503ec559635d7
+var	c:@ARBlendShapeLocationEyeLookOutLeft	-			ios=11.0/-/-/0	-	1615852e52d1e6e2
+var	c:@ARBlendShapeLocationEyeLookOutRight	-			ios=11.0/-/-/0	-	e212cd2f44908f74
+var	c:@ARBlendShapeLocationEyeLookUpLeft	-			ios=11.0/-/-/0	-	7aaeae6abb3ed9fa
+var	c:@ARBlendShapeLocationEyeLookUpRight	-			ios=11.0/-/-/0	-	d4eda9bb72ec836e
+var	c:@ARBlendShapeLocationEyeSquintLeft	-			ios=11.0/-/-/0	-	9dfd8d51bd729553
+var	c:@ARBlendShapeLocationEyeSquintRight	-			ios=11.0/-/-/0	-	f7e1f0396a7ffef0
+var	c:@ARBlendShapeLocationEyeWideLeft	-			ios=11.0/-/-/0	-	709c3092d682d043
+var	c:@ARBlendShapeLocationEyeWideRight	-			ios=11.0/-/-/0	-	e9be37d6ec6643fc
+var	c:@ARBlendShapeLocationJawForward	-			ios=11.0/-/-/0	-	1902711e4ee0f8e8
+var	c:@ARBlendShapeLocationJawLeft	-			ios=11.0/-/-/0	-	e87923a648bf19fa
+var	c:@ARBlendShapeLocationJawOpen	-			ios=11.0/-/-/0	-	c6d4f7c937dfdb25
+var	c:@ARBlendShapeLocationJawRight	-			ios=11.0/-/-/0	-	c419c5796e5cbb80
+var	c:@ARBlendShapeLocationMouthClose	-			ios=11.0/-/-/0	-	dcc9dc3e59fa3e0f
+var	c:@ARBlendShapeLocationMouthDimpleLeft	-			ios=11.0/-/-/0	-	07eae3f2ac175eda
+var	c:@ARBlendShapeLocationMouthDimpleRight	-			ios=11.0/-/-/0	-	4535d0c38d6025fa
+var	c:@ARBlendShapeLocationMouthFrownLeft	-			ios=11.0/-/-/0	-	390bbb6f97e8ffb6
+var	c:@ARBlendShapeLocationMouthFrownRight	-			ios=11.0/-/-/0	-	14a4703ad0675682
+var	c:@ARBlendShapeLocationMouthFunnel	-			ios=11.0/-/-/0	-	e35d1a821dd06f87
+var	c:@ARBlendShapeLocationMouthLeft	-			ios=11.0/-/-/0	-	be3f45290346d4f8
+var	c:@ARBlendShapeLocationMouthLowerDownLeft	-			ios=11.0/-/-/0	-	6d589ba6a60d438b
+var	c:@ARBlendShapeLocationMouthLowerDownRight	-			ios=11.0/-/-/0	-	ee35aa1a35f816a1
+var	c:@ARBlendShapeLocationMouthPressLeft	-			ios=11.0/-/-/0	-	2a2619d864c7a6c2
+var	c:@ARBlendShapeLocationMouthPressRight	-			ios=11.0/-/-/0	-	108aa7f9facc8f51
+var	c:@ARBlendShapeLocationMouthPucker	-			ios=11.0/-/-/0	-	0d8bb76a2fdd2782
+var	c:@ARBlendShapeLocationMouthRight	-			ios=11.0/-/-/0	-	1116aa30bbb0eb34
+var	c:@ARBlendShapeLocationMouthRollLower	-			ios=11.0/-/-/0	-	ed65dc31bd535636
+var	c:@ARBlendShapeLocationMouthRollUpper	-			ios=11.0/-/-/0	-	367555c7a80c818d
+var	c:@ARBlendShapeLocationMouthShrugLower	-			ios=11.0/-/-/0	-	ae6fa32f1267a622
+var	c:@ARBlendShapeLocationMouthShrugUpper	-			ios=11.0/-/-/0	-	725ac198d77d5e0f
+var	c:@ARBlendShapeLocationMouthSmileLeft	-			ios=11.0/-/-/0	-	9145e7a8061b7c9f
+var	c:@ARBlendShapeLocationMouthSmileRight	-			ios=11.0/-/-/0	-	c086e2f9d8cdbdb6
+var	c:@ARBlendShapeLocationMouthStretchLeft	-			ios=11.0/-/-/0	-	3712f4b6833c4b3e
+var	c:@ARBlendShapeLocationMouthStretchRight	-			ios=11.0/-/-/0	-	bb65b60276b8aa3a
+var	c:@ARBlendShapeLocationMouthUpperUpLeft	-			ios=11.0/-/-/0	-	c6a841aca23f5868
+var	c:@ARBlendShapeLocationMouthUpperUpRight	-			ios=11.0/-/-/0	-	d8f94eb750cbec93
+var	c:@ARBlendShapeLocationNoseSneerLeft	-			ios=11.0/-/-/0	-	dca3941854e26813
+var	c:@ARBlendShapeLocationNoseSneerRight	-			ios=11.0/-/-/0	-	e4e2e0cb4b5033e3
+var	c:@ARBlendShapeLocationTongueOut	-			ios=12.0/-/-/0	-	c3aaa216c8906087
+interface	c:objc(cs)ARFaceAnchor	-			ios=11.0/-/-/0	-	517ade4a399c2419
+super	-	ARFaceAnchor	ARAnchor		-	-	4c6621b5b0e029b7
+conforms	-	ARFaceAnchor	ARTrackable		-	-	07d35c6a74a630f3
+property	c:objc(cs)ARFaceAnchor(py)geometry	-			ios=11.0/-/-/0	-	63a61d0a833da14e
+property	c:objc(cs)ARFaceAnchor(py)leftEyeTransform	-			ios=12.0/-/-/0	-	10d026920dcb3d22
+property	c:objc(cs)ARFaceAnchor(py)rightEyeTransform	-			ios=12.0/-/-/0	-	259fb384e18e7aff
+property	c:objc(cs)ARFaceAnchor(py)lookAtPoint	-			ios=12.0/-/-/0	-	9e56b7c7383c9e99
+property	c:objc(cs)ARFaceAnchor(py)blendShapes	-			ios=11.0/-/-/0	-	e6ccd5b1c98ce6fd
+method	c:objc(cs)ARFaceAnchor(im)initWithTransform:	-			*unavailable ios=11.0/-/-/0	-	f223fbbff5ddb4a5
+method	c:objc(cs)ARFaceAnchor(im)initWithName:transform:	-			*unavailable ios=11.0/-/-/0	-	3eee5c7281b704b6
+interface	c:objc(cs)ARFaceGeometry	-			ios=11.0/-/-/0	-	a872b0070e300bf6
+super	-	ARFaceGeometry	NSObject		-	-	55401c308a6b1f01
+conforms	-	ARFaceGeometry	NSSecureCoding		-	-	2528767b49abf3e6
+conforms	-	ARFaceGeometry	NSCopying		-	-	c61539235f28807a
+property	c:objc(cs)ARFaceGeometry(py)vertexCount	-			ios=11.0/-/-/0	-	5ce26319cbea03d3
+property	c:objc(cs)ARFaceGeometry(py)vertices	-			ios=11.0/-/-/0	-	598fc0603e546ff2
+property	c:objc(cs)ARFaceGeometry(py)textureCoordinateCount	-			ios=11.0/-/-/0	-	c27aa1b6e31dab5d
+property	c:objc(cs)ARFaceGeometry(py)textureCoordinates	-			ios=11.0/-/-/0	-	0db69107f81af968
+property	c:objc(cs)ARFaceGeometry(py)triangleCount	-			ios=11.0/-/-/0	-	016a1b75a4849cde
+property	c:objc(cs)ARFaceGeometry(py)triangleIndices	-			ios=11.0/-/-/0	-	800dbffec15b89eb
+method	c:objc(cs)ARFaceGeometry(im)initWithBlendShapes:	-			ios=11.0/-/-/0	-	8154c5c5042fe4e4
+method	c:objc(cs)ARFaceGeometry(im)init	-			*unavailable ios=11.0/-/-/0	-	6907accd562f14cf
+method	c:objc(cs)ARFaceGeometry(cm)new	-			*unavailable ios=11.0/-/-/0	-	d8dfe251be93c987
+typedef	c:@T@ARHitTestResultType	-			ios=11.0/14.0/-/0	-	75f9bb608485aa7b
+enum	c:@E@ARHitTestResultType	-			-	-	1b8374bf5be3393b
+enumconst	c:@E@ARHitTestResultType@ARHitTestResultTypeFeaturePoint	ARHitTestResultType			-	-	883dca733511cbb4
+enumconst	c:@E@ARHitTestResultType@ARHitTestResultTypeEstimatedHorizontalPlane	ARHitTestResultType			-	-	e28a199a9c1b5476
+enumconst	c:@E@ARHitTestResultType@ARHitTestResultTypeEstimatedVerticalPlane	ARHitTestResultType			ios=11.3/-/-/0	-	030e8d9dfe5a94ef
+enumconst	c:@E@ARHitTestResultType@ARHitTestResultTypeExistingPlane	ARHitTestResultType			-	-	253b63cc59470768
+enumconst	c:@E@ARHitTestResultType@ARHitTestResultTypeExistingPlaneUsingExtent	ARHitTestResultType			-	-	c3692b24512dc078
+enumconst	c:@E@ARHitTestResultType@ARHitTestResultTypeExistingPlaneUsingGeometry	ARHitTestResultType			ios=11.3/-/-/0	-	71ba2c198bc1a306
+interface	c:objc(cs)ARHitTestResult	-			ios=11.0/14.0/-/0	-	5cebb36105d8a68a
+super	-	ARHitTestResult	NSObject		-	-	0000ab8c71cab672
+property	c:objc(cs)ARHitTestResult(py)type	-			ios=11.0/14.0/-/0	-	be08ed4b6de54a7f
+property	c:objc(cs)ARHitTestResult(py)distance	-			ios=11.0/14.0/-/0	-	530781881540caf4
+property	c:objc(cs)ARHitTestResult(py)localTransform	-			ios=11.0/14.0/-/0	-	b48ae80b9ce653c2
+property	c:objc(cs)ARHitTestResult(py)worldTransform	-			ios=11.0/14.0/-/0	-	e108a663186d4a35
+property	c:objc(cs)ARHitTestResult(py)anchor	-			ios=11.0/14.0/-/0	-	a33c24c27340f37e
+method	c:objc(cs)ARHitTestResult(im)init	-			*unavailable ios=11.0/14.0/-/0	-	b3ad33328dceee7f
+method	c:objc(cs)ARHitTestResult(cm)new	-			*unavailable ios=11.0/14.0/-/0	-	1e39b32fcb8f83ee
+typedef	c:@T@ARRaycastTarget	-			ios=13.0/-/-/0	-	0195194c36ffca5b
+enum	c:@E@ARRaycastTarget	-			-	-	4de6f3969c3dcbac
+enumconst	c:@E@ARRaycastTarget@ARRaycastTargetExistingPlaneGeometry	ARRaycastTarget			-	-	62c7073f0f783b3f
+enumconst	c:@E@ARRaycastTarget@ARRaycastTargetExistingPlaneInfinite	ARRaycastTarget			-	-	492214c10bf7e0ec
+enumconst	c:@E@ARRaycastTarget@ARRaycastTargetEstimatedPlane	ARRaycastTarget			-	-	2b65cb174432c908
+typedef	c:@T@ARRaycastTargetAlignment	-			ios=13.0/-/-/0	-	c1755e8710942298
+enum	c:@E@ARRaycastTargetAlignment	-			-	-	07e4e8bdb5c938e0
+enumconst	c:@E@ARRaycastTargetAlignment@ARRaycastTargetAlignmentHorizontal	ARRaycastTargetAlignment			-	-	8d9d0a56e0f6f584
+enumconst	c:@E@ARRaycastTargetAlignment@ARRaycastTargetAlignmentVertical	ARRaycastTargetAlignment			-	-	ded6d8410a958d75
+enumconst	c:@E@ARRaycastTargetAlignment@ARRaycastTargetAlignmentAny	ARRaycastTargetAlignment			-	-	c22866251389669b
+interface	c:objc(cs)ARRaycastQuery	-			ios=13.0/-/-/0	-	df64b12b3839aeb2
+super	-	ARRaycastQuery	NSObject		-	-	d58c4ae0fe0e1b04
+property	c:objc(cs)ARRaycastQuery(py)origin	-			ios=13.0/-/-/0	-	8f06ef20043b532b
+property	c:objc(cs)ARRaycastQuery(py)direction	-			ios=13.0/-/-/0	-	a82b6430763adc56
+property	c:objc(cs)ARRaycastQuery(py)target	-			ios=13.0/-/-/0	-	d2bc94f9544b1e02
+property	c:objc(cs)ARRaycastQuery(py)targetAlignment	-			ios=13.0/-/-/0	-	bd29f8da083576da
+method	c:objc(cs)ARRaycastQuery(im)initWithOrigin:direction:allowingTarget:alignment:	-			ios=13.0/-/-/0	-	3947c3d061c83a0e
+method	c:objc(cs)ARRaycastQuery(im)init	-			*unavailable ios=13.0/-/-/0	-	1eefd0d08a50c0dc
+method	c:objc(cs)ARRaycastQuery(im)new	-			*unavailable ios=13.0/-/-/0	-	042e2ee4b9ea7f6f
+typedef	c:@T@ARSegmentationClass	-			ios=13.0/-/-/0	-	ace7aa47dff762fd
+enum	c:@E@ARSegmentationClass	-			-	-	ef13903e2a772809
+enumconst	c:@E@ARSegmentationClass@ARSegmentationClassNone	ARSegmentationClass			-	-	a29bed1ee73efdef
+enumconst	c:@E@ARSegmentationClass@ARSegmentationClassPerson	ARSegmentationClass			-	-	eb16d02675f911e0
+typedef	c:@T@ARWorldMappingStatus	-			ios=12.0/-/-/0	-	8f70895a70cc9566
+enum	c:@E@ARWorldMappingStatus	-			-	-	1a35df26bc7f912b
+enumconst	c:@E@ARWorldMappingStatus@ARWorldMappingStatusNotAvailable	ARWorldMappingStatus			-	-	838893510dd9b9f5
+enumconst	c:@E@ARWorldMappingStatus@ARWorldMappingStatusLimited	ARWorldMappingStatus			-	-	362ab5b748102789
+enumconst	c:@E@ARWorldMappingStatus@ARWorldMappingStatusExtending	ARWorldMappingStatus			-	-	062f1469d28f0b85
+enumconst	c:@E@ARWorldMappingStatus@ARWorldMappingStatusMapped	ARWorldMappingStatus			-	-	3f3ad69abfbe3503
+interface	c:objc(cs)ARFrame	-			ios=11.0/-/-/0	deprecated: Use [ARSession raycast:]	245de1a5bc752e39
+super	-	ARFrame	NSObject		-	-	a15e81b0abc0c3d8
+conforms	-	ARFrame	NSCopying		-	-	badecaee2fc63c68
+property	c:objc(cs)ARFrame(py)timestamp	-			ios=11.0/-/-/0	-	fe94b39130f0c9e7
+property	c:objc(cs)ARFrame(py)capturedImage	-			ios=11.0/-/-/0	-	e459098e1a8a0f0c
+property	c:objc(cs)ARFrame(py)exifData	-			ios=16.0/-/-/0	-	ccdd0e3f8e9f2367
+property	c:objc(cs)ARFrame(py)cameraGrainTexture	-			ios=13.0/-/-/0	-	59267f8d2241ccbc
+property	c:objc(cs)ARFrame(py)cameraGrainIntensity	-			ios=13.0/-/-/0	-	b4ffca7b523b6e65
+property	c:objc(cs)ARFrame(py)capturedDepthData	-			ios=11.0/-/-/0	-	350365e02dd4cdfb
+property	c:objc(cs)ARFrame(py)capturedDepthDataTimestamp	-			ios=11.0/-/-/0	-	e35bfc3e8db7bf8c
+property	c:objc(cs)ARFrame(py)camera	-			ios=11.0/-/-/0	-	5f8519bb43a3df34
+property	c:objc(cs)ARFrame(py)anchors	-			ios=11.0/-/-/0	-	a6ac1d28c21dba4e
+property	c:objc(cs)ARFrame(py)lightEstimate	-			ios=11.0/-/-/0	-	d6085b2b3a3aa4a8
+property	c:objc(cs)ARFrame(py)rawFeaturePoints	-			ios=11.0/-/-/0	-	aa153947a7f39b9a
+property	c:objc(cs)ARFrame(py)worldMappingStatus	-			ios=12.0/-/-/0	-	354748d2b769bf9c
+property	c:objc(cs)ARFrame(py)segmentationBuffer	-			ios=13.0/-/-/0	-	e339c803d418c442
+property	c:objc(cs)ARFrame(py)estimatedDepthData	-			ios=13.0/-/-/0	-	3cbf370c7c8a08ba
+property	c:objc(cs)ARFrame(py)detectedBody	-			ios=13.0/-/-/0	-	7d6fc15923ae2b83
+property	c:objc(cs)ARFrame(py)geoTrackingStatus	-			ios=14.0/-/-/0	-	482ad5c906ee4e39
+property	c:objc(cs)ARFrame(py)sceneDepth	-			ios=14.0/-/-/0	-	53d86c4cc0ddc1f7
+property	c:objc(cs)ARFrame(py)smoothedSceneDepth	-			ios=14.0/-/-/0	-	39ed6db92d78fa4d
+method	c:objc(cs)ARFrame(im)hitTest:types:	-			ios=11.0/14.0/-/0	deprecated: Use [ARSession raycast:]	832145d615e04a24
+method	c:objc(cs)ARFrame(im)raycastQueryFromPoint:allowingTarget:alignment:	-			ios=13.0/-/-/0	-	d5a9b68d1763c9b5
+method	c:objc(cs)ARFrame(im)displayTransformForOrientation:viewportSize:	-			ios=11.0/-/-/0	-	3c1f4f2c0ffec689
+method	c:objc(cs)ARFrame(im)init	-			*unavailable ios=11.0/-/-/0	-	63e6f1fcbda9180f
+method	c:objc(cs)ARFrame(cm)new	-			*unavailable ios=11.0/-/-/0	-	86ca1a1fc0b51b9a
+interface	c:objc(cs)ARGeoAnchor	-			ios=14.0/-/-/0	-	e599d113d0ea74cb
+super	-	ARGeoAnchor	ARAnchor		-	-	da7d695a8b5d46ec
+conforms	-	ARGeoAnchor	ARTrackable		-	-	d90ac652d53ac5a1
+property	c:objc(cs)ARGeoAnchor(py)coordinate	-			ios=14.0/-/-/0	-	a86fa94605c63608
+property	c:objc(cs)ARGeoAnchor(py)altitude	-			ios=14.0/-/-/0	-	700b1ea58337ec79
+property	c:objc(cs)ARGeoAnchor(py)altitudeSource	-			ios=14.0/-/-/0	-	3e87a66c709bf2dc
+method	c:objc(cs)ARGeoAnchor(im)initWithCoordinate:	-			ios=14.0/-/-/0	-	613a9b99429b60b2
+method	c:objc(cs)ARGeoAnchor(im)initWithCoordinate:altitude:	-			ios=14.0/-/-/0	-	b3bdafc9c11be205
+method	c:objc(cs)ARGeoAnchor(im)initWithName:coordinate:	-			ios=14.0/-/-/0	-	f9d9d9ad5c8ab042
+method	c:objc(cs)ARGeoAnchor(im)initWithName:coordinate:altitude:	-			ios=14.0/-/-/0	-	f8fa53958ff3673b
+method	c:objc(cs)ARGeoAnchor(im)initWithTransform:	-			*unavailable ios=14.0/-/-/0	-	f0b4291d2e398db3
+method	c:objc(cs)ARGeoAnchor(im)initWithName:transform:	-			*unavailable ios=14.0/-/-/0	-	db9be0d727b84457
+interface	c:objc(cs)ARImageAnchor	-			ios=11.3/-/-/0	-	7f99455cb8e80ee7
+super	-	ARImageAnchor	ARAnchor		-	-	73ab88cdf6b0a122
+conforms	-	ARImageAnchor	ARTrackable		-	-	8b9b28e99ee4bef1
+property	c:objc(cs)ARImageAnchor(py)referenceImage	-			ios=11.3/-/-/0	-	21629f979c510b65
+property	c:objc(cs)ARImageAnchor(py)estimatedScaleFactor	-			ios=13.0/-/-/0	-	88e7c43ffa8ee00a
+method	c:objc(cs)ARImageAnchor(im)initWithTransform:	-			*unavailable ios=11.3/-/-/0	-	a58dc3d208c2f02f
+method	c:objc(cs)ARImageAnchor(im)initWithName:transform:	-			*unavailable ios=11.3/-/-/0	-	4371e0dc8aa861dc
+interface	c:objc(cs)ARLightEstimate	-			ios=11.0/-/-/0	-	73e3ab545f040b44
+super	-	ARLightEstimate	NSObject		-	-	133d783b1df8d401
+property	c:objc(cs)ARLightEstimate(py)ambientIntensity	-			ios=11.0/-/-/0	-	92c62ad9bbc0ff07
+property	c:objc(cs)ARLightEstimate(py)ambientColorTemperature	-			ios=11.0/-/-/0	-	57674080c497adf7
+method	c:objc(cs)ARLightEstimate(im)init	-			*unavailable ios=11.0/-/-/0	-	be144a5186a7dcec
+method	c:objc(cs)ARLightEstimate(cm)new	-			*unavailable ios=11.0/-/-/0	-	3289822338c32e80
+interface	c:objc(cs)ARDirectionalLightEstimate	-			ios=11.0/-/-/0	-	cff8919baab28f67
+super	-	ARDirectionalLightEstimate	ARLightEstimate		-	-	d07864f553cc8906
+property	c:objc(cs)ARDirectionalLightEstimate(py)sphericalHarmonicsCoefficients	-			ios=11.0/-/-/0	-	d07c4130086ff5eb
+property	c:objc(cs)ARDirectionalLightEstimate(py)primaryLightDirection	-			ios=11.0/-/-/0	-	a3a71947f4506da3
+property	c:objc(cs)ARDirectionalLightEstimate(py)primaryLightIntensity	-			ios=11.0/-/-/0	-	94656f9db7a2c365
+typedef	c:@T@ARMatteResolution	-			ios=13.0/-/-/0	-	32bd24483b9ed325
+enum	c:@E@ARMatteResolution	-			-	-	2c7aa7d770d6c317
+enumconst	c:@E@ARMatteResolution@ARMatteResolutionFull	ARMatteResolution			-	-	a53e4a77c72a4b6a
+enumconst	c:@E@ARMatteResolution@ARMatteResolutionHalf	ARMatteResolution			-	-	ff207adab35b293e
+interface	c:objc(cs)ARMatteGenerator	-			ios=13.0/-/-/0	-	cb4d9e66cc03b359
+super	-	ARMatteGenerator	NSObject		-	-	bd638ee2af08f224
+method	c:objc(cs)ARMatteGenerator(im)initWithDevice:matteResolution:	-			ios=13.0/-/-/0	-	132519a8a17ea4d4
+method	c:objc(cs)ARMatteGenerator(im)generateMatteFromFrame:commandBuffer:	-			ios=13.0/-/-/0	-	83c0e3cfbe65cf81
+method	c:objc(cs)ARMatteGenerator(im)generateDilatedDepthFromFrame:commandBuffer:	-			ios=13.0/-/-/0	-	74a4967de2a7106b
+method	c:objc(cs)ARMatteGenerator(im)init	-			*unavailable ios=13.0/-/-/0	-	6300bfc6d6622ef3
+method	c:objc(cs)ARMatteGenerator(cm)new	-			*unavailable ios=13.0/-/-/0	-	d156bb4e95553b3f
+interface	c:objc(cs)ARMeshAnchor	-			ios=13.4/-/-/0	-	ea357e9875aea498
+super	-	ARMeshAnchor	ARAnchor		-	-	e8aac2ad064b740b
+property	c:objc(cs)ARMeshAnchor(py)geometry	-			ios=13.4/-/-/0	-	88cee950ecb49b6b
+method	c:objc(cs)ARMeshAnchor(im)initWithTransform:	-			*unavailable ios=13.4/-/-/0	-	c782f2eb0afe68ed
+method	c:objc(cs)ARMeshAnchor(im)initWithName:transform:	-			*unavailable ios=13.4/-/-/0	-	b07afb87de62ed53
+interface	c:objc(cs)ARGeometrySource	-			ios=13.4/-/-/0	-	602f30cff317788b
+super	-	ARGeometrySource	NSObject		-	-	e4794427b88150e2
+conforms	-	ARGeometrySource	NSSecureCoding		-	-	cbdcaaa7886f3ae4
+property	c:objc(cs)ARGeometrySource(py)buffer	-			ios=13.4/-/-/0	-	b17eb4b802ef13b3
+property	c:objc(cs)ARGeometrySource(py)count	-			ios=13.4/-/-/0	-	abce49752ef22991
+property	c:objc(cs)ARGeometrySource(py)format	-			ios=13.4/-/-/0	-	bd516af89efc8e3d
+property	c:objc(cs)ARGeometrySource(py)componentsPerVector	-			ios=13.4/-/-/0	-	d88be0770b397292
+property	c:objc(cs)ARGeometrySource(py)offset	-			ios=13.4/-/-/0	-	f8a8ac62b93a51de
+property	c:objc(cs)ARGeometrySource(py)stride	-			ios=13.4/-/-/0	-	dce0ce347bff539f
+method	c:objc(cs)ARGeometrySource(im)init	-			*unavailable ios=13.4/-/-/0	-	027289beb065bf42
+method	c:objc(cs)ARGeometrySource(cm)new	-			*unavailable ios=13.4/-/-/0	-	98e56608a1213aed
+typedef	c:@T@ARGeometryPrimitiveType	-			ios=13.4/-/-/0	-	7d9459666dc4c7a6
+enum	c:@E@ARGeometryPrimitiveType	-			-	-	7e98bc7ceea1bc7c
+enumconst	c:@E@ARGeometryPrimitiveType@ARGeometryPrimitiveTypeLine	ARGeometryPrimitiveType			-	-	686daa252c1362e5
+enumconst	c:@E@ARGeometryPrimitiveType@ARGeometryPrimitiveTypeTriangle	ARGeometryPrimitiveType			-	-	f1f10ebfd985622d
+interface	c:objc(cs)ARGeometryElement	-			ios=13.4/-/-/0	-	4e4efe4c69d144b1
+super	-	ARGeometryElement	NSObject		-	-	bc6ab863114e2b18
+conforms	-	ARGeometryElement	NSSecureCoding		-	-	cbc3ea6372dceafc
+property	c:objc(cs)ARGeometryElement(py)buffer	-			ios=13.4/-/-/0	-	3f824664d238d793
+property	c:objc(cs)ARGeometryElement(py)count	-			ios=13.4/-/-/0	-	7c8c5fb4a4ad830b
+property	c:objc(cs)ARGeometryElement(py)bytesPerIndex	-			ios=13.4/-/-/0	-	4312011db117f815
+property	c:objc(cs)ARGeometryElement(py)indexCountPerPrimitive	-			ios=13.4/-/-/0	-	080cd171214a3606
+property	c:objc(cs)ARGeometryElement(py)primitiveType	-			ios=13.4/-/-/0	-	6b0ddc4d3cd0c56b
+method	c:objc(cs)ARGeometryElement(im)init	-			*unavailable ios=13.4/-/-/0	-	d82bafc8478eaf28
+method	c:objc(cs)ARGeometryElement(cm)new	-			*unavailable ios=13.4/-/-/0	-	a711a2a5c9797a23
+typedef	c:@T@ARMeshClassification	-			ios=13.4/-/-/0	-	dc4de49d681cfcf5
+enum	c:@E@ARMeshClassification	-			-	-	00955d437015365a
+enumconst	c:@E@ARMeshClassification@ARMeshClassificationNone	ARMeshClassification			-	-	97d4352cfb0b3a29
+enumconst	c:@E@ARMeshClassification@ARMeshClassificationWall	ARMeshClassification			-	-	f62dfebefcb683c1
+enumconst	c:@E@ARMeshClassification@ARMeshClassificationFloor	ARMeshClassification			-	-	5962ecc9c41e4c02
+enumconst	c:@E@ARMeshClassification@ARMeshClassificationCeiling	ARMeshClassification			-	-	506a275576f5651c
+enumconst	c:@E@ARMeshClassification@ARMeshClassificationTable	ARMeshClassification			-	-	ffcbaecda79f26bc
+enumconst	c:@E@ARMeshClassification@ARMeshClassificationSeat	ARMeshClassification			-	-	be38a5d69f0e46b3
+enumconst	c:@E@ARMeshClassification@ARMeshClassificationWindow	ARMeshClassification			-	-	ba524a922538c85e
+enumconst	c:@E@ARMeshClassification@ARMeshClassificationDoor	ARMeshClassification			-	-	b130fb2644c239d7
+interface	c:objc(cs)ARMeshGeometry	-			ios=13.4/-/-/0	-	e9ad791612e4320d
+super	-	ARMeshGeometry	NSObject		-	-	57090f5b2b6e5285
+conforms	-	ARMeshGeometry	NSSecureCoding		-	-	cf97c417994674d2
+property	c:objc(cs)ARMeshGeometry(py)vertices	-			ios=13.4/-/-/0	-	6f632db5c2200e5b
+property	c:objc(cs)ARMeshGeometry(py)normals	-			ios=13.4/-/-/0	-	b7d0e01aab052b3f
+property	c:objc(cs)ARMeshGeometry(py)faces	-			ios=13.4/-/-/0	-	6f2a8cfee8ff7784
+property	c:objc(cs)ARMeshGeometry(py)classification	-			ios=13.4/-/-/0	-	0776fe674250922c
+method	c:objc(cs)ARMeshGeometry(im)init	-			*unavailable ios=13.4/-/-/0	-	f8d23f57f362c632
+method	c:objc(cs)ARMeshGeometry(cm)new	-			*unavailable ios=13.4/-/-/0	-	41d1eb231ff353c4
+interface	c:objc(cs)ARObjectAnchor	-			ios=12.0/-/-/0	-	d054742b84a82bcd
+super	-	ARObjectAnchor	ARAnchor		-	-	bc6c6ce7003fe425
+property	c:objc(cs)ARObjectAnchor(py)referenceObject	-			ios=12.0/-/-/0	-	c8f118ff1f774e97
+method	c:objc(cs)ARObjectAnchor(im)initWithTransform:	-			*unavailable ios=12.0/-/-/0	-	1c34c6940c2b3d98
+method	c:objc(cs)ARObjectAnchor(im)initWithName:transform:	-			*unavailable ios=12.0/-/-/0	-	5e74f0a3f2f4c052
+interface	c:objc(cs)ARParticipantAnchor	-			ios=13.0/-/-/0	-	6d0f0411722fb18e
+super	-	ARParticipantAnchor	ARAnchor		-	-	3a580cae52092306
+method	c:objc(cs)ARParticipantAnchor(im)initWithTransform:	-			*unavailable ios=13.0/-/-/0	-	242bef7c3d8541a6
+method	c:objc(cs)ARParticipantAnchor(im)initWithName:transform:	-			*unavailable ios=13.0/-/-/0	-	d96c4a786db116ff
+typedef	c:@T@ARPlaneAnchorAlignment	-			ios=11.0/-/-/0	-	2f4de0ab4dd6a483
+enum	c:@E@ARPlaneAnchorAlignment	-			-	-	2ea22fd6688e70da
+enumconst	c:@E@ARPlaneAnchorAlignment@ARPlaneAnchorAlignmentHorizontal	ARPlaneAnchorAlignment			-	-	d8c0b8fbcbb93704
+enumconst	c:@E@ARPlaneAnchorAlignment@ARPlaneAnchorAlignmentVertical	ARPlaneAnchorAlignment			ios=11.3/-/-/0	-	977a149ed84201c4
+typedef	c:@T@ARPlaneClassificationStatus	-			ios=12.0/-/-/0	-	d5d7391fd4db40a1
+enum	c:@E@ARPlaneClassificationStatus	-			-	-	b0fb6e648609bb98
+enumconst	c:@E@ARPlaneClassificationStatus@ARPlaneClassificationStatusNotAvailable	ARPlaneClassificationStatus			-	-	9dedcf2201aa18d4
+enumconst	c:@E@ARPlaneClassificationStatus@ARPlaneClassificationStatusUndetermined	ARPlaneClassificationStatus			-	-	96544d655eeb20f5
+enumconst	c:@E@ARPlaneClassificationStatus@ARPlaneClassificationStatusUnknown	ARPlaneClassificationStatus			-	-	2c763e448899e6a7
+enumconst	c:@E@ARPlaneClassificationStatus@ARPlaneClassificationStatusKnown	ARPlaneClassificationStatus			-	-	c08f871f372963dc
+typedef	c:@T@ARPlaneClassification	-			ios=12.0/-/-/0	-	432f59c53b691bb0
+enum	c:@E@ARPlaneClassification	-			-	-	d1e824050cf5c139
+enumconst	c:@E@ARPlaneClassification@ARPlaneClassificationNone	ARPlaneClassification			-	-	b68f35832f856b0f
+enumconst	c:@E@ARPlaneClassification@ARPlaneClassificationWall	ARPlaneClassification			-	-	cced39d9d63815cc
+enumconst	c:@E@ARPlaneClassification@ARPlaneClassificationFloor	ARPlaneClassification			-	-	714a560437f5e2ba
+enumconst	c:@E@ARPlaneClassification@ARPlaneClassificationCeiling	ARPlaneClassification			-	-	ac776a32b1e54d93
+enumconst	c:@E@ARPlaneClassification@ARPlaneClassificationTable	ARPlaneClassification			-	-	d7faea202a7495fc
+enumconst	c:@E@ARPlaneClassification@ARPlaneClassificationSeat	ARPlaneClassification			-	-	1f789767d085fb8f
+enumconst	c:@E@ARPlaneClassification@ARPlaneClassificationWindow	ARPlaneClassification			-	-	d2a86122041eccdc
+enumconst	c:@E@ARPlaneClassification@ARPlaneClassificationDoor	ARPlaneClassification			-	-	31213ec457414254
+interface	c:objc(cs)ARPlaneExtent	-			ios=16.0/-/-/0	-	94034322047c9efb
+super	-	ARPlaneExtent	NSObject		-	-	48c541acab110794
+conforms	-	ARPlaneExtent	NSSecureCoding		-	-	be9683d57cebac69
+property	c:objc(cs)ARPlaneExtent(py)rotationOnYAxis	-			ios=16.0/-/-/0	-	63028fb0d3c999b5
+property	c:objc(cs)ARPlaneExtent(py)width	-			ios=16.0/-/-/0	-	5d34f66a54be1935
+property	c:objc(cs)ARPlaneExtent(py)height	-			ios=16.0/-/-/0	-	7f39daefc66c4fb3
+interface	c:objc(cs)ARPlaneAnchor	-			ios=11.0/-/-/0	deprecated: Use planeExtent instead	6fc7f3aa6eac6561
+super	-	ARPlaneAnchor	ARAnchor		-	-	e2f89de60e33cc5f
+property	c:objc(cs)ARPlaneAnchor(cpy)classificationSupported	-			ios=12.0/-/-/0	-	a1a8d0fbe08c9e59
+property	c:objc(cs)ARPlaneAnchor(py)alignment	-			ios=11.0/-/-/0	-	4e6f16488d195f87
+property	c:objc(cs)ARPlaneAnchor(py)center	-			ios=11.0/-/-/0	-	3da83618317612f0
+property	c:objc(cs)ARPlaneAnchor(py)extent	-			ios=11.0/16.0/-/0	-	24187c4e7b2a14a3
+property	c:objc(cs)ARPlaneAnchor(py)planeExtent	-			ios=16.0/-/-/0	-	a2bcf4be0f7abb43
+property	c:objc(cs)ARPlaneAnchor(py)geometry	-			ios=11.3/-/-/0	-	a069d1a30f0c6b92
+property	c:objc(cs)ARPlaneAnchor(py)classificationStatus	-			ios=12.0/-/-/0	-	67d9301b72574add
+property	c:objc(cs)ARPlaneAnchor(py)classification	-			ios=12.0/-/-/0	-	1752e13aab0d52ee
+method	c:objc(cs)ARPlaneAnchor(im)initWithTransform:	-			*unavailable ios=11.0/-/-/0	-	8efff0c648483b32
+method	c:objc(cs)ARPlaneAnchor(im)initWithName:transform:	-			*unavailable ios=11.0/-/-/0	-	3920965add8a88f2
+interface	c:objc(cs)ARPlaneGeometry	-			ios=11.3/-/-/0	-	deb40bfaf50994da
+super	-	ARPlaneGeometry	NSObject		-	-	6a4a9fa803824ae3
+conforms	-	ARPlaneGeometry	NSSecureCoding		-	-	acd4c1ee4754a03a
+property	c:objc(cs)ARPlaneGeometry(py)vertexCount	-			ios=11.3/-/-/0	-	fa41e1cb3cf57250
+property	c:objc(cs)ARPlaneGeometry(py)vertices	-			ios=11.3/-/-/0	-	eab31f36f5a72f50
+property	c:objc(cs)ARPlaneGeometry(py)textureCoordinateCount	-			ios=11.3/-/-/0	-	39c4e0fa1cfb7592
+property	c:objc(cs)ARPlaneGeometry(py)textureCoordinates	-			ios=11.3/-/-/0	-	08c07e0ee535ba69
+property	c:objc(cs)ARPlaneGeometry(py)triangleCount	-			ios=11.3/-/-/0	-	0deebe0944f94de7
+property	c:objc(cs)ARPlaneGeometry(py)triangleIndices	-			ios=11.3/-/-/0	-	60f49b8a607bf6b4
+property	c:objc(cs)ARPlaneGeometry(py)boundaryVertexCount	-			ios=11.3/-/-/0	-	18df47e012a34198
+property	c:objc(cs)ARPlaneGeometry(py)boundaryVertices	-			ios=11.3/-/-/0	-	7aa41669a7c0b81a
+method	c:objc(cs)ARPlaneGeometry(im)init	-			*unavailable ios=11.3/-/-/0	-	2a41ebf40048e2dc
+method	c:objc(cs)ARPlaneGeometry(cm)new	-			*unavailable ios=11.3/-/-/0	-	2275fccef577364c
+interface	c:objc(cs)ARPointCloud	-			ios=11.0/-/-/0	-	1a19f7550c58abf4
+super	-	ARPointCloud	NSObject		-	-	6cbb6b5ffd819b4e
+conforms	-	ARPointCloud	NSSecureCoding		-	-	ea718bfe2a675dfb
+property	c:objc(cs)ARPointCloud(py)count	-			ios=11.0/-/-/0	-	e69914284930f00e
+property	c:objc(cs)ARPointCloud(py)points	-			ios=11.0/-/-/0	-	8c8442a15da0ee68
+property	c:objc(cs)ARPointCloud(py)identifiers	-			ios=11.0/-/-/0	-	b2202c7d7849b48d
+method	c:objc(cs)ARPointCloud(im)init	-			*unavailable ios=11.0/-/-/0	-	c6866e2e808a577c
+method	c:objc(cs)ARPointCloud(cm)new	-			*unavailable ios=11.0/-/-/0	-	e6a7ab73691fea41
+interface	c:objc(cs)ARRaycastResult	-			ios=13.0/-/-/0	-	58df851479a56481
+super	-	ARRaycastResult	NSObject		-	-	cdc4678091093a8d
+property	c:objc(cs)ARRaycastResult(py)worldTransform	-			ios=13.0/-/-/0	-	0145e2fb7f4e9132
+property	c:objc(cs)ARRaycastResult(py)target	-			ios=13.0/-/-/0	-	8b8f20a35811ddcd
+property	c:objc(cs)ARRaycastResult(py)targetAlignment	-			ios=13.0/-/-/0	-	e6a21052558874cc
+property	c:objc(cs)ARRaycastResult(py)anchor	-			ios=13.0/-/-/0	-	c13edde8b882e681
+method	c:objc(cs)ARRaycastResult(im)init	-			*unavailable ios=13.0/-/-/0	-	bca16ae2187c3bd6
+method	c:objc(cs)ARRaycastResult(im)new	-			*unavailable ios=13.0/-/-/0	-	6566972e53577ceb
+interface	c:objc(cs)ARReferenceImage	-			ios=11.3/-/-/0	-	cca06e01542a58a6
+super	-	ARReferenceImage	NSObject		-	-	863fc06991303a09
+property	c:objc(cs)ARReferenceImage(py)name	-			ios=11.3/-/-/0	-	77fb3493e90985a3
+property	c:objc(cs)ARReferenceImage(py)physicalSize	-			ios=11.3/-/-/0	-	3f4b1fcd57b463d6
+property	c:objc(cs)ARReferenceImage(py)resourceGroupName	-			ios=13.0/-/-/0	-	390da0dc0b21f4b5
+method	c:objc(cs)ARReferenceImage(im)validateWithCompletionHandler:	-			ios=13.0/-/-/0	-	7e445817feddb262
+method	c:objc(cs)ARReferenceImage(im)initWithCGImage:orientation:physicalWidth:	-			ios=11.3/-/-/0	-	2b683e24ab79efd1
+method	c:objc(cs)ARReferenceImage(im)initWithPixelBuffer:orientation:physicalWidth:	-			ios=11.3/-/-/0	-	5dcb30e8b8bd803d
+method	c:objc(cs)ARReferenceImage(cm)referenceImagesInGroupNamed:bundle:	-			ios=11.3/-/-/0	-	4f7428d6ada4cc69
+method	c:objc(cs)ARReferenceImage(im)init	-			*unavailable ios=11.3/-/-/0	-	c7481fb8cd44b1f0
+method	c:objc(cs)ARReferenceImage(cm)new	-			*unavailable ios=11.3/-/-/0	-	22fe6560e1fa157a
+var	c:@ARReferenceObjectArchiveExtension	-			ios=12.0/-/-/0	-	fe044274ad158bdc
+interface	c:objc(cs)ARReferenceObject	-			ios=12.0/-/-/0	-	9338948548119364
+super	-	ARReferenceObject	NSObject		-	-	3b4cc74ffac004d8
+conforms	-	ARReferenceObject	NSSecureCoding		-	-	6f284c55386c28d0
+property	c:objc(cs)ARReferenceObject(py)name	-			ios=12.0/-/-/0	-	d4941522b37329d3
+property	c:objc(cs)ARReferenceObject(py)center	-			ios=12.0/-/-/0	-	5516e8b4ea7c5ead
+property	c:objc(cs)ARReferenceObject(py)extent	-			ios=12.0/-/-/0	-	7e4a243d3ddd3381
+property	c:objc(cs)ARReferenceObject(py)scale	-			ios=12.0/-/-/0	-	280ad08344e3fc82
+property	c:objc(cs)ARReferenceObject(py)resourceGroupName	-			ios=13.0/-/-/0	-	422df3e523bae169
+property	c:objc(cs)ARReferenceObject(py)rawFeaturePoints	-			ios=12.0/-/-/0	-	2e294edbe1b78479
+method	c:objc(cs)ARReferenceObject(cm)referenceObjectsInGroupNamed:bundle:	-			ios=12.0/-/-/0	-	432274822bd81bb1
+method	c:objc(cs)ARReferenceObject(im)initWithArchiveURL:error:	-			ios=12.0/-/-/0	-	b80d212b1a8dc932
+method	c:objc(cs)ARReferenceObject(im)exportObjectToURL:previewImage:error:	-			ios=12.0/-/-/0	-	e2909ef3ad9d3b90
+method	c:objc(cs)ARReferenceObject(im)referenceObjectByApplyingTransform:	-			ios=12.0/-/-/0	-	af77ef087f029921
+method	c:objc(cs)ARReferenceObject(im)referenceObjectByMergingObject:error:	-			ios=12.0/-/-/0	-	fa41ee07fa6f1792
+method	c:objc(cs)ARReferenceObject(im)init	-			*unavailable ios=12.0/-/-/0	-	74b991932551c05d
+method	c:objc(cs)ARReferenceObject(cm)new	-			*unavailable ios=12.0/-/-/0	-	dff240d37502d984
+interface	c:objc(cs)ARTrackedRaycast	-			ios=13.0/-/-/0	-	dbd749d480a637ce
+super	-	ARTrackedRaycast	NSObject		-	-	2662aba6ed1d8f87
+method	c:objc(cs)ARTrackedRaycast(im)stopTracking	-			ios=13.0/-/-/0	-	c536274bd99ac768
+method	c:objc(cs)ARTrackedRaycast(im)init	-			*unavailable ios=13.0/-/-/0	-	4d7c6b940d6117b8
+method	c:objc(cs)ARTrackedRaycast(im)new	-			*unavailable ios=13.0/-/-/0	-	50ace727bf3ecc86
+interface	c:objc(cs)ARVideoFormat	-			ios=11.3/-/-/0	-	bc01a1fb3f6b7b1e
+super	-	ARVideoFormat	NSObject		-	-	4fbe6d13048a506c
+conforms	-	ARVideoFormat	NSCopying		-	-	7dd2e3ff72620b2d
+property	c:objc(cs)ARVideoFormat(py)captureDevicePosition	-			ios=13.0/-/-/0	-	37685de088fb75cb
+property	c:objc(cs)ARVideoFormat(py)captureDeviceType	-			ios=14.5/-/-/0	-	fbcfaa22ba3dfda1
+property	c:objc(cs)ARVideoFormat(py)imageResolution	-			ios=11.3/-/-/0	-	6ce38fd38ab0777e
+property	c:objc(cs)ARVideoFormat(py)framesPerSecond	-			ios=11.3/-/-/0	-	fad05a870374c030
+property	c:objc(cs)ARVideoFormat(py)isRecommendedForHighResolutionFrameCapturing	-			ios=16.0/-/-/0	-	a7a32b1950d7da44
+property	c:objc(cs)ARVideoFormat(py)videoHDRSupported	-			ios=16.0/-/-/0	-	837395e678abd1e8
+property	c:objc(cs)ARVideoFormat(py)defaultColorSpace	-			ios=26.0/-/-/0	-	a2a362d521ce1c36
+property	c:objc(cs)ARVideoFormat(py)defaultPhotoSettings	-			ios=26.0/-/-/0	-	d48d707eb3b5cb5c
+method	c:objc(cs)ARVideoFormat(im)init	-			*unavailable ios=11.3/-/-/0	-	1783ff485ff29f13
+method	c:objc(cs)ARVideoFormat(cm)new	-			*unavailable ios=11.3/-/-/0	-	6e2c049dcc3e5360
+interface	c:objc(cs)ARWorldMap	-			ios=12.0/-/-/0	-	e2d411ca74edd15c
+super	-	ARWorldMap	NSObject		-	-	7568ef0350f75c73
+conforms	-	ARWorldMap	NSCopying		-	-	c52d0650687e440a
+conforms	-	ARWorldMap	NSSecureCoding		-	-	95fdd333c16032cf
+property	c:objc(cs)ARWorldMap(py)center	-			ios=12.0/-/-/0	-	7deffba453de0c95
+property	c:objc(cs)ARWorldMap(py)extent	-			ios=12.0/-/-/0	-	76ceffbf5b413325
+property	c:objc(cs)ARWorldMap(py)anchors	-			ios=12.0/-/-/0	-	ff66273ce70f7ea2
+property	c:objc(cs)ARWorldMap(py)rawFeaturePoints	-			ios=12.0/-/-/0	-	045744a4774d2504
+method	c:objc(cs)ARWorldMap(im)init	-			*unavailable ios=12.0/-/-/0	-	8b1ce0588de9cbda
+method	c:objc(cs)ARWorldMap(cm)new	-			*unavailable ios=12.0/-/-/0	-	603c1870c87c1b4c
+typedef	c:@T@ARAppClipCodeURLDecodingState	-			ios=14.3/-/-/0	-	2fcf118dd95eb57f
+enum	c:@E@ARAppClipCodeURLDecodingState	-			-	-	5d5ebc572f99fb16
+enumconst	c:@E@ARAppClipCodeURLDecodingState@ARAppClipCodeURLDecodingStateDecoding	ARAppClipCodeURLDecodingState			-	-	388fc0d9652294a4
+enumconst	c:@E@ARAppClipCodeURLDecodingState@ARAppClipCodeURLDecodingStateFailed	ARAppClipCodeURLDecodingState			-	-	967b1b81d9048b2d
+enumconst	c:@E@ARAppClipCodeURLDecodingState@ARAppClipCodeURLDecodingStateDecoded	ARAppClipCodeURLDecodingState			-	-	56afa0f3a2a71871
+interface	c:objc(cs)ARAppClipCodeAnchor	-			ios=14.3/-/-/0	-	398ab89f50866348
+super	-	ARAppClipCodeAnchor	ARAnchor		-	-	2194f6b932f49014
+conforms	-	ARAppClipCodeAnchor	ARTrackable		-	-	4b282c1db5a68c43
+property	c:objc(cs)ARAppClipCodeAnchor(py)url	-			ios=14.3/-/-/0	-	f018d602b41deec4
+property	c:objc(cs)ARAppClipCodeAnchor(py)urlDecodingState	-			ios=14.3/-/-/0	-	bf7c3330f57bf3d8
+property	c:objc(cs)ARAppClipCodeAnchor(py)radius	-			ios=14.3/-/-/0	-	d5575283df9c588b
+method	c:objc(cs)ARAppClipCodeAnchor(im)initWithTransform:	-			*unavailable ios=14.3/-/-/0	-	d6c05d0e95ac57b6
+method	c:objc(cs)ARAppClipCodeAnchor(im)initWithName:transform:	-			*unavailable ios=14.3/-/-/0	-	145a9ee7df8e0277
+interface	c:objc(cs)ARSCNView	-			ios=11.0/-/-/0	deprecated: Use [ARSCNView raycastQueryFromPoint:allowingTarget:alignment]	cb4a4c269f1b9ffc
+super	-	ARSCNView	SCNView		-	-	1b53766c454a81e1
+conforms	-	ARSCNView	ARSessionProviding		-	-	f01ac6a9d30623ec
+property	c:objc(cs)ARSCNView(py)delegate	-			ios=11.0/-/-/0	-	d728d2b41e692a55
+property	c:objc(cs)ARSCNView(py)session	-			ios=11.0/-/-/0	-	1d682def682f597e
+property	c:objc(cs)ARSCNView(py)scene	-			ios=11.0/-/-/0	-	9d579222657c937f
+property	c:objc(cs)ARSCNView(py)automaticallyUpdatesLighting	-			ios=11.0/-/-/0	-	25f1341b9b46c5f7
+property	c:objc(cs)ARSCNView(py)rendersCameraGrain	-			ios=13.0/-/-/0	-	f3515bc45069315e
+property	c:objc(cs)ARSCNView(py)rendersMotionBlur	-			ios=13.0/-/-/0	-	181739f4cce77d9f
+method	c:objc(cs)ARSCNView(im)anchorForNode:	-			ios=11.0/-/-/0	-	394534cf47a22ef5
+method	c:objc(cs)ARSCNView(im)nodeForAnchor:	-			ios=11.0/-/-/0	-	d5ab8773cd3aac6f
+method	c:objc(cs)ARSCNView(im)hitTest:types:	-			ios=11.0/14.0/-/0	deprecated: Use [ARSCNView raycastQueryFromPoint:allowingTarget:alignment]	48a7f9b433ef0885
+method	c:objc(cs)ARSCNView(im)unprojectPoint:ontoPlaneWithTransform:	-			ios=12.0/-/-/0	-	cdc24955180797a7
+method	c:objc(cs)ARSCNView(im)raycastQueryFromPoint:allowingTarget:alignment:	-			ios=13.0/-/-/0	-	1b4e7fc805d9b8c6
+protocol	c:objc(pl)ARSCNViewDelegate	-			ios=11.0/-/-/0	-	c3b42df1dd4df112
+conforms	-	ARSCNViewDelegate	SCNSceneRendererDelegate		-	-	01b781748b7f45cd
+conforms	-	ARSCNViewDelegate	ARSessionObserver		-	-	7bba03900c91ef44
+method	c:objc(pl)ARSCNViewDelegate(im)renderer:nodeForAnchor:	-			ios=11.0/-/-/0	-	3a65cddc70dbf178
+method	c:objc(pl)ARSCNViewDelegate(im)renderer:didAddNode:forAnchor:	-			ios=11.0/-/-/0	-	5d16fba1b42fc3b4
+method	c:objc(pl)ARSCNViewDelegate(im)renderer:willUpdateNode:forAnchor:	-			ios=11.0/-/-/0	-	63fd0c70bec0cfaf
+method	c:objc(pl)ARSCNViewDelegate(im)renderer:didUpdateNode:forAnchor:	-			ios=11.0/-/-/0	-	09b1ab61832cf4c9
+method	c:objc(pl)ARSCNViewDelegate(im)renderer:didRemoveNode:forAnchor:	-			ios=11.0/-/-/0	-	7843521d288003cf
+typedef	c:@T@ARSCNDebugOptions	-			ios=11.0/-/-/0	-	7a764c7ae384cb3a
+var	c:@ARSCNDebugOptionShowWorldOrigin	-			ios=11.0/-/-/0	-	2f8296593249c0bb
+var	c:@ARSCNDebugOptionShowFeaturePoints	-			ios=11.0/-/-/0	-	22c56d5b58f1d538
+interface	c:objc(cs)ARSCNFaceGeometry	-			ios=11.0/-/-/0	-	17a528fc6c56fa53
+super	-	ARSCNFaceGeometry	SCNGeometry		-	-	292d2ab082c06f99
+method	c:objc(cs)ARSCNFaceGeometry(cm)faceGeometryWithDevice:	-			ios=11.0/-/-/0	-	9c6d1b129463e6a7
+method	c:objc(cs)ARSCNFaceGeometry(cm)faceGeometryWithDevice:fillMesh:	-			ios=11.0/-/-/0	-	430b3df22b90d991
+method	c:objc(cs)ARSCNFaceGeometry(im)updateFromFaceGeometry:	-			ios=11.0/-/-/0	-	a2f814a41c21292e
+method	c:objc(cs)ARSCNFaceGeometry(im)init	-			*unavailable ios=11.0/-/-/0	-	ee37e961a7feecf0
+method	c:objc(cs)ARSCNFaceGeometry(cm)new	-			*unavailable ios=11.0/-/-/0	-	9a7f364c1a1e6b08
+interface	c:objc(cs)ARSCNPlaneGeometry	-			ios=11.3/-/-/0	-	4d1f0ec9853f74db
+super	-	ARSCNPlaneGeometry	SCNGeometry		-	-	92f518a67a64e717
+method	c:objc(cs)ARSCNPlaneGeometry(cm)planeGeometryWithDevice:	-			ios=11.3/-/-/0	-	05001aea7ffad4dd
+method	c:objc(cs)ARSCNPlaneGeometry(im)updateFromPlaneGeometry:	-			ios=11.3/-/-/0	-	1613d3c6551d30e2
+protocol	c:objc(pl)ARSKViewDelegate	-			ios=11.0/-/-/0	-	79110a292b6aadfe
+conforms	-	ARSKViewDelegate	SKViewDelegate		-	-	5fe7ffb7236fe254
+conforms	-	ARSKViewDelegate	ARSessionObserver		-	-	132a3d8e23efc035
+method	c:objc(pl)ARSKViewDelegate(im)view:nodeForAnchor:	-			ios=11.0/-/-/0	-	45f373f69861ccb6
+method	c:objc(pl)ARSKViewDelegate(im)view:didAddNode:forAnchor:	-			ios=11.0/-/-/0	-	7912dc287bd55204
+method	c:objc(pl)ARSKViewDelegate(im)view:willUpdateNode:forAnchor:	-			ios=11.0/-/-/0	-	8db5e580e7b4224d
+method	c:objc(pl)ARSKViewDelegate(im)view:didUpdateNode:forAnchor:	-			ios=11.0/-/-/0	-	f56d31f5652e5f06
+method	c:objc(pl)ARSKViewDelegate(im)view:didRemoveNode:forAnchor:	-			ios=11.0/-/-/0	-	c79bf1285fa63d4d
+interface	c:objc(cs)ARSKView	-			ios=11.0/-/-/0	deprecated: Use raycasting	91b7cc823c02f759
+super	-	ARSKView	SKView		-	-	bc1ec0bab84ff1f0
+conforms	-	ARSKView	ARSessionProviding		-	-	4e745292eb2807d9
+property	c:objc(cs)ARSKView(py)delegate	-			ios=11.0/-/-/0	-	6e264fdfc5c96960
+property	c:objc(cs)ARSKView(py)session	-			ios=11.0/-/-/0	-	b6469cb60ff82d3a
+method	c:objc(cs)ARSKView(im)anchorForNode:	-			ios=11.0/-/-/0	-	078f83efbc676dfc
+method	c:objc(cs)ARSKView(im)nodeForAnchor:	-			ios=11.0/-/-/0	-	ec9d08d7b9ff376b
+method	c:objc(cs)ARSKView(im)hitTest:types:	-			ios=11.0/14.0/-/0	deprecated: Use raycasting	26ce0ba654711c8f
+typedef	c:@T@ARCoachingGoal	-			ios=13.0/-/-/0	-	199fc17d9a03988e
+enum	c:@E@ARCoachingGoal	-			-	-	19f096a9090b45cb
+enumconst	c:@E@ARCoachingGoal@ARCoachingGoalTracking	ARCoachingGoal			-	-	9e544907d287776a
+enumconst	c:@E@ARCoachingGoal@ARCoachingGoalHorizontalPlane	ARCoachingGoal			-	-	0e826a2d6e44a4ad
+enumconst	c:@E@ARCoachingGoal@ARCoachingGoalVerticalPlane	ARCoachingGoal			-	-	466ee45fad2dba27
+enumconst	c:@E@ARCoachingGoal@ARCoachingGoalAnyPlane	ARCoachingGoal			-	-	8d854889654722de
+enumconst	c:@E@ARCoachingGoal@ARCoachingGoalGeoTracking	ARCoachingGoal			-	-	e2b97e0bc8d2e908
+interface	c:objc(cs)ARCoachingOverlayView	-			ios=13.0/-/-/0	-	c5dadebb4f3f9ac4
+super	-	ARCoachingOverlayView	UIView		-	-	80748c14a3c0717d
+property	c:objc(cs)ARCoachingOverlayView(py)delegate	-			ios=13.0/-/-/0	-	76c3f83014a21162
+property	c:objc(cs)ARCoachingOverlayView(py)sessionProvider	-			ios=13.0/-/-/0	-	5d10b4aca383c3f8
+property	c:objc(cs)ARCoachingOverlayView(py)session	-			ios=13.0/-/-/0	-	a14e3b83a9f6078b
+property	c:objc(cs)ARCoachingOverlayView(py)goal	-			ios=13.0/-/-/0	-	952655f6fcfee63c
+property	c:objc(cs)ARCoachingOverlayView(py)activatesAutomatically	-			ios=13.0/-/-/0	-	c15282b4549c45de
+property	c:objc(cs)ARCoachingOverlayView(py)isActive	-			ios=13.0/-/-/0	-	0f5da8b39121aecd
+method	c:objc(cs)ARCoachingOverlayView(im)setActive:animated:	-			ios=13.0/-/-/0	-	bce950ddadc3f8af
+protocol	c:objc(pl)ARCoachingOverlayViewDelegate	-			ios=13.0/-/-/0	-	84f7cb26ac799c15
+conforms	-	ARCoachingOverlayViewDelegate	NSObject		-	-	d617b86ad59bf815
+method	c:objc(pl)ARCoachingOverlayViewDelegate(im)coachingOverlayViewDidRequestSessionReset:	-			ios=13.0/-/-/0	-	ac3d7712d9467ac0
+method	c:objc(pl)ARCoachingOverlayViewDelegate(im)coachingOverlayViewWillActivate:	-			ios=13.0/-/-/0	-	bc4e531ff9b7c037
+method	c:objc(pl)ARCoachingOverlayViewDelegate(im)coachingOverlayViewDidDeactivate:	-			ios=13.0/-/-/0	-	0ae5cf11da6486d6

@@ -1,0 +1,71 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+interface	c:objc(cs)BGTaskRequest	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	570a9a59086df2bc
+super	-	BGTaskRequest	NSObject		-	-	2af75c60d1453731
+conforms	-	BGTaskRequest	NSCopying		-	-	c3c27b233b1c32cd
+property	c:objc(cs)BGTaskRequest(py)identifier	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	cbd70577509805b9
+property	c:objc(cs)BGTaskRequest(py)earliestBeginDate	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	a5fec4b35c05519e
+method	c:objc(cs)BGTaskRequest(im)init	-			*unavailable ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	7c5cb95d0e1c7c57
+method	c:objc(cs)BGTaskRequest(cm)new	-			*unavailable ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	f6f3ed5492cdd7d5
+interface	c:objc(cs)BGAppRefreshTaskRequest	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	58a9088bb1e5d017
+super	-	BGAppRefreshTaskRequest	BGTaskRequest		-	-	1741618ad9eee64c
+method	c:objc(cs)BGAppRefreshTaskRequest(im)initWithIdentifier:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	d91faf830ed1e173
+interface	c:objc(cs)BGProcessingTaskRequest	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	e57005d37ab6fc16
+super	-	BGProcessingTaskRequest	BGTaskRequest		-	-	fd4d847dd2859667
+method	c:objc(cs)BGProcessingTaskRequest(im)initWithIdentifier:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	6ba5dee818ef6de8
+property	c:objc(cs)BGProcessingTaskRequest(py)requiresNetworkConnectivity	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	ee79e0333adfa1a6
+property	c:objc(cs)BGProcessingTaskRequest(py)requiresExternalPower	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	9315d9fb3083a36b
+interface	c:objc(cs)BGHealthResearchTaskRequest	-			ios=17.0/-/-/0,macos=-/-/-/1,tvos=17.0/-/-/0,watchos=-/-/-/1	-	cc296fb0fe20652f
+super	-	BGHealthResearchTaskRequest	BGProcessingTaskRequest		-	-	3679ee8b74bbcb21
+property	c:objc(cs)BGHealthResearchTaskRequest(py)protectionTypeOfRequiredData	-			ios=17.0/-/-/0,macos=-/-/-/1,tvos=17.0/-/-/0,watchos=-/-/-/1	-	2fc43e7589f8e551
+typedef	c:@T@BGContinuedProcessingTaskRequestSubmissionStrategy	-			-	-	2b565e9d77db595d
+enum	c:@E@BGContinuedProcessingTaskRequestSubmissionStrategy	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	50259a4c44e73c72
+enumconst	c:@E@BGContinuedProcessingTaskRequestSubmissionStrategy@BGContinuedProcessingTaskRequestSubmissionStrategyFail	BGContinuedProcessingTaskRequestSubmissionStrategy			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	921e7c9d73f71d80
+enumconst	c:@E@BGContinuedProcessingTaskRequestSubmissionStrategy@BGContinuedProcessingTaskRequestSubmissionStrategyQueue	BGContinuedProcessingTaskRequestSubmissionStrategy			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ce7dd803b926a792
+typedef	c:@T@BGContinuedProcessingTaskRequestResources	-			-	-	73243d0d81f6799c
+enum	c:@E@BGContinuedProcessingTaskRequestResources	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bdba6342bcdab102
+enumconst	c:@E@BGContinuedProcessingTaskRequestResources@BGContinuedProcessingTaskRequestResourcesDefault	BGContinuedProcessingTaskRequestResources			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	525062450968c76e
+enumconst	c:@E@BGContinuedProcessingTaskRequestResources@BGContinuedProcessingTaskRequestResourcesGPU	BGContinuedProcessingTaskRequestResources			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	375ff66ff40da345
+interface	c:objc(cs)BGContinuedProcessingTaskRequest	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bfaeb6c469a4036d
+super	-	BGContinuedProcessingTaskRequest	BGTaskRequest		-	-	f08e59b9c16afbc5
+property	c:objc(cs)BGContinuedProcessingTaskRequest(py)title	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f14458ddec794e3a
+property	c:objc(cs)BGContinuedProcessingTaskRequest(py)subtitle	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0940c5ceab3f7a86
+property	c:objc(cs)BGContinuedProcessingTaskRequest(py)strategy	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	438167238fa7efb6
+property	c:objc(cs)BGContinuedProcessingTaskRequest(py)requiredResources	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	183bf350a825b215
+method	c:objc(cs)BGContinuedProcessingTaskRequest(im)initWithIdentifier:title:subtitle:	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	152bdd017738c953
+var	c:@BGTaskSchedulerErrorDomain	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	a8ffbb58b2a58bf3
+typedef	c:@T@BGTaskSchedulerErrorCode	-			-	-	9100b3ce0b484e23
+enum	c:@E@BGTaskSchedulerErrorCode	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	f32e0a9fdb48cdbd
+enumconst	c:@E@BGTaskSchedulerErrorCode@BGTaskSchedulerErrorCodeUnavailable	BGTaskSchedulerErrorCode			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	eba1e7ac550357ec
+enumconst	c:@E@BGTaskSchedulerErrorCode@BGTaskSchedulerErrorCodeTooManyPendingTaskRequests	BGTaskSchedulerErrorCode			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	3b556cdcb1003e46
+enumconst	c:@E@BGTaskSchedulerErrorCode@BGTaskSchedulerErrorCodeNotPermitted	BGTaskSchedulerErrorCode			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	bbc9da0b62bb6bd0
+enumconst	c:@E@BGTaskSchedulerErrorCode@BGTaskSchedulerErrorCodeImmediateRunIneligible	BGTaskSchedulerErrorCode			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	467661ba4152cf26
+interface	c:objc(cs)BGTaskScheduler	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	09ac83f3d5eb9512
+super	-	BGTaskScheduler	NSObject		-	-	406d2f59153dac40
+method	c:objc(cs)BGTaskScheduler(im)init	-			*unavailable ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	e93a31423c8b8ece
+method	c:objc(cs)BGTaskScheduler(cm)new	-			*unavailable ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	203eb06af9287e8e
+property	c:objc(cs)BGTaskScheduler(cpy)sharedScheduler	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	6e5813275420411c
+property	c:objc(cs)BGTaskScheduler(cpy)supportedResources	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4eb528755d0a0036
+method	c:objc(cs)BGTaskScheduler(im)registerForTaskWithIdentifier:usingQueue:launchHandler:	-			ios_app_extension=-/-/-/1,macos_app_extension=-/-/-/1	-	fd575860b9bc642d
+method	c:objc(cs)BGTaskScheduler(im)submitTaskRequest:error:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	6af15928318d83e1
+method	c:objc(cs)BGTaskScheduler(im)cancelTaskRequestWithIdentifier:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	4f2b4cc6d10d6bb7
+method	c:objc(cs)BGTaskScheduler(im)cancelAllTaskRequests	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	b0efdcbf9ee49bff
+method	c:objc(cs)BGTaskScheduler(im)getPendingTaskRequestsWithCompletionHandler:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	a8244f7e4cfeddda
+interface	c:objc(cs)BGTask	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	206a9e50eec9816c
+super	-	BGTask	NSObject		-	-	e8f41b37a89b888b
+property	c:objc(cs)BGTask(py)identifier	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	02405f117505622b
+property	c:objc(cs)BGTask(py)expirationHandler	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	1f53130e790b7a3e
+method	c:objc(cs)BGTask(im)init	-			*unavailable ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	d52897915db230f7
+method	c:objc(cs)BGTask(cm)new	-			*unavailable ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	9338b9b80df628ff
+method	c:objc(cs)BGTask(im)setTaskCompletedWithSuccess:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	84d8b5c19ea8bea8
+interface	c:objc(cs)BGProcessingTask	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	0c65c3adf2478ab5
+super	-	BGProcessingTask	BGTask		-	-	cd9dca55605225e5
+interface	c:objc(cs)BGHealthResearchTask	-			ios=17.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	143ff8e09426abf5
+super	-	BGHealthResearchTask	BGProcessingTask		-	-	32ab0fe61dc9267e
+interface	c:objc(cs)BGAppRefreshTask	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	1597601471687ab0
+super	-	BGAppRefreshTask	BGTask		-	-	73e82c74fcf8fe8e
+interface	c:objc(cs)BGContinuedProcessingTask	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	34d5b5cb50e5d82b
+super	-	BGContinuedProcessingTask	BGTask		-	-	0573eca31491fb50
+conforms	-	BGContinuedProcessingTask	NSProgressReporting		-	-	526d56e60b7e13d1
+property	c:objc(cs)BGContinuedProcessingTask(py)title	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e08108c012e00210
+property	c:objc(cs)BGContinuedProcessingTask(py)subtitle	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b4ad46fbbcec1e55
+method	c:objc(cs)BGContinuedProcessingTask(im)updateTitle:subtitle:	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2536696b9f06035d

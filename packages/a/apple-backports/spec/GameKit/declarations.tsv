@@ -1,0 +1,1026 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+typedef	c:@T@GKMatchProperties	-			ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=10.2/-/-/0,xros=1.1/-/-/0	-	0a90a8b6e4003a52
+interface	c:objc(cs)GKBasePlayer	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	deprecated: Use Use ``GKPlayer/gamePlayerID`` or ``GKPlayer/teamPlayerID`` instead. instead	3971f50c92761232
+super	-	GKBasePlayer	NSObject		-	-	3e7db57ec2b2606a
+conforms	-	GKBasePlayer	NSCopying		-	-	dc97253ebf93f312
+property	c:objc(cs)GKBasePlayer(py)playerID	-			ios=10.0/13.0/-/0,macos=10.12/10.15/-/0,tvos=10.0/13.0/-/0,watchos=3.0/6.0/-/0,xros=1.0/1.0/-/0	-	e8a6e9af42f7c6e9
+property	c:objc(cs)GKBasePlayer(py)displayName	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	0fd8a895a11a4fb2
+var	c:@GKErrorDomain	-			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	8b1e17fdc60a0ad9
+typedef	c:@T@GKErrorCode	-			-	-	30a29fb15074fad9
+enum	c:@E@GKErrorCode	-			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	e8d49218825c318b
+enumconst	c:@E@GKErrorCode@GKErrorUnknown	GKErrorCode			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	fce0ed5b19fce490
+enumconst	c:@E@GKErrorCode@GKErrorCancelled	GKErrorCode			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	9e6b7772a245f880
+enumconst	c:@E@GKErrorCode@GKErrorCommunicationsFailure	GKErrorCode			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	86e2fede56437693
+enumconst	c:@E@GKErrorCode@GKErrorUserDenied	GKErrorCode			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	7cd0271e9de69a30
+enumconst	c:@E@GKErrorCode@GKErrorInvalidCredentials	GKErrorCode			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	92583d05300c7703
+enumconst	c:@E@GKErrorCode@GKErrorNotAuthenticated	GKErrorCode			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	0117cd7c5ace1135
+enumconst	c:@E@GKErrorCode@GKErrorAuthenticationInProgress	GKErrorCode			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	59ab538c9a091bd6
+enumconst	c:@E@GKErrorCode@GKErrorInvalidPlayer	GKErrorCode			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	c2dd72ee4ec1011d
+enumconst	c:@E@GKErrorCode@GKErrorScoreNotSet	GKErrorCode			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	ea4c4218c9471e9c
+enumconst	c:@E@GKErrorCode@GKErrorParentalControlsBlocked	GKErrorCode			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	cfcbf4e354c48c74
+enumconst	c:@E@GKErrorCode@GKErrorPlayerStatusExceedsMaximumLength	GKErrorCode			ios=4.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	949b203ba598973d
+enumconst	c:@E@GKErrorCode@GKErrorPlayerStatusInvalid	GKErrorCode			ios=4.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	66b6dbb6cee42011
+enumconst	c:@E@GKErrorCode@GKErrorMatchRequestInvalid	GKErrorCode			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	2eecb04533997208
+enumconst	c:@E@GKErrorCode@GKErrorUnderage	GKErrorCode			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	0b8894d0785a4f6e
+enumconst	c:@E@GKErrorCode@GKErrorGameUnrecognized	GKErrorCode			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	dab497866411a8b7
+enumconst	c:@E@GKErrorCode@GKErrorNotSupported	GKErrorCode			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	2040f7d534be37a3
+enumconst	c:@E@GKErrorCode@GKErrorInvalidParameter	GKErrorCode			ios=4.2/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	39516a86a4d51185
+enumconst	c:@E@GKErrorCode@GKErrorUnexpectedConnection	GKErrorCode			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	8e41914214f68bbe
+enumconst	c:@E@GKErrorCode@GKErrorChallengeInvalid	GKErrorCode			ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=3.0/26.0/-/0,xros=1.0/26.0/-/0	deprecated: Use Replaced by developer defined challenges, see ``GKChallengeDefinition`` instead	50d1f52a29e49edd
+enumconst	c:@E@GKErrorCode@GKErrorTurnBasedMatchDataTooLarge	GKErrorCode			ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	453f6aba55e7b28f
+enumconst	c:@E@GKErrorCode@GKErrorTurnBasedTooManySessions	GKErrorCode			ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	a5158d4a6ec5da92
+enumconst	c:@E@GKErrorCode@GKErrorTurnBasedInvalidParticipant	GKErrorCode			ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	a56072f61a1ab7d3
+enumconst	c:@E@GKErrorCode@GKErrorTurnBasedInvalidTurn	GKErrorCode			ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	98d4b02218bd3cde
+enumconst	c:@E@GKErrorCode@GKErrorTurnBasedInvalidState	GKErrorCode			ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	4b6a4b3ff71d56eb
+enumconst	c:@E@GKErrorCode@GKErrorInvitationsDisabled	GKErrorCode			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	d9fd8c1003c6d40f
+enumconst	c:@E@GKErrorCode@GKErrorPlayerPhotoFailure	GKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	cd52ba78590427c0
+enumconst	c:@E@GKErrorCode@GKErrorUbiquityContainerUnavailable	GKErrorCode			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	cf1f1c0c9560a155
+enumconst	c:@E@GKErrorCode@GKErrorMatchNotConnected	GKErrorCode			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	158498722515c614
+enumconst	c:@E@GKErrorCode@GKErrorGameSessionRequestInvalid	GKErrorCode			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	4ee747c7653875f6
+enumconst	c:@E@GKErrorCode@GKErrorRestrictedToAutomatch	GKErrorCode			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	be4d06e0f385e689
+enumconst	c:@E@GKErrorCode@GKErrorAPINotAvailable	GKErrorCode			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	4580e221cf71d615
+enumconst	c:@E@GKErrorCode@GKErrorNotAuthorized	GKErrorCode			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0,xros=1.0/-/-/0	-	4e61a45d14287baf
+enumconst	c:@E@GKErrorCode@GKErrorConnectionTimeout	GKErrorCode			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0,xros=1.0/-/-/0	-	edd6245993dfc83d
+enumconst	c:@E@GKErrorCode@GKErrorAPIObsolete	GKErrorCode			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0,xros=1.0/-/-/0	-	aaecf5bdf0d58c81
+enumconst	c:@E@GKErrorCode@GKErrorICloudUnavailable	GKErrorCode			ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=10.2/-/-/0,xros=1.1/-/-/0	-	2b7f8deb6e6acd9f
+enumconst	c:@E@GKErrorCode@GKErrorLockdownMode	GKErrorCode			ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=10.2/-/-/0,xros=1.1/-/-/0	-	d7cf1cf68524bdb1
+enumconst	c:@E@GKErrorCode@GKErrorAppUnlisted	GKErrorCode			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0,xros=1.1/-/-/0	-	69db0d6837aec678
+enumconst	c:@E@GKErrorCode@GKErrorDebugMode	GKErrorCode			ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0,xros=2.4/-/-/0	-	6ba072ac5c97a9e4
+enumconst	c:@E@GKErrorCode@GKErrorFriendListDescriptionMissing	GKErrorCode			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.4/-/-/0,xros=1.0/-/-/0	-	5b59eb0bd13aa752
+enumconst	c:@E@GKErrorCode@GKErrorFriendListRestricted	GKErrorCode			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.4/-/-/0,xros=1.0/-/-/0	-	920cfe5127ea6f32
+enumconst	c:@E@GKErrorCode@GKErrorFriendListDenied	GKErrorCode			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.4/-/-/0,xros=1.0/-/-/0	-	bf1a99a3bc4aad28
+enumconst	c:@E@GKErrorCode@GKErrorFriendRequestNotAvailable	GKErrorCode			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	c14933ee25f393ff
+var	c:@GKPlayerIDNoLongerAvailable	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	6a9c8450f223deaa
+interface	c:objc(cs)GKPlayer	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	28de113d42c9c46e
+super	-	GKPlayer	GKBasePlayer		-	-	102bdb44fbab39ee
+method	c:objc(cs)GKPlayer(im)scopedIDsArePersistent	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	4f970389dad1d0ab
+property	c:objc(cs)GKPlayer(py)gamePlayerID	-			ios=12.4/-/-/0,macos=10.14.6/-/-/0,tvos=12.4/-/-/0,watchos=-/-/-/1	-	b84464d219d4d129
+property	c:objc(cs)GKPlayer(py)teamPlayerID	-			ios=12.4/-/-/0,macos=10.14.6/-/-/0,tvos=12.4/-/-/0,watchos=-/-/-/1	-	e7c86de4e4ce9306
+property	c:objc(cs)GKPlayer(py)displayName	-			ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	421cff4e56c3e801
+property	c:objc(cs)GKPlayer(py)alias	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	603f921b053ea2cc
+method	c:objc(cs)GKPlayer(cm)anonymousGuestPlayerWithIdentifier:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	8c5295ea944f57b5
+property	c:objc(cs)GKPlayer(py)guestIdentifier	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	a308ae9fa38c34af
+property	c:objc(cs)GKPlayer(py)isInvitable	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	4cad64e38c098a5f
+category	c:objc(cy)GKPlayer@UI	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	7cc540efbc542429
+method	c:objc(cs)GKPlayer(im)loadPhotoForSize:withCompletionHandler:	UI			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	b85fef3a003c5e9d
+typedef	c:@T@GKPhotoSize	-			-	-	befecb24406ec6ba
+enum	c:@E@GKPhotoSize	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,xros=1.0/-/-/0	-	55826ca2d3de406a
+enumconst	c:@E@GKPhotoSize@GKPhotoSizeSmall	GKPhotoSize			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,xros=1.0/-/-/0	-	1261b3fa817a2a8f
+enumconst	c:@E@GKPhotoSize@GKPhotoSizeNormal	GKPhotoSize			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,xros=1.0/-/-/0	-	7174ef146622b450
+var	c:@GKPlayerDidChangeNotificationName	-			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	2b977846bdb12db9
+category	c:objc(cy)GKPlayer@Deprecated	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	deprecated: Use Use ``GKLocalPlayer/loadFriendPlayers(completionHandler:)`` instead. instead	759597ce6619ca20
+property	c:objc(cs)GKPlayer(py)isFriend	Deprecated			ios=4.1/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	b5972eff6e98879b
+property	c:objc(cs)GKPlayer(py)playerID	Deprecated			ios=4.1/13.0/-/0,macos=10.8/10.15/-/0,tvos=9.0/13.0/-/0	-	fee6a61c8e9d171d
+method	c:objc(cs)GKPlayer(cm)loadPlayersForIdentifiers:withCompletionHandler:	Deprecated			ios=4.1/14.5/-/0,macos=10.8/11.3/-/0,tvos=9.0/14.5/-/0,watchos=3.0/7.4/-/0	deprecated: Use Use ``GKLocalPlayer/loadFriends(identifiedBy:completionHandler:)`` instead. instead	8c86cde17b1aede4
+typedef	c:@T@GKReleaseState	-			-	-	f8d0ca99d3b1d901
+enum	c:@E@GKReleaseState	-			ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0,xros=2.4/-/-/0	-	3c6c5dd1c37f3725
+enumconst	c:@E@GKReleaseState@GKReleaseStateUnknown	GKReleaseState			ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0,xros=2.4/-/-/0	-	582ada2fd25b3ec8
+enumconst	c:@E@GKReleaseState@GKReleaseStateReleased	GKReleaseState			ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0,xros=2.4/-/-/0	-	dd9ed5bbb4400f58
+enumconst	c:@E@GKReleaseState@GKReleaseStatePrereleased	GKReleaseState			ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0,xros=2.4/-/-/0	-	9a9c8bf70e3027b4
+typedef	c:@T@GKLeaderboardTimeScope	-			-	-	8bf9375ee24f3633
+enum	c:@E@GKLeaderboardTimeScope	-			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	35ebcb4d239fd9a8
+enumconst	c:@E@GKLeaderboardTimeScope@GKLeaderboardTimeScopeToday	GKLeaderboardTimeScope			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	41eb9cabd5a50310
+enumconst	c:@E@GKLeaderboardTimeScope@GKLeaderboardTimeScopeWeek	GKLeaderboardTimeScope			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	712bb65ac86792cd
+enumconst	c:@E@GKLeaderboardTimeScope@GKLeaderboardTimeScopeAllTime	GKLeaderboardTimeScope			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	692f55a14d3c8a3f
+typedef	c:@T@GKLeaderboardPlayerScope	-			-	-	923d5346efc40a86
+enum	c:@E@GKLeaderboardPlayerScope	-			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	fd5b66f0ca26acaf
+enumconst	c:@E@GKLeaderboardPlayerScope@GKLeaderboardPlayerScopeGlobal	GKLeaderboardPlayerScope			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	0dd3f0620a9189e9
+enumconst	c:@E@GKLeaderboardPlayerScope@GKLeaderboardPlayerScopeFriendsOnly	GKLeaderboardPlayerScope			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	bed0ec1afafa39fc
+typedef	c:@T@GKLeaderboardType	-			-	-	319ca96b9b04f8c4
+enum	c:@E@GKLeaderboardType	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0,xros=1.0/-/-/0	-	f7ef54b01617fad6
+enumconst	c:@E@GKLeaderboardType@GKLeaderboardTypeClassic	GKLeaderboardType			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0,xros=1.0/-/-/0	-	2f13da14fb8033c3
+enumconst	c:@E@GKLeaderboardType@GKLeaderboardTypeRecurring	GKLeaderboardType			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0,xros=1.0/-/-/0	-	297db5d9e80c87a8
+interface	c:objc(cs)GKLeaderboard	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	a3a79db1a5ea9f05
+super	-	GKLeaderboard	NSObject		-	-	7f0efae577da2a6a
+property	c:objc(cs)GKLeaderboard(py)title	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	15e4b180b6284c77
+property	c:objc(cs)GKLeaderboard(py)groupIdentifier	-			ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	30ec78a04c3e4da5
+property	c:objc(cs)GKLeaderboard(py)baseLeaderboardID	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	d63da464e05cce51
+property	c:objc(cs)GKLeaderboard(py)type	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	7f2831c3eec4e9ad
+property	c:objc(cs)GKLeaderboard(py)startDate	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	8650e9e32425fabe
+property	c:objc(cs)GKLeaderboard(py)nextStartDate	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	8a7fa52e0868c3d2
+property	c:objc(cs)GKLeaderboard(py)duration	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	04ea51bb54c810b4
+property	c:objc(cs)GKLeaderboard(py)leaderboardDescription	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	595ce0717cbebdc6
+property	c:objc(cs)GKLeaderboard(py)releaseState	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	123cac57b3e65af8
+property	c:objc(cs)GKLeaderboard(py)activityIdentifier	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	c989c3060d32a960
+property	c:objc(cs)GKLeaderboard(py)activityProperties	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	f5e7411522adace7
+property	c:objc(cs)GKLeaderboard(py)isHidden	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	416fb72e4f29a339
+method	c:objc(cs)GKLeaderboard(cm)loadLeaderboardsWithIDs:completionHandler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	a51d240cf71faddc
+method	c:objc(cs)GKLeaderboard(im)loadPreviousOccurrenceWithCompletionHandler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	90425edd19aa240d
+method	c:objc(cs)GKLeaderboard(cm)submitScore:context:player:leaderboardIDs:completionHandler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	71da3d6c66a81190
+method	c:objc(cs)GKLeaderboard(im)submitScore:context:player:completionHandler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	a9170513783fa730
+method	c:objc(cs)GKLeaderboard(im)loadEntriesForPlayerScope:timeScope:range:completionHandler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	64ec7d31ed76d27d
+method	c:objc(cs)GKLeaderboard(im)loadEntriesForPlayers:timeScope:completionHandler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ac0d3982e44cb8eb
+category	c:objc(cy)GKLeaderboard@Deprecated	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	deprecated: Use Use the ``GKLeaderboard/loadEntries(for:timeScope:range:completionHandler:)`` method instead. instead	b3b869d4bf4c6cd2
+property	c:objc(cs)GKLeaderboard(py)category	Deprecated			ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	41b935708201a5e8
+method	c:objc(cs)GKLeaderboard(im)initWithPlayerIDs:	Deprecated			ios=4.1/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	deprecated: Use Use the ``GKLeaderboard/loadEntries(for:timeScope:completionHandler:)`` method instead. instead	0c1daa27abb3c597
+method	c:objc(cs)GKLeaderboard(cm)loadCategoriesWithCompletionHandler:	Deprecated			ios=4.1/6.0/-/0,macos=10.8/10.9/-/0,tvos=-/-/-/1	deprecated: Use Use the ``GKLeaderboard/loadLeaderboards(completionHandler:)`` method instead. instead	7961884dad1399f6
+method	c:objc(cs)GKLeaderboard(cm)setDefaultLeaderboard:withCompletionHandler:	Deprecated			ios=5.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	deprecated: Use Use the ``GKLocalPlayer/setDefaultLeaderboardIdentifier(_:completionHandler:)`` method instead. instead	c24eb5a98ee82035
+property	c:objc(cs)GKLeaderboard(py)timeScope	Deprecated			ios=4.0/14.0/-/0,macos=10.8/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0	-	573d969dec6e1597
+property	c:objc(cs)GKLeaderboard(py)playerScope	Deprecated			ios=4.0/14.0/-/0,macos=10.8/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0	-	841201ca777a3b79
+property	c:objc(cs)GKLeaderboard(py)identifier	Deprecated			ios=7.0/14.0/-/0,macos=10.10/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0	-	9a075b407df61680
+property	c:objc(cs)GKLeaderboard(py)range	Deprecated			ios=4.0/14.0/-/0,macos=10.8/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0	-	388ea7b116a106c3
+property	c:objc(cs)GKLeaderboard(py)scores	Deprecated			ios=4.0/14.0/-/0,macos=10.8/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0	-	2b319ad5b854dcd8
+property	c:objc(cs)GKLeaderboard(py)maxRange	Deprecated			ios=4.0/14.0/-/0,macos=10.8/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0	-	37fe40c4fdf92b12
+property	c:objc(cs)GKLeaderboard(py)localPlayerScore	Deprecated			ios=4.0/14.0/-/0,macos=10.8/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0	-	dbc4f02ed8d3ee36
+property	c:objc(cs)GKLeaderboard(py)loading	Deprecated			ios=4.1/14.0/-/0,macos=10.8/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0	-	2f747b866120776b
+method	c:objc(cs)GKLeaderboard(im)init	Deprecated			ios=4.0/14.0/-/0,macos=10.8/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0	deprecated: Use Use the ``GKLeaderboard/loadLeaderboards(IDs:completionHandler:)`` method instead. instead	470bcfc1eaa9352f
+method	c:objc(cs)GKLeaderboard(im)initWithPlayers:	Deprecated			ios=8.0/14.0/-/0,macos=10.10/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0	deprecated: Use Use the ``GKLeaderboard/loadEntries(for:timeScope:completionHandler:)`` method instead. instead	1e2729c12a62d90d
+method	c:objc(cs)GKLeaderboard(im)loadScoresWithCompletionHandler:	Deprecated			ios=4.0/14.0/-/0,macos=10.8/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0	deprecated: Use Use ``GKLeaderboard/loadEntries(for:timeScope:range:completionHandler:)`` instead. instead	93e4a74cfa91a2dc
+method	c:objc(cs)GKLeaderboard(cm)loadLeaderboardsWithCompletionHandler:	Deprecated			ios=6.0/14.0/-/0,macos=10.8/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0	deprecated: Use Use the ``GKLeaderboard/loadLeaderboards(IDs:completionHandler:)`` method instead. instead	08abae931ea82c33
+category	c:objc(cy)GKLeaderboard@UI	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	b71175067a70f87f
+method	c:objc(cs)GKLeaderboard(im)loadImageWithCompletionHandler:	UI			ios=7.0/-/-/0,macos=10.8/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	a5117b16e84e2a57
+interface	c:objc(cs)GKAchievement	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	1c317e60c66e034a
+super	-	GKAchievement	NSObject		-	-	a1dbaffbd60d118f
+conforms	-	GKAchievement	NSCoding		-	-	971aab41e09fb860
+conforms	-	GKAchievement	NSSecureCoding		-	-	f05dfaa7358b9d02
+method	c:objc(cs)GKAchievement(cm)loadAchievementsWithCompletionHandler:	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	0a75dc97f7e2c393
+method	c:objc(cs)GKAchievement(cm)resetAchievementsWithCompletionHandler:	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	56d5c8e199f36e10
+method	c:objc(cs)GKAchievement(im)initWithIdentifier:	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	54d6b568c64ddb4f
+method	c:objc(cs)GKAchievement(im)initWithIdentifier:player:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	32beed2fe3daf924
+method	c:objc(cs)GKAchievement(cm)reportAchievements:withCompletionHandler:	-			ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	a2512421075c7006
+property	c:objc(cs)GKAchievement(py)identifier	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	1eea677df357eec3
+property	c:objc(cs)GKAchievement(py)percentComplete	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	6df0fa61bae6a298
+property	c:objc(cs)GKAchievement(py)completed	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	7161617fd8f7d010
+property	c:objc(cs)GKAchievement(py)lastReportedDate	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	598a05ede2960181
+property	c:objc(cs)GKAchievement(py)showsCompletionBanner	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	ab914de539494748
+property	c:objc(cs)GKAchievement(py)player	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	038dbf92af0c4b11
+category	c:objc(cy)GKAchievement@Deprecated	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	deprecated: Use Use ``GKAchievement/report(_:withCompletionHandler:)`` instead. instead	54e6ac8f4c563b49
+method	c:objc(cs)GKAchievement(im)reportAchievementWithCompletionHandler:	Deprecated			ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	deprecated: Use Use ``GKAchievement/report(_:withCompletionHandler:)`` instead. instead	cf96fd7d899ca7c5
+property	c:objc(cs)GKAchievement(py)hidden	Deprecated			ios=4.1/6.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	62460a16135b2ae5
+category	c:objc(cy)GKAchievement@Obsoleted	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	deprecated: Use Use ``GKAchievement/init(identifier:player:)`` instead. instead	f4917f0cbda36f94
+method	c:objc(cs)GKAchievement(im)initWithIdentifier:forPlayer:	Obsoleted			ios=7.0/8.0/-/0,macos=10.9/10.10/-/0,tvos=-/-/-/1	deprecated: Use Use ``GKAchievement/init(identifier:player:)`` instead. instead	de3ce503980d9d24
+property	c:objc(cs)GKAchievement(py)playerID	Obsoleted			ios=7.0/8.0/-/0,macos=10.9/10.10/-/0,tvos=-/-/-/1	-	4cc88beaf3870fc7
+typedef	c:@T@GKGameCenterViewControllerState	-			watchos=-/-/-/1	-	0ba96eaeed8f9cd1
+enum	c:@E@GKGameCenterViewControllerState	-			ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	60b10bf6d0034187
+enumconst	c:@E@GKGameCenterViewControllerState@GKGameCenterViewControllerStateDefault	GKGameCenterViewControllerState			watchos=-/-/-/1	-	e5aac915436fbf7f
+enumconst	c:@E@GKGameCenterViewControllerState@GKGameCenterViewControllerStateLeaderboards	GKGameCenterViewControllerState			watchos=-/-/-/1	-	db99215e8c53e72c
+enumconst	c:@E@GKGameCenterViewControllerState@GKGameCenterViewControllerStateAchievements	GKGameCenterViewControllerState			watchos=-/-/-/1	-	1ca722912d13b262
+enumconst	c:@E@GKGameCenterViewControllerState@GKGameCenterViewControllerStateChallenges	GKGameCenterViewControllerState			ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	-	2840f8aaa4b7d89f
+enumconst	c:@E@GKGameCenterViewControllerState@GKGameCenterViewControllerStateLocalPlayerProfile	GKGameCenterViewControllerState			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	4e09e446ac4cd7f7
+enumconst	c:@E@GKGameCenterViewControllerState@GKGameCenterViewControllerStateDashboard	GKGameCenterViewControllerState			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	1c69181610b77e90
+enumconst	c:@E@GKGameCenterViewControllerState@GKGameCenterViewControllerStateLocalPlayerFriendsList	GKGameCenterViewControllerState			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	aba83299885ee6c1
+interface	c:objc(cs)GKGameCenterViewController	-			ios=6.0/26.0/-/0,macos=10.9/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	-	9c58ae1c7cdfa633
+super	-	GKGameCenterViewController	UINavigationController		-	-	1e44e9dd581b32e6
+category	c:objc(ext)GKGameCenterViewController	-	-		watchos=-/-/-/1	-	4192d4c747d9c6c6
+property	c:objc(cs)GKGameCenterViewController(py)gameCenterDelegate	-			watchos=-/-/-/1	-	dd6270a006a52892
+method	c:objc(cs)GKGameCenterViewController(im)initWithState:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	04a06bdb1aa693e1
+method	c:objc(cs)GKGameCenterViewController(im)initWithLeaderboardID:playerScope:timeScope:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	9548ee02cff282d6
+method	c:objc(cs)GKGameCenterViewController(im)initWithLeaderboard:playerScope:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	1e7f674e265cb2d5
+method	c:objc(cs)GKGameCenterViewController(im)initWithLeaderboardSetID:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	e0ec756c66c02870
+method	c:objc(cs)GKGameCenterViewController(im)initWithAchievementID:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	65b2fe895c029b4a
+method	c:objc(cs)GKGameCenterViewController(im)initWithPlayer:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	772954afeba9bcf5
+category	c:objc(cy)GKGameCenterViewController@Deprecated	-			watchos=-/-/-/1	deprecated: Use Use ``GKGameCenterViewController/init(state:)`` instead. instead	4f0e69b9f3525810
+property	c:objc(cs)GKGameCenterViewController(py)viewState	Deprecated			ios=6.0/14.0/-/0,macos=10.9/11.0/-/0,tvos=9.0/14.0/-/0,watchos=-/-/-/1	-	d779d64b1cb336b4
+property	c:objc(cs)GKGameCenterViewController(py)leaderboardTimeScope	Deprecated			ios=4.1/14.0/-/0,macos=10.8/11.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	950f4b1b9d98868b
+property	c:objc(cs)GKGameCenterViewController(py)leaderboardIdentifier	Deprecated			ios=7.0/14.0/-/0,macos=10.10/11.0/-/0,tvos=9.0/14.0/-/0,watchos=-/-/-/1	-	6696eaff5b0889cf
+property	c:objc(cs)GKGameCenterViewController(py)leaderboardCategory	Deprecated			ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1d93112bfc8f9e4a
+protocol	c:objc(pl)GKGameCenterControllerDelegate	-			ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	-	152879e9f93f86a3
+conforms	-	GKGameCenterControllerDelegate	NSObject		-	-	696e0b35181e776a
+method	c:objc(pl)GKGameCenterControllerDelegate(im)gameCenterViewControllerDidFinish:	-			ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	be667c0fcb28fb2d
+typedef	c:@T@GKAccessPointLocation	-			-	-	252509a3363fd6d9
+enum	c:@E@GKAccessPointLocation	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,xros=1.0/-/-/0	-	6c18ce92daec7e13
+enumconst	c:@E@GKAccessPointLocation@GKAccessPointLocationTopLeading	GKAccessPointLocation			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,xros=1.0/-/-/0	-	abd6b3f3ead5ae7e
+enumconst	c:@E@GKAccessPointLocation@GKAccessPointLocationTopTrailing	GKAccessPointLocation			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,xros=1.0/-/-/0	-	bcccfff819a9dd4e
+enumconst	c:@E@GKAccessPointLocation@GKAccessPointLocationBottomLeading	GKAccessPointLocation			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,xros=1.0/-/-/0	-	b158ec2593fc0b28
+enumconst	c:@E@GKAccessPointLocation@GKAccessPointLocationBottomTrailing	GKAccessPointLocation			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,xros=1.0/-/-/0	-	cd54c1a86102331c
+interface	c:objc(cs)GKAccessPoint	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	deprecated: No longer supported	6e8017dd02813f5e
+super	-	GKAccessPoint	NSObject		-	-	24c0ab45264ea9ab
+property	c:objc(cs)GKAccessPoint(cpy)shared	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	6bead5bd1b8b66c1
+property	c:objc(cs)GKAccessPoint(py)active	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	320360177ae527b9
+property	c:objc(cs)GKAccessPoint(py)focused	-			ios=-/-/-/1,macos=-/-/-/1,tvos=14.0/-/-/0	-	be112bcc50adff8f
+property	c:objc(cs)GKAccessPoint(py)visible	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	f5cf9ead79127cde
+property	c:objc(cs)GKAccessPoint(py)isPresentingGameCenter	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	81761d6fcbd07eeb
+property	c:objc(cs)GKAccessPoint(py)showHighlights	-			ios=14.0/26.0/-/0,macos=11.0/26.0/-/0,tvos=14.0/26.0/-/0,xros=1.0/26.0/-/0	-	6643871ddd7d5124
+property	c:objc(cs)GKAccessPoint(py)location	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	377bae8744a26fe7
+property	c:objc(cs)GKAccessPoint(py)frameInScreenCoordinates	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	9ac0511f1df24bfc
+property	c:objc(cs)GKAccessPoint(py)parentWindow	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	a2d75583e1247748
+method	c:objc(cs)GKAccessPoint(im)triggerAccessPointWithHandler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	169a35697c7d2f31
+method	c:objc(cs)GKAccessPoint(im)triggerAccessPointWithState:handler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	8b6287cd7c74c1dc
+method	c:objc(cs)GKAccessPoint(im)triggerAccessPointWithAchievementID:handler:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	de0ba133b5ce06f0
+method	c:objc(cs)GKAccessPoint(im)triggerAccessPointWithLeaderboardSetID:handler:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	22b0a4cfe1bfd9f0
+method	c:objc(cs)GKAccessPoint(im)triggerAccessPointWithLeaderboardID:playerScope:timeScope:handler:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	5751e12cc8e16a4f
+method	c:objc(cs)GKAccessPoint(im)triggerAccessPointWithPlayer:handler:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	46be015564ccb659
+method	c:objc(cs)GKAccessPoint(im)triggerAccessPointForPlayTogetherWithHandler:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1a5f7313d3435ddc
+method	c:objc(cs)GKAccessPoint(im)triggerAccessPointForChallengesWithHandler:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	424cb3cba188501a
+method	c:objc(cs)GKAccessPoint(im)triggerAccessPointWithChallengeDefinitionID:handler:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8d6ad780fca45ae6
+method	c:objc(cs)GKAccessPoint(im)triggerAccessPointWithGameActivityDefinitionID:handler:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1b5ff8db95e64987
+method	c:objc(cs)GKAccessPoint(im)triggerAccessPointWithGameActivity:handler:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ea0384923ba46f93
+method	c:objc(cs)GKAccessPoint(im)triggerAccessPointForFriendingWithHandler:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0f3cf74372013d10
+method	c:objc(cs)GKAccessPoint(im)triggerAccessPointForArcadeWithHandler:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	66ae6c08cb5abc96
+interface	c:objc(cs)GKAchievementDescription	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	cd058dc849558eaa
+super	-	GKAchievementDescription	NSObject		-	-	ffe3d6743474ff92
+conforms	-	GKAchievementDescription	NSCoding		-	-	585ac33c870010c7
+conforms	-	GKAchievementDescription	NSSecureCoding		-	-	41b44b3ff69f39d9
+method	c:objc(cs)GKAchievementDescription(cm)loadAchievementDescriptionsWithCompletionHandler:	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	295dd21c1db0e0ac
+property	c:objc(cs)GKAchievementDescription(py)identifier	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	1883804a9682eda1
+property	c:objc(cs)GKAchievementDescription(py)groupIdentifier	-			ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	53909a6a3cf0131a
+property	c:objc(cs)GKAchievementDescription(py)title	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	ad0797d117073bb4
+property	c:objc(cs)GKAchievementDescription(py)achievedDescription	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	4abd8aeca7565601
+property	c:objc(cs)GKAchievementDescription(py)unachievedDescription	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	7440d64d16a46b44
+property	c:objc(cs)GKAchievementDescription(py)maximumPoints	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	3324f80771ea72c9
+property	c:objc(cs)GKAchievementDescription(py)hidden	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	e974a56d12b7b38a
+property	c:objc(cs)GKAchievementDescription(py)replayable	-			ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	87f04775d80f7639
+property	c:objc(cs)GKAchievementDescription(py)rarityPercent	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	3da56708fee2713d
+property	c:objc(cs)GKAchievementDescription(py)releaseState	-			ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0,xros=2.4/-/-/0	-	cd00d3bac1702182
+property	c:objc(cs)GKAchievementDescription(py)activityIdentifier	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	f50c58df001c1f34
+property	c:objc(cs)GKAchievementDescription(py)activityProperties	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	421d9d777f356446
+category	c:objc(cy)GKAchievementDescription@UI	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	deprecated: Use Use ``GKAchievementDescription/loadImage(completionHandler:)`` instead. instead	e716b92a3bca4d7b
+property	c:objc(cs)GKAchievementDescription(py)image	UI			ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=9.0/17.2/-/0,watchos=-/-/-/1	-	1e9ca35eb343b261
+method	c:objc(cs)GKAchievementDescription(im)loadImageWithCompletionHandler:	UI			watchos=-/-/-/1	-	15878c4b1742f4b7
+method	c:objc(cs)GKAchievementDescription(cm)incompleteAchievementImage	UI			watchos=-/-/-/1	-	276d619bdde1d332
+method	c:objc(cs)GKAchievementDescription(cm)placeholderCompletedAchievementImage	UI			watchos=-/-/-/1	-	b7a1b94344347901
+interface	c:objc(cs)GKAchievementViewController	-			ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	afbfb7c967944c7f
+super	-	GKAchievementViewController	GKGameCenterViewController		-	-	7999e4ed6aeae58e
+property	c:objc(cs)GKAchievementViewController(py)achievementDelegate	-			ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	084cab702f576575
+protocol	c:objc(pl)GKAchievementViewControllerDelegate	-			ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	10a99a167899a640
+conforms	-	GKAchievementViewControllerDelegate	NSObject		-	-	d04aa24d2a75f843
+method	c:objc(pl)GKAchievementViewControllerDelegate(im)achievementViewControllerDidFinish:	-			ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	de0c7be1ac7edc0e
+interface	c:objc(cs)GKScore	-			ios=4.1/14.0/-/0,macos=10.8/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use ``GKLeaderboardScore`` instead. instead	97ce48bceaec9c1c
+super	-	GKScore	NSObject		-	-	b4053230a9631d10
+conforms	-	GKScore	NSCoding		-	-	7781aa52eb9f732f
+conforms	-	GKScore	NSSecureCoding		-	-	9eb2b0bbf3574302
+method	c:objc(cs)GKScore(im)initWithLeaderboardIdentifier:	-			ios=4.1/14.0/-/0,macos=10.8/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0,xros=1.0/1.0/-/0	-	8903376cc49f010d
+method	c:objc(cs)GKScore(im)initWithLeaderboardIdentifier:player:	-			ios=8.0/14.0/-/0,macos=10.10/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use ``GKLeaderboardScore`` instead. instead	97014cf89251bd86
+property	c:objc(cs)GKScore(py)value	-			ios=4.1/14.0/-/0,macos=10.8/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0,xros=1.0/1.0/-/0	-	bdb976191f1e3ef1
+property	c:objc(cs)GKScore(py)formattedValue	-			ios=4.1/14.0/-/0,macos=10.8/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0,xros=1.0/1.0/-/0	-	bfa87f9ee11a97f5
+property	c:objc(cs)GKScore(py)leaderboardIdentifier	-			ios=7.0/14.0/-/0,macos=10.10/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0,xros=1.0/1.0/-/0	-	97cbcb68b0c78adc
+property	c:objc(cs)GKScore(py)context	-			ios=5.0/14.0/-/0,macos=10.8/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0,xros=1.0/1.0/-/0	-	a55273685eda45ea
+property	c:objc(cs)GKScore(py)date	-			ios=4.1/14.0/-/0,macos=10.8/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0,xros=1.0/1.0/-/0	-	b505422fa1fbf629
+property	c:objc(cs)GKScore(py)player	-			ios=8.0/14.0/-/0,macos=10.10/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0,xros=1.0/1.0/-/0	-	69e2a96265893623
+property	c:objc(cs)GKScore(py)rank	-			ios=4.1/14.0/-/0,macos=10.8/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0,xros=1.0/1.0/-/0	-	c948cdd63514dbde
+property	c:objc(cs)GKScore(py)shouldSetDefaultLeaderboard	-			ios=5.0/14.0/-/0,macos=10.8/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0,xros=1.0/1.0/-/0	-	b8d62fff42cc93f9
+method	c:objc(cs)GKScore(cm)reportScores:withCompletionHandler:	-			ios=6.0/14.0/-/0,macos=10.8/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use ``GKLeaderboardScore`` instead. instead	fb5bb8183551208d
+category	c:objc(cy)GKScore@Deprecated	-			ios=4.1/14.0/-/0,macos=10.8/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use ``GKLeaderboardScore`` instead. instead	6da78b50b1f21939
+method	c:objc(cs)GKScore(im)reportScoreWithCompletionHandler:	Deprecated			ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use ``GKLeaderboardScore`` instead. instead	8d69aac81d70c2a4
+method	c:objc(cs)GKScore(im)initWithCategory:	Deprecated			ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use ``GKLeaderboardScore`` instead. instead	03a563c3b3a391e9
+property	c:objc(cs)GKScore(py)category	Deprecated			ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	5b50463214fdfa4e
+category	c:objc(cy)GKScore@Obsoleted	-			tvos=-/-/-/1	deprecated: Use Use ``GKLeaderboardScore`` instead. instead	8a4236ce28b2710c
+method	c:objc(cs)GKScore(im)initWithLeaderboardIdentifier:forPlayer:	Obsoleted			ios=7.0/8.0/-/0,macos=10.9/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use ``GKLeaderboardScore`` instead. instead	3d7c772a578278f1
+property	c:objc(cs)GKScore(py)playerID	Obsoleted			ios=4.1/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	3f565a61b2291850
+interface	c:objc(cs)GKLeaderboardEntry	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	f477c365a71679a3
+super	-	GKLeaderboardEntry	NSObject		-	-	c8cd348969dc8616
+property	c:objc(cs)GKLeaderboardEntry(py)player	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	2deaf169688e4108
+property	c:objc(cs)GKLeaderboardEntry(py)rank	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	d68c47ce850ef7ee
+property	c:objc(cs)GKLeaderboardEntry(py)score	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	859e9accb1a3eba4
+property	c:objc(cs)GKLeaderboardEntry(py)formattedScore	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	c3679adcfefb6aab
+property	c:objc(cs)GKLeaderboardEntry(py)context	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	5ca3349bc1739c52
+property	c:objc(cs)GKLeaderboardEntry(py)date	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	104958e3fb5d12e8
+method	c:objc(cs)GKLeaderboardEntry(im)init	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	a05dc69e9cd4382a
+interface	c:objc(cs)GKLeaderboardScore	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1568d82e2e66eb99
+super	-	GKLeaderboardScore	NSObject		-	-	62a2e35706f368fa
+property	c:objc(cs)GKLeaderboardScore(py)player	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	2770b0967197bb2d
+property	c:objc(cs)GKLeaderboardScore(py)value	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	9d498c7e7a5c8909
+property	c:objc(cs)GKLeaderboardScore(py)context	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1e0604a17d3574e6
+property	c:objc(cs)GKLeaderboardScore(py)leaderboardID	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	819746a3a3a1946a
+typedef	c:@T@GKChallengeState	-			-	-	fe36c7a1b821f291
+enum	c:@E@GKChallengeState	-			ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=3.0/26.0/-/0,xros=1.0/26.0/-/0	-	ba648a6adf9f2551
+enumconst	c:@E@GKChallengeState@GKChallengeStateInvalid	GKChallengeState			ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=3.0/26.0/-/0,xros=1.0/26.0/-/0	-	e69175fe2a3c8edc
+enumconst	c:@E@GKChallengeState@GKChallengeStatePending	GKChallengeState			ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=3.0/26.0/-/0,xros=1.0/26.0/-/0	-	3e627d5b4279d723
+enumconst	c:@E@GKChallengeState@GKChallengeStateCompleted	GKChallengeState			ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=3.0/26.0/-/0,xros=1.0/26.0/-/0	-	8485157d81151dd7
+enumconst	c:@E@GKChallengeState@GKChallengeStateDeclined	GKChallengeState			ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=3.0/26.0/-/0,xros=1.0/26.0/-/0	-	feb94147f94b46b0
+interface	c:objc(cs)GKChallenge	-			ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	-	248650b2de68ee0d
+super	-	GKChallenge	NSObject		-	-	54ad8fd4958045ed
+conforms	-	GKChallenge	NSCoding		-	-	7d2a60ed94ac2b5c
+conforms	-	GKChallenge	NSSecureCoding		-	-	d6e551a46d4eebe1
+method	c:objc(cs)GKChallenge(cm)loadReceivedChallengesWithCompletionHandler:	-			ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	-	c5a6e50c30566c72
+method	c:objc(cs)GKChallenge(im)decline	-			ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	-	a83c34bd56ea7f5d
+property	c:objc(cs)GKChallenge(py)issuingPlayer	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	495aa2508b1618d0
+property	c:objc(cs)GKChallenge(py)receivingPlayer	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	e424fc4d8ca19071
+property	c:objc(cs)GKChallenge(py)state	-			ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	-	05b05156f42f806d
+property	c:objc(cs)GKChallenge(py)issueDate	-			ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	-	87524a238abac9d7
+property	c:objc(cs)GKChallenge(py)completionDate	-			ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	-	2bde3440320d2650
+property	c:objc(cs)GKChallenge(py)message	-			ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	-	2771326fb6686cc1
+category	c:objc(cy)GKChallenge@Obsoleted	-			watchos=-/-/-/1	deprecated: Use Use ``GKChallenge/issuingPlayer`` instead. instead	d37f1b2ce243ac56
+property	c:objc(cs)GKChallenge(py)issuingPlayerID	Obsoleted			ios=6.0/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f7b0f63d21ea1555
+property	c:objc(cs)GKChallenge(py)receivingPlayerID	Obsoleted			ios=6.0/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f3cb6eb25c6ac767
+interface	c:objc(cs)GKScoreChallenge	-			ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	deprecated: Use Use ``GKChallenge/leaderboardEntry`` instead instead	e4475464b41fe4c7
+super	-	GKScoreChallenge	GKChallenge		-	-	200f0e5d74a9e758
+property	c:objc(cs)GKScoreChallenge(py)score	-			ios=6.0/17.4/-/0,macos=10.8/14.4/-/0,tvos=9.0/17.4/-/0,watchos=-/-/-/1,xros=1.0/1.1/-/0	-	d6e5c72274352360
+property	c:objc(cs)GKScoreChallenge(py)leaderboardEntry	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=-/-/-/1	-	35839e33f6cb4593
+interface	c:objc(cs)GKAchievementChallenge	-			ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	-	4350f88472665ad4
+super	-	GKAchievementChallenge	GKChallenge		-	-	d1a764b7420374be
+property	c:objc(cs)GKAchievementChallenge(py)achievement	-			ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	-	4a1c4a21a80f2f5d
+category	c:objc(cy)GKScore@GKChallenge	-			watchos=-/-/-/1	deprecated: Use Use ``GKScore/report(_:withEligibleChallenges:withCompletionHandler:)`` instead. instead	ee9dadbf2f1b32b9
+method	c:objc(cs)GKScore(cm)reportScores:withEligibleChallenges:withCompletionHandler:	GKChallenge			ios=6.0/14.0/-/0,macos=10.10/11.0/-/0,watchos=-/-/-/1	deprecated: Use Use ``GKScore/report(_:withEligibleChallenges:withCompletionHandler:)`` instead. instead	e21b38f75e0ece27
+method	c:objc(cs)GKScore(cm)reportLeaderboardScores:withEligibleChallenges:withCompletionHandler:	GKChallenge			ios=14.0/26.0/-/0,macos=11.0/26.0/-/0,tvos=14.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	deprecated: Use Replaced by developer defined challenges, see ``GKChallengeDefinition`` instead	391cad428b8722bc
+category	c:objc(cy)GKAchievement@GKChallenge	-			watchos=-/-/-/1	deprecated: Use Replaced by developer defined challenges, see ``GKChallengeDefinition`` instead	7096f52cda5b8196
+method	c:objc(cs)GKAchievement(im)selectChallengeablePlayers:withCompletionHandler:	GKChallenge			ios=8.0/26.0/-/0,macos=10.10/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	deprecated: Use Replaced by developer defined challenges, see ``GKChallengeDefinition`` instead	7685aa0081cf1fce
+method	c:objc(cs)GKAchievement(cm)reportAchievements:withEligibleChallenges:withCompletionHandler:	GKChallenge			ios=7.0/26.0/-/0,macos=10.10/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	deprecated: Use Replaced by developer defined challenges, see ``GKChallengeDefinition`` instead	6312e7f13c7eace9
+category	c:objc(cy)GKScore@GKChallengeObsoleted	-			watchos=-/-/-/1	deprecated: Use Use the ``GKAchievement/challengeComposeController(withMessage:players:completionHandler:)`` method of the ``GKAchievement`` class instead. instead	c1c037126fac489b
+method	c:objc(cs)GKScore(im)issueChallengeToPlayers:message:	GKChallengeObsoleted			ios=6.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use Use the ``GKAchievement/challengeComposeController(withMessage:players:completionHandler:)`` method of the ``GKAchievement`` class instead. instead	849b1d021048a878
+category	c:objc(cy)GKAchievement@GKChallengeObsoleted	-			watchos=-/-/-/1	deprecated: Use Use the ``GKAchievement/challengeComposeController(withMessage:players:completionHandler:)`` method of the ``GKAchievement`` class instead. instead	84cc54acc8adc678
+method	c:objc(cs)GKAchievement(im)issueChallengeToPlayers:message:	GKChallengeObsoleted			ios=6.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use Use the ``GKAchievement/challengeComposeController(withMessage:players:completionHandler:)`` method of the ``GKAchievement`` class instead. instead	ca86a1f0e9b56642
+method	c:objc(cs)GKAchievement(im)selectChallengeablePlayerIDs:withCompletionHandler:	GKChallengeObsoleted			ios=6.0/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: This method is obsolete.	7b769dd2ed7a47cb
+typedef	c:@T@GKChallengeComposeCompletionBlock	-			ios=8.0/17.0/-/0,tvos=9.0/17.0/-/0,watchos=-/-/-/1	-	ea8c40b7adb3c7b6
+typedef	c:@T@GKChallengeComposeHandler	-			ios=17.0/26.0/-/0,tvos=17.0/26.0/-/0,watchos=-/-/-/1	-	0880db345a6ff156
+category	c:objc(cy)GKScore@GKChallengeUI	-			watchos=-/-/-/1	deprecated: Use Use the ``GKAchievement/challengeComposeController(withMessage:players:completion:)`` method instead. instead	e90a35df3f8944b2
+method	c:objc(cs)GKScore(im)challengeComposeControllerWithMessage:players:completionHandler:	GKChallengeUI			ios=8.0/17.0/-/0,tvos=9.0/17.0/-/0,watchos=-/-/-/1	deprecated: Use Use the ``GKAchievement/challengeComposeController(withMessage:players:completion:)`` method instead. instead	bb49aa765aeeaa0c
+method	c:objc(cs)GKScore(im)challengeComposeControllerWithMessage:players:completion:	GKChallengeUI			ios=17.0/26.0/-/0,tvos=17.0/26.0/-/0,watchos=-/-/-/1	deprecated: Use Replaced by developer defined challenges, see ``GKChallengeDefinition`` instead	446b0b425d88594b
+category	c:objc(cy)GKLeaderboardEntry@GKChallengeUI	-			watchos=-/-/-/1	deprecated: Use Use the ``GKAchievement/challengeComposeController(withMessage:players:completion:)`` method instead. instead	1faa20a0815d7ee4
+method	c:objc(cs)GKLeaderboardEntry(im)challengeComposeControllerWithMessage:players:completionHandler:	GKChallengeUI			ios=14.0/17.0/-/0,tvos=14.0/17.0/-/0,watchos=-/-/-/1	deprecated: Use Use the ``GKAchievement/challengeComposeController(withMessage:players:completion:)`` method instead. instead	5d909fbfe8cc75ae
+method	c:objc(cs)GKLeaderboardEntry(im)challengeComposeControllerWithMessage:players:completion:	GKChallengeUI			ios=17.0/26.0/-/0,tvos=17.0/26.0/-/0,watchos=-/-/-/1	deprecated: Use Replaced by developer defined challenges, see ``GKChallengeDefinition`` instead	b42d425534ff4b34
+category	c:objc(cy)GKAchievement@GKChallengeUI	-			watchos=-/-/-/1	deprecated: Use Use the ``GKAchievement/challengeComposeController(withMessage:players:completion:)`` method instead. instead	b8ecc0c9fd6fe73f
+method	c:objc(cs)GKAchievement(im)challengeComposeControllerWithMessage:players:completionHandler:	GKChallengeUI			ios=8.0/17.0/-/0,tvos=9.0/17.0/-/0,watchos=-/-/-/1	deprecated: Use Use the ``GKAchievement/challengeComposeController(withMessage:players:completion:)`` method instead. instead	cbbf2086a27933e5
+method	c:objc(cs)GKAchievement(im)challengeComposeControllerWithMessage:players:completion:	GKChallengeUI			ios=17.0/26.0/-/0,tvos=17.0/26.0/-/0,watchos=-/-/-/1	deprecated: Use Replaced by developer defined challenges, see ``GKChallengeDefinition`` instead	7e0628a166a1ae66
+category	c:objc(cy)GKScore@GKChallengeObsoletedUI	-			watchos=-/-/-/1	deprecated: Use Use the ``GKAchievement/challengeComposeController(withMessage:players:completion:)`` method instead. instead	774248adeabc3dea
+method	c:objc(cs)GKScore(im)challengeComposeControllerWithPlayers:message:completionHandler:	GKChallengeObsoletedUI			ios=7.0/8.0/-/0,tvos=9.0/17.0/-/0,watchos=-/-/-/1	deprecated: Use Use the ``GKAchievement/challengeComposeController(withMessage:players:completion:)`` method instead. instead	1ea214917773a9d1
+category	c:objc(cy)GKAchievement@GKChallengeObsoletedUI	-			watchos=-/-/-/1	deprecated: Use Use the ``GKAchievement/challengeComposeController(withMessage:players:completion:)`` method instead. instead	67afb2b48f5da788
+method	c:objc(cs)GKAchievement(im)challengeComposeControllerWithPlayers:message:completionHandler:	GKChallengeObsoletedUI			ios=7.0/8.0/-/0,tvos=9.0/17.0/-/0,watchos=-/-/-/1	deprecated: Use Use the ``GKAchievement/challengeComposeController(withMessage:players:completion:)`` method instead. instead	f454434c3cad47ec
+interface	c:objc(cs)GKChallengeDefinition	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	588d6931607f2a57
+super	-	GKChallengeDefinition	NSObject		-	-	0e2b9bf534d2834b
+property	c:objc(cs)GKChallengeDefinition(py)identifier	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	1a122588b84dc416
+property	c:objc(cs)GKChallengeDefinition(py)groupIdentifier	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	6a5d7f614478c217
+property	c:objc(cs)GKChallengeDefinition(py)title	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	ada3f089e05037c9
+property	c:objc(cs)GKChallengeDefinition(py)details	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	cb86f7dce7e39992
+property	c:objc(cs)GKChallengeDefinition(py)durationOptions	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	6e60ec1306016498
+property	c:objc(cs)GKChallengeDefinition(py)isRepeatable	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	4a6b0126f0df0c37
+property	c:objc(cs)GKChallengeDefinition(py)leaderboard	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	7ee38b73dc72f2be
+property	c:objc(cs)GKChallengeDefinition(py)releaseState	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	29507b8c276d1346
+method	c:objc(cs)GKChallengeDefinition(im)loadImageWithCompletionHandler:	-			watchos=-/-/-/1	-	def87b9825c7aaf7
+category	c:objc(cy)GKChallengeDefinition@State	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	c079c72956613299
+method	c:objc(cs)GKChallengeDefinition(cm)loadChallengeDefinitionsWithCompletionHandler:	State			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	a7e3549ec2fe0dbc
+method	c:objc(cs)GKChallengeDefinition(im)hasActiveChallengesWithCompletionHandler:	State			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	6579f9388865d7b6
+protocol	c:objc(pl)GKChallengeEventHandlerDelegate	-			ios=6.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8968c1e4955a2b6d
+conforms	-	GKChallengeEventHandlerDelegate	NSObject		-	-	8b7dc0b48f46f3fc
+method	c:objc(pl)GKChallengeEventHandlerDelegate(im)localPlayerDidSelectChallenge:	-			ios=6.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a47725540fba13b8
+method	c:objc(pl)GKChallengeEventHandlerDelegate(im)shouldShowBannerForLocallyReceivedChallenge:	-			ios=6.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	562df111796b6bd9
+method	c:objc(pl)GKChallengeEventHandlerDelegate(im)localPlayerDidReceiveChallenge:	-			ios=6.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5618ef6cfae53a2b
+method	c:objc(pl)GKChallengeEventHandlerDelegate(im)shouldShowBannerForLocallyCompletedChallenge:	-			ios=6.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ec6ebfa4a1bd0f9e
+method	c:objc(pl)GKChallengeEventHandlerDelegate(im)localPlayerDidCompleteChallenge:	-			ios=6.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	afed3d591534ef3d
+method	c:objc(pl)GKChallengeEventHandlerDelegate(im)shouldShowBannerForRemotelyCompletedChallenge:	-			ios=6.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	60140bf7f992d10d
+method	c:objc(pl)GKChallengeEventHandlerDelegate(im)remotePlayerDidCompleteChallenge:	-			ios=6.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	22e1bbc27673ceee
+interface	c:objc(cs)GKChallengeEventHandler	-			ios=6.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: No longer supported.	3f6a988755ffc9ce
+super	-	GKChallengeEventHandler	NSObject		-	-	45063ce83962c158
+method	c:objc(cs)GKChallengeEventHandler(cm)challengeEventHandler	-			ios=6.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	deprecated: No longer supported.	617e07a72f3d9fcf
+property	c:objc(cs)GKChallengeEventHandler(py)delegate	-			ios=6.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	915a5701e31e09d3
+interface	c:objc(cs)GKCloudPlayer	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	c761d6f66ad3d6d9
+super	-	GKCloudPlayer	GKBasePlayer		-	-	dcd8f55288cd1036
+method	c:objc(cs)GKCloudPlayer(cm)getCurrentSignedInPlayerForContainer:completionHandler:	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	9a76e14705598029
+protocol	c:objc(pl)GKChallengeListener	-			ios=7.0/26.0/-/0,macos=10.10/26.0/-/0,tvos=9.0/26.0/-/0,watchos=3.0/26.0/-/0,xros=1.0/26.0/-/0	-	b795ba1ee7ba730d
+conforms	-	GKChallengeListener	NSObject		-	-	7227f2fa2d62638c
+method	c:objc(pl)GKChallengeListener(im)player:wantsToPlayChallenge:	-			watchos=-/-/-/1	-	425a1d5bb5bcb560
+method	c:objc(pl)GKChallengeListener(im)player:didReceiveChallenge:	-			watchos=-/-/-/1	-	c4d43d8cb9069a98
+method	c:objc(pl)GKChallengeListener(im)player:didCompleteChallenge:issuedByFriend:	-			watchos=-/-/-/1	-	c8b4a2a75334c5bd
+method	c:objc(pl)GKChallengeListener(im)player:issuedChallengeWasCompleted:byFriend:	-			watchos=-/-/-/1	-	f5051ee99ac7c970
+interface	c:objc(cs)GKFriendRequestComposeViewController	-			ios=4.2/10.0/-/0,macos=10.8/10.12/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	694d3d1c0b3eb507
+super	-	GKFriendRequestComposeViewController	UINavigationController		-	-	ba5d747917c54d2b
+category	c:objc(ext)GKFriendRequestComposeViewController	-	-		ios=4.2/10.0/-/0,macos=10.8/10.12/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	deprecated: Use Use ``GKFriendRequestComposeViewController/addRecipientPlayers(_:)`` instead. instead	578435e7ebe45ef3
+method	c:objc(cs)GKFriendRequestComposeViewController(cm)maxNumberOfRecipients	-			ios=4.2/10.0/-/0,macos=10.8/10.12/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	f2c3f571ff1de06a
+method	c:objc(cs)GKFriendRequestComposeViewController(im)setMessage:	-			ios=4.2/10.0/-/0,macos=10.8/10.12/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	165767aa1ff47f7b
+method	c:objc(cs)GKFriendRequestComposeViewController(im)addRecipientPlayers:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	6c583f874c387465
+method	c:objc(cs)GKFriendRequestComposeViewController(im)addRecipientsWithPlayerIDs:	-			ios=4.2/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	deprecated: Use Use ``GKFriendRequestComposeViewController/addRecipientPlayers(_:)`` instead. instead	7ce35740f577ee09
+method	c:objc(cs)GKFriendRequestComposeViewController(im)addRecipientsWithEmailAddresses:	-			ios=4.2/10.0/-/0,macos=10.8/10.12/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	8d1ce1494b537682
+property	c:objc(cs)GKFriendRequestComposeViewController(py)composeViewDelegate	-			ios=4.2/10.0/-/0,macos=10.8/10.12/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	00ef31f2833c8c03
+protocol	c:objc(pl)GKFriendRequestComposeViewControllerDelegate	-			ios=4.2/10.0/-/0,macos=10.8/10.12/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	deprecated: No longer supported.	d8d40d8dd29e2669
+method	c:objc(pl)GKFriendRequestComposeViewControllerDelegate(im)friendRequestComposeViewControllerDidFinish:	-			ios=4.2/10.0/-/0,macos=10.8/10.12/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	deprecated: No longer supported.	7b83118fbee3e05b
+typedef	c:@T@GKGameActivityState	-			-	-	4293dccbcace05bc
+enum	c:@E@GKGameActivityState	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	52a5fae4fa6926a0
+enumconst	c:@E@GKGameActivityState@GKGameActivityStateInitialized	GKGameActivityState			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	0a8125a482406ccb
+enumconst	c:@E@GKGameActivityState@GKGameActivityStateActive	GKGameActivityState			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	523d079d5481a36d
+enumconst	c:@E@GKGameActivityState@GKGameActivityStatePaused	GKGameActivityState			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	bf68c48e3dc37cc1
+enumconst	c:@E@GKGameActivityState@GKGameActivityStateEnded	GKGameActivityState			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	ad69f5493153b698
+interface	c:objc(cs)GKGameActivity	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	cb15a98ee3421a5d
+super	-	GKGameActivity	NSObject		-	-	a0e280ee596eb125
+property	c:objc(cs)GKGameActivity(py)identifier	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	3c0e5edca7d7b94d
+property	c:objc(cs)GKGameActivity(py)activityDefinition	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	6d28cf162f3470fc
+property	c:objc(cs)GKGameActivity(py)properties	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	1af30261b3c1db3c
+property	c:objc(cs)GKGameActivity(py)state	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	3e4a392393c091b4
+property	c:objc(cs)GKGameActivity(py)partyCode	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	52c5ae452098b6a9
+property	c:objc(cs)GKGameActivity(py)partyURL	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	4c95cadf64183950
+property	c:objc(cs)GKGameActivity(py)creationDate	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	51da02920373f4ea
+property	c:objc(cs)GKGameActivity(py)startDate	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	ce1bc6cda3b1fdde
+property	c:objc(cs)GKGameActivity(py)lastResumeDate	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	ccdef1c72a419b2a
+property	c:objc(cs)GKGameActivity(py)endDate	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	19042f557a1e4aa9
+property	c:objc(cs)GKGameActivity(py)duration	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	d0bee24a7219009c
+property	c:objc(cs)GKGameActivity(py)achievements	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	bc4d4b073ce59191
+property	c:objc(cs)GKGameActivity(py)leaderboardScores	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	ab3a900390ef643b
+property	c:objc(cs)GKGameActivity(cpy)validPartyCodeAlphabet	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	2eb661a1258b7176
+method	c:objc(cs)GKGameActivity(im)init	-			*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	faa28f05778492ed
+method	c:objc(cs)GKGameActivity(cm)startWithDefinition:partyCode:error:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	dc72ae9260b0ac3c
+method	c:objc(cs)GKGameActivity(cm)startWithDefinition:error:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	bb6166b44d62e09d
+method	c:objc(cs)GKGameActivity(cm)isValidPartyCode:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	bb81145d13b5c4a3
+method	c:objc(cs)GKGameActivity(im)initWithDefinition:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	4d607db9272f9589
+method	c:objc(cs)GKGameActivity(im)start	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	d0ae1b60e9f8af5a
+method	c:objc(cs)GKGameActivity(im)pause	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	e8110585391328a1
+method	c:objc(cs)GKGameActivity(im)resume	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	3ae3d168e89c1f86
+method	c:objc(cs)GKGameActivity(im)end	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	62cf1e7b43e62346
+method	c:objc(cs)GKGameActivity(im)setScoreOnLeaderboard:toScore:context:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	6994bffbc2a76ce1
+method	c:objc(cs)GKGameActivity(im)setScoreOnLeaderboard:toScore:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	309b9ce24b8ffd25
+method	c:objc(cs)GKGameActivity(im)getScoreOnLeaderboard:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	f65d7bf6b2a1989c
+method	c:objc(cs)GKGameActivity(im)removeScoresFromLeaderboards:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	7af3db758d54bb99
+method	c:objc(cs)GKGameActivity(im)setProgressOnAchievement:toPercentComplete:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	6a2b2a47f42e4075
+method	c:objc(cs)GKGameActivity(im)setAchievementCompleted:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	70918deced376e7d
+method	c:objc(cs)GKGameActivity(im)getProgressOnAchievement:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	17811998d75c6b6a
+method	c:objc(cs)GKGameActivity(im)removeAchievements:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	4d80585a81255185
+category	c:objc(cy)GKGameActivity@Multiplayer	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	cee16d7014e2967a
+method	c:objc(cs)GKGameActivity(im)makeMatchRequest	Multiplayer			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	6df22e95ae559c8d
+method	c:objc(cs)GKGameActivity(im)findMatchWithCompletionHandler:	Multiplayer			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	31202f498b711c6a
+method	c:objc(cs)GKGameActivity(im)findPlayersForHostedMatchWithCompletionHandler:	Multiplayer			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	249dd2db4d501414
+category	c:objc(cy)GKGameActivity@State	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	a5718a5c37d43892
+method	c:objc(cs)GKGameActivity(cm)checkPendingGameActivityExistenceWithCompletionHandler:	State			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	e5124d147368767c
+typedef	c:@T@GKGameActivityPlayStyle	-			-	-	8b8dde46127d77c7
+enum	c:@E@GKGameActivityPlayStyle	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	64a1d6d53a22c5f0
+enumconst	c:@E@GKGameActivityPlayStyle@GKGameActivityPlayStyleUnspecified	GKGameActivityPlayStyle			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	db8effa6dbdafaa5
+enumconst	c:@E@GKGameActivityPlayStyle@GKGameActivityPlayStyleSynchronous	GKGameActivityPlayStyle			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	3aa8f093c1056bc0
+enumconst	c:@E@GKGameActivityPlayStyle@GKGameActivityPlayStyleAsynchronous	GKGameActivityPlayStyle			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	f77fa4a89b721a1b
+interface	c:objc(cs)GKGameActivityDefinition	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	2c82c41d745459d9
+super	-	GKGameActivityDefinition	NSObject		-	-	114f071746e84d9e
+property	c:objc(cs)GKGameActivityDefinition(py)identifier	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	ec4ecc709113d9b6
+property	c:objc(cs)GKGameActivityDefinition(py)groupIdentifier	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	a424cb395fafce68
+property	c:objc(cs)GKGameActivityDefinition(py)title	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	fec1487ffb629313
+property	c:objc(cs)GKGameActivityDefinition(py)details	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	bb2d1a56b36d22ed
+property	c:objc(cs)GKGameActivityDefinition(py)defaultProperties	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	c663ae2a12b9cf21
+property	c:objc(cs)GKGameActivityDefinition(py)fallbackURL	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	bc5a97615aaa66b2
+property	c:objc(cs)GKGameActivityDefinition(py)supportsPartyCode	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	bfeb511885958f68
+property	c:objc(cs)GKGameActivityDefinition(py)maxPlayers	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	f074002c3e56783e
+property	c:objc(cs)GKGameActivityDefinition(py)minPlayers	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	948120d6c377f086
+property	c:objc(cs)GKGameActivityDefinition(py)supportsUnlimitedPlayers	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	9c3cef0bcbd20512
+property	c:objc(cs)GKGameActivityDefinition(py)playStyle	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	12d182bf7d0616ce
+property	c:objc(cs)GKGameActivityDefinition(py)releaseState	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	ba4932461fc2ce91
+method	c:objc(cs)GKGameActivityDefinition(im)init	-			*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	105fc893d436f8a7
+method	c:objc(cs)GKGameActivityDefinition(im)loadAchievementDescriptionsWithCompletionHandler:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	9ea73194812f39fd
+method	c:objc(cs)GKGameActivityDefinition(im)loadLeaderboardsWithCompletionHandler:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	0f8a8fa344951468
+method	c:objc(cs)GKGameActivityDefinition(im)loadImageWithCompletionHandler:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	4e2dcd4f0597f566
+category	c:objc(cy)GKGameActivityDefinition@State	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	0483ca41570ef4da
+method	c:objc(cs)GKGameActivityDefinition(cm)loadGameActivityDefinitionsWithCompletionHandler:	State			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	c183fc10e575ce44
+method	c:objc(cs)GKGameActivityDefinition(cm)loadGameActivityDefinitionsWithIDs:completionHandler:	State			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	db25f8e49ddb5f2f
+protocol	c:objc(pl)GKGameActivityListener	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	4e1c0759715fb448
+method	c:objc(pl)GKGameActivityListener(im)player:wantsToPlayGameActivity:completionHandler:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	abf99f385f198ed2
+typedef	c:@T@GKConnectionState	-			-	-	d09bb7c45fb8ba23
+enum	c:@E@GKConnectionState	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	adb05b466e28c2b5
+enumconst	c:@E@GKConnectionState@GKConnectionStateNotConnected	GKConnectionState			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	5e3fc5bab17df8f8
+enumconst	c:@E@GKConnectionState@GKConnectionStateConnected	GKConnectionState			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	424a571f749b3981
+typedef	c:@T@GKTransportType	-			-	-	9beec1d4068c4a31
+enum	c:@E@GKTransportType	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	ebb38e4ee2504296
+enumconst	c:@E@GKTransportType@GKTransportTypeUnreliable	GKTransportType			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	35f02fdbd036401a
+enumconst	c:@E@GKTransportType@GKTransportTypeReliable	GKTransportType			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	2d7a0a37e1760ce7
+interface	c:objc(cs)GKGameSession	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	69d7f3aaf75d7fde
+super	-	GKGameSession	NSObject		-	-	105c2e91e2226f7d
+property	c:objc(cs)GKGameSession(py)identifier	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	5d9cb82abe0611b3
+property	c:objc(cs)GKGameSession(py)title	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	9211e5f389bb3d08
+property	c:objc(cs)GKGameSession(py)owner	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	9a9e940ee06dfed0
+property	c:objc(cs)GKGameSession(py)players	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	d2fd5414604cb673
+property	c:objc(cs)GKGameSession(py)lastModifiedDate	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	0f97db0ce9e5dabf
+property	c:objc(cs)GKGameSession(py)lastModifiedPlayer	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	d2508425b47e815a
+property	c:objc(cs)GKGameSession(py)maxNumberOfConnectedPlayers	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	3609d8488a1fe586
+property	c:objc(cs)GKGameSession(py)badgedPlayers	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	0c3c0eddb4f6d446
+method	c:objc(cs)GKGameSession(cm)createSessionInContainer:withTitle:maxConnectedPlayers:completionHandler:	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	17a2a329397ae3d1
+method	c:objc(cs)GKGameSession(cm)loadSessionsInContainer:completionHandler:	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	6820b9eb5e40a1d9
+method	c:objc(cs)GKGameSession(cm)loadSessionWithIdentifier:completionHandler:	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	d05634ac77aa3892
+method	c:objc(cs)GKGameSession(cm)removeSessionWithIdentifier:completionHandler:	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	4568ecc2894179a8
+method	c:objc(cs)GKGameSession(im)getShareURLWithCompletionHandler:	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	916f3f8e90b84dd4
+method	c:objc(cs)GKGameSession(im)loadDataWithCompletionHandler:	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	1db2989d4b816be8
+method	c:objc(cs)GKGameSession(im)saveData:completionHandler:	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	733d5facab1beb7b
+method	c:objc(cs)GKGameSession(im)setConnectionState:completionHandler:	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	91daf46d7cd59720
+method	c:objc(cs)GKGameSession(im)playersWithConnectionState:	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	f14353d5153dfc61
+method	c:objc(cs)GKGameSession(im)sendData:withTransportType:completionHandler:	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	8c1cd90ee053c873
+method	c:objc(cs)GKGameSession(im)sendMessageWithLocalizedFormatKey:arguments:data:toPlayers:badgePlayers:completionHandler:	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	e25999464453341a
+method	c:objc(cs)GKGameSession(im)clearBadgeForPlayers:completionHandler:	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	9e11572baf439a83
+var	c:@GKGameSessionErrorDomain	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	9c67229a3f7bbbe5
+typedef	c:@T@GKGameSessionErrorCode	-			-	-	6095781c6f33e4e7
+enum	c:@E@GKGameSessionErrorCode	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	163a4927a2e013e8
+enumconst	c:@E@GKGameSessionErrorCode@GKGameSessionErrorUnknown	GKGameSessionErrorCode			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	c434e67813c74e67
+enumconst	c:@E@GKGameSessionErrorCode@GKGameSessionErrorNotAuthenticated	GKGameSessionErrorCode			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	96df4453ff05ee4c
+enumconst	c:@E@GKGameSessionErrorCode@GKGameSessionErrorSessionConflict	GKGameSessionErrorCode			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	aabe03fd98bb9b4f
+enumconst	c:@E@GKGameSessionErrorCode@GKGameSessionErrorSessionNotShared	GKGameSessionErrorCode			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	bd9ee8ed4e1a9eb7
+enumconst	c:@E@GKGameSessionErrorCode@GKGameSessionErrorConnectionCancelledByUser	GKGameSessionErrorCode			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	b19d4b0211c6e939
+enumconst	c:@E@GKGameSessionErrorCode@GKGameSessionErrorConnectionFailed	GKGameSessionErrorCode			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	e9c213c326db6cee
+enumconst	c:@E@GKGameSessionErrorCode@GKGameSessionErrorSessionHasMaxConnectedPlayers	GKGameSessionErrorCode			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	a4fc92025af699d8
+enumconst	c:@E@GKGameSessionErrorCode@GKGameSessionErrorSendDataNotConnected	GKGameSessionErrorCode			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	f0b4dfe11111d872
+enumconst	c:@E@GKGameSessionErrorCode@GKGameSessionErrorSendDataNoRecipients	GKGameSessionErrorCode			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	3a888f988df13bd2
+enumconst	c:@E@GKGameSessionErrorCode@GKGameSessionErrorSendDataNotReachable	GKGameSessionErrorCode			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	79661041efc5bba8
+enumconst	c:@E@GKGameSessionErrorCode@GKGameSessionErrorSendRateLimitReached	GKGameSessionErrorCode			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	8d202d1bba5ed210
+enumconst	c:@E@GKGameSessionErrorCode@GKGameSessionErrorBadContainer	GKGameSessionErrorCode			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	88dfa9e15420c4dd
+enumconst	c:@E@GKGameSessionErrorCode@GKGameSessionErrorCloudQuotaExceeded	GKGameSessionErrorCode			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	b45fdc1f350f3c80
+enumconst	c:@E@GKGameSessionErrorCode@GKGameSessionErrorNetworkFailure	GKGameSessionErrorCode			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	13376c47617745f4
+enumconst	c:@E@GKGameSessionErrorCode@GKGameSessionErrorCloudDriveDisabled	GKGameSessionErrorCode			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	080f95d1b4ec5bf8
+enumconst	c:@E@GKGameSessionErrorCode@GKGameSessionErrorInvalidSession	GKGameSessionErrorCode			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	20c9e3f5e0e8962f
+protocol	c:objc(pl)GKGameSessionEventListener	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	ebe4296fa547906a
+conforms	-	GKGameSessionEventListener	NSObject		-	-	388c9677e71b9c17
+method	c:objc(pl)GKGameSessionEventListener(im)session:didAddPlayer:	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	b65cb25b63a7bb35
+method	c:objc(pl)GKGameSessionEventListener(im)session:didRemovePlayer:	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	9525a2ecd8a15e82
+method	c:objc(pl)GKGameSessionEventListener(im)session:player:didChangeConnectionState:	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	1d2000b6bf612852
+method	c:objc(pl)GKGameSessionEventListener(im)session:player:didSaveData:	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	0a1dbb294b6ed624
+method	c:objc(pl)GKGameSessionEventListener(im)session:didReceiveData:fromPlayer:	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	c18f2716bd0253ee
+method	c:objc(pl)GKGameSessionEventListener(im)session:didReceiveMessage:withData:fromPlayer:	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	d54d11dc6a425288
+category	c:objc(cy)GKGameSession@GKGameSessionEventListener	-			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	deprecated: Use Use the ``GKLocalPlayer/register(_:)`` method of the ``GKLocalPlayer`` class instead. instead	311674f3cd9c244c
+method	c:objc(cs)GKGameSession(cm)addEventListener:	GKGameSessionEventListener			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	deprecated: Use Use the ``GKLocalPlayer/register(_:)`` method of the ``GKLocalPlayer`` class instead. instead	00f3d1d548585477
+method	c:objc(cs)GKGameSession(cm)removeEventListener:	GKGameSessionEventListener			ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	deprecated: Use Use the ``GKLocalPlayer/unregisterListener(_:)`` or ``GKLocalPlayer/unregisterAllListeners()`` methods of ``GKLocalPlayer`` instead. instead	1dc1eb8ecff67942
+interface	c:objc(cs)GKLeaderboardSet	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	b8c90fd8fd73f07a
+super	-	GKLeaderboardSet	NSObject		-	-	7aa589463de25840
+conforms	-	GKLeaderboardSet	NSCoding		-	-	66501ce52eec4634
+conforms	-	GKLeaderboardSet	NSSecureCoding		-	-	d9121e6b41841f8a
+property	c:objc(cs)GKLeaderboardSet(py)title	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	15b2ff438578f3eb
+property	c:objc(cs)GKLeaderboardSet(py)groupIdentifier	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	e2f8b4908a3e8c03
+property	c:objc(cs)GKLeaderboardSet(py)identifier	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	14f3aaf66d6ad301
+method	c:objc(cs)GKLeaderboardSet(cm)loadLeaderboardSetsWithCompletionHandler:	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	836fc29083435bf4
+method	c:objc(cs)GKLeaderboardSet(im)loadLeaderboardsWithHandler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	49ace4c6f7fdd58c
+category	c:objc(cy)GKLeaderboardSet@Deprecated	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	deprecated: Use Use the ``GKLeaderboardSet/loadLeaderboards(handler:)`` method instead. instead	3805ae3b197e5feb
+method	c:objc(cs)GKLeaderboardSet(im)loadLeaderboardsWithCompletionHandler:	Deprecated			ios=7.0/14.0/-/0,macos=10.10/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0	deprecated: Use Use the ``GKLeaderboardSet/loadLeaderboards(handler:)`` method instead. instead	cd83b6fea46c59ea
+category	c:objc(cy)GKLeaderboardSet@UI	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	8946b31b5ac16abe
+method	c:objc(cs)GKLeaderboardSet(im)loadImageWithCompletionHandler:	UI			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	8b8b384697e34e9d
+interface	c:objc(cs)GKLeaderboardViewController	-			ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1d44be53f5dd18a4
+super	-	GKLeaderboardViewController	GKGameCenterViewController		-	-	417c54f8c32fe626
+category	c:objc(ext)GKLeaderboardViewController	-	-		ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0478c62a7ba7dbb7
+property	c:objc(cs)GKLeaderboardViewController(py)timeScope	-			ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	38671ab5eb442648
+property	c:objc(cs)GKLeaderboardViewController(py)category	-			ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	43926082d7cd3d25
+property	c:objc(cs)GKLeaderboardViewController(py)leaderboardDelegate	-			ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ecc5fe27dff7b57b
+protocol	c:objc(pl)GKLeaderboardViewControllerDelegate	-			ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2d7cfc7f47341e0a
+conforms	-	GKLeaderboardViewControllerDelegate	NSObject		-	-	59ff99001b43196b
+method	c:objc(pl)GKLeaderboardViewControllerDelegate(im)leaderboardViewControllerDidFinish:	-			ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5abba999fbfe857d
+typedef	c:@T@GKTurnBasedMatchStatus	-			-	-	2bd84cd0a3571e3b
+enum	c:@E@GKTurnBasedMatchStatus	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	d1b9bdead0ee31d6
+enumconst	c:@E@GKTurnBasedMatchStatus@GKTurnBasedMatchStatusUnknown	GKTurnBasedMatchStatus			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	68cd34e63eabc308
+enumconst	c:@E@GKTurnBasedMatchStatus@GKTurnBasedMatchStatusOpen	GKTurnBasedMatchStatus			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	d55e1b42d1b06d2b
+enumconst	c:@E@GKTurnBasedMatchStatus@GKTurnBasedMatchStatusEnded	GKTurnBasedMatchStatus			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	f5e17dfe3fd5c668
+enumconst	c:@E@GKTurnBasedMatchStatus@GKTurnBasedMatchStatusMatching	GKTurnBasedMatchStatus			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	9cfb4ff5d581ec1b
+typedef	c:@T@GKTurnBasedParticipantStatus	-			-	-	f902ad4a1af2feb8
+enum	c:@E@GKTurnBasedParticipantStatus	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	eb39da7d1becc975
+enumconst	c:@E@GKTurnBasedParticipantStatus@GKTurnBasedParticipantStatusUnknown	GKTurnBasedParticipantStatus			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	ddb28bdcde4e37eb
+enumconst	c:@E@GKTurnBasedParticipantStatus@GKTurnBasedParticipantStatusInvited	GKTurnBasedParticipantStatus			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	c6cea99d82610ed3
+enumconst	c:@E@GKTurnBasedParticipantStatus@GKTurnBasedParticipantStatusDeclined	GKTurnBasedParticipantStatus			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	da8240cbe00af43b
+enumconst	c:@E@GKTurnBasedParticipantStatus@GKTurnBasedParticipantStatusMatching	GKTurnBasedParticipantStatus			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	3b1eb77916033381
+enumconst	c:@E@GKTurnBasedParticipantStatus@GKTurnBasedParticipantStatusActive	GKTurnBasedParticipantStatus			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	72b945352d392082
+enumconst	c:@E@GKTurnBasedParticipantStatus@GKTurnBasedParticipantStatusDone	GKTurnBasedParticipantStatus			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	b6a391afae9e121d
+typedef	c:@T@GKTurnBasedMatchOutcome	-			-	-	a7368237e598eaf9
+enum	c:@E@GKTurnBasedMatchOutcome	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	7d1e4785396035f0
+enumconst	c:@E@GKTurnBasedMatchOutcome@GKTurnBasedMatchOutcomeNone	GKTurnBasedMatchOutcome			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	6698ad5696834915
+enumconst	c:@E@GKTurnBasedMatchOutcome@GKTurnBasedMatchOutcomeQuit	GKTurnBasedMatchOutcome			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	be66dd8a79628f66
+enumconst	c:@E@GKTurnBasedMatchOutcome@GKTurnBasedMatchOutcomeWon	GKTurnBasedMatchOutcome			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	2ee19b624fd4f847
+enumconst	c:@E@GKTurnBasedMatchOutcome@GKTurnBasedMatchOutcomeLost	GKTurnBasedMatchOutcome			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	d3da99eeab183274
+enumconst	c:@E@GKTurnBasedMatchOutcome@GKTurnBasedMatchOutcomeTied	GKTurnBasedMatchOutcome			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	2b1294f9edec110f
+enumconst	c:@E@GKTurnBasedMatchOutcome@GKTurnBasedMatchOutcomeTimeExpired	GKTurnBasedMatchOutcome			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	1b31639ac1e237c9
+enumconst	c:@E@GKTurnBasedMatchOutcome@GKTurnBasedMatchOutcomeFirst	GKTurnBasedMatchOutcome			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	29126183778b093f
+enumconst	c:@E@GKTurnBasedMatchOutcome@GKTurnBasedMatchOutcomeSecond	GKTurnBasedMatchOutcome			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	c3c9a4c3f233ccab
+enumconst	c:@E@GKTurnBasedMatchOutcome@GKTurnBasedMatchOutcomeThird	GKTurnBasedMatchOutcome			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	421e177ad92da98a
+enumconst	c:@E@GKTurnBasedMatchOutcome@GKTurnBasedMatchOutcomeFourth	GKTurnBasedMatchOutcome			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	0b20d523096314fa
+enumconst	c:@E@GKTurnBasedMatchOutcome@GKTurnBasedMatchOutcomeCustomRange	GKTurnBasedMatchOutcome			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	f1f8c047d5b70e82
+interface	c:objc(cs)GKTurnBasedParticipant	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	6e82b2f68175b065
+super	-	GKTurnBasedParticipant	NSObject		-	-	a346874f64d80ebe
+property	c:objc(cs)GKTurnBasedParticipant(py)player	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	fd11058d0fadfcf5
+property	c:objc(cs)GKTurnBasedParticipant(py)lastTurnDate	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	81326b8386a932e5
+property	c:objc(cs)GKTurnBasedParticipant(py)status	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	4631c3e22c7faa17
+property	c:objc(cs)GKTurnBasedParticipant(py)matchOutcome	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	4091f6275fd1f33a
+property	c:objc(cs)GKTurnBasedParticipant(py)timeoutDate	-			ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	ae5b879423a03d45
+category	c:objc(cy)GKTurnBasedParticipant@Obsoleted	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	deprecated: Use Use ``GKTurnBasedParticipant/player`` instead. instead	9c940ec0cc10a3ab
+property	c:objc(cs)GKTurnBasedParticipant(py)playerID	Obsoleted			ios=5.0/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	2d69b5e643674f32
+protocol	c:objc(pl)GKTurnBasedEventListener	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	deprecated: Use Use the ``GKTurnBasedEventListener/player(_:didRequestMatchWithOtherPlayers:)`` method instead. instead	9b74ef4f220234d8
+method	c:objc(pl)GKTurnBasedEventListener(im)player:didRequestMatchWithOtherPlayers:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	946e945dc310ed5f
+method	c:objc(pl)GKTurnBasedEventListener(im)player:receivedTurnEventForMatch:didBecomeActive:	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	bf0d39260cad7295
+method	c:objc(pl)GKTurnBasedEventListener(im)player:matchEnded:	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	23aa78819b81eb04
+method	c:objc(pl)GKTurnBasedEventListener(im)player:receivedExchangeRequest:forMatch:	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	edc4614b57828c4b
+method	c:objc(pl)GKTurnBasedEventListener(im)player:receivedExchangeCancellation:forMatch:	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	3c5654b9eeb4a07e
+method	c:objc(pl)GKTurnBasedEventListener(im)player:receivedExchangeReplies:forCompletedExchange:forMatch:	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	b2b3da826af520a1
+method	c:objc(pl)GKTurnBasedEventListener(im)player:wantsToQuitMatch:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	93745bc987ef61ca
+method	c:objc(pl)GKTurnBasedEventListener(im)player:didRequestMatchWithPlayers:	-			ios=7.0/8.0/-/0,macos=10.9/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use the ``GKTurnBasedEventListener/player(_:didRequestMatchWithOtherPlayers:)`` method instead. instead	a19c4b592c200019
+var	c:@GKTurnTimeoutDefault	-			ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	ed23ddd8d089cf5e
+var	c:@GKTurnTimeoutNone	-			ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	7a0ace524b583479
+interface	c:objc(cs)GKTurnBasedMatch	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	deprecated: Use Use the ``GKTurnBasedMatch/endMatchInTurn(withMatch:scores:achievements:completionHandler:)`` method instead. instead	b1cc6c55d62c9cca
+super	-	GKTurnBasedMatch	NSObject		-	-	dae1be5c0643a5e6
+property	c:objc(cs)GKTurnBasedMatch(py)matchID	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	9759388865073cca
+property	c:objc(cs)GKTurnBasedMatch(py)creationDate	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	873f317ce9057c72
+property	c:objc(cs)GKTurnBasedMatch(py)participants	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	b1e10266bf261e38
+property	c:objc(cs)GKTurnBasedMatch(py)status	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	d688aa4fe30bb7ad
+property	c:objc(cs)GKTurnBasedMatch(py)currentParticipant	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	809309f2b3ec19a4
+property	c:objc(cs)GKTurnBasedMatch(py)matchData	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	8ebda83c2ffb2bee
+method	c:objc(cs)GKTurnBasedMatch(im)setLocalizableMessageWithKey:arguments:	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	8ca4a9a2b3f2eee4
+property	c:objc(cs)GKTurnBasedMatch(py)message	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	d28a9bf10276047a
+property	c:objc(cs)GKTurnBasedMatch(py)matchDataMaximumSize	-			ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	9dc43739bdf42597
+property	c:objc(cs)GKTurnBasedMatch(py)exchanges	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	b584f72dea5b310a
+property	c:objc(cs)GKTurnBasedMatch(py)activeExchanges	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	79f13db789b559cf
+property	c:objc(cs)GKTurnBasedMatch(py)completedExchanges	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	eff08f0fd3732e8b
+property	c:objc(cs)GKTurnBasedMatch(py)exchangeDataMaximumSize	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	4f8ba555c3f0b369
+property	c:objc(cs)GKTurnBasedMatch(py)exchangeMaxInitiatedExchangesPerPlayer	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	e122f134b6030dcc
+method	c:objc(cs)GKTurnBasedMatch(cm)findMatchForRequest:withCompletionHandler:	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	a4f898d2b4a3b917
+method	c:objc(cs)GKTurnBasedMatch(cm)loadMatchesWithCompletionHandler:	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	f6af0e2cb0565bf3
+method	c:objc(cs)GKTurnBasedMatch(cm)loadMatchWithID:withCompletionHandler:	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	c6790f58ff3ff316
+method	c:objc(cs)GKTurnBasedMatch(im)rematchWithCompletionHandler:	-			ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	4030d45422d03ab1
+method	c:objc(cs)GKTurnBasedMatch(im)acceptInviteWithCompletionHandler:	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	86a415750d28007d
+method	c:objc(cs)GKTurnBasedMatch(im)declineInviteWithCompletionHandler:	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	d498a692bd1bd0a3
+method	c:objc(cs)GKTurnBasedMatch(im)removeWithCompletionHandler:	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	3c1597839c3ce239
+method	c:objc(cs)GKTurnBasedMatch(im)loadMatchDataWithCompletionHandler:	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	ebc56c3c84120ed8
+method	c:objc(cs)GKTurnBasedMatch(im)endTurnWithNextParticipants:turnTimeout:matchData:completionHandler:	-			ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	250bb2631988489b
+method	c:objc(cs)GKTurnBasedMatch(im)participantQuitInTurnWithOutcome:nextParticipants:turnTimeout:matchData:completionHandler:	-			ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	3de0125592c1bfa1
+method	c:objc(cs)GKTurnBasedMatch(im)participantQuitOutOfTurnWithOutcome:withCompletionHandler:	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	06e7ac88ce0cc06c
+method	c:objc(cs)GKTurnBasedMatch(im)endMatchInTurnWithMatchData:completionHandler:	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	e2ace45bb9d5c7b9
+method	c:objc(cs)GKTurnBasedMatch(im)endMatchInTurnWithMatchData:scores:achievements:completionHandler:	-			ios=6.0/14.0/-/0,macos=10.10/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use the ``GKTurnBasedMatch/endMatchInTurn(withMatch:scores:achievements:completionHandler:)`` method instead. instead	f239c417df6d8904
+method	c:objc(cs)GKTurnBasedMatch(im)endMatchInTurnWithMatchData:leaderboardScores:achievements:completionHandler:	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0,xros=1.0/-/-/0	-	facd9d8f1b772a78
+method	c:objc(cs)GKTurnBasedMatch(im)saveCurrentTurnWithMatchData:completionHandler:	-			ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	89c2411e3880066b
+method	c:objc(cs)GKTurnBasedMatch(im)saveMergedMatchData:withResolvedExchanges:completionHandler:	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	96bf6dc107fe241f
+method	c:objc(cs)GKTurnBasedMatch(im)sendExchangeToParticipants:data:localizableMessageKey:arguments:timeout:completionHandler:	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	7a87cb6b24574ea2
+method	c:objc(cs)GKTurnBasedMatch(im)sendReminderToParticipants:localizableMessageKey:arguments:completionHandler:	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	b90ee442680f56f5
+method	c:objc(cs)GKTurnBasedMatch(im)endTurnWithNextParticipant:matchData:completionHandler:	-			ios=5.0/6.0/-/0,macos=10.8/10.9/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use the ``GKTurnBasedMatch/endTurn(withNextParticipants:turnTimeout:match:completionHandler:)`` method instead. instead	6e17f46676ef3b2b
+method	c:objc(cs)GKTurnBasedMatch(im)participantQuitInTurnWithOutcome:nextParticipant:matchData:completionHandler:	-			ios=5.0/6.0/-/0,macos=10.8/10.9/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use the  ``GKTurnBasedMatch/participantQuitInTurn(with:nextParticipants:turnTimeout:match:completionHandler:)`` method instead. instead	6142acf1ec1ed3eb
+typedef	c:@T@GKTurnBasedExchangeStatus	-			-	-	4de48d834cc71f11
+enum	c:@E@GKTurnBasedExchangeStatus	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	e1ed513741d384ad
+enumconst	c:@E@GKTurnBasedExchangeStatus@GKTurnBasedExchangeStatusUnknown	GKTurnBasedExchangeStatus			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	4193ede2d5f2f21d
+enumconst	c:@E@GKTurnBasedExchangeStatus@GKTurnBasedExchangeStatusActive	GKTurnBasedExchangeStatus			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	9a2df3fad5695ddd
+enumconst	c:@E@GKTurnBasedExchangeStatus@GKTurnBasedExchangeStatusComplete	GKTurnBasedExchangeStatus			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	18986f10f5548d6c
+enumconst	c:@E@GKTurnBasedExchangeStatus@GKTurnBasedExchangeStatusResolved	GKTurnBasedExchangeStatus			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	9b8067393b44d3ae
+enumconst	c:@E@GKTurnBasedExchangeStatus@GKTurnBasedExchangeStatusCanceled	GKTurnBasedExchangeStatus			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	93d832418741a281
+var	c:@GKExchangeTimeoutDefault	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	8d4069ac95085499
+var	c:@GKExchangeTimeoutNone	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	611142471d87c48c
+interface	c:objc(cs)GKTurnBasedExchange	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	547256b49203e346
+super	-	GKTurnBasedExchange	NSObject		-	-	13d565191ef1c3f7
+property	c:objc(cs)GKTurnBasedExchange(py)exchangeID	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	ad46174218263a64
+property	c:objc(cs)GKTurnBasedExchange(py)sender	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	211094adbaf46269
+property	c:objc(cs)GKTurnBasedExchange(py)recipients	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	5afb0f89b4c6fb6c
+property	c:objc(cs)GKTurnBasedExchange(py)status	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	a4925bf6102cafbb
+property	c:objc(cs)GKTurnBasedExchange(py)message	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	8530a014d45140ad
+property	c:objc(cs)GKTurnBasedExchange(py)data	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	f7ef19accf0014e6
+property	c:objc(cs)GKTurnBasedExchange(py)sendDate	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	6884e9ac8b0c73c6
+property	c:objc(cs)GKTurnBasedExchange(py)timeoutDate	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	40358604b948010d
+property	c:objc(cs)GKTurnBasedExchange(py)completionDate	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	0f85ee35360f5ec1
+property	c:objc(cs)GKTurnBasedExchange(py)replies	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	b9e1850db4f09e0b
+method	c:objc(cs)GKTurnBasedExchange(im)cancelWithLocalizableMessageKey:arguments:completionHandler:	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	ba677eaabdd0ba5c
+method	c:objc(cs)GKTurnBasedExchange(im)replyWithLocalizableMessageKey:arguments:data:completionHandler:	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	300347865dbcb872
+interface	c:objc(cs)GKTurnBasedExchangeReply	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	16cefb6924f36aa4
+super	-	GKTurnBasedExchangeReply	NSObject		-	-	7f65722365a8cb09
+property	c:objc(cs)GKTurnBasedExchangeReply(py)recipient	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	ffb66ddb6b29c1a2
+property	c:objc(cs)GKTurnBasedExchangeReply(py)message	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	1cbc0ccf61b75b5c
+property	c:objc(cs)GKTurnBasedExchangeReply(py)data	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	4d450ea40c711d09
+property	c:objc(cs)GKTurnBasedExchangeReply(py)replyDate	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	df7c723fdbc37da1
+protocol	c:objc(pl)GKTurnBasedEventHandlerDelegate	-			ios=5.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use the ``GKLocalPlayer/register(_:)`` method of the ``GKLocalPlayer`` class instead. instead	bee27794000a38a6
+method	c:objc(pl)GKTurnBasedEventHandlerDelegate(im)handleInviteFromGameCenter:	-			ios=5.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use the ``GKLocalPlayer/register(_:)`` method of the ``GKLocalPlayer`` class instead. instead	17d60095122215d7
+method	c:objc(pl)GKTurnBasedEventHandlerDelegate(im)handleTurnEventForMatch:didBecomeActive:	-			ios=6.0/7.0/-/0,macos=10.9/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use the ``GKLocalPlayer/register(_:)`` method of the ``GKLocalPlayer`` class instead. instead	9776aa974b5bad11
+method	c:objc(pl)GKTurnBasedEventHandlerDelegate(im)handleTurnEventForMatch:	-			ios=5.0/7.0/-/0,macos=10.8/10.9/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use the ``GKLocalPlayer/register(_:)`` method of the ``GKLocalPlayer`` class instead. instead	8bbb951422ba8d9a
+method	c:objc(pl)GKTurnBasedEventHandlerDelegate(im)handleMatchEnded:	-			ios=6.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use the ``GKLocalPlayer/register(_:)`` method of the ``GKLocalPlayer`` class instead. instead	bbfdae68f6d98c22
+interface	c:objc(cs)GKTurnBasedEventHandler	-			ios=5.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use the ``GKLocalPlayer/register(_:)`` method of the ``GKLocalPlayer`` class instead. instead	d22e80aa9cad6d63
+super	-	GKTurnBasedEventHandler	NSObject		-	-	af6ae1d4542d9dda
+method	c:objc(cs)GKTurnBasedEventHandler(cm)sharedTurnBasedEventHandler	-			ios=5.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use the ``GKLocalPlayer/register(_:)`` method of the ``GKLocalPlayer`` class instead. instead	4e368a2c00b2bdf0
+property	c:objc(cs)GKTurnBasedEventHandler(py)delegate	-			ios=5.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	b74ba774c37d600e
+typedef	c:@T@GKInviteRecipientResponse	-			-	-	24f2f1cb5702a26d
+enum	c:@E@GKInviteRecipientResponse	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	ab0241013bd3b23d
+enumconst	c:@E@GKInviteRecipientResponse@GKInviteRecipientResponseAccepted	GKInviteRecipientResponse			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	f3572b51fc0e71bb
+enumconst	c:@E@GKInviteRecipientResponse@GKInviteRecipientResponseDeclined	GKInviteRecipientResponse			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	70e26dc65eacb42b
+enumconst	c:@E@GKInviteRecipientResponse@GKInviteRecipientResponseFailed	GKInviteRecipientResponse			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	0b64926eade4a3d4
+enumconst	c:@E@GKInviteRecipientResponse@GKInviteRecipientResponseIncompatible	GKInviteRecipientResponse			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	8a0d92acf3f002fd
+enumconst	c:@E@GKInviteRecipientResponse@GKInviteRecipientResponseUnableToConnect	GKInviteRecipientResponse			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	bad6a3e402f33e53
+enumconst	c:@E@GKInviteRecipientResponse@GKInviteRecipientResponseNoAnswer	GKInviteRecipientResponse			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	43a6ec1229b9068d
+enumconst	c:@E@GKInviteRecipientResponse@GKInviteeResponseAccepted	GKInviteRecipientResponse			ios=6.0/18.4/-/0,macos=10.8/15.4/-/0,tvos=9.0/18.4/-/0,watchos=3.0/11.4/-/0,xros=1.0/2.4/-/0	deprecated: Use Use ``GKInviteRecipientResponse/accepted`` instead. instead	47367f000dfe53df
+enumconst	c:@E@GKInviteRecipientResponse@GKInviteeResponseDeclined	GKInviteRecipientResponse			ios=6.0/18.4/-/0,macos=10.8/15.4/-/0,tvos=9.0/18.4/-/0,watchos=3.0/11.4/-/0,xros=1.0/2.4/-/0	deprecated: Use Use ``GKInviteRecipientResponse/declined`` instead. instead	fbc3d59321db6db7
+enumconst	c:@E@GKInviteRecipientResponse@GKInviteeResponseFailed	GKInviteRecipientResponse			ios=6.0/18.4/-/0,macos=10.8/15.4/-/0,tvos=9.0/18.4/-/0,watchos=3.0/11.4/-/0,xros=1.0/2.4/-/0	deprecated: Use Use ``GKInviteRecipientResponse/failed`` instead. instead	2747f540619f8247
+enumconst	c:@E@GKInviteRecipientResponse@GKInviteeResponseIncompatible	GKInviteRecipientResponse			ios=6.0/18.4/-/0,macos=10.8/15.4/-/0,tvos=9.0/18.4/-/0,watchos=3.0/11.4/-/0,xros=1.0/2.4/-/0	deprecated: Use Use ``GKInviteRecipientResponse/incompatible`` instead. instead	90bec0be653fde33
+enumconst	c:@E@GKInviteRecipientResponse@GKInviteeResponseUnableToConnect	GKInviteRecipientResponse			ios=6.0/18.4/-/0,macos=10.8/15.4/-/0,tvos=9.0/18.4/-/0,watchos=3.0/11.4/-/0,xros=1.0/2.4/-/0	deprecated: Use Use ``GKInviteRecipientResponse/unableToConnect`` instead. instead	7ace929779bac778
+enumconst	c:@E@GKInviteRecipientResponse@GKInviteeResponseNoAnswer	GKInviteRecipientResponse			ios=6.0/18.4/-/0,macos=10.8/15.4/-/0,tvos=9.0/18.4/-/0,watchos=3.0/11.4/-/0,xros=1.0/2.4/-/0	deprecated: Use Use ``GKInviteRecipientResponse/noAnswer`` instead. instead	72b17cbe3e5ba6dd
+typedef	c:@T@GKInviteeResponse	-			ios=6.0/17.0/-/0,macos=10.8/14.0/-/0,tvos=9.0/17.0/-/0,watchos=3.0/10.0/-/0,xros=1.0/1.0/-/0	-	e352a78c4469f227
+interface	c:objc(cs)GKMatchRequest	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	deprecated: Use Use the ``GKMatchmakerViewController/matchmakingMode`` property instead. instead	b1854bcf07b9fe2c
+super	-	GKMatchRequest	NSObject		-	-	db936e777e3d943c
+property	c:objc(cs)GKMatchRequest(py)minPlayers	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	93988602e1cb863a
+property	c:objc(cs)GKMatchRequest(py)maxPlayers	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	bee4dcd05b20cc8f
+property	c:objc(cs)GKMatchRequest(py)playerGroup	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	8303db00ecdb93d8
+property	c:objc(cs)GKMatchRequest(py)playerAttributes	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	a422001defdde45b
+property	c:objc(cs)GKMatchRequest(py)recipients	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	e56aca6c30e0c15f
+property	c:objc(cs)GKMatchRequest(py)inviteMessage	-			ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	0d216dea279d2462
+property	c:objc(cs)GKMatchRequest(py)defaultNumberOfPlayers	-			ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	b0e390cf77c34e68
+property	c:objc(cs)GKMatchRequest(py)restrictToAutomatch	-			ios=13.0/14.0/-/0,macos=10.15/11.0/-/0,tvos=13.0/14.0/-/0	-	61c7faff7380bace
+property	c:objc(cs)GKMatchRequest(py)recipientResponseHandler	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	9ba2c04100a77117
+property	c:objc(cs)GKMatchRequest(py)inviteeResponseHandler	-			ios=6.0/8.0/-/0,macos=10.9/10.10/-/0,tvos=-/-/-/1	-	a7ddc8de6c23343d
+method	c:objc(cs)GKMatchRequest(cm)maxPlayersAllowedForMatchOfType:	-			ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	5d24863a2421ddfc
+property	c:objc(cs)GKMatchRequest(py)playersToInvite	-			ios=4.1/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	4e4de889e6ff0948
+property	c:objc(cs)GKMatchRequest(py)queueName	-			ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=10.2/-/-/0,xros=1.1/-/-/0	-	94fe3b8402f443bf
+property	c:objc(cs)GKMatchRequest(py)properties	-			ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=10.2/-/-/0,xros=1.1/-/-/0	-	d59afd68794917a4
+property	c:objc(cs)GKMatchRequest(py)recipientProperties	-			ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=10.2/-/-/0,xros=1.1/-/-/0	-	a7d13edab69f77f6
+typedef	c:@T@GKMatchType	-			-	-	d11f359217140e48
+enum	c:@E@GKMatchType	-			ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	f024ad1d137a75e6
+enumconst	c:@E@GKMatchType@GKMatchTypePeerToPeer	GKMatchType			ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	c9a940136ce0b0fb
+enumconst	c:@E@GKMatchType@GKMatchTypeHosted	GKMatchType			ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	5cb1fd8d5ebb830a
+enumconst	c:@E@GKMatchType@GKMatchTypeTurnBased	GKMatchType			ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	8cbc7c341a9d1bbe
+interface	c:objc(cs)GKInvite	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	deprecated: Use Use the ``GKInvite/sender`` property instead. instead	609ad3151d820747
+super	-	GKInvite	NSObject		-	-	856865cb47f2e745
+property	c:objc(cs)GKInvite(py)sender	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	71c1ef7564505a2b
+property	c:objc(cs)GKInvite(py)hosted	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	ad468f237d00dc6a
+property	c:objc(cs)GKInvite(py)playerGroup	-			ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	fe442683e013d40f
+property	c:objc(cs)GKInvite(py)playerAttributes	-			ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	63db8e059081b785
+property	c:objc(cs)GKInvite(py)inviter	-			ios=4.1/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	af0b3539231f088b
+protocol	c:objc(pl)GKInviteEventListener	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	deprecated: Use Use the ``GKInviteEventListener/player(_:didRequestMatchWithRecipients:)`` method instead. instead	7aa695474e650f6b
+method	c:objc(pl)GKInviteEventListener(im)player:didAcceptInvite:	-			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	d06c16e47d0c10ea
+method	c:objc(pl)GKInviteEventListener(im)player:didRequestMatchWithRecipients:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	08b6898c0e406718
+method	c:objc(pl)GKInviteEventListener(im)player:didRequestMatchWithPlayers:	-			ios=7.0/8.0/-/0,macos=10.9/10.10/-/0,tvos=-/-/-/1	deprecated: Use Use the ``GKInviteEventListener/player(_:didRequestMatchWithRecipients:)`` method instead. instead	7b0c934350abbccf
+interface	c:objc(cs)GKMatchedPlayers	-			ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=-/-/-/1,xros=1.1/-/-/0	-	88f1ebfab642a71d
+super	-	GKMatchedPlayers	NSObject		-	-	012a91b37ffb4593
+property	c:objc(cs)GKMatchedPlayers(py)properties	-			ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=-/-/-/1,xros=1.1/-/-/0	-	55111f9344188095
+property	c:objc(cs)GKMatchedPlayers(py)players	-			ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=-/-/-/1,xros=1.1/-/-/0	-	ee782e3d23a33f39
+property	c:objc(cs)GKMatchedPlayers(py)playerProperties	-			ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=-/-/-/1,xros=1.1/-/-/0	-	abb330fd8f1cfd67
+interface	c:objc(cs)GKMatchmaker	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	9a7a3a1959089220
+super	-	GKMatchmaker	NSObject		-	-	134927a61020830e
+method	c:objc(cs)GKMatchmaker(cm)sharedMatchmaker	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	1a6941283ad0a977
+method	c:objc(cs)GKMatchmaker(im)matchForInvite:completionHandler:	-			ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	e3caec40238108fb
+method	c:objc(cs)GKMatchmaker(im)findMatchForRequest:withCompletionHandler:	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	aa686bf19b7b6cc3
+method	c:objc(cs)GKMatchmaker(im)findPlayersForHostedRequest:withCompletionHandler:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	74e82b492595447d
+method	c:objc(cs)GKMatchmaker(im)findMatchedPlayers:withCompletionHandler:	-			ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=-/-/-/1,xros=1.1/-/-/0	-	cb8d4c3f824b605a
+method	c:objc(cs)GKMatchmaker(im)addPlayersToMatch:matchRequest:completionHandler:	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	07420a75b771b860
+method	c:objc(cs)GKMatchmaker(im)cancel	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	10d94e5399d90b53
+method	c:objc(cs)GKMatchmaker(im)cancelPendingInviteToPlayer:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	82cd13d0eee4ee7b
+method	c:objc(cs)GKMatchmaker(im)finishMatchmakingForMatch:	-			ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	c9a9373d9b4fdc33
+method	c:objc(cs)GKMatchmaker(im)queryPlayerGroupActivity:withCompletionHandler:	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	2dfe5d6f15d2b649
+method	c:objc(cs)GKMatchmaker(im)queryActivityWithCompletionHandler:	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	bd799da946f7aab7
+method	c:objc(cs)GKMatchmaker(im)queryQueueActivity:withCompletionHandler:	-			ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=-/-/-/1,xros=1.1/-/-/0	-	65085cf72bdc66d5
+method	c:objc(cs)GKMatchmaker(im)startBrowsingForNearbyPlayersWithHandler:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	cddc16664e22565c
+method	c:objc(cs)GKMatchmaker(im)stopBrowsingForNearbyPlayers	-			ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	b98bca4231bb0429
+method	c:objc(cs)GKMatchmaker(im)startGroupActivityWithPlayerHandler:	-			ios=16.2/-/-/0,macos=13.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	5e40661789b28059
+method	c:objc(cs)GKMatchmaker(im)stopGroupActivity	-			ios=16.2/-/-/0,macos=13.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	cfe62296cafffc10
+category	c:objc(cy)GKMatchmaker@GKDeprecated	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	deprecated: Use the ``GKLocalPlayer/register(_:)`` method instead.	0d2c82ccd179f8d6
+property	c:objc(cs)GKMatchmaker(py)inviteHandler	GKDeprecated			ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	e41b9fc918ce5e25
+category	c:objc(cy)GKMatchmaker@Obsoleted	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	deprecated: Use Use the ``GKMatchmaker/startBrowsingForNearbyPlayers(handler:)`` method instead. instead	5b5d648e6ebabdea
+method	c:objc(cs)GKMatchmaker(im)startBrowsingForNearbyPlayersWithReachableHandler:	Obsoleted			ios=6.0/8.0/-/0,macos=10.9/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	deprecated: Use Use the ``GKMatchmaker/startBrowsingForNearbyPlayers(handler:)`` method instead. instead	dac51ee3e8b8afaa
+method	c:objc(cs)GKMatchmaker(im)cancelInviteToPlayer:	Obsoleted			ios=6.0/8.0/-/0,macos=10.9/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	deprecated: Use Use the ``GKMatchmaker/cancelPendingInvite(to:)`` method instead. instead	c0526479020561cf
+method	c:objc(cs)GKMatchmaker(im)findPlayersForHostedMatchRequest:withCompletionHandler:	Obsoleted			ios=4.1/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	deprecated: Use Use the ``GKMatchmaker/findPlayers(forHostedRequest:withCompletionHandler:)`` method instead. instead	46d004c1d856a562
+protocol	c:objc(pl)GKSavedGameListener	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	378612db9584e650
+conforms	-	GKSavedGameListener	NSObject		-	-	eec3086766cc4111
+method	c:objc(pl)GKSavedGameListener(im)player:didModifySavedGame:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	46cfd83f51ec0e99
+method	c:objc(pl)GKSavedGameListener(im)player:hasConflictingSavedGames:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f837d2d300cb4804
+interface	c:objc(cs)GKLocalPlayer	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	86cdbe9b7acdcc51
+super	-	GKLocalPlayer	GKPlayer		-	-	99b1dd6d30d9d1a7
+property	c:objc(cs)GKLocalPlayer(cpy)local	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	2c72b09235f31385
+property	c:objc(cs)GKLocalPlayer(cpy)localPlayer	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	c7a95d77bd2410aa
+property	c:objc(cs)GKLocalPlayer(py)authenticated	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	18ce52c7252e2038
+property	c:objc(cs)GKLocalPlayer(py)underage	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	f3c69193fa8c17ee
+property	c:objc(cs)GKLocalPlayer(py)multiplayerGamingRestricted	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	5e8eb7740c05753d
+property	c:objc(cs)GKLocalPlayer(py)personalizedCommunicationRestricted	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	74100a7a19a27215
+method	c:objc(cs)GKLocalPlayer(im)loadRecentPlayersWithCompletionHandler:	-			ios=10.0/-/-/0,macos=10.11/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	501f7be61edd5c3e
+method	c:objc(cs)GKLocalPlayer(im)loadChallengableFriendsWithCompletionHandler:	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	2bd382b40e858b82
+method	c:objc(cs)GKLocalPlayer(im)fetchItemsForIdentityVerificationSignature:	-			ios=13.5/-/-/0,macos=10.15.5/-/-/0,tvos=13.4.8/-/-/0,watchos=6.5/-/-/0,xros=1.0/-/-/0	-	eb593e9559cabc07
+protocol	c:objc(pl)GKLocalPlayerListener	-			ios=7.0/-/-/0,macos=10.10/-/-/0,xros=1.0/-/-/0	-	ae63f8ad97452a0f
+conforms	-	GKLocalPlayerListener	GKChallengeListener		-	-	0b3ea87f987f1d48
+conforms	-	GKLocalPlayerListener	GKGameActivityListener		-	-	e743123689d64900
+conforms	-	GKLocalPlayerListener	GKInviteEventListener		-	-	1ed38a1a3b0a9abd
+conforms	-	GKLocalPlayerListener	GKTurnBasedEventListener		-	-	c9cdc8a0ccfdb5ce
+conforms	-	GKLocalPlayerListener	GKSavedGameListener		-	-	962686194d257cb4
+category	c:objc(cy)GKLocalPlayer@GKLocalPlayerEvents	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	3e82d5c3373b1b57
+method	c:objc(cs)GKLocalPlayer(im)registerListener:	GKLocalPlayerEvents			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	7a8fbe9e050b6def
+method	c:objc(cs)GKLocalPlayer(im)unregisterListener:	GKLocalPlayerEvents			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	9505b6b39e817f2f
+method	c:objc(cs)GKLocalPlayer(im)unregisterAllListeners	GKLocalPlayerEvents			ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	a0723944db05483a
+var	c:@GKPlayerAuthenticationDidChangeNotificationName	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	7030064c2796385c
+category	c:objc(cy)GKLocalPlayer@Deprecated	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	deprecated: Use Use ``GKLocalPlayer/setDefaultLeaderboardIdentifier(_:completionHandler:)`` instead. instead	3462d6b237895b8c
+method	c:objc(cs)GKLocalPlayer(im)setDefaultLeaderboardCategoryID:completionHandler:	Deprecated			ios=6.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	deprecated: Use Use ``GKLocalPlayer/setDefaultLeaderboardIdentifier(_:completionHandler:)`` instead. instead	38e3e9885ecebeab
+method	c:objc(cs)GKLocalPlayer(im)loadDefaultLeaderboardCategoryIDWithCompletionHandler:	Deprecated			ios=6.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	deprecated: Use Use ``GKLocalPlayer/loadDefaultLeaderboardIdentifier(completionHandler:)`` instead. instead	14a3264ee31c01b5
+method	c:objc(cs)GKLocalPlayer(im)authenticateWithCompletionHandler:	Deprecated			ios=4.1/6.0/-/0,macos=10.8/10.8/-/0,tvos=-/-/-/1	deprecated: Use Use ``GKLocalPlayer/authenticateHandler`` instead. instead	fa2e2236761c930c
+method	c:objc(cs)GKLocalPlayer(im)loadFriendPlayersWithCompletionHandler:	Deprecated			ios=8.0/10.0/-/0,macos=10.10/10.11/-/0,tvos=9.0/10.0/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use ``GKLocalPlayer/loadFriends(_:)`` instead. instead	5ce6d96a8c6e0429
+method	c:objc(cs)GKLocalPlayer(im)generateIdentityVerificationSignatureWithCompletionHandler:	Deprecated			ios=7.0/13.5/-/0,macos=10.10/10.15.5/-/0,tvos=9.0/13.4.8/-/0,watchos=3.0/6.5/-/0,xros=1.0/1.0/-/0	deprecated: Use Use ``GKLocalPlayer/fetchItems(forIdentityVerificationSignature:)`` instead. instead	332b0fb27fc91c25
+method	c:objc(cs)GKLocalPlayer(im)loadDefaultLeaderboardIdentifierWithCompletionHandler:	Deprecated			ios=7.0/26.2/-/0,macos=10.10/26.2/-/0,tvos=9.0/26.2/-/0,watchos=3.0/26.2/-/0,xros=1.0/26.2/-/0	deprecated: No longer supported	f9e2198a95ae84e2
+method	c:objc(cs)GKLocalPlayer(im)setDefaultLeaderboardIdentifier:completionHandler:	Deprecated			ios=7.0/26.2/-/0,macos=10.10/26.2/-/0,tvos=9.0/26.2/-/0,watchos=3.0/26.2/-/0,xros=1.0/26.2/-/0	deprecated: No longer supported	62d2b581138a3e38
+category	c:objc(cy)GKLocalPlayer@Obsoleted	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	deprecated: Use Use ``GKLocalPlayer/loadFriends(_:)`` instead. instead	adfd2745604befd8
+method	c:objc(cs)GKLocalPlayer(im)loadFriendsWithCompletionHandler:	Obsoleted			ios=4.1/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use ``GKLocalPlayer/loadFriends(_:)`` instead. instead	3f10a2ec943206f1
+property	c:objc(cs)GKLocalPlayer(py)friends	Obsoleted			ios=4.1/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	5de24c3b4d18e667
+typedef	c:@T@GKFriendsAuthorizationStatus	-			-	-	3c6da22b2b17c39a
+enum	c:@E@GKFriendsAuthorizationStatus	-			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.3/-/-/0,xros=1.0/-/-/0	-	e8e8f29890157b2c
+enumconst	c:@E@GKFriendsAuthorizationStatus@GKFriendsAuthorizationStatusNotDetermined	GKFriendsAuthorizationStatus			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.3/-/-/0,xros=1.0/-/-/0	-	de7b315c3746e1b1
+enumconst	c:@E@GKFriendsAuthorizationStatus@GKFriendsAuthorizationStatusRestricted	GKFriendsAuthorizationStatus			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.3/-/-/0,xros=1.0/-/-/0	-	f46b6b796223c6ba
+enumconst	c:@E@GKFriendsAuthorizationStatus@GKFriendsAuthorizationStatusDenied	GKFriendsAuthorizationStatus			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.3/-/-/0,xros=1.0/-/-/0	-	baea95218447c705
+enumconst	c:@E@GKFriendsAuthorizationStatus@GKFriendsAuthorizationStatusAuthorized	GKFriendsAuthorizationStatus			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.3/-/-/0,xros=1.0/-/-/0	-	daa3cbeaba713ef1
+category	c:objc(cy)GKLocalPlayer@FriendsList	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	b56e8fdc4e124086
+method	c:objc(cs)GKLocalPlayer(im)loadFriendsAuthorizationStatus:	FriendsList			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.3/-/-/0,xros=1.0/-/-/0	-	30aeb6df4cbd42d2
+method	c:objc(cs)GKLocalPlayer(im)loadFriends:	FriendsList			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.3/-/-/0,xros=1.0/-/-/0	-	881a7fb1445c3287
+method	c:objc(cs)GKLocalPlayer(im)loadFriendsWithIdentifiers:completionHandler:	FriendsList			ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.3/-/-/0,xros=1.0/-/-/0	-	51ab2d3c2e6cbcc0
+category	c:objc(cy)GKLocalPlayer@UI	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	e9d3b2e0d383a1d0
+property	c:objc(cs)GKLocalPlayer(py)authenticateHandler	UI			ios=6.0/-/-/0,tvos=9.0/-/-/0,xros=1.0/-/-/0	-	ade0ade00592f93a
+property	c:objc(cs)GKLocalPlayer(py)isPresentingFriendRequestViewController	UI			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	fa41065b6af2ac3c
+method	c:objc(cs)GKLocalPlayer(im)presentFriendRequestCreatorFromViewController:error:	UI			ios=15.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	d6ba7d5894ace15e
+method	c:objc(cs)GKLocalPlayer(im)presentFriendRequestCreatorFromWindow:error:	UI			ios=-/-/-/1,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2242684702432a66
+typedef	c:@T@GKMatchSendDataMode	-			-	-	23ea290b2ef33e08
+enum	c:@E@GKMatchSendDataMode	-			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	d055b6be4739d370
+enumconst	c:@E@GKMatchSendDataMode@GKMatchSendDataReliable	GKMatchSendDataMode			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	62e449d390510b54
+enumconst	c:@E@GKMatchSendDataMode@GKMatchSendDataUnreliable	GKMatchSendDataMode			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	a38b9fbaa336dfe5
+typedef	c:@T@GKPlayerConnectionState	-			-	-	f2f4497fc9a33b95
+enum	c:@E@GKPlayerConnectionState	-			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	5b1bac3165308af6
+enumconst	c:@E@GKPlayerConnectionState@GKPlayerStateUnknown	GKPlayerConnectionState			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	5422dbcb33e56add
+enumconst	c:@E@GKPlayerConnectionState@GKPlayerStateConnected	GKPlayerConnectionState			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	1af86677e8d21899
+enumconst	c:@E@GKPlayerConnectionState@GKPlayerStateDisconnected	GKPlayerConnectionState			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	11d7aaafe1016912
+interface	c:objc(cs)GKMatch	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	deprecated: No longer supported	bd202328ed2dc7a4
+super	-	GKMatch	NSObject		-	-	f9e9a0e50b044c71
+property	c:objc(cs)GKMatch(py)players	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	5a08c8d9f7010fda
+property	c:objc(cs)GKMatch(py)delegate	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	3827e1622b09047e
+property	c:objc(cs)GKMatch(py)expectedPlayerCount	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	0661865b3b7d586a
+property	c:objc(cs)GKMatch(py)properties	-			ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=-/-/-/1,xros=1.1/-/-/0	-	e4c4ae2f6a6512cc
+property	c:objc(cs)GKMatch(py)playerProperties	-			ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=-/-/-/1,xros=1.1/-/-/0	-	5386f509c1711bc4
+method	c:objc(cs)GKMatch(im)sendData:toPlayers:dataMode:error:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	c0bdb9a0f34acf7c
+method	c:objc(cs)GKMatch(im)sendDataToAllPlayers:withDataMode:error:	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	091f300551fa7f80
+method	c:objc(cs)GKMatch(im)disconnect	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	cf3e0189778fa7c6
+method	c:objc(cs)GKMatch(im)chooseBestHostingPlayerWithCompletionHandler:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	c684dae3e1a4de32
+method	c:objc(cs)GKMatch(im)rematchWithCompletionHandler:	-			ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	0c00148b11b72639
+method	c:objc(cs)GKMatch(im)voiceChatWithName:	-			ios=4.1/18.0/-/0,macos=10.8/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: No longer supported	58c78adfcbe18bdd
+protocol	c:objc(pl)GKMatchDelegate	-			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	deprecated: Use Use ``GKMatchDelegate/match(_:didReceive:fromRemotePlayer:)`` instead. instead	ce35c72740e965d9
+conforms	-	GKMatchDelegate	NSObject		-	-	b9a30c08d3108b09
+method	c:objc(pl)GKMatchDelegate(im)match:didReceiveData:fromRemotePlayer:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	904df59ac47fd1b7
+method	c:objc(pl)GKMatchDelegate(im)match:didReceiveData:forRecipient:fromRemotePlayer:	-			ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	3b3634611a592e4f
+method	c:objc(pl)GKMatchDelegate(im)match:player:didChangeConnectionState:	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	ff96143087f56dfc
+method	c:objc(pl)GKMatchDelegate(im)match:didFailWithError:	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	d983e0c7c19c4392
+method	c:objc(pl)GKMatchDelegate(im)match:shouldReinviteDisconnectedPlayer:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	e4c3d60429cf034a
+method	c:objc(pl)GKMatchDelegate(im)match:didReceiveData:fromPlayer:	-			ios=4.1/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	deprecated: Use Use ``GKMatchDelegate/match(_:didReceive:fromRemotePlayer:)`` instead. instead	59c0666530524194
+method	c:objc(pl)GKMatchDelegate(im)match:player:didChangeState:	-			ios=4.1/8.0/-/0,macos=10.8/10.8/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	deprecated: Use Use ``GKMatchDelegate/match(_:player:didChange:)-8ohgr`` instead. instead	39eeebac16af1b17
+method	c:objc(pl)GKMatchDelegate(im)match:shouldReinvitePlayer:	-			ios=5.0/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	deprecated: Use Use ``GKMatchDelegate/match(_:shouldReinviteDisconnectedPlayer:)`` instead. instead	e55e04c699237954
+category	c:objc(cy)GKMatch@Obsoleted	-			tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use Use the ``GKMatch/chooseBestHostingPlayer(completionHandler:)`` method instead. instead	832617d975e1024f
+method	c:objc(cs)GKMatch(im)chooseBestHostPlayerWithCompletionHandler:	Obsoleted			ios=6.0/8.0/-/0,macos=10.9/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	deprecated: Use Use the ``GKMatch/chooseBestHostingPlayer(completionHandler:)`` method instead. instead	d2d9d3cd629c4160
+method	c:objc(cs)GKMatch(im)sendData:toPlayers:withDataMode:error:	Obsoleted			ios=4.1/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	deprecated: Use Use the ``GKMatch/sendData(toAllPlayers:with:)`` method instead. instead	ef0c5398c94602d4
+property	c:objc(cs)GKMatch(py)playerIDs	Obsoleted			ios=4.1/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	82b318cfe9d4b46c
+typedef	c:@T@GKMatchmakingMode	-			-	-	3da2aca3ced41c49
+enum	c:@E@GKMatchmakingMode	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,xros=1.0/-/-/0	-	40e8ad150f3f0d00
+enumconst	c:@E@GKMatchmakingMode@GKMatchmakingModeDefault	GKMatchmakingMode			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,xros=1.0/-/-/0	-	4680cae721f40ba1
+enumconst	c:@E@GKMatchmakingMode@GKMatchmakingModeNearbyOnly	GKMatchmakingMode			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,xros=1.0/-/-/0	-	c1a2642ba10878eb
+enumconst	c:@E@GKMatchmakingMode@GKMatchmakingModeAutomatchOnly	GKMatchmakingMode			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,xros=1.0/-/-/0	-	039904f9b0dca18c
+enumconst	c:@E@GKMatchmakingMode@GKMatchmakingModeInviteOnly	GKMatchmakingMode			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,xros=1.0/-/-/0	-	bb2e59c12a5b5919
+interface	c:objc(cs)GKMatchmakerViewController	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	deprecated: No longer supported.	d628b59392a47e08
+super	-	GKMatchmakerViewController	UINavigationController		-	-	4bf97be3fe83eeac
+property	c:objc(cs)GKMatchmakerViewController(py)matchmakerDelegate	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	1491ece8030ebcae
+property	c:objc(cs)GKMatchmakerViewController(py)matchRequest	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	52aa1614eb926524
+property	c:objc(cs)GKMatchmakerViewController(py)hosted	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	678a9d8dcc41c00d
+property	c:objc(cs)GKMatchmakerViewController(py)matchmakingMode	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	7b455fa4f0df3612
+property	c:objc(cs)GKMatchmakerViewController(py)canStartWithMinimumPlayers	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	f7b68c22fbdf8a37
+method	c:objc(cs)GKMatchmakerViewController(im)initWithMatchRequest:	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	16a7fa14dc5f1f2e
+method	c:objc(cs)GKMatchmakerViewController(im)initWithInvite:	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	e2cbaa9b977ef085
+method	c:objc(cs)GKMatchmakerViewController(im)addPlayersToMatch:	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,xros=1.0/-/-/0	-	391a744db48c0bd3
+method	c:objc(cs)GKMatchmakerViewController(im)setHostedPlayer:didConnect:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,xros=1.0/-/-/0	-	67882f8352e4f2d5
+property	c:objc(cs)GKMatchmakerViewController(py)defaultInvitationMessage	-			ios=5.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	8dc14d3c22daf784
+category	c:objc(cy)GKMatchmakerViewController@Obsoleted	-			ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	deprecated: Use Use the ``GKMatchmakerViewController/setHostedPlayer(_:didConnect:)`` method instead. instead	2b1a49c7709dc9a7
+method	c:objc(cs)GKMatchmakerViewController(im)setHostedPlayer:connected:	Obsoleted			ios=5.0/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	deprecated: Use Use the ``GKMatchmakerViewController/setHostedPlayer(_:didConnect:)`` method instead. instead	7e33c50946b2065a
+method	c:objc(cs)GKMatchmakerViewController(im)setHostedPlayerReady:	Obsoleted			ios=4.1/5.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	deprecated: Use Use the ``GKMatchmakerViewController/setHostedPlayer(_:connected:)`` method instead. instead	28362950c465324c
+protocol	c:objc(pl)GKMatchmakerViewControllerDelegate	-			ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	deprecated: Use Use ``GKMatchmakerViewControllerDelegate/matchmakerViewController(_:didFindHostedPlayers:)`` instead. instead	1aca787f766986f5
+conforms	-	GKMatchmakerViewControllerDelegate	NSObject		-	-	ec08dff9cdaa0e6b
+method	c:objc(pl)GKMatchmakerViewControllerDelegate(im)matchmakerViewControllerWasCancelled:	-			ios=4.1/-/-/0	-	a231b3ea64c1d8e8
+method	c:objc(pl)GKMatchmakerViewControllerDelegate(im)matchmakerViewController:didFailWithError:	-			ios=4.1/-/-/0	-	3fb88db04442236e
+method	c:objc(pl)GKMatchmakerViewControllerDelegate(im)matchmakerViewController:didFindMatch:	-			ios=4.1/-/-/0	-	98d67e1960ce4fda
+method	c:objc(pl)GKMatchmakerViewControllerDelegate(im)matchmakerViewController:didFindHostedPlayers:	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	75bc34e0e2d33663
+method	c:objc(pl)GKMatchmakerViewControllerDelegate(im)matchmakerViewController:hostedPlayerDidAccept:	-			ios=8.0/-/-/0,macos=10.10/-/-/0	-	c2442c9b5f431315
+method	c:objc(pl)GKMatchmakerViewControllerDelegate(im)matchmakerViewController:getMatchPropertiesForRecipient:withCompletionHandler:	-			ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,xros=1.1/-/-/0	-	d9cc3540800da120
+method	c:objc(pl)GKMatchmakerViewControllerDelegate(im)matchmakerViewController:didFindPlayers:	-			ios=4.1/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	deprecated: Use Use ``GKMatchmakerViewControllerDelegate/matchmakerViewController(_:didFindHostedPlayers:)`` instead. instead	85149237dea807dc
+method	c:objc(pl)GKMatchmakerViewControllerDelegate(im)matchmakerViewController:didReceiveAcceptFromHostedPlayer:	-			ios=5.0/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	deprecated: Use Use ``GKMatchmakerViewControllerDelegate/matchmakerViewController(_:hostedPlayerDidAccept:)`` instead. instead	c380647806e89767
+interface	c:objc(cs)GKNotificationBanner	-			ios=5.0/17.0/-/0,macos=10.8/14.0/-/0,tvos=9.0/16.1/-/0	deprecated: Use UNNotificationRequest or provide custom UI instead. This method will become a no-op in a future version of GameKit.	bfcff02a21fa2760
+super	-	GKNotificationBanner	NSObject		-	-	2a566afd49304123
+method	c:objc(cs)GKNotificationBanner(cm)showBannerWithTitle:message:completionHandler:	-			ios=5.0/16.1/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.1/-/0	deprecated: Use UNNotificationRequest or provide custom UI instead. This method will become a no-op in a future version of GameKit.	e24ceb7e718c3380
+method	c:objc(cs)GKNotificationBanner(cm)showBannerWithTitle:message:duration:completionHandler:	-			ios=5.0/16.1/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.1/-/0	deprecated: Use UNNotificationRequest or provide custom UI instead. This method will become a no-op in a future version of GameKit.	119572a3ed4bf724
+typedef	c:@T@GKSendDataMode	-			-	-	ae33ea0a2df335d8
+enum	c:@E@GKSendDataMode	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	584d0c94b6c0c5e0
+enumconst	c:@E@GKSendDataMode@GKSendDataReliable	GKSendDataMode			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	50cce5c5ed341f45
+enumconst	c:@E@GKSendDataMode@GKSendDataUnreliable	GKSendDataMode			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	a68d2ffc4956df97
+typedef	c:@T@GKSessionMode	-			-	-	e542a1340df88dee
+enum	c:@E@GKSessionMode	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	96e45703f0fd035d
+enumconst	c:@E@GKSessionMode@GKSessionModeServer	GKSessionMode			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	3a013142e3fa1ba9
+enumconst	c:@E@GKSessionMode@GKSessionModeClient	GKSessionMode			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	67788d689c343532
+enumconst	c:@E@GKSessionMode@GKSessionModePeer	GKSessionMode			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	a907c9845951421e
+typedef	c:@T@GKPeerConnectionState	-			-	-	d4ca727cba50086b
+enum	c:@E@GKPeerConnectionState	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	1f6b1251fba9a630
+enumconst	c:@E@GKPeerConnectionState@GKPeerStateAvailable	GKPeerConnectionState			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	1cf9f2c761bf0b01
+enumconst	c:@E@GKPeerConnectionState@GKPeerStateUnavailable	GKPeerConnectionState			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	457a0bd2867bce2e
+enumconst	c:@E@GKPeerConnectionState@GKPeerStateConnected	GKPeerConnectionState			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	fa53b490f79743dd
+enumconst	c:@E@GKPeerConnectionState@GKPeerStateDisconnected	GKPeerConnectionState			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	007a25052d33ac4e
+enumconst	c:@E@GKPeerConnectionState@GKPeerStateConnecting	GKPeerConnectionState			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	a1faaf4890c3b749
+enumconst	c:@E@GKPeerConnectionState@GKPeerStateConnectedRelay	GKPeerConnectionState			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	3b35978ed3e6099b
+var	c:@GKVoiceChatServiceErrorDomain	-			ios=3.0/18.4/-/0,macos=10.10/15.4/-/0,tvos=9.0/18.4/-/0,watchos=3.0/11.4/-/0,xros=1.0/2.4/-/0	-	8b4b80bb8731232f
+typedef	c:@T@GKVoiceChatServiceError	-			-	-	bee0e51886551560
+enum	c:@E@GKVoiceChatServiceError	-			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	c25005a287e88b6d
+enumconst	c:@E@GKVoiceChatServiceError@GKVoiceChatServiceInternalError	GKVoiceChatServiceError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	796ff246b5828ab0
+enumconst	c:@E@GKVoiceChatServiceError@GKVoiceChatServiceNoRemotePacketsError	GKVoiceChatServiceError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	7a07629329f912e4
+enumconst	c:@E@GKVoiceChatServiceError@GKVoiceChatServiceUnableToConnectError	GKVoiceChatServiceError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	259752138b41d557
+enumconst	c:@E@GKVoiceChatServiceError@GKVoiceChatServiceRemoteParticipantHangupError	GKVoiceChatServiceError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	d660ef8e800ee48f
+enumconst	c:@E@GKVoiceChatServiceError@GKVoiceChatServiceInvalidCallIDError	GKVoiceChatServiceError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	622ec723fea65f29
+enumconst	c:@E@GKVoiceChatServiceError@GKVoiceChatServiceAudioUnavailableError	GKVoiceChatServiceError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	4cc18c8af79d5000
+enumconst	c:@E@GKVoiceChatServiceError@GKVoiceChatServiceUninitializedClientError	GKVoiceChatServiceError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	921c8cc2f975c0fe
+enumconst	c:@E@GKVoiceChatServiceError@GKVoiceChatServiceClientMissingRequiredMethodsError	GKVoiceChatServiceError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	1d52dafedf38197b
+enumconst	c:@E@GKVoiceChatServiceError@GKVoiceChatServiceRemoteParticipantBusyError	GKVoiceChatServiceError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	42c02b129271ee7b
+enumconst	c:@E@GKVoiceChatServiceError@GKVoiceChatServiceRemoteParticipantCancelledError	GKVoiceChatServiceError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	5fbf22579b01fde2
+enumconst	c:@E@GKVoiceChatServiceError@GKVoiceChatServiceRemoteParticipantResponseInvalidError	GKVoiceChatServiceError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	93076f98b2039e01
+enumconst	c:@E@GKVoiceChatServiceError@GKVoiceChatServiceRemoteParticipantDeclinedInviteError	GKVoiceChatServiceError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	cc1ab74968af052b
+enumconst	c:@E@GKVoiceChatServiceError@GKVoiceChatServiceMethodCurrentlyInvalidError	GKVoiceChatServiceError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	2ffd690e11ec025f
+enumconst	c:@E@GKVoiceChatServiceError@GKVoiceChatServiceNetworkConfigurationError	GKVoiceChatServiceError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	94c04946c54a1262
+enumconst	c:@E@GKVoiceChatServiceError@GKVoiceChatServiceUnsupportedRemoteVersionError	GKVoiceChatServiceError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	05077788bc92c4ef
+enumconst	c:@E@GKVoiceChatServiceError@GKVoiceChatServiceOutOfMemoryError	GKVoiceChatServiceError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	200c5fa1e666823a
+enumconst	c:@E@GKVoiceChatServiceError@GKVoiceChatServiceInvalidParameterError	GKVoiceChatServiceError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	ef9ab9417d958743
+protocol	c:objc(pl)GKSessionDelegate	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	78e792fbc251166b
+conforms	-	GKSessionDelegate	NSObject		-	-	7e4091e32be0bbdd
+method	c:objc(pl)GKSessionDelegate(im)session:peer:didChangeState:	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	daa85c2ee3479701
+method	c:objc(pl)GKSessionDelegate(im)session:didReceiveConnectionRequestFromPeer:	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	2acd3f09e7afc099
+method	c:objc(pl)GKSessionDelegate(im)session:connectionWithPeerFailed:withError:	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	27625af058eb6f24
+method	c:objc(pl)GKSessionDelegate(im)session:didFailWithError:	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	0cdf8d356d5a7c22
+protocol	c:objc(pl)GKVoiceChatClient	-			ios=3.0/7.0/-/0,macos=10.6/10.8/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	24ee538b5df455d7
+conforms	-	GKVoiceChatClient	NSObject		-	-	8eaa9a00be3a3522
+method	c:objc(pl)GKVoiceChatClient(im)voiceChatService:sendData:toParticipantID:	-			ios=3.0/7.0/-/0,macos=10.6/10.8/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	c0c432ab824863d9
+method	c:objc(pl)GKVoiceChatClient(im)participantID	-			ios=3.0/7.0/-/0,macos=10.6/10.8/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	47d4182c6caecd6e
+method	c:objc(pl)GKVoiceChatClient(im)voiceChatService:sendRealTimeData:toParticipantID:	-			ios=3.0/7.0/-/0,macos=10.6/10.8/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	ed7be4bce77f55e7
+method	c:objc(pl)GKVoiceChatClient(im)voiceChatService:didStartWithParticipantID:	-			ios=3.0/7.0/-/0,macos=10.6/10.8/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	7817d37b2f8ae01c
+method	c:objc(pl)GKVoiceChatClient(im)voiceChatService:didNotStartWithParticipantID:error:	-			ios=3.0/7.0/-/0,macos=10.6/10.8/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	95de07b13ee566dc
+method	c:objc(pl)GKVoiceChatClient(im)voiceChatService:didStopWithParticipantID:error:	-			ios=3.0/7.0/-/0,macos=10.6/10.8/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	38ac6aa12ae93bd6
+method	c:objc(pl)GKVoiceChatClient(im)voiceChatService:didReceiveInvitationFromParticipantID:callID:	-			ios=3.0/7.0/-/0,macos=10.6/10.8/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	3f53db7646437b3c
+interface	c:objc(cs)GKSession	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	deprecated: No longer available	4c4f12a4cfc315fb
+super	-	GKSession	NSObject		-	-	bcdf504f3a1bd1c9
+method	c:objc(cs)GKSession(im)initWithSessionID:displayName:sessionMode:	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	deprecated: No longer available	7dcc8bc2ec2f894c
+property	c:objc(cs)GKSession(py)delegate	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	83d1f81add130c01
+property	c:objc(cs)GKSession(py)sessionID	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	f5193039cdda4d65
+property	c:objc(cs)GKSession(py)displayName	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	b8461dc0d1c5a45c
+property	c:objc(cs)GKSession(py)sessionMode	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	edcded2cf62e01e7
+property	c:objc(cs)GKSession(py)peerID	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	d4f8ca378a541890
+property	c:objc(cs)GKSession(py)available	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	372e1ef1528b862a
+property	c:objc(cs)GKSession(py)disconnectTimeout	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	a19f9cfb1f6adc52
+method	c:objc(cs)GKSession(im)displayNameForPeer:	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	32d3dba2047a1d18
+method	c:objc(cs)GKSession(im)sendData:toPeers:withDataMode:error:	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	deprecated: No longer supported.	139e4b165be5c99e
+method	c:objc(cs)GKSession(im)sendDataToAllPeers:withDataMode:error:	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	deprecated: No longer supported.	2642e9692e58c4cf
+method	c:objc(cs)GKSession(im)setDataReceiveHandler:withContext:	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	ead608c0f8b59890
+method	c:objc(cs)GKSession(im)connectToPeer:withTimeout:	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	52f1ac953671835d
+method	c:objc(cs)GKSession(im)cancelConnectToPeer:	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	d434d89b34ecb356
+method	c:objc(cs)GKSession(im)acceptConnectionFromPeer:error:	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	b54d9e093e016eb7
+method	c:objc(cs)GKSession(im)denyConnectionFromPeer:	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	9719c158a217b199
+method	c:objc(cs)GKSession(im)disconnectPeerFromAllPeers:	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	458da69ee15b452c
+method	c:objc(cs)GKSession(im)disconnectFromAllPeers	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	d6fc2e56909261d4
+method	c:objc(cs)GKSession(im)peersWithConnectionState:	-			ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	deprecated: No longer supported.	eeecbc7599fc744d
+typedef	c:@T@GKPeerPickerConnectionType	-			-	-	c57d81aaa72cc05a
+enum	c:@E@GKPeerPickerConnectionType	-			ios=3.0/7.0/-/0,xros=1.0/1.0/-/0	-	743cc807c3264f80
+enumconst	c:@E@GKPeerPickerConnectionType@GKPeerPickerConnectionTypeOnline	GKPeerPickerConnectionType			ios=3.0/7.0/-/0,xros=1.0/1.0/-/0	-	06ff0ab665274590
+enumconst	c:@E@GKPeerPickerConnectionType@GKPeerPickerConnectionTypeNearby	GKPeerPickerConnectionType			ios=3.0/7.0/-/0,xros=1.0/1.0/-/0	-	095de120abdaf6f9
+protocol	c:objc(pl)GKPeerPickerControllerDelegate	-			ios=3.0/7.0/-/0,tvos=-/-/-/1	-	bb15b3e04a73329d
+conforms	-	GKPeerPickerControllerDelegate	NSObject		-	-	575b5ff5356d6ae6
+method	c:objc(pl)GKPeerPickerControllerDelegate(im)peerPickerController:didSelectConnectionType:	-			ios=3.0/7.0/-/0,tvos=-/-/-/1	-	6998bb896daacc7f
+method	c:objc(pl)GKPeerPickerControllerDelegate(im)peerPickerController:sessionForConnectionType:	-			ios=3.0/7.0/-/0,tvos=-/-/-/1	-	32a8d389fd00255c
+method	c:objc(pl)GKPeerPickerControllerDelegate(im)peerPickerController:didConnectPeer:toSession:	-			ios=3.0/7.0/-/0,tvos=-/-/-/1	-	5bedcac9ebd71d75
+method	c:objc(pl)GKPeerPickerControllerDelegate(im)peerPickerControllerDidCancel:	-			ios=3.0/7.0/-/0,tvos=-/-/-/1	-	f38145e7d02e5e13
+interface	c:objc(cs)GKPeerPickerController	-			ios=3.0/7.0/-/0,tvos=-/-/-/1	deprecated: No longer supported	76eafe5ef8ffce3c
+super	-	GKPeerPickerController	NSObject		-	-	e0d87fe143af0d76
+property	c:objc(cs)GKPeerPickerController(py)connectionTypesMask	-			ios=3.0/7.0/-/0,tvos=-/-/-/1	-	ac5db2d5eada36f5
+property	c:objc(cs)GKPeerPickerController(py)delegate	-			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	5e0067bff1e4d4b9
+method	c:objc(cs)GKPeerPickerController(im)show	-			ios=3.0/7.0/-/0,tvos=-/-/-/1	-	79215697a8d31497
+method	c:objc(cs)GKPeerPickerController(im)dismiss	-			ios=3.0/7.0/-/0,tvos=-/-/-/1	-	765f734b825f43d2
+property	c:objc(cs)GKPeerPickerController(py)visible	-			ios=3.0/7.0/-/0,tvos=-/-/-/1	-	b2219e177c9b9c9e
+interface	c:objc(cs)GKSavedGame	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0bc2e539a485c7f4
+super	-	GKSavedGame	NSObject		-	-	5c4b0962a5b05bfc
+conforms	-	GKSavedGame	NSCopying		-	-	530c4a4c0d984a84
+property	c:objc(cs)GKSavedGame(py)name	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fe7d2506b3299646
+property	c:objc(cs)GKSavedGame(py)deviceName	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6cf5221eb25ab098
+property	c:objc(cs)GKSavedGame(py)modificationDate	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c7e18a93604b70aa
+method	c:objc(cs)GKSavedGame(im)loadDataWithCompletionHandler:	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fb20747b486ca929
+category	c:objc(cy)GKLocalPlayer@GKSavedGame	-			tvos=-/-/-/1,watchos=-/-/-/1	-	959fede1ad5eb68a
+conforms	-	GKLocalPlayer	GKSavedGameListener		-	-	4974d9a53d609b58
+method	c:objc(cs)GKLocalPlayer(im)fetchSavedGamesWithCompletionHandler:	GKSavedGame			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8cb794b9e05739a2
+method	c:objc(cs)GKLocalPlayer(im)saveGameData:withName:completionHandler:	GKSavedGame			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	77e28de257fbcace
+method	c:objc(cs)GKLocalPlayer(im)deleteSavedGamesWithName:completionHandler:	GKSavedGame			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	65022e1d81680931
+method	c:objc(cs)GKLocalPlayer(im)resolveConflictingSavedGames:withData:completionHandler:	GKSavedGame			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5f58348001cfbb78
+var	c:@GKSessionErrorDomain	-			ios=3.0/18.4/-/0,macos=10.10/15.4/-/0,tvos=9.0/18.4/-/0,watchos=3.0/11.4/-/0,xros=1.0/2.4/-/0	-	0fe5879a7b7ed1b9
+typedef	c:@T@GKSessionError	-			-	-	a04ac89d1fa27c40
+enum	c:@E@GKSessionError	-			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	63c4a6993b104614
+enumconst	c:@E@GKSessionError@GKSessionInvalidParameterError	GKSessionError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	4db2b4b7db819bbc
+enumconst	c:@E@GKSessionError@GKSessionPeerNotFoundError	GKSessionError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	8fd5ecd91c76f6be
+enumconst	c:@E@GKSessionError@GKSessionDeclinedError	GKSessionError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	16cffa22e3a706cb
+enumconst	c:@E@GKSessionError@GKSessionTimedOutError	GKSessionError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	5faa8de55feef647
+enumconst	c:@E@GKSessionError@GKSessionCancelledError	GKSessionError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	fcd1d1e160dece4e
+enumconst	c:@E@GKSessionError@GKSessionConnectionFailedError	GKSessionError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	9d15b78490308b21
+enumconst	c:@E@GKSessionError@GKSessionConnectionClosedError	GKSessionError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	9099bc46bad03e36
+enumconst	c:@E@GKSessionError@GKSessionDataTooBigError	GKSessionError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	34713646a7e60a48
+enumconst	c:@E@GKSessionError@GKSessionNotConnectedError	GKSessionError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	b6050383ee650d19
+enumconst	c:@E@GKSessionError@GKSessionCannotEnableError	GKSessionError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	30c5676ba6f45541
+enumconst	c:@E@GKSessionError@GKSessionInProgressError	GKSessionError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	b1a8f60ecfc18624
+enumconst	c:@E@GKSessionError@GKSessionConnectivityError	GKSessionError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	3204d0a4cbf0f1bc
+enumconst	c:@E@GKSessionError@GKSessionTransportError	GKSessionError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	232936e49abc14ba
+enumconst	c:@E@GKSessionError@GKSessionInternalError	GKSessionError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	a944ccf102d71fcc
+enumconst	c:@E@GKSessionError@GKSessionUnknownError	GKSessionError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	b51a53b24c0ac907
+enumconst	c:@E@GKSessionError@GKSessionSystemError	GKSessionError			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	8dbd15efc8b4699b
+interface	c:objc(cs)GKTurnBasedMatchmakerViewController	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	2cc383b7fcaac1ec
+super	-	GKTurnBasedMatchmakerViewController	UINavigationController		-	-	72f5e11ebe4e848c
+category	c:objc(ext)GKTurnBasedMatchmakerViewController	-	-		ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	b243becd0c2f2c5a
+property	c:objc(cs)GKTurnBasedMatchmakerViewController(py)turnBasedMatchmakerDelegate	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	f3c51944a2f2a338
+property	c:objc(cs)GKTurnBasedMatchmakerViewController(py)showExistingMatches	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	28ed15a4103371ae
+property	c:objc(cs)GKTurnBasedMatchmakerViewController(py)matchmakingMode	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	29f61d6e43f2a920
+method	c:objc(cs)GKTurnBasedMatchmakerViewController(im)initWithMatchRequest:	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	288ff57f5b132afa
+protocol	c:objc(pl)GKTurnBasedMatchmakerViewControllerDelegate	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	deprecated: Use Use ``GKTurnBasedEventListener`` method ``GKTurnBasedEventListener/player(_:receivedTurnEventFor:didBecomeActive:)`` instead. instead	e52cd23b29d093cd
+conforms	-	GKTurnBasedMatchmakerViewControllerDelegate	NSObject		-	-	f56fc70161f805e5
+method	c:objc(pl)GKTurnBasedMatchmakerViewControllerDelegate(im)turnBasedMatchmakerViewControllerWasCancelled:	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	b0e89f5cd8c42604
+method	c:objc(pl)GKTurnBasedMatchmakerViewControllerDelegate(im)turnBasedMatchmakerViewController:didFailWithError:	-			ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	f44315ecb1b6be17
+method	c:objc(pl)GKTurnBasedMatchmakerViewControllerDelegate(im)turnBasedMatchmakerViewController:didFindMatch:	-			ios=5.0/9.0/-/0,macos=10.8/10.11/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	deprecated: Use Use ``GKTurnBasedEventListener`` method ``GKTurnBasedEventListener/player(_:receivedTurnEventFor:didBecomeActive:)`` instead. instead	2272fc0907cf0924
+method	c:objc(pl)GKTurnBasedMatchmakerViewControllerDelegate(im)turnBasedMatchmakerViewController:playerQuitForMatch:	-			ios=5.0/9.0/-/0,macos=10.8/10.11/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	deprecated: Use Use ``GKTurnBasedEventListener`` method ``GKTurnBasedEventListener/player(_:wantsToQuitMatch:)`` instead. instead	5f8d0e7a304be8cb
+typedef	c:@T@GKVoiceChatPlayerState	-			-	-	0844dd5a61ad5b14
+enum	c:@E@GKVoiceChatPlayerState	-			ios=4.1/18.0/-/0,macos=10.8/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	2c4f45a52ec66e73
+enumconst	c:@E@GKVoiceChatPlayerState@GKVoiceChatPlayerConnected	GKVoiceChatPlayerState			ios=4.1/18.0/-/0,macos=10.8/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	41a7cfc1bc1ae502
+enumconst	c:@E@GKVoiceChatPlayerState@GKVoiceChatPlayerDisconnected	GKVoiceChatPlayerState			ios=4.1/18.0/-/0,macos=10.8/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	f50a0ca5b3cd7366
+enumconst	c:@E@GKVoiceChatPlayerState@GKVoiceChatPlayerSpeaking	GKVoiceChatPlayerState			ios=4.1/18.0/-/0,macos=10.8/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	1a14acc0924dbcbd
+enumconst	c:@E@GKVoiceChatPlayerState@GKVoiceChatPlayerSilent	GKVoiceChatPlayerState			ios=4.1/18.0/-/0,macos=10.8/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	ebfc1f9119607e2e
+enumconst	c:@E@GKVoiceChatPlayerState@GKVoiceChatPlayerConnecting	GKVoiceChatPlayerState			ios=4.1/18.0/-/0,macos=10.8/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	a59812b37986c304
+interface	c:objc(cs)GKVoiceChat	-			ios=4.1/18.0/-/0,macos=10.8/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: No longer supported	9bf23d1ffd9ed8fe
+super	-	GKVoiceChat	NSObject		-	-	df2a3f3abdd39313
+method	c:objc(cs)GKVoiceChat(im)start	-			ios=4.1/18.0/-/0,macos=10.8/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	edd66f5e0695e829
+method	c:objc(cs)GKVoiceChat(im)stop	-			ios=4.1/18.0/-/0,macos=10.8/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	f72d38ca4a2ff641
+method	c:objc(cs)GKVoiceChat(im)setPlayer:muted:	-			ios=8.0/18.0/-/0,macos=10.10/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: No longer supported	da86413946bded57
+property	c:objc(cs)GKVoiceChat(py)playerVoiceChatStateDidChangeHandler	-			ios=8.0/18.0/-/0,macos=10.10/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	39ce4575a354a128
+property	c:objc(cs)GKVoiceChat(py)name	-			ios=4.1/18.0/-/0,macos=10.8/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	cfc8a16552262e27
+property	c:objc(cs)GKVoiceChat(py)active	-			ios=4.1/18.0/-/0,macos=10.8/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	e33f646c71456fa2
+property	c:objc(cs)GKVoiceChat(py)volume	-			ios=4.1/18.0/-/0,macos=10.8/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	9b6727d483377b46
+property	c:objc(cs)GKVoiceChat(py)players	-			ios=8.0/18.0/-/0,macos=10.10/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	927f2ef340baf03c
+method	c:objc(cs)GKVoiceChat(cm)isVoIPAllowed	-			ios=4.1/18.0/-/0,macos=10.8/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	1bacb706799d03ef
+category	c:objc(cy)GKVoiceChat@Deprecated	-			ios=4.1/18.0/-/0,macos=10.8/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use Use the ``GKVoiceChat/playerVoiceChatStateDidChangeHandler`` property instead. instead	a0f99899a6ae6fae
+property	c:objc(cs)GKVoiceChat(py)playerStateUpdateHandler	Deprecated			ios=4.1/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6ea78be97515b411
+category	c:objc(cy)GKVoiceChat@Obsoleted	-			ios=4.1/18.0/-/0,macos=10.8/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use Use the ``GKVoiceChat/players`` property instead. instead	d0104dadfdf12ead
+property	c:objc(cs)GKVoiceChat(py)playerIDs	Obsoleted			ios=5.0/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6056637cf327a445
+method	c:objc(cs)GKVoiceChat(im)setMute:forPlayer:	Obsoleted			ios=5.0/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use Use the ``GKVoiceChat/setPlayer(_:muted:)`` method instead. instead	b8d238ec44810f3e
+interface	c:objc(cs)GKVoiceChatService	-			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	deprecated: No longer supported.	704d53e36799dd38
+super	-	GKVoiceChatService	NSObject		-	-	006e1b9377726f0d
+method	c:objc(cs)GKVoiceChatService(cm)defaultVoiceChatService	-			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	9d91ef3b16a90ff5
+method	c:objc(cs)GKVoiceChatService(cm)isVoIPAllowed	-			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	5cb45858fd06af4b
+property	c:objc(cs)GKVoiceChatService(py)client	-			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	0ab4a1dd1e785d0d
+method	c:objc(cs)GKVoiceChatService(im)startVoiceChatWithParticipantID:error:	-			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	80b8441e1b1462d9
+method	c:objc(cs)GKVoiceChatService(im)stopVoiceChatWithParticipantID:	-			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	eb5a6f72abe56c7b
+method	c:objc(cs)GKVoiceChatService(im)acceptCallID:error:	-			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	cde583879bc89e82
+method	c:objc(cs)GKVoiceChatService(im)denyCallID:	-			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	b3ac59f75d594f3e
+method	c:objc(cs)GKVoiceChatService(im)receivedRealTimeData:fromParticipantID:	-			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	26e062483cc6ce94
+method	c:objc(cs)GKVoiceChatService(im)receivedData:fromParticipantID:	-			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	d58de50156dbbd0f
+property	c:objc(cs)GKVoiceChatService(py)microphoneMuted	-			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	dd4cd522d7ca57d1
+property	c:objc(cs)GKVoiceChatService(py)remoteParticipantVolume	-			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	1d489e4184264a2e
+property	c:objc(cs)GKVoiceChatService(py)outputMeteringEnabled	-			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	199ca890dc357eb3
+property	c:objc(cs)GKVoiceChatService(py)inputMeteringEnabled	-			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	c4341728f6c2bfe6
+property	c:objc(cs)GKVoiceChatService(py)outputMeterLevel	-			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	ced0a31861318b6e
+property	c:objc(cs)GKVoiceChatService(py)inputMeterLevel	-			ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	e7f6e1c3adaa5527

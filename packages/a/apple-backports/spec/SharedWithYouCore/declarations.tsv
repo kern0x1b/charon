@@ -1,0 +1,122 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+var	c:@SharedWithYouCoreVersionNumber	-			-	-	08b22ebf95eb9a57
+var	c:@SharedWithYouCoreVersionString	-			-	-	34656325148f2460
+interface	c:objc(cs)SWAction	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	6668b9fdd0922c50
+super	-	SWAction	NSObject		-	-	e3e37e7dd7c560f7
+conforms	-	SWAction	NSCopying		-	-	bfc5c20374338966
+conforms	-	SWAction	NSSecureCoding		-	-	a3f1be41075d1a3d
+property	c:objc(cs)SWAction(py)uuid	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	85c81bce1a9892f9
+property	c:objc(cs)SWAction(py)complete	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	c632edbc0fd379f5
+method	c:objc(cs)SWAction(im)fulfill	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	a1c61b5f0e791234
+method	c:objc(cs)SWAction(im)fail	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	6c42f990f5f35cc7
+protocol	c:objc(pl)SWCollaborationActionHandler	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	dd2f9a5e0c65a3e5
+conforms	-	SWCollaborationActionHandler	NSObject		-	-	f59cbbcf77126191
+method	c:objc(pl)SWCollaborationActionHandler(im)collaborationCoordinator:handleStartCollaborationAction:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	bf5548a8949cc89f
+method	c:objc(pl)SWCollaborationActionHandler(im)collaborationCoordinator:handleUpdateCollaborationParticipantsAction:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	1bda34b7f441e824
+interface	c:objc(cs)SWCollaborationCoordinator	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	897e363e243f4261
+super	-	SWCollaborationCoordinator	NSObject		-	-	22ecbe1c1fd6d6f8
+property	c:objc(cs)SWCollaborationCoordinator(cpy)sharedCoordinator	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	9d400f3154fe58ed
+property	c:objc(cs)SWCollaborationCoordinator(py)actionHandler	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	6b59f0f807f1602f
+interface	c:objc(cs)SWCollaborationOption	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	52badbac45025bcf
+super	-	SWCollaborationOption	NSObject		-	-	6c019ea47c1de550
+conforms	-	SWCollaborationOption	NSCopying		-	-	9757a97bebe7a387
+conforms	-	SWCollaborationOption	NSSecureCoding		-	-	b825ad31b249e5a0
+property	c:objc(cs)SWCollaborationOption(py)title	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	e4d91d72235cba6b
+property	c:objc(cs)SWCollaborationOption(py)identifier	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	8dfa5c9cf95332ae
+property	c:objc(cs)SWCollaborationOption(py)subtitle	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	858b10cd044409fa
+property	c:objc(cs)SWCollaborationOption(py)selected	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	bc10d267d171c498
+property	c:objc(cs)SWCollaborationOption(py)requiredOptionsIdentifiers	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	fe6ee5cf5a4ab39c
+method	c:objc(cs)SWCollaborationOption(im)initWithTitle:identifier:	-			swift=-/-/-/1	-	c37c9983d243640d
+method	c:objc(cs)SWCollaborationOption(im)init	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	596defc94a79aa05
+method	c:objc(cs)SWCollaborationOption(cm)new	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	4e0643dce0e22e8c
+method	c:objc(cs)SWCollaborationOption(cm)optionWithTitle:identifier:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	17b0195a88ba64a0
+var	c:@UTCollaborationOptionsTypeIdentifier	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	3dde72967ab12802
+interface	c:objc(cs)SWCollaborationOptionsGroup	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	ccd0c9370a547b55
+super	-	SWCollaborationOptionsGroup	NSObject		-	-	bf0d5a32516c27e4
+conforms	-	SWCollaborationOptionsGroup	NSCopying		-	-	61ebaf83bb61ada6
+conforms	-	SWCollaborationOptionsGroup	NSSecureCoding		-	-	da85565574fa3357
+property	c:objc(cs)SWCollaborationOptionsGroup(py)title	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	8608e532011f3ff6
+property	c:objc(cs)SWCollaborationOptionsGroup(py)identifier	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	e827f389c4d909a6
+property	c:objc(cs)SWCollaborationOptionsGroup(py)footer	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	6ff0506f05841028
+property	c:objc(cs)SWCollaborationOptionsGroup(py)options	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	092266baf12e2008
+method	c:objc(cs)SWCollaborationOptionsGroup(im)initWithIdentifier:options:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	12a41305df9bb61c
+method	c:objc(cs)SWCollaborationOptionsGroup(cm)optionsGroupWithIdentifier:options:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	045857a406d50b5c
+method	c:objc(cs)SWCollaborationOptionsGroup(im)init	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	6913329277bd5a37
+method	c:objc(cs)SWCollaborationOptionsGroup(cm)new	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	98f9446ec52d3311
+interface	c:objc(cs)SWCollaborationOptionsPickerGroup	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	4478c6790ffc720b
+super	-	SWCollaborationOptionsPickerGroup	SWCollaborationOptionsGroup		-	-	bf873bb3b86ef15f
+property	c:objc(cs)SWCollaborationOptionsPickerGroup(py)selectedOptionIdentifier	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	7cbce3986003e35a
+interface	c:objc(cs)SWCollaborationShareOptions	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	73d47f3d8549da38
+super	-	SWCollaborationShareOptions	NSObject		-	-	1528fe4f8e42b6c4
+conforms	-	SWCollaborationShareOptions	NSCopying		-	-	3bd09e3e024b5801
+conforms	-	SWCollaborationShareOptions	NSSecureCoding		-	-	acef8be9d1e802a9
+property	c:objc(cs)SWCollaborationShareOptions(py)optionsGroups	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	01fcc2f522702676
+property	c:objc(cs)SWCollaborationShareOptions(py)summary	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	b2bdbeb166c03b93
+method	c:objc(cs)SWCollaborationShareOptions(im)initWithOptionsGroups:summary:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	224e29fb81e47c0a
+method	c:objc(cs)SWCollaborationShareOptions(im)initWithOptionsGroups:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	9f94540c6691fa99
+method	c:objc(cs)SWCollaborationShareOptions(cm)shareOptionsWithOptionsGroups:summary:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	7a0bc24b0ef48cb5
+method	c:objc(cs)SWCollaborationShareOptions(cm)shareOptionsWithOptionsGroups:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	21659d3e89761cb0
+method	c:objc(cs)SWCollaborationShareOptions(im)init	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	0b28f6eb4335bfe5
+method	c:objc(cs)SWCollaborationShareOptions(im)initWithCoder:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	93873ead0b84baac
+typedef	c:@T@SWCollaborationIdentifier	-			-	-	1d47ed0010c52555
+typedef	c:@T@SWLocalCollaborationIdentifier	-			-	-	5cebc33a7995efbb
+interface	c:objc(cs)SWCollaborationMetadata	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	df1ce867bbc3a1c8
+super	-	SWCollaborationMetadata	NSObject		-	-	2beadb617a63b7f7
+conforms	-	SWCollaborationMetadata	NSSecureCoding		-	-	809c7c51aa550358
+conforms	-	SWCollaborationMetadata	NSCopying		-	-	257f98b24f169261
+conforms	-	SWCollaborationMetadata	NSMutableCopying		-	-	b4d7d6a83ec2b583
+property	c:objc(cs)SWCollaborationMetadata(py)collaborationIdentifier	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	fd7039af714ecf28
+property	c:objc(cs)SWCollaborationMetadata(py)localIdentifier	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	cec24559a5076886
+property	c:objc(cs)SWCollaborationMetadata(py)title	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	f63e08dc94b62f8b
+property	c:objc(cs)SWCollaborationMetadata(py)defaultShareOptions	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	87a30a612f634e8e
+property	c:objc(cs)SWCollaborationMetadata(py)userSelectedShareOptions	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	c141e26c39588434
+property	c:objc(cs)SWCollaborationMetadata(py)initiatorHandle	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	2ebcc122fe8236bd
+property	c:objc(cs)SWCollaborationMetadata(py)initiatorNameComponents	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	9566a70ce33dc279
+method	c:objc(cs)SWCollaborationMetadata(im)initWithLocalIdentifier:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	cc5f189a8aadf796
+method	c:objc(cs)SWCollaborationMetadata(im)initWithCollaborationIdentifier:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	24f7f27704865a49
+method	c:objc(cs)SWCollaborationMetadata(im)init	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	efb8313fc767470a
+method	c:objc(cs)SWCollaborationMetadata(cm)new	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	c9df6357a5981bee
+interface	c:objc(cs)SWPerson	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	be30b65d9a1a894c
+super	-	SWPerson	NSObject		-	-	b14e7e9e955f1e7a
+conforms	-	SWPerson	NSSecureCoding		-	-	6f1395761b3e6794
+method	c:objc(cs)SWPerson(im)initWithHandle:identity:displayName:thumbnailImageData:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	e8887a2829e3ac30
+method	c:objc(cs)SWPerson(im)init	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	06fe54767e09e9ec
+method	c:objc(cs)SWPerson(cm)new	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	138e521558cb8808
+interface	c:objc(cs)SWPersonIdentity	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	3683c08d321f085a
+super	-	SWPersonIdentity	NSObject		-	-	e31b2967643e2eec
+conforms	-	SWPersonIdentity	NSSecureCoding		-	-	4310ac80646caf8f
+conforms	-	SWPersonIdentity	NSCopying		-	-	e53b5407215c9a97
+property	c:objc(cs)SWPersonIdentity(py)rootHash	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	37a5e28f1c6630ff
+method	c:objc(cs)SWPersonIdentity(im)init	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	334bfa3de31844ba
+method	c:objc(cs)SWPersonIdentity(cm)new	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	d1e218c31edca262
+method	c:objc(cs)SWPersonIdentity(im)initWithRootHash:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	dd4b3ad85193f9d3
+interface	c:objc(cs)SWPersonIdentityProof	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	1d14c012417092ae
+super	-	SWPersonIdentityProof	NSObject		-	-	da654781032ee1c3
+conforms	-	SWPersonIdentityProof	NSSecureCoding		-	-	9807e07eca03bba7
+conforms	-	SWPersonIdentityProof	NSCopying		-	-	7a04b92b776dfce7
+property	c:objc(cs)SWPersonIdentityProof(py)inclusionHashes	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	ee7c64def8e90cd6
+property	c:objc(cs)SWPersonIdentityProof(py)publicKey	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	8f949df2276a1574
+property	c:objc(cs)SWPersonIdentityProof(py)publicKeyIndex	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	8ac5604df946946c
+method	c:objc(cs)SWPersonIdentityProof(im)init	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	965d983572a3b7c2
+method	c:objc(cs)SWPersonIdentityProof(cm)new	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	092a2f8e5ca4c3de
+interface	c:objc(cs)SWSignedPersonIdentityProof	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	49d71318ebe811b0
+super	-	SWSignedPersonIdentityProof	SWPersonIdentityProof		-	-	52ba10ebc85725af
+method	c:objc(cs)SWSignedPersonIdentityProof(im)initWithPersonIdentityProof:signatureData:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	310f3468074cea08
+property	c:objc(cs)SWSignedPersonIdentityProof(py)signatureData	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	ca2541f07d996c93
+interface	c:objc(cs)SWStartCollaborationAction	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	0d3064066e45196c
+super	-	SWStartCollaborationAction	SWAction		-	-	f738e1e3e28032cf
+conforms	-	SWStartCollaborationAction	NSSecureCoding		-	-	c5082c6010ca72f4
+conforms	-	SWStartCollaborationAction	NSCopying		-	-	8b7b9cc8ffd53ca0
+property	c:objc(cs)SWStartCollaborationAction(py)collaborationMetadata	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	336fe629702fff54
+method	c:objc(cs)SWStartCollaborationAction(im)fulfillUsingURL:collaborationIdentifier:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	e26e00d04f5a46aa
+method	c:objc(cs)SWStartCollaborationAction(im)init	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	44b673a86190b3e2
+method	c:objc(cs)SWStartCollaborationAction(cm)new	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	9fd7f724384b32ab
+interface	c:objc(cs)SWUpdateCollaborationParticipantsAction	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	5ff40f23d7df6108
+super	-	SWUpdateCollaborationParticipantsAction	SWAction		-	-	d42824b743dd7341
+conforms	-	SWUpdateCollaborationParticipantsAction	NSSecureCoding		-	-	3dac7e538d33bb00
+conforms	-	SWUpdateCollaborationParticipantsAction	NSCopying		-	-	47e5480765bbfc62
+property	c:objc(cs)SWUpdateCollaborationParticipantsAction(py)collaborationMetadata	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	dd0ed67b3772be92
+property	c:objc(cs)SWUpdateCollaborationParticipantsAction(py)addedIdentities	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	0710186d0cdac52c
+property	c:objc(cs)SWUpdateCollaborationParticipantsAction(py)removedIdentities	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	a4435308290056ec
+method	c:objc(cs)SWUpdateCollaborationParticipantsAction(im)init	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	7d90efba753aa734
+method	c:objc(cs)SWUpdateCollaborationParticipantsAction(cm)new	-			*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	0beea59072af2826

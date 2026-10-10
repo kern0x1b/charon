@@ -1,0 +1,267 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
+var	c:@CXErrorDomain	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	d270dfcf81b6adca
+var	c:@CXErrorDomainIncomingCall	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	ebc52930a4572b20
+var	c:@CXErrorDomainRequestTransaction	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	a8da46a9711cee5d
+var	c:@CXErrorDomainCallDirectoryManager	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	57625ff712ebb28d
+var	c:@CXErrorDomainNotificationServiceExtension	-			ios=14.5/-/-/0,maccatalyst=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	ee77c5add32014da
+typedef	c:@T@CXErrorCode	-			-	-	831d576fca848e25
+enum	c:@E@CXErrorCode	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	99980200489bc8fd
+enumconst	c:@E@CXErrorCode@CXErrorCodeUnknownError	CXErrorCode			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	b921f0362560caae
+enumconst	c:@E@CXErrorCode@CXErrorCodeUnentitled	CXErrorCode			ios=13.2/-/-/0,maccatalyst=13.2/-/-/0,macos=-/-/-/1,watchos=9.0/-/-/0	-	fed36da7b3c1e9ba
+enumconst	c:@E@CXErrorCode@CXErrorCodeInvalidArgument	CXErrorCode			ios=13.2/-/-/0,maccatalyst=13.2/-/-/0,macos=-/-/-/1,watchos=9.0/-/-/0	-	4967b86fcfe3d3d9
+enumconst	c:@E@CXErrorCode@CXErrorCodeMissingVoIPBackgroundMode	CXErrorCode			ios=14.5/-/-/0,maccatalyst=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	24efc01411ec31d4
+typedef	c:@T@CXErrorCodeIncomingCallError	-			-	-	a0e22e440062ca9c
+enum	c:@E@CXErrorCodeIncomingCallError	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	69d72081d98194cd
+enumconst	c:@E@CXErrorCodeIncomingCallError@CXErrorCodeIncomingCallErrorUnknown	CXErrorCodeIncomingCallError			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	3db14acbd3a4959d
+enumconst	c:@E@CXErrorCodeIncomingCallError@CXErrorCodeIncomingCallErrorUnentitled	CXErrorCodeIncomingCallError			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	f589e12ea9d4138c
+enumconst	c:@E@CXErrorCodeIncomingCallError@CXErrorCodeIncomingCallErrorCallUUIDAlreadyExists	CXErrorCodeIncomingCallError			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	e27c90f8312b9951
+enumconst	c:@E@CXErrorCodeIncomingCallError@CXErrorCodeIncomingCallErrorFilteredByDoNotDisturb	CXErrorCodeIncomingCallError			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	d0168c1732350f72
+enumconst	c:@E@CXErrorCodeIncomingCallError@CXErrorCodeIncomingCallErrorFilteredByBlockList	CXErrorCodeIncomingCallError			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	69e0fae802fdb7b3
+enumconst	c:@E@CXErrorCodeIncomingCallError@CXErrorCodeIncomingCallErrorFilteredDuringRestrictedSharingMode	CXErrorCodeIncomingCallError			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	07b9ce05a7cb3d3d
+enumconst	c:@E@CXErrorCodeIncomingCallError@CXErrorCodeIncomingCallErrorCallIsProtected	CXErrorCodeIncomingCallError			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	93dd1286f0450e33
+enumconst	c:@E@CXErrorCodeIncomingCallError@CXErrorCodeIncomingCallErrorFilteredBySensitiveParticipants	CXErrorCodeIncomingCallError			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	f3a87734b20cd8ff
+typedef	c:@T@CXErrorCodeRequestTransactionError	-			-	-	4f5f4c7ab4a8606d
+enum	c:@E@CXErrorCodeRequestTransactionError	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	a2d4fc1d9386875a
+enumconst	c:@E@CXErrorCodeRequestTransactionError@CXErrorCodeRequestTransactionErrorUnknown	CXErrorCodeRequestTransactionError			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	5095f5f8197e814c
+enumconst	c:@E@CXErrorCodeRequestTransactionError@CXErrorCodeRequestTransactionErrorUnentitled	CXErrorCodeRequestTransactionError			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	1fbfff6ac21a76e7
+enumconst	c:@E@CXErrorCodeRequestTransactionError@CXErrorCodeRequestTransactionErrorUnknownCallProvider	CXErrorCodeRequestTransactionError			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	b8b4522cdb0f6303
+enumconst	c:@E@CXErrorCodeRequestTransactionError@CXErrorCodeRequestTransactionErrorEmptyTransaction	CXErrorCodeRequestTransactionError			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	8fa8994010f2624d
+enumconst	c:@E@CXErrorCodeRequestTransactionError@CXErrorCodeRequestTransactionErrorUnknownCallUUID	CXErrorCodeRequestTransactionError			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	0dcc6b2f4943a88f
+enumconst	c:@E@CXErrorCodeRequestTransactionError@CXErrorCodeRequestTransactionErrorCallUUIDAlreadyExists	CXErrorCodeRequestTransactionError			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	9257027a70e73bf5
+enumconst	c:@E@CXErrorCodeRequestTransactionError@CXErrorCodeRequestTransactionErrorInvalidAction	CXErrorCodeRequestTransactionError			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	fa3185a6f3fefd38
+enumconst	c:@E@CXErrorCodeRequestTransactionError@CXErrorCodeRequestTransactionErrorMaximumCallGroupsReached	CXErrorCodeRequestTransactionError			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	c13a0f64ca6c2054
+enumconst	c:@E@CXErrorCodeRequestTransactionError@CXErrorCodeRequestTransactionErrorCallIsProtected	CXErrorCodeRequestTransactionError			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	10b72069fe650dcd
+typedef	c:@T@CXErrorCodeCallDirectoryManagerError	-			-	-	696cd4b0f1439ee8
+enum	c:@E@CXErrorCodeCallDirectoryManagerError	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	613d52a0645ddc8f
+enumconst	c:@E@CXErrorCodeCallDirectoryManagerError@CXErrorCodeCallDirectoryManagerErrorUnknown	CXErrorCodeCallDirectoryManagerError			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	40be1b037601aa3b
+enumconst	c:@E@CXErrorCodeCallDirectoryManagerError@CXErrorCodeCallDirectoryManagerErrorNoExtensionFound	CXErrorCodeCallDirectoryManagerError			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	36120c0ea49c0bbf
+enumconst	c:@E@CXErrorCodeCallDirectoryManagerError@CXErrorCodeCallDirectoryManagerErrorLoadingInterrupted	CXErrorCodeCallDirectoryManagerError			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	5377d1c0f136c6db
+enumconst	c:@E@CXErrorCodeCallDirectoryManagerError@CXErrorCodeCallDirectoryManagerErrorEntriesOutOfOrder	CXErrorCodeCallDirectoryManagerError			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	979c34d95720eb3a
+enumconst	c:@E@CXErrorCodeCallDirectoryManagerError@CXErrorCodeCallDirectoryManagerErrorDuplicateEntries	CXErrorCodeCallDirectoryManagerError			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	8090de08ff45afc8
+enumconst	c:@E@CXErrorCodeCallDirectoryManagerError@CXErrorCodeCallDirectoryManagerErrorMaximumEntriesExceeded	CXErrorCodeCallDirectoryManagerError			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	f741e2d7ce4f7d20
+enumconst	c:@E@CXErrorCodeCallDirectoryManagerError@CXErrorCodeCallDirectoryManagerErrorExtensionDisabled	CXErrorCodeCallDirectoryManagerError			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	b1267111a7719ca7
+enumconst	c:@E@CXErrorCodeCallDirectoryManagerError@CXErrorCodeCallDirectoryManagerErrorCurrentlyLoading	CXErrorCodeCallDirectoryManagerError			ios=10.3/-/-/0,maccatalyst=13.0/-/-/0	-	86bb78c9acdc2ef0
+enumconst	c:@E@CXErrorCodeCallDirectoryManagerError@CXErrorCodeCallDirectoryManagerErrorUnexpectedIncrementalRemoval	CXErrorCodeCallDirectoryManagerError			ios=11.0/-/-/0,maccatalyst=13.0/-/-/0	-	96588e914a7a528d
+typedef	c:@T@CXErrorCodeNotificationServiceExtensionError	-			-	-	815414945972d96d
+enum	c:@E@CXErrorCodeNotificationServiceExtensionError	-			ios=14.5/-/-/0,maccatalyst=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	3f7397196d472ca4
+enumconst	c:@E@CXErrorCodeNotificationServiceExtensionError@CXErrorCodeNotificationServiceExtensionErrorUnknown	CXErrorCodeNotificationServiceExtensionError			ios=14.5/-/-/0,maccatalyst=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	78ea2eac680d6f2a
+enumconst	c:@E@CXErrorCodeNotificationServiceExtensionError@CXErrorCodeNotificationServiceExtensionErrorInvalidClientProcess	CXErrorCodeNotificationServiceExtensionError			ios=14.5/-/-/0,maccatalyst=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	f34306b0ed749af1
+enumconst	c:@E@CXErrorCodeNotificationServiceExtensionError@CXErrorCodeNotificationServiceExtensionErrorMissingNotificationFilteringEntitlement	CXErrorCodeNotificationServiceExtensionError			ios=14.5/-/-/0,maccatalyst=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	10f77cd598561597
+interface	c:objc(cs)CXAction	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	0ca1194fad859db5
+super	-	CXAction	NSObject		-	-	5311f63dddbc17ba
+conforms	-	CXAction	NSCopying		-	-	e2fd8682c4cc69f0
+conforms	-	CXAction	NSSecureCoding		-	-	2c3db03d17eb2da3
+property	c:objc(cs)CXAction(py)UUID	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	f458e84df6f0672f
+property	c:objc(cs)CXAction(py)complete	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	8a75bbc8285f1259
+property	c:objc(cs)CXAction(py)timeoutDate	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	598634f523a3dd9b
+method	c:objc(cs)CXAction(im)init	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	324edd8d919ab536
+method	c:objc(cs)CXAction(im)initWithCoder:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	3d5f4405b980384e
+method	c:objc(cs)CXAction(im)fulfill	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	f50dcb67f95590f0
+method	c:objc(cs)CXAction(im)fail	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	1fd5ff213e6a1919
+interface	c:objc(cs)CXTransaction	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	28aa2c1f2d72aa7c
+super	-	CXTransaction	NSObject		-	-	9fd966261e499ca4
+conforms	-	CXTransaction	NSCopying		-	-	a06837417e83b763
+conforms	-	CXTransaction	NSSecureCoding		-	-	aefcfe3914c8d538
+property	c:objc(cs)CXTransaction(py)UUID	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	02c3f8b61e8fecf4
+property	c:objc(cs)CXTransaction(py)complete	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	5ec3f83558c5a047
+property	c:objc(cs)CXTransaction(py)actions	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	7fa521d0e4a9d843
+method	c:objc(cs)CXTransaction(im)initWithActions:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	e0fa816d0ac15723
+method	c:objc(cs)CXTransaction(im)initWithAction:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	8b19a86b91b2bbb0
+method	c:objc(cs)CXTransaction(im)addAction:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	bb437cb397e31c53
+interface	c:objc(cs)CXCallUpdate	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	54516fea9d8cc59f
+super	-	CXCallUpdate	NSObject		-	-	47663afaffc6aea1
+conforms	-	CXCallUpdate	NSCopying		-	-	d8432353b9c112ea
+property	c:objc(cs)CXCallUpdate(py)remoteHandle	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	413e1ba6a7c02792
+property	c:objc(cs)CXCallUpdate(py)localizedCallerName	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	34f43eaa437da87e
+property	c:objc(cs)CXCallUpdate(py)supportsHolding	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	44ce8d5c3eea5d04
+property	c:objc(cs)CXCallUpdate(py)supportsGrouping	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	1412c6dd9806fc1c
+property	c:objc(cs)CXCallUpdate(py)supportsUngrouping	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	6322623760810f3d
+property	c:objc(cs)CXCallUpdate(py)supportsDTMF	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	58cb2a3533144e52
+property	c:objc(cs)CXCallUpdate(py)hasVideo	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	d26951b2162844cb
+typedef	c:@T@CXHandleType	-			-	-	fcb9a60dbe593571
+enum	c:@E@CXHandleType	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	0e0101af2f13bf77
+enumconst	c:@E@CXHandleType@CXHandleTypeGeneric	CXHandleType			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	c340eaee7a85fcb1
+enumconst	c:@E@CXHandleType@CXHandleTypePhoneNumber	CXHandleType			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	1400f18c506f6172
+enumconst	c:@E@CXHandleType@CXHandleTypeEmailAddress	CXHandleType			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	fb3cada95b659fbf
+interface	c:objc(cs)CXHandle	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	88f1a91d12651f76
+super	-	CXHandle	NSObject		-	-	3d9fd26f8f95e1a3
+conforms	-	CXHandle	NSCopying		-	-	3fa64f099b02b214
+conforms	-	CXHandle	NSSecureCoding		-	-	c4d5c29f48fcfac0
+property	c:objc(cs)CXHandle(py)type	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	a20d95abc0fc362c
+property	c:objc(cs)CXHandle(py)value	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	0888fc7ddb447242
+method	c:objc(cs)CXHandle(im)initWithType:value:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	19d405fefa5b2430
+method	c:objc(cs)CXHandle(im)init	-			*unavailable ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	62f4f5910b881bad
+method	c:objc(cs)CXHandle(im)isEqualToHandle:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	10a59660b90d9adf
+interface	c:objc(cs)CXCallAction	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	180970f313a580c5
+super	-	CXCallAction	CXAction		-	-	6cb6c0bb213a73fe
+property	c:objc(cs)CXCallAction(py)callUUID	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	0997b24d49fc68b2
+method	c:objc(cs)CXCallAction(im)initWithCallUUID:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	d23d08e98c4c7002
+method	c:objc(cs)CXCallAction(im)initWithCoder:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	e00796c838fd9509
+method	c:objc(cs)CXCallAction(im)init	-			*unavailable ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	8b68ecefa7558dda
+interface	c:objc(cs)CXStartCallAction	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	b553785edbfe93c9
+super	-	CXStartCallAction	CXCallAction		-	-	3d0c32aaec69f36e
+method	c:objc(cs)CXStartCallAction(im)initWithCallUUID:handle:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	51ecbc7d62e48e47
+method	c:objc(cs)CXStartCallAction(im)initWithCoder:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	420c6e69956a781b
+method	c:objc(cs)CXStartCallAction(im)initWithCallUUID:	-			*unavailable ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	4065ed0841479d5e
+property	c:objc(cs)CXStartCallAction(py)handle	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	f0a6ac8015294153
+property	c:objc(cs)CXStartCallAction(py)contactIdentifier	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	c75cad28c8de5e3a
+property	c:objc(cs)CXStartCallAction(py)video	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	59ba28ccae460ea0
+method	c:objc(cs)CXStartCallAction(im)fulfillWithDateStarted:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	26936fc025380b43
+interface	c:objc(cs)CXAnswerCallAction	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	2eff46fb520858c2
+super	-	CXAnswerCallAction	CXCallAction		-	-	587239a990ebf4b6
+method	c:objc(cs)CXAnswerCallAction(im)fulfillWithDateConnected:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	82a20c9d69d36c0e
+interface	c:objc(cs)CXEndCallAction	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	61bb409c850f577f
+super	-	CXEndCallAction	CXCallAction		-	-	0f9c0f8d02e00ea6
+method	c:objc(cs)CXEndCallAction(im)fulfillWithDateEnded:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	b6e86d930133f855
+interface	c:objc(cs)CXSetHeldCallAction	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	0662e1e2657cbbe8
+super	-	CXSetHeldCallAction	CXCallAction		-	-	a37e896a85476651
+method	c:objc(cs)CXSetHeldCallAction(im)initWithCallUUID:onHold:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	b9afa39465602e7c
+method	c:objc(cs)CXSetHeldCallAction(im)initWithCoder:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	d6e58299070b2a89
+method	c:objc(cs)CXSetHeldCallAction(im)initWithCallUUID:	-			*unavailable ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	469e2f0107091ccb
+property	c:objc(cs)CXSetHeldCallAction(py)onHold	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	6e4414c183835369
+interface	c:objc(cs)CXSetMutedCallAction	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	595ab555d4e53440
+super	-	CXSetMutedCallAction	CXCallAction		-	-	f3b8e6ed4aede4e2
+method	c:objc(cs)CXSetMutedCallAction(im)initWithCallUUID:muted:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	44fb05fb55b50552
+method	c:objc(cs)CXSetMutedCallAction(im)initWithCoder:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	55bb42c4799e8187
+method	c:objc(cs)CXSetMutedCallAction(im)initWithCallUUID:	-			*unavailable ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	d964bdec09793a6b
+property	c:objc(cs)CXSetMutedCallAction(py)muted	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	034f666705067598
+interface	c:objc(cs)CXSetGroupCallAction	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	f9e4054ef53f5f1b
+super	-	CXSetGroupCallAction	CXCallAction		-	-	635b5aabfbf88e1e
+method	c:objc(cs)CXSetGroupCallAction(im)initWithCallUUID:callUUIDToGroupWith:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	d976975e7bf6afc0
+method	c:objc(cs)CXSetGroupCallAction(im)initWithCoder:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	8910d4147c135048
+method	c:objc(cs)CXSetGroupCallAction(im)initWithCallUUID:	-			*unavailable ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	f666bc67eb38ab19
+property	c:objc(cs)CXSetGroupCallAction(py)callUUIDToGroupWith	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	7ad1adbcbcc0a1e4
+typedef	c:@T@CXPlayDTMFCallActionType	-			-	-	2dee8f9cd6da14e6
+enum	c:@E@CXPlayDTMFCallActionType	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	a9a4155cd65071ea
+enumconst	c:@E@CXPlayDTMFCallActionType@CXPlayDTMFCallActionTypeSingleTone	CXPlayDTMFCallActionType			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	41e95f4d1b84a616
+enumconst	c:@E@CXPlayDTMFCallActionType@CXPlayDTMFCallActionTypeSoftPause	CXPlayDTMFCallActionType			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	c2c93e1a049ed682
+enumconst	c:@E@CXPlayDTMFCallActionType@CXPlayDTMFCallActionTypeHardPause	CXPlayDTMFCallActionType			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	1334fc5dd2cace93
+interface	c:objc(cs)CXPlayDTMFCallAction	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	a245bc6b30e520aa
+super	-	CXPlayDTMFCallAction	CXCallAction		-	-	45f16d79378beab4
+method	c:objc(cs)CXPlayDTMFCallAction(im)initWithCallUUID:digits:type:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	36943ef446b84bef
+method	c:objc(cs)CXPlayDTMFCallAction(im)initWithCoder:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	0936dcfac5f8d0a0
+method	c:objc(cs)CXPlayDTMFCallAction(im)initWithCallUUID:	-			*unavailable ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	06e3e7a637853fa1
+property	c:objc(cs)CXPlayDTMFCallAction(py)digits	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	fdbcf8e18a3acbe6
+property	c:objc(cs)CXPlayDTMFCallAction(py)type	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	0f07f74d4e13c1d9
+typedef	c:@T@CXTranslationEngine	-			-	-	19f5987007bac1e2
+enum	c:@E@CXTranslationEngine	-			-	-	3c048d28eae479f6
+enumconst	c:@E@CXTranslationEngine@CXTranslationEngineDefault	CXTranslationEngine			-	-	12f9cff15fcc37f1
+enumconst	c:@E@CXTranslationEngine@CXTranslationEngineCustom	CXTranslationEngine			-	-	e6034221f51fc658
+interface	c:objc(cs)CXSetTranslatingCallAction	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8b6f9de1f45f9ef6
+super	-	CXSetTranslatingCallAction	CXCallAction		-	-	aa00fdcfc2cd744b
+conforms	-	CXSetTranslatingCallAction	NSSecureCoding		-	-	ec83562b8d67b153
+property	c:objc(cs)CXSetTranslatingCallAction(py)isTranslating	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fddea72d83585e50
+property	c:objc(cs)CXSetTranslatingCallAction(py)localLanguage	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	604baeb98a25c8d8
+property	c:objc(cs)CXSetTranslatingCallAction(py)remoteLanguage	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0e00764d905b4f4c
+method	c:objc(cs)CXSetTranslatingCallAction(im)initWithCallUUID:isTranslating:localLanguage:remoteLanguage:	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	dd2650d13d808cb2
+method	c:objc(cs)CXSetTranslatingCallAction(im)initWithCoder:	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4dbcd0f3f783dae1
+method	c:objc(cs)CXSetTranslatingCallAction(im)initWithCallUUID:	-			*unavailable ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	009af8f443a75393
+method	c:objc(cs)CXSetTranslatingCallAction(im)fulfillUsingTranslationEngine:	-			ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f5829e1b7ff49a9d
+typedef	c:@T@CXCallEndedReason	-			-	-	86b013b8b431408d
+enum	c:@E@CXCallEndedReason	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	0bdbef03e96969c4
+enumconst	c:@E@CXCallEndedReason@CXCallEndedReasonFailed	CXCallEndedReason			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	0bf420e25f7094f5
+enumconst	c:@E@CXCallEndedReason@CXCallEndedReasonRemoteEnded	CXCallEndedReason			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	d4a57774ba849815
+enumconst	c:@E@CXCallEndedReason@CXCallEndedReasonUnanswered	CXCallEndedReason			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	bd36fbae6609beb4
+enumconst	c:@E@CXCallEndedReason@CXCallEndedReasonAnsweredElsewhere	CXCallEndedReason			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	2f2e97a757ec94a8
+enumconst	c:@E@CXCallEndedReason@CXCallEndedReasonDeclinedElsewhere	CXCallEndedReason			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	f5e569cc9bf98480
+protocol	c:objc(pl)CXProviderDelegate	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	dc4517e240adc8e4
+conforms	-	CXProviderDelegate	NSObject		-	-	de5f7ae1af52a139
+method	c:objc(pl)CXProviderDelegate(im)providerDidReset:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	1c27bb8fb5ffd1f3
+method	c:objc(pl)CXProviderDelegate(im)providerDidBegin:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	318e9e66efaa9df6
+method	c:objc(pl)CXProviderDelegate(im)provider:executeTransaction:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	72f4dc941017f250
+method	c:objc(pl)CXProviderDelegate(im)provider:performStartCallAction:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	12766c4606069726
+method	c:objc(pl)CXProviderDelegate(im)provider:performAnswerCallAction:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	d489ca53ed68e294
+method	c:objc(pl)CXProviderDelegate(im)provider:performEndCallAction:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	fc753845bd631993
+method	c:objc(pl)CXProviderDelegate(im)provider:performSetHeldCallAction:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	e5890bcba99d6a94
+method	c:objc(pl)CXProviderDelegate(im)provider:performSetMutedCallAction:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	69aaa506ceacd060
+method	c:objc(pl)CXProviderDelegate(im)provider:performSetGroupCallAction:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	80afcfd2a55b47f6
+method	c:objc(pl)CXProviderDelegate(im)provider:performPlayDTMFCallAction:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	35038bb23ef84b4f
+method	c:objc(pl)CXProviderDelegate(im)provider:performSetTranslatingCallAction:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	740b5891a57fe7f3
+method	c:objc(pl)CXProviderDelegate(im)provider:timedOutPerformingAction:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	5412347bbe7d04e3
+method	c:objc(pl)CXProviderDelegate(im)provider:didActivateAudioSession:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	870618783e754cd6
+method	c:objc(pl)CXProviderDelegate(im)provider:didDeactivateAudioSession:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	7dfdc7b9a20a349d
+interface	c:objc(cs)CXProvider	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	e6b84e2cf17b23c6
+super	-	CXProvider	NSObject		-	-	b7f1169960624bb0
+method	c:objc(cs)CXProvider(im)initWithConfiguration:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	d13838a79cea87dc
+method	c:objc(cs)CXProvider(cm)new	-			*unavailable ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	4db4b780a3518416
+method	c:objc(cs)CXProvider(im)init	-			*unavailable ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	7ad44c854b74b69a
+method	c:objc(cs)CXProvider(im)setDelegate:queue:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	9d93f6f867952ffe
+method	c:objc(cs)CXProvider(im)reportNewIncomingCallWithUUID:update:completion:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	5e9b4458fe5d9770
+method	c:objc(cs)CXProvider(im)reportCallWithUUID:updated:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	1630409d1ae3369b
+method	c:objc(cs)CXProvider(im)reportCallWithUUID:endedAtDate:reason:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	fd569fce0c822b2c
+method	c:objc(cs)CXProvider(im)reportOutgoingCallWithUUID:startedConnectingAtDate:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	4e3596aec3d1e91e
+method	c:objc(cs)CXProvider(im)reportOutgoingCallWithUUID:connectedAtDate:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	b4687ead6c5bb3f2
+method	c:objc(cs)CXProvider(cm)reportNewIncomingVoIPPushPayload:completion:	-			ios=14.5/-/-/0,maccatalyst=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9459ce31746b1ec9
+property	c:objc(cs)CXProvider(py)configuration	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	a50ef769af873f3a
+method	c:objc(cs)CXProvider(im)invalidate	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	63e7347142166067
+property	c:objc(cs)CXProvider(py)pendingTransactions	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	6c33a9fafe6f08f1
+method	c:objc(cs)CXProvider(im)pendingCallActionsOfClass:withCallUUID:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	82d6f855de07e3b2
+interface	c:objc(cs)CXProviderConfiguration	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=9.0/-/-/0	deprecated: No longer supported	1006c3aa9925004f
+super	-	CXProviderConfiguration	NSObject		-	-	6ecf315a5d97e8ec
+conforms	-	CXProviderConfiguration	NSCopying		-	-	b0f09350d096d024
+property	c:objc(cs)CXProviderConfiguration(py)localizedName	-			ios=10.0/14.0/-/0,maccatalyst=13.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4ae5e258398f0529
+property	c:objc(cs)CXProviderConfiguration(py)ringtoneSound	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=9.0/-/-/0	-	fa8408006d418d79
+property	c:objc(cs)CXProviderConfiguration(py)iconTemplateImageData	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=9.0/-/-/0	-	46411899773b9f49
+property	c:objc(cs)CXProviderConfiguration(py)maximumCallGroups	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=9.0/-/-/0	-	0559e4f93a4dd82a
+property	c:objc(cs)CXProviderConfiguration(py)maximumCallsPerCallGroup	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=9.0/-/-/0	-	de3fb139600adc24
+property	c:objc(cs)CXProviderConfiguration(py)includesCallsInRecents	-			ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,watchos=9.0/-/-/0	-	61afaef37ca5c9a2
+property	c:objc(cs)CXProviderConfiguration(py)supportsVideo	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=9.0/-/-/0	-	f97dccc60b98cb96
+property	c:objc(cs)CXProviderConfiguration(py)supportsAudioTranslation	-			ios=26.0/-/-/0	-	e47dfa545be00b38
+property	c:objc(cs)CXProviderConfiguration(py)supportedHandleTypes	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=9.0/-/-/0	-	e4b360b88c259d91
+method	c:objc(cs)CXProviderConfiguration(im)init	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=9.0/-/-/0	-	ad6ce25c64884b4f
+method	c:objc(cs)CXProviderConfiguration(im)initWithLocalizedName:	-			ios=10.0/14.0/-/0,maccatalyst=13.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use init instead	6bd5ea65c89eb553
+interface	c:objc(cs)CXCall	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	b38c29af953b44ce
+super	-	CXCall	NSObject		-	-	6b80e37f7c35b0c0
+property	c:objc(cs)CXCall(py)UUID	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	9b8335be75f6fe4d
+property	c:objc(cs)CXCall(py)outgoing	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	5cd665ca93f9dbb7
+property	c:objc(cs)CXCall(py)onHold	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	ef5c1272e6038eef
+property	c:objc(cs)CXCall(py)hasConnected	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	a5dfdd6b0dc12649
+property	c:objc(cs)CXCall(py)hasEnded	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	a081df2cb4d28058
+method	c:objc(cs)CXCall(im)init	-			*unavailable ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	ce89fedf8b3ff725
+method	c:objc(cs)CXCall(im)isEqualToCall:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	583078fcea21fc32
+protocol	c:objc(pl)CXCallObserverDelegate	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	cefa4dc1f974517a
+conforms	-	CXCallObserverDelegate	NSObject		-	-	86c87b2490bdd491
+method	c:objc(pl)CXCallObserverDelegate(im)callObserver:callChanged:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	1daa7b4081226e79
+interface	c:objc(cs)CXCallObserver	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	cd77be99e4effbf3
+super	-	CXCallObserver	NSObject		-	-	b73c7bc4bfa4f5ed
+property	c:objc(cs)CXCallObserver(py)calls	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	32e5376d876c15b4
+method	c:objc(cs)CXCallObserver(im)setDelegate:queue:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	d25fafceec867c83
+interface	c:objc(cs)CXCallController	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	3c4b08204953fa5e
+super	-	CXCallController	NSObject		-	-	70461bbdb88f5c23
+method	c:objc(cs)CXCallController(im)init	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	1358154d282790fb
+method	c:objc(cs)CXCallController(im)initWithQueue:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	797c2aedf1a39646
+property	c:objc(cs)CXCallController(py)callObserver	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	7781cbf74aa84d33
+method	c:objc(cs)CXCallController(im)requestTransaction:completion:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	7fcb7493fb09beee
+method	c:objc(cs)CXCallController(im)requestTransactionWithActions:completion:	-			ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,watchos=9.0/-/-/0	-	138afd023b862bea
+method	c:objc(cs)CXCallController(im)requestTransactionWithAction:completion:	-			ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,watchos=9.0/-/-/0	-	fb1090c1c2f66980
+typedef	c:@T@CXCallDirectoryPhoneNumber	-			-	-	2c21cb2e1a341fcd
+typedef	c:@T@CXCallDirectoryEnabledStatus	-			-	-	5437157fa5c980a6
+enum	c:@E@CXCallDirectoryEnabledStatus	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1c8ede97ea9d5eaa
+enumconst	c:@E@CXCallDirectoryEnabledStatus@CXCallDirectoryEnabledStatusUnknown	CXCallDirectoryEnabledStatus			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9ae4bb0b18a87687
+enumconst	c:@E@CXCallDirectoryEnabledStatus@CXCallDirectoryEnabledStatusDisabled	CXCallDirectoryEnabledStatus			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4491c8782abbd0d0
+enumconst	c:@E@CXCallDirectoryEnabledStatus@CXCallDirectoryEnabledStatusEnabled	CXCallDirectoryEnabledStatus			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ef9ae196123b9f5b
+interface	c:objc(cs)CXCallDirectoryManager	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4078f9fa5c975319
+super	-	CXCallDirectoryManager	NSObject		-	-	4dc515f0fee19d77
+property	c:objc(cs)CXCallDirectoryManager(cpy)sharedInstance	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b132dfd02b101044
+method	c:objc(cs)CXCallDirectoryManager(im)reloadExtensionWithIdentifier:completionHandler:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c071381422266496
+method	c:objc(cs)CXCallDirectoryManager(im)getEnabledStatusForExtensionWithIdentifier:completionHandler:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	72815d8c5ab5fc18
+method	c:objc(cs)CXCallDirectoryManager(im)openSettingsWithCompletionHandler:	-			ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d826d8759d83a367
+interface	c:objc(cs)CXCallDirectoryProvider	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4c1a50259e4c0a81
+super	-	CXCallDirectoryProvider	NSObject		-	-	188769958815e6e4
+conforms	-	CXCallDirectoryProvider	NSExtensionRequestHandling		-	-	02cb1446dd66f6db
+method	c:objc(cs)CXCallDirectoryProvider(im)beginRequestWithExtensionContext:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	865ae6d500db3610
+protocol	c:objc(pl)CXCallDirectoryExtensionContextDelegate	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a72f5e60d7f461cd
+conforms	-	CXCallDirectoryExtensionContextDelegate	NSObject		-	-	59937fe01c14dbf1
+method	c:objc(pl)CXCallDirectoryExtensionContextDelegate(im)requestFailedForExtensionContext:withError:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5e6e08736e40cd48
+interface	c:objc(cs)CXCallDirectoryExtensionContext	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	57207c7f88773e19
+super	-	CXCallDirectoryExtensionContext	NSExtensionContext		-	-	fad398ace7ac68cc
+property	c:objc(cs)CXCallDirectoryExtensionContext(py)delegate	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	56dad97c37080e23
+property	c:objc(cs)CXCallDirectoryExtensionContext(py)incremental	-			ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	246706bc265c53c6
+method	c:objc(cs)CXCallDirectoryExtensionContext(im)addBlockingEntryWithNextSequentialPhoneNumber:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	38a328786e5f6a9e
+method	c:objc(cs)CXCallDirectoryExtensionContext(im)removeBlockingEntryWithPhoneNumber:	-			ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	d66b6c3778dd1ea6
+method	c:objc(cs)CXCallDirectoryExtensionContext(im)removeAllBlockingEntries	-			ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	15926ab31b4f2c3e
+method	c:objc(cs)CXCallDirectoryExtensionContext(im)addIdentificationEntryWithNextSequentialPhoneNumber:label:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	597e876ae03806cd
+method	c:objc(cs)CXCallDirectoryExtensionContext(im)removeIdentificationEntryWithPhoneNumber:	-			ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	915d05ca4fa850af
+method	c:objc(cs)CXCallDirectoryExtensionContext(im)removeAllIdentificationEntries	-			ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	cb9df2fd2f8b1d08
+method	c:objc(cs)CXCallDirectoryExtensionContext(im)completeRequestWithCompletionHandler:	-			ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2399cc01e691d495
+method	c:objc(cs)CXCallDirectoryExtensionContext(im)completeRequestReturningItems:completionHandler:	-			*unavailable ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fb512f4cd854e10c
