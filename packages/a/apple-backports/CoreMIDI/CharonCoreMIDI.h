@@ -74,6 +74,24 @@ void CharonMIDIParseBytes(CharonMIDIParser *parser, const uint8_t *data, size_t 
 // and stays open for the packets that follow. macOS does the same at the end of a list.
 void CharonMIDIParseFlush(CharonMIDIParser *parser, uint8_t group, CharonMIDIWords *out);
 
+// What a Bluetooth LE MIDI stream carries from one notification to the next: whether a timestamp byte is due, a SysEx
+// open for its F7, the running status, and a message whose data bytes have not all arrived.
+typedef struct CharonBLEParser {
+    int timestampDue;
+    int afterTimestamp;
+    int inSysex;
+    uint8_t running;
+    int need;
+    int have;
+} CharonBLEParser;
+
+// Parses one Bluetooth LE MIDI packet into MIDI 1.0 bytes, as the Bluetooth LE MIDI specification frames them: a header
+// byte with bit 7 set, then messages, each preceded by a timestamp byte (bit 7 set), which is dropped. A byte with bit 7
+// set where a timestamp is due is that timestamp; any other byte with bit 7 set is a status, and a byte without it is
+// data, of the running status or of an open SysEx. A packet whose first byte is not a header is dropped. out must hold
+// twice length bytes (a running status is sent again with each message's first data byte). Returns the bytes written.
+size_t CharonBLEMIDIParse(CharonBLEParser *parser, const uint8_t *data, size_t length, uint8_t *out);
+
 // Converts the UMP words of one event packet to MIDI 1.0 bytes, appending to out. A message with no 1.0
 // counterpart (per-note controllers, relative RPN and NRPN, per-note management, unknown types) produces no
 // bytes, as it does on macOS. rpn is the per-channel state of the destination the bytes are sent to.

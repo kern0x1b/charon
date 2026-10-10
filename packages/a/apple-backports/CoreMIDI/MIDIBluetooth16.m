@@ -1,7 +1,7 @@
 // MIDIBluetoothDriverActivateAllConnections and MIDIBluetoothDriverDisconnect, of iOS 16: the calls that bring up and
 // take down the connections of Bluetooth LE MIDI devices. The release has no Bluetooth MIDI driver, so this file is the
 // central: CoreBluetooth (on 6.1.3 since iOS 5) scans for the MIDI service, connects to the devices it finds, reads the
-// MIDI I/O characteristic, and turns each BLE MIDI packet into MIDI 1.0 bytes.
+// MIDI I/O characteristic, and turns each BLE MIDI packet into MIDI 1.0 bytes (CharonBLEMIDIParse, CharonCoreMIDI.c).
 //
 // The bytes go to a virtual source the central makes through the release's MIDISourceCreate, one per device. Whether the
 // release lets a process make a virtual source is the open question in facts/CoreMIDI/CoreMIDI.md: when it refuses
@@ -12,12 +12,32 @@
 #import <CoreMIDI/CoreMIDI.h>
 
 #include <dispatch/dispatch.h>
+#include <stdlib.h>
+
+#import "CharonCoreMIDI.h"
 
 // The BLE MIDI service and its I/O characteristic (the MIDI 1.0 over BLE specification's UUIDs).
 static NSString *const charon_service = @"03B80E5A-EDE8-4B33-A751-6CE34EC4C700";
 static NSString *const charon_characteristic = @"7772E5DB-3868-4112-A1A9-F2669D106BF3";
 
-@interface CharonBLEDevice : NSObject <CBPeripheralDelegate>
+// The release's peripheral before iOS 7 has the UUID as a CFUUIDRef, and the 26.2 SDK no longer declares it. It is declared
+// here, without an implementation, so that the one call to it is typed; it is only sent where identifier is not answered.
+@interface CBPeripheral (CharonUUID)
+- (CFUUIDRef)UUID;
+@end
+
+// The key of a peripheral in the central's table: its identifier as a UUID string, the form MIDIBluetoothDriverDisconnect
+// is given. From iOS 7 the identifier is an NSUUID; on 6.1.3 the CFUUIDRef of the release is formatted the same way.
+static NSString *charon_peripheral_key(CBPeripheral *peripheral)
+{
+    if ([peripheral respondsToSelector:@selector(identifier)])
+        return peripheral.identifier.UUIDString;
+    return (__bridge_transfer NSString *)CFUUIDCreateString(kCFAllocatorDefault, [peripheral UUID]);
+}
+
+@interface CharonBLEDevice : NSObject <CBPeripheralDelegate> {
+    CharonBLEParser _parser;
+}
 @property (nonatomic, strong) CBPeripheral *peripheral;
 @property (nonatomic, assign) MIDIEndpointRef source;
 @property (nonatomic, assign) BOOL refusedOnce;
@@ -45,34 +65,35 @@ static NSString *const charon_characteristic = @"7772E5DB-3868-4112-A1A9-F2669D1
     }
 }
 
-// A BLE MIDI packet: a header byte with bit 7 set, then messages, each preceded by a timestamp byte (bit 7 set) when a
-// status byte follows. The timestamp is dropped; the MIDI bytes go to the device's virtual source at the time of arrival.
-// A timestamp is told from a status by what follows it, so a real-time byte (F8 to FF) followed by a timestamp is read as
-// a timestamp: the one case this rule gets wrong, not measured on a device.
+// The bytes of one notification become MIDI 1.0 bytes in a packet of the release's own list. The parser's state (a SysEx
+// open across notifications, the running status) belongs to the device, and the buffers are sized from the notification.
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
 {
     NSData *value = characteristic.value;
-    if (value.length < 2 || self.source == 0)
+    if (value.length == 0 || self.source == 0)
         return;
-    const UInt8 *bytes = value.bytes;
-    UInt8 midi[256];
-    NSUInteger count = 0;
-    for (NSUInteger i = 1; i < value.length && count < sizeof(midi); i++) {
-        UInt8 byte = bytes[i];
-        if ((byte & 0x80) && i + 1 < value.length && (bytes[i + 1] & 0x80))
-            continue;
-        midi[count++] = byte;
-    }
-    if (count == 0)
+    // CharonBLEMIDIParse writes at most twice the notification's length (a running status is sent again with its data).
+    uint8_t *midi = malloc(2 * value.length);
+    if (!midi)
         return;
-    Byte buffer[512];
-    MIDIPacketList *list = (MIDIPacketList *)buffer;
-    MIDIPacketListAdd(list, sizeof(buffer), MIDIPacketListInit(list), 0, (ByteCount)count, midi);
-    OSStatus status = MIDIReceived(self.source, list);
-    if (status != noErr && !self.refusedOnce) {
-        self.refusedOnce = YES;
-        NSLog(@"charon: a Bluetooth MIDI device's bytes were not received by the release (status %d); facts/CoreMIDI/CoreMIDI.md", (int)status);
+    size_t count = CharonBLEMIDIParse(&_parser, value.bytes, value.length, midi);
+    if (count > 0) {
+        // The list holds one packet of count bytes: its header is inside sizeof(MIDIPacketList), and the packet's own
+        // rounding to four bytes fits in the four bytes added.
+        size_t listSize = sizeof(MIDIPacketList) + count + 4;
+        Byte *buffer = malloc(listSize);
+        if (buffer) {
+            MIDIPacketList *list = (MIDIPacketList *)buffer;
+            MIDIPacketListAdd(list, listSize, MIDIPacketListInit(list), 0, count, midi);
+            OSStatus status = MIDIReceived(self.source, list);
+            if (status != noErr && !self.refusedOnce) {
+                self.refusedOnce = YES;
+                NSLog(@"charon: a Bluetooth MIDI device's bytes were not received by the release (status %d); facts/CoreMIDI/CoreMIDI.md", (int)status);
+            }
+            free(buffer);
+        }
     }
+    free(midi);
 }
 
 @end
@@ -82,6 +103,7 @@ static NSString *const charon_characteristic = @"7772E5DB-3868-4112-A1A9-F2669D1
 @property (nonatomic, strong) NSMutableDictionary *devices;
 @property (nonatomic, assign) BOOL activated;
 @property (nonatomic, assign) MIDIClientRef client;
+- (void)forgetDevice:(NSString *)key;
 @end
 
 @implementation CharonBLECentral
@@ -110,7 +132,7 @@ static NSString *const charon_characteristic = @"7772E5DB-3868-4112-A1A9-F2669D1
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral
      advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI
 {
-    NSString *key = peripheral.identifier.UUIDString;
+    NSString *key = charon_peripheral_key(peripheral);
     if (self.devices[key])
         return;
     CharonBLEDevice *device = [[CharonBLEDevice alloc] init];
@@ -122,7 +144,7 @@ static NSString *const charon_characteristic = @"7772E5DB-3868-4112-A1A9-F2669D1
 
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral
 {
-    CharonBLEDevice *device = self.devices[peripheral.identifier.UUIDString];
+    CharonBLEDevice *device = self.devices[charon_peripheral_key(peripheral)];
     if (!device)
         return;
     if (!self.client) {
@@ -140,9 +162,27 @@ static NSString *const charon_characteristic = @"7772E5DB-3868-4112-A1A9-F2669D1
     [peripheral discoverServices:@[[CBUUID UUIDWithString:charon_service]]];
 }
 
+// A connect that fails leaves no device: the entry goes, so that the next advertisement connects again.
+- (void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
+{
+    NSLog(@"charon: a Bluetooth MIDI device did not connect (%@)", error);
+    [self forgetDevice:charon_peripheral_key(peripheral)];
+}
+
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
 {
-    [self.devices removeObjectForKey:peripheral.identifier.UUIDString];
+    [self forgetDevice:charon_peripheral_key(peripheral)];
+}
+
+// Drops a device and disposes its virtual source, so a reconnect makes one source and not a second of the same name.
+- (void)forgetDevice:(NSString *)key
+{
+    CharonBLEDevice *device = self.devices[key];
+    if (device.source != 0) {
+        MIDIEndpointDispose(device.source);
+        device.source = 0;
+    }
+    [self.devices removeObjectForKey:key];
 }
 
 @end
@@ -176,7 +216,7 @@ OSStatus MIDIBluetoothDriverDisconnect(CFStringRef uuid)
         CharonBLEDevice *device = central.devices[key];
         if (device) {
             [central.manager cancelPeripheralConnection:device.peripheral];
-            [central.devices removeObjectForKey:key];
+            [central forgetDevice:key];
         }
     });
     return noErr;

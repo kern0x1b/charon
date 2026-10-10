@@ -442,3 +442,80 @@ MIDIEventPacket *CharonMIDIEventListAdd(MIDIEventList *list, size_t listSize, MI
     list->numPackets++;
     return (MIDIEventPacket *)(base + end + need);
 }
+
+// A status byte that is not a timestamp and not real-time: it cuts an open SysEx, and starts the message its data completes.
+static void charon_ble_status(CharonBLEParser *parser, uint8_t byte, uint8_t *out, size_t *count)
+{
+    parser->inSysex = 0;
+    parser->need = charon_data_bytes(byte);
+    parser->have = 0;
+    parser->running = byte < 0xF0 ? byte : 0;
+    out[(*count)++] = byte;
+    if (parser->need == 0)
+        parser->timestampDue = 1;
+}
+
+size_t CharonBLEMIDIParse(CharonBLEParser *parser, const uint8_t *data, size_t length, uint8_t *out)
+{
+    size_t count = 0;
+    if (length == 0 || (data[0] & 0x80) == 0)
+        return 0;
+    parser->timestampDue = 1;
+    parser->afterTimestamp = 0;
+    for (size_t i = 1; i < length; i++) {
+        uint8_t byte = data[i];
+        if (byte & 0x80) {
+            // Inside a SysEx the framing puts a timestamp before the F7 that ends it and before a real-time byte, so a
+            // status-class byte that is not F7 or real-time, and does not follow a timestamp, is that timestamp.
+            int sysexTimestamp = parser->inSysex && !parser->afterTimestamp && byte != 0xF7 && byte < 0xF8;
+            if (parser->timestampDue || sysexTimestamp) {
+                parser->timestampDue = 0;
+                parser->afterTimestamp = 1;
+                continue;
+            }
+            parser->afterTimestamp = 0;
+            if (byte >= 0xF8) {
+                // Real-time: one message of its own, sent inside a SysEx as well, and it neither changes the running
+                // status nor closes the SysEx. Outside a SysEx the next message has its own timestamp.
+                out[count++] = byte;
+                if (!parser->inSysex)
+                    parser->timestampDue = 1;
+            } else if (byte == 0xF0) {
+                parser->inSysex = 1;
+                parser->running = 0;
+                parser->need = 0;
+                out[count++] = byte;
+            } else if (byte == 0xF7) {
+                // The end of an open SysEx; a stray F7 is not a message.
+                if (parser->inSysex) {
+                    out[count++] = byte;
+                    parser->inSysex = 0;
+                    parser->timestampDue = 1;
+                }
+            } else {
+                charon_ble_status(parser, byte, out, &count);
+            }
+            continue;
+        }
+        parser->afterTimestamp = 0;
+        if (parser->inSysex) {
+            out[count++] = byte;
+            continue;
+        }
+        if (parser->need == 0) {
+            // Running status: a data byte after a timestamp, with the last channel status to carry it. Without one it is dropped.
+            if (parser->running == 0)
+                continue;
+            parser->need = charon_data_bytes(parser->running);
+            parser->have = 0;
+            out[count++] = parser->running;
+        }
+        out[count++] = byte;
+        if (++parser->have == parser->need) {
+            parser->need = 0;
+            parser->have = 0;
+            parser->timestampDue = 1;
+        }
+    }
+    return count;
+}

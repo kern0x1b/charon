@@ -12,7 +12,16 @@ What the port does:
   and connects to each device found. It reads the MIDI I/O characteristic `7772E5DB-3868-4112-A1A9-F2669D106BF3` and
   subscribes to it.
 - Each BLE MIDI packet's header and timestamp bytes are dropped and its MIDI bytes are received by a virtual source the
-  central makes for the device, through the release's MIDISourceCreate and MIDIReceived.
+  central makes for the device, through the release's MIDISourceCreate and MIDIReceived. The framing is CharonBLEMIDIParse
+  (CharonCoreMIDI.c): a byte with bit 7 set where a timestamp is due is that timestamp; inside a SysEx the timestamp before
+  F7 or a real-time byte is read the same way; running status is sent again with its data; a SysEx continues across
+  notifications, and the parser's state belongs to the device. The cases in tests/backports/host/coremidi/differential.m
+  (check_ble_parse) are the specification's framing, not a macOS measurement.
+- The peripheral's key in the central's table is its identifier as a UUID string: the NSUUID `identifier` where the release
+  answers it (iOS 7 and later), else the CFUUIDRef `UUID` of the release (6.1.3). The 6.1.3 answer to `identifier` is not
+  measured here; the cache has no CBPeer class (the ledger's rows for CBPeer.identifier).
+- A device's virtual source is disposed when the device disconnects, when its connect fails, and when a disconnect is asked
+  for, so a reconnect makes one source of the device's name, not a second.
 - Disconnect cancels the peripheral with that identifier.
 
 What is not established:
@@ -22,7 +31,10 @@ What is not established:
   the release may allow it; that is not measured here.
 - The emulated 4S has no Bluetooth, so no BLE device was seen. The scan, connect and characteristic code is compiled for
   the iOS 16.4 SDK at iOS 6.0 and is not run.
-- A timestamp byte and a real-time byte that follows it cannot be told apart by the byte alone: a real-time byte followed
-  by a timestamp is dropped. The rule is the BLE MIDI specification's reading, not measured on a device.
+- A timestamp byte is told from a status byte by its position, not by its value: a timestamp whose value is F8 to FF (time
+  bits 0x78 to 0x7F) at a timestamp position is a timestamp, and a real-time byte that comes straight after a message is
+  read as real-time. The rule is the BLE MIDI specification's reading, not measured on a device.
+- Running status carries across notifications (the parser's state is per device); the specification's wording on that was
+  not checked here.
 - "Paired" devices: the central connects to any device advertising the service once activated, and keeps no list of paired
   devices across launches. macOS keeps such a list in the system's Bluetooth settings; that store is not reproduced.

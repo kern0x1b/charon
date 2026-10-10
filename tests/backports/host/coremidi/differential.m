@@ -582,6 +582,73 @@ static void check_new_entity_device_zero(void)
     check(status == -50 && entity == 0, "MIDIDeviceNewEntity on device 0: paramErr and no entity, as macOS", "");
 }
 
+// The bytes of a string of hex pairs, spaces ignored, into out; returns their count.
+static size_t hex_bytes(const char *text, uint8_t *out)
+{
+    size_t n = 0;
+    for (const char *p = text; *p;) {
+        if (*p == ' ') {
+            p++;
+            continue;
+        }
+        unsigned int v = 0;
+        sscanf(p, "%2X", &v);
+        out[n++] = (uint8_t)v;
+        p += 2;
+    }
+    return n;
+}
+
+// One Bluetooth LE MIDI case: the notifications in order, through one parser, and the MIDI 1.0 bytes they must give
+// together. The expectations are the framing the Bluetooth LE MIDI specification gives, not a macOS measurement: the
+// emulator has no Bluetooth and no BLE MIDI device was available (facts/CoreMIDI/Bluetooth.md).
+static void check_ble_case(const char *name, const char *const *packets, int packetCount, const char *want)
+{
+    CharonBLEParser parser;
+    memset(&parser, 0, sizeof(parser));
+    uint8_t got[1024];
+    size_t count = 0;
+    for (int p = 0; p < packetCount; p++) {
+        uint8_t data[256];
+        size_t n = hex_bytes(packets[p], data);
+        count += CharonBLEMIDIParse(&parser, data, n, got + count);
+    }
+    uint8_t wantBytes[1024];
+    size_t wantCount = hex_bytes(want, wantBytes);
+    int same = count == wantCount && memcmp(got, wantBytes, count) == 0;
+    char detail[3 * 1024 + 64] = "";
+    size_t at = 0;
+    for (size_t i = 0; i < count && at + 4 < sizeof(detail); i++)
+        at += (size_t)snprintf(detail + at, sizeof(detail) - at, "%02X ", got[i]);
+    check(same, name, detail);
+}
+
+static void check_ble_parse(void)
+{
+    const char *single[] = {"80 80 90 3C 7F"};
+    check_ble_case("BLE: a note after its timestamp", single, 1, "90 3C 7F");
+    const char *timestampNotStatus[] = {"80 81 3C 40"};
+    check_ble_case("BLE: a timestamp is not a status: data with no status is dropped", timestampNotStatus, 1, "");
+    const char *headerOnly[] = {"80 81"};
+    check_ble_case("BLE: a header and a timestamp alone give nothing", headerOnly, 1, "");
+    const char *runningStatus[] = {"80 81 90 3C 7F 82 3E 00"};
+    check_ble_case("BLE: running status after a timestamp is sent with its data", runningStatus, 1, "90 3C 7F 90 3E 00");
+    const char *sysex[] = {"80 81 F0 01 02 82 F7"};
+    check_ble_case("BLE: a SysEx with the timestamp before its F7", sysex, 1, "F0 01 02 F7");
+    const char *realtimeNote[] = {"80 81 90 3C 7F 82 F8 83 3E 00"};
+    check_ble_case("BLE: a real-time byte between notes keeps the running status", realtimeNote, 1, "90 3C 7F F8 90 3E 00");
+    const char *realtimeSysex[] = {"80 81 F0 01 82 F8 02 83 F7"};
+    check_ble_case("BLE: a real-time byte inside a SysEx does not end it", realtimeSysex, 1, "F0 01 F8 02 F7");
+    const char *split[] = {"80 81 F0 01 02", "80 82 03 83 F7"};
+    check_ble_case("BLE: a SysEx continued in the next notification", split, 2, "F0 01 02 03 F7");
+    const char *notHeader[] = {"01 81 90 3C 7F"};
+    check_ble_case("BLE: a packet without a header is dropped", notHeader, 1, "");
+    const char *stray[] = {"80 81 F7"};
+    check_ble_case("BLE: a stray F7 is not a message", stray, 1, "");
+    const char *twoNotes[] = {"80 81 90 3C 7F 82 90 3E 00"};
+    check_ble_case("BLE: two notes, each with its own timestamp", twoNotes, 1, "90 3C 7F 90 3E 00");
+}
+
 extern int charon_ump_classes_run(int *checks);
 
 int main(void)
@@ -606,6 +673,7 @@ int main(void)
             gChecks += umpChecks;
         }
         check_new_entity_device_zero();
+        check_ble_parse();
         printf("checks=%d failures=%d\n", gChecks, gFailures);
     }
     return gFailures == 0 ? 0 : 1;
