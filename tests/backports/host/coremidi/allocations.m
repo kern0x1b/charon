@@ -196,9 +196,10 @@ int main(void)
         gSent = 0;
         OSStatus sent = CharonMIDISend(0, 99, list);
         long firstSend = gMallocs;
-        // The route of the endpoint is one object (one allocation), and the table of routes grows from nothing at the first one
-        // (another): two in all. A second endpoint makes its route alone (checked below). The count of two is the library's own
-        // design, not a value macOS gives (no oracle has it): it is pinned so that a third allocation on the first send is seen.
+        // The count of two is a design bound, not a measurement: the endpoint's route is one object (one allocation), and the table
+        // of routes grows from nothing at the first route (another). The bound is pinned because a third allocation on the first send
+        // is a change of the design that the test has to show. It is not an oracle: no measurement against Apple gives this count (the
+        // release's own allocations are not visible to the test). A second endpoint makes its route alone (checked below).
         expect(sent == noErr && gSent == 1 && firstSend == 2, "the first send to a release endpoint makes its route and the table's first growth", firstSend);
         gMallocs = 0;
         gReads = 0;
