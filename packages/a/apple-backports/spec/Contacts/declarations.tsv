@@ -1,714 +1,714 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
-interface	c:objc(cs)CNLabeledValue	-			-	-	ios=9.0/-/-/0	-	aff6fced600a1b87
-super	-	CNLabeledValue	NSObject		-	-	-	-	9ff64da8969219b5
-conforms	-	CNLabeledValue	NSCopying		-	-	-	-	b250eef073e2afae
-conforms	-	CNLabeledValue	NSSecureCoding		-	-	-	-	99e2143fa40c9c02
-property	c:objc(cs)CNLabeledValue(py)identifier	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	7739e73da4e9ea0c
-property	c:objc(cs)CNLabeledValue(py)label	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	72a3c5d4b9710b6c
-property	c:objc(cs)CNLabeledValue(py)value	-			ValueType	readonly,copy,nonatomic	ios=9.0/-/-/0	-	408c9d4a397c67a4
-method	c:objc(cs)CNLabeledValue(cm)labeledValueWithLabel:value:	-			instancetype	-	ios=9.0/-/-/0	-	8370f35a3e22cd25
-method	c:objc(cs)CNLabeledValue(im)initWithLabel:value:	-			instancetype	-	ios=9.0/-/-/0	-	0a224e66ee16be3a
-method	c:objc(cs)CNLabeledValue(im)labeledValueBySettingLabel:	-			instancetype	-	ios=9.0/-/-/0	-	2c1a003838d53e69
-method	c:objc(cs)CNLabeledValue(im)labeledValueBySettingValue:	-			instancetype	-	ios=9.0/-/-/0	-	373cd23af88a776c
-method	c:objc(cs)CNLabeledValue(im)labeledValueBySettingLabel:value:	-			instancetype	-	ios=9.0/-/-/0	-	231e89da43525e43
-method	c:objc(cs)CNLabeledValue(cm)localizedStringForLabel:	-			NSString *	-	ios=9.0/-/-/0	-	158c02836e1cc1a5
-var	c:@CNLabelHome	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	617f9bbb4960546e
-var	c:@CNLabelWork	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	02cb23b8f801f8ac
-var	c:@CNLabelSchool	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	9b3dee7fb59eb0d7
-var	c:@CNLabelOther	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	56250fcf98a286ff
-var	c:@CNLabelEmailiCloud	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	b716d9483ef54195
-var	c:@CNLabelURLAddressHomePage	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	8c557312af90e607
-var	c:@CNLabelDateAnniversary	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	bd07474329b51fbf
-interface	c:objc(cs)CNPhoneNumber	-			-	-	ios=9.0/-/-/0	-	55d3c2478ed92a08
-super	-	CNPhoneNumber	NSObject		-	-	-	-	d4b4b82680b8b0c6
-conforms	-	CNPhoneNumber	NSCopying		-	-	-	-	2f70cb7c1b08c0c3
-conforms	-	CNPhoneNumber	NSSecureCoding		-	-	-	-	ffe102bc7c0580a9
-method	c:objc(cs)CNPhoneNumber(cm)phoneNumberWithStringValue:	-			instancetype	-	ios=9.0/-/-/0	-	010a2b815124e94a
-method	c:objc(cs)CNPhoneNumber(im)initWithStringValue:	-			instancetype	-	ios=9.0/-/-/0	-	c3e823e646dc1d22
-method	c:objc(cs)CNPhoneNumber(im)init	-			instancetype	-	ios=9.0/11.0/-/0	-	607e4f8aa19125ba
-method	c:objc(cs)CNPhoneNumber(cm)new	-			instancetype	-	ios=9.0/11.0/-/0	-	917ff0ce9d921052
-property	c:objc(cs)CNPhoneNumber(py)stringValue	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	2d549fb43808b821
-var	c:@CNLabelPhoneNumberiPhone	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	319114bcbe9131c4
-var	c:@CNLabelPhoneNumberAppleWatch	-			NSString *const	-	ios=14.3/-/-/0,macos=11.1/-/-/0,watchos=7.2/-/-/0	-	b633bc6089b6fbd7
-var	c:@CNLabelPhoneNumberMobile	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	b09295269f17d84a
-var	c:@CNLabelPhoneNumberMain	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	d6cf1997899a0b73
-var	c:@CNLabelPhoneNumberHomeFax	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	845d58d4e056dd0f
-var	c:@CNLabelPhoneNumberWorkFax	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	f6bf6f730db88cce
-var	c:@CNLabelPhoneNumberOtherFax	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	7a2333f475ec4114
-var	c:@CNLabelPhoneNumberPager	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	02ff483f178d87e4
-interface	c:objc(cs)CNPostalAddress	-			-	-	ios=9.0/-/-/0	-	658c0a2b9960e8c4
-super	-	CNPostalAddress	NSObject		-	-	-	-	e344a9024504ca72
-conforms	-	CNPostalAddress	NSCopying		-	-	-	-	a52d6456bd002696
-conforms	-	CNPostalAddress	NSMutableCopying		-	-	-	-	fc87e8e8fe3f3bc1
-conforms	-	CNPostalAddress	NSSecureCoding		-	-	-	-	95e0dd98d31bffd9
-property	c:objc(cs)CNPostalAddress(py)street	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	115711ca436d729f
-property	c:objc(cs)CNPostalAddress(py)subLocality	-			NS_AVAILABLE NSString *	readonly,copy,nonatomic	ios=10.3/-/-/0	-	5eea286ead75bba8
-property	c:objc(cs)CNPostalAddress(py)city	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	b51a4c0a9e4ba4bd
-property	c:objc(cs)CNPostalAddress(py)subAdministrativeArea	-			NS_AVAILABLE NSString *	readonly,copy,nonatomic	ios=10.3/-/-/0	-	610a875bb99dd2fd
-property	c:objc(cs)CNPostalAddress(py)state	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	db6a6c0955d7fe23
-property	c:objc(cs)CNPostalAddress(py)postalCode	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	f98495c546fb2225
-property	c:objc(cs)CNPostalAddress(py)country	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	58fef6ef7f77e4cc
-property	c:objc(cs)CNPostalAddress(py)ISOCountryCode	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	6f4d288c619f9140
-method	c:objc(cs)CNPostalAddress(cm)localizedStringForKey:	-			NSString *	-	ios=9.0/-/-/0	-	ef7ef8f8fb5ba938
-var	c:@CNPostalAddressStreetKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	03f17eca1f520663
-var	c:@CNPostalAddressSubLocalityKey	-			NS_AVAILABLE NSString *const	-	ios=10.3/-/-/0	-	938ee88d9c841e71
-var	c:@CNPostalAddressCityKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	20c7fce7f5149a39
-var	c:@CNPostalAddressSubAdministrativeAreaKey	-			NS_AVAILABLE NSString *const	-	ios=10.3/-/-/0	-	df01265e4c3a0379
-var	c:@CNPostalAddressStateKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	94d2be3d76cf9228
-var	c:@CNPostalAddressPostalCodeKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	f9f6e4a9e7bf9b4d
-var	c:@CNPostalAddressCountryKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	e6ccc043d1b1c677
-var	c:@CNPostalAddressISOCountryCodeKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	29e08d423e0ddcc5
-interface	c:objc(cs)CNContactRelation	-			-	-	ios=9.0/-/-/0	-	c92fffa266ce9f37
-super	-	CNContactRelation	NSObject		-	-	-	-	9053c549f8eaeffd
-conforms	-	CNContactRelation	NSCopying		-	-	-	-	002936a44fd358a1
-conforms	-	CNContactRelation	NSSecureCoding		-	-	-	-	76ebcef25ef7c79c
-method	c:objc(cs)CNContactRelation(cm)contactRelationWithName:	-			instancetype	-	ios=9.0/-/-/0	-	cfc9ca565c848d8b
-method	c:objc(cs)CNContactRelation(im)initWithName:	-			instancetype	-	ios=9.0/-/-/0	-	7ef8906d77fe3df7
-property	c:objc(cs)CNContactRelation(py)name	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	3da9b5a886d8f8c7
-var	c:@CNLabelContactRelationAssistant	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	3870a63444c7d275
-var	c:@CNLabelContactRelationManager	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	9dac25ffe607e697
-var	c:@CNLabelContactRelationColleague	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	1c7f04fb278f9e68
-var	c:@CNLabelContactRelationTeacher	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	d1ed37b76c99fa23
-var	c:@CNLabelContactRelationSibling	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	b653de3f2c0a8cca
-var	c:@CNLabelContactRelationYoungerSibling	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	86b74ff22fc691db
-var	c:@CNLabelContactRelationElderSibling	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	172ed685546954da
-var	c:@CNLabelContactRelationSister	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	52e6e5193a6965f5
-var	c:@CNLabelContactRelationYoungerSister	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	72574a9667acdeca
-var	c:@CNLabelContactRelationYoungestSister	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	8e426a16831367d4
-var	c:@CNLabelContactRelationElderSister	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	d30bb603ad5065f8
-var	c:@CNLabelContactRelationEldestSister	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	0e531581472ffd9f
-var	c:@CNLabelContactRelationBrother	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	d9d289e1b17778b6
-var	c:@CNLabelContactRelationYoungerBrother	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	b0325819171d028f
-var	c:@CNLabelContactRelationYoungestBrother	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	d1146e5c863c28e8
-var	c:@CNLabelContactRelationElderBrother	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	142a073529e41f7e
-var	c:@CNLabelContactRelationEldestBrother	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	4950c09b13863e97
-var	c:@CNLabelContactRelationFriend	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	887c3290bce1b244
-var	c:@CNLabelContactRelationMaleFriend	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	817bd92d6e8361fc
-var	c:@CNLabelContactRelationFemaleFriend	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	1753f160f1ddf4ea
-var	c:@CNLabelContactRelationSpouse	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	d36f59648a764ff7
-var	c:@CNLabelContactRelationWife	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	2ee7834a10267431
-var	c:@CNLabelContactRelationHusband	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	b3eb886ce15ac6a5
-var	c:@CNLabelContactRelationPartner	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	4805816d75ef8c0b
-var	c:@CNLabelContactRelationMalePartner	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	e9f08369c2dac1e0
-var	c:@CNLabelContactRelationFemalePartner	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	fa38855206a13182
-var	c:@CNLabelContactRelationGirlfriendOrBoyfriend	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	c952e5a11cd9ea60
-var	c:@CNLabelContactRelationGirlfriend	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	40112aa43fa98130
-var	c:@CNLabelContactRelationBoyfriend	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	a6d8053cefa2243b
-var	c:@CNLabelContactRelationParent	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	6b959307fa8c89ab
-var	c:@CNLabelContactRelationMother	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	92fc330830ac6533
-var	c:@CNLabelContactRelationFather	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	ee0bb5da39e9db80
-var	c:@CNLabelContactRelationChild	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	aa599653993c3e1c
-var	c:@CNLabelContactRelationDaughter	-			NS_AVAILABLE NSString *const	-	ios=11.0/-/-/0	-	104abef9d2d48d01
-var	c:@CNLabelContactRelationSon	-			NS_AVAILABLE NSString *const	-	ios=11.0/-/-/0	-	2fa2be4f24526218
-var	c:@CNLabelContactRelationGrandparent	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	d749cd9161c0aa15
-var	c:@CNLabelContactRelationGrandmother	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	e269fb81855c8ed4
-var	c:@CNLabelContactRelationGrandmotherMothersMother	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	76750cddf3cb8512
-var	c:@CNLabelContactRelationGrandmotherFathersMother	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	f319ee30200a1412
-var	c:@CNLabelContactRelationGrandfather	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	0582dfc5af57631f
-var	c:@CNLabelContactRelationGrandfatherMothersFather	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	07bea1e6767b64ea
-var	c:@CNLabelContactRelationGrandfatherFathersFather	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	2db5f5677471c5cf
-var	c:@CNLabelContactRelationGreatGrandparent	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	cc2f22b390043fd1
-var	c:@CNLabelContactRelationGreatGrandmother	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	78f9167e456f6686
-var	c:@CNLabelContactRelationGreatGrandfather	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	9239cab974874535
-var	c:@CNLabelContactRelationGrandchild	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	5687afb8fe7e5886
-var	c:@CNLabelContactRelationGranddaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	ceb69f9c6d1f6754
-var	c:@CNLabelContactRelationGranddaughterDaughtersDaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	2ad0d6078dfa036a
-var	c:@CNLabelContactRelationGranddaughterSonsDaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	f627fc1bde8098d1
-var	c:@CNLabelContactRelationGrandson	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	3fdebf8e8f5320d4
-var	c:@CNLabelContactRelationGrandsonDaughtersSon	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	29338a1119aa25f0
-var	c:@CNLabelContactRelationGrandsonSonsSon	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	362b47c659d37659
-var	c:@CNLabelContactRelationGreatGrandchild	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	fd79ac2441a641ac
-var	c:@CNLabelContactRelationGreatGranddaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	ba4409436426d9c8
-var	c:@CNLabelContactRelationGreatGrandson	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	376ec687710dd1aa
-var	c:@CNLabelContactRelationParentInLaw	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	2ba74bb9009767b7
-var	c:@CNLabelContactRelationMotherInLaw	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	0c5a7d84238a6869
-var	c:@CNLabelContactRelationMotherInLawWifesMother	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	893bd36fe5b5db3c
-var	c:@CNLabelContactRelationMotherInLawHusbandsMother	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	94a632ad71964210
-var	c:@CNLabelContactRelationFatherInLaw	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	5dc1cb3a6d0539cd
-var	c:@CNLabelContactRelationFatherInLawWifesFather	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	c534a85e5a102fff
-var	c:@CNLabelContactRelationFatherInLawHusbandsFather	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	75eccd989d96a1f8
-var	c:@CNLabelContactRelationCoParentInLaw	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	d2e539523c27174c
-var	c:@CNLabelContactRelationCoMotherInLaw	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	bb3a0023b98bfab4
-var	c:@CNLabelContactRelationCoFatherInLaw	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	2e30119a98697f90
-var	c:@CNLabelContactRelationSiblingInLaw	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	29e0f9bdf7fdcb22
-var	c:@CNLabelContactRelationYoungerSiblingInLaw	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	32af8a45df8147fe
-var	c:@CNLabelContactRelationElderSiblingInLaw	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	ad35782502d600bc
-var	c:@CNLabelContactRelationSisterInLaw	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	c46d6bf3238e96bb
-var	c:@CNLabelContactRelationYoungerSisterInLaw	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	c91afab395e8b61a
-var	c:@CNLabelContactRelationElderSisterInLaw	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	7929ef9aea7280c1
-var	c:@CNLabelContactRelationSisterInLawSpousesSister	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	fa45dd41903772d8
-var	c:@CNLabelContactRelationSisterInLawWifesSister	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	35f7aca2c2c9f5a3
-var	c:@CNLabelContactRelationSisterInLawHusbandsSister	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	43ca9736e5002b7b
-var	c:@CNLabelContactRelationSisterInLawBrothersWife	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	2af13e0360634834
-var	c:@CNLabelContactRelationSisterInLawYoungerBrothersWife	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	b58cf20b6626ccc7
-var	c:@CNLabelContactRelationSisterInLawElderBrothersWife	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	b2d1fc5ecf7a9afb
-var	c:@CNLabelContactRelationBrotherInLaw	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	a642dc5681835efa
-var	c:@CNLabelContactRelationYoungerBrotherInLaw	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	1e51b846db9d8704
-var	c:@CNLabelContactRelationElderBrotherInLaw	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	a72030df4cfad83d
-var	c:@CNLabelContactRelationBrotherInLawSpousesBrother	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	3be4b8532a0162be
-var	c:@CNLabelContactRelationBrotherInLawHusbandsBrother	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	1a34e48e03404e33
-var	c:@CNLabelContactRelationBrotherInLawWifesBrother	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	501836de6227c3a4
-var	c:@CNLabelContactRelationBrotherInLawSistersHusband	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	0c051ac0b7ec12e3
-var	c:@CNLabelContactRelationBrotherInLawYoungerSistersHusband	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	9564bcbb251675c9
-var	c:@CNLabelContactRelationBrotherInLawElderSistersHusband	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	9c4487838ef299e9
-var	c:@CNLabelContactRelationSisterInLawWifesBrothersWife	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	a14c1a115d4c9e0d
-var	c:@CNLabelContactRelationSisterInLawHusbandsBrothersWife	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	e09b631a3f4ac6a9
-var	c:@CNLabelContactRelationBrotherInLawWifesSistersHusband	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	21dc1ae580b35368
-var	c:@CNLabelContactRelationBrotherInLawHusbandsSistersHusband	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	946bf4efbfc3e7ee
-var	c:@CNLabelContactRelationCoSiblingInLaw	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	63674ac0dad38ec4
-var	c:@CNLabelContactRelationCoSisterInLaw	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	b214c395f858dcef
-var	c:@CNLabelContactRelationCoBrotherInLaw	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	51f850f85f9d752c
-var	c:@CNLabelContactRelationChildInLaw	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	bacf0034515939d4
-var	c:@CNLabelContactRelationDaughterInLaw	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	86ec8ed1280eef2a
-var	c:@CNLabelContactRelationSonInLaw	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	3ef481f11095002c
-var	c:@CNLabelContactRelationCousin	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	f14735a3d4174b1c
-var	c:@CNLabelContactRelationYoungerCousin	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	85f39e70eee07d59
-var	c:@CNLabelContactRelationElderCousin	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	7e381f0e921a023d
-var	c:@CNLabelContactRelationMaleCousin	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	81f8132e0395f56b
-var	c:@CNLabelContactRelationFemaleCousin	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	9bb0631659248f37
-var	c:@CNLabelContactRelationCousinParentsSiblingsChild	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	d1f7a36dde6958b2
-var	c:@CNLabelContactRelationCousinParentsSiblingsSon	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	758ff13f732e4240
-var	c:@CNLabelContactRelationYoungerCousinParentsSiblingsSon	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	e0974aea5596ae37
-var	c:@CNLabelContactRelationElderCousinParentsSiblingsSon	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	c2ba145c8e1326b9
-var	c:@CNLabelContactRelationCousinParentsSiblingsDaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	d79d0f49b48408f0
-var	c:@CNLabelContactRelationYoungerCousinParentsSiblingsDaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	6df7eeebe8e5ee80
-var	c:@CNLabelContactRelationElderCousinParentsSiblingsDaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	d1677ad4efe7d708
-var	c:@CNLabelContactRelationCousinMothersSistersDaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	812c145b3e8c371e
-var	c:@CNLabelContactRelationYoungerCousinMothersSistersDaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	17366b7c9585688a
-var	c:@CNLabelContactRelationElderCousinMothersSistersDaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	7262a77d92ef8596
-var	c:@CNLabelContactRelationCousinMothersSistersSon	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	12117c2806d29980
-var	c:@CNLabelContactRelationYoungerCousinMothersSistersSon	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	df6166d7d99250ac
-var	c:@CNLabelContactRelationElderCousinMothersSistersSon	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	8040c18cfb9e011c
-var	c:@CNLabelContactRelationCousinMothersBrothersDaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	81c76b46bca2b9ea
-var	c:@CNLabelContactRelationYoungerCousinMothersBrothersDaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	6a9b53d210e5b408
-var	c:@CNLabelContactRelationElderCousinMothersBrothersDaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	223dd3e7ef7eeb2e
-var	c:@CNLabelContactRelationCousinMothersBrothersSon	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	a9a3b1a53daf751f
-var	c:@CNLabelContactRelationYoungerCousinMothersBrothersSon	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	a30af646518f69e2
-var	c:@CNLabelContactRelationElderCousinMothersBrothersSon	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	d1cac294f5f69e1e
-var	c:@CNLabelContactRelationCousinFathersSistersDaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	8dda4f7c174471f7
-var	c:@CNLabelContactRelationYoungerCousinFathersSistersDaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	78776c5fe9b55f13
-var	c:@CNLabelContactRelationElderCousinFathersSistersDaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	37d66432e0b54c97
-var	c:@CNLabelContactRelationCousinFathersSistersSon	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	06e8ffabc4a79da2
-var	c:@CNLabelContactRelationYoungerCousinFathersSistersSon	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	380819b90e096290
-var	c:@CNLabelContactRelationElderCousinFathersSistersSon	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	348a06c0f056300c
-var	c:@CNLabelContactRelationCousinFathersBrothersDaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	2fdb5a903065b194
-var	c:@CNLabelContactRelationYoungerCousinFathersBrothersDaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	81fb0b16640c8c7e
-var	c:@CNLabelContactRelationElderCousinFathersBrothersDaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	080df329b3690cc2
-var	c:@CNLabelContactRelationCousinFathersBrothersSon	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	4cce9afc39ed8e71
-var	c:@CNLabelContactRelationYoungerCousinFathersBrothersSon	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	423a0fc41fb07d2d
-var	c:@CNLabelContactRelationElderCousinFathersBrothersSon	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	89512825308a6723
-var	c:@CNLabelContactRelationCousinGrandparentsSiblingsChild	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	5354e7bb919622ef
-var	c:@CNLabelContactRelationCousinGrandparentsSiblingsDaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	517d64400104fd71
-var	c:@CNLabelContactRelationCousinGrandparentsSiblingsSon	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	c5863de26916e793
-var	c:@CNLabelContactRelationYoungerCousinMothersSiblingsSonOrFathersSistersSon	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	52e753ff6cec2cb5
-var	c:@CNLabelContactRelationElderCousinMothersSiblingsSonOrFathersSistersSon	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	74f33485ff05f658
-var	c:@CNLabelContactRelationYoungerCousinMothersSiblingsDaughterOrFathersSistersDaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	90b88d3d3bd422f5
-var	c:@CNLabelContactRelationElderCousinMothersSiblingsDaughterOrFathersSistersDaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	3035e9e72c7c9171
-var	c:@CNLabelContactRelationParentsSibling	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	3a0eada8cec3ddc2
-var	c:@CNLabelContactRelationParentsYoungerSibling	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	16a79b787c606fd3
-var	c:@CNLabelContactRelationParentsElderSibling	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	b6d0343344d2ebdc
-var	c:@CNLabelContactRelationParentsSiblingMothersSibling	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	4e458e40bd840428
-var	c:@CNLabelContactRelationParentsSiblingMothersYoungerSibling	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	c855bfdd76c7018e
-var	c:@CNLabelContactRelationParentsSiblingMothersElderSibling	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	e4b52c342a140fee
-var	c:@CNLabelContactRelationParentsSiblingFathersSibling	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	b4ede820e554539b
-var	c:@CNLabelContactRelationParentsSiblingFathersYoungerSibling	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	72586e0893651156
-var	c:@CNLabelContactRelationParentsSiblingFathersElderSibling	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	3a7fcbb22249574c
-var	c:@CNLabelContactRelationAunt	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	47bed5c31a9760c3
-var	c:@CNLabelContactRelationAuntParentsSister	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	2bda9f5bfd3297ee
-var	c:@CNLabelContactRelationAuntParentsYoungerSister	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	cc035b032d661328
-var	c:@CNLabelContactRelationAuntParentsElderSister	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	736998ca3cf8d81a
-var	c:@CNLabelContactRelationAuntFathersSister	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	537a682d789b2654
-var	c:@CNLabelContactRelationAuntFathersYoungerSister	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	47f86e76314ba8a5
-var	c:@CNLabelContactRelationAuntFathersElderSister	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	08f43347de552261
-var	c:@CNLabelContactRelationAuntFathersBrothersWife	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	5c16c77ac550dd24
-var	c:@CNLabelContactRelationAuntFathersYoungerBrothersWife	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	0f2854114d84008a
-var	c:@CNLabelContactRelationAuntFathersElderBrothersWife	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	d6fcfb49e00704ea
-var	c:@CNLabelContactRelationAuntMothersSister	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	0e28790fd8288982
-var	c:@CNLabelContactRelationAuntMothersYoungerSister	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	7edb189609944497
-var	c:@CNLabelContactRelationAuntMothersElderSister	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	f343e4ffd0900c06
-var	c:@CNLabelContactRelationAuntMothersBrothersWife	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	c39435b9b15e263a
-var	c:@CNLabelContactRelationGrandaunt	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	f284933664c4313a
-var	c:@CNLabelContactRelationUncle	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	03205ec03e17c8e9
-var	c:@CNLabelContactRelationUncleParentsBrother	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	61caf2eb6523aaa4
-var	c:@CNLabelContactRelationUncleParentsYoungerBrother	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	eec1be3648f43643
-var	c:@CNLabelContactRelationUncleParentsElderBrother	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	f5f36523b8ec2f86
-var	c:@CNLabelContactRelationUncleMothersBrother	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	45b50e082b3435fb
-var	c:@CNLabelContactRelationUncleMothersYoungerBrother	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	b5e53bf9e4a3fd2e
-var	c:@CNLabelContactRelationUncleMothersElderBrother	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	5ba21ef002101b09
-var	c:@CNLabelContactRelationUncleMothersSistersHusband	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	80b54392dc3c99e4
-var	c:@CNLabelContactRelationUncleFathersBrother	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	638fd7dc235ca21a
-var	c:@CNLabelContactRelationUncleFathersYoungerBrother	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	f4ce767809f8a544
-var	c:@CNLabelContactRelationUncleFathersElderBrother	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	8e6acadb5648d5fd
-var	c:@CNLabelContactRelationUncleFathersSistersHusband	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	bdffd496b4f424ec
-var	c:@CNLabelContactRelationUncleFathersYoungerSistersHusband	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	6caad235f9ee4171
-var	c:@CNLabelContactRelationUncleFathersElderSistersHusband	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	99a23fe031a20b4e
-var	c:@CNLabelContactRelationGranduncle	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	03b93bb4cdaac0e1
-var	c:@CNLabelContactRelationSiblingsChild	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	6244fb51a83a96e6
-var	c:@CNLabelContactRelationNiece	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	2e4a664cf80be08e
-var	c:@CNLabelContactRelationNieceSistersDaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	3aeb47878a41c11a
-var	c:@CNLabelContactRelationNieceBrothersDaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	a1b399dcb3e4475b
-var	c:@CNLabelContactRelationNieceSistersDaughterOrWifesSiblingsDaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	1373c56e544bd0b8
-var	c:@CNLabelContactRelationNieceBrothersDaughterOrHusbandsSiblingsDaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	e3b8e34afab62114
-var	c:@CNLabelContactRelationNephew	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	43f94320454174fc
-var	c:@CNLabelContactRelationNephewSistersSon	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	ec17ce5c8029a82e
-var	c:@CNLabelContactRelationNephewBrothersSon	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	c3cafc825873d33a
-var	c:@CNLabelContactRelationNephewBrothersSonOrHusbandsSiblingsSon	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	3afae1902745f37b
-var	c:@CNLabelContactRelationNephewSistersSonOrWifesSiblingsSon	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	85c453e5c6ae7af4
-var	c:@CNLabelContactRelationGrandniece	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	8c3c8dbf8d72002f
-var	c:@CNLabelContactRelationGrandnieceSistersGranddaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	f493599ce7a7febd
-var	c:@CNLabelContactRelationGrandnieceBrothersGranddaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	7d6a7ab1b1e430c0
-var	c:@CNLabelContactRelationGrandnephew	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	f1bae8a19ebee227
-var	c:@CNLabelContactRelationGrandnephewSistersGrandson	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	62ca6fb9e80f41fa
-var	c:@CNLabelContactRelationGrandnephewBrothersGrandson	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	684777513633b485
-var	c:@CNLabelContactRelationStepparent	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	97ac9cf94329359d
-var	c:@CNLabelContactRelationStepmother	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	8f0942ff98e3675f
-var	c:@CNLabelContactRelationStepfather	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	c238351c7f9da7fd
-var	c:@CNLabelContactRelationStepchild	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	050aab15d237ac90
-var	c:@CNLabelContactRelationStepdaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	2bcef4c038b125a6
-var	c:@CNLabelContactRelationStepson	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	0a8a36c0c927695a
-var	c:@CNLabelContactRelationStepsister	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	a9c170129985fc9e
-var	c:@CNLabelContactRelationStepbrother	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	f4b4e64858e84cb0
-var	c:@CNLabelContactRelationMotherInLawOrStepmother	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	65bf217ce19ce637
-var	c:@CNLabelContactRelationFatherInLawOrStepfather	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	8fe17dc00a1ed8e4
-var	c:@CNLabelContactRelationDaughterInLawOrStepdaughter	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	00973d57b41616ac
-var	c:@CNLabelContactRelationSonInLawOrStepson	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	43751ba8c0c65a6c
-var	c:@CNLabelContactRelationCousinOrSiblingsChild	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	6e1cd7aa460572e4
-var	c:@CNLabelContactRelationNieceOrCousin	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	45865559257e9413
-var	c:@CNLabelContactRelationNephewOrCousin	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	7a6f85d78e2ad1bd
-var	c:@CNLabelContactRelationGrandchildOrSiblingsChild	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	17d70fb0328ef008
-var	c:@CNLabelContactRelationGranddaughterOrNiece	-			NS_AVAILABLE NSString *const	-	ios=14.0/-/-/0	-	8dabc4dba0bc52d9
-var	c:@CNLabelContactRelationGrandsonOrNephew	-			NS_AVAILABLE NSString *const	-	ios=14.0/-/-/0	-	9228eb89891f28e8
-var	c:@CNLabelContactRelationGreatGrandchildOrSiblingsGrandchild	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	0414c5f8cac176e2
-var	c:@CNLabelContactRelationDaughterInLawOrSisterInLaw	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	f80eeff587f072be
-var	c:@CNLabelContactRelationSonInLawOrBrotherInLaw	-			NS_AVAILABLE NSString *const	-	ios=13.0/-/-/0	-	4cae7475cc4757e1
-interface	c:objc(cs)CNSocialProfile	-			-	-	ios=9.0/-/-/0	-	7e1164195dff32ae
-super	-	CNSocialProfile	NSObject		-	-	-	-	84ff0883146a81f5
-conforms	-	CNSocialProfile	NSCopying		-	-	-	-	d40a7c1fd6c3fbe5
-conforms	-	CNSocialProfile	NSSecureCoding		-	-	-	-	5e9f1bbbcfd70112
-property	c:objc(cs)CNSocialProfile(py)urlString	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	47f3258e3f61eebe
-property	c:objc(cs)CNSocialProfile(py)username	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	4df738f2f91e02a6
-property	c:objc(cs)CNSocialProfile(py)userIdentifier	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	70cbbe704ffb3962
-property	c:objc(cs)CNSocialProfile(py)service	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	83e83629b16b6cc3
-method	c:objc(cs)CNSocialProfile(im)initWithUrlString:username:userIdentifier:service:	-			instancetype	-	ios=9.0/-/-/0	-	3ae1e829ed5e96d1
-method	c:objc(cs)CNSocialProfile(cm)localizedStringForKey:	-			NSString *	-	ios=9.0/-/-/0	-	de77ae698edb9c65
-method	c:objc(cs)CNSocialProfile(cm)localizedStringForService:	-			NSString *	-	ios=9.0/-/-/0	-	87993d5b000a85bd
-var	c:@CNSocialProfileURLStringKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	d30f51a914bef029
-var	c:@CNSocialProfileUsernameKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	bd7e2f51e33a1e65
-var	c:@CNSocialProfileUserIdentifierKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	57c79c465c6a374a
-var	c:@CNSocialProfileServiceKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	63532a17347739d1
-var	c:@CNSocialProfileServiceFacebook	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	5506c7f8e03e28d2
-var	c:@CNSocialProfileServiceFlickr	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	84551007dddb2502
-var	c:@CNSocialProfileServiceLinkedIn	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	6ca0aec94c3ab9a6
-var	c:@CNSocialProfileServiceMySpace	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	8887e13e2eebffb8
-var	c:@CNSocialProfileServiceSinaWeibo	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	818bef6629f97518
-var	c:@CNSocialProfileServiceTencentWeibo	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	dd176f1a8b4cd378
-var	c:@CNSocialProfileServiceTwitter	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	724f912e9e91c0cc
-var	c:@CNSocialProfileServiceYelp	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	c977a39a92f33e88
-var	c:@CNSocialProfileServiceGameCenter	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	d910ac3fdc94f442
-interface	c:objc(cs)CNInstantMessageAddress	-			-	-	ios=9.0/-/-/0	-	70ba687255f29a0e
-super	-	CNInstantMessageAddress	NSObject		-	-	-	-	190d7a2386f91bbb
-conforms	-	CNInstantMessageAddress	NSCopying		-	-	-	-	b75140f023e87aea
-conforms	-	CNInstantMessageAddress	NSSecureCoding		-	-	-	-	4a7b7d24a66d473c
-property	c:objc(cs)CNInstantMessageAddress(py)username	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	e7e1cf11d2f40e2d
-property	c:objc(cs)CNInstantMessageAddress(py)service	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	39d7e74fc2819c2d
-method	c:objc(cs)CNInstantMessageAddress(im)initWithUsername:service:	-			instancetype	-	ios=9.0/-/-/0	-	574c39b329fb0088
-method	c:objc(cs)CNInstantMessageAddress(cm)localizedStringForKey:	-			NSString *	-	ios=9.0/-/-/0	-	3570b34fc05e23a4
-method	c:objc(cs)CNInstantMessageAddress(cm)localizedStringForService:	-			NSString *	-	ios=9.0/-/-/0	-	1181546985cadad7
-var	c:@CNInstantMessageAddressUsernameKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	5ae218a42f312bc1
-var	c:@CNInstantMessageAddressServiceKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	7ca31921c92da191
-var	c:@CNInstantMessageServiceAIM	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	6387eb97a5657ee0
-var	c:@CNInstantMessageServiceFacebook	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	594af25db54eb067
-var	c:@CNInstantMessageServiceGaduGadu	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	64e33f2a1ca2fdae
-var	c:@CNInstantMessageServiceGoogleTalk	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	de5fc5c5055e3bc6
-var	c:@CNInstantMessageServiceICQ	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	3a9b55fdb92d8d4d
-var	c:@CNInstantMessageServiceJabber	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	033766290d2f7f18
-var	c:@CNInstantMessageServiceMSN	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	88054639d9b7a6e0
-var	c:@CNInstantMessageServiceQQ	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	681c530b05c6a0d0
-var	c:@CNInstantMessageServiceSkype	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	e7ac670b0528ad7c
-var	c:@CNInstantMessageServiceYahoo	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	4d50d01faf9cf4a7
-typedef	c:@T@CNContactType	-			enum CNContactType	-	-	-	6515516da7de32a8
-enum	c:@E@CNContactType	-			NSInteger	-	ios=9.0/-/-/0	-	d9a1e18698b4395e
-enumconst	c:@E@CNContactType@CNContactTypePerson	CNContactType			-	-	ios=9.0/-/-/0	-	a41b794405dba498
-enumconst	c:@E@CNContactType@CNContactTypeOrganization	CNContactType			-	-	ios=9.0/-/-/0	-	a3d9753b64a4fc68
-typedef	c:@T@CNContactSortOrder	-			enum CNContactSortOrder	-	-	-	fcfccba75b5f9146
-enum	c:@E@CNContactSortOrder	-			NSInteger	-	ios=9.0/-/-/0	-	0c3458d642e8811c
-enumconst	c:@E@CNContactSortOrder@CNContactSortOrderNone	CNContactSortOrder			-	-	ios=9.0/-/-/0	-	635cd260c29f6789
-enumconst	c:@E@CNContactSortOrder@CNContactSortOrderUserDefault	CNContactSortOrder			-	-	ios=9.0/-/-/0	-	f6e9427138ed5efc
-enumconst	c:@E@CNContactSortOrder@CNContactSortOrderGivenName	CNContactSortOrder			-	-	ios=9.0/-/-/0	-	0b163245310504bb
-enumconst	c:@E@CNContactSortOrder@CNContactSortOrderFamilyName	CNContactSortOrder			-	-	ios=9.0/-/-/0	-	b9299fdd6abc46d5
-protocol	c:objc(pl)CNKeyDescriptor	-			-	-	-	-	9285a56148d49ef9
-conforms	-	CNKeyDescriptor	NSObject		-	-	-	-	625703fd15068540
-conforms	-	CNKeyDescriptor	NSSecureCoding		-	-	-	-	7ff4a663ae89e899
-conforms	-	CNKeyDescriptor	NSCopying		-	-	-	-	7bbdacafa03675b4
-category	c:objc(cy)NSString@Contacts	-			-	-	-	-	21de3253b20916c6
-conforms	-	NSString	CNKeyDescriptor		-	-	-	-	6a957710a9752518
-interface	c:objc(cs)CNContact	-			-	-	ios=9.0/-/-/0	-	4d3296f584493db2
-super	-	CNContact	NSObject		-	-	-	-	850af951cb06e0a5
-conforms	-	CNContact	NSCopying		-	-	-	-	fbff400778ea6ed9
-conforms	-	CNContact	NSMutableCopying		-	-	-	-	6e46fd11089bf0aa
-conforms	-	CNContact	NSSecureCoding		-	-	-	-	70dc368e72a7fa2a
-property	c:objc(cs)CNContact(py)identifier	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	0f02d6770f27057f
-property	c:objc(cs)CNContact(py)contactType	-			CNContactType	readonly,nonatomic	ios=9.0/-/-/0	-	879e991b7cb0bf24
-property	c:objc(cs)CNContact(py)namePrefix	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	ed33f6b3dc6c6fe5
-property	c:objc(cs)CNContact(py)givenName	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	3f6f28db0b596994
-property	c:objc(cs)CNContact(py)middleName	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	2aec5e2757aa3e8e
-property	c:objc(cs)CNContact(py)familyName	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	d6272986abef218d
-property	c:objc(cs)CNContact(py)previousFamilyName	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	b1590709bf7e47c8
-property	c:objc(cs)CNContact(py)nameSuffix	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	acd824caf24e38fc
-property	c:objc(cs)CNContact(py)nickname	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	433ce841509432fb
-property	c:objc(cs)CNContact(py)organizationName	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	3ee3c5dc9f623753
-property	c:objc(cs)CNContact(py)departmentName	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	78706d0a045192f9
-property	c:objc(cs)CNContact(py)jobTitle	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	c43925a4d44084c6
-property	c:objc(cs)CNContact(py)phoneticGivenName	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	9ddf81a52f8d0b28
-property	c:objc(cs)CNContact(py)phoneticMiddleName	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	5574eb22ea850537
-property	c:objc(cs)CNContact(py)phoneticFamilyName	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	3d9993f0a325cc6a
-property	c:objc(cs)CNContact(py)phoneticOrganizationName	-			NS_AVAILABLE NSString *	readonly,copy,nonatomic	ios=10.0/-/-/0	-	0e6c11d4b410f61e
-property	c:objc(cs)CNContact(py)note	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	c2e1af9c4cb49513
-property	c:objc(cs)CNContact(py)imageData	-			NSData *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	2e4347400f72ac87
-property	c:objc(cs)CNContact(py)thumbnailImageData	-			NSData *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	9a2f3e59d6354d76
-property	c:objc(cs)CNContact(py)imageDataAvailable	-			BOOL	readonly,nonatomic	ios=9.0/-/-/0	-	c9ee2789a80f935a
-property	c:objc(cs)CNContact(py)phoneNumbers	-			NSArray<CNLabeledValue<CNPhoneNumber *> *> *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	7597a32f1c01c8e0
-property	c:objc(cs)CNContact(py)emailAddresses	-			NSArray<CNLabeledValue<NSString *> *> *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	00909d49fe985b58
-property	c:objc(cs)CNContact(py)postalAddresses	-			NSArray<CNLabeledValue<CNPostalAddress *> *> *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	2033c728c715f0df
-property	c:objc(cs)CNContact(py)urlAddresses	-			NSArray<CNLabeledValue<NSString *> *> *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	36a7196d1c030c2c
-property	c:objc(cs)CNContact(py)contactRelations	-			NSArray<CNLabeledValue<CNContactRelation *> *> *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	51e7877c892d0a77
-property	c:objc(cs)CNContact(py)socialProfiles	-			NSArray<CNLabeledValue<CNSocialProfile *> *> *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	4f347c3e752cfc7b
-property	c:objc(cs)CNContact(py)instantMessageAddresses	-			NSArray<CNLabeledValue<CNInstantMessageAddress *> *> *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	d6178b117617e108
-property	c:objc(cs)CNContact(py)birthday	-			NSDateComponents *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	74eff3d463982e1f
-property	c:objc(cs)CNContact(py)nonGregorianBirthday	-			NSDateComponents *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	684ce27b07e8c107
-property	c:objc(cs)CNContact(py)dates	-			NSArray<CNLabeledValue<NSDateComponents *> *> *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	96b4c0a9ee708643
-method	c:objc(cs)CNContact(im)isKeyAvailable:	-			BOOL	-	ios=9.0/-/-/0	-	a162cb0f727363bf
-method	c:objc(cs)CNContact(im)areKeysAvailable:	-			BOOL	-	ios=9.0/-/-/0	-	993416b8b52bea7a
-method	c:objc(cs)CNContact(cm)localizedStringForKey:	-			NSString *	-	ios=9.0/-/-/0	-	6d9cee513d04050c
-method	c:objc(cs)CNContact(cm)comparatorForNameSortOrder:	-			NSComparator	-	ios=9.0/-/-/0	-	5e98082b8d6f719f
-method	c:objc(cs)CNContact(cm)descriptorForAllComparatorKeys	-			id<CNKeyDescriptor>	-	ios=9.0/-/-/0	-	237e920b0a7f198e
-method	c:objc(cs)CNContact(im)isUnifiedWithContactWithIdentifier:	-			BOOL	-	ios=9.0/-/-/0	-	614ccb67e1bc4e15
-var	c:@CNContactPropertyNotFetchedExceptionName	-			NSString *const	-	-	-	14f784d71daf3619
-var	c:@CNContactIdentifierKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	6721eadbbc4cf605
-var	c:@CNContactNamePrefixKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	202eca0e8a1c7f7b
-var	c:@CNContactGivenNameKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	876f809025bdbd70
-var	c:@CNContactMiddleNameKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	e6a705c313a2480e
-var	c:@CNContactFamilyNameKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	0876a251dfa3c201
-var	c:@CNContactPreviousFamilyNameKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	4c9aa2934183378f
-var	c:@CNContactNameSuffixKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	928758201f5d1e20
-var	c:@CNContactNicknameKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	bd49837558f0af55
-var	c:@CNContactOrganizationNameKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	e3423ce9dd230633
-var	c:@CNContactDepartmentNameKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	d6b80f73df4e2069
-var	c:@CNContactJobTitleKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	c594bf017c6f7b05
-var	c:@CNContactPhoneticGivenNameKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	957c71e26a506a70
-var	c:@CNContactPhoneticMiddleNameKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	989d5452dfc0f066
-var	c:@CNContactPhoneticFamilyNameKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	7453b532be99943a
-var	c:@CNContactPhoneticOrganizationNameKey	-			NS_AVAILABLE NSString *const	-	ios=10.0/-/-/0	-	09af54a78bd7155e
-var	c:@CNContactBirthdayKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	4720b2aab02a277d
-var	c:@CNContactNonGregorianBirthdayKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	92d986b646e861a0
-var	c:@CNContactNoteKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	e73f274af5043ae9
-var	c:@CNContactImageDataKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	8b8c0490fa0c16d3
-var	c:@CNContactThumbnailImageDataKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	2cc749c831efbfa1
-var	c:@CNContactImageDataAvailableKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	1bc01f787920c59c
-var	c:@CNContactTypeKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	582f9699be9869a5
-var	c:@CNContactPhoneNumbersKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	83b29aa06fab9671
-var	c:@CNContactEmailAddressesKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	9a08039ea7ce7b01
-var	c:@CNContactPostalAddressesKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	f389415c126daf7e
-var	c:@CNContactDatesKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	534d22c6702bc52c
-var	c:@CNContactUrlAddressesKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	6d5dae816d0a183b
-var	c:@CNContactRelationsKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	e4be93362f120ecd
-var	c:@CNContactSocialProfilesKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	287b33b403d04b56
-var	c:@CNContactInstantMessageAddressesKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	5567a28d98a55c4f
-typedef	c:@T@CNEntityType	-			enum CNEntityType	-	-	-	448384113764178f
-enum	c:@E@CNEntityType	-			NSInteger	-	ios=9.0/-/-/0	-	eb7d24c5d792affe
-enumconst	c:@E@CNEntityType@CNEntityTypeContacts	CNEntityType			-	-	ios=9.0/-/-/0	-	d8900fd4609fecef
-typedef	c:@T@CNAuthorizationStatus	-			enum CNAuthorizationStatus	-	-	-	ef357de023874307
-enum	c:@E@CNAuthorizationStatus	-			NSInteger	-	ios=9.0/-/-/0	-	90ebec001657674a
-enumconst	c:@E@CNAuthorizationStatus@CNAuthorizationStatusNotDetermined	CNAuthorizationStatus			-	-	ios=9.0/-/-/0	-	1cb86065c9901d96
-enumconst	c:@E@CNAuthorizationStatus@CNAuthorizationStatusRestricted	CNAuthorizationStatus			-	-	ios=9.0/-/-/0	-	99e6a91d84e55ada
-enumconst	c:@E@CNAuthorizationStatus@CNAuthorizationStatusDenied	CNAuthorizationStatus			-	-	ios=9.0/-/-/0	-	a852d198200db388
-enumconst	c:@E@CNAuthorizationStatus@CNAuthorizationStatusAuthorized	CNAuthorizationStatus			-	-	ios=9.0/-/-/0	-	a92e620f443dbf95
-enumconst	c:@E@CNAuthorizationStatus@CNAuthorizationStatusLimited	CNAuthorizationStatus			-	-	ios=18.0/-/-/0	-	7c0d15fb23979d20
-interface	c:objc(cs)CNContactStore	-			-	-	ios=9.0/-/-/0	-	2afb31e5e34644e0
-super	-	CNContactStore	NSObject		-	-	-	-	ac6592fb3d492ac3
-method	c:objc(cs)CNContactStore(cm)authorizationStatusForEntityType:	-			CNAuthorizationStatus	-	ios=9.0/-/-/0	-	a8e1285a172584b3
-method	c:objc(cs)CNContactStore(im)requestAccessForEntityType:completionHandler:	-			void	-	ios=9.0/-/-/0	-	30bc5d9c8daf9383
-method	c:objc(cs)CNContactStore(im)unifiedContactsMatchingPredicate:keysToFetch:error:	-			NSArray<CNContact *> *	-	ios=9.0/-/-/0	-	a8c1a388dd95dd6e
-method	c:objc(cs)CNContactStore(im)unifiedContactWithIdentifier:keysToFetch:error:	-			CNContact *	-	ios=9.0/-/-/0	-	fc4bb81e2e38ca22
-method	c:objc(cs)CNContactStore(im)unifiedMeContactWithKeysToFetch:error:	-			CNContact *	-	ios=-/-/-/1,watchos=-/-/-/1	-	91d48713a2a1236b
-method	c:objc(cs)CNContactStore(im)enumeratorForContactFetchRequest:error:	-			CNFetchResult<NSEnumerator<CNContact *> *> *	-	ios=13.0/-/-/0,macos=10.15/-/-/0,swift=-/-/-/1,watchos=6.0/-/-/0	-	0b5cba0f4525320b
-method	c:objc(cs)CNContactStore(im)enumeratorForChangeHistoryFetchRequest:error:	-			CNFetchResult<NSEnumerator<CNChangeHistoryEvent *> *> *	-	ios=13.0/-/-/0,macos=10.15/-/-/0,swift=-/-/-/1,watchos=6.0/-/-/0	-	ede595ee59575d64
-method	c:objc(cs)CNContactStore(im)enumerateContactsWithFetchRequest:error:usingBlock:	-			BOOL	-	ios=9.0/-/-/0	-	988e3dbac6eb5de9
-method	c:objc(cs)CNContactStore(im)groupsMatchingPredicate:error:	-			NSArray<CNGroup *> *	-	ios=9.0/-/-/0	-	3f774d8888a3e735
-method	c:objc(cs)CNContactStore(im)containersMatchingPredicate:error:	-			NSArray<CNContainer *> *	-	ios=9.0/-/-/0	-	c73e85991c700783
-method	c:objc(cs)CNContactStore(im)executeSaveRequest:error:	-			BOOL	-	watchos=-/-/-/1	-	376451d8ffaaaed2
-property	c:objc(cs)CNContactStore(py)currentHistoryToken	-			NSData *	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	c921742e337c420b
-method	c:objc(cs)CNContactStore(im)defaultContainerIdentifier	-			NSString *	-	ios=9.0/-/-/0	-	5d32d843c6665f5e
-var	c:@CNContactStoreDidChangeNotification	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	c779d41a33d6a18d
-interface	c:objc(cs)CNFetchRequest	-			-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	0ce1c0f4d5c820cb
-super	-	CNFetchRequest	NSObject		-	-	-	-	5572de653e3a3707
-interface	c:objc(cs)CNContactFetchRequest	-			-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	53e45e1838b3e104
-super	-	CNContactFetchRequest	CNFetchRequest		-	-	-	-	4c2480956c6be553
-conforms	-	CNContactFetchRequest	NSSecureCoding		-	-	-	-	2a76f18ce51b637c
-method	c:objc(cs)CNContactFetchRequest(im)init	-			instancetype	-	*unavailable ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	8715105a746493b7
-method	c:objc(cs)CNContactFetchRequest(cm)new	-			instancetype	-	*unavailable ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	f8c40be141f2652b
-method	c:objc(cs)CNContactFetchRequest(im)initWithKeysToFetch:	-			instancetype	-	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	6efac6e11547d989
-property	c:objc(cs)CNContactFetchRequest(py)predicate	-			NSPredicate *	copy,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	1a405fdcacdad598
-property	c:objc(cs)CNContactFetchRequest(py)keysToFetch	-			NSArray<id<CNKeyDescriptor>> *	copy,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	bfc657cba42e6ba9
-property	c:objc(cs)CNContactFetchRequest(py)mutableObjects	-			BOOL	nonatomic	ios=10.0/-/-/0	-	d84d17258bb61be9
-property	c:objc(cs)CNContactFetchRequest(py)unifyResults	-			BOOL	nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	8c172057ca7640c6
-property	c:objc(cs)CNContactFetchRequest(py)sortOrder	-			CNContactSortOrder	nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	fa78ab8a2eeec292
-interface	c:objc(cs)CNFetchResult	-			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	6e84c21fde4d56e8
-super	-	CNFetchResult	NSObject		-	-	-	-	65e25c2ad594dea9
-method	c:objc(cs)CNFetchResult(im)init	-			instancetype	-	*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	01c43ab14fe8a70e
-method	c:objc(cs)CNFetchResult(cm)new	-			instancetype	-	*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	50a52d7b7151a163
-property	c:objc(cs)CNFetchResult(py)value	-			ValueType	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	6c196ff2d24744c5
-property	c:objc(cs)CNFetchResult(py)currentHistoryToken	-			NSData *	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	f497a075467f68ad
-interface	c:objc(cs)CNSaveRequest	-			-	-	ios=9/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	956e6be3a95b9984
-super	-	CNSaveRequest	NSObject		-	-	-	-	cde8f04c0c97b63f
-method	c:objc(cs)CNSaveRequest(im)addContact:toContainerWithIdentifier:	-			void	-	ios=9/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	48823aecd33da947
-method	c:objc(cs)CNSaveRequest(im)updateContact:	-			void	-	ios=9/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	ef2fa129eccc88cb
-method	c:objc(cs)CNSaveRequest(im)deleteContact:	-			void	-	ios=9/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	e370c9d3c8a06d0b
-method	c:objc(cs)CNSaveRequest(im)addGroup:toContainerWithIdentifier:	-			void	-	ios=9/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	19e70d8fd872a9f5
-method	c:objc(cs)CNSaveRequest(im)updateGroup:	-			void	-	ios=9/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	b36d90974ab084ab
-method	c:objc(cs)CNSaveRequest(im)deleteGroup:	-			void	-	ios=9/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	04ee37161c087019
-method	c:objc(cs)CNSaveRequest(im)addSubgroup:toGroup:	-			void	-	ios=-/-/-/1,macos=10.11/-/-/0	-	bcf27d7f93303c99
-method	c:objc(cs)CNSaveRequest(im)removeSubgroup:fromGroup:	-			void	-	ios=-/-/-/1,macos=10.11/-/-/0	-	46c995b41d4ff771
-method	c:objc(cs)CNSaveRequest(im)addMember:toGroup:	-			void	-	ios=9/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	22c2cc15573ba9a1
-method	c:objc(cs)CNSaveRequest(im)removeMember:fromGroup:	-			void	-	ios=9/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	04ff05546fb3de37
-property	c:objc(cs)CNSaveRequest(py)transactionAuthor	-			NSString *	copy,nonatomic	ios=15/-/-/0,macos=12/-/-/0	-	14972617f8178532
-property	c:objc(cs)CNSaveRequest(py)shouldRefetchContacts	-			BOOL	assign,nonatomic	ios=15.4/-/-/0,macos=12.3/-/-/0	-	deaa3231d283716f
-interface	c:objc(cs)CNChangeHistoryFetchRequest	-			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	3b3015664622c417
-super	-	CNChangeHistoryFetchRequest	CNFetchRequest		-	-	-	-	298043449016ac1f
-conforms	-	CNChangeHistoryFetchRequest	NSSecureCoding		-	-	-	-	c2da5bcedc0622d4
-property	c:objc(cs)CNChangeHistoryFetchRequest(py)startingToken	-			NSData *	copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	555b0a5813f2a843
-property	c:objc(cs)CNChangeHistoryFetchRequest(py)additionalContactKeyDescriptors	-			NSArray<id<CNKeyDescriptor>> *	copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	b0e38e9698fe07a5
-property	c:objc(cs)CNChangeHistoryFetchRequest(py)shouldUnifyResults	-			BOOL	nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	2d7560d18e27cee7
-property	c:objc(cs)CNChangeHistoryFetchRequest(py)mutableObjects	-			BOOL	nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	fb91a2c099b3a6bc
-property	c:objc(cs)CNChangeHistoryFetchRequest(py)includeGroupChanges	-			BOOL	nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	2fea4e5a6d212fec
-property	c:objc(cs)CNChangeHistoryFetchRequest(py)excludedTransactionAuthors	-			NSArray<NSString *> *	copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	9066dce34064dbf5
-interface	c:objc(cs)CNChangeHistoryEvent	-			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	31cfe465622121d4
-super	-	CNChangeHistoryEvent	NSObject		-	-	-	-	73a346be7fa72c31
-conforms	-	CNChangeHistoryEvent	NSCopying		-	-	-	-	4790de985da47205
-conforms	-	CNChangeHistoryEvent	NSSecureCoding		-	-	-	-	dbac3eb33227597f
-method	c:objc(cs)CNChangeHistoryEvent(im)acceptEventVisitor:	-			void	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	18da5c84de0f3a69
-interface	c:objc(cs)CNChangeHistoryDropEverythingEvent	-			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	65bdf696e765faa3
-super	-	CNChangeHistoryDropEverythingEvent	CNChangeHistoryEvent		-	-	-	-	9b19cf39e4ce2fb5
-interface	c:objc(cs)CNChangeHistoryAddContactEvent	-			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	c5ff58569486e65d
-super	-	CNChangeHistoryAddContactEvent	CNChangeHistoryEvent		-	-	-	-	70ee4d047927603b
-property	c:objc(cs)CNChangeHistoryAddContactEvent(py)contact	-			CNContact *	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	4ab36f3ccd10b520
-property	c:objc(cs)CNChangeHistoryAddContactEvent(py)containerIdentifier	-			NSString *	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	041551accf3d5fff
-interface	c:objc(cs)CNChangeHistoryUpdateContactEvent	-			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	f9aec1de16e7c989
-super	-	CNChangeHistoryUpdateContactEvent	CNChangeHistoryEvent		-	-	-	-	6eaac0b4ef9b0cb4
-property	c:objc(cs)CNChangeHistoryUpdateContactEvent(py)contact	-			CNContact *	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	19679b1839586f52
-interface	c:objc(cs)CNChangeHistoryDeleteContactEvent	-			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	4441a1fb39c4f320
-super	-	CNChangeHistoryDeleteContactEvent	CNChangeHistoryEvent		-	-	-	-	f2d2434deffa57ab
-property	c:objc(cs)CNChangeHistoryDeleteContactEvent(py)contactIdentifier	-			NSString *	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	a42bb66a9fa08633
-interface	c:objc(cs)CNChangeHistoryAddGroupEvent	-			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	38759f3c3a985b02
-super	-	CNChangeHistoryAddGroupEvent	CNChangeHistoryEvent		-	-	-	-	f5eeaa5b3c98fcbd
-property	c:objc(cs)CNChangeHistoryAddGroupEvent(py)group	-			CNGroup *	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	1d9a6627b614a01a
-property	c:objc(cs)CNChangeHistoryAddGroupEvent(py)containerIdentifier	-			NSString *	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	25cf349d864322e4
-interface	c:objc(cs)CNChangeHistoryUpdateGroupEvent	-			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	d3c92ff762ee7887
-super	-	CNChangeHistoryUpdateGroupEvent	CNChangeHistoryEvent		-	-	-	-	50179148d1313767
-property	c:objc(cs)CNChangeHistoryUpdateGroupEvent(py)group	-			CNGroup *	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	29a9fb7c9c77aa6e
-interface	c:objc(cs)CNChangeHistoryDeleteGroupEvent	-			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	4f0c00efccbbd6c5
-super	-	CNChangeHistoryDeleteGroupEvent	CNChangeHistoryEvent		-	-	-	-	24f52d8823655b89
-property	c:objc(cs)CNChangeHistoryDeleteGroupEvent(py)groupIdentifier	-			NSString *	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	c1ead0939e737ffb
-interface	c:objc(cs)CNChangeHistoryAddMemberToGroupEvent	-			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	bedacd99b710bf69
-super	-	CNChangeHistoryAddMemberToGroupEvent	CNChangeHistoryEvent		-	-	-	-	67f51a42a74dd401
-property	c:objc(cs)CNChangeHistoryAddMemberToGroupEvent(py)member	-			CNContact *	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	3d8ef968699cbde3
-property	c:objc(cs)CNChangeHistoryAddMemberToGroupEvent(py)group	-			CNGroup *	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	0fa6c234549b63a1
-interface	c:objc(cs)CNChangeHistoryRemoveMemberFromGroupEvent	-			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	1825a3b7906ba5d6
-super	-	CNChangeHistoryRemoveMemberFromGroupEvent	CNChangeHistoryEvent		-	-	-	-	af8dc9fed1d04e93
-property	c:objc(cs)CNChangeHistoryRemoveMemberFromGroupEvent(py)member	-			CNContact *	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	b236160ae1dd8caa
-property	c:objc(cs)CNChangeHistoryRemoveMemberFromGroupEvent(py)group	-			CNGroup *	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	d22fc1661ad2e0d1
-interface	c:objc(cs)CNChangeHistoryAddSubgroupToGroupEvent	-			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	9d903444adea363d
-super	-	CNChangeHistoryAddSubgroupToGroupEvent	CNChangeHistoryEvent		-	-	-	-	949827ad48deaa3d
-property	c:objc(cs)CNChangeHistoryAddSubgroupToGroupEvent(py)subgroup	-			CNGroup *	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	559ca3fa2f7f2156
-property	c:objc(cs)CNChangeHistoryAddSubgroupToGroupEvent(py)group	-			CNGroup *	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	39d0cf1be7beed87
-interface	c:objc(cs)CNChangeHistoryRemoveSubgroupFromGroupEvent	-			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	ced9b1debab7ca4a
-super	-	CNChangeHistoryRemoveSubgroupFromGroupEvent	CNChangeHistoryEvent		-	-	-	-	9dcf58a1be427311
-property	c:objc(cs)CNChangeHistoryRemoveSubgroupFromGroupEvent(py)subgroup	-			CNGroup *	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	70faf32cbbca830c
-property	c:objc(cs)CNChangeHistoryRemoveSubgroupFromGroupEvent(py)group	-			CNGroup *	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	6d0e4eb5ae0a38a4
-protocol	c:objc(pl)CNChangeHistoryEventVisitor	-			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	c9dc9f6be414f4dd
-conforms	-	CNChangeHistoryEventVisitor	NSObject		-	-	-	-	e4555ba09a866b2d
-method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitDropEverythingEvent:	-			void	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	5f9ef74e4a3e5645
-method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitAddContactEvent:	-			void	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	2ab1b6b9bc8884b1
-method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitUpdateContactEvent:	-			void	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	6edf4c1493d035f9
-method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitDeleteContactEvent:	-			void	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	fa402aae050a5d57
-method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitAddGroupEvent:	-			void	optional	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	f57f510d88c7f1a5
-method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitUpdateGroupEvent:	-			void	optional	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	fec91482268ad3d4
-method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitDeleteGroupEvent:	-			void	optional	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	1b77456e559dc302
-method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitAddMemberToGroupEvent:	-			void	optional	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	8f176bb96183972e
-method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitRemoveMemberFromGroupEvent:	-			void	optional	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	219aae287a88e859
-method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitAddSubgroupToGroupEvent:	-			void	optional	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	8a3d2391412f2c90
-method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitRemoveSubgroupFromGroupEvent:	-			void	optional	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	07c7a8b31cf5a909
-category	c:objc(cy)CNContact@Predicates	-			-	-	ios=9.0/-/-/0	-	b15cd92b7493e64f
-method	c:objc(cs)CNContact(cm)predicateForContactsMatchingName:	Predicates			NSPredicate *	-	ios=9.0/-/-/0	-	4c2a248f9a44923e
-method	c:objc(cs)CNContact(cm)predicateForContactsMatchingEmailAddress:	Predicates			NSPredicate *	-	ios=11.0/-/-/0,macos=10.13/-/-/0,watchos=4.0/-/-/0	-	559110230a899421
-method	c:objc(cs)CNContact(cm)predicateForContactsMatchingPhoneNumber:	Predicates			NSPredicate *	-	ios=11.0/-/-/0,macos=10.13/-/-/0,watchos=4.0/-/-/0	-	dc7ef411cba4756b
-method	c:objc(cs)CNContact(cm)predicateForContactsWithIdentifiers:	Predicates			NSPredicate *	-	ios=9.0/-/-/0	-	3e3e6d42e70aef60
-method	c:objc(cs)CNContact(cm)predicateForContactsInGroupWithIdentifier:	Predicates			NSPredicate *	-	ios=9.0/-/-/0	-	057f76fbf13a93e6
-method	c:objc(cs)CNContact(cm)predicateForContactsInContainerWithIdentifier:	Predicates			NSPredicate *	-	ios=9.0/-/-/0	-	309a604212abd202
-interface	c:objc(cs)CNMutableContact	-			-	-	ios=9.0/-/-/0	-	dde14f6d6625a1e6
-super	-	CNMutableContact	CNContact		-	-	-	-	e2c9ccebb16328dc
-property	c:objc(cs)CNMutableContact(py)contactType	-			CNContactType	nonatomic	ios=9.0/-/-/0	-	cd68ffa39f523b85
-property	c:objc(cs)CNMutableContact(py)namePrefix	-			NSString *	copy,nonatomic	ios=9.0/-/-/0	-	dad92cd81dda99e9
-property	c:objc(cs)CNMutableContact(py)givenName	-			NSString *	copy,nonatomic	ios=9.0/-/-/0	-	09d55299fb4d9023
-property	c:objc(cs)CNMutableContact(py)middleName	-			NSString *	copy,nonatomic	ios=9.0/-/-/0	-	b5aa05787086fc8b
-property	c:objc(cs)CNMutableContact(py)familyName	-			NSString *	copy,nonatomic	ios=9.0/-/-/0	-	19f31f8bdeaf2993
-property	c:objc(cs)CNMutableContact(py)previousFamilyName	-			NSString *	copy,nonatomic	ios=9.0/-/-/0	-	5bd04daf31abf4a8
-property	c:objc(cs)CNMutableContact(py)nameSuffix	-			NSString *	copy,nonatomic	ios=9.0/-/-/0	-	083f17ecc2c4f3f0
-property	c:objc(cs)CNMutableContact(py)nickname	-			NSString *	copy,nonatomic	ios=9.0/-/-/0	-	9edacc8faba87b31
-property	c:objc(cs)CNMutableContact(py)organizationName	-			NSString *	copy,nonatomic	ios=9.0/-/-/0	-	d6c66052e1f70bb3
-property	c:objc(cs)CNMutableContact(py)departmentName	-			NSString *	copy,nonatomic	ios=9.0/-/-/0	-	eb63d06da421d1c8
-property	c:objc(cs)CNMutableContact(py)jobTitle	-			NSString *	copy,nonatomic	ios=9.0/-/-/0	-	6bb6c2869f888e07
-property	c:objc(cs)CNMutableContact(py)phoneticGivenName	-			NSString *	copy,nonatomic	ios=9.0/-/-/0	-	5631a10e8b52f79b
-property	c:objc(cs)CNMutableContact(py)phoneticMiddleName	-			NSString *	copy,nonatomic	ios=9.0/-/-/0	-	a241aa2bd39c1752
-property	c:objc(cs)CNMutableContact(py)phoneticFamilyName	-			NSString *	copy,nonatomic	ios=9.0/-/-/0	-	780b33664d06c92c
-property	c:objc(cs)CNMutableContact(py)phoneticOrganizationName	-			NSString *	copy,nonatomic	ios=9.0/-/-/0	-	2e519b64f22af6ec
-property	c:objc(cs)CNMutableContact(py)note	-			NSString *	copy,nonatomic	ios=9.0/-/-/0	-	fa985e0f7176fbef
-property	c:objc(cs)CNMutableContact(py)imageData	-			NSData *	copy,nonatomic	ios=9.0/-/-/0	-	2bd2aaa7adfefebf
-property	c:objc(cs)CNMutableContact(py)phoneNumbers	-			NSArray<CNLabeledValue<CNPhoneNumber *> *> *	copy,nonatomic	ios=9.0/-/-/0	-	13b35135e2f8b521
-property	c:objc(cs)CNMutableContact(py)emailAddresses	-			NSArray<CNLabeledValue<NSString *> *> *	copy,nonatomic	ios=9.0/-/-/0	-	d4b5bbfe2521048a
-property	c:objc(cs)CNMutableContact(py)postalAddresses	-			NSArray<CNLabeledValue<CNPostalAddress *> *> *	copy,nonatomic	ios=9.0/-/-/0	-	c8b615dfd0b71b96
-property	c:objc(cs)CNMutableContact(py)urlAddresses	-			NSArray<CNLabeledValue<NSString *> *> *	copy,nonatomic	ios=9.0/-/-/0	-	23671f268f2683d3
-property	c:objc(cs)CNMutableContact(py)contactRelations	-			NSArray<CNLabeledValue<CNContactRelation *> *> *	copy,nonatomic	ios=9.0/-/-/0	-	6eb50c21d0092b08
-property	c:objc(cs)CNMutableContact(py)socialProfiles	-			NSArray<CNLabeledValue<CNSocialProfile *> *> *	copy,nonatomic	ios=9.0/-/-/0	-	a39eac60addf7919
-property	c:objc(cs)CNMutableContact(py)instantMessageAddresses	-			NSArray<CNLabeledValue<CNInstantMessageAddress *> *> *	copy,nonatomic	ios=9.0/-/-/0	-	25d4dff0bbfd7cb1
-property	c:objc(cs)CNMutableContact(py)birthday	-			NSDateComponents *	copy,nonatomic	ios=9.0/-/-/0	-	6abbb41182370774
-property	c:objc(cs)CNMutableContact(py)nonGregorianBirthday	-			NSDateComponents *	copy,nonatomic	ios=9.0/-/-/0	-	5b5fc95852fb768b
-property	c:objc(cs)CNMutableContact(py)dates	-			NSArray<CNLabeledValue<NSDateComponents *> *> *	copy,nonatomic	ios=9.0/-/-/0	-	baefb61db8bead26
-category	c:objc(cy)CNContact@NSItemProvider	-			-	-	ios=9.0/-/-/0	-	56d2d0667a5f0e62
-conforms	-	CNContact	NSItemProviderReading		-	-	-	-	1ab2092b59ab2155
-conforms	-	CNContact	NSItemProviderWriting		-	-	-	-	c65c0b94ad0a0186
-interface	c:objc(cs)CNMutablePostalAddress	-			-	-	ios=9.0/-/-/0	-	8ef99d01e1523da5
-super	-	CNMutablePostalAddress	CNPostalAddress		-	-	-	-	719981969316e4f1
-property	c:objc(cs)CNMutablePostalAddress(py)street	-			NSString *	copy,nonatomic	ios=9.0/-/-/0	-	6aa442b1092a9f7f
-property	c:objc(cs)CNMutablePostalAddress(py)subLocality	-			NS_AVAILABLE NSString *	copy,nonatomic	ios=10.3/-/-/0	-	f1a2e1f7b95cb07e
-property	c:objc(cs)CNMutablePostalAddress(py)city	-			NSString *	copy,nonatomic	ios=9.0/-/-/0	-	6535d01bf0873ed2
-property	c:objc(cs)CNMutablePostalAddress(py)subAdministrativeArea	-			NS_AVAILABLE NSString *	copy,nonatomic	ios=10.3/-/-/0	-	faba5c773d7a5917
-property	c:objc(cs)CNMutablePostalAddress(py)state	-			NSString *	copy,nonatomic	ios=9.0/-/-/0	-	b1470c99e81bb8a3
-property	c:objc(cs)CNMutablePostalAddress(py)postalCode	-			NSString *	copy,nonatomic	ios=9.0/-/-/0	-	6ca0be3cbefd9818
-property	c:objc(cs)CNMutablePostalAddress(py)country	-			NSString *	copy,nonatomic	ios=9.0/-/-/0	-	cbaf92fb6636947c
-property	c:objc(cs)CNMutablePostalAddress(py)ISOCountryCode	-			NSString *	copy,nonatomic	ios=9.0/-/-/0	-	28dd3252dc130b3b
-interface	c:objc(cs)CNGroup	-			-	-	ios=9.0/-/-/0	-	7871958d67a37f09
-super	-	CNGroup	NSObject		-	-	-	-	01a5a8b51ff4ac41
-conforms	-	CNGroup	NSCopying		-	-	-	-	29541ebe723f02b6
-conforms	-	CNGroup	NSMutableCopying		-	-	-	-	d665ffc178f99da2
-conforms	-	CNGroup	NSSecureCoding		-	-	-	-	2d50c0321928c880
-property	c:objc(cs)CNGroup(py)identifier	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	feed10cff731d5ae
-property	c:objc(cs)CNGroup(py)name	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	867a5e20df63716f
-var	c:@CNGroupIdentifierKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	ee1cf2fd99886359
-var	c:@CNGroupNameKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	cc2b6ef50aaa2e18
-category	c:objc(cy)CNGroup@Predicates	-			-	-	ios=9.0/-/-/0	-	07a2dc6882dd6aec
-method	c:objc(cs)CNGroup(cm)predicateForGroupsWithIdentifiers:	Predicates			NSPredicate *	-	ios=9.0/-/-/0	-	b06691aba018734a
-method	c:objc(cs)CNGroup(cm)predicateForSubgroupsInGroupWithIdentifier:	Predicates			NSPredicate *	-	ios=-/-/-/1	-	677ad099fda096bd
-method	c:objc(cs)CNGroup(cm)predicateForGroupsInContainerWithIdentifier:	Predicates			NSPredicate *	-	ios=9.0/-/-/0	-	554f3ede5a7c4133
-interface	c:objc(cs)CNMutableGroup	-			-	-	ios=9.0/-/-/0	-	af669463b5b0ebfc
-super	-	CNMutableGroup	CNGroup		-	-	-	-	0a776b4ee843ea68
-property	c:objc(cs)CNMutableGroup(py)name	-			NSString *	copy,nonatomic	ios=9.0/-/-/0	-	685364719d03d9d5
-typedef	c:@T@CNContainerType	-			enum CNContainerType	-	-	-	9e11dc6181f57cc9
-enum	c:@E@CNContainerType	-			NSInteger	-	ios=9.0/-/-/0	-	d3df80113cd8c9b4
-enumconst	c:@E@CNContainerType@CNContainerTypeUnassigned	CNContainerType			-	-	ios=9.0/-/-/0	-	0dd2dd0d86a7e315
-enumconst	c:@E@CNContainerType@CNContainerTypeLocal	CNContainerType			-	-	ios=9.0/-/-/0	-	6be1de77d604a29a
-enumconst	c:@E@CNContainerType@CNContainerTypeExchange	CNContainerType			-	-	ios=9.0/-/-/0	-	5d2aa412a02bb3fa
-enumconst	c:@E@CNContainerType@CNContainerTypeCardDAV	CNContainerType			-	-	ios=9.0/-/-/0	-	884410ddb87e95d2
-interface	c:objc(cs)CNContainer	-			-	-	ios=9.0/-/-/0	-	9e18d44b4f204438
-super	-	CNContainer	NSObject		-	-	-	-	d4a0bd5d3575731c
-conforms	-	CNContainer	NSCopying		-	-	-	-	305e2e8e3cca83fa
-conforms	-	CNContainer	NSSecureCoding		-	-	-	-	f622009f03a4093b
-property	c:objc(cs)CNContainer(py)identifier	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	4cdb6fa5fc3f52aa
-property	c:objc(cs)CNContainer(py)name	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	a7581ab6a72bce60
-property	c:objc(cs)CNContainer(py)type	-			CNContainerType	readonly,nonatomic	ios=9.0/-/-/0	-	f2a8911f147792f2
-var	c:@CNContainerIdentifierKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	ed6261f3679bfd3c
-var	c:@CNContainerNameKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	4a5adcc18131d841
-var	c:@CNContainerTypeKey	-			NS_AVAILABLE NSString *const	-	ios=9.0/-/-/0	-	ffe65ede0a291db7
-category	c:objc(cy)CNContainer@Predicates	-			-	-	ios=9.0/-/-/0	-	06f6c11c111f1be9
-method	c:objc(cs)CNContainer(cm)predicateForContainersWithIdentifiers:	Predicates			NSPredicate *	-	ios=9.0/-/-/0	-	7b4ec364b20f0b1e
-method	c:objc(cs)CNContainer(cm)predicateForContainerOfContactWithIdentifier:	Predicates			NSPredicate *	-	ios=9.0/-/-/0	-	6fcc4a93c138f230
-method	c:objc(cs)CNContainer(cm)predicateForContainerOfGroupWithIdentifier:	Predicates			NSPredicate *	-	ios=9.0/-/-/0	-	e56914723bd3ee1e
-typedef	c:@T@CNContactFormatterStyle	-			enum CNContactFormatterStyle	-	-	-	fc3bbe234c81b656
-enum	c:@E@CNContactFormatterStyle	-			NSInteger	-	ios=9.0/-/-/0	-	a458cad4175a81ab
-enumconst	c:@E@CNContactFormatterStyle@CNContactFormatterStyleFullName	CNContactFormatterStyle			-	-	ios=9.0/-/-/0	-	9ebe3afae7e08e31
-enumconst	c:@E@CNContactFormatterStyle@CNContactFormatterStylePhoneticFullName	CNContactFormatterStyle			-	-	ios=9.0/-/-/0	-	e1acfeef4d178dda
-typedef	c:@T@CNContactDisplayNameOrder	-			enum CNContactDisplayNameOrder	-	-	-	7429e4b066af7e09
-enum	c:@E@CNContactDisplayNameOrder	-			NSInteger	-	ios=9.0/-/-/0	-	3f53f1998b25bdfc
-enumconst	c:@E@CNContactDisplayNameOrder@CNContactDisplayNameOrderUserDefault	CNContactDisplayNameOrder			-	-	ios=9.0/-/-/0	-	2d9cf854e7696091
-enumconst	c:@E@CNContactDisplayNameOrder@CNContactDisplayNameOrderGivenNameFirst	CNContactDisplayNameOrder			-	-	ios=9.0/-/-/0	-	1f8369fcb0521ff8
-enumconst	c:@E@CNContactDisplayNameOrder@CNContactDisplayNameOrderFamilyNameFirst	CNContactDisplayNameOrder			-	-	ios=9.0/-/-/0	-	4e742c589f81e320
-interface	c:objc(cs)CNContactFormatter	-			-	-	ios=9.0/-/-/0	-	8c0427fcf019c79b
-super	-	CNContactFormatter	NSFormatter		-	-	-	-	5feb8c81b2b3c2bc
-conforms	-	CNContactFormatter	NSSecureCoding		-	-	-	-	82156c5ba9392a2c
-method	c:objc(cs)CNContactFormatter(cm)descriptorForRequiredKeysForStyle:	-			id<CNKeyDescriptor>	-	ios=9.0/-/-/0	-	78123606223eec41
-property	c:objc(cs)CNContactFormatter(cpy)descriptorForRequiredKeysForNameOrder	-			id<CNKeyDescriptor>	readonly,class	ios=9.0/-/-/0	-	563005c1be4384a4
-property	c:objc(cs)CNContactFormatter(cpy)descriptorForRequiredKeysForDelimiter	-			id<CNKeyDescriptor>	readonly,class	ios=9.0/-/-/0	-	b5be02f9f3c229e8
-method	c:objc(cs)CNContactFormatter(cm)stringFromContact:style:	-			NSString *	-	ios=9.0/-/-/0	-	eac6bcdffef3f0c4
-method	c:objc(cs)CNContactFormatter(cm)attributedStringFromContact:style:defaultAttributes:	-			NSAttributedString *	-	ios=9.0/-/-/0	-	37722b0b2520183a
-method	c:objc(cs)CNContactFormatter(cm)nameOrderForContact:	-			CNContactDisplayNameOrder	-	ios=9.0/-/-/0	-	d66c259c9984e7b3
-method	c:objc(cs)CNContactFormatter(cm)delimiterForContact:	-			NSString *	-	ios=9.0/-/-/0	-	140f202c8d58114a
-property	c:objc(cs)CNContactFormatter(py)style	-			CNContactFormatterStyle	nonatomic	ios=9.0/-/-/0	-	1b9e633fb5fec5c6
-method	c:objc(cs)CNContactFormatter(im)stringFromContact:	-			NSString *	-	ios=9.0/-/-/0	-	a9d49a846a7098c0
-method	c:objc(cs)CNContactFormatter(im)attributedStringFromContact:defaultAttributes:	-			NSAttributedString *	-	ios=9.0/-/-/0	-	04d6eabd3c2fdcbf
-var	c:@CNContactPropertyAttribute	-			NSString *const	-	-	-	a057e70c001da199
-typedef	c:@T@CNPostalAddressFormatterStyle	-			enum CNPostalAddressFormatterStyle	-	-	-	56a28f7e95849457
-enum	c:@E@CNPostalAddressFormatterStyle	-			NSInteger	-	ios=9.0/-/-/0	-	b72b19a2ae74cec3
-enumconst	c:@E@CNPostalAddressFormatterStyle@CNPostalAddressFormatterStyleMailingAddress	CNPostalAddressFormatterStyle			-	-	ios=9.0/-/-/0	-	6ffd15f2d64ebb59
-interface	c:objc(cs)CNPostalAddressFormatter	-			-	-	ios=9.0/-/-/0	-	15fd3dd81eb487c3
-super	-	CNPostalAddressFormatter	NSFormatter		-	-	-	-	8f5a0ce4a36906a7
-method	c:objc(cs)CNPostalAddressFormatter(cm)stringFromPostalAddress:style:	-			NSString *	-	ios=9.0/-/-/0	-	959320758719ee48
-method	c:objc(cs)CNPostalAddressFormatter(cm)attributedStringFromPostalAddress:style:withDefaultAttributes:	-			NSAttributedString *	-	ios=9.0/-/-/0	-	85fb3c77257682eb
-property	c:objc(cs)CNPostalAddressFormatter(py)style	-			CNPostalAddressFormatterStyle	nonatomic	ios=9.0/-/-/0	-	3a33ea35225d2ee2
-method	c:objc(cs)CNPostalAddressFormatter(im)stringFromPostalAddress:	-			NSString *	-	ios=9.0/-/-/0	-	a3cba0227f755076
-method	c:objc(cs)CNPostalAddressFormatter(im)attributedStringFromPostalAddress:withDefaultAttributes:	-			NSAttributedString *	-	ios=9.0/-/-/0	-	c67fd282054e8554
-var	c:@CNPostalAddressPropertyAttribute	-			NSString *const	-	-	-	94069023748beadb
-var	c:@CNPostalAddressLocalizedPropertyNameAttribute	-			NSString *const	-	-	-	6cf2d117d35c0a07
-interface	c:objc(cs)CNContactVCardSerialization	-			-	-	ios=9.0/-/-/0	-	a06de3138fb742f1
-super	-	CNContactVCardSerialization	NSObject		-	-	-	-	d98024b243435074
-method	c:objc(cs)CNContactVCardSerialization(cm)descriptorForRequiredKeys	-			id<CNKeyDescriptor>	-	ios=9.0/-/-/0	-	f93e4b4990599519
-method	c:objc(cs)CNContactVCardSerialization(cm)dataWithContacts:error:	-			NSData *	-	ios=9.0/-/-/0	-	76a5c27d72af9e76
-method	c:objc(cs)CNContactVCardSerialization(cm)contactsWithData:error:	-			NSArray<CNContact *> *	-	ios=9.0/-/-/0	-	4f916819d5931253
-interface	c:objc(cs)CNContactsUserDefaults	-			-	-	ios=9.0/-/-/0	-	0baa007a964fbd28
-super	-	CNContactsUserDefaults	NSObject		-	-	-	-	efcdb55456b4ca3c
-method	c:objc(cs)CNContactsUserDefaults(cm)sharedDefaults	-			instancetype	-	ios=9.0/-/-/0	-	b4baab422f5c1265
-property	c:objc(cs)CNContactsUserDefaults(py)sortOrder	-			CNContactSortOrder	readonly,nonatomic	ios=9.0/-/-/0	-	40c325627f541e72
-property	c:objc(cs)CNContactsUserDefaults(py)countryCode	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	c3dff9b796d83890
-interface	c:objc(cs)CNContactProperty	-			-	-	ios=9.0/-/-/0	-	ea319f95964ea9a6
-super	-	CNContactProperty	NSObject		-	-	-	-	2523b83ed2506be8
-conforms	-	CNContactProperty	NSCopying		-	-	-	-	cb2c33b040c4bd28
-conforms	-	CNContactProperty	NSSecureCoding		-	-	-	-	c57aefbf4a07f5c9
-property	c:objc(cs)CNContactProperty(py)contact	-			CNContact *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	867c11ec314de841
-property	c:objc(cs)CNContactProperty(py)key	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	c1f95344e97b0a7e
-property	c:objc(cs)CNContactProperty(py)value	-			id	readonly,nonatomic	ios=9.0/-/-/0	-	b8539c3a6f9be802
-property	c:objc(cs)CNContactProperty(py)identifier	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	6f0c42899124ca21
-property	c:objc(cs)CNContactProperty(py)label	-			NSString *	readonly,copy,nonatomic	ios=9.0/-/-/0	-	918b1ef2802ebc5e
-var	c:@CNErrorDomain	-			NSString *const	-	ios=9.0/-/-/0	-	931d9392f242f7fa
-typedef	c:@T@CNErrorCode	-			enum CNErrorCode	-	-	-	624e889008007042
-enum	c:@E@CNErrorCode	-			NSInteger	-	ios=9.0/-/-/0	-	9d71d83056976d55
-enumconst	c:@E@CNErrorCode@CNErrorCodeCommunicationError	CNErrorCode			-	-	ios=9.0/-/-/0	-	489e2189b93a03ee
-enumconst	c:@E@CNErrorCode@CNErrorCodeDataAccessError	CNErrorCode			-	-	ios=9.0/-/-/0	-	12f3b7c007c1d98a
-enumconst	c:@E@CNErrorCode@CNErrorCodeAuthorizationDenied	CNErrorCode			-	-	ios=9.0/-/-/0	-	e28e0c5ed57c7ef5
-enumconst	c:@E@CNErrorCode@CNErrorCodeNoAccessableWritableContainers	CNErrorCode			-	-	ios=11.3/-/-/0	-	90f682b713305d8e
-enumconst	c:@E@CNErrorCode@CNErrorCodeUnauthorizedKeys	CNErrorCode			-	-	ios=13.0/-/-/0,macos=10.14/-/-/0,watchos=6.0/-/-/0	-	6fd5bbd1a2390814
-enumconst	c:@E@CNErrorCode@CNErrorCodeFeatureDisabledByUser	CNErrorCode			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	513b9edf684d4f39
-enumconst	c:@E@CNErrorCode@CNErrorCodeFeatureNotAvailable	CNErrorCode			-	-	ios=17/-/-/0,macos=14/-/-/0,watchos=10/-/-/0	-	4ec7b8f7fc2bb0a8
-enumconst	c:@E@CNErrorCode@CNErrorCodeRecordDoesNotExist	CNErrorCode			-	-	ios=9.0/-/-/0	-	0ba9eb601146feaf
-enumconst	c:@E@CNErrorCode@CNErrorCodeInsertedRecordAlreadyExists	CNErrorCode			-	-	ios=9.0/-/-/0	-	c074e0f18dba7e13
-enumconst	c:@E@CNErrorCode@CNErrorCodeContainmentCycle	CNErrorCode			-	-	ios=9.0/-/-/0	-	87bd1ddb44824c36
-enumconst	c:@E@CNErrorCode@CNErrorCodeContainmentScope	CNErrorCode			-	-	ios=9.0/-/-/0	-	a940629bcf1275f7
-enumconst	c:@E@CNErrorCode@CNErrorCodeParentRecordDoesNotExist	CNErrorCode			-	-	ios=9.0/-/-/0	-	4a0af81734a67750
-enumconst	c:@E@CNErrorCode@CNErrorCodeRecordIdentifierInvalid	CNErrorCode			-	-	ios=9.0/-/-/0	-	8afd74cec59248d4
-enumconst	c:@E@CNErrorCode@CNErrorCodeRecordNotWritable	CNErrorCode			-	-	ios=13.0/-/-/0,macos=10.14/-/-/0,watchos=6.0/-/-/0	-	bda650f761a52046
-enumconst	c:@E@CNErrorCode@CNErrorCodeParentContainerNotWritable	CNErrorCode			-	-	ios=13.0/-/-/0,macos=10.14/-/-/0,watchos=6.0/-/-/0	-	b1e1e0c2755859fc
-enumconst	c:@E@CNErrorCode@CNErrorCodeValidationMultipleErrors	CNErrorCode			-	-	ios=9.0/-/-/0	-	304add32867807f1
-enumconst	c:@E@CNErrorCode@CNErrorCodeValidationTypeMismatch	CNErrorCode			-	-	ios=9.0/-/-/0	-	751f4b4f74967a82
-enumconst	c:@E@CNErrorCode@CNErrorCodeValidationConfigurationError	CNErrorCode			-	-	ios=9.0/-/-/0	-	084f750c254265a3
-enumconst	c:@E@CNErrorCode@CNErrorCodePredicateInvalid	CNErrorCode			-	-	ios=9.0/-/-/0	-	d5a7924f593917ae
-enumconst	c:@E@CNErrorCode@CNErrorCodePolicyViolation	CNErrorCode			-	-	ios=9.0/-/-/0	-	4a7f7c74b062ed8c
-enumconst	c:@E@CNErrorCode@CNErrorCodeClientIdentifierInvalid	CNErrorCode			-	-	ios=9.0/-/-/0	-	4b1f393c728a5b41
-enumconst	c:@E@CNErrorCode@CNErrorCodeClientIdentifierDoesNotExist	CNErrorCode			-	-	ios=9.0/-/-/0	-	8ab066d8c3a86b79
-enumconst	c:@E@CNErrorCode@CNErrorCodeClientIdentifierCollision	CNErrorCode			-	-	ios=9.0/-/-/0	-	610d53295cc5a28c
-enumconst	c:@E@CNErrorCode@CNErrorCodeChangeHistoryExpired	CNErrorCode			-	-	ios=9.0/-/-/0	-	8f05ab9eed918344
-enumconst	c:@E@CNErrorCode@CNErrorCodeChangeHistoryInvalidAnchor	CNErrorCode			-	-	ios=9.0/-/-/0	-	b3c9f6b5b56ead95
-enumconst	c:@E@CNErrorCode@CNErrorCodeChangeHistoryInvalidFetchRequest	CNErrorCode			-	-	ios=9.0/-/-/0	-	95cabc0467cc715e
-enumconst	c:@E@CNErrorCode@CNErrorCodeVCardMalformed	CNErrorCode			-	-	ios=11.0/-/-/0	-	345d4bc31e4c735b
-enumconst	c:@E@CNErrorCode@CNErrorCodeVCardSummarizationError	CNErrorCode			-	-	ios=12.0/-/-/0	-	37a8e2f4cd532f75
-var	c:@CNErrorUserInfoAffectedRecordsKey	-			NSString *const	-	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	60b9a163d524044f
-var	c:@CNErrorUserInfoAffectedRecordIdentifiersKey	-			NSString *const	-	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	19dadbf2bb53439d
-var	c:@CNErrorUserInfoValidationErrorsKey	-			NSString *const	-	ios=9.0/-/-/0	-	cfe499ffb426aaf9
-var	c:@CNErrorUserInfoKeyPathsKey	-			NSString *const	-	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	a6c5c953dd1f7bef
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+interface	c:objc(cs)CNLabeledValue	-			-	-	-	ios=9.0/-/-/0	-	aff6fced600a1b87
+super	-	CNLabeledValue	NSObject		-	-	-	-	-	9ff64da8969219b5
+conforms	-	CNLabeledValue	NSCopying		-	-	-	-	-	b250eef073e2afae
+conforms	-	CNLabeledValue	NSSecureCoding		-	-	-	-	-	99e2143fa40c9c02
+property	c:objc(cs)CNLabeledValue(py)identifier	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	7739e73da4e9ea0c
+property	c:objc(cs)CNLabeledValue(py)label	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	72a3c5d4b9710b6c
+property	c:objc(cs)CNLabeledValue(py)value	-			ValueType	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	408c9d4a397c67a4
+method	c:objc(cs)CNLabeledValue(cm)labeledValueWithLabel:value:	-			instancetype	NSString * label | ValueType value	-	ios=9.0/-/-/0	-	8370f35a3e22cd25
+method	c:objc(cs)CNLabeledValue(im)initWithLabel:value:	-			instancetype	NSString * label | ValueType value	-	ios=9.0/-/-/0	-	0a224e66ee16be3a
+method	c:objc(cs)CNLabeledValue(im)labeledValueBySettingLabel:	-			instancetype	NSString * label	-	ios=9.0/-/-/0	-	2c1a003838d53e69
+method	c:objc(cs)CNLabeledValue(im)labeledValueBySettingValue:	-			instancetype	ValueType value	-	ios=9.0/-/-/0	-	373cd23af88a776c
+method	c:objc(cs)CNLabeledValue(im)labeledValueBySettingLabel:value:	-			instancetype	NSString * label | ValueType value	-	ios=9.0/-/-/0	-	231e89da43525e43
+method	c:objc(cs)CNLabeledValue(cm)localizedStringForLabel:	-			NSString *	NSString * label	-	ios=9.0/-/-/0	-	158c02836e1cc1a5
+var	c:@CNLabelHome	-			NSString *const	-	-	ios=9.0/-/-/0	-	0e96f46352336299
+var	c:@CNLabelWork	-			NSString *const	-	-	ios=9.0/-/-/0	-	c4ac0578a69a5e7d
+var	c:@CNLabelSchool	-			NSString *const	-	-	ios=13.0/-/-/0	-	209ddcf046234480
+var	c:@CNLabelOther	-			NSString *const	-	-	ios=9.0/-/-/0	-	84eeaf243f1ce36a
+var	c:@CNLabelEmailiCloud	-			NSString *const	-	-	ios=9.0/-/-/0	-	427860d0ee5b61d4
+var	c:@CNLabelURLAddressHomePage	-			NSString *const	-	-	ios=9.0/-/-/0	-	89a0ca98ccc9495d
+var	c:@CNLabelDateAnniversary	-			NSString *const	-	-	ios=9.0/-/-/0	-	fe9c51d99685b846
+interface	c:objc(cs)CNPhoneNumber	-			-	-	-	ios=9.0/-/-/0	-	55d3c2478ed92a08
+super	-	CNPhoneNumber	NSObject		-	-	-	-	-	d4b4b82680b8b0c6
+conforms	-	CNPhoneNumber	NSCopying		-	-	-	-	-	2f70cb7c1b08c0c3
+conforms	-	CNPhoneNumber	NSSecureCoding		-	-	-	-	-	ffe102bc7c0580a9
+method	c:objc(cs)CNPhoneNumber(cm)phoneNumberWithStringValue:	-			instancetype	NSString * stringValue	-	ios=9.0/-/-/0	-	010a2b815124e94a
+method	c:objc(cs)CNPhoneNumber(im)initWithStringValue:	-			instancetype	NSString * string	-	ios=9.0/-/-/0	-	c3e823e646dc1d22
+method	c:objc(cs)CNPhoneNumber(im)init	-			instancetype	-	-	ios=9.0/11.0/-/0	-	607e4f8aa19125ba
+method	c:objc(cs)CNPhoneNumber(cm)new	-			instancetype	-	-	ios=9.0/11.0/-/0	-	917ff0ce9d921052
+property	c:objc(cs)CNPhoneNumber(py)stringValue	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	2d549fb43808b821
+var	c:@CNLabelPhoneNumberiPhone	-			NSString *const	-	-	ios=9.0/-/-/0	-	9b823231612044f8
+var	c:@CNLabelPhoneNumberAppleWatch	-			NSString *const	-	-	ios=14.3/-/-/0,macos=11.1/-/-/0,watchos=7.2/-/-/0	-	b633bc6089b6fbd7
+var	c:@CNLabelPhoneNumberMobile	-			NSString *const	-	-	ios=9.0/-/-/0	-	c7148f6f72f82804
+var	c:@CNLabelPhoneNumberMain	-			NSString *const	-	-	ios=9.0/-/-/0	-	a0848c03a9f7dc1e
+var	c:@CNLabelPhoneNumberHomeFax	-			NSString *const	-	-	ios=9.0/-/-/0	-	0ade2e4b04a415ee
+var	c:@CNLabelPhoneNumberWorkFax	-			NSString *const	-	-	ios=9.0/-/-/0	-	14a78290e8d54c40
+var	c:@CNLabelPhoneNumberOtherFax	-			NSString *const	-	-	ios=9.0/-/-/0	-	68da7a554bea0487
+var	c:@CNLabelPhoneNumberPager	-			NSString *const	-	-	ios=9.0/-/-/0	-	af1f0bf2c9a34928
+interface	c:objc(cs)CNPostalAddress	-			-	-	-	ios=9.0/-/-/0	-	658c0a2b9960e8c4
+super	-	CNPostalAddress	NSObject		-	-	-	-	-	e344a9024504ca72
+conforms	-	CNPostalAddress	NSCopying		-	-	-	-	-	a52d6456bd002696
+conforms	-	CNPostalAddress	NSMutableCopying		-	-	-	-	-	fc87e8e8fe3f3bc1
+conforms	-	CNPostalAddress	NSSecureCoding		-	-	-	-	-	95e0dd98d31bffd9
+property	c:objc(cs)CNPostalAddress(py)street	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	115711ca436d729f
+property	c:objc(cs)CNPostalAddress(py)subLocality	-			NS_AVAILABLE NSString *	-	readonly,copy,nonatomic	ios=10.3/-/-/0	-	5eea286ead75bba8
+property	c:objc(cs)CNPostalAddress(py)city	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	b51a4c0a9e4ba4bd
+property	c:objc(cs)CNPostalAddress(py)subAdministrativeArea	-			NS_AVAILABLE NSString *	-	readonly,copy,nonatomic	ios=10.3/-/-/0	-	610a875bb99dd2fd
+property	c:objc(cs)CNPostalAddress(py)state	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	db6a6c0955d7fe23
+property	c:objc(cs)CNPostalAddress(py)postalCode	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	f98495c546fb2225
+property	c:objc(cs)CNPostalAddress(py)country	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	58fef6ef7f77e4cc
+property	c:objc(cs)CNPostalAddress(py)ISOCountryCode	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	6f4d288c619f9140
+method	c:objc(cs)CNPostalAddress(cm)localizedStringForKey:	-			NSString *	NSString * key	-	ios=9.0/-/-/0	-	ef7ef8f8fb5ba938
+var	c:@CNPostalAddressStreetKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	45ded3a5838ecb03
+var	c:@CNPostalAddressSubLocalityKey	-			NSString *const	-	-	ios=10.3/-/-/0	-	4ff618b181d9ba53
+var	c:@CNPostalAddressCityKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	462715c137500cab
+var	c:@CNPostalAddressSubAdministrativeAreaKey	-			NSString *const	-	-	ios=10.3/-/-/0	-	db91e6f1c2000eb5
+var	c:@CNPostalAddressStateKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	a1c3a117fc0fcffe
+var	c:@CNPostalAddressPostalCodeKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	60228ec2f0da029f
+var	c:@CNPostalAddressCountryKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	0a2a6905ee311417
+var	c:@CNPostalAddressISOCountryCodeKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	8826d11fa950a2cc
+interface	c:objc(cs)CNContactRelation	-			-	-	-	ios=9.0/-/-/0	-	c92fffa266ce9f37
+super	-	CNContactRelation	NSObject		-	-	-	-	-	9053c549f8eaeffd
+conforms	-	CNContactRelation	NSCopying		-	-	-	-	-	002936a44fd358a1
+conforms	-	CNContactRelation	NSSecureCoding		-	-	-	-	-	76ebcef25ef7c79c
+method	c:objc(cs)CNContactRelation(cm)contactRelationWithName:	-			instancetype	NSString * name	-	ios=9.0/-/-/0	-	cfc9ca565c848d8b
+method	c:objc(cs)CNContactRelation(im)initWithName:	-			instancetype	NSString * name	-	ios=9.0/-/-/0	-	7ef8906d77fe3df7
+property	c:objc(cs)CNContactRelation(py)name	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	3da9b5a886d8f8c7
+var	c:@CNLabelContactRelationAssistant	-			NSString *const	-	-	ios=9.0/-/-/0	-	d3627f1164822446
+var	c:@CNLabelContactRelationManager	-			NSString *const	-	-	ios=9.0/-/-/0	-	29e808eb968bb915
+var	c:@CNLabelContactRelationColleague	-			NSString *const	-	-	ios=13.0/-/-/0	-	f2c7e8eef9447514
+var	c:@CNLabelContactRelationTeacher	-			NSString *const	-	-	ios=13.0/-/-/0	-	8d0b688229d7db18
+var	c:@CNLabelContactRelationSibling	-			NSString *const	-	-	ios=13.0/-/-/0	-	bb05e3df1147a834
+var	c:@CNLabelContactRelationYoungerSibling	-			NSString *const	-	-	ios=13.0/-/-/0	-	c96aad4f6cc0b1fe
+var	c:@CNLabelContactRelationElderSibling	-			NSString *const	-	-	ios=13.0/-/-/0	-	5d0ceaf285533bfb
+var	c:@CNLabelContactRelationSister	-			NSString *const	-	-	ios=9.0/-/-/0	-	d3d2b495e4c5fba3
+var	c:@CNLabelContactRelationYoungerSister	-			NSString *const	-	-	ios=13.0/-/-/0	-	239657cf6d7326b6
+var	c:@CNLabelContactRelationYoungestSister	-			NSString *const	-	-	ios=13.0/-/-/0	-	f80326548d43c835
+var	c:@CNLabelContactRelationElderSister	-			NSString *const	-	-	ios=13.0/-/-/0	-	e687f4bd85547471
+var	c:@CNLabelContactRelationEldestSister	-			NSString *const	-	-	ios=13.0/-/-/0	-	a8a501542d2c86bb
+var	c:@CNLabelContactRelationBrother	-			NSString *const	-	-	ios=9.0/-/-/0	-	c36da4d027239e0e
+var	c:@CNLabelContactRelationYoungerBrother	-			NSString *const	-	-	ios=13.0/-/-/0	-	f95957f34c595239
+var	c:@CNLabelContactRelationYoungestBrother	-			NSString *const	-	-	ios=13.0/-/-/0	-	fe16fcefeefeea7d
+var	c:@CNLabelContactRelationElderBrother	-			NSString *const	-	-	ios=13.0/-/-/0	-	0af9ff5af2706348
+var	c:@CNLabelContactRelationEldestBrother	-			NSString *const	-	-	ios=13.0/-/-/0	-	0d990e957cab20f6
+var	c:@CNLabelContactRelationFriend	-			NSString *const	-	-	ios=9.0/-/-/0	-	6562a3def9ffdc23
+var	c:@CNLabelContactRelationMaleFriend	-			NSString *const	-	-	ios=13.0/-/-/0	-	58314be658498653
+var	c:@CNLabelContactRelationFemaleFriend	-			NSString *const	-	-	ios=13.0/-/-/0	-	12f79f252b83e7cc
+var	c:@CNLabelContactRelationSpouse	-			NSString *const	-	-	ios=9.0/-/-/0	-	09bb6816de17acd4
+var	c:@CNLabelContactRelationWife	-			NSString *const	-	-	ios=13.0/-/-/0	-	2a54f9b7486a632c
+var	c:@CNLabelContactRelationHusband	-			NSString *const	-	-	ios=13.0/-/-/0	-	af4d983e0a8c1993
+var	c:@CNLabelContactRelationPartner	-			NSString *const	-	-	ios=9.0/-/-/0	-	9420424c2acfae0d
+var	c:@CNLabelContactRelationMalePartner	-			NSString *const	-	-	ios=13.0/-/-/0	-	bec80ff72ac4e3a5
+var	c:@CNLabelContactRelationFemalePartner	-			NSString *const	-	-	ios=13.0/-/-/0	-	184881057dbf74be
+var	c:@CNLabelContactRelationGirlfriendOrBoyfriend	-			NSString *const	-	-	ios=13.0/-/-/0	-	d37819783e556cb1
+var	c:@CNLabelContactRelationGirlfriend	-			NSString *const	-	-	ios=13.0/-/-/0	-	24fe7943b3007971
+var	c:@CNLabelContactRelationBoyfriend	-			NSString *const	-	-	ios=13.0/-/-/0	-	4a4cc0d05cf4b481
+var	c:@CNLabelContactRelationParent	-			NSString *const	-	-	ios=9.0/-/-/0	-	75ced440c2be38d0
+var	c:@CNLabelContactRelationMother	-			NSString *const	-	-	ios=9.0/-/-/0	-	60ef49a95e0f5072
+var	c:@CNLabelContactRelationFather	-			NSString *const	-	-	ios=9.0/-/-/0	-	d0b179c55d2e7d9f
+var	c:@CNLabelContactRelationChild	-			NSString *const	-	-	ios=9.0/-/-/0	-	1855a4c956f43ef8
+var	c:@CNLabelContactRelationDaughter	-			NSString *const	-	-	ios=11.0/-/-/0	-	bfd860e8ccaa0dfd
+var	c:@CNLabelContactRelationSon	-			NSString *const	-	-	ios=11.0/-/-/0	-	5b218f652a36f1da
+var	c:@CNLabelContactRelationGrandparent	-			NSString *const	-	-	ios=13.0/-/-/0	-	a935409400818e18
+var	c:@CNLabelContactRelationGrandmother	-			NSString *const	-	-	ios=13.0/-/-/0	-	1b08180dbbd1c95a
+var	c:@CNLabelContactRelationGrandmotherMothersMother	-			NSString *const	-	-	ios=13.0/-/-/0	-	3564d857ae719235
+var	c:@CNLabelContactRelationGrandmotherFathersMother	-			NSString *const	-	-	ios=13.0/-/-/0	-	d6c99447c5d9dc9c
+var	c:@CNLabelContactRelationGrandfather	-			NSString *const	-	-	ios=13.0/-/-/0	-	0e124ea2c4922087
+var	c:@CNLabelContactRelationGrandfatherMothersFather	-			NSString *const	-	-	ios=13.0/-/-/0	-	bdc16db08647a818
+var	c:@CNLabelContactRelationGrandfatherFathersFather	-			NSString *const	-	-	ios=13.0/-/-/0	-	a1876c5bf0faf1fc
+var	c:@CNLabelContactRelationGreatGrandparent	-			NSString *const	-	-	ios=13.0/-/-/0	-	3ad83970b9c8859a
+var	c:@CNLabelContactRelationGreatGrandmother	-			NSString *const	-	-	ios=13.0/-/-/0	-	3987e686b5af8b83
+var	c:@CNLabelContactRelationGreatGrandfather	-			NSString *const	-	-	ios=13.0/-/-/0	-	174d379518772f13
+var	c:@CNLabelContactRelationGrandchild	-			NSString *const	-	-	ios=13.0/-/-/0	-	b9aaf42d09638e03
+var	c:@CNLabelContactRelationGranddaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	dd97d26bdc997074
+var	c:@CNLabelContactRelationGranddaughterDaughtersDaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	c75854395af515b0
+var	c:@CNLabelContactRelationGranddaughterSonsDaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	dd6a6c0f4abbf18e
+var	c:@CNLabelContactRelationGrandson	-			NSString *const	-	-	ios=13.0/-/-/0	-	9ce848386cc9db08
+var	c:@CNLabelContactRelationGrandsonDaughtersSon	-			NSString *const	-	-	ios=13.0/-/-/0	-	96d2c330e5ae000c
+var	c:@CNLabelContactRelationGrandsonSonsSon	-			NSString *const	-	-	ios=13.0/-/-/0	-	e590016eb39b7928
+var	c:@CNLabelContactRelationGreatGrandchild	-			NSString *const	-	-	ios=13.0/-/-/0	-	82c9b6564183dec2
+var	c:@CNLabelContactRelationGreatGranddaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	7d701b0a16ea93c5
+var	c:@CNLabelContactRelationGreatGrandson	-			NSString *const	-	-	ios=13.0/-/-/0	-	c667815064c34caa
+var	c:@CNLabelContactRelationParentInLaw	-			NSString *const	-	-	ios=13.0/-/-/0	-	f938514612101157
+var	c:@CNLabelContactRelationMotherInLaw	-			NSString *const	-	-	ios=13.0/-/-/0	-	07e85770402323b1
+var	c:@CNLabelContactRelationMotherInLawWifesMother	-			NSString *const	-	-	ios=13.0/-/-/0	-	f2e8628940bdef74
+var	c:@CNLabelContactRelationMotherInLawHusbandsMother	-			NSString *const	-	-	ios=13.0/-/-/0	-	4b2aee4cef0c64ee
+var	c:@CNLabelContactRelationFatherInLaw	-			NSString *const	-	-	ios=13.0/-/-/0	-	bd58bfbdfaa2431e
+var	c:@CNLabelContactRelationFatherInLawWifesFather	-			NSString *const	-	-	ios=13.0/-/-/0	-	cdfc1d6c26716476
+var	c:@CNLabelContactRelationFatherInLawHusbandsFather	-			NSString *const	-	-	ios=13.0/-/-/0	-	5b53460e20a73414
+var	c:@CNLabelContactRelationCoParentInLaw	-			NSString *const	-	-	ios=13.0/-/-/0	-	908760a184ac21b4
+var	c:@CNLabelContactRelationCoMotherInLaw	-			NSString *const	-	-	ios=13.0/-/-/0	-	4339e1b1d7dc5cd5
+var	c:@CNLabelContactRelationCoFatherInLaw	-			NSString *const	-	-	ios=13.0/-/-/0	-	ad04c5d1c0f8b4ce
+var	c:@CNLabelContactRelationSiblingInLaw	-			NSString *const	-	-	ios=13.0/-/-/0	-	406178648cf2bef2
+var	c:@CNLabelContactRelationYoungerSiblingInLaw	-			NSString *const	-	-	ios=13.0/-/-/0	-	6455833190cc59de
+var	c:@CNLabelContactRelationElderSiblingInLaw	-			NSString *const	-	-	ios=13.0/-/-/0	-	a9132221f74027e5
+var	c:@CNLabelContactRelationSisterInLaw	-			NSString *const	-	-	ios=13.0/-/-/0	-	a8c843ee54ef4986
+var	c:@CNLabelContactRelationYoungerSisterInLaw	-			NSString *const	-	-	ios=13.0/-/-/0	-	0ae71ba777e5e904
+var	c:@CNLabelContactRelationElderSisterInLaw	-			NSString *const	-	-	ios=13.0/-/-/0	-	a7a1e8e0aa9daa11
+var	c:@CNLabelContactRelationSisterInLawSpousesSister	-			NSString *const	-	-	ios=13.0/-/-/0	-	493548da10fd4751
+var	c:@CNLabelContactRelationSisterInLawWifesSister	-			NSString *const	-	-	ios=13.0/-/-/0	-	dd42c8b85e2eaa04
+var	c:@CNLabelContactRelationSisterInLawHusbandsSister	-			NSString *const	-	-	ios=13.0/-/-/0	-	691268ddc58ae705
+var	c:@CNLabelContactRelationSisterInLawBrothersWife	-			NSString *const	-	-	ios=13.0/-/-/0	-	ce2a2184be7674ed
+var	c:@CNLabelContactRelationSisterInLawYoungerBrothersWife	-			NSString *const	-	-	ios=13.0/-/-/0	-	56d6899757636f26
+var	c:@CNLabelContactRelationSisterInLawElderBrothersWife	-			NSString *const	-	-	ios=13.0/-/-/0	-	f3f5d7c6478713e5
+var	c:@CNLabelContactRelationBrotherInLaw	-			NSString *const	-	-	ios=13.0/-/-/0	-	047dc7aee994e830
+var	c:@CNLabelContactRelationYoungerBrotherInLaw	-			NSString *const	-	-	ios=13.0/-/-/0	-	a3792a9dfdd8b4b2
+var	c:@CNLabelContactRelationElderBrotherInLaw	-			NSString *const	-	-	ios=13.0/-/-/0	-	4b6eb432fd4cf6a8
+var	c:@CNLabelContactRelationBrotherInLawSpousesBrother	-			NSString *const	-	-	ios=13.0/-/-/0	-	992987954c6e7e82
+var	c:@CNLabelContactRelationBrotherInLawHusbandsBrother	-			NSString *const	-	-	ios=13.0/-/-/0	-	063db885c0af7011
+var	c:@CNLabelContactRelationBrotherInLawWifesBrother	-			NSString *const	-	-	ios=13.0/-/-/0	-	a6283c6dddbd9a8e
+var	c:@CNLabelContactRelationBrotherInLawSistersHusband	-			NSString *const	-	-	ios=13.0/-/-/0	-	093b8517280fb02f
+var	c:@CNLabelContactRelationBrotherInLawYoungerSistersHusband	-			NSString *const	-	-	ios=13.0/-/-/0	-	fd46762ec358354f
+var	c:@CNLabelContactRelationBrotherInLawElderSistersHusband	-			NSString *const	-	-	ios=13.0/-/-/0	-	7a3bd48b2e7ff96a
+var	c:@CNLabelContactRelationSisterInLawWifesBrothersWife	-			NSString *const	-	-	ios=13.0/-/-/0	-	f1f44a084ac8a163
+var	c:@CNLabelContactRelationSisterInLawHusbandsBrothersWife	-			NSString *const	-	-	ios=13.0/-/-/0	-	49e7a599392fc90d
+var	c:@CNLabelContactRelationBrotherInLawWifesSistersHusband	-			NSString *const	-	-	ios=13.0/-/-/0	-	bc55e8d5d0635e50
+var	c:@CNLabelContactRelationBrotherInLawHusbandsSistersHusband	-			NSString *const	-	-	ios=13.0/-/-/0	-	e2105eb0f6806826
+var	c:@CNLabelContactRelationCoSiblingInLaw	-			NSString *const	-	-	ios=13.0/-/-/0	-	530966117ea4de0c
+var	c:@CNLabelContactRelationCoSisterInLaw	-			NSString *const	-	-	ios=13.0/-/-/0	-	de5cf3949323c039
+var	c:@CNLabelContactRelationCoBrotherInLaw	-			NSString *const	-	-	ios=13.0/-/-/0	-	d9e87f106860dd22
+var	c:@CNLabelContactRelationChildInLaw	-			NSString *const	-	-	ios=13.0/-/-/0	-	7d996c294b9bee8e
+var	c:@CNLabelContactRelationDaughterInLaw	-			NSString *const	-	-	ios=13.0/-/-/0	-	2787da6199f60067
+var	c:@CNLabelContactRelationSonInLaw	-			NSString *const	-	-	ios=13.0/-/-/0	-	78ed817f123aedfa
+var	c:@CNLabelContactRelationCousin	-			NSString *const	-	-	ios=13.0/-/-/0	-	5c8b1cd37b33717c
+var	c:@CNLabelContactRelationYoungerCousin	-			NSString *const	-	-	ios=13.0/-/-/0	-	cec7aab96166ecbf
+var	c:@CNLabelContactRelationElderCousin	-			NSString *const	-	-	ios=13.0/-/-/0	-	c38d7f53097a537b
+var	c:@CNLabelContactRelationMaleCousin	-			NSString *const	-	-	ios=13.0/-/-/0	-	cbc2f70a1ed5010c
+var	c:@CNLabelContactRelationFemaleCousin	-			NSString *const	-	-	ios=13.0/-/-/0	-	9de6b46749ce7846
+var	c:@CNLabelContactRelationCousinParentsSiblingsChild	-			NSString *const	-	-	ios=13.0/-/-/0	-	85bc77f034fa85a1
+var	c:@CNLabelContactRelationCousinParentsSiblingsSon	-			NSString *const	-	-	ios=13.0/-/-/0	-	b1b082496822adb2
+var	c:@CNLabelContactRelationYoungerCousinParentsSiblingsSon	-			NSString *const	-	-	ios=13.0/-/-/0	-	591a6fd615fab3b8
+var	c:@CNLabelContactRelationElderCousinParentsSiblingsSon	-			NSString *const	-	-	ios=13.0/-/-/0	-	112f89d308c8f131
+var	c:@CNLabelContactRelationCousinParentsSiblingsDaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	c3ebfb4a1062f1ec
+var	c:@CNLabelContactRelationYoungerCousinParentsSiblingsDaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	bae3def0709b4462
+var	c:@CNLabelContactRelationElderCousinParentsSiblingsDaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	387772366d592dd0
+var	c:@CNLabelContactRelationCousinMothersSistersDaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	2c04b6ed11650ca8
+var	c:@CNLabelContactRelationYoungerCousinMothersSistersDaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	f6296e286d1a332b
+var	c:@CNLabelContactRelationElderCousinMothersSistersDaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	aae3281e0c9632da
+var	c:@CNLabelContactRelationCousinMothersSistersSon	-			NSString *const	-	-	ios=13.0/-/-/0	-	5ea21ea5f50d0407
+var	c:@CNLabelContactRelationYoungerCousinMothersSistersSon	-			NSString *const	-	-	ios=13.0/-/-/0	-	9f364bcb7cabca2a
+var	c:@CNLabelContactRelationElderCousinMothersSistersSon	-			NSString *const	-	-	ios=13.0/-/-/0	-	4499d5108f19c37f
+var	c:@CNLabelContactRelationCousinMothersBrothersDaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	28b351e76e191124
+var	c:@CNLabelContactRelationYoungerCousinMothersBrothersDaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	106b02840828f946
+var	c:@CNLabelContactRelationElderCousinMothersBrothersDaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	22f70faefc97ea34
+var	c:@CNLabelContactRelationCousinMothersBrothersSon	-			NSString *const	-	-	ios=13.0/-/-/0	-	521ae136b8b2f175
+var	c:@CNLabelContactRelationYoungerCousinMothersBrothersSon	-			NSString *const	-	-	ios=13.0/-/-/0	-	f2636e550d82402f
+var	c:@CNLabelContactRelationElderCousinMothersBrothersSon	-			NSString *const	-	-	ios=13.0/-/-/0	-	1104f0ae9e448601
+var	c:@CNLabelContactRelationCousinFathersSistersDaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	b5c4ec3cb163d63c
+var	c:@CNLabelContactRelationYoungerCousinFathersSistersDaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	696faf0357d6f493
+var	c:@CNLabelContactRelationElderCousinFathersSistersDaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	fbdbdee4c1da7621
+var	c:@CNLabelContactRelationCousinFathersSistersSon	-			NSString *const	-	-	ios=13.0/-/-/0	-	5fd2c9d149aa5319
+var	c:@CNLabelContactRelationYoungerCousinFathersSistersSon	-			NSString *const	-	-	ios=13.0/-/-/0	-	148f7d753ea4a648
+var	c:@CNLabelContactRelationElderCousinFathersSistersSon	-			NSString *const	-	-	ios=13.0/-/-/0	-	806ee4f4bbbe0e7d
+var	c:@CNLabelContactRelationCousinFathersBrothersDaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	c0eb80f2cc69b54f
+var	c:@CNLabelContactRelationYoungerCousinFathersBrothersDaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	21c1d09db0f7e536
+var	c:@CNLabelContactRelationElderCousinFathersBrothersDaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	56d31dcafe49ee62
+var	c:@CNLabelContactRelationCousinFathersBrothersSon	-			NSString *const	-	-	ios=13.0/-/-/0	-	7dcc4155c072e62e
+var	c:@CNLabelContactRelationYoungerCousinFathersBrothersSon	-			NSString *const	-	-	ios=13.0/-/-/0	-	18db739eb0bf20b1
+var	c:@CNLabelContactRelationElderCousinFathersBrothersSon	-			NSString *const	-	-	ios=13.0/-/-/0	-	a29aafddd5c6d110
+var	c:@CNLabelContactRelationCousinGrandparentsSiblingsChild	-			NSString *const	-	-	ios=13.0/-/-/0	-	d9fc88e47e9007c0
+var	c:@CNLabelContactRelationCousinGrandparentsSiblingsDaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	6d3463b1050d5c73
+var	c:@CNLabelContactRelationCousinGrandparentsSiblingsSon	-			NSString *const	-	-	ios=13.0/-/-/0	-	d31be38baf3e87e8
+var	c:@CNLabelContactRelationYoungerCousinMothersSiblingsSonOrFathersSistersSon	-			NSString *const	-	-	ios=13.0/-/-/0	-	06c59af8ad51068c
+var	c:@CNLabelContactRelationElderCousinMothersSiblingsSonOrFathersSistersSon	-			NSString *const	-	-	ios=13.0/-/-/0	-	061ce35d336eea92
+var	c:@CNLabelContactRelationYoungerCousinMothersSiblingsDaughterOrFathersSistersDaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	ab49a43acc662cef
+var	c:@CNLabelContactRelationElderCousinMothersSiblingsDaughterOrFathersSistersDaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	66db0e12b6dfa804
+var	c:@CNLabelContactRelationParentsSibling	-			NSString *const	-	-	ios=13.0/-/-/0	-	f9ab7434a78db8f7
+var	c:@CNLabelContactRelationParentsYoungerSibling	-			NSString *const	-	-	ios=13.0/-/-/0	-	3c326e84f9297692
+var	c:@CNLabelContactRelationParentsElderSibling	-			NSString *const	-	-	ios=13.0/-/-/0	-	34df090ccbf850bf
+var	c:@CNLabelContactRelationParentsSiblingMothersSibling	-			NSString *const	-	-	ios=13.0/-/-/0	-	cdd5b9bb274b8bae
+var	c:@CNLabelContactRelationParentsSiblingMothersYoungerSibling	-			NSString *const	-	-	ios=13.0/-/-/0	-	88f2d987080b4476
+var	c:@CNLabelContactRelationParentsSiblingMothersElderSibling	-			NSString *const	-	-	ios=13.0/-/-/0	-	d95907a9316dea16
+var	c:@CNLabelContactRelationParentsSiblingFathersSibling	-			NSString *const	-	-	ios=13.0/-/-/0	-	485042259febc4d5
+var	c:@CNLabelContactRelationParentsSiblingFathersYoungerSibling	-			NSString *const	-	-	ios=13.0/-/-/0	-	737a3574bfbadc17
+var	c:@CNLabelContactRelationParentsSiblingFathersElderSibling	-			NSString *const	-	-	ios=13.0/-/-/0	-	1219fc5912513dc8
+var	c:@CNLabelContactRelationAunt	-			NSString *const	-	-	ios=13.0/-/-/0	-	a154a59bbd1450c9
+var	c:@CNLabelContactRelationAuntParentsSister	-			NSString *const	-	-	ios=13.0/-/-/0	-	fb33b46d28aa7eb1
+var	c:@CNLabelContactRelationAuntParentsYoungerSister	-			NSString *const	-	-	ios=13.0/-/-/0	-	0debd81370cb6227
+var	c:@CNLabelContactRelationAuntParentsElderSister	-			NSString *const	-	-	ios=13.0/-/-/0	-	1223e36c7a3c3753
+var	c:@CNLabelContactRelationAuntFathersSister	-			NSString *const	-	-	ios=13.0/-/-/0	-	f68a93930726acbe
+var	c:@CNLabelContactRelationAuntFathersYoungerSister	-			NSString *const	-	-	ios=13.0/-/-/0	-	86041f17c003b7e5
+var	c:@CNLabelContactRelationAuntFathersElderSister	-			NSString *const	-	-	ios=13.0/-/-/0	-	fdfb96f8efbda7cd
+var	c:@CNLabelContactRelationAuntFathersBrothersWife	-			NSString *const	-	-	ios=13.0/-/-/0	-	1a67189e93ae5c50
+var	c:@CNLabelContactRelationAuntFathersYoungerBrothersWife	-			NSString *const	-	-	ios=13.0/-/-/0	-	7e9c53f396798129
+var	c:@CNLabelContactRelationAuntFathersElderBrothersWife	-			NSString *const	-	-	ios=13.0/-/-/0	-	c3e04985aae0107a
+var	c:@CNLabelContactRelationAuntMothersSister	-			NSString *const	-	-	ios=13.0/-/-/0	-	053b24fa78b5fa05
+var	c:@CNLabelContactRelationAuntMothersYoungerSister	-			NSString *const	-	-	ios=13.0/-/-/0	-	66b616f8fae2ba6a
+var	c:@CNLabelContactRelationAuntMothersElderSister	-			NSString *const	-	-	ios=13.0/-/-/0	-	45beb5add5440ff2
+var	c:@CNLabelContactRelationAuntMothersBrothersWife	-			NSString *const	-	-	ios=13.0/-/-/0	-	6cae0b4adf7a74e5
+var	c:@CNLabelContactRelationGrandaunt	-			NSString *const	-	-	ios=13.0/-/-/0	-	c81bc5ead520f6bc
+var	c:@CNLabelContactRelationUncle	-			NSString *const	-	-	ios=13.0/-/-/0	-	7a2a6d977964b723
+var	c:@CNLabelContactRelationUncleParentsBrother	-			NSString *const	-	-	ios=13.0/-/-/0	-	b9f00110727c7490
+var	c:@CNLabelContactRelationUncleParentsYoungerBrother	-			NSString *const	-	-	ios=13.0/-/-/0	-	34e48dfab9d58b6e
+var	c:@CNLabelContactRelationUncleParentsElderBrother	-			NSString *const	-	-	ios=13.0/-/-/0	-	fcf2024aad7d846c
+var	c:@CNLabelContactRelationUncleMothersBrother	-			NSString *const	-	-	ios=13.0/-/-/0	-	d3088c6060f44fc1
+var	c:@CNLabelContactRelationUncleMothersYoungerBrother	-			NSString *const	-	-	ios=13.0/-/-/0	-	441a20230eb20f48
+var	c:@CNLabelContactRelationUncleMothersElderBrother	-			NSString *const	-	-	ios=13.0/-/-/0	-	e990938080f9536b
+var	c:@CNLabelContactRelationUncleMothersSistersHusband	-			NSString *const	-	-	ios=13.0/-/-/0	-	562cb6ce36146db9
+var	c:@CNLabelContactRelationUncleFathersBrother	-			NSString *const	-	-	ios=13.0/-/-/0	-	e7a714f0c507475a
+var	c:@CNLabelContactRelationUncleFathersYoungerBrother	-			NSString *const	-	-	ios=13.0/-/-/0	-	6d05bf1c05e89bd0
+var	c:@CNLabelContactRelationUncleFathersElderBrother	-			NSString *const	-	-	ios=13.0/-/-/0	-	ded4eecd2d351a28
+var	c:@CNLabelContactRelationUncleFathersSistersHusband	-			NSString *const	-	-	ios=13.0/-/-/0	-	b5132e8f90261313
+var	c:@CNLabelContactRelationUncleFathersYoungerSistersHusband	-			NSString *const	-	-	ios=13.0/-/-/0	-	37f2d5d01ecdba67
+var	c:@CNLabelContactRelationUncleFathersElderSistersHusband	-			NSString *const	-	-	ios=13.0/-/-/0	-	871fc8fb8a2a756d
+var	c:@CNLabelContactRelationGranduncle	-			NSString *const	-	-	ios=13.0/-/-/0	-	8039e6419ba8b2c4
+var	c:@CNLabelContactRelationSiblingsChild	-			NSString *const	-	-	ios=13.0/-/-/0	-	dfce18120350320e
+var	c:@CNLabelContactRelationNiece	-			NSString *const	-	-	ios=13.0/-/-/0	-	6262a9bce06ef237
+var	c:@CNLabelContactRelationNieceSistersDaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	f16e8e035a864a13
+var	c:@CNLabelContactRelationNieceBrothersDaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	db278208ec2e71ca
+var	c:@CNLabelContactRelationNieceSistersDaughterOrWifesSiblingsDaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	36e6061c3f484ad3
+var	c:@CNLabelContactRelationNieceBrothersDaughterOrHusbandsSiblingsDaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	fac11be4f5290f6a
+var	c:@CNLabelContactRelationNephew	-			NSString *const	-	-	ios=13.0/-/-/0	-	1a959be58bd73a8a
+var	c:@CNLabelContactRelationNephewSistersSon	-			NSString *const	-	-	ios=13.0/-/-/0	-	e9c0664f2e21d1dc
+var	c:@CNLabelContactRelationNephewBrothersSon	-			NSString *const	-	-	ios=13.0/-/-/0	-	818271dca15b08ae
+var	c:@CNLabelContactRelationNephewBrothersSonOrHusbandsSiblingsSon	-			NSString *const	-	-	ios=13.0/-/-/0	-	677b70a7af2d7f3c
+var	c:@CNLabelContactRelationNephewSistersSonOrWifesSiblingsSon	-			NSString *const	-	-	ios=13.0/-/-/0	-	0fffd988061af75f
+var	c:@CNLabelContactRelationGrandniece	-			NSString *const	-	-	ios=13.0/-/-/0	-	d12e4176432eece1
+var	c:@CNLabelContactRelationGrandnieceSistersGranddaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	70e1eae46259f59a
+var	c:@CNLabelContactRelationGrandnieceBrothersGranddaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	573e8beaf067a1e0
+var	c:@CNLabelContactRelationGrandnephew	-			NSString *const	-	-	ios=13.0/-/-/0	-	7865065c107229f2
+var	c:@CNLabelContactRelationGrandnephewSistersGrandson	-			NSString *const	-	-	ios=13.0/-/-/0	-	ceaefe9000239d48
+var	c:@CNLabelContactRelationGrandnephewBrothersGrandson	-			NSString *const	-	-	ios=13.0/-/-/0	-	fb7a08f8f91c8bdb
+var	c:@CNLabelContactRelationStepparent	-			NSString *const	-	-	ios=13.0/-/-/0	-	874c71192d2275ab
+var	c:@CNLabelContactRelationStepmother	-			NSString *const	-	-	ios=13.0/-/-/0	-	eedaa33fc82212f6
+var	c:@CNLabelContactRelationStepfather	-			NSString *const	-	-	ios=13.0/-/-/0	-	5d211be488b0a891
+var	c:@CNLabelContactRelationStepchild	-			NSString *const	-	-	ios=13.0/-/-/0	-	316e9e5feb60265a
+var	c:@CNLabelContactRelationStepdaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	6f1c91f980d35317
+var	c:@CNLabelContactRelationStepson	-			NSString *const	-	-	ios=13.0/-/-/0	-	4546112209794262
+var	c:@CNLabelContactRelationStepsister	-			NSString *const	-	-	ios=13.0/-/-/0	-	fd47ff3ac35c8e70
+var	c:@CNLabelContactRelationStepbrother	-			NSString *const	-	-	ios=13.0/-/-/0	-	63fa40d1a803f685
+var	c:@CNLabelContactRelationMotherInLawOrStepmother	-			NSString *const	-	-	ios=13.0/-/-/0	-	7c0d1304a36a66f8
+var	c:@CNLabelContactRelationFatherInLawOrStepfather	-			NSString *const	-	-	ios=13.0/-/-/0	-	f5395cf1dfaf61d3
+var	c:@CNLabelContactRelationDaughterInLawOrStepdaughter	-			NSString *const	-	-	ios=13.0/-/-/0	-	06d2f7e3321ae2fc
+var	c:@CNLabelContactRelationSonInLawOrStepson	-			NSString *const	-	-	ios=13.0/-/-/0	-	4533fc4620bc1a05
+var	c:@CNLabelContactRelationCousinOrSiblingsChild	-			NSString *const	-	-	ios=13.0/-/-/0	-	ab52fa6b1066a86e
+var	c:@CNLabelContactRelationNieceOrCousin	-			NSString *const	-	-	ios=13.0/-/-/0	-	a04b770ec0c50d3c
+var	c:@CNLabelContactRelationNephewOrCousin	-			NSString *const	-	-	ios=13.0/-/-/0	-	2c2c1f5ac5f832fc
+var	c:@CNLabelContactRelationGrandchildOrSiblingsChild	-			NSString *const	-	-	ios=13.0/-/-/0	-	0d0d9437537a7776
+var	c:@CNLabelContactRelationGranddaughterOrNiece	-			NSString *const	-	-	ios=14.0/-/-/0	-	02276efe56d8fd51
+var	c:@CNLabelContactRelationGrandsonOrNephew	-			NSString *const	-	-	ios=14.0/-/-/0	-	cfd0b1b5c205d3b4
+var	c:@CNLabelContactRelationGreatGrandchildOrSiblingsGrandchild	-			NSString *const	-	-	ios=13.0/-/-/0	-	da6ab33f6d083ec9
+var	c:@CNLabelContactRelationDaughterInLawOrSisterInLaw	-			NSString *const	-	-	ios=13.0/-/-/0	-	f9071fea5e0ccec7
+var	c:@CNLabelContactRelationSonInLawOrBrotherInLaw	-			NSString *const	-	-	ios=13.0/-/-/0	-	afb33bc2cf5cff5c
+interface	c:objc(cs)CNSocialProfile	-			-	-	-	ios=9.0/-/-/0	-	7e1164195dff32ae
+super	-	CNSocialProfile	NSObject		-	-	-	-	-	84ff0883146a81f5
+conforms	-	CNSocialProfile	NSCopying		-	-	-	-	-	d40a7c1fd6c3fbe5
+conforms	-	CNSocialProfile	NSSecureCoding		-	-	-	-	-	5e9f1bbbcfd70112
+property	c:objc(cs)CNSocialProfile(py)urlString	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	47f3258e3f61eebe
+property	c:objc(cs)CNSocialProfile(py)username	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	4df738f2f91e02a6
+property	c:objc(cs)CNSocialProfile(py)userIdentifier	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	70cbbe704ffb3962
+property	c:objc(cs)CNSocialProfile(py)service	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	83e83629b16b6cc3
+method	c:objc(cs)CNSocialProfile(im)initWithUrlString:username:userIdentifier:service:	-			instancetype	NSString * urlString | NSString * username | NSString * userIdentifier | NSString * service	-	ios=9.0/-/-/0	-	3ae1e829ed5e96d1
+method	c:objc(cs)CNSocialProfile(cm)localizedStringForKey:	-			NSString *	NSString * key	-	ios=9.0/-/-/0	-	de77ae698edb9c65
+method	c:objc(cs)CNSocialProfile(cm)localizedStringForService:	-			NSString *	NSString * service	-	ios=9.0/-/-/0	-	87993d5b000a85bd
+var	c:@CNSocialProfileURLStringKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	e2dc076699dcd811
+var	c:@CNSocialProfileUsernameKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	54d56732447cd593
+var	c:@CNSocialProfileUserIdentifierKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	9c171815ae61470e
+var	c:@CNSocialProfileServiceKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	c5ae65971500cb28
+var	c:@CNSocialProfileServiceFacebook	-			NSString *const	-	-	ios=9.0/-/-/0	-	66416807dfeaaf48
+var	c:@CNSocialProfileServiceFlickr	-			NSString *const	-	-	ios=9.0/-/-/0	-	222a8d042af35192
+var	c:@CNSocialProfileServiceLinkedIn	-			NSString *const	-	-	ios=9.0/-/-/0	-	6b2a9c4fac0f7b3d
+var	c:@CNSocialProfileServiceMySpace	-			NSString *const	-	-	ios=9.0/-/-/0	-	a3cbc1216af03977
+var	c:@CNSocialProfileServiceSinaWeibo	-			NSString *const	-	-	ios=9.0/-/-/0	-	9a77bd6556214c81
+var	c:@CNSocialProfileServiceTencentWeibo	-			NSString *const	-	-	ios=9.0/-/-/0	-	9dce3863d1d66c7c
+var	c:@CNSocialProfileServiceTwitter	-			NSString *const	-	-	ios=9.0/-/-/0	-	4643ab45dc5567af
+var	c:@CNSocialProfileServiceYelp	-			NSString *const	-	-	ios=9.0/-/-/0	-	5665299bcfe97e4b
+var	c:@CNSocialProfileServiceGameCenter	-			NSString *const	-	-	ios=9.0/-/-/0	-	68188f0006497aca
+interface	c:objc(cs)CNInstantMessageAddress	-			-	-	-	ios=9.0/-/-/0	-	70ba687255f29a0e
+super	-	CNInstantMessageAddress	NSObject		-	-	-	-	-	190d7a2386f91bbb
+conforms	-	CNInstantMessageAddress	NSCopying		-	-	-	-	-	b75140f023e87aea
+conforms	-	CNInstantMessageAddress	NSSecureCoding		-	-	-	-	-	4a7b7d24a66d473c
+property	c:objc(cs)CNInstantMessageAddress(py)username	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	e7e1cf11d2f40e2d
+property	c:objc(cs)CNInstantMessageAddress(py)service	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	39d7e74fc2819c2d
+method	c:objc(cs)CNInstantMessageAddress(im)initWithUsername:service:	-			instancetype	NSString * username | NSString * service	-	ios=9.0/-/-/0	-	574c39b329fb0088
+method	c:objc(cs)CNInstantMessageAddress(cm)localizedStringForKey:	-			NSString *	NSString * key	-	ios=9.0/-/-/0	-	3570b34fc05e23a4
+method	c:objc(cs)CNInstantMessageAddress(cm)localizedStringForService:	-			NSString *	NSString * service	-	ios=9.0/-/-/0	-	1181546985cadad7
+var	c:@CNInstantMessageAddressUsernameKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	ea7b75bd8b80b2f3
+var	c:@CNInstantMessageAddressServiceKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	18ff7dfe0e0d573a
+var	c:@CNInstantMessageServiceAIM	-			NSString *const	-	-	ios=9.0/-/-/0	-	bd1985f2966d6660
+var	c:@CNInstantMessageServiceFacebook	-			NSString *const	-	-	ios=9.0/-/-/0	-	c2c52901d0f444b8
+var	c:@CNInstantMessageServiceGaduGadu	-			NSString *const	-	-	ios=9.0/-/-/0	-	16a48ac49353e30b
+var	c:@CNInstantMessageServiceGoogleTalk	-			NSString *const	-	-	ios=9.0/-/-/0	-	b2e933ea4d56ae2d
+var	c:@CNInstantMessageServiceICQ	-			NSString *const	-	-	ios=9.0/-/-/0	-	6f2b3f6c7fe3f86c
+var	c:@CNInstantMessageServiceJabber	-			NSString *const	-	-	ios=9.0/-/-/0	-	61ac8c62c1ff2ee8
+var	c:@CNInstantMessageServiceMSN	-			NSString *const	-	-	ios=9.0/-/-/0	-	4b18b26b1867647d
+var	c:@CNInstantMessageServiceQQ	-			NSString *const	-	-	ios=9.0/-/-/0	-	4948aabfd92b39cb
+var	c:@CNInstantMessageServiceSkype	-			NSString *const	-	-	ios=9.0/-/-/0	-	92bfb96d3a6bf5bd
+var	c:@CNInstantMessageServiceYahoo	-			NSString *const	-	-	ios=9.0/-/-/0	-	19fb7af19e83d733
+typedef	c:@T@CNContactType	-			enum CNContactType	-	-	-	-	6515516da7de32a8
+enum	c:@E@CNContactType	-			NSInteger	-	-	ios=9.0/-/-/0	-	d9a1e18698b4395e
+enumconst	c:@E@CNContactType@CNContactTypePerson	CNContactType			-	-	-	ios=9.0/-/-/0	-	a41b794405dba498
+enumconst	c:@E@CNContactType@CNContactTypeOrganization	CNContactType			-	-	-	ios=9.0/-/-/0	-	a3d9753b64a4fc68
+typedef	c:@T@CNContactSortOrder	-			enum CNContactSortOrder	-	-	-	-	fcfccba75b5f9146
+enum	c:@E@CNContactSortOrder	-			NSInteger	-	-	ios=9.0/-/-/0	-	0c3458d642e8811c
+enumconst	c:@E@CNContactSortOrder@CNContactSortOrderNone	CNContactSortOrder			-	-	-	ios=9.0/-/-/0	-	635cd260c29f6789
+enumconst	c:@E@CNContactSortOrder@CNContactSortOrderUserDefault	CNContactSortOrder			-	-	-	ios=9.0/-/-/0	-	f6e9427138ed5efc
+enumconst	c:@E@CNContactSortOrder@CNContactSortOrderGivenName	CNContactSortOrder			-	-	-	ios=9.0/-/-/0	-	0b163245310504bb
+enumconst	c:@E@CNContactSortOrder@CNContactSortOrderFamilyName	CNContactSortOrder			-	-	-	ios=9.0/-/-/0	-	b9299fdd6abc46d5
+protocol	c:objc(pl)CNKeyDescriptor	-			-	-	-	-	-	9285a56148d49ef9
+conforms	-	CNKeyDescriptor	NSObject		-	-	-	-	-	625703fd15068540
+conforms	-	CNKeyDescriptor	NSSecureCoding		-	-	-	-	-	7ff4a663ae89e899
+conforms	-	CNKeyDescriptor	NSCopying		-	-	-	-	-	7bbdacafa03675b4
+category	c:objc(cy)NSString@Contacts	-			-	-	-	-	-	21de3253b20916c6
+conforms	-	NSString	CNKeyDescriptor		-	-	-	-	-	6a957710a9752518
+interface	c:objc(cs)CNContact	-			-	-	-	ios=9.0/-/-/0	-	4d3296f584493db2
+super	-	CNContact	NSObject		-	-	-	-	-	850af951cb06e0a5
+conforms	-	CNContact	NSCopying		-	-	-	-	-	fbff400778ea6ed9
+conforms	-	CNContact	NSMutableCopying		-	-	-	-	-	6e46fd11089bf0aa
+conforms	-	CNContact	NSSecureCoding		-	-	-	-	-	70dc368e72a7fa2a
+property	c:objc(cs)CNContact(py)identifier	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	0f02d6770f27057f
+property	c:objc(cs)CNContact(py)contactType	-			CNContactType	-	readonly,nonatomic	ios=9.0/-/-/0	-	879e991b7cb0bf24
+property	c:objc(cs)CNContact(py)namePrefix	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	ed33f6b3dc6c6fe5
+property	c:objc(cs)CNContact(py)givenName	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	3f6f28db0b596994
+property	c:objc(cs)CNContact(py)middleName	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	2aec5e2757aa3e8e
+property	c:objc(cs)CNContact(py)familyName	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	d6272986abef218d
+property	c:objc(cs)CNContact(py)previousFamilyName	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	b1590709bf7e47c8
+property	c:objc(cs)CNContact(py)nameSuffix	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	acd824caf24e38fc
+property	c:objc(cs)CNContact(py)nickname	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	433ce841509432fb
+property	c:objc(cs)CNContact(py)organizationName	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	3ee3c5dc9f623753
+property	c:objc(cs)CNContact(py)departmentName	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	78706d0a045192f9
+property	c:objc(cs)CNContact(py)jobTitle	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	c43925a4d44084c6
+property	c:objc(cs)CNContact(py)phoneticGivenName	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	9ddf81a52f8d0b28
+property	c:objc(cs)CNContact(py)phoneticMiddleName	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	5574eb22ea850537
+property	c:objc(cs)CNContact(py)phoneticFamilyName	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	3d9993f0a325cc6a
+property	c:objc(cs)CNContact(py)phoneticOrganizationName	-			NS_AVAILABLE NSString *	-	readonly,copy,nonatomic	ios=10.0/-/-/0	-	0e6c11d4b410f61e
+property	c:objc(cs)CNContact(py)note	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	c2e1af9c4cb49513
+property	c:objc(cs)CNContact(py)imageData	-			NSData *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	2e4347400f72ac87
+property	c:objc(cs)CNContact(py)thumbnailImageData	-			NSData *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	9a2f3e59d6354d76
+property	c:objc(cs)CNContact(py)imageDataAvailable	-			BOOL	-	readonly,nonatomic	ios=9.0/-/-/0	-	c9ee2789a80f935a
+property	c:objc(cs)CNContact(py)phoneNumbers	-			NSArray<CNLabeledValue<CNPhoneNumber *> *> *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	7597a32f1c01c8e0
+property	c:objc(cs)CNContact(py)emailAddresses	-			NSArray<CNLabeledValue<NSString *> *> *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	00909d49fe985b58
+property	c:objc(cs)CNContact(py)postalAddresses	-			NSArray<CNLabeledValue<CNPostalAddress *> *> *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	2033c728c715f0df
+property	c:objc(cs)CNContact(py)urlAddresses	-			NSArray<CNLabeledValue<NSString *> *> *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	36a7196d1c030c2c
+property	c:objc(cs)CNContact(py)contactRelations	-			NSArray<CNLabeledValue<CNContactRelation *> *> *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	51e7877c892d0a77
+property	c:objc(cs)CNContact(py)socialProfiles	-			NSArray<CNLabeledValue<CNSocialProfile *> *> *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	4f347c3e752cfc7b
+property	c:objc(cs)CNContact(py)instantMessageAddresses	-			NSArray<CNLabeledValue<CNInstantMessageAddress *> *> *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	d6178b117617e108
+property	c:objc(cs)CNContact(py)birthday	-			NSDateComponents *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	74eff3d463982e1f
+property	c:objc(cs)CNContact(py)nonGregorianBirthday	-			NSDateComponents *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	684ce27b07e8c107
+property	c:objc(cs)CNContact(py)dates	-			NSArray<CNLabeledValue<NSDateComponents *> *> *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	96b4c0a9ee708643
+method	c:objc(cs)CNContact(im)isKeyAvailable:	-			BOOL	NSString * key	-	ios=9.0/-/-/0	-	a162cb0f727363bf
+method	c:objc(cs)CNContact(im)areKeysAvailable:	-			BOOL	NSArray<id<CNKeyDescriptor>> * keyDescriptors	-	ios=9.0/-/-/0	-	993416b8b52bea7a
+method	c:objc(cs)CNContact(cm)localizedStringForKey:	-			NSString *	NSString * key	-	ios=9.0/-/-/0	-	6d9cee513d04050c
+method	c:objc(cs)CNContact(cm)comparatorForNameSortOrder:	-			NSComparator	CNContactSortOrder sortOrder	-	ios=9.0/-/-/0	-	5e98082b8d6f719f
+method	c:objc(cs)CNContact(cm)descriptorForAllComparatorKeys	-			id<CNKeyDescriptor>	-	-	ios=9.0/-/-/0	-	237e920b0a7f198e
+method	c:objc(cs)CNContact(im)isUnifiedWithContactWithIdentifier:	-			BOOL	NSString * contactIdentifier	-	ios=9.0/-/-/0	-	614ccb67e1bc4e15
+var	c:@CNContactPropertyNotFetchedExceptionName	-			NSString *const	-	-	-	-	14f784d71daf3619
+var	c:@CNContactIdentifierKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	be9221ced6a0f41a
+var	c:@CNContactNamePrefixKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	2ad68c16574a37a1
+var	c:@CNContactGivenNameKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	0ffb16801347d287
+var	c:@CNContactMiddleNameKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	7a7619aa4f376323
+var	c:@CNContactFamilyNameKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	f6e4c9343b977427
+var	c:@CNContactPreviousFamilyNameKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	a56e51e25c467e5e
+var	c:@CNContactNameSuffixKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	e06322108c710e56
+var	c:@CNContactNicknameKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	cf2b2b440ad0c021
+var	c:@CNContactOrganizationNameKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	44fd72f0f02fcba2
+var	c:@CNContactDepartmentNameKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	0d68ac2e64c49503
+var	c:@CNContactJobTitleKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	614d5cc26cf4e86b
+var	c:@CNContactPhoneticGivenNameKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	77f7f171a88b96ea
+var	c:@CNContactPhoneticMiddleNameKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	6e4a984b807087f1
+var	c:@CNContactPhoneticFamilyNameKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	cae8b562486e9384
+var	c:@CNContactPhoneticOrganizationNameKey	-			NSString *const	-	-	ios=10.0/-/-/0	-	0a75e5d97f386a2d
+var	c:@CNContactBirthdayKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	fac239693b991ee7
+var	c:@CNContactNonGregorianBirthdayKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	c904c537f2a14bdc
+var	c:@CNContactNoteKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	1022f75dcab88d1c
+var	c:@CNContactImageDataKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	47ca2d18859f49a7
+var	c:@CNContactThumbnailImageDataKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	cb94a7157d429d8e
+var	c:@CNContactImageDataAvailableKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	163f0028e89bdba6
+var	c:@CNContactTypeKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	bee57970f5dffa14
+var	c:@CNContactPhoneNumbersKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	a51fd57e852427e1
+var	c:@CNContactEmailAddressesKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	42a56f74196db6f8
+var	c:@CNContactPostalAddressesKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	1217b42666a5b8f1
+var	c:@CNContactDatesKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	ee741998fdf5d18f
+var	c:@CNContactUrlAddressesKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	11674223f4164654
+var	c:@CNContactRelationsKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	dd7b43e02e34a785
+var	c:@CNContactSocialProfilesKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	78fa1fb9e25b4f40
+var	c:@CNContactInstantMessageAddressesKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	0cf3768c1b861253
+typedef	c:@T@CNEntityType	-			enum CNEntityType	-	-	-	-	448384113764178f
+enum	c:@E@CNEntityType	-			NSInteger	-	-	ios=9.0/-/-/0	-	eb7d24c5d792affe
+enumconst	c:@E@CNEntityType@CNEntityTypeContacts	CNEntityType			-	-	-	ios=9.0/-/-/0	-	d8900fd4609fecef
+typedef	c:@T@CNAuthorizationStatus	-			enum CNAuthorizationStatus	-	-	-	-	ef357de023874307
+enum	c:@E@CNAuthorizationStatus	-			NSInteger	-	-	ios=9.0/-/-/0	-	90ebec001657674a
+enumconst	c:@E@CNAuthorizationStatus@CNAuthorizationStatusNotDetermined	CNAuthorizationStatus			-	-	-	ios=9.0/-/-/0	-	1cb86065c9901d96
+enumconst	c:@E@CNAuthorizationStatus@CNAuthorizationStatusRestricted	CNAuthorizationStatus			-	-	-	ios=9.0/-/-/0	-	99e6a91d84e55ada
+enumconst	c:@E@CNAuthorizationStatus@CNAuthorizationStatusDenied	CNAuthorizationStatus			-	-	-	ios=9.0/-/-/0	-	a852d198200db388
+enumconst	c:@E@CNAuthorizationStatus@CNAuthorizationStatusAuthorized	CNAuthorizationStatus			-	-	-	ios=9.0/-/-/0	-	a92e620f443dbf95
+enumconst	c:@E@CNAuthorizationStatus@CNAuthorizationStatusLimited	CNAuthorizationStatus			-	-	-	ios=18.0/-/-/0	-	7c0d15fb23979d20
+interface	c:objc(cs)CNContactStore	-			-	-	-	ios=9.0/-/-/0	-	2afb31e5e34644e0
+super	-	CNContactStore	NSObject		-	-	-	-	-	ac6592fb3d492ac3
+method	c:objc(cs)CNContactStore(cm)authorizationStatusForEntityType:	-			CNAuthorizationStatus	CNEntityType entityType	-	ios=9.0/-/-/0	-	a8e1285a172584b3
+method	c:objc(cs)CNContactStore(im)requestAccessForEntityType:completionHandler:	-			void	CNEntityType entityType | void (^)(BOOL, NSError * _Nullable) completionHandler	-	ios=9.0/-/-/0	-	30bc5d9c8daf9383
+method	c:objc(cs)CNContactStore(im)unifiedContactsMatchingPredicate:keysToFetch:error:	-			NSArray<CNContact *> *	NSPredicate * predicate | NSArray<id<CNKeyDescriptor>> * keys | NSError * _Nullable * error	-	ios=9.0/-/-/0	-	a8c1a388dd95dd6e
+method	c:objc(cs)CNContactStore(im)unifiedContactWithIdentifier:keysToFetch:error:	-			CNContact *	NSString * identifier | NSArray<id<CNKeyDescriptor>> * keys | NSError * _Nullable * error	-	ios=9.0/-/-/0	-	fc4bb81e2e38ca22
+method	c:objc(cs)CNContactStore(im)unifiedMeContactWithKeysToFetch:error:	-			CNContact *	NSArray<id<CNKeyDescriptor>> * keys | NSError * _Nullable * error	-	ios=-/-/-/1,watchos=-/-/-/1	-	91d48713a2a1236b
+method	c:objc(cs)CNContactStore(im)enumeratorForContactFetchRequest:error:	-			CNFetchResult<NSEnumerator<CNContact *> *> *	CNContactFetchRequest * request | NSError * _Nullable * error	-	ios=13.0/-/-/0,macos=10.15/-/-/0,swift=-/-/-/1,watchos=6.0/-/-/0	-	0b5cba0f4525320b
+method	c:objc(cs)CNContactStore(im)enumeratorForChangeHistoryFetchRequest:error:	-			CNFetchResult<NSEnumerator<CNChangeHistoryEvent *> *> *	CNChangeHistoryFetchRequest * request | NSError * _Nullable * error	-	ios=13.0/-/-/0,macos=10.15/-/-/0,swift=-/-/-/1,watchos=6.0/-/-/0	-	ede595ee59575d64
+method	c:objc(cs)CNContactStore(im)enumerateContactsWithFetchRequest:error:usingBlock:	-			BOOL	CNContactFetchRequest * fetchRequest | NSError * _Nullable * error | void (^)(CNContact * _Nonnull, BOOL * _Nonnull) block	-	ios=9.0/-/-/0	-	988e3dbac6eb5de9
+method	c:objc(cs)CNContactStore(im)groupsMatchingPredicate:error:	-			NSArray<CNGroup *> *	NSPredicate * predicate | NSError * _Nullable * error	-	ios=9.0/-/-/0	-	3f774d8888a3e735
+method	c:objc(cs)CNContactStore(im)containersMatchingPredicate:error:	-			NSArray<CNContainer *> *	NSPredicate * predicate | NSError * _Nullable * error	-	ios=9.0/-/-/0	-	c73e85991c700783
+method	c:objc(cs)CNContactStore(im)executeSaveRequest:error:	-			BOOL	CNSaveRequest * saveRequest | NSError * _Nullable * error	-	watchos=-/-/-/1	-	376451d8ffaaaed2
+property	c:objc(cs)CNContactStore(py)currentHistoryToken	-			NSData *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	c921742e337c420b
+method	c:objc(cs)CNContactStore(im)defaultContainerIdentifier	-			NSString *	-	-	ios=9.0/-/-/0	-	5d32d843c6665f5e
+var	c:@CNContactStoreDidChangeNotification	-			NSString *const	-	-	ios=9.0/-/-/0	-	fb2b4275315c3800
+interface	c:objc(cs)CNFetchRequest	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	0ce1c0f4d5c820cb
+super	-	CNFetchRequest	NSObject		-	-	-	-	-	5572de653e3a3707
+interface	c:objc(cs)CNContactFetchRequest	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	53e45e1838b3e104
+super	-	CNContactFetchRequest	CNFetchRequest		-	-	-	-	-	4c2480956c6be553
+conforms	-	CNContactFetchRequest	NSSecureCoding		-	-	-	-	-	2a76f18ce51b637c
+method	c:objc(cs)CNContactFetchRequest(im)init	-			instancetype	-	-	*unavailable ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	8715105a746493b7
+method	c:objc(cs)CNContactFetchRequest(cm)new	-			instancetype	-	-	*unavailable ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	f8c40be141f2652b
+method	c:objc(cs)CNContactFetchRequest(im)initWithKeysToFetch:	-			instancetype	NSArray<id<CNKeyDescriptor>> * keysToFetch	-	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	6efac6e11547d989
+property	c:objc(cs)CNContactFetchRequest(py)predicate	-			NSPredicate *	-	copy,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	1a405fdcacdad598
+property	c:objc(cs)CNContactFetchRequest(py)keysToFetch	-			NSArray<id<CNKeyDescriptor>> *	-	copy,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	bfc657cba42e6ba9
+property	c:objc(cs)CNContactFetchRequest(py)mutableObjects	-			BOOL	-	nonatomic	ios=10.0/-/-/0	-	d84d17258bb61be9
+property	c:objc(cs)CNContactFetchRequest(py)unifyResults	-			BOOL	-	nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	8c172057ca7640c6
+property	c:objc(cs)CNContactFetchRequest(py)sortOrder	-			CNContactSortOrder	-	nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	fa78ab8a2eeec292
+interface	c:objc(cs)CNFetchResult	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	6e84c21fde4d56e8
+super	-	CNFetchResult	NSObject		-	-	-	-	-	65e25c2ad594dea9
+method	c:objc(cs)CNFetchResult(im)init	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	01c43ab14fe8a70e
+method	c:objc(cs)CNFetchResult(cm)new	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	50a52d7b7151a163
+property	c:objc(cs)CNFetchResult(py)value	-			ValueType	-	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	6c196ff2d24744c5
+property	c:objc(cs)CNFetchResult(py)currentHistoryToken	-			NSData *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	f497a075467f68ad
+interface	c:objc(cs)CNSaveRequest	-			-	-	-	ios=9/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	956e6be3a95b9984
+super	-	CNSaveRequest	NSObject		-	-	-	-	-	cde8f04c0c97b63f
+method	c:objc(cs)CNSaveRequest(im)addContact:toContainerWithIdentifier:	-			void	CNMutableContact * contact | NSString * identifier	-	ios=9/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	48823aecd33da947
+method	c:objc(cs)CNSaveRequest(im)updateContact:	-			void	CNMutableContact * contact	-	ios=9/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	ef2fa129eccc88cb
+method	c:objc(cs)CNSaveRequest(im)deleteContact:	-			void	CNMutableContact * contact	-	ios=9/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	e370c9d3c8a06d0b
+method	c:objc(cs)CNSaveRequest(im)addGroup:toContainerWithIdentifier:	-			void	CNMutableGroup * group | NSString * identifier	-	ios=9/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	19e70d8fd872a9f5
+method	c:objc(cs)CNSaveRequest(im)updateGroup:	-			void	CNMutableGroup * group	-	ios=9/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	b36d90974ab084ab
+method	c:objc(cs)CNSaveRequest(im)deleteGroup:	-			void	CNMutableGroup * group	-	ios=9/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	04ee37161c087019
+method	c:objc(cs)CNSaveRequest(im)addSubgroup:toGroup:	-			void	CNGroup * subgroup | CNGroup * group	-	ios=-/-/-/1,macos=10.11/-/-/0	-	bcf27d7f93303c99
+method	c:objc(cs)CNSaveRequest(im)removeSubgroup:fromGroup:	-			void	CNGroup * subgroup | CNGroup * group	-	ios=-/-/-/1,macos=10.11/-/-/0	-	46c995b41d4ff771
+method	c:objc(cs)CNSaveRequest(im)addMember:toGroup:	-			void	CNContact * contact | CNGroup * group	-	ios=9/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	22c2cc15573ba9a1
+method	c:objc(cs)CNSaveRequest(im)removeMember:fromGroup:	-			void	CNContact * contact | CNGroup * group	-	ios=9/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	04ff05546fb3de37
+property	c:objc(cs)CNSaveRequest(py)transactionAuthor	-			NSString *	-	copy,nonatomic	ios=15/-/-/0,macos=12/-/-/0	-	14972617f8178532
+property	c:objc(cs)CNSaveRequest(py)shouldRefetchContacts	-			BOOL	-	assign,nonatomic	ios=15.4/-/-/0,macos=12.3/-/-/0	-	deaa3231d283716f
+interface	c:objc(cs)CNChangeHistoryFetchRequest	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	3b3015664622c417
+super	-	CNChangeHistoryFetchRequest	CNFetchRequest		-	-	-	-	-	298043449016ac1f
+conforms	-	CNChangeHistoryFetchRequest	NSSecureCoding		-	-	-	-	-	c2da5bcedc0622d4
+property	c:objc(cs)CNChangeHistoryFetchRequest(py)startingToken	-			NSData *	-	copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	555b0a5813f2a843
+property	c:objc(cs)CNChangeHistoryFetchRequest(py)additionalContactKeyDescriptors	-			NSArray<id<CNKeyDescriptor>> *	-	copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	b0e38e9698fe07a5
+property	c:objc(cs)CNChangeHistoryFetchRequest(py)shouldUnifyResults	-			BOOL	-	nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	2d7560d18e27cee7
+property	c:objc(cs)CNChangeHistoryFetchRequest(py)mutableObjects	-			BOOL	-	nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	fb91a2c099b3a6bc
+property	c:objc(cs)CNChangeHistoryFetchRequest(py)includeGroupChanges	-			BOOL	-	nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	2fea4e5a6d212fec
+property	c:objc(cs)CNChangeHistoryFetchRequest(py)excludedTransactionAuthors	-			NSArray<NSString *> *	-	copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	9066dce34064dbf5
+interface	c:objc(cs)CNChangeHistoryEvent	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	31cfe465622121d4
+super	-	CNChangeHistoryEvent	NSObject		-	-	-	-	-	73a346be7fa72c31
+conforms	-	CNChangeHistoryEvent	NSCopying		-	-	-	-	-	4790de985da47205
+conforms	-	CNChangeHistoryEvent	NSSecureCoding		-	-	-	-	-	dbac3eb33227597f
+method	c:objc(cs)CNChangeHistoryEvent(im)acceptEventVisitor:	-			void	id<CNChangeHistoryEventVisitor> visitor	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	18da5c84de0f3a69
+interface	c:objc(cs)CNChangeHistoryDropEverythingEvent	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	65bdf696e765faa3
+super	-	CNChangeHistoryDropEverythingEvent	CNChangeHistoryEvent		-	-	-	-	-	9b19cf39e4ce2fb5
+interface	c:objc(cs)CNChangeHistoryAddContactEvent	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	c5ff58569486e65d
+super	-	CNChangeHistoryAddContactEvent	CNChangeHistoryEvent		-	-	-	-	-	70ee4d047927603b
+property	c:objc(cs)CNChangeHistoryAddContactEvent(py)contact	-			CNContact *	-	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	4ab36f3ccd10b520
+property	c:objc(cs)CNChangeHistoryAddContactEvent(py)containerIdentifier	-			NSString *	-	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	041551accf3d5fff
+interface	c:objc(cs)CNChangeHistoryUpdateContactEvent	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	f9aec1de16e7c989
+super	-	CNChangeHistoryUpdateContactEvent	CNChangeHistoryEvent		-	-	-	-	-	6eaac0b4ef9b0cb4
+property	c:objc(cs)CNChangeHistoryUpdateContactEvent(py)contact	-			CNContact *	-	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	19679b1839586f52
+interface	c:objc(cs)CNChangeHistoryDeleteContactEvent	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	4441a1fb39c4f320
+super	-	CNChangeHistoryDeleteContactEvent	CNChangeHistoryEvent		-	-	-	-	-	f2d2434deffa57ab
+property	c:objc(cs)CNChangeHistoryDeleteContactEvent(py)contactIdentifier	-			NSString *	-	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	a42bb66a9fa08633
+interface	c:objc(cs)CNChangeHistoryAddGroupEvent	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	38759f3c3a985b02
+super	-	CNChangeHistoryAddGroupEvent	CNChangeHistoryEvent		-	-	-	-	-	f5eeaa5b3c98fcbd
+property	c:objc(cs)CNChangeHistoryAddGroupEvent(py)group	-			CNGroup *	-	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	1d9a6627b614a01a
+property	c:objc(cs)CNChangeHistoryAddGroupEvent(py)containerIdentifier	-			NSString *	-	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	25cf349d864322e4
+interface	c:objc(cs)CNChangeHistoryUpdateGroupEvent	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	d3c92ff762ee7887
+super	-	CNChangeHistoryUpdateGroupEvent	CNChangeHistoryEvent		-	-	-	-	-	50179148d1313767
+property	c:objc(cs)CNChangeHistoryUpdateGroupEvent(py)group	-			CNGroup *	-	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	29a9fb7c9c77aa6e
+interface	c:objc(cs)CNChangeHistoryDeleteGroupEvent	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	4f0c00efccbbd6c5
+super	-	CNChangeHistoryDeleteGroupEvent	CNChangeHistoryEvent		-	-	-	-	-	24f52d8823655b89
+property	c:objc(cs)CNChangeHistoryDeleteGroupEvent(py)groupIdentifier	-			NSString *	-	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	c1ead0939e737ffb
+interface	c:objc(cs)CNChangeHistoryAddMemberToGroupEvent	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	bedacd99b710bf69
+super	-	CNChangeHistoryAddMemberToGroupEvent	CNChangeHistoryEvent		-	-	-	-	-	67f51a42a74dd401
+property	c:objc(cs)CNChangeHistoryAddMemberToGroupEvent(py)member	-			CNContact *	-	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	3d8ef968699cbde3
+property	c:objc(cs)CNChangeHistoryAddMemberToGroupEvent(py)group	-			CNGroup *	-	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	0fa6c234549b63a1
+interface	c:objc(cs)CNChangeHistoryRemoveMemberFromGroupEvent	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	1825a3b7906ba5d6
+super	-	CNChangeHistoryRemoveMemberFromGroupEvent	CNChangeHistoryEvent		-	-	-	-	-	af8dc9fed1d04e93
+property	c:objc(cs)CNChangeHistoryRemoveMemberFromGroupEvent(py)member	-			CNContact *	-	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	b236160ae1dd8caa
+property	c:objc(cs)CNChangeHistoryRemoveMemberFromGroupEvent(py)group	-			CNGroup *	-	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	d22fc1661ad2e0d1
+interface	c:objc(cs)CNChangeHistoryAddSubgroupToGroupEvent	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	9d903444adea363d
+super	-	CNChangeHistoryAddSubgroupToGroupEvent	CNChangeHistoryEvent		-	-	-	-	-	949827ad48deaa3d
+property	c:objc(cs)CNChangeHistoryAddSubgroupToGroupEvent(py)subgroup	-			CNGroup *	-	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	559ca3fa2f7f2156
+property	c:objc(cs)CNChangeHistoryAddSubgroupToGroupEvent(py)group	-			CNGroup *	-	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	39d0cf1be7beed87
+interface	c:objc(cs)CNChangeHistoryRemoveSubgroupFromGroupEvent	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	ced9b1debab7ca4a
+super	-	CNChangeHistoryRemoveSubgroupFromGroupEvent	CNChangeHistoryEvent		-	-	-	-	-	9dcf58a1be427311
+property	c:objc(cs)CNChangeHistoryRemoveSubgroupFromGroupEvent(py)subgroup	-			CNGroup *	-	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	70faf32cbbca830c
+property	c:objc(cs)CNChangeHistoryRemoveSubgroupFromGroupEvent(py)group	-			CNGroup *	-	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	6d0e4eb5ae0a38a4
+protocol	c:objc(pl)CNChangeHistoryEventVisitor	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	c9dc9f6be414f4dd
+conforms	-	CNChangeHistoryEventVisitor	NSObject		-	-	-	-	-	e4555ba09a866b2d
+method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitDropEverythingEvent:	-			void	CNChangeHistoryDropEverythingEvent * event	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	5f9ef74e4a3e5645
+method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitAddContactEvent:	-			void	CNChangeHistoryAddContactEvent * event	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	2ab1b6b9bc8884b1
+method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitUpdateContactEvent:	-			void	CNChangeHistoryUpdateContactEvent * event	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	6edf4c1493d035f9
+method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitDeleteContactEvent:	-			void	CNChangeHistoryDeleteContactEvent * event	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	fa402aae050a5d57
+method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitAddGroupEvent:	-			void	CNChangeHistoryAddGroupEvent * event	optional	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	f57f510d88c7f1a5
+method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitUpdateGroupEvent:	-			void	CNChangeHistoryUpdateGroupEvent * event	optional	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	fec91482268ad3d4
+method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitDeleteGroupEvent:	-			void	CNChangeHistoryDeleteGroupEvent * event	optional	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	1b77456e559dc302
+method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitAddMemberToGroupEvent:	-			void	CNChangeHistoryAddMemberToGroupEvent * event	optional	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	8f176bb96183972e
+method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitRemoveMemberFromGroupEvent:	-			void	CNChangeHistoryRemoveMemberFromGroupEvent * event	optional	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	219aae287a88e859
+method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitAddSubgroupToGroupEvent:	-			void	CNChangeHistoryAddSubgroupToGroupEvent * event	optional	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	8a3d2391412f2c90
+method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitRemoveSubgroupFromGroupEvent:	-			void	CNChangeHistoryRemoveSubgroupFromGroupEvent * event	optional	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	07c7a8b31cf5a909
+category	c:objc(cy)CNContact@Predicates	-			-	-	-	ios=9.0/-/-/0	-	b15cd92b7493e64f
+method	c:objc(cs)CNContact(cm)predicateForContactsMatchingName:	Predicates			NSPredicate *	NSString * name	-	ios=9.0/-/-/0	-	4c2a248f9a44923e
+method	c:objc(cs)CNContact(cm)predicateForContactsMatchingEmailAddress:	Predicates			NSPredicate *	NSString * emailAddress	-	ios=11.0/-/-/0,macos=10.13/-/-/0,watchos=4.0/-/-/0	-	559110230a899421
+method	c:objc(cs)CNContact(cm)predicateForContactsMatchingPhoneNumber:	Predicates			NSPredicate *	CNPhoneNumber * phoneNumber	-	ios=11.0/-/-/0,macos=10.13/-/-/0,watchos=4.0/-/-/0	-	dc7ef411cba4756b
+method	c:objc(cs)CNContact(cm)predicateForContactsWithIdentifiers:	Predicates			NSPredicate *	NSArray<NSString *> * identifiers	-	ios=9.0/-/-/0	-	3e3e6d42e70aef60
+method	c:objc(cs)CNContact(cm)predicateForContactsInGroupWithIdentifier:	Predicates			NSPredicate *	NSString * groupIdentifier	-	ios=9.0/-/-/0	-	057f76fbf13a93e6
+method	c:objc(cs)CNContact(cm)predicateForContactsInContainerWithIdentifier:	Predicates			NSPredicate *	NSString * containerIdentifier	-	ios=9.0/-/-/0	-	309a604212abd202
+interface	c:objc(cs)CNMutableContact	-			-	-	-	ios=9.0/-/-/0	-	dde14f6d6625a1e6
+super	-	CNMutableContact	CNContact		-	-	-	-	-	e2c9ccebb16328dc
+property	c:objc(cs)CNMutableContact(py)contactType	-			CNContactType	-	nonatomic	ios=9.0/-/-/0	-	cd68ffa39f523b85
+property	c:objc(cs)CNMutableContact(py)namePrefix	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	dad92cd81dda99e9
+property	c:objc(cs)CNMutableContact(py)givenName	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	09d55299fb4d9023
+property	c:objc(cs)CNMutableContact(py)middleName	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	b5aa05787086fc8b
+property	c:objc(cs)CNMutableContact(py)familyName	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	19f31f8bdeaf2993
+property	c:objc(cs)CNMutableContact(py)previousFamilyName	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	5bd04daf31abf4a8
+property	c:objc(cs)CNMutableContact(py)nameSuffix	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	083f17ecc2c4f3f0
+property	c:objc(cs)CNMutableContact(py)nickname	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	9edacc8faba87b31
+property	c:objc(cs)CNMutableContact(py)organizationName	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	d6c66052e1f70bb3
+property	c:objc(cs)CNMutableContact(py)departmentName	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	eb63d06da421d1c8
+property	c:objc(cs)CNMutableContact(py)jobTitle	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	6bb6c2869f888e07
+property	c:objc(cs)CNMutableContact(py)phoneticGivenName	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	5631a10e8b52f79b
+property	c:objc(cs)CNMutableContact(py)phoneticMiddleName	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	a241aa2bd39c1752
+property	c:objc(cs)CNMutableContact(py)phoneticFamilyName	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	780b33664d06c92c
+property	c:objc(cs)CNMutableContact(py)phoneticOrganizationName	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	2e519b64f22af6ec
+property	c:objc(cs)CNMutableContact(py)note	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	fa985e0f7176fbef
+property	c:objc(cs)CNMutableContact(py)imageData	-			NSData *	-	copy,nonatomic	ios=9.0/-/-/0	-	2bd2aaa7adfefebf
+property	c:objc(cs)CNMutableContact(py)phoneNumbers	-			NSArray<CNLabeledValue<CNPhoneNumber *> *> *	-	copy,nonatomic	ios=9.0/-/-/0	-	13b35135e2f8b521
+property	c:objc(cs)CNMutableContact(py)emailAddresses	-			NSArray<CNLabeledValue<NSString *> *> *	-	copy,nonatomic	ios=9.0/-/-/0	-	d4b5bbfe2521048a
+property	c:objc(cs)CNMutableContact(py)postalAddresses	-			NSArray<CNLabeledValue<CNPostalAddress *> *> *	-	copy,nonatomic	ios=9.0/-/-/0	-	c8b615dfd0b71b96
+property	c:objc(cs)CNMutableContact(py)urlAddresses	-			NSArray<CNLabeledValue<NSString *> *> *	-	copy,nonatomic	ios=9.0/-/-/0	-	23671f268f2683d3
+property	c:objc(cs)CNMutableContact(py)contactRelations	-			NSArray<CNLabeledValue<CNContactRelation *> *> *	-	copy,nonatomic	ios=9.0/-/-/0	-	6eb50c21d0092b08
+property	c:objc(cs)CNMutableContact(py)socialProfiles	-			NSArray<CNLabeledValue<CNSocialProfile *> *> *	-	copy,nonatomic	ios=9.0/-/-/0	-	a39eac60addf7919
+property	c:objc(cs)CNMutableContact(py)instantMessageAddresses	-			NSArray<CNLabeledValue<CNInstantMessageAddress *> *> *	-	copy,nonatomic	ios=9.0/-/-/0	-	25d4dff0bbfd7cb1
+property	c:objc(cs)CNMutableContact(py)birthday	-			NSDateComponents *	-	copy,nonatomic	ios=9.0/-/-/0	-	6abbb41182370774
+property	c:objc(cs)CNMutableContact(py)nonGregorianBirthday	-			NSDateComponents *	-	copy,nonatomic	ios=9.0/-/-/0	-	5b5fc95852fb768b
+property	c:objc(cs)CNMutableContact(py)dates	-			NSArray<CNLabeledValue<NSDateComponents *> *> *	-	copy,nonatomic	ios=9.0/-/-/0	-	baefb61db8bead26
+category	c:objc(cy)CNContact@NSItemProvider	-			-	-	-	ios=9.0/-/-/0	-	56d2d0667a5f0e62
+conforms	-	CNContact	NSItemProviderReading		-	-	-	-	-	1ab2092b59ab2155
+conforms	-	CNContact	NSItemProviderWriting		-	-	-	-	-	c65c0b94ad0a0186
+interface	c:objc(cs)CNMutablePostalAddress	-			-	-	-	ios=9.0/-/-/0	-	8ef99d01e1523da5
+super	-	CNMutablePostalAddress	CNPostalAddress		-	-	-	-	-	719981969316e4f1
+property	c:objc(cs)CNMutablePostalAddress(py)street	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	6aa442b1092a9f7f
+property	c:objc(cs)CNMutablePostalAddress(py)subLocality	-			NS_AVAILABLE NSString *	-	copy,nonatomic	ios=10.3/-/-/0	-	f1a2e1f7b95cb07e
+property	c:objc(cs)CNMutablePostalAddress(py)city	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	6535d01bf0873ed2
+property	c:objc(cs)CNMutablePostalAddress(py)subAdministrativeArea	-			NS_AVAILABLE NSString *	-	copy,nonatomic	ios=10.3/-/-/0	-	faba5c773d7a5917
+property	c:objc(cs)CNMutablePostalAddress(py)state	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	b1470c99e81bb8a3
+property	c:objc(cs)CNMutablePostalAddress(py)postalCode	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	6ca0be3cbefd9818
+property	c:objc(cs)CNMutablePostalAddress(py)country	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	cbaf92fb6636947c
+property	c:objc(cs)CNMutablePostalAddress(py)ISOCountryCode	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	28dd3252dc130b3b
+interface	c:objc(cs)CNGroup	-			-	-	-	ios=9.0/-/-/0	-	7871958d67a37f09
+super	-	CNGroup	NSObject		-	-	-	-	-	01a5a8b51ff4ac41
+conforms	-	CNGroup	NSCopying		-	-	-	-	-	29541ebe723f02b6
+conforms	-	CNGroup	NSMutableCopying		-	-	-	-	-	d665ffc178f99da2
+conforms	-	CNGroup	NSSecureCoding		-	-	-	-	-	2d50c0321928c880
+property	c:objc(cs)CNGroup(py)identifier	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	feed10cff731d5ae
+property	c:objc(cs)CNGroup(py)name	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	867a5e20df63716f
+var	c:@CNGroupIdentifierKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	5445c52ec4ef38ee
+var	c:@CNGroupNameKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	34a34fd18515a53a
+category	c:objc(cy)CNGroup@Predicates	-			-	-	-	ios=9.0/-/-/0	-	07a2dc6882dd6aec
+method	c:objc(cs)CNGroup(cm)predicateForGroupsWithIdentifiers:	Predicates			NSPredicate *	NSArray<NSString *> * identifiers	-	ios=9.0/-/-/0	-	b06691aba018734a
+method	c:objc(cs)CNGroup(cm)predicateForSubgroupsInGroupWithIdentifier:	Predicates			NSPredicate *	NSString * parentGroupIdentifier	-	ios=-/-/-/1	-	677ad099fda096bd
+method	c:objc(cs)CNGroup(cm)predicateForGroupsInContainerWithIdentifier:	Predicates			NSPredicate *	NSString * containerIdentifier	-	ios=9.0/-/-/0	-	554f3ede5a7c4133
+interface	c:objc(cs)CNMutableGroup	-			-	-	-	ios=9.0/-/-/0	-	af669463b5b0ebfc
+super	-	CNMutableGroup	CNGroup		-	-	-	-	-	0a776b4ee843ea68
+property	c:objc(cs)CNMutableGroup(py)name	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	685364719d03d9d5
+typedef	c:@T@CNContainerType	-			enum CNContainerType	-	-	-	-	9e11dc6181f57cc9
+enum	c:@E@CNContainerType	-			NSInteger	-	-	ios=9.0/-/-/0	-	d3df80113cd8c9b4
+enumconst	c:@E@CNContainerType@CNContainerTypeUnassigned	CNContainerType			-	-	-	ios=9.0/-/-/0	-	0dd2dd0d86a7e315
+enumconst	c:@E@CNContainerType@CNContainerTypeLocal	CNContainerType			-	-	-	ios=9.0/-/-/0	-	6be1de77d604a29a
+enumconst	c:@E@CNContainerType@CNContainerTypeExchange	CNContainerType			-	-	-	ios=9.0/-/-/0	-	5d2aa412a02bb3fa
+enumconst	c:@E@CNContainerType@CNContainerTypeCardDAV	CNContainerType			-	-	-	ios=9.0/-/-/0	-	884410ddb87e95d2
+interface	c:objc(cs)CNContainer	-			-	-	-	ios=9.0/-/-/0	-	9e18d44b4f204438
+super	-	CNContainer	NSObject		-	-	-	-	-	d4a0bd5d3575731c
+conforms	-	CNContainer	NSCopying		-	-	-	-	-	305e2e8e3cca83fa
+conforms	-	CNContainer	NSSecureCoding		-	-	-	-	-	f622009f03a4093b
+property	c:objc(cs)CNContainer(py)identifier	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	4cdb6fa5fc3f52aa
+property	c:objc(cs)CNContainer(py)name	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	a7581ab6a72bce60
+property	c:objc(cs)CNContainer(py)type	-			CNContainerType	-	readonly,nonatomic	ios=9.0/-/-/0	-	f2a8911f147792f2
+var	c:@CNContainerIdentifierKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	bd1475d2da3e69c7
+var	c:@CNContainerNameKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	96a93e34d1deac29
+var	c:@CNContainerTypeKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	304203fd5360e462
+category	c:objc(cy)CNContainer@Predicates	-			-	-	-	ios=9.0/-/-/0	-	06f6c11c111f1be9
+method	c:objc(cs)CNContainer(cm)predicateForContainersWithIdentifiers:	Predicates			NSPredicate *	NSArray<NSString *> * identifiers	-	ios=9.0/-/-/0	-	7b4ec364b20f0b1e
+method	c:objc(cs)CNContainer(cm)predicateForContainerOfContactWithIdentifier:	Predicates			NSPredicate *	NSString * contactIdentifier	-	ios=9.0/-/-/0	-	6fcc4a93c138f230
+method	c:objc(cs)CNContainer(cm)predicateForContainerOfGroupWithIdentifier:	Predicates			NSPredicate *	NSString * groupIdentifier	-	ios=9.0/-/-/0	-	e56914723bd3ee1e
+typedef	c:@T@CNContactFormatterStyle	-			enum CNContactFormatterStyle	-	-	-	-	fc3bbe234c81b656
+enum	c:@E@CNContactFormatterStyle	-			NSInteger	-	-	ios=9.0/-/-/0	-	a458cad4175a81ab
+enumconst	c:@E@CNContactFormatterStyle@CNContactFormatterStyleFullName	CNContactFormatterStyle			-	-	-	ios=9.0/-/-/0	-	9ebe3afae7e08e31
+enumconst	c:@E@CNContactFormatterStyle@CNContactFormatterStylePhoneticFullName	CNContactFormatterStyle			-	-	-	ios=9.0/-/-/0	-	e1acfeef4d178dda
+typedef	c:@T@CNContactDisplayNameOrder	-			enum CNContactDisplayNameOrder	-	-	-	-	7429e4b066af7e09
+enum	c:@E@CNContactDisplayNameOrder	-			NSInteger	-	-	ios=9.0/-/-/0	-	3f53f1998b25bdfc
+enumconst	c:@E@CNContactDisplayNameOrder@CNContactDisplayNameOrderUserDefault	CNContactDisplayNameOrder			-	-	-	ios=9.0/-/-/0	-	2d9cf854e7696091
+enumconst	c:@E@CNContactDisplayNameOrder@CNContactDisplayNameOrderGivenNameFirst	CNContactDisplayNameOrder			-	-	-	ios=9.0/-/-/0	-	1f8369fcb0521ff8
+enumconst	c:@E@CNContactDisplayNameOrder@CNContactDisplayNameOrderFamilyNameFirst	CNContactDisplayNameOrder			-	-	-	ios=9.0/-/-/0	-	4e742c589f81e320
+interface	c:objc(cs)CNContactFormatter	-			-	-	-	ios=9.0/-/-/0	-	8c0427fcf019c79b
+super	-	CNContactFormatter	NSFormatter		-	-	-	-	-	5feb8c81b2b3c2bc
+conforms	-	CNContactFormatter	NSSecureCoding		-	-	-	-	-	82156c5ba9392a2c
+method	c:objc(cs)CNContactFormatter(cm)descriptorForRequiredKeysForStyle:	-			id<CNKeyDescriptor>	CNContactFormatterStyle style	-	ios=9.0/-/-/0	-	78123606223eec41
+property	c:objc(cs)CNContactFormatter(cpy)descriptorForRequiredKeysForNameOrder	-			id<CNKeyDescriptor>	-	readonly,class	ios=9.0/-/-/0	-	563005c1be4384a4
+property	c:objc(cs)CNContactFormatter(cpy)descriptorForRequiredKeysForDelimiter	-			id<CNKeyDescriptor>	-	readonly,class	ios=9.0/-/-/0	-	b5be02f9f3c229e8
+method	c:objc(cs)CNContactFormatter(cm)stringFromContact:style:	-			NSString *	CNContact * contact | CNContactFormatterStyle style	-	ios=9.0/-/-/0	-	eac6bcdffef3f0c4
+method	c:objc(cs)CNContactFormatter(cm)attributedStringFromContact:style:defaultAttributes:	-			NSAttributedString *	CNContact * contact | CNContactFormatterStyle style | NSDictionary * attributes	-	ios=9.0/-/-/0	-	37722b0b2520183a
+method	c:objc(cs)CNContactFormatter(cm)nameOrderForContact:	-			CNContactDisplayNameOrder	CNContact * contact	-	ios=9.0/-/-/0	-	d66c259c9984e7b3
+method	c:objc(cs)CNContactFormatter(cm)delimiterForContact:	-			NSString *	CNContact * contact	-	ios=9.0/-/-/0	-	140f202c8d58114a
+property	c:objc(cs)CNContactFormatter(py)style	-			CNContactFormatterStyle	-	nonatomic	ios=9.0/-/-/0	-	1b9e633fb5fec5c6
+method	c:objc(cs)CNContactFormatter(im)stringFromContact:	-			NSString *	CNContact * contact	-	ios=9.0/-/-/0	-	a9d49a846a7098c0
+method	c:objc(cs)CNContactFormatter(im)attributedStringFromContact:defaultAttributes:	-			NSAttributedString *	CNContact * contact | NSDictionary * attributes	-	ios=9.0/-/-/0	-	04d6eabd3c2fdcbf
+var	c:@CNContactPropertyAttribute	-			NSString *const	-	-	-	-	a057e70c001da199
+typedef	c:@T@CNPostalAddressFormatterStyle	-			enum CNPostalAddressFormatterStyle	-	-	-	-	56a28f7e95849457
+enum	c:@E@CNPostalAddressFormatterStyle	-			NSInteger	-	-	ios=9.0/-/-/0	-	b72b19a2ae74cec3
+enumconst	c:@E@CNPostalAddressFormatterStyle@CNPostalAddressFormatterStyleMailingAddress	CNPostalAddressFormatterStyle			-	-	-	ios=9.0/-/-/0	-	6ffd15f2d64ebb59
+interface	c:objc(cs)CNPostalAddressFormatter	-			-	-	-	ios=9.0/-/-/0	-	15fd3dd81eb487c3
+super	-	CNPostalAddressFormatter	NSFormatter		-	-	-	-	-	8f5a0ce4a36906a7
+method	c:objc(cs)CNPostalAddressFormatter(cm)stringFromPostalAddress:style:	-			NSString *	CNPostalAddress * postalAddress | CNPostalAddressFormatterStyle style	-	ios=9.0/-/-/0	-	959320758719ee48
+method	c:objc(cs)CNPostalAddressFormatter(cm)attributedStringFromPostalAddress:style:withDefaultAttributes:	-			NSAttributedString *	CNPostalAddress * postalAddress | CNPostalAddressFormatterStyle style | NSDictionary * attributes	-	ios=9.0/-/-/0	-	85fb3c77257682eb
+property	c:objc(cs)CNPostalAddressFormatter(py)style	-			CNPostalAddressFormatterStyle	-	nonatomic	ios=9.0/-/-/0	-	3a33ea35225d2ee2
+method	c:objc(cs)CNPostalAddressFormatter(im)stringFromPostalAddress:	-			NSString *	CNPostalAddress * postalAddress	-	ios=9.0/-/-/0	-	a3cba0227f755076
+method	c:objc(cs)CNPostalAddressFormatter(im)attributedStringFromPostalAddress:withDefaultAttributes:	-			NSAttributedString *	CNPostalAddress * postalAddress | NSDictionary * attributes	-	ios=9.0/-/-/0	-	c67fd282054e8554
+var	c:@CNPostalAddressPropertyAttribute	-			NSString *const	-	-	-	-	94069023748beadb
+var	c:@CNPostalAddressLocalizedPropertyNameAttribute	-			NSString *const	-	-	-	-	6cf2d117d35c0a07
+interface	c:objc(cs)CNContactVCardSerialization	-			-	-	-	ios=9.0/-/-/0	-	a06de3138fb742f1
+super	-	CNContactVCardSerialization	NSObject		-	-	-	-	-	d98024b243435074
+method	c:objc(cs)CNContactVCardSerialization(cm)descriptorForRequiredKeys	-			id<CNKeyDescriptor>	-	-	ios=9.0/-/-/0	-	f93e4b4990599519
+method	c:objc(cs)CNContactVCardSerialization(cm)dataWithContacts:error:	-			NSData *	NSArray<CNContact *> * contacts | NSError * _Nullable * error	-	ios=9.0/-/-/0	-	76a5c27d72af9e76
+method	c:objc(cs)CNContactVCardSerialization(cm)contactsWithData:error:	-			NSArray<CNContact *> *	NSData * data | NSError * _Nullable * error	-	ios=9.0/-/-/0	-	4f916819d5931253
+interface	c:objc(cs)CNContactsUserDefaults	-			-	-	-	ios=9.0/-/-/0	-	0baa007a964fbd28
+super	-	CNContactsUserDefaults	NSObject		-	-	-	-	-	efcdb55456b4ca3c
+method	c:objc(cs)CNContactsUserDefaults(cm)sharedDefaults	-			instancetype	-	-	ios=9.0/-/-/0	-	b4baab422f5c1265
+property	c:objc(cs)CNContactsUserDefaults(py)sortOrder	-			CNContactSortOrder	-	readonly,nonatomic	ios=9.0/-/-/0	-	40c325627f541e72
+property	c:objc(cs)CNContactsUserDefaults(py)countryCode	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	c3dff9b796d83890
+interface	c:objc(cs)CNContactProperty	-			-	-	-	ios=9.0/-/-/0	-	ea319f95964ea9a6
+super	-	CNContactProperty	NSObject		-	-	-	-	-	2523b83ed2506be8
+conforms	-	CNContactProperty	NSCopying		-	-	-	-	-	cb2c33b040c4bd28
+conforms	-	CNContactProperty	NSSecureCoding		-	-	-	-	-	c57aefbf4a07f5c9
+property	c:objc(cs)CNContactProperty(py)contact	-			CNContact *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	867c11ec314de841
+property	c:objc(cs)CNContactProperty(py)key	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	c1f95344e97b0a7e
+property	c:objc(cs)CNContactProperty(py)value	-			id	-	readonly,nonatomic	ios=9.0/-/-/0	-	b8539c3a6f9be802
+property	c:objc(cs)CNContactProperty(py)identifier	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	6f0c42899124ca21
+property	c:objc(cs)CNContactProperty(py)label	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	918b1ef2802ebc5e
+var	c:@CNErrorDomain	-			NSString *const	-	-	ios=9.0/-/-/0	-	931d9392f242f7fa
+typedef	c:@T@CNErrorCode	-			enum CNErrorCode	-	-	-	-	624e889008007042
+enum	c:@E@CNErrorCode	-			NSInteger	-	-	ios=9.0/-/-/0	-	9d71d83056976d55
+enumconst	c:@E@CNErrorCode@CNErrorCodeCommunicationError	CNErrorCode			-	-	-	ios=9.0/-/-/0	-	489e2189b93a03ee
+enumconst	c:@E@CNErrorCode@CNErrorCodeDataAccessError	CNErrorCode			-	-	-	ios=9.0/-/-/0	-	12f3b7c007c1d98a
+enumconst	c:@E@CNErrorCode@CNErrorCodeAuthorizationDenied	CNErrorCode			-	-	-	ios=9.0/-/-/0	-	e28e0c5ed57c7ef5
+enumconst	c:@E@CNErrorCode@CNErrorCodeNoAccessableWritableContainers	CNErrorCode			-	-	-	ios=11.3/-/-/0	-	90f682b713305d8e
+enumconst	c:@E@CNErrorCode@CNErrorCodeUnauthorizedKeys	CNErrorCode			-	-	-	ios=13.0/-/-/0,macos=10.14/-/-/0,watchos=6.0/-/-/0	-	6fd5bbd1a2390814
+enumconst	c:@E@CNErrorCode@CNErrorCodeFeatureDisabledByUser	CNErrorCode			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	513b9edf684d4f39
+enumconst	c:@E@CNErrorCode@CNErrorCodeFeatureNotAvailable	CNErrorCode			-	-	-	ios=17/-/-/0,macos=14/-/-/0,watchos=10/-/-/0	-	4ec7b8f7fc2bb0a8
+enumconst	c:@E@CNErrorCode@CNErrorCodeRecordDoesNotExist	CNErrorCode			-	-	-	ios=9.0/-/-/0	-	0ba9eb601146feaf
+enumconst	c:@E@CNErrorCode@CNErrorCodeInsertedRecordAlreadyExists	CNErrorCode			-	-	-	ios=9.0/-/-/0	-	c074e0f18dba7e13
+enumconst	c:@E@CNErrorCode@CNErrorCodeContainmentCycle	CNErrorCode			-	-	-	ios=9.0/-/-/0	-	87bd1ddb44824c36
+enumconst	c:@E@CNErrorCode@CNErrorCodeContainmentScope	CNErrorCode			-	-	-	ios=9.0/-/-/0	-	a940629bcf1275f7
+enumconst	c:@E@CNErrorCode@CNErrorCodeParentRecordDoesNotExist	CNErrorCode			-	-	-	ios=9.0/-/-/0	-	4a0af81734a67750
+enumconst	c:@E@CNErrorCode@CNErrorCodeRecordIdentifierInvalid	CNErrorCode			-	-	-	ios=9.0/-/-/0	-	8afd74cec59248d4
+enumconst	c:@E@CNErrorCode@CNErrorCodeRecordNotWritable	CNErrorCode			-	-	-	ios=13.0/-/-/0,macos=10.14/-/-/0,watchos=6.0/-/-/0	-	bda650f761a52046
+enumconst	c:@E@CNErrorCode@CNErrorCodeParentContainerNotWritable	CNErrorCode			-	-	-	ios=13.0/-/-/0,macos=10.14/-/-/0,watchos=6.0/-/-/0	-	b1e1e0c2755859fc
+enumconst	c:@E@CNErrorCode@CNErrorCodeValidationMultipleErrors	CNErrorCode			-	-	-	ios=9.0/-/-/0	-	304add32867807f1
+enumconst	c:@E@CNErrorCode@CNErrorCodeValidationTypeMismatch	CNErrorCode			-	-	-	ios=9.0/-/-/0	-	751f4b4f74967a82
+enumconst	c:@E@CNErrorCode@CNErrorCodeValidationConfigurationError	CNErrorCode			-	-	-	ios=9.0/-/-/0	-	084f750c254265a3
+enumconst	c:@E@CNErrorCode@CNErrorCodePredicateInvalid	CNErrorCode			-	-	-	ios=9.0/-/-/0	-	d5a7924f593917ae
+enumconst	c:@E@CNErrorCode@CNErrorCodePolicyViolation	CNErrorCode			-	-	-	ios=9.0/-/-/0	-	4a7f7c74b062ed8c
+enumconst	c:@E@CNErrorCode@CNErrorCodeClientIdentifierInvalid	CNErrorCode			-	-	-	ios=9.0/-/-/0	-	4b1f393c728a5b41
+enumconst	c:@E@CNErrorCode@CNErrorCodeClientIdentifierDoesNotExist	CNErrorCode			-	-	-	ios=9.0/-/-/0	-	8ab066d8c3a86b79
+enumconst	c:@E@CNErrorCode@CNErrorCodeClientIdentifierCollision	CNErrorCode			-	-	-	ios=9.0/-/-/0	-	610d53295cc5a28c
+enumconst	c:@E@CNErrorCode@CNErrorCodeChangeHistoryExpired	CNErrorCode			-	-	-	ios=9.0/-/-/0	-	8f05ab9eed918344
+enumconst	c:@E@CNErrorCode@CNErrorCodeChangeHistoryInvalidAnchor	CNErrorCode			-	-	-	ios=9.0/-/-/0	-	b3c9f6b5b56ead95
+enumconst	c:@E@CNErrorCode@CNErrorCodeChangeHistoryInvalidFetchRequest	CNErrorCode			-	-	-	ios=9.0/-/-/0	-	95cabc0467cc715e
+enumconst	c:@E@CNErrorCode@CNErrorCodeVCardMalformed	CNErrorCode			-	-	-	ios=11.0/-/-/0	-	345d4bc31e4c735b
+enumconst	c:@E@CNErrorCode@CNErrorCodeVCardSummarizationError	CNErrorCode			-	-	-	ios=12.0/-/-/0	-	37a8e2f4cd532f75
+var	c:@CNErrorUserInfoAffectedRecordsKey	-			NSString *const	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	60b9a163d524044f
+var	c:@CNErrorUserInfoAffectedRecordIdentifiersKey	-			NSString *const	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	19dadbf2bb53439d
+var	c:@CNErrorUserInfoValidationErrorsKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	cfe499ffb426aaf9
+var	c:@CNErrorUserInfoKeyPathsKey	-			NSString *const	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	a6c5c953dd1f7bef

@@ -1,0 +1,376 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+typedef	c:AADefs.h@T@AAHashFunction	-			uint32_t	-	-	-	-	9e1ddae162c6818a
+enum	c:@E@AAHashFunctions	-			uint32_t	-	-	-	-	c3ca618eb12c0ca5
+enumconst	c:@E@AAHashFunctions@AA_HASH_FUNCTION_CRC32	AAHashFunctions			-	-	-	-	-	b6a6c085a702027c
+enumconst	c:@E@AAHashFunctions@AA_HASH_FUNCTION_SHA1	AAHashFunctions			-	-	-	-	-	d9814b28f391fb13
+enumconst	c:@E@AAHashFunctions@AA_HASH_FUNCTION_SHA256	AAHashFunctions			-	-	-	-	-	ad03c6889c542331
+enumconst	c:@E@AAHashFunctions@AA_HASH_FUNCTION_SHA384	AAHashFunctions			-	-	-	-	-	f770f19526b8c7db
+enumconst	c:@E@AAHashFunctions@AA_HASH_FUNCTION_SHA512	AAHashFunctions			-	-	-	-	-	4a615cc8dbdfc71b
+typedef	c:AADefs.h@T@AACompressionAlgorithm	-			uint32_t	-	-	-	-	a41a5cdae9038a68
+enum	c:@E@AACompressionAlgorithms	-			uint32_t	-	-	-	-	48b9c7a6465c04e1
+enumconst	c:@E@AACompressionAlgorithms@AA_COMPRESSION_ALGORITHM_NONE	AACompressionAlgorithms			-	-	-	-	-	a9055496aab53865
+enumconst	c:@E@AACompressionAlgorithms@AA_COMPRESSION_ALGORITHM_LZ4	AACompressionAlgorithms			-	-	-	-	-	7ba9c3495b0eac4b
+enumconst	c:@E@AACompressionAlgorithms@AA_COMPRESSION_ALGORITHM_ZLIB	AACompressionAlgorithms			-	-	-	-	-	63dd32f048206a01
+enumconst	c:@E@AACompressionAlgorithms@AA_COMPRESSION_ALGORITHM_LZMA	AACompressionAlgorithms			-	-	-	-	-	1ce784a321f5bf4d
+enumconst	c:@E@AACompressionAlgorithms@AA_COMPRESSION_ALGORITHM_LZFSE	AACompressionAlgorithms			-	-	-	-	-	ffed597189aa336d
+enumconst	c:@E@AACompressionAlgorithms@AA_COMPRESSION_ALGORITHM_LZBITMAP	AACompressionAlgorithms			-	-	-	-	-	ff620c521930bc5e
+typedef	c:AADefs.h@T@AAEntryType	-			uint32_t	-	-	-	-	e86a82b93be0b8ba
+enum	c:@E@AAEntryTypes	-			uint32_t	-	-	-	-	a5567bfa186a6cdb
+enumconst	c:@E@AAEntryTypes@AA_ENTRY_TYPE_REG	AAEntryTypes			-	-	-	-	-	234e5978d29ef505
+enumconst	c:@E@AAEntryTypes@AA_ENTRY_TYPE_DIR	AAEntryTypes			-	-	-	-	-	67038a99af3ac42f
+enumconst	c:@E@AAEntryTypes@AA_ENTRY_TYPE_LNK	AAEntryTypes			-	-	-	-	-	05a5b4bc95b75049
+enumconst	c:@E@AAEntryTypes@AA_ENTRY_TYPE_FIFO	AAEntryTypes			-	-	-	-	-	d45c40b7933a3ccd
+enumconst	c:@E@AAEntryTypes@AA_ENTRY_TYPE_CHR	AAEntryTypes			-	-	-	-	-	c9732aaaf3e4f2f1
+enumconst	c:@E@AAEntryTypes@AA_ENTRY_TYPE_BLK	AAEntryTypes			-	-	-	-	-	fec878770a7dd766
+enumconst	c:@E@AAEntryTypes@AA_ENTRY_TYPE_SOCK	AAEntryTypes			-	-	-	-	-	7a2445822becea24
+enumconst	c:@E@AAEntryTypes@AA_ENTRY_TYPE_WHT	AAEntryTypes			-	-	-	-	-	4449ac60e14dc33e
+enumconst	c:@E@AAEntryTypes@AA_ENTRY_TYPE_DOOR	AAEntryTypes			-	-	-	-	-	80d3a80f0417c73c
+enumconst	c:@E@AAEntryTypes@AA_ENTRY_TYPE_PORT	AAEntryTypes			-	-	-	-	-	9db42b712b24054e
+enumconst	c:@E@AAEntryTypes@AA_ENTRY_TYPE_METADATA	AAEntryTypes			-	-	-	-	-	cbafe1397092e46d
+typedef	c:AADefs.h@T@AAFieldType	-			uint32_t	-	-	-	-	0fc7fb59083851ad
+enum	c:@E@AAFieldTypes	-			uint32_t	-	-	-	-	cab5b28148e7b71e
+enumconst	c:@E@AAFieldTypes@AA_FIELD_TYPE_FLAG	AAFieldTypes			-	-	-	-	-	83f1f063f621395f
+enumconst	c:@E@AAFieldTypes@AA_FIELD_TYPE_UINT	AAFieldTypes			-	-	-	-	-	eb663cc56855c48f
+enumconst	c:@E@AAFieldTypes@AA_FIELD_TYPE_STRING	AAFieldTypes			-	-	-	-	-	bebcdc9aa851f45c
+enumconst	c:@E@AAFieldTypes@AA_FIELD_TYPE_HASH	AAFieldTypes			-	-	-	-	-	28dee8161dbc5bea
+enumconst	c:@E@AAFieldTypes@AA_FIELD_TYPE_TIMESPEC	AAFieldTypes			-	-	-	-	-	f91ad03169dbef58
+enumconst	c:@E@AAFieldTypes@AA_FIELD_TYPE_BLOB	AAFieldTypes			-	-	-	-	-	d8c5d1ebe37f238b
+struct	c:@S@AAPathList_impl	-			-	-	-	-	-	5db142512d25e6a5
+typedef	c:AADefs.h@T@AAPathList	-			struct AAPathList_impl *	-	-	-	-	8f365457e121568d
+struct	c:@S@AAHeader_impl	-			-	-	-	-	-	5d51c93db75ae09f
+typedef	c:AADefs.h@T@AAHeader	-			struct AAHeader_impl *	-	-	-	-	c495dfcb37c3c816
+struct	c:@S@AAFieldKeySet_impl	-			-	-	-	-	-	307f284b678a0499
+typedef	c:AADefs.h@T@AAFieldKeySet	-			struct AAFieldKeySet_impl *	-	-	-	-	f3b64ee8e8200a79
+struct	c:@S@AAEntryACLBlob_impl	-			-	-	-	-	-	409d719b82e8f9f3
+typedef	c:AADefs.h@T@AAEntryACLBlob	-			struct AAEntryACLBlob_impl *	-	-	-	-	781378824d8287a0
+struct	c:@S@AAEntryXATBlob_impl	-			-	-	-	-	-	f9efb90e525ea4f6
+typedef	c:AADefs.h@T@AAEntryXATBlob	-			struct AAEntryXATBlob_impl *	-	-	-	-	fe2b0b227643a3c5
+struct	c:@S@AAByteStream_impl	-			-	-	-	-	-	4867b0e6e61ac8a7
+typedef	c:AADefs.h@T@AAByteStream	-			struct AAByteStream_impl *	-	-	-	-	7d792a31f104dde0
+struct	c:@S@AAArchiveStream_impl	-			-	-	-	-	-	07f55ae667773e8e
+typedef	c:AADefs.h@T@AAArchiveStream	-			struct AAArchiveStream_impl *	-	-	-	-	13bb1c5ce33064c6
+typedef	c:AAEntryMessage.h@T@AAEntryMessage	-			uint32_t	-	-	-	-	71aa3b514fb153c6
+enum	c:@E@AAEntryMessages	-			uint32_t	-	-	-	-	0b129f930a3b66dc
+enumconst	c:@E@AAEntryMessages@AA_ENTRY_MESSAGE_SEARCH_PRUNE_DIR	AAEntryMessages			-	-	-	-	-	9f28a3bbc72c412d
+enumconst	c:@E@AAEntryMessages@AA_ENTRY_MESSAGE_SEARCH_EXCLUDE	AAEntryMessages			-	-	-	-	-	d74e2e6e05c9e2db
+enumconst	c:@E@AAEntryMessages@AA_ENTRY_MESSAGE_SEARCH_FAIL	AAEntryMessages			-	-	-	-	-	ef7c43ab518f4a06
+enumconst	c:@E@AAEntryMessages@AA_ENTRY_MESSAGE_EXTRACT_BEGIN	AAEntryMessages			-	-	-	-	-	89ecda03d1438933
+enumconst	c:@E@AAEntryMessages@AA_ENTRY_MESSAGE_EXTRACT_END	AAEntryMessages			-	-	-	-	-	b7a97b249404f15f
+enumconst	c:@E@AAEntryMessages@AA_ENTRY_MESSAGE_EXTRACT_FAIL	AAEntryMessages			-	-	-	-	-	141b2a1a0a285f1d
+enumconst	c:@E@AAEntryMessages@AA_ENTRY_MESSAGE_EXTRACT_ATTRIBUTES	AAEntryMessages			-	-	-	-	-	9bc51aa855f36b39
+enumconst	c:@E@AAEntryMessages@AA_ENTRY_MESSAGE_EXTRACT_XAT	AAEntryMessages			-	-	-	-	-	22f52d3ed4d6fd93
+enumconst	c:@E@AAEntryMessages@AA_ENTRY_MESSAGE_EXTRACT_ACL	AAEntryMessages			-	-	-	-	-	7138f688f870b90a
+enumconst	c:@E@AAEntryMessages@AA_ENTRY_MESSAGE_ENCODE_SCANNING	AAEntryMessages			-	-	-	-	-	f39528c94c2c6462
+enumconst	c:@E@AAEntryMessages@AA_ENTRY_MESSAGE_ENCODE_WRITING	AAEntryMessages			-	-	-	-	-	08b9ed1232fb7a25
+enumconst	c:@E@AAEntryMessages@AA_ENTRY_MESSAGE_CONVERT_EXCLUDE	AAEntryMessages			-	-	-	-	-	815bd003535dd60d
+enumconst	c:@E@AAEntryMessages@AA_ENTRY_MESSAGE_PROCESS_EXCLUDE	AAEntryMessages			-	-	-	-	-	6eee18af606da8ee
+enumconst	c:@E@AAEntryMessages@AA_ENTRY_MESSAGE_DECODE_READING	AAEntryMessages			-	-	-	-	-	10a959a257cc566d
+typedef	c:AAEntryMessage.h@T@AAEntryMessageProc	-			int (*)(void * _Nullable, AAEntryMessage, const char * _Nonnull, void * _Nullable)	-	-	-	-	b7b0a57ea627fecb
+typedef	c:AAFlagSet.h@T@AAFlagSet	-			uint64_t	-	-	-	-	2ed765b05cd21582
+enum	c:@E@AAFlags	-			uint64_t	-	-	-	-	d9089ccb6a700263
+enumconst	c:@E@AAFlags@AA_FLAG_IGNORE_EPERM	AAFlags			-	-	-	-	-	e87fda15e768028d
+enumconst	c:@E@AAFlags@AA_FLAG_ARCHIVE_DEDUPLICATE_DAT	AAFlags			-	-	-	-	-	c588ff617bdcbaea
+enumconst	c:@E@AAFlags@AA_FLAG_ARCHIVE_NO_RESOLVE_ACL_QUALIFIERS	AAFlags			-	-	-	-	-	9898188398e63296
+enumconst	c:@E@AAFlags@AA_FLAG_REPLACE_ATTRIBUTES	AAFlags			-	-	-	-	-	ff031710e650a9ac
+enumconst	c:@E@AAFlags@AA_FLAG_EXTRACT_NO_AUTO_DEDUP	AAFlags			-	-	-	-	-	0c0fe1d0e05f1612
+enumconst	c:@E@AAFlags@AA_FLAG_EXTRACT_NO_AUTO_SPARSE	AAFlags			-	-	-	-	-	c4756651ffa9f75e
+enumconst	c:@E@AAFlags@AA_FLAG_CROSS_VOLUME_BOUNDARIES	AAFlags			-	-	-	-	-	612a92040aef1588
+enumconst	c:@E@AAFlags@AA_FLAG_EXTRACT_AUTO_DEDUP_AS_HARD_LINKS	AAFlags			-	-	-	-	-	184c975cdf2eac27
+enumconst	c:@E@AAFlags@AA_FLAG_DECODE_INSERT_IDX	AAFlags			-	-	-	-	-	d5e92b29c59a39db
+enumconst	c:@E@AAFlags@AA_FLAG_EXCLUDE_METADATA_ENTRIES	AAFlags			-	-	-	-	-	1ba38575c6162afc
+enumconst	c:@E@AAFlags@AA_FLAG_PROCESS_RANDOM_ACCESS_OUTPUT	AAFlags			-	-	-	-	-	3dd2d2d61b93e32d
+enumconst	c:@E@AAFlags@AA_FLAG_VERBOSITY_0	AAFlags			-	-	-	-	-	f2b42ca4d9c458e5
+enumconst	c:@E@AAFlags@AA_FLAG_VERBOSITY_1	AAFlags			-	-	-	-	-	3f7cf876fb160bf8
+enumconst	c:@E@AAFlags@AA_FLAG_VERBOSITY_2	AAFlags			-	-	-	-	-	c92886d5689910c0
+enumconst	c:@E@AAFlags@AA_FLAG_VERBOSITY_3	AAFlags			-	-	-	-	-	a521870a40dd9427
+function	c:@F@AAByteStreamWrite	-			ssize_t (AAByteStream _Nonnull, const void * _Nonnull, size_t)	AAByteStream s | const void * buf | size_t nbyte	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	c7b65c2796eafd88
+function	c:@F@AAByteStreamPWrite	-			ssize_t (AAByteStream _Nonnull, const void * _Nonnull, size_t, off_t)	AAByteStream s | const void * buf | size_t nbyte | off_t offset	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	b11dee5eaf0d1915
+function	c:@F@AAByteStreamRead	-			ssize_t (AAByteStream _Nonnull, void * _Nonnull, size_t)	AAByteStream s | void * buf | size_t nbyte	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	380b8768d5cf2dee
+function	c:@F@AAByteStreamPRead	-			ssize_t (AAByteStream _Nonnull, void * _Nonnull, size_t, off_t)	AAByteStream s | void * buf | size_t nbyte | off_t offset	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	66abb3e335a1f41b
+function	c:@F@AAByteStreamSeek	-			off_t (AAByteStream _Nonnull, off_t, int)	AAByteStream s | off_t offset | int whence	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	53b777e33171fefc
+function	c:@F@AAByteStreamCancel	-			void (AAByteStream _Nonnull)	AAByteStream s	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	42da9e733de7b359
+function	c:@F@AAByteStreamClose	-			int (AAByteStream _Nullable)	AAByteStream s	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	8912ef8a29cce4f4
+function	c:@F@AAFileStreamOpenWithFD	-			AAByteStream  _Nullable (int, int)	int fd | int automatic_close	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	a5db365c3871ed4e
+function	c:@F@AAFileStreamOpenWithPath	-			AAByteStream  _Nullable (const char * _Nonnull, int, mode_t)	const char * path | int open_flags | mode_t open_mode	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	7d93832a84a4bf59
+function	c:@F@AACompressionOutputStreamOpen	-			AAByteStream  _Nullable (AAByteStream _Nonnull, AACompressionAlgorithm, size_t, AAFlagSet, int)	AAByteStream compressed_stream | AACompressionAlgorithm compression_algorithm | size_t block_size | AAFlagSet flags | int n_threads	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	b750de3ece591ae2
+function	c:@F@AACompressionOutputStreamOpenExisting	-			AAByteStream  _Nullable (AAByteStream _Nonnull, AAFlagSet, int)	AAByteStream compressed_stream | AAFlagSet flags | int n_threads	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1277594aef2efce6
+function	c:@F@AADecompressionInputStreamOpen	-			AAByteStream  _Nullable (AAByteStream _Nonnull, AAFlagSet, int)	AAByteStream compressed_stream | AAFlagSet flags | int n_threads	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	c210178bcdb0af39
+function	c:@F@AADecompressionRandomAccessInputStreamOpen	-			AAByteStream  _Nullable (AAByteStream _Nonnull, size_t, AAFlagSet, int)	AAByteStream compressed_stream | size_t alloc_limit | AAFlagSet flags | int n_threads	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	e456e133591a9d7d
+function	c:@F@AATempFileStreamOpen	-			AAByteStream  _Nullable (void)	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	d4cada7fd32e6ec0
+function	c:@F@AASharedBufferPipeOpen	-			int (AAByteStream  _Nonnull * _Nullable, AAByteStream  _Nonnull * _Nullable, size_t)	AAByteStream  _Nonnull * ostream | AAByteStream  _Nonnull * istream | size_t buffer_capacity	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	c5964436bfb54c29
+function	c:@F@AAByteStreamProcess	-			off_t (AAByteStream _Nonnull, AAByteStream _Nonnull)	AAByteStream istream | AAByteStream ostream	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	25e480343652c9c8
+function	c:@F@AARandomAccessByteStreamProcess	-			off_t (AAByteStream _Nonnull, AAByteStream _Nonnull, off_t, size_t, AAFlagSet, int)	AAByteStream istream | AAByteStream ostream | off_t max_offset | size_t block_size | AAFlagSet flags | int n_threads	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	c1bb7fc4ba740c68
+typedef	c:AACustomByteStream.h@T@AAByteStreamWriteProc	-			ssize_t (*)(void * _Nullable, const void * _Nonnull, size_t)	-	-	-	-	db9682f2e0da2c0e
+typedef	c:AACustomByteStream.h@T@AAByteStreamPWriteProc	-			ssize_t (*)(void * _Nullable, const void * _Nonnull, size_t, off_t)	-	-	-	-	36f10cecf4288ced
+typedef	c:AACustomByteStream.h@T@AAByteStreamReadProc	-			ssize_t (*)(void * _Nullable, void * _Nonnull, size_t)	-	-	-	-	d546e19f25ec835e
+typedef	c:AACustomByteStream.h@T@AAByteStreamPReadProc	-			ssize_t (*)(void * _Nullable, void * _Nonnull, size_t, off_t)	-	-	-	-	927369c92213a7f7
+typedef	c:AACustomByteStream.h@T@AAByteStreamSeekProc	-			off_t (*)(void * _Nullable, off_t, int)	-	-	-	-	6ac8881d9c76b8a3
+typedef	c:AACustomByteStream.h@T@AAByteStreamCancelProc	-			void (*)(void * _Nullable)	-	-	-	-	9cb6d6316db1a4a3
+typedef	c:AACustomByteStream.h@T@AAByteStreamCloseProc	-			int (*)(void * _Nullable)	-	-	-	-	832c320a51423737
+function	c:@F@AACustomByteStreamOpen	-			AAByteStream  _Nullable (void)	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	76ae6fb4b6deab04
+function	c:@F@AACustomByteStreamSetData	-			void (AAByteStream _Nonnull, void * _Nullable)	AAByteStream s | void * data	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	528e48c4eb523f35
+function	c:@F@AACustomByteStreamSetCloseProc	-			void (AAByteStream _Nonnull, AAByteStreamCloseProc _Nullable)	AAByteStream s | AAByteStreamCloseProc proc	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	baa6f14b7c93a7cf
+function	c:@F@AACustomByteStreamSetReadProc	-			void (AAByteStream _Nonnull, AAByteStreamReadProc _Nullable)	AAByteStream s | AAByteStreamReadProc proc	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	4ff986e2c296beb9
+function	c:@F@AACustomByteStreamSetPReadProc	-			void (AAByteStream _Nonnull, AAByteStreamPReadProc _Nullable)	AAByteStream s | AAByteStreamPReadProc proc	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	7b9ff10e6a41bec9
+function	c:@F@AACustomByteStreamSetWriteProc	-			void (AAByteStream _Nonnull, AAByteStreamWriteProc _Nullable)	AAByteStream s | AAByteStreamWriteProc proc	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	a2949c7b69f315df
+function	c:@F@AACustomByteStreamSetPWriteProc	-			void (AAByteStream _Nonnull, AAByteStreamPWriteProc _Nullable)	AAByteStream s | AAByteStreamPWriteProc proc	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	45ff2cb6ddbed527
+function	c:@F@AACustomByteStreamSetSeekProc	-			void (AAByteStream _Nonnull, AAByteStreamSeekProc _Nullable)	AAByteStream s | AAByteStreamSeekProc proc	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	0a0ebb6ea05fd4a5
+function	c:@F@AACustomByteStreamSetCancelProc	-			void (AAByteStream _Nonnull, AAByteStreamCancelProc _Nullable)	AAByteStream s | AAByteStreamCancelProc proc	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	32bb349f98434e63
+union	c:@UA@AAFieldKey	-			-	-	-	-	-	8cb3e303e0d6cdb2
+field	c:@UA@AAFieldKey@FI@skey	AAFieldKey			char[4]	-	-	-	-	f5977b1ec8bb6b9d
+field	c:@UA@AAFieldKey@FI@ikey	AAFieldKey			uint32_t	-	-	-	-	dd58efef03395c9d
+typedef	c:@T@AAFieldKey	-			union AAFieldKey	-	-	-	-	2f6cc90c7d4bc999
+function	c:@F@AAFieldKeySetCreate	-			AAFieldKeySet  _Nullable (void)	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	206819c2072ebda4
+function	c:@F@AAFieldKeySetCreateWithString	-			AAFieldKeySet  _Nullable (const char * _Nonnull)	const char * s	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	888292a4cc2b2ba6
+function	c:@F@AAFieldKeySetClone	-			AAFieldKeySet  _Nullable (AAFieldKeySet _Nonnull)	AAFieldKeySet key_set	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1e360da45ae564dd
+function	c:@F@AAFieldKeySetDestroy	-			void (AAFieldKeySet _Nullable)	AAFieldKeySet key_set	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	6efa1994ba02e8f6
+function	c:@F@AAFieldKeySetClear	-			int (AAFieldKeySet _Nonnull)	AAFieldKeySet key_set	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	e179abd2d4d28e9c
+function	c:@F@AAFieldKeySetContainsKey	-			int (AAFieldKeySet _Nonnull, AAFieldKey)	AAFieldKeySet key_set | AAFieldKey key	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1b4c8670cfe4cc6a
+function	c:@F@AAFieldKeySetInsertKey	-			int (AAFieldKeySet _Nonnull, AAFieldKey)	AAFieldKeySet key_set | AAFieldKey key	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	d8c1d6430f1c4cca
+function	c:@F@AAFieldKeySetRemoveKey	-			int (AAFieldKeySet _Nonnull, AAFieldKey)	AAFieldKeySet key_set | AAFieldKey key	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	a3f895cc43e16597
+function	c:@F@AAFieldKeySetInsertKeySet	-			int (AAFieldKeySet _Nonnull, AAFieldKeySet _Nonnull)	AAFieldKeySet key_set | AAFieldKeySet s	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	dbf7a52030520063
+function	c:@F@AAFieldKeySetRemoveKeySet	-			int (AAFieldKeySet _Nonnull, AAFieldKeySet _Nonnull)	AAFieldKeySet key_set | AAFieldKeySet s	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	3c4a181db2055020
+function	c:@F@AAFieldKeySetSelectKeySet	-			int (AAFieldKeySet _Nonnull, AAFieldKeySet _Nonnull)	AAFieldKeySet key_set | AAFieldKeySet s	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ec5927fbf60dfcda
+function	c:@F@AAFieldKeySetGetKeyCount	-			uint32_t (AAFieldKeySet _Nonnull)	AAFieldKeySet key_set	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1b54f327b465b73a
+function	c:@F@AAFieldKeySetGetKey	-			AAFieldKey (AAFieldKeySet _Nonnull, uint32_t)	AAFieldKeySet key_set | uint32_t i	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	4f601b967d9aae97
+function	c:@F@AAFieldKeySetSerialize	-			int (AAFieldKeySet _Nonnull, size_t, char * _Nonnull)	AAFieldKeySet key_set | size_t capacity | char * s	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	bee04bf6b4bf1a3e
+function	c:@F@AAHeaderCreate	-			AAHeader  _Nullable (void)	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	d20acb8b8fbeb645
+function	c:@F@AAHeaderDestroy	-			void (AAHeader _Nullable)	AAHeader header	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	08e3cebaff52052d
+function	c:@F@AAHeaderCreateWithEncodedData	-			AAHeader  _Nullable (size_t, const uint8_t * _Nonnull)	size_t data_size | const uint8_t * data	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	c95bde956a8bd081
+function	c:@F@AAHeaderClone	-			AAHeader  _Nullable (AAHeader _Nonnull)	AAHeader header	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	0eccd2d120760c21
+function	c:@F@AAHeaderAssign	-			int (AAHeader _Nonnull, AAHeader _Nonnull)	AAHeader header | AAHeader from_header	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	0380776aff7169b5
+function	c:@F@AAHeaderCreateWithPath	-			AAHeader  _Nullable (AAFieldKeySet _Nonnull, const char * _Nonnull, const char * _Nonnull, AAFlagSet)	AAFieldKeySet key_set | const char * dir | const char * path | AAFlagSet flags	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	c35c898fad4f3d1f
+function	c:@F@AAHeaderGetFieldCount	-			uint32_t (AAHeader _Nonnull)	AAHeader header	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	22ef11d4ee40b9d4
+function	c:@F@AAHeaderGetKeyIndex	-			int (AAHeader _Nonnull, AAFieldKey)	AAHeader header | AAFieldKey key	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	09fb3497390dafce
+function	c:@F@AAHeaderGetFieldType	-			int (AAHeader _Nonnull, uint32_t)	AAHeader header | uint32_t i	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	623ec7892d485ffc
+function	c:@F@AAHeaderGetFieldKey	-			AAFieldKey (AAHeader _Nonnull, uint32_t)	AAHeader header | uint32_t i	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	63b1f8915a57871d
+function	c:@F@AAHeaderGetPayloadSize	-			uint64_t (AAHeader _Nonnull)	AAHeader header	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	a7f22e9d5350f488
+function	c:@F@AAHeaderRemoveField	-			int (AAHeader _Nonnull, uint32_t)	AAHeader header | uint32_t i	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1dbec53b01a26443
+function	c:@F@AAHeaderClear	-			int (AAHeader _Nonnull)	AAHeader header	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	0349c4f93c3a6238
+function	c:@F@AAHeaderSetFieldFlag	-			int (AAHeader _Nonnull, uint32_t, AAFieldKey)	AAHeader header | uint32_t i | AAFieldKey key	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	5f0cbf3508fd75d3
+function	c:@F@AAHeaderSetFieldUInt	-			int (AAHeader _Nonnull, uint32_t, AAFieldKey, uint64_t)	AAHeader header | uint32_t i | AAFieldKey key | uint64_t value	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	0a27c0c38491a0f0
+function	c:@F@AAHeaderSetFieldString	-			int (AAHeader _Nonnull, uint32_t, AAFieldKey, const char * _Nonnull, size_t)	AAHeader header | uint32_t i | AAFieldKey key | const char * value | size_t length	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	01b2ba4858947f40
+function	c:@F@AAHeaderSetFieldHash	-			int (AAHeader _Nonnull, uint32_t, AAFieldKey, AAHashFunction, const uint8_t * _Nonnull)	AAHeader header | uint32_t i | AAFieldKey key | AAHashFunction hash_function | const uint8_t * value	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1dcb8c4552b29dc1
+function	c:@F@AAHeaderSetFieldTimespec	-			int (AAHeader _Nonnull, uint32_t, AAFieldKey, const struct timespec * _Nonnull)	AAHeader header | uint32_t i | AAFieldKey key | const struct timespec * value	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	4c829f404550bbb6
+function	c:@F@AAHeaderSetFieldBlob	-			int (AAHeader _Nonnull, uint32_t, AAFieldKey, uint64_t)	AAHeader header | uint32_t i | AAFieldKey key | uint64_t size	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	accc150e977eb4f0
+function	c:AAHeader.h@F@AAHeaderAppendFieldFlag#*$@S@AAHeader_impl#$@UA@AAFieldKey#	-	AAHeaderAppendFieldFlag		int (AAHeader _Nonnull, AAFieldKey)	AAHeader header | AAFieldKey key	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	8f692c99722b9737
+function	c:AAHeader.h@F@AAHeaderAppendFieldUInt#*$@S@AAHeader_impl#$@UA@AAFieldKey#k#	-	AAHeaderAppendFieldUInt		int (AAHeader _Nonnull, AAFieldKey, uint64_t)	AAHeader header | AAFieldKey key | uint64_t value	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	d3cbf854636ed747
+function	c:AAHeader.h@F@AAHeaderAppendFieldString#*$@S@AAHeader_impl#$@UA@AAFieldKey#*1C#l#	-	AAHeaderAppendFieldString		int (AAHeader _Nonnull, AAFieldKey, const char * _Nonnull, size_t)	AAHeader header | AAFieldKey key | const char * value | size_t length	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	9d2352b9fd36e48c
+function	c:AAHeader.h@F@AAHeaderAppendFieldCString#*$@S@AAHeader_impl#$@UA@AAFieldKey#*1C#	-	AAHeaderAppendFieldCString		int (AAHeader _Nonnull, AAFieldKey, const char * _Nonnull)	AAHeader header | AAFieldKey key | const char * value	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	68e545b4d28efda1
+function	c:AAHeader.h@F@AAHeaderAppendFieldHash#*$@S@AAHeader_impl#$@UA@AAFieldKey#i#*1c#	-	AAHeaderAppendFieldHash		int (AAHeader _Nonnull, AAFieldKey, AAHashFunction, const uint8_t * _Nonnull)	AAHeader header | AAFieldKey key | AAHashFunction hash_function | const uint8_t * value	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	efad0c6504e9924f
+function	c:AAHeader.h@F@AAHeaderAppendFieldTimespec#*$@S@AAHeader_impl#$@UA@AAFieldKey#*1$@S@timespec#	-	AAHeaderAppendFieldTimespec		int (AAHeader _Nonnull, AAFieldKey, const struct timespec * _Nonnull)	AAHeader header | AAFieldKey key | const struct timespec * value	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	e9b4078871e656ea
+function	c:AAHeader.h@F@AAHeaderAppendFieldBlob#*$@S@AAHeader_impl#$@UA@AAFieldKey#k#	-	AAHeaderAppendFieldBlob		int (AAHeader _Nonnull, AAFieldKey, uint64_t)	AAHeader header | AAFieldKey key | uint64_t size	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	7cb784ecdbabd930
+function	c:@F@AAHeaderGetFieldUInt	-			int (AAHeader _Nonnull, uint32_t, uint64_t * _Nonnull)	AAHeader header | uint32_t i | uint64_t * value	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	3552860d0b3ae8f6
+function	c:@F@AAHeaderGetFieldString	-			int (AAHeader _Nonnull, uint32_t, size_t, char * _Nullable, size_t * _Nullable)	AAHeader header | uint32_t i | size_t capacity | char * value | size_t * length	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	bfe112ba52f08d1d
+function	c:@F@AAHeaderGetFieldHash	-			int (AAHeader _Nonnull, uint32_t, size_t, AAHashFunction * _Nullable, uint8_t * _Nullable)	AAHeader header | uint32_t i | size_t capacity | AAHashFunction * hash_function | uint8_t * value	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	80f689b5a254c8b3
+function	c:@F@AAHeaderGetFieldTimespec	-			int (AAHeader _Nonnull, uint32_t, struct timespec * _Nonnull)	AAHeader header | uint32_t i | struct timespec * value	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	81adc3533c671b61
+function	c:@F@AAHeaderGetFieldBlob	-			int (AAHeader _Nonnull, uint32_t, uint64_t * _Nonnull, uint64_t * _Nonnull)	AAHeader header | uint32_t i | uint64_t * size | uint64_t * offset	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	726f3731c0255535
+function	c:AAHeader.h@F@AAHeaderGetFieldUIntWithKey#*$@S@AAHeader_impl#$@UA@AAFieldKey#*k#	-	AAHeaderGetFieldUIntWithKey		int (AAHeader _Nonnull, AAFieldKey, uint64_t * _Nonnull)	AAHeader header | AAFieldKey key | uint64_t * value	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	01bc5752d6eeb82d
+function	c:AAHeader.h@F@AAHeaderGetFieldStringWithKey#*$@S@AAHeader_impl#$@UA@AAFieldKey#l#*C#*l#	-	AAHeaderGetFieldStringWithKey		int (AAHeader _Nonnull, AAFieldKey, size_t, char * _Nullable, size_t * _Nullable)	AAHeader header | AAFieldKey key | size_t capacity | char * value | size_t * length	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	84d77f071c83152f
+function	c:AAHeader.h@F@AAHeaderGetFieldHashWithKey#*$@S@AAHeader_impl#$@UA@AAFieldKey#l#*i#*c#	-	AAHeaderGetFieldHashWithKey		int (AAHeader _Nonnull, AAFieldKey, size_t, AAHashFunction * _Nullable, uint8_t * _Nullable)	AAHeader header | AAFieldKey key | size_t capacity | AAHashFunction * hash_function | uint8_t * value	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	f8f3a4f25cfe99b8
+function	c:AAHeader.h@F@AAHeaderGetFieldTimespecWithKey#*$@S@AAHeader_impl#$@UA@AAFieldKey#*$@S@timespec#	-	AAHeaderGetFieldTimespecWithKey		int (AAHeader _Nonnull, AAFieldKey, struct timespec * _Nonnull)	AAHeader header | AAFieldKey key | struct timespec * value	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ed29d16cd6f5d878
+function	c:AAHeader.h@F@AAHeaderGetFieldBlobWithKey#*$@S@AAHeader_impl#$@UA@AAFieldKey#*k#S3_#	-	AAHeaderGetFieldBlobWithKey		int (AAHeader _Nonnull, AAFieldKey, uint64_t * _Nonnull, uint64_t * _Nonnull)	AAHeader header | AAFieldKey key | uint64_t * size | uint64_t * offset	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	4f39e7140ae3603a
+function	c:@F@AAHeaderGetEncodedSize	-			size_t (AAHeader _Nonnull)	AAHeader header	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	28351943e97fdd3c
+function	c:@F@AAHeaderGetEncodedData	-			const uint8_t * _Nullable (AAHeader _Nonnull)	AAHeader header	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	191756d050f5ebf1
+struct	c:@SA@AAEntryAttributes	-			-	-	-	-	-	1201fcda4e26b355
+union	c:@SA@AAEntryAttributes@Ua	-	-		-	-	-	-	-	2eadc9466e8024c1
+field	c:@SA@AAEntryAttributes@Ua@FI@bits	-			uint32_t	-	-	-	-	6bbb2930b79c35e3
+struct	c:@SA@AAEntryAttributes@Ua@Sa	-	-		-	-	-	-	-	88383a5accde22be
+field	c:@SA@AAEntryAttributes@Ua@Sa@FI@UID	-			uint32_t	-	-	-	-	928fecaf115dbbae
+field	c:@SA@AAEntryAttributes@Ua@Sa@FI@GID	-			uint32_t	-	-	-	-	0ae1e2e379fb8a10
+field	c:@SA@AAEntryAttributes@Ua@Sa@FI@FLG	-			uint32_t	-	-	-	-	3bdaa9a8b7cba72c
+field	c:@SA@AAEntryAttributes@Ua@Sa@FI@MOD	-			uint32_t	-	-	-	-	9593316dbab58850
+field	c:@SA@AAEntryAttributes@Ua@Sa@FI@BTM	-			uint32_t	-	-	-	-	55318e29a7f048b5
+field	c:@SA@AAEntryAttributes@Ua@Sa@FI@CTM	-			uint32_t	-	-	-	-	419d262318437643
+field	c:@SA@AAEntryAttributes@Ua@Sa@FI@MTM	-			uint32_t	-	-	-	-	64d9d36648e335a8
+field	c:@SA@AAEntryAttributes@FI@uid	AAEntryAttributes			uint32_t	-	-	-	-	bd4c88e4e10068d6
+field	c:@SA@AAEntryAttributes@FI@gid	AAEntryAttributes			uint32_t	-	-	-	-	a30719b5586df7f5
+field	c:@SA@AAEntryAttributes@FI@flg	AAEntryAttributes			uint32_t	-	-	-	-	bddbe9af92d7703d
+field	c:@SA@AAEntryAttributes@FI@mod	AAEntryAttributes			uint32_t	-	-	-	-	0518a0001d11a48c
+field	c:@SA@AAEntryAttributes@FI@btm	AAEntryAttributes			struct timespec	-	-	-	-	6c9114d74542969e
+field	c:@SA@AAEntryAttributes@FI@ctm	AAEntryAttributes			struct timespec	-	-	-	-	875e08549671320c
+field	c:@SA@AAEntryAttributes@FI@mtm	AAEntryAttributes			struct timespec	-	-	-	-	2f9f913e6dabbd28
+typedef	c:@T@AAEntryAttributes	-			struct AAEntryAttributes	-	-	-	-	633744c55b380fdb
+typedef	c:AAEntryACLBlob.h@T@AAACEQualifierType	-			uint32_t	-	-	-	-	268505d82af3931d
+enum	c:@E@AAACEQualifierTypes	-			uint32_t	-	-	-	-	cbfe2ff53fde3ade
+enumconst	c:@E@AAACEQualifierTypes@AA_ACE_QUALIFIER_TYPE_USER	AAACEQualifierTypes			-	-	-	-	-	ec90cbd4f0b3715f
+enumconst	c:@E@AAACEQualifierTypes@AA_ACE_QUALIFIER_TYPE_GROUP	AAACEQualifierTypes			-	-	-	-	-	7494af59c9fec818
+enumconst	c:@E@AAACEQualifierTypes@AA_ACE_QUALIFIER_TYPE_SID	AAACEQualifierTypes			-	-	-	-	-	26ac9c98a34d9cc7
+enumconst	c:@E@AAACEQualifierTypes@AA_ACE_QUALIFIER_TYPE_UUID	AAACEQualifierTypes			-	-	-	-	-	d3102f35d2f17aa9
+typedef	c:AAEntryACLBlob.h@T@AAACETag	-			uint32_t	-	-	-	-	6901d4a7b13033e8
+typedef	c:AAEntryACLBlob.h@T@AAACEPermSet	-			uint64_t	-	-	-	-	f43ccea8c48af875
+typedef	c:AAEntryACLBlob.h@T@AAACEFlagSet	-			uint64_t	-	-	-	-	32f35062ee0c4378
+struct	c:@SA@AAAccessControlEntry	-			-	-	-	-	-	3cadd279a95ad59e
+field	c:@SA@AAAccessControlEntry@FI@tag	AAAccessControlEntry			AAACETag	-	-	-	-	d165c7bb528df029
+field	c:@SA@AAAccessControlEntry@FI@perms	AAAccessControlEntry			AAACEPermSet	-	-	-	-	fe7d61a4d938eceb
+field	c:@SA@AAAccessControlEntry@FI@flags	AAAccessControlEntry			AAACEFlagSet	-	-	-	-	cc9a8f8dcdbae0be
+field	c:@SA@AAAccessControlEntry@FI@qualifier_type	AAAccessControlEntry			AAACEQualifierType	-	-	-	-	48b3dfe9b3c546d5
+typedef	c:@T@AAAccessControlEntry	-			struct AAAccessControlEntry	-	-	-	-	3c2cec3bc837f916
+function	c:@F@AAEntryACLBlobCreate	-			AAEntryACLBlob  _Nullable (void)	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	be56caf6d04c2061
+function	c:@F@AAEntryACLBlobDestroy	-			void (AAEntryACLBlob _Nullable)	AAEntryACLBlob acl	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	3d85068bbfee0491
+function	c:@F@AAEntryACLBlobCreateWithEncodedData	-			AAEntryACLBlob  _Nullable (const uint8_t * _Nonnull, size_t)	const uint8_t * data | size_t data_size	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	94ae309e2789ed29
+function	c:@F@AAEntryACLBlobCreateWithPath	-			AAEntryACLBlob  _Nullable (const char * _Nonnull, const char * _Nonnull, AAFlagSet)	const char * dir | const char * path | AAFlagSet flags	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	7b0bedccff79902b
+function	c:@F@AAEntryACLBlobApplyToPath	-			int (AAEntryACLBlob _Nonnull, const char * _Nonnull, const char * _Nonnull, AAFlagSet)	AAEntryACLBlob acl | const char * dir | const char * path | AAFlagSet flags	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	6cc2554dd73103bd
+function	c:@F@AAEntryACLBlobGetEntryCount	-			uint32_t (AAEntryACLBlob _Nonnull)	AAEntryACLBlob acl	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	d773dd36a71699f6
+function	c:@F@AAEntryACLBlobGetEntry	-			int (AAEntryACLBlob _Nonnull, uint32_t, AAAccessControlEntry * _Nonnull, size_t, uint8_t * _Nullable, size_t * _Nullable)	AAEntryACLBlob acl | uint32_t i | AAAccessControlEntry * ace | size_t qualifier_capacity | uint8_t * qualifier_value | size_t * qualifier_size	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	a59409a750f32409
+function	c:@F@AAEntryACLBlobAppendEntry	-			int (AAEntryACLBlob _Nonnull, const AAAccessControlEntry * _Nonnull, const uint8_t * _Nonnull, size_t)	AAEntryACLBlob acl | const AAAccessControlEntry * ace | const uint8_t * qualifier_value | size_t qualifier_size	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ba2bbeb02e2e2d41
+function	c:@F@AAEntryACLBlobSetEntry	-			int (AAEntryACLBlob _Nonnull, uint32_t, const AAAccessControlEntry * _Nonnull, const uint8_t * _Nonnull, size_t)	AAEntryACLBlob acl | uint32_t i | const AAAccessControlEntry * ace | const uint8_t * qualifier_value | size_t qualifier_size	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	00e9b3e0b2911aa0
+function	c:@F@AAEntryACLBlobClear	-			int (AAEntryACLBlob _Nonnull)	AAEntryACLBlob acl	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1136b8e1154fb408
+function	c:@F@AAEntryACLBlobRemoveEntry	-			int (AAEntryACLBlob _Nonnull, uint32_t)	AAEntryACLBlob acl | uint32_t i	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	d5783c1e858b126a
+function	c:@F@AAEntryACLBlobGetEncodedSize	-			size_t (AAEntryACLBlob _Nonnull)	AAEntryACLBlob acl	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	3e0d71d17e39e1f2
+function	c:@F@AAEntryACLBlobGetEncodedData	-			const uint8_t * _Nullable (AAEntryACLBlob _Nonnull)	AAEntryACLBlob acl	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	022af059a223233b
+function	c:@F@AAEntryXATBlobCreate	-			AAEntryXATBlob  _Nullable (void)	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	621eae0fe4c118d9
+function	c:@F@AAEntryXATBlobDestroy	-			void (AAEntryXATBlob _Nullable)	AAEntryXATBlob xat	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	618c458d238bacd4
+function	c:@F@AAEntryXATBlobCreateWithEncodedData	-			AAEntryXATBlob  _Nullable (const uint8_t * _Nullable, size_t)	const uint8_t * data | size_t data_size	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	93a356406e965412
+function	c:@F@AAEntryXATBlobCreateWithPath	-			AAEntryXATBlob  _Nullable (const char * _Nonnull, const char * _Nonnull, AAFlagSet)	const char * dir | const char * path | AAFlagSet flags	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	a829676daf4d1028
+function	c:@F@AAEntryXATBlobApplyToPath	-			int (AAEntryXATBlob _Nonnull, const char * _Nonnull, const char * _Nonnull, AAFlagSet)	AAEntryXATBlob xat | const char * dir | const char * path | AAFlagSet flags	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	718ccb0f3f6e673d
+function	c:@F@AAEntryXATBlobGetEntryCount	-			uint32_t (AAEntryXATBlob _Nonnull)	AAEntryXATBlob xat	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	891dfc26acce74bc
+function	c:@F@AAEntryXATBlobGetEntry	-			int (AAEntryXATBlob _Nonnull, uint32_t, size_t, char * _Nullable, size_t * _Nullable, size_t, uint8_t * _Nullable, size_t * _Nullable)	AAEntryXATBlob xat | uint32_t i | size_t key_capacity | char * key | size_t * key_length | size_t data_capacity | uint8_t * data | size_t * data_size	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	dad4b731100662db
+function	c:@F@AAEntryXATBlobAppendEntry	-			int (AAEntryXATBlob _Nonnull, const char * _Nonnull, const uint8_t * _Nullable, size_t)	AAEntryXATBlob xat | const char * key | const uint8_t * data | size_t data_size	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	dab84278b3463ad0
+function	c:@F@AAEntryXATBlobSetEntry	-			int (AAEntryXATBlob _Nonnull, uint32_t, const char * _Nonnull, const uint8_t * _Nullable, size_t)	AAEntryXATBlob xat | uint32_t i | const char * key | const uint8_t * data | size_t data_size	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	abf38941445bba81
+function	c:@F@AAEntryXATBlobClear	-			int (AAEntryXATBlob _Nonnull)	AAEntryXATBlob xat	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	4fec20d8ded13f0f
+function	c:@F@AAEntryXATBlobRemoveEntry	-			int (AAEntryXATBlob _Nonnull, uint32_t)	AAEntryXATBlob xat | uint32_t i	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	06f19202bbc08dfa
+function	c:@F@AAEntryXATBlobGetEncodedSize	-			size_t (AAEntryXATBlob _Nonnull)	AAEntryXATBlob xat	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	6bacb20f587c138e
+function	c:@F@AAEntryXATBlobGetEncodedData	-			const uint8_t * _Nullable (AAEntryXATBlob _Nonnull)	AAEntryXATBlob xat	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ca34e7771b9063fb
+function	c:@F@AAPathListCreateWithDirectoryContents	-			AAPathList  _Nullable (const char * _Nonnull, const char * _Nullable, void * _Nullable, AAEntryMessageProc _Nullable, AAFlagSet, int)	const char * dir | const char * path | void * msg_data | AAEntryMessageProc msg_proc | AAFlagSet flags | int n_threads	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	f17472471aac7c4e
+function	c:@F@AAPathListCreateWithPath	-			AAPathList  _Nullable (const char * _Nonnull, const char * _Nonnull)	const char * dir | const char * path	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	fb5a5ecdbfb3d8c4
+function	c:@F@AAPathListDestroy	-			void (AAPathList _Nullable)	AAPathList path_list	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	35e04fac8e4cd070
+function	c:@F@AAPathListNodeGetPath	-			int (AAPathList _Nonnull, uint64_t, size_t, char * _Nullable, size_t * _Nullable)	AAPathList path_list | uint64_t node | size_t path_capacity | char * path | size_t * path_length	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	263ce284d0048338
+function	c:@F@AAPathListNodeFirst	-			uint64_t (AAPathList _Nonnull)	AAPathList path_list	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	54c6e778c457fd3d
+function	c:@F@AAPathListNodeNext	-			uint64_t (AAPathList _Nonnull, uint64_t)	AAPathList path_list | uint64_t node	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1a2bdc8a2b0f6e19
+function	c:@F@AAArchiveStreamWriteHeader	-			int (AAArchiveStream _Nonnull, AAHeader _Nonnull)	AAArchiveStream s | AAHeader header	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	420f5b7d14bea7fa
+function	c:@F@AAArchiveStreamWriteBlob	-			int (AAArchiveStream _Nonnull, AAFieldKey, const void * _Nonnull, size_t)	AAArchiveStream s | AAFieldKey key | const void * buf | size_t nbyte	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	4d40c07d987a0fe1
+function	c:@F@AAArchiveStreamReadHeader	-			int (AAArchiveStream _Nonnull, AAHeader  _Nullable * _Nonnull)	AAArchiveStream s | AAHeader  _Nullable * header	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	7da80e297fc01d3f
+function	c:@F@AAArchiveStreamReadBlob	-			int (AAArchiveStream _Nonnull, AAFieldKey, void * _Nonnull, size_t)	AAArchiveStream s | AAFieldKey key | void * buf | size_t nbyte	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	4bb3724db1343c0c
+function	c:@F@AAArchiveStreamCancel	-			void (AAArchiveStream _Nonnull)	AAArchiveStream s	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	aa9b17c05fe6e7af
+function	c:@F@AAArchiveStreamClose	-			int (AAArchiveStream _Nullable)	AAArchiveStream s	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ed8d5fb39d0b4fa4
+function	c:@F@AAArchiveStreamWritePathList	-			int (AAArchiveStream _Nonnull, AAPathList _Nonnull, AAFieldKeySet _Nonnull, const char * _Nonnull, void * _Nullable, AAEntryMessageProc _Nullable, AAFlagSet, int)	AAArchiveStream s | AAPathList path_list | AAFieldKeySet key_set | const char * dir | void * msg_data | AAEntryMessageProc msg_proc | AAFlagSet flags | int n_threads	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	d90b7e1252929db3
+function	c:@F@AAExtractArchiveOutputStreamOpen	-			AAArchiveStream  _Nullable (const char * _Nonnull, void * _Nullable, AAEntryMessageProc _Nullable, AAFlagSet, int)	const char * dir | void * msg_data | AAEntryMessageProc msg_proc | AAFlagSet flags | int n_threads	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	a785493cf6dc0d30
+function	c:@F@AAConvertArchiveOutputStreamOpen	-			AAArchiveStream  _Nullable (AAArchiveStream _Nonnull, AAFieldKeySet _Nonnull, AAFieldKeySet _Nonnull, void * _Nullable, AAEntryMessageProc _Nullable, AAFlagSet, int)	AAArchiveStream stream | AAFieldKeySet insert_key_set | AAFieldKeySet remove_key_set | void * msg_data | AAEntryMessageProc msg_proc | AAFlagSet flags | int n_threads	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	3d11fccf8989d116
+function	c:@F@AAEncodeArchiveOutputStreamOpen	-			AAArchiveStream  _Nullable (AAByteStream _Nonnull, void * _Nullable, AAEntryMessageProc _Nullable, AAFlagSet, int)	AAByteStream stream | void * msg_data | AAEntryMessageProc msg_proc | AAFlagSet flags | int n_threads	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	367aab35cc874d3e
+function	c:@F@AADecodeArchiveInputStreamOpen	-			AAArchiveStream  _Nullable (AAByteStream _Nonnull, void * _Nullable, AAEntryMessageProc _Nullable, AAFlagSet, int)	AAByteStream stream | void * msg_data | AAEntryMessageProc msg_proc | AAFlagSet flags | int n_threads	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	cfdabf7650fba138
+function	c:@F@AAArchiveStreamProcess	-			ssize_t (AAArchiveStream _Nonnull, AAArchiveStream _Nonnull, void * _Nullable, AAEntryMessageProc _Nullable, AAFlagSet, int)	AAArchiveStream istream | AAArchiveStream ostream | void * msg_data | AAEntryMessageProc msg_proc | AAFlagSet flags | int n_threads	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	46b50cce83f8ed64
+typedef	c:AACustomArchiveStream.h@T@AAArchiveStreamWriteHeaderProc	-			int (*)(void * _Nullable, AAHeader _Nonnull)	-	-	-	-	0bac78923549fc00
+typedef	c:AACustomArchiveStream.h@T@AAArchiveStreamWriteBlobProc	-			int (*)(void * _Nullable, AAFieldKey, const void * _Nonnull, size_t)	-	-	-	-	ebc459223b1d2118
+typedef	c:AACustomArchiveStream.h@T@AAArchiveStreamReadHeaderProc	-			int (*)(void * _Nullable, AAHeader  _Nullable * _Nonnull)	-	-	-	-	df33f49a52ebf75f
+typedef	c:AACustomArchiveStream.h@T@AAArchiveStreamReadBlobProc	-			int (*)(void * _Nullable, AAFieldKey, void * _Nonnull, size_t)	-	-	-	-	0e6db466cce02028
+typedef	c:AACustomArchiveStream.h@T@AAArchiveStreamCancelProc	-			void (*)(void * _Nullable)	-	-	-	-	7d8d5f201a69d0ef
+typedef	c:AACustomArchiveStream.h@T@AAArchiveStreamCloseProc	-			int (*)(void * _Nullable)	-	-	-	-	569d3d04c8a7d478
+function	c:@F@AACustomArchiveStreamOpen	-			AAArchiveStream  _Nullable (void)	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	6716f8eb1e650ddc
+function	c:@F@AACustomArchiveStreamSetData	-			void (AAArchiveStream _Nonnull, void * _Nullable)	AAArchiveStream s | void * data	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	3ff1f59214e5330f
+function	c:@F@AACustomArchiveStreamSetCloseProc	-			void (AAArchiveStream _Nonnull, AAArchiveStreamCloseProc _Nullable)	AAArchiveStream s | AAArchiveStreamCloseProc proc	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	eb8bdb9d14a6de1d
+function	c:@F@AACustomArchiveStreamSetCancelProc	-			void (AAArchiveStream _Nonnull, AAArchiveStreamCancelProc _Nullable)	AAArchiveStream s | AAArchiveStreamCancelProc proc	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	7bdd491e98a0284b
+function	c:@F@AACustomArchiveStreamSetWriteHeaderProc	-			void (AAArchiveStream _Nonnull, AAArchiveStreamWriteHeaderProc _Nullable)	AAArchiveStream s | AAArchiveStreamWriteHeaderProc proc	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	bd21632f4a4d3bba
+function	c:@F@AACustomArchiveStreamSetWriteBlobProc	-			void (AAArchiveStream _Nonnull, AAArchiveStreamWriteBlobProc _Nullable)	AAArchiveStream s | AAArchiveStreamWriteBlobProc proc	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	79d9e81ab804411d
+function	c:@F@AACustomArchiveStreamSetReadHeaderProc	-			void (AAArchiveStream _Nonnull, AAArchiveStreamReadHeaderProc _Nullable)	AAArchiveStream s | AAArchiveStreamReadHeaderProc proc	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ed53a18271180967
+function	c:@F@AACustomArchiveStreamSetReadBlobProc	-			void (AAArchiveStream _Nonnull, AAArchiveStreamReadBlobProc _Nullable)	AAArchiveStream s | AAArchiveStreamReadBlobProc proc	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	e0f9f1d7037ce29e
+typedef	c:AEADefs.h@T@AEAProfile	-			uint32_t	-	-	-	-	e0a3b15b2dcab244
+enum	c:@E@AEAProfiles	-			uint32_t	-	-	-	-	b30792d06ca35621
+enumconst	c:@E@AEAProfiles@AEA_PROFILE__HKDF_SHA256_HMAC__NONE__ECDSA_P256	AEAProfiles			-	-	-	-	-	a2f0617fc7652a7e
+enumconst	c:@E@AEAProfiles@AEA_PROFILE__HKDF_SHA256_AESCTR_HMAC__SYMMETRIC__NONE	AEAProfiles			-	-	-	-	-	db0aaa035da08048
+enumconst	c:@E@AEAProfiles@AEA_PROFILE__HKDF_SHA256_AESCTR_HMAC__SYMMETRIC__ECDSA_P256	AEAProfiles			-	-	-	-	-	f1e01781f9b993af
+enumconst	c:@E@AEAProfiles@AEA_PROFILE__HKDF_SHA256_AESCTR_HMAC__ECDHE_P256__NONE	AEAProfiles			-	-	-	-	-	e04be2edc987cabb
+enumconst	c:@E@AEAProfiles@AEA_PROFILE__HKDF_SHA256_AESCTR_HMAC__ECDHE_P256__ECDSA_P256	AEAProfiles			-	-	-	-	-	1d251a4c29e91cc6
+enumconst	c:@E@AEAProfiles@AEA_PROFILE__HKDF_SHA256_AESCTR_HMAC__SCRYPT__NONE	AEAProfiles			-	-	-	-	-	b19ca43284972065
+typedef	c:AEADefs.h@T@AEAContextField	-			uint32_t	-	-	-	-	143b10ca4a821fc1
+enum	c:@E@AEAContextFields	-			uint32_t	-	-	-	-	d0e032c7801c5b79
+enumconst	c:@E@AEAContextFields@AEA_CONTEXT_FIELD_PROFILE	AEAContextFields			-	-	-	-	-	a162e1abd51fca40
+enumconst	c:@E@AEAContextFields@AEA_CONTEXT_FIELD_PADDING_SIZE	AEAContextFields			-	-	-	-	-	0d1a5412aeec4569
+enumconst	c:@E@AEAContextFields@AEA_CONTEXT_FIELD_CHECKSUM_MODE	AEAContextFields			-	-	-	-	-	9e67375deb1fa1c7
+enumconst	c:@E@AEAContextFields@AEA_CONTEXT_FIELD_COMPRESSION_ALGORITHM	AEAContextFields			-	-	-	-	-	5c40ff7a34a5fb3b
+enumconst	c:@E@AEAContextFields@AEA_CONTEXT_FIELD_COMPRESSION_BLOCK_SIZE	AEAContextFields			-	-	-	-	-	fadb0fc8ab60b5b5
+enumconst	c:@E@AEAContextFields@AEA_CONTEXT_FIELD_AUTH_DATA	AEAContextFields			-	-	-	-	-	17eabad6be770e68
+enumconst	c:@E@AEAContextFields@AEA_CONTEXT_FIELD_MAIN_KEY	AEAContextFields			-	-	-	-	-	df9f77818457ba38
+enumconst	c:@E@AEAContextFields@AEA_CONTEXT_FIELD_SIGNING_PUBLIC_KEY	AEAContextFields			-	-	-	-	-	56ec9e2112d946af
+enumconst	c:@E@AEAContextFields@AEA_CONTEXT_FIELD_SIGNING_PRIVATE_KEY	AEAContextFields			-	-	-	-	-	b9f5782dd142eb71
+enumconst	c:@E@AEAContextFields@AEA_CONTEXT_FIELD_SYMMETRIC_KEY	AEAContextFields			-	-	-	-	-	9b065d4844e0159b
+enumconst	c:@E@AEAContextFields@AEA_CONTEXT_FIELD_RECIPIENT_PUBLIC_KEY	AEAContextFields			-	-	-	-	-	a9a6591619717680
+enumconst	c:@E@AEAContextFields@AEA_CONTEXT_FIELD_RECIPIENT_PRIVATE_KEY	AEAContextFields			-	-	-	-	-	b15c25f66b7d64d6
+enumconst	c:@E@AEAContextFields@AEA_CONTEXT_FIELD_SIGNATURE_ENCRYPTION_KEY	AEAContextFields			-	-	-	-	-	f2776bfa2ee8d628
+enumconst	c:@E@AEAContextFields@AEA_CONTEXT_FIELD_RAW_SIZE	AEAContextFields			-	-	-	-	-	aebe79f72aa5221b
+enumconst	c:@E@AEAContextFields@AEA_CONTEXT_FIELD_CONTAINER_SIZE	AEAContextFields			-	-	-	-	-	96abfe3f42d48df9
+enumconst	c:@E@AEAContextFields@AEA_CONTEXT_FIELD_BLOCKS_PER_CLUSTER	AEAContextFields			-	-	-	-	-	048329825014848c
+enumconst	c:@E@AEAContextFields@AEA_CONTEXT_FIELD_ARCHIVE_IDENTIFIER	AEAContextFields			-	-	-	-	-	a17606df6cde3f15
+enumconst	c:@E@AEAContextFields@AEA_CONTEXT_FIELD_PASSWORD	AEAContextFields			-	-	-	-	-	3dbbe4c8e5c01ba4
+typedef	c:AEADefs.h@T@AEAContextFieldRepresentation	-			uint32_t	-	-	-	-	0aa7e207709f9c1a
+enum	c:@E@AEAContextFieldRepresentations	-			uint32_t	-	-	-	-	95ec7ae68e5c8676
+enumconst	c:@E@AEAContextFieldRepresentations@AEA_CONTEXT_FIELD_REPRESENTATION_RAW	AEAContextFieldRepresentations			-	-	-	-	-	45da5339b0c56686
+enumconst	c:@E@AEAContextFieldRepresentations@AEA_CONTEXT_FIELD_REPRESENTATION_X963	AEAContextFieldRepresentations			-	-	-	-	-	883112a446019d10
+enumconst	c:@E@AEAContextFieldRepresentations@AEA_CONTEXT_FIELD_REPRESENTATION_GENERATE	AEAContextFieldRepresentations			-	-	-	-	-	9264fd45f7b889d1
+enum	c:@E@AEAContextFieldValues	-			uint32_t	-	-	-	-	458c463ef94293b9
+enumconst	c:@E@AEAContextFieldValues@AEA_CONTEXT_CIPHERSUITE_HKDF_SHA256_HMAC	AEAContextFieldValues			-	-	-	-	-	9680f3bf4b51d26f
+enumconst	c:@E@AEAContextFieldValues@AEA_CONTEXT_CIPHERSUITE_HKDF_SHA256_AESCTR_HMAC	AEAContextFieldValues			-	-	-	-	-	fae9bf32d7e93c0f
+enumconst	c:@E@AEAContextFieldValues@AEA_CONTEXT_SIGNATURE_NONE	AEAContextFieldValues			-	-	-	-	-	13385457540fe785
+enumconst	c:@E@AEAContextFieldValues@AEA_CONTEXT_SIGNATURE_ECDSA_P256	AEAContextFieldValues			-	-	-	-	-	bad15f6abf537154
+enumconst	c:@E@AEAContextFieldValues@AEA_CONTEXT_ENCRYPTION_NONE	AEAContextFieldValues			-	-	-	-	-	b674164f5e979ad1
+enumconst	c:@E@AEAContextFieldValues@AEA_CONTEXT_ENCRYPTION_SYMMETRIC	AEAContextFieldValues			-	-	-	-	-	e8ad16d0dfe7c0ff
+enumconst	c:@E@AEAContextFieldValues@AEA_CONTEXT_ENCRYPTION_ECDHE_P256	AEAContextFieldValues			-	-	-	-	-	a2c04ae18db7be0b
+enumconst	c:@E@AEAContextFieldValues@AEA_CONTEXT_ENCRYPTION_SCRYPT	AEAContextFieldValues			-	-	-	-	-	1d1cdff4f341732e
+enumconst	c:@E@AEAContextFieldValues@AEA_CONTEXT_CHECKSUM_NONE	AEAContextFieldValues			-	-	-	-	-	2ec4f61dd60b1c3e
+enumconst	c:@E@AEAContextFieldValues@AEA_CONTEXT_CHECKSUM_MURMURHASH64	AEAContextFieldValues			-	-	-	-	-	e0d2d34dc7537312
+enumconst	c:@E@AEAContextFieldValues@AEA_CONTEXT_CHECKSUM_SHA256	AEAContextFieldValues			-	-	-	-	-	036d52cbeb60f44c
+enumconst	c:@E@AEAContextFieldValues@AEA_CONTEXT_PADDING_NONE	AEAContextFieldValues			-	-	-	-	-	f5d9d3dcb2ec65bc
+enumconst	c:@E@AEAContextFieldValues@AEA_CONTEXT_PADDING_ADAPTIVE	AEAContextFieldValues			-	-	-	-	-	b444d1d81b08b714
+enumconst	c:@E@AEAContextFieldValues@AEA_CONTEXT_PADDING_MIN_SIZE	AEAContextFieldValues			-	-	-	-	-	1a94edf46538b783
+struct	c:@S@AEAContext_impl	-			-	-	-	-	-	fd4d30ee21e46efd
+typedef	c:AEADefs.h@T@AEAContext	-			struct AEAContext_impl *	-	-	-	-	1f36ad63af89b667
+struct	c:@S@AEAAuthData_impl	-			-	-	-	-	-	99d924ec15dc58dd
+typedef	c:AEADefs.h@T@AEAAuthData	-			struct AEAAuthData_impl *	-	-	-	-	11794d441648d3b5
+function	c:@F@AEAAuthDataCreate	-			AEAAuthData  _Nullable (void)	-	-	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.4/-/-/0	-	7b62d86854e8dac1
+function	c:@F@AEAAuthDataDestroy	-			void (AEAAuthData _Nullable)	AEAAuthData auth_data	-	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.4/-/-/0	-	9e4060491d52513f
+function	c:@F@AEAAuthDataCreateWithContext	-			AEAAuthData  _Nullable (AEAContext _Nonnull)	AEAContext context	-	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.4/-/-/0	-	d801d0da293b1673
+function	c:@F@AEAAuthDataGetEntryCount	-			uint32_t (AEAAuthData _Nonnull)	AEAAuthData auth_data	-	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.4/-/-/0	-	956ed5befe2eaa8d
+function	c:@F@AEAAuthDataGetEntry	-			int (AEAAuthData _Nonnull, uint32_t, size_t, char * _Nullable, size_t * _Nullable, size_t, uint8_t * _Nullable, size_t * _Nullable)	AEAAuthData auth_data | uint32_t i | size_t key_capacity | char * key | size_t * key_length | size_t data_capacity | uint8_t * data | size_t * data_size	-	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.4/-/-/0	-	80f6dc124d2d3f81
+function	c:@F@AEAAuthDataAppendEntry	-			int (AEAAuthData _Nonnull, const char * _Nonnull, const uint8_t * _Nullable, size_t)	AEAAuthData auth_data | const char * key | const uint8_t * data | size_t data_size	-	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.4/-/-/0	-	82a239ce5defc665
+function	c:@F@AEAAuthDataSetEntry	-			int (AEAAuthData _Nonnull, uint32_t, const char * _Nonnull, const uint8_t * _Nullable, size_t)	AEAAuthData auth_data | uint32_t i | const char * key | const uint8_t * data | size_t data_size	-	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.4/-/-/0	-	c7ef33bfb7fb6b91
+function	c:@F@AEAAuthDataClear	-			int (AEAAuthData _Nonnull)	AEAAuthData auth_data	-	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.4/-/-/0	-	1e3061b03f723939
+function	c:@F@AEAAuthDataRemoveEntry	-			int (AEAAuthData _Nonnull, uint32_t)	AEAAuthData auth_data | uint32_t i	-	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.4/-/-/0	-	614bb1b45cf29b7b
+function	c:@F@AEAAuthDataGetEncodedSize	-			size_t (AEAAuthData _Nonnull)	AEAAuthData auth_data	-	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.4/-/-/0	-	0969166460652bc3
+function	c:@F@AEAAuthDataGetEncodedData	-			const uint8_t * _Nullable (AEAAuthData _Nonnull)	AEAAuthData auth_data	-	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.4/-/-/0	-	b9f21e975c92b80a
+function	c:@F@AEAContextCreateWithProfile	-			AEAContext  _Nullable (AEAProfile)	AEAProfile profile	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	648d8d4be79404da
+function	c:@F@AEAContextCreateWithEncryptedStream	-			AEAContext  _Nullable (AAByteStream _Nonnull)	AAByteStream encrypted_stream	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	41b1ba09e3e6939d
+function	c:@F@AEAContextDestroy	-			void (AEAContext _Nullable)	AEAContext context	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	7bef4e10b16739e8
+function	c:@F@AEAContextGetFieldUInt	-			uint64_t (AEAContext _Nonnull, AEAContextField)	AEAContext context | AEAContextField field	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ddd292fd80a71ed6
+function	c:@F@AEAContextGetFieldBlob	-			int (AEAContext _Nonnull, AEAContextField, AEAContextFieldRepresentation, size_t, uint8_t * _Nullable, size_t * _Nullable)	AEAContext context | AEAContextField field | AEAContextFieldRepresentation representation | size_t buf_capacity | uint8_t * buf | size_t * buf_size	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ac44a9c87b048cb4
+function	c:@F@AEAContextSetFieldUInt	-			int (AEAContext _Nonnull, AEAContextField, uint64_t)	AEAContext context | AEAContextField field | uint64_t value	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1e6f89d4d94a8209
+function	c:@F@AEAContextSetFieldBlob	-			int (AEAContext _Nonnull, AEAContextField, AEAContextFieldRepresentation, const uint8_t * _Nullable, size_t)	AEAContext context | AEAContextField field | AEAContextFieldRepresentation representation | const uint8_t * buf | size_t buf_size	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	805eaa17d3274fee
+function	c:@F@AEAContextGenerateFieldBlob	-			int (AEAContext _Nonnull, AEAContextField)	AEAContext context | AEAContextField field	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	93cc00d6543ff9e7
+function	c:AEAContext.h@F@AEAContextGetProfile#*$@S@AEAContext_impl#	-	AEAContextGetProfile		uint32_t (AEAContext _Nonnull)	AEAContext context	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	549d474b1a9385f1
+function	c:AEAContext.h@F@AEAProfileGetCiphersuite#i#	-	AEAProfileGetCiphersuite		uint32_t (uint32_t)	uint32_t profile	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	50672975a2391ad7
+function	c:AEAContext.h@F@AEAProfileGetSignatureMode#i#	-	AEAProfileGetSignatureMode		uint32_t (uint32_t)	uint32_t profile	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1ec6da8b42655987
+function	c:AEAContext.h@F@AEAProfileGetEncryptionMode#i#	-	AEAProfileGetEncryptionMode		uint32_t (uint32_t)	uint32_t profile	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	fbbde4850e5e7f8e
+function	c:AEAContext.h@F@AEAContextGetPaddingSize#*$@S@AEAContext_impl#	-	AEAContextGetPaddingSize		uint64_t (AEAContext _Nonnull)	AEAContext context	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	d77c6b75454666ca
+function	c:AEAContext.h@F@AEAContextGetChecksumMode#*$@S@AEAContext_impl#	-	AEAContextGetChecksumMode		uint32_t (AEAContext _Nonnull)	AEAContext context	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	edef454ee818c2a1
+function	c:AEAContext.h@F@AEAContextGetCompressionAlgorithm#*$@S@AEAContext_impl#	-	AEAContextGetCompressionAlgorithm		AACompressionAlgorithm (AEAContext _Nonnull)	AEAContext context	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	424b84fca82bb5f7
+function	c:AEAContext.h@F@AEAContextGetCompressionBlockSize#*$@S@AEAContext_impl#	-	AEAContextGetCompressionBlockSize		size_t (AEAContext _Nonnull)	AEAContext context	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	b90c254fb4fd1246
+function	c:AEAContext.h@F@AEAContextGetRawSize#*$@S@AEAContext_impl#	-	AEAContextGetRawSize		uint64_t (AEAContext _Nonnull)	AEAContext context	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	428ab4b309528113
+function	c:AEAContext.h@F@AEAContextGetContainerSize#*$@S@AEAContext_impl#	-	AEAContextGetContainerSize		uint64_t (AEAContext _Nonnull)	AEAContext context	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	aaa9b0e1b6905100
+function	c:AEAContext.h@F@AEAContextGetAuthData#*$@S@AEAContext_impl#l#*c#*l#	-	AEAContextGetAuthData		int (AEAContext _Nonnull, size_t, uint8_t * _Nullable, size_t * _Nullable)	AEAContext context | size_t auth_data_capacity | uint8_t * auth_data | size_t * auth_data_size	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	75050d6120c6e78a
+function	c:AEAContext.h@F@AEAContextGetSignatureEncryptionKey#*$@S@AEAContext_impl#l#*c#*l#	-	AEAContextGetSignatureEncryptionKey		int (AEAContext _Nonnull, size_t, uint8_t * _Nullable, size_t * _Nullable)	AEAContext context | size_t key_capacity | uint8_t * key | size_t * key_size	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	21974abaa4b0c894
+function	c:AEAContext.h@F@AEAContextGetArchiveIdentifier#*$@S@AEAContext_impl#l#*c#*l#	-	AEAContextGetArchiveIdentifier		int (AEAContext _Nonnull, size_t, uint8_t * _Nullable, size_t * _Nullable)	AEAContext context | size_t identifier_capacity | uint8_t * identifier | size_t * identifier_size	-	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.4/-/-/0	-	b04b41350e7189e2
+function	c:AEAContext.h@F@AEAContextGetMainKey#*$@S@AEAContext_impl#l#*c#*l#	-	AEAContextGetMainKey		int (AEAContext _Nonnull, size_t, uint8_t * _Nullable, size_t * _Nullable)	AEAContext context | size_t key_capacity | uint8_t * key | size_t * key_size	-	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.4/-/-/0	-	cecc9edcb91862cd
+function	c:AEAContext.h@F@AEAContextSetCompressionAlgorithm#*$@S@AEAContext_impl#i#	-	AEAContextSetCompressionAlgorithm		int (AEAContext _Nonnull, AACompressionAlgorithm)	AEAContext context | AACompressionAlgorithm compression_algorithm	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	6da5d4271be1de28
+function	c:AEAContext.h@F@AEAContextSetCompressionBlockSize#*$@S@AEAContext_impl#l#	-	AEAContextSetCompressionBlockSize		int (AEAContext _Nonnull, size_t)	AEAContext context | size_t compression_block_size	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	983d142a9d84ac25
+function	c:AEAContext.h@F@AEAContextSetChecksumMode#*$@S@AEAContext_impl#i#	-	AEAContextSetChecksumMode		int (AEAContext _Nonnull, uint32_t)	AEAContext context | uint32_t checksum_mode	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	9eaa34e29732d6f8
+function	c:AEAContext.h@F@AEAContextSetPaddingSize#*$@S@AEAContext_impl#k#	-	AEAContextSetPaddingSize		int (AEAContext _Nonnull, uint64_t)	AEAContext context | uint64_t padding_size	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	c1c23664b8f54b43
+function	c:AEAContext.h@F@AEAContextSetAuthData#*$@S@AEAContext_impl#*1c#l#	-	AEAContextSetAuthData		int (AEAContext _Nonnull, const uint8_t * _Nonnull, size_t)	AEAContext context | const uint8_t * auth_data | size_t auth_data_size	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1c59150274c93a7c
+function	c:AEAContext.h@F@AEAContextSetAuthData#*$@S@AEAContext_impl#*$@S@AEAAuthData_impl#	-	AEAContextSetAuthData		int (AEAContext _Nonnull, AEAAuthData _Nonnull)	AEAContext context | AEAAuthData auth_data	-	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.4/-/-/0	-	05c6d27af6b2afba
+function	c:AEAContext.h@F@AEAContextSetSignatureEncryptionKey#*$@S@AEAContext_impl#*1c#l#	-	AEAContextSetSignatureEncryptionKey		int (AEAContext _Nonnull, const uint8_t * _Nonnull, size_t)	AEAContext context | const uint8_t * key | size_t key_size	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	8bdf8dc04922111c
+function	c:AEAContext.h@F@AEAContextSetSymmetricKey#*$@S@AEAContext_impl#*1c#l#	-	AEAContextSetSymmetricKey		int (AEAContext _Nonnull, const uint8_t * _Nonnull, size_t)	AEAContext context | const uint8_t * key | size_t key_size	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ecf8cefb3329daab
+function	c:AEAContext.h@F@AEAContextSetPassword#*$@S@AEAContext_impl#*1c#l#	-	AEAContextSetPassword		int (AEAContext _Nonnull, const uint8_t * _Nonnull, size_t)	AEAContext context | const uint8_t * password | size_t password_size	-	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.4/-/-/0	-	864a4f95c4c9d863
+function	c:AEAContext.h@F@AEAContextSetSigningPublicKey#*$@S@AEAContext_impl#*1c#l#	-	AEAContextSetSigningPublicKey		int (AEAContext _Nonnull, const uint8_t * _Nonnull, size_t)	AEAContext context | const uint8_t * key | size_t key_size	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ac4ac983918a8c9b
+function	c:AEAContext.h@F@AEAContextSetSigningPrivateKey#*$@S@AEAContext_impl#*1c#l#	-	AEAContextSetSigningPrivateKey		int (AEAContext _Nonnull, const uint8_t * _Nonnull, size_t)	AEAContext context | const uint8_t * key | size_t key_size	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	7a75ebed237979fe
+function	c:AEAContext.h@F@AEAContextSetRecipientPublicKey#*$@S@AEAContext_impl#*1c#l#	-	AEAContextSetRecipientPublicKey		int (AEAContext _Nonnull, const uint8_t * _Nonnull, size_t)	AEAContext context | const uint8_t * key | size_t key_size	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	f8334083ca1e94a5
+function	c:AEAContext.h@F@AEAContextSetRecipientPrivateKey#*$@S@AEAContext_impl#*1c#l#	-	AEAContextSetRecipientPrivateKey		int (AEAContext _Nonnull, const uint8_t * _Nonnull, size_t)	AEAContext context | const uint8_t * key | size_t key_size	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1a480a73bb663eb8
+function	c:AEAContext.h@F@AEAContextSetMainKey#*$@S@AEAContext_impl#*1c#l#	-	AEAContextSetMainKey		int (AEAContext _Nonnull, const uint8_t * _Nonnull, size_t)	AEAContext context | const uint8_t * key | size_t key_size	-	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.4/-/-/0	-	be3ac15019ffc31d
+function	c:@F@AEAEncryptionOutputStreamOpen	-			AAByteStream  _Nullable (AAByteStream _Nonnull, AEAContext _Nonnull, AAFlagSet, int)	AAByteStream encrypted_stream | AEAContext context | AAFlagSet flags | int n_threads	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	2bd089fdcdaf3247
+function	c:@F@AEAEncryptionOutputStreamOpenExisting	-			AAByteStream  _Nullable (AAByteStream _Nonnull, AEAContext _Nonnull, AAFlagSet, int)	AAByteStream encrypted_stream | AEAContext context | AAFlagSet flags | int n_threads	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	68d0642d68b8ded4
+function	c:@F@AEAEncryptionOutputStreamCloseAndUpdateContext	-			int (AAByteStream _Nonnull, AEAContext _Nonnull)	AAByteStream stream | AEAContext context	-	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.4/-/-/0	-	05ce645fb0da051d
+function	c:@F@AEAContextDecryptAttributes	-			int (AEAContext _Nonnull)	AEAContext context	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	0557d2332714a04c
+function	c:@F@AEADecryptionInputStreamOpen	-			AAByteStream  _Nullable (AAByteStream _Nonnull, AEAContext _Nonnull, AAFlagSet, int)	AAByteStream encrypted_stream | AEAContext context | AAFlagSet flags | int n_threads	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	8302dd6f50049de0
+function	c:@F@AEADecryptionRandomAccessInputStreamOpen	-			AAByteStream  _Nullable (AAByteStream _Nonnull, AEAContext _Nonnull, size_t, AAFlagSet, int)	AAByteStream encrypted_stream | AEAContext context | size_t alloc_limit | AAFlagSet flags | int n_threads	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	e17ed1ea9b31afa1
+function	c:@F@AEAStreamSign	-			int (AAByteStream _Nonnull, AEAContext _Nonnull)	AAByteStream encrypted_stream | AEAContext context	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	28117d7b0ba4016d
+function	c:AppleArchive.h@F@AAByteStreamAbort#*$@S@AAByteStream_impl#	-	AAByteStreamAbort		void (AAByteStream)	AAByteStream s	-	ios=14.0/-/-/0,macos=11.0/11.0/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	b079b9370c18b044
+function	c:AppleArchive.h@F@AACustomByteStreamSetAbortProc#*$@S@AAByteStream_impl#*Fv(#*v)#	-	AACustomByteStreamSetAbortProc		void (AAByteStream, AAByteStreamCancelProc)	AAByteStream s | AAByteStreamCancelProc proc	-	ios=14.0/-/-/0,macos=11.0/11.0/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	6e4a25c8c2a2b14e
+function	c:AppleArchive.h@F@AAArchiveStreamAbort#*$@S@AAArchiveStream_impl#	-	AAArchiveStreamAbort		void (AAArchiveStream)	AAArchiveStream s	-	ios=14.0/-/-/0,macos=11.0/11.0/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	fd498822afb6fb8a
+function	c:AppleArchive.h@F@AACustomArchiveStreamSetAbortProc#*$@S@AAArchiveStream_impl#*Fv(#*v)#	-	AACustomArchiveStreamSetAbortProc		void (AAArchiveStream, AAArchiveStreamCancelProc)	AAArchiveStream s | AAArchiveStreamCancelProc proc	-	ios=14.0/-/-/0,macos=11.0/11.0/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1c0de676099711a2

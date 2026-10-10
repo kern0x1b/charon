@@ -1,3 +1,3 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
-var	c:@ProximityReaderVersionNumber	-			double	-	-	-	0018b049286c6559
-var	c:@ProximityReaderVersionString	-			const unsigned char[]	-	-	-	eb953aaf66a32fb0
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+var	c:@ProximityReaderVersionNumber	-			double	-	-	-	-	0018b049286c6559
+var	c:@ProximityReaderVersionString	-			const unsigned char[]	-	-	-	-	eb953aaf66a32fb0

@@ -22,8 +22,8 @@ function rows(spec, framework)
             local c = {}
             for cell in (line .. "\t"):gmatch("([^\t]*)\t") do table.insert(c, cell) end
             local name, side = shard.decode(c[1], c[2], c[4], c[5])
-            table.insert(out, {kind = c[1], usr = c[2], key = c[3], name = name, side = side, type = c[6], attrs = c[7],
-                avail = c[8], message = c[9], hash = c[10]})
+            table.insert(out, {kind = c[1], usr = c[2], key = c[3], name = name, side = side, type = c[6], params = c[7],
+                attrs = c[8], avail = c[9], message = c[10], hash = c[11]})
         end
     end
     return out

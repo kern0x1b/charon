@@ -1,415 +1,415 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
-var	c:@kCFErrorDomainCFNetwork	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	f83c0bcb8f55a103
-var	c:@kCFErrorDomainWinSock	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	5ba67360cc7951bc
-typedef	c:@T@CFNetworkErrors	-			enum CFNetworkErrors	-	-	-	b300f047acb010ff
-enum	c:@E@CFNetworkErrors	-			int	-	-	-	8efd1055b3fb01e3
-enumconst	c:@E@CFNetworkErrors@kCFHostErrorHostNotFound	CFNetworkErrors			-	-	-	-	1395ce436c5800fc
-enumconst	c:@E@CFNetworkErrors@kCFHostErrorUnknown	CFNetworkErrors			-	-	-	-	60c31408d686b792
-enumconst	c:@E@CFNetworkErrors@kCFSOCKSErrorUnknownClientVersion	CFNetworkErrors			-	-	-	-	3341a531ba1254e5
-enumconst	c:@E@CFNetworkErrors@kCFSOCKSErrorUnsupportedServerVersion	CFNetworkErrors			-	-	-	-	dfc2e8e52e5f59cd
-enumconst	c:@E@CFNetworkErrors@kCFSOCKS4ErrorRequestFailed	CFNetworkErrors			-	-	-	-	371a42d1f1fb4ab9
-enumconst	c:@E@CFNetworkErrors@kCFSOCKS4ErrorIdentdFailed	CFNetworkErrors			-	-	-	-	d166115035312d3c
-enumconst	c:@E@CFNetworkErrors@kCFSOCKS4ErrorIdConflict	CFNetworkErrors			-	-	-	-	5e3ee653b0b4d5e3
-enumconst	c:@E@CFNetworkErrors@kCFSOCKS4ErrorUnknownStatusCode	CFNetworkErrors			-	-	-	-	2324bfcfc341a0bb
-enumconst	c:@E@CFNetworkErrors@kCFSOCKS5ErrorBadState	CFNetworkErrors			-	-	-	-	33500c315680c137
-enumconst	c:@E@CFNetworkErrors@kCFSOCKS5ErrorBadResponseAddr	CFNetworkErrors			-	-	-	-	13f86d6e6142cbc2
-enumconst	c:@E@CFNetworkErrors@kCFSOCKS5ErrorBadCredentials	CFNetworkErrors			-	-	-	-	8ce5a417454aaada
-enumconst	c:@E@CFNetworkErrors@kCFSOCKS5ErrorUnsupportedNegotiationMethod	CFNetworkErrors			-	-	-	-	f19e73f26c86070d
-enumconst	c:@E@CFNetworkErrors@kCFSOCKS5ErrorNoAcceptableMethod	CFNetworkErrors			-	-	-	-	c672fd2af48b3840
-enumconst	c:@E@CFNetworkErrors@kCFFTPErrorUnexpectedStatusCode	CFNetworkErrors			-	-	-	-	32bd976ba47d50f5
-enumconst	c:@E@CFNetworkErrors@kCFErrorHTTPAuthenticationTypeUnsupported	CFNetworkErrors			-	-	-	-	0506af3cdf3c5760
-enumconst	c:@E@CFNetworkErrors@kCFErrorHTTPBadCredentials	CFNetworkErrors			-	-	-	-	f0e09bdea3808761
-enumconst	c:@E@CFNetworkErrors@kCFErrorHTTPConnectionLost	CFNetworkErrors			-	-	-	-	e8117f380fc72bb6
-enumconst	c:@E@CFNetworkErrors@kCFErrorHTTPParseFailure	CFNetworkErrors			-	-	-	-	09ff02060a6e5f47
-enumconst	c:@E@CFNetworkErrors@kCFErrorHTTPRedirectionLoopDetected	CFNetworkErrors			-	-	-	-	c8e3e61f7d7a224c
-enumconst	c:@E@CFNetworkErrors@kCFErrorHTTPBadURL	CFNetworkErrors			-	-	-	-	9ef78fe0a0e9011e
-enumconst	c:@E@CFNetworkErrors@kCFErrorHTTPProxyConnectionFailure	CFNetworkErrors			-	-	-	-	e0fe50a853a65161
-enumconst	c:@E@CFNetworkErrors@kCFErrorHTTPBadProxyCredentials	CFNetworkErrors			-	-	-	-	ba8373f1e59ad701
-enumconst	c:@E@CFNetworkErrors@kCFErrorPACFileError	CFNetworkErrors			-	-	-	-	f52b36e83f46e17c
-enumconst	c:@E@CFNetworkErrors@kCFErrorPACFileAuth	CFNetworkErrors			-	-	-	-	8163e545e3ed4d20
-enumconst	c:@E@CFNetworkErrors@kCFErrorHTTPSProxyConnectionFailure	CFNetworkErrors			-	-	-	-	994d223eb850fdb6
-enumconst	c:@E@CFNetworkErrors@kCFStreamErrorHTTPSProxyFailureUnexpectedResponseToCONNECTMethod	CFNetworkErrors			-	-	-	-	4c61986ac225689b
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorBackgroundSessionInUseByAnotherProcess	CFNetworkErrors			-	-	-	-	279b576c486bf5e5
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorBackgroundSessionWasDisconnected	CFNetworkErrors			-	-	-	-	e21dece3c38d3628
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorUnknown	CFNetworkErrors			-	-	-	-	5c0f515a902e4cc5
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorCancelled	CFNetworkErrors			-	-	-	-	c10f653619eb4fee
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorBadURL	CFNetworkErrors			-	-	-	-	2e07a64bed69ff23
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorTimedOut	CFNetworkErrors			-	-	-	-	92a4dffbcc2ff569
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorUnsupportedURL	CFNetworkErrors			-	-	-	-	a7bfb94b2b693d50
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorCannotFindHost	CFNetworkErrors			-	-	-	-	f799bf2b9343e5bd
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorCannotConnectToHost	CFNetworkErrors			-	-	-	-	080823e0a562173a
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorNetworkConnectionLost	CFNetworkErrors			-	-	-	-	446db7affff87441
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorDNSLookupFailed	CFNetworkErrors			-	-	-	-	1567609a371117d1
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorHTTPTooManyRedirects	CFNetworkErrors			-	-	-	-	6b0cf2e61420cd0e
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorResourceUnavailable	CFNetworkErrors			-	-	-	-	8d76782079ff5501
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorNotConnectedToInternet	CFNetworkErrors			-	-	-	-	968326ab8712871e
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorRedirectToNonExistentLocation	CFNetworkErrors			-	-	-	-	f610875043b14651
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorBadServerResponse	CFNetworkErrors			-	-	-	-	239235b156f4f0b0
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorUserCancelledAuthentication	CFNetworkErrors			-	-	-	-	98c2e2f79430027f
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorUserAuthenticationRequired	CFNetworkErrors			-	-	-	-	1758ea246dec2e09
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorZeroByteResource	CFNetworkErrors			-	-	-	-	1b4e59d21bdaf551
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorCannotDecodeRawData	CFNetworkErrors			-	-	-	-	9fa7250868593608
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorCannotDecodeContentData	CFNetworkErrors			-	-	-	-	a648a5a9fce80f7e
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorCannotParseResponse	CFNetworkErrors			-	-	-	-	8ca8487d711bed7a
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorInternationalRoamingOff	CFNetworkErrors			-	-	-	-	1bb9bcaada4cd505
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorCallIsActive	CFNetworkErrors			-	-	-	-	e96df0105fdebf63
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorDataNotAllowed	CFNetworkErrors			-	-	-	-	168af707d53c270b
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorRequestBodyStreamExhausted	CFNetworkErrors			-	-	-	-	dfba2cf84e2f2c91
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorAppTransportSecurityRequiresSecureConnection	CFNetworkErrors			-	-	-	-	70160e217e92bb62
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorFileDoesNotExist	CFNetworkErrors			-	-	-	-	53776afb41d02c35
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorFileIsDirectory	CFNetworkErrors			-	-	-	-	feff008e9c84c4d4
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorNoPermissionsToReadFile	CFNetworkErrors			-	-	-	-	04fd4724f60e9483
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorDataLengthExceedsMaximum	CFNetworkErrors			-	-	-	-	99596b11290e4875
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorFileOutsideSafeArea	CFNetworkErrors			-	-	-	-	08398af576e6bf03
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorSecureConnectionFailed	CFNetworkErrors			-	-	-	-	61fbdf9d950cdfdf
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorServerCertificateHasBadDate	CFNetworkErrors			-	-	-	-	24a1a731a627b763
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorServerCertificateUntrusted	CFNetworkErrors			-	-	-	-	a10efdaf41e5318d
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorServerCertificateHasUnknownRoot	CFNetworkErrors			-	-	-	-	e9f3d136d9883e04
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorServerCertificateNotYetValid	CFNetworkErrors			-	-	-	-	94f480816811d5d9
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorClientCertificateRejected	CFNetworkErrors			-	-	-	-	7f31f0b8a4ea20af
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorClientCertificateRequired	CFNetworkErrors			-	-	-	-	e14095cca533eee1
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorCannotLoadFromNetwork	CFNetworkErrors			-	-	-	-	630b637e5b256bc7
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorCannotCreateFile	CFNetworkErrors			-	-	-	-	e76000560a91d45a
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorCannotOpenFile	CFNetworkErrors			-	-	-	-	ea8cc9632cac9252
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorCannotCloseFile	CFNetworkErrors			-	-	-	-	b4cd0c27dca36303
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorCannotWriteToFile	CFNetworkErrors			-	-	-	-	b1d1fd84b847ffd1
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorCannotRemoveFile	CFNetworkErrors			-	-	-	-	dcb335de1ab1229b
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorCannotMoveFile	CFNetworkErrors			-	-	-	-	d3fe6395cf16d8b6
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorDownloadDecodingFailedMidStream	CFNetworkErrors			-	-	-	-	128517bca0bdf7a3
-enumconst	c:@E@CFNetworkErrors@kCFURLErrorDownloadDecodingFailedToComplete	CFNetworkErrors			-	-	-	-	026e477811b0c699
-enumconst	c:@E@CFNetworkErrors@kCFHTTPCookieCannotParseCookieFile	CFNetworkErrors			-	-	-	-	b7e6b41de77c7149
-enumconst	c:@E@CFNetworkErrors@kCFNetServiceErrorUnknown	CFNetworkErrors			-	-	-	-	15e1ba953a425628
-enumconst	c:@E@CFNetworkErrors@kCFNetServiceErrorCollision	CFNetworkErrors			-	-	-	-	f1fd9390713fdfee
-enumconst	c:@E@CFNetworkErrors@kCFNetServiceErrorNotFound	CFNetworkErrors			-	-	-	-	505cbeb23417ec9f
-enumconst	c:@E@CFNetworkErrors@kCFNetServiceErrorInProgress	CFNetworkErrors			-	-	-	-	9a5747333428cd52
-enumconst	c:@E@CFNetworkErrors@kCFNetServiceErrorBadArgument	CFNetworkErrors			-	-	-	-	0fac67d4f6cb6ee4
-enumconst	c:@E@CFNetworkErrors@kCFNetServiceErrorCancel	CFNetworkErrors			-	-	-	-	318ea30159edad56
-enumconst	c:@E@CFNetworkErrors@kCFNetServiceErrorInvalid	CFNetworkErrors			-	-	-	-	315abdfa99efd9b9
-enumconst	c:@E@CFNetworkErrors@kCFNetServiceErrorTimeout	CFNetworkErrors			-	-	-	-	2c58c41aee80b516
-enumconst	c:@E@CFNetworkErrors@kCFNetServiceErrorDNSServiceFailure	CFNetworkErrors			-	-	-	-	1566869e4768ed88
-var	c:@kCFURLErrorFailingURLErrorKey	-			CF_AVAILABLE const CFStringRef	-	ios=2.2/-/-/0	-	eb6ab004583e25ac
-var	c:@kCFURLErrorFailingURLStringErrorKey	-			CF_AVAILABLE const CFStringRef	-	ios=2.2/-/-/0	-	ed6cc5e49d9d5e3a
-var	c:@kCFGetAddrInfoFailureKey	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	0bf7753fbcdcb2e6
-var	c:@kCFSOCKSStatusCodeKey	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	10c9ad6c888b099a
-var	c:@kCFSOCKSVersionKey	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	c5beed56adc135da
-var	c:@kCFSOCKSNegotiationMethodKey	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	861c69a4a1b8f354
-var	c:@kCFDNSServiceFailureKey	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	0e110f36d00dfcb5
-var	c:@kCFFTPStatusCodeKey	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	cb84d6e719095d38
-struct	c:@S@__CFHost	-			-	-	-	-	1a1c2a0fc4c44d47
-typedef	c:@T@CFHostRef	-			struct __CFHost *	-	-	-	7af4b4c8e0919fe6
-var	c:@kCFStreamErrorDomainNetDB	-			const SInt32	-	ios=2.0/-/-/0	-	aa0a6554cb89aeb6
-var	c:@kCFStreamErrorDomainSystemConfiguration	-			const SInt32	-	ios=2.0/-/-/0	-	a8647d276c46f792
-typedef	c:@T@CFHostInfoType	-			enum CFHostInfoType	-	-	-	842fb8a28bb9a8ce
-enum	c:@E@CFHostInfoType	-			int	-	-	-	8794edbde01d95a5
-enumconst	c:@E@CFHostInfoType@kCFHostAddresses	CFHostInfoType			-	-	-	-	af8418aa6f6e7179
-enumconst	c:@E@CFHostInfoType@kCFHostNames	CFHostInfoType			-	-	-	-	aff9f0a0762975e7
-enumconst	c:@E@CFHostInfoType@kCFHostReachability	CFHostInfoType			-	-	-	-	e5dea08214a52b2e
-struct	c:@S@CFHostClientContext	-			-	-	-	-	ff9d85582ff58d79
-field	c:@S@CFHostClientContext@FI@version	CFHostClientContext			CFIndex	-	-	-	019d43eead23d5fb
-field	c:@S@CFHostClientContext@FI@info	CFHostClientContext			void *	-	-	-	289dbc1ee5fcad29
-field	c:@S@CFHostClientContext@FI@retain	CFHostClientContext			CFAllocatorRetainCallBack	-	-	-	f70c4df2d7f859f5
-field	c:@S@CFHostClientContext@FI@release	CFHostClientContext			CFAllocatorReleaseCallBack	-	-	-	fec544ebd3349381
-field	c:@S@CFHostClientContext@FI@copyDescription	CFHostClientContext			CFAllocatorCopyDescriptionCallBack	-	-	-	1aaaab325a7593c0
-typedef	c:@T@CFHostClientContext	-			struct CFHostClientContext	-	-	-	0816f530bbfe1776
-typedef	c:@T@CFHostClientCallBack	-			void (*)(CFHostRef _Nonnull, CFHostInfoType, const CFStreamError * _Nullable, void * _Nullable)	-	-	-	298c933f2c546fb2
-function	c:@F@CFHostGetTypeID	-			CFTypeID (void)	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	e4abf71c7871140a
-function	c:@F@CFHostCreateWithName	-			CFHostRef  _Nonnull (CFAllocatorRef _Nullable, CFStringRef _Nonnull)	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	7c801ed34e738e7c
-function	c:@F@CFHostCreateWithAddress	-			CFHostRef  _Nonnull (CFAllocatorRef _Nullable, CFDataRef _Nonnull)	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	daae34d13e47ba7a
-function	c:@F@CFHostCreateCopy	-			CFHostRef  _Nonnull (CFAllocatorRef _Nullable, CFHostRef _Nonnull)	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	895bf91dc2e213e7
-function	c:@F@CFHostStartInfoResolution	-			Boolean (CFHostRef _Nonnull, CFHostInfoType, CFStreamError * _Nullable)	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	f329f4c5230ab755
-function	c:@F@CFHostGetAddressing	-			CFArrayRef  _Nullable (CFHostRef _Nonnull, Boolean * _Nullable)	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	103189df4dc4ade0
-function	c:@F@CFHostGetNames	-			CFArrayRef  _Nullable (CFHostRef _Nonnull, Boolean * _Nullable)	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	d1b2fe8884a45400
-function	c:@F@CFHostGetReachability	-			CFDataRef  _Nullable (CFHostRef _Nonnull, Boolean * _Nullable)	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	3b0326426c644e7f
-function	c:@F@CFHostCancelInfoResolution	-			void (CFHostRef _Nonnull, CFHostInfoType)	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	c23bc999e5e1773e
-function	c:@F@CFHostSetClient	-			Boolean (CFHostRef _Nonnull, CFHostClientCallBack _Nullable, CFHostClientContext * _Nullable)	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	49bc17ce39fe6eb4
-function	c:@F@CFHostScheduleWithRunLoop	-			void (CFHostRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	244d97ead045a710
-function	c:@F@CFHostUnscheduleFromRunLoop	-			void (CFHostRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	266d95fee1cf2813
-struct	c:@S@__CFNetService	-			-	-	-	-	91d14f664dd9820a
-typedef	c:@T@CFNetServiceRef	-			struct __CFNetService *	-	-	-	0bd4641247bb7767
-struct	c:@S@__CFNetServiceMonitor	-			-	-	-	-	b817b4f6d8214b0d
-typedef	c:@T@CFNetServiceMonitorRef	-			struct __CFNetServiceMonitor *	-	-	-	64b8ee08d9c83bf9
-struct	c:@S@__CFNetServiceBrowser	-			-	-	-	-	790f96b332cccc6a
-typedef	c:@T@CFNetServiceBrowserRef	-			struct __CFNetServiceBrowser *	-	-	-	2162dfcfd6fdd87e
-var	c:@kCFStreamErrorDomainMach	-			const SInt32	-	ios=2.0/-/-/0	-	fec3415549d93efc
-var	c:@kCFStreamErrorDomainNetServices	-			const SInt32	-	ios=2.0/-/-/0	-	a628d306dc4e570f
-typedef	c:@T@CFNetServicesError	-			enum CFNetServicesError	-	-	-	476190efbc594dcb
-enum	c:@E@CFNetServicesError	-			int	-	-	-	547d6c5840d26040
-enumconst	c:@E@CFNetServicesError@kCFNetServicesErrorUnknown	CFNetServicesError			-	-	-	-	04684d9f068b3eff
-enumconst	c:@E@CFNetServicesError@kCFNetServicesErrorCollision	CFNetServicesError			-	-	-	-	01981d03566d920a
-enumconst	c:@E@CFNetServicesError@kCFNetServicesErrorNotFound	CFNetServicesError			-	-	-	-	4e70accb587f5ff5
-enumconst	c:@E@CFNetServicesError@kCFNetServicesErrorInProgress	CFNetServicesError			-	-	-	-	75ff0df61eac9def
-enumconst	c:@E@CFNetServicesError@kCFNetServicesErrorBadArgument	CFNetServicesError			-	-	-	-	b01e768c59d231b6
-enumconst	c:@E@CFNetServicesError@kCFNetServicesErrorCancel	CFNetServicesError			-	-	-	-	1dbb4838bc74d0bf
-enumconst	c:@E@CFNetServicesError@kCFNetServicesErrorInvalid	CFNetServicesError			-	-	-	-	a8dcc908011ac344
-enumconst	c:@E@CFNetServicesError@kCFNetServicesErrorTimeout	CFNetServicesError			-	-	-	-	5f47ae14edbc9060
-enumconst	c:@E@CFNetServicesError@kCFNetServicesErrorMissingRequiredConfiguration	CFNetServicesError			-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	9fc4e413cdf317e3
-typedef	c:@T@CFNetServiceMonitorType	-			enum CFNetServiceMonitorType	-	-	-	8cd4c99c8fb82706
-enum	c:@E@CFNetServiceMonitorType	-			int	-	-	-	bfb2141f13299dfc
-enumconst	c:@E@CFNetServiceMonitorType@kCFNetServiceMonitorTXT	CFNetServiceMonitorType			-	-	-	-	eff9d229161d4ed8
-typedef	c:@T@CFNetServiceRegisterFlags	-			enum CFNetServiceRegisterFlags	-	-	-	f06019a1b5a181a9
-enum	c:@E@CFNetServiceRegisterFlags	-			CFOptionFlags	-	-	-	5a88616406be4337
-enumconst	c:@E@CFNetServiceRegisterFlags@kCFNetServiceFlagNoAutoRename	CFNetServiceRegisterFlags			-	-	-	-	5038b3a190471205
-typedef	c:@T@CFNetServiceBrowserFlags	-			enum CFNetServiceBrowserFlags	-	-	-	072ff4aebfe11757
-enum	c:@E@CFNetServiceBrowserFlags	-			CFOptionFlags	-	-	-	693393a04af01f24
-enumconst	c:@E@CFNetServiceBrowserFlags@kCFNetServiceFlagMoreComing	CFNetServiceBrowserFlags			-	-	-	-	16bad456eb5abf13
-enumconst	c:@E@CFNetServiceBrowserFlags@kCFNetServiceFlagIsDomain	CFNetServiceBrowserFlags			-	-	-	-	0c94a17777fc6e10
-enumconst	c:@E@CFNetServiceBrowserFlags@kCFNetServiceFlagIsDefault	CFNetServiceBrowserFlags			-	-	-	-	3559296e0a22b9fc
-enumconst	c:@E@CFNetServiceBrowserFlags@kCFNetServiceFlagIsRegistrationDomain	CFNetServiceBrowserFlags			-	-	ios=2.0/2.0/-/0	-	9149f009ad63bf27
-enumconst	c:@E@CFNetServiceBrowserFlags@kCFNetServiceFlagRemove	CFNetServiceBrowserFlags			-	-	-	-	adf75b76e746c32a
-struct	c:@S@CFNetServiceClientContext	-			-	-	-	-	3d6781a73cfbd5c4
-field	c:@S@CFNetServiceClientContext@FI@version	CFNetServiceClientContext			CFIndex	-	-	-	c3a6d95c157d4cda
-field	c:@S@CFNetServiceClientContext@FI@info	CFNetServiceClientContext			void *	-	-	-	ae02ced9b47319a0
-field	c:@S@CFNetServiceClientContext@FI@retain	CFNetServiceClientContext			CFAllocatorRetainCallBack	-	-	-	35af26ed040e14ed
-field	c:@S@CFNetServiceClientContext@FI@release	CFNetServiceClientContext			CFAllocatorReleaseCallBack	-	-	-	e4e132524c95ea94
-field	c:@S@CFNetServiceClientContext@FI@copyDescription	CFNetServiceClientContext			CFAllocatorCopyDescriptionCallBack	-	-	-	aa002f640f646557
-typedef	c:@T@CFNetServiceClientContext	-			struct CFNetServiceClientContext	-	-	-	105bd79d2fd67bd2
-typedef	c:@T@CFNetServiceClientCallBack	-			void (*)(CFNetServiceRef _Nonnull, CFStreamError * _Nullable, void * _Nullable)	-	-	-	33e36720d469ffc9
-typedef	c:@T@CFNetServiceMonitorClientCallBack	-			void (*)(CFNetServiceMonitorRef _Nonnull, CFNetServiceRef _Nullable, CFNetServiceMonitorType, CFDataRef _Nullable, CFStreamError * _Nullable, void * _Nullable)	-	-	-	ae5bc5e41a362af0
-typedef	c:@T@CFNetServiceBrowserClientCallBack	-			void (*)(CFNetServiceBrowserRef _Nonnull, CFOptionFlags, CFTypeRef _Nullable, CFStreamError * _Nullable, void * _Nullable)	-	-	-	7758aec45885d9e3
-function	c:@F@CFNetServiceGetTypeID	-			CFTypeID (void)	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	7b4ebd4dd20f2b29
-function	c:@F@CFNetServiceMonitorGetTypeID	-			CFTypeID (void)	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	dab762f315e1e91b
-function	c:@F@CFNetServiceBrowserGetTypeID	-			CFTypeID (void)	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	cddcd507322420de
-function	c:@F@CFNetServiceCreate	-			CFNetServiceRef  _Nonnull (CFAllocatorRef _Nullable, CFStringRef _Nonnull, CFStringRef _Nonnull, CFStringRef _Nonnull, SInt32)	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	c2f04a11183435ac
-function	c:@F@CFNetServiceCreateCopy	-			CFNetServiceRef  _Nonnull (CFAllocatorRef _Nullable, CFNetServiceRef _Nonnull)	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	22684783489179e9
-function	c:@F@CFNetServiceGetDomain	-			CFStringRef  _Nonnull (CFNetServiceRef _Nonnull)	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	896617399685acc4
-function	c:@F@CFNetServiceGetType	-			CFStringRef  _Nonnull (CFNetServiceRef _Nonnull)	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	bb079c248b4c7370
-function	c:@F@CFNetServiceGetName	-			CFStringRef  _Nonnull (CFNetServiceRef _Nonnull)	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	f3fb572d7954debc
-function	c:@F@CFNetServiceRegisterWithOptions	-			Boolean (CFNetServiceRef _Nonnull, CFOptionFlags, CFStreamError * _Nullable)	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	765b46a28866725f
-function	c:@F@CFNetServiceResolveWithTimeout	-			Boolean (CFNetServiceRef _Nonnull, CFTimeInterval, CFStreamError * _Nullable)	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	46b3375050a742a4
-function	c:@F@CFNetServiceCancel	-			void (CFNetServiceRef _Nonnull)	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	67410d998424e838
-function	c:@F@CFNetServiceGetTargetHost	-			CFStringRef  _Nullable (CFNetServiceRef _Nonnull)	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	076c9d9ba5b8e694
-function	c:@F@CFNetServiceGetPortNumber	-			SInt32 (CFNetServiceRef _Nonnull)	-	ios=2.0/100000/-/0,macos=10.5/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	4ea1400c30463427
-function	c:@F@CFNetServiceGetAddressing	-			CFArrayRef  _Nullable (CFNetServiceRef _Nonnull)	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	32d9979e106ed551
-function	c:@F@CFNetServiceGetTXTData	-			CFDataRef  _Nullable (CFNetServiceRef _Nonnull)	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	cd2b2df2a5fc3d6e
-function	c:@F@CFNetServiceSetTXTData	-			Boolean (CFNetServiceRef _Nonnull, CFDataRef _Nonnull)	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	975e679e649ad25e
-function	c:@F@CFNetServiceCreateDictionaryWithTXTData	-			CFDictionaryRef  _Nullable (CFAllocatorRef _Nullable, CFDataRef _Nonnull)	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	8cb1faa6bbd871af
-function	c:@F@CFNetServiceCreateTXTDataWithDictionary	-			CFDataRef  _Nullable (CFAllocatorRef _Nullable, CFDictionaryRef _Nonnull)	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	1a7b2ea2d0ad3927
-function	c:@F@CFNetServiceSetClient	-			Boolean (CFNetServiceRef _Nonnull, CFNetServiceClientCallBack _Nullable, CFNetServiceClientContext * _Nullable)	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	0b0922cead5609b8
-function	c:@F@CFNetServiceScheduleWithRunLoop	-			void (CFNetServiceRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	5ce26446b35d09f6
-function	c:@F@CFNetServiceUnscheduleFromRunLoop	-			void (CFNetServiceRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	afd059bc71fd5d43
-function	c:@F@CFNetServiceMonitorCreate	-			CFNetServiceMonitorRef  _Nonnull (CFAllocatorRef _Nullable, CFNetServiceRef _Nonnull, CFNetServiceMonitorClientCallBack _Nonnull, CFNetServiceClientContext * _Nonnull)	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	6cbaa784d6eaae8a
-function	c:@F@CFNetServiceMonitorInvalidate	-			void (CFNetServiceMonitorRef _Nonnull)	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	017e5d859e178879
-function	c:@F@CFNetServiceMonitorStart	-			Boolean (CFNetServiceMonitorRef _Nonnull, CFNetServiceMonitorType, CFStreamError * _Nullable)	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	f4947f2c4fad38a5
-function	c:@F@CFNetServiceMonitorStop	-			void (CFNetServiceMonitorRef _Nonnull, CFStreamError * _Nullable)	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	41d2532ef878f9cf
-function	c:@F@CFNetServiceMonitorScheduleWithRunLoop	-			void (CFNetServiceMonitorRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	ab2c26fc21162392
-function	c:@F@CFNetServiceMonitorUnscheduleFromRunLoop	-			void (CFNetServiceMonitorRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	cd69e7605fff04a6
-function	c:@F@CFNetServiceBrowserCreate	-			CFNetServiceBrowserRef  _Nonnull (CFAllocatorRef _Nullable, CFNetServiceBrowserClientCallBack _Nonnull, CFNetServiceClientContext * _Nonnull)	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	bfba6b0009ea42ea
-function	c:@F@CFNetServiceBrowserInvalidate	-			void (CFNetServiceBrowserRef _Nonnull)	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	1dee7291c4cc9e66
-function	c:@F@CFNetServiceBrowserSearchForDomains	-			Boolean (CFNetServiceBrowserRef _Nonnull, Boolean, CFStreamError * _Nullable)	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	7e3b9dfda8bd15b0
-function	c:@F@CFNetServiceBrowserSearchForServices	-			Boolean (CFNetServiceBrowserRef _Nonnull, CFStringRef _Nonnull, CFStringRef _Nonnull, CFStreamError * _Nullable)	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	b83d6681f970a638
-function	c:@F@CFNetServiceBrowserStopSearch	-			void (CFNetServiceBrowserRef _Nonnull, CFStreamError * _Nullable)	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	7cacb7abb2307e24
-function	c:@F@CFNetServiceBrowserScheduleWithRunLoop	-			void (CFNetServiceBrowserRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	e0bdc08a8ab1ae01
-function	c:@F@CFNetServiceBrowserUnscheduleFromRunLoop	-			void (CFNetServiceBrowserRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	f22c5d564101259b
-function	c:@F@CFNetServiceRegister	-			Boolean (CFNetServiceRef _Nonnull, CFStreamError * _Nullable)	-	ios=-/-/-/1	-	aa2c6a5ea342b608
-function	c:@F@CFNetServiceResolve	-			Boolean (CFNetServiceRef _Nonnull, CFStreamError * _Nullable)	-	ios=-/-/-/1	-	cf421b506980438a
-var	c:@kCFStreamPropertySSLContext	-			CF_AVAILABLE const CFStringRef	-	ios=5.0/-/-/0	-	b30a79b4225ac86f
-var	c:@kCFStreamPropertySSLPeerTrust	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	ce1dfdf71aa1dd0d
-var	c:@kCFStreamSSLValidatesCertificateChain	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	f4b7e9703985f2ab
-var	c:@kCFStreamPropertySSLSettings	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	4f4be27ee7875dc0
-var	c:@kCFStreamSSLLevel	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	a8e504d4b69043e4
-var	c:@kCFStreamSSLPeerName	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	ec92909df52cb371
-var	c:@kCFStreamSSLCertificates	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	22b0daea512e17e1
-var	c:@kCFStreamSSLIsServer	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	616954cc8f92f30a
-var	c:@kCFStreamNetworkServiceType	-			CF_AVAILABLE const CFStringRef	-	ios=4.0/-/-/0	-	d3c7feb7b1016d40
-var	c:@kCFStreamNetworkServiceTypeVideo	-			CF_AVAILABLE const CFStringRef	-	ios=5.0/-/-/0	-	1f845808933f1a3e
-var	c:@kCFStreamNetworkServiceTypeVoice	-			CF_AVAILABLE const CFStringRef	-	ios=5.0/-/-/0	-	d408123bb7eed819
-var	c:@kCFStreamNetworkServiceTypeBackground	-			CF_AVAILABLE const CFStringRef	-	ios=5.0/-/-/0	-	e981bf813616304c
-var	c:@kCFStreamNetworkServiceTypeResponsiveData	-			__OSX_AVAILABLE_STARTING const CFStringRef	-	ios=6.0/-/-/0	-	63ff7fe93fe2390c
-var	c:@kCFStreamNetworkServiceTypeCallSignaling	-			CF_AVAILABLE const CFStringRef	-	ios=10.0/-/-/0	-	1c181801088e48c0
-var	c:@kCFStreamNetworkServiceTypeAVStreaming	-			__OSX_AVAILABLE_STARTING const CFStringRef	-	ios=6.0/-/-/0	-	3fbe5d096d0c4be0
-var	c:@kCFStreamNetworkServiceTypeResponsiveAV	-			__OSX_AVAILABLE_STARTING const CFStringRef	-	ios=6.0/-/-/0	-	b217bfc5bf535916
-var	c:@kCFStreamNetworkServiceTypeVoIP	-			CF_DEPRECATED const CFStringRef	-	ios=4.0/9.0/-/0	-	c426a29dfd635afa
-var	c:@kCFStreamPropertyNoCellular	-			CF_AVAILABLE const CFStringRef	-	ios=5.0/-/-/0	-	9fa42638f217d9e1
-var	c:@kCFStreamPropertyConnectionIsCellular	-			CF_AVAILABLE const CFStringRef	-	ios=6.0/-/-/0	-	a555d6bc15abd9a4
-var	c:@kCFStreamPropertyAllowExpensiveNetworkAccess	-			const CFStringRef	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	d01d4e355419737c
-var	c:@kCFStreamPropertyConnectionIsExpensive	-			const CFStringRef	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	bb970c9739429964
-var	c:@kCFStreamPropertyAllowConstrainedNetworkAccess	-			const CFStringRef	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	0273a2480a0a45c1
-var	c:@kCFStreamErrorDomainWinSock	-			const CFIndex	-	ios=2.0/-/-/0	-	dc9a9da2d848c930
-function	c:@F@CFSocketStreamSOCKSGetErrorSubdomain	-			SInt32 (const CFStreamError * _Nonnull)	-	-	-	9c2e0d053b252622
-function	c:@F@CFSocketStreamSOCKSGetError	-			SInt32 (const CFStreamError * _Nonnull)	-	-	-	0defa6561feba0a6
-enum	c:@Ea@kCFStreamErrorSOCKSSubDomainNone	-	-		unsigned int	-	-	-	96743da8425abb5b
-enumconst	c:@Ea@kCFStreamErrorSOCKSSubDomainNone@kCFStreamErrorSOCKSSubDomainNone	-			-	-	-	-	859693f6a6b63b65
-enumconst	c:@Ea@kCFStreamErrorSOCKSSubDomainNone@kCFStreamErrorSOCKSSubDomainVersionCode	-			-	-	-	-	1c2685ba13f90550
-enumconst	c:@Ea@kCFStreamErrorSOCKSSubDomainNone@kCFStreamErrorSOCKS4SubDomainResponse	-			-	-	-	-	21f85b2312ad1be9
-enumconst	c:@Ea@kCFStreamErrorSOCKSSubDomainNone@kCFStreamErrorSOCKS5SubDomainUserPass	-			-	-	-	-	58318892c6831b88
-enumconst	c:@Ea@kCFStreamErrorSOCKSSubDomainNone@kCFStreamErrorSOCKS5SubDomainMethod	-			-	-	-	-	3ba114c970465c19
-enumconst	c:@Ea@kCFStreamErrorSOCKSSubDomainNone@kCFStreamErrorSOCKS5SubDomainResponse	-			-	-	-	-	1b40257dc83a3e49
-enum	c:@Ea@kCFStreamErrorSOCKS5BadResponseAddr	-	-		unsigned int	-	-	-	986f0d91bd91c025
-enumconst	c:@Ea@kCFStreamErrorSOCKS5BadResponseAddr@kCFStreamErrorSOCKS5BadResponseAddr	-			-	-	-	-	af68be07f5230c96
-enumconst	c:@Ea@kCFStreamErrorSOCKS5BadResponseAddr@kCFStreamErrorSOCKS5BadState	-			-	-	-	-	949ba2fcd5d6666a
-enumconst	c:@Ea@kCFStreamErrorSOCKS5BadResponseAddr@kCFStreamErrorSOCKSUnknownClientVersion	-			-	-	-	-	1d16a4efbdae2ea4
-enum	c:@Ea@kCFStreamErrorSOCKS4RequestFailed	-	-		unsigned int	-	-	-	c773cb519aee258e
-enumconst	c:@Ea@kCFStreamErrorSOCKS4RequestFailed@kCFStreamErrorSOCKS4RequestFailed	-			-	-	-	-	dadfe0d0534a6d95
-enumconst	c:@Ea@kCFStreamErrorSOCKS4RequestFailed@kCFStreamErrorSOCKS4IdentdFailed	-			-	-	-	-	1685f8d4f9bb76ef
-enumconst	c:@Ea@kCFStreamErrorSOCKS4RequestFailed@kCFStreamErrorSOCKS4IdConflict	-			-	-	-	-	98a63a0948d95c11
-enum	c:@Ea@kSOCKS5NoAcceptableMethod	-	-		unsigned int	-	-	-	c2a9f427def4d9d9
-enumconst	c:@Ea@kSOCKS5NoAcceptableMethod@kSOCKS5NoAcceptableMethod	-			-	-	-	-	10d6a6be4ee8f31c
-var	c:@kCFStreamPropertyProxyLocalBypass	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	1f250cc81f382b42
-var	c:@kCFStreamPropertySocketRemoteHost	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	27408886c0f0218a
-var	c:@kCFStreamPropertySocketRemoteNetService	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	7e9e375686361cfd
-var	c:@kCFStreamPropertySocketExtendedBackgroundIdleMode	-			CF_AVAILABLE const CFStringRef	-	ios=9.0/-/-/0	-	383a2025c1ad592a
-function	c:@F@CFStreamCreatePairWithSocketToCFHost	-			void (CFAllocatorRef _Nullable, CFHostRef _Nonnull, SInt32, CFReadStreamRef  _Nullable * _Nullable, CFWriteStreamRef  _Nullable * _Nullable)	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	06aacd1755322303
-function	c:@F@CFStreamCreatePairWithSocketToNetService	-			void (CFAllocatorRef _Nullable, CFNetServiceRef _Nonnull, CFReadStreamRef  _Nullable * _Nullable, CFWriteStreamRef  _Nullable * _Nullable)	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	4c62458a4d032195
-var	c:@kCFStreamPropertySSLPeerCertificates	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/4.0/-/0	-	c717908e71a60cc7
-var	c:@kCFStreamSSLAllowsExpiredCertificates	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/4.0/-/0	-	ae61d816ebe598bf
-var	c:@kCFStreamSSLAllowsExpiredRoots	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/4.0/-/0	-	d230e3ab62ab50a5
-var	c:@kCFStreamSSLAllowsAnyRoot	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/4.0/-/0	-	b39ee2358bf8ce94
-var	c:@kCFStreamErrorDomainFTP	-			const SInt32	-	ios=2.0/-/-/0	-	0cc20bf4ea4d89fb
-var	c:@kCFStreamPropertyFTPUserName	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	7b3d528b62908303
-var	c:@kCFStreamPropertyFTPPassword	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	f7ab536da4fb2c11
-var	c:@kCFStreamPropertyFTPUsePassiveMode	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	54748baa6ccd7976
-var	c:@kCFStreamPropertyFTPResourceSize	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	b978d84a916ba6bb
-var	c:@kCFStreamPropertyFTPFetchResourceInfo	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	6459a11231b2a677
-var	c:@kCFStreamPropertyFTPFileTransferOffset	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	dab14c244198fdee
-var	c:@kCFStreamPropertyFTPAttemptPersistentConnection	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	3661a0a0b838dd4b
-var	c:@kCFStreamPropertyFTPProxy	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	5bde455989d81d79
-var	c:@kCFStreamPropertyFTPProxyHost	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	61708698652ed76f
-var	c:@kCFStreamPropertyFTPProxyPort	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	8474a657cdf67baa
-var	c:@kCFStreamPropertyFTPProxyUser	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	6243d44ec35a00fd
-var	c:@kCFStreamPropertyFTPProxyPassword	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	fc8cfa61f609fafd
-var	c:@kCFFTPResourceMode	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	5d9aef6977fa7b88
-var	c:@kCFFTPResourceName	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	387f01d3b5144487
-var	c:@kCFFTPResourceOwner	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	dba433aafa728fde
-var	c:@kCFFTPResourceGroup	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	66fd19dcf775c7a3
-var	c:@kCFFTPResourceLink	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	802dd8025fe1358b
-var	c:@kCFFTPResourceSize	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	435c15e553db64d6
-var	c:@kCFFTPResourceType	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	1667d401b82c713b
-var	c:@kCFFTPResourceModDate	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	4bb276c9842b1317
-function	c:@F@CFReadStreamCreateWithFTPURL	-			CFReadStreamRef  _Nonnull (CFAllocatorRef _Nullable, CFURLRef _Nonnull)	-	ios=2.0/9.0/-/0	-	3044650f3884eaaf
-function	c:@F@CFFTPCreateParsedResourceListing	-			CFIndex (CFAllocatorRef _Nullable, const UInt8 * _Nonnull, CFIndex, CFDictionaryRef  _Nullable * _Nullable)	-	ios=2.0/9.0/-/0	-	b8cbed51317641bd
-function	c:@F@CFWriteStreamCreateWithFTPURL	-			CFWriteStreamRef  _Nonnull (CFAllocatorRef _Nullable, CFURLRef _Nonnull)	-	ios=2.0/9.0/-/0	-	7ffb981dba9db600
-var	c:@kCFHTTPVersion1_0	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	22a2d305f85fbcd0
-var	c:@kCFHTTPVersion1_1	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	0aee8534b9a10c08
-var	c:@kCFHTTPVersion2_0	-			CF_AVAILABLE const CFStringRef	-	ios=8.0/-/-/0	-	335092010af16f7b
-var	c:@kCFHTTPVersion3_0	-			CF_AVAILABLE const CFStringRef	-	ios=13.0/-/-/0	-	7e1805b45517f18d
-var	c:@kCFHTTPAuthenticationSchemeBasic	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	707a19a500a54dec
-var	c:@kCFHTTPAuthenticationSchemeDigest	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	0d97ce6e4695d0d1
-var	c:@kCFHTTPAuthenticationSchemeNTLM	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	81116e9f6774eb11
-var	c:@kCFHTTPAuthenticationSchemeKerberos	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	04ed236c40e90e72
-var	c:@kCFHTTPAuthenticationSchemeNegotiate	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	a85d243f726fcf44
-var	c:@kCFHTTPAuthenticationSchemeNegotiate2	-			CF_AVAILABLE const CFStringRef	-	ios=3.0/-/-/0	-	c10d2242a76c27dd
-var	c:@kCFHTTPAuthenticationSchemeXMobileMeAuthToken	-			CF_AVAILABLE const CFStringRef	-	ios=4.3/-/-/0	-	baf323945cafd7c3
-struct	c:@S@__CFHTTPMessage	-			-	-	-	-	15a01caa00fc0e18
-typedef	c:@T@CFHTTPMessageRef	-			struct __CFHTTPMessage *	-	-	-	79a4eb7a42abd066
-function	c:@F@CFHTTPMessageGetTypeID	-			CFTypeID (void)	-	ios=2.0/-/-/0	-	b40ed0fccc1ddb3d
-function	c:@F@CFHTTPMessageCreateRequest	-			CFHTTPMessageRef  _Nonnull (CFAllocatorRef _Nullable, CFStringRef _Nonnull, CFURLRef _Nonnull, CFStringRef _Nonnull)	-	ios=2.0/-/-/0	-	84e5fa4bccef1a51
-function	c:@F@CFHTTPMessageCreateResponse	-			CFHTTPMessageRef  _Nonnull (CFAllocatorRef _Nullable, CFIndex, CFStringRef _Nullable, CFStringRef _Nonnull)	-	ios=2.0/-/-/0	-	c57b2fe0fc4a896f
-function	c:@F@CFHTTPMessageCreateEmpty	-			CFHTTPMessageRef  _Nonnull (CFAllocatorRef _Nullable, Boolean)	-	ios=2.0/-/-/0	-	6483962743346635
-function	c:@F@CFHTTPMessageCreateCopy	-			CFHTTPMessageRef  _Nonnull (CFAllocatorRef _Nullable, CFHTTPMessageRef _Nonnull)	-	ios=2.0/-/-/0	-	b405965861084820
-function	c:@F@CFHTTPMessageIsRequest	-			Boolean (CFHTTPMessageRef _Nonnull)	-	ios=2.0/-/-/0	-	01188b6c72e58404
-function	c:@F@CFHTTPMessageCopyVersion	-			CFStringRef  _Nonnull (CFHTTPMessageRef _Nonnull)	-	ios=2.0/-/-/0	-	8bade3fc1703599d
-function	c:@F@CFHTTPMessageCopyBody	-			CFDataRef  _Nullable (CFHTTPMessageRef _Nonnull)	-	ios=2.0/-/-/0	-	ac0e5e77c4bfb425
-function	c:@F@CFHTTPMessageSetBody	-			void (CFHTTPMessageRef _Nonnull, CFDataRef _Nonnull)	-	ios=2.0/-/-/0	-	2ffcdb3a29d8b315
-function	c:@F@CFHTTPMessageCopyHeaderFieldValue	-			CFStringRef  _Nullable (CFHTTPMessageRef _Nonnull, CFStringRef _Nonnull)	-	ios=2.0/-/-/0	-	6ea3425a2025db6e
-function	c:@F@CFHTTPMessageCopyAllHeaderFields	-			CFDictionaryRef  _Nullable (CFHTTPMessageRef _Nonnull)	-	ios=2.0/-/-/0	-	a6ef663f6e820f1f
-function	c:@F@CFHTTPMessageSetHeaderFieldValue	-			void (CFHTTPMessageRef _Nonnull, CFStringRef _Nonnull, CFStringRef _Nullable)	-	ios=2.0/-/-/0	-	99279894b89f8be6
-function	c:@F@CFHTTPMessageAppendBytes	-			Boolean (CFHTTPMessageRef _Nonnull, const UInt8 * _Nonnull, CFIndex)	-	ios=2.0/-/-/0	-	b585b391e15bfafd
-function	c:@F@CFHTTPMessageIsHeaderComplete	-			Boolean (CFHTTPMessageRef _Nonnull)	-	ios=2.0/-/-/0	-	aa6e1ba97d415f41
-function	c:@F@CFHTTPMessageCopySerializedMessage	-			CFDataRef  _Nullable (CFHTTPMessageRef _Nonnull)	-	ios=2.0/-/-/0	-	704888f02b24a1c7
-function	c:@F@CFHTTPMessageCopyRequestURL	-			CFURLRef  _Nullable (CFHTTPMessageRef _Nonnull)	-	ios=2.0/-/-/0	-	4ddf07c0b86de9aa
-function	c:@F@CFHTTPMessageCopyRequestMethod	-			CFStringRef  _Nullable (CFHTTPMessageRef _Nonnull)	-	ios=2.0/-/-/0	-	89804429543b0334
-function	c:@F@CFHTTPMessageAddAuthentication	-			Boolean (CFHTTPMessageRef _Nonnull, CFHTTPMessageRef _Nullable, CFStringRef _Nonnull, CFStringRef _Nonnull, CFStringRef _Nullable, Boolean)	-	ios=2.0/-/-/0	-	c41716ea535c9e3e
-function	c:@F@CFHTTPMessageGetResponseStatusCode	-			CFIndex (CFHTTPMessageRef _Nonnull)	-	ios=2.0/-/-/0	-	c2c37b2267f75735
-function	c:@F@CFHTTPMessageCopyResponseStatusLine	-			CFStringRef  _Nullable (CFHTTPMessageRef _Nonnull)	-	ios=2.0/-/-/0	-	f5bb5cfbe9513002
-var	c:@kCFStreamErrorDomainHTTP	-			const SInt32	-	ios=2.0/-/-/0	-	c5f528eb8c969529
-typedef	c:@T@CFStreamErrorHTTP	-			enum CFStreamErrorHTTP	-	-	-	cb7bc1a3899656c5
-enum	c:@E@CFStreamErrorHTTP	-			int	-	-	-	60c3ac2c831d2442
-enumconst	c:@E@CFStreamErrorHTTP@kCFStreamErrorHTTPParseFailure	CFStreamErrorHTTP			-	-	-	-	2c0dba8eb00bc801
-enumconst	c:@E@CFStreamErrorHTTP@kCFStreamErrorHTTPRedirectionLoop	CFStreamErrorHTTP			-	-	-	-	c77ae39c2e76db9c
-enumconst	c:@E@CFStreamErrorHTTP@kCFStreamErrorHTTPBadURL	CFStreamErrorHTTP			-	-	-	-	06453ccf8ec52afe
-var	c:@kCFStreamPropertyHTTPResponseHeader	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	5a2e52bb1f8f484c
-var	c:@kCFStreamPropertyHTTPFinalURL	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	920495e140fb5b03
-var	c:@kCFStreamPropertyHTTPFinalRequest	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	cde9dd5eb37ebf07
-var	c:@kCFStreamPropertyHTTPProxy	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	8e5cd295dbacb570
-var	c:@kCFStreamPropertyHTTPProxyHost	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	16631769f390ef0b
-var	c:@kCFStreamPropertyHTTPProxyPort	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	aca9b9574e93014f
-var	c:@kCFStreamPropertyHTTPSProxyHost	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	bf74c2361a5edf5e
-var	c:@kCFStreamPropertyHTTPSProxyPort	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	726c53802ed0cec8
-var	c:@kCFStreamPropertyHTTPShouldAutoredirect	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	1c15a1198e411460
-var	c:@kCFStreamPropertyHTTPAttemptPersistentConnection	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	63253730b1c6c0bc
-var	c:@kCFStreamPropertyHTTPRequestBytesWrittenCount	-			CF_DEPRECATED const CFStringRef	-	ios=2.0/9.0/-/0	-	561f7c8e1da10b36
-function	c:@F@CFReadStreamCreateForHTTPRequest	-			CFReadStreamRef  _Nonnull (CFAllocatorRef _Nullable, CFHTTPMessageRef _Nonnull)	-	ios=2.0/9.0/-/0	-	786d6c3c13ffe082
-function	c:@F@CFReadStreamCreateForStreamedHTTPRequest	-			CFReadStreamRef  _Nonnull (CFAllocatorRef _Nullable, CFHTTPMessageRef _Nonnull, CFReadStreamRef _Nonnull)	-	ios=2.0/9.0/-/0	-	b3800cec1d8795c3
-struct	c:@S@_CFHTTPAuthentication	-			-	-	-	-	c5e6568d04a497a9
-typedef	c:@T@CFHTTPAuthenticationRef	-			struct _CFHTTPAuthentication *	-	-	-	177c8d6c1f2a09f1
-typedef	c:@T@CFStreamErrorHTTPAuthentication	-			enum CFStreamErrorHTTPAuthentication	-	-	-	7d069222794ad0e1
-enum	c:@E@CFStreamErrorHTTPAuthentication	-			int	-	-	-	a838f0b789252554
-enumconst	c:@E@CFStreamErrorHTTPAuthentication@kCFStreamErrorHTTPAuthenticationTypeUnsupported	CFStreamErrorHTTPAuthentication			-	-	-	-	698ec6e7600738ce
-enumconst	c:@E@CFStreamErrorHTTPAuthentication@kCFStreamErrorHTTPAuthenticationBadUserName	CFStreamErrorHTTPAuthentication			-	-	-	-	45f90438321f03e8
-enumconst	c:@E@CFStreamErrorHTTPAuthentication@kCFStreamErrorHTTPAuthenticationBadPassword	CFStreamErrorHTTPAuthentication			-	-	-	-	4545a03603d2107c
-var	c:@kCFHTTPAuthenticationUsername	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	f1a9a4f7029f1eb7
-var	c:@kCFHTTPAuthenticationPassword	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	d23ae0cb93993580
-var	c:@kCFHTTPAuthenticationAccountDomain	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	d1636e44feb2ce17
-function	c:@F@CFHTTPAuthenticationGetTypeID	-			CFTypeID (void)	-	ios=2.0/-/-/0	-	5c6d21c645e68cba
-function	c:@F@CFHTTPAuthenticationCreateFromResponse	-			CFHTTPAuthenticationRef  _Nonnull (CFAllocatorRef _Nullable, CFHTTPMessageRef _Nonnull)	-	ios=2.0/-/-/0	-	c827396126fa4c40
-function	c:@F@CFHTTPAuthenticationIsValid	-			Boolean (CFHTTPAuthenticationRef _Nonnull, CFStreamError * _Nullable)	-	ios=2.0/-/-/0	-	e92f6e5454930159
-function	c:@F@CFHTTPAuthenticationAppliesToRequest	-			Boolean (CFHTTPAuthenticationRef _Nonnull, CFHTTPMessageRef _Nonnull)	-	ios=2.0/-/-/0	-	ac4e1bf173564b27
-function	c:@F@CFHTTPAuthenticationRequiresOrderedRequests	-			Boolean (CFHTTPAuthenticationRef _Nonnull)	-	ios=2.0/-/-/0	-	b9dd8483d37efae3
-function	c:@F@CFHTTPMessageApplyCredentials	-			Boolean (CFHTTPMessageRef _Nonnull, CFHTTPAuthenticationRef _Nonnull, CFStringRef _Nullable, CFStringRef _Nullable, CFStreamError * _Nullable)	-	ios=2.0/-/-/0	-	fe549b30e92acb58
-function	c:@F@CFHTTPMessageApplyCredentialDictionary	-			Boolean (CFHTTPMessageRef _Nonnull, CFHTTPAuthenticationRef _Nonnull, CFDictionaryRef _Nonnull, CFStreamError * _Nullable)	-	ios=2.0/-/-/0	-	b9b55bfbc58d6893
-function	c:@F@CFHTTPAuthenticationCopyRealm	-			CFStringRef  _Nonnull (CFHTTPAuthenticationRef _Nonnull)	-	ios=2.0/-/-/0	-	2b27dea03a8fc0b0
-function	c:@F@CFHTTPAuthenticationCopyDomains	-			CFArrayRef  _Nonnull (CFHTTPAuthenticationRef _Nonnull)	-	ios=2.0/-/-/0	-	f702aa26c622f9fe
-function	c:@F@CFHTTPAuthenticationCopyMethod	-			CFStringRef  _Nonnull (CFHTTPAuthenticationRef _Nonnull)	-	ios=2.0/-/-/0	-	a892be68f0003337
-function	c:@F@CFHTTPAuthenticationRequiresUserNameAndPassword	-			Boolean (CFHTTPAuthenticationRef _Nonnull)	-	ios=2.0/-/-/0	-	b81d4d64b4dcfa81
-function	c:@F@CFHTTPAuthenticationRequiresAccountDomain	-			Boolean (CFHTTPAuthenticationRef _Nonnull)	-	ios=2.0/-/-/0	-	1ae0a6c817f47d67
-struct	c:@S@__CFNetDiagnostic	-			-	-	-	-	ddb8c453c0b86f93
-typedef	c:@T@CFNetDiagnosticRef	-			struct __CFNetDiagnostic *	-	-	-	75c66e5b4b04d2fc
-typedef	c:@T@CFNetDiagnosticStatusValues	-			enum CFNetDiagnosticStatusValues	-	-	-	1e00e0593f4dadeb
-enum	c:@E@CFNetDiagnosticStatusValues	-			int	-	ios=2.0/11.0/-/0	-	5c5368aad288997f
-enumconst	c:@E@CFNetDiagnosticStatusValues@kCFNetDiagnosticNoErr	CFNetDiagnosticStatusValues			-	-	ios=2.0/11.0/-/0	-	7299ad0e5584c13a
-enumconst	c:@E@CFNetDiagnosticStatusValues@kCFNetDiagnosticErr	CFNetDiagnosticStatusValues			-	-	ios=2.0/11.0/-/0	-	9dd28a05933f5a94
-enumconst	c:@E@CFNetDiagnosticStatusValues@kCFNetDiagnosticConnectionUp	CFNetDiagnosticStatusValues			-	-	ios=2.0/11.0/-/0	-	4f8135fafee6277c
-enumconst	c:@E@CFNetDiagnosticStatusValues@kCFNetDiagnosticConnectionIndeterminate	CFNetDiagnosticStatusValues			-	-	ios=2.0/11.0/-/0	-	27eeb84e17b000f6
-enumconst	c:@E@CFNetDiagnosticStatusValues@kCFNetDiagnosticConnectionDown	CFNetDiagnosticStatusValues			-	-	ios=2.0/11.0/-/0	-	7c45bc93a345f5f2
-typedef	c:@T@CFNetDiagnosticStatus	-			CFIndex	-	ios=2.0/11.0/-/0	-	433b462bb177877b
-function	c:@F@CFNetDiagnosticCreateWithStreams	-			CFNetDiagnosticRef  _Nonnull (CFAllocatorRef _Nullable, CFReadStreamRef _Nullable, CFWriteStreamRef _Nullable)	-	ios=2.0/11.0/-/0	-	55bae5348ba5494e
-function	c:@F@CFNetDiagnosticCreateWithURL	-			CFNetDiagnosticRef  _Nonnull (CFAllocatorRef _Nonnull, CFURLRef _Nonnull)	-	ios=2.0/11.0/-/0	-	ff99d3baa5ca391c
-function	c:@F@CFNetDiagnosticSetName	-			void (CFNetDiagnosticRef _Nonnull, CFStringRef _Nonnull)	-	ios=2.0/11.0/-/0	-	d75d270066f31b0b
-function	c:@F@CFNetDiagnosticDiagnoseProblemInteractively	-			CFNetDiagnosticStatus (CFNetDiagnosticRef _Nonnull)	-	ios=2.0/11.0/-/0	-	3306f8f06bc6a3fe
-function	c:@F@CFNetDiagnosticCopyNetworkStatusPassively	-			CFNetDiagnosticStatus (CFNetDiagnosticRef _Nonnull, CFStringRef  _Nullable * _Nullable)	-	ios=2.0/11.0/-/0	-	66881579ba0016ba
-function	c:@F@CFNetworkCopySystemProxySettings	-			CFDictionaryRef  _Nullable (void)	-	ios=2.0/-/-/0	-	7dc90081575e7c32
-function	c:@F@CFNetworkCopyProxiesForURL	-			CFArrayRef  _Nonnull (CFURLRef _Nonnull, CFDictionaryRef _Nonnull)	-	ios=2.0/-/-/0	-	12a694704e5261b0
-typedef	c:@T@CFProxyAutoConfigurationResultCallback	-			void (*)(void * _Nonnull, CFArrayRef _Nonnull, CFErrorRef _Nullable)	-	-	-	e6e43fef3b77421d
-function	c:@F@CFNetworkCopyProxiesForAutoConfigurationScript	-			CFArrayRef  _Nullable (CFStringRef _Nonnull, CFURLRef _Nonnull, CFErrorRef  _Nullable * _Nullable)	-	ios=2.0/-/-/0	-	6be2d414d0370848
-function	c:@F@CFNetworkExecuteProxyAutoConfigurationScript	-			CFRunLoopSourceRef  _Nonnull (CFStringRef _Nonnull, CFURLRef _Nonnull, CFProxyAutoConfigurationResultCallback _Nonnull, CFStreamClientContext * _Nonnull)	-	ios=2.0/-/-/0	-	341a30c73beb78c8
-function	c:@F@CFNetworkExecuteProxyAutoConfigurationURL	-			CFRunLoopSourceRef  _Nonnull (CFURLRef _Nonnull, CFURLRef _Nonnull, CFProxyAutoConfigurationResultCallback _Nonnull, CFStreamClientContext * _Nonnull)	-	ios=2.0/-/-/0	-	9564aedcc4430bb6
-var	c:@kCFProxyTypeKey	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	da1cb0adc6d022e3
-var	c:@kCFProxyHostNameKey	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	e94fee5b71eca633
-var	c:@kCFProxyPortNumberKey	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	64679287c10f4d98
-var	c:@kCFProxyAutoConfigurationURLKey	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	9d51db895ec9ffd2
-var	c:@kCFProxyAutoConfigurationJavaScriptKey	-			CF_AVAILABLE const CFStringRef	-	ios=3.0/-/-/0	-	477c3f0ebea6efac
-var	c:@kCFProxyUsernameKey	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	c32bb98a3711c338
-var	c:@kCFProxyPasswordKey	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	ec3cc6b1ccaff549
-var	c:@kCFProxyTypeNone	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	bf1d157f0ba63922
-var	c:@kCFProxyTypeHTTP	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	1cfa3f03c9d71c3f
-var	c:@kCFProxyTypeHTTPS	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	28dce81e5baf15a5
-var	c:@kCFProxyTypeSOCKS	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	ca4ead0037d9f808
-var	c:@kCFProxyTypeFTP	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	3a647a1f638c9031
-var	c:@kCFProxyTypeAutoConfigurationURL	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	eb0eeae0f07f39f4
-var	c:@kCFProxyTypeAutoConfigurationJavaScript	-			CF_AVAILABLE const CFStringRef	-	ios=3.0/-/-/0	-	5f488fff7f480e0f
-var	c:@kCFProxyAutoConfigurationHTTPResponseKey	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	de4ca623386f1d11
-var	c:@kCFNetworkProxiesExceptionsList	-			CF_AVAILABLE const CFStringRef	-	ios=-/-/-/1	-	3e75efb10ffb8533
-var	c:@kCFNetworkProxiesExcludeSimpleHostnames	-			CF_AVAILABLE const CFStringRef	-	ios=-/-/-/1	-	ddc40d01d55d46b5
-var	c:@kCFNetworkProxiesFTPEnable	-			CF_AVAILABLE const CFStringRef	-	ios=-/-/-/1	-	dcb349991956962f
-var	c:@kCFNetworkProxiesFTPPassive	-			CF_AVAILABLE const CFStringRef	-	ios=-/-/-/1	-	2177030e2ceb50c3
-var	c:@kCFNetworkProxiesFTPPort	-			CF_AVAILABLE const CFStringRef	-	ios=-/-/-/1	-	7c62029b1f967d52
-var	c:@kCFNetworkProxiesFTPProxy	-			CF_AVAILABLE const CFStringRef	-	ios=-/-/-/1	-	e2c6e8e09b951748
-var	c:@kCFNetworkProxiesGopherEnable	-			CF_AVAILABLE const CFStringRef	-	ios=-/-/-/1	-	49c46a995ba41c9f
-var	c:@kCFNetworkProxiesGopherPort	-			CF_AVAILABLE const CFStringRef	-	ios=-/-/-/1	-	a5574d2ab536a702
-var	c:@kCFNetworkProxiesGopherProxy	-			CF_AVAILABLE const CFStringRef	-	ios=-/-/-/1	-	0a67aa3be77ffd1e
-var	c:@kCFNetworkProxiesHTTPEnable	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	4f6a52f7d6dee867
-var	c:@kCFNetworkProxiesHTTPPort	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	ca725b185d2a8431
-var	c:@kCFNetworkProxiesHTTPProxy	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	2f7ce253f6b8e6e7
-var	c:@kCFNetworkProxiesHTTPSEnable	-			CF_AVAILABLE const CFStringRef	-	ios=-/-/-/1	-	7229840b3372f1b9
-var	c:@kCFNetworkProxiesHTTPSPort	-			CF_AVAILABLE const CFStringRef	-	ios=-/-/-/1	-	e0cea279e11dea44
-var	c:@kCFNetworkProxiesHTTPSProxy	-			CF_AVAILABLE const CFStringRef	-	ios=-/-/-/1	-	e992f89e98bf94e9
-var	c:@kCFNetworkProxiesRTSPEnable	-			CF_AVAILABLE const CFStringRef	-	ios=-/-/-/1	-	dcd48be100c6c7da
-var	c:@kCFNetworkProxiesRTSPPort	-			CF_AVAILABLE const CFStringRef	-	ios=-/-/-/1	-	f4c9328e7ac2d3be
-var	c:@kCFNetworkProxiesRTSPProxy	-			CF_AVAILABLE const CFStringRef	-	ios=-/-/-/1	-	e9de7bb5ee57f4f8
-var	c:@kCFNetworkProxiesSOCKSEnable	-			CF_AVAILABLE const CFStringRef	-	ios=-/-/-/1	-	af7b960c27b0a560
-var	c:@kCFNetworkProxiesSOCKSPort	-			CF_AVAILABLE const CFStringRef	-	ios=-/-/-/1	-	b3f9ae32f7abde9e
-var	c:@kCFNetworkProxiesSOCKSProxy	-			CF_AVAILABLE const CFStringRef	-	ios=-/-/-/1	-	7c7fc9094acbc175
-var	c:@kCFNetworkProxiesProxyAutoConfigEnable	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	dcdb62235661562c
-var	c:@kCFNetworkProxiesProxyAutoConfigURLString	-			CF_AVAILABLE const CFStringRef	-	ios=2.0/-/-/0	-	c8cfd345d1b5691a
-var	c:@kCFNetworkProxiesProxyAutoConfigJavaScript	-			CF_AVAILABLE const CFStringRef	-	ios=3.0/-/-/0	-	d3398b06f2cfb565
-var	c:@kCFNetworkProxiesProxyAutoDiscoveryEnable	-			CF_AVAILABLE const CFStringRef	-	ios=-/-/-/1	-	f03f5a481754f13b
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+var	c:@kCFErrorDomainCFNetwork	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	3ac5ef7a8cb91bc1
+var	c:@kCFErrorDomainWinSock	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	5539fc2680d6a9e1
+typedef	c:@T@CFNetworkErrors	-			enum CFNetworkErrors	-	-	-	-	b300f047acb010ff
+enum	c:@E@CFNetworkErrors	-			int	-	-	-	-	8efd1055b3fb01e3
+enumconst	c:@E@CFNetworkErrors@kCFHostErrorHostNotFound	CFNetworkErrors			-	-	-	-	-	1395ce436c5800fc
+enumconst	c:@E@CFNetworkErrors@kCFHostErrorUnknown	CFNetworkErrors			-	-	-	-	-	60c31408d686b792
+enumconst	c:@E@CFNetworkErrors@kCFSOCKSErrorUnknownClientVersion	CFNetworkErrors			-	-	-	-	-	3341a531ba1254e5
+enumconst	c:@E@CFNetworkErrors@kCFSOCKSErrorUnsupportedServerVersion	CFNetworkErrors			-	-	-	-	-	dfc2e8e52e5f59cd
+enumconst	c:@E@CFNetworkErrors@kCFSOCKS4ErrorRequestFailed	CFNetworkErrors			-	-	-	-	-	371a42d1f1fb4ab9
+enumconst	c:@E@CFNetworkErrors@kCFSOCKS4ErrorIdentdFailed	CFNetworkErrors			-	-	-	-	-	d166115035312d3c
+enumconst	c:@E@CFNetworkErrors@kCFSOCKS4ErrorIdConflict	CFNetworkErrors			-	-	-	-	-	5e3ee653b0b4d5e3
+enumconst	c:@E@CFNetworkErrors@kCFSOCKS4ErrorUnknownStatusCode	CFNetworkErrors			-	-	-	-	-	2324bfcfc341a0bb
+enumconst	c:@E@CFNetworkErrors@kCFSOCKS5ErrorBadState	CFNetworkErrors			-	-	-	-	-	33500c315680c137
+enumconst	c:@E@CFNetworkErrors@kCFSOCKS5ErrorBadResponseAddr	CFNetworkErrors			-	-	-	-	-	13f86d6e6142cbc2
+enumconst	c:@E@CFNetworkErrors@kCFSOCKS5ErrorBadCredentials	CFNetworkErrors			-	-	-	-	-	8ce5a417454aaada
+enumconst	c:@E@CFNetworkErrors@kCFSOCKS5ErrorUnsupportedNegotiationMethod	CFNetworkErrors			-	-	-	-	-	f19e73f26c86070d
+enumconst	c:@E@CFNetworkErrors@kCFSOCKS5ErrorNoAcceptableMethod	CFNetworkErrors			-	-	-	-	-	c672fd2af48b3840
+enumconst	c:@E@CFNetworkErrors@kCFFTPErrorUnexpectedStatusCode	CFNetworkErrors			-	-	-	-	-	32bd976ba47d50f5
+enumconst	c:@E@CFNetworkErrors@kCFErrorHTTPAuthenticationTypeUnsupported	CFNetworkErrors			-	-	-	-	-	0506af3cdf3c5760
+enumconst	c:@E@CFNetworkErrors@kCFErrorHTTPBadCredentials	CFNetworkErrors			-	-	-	-	-	f0e09bdea3808761
+enumconst	c:@E@CFNetworkErrors@kCFErrorHTTPConnectionLost	CFNetworkErrors			-	-	-	-	-	e8117f380fc72bb6
+enumconst	c:@E@CFNetworkErrors@kCFErrorHTTPParseFailure	CFNetworkErrors			-	-	-	-	-	09ff02060a6e5f47
+enumconst	c:@E@CFNetworkErrors@kCFErrorHTTPRedirectionLoopDetected	CFNetworkErrors			-	-	-	-	-	c8e3e61f7d7a224c
+enumconst	c:@E@CFNetworkErrors@kCFErrorHTTPBadURL	CFNetworkErrors			-	-	-	-	-	9ef78fe0a0e9011e
+enumconst	c:@E@CFNetworkErrors@kCFErrorHTTPProxyConnectionFailure	CFNetworkErrors			-	-	-	-	-	e0fe50a853a65161
+enumconst	c:@E@CFNetworkErrors@kCFErrorHTTPBadProxyCredentials	CFNetworkErrors			-	-	-	-	-	ba8373f1e59ad701
+enumconst	c:@E@CFNetworkErrors@kCFErrorPACFileError	CFNetworkErrors			-	-	-	-	-	f52b36e83f46e17c
+enumconst	c:@E@CFNetworkErrors@kCFErrorPACFileAuth	CFNetworkErrors			-	-	-	-	-	8163e545e3ed4d20
+enumconst	c:@E@CFNetworkErrors@kCFErrorHTTPSProxyConnectionFailure	CFNetworkErrors			-	-	-	-	-	994d223eb850fdb6
+enumconst	c:@E@CFNetworkErrors@kCFStreamErrorHTTPSProxyFailureUnexpectedResponseToCONNECTMethod	CFNetworkErrors			-	-	-	-	-	4c61986ac225689b
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorBackgroundSessionInUseByAnotherProcess	CFNetworkErrors			-	-	-	-	-	279b576c486bf5e5
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorBackgroundSessionWasDisconnected	CFNetworkErrors			-	-	-	-	-	e21dece3c38d3628
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorUnknown	CFNetworkErrors			-	-	-	-	-	5c0f515a902e4cc5
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorCancelled	CFNetworkErrors			-	-	-	-	-	c10f653619eb4fee
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorBadURL	CFNetworkErrors			-	-	-	-	-	2e07a64bed69ff23
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorTimedOut	CFNetworkErrors			-	-	-	-	-	92a4dffbcc2ff569
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorUnsupportedURL	CFNetworkErrors			-	-	-	-	-	a7bfb94b2b693d50
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorCannotFindHost	CFNetworkErrors			-	-	-	-	-	f799bf2b9343e5bd
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorCannotConnectToHost	CFNetworkErrors			-	-	-	-	-	080823e0a562173a
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorNetworkConnectionLost	CFNetworkErrors			-	-	-	-	-	446db7affff87441
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorDNSLookupFailed	CFNetworkErrors			-	-	-	-	-	1567609a371117d1
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorHTTPTooManyRedirects	CFNetworkErrors			-	-	-	-	-	6b0cf2e61420cd0e
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorResourceUnavailable	CFNetworkErrors			-	-	-	-	-	8d76782079ff5501
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorNotConnectedToInternet	CFNetworkErrors			-	-	-	-	-	968326ab8712871e
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorRedirectToNonExistentLocation	CFNetworkErrors			-	-	-	-	-	f610875043b14651
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorBadServerResponse	CFNetworkErrors			-	-	-	-	-	239235b156f4f0b0
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorUserCancelledAuthentication	CFNetworkErrors			-	-	-	-	-	98c2e2f79430027f
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorUserAuthenticationRequired	CFNetworkErrors			-	-	-	-	-	1758ea246dec2e09
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorZeroByteResource	CFNetworkErrors			-	-	-	-	-	1b4e59d21bdaf551
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorCannotDecodeRawData	CFNetworkErrors			-	-	-	-	-	9fa7250868593608
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorCannotDecodeContentData	CFNetworkErrors			-	-	-	-	-	a648a5a9fce80f7e
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorCannotParseResponse	CFNetworkErrors			-	-	-	-	-	8ca8487d711bed7a
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorInternationalRoamingOff	CFNetworkErrors			-	-	-	-	-	1bb9bcaada4cd505
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorCallIsActive	CFNetworkErrors			-	-	-	-	-	e96df0105fdebf63
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorDataNotAllowed	CFNetworkErrors			-	-	-	-	-	168af707d53c270b
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorRequestBodyStreamExhausted	CFNetworkErrors			-	-	-	-	-	dfba2cf84e2f2c91
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorAppTransportSecurityRequiresSecureConnection	CFNetworkErrors			-	-	-	-	-	70160e217e92bb62
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorFileDoesNotExist	CFNetworkErrors			-	-	-	-	-	53776afb41d02c35
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorFileIsDirectory	CFNetworkErrors			-	-	-	-	-	feff008e9c84c4d4
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorNoPermissionsToReadFile	CFNetworkErrors			-	-	-	-	-	04fd4724f60e9483
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorDataLengthExceedsMaximum	CFNetworkErrors			-	-	-	-	-	99596b11290e4875
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorFileOutsideSafeArea	CFNetworkErrors			-	-	-	-	-	08398af576e6bf03
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorSecureConnectionFailed	CFNetworkErrors			-	-	-	-	-	61fbdf9d950cdfdf
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorServerCertificateHasBadDate	CFNetworkErrors			-	-	-	-	-	24a1a731a627b763
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorServerCertificateUntrusted	CFNetworkErrors			-	-	-	-	-	a10efdaf41e5318d
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorServerCertificateHasUnknownRoot	CFNetworkErrors			-	-	-	-	-	e9f3d136d9883e04
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorServerCertificateNotYetValid	CFNetworkErrors			-	-	-	-	-	94f480816811d5d9
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorClientCertificateRejected	CFNetworkErrors			-	-	-	-	-	7f31f0b8a4ea20af
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorClientCertificateRequired	CFNetworkErrors			-	-	-	-	-	e14095cca533eee1
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorCannotLoadFromNetwork	CFNetworkErrors			-	-	-	-	-	630b637e5b256bc7
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorCannotCreateFile	CFNetworkErrors			-	-	-	-	-	e76000560a91d45a
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorCannotOpenFile	CFNetworkErrors			-	-	-	-	-	ea8cc9632cac9252
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorCannotCloseFile	CFNetworkErrors			-	-	-	-	-	b4cd0c27dca36303
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorCannotWriteToFile	CFNetworkErrors			-	-	-	-	-	b1d1fd84b847ffd1
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorCannotRemoveFile	CFNetworkErrors			-	-	-	-	-	dcb335de1ab1229b
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorCannotMoveFile	CFNetworkErrors			-	-	-	-	-	d3fe6395cf16d8b6
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorDownloadDecodingFailedMidStream	CFNetworkErrors			-	-	-	-	-	128517bca0bdf7a3
+enumconst	c:@E@CFNetworkErrors@kCFURLErrorDownloadDecodingFailedToComplete	CFNetworkErrors			-	-	-	-	-	026e477811b0c699
+enumconst	c:@E@CFNetworkErrors@kCFHTTPCookieCannotParseCookieFile	CFNetworkErrors			-	-	-	-	-	b7e6b41de77c7149
+enumconst	c:@E@CFNetworkErrors@kCFNetServiceErrorUnknown	CFNetworkErrors			-	-	-	-	-	15e1ba953a425628
+enumconst	c:@E@CFNetworkErrors@kCFNetServiceErrorCollision	CFNetworkErrors			-	-	-	-	-	f1fd9390713fdfee
+enumconst	c:@E@CFNetworkErrors@kCFNetServiceErrorNotFound	CFNetworkErrors			-	-	-	-	-	505cbeb23417ec9f
+enumconst	c:@E@CFNetworkErrors@kCFNetServiceErrorInProgress	CFNetworkErrors			-	-	-	-	-	9a5747333428cd52
+enumconst	c:@E@CFNetworkErrors@kCFNetServiceErrorBadArgument	CFNetworkErrors			-	-	-	-	-	0fac67d4f6cb6ee4
+enumconst	c:@E@CFNetworkErrors@kCFNetServiceErrorCancel	CFNetworkErrors			-	-	-	-	-	318ea30159edad56
+enumconst	c:@E@CFNetworkErrors@kCFNetServiceErrorInvalid	CFNetworkErrors			-	-	-	-	-	315abdfa99efd9b9
+enumconst	c:@E@CFNetworkErrors@kCFNetServiceErrorTimeout	CFNetworkErrors			-	-	-	-	-	2c58c41aee80b516
+enumconst	c:@E@CFNetworkErrors@kCFNetServiceErrorDNSServiceFailure	CFNetworkErrors			-	-	-	-	-	1566869e4768ed88
+var	c:@kCFURLErrorFailingURLErrorKey	-			const CFStringRef	-	-	ios=2.2/-/-/0	-	3ec58c87d8118973
+var	c:@kCFURLErrorFailingURLStringErrorKey	-			const CFStringRef	-	-	ios=2.2/-/-/0	-	1213f75e93629232
+var	c:@kCFGetAddrInfoFailureKey	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	19f81b5f9a9b220b
+var	c:@kCFSOCKSStatusCodeKey	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	7623968b48876ff3
+var	c:@kCFSOCKSVersionKey	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	06db2a412fec5c78
+var	c:@kCFSOCKSNegotiationMethodKey	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	df2ea7656ad64bc4
+var	c:@kCFDNSServiceFailureKey	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	ede2943971fd95cf
+var	c:@kCFFTPStatusCodeKey	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	a4555b0827864d98
+struct	c:@S@__CFHost	-			-	-	-	-	-	1a1c2a0fc4c44d47
+typedef	c:@T@CFHostRef	-			struct __CFHost *	-	-	-	-	7af4b4c8e0919fe6
+var	c:@kCFStreamErrorDomainNetDB	-			const SInt32	-	-	ios=2.0/-/-/0	-	aa0a6554cb89aeb6
+var	c:@kCFStreamErrorDomainSystemConfiguration	-			const SInt32	-	-	ios=2.0/-/-/0	-	a8647d276c46f792
+typedef	c:@T@CFHostInfoType	-			enum CFHostInfoType	-	-	-	-	842fb8a28bb9a8ce
+enum	c:@E@CFHostInfoType	-			int	-	-	-	-	8794edbde01d95a5
+enumconst	c:@E@CFHostInfoType@kCFHostAddresses	CFHostInfoType			-	-	-	-	-	af8418aa6f6e7179
+enumconst	c:@E@CFHostInfoType@kCFHostNames	CFHostInfoType			-	-	-	-	-	aff9f0a0762975e7
+enumconst	c:@E@CFHostInfoType@kCFHostReachability	CFHostInfoType			-	-	-	-	-	e5dea08214a52b2e
+struct	c:@S@CFHostClientContext	-			-	-	-	-	-	ff9d85582ff58d79
+field	c:@S@CFHostClientContext@FI@version	CFHostClientContext			CFIndex	-	-	-	-	019d43eead23d5fb
+field	c:@S@CFHostClientContext@FI@info	CFHostClientContext			void *	-	-	-	-	289dbc1ee5fcad29
+field	c:@S@CFHostClientContext@FI@retain	CFHostClientContext			CFAllocatorRetainCallBack	-	-	-	-	f70c4df2d7f859f5
+field	c:@S@CFHostClientContext@FI@release	CFHostClientContext			CFAllocatorReleaseCallBack	-	-	-	-	fec544ebd3349381
+field	c:@S@CFHostClientContext@FI@copyDescription	CFHostClientContext			CFAllocatorCopyDescriptionCallBack	-	-	-	-	1aaaab325a7593c0
+typedef	c:@T@CFHostClientContext	-			struct CFHostClientContext	-	-	-	-	0816f530bbfe1776
+typedef	c:@T@CFHostClientCallBack	-			void (*)(CFHostRef _Nonnull, CFHostInfoType, const CFStreamError * _Nullable, void * _Nullable)	-	-	-	-	298c933f2c546fb2
+function	c:@F@CFHostGetTypeID	-			CFTypeID (void)	-	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	e4abf71c7871140a
+function	c:@F@CFHostCreateWithName	-			CFHostRef  _Nonnull (CFAllocatorRef _Nullable, CFStringRef _Nonnull)	CFAllocatorRef allocator | CFStringRef hostname	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	7c801ed34e738e7c
+function	c:@F@CFHostCreateWithAddress	-			CFHostRef  _Nonnull (CFAllocatorRef _Nullable, CFDataRef _Nonnull)	CFAllocatorRef allocator | CFDataRef addr	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	daae34d13e47ba7a
+function	c:@F@CFHostCreateCopy	-			CFHostRef  _Nonnull (CFAllocatorRef _Nullable, CFHostRef _Nonnull)	CFAllocatorRef alloc | CFHostRef host	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	895bf91dc2e213e7
+function	c:@F@CFHostStartInfoResolution	-			Boolean (CFHostRef _Nonnull, CFHostInfoType, CFStreamError * _Nullable)	CFHostRef theHost | CFHostInfoType info | CFStreamError * error	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	f329f4c5230ab755
+function	c:@F@CFHostGetAddressing	-			CFArrayRef  _Nullable (CFHostRef _Nonnull, Boolean * _Nullable)	CFHostRef theHost | Boolean * hasBeenResolved	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	103189df4dc4ade0
+function	c:@F@CFHostGetNames	-			CFArrayRef  _Nullable (CFHostRef _Nonnull, Boolean * _Nullable)	CFHostRef theHost | Boolean * hasBeenResolved	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	d1b2fe8884a45400
+function	c:@F@CFHostGetReachability	-			CFDataRef  _Nullable (CFHostRef _Nonnull, Boolean * _Nullable)	CFHostRef theHost | Boolean * hasBeenResolved	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	3b0326426c644e7f
+function	c:@F@CFHostCancelInfoResolution	-			void (CFHostRef _Nonnull, CFHostInfoType)	CFHostRef theHost | CFHostInfoType info	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	c23bc999e5e1773e
+function	c:@F@CFHostSetClient	-			Boolean (CFHostRef _Nonnull, CFHostClientCallBack _Nullable, CFHostClientContext * _Nullable)	CFHostRef theHost | CFHostClientCallBack clientCB | CFHostClientContext * clientContext	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	49bc17ce39fe6eb4
+function	c:@F@CFHostScheduleWithRunLoop	-			void (CFHostRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	CFHostRef theHost | CFRunLoopRef runLoop | CFStringRef runLoopMode	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	244d97ead045a710
+function	c:@F@CFHostUnscheduleFromRunLoop	-			void (CFHostRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	CFHostRef theHost | CFRunLoopRef runLoop | CFStringRef runLoopMode	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	266d95fee1cf2813
+struct	c:@S@__CFNetService	-			-	-	-	-	-	91d14f664dd9820a
+typedef	c:@T@CFNetServiceRef	-			struct __CFNetService *	-	-	-	-	0bd4641247bb7767
+struct	c:@S@__CFNetServiceMonitor	-			-	-	-	-	-	b817b4f6d8214b0d
+typedef	c:@T@CFNetServiceMonitorRef	-			struct __CFNetServiceMonitor *	-	-	-	-	64b8ee08d9c83bf9
+struct	c:@S@__CFNetServiceBrowser	-			-	-	-	-	-	790f96b332cccc6a
+typedef	c:@T@CFNetServiceBrowserRef	-			struct __CFNetServiceBrowser *	-	-	-	-	2162dfcfd6fdd87e
+var	c:@kCFStreamErrorDomainMach	-			const SInt32	-	-	ios=2.0/-/-/0	-	fec3415549d93efc
+var	c:@kCFStreamErrorDomainNetServices	-			const SInt32	-	-	ios=2.0/-/-/0	-	a628d306dc4e570f
+typedef	c:@T@CFNetServicesError	-			enum CFNetServicesError	-	-	-	-	476190efbc594dcb
+enum	c:@E@CFNetServicesError	-			int	-	-	-	-	547d6c5840d26040
+enumconst	c:@E@CFNetServicesError@kCFNetServicesErrorUnknown	CFNetServicesError			-	-	-	-	-	04684d9f068b3eff
+enumconst	c:@E@CFNetServicesError@kCFNetServicesErrorCollision	CFNetServicesError			-	-	-	-	-	01981d03566d920a
+enumconst	c:@E@CFNetServicesError@kCFNetServicesErrorNotFound	CFNetServicesError			-	-	-	-	-	4e70accb587f5ff5
+enumconst	c:@E@CFNetServicesError@kCFNetServicesErrorInProgress	CFNetServicesError			-	-	-	-	-	75ff0df61eac9def
+enumconst	c:@E@CFNetServicesError@kCFNetServicesErrorBadArgument	CFNetServicesError			-	-	-	-	-	b01e768c59d231b6
+enumconst	c:@E@CFNetServicesError@kCFNetServicesErrorCancel	CFNetServicesError			-	-	-	-	-	1dbb4838bc74d0bf
+enumconst	c:@E@CFNetServicesError@kCFNetServicesErrorInvalid	CFNetServicesError			-	-	-	-	-	a8dcc908011ac344
+enumconst	c:@E@CFNetServicesError@kCFNetServicesErrorTimeout	CFNetServicesError			-	-	-	-	-	5f47ae14edbc9060
+enumconst	c:@E@CFNetServicesError@kCFNetServicesErrorMissingRequiredConfiguration	CFNetServicesError			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	9fc4e413cdf317e3
+typedef	c:@T@CFNetServiceMonitorType	-			enum CFNetServiceMonitorType	-	-	-	-	8cd4c99c8fb82706
+enum	c:@E@CFNetServiceMonitorType	-			int	-	-	-	-	bfb2141f13299dfc
+enumconst	c:@E@CFNetServiceMonitorType@kCFNetServiceMonitorTXT	CFNetServiceMonitorType			-	-	-	-	-	eff9d229161d4ed8
+typedef	c:@T@CFNetServiceRegisterFlags	-			enum CFNetServiceRegisterFlags	-	-	-	-	f06019a1b5a181a9
+enum	c:@E@CFNetServiceRegisterFlags	-			CFOptionFlags	-	-	-	-	5a88616406be4337
+enumconst	c:@E@CFNetServiceRegisterFlags@kCFNetServiceFlagNoAutoRename	CFNetServiceRegisterFlags			-	-	-	-	-	5038b3a190471205
+typedef	c:@T@CFNetServiceBrowserFlags	-			enum CFNetServiceBrowserFlags	-	-	-	-	072ff4aebfe11757
+enum	c:@E@CFNetServiceBrowserFlags	-			CFOptionFlags	-	-	-	-	693393a04af01f24
+enumconst	c:@E@CFNetServiceBrowserFlags@kCFNetServiceFlagMoreComing	CFNetServiceBrowserFlags			-	-	-	-	-	16bad456eb5abf13
+enumconst	c:@E@CFNetServiceBrowserFlags@kCFNetServiceFlagIsDomain	CFNetServiceBrowserFlags			-	-	-	-	-	0c94a17777fc6e10
+enumconst	c:@E@CFNetServiceBrowserFlags@kCFNetServiceFlagIsDefault	CFNetServiceBrowserFlags			-	-	-	-	-	3559296e0a22b9fc
+enumconst	c:@E@CFNetServiceBrowserFlags@kCFNetServiceFlagIsRegistrationDomain	CFNetServiceBrowserFlags			-	-	-	ios=2.0/2.0/-/0	-	9149f009ad63bf27
+enumconst	c:@E@CFNetServiceBrowserFlags@kCFNetServiceFlagRemove	CFNetServiceBrowserFlags			-	-	-	-	-	adf75b76e746c32a
+struct	c:@S@CFNetServiceClientContext	-			-	-	-	-	-	3d6781a73cfbd5c4
+field	c:@S@CFNetServiceClientContext@FI@version	CFNetServiceClientContext			CFIndex	-	-	-	-	c3a6d95c157d4cda
+field	c:@S@CFNetServiceClientContext@FI@info	CFNetServiceClientContext			void *	-	-	-	-	ae02ced9b47319a0
+field	c:@S@CFNetServiceClientContext@FI@retain	CFNetServiceClientContext			CFAllocatorRetainCallBack	-	-	-	-	35af26ed040e14ed
+field	c:@S@CFNetServiceClientContext@FI@release	CFNetServiceClientContext			CFAllocatorReleaseCallBack	-	-	-	-	e4e132524c95ea94
+field	c:@S@CFNetServiceClientContext@FI@copyDescription	CFNetServiceClientContext			CFAllocatorCopyDescriptionCallBack	-	-	-	-	aa002f640f646557
+typedef	c:@T@CFNetServiceClientContext	-			struct CFNetServiceClientContext	-	-	-	-	105bd79d2fd67bd2
+typedef	c:@T@CFNetServiceClientCallBack	-			void (*)(CFNetServiceRef _Nonnull, CFStreamError * _Nullable, void * _Nullable)	-	-	-	-	33e36720d469ffc9
+typedef	c:@T@CFNetServiceMonitorClientCallBack	-			void (*)(CFNetServiceMonitorRef _Nonnull, CFNetServiceRef _Nullable, CFNetServiceMonitorType, CFDataRef _Nullable, CFStreamError * _Nullable, void * _Nullable)	-	-	-	-	ae5bc5e41a362af0
+typedef	c:@T@CFNetServiceBrowserClientCallBack	-			void (*)(CFNetServiceBrowserRef _Nonnull, CFOptionFlags, CFTypeRef _Nullable, CFStreamError * _Nullable, void * _Nullable)	-	-	-	-	7758aec45885d9e3
+function	c:@F@CFNetServiceGetTypeID	-			CFTypeID (void)	-	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	7b4ebd4dd20f2b29
+function	c:@F@CFNetServiceMonitorGetTypeID	-			CFTypeID (void)	-	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	dab762f315e1e91b
+function	c:@F@CFNetServiceBrowserGetTypeID	-			CFTypeID (void)	-	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	cddcd507322420de
+function	c:@F@CFNetServiceCreate	-			CFNetServiceRef  _Nonnull (CFAllocatorRef _Nullable, CFStringRef _Nonnull, CFStringRef _Nonnull, CFStringRef _Nonnull, SInt32)	CFAllocatorRef alloc | CFStringRef domain | CFStringRef serviceType | CFStringRef name | SInt32 port	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	c2f04a11183435ac
+function	c:@F@CFNetServiceCreateCopy	-			CFNetServiceRef  _Nonnull (CFAllocatorRef _Nullable, CFNetServiceRef _Nonnull)	CFAllocatorRef alloc | CFNetServiceRef service	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	22684783489179e9
+function	c:@F@CFNetServiceGetDomain	-			CFStringRef  _Nonnull (CFNetServiceRef _Nonnull)	CFNetServiceRef theService	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	896617399685acc4
+function	c:@F@CFNetServiceGetType	-			CFStringRef  _Nonnull (CFNetServiceRef _Nonnull)	CFNetServiceRef theService	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	bb079c248b4c7370
+function	c:@F@CFNetServiceGetName	-			CFStringRef  _Nonnull (CFNetServiceRef _Nonnull)	CFNetServiceRef theService	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	f3fb572d7954debc
+function	c:@F@CFNetServiceRegisterWithOptions	-			Boolean (CFNetServiceRef _Nonnull, CFOptionFlags, CFStreamError * _Nullable)	CFNetServiceRef theService | CFOptionFlags options | CFStreamError * error	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	765b46a28866725f
+function	c:@F@CFNetServiceResolveWithTimeout	-			Boolean (CFNetServiceRef _Nonnull, CFTimeInterval, CFStreamError * _Nullable)	CFNetServiceRef theService | CFTimeInterval timeout | CFStreamError * error	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	46b3375050a742a4
+function	c:@F@CFNetServiceCancel	-			void (CFNetServiceRef _Nonnull)	CFNetServiceRef theService	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	67410d998424e838
+function	c:@F@CFNetServiceGetTargetHost	-			CFStringRef  _Nullable (CFNetServiceRef _Nonnull)	CFNetServiceRef theService	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	076c9d9ba5b8e694
+function	c:@F@CFNetServiceGetPortNumber	-			SInt32 (CFNetServiceRef _Nonnull)	CFNetServiceRef theService	-	ios=2.0/100000/-/0,macos=10.5/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	4ea1400c30463427
+function	c:@F@CFNetServiceGetAddressing	-			CFArrayRef  _Nullable (CFNetServiceRef _Nonnull)	CFNetServiceRef theService	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	32d9979e106ed551
+function	c:@F@CFNetServiceGetTXTData	-			CFDataRef  _Nullable (CFNetServiceRef _Nonnull)	CFNetServiceRef theService	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	cd2b2df2a5fc3d6e
+function	c:@F@CFNetServiceSetTXTData	-			Boolean (CFNetServiceRef _Nonnull, CFDataRef _Nonnull)	CFNetServiceRef theService | CFDataRef txtRecord	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	975e679e649ad25e
+function	c:@F@CFNetServiceCreateDictionaryWithTXTData	-			CFDictionaryRef  _Nullable (CFAllocatorRef _Nullable, CFDataRef _Nonnull)	CFAllocatorRef alloc | CFDataRef txtRecord	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	8cb1faa6bbd871af
+function	c:@F@CFNetServiceCreateTXTDataWithDictionary	-			CFDataRef  _Nullable (CFAllocatorRef _Nullable, CFDictionaryRef _Nonnull)	CFAllocatorRef alloc | CFDictionaryRef keyValuePairs	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	1a7b2ea2d0ad3927
+function	c:@F@CFNetServiceSetClient	-			Boolean (CFNetServiceRef _Nonnull, CFNetServiceClientCallBack _Nullable, CFNetServiceClientContext * _Nullable)	CFNetServiceRef theService | CFNetServiceClientCallBack clientCB | CFNetServiceClientContext * clientContext	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	0b0922cead5609b8
+function	c:@F@CFNetServiceScheduleWithRunLoop	-			void (CFNetServiceRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	CFNetServiceRef theService | CFRunLoopRef runLoop | CFStringRef runLoopMode	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	5ce26446b35d09f6
+function	c:@F@CFNetServiceUnscheduleFromRunLoop	-			void (CFNetServiceRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	CFNetServiceRef theService | CFRunLoopRef runLoop | CFStringRef runLoopMode	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	afd059bc71fd5d43
+function	c:@F@CFNetServiceMonitorCreate	-			CFNetServiceMonitorRef  _Nonnull (CFAllocatorRef _Nullable, CFNetServiceRef _Nonnull, CFNetServiceMonitorClientCallBack _Nonnull, CFNetServiceClientContext * _Nonnull)	CFAllocatorRef alloc | CFNetServiceRef theService | CFNetServiceMonitorClientCallBack clientCB | CFNetServiceClientContext * clientContext	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	6cbaa784d6eaae8a
+function	c:@F@CFNetServiceMonitorInvalidate	-			void (CFNetServiceMonitorRef _Nonnull)	CFNetServiceMonitorRef monitor	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	017e5d859e178879
+function	c:@F@CFNetServiceMonitorStart	-			Boolean (CFNetServiceMonitorRef _Nonnull, CFNetServiceMonitorType, CFStreamError * _Nullable)	CFNetServiceMonitorRef monitor | CFNetServiceMonitorType recordType | CFStreamError * error	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	f4947f2c4fad38a5
+function	c:@F@CFNetServiceMonitorStop	-			void (CFNetServiceMonitorRef _Nonnull, CFStreamError * _Nullable)	CFNetServiceMonitorRef monitor | CFStreamError * error	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	41d2532ef878f9cf
+function	c:@F@CFNetServiceMonitorScheduleWithRunLoop	-			void (CFNetServiceMonitorRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	CFNetServiceMonitorRef monitor | CFRunLoopRef runLoop | CFStringRef runLoopMode	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	ab2c26fc21162392
+function	c:@F@CFNetServiceMonitorUnscheduleFromRunLoop	-			void (CFNetServiceMonitorRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	CFNetServiceMonitorRef monitor | CFRunLoopRef runLoop | CFStringRef runLoopMode	-	ios=2.0/100000/-/0,macos=10.4/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	cd69e7605fff04a6
+function	c:@F@CFNetServiceBrowserCreate	-			CFNetServiceBrowserRef  _Nonnull (CFAllocatorRef _Nullable, CFNetServiceBrowserClientCallBack _Nonnull, CFNetServiceClientContext * _Nonnull)	CFAllocatorRef alloc | CFNetServiceBrowserClientCallBack clientCB | CFNetServiceClientContext * clientContext	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	bfba6b0009ea42ea
+function	c:@F@CFNetServiceBrowserInvalidate	-			void (CFNetServiceBrowserRef _Nonnull)	CFNetServiceBrowserRef browser	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	1dee7291c4cc9e66
+function	c:@F@CFNetServiceBrowserSearchForDomains	-			Boolean (CFNetServiceBrowserRef _Nonnull, Boolean, CFStreamError * _Nullable)	CFNetServiceBrowserRef browser | Boolean registrationDomains | CFStreamError * error	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	7e3b9dfda8bd15b0
+function	c:@F@CFNetServiceBrowserSearchForServices	-			Boolean (CFNetServiceBrowserRef _Nonnull, CFStringRef _Nonnull, CFStringRef _Nonnull, CFStreamError * _Nullable)	CFNetServiceBrowserRef browser | CFStringRef domain | CFStringRef serviceType | CFStreamError * error	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	b83d6681f970a638
+function	c:@F@CFNetServiceBrowserStopSearch	-			void (CFNetServiceBrowserRef _Nonnull, CFStreamError * _Nullable)	CFNetServiceBrowserRef browser | CFStreamError * error	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	7cacb7abb2307e24
+function	c:@F@CFNetServiceBrowserScheduleWithRunLoop	-			void (CFNetServiceBrowserRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	CFNetServiceBrowserRef browser | CFRunLoopRef runLoop | CFStringRef runLoopMode	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	e0bdc08a8ab1ae01
+function	c:@F@CFNetServiceBrowserUnscheduleFromRunLoop	-			void (CFNetServiceBrowserRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	CFNetServiceBrowserRef browser | CFRunLoopRef runLoop | CFStringRef runLoopMode	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	f22c5d564101259b
+function	c:@F@CFNetServiceRegister	-			Boolean (CFNetServiceRef _Nonnull, CFStreamError * _Nullable)	CFNetServiceRef theService | CFStreamError * error	-	ios=-/-/-/1	-	aa2c6a5ea342b608
+function	c:@F@CFNetServiceResolve	-			Boolean (CFNetServiceRef _Nonnull, CFStreamError * _Nullable)	CFNetServiceRef theService | CFStreamError * error	-	ios=-/-/-/1	-	cf421b506980438a
+var	c:@kCFStreamPropertySSLContext	-			const CFStringRef	-	-	ios=5.0/-/-/0	-	f82cd835a4b9ca17
+var	c:@kCFStreamPropertySSLPeerTrust	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	9aab148f6ad085da
+var	c:@kCFStreamSSLValidatesCertificateChain	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	19dbd99341f31d2c
+var	c:@kCFStreamPropertySSLSettings	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	82a0cbe38e4d2a1d
+var	c:@kCFStreamSSLLevel	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	6ff9a07d5e9ddabb
+var	c:@kCFStreamSSLPeerName	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	bea779598030af71
+var	c:@kCFStreamSSLCertificates	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	129cad90b91d973b
+var	c:@kCFStreamSSLIsServer	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	28a42768052d0645
+var	c:@kCFStreamNetworkServiceType	-			const CFStringRef	-	-	ios=4.0/-/-/0	-	c1e9f611816ca223
+var	c:@kCFStreamNetworkServiceTypeVideo	-			const CFStringRef	-	-	ios=5.0/-/-/0	-	74248a205c1bd3cc
+var	c:@kCFStreamNetworkServiceTypeVoice	-			const CFStringRef	-	-	ios=5.0/-/-/0	-	2da275195109601a
+var	c:@kCFStreamNetworkServiceTypeBackground	-			const CFStringRef	-	-	ios=5.0/-/-/0	-	c05a6a79e3475783
+var	c:@kCFStreamNetworkServiceTypeResponsiveData	-			const CFStringRef	-	-	ios=6.0/-/-/0	-	9020f5a605fa5744
+var	c:@kCFStreamNetworkServiceTypeCallSignaling	-			const CFStringRef	-	-	ios=10.0/-/-/0	-	f372b6b2220c9280
+var	c:@kCFStreamNetworkServiceTypeAVStreaming	-			const CFStringRef	-	-	ios=6.0/-/-/0	-	2cc84862f3c31d24
+var	c:@kCFStreamNetworkServiceTypeResponsiveAV	-			const CFStringRef	-	-	ios=6.0/-/-/0	-	1fb8e51d6e08377d
+var	c:@kCFStreamNetworkServiceTypeVoIP	-			const CFStringRef	-	-	ios=4.0/9.0/-/0	-	0b0a63977fdcb7a1
+var	c:@kCFStreamPropertyNoCellular	-			const CFStringRef	-	-	ios=5.0/-/-/0	-	e198bc60c5bc7ed6
+var	c:@kCFStreamPropertyConnectionIsCellular	-			const CFStringRef	-	-	ios=6.0/-/-/0	-	bdfe49f06be9c4cf
+var	c:@kCFStreamPropertyAllowExpensiveNetworkAccess	-			const CFStringRef	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	d01d4e355419737c
+var	c:@kCFStreamPropertyConnectionIsExpensive	-			const CFStringRef	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	bb970c9739429964
+var	c:@kCFStreamPropertyAllowConstrainedNetworkAccess	-			const CFStringRef	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	0273a2480a0a45c1
+var	c:@kCFStreamErrorDomainWinSock	-			const CFIndex	-	-	ios=2.0/-/-/0	-	dc9a9da2d848c930
+function	c:@F@CFSocketStreamSOCKSGetErrorSubdomain	-			SInt32 (const CFStreamError * _Nonnull)	const CFStreamError * error	-	-	-	9c2e0d053b252622
+function	c:@F@CFSocketStreamSOCKSGetError	-			SInt32 (const CFStreamError * _Nonnull)	const CFStreamError * error	-	-	-	0defa6561feba0a6
+enum	c:@Ea@kCFStreamErrorSOCKSSubDomainNone	-	-		unsigned int	-	-	-	-	96743da8425abb5b
+enumconst	c:@Ea@kCFStreamErrorSOCKSSubDomainNone@kCFStreamErrorSOCKSSubDomainNone	-			-	-	-	-	-	859693f6a6b63b65
+enumconst	c:@Ea@kCFStreamErrorSOCKSSubDomainNone@kCFStreamErrorSOCKSSubDomainVersionCode	-			-	-	-	-	-	1c2685ba13f90550
+enumconst	c:@Ea@kCFStreamErrorSOCKSSubDomainNone@kCFStreamErrorSOCKS4SubDomainResponse	-			-	-	-	-	-	21f85b2312ad1be9
+enumconst	c:@Ea@kCFStreamErrorSOCKSSubDomainNone@kCFStreamErrorSOCKS5SubDomainUserPass	-			-	-	-	-	-	58318892c6831b88
+enumconst	c:@Ea@kCFStreamErrorSOCKSSubDomainNone@kCFStreamErrorSOCKS5SubDomainMethod	-			-	-	-	-	-	3ba114c970465c19
+enumconst	c:@Ea@kCFStreamErrorSOCKSSubDomainNone@kCFStreamErrorSOCKS5SubDomainResponse	-			-	-	-	-	-	1b40257dc83a3e49
+enum	c:@Ea@kCFStreamErrorSOCKS5BadResponseAddr	-	-		unsigned int	-	-	-	-	986f0d91bd91c025
+enumconst	c:@Ea@kCFStreamErrorSOCKS5BadResponseAddr@kCFStreamErrorSOCKS5BadResponseAddr	-			-	-	-	-	-	af68be07f5230c96
+enumconst	c:@Ea@kCFStreamErrorSOCKS5BadResponseAddr@kCFStreamErrorSOCKS5BadState	-			-	-	-	-	-	949ba2fcd5d6666a
+enumconst	c:@Ea@kCFStreamErrorSOCKS5BadResponseAddr@kCFStreamErrorSOCKSUnknownClientVersion	-			-	-	-	-	-	1d16a4efbdae2ea4
+enum	c:@Ea@kCFStreamErrorSOCKS4RequestFailed	-	-		unsigned int	-	-	-	-	c773cb519aee258e
+enumconst	c:@Ea@kCFStreamErrorSOCKS4RequestFailed@kCFStreamErrorSOCKS4RequestFailed	-			-	-	-	-	-	dadfe0d0534a6d95
+enumconst	c:@Ea@kCFStreamErrorSOCKS4RequestFailed@kCFStreamErrorSOCKS4IdentdFailed	-			-	-	-	-	-	1685f8d4f9bb76ef
+enumconst	c:@Ea@kCFStreamErrorSOCKS4RequestFailed@kCFStreamErrorSOCKS4IdConflict	-			-	-	-	-	-	98a63a0948d95c11
+enum	c:@Ea@kSOCKS5NoAcceptableMethod	-	-		unsigned int	-	-	-	-	c2a9f427def4d9d9
+enumconst	c:@Ea@kSOCKS5NoAcceptableMethod@kSOCKS5NoAcceptableMethod	-			-	-	-	-	-	10d6a6be4ee8f31c
+var	c:@kCFStreamPropertyProxyLocalBypass	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	f1ebecc0e02ea8f5
+var	c:@kCFStreamPropertySocketRemoteHost	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	cfad22a22274564e
+var	c:@kCFStreamPropertySocketRemoteNetService	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	c0ecf2b1e1992e2d
+var	c:@kCFStreamPropertySocketExtendedBackgroundIdleMode	-			const CFStringRef	-	-	ios=9.0/-/-/0	-	6868277d89ebd3c3
+function	c:@F@CFStreamCreatePairWithSocketToCFHost	-			void (CFAllocatorRef _Nullable, CFHostRef _Nonnull, SInt32, CFReadStreamRef  _Nullable * _Nullable, CFWriteStreamRef  _Nullable * _Nullable)	CFAllocatorRef alloc | CFHostRef host | SInt32 port | CFReadStreamRef  _Nullable * readStream | CFWriteStreamRef  _Nullable * writeStream	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	06aacd1755322303
+function	c:@F@CFStreamCreatePairWithSocketToNetService	-			void (CFAllocatorRef _Nullable, CFNetServiceRef _Nonnull, CFReadStreamRef  _Nullable * _Nullable, CFWriteStreamRef  _Nullable * _Nullable)	CFAllocatorRef alloc | CFNetServiceRef service | CFReadStreamRef  _Nullable * readStream | CFWriteStreamRef  _Nullable * writeStream	-	ios=2.0/100000/-/0,macos=10.3/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	4c62458a4d032195
+var	c:@kCFStreamPropertySSLPeerCertificates	-			const CFStringRef	-	-	ios=2.0/4.0/-/0	-	6d57f7977b220227
+var	c:@kCFStreamSSLAllowsExpiredCertificates	-			const CFStringRef	-	-	ios=2.0/4.0/-/0	-	62933496a0cdd5de
+var	c:@kCFStreamSSLAllowsExpiredRoots	-			const CFStringRef	-	-	ios=2.0/4.0/-/0	-	bbd3211e4c557739
+var	c:@kCFStreamSSLAllowsAnyRoot	-			const CFStringRef	-	-	ios=2.0/4.0/-/0	-	114a297c5f42dbd8
+var	c:@kCFStreamErrorDomainFTP	-			const SInt32	-	-	ios=2.0/-/-/0	-	0cc20bf4ea4d89fb
+var	c:@kCFStreamPropertyFTPUserName	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	b754ce01586477e9
+var	c:@kCFStreamPropertyFTPPassword	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	b14c8144d65cf3df
+var	c:@kCFStreamPropertyFTPUsePassiveMode	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	dc1cb9777827313e
+var	c:@kCFStreamPropertyFTPResourceSize	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	4702feaa8e826cf7
+var	c:@kCFStreamPropertyFTPFetchResourceInfo	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	bd005a1c5fd82547
+var	c:@kCFStreamPropertyFTPFileTransferOffset	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	5a4d5e5a4500f3e5
+var	c:@kCFStreamPropertyFTPAttemptPersistentConnection	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	68b85bb54a37dbfe
+var	c:@kCFStreamPropertyFTPProxy	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	fdc9c0406546881a
+var	c:@kCFStreamPropertyFTPProxyHost	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	09bcbfb5f2d1ae6b
+var	c:@kCFStreamPropertyFTPProxyPort	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	fea0c8ac02a06cd5
+var	c:@kCFStreamPropertyFTPProxyUser	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	2619cd7238457472
+var	c:@kCFStreamPropertyFTPProxyPassword	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	d1b9f0e7f56e2859
+var	c:@kCFFTPResourceMode	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	a698d3bf5b98839c
+var	c:@kCFFTPResourceName	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	00f858a2bfbff038
+var	c:@kCFFTPResourceOwner	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	2482284e28ff3c68
+var	c:@kCFFTPResourceGroup	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	551736ddee314ced
+var	c:@kCFFTPResourceLink	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	df72374ebffee3c7
+var	c:@kCFFTPResourceSize	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	2c0955b30aaaf0e4
+var	c:@kCFFTPResourceType	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	a80ead6d9dbd5dd7
+var	c:@kCFFTPResourceModDate	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	f85868ad63764a54
+function	c:@F@CFReadStreamCreateWithFTPURL	-			CFReadStreamRef  _Nonnull (CFAllocatorRef _Nullable, CFURLRef _Nonnull)	CFAllocatorRef alloc | CFURLRef ftpURL	-	ios=2.0/9.0/-/0	-	3044650f3884eaaf
+function	c:@F@CFFTPCreateParsedResourceListing	-			CFIndex (CFAllocatorRef _Nullable, const UInt8 * _Nonnull, CFIndex, CFDictionaryRef  _Nullable * _Nullable)	CFAllocatorRef alloc | const UInt8 * buffer | CFIndex bufferLength | CFDictionaryRef  _Nullable * parsed	-	ios=2.0/9.0/-/0	-	b8cbed51317641bd
+function	c:@F@CFWriteStreamCreateWithFTPURL	-			CFWriteStreamRef  _Nonnull (CFAllocatorRef _Nullable, CFURLRef _Nonnull)	CFAllocatorRef alloc | CFURLRef ftpURL	-	ios=2.0/9.0/-/0	-	7ffb981dba9db600
+var	c:@kCFHTTPVersion1_0	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	df3561015c354183
+var	c:@kCFHTTPVersion1_1	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	71db70822b3086ad
+var	c:@kCFHTTPVersion2_0	-			const CFStringRef	-	-	ios=8.0/-/-/0	-	2555529073b3cdf2
+var	c:@kCFHTTPVersion3_0	-			const CFStringRef	-	-	ios=13.0/-/-/0	-	3e69a1a513a0a093
+var	c:@kCFHTTPAuthenticationSchemeBasic	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	e4077b38718e68eb
+var	c:@kCFHTTPAuthenticationSchemeDigest	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	6716bfcfc589492e
+var	c:@kCFHTTPAuthenticationSchemeNTLM	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	8ec0b56d1921ba6f
+var	c:@kCFHTTPAuthenticationSchemeKerberos	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	7e0a8ca50c6ef701
+var	c:@kCFHTTPAuthenticationSchemeNegotiate	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	a905863ed52f0b9e
+var	c:@kCFHTTPAuthenticationSchemeNegotiate2	-			const CFStringRef	-	-	ios=3.0/-/-/0	-	fe57f484b13b2fb6
+var	c:@kCFHTTPAuthenticationSchemeXMobileMeAuthToken	-			const CFStringRef	-	-	ios=4.3/-/-/0	-	50b9c424a3c436a7
+struct	c:@S@__CFHTTPMessage	-			-	-	-	-	-	15a01caa00fc0e18
+typedef	c:@T@CFHTTPMessageRef	-			struct __CFHTTPMessage *	-	-	-	-	79a4eb7a42abd066
+function	c:@F@CFHTTPMessageGetTypeID	-			CFTypeID (void)	-	-	ios=2.0/-/-/0	-	b40ed0fccc1ddb3d
+function	c:@F@CFHTTPMessageCreateRequest	-			CFHTTPMessageRef  _Nonnull (CFAllocatorRef _Nullable, CFStringRef _Nonnull, CFURLRef _Nonnull, CFStringRef _Nonnull)	CFAllocatorRef alloc | CFStringRef requestMethod | CFURLRef url | CFStringRef httpVersion	-	ios=2.0/-/-/0	-	84e5fa4bccef1a51
+function	c:@F@CFHTTPMessageCreateResponse	-			CFHTTPMessageRef  _Nonnull (CFAllocatorRef _Nullable, CFIndex, CFStringRef _Nullable, CFStringRef _Nonnull)	CFAllocatorRef alloc | CFIndex statusCode | CFStringRef statusDescription | CFStringRef httpVersion	-	ios=2.0/-/-/0	-	c57b2fe0fc4a896f
+function	c:@F@CFHTTPMessageCreateEmpty	-			CFHTTPMessageRef  _Nonnull (CFAllocatorRef _Nullable, Boolean)	CFAllocatorRef alloc | Boolean isRequest	-	ios=2.0/-/-/0	-	6483962743346635
+function	c:@F@CFHTTPMessageCreateCopy	-			CFHTTPMessageRef  _Nonnull (CFAllocatorRef _Nullable, CFHTTPMessageRef _Nonnull)	CFAllocatorRef alloc | CFHTTPMessageRef message	-	ios=2.0/-/-/0	-	b405965861084820
+function	c:@F@CFHTTPMessageIsRequest	-			Boolean (CFHTTPMessageRef _Nonnull)	CFHTTPMessageRef message	-	ios=2.0/-/-/0	-	01188b6c72e58404
+function	c:@F@CFHTTPMessageCopyVersion	-			CFStringRef  _Nonnull (CFHTTPMessageRef _Nonnull)	CFHTTPMessageRef message	-	ios=2.0/-/-/0	-	8bade3fc1703599d
+function	c:@F@CFHTTPMessageCopyBody	-			CFDataRef  _Nullable (CFHTTPMessageRef _Nonnull)	CFHTTPMessageRef message	-	ios=2.0/-/-/0	-	ac0e5e77c4bfb425
+function	c:@F@CFHTTPMessageSetBody	-			void (CFHTTPMessageRef _Nonnull, CFDataRef _Nonnull)	CFHTTPMessageRef message | CFDataRef bodyData	-	ios=2.0/-/-/0	-	2ffcdb3a29d8b315
+function	c:@F@CFHTTPMessageCopyHeaderFieldValue	-			CFStringRef  _Nullable (CFHTTPMessageRef _Nonnull, CFStringRef _Nonnull)	CFHTTPMessageRef message | CFStringRef headerField	-	ios=2.0/-/-/0	-	6ea3425a2025db6e
+function	c:@F@CFHTTPMessageCopyAllHeaderFields	-			CFDictionaryRef  _Nullable (CFHTTPMessageRef _Nonnull)	CFHTTPMessageRef message	-	ios=2.0/-/-/0	-	a6ef663f6e820f1f
+function	c:@F@CFHTTPMessageSetHeaderFieldValue	-			void (CFHTTPMessageRef _Nonnull, CFStringRef _Nonnull, CFStringRef _Nullable)	CFHTTPMessageRef message | CFStringRef headerField | CFStringRef value	-	ios=2.0/-/-/0	-	99279894b89f8be6
+function	c:@F@CFHTTPMessageAppendBytes	-			Boolean (CFHTTPMessageRef _Nonnull, const UInt8 * _Nonnull, CFIndex)	CFHTTPMessageRef message | const UInt8 * newBytes | CFIndex numBytes	-	ios=2.0/-/-/0	-	b585b391e15bfafd
+function	c:@F@CFHTTPMessageIsHeaderComplete	-			Boolean (CFHTTPMessageRef _Nonnull)	CFHTTPMessageRef message	-	ios=2.0/-/-/0	-	aa6e1ba97d415f41
+function	c:@F@CFHTTPMessageCopySerializedMessage	-			CFDataRef  _Nullable (CFHTTPMessageRef _Nonnull)	CFHTTPMessageRef message	-	ios=2.0/-/-/0	-	704888f02b24a1c7
+function	c:@F@CFHTTPMessageCopyRequestURL	-			CFURLRef  _Nullable (CFHTTPMessageRef _Nonnull)	CFHTTPMessageRef request	-	ios=2.0/-/-/0	-	4ddf07c0b86de9aa
+function	c:@F@CFHTTPMessageCopyRequestMethod	-			CFStringRef  _Nullable (CFHTTPMessageRef _Nonnull)	CFHTTPMessageRef request	-	ios=2.0/-/-/0	-	89804429543b0334
+function	c:@F@CFHTTPMessageAddAuthentication	-			Boolean (CFHTTPMessageRef _Nonnull, CFHTTPMessageRef _Nullable, CFStringRef _Nonnull, CFStringRef _Nonnull, CFStringRef _Nullable, Boolean)	CFHTTPMessageRef request | CFHTTPMessageRef authenticationFailureResponse | CFStringRef username | CFStringRef password | CFStringRef authenticationScheme | Boolean forProxy	-	ios=2.0/-/-/0	-	c41716ea535c9e3e
+function	c:@F@CFHTTPMessageGetResponseStatusCode	-			CFIndex (CFHTTPMessageRef _Nonnull)	CFHTTPMessageRef response	-	ios=2.0/-/-/0	-	c2c37b2267f75735
+function	c:@F@CFHTTPMessageCopyResponseStatusLine	-			CFStringRef  _Nullable (CFHTTPMessageRef _Nonnull)	CFHTTPMessageRef response	-	ios=2.0/-/-/0	-	f5bb5cfbe9513002
+var	c:@kCFStreamErrorDomainHTTP	-			const SInt32	-	-	ios=2.0/-/-/0	-	c5f528eb8c969529
+typedef	c:@T@CFStreamErrorHTTP	-			enum CFStreamErrorHTTP	-	-	-	-	cb7bc1a3899656c5
+enum	c:@E@CFStreamErrorHTTP	-			int	-	-	-	-	60c3ac2c831d2442
+enumconst	c:@E@CFStreamErrorHTTP@kCFStreamErrorHTTPParseFailure	CFStreamErrorHTTP			-	-	-	-	-	2c0dba8eb00bc801
+enumconst	c:@E@CFStreamErrorHTTP@kCFStreamErrorHTTPRedirectionLoop	CFStreamErrorHTTP			-	-	-	-	-	c77ae39c2e76db9c
+enumconst	c:@E@CFStreamErrorHTTP@kCFStreamErrorHTTPBadURL	CFStreamErrorHTTP			-	-	-	-	-	06453ccf8ec52afe
+var	c:@kCFStreamPropertyHTTPResponseHeader	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	e4d78803c5fd793f
+var	c:@kCFStreamPropertyHTTPFinalURL	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	e3a18a492c715056
+var	c:@kCFStreamPropertyHTTPFinalRequest	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	218c9945ad34349d
+var	c:@kCFStreamPropertyHTTPProxy	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	d0a8ca8a54106d51
+var	c:@kCFStreamPropertyHTTPProxyHost	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	7481c04342802b40
+var	c:@kCFStreamPropertyHTTPProxyPort	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	b7154ead6353224e
+var	c:@kCFStreamPropertyHTTPSProxyHost	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	0f8ca183743de08d
+var	c:@kCFStreamPropertyHTTPSProxyPort	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	b46202865d459094
+var	c:@kCFStreamPropertyHTTPShouldAutoredirect	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	4144872304426091
+var	c:@kCFStreamPropertyHTTPAttemptPersistentConnection	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	cbfaf26c7d960e12
+var	c:@kCFStreamPropertyHTTPRequestBytesWrittenCount	-			const CFStringRef	-	-	ios=2.0/9.0/-/0	-	e5dabbe9a27e4e80
+function	c:@F@CFReadStreamCreateForHTTPRequest	-			CFReadStreamRef  _Nonnull (CFAllocatorRef _Nullable, CFHTTPMessageRef _Nonnull)	CFAllocatorRef alloc | CFHTTPMessageRef request	-	ios=2.0/9.0/-/0	-	786d6c3c13ffe082
+function	c:@F@CFReadStreamCreateForStreamedHTTPRequest	-			CFReadStreamRef  _Nonnull (CFAllocatorRef _Nullable, CFHTTPMessageRef _Nonnull, CFReadStreamRef _Nonnull)	CFAllocatorRef alloc | CFHTTPMessageRef requestHeaders | CFReadStreamRef requestBody	-	ios=2.0/9.0/-/0	-	b3800cec1d8795c3
+struct	c:@S@_CFHTTPAuthentication	-			-	-	-	-	-	c5e6568d04a497a9
+typedef	c:@T@CFHTTPAuthenticationRef	-			struct _CFHTTPAuthentication *	-	-	-	-	177c8d6c1f2a09f1
+typedef	c:@T@CFStreamErrorHTTPAuthentication	-			enum CFStreamErrorHTTPAuthentication	-	-	-	-	7d069222794ad0e1
+enum	c:@E@CFStreamErrorHTTPAuthentication	-			int	-	-	-	-	a838f0b789252554
+enumconst	c:@E@CFStreamErrorHTTPAuthentication@kCFStreamErrorHTTPAuthenticationTypeUnsupported	CFStreamErrorHTTPAuthentication			-	-	-	-	-	698ec6e7600738ce
+enumconst	c:@E@CFStreamErrorHTTPAuthentication@kCFStreamErrorHTTPAuthenticationBadUserName	CFStreamErrorHTTPAuthentication			-	-	-	-	-	45f90438321f03e8
+enumconst	c:@E@CFStreamErrorHTTPAuthentication@kCFStreamErrorHTTPAuthenticationBadPassword	CFStreamErrorHTTPAuthentication			-	-	-	-	-	4545a03603d2107c
+var	c:@kCFHTTPAuthenticationUsername	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	ada55afb639eb0f2
+var	c:@kCFHTTPAuthenticationPassword	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	845f4867f10af4c9
+var	c:@kCFHTTPAuthenticationAccountDomain	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	33e131f5d20a1592
+function	c:@F@CFHTTPAuthenticationGetTypeID	-			CFTypeID (void)	-	-	ios=2.0/-/-/0	-	5c6d21c645e68cba
+function	c:@F@CFHTTPAuthenticationCreateFromResponse	-			CFHTTPAuthenticationRef  _Nonnull (CFAllocatorRef _Nullable, CFHTTPMessageRef _Nonnull)	CFAllocatorRef alloc | CFHTTPMessageRef response	-	ios=2.0/-/-/0	-	c827396126fa4c40
+function	c:@F@CFHTTPAuthenticationIsValid	-			Boolean (CFHTTPAuthenticationRef _Nonnull, CFStreamError * _Nullable)	CFHTTPAuthenticationRef auth | CFStreamError * error	-	ios=2.0/-/-/0	-	e92f6e5454930159
+function	c:@F@CFHTTPAuthenticationAppliesToRequest	-			Boolean (CFHTTPAuthenticationRef _Nonnull, CFHTTPMessageRef _Nonnull)	CFHTTPAuthenticationRef auth | CFHTTPMessageRef request	-	ios=2.0/-/-/0	-	ac4e1bf173564b27
+function	c:@F@CFHTTPAuthenticationRequiresOrderedRequests	-			Boolean (CFHTTPAuthenticationRef _Nonnull)	CFHTTPAuthenticationRef auth	-	ios=2.0/-/-/0	-	b9dd8483d37efae3
+function	c:@F@CFHTTPMessageApplyCredentials	-			Boolean (CFHTTPMessageRef _Nonnull, CFHTTPAuthenticationRef _Nonnull, CFStringRef _Nullable, CFStringRef _Nullable, CFStreamError * _Nullable)	CFHTTPMessageRef request | CFHTTPAuthenticationRef auth | CFStringRef username | CFStringRef password | CFStreamError * error	-	ios=2.0/-/-/0	-	fe549b30e92acb58
+function	c:@F@CFHTTPMessageApplyCredentialDictionary	-			Boolean (CFHTTPMessageRef _Nonnull, CFHTTPAuthenticationRef _Nonnull, CFDictionaryRef _Nonnull, CFStreamError * _Nullable)	CFHTTPMessageRef request | CFHTTPAuthenticationRef auth | CFDictionaryRef dict | CFStreamError * error	-	ios=2.0/-/-/0	-	b9b55bfbc58d6893
+function	c:@F@CFHTTPAuthenticationCopyRealm	-			CFStringRef  _Nonnull (CFHTTPAuthenticationRef _Nonnull)	CFHTTPAuthenticationRef auth	-	ios=2.0/-/-/0	-	2b27dea03a8fc0b0
+function	c:@F@CFHTTPAuthenticationCopyDomains	-			CFArrayRef  _Nonnull (CFHTTPAuthenticationRef _Nonnull)	CFHTTPAuthenticationRef auth	-	ios=2.0/-/-/0	-	f702aa26c622f9fe
+function	c:@F@CFHTTPAuthenticationCopyMethod	-			CFStringRef  _Nonnull (CFHTTPAuthenticationRef _Nonnull)	CFHTTPAuthenticationRef auth	-	ios=2.0/-/-/0	-	a892be68f0003337
+function	c:@F@CFHTTPAuthenticationRequiresUserNameAndPassword	-			Boolean (CFHTTPAuthenticationRef _Nonnull)	CFHTTPAuthenticationRef auth	-	ios=2.0/-/-/0	-	b81d4d64b4dcfa81
+function	c:@F@CFHTTPAuthenticationRequiresAccountDomain	-			Boolean (CFHTTPAuthenticationRef _Nonnull)	CFHTTPAuthenticationRef auth	-	ios=2.0/-/-/0	-	1ae0a6c817f47d67
+struct	c:@S@__CFNetDiagnostic	-			-	-	-	-	-	ddb8c453c0b86f93
+typedef	c:@T@CFNetDiagnosticRef	-			struct __CFNetDiagnostic *	-	-	-	-	75c66e5b4b04d2fc
+typedef	c:@T@CFNetDiagnosticStatusValues	-			enum CFNetDiagnosticStatusValues	-	-	-	-	1e00e0593f4dadeb
+enum	c:@E@CFNetDiagnosticStatusValues	-			int	-	-	ios=2.0/11.0/-/0	-	5c5368aad288997f
+enumconst	c:@E@CFNetDiagnosticStatusValues@kCFNetDiagnosticNoErr	CFNetDiagnosticStatusValues			-	-	-	ios=2.0/11.0/-/0	-	7299ad0e5584c13a
+enumconst	c:@E@CFNetDiagnosticStatusValues@kCFNetDiagnosticErr	CFNetDiagnosticStatusValues			-	-	-	ios=2.0/11.0/-/0	-	9dd28a05933f5a94
+enumconst	c:@E@CFNetDiagnosticStatusValues@kCFNetDiagnosticConnectionUp	CFNetDiagnosticStatusValues			-	-	-	ios=2.0/11.0/-/0	-	4f8135fafee6277c
+enumconst	c:@E@CFNetDiagnosticStatusValues@kCFNetDiagnosticConnectionIndeterminate	CFNetDiagnosticStatusValues			-	-	-	ios=2.0/11.0/-/0	-	27eeb84e17b000f6
+enumconst	c:@E@CFNetDiagnosticStatusValues@kCFNetDiagnosticConnectionDown	CFNetDiagnosticStatusValues			-	-	-	ios=2.0/11.0/-/0	-	7c45bc93a345f5f2
+typedef	c:@T@CFNetDiagnosticStatus	-			CFIndex	-	-	ios=2.0/11.0/-/0	-	433b462bb177877b
+function	c:@F@CFNetDiagnosticCreateWithStreams	-			CFNetDiagnosticRef  _Nonnull (CFAllocatorRef _Nullable, CFReadStreamRef _Nullable, CFWriteStreamRef _Nullable)	CFAllocatorRef alloc | CFReadStreamRef readStream | CFWriteStreamRef writeStream	-	ios=2.0/11.0/-/0	-	55bae5348ba5494e
+function	c:@F@CFNetDiagnosticCreateWithURL	-			CFNetDiagnosticRef  _Nonnull (CFAllocatorRef _Nonnull, CFURLRef _Nonnull)	CFAllocatorRef alloc | CFURLRef url	-	ios=2.0/11.0/-/0	-	ff99d3baa5ca391c
+function	c:@F@CFNetDiagnosticSetName	-			void (CFNetDiagnosticRef _Nonnull, CFStringRef _Nonnull)	CFNetDiagnosticRef details | CFStringRef name	-	ios=2.0/11.0/-/0	-	d75d270066f31b0b
+function	c:@F@CFNetDiagnosticDiagnoseProblemInteractively	-			CFNetDiagnosticStatus (CFNetDiagnosticRef _Nonnull)	CFNetDiagnosticRef details	-	ios=2.0/11.0/-/0	-	3306f8f06bc6a3fe
+function	c:@F@CFNetDiagnosticCopyNetworkStatusPassively	-			CFNetDiagnosticStatus (CFNetDiagnosticRef _Nonnull, CFStringRef  _Nullable * _Nullable)	CFNetDiagnosticRef details | CFStringRef  _Nullable * description	-	ios=2.0/11.0/-/0	-	66881579ba0016ba
+function	c:@F@CFNetworkCopySystemProxySettings	-			CFDictionaryRef  _Nullable (void)	-	-	ios=2.0/-/-/0	-	7dc90081575e7c32
+function	c:@F@CFNetworkCopyProxiesForURL	-			CFArrayRef  _Nonnull (CFURLRef _Nonnull, CFDictionaryRef _Nonnull)	CFURLRef url | CFDictionaryRef proxySettings	-	ios=2.0/-/-/0	-	12a694704e5261b0
+typedef	c:@T@CFProxyAutoConfigurationResultCallback	-			void (*)(void * _Nonnull, CFArrayRef _Nonnull, CFErrorRef _Nullable)	-	-	-	-	e6e43fef3b77421d
+function	c:@F@CFNetworkCopyProxiesForAutoConfigurationScript	-			CFArrayRef  _Nullable (CFStringRef _Nonnull, CFURLRef _Nonnull, CFErrorRef  _Nullable * _Nullable)	CFStringRef proxyAutoConfigurationScript | CFURLRef targetURL | CFErrorRef  _Nullable * error	-	ios=2.0/-/-/0	-	6be2d414d0370848
+function	c:@F@CFNetworkExecuteProxyAutoConfigurationScript	-			CFRunLoopSourceRef  _Nonnull (CFStringRef _Nonnull, CFURLRef _Nonnull, CFProxyAutoConfigurationResultCallback _Nonnull, CFStreamClientContext * _Nonnull)	CFStringRef proxyAutoConfigurationScript | CFURLRef targetURL | CFProxyAutoConfigurationResultCallback cb | CFStreamClientContext * clientContext	-	ios=2.0/-/-/0	-	341a30c73beb78c8
+function	c:@F@CFNetworkExecuteProxyAutoConfigurationURL	-			CFRunLoopSourceRef  _Nonnull (CFURLRef _Nonnull, CFURLRef _Nonnull, CFProxyAutoConfigurationResultCallback _Nonnull, CFStreamClientContext * _Nonnull)	CFURLRef proxyAutoConfigURL | CFURLRef targetURL | CFProxyAutoConfigurationResultCallback cb | CFStreamClientContext * clientContext	-	ios=2.0/-/-/0	-	9564aedcc4430bb6
+var	c:@kCFProxyTypeKey	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	d802f65d7b54c9e1
+var	c:@kCFProxyHostNameKey	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	c57731ed2ecbbc13
+var	c:@kCFProxyPortNumberKey	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	fdad8b3c9f415ba4
+var	c:@kCFProxyAutoConfigurationURLKey	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	bd3a22b64aaf93a2
+var	c:@kCFProxyAutoConfigurationJavaScriptKey	-			const CFStringRef	-	-	ios=3.0/-/-/0	-	656f710ab985c3ee
+var	c:@kCFProxyUsernameKey	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	cbd53886609708f7
+var	c:@kCFProxyPasswordKey	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	b2cd484b320f3872
+var	c:@kCFProxyTypeNone	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	79e288921dd0c039
+var	c:@kCFProxyTypeHTTP	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	c57c5d040c12c9cc
+var	c:@kCFProxyTypeHTTPS	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	a2192ad7c7ba57b2
+var	c:@kCFProxyTypeSOCKS	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	9b78552e483981fc
+var	c:@kCFProxyTypeFTP	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	b0b7f08add5d3888
+var	c:@kCFProxyTypeAutoConfigurationURL	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	562efbefaadcde16
+var	c:@kCFProxyTypeAutoConfigurationJavaScript	-			const CFStringRef	-	-	ios=3.0/-/-/0	-	d412200dec1465cf
+var	c:@kCFProxyAutoConfigurationHTTPResponseKey	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	5fea709f4e50f80b
+var	c:@kCFNetworkProxiesExceptionsList	-			const CFStringRef	-	-	ios=-/-/-/1	-	9fff5e684bfd4e73
+var	c:@kCFNetworkProxiesExcludeSimpleHostnames	-			const CFStringRef	-	-	ios=-/-/-/1	-	b0c2dfdc91b072cb
+var	c:@kCFNetworkProxiesFTPEnable	-			const CFStringRef	-	-	ios=-/-/-/1	-	f36de56ab7e9991d
+var	c:@kCFNetworkProxiesFTPPassive	-			const CFStringRef	-	-	ios=-/-/-/1	-	9c810baffbb88f20
+var	c:@kCFNetworkProxiesFTPPort	-			const CFStringRef	-	-	ios=-/-/-/1	-	d80791453edcbd54
+var	c:@kCFNetworkProxiesFTPProxy	-			const CFStringRef	-	-	ios=-/-/-/1	-	0da7217509a85c67
+var	c:@kCFNetworkProxiesGopherEnable	-			const CFStringRef	-	-	ios=-/-/-/1	-	58f9be5ed8d84419
+var	c:@kCFNetworkProxiesGopherPort	-			const CFStringRef	-	-	ios=-/-/-/1	-	50700bf8dab03db7
+var	c:@kCFNetworkProxiesGopherProxy	-			const CFStringRef	-	-	ios=-/-/-/1	-	80aa55f1de06cf3b
+var	c:@kCFNetworkProxiesHTTPEnable	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	cce4c8be9e609f0d
+var	c:@kCFNetworkProxiesHTTPPort	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	1e866525c1b5431a
+var	c:@kCFNetworkProxiesHTTPProxy	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	755c6bf41d6b912b
+var	c:@kCFNetworkProxiesHTTPSEnable	-			const CFStringRef	-	-	ios=-/-/-/1	-	72e1b3e472144b0f
+var	c:@kCFNetworkProxiesHTTPSPort	-			const CFStringRef	-	-	ios=-/-/-/1	-	24f4ce72757166bf
+var	c:@kCFNetworkProxiesHTTPSProxy	-			const CFStringRef	-	-	ios=-/-/-/1	-	3e8a2d1915f1aeb5
+var	c:@kCFNetworkProxiesRTSPEnable	-			const CFStringRef	-	-	ios=-/-/-/1	-	d5f7959caf72e0cf
+var	c:@kCFNetworkProxiesRTSPPort	-			const CFStringRef	-	-	ios=-/-/-/1	-	f4d6e5521d5fddf8
+var	c:@kCFNetworkProxiesRTSPProxy	-			const CFStringRef	-	-	ios=-/-/-/1	-	36f6e14bc05d2c7f
+var	c:@kCFNetworkProxiesSOCKSEnable	-			const CFStringRef	-	-	ios=-/-/-/1	-	31da43ec1898c134
+var	c:@kCFNetworkProxiesSOCKSPort	-			const CFStringRef	-	-	ios=-/-/-/1	-	663d58eb2f92b30f
+var	c:@kCFNetworkProxiesSOCKSProxy	-			const CFStringRef	-	-	ios=-/-/-/1	-	2a53235b6cf169bb
+var	c:@kCFNetworkProxiesProxyAutoConfigEnable	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	b0d666d7d285f500
+var	c:@kCFNetworkProxiesProxyAutoConfigURLString	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	ef6ac85645bbed6a
+var	c:@kCFNetworkProxiesProxyAutoConfigJavaScript	-			const CFStringRef	-	-	ios=3.0/-/-/0	-	3e6fea86c14dec02
+var	c:@kCFNetworkProxiesProxyAutoDiscoveryEnable	-			const CFStringRef	-	-	ios=-/-/-/1	-	108e6e77e4bac855

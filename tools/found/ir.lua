@@ -27,6 +27,8 @@
 --   IR_FULL    if set, the full 17-column IR is written there (a build product, not committed).
 --   IR_DECLS   the extractor binary (default: the xmake build product of tools/found).
 --   IR_TIMEOUT seconds per framework (default 300).
+--   IR_USR_MODULES the usr/include modules the sweep covers, by name, a comma list (default: the seven of ruling 2026-10-10). A
+--                 module's shard is its own declarations: those written in the directories of its headers, which its module map names.
 local SDK = os.getenv("IR_SDK")
 local MODE = os.getenv("IR_MODE") or "write"
 local SPEC = os.getenv("IR_SPEC") or "packages/a/apple-backports/spec"
@@ -35,18 +37,17 @@ local DECLS = os.getenv("IR_DECLS") or "build/macosx/arm64/release/decls"
 local TIMEOUT = os.getenv("IR_TIMEOUT") or "300"
 local CONFLICTS = os.getenv("IR_CONFLICTS") or path.join("tools", "found", "conflicts.tsv")
 local UNPARSED = os.getenv("IR_UNPARSED") or path.join("tools", "found", "unparsed.tsv")
-local TRIPLE = "arm64-apple-ios26.2"
-local CLANG = "/Library/Developer/CommandLineTools/usr/bin/clang"
+-- the target the extractor compiles for (decls owns it: decls --target)
+local TRIPLE = (os.iorunv(DECLS, {"--target"}):gsub("%s+$", ""))
 local COLUMNS = 18
 -- The columns a shard keeps: kind, usr, container, name, side, type (typedef rows only), avail, message, declhash. The IR's other columns are derived or are
 -- build products: framework is the folder, availhash is derived from avail, header and line are for documentation, decl is for the
 -- docs (ruling D8: re-derived from clang at doc time), and type, params, nullab, attrs and value are inside the declaration hash.
 -- name and side are stored only where the USR does not give them (shard.lua). avail and message are rendered by the generator
 -- (avail.lua, ruling D7).
-local SHARD_NAMES = "kind,usr,container,name,side,type,attrs,availability,message,declhash"
+local SHARD_NAMES = "kind,usr,container,name,side,type,params,attrs,availability,message,declhash"
 local shard = import("shard", {rootdir = path.join(os.curdir(), "tools", "found")})
 local avail = import("avail", {rootdir = path.join(os.curdir(), "tools", "found")})
-local RESOURCE  -- the compiler's resource directory, read from CLANG below
 local SDK_NAME  -- the SDK's name without its path or .sdk suffix, as the shards record it
 
 if not SDK then raise("IR_SDK must name the iPhoneOS SDK (for example .../iPhoneOS26.2.sdk)") end
@@ -67,112 +68,14 @@ local function cells_of(line)
     return out
 end
 
--- The frameworks directly in dir, as {name, base, root}. A nested framework is named by its outer framework and its own name
--- ("AVFoundation/AVFAudio"): the SDK nests a framework of the same name as a top-level one, and the names must be unique.
-local function frameworks_in(dir, outer)
-    local out = {}
-    for _, root in ipairs(os.dirs(path.join(dir, "*.framework"))) do
-        local base = path.basename(root):gsub("%.framework$", "")
-        table.insert(out, {name = outer and (outer .. "/" .. base) or base, base = base, root = root})
-    end
-    return out
-end
-
--- Every framework of the SDK and every framework nested in one's Frameworks/ directory, at any depth. A symbolic link to a framework
--- is the same framework (AVFoundation's Frameworks/AVFAudio.framework links to the top-level one) and is not listed twice.
-local function all_frameworks()
-    local out = {}
-    local function collect(list)
-        for _, f in ipairs(list) do
-            table.insert(out, f)
-            collect(frameworks_in(path.join(f.root, "Frameworks"), f.name))
-        end
-    end
-    collect(frameworks_in(path.join(SDK, "System", "Library", "Frameworks"), nil))
-    table.sort(out, function(a, b) return a.name < b.name end)
-    for i = 2, #out do
-        if out[i].name == out[i - 1].name then raise("two frameworks are named " .. out[i].name) end
-    end
-    return out
-end
-
--- The public headers a module map exposes, as absolute paths. Submodules are followed; a framework module nested in this one is
--- its own framework and is skipped here; so is any module whose requirements name x86 (the target is arm64). Textual, private
--- and excluded headers are not public, and an exclude removes a header that an umbrella directory would take.
-local function module_headers(root)
-    local map = path.join(root, "Modules", "module.modulemap")
-    if not os.isfile(map) then return {} end
-    local headers, excluded, named, seen = {}, {}, {}, {}
-    local function add(file, explicit)
-        if explicit then named[file] = true end
-        if not seen[file] then
-            seen[file] = true
-            table.insert(headers, file)
-        end
-    end
-    local depth, skip_at = 0, nil
-    for line in io.lines(map) do
-        local code = trim((line:gsub("//.*$", "")))
-        local _, opens = code:gsub("{", "")
-        local _, closes = code:gsub("}", "")
-        local skipping = skip_at ~= nil and depth >= skip_at
-        if not skipping then
-            if code:find("^framework%s+module%s") and depth >= 1 then
-                skip_at = depth + 1
-            elseif code:find("^requires%s+x86") then
-                skip_at = depth
-            else
-                local file = code:match('^umbrella%s+header%s+"([^"]+)"') or code:match('^header%s+"([^"]+)"')
-                if file then
-                    add(path.join(root, "Headers", file), true)
-                elseif code:find("^exclude%s+header%s") then
-                    excluded[path.join(root, "Headers", code:match('"([^"]+)"'))] = true
-                else
-                    local dir = code:match('^umbrella%s+"([^"]+)"')
-                    if dir then
-                        for _, file in ipairs(os.files(path.join(root, dir, "**.h"))) do
-                            add(file)
-                        end
-                    end
-                end
-            end
-        end
-        depth = depth + opens - closes
-        if skip_at and depth < skip_at then skip_at = nil end
-    end
-    -- an exclude keeps a header out of an umbrella directory; a header a module names itself stays (CoreData's explicit CloudKit
-    -- submodule names NSPersistentCloudKitContainer_Sharing.h, which its module map also excludes from the umbrella)
-    local out = {}
-    for _, file in ipairs(headers) do
-        if not excluded[file] or named[file] then table.insert(out, file) end
-    end
-    table.sort(out)
-    return out
-end
-
--- The headers a framework is parsed from, and the reason when there are none.
-local function headers_of(f)
-    local listed = module_headers(f.root)
-    if #listed > 0 then return listed end
-    local umbrella = path.join(f.root, "Headers", f.base .. ".h")
-    if os.isfile(umbrella) then return {umbrella} end
-    local all = os.files(path.join(f.root, "Headers", "*.h"))
-    table.sort(all)
-    if #all > 0 then return all end
-    local swift = os.dirs(path.join(f.root, "Modules", "*.swiftmodule"))
-    if #swift > 0 then return {}, "no Objective-C or C header; Swift interface only" end
-    return {}, "no public header in Headers/ and no module map header"
-end
-
 -- The redacted SDK path is what the rows carry: the rows must not depend on where the SDK is installed.
 local function redact(s)
     return (s:gsub(SDK:gsub("%p", "%%%0"), "<sdk>"))
 end
 
 -- The rows of one framework (COLUMNS cells each, newline-terminated), or the reason it could not be parsed.
-local function parse(f, headers)
-    local argv = {"--timeout", TIMEOUT, SDK, f.name, f.root, TRIPLE, RESOURCE}
-    for _, file in ipairs(headers) do table.insert(argv, file) end
+local function parse(f)
+    local argv = {"--timeout", TIMEOUT, f.name}
     local out, failure
     try {
         function () out = os.iorunv(DECLS, argv) end,
@@ -221,15 +124,21 @@ local function listed_conflicts()
 end
 
 local started = os.mclock()
-RESOURCE = trim(os.iorunv(CLANG, {"-print-resource-dir"}))
+-- decls resolves the SDK from IR_SDK, so every extractor run below sees the absolute path the sweep uses
+os.setenv("IR_SDK", SDK)
 local libclang = trim(os.iorunv(DECLS, {"--version"}))
 SDK_NAME = (path.basename(SDK):gsub("%.sdk$", ""))
 
-local frameworks = all_frameworks()
+-- The frameworks the sweep covers, as decls lists them (its name and its root): the one code path for the list, the headers and the
+-- doc mode.
+local frameworks = {}
+for line in os.iorunv(DECLS, {"--list"}):gmatch("[^\n]+") do
+    local name, root = line:match("^([^\t]+)\t(.+)$")
+    table.insert(frameworks, {name = name, root = root})
+end
 -- The doc-time rows of one framework (decls --doc), or nil when the extractor does not parse it (its own status is an error).
-local function doc_rows(f, headers)
-    local argv = {"--doc", "--timeout", TIMEOUT, SDK, f.name, f.root, TRIPLE, RESOURCE}
-    for _, file in ipairs(headers) do table.insert(argv, file) end
+local function doc_rows(f)
+    local argv = {"--doc", "--timeout", TIMEOUT, f.name}
     local out
     try {
         function () out = os.iorunv(DECLS, argv) end,
@@ -245,8 +154,7 @@ if MODE == "docs" then
     local started = os.mclock()
     local seen, parsed, rows, bytes = 0, 0, 0, 0
     for _, f in ipairs(frameworks) do
-        local headers = headers_of(f)
-        local out = #headers > 0 and doc_rows(f, headers) or nil
+        local out = doc_rows(f)
         seen = seen + 1
         if out then
             parsed = parsed + 1
@@ -266,9 +174,7 @@ local full = {table.concat({"-", "meta", "-", "-", "-", "-", "-", "-", "-", "-",
 local shards, unparsed, conflicts = {}, {}, {}
 local census_of = {}  -- framework -> {own, foreign}: the extractor's count of the declarations its translation unit reaches
 for _, f in ipairs(frameworks) do
-    local headers, reason = headers_of(f)
-    local out
-    if #headers > 0 then out, reason = parse(f, headers) end
+    local out, reason = parse(f)
     if out and not is_unparsed(out) then
         parsed = parsed + 1
         local lines = {shard_header(libclang):sub(1, -2)}
@@ -326,11 +232,12 @@ for _, f in ipairs(frameworks) do
             -- an accessor is derived from its property, so the shards leave it out; the full IR keeps it
             -- the typed set: a column is in a shard only when a committed stage reads it (ruling of 2026-10-10, per column). The type is
             -- the return type of a method or a function, the field or variable type (with its qualifiers), the underlying type of a
-            -- typedef; the attributes are the property's, which the property stubs read. The parameters, the nullability and the value
-            -- have no committed reader and stay in the full IR; decl and the locations are not in a shard.
+            -- typedef; the parameters are the parameter types and names, which the trace stubs read (the NSError ** detection, named by
+            -- v-gen); the attributes are the property's, which the property stubs read. The nullability and the value have no committed
+            -- reader and stay in the full IR; decl and the locations are not in a shard.
             if kind ~= "accessor" then
-                table.insert(lines, table.concat({kind, usr, row[4], stored_name, stored_side, row[11], row[13], row[9], row[18],
-                    row[15]}, "\t"))
+                table.insert(lines, table.concat({kind, usr, row[4], stored_name, stored_side, row[11], row[12], row[13], row[9],
+                    row[18], row[15]}, "\t"))
             end
             table.insert(full, table.concat(row, "\t") .. "\n")
         end
@@ -361,16 +268,19 @@ if MODE == "gaps" then
         local f = sdk_framework[name]
         local category, count, detail
         if not f then
-            local module_headers = #os.files(path.join(SDK, "usr", "include", name, "**.h"))
+            local usr_headers = #os.files(path.join(SDK, "usr", "include", name, "**.h"))
             local swift_stdlib = os.isdir(path.join(SDK, "usr", "lib", "swift", name .. ".swiftmodule"))
             category = "not-an-sdk-framework"
-            count = module_headers
-            detail = "usr/include headers " .. module_headers .. ", Swift stdlib module " .. (swift_stdlib and "yes" or "no")
+            count = usr_headers
+            detail = "usr/include headers " .. usr_headers .. ", Swift stdlib module " .. (swift_stdlib and "yes" or "no")
         else
-            local headers, reason = headers_of(f)
-            count = #headers
+            -- a framework with no header is a row of the extractor's unparsed list, with its reason (decls writes that row)
+            local reason = skipped[name]
+            local no_header = reason ~= nil and (reason:find("Swift interface only", 1, true) ~= nil
+                or reason:find("no public header", 1, true) ~= nil or reason:find("no module map header", 1, true) ~= nil)
+            count = census_of[name] and census_of[name].own or 0
             local swift = #os.dirs(path.join(f.root, "Modules", "*.swiftmodule")) > 0
-            if #headers == 0 then
+            if no_header then
                 category = reason:find("Swift interface only", 1, true) and "swift-only" or "no-public-header"
                 detail = reason
             elseif skipped[name] then

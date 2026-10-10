@@ -1,0 +1,267 @@
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+struct	c:@S@_xpc_type_s	-			-	-	-	-	-	15089d63650121f4
+typedef	c:xpc.h@T@xpc_type_t	-			const struct _xpc_type_s *	-	-	-	-	2d6ee3c06f3e40ad
+protocol	c:objc(pl)OS_xpc_object	-			-	-	-	-	-	a0699549e4b541d8
+conforms	-	OS_xpc_object	NSObject		-	-	-	-	-	762afe09259da1df
+typedef	c:xpc.h@T@xpc_object_t	-			NSObject<OS_xpc_object> *	-	-	-	-	12642bbc38187f0a
+function	c:xpc.h@F@_xpc_object_validate	-			void (xpc_object_t _Nonnull)	xpc_object_t object	-	-	-	55c426eb1fd89792
+typedef	c:xpc.h@T@xpc_handler_t	-			void (^)(xpc_object_t _Nonnull)	-	-	-	-	2144866fe2ec6a25
+var	c:@_xpc_type_connection	-			const struct _xpc_type_s	-	-	ios=5.0/-/-/0	-	f30cecd83c55b8cc
+typedef	c:xpc.h@T@xpc_connection_t	-			xpc_object_t	-	-	-	-	6b0be29e55326105
+typedef	c:xpc.h@T@xpc_connection_handler_t	-			void (*)(xpc_connection_t _Nonnull)	-	-	-	-	eaaa3f92adbadcb3
+var	c:@_xpc_type_endpoint	-			const struct _xpc_type_s	-	-	ios=5.0/-/-/0	-	8e8d760af55c78ce
+typedef	c:xpc.h@T@xpc_endpoint_t	-			xpc_object_t	-	-	-	-	1cd57996f637ac4a
+var	c:@_xpc_type_null	-			const struct _xpc_type_s	-	-	ios=5.0/-/-/0	-	35cb6f49eace247c
+var	c:@_xpc_type_bool	-			const struct _xpc_type_s	-	-	ios=5.0/-/-/0	-	2de02ce934592c2b
+struct	c:@S@_xpc_bool_s	-			-	-	-	-	-	b16ac9a63bc56189
+var	c:@_xpc_bool_true	-			const struct _xpc_bool_s	-	-	ios=5.0/-/-/0	-	3cc0cd9299fdbf6e
+var	c:@_xpc_bool_false	-			const struct _xpc_bool_s	-	-	ios=5.0/-/-/0	-	1d639ebaee016754
+var	c:@_xpc_type_int64	-			const struct _xpc_type_s	-	-	ios=5.0/-/-/0	-	9721f61ef417de12
+var	c:@_xpc_type_uint64	-			const struct _xpc_type_s	-	-	ios=5.0/-/-/0	-	8d18ae9fe117698e
+var	c:@_xpc_type_double	-			const struct _xpc_type_s	-	-	ios=5.0/-/-/0	-	4b93b9e3f618b444
+var	c:@_xpc_type_date	-			const struct _xpc_type_s	-	-	ios=5.0/-/-/0	-	34cd2042810a27d5
+var	c:@_xpc_type_data	-			const struct _xpc_type_s	-	-	ios=5.0/-/-/0	-	49967bef4bda08d0
+var	c:@_xpc_type_string	-			const struct _xpc_type_s	-	-	ios=5.0/-/-/0	-	0811acd0a311b9b4
+var	c:@_xpc_type_uuid	-			const struct _xpc_type_s	-	-	ios=5.0/-/-/0	-	a4acacb6b57c8021
+var	c:@_xpc_type_fd	-			const struct _xpc_type_s	-	-	ios=5.0/-/-/0	-	aabb466b44a4d8f3
+var	c:@_xpc_type_shmem	-			const struct _xpc_type_s	-	-	ios=5.0/-/-/0	-	f3ca67e4c5f59b8d
+var	c:@_xpc_type_array	-			const struct _xpc_type_s	-	-	ios=5.0/-/-/0	-	eb6c2b79b71b84cc
+var	c:@_xpc_type_dictionary	-			const struct _xpc_type_s	-	-	ios=5.0/-/-/0	-	9b8c80eed2ac3a78
+var	c:@_xpc_type_error	-			const struct _xpc_type_s	-	-	ios=5.0/-/-/0	-	71e50560694a92d3
+var	c:@_xpc_error_key_description	-			const char *const	-	-	ios=5.0/-/-/0	-	4f924fd5038fc0bd
+var	c:@_xpc_event_key_name	-			const char *const	-	-	ios=5.0/-/-/0	-	49c3eee3342806c5
+var	c:@_xpc_type_rich_error	-			const struct _xpc_type_s	-	-	-	-	1e491f76ab046455
+typedef	c:xpc.h@T@xpc_rich_error_t	-			xpc_object_t	-	-	-	-	32bdc3b03735ebb2
+function	c:@F@xpc_endpoint_create	-			XPC_RETURNS_RETAINED xpc_endpoint_t  _Nonnull (xpc_connection_t _Nonnull)	xpc_connection_t connection	-	ios=5.0/-/-/0	-	f224099463336440
+function	c:@F@xpc_debugger_api_misuse_info	-			const char *(void)	-	-	-	-	e6c43a89cc99bf16
+var	c:@XPC_ACTIVITY_INTERVAL	-			const char *const	-	-	ios=-/-/-/1,macos=10.9/-/-/0	-	18dae845c33913fd
+var	c:@XPC_ACTIVITY_REPEATING	-			const char *const	-	-	ios=-/-/-/1,macos=10.9/-/-/0	-	c2693c0bbfa8d8b0
+var	c:@XPC_ACTIVITY_DELAY	-			const char *const	-	-	ios=-/-/-/1,macos=10.9/-/-/0	-	cdc2119b9ca18ae7
+var	c:@XPC_ACTIVITY_GRACE_PERIOD	-			const char *const	-	-	ios=-/-/-/1,macos=10.9/-/-/0	-	a4ba0466e9336e14
+var	c:@XPC_ACTIVITY_INTERVAL_1_MIN	-			const int64_t	-	-	ios=-/-/-/1,macos=10.9/-/-/0	-	177d84b2c9bc34e4
+var	c:@XPC_ACTIVITY_INTERVAL_5_MIN	-			const int64_t	-	-	ios=-/-/-/1,macos=10.9/-/-/0	-	06c6dc73bfa1f016
+var	c:@XPC_ACTIVITY_INTERVAL_15_MIN	-			const int64_t	-	-	ios=-/-/-/1,macos=10.9/-/-/0	-	c487769148d8287a
+var	c:@XPC_ACTIVITY_INTERVAL_30_MIN	-			const int64_t	-	-	ios=-/-/-/1,macos=10.9/-/-/0	-	576f4bb99e46a2d8
+var	c:@XPC_ACTIVITY_INTERVAL_1_HOUR	-			const int64_t	-	-	ios=-/-/-/1,macos=10.9/-/-/0	-	c5342598ec754203
+var	c:@XPC_ACTIVITY_INTERVAL_4_HOURS	-			const int64_t	-	-	ios=-/-/-/1,macos=10.9/-/-/0	-	cde048d0b9dabb05
+var	c:@XPC_ACTIVITY_INTERVAL_8_HOURS	-			const int64_t	-	-	ios=-/-/-/1,macos=10.9/-/-/0	-	f636dc6672cb349b
+var	c:@XPC_ACTIVITY_INTERVAL_1_DAY	-			const int64_t	-	-	ios=-/-/-/1,macos=10.9/-/-/0	-	b14b30abedada1ba
+var	c:@XPC_ACTIVITY_INTERVAL_7_DAYS	-			const int64_t	-	-	ios=-/-/-/1,macos=10.9/-/-/0	-	1cfb1aa55fe1fe6b
+var	c:@XPC_ACTIVITY_PRIORITY	-			const char *const	-	-	ios=-/-/-/1,macos=10.9/-/-/0	-	ec25d6b985b15af9
+var	c:@XPC_ACTIVITY_PRIORITY_MAINTENANCE	-			const char *const	-	-	ios=-/-/-/1,macos=10.9/-/-/0	-	bccdba7e19e548af
+var	c:@XPC_ACTIVITY_PRIORITY_UTILITY	-			const char *const	-	-	ios=-/-/-/1,macos=10.9/-/-/0	-	69f012697e3b1a86
+var	c:@XPC_ACTIVITY_ALLOW_BATTERY	-			const char *const	-	-	ios=-/-/-/1,macos=10.9/-/-/0	-	8a1325bafae0cddf
+var	c:@XPC_ACTIVITY_REQUIRE_SCREEN_SLEEP	-			const char *const	-	-	ios=-/-/-/1,macos=10.9/-/-/0	-	c63e87d6d4eeed54
+var	c:@XPC_ACTIVITY_PREVENT_DEVICE_SLEEP	-			const char *const	-	-	ios=-/-/-/1,macos=12.0/-/-/0,watchos=-/-/-/1	-	c94a0a11ecc024f5
+var	c:@XPC_ACTIVITY_REQUIRE_BATTERY_LEVEL	-			const char *const	-	-	ios=7.0/7.0/-/0	-	166900d5c2c1a8f6
+var	c:@XPC_ACTIVITY_REQUIRE_HDD_SPINNING	-			const char *const	-	-	ios=7.0/7.0/-/0	-	fe204182d0c33ed9
+var	c:@_xpc_type_activity	-			const struct _xpc_type_s	-	-	ios=-/-/-/1,macos=10.9/-/-/0	-	e114a7a2dd618147
+typedef	c:@T@xpc_activity_t	-			xpc_object_t	-	-	-	-	5a505ac3b079557e
+typedef	c:@T@xpc_activity_handler_t	-			void (^)(xpc_activity_t _Nonnull)	-	-	-	-	67793f3be8d47f62
+var	c:@XPC_ACTIVITY_CHECK_IN	-			const xpc_object_t	-	-	ios=-/-/-/1,macos=10.9/-/-/0	-	b1dd8b59a9f116d2
+function	c:@F@xpc_activity_register	-			void (const char * _Nonnull, xpc_object_t _Nonnull, xpc_activity_handler_t _Nonnull)	const char * identifier | xpc_object_t criteria | xpc_activity_handler_t handler	-	ios=-/-/-/1,macos=10.9/-/-/0	-	7051f89bca1e627f
+function	c:@F@xpc_activity_copy_criteria	-			XPC_RETURNS_RETAINED xpc_object_t  _Nullable (xpc_activity_t _Nonnull)	xpc_activity_t activity	-	ios=-/-/-/1,macos=10.9/-/-/0	-	3cd36c63683ddf09
+function	c:@F@xpc_activity_set_criteria	-			void (xpc_activity_t _Nonnull, xpc_object_t _Nonnull)	xpc_activity_t activity | xpc_object_t criteria	-	ios=-/-/-/1,macos=10.9/-/-/0	-	3e8ce54d16d6b8b5
+enum	c:@Ea@XPC_ACTIVITY_STATE_CHECK_IN	-	-		unsigned int	-	-	-	-	2f43cc59b149b765
+enumconst	c:@Ea@XPC_ACTIVITY_STATE_CHECK_IN@XPC_ACTIVITY_STATE_CHECK_IN	-			-	-	-	-	-	74a6d04f0d1cee87
+enumconst	c:@Ea@XPC_ACTIVITY_STATE_CHECK_IN@XPC_ACTIVITY_STATE_WAIT	-			-	-	-	-	-	c9160a5f27f83518
+enumconst	c:@Ea@XPC_ACTIVITY_STATE_CHECK_IN@XPC_ACTIVITY_STATE_RUN	-			-	-	-	-	-	86b08d1677cef9b9
+enumconst	c:@Ea@XPC_ACTIVITY_STATE_CHECK_IN@XPC_ACTIVITY_STATE_DEFER	-			-	-	-	-	-	42d1115a1e7b0bda
+enumconst	c:@Ea@XPC_ACTIVITY_STATE_CHECK_IN@XPC_ACTIVITY_STATE_CONTINUE	-			-	-	-	-	-	f8b68941dc8ba84b
+enumconst	c:@Ea@XPC_ACTIVITY_STATE_CHECK_IN@XPC_ACTIVITY_STATE_DONE	-			-	-	-	-	-	13226e2d82a0593c
+typedef	c:@T@xpc_activity_state_t	-			long	-	-	-	-	f55cec04706a452c
+function	c:@F@xpc_activity_get_state	-			xpc_activity_state_t (xpc_activity_t _Nonnull)	xpc_activity_t activity	-	ios=-/-/-/1,macos=10.9/-/-/0	-	6fd5b115b343fa0f
+function	c:@F@xpc_activity_set_state	-			_Bool (xpc_activity_t _Nonnull, xpc_activity_state_t)	xpc_activity_t activity | xpc_activity_state_t state	-	ios=-/-/-/1,macos=10.9/-/-/0	-	5f139c59d5e17284
+function	c:@F@xpc_activity_should_defer	-			_Bool (xpc_activity_t _Nonnull)	xpc_activity_t activity	-	ios=-/-/-/1,macos=10.9/-/-/0	-	fa69ea9cc58d761e
+function	c:@F@xpc_activity_unregister	-			void (const char * _Nonnull)	const char * identifier	-	ios=-/-/-/1,macos=10.9/-/-/0	-	9d0d8f0b3577dee3
+protocol	c:objc(pl)OS_xpc_peer_requirement	-			-	-	-	swift=-/-/-/1	-	38f9c040d050a3a3
+conforms	-	OS_xpc_peer_requirement	NSObject		-	-	-	-	-	06dc1b9f51859d5c
+typedef	c:@T@xpc_peer_requirement_t	-			NSObject<OS_xpc_peer_requirement> *	-	-	-	-	a5d8a7e95f9af45d
+function	c:@F@xpc_peer_requirement_create_entitlement_exists	-			XPC_RETURNS_RETAINED xpc_peer_requirement_t  _Nullable (const char * _Nonnull, xpc_rich_error_t  _Nullable * _Nullable)	const char * entitlement | xpc_rich_error_t  _Nullable * error_out	-	ios=26.0/-/-/0,macos=26.0/-/-/0,swift=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5765d79416587543
+function	c:@F@xpc_peer_requirement_create_entitlement_matches_value	-			XPC_RETURNS_RETAINED xpc_peer_requirement_t  _Nullable (const char * _Nonnull, xpc_object_t _Nonnull, xpc_rich_error_t  _Nullable * _Nullable)	const char * entitlement | xpc_object_t value | xpc_rich_error_t  _Nullable * error_out	-	ios=26.0/-/-/0,macos=26.0/-/-/0,swift=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c0c8867130408db2
+function	c:@F@xpc_peer_requirement_create_team_identity	-			XPC_RETURNS_RETAINED xpc_peer_requirement_t  _Nullable (const char * _Nullable, xpc_rich_error_t  _Nullable * _Nullable)	const char * signing_identifier | xpc_rich_error_t  _Nullable * error_out	-	ios=26.0/-/-/0,macos=26.0/-/-/0,swift=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c4edcd28cd2d98a4
+function	c:@F@xpc_peer_requirement_create_platform_identity	-			XPC_RETURNS_RETAINED xpc_peer_requirement_t  _Nullable (const char * _Nullable, xpc_rich_error_t  _Nullable * _Nullable)	const char * signing_identifier | xpc_rich_error_t  _Nullable * error_out	-	ios=26.0/-/-/0,macos=26.0/-/-/0,swift=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9f8fa16f48f88a6e
+function	c:@F@xpc_peer_requirement_create_lwcr	-			XPC_RETURNS_RETAINED xpc_peer_requirement_t  _Nullable (xpc_object_t _Nonnull, xpc_rich_error_t  _Nullable * _Nullable)	xpc_object_t lwcr | xpc_rich_error_t  _Nullable * error_out	-	ios=26.0/-/-/0,macos=26.0/-/-/0,swift=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f654515e36093205
+function	c:@F@xpc_peer_requirement_match_received_message	-			_Bool (xpc_peer_requirement_t _Nonnull, xpc_object_t _Nonnull, xpc_rich_error_t  _Nullable * _Nullable)	xpc_peer_requirement_t peer_requirement | xpc_object_t message | xpc_rich_error_t  _Nullable * error_out	-	ios=26.0/-/-/0,macos=26.0/-/-/0,swift=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	656570def2337f81
+struct	c:@S@_xpc_dictionary_s	-			-	-	-	-	-	9f9176f421d5f3cc
+var	c:@_xpc_error_connection_interrupted	-			const struct _xpc_dictionary_s	-	-	ios=5.0/-/-/0	-	10970cdc62921522
+var	c:@_xpc_error_connection_invalid	-			const struct _xpc_dictionary_s	-	-	ios=5.0/-/-/0	-	ce0d1a1846a8b27c
+var	c:@_xpc_error_termination_imminent	-			const struct _xpc_dictionary_s	-	-	ios=5.0/-/-/0	-	aa9b3b6560b57ded
+var	c:@_xpc_error_peer_code_signing_requirement	-			const struct _xpc_dictionary_s	-	-	maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	69b71dd36309cbde
+typedef	c:@T@xpc_finalizer_t	-			void (*)(void * _Nullable)	-	-	-	-	13d64043a3940c5b
+function	c:@F@xpc_connection_create	-			XPC_RETURNS_RETAINED xpc_connection_t  _Nonnull (const char * _Nullable, dispatch_queue_t _Nullable)	const char * name | dispatch_queue_t targetq	-	ios=5.0/-/-/0	-	de3e2eff28aacdb9
+function	c:@F@xpc_connection_create_mach_service	-			XPC_RETURNS_RETAINED xpc_connection_t  _Nonnull (const char * _Nonnull, dispatch_queue_t _Nullable, uint64_t)	const char * name | dispatch_queue_t targetq | uint64_t flags	-	ios=-/-/-/1,maccatalyst=5.0/-/-/0,macos=10.7/-/-/0	-	acdec2a0bfdcc553
+function	c:@F@xpc_connection_create_from_endpoint	-			XPC_RETURNS_RETAINED xpc_connection_t  _Nonnull (xpc_endpoint_t _Nonnull)	xpc_endpoint_t endpoint	-	ios=5.0/-/-/0	-	5c1173a617ce3f1b
+function	c:@F@xpc_connection_set_target_queue	-			void (xpc_connection_t _Nonnull, dispatch_queue_t _Nullable)	xpc_connection_t connection | dispatch_queue_t targetq	-	ios=5.0/-/-/0	-	55821ba7b820b177
+function	c:@F@xpc_connection_set_event_handler	-			void (xpc_connection_t _Nonnull, XPC_SWIFT_SENDABLE xpc_handler_t _Nonnull)	xpc_connection_t connection | XPC_SWIFT_SENDABLE xpc_handler_t handler	-	ios=5.0/-/-/0	-	ea09ce74c91c7c99
+function	c:@F@xpc_connection_activate	-			void (xpc_connection_t _Nonnull)	xpc_connection_t connection	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	08b2849a09a448a2
+function	c:@F@xpc_connection_suspend	-			void (xpc_connection_t _Nonnull)	xpc_connection_t connection	-	ios=5.0/-/-/0	-	b22a7eea7bcddcae
+function	c:@F@xpc_connection_resume	-			void (xpc_connection_t _Nonnull)	xpc_connection_t connection	-	ios=5.0/-/-/0	-	78d130948a1cd1cb
+function	c:@F@xpc_connection_send_message	-			void (xpc_connection_t _Nonnull, xpc_object_t _Nonnull)	xpc_connection_t connection | xpc_object_t message	-	ios=5.0/-/-/0	-	ec3d13ea1a910bd6
+function	c:@F@xpc_connection_send_barrier	-			void (xpc_connection_t _Nonnull, dispatch_block_t _Nonnull)	xpc_connection_t connection | dispatch_block_t barrier	-	ios=5.0/-/-/0	-	c59d6dd26414cd93
+function	c:@F@xpc_connection_send_message_with_reply	-			void (xpc_connection_t _Nonnull, xpc_object_t _Nonnull, dispatch_queue_t _Nullable, XPC_SWIFT_SENDABLE xpc_handler_t _Nonnull)	xpc_connection_t connection | xpc_object_t message | dispatch_queue_t replyq | XPC_SWIFT_SENDABLE xpc_handler_t handler	-	ios=5.0/-/-/0	-	6cf83d9d1191e2a8
+function	c:@F@xpc_connection_send_message_with_reply_sync	-			XPC_RETURNS_RETAINED xpc_object_t  _Nonnull (xpc_connection_t _Nonnull, xpc_object_t _Nonnull)	xpc_connection_t connection | xpc_object_t message	-	ios=5.0/-/-/0	-	8d25bcec5ed78255
+function	c:@F@xpc_connection_cancel	-			void (xpc_connection_t _Nonnull)	xpc_connection_t connection	-	ios=5.0/-/-/0	-	c97de96d6d6534bc
+function	c:@F@xpc_connection_get_name	-			const char * _Nullable (xpc_connection_t _Nonnull)	xpc_connection_t connection	-	ios=5.0/-/-/0	-	feab24cf9cbe2f1d
+function	c:@F@xpc_connection_get_euid	-			uid_t (xpc_connection_t _Nonnull)	xpc_connection_t connection	-	ios=5.0/-/-/0	-	2d4b23ff3cb125c9
+function	c:@F@xpc_connection_get_egid	-			gid_t (xpc_connection_t _Nonnull)	xpc_connection_t connection	-	ios=5.0/-/-/0	-	1c386a9146bd62a8
+function	c:@F@xpc_connection_get_pid	-			pid_t (xpc_connection_t _Nonnull)	xpc_connection_t connection	-	ios=-/-/-/1,macos=10.7/-/-/0	-	163bc139bb43adc0
+function	c:@F@xpc_connection_get_asid	-			au_asid_t (xpc_connection_t _Nonnull)	xpc_connection_t connection	-	ios=-/-/-/1,macos=10.7/-/-/0	-	1fde0e31a20619bf
+function	c:@F@xpc_connection_set_context	-			void (xpc_connection_t _Nonnull, void * _Nullable)	xpc_connection_t connection | void * context	-	ios=5.0/-/-/0	-	0d8b75e13446d594
+function	c:@F@xpc_connection_get_context	-			void * _Nullable (xpc_connection_t _Nonnull)	xpc_connection_t connection	-	ios=5.0/-/-/0	-	925e5824bb58954a
+function	c:@F@xpc_connection_set_finalizer_f	-			void (xpc_connection_t _Nonnull, xpc_finalizer_t _Nullable)	xpc_connection_t connection | xpc_finalizer_t finalizer	-	ios=5.0/-/-/0	-	328625f988b36873
+function	c:@F@xpc_connection_set_peer_code_signing_requirement	-			int (xpc_connection_t _Nonnull, const char * _Nonnull)	xpc_connection_t connection | const char * requirement	-	ios=-/-/-/1,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	83e537c213e1bb28
+function	c:@F@xpc_connection_set_peer_entitlement_exists_requirement	-			int (xpc_connection_t _Nonnull, const char * _Nonnull)	xpc_connection_t connection | const char * entitlement	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	616bdd8ae16125d2
+function	c:@F@xpc_connection_set_peer_entitlement_matches_value_requirement	-			int (xpc_connection_t _Nonnull, const char * _Nonnull, xpc_object_t _Nonnull)	xpc_connection_t connection | const char * entitlement | xpc_object_t value	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	91da840794656205
+function	c:@F@xpc_connection_set_peer_team_identity_requirement	-			int (xpc_connection_t _Nonnull, const char * _Nullable)	xpc_connection_t connection | const char * signing_identifier	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a70d251e195f91ae
+function	c:@F@xpc_connection_set_peer_platform_identity_requirement	-			int (xpc_connection_t _Nonnull, const char * _Nullable)	xpc_connection_t connection | const char * signing_identifier	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0beb9b4f3a85efc9
+function	c:@F@xpc_connection_set_peer_lightweight_code_requirement	-			int (xpc_connection_t _Nonnull, xpc_object_t _Nonnull)	xpc_connection_t connection | xpc_object_t lwcr	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6c23143caa21fef1
+function	c:@F@xpc_connection_set_peer_requirement	-			void (xpc_connection_t _Nonnull, xpc_peer_requirement_t _Nonnull)	xpc_connection_t connection | xpc_peer_requirement_t peer_requirement	-	ios=26.0/-/-/0,macos=26.0/-/-/0,swift=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e45b0168a6009150
+function	c:@F@xpc_connection_copy_invalidation_reason	-			char * _Nullable (xpc_connection_t _Nonnull)	xpc_connection_t connection	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	3f9a0b0407a22df8
+function	c:@F@xpc_rich_error_copy_description	-			char * _Nullable (xpc_rich_error_t _Nonnull)	xpc_rich_error_t error	-	-	-	0b270a62eb8127e5
+function	c:@F@xpc_rich_error_can_retry	-			_Bool (xpc_rich_error_t _Nonnull)	xpc_rich_error_t error	-	-	-	69545e8ee587e992
+protocol	c:objc(pl)OS_xpc_session	-			-	-	-	-	-	061a2c6bf8338036
+conforms	-	OS_xpc_session	NSObject		-	-	-	-	-	b2e306d7509dd711
+typedef	c:@T@xpc_session_t	-			NSObject<OS_xpc_session> *	-	-	-	-	c6bc03b4f35f8cd3
+enum	c:@EA@xpc_session_create_flags_t	-			uint64_t	-	-	-	-	7ebb6cec9919d9c9
+enumconst	c:@EA@xpc_session_create_flags_t@XPC_SESSION_CREATE_NONE	xpc_session_create_flags_t			-	-	-	-	-	b14c57f361ed47ee
+enumconst	c:@EA@xpc_session_create_flags_t@XPC_SESSION_CREATE_INACTIVE	xpc_session_create_flags_t			-	-	-	-	-	882f68725a17759b
+enumconst	c:@EA@xpc_session_create_flags_t@XPC_SESSION_CREATE_MACH_PRIVILEGED	xpc_session_create_flags_t			-	-	-	-	-	4280350a284c2078
+typedef	c:@T@xpc_session_create_flags_t	-			enum xpc_session_create_flags_t	-	-	swift=-/-/-/1	-	b7d6501d3af1e66b
+typedef	c:@T@xpc_session_cancel_handler_t	-			void (^)(xpc_rich_error_t _Nonnull)	-	-	swift=-/-/-/1	-	aa59da8ada88fa61
+typedef	c:@T@xpc_session_incoming_message_handler_t	-			void (^)(xpc_object_t _Nonnull)	-	-	swift=-/-/-/1	-	64e328ece2439774
+typedef	c:@T@xpc_session_reply_handler_t	-			void (^)(xpc_object_t _Nullable, xpc_rich_error_t _Nullable)	-	-	swift=-/-/-/1	-	02960e89b303c24e
+function	c:@F@xpc_session_copy_description	-			char * _Nullable (xpc_session_t _Nonnull)	xpc_session_t session	-	ios=16.0/-/-/0,macos=13.0/-/-/0,swift=-/-/-/1,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	31d850cbdd2e2f08
+function	c:@F@xpc_session_create_xpc_service	-			XPC_RETURNS_RETAINED xpc_session_t  _Nullable (const char * _Nonnull, dispatch_queue_t _Nullable, xpc_session_create_flags_t, xpc_rich_error_t  _Nullable * _Nullable)	const char * name | dispatch_queue_t target_queue | xpc_session_create_flags_t flags | xpc_rich_error_t  _Nullable * error_out	-	ios=-/-/-/1,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,swift=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7f87cbe66f8174cb
+function	c:@F@xpc_session_create_mach_service	-			XPC_RETURNS_RETAINED xpc_session_t  _Nullable (const char * _Nonnull, dispatch_queue_t _Nullable, xpc_session_create_flags_t, xpc_rich_error_t  _Nullable * _Nullable)	const char * mach_service | dispatch_queue_t target_queue | xpc_session_create_flags_t flags | xpc_rich_error_t  _Nullable * error_out	-	ios=-/-/-/1,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,swift=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	99f9eb9b80680c29
+function	c:@F@xpc_session_set_incoming_message_handler	-			void (xpc_session_t _Nonnull, xpc_session_incoming_message_handler_t _Nonnull)	xpc_session_t session | xpc_session_incoming_message_handler_t handler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,swift=-/-/-/1,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	d191c9738268f288
+function	c:@F@xpc_session_set_cancel_handler	-			void (xpc_session_t _Nonnull, xpc_session_cancel_handler_t _Nonnull)	xpc_session_t session | xpc_session_cancel_handler_t cancel_handler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,swift=-/-/-/1,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	f1d426a7c788424b
+function	c:@F@xpc_session_set_target_queue	-			void (xpc_session_t _Nonnull, dispatch_queue_t _Nullable)	xpc_session_t session | dispatch_queue_t target_queue	-	ios=17.0/-/-/0,macos=14.0/-/-/0,swift=-/-/-/1,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	76a1c9051140d5a8
+function	c:@F@xpc_session_activate	-			_Bool (xpc_session_t _Nonnull, xpc_rich_error_t  _Nullable * _Nullable)	xpc_session_t session | xpc_rich_error_t  _Nullable * error_out	-	ios=16.0/-/-/0,macos=13.0/-/-/0,swift=-/-/-/1,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	7c4e423d80602b28
+function	c:@F@xpc_session_cancel	-			void (xpc_session_t _Nonnull)	xpc_session_t session	-	ios=16.0/-/-/0,macos=13.0/-/-/0,swift=-/-/-/1,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	f2098dffa97fa2d7
+function	c:@F@xpc_session_send_message	-			XPC_RETURNS_RETAINED xpc_rich_error_t  _Nullable (xpc_session_t _Nonnull, xpc_object_t _Nonnull)	xpc_session_t session | xpc_object_t message	-	ios=16.0/-/-/0,macos=13.0/-/-/0,swift=-/-/-/1,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	a6c8f879153802d8
+function	c:@F@xpc_session_send_message_with_reply_sync	-			XPC_RETURNS_RETAINED xpc_object_t  _Nullable (xpc_session_t _Nonnull, xpc_object_t _Nonnull, xpc_rich_error_t  _Nullable * _Nullable)	xpc_session_t session | xpc_object_t message | xpc_rich_error_t  _Nullable * error_out	-	ios=16.0/-/-/0,macos=13.0/-/-/0,swift=-/-/-/1,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	46aefe44fc927f6d
+function	c:@F@xpc_session_send_message_with_reply_async	-			void (xpc_session_t _Nonnull, xpc_object_t _Nonnull, xpc_session_reply_handler_t _Nonnull)	xpc_session_t session | xpc_object_t message | xpc_session_reply_handler_t reply_handler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,swift=-/-/-/1,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	60efdc38a17cc21f
+function	c:@F@xpc_session_set_peer_code_signing_requirement	-			int (xpc_session_t _Nonnull, const char * _Nonnull)	xpc_session_t session | const char * requirement	-	ios=-/-/-/1,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d8d141c4b9fcdea1
+function	c:@F@xpc_session_set_peer_requirement	-			void (xpc_session_t _Nonnull, xpc_peer_requirement_t _Nonnull)	xpc_session_t session | xpc_peer_requirement_t requirement	-	ios=26.0/-/-/0,macos=26.0/-/-/0,swift=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e6f20fe235fbc392
+var	c:@_xpc_type_session	-			const struct _xpc_type_s	-	-	-	-	b4718eff9bffee35
+protocol	c:objc(pl)OS_xpc_listener	-			-	-	-	-	-	a0db898cebb1a4f9
+conforms	-	OS_xpc_listener	NSObject		-	-	-	-	-	b9b6fc791395ef9f
+typedef	c:@T@xpc_listener_t	-			NSObject<OS_xpc_listener> *	-	-	-	-	171223652a1fea60
+enum	c:@EA@xpc_listener_create_flags_t	-			uint64_t	-	-	-	-	85ecf212187d610b
+enumconst	c:@EA@xpc_listener_create_flags_t@XPC_LISTENER_CREATE_NONE	xpc_listener_create_flags_t			-	-	-	-	-	9fe0de64e2bdccea
+enumconst	c:@EA@xpc_listener_create_flags_t@XPC_LISTENER_CREATE_INACTIVE	xpc_listener_create_flags_t			-	-	-	-	-	ccdaa10cec2de00f
+enumconst	c:@EA@xpc_listener_create_flags_t@XPC_LISTENER_CREATE_FORCE_MACH	xpc_listener_create_flags_t			-	-	-	-	-	222cc402c7fa0bef
+enumconst	c:@EA@xpc_listener_create_flags_t@XPC_LISTENER_CREATE_FORCE_XPCSERVICE	xpc_listener_create_flags_t			-	-	-	-	-	eb932613698630e8
+typedef	c:@T@xpc_listener_create_flags_t	-			enum xpc_listener_create_flags_t	-	-	swift=-/-/-/1	-	9d3369ac451d6c53
+typedef	c:@T@xpc_listener_incoming_session_handler_t	-			void (^)(xpc_session_t _Nonnull)	-	-	-	-	a21daae7f9b596c1
+function	c:@F@xpc_listener_copy_description	-			char * _Nullable (xpc_listener_t _Nonnull)	xpc_listener_t listener	-	ios=-/-/-/1,maccatalyst=17.0/-/-/0,macos=14.0/-/-/0,swift=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0befe5bf1edc4cf5
+function	c:@F@xpc_listener_create	-			XPC_RETURNS_RETAINED xpc_listener_t  _Nullable (const char * _Nonnull, dispatch_queue_t _Nullable, xpc_listener_create_flags_t, xpc_listener_incoming_session_handler_t _Nonnull, xpc_rich_error_t  _Nullable * _Nullable)	const char * service | dispatch_queue_t target_queue | xpc_listener_create_flags_t flags | xpc_listener_incoming_session_handler_t incoming_session_handler | xpc_rich_error_t  _Nullable * error_out	-	ios=-/-/-/1,maccatalyst=17.0/-/-/0,macos=14.0/-/-/0,swift=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d8ee1aeceac3bc42
+function	c:@F@xpc_listener_activate	-			_Bool (xpc_listener_t _Nonnull, xpc_rich_error_t  _Nullable * _Nullable)	xpc_listener_t listener | xpc_rich_error_t  _Nullable * error_out	-	ios=-/-/-/1,maccatalyst=17.0/-/-/0,macos=14.0/-/-/0,swift=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ee5bcf72f45fb154
+function	c:@F@xpc_listener_cancel	-			void (xpc_listener_t _Nonnull)	xpc_listener_t listener	-	ios=-/-/-/1,maccatalyst=17.0/-/-/0,macos=14.0/-/-/0,swift=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	bfd7290c6d9c27fe
+function	c:@F@xpc_listener_reject_peer	-			void (xpc_session_t _Nonnull, const char * _Nonnull)	xpc_session_t peer | const char * reason	-	ios=-/-/-/1,maccatalyst=17.0/-/-/0,macos=14.0/-/-/0,swift=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c1e5cafb792e0617
+function	c:@F@xpc_listener_set_peer_code_signing_requirement	-			int (xpc_listener_t _Nonnull, const char * _Nonnull)	xpc_listener_t listener | const char * requirement	-	ios=-/-/-/1,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f4edacaef6218820
+function	c:@F@xpc_listener_set_peer_requirement	-			void (xpc_listener_t _Nonnull, xpc_peer_requirement_t _Nonnull)	xpc_listener_t listener | xpc_peer_requirement_t requirement	-	ios=26.0/-/-/0,macos=26.0/-/-/0,swift=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3244b44766f72585
+function	c:@F@xpc_retain	-			xpc_object_t  _Nonnull (xpc_object_t _Nonnull)	xpc_object_t object	-	ios=5.0/-/-/0	-	4d720b7df9a8f2a9
+function	c:@F@xpc_release	-			void (xpc_object_t _Nonnull)	xpc_object_t object	-	ios=5.0/-/-/0	-	2e83364541bcb8e0
+function	c:@F@xpc_get_type	-			xpc_type_t  _Nonnull (xpc_object_t _Nonnull)	xpc_object_t object	-	ios=5.0/-/-/0	-	5cc229cc5afb056f
+function	c:@F@xpc_type_get_name	-			const char * _Nonnull (xpc_type_t _Nonnull)	xpc_type_t type	-	ios=13.0/-/-/0	-	54153dead481bb02
+function	c:@F@xpc_copy	-			XPC_RETURNS_RETAINED xpc_object_t  _Nullable (xpc_object_t _Nonnull)	xpc_object_t object	-	ios=5.0/-/-/0	-	d414c268e0be3561
+function	c:@F@xpc_equal	-			_Bool (xpc_object_t _Nonnull, xpc_object_t _Nonnull)	xpc_object_t object1 | xpc_object_t object2	-	ios=5.0/-/-/0	-	1a86118aaf348e1d
+function	c:@F@xpc_hash	-			size_t (xpc_object_t _Nonnull)	xpc_object_t object	-	ios=5.0/-/-/0	-	742a598b79755a02
+function	c:@F@xpc_copy_description	-			char * _Nonnull (xpc_object_t _Nonnull)	xpc_object_t object	-	ios=5.0/-/-/0	-	01f60c2a57e4fe7f
+function	c:@F@xpc_null_create	-			XPC_RETURNS_RETAINED xpc_object_t  _Nonnull (void)	-	-	ios=5.0/-/-/0	-	975fd0a250abdc4a
+function	c:@F@xpc_bool_create	-			XPC_RETURNS_RETAINED xpc_object_t  _Nonnull (_Bool)	_Bool value	-	ios=5.0/-/-/0	-	53de56fef19a5ee1
+function	c:@F@xpc_bool_get_value	-			_Bool (xpc_object_t _Nonnull)	xpc_object_t xbool	-	ios=5.0/-/-/0	-	dea4f020536156e5
+function	c:@F@xpc_int64_create	-			XPC_RETURNS_RETAINED xpc_object_t  _Nonnull (int64_t)	int64_t value	-	ios=5.0/-/-/0	-	76f1a8179a244de5
+function	c:@F@xpc_int64_get_value	-			int64_t (xpc_object_t _Nonnull)	xpc_object_t xint	-	ios=5.0/-/-/0	-	f8ef2d4b99a49d46
+function	c:@F@xpc_uint64_create	-			XPC_RETURNS_RETAINED xpc_object_t  _Nonnull (uint64_t)	uint64_t value	-	ios=5.0/-/-/0	-	3e0e8779c4ca8182
+function	c:@F@xpc_uint64_get_value	-			uint64_t (xpc_object_t _Nonnull)	xpc_object_t xuint	-	ios=5.0/-/-/0	-	b545fdf80adbf29f
+function	c:@F@xpc_double_create	-			XPC_RETURNS_RETAINED xpc_object_t  _Nonnull (double)	double value	-	ios=5.0/-/-/0	-	510a390d02095057
+function	c:@F@xpc_double_get_value	-			double (xpc_object_t _Nonnull)	xpc_object_t xdouble	-	ios=5.0/-/-/0	-	d02303572a9b9816
+function	c:@F@xpc_date_create	-			XPC_RETURNS_RETAINED xpc_object_t  _Nonnull (int64_t)	int64_t interval	-	ios=5.0/-/-/0	-	b9e8754cb5d7fa28
+function	c:@F@xpc_date_create_from_current	-			XPC_RETURNS_RETAINED xpc_object_t  _Nonnull (void)	-	-	ios=5.0/-/-/0	-	b29f426884d2a338
+function	c:@F@xpc_date_get_value	-			int64_t (xpc_object_t _Nonnull)	xpc_object_t xdate	-	ios=5.0/-/-/0	-	b7d7e5cddb1c6691
+function	c:@F@xpc_data_create	-			XPC_RETURNS_RETAINED xpc_object_t  _Nonnull (const void * _Nullable, size_t)	const void * bytes | size_t length	-	ios=5.0/-/-/0	-	47b2ce8de2d0fed8
+function	c:@F@xpc_data_create_with_dispatch_data	-			XPC_RETURNS_RETAINED xpc_object_t  _Nonnull (dispatch_data_t _Nonnull)	dispatch_data_t ddata	-	ios=5.0/-/-/0	-	f58ee462ab45bd1b
+function	c:@F@xpc_data_get_length	-			size_t (xpc_object_t _Nonnull)	xpc_object_t xdata	-	ios=5.0/-/-/0	-	bdf4519c21572a9f
+function	c:@F@xpc_data_get_bytes_ptr	-			const void * _Nullable (xpc_object_t _Nonnull)	xpc_object_t xdata	-	ios=5.0/-/-/0	-	b75f6aaec0095990
+function	c:@F@xpc_data_get_bytes	-			size_t (xpc_object_t _Nonnull, void * _Nonnull, size_t, size_t)	xpc_object_t xdata | void * buffer | size_t off | size_t length	-	ios=5.0/-/-/0	-	3270c5dc92980d6c
+function	c:@F@xpc_string_create	-			XPC_RETURNS_RETAINED xpc_object_t  _Nonnull (const char * _Nonnull)	const char * string	-	ios=5.0/-/-/0	-	ee46870c42c59bdc
+function	c:@F@xpc_string_create_with_format	-			XPC_RETURNS_RETAINED xpc_object_t  _Nonnull (const char * _Nonnull, ...)	const char * fmt	variadic	ios=5.0/-/-/0	-	358e0b0de68e5881
+function	c:@F@xpc_string_create_with_format_and_arguments	-			XPC_RETURNS_RETAINED xpc_object_t  _Nonnull (const char * _Nonnull, va_list)	const char * fmt | va_list ap	-	ios=5.0/-/-/0	-	e854c151fb1dc864
+function	c:@F@xpc_string_get_length	-			size_t (xpc_object_t _Nonnull)	xpc_object_t xstring	-	ios=5.0/-/-/0	-	caff83e96304e692
+function	c:@F@xpc_string_get_string_ptr	-			const char * _Nullable (xpc_object_t _Nonnull)	xpc_object_t xstring	-	ios=5.0/-/-/0	-	c1a716e08e82a2f2
+function	c:@F@xpc_uuid_create	-			XPC_RETURNS_RETAINED xpc_object_t  _Nonnull (const unsigned char * _Nonnull)	uuid_t uuid	-	ios=5.0/-/-/0	-	feb62618e54b166d
+function	c:@F@xpc_uuid_get_bytes	-			const uint8_t * _Nullable (xpc_object_t _Nonnull)	xpc_object_t xuuid	-	ios=5.0/-/-/0	-	eb8c1c0fef7746ca
+function	c:@F@xpc_fd_create	-			XPC_RETURNS_RETAINED xpc_object_t  _Nullable (int)	int fd	-	ios=5.0/-/-/0	-	ca017c9da0df4a77
+function	c:@F@xpc_fd_dup	-			int (xpc_object_t _Nonnull)	xpc_object_t xfd	-	ios=5.0/-/-/0	-	36fe95693c082c0f
+function	c:@F@xpc_shmem_create	-			XPC_RETURNS_RETAINED xpc_object_t  _Nonnull (void * _Nonnull, size_t)	void * region | size_t length	-	ios=5.0/-/-/0	-	86afd03fd874e5d1
+function	c:@F@xpc_shmem_map	-			size_t (xpc_object_t _Nonnull, void * _Nullable * _Nonnull)	xpc_object_t xshmem | void * _Nullable * region	-	ios=5.0/-/-/0	-	4bec44ebf825fbb9
+typedef	c:xpc.h@T@xpc_array_applier_t	-			_Bool (^)(size_t, xpc_object_t _Nonnull)	-	-	-	-	9c4b11be8032d7fa
+function	c:@F@xpc_array_create	-			XPC_RETURNS_RETAINED xpc_object_t  _Nonnull (xpc_object_t  _Nonnull const * _Nullable, size_t)	xpc_object_t  _Nonnull const * objects | size_t count	-	ios=5.0/-/-/0	-	54907d198a8acc1b
+function	c:@F@xpc_array_create_empty	-			XPC_RETURNS_RETAINED xpc_object_t  _Nonnull (void)	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	062c0f9923506561
+function	c:@F@xpc_array_set_value	-			void (xpc_object_t _Nonnull, size_t, xpc_object_t _Nonnull)	xpc_object_t xarray | size_t index | xpc_object_t value	-	ios=5.0/-/-/0	-	9edfbc5cddcab45d
+function	c:@F@xpc_array_append_value	-			void (xpc_object_t _Nonnull, xpc_object_t _Nonnull)	xpc_object_t xarray | xpc_object_t value	-	ios=5.0/-/-/0	-	09473e45d3957501
+function	c:@F@xpc_array_get_count	-			size_t (xpc_object_t _Nonnull)	xpc_object_t xarray	-	ios=5.0/-/-/0	-	853cab37327c05eb
+function	c:@F@xpc_array_get_value	-			xpc_object_t  _Nonnull (xpc_object_t _Nonnull, size_t)	xpc_object_t xarray | size_t index	-	ios=5.0/-/-/0	-	86bce4a634a8ad54
+function	c:@F@xpc_array_apply	-			_Bool (xpc_object_t _Nonnull, __attribute__((noescape)) xpc_array_applier_t _Nonnull)	xpc_object_t xarray | xpc_array_applier_t applier	-	ios=5.0/-/-/0	-	489894a808412ae9
+function	c:@F@xpc_array_set_bool	-			void (xpc_object_t _Nonnull, size_t, _Bool)	xpc_object_t xarray | size_t index | _Bool value	-	ios=5.0/-/-/0	-	6e0ed6e802937c78
+function	c:@F@xpc_array_set_int64	-			void (xpc_object_t _Nonnull, size_t, int64_t)	xpc_object_t xarray | size_t index | int64_t value	-	ios=5.0/-/-/0	-	c860ecb932103020
+function	c:@F@xpc_array_set_uint64	-			void (xpc_object_t _Nonnull, size_t, uint64_t)	xpc_object_t xarray | size_t index | uint64_t value	-	ios=5.0/-/-/0	-	51e70e37c6ee9020
+function	c:@F@xpc_array_set_double	-			void (xpc_object_t _Nonnull, size_t, double)	xpc_object_t xarray | size_t index | double value	-	ios=5.0/-/-/0	-	eb468ef5cdddd30d
+function	c:@F@xpc_array_set_date	-			void (xpc_object_t _Nonnull, size_t, int64_t)	xpc_object_t xarray | size_t index | int64_t value	-	ios=5.0/-/-/0	-	5ef3bd299daf2d46
+function	c:@F@xpc_array_set_data	-			void (xpc_object_t _Nonnull, size_t, const void * _Nonnull, size_t)	xpc_object_t xarray | size_t index | const void * bytes | size_t length	-	ios=5.0/-/-/0	-	c1f5a0fa6a76fe22
+function	c:@F@xpc_array_set_string	-			void (xpc_object_t _Nonnull, size_t, const char * _Nonnull)	xpc_object_t xarray | size_t index | const char * string	-	ios=5.0/-/-/0	-	26e18b14a4ae5e19
+function	c:@F@xpc_array_set_uuid	-			void (xpc_object_t _Nonnull, size_t, const unsigned char * _Nonnull)	xpc_object_t xarray | size_t index | uuid_t uuid	-	ios=5.0/-/-/0	-	1160b6b37fb77a94
+function	c:@F@xpc_array_set_fd	-			void (xpc_object_t _Nonnull, size_t, int)	xpc_object_t xarray | size_t index | int fd	-	ios=5.0/-/-/0	-	ab4976df5e00e394
+function	c:@F@xpc_array_set_connection	-			void (xpc_object_t _Nonnull, size_t, xpc_connection_t _Nonnull)	xpc_object_t xarray | size_t index | xpc_connection_t connection	-	ios=5.0/-/-/0	-	cea0009a4b541f29
+function	c:@F@xpc_array_get_bool	-			_Bool (xpc_object_t _Nonnull, size_t)	xpc_object_t xarray | size_t index	-	ios=5.0/-/-/0	-	032dc5e63ec28a6b
+function	c:@F@xpc_array_get_int64	-			int64_t (xpc_object_t _Nonnull, size_t)	xpc_object_t xarray | size_t index	-	ios=5.0/-/-/0	-	4a5849de7ea423f4
+function	c:@F@xpc_array_get_uint64	-			uint64_t (xpc_object_t _Nonnull, size_t)	xpc_object_t xarray | size_t index	-	ios=5.0/-/-/0	-	15cc3e2f3f413e90
+function	c:@F@xpc_array_get_double	-			double (xpc_object_t _Nonnull, size_t)	xpc_object_t xarray | size_t index	-	ios=5.0/-/-/0	-	1261aca96d537948
+function	c:@F@xpc_array_get_date	-			int64_t (xpc_object_t _Nonnull, size_t)	xpc_object_t xarray | size_t index	-	ios=5.0/-/-/0	-	452e0723457d5452
+function	c:@F@xpc_array_get_data	-			const void * _Nullable (xpc_object_t _Nonnull, size_t, size_t * _Nullable)	xpc_object_t xarray | size_t index | size_t * length	-	ios=5.0/-/-/0	-	48b2f76dead4a8df
+function	c:@F@xpc_array_get_string	-			const char * _Nullable (xpc_object_t _Nonnull, size_t)	xpc_object_t xarray | size_t index	-	ios=5.0/-/-/0	-	2e384db94fb9e639
+function	c:@F@xpc_array_get_uuid	-			const uint8_t * _Nullable (xpc_object_t _Nonnull, size_t)	xpc_object_t xarray | size_t index	-	ios=5.0/-/-/0	-	4223cfd8f5c521bd
+function	c:@F@xpc_array_dup_fd	-			int (xpc_object_t _Nonnull, size_t)	xpc_object_t xarray | size_t index	-	ios=5.0/-/-/0	-	a92f39b4d5836d35
+function	c:@F@xpc_array_create_connection	-			XPC_RETURNS_RETAINED xpc_connection_t  _Nullable (xpc_object_t _Nonnull, size_t)	xpc_object_t xarray | size_t index	-	ios=5.0/-/-/0	-	d70cb5ab8d921b48
+function	c:@F@xpc_array_get_dictionary	-			xpc_object_t  _Nullable (xpc_object_t _Nonnull, size_t)	xpc_object_t xarray | size_t index	-	ios=9.0/-/-/0	-	ced9c1fa2f65b4cb
+function	c:@F@xpc_array_get_array	-			xpc_object_t  _Nullable (xpc_object_t _Nonnull, size_t)	xpc_object_t xarray | size_t index	-	ios=9.0/-/-/0	-	096462672d63e79a
+typedef	c:xpc.h@T@xpc_dictionary_applier_t	-			_Bool (^)(const char * _Nonnull, xpc_object_t _Nonnull)	-	-	-	-	19ed18ca43523a3f
+function	c:@F@xpc_dictionary_create	-			XPC_RETURNS_RETAINED xpc_object_t  _Nonnull (const char *const  _Nonnull * _Nullable, xpc_object_t  _Nullable const * _Nullable, size_t)	const char *const  _Nonnull * keys | xpc_object_t  _Nullable const * values | size_t count	-	ios=5.0/-/-/0	-	d12279a31b2ec9a5
+function	c:@F@xpc_dictionary_create_empty	-			XPC_RETURNS_RETAINED xpc_object_t  _Nonnull (void)	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	5877cbee0b927721
+function	c:@F@xpc_dictionary_create_reply	-			XPC_RETURNS_RETAINED xpc_object_t  _Nullable (xpc_object_t _Nonnull)	xpc_object_t original	-	ios=5.0/-/-/0	-	1758ea0768016d88
+function	c:@F@xpc_dictionary_set_value	-			void (xpc_object_t _Nonnull, const char * _Nonnull, xpc_object_t _Nullable)	xpc_object_t xdict | const char * key | xpc_object_t value	-	ios=5.0/-/-/0	-	0435af5392d4f2c0
+function	c:@F@xpc_dictionary_get_value	-			xpc_object_t  _Nullable (xpc_object_t _Nonnull, const char * _Nonnull)	xpc_object_t xdict | const char * key	-	ios=5.0/-/-/0	-	7c1188ff65f9336a
+function	c:@F@xpc_dictionary_get_count	-			size_t (xpc_object_t _Nonnull)	xpc_object_t xdict	-	ios=5.0/-/-/0	-	d0e3107eaf710ac7
+function	c:@F@xpc_dictionary_apply	-			_Bool (xpc_object_t _Nonnull, __attribute__((noescape)) xpc_dictionary_applier_t _Nonnull)	xpc_object_t xdict | xpc_dictionary_applier_t applier	-	ios=5.0/-/-/0	-	37f884245cdc3792
+function	c:@F@xpc_dictionary_get_remote_connection	-			xpc_connection_t  _Nullable (xpc_object_t _Nonnull)	xpc_object_t xdict	-	ios=5.0/-/-/0	-	0c840df50776635e
+function	c:@F@xpc_dictionary_set_bool	-			void (xpc_object_t _Nonnull, const char * _Nonnull, _Bool)	xpc_object_t xdict | const char * key | _Bool value	-	ios=5.0/-/-/0	-	0e3146d98f4acfa6
+function	c:@F@xpc_dictionary_set_int64	-			void (xpc_object_t _Nonnull, const char * _Nonnull, int64_t)	xpc_object_t xdict | const char * key | int64_t value	-	ios=5.0/-/-/0	-	1bba62b4b308a35c
+function	c:@F@xpc_dictionary_set_uint64	-			void (xpc_object_t _Nonnull, const char * _Nonnull, uint64_t)	xpc_object_t xdict | const char * key | uint64_t value	-	ios=5.0/-/-/0	-	f769a1916ce0bd8e
+function	c:@F@xpc_dictionary_set_double	-			void (xpc_object_t _Nonnull, const char * _Nonnull, double)	xpc_object_t xdict | const char * key | double value	-	ios=5.0/-/-/0	-	65e7203780a0b339
+function	c:@F@xpc_dictionary_set_date	-			void (xpc_object_t _Nonnull, const char * _Nonnull, int64_t)	xpc_object_t xdict | const char * key | int64_t value	-	ios=5.0/-/-/0	-	5991f1fad06c5942
+function	c:@F@xpc_dictionary_set_data	-			void (xpc_object_t _Nonnull, const char * _Nonnull, const void * _Nonnull, size_t)	xpc_object_t xdict | const char * key | const void * bytes | size_t length	-	ios=5.0/-/-/0	-	7c7f9aaf82af91e4
+function	c:@F@xpc_dictionary_set_string	-			void (xpc_object_t _Nonnull, const char * _Nonnull, const char * _Nonnull)	xpc_object_t xdict | const char * key | const char * string	-	ios=5.0/-/-/0	-	4bf33cbf7502984e
+function	c:@F@xpc_dictionary_set_uuid	-			void (xpc_object_t _Nonnull, const char * _Nonnull, const unsigned char * _Nonnull)	xpc_object_t xdict | const char * key | uuid_t uuid	-	ios=5.0/-/-/0	-	a88360ea1c29ee2f
+function	c:@F@xpc_dictionary_set_fd	-			void (xpc_object_t _Nonnull, const char * _Nonnull, int)	xpc_object_t xdict | const char * key | int fd	-	ios=5.0/-/-/0	-	1db1c29d68691ae7
+function	c:@F@xpc_dictionary_set_connection	-			void (xpc_object_t _Nonnull, const char * _Nonnull, xpc_connection_t _Nonnull)	xpc_object_t xdict | const char * key | xpc_connection_t connection	-	ios=5.0/-/-/0	-	474502b76724e7e7
+function	c:@F@xpc_dictionary_set_mach_send	-			void (xpc_object_t _Nonnull, const char * _Nonnull, mach_port_t)	xpc_object_t xdict | const char * key | mach_port_t p	-	ios=5.0/-/-/0	-	eb9f2440d658792a
+function	c:@F@xpc_dictionary_get_bool	-			_Bool (xpc_object_t _Nonnull, const char * _Nonnull)	xpc_object_t xdict | const char * key	-	ios=5.0/-/-/0	-	993e6dfb4d147d56
+function	c:@F@xpc_dictionary_get_int64	-			int64_t (xpc_object_t _Nonnull, const char * _Nonnull)	xpc_object_t xdict | const char * key	-	ios=5.0/-/-/0	-	c1f6ae6919dfe907
+function	c:@F@xpc_dictionary_get_uint64	-			uint64_t (xpc_object_t _Nonnull, const char * _Nonnull)	xpc_object_t xdict | const char * key	-	ios=5.0/-/-/0	-	580b72075bb18eea
+function	c:@F@xpc_dictionary_get_double	-			double (xpc_object_t _Nonnull, const char * _Nonnull)	xpc_object_t xdict | const char * key	-	ios=5.0/-/-/0	-	07666b915fb0927d
+function	c:@F@xpc_dictionary_get_date	-			int64_t (xpc_object_t _Nonnull, const char * _Nonnull)	xpc_object_t xdict | const char * key	-	ios=5.0/-/-/0	-	333b31e3fc8a1742
+function	c:@F@xpc_dictionary_get_data	-			const void * _Nullable (xpc_object_t _Nonnull, const char * _Nonnull, size_t * _Nullable)	xpc_object_t xdict | const char * key | size_t * length	-	ios=5.0/-/-/0	-	c392e3b77d1f2459
+function	c:@F@xpc_dictionary_get_string	-			const char * _Nullable (xpc_object_t _Nonnull, const char * _Nonnull)	xpc_object_t xdict | const char * key	-	ios=5.0/-/-/0	-	c1a54867ef343098
+function	c:@F@xpc_dictionary_get_uuid	-			const uint8_t * _Nullable (xpc_object_t _Nonnull, const char * _Nonnull)	xpc_object_t xdict | const char * key	-	ios=5.0/-/-/0	-	764e22e430928491
+function	c:@F@xpc_dictionary_dup_fd	-			int (xpc_object_t _Nonnull, const char * _Nonnull)	xpc_object_t xdict | const char * key	-	ios=5.0/-/-/0	-	71faa6d89542b05e
+function	c:@F@xpc_dictionary_create_connection	-			XPC_RETURNS_RETAINED xpc_connection_t  _Nullable (xpc_object_t _Nonnull, const char * _Nonnull)	xpc_object_t xdict | const char * key	-	ios=5.0/-/-/0	-	e22832ec1775b3a3
+function	c:@F@xpc_dictionary_get_dictionary	-			xpc_object_t  _Nullable (xpc_object_t _Nonnull, const char * _Nonnull)	xpc_object_t xdict | const char * key	-	ios=9.0/-/-/0	-	b2f3078dfe88db18
+function	c:@F@xpc_dictionary_get_array	-			xpc_object_t  _Nullable (xpc_object_t _Nonnull, const char * _Nonnull)	xpc_object_t xdict | const char * key	-	ios=9.0/-/-/0	-	a9bc514a4b36c76d
+function	c:@F@xpc_dictionary_copy_mach_send	-			mach_port_t (xpc_object_t _Nonnull, const char * _Nonnull)	xpc_object_t xdict | const char * key	-	ios=5.0/-/-/0	-	9197459a52e222b0
+function	c:@F@xpc_main	-			void (xpc_connection_handler_t _Nonnull) __attribute__((noreturn))	xpc_connection_handler_t handler	-	ios=-/-/-/1,maccatalyst=5.0/-/-/0,macos=10.7/-/-/0	-	d0c0776529d74bf8
+function	c:@F@xpc_transaction_begin	-			void (void)	-	-	ios=-/-/-/1,macos=10.7/-/-/0	-	ff8f7f5974359fd3
+function	c:@F@xpc_transaction_end	-			void (void)	-	-	ios=-/-/-/1,macos=10.7/-/-/0	-	307d510814b22627
+function	c:@F@xpc_set_event_stream_handler	-			void (const char * _Nonnull, dispatch_queue_t _Nullable, XPC_SWIFT_SENDABLE xpc_handler_t _Nonnull)	const char * stream | dispatch_queue_t targetq | XPC_SWIFT_SENDABLE xpc_handler_t handler	-	ios=-/-/-/1,macos=10.7/-/-/0	-	97917cede0c8159f

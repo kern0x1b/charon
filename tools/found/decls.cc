@@ -1,11 +1,13 @@
 // The declarations of one framework, from clang's own AST through libclang: the source of the spec's Objective-C and C facts.
 //
-// usage: decls --version
-//        decls [--doc] [--timeout SECONDS] <sdk-root> <framework> <framework-root> <target-triple> <clang-resource-dir> <header>...
-// <framework> is the name the rows carry (a nested framework has its own name). <framework-root> is its .framework directory;
-// its declarations are the ones written under <framework-root>/Headers. Each <header> is an absolute path of a public header
-// of the module (the driver reads the module map and passes the header set); the headers become one unsaved buffer of #import
-// lines, so nothing is written to disk. <clang-resource-dir> holds the compiler's own headers (stdarg.h, stddef.h).
+// usage: decls --version | --target | --digest TEXT | --list
+//        decls [--doc] [--timeout SECONDS] <framework>
+// The SDK is IR_SDK. <framework> is a name --list prints: a framework of System/Library/Frameworks (a nested one is Outer/Inner), or a
+// usr/include module of the sweep (IR_USR_MODULES). decls resolves the framework's headers itself, from its module map, by the rule
+// of ir.lua's sweep (module_headers below): the sweep and the doc mode share that one code path. The headers become one unsaved buffer
+// of #import lines, so nothing is written to disk. IR_RESOURCE, if set, is the compiler's resource directory (default: libclang's).
+// A framework's own declarations are those under its Headers/; a usr/include module's are those written in the directories of its
+// headers. --target prints the target the rows are compiled for.
 //
 // --doc (the doc-time mode, for the doc generator): the same pass and the same keys, but the output is one row per declaration
 // with ten cells instead of the IR's rows: framework, kind, usr, container, name, side (the IR's own values), the parameter names
@@ -32,11 +34,16 @@
 #include <unistd.h>
 
 #include <algorithm>
+#include <cctype>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <filesystem>
+#include <fstream>
 #include <map>
+#include <regex>
 #include <set>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -152,8 +159,7 @@ CXType unqualified(CXType t) {
 // "union (unnamed union at /abs/path/...)", and "union (unnamed)" in another version. The location is the host's SDK path and a
 // line of the header, and the words inside the parentheses differ between versions, so every anonymous type is spelled
 // "(unnamed)" (or "(anonymous)"); the kind outside the parentheses is kept.
-std::string spelled(CXType t) {
-  std::string s = text(clang_getTypeSpelling(unqualified(t)));
+std::string without_location(std::string s) {
   for (const char* open : {"(unnamed", "(anonymous"}) {
     for (size_t at = s.find(open); at != std::string::npos; at = s.find(open, at + 1)) {
       size_t close = s.find(')', at);
@@ -162,6 +168,42 @@ std::string spelled(CXType t) {
     }
   }
   return s;
+}
+
+std::string spelled(CXType t) { return without_location(text(clang_getTypeSpelling(unqualified(t)))); }
+
+// The name of the macro clang prints in front of a type it keeps as a macro-qualified type (CF_REFINED_FOR_SWIFT CFStringRef, API_AVAILABLE
+// NSString *const): a leading word of capitals, then the type. A type name is not all capitals followed by a type, and clang prints a
+// const after such a macro, never before it.
+std::string without_macro_word(const std::string& s) {
+  size_t space = s.find(' ');
+  if (space == std::string::npos || space < 2 || s.size() == space + 1) return s;
+  for (size_t i = 0; i < space; ++i) {
+    unsigned char ch = (unsigned char)s[i];
+    if (!(std::isupper(ch) || std::isdigit(ch) || ch == '_')) return s;
+  }
+  unsigned char next = (unsigned char)s[space + 1];
+  if (!(std::isalpha(next) || next == '_')) return s;
+  return s.substr(space + 1);
+}
+
+// The type of a declared variable or field, as the declaration has it. clang prints attribute sugar in front of the type (an
+// availability macro such as API_AVAILABLE, a Swift attribute, the nullability word after it), and that sugar can drop the top-level
+// const: CG_EXTERN const CFStringRef __nonnull kCGContentAverageLightLevel prints as CF_REFINED_FOR_SWIFT CFStringRef, though the
+// variable is const. So the attributes are taken off, and the const is read from the canonical type (every top-level qualifier
+// of the declared type is in it), not from the printed sugar. The nullability column holds the nullability; a pointer's const follows the star.
+std::string declared_type(CXType t) {
+  CXType bare = t;
+  while (bare.kind == CXType_Attributed) bare = clang_Type_getModifiedType(bare);
+  std::string s = text(clang_getTypeSpelling(bare));
+  if (bare.kind == CXType_Unexposed) s = without_macro_word(s);
+  // the canonical type keeps every qualifier the variable has at its top level; the printed sugar can drop one
+  if (clang_isConstQualifiedType(clang_getCanonicalType(t))) {
+    bool leading = s.compare(0, 6, "const ") == 0;
+    bool trailing = s.size() >= 5 && s.compare(s.size() - 5, 5, "const") == 0;
+    if (!leading && !trailing && !s.empty()) s = s.back() == '*' ? s + "const" : "const " + s;
+  }
+  return without_location(s);
 }
 
 // The offset in its file of a source location (the expansion, for a token a macro produced).
@@ -310,7 +352,7 @@ struct Record {
 
 struct Context {
   std::string framework;
-  std::string headers;  // <framework-root>/Headers/, with the trailing slash
+  std::vector<std::string> own;  // the directories whose headers are the framework's own, each with its trailing slash
   CXTranslationUnit tu;
   std::vector<Record> records;  // every declaration in source order; resolve() writes them
   std::set<std::string> tags;   // the tags emitted, by USR: each is one declaration
@@ -329,10 +371,14 @@ bool in_framework(CXCursor c, const Context& ctx, std::string* file_out, unsigne
   clang_getExpansionLocation(loc, &file, &line, &column, &offset);
   if (!file) return false;
   std::string path = text(clang_getFileName(file));
-  if (path.compare(0, ctx.headers.size(), ctx.headers) != 0) return false;
-  *file_out = path.substr(ctx.headers.size());
-  *line_out = line;
-  return true;
+  for (const std::string& dir : ctx.own) {
+    if (path.compare(0, dir.size(), dir) == 0) {
+      *file_out = path.substr(dir.size());
+      *line_out = line;
+      return true;
+    }
+  }
+  return false;
 }
 
 // The first 8 bytes of SHA-256, as 16 hex digits: the declaration hash and the availability hash.
@@ -364,13 +410,17 @@ std::string declaration_hash(const Row& r) {
 // The doc-time text of a declaration (--doc): its brief and raw doc comment as clang parses them, and the names of its parameters.
 // It is attached when the record is made, while the cursor is at hand.
 void attach_doc(CXCursor c, Row* r) {
-  r->brief = text(clang_Cursor_getBriefCommentText(c));
-  r->comment = text(clang_Cursor_getRawCommentText(c));
+  // only the /// and /** */ forms are doc comments here (ruling of 2026-10-10): clang also attaches //! and /*! comments, which are not
+  // kept, with their brief; a declaration with only those has no doc text
   int n = clang_Cursor_getNumArguments(c);
   for (int i = 0; i < n; ++i) {
     if (i) r->params_names += " | ";
     r->params_names += text(clang_getCursorSpelling(clang_Cursor_getArgument(c, (unsigned)i)));
   }
+  std::string raw = text(clang_Cursor_getRawCommentText(c));
+  if (raw.compare(0, 3, "///") != 0 && raw.compare(0, 3, "/**") != 0) return;
+  r->comment = raw;
+  r->brief = text(clang_Cursor_getBriefCommentText(c));
 }
 
 // A cell of the doc mode with its backslashes, tabs and line breaks escaped, so that a declaration is one line.
@@ -767,7 +817,7 @@ CXChildVisitResult visit(CXCursor c, CXCursor parent, CXClientData data) {
     case CXCursor_VarDecl:
       if (own && clang_getCursorLinkage(c) == CXLinkage_External) {
         CXType t = clang_getCursorType(c);
-        simple_row(ctx, c, "var", spelled(t), nullability(t), "-", "-", clang_isCursorDefinition(c));
+        simple_row(ctx, c, "var", declared_type(t), nullability(t), "-", "-", clang_isCursorDefinition(c));
       }
       return CXChildVisit_Continue;
     case CXCursor_FunctionDecl:
@@ -803,7 +853,7 @@ CXChildVisitResult visit(CXCursor c, CXCursor parent, CXClientData data) {
     case CXCursor_FieldDecl:
       if (own) {
         CXType t = clang_getCursorType(c);
-        simple_row(ctx, c, "field", spelled(t), nullability(t), "-", nest->name, true);
+        simple_row(ctx, c, "field", declared_type(t), nullability(t), "-", nest->name, true);
       }
       return CXChildVisit_Continue;
     default:
@@ -853,12 +903,231 @@ CXChildVisitResult census_visit(CXCursor c, CXCursor parent, CXClientData data) 
 
 void usage() {
   std::fprintf(stderr,
-               "usage: decls --version\n"
-               "       decls [--doc] [--timeout SECONDS] <sdk-root> <framework> <framework-root> <target-triple> "
-               "<clang-resource-dir> <header>...\n");
+               "usage: decls --version | --target | --digest TEXT | --list\n"
+               "       decls [--doc] [--timeout SECONDS] <framework>\n"
+               "The SDK is IR_SDK. IR_USR_MODULES (a comma list) overrides the usr/include modules of the sweep. IR_RESOURCE, if set,\n"
+               "is the compiler's resource directory; by default libclang finds its own.\n");
 }
 
 }  // namespace
+
+// The frameworks the sweep covers, and the rule that gives each one's headers. The sweep (ir.lua) and the doc mode (--doc) both
+// resolve a framework here, so the rule is written once.
+namespace fs = std::filesystem;
+
+// The target the rows are compiled for: the iOS arm64 target the spec is written against (ir.lua writes it in the meta row).
+const char* const kTarget = "arm64-apple-ios26.2";
+
+// The usr/include modules of the sweep (ruling of 2026-10-10). IR_USR_MODULES, a comma list, overrides it.
+const char* const kUsrModules = "AppleArchive,Dispatch,Spatial,XPC,hvf,os,simd";
+
+struct Framework {
+  std::string name;  // as the rows carry it: a nested framework is Outer/Inner
+  std::string base;  // the folder's name without .framework (a usr/include module's name)
+  fs::path root;     // the .framework directory (a usr/include module: the usr/include directory)
+  fs::path map;      // a usr/include module's module map
+  bool usr = false;  // a module of usr/include
+};
+
+// A path as the rows and the imports carry it: lexically normal (no "." or "x/..").
+std::string normal(const fs::path& p) { return p.lexically_normal().string(); }
+
+std::string trim_space(const std::string& s) {
+  size_t begin = s.find_first_not_of(" \t\r\n");
+  if (begin == std::string::npos) return "";
+  size_t end = s.find_last_not_of(" \t\r\n");
+  return s.substr(begin, end - begin + 1);
+}
+
+bool is_file(const fs::path& p) {
+  std::error_code ec;
+  return fs::is_regular_file(p, ec);
+}
+
+bool is_dir(const fs::path& p) {
+  std::error_code ec;
+  return fs::is_directory(p, ec);
+}
+
+// The entries of a folder, sorted by path (none when the folder does not exist).
+std::vector<fs::path> entries_of(const fs::path& dir) {
+  std::vector<fs::path> out;
+  std::error_code ec;
+  for (fs::directory_iterator it(dir, ec), end; !ec && it != end; it.increment(ec)) out.push_back(it->path());
+  std::sort(out.begin(), out.end());
+  return out;
+}
+
+// The frameworks directly in a folder, then those nested in each one's Frameworks/ folder (named Outer/Inner). A symbolic link to a
+// directory is listed as the framework it names, as it always has been (WebKit.framework links into the Cryptexes; AVFoundation's
+// Frameworks/AVFAudio.framework links to the top-level AVFAudio.framework, and parses to no declaration of its own: it has no shard).
+void frameworks_in(const fs::path& dir, const std::string& outer, std::vector<Framework>* out) {
+  const std::string suffix = ".framework";
+  for (const fs::path& p : entries_of(dir)) {
+    std::string file = p.filename().string();
+    if (file.size() <= suffix.size() || file.compare(file.size() - suffix.size(), suffix.size(), suffix) != 0) continue;
+    if (!is_dir(p)) continue;
+    Framework f;
+    f.base = file.substr(0, file.size() - suffix.size());
+    f.name = outer.empty() ? f.base : outer + "/" + f.base;
+    f.root = p;
+    out->push_back(f);
+    frameworks_in(p / "Frameworks", f.name, out);
+  }
+}
+
+// The name a module map line declares as a top-level module (the line starts at its first column with module or explicit module), or "".
+std::string declared_module(const std::string& line) {
+  static const std::regex declaration(R"re(^(?:explicit\s+)?module\s+([A-Za-z0-9_]+))re");
+  std::smatch m;
+  return std::regex_search(line, m, declaration) ? m[1].str() : std::string();
+}
+
+// The module map of a usr/include module: the one map (usr/include/*.modulemap, or usr/include/<dir>/module.modulemap) that declares
+// the module as a top-level module. Two maps that declare it are an error.
+fs::path usr_module_map(const fs::path& include, const std::string& name, std::string* error) {
+  std::vector<fs::path> candidates;
+  for (const fs::path& p : entries_of(include)) {
+    if (p.extension() == ".modulemap" && is_file(p)) candidates.push_back(p);
+    if (is_dir(p) && is_file(p / "module.modulemap")) candidates.push_back(p / "module.modulemap");
+  }
+  std::vector<fs::path> found;
+  for (const fs::path& file : candidates) {
+    std::ifstream in(file);
+    for (std::string line; std::getline(in, line);) {
+      if (declared_module(line) == name) {
+        found.push_back(file);
+        break;
+      }
+    }
+  }
+  if (found.size() > 1) {
+    *error = "more than one module map declares the module " + name;
+    return {};
+  }
+  return found.empty() ? fs::path() : found[0];
+}
+
+// The public headers a module map exposes, as paths: the header lines and the umbrella header resolve in header_base, the umbrella
+// directories in dir_base. A framework module nested in this one is its own framework and is skipped, and so is a module that requires
+// x86 (the target is arm64). Textual, private and excluded headers are not public: an exclude removes a header an umbrella directory
+// takes, unless the module names it. wanted, when set, is the one top-level module to take (a usr/include map can declare several); a
+// framework's headers are in path order, a usr/include module's in the order its map names them.
+std::vector<std::string> module_headers(const fs::path& map, const fs::path& header_base, const fs::path& dir_base,
+                                        const std::string& wanted) {
+  if (!is_file(map)) return {};
+  static const std::regex framework_module(R"re(^framework\s+module\s)re");
+  static const std::regex x86(R"re(^requires\s+x86)re");
+  static const std::regex umbrella_header(R"re(^umbrella\s+header\s+"([^"]+)")re");
+  static const std::regex header_line(R"re(^header\s+"([^"]+)")re");
+  static const std::regex exclude_header(R"re(^exclude\s+header\s)re");
+  static const std::regex umbrella_dir(R"re(^umbrella\s+"([^"]+)")re");
+  static const std::regex quoted(R"re("([^"]+)")re");
+  std::vector<std::string> headers;
+  std::set<std::string> seen, named, excluded;
+  auto add = [&](const std::string& file, bool is_named) {
+    if (is_named) named.insert(file);
+    if (seen.insert(file).second) headers.push_back(file);
+  };
+  std::ifstream in(map);
+  int depth = 0;
+  bool skipping_set = false;
+  int skip_at = 0;
+  for (std::string line; std::getline(in, line);) {
+    std::string code = trim_space(line.substr(0, line.find("//")));
+    int opens = (int)std::count(code.begin(), code.end(), '{');
+    int closes = (int)std::count(code.begin(), code.end(), '}');
+    bool skipping = skipping_set && depth >= skip_at;
+    if (!skipping) {
+      std::smatch m;
+      std::string declared = declared_module(code);
+      if (std::regex_search(code, framework_module) && depth >= 1) {
+        skipping_set = true;
+        skip_at = depth + 1;
+      } else if (std::regex_search(code, x86)) {
+        skipping_set = true;
+        skip_at = depth;
+      } else if (!wanted.empty() && depth == 0 && !declared.empty() && declared != wanted) {
+        skipping_set = true;
+        skip_at = depth + 1;
+      } else if (std::regex_search(code, m, umbrella_header) || std::regex_search(code, m, header_line)) {
+        add(normal(header_base / m[1].str()), true);
+      } else if (std::regex_search(code, exclude_header)) {
+        std::smatch q;
+        if (std::regex_search(code, q, quoted)) excluded.insert(normal(header_base / q[1].str()));
+      } else if (std::regex_search(code, m, umbrella_dir)) {
+        std::vector<std::string> files;
+        std::error_code ec;
+        for (fs::recursive_directory_iterator it(dir_base / m[1].str(), ec), end; !ec && it != end; it.increment(ec)) {
+          if (it->path().extension() == ".h" && is_file(it->path())) files.push_back(normal(it->path()));
+        }
+        std::sort(files.begin(), files.end());
+        for (const std::string& file : files) add(file, false);
+      }
+    }
+    depth += opens - closes;
+    if (skipping_set && depth < skip_at) skipping_set = false;
+  }
+  std::vector<std::string> out;
+  for (const std::string& file : headers) {
+    if (!excluded.count(file) || named.count(file)) out.push_back(file);
+  }
+  if (wanted.empty()) std::sort(out.begin(), out.end());
+  return out;
+}
+
+// The headers a framework is parsed from: its module map's list, else its umbrella header, else its Headers/ files; and the reason it has
+// none. A usr/include module has its map's list and nothing else.
+std::vector<std::string> headers_of(const Framework& f, std::string* reason) {
+  if (f.usr) {
+    std::vector<std::string> listed = module_headers(f.map, f.map.parent_path(), f.map.parent_path(), f.name);
+    if (!listed.empty()) return listed;
+    *reason = "no module map header";
+    return {};
+  }
+  std::vector<std::string> listed = module_headers(f.root / "Modules" / "module.modulemap", f.root / "Headers", f.root, "");
+  if (!listed.empty()) return listed;
+  fs::path umbrella = f.root / "Headers" / (f.base + ".h");
+  if (is_file(umbrella)) return {normal(umbrella)};
+  std::vector<std::string> all;
+  for (const fs::path& p : entries_of(f.root / "Headers")) {
+    if (p.extension() == ".h" && is_file(p)) all.push_back(normal(p));
+  }
+  if (!all.empty()) return all;
+  for (const fs::path& p : entries_of(f.root / "Modules")) {
+    if (p.extension() == ".swiftmodule" && is_dir(p)) {
+      *reason = "no Objective-C or C header; Swift interface only";
+      return {};
+    }
+  }
+  *reason = "no public header in Headers/ and no module map header";
+  return {};
+}
+
+// The frameworks the sweep covers, sorted by name: System/Library/Frameworks with those nested in each, and the usr/include modules of
+// IR_USR_MODULES (a comma list; the default is kUsrModules). Two frameworks of one name, or a module with no module map, are errors.
+bool discover(const std::string& sdk, std::vector<Framework>* out, std::string* error) {
+  frameworks_in(fs::path(sdk) / "System" / "Library" / "Frameworks", "", out);
+  const char* env = std::getenv("IR_USR_MODULES");
+  std::stringstream names(env != nullptr ? env : kUsrModules);
+  for (std::string name; std::getline(names, name, ',');) {
+    if (name.empty()) continue;
+    Framework f;
+    f.name = name;
+    f.base = name;
+    f.root = fs::path(sdk) / "usr" / "include";
+    f.usr = true;
+    out->push_back(f);  // its module map is found when it is the framework asked for (main), not for every listing
+  }
+  std::sort(out->begin(), out->end(), [](const Framework& a, const Framework& b) { return a.name < b.name; });
+  for (size_t i = 1; i < out->size(); ++i) {
+    if ((*out)[i].name == (*out)[i - 1].name) {
+      *error = "two frameworks are named " + (*out)[i].name;
+      return false;
+    }
+  }
+  return true;
+}
 
 // The census row: a row of kind census, the framework's own and foreign declaration counts in the name and type cells (ir.lua reads
 // them to classify the frameworks that have no shard).
@@ -881,39 +1150,104 @@ int main(int argc, char** argv) {
     std::printf("%s\n", digest16(argv[2]).c_str());
     return 0;
   }
+  if (argc == 2 && std::strcmp(argv[1], "--target") == 0) {
+    std::printf("%s\n", kTarget);
+    return 0;
+  }
+  // the flags, in any order: --doc (the doc rows), --list (the frameworks), --timeout SECONDS
   int first = 1;
-  bool doc = false;
-  if (argc > first && std::strcmp(argv[first], "--doc") == 0) {
-    doc = true;
-    ++first;
+  bool doc = false, list = false;
+  for (;;) {
+    if (first < argc && std::strcmp(argv[first], "--doc") == 0) {
+      doc = true;
+      first += 1;
+    } else if (first < argc && std::strcmp(argv[first], "--list") == 0) {
+      list = true;
+      first += 1;
+    } else if (first + 1 < argc && std::strcmp(argv[first], "--timeout") == 0) {
+      alarm((unsigned)std::atoi(argv[first + 1]));
+      first += 2;
+    } else {
+      break;
+    }
   }
-  if (argc > first + 1 && std::strcmp(argv[first], "--timeout") == 0) {
-    alarm((unsigned)std::atoi(argv[first + 1]));
-    first += 2;
+  const char* sdk_env = std::getenv("IR_SDK");
+  if (sdk_env == nullptr) {
+    std::fprintf(stderr, "decls: IR_SDK must name the iPhoneOS SDK\n");
+    return 2;
   }
-  if (argc - first < 6) {
+  const std::string sdk = fs::absolute(sdk_env).string();
+  std::vector<Framework> frameworks;
+  std::string error;
+  if (!discover(sdk, &frameworks, &error)) {
+    std::fprintf(stderr, "decls: %s\n", error.c_str());
+    return 2;
+  }
+  if (list) {
+    for (const Framework& f : frameworks) std::printf("%s\t%s\n", f.name.c_str(), f.root.string().c_str());
+    return 0;
+  }
+  if (argc - first != 1) {
     usage();
-    return 1;
+    return 2;
   }
-  const char* sdk = argv[first];
+  const std::string name = argv[first];
+  const Framework* framework = nullptr;
+  for (const Framework& f : frameworks) {
+    if (f.name == name) framework = &f;
+  }
+  if (framework == nullptr) {
+    std::fprintf(stderr, "decls: no framework named %s in the SDK\n", name.c_str());
+    return 2;
+  }
+  std::string reason;
+  Framework chosen = *framework;
+  if (chosen.usr) {
+    chosen.map = usr_module_map(chosen.root, chosen.name, &error);
+    if (!error.empty() || chosen.map.empty()) {
+      std::fprintf(stderr, "decls: %s\n", error.empty() ? ("no module map in usr/include declares the module " + name).c_str() : error.c_str());
+      return 2;
+    }
+  }
+  std::vector<std::string> headers = headers_of(chosen, &reason);
   Context ctx;
   ctx.doc = doc;
-  ctx.framework = argv[first + 1];
-  ctx.headers = std::string(argv[first + 2]) + "/Headers/";
-  const char* triple = argv[first + 3];
-  const char* resource = argv[first + 4];
+  ctx.framework = name;
+  if (framework->usr) {
+    std::set<std::string> dirs;
+    for (const std::string& h : headers) dirs.insert(fs::path(h).parent_path().string() + "/");
+    ctx.own.assign(dirs.begin(), dirs.end());
+  } else {
+    ctx.own.push_back(framework->root.string() + "/Headers/");
+  }
+  if (headers.empty()) {
+    if (doc) {
+      std::fprintf(stderr, "decls: %s: %s\n", name.c_str(), reason.c_str());
+      return 1;
+    }
+    // a framework with no header is one row of kind unparsed, its reason in the name column, as a framework that does not parse is
+    std::string row = name + "\tunparsed\t-\t-\t" + reason;
+    for (int i = 5; i < 18; ++i) row += "\t-";
+    std::printf("%s\n", row.c_str());
+    return 0;
+  }
   std::string imports;
-  for (int i = first + 5; i < argc; ++i) imports += std::string("#import \"") + argv[i] + "\"\n";
+  for (const std::string& h : headers) imports += "#import \"" + h + "\"\n";
   CXUnsavedFile unsaved = {"charon-module.m", imports.c_str(), (unsigned long)imports.size()};
-  const char* args[] = {"-x", "objective-c", "-target", triple, "-isysroot", sdk, "-resource-dir", resource, "-Wno-everything"};
+  std::vector<const char*> args = {"-x", "objective-c", "-target", kTarget, "-isysroot", sdk.c_str()};
+  if (const char* resource = std::getenv("IR_RESOURCE")) {
+    args.push_back("-resource-dir");
+    args.push_back(resource);
+  }
+  args.push_back("-Wno-everything");
   CXIndex index = clang_createIndex(0, 0);
   CXTranslationUnit tu = nullptr;
   CXErrorCode code = clang_parseTranslationUnit2(
-      index, "charon-module.m", args, sizeof args / sizeof args[0], &unsaved, 1,
+      index, "charon-module.m", args.data(), (int)args.size(), &unsaved, 1,
       CXTranslationUnit_SkipFunctionBodies | CXTranslationUnit_DetailedPreprocessingRecord | CXTranslationUnit_IncludeAttributedTypes,
       &tu);
   if (code != CXError_Success || !tu) {
-    std::fprintf(stderr, "decls: parse failed for %s (code %d)\n", ctx.framework.c_str(), (int)code);
+    std::fprintf(stderr, "decls: parse failed for %s (code %d)\n", name.c_str(), (int)code);
     return 1;
   }
   ctx.tu = tu;
@@ -923,7 +1257,14 @@ int main(int argc, char** argv) {
   for (unsigned i = 0; i < n; ++i) {
     CXDiagnostic d = clang_getDiagnostic(tu, i);
     if (clang_getDiagnosticSeverity(d) >= CXDiagnostic_Error) {
-      if (errors == 0) first_error = cell(text(clang_getDiagnosticSpelling(d)));
+      if (errors == 0) {
+        // the first error, with the file and line it is in (the header that refused the parse)
+        CXFile file = nullptr;
+        unsigned line = 0, column = 0, offset = 0;
+        clang_getSpellingLocation(clang_getDiagnosticLocation(d), &file, &line, &column, &offset);
+        std::string where = file ? text(clang_getFileName(file)) + ":" + std::to_string(line) + ": " : "";
+        first_error = cell(where + text(clang_getDiagnosticSpelling(d)));
+      }
       ++errors;
     }
     clang_disposeDiagnostic(d);
@@ -933,10 +1274,10 @@ int main(int argc, char** argv) {
     Nest root{&ctx, "-", "", false, true};
     clang_visitChildren(clang_getTranslationUnitCursor(tu), visit, &root);
     resolve(ctx);
-    if (!doc) census_row(ctx, sdk, tu);
+    if (!doc) census_row(ctx, sdk.c_str(), tu);
     std::fwrite(ctx.out.data(), 1, ctx.out.size(), stdout);
   } else if (doc) {
-    std::fprintf(stderr, "decls: %s: %ld error diagnostics\n", ctx.framework.c_str(), errors);
+    std::fprintf(stderr, "decls: %s: %ld error diagnostics\n", name.c_str(), errors);
     clang_disposeTranslationUnit(tu);
     clang_disposeIndex(index);
     return 1;
@@ -944,11 +1285,11 @@ int main(int argc, char** argv) {
     // A module that does not parse is one row of kind unparsed, its reason in the name column; no declaration of it is written.
     // The SDK's absolute path is redacted: the snapshot must not depend on where the SDK is installed.
     for (size_t at = first_error.find(sdk); at != std::string::npos; at = first_error.find(sdk, at)) {
-      first_error.replace(at, std::strlen(sdk), "<sdk>");
+      first_error.replace(at, sdk.size(), "<sdk>");
     }
-    std::fprintf(stderr, "decls: %s: %ld error diagnostics, first: %s\n", ctx.framework.c_str(), errors, first_error.c_str());
+    std::fprintf(stderr, "decls: %s: %ld error diagnostics, first: %s\n", name.c_str(), errors, first_error.c_str());
     // the row has the 17 cells of every row: the reason is the name, the rest are "-"
-    std::string row = cell(ctx.framework) + "\tunparsed\t-\t-\t" + first_error;
+    std::string row = name + "\tunparsed\t-\t-\t" + first_error;
     for (int i = 5; i < 18; ++i) row += "\t-";
     std::printf("%s\n", row.c_str());
   }

@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
-var	c:@LockedCameraCaptureVersionNumber	-			double	-	-	-	f12cbbc0d480b590
-var	c:@LockedCameraCaptureVersionString	-			const unsigned char[]	-	-	-	4477fc497be6a9df
-var	c:@NSUserActivityTypeLockedCameraCapture	-			NSString *const	-	-	-	eec37f298ac667f6
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+var	c:@LockedCameraCaptureVersionNumber	-			double	-	-	-	-	f12cbbc0d480b590
+var	c:@LockedCameraCaptureVersionString	-			const unsigned char[]	-	-	-	-	4477fc497be6a9df
+var	c:@NSUserActivityTypeLockedCameraCapture	-			NSString *const	-	-	-	-	eec37f298ac667f6

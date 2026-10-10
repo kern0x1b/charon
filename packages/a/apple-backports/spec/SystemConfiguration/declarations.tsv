@@ -1,611 +1,611 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
-function	c:@F@CNSetSupportedSSIDs	-			Boolean (CFArrayRef _Nonnull)	-	ios=4.0/9.0/-/0,macos=10.8/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use Replaced by <NetworkExtension/NEHotspotHelper.h> instead	500f852b9daba67e
-function	c:@F@CNMarkPortalOnline	-			Boolean (CFStringRef _Nonnull)	-	ios=4.0/9.0/-/0,macos=10.8/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use Replaced by <NetworkExtension/NEHotspotHelper.h> instead	41594d57962840d7
-function	c:@F@CNMarkPortalOffline	-			Boolean (CFStringRef _Nonnull)	-	ios=4.0/9.0/-/0,macos=10.8/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use Replaced by <NetworkExtension/NEHotspotHelper.h> instead	00362381d20528ac
-function	c:@F@CNCopySupportedInterfaces	-			CFArrayRef  _Nullable (void)	-	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5879e5d8b16e7d37
-var	c:@kCNNetworkInfoKeySSIDData	-			API_AVAILABLE const CFStringRef	-	ios=4.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	eae881a77071d021
-var	c:@kCNNetworkInfoKeySSID	-			API_AVAILABLE const CFStringRef	-	ios=4.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	be6257ae89d4621f
-var	c:@kCNNetworkInfoKeyBSSID	-			API_AVAILABLE const CFStringRef	-	ios=4.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	98a11c884ae55bc7
-function	c:@F@CNCopyCurrentNetworkInfo	-			CFDictionaryRef  _Nullable (CFStringRef _Nonnull)	-	ios=4.1/100000/-/0,maccatalyst=14.0/100000/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use [NEHotspotNetwork fetchCurrentWithCompletionHandler:] instead	954a2bdf0e84dd72
-function	c:@F@DHCPClientPreferencesSetApplicationOptions	-			Boolean (CFStringRef _Nonnull, const UInt8 * _Nullable, CFIndex)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d11600a8b5759f0e
-function	c:@F@DHCPClientPreferencesCopyApplicationOptions	-			UInt8 * _Nullable (CFStringRef _Nonnull, CFIndex * _Nonnull)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4d3fd9b1067992db
-struct	c:@S@__SCDynamicStore	-			-	-	-	-	a29e8d2aeee2b62c
-typedef	c:@T@SCDynamicStoreRef	-			const struct __SCDynamicStore *	-	-	-	7d9af018a84d1128
-struct	c:@SA@SCDynamicStoreContext	-			-	-	-	-	b1ea310a2abf8f63
-field	c:@SA@SCDynamicStoreContext@FI@version	SCDynamicStoreContext			CFIndex	-	-	-	4d484a833dd23970
-field	c:@SA@SCDynamicStoreContext@FI@info	SCDynamicStoreContext			void *	-	-	-	f4eae857e166194d
-field	c:@SA@SCDynamicStoreContext@FI@retain	SCDynamicStoreContext			const void * _Nonnull (*)(const void * _Nonnull)	-	-	-	ec1ccec106e58a5c
-field	c:@SA@SCDynamicStoreContext@FI@release	SCDynamicStoreContext			void (*)(const void * _Nonnull)	-	-	-	8f4551529ab3f34b
-field	c:@SA@SCDynamicStoreContext@FI@copyDescription	SCDynamicStoreContext			CFStringRef  _Nonnull (*)(const void * _Nonnull)	-	-	-	e841d76211933489
-typedef	c:@T@SCDynamicStoreContext	-			struct SCDynamicStoreContext	-	-	-	33843aa563174b56
-typedef	c:@T@SCDynamicStoreCallBack	-			void (*)(SCDynamicStoreRef _Nonnull, CFArrayRef _Nonnull, void * _Nullable)	-	-	-	73674990a62dd03f
-function	c:@F@SCDynamicStoreGetTypeID	-			CFTypeID (void)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	eb7ba4bbab2d98b4
-function	c:@F@SCDynamicStoreCreate	-			SCDynamicStoreRef  _Nullable (CFAllocatorRef _Nullable, CFStringRef _Nonnull, SCDynamicStoreCallBack _Nullable, SCDynamicStoreContext * _Nullable)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f414a2242d84e2b5
-function	c:@F@SCDynamicStoreCreateWithOptions	-			SCDynamicStoreRef  _Nullable (CFAllocatorRef _Nullable, CFStringRef _Nonnull, CFDictionaryRef _Nullable, SCDynamicStoreCallBack _Nullable, SCDynamicStoreContext * _Nullable)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	26b556010c8e5d22
-var	c:@kSCDynamicStoreUseSessionKeys	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	adb833273cc7dd81
-function	c:@F@SCDynamicStoreCreateRunLoopSource	-			CFRunLoopSourceRef  _Nullable (CFAllocatorRef _Nullable, SCDynamicStoreRef _Nonnull, CFIndex)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ecd4fbc0c65ae2fc
-function	c:@F@SCDynamicStoreSetDispatchQueue	-			Boolean (SCDynamicStoreRef _Nonnull, dispatch_queue_t _Nullable)	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e1e42ec64cc261d6
-function	c:@F@SCDynamicStoreCopyKeyList	-			CFArrayRef  _Nullable (SCDynamicStoreRef _Nullable, CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	530115072c6d9877
-function	c:@F@SCDynamicStoreAddValue	-			Boolean (SCDynamicStoreRef _Nullable, CFStringRef _Nonnull, CFPropertyListRef _Nonnull)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5759edc23e08997b
-function	c:@F@SCDynamicStoreAddTemporaryValue	-			Boolean (SCDynamicStoreRef _Nonnull, CFStringRef _Nonnull, CFPropertyListRef _Nonnull)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	18d5cf05b46ae7da
-function	c:@F@SCDynamicStoreCopyValue	-			CFPropertyListRef  _Nullable (SCDynamicStoreRef _Nullable, CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0d7e948dd37e3662
-function	c:@F@SCDynamicStoreCopyMultiple	-			CFDictionaryRef  _Nullable (SCDynamicStoreRef _Nullable, CFArrayRef _Nullable, CFArrayRef _Nullable)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	903ef7a68061dfa4
-function	c:@F@SCDynamicStoreSetValue	-			Boolean (SCDynamicStoreRef _Nullable, CFStringRef _Nonnull, CFPropertyListRef _Nonnull)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4b69644cdd5e820b
-function	c:@F@SCDynamicStoreSetMultiple	-			Boolean (SCDynamicStoreRef _Nullable, CFDictionaryRef _Nullable, CFArrayRef _Nullable, CFArrayRef _Nullable)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4a661f1ee830bd74
-function	c:@F@SCDynamicStoreRemoveValue	-			Boolean (SCDynamicStoreRef _Nullable, CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	721ca830f8f51c52
-function	c:@F@SCDynamicStoreNotifyValue	-			Boolean (SCDynamicStoreRef _Nullable, CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	588f7fa09d5ee5da
-function	c:@F@SCDynamicStoreSetNotificationKeys	-			Boolean (SCDynamicStoreRef _Nonnull, CFArrayRef _Nullable, CFArrayRef _Nullable)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	141678a3a684b284
-function	c:@F@SCDynamicStoreCopyNotifiedKeys	-			CFArrayRef  _Nullable (SCDynamicStoreRef _Nonnull)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9b1e293d88cfd290
-function	c:@F@SCDynamicStoreCopyDHCPInfo	-			CFDictionaryRef  _Nullable (SCDynamicStoreRef _Nullable, CFStringRef _Nullable)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f42cb3600fca9e59
-function	c:@F@DHCPInfoGetOptionData	-			CFDataRef  _Nullable (CFDictionaryRef _Nonnull, UInt8)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5a41d436e99aae28
-function	c:@F@DHCPInfoGetLeaseStartTime	-			CFDateRef  _Nullable (CFDictionaryRef _Nonnull)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	05c87b5bbc20b0f5
-function	c:@F@DHCPInfoGetLeaseExpirationTime	-			CFDateRef  _Nullable (CFDictionaryRef _Nonnull)	-	ios=-/-/-/1,macos=10.8/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	46c24ae51b812c3e
-enum	c:@Ea@kSCStatusOK	-	-		unsigned int	-	-	-	0e518cf5b3ad4a51
-enumconst	c:@Ea@kSCStatusOK@kSCStatusOK	-			-	-	-	-	c09ba5350e7dc222
-enumconst	c:@Ea@kSCStatusOK@kSCStatusFailed	-			-	-	-	-	77810a98f5f24f22
-enumconst	c:@Ea@kSCStatusOK@kSCStatusInvalidArgument	-			-	-	-	-	786393e9bca31150
-enumconst	c:@Ea@kSCStatusOK@kSCStatusAccessError	-			-	-	-	-	2ca9061ae51d9876
-enumconst	c:@Ea@kSCStatusOK@kSCStatusNoKey	-			-	-	-	-	51837373f512f34d
-enumconst	c:@Ea@kSCStatusOK@kSCStatusKeyExists	-			-	-	-	-	39c8ac185c307761
-enumconst	c:@Ea@kSCStatusOK@kSCStatusLocked	-			-	-	-	-	970975d1fd6fbf4f
-enumconst	c:@Ea@kSCStatusOK@kSCStatusNeedLock	-			-	-	-	-	00fb646797769161
-enumconst	c:@Ea@kSCStatusOK@kSCStatusNoStoreSession	-			-	-	-	-	39468e359f639c12
-enumconst	c:@Ea@kSCStatusOK@kSCStatusNoStoreServer	-			-	-	-	-	88b25deb0a5bba3d
-enumconst	c:@Ea@kSCStatusOK@kSCStatusNotifierActive	-			-	-	-	-	36366d0477667a65
-enumconst	c:@Ea@kSCStatusOK@kSCStatusNoPrefsSession	-			-	-	-	-	c2d5f6512fb4eb9a
-enumconst	c:@Ea@kSCStatusOK@kSCStatusPrefsBusy	-			-	-	-	-	023da5f883170dd4
-enumconst	c:@Ea@kSCStatusOK@kSCStatusNoConfigFile	-			-	-	-	-	da46a938fb0d7fda
-enumconst	c:@Ea@kSCStatusOK@kSCStatusNoLink	-			-	-	-	-	8b625bee5137a780
-enumconst	c:@Ea@kSCStatusOK@kSCStatusStale	-			-	-	-	-	f47bd0e4724f6bae
-enumconst	c:@Ea@kSCStatusOK@kSCStatusMaxLink	-			-	-	-	-	2f30ad23e75f9027
-enumconst	c:@Ea@kSCStatusOK@kSCStatusReachabilityUnknown	-			-	-	-	-	b14db3807638620b
-enumconst	c:@Ea@kSCStatusOK@kSCStatusConnectionNoService	-			-	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	30549482a40ca6b5
-enumconst	c:@Ea@kSCStatusOK@kSCStatusConnectionIgnore	-			-	-	ios=-/-/-/1,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2cd165c4c0c6ba53
-function	c:@F@SCDynamicStoreKeyCreate	-			CFStringRef  _Nonnull (CFAllocatorRef _Nullable, CFStringRef _Nonnull, ...)	variadic	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fad91178f10e3cbd
-function	c:@F@SCDynamicStoreKeyCreateNetworkGlobalEntity	-			CFStringRef  _Nonnull (CFAllocatorRef _Nullable, CFStringRef _Nonnull, CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0611250e8b38fdd8
-function	c:@F@SCDynamicStoreKeyCreateNetworkInterface	-			CFStringRef  _Nonnull (CFAllocatorRef _Nullable, CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9185159d3aeff144
-function	c:@F@SCDynamicStoreKeyCreateNetworkInterfaceEntity	-			CFStringRef  _Nonnull (CFAllocatorRef _Nullable, CFStringRef _Nonnull, CFStringRef _Nonnull, CFStringRef _Nullable)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	75db738a68b199a0
-function	c:@F@SCDynamicStoreKeyCreateNetworkServiceEntity	-			CFStringRef  _Nonnull (CFAllocatorRef _Nullable, CFStringRef _Nonnull, CFStringRef _Nonnull, CFStringRef _Nullable)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2df022c8c539460e
-function	c:@F@SCDynamicStoreKeyCreateComputerName	-			CFStringRef  _Nonnull (CFAllocatorRef _Nullable)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d4900da2081b745b
-function	c:@F@SCDynamicStoreKeyCreateConsoleUser	-			CFStringRef  _Nonnull (CFAllocatorRef _Nullable)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	788d64aa476f5932
-function	c:@F@SCDynamicStoreKeyCreateHostNames	-			CFStringRef  _Nonnull (CFAllocatorRef _Nullable)	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b097a74d2f45d8be
-function	c:@F@SCDynamicStoreKeyCreateLocation	-			CFStringRef  _Nonnull (CFAllocatorRef _Nullable)	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fbd41fbf828d034b
-function	c:@F@SCDynamicStoreKeyCreateProxies	-			CFStringRef  _Nonnull (CFAllocatorRef _Nullable)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3ee9e4ad3adbbfbc
-function	c:@F@SCDynamicStoreCopyComputerName	-			CFStringRef  _Nullable (SCDynamicStoreRef _Nullable, CFStringEncoding * _Nullable)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f1175028797faaeb
-function	c:@F@SCDynamicStoreCopyConsoleUser	-			CFStringRef  _Nullable (SCDynamicStoreRef _Nullable, uid_t * _Nullable, gid_t * _Nullable)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	26ed1df0abf72943
-function	c:@F@SCDynamicStoreCopyLocalHostName	-			CFStringRef  _Nullable (SCDynamicStoreRef _Nullable)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	44908fbb2d850683
-function	c:@F@SCDynamicStoreCopyLocation	-			CFStringRef  _Nullable (SCDynamicStoreRef _Nullable)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	72d89c974f0b965f
-function	c:@F@SCDynamicStoreCopyProxies	-			CFDictionaryRef  _Nullable (SCDynamicStoreRef _Nullable)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f3537d36416d774c
-struct	c:@S@AuthorizationOpaqueRef	-			-	-	-	-	3b269c0528a2cedf
-typedef	c:@T@AuthorizationRef	-			const struct AuthorizationOpaqueRef *	-	-	-	3b2906683fa47cb0
-struct	c:@S@__SCPreferences	-			-	-	-	-	fd50989f11cb697f
-typedef	c:@T@SCPreferencesRef	-			const struct __SCPreferences *	-	-	-	ba8a9f8b2febcce2
-typedef	c:@T@SCPreferencesNotification	-			enum SCPreferencesNotification	-	-	-	74302dec68a41851
-enum	c:@E@SCPreferencesNotification	-			uint32_t	-	-	-	86726cd583ed5988
-enumconst	c:@E@SCPreferencesNotification@kSCPreferencesNotificationCommit	SCPreferencesNotification			-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cef76001f4da06a4
-enumconst	c:@E@SCPreferencesNotification@kSCPreferencesNotificationApply	SCPreferencesNotification			-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b156f6b1641d230a
-struct	c:@SA@SCPreferencesContext	-			-	-	-	-	b4f7ed0db363ff36
-field	c:@SA@SCPreferencesContext@FI@version	SCPreferencesContext			CFIndex	-	-	-	17610c547546d546
-field	c:@SA@SCPreferencesContext@FI@info	SCPreferencesContext			void *	-	-	-	c7e3928851c03fcd
-field	c:@SA@SCPreferencesContext@FI@retain	SCPreferencesContext			const void * _Nonnull (*)(const void * _Nonnull)	-	-	-	64ce7c3ca877f997
-field	c:@SA@SCPreferencesContext@FI@release	SCPreferencesContext			void (*)(const void * _Nonnull)	-	-	-	768df7a54f6f7f85
-field	c:@SA@SCPreferencesContext@FI@copyDescription	SCPreferencesContext			CFStringRef  _Nonnull (*)(const void * _Nonnull)	-	-	-	d06e6b395e7bdf67
-typedef	c:@T@SCPreferencesContext	-			struct SCPreferencesContext	-	-	-	bddd7c68b29d08b0
-typedef	c:@T@SCPreferencesCallBack	-			void (*)(SCPreferencesRef _Nonnull, SCPreferencesNotification, void * _Nullable)	-	-	-	24aecf5945733199
-function	c:@F@SCPreferencesGetTypeID	-			CFTypeID (void)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1608e40d04b21932
-function	c:@F@SCPreferencesCreate	-			SCPreferencesRef  _Nullable (CFAllocatorRef _Nullable, CFStringRef _Nonnull, CFStringRef _Nullable)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0f87ca9c3cd6fb24
-function	c:@F@SCPreferencesCreateWithAuthorization	-			SCPreferencesRef  _Nullable (CFAllocatorRef _Nullable, CFStringRef _Nonnull, CFStringRef _Nullable, AuthorizationRef _Nullable)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	18eb84aab0fee785
-function	c:@F@SCPreferencesLock	-			Boolean (SCPreferencesRef _Nonnull, Boolean)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	83eca3ca643acdee
-function	c:@F@SCPreferencesCommitChanges	-			Boolean (SCPreferencesRef _Nonnull)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a8b6ff7f3ab380f2
-function	c:@F@SCPreferencesApplyChanges	-			Boolean (SCPreferencesRef _Nonnull)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3fe069d321b8c705
-function	c:@F@SCPreferencesUnlock	-			Boolean (SCPreferencesRef _Nonnull)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8414bcaae8ee1b09
-function	c:@F@SCPreferencesGetSignature	-			CFDataRef  _Nullable (SCPreferencesRef _Nonnull)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4ec2cbaf107747c0
-function	c:@F@SCPreferencesCopyKeyList	-			CFArrayRef  _Nullable (SCPreferencesRef _Nonnull)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ea16780b36e84c1e
-function	c:@F@SCPreferencesGetValue	-			CFPropertyListRef  _Nullable (SCPreferencesRef _Nonnull, CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ecaf4f12fa6064d9
-function	c:@F@SCPreferencesAddValue	-			Boolean (SCPreferencesRef _Nonnull, CFStringRef _Nonnull, CFPropertyListRef _Nonnull)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fc553d6a1152695b
-function	c:@F@SCPreferencesSetValue	-			Boolean (SCPreferencesRef _Nonnull, CFStringRef _Nonnull, CFPropertyListRef _Nonnull)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	faaca2254a5cd9ff
-function	c:@F@SCPreferencesRemoveValue	-			Boolean (SCPreferencesRef _Nonnull, CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3020a03a730a6ed1
-function	c:@F@SCPreferencesSetCallback	-			Boolean (SCPreferencesRef _Nonnull, SCPreferencesCallBack _Nullable, SCPreferencesContext * _Nullable)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0e4bca733721ee17
-function	c:@F@SCPreferencesScheduleWithRunLoop	-			Boolean (SCPreferencesRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	70a2a1f1342faf0d
-function	c:@F@SCPreferencesUnscheduleFromRunLoop	-			Boolean (SCPreferencesRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7c2073a40284f5e2
-function	c:@F@SCPreferencesSetDispatchQueue	-			Boolean (SCPreferencesRef _Nonnull, dispatch_queue_t _Nullable)	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c9fcb924dcc1fe5c
-function	c:@F@SCPreferencesSynchronize	-			void (SCPreferencesRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	becbfa5f282e33de
-function	c:@F@SCPreferencesPathCreateUniqueChild	-			CFStringRef  _Nullable (SCPreferencesRef _Nonnull, CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cd10faad880e210a
-function	c:@F@SCPreferencesPathGetValue	-			CFDictionaryRef  _Nullable (SCPreferencesRef _Nonnull, CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	628547cc09d5252b
-function	c:@F@SCPreferencesPathGetLink	-			CFStringRef  _Nullable (SCPreferencesRef _Nonnull, CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1ca103d79d3d72e0
-function	c:@F@SCPreferencesPathSetValue	-			Boolean (SCPreferencesRef _Nonnull, CFStringRef _Nonnull, CFDictionaryRef _Nonnull)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	720006330ed977f1
-function	c:@F@SCPreferencesPathSetLink	-			Boolean (SCPreferencesRef _Nonnull, CFStringRef _Nonnull, CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	eb192e6ad95c6293
-function	c:@F@SCPreferencesPathRemoveValue	-			Boolean (SCPreferencesRef _Nonnull, CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	552bc15f91716092
-function	c:@F@SCPreferencesSetComputerName	-			Boolean (SCPreferencesRef _Nonnull, CFStringRef _Nullable, CFStringEncoding)	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4e536be5438bfebd
-function	c:@F@SCPreferencesSetLocalHostName	-			Boolean (SCPreferencesRef _Nonnull, CFStringRef _Nullable)	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6c0182ac363445ab
-var	c:@kSCResvLink	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	066485b734a5452f
-var	c:@kSCResvInactive	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	888a767f06956da5
-var	c:@kSCPropInterfaceName	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a3525b3c1caed8a5
-var	c:@kSCPropMACAddress	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cbf65c28746fe284
-var	c:@kSCPropUserDefinedName	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f1e14e667d0e1e92
-var	c:@kSCPropVersion	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5cee64fa0979cb2e
-var	c:@kSCPrefCurrentSet	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4b3667922054aed6
-var	c:@kSCPrefNetworkServices	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6948a43bf4ceb7b6
-var	c:@kSCPrefSets	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9ea53e358beb79f0
-var	c:@kSCPrefSystem	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fd14c3103c639dc2
-var	c:@kSCCompNetwork	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	de11555d4dbfa01f
-var	c:@kSCCompService	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ccabf259e45e535d
-var	c:@kSCCompGlobal	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ad2f0f3f40ceda88
-var	c:@kSCCompHostNames	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2ecb5170a62d6bf8
-var	c:@kSCCompInterface	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6641eba8df84db3d
-var	c:@kSCCompSystem	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4d90c17f6b5413af
-var	c:@kSCCompUsers	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8562a397a859ef8b
-var	c:@kSCCompAnyRegex	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f31ce4ae9b63521c
-var	c:@kSCEntNetAirPort	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	01aba233612731a2
-var	c:@kSCEntNetDHCP	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	58bc6107b72e18bf
-var	c:@kSCEntNetDNS	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e33967b97018f22e
-var	c:@kSCEntNetEthernet	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a6555cb0fd5a8d06
-var	c:@kSCEntNetFireWire	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f2de16d0b00c6bc5
-var	c:@kSCEntNetInterface	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e76ed7f768f49839
-var	c:@kSCEntNetIPSec	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	447d22ac5db21064
-var	c:@kSCEntNetIPv4	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	83beab0277cca3fb
-var	c:@kSCEntNetIPv6	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9ea111dcf340bd64
-var	c:@kSCEntNetL2TP	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bb46a3501ced97c4
-var	c:@kSCEntNetLink	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5a402997ca8f77ec
-var	c:@kSCEntNetModem	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6978915a5e67ee2d
-var	c:@kSCEntNetPPP	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5cf908a665f6a2bf
-var	c:@kSCEntNetPPPoE	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	db6f559399b9a6c7
-var	c:@kSCEntNetPPPSerial	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	97476022c7360fd0
-var	c:@kSCEntNetPPTP	-			API_DEPRECATED const CFStringRef	-	ios=-/-/-/1,macos=10.3/10.12/-/0	-	fa9e906e584f10a2
-var	c:@kSCEntNetProxies	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cd9b15962bc0ca93
-var	c:@kSCEntNetSMB	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	94820b77860d7b1d
-var	c:@kSCEntNet6to4	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3cd3112043518ee1
-var	c:@kSCPropNetOverridePrimary	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4fee549bea328dce
-var	c:@kSCPropNetServiceOrder	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	718d1aaec79a2fa6
-var	c:@kSCPropNetPPPOverridePrimary	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	594930ca6504341f
-var	c:@kSCPropNetInterfaces	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a93e985c1a38aa46
-var	c:@kSCPropNetLocalHostName	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4e87d7d48fb7321d
-var	c:@kSCPropNetAirPortAllowNetCreation	-			API_DEPRECATED const CFStringRef	-	ios=-/-/-/1,macos=10.2/10.9/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	16464d0354dc8e47
-var	c:@kSCPropNetAirPortAuthPassword	-			API_DEPRECATED const CFStringRef	-	ios=-/-/-/1,macos=10.1/10.9/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d69eafdb27354daf
-var	c:@kSCPropNetAirPortAuthPasswordEncryption	-			API_DEPRECATED const CFStringRef	-	ios=-/-/-/1,macos=10.1/10.9/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b5b38fddf7711715
-var	c:@kSCPropNetAirPortJoinMode	-			API_DEPRECATED const CFStringRef	-	ios=-/-/-/1,macos=10.2/10.9/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	784488f607386439
-var	c:@kSCPropNetAirPortPowerEnabled	-			API_DEPRECATED const CFStringRef	-	ios=-/-/-/1,macos=10.1/10.9/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2b31626fa8384ead
-var	c:@kSCPropNetAirPortPreferredNetwork	-			API_DEPRECATED const CFStringRef	-	ios=-/-/-/1,macos=10.1/10.9/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9f2e75b375f3ab51
-var	c:@kSCPropNetAirPortSavePasswords	-			API_DEPRECATED const CFStringRef	-	ios=-/-/-/1,macos=10.2/10.9/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	27036fcaf35550fc
-var	c:@kSCValNetAirPortJoinModeAutomatic	-			API_DEPRECATED const CFStringRef	-	ios=-/-/-/1,macos=10.3/10.9/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c3b980c511abd949
-var	c:@kSCValNetAirPortJoinModePreferred	-			API_DEPRECATED const CFStringRef	-	ios=-/-/-/1,macos=10.2/10.9/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	56aa53f47c30d9be
-var	c:@kSCValNetAirPortJoinModeRanked	-			API_DEPRECATED const CFStringRef	-	ios=-/-/-/1,macos=10.4/10.9/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	aad32232fd221300
-var	c:@kSCValNetAirPortJoinModeRecent	-			API_DEPRECATED const CFStringRef	-	ios=-/-/-/1,macos=10.2/10.9/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	99b3124e87db9a89
-var	c:@kSCValNetAirPortJoinModeStrongest	-			API_DEPRECATED const CFStringRef	-	ios=-/-/-/1,macos=10.2/10.9/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5551f2287c84adb6
-var	c:@kSCValNetAirPortAuthPasswordEncryptionKeychain	-			API_DEPRECATED const CFStringRef	-	ios=-/-/-/1,macos=10.3/10.9/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f97b5eb462075038
-var	c:@kSCPropNetDNSDomainName	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5e1c605707efd1df
-var	c:@kSCPropNetDNSOptions	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9a2ce1f797010ef1
-var	c:@kSCPropNetDNSSearchDomains	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ddcb6799e6e69165
-var	c:@kSCPropNetDNSSearchOrder	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e787b477f0199539
-var	c:@kSCPropNetDNSServerAddresses	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	07e842e318e2ccb7
-var	c:@kSCPropNetDNSServerPort	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8c8f29f6d9cb2c78
-var	c:@kSCPropNetDNSServerTimeout	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d65f652038f74d5c
-var	c:@kSCPropNetDNSSortList	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	101960780dec66e6
-var	c:@kSCPropNetDNSSupplementalMatchDomains	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6255b23d85dad705
-var	c:@kSCPropNetDNSSupplementalMatchOrders	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1153150668f33d9f
-var	c:@kSCPropNetEthernetMediaSubType	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ce148720d27ccad7
-var	c:@kSCPropNetEthernetMediaOptions	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6bd6d888dbcddeeb
-var	c:@kSCPropNetEthernetMTU	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e5248c25a2559d36
-var	c:@kSCPropNetInterfaceDeviceName	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	72f10f2167337398
-var	c:@kSCPropNetInterfaceHardware	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ba6e0ec12e540c77
-var	c:@kSCPropNetInterfaceType	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a082b82dd3401b87
-var	c:@kSCPropNetInterfaceSubType	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0daa5d22ddc76c14
-var	c:@kSCPropNetInterfaceSupportsModemOnHold	-			API_DEPRECATED const CFStringRef	-	ios=-/-/-/1,macos=10.2/10.13/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	17394fee03a28516
-var	c:@kSCValNetInterfaceTypeEthernet	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b84eafd72f06aa7b
-var	c:@kSCValNetInterfaceTypeFireWire	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b2401ad0c6cb89ba
-var	c:@kSCValNetInterfaceTypePPP	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a7f00992036e797c
-var	c:@kSCValNetInterfaceType6to4	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1c191f2da789eabb
-var	c:@kSCValNetInterfaceTypeIPSec	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c4ddb2f293ee124e
-var	c:@kSCValNetInterfaceSubTypePPPoE	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	99808ea59206b5a0
-var	c:@kSCValNetInterfaceSubTypePPPSerial	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6398843f29436c02
-var	c:@kSCValNetInterfaceSubTypePPTP	-			API_DEPRECATED const CFStringRef	-	ios=-/-/-/1,macos=10.2/10.12/-/0	-	8920829db1f64149
-var	c:@kSCValNetInterfaceSubTypeL2TP	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cf3bea0724e26d50
-var	c:@kSCPropNetIPSecAuthenticationMethod	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	69716be00fd96c60
-var	c:@kSCPropNetIPSecLocalCertificate	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ee8bb32752723256
-var	c:@kSCPropNetIPSecLocalIdentifier	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	693a238b1fae11f7
-var	c:@kSCPropNetIPSecLocalIdentifierType	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2540c13ce198c03c
-var	c:@kSCPropNetIPSecSharedSecret	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7d9cfe00aa4ec198
-var	c:@kSCPropNetIPSecSharedSecretEncryption	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1e64b979db614a9e
-var	c:@kSCPropNetIPSecConnectTime	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	587bbf19153b8d37
-var	c:@kSCPropNetIPSecRemoteAddress	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	09442d29a89998b8
-var	c:@kSCPropNetIPSecStatus	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4392ed04d776deb7
-var	c:@kSCPropNetIPSecXAuthEnabled	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7f17d99a14b6815c
-var	c:@kSCPropNetIPSecXAuthName	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9abb09c4ddff6038
-var	c:@kSCPropNetIPSecXAuthPassword	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	75a37a97d96694e5
-var	c:@kSCPropNetIPSecXAuthPasswordEncryption	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0f755f0b782e7d46
-var	c:@kSCValNetIPSecAuthenticationMethodSharedSecret	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ee007991360b0d07
-var	c:@kSCValNetIPSecAuthenticationMethodCertificate	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f0c6f65d95a474e3
-var	c:@kSCValNetIPSecAuthenticationMethodHybrid	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0c4dfa5a8dc89d52
-var	c:@kSCValNetIPSecLocalIdentifierTypeKeyID	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	242df76caf95ff15
-var	c:@kSCValNetIPSecSharedSecretEncryptionKeychain	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fb145544bb9e6f07
-var	c:@kSCValNetIPSecXAuthPasswordEncryptionKeychain	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7cb7654132c1190f
-var	c:@kSCValNetIPSecXAuthPasswordEncryptionPrompt	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c507dad7df29a73b
-var	c:@kSCPropNetIPv4Addresses	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a71d512ea11a06c5
-var	c:@kSCPropNetIPv4ConfigMethod	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9f43b18e5c8c758e
-var	c:@kSCPropNetIPv4DHCPClientID	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	de8c86227983f232
-var	c:@kSCPropNetIPv4Router	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c5341d39b04219f8
-var	c:@kSCPropNetIPv4SubnetMasks	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b2803bcf35c959fd
-var	c:@kSCPropNetIPv4DestAddresses	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d682e278c6d4d024
-var	c:@kSCPropNetIPv4BroadcastAddresses	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	30440ef9e4f84c9b
-var	c:@kSCValNetIPv4ConfigMethodAutomatic	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3e0c29789e8b6813
-var	c:@kSCValNetIPv4ConfigMethodBOOTP	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cfbf70d218ca0819
-var	c:@kSCValNetIPv4ConfigMethodDHCP	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	72bf99d9a2553b7c
-var	c:@kSCValNetIPv4ConfigMethodINFORM	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	64c88748a1c2f323
-var	c:@kSCValNetIPv4ConfigMethodLinkLocal	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4a0d4dafb3a7baf7
-var	c:@kSCValNetIPv4ConfigMethodManual	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	de5087ce5dd192c2
-var	c:@kSCValNetIPv4ConfigMethodPPP	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	428b024dfb209d34
-var	c:@kSCPropNetIPv6Addresses	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5ef4f82781e5fa3d
-var	c:@kSCPropNetIPv6ConfigMethod	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8dc41342171b2477
-var	c:@kSCPropNetIPv6DestAddresses	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c34dfba94c404397
-var	c:@kSCPropNetIPv6Flags	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	01d5090a35fa6f15
-var	c:@kSCPropNetIPv6PrefixLength	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	93487b69ff3182b0
-var	c:@kSCPropNetIPv6Router	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6641a4fa1a82b6e2
-var	c:@kSCValNetIPv6ConfigMethodAutomatic	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c3bf34b3a911ec62
-var	c:@kSCValNetIPv6ConfigMethodLinkLocal	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.7/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	38ae38b06dd9e056
-var	c:@kSCValNetIPv6ConfigMethodManual	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2734d37594ed3f19
-var	c:@kSCValNetIPv6ConfigMethodRouterAdvertisement	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	49ff6d8872cbe4e8
-var	c:@kSCValNetIPv6ConfigMethod6to4	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	64529096a5810027
-var	c:@kSCPropNet6to4Relay	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e0b362e4b081c34e
-var	c:@kSCPropNetLinkActive	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	aac3c8eafa748216
-var	c:@kSCPropNetLinkDetaching	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e4b1052ee779d451
-var	c:@kSCPropNetModemAccessPointName	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	eaa807abdff162f6
-var	c:@kSCPropNetModemConnectionPersonality	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e1f97105cfc993de
-var	c:@kSCPropNetModemConnectionScript	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	be4b500376f14013
-var	c:@kSCPropNetModemConnectSpeed	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8ff7474aa4dde98b
-var	c:@kSCPropNetModemDataCompression	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ebb200759d4c59af
-var	c:@kSCPropNetModemDeviceContextID	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	adf362bf0519fc27
-var	c:@kSCPropNetModemDeviceModel	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2baa72d0035cdcde
-var	c:@kSCPropNetModemDeviceVendor	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	aa4d928b8b0e3c5a
-var	c:@kSCPropNetModemDialMode	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cc2a490c7aeb02e3
-var	c:@kSCPropNetModemErrorCorrection	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3ea5ac7b39a0eb08
-var	c:@kSCPropNetModemHoldCallWaitingAudibleAlert	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8cc663d710d672e6
-var	c:@kSCPropNetModemHoldDisconnectOnAnswer	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f6d7a93032925b07
-var	c:@kSCPropNetModemHoldEnabled	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	434ec97140124a58
-var	c:@kSCPropNetModemHoldReminder	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	277163bd585e946a
-var	c:@kSCPropNetModemHoldReminderTime	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ca6fd41b730df353
-var	c:@kSCPropNetModemNote	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c62be2203f7fb04f
-var	c:@kSCPropNetModemPulseDial	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d0326a30ebba7ef7
-var	c:@kSCPropNetModemSpeaker	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	afc0e2bbe19acb56
-var	c:@kSCPropNetModemSpeed	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b001c048f2257fb8
-var	c:@kSCValNetModemDialModeIgnoreDialTone	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	22fc9d4b6ad6e80e
-var	c:@kSCValNetModemDialModeManual	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c730878092eae7ff
-var	c:@kSCValNetModemDialModeWaitForDialTone	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e2607f1856597ae5
-var	c:@kSCPropNetPPPACSPEnabled	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	154854acae9e0a71
-var	c:@kSCPropNetPPPConnectTime	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	47e2f9de4748a3c6
-var	c:@kSCPropNetPPPDeviceLastCause	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5f5a5dfa06f75713
-var	c:@kSCPropNetPPPDialOnDemand	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	01a2a653d11cfaa9
-var	c:@kSCPropNetPPPDisconnectOnFastUserSwitch	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	468b1fd046e40bfc
-var	c:@kSCPropNetPPPDisconnectOnIdle	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	58f0332a0da9d20d
-var	c:@kSCPropNetPPPDisconnectOnIdleTimer	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	020f08fe257713e8
-var	c:@kSCPropNetPPPDisconnectOnLogout	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4eab643477266519
-var	c:@kSCPropNetPPPDisconnectOnSleep	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f4c4aaa7c9a7dd35
-var	c:@kSCPropNetPPPDisconnectTime	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	857ef3ee952819fd
-var	c:@kSCPropNetPPPIdleReminder	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3cab3790d6e505da
-var	c:@kSCPropNetPPPIdleReminderTimer	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	78c19dd4c92d52ff
-var	c:@kSCPropNetPPPLastCause	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a215ca125b82c845
-var	c:@kSCPropNetPPPLogfile	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	004b8247dc47095e
-var	c:@kSCPropNetPPPPlugins	-			API_DEPRECATED const CFStringRef	-	ios=-/-/-/1,macos=10.2/10.15/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e5617ba7ee6a3fb6
-var	c:@kSCPropNetPPPRetryConnectTime	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	20227b06d899334e
-var	c:@kSCPropNetPPPSessionTimer	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5ee6a7215d57b51e
-var	c:@kSCPropNetPPPStatus	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e241f4a97f308dff
-var	c:@kSCPropNetPPPUseSessionTimer	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1e92eeb537c6c772
-var	c:@kSCPropNetPPPVerboseLogging	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4a861594c057d33c
-var	c:@kSCPropNetPPPAuthEAPPlugins	-			API_DEPRECATED const CFStringRef	-	ios=-/-/-/1,macos=10.3/10.15/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5ca400fd39a62130
-var	c:@kSCPropNetPPPAuthName	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7c490a0fec6df088
-var	c:@kSCPropNetPPPAuthPassword	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	63d9c4b4d58db13a
-var	c:@kSCPropNetPPPAuthPasswordEncryption	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	00c320708b690dec
-var	c:@kSCPropNetPPPAuthPrompt	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	93781d26d0482779
-var	c:@kSCPropNetPPPAuthProtocol	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	88887dbfb84a4538
-var	c:@kSCValNetPPPAuthPasswordEncryptionKeychain	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	022db1cfe31666ac
-var	c:@kSCValNetPPPAuthPasswordEncryptionToken	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bbddd9bbf3aff688
-var	c:@kSCValNetPPPAuthPromptBefore	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	124faecf989143f3
-var	c:@kSCValNetPPPAuthPromptAfter	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1e1d696198985283
-var	c:@kSCValNetPPPAuthProtocolCHAP	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7d73fa3fece78796
-var	c:@kSCValNetPPPAuthProtocolEAP	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	acd4a7d7830fc1a0
-var	c:@kSCValNetPPPAuthProtocolMSCHAP1	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	00a0cb0a1d43b55b
-var	c:@kSCValNetPPPAuthProtocolMSCHAP2	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0964d3e972e53430
-var	c:@kSCValNetPPPAuthProtocolPAP	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0d3cf9526a220b88
-var	c:@kSCPropNetPPPCommAlternateRemoteAddress	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0b7182ec099566c8
-var	c:@kSCPropNetPPPCommConnectDelay	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5c8fbab13ed164a9
-var	c:@kSCPropNetPPPCommDisplayTerminalWindow	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4ba753abb1a96d4f
-var	c:@kSCPropNetPPPCommRedialCount	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	96430b4a15385fe3
-var	c:@kSCPropNetPPPCommRedialEnabled	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e2d07e6c0e500bc8
-var	c:@kSCPropNetPPPCommRedialInterval	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	481bfc729e56ce92
-var	c:@kSCPropNetPPPCommRemoteAddress	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	80ef0820bbe221ba
-var	c:@kSCPropNetPPPCommTerminalScript	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4f72034086810b16
-var	c:@kSCPropNetPPPCommUseTerminalScript	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	37cd1e9c2d7a0518
-var	c:@kSCPropNetPPPCCPEnabled	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a1eba353e38a44c6
-var	c:@kSCPropNetPPPCCPMPPE40Enabled	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fa3f2fceffcd4eb7
-var	c:@kSCPropNetPPPCCPMPPE128Enabled	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ed51821e317e2fbd
-var	c:@kSCPropNetPPPIPCPCompressionVJ	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ea1c27502d88d4b5
-var	c:@kSCPropNetPPPIPCPUsePeerDNS	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6a29e100cb213efe
-var	c:@kSCPropNetPPPLCPEchoEnabled	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c227d6c316b6301c
-var	c:@kSCPropNetPPPLCPEchoFailure	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	852695c778f75785
-var	c:@kSCPropNetPPPLCPEchoInterval	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e0a149e04b4db4c8
-var	c:@kSCPropNetPPPLCPCompressionACField	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2723aa5da213b69c
-var	c:@kSCPropNetPPPLCPCompressionPField	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1099cc8000c57a0d
-var	c:@kSCPropNetPPPLCPMRU	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6007f01d2cd3a5b8
-var	c:@kSCPropNetPPPLCPMTU	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	647cf7055586a003
-var	c:@kSCPropNetPPPLCPReceiveACCM	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	03e15245be79f128
-var	c:@kSCPropNetPPPLCPTransmitACCM	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8aa98b26bac358c5
-var	c:@kSCPropNetL2TPIPSecSharedSecret	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0f20f6a6669b0f56
-var	c:@kSCPropNetL2TPIPSecSharedSecretEncryption	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1611925dd6b0cb4e
-var	c:@kSCPropNetL2TPTransport	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5f38ea59fdfdd96b
-var	c:@kSCValNetL2TPIPSecSharedSecretEncryptionKeychain	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	73646191e287db42
-var	c:@kSCValNetL2TPTransportIP	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3e05ee040e387b88
-var	c:@kSCValNetL2TPTransportIPSec	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	08d1ffebcfc0a0ba
-var	c:@kSCPropNetProxiesExceptionsList	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1824aa2cf34cca32
-var	c:@kSCPropNetProxiesExcludeSimpleHostnames	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6f02325bd8ca00b9
-var	c:@kSCPropNetProxiesFTPEnable	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3cc73f11de089c4d
-var	c:@kSCPropNetProxiesFTPPassive	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ca39a782a63a4e9b
-var	c:@kSCPropNetProxiesFTPPort	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	343fe5ea1ac499cf
-var	c:@kSCPropNetProxiesFTPProxy	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9cf8867ee32336b0
-var	c:@kSCPropNetProxiesFTPUser	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6aaea5df50d07a3b
-var	c:@kSCPropNetProxiesGopherEnable	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	49e4c11fa2cadf16
-var	c:@kSCPropNetProxiesGopherPort	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	64857da81573eae0
-var	c:@kSCPropNetProxiesGopherProxy	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d063e0607308dad2
-var	c:@kSCPropNetProxiesGopherUser	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	157dd8a70a9f9e68
-var	c:@kSCPropNetProxiesHTTPEnable	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c5c7424a33f3d461
-var	c:@kSCPropNetProxiesHTTPPort	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e3abcad60ccc271c
-var	c:@kSCPropNetProxiesHTTPProxy	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0f79eac0a35359c3
-var	c:@kSCPropNetProxiesHTTPUser	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	46791f10b4d0c91f
-var	c:@kSCPropNetProxiesHTTPSEnable	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1cb52c663e4b4a9e
-var	c:@kSCPropNetProxiesHTTPSPort	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2946e4f15a87ce98
-var	c:@kSCPropNetProxiesHTTPSProxy	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7fbe13736efa51ac
-var	c:@kSCPropNetProxiesHTTPSUser	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	164d92049c02ff87
-var	c:@kSCPropNetProxiesRTSPEnable	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f6a98ef8d142f691
-var	c:@kSCPropNetProxiesRTSPPort	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	525fb01e67d47f8e
-var	c:@kSCPropNetProxiesRTSPProxy	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a739e2f5b4c20178
-var	c:@kSCPropNetProxiesRTSPUser	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	517e29a94537f85f
-var	c:@kSCPropNetProxiesSOCKSEnable	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b49178357fdb295f
-var	c:@kSCPropNetProxiesSOCKSPort	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f600e00838f8b38a
-var	c:@kSCPropNetProxiesSOCKSProxy	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2b819e815c63f7f9
-var	c:@kSCPropNetProxiesSOCKSUser	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3ba1b637018dba82
-var	c:@kSCPropNetProxiesProxyAutoConfigEnable	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2b5d5abd6edd1102
-var	c:@kSCPropNetProxiesProxyAutoConfigJavaScript	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.7/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	16bb7e9bab12eabf
-var	c:@kSCPropNetProxiesProxyAutoConfigURLString	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	176df61930a10429
-var	c:@kSCPropNetProxiesProxyAutoDiscoveryEnable	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1d8331e864ce9dcd
-var	c:@kSCPropNetSMBNetBIOSName	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5b3a9ee192f0bb91
-var	c:@kSCPropNetSMBNetBIOSNodeType	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7a44b243680c8009
-var	c:@kSCPropNetSMBNetBIOSScope	-			API_DEPRECATED const CFStringRef	-	ios=-/-/-/1,macos=10.5/10.7/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bcae43f876987ec6
-var	c:@kSCPropNetSMBWINSAddresses	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e09e56994a09fa0e
-var	c:@kSCPropNetSMBWorkgroup	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	46dbdf1ab27bb50d
-var	c:@kSCValNetSMBNetBIOSNodeTypeBroadcast	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cf8e7a12cf07ea63
-var	c:@kSCValNetSMBNetBIOSNodeTypePeer	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8b75fe4596798853
-var	c:@kSCValNetSMBNetBIOSNodeTypeMixed	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8f470747f5332c53
-var	c:@kSCValNetSMBNetBIOSNodeTypeHybrid	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	48a52f7d71a31430
-var	c:@kSCEntUsersConsoleUser	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a67acdbbebd6dc3d
-var	c:@kSCPropSystemComputerName	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3ba4e9c841d9fa36
-var	c:@kSCPropSystemComputerNameEncoding	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c9ea4ac53f1ffa91
-var	c:@kSCDynamicStoreDomainFile	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f6832eca4081f145
-var	c:@kSCDynamicStoreDomainPlugin	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a53604e8fda58776
-var	c:@kSCDynamicStoreDomainSetup	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c513f5d693212e60
-var	c:@kSCDynamicStoreDomainState	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cef4c2210f855e57
-var	c:@kSCDynamicStoreDomainPrefs	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	47664046481205e0
-var	c:@kSCDynamicStorePropSetupCurrentSet	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1d3cf0879b81bf14
-var	c:@kSCDynamicStorePropSetupLastUpdated	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6394d7155d11ebfa
-var	c:@kSCDynamicStorePropNetInterfaces	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6e3afff56e4e6c36
-var	c:@kSCDynamicStorePropNetPrimaryInterface	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e696652c628a3085
-var	c:@kSCDynamicStorePropNetPrimaryService	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bd1b55c6edd27158
-var	c:@kSCDynamicStorePropNetServiceIDs	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a6e9e62b1688ee6a
-var	c:@kSCPropUsersConsoleUserName	-			API_DEPRECATED const CFStringRef	-	ios=-/-/-/1,macos=10.1/10.4/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	78457c4bd4ff5f7e
-var	c:@kSCPropUsersConsoleUserUID	-			API_DEPRECATED const CFStringRef	-	ios=-/-/-/1,macos=10.1/10.4/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8f2dae91ce449119
-var	c:@kSCPropUsersConsoleUserGID	-			API_DEPRECATED const CFStringRef	-	ios=-/-/-/1,macos=10.1/10.4/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8b1ed3d700215998
-struct	c:@S@__SCNetworkInterface	-			-	-	-	-	67e1571d1d364b5d
-typedef	c:@T@SCNetworkInterfaceRef	-			const struct __SCNetworkInterface *	-	-	-	a0d475c72155a867
-var	c:@kSCNetworkInterfaceType6to4	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f404be8bf922cfcb
-var	c:@kSCNetworkInterfaceTypeBluetooth	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b275ec23c8f651a1
-var	c:@kSCNetworkInterfaceTypeBond	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f0b670466ab283ac
-var	c:@kSCNetworkInterfaceTypeEthernet	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	515b33e8224e7741
-var	c:@kSCNetworkInterfaceTypeFireWire	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	421695da61b82f2d
-var	c:@kSCNetworkInterfaceTypeIEEE80211	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c4e749467393b260
-var	c:@kSCNetworkInterfaceTypeIPSec	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f00ed286ff9952b8
-var	c:@kSCNetworkInterfaceTypeIrDA	-			API_DEPRECATED const CFStringRef	-	ios=-/-/-/1,macos=10.4/12.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5f44a35d86fb8879
-var	c:@kSCNetworkInterfaceTypeL2TP	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fd7bcc0c5a126c7b
-var	c:@kSCNetworkInterfaceTypeModem	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7fe4f6945ab9ac2a
-var	c:@kSCNetworkInterfaceTypePPP	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	10ba14ea4922d99b
-var	c:@kSCNetworkInterfaceTypePPTP	-			API_DEPRECATED const CFStringRef	-	ios=-/-/-/1,macos=10.4/10.12/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c0cfa2af8daacb19
-var	c:@kSCNetworkInterfaceTypeSerial	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7ff0c9cf8a1f8e02
-var	c:@kSCNetworkInterfaceTypeVLAN	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	739c2d43b7dc7cc2
-var	c:@kSCNetworkInterfaceTypeWWAN	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	20138929c554b826
-var	c:@kSCNetworkInterfaceTypeIPv4	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	65c473543bd08d91
-var	c:@kSCNetworkInterfaceIPv4	-			API_AVAILABLE const SCNetworkInterfaceRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	91f077a52606e726
-typedef	c:@T@SCBondInterfaceRef	-			SCNetworkInterfaceRef	-	-	-	1500c1794ba9d681
-struct	c:@S@__SCBondStatus	-			-	-	-	-	732671755469b52a
-typedef	c:@T@SCBondStatusRef	-			const struct __SCBondStatus *	-	-	-	2b575cfb00e18b1d
-enum	c:@Ea@kSCBondStatusOK	-	-		unsigned int	-	-	-	c7d4136dc992303c
-enumconst	c:@Ea@kSCBondStatusOK@kSCBondStatusOK	-			-	-	-	-	aefa89cfaea16b7a
-enumconst	c:@Ea@kSCBondStatusOK@kSCBondStatusLinkInvalid	-			-	-	-	-	53437852cb7da286
-enumconst	c:@Ea@kSCBondStatusOK@kSCBondStatusNoPartner	-			-	-	-	-	f744a517d2b50694
-enumconst	c:@Ea@kSCBondStatusOK@kSCBondStatusNotInActiveGroup	-			-	-	-	-	dfc04f3af1661d47
-enumconst	c:@Ea@kSCBondStatusOK@kSCBondStatusUnknown	-			-	-	-	-	eadffac5d48b5483
-var	c:@kSCBondStatusDeviceAggregationStatus	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c0729f8bbf33963d
-var	c:@kSCBondStatusDeviceCollecting	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c3c2be51656e6e94
-var	c:@kSCBondStatusDeviceDistributing	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0fca69b40d8ab838
-typedef	c:@T@SCVLANInterfaceRef	-			SCNetworkInterfaceRef	-	-	-	39fbb0597e8c5d64
-struct	c:@S@__SCNetworkProtocol	-			-	-	-	-	a396db3628e97d97
-typedef	c:@T@SCNetworkProtocolRef	-			const struct __SCNetworkProtocol *	-	-	-	a71b6c9ea751d177
-var	c:@kSCNetworkProtocolTypeDNS	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	36c55ff0612106fb
-var	c:@kSCNetworkProtocolTypeIPv4	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4b3f8df24d957c7f
-var	c:@kSCNetworkProtocolTypeIPv6	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4b58c009659624e4
-var	c:@kSCNetworkProtocolTypeProxies	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	12b318b308cf3266
-var	c:@kSCNetworkProtocolTypeSMB	-			API_AVAILABLE const CFStringRef	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e4bc5d17fead87da
-struct	c:@S@__SCNetworkService	-			-	-	-	-	2fd2d4926bafdf57
-typedef	c:@T@SCNetworkServiceRef	-			const struct __SCNetworkService *	-	-	-	08e6b1c810535b84
-struct	c:@S@__SCNetworkSet	-			-	-	-	-	d40016cfbcf71c3b
-typedef	c:@T@SCNetworkSetRef	-			const struct __SCNetworkSet *	-	-	-	e5f678549eae0c12
-function	c:@F@SCNetworkInterfaceGetTypeID	-			CFTypeID (void)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	63962462b044632e
-function	c:@F@SCNetworkInterfaceCopyAll	-			CFArrayRef  _Nonnull (void)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e87518e2b8663ed4
-function	c:@F@SCNetworkInterfaceGetSupportedInterfaceTypes	-			CFArrayRef  _Nullable (SCNetworkInterfaceRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	07b1a86f598a63f6
-function	c:@F@SCNetworkInterfaceGetSupportedProtocolTypes	-			CFArrayRef  _Nullable (SCNetworkInterfaceRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	aef6d17c226a6a2d
-function	c:@F@SCNetworkInterfaceCreateWithInterface	-			SCNetworkInterfaceRef  _Nullable (SCNetworkInterfaceRef _Nonnull, CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a699e25d3941914a
-function	c:@F@SCNetworkInterfaceGetBSDName	-			CFStringRef  _Nullable (SCNetworkInterfaceRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	333817659b15746c
-function	c:@F@SCNetworkInterfaceGetConfiguration	-			CFDictionaryRef  _Nullable (SCNetworkInterfaceRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e2cab9929f4c5a4b
-function	c:@F@SCNetworkInterfaceGetExtendedConfiguration	-			CFDictionaryRef  _Nullable (SCNetworkInterfaceRef _Nonnull, CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5d59a5a0511642f7
-function	c:@F@SCNetworkInterfaceGetHardwareAddressString	-			CFStringRef  _Nullable (SCNetworkInterfaceRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c05b8bfcecafd033
-function	c:@F@SCNetworkInterfaceGetInterface	-			SCNetworkInterfaceRef  _Nullable (SCNetworkInterfaceRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	85f7409a4dbaf68b
-function	c:@F@SCNetworkInterfaceGetInterfaceType	-			CFStringRef  _Nullable (SCNetworkInterfaceRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c84b53d7dda4fd5a
-function	c:@F@SCNetworkInterfaceGetLocalizedDisplayName	-			CFStringRef  _Nullable (SCNetworkInterfaceRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	36e33ff29455b9f8
-function	c:@F@SCNetworkInterfaceSetConfiguration	-			Boolean (SCNetworkInterfaceRef _Nonnull, CFDictionaryRef _Nullable)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4eebe42c4e9181bc
-function	c:@F@SCNetworkInterfaceSetExtendedConfiguration	-			Boolean (SCNetworkInterfaceRef _Nonnull, CFStringRef _Nonnull, CFDictionaryRef _Nullable)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	63869c6470ec7940
-function	c:@F@SCNetworkInterfaceCopyMediaOptions	-			Boolean (SCNetworkInterfaceRef _Nonnull, CFDictionaryRef  _Nullable * _Nullable, CFDictionaryRef  _Nullable * _Nullable, CFArrayRef  _Nullable * _Nullable, Boolean)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6b77f1f1f91e68b0
-function	c:@F@SCNetworkInterfaceCopyMediaSubTypes	-			CFArrayRef  _Nullable (CFArrayRef _Nonnull)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b79fd1a79e81d5ce
-function	c:@F@SCNetworkInterfaceCopyMediaSubTypeOptions	-			CFArrayRef  _Nullable (CFArrayRef _Nonnull, CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e2e93462b3ebf4c1
-function	c:@F@SCNetworkInterfaceCopyMTU	-			Boolean (SCNetworkInterfaceRef _Nonnull, int * _Nullable, int * _Nullable, int * _Nullable)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8abcc6ef3958a0c0
-function	c:@F@SCNetworkInterfaceSetMediaOptions	-			Boolean (SCNetworkInterfaceRef _Nonnull, CFStringRef _Nullable, CFArrayRef _Nullable)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c2f972c68609cd06
-function	c:@F@SCNetworkInterfaceSetMTU	-			Boolean (SCNetworkInterfaceRef _Nonnull, int)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	04be5f6c97c037f1
-function	c:@F@SCNetworkInterfaceForceConfigurationRefresh	-			Boolean (SCNetworkInterfaceRef _Nonnull)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ac2cfcf6f529a0c0
-function	c:@F@SCBondInterfaceCopyAll	-			CFArrayRef  _Nonnull (SCPreferencesRef _Nonnull)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fc280311593b7e96
-function	c:@F@SCBondInterfaceCopyAvailableMemberInterfaces	-			CFArrayRef  _Nonnull (SCPreferencesRef _Nonnull)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	753a181898d61f02
-function	c:@F@SCBondInterfaceCreate	-			SCBondInterfaceRef  _Nullable (SCPreferencesRef _Nonnull)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0ce88112d07bbc30
-function	c:@F@SCBondInterfaceRemove	-			Boolean (SCBondInterfaceRef _Nonnull)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2d93836514a4f847
-function	c:@F@SCBondInterfaceGetMemberInterfaces	-			CFArrayRef  _Nullable (SCBondInterfaceRef _Nonnull)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4ca0ee8809533b98
-function	c:@F@SCBondInterfaceGetOptions	-			CFDictionaryRef  _Nullable (SCBondInterfaceRef _Nonnull)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d5ee0671999cf6ab
-function	c:@F@SCBondInterfaceSetMemberInterfaces	-			Boolean (SCBondInterfaceRef _Nonnull, CFArrayRef _Nonnull)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6e2f4e65ab865da6
-function	c:@F@SCBondInterfaceSetLocalizedDisplayName	-			Boolean (SCBondInterfaceRef _Nonnull, CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	937c8bdab499c9e1
-function	c:@F@SCBondInterfaceSetOptions	-			Boolean (SCBondInterfaceRef _Nonnull, CFDictionaryRef _Nonnull)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	da24fc7d4fc5aa19
-function	c:@F@SCBondInterfaceCopyStatus	-			SCBondStatusRef  _Nullable (SCBondInterfaceRef _Nonnull)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5c15fc8139b850e0
-function	c:@F@SCBondStatusGetTypeID	-			CFTypeID (void)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f7d40c1af34c8aaf
-function	c:@F@SCBondStatusGetMemberInterfaces	-			CFArrayRef  _Nullable (SCBondStatusRef _Nonnull)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6e2fc69c7b10ea51
-function	c:@F@SCBondStatusGetInterfaceStatus	-			CFDictionaryRef  _Nullable (SCBondStatusRef _Nonnull, SCNetworkInterfaceRef _Nullable)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	87be589ba8fb254f
-function	c:@F@SCVLANInterfaceCopyAll	-			CFArrayRef  _Nonnull (SCPreferencesRef _Nonnull)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5c5b7ac91a27f738
-function	c:@F@SCVLANInterfaceCopyAvailablePhysicalInterfaces	-			CFArrayRef  _Nonnull (void)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	322bd6be2c0e9f46
-function	c:@F@SCVLANInterfaceCreate	-			SCVLANInterfaceRef  _Nullable (SCPreferencesRef _Nonnull, SCNetworkInterfaceRef _Nonnull, CFNumberRef _Nonnull)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9514d00fc75c41fc
-function	c:@F@SCVLANInterfaceRemove	-			Boolean (SCVLANInterfaceRef _Nonnull)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	384f432085d57e92
-function	c:@F@SCVLANInterfaceGetPhysicalInterface	-			SCNetworkInterfaceRef  _Nullable (SCVLANInterfaceRef _Nonnull)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0482d75f3f4f2e34
-function	c:@F@SCVLANInterfaceGetTag	-			CFNumberRef  _Nullable (SCVLANInterfaceRef _Nonnull)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	580fb38e05fb9a58
-function	c:@F@SCVLANInterfaceGetOptions	-			CFDictionaryRef  _Nullable (SCVLANInterfaceRef _Nonnull)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c3f55862649302e1
-function	c:@F@SCVLANInterfaceSetPhysicalInterfaceAndTag	-			Boolean (SCVLANInterfaceRef _Nonnull, SCNetworkInterfaceRef _Nonnull, CFNumberRef _Nonnull)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	00a1fe5fccfff5df
-function	c:@F@SCVLANInterfaceSetLocalizedDisplayName	-			Boolean (SCVLANInterfaceRef _Nonnull, CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0dac07e57551582d
-function	c:@F@SCVLANInterfaceSetOptions	-			Boolean (SCVLANInterfaceRef _Nonnull, CFDictionaryRef _Nonnull)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8342345daa51fa56
-function	c:@F@SCNetworkProtocolGetTypeID	-			CFTypeID (void)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d1cbe002fdd34b38
-function	c:@F@SCNetworkProtocolGetConfiguration	-			CFDictionaryRef  _Nullable (SCNetworkProtocolRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4fb17467acee060a
-function	c:@F@SCNetworkProtocolGetEnabled	-			Boolean (SCNetworkProtocolRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	beadd00cdca66bc4
-function	c:@F@SCNetworkProtocolGetProtocolType	-			CFStringRef  _Nullable (SCNetworkProtocolRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	24141ade0d3421b2
-function	c:@F@SCNetworkProtocolSetConfiguration	-			Boolean (SCNetworkProtocolRef _Nonnull, CFDictionaryRef _Nullable)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	17c1abda61512ae1
-function	c:@F@SCNetworkProtocolSetEnabled	-			Boolean (SCNetworkProtocolRef _Nonnull, Boolean)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4c54e92986d6c8f5
-function	c:@F@SCNetworkServiceGetTypeID	-			CFTypeID (void)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9ca97db03ee1f4c5
-function	c:@F@SCNetworkServiceAddProtocolType	-			Boolean (SCNetworkServiceRef _Nonnull, CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0703ddc2b65293e6
-function	c:@F@SCNetworkServiceCopyAll	-			CFArrayRef  _Nullable (SCPreferencesRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	047036b3b18e4a9c
-function	c:@F@SCNetworkServiceCopyProtocols	-			CFArrayRef  _Nullable (SCNetworkServiceRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	64687320240ce3c7
-function	c:@F@SCNetworkServiceCreate	-			SCNetworkServiceRef  _Nullable (SCPreferencesRef _Nonnull, SCNetworkInterfaceRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	83648460ac0e0a1c
-function	c:@F@SCNetworkServiceCopy	-			SCNetworkServiceRef  _Nullable (SCPreferencesRef _Nonnull, CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6eaac83ce03565f8
-function	c:@F@SCNetworkServiceEstablishDefaultConfiguration	-			Boolean (SCNetworkServiceRef _Nonnull)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c84be2c9b70de1d4
-function	c:@F@SCNetworkServiceGetEnabled	-			Boolean (SCNetworkServiceRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2bfa2e916a29e546
-function	c:@F@SCNetworkServiceGetInterface	-			SCNetworkInterfaceRef  _Nullable (SCNetworkServiceRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	22df27eed7abfe89
-function	c:@F@SCNetworkServiceGetName	-			CFStringRef  _Nullable (SCNetworkServiceRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	68e9ddfd74ea89f9
-function	c:@F@SCNetworkServiceCopyProtocol	-			SCNetworkProtocolRef  _Nullable (SCNetworkServiceRef _Nonnull, CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8e8b3cbe944f3568
-function	c:@F@SCNetworkServiceGetServiceID	-			CFStringRef  _Nullable (SCNetworkServiceRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	44c54a1b4ffc7977
-function	c:@F@SCNetworkServiceRemove	-			Boolean (SCNetworkServiceRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e2f81ecb941c876c
-function	c:@F@SCNetworkServiceRemoveProtocolType	-			Boolean (SCNetworkServiceRef _Nonnull, CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7c720a8d3f92011f
-function	c:@F@SCNetworkServiceSetEnabled	-			Boolean (SCNetworkServiceRef _Nonnull, Boolean)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7a25060b49467fa6
-function	c:@F@SCNetworkServiceSetName	-			Boolean (SCNetworkServiceRef _Nonnull, CFStringRef _Nullable)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0be06f9034ee7a9b
-function	c:@F@SCNetworkSetGetTypeID	-			CFTypeID (void)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	411f34b8134e91a8
-function	c:@F@SCNetworkSetAddService	-			Boolean (SCNetworkSetRef _Nonnull, SCNetworkServiceRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f63a9749d251f363
-function	c:@F@SCNetworkSetContainsInterface	-			Boolean (SCNetworkSetRef _Nonnull, SCNetworkInterfaceRef _Nonnull)	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fd9f6d1ed2c15d70
-function	c:@F@SCNetworkSetCopyAll	-			CFArrayRef  _Nullable (SCPreferencesRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f8b2b9c39b8f8727
-function	c:@F@SCNetworkSetCopyCurrent	-			SCNetworkSetRef  _Nullable (SCPreferencesRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9ffbd6e9c6ec1301
-function	c:@F@SCNetworkSetCopyServices	-			CFArrayRef  _Nullable (SCNetworkSetRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bef06695dad363e1
-function	c:@F@SCNetworkSetCreate	-			SCNetworkSetRef  _Nullable (SCPreferencesRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6f76fd6d8f0ec4c0
-function	c:@F@SCNetworkSetCopy	-			SCNetworkSetRef  _Nullable (SCPreferencesRef _Nonnull, CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	881ff4d765df00da
-function	c:@F@SCNetworkSetGetName	-			CFStringRef  _Nullable (SCNetworkSetRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6bffc271cf9b6e0d
-function	c:@F@SCNetworkSetGetSetID	-			CFStringRef  _Nullable (SCNetworkSetRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	79ded9796ab6de63
-function	c:@F@SCNetworkSetGetServiceOrder	-			CFArrayRef  _Nullable (SCNetworkSetRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fe2691ed248bff7d
-function	c:@F@SCNetworkSetRemove	-			Boolean (SCNetworkSetRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d42ee91ac68442ea
-function	c:@F@SCNetworkSetRemoveService	-			Boolean (SCNetworkSetRef _Nonnull, SCNetworkServiceRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7adfc50e18e3b50d
-function	c:@F@SCNetworkSetSetCurrent	-			Boolean (SCNetworkSetRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b7c2f4c2ec2fb6c8
-function	c:@F@SCNetworkSetSetName	-			Boolean (SCNetworkSetRef _Nonnull, CFStringRef _Nullable)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3efad7b5f131a937
-function	c:@F@SCNetworkSetSetServiceOrder	-			Boolean (SCNetworkSetRef _Nonnull, CFArrayRef _Nonnull)	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5ab38787c20936ed
-enum	c:@Ea@kSCNetworkFlagsTransientConnection	-	-		unsigned int	-	-	-	e43df8553b9d5eb0
-enumconst	c:@Ea@kSCNetworkFlagsTransientConnection@kSCNetworkFlagsTransientConnection	-			-	-	-	-	752c02bb1a7d9ee0
-enumconst	c:@Ea@kSCNetworkFlagsTransientConnection@kSCNetworkFlagsReachable	-			-	-	-	-	7611523e9e5bfa79
-enumconst	c:@Ea@kSCNetworkFlagsTransientConnection@kSCNetworkFlagsConnectionRequired	-			-	-	-	-	b562e86e3026586a
-enumconst	c:@Ea@kSCNetworkFlagsTransientConnection@kSCNetworkFlagsConnectionAutomatic	-			-	-	-	-	2847e76a9a8af312
-enumconst	c:@Ea@kSCNetworkFlagsTransientConnection@kSCNetworkFlagsInterventionRequired	-			-	-	-	-	1df5231b8cd5baaa
-enumconst	c:@Ea@kSCNetworkFlagsTransientConnection@kSCNetworkFlagsIsLocalAddress	-			-	-	-	-	cb93fd164cb19ec8
-enumconst	c:@Ea@kSCNetworkFlagsTransientConnection@kSCNetworkFlagsIsDirect	-			-	-	-	-	306de9bcb1c0ab3c
-typedef	c:@T@SCNetworkConnectionFlags	-			uint32_t	-	-	-	d1335d13845c9982
-function	c:@F@SCNetworkCheckReachabilityByAddress	-			Boolean (const struct sockaddr * _Nonnull, socklen_t, SCNetworkConnectionFlags * _Nonnull)	-	ios=-/-/-/1,macos=10.1/10.6/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: No longer supported	349e165655724050
-function	c:@F@SCNetworkCheckReachabilityByName	-			Boolean (const char * _Nonnull, SCNetworkConnectionFlags * _Nonnull)	-	ios=-/-/-/1,macos=10.1/10.6/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: No longer supported	117062a70bfdd0a7
-function	c:@F@SCNetworkInterfaceRefreshConfiguration	-			Boolean (CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.1/10.5/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: No longer supported	b53c27cd5e59c4c9
-struct	c:@S@__SCNetworkReachability	-			-	-	-	-	ca73fc98801cfc1d
-typedef	c:@T@SCNetworkReachabilityRef	-			const struct __SCNetworkReachability *	-	-	-	d7bb5cf8b44869af
-struct	c:@SA@SCNetworkReachabilityContext	-			-	-	-	-	2bb4ab485d01aaee
-field	c:@SA@SCNetworkReachabilityContext@FI@version	SCNetworkReachabilityContext			CFIndex	-	-	-	6b8bfc8ada5e3ba4
-field	c:@SA@SCNetworkReachabilityContext@FI@info	SCNetworkReachabilityContext			void *	-	-	-	67afe2f30d3568c7
-field	c:@SA@SCNetworkReachabilityContext@FI@retain	SCNetworkReachabilityContext			const void * _Nonnull (*)(const void * _Nonnull)	-	-	-	25978d4f5088417b
-field	c:@SA@SCNetworkReachabilityContext@FI@release	SCNetworkReachabilityContext			void (*)(const void * _Nonnull)	-	-	-	1bda6ae374dd4d32
-field	c:@SA@SCNetworkReachabilityContext@FI@copyDescription	SCNetworkReachabilityContext			CFStringRef  _Nonnull (*)(const void * _Nonnull)	-	-	-	6220ad4c89651aad
-typedef	c:@T@SCNetworkReachabilityContext	-			struct SCNetworkReachabilityContext	-	-	-	b12676c83d8e27b0
-typedef	c:@T@SCNetworkReachabilityFlags	-			enum SCNetworkReachabilityFlags	-	-	-	a79a465de93498f4
-enum	c:@E@SCNetworkReachabilityFlags	-			uint32_t	-	-	-	1488e14af17ef06d
-enumconst	c:@E@SCNetworkReachabilityFlags@kSCNetworkReachabilityFlagsTransientConnection	SCNetworkReachabilityFlags			-	-	-	-	c3a2fe312e0ea530
-enumconst	c:@E@SCNetworkReachabilityFlags@kSCNetworkReachabilityFlagsReachable	SCNetworkReachabilityFlags			-	-	-	-	989ce37b93b786f3
-enumconst	c:@E@SCNetworkReachabilityFlags@kSCNetworkReachabilityFlagsConnectionRequired	SCNetworkReachabilityFlags			-	-	-	-	00f46f4af41bd680
-enumconst	c:@E@SCNetworkReachabilityFlags@kSCNetworkReachabilityFlagsConnectionOnTraffic	SCNetworkReachabilityFlags			-	-	-	-	76e24cde9678f370
-enumconst	c:@E@SCNetworkReachabilityFlags@kSCNetworkReachabilityFlagsInterventionRequired	SCNetworkReachabilityFlags			-	-	-	-	25a0ea2484c4e469
-enumconst	c:@E@SCNetworkReachabilityFlags@kSCNetworkReachabilityFlagsConnectionOnDemand	SCNetworkReachabilityFlags			-	-	ios=3.0/-/-/0,macos=10.6/-/-/0	-	1d61c9e7414d9555
-enumconst	c:@E@SCNetworkReachabilityFlags@kSCNetworkReachabilityFlagsIsLocalAddress	SCNetworkReachabilityFlags			-	-	-	-	0c103c45abe3dd20
-enumconst	c:@E@SCNetworkReachabilityFlags@kSCNetworkReachabilityFlagsIsDirect	SCNetworkReachabilityFlags			-	-	-	-	058afba181b35a40
-enumconst	c:@E@SCNetworkReachabilityFlags@kSCNetworkReachabilityFlagsIsWWAN	SCNetworkReachabilityFlags			-	-	ios=2.0/-/-/0,macos=-/-/-/1	-	d8dd213490383db2
-enumconst	c:@E@SCNetworkReachabilityFlags@kSCNetworkReachabilityFlagsConnectionAutomatic	SCNetworkReachabilityFlags			-	-	-	-	6bbac426df039eeb
-typedef	c:@T@SCNetworkReachabilityCallBack	-			void (*)(SCNetworkReachabilityRef _Nonnull, SCNetworkReachabilityFlags, void * _Nullable)	-	-	-	d103698cad12ebaa
-function	c:@F@SCNetworkReachabilityCreateWithAddress	-			SCNetworkReachabilityRef  _Nullable (CFAllocatorRef _Nullable, const struct sockaddr * _Nonnull)	-	ios=2.0/17.4/-/0,macos=10.3/14.4/-/0	deprecated: Use Use URLSession or NWConnection to create connections that dynamically handle changing networks. Use NWPathMonitor to enumerate available network interfaces. instead	baa0dbd759694a29
-function	c:@F@SCNetworkReachabilityCreateWithAddressPair	-			SCNetworkReachabilityRef  _Nullable (CFAllocatorRef _Nullable, const struct sockaddr * _Nullable, const struct sockaddr * _Nullable)	-	ios=2.0/17.4/-/0,macos=10.3/14.4/-/0	deprecated: Use Use URLSession or NWConnection to create connections that dynamically handle changing networks. Use NWPathMonitor to enumerate available network interfaces. instead	45b3508db8b212d0
-function	c:@F@SCNetworkReachabilityCreateWithName	-			SCNetworkReachabilityRef  _Nullable (CFAllocatorRef _Nullable, const char * _Nonnull)	-	ios=2.0/17.4/-/0,macos=10.3/14.4/-/0	deprecated: Use Use URLSession or NWConnection to create connections that dynamically handle changing networks. Use NWPathMonitor to enumerate available network interfaces. instead	ef1e76efb5207e6d
-function	c:@F@SCNetworkReachabilityGetTypeID	-			CFTypeID (void)	-	ios=2.0/17.4/-/0,macos=10.3/14.4/-/0	deprecated: Use Use URLSession or NWConnection to create connections that dynamically handle changing networks. Use NWPathMonitor to enumerate available network interfaces. instead	ec604ff57325d16d
-function	c:@F@SCNetworkReachabilityGetFlags	-			Boolean (SCNetworkReachabilityRef _Nonnull, SCNetworkReachabilityFlags * _Nonnull)	-	ios=2.0/17.4/-/0,macos=10.3/14.4/-/0	deprecated: Use Use URLSession or NWConnection to create connections that dynamically handle changing networks. Use NWPathMonitor to enumerate available network interfaces. instead	67370981e89e2471
-function	c:@F@SCNetworkReachabilitySetCallback	-			Boolean (SCNetworkReachabilityRef _Nonnull, SCNetworkReachabilityCallBack _Nullable, SCNetworkReachabilityContext * _Nullable)	-	ios=2.0/17.4/-/0,macos=10.3/14.4/-/0	deprecated: Use Use URLSession or NWConnection to create connections that dynamically handle changing networks. Use NWPathMonitor to enumerate available network interfaces. instead	9e6c8f7717917ddf
-function	c:@F@SCNetworkReachabilityScheduleWithRunLoop	-			Boolean (SCNetworkReachabilityRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	-	ios=2.0/17.4/-/0,macos=10.3/14.4/-/0	deprecated: Use Use URLSession or NWConnection to create connections that dynamically handle changing networks. Use NWPathMonitor to enumerate available network interfaces. instead	34ceeb110dab2cfd
-function	c:@F@SCNetworkReachabilityUnscheduleFromRunLoop	-			Boolean (SCNetworkReachabilityRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	-	ios=2.0/17.4/-/0,macos=10.3/14.4/-/0	deprecated: Use Use URLSession or NWConnection to create connections that dynamically handle changing networks. Use NWPathMonitor to enumerate available network interfaces. instead	d0151901ae4f2d09
-function	c:@F@SCNetworkReachabilitySetDispatchQueue	-			Boolean (SCNetworkReachabilityRef _Nonnull, dispatch_queue_t _Nullable)	-	ios=4.0/17.4/-/0,macos=10.6/14.4/-/0	deprecated: Use Use URLSession or NWConnection to create connections that dynamically handle changing networks. Use NWPathMonitor to enumerate available network interfaces. instead	255c34c7776d7f76
-struct	c:@S@__SCNetworkConnection	-			-	-	-	-	a74ac8336194bd13
-typedef	c:@T@SCNetworkConnectionRef	-			const struct __SCNetworkConnection *	-	-	-	c70030fad76ba873
-struct	c:@SA@SCNetworkConnectionContext	-			-	-	-	-	620e166b3aebc993
-field	c:@SA@SCNetworkConnectionContext@FI@version	SCNetworkConnectionContext			CFIndex	-	-	-	df1eb11eae99397a
-field	c:@SA@SCNetworkConnectionContext@FI@info	SCNetworkConnectionContext			void *	-	-	-	a6452e44a3cf49b8
-field	c:@SA@SCNetworkConnectionContext@FI@retain	SCNetworkConnectionContext			const void * _Nonnull (*)(const void * _Nonnull)	-	-	-	e82176fae924b4cd
-field	c:@SA@SCNetworkConnectionContext@FI@release	SCNetworkConnectionContext			void (*)(const void * _Nonnull)	-	-	-	a3ca945982621028
-field	c:@SA@SCNetworkConnectionContext@FI@copyDescription	SCNetworkConnectionContext			CFStringRef  _Nonnull (*)(const void * _Nonnull)	-	-	-	284e771650bd6b9a
-typedef	c:@T@SCNetworkConnectionContext	-			struct SCNetworkConnectionContext	-	-	-	ad7bad4370edfb36
-typedef	c:@T@SCNetworkConnectionStatus	-			enum SCNetworkConnectionStatus	-	-	-	a0ed8ae02026965c
-enum	c:@E@SCNetworkConnectionStatus	-			int32_t	-	-	-	90d98004fee21e94
-enumconst	c:@E@SCNetworkConnectionStatus@kSCNetworkConnectionInvalid	SCNetworkConnectionStatus			-	-	-	-	a237c01c2680e27e
-enumconst	c:@E@SCNetworkConnectionStatus@kSCNetworkConnectionDisconnected	SCNetworkConnectionStatus			-	-	-	-	818b6b9bf6c4e213
-enumconst	c:@E@SCNetworkConnectionStatus@kSCNetworkConnectionConnecting	SCNetworkConnectionStatus			-	-	-	-	d8778679a082ffff
-enumconst	c:@E@SCNetworkConnectionStatus@kSCNetworkConnectionConnected	SCNetworkConnectionStatus			-	-	-	-	fcf6c0db7d745798
-enumconst	c:@E@SCNetworkConnectionStatus@kSCNetworkConnectionDisconnecting	SCNetworkConnectionStatus			-	-	-	-	189f85b9882190ae
-typedef	c:@T@SCNetworkConnectionPPPStatus	-			enum SCNetworkConnectionPPPStatus	-	-	-	06a92514cbc428e3
-enum	c:@E@SCNetworkConnectionPPPStatus	-			int32_t	-	-	-	8b9a2c3b218d18b0
-enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPDisconnected	SCNetworkConnectionPPPStatus			-	-	-	-	d23e27e424732570
-enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPInitializing	SCNetworkConnectionPPPStatus			-	-	-	-	f8ee65cc55fcf5b9
-enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPConnectingLink	SCNetworkConnectionPPPStatus			-	-	-	-	62cc20ef6f9067e4
-enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPDialOnTraffic	SCNetworkConnectionPPPStatus			-	-	-	-	ba68117d1b541e1f
-enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPNegotiatingLink	SCNetworkConnectionPPPStatus			-	-	-	-	db439cf1b26a521a
-enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPAuthenticating	SCNetworkConnectionPPPStatus			-	-	-	-	7963a842d9dba8f0
-enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPWaitingForCallBack	SCNetworkConnectionPPPStatus			-	-	-	-	de7351dab3ac060b
-enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPNegotiatingNetwork	SCNetworkConnectionPPPStatus			-	-	-	-	aa5ef6e4ccaba375
-enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPConnected	SCNetworkConnectionPPPStatus			-	-	-	-	4210a20f25085259
-enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPTerminating	SCNetworkConnectionPPPStatus			-	-	-	-	1802a657ff4b43c4
-enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPDisconnectingLink	SCNetworkConnectionPPPStatus			-	-	-	-	31ab83ea862ac175
-enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPHoldingLinkOff	SCNetworkConnectionPPPStatus			-	-	-	-	cdd998f463b52717
-enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPSuspended	SCNetworkConnectionPPPStatus			-	-	-	-	88a2acab862e0ab0
-enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPWaitingForRedial	SCNetworkConnectionPPPStatus			-	-	-	-	91ea476a3f2d524f
-typedef	c:@T@SCNetworkConnectionCallBack	-			void (*)(SCNetworkConnectionRef _Nonnull, SCNetworkConnectionStatus, void * _Nullable)	-	-	-	43da694c2985eae9
-function	c:@F@SCNetworkConnectionGetTypeID	-			CFTypeID (void)	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d80ed1f92ed0f389
-function	c:@F@SCNetworkConnectionCopyUserPreferences	-			Boolean (CFDictionaryRef _Nullable, CFStringRef  _Nullable * _Nonnull, CFDictionaryRef  _Nullable * _Nonnull)	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c7d7c08bbfe85475
-function	c:@F@SCNetworkConnectionCreateWithServiceID	-			SCNetworkConnectionRef  _Nullable (CFAllocatorRef _Nullable, CFStringRef _Nonnull, SCNetworkConnectionCallBack _Nullable, SCNetworkConnectionContext * _Nullable)	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3cd95c3953e84e2b
-function	c:@F@SCNetworkConnectionCopyServiceID	-			CFStringRef  _Nullable (SCNetworkConnectionRef _Nonnull)	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	865be38c620f1c18
-function	c:@F@SCNetworkConnectionGetStatus	-			SCNetworkConnectionStatus (SCNetworkConnectionRef _Nonnull)	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	207082327269da53
-function	c:@F@SCNetworkConnectionCopyExtendedStatus	-			CFDictionaryRef  _Nullable (SCNetworkConnectionRef _Nonnull)	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c60771c85a893f55
-function	c:@F@SCNetworkConnectionCopyStatistics	-			CFDictionaryRef  _Nullable (SCNetworkConnectionRef _Nonnull)	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3ded0227499c7689
-function	c:@F@SCNetworkConnectionStart	-			Boolean (SCNetworkConnectionRef _Nonnull, CFDictionaryRef _Nullable, Boolean)	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	615a820f95406616
-function	c:@F@SCNetworkConnectionStop	-			Boolean (SCNetworkConnectionRef _Nonnull, Boolean)	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1dd575bb09ec240e
-function	c:@F@SCNetworkConnectionCopyUserOptions	-			CFDictionaryRef  _Nullable (SCNetworkConnectionRef _Nonnull)	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	842053146b6a4cc3
-function	c:@F@SCNetworkConnectionScheduleWithRunLoop	-			Boolean (SCNetworkConnectionRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	97550584e999a6a6
-function	c:@F@SCNetworkConnectionUnscheduleFromRunLoop	-			Boolean (SCNetworkConnectionRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fa35eb8f2457310a
-function	c:@F@SCNetworkConnectionSetDispatchQueue	-			Boolean (SCNetworkConnectionRef _Nonnull, dispatch_queue_t _Nullable)	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8df68bb0da1db399
-var	c:@kCFErrorDomainSystemConfiguration	-			const CFStringRef	-	ios=2.0/-/-/0,macos=10.5/-/-/0	-	0625538e8bd1046a
-function	c:@F@SCCopyLastError	-			CFErrorRef  _Nonnull (void)	-	ios=2.0/-/-/0,macos=10.5/-/-/0	-	71d74a67d191916c
-function	c:@F@SCError	-			int (void)	-	ios=2.0/-/-/0,macos=10.1/-/-/0	-	1ff24d3558ea25c7
-function	c:@F@SCErrorString	-			const char * _Nonnull (int)	-	ios=2.0/-/-/0,macos=10.1/-/-/0	-	5ecfc96d7568e761
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+function	c:@F@CNSetSupportedSSIDs	-			Boolean (CFArrayRef _Nonnull)	CFArrayRef ssidArray	-	ios=4.0/9.0/-/0,macos=10.8/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use Replaced by <NetworkExtension/NEHotspotHelper.h> instead	500f852b9daba67e
+function	c:@F@CNMarkPortalOnline	-			Boolean (CFStringRef _Nonnull)	CFStringRef interfaceName	-	ios=4.0/9.0/-/0,macos=10.8/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use Replaced by <NetworkExtension/NEHotspotHelper.h> instead	41594d57962840d7
+function	c:@F@CNMarkPortalOffline	-			Boolean (CFStringRef _Nonnull)	CFStringRef interfaceName	-	ios=4.0/9.0/-/0,macos=10.8/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use Replaced by <NetworkExtension/NEHotspotHelper.h> instead	00362381d20528ac
+function	c:@F@CNCopySupportedInterfaces	-			CFArrayRef  _Nullable (void)	-	-	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5879e5d8b16e7d37
+var	c:@kCNNetworkInfoKeySSIDData	-			const CFStringRef	-	-	ios=4.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	29c2c8099729c62b
+var	c:@kCNNetworkInfoKeySSID	-			const CFStringRef	-	-	ios=4.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	de30e0dec0b92fa1
+var	c:@kCNNetworkInfoKeyBSSID	-			const CFStringRef	-	-	ios=4.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	447f4c694b325203
+function	c:@F@CNCopyCurrentNetworkInfo	-			CFDictionaryRef  _Nullable (CFStringRef _Nonnull)	CFStringRef interfaceName	-	ios=4.1/100000/-/0,maccatalyst=14.0/100000/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use [NEHotspotNetwork fetchCurrentWithCompletionHandler:] instead	954a2bdf0e84dd72
+function	c:@F@DHCPClientPreferencesSetApplicationOptions	-			Boolean (CFStringRef _Nonnull, const UInt8 * _Nullable, CFIndex)	CFStringRef applicationID | const UInt8 * options | CFIndex count	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d11600a8b5759f0e
+function	c:@F@DHCPClientPreferencesCopyApplicationOptions	-			UInt8 * _Nullable (CFStringRef _Nonnull, CFIndex * _Nonnull)	CFStringRef applicationID | CFIndex * count	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4d3fd9b1067992db
+struct	c:@S@__SCDynamicStore	-			-	-	-	-	-	a29e8d2aeee2b62c
+typedef	c:@T@SCDynamicStoreRef	-			const struct __SCDynamicStore *	-	-	-	-	7d9af018a84d1128
+struct	c:@SA@SCDynamicStoreContext	-			-	-	-	-	-	b1ea310a2abf8f63
+field	c:@SA@SCDynamicStoreContext@FI@version	SCDynamicStoreContext			CFIndex	-	-	-	-	4d484a833dd23970
+field	c:@SA@SCDynamicStoreContext@FI@info	SCDynamicStoreContext			void *	-	-	-	-	f4eae857e166194d
+field	c:@SA@SCDynamicStoreContext@FI@retain	SCDynamicStoreContext			const void * _Nonnull (*)(const void * _Nonnull)	-	-	-	-	ec1ccec106e58a5c
+field	c:@SA@SCDynamicStoreContext@FI@release	SCDynamicStoreContext			void (*)(const void * _Nonnull)	-	-	-	-	8f4551529ab3f34b
+field	c:@SA@SCDynamicStoreContext@FI@copyDescription	SCDynamicStoreContext			CFStringRef  _Nonnull (*)(const void * _Nonnull)	-	-	-	-	e841d76211933489
+typedef	c:@T@SCDynamicStoreContext	-			struct SCDynamicStoreContext	-	-	-	-	33843aa563174b56
+typedef	c:@T@SCDynamicStoreCallBack	-			void (*)(SCDynamicStoreRef _Nonnull, CFArrayRef _Nonnull, void * _Nullable)	-	-	-	-	73674990a62dd03f
+function	c:@F@SCDynamicStoreGetTypeID	-			CFTypeID (void)	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	eb7ba4bbab2d98b4
+function	c:@F@SCDynamicStoreCreate	-			SCDynamicStoreRef  _Nullable (CFAllocatorRef _Nullable, CFStringRef _Nonnull, SCDynamicStoreCallBack _Nullable, SCDynamicStoreContext * _Nullable)	CFAllocatorRef allocator | CFStringRef name | SCDynamicStoreCallBack callout | SCDynamicStoreContext * context	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f414a2242d84e2b5
+function	c:@F@SCDynamicStoreCreateWithOptions	-			SCDynamicStoreRef  _Nullable (CFAllocatorRef _Nullable, CFStringRef _Nonnull, CFDictionaryRef _Nullable, SCDynamicStoreCallBack _Nullable, SCDynamicStoreContext * _Nullable)	CFAllocatorRef allocator | CFStringRef name | CFDictionaryRef storeOptions | SCDynamicStoreCallBack callout | SCDynamicStoreContext * context	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	26b556010c8e5d22
+var	c:@kSCDynamicStoreUseSessionKeys	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	943592d4ff3c7695
+function	c:@F@SCDynamicStoreCreateRunLoopSource	-			CFRunLoopSourceRef  _Nullable (CFAllocatorRef _Nullable, SCDynamicStoreRef _Nonnull, CFIndex)	CFAllocatorRef allocator | SCDynamicStoreRef store | CFIndex order	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ecd4fbc0c65ae2fc
+function	c:@F@SCDynamicStoreSetDispatchQueue	-			Boolean (SCDynamicStoreRef _Nonnull, dispatch_queue_t _Nullable)	SCDynamicStoreRef store | dispatch_queue_t queue	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e1e42ec64cc261d6
+function	c:@F@SCDynamicStoreCopyKeyList	-			CFArrayRef  _Nullable (SCDynamicStoreRef _Nullable, CFStringRef _Nonnull)	SCDynamicStoreRef store | CFStringRef pattern	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	530115072c6d9877
+function	c:@F@SCDynamicStoreAddValue	-			Boolean (SCDynamicStoreRef _Nullable, CFStringRef _Nonnull, CFPropertyListRef _Nonnull)	SCDynamicStoreRef store | CFStringRef key | CFPropertyListRef value	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5759edc23e08997b
+function	c:@F@SCDynamicStoreAddTemporaryValue	-			Boolean (SCDynamicStoreRef _Nonnull, CFStringRef _Nonnull, CFPropertyListRef _Nonnull)	SCDynamicStoreRef store | CFStringRef key | CFPropertyListRef value	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	18d5cf05b46ae7da
+function	c:@F@SCDynamicStoreCopyValue	-			CFPropertyListRef  _Nullable (SCDynamicStoreRef _Nullable, CFStringRef _Nonnull)	SCDynamicStoreRef store | CFStringRef key	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0d7e948dd37e3662
+function	c:@F@SCDynamicStoreCopyMultiple	-			CFDictionaryRef  _Nullable (SCDynamicStoreRef _Nullable, CFArrayRef _Nullable, CFArrayRef _Nullable)	SCDynamicStoreRef store | CFArrayRef keys | CFArrayRef patterns	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	903ef7a68061dfa4
+function	c:@F@SCDynamicStoreSetValue	-			Boolean (SCDynamicStoreRef _Nullable, CFStringRef _Nonnull, CFPropertyListRef _Nonnull)	SCDynamicStoreRef store | CFStringRef key | CFPropertyListRef value	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4b69644cdd5e820b
+function	c:@F@SCDynamicStoreSetMultiple	-			Boolean (SCDynamicStoreRef _Nullable, CFDictionaryRef _Nullable, CFArrayRef _Nullable, CFArrayRef _Nullable)	SCDynamicStoreRef store | CFDictionaryRef keysToSet | CFArrayRef keysToRemove | CFArrayRef keysToNotify	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4a661f1ee830bd74
+function	c:@F@SCDynamicStoreRemoveValue	-			Boolean (SCDynamicStoreRef _Nullable, CFStringRef _Nonnull)	SCDynamicStoreRef store | CFStringRef key	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	721ca830f8f51c52
+function	c:@F@SCDynamicStoreNotifyValue	-			Boolean (SCDynamicStoreRef _Nullable, CFStringRef _Nonnull)	SCDynamicStoreRef store | CFStringRef key	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	588f7fa09d5ee5da
+function	c:@F@SCDynamicStoreSetNotificationKeys	-			Boolean (SCDynamicStoreRef _Nonnull, CFArrayRef _Nullable, CFArrayRef _Nullable)	SCDynamicStoreRef store | CFArrayRef keys | CFArrayRef patterns	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	141678a3a684b284
+function	c:@F@SCDynamicStoreCopyNotifiedKeys	-			CFArrayRef  _Nullable (SCDynamicStoreRef _Nonnull)	SCDynamicStoreRef store	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9b1e293d88cfd290
+function	c:@F@SCDynamicStoreCopyDHCPInfo	-			CFDictionaryRef  _Nullable (SCDynamicStoreRef _Nullable, CFStringRef _Nullable)	SCDynamicStoreRef store | CFStringRef serviceID	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f42cb3600fca9e59
+function	c:@F@DHCPInfoGetOptionData	-			CFDataRef  _Nullable (CFDictionaryRef _Nonnull, UInt8)	CFDictionaryRef info | UInt8 code	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5a41d436e99aae28
+function	c:@F@DHCPInfoGetLeaseStartTime	-			CFDateRef  _Nullable (CFDictionaryRef _Nonnull)	CFDictionaryRef info	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	05c87b5bbc20b0f5
+function	c:@F@DHCPInfoGetLeaseExpirationTime	-			CFDateRef  _Nullable (CFDictionaryRef _Nonnull)	CFDictionaryRef info	-	ios=-/-/-/1,macos=10.8/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	46c24ae51b812c3e
+enum	c:@Ea@kSCStatusOK	-	-		unsigned int	-	-	-	-	0e518cf5b3ad4a51
+enumconst	c:@Ea@kSCStatusOK@kSCStatusOK	-			-	-	-	-	-	c09ba5350e7dc222
+enumconst	c:@Ea@kSCStatusOK@kSCStatusFailed	-			-	-	-	-	-	77810a98f5f24f22
+enumconst	c:@Ea@kSCStatusOK@kSCStatusInvalidArgument	-			-	-	-	-	-	786393e9bca31150
+enumconst	c:@Ea@kSCStatusOK@kSCStatusAccessError	-			-	-	-	-	-	2ca9061ae51d9876
+enumconst	c:@Ea@kSCStatusOK@kSCStatusNoKey	-			-	-	-	-	-	51837373f512f34d
+enumconst	c:@Ea@kSCStatusOK@kSCStatusKeyExists	-			-	-	-	-	-	39c8ac185c307761
+enumconst	c:@Ea@kSCStatusOK@kSCStatusLocked	-			-	-	-	-	-	970975d1fd6fbf4f
+enumconst	c:@Ea@kSCStatusOK@kSCStatusNeedLock	-			-	-	-	-	-	00fb646797769161
+enumconst	c:@Ea@kSCStatusOK@kSCStatusNoStoreSession	-			-	-	-	-	-	39468e359f639c12
+enumconst	c:@Ea@kSCStatusOK@kSCStatusNoStoreServer	-			-	-	-	-	-	88b25deb0a5bba3d
+enumconst	c:@Ea@kSCStatusOK@kSCStatusNotifierActive	-			-	-	-	-	-	36366d0477667a65
+enumconst	c:@Ea@kSCStatusOK@kSCStatusNoPrefsSession	-			-	-	-	-	-	c2d5f6512fb4eb9a
+enumconst	c:@Ea@kSCStatusOK@kSCStatusPrefsBusy	-			-	-	-	-	-	023da5f883170dd4
+enumconst	c:@Ea@kSCStatusOK@kSCStatusNoConfigFile	-			-	-	-	-	-	da46a938fb0d7fda
+enumconst	c:@Ea@kSCStatusOK@kSCStatusNoLink	-			-	-	-	-	-	8b625bee5137a780
+enumconst	c:@Ea@kSCStatusOK@kSCStatusStale	-			-	-	-	-	-	f47bd0e4724f6bae
+enumconst	c:@Ea@kSCStatusOK@kSCStatusMaxLink	-			-	-	-	-	-	2f30ad23e75f9027
+enumconst	c:@Ea@kSCStatusOK@kSCStatusReachabilityUnknown	-			-	-	-	-	-	b14db3807638620b
+enumconst	c:@Ea@kSCStatusOK@kSCStatusConnectionNoService	-			-	-	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	30549482a40ca6b5
+enumconst	c:@Ea@kSCStatusOK@kSCStatusConnectionIgnore	-			-	-	-	ios=-/-/-/1,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2cd165c4c0c6ba53
+function	c:@F@SCDynamicStoreKeyCreate	-			CFStringRef  _Nonnull (CFAllocatorRef _Nullable, CFStringRef _Nonnull, ...)	CFAllocatorRef allocator | CFStringRef fmt	variadic	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fad91178f10e3cbd
+function	c:@F@SCDynamicStoreKeyCreateNetworkGlobalEntity	-			CFStringRef  _Nonnull (CFAllocatorRef _Nullable, CFStringRef _Nonnull, CFStringRef _Nonnull)	CFAllocatorRef allocator | CFStringRef domain | CFStringRef entity	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0611250e8b38fdd8
+function	c:@F@SCDynamicStoreKeyCreateNetworkInterface	-			CFStringRef  _Nonnull (CFAllocatorRef _Nullable, CFStringRef _Nonnull)	CFAllocatorRef allocator | CFStringRef domain	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9185159d3aeff144
+function	c:@F@SCDynamicStoreKeyCreateNetworkInterfaceEntity	-			CFStringRef  _Nonnull (CFAllocatorRef _Nullable, CFStringRef _Nonnull, CFStringRef _Nonnull, CFStringRef _Nullable)	CFAllocatorRef allocator | CFStringRef domain | CFStringRef ifname | CFStringRef entity	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	75db738a68b199a0
+function	c:@F@SCDynamicStoreKeyCreateNetworkServiceEntity	-			CFStringRef  _Nonnull (CFAllocatorRef _Nullable, CFStringRef _Nonnull, CFStringRef _Nonnull, CFStringRef _Nullable)	CFAllocatorRef allocator | CFStringRef domain | CFStringRef serviceID | CFStringRef entity	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2df022c8c539460e
+function	c:@F@SCDynamicStoreKeyCreateComputerName	-			CFStringRef  _Nonnull (CFAllocatorRef _Nullable)	CFAllocatorRef allocator	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d4900da2081b745b
+function	c:@F@SCDynamicStoreKeyCreateConsoleUser	-			CFStringRef  _Nonnull (CFAllocatorRef _Nullable)	CFAllocatorRef allocator	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	788d64aa476f5932
+function	c:@F@SCDynamicStoreKeyCreateHostNames	-			CFStringRef  _Nonnull (CFAllocatorRef _Nullable)	CFAllocatorRef allocator	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b097a74d2f45d8be
+function	c:@F@SCDynamicStoreKeyCreateLocation	-			CFStringRef  _Nonnull (CFAllocatorRef _Nullable)	CFAllocatorRef allocator	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fbd41fbf828d034b
+function	c:@F@SCDynamicStoreKeyCreateProxies	-			CFStringRef  _Nonnull (CFAllocatorRef _Nullable)	CFAllocatorRef allocator	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3ee9e4ad3adbbfbc
+function	c:@F@SCDynamicStoreCopyComputerName	-			CFStringRef  _Nullable (SCDynamicStoreRef _Nullable, CFStringEncoding * _Nullable)	SCDynamicStoreRef store | CFStringEncoding * nameEncoding	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f1175028797faaeb
+function	c:@F@SCDynamicStoreCopyConsoleUser	-			CFStringRef  _Nullable (SCDynamicStoreRef _Nullable, uid_t * _Nullable, gid_t * _Nullable)	SCDynamicStoreRef store | uid_t * uid | gid_t * gid	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	26ed1df0abf72943
+function	c:@F@SCDynamicStoreCopyLocalHostName	-			CFStringRef  _Nullable (SCDynamicStoreRef _Nullable)	SCDynamicStoreRef store	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	44908fbb2d850683
+function	c:@F@SCDynamicStoreCopyLocation	-			CFStringRef  _Nullable (SCDynamicStoreRef _Nullable)	SCDynamicStoreRef store	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	72d89c974f0b965f
+function	c:@F@SCDynamicStoreCopyProxies	-			CFDictionaryRef  _Nullable (SCDynamicStoreRef _Nullable)	SCDynamicStoreRef store	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f3537d36416d774c
+struct	c:@S@AuthorizationOpaqueRef	-			-	-	-	-	-	3b269c0528a2cedf
+typedef	c:@T@AuthorizationRef	-			const struct AuthorizationOpaqueRef *	-	-	-	-	3b2906683fa47cb0
+struct	c:@S@__SCPreferences	-			-	-	-	-	-	fd50989f11cb697f
+typedef	c:@T@SCPreferencesRef	-			const struct __SCPreferences *	-	-	-	-	ba8a9f8b2febcce2
+typedef	c:@T@SCPreferencesNotification	-			enum SCPreferencesNotification	-	-	-	-	74302dec68a41851
+enum	c:@E@SCPreferencesNotification	-			uint32_t	-	-	-	-	86726cd583ed5988
+enumconst	c:@E@SCPreferencesNotification@kSCPreferencesNotificationCommit	SCPreferencesNotification			-	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cef76001f4da06a4
+enumconst	c:@E@SCPreferencesNotification@kSCPreferencesNotificationApply	SCPreferencesNotification			-	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b156f6b1641d230a
+struct	c:@SA@SCPreferencesContext	-			-	-	-	-	-	b4f7ed0db363ff36
+field	c:@SA@SCPreferencesContext@FI@version	SCPreferencesContext			CFIndex	-	-	-	-	17610c547546d546
+field	c:@SA@SCPreferencesContext@FI@info	SCPreferencesContext			void *	-	-	-	-	c7e3928851c03fcd
+field	c:@SA@SCPreferencesContext@FI@retain	SCPreferencesContext			const void * _Nonnull (*)(const void * _Nonnull)	-	-	-	-	64ce7c3ca877f997
+field	c:@SA@SCPreferencesContext@FI@release	SCPreferencesContext			void (*)(const void * _Nonnull)	-	-	-	-	768df7a54f6f7f85
+field	c:@SA@SCPreferencesContext@FI@copyDescription	SCPreferencesContext			CFStringRef  _Nonnull (*)(const void * _Nonnull)	-	-	-	-	d06e6b395e7bdf67
+typedef	c:@T@SCPreferencesContext	-			struct SCPreferencesContext	-	-	-	-	bddd7c68b29d08b0
+typedef	c:@T@SCPreferencesCallBack	-			void (*)(SCPreferencesRef _Nonnull, SCPreferencesNotification, void * _Nullable)	-	-	-	-	24aecf5945733199
+function	c:@F@SCPreferencesGetTypeID	-			CFTypeID (void)	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1608e40d04b21932
+function	c:@F@SCPreferencesCreate	-			SCPreferencesRef  _Nullable (CFAllocatorRef _Nullable, CFStringRef _Nonnull, CFStringRef _Nullable)	CFAllocatorRef allocator | CFStringRef name | CFStringRef prefsID	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0f87ca9c3cd6fb24
+function	c:@F@SCPreferencesCreateWithAuthorization	-			SCPreferencesRef  _Nullable (CFAllocatorRef _Nullable, CFStringRef _Nonnull, CFStringRef _Nullable, AuthorizationRef _Nullable)	CFAllocatorRef allocator | CFStringRef name | CFStringRef prefsID | AuthorizationRef authorization	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	18eb84aab0fee785
+function	c:@F@SCPreferencesLock	-			Boolean (SCPreferencesRef _Nonnull, Boolean)	SCPreferencesRef prefs | Boolean wait	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	83eca3ca643acdee
+function	c:@F@SCPreferencesCommitChanges	-			Boolean (SCPreferencesRef _Nonnull)	SCPreferencesRef prefs	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a8b6ff7f3ab380f2
+function	c:@F@SCPreferencesApplyChanges	-			Boolean (SCPreferencesRef _Nonnull)	SCPreferencesRef prefs	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3fe069d321b8c705
+function	c:@F@SCPreferencesUnlock	-			Boolean (SCPreferencesRef _Nonnull)	SCPreferencesRef prefs	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8414bcaae8ee1b09
+function	c:@F@SCPreferencesGetSignature	-			CFDataRef  _Nullable (SCPreferencesRef _Nonnull)	SCPreferencesRef prefs	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4ec2cbaf107747c0
+function	c:@F@SCPreferencesCopyKeyList	-			CFArrayRef  _Nullable (SCPreferencesRef _Nonnull)	SCPreferencesRef prefs	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ea16780b36e84c1e
+function	c:@F@SCPreferencesGetValue	-			CFPropertyListRef  _Nullable (SCPreferencesRef _Nonnull, CFStringRef _Nonnull)	SCPreferencesRef prefs | CFStringRef key	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ecaf4f12fa6064d9
+function	c:@F@SCPreferencesAddValue	-			Boolean (SCPreferencesRef _Nonnull, CFStringRef _Nonnull, CFPropertyListRef _Nonnull)	SCPreferencesRef prefs | CFStringRef key | CFPropertyListRef value	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fc553d6a1152695b
+function	c:@F@SCPreferencesSetValue	-			Boolean (SCPreferencesRef _Nonnull, CFStringRef _Nonnull, CFPropertyListRef _Nonnull)	SCPreferencesRef prefs | CFStringRef key | CFPropertyListRef value	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	faaca2254a5cd9ff
+function	c:@F@SCPreferencesRemoveValue	-			Boolean (SCPreferencesRef _Nonnull, CFStringRef _Nonnull)	SCPreferencesRef prefs | CFStringRef key	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3020a03a730a6ed1
+function	c:@F@SCPreferencesSetCallback	-			Boolean (SCPreferencesRef _Nonnull, SCPreferencesCallBack _Nullable, SCPreferencesContext * _Nullable)	SCPreferencesRef prefs | SCPreferencesCallBack callout | SCPreferencesContext * context	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0e4bca733721ee17
+function	c:@F@SCPreferencesScheduleWithRunLoop	-			Boolean (SCPreferencesRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	SCPreferencesRef prefs | CFRunLoopRef runLoop | CFStringRef runLoopMode	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	70a2a1f1342faf0d
+function	c:@F@SCPreferencesUnscheduleFromRunLoop	-			Boolean (SCPreferencesRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	SCPreferencesRef prefs | CFRunLoopRef runLoop | CFStringRef runLoopMode	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7c2073a40284f5e2
+function	c:@F@SCPreferencesSetDispatchQueue	-			Boolean (SCPreferencesRef _Nonnull, dispatch_queue_t _Nullable)	SCPreferencesRef prefs | dispatch_queue_t queue	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c9fcb924dcc1fe5c
+function	c:@F@SCPreferencesSynchronize	-			void (SCPreferencesRef _Nonnull)	SCPreferencesRef prefs	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	becbfa5f282e33de
+function	c:@F@SCPreferencesPathCreateUniqueChild	-			CFStringRef  _Nullable (SCPreferencesRef _Nonnull, CFStringRef _Nonnull)	SCPreferencesRef prefs | CFStringRef prefix	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cd10faad880e210a
+function	c:@F@SCPreferencesPathGetValue	-			CFDictionaryRef  _Nullable (SCPreferencesRef _Nonnull, CFStringRef _Nonnull)	SCPreferencesRef prefs | CFStringRef path	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	628547cc09d5252b
+function	c:@F@SCPreferencesPathGetLink	-			CFStringRef  _Nullable (SCPreferencesRef _Nonnull, CFStringRef _Nonnull)	SCPreferencesRef prefs | CFStringRef path	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1ca103d79d3d72e0
+function	c:@F@SCPreferencesPathSetValue	-			Boolean (SCPreferencesRef _Nonnull, CFStringRef _Nonnull, CFDictionaryRef _Nonnull)	SCPreferencesRef prefs | CFStringRef path | CFDictionaryRef value	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	720006330ed977f1
+function	c:@F@SCPreferencesPathSetLink	-			Boolean (SCPreferencesRef _Nonnull, CFStringRef _Nonnull, CFStringRef _Nonnull)	SCPreferencesRef prefs | CFStringRef path | CFStringRef link	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	eb192e6ad95c6293
+function	c:@F@SCPreferencesPathRemoveValue	-			Boolean (SCPreferencesRef _Nonnull, CFStringRef _Nonnull)	SCPreferencesRef prefs | CFStringRef path	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	552bc15f91716092
+function	c:@F@SCPreferencesSetComputerName	-			Boolean (SCPreferencesRef _Nonnull, CFStringRef _Nullable, CFStringEncoding)	SCPreferencesRef prefs | CFStringRef name | CFStringEncoding nameEncoding	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4e536be5438bfebd
+function	c:@F@SCPreferencesSetLocalHostName	-			Boolean (SCPreferencesRef _Nonnull, CFStringRef _Nullable)	SCPreferencesRef prefs | CFStringRef name	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6c0182ac363445ab
+var	c:@kSCResvLink	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	93c45bdfff79db89
+var	c:@kSCResvInactive	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5266ebbf7dcd8bc6
+var	c:@kSCPropInterfaceName	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b90aaadcf1deeb01
+var	c:@kSCPropMACAddress	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0c2796a232e909fc
+var	c:@kSCPropUserDefinedName	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9ed754fccf2fcbb0
+var	c:@kSCPropVersion	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b62696229ff836da
+var	c:@kSCPrefCurrentSet	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0bf15ee4b43e709c
+var	c:@kSCPrefNetworkServices	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	91d7561f64c77df9
+var	c:@kSCPrefSets	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3d6d27b0392e852d
+var	c:@kSCPrefSystem	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	08338c4aa0af5189
+var	c:@kSCCompNetwork	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	888bcdb81ae7ce8f
+var	c:@kSCCompService	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	81aa9bf313cf928e
+var	c:@kSCCompGlobal	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ceb2f7f58c22d2a8
+var	c:@kSCCompHostNames	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	803267e86c83d68c
+var	c:@kSCCompInterface	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	52fa1d03ca137392
+var	c:@kSCCompSystem	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	31307b8fad7cf0f4
+var	c:@kSCCompUsers	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	75376100e296caee
+var	c:@kSCCompAnyRegex	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	89e6f095575323db
+var	c:@kSCEntNetAirPort	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	81405ff28d5b6c9e
+var	c:@kSCEntNetDHCP	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f78d2e020b82e162
+var	c:@kSCEntNetDNS	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ae3f0172f36b9d55
+var	c:@kSCEntNetEthernet	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	58636127fdd31136
+var	c:@kSCEntNetFireWire	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ed062970ca6a90f1
+var	c:@kSCEntNetInterface	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3904e75884eb96bc
+var	c:@kSCEntNetIPSec	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	677ef2ab4f8b33eb
+var	c:@kSCEntNetIPv4	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8347ea63086f92af
+var	c:@kSCEntNetIPv6	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0a591c2e4bc7612d
+var	c:@kSCEntNetL2TP	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f8972fcc5a7f9032
+var	c:@kSCEntNetLink	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2f2e0c172da420b7
+var	c:@kSCEntNetModem	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7af71782bb6fc788
+var	c:@kSCEntNetPPP	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	305d1979493a8f9f
+var	c:@kSCEntNetPPPoE	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d1293b064a122b4c
+var	c:@kSCEntNetPPPSerial	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6d5c44d8d8a5b736
+var	c:@kSCEntNetPPTP	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/10.12/-/0	-	dd2b5ff1a0d8e73c
+var	c:@kSCEntNetProxies	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2cfeb31d103d64cd
+var	c:@kSCEntNetSMB	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	084c9a9d2d290f2f
+var	c:@kSCEntNet6to4	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7a5a0e139e6c4ddf
+var	c:@kSCPropNetOverridePrimary	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2fb1b44bd6af4142
+var	c:@kSCPropNetServiceOrder	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	34125a4b83fd07ed
+var	c:@kSCPropNetPPPOverridePrimary	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0a0796acedd9277b
+var	c:@kSCPropNetInterfaces	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5586fff696c12ef1
+var	c:@kSCPropNetLocalHostName	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0636bd0ff17d6eaf
+var	c:@kSCPropNetAirPortAllowNetCreation	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/10.9/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b8d6a5281a71bb9d
+var	c:@kSCPropNetAirPortAuthPassword	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/10.9/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6e70c97becb0cb64
+var	c:@kSCPropNetAirPortAuthPasswordEncryption	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/10.9/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	dc4f4125eceb13db
+var	c:@kSCPropNetAirPortJoinMode	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/10.9/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	579f9c61db76b8d6
+var	c:@kSCPropNetAirPortPowerEnabled	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/10.9/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d2f84376fa57fbdf
+var	c:@kSCPropNetAirPortPreferredNetwork	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/10.9/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8fa8a2dd7f40e7dc
+var	c:@kSCPropNetAirPortSavePasswords	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/10.9/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e89a41677ff0ab90
+var	c:@kSCValNetAirPortJoinModeAutomatic	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/10.9/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ccbea6143375248b
+var	c:@kSCValNetAirPortJoinModePreferred	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/10.9/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	caa1b6dad54596ed
+var	c:@kSCValNetAirPortJoinModeRanked	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/10.9/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e822b314356a8d0b
+var	c:@kSCValNetAirPortJoinModeRecent	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/10.9/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	851d84b45e6dd059
+var	c:@kSCValNetAirPortJoinModeStrongest	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/10.9/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	72a8f8541be13d9d
+var	c:@kSCValNetAirPortAuthPasswordEncryptionKeychain	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/10.9/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f22d62d19354fe30
+var	c:@kSCPropNetDNSDomainName	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0259807c5485cfbe
+var	c:@kSCPropNetDNSOptions	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2dbafa3938ff6550
+var	c:@kSCPropNetDNSSearchDomains	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	29c40fd6b9701ef2
+var	c:@kSCPropNetDNSSearchOrder	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e494f688f6f9279d
+var	c:@kSCPropNetDNSServerAddresses	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	35bb268cdc6d42e5
+var	c:@kSCPropNetDNSServerPort	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	20d42df0307715e2
+var	c:@kSCPropNetDNSServerTimeout	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	511ee55acc6dcc78
+var	c:@kSCPropNetDNSSortList	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	49fc853092e840d2
+var	c:@kSCPropNetDNSSupplementalMatchDomains	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ed6675446d1652d2
+var	c:@kSCPropNetDNSSupplementalMatchOrders	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c04129e20d3190c7
+var	c:@kSCPropNetEthernetMediaSubType	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	98cd7d5493241631
+var	c:@kSCPropNetEthernetMediaOptions	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	43f2284b43fdaf28
+var	c:@kSCPropNetEthernetMTU	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5bcab85173f2b743
+var	c:@kSCPropNetInterfaceDeviceName	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cd1b138d0bdee0b2
+var	c:@kSCPropNetInterfaceHardware	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a3737defcb9973e0
+var	c:@kSCPropNetInterfaceType	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1988102876f46502
+var	c:@kSCPropNetInterfaceSubType	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5ff9d9ef89437095
+var	c:@kSCPropNetInterfaceSupportsModemOnHold	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/10.13/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	193dc0c3164615c2
+var	c:@kSCValNetInterfaceTypeEthernet	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ba50d292e55b5250
+var	c:@kSCValNetInterfaceTypeFireWire	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0b854c1f69461d4b
+var	c:@kSCValNetInterfaceTypePPP	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f6b40b6abcb715a9
+var	c:@kSCValNetInterfaceType6to4	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7879813b31155a2e
+var	c:@kSCValNetInterfaceTypeIPSec	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5cd151f1ef513f64
+var	c:@kSCValNetInterfaceSubTypePPPoE	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f5d03b12fca86e55
+var	c:@kSCValNetInterfaceSubTypePPPSerial	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6562f3ce147ba334
+var	c:@kSCValNetInterfaceSubTypePPTP	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/10.12/-/0	-	1bdcae38575f9a11
+var	c:@kSCValNetInterfaceSubTypeL2TP	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	03e536c4ddf9af5d
+var	c:@kSCPropNetIPSecAuthenticationMethod	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8556724c48ea3c3f
+var	c:@kSCPropNetIPSecLocalCertificate	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	143f47ac3ba8ff5e
+var	c:@kSCPropNetIPSecLocalIdentifier	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ef860516b867b661
+var	c:@kSCPropNetIPSecLocalIdentifierType	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7bbfc8bf6298c94f
+var	c:@kSCPropNetIPSecSharedSecret	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	574b031f38834fc1
+var	c:@kSCPropNetIPSecSharedSecretEncryption	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e783a50b636adabc
+var	c:@kSCPropNetIPSecConnectTime	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cc61e2c6a2e0a12c
+var	c:@kSCPropNetIPSecRemoteAddress	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	07232ff414225018
+var	c:@kSCPropNetIPSecStatus	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6c916111279ccfd0
+var	c:@kSCPropNetIPSecXAuthEnabled	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7f45a3b2d25d974a
+var	c:@kSCPropNetIPSecXAuthName	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ba388314fc7b4098
+var	c:@kSCPropNetIPSecXAuthPassword	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f0be5da4619ecd29
+var	c:@kSCPropNetIPSecXAuthPasswordEncryption	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0c5fe2f94346e5e7
+var	c:@kSCValNetIPSecAuthenticationMethodSharedSecret	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	30e4e32e351d8754
+var	c:@kSCValNetIPSecAuthenticationMethodCertificate	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	373361684388fe05
+var	c:@kSCValNetIPSecAuthenticationMethodHybrid	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1e6091e705ac91a5
+var	c:@kSCValNetIPSecLocalIdentifierTypeKeyID	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4b7475d53bfafc3f
+var	c:@kSCValNetIPSecSharedSecretEncryptionKeychain	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a592f12aad0b09e5
+var	c:@kSCValNetIPSecXAuthPasswordEncryptionKeychain	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8e0bef0f61de0941
+var	c:@kSCValNetIPSecXAuthPasswordEncryptionPrompt	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6d604db431195083
+var	c:@kSCPropNetIPv4Addresses	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b5cd0c720915f356
+var	c:@kSCPropNetIPv4ConfigMethod	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d3ba6aaa40914b77
+var	c:@kSCPropNetIPv4DHCPClientID	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f72bdfd8b11249ac
+var	c:@kSCPropNetIPv4Router	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	add5cbe4768599fb
+var	c:@kSCPropNetIPv4SubnetMasks	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7b4c93537db62b1d
+var	c:@kSCPropNetIPv4DestAddresses	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d0abb9c93a3f6935
+var	c:@kSCPropNetIPv4BroadcastAddresses	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6012dd48d6c7adca
+var	c:@kSCValNetIPv4ConfigMethodAutomatic	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4a09b42b721b091e
+var	c:@kSCValNetIPv4ConfigMethodBOOTP	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1e0c37d8682671d9
+var	c:@kSCValNetIPv4ConfigMethodDHCP	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d7442b44354786e6
+var	c:@kSCValNetIPv4ConfigMethodINFORM	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ee50bffa0bdb64e7
+var	c:@kSCValNetIPv4ConfigMethodLinkLocal	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	48a66a8b896fb2a7
+var	c:@kSCValNetIPv4ConfigMethodManual	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c5958e8e467a556f
+var	c:@kSCValNetIPv4ConfigMethodPPP	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5e69beee619d8e1f
+var	c:@kSCPropNetIPv6Addresses	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	69cddac1a684cc69
+var	c:@kSCPropNetIPv6ConfigMethod	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9b4cee7ce3164801
+var	c:@kSCPropNetIPv6DestAddresses	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ed6f65c9d814b37e
+var	c:@kSCPropNetIPv6Flags	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c365557db6087663
+var	c:@kSCPropNetIPv6PrefixLength	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	eadd2af7f1ef48d1
+var	c:@kSCPropNetIPv6Router	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0aca7d115d6e644e
+var	c:@kSCValNetIPv6ConfigMethodAutomatic	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d6de346adc435ffb
+var	c:@kSCValNetIPv6ConfigMethodLinkLocal	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.7/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	77065d2bc2af98bb
+var	c:@kSCValNetIPv6ConfigMethodManual	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1acf2fc5b301d85f
+var	c:@kSCValNetIPv6ConfigMethodRouterAdvertisement	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d843fc9af1d67be5
+var	c:@kSCValNetIPv6ConfigMethod6to4	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7d9e34b1891efb67
+var	c:@kSCPropNet6to4Relay	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8f8f198c531adbab
+var	c:@kSCPropNetLinkActive	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7e164050f5b130ae
+var	c:@kSCPropNetLinkDetaching	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	581331365511bbd0
+var	c:@kSCPropNetModemAccessPointName	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	07fe90dd7fa36019
+var	c:@kSCPropNetModemConnectionPersonality	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a31c4fed1f1fe6ee
+var	c:@kSCPropNetModemConnectionScript	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	77dba717256e8629
+var	c:@kSCPropNetModemConnectSpeed	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d9f8c25eb5f70dd9
+var	c:@kSCPropNetModemDataCompression	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cd9334d8f71aaf98
+var	c:@kSCPropNetModemDeviceContextID	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a15a6802e46684e7
+var	c:@kSCPropNetModemDeviceModel	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	36a1c4efcab21339
+var	c:@kSCPropNetModemDeviceVendor	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3d52bc26d0e49df3
+var	c:@kSCPropNetModemDialMode	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	266b572665d3f17d
+var	c:@kSCPropNetModemErrorCorrection	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3a0bc7f9c085d5e0
+var	c:@kSCPropNetModemHoldCallWaitingAudibleAlert	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ba3e3d94036333f9
+var	c:@kSCPropNetModemHoldDisconnectOnAnswer	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	31fa3da833ca90c6
+var	c:@kSCPropNetModemHoldEnabled	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9ee8cf37e735b2be
+var	c:@kSCPropNetModemHoldReminder	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d373305b8d85664c
+var	c:@kSCPropNetModemHoldReminderTime	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f739362dc5de791b
+var	c:@kSCPropNetModemNote	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a5d5193383b6f02d
+var	c:@kSCPropNetModemPulseDial	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5be3dbbf0199659e
+var	c:@kSCPropNetModemSpeaker	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5645746f1e7cc2ae
+var	c:@kSCPropNetModemSpeed	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6697bddc91ffc5b3
+var	c:@kSCValNetModemDialModeIgnoreDialTone	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fcdd32620269d60c
+var	c:@kSCValNetModemDialModeManual	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6fb144de4d8591ec
+var	c:@kSCValNetModemDialModeWaitForDialTone	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b2ce38227d9db763
+var	c:@kSCPropNetPPPACSPEnabled	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	659c4e3feb670f5b
+var	c:@kSCPropNetPPPConnectTime	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	138db5b9e44c36f4
+var	c:@kSCPropNetPPPDeviceLastCause	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b81454d4c11342f2
+var	c:@kSCPropNetPPPDialOnDemand	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	683efb6b8ae86d90
+var	c:@kSCPropNetPPPDisconnectOnFastUserSwitch	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c16ffb340badc34a
+var	c:@kSCPropNetPPPDisconnectOnIdle	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5ab18032127f8324
+var	c:@kSCPropNetPPPDisconnectOnIdleTimer	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e1f5c174976d1a43
+var	c:@kSCPropNetPPPDisconnectOnLogout	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fe276017e84b4d5c
+var	c:@kSCPropNetPPPDisconnectOnSleep	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	77ba9b270f2d99c9
+var	c:@kSCPropNetPPPDisconnectTime	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	993ae6980206fd01
+var	c:@kSCPropNetPPPIdleReminder	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1ebff1593e9884a1
+var	c:@kSCPropNetPPPIdleReminderTimer	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a9de89e081c08503
+var	c:@kSCPropNetPPPLastCause	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1b454ca73edce7a8
+var	c:@kSCPropNetPPPLogfile	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f0927ed12b598648
+var	c:@kSCPropNetPPPPlugins	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/10.15/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	aa12dae105172de7
+var	c:@kSCPropNetPPPRetryConnectTime	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d80fa0e40c4061db
+var	c:@kSCPropNetPPPSessionTimer	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2fa35e0088cb3871
+var	c:@kSCPropNetPPPStatus	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	812e91dd3ed009a0
+var	c:@kSCPropNetPPPUseSessionTimer	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4a4efc98b4cda30a
+var	c:@kSCPropNetPPPVerboseLogging	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	61abee4dd295b956
+var	c:@kSCPropNetPPPAuthEAPPlugins	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/10.15/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1a9849f075579cec
+var	c:@kSCPropNetPPPAuthName	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c41f085e6fcc163e
+var	c:@kSCPropNetPPPAuthPassword	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f583526ec86c3234
+var	c:@kSCPropNetPPPAuthPasswordEncryption	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b4ebd47df2dcf04c
+var	c:@kSCPropNetPPPAuthPrompt	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	315519d40ac66e1b
+var	c:@kSCPropNetPPPAuthProtocol	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3170b0295f907de6
+var	c:@kSCValNetPPPAuthPasswordEncryptionKeychain	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	faa6f192cdf02cc0
+var	c:@kSCValNetPPPAuthPasswordEncryptionToken	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e4217d7a75264c9a
+var	c:@kSCValNetPPPAuthPromptBefore	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	44194926194fe624
+var	c:@kSCValNetPPPAuthPromptAfter	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5272fe0bfe749247
+var	c:@kSCValNetPPPAuthProtocolCHAP	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	adcfd0a7e9e7090d
+var	c:@kSCValNetPPPAuthProtocolEAP	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6eee7390b3e50576
+var	c:@kSCValNetPPPAuthProtocolMSCHAP1	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ccbf1ba5b0836649
+var	c:@kSCValNetPPPAuthProtocolMSCHAP2	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7e96fb4cb3a073b3
+var	c:@kSCValNetPPPAuthProtocolPAP	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9691b000aab7e441
+var	c:@kSCPropNetPPPCommAlternateRemoteAddress	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1763d88ea130833f
+var	c:@kSCPropNetPPPCommConnectDelay	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	eb69d7f7be5e19e4
+var	c:@kSCPropNetPPPCommDisplayTerminalWindow	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ab6b4f3b62debc63
+var	c:@kSCPropNetPPPCommRedialCount	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e777221dbd682559
+var	c:@kSCPropNetPPPCommRedialEnabled	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d0e92d019a9a42c6
+var	c:@kSCPropNetPPPCommRedialInterval	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f63445cef6633ade
+var	c:@kSCPropNetPPPCommRemoteAddress	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	90e9e24756efc8e7
+var	c:@kSCPropNetPPPCommTerminalScript	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a28e1a45967e3cbb
+var	c:@kSCPropNetPPPCommUseTerminalScript	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a914a09add1a93ce
+var	c:@kSCPropNetPPPCCPEnabled	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f0babcc7b1d77b98
+var	c:@kSCPropNetPPPCCPMPPE40Enabled	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d89aa1cf178187d3
+var	c:@kSCPropNetPPPCCPMPPE128Enabled	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f01d41b1e8ec8c7a
+var	c:@kSCPropNetPPPIPCPCompressionVJ	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b54417af0fea1780
+var	c:@kSCPropNetPPPIPCPUsePeerDNS	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	52f1dda2d4bef6c8
+var	c:@kSCPropNetPPPLCPEchoEnabled	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8971f5fe0e8d685c
+var	c:@kSCPropNetPPPLCPEchoFailure	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	494091a534a54fdc
+var	c:@kSCPropNetPPPLCPEchoInterval	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	04169d28edaaa723
+var	c:@kSCPropNetPPPLCPCompressionACField	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c346fb963019732f
+var	c:@kSCPropNetPPPLCPCompressionPField	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4bc114a65267745b
+var	c:@kSCPropNetPPPLCPMRU	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1b144f6c11263c7e
+var	c:@kSCPropNetPPPLCPMTU	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d90cccb3795d1547
+var	c:@kSCPropNetPPPLCPReceiveACCM	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3a054a238f59d48e
+var	c:@kSCPropNetPPPLCPTransmitACCM	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	92ef95d38a58a7d2
+var	c:@kSCPropNetL2TPIPSecSharedSecret	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3348ef7b8621394c
+var	c:@kSCPropNetL2TPIPSecSharedSecretEncryption	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	44ff57fe42040529
+var	c:@kSCPropNetL2TPTransport	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3e6079d977890b85
+var	c:@kSCValNetL2TPIPSecSharedSecretEncryptionKeychain	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c56355d74953d1aa
+var	c:@kSCValNetL2TPTransportIP	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5b81b1e2798b7c89
+var	c:@kSCValNetL2TPTransportIPSec	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7f1ab43663a05945
+var	c:@kSCPropNetProxiesExceptionsList	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fe4e5618733b46f2
+var	c:@kSCPropNetProxiesExcludeSimpleHostnames	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	61d7c26350e33802
+var	c:@kSCPropNetProxiesFTPEnable	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6048095a9e9f6941
+var	c:@kSCPropNetProxiesFTPPassive	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0931d1e693d81ba3
+var	c:@kSCPropNetProxiesFTPPort	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9be19a93b2ccdb8d
+var	c:@kSCPropNetProxiesFTPProxy	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	21eb0ad99e8c0699
+var	c:@kSCPropNetProxiesFTPUser	-			const CFStringRef	-	-	ios=-/-/-/1,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	09e1f6f9eb9384b9
+var	c:@kSCPropNetProxiesGopherEnable	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	12731ab6a4c095cb
+var	c:@kSCPropNetProxiesGopherPort	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	909d1aedd848302d
+var	c:@kSCPropNetProxiesGopherProxy	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d9c1fd0c4b10da34
+var	c:@kSCPropNetProxiesGopherUser	-			const CFStringRef	-	-	ios=-/-/-/1,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c8f243554f30ed41
+var	c:@kSCPropNetProxiesHTTPEnable	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d21ac5fd63b45e1d
+var	c:@kSCPropNetProxiesHTTPPort	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	15baeeb6370b984e
+var	c:@kSCPropNetProxiesHTTPProxy	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a2cf5876c37c402d
+var	c:@kSCPropNetProxiesHTTPUser	-			const CFStringRef	-	-	ios=-/-/-/1,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	320c8176571297ca
+var	c:@kSCPropNetProxiesHTTPSEnable	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a9b210720ac5d563
+var	c:@kSCPropNetProxiesHTTPSPort	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6b4b746d3587dda4
+var	c:@kSCPropNetProxiesHTTPSProxy	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3a2c0ee10f029013
+var	c:@kSCPropNetProxiesHTTPSUser	-			const CFStringRef	-	-	ios=-/-/-/1,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7e348517eb86a9a0
+var	c:@kSCPropNetProxiesRTSPEnable	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b3291360f233638b
+var	c:@kSCPropNetProxiesRTSPPort	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e170b7a9e5094e46
+var	c:@kSCPropNetProxiesRTSPProxy	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f4846c74f402fb23
+var	c:@kSCPropNetProxiesRTSPUser	-			const CFStringRef	-	-	ios=-/-/-/1,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0072b9d209a738af
+var	c:@kSCPropNetProxiesSOCKSEnable	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	01d3759206edd782
+var	c:@kSCPropNetProxiesSOCKSPort	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8e9ab0c7d0daf053
+var	c:@kSCPropNetProxiesSOCKSProxy	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	aa48f2afb35bcf49
+var	c:@kSCPropNetProxiesSOCKSUser	-			const CFStringRef	-	-	ios=-/-/-/1,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	318543b96aec742a
+var	c:@kSCPropNetProxiesProxyAutoConfigEnable	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a61b73a408f6f55e
+var	c:@kSCPropNetProxiesProxyAutoConfigJavaScript	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.7/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a60999f014b8f092
+var	c:@kSCPropNetProxiesProxyAutoConfigURLString	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0a92bdbc54e69027
+var	c:@kSCPropNetProxiesProxyAutoDiscoveryEnable	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	49fd445ecec521df
+var	c:@kSCPropNetSMBNetBIOSName	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0c1a4dc738e1765a
+var	c:@kSCPropNetSMBNetBIOSNodeType	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0dbf0dae000d7f40
+var	c:@kSCPropNetSMBNetBIOSScope	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/10.7/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d4b9774871f5c01e
+var	c:@kSCPropNetSMBWINSAddresses	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bbb87fb0aa5b983f
+var	c:@kSCPropNetSMBWorkgroup	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5cc84a58ddfcd0ea
+var	c:@kSCValNetSMBNetBIOSNodeTypeBroadcast	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	854717c6b80588d1
+var	c:@kSCValNetSMBNetBIOSNodeTypePeer	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b7e7a3f6aa54c276
+var	c:@kSCValNetSMBNetBIOSNodeTypeMixed	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c4bc05b2eed50fda
+var	c:@kSCValNetSMBNetBIOSNodeTypeHybrid	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d773ac4a049a49a8
+var	c:@kSCEntUsersConsoleUser	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c9185f88bc92e897
+var	c:@kSCPropSystemComputerName	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d29880fa2f1abc08
+var	c:@kSCPropSystemComputerNameEncoding	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	099d5faaca19955b
+var	c:@kSCDynamicStoreDomainFile	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ef9678579c4351e2
+var	c:@kSCDynamicStoreDomainPlugin	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4e59ff838061b5a5
+var	c:@kSCDynamicStoreDomainSetup	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9fa9c2bb0b7ac2a8
+var	c:@kSCDynamicStoreDomainState	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4e862269c9c89382
+var	c:@kSCDynamicStoreDomainPrefs	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7f11dcc86563fcd8
+var	c:@kSCDynamicStorePropSetupCurrentSet	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	401f6cbcfe622cd0
+var	c:@kSCDynamicStorePropSetupLastUpdated	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a11eba9f960d944e
+var	c:@kSCDynamicStorePropNetInterfaces	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f1bc129e8d63599c
+var	c:@kSCDynamicStorePropNetPrimaryInterface	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	922e0a987ebe1795
+var	c:@kSCDynamicStorePropNetPrimaryService	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	88159e529ca7252d
+var	c:@kSCDynamicStorePropNetServiceIDs	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1420c7f20ff49a49
+var	c:@kSCPropUsersConsoleUserName	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/10.4/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	66bf5fc1daf21fb1
+var	c:@kSCPropUsersConsoleUserUID	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/10.4/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f5a05e1421655e6c
+var	c:@kSCPropUsersConsoleUserGID	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.1/10.4/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7512e3203673302f
+struct	c:@S@__SCNetworkInterface	-			-	-	-	-	-	67e1571d1d364b5d
+typedef	c:@T@SCNetworkInterfaceRef	-			const struct __SCNetworkInterface *	-	-	-	-	a0d475c72155a867
+var	c:@kSCNetworkInterfaceType6to4	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6cbfae03ff298e91
+var	c:@kSCNetworkInterfaceTypeBluetooth	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	97cd8d97e5edeace
+var	c:@kSCNetworkInterfaceTypeBond	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7ff15470d35485eb
+var	c:@kSCNetworkInterfaceTypeEthernet	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	31b70de00a0365f8
+var	c:@kSCNetworkInterfaceTypeFireWire	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7ecb25c99055557d
+var	c:@kSCNetworkInterfaceTypeIEEE80211	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	780a9be818ee6ce6
+var	c:@kSCNetworkInterfaceTypeIPSec	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	58161f202bb81b5e
+var	c:@kSCNetworkInterfaceTypeIrDA	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/12.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2fa6c0cc39a705ef
+var	c:@kSCNetworkInterfaceTypeL2TP	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f2858d265a8ccb46
+var	c:@kSCNetworkInterfaceTypeModem	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6a135c5a10bb1a21
+var	c:@kSCNetworkInterfaceTypePPP	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	140923986baaa738
+var	c:@kSCNetworkInterfaceTypePPTP	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/10.12/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b8ed2704f3d2d959
+var	c:@kSCNetworkInterfaceTypeSerial	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b6f12d6ad5c7d183
+var	c:@kSCNetworkInterfaceTypeVLAN	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8aa98718f99b9584
+var	c:@kSCNetworkInterfaceTypeWWAN	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	565b3eae841107cf
+var	c:@kSCNetworkInterfaceTypeIPv4	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fc98427e2c71353d
+var	c:@kSCNetworkInterfaceIPv4	-			const SCNetworkInterfaceRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	636b03c7d5bcbff3
+typedef	c:@T@SCBondInterfaceRef	-			SCNetworkInterfaceRef	-	-	-	-	1500c1794ba9d681
+struct	c:@S@__SCBondStatus	-			-	-	-	-	-	732671755469b52a
+typedef	c:@T@SCBondStatusRef	-			const struct __SCBondStatus *	-	-	-	-	2b575cfb00e18b1d
+enum	c:@Ea@kSCBondStatusOK	-	-		unsigned int	-	-	-	-	c7d4136dc992303c
+enumconst	c:@Ea@kSCBondStatusOK@kSCBondStatusOK	-			-	-	-	-	-	aefa89cfaea16b7a
+enumconst	c:@Ea@kSCBondStatusOK@kSCBondStatusLinkInvalid	-			-	-	-	-	-	53437852cb7da286
+enumconst	c:@Ea@kSCBondStatusOK@kSCBondStatusNoPartner	-			-	-	-	-	-	f744a517d2b50694
+enumconst	c:@Ea@kSCBondStatusOK@kSCBondStatusNotInActiveGroup	-			-	-	-	-	-	dfc04f3af1661d47
+enumconst	c:@Ea@kSCBondStatusOK@kSCBondStatusUnknown	-			-	-	-	-	-	eadffac5d48b5483
+var	c:@kSCBondStatusDeviceAggregationStatus	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e5ab5a7bd3da2f29
+var	c:@kSCBondStatusDeviceCollecting	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3586bf7b041346c5
+var	c:@kSCBondStatusDeviceDistributing	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c16fc8c1418d0e72
+typedef	c:@T@SCVLANInterfaceRef	-			SCNetworkInterfaceRef	-	-	-	-	39fbb0597e8c5d64
+struct	c:@S@__SCNetworkProtocol	-			-	-	-	-	-	a396db3628e97d97
+typedef	c:@T@SCNetworkProtocolRef	-			const struct __SCNetworkProtocol *	-	-	-	-	a71b6c9ea751d177
+var	c:@kSCNetworkProtocolTypeDNS	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	83cee1cc02ab5574
+var	c:@kSCNetworkProtocolTypeIPv4	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	86ad5a16fc91b8a9
+var	c:@kSCNetworkProtocolTypeIPv6	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a606e3ebf5e777f9
+var	c:@kSCNetworkProtocolTypeProxies	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a73462fde70f6271
+var	c:@kSCNetworkProtocolTypeSMB	-			const CFStringRef	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	04380e88776a54ad
+struct	c:@S@__SCNetworkService	-			-	-	-	-	-	2fd2d4926bafdf57
+typedef	c:@T@SCNetworkServiceRef	-			const struct __SCNetworkService *	-	-	-	-	08e6b1c810535b84
+struct	c:@S@__SCNetworkSet	-			-	-	-	-	-	d40016cfbcf71c3b
+typedef	c:@T@SCNetworkSetRef	-			const struct __SCNetworkSet *	-	-	-	-	e5f678549eae0c12
+function	c:@F@SCNetworkInterfaceGetTypeID	-			CFTypeID (void)	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	63962462b044632e
+function	c:@F@SCNetworkInterfaceCopyAll	-			CFArrayRef  _Nonnull (void)	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e87518e2b8663ed4
+function	c:@F@SCNetworkInterfaceGetSupportedInterfaceTypes	-			CFArrayRef  _Nullable (SCNetworkInterfaceRef _Nonnull)	SCNetworkInterfaceRef interface	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	07b1a86f598a63f6
+function	c:@F@SCNetworkInterfaceGetSupportedProtocolTypes	-			CFArrayRef  _Nullable (SCNetworkInterfaceRef _Nonnull)	SCNetworkInterfaceRef interface	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	aef6d17c226a6a2d
+function	c:@F@SCNetworkInterfaceCreateWithInterface	-			SCNetworkInterfaceRef  _Nullable (SCNetworkInterfaceRef _Nonnull, CFStringRef _Nonnull)	SCNetworkInterfaceRef interface | CFStringRef interfaceType	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a699e25d3941914a
+function	c:@F@SCNetworkInterfaceGetBSDName	-			CFStringRef  _Nullable (SCNetworkInterfaceRef _Nonnull)	SCNetworkInterfaceRef interface	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	333817659b15746c
+function	c:@F@SCNetworkInterfaceGetConfiguration	-			CFDictionaryRef  _Nullable (SCNetworkInterfaceRef _Nonnull)	SCNetworkInterfaceRef interface	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e2cab9929f4c5a4b
+function	c:@F@SCNetworkInterfaceGetExtendedConfiguration	-			CFDictionaryRef  _Nullable (SCNetworkInterfaceRef _Nonnull, CFStringRef _Nonnull)	SCNetworkInterfaceRef interface | CFStringRef extendedType	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5d59a5a0511642f7
+function	c:@F@SCNetworkInterfaceGetHardwareAddressString	-			CFStringRef  _Nullable (SCNetworkInterfaceRef _Nonnull)	SCNetworkInterfaceRef interface	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c05b8bfcecafd033
+function	c:@F@SCNetworkInterfaceGetInterface	-			SCNetworkInterfaceRef  _Nullable (SCNetworkInterfaceRef _Nonnull)	SCNetworkInterfaceRef interface	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	85f7409a4dbaf68b
+function	c:@F@SCNetworkInterfaceGetInterfaceType	-			CFStringRef  _Nullable (SCNetworkInterfaceRef _Nonnull)	SCNetworkInterfaceRef interface	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c84b53d7dda4fd5a
+function	c:@F@SCNetworkInterfaceGetLocalizedDisplayName	-			CFStringRef  _Nullable (SCNetworkInterfaceRef _Nonnull)	SCNetworkInterfaceRef interface	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	36e33ff29455b9f8
+function	c:@F@SCNetworkInterfaceSetConfiguration	-			Boolean (SCNetworkInterfaceRef _Nonnull, CFDictionaryRef _Nullable)	SCNetworkInterfaceRef interface | CFDictionaryRef config	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4eebe42c4e9181bc
+function	c:@F@SCNetworkInterfaceSetExtendedConfiguration	-			Boolean (SCNetworkInterfaceRef _Nonnull, CFStringRef _Nonnull, CFDictionaryRef _Nullable)	SCNetworkInterfaceRef interface | CFStringRef extendedType | CFDictionaryRef config	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	63869c6470ec7940
+function	c:@F@SCNetworkInterfaceCopyMediaOptions	-			Boolean (SCNetworkInterfaceRef _Nonnull, CFDictionaryRef  _Nullable * _Nullable, CFDictionaryRef  _Nullable * _Nullable, CFArrayRef  _Nullable * _Nullable, Boolean)	SCNetworkInterfaceRef interface | CFDictionaryRef  _Nullable * current | CFDictionaryRef  _Nullable * active | CFArrayRef  _Nullable * available | Boolean filter	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6b77f1f1f91e68b0
+function	c:@F@SCNetworkInterfaceCopyMediaSubTypes	-			CFArrayRef  _Nullable (CFArrayRef _Nonnull)	CFArrayRef available	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b79fd1a79e81d5ce
+function	c:@F@SCNetworkInterfaceCopyMediaSubTypeOptions	-			CFArrayRef  _Nullable (CFArrayRef _Nonnull, CFStringRef _Nonnull)	CFArrayRef available | CFStringRef subType	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e2e93462b3ebf4c1
+function	c:@F@SCNetworkInterfaceCopyMTU	-			Boolean (SCNetworkInterfaceRef _Nonnull, int * _Nullable, int * _Nullable, int * _Nullable)	SCNetworkInterfaceRef interface | int * mtu_cur | int * mtu_min | int * mtu_max	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8abcc6ef3958a0c0
+function	c:@F@SCNetworkInterfaceSetMediaOptions	-			Boolean (SCNetworkInterfaceRef _Nonnull, CFStringRef _Nullable, CFArrayRef _Nullable)	SCNetworkInterfaceRef interface | CFStringRef subtype | CFArrayRef options	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c2f972c68609cd06
+function	c:@F@SCNetworkInterfaceSetMTU	-			Boolean (SCNetworkInterfaceRef _Nonnull, int)	SCNetworkInterfaceRef interface | int mtu	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	04be5f6c97c037f1
+function	c:@F@SCNetworkInterfaceForceConfigurationRefresh	-			Boolean (SCNetworkInterfaceRef _Nonnull)	SCNetworkInterfaceRef interface	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ac2cfcf6f529a0c0
+function	c:@F@SCBondInterfaceCopyAll	-			CFArrayRef  _Nonnull (SCPreferencesRef _Nonnull)	SCPreferencesRef prefs	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fc280311593b7e96
+function	c:@F@SCBondInterfaceCopyAvailableMemberInterfaces	-			CFArrayRef  _Nonnull (SCPreferencesRef _Nonnull)	SCPreferencesRef prefs	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	753a181898d61f02
+function	c:@F@SCBondInterfaceCreate	-			SCBondInterfaceRef  _Nullable (SCPreferencesRef _Nonnull)	SCPreferencesRef prefs	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0ce88112d07bbc30
+function	c:@F@SCBondInterfaceRemove	-			Boolean (SCBondInterfaceRef _Nonnull)	SCBondInterfaceRef bond	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2d93836514a4f847
+function	c:@F@SCBondInterfaceGetMemberInterfaces	-			CFArrayRef  _Nullable (SCBondInterfaceRef _Nonnull)	SCBondInterfaceRef bond	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4ca0ee8809533b98
+function	c:@F@SCBondInterfaceGetOptions	-			CFDictionaryRef  _Nullable (SCBondInterfaceRef _Nonnull)	SCBondInterfaceRef bond	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d5ee0671999cf6ab
+function	c:@F@SCBondInterfaceSetMemberInterfaces	-			Boolean (SCBondInterfaceRef _Nonnull, CFArrayRef _Nonnull)	SCBondInterfaceRef bond | CFArrayRef members	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6e2f4e65ab865da6
+function	c:@F@SCBondInterfaceSetLocalizedDisplayName	-			Boolean (SCBondInterfaceRef _Nonnull, CFStringRef _Nonnull)	SCBondInterfaceRef bond | CFStringRef newName	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	937c8bdab499c9e1
+function	c:@F@SCBondInterfaceSetOptions	-			Boolean (SCBondInterfaceRef _Nonnull, CFDictionaryRef _Nonnull)	SCBondInterfaceRef bond | CFDictionaryRef newOptions	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	da24fc7d4fc5aa19
+function	c:@F@SCBondInterfaceCopyStatus	-			SCBondStatusRef  _Nullable (SCBondInterfaceRef _Nonnull)	SCBondInterfaceRef bond	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5c15fc8139b850e0
+function	c:@F@SCBondStatusGetTypeID	-			CFTypeID (void)	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f7d40c1af34c8aaf
+function	c:@F@SCBondStatusGetMemberInterfaces	-			CFArrayRef  _Nullable (SCBondStatusRef _Nonnull)	SCBondStatusRef bondStatus	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6e2fc69c7b10ea51
+function	c:@F@SCBondStatusGetInterfaceStatus	-			CFDictionaryRef  _Nullable (SCBondStatusRef _Nonnull, SCNetworkInterfaceRef _Nullable)	SCBondStatusRef bondStatus | SCNetworkInterfaceRef interface	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	87be589ba8fb254f
+function	c:@F@SCVLANInterfaceCopyAll	-			CFArrayRef  _Nonnull (SCPreferencesRef _Nonnull)	SCPreferencesRef prefs	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5c5b7ac91a27f738
+function	c:@F@SCVLANInterfaceCopyAvailablePhysicalInterfaces	-			CFArrayRef  _Nonnull (void)	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	322bd6be2c0e9f46
+function	c:@F@SCVLANInterfaceCreate	-			SCVLANInterfaceRef  _Nullable (SCPreferencesRef _Nonnull, SCNetworkInterfaceRef _Nonnull, CFNumberRef _Nonnull)	SCPreferencesRef prefs | SCNetworkInterfaceRef physical | CFNumberRef tag	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9514d00fc75c41fc
+function	c:@F@SCVLANInterfaceRemove	-			Boolean (SCVLANInterfaceRef _Nonnull)	SCVLANInterfaceRef vlan	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	384f432085d57e92
+function	c:@F@SCVLANInterfaceGetPhysicalInterface	-			SCNetworkInterfaceRef  _Nullable (SCVLANInterfaceRef _Nonnull)	SCVLANInterfaceRef vlan	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0482d75f3f4f2e34
+function	c:@F@SCVLANInterfaceGetTag	-			CFNumberRef  _Nullable (SCVLANInterfaceRef _Nonnull)	SCVLANInterfaceRef vlan	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	580fb38e05fb9a58
+function	c:@F@SCVLANInterfaceGetOptions	-			CFDictionaryRef  _Nullable (SCVLANInterfaceRef _Nonnull)	SCVLANInterfaceRef vlan	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c3f55862649302e1
+function	c:@F@SCVLANInterfaceSetPhysicalInterfaceAndTag	-			Boolean (SCVLANInterfaceRef _Nonnull, SCNetworkInterfaceRef _Nonnull, CFNumberRef _Nonnull)	SCVLANInterfaceRef vlan | SCNetworkInterfaceRef physical | CFNumberRef tag	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	00a1fe5fccfff5df
+function	c:@F@SCVLANInterfaceSetLocalizedDisplayName	-			Boolean (SCVLANInterfaceRef _Nonnull, CFStringRef _Nonnull)	SCVLANInterfaceRef vlan | CFStringRef newName	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0dac07e57551582d
+function	c:@F@SCVLANInterfaceSetOptions	-			Boolean (SCVLANInterfaceRef _Nonnull, CFDictionaryRef _Nonnull)	SCVLANInterfaceRef vlan | CFDictionaryRef newOptions	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8342345daa51fa56
+function	c:@F@SCNetworkProtocolGetTypeID	-			CFTypeID (void)	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d1cbe002fdd34b38
+function	c:@F@SCNetworkProtocolGetConfiguration	-			CFDictionaryRef  _Nullable (SCNetworkProtocolRef _Nonnull)	SCNetworkProtocolRef protocol	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4fb17467acee060a
+function	c:@F@SCNetworkProtocolGetEnabled	-			Boolean (SCNetworkProtocolRef _Nonnull)	SCNetworkProtocolRef protocol	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	beadd00cdca66bc4
+function	c:@F@SCNetworkProtocolGetProtocolType	-			CFStringRef  _Nullable (SCNetworkProtocolRef _Nonnull)	SCNetworkProtocolRef protocol	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	24141ade0d3421b2
+function	c:@F@SCNetworkProtocolSetConfiguration	-			Boolean (SCNetworkProtocolRef _Nonnull, CFDictionaryRef _Nullable)	SCNetworkProtocolRef protocol | CFDictionaryRef config	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	17c1abda61512ae1
+function	c:@F@SCNetworkProtocolSetEnabled	-			Boolean (SCNetworkProtocolRef _Nonnull, Boolean)	SCNetworkProtocolRef protocol | Boolean enabled	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4c54e92986d6c8f5
+function	c:@F@SCNetworkServiceGetTypeID	-			CFTypeID (void)	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9ca97db03ee1f4c5
+function	c:@F@SCNetworkServiceAddProtocolType	-			Boolean (SCNetworkServiceRef _Nonnull, CFStringRef _Nonnull)	SCNetworkServiceRef service | CFStringRef protocolType	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0703ddc2b65293e6
+function	c:@F@SCNetworkServiceCopyAll	-			CFArrayRef  _Nullable (SCPreferencesRef _Nonnull)	SCPreferencesRef prefs	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	047036b3b18e4a9c
+function	c:@F@SCNetworkServiceCopyProtocols	-			CFArrayRef  _Nullable (SCNetworkServiceRef _Nonnull)	SCNetworkServiceRef service	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	64687320240ce3c7
+function	c:@F@SCNetworkServiceCreate	-			SCNetworkServiceRef  _Nullable (SCPreferencesRef _Nonnull, SCNetworkInterfaceRef _Nonnull)	SCPreferencesRef prefs | SCNetworkInterfaceRef interface	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	83648460ac0e0a1c
+function	c:@F@SCNetworkServiceCopy	-			SCNetworkServiceRef  _Nullable (SCPreferencesRef _Nonnull, CFStringRef _Nonnull)	SCPreferencesRef prefs | CFStringRef serviceID	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6eaac83ce03565f8
+function	c:@F@SCNetworkServiceEstablishDefaultConfiguration	-			Boolean (SCNetworkServiceRef _Nonnull)	SCNetworkServiceRef service	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c84be2c9b70de1d4
+function	c:@F@SCNetworkServiceGetEnabled	-			Boolean (SCNetworkServiceRef _Nonnull)	SCNetworkServiceRef service	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2bfa2e916a29e546
+function	c:@F@SCNetworkServiceGetInterface	-			SCNetworkInterfaceRef  _Nullable (SCNetworkServiceRef _Nonnull)	SCNetworkServiceRef service	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	22df27eed7abfe89
+function	c:@F@SCNetworkServiceGetName	-			CFStringRef  _Nullable (SCNetworkServiceRef _Nonnull)	SCNetworkServiceRef service	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	68e9ddfd74ea89f9
+function	c:@F@SCNetworkServiceCopyProtocol	-			SCNetworkProtocolRef  _Nullable (SCNetworkServiceRef _Nonnull, CFStringRef _Nonnull)	SCNetworkServiceRef service | CFStringRef protocolType	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8e8b3cbe944f3568
+function	c:@F@SCNetworkServiceGetServiceID	-			CFStringRef  _Nullable (SCNetworkServiceRef _Nonnull)	SCNetworkServiceRef service	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	44c54a1b4ffc7977
+function	c:@F@SCNetworkServiceRemove	-			Boolean (SCNetworkServiceRef _Nonnull)	SCNetworkServiceRef service	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e2f81ecb941c876c
+function	c:@F@SCNetworkServiceRemoveProtocolType	-			Boolean (SCNetworkServiceRef _Nonnull, CFStringRef _Nonnull)	SCNetworkServiceRef service | CFStringRef protocolType	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7c720a8d3f92011f
+function	c:@F@SCNetworkServiceSetEnabled	-			Boolean (SCNetworkServiceRef _Nonnull, Boolean)	SCNetworkServiceRef service | Boolean enabled	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7a25060b49467fa6
+function	c:@F@SCNetworkServiceSetName	-			Boolean (SCNetworkServiceRef _Nonnull, CFStringRef _Nullable)	SCNetworkServiceRef service | CFStringRef name	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0be06f9034ee7a9b
+function	c:@F@SCNetworkSetGetTypeID	-			CFTypeID (void)	-	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	411f34b8134e91a8
+function	c:@F@SCNetworkSetAddService	-			Boolean (SCNetworkSetRef _Nonnull, SCNetworkServiceRef _Nonnull)	SCNetworkSetRef set | SCNetworkServiceRef service	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f63a9749d251f363
+function	c:@F@SCNetworkSetContainsInterface	-			Boolean (SCNetworkSetRef _Nonnull, SCNetworkInterfaceRef _Nonnull)	SCNetworkSetRef set | SCNetworkInterfaceRef interface	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fd9f6d1ed2c15d70
+function	c:@F@SCNetworkSetCopyAll	-			CFArrayRef  _Nullable (SCPreferencesRef _Nonnull)	SCPreferencesRef prefs	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f8b2b9c39b8f8727
+function	c:@F@SCNetworkSetCopyCurrent	-			SCNetworkSetRef  _Nullable (SCPreferencesRef _Nonnull)	SCPreferencesRef prefs	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9ffbd6e9c6ec1301
+function	c:@F@SCNetworkSetCopyServices	-			CFArrayRef  _Nullable (SCNetworkSetRef _Nonnull)	SCNetworkSetRef set	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bef06695dad363e1
+function	c:@F@SCNetworkSetCreate	-			SCNetworkSetRef  _Nullable (SCPreferencesRef _Nonnull)	SCPreferencesRef prefs	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6f76fd6d8f0ec4c0
+function	c:@F@SCNetworkSetCopy	-			SCNetworkSetRef  _Nullable (SCPreferencesRef _Nonnull, CFStringRef _Nonnull)	SCPreferencesRef prefs | CFStringRef setID	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	881ff4d765df00da
+function	c:@F@SCNetworkSetGetName	-			CFStringRef  _Nullable (SCNetworkSetRef _Nonnull)	SCNetworkSetRef set	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6bffc271cf9b6e0d
+function	c:@F@SCNetworkSetGetSetID	-			CFStringRef  _Nullable (SCNetworkSetRef _Nonnull)	SCNetworkSetRef set	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	79ded9796ab6de63
+function	c:@F@SCNetworkSetGetServiceOrder	-			CFArrayRef  _Nullable (SCNetworkSetRef _Nonnull)	SCNetworkSetRef set	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fe2691ed248bff7d
+function	c:@F@SCNetworkSetRemove	-			Boolean (SCNetworkSetRef _Nonnull)	SCNetworkSetRef set	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d42ee91ac68442ea
+function	c:@F@SCNetworkSetRemoveService	-			Boolean (SCNetworkSetRef _Nonnull, SCNetworkServiceRef _Nonnull)	SCNetworkSetRef set | SCNetworkServiceRef service	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7adfc50e18e3b50d
+function	c:@F@SCNetworkSetSetCurrent	-			Boolean (SCNetworkSetRef _Nonnull)	SCNetworkSetRef set	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b7c2f4c2ec2fb6c8
+function	c:@F@SCNetworkSetSetName	-			Boolean (SCNetworkSetRef _Nonnull, CFStringRef _Nullable)	SCNetworkSetRef set | CFStringRef name	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3efad7b5f131a937
+function	c:@F@SCNetworkSetSetServiceOrder	-			Boolean (SCNetworkSetRef _Nonnull, CFArrayRef _Nonnull)	SCNetworkSetRef set | CFArrayRef newOrder	-	ios=-/-/-/1,macos=10.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5ab38787c20936ed
+enum	c:@Ea@kSCNetworkFlagsTransientConnection	-	-		unsigned int	-	-	-	-	e43df8553b9d5eb0
+enumconst	c:@Ea@kSCNetworkFlagsTransientConnection@kSCNetworkFlagsTransientConnection	-			-	-	-	-	-	752c02bb1a7d9ee0
+enumconst	c:@Ea@kSCNetworkFlagsTransientConnection@kSCNetworkFlagsReachable	-			-	-	-	-	-	7611523e9e5bfa79
+enumconst	c:@Ea@kSCNetworkFlagsTransientConnection@kSCNetworkFlagsConnectionRequired	-			-	-	-	-	-	b562e86e3026586a
+enumconst	c:@Ea@kSCNetworkFlagsTransientConnection@kSCNetworkFlagsConnectionAutomatic	-			-	-	-	-	-	2847e76a9a8af312
+enumconst	c:@Ea@kSCNetworkFlagsTransientConnection@kSCNetworkFlagsInterventionRequired	-			-	-	-	-	-	1df5231b8cd5baaa
+enumconst	c:@Ea@kSCNetworkFlagsTransientConnection@kSCNetworkFlagsIsLocalAddress	-			-	-	-	-	-	cb93fd164cb19ec8
+enumconst	c:@Ea@kSCNetworkFlagsTransientConnection@kSCNetworkFlagsIsDirect	-			-	-	-	-	-	306de9bcb1c0ab3c
+typedef	c:@T@SCNetworkConnectionFlags	-			uint32_t	-	-	-	-	d1335d13845c9982
+function	c:@F@SCNetworkCheckReachabilityByAddress	-			Boolean (const struct sockaddr * _Nonnull, socklen_t, SCNetworkConnectionFlags * _Nonnull)	const struct sockaddr * address | socklen_t addrlen | SCNetworkConnectionFlags * flags	-	ios=-/-/-/1,macos=10.1/10.6/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: No longer supported	349e165655724050
+function	c:@F@SCNetworkCheckReachabilityByName	-			Boolean (const char * _Nonnull, SCNetworkConnectionFlags * _Nonnull)	const char * nodename | SCNetworkConnectionFlags * flags	-	ios=-/-/-/1,macos=10.1/10.6/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: No longer supported	117062a70bfdd0a7
+function	c:@F@SCNetworkInterfaceRefreshConfiguration	-			Boolean (CFStringRef _Nonnull)	CFStringRef ifName	-	ios=-/-/-/1,macos=10.1/10.5/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: No longer supported	b53c27cd5e59c4c9
+struct	c:@S@__SCNetworkReachability	-			-	-	-	-	-	ca73fc98801cfc1d
+typedef	c:@T@SCNetworkReachabilityRef	-			const struct __SCNetworkReachability *	-	-	-	-	d7bb5cf8b44869af
+struct	c:@SA@SCNetworkReachabilityContext	-			-	-	-	-	-	2bb4ab485d01aaee
+field	c:@SA@SCNetworkReachabilityContext@FI@version	SCNetworkReachabilityContext			CFIndex	-	-	-	-	6b8bfc8ada5e3ba4
+field	c:@SA@SCNetworkReachabilityContext@FI@info	SCNetworkReachabilityContext			void *	-	-	-	-	67afe2f30d3568c7
+field	c:@SA@SCNetworkReachabilityContext@FI@retain	SCNetworkReachabilityContext			const void * _Nonnull (*)(const void * _Nonnull)	-	-	-	-	25978d4f5088417b
+field	c:@SA@SCNetworkReachabilityContext@FI@release	SCNetworkReachabilityContext			void (*)(const void * _Nonnull)	-	-	-	-	1bda6ae374dd4d32
+field	c:@SA@SCNetworkReachabilityContext@FI@copyDescription	SCNetworkReachabilityContext			CFStringRef  _Nonnull (*)(const void * _Nonnull)	-	-	-	-	6220ad4c89651aad
+typedef	c:@T@SCNetworkReachabilityContext	-			struct SCNetworkReachabilityContext	-	-	-	-	b12676c83d8e27b0
+typedef	c:@T@SCNetworkReachabilityFlags	-			enum SCNetworkReachabilityFlags	-	-	-	-	a79a465de93498f4
+enum	c:@E@SCNetworkReachabilityFlags	-			uint32_t	-	-	-	-	1488e14af17ef06d
+enumconst	c:@E@SCNetworkReachabilityFlags@kSCNetworkReachabilityFlagsTransientConnection	SCNetworkReachabilityFlags			-	-	-	-	-	c3a2fe312e0ea530
+enumconst	c:@E@SCNetworkReachabilityFlags@kSCNetworkReachabilityFlagsReachable	SCNetworkReachabilityFlags			-	-	-	-	-	989ce37b93b786f3
+enumconst	c:@E@SCNetworkReachabilityFlags@kSCNetworkReachabilityFlagsConnectionRequired	SCNetworkReachabilityFlags			-	-	-	-	-	00f46f4af41bd680
+enumconst	c:@E@SCNetworkReachabilityFlags@kSCNetworkReachabilityFlagsConnectionOnTraffic	SCNetworkReachabilityFlags			-	-	-	-	-	76e24cde9678f370
+enumconst	c:@E@SCNetworkReachabilityFlags@kSCNetworkReachabilityFlagsInterventionRequired	SCNetworkReachabilityFlags			-	-	-	-	-	25a0ea2484c4e469
+enumconst	c:@E@SCNetworkReachabilityFlags@kSCNetworkReachabilityFlagsConnectionOnDemand	SCNetworkReachabilityFlags			-	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0	-	1d61c9e7414d9555
+enumconst	c:@E@SCNetworkReachabilityFlags@kSCNetworkReachabilityFlagsIsLocalAddress	SCNetworkReachabilityFlags			-	-	-	-	-	0c103c45abe3dd20
+enumconst	c:@E@SCNetworkReachabilityFlags@kSCNetworkReachabilityFlagsIsDirect	SCNetworkReachabilityFlags			-	-	-	-	-	058afba181b35a40
+enumconst	c:@E@SCNetworkReachabilityFlags@kSCNetworkReachabilityFlagsIsWWAN	SCNetworkReachabilityFlags			-	-	-	ios=2.0/-/-/0,macos=-/-/-/1	-	d8dd213490383db2
+enumconst	c:@E@SCNetworkReachabilityFlags@kSCNetworkReachabilityFlagsConnectionAutomatic	SCNetworkReachabilityFlags			-	-	-	-	-	6bbac426df039eeb
+typedef	c:@T@SCNetworkReachabilityCallBack	-			void (*)(SCNetworkReachabilityRef _Nonnull, SCNetworkReachabilityFlags, void * _Nullable)	-	-	-	-	d103698cad12ebaa
+function	c:@F@SCNetworkReachabilityCreateWithAddress	-			SCNetworkReachabilityRef  _Nullable (CFAllocatorRef _Nullable, const struct sockaddr * _Nonnull)	CFAllocatorRef allocator | const struct sockaddr * address	-	ios=2.0/17.4/-/0,macos=10.3/14.4/-/0	deprecated: Use Use URLSession or NWConnection to create connections that dynamically handle changing networks. Use NWPathMonitor to enumerate available network interfaces. instead	baa0dbd759694a29
+function	c:@F@SCNetworkReachabilityCreateWithAddressPair	-			SCNetworkReachabilityRef  _Nullable (CFAllocatorRef _Nullable, const struct sockaddr * _Nullable, const struct sockaddr * _Nullable)	CFAllocatorRef allocator | const struct sockaddr * localAddress | const struct sockaddr * remoteAddress	-	ios=2.0/17.4/-/0,macos=10.3/14.4/-/0	deprecated: Use Use URLSession or NWConnection to create connections that dynamically handle changing networks. Use NWPathMonitor to enumerate available network interfaces. instead	45b3508db8b212d0
+function	c:@F@SCNetworkReachabilityCreateWithName	-			SCNetworkReachabilityRef  _Nullable (CFAllocatorRef _Nullable, const char * _Nonnull)	CFAllocatorRef allocator | const char * nodename	-	ios=2.0/17.4/-/0,macos=10.3/14.4/-/0	deprecated: Use Use URLSession or NWConnection to create connections that dynamically handle changing networks. Use NWPathMonitor to enumerate available network interfaces. instead	ef1e76efb5207e6d
+function	c:@F@SCNetworkReachabilityGetTypeID	-			CFTypeID (void)	-	-	ios=2.0/17.4/-/0,macos=10.3/14.4/-/0	deprecated: Use Use URLSession or NWConnection to create connections that dynamically handle changing networks. Use NWPathMonitor to enumerate available network interfaces. instead	ec604ff57325d16d
+function	c:@F@SCNetworkReachabilityGetFlags	-			Boolean (SCNetworkReachabilityRef _Nonnull, SCNetworkReachabilityFlags * _Nonnull)	SCNetworkReachabilityRef target | SCNetworkReachabilityFlags * flags	-	ios=2.0/17.4/-/0,macos=10.3/14.4/-/0	deprecated: Use Use URLSession or NWConnection to create connections that dynamically handle changing networks. Use NWPathMonitor to enumerate available network interfaces. instead	67370981e89e2471
+function	c:@F@SCNetworkReachabilitySetCallback	-			Boolean (SCNetworkReachabilityRef _Nonnull, SCNetworkReachabilityCallBack _Nullable, SCNetworkReachabilityContext * _Nullable)	SCNetworkReachabilityRef target | SCNetworkReachabilityCallBack callout | SCNetworkReachabilityContext * context	-	ios=2.0/17.4/-/0,macos=10.3/14.4/-/0	deprecated: Use Use URLSession or NWConnection to create connections that dynamically handle changing networks. Use NWPathMonitor to enumerate available network interfaces. instead	9e6c8f7717917ddf
+function	c:@F@SCNetworkReachabilityScheduleWithRunLoop	-			Boolean (SCNetworkReachabilityRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	SCNetworkReachabilityRef target | CFRunLoopRef runLoop | CFStringRef runLoopMode	-	ios=2.0/17.4/-/0,macos=10.3/14.4/-/0	deprecated: Use Use URLSession or NWConnection to create connections that dynamically handle changing networks. Use NWPathMonitor to enumerate available network interfaces. instead	34ceeb110dab2cfd
+function	c:@F@SCNetworkReachabilityUnscheduleFromRunLoop	-			Boolean (SCNetworkReachabilityRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	SCNetworkReachabilityRef target | CFRunLoopRef runLoop | CFStringRef runLoopMode	-	ios=2.0/17.4/-/0,macos=10.3/14.4/-/0	deprecated: Use Use URLSession or NWConnection to create connections that dynamically handle changing networks. Use NWPathMonitor to enumerate available network interfaces. instead	d0151901ae4f2d09
+function	c:@F@SCNetworkReachabilitySetDispatchQueue	-			Boolean (SCNetworkReachabilityRef _Nonnull, dispatch_queue_t _Nullable)	SCNetworkReachabilityRef target | dispatch_queue_t queue	-	ios=4.0/17.4/-/0,macos=10.6/14.4/-/0	deprecated: Use Use URLSession or NWConnection to create connections that dynamically handle changing networks. Use NWPathMonitor to enumerate available network interfaces. instead	255c34c7776d7f76
+struct	c:@S@__SCNetworkConnection	-			-	-	-	-	-	a74ac8336194bd13
+typedef	c:@T@SCNetworkConnectionRef	-			const struct __SCNetworkConnection *	-	-	-	-	c70030fad76ba873
+struct	c:@SA@SCNetworkConnectionContext	-			-	-	-	-	-	620e166b3aebc993
+field	c:@SA@SCNetworkConnectionContext@FI@version	SCNetworkConnectionContext			CFIndex	-	-	-	-	df1eb11eae99397a
+field	c:@SA@SCNetworkConnectionContext@FI@info	SCNetworkConnectionContext			void *	-	-	-	-	a6452e44a3cf49b8
+field	c:@SA@SCNetworkConnectionContext@FI@retain	SCNetworkConnectionContext			const void * _Nonnull (*)(const void * _Nonnull)	-	-	-	-	e82176fae924b4cd
+field	c:@SA@SCNetworkConnectionContext@FI@release	SCNetworkConnectionContext			void (*)(const void * _Nonnull)	-	-	-	-	a3ca945982621028
+field	c:@SA@SCNetworkConnectionContext@FI@copyDescription	SCNetworkConnectionContext			CFStringRef  _Nonnull (*)(const void * _Nonnull)	-	-	-	-	284e771650bd6b9a
+typedef	c:@T@SCNetworkConnectionContext	-			struct SCNetworkConnectionContext	-	-	-	-	ad7bad4370edfb36
+typedef	c:@T@SCNetworkConnectionStatus	-			enum SCNetworkConnectionStatus	-	-	-	-	a0ed8ae02026965c
+enum	c:@E@SCNetworkConnectionStatus	-			int32_t	-	-	-	-	90d98004fee21e94
+enumconst	c:@E@SCNetworkConnectionStatus@kSCNetworkConnectionInvalid	SCNetworkConnectionStatus			-	-	-	-	-	a237c01c2680e27e
+enumconst	c:@E@SCNetworkConnectionStatus@kSCNetworkConnectionDisconnected	SCNetworkConnectionStatus			-	-	-	-	-	818b6b9bf6c4e213
+enumconst	c:@E@SCNetworkConnectionStatus@kSCNetworkConnectionConnecting	SCNetworkConnectionStatus			-	-	-	-	-	d8778679a082ffff
+enumconst	c:@E@SCNetworkConnectionStatus@kSCNetworkConnectionConnected	SCNetworkConnectionStatus			-	-	-	-	-	fcf6c0db7d745798
+enumconst	c:@E@SCNetworkConnectionStatus@kSCNetworkConnectionDisconnecting	SCNetworkConnectionStatus			-	-	-	-	-	189f85b9882190ae
+typedef	c:@T@SCNetworkConnectionPPPStatus	-			enum SCNetworkConnectionPPPStatus	-	-	-	-	06a92514cbc428e3
+enum	c:@E@SCNetworkConnectionPPPStatus	-			int32_t	-	-	-	-	8b9a2c3b218d18b0
+enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPDisconnected	SCNetworkConnectionPPPStatus			-	-	-	-	-	d23e27e424732570
+enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPInitializing	SCNetworkConnectionPPPStatus			-	-	-	-	-	f8ee65cc55fcf5b9
+enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPConnectingLink	SCNetworkConnectionPPPStatus			-	-	-	-	-	62cc20ef6f9067e4
+enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPDialOnTraffic	SCNetworkConnectionPPPStatus			-	-	-	-	-	ba68117d1b541e1f
+enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPNegotiatingLink	SCNetworkConnectionPPPStatus			-	-	-	-	-	db439cf1b26a521a
+enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPAuthenticating	SCNetworkConnectionPPPStatus			-	-	-	-	-	7963a842d9dba8f0
+enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPWaitingForCallBack	SCNetworkConnectionPPPStatus			-	-	-	-	-	de7351dab3ac060b
+enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPNegotiatingNetwork	SCNetworkConnectionPPPStatus			-	-	-	-	-	aa5ef6e4ccaba375
+enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPConnected	SCNetworkConnectionPPPStatus			-	-	-	-	-	4210a20f25085259
+enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPTerminating	SCNetworkConnectionPPPStatus			-	-	-	-	-	1802a657ff4b43c4
+enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPDisconnectingLink	SCNetworkConnectionPPPStatus			-	-	-	-	-	31ab83ea862ac175
+enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPHoldingLinkOff	SCNetworkConnectionPPPStatus			-	-	-	-	-	cdd998f463b52717
+enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPSuspended	SCNetworkConnectionPPPStatus			-	-	-	-	-	88a2acab862e0ab0
+enumconst	c:@E@SCNetworkConnectionPPPStatus@kSCNetworkConnectionPPPWaitingForRedial	SCNetworkConnectionPPPStatus			-	-	-	-	-	91ea476a3f2d524f
+typedef	c:@T@SCNetworkConnectionCallBack	-			void (*)(SCNetworkConnectionRef _Nonnull, SCNetworkConnectionStatus, void * _Nullable)	-	-	-	-	43da694c2985eae9
+function	c:@F@SCNetworkConnectionGetTypeID	-			CFTypeID (void)	-	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d80ed1f92ed0f389
+function	c:@F@SCNetworkConnectionCopyUserPreferences	-			Boolean (CFDictionaryRef _Nullable, CFStringRef  _Nullable * _Nonnull, CFDictionaryRef  _Nullable * _Nonnull)	CFDictionaryRef selectionOptions | CFStringRef  _Nullable * serviceID | CFDictionaryRef  _Nullable * userOptions	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c7d7c08bbfe85475
+function	c:@F@SCNetworkConnectionCreateWithServiceID	-			SCNetworkConnectionRef  _Nullable (CFAllocatorRef _Nullable, CFStringRef _Nonnull, SCNetworkConnectionCallBack _Nullable, SCNetworkConnectionContext * _Nullable)	CFAllocatorRef allocator | CFStringRef serviceID | SCNetworkConnectionCallBack callout | SCNetworkConnectionContext * context	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3cd95c3953e84e2b
+function	c:@F@SCNetworkConnectionCopyServiceID	-			CFStringRef  _Nullable (SCNetworkConnectionRef _Nonnull)	SCNetworkConnectionRef connection	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	865be38c620f1c18
+function	c:@F@SCNetworkConnectionGetStatus	-			SCNetworkConnectionStatus (SCNetworkConnectionRef _Nonnull)	SCNetworkConnectionRef connection	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	207082327269da53
+function	c:@F@SCNetworkConnectionCopyExtendedStatus	-			CFDictionaryRef  _Nullable (SCNetworkConnectionRef _Nonnull)	SCNetworkConnectionRef connection	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c60771c85a893f55
+function	c:@F@SCNetworkConnectionCopyStatistics	-			CFDictionaryRef  _Nullable (SCNetworkConnectionRef _Nonnull)	SCNetworkConnectionRef connection	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3ded0227499c7689
+function	c:@F@SCNetworkConnectionStart	-			Boolean (SCNetworkConnectionRef _Nonnull, CFDictionaryRef _Nullable, Boolean)	SCNetworkConnectionRef connection | CFDictionaryRef userOptions | Boolean linger	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	615a820f95406616
+function	c:@F@SCNetworkConnectionStop	-			Boolean (SCNetworkConnectionRef _Nonnull, Boolean)	SCNetworkConnectionRef connection | Boolean forceDisconnect	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1dd575bb09ec240e
+function	c:@F@SCNetworkConnectionCopyUserOptions	-			CFDictionaryRef  _Nullable (SCNetworkConnectionRef _Nonnull)	SCNetworkConnectionRef connection	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	842053146b6a4cc3
+function	c:@F@SCNetworkConnectionScheduleWithRunLoop	-			Boolean (SCNetworkConnectionRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	SCNetworkConnectionRef connection | CFRunLoopRef runLoop | CFStringRef runLoopMode	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	97550584e999a6a6
+function	c:@F@SCNetworkConnectionUnscheduleFromRunLoop	-			Boolean (SCNetworkConnectionRef _Nonnull, CFRunLoopRef _Nonnull, CFStringRef _Nonnull)	SCNetworkConnectionRef connection | CFRunLoopRef runLoop | CFStringRef runLoopMode	-	ios=-/-/-/1,macos=10.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fa35eb8f2457310a
+function	c:@F@SCNetworkConnectionSetDispatchQueue	-			Boolean (SCNetworkConnectionRef _Nonnull, dispatch_queue_t _Nullable)	SCNetworkConnectionRef connection | dispatch_queue_t queue	-	ios=-/-/-/1,macos=10.6/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8df68bb0da1db399
+var	c:@kCFErrorDomainSystemConfiguration	-			const CFStringRef	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0	-	0625538e8bd1046a
+function	c:@F@SCCopyLastError	-			CFErrorRef  _Nonnull (void)	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0	-	71d74a67d191916c
+function	c:@F@SCError	-			int (void)	-	-	ios=2.0/-/-/0,macos=10.1/-/-/0	-	1ff24d3558ea25c7
+function	c:@F@SCErrorString	-			const char * _Nonnull (int)	int status	-	ios=2.0/-/-/0,macos=10.1/-/-/0	-	5ecfc96d7568e761

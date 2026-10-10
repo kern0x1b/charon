@@ -1,33 +1,33 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
-struct	c:@S@opaqueMTAudioProcessingTap	-			-	-	-	-	98e86c95c5687cba
-typedef	c:@T@MTAudioProcessingTapRef	-			const struct opaqueMTAudioProcessingTap *	-	-	-	1378bec5e1b9d491
-function	c:@F@MTAudioProcessingTapGetTypeID	-			CFTypeID (void)	-	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	3ab555f26c171273
-typedef	c:@T@MTAudioProcessingTapCreationFlags	-			uint32_t	-	-	-	19c8f99d6703125b
-enum	c:@Ea@kMTAudioProcessingTapCreationFlag_PreEffects	-	-		MTAudioProcessingTapCreationFlags	-	-	-	a59c42b4380ba8ff
-enumconst	c:@Ea@kMTAudioProcessingTapCreationFlag_PreEffects@kMTAudioProcessingTapCreationFlag_PreEffects	-			-	-	-	-	87cd7f6a206e0114
-enumconst	c:@Ea@kMTAudioProcessingTapCreationFlag_PreEffects@kMTAudioProcessingTapCreationFlag_PostEffects	-			-	-	-	-	8d02f208479299cf
-typedef	c:@T@MTAudioProcessingTapFlags	-			uint32_t	-	-	-	b42976cf09bd1f44
-enum	c:@Ea@kMTAudioProcessingTapFlag_StartOfStream	-	-		MTAudioProcessingTapFlags	-	-	-	54df205368d05c04
-enumconst	c:@Ea@kMTAudioProcessingTapFlag_StartOfStream@kMTAudioProcessingTapFlag_StartOfStream	-			-	-	-	-	e04f8b49c12fa1d2
-enumconst	c:@Ea@kMTAudioProcessingTapFlag_StartOfStream@kMTAudioProcessingTapFlag_EndOfStream	-			-	-	-	-	c65ae98ffc1e82fe
-typedef	c:@T@MTAudioProcessingTapInitCallback	-			void (*)(MTAudioProcessingTapRef _Nonnull, void * _Nullable, void * _Nullable * _Nonnull)	-	-	-	4e6f7062f91930d9
-typedef	c:@T@MTAudioProcessingTapFinalizeCallback	-			void (*)(MTAudioProcessingTapRef _Nonnull)	-	-	-	25ed2bd2259bc349
-typedef	c:@T@MTAudioProcessingTapPrepareCallback	-			void (*)(MTAudioProcessingTapRef _Nonnull, CMItemCount, const AudioStreamBasicDescription * _Nonnull)	-	-	-	a654cfe3793249fd
-typedef	c:@T@MTAudioProcessingTapUnprepareCallback	-			void (*)(MTAudioProcessingTapRef _Nonnull)	-	-	-	da589819c9e1b286
-typedef	c:@T@MTAudioProcessingTapProcessCallback	-			void (*)(MTAudioProcessingTapRef _Nonnull, CMItemCount, MTAudioProcessingTapFlags, AudioBufferList * _Nonnull, CMItemCount * _Nonnull, MTAudioProcessingTapFlags * _Nonnull)	-	-	-	9c436f9ccbb5dfdb
-enum	c:@Ea@kMTAudioProcessingTapCallbacksVersion_0	-	-		int	-	-	-	6a4b361dbbc0b1d9
-enumconst	c:@Ea@kMTAudioProcessingTapCallbacksVersion_0@kMTAudioProcessingTapCallbacksVersion_0	-			-	-	-	-	1c8172d65d68c930
-struct	c:@SA@MTAudioProcessingTapCallbacks	-			-	-	-	-	0587279e91bdb94c
-field	c:@SA@MTAudioProcessingTapCallbacks@FI@version	MTAudioProcessingTapCallbacks			int	-	-	-	361a16be10051f07
-field	c:@SA@MTAudioProcessingTapCallbacks@FI@clientInfo	MTAudioProcessingTapCallbacks			void *	-	-	-	b7eca17920da383a
-field	c:@SA@MTAudioProcessingTapCallbacks@FI@init	MTAudioProcessingTapCallbacks			MTAudioProcessingTapInitCallback	-	-	-	77538592defe4672
-field	c:@SA@MTAudioProcessingTapCallbacks@FI@finalize	MTAudioProcessingTapCallbacks			MTAudioProcessingTapFinalizeCallback	-	-	-	7608bb8cf94dd127
-field	c:@SA@MTAudioProcessingTapCallbacks@FI@prepare	MTAudioProcessingTapCallbacks			MTAudioProcessingTapPrepareCallback	-	-	-	9e1b97e2c0702429
-field	c:@SA@MTAudioProcessingTapCallbacks@FI@unprepare	MTAudioProcessingTapCallbacks			MTAudioProcessingTapUnprepareCallback	-	-	-	b64f41617dd24e0b
-field	c:@SA@MTAudioProcessingTapCallbacks@FI@process	MTAudioProcessingTapCallbacks			MTAudioProcessingTapProcessCallback	-	-	-	e08317cb83a86e4a
-typedef	c:@T@MTAudioProcessingTapCallbacks	-			struct MTAudioProcessingTapCallbacks	-	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	17a6db5b1e40d067
-function	c:@F@MTAudioProcessingTapCreate	-			OSStatus (CFAllocatorRef _Nullable, const MTAudioProcessingTapCallbacks * _Nonnull, MTAudioProcessingTapCreationFlags, MTAudioProcessingTapRef  _Nullable * _Nonnull)	-	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	77d91bb0b9a7cc8d
-function	c:@F@MTAudioProcessingTapGetStorage	-			void * _Nonnull (MTAudioProcessingTapRef _Nonnull)	-	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	49797c9fb28a0cea
-function	c:@F@MTAudioProcessingTapGetSourceAudio	-			OSStatus (MTAudioProcessingTapRef _Nonnull, CMItemCount, AudioBufferList * _Nonnull, MTAudioProcessingTapFlags * _Nullable, CMTimeRange * _Nullable, CMItemCount * _Nullable)	-	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	849ed2feaede3152
-function	c:@F@MTCopyLocalizedNameForMediaType	-			CFStringRef  _Nullable (CMMediaType)	-	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	257298766dac5579
-function	c:@F@MTCopyLocalizedNameForMediaSubType	-			CFStringRef  _Nullable (CMMediaType, FourCharCode)	-	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	0b36b97b0003c52b
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+struct	c:@S@opaqueMTAudioProcessingTap	-			-	-	-	-	-	98e86c95c5687cba
+typedef	c:@T@MTAudioProcessingTapRef	-			const struct opaqueMTAudioProcessingTap *	-	-	-	-	1378bec5e1b9d491
+function	c:@F@MTAudioProcessingTapGetTypeID	-			CFTypeID (void)	-	-	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	3ab555f26c171273
+typedef	c:@T@MTAudioProcessingTapCreationFlags	-			uint32_t	-	-	-	-	19c8f99d6703125b
+enum	c:@Ea@kMTAudioProcessingTapCreationFlag_PreEffects	-	-		MTAudioProcessingTapCreationFlags	-	-	-	-	a59c42b4380ba8ff
+enumconst	c:@Ea@kMTAudioProcessingTapCreationFlag_PreEffects@kMTAudioProcessingTapCreationFlag_PreEffects	-			-	-	-	-	-	87cd7f6a206e0114
+enumconst	c:@Ea@kMTAudioProcessingTapCreationFlag_PreEffects@kMTAudioProcessingTapCreationFlag_PostEffects	-			-	-	-	-	-	8d02f208479299cf
+typedef	c:@T@MTAudioProcessingTapFlags	-			uint32_t	-	-	-	-	b42976cf09bd1f44
+enum	c:@Ea@kMTAudioProcessingTapFlag_StartOfStream	-	-		MTAudioProcessingTapFlags	-	-	-	-	54df205368d05c04
+enumconst	c:@Ea@kMTAudioProcessingTapFlag_StartOfStream@kMTAudioProcessingTapFlag_StartOfStream	-			-	-	-	-	-	e04f8b49c12fa1d2
+enumconst	c:@Ea@kMTAudioProcessingTapFlag_StartOfStream@kMTAudioProcessingTapFlag_EndOfStream	-			-	-	-	-	-	c65ae98ffc1e82fe
+typedef	c:@T@MTAudioProcessingTapInitCallback	-			void (*)(MTAudioProcessingTapRef _Nonnull, void * _Nullable, void * _Nullable * _Nonnull)	-	-	-	-	4e6f7062f91930d9
+typedef	c:@T@MTAudioProcessingTapFinalizeCallback	-			void (*)(MTAudioProcessingTapRef _Nonnull)	-	-	-	-	25ed2bd2259bc349
+typedef	c:@T@MTAudioProcessingTapPrepareCallback	-			void (*)(MTAudioProcessingTapRef _Nonnull, CMItemCount, const AudioStreamBasicDescription * _Nonnull)	-	-	-	-	a654cfe3793249fd
+typedef	c:@T@MTAudioProcessingTapUnprepareCallback	-			void (*)(MTAudioProcessingTapRef _Nonnull)	-	-	-	-	da589819c9e1b286
+typedef	c:@T@MTAudioProcessingTapProcessCallback	-			void (*)(MTAudioProcessingTapRef _Nonnull, CMItemCount, MTAudioProcessingTapFlags, AudioBufferList * _Nonnull, CMItemCount * _Nonnull, MTAudioProcessingTapFlags * _Nonnull)	-	-	-	-	9c436f9ccbb5dfdb
+enum	c:@Ea@kMTAudioProcessingTapCallbacksVersion_0	-	-		int	-	-	-	-	6a4b361dbbc0b1d9
+enumconst	c:@Ea@kMTAudioProcessingTapCallbacksVersion_0@kMTAudioProcessingTapCallbacksVersion_0	-			-	-	-	-	-	1c8172d65d68c930
+struct	c:@SA@MTAudioProcessingTapCallbacks	-			-	-	-	-	-	0587279e91bdb94c
+field	c:@SA@MTAudioProcessingTapCallbacks@FI@version	MTAudioProcessingTapCallbacks			int	-	-	-	-	361a16be10051f07
+field	c:@SA@MTAudioProcessingTapCallbacks@FI@clientInfo	MTAudioProcessingTapCallbacks			void *	-	-	-	-	b7eca17920da383a
+field	c:@SA@MTAudioProcessingTapCallbacks@FI@init	MTAudioProcessingTapCallbacks			MTAudioProcessingTapInitCallback	-	-	-	-	77538592defe4672
+field	c:@SA@MTAudioProcessingTapCallbacks@FI@finalize	MTAudioProcessingTapCallbacks			MTAudioProcessingTapFinalizeCallback	-	-	-	-	7608bb8cf94dd127
+field	c:@SA@MTAudioProcessingTapCallbacks@FI@prepare	MTAudioProcessingTapCallbacks			MTAudioProcessingTapPrepareCallback	-	-	-	-	9e1b97e2c0702429
+field	c:@SA@MTAudioProcessingTapCallbacks@FI@unprepare	MTAudioProcessingTapCallbacks			MTAudioProcessingTapUnprepareCallback	-	-	-	-	b64f41617dd24e0b
+field	c:@SA@MTAudioProcessingTapCallbacks@FI@process	MTAudioProcessingTapCallbacks			MTAudioProcessingTapProcessCallback	-	-	-	-	e08317cb83a86e4a
+typedef	c:@T@MTAudioProcessingTapCallbacks	-			struct MTAudioProcessingTapCallbacks	-	-	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	17a6db5b1e40d067
+function	c:@F@MTAudioProcessingTapCreate	-			OSStatus (CFAllocatorRef _Nullable, const MTAudioProcessingTapCallbacks * _Nonnull, MTAudioProcessingTapCreationFlags, MTAudioProcessingTapRef  _Nullable * _Nonnull)	CFAllocatorRef allocator | const MTAudioProcessingTapCallbacks * callbacks | MTAudioProcessingTapCreationFlags flags | MTAudioProcessingTapRef  _Nullable * tapOut	-	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	77d91bb0b9a7cc8d
+function	c:@F@MTAudioProcessingTapGetStorage	-			void * _Nonnull (MTAudioProcessingTapRef _Nonnull)	MTAudioProcessingTapRef tap	-	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	49797c9fb28a0cea
+function	c:@F@MTAudioProcessingTapGetSourceAudio	-			OSStatus (MTAudioProcessingTapRef _Nonnull, CMItemCount, AudioBufferList * _Nonnull, MTAudioProcessingTapFlags * _Nullable, CMTimeRange * _Nullable, CMItemCount * _Nullable)	MTAudioProcessingTapRef tap | CMItemCount numberFrames | AudioBufferList * bufferListInOut | MTAudioProcessingTapFlags * flagsOut | CMTimeRange * timeRangeOut | CMItemCount * numberFramesOut	-	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	849ed2feaede3152
+function	c:@F@MTCopyLocalizedNameForMediaType	-			CFStringRef  _Nullable (CMMediaType)	CMMediaType mediaType	-	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	257298766dac5579
+function	c:@F@MTCopyLocalizedNameForMediaSubType	-			CFStringRef  _Nullable (CMMediaType, FourCharCode)	CMMediaType mediaType | FourCharCode mediaSubType	-	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	0b36b97b0003c52b

@@ -17,7 +17,7 @@ end
 -- 1. the driver reproduces the golden exactly (check mode: nothing is written)
 -- the full IR (the build product, with decl) is written to the build directory: the declaration text is checked there
 local FULL = path.join("build", "found", "test-ir.tsv")
-os.runv("xmake", {"l", "./tools/found/ir.lua"}, {envs = {IR_SDK = path.join(ROOT, "fixture", "sdk"), IR_MODE = "check",
+os.runv("xmake", {"l", "./tools/found/ir.lua"}, {envs = {IR_SDK = path.join(ROOT, "fixture", "sdk"), IR_USR_MODULES = "FixtureC", IR_MODE = "check",
     IR_SPEC = SPEC, IR_CONFLICTS = path.join(ROOT, "conflicts.tsv"), IR_UNPARSED = path.join(ROOT, "unparsed.tsv"),
     IR_FULL = FULL}})
 checks = checks + 1
@@ -50,10 +50,10 @@ for _, file in ipairs({path.join(SPEC, "Fixture", "declarations.tsv"), path.join
         if not line:find("^#") then
             local c = {}
             for cell in (line .. "\t"):gmatch("([^\t]*)\t") do table.insert(c, cell) end
-            expect(#c == 10, "every shard row has 10 columns: " .. line)
+            expect(#c == 11, "every shard row has 11 columns: " .. line)
             local name, side = shard.decode(c[1], c[2], c[4], c[5])
             table.insert(rows, {framework = framework, kind = c[1], usr = c[2], container = c[3], name = name, side = side,
-                type = c[6], attrs = c[7], avail = c[8], message = c[9], hash = c[10]})
+                type = c[6], params = c[7], attrs = c[8], avail = c[9], message = c[10], hash = c[11]})
         end
     end
 end
@@ -80,8 +80,22 @@ expect(find(function (r) return r.usr == "c:Fixture.h@T@FXOpaque" end)[1].type =
     "an opaque typedef keeps the struct it names")
 local widget_named = find(function (r) return r.usr == "c:objc(cs)FXWidget(cm)widgetNamed:" end)[1]
 expect(widget_named.type == "instancetype", "a method keeps its return type")
--- the columns no committed stage reads stay in the full IR: the parameters, the nullability and the value
-expect(full_of("c:@F@FXRun")[12] == "int total", "a function keeps its parameter types and names (full IR)")
+expect(find(function (r) return r.usr == "c:@F@FXRun" end)[1].params == "int total", "a function keeps its parameter types and names")
+-- the type of a declared variable (ruling of 2026-10-10, the const fix): the top-level const of the declared type is in it, a pointer's
+-- const follows the star, and an attribute macro in front of the type is not part of it
+local function type_of_var(usr)
+    return find(function (r) return r.usr == usr end)[1].type
+end
+expect(type_of_var("c:@FXConstName") == "const FXStringRef", "a const variable of a typedef keeps its const")
+expect(type_of_var("c:@FXConstPointer") == "const char *const", "a const pointer to const keeps both")
+expect(type_of_var("c:@FXPointerConst") == "char *const", "a const pointer keeps its const after the star")
+expect(type_of_var("c:@FXPointerToConst") == "const char *", "a pointer to const keeps its const before the star")
+expect(type_of_var("c:@FXConstInt") == "const int", "a const integer keeps its const")
+expect(type_of_var("c:@FXMacroConst") == "const FXStringRef", "an attribute macro in front of a variable's type is not part of the type")
+expect(type_of_var("c:@FXMacroPointer") == "char *const", "an attribute macro does not hide a pointer's const")
+expect(type_of_var("c:@FXRefinedName") == "const FXStringRef", "a Swift attribute macro in front of the type is not part of it")
+expect(full_of("c:@FXConstName")[10] == "n", "a nullability word stays in the nullability column, not the type")
+-- the columns no committed stage reads stay in the full IR: the nullability and the value
 expect(full_of("c:objc(cs)FXWidget(cm)widgetNamed:")[10] == "-|l",
     "a method's nullability is the result, then the parameters (full IR)")
 expect(full_of("c:@E@FXState@FXStateOn")[14] == "1", "an enum constant keeps its value (full IR)")
@@ -259,7 +273,7 @@ expect(dep == nil and unav == "removed in 2.0", "an unavailability text alone")
 
 -- the doc-time mode (ir.lua's docs mode, which runs decls --doc over the fixture): one line per declaration of ten escaped cells, the
 -- doc comment's brief and raw text, the parameter names and the declaration as written; nothing is written
-local docs = os.iorunv("xmake", {"l", "./tools/found/ir.lua"}, {envs = {IR_SDK = path.join(ROOT, "fixture", "sdk"), IR_MODE = "docs"}})
+local docs = os.iorunv("xmake", {"l", "./tools/found/ir.lua"}, {envs = {IR_SDK = path.join(ROOT, "fixture", "sdk"), IR_USR_MODULES = "FixtureC", IR_MODE = "docs"}})
 local doc_lines = {}
 for line in docs:gmatch("[^\n]+") do
     if line:find("\t", 1, true) then table.insert(doc_lines, line) end
@@ -287,5 +301,52 @@ expect(run_doc ~= nil and run_doc[7] == "total" and run_doc[10] == "void FXRun(i
 local widget_doc = doc_of("c:objc(cs)FXWidget(cm)widgetNamed:")
 expect(widget_doc ~= nil and widget_doc[7] == "name" and widget_doc[8] == "", "a method with no doc comment has an empty brief")
 expect(doc_of("c:Repeat.h@T@FXCount") ~= nil and doc_of("c:Repeat.h@T@FXCount")[9] == "", "a declaration with no comment has an empty raw text")
+-- the doc comment forms are /// and /** */ only (ruling of 2026-10-10): FXCount's //! comment is not kept, FXDouble's /// is
+local double_doc = doc_of("c:@F@FXDouble")
+expect(double_doc ~= nil and double_doc[8] == "Doubles a value." and double_doc[9] == "/// Doubles a value.",
+    "a /// doc comment is kept, with its brief")
+expect(doc_of("c:Repeat.h@T@FXCount")[8] == "", "a //! comment is not a doc comment: no brief")
+
+-- the usr/include module (ruling of 2026-10-10): its shard holds the declarations written in its own directory; the module map's
+-- other module (FixtureCExtra) and a header of another directory (FixtureOther) are not the module's own
+local usr_shard = {}
+for line in io.lines(path.join(SPEC, "FixtureC", "declarations.tsv")) do
+    if not line:find("^#") then table.insert(usr_shard, line) end
+end
+local function shard_has(name)
+    for _, line in ipairs(usr_shard) do
+        if doc_cells(line)[2] == name then return true end
+    end
+    return false
+end
+expect(shard_has("c:@F@fc_add") and shard_has("c:@T@fc_count"), "a usr/include module's shard holds the declarations of its own directory")
+expect(not shard_has("c:@F@fc_other") and not shard_has("c:@F@fc_extra"),
+    "a declaration of another directory, or of another module in the same map, is not in the module's shard")
+local usr_doc = false
+for _, line in ipairs(doc_lines) do
+    if line:find("^FixtureC\t") then usr_doc = true end
+end
+expect(usr_doc, "the doc mode covers the usr/include module")
+
+-- the extractor takes a framework name and resolves its headers itself (decls --doc <Framework>): the list, the target and the doc rows of
+-- one framework are the ones the sweep and the doc pass use
+local DECLS = path.join("build", "macosx", "arm64", "release", "decls")
+local fixture_env = {IR_SDK = path.join(ROOT, "fixture", "sdk"), IR_USR_MODULES = "FixtureC"}
+local names = {}
+for line in os.iorunv(DECLS, {"--list"}, {envs = fixture_env}):gmatch("[^\n]+") do
+    table.insert(names, line:match("^([^\t]+)"))
+end
+expect(table.concat(names, " ") == "Broken Fixture Fixture/Inner FixtureC NoHeader Swiftonly", "decls --list names the sweep's frameworks")
+expect(os.iorunv(DECLS, {"--target"}) == "arm64-apple-ios26.2\n", "decls --target is the pinned target")
+local function rows_of(text, name)
+    local out = {}
+    for line in text:gmatch("[^\n]+") do
+        if line:sub(1, #name + 1) == name .. "\t" then table.insert(out, line) end
+    end
+    return table.concat(out, "\n")
+end
+local direct = os.iorunv(DECLS, {"--doc", "Fixture"}, {envs = fixture_env})
+expect(direct ~= "" and rows_of(direct, "Fixture") == rows_of(docs, "Fixture"),
+    "decls --doc Fixture gives the rows the doc pass gives for Fixture")
 
 print(string.format("extractor tests passed: %d checks", checks))

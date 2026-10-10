@@ -83,3 +83,4 @@ _SwiftData_SwiftUI	no Objective-C or C header; Swift interface only
 _Translation_SwiftUI	no Objective-C or C header; Swift interface only
 _WebKit_SwiftUI	no Objective-C or C header; Swift interface only
 _WorkoutKit_SwiftUI	no Objective-C or C header; Swift interface only
+os	<sdk>/usr/include/_modules/_os_lock.h:28: "Do not include this header directly, include <os/lock.h> instead"
