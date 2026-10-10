@@ -13,6 +13,11 @@ local CHUNK = 1 << 20
 local CHILD_POLL = 100
 -- The milliseconds of the check on each empty read. A wait of 0 blocks until the child exits (measured), so the check waits 1.
 local CHILD_CHECK = 1
+-- After the exit: at most DRAIN_READS empty reads of DRAIN_WAIT milliseconds (a bound of 2 s) before the sentinel is declared missing;
+-- and WAIT_ERRORS wait errors in a row are an error. Measured: output reported after an exit came within 2 s.
+local DRAIN_READS = 200
+local DRAIN_WAIT = 10
+local WAIT_ERRORS = 100
 
 -- Calls each(line) for every line the program prints, in order, and returns the program's exit status. A partial last
 -- line is passed on as it is; the program's stderr goes to ours.
@@ -27,12 +32,14 @@ function lines(program, args, each)
     wpipe:close()
     local buff = bytes(CHUNK)
     local carry, status = "", nil
-    -- Set when the child has exited: whatever it wrote is still in the pipe, so one more read follows, and an empty read after
-    -- that means the sentinel never came.
-    local exited = false
+    -- Once the child has exited, what it wrote is in the pipe; the reads that follow are bounded (DRAIN_READS of DRAIN_WAIT
+    -- milliseconds each), and an empty read after the bound means the sentinel never came. A wait result of -1 is an error of the
+    -- wait, not an exit: it is retried up to WAIT_ERRORS times.
+    local exited, drained, wait_errors = false, 0, 0
     while not status do
         local n = rpipe:read(buff, CHUNK)
         if n > 0 then
+            drained = 0
             local text = carry .. buff:str(1, n)
             local pos = 1
             while not status do
@@ -50,10 +57,21 @@ function lines(program, args, each)
             end
             carry = string.sub(text, pos)
         elseif n == 0 then
-            assert(not exited, "the program ended without its sentinel: " .. program)
-            exited = child:wait(CHILD_CHECK) ~= 0
-            if not exited then
-                rpipe:wait(pipe.EV_READ, 100)
+            if exited then
+                drained = drained + 1
+                assert(drained <= DRAIN_READS, "the program ended without its sentinel: " .. program)
+                rpipe:wait(pipe.EV_READ, DRAIN_WAIT)
+            else
+                local result = child:wait(CHILD_CHECK)
+                if result == 1 then
+                    exited = true
+                elseif result == -1 then
+                    wait_errors = wait_errors + 1
+                    assert(wait_errors <= WAIT_ERRORS, "cannot observe the exit of " .. program)
+                    rpipe:wait(pipe.EV_READ, DRAIN_WAIT)
+                else
+                    rpipe:wait(pipe.EV_READ, 100)
+                end
             end
         else
             error("pipe read failed: " .. program)
