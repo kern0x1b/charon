@@ -3,8 +3,17 @@
 # every answer macOS gave the oracle (oracle/batch-up.txt and oracle/batch-down.txt, from oracle/batch.m) and the probes in
 # differential.m. The API files are compiled too, with their functions renamed, so a file that stops compiling
 # stops this run instead of hiding in the library.
+#
+# The host-probe rule (prefs-bracket.sh states it): the differential makes process-lifetime virtual endpoints and connects
+# ports to them, and nothing that persists. The whole run is bracketed by a read-only digest of the persistent MIDI
+# preferences (the ByHost com.apple.MIDI plist and ~/Library/Audio/MIDI Configurations); the run fails when the digest differs,
+# and the check proves first that it can fail (selftest).
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+if [ -z "${COREMIDI_BRACKETED:-}" ]; then
+    sh "$here/prefs-bracket.sh" selftest
+    COREMIDI_BRACKETED=1 exec sh "$here/prefs-bracket.sh" run sh "$here/run.sh" "$@"
+fi
 CORE=${COREMIDI:-$here/../../../../packages/a/apple-backports/CoreMIDI}
 # The build folder is a run folder of this checkout (.agent-work/runs), never the system temp directory.
 build=${COREMIDI_BUILD:-$here/../../../../.agent-work/runs/coremidi-host}
