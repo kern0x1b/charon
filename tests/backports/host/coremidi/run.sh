@@ -120,7 +120,19 @@ xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" "$
     "$build/CharonCoreMIDI.o" -framework Foundation -framework CoreMIDI -o "$build/delivery"
 "$build/delivery" > "$build/delivery.log" 2>&1 && delivered=0 || delivered=$?
 cat "$build/delivery.log"
-for step in "$owner" "$entity" "$stale" "$bounded" "$counted_result" "$delivered"; do
+# The route of a reused reference (reuse.m, review r4 F4): the release gives a reference an old destination held to a new one, and
+# the new destination's first RPN must select its parameter again. CharonMIDIPorts.m is compiled with the release's send, property
+# calls and destination creation renamed to stand-ins (reuse.m); the file's other calls are the release's own.
+reuse_standins="-DMIDIDestinationCreate=charon_test_MIDIDestinationCreate \
+    -DMIDIObjectGetIntegerProperty=charon_test_MIDIObjectGetIntegerProperty -DMIDIObjectSetIntegerProperty=charon_test_MIDIObjectSetIntegerProperty \
+    -DMIDISend=charon_test_MIDISend"
+xcrun clang $sanitize -c -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" $reuse_standins "$CORE/CharonMIDIPorts.m" \
+    -o "$build/reuse-ports.o"
+xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" "$here/reuse.m" "$build/reuse-ports.o" \
+    "$build/CharonCoreMIDI.o" -framework Foundation -framework CoreMIDI -o "$build/reuse"
+"$build/reuse" > "$build/reuse.log" 2>&1 && reused=0 || reused=$?
+cat "$build/reuse.log"
+for step in "$owner" "$entity" "$stale" "$bounded" "$counted_result" "$delivered" "$reused"; do
     if [ "$result" -eq 0 ]; then result=$step; fi
 done
 exit $result
