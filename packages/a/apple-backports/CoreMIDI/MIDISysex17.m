@@ -77,6 +77,9 @@ static OSStatus charon_send_ump(MIDISysexSendRequestUMP *umpRequest)
     if (!umpRequest)
         return charon_paramErr;
     UInt32 count = umpRequest->wordsToSend;
+    // The request is used up before anything is queued: once MIDISendSysex has the bytes, the release may complete the
+    // send on its own thread, or before the call returns, and the completion may free the request.
+    umpRequest->wordsToSend = 0;
     int queued = 0;
     if (count > 0 && umpRequest->words && !CharonMIDIDeliverInProcess(umpRequest->destination, umpRequest->words, count)) {
         CharonMIDIRPN rpn[16];
@@ -105,7 +108,7 @@ static OSStatus charon_send_ump(MIDISysexSendRequestUMP *umpRequest)
         }
         free(bytes.bytes);
     }
-    umpRequest->wordsToSend = 0;
+    // Only a request this call still owns is touched here: a queued one belongs to its completion.
     if (!queued) {
         umpRequest->complete = YES;
         if (umpRequest->completionProc)

@@ -40,4 +40,12 @@ xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -DCHARON_HOS
 "$build/differential" > "$build/log" 2>&1 && result=0 || result=$?
 grep -v '^ok ' "$build/log" || true
 echo "log=$build/log"
+# The request of MIDISendUMPSysex, against a release that completes the send before it returns (ownership.m): the
+# MIDISendSysex of MIDISysex17.m is renamed to the stand-in, and nothing is linked from the release for it.
+xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -DCHARON_HOST_HAS_UMP_SYSEX=1 \
+    -DMIDISendSysex=charon_test_MIDISendSysex -I"$CORE" -I"$here" "$here/ownership.m" "$CORE/MIDISysex17.m" \
+    "$build/CharonCoreMIDI.o" "$build/CharonMIDIPorts.m.o" -framework Foundation -framework CoreMIDI -o "$build/ownership"
+"$build/ownership" > "$build/ownership.log" 2>&1 && owner=0 || owner=$?
+cat "$build/ownership.log"
+if [ "$result" -eq 0 ]; then result=$owner; fi
 exit $result
