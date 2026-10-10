@@ -1,0 +1,7 @@
+Package: org.charon.matter-app
+Name: Charon Matter cluster application
+Architecture: iphoneos-arm
+Description: The Matter cluster port as an application, launched through SpringBoard
+Maintainer: charon
+Author: charon
+Section: Development
