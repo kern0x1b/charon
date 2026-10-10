@@ -33,27 +33,27 @@ for name in MIDIEventListInit MIDIEventListAdd MIDIClientCreateWithBlock MIDIInp
 done
 for path in "$CORE"/*.m; do
     source=$(basename "$path")
-    xcrun clang $sanitize -fobjc-arc -fvisibility=hidden -w -I"$CORE" -DCHARON_HOST_HAS_UMP_SYSEX=1 $renames -c "$path" -o "$build/$source.o"
+    xcrun clang $sanitize -fobjc-arc -fvisibility=hidden -Wall -Werror -I"$CORE" $renames -c "$path" -o "$build/$source.o"
 done
-xcrun clang $sanitize -c -w -I"$CORE" -DCHARON_HOST_HAS_UMP_SYSEX=1 "$CORE/CharonCoreMIDI.c" -o "$build/CharonCoreMIDI.o"
+xcrun clang $sanitize -c -Wall -Werror -I"$CORE" "$CORE/CharonCoreMIDI.c" -o "$build/CharonCoreMIDI.o"
 # differential-ports.m is compiled without the renames: it calls the release's own MIDISendEventList and friends as the oracle.
-xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -DCHARON_HOST_HAS_UMP_SYSEX=1 -I"$CORE" -c \
+xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" -c \
     "$here/differential-ports.m" -o "$build/differential-ports.o"
-xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -DCHARON_HOST_HAS_UMP_SYSEX=1 -I"$CORE" -I"$here" $renames \
+xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" -I"$here" $renames \
     "$here/differential.m" "$here/differential-ump.m" "$build/differential-ports.o" "$build/CharonCoreMIDI.o" "$build"/*.m.o -framework Foundation -framework CoreMIDI -framework CoreBluetooth -o "$build/differential"
 "$build/differential" > "$build/log" 2>&1 && result=0 || result=$?
 awk '!/^ok /' "$build/log"
 echo "log=$build/log"
 # The request of MIDISendUMPSysex, against a release that completes the send before it returns (ownership.m): the
 # MIDISendSysex of MIDISysex17.m is renamed to the stand-in, and nothing is linked from the release for it.
-xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -DCHARON_HOST_HAS_UMP_SYSEX=1 \
+xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations \
     -DMIDISendSysex=charon_test_MIDISendSysex -I"$CORE" -I"$here" "$here/ownership.m" "$CORE/MIDISysex17.m" \
     "$build/CharonCoreMIDI.o" "$build/CharonMIDIPorts.m.o" -framework Foundation -framework CoreMIDI -o "$build/ownership"
 "$build/ownership" > "$build/ownership.log" 2>&1 && owner=0 || owner=$?
 cat "$build/ownership.log"
 # MIDIDeviceNewEntity against stand-ins for the three release calls it makes (entity.m): the host forbids a real entity, and the
 # release cannot be made to refuse the protocol. MIDIDevice14.m is compiled again here with those calls renamed.
-xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -DCHARON_HOST_HAS_UMP_SYSEX=1 \
+xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations \
     -DMIDIDeviceNewEntity=charon_test_MIDIDeviceNewEntity -DMIDIDeviceAddEntity=charon_test_MIDIDeviceAddEntity \
     -DMIDIObjectSetIntegerProperty=charon_test_MIDIObjectSetIntegerProperty -DMIDIDeviceRemoveEntity=charon_test_MIDIDeviceRemoveEntity \
     -I"$CORE" -I"$here" "$here/entity.m" "$CORE/MIDIDevice14.m" -framework Foundation -framework CoreMIDI -o "$build/entity"

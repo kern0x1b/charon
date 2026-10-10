@@ -9,7 +9,9 @@
 #ifndef CharonCoreMIDI_h
 #define CharonCoreMIDI_h
 
+#include <Availability.h>
 #include <CoreMIDI/MIDIServices.h>
+#include <TargetConditionals.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -165,9 +167,10 @@ Boolean CharonMIDIDeliverInProcess(MIDIEndpointRef endpoint, const UInt32 *words
 // the block is released when the object is gone.
 void CharonMIDIOwnBlock(MIDIObjectRef object, void *retainedBlock);
 
-// The request of MIDISendUMPSysex and MIDISendUMPSysex8, as the 26.2 SDK declares it (MIDIServices.h). The host's SDK declares
-// it already, and run.sh sets CHARON_HOST_HAS_UMP_SYSEX so this file does not repeat it there.
-#ifndef CHARON_HOST_HAS_UMP_SYSEX
+// The request of MIDISendUMPSysex and MIDISendUMPSysex8, as the 26.2 SDK declares it (MIDIServices.h). An SDK declares it from
+// iOS 17 and macOS 14, and the port's package builds against an older one (16.4): the version the SDK gives itself decides, not
+// a flag a build has to remember, so the same header compiles against both and against the host's SDK.
+#if (TARGET_OS_IPHONE && __IPHONE_OS_VERSION_MAX_ALLOWED < 170000) || (!TARGET_OS_IPHONE && __MAC_OS_X_VERSION_MAX_ALLOWED < 140000)
 typedef struct MIDISysexSendRequestUMP MIDISysexSendRequestUMP;
 typedef void (*MIDICompletionProcUMP)(MIDISysexSendRequestUMP *request);
 struct MIDISysexSendRequestUMP {
