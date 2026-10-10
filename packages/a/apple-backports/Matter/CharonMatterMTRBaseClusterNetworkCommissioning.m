@@ -20,7 +20,7 @@
 //  and read and written under the object's lock, so two threads on one object are not a race.
 //  Every command answers through its completion. Nothing here reaches a fabric: the 16 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
-//  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
+//  read from. A cached read completes with no value and the error of charon_port_no_node_error();
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
 //  queue, never calls its established handler, and leaves the stored value alone.
 //
@@ -43,25 +43,21 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    @package
     NSMutableDictionary *_charon_values;
 }
 @end
 
-@implementation MTRBaseClusterNetworkCommissioning
-
 // The values the caller has written, by attribute name: this object's own table, made on
-// first use - an object built through a superclass's initializer never ran this class's -
-// and handed out under the object's lock, which every read and write below holds for the
-// whole of its access. It is not keyed by the class: two objects of one class are two
-// tables, as they are two sets of state in the framework.
-- (NSMutableDictionary *)charon_port_values
+// first use. The caller holds the object's lock for the whole of its access, so this takes
+// none. It is not keyed by the class: two objects of one class are two tables, as they are
+// two sets of state in the framework.
+static NSMutableDictionary *charon_port_values(MTRBaseClusterNetworkCommissioning *object)
 {
-    @synchronized (self) {
-        if (!_charon_values) {
-            _charon_values = [NSMutableDictionary dictionary];
-        }
-        return _charon_values;
+    if (!object->_charon_values) {
+        object->_charon_values = [NSMutableDictionary dictionary];
     }
+    return object->_charon_values;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -71,11 +67,19 @@
 // tests/backports/host/matterdifferential/behaviour.m: MTRErrorDomain, MTRErrorCodeInvalidState,
 // "Invalid object state.". The domain is written as the string the constant holds: the
 // constant is defined by the framework's own build (packages/m/matter), not by this library.
-+ (NSError *)charon_port_no_node_error
+// Built once: every caller gets the same object, and it is made on first use.
+static NSError *charon_port_no_node_error(void)
 {
-    return [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
-                           userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
+    static NSError *error;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        error = [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
+                                userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
+    });
+    return error;
 }
+
+@implementation MTRBaseClusterNetworkCommissioning
 
 // - (instancetype)initWithDevice:(MTRBaseDevice *)device
 // endpointID:(NSNumber *)endpointID
@@ -90,6 +94,19 @@
     return self;
 }
 
+// - (nullable instancetype)initWithDevice:(MTRBaseDevice *)device
+// endpoint:(uint16_t)endpoint
+// queue:(dispatch_queue_t)queue
+- (nullable instancetype)initWithDevice:(MTRBaseDevice *)device
+                               endpoint:(uint16_t)endpoint
+                                  queue:(dispatch_queue_t)queue
+{
+    _charon_device = device;
+    _charon_endpoint = @(endpoint);
+    _charon_queue = queue;
+    return self;
+}
+
 // MaxNetworks, a NSNumber.
 - (void)readAttributeMaxNetworksWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completion
 {
@@ -98,7 +115,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"MaxNetworks"];
+        written = charon_port_values(self)[@"MaxNetworks"];
     }
     completion(written, nil);
 }
@@ -112,7 +129,24 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+- (void)subscribeAttributeMaxNetworksWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                              params:(MTRSubscribeParams * _Nullable)params
+                             subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                       reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -125,7 +159,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"Networks"];
+        written = charon_port_values(self)[@"Networks"];
     }
     completion(written, nil);
 }
@@ -139,7 +173,24 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+- (void)subscribeAttributeNetworksWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                           params:(MTRSubscribeParams * _Nullable)params
+                          subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                    reportHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -152,7 +203,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"ScanMaxTimeSeconds"];
+        written = charon_port_values(self)[@"ScanMaxTimeSeconds"];
     }
     completion(written, nil);
 }
@@ -166,7 +217,24 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+- (void)subscribeAttributeScanMaxTimeSecondsWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                                     params:(MTRSubscribeParams * _Nullable)params
+                                    subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                              reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -179,7 +247,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"ConnectMaxTimeSeconds"];
+        written = charon_port_values(self)[@"ConnectMaxTimeSeconds"];
     }
     completion(written, nil);
 }
@@ -193,7 +261,24 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+- (void)subscribeAttributeConnectMaxTimeSecondsWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                                        params:(MTRSubscribeParams * _Nullable)params
+                                       subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                                 reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -206,7 +291,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"InterfaceEnabled"];
+        written = charon_port_values(self)[@"InterfaceEnabled"];
     }
     completion(written, nil);
 }
@@ -214,7 +299,7 @@
 - (void)writeAttributeInterfaceEnabledWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"InterfaceEnabled"] = value;
+        charon_port_values(self)[@"InterfaceEnabled"] = value;
     }
     if (completion) {
         completion(nil);
@@ -224,10 +309,30 @@
 - (void)writeAttributeInterfaceEnabledWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"InterfaceEnabled"] = value;
+        charon_port_values(self)[@"InterfaceEnabled"] = value;
     }
     if (completion) {
         completion(nil);
+    }
+}
+
+- (void)writeAttributeInterfaceEnabledWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
+{
+    @synchronized (self) {
+        charon_port_values(self)[@"InterfaceEnabled"] = value;
+    }
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
+- (void)writeAttributeInterfaceEnabledWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
+{
+    @synchronized (self) {
+        charon_port_values(self)[@"InterfaceEnabled"] = value;
+    }
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 
@@ -240,7 +345,24 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+- (void)subscribeAttributeInterfaceEnabledWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                                   params:(MTRSubscribeParams * _Nullable)params
+                                  subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                            reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -253,7 +375,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"LastNetworkingStatus"];
+        written = charon_port_values(self)[@"LastNetworkingStatus"];
     }
     completion(written, nil);
 }
@@ -267,7 +389,24 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+- (void)subscribeAttributeLastNetworkingStatusWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                                       params:(MTRSubscribeParams * _Nullable)params
+                                      subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                                reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -280,7 +419,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"LastNetworkID"];
+        written = charon_port_values(self)[@"LastNetworkID"];
     }
     completion(written, nil);
 }
@@ -294,7 +433,24 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+- (void)subscribeAttributeLastNetworkIDWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                                params:(MTRSubscribeParams * _Nullable)params
+                               subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                         reportHandler:(void (^)(NSData * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -307,7 +463,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"LastConnectErrorValue"];
+        written = charon_port_values(self)[@"LastConnectErrorValue"];
     }
     completion(written, nil);
 }
@@ -321,7 +477,24 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+- (void)subscribeAttributeLastConnectErrorValueWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                                        params:(MTRSubscribeParams * _Nullable)params
+                                       subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                                 reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -334,7 +507,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"SupportedWiFiBands"];
+        written = charon_port_values(self)[@"SupportedWiFiBands"];
     }
     completion(written, nil);
 }
@@ -348,7 +521,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -361,7 +534,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"SupportedThreadFeatures"];
+        written = charon_port_values(self)[@"SupportedThreadFeatures"];
     }
     completion(written, nil);
 }
@@ -375,7 +548,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -388,7 +561,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"ThreadVersion"];
+        written = charon_port_values(self)[@"ThreadVersion"];
     }
     completion(written, nil);
 }
@@ -402,7 +575,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -415,7 +588,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"GeneratedCommandList"];
+        written = charon_port_values(self)[@"GeneratedCommandList"];
     }
     completion(written, nil);
 }
@@ -429,7 +602,24 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+- (void)subscribeAttributeGeneratedCommandListWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                                       params:(MTRSubscribeParams * _Nullable)params
+                                      subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                                reportHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -442,7 +632,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"AcceptedCommandList"];
+        written = charon_port_values(self)[@"AcceptedCommandList"];
     }
     completion(written, nil);
 }
@@ -456,7 +646,24 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+- (void)subscribeAttributeAcceptedCommandListWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                                      params:(MTRSubscribeParams * _Nullable)params
+                                     subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                               reportHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -469,7 +676,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"AttributeList"];
+        written = charon_port_values(self)[@"AttributeList"];
     }
     completion(written, nil);
 }
@@ -483,7 +690,24 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+- (void)subscribeAttributeAttributeListWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                                params:(MTRSubscribeParams * _Nullable)params
+                               subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                         reportHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -496,7 +720,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"FeatureMap"];
+        written = charon_port_values(self)[@"FeatureMap"];
     }
     completion(written, nil);
 }
@@ -510,7 +734,24 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+- (void)subscribeAttributeFeatureMapWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                             params:(MTRSubscribeParams * _Nullable)params
+                            subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                      reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -523,7 +764,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"ClusterRevision"];
+        written = charon_port_values(self)[@"ClusterRevision"];
     }
     completion(written, nil);
 }
@@ -537,7 +778,24 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+- (void)subscribeAttributeClusterRevisionWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                                  params:(MTRSubscribeParams * _Nullable)params
+                                 subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                           reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -547,11 +805,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of Networks: no value and the error, because there is no node.
@@ -559,11 +819,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of ScanMaxTimeSeconds: no value and the error, because there is no node.
@@ -571,11 +833,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of ConnectMaxTimeSeconds: no value and the error, because there is no node.
@@ -583,11 +847,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of InterfaceEnabled: no value and the error, because there is no node.
@@ -595,11 +861,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of LastNetworkingStatus: no value and the error, because there is no node.
@@ -607,11 +875,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of LastNetworkID: no value and the error, because there is no node.
@@ -619,11 +889,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of LastConnectErrorValue: no value and the error, because there is no node.
@@ -631,11 +903,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of SupportedWiFiBands: no value and the error, because there is no node.
@@ -643,11 +917,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of SupportedThreadFeatures: no value and the error, because there is no node.
@@ -655,11 +931,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of ThreadVersion: no value and the error, because there is no node.
@@ -667,11 +945,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of GeneratedCommandList: no value and the error, because there is no node.
@@ -679,11 +959,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of AcceptedCommandList: no value and the error, because there is no node.
@@ -691,11 +973,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of AttributeList: no value and the error, because there is no node.
@@ -703,11 +987,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of FeatureMap: no value and the error, because there is no node.
@@ -715,11 +1001,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of ClusterRevision: no value and the error, because there is no node.
@@ -727,11 +1015,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterNetworkCommissioning charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 - (void)scanNetworksWithCompletion:(void (^)(MTRNetworkCommissioningClusterScanNetworksResponseParams * data, NSError * error))completion
@@ -750,12 +1040,30 @@
     }
 }
 
+// scanNetworks. It answers: there is nothing to reach on a release with no fabric.
+- (void)scanNetworksWithParams:(MTRNetworkCommissioningClusterScanNetworksParams *)params completionHandler:(void (^)(MTRNetworkCommissioningClusterScanNetworksResponseParams * data, NSError * error))completionHandler
+{
+    (void)params;
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
 // addOrUpdateWiFiNetwork. It answers: there is nothing to reach on a release with no fabric.
 - (void)addOrUpdateWiFiNetworkWithParams:(MTRNetworkCommissioningClusterAddOrUpdateWiFiNetworkParams *)params completion:(void (^)(MTRNetworkCommissioningClusterNetworkConfigResponseParams * data, NSError * error))completion
 {
     (void)params;
     if (completion) {
         completion(nil, nil);
+    }
+}
+
+// addOrUpdateWiFiNetwork. It answers: there is nothing to reach on a release with no fabric.
+- (void)addOrUpdateWiFiNetworkWithParams:(MTRNetworkCommissioningClusterAddOrUpdateWiFiNetworkParams *)params completionHandler:(void (^)(MTRNetworkCommissioningClusterNetworkConfigResponseParams * data, NSError * error))completionHandler
+{
+    (void)params;
+    if (completionHandler) {
+        completionHandler(nil, nil);
     }
 }
 
@@ -768,12 +1076,30 @@
     }
 }
 
+// addOrUpdateThreadNetwork. It answers: there is nothing to reach on a release with no fabric.
+- (void)addOrUpdateThreadNetworkWithParams:(MTRNetworkCommissioningClusterAddOrUpdateThreadNetworkParams *)params completionHandler:(void (^)(MTRNetworkCommissioningClusterNetworkConfigResponseParams * data, NSError * error))completionHandler
+{
+    (void)params;
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
 // removeNetwork. It answers: there is nothing to reach on a release with no fabric.
 - (void)removeNetworkWithParams:(MTRNetworkCommissioningClusterRemoveNetworkParams *)params completion:(void (^)(MTRNetworkCommissioningClusterNetworkConfigResponseParams * data, NSError * error))completion
 {
     (void)params;
     if (completion) {
         completion(nil, nil);
+    }
+}
+
+// removeNetwork. It answers: there is nothing to reach on a release with no fabric.
+- (void)removeNetworkWithParams:(MTRNetworkCommissioningClusterRemoveNetworkParams *)params completionHandler:(void (^)(MTRNetworkCommissioningClusterNetworkConfigResponseParams * data, NSError * error))completionHandler
+{
+    (void)params;
+    if (completionHandler) {
+        completionHandler(nil, nil);
     }
 }
 
@@ -786,6 +1112,15 @@
     }
 }
 
+// connectNetwork. It answers: there is nothing to reach on a release with no fabric.
+- (void)connectNetworkWithParams:(MTRNetworkCommissioningClusterConnectNetworkParams *)params completionHandler:(void (^)(MTRNetworkCommissioningClusterConnectNetworkResponseParams * data, NSError * error))completionHandler
+{
+    (void)params;
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
 // reorderNetwork. It answers: there is nothing to reach on a release with no fabric.
 - (void)reorderNetworkWithParams:(MTRNetworkCommissioningClusterReorderNetworkParams *)params completion:(void (^)(MTRNetworkCommissioningClusterNetworkConfigResponseParams * data, NSError * error))completion
 {
@@ -795,12 +1130,112 @@
     }
 }
 
+// reorderNetwork. It answers: there is nothing to reach on a release with no fabric.
+- (void)reorderNetworkWithParams:(MTRNetworkCommissioningClusterReorderNetworkParams *)params completionHandler:(void (^)(MTRNetworkCommissioningClusterNetworkConfigResponseParams * data, NSError * error))completionHandler
+{
+    (void)params;
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
 // queryIdentity. It answers: there is nothing to reach on a release with no fabric.
 - (void)queryIdentityWithParams:(MTRNetworkCommissioningClusterQueryIdentityParams *)params completion:(void (^)(MTRNetworkCommissioningClusterQueryIdentityResponseParams * data, NSError * error))completion
 {
     (void)params;
     if (completion) {
         completion(nil, nil);
+    }
+}
+
+- (void)readAttributeMaxNetworksWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributeNetworksWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributeScanMaxTimeSecondsWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributeConnectMaxTimeSecondsWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributeInterfaceEnabledWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributeLastNetworkingStatusWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributeLastNetworkIDWithCompletionHandler:(void (^)(NSData * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributeLastConnectErrorValueWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributeGeneratedCommandListWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributeAcceptedCommandListWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributeAttributeListWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributeFeatureMapWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributeClusterRevisionWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
     }
 }
 

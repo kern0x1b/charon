@@ -20,7 +20,7 @@
 //  and read and written under the object's lock, so two threads on one object are not a race.
 //  Every command answers through its completion. Nothing here reaches a fabric: the 28 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
-//  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
+//  read from. A cached read completes with no value and the error of charon_port_no_node_error();
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
 //  queue, never calls its established handler, and leaves the stored value alone.
 //
@@ -34,9 +34,41 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    @package
     NSMutableDictionary *_charon_values;
 }
 @end
+
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use. The caller holds the object's lock for the whole of its access, so this takes
+// none. It is not keyed by the class: two objects of one class are two tables, as they are
+// two sets of state in the framework.
+static NSMutableDictionary *charon_port_values(MTRBaseClusterEnergyEVSE *object)
+{
+    if (!object->_charon_values) {
+        object->_charon_values = [NSMutableDictionary dictionary];
+    }
+    return object->_charon_values;
+}
+
+// The error a member that would need a node answers, on a release with no Matter
+// hardware: there is no controller to ask and no node to read from. It is the framework's
+// own answer to a cached read on a container with no cache and to any request on a
+// controller that has been shut down, measured on the host by
+// tests/backports/host/matterdifferential/behaviour.m: MTRErrorDomain, MTRErrorCodeInvalidState,
+// "Invalid object state.". The domain is written as the string the constant holds: the
+// constant is defined by the framework's own build (packages/m/matter), not by this library.
+// Built once: every caller gets the same object, and it is made on first use.
+static NSError *charon_port_no_node_error(void)
+{
+    static NSError *error;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        error = [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
+                                userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
+    });
+    return error;
+}
 
 @implementation MTRBaseClusterEnergyEVSE
 
@@ -69,34 +101,6 @@
 @synthesize UserMaximumChargeCurrentValues = _UserMaximumChargeCurrentValues;
 @synthesize VehicleIDValues = _VehicleIDValues;
 
-// The values the caller has written, by attribute name: this object's own table, made on
-// first use - an object built through a superclass's initializer never ran this class's -
-// and handed out under the object's lock, which every read and write below holds for the
-// whole of its access. It is not keyed by the class: two objects of one class are two
-// tables, as they are two sets of state in the framework.
-- (NSMutableDictionary *)charon_port_values
-{
-    @synchronized (self) {
-        if (!_charon_values) {
-            _charon_values = [NSMutableDictionary dictionary];
-        }
-        return _charon_values;
-    }
-}
-
-// The error a member that would need a node answers, on a release with no Matter
-// hardware: there is no controller to ask and no node to read from. It is the framework's
-// own answer to a cached read on a container with no cache and to any request on a
-// controller that has been shut down, measured on the host by
-// tests/backports/host/matterdifferential/behaviour.m: MTRErrorDomain, MTRErrorCodeInvalidState,
-// "Invalid object state.". The domain is written as the string the constant holds: the
-// constant is defined by the framework's own build (packages/m/matter), not by this library.
-+ (NSError *)charon_port_no_node_error
-{
-    return [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
-                           userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
-}
-
 // - (instancetype)initWithDevice:(MTRBaseDevice *)device
 // endpointID:(NSNumber *)endpointID
 // queue:(dispatch_queue_t)queue
@@ -118,7 +122,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"State"];
+        written = charon_port_values(self)[@"State"];
     }
     completion(written, nil);
 }
@@ -132,7 +136,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -145,7 +149,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"SupplyState"];
+        written = charon_port_values(self)[@"SupplyState"];
     }
     completion(written, nil);
 }
@@ -159,7 +163,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -172,7 +176,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"FaultState"];
+        written = charon_port_values(self)[@"FaultState"];
     }
     completion(written, nil);
 }
@@ -186,7 +190,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -199,7 +203,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"ChargingEnabledUntil"];
+        written = charon_port_values(self)[@"ChargingEnabledUntil"];
     }
     completion(written, nil);
 }
@@ -213,7 +217,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -226,7 +230,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"DischargingEnabledUntil"];
+        written = charon_port_values(self)[@"DischargingEnabledUntil"];
     }
     completion(written, nil);
 }
@@ -240,7 +244,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -253,7 +257,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"CircuitCapacity"];
+        written = charon_port_values(self)[@"CircuitCapacity"];
     }
     completion(written, nil);
 }
@@ -267,7 +271,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -280,7 +284,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"MinimumChargeCurrent"];
+        written = charon_port_values(self)[@"MinimumChargeCurrent"];
     }
     completion(written, nil);
 }
@@ -294,7 +298,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -307,7 +311,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"MaximumChargeCurrent"];
+        written = charon_port_values(self)[@"MaximumChargeCurrent"];
     }
     completion(written, nil);
 }
@@ -321,7 +325,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -334,7 +338,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"MaximumDischargeCurrent"];
+        written = charon_port_values(self)[@"MaximumDischargeCurrent"];
     }
     completion(written, nil);
 }
@@ -348,7 +352,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -361,7 +365,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"UserMaximumChargeCurrent"];
+        written = charon_port_values(self)[@"UserMaximumChargeCurrent"];
     }
     completion(written, nil);
 }
@@ -369,7 +373,7 @@
 - (void)writeAttributeUserMaximumChargeCurrentWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"UserMaximumChargeCurrent"] = value;
+        charon_port_values(self)[@"UserMaximumChargeCurrent"] = value;
     }
     if (completion) {
         completion(nil);
@@ -379,7 +383,7 @@
 - (void)writeAttributeUserMaximumChargeCurrentWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"UserMaximumChargeCurrent"] = value;
+        charon_port_values(self)[@"UserMaximumChargeCurrent"] = value;
     }
     if (completion) {
         completion(nil);
@@ -395,7 +399,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -408,7 +412,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"RandomizationDelayWindow"];
+        written = charon_port_values(self)[@"RandomizationDelayWindow"];
     }
     completion(written, nil);
 }
@@ -416,7 +420,7 @@
 - (void)writeAttributeRandomizationDelayWindowWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"RandomizationDelayWindow"] = value;
+        charon_port_values(self)[@"RandomizationDelayWindow"] = value;
     }
     if (completion) {
         completion(nil);
@@ -426,7 +430,7 @@
 - (void)writeAttributeRandomizationDelayWindowWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"RandomizationDelayWindow"] = value;
+        charon_port_values(self)[@"RandomizationDelayWindow"] = value;
     }
     if (completion) {
         completion(nil);
@@ -442,7 +446,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -455,7 +459,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NextChargeStartTime"];
+        written = charon_port_values(self)[@"NextChargeStartTime"];
     }
     completion(written, nil);
 }
@@ -469,7 +473,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -482,7 +486,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NextChargeTargetTime"];
+        written = charon_port_values(self)[@"NextChargeTargetTime"];
     }
     completion(written, nil);
 }
@@ -496,7 +500,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -509,7 +513,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NextChargeRequiredEnergy"];
+        written = charon_port_values(self)[@"NextChargeRequiredEnergy"];
     }
     completion(written, nil);
 }
@@ -523,7 +527,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -536,7 +540,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NextChargeTargetSoC"];
+        written = charon_port_values(self)[@"NextChargeTargetSoC"];
     }
     completion(written, nil);
 }
@@ -550,7 +554,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -563,7 +567,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"ApproximateEVEfficiency"];
+        written = charon_port_values(self)[@"ApproximateEVEfficiency"];
     }
     completion(written, nil);
 }
@@ -571,7 +575,7 @@
 - (void)writeAttributeApproximateEVEfficiencyWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"ApproximateEVEfficiency"] = value;
+        charon_port_values(self)[@"ApproximateEVEfficiency"] = value;
     }
     if (completion) {
         completion(nil);
@@ -581,7 +585,7 @@
 - (void)writeAttributeApproximateEVEfficiencyWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"ApproximateEVEfficiency"] = value;
+        charon_port_values(self)[@"ApproximateEVEfficiency"] = value;
     }
     if (completion) {
         completion(nil);
@@ -597,7 +601,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -610,7 +614,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"StateOfCharge"];
+        written = charon_port_values(self)[@"StateOfCharge"];
     }
     completion(written, nil);
 }
@@ -624,7 +628,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -637,7 +641,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"BatteryCapacity"];
+        written = charon_port_values(self)[@"BatteryCapacity"];
     }
     completion(written, nil);
 }
@@ -651,7 +655,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -664,7 +668,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"VehicleID"];
+        written = charon_port_values(self)[@"VehicleID"];
     }
     completion(written, nil);
 }
@@ -678,7 +682,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -691,7 +695,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"SessionID"];
+        written = charon_port_values(self)[@"SessionID"];
     }
     completion(written, nil);
 }
@@ -705,7 +709,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -718,7 +722,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"SessionDuration"];
+        written = charon_port_values(self)[@"SessionDuration"];
     }
     completion(written, nil);
 }
@@ -732,7 +736,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -745,7 +749,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"SessionEnergyCharged"];
+        written = charon_port_values(self)[@"SessionEnergyCharged"];
     }
     completion(written, nil);
 }
@@ -759,7 +763,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -772,7 +776,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"SessionEnergyDischarged"];
+        written = charon_port_values(self)[@"SessionEnergyDischarged"];
     }
     completion(written, nil);
 }
@@ -786,7 +790,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -799,7 +803,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"GeneratedCommandList"];
+        written = charon_port_values(self)[@"GeneratedCommandList"];
     }
     completion(written, nil);
 }
@@ -813,7 +817,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -826,7 +830,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"AcceptedCommandList"];
+        written = charon_port_values(self)[@"AcceptedCommandList"];
     }
     completion(written, nil);
 }
@@ -840,7 +844,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -853,7 +857,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"AttributeList"];
+        written = charon_port_values(self)[@"AttributeList"];
     }
     completion(written, nil);
 }
@@ -867,7 +871,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -880,7 +884,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"FeatureMap"];
+        written = charon_port_values(self)[@"FeatureMap"];
     }
     completion(written, nil);
 }
@@ -894,7 +898,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -907,7 +911,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"ClusterRevision"];
+        written = charon_port_values(self)[@"ClusterRevision"];
     }
     completion(written, nil);
 }
@@ -921,7 +925,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -931,11 +935,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of SupplyState: no value and the error, because there is no node.
@@ -943,11 +949,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of FaultState: no value and the error, because there is no node.
@@ -955,11 +963,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of ChargingEnabledUntil: no value and the error, because there is no node.
@@ -967,11 +977,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of DischargingEnabledUntil: no value and the error, because there is no node.
@@ -979,11 +991,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of CircuitCapacity: no value and the error, because there is no node.
@@ -991,11 +1005,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of MinimumChargeCurrent: no value and the error, because there is no node.
@@ -1003,11 +1019,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of MaximumChargeCurrent: no value and the error, because there is no node.
@@ -1015,11 +1033,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of MaximumDischargeCurrent: no value and the error, because there is no node.
@@ -1027,11 +1047,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of UserMaximumChargeCurrent: no value and the error, because there is no node.
@@ -1039,11 +1061,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of RandomizationDelayWindow: no value and the error, because there is no node.
@@ -1051,11 +1075,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NextChargeStartTime: no value and the error, because there is no node.
@@ -1063,11 +1089,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NextChargeTargetTime: no value and the error, because there is no node.
@@ -1075,11 +1103,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NextChargeRequiredEnergy: no value and the error, because there is no node.
@@ -1087,11 +1117,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NextChargeTargetSoC: no value and the error, because there is no node.
@@ -1099,11 +1131,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of ApproximateEVEfficiency: no value and the error, because there is no node.
@@ -1111,11 +1145,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of StateOfCharge: no value and the error, because there is no node.
@@ -1123,11 +1159,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of BatteryCapacity: no value and the error, because there is no node.
@@ -1135,11 +1173,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of VehicleID: no value and the error, because there is no node.
@@ -1147,11 +1187,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of SessionID: no value and the error, because there is no node.
@@ -1159,11 +1201,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of SessionDuration: no value and the error, because there is no node.
@@ -1171,11 +1215,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of SessionEnergyCharged: no value and the error, because there is no node.
@@ -1183,11 +1229,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of SessionEnergyDischarged: no value and the error, because there is no node.
@@ -1195,11 +1243,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of GeneratedCommandList: no value and the error, because there is no node.
@@ -1207,11 +1257,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of AcceptedCommandList: no value and the error, because there is no node.
@@ -1219,11 +1271,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of AttributeList: no value and the error, because there is no node.
@@ -1231,11 +1285,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of FeatureMap: no value and the error, because there is no node.
@@ -1243,11 +1299,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of ClusterRevision: no value and the error, because there is no node.
@@ -1255,11 +1313,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterEnergyEVSE charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 - (void)disableWithCompletion:(MTRStatusCompletion)completion

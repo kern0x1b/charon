@@ -20,7 +20,7 @@
 //  and read and written under the object's lock, so two threads on one object are not a race.
 //  Every command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
-//  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
+//  read from. A cached read completes with no value and the error of charon_port_no_node_error();
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
 //  queue, never calls its established handler, and leaves the stored value alone.
 //
@@ -43,25 +43,21 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    @package
     NSMutableDictionary *_charon_values;
 }
 @end
 
-@implementation MTRClusterDoorLock
-
 // The values the caller has written, by attribute name: this object's own table, made on
-// first use - an object built through a superclass's initializer never ran this class's -
-// and handed out under the object's lock, which every read and write below holds for the
-// whole of its access. It is not keyed by the class: two objects of one class are two
-// tables, as they are two sets of state in the framework.
-- (NSMutableDictionary *)charon_port_values
+// first use. The caller holds the object's lock for the whole of its access, so this takes
+// none. It is not keyed by the class: two objects of one class are two tables, as they are
+// two sets of state in the framework.
+static NSMutableDictionary *charon_port_values(MTRClusterDoorLock *object)
 {
-    @synchronized (self) {
-        if (!_charon_values) {
-            _charon_values = [NSMutableDictionary dictionary];
-        }
-        return _charon_values;
+    if (!object->_charon_values) {
+        object->_charon_values = [NSMutableDictionary dictionary];
     }
+    return object->_charon_values;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -71,11 +67,19 @@
 // tests/backports/host/matterdifferential/behaviour.m: MTRErrorDomain, MTRErrorCodeInvalidState,
 // "Invalid object state.". The domain is written as the string the constant holds: the
 // constant is defined by the framework's own build (packages/m/matter), not by this library.
-+ (NSError *)charon_port_no_node_error
+// Built once: every caller gets the same object, and it is made on first use.
+static NSError *charon_port_no_node_error(void)
 {
-    return [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
-                           userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
+    static NSError *error;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        error = [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
+                                userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
+    });
+    return error;
 }
+
+@implementation MTRClusterDoorLock
 
 // - (instancetype)initWithDevice:(MTRDevice *)device
 // endpointID:(NSNumber *)endpointID
@@ -90,12 +94,25 @@
     return self;
 }
 
+// - (nullable instancetype)initWithDevice:(MTRDevice *)device
+// endpoint:(uint16_t)endpoint
+// queue:(dispatch_queue_t)queue
+- (nullable instancetype)initWithDevice:(MTRDevice *)device
+                               endpoint:(uint16_t)endpoint
+                                  queue:(dispatch_queue_t)queue
+{
+    _charon_device = device;
+    _charon_endpoint = @(endpoint);
+    _charon_queue = queue;
+    return self;
+}
+
 // LockState, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeLockStateWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"LockState"];
+        return charon_port_values(self)[@"LockState"];
     }
 }
 
@@ -104,7 +121,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"LockType"];
+        return charon_port_values(self)[@"LockType"];
     }
 }
 
@@ -113,7 +130,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ActuatorEnabled"];
+        return charon_port_values(self)[@"ActuatorEnabled"];
     }
 }
 
@@ -122,7 +139,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"DoorState"];
+        return charon_port_values(self)[@"DoorState"];
     }
 }
 
@@ -131,14 +148,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"DoorOpenEvents"];
+        return charon_port_values(self)[@"DoorOpenEvents"];
     }
 }
 
 - (void)writeAttributeDoorOpenEventsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"DoorOpenEvents"] = dataValueDictionary;
+        charon_port_values(self)[@"DoorOpenEvents"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -146,7 +163,7 @@
 - (void)writeAttributeDoorOpenEventsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"DoorOpenEvents"] = dataValueDictionary;
+        charon_port_values(self)[@"DoorOpenEvents"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -157,14 +174,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"DoorClosedEvents"];
+        return charon_port_values(self)[@"DoorClosedEvents"];
     }
 }
 
 - (void)writeAttributeDoorClosedEventsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"DoorClosedEvents"] = dataValueDictionary;
+        charon_port_values(self)[@"DoorClosedEvents"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -172,7 +189,7 @@
 - (void)writeAttributeDoorClosedEventsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"DoorClosedEvents"] = dataValueDictionary;
+        charon_port_values(self)[@"DoorClosedEvents"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -183,14 +200,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"OpenPeriod"];
+        return charon_port_values(self)[@"OpenPeriod"];
     }
 }
 
 - (void)writeAttributeOpenPeriodWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"OpenPeriod"] = dataValueDictionary;
+        charon_port_values(self)[@"OpenPeriod"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -198,7 +215,7 @@
 - (void)writeAttributeOpenPeriodWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"OpenPeriod"] = dataValueDictionary;
+        charon_port_values(self)[@"OpenPeriod"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -209,7 +226,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"NumberOfTotalUsersSupported"];
+        return charon_port_values(self)[@"NumberOfTotalUsersSupported"];
     }
 }
 
@@ -218,7 +235,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"NumberOfPINUsersSupported"];
+        return charon_port_values(self)[@"NumberOfPINUsersSupported"];
     }
 }
 
@@ -227,7 +244,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"NumberOfRFIDUsersSupported"];
+        return charon_port_values(self)[@"NumberOfRFIDUsersSupported"];
     }
 }
 
@@ -236,7 +253,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"NumberOfWeekDaySchedulesSupportedPerUser"];
+        return charon_port_values(self)[@"NumberOfWeekDaySchedulesSupportedPerUser"];
     }
 }
 
@@ -245,7 +262,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"NumberOfYearDaySchedulesSupportedPerUser"];
+        return charon_port_values(self)[@"NumberOfYearDaySchedulesSupportedPerUser"];
     }
 }
 
@@ -254,7 +271,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"NumberOfHolidaySchedulesSupported"];
+        return charon_port_values(self)[@"NumberOfHolidaySchedulesSupported"];
     }
 }
 
@@ -263,7 +280,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"MaxPINCodeLength"];
+        return charon_port_values(self)[@"MaxPINCodeLength"];
     }
 }
 
@@ -272,7 +289,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"MinPINCodeLength"];
+        return charon_port_values(self)[@"MinPINCodeLength"];
     }
 }
 
@@ -281,7 +298,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"MaxRFIDCodeLength"];
+        return charon_port_values(self)[@"MaxRFIDCodeLength"];
     }
 }
 
@@ -290,7 +307,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"MinRFIDCodeLength"];
+        return charon_port_values(self)[@"MinRFIDCodeLength"];
     }
 }
 
@@ -299,7 +316,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"CredentialRulesSupport"];
+        return charon_port_values(self)[@"CredentialRulesSupport"];
     }
 }
 
@@ -308,7 +325,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"NumberOfCredentialsSupportedPerUser"];
+        return charon_port_values(self)[@"NumberOfCredentialsSupportedPerUser"];
     }
 }
 
@@ -317,14 +334,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Language"];
+        return charon_port_values(self)[@"Language"];
     }
 }
 
 - (void)writeAttributeLanguageWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"Language"] = dataValueDictionary;
+        charon_port_values(self)[@"Language"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -332,7 +349,7 @@
 - (void)writeAttributeLanguageWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"Language"] = dataValueDictionary;
+        charon_port_values(self)[@"Language"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -343,14 +360,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"LEDSettings"];
+        return charon_port_values(self)[@"LEDSettings"];
     }
 }
 
 - (void)writeAttributeLEDSettingsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"LEDSettings"] = dataValueDictionary;
+        charon_port_values(self)[@"LEDSettings"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -358,7 +375,7 @@
 - (void)writeAttributeLEDSettingsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"LEDSettings"] = dataValueDictionary;
+        charon_port_values(self)[@"LEDSettings"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -369,14 +386,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AutoRelockTime"];
+        return charon_port_values(self)[@"AutoRelockTime"];
     }
 }
 
 - (void)writeAttributeAutoRelockTimeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"AutoRelockTime"] = dataValueDictionary;
+        charon_port_values(self)[@"AutoRelockTime"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -384,7 +401,7 @@
 - (void)writeAttributeAutoRelockTimeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"AutoRelockTime"] = dataValueDictionary;
+        charon_port_values(self)[@"AutoRelockTime"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -395,14 +412,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"SoundVolume"];
+        return charon_port_values(self)[@"SoundVolume"];
     }
 }
 
 - (void)writeAttributeSoundVolumeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"SoundVolume"] = dataValueDictionary;
+        charon_port_values(self)[@"SoundVolume"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -410,7 +427,7 @@
 - (void)writeAttributeSoundVolumeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"SoundVolume"] = dataValueDictionary;
+        charon_port_values(self)[@"SoundVolume"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -421,14 +438,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"OperatingMode"];
+        return charon_port_values(self)[@"OperatingMode"];
     }
 }
 
 - (void)writeAttributeOperatingModeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"OperatingMode"] = dataValueDictionary;
+        charon_port_values(self)[@"OperatingMode"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -436,7 +453,7 @@
 - (void)writeAttributeOperatingModeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"OperatingMode"] = dataValueDictionary;
+        charon_port_values(self)[@"OperatingMode"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -447,7 +464,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"SupportedOperatingModes"];
+        return charon_port_values(self)[@"SupportedOperatingModes"];
     }
 }
 
@@ -456,7 +473,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"DefaultConfigurationRegister"];
+        return charon_port_values(self)[@"DefaultConfigurationRegister"];
     }
 }
 
@@ -465,14 +482,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"EnableLocalProgramming"];
+        return charon_port_values(self)[@"EnableLocalProgramming"];
     }
 }
 
 - (void)writeAttributeEnableLocalProgrammingWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"EnableLocalProgramming"] = dataValueDictionary;
+        charon_port_values(self)[@"EnableLocalProgramming"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -480,7 +497,7 @@
 - (void)writeAttributeEnableLocalProgrammingWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"EnableLocalProgramming"] = dataValueDictionary;
+        charon_port_values(self)[@"EnableLocalProgramming"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -491,14 +508,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"EnableOneTouchLocking"];
+        return charon_port_values(self)[@"EnableOneTouchLocking"];
     }
 }
 
 - (void)writeAttributeEnableOneTouchLockingWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"EnableOneTouchLocking"] = dataValueDictionary;
+        charon_port_values(self)[@"EnableOneTouchLocking"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -506,7 +523,7 @@
 - (void)writeAttributeEnableOneTouchLockingWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"EnableOneTouchLocking"] = dataValueDictionary;
+        charon_port_values(self)[@"EnableOneTouchLocking"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -517,14 +534,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"EnableInsideStatusLED"];
+        return charon_port_values(self)[@"EnableInsideStatusLED"];
     }
 }
 
 - (void)writeAttributeEnableInsideStatusLEDWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"EnableInsideStatusLED"] = dataValueDictionary;
+        charon_port_values(self)[@"EnableInsideStatusLED"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -532,7 +549,7 @@
 - (void)writeAttributeEnableInsideStatusLEDWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"EnableInsideStatusLED"] = dataValueDictionary;
+        charon_port_values(self)[@"EnableInsideStatusLED"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -543,14 +560,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"EnablePrivacyModeButton"];
+        return charon_port_values(self)[@"EnablePrivacyModeButton"];
     }
 }
 
 - (void)writeAttributeEnablePrivacyModeButtonWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"EnablePrivacyModeButton"] = dataValueDictionary;
+        charon_port_values(self)[@"EnablePrivacyModeButton"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -558,7 +575,7 @@
 - (void)writeAttributeEnablePrivacyModeButtonWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"EnablePrivacyModeButton"] = dataValueDictionary;
+        charon_port_values(self)[@"EnablePrivacyModeButton"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -569,14 +586,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"LocalProgrammingFeatures"];
+        return charon_port_values(self)[@"LocalProgrammingFeatures"];
     }
 }
 
 - (void)writeAttributeLocalProgrammingFeaturesWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"LocalProgrammingFeatures"] = dataValueDictionary;
+        charon_port_values(self)[@"LocalProgrammingFeatures"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -584,7 +601,7 @@
 - (void)writeAttributeLocalProgrammingFeaturesWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"LocalProgrammingFeatures"] = dataValueDictionary;
+        charon_port_values(self)[@"LocalProgrammingFeatures"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -595,14 +612,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"WrongCodeEntryLimit"];
+        return charon_port_values(self)[@"WrongCodeEntryLimit"];
     }
 }
 
 - (void)writeAttributeWrongCodeEntryLimitWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"WrongCodeEntryLimit"] = dataValueDictionary;
+        charon_port_values(self)[@"WrongCodeEntryLimit"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -610,7 +627,7 @@
 - (void)writeAttributeWrongCodeEntryLimitWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"WrongCodeEntryLimit"] = dataValueDictionary;
+        charon_port_values(self)[@"WrongCodeEntryLimit"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -621,14 +638,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"UserCodeTemporaryDisableTime"];
+        return charon_port_values(self)[@"UserCodeTemporaryDisableTime"];
     }
 }
 
 - (void)writeAttributeUserCodeTemporaryDisableTimeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"UserCodeTemporaryDisableTime"] = dataValueDictionary;
+        charon_port_values(self)[@"UserCodeTemporaryDisableTime"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -636,7 +653,7 @@
 - (void)writeAttributeUserCodeTemporaryDisableTimeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"UserCodeTemporaryDisableTime"] = dataValueDictionary;
+        charon_port_values(self)[@"UserCodeTemporaryDisableTime"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -647,14 +664,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"SendPINOverTheAir"];
+        return charon_port_values(self)[@"SendPINOverTheAir"];
     }
 }
 
 - (void)writeAttributeSendPINOverTheAirWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"SendPINOverTheAir"] = dataValueDictionary;
+        charon_port_values(self)[@"SendPINOverTheAir"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -662,7 +679,7 @@
 - (void)writeAttributeSendPINOverTheAirWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"SendPINOverTheAir"] = dataValueDictionary;
+        charon_port_values(self)[@"SendPINOverTheAir"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -673,14 +690,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"RequirePINforRemoteOperation"];
+        return charon_port_values(self)[@"RequirePINforRemoteOperation"];
     }
 }
 
 - (void)writeAttributeRequirePINforRemoteOperationWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"RequirePINforRemoteOperation"] = dataValueDictionary;
+        charon_port_values(self)[@"RequirePINforRemoteOperation"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -688,7 +705,7 @@
 - (void)writeAttributeRequirePINforRemoteOperationWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"RequirePINforRemoteOperation"] = dataValueDictionary;
+        charon_port_values(self)[@"RequirePINforRemoteOperation"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -699,14 +716,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ExpiringUserTimeout"];
+        return charon_port_values(self)[@"ExpiringUserTimeout"];
     }
 }
 
 - (void)writeAttributeExpiringUserTimeoutWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"ExpiringUserTimeout"] = dataValueDictionary;
+        charon_port_values(self)[@"ExpiringUserTimeout"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -714,7 +731,7 @@
 - (void)writeAttributeExpiringUserTimeoutWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"ExpiringUserTimeout"] = dataValueDictionary;
+        charon_port_values(self)[@"ExpiringUserTimeout"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -725,7 +742,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AliroReaderVerificationKey"];
+        return charon_port_values(self)[@"AliroReaderVerificationKey"];
     }
 }
 
@@ -734,7 +751,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AliroReaderGroupIdentifier"];
+        return charon_port_values(self)[@"AliroReaderGroupIdentifier"];
     }
 }
 
@@ -743,7 +760,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AliroReaderGroupSubIdentifier"];
+        return charon_port_values(self)[@"AliroReaderGroupSubIdentifier"];
     }
 }
 
@@ -752,7 +769,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AliroExpeditedTransactionSupportedProtocolVersions"];
+        return charon_port_values(self)[@"AliroExpeditedTransactionSupportedProtocolVersions"];
     }
 }
 
@@ -761,7 +778,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AliroGroupResolvingKey"];
+        return charon_port_values(self)[@"AliroGroupResolvingKey"];
     }
 }
 
@@ -770,7 +787,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AliroSupportedBLEUWBProtocolVersions"];
+        return charon_port_values(self)[@"AliroSupportedBLEUWBProtocolVersions"];
     }
 }
 
@@ -779,7 +796,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AliroBLEAdvertisingVersion"];
+        return charon_port_values(self)[@"AliroBLEAdvertisingVersion"];
     }
 }
 
@@ -788,7 +805,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"NumberOfAliroCredentialIssuerKeysSupported"];
+        return charon_port_values(self)[@"NumberOfAliroCredentialIssuerKeysSupported"];
     }
 }
 
@@ -797,7 +814,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"NumberOfAliroEndpointKeysSupported"];
+        return charon_port_values(self)[@"NumberOfAliroEndpointKeysSupported"];
     }
 }
 
@@ -806,7 +823,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"GeneratedCommandList"];
+        return charon_port_values(self)[@"GeneratedCommandList"];
     }
 }
 
@@ -815,7 +832,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AcceptedCommandList"];
+        return charon_port_values(self)[@"AcceptedCommandList"];
     }
 }
 
@@ -824,7 +841,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AttributeList"];
+        return charon_port_values(self)[@"AttributeList"];
     }
 }
 
@@ -833,7 +850,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"FeatureMap"];
+        return charon_port_values(self)[@"FeatureMap"];
     }
 }
 
@@ -842,7 +859,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ClusterRevision"];
+        return charon_port_values(self)[@"ClusterRevision"];
     }
 }
 
@@ -851,7 +868,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AppleAliroReaderVerificationKey"];
+        return charon_port_values(self)[@"AppleAliroReaderVerificationKey"];
     }
 }
 
@@ -860,7 +877,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AppleAliroReaderGroupIdentifier"];
+        return charon_port_values(self)[@"AppleAliroReaderGroupIdentifier"];
     }
 }
 
@@ -869,7 +886,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AppleAliroReaderGroupSubIdentifier"];
+        return charon_port_values(self)[@"AppleAliroReaderGroupSubIdentifier"];
     }
 }
 
@@ -878,7 +895,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AppleAliroExpeditedTransactionSupportedProtocolVersions"];
+        return charon_port_values(self)[@"AppleAliroExpeditedTransactionSupportedProtocolVersions"];
     }
 }
 
@@ -887,7 +904,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AppleAliroGroupResolvingKey"];
+        return charon_port_values(self)[@"AppleAliroGroupResolvingKey"];
     }
 }
 
@@ -896,7 +913,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AppleAliroSupportedBLEUWBProtocolVersions"];
+        return charon_port_values(self)[@"AppleAliroSupportedBLEUWBProtocolVersions"];
     }
 }
 
@@ -905,7 +922,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AppleAliroBLEAdvertisingVersion"];
+        return charon_port_values(self)[@"AppleAliroBLEAdvertisingVersion"];
     }
 }
 
@@ -914,7 +931,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AppleNumberOfAliroCredentialIssuerKeysSupported"];
+        return charon_port_values(self)[@"AppleNumberOfAliroCredentialIssuerKeysSupported"];
     }
 }
 
@@ -923,7 +940,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AppleNumberOfAliroEndpointKeysSupported"];
+        return charon_port_values(self)[@"AppleNumberOfAliroEndpointKeysSupported"];
     }
 }
 
@@ -948,6 +965,17 @@
     }
 }
 
+// lockDoor. It answers: there is nothing to reach on a release with no fabric.
+- (void)lockDoorWithParams:(MTRDoorLockClusterLockDoorParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
 // unlockDoor. It answers: there is nothing to reach on a release with no fabric.
 - (void)unlockDoorWithParams:(MTRDoorLockClusterUnlockDoorParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
@@ -969,6 +997,17 @@
     }
 }
 
+// unlockDoor. It answers: there is nothing to reach on a release with no fabric.
+- (void)unlockDoorWithParams:(MTRDoorLockClusterUnlockDoorParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
 // unlockWithTimeout. It answers: there is nothing to reach on a release with no fabric.
 - (void)unlockWithTimeoutWithParams:(MTRDoorLockClusterUnlockWithTimeoutParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
@@ -977,6 +1016,17 @@
     (void)expectedValueIntervalMs;
     if (completion) {
         completion(nil);
+    }
+}
+
+// unlockWithTimeout. It answers: there is nothing to reach on a release with no fabric.
+- (void)unlockWithTimeoutWithParams:(MTRDoorLockClusterUnlockWithTimeoutParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 
@@ -991,6 +1041,17 @@
     }
 }
 
+// setWeekDaySchedule. It answers: there is nothing to reach on a release with no fabric.
+- (void)setWeekDayScheduleWithParams:(MTRDoorLockClusterSetWeekDayScheduleParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
 // getWeekDaySchedule. It answers: there is nothing to reach on a release with no fabric.
 - (void)getWeekDayScheduleWithParams:(MTRDoorLockClusterGetWeekDayScheduleParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRDoorLockClusterGetWeekDayScheduleResponseParams * data, NSError * error))completion
 {
@@ -999,6 +1060,17 @@
     (void)expectedValueIntervalMs;
     if (completion) {
         completion(nil, nil);
+    }
+}
+
+// getWeekDaySchedule. It answers: there is nothing to reach on a release with no fabric.
+- (void)getWeekDayScheduleWithParams:(MTRDoorLockClusterGetWeekDayScheduleParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(void (^)(MTRDoorLockClusterGetWeekDayScheduleResponseParams * data, NSError * error))completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil, nil);
     }
 }
 
@@ -1013,6 +1085,17 @@
     }
 }
 
+// clearWeekDaySchedule. It answers: there is nothing to reach on a release with no fabric.
+- (void)clearWeekDayScheduleWithParams:(MTRDoorLockClusterClearWeekDayScheduleParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
 // setYearDaySchedule. It answers: there is nothing to reach on a release with no fabric.
 - (void)setYearDayScheduleWithParams:(MTRDoorLockClusterSetYearDayScheduleParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
@@ -1021,6 +1104,17 @@
     (void)expectedValueIntervalMs;
     if (completion) {
         completion(nil);
+    }
+}
+
+// setYearDaySchedule. It answers: there is nothing to reach on a release with no fabric.
+- (void)setYearDayScheduleWithParams:(MTRDoorLockClusterSetYearDayScheduleParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 
@@ -1035,6 +1129,17 @@
     }
 }
 
+// getYearDaySchedule. It answers: there is nothing to reach on a release with no fabric.
+- (void)getYearDayScheduleWithParams:(MTRDoorLockClusterGetYearDayScheduleParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(void (^)(MTRDoorLockClusterGetYearDayScheduleResponseParams * data, NSError * error))completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
 // clearYearDaySchedule. It answers: there is nothing to reach on a release with no fabric.
 - (void)clearYearDayScheduleWithParams:(MTRDoorLockClusterClearYearDayScheduleParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
@@ -1043,6 +1148,17 @@
     (void)expectedValueIntervalMs;
     if (completion) {
         completion(nil);
+    }
+}
+
+// clearYearDaySchedule. It answers: there is nothing to reach on a release with no fabric.
+- (void)clearYearDayScheduleWithParams:(MTRDoorLockClusterClearYearDayScheduleParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 
@@ -1057,6 +1173,17 @@
     }
 }
 
+// setHolidaySchedule. It answers: there is nothing to reach on a release with no fabric.
+- (void)setHolidayScheduleWithParams:(MTRDoorLockClusterSetHolidayScheduleParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
 // getHolidaySchedule. It answers: there is nothing to reach on a release with no fabric.
 - (void)getHolidayScheduleWithParams:(MTRDoorLockClusterGetHolidayScheduleParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRDoorLockClusterGetHolidayScheduleResponseParams * data, NSError * error))completion
 {
@@ -1065,6 +1192,17 @@
     (void)expectedValueIntervalMs;
     if (completion) {
         completion(nil, nil);
+    }
+}
+
+// getHolidaySchedule. It answers: there is nothing to reach on a release with no fabric.
+- (void)getHolidayScheduleWithParams:(MTRDoorLockClusterGetHolidayScheduleParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(void (^)(MTRDoorLockClusterGetHolidayScheduleResponseParams * data, NSError * error))completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil, nil);
     }
 }
 
@@ -1079,6 +1217,17 @@
     }
 }
 
+// clearHolidaySchedule. It answers: there is nothing to reach on a release with no fabric.
+- (void)clearHolidayScheduleWithParams:(MTRDoorLockClusterClearHolidayScheduleParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
 // setUser. It answers: there is nothing to reach on a release with no fabric.
 - (void)setUserWithParams:(MTRDoorLockClusterSetUserParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
@@ -1087,6 +1236,17 @@
     (void)expectedValueIntervalMs;
     if (completion) {
         completion(nil);
+    }
+}
+
+// setUser. It answers: there is nothing to reach on a release with no fabric.
+- (void)setUserWithParams:(MTRDoorLockClusterSetUserParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 
@@ -1101,6 +1261,17 @@
     }
 }
 
+// getUser. It answers: there is nothing to reach on a release with no fabric.
+- (void)getUserWithParams:(MTRDoorLockClusterGetUserParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(void (^)(MTRDoorLockClusterGetUserResponseParams * data, NSError * error))completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
 // clearUser. It answers: there is nothing to reach on a release with no fabric.
 - (void)clearUserWithParams:(MTRDoorLockClusterClearUserParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
@@ -1109,6 +1280,17 @@
     (void)expectedValueIntervalMs;
     if (completion) {
         completion(nil);
+    }
+}
+
+// clearUser. It answers: there is nothing to reach on a release with no fabric.
+- (void)clearUserWithParams:(MTRDoorLockClusterClearUserParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 
@@ -1123,6 +1305,17 @@
     }
 }
 
+// setCredential. It answers: there is nothing to reach on a release with no fabric.
+- (void)setCredentialWithParams:(MTRDoorLockClusterSetCredentialParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(void (^)(MTRDoorLockClusterSetCredentialResponseParams * data, NSError * error))completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
 // getCredentialStatus. It answers: there is nothing to reach on a release with no fabric.
 - (void)getCredentialStatusWithParams:(MTRDoorLockClusterGetCredentialStatusParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRDoorLockClusterGetCredentialStatusResponseParams * data, NSError * error))completion
 {
@@ -1134,6 +1327,17 @@
     }
 }
 
+// getCredentialStatus. It answers: there is nothing to reach on a release with no fabric.
+- (void)getCredentialStatusWithParams:(MTRDoorLockClusterGetCredentialStatusParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(void (^)(MTRDoorLockClusterGetCredentialStatusResponseParams * data, NSError * error))completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
 // clearCredential. It answers: there is nothing to reach on a release with no fabric.
 - (void)clearCredentialWithParams:(MTRDoorLockClusterClearCredentialParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
@@ -1142,6 +1346,17 @@
     (void)expectedValueIntervalMs;
     if (completion) {
         completion(nil);
+    }
+}
+
+// clearCredential. It answers: there is nothing to reach on a release with no fabric.
+- (void)clearCredentialWithParams:(MTRDoorLockClusterClearCredentialParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 

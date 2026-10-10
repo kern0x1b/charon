@@ -20,7 +20,7 @@
 //  and read and written under the object's lock, so two threads on one object are not a race.
 //  Every command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
-//  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
+//  read from. A cached read completes with no value and the error of charon_port_no_node_error();
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
 //  queue, never calls its established handler, and leaves the stored value alone.
 //
@@ -34,9 +34,41 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    @package
     NSMutableDictionary *_charon_values;
 }
 @end
+
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use. The caller holds the object's lock for the whole of its access, so this takes
+// none. It is not keyed by the class: two objects of one class are two tables, as they are
+// two sets of state in the framework.
+static NSMutableDictionary *charon_port_values(MTRClusterMicrowaveOvenControl *object)
+{
+    if (!object->_charon_values) {
+        object->_charon_values = [NSMutableDictionary dictionary];
+    }
+    return object->_charon_values;
+}
+
+// The error a member that would need a node answers, on a release with no Matter
+// hardware: there is no controller to ask and no node to read from. It is the framework's
+// own answer to a cached read on a container with no cache and to any request on a
+// controller that has been shut down, measured on the host by
+// tests/backports/host/matterdifferential/behaviour.m: MTRErrorDomain, MTRErrorCodeInvalidState,
+// "Invalid object state.". The domain is written as the string the constant holds: the
+// constant is defined by the framework's own build (packages/m/matter), not by this library.
+// Built once: every caller gets the same object, and it is made on first use.
+static NSError *charon_port_no_node_error(void)
+{
+    static NSError *error;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        error = [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
+                                userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
+    });
+    return error;
+}
 
 @implementation MTRClusterMicrowaveOvenControl
 
@@ -54,34 +86,6 @@
 @synthesize SelectedWattIndexValues = _SelectedWattIndexValues;
 @synthesize SupportedWattsValues = _SupportedWattsValues;
 @synthesize WattRatingValues = _WattRatingValues;
-
-// The values the caller has written, by attribute name: this object's own table, made on
-// first use - an object built through a superclass's initializer never ran this class's -
-// and handed out under the object's lock, which every read and write below holds for the
-// whole of its access. It is not keyed by the class: two objects of one class are two
-// tables, as they are two sets of state in the framework.
-- (NSMutableDictionary *)charon_port_values
-{
-    @synchronized (self) {
-        if (!_charon_values) {
-            _charon_values = [NSMutableDictionary dictionary];
-        }
-        return _charon_values;
-    }
-}
-
-// The error a member that would need a node answers, on a release with no Matter
-// hardware: there is no controller to ask and no node to read from. It is the framework's
-// own answer to a cached read on a container with no cache and to any request on a
-// controller that has been shut down, measured on the host by
-// tests/backports/host/matterdifferential/behaviour.m: MTRErrorDomain, MTRErrorCodeInvalidState,
-// "Invalid object state.". The domain is written as the string the constant holds: the
-// constant is defined by the framework's own build (packages/m/matter), not by this library.
-+ (NSError *)charon_port_no_node_error
-{
-    return [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
-                           userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
-}
 
 // - (instancetype)initWithDevice:(MTRDevice *)device
 // endpointID:(NSNumber *)endpointID
@@ -101,7 +105,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"CookTime"];
+        return charon_port_values(self)[@"CookTime"];
     }
 }
 
@@ -110,7 +114,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"MaxCookTime"];
+        return charon_port_values(self)[@"MaxCookTime"];
     }
 }
 
@@ -119,7 +123,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"PowerSetting"];
+        return charon_port_values(self)[@"PowerSetting"];
     }
 }
 
@@ -128,7 +132,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"MinPower"];
+        return charon_port_values(self)[@"MinPower"];
     }
 }
 
@@ -137,7 +141,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"MaxPower"];
+        return charon_port_values(self)[@"MaxPower"];
     }
 }
 
@@ -146,7 +150,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"PowerStep"];
+        return charon_port_values(self)[@"PowerStep"];
     }
 }
 
@@ -155,7 +159,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"SupportedWatts"];
+        return charon_port_values(self)[@"SupportedWatts"];
     }
 }
 
@@ -164,7 +168,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"SelectedWattIndex"];
+        return charon_port_values(self)[@"SelectedWattIndex"];
     }
 }
 
@@ -173,7 +177,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"WattRating"];
+        return charon_port_values(self)[@"WattRating"];
     }
 }
 
@@ -182,7 +186,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"GeneratedCommandList"];
+        return charon_port_values(self)[@"GeneratedCommandList"];
     }
 }
 
@@ -191,7 +195,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AcceptedCommandList"];
+        return charon_port_values(self)[@"AcceptedCommandList"];
     }
 }
 
@@ -200,7 +204,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AttributeList"];
+        return charon_port_values(self)[@"AttributeList"];
     }
 }
 
@@ -209,7 +213,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"FeatureMap"];
+        return charon_port_values(self)[@"FeatureMap"];
     }
 }
 
@@ -218,7 +222,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ClusterRevision"];
+        return charon_port_values(self)[@"ClusterRevision"];
     }
 }
 

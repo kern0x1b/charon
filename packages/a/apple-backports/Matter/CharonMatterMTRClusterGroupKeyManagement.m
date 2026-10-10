@@ -20,7 +20,7 @@
 //  and read and written under the object's lock, so two threads on one object are not a race.
 //  Every command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
-//  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
+//  read from. A cached read completes with no value and the error of charon_port_no_node_error();
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
 //  queue, never calls its established handler, and leaves the stored value alone.
 //
@@ -43,25 +43,21 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    @package
     NSMutableDictionary *_charon_values;
 }
 @end
 
-@implementation MTRClusterGroupKeyManagement
-
 // The values the caller has written, by attribute name: this object's own table, made on
-// first use - an object built through a superclass's initializer never ran this class's -
-// and handed out under the object's lock, which every read and write below holds for the
-// whole of its access. It is not keyed by the class: two objects of one class are two
-// tables, as they are two sets of state in the framework.
-- (NSMutableDictionary *)charon_port_values
+// first use. The caller holds the object's lock for the whole of its access, so this takes
+// none. It is not keyed by the class: two objects of one class are two tables, as they are
+// two sets of state in the framework.
+static NSMutableDictionary *charon_port_values(MTRClusterGroupKeyManagement *object)
 {
-    @synchronized (self) {
-        if (!_charon_values) {
-            _charon_values = [NSMutableDictionary dictionary];
-        }
-        return _charon_values;
+    if (!object->_charon_values) {
+        object->_charon_values = [NSMutableDictionary dictionary];
     }
+    return object->_charon_values;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -71,11 +67,19 @@
 // tests/backports/host/matterdifferential/behaviour.m: MTRErrorDomain, MTRErrorCodeInvalidState,
 // "Invalid object state.". The domain is written as the string the constant holds: the
 // constant is defined by the framework's own build (packages/m/matter), not by this library.
-+ (NSError *)charon_port_no_node_error
+// Built once: every caller gets the same object, and it is made on first use.
+static NSError *charon_port_no_node_error(void)
 {
-    return [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
-                           userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
+    static NSError *error;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        error = [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
+                                userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
+    });
+    return error;
 }
+
+@implementation MTRClusterGroupKeyManagement
 
 // - (instancetype)initWithDevice:(MTRDevice *)device
 // endpointID:(NSNumber *)endpointID
@@ -90,19 +94,32 @@
     return self;
 }
 
+// - (nullable instancetype)initWithDevice:(MTRDevice *)device
+// endpoint:(uint16_t)endpoint
+// queue:(dispatch_queue_t)queue
+- (nullable instancetype)initWithDevice:(MTRDevice *)device
+                               endpoint:(uint16_t)endpoint
+                                  queue:(dispatch_queue_t)queue
+{
+    _charon_device = device;
+    _charon_endpoint = @(endpoint);
+    _charon_queue = queue;
+    return self;
+}
+
 // GroupKeyMap, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeGroupKeyMapWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"GroupKeyMap"];
+        return charon_port_values(self)[@"GroupKeyMap"];
     }
 }
 
 - (void)writeAttributeGroupKeyMapWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"GroupKeyMap"] = dataValueDictionary;
+        charon_port_values(self)[@"GroupKeyMap"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -110,7 +127,7 @@
 - (void)writeAttributeGroupKeyMapWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"GroupKeyMap"] = dataValueDictionary;
+        charon_port_values(self)[@"GroupKeyMap"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -121,7 +138,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"GroupTable"];
+        return charon_port_values(self)[@"GroupTable"];
     }
 }
 
@@ -130,7 +147,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"MaxGroupsPerFabric"];
+        return charon_port_values(self)[@"MaxGroupsPerFabric"];
     }
 }
 
@@ -139,7 +156,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"MaxGroupKeysPerFabric"];
+        return charon_port_values(self)[@"MaxGroupKeysPerFabric"];
     }
 }
 
@@ -148,7 +165,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"GeneratedCommandList"];
+        return charon_port_values(self)[@"GeneratedCommandList"];
     }
 }
 
@@ -157,7 +174,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AcceptedCommandList"];
+        return charon_port_values(self)[@"AcceptedCommandList"];
     }
 }
 
@@ -166,7 +183,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AttributeList"];
+        return charon_port_values(self)[@"AttributeList"];
     }
 }
 
@@ -175,7 +192,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"FeatureMap"];
+        return charon_port_values(self)[@"FeatureMap"];
     }
 }
 
@@ -184,7 +201,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ClusterRevision"];
+        return charon_port_values(self)[@"ClusterRevision"];
     }
 }
 
@@ -199,6 +216,17 @@
     }
 }
 
+// keySetWrite. It answers: there is nothing to reach on a release with no fabric.
+- (void)keySetWriteWithParams:(MTRGroupKeyManagementClusterKeySetWriteParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
 // keySetRead. It answers: there is nothing to reach on a release with no fabric.
 - (void)keySetReadWithParams:(MTRGroupKeyManagementClusterKeySetReadParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRGroupKeyManagementClusterKeySetReadResponseParams * data, NSError * error))completion
 {
@@ -210,6 +238,17 @@
     }
 }
 
+// keySetRead. It answers: there is nothing to reach on a release with no fabric.
+- (void)keySetReadWithParams:(MTRGroupKeyManagementClusterKeySetReadParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(void (^)(MTRGroupKeyManagementClusterKeySetReadResponseParams * data, NSError * error))completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
 // keySetRemove. It answers: there is nothing to reach on a release with no fabric.
 - (void)keySetRemoveWithParams:(MTRGroupKeyManagementClusterKeySetRemoveParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
@@ -218,6 +257,17 @@
     (void)expectedValueIntervalMs;
     if (completion) {
         completion(nil);
+    }
+}
+
+// keySetRemove. It answers: there is nothing to reach on a release with no fabric.
+- (void)keySetRemoveWithParams:(MTRGroupKeyManagementClusterKeySetRemoveParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 
@@ -239,6 +289,17 @@
     (void)expectedValueIntervalMs;
     if (completion) {
         completion(nil, nil);
+    }
+}
+
+// keySetReadAllIndices. It answers: there is nothing to reach on a release with no fabric.
+- (void)keySetReadAllIndicesWithParams:(MTRGroupKeyManagementClusterKeySetReadAllIndicesParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(void (^)(MTRGroupKeyManagementClusterKeySetReadAllIndicesResponseParams * data, NSError * error))completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil, nil);
     }
 }
 

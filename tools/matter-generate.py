@@ -111,8 +111,10 @@ INIT = re.compile(r"^-\s*\((?:nonnull\s+|nullable\s+)?instancetype(?:\s+_\w+)?\)
 # error, so neither needs one. `NSDictionary<NSString *, id>` is the DATA VALUE type both of them carry: the
 # attribute's own type is not stated anywhere in these 143 headers, and the emitted comment says so rather
 # than naming one.
+# The Deprecated synchronous reads (MTRClusters.h, 26.2) write the same return type WITHOUT `_Nullable`: they are the
+# same shape, and were not read until the declarations of a class were read across its categories.
 READ_SYNC = re.compile(
-    r"^-\s*\(NSDictionary<NSString \*, id> \* _Nullable\)readAttribute(\w+)WithParams:")
+    r"^-\s*\(NSDictionary<NSString \*, id> \*(?: _Nullable)?\)readAttribute(\w+)WithParams:")
 # `\s+` and not a space between the two arguments: SDK 16.4 writes this declaration over TWO lines
 # (`- (void)writeAttributeWhitePointXWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary` then
 # `expectedValueInterval:(NSNumber *)expectedValueIntervalMs API_AVAILABLE(...)`), and a literal space does
@@ -346,16 +348,76 @@ def declarations(block, opens_body=False):
         yield first, "\n".join(parts)
 
 
-# The port's OWN methods, which are not header members and so are not in any contract: the table the
-# attributes are stored in and the error the members with no node answer with. Named here rather than
-# matched loosely, because the reverse check must be able to fail.
-PORT_OWNED = {
-    "charon_port_values": "the port's own per-object storage table, not a cluster member",
-    "charon_port_no_node_error": "the port's own error for a member that would need a node",
-}
-
 PORT_ONLY = []
 PORT_OWNED_CLASS = []
+
+# The superclasses whose queue an alias reads. Filled by main() before any object is emitted, because the
+# superclass's own object imports the header that declares its queue and may be emitted before its alias.
+QUEUE_SUPERS = set()
+QUEUE_HEADER = "CharonMatterQueueStorage.h"
+
+
+def inherits_queue_of(initialisers):
+    """Whether a class's queue is its superclass's: it declares only the old initializer, so the object the
+    designated one builds is the superclass's own and its queue is there."""
+    return bool(initialisers) and not any(
+        selector_of(each["signature"]) == "initWithDevice:endpointID:queue:" for each in initialisers)
+
+
+def queue_storage_drift(directory):
+    """What the queue storage must look like on the files as written, read back from disk.
+
+    The queue ivar is declared in CharonMatterQueueStorage.h and nowhere else: a second declaration in a
+    superclass file is a second ivar the object does not read, and a runtime lookup by name is the mechanism
+    the round before this one replaced. Returns one line per problem; an empty list is the check passing.
+    """
+    problems = []
+    header = os.path.join(directory, QUEUE_HEADER)
+    header_text = open(header).read() if os.path.exists(header) else ""
+    declared = header_text.count("dispatch_queue_t _charon_queue;")
+    if header_text.count("@protected") != len(QUEUE_SUPERS) or declared != len(QUEUE_SUPERS):
+        problems.append("%s does not declare each of %d superclass queues exactly once"
+                        % (QUEUE_HEADER, len(QUEUE_SUPERS)))
+    for name in sorted(os.listdir(directory)):
+        if not name.endswith(".m"):
+            continue
+        text = open(os.path.join(directory, name)).read()
+        for banned in ("class_getInstanceVariable", "object_getIvar", "@protected"):
+            if banned in text:
+                problems.append("%s uses %s: the queue is read as an ivar the header declares, nowhere else"
+                                % (name, banned))
+        imports = '#import "%s"' % QUEUE_HEADER in text
+        if imports and not QUEUE_SUPERS:
+            problems.append("%s imports %s and no superclass needs it" % (name, QUEUE_HEADER))
+        if "(_charon_queue ?: ((" in text and not imports:
+            problems.append("%s reads its superclass's queue and does not import %s" % (name, QUEUE_HEADER))
+        if name[len("CharonMatter"):-2] in QUEUE_SUPERS:
+            if not imports:
+                problems.append("%s is a superclass of an alias and does not import %s" % (name, QUEUE_HEADER))
+            if "    dispatch_queue_t _charon_queue;" in text.splitlines():
+                problems.append("%s declares _charon_queue itself, and %s declares it too" % (name, QUEUE_HEADER))
+    return problems
+
+
+def queue_header(supers):
+    """CharonMatterQueueStorage.h: the one declaration of each superclass's queue ivar, PROTECTED.
+
+    A superclass and its aliases import it, so the ivar is declared once in the library rather than once per
+    file. It is not API: no framework header declares it and the package exports no symbol for it - the offset
+    the compiler reads is private external in the superclass's object.
+    """
+    out = ["//\n//  %s\n//  Matter\n//\n" % QUEUE_HEADER,
+           "//  GENERATED by tools/matter-generate.py. Not API: no framework header declares it, and only the\n"
+           "//  superclass and its aliases import it. See the alias's comment in matter-generate.py for why the\n"
+           "//  ivar is protected and read directly rather than by name.\n\n",
+           "#import <Foundation/Foundation.h>\n#import <Matter/Matter.h>\n\n"]
+    for name in sorted(supers):
+        out.append("@interface %s () {\n"
+                   "    @protected\n"
+                   "    dispatch_queue_t _charon_queue;\n"
+                   "}\n"
+                   "@end\n\n" % name)
+    return "".join(out)
 
 
 def chain_blocked(cluster):
@@ -403,8 +465,38 @@ def own_interface_block(block):
     return own
 
 
-def cluster_declarations(cluster, block):
+def cluster_spans(lines, name):
+    """Every span of the header that declares the class: its own @interface, and each category and
+    extension of it, from the head line to the @end that closes it, wherever in the header it sits.
+
+    cluster_block() stops at the next @interface of ANOTHER class, and a category filed after that class
+    was never read. 26.2's Deprecated categories of Identify come after the next class's @interface, so
+    the port had no WithMinInterval shape for them, and the contract - read the same way - did not ask
+    for one: the check that compared the two could not see the gap.
+    """
+    lines = joined_heads(lines)
+    spans, inside = [], False
+    for line in lines:
+        head = HEAD_NAME.match(line)
+        if head:
+            inside = head.group(1) == name
+        if inside:
+            spans.append(line)
+        if inside and line.strip() == "@end":
+            inside = False
+    return spans
+
+
+HEAD_NAME = re.compile(r"^@interface\s+(\w+)\b")
+
+
+def cluster_declarations(cluster, spans):
     """Every declaration the port owes a body for: this SDK's own, plus what the library's SDK declares.
+
+    `spans` is every span of this SDK's header that declares the class (cluster_spans()): its own
+    @interface AND its categories. A category member is one the class answers, and the header declares it
+    for the class, so the port defines it - a deprecated shape a client built against an older SDK still
+    calls is one of them. A selector two spans both declare is written once, from the first span.
 
     The port compiles against iPhoneOS 16.4, and where 16.4 declares the class, 16.4's OWN @interface is
     that class's declaration - so every member in it is a member the port's object has to define, and a
@@ -414,11 +506,17 @@ def cluster_declarations(cluster, block):
     body, which is -Wincomplete-implementation on every one and a doesNotRecognizeSelector for a client
     built against this port's own SDK.
 
-    Only the class's own @interface is read from the library's SDK, not its categories: a deprecated
-    category member is not one the class must define, and 26.2's blocks are the contract for everything
-    else. Where the library's SDK does not declare the class, this SDK's block is the whole of it.
+    Only the class's own @interface is read from the library's SDK, not its categories: the library's
+    categories are not what the port is generated against. Where the library's SDK does not declare the
+    class, this SDK's spans are the whole of it.
     """
-    own = list(declarations(block))
+    own, taken = [], set()
+    for first, text in declarations(spans):
+        name = selector_of(signature(text))
+        if name in taken:
+            continue
+        taken.add(name)
+        own.append((first, text))
     if not DECLARED_LINES_16:
         return own
     other, _ = cluster_block(DECLARED_LINES_16, cluster)
@@ -765,7 +863,16 @@ def facts(items):
             # setdefault returns that dict and a second key inside it is never written. That is 127
             # members - every parameterless command in the framework - and it is the same mistake as the
             # three before it: a value not recorded because something already sat under the key.
-            command["noparam"] = signature(line)
+            # The FIRST parameterless shape is `noparam`, the class's own, and a later one is a second selector
+            # the class answers - a Deprecated category's `<verb>WithCompletionHandler:` beside `<verb>WithCompletion:`.
+            # Overwriting the slot put the deprecated shape in place of the current one, and 37 current selectors
+            # over 21 clusters went out of the objects. Both are kept, as the parameterised shapes are.
+            if "noparam" not in command:
+                command["noparam"] = signature(line)
+            elif selector_of(signature(line)) != selector_of(command["noparam"]):
+                shapes = command.setdefault("noparam_more", [])
+                if not any(selector_of(each) == selector_of(signature(line)) for each in shapes):
+                    shapes.append(signature(line))
             continue
         found = CACHE.match(line)
         if found:
@@ -803,7 +910,7 @@ PREAMBLE = '''//
 //  and read and written under the object's lock, so two threads on one object are not a race.
 //  Every command answers through its completion. Nothing here reaches a fabric: the {cache} cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
-//  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
+//  read from. A cached read completes with no value and the error of charon_port_no_node_error();
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
 //  queue, never calls its established handler, and leaves the stored value alone.
 //
@@ -2763,9 +2870,16 @@ def command_declarations(info):
     so the interface is checked against the same contract below, in the same run.
     """
     shapes = command_shapes(info)
-    if info.get("noparam"):
-        shapes.append(info["noparam"])
+    shapes.extend(noparam_shapes(info))
     return shapes
+
+
+def noparam_shapes(info):
+    """Every PARAMETERLESS shape one command verb is declared in: the class's own `<verb>WithCompletion:`, and
+    any Deprecated `<verb>WithCompletionHandler:` beside it, in the order facts() read them."""
+    if not info.get("noparam"):
+        return []
+    return [info["noparam"]] + list(info.get("noparam_more") or [])
 
 
 def cluster_interface(cluster, items, supers):
@@ -3000,29 +3114,28 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
     # `initWithDevice:endpoint:queue:`; the current `initWithDevice:endpointID:queue:` is the class it
     # aliases', and that class is a port class with ITS OWN `_charon_queue`. An object built through the
     # inherited initializer holds its queue there and this class's stays nil, so the queue is read from the
-    # superclass's ivar. That ivar is private to the superclass's own file, so this file declares it again,
-    # PROTECTED, in an extension of the superclass: the compiler then reads it at the offset the superclass's
-    # object defines (_OBJC_IVAR_$_<superclass>._charon_queue, private external there, so it links inside the
-    # library and is exported by none). Not a method - the differential compares the method lists - and not a
-    # runtime lookup by name. Measured: compiles for armv7-apple-ios6.1.3 and the host with 0 errors, and a
+    # superclass's ivar. That ivar is declared ONCE, PROTECTED, in CharonMatterQueueStorage.h, which the
+    # superclass and every alias of it import: the compiler reads it at the offset the superclass's object
+    # defines (_OBJC_IVAR_$_<superclass>._charon_queue, private external there, so it links inside the library
+    # and is exported by none). Not a method - the differential compares the method lists - and not a runtime
+    # lookup by name. Measured: compiles for armv7-apple-ios6.1.3 and the host with 0 errors, and a
     # file-private static function that reads the ivar does not compile ("is private").
-    inherits_queue = bool(initialisers) and not any(
-        selector_of(each["signature"]) == "initWithDevice:endpointID:queue:" for each in initialisers)
-    if inherits_queue:
-        if not supers:
-            raise SystemExit("%s inherits its queue but names no superclass to read it from" % cluster)
-        body.append("@interface %s () {\n"
-                    "    @protected\n"
-                    "    dispatch_queue_t _charon_queue;\n"
-                    "}\n"
-                    "@end\n\n" % supers)
+    inherits_queue = inherits_queue_of(initialisers)
+    if inherits_queue and not supers:
+        raise SystemExit("%s inherits its queue but names no superclass to read it from" % cluster)
     body.append("@interface %s () {\n" % cluster)
     body.append("    id _charon_device;\n")
     body.append("    NSNumber *_charon_endpoint;\n")
-    body.append("    dispatch_queue_t _charon_queue;\n")
+    if cluster not in QUEUE_SUPERS:
+        body.append("    dispatch_queue_t _charon_queue;\n")
+    # PACKAGE, not private: the static C functions below read this table from outside the methods, and a
+    # private ivar is not visible to them ("instance variable is private"). The offset symbol stays private
+    # external in the object, so the table is still exported by nothing.
+    body.append("    @package\n")
     body.append("    NSMutableDictionary *_charon_values;\n")
     body.append("}\n")
     body.append("@end\n\n")
+    helpers_at = len(body)
     body.append("@implementation %s\n\n" % cluster)
 
     # The class interface above declares one NSMutableDictionary property per attribute, and the
@@ -3037,28 +3150,9 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
         for _name in sorted(attributes):
             body.append("@synthesize %sValues = _%sValues;\n" % (_name, _name))
         body.append("\n")
-    body.append("// The values the caller has written, by attribute name: this object's own table, made on\n"
-                "// first use - an object built through a superclass's initializer never ran this class's -\n"
-                "// and handed out under the object's lock, which every read and write below holds for the\n"
-                "// whole of its access. It is not keyed by the class: two objects of one class are two\n"
-                "// tables, as they are two sets of state in the framework.\n")
-    body.append("- (NSMutableDictionary *)charon_port_values\n{\n"
-                "    @synchronized (self) {\n"
-                "        if (!_charon_values) {\n"
-                "            _charon_values = [NSMutableDictionary dictionary];\n"
-                "        }\n"
-                "        return _charon_values;\n"
-                "    }\n}\n\n")
-    body.append("// The error a member that would need a node answers, on a release with no Matter\n"
-                "// hardware: there is no controller to ask and no node to read from. It is the framework's\n"
-                "// own answer to a cached read on a container with no cache and to any request on a\n"
-                "// controller that has been shut down, measured on the host by\n"
-                "// tests/backports/host/matterdifferential/behaviour.m: MTRErrorDomain, MTRErrorCodeInvalidState,\n"
-                "// \"Invalid object state.\". The domain is written as the string the constant holds: the\n"
-                "// constant is defined by the framework's own build (packages/m/matter), not by this library.\n")
-    body.append("+ (NSError *)charon_port_no_node_error\n{\n"
-                "    return [NSError errorWithDomain:@\"MTRErrorDomain\" code:MTRErrorCodeInvalidState\n"
-                "                           userInfo:@{NSLocalizedDescriptionKey: @\"Invalid object state.\"}];\n}\n\n")
+    # The two helpers are FILE-STATIC C functions, not methods: the differential compares the class's method
+    # lists, and a helper that is a method is one more selector on every class. They are written once the
+    # body is known, at helpers_at, and only when a body calls them (an unused static function is a warning).
     for entry in initialisers:
         body.append(as_comment(shape_line(entry["signature"])))
         # The three arguments go into the three ivars the class extension above declares: an initializer
@@ -3083,6 +3177,12 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                          for slot, (name, kind) in zip(slots, typed))
         body.append("%s\n{\n%s    return self;\n}\n\n"
                     % (shape_line(entry["signature"]), stored))
+    # The queue a completion or a report handler is delivered on: the one the cluster was given. For an alias
+    # that is the superclass's, through the protected ivar in CharonMatterQueueStorage.h, and the object's own
+    # is used when it has one. A nil queue is a crash in dispatch_async, so the default global queue answers
+    # when there is none.
+    queue = ("(_charon_queue ?: ((%s *)self)->_charon_queue)" % supers
+             if inherits_queue else "_charon_queue")
     for name, info in attributes.items():
         value = info["value"]
         body.append("// %s, a %s.\n" % (name, value))
@@ -3098,7 +3198,7 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                         "    if (!%s) {\n        return;\n    }\n"
                         "    id written;\n"
                         "    @synchronized (self) {\n"
-                        "        written = [self charon_port_values][@\"%s\"];\n"
+                        "        written = charon_port_values(self)[@\"%s\"];\n"
                         "    }\n"
                         "    %s;\n}\n\n"
                         % (s, completion, name, completion_call(s, completion, "written")))
@@ -3115,7 +3215,7 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                         "    if (!%s) {\n        return;\n    }\n"
                         "    id written;\n"
                         "    @synchronized (self) {\n"
-                        "        written = [self charon_port_values][@\"%s\"];\n"
+                        "        written = charon_port_values(self)[@\"%s\"];\n"
                         "    }\n"
                         "    %s;\n}\n\n"
                         % (s, unused, completion, name,
@@ -3131,7 +3231,7 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
             unused = "".join("    (void)%s;\n" % each for each in names)
             body.append("%s\n{\n%s"
                         "    @synchronized (self) {\n"
-                        "        return [self charon_port_values][@\"%s\"];\n"
+                        "        return charon_port_values(self)[@\"%s\"];\n"
                         "    }\n}\n\n"
                         % (strip_return_nullability(s), unused, name))
         for s in info.get("write", []):
@@ -3147,7 +3247,7 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                 continue
             body.append("%s\n{\n"
                         "    @synchronized (self) {\n"
-                        "        [self charon_port_values][@\"%s\"] = %s;\n"
+                        "        charon_port_values(self)[@\"%s\"] = %s;\n"
                         "    }\n"
                         "    if (%s) {\n        %s;\n    }\n}\n\n"
                         % (s, name, value_name, completion, completion_call(s, completion)))
@@ -3164,7 +3264,7 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
             unused = "".join("    (void)%s;\n" % each for each in names[1:])
             body.append("%s\n{\n"
                         "    @synchronized (self) {\n"
-                        "        [self charon_port_values][@\"%s\"] = %s;\n"
+                        "        charon_port_values(self)[@\"%s\"] = %s;\n"
                         "    }\n%s}\n\n"
                         % (s, name, names[0], unused))
         for s in info.get("subscribe", []):
@@ -3180,8 +3280,6 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
             # The queue is the one the cluster was given. A cluster that never saw one answers on the default
             # queue, because dispatch_async on a nil queue is a crash, which is what the first version of
             # this body did on an object built through a superclass's initializer.
-            queue = ("(_charon_queue ?: ((%s *)self)->_charon_queue)" % supers
-                     if inherits_queue else "_charon_queue")
             handler, rule = completion_of(s)
             if handler is None:
                 OFFENDERS.append((cluster, name, "subscribe", s))
@@ -3196,7 +3294,7 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                         "    }\n}\n\n"
                         % (s, unused, handler, queue,
                            completion_call(s, handler,
-                                           error="[%s charon_port_no_node_error]" % cluster)))
+                                           error="charon_port_no_node_error()")))
     for name, info in cache.items():
         body.append("// The cached read of %s: no value and the error, because there is no node.\n" % name)
         args = arguments_or_note(info["signature"], cluster, name, "cached read")
@@ -3207,13 +3305,24 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
             OFFENDERS.append((cluster, name, "cached read", info["signature"]))
             continue
         EMITTED_DECLARED.append((cluster, selector_of(info["signature"])))
-        unused = "".join("    (void)%s;\n" % each for each in args[:-1])
+        # A cached read is a CLASS method, so it has no queue of the object's to use: it is given one, as the
+        # parameter `queue:` the SDK declares. The completion runs on that queue, as the framework's own does
+        # (measured on the host: tests/backports/host/matterdifferential/behaviour.m). A nil queue is a crash in
+        # dispatch_async, so the default global queue answers when the caller gave none.
+        given = [name for name, kind in arguments(info["signature"], typed=True) if "dispatch_queue_t" in kind]
+        unused = "".join("    (void)%s;\n" % each for each in args[:-1] if each not in given)
+        if given:
+            target = "%s\n                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)" % given[0]
+        else:
+            target = "dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)"
         body.append("%s\n{\n%s"
                     "    if (!%s) {\n        return;\n    }\n"
-                    "    %s;\n}\n\n"
-                    % (info["signature"], unused, completion,
+                    "    dispatch_async(%s, ^{\n"
+                    "        %s;\n"
+                    "    });\n}\n\n"
+                    % (info["signature"], unused, completion, target,
                        completion_call(info["signature"], completion,
-                                       error="[%s charon_port_no_node_error]" % cluster)))
+                                       error="charon_port_no_node_error()")))
     # Every shape this object emits has to match the interface it lives under. For a cluster whose
     # declaration is in the shared header, that means the header's region nullability, not the 26.2
     # header's per-parameter annotation.
@@ -3232,11 +3341,16 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                                           if isinstance(value, str)}.items())
                                     + ([("more", [strip_region_nullability(shape)
                                                   for shape in info["more"]])]
-                                       if info.get("more") else [])))
+                                       if info.get("more") else [])
+                                    + ([("noparam_more", [strip_region_nullability(shape)
+                                                          for shape in info["noparam_more"]])]
+                                       if info.get("noparam_more") else [])))
                         for verb, info in commands.items())
         for info in commands.values():
             if info.get("more"):
                 info["more"] = [strip_region_nullability(shape) for shape in info["more"]]
+            if info.get("noparam_more"):
+                info["noparam_more"] = [strip_region_nullability(shape) for shape in info["noparam_more"]]
         for info in attributes.values():
             for key in ("read", "read_params", "read_sync", "write", "write_expected", "subscribe"):
                 if isinstance(info.get(key), list):
@@ -3246,8 +3360,7 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                 info["signature"] = strip_region_nullability(info["signature"])
 
     for verb, info in commands.items():
-        if info.get("noparam"):
-            shape = info["noparam"]
+        for shape in noparam_shapes(info):
             names = arguments_or_note(shape, cluster, verb, "command")
             if names is not None:
                 completion, rule = completion_of(shape)
@@ -3279,6 +3392,39 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
             body.append("%s\n{\n%s"
                         "    if (%s) {\n        %s;\n    }\n}\n\n"
                         % (shape, unused, completion, completion_call(shape, completion)))
+    # The static helpers, written where the @implementation starts and only when a body above calls them.
+    # The values table is the object's own, made on first use - an object built through a superclass's
+    # initializer never ran this class's. It takes NO lock: the caller holds the object's lock for the whole
+    # of its access, and every read and write above takes that lock once.
+    helpers = []
+    if any("charon_port_values(self)" in each for each in body):
+        helpers.append("// The values the caller has written, by attribute name: this object's own table, made on\n"
+                       "// first use. The caller holds the object's lock for the whole of its access, so this takes\n"
+                       "// none. It is not keyed by the class: two objects of one class are two tables, as they are\n"
+                       "// two sets of state in the framework.\n"
+                       "static NSMutableDictionary *charon_port_values(%s *object)\n{\n"
+                       "    if (!object->_charon_values) {\n"
+                       "        object->_charon_values = [NSMutableDictionary dictionary];\n"
+                       "    }\n"
+                       "    return object->_charon_values;\n}\n\n" % cluster)
+    if any("charon_port_no_node_error()" in each for each in body):
+        helpers.append("// The error a member that would need a node answers, on a release with no Matter\n"
+                       "// hardware: there is no controller to ask and no node to read from. It is the framework's\n"
+                       "// own answer to a cached read on a container with no cache and to any request on a\n"
+                       "// controller that has been shut down, measured on the host by\n"
+                       "// tests/backports/host/matterdifferential/behaviour.m: MTRErrorDomain, MTRErrorCodeInvalidState,\n"
+                       "// \"Invalid object state.\". The domain is written as the string the constant holds: the\n"
+                       "// constant is defined by the framework's own build (packages/m/matter), not by this library.\n"
+                       "// Built once: every caller gets the same object, and it is made on first use.\n"
+                       "static NSError *charon_port_no_node_error(void)\n{\n"
+                       "    static NSError *error;\n"
+                       "    static dispatch_once_t once;\n"
+                       "    dispatch_once(&once, ^{\n"
+                       "        error = [NSError errorWithDomain:@\"MTRErrorDomain\" code:MTRErrorCodeInvalidState\n"
+                       "                                userInfo:@{NSLocalizedDescriptionKey: @\"Invalid object state.\"}];\n"
+                       "    });\n"
+                       "    return error;\n}\n\n")
+    body[helpers_at:helpers_at] = helpers
     body.append("@end\n")
     text = "".join(body)
 
@@ -3287,6 +3433,11 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
     # twice, and this object carries only its @implementation.
     text = text.replace("#import <Matter/Matter.h>",
                         "#import <Matter/Matter.h>\n#import \"CharonMatterTypes.h\"", 1)
+    # The superclass that declares the queue, and each alias that reads it, import the one header that declares
+    # it (see the alias's comment above). The superclass's own file no longer declares the ivar.
+    if inherits_queue or cluster in QUEUE_SUPERS:
+        text = text.replace("#import \"CharonMatterTypes.h\"",
+                            "#import \"CharonMatterTypes.h\"\n#import \"%s\"" % QUEUE_HEADER, 1)
     # The forward declarations go in the SHARED HEADER, not in this object: the interfaces there declare
     # methods whose parameter types are 26.2-only, and a @class line in the object is textually AFTER the
     # header that names those types, so the header could not see them and every interface line was
@@ -3531,18 +3682,32 @@ def main():
     EMITTED_DECLARED = []
     INTERFACE_LOST = []
     written = 0
+    # Every class is read once, before any is emitted: an alias needs its superclass named in the queue header,
+    # and that is known only from the alias's own initializers. The results are kept for the emit loop below.
+    QUEUE_SUPERS.clear()
+    read_once = {}
+    for cluster in arguments.classes:
+        if cluster in EXCLUDED:
+            continue
+        block, supers = cluster_block(lines, cluster)
+        if block is None:
+            continue
+        # What the port owes a body for: this SDK's declarations, including its categories, plus the members the
+        # library's SDK's own @interface declares for the class and this one dropped.
+        items = cluster_declarations(cluster, cluster_spans(lines, cluster))
+        facts_of = facts(items)
+        read_once[cluster] = (block, supers, items, facts_of)
+        if inherits_queue_of(facts_of[4]) and supers:
+            QUEUE_SUPERS.add(supers)
     for cluster in arguments.classes:
         if cluster in EXCLUDED:
             print("skipped %s: %s" % (cluster, EXCLUDED[cluster]))
             continue
-        block, supers = cluster_block(lines, cluster)
-        if block is None:
+        if cluster not in read_once:
             print("no such cluster in the SDK's Matter headers: %s" % cluster)
             continue
-        # What the port owes a body for: this SDK's declarations, plus the members the library's SDK's
-        # own @interface declares for the class and this one dropped.
-        items = cluster_declarations(cluster, block)
-        attributes, commands, version, cache_reads, initialisers, cache = facts(items)
+        block, supers, items, facts_of = read_once[cluster]
+        attributes, commands, version, cache_reads, initialisers, cache = facts_of
         # The CLASS name, verbatim. Stripping a prefix put OTA and Ota, and WakeOnLAN and WakeOnLan, on
         # the same file name, and a volume that folds case would fold them anyway - so a collision on the
         # name as written is detected here and the second one is suffixed, and both are printed.
@@ -3604,7 +3769,7 @@ def main():
         # nobody asked for correct, and MTRBaseClusterTestCluster came back DIFFERENT on exactly that.
         for first, text in emitted_declarations:
             name = selector_of(signature(text))
-            if name in declared or name in PORT_OWNED or name.startswith("."):
+            if name in declared or name.startswith("."):
                 continue
             # A CLASS method is not an instance member: the contract lists the instance methods, which is
             # what the differential compares, and the header's `+` declarations are skipped there on
@@ -3619,6 +3784,13 @@ def main():
                  len(initialisers), version or "unknown"))
         written += 1
         EMITTED.append(cluster)
+    # The queue header, when an alias reads a superclass's queue; a stale one from an earlier run goes when none does.
+    queue_header_path = os.path.join(arguments.out, QUEUE_HEADER)
+    if QUEUE_SUPERS:
+        with open(queue_header_path, "w") as out:
+            out.write(queue_header(QUEUE_SUPERS))
+    elif os.path.exists(queue_header_path):
+        os.remove(queue_header_path)
     # What was written, as the differential's input. It reads THIS rather than a cluster list kept beside
     # it, which is how the check came to ask for a cluster this run refused to generate.
     if arguments.paths:
@@ -3933,6 +4105,12 @@ def main():
                   " that does not compile by itself is a defect the objects were hiding")
             HEADER_NOT_ALONE.append("CharonMatterTypes.h")
 
+    queue_drift = queue_storage_drift(arguments.out)
+    for problem in queue_drift:
+        print("QUEUE STORAGE: %s" % problem)
+    if not queue_drift:
+        print("queue storage: %d superclass queue(s) declared once, in %s" % (len(QUEUE_SUPERS), QUEUE_HEADER))
+
     failed = compile_objects(arguments.out, arguments.sdk16, arguments.target)
     if failed:
         print("OBJECTS THAT DO NOT COMPILE against the SDK the library builds with: %d" % len(failed))
@@ -3960,7 +4138,7 @@ def main():
 
     everything_clear = not (OFFENDERS or LOST or PORT_ONLY or NAME_ERRORS or PARAMS_MISSING
                             or COMPILE_FAILURES or HEADER_NOT_ALONE or unnamed or STORE_CLASSES
-                            or GENERIC_DRIFT or INTERFACE_LOST)
+                            or GENERIC_DRIFT or INTERFACE_LOST or queue_drift)
     return 0 if everything_clear else 1
 
 

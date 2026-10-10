@@ -20,7 +20,7 @@
 //  and read and written under the object's lock, so two threads on one object are not a race.
 //  Every command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
-//  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
+//  read from. A cached read completes with no value and the error of charon_port_no_node_error();
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
 //  queue, never calls its established handler, and leaves the stored value alone.
 //
@@ -43,25 +43,21 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    @package
     NSMutableDictionary *_charon_values;
 }
 @end
 
-@implementation MTRClusterPowerSource
-
 // The values the caller has written, by attribute name: this object's own table, made on
-// first use - an object built through a superclass's initializer never ran this class's -
-// and handed out under the object's lock, which every read and write below holds for the
-// whole of its access. It is not keyed by the class: two objects of one class are two
-// tables, as they are two sets of state in the framework.
-- (NSMutableDictionary *)charon_port_values
+// first use. The caller holds the object's lock for the whole of its access, so this takes
+// none. It is not keyed by the class: two objects of one class are two tables, as they are
+// two sets of state in the framework.
+static NSMutableDictionary *charon_port_values(MTRClusterPowerSource *object)
 {
-    @synchronized (self) {
-        if (!_charon_values) {
-            _charon_values = [NSMutableDictionary dictionary];
-        }
-        return _charon_values;
+    if (!object->_charon_values) {
+        object->_charon_values = [NSMutableDictionary dictionary];
     }
+    return object->_charon_values;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -71,11 +67,19 @@
 // tests/backports/host/matterdifferential/behaviour.m: MTRErrorDomain, MTRErrorCodeInvalidState,
 // "Invalid object state.". The domain is written as the string the constant holds: the
 // constant is defined by the framework's own build (packages/m/matter), not by this library.
-+ (NSError *)charon_port_no_node_error
+// Built once: every caller gets the same object, and it is made on first use.
+static NSError *charon_port_no_node_error(void)
 {
-    return [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
-                           userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
+    static NSError *error;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        error = [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
+                                userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
+    });
+    return error;
 }
+
+@implementation MTRClusterPowerSource
 
 // - (instancetype)initWithDevice:(MTRDevice *)device
 // endpointID:(NSNumber *)endpointID
@@ -90,12 +94,25 @@
     return self;
 }
 
+// - (nullable instancetype)initWithDevice:(MTRDevice *)device
+// endpoint:(uint16_t)endpoint
+// queue:(dispatch_queue_t)queue
+- (nullable instancetype)initWithDevice:(MTRDevice *)device
+                               endpoint:(uint16_t)endpoint
+                                  queue:(dispatch_queue_t)queue
+{
+    _charon_device = device;
+    _charon_endpoint = @(endpoint);
+    _charon_queue = queue;
+    return self;
+}
+
 // Status, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeStatusWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Status"];
+        return charon_port_values(self)[@"Status"];
     }
 }
 
@@ -104,7 +121,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Order"];
+        return charon_port_values(self)[@"Order"];
     }
 }
 
@@ -113,7 +130,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Description"];
+        return charon_port_values(self)[@"Description"];
     }
 }
 
@@ -122,7 +139,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"WiredAssessedInputVoltage"];
+        return charon_port_values(self)[@"WiredAssessedInputVoltage"];
     }
 }
 
@@ -131,7 +148,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"WiredAssessedInputFrequency"];
+        return charon_port_values(self)[@"WiredAssessedInputFrequency"];
     }
 }
 
@@ -140,7 +157,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"WiredCurrentType"];
+        return charon_port_values(self)[@"WiredCurrentType"];
     }
 }
 
@@ -149,7 +166,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"WiredAssessedCurrent"];
+        return charon_port_values(self)[@"WiredAssessedCurrent"];
     }
 }
 
@@ -158,7 +175,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"WiredNominalVoltage"];
+        return charon_port_values(self)[@"WiredNominalVoltage"];
     }
 }
 
@@ -167,7 +184,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"WiredMaximumCurrent"];
+        return charon_port_values(self)[@"WiredMaximumCurrent"];
     }
 }
 
@@ -176,7 +193,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"WiredPresent"];
+        return charon_port_values(self)[@"WiredPresent"];
     }
 }
 
@@ -185,7 +202,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ActiveWiredFaults"];
+        return charon_port_values(self)[@"ActiveWiredFaults"];
     }
 }
 
@@ -194,7 +211,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"BatVoltage"];
+        return charon_port_values(self)[@"BatVoltage"];
     }
 }
 
@@ -203,7 +220,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"BatPercentRemaining"];
+        return charon_port_values(self)[@"BatPercentRemaining"];
     }
 }
 
@@ -212,7 +229,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"BatTimeRemaining"];
+        return charon_port_values(self)[@"BatTimeRemaining"];
     }
 }
 
@@ -221,7 +238,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"BatChargeLevel"];
+        return charon_port_values(self)[@"BatChargeLevel"];
     }
 }
 
@@ -230,7 +247,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"BatReplacementNeeded"];
+        return charon_port_values(self)[@"BatReplacementNeeded"];
     }
 }
 
@@ -239,7 +256,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"BatReplaceability"];
+        return charon_port_values(self)[@"BatReplaceability"];
     }
 }
 
@@ -248,7 +265,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"BatPresent"];
+        return charon_port_values(self)[@"BatPresent"];
     }
 }
 
@@ -257,7 +274,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ActiveBatFaults"];
+        return charon_port_values(self)[@"ActiveBatFaults"];
     }
 }
 
@@ -266,7 +283,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"BatReplacementDescription"];
+        return charon_port_values(self)[@"BatReplacementDescription"];
     }
 }
 
@@ -275,7 +292,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"BatCommonDesignation"];
+        return charon_port_values(self)[@"BatCommonDesignation"];
     }
 }
 
@@ -284,7 +301,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"BatANSIDesignation"];
+        return charon_port_values(self)[@"BatANSIDesignation"];
     }
 }
 
@@ -293,7 +310,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"BatIECDesignation"];
+        return charon_port_values(self)[@"BatIECDesignation"];
     }
 }
 
@@ -302,7 +319,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"BatApprovedChemistry"];
+        return charon_port_values(self)[@"BatApprovedChemistry"];
     }
 }
 
@@ -311,7 +328,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"BatCapacity"];
+        return charon_port_values(self)[@"BatCapacity"];
     }
 }
 
@@ -320,7 +337,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"BatQuantity"];
+        return charon_port_values(self)[@"BatQuantity"];
     }
 }
 
@@ -329,7 +346,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"BatChargeState"];
+        return charon_port_values(self)[@"BatChargeState"];
     }
 }
 
@@ -338,7 +355,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"BatTimeToFullCharge"];
+        return charon_port_values(self)[@"BatTimeToFullCharge"];
     }
 }
 
@@ -347,7 +364,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"BatFunctionalWhileCharging"];
+        return charon_port_values(self)[@"BatFunctionalWhileCharging"];
     }
 }
 
@@ -356,7 +373,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"BatChargingCurrent"];
+        return charon_port_values(self)[@"BatChargingCurrent"];
     }
 }
 
@@ -365,7 +382,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ActiveBatChargeFaults"];
+        return charon_port_values(self)[@"ActiveBatChargeFaults"];
     }
 }
 
@@ -374,7 +391,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"EndpointList"];
+        return charon_port_values(self)[@"EndpointList"];
     }
 }
 
@@ -383,7 +400,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"GeneratedCommandList"];
+        return charon_port_values(self)[@"GeneratedCommandList"];
     }
 }
 
@@ -392,7 +409,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AcceptedCommandList"];
+        return charon_port_values(self)[@"AcceptedCommandList"];
     }
 }
 
@@ -401,7 +418,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AttributeList"];
+        return charon_port_values(self)[@"AttributeList"];
     }
 }
 
@@ -410,7 +427,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"FeatureMap"];
+        return charon_port_values(self)[@"FeatureMap"];
     }
 }
 
@@ -419,7 +436,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ClusterRevision"];
+        return charon_port_values(self)[@"ClusterRevision"];
     }
 }
 

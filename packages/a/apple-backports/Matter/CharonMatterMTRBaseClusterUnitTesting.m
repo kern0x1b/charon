@@ -20,13 +20,14 @@
 //  and read and written under the object's lock, so two threads on one object are not a race.
 //  Every command answers through its completion. Nothing here reaches a fabric: the 95 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
-//  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
+//  read from. A cached read completes with no value and the error of charon_port_no_node_error();
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
 //  queue, never calls its established handler, and leaves the stored value alone.
 //
 #import <Foundation/Foundation.h>
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
+#import "CharonMatterQueueStorage.h"
 
 // This cluster's @interface is the SDK's own - iPhoneOS 16.4 declares MTRBaseClusterUnitTesting - and it marks
 // -initWithDevice:endpointID:queue: NS_DESIGNATED_INITIALIZER, so clang asks the initializer below to call
@@ -42,26 +43,21 @@
 @interface MTRBaseClusterUnitTesting () {
     id _charon_device;
     NSNumber *_charon_endpoint;
-    dispatch_queue_t _charon_queue;
+    @package
     NSMutableDictionary *_charon_values;
 }
 @end
 
-@implementation MTRBaseClusterUnitTesting
-
 // The values the caller has written, by attribute name: this object's own table, made on
-// first use - an object built through a superclass's initializer never ran this class's -
-// and handed out under the object's lock, which every read and write below holds for the
-// whole of its access. It is not keyed by the class: two objects of one class are two
-// tables, as they are two sets of state in the framework.
-- (NSMutableDictionary *)charon_port_values
+// first use. The caller holds the object's lock for the whole of its access, so this takes
+// none. It is not keyed by the class: two objects of one class are two tables, as they are
+// two sets of state in the framework.
+static NSMutableDictionary *charon_port_values(MTRBaseClusterUnitTesting *object)
 {
-    @synchronized (self) {
-        if (!_charon_values) {
-            _charon_values = [NSMutableDictionary dictionary];
-        }
-        return _charon_values;
+    if (!object->_charon_values) {
+        object->_charon_values = [NSMutableDictionary dictionary];
     }
+    return object->_charon_values;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -71,11 +67,19 @@
 // tests/backports/host/matterdifferential/behaviour.m: MTRErrorDomain, MTRErrorCodeInvalidState,
 // "Invalid object state.". The domain is written as the string the constant holds: the
 // constant is defined by the framework's own build (packages/m/matter), not by this library.
-+ (NSError *)charon_port_no_node_error
+// Built once: every caller gets the same object, and it is made on first use.
+static NSError *charon_port_no_node_error(void)
 {
-    return [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
-                           userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
+    static NSError *error;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        error = [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
+                                userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
+    });
+    return error;
 }
+
+@implementation MTRBaseClusterUnitTesting
 
 // - (instancetype)initWithDevice:(MTRBaseDevice *)device
 // endpointID:(NSNumber *)endpointID
@@ -98,7 +102,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"Boolean"];
+        written = charon_port_values(self)[@"Boolean"];
     }
     completion(written, nil);
 }
@@ -106,7 +110,7 @@
 - (void)writeAttributeBooleanWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Boolean"] = value;
+        charon_port_values(self)[@"Boolean"] = value;
     }
     if (completion) {
         completion(nil);
@@ -116,7 +120,7 @@
 - (void)writeAttributeBooleanWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Boolean"] = value;
+        charon_port_values(self)[@"Boolean"] = value;
     }
     if (completion) {
         completion(nil);
@@ -132,7 +136,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -145,7 +149,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"Bitmap8"];
+        written = charon_port_values(self)[@"Bitmap8"];
     }
     completion(written, nil);
 }
@@ -153,7 +157,7 @@
 - (void)writeAttributeBitmap8WithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Bitmap8"] = value;
+        charon_port_values(self)[@"Bitmap8"] = value;
     }
     if (completion) {
         completion(nil);
@@ -163,7 +167,7 @@
 - (void)writeAttributeBitmap8WithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Bitmap8"] = value;
+        charon_port_values(self)[@"Bitmap8"] = value;
     }
     if (completion) {
         completion(nil);
@@ -179,7 +183,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -192,7 +196,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"Bitmap16"];
+        written = charon_port_values(self)[@"Bitmap16"];
     }
     completion(written, nil);
 }
@@ -200,7 +204,7 @@
 - (void)writeAttributeBitmap16WithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Bitmap16"] = value;
+        charon_port_values(self)[@"Bitmap16"] = value;
     }
     if (completion) {
         completion(nil);
@@ -210,7 +214,7 @@
 - (void)writeAttributeBitmap16WithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Bitmap16"] = value;
+        charon_port_values(self)[@"Bitmap16"] = value;
     }
     if (completion) {
         completion(nil);
@@ -226,7 +230,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -239,7 +243,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"Bitmap32"];
+        written = charon_port_values(self)[@"Bitmap32"];
     }
     completion(written, nil);
 }
@@ -247,7 +251,7 @@
 - (void)writeAttributeBitmap32WithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Bitmap32"] = value;
+        charon_port_values(self)[@"Bitmap32"] = value;
     }
     if (completion) {
         completion(nil);
@@ -257,7 +261,7 @@
 - (void)writeAttributeBitmap32WithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Bitmap32"] = value;
+        charon_port_values(self)[@"Bitmap32"] = value;
     }
     if (completion) {
         completion(nil);
@@ -273,7 +277,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -286,7 +290,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"Bitmap64"];
+        written = charon_port_values(self)[@"Bitmap64"];
     }
     completion(written, nil);
 }
@@ -294,7 +298,7 @@
 - (void)writeAttributeBitmap64WithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Bitmap64"] = value;
+        charon_port_values(self)[@"Bitmap64"] = value;
     }
     if (completion) {
         completion(nil);
@@ -304,7 +308,7 @@
 - (void)writeAttributeBitmap64WithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Bitmap64"] = value;
+        charon_port_values(self)[@"Bitmap64"] = value;
     }
     if (completion) {
         completion(nil);
@@ -320,7 +324,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -333,7 +337,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"Int8u"];
+        written = charon_port_values(self)[@"Int8u"];
     }
     completion(written, nil);
 }
@@ -341,7 +345,7 @@
 - (void)writeAttributeInt8uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int8u"] = value;
+        charon_port_values(self)[@"Int8u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -351,7 +355,7 @@
 - (void)writeAttributeInt8uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int8u"] = value;
+        charon_port_values(self)[@"Int8u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -367,7 +371,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -380,7 +384,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"Int16u"];
+        written = charon_port_values(self)[@"Int16u"];
     }
     completion(written, nil);
 }
@@ -388,7 +392,7 @@
 - (void)writeAttributeInt16uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int16u"] = value;
+        charon_port_values(self)[@"Int16u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -398,7 +402,7 @@
 - (void)writeAttributeInt16uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int16u"] = value;
+        charon_port_values(self)[@"Int16u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -414,7 +418,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -427,7 +431,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"Int24u"];
+        written = charon_port_values(self)[@"Int24u"];
     }
     completion(written, nil);
 }
@@ -435,7 +439,7 @@
 - (void)writeAttributeInt24uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int24u"] = value;
+        charon_port_values(self)[@"Int24u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -445,7 +449,7 @@
 - (void)writeAttributeInt24uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int24u"] = value;
+        charon_port_values(self)[@"Int24u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -461,7 +465,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -474,7 +478,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"Int32u"];
+        written = charon_port_values(self)[@"Int32u"];
     }
     completion(written, nil);
 }
@@ -482,7 +486,7 @@
 - (void)writeAttributeInt32uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int32u"] = value;
+        charon_port_values(self)[@"Int32u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -492,7 +496,7 @@
 - (void)writeAttributeInt32uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int32u"] = value;
+        charon_port_values(self)[@"Int32u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -508,7 +512,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -521,7 +525,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"Int40u"];
+        written = charon_port_values(self)[@"Int40u"];
     }
     completion(written, nil);
 }
@@ -529,7 +533,7 @@
 - (void)writeAttributeInt40uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int40u"] = value;
+        charon_port_values(self)[@"Int40u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -539,7 +543,7 @@
 - (void)writeAttributeInt40uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int40u"] = value;
+        charon_port_values(self)[@"Int40u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -555,7 +559,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -568,7 +572,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"Int48u"];
+        written = charon_port_values(self)[@"Int48u"];
     }
     completion(written, nil);
 }
@@ -576,7 +580,7 @@
 - (void)writeAttributeInt48uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int48u"] = value;
+        charon_port_values(self)[@"Int48u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -586,7 +590,7 @@
 - (void)writeAttributeInt48uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int48u"] = value;
+        charon_port_values(self)[@"Int48u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -602,7 +606,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -615,7 +619,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"Int56u"];
+        written = charon_port_values(self)[@"Int56u"];
     }
     completion(written, nil);
 }
@@ -623,7 +627,7 @@
 - (void)writeAttributeInt56uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int56u"] = value;
+        charon_port_values(self)[@"Int56u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -633,7 +637,7 @@
 - (void)writeAttributeInt56uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int56u"] = value;
+        charon_port_values(self)[@"Int56u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -649,7 +653,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -662,7 +666,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"Int64u"];
+        written = charon_port_values(self)[@"Int64u"];
     }
     completion(written, nil);
 }
@@ -670,7 +674,7 @@
 - (void)writeAttributeInt64uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int64u"] = value;
+        charon_port_values(self)[@"Int64u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -680,7 +684,7 @@
 - (void)writeAttributeInt64uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int64u"] = value;
+        charon_port_values(self)[@"Int64u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -696,7 +700,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -709,7 +713,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"Int8s"];
+        written = charon_port_values(self)[@"Int8s"];
     }
     completion(written, nil);
 }
@@ -717,7 +721,7 @@
 - (void)writeAttributeInt8sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int8s"] = value;
+        charon_port_values(self)[@"Int8s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -727,7 +731,7 @@
 - (void)writeAttributeInt8sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int8s"] = value;
+        charon_port_values(self)[@"Int8s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -743,7 +747,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -756,7 +760,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"Int16s"];
+        written = charon_port_values(self)[@"Int16s"];
     }
     completion(written, nil);
 }
@@ -764,7 +768,7 @@
 - (void)writeAttributeInt16sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int16s"] = value;
+        charon_port_values(self)[@"Int16s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -774,7 +778,7 @@
 - (void)writeAttributeInt16sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int16s"] = value;
+        charon_port_values(self)[@"Int16s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -790,7 +794,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -803,7 +807,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"Int24s"];
+        written = charon_port_values(self)[@"Int24s"];
     }
     completion(written, nil);
 }
@@ -811,7 +815,7 @@
 - (void)writeAttributeInt24sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int24s"] = value;
+        charon_port_values(self)[@"Int24s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -821,7 +825,7 @@
 - (void)writeAttributeInt24sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int24s"] = value;
+        charon_port_values(self)[@"Int24s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -837,7 +841,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -850,7 +854,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"Int32s"];
+        written = charon_port_values(self)[@"Int32s"];
     }
     completion(written, nil);
 }
@@ -858,7 +862,7 @@
 - (void)writeAttributeInt32sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int32s"] = value;
+        charon_port_values(self)[@"Int32s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -868,7 +872,7 @@
 - (void)writeAttributeInt32sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int32s"] = value;
+        charon_port_values(self)[@"Int32s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -884,7 +888,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -897,7 +901,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"Int40s"];
+        written = charon_port_values(self)[@"Int40s"];
     }
     completion(written, nil);
 }
@@ -905,7 +909,7 @@
 - (void)writeAttributeInt40sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int40s"] = value;
+        charon_port_values(self)[@"Int40s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -915,7 +919,7 @@
 - (void)writeAttributeInt40sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int40s"] = value;
+        charon_port_values(self)[@"Int40s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -931,7 +935,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -944,7 +948,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"Int48s"];
+        written = charon_port_values(self)[@"Int48s"];
     }
     completion(written, nil);
 }
@@ -952,7 +956,7 @@
 - (void)writeAttributeInt48sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int48s"] = value;
+        charon_port_values(self)[@"Int48s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -962,7 +966,7 @@
 - (void)writeAttributeInt48sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int48s"] = value;
+        charon_port_values(self)[@"Int48s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -978,7 +982,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -991,7 +995,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"Int56s"];
+        written = charon_port_values(self)[@"Int56s"];
     }
     completion(written, nil);
 }
@@ -999,7 +1003,7 @@
 - (void)writeAttributeInt56sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int56s"] = value;
+        charon_port_values(self)[@"Int56s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1009,7 +1013,7 @@
 - (void)writeAttributeInt56sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int56s"] = value;
+        charon_port_values(self)[@"Int56s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1025,7 +1029,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1038,7 +1042,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"Int64s"];
+        written = charon_port_values(self)[@"Int64s"];
     }
     completion(written, nil);
 }
@@ -1046,7 +1050,7 @@
 - (void)writeAttributeInt64sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int64s"] = value;
+        charon_port_values(self)[@"Int64s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1056,7 +1060,7 @@
 - (void)writeAttributeInt64sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Int64s"] = value;
+        charon_port_values(self)[@"Int64s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1072,7 +1076,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1085,7 +1089,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"Enum8"];
+        written = charon_port_values(self)[@"Enum8"];
     }
     completion(written, nil);
 }
@@ -1093,7 +1097,7 @@
 - (void)writeAttributeEnum8WithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Enum8"] = value;
+        charon_port_values(self)[@"Enum8"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1103,7 +1107,7 @@
 - (void)writeAttributeEnum8WithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Enum8"] = value;
+        charon_port_values(self)[@"Enum8"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1119,7 +1123,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1132,7 +1136,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"Enum16"];
+        written = charon_port_values(self)[@"Enum16"];
     }
     completion(written, nil);
 }
@@ -1140,7 +1144,7 @@
 - (void)writeAttributeEnum16WithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Enum16"] = value;
+        charon_port_values(self)[@"Enum16"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1150,7 +1154,7 @@
 - (void)writeAttributeEnum16WithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Enum16"] = value;
+        charon_port_values(self)[@"Enum16"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1166,7 +1170,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1179,7 +1183,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"FloatSingle"];
+        written = charon_port_values(self)[@"FloatSingle"];
     }
     completion(written, nil);
 }
@@ -1187,7 +1191,7 @@
 - (void)writeAttributeFloatSingleWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"FloatSingle"] = value;
+        charon_port_values(self)[@"FloatSingle"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1197,7 +1201,7 @@
 - (void)writeAttributeFloatSingleWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"FloatSingle"] = value;
+        charon_port_values(self)[@"FloatSingle"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1213,7 +1217,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1226,7 +1230,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"FloatDouble"];
+        written = charon_port_values(self)[@"FloatDouble"];
     }
     completion(written, nil);
 }
@@ -1234,7 +1238,7 @@
 - (void)writeAttributeFloatDoubleWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"FloatDouble"] = value;
+        charon_port_values(self)[@"FloatDouble"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1244,7 +1248,7 @@
 - (void)writeAttributeFloatDoubleWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"FloatDouble"] = value;
+        charon_port_values(self)[@"FloatDouble"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1260,7 +1264,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1273,7 +1277,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"OctetString"];
+        written = charon_port_values(self)[@"OctetString"];
     }
     completion(written, nil);
 }
@@ -1281,7 +1285,7 @@
 - (void)writeAttributeOctetStringWithValue:(NSData * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"OctetString"] = value;
+        charon_port_values(self)[@"OctetString"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1291,7 +1295,7 @@
 - (void)writeAttributeOctetStringWithValue:(NSData * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"OctetString"] = value;
+        charon_port_values(self)[@"OctetString"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1307,7 +1311,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1320,7 +1324,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"ListInt8u"];
+        written = charon_port_values(self)[@"ListInt8u"];
     }
     completion(written, nil);
 }
@@ -1328,7 +1332,7 @@
 - (void)writeAttributeListInt8uWithValue:(NSArray * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"ListInt8u"] = value;
+        charon_port_values(self)[@"ListInt8u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1338,7 +1342,7 @@
 - (void)writeAttributeListInt8uWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"ListInt8u"] = value;
+        charon_port_values(self)[@"ListInt8u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1354,7 +1358,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1367,7 +1371,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"ListOctetString"];
+        written = charon_port_values(self)[@"ListOctetString"];
     }
     completion(written, nil);
 }
@@ -1375,7 +1379,7 @@
 - (void)writeAttributeListOctetStringWithValue:(NSArray * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"ListOctetString"] = value;
+        charon_port_values(self)[@"ListOctetString"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1385,7 +1389,7 @@
 - (void)writeAttributeListOctetStringWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"ListOctetString"] = value;
+        charon_port_values(self)[@"ListOctetString"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1401,7 +1405,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1414,7 +1418,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"ListStructOctetString"];
+        written = charon_port_values(self)[@"ListStructOctetString"];
     }
     completion(written, nil);
 }
@@ -1422,7 +1426,7 @@
 - (void)writeAttributeListStructOctetStringWithValue:(NSArray * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"ListStructOctetString"] = value;
+        charon_port_values(self)[@"ListStructOctetString"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1432,7 +1436,7 @@
 - (void)writeAttributeListStructOctetStringWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"ListStructOctetString"] = value;
+        charon_port_values(self)[@"ListStructOctetString"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1448,7 +1452,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1461,7 +1465,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"LongOctetString"];
+        written = charon_port_values(self)[@"LongOctetString"];
     }
     completion(written, nil);
 }
@@ -1469,7 +1473,7 @@
 - (void)writeAttributeLongOctetStringWithValue:(NSData * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"LongOctetString"] = value;
+        charon_port_values(self)[@"LongOctetString"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1479,7 +1483,7 @@
 - (void)writeAttributeLongOctetStringWithValue:(NSData * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"LongOctetString"] = value;
+        charon_port_values(self)[@"LongOctetString"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1495,7 +1499,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1508,7 +1512,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"CharString"];
+        written = charon_port_values(self)[@"CharString"];
     }
     completion(written, nil);
 }
@@ -1516,7 +1520,7 @@
 - (void)writeAttributeCharStringWithValue:(NSString * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"CharString"] = value;
+        charon_port_values(self)[@"CharString"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1526,7 +1530,7 @@
 - (void)writeAttributeCharStringWithValue:(NSString * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"CharString"] = value;
+        charon_port_values(self)[@"CharString"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1542,7 +1546,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1555,7 +1559,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"LongCharString"];
+        written = charon_port_values(self)[@"LongCharString"];
     }
     completion(written, nil);
 }
@@ -1563,7 +1567,7 @@
 - (void)writeAttributeLongCharStringWithValue:(NSString * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"LongCharString"] = value;
+        charon_port_values(self)[@"LongCharString"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1573,7 +1577,7 @@
 - (void)writeAttributeLongCharStringWithValue:(NSString * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"LongCharString"] = value;
+        charon_port_values(self)[@"LongCharString"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1589,7 +1593,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1602,7 +1606,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"EpochUs"];
+        written = charon_port_values(self)[@"EpochUs"];
     }
     completion(written, nil);
 }
@@ -1610,7 +1614,7 @@
 - (void)writeAttributeEpochUsWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"EpochUs"] = value;
+        charon_port_values(self)[@"EpochUs"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1620,7 +1624,7 @@
 - (void)writeAttributeEpochUsWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"EpochUs"] = value;
+        charon_port_values(self)[@"EpochUs"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1636,7 +1640,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1649,7 +1653,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"EpochS"];
+        written = charon_port_values(self)[@"EpochS"];
     }
     completion(written, nil);
 }
@@ -1657,7 +1661,7 @@
 - (void)writeAttributeEpochSWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"EpochS"] = value;
+        charon_port_values(self)[@"EpochS"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1667,7 +1671,7 @@
 - (void)writeAttributeEpochSWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"EpochS"] = value;
+        charon_port_values(self)[@"EpochS"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1683,7 +1687,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1696,7 +1700,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"VendorId"];
+        written = charon_port_values(self)[@"VendorId"];
     }
     completion(written, nil);
 }
@@ -1704,7 +1708,7 @@
 - (void)writeAttributeVendorIdWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"VendorId"] = value;
+        charon_port_values(self)[@"VendorId"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1714,7 +1718,7 @@
 - (void)writeAttributeVendorIdWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"VendorId"] = value;
+        charon_port_values(self)[@"VendorId"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1730,7 +1734,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1743,7 +1747,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"ListNullablesAndOptionalsStruct"];
+        written = charon_port_values(self)[@"ListNullablesAndOptionalsStruct"];
     }
     completion(written, nil);
 }
@@ -1751,7 +1755,7 @@
 - (void)writeAttributeListNullablesAndOptionalsStructWithValue:(NSArray * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"ListNullablesAndOptionalsStruct"] = value;
+        charon_port_values(self)[@"ListNullablesAndOptionalsStruct"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1761,7 +1765,7 @@
 - (void)writeAttributeListNullablesAndOptionalsStructWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"ListNullablesAndOptionalsStruct"] = value;
+        charon_port_values(self)[@"ListNullablesAndOptionalsStruct"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1777,7 +1781,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1790,7 +1794,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"EnumAttr"];
+        written = charon_port_values(self)[@"EnumAttr"];
     }
     completion(written, nil);
 }
@@ -1798,7 +1802,7 @@
 - (void)writeAttributeEnumAttrWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"EnumAttr"] = value;
+        charon_port_values(self)[@"EnumAttr"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1808,7 +1812,7 @@
 - (void)writeAttributeEnumAttrWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"EnumAttr"] = value;
+        charon_port_values(self)[@"EnumAttr"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1824,7 +1828,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1837,7 +1841,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"StructAttr"];
+        written = charon_port_values(self)[@"StructAttr"];
     }
     completion(written, nil);
 }
@@ -1845,7 +1849,7 @@
 - (void)writeAttributeStructAttrWithValue:(MTRUnitTestingClusterSimpleStruct * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"StructAttr"] = value;
+        charon_port_values(self)[@"StructAttr"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1855,7 +1859,7 @@
 - (void)writeAttributeStructAttrWithValue:(MTRUnitTestingClusterSimpleStruct * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"StructAttr"] = value;
+        charon_port_values(self)[@"StructAttr"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1871,7 +1875,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1884,7 +1888,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"RangeRestrictedInt8u"];
+        written = charon_port_values(self)[@"RangeRestrictedInt8u"];
     }
     completion(written, nil);
 }
@@ -1892,7 +1896,7 @@
 - (void)writeAttributeRangeRestrictedInt8uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"RangeRestrictedInt8u"] = value;
+        charon_port_values(self)[@"RangeRestrictedInt8u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1902,7 +1906,7 @@
 - (void)writeAttributeRangeRestrictedInt8uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"RangeRestrictedInt8u"] = value;
+        charon_port_values(self)[@"RangeRestrictedInt8u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1918,7 +1922,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1931,7 +1935,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"RangeRestrictedInt8s"];
+        written = charon_port_values(self)[@"RangeRestrictedInt8s"];
     }
     completion(written, nil);
 }
@@ -1939,7 +1943,7 @@
 - (void)writeAttributeRangeRestrictedInt8sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"RangeRestrictedInt8s"] = value;
+        charon_port_values(self)[@"RangeRestrictedInt8s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1949,7 +1953,7 @@
 - (void)writeAttributeRangeRestrictedInt8sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"RangeRestrictedInt8s"] = value;
+        charon_port_values(self)[@"RangeRestrictedInt8s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1965,7 +1969,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1978,7 +1982,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"RangeRestrictedInt16u"];
+        written = charon_port_values(self)[@"RangeRestrictedInt16u"];
     }
     completion(written, nil);
 }
@@ -1986,7 +1990,7 @@
 - (void)writeAttributeRangeRestrictedInt16uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"RangeRestrictedInt16u"] = value;
+        charon_port_values(self)[@"RangeRestrictedInt16u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1996,7 +2000,7 @@
 - (void)writeAttributeRangeRestrictedInt16uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"RangeRestrictedInt16u"] = value;
+        charon_port_values(self)[@"RangeRestrictedInt16u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2012,7 +2016,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -2025,7 +2029,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"RangeRestrictedInt16s"];
+        written = charon_port_values(self)[@"RangeRestrictedInt16s"];
     }
     completion(written, nil);
 }
@@ -2033,7 +2037,7 @@
 - (void)writeAttributeRangeRestrictedInt16sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"RangeRestrictedInt16s"] = value;
+        charon_port_values(self)[@"RangeRestrictedInt16s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2043,7 +2047,7 @@
 - (void)writeAttributeRangeRestrictedInt16sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"RangeRestrictedInt16s"] = value;
+        charon_port_values(self)[@"RangeRestrictedInt16s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2059,7 +2063,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -2072,7 +2076,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"ListLongOctetString"];
+        written = charon_port_values(self)[@"ListLongOctetString"];
     }
     completion(written, nil);
 }
@@ -2080,7 +2084,7 @@
 - (void)writeAttributeListLongOctetStringWithValue:(NSArray * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"ListLongOctetString"] = value;
+        charon_port_values(self)[@"ListLongOctetString"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2090,7 +2094,7 @@
 - (void)writeAttributeListLongOctetStringWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"ListLongOctetString"] = value;
+        charon_port_values(self)[@"ListLongOctetString"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2106,7 +2110,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -2120,7 +2124,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"ListFabricScoped"];
+        written = charon_port_values(self)[@"ListFabricScoped"];
     }
     completion(written, nil);
 }
@@ -2128,7 +2132,7 @@
 - (void)writeAttributeListFabricScopedWithValue:(NSArray * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"ListFabricScoped"] = value;
+        charon_port_values(self)[@"ListFabricScoped"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2138,7 +2142,7 @@
 - (void)writeAttributeListFabricScopedWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"ListFabricScoped"] = value;
+        charon_port_values(self)[@"ListFabricScoped"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2154,7 +2158,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -2167,7 +2171,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"TimedWriteBoolean"];
+        written = charon_port_values(self)[@"TimedWriteBoolean"];
     }
     completion(written, nil);
 }
@@ -2175,7 +2179,7 @@
 - (void)writeAttributeTimedWriteBooleanWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"TimedWriteBoolean"] = value;
+        charon_port_values(self)[@"TimedWriteBoolean"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2185,7 +2189,7 @@
 - (void)writeAttributeTimedWriteBooleanWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"TimedWriteBoolean"] = value;
+        charon_port_values(self)[@"TimedWriteBoolean"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2201,7 +2205,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -2214,7 +2218,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"GeneralErrorBoolean"];
+        written = charon_port_values(self)[@"GeneralErrorBoolean"];
     }
     completion(written, nil);
 }
@@ -2222,7 +2226,7 @@
 - (void)writeAttributeGeneralErrorBooleanWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"GeneralErrorBoolean"] = value;
+        charon_port_values(self)[@"GeneralErrorBoolean"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2232,7 +2236,7 @@
 - (void)writeAttributeGeneralErrorBooleanWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"GeneralErrorBoolean"] = value;
+        charon_port_values(self)[@"GeneralErrorBoolean"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2248,7 +2252,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -2261,7 +2265,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"ClusterErrorBoolean"];
+        written = charon_port_values(self)[@"ClusterErrorBoolean"];
     }
     completion(written, nil);
 }
@@ -2269,7 +2273,7 @@
 - (void)writeAttributeClusterErrorBooleanWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"ClusterErrorBoolean"] = value;
+        charon_port_values(self)[@"ClusterErrorBoolean"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2279,7 +2283,7 @@
 - (void)writeAttributeClusterErrorBooleanWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"ClusterErrorBoolean"] = value;
+        charon_port_values(self)[@"ClusterErrorBoolean"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2295,7 +2299,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -2308,7 +2312,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"GlobalEnum"];
+        written = charon_port_values(self)[@"GlobalEnum"];
     }
     completion(written, nil);
 }
@@ -2316,7 +2320,7 @@
 - (void)writeAttributeGlobalEnumWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"GlobalEnum"] = value;
+        charon_port_values(self)[@"GlobalEnum"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2326,7 +2330,7 @@
 - (void)writeAttributeGlobalEnumWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"GlobalEnum"] = value;
+        charon_port_values(self)[@"GlobalEnum"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2342,7 +2346,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -2355,7 +2359,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"GlobalStruct"];
+        written = charon_port_values(self)[@"GlobalStruct"];
     }
     completion(written, nil);
 }
@@ -2363,7 +2367,7 @@
 - (void)writeAttributeGlobalStructWithValue:(MTRDataTypeTestGlobalStruct * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"GlobalStruct"] = value;
+        charon_port_values(self)[@"GlobalStruct"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2373,7 +2377,7 @@
 - (void)writeAttributeGlobalStructWithValue:(MTRDataTypeTestGlobalStruct * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"GlobalStruct"] = value;
+        charon_port_values(self)[@"GlobalStruct"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2389,7 +2393,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -2402,7 +2406,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"UnsupportedAttributeRequiringAdminPrivilege"];
+        written = charon_port_values(self)[@"UnsupportedAttributeRequiringAdminPrivilege"];
     }
     completion(written, nil);
 }
@@ -2410,7 +2414,7 @@
 - (void)writeAttributeUnsupportedAttributeRequiringAdminPrivilegeWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"UnsupportedAttributeRequiringAdminPrivilege"] = value;
+        charon_port_values(self)[@"UnsupportedAttributeRequiringAdminPrivilege"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2420,7 +2424,7 @@
 - (void)writeAttributeUnsupportedAttributeRequiringAdminPrivilegeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"UnsupportedAttributeRequiringAdminPrivilege"] = value;
+        charon_port_values(self)[@"UnsupportedAttributeRequiringAdminPrivilege"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2436,7 +2440,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -2449,7 +2453,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"Unsupported"];
+        written = charon_port_values(self)[@"Unsupported"];
     }
     completion(written, nil);
 }
@@ -2457,7 +2461,7 @@
 - (void)writeAttributeUnsupportedWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Unsupported"] = value;
+        charon_port_values(self)[@"Unsupported"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2467,7 +2471,7 @@
 - (void)writeAttributeUnsupportedWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Unsupported"] = value;
+        charon_port_values(self)[@"Unsupported"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2483,7 +2487,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -2496,7 +2500,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"ReadFailureCode"];
+        written = charon_port_values(self)[@"ReadFailureCode"];
     }
     completion(written, nil);
 }
@@ -2504,7 +2508,7 @@
 - (void)writeAttributeReadFailureCodeWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"ReadFailureCode"] = value;
+        charon_port_values(self)[@"ReadFailureCode"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2514,7 +2518,7 @@
 - (void)writeAttributeReadFailureCodeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"ReadFailureCode"] = value;
+        charon_port_values(self)[@"ReadFailureCode"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2530,7 +2534,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -2543,7 +2547,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"FailureInt32U"];
+        written = charon_port_values(self)[@"FailureInt32U"];
     }
     completion(written, nil);
 }
@@ -2551,7 +2555,7 @@
 - (void)writeAttributeFailureInt32UWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"FailureInt32U"] = value;
+        charon_port_values(self)[@"FailureInt32U"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2561,7 +2565,7 @@
 - (void)writeAttributeFailureInt32UWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"FailureInt32U"] = value;
+        charon_port_values(self)[@"FailureInt32U"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2577,7 +2581,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -2590,7 +2594,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableBoolean"];
+        written = charon_port_values(self)[@"NullableBoolean"];
     }
     completion(written, nil);
 }
@@ -2598,7 +2602,7 @@
 - (void)writeAttributeNullableBooleanWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableBoolean"] = value;
+        charon_port_values(self)[@"NullableBoolean"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2608,7 +2612,7 @@
 - (void)writeAttributeNullableBooleanWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableBoolean"] = value;
+        charon_port_values(self)[@"NullableBoolean"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2624,7 +2628,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -2637,7 +2641,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableBitmap8"];
+        written = charon_port_values(self)[@"NullableBitmap8"];
     }
     completion(written, nil);
 }
@@ -2645,7 +2649,7 @@
 - (void)writeAttributeNullableBitmap8WithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableBitmap8"] = value;
+        charon_port_values(self)[@"NullableBitmap8"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2655,7 +2659,7 @@
 - (void)writeAttributeNullableBitmap8WithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableBitmap8"] = value;
+        charon_port_values(self)[@"NullableBitmap8"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2671,7 +2675,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -2684,7 +2688,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableBitmap16"];
+        written = charon_port_values(self)[@"NullableBitmap16"];
     }
     completion(written, nil);
 }
@@ -2692,7 +2696,7 @@
 - (void)writeAttributeNullableBitmap16WithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableBitmap16"] = value;
+        charon_port_values(self)[@"NullableBitmap16"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2702,7 +2706,7 @@
 - (void)writeAttributeNullableBitmap16WithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableBitmap16"] = value;
+        charon_port_values(self)[@"NullableBitmap16"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2718,7 +2722,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -2731,7 +2735,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableBitmap32"];
+        written = charon_port_values(self)[@"NullableBitmap32"];
     }
     completion(written, nil);
 }
@@ -2739,7 +2743,7 @@
 - (void)writeAttributeNullableBitmap32WithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableBitmap32"] = value;
+        charon_port_values(self)[@"NullableBitmap32"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2749,7 +2753,7 @@
 - (void)writeAttributeNullableBitmap32WithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableBitmap32"] = value;
+        charon_port_values(self)[@"NullableBitmap32"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2765,7 +2769,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -2778,7 +2782,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableBitmap64"];
+        written = charon_port_values(self)[@"NullableBitmap64"];
     }
     completion(written, nil);
 }
@@ -2786,7 +2790,7 @@
 - (void)writeAttributeNullableBitmap64WithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableBitmap64"] = value;
+        charon_port_values(self)[@"NullableBitmap64"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2796,7 +2800,7 @@
 - (void)writeAttributeNullableBitmap64WithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableBitmap64"] = value;
+        charon_port_values(self)[@"NullableBitmap64"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2812,7 +2816,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -2825,7 +2829,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableInt8u"];
+        written = charon_port_values(self)[@"NullableInt8u"];
     }
     completion(written, nil);
 }
@@ -2833,7 +2837,7 @@
 - (void)writeAttributeNullableInt8uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt8u"] = value;
+        charon_port_values(self)[@"NullableInt8u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2843,7 +2847,7 @@
 - (void)writeAttributeNullableInt8uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt8u"] = value;
+        charon_port_values(self)[@"NullableInt8u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2859,7 +2863,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -2872,7 +2876,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableInt16u"];
+        written = charon_port_values(self)[@"NullableInt16u"];
     }
     completion(written, nil);
 }
@@ -2880,7 +2884,7 @@
 - (void)writeAttributeNullableInt16uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt16u"] = value;
+        charon_port_values(self)[@"NullableInt16u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2890,7 +2894,7 @@
 - (void)writeAttributeNullableInt16uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt16u"] = value;
+        charon_port_values(self)[@"NullableInt16u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2906,7 +2910,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -2919,7 +2923,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableInt24u"];
+        written = charon_port_values(self)[@"NullableInt24u"];
     }
     completion(written, nil);
 }
@@ -2927,7 +2931,7 @@
 - (void)writeAttributeNullableInt24uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt24u"] = value;
+        charon_port_values(self)[@"NullableInt24u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2937,7 +2941,7 @@
 - (void)writeAttributeNullableInt24uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt24u"] = value;
+        charon_port_values(self)[@"NullableInt24u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2953,7 +2957,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -2966,7 +2970,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableInt32u"];
+        written = charon_port_values(self)[@"NullableInt32u"];
     }
     completion(written, nil);
 }
@@ -2974,7 +2978,7 @@
 - (void)writeAttributeNullableInt32uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt32u"] = value;
+        charon_port_values(self)[@"NullableInt32u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2984,7 +2988,7 @@
 - (void)writeAttributeNullableInt32uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt32u"] = value;
+        charon_port_values(self)[@"NullableInt32u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3000,7 +3004,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -3013,7 +3017,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableInt40u"];
+        written = charon_port_values(self)[@"NullableInt40u"];
     }
     completion(written, nil);
 }
@@ -3021,7 +3025,7 @@
 - (void)writeAttributeNullableInt40uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt40u"] = value;
+        charon_port_values(self)[@"NullableInt40u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3031,7 +3035,7 @@
 - (void)writeAttributeNullableInt40uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt40u"] = value;
+        charon_port_values(self)[@"NullableInt40u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3047,7 +3051,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -3060,7 +3064,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableInt48u"];
+        written = charon_port_values(self)[@"NullableInt48u"];
     }
     completion(written, nil);
 }
@@ -3068,7 +3072,7 @@
 - (void)writeAttributeNullableInt48uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt48u"] = value;
+        charon_port_values(self)[@"NullableInt48u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3078,7 +3082,7 @@
 - (void)writeAttributeNullableInt48uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt48u"] = value;
+        charon_port_values(self)[@"NullableInt48u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3094,7 +3098,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -3107,7 +3111,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableInt56u"];
+        written = charon_port_values(self)[@"NullableInt56u"];
     }
     completion(written, nil);
 }
@@ -3115,7 +3119,7 @@
 - (void)writeAttributeNullableInt56uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt56u"] = value;
+        charon_port_values(self)[@"NullableInt56u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3125,7 +3129,7 @@
 - (void)writeAttributeNullableInt56uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt56u"] = value;
+        charon_port_values(self)[@"NullableInt56u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3141,7 +3145,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -3154,7 +3158,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableInt64u"];
+        written = charon_port_values(self)[@"NullableInt64u"];
     }
     completion(written, nil);
 }
@@ -3162,7 +3166,7 @@
 - (void)writeAttributeNullableInt64uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt64u"] = value;
+        charon_port_values(self)[@"NullableInt64u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3172,7 +3176,7 @@
 - (void)writeAttributeNullableInt64uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt64u"] = value;
+        charon_port_values(self)[@"NullableInt64u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3188,7 +3192,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -3201,7 +3205,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableInt8s"];
+        written = charon_port_values(self)[@"NullableInt8s"];
     }
     completion(written, nil);
 }
@@ -3209,7 +3213,7 @@
 - (void)writeAttributeNullableInt8sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt8s"] = value;
+        charon_port_values(self)[@"NullableInt8s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3219,7 +3223,7 @@
 - (void)writeAttributeNullableInt8sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt8s"] = value;
+        charon_port_values(self)[@"NullableInt8s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3235,7 +3239,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -3248,7 +3252,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableInt16s"];
+        written = charon_port_values(self)[@"NullableInt16s"];
     }
     completion(written, nil);
 }
@@ -3256,7 +3260,7 @@
 - (void)writeAttributeNullableInt16sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt16s"] = value;
+        charon_port_values(self)[@"NullableInt16s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3266,7 +3270,7 @@
 - (void)writeAttributeNullableInt16sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt16s"] = value;
+        charon_port_values(self)[@"NullableInt16s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3282,7 +3286,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -3295,7 +3299,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableInt24s"];
+        written = charon_port_values(self)[@"NullableInt24s"];
     }
     completion(written, nil);
 }
@@ -3303,7 +3307,7 @@
 - (void)writeAttributeNullableInt24sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt24s"] = value;
+        charon_port_values(self)[@"NullableInt24s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3313,7 +3317,7 @@
 - (void)writeAttributeNullableInt24sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt24s"] = value;
+        charon_port_values(self)[@"NullableInt24s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3329,7 +3333,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -3342,7 +3346,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableInt32s"];
+        written = charon_port_values(self)[@"NullableInt32s"];
     }
     completion(written, nil);
 }
@@ -3350,7 +3354,7 @@
 - (void)writeAttributeNullableInt32sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt32s"] = value;
+        charon_port_values(self)[@"NullableInt32s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3360,7 +3364,7 @@
 - (void)writeAttributeNullableInt32sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt32s"] = value;
+        charon_port_values(self)[@"NullableInt32s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3376,7 +3380,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -3389,7 +3393,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableInt40s"];
+        written = charon_port_values(self)[@"NullableInt40s"];
     }
     completion(written, nil);
 }
@@ -3397,7 +3401,7 @@
 - (void)writeAttributeNullableInt40sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt40s"] = value;
+        charon_port_values(self)[@"NullableInt40s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3407,7 +3411,7 @@
 - (void)writeAttributeNullableInt40sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt40s"] = value;
+        charon_port_values(self)[@"NullableInt40s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3423,7 +3427,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -3436,7 +3440,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableInt48s"];
+        written = charon_port_values(self)[@"NullableInt48s"];
     }
     completion(written, nil);
 }
@@ -3444,7 +3448,7 @@
 - (void)writeAttributeNullableInt48sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt48s"] = value;
+        charon_port_values(self)[@"NullableInt48s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3454,7 +3458,7 @@
 - (void)writeAttributeNullableInt48sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt48s"] = value;
+        charon_port_values(self)[@"NullableInt48s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3470,7 +3474,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -3483,7 +3487,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableInt56s"];
+        written = charon_port_values(self)[@"NullableInt56s"];
     }
     completion(written, nil);
 }
@@ -3491,7 +3495,7 @@
 - (void)writeAttributeNullableInt56sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt56s"] = value;
+        charon_port_values(self)[@"NullableInt56s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3501,7 +3505,7 @@
 - (void)writeAttributeNullableInt56sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt56s"] = value;
+        charon_port_values(self)[@"NullableInt56s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3517,7 +3521,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -3530,7 +3534,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableInt64s"];
+        written = charon_port_values(self)[@"NullableInt64s"];
     }
     completion(written, nil);
 }
@@ -3538,7 +3542,7 @@
 - (void)writeAttributeNullableInt64sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt64s"] = value;
+        charon_port_values(self)[@"NullableInt64s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3548,7 +3552,7 @@
 - (void)writeAttributeNullableInt64sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableInt64s"] = value;
+        charon_port_values(self)[@"NullableInt64s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3564,7 +3568,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -3577,7 +3581,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableEnum8"];
+        written = charon_port_values(self)[@"NullableEnum8"];
     }
     completion(written, nil);
 }
@@ -3585,7 +3589,7 @@
 - (void)writeAttributeNullableEnum8WithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableEnum8"] = value;
+        charon_port_values(self)[@"NullableEnum8"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3595,7 +3599,7 @@
 - (void)writeAttributeNullableEnum8WithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableEnum8"] = value;
+        charon_port_values(self)[@"NullableEnum8"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3611,7 +3615,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -3624,7 +3628,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableEnum16"];
+        written = charon_port_values(self)[@"NullableEnum16"];
     }
     completion(written, nil);
 }
@@ -3632,7 +3636,7 @@
 - (void)writeAttributeNullableEnum16WithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableEnum16"] = value;
+        charon_port_values(self)[@"NullableEnum16"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3642,7 +3646,7 @@
 - (void)writeAttributeNullableEnum16WithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableEnum16"] = value;
+        charon_port_values(self)[@"NullableEnum16"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3658,7 +3662,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -3671,7 +3675,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableFloatSingle"];
+        written = charon_port_values(self)[@"NullableFloatSingle"];
     }
     completion(written, nil);
 }
@@ -3679,7 +3683,7 @@
 - (void)writeAttributeNullableFloatSingleWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableFloatSingle"] = value;
+        charon_port_values(self)[@"NullableFloatSingle"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3689,7 +3693,7 @@
 - (void)writeAttributeNullableFloatSingleWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableFloatSingle"] = value;
+        charon_port_values(self)[@"NullableFloatSingle"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3705,7 +3709,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -3718,7 +3722,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableFloatDouble"];
+        written = charon_port_values(self)[@"NullableFloatDouble"];
     }
     completion(written, nil);
 }
@@ -3726,7 +3730,7 @@
 - (void)writeAttributeNullableFloatDoubleWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableFloatDouble"] = value;
+        charon_port_values(self)[@"NullableFloatDouble"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3736,7 +3740,7 @@
 - (void)writeAttributeNullableFloatDoubleWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableFloatDouble"] = value;
+        charon_port_values(self)[@"NullableFloatDouble"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3752,7 +3756,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -3765,7 +3769,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableOctetString"];
+        written = charon_port_values(self)[@"NullableOctetString"];
     }
     completion(written, nil);
 }
@@ -3773,7 +3777,7 @@
 - (void)writeAttributeNullableOctetStringWithValue:(NSData * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableOctetString"] = value;
+        charon_port_values(self)[@"NullableOctetString"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3783,7 +3787,7 @@
 - (void)writeAttributeNullableOctetStringWithValue:(NSData * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableOctetString"] = value;
+        charon_port_values(self)[@"NullableOctetString"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3799,7 +3803,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -3812,7 +3816,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableCharString"];
+        written = charon_port_values(self)[@"NullableCharString"];
     }
     completion(written, nil);
 }
@@ -3820,7 +3824,7 @@
 - (void)writeAttributeNullableCharStringWithValue:(NSString * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableCharString"] = value;
+        charon_port_values(self)[@"NullableCharString"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3830,7 +3834,7 @@
 - (void)writeAttributeNullableCharStringWithValue:(NSString * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableCharString"] = value;
+        charon_port_values(self)[@"NullableCharString"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3846,7 +3850,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -3859,7 +3863,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableEnumAttr"];
+        written = charon_port_values(self)[@"NullableEnumAttr"];
     }
     completion(written, nil);
 }
@@ -3867,7 +3871,7 @@
 - (void)writeAttributeNullableEnumAttrWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableEnumAttr"] = value;
+        charon_port_values(self)[@"NullableEnumAttr"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3877,7 +3881,7 @@
 - (void)writeAttributeNullableEnumAttrWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableEnumAttr"] = value;
+        charon_port_values(self)[@"NullableEnumAttr"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3893,7 +3897,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -3906,7 +3910,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableStruct"];
+        written = charon_port_values(self)[@"NullableStruct"];
     }
     completion(written, nil);
 }
@@ -3914,7 +3918,7 @@
 - (void)writeAttributeNullableStructWithValue:(MTRUnitTestingClusterSimpleStruct * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableStruct"] = value;
+        charon_port_values(self)[@"NullableStruct"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3924,7 +3928,7 @@
 - (void)writeAttributeNullableStructWithValue:(MTRUnitTestingClusterSimpleStruct * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableStruct"] = value;
+        charon_port_values(self)[@"NullableStruct"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3940,7 +3944,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -3953,7 +3957,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableRangeRestrictedInt8u"];
+        written = charon_port_values(self)[@"NullableRangeRestrictedInt8u"];
     }
     completion(written, nil);
 }
@@ -3961,7 +3965,7 @@
 - (void)writeAttributeNullableRangeRestrictedInt8uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableRangeRestrictedInt8u"] = value;
+        charon_port_values(self)[@"NullableRangeRestrictedInt8u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3971,7 +3975,7 @@
 - (void)writeAttributeNullableRangeRestrictedInt8uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableRangeRestrictedInt8u"] = value;
+        charon_port_values(self)[@"NullableRangeRestrictedInt8u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -3987,7 +3991,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -4000,7 +4004,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableRangeRestrictedInt8s"];
+        written = charon_port_values(self)[@"NullableRangeRestrictedInt8s"];
     }
     completion(written, nil);
 }
@@ -4008,7 +4012,7 @@
 - (void)writeAttributeNullableRangeRestrictedInt8sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableRangeRestrictedInt8s"] = value;
+        charon_port_values(self)[@"NullableRangeRestrictedInt8s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -4018,7 +4022,7 @@
 - (void)writeAttributeNullableRangeRestrictedInt8sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableRangeRestrictedInt8s"] = value;
+        charon_port_values(self)[@"NullableRangeRestrictedInt8s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -4034,7 +4038,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -4047,7 +4051,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableRangeRestrictedInt16u"];
+        written = charon_port_values(self)[@"NullableRangeRestrictedInt16u"];
     }
     completion(written, nil);
 }
@@ -4055,7 +4059,7 @@
 - (void)writeAttributeNullableRangeRestrictedInt16uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableRangeRestrictedInt16u"] = value;
+        charon_port_values(self)[@"NullableRangeRestrictedInt16u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -4065,7 +4069,7 @@
 - (void)writeAttributeNullableRangeRestrictedInt16uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableRangeRestrictedInt16u"] = value;
+        charon_port_values(self)[@"NullableRangeRestrictedInt16u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -4081,7 +4085,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -4094,7 +4098,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableRangeRestrictedInt16s"];
+        written = charon_port_values(self)[@"NullableRangeRestrictedInt16s"];
     }
     completion(written, nil);
 }
@@ -4102,7 +4106,7 @@
 - (void)writeAttributeNullableRangeRestrictedInt16sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableRangeRestrictedInt16s"] = value;
+        charon_port_values(self)[@"NullableRangeRestrictedInt16s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -4112,7 +4116,7 @@
 - (void)writeAttributeNullableRangeRestrictedInt16sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableRangeRestrictedInt16s"] = value;
+        charon_port_values(self)[@"NullableRangeRestrictedInt16s"] = value;
     }
     if (completion) {
         completion(nil);
@@ -4128,7 +4132,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -4141,7 +4145,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"WriteOnlyInt8u"];
+        written = charon_port_values(self)[@"WriteOnlyInt8u"];
     }
     completion(written, nil);
 }
@@ -4149,7 +4153,7 @@
 - (void)writeAttributeWriteOnlyInt8uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"WriteOnlyInt8u"] = value;
+        charon_port_values(self)[@"WriteOnlyInt8u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -4159,7 +4163,7 @@
 - (void)writeAttributeWriteOnlyInt8uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"WriteOnlyInt8u"] = value;
+        charon_port_values(self)[@"WriteOnlyInt8u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -4175,7 +4179,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -4188,7 +4192,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableGlobalEnum"];
+        written = charon_port_values(self)[@"NullableGlobalEnum"];
     }
     completion(written, nil);
 }
@@ -4196,7 +4200,7 @@
 - (void)writeAttributeNullableGlobalEnumWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableGlobalEnum"] = value;
+        charon_port_values(self)[@"NullableGlobalEnum"] = value;
     }
     if (completion) {
         completion(nil);
@@ -4206,7 +4210,7 @@
 - (void)writeAttributeNullableGlobalEnumWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableGlobalEnum"] = value;
+        charon_port_values(self)[@"NullableGlobalEnum"] = value;
     }
     if (completion) {
         completion(nil);
@@ -4222,7 +4226,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -4235,7 +4239,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NullableGlobalStruct"];
+        written = charon_port_values(self)[@"NullableGlobalStruct"];
     }
     completion(written, nil);
 }
@@ -4243,7 +4247,7 @@
 - (void)writeAttributeNullableGlobalStructWithValue:(MTRDataTypeTestGlobalStruct * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableGlobalStruct"] = value;
+        charon_port_values(self)[@"NullableGlobalStruct"] = value;
     }
     if (completion) {
         completion(nil);
@@ -4253,7 +4257,7 @@
 - (void)writeAttributeNullableGlobalStructWithValue:(MTRDataTypeTestGlobalStruct * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NullableGlobalStruct"] = value;
+        charon_port_values(self)[@"NullableGlobalStruct"] = value;
     }
     if (completion) {
         completion(nil);
@@ -4269,7 +4273,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -4282,7 +4286,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"GeneratedCommandList"];
+        written = charon_port_values(self)[@"GeneratedCommandList"];
     }
     completion(written, nil);
 }
@@ -4296,7 +4300,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -4309,7 +4313,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"AcceptedCommandList"];
+        written = charon_port_values(self)[@"AcceptedCommandList"];
     }
     completion(written, nil);
 }
@@ -4323,7 +4327,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -4336,7 +4340,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"AttributeList"];
+        written = charon_port_values(self)[@"AttributeList"];
     }
     completion(written, nil);
 }
@@ -4350,7 +4354,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -4363,7 +4367,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"FeatureMap"];
+        written = charon_port_values(self)[@"FeatureMap"];
     }
     completion(written, nil);
 }
@@ -4377,7 +4381,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -4390,7 +4394,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"ClusterRevision"];
+        written = charon_port_values(self)[@"ClusterRevision"];
     }
     completion(written, nil);
 }
@@ -4404,7 +4408,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -4417,7 +4421,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"MeiInt8u"];
+        written = charon_port_values(self)[@"MeiInt8u"];
     }
     completion(written, nil);
 }
@@ -4425,7 +4429,7 @@
 - (void)writeAttributeMeiInt8uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"MeiInt8u"] = value;
+        charon_port_values(self)[@"MeiInt8u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -4435,7 +4439,7 @@
 - (void)writeAttributeMeiInt8uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"MeiInt8u"] = value;
+        charon_port_values(self)[@"MeiInt8u"] = value;
     }
     if (completion) {
         completion(nil);
@@ -4451,7 +4455,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -4461,11 +4465,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of Bitmap8: no value and the error, because there is no node.
@@ -4473,11 +4479,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of Bitmap16: no value and the error, because there is no node.
@@ -4485,11 +4493,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of Bitmap32: no value and the error, because there is no node.
@@ -4497,11 +4507,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of Bitmap64: no value and the error, because there is no node.
@@ -4509,11 +4521,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of Int8u: no value and the error, because there is no node.
@@ -4521,11 +4535,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of Int16u: no value and the error, because there is no node.
@@ -4533,11 +4549,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of Int24u: no value and the error, because there is no node.
@@ -4545,11 +4563,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of Int32u: no value and the error, because there is no node.
@@ -4557,11 +4577,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of Int40u: no value and the error, because there is no node.
@@ -4569,11 +4591,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of Int48u: no value and the error, because there is no node.
@@ -4581,11 +4605,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of Int56u: no value and the error, because there is no node.
@@ -4593,11 +4619,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of Int64u: no value and the error, because there is no node.
@@ -4605,11 +4633,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of Int8s: no value and the error, because there is no node.
@@ -4617,11 +4647,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of Int16s: no value and the error, because there is no node.
@@ -4629,11 +4661,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of Int24s: no value and the error, because there is no node.
@@ -4641,11 +4675,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of Int32s: no value and the error, because there is no node.
@@ -4653,11 +4689,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of Int40s: no value and the error, because there is no node.
@@ -4665,11 +4703,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of Int48s: no value and the error, because there is no node.
@@ -4677,11 +4717,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of Int56s: no value and the error, because there is no node.
@@ -4689,11 +4731,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of Int64s: no value and the error, because there is no node.
@@ -4701,11 +4745,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of Enum8: no value and the error, because there is no node.
@@ -4713,11 +4759,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of Enum16: no value and the error, because there is no node.
@@ -4725,11 +4773,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of FloatSingle: no value and the error, because there is no node.
@@ -4737,11 +4787,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of FloatDouble: no value and the error, because there is no node.
@@ -4749,11 +4801,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of OctetString: no value and the error, because there is no node.
@@ -4761,11 +4815,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of ListInt8u: no value and the error, because there is no node.
@@ -4773,11 +4829,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of ListOctetString: no value and the error, because there is no node.
@@ -4785,11 +4843,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of ListStructOctetString: no value and the error, because there is no node.
@@ -4797,11 +4857,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of LongOctetString: no value and the error, because there is no node.
@@ -4809,11 +4871,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of CharString: no value and the error, because there is no node.
@@ -4821,11 +4885,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of LongCharString: no value and the error, because there is no node.
@@ -4833,11 +4899,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of EpochUs: no value and the error, because there is no node.
@@ -4845,11 +4913,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of EpochS: no value and the error, because there is no node.
@@ -4857,11 +4927,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of VendorId: no value and the error, because there is no node.
@@ -4869,11 +4941,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of ListNullablesAndOptionalsStruct: no value and the error, because there is no node.
@@ -4881,11 +4955,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of EnumAttr: no value and the error, because there is no node.
@@ -4893,11 +4969,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of StructAttr: no value and the error, because there is no node.
@@ -4905,11 +4983,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of RangeRestrictedInt8u: no value and the error, because there is no node.
@@ -4917,11 +4997,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of RangeRestrictedInt8s: no value and the error, because there is no node.
@@ -4929,11 +5011,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of RangeRestrictedInt16u: no value and the error, because there is no node.
@@ -4941,11 +5025,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of RangeRestrictedInt16s: no value and the error, because there is no node.
@@ -4953,11 +5039,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of ListLongOctetString: no value and the error, because there is no node.
@@ -4965,11 +5053,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of ListFabricScoped: no value and the error, because there is no node.
@@ -4977,11 +5067,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of TimedWriteBoolean: no value and the error, because there is no node.
@@ -4989,11 +5081,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of GeneralErrorBoolean: no value and the error, because there is no node.
@@ -5001,11 +5095,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of ClusterErrorBoolean: no value and the error, because there is no node.
@@ -5013,11 +5109,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of GlobalEnum: no value and the error, because there is no node.
@@ -5025,11 +5123,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of GlobalStruct: no value and the error, because there is no node.
@@ -5037,11 +5137,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of UnsupportedAttributeRequiringAdminPrivilege: no value and the error, because there is no node.
@@ -5049,11 +5151,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of Unsupported: no value and the error, because there is no node.
@@ -5061,11 +5165,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of ReadFailureCode: no value and the error, because there is no node.
@@ -5073,11 +5179,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of FailureInt32U: no value and the error, because there is no node.
@@ -5085,11 +5193,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableBoolean: no value and the error, because there is no node.
@@ -5097,11 +5207,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableBitmap8: no value and the error, because there is no node.
@@ -5109,11 +5221,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableBitmap16: no value and the error, because there is no node.
@@ -5121,11 +5235,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableBitmap32: no value and the error, because there is no node.
@@ -5133,11 +5249,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableBitmap64: no value and the error, because there is no node.
@@ -5145,11 +5263,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableInt8u: no value and the error, because there is no node.
@@ -5157,11 +5277,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableInt16u: no value and the error, because there is no node.
@@ -5169,11 +5291,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableInt24u: no value and the error, because there is no node.
@@ -5181,11 +5305,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableInt32u: no value and the error, because there is no node.
@@ -5193,11 +5319,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableInt40u: no value and the error, because there is no node.
@@ -5205,11 +5333,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableInt48u: no value and the error, because there is no node.
@@ -5217,11 +5347,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableInt56u: no value and the error, because there is no node.
@@ -5229,11 +5361,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableInt64u: no value and the error, because there is no node.
@@ -5241,11 +5375,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableInt8s: no value and the error, because there is no node.
@@ -5253,11 +5389,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableInt16s: no value and the error, because there is no node.
@@ -5265,11 +5403,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableInt24s: no value and the error, because there is no node.
@@ -5277,11 +5417,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableInt32s: no value and the error, because there is no node.
@@ -5289,11 +5431,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableInt40s: no value and the error, because there is no node.
@@ -5301,11 +5445,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableInt48s: no value and the error, because there is no node.
@@ -5313,11 +5459,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableInt56s: no value and the error, because there is no node.
@@ -5325,11 +5473,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableInt64s: no value and the error, because there is no node.
@@ -5337,11 +5487,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableEnum8: no value and the error, because there is no node.
@@ -5349,11 +5501,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableEnum16: no value and the error, because there is no node.
@@ -5361,11 +5515,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableFloatSingle: no value and the error, because there is no node.
@@ -5373,11 +5529,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableFloatDouble: no value and the error, because there is no node.
@@ -5385,11 +5543,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableOctetString: no value and the error, because there is no node.
@@ -5397,11 +5557,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableCharString: no value and the error, because there is no node.
@@ -5409,11 +5571,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableEnumAttr: no value and the error, because there is no node.
@@ -5421,11 +5585,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableStruct: no value and the error, because there is no node.
@@ -5433,11 +5599,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableRangeRestrictedInt8u: no value and the error, because there is no node.
@@ -5445,11 +5613,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableRangeRestrictedInt8s: no value and the error, because there is no node.
@@ -5457,11 +5627,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableRangeRestrictedInt16u: no value and the error, because there is no node.
@@ -5469,11 +5641,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableRangeRestrictedInt16s: no value and the error, because there is no node.
@@ -5481,11 +5655,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of WriteOnlyInt8u: no value and the error, because there is no node.
@@ -5493,11 +5669,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableGlobalEnum: no value and the error, because there is no node.
@@ -5505,11 +5683,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NullableGlobalStruct: no value and the error, because there is no node.
@@ -5517,11 +5697,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of GeneratedCommandList: no value and the error, because there is no node.
@@ -5529,11 +5711,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of AcceptedCommandList: no value and the error, because there is no node.
@@ -5541,11 +5725,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of AttributeList: no value and the error, because there is no node.
@@ -5553,11 +5739,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of FeatureMap: no value and the error, because there is no node.
@@ -5565,11 +5753,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of ClusterRevision: no value and the error, because there is no node.
@@ -5577,11 +5767,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of MeiInt8u: no value and the error, because there is no node.
@@ -5589,11 +5781,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterUnitTesting charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 - (void)testWithCompletion:(MTRStatusCompletion)completion

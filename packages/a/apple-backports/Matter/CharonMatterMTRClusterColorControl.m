@@ -20,7 +20,7 @@
 //  and read and written under the object's lock, so two threads on one object are not a race.
 //  Every command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
-//  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
+//  read from. A cached read completes with no value and the error of charon_port_no_node_error();
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
 //  queue, never calls its established handler, and leaves the stored value alone.
 //
@@ -43,25 +43,21 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    @package
     NSMutableDictionary *_charon_values;
 }
 @end
 
-@implementation MTRClusterColorControl
-
 // The values the caller has written, by attribute name: this object's own table, made on
-// first use - an object built through a superclass's initializer never ran this class's -
-// and handed out under the object's lock, which every read and write below holds for the
-// whole of its access. It is not keyed by the class: two objects of one class are two
-// tables, as they are two sets of state in the framework.
-- (NSMutableDictionary *)charon_port_values
+// first use. The caller holds the object's lock for the whole of its access, so this takes
+// none. It is not keyed by the class: two objects of one class are two tables, as they are
+// two sets of state in the framework.
+static NSMutableDictionary *charon_port_values(MTRClusterColorControl *object)
 {
-    @synchronized (self) {
-        if (!_charon_values) {
-            _charon_values = [NSMutableDictionary dictionary];
-        }
-        return _charon_values;
+    if (!object->_charon_values) {
+        object->_charon_values = [NSMutableDictionary dictionary];
     }
+    return object->_charon_values;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -71,11 +67,19 @@
 // tests/backports/host/matterdifferential/behaviour.m: MTRErrorDomain, MTRErrorCodeInvalidState,
 // "Invalid object state.". The domain is written as the string the constant holds: the
 // constant is defined by the framework's own build (packages/m/matter), not by this library.
-+ (NSError *)charon_port_no_node_error
+// Built once: every caller gets the same object, and it is made on first use.
+static NSError *charon_port_no_node_error(void)
 {
-    return [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
-                           userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
+    static NSError *error;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        error = [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
+                                userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
+    });
+    return error;
 }
+
+@implementation MTRClusterColorControl
 
 // - (instancetype)initWithDevice:(MTRDevice *)device
 // endpointID:(NSNumber *)endpointID
@@ -90,12 +94,25 @@
     return self;
 }
 
+// - (nullable instancetype)initWithDevice:(MTRDevice *)device
+// endpoint:(uint16_t)endpoint
+// queue:(dispatch_queue_t)queue
+- (nullable instancetype)initWithDevice:(MTRDevice *)device
+                               endpoint:(uint16_t)endpoint
+                                  queue:(dispatch_queue_t)queue
+{
+    _charon_device = device;
+    _charon_endpoint = @(endpoint);
+    _charon_queue = queue;
+    return self;
+}
+
 // CurrentHue, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeCurrentHueWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"CurrentHue"];
+        return charon_port_values(self)[@"CurrentHue"];
     }
 }
 
@@ -104,7 +121,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"CurrentSaturation"];
+        return charon_port_values(self)[@"CurrentSaturation"];
     }
 }
 
@@ -113,7 +130,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"RemainingTime"];
+        return charon_port_values(self)[@"RemainingTime"];
     }
 }
 
@@ -122,7 +139,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"CurrentX"];
+        return charon_port_values(self)[@"CurrentX"];
     }
 }
 
@@ -131,7 +148,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"CurrentY"];
+        return charon_port_values(self)[@"CurrentY"];
     }
 }
 
@@ -140,7 +157,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"DriftCompensation"];
+        return charon_port_values(self)[@"DriftCompensation"];
     }
 }
 
@@ -149,7 +166,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"CompensationText"];
+        return charon_port_values(self)[@"CompensationText"];
     }
 }
 
@@ -158,7 +175,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ColorTemperatureMireds"];
+        return charon_port_values(self)[@"ColorTemperatureMireds"];
     }
 }
 
@@ -167,7 +184,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ColorMode"];
+        return charon_port_values(self)[@"ColorMode"];
     }
 }
 
@@ -176,14 +193,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Options"];
+        return charon_port_values(self)[@"Options"];
     }
 }
 
 - (void)writeAttributeOptionsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"Options"] = dataValueDictionary;
+        charon_port_values(self)[@"Options"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -191,7 +208,7 @@
 - (void)writeAttributeOptionsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"Options"] = dataValueDictionary;
+        charon_port_values(self)[@"Options"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -202,7 +219,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"NumberOfPrimaries"];
+        return charon_port_values(self)[@"NumberOfPrimaries"];
     }
 }
 
@@ -211,7 +228,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Primary1X"];
+        return charon_port_values(self)[@"Primary1X"];
     }
 }
 
@@ -220,7 +237,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Primary1Y"];
+        return charon_port_values(self)[@"Primary1Y"];
     }
 }
 
@@ -229,7 +246,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Primary1Intensity"];
+        return charon_port_values(self)[@"Primary1Intensity"];
     }
 }
 
@@ -238,7 +255,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Primary2X"];
+        return charon_port_values(self)[@"Primary2X"];
     }
 }
 
@@ -247,7 +264,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Primary2Y"];
+        return charon_port_values(self)[@"Primary2Y"];
     }
 }
 
@@ -256,7 +273,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Primary2Intensity"];
+        return charon_port_values(self)[@"Primary2Intensity"];
     }
 }
 
@@ -265,7 +282,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Primary3X"];
+        return charon_port_values(self)[@"Primary3X"];
     }
 }
 
@@ -274,7 +291,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Primary3Y"];
+        return charon_port_values(self)[@"Primary3Y"];
     }
 }
 
@@ -283,7 +300,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Primary3Intensity"];
+        return charon_port_values(self)[@"Primary3Intensity"];
     }
 }
 
@@ -292,7 +309,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Primary4X"];
+        return charon_port_values(self)[@"Primary4X"];
     }
 }
 
@@ -301,7 +318,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Primary4Y"];
+        return charon_port_values(self)[@"Primary4Y"];
     }
 }
 
@@ -310,7 +327,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Primary4Intensity"];
+        return charon_port_values(self)[@"Primary4Intensity"];
     }
 }
 
@@ -319,7 +336,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Primary5X"];
+        return charon_port_values(self)[@"Primary5X"];
     }
 }
 
@@ -328,7 +345,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Primary5Y"];
+        return charon_port_values(self)[@"Primary5Y"];
     }
 }
 
@@ -337,7 +354,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Primary5Intensity"];
+        return charon_port_values(self)[@"Primary5Intensity"];
     }
 }
 
@@ -346,7 +363,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Primary6X"];
+        return charon_port_values(self)[@"Primary6X"];
     }
 }
 
@@ -355,7 +372,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Primary6Y"];
+        return charon_port_values(self)[@"Primary6Y"];
     }
 }
 
@@ -364,7 +381,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Primary6Intensity"];
+        return charon_port_values(self)[@"Primary6Intensity"];
     }
 }
 
@@ -373,7 +390,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"WhitePointX"];
+        return charon_port_values(self)[@"WhitePointX"];
     }
 }
 
@@ -381,7 +398,7 @@
                      expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"WhitePointX"] = dataValueDictionary;
+        charon_port_values(self)[@"WhitePointX"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -391,7 +408,7 @@
                                     params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"WhitePointX"] = dataValueDictionary;
+        charon_port_values(self)[@"WhitePointX"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -402,7 +419,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"WhitePointY"];
+        return charon_port_values(self)[@"WhitePointY"];
     }
 }
 
@@ -410,7 +427,7 @@
                      expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"WhitePointY"] = dataValueDictionary;
+        charon_port_values(self)[@"WhitePointY"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -420,7 +437,7 @@
                                     params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"WhitePointY"] = dataValueDictionary;
+        charon_port_values(self)[@"WhitePointY"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -431,7 +448,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ColorPointRX"];
+        return charon_port_values(self)[@"ColorPointRX"];
     }
 }
 
@@ -439,7 +456,7 @@
                       expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"ColorPointRX"] = dataValueDictionary;
+        charon_port_values(self)[@"ColorPointRX"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -449,7 +466,7 @@
                                      params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"ColorPointRX"] = dataValueDictionary;
+        charon_port_values(self)[@"ColorPointRX"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -460,7 +477,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ColorPointRY"];
+        return charon_port_values(self)[@"ColorPointRY"];
     }
 }
 
@@ -468,7 +485,7 @@
                       expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"ColorPointRY"] = dataValueDictionary;
+        charon_port_values(self)[@"ColorPointRY"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -478,7 +495,7 @@
                                      params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"ColorPointRY"] = dataValueDictionary;
+        charon_port_values(self)[@"ColorPointRY"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -489,7 +506,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ColorPointRIntensity"];
+        return charon_port_values(self)[@"ColorPointRIntensity"];
     }
 }
 
@@ -497,7 +514,7 @@
                               expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"ColorPointRIntensity"] = dataValueDictionary;
+        charon_port_values(self)[@"ColorPointRIntensity"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -507,7 +524,7 @@
                                              params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"ColorPointRIntensity"] = dataValueDictionary;
+        charon_port_values(self)[@"ColorPointRIntensity"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -518,7 +535,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ColorPointGX"];
+        return charon_port_values(self)[@"ColorPointGX"];
     }
 }
 
@@ -526,7 +543,7 @@
                       expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"ColorPointGX"] = dataValueDictionary;
+        charon_port_values(self)[@"ColorPointGX"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -536,7 +553,7 @@
                                      params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"ColorPointGX"] = dataValueDictionary;
+        charon_port_values(self)[@"ColorPointGX"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -547,7 +564,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ColorPointGY"];
+        return charon_port_values(self)[@"ColorPointGY"];
     }
 }
 
@@ -555,7 +572,7 @@
                       expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"ColorPointGY"] = dataValueDictionary;
+        charon_port_values(self)[@"ColorPointGY"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -565,7 +582,7 @@
                                      params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"ColorPointGY"] = dataValueDictionary;
+        charon_port_values(self)[@"ColorPointGY"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -576,7 +593,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ColorPointGIntensity"];
+        return charon_port_values(self)[@"ColorPointGIntensity"];
     }
 }
 
@@ -584,7 +601,7 @@
                               expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"ColorPointGIntensity"] = dataValueDictionary;
+        charon_port_values(self)[@"ColorPointGIntensity"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -594,7 +611,7 @@
                                              params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"ColorPointGIntensity"] = dataValueDictionary;
+        charon_port_values(self)[@"ColorPointGIntensity"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -605,7 +622,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ColorPointBX"];
+        return charon_port_values(self)[@"ColorPointBX"];
     }
 }
 
@@ -613,7 +630,7 @@
                       expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"ColorPointBX"] = dataValueDictionary;
+        charon_port_values(self)[@"ColorPointBX"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -623,7 +640,7 @@
                                      params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"ColorPointBX"] = dataValueDictionary;
+        charon_port_values(self)[@"ColorPointBX"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -634,7 +651,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ColorPointBY"];
+        return charon_port_values(self)[@"ColorPointBY"];
     }
 }
 
@@ -642,7 +659,7 @@
                       expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"ColorPointBY"] = dataValueDictionary;
+        charon_port_values(self)[@"ColorPointBY"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -652,7 +669,7 @@
                                      params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"ColorPointBY"] = dataValueDictionary;
+        charon_port_values(self)[@"ColorPointBY"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -663,7 +680,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ColorPointBIntensity"];
+        return charon_port_values(self)[@"ColorPointBIntensity"];
     }
 }
 
@@ -671,7 +688,7 @@
                               expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"ColorPointBIntensity"] = dataValueDictionary;
+        charon_port_values(self)[@"ColorPointBIntensity"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -681,7 +698,7 @@
                                              params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"ColorPointBIntensity"] = dataValueDictionary;
+        charon_port_values(self)[@"ColorPointBIntensity"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -692,7 +709,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"EnhancedCurrentHue"];
+        return charon_port_values(self)[@"EnhancedCurrentHue"];
     }
 }
 
@@ -701,7 +718,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"EnhancedColorMode"];
+        return charon_port_values(self)[@"EnhancedColorMode"];
     }
 }
 
@@ -710,7 +727,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ColorLoopActive"];
+        return charon_port_values(self)[@"ColorLoopActive"];
     }
 }
 
@@ -719,7 +736,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ColorLoopDirection"];
+        return charon_port_values(self)[@"ColorLoopDirection"];
     }
 }
 
@@ -728,7 +745,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ColorLoopTime"];
+        return charon_port_values(self)[@"ColorLoopTime"];
     }
 }
 
@@ -737,7 +754,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ColorLoopStartEnhancedHue"];
+        return charon_port_values(self)[@"ColorLoopStartEnhancedHue"];
     }
 }
 
@@ -746,7 +763,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ColorLoopStoredEnhancedHue"];
+        return charon_port_values(self)[@"ColorLoopStoredEnhancedHue"];
     }
 }
 
@@ -755,7 +772,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ColorCapabilities"];
+        return charon_port_values(self)[@"ColorCapabilities"];
     }
 }
 
@@ -764,7 +781,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ColorTempPhysicalMinMireds"];
+        return charon_port_values(self)[@"ColorTempPhysicalMinMireds"];
     }
 }
 
@@ -773,7 +790,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ColorTempPhysicalMaxMireds"];
+        return charon_port_values(self)[@"ColorTempPhysicalMaxMireds"];
     }
 }
 
@@ -782,7 +799,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"CoupleColorTempToLevelMinMireds"];
+        return charon_port_values(self)[@"CoupleColorTempToLevelMinMireds"];
     }
 }
 
@@ -791,14 +808,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"StartUpColorTemperatureMireds"];
+        return charon_port_values(self)[@"StartUpColorTemperatureMireds"];
     }
 }
 
 - (void)writeAttributeStartUpColorTemperatureMiredsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"StartUpColorTemperatureMireds"] = dataValueDictionary;
+        charon_port_values(self)[@"StartUpColorTemperatureMireds"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -806,7 +823,7 @@
 - (void)writeAttributeStartUpColorTemperatureMiredsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"StartUpColorTemperatureMireds"] = dataValueDictionary;
+        charon_port_values(self)[@"StartUpColorTemperatureMireds"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -817,7 +834,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"GeneratedCommandList"];
+        return charon_port_values(self)[@"GeneratedCommandList"];
     }
 }
 
@@ -826,7 +843,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AcceptedCommandList"];
+        return charon_port_values(self)[@"AcceptedCommandList"];
     }
 }
 
@@ -835,7 +852,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AttributeList"];
+        return charon_port_values(self)[@"AttributeList"];
     }
 }
 
@@ -844,7 +861,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"FeatureMap"];
+        return charon_port_values(self)[@"FeatureMap"];
     }
 }
 
@@ -853,7 +870,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ClusterRevision"];
+        return charon_port_values(self)[@"ClusterRevision"];
     }
 }
 
@@ -868,6 +885,17 @@
     }
 }
 
+// moveToHue. It answers: there is nothing to reach on a release with no fabric.
+- (void)moveToHueWithParams:(MTRColorControlClusterMoveToHueParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
 // moveHue. It answers: there is nothing to reach on a release with no fabric.
 - (void)moveHueWithParams:(MTRColorControlClusterMoveHueParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
@@ -876,6 +904,17 @@
     (void)expectedValueIntervalMs;
     if (completion) {
         completion(nil);
+    }
+}
+
+// moveHue. It answers: there is nothing to reach on a release with no fabric.
+- (void)moveHueWithParams:(MTRColorControlClusterMoveHueParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 
@@ -890,6 +929,17 @@
     }
 }
 
+// stepHue. It answers: there is nothing to reach on a release with no fabric.
+- (void)stepHueWithParams:(MTRColorControlClusterStepHueParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
 // moveToSaturation. It answers: there is nothing to reach on a release with no fabric.
 - (void)moveToSaturationWithParams:(MTRColorControlClusterMoveToSaturationParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
@@ -898,6 +948,17 @@
     (void)expectedValueIntervalMs;
     if (completion) {
         completion(nil);
+    }
+}
+
+// moveToSaturation. It answers: there is nothing to reach on a release with no fabric.
+- (void)moveToSaturationWithParams:(MTRColorControlClusterMoveToSaturationParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 
@@ -912,6 +973,17 @@
     }
 }
 
+// moveSaturation. It answers: there is nothing to reach on a release with no fabric.
+- (void)moveSaturationWithParams:(MTRColorControlClusterMoveSaturationParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
 // stepSaturation. It answers: there is nothing to reach on a release with no fabric.
 - (void)stepSaturationWithParams:(MTRColorControlClusterStepSaturationParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
@@ -920,6 +992,17 @@
     (void)expectedValueIntervalMs;
     if (completion) {
         completion(nil);
+    }
+}
+
+// stepSaturation. It answers: there is nothing to reach on a release with no fabric.
+- (void)stepSaturationWithParams:(MTRColorControlClusterStepSaturationParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 
@@ -934,6 +1017,17 @@
     }
 }
 
+// moveToHueAndSaturation. It answers: there is nothing to reach on a release with no fabric.
+- (void)moveToHueAndSaturationWithParams:(MTRColorControlClusterMoveToHueAndSaturationParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
 // moveToColor. It answers: there is nothing to reach on a release with no fabric.
 - (void)moveToColorWithParams:(MTRColorControlClusterMoveToColorParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
@@ -942,6 +1036,17 @@
     (void)expectedValueIntervalMs;
     if (completion) {
         completion(nil);
+    }
+}
+
+// moveToColor. It answers: there is nothing to reach on a release with no fabric.
+- (void)moveToColorWithParams:(MTRColorControlClusterMoveToColorParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 
@@ -956,6 +1061,17 @@
     }
 }
 
+// moveColor. It answers: there is nothing to reach on a release with no fabric.
+- (void)moveColorWithParams:(MTRColorControlClusterMoveColorParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
 // stepColor. It answers: there is nothing to reach on a release with no fabric.
 - (void)stepColorWithParams:(MTRColorControlClusterStepColorParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
@@ -964,6 +1080,17 @@
     (void)expectedValueIntervalMs;
     if (completion) {
         completion(nil);
+    }
+}
+
+// stepColor. It answers: there is nothing to reach on a release with no fabric.
+- (void)stepColorWithParams:(MTRColorControlClusterStepColorParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 
@@ -978,6 +1105,17 @@
     }
 }
 
+// moveToColorTemperature. It answers: there is nothing to reach on a release with no fabric.
+- (void)moveToColorTemperatureWithParams:(MTRColorControlClusterMoveToColorTemperatureParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
 // enhancedMoveToHue. It answers: there is nothing to reach on a release with no fabric.
 - (void)enhancedMoveToHueWithParams:(MTRColorControlClusterEnhancedMoveToHueParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
@@ -986,6 +1124,17 @@
     (void)expectedValueIntervalMs;
     if (completion) {
         completion(nil);
+    }
+}
+
+// enhancedMoveToHue. It answers: there is nothing to reach on a release with no fabric.
+- (void)enhancedMoveToHueWithParams:(MTRColorControlClusterEnhancedMoveToHueParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 
@@ -1000,6 +1149,17 @@
     }
 }
 
+// enhancedMoveHue. It answers: there is nothing to reach on a release with no fabric.
+- (void)enhancedMoveHueWithParams:(MTRColorControlClusterEnhancedMoveHueParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
 // enhancedStepHue. It answers: there is nothing to reach on a release with no fabric.
 - (void)enhancedStepHueWithParams:(MTRColorControlClusterEnhancedStepHueParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
@@ -1008,6 +1168,17 @@
     (void)expectedValueIntervalMs;
     if (completion) {
         completion(nil);
+    }
+}
+
+// enhancedStepHue. It answers: there is nothing to reach on a release with no fabric.
+- (void)enhancedStepHueWithParams:(MTRColorControlClusterEnhancedStepHueParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 
@@ -1022,6 +1193,17 @@
     }
 }
 
+// enhancedMoveToHueAndSaturation. It answers: there is nothing to reach on a release with no fabric.
+- (void)enhancedMoveToHueAndSaturationWithParams:(MTRColorControlClusterEnhancedMoveToHueAndSaturationParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
 // colorLoopSet. It answers: there is nothing to reach on a release with no fabric.
 - (void)colorLoopSetWithParams:(MTRColorControlClusterColorLoopSetParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
@@ -1030,6 +1212,17 @@
     (void)expectedValueIntervalMs;
     if (completion) {
         completion(nil);
+    }
+}
+
+// colorLoopSet. It answers: there is nothing to reach on a release with no fabric.
+- (void)colorLoopSetWithParams:(MTRColorControlClusterColorLoopSetParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 
@@ -1044,6 +1237,17 @@
     }
 }
 
+// stopMoveStep. It answers: there is nothing to reach on a release with no fabric.
+- (void)stopMoveStepWithParams:(MTRColorControlClusterStopMoveStepParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
 // moveColorTemperature. It answers: there is nothing to reach on a release with no fabric.
 - (void)moveColorTemperatureWithParams:(MTRColorControlClusterMoveColorTemperatureParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
@@ -1055,6 +1259,17 @@
     }
 }
 
+// moveColorTemperature. It answers: there is nothing to reach on a release with no fabric.
+- (void)moveColorTemperatureWithParams:(MTRColorControlClusterMoveColorTemperatureParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
 // stepColorTemperature. It answers: there is nothing to reach on a release with no fabric.
 - (void)stepColorTemperatureWithParams:(MTRColorControlClusterStepColorTemperatureParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
@@ -1063,6 +1278,17 @@
     (void)expectedValueIntervalMs;
     if (completion) {
         completion(nil);
+    }
+}
+
+// stepColorTemperature. It answers: there is nothing to reach on a release with no fabric.
+- (void)stepColorTemperatureWithParams:(MTRColorControlClusterStepColorTemperatureParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 

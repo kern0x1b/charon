@@ -20,7 +20,7 @@
 //  and read and written under the object's lock, so two threads on one object are not a race.
 //  Every command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
-//  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
+//  read from. A cached read completes with no value and the error of charon_port_no_node_error();
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
 //  queue, never calls its established handler, and leaves the stored value alone.
 //
@@ -43,25 +43,21 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    @package
     NSMutableDictionary *_charon_values;
 }
 @end
 
-@implementation MTRClusterLevelControl
-
 // The values the caller has written, by attribute name: this object's own table, made on
-// first use - an object built through a superclass's initializer never ran this class's -
-// and handed out under the object's lock, which every read and write below holds for the
-// whole of its access. It is not keyed by the class: two objects of one class are two
-// tables, as they are two sets of state in the framework.
-- (NSMutableDictionary *)charon_port_values
+// first use. The caller holds the object's lock for the whole of its access, so this takes
+// none. It is not keyed by the class: two objects of one class are two tables, as they are
+// two sets of state in the framework.
+static NSMutableDictionary *charon_port_values(MTRClusterLevelControl *object)
 {
-    @synchronized (self) {
-        if (!_charon_values) {
-            _charon_values = [NSMutableDictionary dictionary];
-        }
-        return _charon_values;
+    if (!object->_charon_values) {
+        object->_charon_values = [NSMutableDictionary dictionary];
     }
+    return object->_charon_values;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -71,11 +67,19 @@
 // tests/backports/host/matterdifferential/behaviour.m: MTRErrorDomain, MTRErrorCodeInvalidState,
 // "Invalid object state.". The domain is written as the string the constant holds: the
 // constant is defined by the framework's own build (packages/m/matter), not by this library.
-+ (NSError *)charon_port_no_node_error
+// Built once: every caller gets the same object, and it is made on first use.
+static NSError *charon_port_no_node_error(void)
 {
-    return [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
-                           userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
+    static NSError *error;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        error = [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
+                                userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
+    });
+    return error;
 }
+
+@implementation MTRClusterLevelControl
 
 // - (instancetype)initWithDevice:(MTRDevice *)device
 // endpointID:(NSNumber *)endpointID
@@ -90,12 +94,25 @@
     return self;
 }
 
+// - (nullable instancetype)initWithDevice:(MTRDevice *)device
+// endpoint:(uint16_t)endpoint
+// queue:(dispatch_queue_t)queue
+- (nullable instancetype)initWithDevice:(MTRDevice *)device
+                               endpoint:(uint16_t)endpoint
+                                  queue:(dispatch_queue_t)queue
+{
+    _charon_device = device;
+    _charon_endpoint = @(endpoint);
+    _charon_queue = queue;
+    return self;
+}
+
 // CurrentLevel, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeCurrentLevelWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"CurrentLevel"];
+        return charon_port_values(self)[@"CurrentLevel"];
     }
 }
 
@@ -104,7 +121,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"RemainingTime"];
+        return charon_port_values(self)[@"RemainingTime"];
     }
 }
 
@@ -113,7 +130,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"MinLevel"];
+        return charon_port_values(self)[@"MinLevel"];
     }
 }
 
@@ -122,7 +139,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"MaxLevel"];
+        return charon_port_values(self)[@"MaxLevel"];
     }
 }
 
@@ -131,7 +148,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"CurrentFrequency"];
+        return charon_port_values(self)[@"CurrentFrequency"];
     }
 }
 
@@ -140,7 +157,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"MinFrequency"];
+        return charon_port_values(self)[@"MinFrequency"];
     }
 }
 
@@ -149,7 +166,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"MaxFrequency"];
+        return charon_port_values(self)[@"MaxFrequency"];
     }
 }
 
@@ -158,14 +175,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Options"];
+        return charon_port_values(self)[@"Options"];
     }
 }
 
 - (void)writeAttributeOptionsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"Options"] = dataValueDictionary;
+        charon_port_values(self)[@"Options"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -173,7 +190,7 @@
 - (void)writeAttributeOptionsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"Options"] = dataValueDictionary;
+        charon_port_values(self)[@"Options"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -184,14 +201,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"OnOffTransitionTime"];
+        return charon_port_values(self)[@"OnOffTransitionTime"];
     }
 }
 
 - (void)writeAttributeOnOffTransitionTimeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"OnOffTransitionTime"] = dataValueDictionary;
+        charon_port_values(self)[@"OnOffTransitionTime"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -199,7 +216,7 @@
 - (void)writeAttributeOnOffTransitionTimeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"OnOffTransitionTime"] = dataValueDictionary;
+        charon_port_values(self)[@"OnOffTransitionTime"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -210,14 +227,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"OnLevel"];
+        return charon_port_values(self)[@"OnLevel"];
     }
 }
 
 - (void)writeAttributeOnLevelWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"OnLevel"] = dataValueDictionary;
+        charon_port_values(self)[@"OnLevel"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -225,7 +242,7 @@
 - (void)writeAttributeOnLevelWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"OnLevel"] = dataValueDictionary;
+        charon_port_values(self)[@"OnLevel"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -236,14 +253,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"OnTransitionTime"];
+        return charon_port_values(self)[@"OnTransitionTime"];
     }
 }
 
 - (void)writeAttributeOnTransitionTimeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"OnTransitionTime"] = dataValueDictionary;
+        charon_port_values(self)[@"OnTransitionTime"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -251,7 +268,7 @@
 - (void)writeAttributeOnTransitionTimeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"OnTransitionTime"] = dataValueDictionary;
+        charon_port_values(self)[@"OnTransitionTime"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -262,14 +279,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"OffTransitionTime"];
+        return charon_port_values(self)[@"OffTransitionTime"];
     }
 }
 
 - (void)writeAttributeOffTransitionTimeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"OffTransitionTime"] = dataValueDictionary;
+        charon_port_values(self)[@"OffTransitionTime"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -277,7 +294,7 @@
 - (void)writeAttributeOffTransitionTimeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"OffTransitionTime"] = dataValueDictionary;
+        charon_port_values(self)[@"OffTransitionTime"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -288,14 +305,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"DefaultMoveRate"];
+        return charon_port_values(self)[@"DefaultMoveRate"];
     }
 }
 
 - (void)writeAttributeDefaultMoveRateWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"DefaultMoveRate"] = dataValueDictionary;
+        charon_port_values(self)[@"DefaultMoveRate"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -303,7 +320,7 @@
 - (void)writeAttributeDefaultMoveRateWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"DefaultMoveRate"] = dataValueDictionary;
+        charon_port_values(self)[@"DefaultMoveRate"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -314,14 +331,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"StartUpCurrentLevel"];
+        return charon_port_values(self)[@"StartUpCurrentLevel"];
     }
 }
 
 - (void)writeAttributeStartUpCurrentLevelWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"StartUpCurrentLevel"] = dataValueDictionary;
+        charon_port_values(self)[@"StartUpCurrentLevel"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -329,7 +346,7 @@
 - (void)writeAttributeStartUpCurrentLevelWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"StartUpCurrentLevel"] = dataValueDictionary;
+        charon_port_values(self)[@"StartUpCurrentLevel"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -340,7 +357,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"GeneratedCommandList"];
+        return charon_port_values(self)[@"GeneratedCommandList"];
     }
 }
 
@@ -349,7 +366,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AcceptedCommandList"];
+        return charon_port_values(self)[@"AcceptedCommandList"];
     }
 }
 
@@ -358,7 +375,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AttributeList"];
+        return charon_port_values(self)[@"AttributeList"];
     }
 }
 
@@ -367,7 +384,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"FeatureMap"];
+        return charon_port_values(self)[@"FeatureMap"];
     }
 }
 
@@ -376,7 +393,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ClusterRevision"];
+        return charon_port_values(self)[@"ClusterRevision"];
     }
 }
 
@@ -391,6 +408,17 @@
     }
 }
 
+// moveToLevel. It answers: there is nothing to reach on a release with no fabric.
+- (void)moveToLevelWithParams:(MTRLevelControlClusterMoveToLevelParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
 // move. It answers: there is nothing to reach on a release with no fabric.
 - (void)moveWithParams:(MTRLevelControlClusterMoveParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
@@ -399,6 +427,17 @@
     (void)expectedValueIntervalMs;
     if (completion) {
         completion(nil);
+    }
+}
+
+// move. It answers: there is nothing to reach on a release with no fabric.
+- (void)moveWithParams:(MTRLevelControlClusterMoveParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 
@@ -413,6 +452,17 @@
     }
 }
 
+// step. It answers: there is nothing to reach on a release with no fabric.
+- (void)stepWithParams:(MTRLevelControlClusterStepParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
 // stop. It answers: there is nothing to reach on a release with no fabric.
 - (void)stopWithParams:(MTRLevelControlClusterStopParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
@@ -421,6 +471,17 @@
     (void)expectedValueIntervalMs;
     if (completion) {
         completion(nil);
+    }
+}
+
+// stop. It answers: there is nothing to reach on a release with no fabric.
+- (void)stopWithParams:(MTRLevelControlClusterStopParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 
@@ -435,6 +496,17 @@
     }
 }
 
+// moveToLevelWithOnOff. It answers: there is nothing to reach on a release with no fabric.
+- (void)moveToLevelWithOnOffWithParams:(MTRLevelControlClusterMoveToLevelWithOnOffParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
 // moveWithOnOff. It answers: there is nothing to reach on a release with no fabric.
 - (void)moveWithOnOffWithParams:(MTRLevelControlClusterMoveWithOnOffParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
@@ -443,6 +515,17 @@
     (void)expectedValueIntervalMs;
     if (completion) {
         completion(nil);
+    }
+}
+
+// moveWithOnOff. It answers: there is nothing to reach on a release with no fabric.
+- (void)moveWithOnOffWithParams:(MTRLevelControlClusterMoveWithOnOffParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 
@@ -457,6 +540,17 @@
     }
 }
 
+// stepWithOnOff. It answers: there is nothing to reach on a release with no fabric.
+- (void)stepWithOnOffWithParams:(MTRLevelControlClusterStepWithOnOffParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
 // stopWithOnOff. It answers: there is nothing to reach on a release with no fabric.
 - (void)stopWithOnOffWithParams:(MTRLevelControlClusterStopWithOnOffParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
@@ -468,6 +562,17 @@
     }
 }
 
+// stopWithOnOff. It answers: there is nothing to reach on a release with no fabric.
+- (void)stopWithOnOffWithParams:(MTRLevelControlClusterStopWithOnOffParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
 // moveToClosestFrequency. It answers: there is nothing to reach on a release with no fabric.
 - (void)moveToClosestFrequencyWithParams:(MTRLevelControlClusterMoveToClosestFrequencyParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
@@ -476,6 +581,17 @@
     (void)expectedValueIntervalMs;
     if (completion) {
         completion(nil);
+    }
+}
+
+// moveToClosestFrequency. It answers: there is nothing to reach on a release with no fabric.
+- (void)moveToClosestFrequencyWithParams:(MTRLevelControlClusterMoveToClosestFrequencyParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 

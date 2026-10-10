@@ -20,7 +20,7 @@
 //  and read and written under the object's lock, so two threads on one object are not a race.
 //  Every command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
-//  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
+//  read from. A cached read completes with no value and the error of charon_port_no_node_error();
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
 //  queue, never calls its established handler, and leaves the stored value alone.
 //
@@ -43,25 +43,21 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    @package
     NSMutableDictionary *_charon_values;
 }
 @end
 
-@implementation MTRClusterWindowCovering
-
 // The values the caller has written, by attribute name: this object's own table, made on
-// first use - an object built through a superclass's initializer never ran this class's -
-// and handed out under the object's lock, which every read and write below holds for the
-// whole of its access. It is not keyed by the class: two objects of one class are two
-// tables, as they are two sets of state in the framework.
-- (NSMutableDictionary *)charon_port_values
+// first use. The caller holds the object's lock for the whole of its access, so this takes
+// none. It is not keyed by the class: two objects of one class are two tables, as they are
+// two sets of state in the framework.
+static NSMutableDictionary *charon_port_values(MTRClusterWindowCovering *object)
 {
-    @synchronized (self) {
-        if (!_charon_values) {
-            _charon_values = [NSMutableDictionary dictionary];
-        }
-        return _charon_values;
+    if (!object->_charon_values) {
+        object->_charon_values = [NSMutableDictionary dictionary];
     }
+    return object->_charon_values;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -71,11 +67,19 @@
 // tests/backports/host/matterdifferential/behaviour.m: MTRErrorDomain, MTRErrorCodeInvalidState,
 // "Invalid object state.". The domain is written as the string the constant holds: the
 // constant is defined by the framework's own build (packages/m/matter), not by this library.
-+ (NSError *)charon_port_no_node_error
+// Built once: every caller gets the same object, and it is made on first use.
+static NSError *charon_port_no_node_error(void)
 {
-    return [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
-                           userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
+    static NSError *error;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        error = [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
+                                userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
+    });
+    return error;
 }
+
+@implementation MTRClusterWindowCovering
 
 // - (instancetype)initWithDevice:(MTRDevice *)device
 // endpointID:(NSNumber *)endpointID
@@ -90,12 +94,25 @@
     return self;
 }
 
+// - (nullable instancetype)initWithDevice:(MTRDevice *)device
+// endpoint:(uint16_t)endpoint
+// queue:(dispatch_queue_t)queue
+- (nullable instancetype)initWithDevice:(MTRDevice *)device
+                               endpoint:(uint16_t)endpoint
+                                  queue:(dispatch_queue_t)queue
+{
+    _charon_device = device;
+    _charon_endpoint = @(endpoint);
+    _charon_queue = queue;
+    return self;
+}
+
 // Type, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeTypeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Type"];
+        return charon_port_values(self)[@"Type"];
     }
 }
 
@@ -104,7 +121,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"PhysicalClosedLimitLift"];
+        return charon_port_values(self)[@"PhysicalClosedLimitLift"];
     }
 }
 
@@ -113,7 +130,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"PhysicalClosedLimitTilt"];
+        return charon_port_values(self)[@"PhysicalClosedLimitTilt"];
     }
 }
 
@@ -122,7 +139,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"CurrentPositionLift"];
+        return charon_port_values(self)[@"CurrentPositionLift"];
     }
 }
 
@@ -131,7 +148,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"CurrentPositionTilt"];
+        return charon_port_values(self)[@"CurrentPositionTilt"];
     }
 }
 
@@ -140,7 +157,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"NumberOfActuationsLift"];
+        return charon_port_values(self)[@"NumberOfActuationsLift"];
     }
 }
 
@@ -149,7 +166,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"NumberOfActuationsTilt"];
+        return charon_port_values(self)[@"NumberOfActuationsTilt"];
     }
 }
 
@@ -158,7 +175,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ConfigStatus"];
+        return charon_port_values(self)[@"ConfigStatus"];
     }
 }
 
@@ -167,7 +184,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"CurrentPositionLiftPercentage"];
+        return charon_port_values(self)[@"CurrentPositionLiftPercentage"];
     }
 }
 
@@ -176,7 +193,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"CurrentPositionTiltPercentage"];
+        return charon_port_values(self)[@"CurrentPositionTiltPercentage"];
     }
 }
 
@@ -185,7 +202,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"OperationalStatus"];
+        return charon_port_values(self)[@"OperationalStatus"];
     }
 }
 
@@ -194,7 +211,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"TargetPositionLiftPercent100ths"];
+        return charon_port_values(self)[@"TargetPositionLiftPercent100ths"];
     }
 }
 
@@ -203,7 +220,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"TargetPositionTiltPercent100ths"];
+        return charon_port_values(self)[@"TargetPositionTiltPercent100ths"];
     }
 }
 
@@ -212,7 +229,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"EndProductType"];
+        return charon_port_values(self)[@"EndProductType"];
     }
 }
 
@@ -221,7 +238,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"CurrentPositionLiftPercent100ths"];
+        return charon_port_values(self)[@"CurrentPositionLiftPercent100ths"];
     }
 }
 
@@ -230,7 +247,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"CurrentPositionTiltPercent100ths"];
+        return charon_port_values(self)[@"CurrentPositionTiltPercent100ths"];
     }
 }
 
@@ -239,7 +256,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"InstalledOpenLimitLift"];
+        return charon_port_values(self)[@"InstalledOpenLimitLift"];
     }
 }
 
@@ -248,7 +265,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"InstalledClosedLimitLift"];
+        return charon_port_values(self)[@"InstalledClosedLimitLift"];
     }
 }
 
@@ -257,7 +274,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"InstalledOpenLimitTilt"];
+        return charon_port_values(self)[@"InstalledOpenLimitTilt"];
     }
 }
 
@@ -266,7 +283,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"InstalledClosedLimitTilt"];
+        return charon_port_values(self)[@"InstalledClosedLimitTilt"];
     }
 }
 
@@ -275,14 +292,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Mode"];
+        return charon_port_values(self)[@"Mode"];
     }
 }
 
 - (void)writeAttributeModeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"Mode"] = dataValueDictionary;
+        charon_port_values(self)[@"Mode"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -290,7 +307,7 @@
 - (void)writeAttributeModeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"Mode"] = dataValueDictionary;
+        charon_port_values(self)[@"Mode"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -301,7 +318,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"SafetyStatus"];
+        return charon_port_values(self)[@"SafetyStatus"];
     }
 }
 
@@ -310,7 +327,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"GeneratedCommandList"];
+        return charon_port_values(self)[@"GeneratedCommandList"];
     }
 }
 
@@ -319,7 +336,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AcceptedCommandList"];
+        return charon_port_values(self)[@"AcceptedCommandList"];
     }
 }
 
@@ -328,7 +345,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AttributeList"];
+        return charon_port_values(self)[@"AttributeList"];
     }
 }
 
@@ -337,7 +354,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"FeatureMap"];
+        return charon_port_values(self)[@"FeatureMap"];
     }
 }
 
@@ -346,7 +363,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ClusterRevision"];
+        return charon_port_values(self)[@"ClusterRevision"];
     }
 }
 
@@ -371,6 +388,27 @@
     }
 }
 
+// upOrOpen. It answers: there is nothing to reach on a release with no fabric.
+- (void)upOrOpenWithParams:(MTRWindowCoveringClusterUpOrOpenParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
+// upOrOpen. It answers: there is nothing to reach on a release with no fabric.
+- (void)upOrOpenWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)expectedValues;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
 // downOrClose. It answers: there is nothing to reach on a release with no fabric.
 - (void)downOrCloseWithParams:(MTRWindowCoveringClusterDownOrCloseParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
@@ -389,6 +427,27 @@
     (void)expectedValueIntervalMs;
     if (completion) {
         completion(nil);
+    }
+}
+
+// downOrClose. It answers: there is nothing to reach on a release with no fabric.
+- (void)downOrCloseWithParams:(MTRWindowCoveringClusterDownOrCloseParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
+// downOrClose. It answers: there is nothing to reach on a release with no fabric.
+- (void)downOrCloseWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)expectedValues;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 
@@ -413,6 +472,27 @@
     }
 }
 
+// stopMotion. It answers: there is nothing to reach on a release with no fabric.
+- (void)stopMotionWithParams:(MTRWindowCoveringClusterStopMotionParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
+// stopMotion. It answers: there is nothing to reach on a release with no fabric.
+- (void)stopMotionWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)expectedValues;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
 // goToLiftValue. It answers: there is nothing to reach on a release with no fabric.
 - (void)goToLiftValueWithParams:(MTRWindowCoveringClusterGoToLiftValueParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
@@ -421,6 +501,17 @@
     (void)expectedValueIntervalMs;
     if (completion) {
         completion(nil);
+    }
+}
+
+// goToLiftValue. It answers: there is nothing to reach on a release with no fabric.
+- (void)goToLiftValueWithParams:(MTRWindowCoveringClusterGoToLiftValueParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 
@@ -435,6 +526,17 @@
     }
 }
 
+// goToLiftPercentage. It answers: there is nothing to reach on a release with no fabric.
+- (void)goToLiftPercentageWithParams:(MTRWindowCoveringClusterGoToLiftPercentageParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
 // goToTiltValue. It answers: there is nothing to reach on a release with no fabric.
 - (void)goToTiltValueWithParams:(MTRWindowCoveringClusterGoToTiltValueParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
@@ -446,6 +548,17 @@
     }
 }
 
+// goToTiltValue. It answers: there is nothing to reach on a release with no fabric.
+- (void)goToTiltValueWithParams:(MTRWindowCoveringClusterGoToTiltValueParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
 // goToTiltPercentage. It answers: there is nothing to reach on a release with no fabric.
 - (void)goToTiltPercentageWithParams:(MTRWindowCoveringClusterGoToTiltPercentageParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
@@ -454,6 +567,17 @@
     (void)expectedValueIntervalMs;
     if (completion) {
         completion(nil);
+    }
+}
+
+// goToTiltPercentage. It answers: there is nothing to reach on a release with no fabric.
+- (void)goToTiltPercentageWithParams:(MTRWindowCoveringClusterGoToTiltPercentageParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
+{
+    (void)params;
+    (void)expectedDataValueDictionaries;
+    (void)expectedValueIntervalMs;
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 

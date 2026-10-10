@@ -20,7 +20,7 @@
 //  and read and written under the object's lock, so two threads on one object are not a race.
 //  Every command answers through its completion. Nothing here reaches a fabric: the 19 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
-//  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
+//  read from. A cached read completes with no value and the error of charon_port_no_node_error();
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
 //  queue, never calls its established handler, and leaves the stored value alone.
 //
@@ -43,25 +43,21 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    @package
     NSMutableDictionary *_charon_values;
 }
 @end
 
-@implementation MTRBaseClusterOccupancySensing
-
 // The values the caller has written, by attribute name: this object's own table, made on
-// first use - an object built through a superclass's initializer never ran this class's -
-// and handed out under the object's lock, which every read and write below holds for the
-// whole of its access. It is not keyed by the class: two objects of one class are two
-// tables, as they are two sets of state in the framework.
-- (NSMutableDictionary *)charon_port_values
+// first use. The caller holds the object's lock for the whole of its access, so this takes
+// none. It is not keyed by the class: two objects of one class are two tables, as they are
+// two sets of state in the framework.
+static NSMutableDictionary *charon_port_values(MTRBaseClusterOccupancySensing *object)
 {
-    @synchronized (self) {
-        if (!_charon_values) {
-            _charon_values = [NSMutableDictionary dictionary];
-        }
-        return _charon_values;
+    if (!object->_charon_values) {
+        object->_charon_values = [NSMutableDictionary dictionary];
     }
+    return object->_charon_values;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -71,11 +67,19 @@
 // tests/backports/host/matterdifferential/behaviour.m: MTRErrorDomain, MTRErrorCodeInvalidState,
 // "Invalid object state.". The domain is written as the string the constant holds: the
 // constant is defined by the framework's own build (packages/m/matter), not by this library.
-+ (NSError *)charon_port_no_node_error
+// Built once: every caller gets the same object, and it is made on first use.
+static NSError *charon_port_no_node_error(void)
 {
-    return [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
-                           userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
+    static NSError *error;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        error = [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
+                                userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
+    });
+    return error;
 }
+
+@implementation MTRBaseClusterOccupancySensing
 
 // - (instancetype)initWithDevice:(MTRBaseDevice *)device
 // endpointID:(NSNumber *)endpointID
@@ -90,6 +94,19 @@
     return self;
 }
 
+// - (nullable instancetype)initWithDevice:(MTRBaseDevice *)device
+// endpoint:(uint16_t)endpoint
+// queue:(dispatch_queue_t)queue
+- (nullable instancetype)initWithDevice:(MTRBaseDevice *)device
+                               endpoint:(uint16_t)endpoint
+                                  queue:(dispatch_queue_t)queue
+{
+    _charon_device = device;
+    _charon_endpoint = @(endpoint);
+    _charon_queue = queue;
+    return self;
+}
+
 // Occupancy, a NSNumber.
 - (void)readAttributeOccupancyWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completion
 {
@@ -98,7 +115,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"Occupancy"];
+        written = charon_port_values(self)[@"Occupancy"];
     }
     completion(written, nil);
 }
@@ -112,7 +129,24 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+- (void)subscribeAttributeOccupancyWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                            params:(MTRSubscribeParams * _Nullable)params
+                           subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                     reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -125,7 +159,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"OccupancySensorType"];
+        written = charon_port_values(self)[@"OccupancySensorType"];
     }
     completion(written, nil);
 }
@@ -139,7 +173,24 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+- (void)subscribeAttributeOccupancySensorTypeWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                                      params:(MTRSubscribeParams * _Nullable)params
+                                     subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                               reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -152,7 +203,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"OccupancySensorTypeBitmap"];
+        written = charon_port_values(self)[@"OccupancySensorTypeBitmap"];
     }
     completion(written, nil);
 }
@@ -166,7 +217,24 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+- (void)subscribeAttributeOccupancySensorTypeBitmapWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                                            params:(MTRSubscribeParams * _Nullable)params
+                                           subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                                     reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -179,7 +247,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"HoldTime"];
+        written = charon_port_values(self)[@"HoldTime"];
     }
     completion(written, nil);
 }
@@ -187,7 +255,7 @@
 - (void)writeAttributeHoldTimeWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"HoldTime"] = value;
+        charon_port_values(self)[@"HoldTime"] = value;
     }
     if (completion) {
         completion(nil);
@@ -197,7 +265,7 @@
 - (void)writeAttributeHoldTimeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"HoldTime"] = value;
+        charon_port_values(self)[@"HoldTime"] = value;
     }
     if (completion) {
         completion(nil);
@@ -213,7 +281,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -226,7 +294,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"HoldTimeLimits"];
+        written = charon_port_values(self)[@"HoldTimeLimits"];
     }
     completion(written, nil);
 }
@@ -240,7 +308,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -253,7 +321,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"PIROccupiedToUnoccupiedDelay"];
+        written = charon_port_values(self)[@"PIROccupiedToUnoccupiedDelay"];
     }
     completion(written, nil);
 }
@@ -261,7 +329,7 @@
 - (void)writeAttributePIROccupiedToUnoccupiedDelayWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"PIROccupiedToUnoccupiedDelay"] = value;
+        charon_port_values(self)[@"PIROccupiedToUnoccupiedDelay"] = value;
     }
     if (completion) {
         completion(nil);
@@ -271,7 +339,7 @@
 - (void)writeAttributePIROccupiedToUnoccupiedDelayWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"PIROccupiedToUnoccupiedDelay"] = value;
+        charon_port_values(self)[@"PIROccupiedToUnoccupiedDelay"] = value;
     }
     if (completion) {
         completion(nil);
@@ -287,7 +355,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -300,7 +368,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"PIRUnoccupiedToOccupiedDelay"];
+        written = charon_port_values(self)[@"PIRUnoccupiedToOccupiedDelay"];
     }
     completion(written, nil);
 }
@@ -308,7 +376,7 @@
 - (void)writeAttributePIRUnoccupiedToOccupiedDelayWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"PIRUnoccupiedToOccupiedDelay"] = value;
+        charon_port_values(self)[@"PIRUnoccupiedToOccupiedDelay"] = value;
     }
     if (completion) {
         completion(nil);
@@ -318,7 +386,7 @@
 - (void)writeAttributePIRUnoccupiedToOccupiedDelayWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"PIRUnoccupiedToOccupiedDelay"] = value;
+        charon_port_values(self)[@"PIRUnoccupiedToOccupiedDelay"] = value;
     }
     if (completion) {
         completion(nil);
@@ -334,7 +402,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -347,7 +415,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"PIRUnoccupiedToOccupiedThreshold"];
+        written = charon_port_values(self)[@"PIRUnoccupiedToOccupiedThreshold"];
     }
     completion(written, nil);
 }
@@ -355,7 +423,7 @@
 - (void)writeAttributePIRUnoccupiedToOccupiedThresholdWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"PIRUnoccupiedToOccupiedThreshold"] = value;
+        charon_port_values(self)[@"PIRUnoccupiedToOccupiedThreshold"] = value;
     }
     if (completion) {
         completion(nil);
@@ -365,7 +433,7 @@
 - (void)writeAttributePIRUnoccupiedToOccupiedThresholdWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"PIRUnoccupiedToOccupiedThreshold"] = value;
+        charon_port_values(self)[@"PIRUnoccupiedToOccupiedThreshold"] = value;
     }
     if (completion) {
         completion(nil);
@@ -381,7 +449,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -394,7 +462,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"UltrasonicOccupiedToUnoccupiedDelay"];
+        written = charon_port_values(self)[@"UltrasonicOccupiedToUnoccupiedDelay"];
     }
     completion(written, nil);
 }
@@ -402,7 +470,7 @@
 - (void)writeAttributeUltrasonicOccupiedToUnoccupiedDelayWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"UltrasonicOccupiedToUnoccupiedDelay"] = value;
+        charon_port_values(self)[@"UltrasonicOccupiedToUnoccupiedDelay"] = value;
     }
     if (completion) {
         completion(nil);
@@ -412,10 +480,30 @@
 - (void)writeAttributeUltrasonicOccupiedToUnoccupiedDelayWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"UltrasonicOccupiedToUnoccupiedDelay"] = value;
+        charon_port_values(self)[@"UltrasonicOccupiedToUnoccupiedDelay"] = value;
     }
     if (completion) {
         completion(nil);
+    }
+}
+
+- (void)writeAttributeUltrasonicOccupiedToUnoccupiedDelayWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
+{
+    @synchronized (self) {
+        charon_port_values(self)[@"UltrasonicOccupiedToUnoccupiedDelay"] = value;
+    }
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
+- (void)writeAttributeUltrasonicOccupiedToUnoccupiedDelayWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
+{
+    @synchronized (self) {
+        charon_port_values(self)[@"UltrasonicOccupiedToUnoccupiedDelay"] = value;
+    }
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 
@@ -428,7 +516,24 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+- (void)subscribeAttributeUltrasonicOccupiedToUnoccupiedDelayWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                                                      params:(MTRSubscribeParams * _Nullable)params
+                                                     subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                                               reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -441,7 +546,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"UltrasonicUnoccupiedToOccupiedDelay"];
+        written = charon_port_values(self)[@"UltrasonicUnoccupiedToOccupiedDelay"];
     }
     completion(written, nil);
 }
@@ -449,7 +554,7 @@
 - (void)writeAttributeUltrasonicUnoccupiedToOccupiedDelayWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"UltrasonicUnoccupiedToOccupiedDelay"] = value;
+        charon_port_values(self)[@"UltrasonicUnoccupiedToOccupiedDelay"] = value;
     }
     if (completion) {
         completion(nil);
@@ -459,10 +564,30 @@
 - (void)writeAttributeUltrasonicUnoccupiedToOccupiedDelayWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"UltrasonicUnoccupiedToOccupiedDelay"] = value;
+        charon_port_values(self)[@"UltrasonicUnoccupiedToOccupiedDelay"] = value;
     }
     if (completion) {
         completion(nil);
+    }
+}
+
+- (void)writeAttributeUltrasonicUnoccupiedToOccupiedDelayWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
+{
+    @synchronized (self) {
+        charon_port_values(self)[@"UltrasonicUnoccupiedToOccupiedDelay"] = value;
+    }
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
+- (void)writeAttributeUltrasonicUnoccupiedToOccupiedDelayWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
+{
+    @synchronized (self) {
+        charon_port_values(self)[@"UltrasonicUnoccupiedToOccupiedDelay"] = value;
+    }
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 
@@ -475,7 +600,24 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+- (void)subscribeAttributeUltrasonicUnoccupiedToOccupiedDelayWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                                                      params:(MTRSubscribeParams * _Nullable)params
+                                                     subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                                               reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -488,7 +630,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"UltrasonicUnoccupiedToOccupiedThreshold"];
+        written = charon_port_values(self)[@"UltrasonicUnoccupiedToOccupiedThreshold"];
     }
     completion(written, nil);
 }
@@ -496,7 +638,7 @@
 - (void)writeAttributeUltrasonicUnoccupiedToOccupiedThresholdWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"UltrasonicUnoccupiedToOccupiedThreshold"] = value;
+        charon_port_values(self)[@"UltrasonicUnoccupiedToOccupiedThreshold"] = value;
     }
     if (completion) {
         completion(nil);
@@ -506,10 +648,30 @@
 - (void)writeAttributeUltrasonicUnoccupiedToOccupiedThresholdWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"UltrasonicUnoccupiedToOccupiedThreshold"] = value;
+        charon_port_values(self)[@"UltrasonicUnoccupiedToOccupiedThreshold"] = value;
     }
     if (completion) {
         completion(nil);
+    }
+}
+
+- (void)writeAttributeUltrasonicUnoccupiedToOccupiedThresholdWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
+{
+    @synchronized (self) {
+        charon_port_values(self)[@"UltrasonicUnoccupiedToOccupiedThreshold"] = value;
+    }
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
+- (void)writeAttributeUltrasonicUnoccupiedToOccupiedThresholdWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
+{
+    @synchronized (self) {
+        charon_port_values(self)[@"UltrasonicUnoccupiedToOccupiedThreshold"] = value;
+    }
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 
@@ -522,7 +684,24 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+- (void)subscribeAttributeUltrasonicUnoccupiedToOccupiedThresholdWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                                                          params:(MTRSubscribeParams * _Nullable)params
+                                                         subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                                                   reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -535,7 +714,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"PhysicalContactOccupiedToUnoccupiedDelay"];
+        written = charon_port_values(self)[@"PhysicalContactOccupiedToUnoccupiedDelay"];
     }
     completion(written, nil);
 }
@@ -543,7 +722,7 @@
 - (void)writeAttributePhysicalContactOccupiedToUnoccupiedDelayWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"PhysicalContactOccupiedToUnoccupiedDelay"] = value;
+        charon_port_values(self)[@"PhysicalContactOccupiedToUnoccupiedDelay"] = value;
     }
     if (completion) {
         completion(nil);
@@ -553,10 +732,30 @@
 - (void)writeAttributePhysicalContactOccupiedToUnoccupiedDelayWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"PhysicalContactOccupiedToUnoccupiedDelay"] = value;
+        charon_port_values(self)[@"PhysicalContactOccupiedToUnoccupiedDelay"] = value;
     }
     if (completion) {
         completion(nil);
+    }
+}
+
+- (void)writeAttributePhysicalContactOccupiedToUnoccupiedDelayWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
+{
+    @synchronized (self) {
+        charon_port_values(self)[@"PhysicalContactOccupiedToUnoccupiedDelay"] = value;
+    }
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
+- (void)writeAttributePhysicalContactOccupiedToUnoccupiedDelayWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
+{
+    @synchronized (self) {
+        charon_port_values(self)[@"PhysicalContactOccupiedToUnoccupiedDelay"] = value;
+    }
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 
@@ -569,7 +768,24 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+- (void)subscribeAttributePhysicalContactOccupiedToUnoccupiedDelayWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                                                           params:(MTRSubscribeParams * _Nullable)params
+                                                          subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                                                    reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -582,7 +798,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"PhysicalContactUnoccupiedToOccupiedDelay"];
+        written = charon_port_values(self)[@"PhysicalContactUnoccupiedToOccupiedDelay"];
     }
     completion(written, nil);
 }
@@ -590,7 +806,7 @@
 - (void)writeAttributePhysicalContactUnoccupiedToOccupiedDelayWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"PhysicalContactUnoccupiedToOccupiedDelay"] = value;
+        charon_port_values(self)[@"PhysicalContactUnoccupiedToOccupiedDelay"] = value;
     }
     if (completion) {
         completion(nil);
@@ -600,10 +816,30 @@
 - (void)writeAttributePhysicalContactUnoccupiedToOccupiedDelayWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"PhysicalContactUnoccupiedToOccupiedDelay"] = value;
+        charon_port_values(self)[@"PhysicalContactUnoccupiedToOccupiedDelay"] = value;
     }
     if (completion) {
         completion(nil);
+    }
+}
+
+- (void)writeAttributePhysicalContactUnoccupiedToOccupiedDelayWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
+{
+    @synchronized (self) {
+        charon_port_values(self)[@"PhysicalContactUnoccupiedToOccupiedDelay"] = value;
+    }
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
+- (void)writeAttributePhysicalContactUnoccupiedToOccupiedDelayWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
+{
+    @synchronized (self) {
+        charon_port_values(self)[@"PhysicalContactUnoccupiedToOccupiedDelay"] = value;
+    }
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 
@@ -616,7 +852,24 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+- (void)subscribeAttributePhysicalContactUnoccupiedToOccupiedDelayWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                                                           params:(MTRSubscribeParams * _Nullable)params
+                                                          subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                                                    reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -629,7 +882,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"PhysicalContactUnoccupiedToOccupiedThreshold"];
+        written = charon_port_values(self)[@"PhysicalContactUnoccupiedToOccupiedThreshold"];
     }
     completion(written, nil);
 }
@@ -637,7 +890,7 @@
 - (void)writeAttributePhysicalContactUnoccupiedToOccupiedThresholdWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"PhysicalContactUnoccupiedToOccupiedThreshold"] = value;
+        charon_port_values(self)[@"PhysicalContactUnoccupiedToOccupiedThreshold"] = value;
     }
     if (completion) {
         completion(nil);
@@ -647,10 +900,30 @@
 - (void)writeAttributePhysicalContactUnoccupiedToOccupiedThresholdWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"PhysicalContactUnoccupiedToOccupiedThreshold"] = value;
+        charon_port_values(self)[@"PhysicalContactUnoccupiedToOccupiedThreshold"] = value;
     }
     if (completion) {
         completion(nil);
+    }
+}
+
+- (void)writeAttributePhysicalContactUnoccupiedToOccupiedThresholdWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
+{
+    @synchronized (self) {
+        charon_port_values(self)[@"PhysicalContactUnoccupiedToOccupiedThreshold"] = value;
+    }
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
+- (void)writeAttributePhysicalContactUnoccupiedToOccupiedThresholdWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
+{
+    @synchronized (self) {
+        charon_port_values(self)[@"PhysicalContactUnoccupiedToOccupiedThreshold"] = value;
+    }
+    if (completionHandler) {
+        completionHandler(nil);
     }
 }
 
@@ -663,7 +936,24 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+- (void)subscribeAttributePhysicalContactUnoccupiedToOccupiedThresholdWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                                                               params:(MTRSubscribeParams * _Nullable)params
+                                                              subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                                                        reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -676,7 +966,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"GeneratedCommandList"];
+        written = charon_port_values(self)[@"GeneratedCommandList"];
     }
     completion(written, nil);
 }
@@ -690,7 +980,24 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+- (void)subscribeAttributeGeneratedCommandListWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                                       params:(MTRSubscribeParams * _Nullable)params
+                                      subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                                reportHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -703,7 +1010,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"AcceptedCommandList"];
+        written = charon_port_values(self)[@"AcceptedCommandList"];
     }
     completion(written, nil);
 }
@@ -717,7 +1024,24 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+- (void)subscribeAttributeAcceptedCommandListWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                                      params:(MTRSubscribeParams * _Nullable)params
+                                     subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                               reportHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -730,7 +1054,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"AttributeList"];
+        written = charon_port_values(self)[@"AttributeList"];
     }
     completion(written, nil);
 }
@@ -744,7 +1068,24 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+- (void)subscribeAttributeAttributeListWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                                params:(MTRSubscribeParams * _Nullable)params
+                               subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                         reportHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -757,7 +1098,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"FeatureMap"];
+        written = charon_port_values(self)[@"FeatureMap"];
     }
     completion(written, nil);
 }
@@ -771,7 +1112,24 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+- (void)subscribeAttributeFeatureMapWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                             params:(MTRSubscribeParams * _Nullable)params
+                            subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                      reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -784,7 +1142,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"ClusterRevision"];
+        written = charon_port_values(self)[@"ClusterRevision"];
     }
     completion(written, nil);
 }
@@ -798,7 +1156,138 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+- (void)subscribeAttributeClusterRevisionWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                                  params:(MTRSubscribeParams * _Nullable)params
+                                 subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                           reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+// PirOccupiedToUnoccupiedDelay, a id.
+- (void)writeAttributePirOccupiedToUnoccupiedDelayWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
+{
+    @synchronized (self) {
+        charon_port_values(self)[@"PirOccupiedToUnoccupiedDelay"] = value;
+    }
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
+- (void)writeAttributePirOccupiedToUnoccupiedDelayWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
+{
+    @synchronized (self) {
+        charon_port_values(self)[@"PirOccupiedToUnoccupiedDelay"] = value;
+    }
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
+- (void)subscribeAttributePirOccupiedToUnoccupiedDelayWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                                               params:(MTRSubscribeParams * _Nullable)params
+                                              subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                                        reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+// PirUnoccupiedToOccupiedDelay, a id.
+- (void)writeAttributePirUnoccupiedToOccupiedDelayWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
+{
+    @synchronized (self) {
+        charon_port_values(self)[@"PirUnoccupiedToOccupiedDelay"] = value;
+    }
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
+- (void)writeAttributePirUnoccupiedToOccupiedDelayWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
+{
+    @synchronized (self) {
+        charon_port_values(self)[@"PirUnoccupiedToOccupiedDelay"] = value;
+    }
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
+- (void)subscribeAttributePirUnoccupiedToOccupiedDelayWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                                               params:(MTRSubscribeParams * _Nullable)params
+                                              subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                                        reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
+        });
+    }
+}
+
+// PirUnoccupiedToOccupiedThreshold, a id.
+- (void)writeAttributePirUnoccupiedToOccupiedThresholdWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
+{
+    @synchronized (self) {
+        charon_port_values(self)[@"PirUnoccupiedToOccupiedThreshold"] = value;
+    }
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
+- (void)writeAttributePirUnoccupiedToOccupiedThresholdWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
+{
+    @synchronized (self) {
+        charon_port_values(self)[@"PirUnoccupiedToOccupiedThreshold"] = value;
+    }
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
+- (void)subscribeAttributePirUnoccupiedToOccupiedThresholdWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
+                                                                   params:(MTRSubscribeParams * _Nullable)params
+                                                  subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
+                                                            reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
+{
+    (void)minInterval;
+    (void)maxInterval;
+    (void)params;
+    (void)subscriptionEstablishedHandler;
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -808,11 +1297,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of OccupancySensorType: no value and the error, because there is no node.
@@ -820,11 +1311,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of OccupancySensorTypeBitmap: no value and the error, because there is no node.
@@ -832,11 +1325,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of HoldTime: no value and the error, because there is no node.
@@ -844,11 +1339,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of HoldTimeLimits: no value and the error, because there is no node.
@@ -856,11 +1353,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of PIROccupiedToUnoccupiedDelay: no value and the error, because there is no node.
@@ -868,11 +1367,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of PIRUnoccupiedToOccupiedDelay: no value and the error, because there is no node.
@@ -880,11 +1381,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of PIRUnoccupiedToOccupiedThreshold: no value and the error, because there is no node.
@@ -892,11 +1395,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of UltrasonicOccupiedToUnoccupiedDelay: no value and the error, because there is no node.
@@ -904,11 +1409,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of UltrasonicUnoccupiedToOccupiedDelay: no value and the error, because there is no node.
@@ -916,11 +1423,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of UltrasonicUnoccupiedToOccupiedThreshold: no value and the error, because there is no node.
@@ -928,11 +1437,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of PhysicalContactOccupiedToUnoccupiedDelay: no value and the error, because there is no node.
@@ -940,11 +1451,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of PhysicalContactUnoccupiedToOccupiedDelay: no value and the error, because there is no node.
@@ -952,11 +1465,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of PhysicalContactUnoccupiedToOccupiedThreshold: no value and the error, because there is no node.
@@ -964,11 +1479,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of GeneratedCommandList: no value and the error, because there is no node.
@@ -976,11 +1493,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of AcceptedCommandList: no value and the error, because there is no node.
@@ -988,11 +1507,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of AttributeList: no value and the error, because there is no node.
@@ -1000,11 +1521,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of FeatureMap: no value and the error, because there is no node.
@@ -1012,11 +1535,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of ClusterRevision: no value and the error, because there is no node.
@@ -1024,11 +1549,132 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterOccupancySensing charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
+}
+
+- (void)readAttributeOccupancyWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributeOccupancySensorTypeWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributeOccupancySensorTypeBitmapWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributePirOccupiedToUnoccupiedDelayWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributePirUnoccupiedToOccupiedDelayWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributePirUnoccupiedToOccupiedThresholdWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributeUltrasonicOccupiedToUnoccupiedDelayWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributeUltrasonicUnoccupiedToOccupiedDelayWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributeUltrasonicUnoccupiedToOccupiedThresholdWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributePhysicalContactOccupiedToUnoccupiedDelayWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributePhysicalContactUnoccupiedToOccupiedDelayWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributePhysicalContactUnoccupiedToOccupiedThresholdWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributeGeneratedCommandListWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributeAcceptedCommandListWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributeAttributeListWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributeFeatureMapWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)readAttributeClusterRevisionWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
 }
 
 @end

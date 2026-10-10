@@ -20,7 +20,7 @@
 //  and read and written under the object's lock, so two threads on one object are not a race.
 //  Every command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
-//  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
+//  read from. A cached read completes with no value and the error of charon_port_no_node_error();
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
 //  queue, never calls its established handler, and leaves the stored value alone.
 //
@@ -43,25 +43,21 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    @package
     NSMutableDictionary *_charon_values;
 }
 @end
 
-@implementation MTRClusterPumpConfigurationAndControl
-
 // The values the caller has written, by attribute name: this object's own table, made on
-// first use - an object built through a superclass's initializer never ran this class's -
-// and handed out under the object's lock, which every read and write below holds for the
-// whole of its access. It is not keyed by the class: two objects of one class are two
-// tables, as they are two sets of state in the framework.
-- (NSMutableDictionary *)charon_port_values
+// first use. The caller holds the object's lock for the whole of its access, so this takes
+// none. It is not keyed by the class: two objects of one class are two tables, as they are
+// two sets of state in the framework.
+static NSMutableDictionary *charon_port_values(MTRClusterPumpConfigurationAndControl *object)
 {
-    @synchronized (self) {
-        if (!_charon_values) {
-            _charon_values = [NSMutableDictionary dictionary];
-        }
-        return _charon_values;
+    if (!object->_charon_values) {
+        object->_charon_values = [NSMutableDictionary dictionary];
     }
+    return object->_charon_values;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -71,11 +67,19 @@
 // tests/backports/host/matterdifferential/behaviour.m: MTRErrorDomain, MTRErrorCodeInvalidState,
 // "Invalid object state.". The domain is written as the string the constant holds: the
 // constant is defined by the framework's own build (packages/m/matter), not by this library.
-+ (NSError *)charon_port_no_node_error
+// Built once: every caller gets the same object, and it is made on first use.
+static NSError *charon_port_no_node_error(void)
 {
-    return [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
-                           userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
+    static NSError *error;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        error = [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
+                                userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
+    });
+    return error;
 }
+
+@implementation MTRClusterPumpConfigurationAndControl
 
 // - (instancetype)initWithDevice:(MTRDevice *)device
 // endpointID:(NSNumber *)endpointID
@@ -90,12 +94,25 @@
     return self;
 }
 
+// - (nullable instancetype)initWithDevice:(MTRDevice *)device
+// endpoint:(uint16_t)endpoint
+// queue:(dispatch_queue_t)queue
+- (nullable instancetype)initWithDevice:(MTRDevice *)device
+                               endpoint:(uint16_t)endpoint
+                                  queue:(dispatch_queue_t)queue
+{
+    _charon_device = device;
+    _charon_endpoint = @(endpoint);
+    _charon_queue = queue;
+    return self;
+}
+
 // MaxPressure, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMaxPressureWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"MaxPressure"];
+        return charon_port_values(self)[@"MaxPressure"];
     }
 }
 
@@ -104,7 +121,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"MaxSpeed"];
+        return charon_port_values(self)[@"MaxSpeed"];
     }
 }
 
@@ -113,7 +130,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"MaxFlow"];
+        return charon_port_values(self)[@"MaxFlow"];
     }
 }
 
@@ -122,7 +139,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"MinConstPressure"];
+        return charon_port_values(self)[@"MinConstPressure"];
     }
 }
 
@@ -131,7 +148,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"MaxConstPressure"];
+        return charon_port_values(self)[@"MaxConstPressure"];
     }
 }
 
@@ -140,7 +157,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"MinCompPressure"];
+        return charon_port_values(self)[@"MinCompPressure"];
     }
 }
 
@@ -149,7 +166,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"MaxCompPressure"];
+        return charon_port_values(self)[@"MaxCompPressure"];
     }
 }
 
@@ -158,7 +175,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"MinConstSpeed"];
+        return charon_port_values(self)[@"MinConstSpeed"];
     }
 }
 
@@ -167,7 +184,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"MaxConstSpeed"];
+        return charon_port_values(self)[@"MaxConstSpeed"];
     }
 }
 
@@ -176,7 +193,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"MinConstFlow"];
+        return charon_port_values(self)[@"MinConstFlow"];
     }
 }
 
@@ -185,7 +202,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"MaxConstFlow"];
+        return charon_port_values(self)[@"MaxConstFlow"];
     }
 }
 
@@ -194,7 +211,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"MinConstTemp"];
+        return charon_port_values(self)[@"MinConstTemp"];
     }
 }
 
@@ -203,7 +220,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"MaxConstTemp"];
+        return charon_port_values(self)[@"MaxConstTemp"];
     }
 }
 
@@ -212,7 +229,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"PumpStatus"];
+        return charon_port_values(self)[@"PumpStatus"];
     }
 }
 
@@ -221,7 +238,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"EffectiveOperationMode"];
+        return charon_port_values(self)[@"EffectiveOperationMode"];
     }
 }
 
@@ -230,7 +247,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"EffectiveControlMode"];
+        return charon_port_values(self)[@"EffectiveControlMode"];
     }
 }
 
@@ -239,7 +256,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Capacity"];
+        return charon_port_values(self)[@"Capacity"];
     }
 }
 
@@ -248,7 +265,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Speed"];
+        return charon_port_values(self)[@"Speed"];
     }
 }
 
@@ -257,14 +274,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"LifetimeRunningHours"];
+        return charon_port_values(self)[@"LifetimeRunningHours"];
     }
 }
 
 - (void)writeAttributeLifetimeRunningHoursWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"LifetimeRunningHours"] = dataValueDictionary;
+        charon_port_values(self)[@"LifetimeRunningHours"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -272,7 +289,7 @@
 - (void)writeAttributeLifetimeRunningHoursWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"LifetimeRunningHours"] = dataValueDictionary;
+        charon_port_values(self)[@"LifetimeRunningHours"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -283,7 +300,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"Power"];
+        return charon_port_values(self)[@"Power"];
     }
 }
 
@@ -292,14 +309,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"LifetimeEnergyConsumed"];
+        return charon_port_values(self)[@"LifetimeEnergyConsumed"];
     }
 }
 
 - (void)writeAttributeLifetimeEnergyConsumedWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"LifetimeEnergyConsumed"] = dataValueDictionary;
+        charon_port_values(self)[@"LifetimeEnergyConsumed"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -307,7 +324,7 @@
 - (void)writeAttributeLifetimeEnergyConsumedWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"LifetimeEnergyConsumed"] = dataValueDictionary;
+        charon_port_values(self)[@"LifetimeEnergyConsumed"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -318,14 +335,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"OperationMode"];
+        return charon_port_values(self)[@"OperationMode"];
     }
 }
 
 - (void)writeAttributeOperationModeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"OperationMode"] = dataValueDictionary;
+        charon_port_values(self)[@"OperationMode"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -333,7 +350,7 @@
 - (void)writeAttributeOperationModeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"OperationMode"] = dataValueDictionary;
+        charon_port_values(self)[@"OperationMode"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -344,14 +361,14 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ControlMode"];
+        return charon_port_values(self)[@"ControlMode"];
     }
 }
 
 - (void)writeAttributeControlModeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        [self charon_port_values][@"ControlMode"] = dataValueDictionary;
+        charon_port_values(self)[@"ControlMode"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -359,7 +376,7 @@
 - (void)writeAttributeControlModeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        [self charon_port_values][@"ControlMode"] = dataValueDictionary;
+        charon_port_values(self)[@"ControlMode"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -370,7 +387,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"GeneratedCommandList"];
+        return charon_port_values(self)[@"GeneratedCommandList"];
     }
 }
 
@@ -379,7 +396,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AcceptedCommandList"];
+        return charon_port_values(self)[@"AcceptedCommandList"];
     }
 }
 
@@ -388,7 +405,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"AttributeList"];
+        return charon_port_values(self)[@"AttributeList"];
     }
 }
 
@@ -397,7 +414,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"FeatureMap"];
+        return charon_port_values(self)[@"FeatureMap"];
     }
 }
 
@@ -406,7 +423,7 @@
 {
     (void)params;
     @synchronized (self) {
-        return [self charon_port_values][@"ClusterRevision"];
+        return charon_port_values(self)[@"ClusterRevision"];
     }
 }
 

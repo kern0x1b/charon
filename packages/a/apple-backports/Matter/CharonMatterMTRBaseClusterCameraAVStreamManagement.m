@@ -20,7 +20,7 @@
 //  and read and written under the object's lock, so two threads on one object are not a race.
 //  Every command answers through its completion. Nothing here reaches a fabric: the 46 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
-//  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
+//  read from. A cached read completes with no value and the error of charon_port_no_node_error();
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
 //  queue, never calls its established handler, and leaves the stored value alone.
 //
@@ -34,9 +34,41 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    @package
     NSMutableDictionary *_charon_values;
 }
 @end
+
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use. The caller holds the object's lock for the whole of its access, so this takes
+// none. It is not keyed by the class: two objects of one class are two tables, as they are
+// two sets of state in the framework.
+static NSMutableDictionary *charon_port_values(MTRBaseClusterCameraAVStreamManagement *object)
+{
+    if (!object->_charon_values) {
+        object->_charon_values = [NSMutableDictionary dictionary];
+    }
+    return object->_charon_values;
+}
+
+// The error a member that would need a node answers, on a release with no Matter
+// hardware: there is no controller to ask and no node to read from. It is the framework's
+// own answer to a cached read on a container with no cache and to any request on a
+// controller that has been shut down, measured on the host by
+// tests/backports/host/matterdifferential/behaviour.m: MTRErrorDomain, MTRErrorCodeInvalidState,
+// "Invalid object state.". The domain is written as the string the constant holds: the
+// constant is defined by the framework's own build (packages/m/matter), not by this library.
+// Built once: every caller gets the same object, and it is made on first use.
+static NSError *charon_port_no_node_error(void)
+{
+    static NSError *error;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        error = [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
+                                userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
+    });
+    return error;
+}
 
 @implementation MTRBaseClusterCameraAVStreamManagement
 
@@ -87,34 +119,6 @@
 @synthesize VideoSensorParamsValues = _VideoSensorParamsValues;
 @synthesize ViewportValues = _ViewportValues;
 
-// The values the caller has written, by attribute name: this object's own table, made on
-// first use - an object built through a superclass's initializer never ran this class's -
-// and handed out under the object's lock, which every read and write below holds for the
-// whole of its access. It is not keyed by the class: two objects of one class are two
-// tables, as they are two sets of state in the framework.
-- (NSMutableDictionary *)charon_port_values
-{
-    @synchronized (self) {
-        if (!_charon_values) {
-            _charon_values = [NSMutableDictionary dictionary];
-        }
-        return _charon_values;
-    }
-}
-
-// The error a member that would need a node answers, on a release with no Matter
-// hardware: there is no controller to ask and no node to read from. It is the framework's
-// own answer to a cached read on a container with no cache and to any request on a
-// controller that has been shut down, measured on the host by
-// tests/backports/host/matterdifferential/behaviour.m: MTRErrorDomain, MTRErrorCodeInvalidState,
-// "Invalid object state.". The domain is written as the string the constant holds: the
-// constant is defined by the framework's own build (packages/m/matter), not by this library.
-+ (NSError *)charon_port_no_node_error
-{
-    return [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
-                           userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
-}
-
 // - (instancetype)initWithDevice:(MTRBaseDevice *)device
 // endpointID:(NSNumber *)endpointID
 // queue:(dispatch_queue_t)queue
@@ -136,7 +140,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"MaxConcurrentEncoders"];
+        written = charon_port_values(self)[@"MaxConcurrentEncoders"];
     }
     completion(written, nil);
 }
@@ -150,7 +154,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -163,7 +167,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"MaxEncodedPixelRate"];
+        written = charon_port_values(self)[@"MaxEncodedPixelRate"];
     }
     completion(written, nil);
 }
@@ -177,7 +181,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -190,7 +194,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"VideoSensorParams"];
+        written = charon_port_values(self)[@"VideoSensorParams"];
     }
     completion(written, nil);
 }
@@ -204,7 +208,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -217,7 +221,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NightVisionUsesInfrared"];
+        written = charon_port_values(self)[@"NightVisionUsesInfrared"];
     }
     completion(written, nil);
 }
@@ -231,7 +235,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -244,7 +248,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"MinViewportResolution"];
+        written = charon_port_values(self)[@"MinViewportResolution"];
     }
     completion(written, nil);
 }
@@ -258,7 +262,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -271,7 +275,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"RateDistortionTradeOffPoints"];
+        written = charon_port_values(self)[@"RateDistortionTradeOffPoints"];
     }
     completion(written, nil);
 }
@@ -285,7 +289,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -298,7 +302,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"MaxContentBufferSize"];
+        written = charon_port_values(self)[@"MaxContentBufferSize"];
     }
     completion(written, nil);
 }
@@ -312,7 +316,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -325,7 +329,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"MicrophoneCapabilities"];
+        written = charon_port_values(self)[@"MicrophoneCapabilities"];
     }
     completion(written, nil);
 }
@@ -339,7 +343,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -352,7 +356,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"SpeakerCapabilities"];
+        written = charon_port_values(self)[@"SpeakerCapabilities"];
     }
     completion(written, nil);
 }
@@ -366,7 +370,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -379,7 +383,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"TwoWayTalkSupport"];
+        written = charon_port_values(self)[@"TwoWayTalkSupport"];
     }
     completion(written, nil);
 }
@@ -393,7 +397,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -406,7 +410,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"SnapshotCapabilities"];
+        written = charon_port_values(self)[@"SnapshotCapabilities"];
     }
     completion(written, nil);
 }
@@ -420,7 +424,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -433,7 +437,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"MaxNetworkBandwidth"];
+        written = charon_port_values(self)[@"MaxNetworkBandwidth"];
     }
     completion(written, nil);
 }
@@ -447,7 +451,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -460,7 +464,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"CurrentFrameRate"];
+        written = charon_port_values(self)[@"CurrentFrameRate"];
     }
     completion(written, nil);
 }
@@ -474,7 +478,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -487,7 +491,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"HDRModeEnabled"];
+        written = charon_port_values(self)[@"HDRModeEnabled"];
     }
     completion(written, nil);
 }
@@ -495,7 +499,7 @@
 - (void)writeAttributeHDRModeEnabledWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"HDRModeEnabled"] = value;
+        charon_port_values(self)[@"HDRModeEnabled"] = value;
     }
     if (completion) {
         completion(nil);
@@ -505,7 +509,7 @@
 - (void)writeAttributeHDRModeEnabledWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"HDRModeEnabled"] = value;
+        charon_port_values(self)[@"HDRModeEnabled"] = value;
     }
     if (completion) {
         completion(nil);
@@ -521,7 +525,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -534,7 +538,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"SupportedStreamUsages"];
+        written = charon_port_values(self)[@"SupportedStreamUsages"];
     }
     completion(written, nil);
 }
@@ -548,7 +552,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -561,7 +565,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"AllocatedVideoStreams"];
+        written = charon_port_values(self)[@"AllocatedVideoStreams"];
     }
     completion(written, nil);
 }
@@ -575,7 +579,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -588,7 +592,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"AllocatedAudioStreams"];
+        written = charon_port_values(self)[@"AllocatedAudioStreams"];
     }
     completion(written, nil);
 }
@@ -602,7 +606,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -615,7 +619,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"AllocatedSnapshotStreams"];
+        written = charon_port_values(self)[@"AllocatedSnapshotStreams"];
     }
     completion(written, nil);
 }
@@ -629,7 +633,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -642,7 +646,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"StreamUsagePriorities"];
+        written = charon_port_values(self)[@"StreamUsagePriorities"];
     }
     completion(written, nil);
 }
@@ -656,7 +660,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -669,7 +673,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"SoftRecordingPrivacyModeEnabled"];
+        written = charon_port_values(self)[@"SoftRecordingPrivacyModeEnabled"];
     }
     completion(written, nil);
 }
@@ -677,7 +681,7 @@
 - (void)writeAttributeSoftRecordingPrivacyModeEnabledWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"SoftRecordingPrivacyModeEnabled"] = value;
+        charon_port_values(self)[@"SoftRecordingPrivacyModeEnabled"] = value;
     }
     if (completion) {
         completion(nil);
@@ -687,7 +691,7 @@
 - (void)writeAttributeSoftRecordingPrivacyModeEnabledWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"SoftRecordingPrivacyModeEnabled"] = value;
+        charon_port_values(self)[@"SoftRecordingPrivacyModeEnabled"] = value;
     }
     if (completion) {
         completion(nil);
@@ -703,7 +707,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -716,7 +720,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"SoftLivestreamPrivacyModeEnabled"];
+        written = charon_port_values(self)[@"SoftLivestreamPrivacyModeEnabled"];
     }
     completion(written, nil);
 }
@@ -724,7 +728,7 @@
 - (void)writeAttributeSoftLivestreamPrivacyModeEnabledWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"SoftLivestreamPrivacyModeEnabled"] = value;
+        charon_port_values(self)[@"SoftLivestreamPrivacyModeEnabled"] = value;
     }
     if (completion) {
         completion(nil);
@@ -734,7 +738,7 @@
 - (void)writeAttributeSoftLivestreamPrivacyModeEnabledWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"SoftLivestreamPrivacyModeEnabled"] = value;
+        charon_port_values(self)[@"SoftLivestreamPrivacyModeEnabled"] = value;
     }
     if (completion) {
         completion(nil);
@@ -750,7 +754,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -763,7 +767,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"HardPrivacyModeOn"];
+        written = charon_port_values(self)[@"HardPrivacyModeOn"];
     }
     completion(written, nil);
 }
@@ -777,7 +781,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -790,7 +794,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NightVision"];
+        written = charon_port_values(self)[@"NightVision"];
     }
     completion(written, nil);
 }
@@ -798,7 +802,7 @@
 - (void)writeAttributeNightVisionWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NightVision"] = value;
+        charon_port_values(self)[@"NightVision"] = value;
     }
     if (completion) {
         completion(nil);
@@ -808,7 +812,7 @@
 - (void)writeAttributeNightVisionWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NightVision"] = value;
+        charon_port_values(self)[@"NightVision"] = value;
     }
     if (completion) {
         completion(nil);
@@ -824,7 +828,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -837,7 +841,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"NightVisionIllum"];
+        written = charon_port_values(self)[@"NightVisionIllum"];
     }
     completion(written, nil);
 }
@@ -845,7 +849,7 @@
 - (void)writeAttributeNightVisionIllumWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NightVisionIllum"] = value;
+        charon_port_values(self)[@"NightVisionIllum"] = value;
     }
     if (completion) {
         completion(nil);
@@ -855,7 +859,7 @@
 - (void)writeAttributeNightVisionIllumWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"NightVisionIllum"] = value;
+        charon_port_values(self)[@"NightVisionIllum"] = value;
     }
     if (completion) {
         completion(nil);
@@ -871,7 +875,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -884,7 +888,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"Viewport"];
+        written = charon_port_values(self)[@"Viewport"];
     }
     completion(written, nil);
 }
@@ -892,7 +896,7 @@
 - (void)writeAttributeViewportWithValue:(MTRDataTypeViewportStruct * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Viewport"] = value;
+        charon_port_values(self)[@"Viewport"] = value;
     }
     if (completion) {
         completion(nil);
@@ -902,7 +906,7 @@
 - (void)writeAttributeViewportWithValue:(MTRDataTypeViewportStruct * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"Viewport"] = value;
+        charon_port_values(self)[@"Viewport"] = value;
     }
     if (completion) {
         completion(nil);
@@ -918,7 +922,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -931,7 +935,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"SpeakerMuted"];
+        written = charon_port_values(self)[@"SpeakerMuted"];
     }
     completion(written, nil);
 }
@@ -939,7 +943,7 @@
 - (void)writeAttributeSpeakerMutedWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"SpeakerMuted"] = value;
+        charon_port_values(self)[@"SpeakerMuted"] = value;
     }
     if (completion) {
         completion(nil);
@@ -949,7 +953,7 @@
 - (void)writeAttributeSpeakerMutedWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"SpeakerMuted"] = value;
+        charon_port_values(self)[@"SpeakerMuted"] = value;
     }
     if (completion) {
         completion(nil);
@@ -965,7 +969,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -978,7 +982,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"SpeakerVolumeLevel"];
+        written = charon_port_values(self)[@"SpeakerVolumeLevel"];
     }
     completion(written, nil);
 }
@@ -986,7 +990,7 @@
 - (void)writeAttributeSpeakerVolumeLevelWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"SpeakerVolumeLevel"] = value;
+        charon_port_values(self)[@"SpeakerVolumeLevel"] = value;
     }
     if (completion) {
         completion(nil);
@@ -996,7 +1000,7 @@
 - (void)writeAttributeSpeakerVolumeLevelWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"SpeakerVolumeLevel"] = value;
+        charon_port_values(self)[@"SpeakerVolumeLevel"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1012,7 +1016,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1025,7 +1029,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"SpeakerMaxLevel"];
+        written = charon_port_values(self)[@"SpeakerMaxLevel"];
     }
     completion(written, nil);
 }
@@ -1039,7 +1043,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1052,7 +1056,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"SpeakerMinLevel"];
+        written = charon_port_values(self)[@"SpeakerMinLevel"];
     }
     completion(written, nil);
 }
@@ -1066,7 +1070,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1079,7 +1083,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"MicrophoneMuted"];
+        written = charon_port_values(self)[@"MicrophoneMuted"];
     }
     completion(written, nil);
 }
@@ -1087,7 +1091,7 @@
 - (void)writeAttributeMicrophoneMutedWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"MicrophoneMuted"] = value;
+        charon_port_values(self)[@"MicrophoneMuted"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1097,7 +1101,7 @@
 - (void)writeAttributeMicrophoneMutedWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"MicrophoneMuted"] = value;
+        charon_port_values(self)[@"MicrophoneMuted"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1113,7 +1117,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1126,7 +1130,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"MicrophoneVolumeLevel"];
+        written = charon_port_values(self)[@"MicrophoneVolumeLevel"];
     }
     completion(written, nil);
 }
@@ -1134,7 +1138,7 @@
 - (void)writeAttributeMicrophoneVolumeLevelWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"MicrophoneVolumeLevel"] = value;
+        charon_port_values(self)[@"MicrophoneVolumeLevel"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1144,7 +1148,7 @@
 - (void)writeAttributeMicrophoneVolumeLevelWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"MicrophoneVolumeLevel"] = value;
+        charon_port_values(self)[@"MicrophoneVolumeLevel"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1160,7 +1164,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1173,7 +1177,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"MicrophoneMaxLevel"];
+        written = charon_port_values(self)[@"MicrophoneMaxLevel"];
     }
     completion(written, nil);
 }
@@ -1187,7 +1191,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1200,7 +1204,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"MicrophoneMinLevel"];
+        written = charon_port_values(self)[@"MicrophoneMinLevel"];
     }
     completion(written, nil);
 }
@@ -1214,7 +1218,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1227,7 +1231,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"MicrophoneAGCEnabled"];
+        written = charon_port_values(self)[@"MicrophoneAGCEnabled"];
     }
     completion(written, nil);
 }
@@ -1235,7 +1239,7 @@
 - (void)writeAttributeMicrophoneAGCEnabledWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"MicrophoneAGCEnabled"] = value;
+        charon_port_values(self)[@"MicrophoneAGCEnabled"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1245,7 +1249,7 @@
 - (void)writeAttributeMicrophoneAGCEnabledWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"MicrophoneAGCEnabled"] = value;
+        charon_port_values(self)[@"MicrophoneAGCEnabled"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1261,7 +1265,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1274,7 +1278,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"ImageRotation"];
+        written = charon_port_values(self)[@"ImageRotation"];
     }
     completion(written, nil);
 }
@@ -1282,7 +1286,7 @@
 - (void)writeAttributeImageRotationWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"ImageRotation"] = value;
+        charon_port_values(self)[@"ImageRotation"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1292,7 +1296,7 @@
 - (void)writeAttributeImageRotationWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"ImageRotation"] = value;
+        charon_port_values(self)[@"ImageRotation"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1308,7 +1312,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1321,7 +1325,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"ImageFlipHorizontal"];
+        written = charon_port_values(self)[@"ImageFlipHorizontal"];
     }
     completion(written, nil);
 }
@@ -1329,7 +1333,7 @@
 - (void)writeAttributeImageFlipHorizontalWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"ImageFlipHorizontal"] = value;
+        charon_port_values(self)[@"ImageFlipHorizontal"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1339,7 +1343,7 @@
 - (void)writeAttributeImageFlipHorizontalWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"ImageFlipHorizontal"] = value;
+        charon_port_values(self)[@"ImageFlipHorizontal"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1355,7 +1359,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1368,7 +1372,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"ImageFlipVertical"];
+        written = charon_port_values(self)[@"ImageFlipVertical"];
     }
     completion(written, nil);
 }
@@ -1376,7 +1380,7 @@
 - (void)writeAttributeImageFlipVerticalWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"ImageFlipVertical"] = value;
+        charon_port_values(self)[@"ImageFlipVertical"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1386,7 +1390,7 @@
 - (void)writeAttributeImageFlipVerticalWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"ImageFlipVertical"] = value;
+        charon_port_values(self)[@"ImageFlipVertical"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1402,7 +1406,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1415,7 +1419,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"LocalVideoRecordingEnabled"];
+        written = charon_port_values(self)[@"LocalVideoRecordingEnabled"];
     }
     completion(written, nil);
 }
@@ -1423,7 +1427,7 @@
 - (void)writeAttributeLocalVideoRecordingEnabledWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"LocalVideoRecordingEnabled"] = value;
+        charon_port_values(self)[@"LocalVideoRecordingEnabled"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1433,7 +1437,7 @@
 - (void)writeAttributeLocalVideoRecordingEnabledWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"LocalVideoRecordingEnabled"] = value;
+        charon_port_values(self)[@"LocalVideoRecordingEnabled"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1449,7 +1453,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1462,7 +1466,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"LocalSnapshotRecordingEnabled"];
+        written = charon_port_values(self)[@"LocalSnapshotRecordingEnabled"];
     }
     completion(written, nil);
 }
@@ -1470,7 +1474,7 @@
 - (void)writeAttributeLocalSnapshotRecordingEnabledWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"LocalSnapshotRecordingEnabled"] = value;
+        charon_port_values(self)[@"LocalSnapshotRecordingEnabled"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1480,7 +1484,7 @@
 - (void)writeAttributeLocalSnapshotRecordingEnabledWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"LocalSnapshotRecordingEnabled"] = value;
+        charon_port_values(self)[@"LocalSnapshotRecordingEnabled"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1496,7 +1500,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1509,7 +1513,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"StatusLightEnabled"];
+        written = charon_port_values(self)[@"StatusLightEnabled"];
     }
     completion(written, nil);
 }
@@ -1517,7 +1521,7 @@
 - (void)writeAttributeStatusLightEnabledWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"StatusLightEnabled"] = value;
+        charon_port_values(self)[@"StatusLightEnabled"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1527,7 +1531,7 @@
 - (void)writeAttributeStatusLightEnabledWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"StatusLightEnabled"] = value;
+        charon_port_values(self)[@"StatusLightEnabled"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1543,7 +1547,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1556,7 +1560,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"StatusLightBrightness"];
+        written = charon_port_values(self)[@"StatusLightBrightness"];
     }
     completion(written, nil);
 }
@@ -1564,7 +1568,7 @@
 - (void)writeAttributeStatusLightBrightnessWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"StatusLightBrightness"] = value;
+        charon_port_values(self)[@"StatusLightBrightness"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1574,7 +1578,7 @@
 - (void)writeAttributeStatusLightBrightnessWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        [self charon_port_values][@"StatusLightBrightness"] = value;
+        charon_port_values(self)[@"StatusLightBrightness"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1590,7 +1594,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1603,7 +1607,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"GeneratedCommandList"];
+        written = charon_port_values(self)[@"GeneratedCommandList"];
     }
     completion(written, nil);
 }
@@ -1617,7 +1621,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1630,7 +1634,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"AcceptedCommandList"];
+        written = charon_port_values(self)[@"AcceptedCommandList"];
     }
     completion(written, nil);
 }
@@ -1644,7 +1648,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1657,7 +1661,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"AttributeList"];
+        written = charon_port_values(self)[@"AttributeList"];
     }
     completion(written, nil);
 }
@@ -1671,7 +1675,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1684,7 +1688,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"FeatureMap"];
+        written = charon_port_values(self)[@"FeatureMap"];
     }
     completion(written, nil);
 }
@@ -1698,7 +1702,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1711,7 +1715,7 @@
     }
     id written;
     @synchronized (self) {
-        written = [self charon_port_values][@"ClusterRevision"];
+        written = charon_port_values(self)[@"ClusterRevision"];
     }
     completion(written, nil);
 }
@@ -1725,7 +1729,7 @@
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1735,11 +1739,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of MaxEncodedPixelRate: no value and the error, because there is no node.
@@ -1747,11 +1753,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of VideoSensorParams: no value and the error, because there is no node.
@@ -1759,11 +1767,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NightVisionUsesInfrared: no value and the error, because there is no node.
@@ -1771,11 +1781,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of MinViewportResolution: no value and the error, because there is no node.
@@ -1783,11 +1795,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of RateDistortionTradeOffPoints: no value and the error, because there is no node.
@@ -1795,11 +1809,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of MaxContentBufferSize: no value and the error, because there is no node.
@@ -1807,11 +1823,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of MicrophoneCapabilities: no value and the error, because there is no node.
@@ -1819,11 +1837,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of SpeakerCapabilities: no value and the error, because there is no node.
@@ -1831,11 +1851,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of TwoWayTalkSupport: no value and the error, because there is no node.
@@ -1843,11 +1865,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of SnapshotCapabilities: no value and the error, because there is no node.
@@ -1855,11 +1879,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of MaxNetworkBandwidth: no value and the error, because there is no node.
@@ -1867,11 +1893,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of CurrentFrameRate: no value and the error, because there is no node.
@@ -1879,11 +1907,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of HDRModeEnabled: no value and the error, because there is no node.
@@ -1891,11 +1921,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of SupportedStreamUsages: no value and the error, because there is no node.
@@ -1903,11 +1935,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of AllocatedVideoStreams: no value and the error, because there is no node.
@@ -1915,11 +1949,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of AllocatedAudioStreams: no value and the error, because there is no node.
@@ -1927,11 +1963,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of AllocatedSnapshotStreams: no value and the error, because there is no node.
@@ -1939,11 +1977,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of StreamUsagePriorities: no value and the error, because there is no node.
@@ -1951,11 +1991,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of SoftRecordingPrivacyModeEnabled: no value and the error, because there is no node.
@@ -1963,11 +2005,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of SoftLivestreamPrivacyModeEnabled: no value and the error, because there is no node.
@@ -1975,11 +2019,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of HardPrivacyModeOn: no value and the error, because there is no node.
@@ -1987,11 +2033,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NightVision: no value and the error, because there is no node.
@@ -1999,11 +2047,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of NightVisionIllum: no value and the error, because there is no node.
@@ -2011,11 +2061,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of Viewport: no value and the error, because there is no node.
@@ -2023,11 +2075,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of SpeakerMuted: no value and the error, because there is no node.
@@ -2035,11 +2089,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of SpeakerVolumeLevel: no value and the error, because there is no node.
@@ -2047,11 +2103,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of SpeakerMaxLevel: no value and the error, because there is no node.
@@ -2059,11 +2117,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of SpeakerMinLevel: no value and the error, because there is no node.
@@ -2071,11 +2131,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of MicrophoneMuted: no value and the error, because there is no node.
@@ -2083,11 +2145,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of MicrophoneVolumeLevel: no value and the error, because there is no node.
@@ -2095,11 +2159,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of MicrophoneMaxLevel: no value and the error, because there is no node.
@@ -2107,11 +2173,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of MicrophoneMinLevel: no value and the error, because there is no node.
@@ -2119,11 +2187,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of MicrophoneAGCEnabled: no value and the error, because there is no node.
@@ -2131,11 +2201,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of ImageRotation: no value and the error, because there is no node.
@@ -2143,11 +2215,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of ImageFlipHorizontal: no value and the error, because there is no node.
@@ -2155,11 +2229,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of ImageFlipVertical: no value and the error, because there is no node.
@@ -2167,11 +2243,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of LocalVideoRecordingEnabled: no value and the error, because there is no node.
@@ -2179,11 +2257,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of LocalSnapshotRecordingEnabled: no value and the error, because there is no node.
@@ -2191,11 +2271,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of StatusLightEnabled: no value and the error, because there is no node.
@@ -2203,11 +2285,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of StatusLightBrightness: no value and the error, because there is no node.
@@ -2215,11 +2299,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of GeneratedCommandList: no value and the error, because there is no node.
@@ -2227,11 +2313,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of AcceptedCommandList: no value and the error, because there is no node.
@@ -2239,11 +2327,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of AttributeList: no value and the error, because there is no node.
@@ -2251,11 +2341,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of FeatureMap: no value and the error, because there is no node.
@@ -2263,11 +2355,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // The cached read of ClusterRevision: no value and the error, because there is no node.
@@ -2275,11 +2369,13 @@
 {
     (void)clusterStateCacheContainer;
     (void)endpoint;
-    (void)queue;
     if (!completion) {
         return;
     }
-    completion(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+    dispatch_async(queue
+                   ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(nil, charon_port_no_node_error());
+    });
 }
 
 // audioStreamAllocate. It answers: there is nothing to reach on a release with no fabric.
