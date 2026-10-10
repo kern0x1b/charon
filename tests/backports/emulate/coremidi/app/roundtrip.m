@@ -1,8 +1,10 @@
 //
-//  roundtrip.m
+//  app/roundtrip.m
 //  The CoreMIDI backport on the emulated iPhone 4S at 6.1.3: a client with a block, a virtual source and a
 //  virtual destination that speaks Universal MIDI Packets, a protocol-aware input port, and a message that goes
-//  out of the source and comes back in both places.
+//  out of the source and comes back in both places. It is run by the application (app/main.m, run-app.sh). It has
+//  no command-line form: the release refuses a command-line process its virtual endpoints (-10844), so the
+//  round trip is measured only as an application (facts/CoreMIDI/CoreMIDI.md).
 //
 //  What it prints, one line each, and what each line must say for the round trip to hold:
 //
@@ -132,10 +134,3 @@ int charon_roundtrip_run(void)
         return gFailures ? 1 : 0;
     }
 }
-
-#ifndef CHARON_APP
-int main(void)
-{
-    return charon_roundtrip_run();
-}
-#endif

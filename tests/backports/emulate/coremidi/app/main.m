@@ -1,6 +1,6 @@
 //
 //  app/main.m
-//  The CoreMIDI round trip as an application: the same probe as the daemon (../roundtrip.m), run from the
+//  The CoreMIDI round trip as an application: the round trip of roundtrip.m (this folder), run from the
 //  application delegate after SpringBoard has launched the process, with the audio background mode the
 //  application declares in its Info.plist and an active audio session, so that a process which the release
 //  treats as an audio client is the one that asks for the endpoints.

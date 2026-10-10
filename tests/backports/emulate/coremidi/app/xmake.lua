@@ -16,7 +16,7 @@ set_defaultarchs("iphoneos|armv7")
 target("charoncoremidiapp")
     add_rules("@addon/charon/app")
     add_files(path.join(root, "tests/backports/emulate/coremidi/app/main.m"))
-    add_files(path.join(root, "tests/backports/emulate/coremidi/roundtrip.m"))
+    add_files(path.join(root, "tests/backports/emulate/coremidi/app/roundtrip.m"))
     -- One list: a nil between the arguments of add_defines ends the arguments there, which dropped the probe define whenever
     -- the audio session was left on.
     local defines = {"CHARON_APP=1"}

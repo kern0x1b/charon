@@ -1,7 +1,0 @@
-Package: org.charon.coremidi-roundtrip
-Name: Charon CoreMIDI round trip
-Architecture: iphoneos-arm
-Description: A client with a block, a virtual source and destination that speak Universal MIDI Packets, and a note that goes out and comes back
-Maintainer: charon
-Author: charon
-Section: Development
