@@ -49,6 +49,7 @@
 #include <cstring>
 #include <filesystem>
 #include <fstream>
+#include <iterator>
 #include <map>
 #include <regex>
 #include <set>
@@ -327,6 +328,51 @@ std::vector<Token> tokens_of(CXTranslationUnit tu, CXCursor c) {
   return toks;
 }
 
+// The tokens of a variable as written: from its first token through the attribute macros after its name (NS_AVAILABLE_IOS(8_0),
+// API_AVAILABLE(...)), which clang's extent leaves out, to the ';' that ends it. A variable a macro declares (FOUNDATION_EXPORT) has an
+// extent inside the macro's expansion, which clang_tokenize reads as no tokens at all: its range runs from the expansion site to the same
+// ';' in the file it is written in, read from that file. Empty when no ';' ends the declaration at the top level (a body or a brace).
+std::vector<Token> variable_tokens(CXTranslationUnit tu, CXCursor c) {
+  static std::map<std::string, std::string> files;  // a header is read once per run, however many variables it declares
+  CXSourceRange extent = clang_getCursorExtent(c);
+  CXFile file = nullptr, end_file = nullptr;
+  unsigned line = 0, column = 0, begin = 0, finish = 0;
+  clang_getExpansionLocation(clang_getRangeStart(extent), &file, &line, &column, &begin);
+  clang_getExpansionLocation(clang_getRangeEnd(extent), &end_file, &line, &column, &finish);
+  if (file == nullptr || file != end_file) return {};
+  std::string path = text(clang_getFileName(file));
+  auto cached = files.find(path);
+  if (cached == files.end()) {
+    std::ifstream in(path, std::ios::binary);
+    if (!in) return {};
+    cached = files.emplace(path, std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>())).first;
+  }
+  const std::string& src = cached->second;
+  int depth = 0;
+  size_t semi = std::string::npos;
+  for (size_t i = finish; i < src.size() && semi == std::string::npos; ++i) {
+    if (src[i] == '(') ++depth;
+    if (src[i] == ')') --depth;
+    if (src[i] == ';' && depth == 0) semi = i;
+    if ((src[i] == '{' || src[i] == '}') && depth == 0) break;
+  }
+  if (semi == std::string::npos) return {};
+  CXSourceRange range = clang_getRange(clang_getLocationForOffset(tu, file, begin),
+                                       clang_getLocationForOffset(tu, file, static_cast<unsigned>(semi)));
+  CXToken* tokens = nullptr;
+  unsigned count = 0;
+  clang_tokenize(tu, range, &tokens, &count);
+  std::vector<Token> toks;
+  for (unsigned i = 0; i < count && offset_of(clang_getRangeStart(clang_getTokenExtent(tu, tokens[i]))) < semi; ++i) {
+    if (clang_getTokenKind(tokens[i]) == CXToken_Comment) continue;
+    CXSourceRange token_extent = clang_getTokenExtent(tu, tokens[i]);
+    toks.push_back(Token{text(clang_getTokenSpelling(tu, tokens[i])), offset_of(clang_getRangeStart(token_extent)),
+                         offset_of(clang_getRangeEnd(token_extent)), clang_getTokenKind(tokens[i]) == CXToken_Literal});
+  }
+  clang_disposeTokens(tu, tokens, count);
+  return toks;
+}
+
 // The declaration as written: its tokens, with each run of whitespace or comment as one space and macros as spelled. The head of
 // a class, protocol or category stops before its members; a body in braces is written as "{ ... }"; a trailing ";" is dropped.
 // The deprecation text a declaration writes in its macros: the first string of API_DEPRECATED("TEXT", ...), the replacement of
@@ -376,7 +422,8 @@ std::string decl_text(CXTranslationUnit tu, const std::map<std::string, std::str
   if (macro != macro_at.end()) return cell(macro->second);
   CXCursorKind kind = clang_getCursorKind(c);
   bool objc_head = kind == CXCursor_ObjCInterfaceDecl || kind == CXCursor_ObjCCategoryDecl || kind == CXCursor_ObjCProtocolDecl;
-  std::vector<Token> toks = tokens_of(tu, c);
+  std::vector<Token> toks = kind == CXCursor_VarDecl ? variable_tokens(tu, c) : std::vector<Token>();
+  if (toks.empty()) toks = tokens_of(tu, c);
   std::string out;
   unsigned previous_end = 0;
   bool any = false;
