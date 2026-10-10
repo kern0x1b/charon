@@ -25,6 +25,8 @@ local ERROR_LIMIT = 1 << 20
 local CHILD_POLL = 100
 -- The milliseconds of the check on each empty read. A wait of 0 blocks until the child exits (measured), so the check waits 1.
 local CHILD_CHECK = 1
+-- The milliseconds between two checks of the child while the read loop finds the pipe empty (the wait on the pipe in between).
+local CHILD_INTERVAL = 20
 -- After the exit: at most DRAIN_READS empty reads of DRAIN_WAIT milliseconds (a bound of 2 s) before the sentinel is declared missing;
 -- and WAIT_ERRORS wait errors in a row are an error. Measured: output reported after an exit came within 2 s.
 local DRAIN_READS = 200
@@ -121,6 +123,8 @@ local function drive(program, args, each, want_err, raw)
     -- milliseconds each), and an empty read after the bound means the sentinel never came. A wait result of -1 is an error of the
     -- wait, not an exit: it is retried up to WAIT_ERRORS times.
     local exited, drained, wait_errors = false, 0, 0
+    -- when the child was last checked (a time long before the first read, so the first empty read checks it)
+    local checked_at = -CHILD_INTERVAL * 1000
     local last_byte = os.mclock()
     -- An error on the read path (a callback that raises, an assert, a pipe that fails) stops the program and the wrapper, and closes
     -- the pipes, before the error goes on (review r3 G6): a stream that raised leaves no program running. A kill that fails too is
@@ -228,7 +232,12 @@ local function drive(program, args, each, want_err, raw)
                         drained = drained + 1
                         assert(drained <= DRAIN_READS, "the program ended without its sentinel: " .. program)
                         rpipe:wait(pipe.EV_READ, DRAIN_WAIT)
+                    elseif os.mclock() - checked_at < CHILD_INTERVAL then
+                        -- the child is checked at most every CHILD_INTERVAL: a check blocks for CHILD_CHECK, and a program that
+                        -- writes in bursts left the read loop checking it a thousand times a second (2 s on a 163 MB dump)
+                        rpipe:wait(pipe.EV_READ, CHILD_INTERVAL)
                     else
+                        checked_at = os.mclock()
                         local result = child:wait(CHILD_CHECK)
                         if result == 1 then
                             exited = true
@@ -237,7 +246,7 @@ local function drive(program, args, each, want_err, raw)
                             assert(wait_errors <= WAIT_ERRORS, "cannot observe the exit of " .. program)
                             rpipe:wait(pipe.EV_READ, DRAIN_WAIT)
                         else
-                            rpipe:wait(pipe.EV_READ, 100)
+                            rpipe:wait(pipe.EV_READ, CHILD_INTERVAL)
                         end
                     end
                 else
