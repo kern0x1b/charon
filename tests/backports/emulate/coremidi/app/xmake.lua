@@ -37,5 +37,7 @@ target("charoncoremidiapp")
     -- The SDK weak-links the iOS 14 and 9 functions and constants (it weak-links what is newer than the deployment target), and
     -- the release has none of them. This application is a measurement program: each of them is the library's own symbol on
     -- this release (libCoreMIDIBackports exports it), so the weak reference binds to the library and is not NULL. The waiver
-    -- names the reason and is not a guard for a released image.
+    -- names the reason and is not a guard for a released image. The pinned charon addon (v0.8.16) waives the weak-import check for
+    -- the whole program, not only for these nine: it has no way to name symbols (the entry "CoreMIDI emulator application: its
+    -- weak-import waiver covers the whole program" in coordination/crutches.md).
     set_values("charon.waive.weak-imports", "measurement program, not a released image: the nine weak imports are the library's own CoreMIDI symbols, which libCoreMIDIBackports exports on this release, so none is NULL")
