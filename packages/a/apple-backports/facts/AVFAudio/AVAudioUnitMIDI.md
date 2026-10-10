@@ -60,6 +60,20 @@ and the same file shows the whole of the 37 `_AU*` exports is `AUGraph*` (29) an
   from the unit's render thread: these methods are called from the host's thread, not from a render
   callback.
 
+## The initializer
+
+`-initWithAudioComponentDescription:` (`introduced` 8.0) is declared on both SDKs the same way:
+nonnull, under `AVAUDIOUNIT_HAVE_AUDIOUNIT` (`AVAudioUnitMIDIInstrument.h:36` of iOS SDK 26.2 and of
+macOS SDK 27.0). The header says the description is for an AUv2 unit of type
+`kAudioUnitType_MusicDevice` or `kAudioUnitType_RemoteInstrument`, and that an AUv3 unit goes through
+`instantiateWithComponentDescription:options:completionHandler:`. The header says nothing about a zero
+type or manufacturer.
+
+**Port choice, not Apple behaviour:** when `componentType` is 0 the port uses `kAudioUnitType_MusicDevice`,
+and when `componentManufacturer` is 0 it uses `kAudioUnitManufacturer_Apple`. The override calls the
+AVAudioUnit hook (see `CharonAVAudioUnit.h`), and never returns nil: `NSObject`'s `init` does not fail,
+so the nonnull declaration holds for every description.
+
 ## What is still not carried
 
 `-[AVAudioUnitMIDIInstrument sendMIDIEventList:]` (iOS 16) is **`absent`**, and the reason is in its
