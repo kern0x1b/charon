@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRThermostatClusterScheduleTransitionStruct
 
 @synthesize dayOfWeek = _dayOfWeek;
@@ -67,12 +56,12 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"dayOfWeek:%@; ", charonDescribeObject(self->_dayOfWeek)];
-    [text appendFormat:@"transitionTime:%@; ", charonDescribeObject(self->_transitionTime)];
-    [text appendFormat:@"presetHandle:%@; ", charonDescribeObject([self->_presetHandle base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"systemMode:%@; ", charonDescribeObject(self->_systemMode)];
-    [text appendFormat:@"coolingSetpoint:%@; ", charonDescribeObject(self->_coolingSetpoint)];
-    [text appendFormat:@"heatingSetpoint:%@; ", charonDescribeObject(self->_heatingSetpoint)];
+    [text appendFormat:@"dayOfWeek:%@; ", [self->_dayOfWeek description]];
+    [text appendFormat:@"transitionTime:%@; ", [self->_transitionTime description]];
+    [text appendFormat:@"presetHandle:%@; ", [[self->_presetHandle base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"systemMode:%@; ", [self->_systemMode description]];
+    [text appendFormat:@"coolingSetpoint:%@; ", [self->_coolingSetpoint description]];
+    [text appendFormat:@"heatingSetpoint:%@; ", [self->_heatingSetpoint description]];
     [text appendString:@">"];
     return text;
 }

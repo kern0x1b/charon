@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRChannelClusterProgramGuideResponseParams
 
 @synthesize paging = _paging;
@@ -59,8 +48,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"paging:%@; ", charonDescribeObject(self->_paging)];
-    [text appendFormat:@"programList:%@; ", charonDescribeObject(self->_programList)];
+    [text appendFormat:@"paging:%@; ", [self->_paging description]];
+    [text appendFormat:@"programList:%@; ", [self->_programList description]];
     [text appendString:@">"];
     return text;
 }

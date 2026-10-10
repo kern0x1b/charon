@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRApplicationLauncherClusterApplicationEPStruct
 
 @synthesize application = _application;
@@ -58,8 +47,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"application:%@; ", charonDescribeObject(self->_application)];
-    [text appendFormat:@"endpoint:%@; ", charonDescribeObject(self->_endpoint)];
+    [text appendFormat:@"application:%@; ", [self->_application description]];
+    [text appendFormat:@"endpoint:%@; ", [self->_endpoint description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRTLSCertificateManagementClusterClientCSRResponseParams
 
 @synthesize ccdid = _ccdid;
@@ -62,9 +51,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"ccdid:%@; ", charonDescribeObject(self->_ccdid)];
-    [text appendFormat:@"csr:%@; ", charonDescribeObject([self->_csr base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"nonceSignature:%@; ", charonDescribeObject([self->_nonceSignature base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"ccdid:%@; ", [self->_ccdid description]];
+    [text appendFormat:@"csr:%@; ", [[self->_csr base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"nonceSignature:%@; ", [[self->_nonceSignature base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRAccountLoginClusterLoginParams
 
 @synthesize tempAccountIdentifier = _tempAccountIdentifier;
@@ -65,9 +54,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"tempAccountIdentifier:%@; ", charonDescribeObject(self->_tempAccountIdentifier)];
-    [text appendFormat:@"setupPIN:%@; ", charonDescribeObject(self->_setupPIN)];
-    [text appendFormat:@"node:%@; ", charonDescribeObject(self->_node)];
+    [text appendFormat:@"tempAccountIdentifier:%@; ", [self->_tempAccountIdentifier description]];
+    [text appendFormat:@"setupPIN:%@; ", [self->_setupPIN description]];
+    [text appendFormat:@"node:%@; ", [self->_node description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRCommodityTariffClusterTariffComponentStruct
 
 @synthesize tariffComponentID = _tariffComponentID;
@@ -72,15 +61,15 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"tariffComponentID:%@; ", charonDescribeObject(self->_tariffComponentID)];
-    [text appendFormat:@"price:%@; ", charonDescribeObject(self->_price)];
-    [text appendFormat:@"friendlyCredit:%@; ", charonDescribeObject(self->_friendlyCredit)];
-    [text appendFormat:@"auxiliaryLoad:%@; ", charonDescribeObject(self->_auxiliaryLoad)];
-    [text appendFormat:@"peakPeriod:%@; ", charonDescribeObject(self->_peakPeriod)];
-    [text appendFormat:@"powerThreshold:%@; ", charonDescribeObject(self->_powerThreshold)];
-    [text appendFormat:@"threshold:%@; ", charonDescribeObject(self->_threshold)];
-    [text appendFormat:@"label:%@; ", charonDescribeObject(self->_label)];
-    [text appendFormat:@"predicted:%@; ", charonDescribeObject(self->_predicted)];
+    [text appendFormat:@"tariffComponentID:%@; ", [self->_tariffComponentID description]];
+    [text appendFormat:@"price:%@; ", [self->_price description]];
+    [text appendFormat:@"friendlyCredit:%@; ", [self->_friendlyCredit description]];
+    [text appendFormat:@"auxiliaryLoad:%@; ", [self->_auxiliaryLoad description]];
+    [text appendFormat:@"peakPeriod:%@; ", [self->_peakPeriod description]];
+    [text appendFormat:@"powerThreshold:%@; ", [self->_powerThreshold description]];
+    [text appendFormat:@"threshold:%@; ", [self->_threshold description]];
+    [text appendFormat:@"label:%@; ", [self->_label description]];
+    [text appendFormat:@"predicted:%@; ", [self->_predicted description]];
     [text appendString:@">"];
     return text;
 }

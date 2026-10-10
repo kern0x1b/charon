@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDoorLockClusterGetHolidayScheduleResponseParams
 
 @synthesize holidayIndex = _holidayIndex;
@@ -67,11 +56,11 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"holidayIndex:%@; ", charonDescribeObject(self->_holidayIndex)];
-    [text appendFormat:@"status:%@; ", charonDescribeObject(self->_status)];
-    [text appendFormat:@"localStartTime:%@; ", charonDescribeObject(self->_localStartTime)];
-    [text appendFormat:@"localEndTime:%@; ", charonDescribeObject(self->_localEndTime)];
-    [text appendFormat:@"operatingMode:%@; ", charonDescribeObject(self->_operatingMode)];
+    [text appendFormat:@"holidayIndex:%@; ", [self->_holidayIndex description]];
+    [text appendFormat:@"status:%@; ", [self->_status description]];
+    [text appendFormat:@"localStartTime:%@; ", [self->_localStartTime description]];
+    [text appendFormat:@"localEndTime:%@; ", [self->_localEndTime description]];
+    [text appendFormat:@"operatingMode:%@; ", [self->_operatingMode description]];
     [text appendString:@">"];
     return text;
 }

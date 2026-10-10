@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDoorLockClusterSetYearDayScheduleParams
 
 @synthesize yearDayIndex = _yearDayIndex;
@@ -69,10 +58,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"yearDayIndex:%@; ", charonDescribeObject(self->_yearDayIndex)];
-    [text appendFormat:@"userIndex:%@; ", charonDescribeObject(self->_userIndex)];
-    [text appendFormat:@"localStartTime:%@; ", charonDescribeObject(self->_localStartTime)];
-    [text appendFormat:@"localEndTime:%@; ", charonDescribeObject(self->_localEndTime)];
+    [text appendFormat:@"yearDayIndex:%@; ", [self->_yearDayIndex description]];
+    [text appendFormat:@"userIndex:%@; ", [self->_userIndex description]];
+    [text appendFormat:@"localStartTime:%@; ", [self->_localStartTime description]];
+    [text appendFormat:@"localEndTime:%@; ", [self->_localEndTime description]];
     [text appendString:@">"];
     return text;
 }

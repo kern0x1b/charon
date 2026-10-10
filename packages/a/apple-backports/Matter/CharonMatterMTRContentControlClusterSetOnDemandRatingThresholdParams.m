@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRContentControlClusterSetOnDemandRatingThresholdParams
 
 @synthesize rating = _rating;
@@ -60,7 +49,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"rating:%@; ", charonDescribeObject(self->_rating)];
+    [text appendFormat:@"rating:%@; ", [self->_rating description]];
     [text appendString:@">"];
     return text;
 }

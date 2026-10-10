@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRSmokeCOAlarmClusterInterconnectSmokeAlarmEvent
 
 @synthesize alarmSeverityLevel = _alarmSeverityLevel;
@@ -56,7 +45,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"alarmSeverityLevel:%@; ", charonDescribeObject(self->_alarmSeverityLevel)];
+    [text appendFormat:@"alarmSeverityLevel:%@; ", [self->_alarmSeverityLevel description]];
     [text appendString:@">"];
     return text;
 }

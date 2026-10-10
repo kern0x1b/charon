@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRChannelClusterChannelInfoStruct
 
 @synthesize majorNumber = _majorNumber;
@@ -69,13 +58,13 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"majorNumber:%@; ", charonDescribeObject(self->_majorNumber)];
-    [text appendFormat:@"minorNumber:%@; ", charonDescribeObject(self->_minorNumber)];
-    [text appendFormat:@"name:%@; ", charonDescribeObject(self->_name)];
-    [text appendFormat:@"callSign:%@; ", charonDescribeObject(self->_callSign)];
-    [text appendFormat:@"affiliateCallSign:%@; ", charonDescribeObject(self->_affiliateCallSign)];
-    [text appendFormat:@"identifier:%@; ", charonDescribeObject(self->_identifier)];
-    [text appendFormat:@"type:%@; ", charonDescribeObject(self->_type)];
+    [text appendFormat:@"majorNumber:%@; ", [self->_majorNumber description]];
+    [text appendFormat:@"minorNumber:%@; ", [self->_minorNumber description]];
+    [text appendFormat:@"name:%@; ", [self->_name description]];
+    [text appendFormat:@"callSign:%@; ", [self->_callSign description]];
+    [text appendFormat:@"affiliateCallSign:%@; ", [self->_affiliateCallSign description]];
+    [text appendFormat:@"identifier:%@; ", [self->_identifier description]];
+    [text appendFormat:@"type:%@; ", [self->_type description]];
     [text appendString:@">"];
     return text;
 }

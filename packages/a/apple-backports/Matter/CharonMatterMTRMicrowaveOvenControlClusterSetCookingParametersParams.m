@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRMicrowaveOvenControlClusterSetCookingParametersParams
 
 @synthesize cookMode = _cookMode;
@@ -67,11 +56,11 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"cookMode:%@; ", charonDescribeObject(self->_cookMode)];
-    [text appendFormat:@"cookTime:%@; ", charonDescribeObject(self->_cookTime)];
-    [text appendFormat:@"powerSetting:%@; ", charonDescribeObject(self->_powerSetting)];
-    [text appendFormat:@"wattSettingIndex:%@; ", charonDescribeObject(self->_wattSettingIndex)];
-    [text appendFormat:@"startAfterSetting:%@; ", charonDescribeObject(self->_startAfterSetting)];
+    [text appendFormat:@"cookMode:%@; ", [self->_cookMode description]];
+    [text appendFormat:@"cookTime:%@; ", [self->_cookTime description]];
+    [text appendFormat:@"powerSetting:%@; ", [self->_powerSetting description]];
+    [text appendFormat:@"wattSettingIndex:%@; ", [self->_wattSettingIndex description]];
+    [text appendFormat:@"startAfterSetting:%@; ", [self->_startAfterSetting description]];
     [text appendString:@">"];
     return text;
 }

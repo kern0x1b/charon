@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDiagnosticLogsClusterRetrieveLogsRequestParams
 
 @synthesize intent = _intent;
@@ -65,9 +54,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"intent:%@; ", charonDescribeObject(self->_intent)];
-    [text appendFormat:@"requestedProtocol:%@; ", charonDescribeObject(self->_requestedProtocol)];
-    [text appendFormat:@"transferFileDesignator:%@; ", charonDescribeObject(self->_transferFileDesignator)];
+    [text appendFormat:@"intent:%@; ", [self->_intent description]];
+    [text appendFormat:@"requestedProtocol:%@; ", [self->_requestedProtocol description]];
+    [text appendFormat:@"transferFileDesignator:%@; ", [self->_transferFileDesignator description]];
     [text appendString:@">"];
     return text;
 }

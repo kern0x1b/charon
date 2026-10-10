@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRValveConfigurationAndControlClusterValveStateChangedEvent
 
 @synthesize valveState = _valveState;
@@ -58,8 +47,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"valveState:%@; ", charonDescribeObject(self->_valveState)];
-    [text appendFormat:@"valveLevel:%@; ", charonDescribeObject(self->_valveLevel)];
+    [text appendFormat:@"valveState:%@; ", [self->_valveState description]];
+    [text appendFormat:@"valveLevel:%@; ", [self->_valveLevel description]];
     [text appendString:@">"];
     return text;
 }

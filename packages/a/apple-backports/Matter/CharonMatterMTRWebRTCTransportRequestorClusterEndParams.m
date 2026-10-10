@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRWebRTCTransportRequestorClusterEndParams
 
 @synthesize webRTCSessionID = _webRTCSessionID;
@@ -63,8 +52,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"webRTCSessionID:%@; ", charonDescribeObject(self->_webRTCSessionID)];
-    [text appendFormat:@"reason:%@; ", charonDescribeObject(self->_reason)];
+    [text appendFormat:@"webRTCSessionID:%@; ", [self->_webRTCSessionID description]];
+    [text appendFormat:@"reason:%@; ", [self->_reason description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRPushAVStreamTransportClusterTransportMotionTriggerTimeControlStruct
 
 @synthesize initialDuration = _initialDuration;
@@ -65,10 +54,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"initialDuration:%@; ", charonDescribeObject(self->_initialDuration)];
-    [text appendFormat:@"augmentationDuration:%@; ", charonDescribeObject(self->_augmentationDuration)];
-    [text appendFormat:@"maxDuration:%@; ", charonDescribeObject(self->_maxDuration)];
-    [text appendFormat:@"blindDuration:%@; ", charonDescribeObject(self->_blindDuration)];
+    [text appendFormat:@"initialDuration:%@; ", [self->_initialDuration description]];
+    [text appendFormat:@"augmentationDuration:%@; ", [self->_augmentationDuration description]];
+    [text appendFormat:@"maxDuration:%@; ", [self->_maxDuration description]];
+    [text appendFormat:@"blindDuration:%@; ", [self->_blindDuration description]];
     [text appendString:@">"];
     return text;
 }

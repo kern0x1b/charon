@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTROperationalStateClusterOperationCompletionEvent
 
 @synthesize completionErrorCode = _completionErrorCode;
@@ -60,9 +49,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"completionErrorCode:%@; ", charonDescribeObject(self->_completionErrorCode)];
-    [text appendFormat:@"totalOperationalTime:%@; ", charonDescribeObject(self->_totalOperationalTime)];
-    [text appendFormat:@"pausedTime:%@; ", charonDescribeObject(self->_pausedTime)];
+    [text appendFormat:@"completionErrorCode:%@; ", [self->_completionErrorCode description]];
+    [text appendFormat:@"totalOperationalTime:%@; ", [self->_totalOperationalTime description]];
+    [text appendFormat:@"pausedTime:%@; ", [self->_pausedTime description]];
     [text appendString:@">"];
     return text;
 }

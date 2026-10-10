@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRNetworkCommissioningClusterScanNetworksParams
 
 @synthesize ssid = _ssid;
@@ -61,8 +50,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"ssid:%@; ", charonDescribeObject([self->_ssid base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"breadcrumb:%@; ", charonDescribeObject(self->_breadcrumb)];
+    [text appendFormat:@"ssid:%@; ", [[self->_ssid base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"breadcrumb:%@; ", [self->_breadcrumb description]];
     [text appendString:@">"];
     return text;
 }

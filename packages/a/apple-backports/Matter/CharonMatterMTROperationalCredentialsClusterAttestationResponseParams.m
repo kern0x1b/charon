@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTROperationalCredentialsClusterAttestationResponseParams
 
 @synthesize attestationElements = _attestationElements;
@@ -75,8 +64,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"attestationElements:%@; ", charonDescribeObject([self->_attestationElements base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"attestationSignature:%@; ", charonDescribeObject([self->_attestationSignature base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"attestationElements:%@; ", [[self->_attestationElements base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"attestationSignature:%@; ", [[self->_attestationSignature base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

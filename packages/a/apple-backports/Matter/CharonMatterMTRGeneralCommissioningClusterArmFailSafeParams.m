@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRGeneralCommissioningClusterArmFailSafeParams
 
 @synthesize expiryLengthSeconds = _expiryLengthSeconds;
@@ -63,8 +52,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"expiryLengthSeconds:%@; ", charonDescribeObject(self->_expiryLengthSeconds)];
-    [text appendFormat:@"breadcrumb:%@; ", charonDescribeObject(self->_breadcrumb)];
+    [text appendFormat:@"expiryLengthSeconds:%@; ", [self->_expiryLengthSeconds description]];
+    [text appendFormat:@"breadcrumb:%@; ", [self->_breadcrumb description]];
     [text appendString:@">"];
     return text;
 }

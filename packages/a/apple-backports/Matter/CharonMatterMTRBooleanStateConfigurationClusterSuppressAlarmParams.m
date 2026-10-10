@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRBooleanStateConfigurationClusterSuppressAlarmParams
 
 @synthesize alarmsToSuppress = _alarmsToSuppress;
@@ -60,7 +49,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"alarmsToSuppress:%@; ", charonDescribeObject(self->_alarmsToSuppress)];
+    [text appendFormat:@"alarmsToSuppress:%@; ", [self->_alarmsToSuppress description]];
     [text appendString:@">"];
     return text;
 }

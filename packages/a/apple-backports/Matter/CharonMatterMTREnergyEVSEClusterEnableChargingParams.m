@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTREnergyEVSEClusterEnableChargingParams
 
 @synthesize chargingEnabledUntil = _chargingEnabledUntil;
@@ -65,9 +54,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"chargingEnabledUntil:%@; ", charonDescribeObject(self->_chargingEnabledUntil)];
-    [text appendFormat:@"minimumChargeCurrent:%@; ", charonDescribeObject(self->_minimumChargeCurrent)];
-    [text appendFormat:@"maximumChargeCurrent:%@; ", charonDescribeObject(self->_maximumChargeCurrent)];
+    [text appendFormat:@"chargingEnabledUntil:%@; ", [self->_chargingEnabledUntil description]];
+    [text appendFormat:@"minimumChargeCurrent:%@; ", [self->_minimumChargeCurrent description]];
+    [text appendFormat:@"maximumChargeCurrent:%@; ", [self->_maximumChargeCurrent description]];
     [text appendString:@">"];
     return text;
 }

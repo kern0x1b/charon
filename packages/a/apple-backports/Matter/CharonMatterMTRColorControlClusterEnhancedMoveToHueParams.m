@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRColorControlClusterEnhancedMoveToHueParams
 
 @synthesize enhancedHue = _enhancedHue;
@@ -72,11 +61,11 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"enhancedHue:%@; ", charonDescribeObject(self->_enhancedHue)];
-    [text appendFormat:@"direction:%@; ", charonDescribeObject(self->_direction)];
-    [text appendFormat:@"transitionTime:%@; ", charonDescribeObject(self->_transitionTime)];
-    [text appendFormat:@"optionsMask:%@; ", charonDescribeObject(self->_optionsMask)];
-    [text appendFormat:@"optionsOverride:%@; ", charonDescribeObject(self->_optionsOverride)];
+    [text appendFormat:@"enhancedHue:%@; ", [self->_enhancedHue description]];
+    [text appendFormat:@"direction:%@; ", [self->_direction description]];
+    [text appendFormat:@"transitionTime:%@; ", [self->_transitionTime description]];
+    [text appendFormat:@"optionsMask:%@; ", [self->_optionsMask description]];
+    [text appendFormat:@"optionsOverride:%@; ", [self->_optionsOverride description]];
     [text appendString:@">"];
     return text;
 }

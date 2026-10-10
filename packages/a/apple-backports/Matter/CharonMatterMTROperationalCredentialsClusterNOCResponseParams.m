@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTROperationalCredentialsClusterNOCResponseParams
 
 @synthesize statusCode = _statusCode;
@@ -62,9 +51,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"statusCode:%@; ", charonDescribeObject(self->_statusCode)];
-    [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self->_fabricIndex)];
-    [text appendFormat:@"debugText:%@; ", charonDescribeObject(self->_debugText)];
+    [text appendFormat:@"statusCode:%@; ", [self->_statusCode description]];
+    [text appendFormat:@"fabricIndex:%@; ", [self->_fabricIndex description]];
+    [text appendFormat:@"debugText:%@; ", [self->_debugText description]];
     [text appendString:@">"];
     return text;
 }

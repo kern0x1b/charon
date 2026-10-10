@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRMessagesClusterMessageCompleteEvent
 
 @synthesize messageID = _messageID;
@@ -62,10 +51,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"messageID:%@; ", charonDescribeObject([self->_messageID base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"responseID:%@; ", charonDescribeObject(self->_responseID)];
-    [text appendFormat:@"reply:%@; ", charonDescribeObject(self->_reply)];
-    [text appendFormat:@"futureMessagesPreference:%@; ", charonDescribeObject(self->_futureMessagesPreference)];
+    [text appendFormat:@"messageID:%@; ", [[self->_messageID base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"responseID:%@; ", [self->_responseID description]];
+    [text appendFormat:@"reply:%@; ", [self->_reply description]];
+    [text appendFormat:@"futureMessagesPreference:%@; ", [self->_futureMessagesPreference description]];
     [text appendString:@">"];
     return text;
 }

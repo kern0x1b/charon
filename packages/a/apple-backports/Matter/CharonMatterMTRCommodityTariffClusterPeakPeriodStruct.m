@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRCommodityTariffClusterPeakPeriodStruct
 
 @synthesize severity = _severity;
@@ -59,8 +48,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"severity:%@; ", charonDescribeObject(self->_severity)];
-    [text appendFormat:@"peakPeriod:%@; ", charonDescribeObject(self->_peakPeriod)];
+    [text appendFormat:@"severity:%@; ", [self->_severity description]];
+    [text appendFormat:@"peakPeriod:%@; ", [self->_peakPeriod description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRThermostatClusterThermostatSuggestionStruct
 
 @synthesize uniqueID = _uniqueID;
@@ -65,10 +54,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"uniqueID:%@; ", charonDescribeObject(self->_uniqueID)];
-    [text appendFormat:@"presetHandle:%@; ", charonDescribeObject([self->_presetHandle base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"effectiveTime:%@; ", charonDescribeObject(self->_effectiveTime)];
-    [text appendFormat:@"expirationTime:%@; ", charonDescribeObject(self->_expirationTime)];
+    [text appendFormat:@"uniqueID:%@; ", [self->_uniqueID description]];
+    [text appendFormat:@"presetHandle:%@; ", [[self->_presetHandle base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"effectiveTime:%@; ", [self->_effectiveTime description]];
+    [text appendFormat:@"expirationTime:%@; ", [self->_expirationTime description]];
     [text appendString:@">"];
     return text;
 }

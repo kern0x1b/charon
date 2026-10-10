@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDishwasherAlarmClusterResetParams
 
 @synthesize alarms = _alarms;
@@ -60,7 +49,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"alarms:%@; ", charonDescribeObject(self->_alarms)];
+    [text appendFormat:@"alarms:%@; ", [self->_alarms description]];
     [text appendString:@">"];
     return text;
 }

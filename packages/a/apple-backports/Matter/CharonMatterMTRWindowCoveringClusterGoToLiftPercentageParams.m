@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRWindowCoveringClusterGoToLiftPercentageParams
 
 @synthesize liftPercent100thsValue = _liftPercent100thsValue;
@@ -60,7 +49,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"liftPercent100thsValue:%@; ", charonDescribeObject(self->_liftPercent100thsValue)];
+    [text appendFormat:@"liftPercent100thsValue:%@; ", [self->_liftPercent100thsValue description]];
     [text appendString:@">"];
     return text;
 }

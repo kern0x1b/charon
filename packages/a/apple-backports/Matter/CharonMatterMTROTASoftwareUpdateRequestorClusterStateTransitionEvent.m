@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTROTASoftwareUpdateRequestorClusterStateTransitionEvent
 
 @synthesize previousState = _previousState;
@@ -64,10 +53,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"previousState:%@; ", charonDescribeObject(self->_previousState)];
-    [text appendFormat:@"newState:%@; ", charonDescribeObject(self->_newState)];
-    [text appendFormat:@"reason:%@; ", charonDescribeObject(self->_reason)];
-    [text appendFormat:@"targetSoftwareVersion:%@; ", charonDescribeObject(self->_targetSoftwareVersion)];
+    [text appendFormat:@"previousState:%@; ", [self->_previousState description]];
+    [text appendFormat:@"newState:%@; ", [self->_newState description]];
+    [text appendFormat:@"reason:%@; ", [self->_reason description]];
+    [text appendFormat:@"targetSoftwareVersion:%@; ", [self->_targetSoftwareVersion description]];
     [text appendString:@">"];
     return text;
 }

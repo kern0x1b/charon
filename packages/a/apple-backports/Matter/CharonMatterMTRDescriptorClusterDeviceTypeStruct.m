@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDescriptorClusterDeviceTypeStruct
 
 @synthesize deviceType = _deviceType;
@@ -73,8 +62,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"deviceType:%@; ", charonDescribeObject(self->_deviceType)];
-    [text appendFormat:@"revision:%@; ", charonDescribeObject(self->_revision)];
+    [text appendFormat:@"deviceType:%@; ", [self->_deviceType description]];
+    [text appendFormat:@"revision:%@; ", [self->_revision description]];
     [text appendString:@">"];
     return text;
 }

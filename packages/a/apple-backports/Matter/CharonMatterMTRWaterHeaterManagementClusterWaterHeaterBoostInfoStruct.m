@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRWaterHeaterManagementClusterWaterHeaterBoostInfoStruct
 
 @synthesize duration = _duration;
@@ -66,12 +55,12 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"duration:%@; ", charonDescribeObject(self->_duration)];
-    [text appendFormat:@"oneShot:%@; ", charonDescribeObject(self->_oneShot)];
-    [text appendFormat:@"emergencyBoost:%@; ", charonDescribeObject(self->_emergencyBoost)];
-    [text appendFormat:@"temporarySetpoint:%@; ", charonDescribeObject(self->_temporarySetpoint)];
-    [text appendFormat:@"targetPercentage:%@; ", charonDescribeObject(self->_targetPercentage)];
-    [text appendFormat:@"targetReheat:%@; ", charonDescribeObject(self->_targetReheat)];
+    [text appendFormat:@"duration:%@; ", [self->_duration description]];
+    [text appendFormat:@"oneShot:%@; ", [self->_oneShot description]];
+    [text appendFormat:@"emergencyBoost:%@; ", [self->_emergencyBoost description]];
+    [text appendFormat:@"temporarySetpoint:%@; ", [self->_temporarySetpoint description]];
+    [text appendFormat:@"targetPercentage:%@; ", [self->_targetPercentage description]];
+    [text appendFormat:@"targetReheat:%@; ", [self->_targetReheat description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTROperationalCredentialsClusterSignVIDVerificationResponseParams
 
 @synthesize fabricIndex = _fabricIndex;
@@ -62,9 +51,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self->_fabricIndex)];
-    [text appendFormat:@"fabricBindingVersion:%@; ", charonDescribeObject(self->_fabricBindingVersion)];
-    [text appendFormat:@"signature:%@; ", charonDescribeObject([self->_signature base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"fabricIndex:%@; ", [self->_fabricIndex description]];
+    [text appendFormat:@"fabricBindingVersion:%@; ", [self->_fabricBindingVersion description]];
+    [text appendFormat:@"signature:%@; ", [[self->_signature base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

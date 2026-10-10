@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRICDManagementClusterUnregisterClientParams
 
 @synthesize checkInNodeID = _checkInNodeID;
@@ -62,8 +51,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"checkInNodeID:%@; ", charonDescribeObject(self->_checkInNodeID)];
-    [text appendFormat:@"verificationKey:%@; ", charonDescribeObject([self->_verificationKey base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"checkInNodeID:%@; ", [self->_checkInNodeID description]];
+    [text appendFormat:@"verificationKey:%@; ", [[self->_verificationKey base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

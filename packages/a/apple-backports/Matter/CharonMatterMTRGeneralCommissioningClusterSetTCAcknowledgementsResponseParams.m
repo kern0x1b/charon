@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRGeneralCommissioningClusterSetTCAcknowledgementsResponseParams
 
 @synthesize errorCode = _errorCode;
@@ -56,7 +45,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"errorCode:%@; ", charonDescribeObject(self->_errorCode)];
+    [text appendFormat:@"errorCode:%@; ", [self->_errorCode description]];
     [text appendString:@">"];
     return text;
 }

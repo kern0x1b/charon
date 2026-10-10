@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRTimeSynchronizationClusterSetUTCTimeParams
 
 @synthesize utcTime = _utcTime;
@@ -65,9 +54,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"utcTime:%@; ", charonDescribeObject(self->_utcTime)];
-    [text appendFormat:@"granularity:%@; ", charonDescribeObject(self->_granularity)];
-    [text appendFormat:@"timeSource:%@; ", charonDescribeObject(self->_timeSource)];
+    [text appendFormat:@"utcTime:%@; ", [self->_utcTime description]];
+    [text appendFormat:@"granularity:%@; ", [self->_granularity description]];
+    [text appendFormat:@"timeSource:%@; ", [self->_timeSource description]];
     [text appendString:@">"];
     return text;
 }

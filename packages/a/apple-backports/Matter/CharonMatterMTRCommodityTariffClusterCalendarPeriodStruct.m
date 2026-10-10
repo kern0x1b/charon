@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRCommodityTariffClusterCalendarPeriodStruct
 
 @synthesize startDate = _startDate;
@@ -58,8 +47,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"startDate:%@; ", charonDescribeObject(self->_startDate)];
-    [text appendFormat:@"dayPatternIDs:%@; ", charonDescribeObject(self->_dayPatternIDs)];
+    [text appendFormat:@"startDate:%@; ", [self->_startDate description]];
+    [text appendFormat:@"dayPatternIDs:%@; ", [self->_dayPatternIDs description]];
     [text appendString:@">"];
     return text;
 }

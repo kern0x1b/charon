@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTREnergyEVSEClusterFaultEvent
 
 @synthesize sessionID = _sessionID;
@@ -64,10 +53,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"sessionID:%@; ", charonDescribeObject(self->_sessionID)];
-    [text appendFormat:@"state:%@; ", charonDescribeObject(self->_state)];
-    [text appendFormat:@"faultStatePreviousState:%@; ", charonDescribeObject(self->_faultStatePreviousState)];
-    [text appendFormat:@"faultStateCurrentState:%@; ", charonDescribeObject(self->_faultStateCurrentState)];
+    [text appendFormat:@"sessionID:%@; ", [self->_sessionID description]];
+    [text appendFormat:@"state:%@; ", [self->_state description]];
+    [text appendFormat:@"faultStatePreviousState:%@; ", [self->_faultStatePreviousState description]];
+    [text appendFormat:@"faultStateCurrentState:%@; ", [self->_faultStateCurrentState description]];
     [text appendString:@">"];
     return text;
 }

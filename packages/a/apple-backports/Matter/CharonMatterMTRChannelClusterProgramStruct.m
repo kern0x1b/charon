@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRChannelClusterProgramStruct
 
 @synthesize identifier = _identifier;
@@ -96,25 +85,25 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"identifier:%@; ", charonDescribeObject(self->_identifier)];
-    [text appendFormat:@"channel:%@; ", charonDescribeObject(self->_channel)];
-    [text appendFormat:@"startTime:%@; ", charonDescribeObject(self->_startTime)];
-    [text appendFormat:@"endTime:%@; ", charonDescribeObject(self->_endTime)];
-    [text appendFormat:@"title:%@; ", charonDescribeObject(self->_title)];
-    [text appendFormat:@"subtitle:%@; ", charonDescribeObject(self->_subtitle)];
-    [text appendFormat:@"descriptionString:%@; ", charonDescribeObject(self->_descriptionString)];
-    [text appendFormat:@"audioLanguages:%@; ", charonDescribeObject(self->_audioLanguages)];
-    [text appendFormat:@"ratings:%@; ", charonDescribeObject(self->_ratings)];
-    [text appendFormat:@"thumbnailUrl:%@; ", charonDescribeObject(self->_thumbnailUrl)];
-    [text appendFormat:@"posterArtUrl:%@; ", charonDescribeObject(self->_posterArtUrl)];
-    [text appendFormat:@"dvbiUrl:%@; ", charonDescribeObject(self->_dvbiUrl)];
-    [text appendFormat:@"releaseDate:%@; ", charonDescribeObject(self->_releaseDate)];
-    [text appendFormat:@"parentalGuidanceText:%@; ", charonDescribeObject(self->_parentalGuidanceText)];
-    [text appendFormat:@"recordingFlag:%@; ", charonDescribeObject(self->_recordingFlag)];
-    [text appendFormat:@"seriesInfo:%@; ", charonDescribeObject(self->_seriesInfo)];
-    [text appendFormat:@"categoryList:%@; ", charonDescribeObject(self->_categoryList)];
-    [text appendFormat:@"castList:%@; ", charonDescribeObject(self->_castList)];
-    [text appendFormat:@"externalIDList:%@; ", charonDescribeObject(self->_externalIDList)];
+    [text appendFormat:@"identifier:%@; ", [self->_identifier description]];
+    [text appendFormat:@"channel:%@; ", [self->_channel description]];
+    [text appendFormat:@"startTime:%@; ", [self->_startTime description]];
+    [text appendFormat:@"endTime:%@; ", [self->_endTime description]];
+    [text appendFormat:@"title:%@; ", [self->_title description]];
+    [text appendFormat:@"subtitle:%@; ", [self->_subtitle description]];
+    [text appendFormat:@"descriptionString:%@; ", [self->_descriptionString description]];
+    [text appendFormat:@"audioLanguages:%@; ", [self->_audioLanguages description]];
+    [text appendFormat:@"ratings:%@; ", [self->_ratings description]];
+    [text appendFormat:@"thumbnailUrl:%@; ", [self->_thumbnailUrl description]];
+    [text appendFormat:@"posterArtUrl:%@; ", [self->_posterArtUrl description]];
+    [text appendFormat:@"dvbiUrl:%@; ", [self->_dvbiUrl description]];
+    [text appendFormat:@"releaseDate:%@; ", [self->_releaseDate description]];
+    [text appendFormat:@"parentalGuidanceText:%@; ", [self->_parentalGuidanceText description]];
+    [text appendFormat:@"recordingFlag:%@; ", [self->_recordingFlag description]];
+    [text appendFormat:@"seriesInfo:%@; ", [self->_seriesInfo description]];
+    [text appendFormat:@"categoryList:%@; ", [self->_categoryList description]];
+    [text appendFormat:@"castList:%@; ", [self->_castList description]];
+    [text appendFormat:@"externalIDList:%@; ", [self->_externalIDList description]];
     [text appendString:@">"];
     return text;
 }

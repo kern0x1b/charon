@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRUnitTestingClusterTestNullableOptionalResponseParams
 
 @synthesize wasPresent = _wasPresent;
@@ -64,10 +53,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"wasPresent:%@; ", charonDescribeObject(self->_wasPresent)];
-    [text appendFormat:@"wasNull:%@; ", charonDescribeObject(self->_wasNull)];
-    [text appendFormat:@"value:%@; ", charonDescribeObject(self->_value)];
-    [text appendFormat:@"originalValue:%@; ", charonDescribeObject(self->_originalValue)];
+    [text appendFormat:@"wasPresent:%@; ", [self->_wasPresent description]];
+    [text appendFormat:@"wasNull:%@; ", [self->_wasNull description]];
+    [text appendFormat:@"value:%@; ", [self->_value description]];
+    [text appendFormat:@"originalValue:%@; ", [self->_originalValue description]];
     [text appendString:@">"];
     return text;
 }

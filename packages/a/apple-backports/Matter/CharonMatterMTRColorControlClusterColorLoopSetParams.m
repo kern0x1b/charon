@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRColorControlClusterColorLoopSetParams
 
 @synthesize updateFlags = _updateFlags;
@@ -78,13 +67,13 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"updateFlags:%@; ", charonDescribeObject(self->_updateFlags)];
-    [text appendFormat:@"action:%@; ", charonDescribeObject(self->_action)];
-    [text appendFormat:@"direction:%@; ", charonDescribeObject(self->_direction)];
-    [text appendFormat:@"time:%@; ", charonDescribeObject(self->_time)];
-    [text appendFormat:@"startHue:%@; ", charonDescribeObject(self->_startHue)];
-    [text appendFormat:@"optionsMask:%@; ", charonDescribeObject(self->_optionsMask)];
-    [text appendFormat:@"optionsOverride:%@; ", charonDescribeObject(self->_optionsOverride)];
+    [text appendFormat:@"updateFlags:%@; ", [self->_updateFlags description]];
+    [text appendFormat:@"action:%@; ", [self->_action description]];
+    [text appendFormat:@"direction:%@; ", [self->_direction description]];
+    [text appendFormat:@"time:%@; ", [self->_time description]];
+    [text appendFormat:@"startHue:%@; ", [self->_startHue description]];
+    [text appendFormat:@"optionsMask:%@; ", [self->_optionsMask description]];
+    [text appendFormat:@"optionsOverride:%@; ", [self->_optionsOverride description]];
     [text appendString:@">"];
     return text;
 }

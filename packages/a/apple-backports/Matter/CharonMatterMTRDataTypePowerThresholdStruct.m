@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDataTypePowerThresholdStruct
 
 @synthesize powerThreshold = _powerThreshold;
@@ -59,9 +48,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"powerThreshold:%@; ", charonDescribeObject(self->_powerThreshold)];
-    [text appendFormat:@"apparentPowerThreshold:%@; ", charonDescribeObject(self->_apparentPowerThreshold)];
-    [text appendFormat:@"powerThresholdSource:%@; ", charonDescribeObject(self->_powerThresholdSource)];
+    [text appendFormat:@"powerThreshold:%@; ", [self->_powerThreshold description]];
+    [text appendFormat:@"apparentPowerThreshold:%@; ", [self->_apparentPowerThreshold description]];
+    [text appendFormat:@"powerThresholdSource:%@; ", [self->_powerThresholdSource description]];
     [text appendString:@">"];
     return text;
 }

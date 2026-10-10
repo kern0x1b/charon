@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRICDManagementClusterMonitoringRegistrationStruct
 
 @synthesize checkInNodeID = _checkInNodeID;
@@ -65,10 +54,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"checkInNodeID:%@; ", charonDescribeObject(self->_checkInNodeID)];
-    [text appendFormat:@"monitoredSubject:%@; ", charonDescribeObject(self->_monitoredSubject)];
-    [text appendFormat:@"clientType:%@; ", charonDescribeObject(self->_clientType)];
-    [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self->_fabricIndex)];
+    [text appendFormat:@"checkInNodeID:%@; ", [self->_checkInNodeID description]];
+    [text appendFormat:@"monitoredSubject:%@; ", [self->_monitoredSubject description]];
+    [text appendFormat:@"clientType:%@; ", [self->_clientType description]];
+    [text appendFormat:@"fabricIndex:%@; ", [self->_fabricIndex description]];
     [text appendString:@">"];
     return text;
 }

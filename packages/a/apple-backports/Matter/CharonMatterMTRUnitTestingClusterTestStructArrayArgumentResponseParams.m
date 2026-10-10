@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRUnitTestingClusterTestStructArrayArgumentResponseParams
 
 @synthesize arg1 = _arg1;
@@ -73,12 +62,12 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"arg1:%@; ", charonDescribeObject(self->_arg1)];
-    [text appendFormat:@"arg2:%@; ", charonDescribeObject(self->_arg2)];
-    [text appendFormat:@"arg3:%@; ", charonDescribeObject(self->_arg3)];
-    [text appendFormat:@"arg4:%@; ", charonDescribeObject(self->_arg4)];
-    [text appendFormat:@"arg5:%@; ", charonDescribeObject(self->_arg5)];
-    [text appendFormat:@"arg6:%@; ", charonDescribeObject(self->_arg6)];
+    [text appendFormat:@"arg1:%@; ", [self->_arg1 description]];
+    [text appendFormat:@"arg2:%@; ", [self->_arg2 description]];
+    [text appendFormat:@"arg3:%@; ", [self->_arg3 description]];
+    [text appendFormat:@"arg4:%@; ", [self->_arg4 description]];
+    [text appendFormat:@"arg5:%@; ", [self->_arg5 description]];
+    [text appendFormat:@"arg6:%@; ", [self->_arg6 description]];
     [text appendString:@">"];
     return text;
 }

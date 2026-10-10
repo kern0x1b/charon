@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRScenesManagementClusterSceneInfoStruct
 
 @synthesize sceneCount = _sceneCount;
@@ -71,12 +60,12 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"sceneCount:%@; ", charonDescribeObject(self->_sceneCount)];
-    [text appendFormat:@"currentScene:%@; ", charonDescribeObject(self->_currentScene)];
-    [text appendFormat:@"currentGroup:%@; ", charonDescribeObject(self->_currentGroup)];
-    [text appendFormat:@"sceneValid:%@; ", charonDescribeObject(self->_sceneValid)];
-    [text appendFormat:@"remainingCapacity:%@; ", charonDescribeObject(self->_remainingCapacity)];
-    [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self->_fabricIndex)];
+    [text appendFormat:@"sceneCount:%@; ", [self->_sceneCount description]];
+    [text appendFormat:@"currentScene:%@; ", [self->_currentScene description]];
+    [text appendFormat:@"currentGroup:%@; ", [self->_currentGroup description]];
+    [text appendFormat:@"sceneValid:%@; ", [self->_sceneValid description]];
+    [text appendFormat:@"remainingCapacity:%@; ", [self->_remainingCapacity description]];
+    [text appendFormat:@"fabricIndex:%@; ", [self->_fabricIndex description]];
     [text appendString:@">"];
     return text;
 }

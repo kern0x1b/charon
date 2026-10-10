@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTREcosystemInformationClusterEcosystemLocationStruct
 
 @synthesize uniqueLocationID = _uniqueLocationID;
@@ -65,10 +54,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"uniqueLocationID:%@; ", charonDescribeObject(self->_uniqueLocationID)];
-    [text appendFormat:@"locationDescriptor:%@; ", charonDescribeObject(self->_locationDescriptor)];
-    [text appendFormat:@"locationDescriptorLastEdit:%@; ", charonDescribeObject(self->_locationDescriptorLastEdit)];
-    [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self->_fabricIndex)];
+    [text appendFormat:@"uniqueLocationID:%@; ", [self->_uniqueLocationID description]];
+    [text appendFormat:@"locationDescriptor:%@; ", [self->_locationDescriptor description]];
+    [text appendFormat:@"locationDescriptorLastEdit:%@; ", [self->_locationDescriptorLastEdit description]];
+    [text appendFormat:@"fabricIndex:%@; ", [self->_fabricIndex description]];
     [text appendString:@">"];
     return text;
 }

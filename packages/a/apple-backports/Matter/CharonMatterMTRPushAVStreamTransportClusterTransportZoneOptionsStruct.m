@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRPushAVStreamTransportClusterTransportZoneOptionsStruct
 
 @synthesize zone = _zone;
@@ -57,8 +46,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"zone:%@; ", charonDescribeObject(self->_zone)];
-    [text appendFormat:@"sensitivity:%@; ", charonDescribeObject(self->_sensitivity)];
+    [text appendFormat:@"zone:%@; ", [self->_zone description]];
+    [text appendFormat:@"sensitivity:%@; ", [self->_sensitivity description]];
     [text appendString:@">"];
     return text;
 }

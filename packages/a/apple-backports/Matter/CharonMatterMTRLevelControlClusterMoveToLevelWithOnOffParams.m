@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRLevelControlClusterMoveToLevelWithOnOffParams
 
 @synthesize level = _level;
@@ -68,10 +57,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"level:%@; ", charonDescribeObject(self->_level)];
-    [text appendFormat:@"transitionTime:%@; ", charonDescribeObject(self->_transitionTime)];
-    [text appendFormat:@"optionsMask:%@; ", charonDescribeObject(self->_optionsMask)];
-    [text appendFormat:@"optionsOverride:%@; ", charonDescribeObject(self->_optionsOverride)];
+    [text appendFormat:@"level:%@; ", [self->_level description]];
+    [text appendFormat:@"transitionTime:%@; ", [self->_transitionTime description]];
+    [text appendFormat:@"optionsMask:%@; ", [self->_optionsMask description]];
+    [text appendFormat:@"optionsOverride:%@; ", [self->_optionsOverride description]];
     [text appendString:@">"];
     return text;
 }

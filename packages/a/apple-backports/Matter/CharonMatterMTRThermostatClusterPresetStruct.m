@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRThermostatClusterPresetStruct
 
 @synthesize presetHandle = _presetHandle;
@@ -66,12 +55,12 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"presetHandle:%@; ", charonDescribeObject([self->_presetHandle base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"presetScenario:%@; ", charonDescribeObject(self->_presetScenario)];
-    [text appendFormat:@"name:%@; ", charonDescribeObject(self->_name)];
-    [text appendFormat:@"coolingSetpoint:%@; ", charonDescribeObject(self->_coolingSetpoint)];
-    [text appendFormat:@"heatingSetpoint:%@; ", charonDescribeObject(self->_heatingSetpoint)];
-    [text appendFormat:@"builtIn:%@; ", charonDescribeObject(self->_builtIn)];
+    [text appendFormat:@"presetHandle:%@; ", [[self->_presetHandle base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"presetScenario:%@; ", [self->_presetScenario description]];
+    [text appendFormat:@"name:%@; ", [self->_name description]];
+    [text appendFormat:@"coolingSetpoint:%@; ", [self->_coolingSetpoint description]];
+    [text appendFormat:@"heatingSetpoint:%@; ", [self->_heatingSetpoint description]];
+    [text appendFormat:@"builtIn:%@; ", [self->_builtIn description]];
     [text appendString:@">"];
     return text;
 }

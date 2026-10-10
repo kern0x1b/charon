@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRThermostatClusterRunningModeChangeEvent
 
 @synthesize previousRunningMode = _previousRunningMode;
@@ -58,8 +47,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"previousRunningMode:%@; ", charonDescribeObject(self->_previousRunningMode)];
-    [text appendFormat:@"currentRunningMode:%@; ", charonDescribeObject(self->_currentRunningMode)];
+    [text appendFormat:@"previousRunningMode:%@; ", [self->_previousRunningMode description]];
+    [text appendFormat:@"currentRunningMode:%@; ", [self->_currentRunningMode description]];
     [text appendString:@">"];
     return text;
 }

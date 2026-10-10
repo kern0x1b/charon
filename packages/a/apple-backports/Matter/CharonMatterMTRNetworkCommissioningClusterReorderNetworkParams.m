@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRNetworkCommissioningClusterReorderNetworkParams
 
 @synthesize networkID = _networkID;
@@ -65,9 +54,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"networkID:%@; ", charonDescribeObject([self->_networkID base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"networkIndex:%@; ", charonDescribeObject(self->_networkIndex)];
-    [text appendFormat:@"breadcrumb:%@; ", charonDescribeObject(self->_breadcrumb)];
+    [text appendFormat:@"networkID:%@; ", [[self->_networkID base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"networkIndex:%@; ", [self->_networkIndex description]];
+    [text appendFormat:@"breadcrumb:%@; ", [self->_breadcrumb description]];
     [text appendString:@">"];
     return text;
 }

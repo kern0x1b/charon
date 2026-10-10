@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRElectricalMeasurementClusterGetProfileInfoResponseCommandParams
 
 @synthesize profileCount = _profileCount;
@@ -67,10 +56,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"profileCount:%@; ", charonDescribeObject(self->_profileCount)];
-    [text appendFormat:@"profileIntervalPeriod:%@; ", charonDescribeObject(self->_profileIntervalPeriod)];
-    [text appendFormat:@"maxNumberOfIntervals:%@; ", charonDescribeObject(self->_maxNumberOfIntervals)];
-    [text appendFormat:@"listOfAttributes:%@; ", charonDescribeObject(self->_listOfAttributes)];
+    [text appendFormat:@"profileCount:%@; ", [self->_profileCount description]];
+    [text appendFormat:@"profileIntervalPeriod:%@; ", [self->_profileIntervalPeriod description]];
+    [text appendFormat:@"maxNumberOfIntervals:%@; ", [self->_maxNumberOfIntervals description]];
+    [text appendFormat:@"listOfAttributes:%@; ", [self->_listOfAttributes description]];
     [text appendString:@">"];
     return text;
 }

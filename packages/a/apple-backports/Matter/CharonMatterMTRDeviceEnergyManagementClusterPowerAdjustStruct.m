@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDeviceEnergyManagementClusterPowerAdjustStruct
 
 @synthesize minPower = _minPower;
@@ -65,10 +54,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"minPower:%@; ", charonDescribeObject(self->_minPower)];
-    [text appendFormat:@"maxPower:%@; ", charonDescribeObject(self->_maxPower)];
-    [text appendFormat:@"minDuration:%@; ", charonDescribeObject(self->_minDuration)];
-    [text appendFormat:@"maxDuration:%@; ", charonDescribeObject(self->_maxDuration)];
+    [text appendFormat:@"minPower:%@; ", [self->_minPower description]];
+    [text appendFormat:@"maxPower:%@; ", [self->_maxPower description]];
+    [text appendFormat:@"minDuration:%@; ", [self->_minDuration description]];
+    [text appendFormat:@"maxDuration:%@; ", [self->_maxDuration description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRCameraAVSettingsUserLevelManagementClusterMPTZRelativeMoveParams
 
 @synthesize panDelta = _panDelta;
@@ -63,9 +52,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"panDelta:%@; ", charonDescribeObject(self->_panDelta)];
-    [text appendFormat:@"tiltDelta:%@; ", charonDescribeObject(self->_tiltDelta)];
-    [text appendFormat:@"zoomDelta:%@; ", charonDescribeObject(self->_zoomDelta)];
+    [text appendFormat:@"panDelta:%@; ", [self->_panDelta description]];
+    [text appendFormat:@"tiltDelta:%@; ", [self->_tiltDelta description]];
+    [text appendFormat:@"zoomDelta:%@; ", [self->_zoomDelta description]];
     [text appendString:@">"];
     return text;
 }

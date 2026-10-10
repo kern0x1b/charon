@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRGroupcastClusterMembershipStruct
 
 @synthesize groupID = _groupID;
@@ -70,12 +59,12 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"groupID:%@; ", charonDescribeObject(self->_groupID)];
-    [text appendFormat:@"endpoints:%@; ", charonDescribeObject(self->_endpoints)];
-    [text appendFormat:@"keyID:%@; ", charonDescribeObject(self->_keyID)];
-    [text appendFormat:@"hasAuxiliaryACL:%@; ", charonDescribeObject(self->_hasAuxiliaryACL)];
-    [text appendFormat:@"expiringKeyID:%@; ", charonDescribeObject(self->_expiringKeyID)];
-    [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self->_fabricIndex)];
+    [text appendFormat:@"groupID:%@; ", [self->_groupID description]];
+    [text appendFormat:@"endpoints:%@; ", [self->_endpoints description]];
+    [text appendFormat:@"keyID:%@; ", [self->_keyID description]];
+    [text appendFormat:@"hasAuxiliaryACL:%@; ", [self->_hasAuxiliaryACL description]];
+    [text appendFormat:@"expiringKeyID:%@; ", [self->_expiringKeyID description]];
+    [text appendFormat:@"fabricIndex:%@; ", [self->_fabricIndex description]];
     [text appendString:@">"];
     return text;
 }

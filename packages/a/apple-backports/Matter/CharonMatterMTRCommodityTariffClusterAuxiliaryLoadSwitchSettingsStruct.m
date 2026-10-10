@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRCommodityTariffClusterAuxiliaryLoadSwitchSettingsStruct
 
 @synthesize number = _number;
@@ -59,8 +48,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"number:%@; ", charonDescribeObject(self->_number)];
-    [text appendFormat:@"requiredState:%@; ", charonDescribeObject(self->_requiredState)];
+    [text appendFormat:@"number:%@; ", [self->_number description]];
+    [text appendFormat:@"requiredState:%@; ", [self->_requiredState description]];
     [text appendString:@">"];
     return text;
 }

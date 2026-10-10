@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRPushAVStreamTransportClusterSetTransportStatusParams
 
 @synthesize connectionID = _connectionID;
@@ -62,8 +51,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"connectionID:%@; ", charonDescribeObject(self->_connectionID)];
-    [text appendFormat:@"transportStatus:%@; ", charonDescribeObject(self->_transportStatus)];
+    [text appendFormat:@"connectionID:%@; ", [self->_connectionID description]];
+    [text appendFormat:@"transportStatus:%@; ", [self->_transportStatus description]];
     [text appendString:@">"];
     return text;
 }

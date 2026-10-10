@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTROTASoftwareUpdateRequestorClusterDownloadErrorEvent
 
 @synthesize softwareVersion = _softwareVersion;
@@ -63,10 +52,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"softwareVersion:%@; ", charonDescribeObject(self->_softwareVersion)];
-    [text appendFormat:@"bytesDownloaded:%@; ", charonDescribeObject(self->_bytesDownloaded)];
-    [text appendFormat:@"progressPercent:%@; ", charonDescribeObject(self->_progressPercent)];
-    [text appendFormat:@"platformCode:%@; ", charonDescribeObject(self->_platformCode)];
+    [text appendFormat:@"softwareVersion:%@; ", [self->_softwareVersion description]];
+    [text appendFormat:@"bytesDownloaded:%@; ", [self->_bytesDownloaded description]];
+    [text appendFormat:@"progressPercent:%@; ", [self->_progressPercent description]];
+    [text appendFormat:@"platformCode:%@; ", [self->_platformCode description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRActionsClusterInstantActionWithTransitionParams
 
 @synthesize actionID = _actionID;
@@ -65,9 +54,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"actionID:%@; ", charonDescribeObject(self->_actionID)];
-    [text appendFormat:@"invokeID:%@; ", charonDescribeObject(self->_invokeID)];
-    [text appendFormat:@"transitionTime:%@; ", charonDescribeObject(self->_transitionTime)];
+    [text appendFormat:@"actionID:%@; ", [self->_actionID description]];
+    [text appendFormat:@"invokeID:%@; ", [self->_invokeID description]];
+    [text appendFormat:@"transitionTime:%@; ", [self->_transitionTime description]];
     [text appendString:@">"];
     return text;
 }

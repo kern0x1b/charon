@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRContentLauncherClusterContentSearchStruct
 
 @synthesize parameterList = _parameterList;
@@ -56,7 +45,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"parameterList:%@; ", charonDescribeObject(self->_parameterList)];
+    [text appendFormat:@"parameterList:%@; ", [self->_parameterList description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRScenesManagementClusterExtensionFieldSetStruct
 
 @synthesize clusterID = _clusterID;
@@ -59,8 +48,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"clusterID:%@; ", charonDescribeObject(self->_clusterID)];
-    [text appendFormat:@"attributeValueList:%@; ", charonDescribeObject(self->_attributeValueList)];
+    [text appendFormat:@"clusterID:%@; ", [self->_clusterID description]];
+    [text appendFormat:@"attributeValueList:%@; ", [self->_attributeValueList description]];
     [text appendString:@">"];
     return text;
 }

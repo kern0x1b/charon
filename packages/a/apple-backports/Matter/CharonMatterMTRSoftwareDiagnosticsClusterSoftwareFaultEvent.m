@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRSoftwareDiagnosticsClusterSoftwareFaultEvent
 
 @synthesize id = _id;
@@ -60,9 +49,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"id:%@; ", charonDescribeObject(self->_id)];
-    [text appendFormat:@"name:%@; ", charonDescribeObject(self->_name)];
-    [text appendFormat:@"faultRecording:%@; ", charonDescribeObject([self->_faultRecording base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"id:%@; ", [self->_id description]];
+    [text appendFormat:@"name:%@; ", [self->_name description]];
+    [text appendFormat:@"faultRecording:%@; ", [[self->_faultRecording base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

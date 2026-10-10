@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRPushAVStreamTransportClusterTransportOptionsStruct
 
 @synthesize streamUsage = _streamUsage;
@@ -77,15 +66,15 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"streamUsage:%@; ", charonDescribeObject(self->_streamUsage)];
-    [text appendFormat:@"videoStreamID:%@; ", charonDescribeObject(self->_videoStreamID)];
-    [text appendFormat:@"audioStreamID:%@; ", charonDescribeObject(self->_audioStreamID)];
-    [text appendFormat:@"tlsEndpointID:%@; ", charonDescribeObject(self->_tlsEndpointID)];
-    [text appendFormat:@"url:%@; ", charonDescribeObject(self->_url)];
-    [text appendFormat:@"triggerOptions:%@; ", charonDescribeObject(self->_triggerOptions)];
-    [text appendFormat:@"ingestMethod:%@; ", charonDescribeObject(self->_ingestMethod)];
-    [text appendFormat:@"containerOptions:%@; ", charonDescribeObject(self->_containerOptions)];
-    [text appendFormat:@"expiryTime:%@; ", charonDescribeObject(self->_expiryTime)];
+    [text appendFormat:@"streamUsage:%@; ", [self->_streamUsage description]];
+    [text appendFormat:@"videoStreamID:%@; ", [self->_videoStreamID description]];
+    [text appendFormat:@"audioStreamID:%@; ", [self->_audioStreamID description]];
+    [text appendFormat:@"tlsEndpointID:%@; ", [self->_tlsEndpointID description]];
+    [text appendFormat:@"url:%@; ", [self->_url description]];
+    [text appendFormat:@"triggerOptions:%@; ", [self->_triggerOptions description]];
+    [text appendFormat:@"ingestMethod:%@; ", [self->_ingestMethod description]];
+    [text appendFormat:@"containerOptions:%@; ", [self->_containerOptions description]];
+    [text appendFormat:@"expiryTime:%@; ", [self->_expiryTime description]];
     [text appendString:@">"];
     return text;
 }

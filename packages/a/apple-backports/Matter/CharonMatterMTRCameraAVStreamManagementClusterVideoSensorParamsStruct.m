@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRCameraAVStreamManagementClusterVideoSensorParamsStruct
 
 @synthesize sensorWidth = _sensorWidth;
@@ -64,10 +53,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"sensorWidth:%@; ", charonDescribeObject(self->_sensorWidth)];
-    [text appendFormat:@"sensorHeight:%@; ", charonDescribeObject(self->_sensorHeight)];
-    [text appendFormat:@"maxFPS:%@; ", charonDescribeObject(self->_maxFPS)];
-    [text appendFormat:@"maxHDRFPS:%@; ", charonDescribeObject(self->_maxHDRFPS)];
+    [text appendFormat:@"sensorWidth:%@; ", [self->_sensorWidth description]];
+    [text appendFormat:@"sensorHeight:%@; ", [self->_sensorHeight description]];
+    [text appendFormat:@"maxFPS:%@; ", [self->_maxFPS description]];
+    [text appendFormat:@"maxHDRFPS:%@; ", [self->_maxHDRFPS description]];
     [text appendString:@">"];
     return text;
 }

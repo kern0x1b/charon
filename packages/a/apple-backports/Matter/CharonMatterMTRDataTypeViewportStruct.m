@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDataTypeViewportStruct
 
 @synthesize x1 = _x1;
@@ -65,10 +54,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"x1:%@; ", charonDescribeObject(self->_x1)];
-    [text appendFormat:@"y1:%@; ", charonDescribeObject(self->_y1)];
-    [text appendFormat:@"x2:%@; ", charonDescribeObject(self->_x2)];
-    [text appendFormat:@"y2:%@; ", charonDescribeObject(self->_y2)];
+    [text appendFormat:@"x1:%@; ", [self->_x1 description]];
+    [text appendFormat:@"y1:%@; ", [self->_y1 description]];
+    [text appendFormat:@"x2:%@; ", [self->_x2 description]];
+    [text appendFormat:@"y2:%@; ", [self->_y2 description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDeviceEnergyManagementClusterSlotAdjustmentStruct
 
 @synthesize slotIndex = _slotIndex;
@@ -61,9 +50,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"slotIndex:%@; ", charonDescribeObject(self->_slotIndex)];
-    [text appendFormat:@"nominalPower:%@; ", charonDescribeObject(self->_nominalPower)];
-    [text appendFormat:@"duration:%@; ", charonDescribeObject(self->_duration)];
+    [text appendFormat:@"slotIndex:%@; ", [self->_slotIndex description]];
+    [text appendFormat:@"nominalPower:%@; ", [self->_nominalPower description]];
+    [text appendFormat:@"duration:%@; ", [self->_duration description]];
     [text appendString:@">"];
     return text;
 }

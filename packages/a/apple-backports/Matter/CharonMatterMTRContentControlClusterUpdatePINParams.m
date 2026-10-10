@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRContentControlClusterUpdatePINParams
 
 @synthesize oldPIN = _oldPIN;
@@ -62,8 +51,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"oldPIN:%@; ", charonDescribeObject(self->_oldPIN)];
-    [text appendFormat:@"newPIN:%@; ", charonDescribeObject(self->_newPIN)];
+    [text appendFormat:@"oldPIN:%@; ", [self->_oldPIN description]];
+    [text appendFormat:@"newPIN:%@; ", [self->_newPIN description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDoorLockClusterLockUserChangeEvent
 
 @synthesize lockDataType = _lockDataType;
@@ -70,13 +59,13 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"lockDataType:%@; ", charonDescribeObject(self->_lockDataType)];
-    [text appendFormat:@"dataOperationType:%@; ", charonDescribeObject(self->_dataOperationType)];
-    [text appendFormat:@"operationSource:%@; ", charonDescribeObject(self->_operationSource)];
-    [text appendFormat:@"userIndex:%@; ", charonDescribeObject(self->_userIndex)];
-    [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self->_fabricIndex)];
-    [text appendFormat:@"sourceNode:%@; ", charonDescribeObject(self->_sourceNode)];
-    [text appendFormat:@"dataIndex:%@; ", charonDescribeObject(self->_dataIndex)];
+    [text appendFormat:@"lockDataType:%@; ", [self->_lockDataType description]];
+    [text appendFormat:@"dataOperationType:%@; ", [self->_dataOperationType description]];
+    [text appendFormat:@"operationSource:%@; ", [self->_operationSource description]];
+    [text appendFormat:@"userIndex:%@; ", [self->_userIndex description]];
+    [text appendFormat:@"fabricIndex:%@; ", [self->_fabricIndex description]];
+    [text appendFormat:@"sourceNode:%@; ", [self->_sourceNode description]];
+    [text appendFormat:@"dataIndex:%@; ", [self->_dataIndex description]];
     [text appendString:@">"];
     return text;
 }

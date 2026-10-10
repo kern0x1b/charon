@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRCommissionerControlClusterRequestCommissioningApprovalParams
 
 @synthesize requestID = _requestID;
@@ -68,10 +57,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"requestID:%@; ", charonDescribeObject(self->_requestID)];
-    [text appendFormat:@"vendorID:%@; ", charonDescribeObject(self->_vendorID)];
-    [text appendFormat:@"productID:%@; ", charonDescribeObject(self->_productID)];
-    [text appendFormat:@"label:%@; ", charonDescribeObject(self->_label)];
+    [text appendFormat:@"requestID:%@; ", [self->_requestID description]];
+    [text appendFormat:@"vendorID:%@; ", [self->_vendorID description]];
+    [text appendFormat:@"productID:%@; ", [self->_productID description]];
+    [text appendFormat:@"label:%@; ", [self->_label description]];
     [text appendString:@">"];
     return text;
 }

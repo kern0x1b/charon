@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDataTypeAtomicAttributeStatusStruct
 
 @synthesize attributeID = _attributeID;
@@ -59,8 +48,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"attributeID:%@; ", charonDescribeObject(self->_attributeID)];
-    [text appendFormat:@"statusCode:%@; ", charonDescribeObject(self->_statusCode)];
+    [text appendFormat:@"attributeID:%@; ", [self->_attributeID description]];
+    [text appendFormat:@"statusCode:%@; ", [self->_statusCode description]];
     [text appendString:@">"];
     return text;
 }

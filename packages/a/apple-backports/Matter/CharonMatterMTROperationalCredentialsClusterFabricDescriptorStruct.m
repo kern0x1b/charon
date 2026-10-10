@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTROperationalCredentialsClusterFabricDescriptorStruct
 
 @synthesize rootPublicKey = _rootPublicKey;
@@ -107,13 +96,13 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"rootPublicKey:%@; ", charonDescribeObject([self->_rootPublicKey base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"vendorID:%@; ", charonDescribeObject(self->_vendorID)];
-    [text appendFormat:@"fabricID:%@; ", charonDescribeObject(self->_fabricID)];
-    [text appendFormat:@"nodeID:%@; ", charonDescribeObject(self->_nodeID)];
-    [text appendFormat:@"label:%@; ", charonDescribeObject(self->_label)];
-    [text appendFormat:@"vidVerificationStatement:%@; ", charonDescribeObject([self->_vidVerificationStatement base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self->_fabricIndex)];
+    [text appendFormat:@"rootPublicKey:%@; ", [[self->_rootPublicKey base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"vendorID:%@; ", [self->_vendorID description]];
+    [text appendFormat:@"fabricID:%@; ", [self->_fabricID description]];
+    [text appendFormat:@"nodeID:%@; ", [self->_nodeID description]];
+    [text appendFormat:@"label:%@; ", [self->_label description]];
+    [text appendFormat:@"vidVerificationStatement:%@; ", [[self->_vidVerificationStatement base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"fabricIndex:%@; ", [self->_fabricIndex description]];
     [text appendString:@">"];
     return text;
 }

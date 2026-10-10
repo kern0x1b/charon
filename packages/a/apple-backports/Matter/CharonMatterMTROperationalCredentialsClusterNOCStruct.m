@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTROperationalCredentialsClusterNOCStruct
 
 @synthesize noc = _noc;
@@ -63,10 +52,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"noc:%@; ", charonDescribeObject([self->_noc base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"icac:%@; ", charonDescribeObject([self->_icac base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"vvsc:%@; ", charonDescribeObject([self->_vvsc base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self->_fabricIndex)];
+    [text appendFormat:@"noc:%@; ", [[self->_noc base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"icac:%@; ", [[self->_icac base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"vvsc:%@; ", [[self->_vvsc base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"fabricIndex:%@; ", [self->_fabricIndex description]];
     [text appendString:@">"];
     return text;
 }

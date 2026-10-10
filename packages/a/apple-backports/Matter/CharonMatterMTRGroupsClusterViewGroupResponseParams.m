@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRGroupsClusterViewGroupResponseParams
 
 @synthesize status = _status;
@@ -78,9 +67,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"status:%@; ", charonDescribeObject(self->_status)];
-    [text appendFormat:@"groupID:%@; ", charonDescribeObject(self->_groupID)];
-    [text appendFormat:@"groupName:%@; ", charonDescribeObject(self->_groupName)];
+    [text appendFormat:@"status:%@; ", [self->_status description]];
+    [text appendFormat:@"groupID:%@; ", [self->_groupID description]];
+    [text appendFormat:@"groupName:%@; ", [self->_groupName description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRCameraAVStreamManagementClusterCaptureSnapshotResponseParams
 
 @synthesize data = _data;
@@ -62,9 +51,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"data:%@; ", charonDescribeObject([self->_data base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"imageCodec:%@; ", charonDescribeObject(self->_imageCodec)];
-    [text appendFormat:@"resolution:%@; ", charonDescribeObject(self->_resolution)];
+    [text appendFormat:@"data:%@; ", [[self->_data base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"imageCodec:%@; ", [self->_imageCodec description]];
+    [text appendFormat:@"resolution:%@; ", [self->_resolution description]];
     [text appendString:@">"];
     return text;
 }

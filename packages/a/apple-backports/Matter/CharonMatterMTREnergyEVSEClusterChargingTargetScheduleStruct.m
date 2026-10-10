@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTREnergyEVSEClusterChargingTargetScheduleStruct
 
 @synthesize dayOfWeekForSequence = _dayOfWeekForSequence;
@@ -59,8 +48,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"dayOfWeekForSequence:%@; ", charonDescribeObject(self->_dayOfWeekForSequence)];
-    [text appendFormat:@"chargingTargets:%@; ", charonDescribeObject(self->_chargingTargets)];
+    [text appendFormat:@"dayOfWeekForSequence:%@; ", [self->_dayOfWeekForSequence description]];
+    [text appendFormat:@"chargingTargets:%@; ", [self->_chargingTargets description]];
     [text appendString:@">"];
     return text;
 }

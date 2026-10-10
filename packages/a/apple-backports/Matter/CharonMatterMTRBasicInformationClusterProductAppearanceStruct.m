@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRBasicInformationClusterProductAppearanceStruct
 
 @synthesize finish = _finish;
@@ -58,8 +47,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"finish:%@; ", charonDescribeObject(self->_finish)];
-    [text appendFormat:@"primaryColor:%@; ", charonDescribeObject(self->_primaryColor)];
+    [text appendFormat:@"finish:%@; ", [self->_finish description]];
+    [text appendFormat:@"primaryColor:%@; ", [self->_primaryColor description]];
     [text appendString:@">"];
     return text;
 }

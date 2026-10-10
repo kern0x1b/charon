@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRServiceAreaClusterProgressStruct
 
 @synthesize areaID = _areaID;
@@ -63,10 +52,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"areaID:%@; ", charonDescribeObject(self->_areaID)];
-    [text appendFormat:@"status:%@; ", charonDescribeObject(self->_status)];
-    [text appendFormat:@"totalOperationalTime:%@; ", charonDescribeObject(self->_totalOperationalTime)];
-    [text appendFormat:@"estimatedTime:%@; ", charonDescribeObject(self->_estimatedTime)];
+    [text appendFormat:@"areaID:%@; ", [self->_areaID description]];
+    [text appendFormat:@"status:%@; ", [self->_status description]];
+    [text appendFormat:@"totalOperationalTime:%@; ", [self->_totalOperationalTime description]];
+    [text appendFormat:@"estimatedTime:%@; ", [self->_estimatedTime description]];
     [text appendString:@">"];
     return text;
 }

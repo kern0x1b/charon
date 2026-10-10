@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRWebRTCTransportProviderClusterProvideOfferParams
 
 @synthesize webRTCSessionID = _webRTCSessionID;
@@ -80,16 +69,16 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"webRTCSessionID:%@; ", charonDescribeObject(self->_webRTCSessionID)];
-    [text appendFormat:@"sdp:%@; ", charonDescribeObject(self->_sdp)];
-    [text appendFormat:@"streamUsage:%@; ", charonDescribeObject(self->_streamUsage)];
-    [text appendFormat:@"originatingEndpointID:%@; ", charonDescribeObject(self->_originatingEndpointID)];
-    [text appendFormat:@"videoStreamID:%@; ", charonDescribeObject(self->_videoStreamID)];
-    [text appendFormat:@"audioStreamID:%@; ", charonDescribeObject(self->_audioStreamID)];
-    [text appendFormat:@"iceServers:%@; ", charonDescribeObject(self->_iceServers)];
-    [text appendFormat:@"iceTransportPolicy:%@; ", charonDescribeObject(self->_iceTransportPolicy)];
-    [text appendFormat:@"metadataEnabled:%@; ", charonDescribeObject(self->_metadataEnabled)];
-    [text appendFormat:@"sFrameConfig:%@; ", charonDescribeObject(self->_sFrameConfig)];
+    [text appendFormat:@"webRTCSessionID:%@; ", [self->_webRTCSessionID description]];
+    [text appendFormat:@"sdp:%@; ", [self->_sdp description]];
+    [text appendFormat:@"streamUsage:%@; ", [self->_streamUsage description]];
+    [text appendFormat:@"originatingEndpointID:%@; ", [self->_originatingEndpointID description]];
+    [text appendFormat:@"videoStreamID:%@; ", [self->_videoStreamID description]];
+    [text appendFormat:@"audioStreamID:%@; ", [self->_audioStreamID description]];
+    [text appendFormat:@"iceServers:%@; ", [self->_iceServers description]];
+    [text appendFormat:@"iceTransportPolicy:%@; ", [self->_iceTransportPolicy description]];
+    [text appendFormat:@"metadataEnabled:%@; ", [self->_metadataEnabled description]];
+    [text appendFormat:@"sFrameConfig:%@; ", [self->_sFrameConfig description]];
     [text appendString:@">"];
     return text;
 }

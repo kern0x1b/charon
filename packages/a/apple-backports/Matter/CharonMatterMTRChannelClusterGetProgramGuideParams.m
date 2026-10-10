@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRChannelClusterGetProgramGuideParams
 
 @synthesize startTime = _startTime;
@@ -71,13 +60,13 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"startTime:%@; ", charonDescribeObject(self->_startTime)];
-    [text appendFormat:@"endTime:%@; ", charonDescribeObject(self->_endTime)];
-    [text appendFormat:@"channelList:%@; ", charonDescribeObject(self->_channelList)];
-    [text appendFormat:@"pageToken:%@; ", charonDescribeObject(self->_pageToken)];
-    [text appendFormat:@"recordingFlag:%@; ", charonDescribeObject(self->_recordingFlag)];
-    [text appendFormat:@"externalIDList:%@; ", charonDescribeObject(self->_externalIDList)];
-    [text appendFormat:@"data:%@; ", charonDescribeObject([self->_data base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"startTime:%@; ", [self->_startTime description]];
+    [text appendFormat:@"endTime:%@; ", [self->_endTime description]];
+    [text appendFormat:@"channelList:%@; ", [self->_channelList description]];
+    [text appendFormat:@"pageToken:%@; ", [self->_pageToken description]];
+    [text appendFormat:@"recordingFlag:%@; ", [self->_recordingFlag description]];
+    [text appendFormat:@"externalIDList:%@; ", [self->_externalIDList description]];
+    [text appendFormat:@"data:%@; ", [[self->_data base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRGroupcastClusterConfigureAuxiliaryACLParams
 
 @synthesize groupID = _groupID;
@@ -63,8 +52,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"groupID:%@; ", charonDescribeObject(self->_groupID)];
-    [text appendFormat:@"useAuxiliaryACL:%@; ", charonDescribeObject(self->_useAuxiliaryACL)];
+    [text appendFormat:@"groupID:%@; ", [self->_groupID description]];
+    [text appendFormat:@"useAuxiliaryACL:%@; ", [self->_useAuxiliaryACL description]];
     [text appendString:@">"];
     return text;
 }

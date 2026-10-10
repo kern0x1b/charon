@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDoorLockClusterUnlockWithTimeoutParams
 
 @synthesize timeout = _timeout;
@@ -62,8 +51,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"timeout:%@; ", charonDescribeObject(self->_timeout)];
-    [text appendFormat:@"pinCode:%@; ", charonDescribeObject([self->_pinCode base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"timeout:%@; ", [self->_timeout description]];
+    [text appendFormat:@"pinCode:%@; ", [[self->_pinCode base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

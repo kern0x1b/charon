@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRApplicationBasicClusterApplicationStruct
 
 @synthesize catalogVendorID = _catalogVendorID;
@@ -83,8 +72,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"catalogVendorID:%@; ", charonDescribeObject(self->_catalogVendorID)];
-    [text appendFormat:@"applicationID:%@; ", charonDescribeObject(self->_applicationID)];
+    [text appendFormat:@"catalogVendorID:%@; ", [self->_catalogVendorID description]];
+    [text appendFormat:@"applicationID:%@; ", [self->_applicationID description]];
     [text appendString:@">"];
     return text;
 }

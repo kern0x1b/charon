@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRGroupKeyManagementClusterGroupInfoMapStruct
 
 @synthesize groupId = _groupId;
@@ -64,10 +53,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"groupId:%@; ", charonDescribeObject(self->_groupId)];
-    [text appendFormat:@"endpoints:%@; ", charonDescribeObject(self->_endpoints)];
-    [text appendFormat:@"groupName:%@; ", charonDescribeObject(self->_groupName)];
-    [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self->_fabricIndex)];
+    [text appendFormat:@"groupId:%@; ", [self->_groupId description]];
+    [text appendFormat:@"endpoints:%@; ", [self->_endpoints description]];
+    [text appendFormat:@"groupName:%@; ", [self->_groupName description]];
+    [text appendFormat:@"fabricIndex:%@; ", [self->_fabricIndex description]];
     [text appendString:@">"];
     return text;
 }

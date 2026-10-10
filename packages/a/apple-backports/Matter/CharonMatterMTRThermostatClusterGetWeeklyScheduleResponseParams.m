@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRThermostatClusterGetWeeklyScheduleResponseParams
 
 @synthesize numberOfTransitionsForSequence = _numberOfTransitionsForSequence;
@@ -67,10 +56,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"numberOfTransitionsForSequence:%@; ", charonDescribeObject(self->_numberOfTransitionsForSequence)];
-    [text appendFormat:@"dayOfWeekForSequence:%@; ", charonDescribeObject(self->_dayOfWeekForSequence)];
-    [text appendFormat:@"modeForSequence:%@; ", charonDescribeObject(self->_modeForSequence)];
-    [text appendFormat:@"transitions:%@; ", charonDescribeObject(self->_transitions)];
+    [text appendFormat:@"numberOfTransitionsForSequence:%@; ", [self->_numberOfTransitionsForSequence description]];
+    [text appendFormat:@"dayOfWeekForSequence:%@; ", [self->_dayOfWeekForSequence description]];
+    [text appendFormat:@"modeForSequence:%@; ", [self->_modeForSequence description]];
+    [text appendFormat:@"transitions:%@; ", [self->_transitions description]];
     [text appendString:@">"];
     return text;
 }

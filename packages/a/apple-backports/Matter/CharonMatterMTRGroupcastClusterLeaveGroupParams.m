@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRGroupcastClusterLeaveGroupParams
 
 @synthesize groupID = _groupID;
@@ -62,8 +51,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"groupID:%@; ", charonDescribeObject(self->_groupID)];
-    [text appendFormat:@"endpoints:%@; ", charonDescribeObject(self->_endpoints)];
+    [text appendFormat:@"groupID:%@; ", [self->_groupID description]];
+    [text appendFormat:@"endpoints:%@; ", [self->_endpoints description]];
     [text appendString:@">"];
     return text;
 }

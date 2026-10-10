@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDataTypeICEServerStruct
 
 @synthesize urls = _urls;
@@ -62,10 +51,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"urls:%@; ", charonDescribeObject(self->_urls)];
-    [text appendFormat:@"username:%@; ", charonDescribeObject(self->_username)];
-    [text appendFormat:@"credential:%@; ", charonDescribeObject(self->_credential)];
-    [text appendFormat:@"caid:%@; ", charonDescribeObject(self->_caid)];
+    [text appendFormat:@"urls:%@; ", [self->_urls description]];
+    [text appendFormat:@"username:%@; ", [self->_username description]];
+    [text appendFormat:@"credential:%@; ", [self->_credential description]];
+    [text appendFormat:@"caid:%@; ", [self->_caid description]];
     [text appendString:@">"];
     return text;
 }

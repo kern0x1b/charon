@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRGroupcastClusterUpdateGroupKeyParams
 
 @synthesize groupID = _groupID;
@@ -67,10 +56,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"groupID:%@; ", charonDescribeObject(self->_groupID)];
-    [text appendFormat:@"keyID:%@; ", charonDescribeObject(self->_keyID)];
-    [text appendFormat:@"key:%@; ", charonDescribeObject([self->_key base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"gracePeriod:%@; ", charonDescribeObject(self->_gracePeriod)];
+    [text appendFormat:@"groupID:%@; ", [self->_groupID description]];
+    [text appendFormat:@"keyID:%@; ", [self->_keyID description]];
+    [text appendFormat:@"key:%@; ", [[self->_key base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"gracePeriod:%@; ", [self->_gracePeriod description]];
     [text appendString:@">"];
     return text;
 }

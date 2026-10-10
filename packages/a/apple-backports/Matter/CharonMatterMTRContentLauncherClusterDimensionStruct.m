@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRContentLauncherClusterDimensionStruct
 
 @synthesize width = _width;
@@ -62,9 +51,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"width:%@; ", charonDescribeObject(self->_width)];
-    [text appendFormat:@"height:%@; ", charonDescribeObject(self->_height)];
-    [text appendFormat:@"metric:%@; ", charonDescribeObject(self->_metric)];
+    [text appendFormat:@"width:%@; ", [self->_width description]];
+    [text appendFormat:@"height:%@; ", [self->_height description]];
+    [text appendFormat:@"metric:%@; ", [self->_metric description]];
     [text appendString:@">"];
     return text;
 }

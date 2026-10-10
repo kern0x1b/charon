@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRUnitTestingClusterTestBatchHelperRequestParams
 
 @synthesize sleepBeforeResponseTimeMs = _sleepBeforeResponseTimeMs;
@@ -66,9 +55,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"sleepBeforeResponseTimeMs:%@; ", charonDescribeObject(self->_sleepBeforeResponseTimeMs)];
-    [text appendFormat:@"sizeOfResponseBuffer:%@; ", charonDescribeObject(self->_sizeOfResponseBuffer)];
-    [text appendFormat:@"fillCharacter:%@; ", charonDescribeObject(self->_fillCharacter)];
+    [text appendFormat:@"sleepBeforeResponseTimeMs:%@; ", [self->_sleepBeforeResponseTimeMs description]];
+    [text appendFormat:@"sizeOfResponseBuffer:%@; ", [self->_sizeOfResponseBuffer description]];
+    [text appendFormat:@"fillCharacter:%@; ", [self->_fillCharacter description]];
     [text appendString:@">"];
     return text;
 }

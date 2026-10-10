@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRElectricalMeasurementClusterGetMeasurementProfileResponseCommandParams
 
 @synthesize startTime = _startTime;
@@ -73,12 +62,12 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"startTime:%@; ", charonDescribeObject(self->_startTime)];
-    [text appendFormat:@"status:%@; ", charonDescribeObject(self->_status)];
-    [text appendFormat:@"profileIntervalPeriod:%@; ", charonDescribeObject(self->_profileIntervalPeriod)];
-    [text appendFormat:@"numberOfIntervalsDelivered:%@; ", charonDescribeObject(self->_numberOfIntervalsDelivered)];
-    [text appendFormat:@"attributeId:%@; ", charonDescribeObject(self->_attributeId)];
-    [text appendFormat:@"intervals:%@; ", charonDescribeObject(self->_intervals)];
+    [text appendFormat:@"startTime:%@; ", [self->_startTime description]];
+    [text appendFormat:@"status:%@; ", [self->_status description]];
+    [text appendFormat:@"profileIntervalPeriod:%@; ", [self->_profileIntervalPeriod description]];
+    [text appendFormat:@"numberOfIntervalsDelivered:%@; ", [self->_numberOfIntervalsDelivered description]];
+    [text appendFormat:@"attributeId:%@; ", [self->_attributeId description]];
+    [text appendFormat:@"intervals:%@; ", [self->_intervals description]];
     [text appendString:@">"];
     return text;
 }

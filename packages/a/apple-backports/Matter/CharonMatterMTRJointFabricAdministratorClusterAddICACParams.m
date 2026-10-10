@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRJointFabricAdministratorClusterAddICACParams
 
 @synthesize icacValue = _icacValue;
@@ -60,7 +49,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"icacValue:%@; ", charonDescribeObject([self->_icacValue base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"icacValue:%@; ", [[self->_icacValue base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

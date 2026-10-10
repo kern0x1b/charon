@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRSwitchClusterMultiPressCompleteEvent
 
 @synthesize previousPosition = _previousPosition;
@@ -73,8 +62,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"previousPosition:%@; ", charonDescribeObject(self->_previousPosition)];
-    [text appendFormat:@"totalNumberOfPressesCounted:%@; ", charonDescribeObject(self->_totalNumberOfPressesCounted)];
+    [text appendFormat:@"previousPosition:%@; ", [self->_previousPosition description]];
+    [text appendFormat:@"totalNumberOfPressesCounted:%@; ", [self->_totalNumberOfPressesCounted description]];
     [text appendString:@">"];
     return text;
 }

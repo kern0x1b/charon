@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRChannelClusterLineupInfoStruct
 
 @synthesize operatorName = _operatorName;
@@ -63,10 +52,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"operatorName:%@; ", charonDescribeObject(self->_operatorName)];
-    [text appendFormat:@"lineupName:%@; ", charonDescribeObject(self->_lineupName)];
-    [text appendFormat:@"postalCode:%@; ", charonDescribeObject(self->_postalCode)];
-    [text appendFormat:@"lineupInfoType:%@; ", charonDescribeObject(self->_lineupInfoType)];
+    [text appendFormat:@"operatorName:%@; ", [self->_operatorName description]];
+    [text appendFormat:@"lineupName:%@; ", [self->_lineupName description]];
+    [text appendFormat:@"postalCode:%@; ", [self->_postalCode description]];
+    [text appendFormat:@"lineupInfoType:%@; ", [self->_lineupInfoType description]];
     [text appendString:@">"];
     return text;
 }

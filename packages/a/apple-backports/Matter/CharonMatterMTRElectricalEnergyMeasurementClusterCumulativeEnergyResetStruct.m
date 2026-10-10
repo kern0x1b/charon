@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRElectricalEnergyMeasurementClusterCumulativeEnergyResetStruct
 
 @synthesize importedResetTimestamp = _importedResetTimestamp;
@@ -61,10 +50,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"importedResetTimestamp:%@; ", charonDescribeObject(self->_importedResetTimestamp)];
-    [text appendFormat:@"exportedResetTimestamp:%@; ", charonDescribeObject(self->_exportedResetTimestamp)];
-    [text appendFormat:@"importedResetSystime:%@; ", charonDescribeObject(self->_importedResetSystime)];
-    [text appendFormat:@"exportedResetSystime:%@; ", charonDescribeObject(self->_exportedResetSystime)];
+    [text appendFormat:@"importedResetTimestamp:%@; ", [self->_importedResetTimestamp description]];
+    [text appendFormat:@"exportedResetTimestamp:%@; ", [self->_exportedResetTimestamp description]];
+    [text appendFormat:@"importedResetSystime:%@; ", [self->_importedResetSystime description]];
+    [text appendFormat:@"exportedResetSystime:%@; ", [self->_exportedResetSystime description]];
     [text appendString:@">"];
     return text;
 }

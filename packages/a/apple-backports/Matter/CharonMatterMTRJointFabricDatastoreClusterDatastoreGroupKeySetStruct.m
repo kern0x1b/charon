@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRJointFabricDatastoreClusterDatastoreGroupKeySetStruct
 
 @synthesize groupKeySetID = _groupKeySetID;
@@ -74,15 +63,15 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"groupKeySetID:%@; ", charonDescribeObject(self->_groupKeySetID)];
-    [text appendFormat:@"groupKeySecurityPolicy:%@; ", charonDescribeObject(self->_groupKeySecurityPolicy)];
-    [text appendFormat:@"epochKey0:%@; ", charonDescribeObject([self->_epochKey0 base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"epochStartTime0:%@; ", charonDescribeObject(self->_epochStartTime0)];
-    [text appendFormat:@"epochKey1:%@; ", charonDescribeObject([self->_epochKey1 base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"epochStartTime1:%@; ", charonDescribeObject(self->_epochStartTime1)];
-    [text appendFormat:@"epochKey2:%@; ", charonDescribeObject([self->_epochKey2 base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"epochStartTime2:%@; ", charonDescribeObject(self->_epochStartTime2)];
-    [text appendFormat:@"groupKeyMulticastPolicy:%@; ", charonDescribeObject(self->_groupKeyMulticastPolicy)];
+    [text appendFormat:@"groupKeySetID:%@; ", [self->_groupKeySetID description]];
+    [text appendFormat:@"groupKeySecurityPolicy:%@; ", [self->_groupKeySecurityPolicy description]];
+    [text appendFormat:@"epochKey0:%@; ", [[self->_epochKey0 base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"epochStartTime0:%@; ", [self->_epochStartTime0 description]];
+    [text appendFormat:@"epochKey1:%@; ", [[self->_epochKey1 base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"epochStartTime1:%@; ", [self->_epochStartTime1 description]];
+    [text appendFormat:@"epochKey2:%@; ", [[self->_epochKey2 base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"epochStartTime2:%@; ", [self->_epochStartTime2 description]];
+    [text appendFormat:@"groupKeyMulticastPolicy:%@; ", [self->_groupKeyMulticastPolicy description]];
     [text appendString:@">"];
     return text;
 }

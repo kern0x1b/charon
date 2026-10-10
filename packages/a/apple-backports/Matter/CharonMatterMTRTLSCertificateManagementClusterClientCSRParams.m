@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRTLSCertificateManagementClusterClientCSRParams
 
 @synthesize nonce = _nonce;
@@ -62,8 +51,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"nonce:%@; ", charonDescribeObject([self->_nonce base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"ccdid:%@; ", charonDescribeObject(self->_ccdid)];
+    [text appendFormat:@"nonce:%@; ", [[self->_nonce base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"ccdid:%@; ", [self->_ccdid description]];
     [text appendString:@">"];
     return text;
 }

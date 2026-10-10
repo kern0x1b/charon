@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRCameraAVStreamManagementClusterSnapshotCapabilitiesStruct
 
 @synthesize resolution = _resolution;
@@ -67,11 +56,11 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"resolution:%@; ", charonDescribeObject(self->_resolution)];
-    [text appendFormat:@"maxFrameRate:%@; ", charonDescribeObject(self->_maxFrameRate)];
-    [text appendFormat:@"imageCodec:%@; ", charonDescribeObject(self->_imageCodec)];
-    [text appendFormat:@"requiresEncodedPixels:%@; ", charonDescribeObject(self->_requiresEncodedPixels)];
-    [text appendFormat:@"requiresHardwareEncoder:%@; ", charonDescribeObject(self->_requiresHardwareEncoder)];
+    [text appendFormat:@"resolution:%@; ", [self->_resolution description]];
+    [text appendFormat:@"maxFrameRate:%@; ", [self->_maxFrameRate description]];
+    [text appendFormat:@"imageCodec:%@; ", [self->_imageCodec description]];
+    [text appendFormat:@"requiresEncodedPixels:%@; ", [self->_requiresEncodedPixels description]];
+    [text appendFormat:@"requiresHardwareEncoder:%@; ", [self->_requiresHardwareEncoder description]];
     [text appendString:@">"];
     return text;
 }

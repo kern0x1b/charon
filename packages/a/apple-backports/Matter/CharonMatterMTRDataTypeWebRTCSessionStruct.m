@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDataTypeWebRTCSessionStruct
 
 @synthesize id = _id;
@@ -75,14 +64,14 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"id:%@; ", charonDescribeObject(self->_id)];
-    [text appendFormat:@"peerNodeID:%@; ", charonDescribeObject(self->_peerNodeID)];
-    [text appendFormat:@"peerEndpointID:%@; ", charonDescribeObject(self->_peerEndpointID)];
-    [text appendFormat:@"streamUsage:%@; ", charonDescribeObject(self->_streamUsage)];
-    [text appendFormat:@"videoStreamID:%@; ", charonDescribeObject(self->_videoStreamID)];
-    [text appendFormat:@"audioStreamID:%@; ", charonDescribeObject(self->_audioStreamID)];
-    [text appendFormat:@"metadataEnabled:%@; ", charonDescribeObject(self->_metadataEnabled)];
-    [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self->_fabricIndex)];
+    [text appendFormat:@"id:%@; ", [self->_id description]];
+    [text appendFormat:@"peerNodeID:%@; ", [self->_peerNodeID description]];
+    [text appendFormat:@"peerEndpointID:%@; ", [self->_peerEndpointID description]];
+    [text appendFormat:@"streamUsage:%@; ", [self->_streamUsage description]];
+    [text appendFormat:@"videoStreamID:%@; ", [self->_videoStreamID description]];
+    [text appendFormat:@"audioStreamID:%@; ", [self->_audioStreamID description]];
+    [text appendFormat:@"metadataEnabled:%@; ", [self->_metadataEnabled description]];
+    [text appendFormat:@"fabricIndex:%@; ", [self->_fabricIndex description]];
     [text appendString:@">"];
     return text;
 }

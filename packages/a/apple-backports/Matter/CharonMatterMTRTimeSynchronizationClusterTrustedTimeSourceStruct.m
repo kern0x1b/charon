@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRTimeSynchronizationClusterTrustedTimeSourceStruct
 
 @synthesize fabricIndex = _fabricIndex;
@@ -62,9 +51,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self->_fabricIndex)];
-    [text appendFormat:@"nodeID:%@; ", charonDescribeObject(self->_nodeID)];
-    [text appendFormat:@"endpoint:%@; ", charonDescribeObject(self->_endpoint)];
+    [text appendFormat:@"fabricIndex:%@; ", [self->_fabricIndex description]];
+    [text appendFormat:@"nodeID:%@; ", [self->_nodeID description]];
+    [text appendFormat:@"endpoint:%@; ", [self->_endpoint description]];
     [text appendString:@">"];
     return text;
 }

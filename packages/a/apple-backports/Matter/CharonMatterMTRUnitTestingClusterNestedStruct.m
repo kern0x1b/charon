@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRUnitTestingClusterNestedStruct
 
 @synthesize a = _a;
@@ -64,10 +53,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"a:%@; ", charonDescribeObject(self->_a)];
-    [text appendFormat:@"b:%@; ", charonDescribeObject(self->_b)];
-    [text appendFormat:@"c:%@; ", charonDescribeObject(self->_c)];
-    [text appendFormat:@"d:%@; ", charonDescribeObject(self->_d)];
+    [text appendFormat:@"a:%@; ", [self->_a description]];
+    [text appendFormat:@"b:%@; ", [self->_b description]];
+    [text appendFormat:@"c:%@; ", [self->_c description]];
+    [text appendFormat:@"d:%@; ", [self->_d description]];
     [text appendString:@">"];
     return text;
 }

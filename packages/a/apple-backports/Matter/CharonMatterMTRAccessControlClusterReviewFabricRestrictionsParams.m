@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRAccessControlClusterReviewFabricRestrictionsParams
 
 @synthesize arl = _arl;
@@ -60,7 +49,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"arl:%@; ", charonDescribeObject(self->_arl)];
+    [text appendFormat:@"arl:%@; ", [self->_arl description]];
     [text appendString:@">"];
     return text;
 }

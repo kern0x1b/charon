@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRChannelClusterSeriesInfoStruct
 
 @synthesize season = _season;
@@ -59,8 +48,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"season:%@; ", charonDescribeObject(self->_season)];
-    [text appendFormat:@"episode:%@; ", charonDescribeObject(self->_episode)];
+    [text appendFormat:@"season:%@; ", [self->_season description]];
+    [text appendFormat:@"episode:%@; ", [self->_episode description]];
     [text appendString:@">"];
     return text;
 }

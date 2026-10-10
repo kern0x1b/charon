@@ -2007,32 +2007,6 @@ def default_of(prop, store=None):
     return stored
 
 
-def describe_helpers():
-    """The two C functions -description prints through, and no more.
-
-    They are C functions and not methods because a method here would be API the framework does not have, and
-    a file that exports no API symbol of its own is where this repository puts such a function (see
-    packages/a/apple-backports/UIKit/UIViewController+DocumentMenu.m).
-
-    `charonDescribeObject` deliberately does NOT check for nil: `[nil description]` is nil, and %@ prints a
-    nil argument as `(null)`, which is what the host prints for a nil member - `subjects:(null)` in the
-    measured MTRAccessControlClusterAccessControlEntryStruct string. A `(nil)` here was the port's own
-    spelling and it differed from the host's on every nil member.
-    """
-    return """
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
-"""
-
-
 def printed_members(description, fresh, names):
     """Which of `names` the host's own measured -description prints, or None when the host gave no string.
 
@@ -2066,9 +2040,10 @@ def describe_body(name, properties, slots, printed=None):
     so the format is `<` + the class name + `: ` + `name:value; ` per member + `>`, the value is what the host
     prints, and INHERITED members are not in it.
 
-    Every member the HOST'S string prints is printed (`printed`, from printed_members(), or all of them when
-    the host gave no string) and each one is read from ITS OWN STORAGE rather than through its accessor. That is not a shortcut, it is what makes every member printable against any
-    SDK: the member's spelling is not always available where the port is compiled. SDK 26.2 calls it
+    Every member the HOST's string prints is printed (`printed`, from printed_members(), or all of them when
+    the host gave no string) and each one is read from ITS OWN STORAGE rather than through its accessor. That is
+    not a shortcut, it is what makes every member printable against any SDK: the member's spelling is not always
+    available where the port is compiled. SDK 26.2 calls it
     `thumbnailUrl` and a later SDK calls it `thumbnailURL` and marks the old spelling
     `API_DEPRECATED`, so `self.thumbnailUrl` is `'thumbnailUrl' is unavailable` and 23 of the objects do not
     build against the host SDK - all of them that one cause. The IVAR is the port's own, it exists whatever
@@ -2078,6 +2053,10 @@ def describe_body(name, properties, slots, printed=None):
     A member that SHARES an ivar with its deprecated alias prints the shared storage through the same
     conversion its accessors use, so the two spellings in one string are one value - which is what the host
     does, and what `aliasBack` measures.
+
+    A nil member sends `description` to nil, which is nil, and %@ prints a nil argument as `(null)`: that is what
+    the host prints (`subjects:(null)` in the measured MTRAccessControlClusterAccessControlEntryStruct string).
+    A `(nil)` here was the port's own spelling and differed from the host's on every nil member.
     """
     body = ["- (NSString *)description\n{\n",
             "    NSMutableString *text = [NSMutableString stringWithFormat:@\"<%@: \","
@@ -2113,13 +2092,11 @@ def describe_body(name, properties, slots, printed=None):
             #   `-[NSData base64EncodedStringWithOptions:]` as implemented, and MatterClusterBackports
             #   already lists `libraries = {"FoundationBackports"}` (modules/apple/backports.lua:119), so
             #   the object links it the way every other object of the library does.
-            value = "charonDescribeObject([self->%s base64EncodedStringWithOptions:0])" % slot
+            value = "[[self->%s base64EncodedStringWithOptions:0] description]" % slot
         elif spelling.endswith("*"):
-            value = "charonDescribeObject(self->%s)" % slot
-        elif spelling.split()[-1:] == ["BOOL"]:
-            value = "charonDescribeScalar((long long)(self->%s))" % slot
+            value = "[self->%s description]" % slot
         else:
-            value = "charonDescribeScalar((long long)(self->%s))" % slot
+            value = "[@((long long)(self->%s)) description]" % slot
         body.append("    [text appendFormat:@\"%s:%%@; \", %s];\n" % (prop["name"], value))
     body.append("    [text appendString:@\">\"];\n    return text;\n}\n")
     return "".join(body)
@@ -2429,8 +2406,6 @@ def emit_params(path, name, info, version, buckets, copying, counts, host=None, 
         for slot, kind in extra:
             body.append("    %s %s;\n" % (kind, slot))
         body.append("}\n@end\n\n")
-    if host and host.get("own_description"):
-        body.append(describe_helpers())
     body.append("@implementation %s\n\n" % name)
     seen = []
     for prop in own:

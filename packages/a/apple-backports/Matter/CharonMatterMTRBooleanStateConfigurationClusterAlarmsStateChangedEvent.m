@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRBooleanStateConfigurationClusterAlarmsStateChangedEvent
 
 @synthesize alarmsActive = _alarmsActive;
@@ -58,8 +47,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"alarmsActive:%@; ", charonDescribeObject(self->_alarmsActive)];
-    [text appendFormat:@"alarmsSuppressed:%@; ", charonDescribeObject(self->_alarmsSuppressed)];
+    [text appendFormat:@"alarmsActive:%@; ", [self->_alarmsActive description]];
+    [text appendFormat:@"alarmsSuppressed:%@; ", [self->_alarmsSuppressed description]];
     [text appendString:@">"];
     return text;
 }

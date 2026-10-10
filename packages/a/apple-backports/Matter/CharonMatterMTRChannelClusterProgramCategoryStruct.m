@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRChannelClusterProgramCategoryStruct
 
 @synthesize category = _category;
@@ -58,8 +47,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"category:%@; ", charonDescribeObject(self->_category)];
-    [text appendFormat:@"subCategory:%@; ", charonDescribeObject(self->_subCategory)];
+    [text appendFormat:@"category:%@; ", [self->_category description]];
+    [text appendFormat:@"subCategory:%@; ", [self->_subCategory description]];
     [text appendString:@">"];
     return text;
 }

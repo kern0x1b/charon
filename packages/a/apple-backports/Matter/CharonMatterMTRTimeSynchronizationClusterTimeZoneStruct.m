@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRTimeSynchronizationClusterTimeZoneStruct
 
 @synthesize offset = _offset;
@@ -61,9 +50,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"offset:%@; ", charonDescribeObject(self->_offset)];
-    [text appendFormat:@"validAt:%@; ", charonDescribeObject(self->_validAt)];
-    [text appendFormat:@"name:%@; ", charonDescribeObject(self->_name)];
+    [text appendFormat:@"offset:%@; ", [self->_offset description]];
+    [text appendFormat:@"validAt:%@; ", [self->_validAt description]];
+    [text appendFormat:@"name:%@; ", [self->_name description]];
     [text appendString:@">"];
     return text;
 }

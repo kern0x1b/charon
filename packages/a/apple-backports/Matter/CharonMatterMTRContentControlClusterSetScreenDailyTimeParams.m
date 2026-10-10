@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRContentControlClusterSetScreenDailyTimeParams
 
 @synthesize screenTime = _screenTime;
@@ -60,7 +49,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"screenTime:%@; ", charonDescribeObject(self->_screenTime)];
+    [text appendFormat:@"screenTime:%@; ", [self->_screenTime description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRJointFabricAdministratorClusterTransferAnchorResponseParams
 
 @synthesize statusCode = _statusCode;
@@ -56,7 +45,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"statusCode:%@; ", charonDescribeObject(self->_statusCode)];
+    [text appendFormat:@"statusCode:%@; ", [self->_statusCode description]];
     [text appendString:@">"];
     return text;
 }

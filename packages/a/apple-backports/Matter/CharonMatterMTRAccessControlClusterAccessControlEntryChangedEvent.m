@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRAccessControlClusterAccessControlEntryChangedEvent
 
 @synthesize adminNodeID = _adminNodeID;
@@ -65,11 +54,11 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"adminNodeID:%@; ", charonDescribeObject(self->_adminNodeID)];
-    [text appendFormat:@"adminPasscodeID:%@; ", charonDescribeObject(self->_adminPasscodeID)];
-    [text appendFormat:@"changeType:%@; ", charonDescribeObject(self->_changeType)];
-    [text appendFormat:@"latestValue:%@; ", charonDescribeObject(self->_latestValue)];
-    [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self->_fabricIndex)];
+    [text appendFormat:@"adminNodeID:%@; ", [self->_adminNodeID description]];
+    [text appendFormat:@"adminPasscodeID:%@; ", [self->_adminPasscodeID description]];
+    [text appendFormat:@"changeType:%@; ", [self->_changeType description]];
+    [text appendFormat:@"latestValue:%@; ", [self->_latestValue description]];
+    [text appendFormat:@"fabricIndex:%@; ", [self->_fabricIndex description]];
     [text appendString:@">"];
     return text;
 }

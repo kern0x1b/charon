@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRGeneralDiagnosticsClusterTestEventTriggerParams
 
 @synthesize enableKey = _enableKey;
@@ -63,8 +52,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"enableKey:%@; ", charonDescribeObject([self->_enableKey base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"eventTrigger:%@; ", charonDescribeObject(self->_eventTrigger)];
+    [text appendFormat:@"enableKey:%@; ", [[self->_enableKey base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"eventTrigger:%@; ", [self->_eventTrigger description]];
     [text appendString:@">"];
     return text;
 }

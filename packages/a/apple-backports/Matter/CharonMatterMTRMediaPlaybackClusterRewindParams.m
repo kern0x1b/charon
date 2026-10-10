@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRMediaPlaybackClusterRewindParams
 
 @synthesize audioAdvanceUnmuted = _audioAdvanceUnmuted;
@@ -59,7 +48,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"audioAdvanceUnmuted:%@; ", charonDescribeObject(self->_audioAdvanceUnmuted)];
+    [text appendFormat:@"audioAdvanceUnmuted:%@; ", [self->_audioAdvanceUnmuted description]];
     [text appendString:@">"];
     return text;
 }

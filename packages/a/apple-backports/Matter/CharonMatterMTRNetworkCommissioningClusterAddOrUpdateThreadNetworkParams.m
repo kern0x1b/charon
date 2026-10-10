@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRNetworkCommissioningClusterAddOrUpdateThreadNetworkParams
 
 @synthesize operationalDataset = _operationalDataset;
@@ -62,8 +51,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"operationalDataset:%@; ", charonDescribeObject([self->_operationalDataset base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"breadcrumb:%@; ", charonDescribeObject(self->_breadcrumb)];
+    [text appendFormat:@"operationalDataset:%@; ", [[self->_operationalDataset base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"breadcrumb:%@; ", [self->_breadcrumb description]];
     [text appendString:@">"];
     return text;
 }

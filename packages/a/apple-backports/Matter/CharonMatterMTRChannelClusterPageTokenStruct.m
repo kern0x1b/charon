@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRChannelClusterPageTokenStruct
 
 @synthesize limit = _limit;
@@ -59,9 +48,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"limit:%@; ", charonDescribeObject(self->_limit)];
-    [text appendFormat:@"after:%@; ", charonDescribeObject(self->_after)];
-    [text appendFormat:@"before:%@; ", charonDescribeObject(self->_before)];
+    [text appendFormat:@"limit:%@; ", [self->_limit description]];
+    [text appendFormat:@"after:%@; ", [self->_after description]];
+    [text appendFormat:@"before:%@; ", [self->_before description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTREnergyEVSEClusterEnergyTransferStartedEvent
 
 @synthesize sessionID = _sessionID;
@@ -64,10 +53,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"sessionID:%@; ", charonDescribeObject(self->_sessionID)];
-    [text appendFormat:@"state:%@; ", charonDescribeObject(self->_state)];
-    [text appendFormat:@"maximumCurrent:%@; ", charonDescribeObject(self->_maximumCurrent)];
-    [text appendFormat:@"maximumDischargeCurrent:%@; ", charonDescribeObject(self->_maximumDischargeCurrent)];
+    [text appendFormat:@"sessionID:%@; ", [self->_sessionID description]];
+    [text appendFormat:@"state:%@; ", [self->_state description]];
+    [text appendFormat:@"maximumCurrent:%@; ", [self->_maximumCurrent description]];
+    [text appendFormat:@"maximumDischargeCurrent:%@; ", [self->_maximumDischargeCurrent description]];
     [text appendString:@">"];
     return text;
 }

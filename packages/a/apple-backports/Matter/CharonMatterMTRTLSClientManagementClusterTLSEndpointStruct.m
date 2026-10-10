@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRTLSClientManagementClusterTLSEndpointStruct
 
 @synthesize endpointID = _endpointID;
@@ -73,13 +62,13 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"endpointID:%@; ", charonDescribeObject(self->_endpointID)];
-    [text appendFormat:@"hostname:%@; ", charonDescribeObject([self->_hostname base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"port:%@; ", charonDescribeObject(self->_port)];
-    [text appendFormat:@"caid:%@; ", charonDescribeObject(self->_caid)];
-    [text appendFormat:@"ccdid:%@; ", charonDescribeObject(self->_ccdid)];
-    [text appendFormat:@"referenceCount:%@; ", charonDescribeObject(self->_referenceCount)];
-    [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self->_fabricIndex)];
+    [text appendFormat:@"endpointID:%@; ", [self->_endpointID description]];
+    [text appendFormat:@"hostname:%@; ", [[self->_hostname base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"port:%@; ", [self->_port description]];
+    [text appendFormat:@"caid:%@; ", [self->_caid description]];
+    [text appendFormat:@"ccdid:%@; ", [self->_ccdid description]];
+    [text appendFormat:@"referenceCount:%@; ", [self->_referenceCount description]];
+    [text appendFormat:@"fabricIndex:%@; ", [self->_fabricIndex description]];
     [text appendString:@">"];
     return text;
 }

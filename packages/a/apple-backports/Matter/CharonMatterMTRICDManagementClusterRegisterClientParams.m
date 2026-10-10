@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRICDManagementClusterRegisterClientParams
 
 @synthesize checkInNodeID = _checkInNodeID;
@@ -71,11 +60,11 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"checkInNodeID:%@; ", charonDescribeObject(self->_checkInNodeID)];
-    [text appendFormat:@"monitoredSubject:%@; ", charonDescribeObject(self->_monitoredSubject)];
-    [text appendFormat:@"key:%@; ", charonDescribeObject([self->_key base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"verificationKey:%@; ", charonDescribeObject([self->_verificationKey base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"clientType:%@; ", charonDescribeObject(self->_clientType)];
+    [text appendFormat:@"checkInNodeID:%@; ", [self->_checkInNodeID description]];
+    [text appendFormat:@"monitoredSubject:%@; ", [self->_monitoredSubject description]];
+    [text appendFormat:@"key:%@; ", [[self->_key base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"verificationKey:%@; ", [[self->_verificationKey base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"clientType:%@; ", [self->_clientType description]];
     [text appendString:@">"];
     return text;
 }

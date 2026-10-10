@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRThreadBorderRouterManagementClusterSetPendingDatasetRequestParams
 
 @synthesize pendingDataset = _pendingDataset;
@@ -60,7 +49,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"pendingDataset:%@; ", charonDescribeObject([self->_pendingDataset base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"pendingDataset:%@; ", [[self->_pendingDataset base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

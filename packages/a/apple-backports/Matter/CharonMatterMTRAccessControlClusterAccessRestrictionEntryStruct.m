@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRAccessControlClusterAccessRestrictionEntryStruct
 
 @synthesize endpoint = _endpoint;
@@ -65,10 +54,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"endpoint:%@; ", charonDescribeObject(self->_endpoint)];
-    [text appendFormat:@"cluster:%@; ", charonDescribeObject(self->_cluster)];
-    [text appendFormat:@"restrictions:%@; ", charonDescribeObject(self->_restrictions)];
-    [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self->_fabricIndex)];
+    [text appendFormat:@"endpoint:%@; ", [self->_endpoint description]];
+    [text appendFormat:@"cluster:%@; ", [self->_cluster description]];
+    [text appendFormat:@"restrictions:%@; ", [self->_restrictions description]];
+    [text appendFormat:@"fabricIndex:%@; ", [self->_fabricIndex description]];
     [text appendString:@">"];
     return text;
 }

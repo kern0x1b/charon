@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTROTASoftwareUpdateProviderClusterQueryImageParams
 
 @synthesize vendorID = _vendorID;
@@ -101,14 +90,14 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"vendorID:%@; ", charonDescribeObject(self->_vendorID)];
-    [text appendFormat:@"productID:%@; ", charonDescribeObject(self->_productID)];
-    [text appendFormat:@"softwareVersion:%@; ", charonDescribeObject(self->_softwareVersion)];
-    [text appendFormat:@"protocolsSupported:%@; ", charonDescribeObject(self->_protocolsSupported)];
-    [text appendFormat:@"hardwareVersion:%@; ", charonDescribeObject(self->_hardwareVersion)];
-    [text appendFormat:@"location:%@; ", charonDescribeObject(self->_location)];
-    [text appendFormat:@"requestorCanConsent:%@; ", charonDescribeObject(self->_requestorCanConsent)];
-    [text appendFormat:@"metadataForProvider:%@; ", charonDescribeObject([self->_metadataForProvider base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"vendorID:%@; ", [self->_vendorID description]];
+    [text appendFormat:@"productID:%@; ", [self->_productID description]];
+    [text appendFormat:@"softwareVersion:%@; ", [self->_softwareVersion description]];
+    [text appendFormat:@"protocolsSupported:%@; ", [self->_protocolsSupported description]];
+    [text appendFormat:@"hardwareVersion:%@; ", [self->_hardwareVersion description]];
+    [text appendFormat:@"location:%@; ", [self->_location description]];
+    [text appendFormat:@"requestorCanConsent:%@; ", [self->_requestorCanConsent description]];
+    [text appendFormat:@"metadataForProvider:%@; ", [[self->_metadataForProvider base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRThermostatClusterScheduleStruct
 
 @synthesize scheduleHandle = _scheduleHandle;
@@ -67,12 +56,12 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"scheduleHandle:%@; ", charonDescribeObject([self->_scheduleHandle base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"systemMode:%@; ", charonDescribeObject(self->_systemMode)];
-    [text appendFormat:@"name:%@; ", charonDescribeObject(self->_name)];
-    [text appendFormat:@"presetHandle:%@; ", charonDescribeObject([self->_presetHandle base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"transitions:%@; ", charonDescribeObject(self->_transitions)];
-    [text appendFormat:@"builtIn:%@; ", charonDescribeObject(self->_builtIn)];
+    [text appendFormat:@"scheduleHandle:%@; ", [[self->_scheduleHandle base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"systemMode:%@; ", [self->_systemMode description]];
+    [text appendFormat:@"name:%@; ", [self->_name description]];
+    [text appendFormat:@"presetHandle:%@; ", [[self->_presetHandle base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"transitions:%@; ", [self->_transitions description]];
+    [text appendFormat:@"builtIn:%@; ", [self->_builtIn description]];
     [text appendString:@">"];
     return text;
 }

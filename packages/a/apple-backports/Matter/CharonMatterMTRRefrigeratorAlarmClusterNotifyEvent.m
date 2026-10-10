@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRRefrigeratorAlarmClusterNotifyEvent
 
 @synthesize active = _active;
@@ -65,10 +54,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"active:%@; ", charonDescribeObject(self->_active)];
-    [text appendFormat:@"inactive:%@; ", charonDescribeObject(self->_inactive)];
-    [text appendFormat:@"state:%@; ", charonDescribeObject(self->_state)];
-    [text appendFormat:@"mask:%@; ", charonDescribeObject(self->_mask)];
+    [text appendFormat:@"active:%@; ", [self->_active description]];
+    [text appendFormat:@"inactive:%@; ", [self->_inactive description]];
+    [text appendFormat:@"state:%@; ", [self->_state description]];
+    [text appendFormat:@"mask:%@; ", [self->_mask description]];
     [text appendString:@">"];
     return text;
 }

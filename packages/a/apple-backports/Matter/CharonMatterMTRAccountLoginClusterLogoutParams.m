@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRAccountLoginClusterLogoutParams
 
 @synthesize node = _node;
@@ -59,7 +48,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"node:%@; ", charonDescribeObject(self->_node)];
+    [text appendFormat:@"node:%@; ", [self->_node description]];
     [text appendString:@">"];
     return text;
 }

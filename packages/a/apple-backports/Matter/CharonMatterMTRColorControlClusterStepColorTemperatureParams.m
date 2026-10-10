@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRColorControlClusterStepColorTemperatureParams
 
 @synthesize stepMode = _stepMode;
@@ -78,13 +67,13 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"stepMode:%@; ", charonDescribeObject(self->_stepMode)];
-    [text appendFormat:@"stepSize:%@; ", charonDescribeObject(self->_stepSize)];
-    [text appendFormat:@"transitionTime:%@; ", charonDescribeObject(self->_transitionTime)];
-    [text appendFormat:@"colorTemperatureMinimumMireds:%@; ", charonDescribeObject(self->_colorTemperatureMinimumMireds)];
-    [text appendFormat:@"colorTemperatureMaximumMireds:%@; ", charonDescribeObject(self->_colorTemperatureMaximumMireds)];
-    [text appendFormat:@"optionsMask:%@; ", charonDescribeObject(self->_optionsMask)];
-    [text appendFormat:@"optionsOverride:%@; ", charonDescribeObject(self->_optionsOverride)];
+    [text appendFormat:@"stepMode:%@; ", [self->_stepMode description]];
+    [text appendFormat:@"stepSize:%@; ", [self->_stepSize description]];
+    [text appendFormat:@"transitionTime:%@; ", [self->_transitionTime description]];
+    [text appendFormat:@"colorTemperatureMinimumMireds:%@; ", [self->_colorTemperatureMinimumMireds description]];
+    [text appendFormat:@"colorTemperatureMaximumMireds:%@; ", [self->_colorTemperatureMaximumMireds description]];
+    [text appendFormat:@"optionsMask:%@; ", [self->_optionsMask description]];
+    [text appendFormat:@"optionsOverride:%@; ", [self->_optionsOverride description]];
     [text appendString:@">"];
     return text;
 }

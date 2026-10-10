@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRUnitTestingClusterTestComplexNullableOptionalRequestParams
 
 @synthesize nullableInt = _nullableInt;
@@ -81,18 +70,18 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"nullableInt:%@; ", charonDescribeObject(self->_nullableInt)];
-    [text appendFormat:@"optionalInt:%@; ", charonDescribeObject(self->_optionalInt)];
-    [text appendFormat:@"nullableOptionalInt:%@; ", charonDescribeObject(self->_nullableOptionalInt)];
-    [text appendFormat:@"nullableString:%@; ", charonDescribeObject(self->_nullableString)];
-    [text appendFormat:@"optionalString:%@; ", charonDescribeObject(self->_optionalString)];
-    [text appendFormat:@"nullableOptionalString:%@; ", charonDescribeObject(self->_nullableOptionalString)];
-    [text appendFormat:@"nullableStruct:%@; ", charonDescribeObject(self->_nullableStruct)];
-    [text appendFormat:@"optionalStruct:%@; ", charonDescribeObject(self->_optionalStruct)];
-    [text appendFormat:@"nullableOptionalStruct:%@; ", charonDescribeObject(self->_nullableOptionalStruct)];
-    [text appendFormat:@"nullableList:%@; ", charonDescribeObject(self->_nullableList)];
-    [text appendFormat:@"optionalList:%@; ", charonDescribeObject(self->_optionalList)];
-    [text appendFormat:@"nullableOptionalList:%@; ", charonDescribeObject(self->_nullableOptionalList)];
+    [text appendFormat:@"nullableInt:%@; ", [self->_nullableInt description]];
+    [text appendFormat:@"optionalInt:%@; ", [self->_optionalInt description]];
+    [text appendFormat:@"nullableOptionalInt:%@; ", [self->_nullableOptionalInt description]];
+    [text appendFormat:@"nullableString:%@; ", [self->_nullableString description]];
+    [text appendFormat:@"optionalString:%@; ", [self->_optionalString description]];
+    [text appendFormat:@"nullableOptionalString:%@; ", [self->_nullableOptionalString description]];
+    [text appendFormat:@"nullableStruct:%@; ", [self->_nullableStruct description]];
+    [text appendFormat:@"optionalStruct:%@; ", [self->_optionalStruct description]];
+    [text appendFormat:@"nullableOptionalStruct:%@; ", [self->_nullableOptionalStruct description]];
+    [text appendFormat:@"nullableList:%@; ", [self->_nullableList description]];
+    [text appendFormat:@"optionalList:%@; ", [self->_optionalList description]];
+    [text appendFormat:@"nullableOptionalList:%@; ", [self->_nullableOptionalList description]];
     [text appendString:@">"];
     return text;
 }

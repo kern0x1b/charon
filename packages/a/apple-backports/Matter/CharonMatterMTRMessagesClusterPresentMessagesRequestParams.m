@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRMessagesClusterPresentMessagesRequestParams
 
 @synthesize messageID = _messageID;
@@ -75,13 +64,13 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"messageID:%@; ", charonDescribeObject([self->_messageID base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"priority:%@; ", charonDescribeObject(self->_priority)];
-    [text appendFormat:@"messageControl:%@; ", charonDescribeObject(self->_messageControl)];
-    [text appendFormat:@"startTime:%@; ", charonDescribeObject(self->_startTime)];
-    [text appendFormat:@"duration:%@; ", charonDescribeObject(self->_duration)];
-    [text appendFormat:@"messageText:%@; ", charonDescribeObject(self->_messageText)];
-    [text appendFormat:@"responses:%@; ", charonDescribeObject(self->_responses)];
+    [text appendFormat:@"messageID:%@; ", [[self->_messageID base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"priority:%@; ", [self->_priority description]];
+    [text appendFormat:@"messageControl:%@; ", [self->_messageControl description]];
+    [text appendFormat:@"startTime:%@; ", [self->_startTime description]];
+    [text appendFormat:@"duration:%@; ", [self->_duration description]];
+    [text appendFormat:@"messageText:%@; ", [self->_messageText description]];
+    [text appendFormat:@"responses:%@; ", [self->_responses description]];
     [text appendString:@">"];
     return text;
 }

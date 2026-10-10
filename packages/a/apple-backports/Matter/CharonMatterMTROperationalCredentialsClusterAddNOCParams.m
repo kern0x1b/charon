@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTROperationalCredentialsClusterAddNOCParams
 
 @synthesize nocValue = _nocValue;
@@ -71,11 +60,11 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"nocValue:%@; ", charonDescribeObject([self->_nocValue base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"icacValue:%@; ", charonDescribeObject([self->_icacValue base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"ipkValue:%@; ", charonDescribeObject([self->_ipkValue base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"caseAdminSubject:%@; ", charonDescribeObject(self->_caseAdminSubject)];
-    [text appendFormat:@"adminVendorId:%@; ", charonDescribeObject(self->_adminVendorId)];
+    [text appendFormat:@"nocValue:%@; ", [[self->_nocValue base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"icacValue:%@; ", [[self->_icacValue base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"ipkValue:%@; ", [[self->_ipkValue base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"caseAdminSubject:%@; ", [self->_caseAdminSubject description]];
+    [text appendFormat:@"adminVendorId:%@; ", [self->_adminVendorId description]];
     [text appendString:@">"];
     return text;
 }

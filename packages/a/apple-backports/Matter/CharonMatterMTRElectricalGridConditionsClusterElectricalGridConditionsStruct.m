@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRElectricalGridConditionsClusterElectricalGridConditionsStruct
 
 @synthesize periodStart = _periodStart;
@@ -70,12 +59,12 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"periodStart:%@; ", charonDescribeObject(self->_periodStart)];
-    [text appendFormat:@"periodEnd:%@; ", charonDescribeObject(self->_periodEnd)];
-    [text appendFormat:@"gridCarbonIntensity:%@; ", charonDescribeObject(self->_gridCarbonIntensity)];
-    [text appendFormat:@"gridCarbonLevel:%@; ", charonDescribeObject(self->_gridCarbonLevel)];
-    [text appendFormat:@"localCarbonIntensity:%@; ", charonDescribeObject(self->_localCarbonIntensity)];
-    [text appendFormat:@"localCarbonLevel:%@; ", charonDescribeObject(self->_localCarbonLevel)];
+    [text appendFormat:@"periodStart:%@; ", [self->_periodStart description]];
+    [text appendFormat:@"periodEnd:%@; ", [self->_periodEnd description]];
+    [text appendFormat:@"gridCarbonIntensity:%@; ", [self->_gridCarbonIntensity description]];
+    [text appendFormat:@"gridCarbonLevel:%@; ", [self->_gridCarbonLevel description]];
+    [text appendFormat:@"localCarbonIntensity:%@; ", [self->_localCarbonIntensity description]];
+    [text appendFormat:@"localCarbonLevel:%@; ", [self->_localCarbonLevel description]];
     [text appendString:@">"];
     return text;
 }

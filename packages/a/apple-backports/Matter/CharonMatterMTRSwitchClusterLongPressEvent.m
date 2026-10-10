@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRSwitchClusterLongPressEvent
 
 @synthesize newPosition = _newPosition;
@@ -56,7 +45,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"newPosition:%@; ", charonDescribeObject(self->_newPosition)];
+    [text appendFormat:@"newPosition:%@; ", [self->_newPosition description]];
     [text appendString:@">"];
     return text;
 }

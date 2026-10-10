@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTREnergyPreferenceClusterBalanceStruct
 
 @synthesize step = _step;
@@ -58,8 +47,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"step:%@; ", charonDescribeObject(self->_step)];
-    [text appendFormat:@"label:%@; ", charonDescribeObject(self->_label)];
+    [text appendFormat:@"step:%@; ", [self->_step description]];
+    [text appendFormat:@"label:%@; ", [self->_label description]];
     [text appendString:@">"];
     return text;
 }

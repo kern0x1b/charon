@@ -27,17 +27,6 @@
 }
 @end
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRGroupKeyManagementClusterKeySetReadAllIndicesParams
 
 @synthesize timedInvokeTimeoutMs = _timedInvokeTimeoutMs;

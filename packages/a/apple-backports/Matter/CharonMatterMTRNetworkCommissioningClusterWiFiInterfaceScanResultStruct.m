@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRNetworkCommissioningClusterWiFiInterfaceScanResultStruct
 
 @synthesize security = _security;
@@ -71,12 +60,12 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"security:%@; ", charonDescribeObject(self->_security)];
-    [text appendFormat:@"ssid:%@; ", charonDescribeObject([self->_ssid base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"bssid:%@; ", charonDescribeObject([self->_bssid base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"channel:%@; ", charonDescribeObject(self->_channel)];
-    [text appendFormat:@"wiFiBand:%@; ", charonDescribeObject(self->_wiFiBand)];
-    [text appendFormat:@"rssi:%@; ", charonDescribeObject(self->_rssi)];
+    [text appendFormat:@"security:%@; ", [self->_security description]];
+    [text appendFormat:@"ssid:%@; ", [[self->_ssid base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"bssid:%@; ", [[self->_bssid base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"channel:%@; ", [self->_channel description]];
+    [text appendFormat:@"wiFiBand:%@; ", [self->_wiFiBand description]];
+    [text appendFormat:@"rssi:%@; ", [self->_rssi description]];
     [text appendString:@">"];
     return text;
 }

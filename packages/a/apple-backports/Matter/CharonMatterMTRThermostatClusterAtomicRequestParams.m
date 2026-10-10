@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRThermostatClusterAtomicRequestParams
 
 @synthesize requestType = _requestType;
@@ -65,9 +54,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"requestType:%@; ", charonDescribeObject(self->_requestType)];
-    [text appendFormat:@"attributeRequests:%@; ", charonDescribeObject(self->_attributeRequests)];
-    [text appendFormat:@"timeout:%@; ", charonDescribeObject(self->_timeout)];
+    [text appendFormat:@"requestType:%@; ", [self->_requestType description]];
+    [text appendFormat:@"attributeRequests:%@; ", [self->_attributeRequests description]];
+    [text appendFormat:@"timeout:%@; ", [self->_timeout description]];
     [text appendString:@">"];
     return text;
 }

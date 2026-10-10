@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRChannelClusterRecordProgramParams
 
 @synthesize programIdentifier = _programIdentifier;
@@ -69,10 +58,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"programIdentifier:%@; ", charonDescribeObject(self->_programIdentifier)];
-    [text appendFormat:@"shouldRecordSeries:%@; ", charonDescribeObject(self->_shouldRecordSeries)];
-    [text appendFormat:@"externalIDList:%@; ", charonDescribeObject(self->_externalIDList)];
-    [text appendFormat:@"data:%@; ", charonDescribeObject([self->_data base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"programIdentifier:%@; ", [self->_programIdentifier description]];
+    [text appendFormat:@"shouldRecordSeries:%@; ", [self->_shouldRecordSeries description]];
+    [text appendFormat:@"externalIDList:%@; ", [self->_externalIDList description]];
+    [text appendFormat:@"data:%@; ", [[self->_data base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

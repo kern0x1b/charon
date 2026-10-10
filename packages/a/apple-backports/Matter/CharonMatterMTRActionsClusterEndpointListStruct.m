@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRActionsClusterEndpointListStruct
 
 @synthesize endpointListID = _endpointListID;
@@ -65,10 +54,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"endpointListID:%@; ", charonDescribeObject(self->_endpointListID)];
-    [text appendFormat:@"name:%@; ", charonDescribeObject(self->_name)];
-    [text appendFormat:@"type:%@; ", charonDescribeObject(self->_type)];
-    [text appendFormat:@"endpoints:%@; ", charonDescribeObject(self->_endpoints)];
+    [text appendFormat:@"endpointListID:%@; ", [self->_endpointListID description]];
+    [text appendFormat:@"name:%@; ", [self->_name description]];
+    [text appendFormat:@"type:%@; ", [self->_type description]];
+    [text appendFormat:@"endpoints:%@; ", [self->_endpoints description]];
     [text appendString:@">"];
     return text;
 }

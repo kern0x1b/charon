@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRThreadNetworkDiagnosticsClusterNeighborTableStruct
 
 @synthesize extAddress = _extAddress;
@@ -93,20 +82,20 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"extAddress:%@; ", charonDescribeObject(self->_extAddress)];
-    [text appendFormat:@"age:%@; ", charonDescribeObject(self->_age)];
-    [text appendFormat:@"rloc16:%@; ", charonDescribeObject(self->_rloc16)];
-    [text appendFormat:@"linkFrameCounter:%@; ", charonDescribeObject(self->_linkFrameCounter)];
-    [text appendFormat:@"mleFrameCounter:%@; ", charonDescribeObject(self->_mleFrameCounter)];
-    [text appendFormat:@"lqi:%@; ", charonDescribeObject(self->_lqi)];
-    [text appendFormat:@"averageRssi:%@; ", charonDescribeObject(self->_averageRssi)];
-    [text appendFormat:@"lastRssi:%@; ", charonDescribeObject(self->_lastRssi)];
-    [text appendFormat:@"frameErrorRate:%@; ", charonDescribeObject(self->_frameErrorRate)];
-    [text appendFormat:@"messageErrorRate:%@; ", charonDescribeObject(self->_messageErrorRate)];
-    [text appendFormat:@"rxOnWhenIdle:%@; ", charonDescribeObject(self->_rxOnWhenIdle)];
-    [text appendFormat:@"fullThreadDevice:%@; ", charonDescribeObject(self->_fullThreadDevice)];
-    [text appendFormat:@"fullNetworkData:%@; ", charonDescribeObject(self->_fullNetworkData)];
-    [text appendFormat:@"isChild:%@; ", charonDescribeObject(self->_isChild)];
+    [text appendFormat:@"extAddress:%@; ", [self->_extAddress description]];
+    [text appendFormat:@"age:%@; ", [self->_age description]];
+    [text appendFormat:@"rloc16:%@; ", [self->_rloc16 description]];
+    [text appendFormat:@"linkFrameCounter:%@; ", [self->_linkFrameCounter description]];
+    [text appendFormat:@"mleFrameCounter:%@; ", [self->_mleFrameCounter description]];
+    [text appendFormat:@"lqi:%@; ", [self->_lqi description]];
+    [text appendFormat:@"averageRssi:%@; ", [self->_averageRssi description]];
+    [text appendFormat:@"lastRssi:%@; ", [self->_lastRssi description]];
+    [text appendFormat:@"frameErrorRate:%@; ", [self->_frameErrorRate description]];
+    [text appendFormat:@"messageErrorRate:%@; ", [self->_messageErrorRate description]];
+    [text appendFormat:@"rxOnWhenIdle:%@; ", [self->_rxOnWhenIdle description]];
+    [text appendFormat:@"fullThreadDevice:%@; ", [self->_fullThreadDevice description]];
+    [text appendFormat:@"fullNetworkData:%@; ", [self->_fullNetworkData description]];
+    [text appendFormat:@"isChild:%@; ", [self->_isChild description]];
     [text appendString:@">"];
     return text;
 }

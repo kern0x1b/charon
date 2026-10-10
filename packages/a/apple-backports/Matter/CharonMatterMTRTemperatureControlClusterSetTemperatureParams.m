@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRTemperatureControlClusterSetTemperatureParams
 
 @synthesize targetTemperature = _targetTemperature;
@@ -61,8 +50,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"targetTemperature:%@; ", charonDescribeObject(self->_targetTemperature)];
-    [text appendFormat:@"targetTemperatureLevel:%@; ", charonDescribeObject(self->_targetTemperatureLevel)];
+    [text appendFormat:@"targetTemperature:%@; ", [self->_targetTemperature description]];
+    [text appendFormat:@"targetTemperatureLevel:%@; ", [self->_targetTemperatureLevel description]];
     [text appendString:@">"];
     return text;
 }

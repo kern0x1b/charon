@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRCommodityMeteringClusterMeteredQuantityStruct
 
 @synthesize tariffComponentIDs = _tariffComponentIDs;
@@ -59,8 +48,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"tariffComponentIDs:%@; ", charonDescribeObject(self->_tariffComponentIDs)];
-    [text appendFormat:@"quantity:%@; ", charonDescribeObject(self->_quantity)];
+    [text appendFormat:@"tariffComponentIDs:%@; ", [self->_tariffComponentIDs description]];
+    [text appendFormat:@"quantity:%@; ", [self->_quantity description]];
     [text appendString:@">"];
     return text;
 }

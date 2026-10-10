@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRChannelClusterChangeChannelByNumberParams
 
 @synthesize majorNumber = _majorNumber;
@@ -63,8 +52,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"majorNumber:%@; ", charonDescribeObject(self->_majorNumber)];
-    [text appendFormat:@"minorNumber:%@; ", charonDescribeObject(self->_minorNumber)];
+    [text appendFormat:@"majorNumber:%@; ", [self->_majorNumber description]];
+    [text appendFormat:@"minorNumber:%@; ", [self->_minorNumber description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRElectricalEnergyMeasurementClusterEnergyMeasurementStruct
 
 @synthesize energy = _energy;
@@ -68,13 +57,13 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"energy:%@; ", charonDescribeObject(self->_energy)];
-    [text appendFormat:@"startTimestamp:%@; ", charonDescribeObject(self->_startTimestamp)];
-    [text appendFormat:@"endTimestamp:%@; ", charonDescribeObject(self->_endTimestamp)];
-    [text appendFormat:@"startSystime:%@; ", charonDescribeObject(self->_startSystime)];
-    [text appendFormat:@"endSystime:%@; ", charonDescribeObject(self->_endSystime)];
-    [text appendFormat:@"apparentEnergy:%@; ", charonDescribeObject(self->_apparentEnergy)];
-    [text appendFormat:@"reactiveEnergy:%@; ", charonDescribeObject(self->_reactiveEnergy)];
+    [text appendFormat:@"energy:%@; ", [self->_energy description]];
+    [text appendFormat:@"startTimestamp:%@; ", [self->_startTimestamp description]];
+    [text appendFormat:@"endTimestamp:%@; ", [self->_endTimestamp description]];
+    [text appendFormat:@"startSystime:%@; ", [self->_startSystime description]];
+    [text appendFormat:@"endSystime:%@; ", [self->_endSystime description]];
+    [text appendFormat:@"apparentEnergy:%@; ", [self->_apparentEnergy description]];
+    [text appendFormat:@"reactiveEnergy:%@; ", [self->_reactiveEnergy description]];
     [text appendString:@">"];
     return text;
 }

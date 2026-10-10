@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDataTypeMeasurementAccuracyRangeStruct
 
 @synthesize rangeMin = _rangeMin;
@@ -71,14 +60,14 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"rangeMin:%@; ", charonDescribeObject(self->_rangeMin)];
-    [text appendFormat:@"rangeMax:%@; ", charonDescribeObject(self->_rangeMax)];
-    [text appendFormat:@"percentMax:%@; ", charonDescribeObject(self->_percentMax)];
-    [text appendFormat:@"percentMin:%@; ", charonDescribeObject(self->_percentMin)];
-    [text appendFormat:@"percentTypical:%@; ", charonDescribeObject(self->_percentTypical)];
-    [text appendFormat:@"fixedMax:%@; ", charonDescribeObject(self->_fixedMax)];
-    [text appendFormat:@"fixedMin:%@; ", charonDescribeObject(self->_fixedMin)];
-    [text appendFormat:@"fixedTypical:%@; ", charonDescribeObject(self->_fixedTypical)];
+    [text appendFormat:@"rangeMin:%@; ", [self->_rangeMin description]];
+    [text appendFormat:@"rangeMax:%@; ", [self->_rangeMax description]];
+    [text appendFormat:@"percentMax:%@; ", [self->_percentMax description]];
+    [text appendFormat:@"percentMin:%@; ", [self->_percentMin description]];
+    [text appendFormat:@"percentTypical:%@; ", [self->_percentTypical description]];
+    [text appendFormat:@"fixedMax:%@; ", [self->_fixedMax description]];
+    [text appendFormat:@"fixedMin:%@; ", [self->_fixedMin description]];
+    [text appendFormat:@"fixedTypical:%@; ", [self->_fixedTypical description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRAdministratorCommissioningClusterOpenCommissioningWindowParams
 
 @synthesize commissioningTimeout = _commissioningTimeout;
@@ -86,11 +75,11 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"commissioningTimeout:%@; ", charonDescribeObject(self->_commissioningTimeout)];
-    [text appendFormat:@"pakePasscodeVerifier:%@; ", charonDescribeObject([self->_pakePasscodeVerifier base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"discriminator:%@; ", charonDescribeObject(self->_discriminator)];
-    [text appendFormat:@"iterations:%@; ", charonDescribeObject(self->_iterations)];
-    [text appendFormat:@"salt:%@; ", charonDescribeObject([self->_salt base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"commissioningTimeout:%@; ", [self->_commissioningTimeout description]];
+    [text appendFormat:@"pakePasscodeVerifier:%@; ", [[self->_pakePasscodeVerifier base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"discriminator:%@; ", [self->_discriminator description]];
+    [text appendFormat:@"iterations:%@; ", [self->_iterations description]];
+    [text appendFormat:@"salt:%@; ", [[self->_salt base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

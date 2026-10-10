@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRJointFabricDatastoreClusterDatastoreStatusEntryStruct
 
 @synthesize state = _state;
@@ -62,9 +51,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"state:%@; ", charonDescribeObject(self->_state)];
-    [text appendFormat:@"updateTimestamp:%@; ", charonDescribeObject(self->_updateTimestamp)];
-    [text appendFormat:@"failureCode:%@; ", charonDescribeObject(self->_failureCode)];
+    [text appendFormat:@"state:%@; ", [self->_state description]];
+    [text appendFormat:@"updateTimestamp:%@; ", [self->_updateTimestamp description]];
+    [text appendFormat:@"failureCode:%@; ", [self->_failureCode description]];
     [text appendString:@">"];
     return text;
 }

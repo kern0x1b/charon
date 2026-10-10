@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDeviceEnergyManagementClusterConstraintsStruct
 
 @synthesize startTime = _startTime;
@@ -65,11 +54,11 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"startTime:%@; ", charonDescribeObject(self->_startTime)];
-    [text appendFormat:@"duration:%@; ", charonDescribeObject(self->_duration)];
-    [text appendFormat:@"nominalPower:%@; ", charonDescribeObject(self->_nominalPower)];
-    [text appendFormat:@"maximumEnergy:%@; ", charonDescribeObject(self->_maximumEnergy)];
-    [text appendFormat:@"loadControl:%@; ", charonDescribeObject(self->_loadControl)];
+    [text appendFormat:@"startTime:%@; ", [self->_startTime description]];
+    [text appendFormat:@"duration:%@; ", [self->_duration description]];
+    [text appendFormat:@"nominalPower:%@; ", [self->_nominalPower description]];
+    [text appendFormat:@"maximumEnergy:%@; ", [self->_maximumEnergy description]];
+    [text appendFormat:@"loadControl:%@; ", [self->_loadControl description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTROccupancySensingClusterHoldTimeLimitsStruct
 
 @synthesize holdTimeMin = _holdTimeMin;
@@ -62,9 +51,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"holdTimeMin:%@; ", charonDescribeObject(self->_holdTimeMin)];
-    [text appendFormat:@"holdTimeMax:%@; ", charonDescribeObject(self->_holdTimeMax)];
-    [text appendFormat:@"holdTimeDefault:%@; ", charonDescribeObject(self->_holdTimeDefault)];
+    [text appendFormat:@"holdTimeMin:%@; ", [self->_holdTimeMin description]];
+    [text appendFormat:@"holdTimeMax:%@; ", [self->_holdTimeMax description]];
+    [text appendFormat:@"holdTimeDefault:%@; ", [self->_holdTimeDefault description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRModeSelectClusterModeOptionStruct
 
 @synthesize label = _label;
@@ -62,9 +51,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"label:%@; ", charonDescribeObject(self->_label)];
-    [text appendFormat:@"mode:%@; ", charonDescribeObject(self->_mode)];
-    [text appendFormat:@"semanticTags:%@; ", charonDescribeObject(self->_semanticTags)];
+    [text appendFormat:@"label:%@; ", [self->_label description]];
+    [text appendFormat:@"mode:%@; ", [self->_mode description]];
+    [text appendFormat:@"semanticTags:%@; ", [self->_semanticTags description]];
     [text appendString:@">"];
     return text;
 }

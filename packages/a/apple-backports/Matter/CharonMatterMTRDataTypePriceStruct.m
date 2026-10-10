@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDataTypePriceStruct
 
 @synthesize amount = _amount;
@@ -59,8 +48,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"amount:%@; ", charonDescribeObject(self->_amount)];
-    [text appendFormat:@"currency:%@; ", charonDescribeObject(self->_currency)];
+    [text appendFormat:@"amount:%@; ", [self->_amount description]];
+    [text appendFormat:@"currency:%@; ", [self->_currency description]];
     [text appendString:@">"];
     return text;
 }

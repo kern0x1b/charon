@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRCommodityPriceClusterCommodityPriceStruct
 
 @synthesize periodStart = _periodStart;
@@ -66,12 +55,12 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"periodStart:%@; ", charonDescribeObject(self->_periodStart)];
-    [text appendFormat:@"periodEnd:%@; ", charonDescribeObject(self->_periodEnd)];
-    [text appendFormat:@"price:%@; ", charonDescribeObject(self->_price)];
-    [text appendFormat:@"priceLevel:%@; ", charonDescribeObject(self->_priceLevel)];
-    [text appendFormat:@"descriptionString:%@; ", charonDescribeObject(self->_descriptionString)];
-    [text appendFormat:@"components:%@; ", charonDescribeObject(self->_components)];
+    [text appendFormat:@"periodStart:%@; ", [self->_periodStart description]];
+    [text appendFormat:@"periodEnd:%@; ", [self->_periodEnd description]];
+    [text appendFormat:@"price:%@; ", [self->_price description]];
+    [text appendFormat:@"priceLevel:%@; ", [self->_priceLevel description]];
+    [text appendFormat:@"descriptionString:%@; ", [self->_descriptionString description]];
+    [text appendFormat:@"components:%@; ", [self->_components description]];
     [text appendString:@">"];
     return text;
 }

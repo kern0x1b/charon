@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRThermostatClusterLocalTemperatureChangeEvent
 
 @synthesize currentLocalTemperature = _currentLocalTemperature;
@@ -55,7 +44,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"currentLocalTemperature:%@; ", charonDescribeObject(self->_currentLocalTemperature)];
+    [text appendFormat:@"currentLocalTemperature:%@; ", [self->_currentLocalTemperature description]];
     [text appendString:@">"];
     return text;
 }

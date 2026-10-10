@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRCommodityTariffClusterTariffPriceStruct
 
 @synthesize priceType = _priceType;
@@ -60,9 +49,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"priceType:%@; ", charonDescribeObject(self->_priceType)];
-    [text appendFormat:@"price:%@; ", charonDescribeObject(self->_price)];
-    [text appendFormat:@"priceLevel:%@; ", charonDescribeObject(self->_priceLevel)];
+    [text appendFormat:@"priceType:%@; ", [self->_priceType description]];
+    [text appendFormat:@"price:%@; ", [self->_price description]];
+    [text appendFormat:@"priceLevel:%@; ", [self->_priceLevel description]];
     [text appendString:@">"];
     return text;
 }

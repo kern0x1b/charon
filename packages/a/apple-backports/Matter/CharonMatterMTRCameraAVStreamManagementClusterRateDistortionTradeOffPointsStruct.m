@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRCameraAVStreamManagementClusterRateDistortionTradeOffPointsStruct
 
 @synthesize codec = _codec;
@@ -62,9 +51,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"codec:%@; ", charonDescribeObject(self->_codec)];
-    [text appendFormat:@"resolution:%@; ", charonDescribeObject(self->_resolution)];
-    [text appendFormat:@"minBitRate:%@; ", charonDescribeObject(self->_minBitRate)];
+    [text appendFormat:@"codec:%@; ", [self->_codec description]];
+    [text appendFormat:@"resolution:%@; ", [self->_resolution description]];
+    [text appendFormat:@"minBitRate:%@; ", [self->_minBitRate description]];
     [text appendString:@">"];
     return text;
 }

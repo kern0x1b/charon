@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDoorLockClusterClearHolidayScheduleParams
 
 @synthesize holidayIndex = _holidayIndex;
@@ -60,7 +49,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"holidayIndex:%@; ", charonDescribeObject(self->_holidayIndex)];
+    [text appendFormat:@"holidayIndex:%@; ", [self->_holidayIndex description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRPushAVStreamTransportClusterTransportTriggerOptionsStruct
 
 @synthesize triggerType = _triggerType;
@@ -64,11 +53,11 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"triggerType:%@; ", charonDescribeObject(self->_triggerType)];
-    [text appendFormat:@"motionZones:%@; ", charonDescribeObject(self->_motionZones)];
-    [text appendFormat:@"motionSensitivity:%@; ", charonDescribeObject(self->_motionSensitivity)];
-    [text appendFormat:@"motionTimeControl:%@; ", charonDescribeObject(self->_motionTimeControl)];
-    [text appendFormat:@"maxPreRollLen:%@; ", charonDescribeObject(self->_maxPreRollLen)];
+    [text appendFormat:@"triggerType:%@; ", [self->_triggerType description]];
+    [text appendFormat:@"motionZones:%@; ", [self->_motionZones description]];
+    [text appendFormat:@"motionSensitivity:%@; ", [self->_motionSensitivity description]];
+    [text appendFormat:@"motionTimeControl:%@; ", [self->_motionTimeControl description]];
+    [text appendFormat:@"maxPreRollLen:%@; ", [self->_maxPreRollLen description]];
     [text appendString:@">"];
     return text;
 }

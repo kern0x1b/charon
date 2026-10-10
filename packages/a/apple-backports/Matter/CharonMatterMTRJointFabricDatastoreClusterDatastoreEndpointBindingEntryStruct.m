@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRJointFabricDatastoreClusterDatastoreEndpointBindingEntryStruct
 
 @synthesize nodeID = _nodeID;
@@ -68,11 +57,11 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"nodeID:%@; ", charonDescribeObject(self->_nodeID)];
-    [text appendFormat:@"endpointID:%@; ", charonDescribeObject(self->_endpointID)];
-    [text appendFormat:@"listID:%@; ", charonDescribeObject(self->_listID)];
-    [text appendFormat:@"binding:%@; ", charonDescribeObject(self->_binding)];
-    [text appendFormat:@"statusEntry:%@; ", charonDescribeObject(self->_statusEntry)];
+    [text appendFormat:@"nodeID:%@; ", [self->_nodeID description]];
+    [text appendFormat:@"endpointID:%@; ", [self->_endpointID description]];
+    [text appendFormat:@"listID:%@; ", [self->_listID description]];
+    [text appendFormat:@"binding:%@; ", [self->_binding description]];
+    [text appendFormat:@"statusEntry:%@; ", [self->_statusEntry description]];
     [text appendString:@">"];
     return text;
 }

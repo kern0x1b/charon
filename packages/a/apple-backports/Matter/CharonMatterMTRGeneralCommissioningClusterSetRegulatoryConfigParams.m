@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRGeneralCommissioningClusterSetRegulatoryConfigParams
 
 @synthesize newRegulatoryConfig = _newRegulatoryConfig;
@@ -66,9 +55,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"newRegulatoryConfig:%@; ", charonDescribeObject(self->_newRegulatoryConfig)];
-    [text appendFormat:@"countryCode:%@; ", charonDescribeObject(self->_countryCode)];
-    [text appendFormat:@"breadcrumb:%@; ", charonDescribeObject(self->_breadcrumb)];
+    [text appendFormat:@"newRegulatoryConfig:%@; ", [self->_newRegulatoryConfig description]];
+    [text appendFormat:@"countryCode:%@; ", [self->_countryCode description]];
+    [text appendFormat:@"breadcrumb:%@; ", [self->_breadcrumb description]];
     [text appendString:@">"];
     return text;
 }

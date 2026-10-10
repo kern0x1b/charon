@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRSoftwareDiagnosticsClusterThreadMetricsStruct
 
 @synthesize id = _id;
@@ -64,11 +53,11 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"id:%@; ", charonDescribeObject(self->_id)];
-    [text appendFormat:@"name:%@; ", charonDescribeObject(self->_name)];
-    [text appendFormat:@"stackFreeCurrent:%@; ", charonDescribeObject(self->_stackFreeCurrent)];
-    [text appendFormat:@"stackFreeMinimum:%@; ", charonDescribeObject(self->_stackFreeMinimum)];
-    [text appendFormat:@"stackSize:%@; ", charonDescribeObject(self->_stackSize)];
+    [text appendFormat:@"id:%@; ", [self->_id description]];
+    [text appendFormat:@"name:%@; ", [self->_name description]];
+    [text appendFormat:@"stackFreeCurrent:%@; ", [self->_stackFreeCurrent description]];
+    [text appendFormat:@"stackFreeMinimum:%@; ", [self->_stackFreeMinimum description]];
+    [text appendFormat:@"stackSize:%@; ", [self->_stackSize description]];
     [text appendString:@">"];
     return text;
 }

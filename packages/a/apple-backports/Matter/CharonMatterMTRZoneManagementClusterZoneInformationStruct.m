@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRZoneManagementClusterZoneInformationStruct
 
 @synthesize zoneID = _zoneID;
@@ -64,10 +53,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"zoneID:%@; ", charonDescribeObject(self->_zoneID)];
-    [text appendFormat:@"zoneType:%@; ", charonDescribeObject(self->_zoneType)];
-    [text appendFormat:@"zoneSource:%@; ", charonDescribeObject(self->_zoneSource)];
-    [text appendFormat:@"twoDCartesianZone:%@; ", charonDescribeObject(self->_twoDCartesianZone)];
+    [text appendFormat:@"zoneID:%@; ", [self->_zoneID description]];
+    [text appendFormat:@"zoneType:%@; ", [self->_zoneType description]];
+    [text appendFormat:@"zoneSource:%@; ", [self->_zoneSource description]];
+    [text appendFormat:@"twoDCartesianZone:%@; ", [self->_twoDCartesianZone description]];
     [text appendString:@">"];
     return text;
 }

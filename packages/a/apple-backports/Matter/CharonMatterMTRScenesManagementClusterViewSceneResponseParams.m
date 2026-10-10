@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRScenesManagementClusterViewSceneResponseParams
 
 @synthesize status = _status;
@@ -68,12 +57,12 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"status:%@; ", charonDescribeObject(self->_status)];
-    [text appendFormat:@"groupID:%@; ", charonDescribeObject(self->_groupID)];
-    [text appendFormat:@"sceneID:%@; ", charonDescribeObject(self->_sceneID)];
-    [text appendFormat:@"transitionTime:%@; ", charonDescribeObject(self->_transitionTime)];
-    [text appendFormat:@"sceneName:%@; ", charonDescribeObject(self->_sceneName)];
-    [text appendFormat:@"extensionFieldSetStructs:%@; ", charonDescribeObject(self->_extensionFieldSetStructs)];
+    [text appendFormat:@"status:%@; ", [self->_status description]];
+    [text appendFormat:@"groupID:%@; ", [self->_groupID description]];
+    [text appendFormat:@"sceneID:%@; ", [self->_sceneID description]];
+    [text appendFormat:@"transitionTime:%@; ", [self->_transitionTime description]];
+    [text appendFormat:@"sceneName:%@; ", [self->_sceneName description]];
+    [text appendFormat:@"extensionFieldSetStructs:%@; ", [self->_extensionFieldSetStructs description]];
     [text appendString:@">"];
     return text;
 }

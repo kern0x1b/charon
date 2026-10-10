@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRBridgedDeviceBasicInformationClusterStartUpEvent
 
 @synthesize softwareVersion = _softwareVersion;
@@ -56,7 +45,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"softwareVersion:%@; ", charonDescribeObject(self->_softwareVersion)];
+    [text appendFormat:@"softwareVersion:%@; ", [self->_softwareVersion description]];
     [text appendString:@">"];
     return text;
 }

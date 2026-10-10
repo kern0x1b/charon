@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRThreadNetworkDirectoryClusterRemoveNetworkParams
 
 @synthesize extendedPanID = _extendedPanID;
@@ -60,7 +49,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"extendedPanID:%@; ", charonDescribeObject([self->_extendedPanID base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"extendedPanID:%@; ", [[self->_extendedPanID base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

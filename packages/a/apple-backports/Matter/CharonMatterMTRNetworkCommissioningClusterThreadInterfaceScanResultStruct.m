@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRNetworkCommissioningClusterThreadInterfaceScanResultStruct
 
 @synthesize panId = _panId;
@@ -77,14 +66,14 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"panId:%@; ", charonDescribeObject(self->_panId)];
-    [text appendFormat:@"extendedPanId:%@; ", charonDescribeObject(self->_extendedPanId)];
-    [text appendFormat:@"networkName:%@; ", charonDescribeObject(self->_networkName)];
-    [text appendFormat:@"channel:%@; ", charonDescribeObject(self->_channel)];
-    [text appendFormat:@"version:%@; ", charonDescribeObject(self->_version)];
-    [text appendFormat:@"extendedAddress:%@; ", charonDescribeObject([self->_extendedAddress base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"rssi:%@; ", charonDescribeObject(self->_rssi)];
-    [text appendFormat:@"lqi:%@; ", charonDescribeObject(self->_lqi)];
+    [text appendFormat:@"panId:%@; ", [self->_panId description]];
+    [text appendFormat:@"extendedPanId:%@; ", [self->_extendedPanId description]];
+    [text appendFormat:@"networkName:%@; ", [self->_networkName description]];
+    [text appendFormat:@"channel:%@; ", [self->_channel description]];
+    [text appendFormat:@"version:%@; ", [self->_version description]];
+    [text appendFormat:@"extendedAddress:%@; ", [[self->_extendedAddress base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"rssi:%@; ", [self->_rssi description]];
+    [text appendFormat:@"lqi:%@; ", [self->_lqi description]];
     [text appendString:@">"];
     return text;
 }

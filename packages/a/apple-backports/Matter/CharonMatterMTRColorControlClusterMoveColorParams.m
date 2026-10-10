@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRColorControlClusterMoveColorParams
 
 @synthesize rateX = _rateX;
@@ -69,10 +58,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"rateX:%@; ", charonDescribeObject(self->_rateX)];
-    [text appendFormat:@"rateY:%@; ", charonDescribeObject(self->_rateY)];
-    [text appendFormat:@"optionsMask:%@; ", charonDescribeObject(self->_optionsMask)];
-    [text appendFormat:@"optionsOverride:%@; ", charonDescribeObject(self->_optionsOverride)];
+    [text appendFormat:@"rateX:%@; ", [self->_rateX description]];
+    [text appendFormat:@"rateY:%@; ", [self->_rateY description]];
+    [text appendFormat:@"optionsMask:%@; ", [self->_optionsMask description]];
+    [text appendFormat:@"optionsOverride:%@; ", [self->_optionsOverride description]];
     [text appendString:@">"];
     return text;
 }

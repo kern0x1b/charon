@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRContentLauncherClusterLaunchURLParams
 
 @synthesize contentURL = _contentURL;
@@ -64,9 +53,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"contentURL:%@; ", charonDescribeObject(self->_contentURL)];
-    [text appendFormat:@"displayString:%@; ", charonDescribeObject(self->_displayString)];
-    [text appendFormat:@"brandingInformation:%@; ", charonDescribeObject(self->_brandingInformation)];
+    [text appendFormat:@"contentURL:%@; ", [self->_contentURL description]];
+    [text appendFormat:@"displayString:%@; ", [self->_displayString description]];
+    [text appendFormat:@"brandingInformation:%@; ", [self->_brandingInformation description]];
     [text appendString:@">"];
     return text;
 }

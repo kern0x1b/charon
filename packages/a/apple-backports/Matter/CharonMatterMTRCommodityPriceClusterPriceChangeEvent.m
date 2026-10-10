@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRCommodityPriceClusterPriceChangeEvent
 
 @synthesize currentPrice = _currentPrice;
@@ -55,7 +44,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"currentPrice:%@; ", charonDescribeObject(self->_currentPrice)];
+    [text appendFormat:@"currentPrice:%@; ", [self->_currentPrice description]];
     [text appendString:@">"];
     return text;
 }

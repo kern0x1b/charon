@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRMessagesClusterMessageResponseOptionStruct
 
 @synthesize messageResponseID = _messageResponseID;
@@ -57,8 +46,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"messageResponseID:%@; ", charonDescribeObject(self->_messageResponseID)];
-    [text appendFormat:@"label:%@; ", charonDescribeObject(self->_label)];
+    [text appendFormat:@"messageResponseID:%@; ", [self->_messageResponseID description]];
+    [text appendFormat:@"label:%@; ", [self->_label description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRPushAVStreamTransportClusterTransportConfigurationStruct
 
 @synthesize connectionID = _connectionID;
@@ -64,10 +53,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"connectionID:%@; ", charonDescribeObject(self->_connectionID)];
-    [text appendFormat:@"transportStatus:%@; ", charonDescribeObject(self->_transportStatus)];
-    [text appendFormat:@"transportOptions:%@; ", charonDescribeObject(self->_transportOptions)];
-    [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self->_fabricIndex)];
+    [text appendFormat:@"connectionID:%@; ", [self->_connectionID description]];
+    [text appendFormat:@"transportStatus:%@; ", [self->_transportStatus description]];
+    [text appendFormat:@"transportOptions:%@; ", [self->_transportOptions description]];
+    [text appendFormat:@"fabricIndex:%@; ", [self->_fabricIndex description]];
     [text appendString:@">"];
     return text;
 }

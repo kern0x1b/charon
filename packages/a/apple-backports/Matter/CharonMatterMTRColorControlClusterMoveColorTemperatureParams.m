@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRColorControlClusterMoveColorTemperatureParams
 
 @synthesize moveMode = _moveMode;
@@ -75,12 +64,12 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"moveMode:%@; ", charonDescribeObject(self->_moveMode)];
-    [text appendFormat:@"rate:%@; ", charonDescribeObject(self->_rate)];
-    [text appendFormat:@"colorTemperatureMinimumMireds:%@; ", charonDescribeObject(self->_colorTemperatureMinimumMireds)];
-    [text appendFormat:@"colorTemperatureMaximumMireds:%@; ", charonDescribeObject(self->_colorTemperatureMaximumMireds)];
-    [text appendFormat:@"optionsMask:%@; ", charonDescribeObject(self->_optionsMask)];
-    [text appendFormat:@"optionsOverride:%@; ", charonDescribeObject(self->_optionsOverride)];
+    [text appendFormat:@"moveMode:%@; ", [self->_moveMode description]];
+    [text appendFormat:@"rate:%@; ", [self->_rate description]];
+    [text appendFormat:@"colorTemperatureMinimumMireds:%@; ", [self->_colorTemperatureMinimumMireds description]];
+    [text appendFormat:@"colorTemperatureMaximumMireds:%@; ", [self->_colorTemperatureMaximumMireds description]];
+    [text appendFormat:@"optionsMask:%@; ", [self->_optionsMask description]];
+    [text appendFormat:@"optionsOverride:%@; ", [self->_optionsOverride description]];
     [text appendString:@">"];
     return text;
 }

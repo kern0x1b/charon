@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRJointFabricDatastoreClusterDatastoreAccessControlEntryStruct
 
 @synthesize privilege = _privilege;
@@ -63,10 +52,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"privilege:%@; ", charonDescribeObject(self->_privilege)];
-    [text appendFormat:@"authMode:%@; ", charonDescribeObject(self->_authMode)];
-    [text appendFormat:@"subjects:%@; ", charonDescribeObject(self->_subjects)];
-    [text appendFormat:@"targets:%@; ", charonDescribeObject(self->_targets)];
+    [text appendFormat:@"privilege:%@; ", [self->_privilege description]];
+    [text appendFormat:@"authMode:%@; ", [self->_authMode description]];
+    [text appendFormat:@"subjects:%@; ", [self->_subjects description]];
+    [text appendFormat:@"targets:%@; ", [self->_targets description]];
     [text appendString:@">"];
     return text;
 }

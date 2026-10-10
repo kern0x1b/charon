@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRPumpConfigurationAndControlClusterSystemPressureLowEvent
 
 // NSCopying, by declaration: the copy owns its own ivars, so writing to the copy never

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTROTASoftwareUpdateProviderClusterNotifyUpdateAppliedParams
 
 @synthesize updateToken = _updateToken;
@@ -63,8 +52,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"updateToken:%@; ", charonDescribeObject([self->_updateToken base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"softwareVersion:%@; ", charonDescribeObject(self->_softwareVersion)];
+    [text appendFormat:@"updateToken:%@; ", [[self->_updateToken base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"softwareVersion:%@; ", [self->_softwareVersion description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRNetworkCommissioningClusterNetworkConfigResponseParams
 
 @synthesize networkingStatus = _networkingStatus;
@@ -66,11 +55,11 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"networkingStatus:%@; ", charonDescribeObject(self->_networkingStatus)];
-    [text appendFormat:@"debugText:%@; ", charonDescribeObject(self->_debugText)];
-    [text appendFormat:@"networkIndex:%@; ", charonDescribeObject(self->_networkIndex)];
-    [text appendFormat:@"clientIdentity:%@; ", charonDescribeObject([self->_clientIdentity base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"possessionSignature:%@; ", charonDescribeObject([self->_possessionSignature base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"networkingStatus:%@; ", [self->_networkingStatus description]];
+    [text appendFormat:@"debugText:%@; ", [self->_debugText description]];
+    [text appendFormat:@"networkIndex:%@; ", [self->_networkIndex description]];
+    [text appendFormat:@"clientIdentity:%@; ", [[self->_clientIdentity base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"possessionSignature:%@; ", [[self->_possessionSignature base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

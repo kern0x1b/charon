@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRMessagesClusterCancelMessagesRequestParams
 
 @synthesize messageIDs = _messageIDs;
@@ -60,7 +49,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"messageIDs:%@; ", charonDescribeObject(self->_messageIDs)];
+    [text appendFormat:@"messageIDs:%@; ", [self->_messageIDs description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRThermostatClusterAtomicResponseParams
 
 @synthesize statusCode = _statusCode;
@@ -61,9 +50,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"statusCode:%@; ", charonDescribeObject(self->_statusCode)];
-    [text appendFormat:@"attributeStatus:%@; ", charonDescribeObject(self->_attributeStatus)];
-    [text appendFormat:@"timeout:%@; ", charonDescribeObject(self->_timeout)];
+    [text appendFormat:@"statusCode:%@; ", [self->_statusCode description]];
+    [text appendFormat:@"attributeStatus:%@; ", [self->_attributeStatus description]];
+    [text appendFormat:@"timeout:%@; ", [self->_timeout description]];
     [text appendString:@">"];
     return text;
 }

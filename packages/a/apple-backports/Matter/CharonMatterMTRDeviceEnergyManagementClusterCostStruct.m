@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDeviceEnergyManagementClusterCostStruct
 
 @synthesize costType = _costType;
@@ -64,10 +53,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"costType:%@; ", charonDescribeObject(self->_costType)];
-    [text appendFormat:@"value:%@; ", charonDescribeObject(self->_value)];
-    [text appendFormat:@"decimalPoints:%@; ", charonDescribeObject(self->_decimalPoints)];
-    [text appendFormat:@"currency:%@; ", charonDescribeObject(self->_currency)];
+    [text appendFormat:@"costType:%@; ", [self->_costType description]];
+    [text appendFormat:@"value:%@; ", [self->_value description]];
+    [text appendFormat:@"decimalPoints:%@; ", [self->_decimalPoints description]];
+    [text appendFormat:@"currency:%@; ", [self->_currency description]];
     [text appendString:@">"];
     return text;
 }

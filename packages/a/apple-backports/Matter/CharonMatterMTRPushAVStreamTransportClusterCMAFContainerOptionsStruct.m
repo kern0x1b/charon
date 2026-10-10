@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRPushAVStreamTransportClusterCMAFContainerOptionsStruct
 
 @synthesize cmafInterface = _cmafInterface;
@@ -74,14 +63,14 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"cmafInterface:%@; ", charonDescribeObject(self->_cmafInterface)];
-    [text appendFormat:@"segmentDuration:%@; ", charonDescribeObject(self->_segmentDuration)];
-    [text appendFormat:@"chunkDuration:%@; ", charonDescribeObject(self->_chunkDuration)];
-    [text appendFormat:@"sessionGroup:%@; ", charonDescribeObject(self->_sessionGroup)];
-    [text appendFormat:@"trackName:%@; ", charonDescribeObject(self->_trackName)];
-    [text appendFormat:@"cencKey:%@; ", charonDescribeObject([self->_cencKey base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"cencKeyID:%@; ", charonDescribeObject([self->_cencKeyID base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"metadataEnabled:%@; ", charonDescribeObject(self->_metadataEnabled)];
+    [text appendFormat:@"cmafInterface:%@; ", [self->_cmafInterface description]];
+    [text appendFormat:@"segmentDuration:%@; ", [self->_segmentDuration description]];
+    [text appendFormat:@"chunkDuration:%@; ", [self->_chunkDuration description]];
+    [text appendFormat:@"sessionGroup:%@; ", [self->_sessionGroup description]];
+    [text appendFormat:@"trackName:%@; ", [self->_trackName description]];
+    [text appendFormat:@"cencKey:%@; ", [[self->_cencKey base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"cencKeyID:%@; ", [[self->_cencKeyID base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"metadataEnabled:%@; ", [self->_metadataEnabled description]];
     [text appendString:@">"];
     return text;
 }

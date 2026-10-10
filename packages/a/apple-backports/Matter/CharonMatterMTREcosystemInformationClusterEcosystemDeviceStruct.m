@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTREcosystemInformationClusterEcosystemDeviceStruct
 
 @synthesize deviceName = _deviceName;
@@ -75,14 +64,14 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"deviceName:%@; ", charonDescribeObject(self->_deviceName)];
-    [text appendFormat:@"deviceNameLastEdit:%@; ", charonDescribeObject(self->_deviceNameLastEdit)];
-    [text appendFormat:@"bridgedEndpoint:%@; ", charonDescribeObject(self->_bridgedEndpoint)];
-    [text appendFormat:@"originalEndpoint:%@; ", charonDescribeObject(self->_originalEndpoint)];
-    [text appendFormat:@"deviceTypes:%@; ", charonDescribeObject(self->_deviceTypes)];
-    [text appendFormat:@"uniqueLocationIDs:%@; ", charonDescribeObject(self->_uniqueLocationIDs)];
-    [text appendFormat:@"uniqueLocationIDsLastEdit:%@; ", charonDescribeObject(self->_uniqueLocationIDsLastEdit)];
-    [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self->_fabricIndex)];
+    [text appendFormat:@"deviceName:%@; ", [self->_deviceName description]];
+    [text appendFormat:@"deviceNameLastEdit:%@; ", [self->_deviceNameLastEdit description]];
+    [text appendFormat:@"bridgedEndpoint:%@; ", [self->_bridgedEndpoint description]];
+    [text appendFormat:@"originalEndpoint:%@; ", [self->_originalEndpoint description]];
+    [text appendFormat:@"deviceTypes:%@; ", [self->_deviceTypes description]];
+    [text appendFormat:@"uniqueLocationIDs:%@; ", [self->_uniqueLocationIDs description]];
+    [text appendFormat:@"uniqueLocationIDsLastEdit:%@; ", [self->_uniqueLocationIDsLastEdit description]];
+    [text appendFormat:@"fabricIndex:%@; ", [self->_fabricIndex description]];
     [text appendString:@">"];
     return text;
 }

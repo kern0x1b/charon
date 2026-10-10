@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRJointFabricDatastoreClusterDatastoreGroupInformationEntryStruct
 
 @synthesize groupID = _groupID;
@@ -68,12 +57,12 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"groupID:%@; ", charonDescribeObject(self->_groupID)];
-    [text appendFormat:@"friendlyName:%@; ", charonDescribeObject(self->_friendlyName)];
-    [text appendFormat:@"groupKeySetID:%@; ", charonDescribeObject(self->_groupKeySetID)];
-    [text appendFormat:@"groupCAT:%@; ", charonDescribeObject(self->_groupCAT)];
-    [text appendFormat:@"groupCATVersion:%@; ", charonDescribeObject(self->_groupCATVersion)];
-    [text appendFormat:@"groupPermission:%@; ", charonDescribeObject(self->_groupPermission)];
+    [text appendFormat:@"groupID:%@; ", [self->_groupID description]];
+    [text appendFormat:@"friendlyName:%@; ", [self->_friendlyName description]];
+    [text appendFormat:@"groupKeySetID:%@; ", [self->_groupKeySetID description]];
+    [text appendFormat:@"groupCAT:%@; ", [self->_groupCAT description]];
+    [text appendFormat:@"groupCATVersion:%@; ", [self->_groupCATVersion description]];
+    [text appendFormat:@"groupPermission:%@; ", [self->_groupPermission description]];
     [text appendString:@">"];
     return text;
 }

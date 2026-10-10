@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRChannelClusterChannelPagingStruct
 
 @synthesize previousToken = _previousToken;
@@ -57,8 +46,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"previousToken:%@; ", charonDescribeObject(self->_previousToken)];
-    [text appendFormat:@"nextToken:%@; ", charonDescribeObject(self->_nextToken)];
+    [text appendFormat:@"previousToken:%@; ", [self->_previousToken description]];
+    [text appendFormat:@"nextToken:%@; ", [self->_nextToken description]];
     [text appendString:@">"];
     return text;
 }

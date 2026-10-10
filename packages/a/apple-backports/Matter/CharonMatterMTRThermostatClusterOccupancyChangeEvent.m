@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRThermostatClusterOccupancyChangeEvent
 
 @synthesize previousOccupancy = _previousOccupancy;
@@ -58,8 +47,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"previousOccupancy:%@; ", charonDescribeObject(self->_previousOccupancy)];
-    [text appendFormat:@"currentOccupancy:%@; ", charonDescribeObject(self->_currentOccupancy)];
+    [text appendFormat:@"previousOccupancy:%@; ", [self->_previousOccupancy description]];
+    [text appendFormat:@"currentOccupancy:%@; ", [self->_currentOccupancy description]];
     [text appendString:@">"];
     return text;
 }

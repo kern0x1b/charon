@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRContentLauncherClusterTrackPreferenceStruct
 
 @synthesize languageCode = _languageCode;
@@ -61,9 +50,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"languageCode:%@; ", charonDescribeObject(self->_languageCode)];
-    [text appendFormat:@"characteristics:%@; ", charonDescribeObject(self->_characteristics)];
-    [text appendFormat:@"audioOutputIndex:%@; ", charonDescribeObject(self->_audioOutputIndex)];
+    [text appendFormat:@"languageCode:%@; ", [self->_languageCode description]];
+    [text appendFormat:@"characteristics:%@; ", [self->_characteristics description]];
+    [text appendFormat:@"audioOutputIndex:%@; ", [self->_audioOutputIndex description]];
     [text appendString:@">"];
     return text;
 }

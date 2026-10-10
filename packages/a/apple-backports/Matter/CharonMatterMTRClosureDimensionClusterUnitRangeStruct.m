@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRClosureDimensionClusterUnitRangeStruct
 
 @synthesize min = _min;
@@ -59,8 +48,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"min:%@; ", charonDescribeObject(self->_min)];
-    [text appendFormat:@"max:%@; ", charonDescribeObject(self->_max)];
+    [text appendFormat:@"min:%@; ", [self->_min description]];
+    [text appendFormat:@"max:%@; ", [self->_max description]];
     [text appendString:@">"];
     return text;
 }

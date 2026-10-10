@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRThermostatClusterScheduleTypeStruct
 
 @synthesize systemMode = _systemMode;
@@ -62,9 +51,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"systemMode:%@; ", charonDescribeObject(self->_systemMode)];
-    [text appendFormat:@"numberOfSchedules:%@; ", charonDescribeObject(self->_numberOfSchedules)];
-    [text appendFormat:@"scheduleTypeFeatures:%@; ", charonDescribeObject(self->_scheduleTypeFeatures)];
+    [text appendFormat:@"systemMode:%@; ", [self->_systemMode description]];
+    [text appendFormat:@"numberOfSchedules:%@; ", [self->_numberOfSchedules description]];
+    [text appendFormat:@"scheduleTypeFeatures:%@; ", [self->_scheduleTypeFeatures description]];
     [text appendString:@">"];
     return text;
 }

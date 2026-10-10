@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTROvenCavityOperationalStateClusterOperationalCommandResponseParams
 
 @synthesize commandResponseState = _commandResponseState;
@@ -56,7 +45,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"commandResponseState:%@; ", charonDescribeObject(self->_commandResponseState)];
+    [text appendFormat:@"commandResponseState:%@; ", [self->_commandResponseState description]];
     [text appendString:@">"];
     return text;
 }

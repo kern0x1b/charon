@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDoorLockClusterSetCredentialParams
 
 @synthesize operationType = _operationType;
@@ -72,12 +61,12 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"operationType:%@; ", charonDescribeObject(self->_operationType)];
-    [text appendFormat:@"credential:%@; ", charonDescribeObject(self->_credential)];
-    [text appendFormat:@"credentialData:%@; ", charonDescribeObject([self->_credentialData base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"userIndex:%@; ", charonDescribeObject(self->_userIndex)];
-    [text appendFormat:@"userStatus:%@; ", charonDescribeObject(self->_userStatus)];
-    [text appendFormat:@"userType:%@; ", charonDescribeObject(self->_userType)];
+    [text appendFormat:@"operationType:%@; ", [self->_operationType description]];
+    [text appendFormat:@"credential:%@; ", [self->_credential description]];
+    [text appendFormat:@"credentialData:%@; ", [[self->_credentialData base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"userIndex:%@; ", [self->_userIndex description]];
+    [text appendFormat:@"userStatus:%@; ", [self->_userStatus description]];
+    [text appendFormat:@"userType:%@; ", [self->_userType description]];
     [text appendString:@">"];
     return text;
 }

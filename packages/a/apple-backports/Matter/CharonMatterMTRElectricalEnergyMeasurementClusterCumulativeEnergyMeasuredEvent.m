@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRElectricalEnergyMeasurementClusterCumulativeEnergyMeasuredEvent
 
 @synthesize energyImported = _energyImported;
@@ -57,8 +46,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"energyImported:%@; ", charonDescribeObject(self->_energyImported)];
-    [text appendFormat:@"energyExported:%@; ", charonDescribeObject(self->_energyExported)];
+    [text appendFormat:@"energyImported:%@; ", [self->_energyImported description]];
+    [text appendFormat:@"energyExported:%@; ", [self->_energyExported description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRContentControlClusterAddBonusTimeParams
 
 @synthesize pinCode = _pinCode;
@@ -61,8 +50,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"pinCode:%@; ", charonDescribeObject(self->_pinCode)];
-    [text appendFormat:@"bonusTime:%@; ", charonDescribeObject(self->_bonusTime)];
+    [text appendFormat:@"pinCode:%@; ", [self->_pinCode description]];
+    [text appendFormat:@"bonusTime:%@; ", [self->_bonusTime description]];
     [text appendString:@">"];
     return text;
 }

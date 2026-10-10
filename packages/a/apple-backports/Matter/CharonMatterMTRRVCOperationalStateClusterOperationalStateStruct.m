@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRRVCOperationalStateClusterOperationalStateStruct
 
 @synthesize operationalStateID = _operationalStateID;
@@ -58,8 +47,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"operationalStateID:%@; ", charonDescribeObject(self->_operationalStateID)];
-    [text appendFormat:@"operationalStateLabel:%@; ", charonDescribeObject(self->_operationalStateLabel)];
+    [text appendFormat:@"operationalStateID:%@; ", [self->_operationalStateID description]];
+    [text appendFormat:@"operationalStateLabel:%@; ", [self->_operationalStateLabel description]];
     [text appendString:@">"];
     return text;
 }

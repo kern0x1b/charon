@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRNetworkCommissioningClusterAddOrUpdateWiFiNetworkParams
 
 @synthesize ssid = _ssid;
@@ -71,12 +60,12 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"ssid:%@; ", charonDescribeObject([self->_ssid base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"credentials:%@; ", charonDescribeObject([self->_credentials base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"breadcrumb:%@; ", charonDescribeObject(self->_breadcrumb)];
-    [text appendFormat:@"networkIdentity:%@; ", charonDescribeObject([self->_networkIdentity base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"clientIdentifier:%@; ", charonDescribeObject([self->_clientIdentifier base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"possessionNonce:%@; ", charonDescribeObject([self->_possessionNonce base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"ssid:%@; ", [[self->_ssid base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"credentials:%@; ", [[self->_credentials base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"breadcrumb:%@; ", [self->_breadcrumb description]];
+    [text appendFormat:@"networkIdentity:%@; ", [[self->_networkIdentity base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"clientIdentifier:%@; ", [[self->_clientIdentifier base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"possessionNonce:%@; ", [[self->_possessionNonce base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

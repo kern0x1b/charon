@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRCameraAVStreamManagementClusterSnapshotStreamAllocateParams
 
 @synthesize imageCodec = _imageCodec;
@@ -76,13 +65,13 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"imageCodec:%@; ", charonDescribeObject(self->_imageCodec)];
-    [text appendFormat:@"maxFrameRate:%@; ", charonDescribeObject(self->_maxFrameRate)];
-    [text appendFormat:@"minResolution:%@; ", charonDescribeObject(self->_minResolution)];
-    [text appendFormat:@"maxResolution:%@; ", charonDescribeObject(self->_maxResolution)];
-    [text appendFormat:@"quality:%@; ", charonDescribeObject(self->_quality)];
-    [text appendFormat:@"watermarkEnabled:%@; ", charonDescribeObject(self->_watermarkEnabled)];
-    [text appendFormat:@"osdEnabled:%@; ", charonDescribeObject(self->_osdEnabled)];
+    [text appendFormat:@"imageCodec:%@; ", [self->_imageCodec description]];
+    [text appendFormat:@"maxFrameRate:%@; ", [self->_maxFrameRate description]];
+    [text appendFormat:@"minResolution:%@; ", [self->_minResolution description]];
+    [text appendFormat:@"maxResolution:%@; ", [self->_maxResolution description]];
+    [text appendFormat:@"quality:%@; ", [self->_quality description]];
+    [text appendFormat:@"watermarkEnabled:%@; ", [self->_watermarkEnabled description]];
+    [text appendFormat:@"osdEnabled:%@; ", [self->_osdEnabled description]];
     [text appendString:@">"];
     return text;
 }

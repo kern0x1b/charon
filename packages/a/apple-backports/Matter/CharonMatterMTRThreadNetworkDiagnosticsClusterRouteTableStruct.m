@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRThreadNetworkDiagnosticsClusterRouteTableStruct
 
 @synthesize extAddress = _extAddress;
@@ -83,16 +72,16 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"extAddress:%@; ", charonDescribeObject(self->_extAddress)];
-    [text appendFormat:@"rloc16:%@; ", charonDescribeObject(self->_rloc16)];
-    [text appendFormat:@"routerId:%@; ", charonDescribeObject(self->_routerId)];
-    [text appendFormat:@"nextHop:%@; ", charonDescribeObject(self->_nextHop)];
-    [text appendFormat:@"pathCost:%@; ", charonDescribeObject(self->_pathCost)];
-    [text appendFormat:@"lqiIn:%@; ", charonDescribeObject(self->_lqiIn)];
-    [text appendFormat:@"lqiOut:%@; ", charonDescribeObject(self->_lqiOut)];
-    [text appendFormat:@"age:%@; ", charonDescribeObject(self->_age)];
-    [text appendFormat:@"allocated:%@; ", charonDescribeObject(self->_allocated)];
-    [text appendFormat:@"linkEstablished:%@; ", charonDescribeObject(self->_linkEstablished)];
+    [text appendFormat:@"extAddress:%@; ", [self->_extAddress description]];
+    [text appendFormat:@"rloc16:%@; ", [self->_rloc16 description]];
+    [text appendFormat:@"routerId:%@; ", [self->_routerId description]];
+    [text appendFormat:@"nextHop:%@; ", [self->_nextHop description]];
+    [text appendFormat:@"pathCost:%@; ", [self->_pathCost description]];
+    [text appendFormat:@"lqiIn:%@; ", [self->_lqiIn description]];
+    [text appendFormat:@"lqiOut:%@; ", [self->_lqiOut description]];
+    [text appendFormat:@"age:%@; ", [self->_age description]];
+    [text appendFormat:@"allocated:%@; ", [self->_allocated description]];
+    [text appendFormat:@"linkEstablished:%@; ", [self->_linkEstablished description]];
     [text appendString:@">"];
     return text;
 }

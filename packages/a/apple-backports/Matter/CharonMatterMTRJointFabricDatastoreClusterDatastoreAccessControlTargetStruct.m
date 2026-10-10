@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRJointFabricDatastoreClusterDatastoreAccessControlTargetStruct
 
 @synthesize cluster = _cluster;
@@ -59,9 +48,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"cluster:%@; ", charonDescribeObject(self->_cluster)];
-    [text appendFormat:@"endpoint:%@; ", charonDescribeObject(self->_endpoint)];
-    [text appendFormat:@"deviceType:%@; ", charonDescribeObject(self->_deviceType)];
+    [text appendFormat:@"cluster:%@; ", [self->_cluster description]];
+    [text appendFormat:@"endpoint:%@; ", [self->_endpoint description]];
+    [text appendFormat:@"deviceType:%@; ", [self->_deviceType description]];
     [text appendString:@">"];
     return text;
 }

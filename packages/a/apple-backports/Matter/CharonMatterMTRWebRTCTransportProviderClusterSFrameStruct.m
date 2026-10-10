@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRWebRTCTransportProviderClusterSFrameStruct
 
 @synthesize cipherSuite = _cipherSuite;
@@ -62,9 +51,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"cipherSuite:%@; ", charonDescribeObject(self->_cipherSuite)];
-    [text appendFormat:@"baseKey:%@; ", charonDescribeObject([self->_baseKey base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"kid:%@; ", charonDescribeObject([self->_kid base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"cipherSuite:%@; ", [self->_cipherSuite description]];
+    [text appendFormat:@"baseKey:%@; ", [[self->_baseKey base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"kid:%@; ", [[self->_kid base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

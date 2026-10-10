@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRWiFiNetworkManagementClusterNetworkPassphraseResponseParams
 
 @synthesize passphrase = _passphrase;
@@ -56,7 +45,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"passphrase:%@; ", charonDescribeObject([self->_passphrase base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"passphrase:%@; ", [[self->_passphrase base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRTimeSynchronizationClusterSetTrustedTimeSourceParams
 
 @synthesize trustedTimeSource = _trustedTimeSource;
@@ -59,7 +48,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"trustedTimeSource:%@; ", charonDescribeObject(self->_trustedTimeSource)];
+    [text appendFormat:@"trustedTimeSource:%@; ", [self->_trustedTimeSource description]];
     [text appendString:@">"];
     return text;
 }

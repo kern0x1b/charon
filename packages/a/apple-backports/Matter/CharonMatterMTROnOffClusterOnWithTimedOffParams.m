@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTROnOffClusterOnWithTimedOffParams
 
 @synthesize onOffControl = _onOffControl;
@@ -66,9 +55,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"onOffControl:%@; ", charonDescribeObject(self->_onOffControl)];
-    [text appendFormat:@"onTime:%@; ", charonDescribeObject(self->_onTime)];
-    [text appendFormat:@"offWaitTime:%@; ", charonDescribeObject(self->_offWaitTime)];
+    [text appendFormat:@"onOffControl:%@; ", [self->_onOffControl description]];
+    [text appendFormat:@"onTime:%@; ", [self->_onTime description]];
+    [text appendFormat:@"offWaitTime:%@; ", [self->_offWaitTime description]];
     [text appendString:@">"];
     return text;
 }

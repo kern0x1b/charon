@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDoorLockClusterGetCredentialStatusResponseParams
 
 @synthesize credentialExists = _credentialExists;
@@ -68,12 +57,12 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"credentialExists:%@; ", charonDescribeObject(self->_credentialExists)];
-    [text appendFormat:@"userIndex:%@; ", charonDescribeObject(self->_userIndex)];
-    [text appendFormat:@"creatorFabricIndex:%@; ", charonDescribeObject(self->_creatorFabricIndex)];
-    [text appendFormat:@"lastModifiedFabricIndex:%@; ", charonDescribeObject(self->_lastModifiedFabricIndex)];
-    [text appendFormat:@"nextCredentialIndex:%@; ", charonDescribeObject(self->_nextCredentialIndex)];
-    [text appendFormat:@"credentialData:%@; ", charonDescribeObject([self->_credentialData base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"credentialExists:%@; ", [self->_credentialExists description]];
+    [text appendFormat:@"userIndex:%@; ", [self->_userIndex description]];
+    [text appendFormat:@"creatorFabricIndex:%@; ", [self->_creatorFabricIndex description]];
+    [text appendFormat:@"lastModifiedFabricIndex:%@; ", [self->_lastModifiedFabricIndex description]];
+    [text appendFormat:@"nextCredentialIndex:%@; ", [self->_nextCredentialIndex description]];
+    [text appendFormat:@"credentialData:%@; ", [[self->_credentialData base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

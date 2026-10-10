@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTROTASoftwareUpdateProviderClusterQueryImageResponseParams
 
 @synthesize status = _status;
@@ -72,14 +61,14 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"status:%@; ", charonDescribeObject(self->_status)];
-    [text appendFormat:@"delayedActionTime:%@; ", charonDescribeObject(self->_delayedActionTime)];
-    [text appendFormat:@"imageURI:%@; ", charonDescribeObject(self->_imageURI)];
-    [text appendFormat:@"softwareVersion:%@; ", charonDescribeObject(self->_softwareVersion)];
-    [text appendFormat:@"softwareVersionString:%@; ", charonDescribeObject(self->_softwareVersionString)];
-    [text appendFormat:@"updateToken:%@; ", charonDescribeObject([self->_updateToken base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"userConsentNeeded:%@; ", charonDescribeObject(self->_userConsentNeeded)];
-    [text appendFormat:@"metadataForRequestor:%@; ", charonDescribeObject([self->_metadataForRequestor base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"status:%@; ", [self->_status description]];
+    [text appendFormat:@"delayedActionTime:%@; ", [self->_delayedActionTime description]];
+    [text appendFormat:@"imageURI:%@; ", [self->_imageURI description]];
+    [text appendFormat:@"softwareVersion:%@; ", [self->_softwareVersion description]];
+    [text appendFormat:@"softwareVersionString:%@; ", [self->_softwareVersionString description]];
+    [text appendFormat:@"updateToken:%@; ", [[self->_updateToken base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"userConsentNeeded:%@; ", [self->_userConsentNeeded description]];
+    [text appendFormat:@"metadataForRequestor:%@; ", [[self->_metadataForRequestor base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

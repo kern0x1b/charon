@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTROperationalCredentialsClusterCSRResponseParams
 
 @synthesize nocsrElements = _nocsrElements;
@@ -61,8 +50,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"nocsrElements:%@; ", charonDescribeObject([self->_nocsrElements base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"attestationSignature:%@; ", charonDescribeObject([self->_attestationSignature base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"nocsrElements:%@; ", [[self->_nocsrElements base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"attestationSignature:%@; ", [[self->_attestationSignature base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

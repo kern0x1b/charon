@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRThermostatClusterPresetTypeStruct
 
 @synthesize presetScenario = _presetScenario;
@@ -62,9 +51,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"presetScenario:%@; ", charonDescribeObject(self->_presetScenario)];
-    [text appendFormat:@"numberOfPresets:%@; ", charonDescribeObject(self->_numberOfPresets)];
-    [text appendFormat:@"presetTypeFeatures:%@; ", charonDescribeObject(self->_presetTypeFeatures)];
+    [text appendFormat:@"presetScenario:%@; ", [self->_presetScenario description]];
+    [text appendFormat:@"numberOfPresets:%@; ", [self->_numberOfPresets description]];
+    [text appendFormat:@"presetTypeFeatures:%@; ", [self->_presetTypeFeatures description]];
     [text appendString:@">"];
     return text;
 }

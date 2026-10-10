@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRActionsClusterActionFailedEvent
 
 @synthesize actionID = _actionID;
@@ -65,10 +54,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"actionID:%@; ", charonDescribeObject(self->_actionID)];
-    [text appendFormat:@"invokeID:%@; ", charonDescribeObject(self->_invokeID)];
-    [text appendFormat:@"newState:%@; ", charonDescribeObject(self->_newState)];
-    [text appendFormat:@"error:%@; ", charonDescribeObject(self->_error)];
+    [text appendFormat:@"actionID:%@; ", [self->_actionID description]];
+    [text appendFormat:@"invokeID:%@; ", [self->_invokeID description]];
+    [text appendFormat:@"newState:%@; ", [self->_newState description]];
+    [text appendFormat:@"error:%@; ", [self->_error description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTROperationalStateClusterErrorStateStruct
 
 @synthesize errorStateID = _errorStateID;
@@ -60,9 +49,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"errorStateID:%@; ", charonDescribeObject(self->_errorStateID)];
-    [text appendFormat:@"errorStateLabel:%@; ", charonDescribeObject(self->_errorStateLabel)];
-    [text appendFormat:@"errorStateDetails:%@; ", charonDescribeObject(self->_errorStateDetails)];
+    [text appendFormat:@"errorStateID:%@; ", [self->_errorStateID description]];
+    [text appendFormat:@"errorStateLabel:%@; ", [self->_errorStateLabel description]];
+    [text appendFormat:@"errorStateDetails:%@; ", [self->_errorStateDetails description]];
     [text appendString:@">"];
     return text;
 }

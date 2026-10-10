@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRThermostatClusterSetpointRaiseLowerParams
 
 @synthesize mode = _mode;
@@ -63,8 +52,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"mode:%@; ", charonDescribeObject(self->_mode)];
-    [text appendFormat:@"amount:%@; ", charonDescribeObject(self->_amount)];
+    [text appendFormat:@"mode:%@; ", [self->_mode description]];
+    [text appendFormat:@"amount:%@; ", [self->_amount description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRTLSCertificateManagementClusterProvisionClientCertificateParams
 
 @synthesize ccdid = _ccdid;
@@ -66,9 +55,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"ccdid:%@; ", charonDescribeObject(self->_ccdid)];
-    [text appendFormat:@"clientCertificate:%@; ", charonDescribeObject([self->_clientCertificate base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"intermediateCertificates:%@; ", charonDescribeObject(self->_intermediateCertificates)];
+    [text appendFormat:@"ccdid:%@; ", [self->_ccdid description]];
+    [text appendFormat:@"clientCertificate:%@; ", [[self->_clientCertificate base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"intermediateCertificates:%@; ", [self->_intermediateCertificates description]];
     [text appendString:@">"];
     return text;
 }

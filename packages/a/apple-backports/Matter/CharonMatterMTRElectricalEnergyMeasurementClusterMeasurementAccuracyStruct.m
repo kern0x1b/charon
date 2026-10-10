@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRElectricalEnergyMeasurementClusterMeasurementAccuracyStruct
 
 @synthesize measurementType = _measurementType;
@@ -68,11 +57,11 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"measurementType:%@; ", charonDescribeObject(self->_measurementType)];
-    [text appendFormat:@"measured:%@; ", charonDescribeObject(self->_measured)];
-    [text appendFormat:@"minMeasuredValue:%@; ", charonDescribeObject(self->_minMeasuredValue)];
-    [text appendFormat:@"maxMeasuredValue:%@; ", charonDescribeObject(self->_maxMeasuredValue)];
-    [text appendFormat:@"accuracyRanges:%@; ", charonDescribeObject(self->_accuracyRanges)];
+    [text appendFormat:@"measurementType:%@; ", [self->_measurementType description]];
+    [text appendFormat:@"measured:%@; ", [self->_measured description]];
+    [text appendFormat:@"minMeasuredValue:%@; ", [self->_minMeasuredValue description]];
+    [text appendFormat:@"maxMeasuredValue:%@; ", [self->_maxMeasuredValue description]];
+    [text appendFormat:@"accuracyRanges:%@; ", [self->_accuracyRanges description]];
     [text appendString:@">"];
     return text;
 }

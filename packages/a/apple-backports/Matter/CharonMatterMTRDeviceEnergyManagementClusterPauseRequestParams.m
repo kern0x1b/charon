@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDeviceEnergyManagementClusterPauseRequestParams
 
 @synthesize duration = _duration;
@@ -63,8 +52,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"duration:%@; ", charonDescribeObject(self->_duration)];
-    [text appendFormat:@"cause:%@; ", charonDescribeObject(self->_cause)];
+    [text appendFormat:@"duration:%@; ", [self->_duration description]];
+    [text appendFormat:@"cause:%@; ", [self->_cause description]];
     [text appendString:@">"];
     return text;
 }

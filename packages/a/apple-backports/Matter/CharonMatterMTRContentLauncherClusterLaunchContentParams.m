@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRContentLauncherClusterLaunchContentParams
 
 @synthesize search = _search;
@@ -69,11 +58,11 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"search:%@; ", charonDescribeObject(self->_search)];
-    [text appendFormat:@"autoPlay:%@; ", charonDescribeObject(self->_autoPlay)];
-    [text appendFormat:@"data:%@; ", charonDescribeObject(self->_data)];
-    [text appendFormat:@"playbackPreferences:%@; ", charonDescribeObject(self->_playbackPreferences)];
-    [text appendFormat:@"useCurrentContext:%@; ", charonDescribeObject(self->_useCurrentContext)];
+    [text appendFormat:@"search:%@; ", [self->_search description]];
+    [text appendFormat:@"autoPlay:%@; ", [self->_autoPlay description]];
+    [text appendFormat:@"data:%@; ", [self->_data description]];
+    [text appendFormat:@"playbackPreferences:%@; ", [self->_playbackPreferences description]];
+    [text appendFormat:@"useCurrentContext:%@; ", [self->_useCurrentContext description]];
     [text appendString:@">"];
     return text;
 }

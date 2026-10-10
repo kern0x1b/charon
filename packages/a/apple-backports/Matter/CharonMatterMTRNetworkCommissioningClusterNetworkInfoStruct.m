@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRNetworkCommissioningClusterNetworkInfoStruct
 
 @synthesize networkID = _networkID;
@@ -63,10 +52,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"networkID:%@; ", charonDescribeObject([self->_networkID base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"connected:%@; ", charonDescribeObject(self->_connected)];
-    [text appendFormat:@"networkIdentifier:%@; ", charonDescribeObject([self->_networkIdentifier base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"clientIdentifier:%@; ", charonDescribeObject([self->_clientIdentifier base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"networkID:%@; ", [[self->_networkID base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"connected:%@; ", [self->_connected description]];
+    [text appendFormat:@"networkIdentifier:%@; ", [[self->_networkIdentifier base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"clientIdentifier:%@; ", [[self->_clientIdentifier base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

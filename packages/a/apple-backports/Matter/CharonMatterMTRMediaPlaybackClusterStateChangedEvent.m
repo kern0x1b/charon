@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRMediaPlaybackClusterStateChangedEvent
 
 @synthesize currentState = _currentState;
@@ -79,15 +68,15 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"currentState:%@; ", charonDescribeObject(self->_currentState)];
-    [text appendFormat:@"startTime:%@; ", charonDescribeObject(self->_startTime)];
-    [text appendFormat:@"duration:%@; ", charonDescribeObject(self->_duration)];
-    [text appendFormat:@"sampledPosition:%@; ", charonDescribeObject(self->_sampledPosition)];
-    [text appendFormat:@"playbackSpeed:%@; ", charonDescribeObject(self->_playbackSpeed)];
-    [text appendFormat:@"seekRangeEnd:%@; ", charonDescribeObject(self->_seekRangeEnd)];
-    [text appendFormat:@"seekRangeStart:%@; ", charonDescribeObject(self->_seekRangeStart)];
-    [text appendFormat:@"data:%@; ", charonDescribeObject([self->_data base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"audioAdvanceUnmuted:%@; ", charonDescribeObject(self->_audioAdvanceUnmuted)];
+    [text appendFormat:@"currentState:%@; ", [self->_currentState description]];
+    [text appendFormat:@"startTime:%@; ", [self->_startTime description]];
+    [text appendFormat:@"duration:%@; ", [self->_duration description]];
+    [text appendFormat:@"sampledPosition:%@; ", [self->_sampledPosition description]];
+    [text appendFormat:@"playbackSpeed:%@; ", [self->_playbackSpeed description]];
+    [text appendFormat:@"seekRangeEnd:%@; ", [self->_seekRangeEnd description]];
+    [text appendFormat:@"seekRangeStart:%@; ", [self->_seekRangeStart description]];
+    [text appendFormat:@"data:%@; ", [[self->_data base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"audioAdvanceUnmuted:%@; ", [self->_audioAdvanceUnmuted description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRTargetNavigatorClusterTargetUpdatedEvent
 
 @synthesize targetList = _targetList;
@@ -62,9 +51,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"targetList:%@; ", charonDescribeObject(self->_targetList)];
-    [text appendFormat:@"currentTarget:%@; ", charonDescribeObject(self->_currentTarget)];
-    [text appendFormat:@"data:%@; ", charonDescribeObject([self->_data base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"targetList:%@; ", [self->_targetList description]];
+    [text appendFormat:@"currentTarget:%@; ", [self->_currentTarget description]];
+    [text appendFormat:@"data:%@; ", [[self->_data base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

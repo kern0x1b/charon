@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRGeneralDiagnosticsClusterPayloadTestRequestParams
 
 @synthesize enableKey = _enableKey;
@@ -66,9 +55,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"enableKey:%@; ", charonDescribeObject([self->_enableKey base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"value:%@; ", charonDescribeObject(self->_value)];
-    [text appendFormat:@"count:%@; ", charonDescribeObject(self->_count)];
+    [text appendFormat:@"enableKey:%@; ", [[self->_enableKey base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"value:%@; ", [self->_value description]];
+    [text appendFormat:@"count:%@; ", [self->_count description]];
     [text appendString:@">"];
     return text;
 }

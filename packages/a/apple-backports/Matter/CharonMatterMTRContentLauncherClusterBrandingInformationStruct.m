@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRContentLauncherClusterBrandingInformationStruct
 
 @synthesize providerName = _providerName;
@@ -66,12 +55,12 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"providerName:%@; ", charonDescribeObject(self->_providerName)];
-    [text appendFormat:@"background:%@; ", charonDescribeObject(self->_background)];
-    [text appendFormat:@"logo:%@; ", charonDescribeObject(self->_logo)];
-    [text appendFormat:@"progressBar:%@; ", charonDescribeObject(self->_progressBar)];
-    [text appendFormat:@"splash:%@; ", charonDescribeObject(self->_splash)];
-    [text appendFormat:@"waterMark:%@; ", charonDescribeObject(self->_waterMark)];
+    [text appendFormat:@"providerName:%@; ", [self->_providerName description]];
+    [text appendFormat:@"background:%@; ", [self->_background description]];
+    [text appendFormat:@"logo:%@; ", [self->_logo description]];
+    [text appendFormat:@"progressBar:%@; ", [self->_progressBar description]];
+    [text appendFormat:@"splash:%@; ", [self->_splash description]];
+    [text appendFormat:@"waterMark:%@; ", [self->_waterMark description]];
     [text appendString:@">"];
     return text;
 }

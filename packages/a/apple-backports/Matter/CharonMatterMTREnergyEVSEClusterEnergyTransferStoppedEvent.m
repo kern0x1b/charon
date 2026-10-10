@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTREnergyEVSEClusterEnergyTransferStoppedEvent
 
 @synthesize sessionID = _sessionID;
@@ -67,11 +56,11 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"sessionID:%@; ", charonDescribeObject(self->_sessionID)];
-    [text appendFormat:@"state:%@; ", charonDescribeObject(self->_state)];
-    [text appendFormat:@"reason:%@; ", charonDescribeObject(self->_reason)];
-    [text appendFormat:@"energyTransferred:%@; ", charonDescribeObject(self->_energyTransferred)];
-    [text appendFormat:@"energyDischarged:%@; ", charonDescribeObject(self->_energyDischarged)];
+    [text appendFormat:@"sessionID:%@; ", [self->_sessionID description]];
+    [text appendFormat:@"state:%@; ", [self->_state description]];
+    [text appendFormat:@"reason:%@; ", [self->_reason description]];
+    [text appendFormat:@"energyTransferred:%@; ", [self->_energyTransferred description]];
+    [text appendFormat:@"energyDischarged:%@; ", [self->_energyDischarged description]];
     [text appendString:@">"];
     return text;
 }

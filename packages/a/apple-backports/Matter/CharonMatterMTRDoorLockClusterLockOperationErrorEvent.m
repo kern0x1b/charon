@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDoorLockClusterLockOperationErrorEvent
 
 @synthesize lockOperationType = _lockOperationType;
@@ -70,13 +59,13 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"lockOperationType:%@; ", charonDescribeObject(self->_lockOperationType)];
-    [text appendFormat:@"operationSource:%@; ", charonDescribeObject(self->_operationSource)];
-    [text appendFormat:@"operationError:%@; ", charonDescribeObject(self->_operationError)];
-    [text appendFormat:@"userIndex:%@; ", charonDescribeObject(self->_userIndex)];
-    [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self->_fabricIndex)];
-    [text appendFormat:@"sourceNode:%@; ", charonDescribeObject(self->_sourceNode)];
-    [text appendFormat:@"credentials:%@; ", charonDescribeObject(self->_credentials)];
+    [text appendFormat:@"lockOperationType:%@; ", [self->_lockOperationType description]];
+    [text appendFormat:@"operationSource:%@; ", [self->_operationSource description]];
+    [text appendFormat:@"operationError:%@; ", [self->_operationError description]];
+    [text appendFormat:@"userIndex:%@; ", [self->_userIndex description]];
+    [text appendFormat:@"fabricIndex:%@; ", [self->_fabricIndex description]];
+    [text appendFormat:@"sourceNode:%@; ", [self->_sourceNode description]];
+    [text appendFormat:@"credentials:%@; ", [self->_credentials description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRMediaPlaybackClusterTrackStruct
 
 @synthesize id = _id;
@@ -58,8 +47,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"id:%@; ", charonDescribeObject(self->_id)];
-    [text appendFormat:@"trackAttributes:%@; ", charonDescribeObject(self->_trackAttributes)];
+    [text appendFormat:@"id:%@; ", [self->_id description]];
+    [text appendFormat:@"trackAttributes:%@; ", [self->_trackAttributes description]];
     [text appendString:@">"];
     return text;
 }

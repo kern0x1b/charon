@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRUnitTestingClusterGlobalEchoRequestParams
 
 @synthesize field1 = _field1;
@@ -63,8 +52,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"field1:%@; ", charonDescribeObject(self->_field1)];
-    [text appendFormat:@"field2:%@; ", charonDescribeObject(self->_field2)];
+    [text appendFormat:@"field1:%@; ", [self->_field1 description]];
+    [text appendFormat:@"field2:%@; ", [self->_field2 description]];
     [text appendString:@">"];
     return text;
 }

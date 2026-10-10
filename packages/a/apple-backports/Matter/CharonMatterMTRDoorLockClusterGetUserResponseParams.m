@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDoorLockClusterGetUserResponseParams
 
 @synthesize userIndex = _userIndex;
@@ -90,16 +79,16 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"userIndex:%@; ", charonDescribeObject(self->_userIndex)];
-    [text appendFormat:@"userName:%@; ", charonDescribeObject(self->_userName)];
-    [text appendFormat:@"userUniqueID:%@; ", charonDescribeObject(self->_userUniqueID)];
-    [text appendFormat:@"userStatus:%@; ", charonDescribeObject(self->_userStatus)];
-    [text appendFormat:@"userType:%@; ", charonDescribeObject(self->_userType)];
-    [text appendFormat:@"credentialRule:%@; ", charonDescribeObject(self->_credentialRule)];
-    [text appendFormat:@"credentials:%@; ", charonDescribeObject(self->_credentials)];
-    [text appendFormat:@"creatorFabricIndex:%@; ", charonDescribeObject(self->_creatorFabricIndex)];
-    [text appendFormat:@"lastModifiedFabricIndex:%@; ", charonDescribeObject(self->_lastModifiedFabricIndex)];
-    [text appendFormat:@"nextUserIndex:%@; ", charonDescribeObject(self->_nextUserIndex)];
+    [text appendFormat:@"userIndex:%@; ", [self->_userIndex description]];
+    [text appendFormat:@"userName:%@; ", [self->_userName description]];
+    [text appendFormat:@"userUniqueID:%@; ", [self->_userUniqueID description]];
+    [text appendFormat:@"userStatus:%@; ", [self->_userStatus description]];
+    [text appendFormat:@"userType:%@; ", [self->_userType description]];
+    [text appendFormat:@"credentialRule:%@; ", [self->_credentialRule description]];
+    [text appendFormat:@"credentials:%@; ", [self->_credentials description]];
+    [text appendFormat:@"creatorFabricIndex:%@; ", [self->_creatorFabricIndex description]];
+    [text appendFormat:@"lastModifiedFabricIndex:%@; ", [self->_lastModifiedFabricIndex description]];
+    [text appendFormat:@"nextUserIndex:%@; ", [self->_nextUserIndex description]];
     [text appendString:@">"];
     return text;
 }

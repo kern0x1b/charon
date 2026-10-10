@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDataTypeSemanticTagStruct
 
 @synthesize mfgCode = _mfgCode;
@@ -63,10 +52,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"mfgCode:%@; ", charonDescribeObject(self->_mfgCode)];
-    [text appendFormat:@"namespaceID:%@; ", charonDescribeObject(self->_namespaceID)];
-    [text appendFormat:@"tag:%@; ", charonDescribeObject(self->_tag)];
-    [text appendFormat:@"label:%@; ", charonDescribeObject(self->_label)];
+    [text appendFormat:@"mfgCode:%@; ", [self->_mfgCode description]];
+    [text appendFormat:@"namespaceID:%@; ", [self->_namespaceID description]];
+    [text appendFormat:@"tag:%@; ", [self->_tag description]];
+    [text appendFormat:@"label:%@; ", [self->_label description]];
     [text appendString:@">"];
     return text;
 }

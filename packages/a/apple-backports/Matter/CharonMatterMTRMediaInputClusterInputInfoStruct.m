@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRMediaInputClusterInputInfoStruct
 
 @synthesize index = _index;
@@ -65,10 +54,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"index:%@; ", charonDescribeObject(self->_index)];
-    [text appendFormat:@"inputType:%@; ", charonDescribeObject(self->_inputType)];
-    [text appendFormat:@"name:%@; ", charonDescribeObject(self->_name)];
-    [text appendFormat:@"descriptionString:%@; ", charonDescribeObject(self->_descriptionString)];
+    [text appendFormat:@"index:%@; ", [self->_index description]];
+    [text appendFormat:@"inputType:%@; ", [self->_inputType description]];
+    [text appendFormat:@"name:%@; ", [self->_name description]];
+    [text appendFormat:@"descriptionString:%@; ", [self->_descriptionString description]];
     [text appendString:@">"];
     return text;
 }

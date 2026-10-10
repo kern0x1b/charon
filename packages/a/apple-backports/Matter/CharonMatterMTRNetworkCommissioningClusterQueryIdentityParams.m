@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRNetworkCommissioningClusterQueryIdentityParams
 
 @synthesize keyIdentifier = _keyIdentifier;
@@ -62,8 +51,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"keyIdentifier:%@; ", charonDescribeObject([self->_keyIdentifier base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"possessionNonce:%@; ", charonDescribeObject([self->_possessionNonce base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"keyIdentifier:%@; ", [[self->_keyIdentifier base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"possessionNonce:%@; ", [[self->_possessionNonce base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

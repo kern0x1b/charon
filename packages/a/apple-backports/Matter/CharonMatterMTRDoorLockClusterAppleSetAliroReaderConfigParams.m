@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDoorLockClusterAppleSetAliroReaderConfigParams
 
 @synthesize signingKey = _signingKey;
@@ -68,10 +57,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"signingKey:%@; ", charonDescribeObject([self->_signingKey base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"verificationKey:%@; ", charonDescribeObject([self->_verificationKey base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"groupIdentifier:%@; ", charonDescribeObject([self->_groupIdentifier base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"groupResolvingKey:%@; ", charonDescribeObject([self->_groupResolvingKey base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"signingKey:%@; ", [[self->_signingKey base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"verificationKey:%@; ", [[self->_verificationKey base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"groupIdentifier:%@; ", [[self->_groupIdentifier base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"groupResolvingKey:%@; ", [[self->_groupResolvingKey base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

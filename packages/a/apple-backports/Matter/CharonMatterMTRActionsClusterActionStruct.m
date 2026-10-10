@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRActionsClusterActionStruct
 
 @synthesize actionID = _actionID;
@@ -71,12 +60,12 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"actionID:%@; ", charonDescribeObject(self->_actionID)];
-    [text appendFormat:@"name:%@; ", charonDescribeObject(self->_name)];
-    [text appendFormat:@"type:%@; ", charonDescribeObject(self->_type)];
-    [text appendFormat:@"endpointListID:%@; ", charonDescribeObject(self->_endpointListID)];
-    [text appendFormat:@"supportedCommands:%@; ", charonDescribeObject(self->_supportedCommands)];
-    [text appendFormat:@"state:%@; ", charonDescribeObject(self->_state)];
+    [text appendFormat:@"actionID:%@; ", [self->_actionID description]];
+    [text appendFormat:@"name:%@; ", [self->_name description]];
+    [text appendFormat:@"type:%@; ", [self->_type description]];
+    [text appendFormat:@"endpointListID:%@; ", [self->_endpointListID description]];
+    [text appendFormat:@"supportedCommands:%@; ", [self->_supportedCommands description]];
+    [text appendFormat:@"state:%@; ", [self->_state description]];
     [text appendString:@">"];
     return text;
 }

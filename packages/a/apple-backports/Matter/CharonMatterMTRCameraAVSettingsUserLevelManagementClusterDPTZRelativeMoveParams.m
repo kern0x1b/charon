@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRCameraAVSettingsUserLevelManagementClusterDPTZRelativeMoveParams
 
 @synthesize videoStreamID = _videoStreamID;
@@ -66,10 +55,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"videoStreamID:%@; ", charonDescribeObject(self->_videoStreamID)];
-    [text appendFormat:@"deltaX:%@; ", charonDescribeObject(self->_deltaX)];
-    [text appendFormat:@"deltaY:%@; ", charonDescribeObject(self->_deltaY)];
-    [text appendFormat:@"zoomDelta:%@; ", charonDescribeObject(self->_zoomDelta)];
+    [text appendFormat:@"videoStreamID:%@; ", [self->_videoStreamID description]];
+    [text appendFormat:@"deltaX:%@; ", [self->_deltaX description]];
+    [text appendFormat:@"deltaY:%@; ", [self->_deltaY description]];
+    [text appendFormat:@"zoomDelta:%@; ", [self->_zoomDelta description]];
     [text appendString:@">"];
     return text;
 }

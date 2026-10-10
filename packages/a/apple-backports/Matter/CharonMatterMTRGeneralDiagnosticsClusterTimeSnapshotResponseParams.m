@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRGeneralDiagnosticsClusterTimeSnapshotResponseParams
 
 @synthesize systemTimeMs = _systemTimeMs;
@@ -58,8 +47,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"systemTimeMs:%@; ", charonDescribeObject(self->_systemTimeMs)];
-    [text appendFormat:@"posixTimeMs:%@; ", charonDescribeObject(self->_posixTimeMs)];
+    [text appendFormat:@"systemTimeMs:%@; ", [self->_systemTimeMs description]];
+    [text appendFormat:@"posixTimeMs:%@; ", [self->_posixTimeMs description]];
     [text appendString:@">"];
     return text;
 }

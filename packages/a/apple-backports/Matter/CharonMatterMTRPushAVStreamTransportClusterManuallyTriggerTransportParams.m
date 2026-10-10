@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRPushAVStreamTransportClusterManuallyTriggerTransportParams
 
 @synthesize connectionID = _connectionID;
@@ -67,10 +56,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"connectionID:%@; ", charonDescribeObject(self->_connectionID)];
-    [text appendFormat:@"activationReason:%@; ", charonDescribeObject(self->_activationReason)];
-    [text appendFormat:@"timeControl:%@; ", charonDescribeObject(self->_timeControl)];
-    [text appendFormat:@"userDefined:%@; ", charonDescribeObject([self->_userDefined base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"connectionID:%@; ", [self->_connectionID description]];
+    [text appendFormat:@"activationReason:%@; ", [self->_activationReason description]];
+    [text appendFormat:@"timeControl:%@; ", [self->_timeControl description]];
+    [text appendFormat:@"userDefined:%@; ", [[self->_userDefined base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

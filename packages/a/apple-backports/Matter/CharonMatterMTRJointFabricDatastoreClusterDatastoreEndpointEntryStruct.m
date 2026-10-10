@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRJointFabricDatastoreClusterDatastoreEndpointEntryStruct
 
 @synthesize endpointID = _endpointID;
@@ -65,10 +54,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"endpointID:%@; ", charonDescribeObject(self->_endpointID)];
-    [text appendFormat:@"nodeID:%@; ", charonDescribeObject(self->_nodeID)];
-    [text appendFormat:@"friendlyName:%@; ", charonDescribeObject(self->_friendlyName)];
-    [text appendFormat:@"statusEntry:%@; ", charonDescribeObject(self->_statusEntry)];
+    [text appendFormat:@"endpointID:%@; ", [self->_endpointID description]];
+    [text appendFormat:@"nodeID:%@; ", [self->_nodeID description]];
+    [text appendFormat:@"friendlyName:%@; ", [self->_friendlyName description]];
+    [text appendFormat:@"statusEntry:%@; ", [self->_statusEntry description]];
     [text appendString:@">"];
     return text;
 }

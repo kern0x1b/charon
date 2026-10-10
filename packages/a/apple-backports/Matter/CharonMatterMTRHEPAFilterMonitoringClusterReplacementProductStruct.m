@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRHEPAFilterMonitoringClusterReplacementProductStruct
 
 @synthesize productIdentifierType = _productIdentifierType;
@@ -59,8 +48,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"productIdentifierType:%@; ", charonDescribeObject(self->_productIdentifierType)];
-    [text appendFormat:@"productIdentifierValue:%@; ", charonDescribeObject(self->_productIdentifierValue)];
+    [text appendFormat:@"productIdentifierType:%@; ", [self->_productIdentifierType description]];
+    [text appendFormat:@"productIdentifierValue:%@; ", [self->_productIdentifierValue description]];
     [text appendString:@">"];
     return text;
 }

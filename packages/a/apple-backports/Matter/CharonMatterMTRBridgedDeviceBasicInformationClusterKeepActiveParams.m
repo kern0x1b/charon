@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRBridgedDeviceBasicInformationClusterKeepActiveParams
 
 @synthesize stayActiveDuration = _stayActiveDuration;
@@ -63,8 +52,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"stayActiveDuration:%@; ", charonDescribeObject(self->_stayActiveDuration)];
-    [text appendFormat:@"timeoutMs:%@; ", charonDescribeObject(self->_timeoutMs)];
+    [text appendFormat:@"stayActiveDuration:%@; ", [self->_stayActiveDuration description]];
+    [text appendFormat:@"timeoutMs:%@; ", [self->_timeoutMs description]];
     [text appendString:@">"];
     return text;
 }

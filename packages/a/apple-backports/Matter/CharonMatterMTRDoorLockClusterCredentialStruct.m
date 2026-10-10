@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDoorLockClusterCredentialStruct
 
 @synthesize credentialType = _credentialType;
@@ -59,8 +48,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"credentialType:%@; ", charonDescribeObject(self->_credentialType)];
-    [text appendFormat:@"credentialIndex:%@; ", charonDescribeObject(self->_credentialIndex)];
+    [text appendFormat:@"credentialType:%@; ", [self->_credentialType description]];
+    [text appendFormat:@"credentialIndex:%@; ", [self->_credentialIndex description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRCameraAVStreamManagementClusterAudioCapabilitiesStruct
 
 @synthesize maxNumberOfChannels = _maxNumberOfChannels;
@@ -65,10 +54,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"maxNumberOfChannels:%@; ", charonDescribeObject(self->_maxNumberOfChannels)];
-    [text appendFormat:@"supportedCodecs:%@; ", charonDescribeObject(self->_supportedCodecs)];
-    [text appendFormat:@"supportedSampleRates:%@; ", charonDescribeObject(self->_supportedSampleRates)];
-    [text appendFormat:@"supportedBitDepths:%@; ", charonDescribeObject(self->_supportedBitDepths)];
+    [text appendFormat:@"maxNumberOfChannels:%@; ", [self->_maxNumberOfChannels description]];
+    [text appendFormat:@"supportedCodecs:%@; ", [self->_supportedCodecs description]];
+    [text appendFormat:@"supportedSampleRates:%@; ", [self->_supportedSampleRates description]];
+    [text appendFormat:@"supportedBitDepths:%@; ", [self->_supportedBitDepths description]];
     [text appendString:@">"];
     return text;
 }

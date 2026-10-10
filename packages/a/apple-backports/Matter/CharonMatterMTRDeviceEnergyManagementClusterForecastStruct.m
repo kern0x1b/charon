@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDeviceEnergyManagementClusterForecastStruct
 
 @synthesize forecastID = _forecastID;
@@ -77,15 +66,15 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"forecastID:%@; ", charonDescribeObject(self->_forecastID)];
-    [text appendFormat:@"activeSlotNumber:%@; ", charonDescribeObject(self->_activeSlotNumber)];
-    [text appendFormat:@"startTime:%@; ", charonDescribeObject(self->_startTime)];
-    [text appendFormat:@"endTime:%@; ", charonDescribeObject(self->_endTime)];
-    [text appendFormat:@"earliestStartTime:%@; ", charonDescribeObject(self->_earliestStartTime)];
-    [text appendFormat:@"latestEndTime:%@; ", charonDescribeObject(self->_latestEndTime)];
-    [text appendFormat:@"isPausable:%@; ", charonDescribeObject(self->_isPausable)];
-    [text appendFormat:@"slots:%@; ", charonDescribeObject(self->_slots)];
-    [text appendFormat:@"forecastUpdateReason:%@; ", charonDescribeObject(self->_forecastUpdateReason)];
+    [text appendFormat:@"forecastID:%@; ", [self->_forecastID description]];
+    [text appendFormat:@"activeSlotNumber:%@; ", [self->_activeSlotNumber description]];
+    [text appendFormat:@"startTime:%@; ", [self->_startTime description]];
+    [text appendFormat:@"endTime:%@; ", [self->_endTime description]];
+    [text appendFormat:@"earliestStartTime:%@; ", [self->_earliestStartTime description]];
+    [text appendFormat:@"latestEndTime:%@; ", [self->_latestEndTime description]];
+    [text appendFormat:@"isPausable:%@; ", [self->_isPausable description]];
+    [text appendFormat:@"slots:%@; ", [self->_slots description]];
+    [text appendFormat:@"forecastUpdateReason:%@; ", [self->_forecastUpdateReason description]];
     [text appendString:@">"];
     return text;
 }

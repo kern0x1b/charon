@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRTimeSynchronizationClusterDSTOffsetStruct
 
 @synthesize offset = _offset;
@@ -61,9 +50,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"offset:%@; ", charonDescribeObject(self->_offset)];
-    [text appendFormat:@"validStarting:%@; ", charonDescribeObject(self->_validStarting)];
-    [text appendFormat:@"validUntil:%@; ", charonDescribeObject(self->_validUntil)];
+    [text appendFormat:@"offset:%@; ", [self->_offset description]];
+    [text appendFormat:@"validStarting:%@; ", [self->_validStarting description]];
+    [text appendFormat:@"validUntil:%@; ", [self->_validUntil description]];
     [text appendString:@">"];
     return text;
 }

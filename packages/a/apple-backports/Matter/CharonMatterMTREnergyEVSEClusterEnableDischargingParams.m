@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTREnergyEVSEClusterEnableDischargingParams
 
 @synthesize dischargingEnabledUntil = _dischargingEnabledUntil;
@@ -62,8 +51,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"dischargingEnabledUntil:%@; ", charonDescribeObject(self->_dischargingEnabledUntil)];
-    [text appendFormat:@"maximumDischargeCurrent:%@; ", charonDescribeObject(self->_maximumDischargeCurrent)];
+    [text appendFormat:@"dischargingEnabledUntil:%@; ", [self->_dischargingEnabledUntil description]];
+    [text appendFormat:@"maximumDischargeCurrent:%@; ", [self->_maximumDischargeCurrent description]];
     [text appendString:@">"];
     return text;
 }

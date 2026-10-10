@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDataTypeICECandidateStruct
 
 @synthesize candidate = _candidate;
@@ -60,9 +49,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"candidate:%@; ", charonDescribeObject(self->_candidate)];
-    [text appendFormat:@"sdpMid:%@; ", charonDescribeObject(self->_sdpMid)];
-    [text appendFormat:@"sdpmLineIndex:%@; ", charonDescribeObject(self->_sdpmLineIndex)];
+    [text appendFormat:@"candidate:%@; ", [self->_candidate description]];
+    [text appendFormat:@"sdpMid:%@; ", [self->_sdpMid description]];
+    [text appendFormat:@"sdpmLineIndex:%@; ", [self->_sdpmLineIndex description]];
     [text appendString:@">"];
     return text;
 }

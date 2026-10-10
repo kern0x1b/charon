@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTROTASoftwareUpdateRequestorClusterAnnounceOTAProviderParams
 
 @synthesize providerNodeID = _providerNodeID;
@@ -95,11 +84,11 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"providerNodeID:%@; ", charonDescribeObject(self->_providerNodeID)];
-    [text appendFormat:@"vendorID:%@; ", charonDescribeObject(self->_vendorID)];
-    [text appendFormat:@"announcementReason:%@; ", charonDescribeObject(self->_announcementReason)];
-    [text appendFormat:@"metadataForNode:%@; ", charonDescribeObject([self->_metadataForNode base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"endpoint:%@; ", charonDescribeObject(self->_endpoint)];
+    [text appendFormat:@"providerNodeID:%@; ", [self->_providerNodeID description]];
+    [text appendFormat:@"vendorID:%@; ", [self->_vendorID description]];
+    [text appendFormat:@"announcementReason:%@; ", [self->_announcementReason description]];
+    [text appendFormat:@"metadataForNode:%@; ", [[self->_metadataForNode base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"endpoint:%@; ", [self->_endpoint description]];
     [text appendString:@">"];
     return text;
 }

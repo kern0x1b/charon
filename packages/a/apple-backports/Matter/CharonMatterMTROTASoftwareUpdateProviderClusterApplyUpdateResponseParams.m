@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTROTASoftwareUpdateProviderClusterApplyUpdateResponseParams
 
 @synthesize action = _action;
@@ -61,8 +50,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"action:%@; ", charonDescribeObject(self->_action)];
-    [text appendFormat:@"delayedActionTime:%@; ", charonDescribeObject(self->_delayedActionTime)];
+    [text appendFormat:@"action:%@; ", [self->_action description]];
+    [text appendFormat:@"delayedActionTime:%@; ", [self->_delayedActionTime description]];
     [text appendString:@">"];
     return text;
 }

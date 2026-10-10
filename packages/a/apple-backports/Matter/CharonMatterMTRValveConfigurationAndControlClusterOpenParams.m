@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRValveConfigurationAndControlClusterOpenParams
 
 @synthesize openDuration = _openDuration;
@@ -61,8 +50,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"openDuration:%@; ", charonDescribeObject(self->_openDuration)];
-    [text appendFormat:@"targetLevel:%@; ", charonDescribeObject(self->_targetLevel)];
+    [text appendFormat:@"openDuration:%@; ", [self->_openDuration description]];
+    [text appendFormat:@"targetLevel:%@; ", [self->_targetLevel description]];
     [text appendString:@">"];
     return text;
 }

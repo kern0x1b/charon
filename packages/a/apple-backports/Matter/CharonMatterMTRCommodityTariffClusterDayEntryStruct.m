@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRCommodityTariffClusterDayEntryStruct
 
 @synthesize dayEntryID = _dayEntryID;
@@ -65,11 +54,11 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"dayEntryID:%@; ", charonDescribeObject(self->_dayEntryID)];
-    [text appendFormat:@"startTime:%@; ", charonDescribeObject(self->_startTime)];
-    [text appendFormat:@"duration:%@; ", charonDescribeObject(self->_duration)];
-    [text appendFormat:@"randomizationOffset:%@; ", charonDescribeObject(self->_randomizationOffset)];
-    [text appendFormat:@"randomizationType:%@; ", charonDescribeObject(self->_randomizationType)];
+    [text appendFormat:@"dayEntryID:%@; ", [self->_dayEntryID description]];
+    [text appendFormat:@"startTime:%@; ", [self->_startTime description]];
+    [text appendFormat:@"duration:%@; ", [self->_duration description]];
+    [text appendFormat:@"randomizationOffset:%@; ", [self->_randomizationOffset description]];
+    [text appendFormat:@"randomizationType:%@; ", [self->_randomizationType description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRClosureDimensionClusterStepParams
 
 @synthesize direction = _direction;
@@ -65,9 +54,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"direction:%@; ", charonDescribeObject(self->_direction)];
-    [text appendFormat:@"numberOfSteps:%@; ", charonDescribeObject(self->_numberOfSteps)];
-    [text appendFormat:@"speed:%@; ", charonDescribeObject(self->_speed)];
+    [text appendFormat:@"direction:%@; ", [self->_direction description]];
+    [text appendFormat:@"numberOfSteps:%@; ", [self->_numberOfSteps description]];
+    [text appendFormat:@"speed:%@; ", [self->_speed description]];
     [text appendString:@">"];
     return text;
 }

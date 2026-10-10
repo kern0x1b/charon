@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRUnitTestingClusterTestDifferentVendorMeiEventEvent
 
 @synthesize arg1 = _arg1;
@@ -56,7 +45,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"arg1:%@; ", charonDescribeObject(self->_arg1)];
+    [text appendFormat:@"arg1:%@; ", [self->_arg1 description]];
     [text appendString:@">"];
     return text;
 }

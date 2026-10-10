@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTROperationalCredentialsClusterSetVIDVerificationStatementParams
 
 @synthesize vendorID = _vendorID;
@@ -63,9 +52,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"vendorID:%@; ", charonDescribeObject(self->_vendorID)];
-    [text appendFormat:@"vidVerificationStatement:%@; ", charonDescribeObject([self->_vidVerificationStatement base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"vvsc:%@; ", charonDescribeObject([self->_vvsc base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"vendorID:%@; ", [self->_vendorID description]];
+    [text appendFormat:@"vidVerificationStatement:%@; ", [[self->_vidVerificationStatement base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"vvsc:%@; ", [[self->_vvsc base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

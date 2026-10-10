@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRThermostatClusterActivePresetChangeEvent
 
 @synthesize previousPresetHandle = _previousPresetHandle;
@@ -57,8 +46,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"previousPresetHandle:%@; ", charonDescribeObject([self->_previousPresetHandle base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"currentPresetHandle:%@; ", charonDescribeObject([self->_currentPresetHandle base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"previousPresetHandle:%@; ", [[self->_previousPresetHandle base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"currentPresetHandle:%@; ", [[self->_currentPresetHandle base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

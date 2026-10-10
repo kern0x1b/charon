@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRCameraAVStreamManagementClusterSnapshotStreamModifyParams
 
 @synthesize snapshotStreamID = _snapshotStreamID;
@@ -64,9 +53,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"snapshotStreamID:%@; ", charonDescribeObject(self->_snapshotStreamID)];
-    [text appendFormat:@"watermarkEnabled:%@; ", charonDescribeObject(self->_watermarkEnabled)];
-    [text appendFormat:@"osdEnabled:%@; ", charonDescribeObject(self->_osdEnabled)];
+    [text appendFormat:@"snapshotStreamID:%@; ", [self->_snapshotStreamID description]];
+    [text appendFormat:@"watermarkEnabled:%@; ", [self->_watermarkEnabled description]];
+    [text appendFormat:@"osdEnabled:%@; ", [self->_osdEnabled description]];
     [text appendString:@">"];
     return text;
 }

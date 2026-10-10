@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRContentAppObserverClusterContentAppMessageParams
 
 @synthesize data = _data;
@@ -62,8 +51,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"data:%@; ", charonDescribeObject(self->_data)];
-    [text appendFormat:@"encodingHint:%@; ", charonDescribeObject(self->_encodingHint)];
+    [text appendFormat:@"data:%@; ", [self->_data description]];
+    [text appendFormat:@"encodingHint:%@; ", [self->_encodingHint description]];
     [text appendString:@">"];
     return text;
 }

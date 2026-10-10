@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRCameraAVStreamManagementClusterSnapshotStreamStruct
 
 @synthesize snapshotStreamID = _snapshotStreamID;
@@ -84,17 +73,17 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"snapshotStreamID:%@; ", charonDescribeObject(self->_snapshotStreamID)];
-    [text appendFormat:@"imageCodec:%@; ", charonDescribeObject(self->_imageCodec)];
-    [text appendFormat:@"frameRate:%@; ", charonDescribeObject(self->_frameRate)];
-    [text appendFormat:@"minResolution:%@; ", charonDescribeObject(self->_minResolution)];
-    [text appendFormat:@"maxResolution:%@; ", charonDescribeObject(self->_maxResolution)];
-    [text appendFormat:@"quality:%@; ", charonDescribeObject(self->_quality)];
-    [text appendFormat:@"referenceCount:%@; ", charonDescribeObject(self->_referenceCount)];
-    [text appendFormat:@"encodedPixels:%@; ", charonDescribeObject(self->_encodedPixels)];
-    [text appendFormat:@"hardwareEncoder:%@; ", charonDescribeObject(self->_hardwareEncoder)];
-    [text appendFormat:@"watermarkEnabled:%@; ", charonDescribeObject(self->_watermarkEnabled)];
-    [text appendFormat:@"osdEnabled:%@; ", charonDescribeObject(self->_osdEnabled)];
+    [text appendFormat:@"snapshotStreamID:%@; ", [self->_snapshotStreamID description]];
+    [text appendFormat:@"imageCodec:%@; ", [self->_imageCodec description]];
+    [text appendFormat:@"frameRate:%@; ", [self->_frameRate description]];
+    [text appendFormat:@"minResolution:%@; ", [self->_minResolution description]];
+    [text appendFormat:@"maxResolution:%@; ", [self->_maxResolution description]];
+    [text appendFormat:@"quality:%@; ", [self->_quality description]];
+    [text appendFormat:@"referenceCount:%@; ", [self->_referenceCount description]];
+    [text appendFormat:@"encodedPixels:%@; ", [self->_encodedPixels description]];
+    [text appendFormat:@"hardwareEncoder:%@; ", [self->_hardwareEncoder description]];
+    [text appendFormat:@"watermarkEnabled:%@; ", [self->_watermarkEnabled description]];
+    [text appendFormat:@"osdEnabled:%@; ", [self->_osdEnabled description]];
     [text appendString:@">"];
     return text;
 }

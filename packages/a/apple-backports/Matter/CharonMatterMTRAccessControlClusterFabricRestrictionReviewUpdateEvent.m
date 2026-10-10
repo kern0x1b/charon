@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRAccessControlClusterFabricRestrictionReviewUpdateEvent
 
 @synthesize token = _token;
@@ -63,10 +52,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"token:%@; ", charonDescribeObject(self->_token)];
-    [text appendFormat:@"instruction:%@; ", charonDescribeObject(self->_instruction)];
-    [text appendFormat:@"arlRequestFlowUrl:%@; ", charonDescribeObject(self->_arlRequestFlowUrl)];
-    [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self->_fabricIndex)];
+    [text appendFormat:@"token:%@; ", [self->_token description]];
+    [text appendFormat:@"instruction:%@; ", [self->_instruction description]];
+    [text appendFormat:@"arlRequestFlowUrl:%@; ", [self->_arlRequestFlowUrl description]];
+    [text appendFormat:@"fabricIndex:%@; ", [self->_fabricIndex description]];
     [text appendString:@">"];
     return text;
 }

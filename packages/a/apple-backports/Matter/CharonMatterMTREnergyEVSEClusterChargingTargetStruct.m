@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTREnergyEVSEClusterChargingTargetStruct
 
 @synthesize targetTimeMinutesPastMidnight = _targetTimeMinutesPastMidnight;
@@ -60,9 +49,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"targetTimeMinutesPastMidnight:%@; ", charonDescribeObject(self->_targetTimeMinutesPastMidnight)];
-    [text appendFormat:@"targetSoC:%@; ", charonDescribeObject(self->_targetSoC)];
-    [text appendFormat:@"addedEnergy:%@; ", charonDescribeObject(self->_addedEnergy)];
+    [text appendFormat:@"targetTimeMinutesPastMidnight:%@; ", [self->_targetTimeMinutesPastMidnight description]];
+    [text appendFormat:@"targetSoC:%@; ", [self->_targetSoC description]];
+    [text appendFormat:@"addedEnergy:%@; ", [self->_addedEnergy description]];
     [text appendString:@">"];
     return text;
 }

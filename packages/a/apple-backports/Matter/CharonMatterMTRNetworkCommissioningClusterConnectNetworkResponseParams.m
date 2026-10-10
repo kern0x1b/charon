@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRNetworkCommissioningClusterConnectNetworkResponseParams
 
 @synthesize networkingStatus = _networkingStatus;
@@ -62,9 +51,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"networkingStatus:%@; ", charonDescribeObject(self->_networkingStatus)];
-    [text appendFormat:@"debugText:%@; ", charonDescribeObject(self->_debugText)];
-    [text appendFormat:@"errorValue:%@; ", charonDescribeObject(self->_errorValue)];
+    [text appendFormat:@"networkingStatus:%@; ", [self->_networkingStatus description]];
+    [text appendFormat:@"debugText:%@; ", [self->_debugText description]];
+    [text appendFormat:@"errorValue:%@; ", [self->_errorValue description]];
     [text appendString:@">"];
     return text;
 }

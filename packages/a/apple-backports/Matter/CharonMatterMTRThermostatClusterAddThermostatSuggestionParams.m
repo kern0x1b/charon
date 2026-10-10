@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRThermostatClusterAddThermostatSuggestionParams
 
 @synthesize presetHandle = _presetHandle;
@@ -65,9 +54,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"presetHandle:%@; ", charonDescribeObject([self->_presetHandle base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"effectiveTime:%@; ", charonDescribeObject(self->_effectiveTime)];
-    [text appendFormat:@"expirationInMinutes:%@; ", charonDescribeObject(self->_expirationInMinutes)];
+    [text appendFormat:@"presetHandle:%@; ", [[self->_presetHandle base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"effectiveTime:%@; ", [self->_effectiveTime description]];
+    [text appendFormat:@"expirationInMinutes:%@; ", [self->_expirationInMinutes description]];
     [text appendString:@">"];
     return text;
 }

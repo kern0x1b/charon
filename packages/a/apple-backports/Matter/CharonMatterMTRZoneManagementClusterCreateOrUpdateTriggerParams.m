@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRZoneManagementClusterCreateOrUpdateTriggerParams
 
 @synthesize trigger = _trigger;
@@ -60,7 +49,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"trigger:%@; ", charonDescribeObject(self->_trigger)];
+    [text appendFormat:@"trigger:%@; ", [self->_trigger description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRWaterHeaterModeClusterModeTagStruct
 
 @synthesize mfgCode = _mfgCode;
@@ -58,8 +47,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"mfgCode:%@; ", charonDescribeObject(self->_mfgCode)];
-    [text appendFormat:@"value:%@; ", charonDescribeObject(self->_value)];
+    [text appendFormat:@"mfgCode:%@; ", [self->_mfgCode description]];
+    [text appendFormat:@"value:%@; ", [self->_value description]];
     [text appendString:@">"];
     return text;
 }

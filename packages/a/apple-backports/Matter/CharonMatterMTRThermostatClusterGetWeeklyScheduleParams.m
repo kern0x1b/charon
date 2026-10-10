@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRThermostatClusterGetWeeklyScheduleParams
 
 @synthesize daysToReturn = _daysToReturn;
@@ -63,8 +52,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"daysToReturn:%@; ", charonDescribeObject(self->_daysToReturn)];
-    [text appendFormat:@"modeToReturn:%@; ", charonDescribeObject(self->_modeToReturn)];
+    [text appendFormat:@"daysToReturn:%@; ", [self->_daysToReturn description]];
+    [text appendFormat:@"modeToReturn:%@; ", [self->_modeToReturn description]];
     [text appendString:@">"];
     return text;
 }

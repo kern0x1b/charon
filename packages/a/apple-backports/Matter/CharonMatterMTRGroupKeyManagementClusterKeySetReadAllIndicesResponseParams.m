@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRGroupKeyManagementClusterKeySetReadAllIndicesResponseParams
 
 @synthesize groupKeySetIDs = _groupKeySetIDs;
@@ -58,7 +47,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"groupKeySetIDs:%@; ", charonDescribeObject(self->_groupKeySetIDs)];
+    [text appendFormat:@"groupKeySetIDs:%@; ", [self->_groupKeySetIDs description]];
     [text appendString:@">"];
     return text;
 }

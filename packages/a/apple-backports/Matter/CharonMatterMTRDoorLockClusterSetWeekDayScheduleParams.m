@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRDoorLockClusterSetWeekDayScheduleParams
 
 @synthesize weekDayIndex = _weekDayIndex;
@@ -78,13 +67,13 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"weekDayIndex:%@; ", charonDescribeObject(self->_weekDayIndex)];
-    [text appendFormat:@"userIndex:%@; ", charonDescribeObject(self->_userIndex)];
-    [text appendFormat:@"daysMask:%@; ", charonDescribeObject(self->_daysMask)];
-    [text appendFormat:@"startHour:%@; ", charonDescribeObject(self->_startHour)];
-    [text appendFormat:@"startMinute:%@; ", charonDescribeObject(self->_startMinute)];
-    [text appendFormat:@"endHour:%@; ", charonDescribeObject(self->_endHour)];
-    [text appendFormat:@"endMinute:%@; ", charonDescribeObject(self->_endMinute)];
+    [text appendFormat:@"weekDayIndex:%@; ", [self->_weekDayIndex description]];
+    [text appendFormat:@"userIndex:%@; ", [self->_userIndex description]];
+    [text appendFormat:@"daysMask:%@; ", [self->_daysMask description]];
+    [text appendFormat:@"startHour:%@; ", [self->_startHour description]];
+    [text appendFormat:@"startMinute:%@; ", [self->_startMinute description]];
+    [text appendFormat:@"endHour:%@; ", [self->_endHour description]];
+    [text appendFormat:@"endMinute:%@; ", [self->_endMinute description]];
     [text appendString:@">"];
     return text;
 }

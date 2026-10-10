@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRElectricalPowerMeasurementClusterMeasurementRangeStruct
 
 @synthesize measurementType = _measurementType;
@@ -78,17 +67,17 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"measurementType:%@; ", charonDescribeObject(self->_measurementType)];
-    [text appendFormat:@"min:%@; ", charonDescribeObject(self->_min)];
-    [text appendFormat:@"max:%@; ", charonDescribeObject(self->_max)];
-    [text appendFormat:@"startTimestamp:%@; ", charonDescribeObject(self->_startTimestamp)];
-    [text appendFormat:@"endTimestamp:%@; ", charonDescribeObject(self->_endTimestamp)];
-    [text appendFormat:@"minTimestamp:%@; ", charonDescribeObject(self->_minTimestamp)];
-    [text appendFormat:@"maxTimestamp:%@; ", charonDescribeObject(self->_maxTimestamp)];
-    [text appendFormat:@"startSystime:%@; ", charonDescribeObject(self->_startSystime)];
-    [text appendFormat:@"endSystime:%@; ", charonDescribeObject(self->_endSystime)];
-    [text appendFormat:@"minSystime:%@; ", charonDescribeObject(self->_minSystime)];
-    [text appendFormat:@"maxSystime:%@; ", charonDescribeObject(self->_maxSystime)];
+    [text appendFormat:@"measurementType:%@; ", [self->_measurementType description]];
+    [text appendFormat:@"min:%@; ", [self->_min description]];
+    [text appendFormat:@"max:%@; ", [self->_max description]];
+    [text appendFormat:@"startTimestamp:%@; ", [self->_startTimestamp description]];
+    [text appendFormat:@"endTimestamp:%@; ", [self->_endTimestamp description]];
+    [text appendFormat:@"minTimestamp:%@; ", [self->_minTimestamp description]];
+    [text appendFormat:@"maxTimestamp:%@; ", [self->_maxTimestamp description]];
+    [text appendFormat:@"startSystime:%@; ", [self->_startSystime description]];
+    [text appendFormat:@"endSystime:%@; ", [self->_endSystime description]];
+    [text appendFormat:@"minSystime:%@; ", [self->_minSystime description]];
+    [text appendFormat:@"maxSystime:%@; ", [self->_maxSystime description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRCameraAVStreamManagementClusterVideoStreamStruct
 
 @synthesize videoStreamID = _videoStreamID;
@@ -90,19 +79,19 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"videoStreamID:%@; ", charonDescribeObject(self->_videoStreamID)];
-    [text appendFormat:@"streamUsage:%@; ", charonDescribeObject(self->_streamUsage)];
-    [text appendFormat:@"videoCodec:%@; ", charonDescribeObject(self->_videoCodec)];
-    [text appendFormat:@"minFrameRate:%@; ", charonDescribeObject(self->_minFrameRate)];
-    [text appendFormat:@"maxFrameRate:%@; ", charonDescribeObject(self->_maxFrameRate)];
-    [text appendFormat:@"minResolution:%@; ", charonDescribeObject(self->_minResolution)];
-    [text appendFormat:@"maxResolution:%@; ", charonDescribeObject(self->_maxResolution)];
-    [text appendFormat:@"minBitRate:%@; ", charonDescribeObject(self->_minBitRate)];
-    [text appendFormat:@"maxBitRate:%@; ", charonDescribeObject(self->_maxBitRate)];
-    [text appendFormat:@"keyFrameInterval:%@; ", charonDescribeObject(self->_keyFrameInterval)];
-    [text appendFormat:@"watermarkEnabled:%@; ", charonDescribeObject(self->_watermarkEnabled)];
-    [text appendFormat:@"osdEnabled:%@; ", charonDescribeObject(self->_osdEnabled)];
-    [text appendFormat:@"referenceCount:%@; ", charonDescribeObject(self->_referenceCount)];
+    [text appendFormat:@"videoStreamID:%@; ", [self->_videoStreamID description]];
+    [text appendFormat:@"streamUsage:%@; ", [self->_streamUsage description]];
+    [text appendFormat:@"videoCodec:%@; ", [self->_videoCodec description]];
+    [text appendFormat:@"minFrameRate:%@; ", [self->_minFrameRate description]];
+    [text appendFormat:@"maxFrameRate:%@; ", [self->_maxFrameRate description]];
+    [text appendFormat:@"minResolution:%@; ", [self->_minResolution description]];
+    [text appendFormat:@"maxResolution:%@; ", [self->_maxResolution description]];
+    [text appendFormat:@"minBitRate:%@; ", [self->_minBitRate description]];
+    [text appendFormat:@"maxBitRate:%@; ", [self->_maxBitRate description]];
+    [text appendFormat:@"keyFrameInterval:%@; ", [self->_keyFrameInterval description]];
+    [text appendFormat:@"watermarkEnabled:%@; ", [self->_watermarkEnabled description]];
+    [text appendFormat:@"osdEnabled:%@; ", [self->_osdEnabled description]];
+    [text appendFormat:@"referenceCount:%@; ", [self->_referenceCount description]];
     [text appendString:@">"];
     return text;
 }

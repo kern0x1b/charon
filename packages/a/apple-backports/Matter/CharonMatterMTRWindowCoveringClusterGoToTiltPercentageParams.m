@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRWindowCoveringClusterGoToTiltPercentageParams
 
 @synthesize tiltPercent100thsValue = _tiltPercent100thsValue;
@@ -60,7 +49,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"tiltPercent100thsValue:%@; ", charonDescribeObject(self->_tiltPercent100thsValue)];
+    [text appendFormat:@"tiltPercent100thsValue:%@; ", [self->_tiltPercent100thsValue description]];
     [text appendString:@">"];
     return text;
 }

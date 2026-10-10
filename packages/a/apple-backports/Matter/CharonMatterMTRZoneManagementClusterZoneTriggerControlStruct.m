@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRZoneManagementClusterZoneTriggerControlStruct
 
 @synthesize zoneID = _zoneID;
@@ -70,12 +59,12 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"zoneID:%@; ", charonDescribeObject(self->_zoneID)];
-    [text appendFormat:@"initialDuration:%@; ", charonDescribeObject(self->_initialDuration)];
-    [text appendFormat:@"augmentationDuration:%@; ", charonDescribeObject(self->_augmentationDuration)];
-    [text appendFormat:@"maxDuration:%@; ", charonDescribeObject(self->_maxDuration)];
-    [text appendFormat:@"blindDuration:%@; ", charonDescribeObject(self->_blindDuration)];
-    [text appendFormat:@"sensitivity:%@; ", charonDescribeObject(self->_sensitivity)];
+    [text appendFormat:@"zoneID:%@; ", [self->_zoneID description]];
+    [text appendFormat:@"initialDuration:%@; ", [self->_initialDuration description]];
+    [text appendFormat:@"augmentationDuration:%@; ", [self->_augmentationDuration description]];
+    [text appendFormat:@"maxDuration:%@; ", [self->_maxDuration description]];
+    [text appendFormat:@"blindDuration:%@; ", [self->_blindDuration description]];
+    [text appendFormat:@"sensitivity:%@; ", [self->_sensitivity description]];
     [text appendString:@">"];
     return text;
 }

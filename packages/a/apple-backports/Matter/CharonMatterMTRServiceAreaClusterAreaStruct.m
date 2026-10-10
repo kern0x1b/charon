@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRServiceAreaClusterAreaStruct
 
 @synthesize areaID = _areaID;
@@ -61,9 +50,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"areaID:%@; ", charonDescribeObject(self->_areaID)];
-    [text appendFormat:@"mapID:%@; ", charonDescribeObject(self->_mapID)];
-    [text appendFormat:@"areaInfo:%@; ", charonDescribeObject(self->_areaInfo)];
+    [text appendFormat:@"areaID:%@; ", [self->_areaID description]];
+    [text appendFormat:@"mapID:%@; ", [self->_mapID description]];
+    [text appendFormat:@"areaInfo:%@; ", [self->_areaInfo description]];
     [text appendString:@">"];
     return text;
 }

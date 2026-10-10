@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRPushAVStreamTransportClusterContainerOptionsStruct
 
 @synthesize containerType = _containerType;
@@ -58,8 +47,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"containerType:%@; ", charonDescribeObject(self->_containerType)];
-    [text appendFormat:@"cmafContainerOptions:%@; ", charonDescribeObject(self->_cmafContainerOptions)];
+    [text appendFormat:@"containerType:%@; ", [self->_containerType description]];
+    [text appendFormat:@"cmafContainerOptions:%@; ", [self->_cmafContainerOptions description]];
     [text appendString:@">"];
     return text;
 }

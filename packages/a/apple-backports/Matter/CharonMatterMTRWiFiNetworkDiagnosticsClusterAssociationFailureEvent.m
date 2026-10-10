@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRWiFiNetworkDiagnosticsClusterAssociationFailureEvent
 
 @synthesize associationFailureCause = _associationFailureCause;
@@ -73,8 +62,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"associationFailureCause:%@; ", charonDescribeObject(self->_associationFailureCause)];
-    [text appendFormat:@"status:%@; ", charonDescribeObject(self->_status)];
+    [text appendFormat:@"associationFailureCause:%@; ", [self->_associationFailureCause description]];
+    [text appendFormat:@"status:%@; ", [self->_status description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRScenesManagementClusterCopySceneParams
 
 @synthesize mode = _mode;
@@ -72,11 +61,11 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"mode:%@; ", charonDescribeObject(self->_mode)];
-    [text appendFormat:@"groupIdentifierFrom:%@; ", charonDescribeObject(self->_groupIdentifierFrom)];
-    [text appendFormat:@"sceneIdentifierFrom:%@; ", charonDescribeObject(self->_sceneIdentifierFrom)];
-    [text appendFormat:@"groupIdentifierTo:%@; ", charonDescribeObject(self->_groupIdentifierTo)];
-    [text appendFormat:@"sceneIdentifierTo:%@; ", charonDescribeObject(self->_sceneIdentifierTo)];
+    [text appendFormat:@"mode:%@; ", [self->_mode description]];
+    [text appendFormat:@"groupIdentifierFrom:%@; ", [self->_groupIdentifierFrom description]];
+    [text appendFormat:@"sceneIdentifierFrom:%@; ", [self->_sceneIdentifierFrom description]];
+    [text appendFormat:@"groupIdentifierTo:%@; ", [self->_groupIdentifierTo description]];
+    [text appendFormat:@"sceneIdentifierTo:%@; ", [self->_sceneIdentifierTo description]];
     [text appendString:@">"];
     return text;
 }

@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRLevelControlClusterMoveToClosestFrequencyParams
 
 @synthesize frequency = _frequency;
@@ -60,7 +49,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"frequency:%@; ", charonDescribeObject(self->_frequency)];
+    [text appendFormat:@"frequency:%@; ", [self->_frequency description]];
     [text appendString:@">"];
     return text;
 }

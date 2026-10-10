@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRThermostatClusterActiveScheduleChangeEvent
 
 @synthesize previousScheduleHandle = _previousScheduleHandle;
@@ -57,8 +46,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"previousScheduleHandle:%@; ", charonDescribeObject([self->_previousScheduleHandle base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"currentScheduleHandle:%@; ", charonDescribeObject([self->_currentScheduleHandle base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"previousScheduleHandle:%@; ", [[self->_previousScheduleHandle base64EncodedStringWithOptions:0] description]];
+    [text appendFormat:@"currentScheduleHandle:%@; ", [[self->_currentScheduleHandle base64EncodedStringWithOptions:0] description]];
     [text appendString:@">"];
     return text;
 }

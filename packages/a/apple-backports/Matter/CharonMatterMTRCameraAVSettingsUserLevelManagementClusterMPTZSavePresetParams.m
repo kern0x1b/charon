@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRCameraAVSettingsUserLevelManagementClusterMPTZSavePresetParams
 
 @synthesize presetID = _presetID;
@@ -62,8 +51,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"presetID:%@; ", charonDescribeObject(self->_presetID)];
-    [text appendFormat:@"name:%@; ", charonDescribeObject(self->_name)];
+    [text appendFormat:@"presetID:%@; ", [self->_presetID description]];
+    [text appendFormat:@"name:%@; ", [self->_name description]];
     [text appendString:@">"];
     return text;
 }

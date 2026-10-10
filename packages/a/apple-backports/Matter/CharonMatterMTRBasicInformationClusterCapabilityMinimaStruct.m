@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRBasicInformationClusterCapabilityMinimaStruct
 
 @synthesize caseSessionsPerFabric = _caseSessionsPerFabric;
@@ -59,8 +48,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"caseSessionsPerFabric:%@; ", charonDescribeObject(self->_caseSessionsPerFabric)];
-    [text appendFormat:@"subscriptionsPerFabric:%@; ", charonDescribeObject(self->_subscriptionsPerFabric)];
+    [text appendFormat:@"caseSessionsPerFabric:%@; ", [self->_caseSessionsPerFabric description]];
+    [text appendFormat:@"subscriptionsPerFabric:%@; ", [self->_subscriptionsPerFabric description]];
     [text appendString:@">"];
     return text;
 }

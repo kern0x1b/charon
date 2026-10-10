@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRScenesManagementClusterAttributeValuePairStruct
 
 @synthesize attributeID = _attributeID;
@@ -72,15 +61,15 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"attributeID:%@; ", charonDescribeObject(self->_attributeID)];
-    [text appendFormat:@"valueUnsigned8:%@; ", charonDescribeObject(self->_valueUnsigned8)];
-    [text appendFormat:@"valueSigned8:%@; ", charonDescribeObject(self->_valueSigned8)];
-    [text appendFormat:@"valueUnsigned16:%@; ", charonDescribeObject(self->_valueUnsigned16)];
-    [text appendFormat:@"valueSigned16:%@; ", charonDescribeObject(self->_valueSigned16)];
-    [text appendFormat:@"valueUnsigned32:%@; ", charonDescribeObject(self->_valueUnsigned32)];
-    [text appendFormat:@"valueSigned32:%@; ", charonDescribeObject(self->_valueSigned32)];
-    [text appendFormat:@"valueUnsigned64:%@; ", charonDescribeObject(self->_valueUnsigned64)];
-    [text appendFormat:@"valueSigned64:%@; ", charonDescribeObject(self->_valueSigned64)];
+    [text appendFormat:@"attributeID:%@; ", [self->_attributeID description]];
+    [text appendFormat:@"valueUnsigned8:%@; ", [self->_valueUnsigned8 description]];
+    [text appendFormat:@"valueSigned8:%@; ", [self->_valueSigned8 description]];
+    [text appendFormat:@"valueUnsigned16:%@; ", [self->_valueUnsigned16 description]];
+    [text appendFormat:@"valueSigned16:%@; ", [self->_valueSigned16 description]];
+    [text appendFormat:@"valueUnsigned32:%@; ", [self->_valueUnsigned32 description]];
+    [text appendFormat:@"valueSigned32:%@; ", [self->_valueSigned32 description]];
+    [text appendFormat:@"valueUnsigned64:%@; ", [self->_valueUnsigned64 description]];
+    [text appendFormat:@"valueSigned64:%@; ", [self->_valueSigned64 description]];
     [text appendString:@">"];
     return text;
 }

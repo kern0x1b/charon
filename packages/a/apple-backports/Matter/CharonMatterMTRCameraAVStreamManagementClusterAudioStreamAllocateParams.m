@@ -19,17 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-
-static NSString *charonDescribeObject(id value)
-{
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
 @implementation MTRCameraAVStreamManagementClusterAudioStreamAllocateParams
 
 @synthesize streamUsage = _streamUsage;
@@ -75,12 +64,12 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"streamUsage:%@; ", charonDescribeObject(self->_streamUsage)];
-    [text appendFormat:@"audioCodec:%@; ", charonDescribeObject(self->_audioCodec)];
-    [text appendFormat:@"channelCount:%@; ", charonDescribeObject(self->_channelCount)];
-    [text appendFormat:@"sampleRate:%@; ", charonDescribeObject(self->_sampleRate)];
-    [text appendFormat:@"bitRate:%@; ", charonDescribeObject(self->_bitRate)];
-    [text appendFormat:@"bitDepth:%@; ", charonDescribeObject(self->_bitDepth)];
+    [text appendFormat:@"streamUsage:%@; ", [self->_streamUsage description]];
+    [text appendFormat:@"audioCodec:%@; ", [self->_audioCodec description]];
+    [text appendFormat:@"channelCount:%@; ", [self->_channelCount description]];
+    [text appendFormat:@"sampleRate:%@; ", [self->_sampleRate description]];
+    [text appendFormat:@"bitRate:%@; ", [self->_bitRate description]];
+    [text appendFormat:@"bitDepth:%@; ", [self->_bitDepth description]];
     [text appendString:@">"];
     return text;
 }
