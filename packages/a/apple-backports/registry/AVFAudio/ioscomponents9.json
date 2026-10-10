@@ -148,11 +148,12 @@
     {
       "api": "-[AVAudioUnitComponent supportsNumberInputChannels:outputChannels:]",
       "kind": "method",
-      "introduced": "9.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "absent",
+      "reason": "SDK 26.2 declares it API_AVAILABLE(macos(10.10)) API_UNAVAILABLE(ios, watchos, tvos) (AVAudioUnitComponent.h:169): a macOS-only member, so no iOS release carries it",
+      "effect": "the selector is not there on iOS: respondsToSelector: answers NO, and a call is doesNotRecognizeSelector:, which is what absent means",
       "facts": "facts/AVFAudio/AVFAudioStrings.md",
-      "source": "AVFAudio of the arm64e shared cache of iOS 18.0 and SDK 26.2, AVFAudio; the C base read from the real armv7 6.1.3 cache with dyld.load (AudioToolbox exports the whole AudioComponent and AudioUnit family and the whole AUGraph family, CoreAudio the whole AudioObject family)"
+      "source": "iPhoneOS26.2.sdk AVFAudio.framework Headers/AVAudioUnitComponent.h:169"
     },
     {
       "api": "-[AVAudioUnitComponentManager componentsMatchingDescription:]",
@@ -211,20 +212,22 @@
     {
       "api": "AVAudioUnitComponent.availableArchitectures",
       "kind": "property",
-      "introduced": "9.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "absent",
+      "reason": "SDK 26.2 declares it API_AVAILABLE(macos(10.10)) API_UNAVAILABLE(ios, watchos, tvos) (AVAudioUnitComponent.h:88): a macOS-only member, so no iOS release carries it",
+      "effect": "the selector is not there on iOS: respondsToSelector: answers NO, and a call is doesNotRecognizeSelector:, which is what absent means",
       "facts": "facts/AVFAudio/AVAudioUnitComponent.md",
-      "source": "AVFAudio of the arm64e shared cache of iOS 18.0 and SDK 26.2, AVFAudio; the C base read from the real armv7 6.1.3 cache with dyld.load (AudioToolbox exports the whole AudioComponent and AudioUnit family and the whole AUGraph family, CoreAudio the whole AudioObject family)"
+      "source": "iPhoneOS26.2.sdk AVFAudio.framework Headers/AVAudioUnitComponent.h:88"
     },
     {
       "api": "AVAudioUnitComponent.componentURL",
       "kind": "property",
-      "introduced": "9.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "absent",
+      "reason": "SDK 26.2 declares it NS_DEPRECATED(10_10, 10_11, NA, NA) (AVAudioUnitComponent.h:83): a macOS-only member, so no iOS release carries it",
+      "effect": "the selector is not there on iOS: respondsToSelector: answers NO, and a call is doesNotRecognizeSelector:, which is what absent means",
       "facts": "facts/AVFAudio/AVAudioUnitComponent.md",
-      "source": "AVFAudio of the arm64e shared cache of iOS 18.0 and SDK 26.2, AVFAudio; the C base read from the real armv7 6.1.3 cache with dyld.load (AudioToolbox exports the whole AudioComponent and AudioUnit family and the whole AUGraph family, CoreAudio the whole AudioObject family)"
+      "source": "iPhoneOS26.2.sdk AVFAudio.framework Headers/AVAudioUnitComponent.h:83"
     },
     {
       "api": "AVAudioUnitComponent.configurationDictionary",
@@ -238,11 +241,12 @@
     {
       "api": "AVAudioUnitComponent.hasCustomView",
       "kind": "property",
-      "introduced": "9.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "absent",
+      "reason": "SDK 26.2 declares it API_AVAILABLE(macos(10.10)) API_UNAVAILABLE(ios, watchos, tvos) (AVAudioUnitComponent.h:158): a macOS-only member, so no iOS release carries it",
+      "effect": "the selector is not there on iOS: respondsToSelector: answers NO, and a call is doesNotRecognizeSelector:, which is what absent means",
       "facts": "facts/AVFAudio/AVAudioUnitComponent.md",
-      "source": "AVFAudio of the arm64e shared cache of iOS 18.0 and SDK 26.2, AVFAudio; the C base read from the real armv7 6.1.3 cache with dyld.load (AudioToolbox exports the whole AudioComponent and AudioUnit family and the whole AUGraph family, CoreAudio the whole AudioObject family)"
+      "source": "iPhoneOS26.2.sdk AVFAudio.framework Headers/AVAudioUnitComponent.h:158"
     },
     {
       "api": "AVAudioUnitComponent.hasMIDIInput",
@@ -274,11 +278,12 @@
     {
       "api": "AVAudioUnitComponent.iconURL",
       "kind": "property",
-      "introduced": "9.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "absent",
+      "reason": "SDK 26.2 declares it API_AVAILABLE(macos(10.10)) API_UNAVAILABLE(ios, watchos, tvos) (AVAudioUnitComponent.h:134): a macOS-only member, so no iOS release carries it",
+      "effect": "the selector is not there on iOS: respondsToSelector: answers NO, and a call is doesNotRecognizeSelector:, which is what absent means",
       "facts": "facts/AVFAudio/AVAudioUnitComponent.md",
-      "source": "AVFAudio of the arm64e shared cache of iOS 18.0 and SDK 26.2, AVFAudio; the C base read from the real armv7 6.1.3 cache with dyld.load (AudioToolbox exports the whole AudioComponent and AudioUnit family and the whole AUGraph family, CoreAudio the whole AudioObject family)"
+      "source": "iPhoneOS26.2.sdk AVFAudio.framework Headers/AVAudioUnitComponent.h:134"
     },
     {
       "api": "AVAudioUnitComponent.localizedTypeName",
@@ -337,11 +342,12 @@
     {
       "api": "AVAudioUnitComponent.userTagNames",
       "kind": "property",
-      "introduced": "9.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "absent",
+      "reason": "SDK 26.2 declares it API_AVAILABLE(macos(10.10)) API_UNAVAILABLE(ios, watchos, tvos) (AVAudioUnitComponent.h:116): a macOS-only member, so no iOS release carries it",
+      "effect": "the selector is not there on iOS: respondsToSelector: answers NO, and a call is doesNotRecognizeSelector:, which is what absent means",
       "facts": "facts/AVFAudio/AVAudioUnitComponent.md",
-      "source": "AVFAudio of the arm64e shared cache of iOS 18.0 and SDK 26.2, AVFAudio; the C base read from the real armv7 6.1.3 cache with dyld.load (AudioToolbox exports the whole AudioComponent and AudioUnit family and the whole AUGraph family, CoreAudio the whole AudioObject family)"
+      "source": "iPhoneOS26.2.sdk AVFAudio.framework Headers/AVAudioUnitComponent.h:116"
     },
     {
       "api": "AVAudioUnitComponent.version",

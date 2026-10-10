@@ -2,7 +2,7 @@
   {
     "api": "PKPass.userInfo",
     "kind": "property",
-    "introduced": "8.0",
+    "introduced": "7.0",
     "minimum": "6.0",
     "status": "implemented",
     "reason": "the release's own PKPass carries -dictionaryRepresentation, which is its reading of the pass's JSON, and the header's userInfo is that JSON",

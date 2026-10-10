@@ -22,11 +22,12 @@
     {
       "api": "-[AVAudioApplication setInputMuteStateChangeHandler:error:]",
       "kind": "method",
-      "introduced": "17.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "absent",
+      "reason": "SDK 26.2 declares it API_AVAILABLE(macos(14.0)) API_UNAVAILABLE(ios, ...) (AVAudioApplication.h:104): a macOS-only member, so no iOS release carries it",
+      "effect": "the selector is not there on iOS: respondsToSelector: answers NO, and a call is doesNotRecognizeSelector:, which is what absent means",
       "facts": "facts/AVFAudio/AVFAudioStrings.md",
-      "source": "AVFAudio of the arm64e shared cache of iOS 18.0 and SDK 26.2, AVFAudio; the C base read from the real armv7 6.1.3 cache with dyld.load (AudioToolbox exports the whole AudioComponent and AudioUnit family and the whole AUGraph family, CoreAudio the whole AudioObject family)"
+      "source": "iPhoneOS26.2.sdk AVFAudio.framework Headers/AVAudioApplication.h:104"
     },
     {
       "api": "-[AVAudioApplication setInputMuted:error:]",

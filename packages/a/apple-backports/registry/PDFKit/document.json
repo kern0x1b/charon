@@ -686,18 +686,6 @@
    "ledger": "?"
   },
   {
-   "api": "-[PDFAnnotation initWithBounds:]",
-   "kind": "method",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "inert",
-   "effect": "not implemented",
-   "reason": "deprecated at PDFAnnotation.h:242, and writes",
-   "facts": "facts/PDFKit/Document11.md",
-   "source": "the host's own PDFKit under macOS in a process containing no port object, against the port's objects in a process containing no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 586 MISMATCHES 0, which includes every annotation key below; two red controls confirm the differential is live - the Print bit read as the Hidden bit makes six annotations DIFFER, and dropping the /Text note rule makes three",
-   "ledger": "?"
-  },
-  {
    "api": "PDFAnnotation.toolTip",
    "kind": "property",
    "introduced": "11.0",
@@ -730,18 +718,6 @@
   "effect": "the DESTINATION OF THE ACTION, and not the /Dest read on its own - which is the opposite of what the first version of this did.  ann-dest-and-a carries BOTH a /Dest whose /XYZ names (1, 2) with zoom 3 and an /A whose /D is a /Fit, and the host answers point UNSPECIFIED - the /A's - where a read of the /Dest would have answered 1, 2 and 3.  So this is one line over -action: the destination of a /GoTo, and nil for every other action.  A bare /Dest produces one because the synthesised GoTo carries it, and a NAMED /Dest answers a destination whose page is nil rather than no destination, while the DICTIONARY spelling of a /Dest answers nil for both members (ann-dest-dict)",
   "facts": "facts/PDFKit/Action11.md",
   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 6375 MISMATCHES 0 over 105 fixtures, and five red controls name a destination key"
-  },
-  {
-   "api": "-[PDFAnnotation drawWithBox:]",
-   "kind": "method",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "inert",
-   "effect": "not implemented",
-   "reason": "deprecated at PDFAnnotation.h:266, and draws into a view this port does not have",
-   "facts": "facts/PDFKit/Document11.md",
-   "source": "the host's own PDFKit under macOS in a process containing no port object, against the port's objects in a process containing no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 586 MISMATCHES 0, which includes every annotation key below; two red controls confirm the differential is live - the Print bit read as the Hidden bit makes six annotations DIFFER, and dropping the /Text note rule makes three",
-   "ledger": "?"
   },
   {
    "api": "-[PDFPage annotations]",
