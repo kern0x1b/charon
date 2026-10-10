@@ -11,9 +11,11 @@
  *     defaults, which a program reads before it has a device;
  *   - the shape of the three areas' classes and of MTRDeviceControllerStorageClasses(), which needs no controller.
  *
- * The output is one "name<TAB>answer" line per question. The port's answers are the same file built against
- * libMatterBackports.dylib and run on the emulator; tools/matter-pure-diff.lua compares the two files and names every
- * line that differs.
+ * The output is one "name<TAB>answer" line per question. This is the HOST half alone. The port's product carries the
+ * cluster and data classes only, not the setup payload, the commissioning parameters or the controller's storage
+ * classes asked about above, so there is no port-side run of this file in the tree and none is compared: the 38
+ * answers are outside the product, and are not passed. tools/matter-pure-diff.lua reads two such files and names every
+ * line that differs, for a product that carries those classes.
  */
 
 #import <Foundation/Foundation.h>

@@ -1,10 +1,10 @@
 -- The Matter differential of behaviour: the port's answers against the host's, line by line.
 --
--- tests/backports/host/matter/pure.m is one program with no device on the other end, written so it compiles against
--- the host's own Matter.framework and against the port's libMatterBackports.dylib alike. The host's answers are what
--- its own framework gives (run.sh); the port's are what the same program gives when the port's library is the one it
--- is linked against, on the emulator at 6.1.3. Each prints "name<TAB>answer" per line, and this reads the two files
--- and says which names differ.
+-- tests/backports/host/matter/pure.m is one program with no device on the other end. The host's answers are what its
+-- own framework gives (run.sh). This product has NO port-side answers: its library carries the cluster and data
+-- classes only, so pure.m does not link against it and no port file exists to pass here. Each file prints
+-- "name<TAB>answer" per line, and this reads the two files and says which names differ, for a product that carries
+-- the classes pure.m asks about.
 --
 -- A name in one file and not the other is a difference too, and the direction of it is the finding: the host answers
 -- for a name the port does not carry, or the port carries a name the host does not. A name neither answers is the
@@ -38,7 +38,7 @@ function main(host, port, ...)
     end
     outfile = outfile or path.join(os.scriptdir(), "..", ".agent-work", "matter-pure-diff.tsv")
     assert(os.isfile(host), "%s is not there: sh tests/backports/host/matter/run.sh writes the host's answers", host)
-    assert(os.isfile(port), "%s is not there: build charon@matter and run tests/backports/host/matter/pure.m on the emulator", port)
+    assert(os.isfile(port), "%s is not there: this product has no port-side pure.m answers (its library carries the cluster and data classes only)", port)
     local theirs, their_order = read(host)
     local ours, our_order = read(port)
 
