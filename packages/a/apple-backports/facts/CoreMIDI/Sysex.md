@@ -4,7 +4,7 @@
 
 The function returns the MIDI 1.0 bytes of the SysEx a packet holds on one group. Measured on macOS on 2026-10-09 by
 `tests/backports/host/coremidi/oracle/sysexbytes.m` (recorded in `sysexbytes-macos.txt`), and held to the port by
-differential.m (check_sysex_bytes_for_group, 8 answers):
+differential.m (check_sysex_bytes_for_group, 8 answers, and check_sysex_long, 2):
 
 - A complete message (status 0) is `F0`, the data and `F7`: `30030102 03000000` gives `F0 01 02 03 F7`.
 - A start (status 1) is `F0` and its data, with no `F7`: `30160102 03040506` gives `F0 01 02 03 04 05 06`.
@@ -12,11 +12,14 @@ differential.m (check_sysex_bytes_for_group, 8 answers):
 - An end (status 3) is its data and `F7`: `30310D00` gives `0D F7`; an end of no data is `F7`.
 - A group other than the packet's answers paramErr (-50) and no data. A word that is not SysEx does the same, and so does
   a group of 15 when the packet is on group 0.
+- A packet of twelve complete messages of six bytes gives 96 bytes, and a start, ten continues and an end of six bytes each
+  give 74 bytes, `F0`, the data 01 to 48 and `F7`: the whole SysEx, not the first 63 bytes. The buffer the port fills is
+  sized from the packet's word count, so a packet of any length is answered in full.
 - The result is a new CFData, which the caller releases.
 
 The port reads the packet's first word and the SysEx messages that follow it on the same group, and stops at the first word
-that is not a SysEx on that group. macOS was measured on single messages, which is what the contract asks for; a packet
-with two SysEx messages is not measured.
+that is not a SysEx on that group. The measured packets are single messages, twelve complete messages, and one SysEx of 66
+bytes spread over twelve words; a packet mixing a SysEx with another message type is not measured.
 
 ## MIDISendUMPSysex and MIDISendUMPSysex8
 

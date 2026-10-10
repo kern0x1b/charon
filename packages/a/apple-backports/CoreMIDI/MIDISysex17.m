@@ -11,9 +11,6 @@
 
 #import "CharonCoreMIDI.h"
 
-// The MacErrors value of paramErr (-50), which the iOS SDK does not declare; see MIDIProtocol14.m.
-static const OSStatus charon_paramErr = -50;
-
 OSStatus MIDIEventPacketSysexBytesForGroup(const MIDIEventPacket *pkt, UInt8 groupIndex, CFDataRef *outData)
 {
     *outData = NULL;
@@ -22,7 +19,13 @@ OSStatus MIDIEventPacketSysexBytesForGroup(const MIDIEventPacket *pkt, UInt8 gro
     UInt32 first = pkt->words[0];
     if ((first >> 28) != 0x3 || ((first >> 24) & 0x0F) != groupIndex)
         return charon_paramErr;
-    UInt8 bytes[64];
+    // Each two-word SysEx7 part holds at most six data bytes, with at most an F0 before and an F7 after: eight bytes.
+    CFIndex capacity = (CFIndex)(pkt->wordCount / 2) * 8;
+    CFMutableDataRef data = CFDataCreateMutable(kCFAllocatorDefault, capacity);
+    if (!data)
+        return charon_memFullErr;
+    CFDataSetLength(data, capacity);
+    UInt8 *bytes = CFDataGetMutableBytePtr(data);
     CFIndex count = 0;
     for (UInt32 i = 0; i + 1 < pkt->wordCount; i += 2) {
         UInt32 word = pkt->words[i];
@@ -31,19 +34,20 @@ OSStatus MIDIEventPacketSysexBytesForGroup(const MIDIEventPacket *pkt, UInt8 gro
         UInt32 status = (word >> 20) & 0x0F;
         UInt32 n = (word >> 16) & 0x0F;
         UInt32 second = pkt->words[i + 1];
-        UInt8 data[6] = {(UInt8)(word >> 8), (UInt8)word, (UInt8)(second >> 24), (UInt8)(second >> 16),
+        UInt8 part[6] = {(UInt8)(word >> 8), (UInt8)word, (UInt8)(second >> 24), (UInt8)(second >> 16),
                          (UInt8)(second >> 8), (UInt8)second};
         if (n > 6)
             n = 6;
         if (status == 0x0 || status == 0x1)
             bytes[count++] = 0xF0;
-        for (UInt32 k = 0; k < n && count < (CFIndex)sizeof(bytes) - 1; k++)
-            bytes[count++] = data[k] & 0x7F;
+        for (UInt32 k = 0; k < n; k++)
+            bytes[count++] = part[k] & 0x7F;
         if (status == 0x0 || status == 0x3)
             bytes[count++] = 0xF7;
     }
-    *outData = CFDataCreate(kCFAllocatorDefault, bytes, count);
-    return *outData ? noErr : charon_paramErr;
+    CFDataSetLength(data, count);
+    *outData = data;
+    return noErr;
 }
 
 // The release's completion of a MIDISendSysex this file queued: the UMP request is completed, and the bytes are released.

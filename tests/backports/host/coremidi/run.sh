@@ -7,6 +7,10 @@ set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 CORE=${COREMIDI:-$here/../../../../packages/a/apple-backports/CoreMIDI}
 build=${COREMIDI_BUILD:-${TMPDIR:-/tmp}/charon-coremidi-host}
+# COREMIDI_SANITIZE=address builds the library and the differential with AddressSanitizer: the buffer overruns of the
+# packet readers (MIDISysex17.m) are found by that build, not by the answers.
+sanitize=""
+if [ -n "${COREMIDI_SANITIZE:-}" ]; then sanitize="-fsanitize=$COREMIDI_SANITIZE -g"; fi
 rm -rf "$build"
 mkdir -p "$build"
 renames=""
@@ -28,10 +32,10 @@ for name in MIDIEventListInit MIDIEventListAdd MIDIClientCreateWithBlock MIDIInp
 done
 for path in "$CORE"/*.m; do
     source=$(basename "$path")
-    xcrun clang -fobjc-arc -fvisibility=hidden -w -I"$CORE" -DCHARON_HOST_HAS_UMP_SYSEX=1 $renames -c "$path" -o "$build/$source.o"
+    xcrun clang $sanitize -fobjc-arc -fvisibility=hidden -w -I"$CORE" -DCHARON_HOST_HAS_UMP_SYSEX=1 $renames -c "$path" -o "$build/$source.o"
 done
-xcrun clang -c -w -I"$CORE" -DCHARON_HOST_HAS_UMP_SYSEX=1 "$CORE/CharonCoreMIDI.c" -o "$build/CharonCoreMIDI.o"
-xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations -DCHARON_HOST_HAS_UMP_SYSEX=1 -I"$CORE" -I"$here" $renames \
+xcrun clang $sanitize -c -w -I"$CORE" -DCHARON_HOST_HAS_UMP_SYSEX=1 "$CORE/CharonCoreMIDI.c" -o "$build/CharonCoreMIDI.o"
+xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -DCHARON_HOST_HAS_UMP_SYSEX=1 -I"$CORE" -I"$here" $renames \
     "$here/differential.m" "$here/differential-ump.m" "$build/CharonCoreMIDI.o" "$build"/*.m.o -framework Foundation -framework CoreMIDI -framework CoreBluetooth -o "$build/differential"
 "$build/differential" > "$build/log" 2>&1 && result=0 || result=$?
 grep -v '^ok ' "$build/log" || true

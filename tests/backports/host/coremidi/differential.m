@@ -459,6 +459,21 @@ extern OSStatus charon_host_MIDIEventPacketSysexBytesForGroup(const MIDIEventPac
 extern OSStatus charon_host_MIDIDeviceNewEntity(MIDIDeviceRef device, CFStringRef name, MIDIProtocolID protocol, Boolean embedded,
                                                 ItemCount numSourceEndpoints, ItemCount numDestinationEndpoints, MIDIEntityRef *newEntity);
 
+// Whether the bytes equal the hex string want (two digits a byte, as oracle/sysexbytes.m prints them).
+static int bytes_equal_hex(CFDataRef data, const char *want)
+{
+    if (!data || CFDataGetLength(data) != (CFIndex)(strlen(want) / 2))
+        return 0;
+    const UInt8 *b = CFDataGetBytePtr(data);
+    for (size_t i = 0; i < strlen(want) / 2; i++) {
+        unsigned int v = 0;
+        sscanf(want + 2 * i, "%2X", &v);
+        if (b[i] != v)
+            return 0;
+    }
+    return 1;
+}
+
 static void check_sysex_bytes_for_group(void)
 {
     struct {
@@ -487,19 +502,10 @@ static void check_sysex_bytes_for_group(void)
         CFDataRef data = NULL;
         OSStatus status = charon_host_MIDIEventPacketSysexBytesForGroup(&list->packet[0], cases[c].group, &data);
         int same = status == cases[c].status;
-        if (cases[c].want) {
-            same = same && data != NULL && CFDataGetLength(data) == (CFIndex)(strlen(cases[c].want) / 2);
-            if (same) {
-                const UInt8 *b = CFDataGetBytePtr(data);
-                for (size_t i = 0; same && i < strlen(cases[c].want) / 2; i++) {
-                    unsigned int v = 0;
-                    sscanf(cases[c].want + 2 * i, "%2X", &v);
-                    same = b[i] == v;
-                }
-            }
-        } else {
+        if (cases[c].want)
+            same = same && bytes_equal_hex(data, cases[c].want);
+        else
             same = same && data == NULL;
-        }
         if (!same) {
             printf("    sysex bytes %s: status %d\n", cases[c].name, (int)status);
             failed++;
@@ -509,6 +515,62 @@ static void check_sysex_bytes_for_group(void)
     }
     char name[96], detail[64];
     snprintf(name, sizeof(name), "sysex bytes for group: %zu macOS answers", sizeof(cases) / sizeof(cases[0]));
+    snprintf(detail, sizeof(detail), "%d differ", failed);
+    check(failed == 0, name, detail);
+}
+
+// Packs one SysEx7 part of up to six data bytes into the two words of a UMP packet, as the UMP layout has it.
+static void sysex7_words(UInt32 *out, UInt32 status, const UInt8 *data, UInt32 count)
+{
+    UInt8 pad[6] = {0, 0, 0, 0, 0, 0};
+    memcpy(pad, data, count);
+    out[0] = 0x30000000u | status << 20 | count << 16 | (UInt32)pad[0] << 8 | pad[1];
+    out[1] = (UInt32)pad[2] << 24 | (UInt32)pad[3] << 16 | (UInt32)pad[4] << 8 | pad[5];
+}
+
+// A SysEx longer than a fixed buffer of the port held (oracle/sysexbytes.m, sysexbytes-macos.txt): twelve complete messages of
+// six bytes (96 bytes out), and a start, ten continues and an end of six bytes each (74 bytes out). The data bytes count up
+// from 1, so the expectation is the bytes macOS returned for the same words.
+static void check_sysex_long(void)
+{
+    struct {
+        const char *name;
+        int complete;
+        const char *want;
+    } cases[] = {
+        {"12 complete messages of 6 bytes", 1,
+         "F0010203040506F7F00708090A0B0CF7F00D0E0F101112F7F0131415161718F7F0191A1B1C1D1EF7F01F2021222324F7F025262728292A"
+         "F7F02B2C2D2E2F30F7F0313233343536F7F03738393A3B3CF7F03D3E3F404142F7F0434445464748F7"},
+        {"start, 10 continues, end: 66 bytes", 0,
+         "F00102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738"
+         "393A3B3C3D3E3F404142434445464748F7"},
+    };
+    int failed = 0;
+    for (size_t c = 0; c < sizeof(cases) / sizeof(cases[0]); c++) {
+        UInt32 words[24];
+        for (UInt32 part = 0; part < 12; part++) {
+            UInt8 data[6];
+            for (UInt32 i = 0; i < 6; i++)
+                data[i] = (UInt8)(1 + part * 6 + i);
+            UInt32 status = cases[c].complete ? 0 : (part == 0 ? 1 : (part == 11 ? 3 : 2));
+            sysex7_words(words + 2 * part, status, data, 6);
+        }
+        Byte buffer[256];
+        MIDIEventList *list = (MIDIEventList *)buffer;
+        MIDIEventPacket *end = MIDIEventListInit(list, kMIDIProtocol_2_0);
+        CharonMIDIEventListAdd(list, sizeof(buffer), end, 0, 24, words);
+        CFDataRef data = NULL;
+        OSStatus status = charon_host_MIDIEventPacketSysexBytesForGroup(&list->packet[0], 0, &data);
+        int same = status == 0 && bytes_equal_hex(data, cases[c].want);
+        if (!same) {
+            printf("    sysex long %s: status %d\n", cases[c].name, (int)status);
+            failed++;
+        }
+        if (data)
+            CFRelease(data);
+    }
+    char name[96], detail[64];
+    snprintf(name, sizeof(name), "sysex bytes for group, long: %zu macOS answers", sizeof(cases) / sizeof(cases[0]));
     snprintf(detail, sizeof(detail), "%d differ", failed);
     check(failed == 0, name, detail);
 }
@@ -537,6 +599,7 @@ int main(void)
         check_constants();
         check_visitor();
         check_sysex_bytes_for_group();
+        check_sysex_long();
         {
             int umpChecks = 0;
             gFailures += charon_ump_classes_run(&umpChecks);

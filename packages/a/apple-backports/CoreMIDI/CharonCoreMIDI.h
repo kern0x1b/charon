@@ -13,6 +13,12 @@
 #include <stddef.h>
 #include <stdint.h>
 
+// The error codes of the Carbon headers (MacErrors.h), which the iOS SDK does not declare: the values are the macOS ones.
+enum {
+    charon_paramErr = -50,
+    charon_memFullErr = -108
+};
+
 // A growable array of UMP words, filled by the parsers below. failed is set when an allocation fails, and the
 // caller then answers with an error rather than with a partial list.
 typedef struct CharonMIDIWords {

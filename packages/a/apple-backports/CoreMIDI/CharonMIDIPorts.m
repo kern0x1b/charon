@@ -15,10 +15,6 @@
 // is the one macOS gives the constant (oracle/probe2.m prints it).
 static const CFStringRef charon_protocol_key = CFSTR("protocol");
 
-// The error codes of the Carbon headers (MacErrors.h), which the iOS SDK does not declare: the values are the macOS ones.
-static const OSStatus charon_paramErr = -50;
-static const OSStatus charon_memFullErr = -108;
-
 // The receive side of one port or destination: the block it was given, retained for as long as it lives, the
 // protocol its events are delivered in, and the MIDI 1.0 parser that carries a SysEx from one list to the next.
 typedef struct charon_port {

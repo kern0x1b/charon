@@ -27,6 +27,14 @@ static void run(const char *tag, const UInt32 *words, int count, UInt8 group) {
     show(tag, &list->packet[0], group);
 }
 
+// Words of one SysEx7 packet of one or two words: status 0 complete, 1 start, 2 continue, 3 end, with count data bytes.
+static void sysex7(UInt32 *out, int status, int count, const UInt8 *data) {
+    UInt8 pad[6] = {0, 0, 0, 0, 0, 0};
+    for (int i = 0; i < count; i++) pad[i] = data[i];
+    out[0] = 0x30000000u | (UInt32)status << 20 | (UInt32)count << 16 | (UInt32)pad[0] << 8 | pad[1];
+    out[1] = (UInt32)pad[2] << 24 | (UInt32)pad[3] << 16 | (UInt32)pad[4] << 8 | pad[5];
+}
+
 int main(void) {
     UInt32 complete[] = {0x30030102u, 0x03000000u};
     UInt32 start[] = {0x30160102u, 0x03040506u};
@@ -42,5 +50,26 @@ int main(void) {
     run("end 0 bytes", emptyEnd, 2, 0);
     run("midi 2.0 note on", midi2, 2, 0);
     run("complete, group 15", complete, 2, 15);
+    // Long SysEx in one packet: twelve complete messages of six bytes (96 bytes out), and a start, ten continues and an
+    // end of six bytes each (66 data bytes, 74 bytes out, a SysEx of more than 64 bytes).
+    {
+        UInt32 words[24];
+        for (int m = 0; m < 12; m++) {
+            UInt8 data[6];
+            for (int i = 0; i < 6; i++) data[i] = (UInt8)(1 + m * 6 + i);
+            sysex7(words + 2 * m, 0, 6, data);
+        }
+        run("12 complete, 6 bytes each", words, 24, 0);
+    }
+    {
+        UInt32 words[24];
+        for (int m = 0; m < 12; m++) {
+            UInt8 data[6];
+            for (int i = 0; i < 6; i++) data[i] = (UInt8)(1 + m * 6 + i);
+            int status = m == 0 ? 1 : (m == 11 ? 3 : 2);
+            sysex7(words + 2 * m, status, 6, data);
+        }
+        run("start, 10 continues, end: 66 bytes", words, 24, 0);
+    }
     return 0;
 }

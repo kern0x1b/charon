@@ -3,8 +3,8 @@
 // is the release's (MIDIDeviceAddEntity), with its protocol kept as the endpoint property the protocol API reads.
 #import <CoreMIDI/CoreMIDI.h>
 
-// The MacErrors value of paramErr (-50), which the iOS SDK does not declare; see MIDIProtocol14.m.
-static const OSStatus charon_paramErr = -50;
+#import "CharonCoreMIDI.h"
+
 
 // The protocol key, as MIDIProtocol14.m keeps it: the iOS SDK marks kMIDIPropertyProtocolID from iOS 14, so this file
 // names the same string rather than use the constant.
