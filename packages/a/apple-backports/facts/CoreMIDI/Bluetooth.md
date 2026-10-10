@@ -2,15 +2,18 @@
 
 `MIDIBluetoothDriverActivateAllConnections()` and `MIDIBluetoothDriverDisconnect(uuid)` return `OSStatus`. Measured on
 macOS on 2026-10-09 (`tests/backports/host/coremidi/oracle/bluetooth.m`, `bluetooth-macos.txt`): the activation answers 0,
-and so does a disconnect of an identifier that is not connected, and of an empty string. The port answers noErr to both.
+and so does a disconnect of an identifier that is not connected, and of an empty string.
 
-What the port does:
+The port does not export either function under its name: the central has never run (no BLE MIDI device was used, and the
+emulated 4S has no Bluetooth), and the registry says `owed` (see "Status in the registry" below). The bodies are kept as
+`charon_bluetooth_activate_all_connections` and `charon_bluetooth_disconnect` (MIDIBluetooth16.m), which answer noErr as macOS
+does. What those bodies would do, once a device run lets the names be exported:
 
 - The central is a CoreBluetooth `CBCentralManager` (CoreBluetooth is in the 6.1.3 cache: `CBCentralManager`,
   `CBPeripheral`, `CBUUID`, `CBCharacteristic`, measured with tools/corpus/cache-exports.lua). The 4S has Bluetooth 4.0.
-- Activation starts the central's scan for the BLE MIDI service `03B80E5A-EDE8-4B33-A751-6CE34EC4C700` once the radio is on,
-  and connects to each device found. It reads the MIDI I/O characteristic `7772E5DB-3868-4112-A1A9-F2669D106BF3` and
-  subscribes to it.
+- Activation would start the central's scan for the BLE MIDI service `03B80E5A-EDE8-4B33-A751-6CE34EC4C700` once the radio is on,
+  and connect to each device found. It would read the MIDI I/O characteristic `7772E5DB-3868-4112-A1A9-F2669D106BF3` and
+  subscribe to it.
 - Each BLE MIDI packet's header and timestamp bytes are dropped and its MIDI bytes are received by a virtual source the
   central makes for the device, through the release's MIDISourceCreate and MIDIReceived. The framing is CharonBLEMIDIParse
   (CharonCoreMIDI.c): a byte with bit 7 set where a timestamp is due is that timestamp; inside a SysEx the timestamp before
@@ -22,7 +25,7 @@ What the port does:
   CBPeripheral does not respond to `identifier` and does respond to `UUID` (the probe, tests/backports/emulate/coremidi/app/main.m).
 - A device's virtual source is disposed when the device disconnects, when its connect fails, and when a disconnect is asked
   for, so a reconnect makes one source of the device's name, not a second.
-- Disconnect cancels the peripheral with that identifier.
+- Disconnect would cancel the peripheral with that identifier.
 
 What is not established:
 

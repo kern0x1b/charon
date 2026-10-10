@@ -157,7 +157,9 @@
       "api": "MIDICIDevice",
       "kind": "class",
       "introduced": "18.0",
-      "status": "implemented",
+      "status": "inert",
+      "reason": "the port has no MIDI-CI transport, so no MIDICIDevice is ever produced: every property answers the empty value (no MUID, no profiles, no supported capability; MIDIUMP18.m). The class is declared so that the manager's list type exists. On the measured host macOS lists none (oracle/umpclasses.m); a machine with a MIDI-CI device is not measured.",
+      "effect": "a MIDICIDevice cannot be obtained, and its properties are the empty values.",
       "facts": "facts/CoreMIDI/UMPClasses.md",
       "source": "the 26.2 headers for the contract (MIDIUMPEndpoint.h, MIDIUMPFunctionBlock.h, MIDIUMPMutableEndpoint.h, MIDIUMPMutableFunctionBlock.h, MIDIUMPCIProfile.h, MIDICIDeviceManager.h, MIDIUMPEndpointManager.h, MIDIUMPCI.h); macOS CoreMIDI for the answers (tests/backports/host/coremidi/oracle/umpclasses.m and umpclasses2.m)"
     },
@@ -165,7 +167,9 @@
       "api": "MIDIUMPCIProfile",
       "kind": "class",
       "introduced": "18.0",
-      "status": "implemented",
+      "status": "inert",
+      "reason": "the port has no MIDI-CI transport, so no profile is ever listed on a device: every property answers the empty value, and setProfileState:enabledChannelCount:error: does nothing, answers NO and says so once in the log (charon_ci_inert, MIDIUMP18.m).",
+      "effect": "a profile is never listed, enabled or disabled.",
       "facts": "facts/CoreMIDI/UMPClasses.md",
       "source": "the 26.2 headers for the contract (MIDIUMPEndpoint.h, MIDIUMPFunctionBlock.h, MIDIUMPMutableEndpoint.h, MIDIUMPMutableFunctionBlock.h, MIDIUMPCIProfile.h, MIDICIDeviceManager.h, MIDIUMPEndpointManager.h, MIDIUMPCI.h); macOS CoreMIDI for the answers (tests/backports/host/coremidi/oracle/umpclasses.m and umpclasses2.m)"
     },
@@ -173,7 +177,9 @@
       "api": "MIDICIDeviceManager",
       "kind": "class",
       "introduced": "18.0",
-      "status": "implemented",
+      "status": "inert",
+      "reason": "the port has no MIDI-CI transport: discoveredCIDevices answers an empty array, always (MIDIUMP18.m). On the measured host macOS lists no MIDI-CI device either (oracle/umpclasses.m); a machine with a MIDI-CI device is not measured.",
+      "effect": "no MIDI-CI device is ever listed.",
       "facts": "facts/CoreMIDI/UMPClasses.md",
       "source": "the 26.2 headers for the contract (MIDIUMPEndpoint.h, MIDIUMPFunctionBlock.h, MIDIUMPMutableEndpoint.h, MIDIUMPMutableFunctionBlock.h, MIDIUMPCIProfile.h, MIDICIDeviceManager.h, MIDIUMPEndpointManager.h, MIDIUMPCI.h); macOS CoreMIDI for the answers (tests/backports/host/coremidi/oracle/umpclasses.m and umpclasses2.m)"
     }

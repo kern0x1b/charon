@@ -11,6 +11,7 @@
 // the classes that describe one are storage that nothing returns (their discovery is in facts/CoreMIDI/MIDICI.md).
 #import <Foundation/Foundation.h>
 #import "CharonCoreMIDI.h"
+#import "CharonMIDICI.h"
 #import "CharonMIDIUMP18.h"
 
 #include <pthread.h>
@@ -333,6 +334,7 @@ static NSMutableArray *charon_endpoints(void)
 
 - (BOOL)setProfileState:(BOOL)isEnabled enabledChannelCount:(MIDIUInteger14)enabledChannelCount error:(NSError **)error
 {
+    charon_ci_inert(__PRETTY_FUNCTION__);
     return NO;
 }
 

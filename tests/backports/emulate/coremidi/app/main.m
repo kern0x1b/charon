@@ -150,7 +150,7 @@ static void charon_probe_objects(void)
         // for 20 s, and the count is printed beside the lines the proc wrote.
         for (int i = 0; i < 200 && gProbeRemovals < 3; i++)
             CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.1, false);
-        printf("probe 6.1.3: removal notifications received %d of 3 (two destinations and a source)\n", gProbeRemovals);
+        printf("probe 6.1.3: removal notifications received: %d (this block disposed two destinations and a source; the release also posts the removals of the objects disposed before it to a client made after them)\n", gProbeRemovals);
         fflush(stdout);
         MIDIClientDispose(notifying);
     }

@@ -54,6 +54,7 @@ void charon_ci_inert(const char * _Nonnull action)
 // No MIDI-CI transport: the profile is not sent, so the answer is NO, as for enable and disable.
 - (BOOL)sendProfile:(MIDICIProfile *)profile onChannel:(MIDIChannelNumber)channel profileData:(NSData *)profileSpecificData
 {
+    charon_ci_inert(__PRETTY_FUNCTION__);
     return NO;
 }
 
