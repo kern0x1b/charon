@@ -178,6 +178,13 @@ static void check_ump_classes(void)
               "the manager lists the disabled client endpoint, as macOS (umpclasses2-macos.txt: 1)", "");
         check([ep setName:@"renamed" error:NULL] && [ep.name isEqualToString:@"renamed"],
               "endpoint setName answers YES, as macOS", "");
+        // The release's own name of the endpoint's destination, read back through kMIDIPropertyName: the name the library set.
+        CFStringRef serverName = NULL;
+        OSStatus serverStatus = MIDIObjectGetStringProperty(ep.MIDIDestination, kMIDIPropertyName, &serverName);
+        check(serverStatus == noErr && serverName && [(__bridge NSString *)serverName isEqualToString:@"renamed"],
+              "endpoint setName changes the release's name of the endpoint (kMIDIPropertyName)", "");
+        if (serverName)
+            CFRelease(serverName);
         check([ep setEnabled:YES error:NULL] && ep.isEnabled, "endpoint setEnabled:YES answers YES, as macOS", "");
         check([ep registerFunctionBlocks:@[fb] markAsStatic:NO error:NULL] && ep.functionBlocks.count == 1,
               "endpoint registers a block and lists it, as macOS", "");

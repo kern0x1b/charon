@@ -19,5 +19,8 @@ preferences). A probe may create virtual endpoints only if it disposes them in t
 kept for the record and must not be run.
 
 The port answers device 0 with paramErr and no entity, as macOS does. A device that exists is the release's own; the
-entity is added by the release's MIDIDeviceAddEntity, and its protocol is kept as the endpoint property the protocol API
-reads. A protocol other than 1.0 and 2.0 answers paramErr; macOS was not measured for it.
+entity is added by the release's MIDIDeviceAddEntity, and the port sets the protocol on the ENTITY (the property MIDIDeviceNewEntity
+writes after MIDIDeviceAddEntity). Where macOS keeps the protocol of an entity, and whether its endpoints read it, is NOT measured:
+the positive probe (oracle/newentity.m) died at MIDIDeviceCreate with -50, and an entity on the host is forbidden
+(oracle/newentity2.m). So the endpoint-level claim is withdrawn; the entity-level write is the port's own choice and a
+crutch (coordination/crutches.md). A protocol other than 1.0 and 2.0 answers paramErr; macOS was not measured for it.

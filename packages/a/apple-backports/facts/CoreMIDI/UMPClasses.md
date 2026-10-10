@@ -12,8 +12,12 @@ Measured and held to the port:
 - A MIDIUMPMutableEndpoint is made with a name, a device info, a product instance ID, a protocol and a destination callback.
   Made with protocol 2.0 it has both ends (a destination and a source), is disabled, and reports protocol 2.0 and its name.
   The endpoint manager lists it while it is disabled: 1.
-- setName: answers YES and changes the name; setEnabled:YES answers YES and enables; registerFunctionBlocks:markAsStatic:error:
-  answers YES, and the endpoint's functionBlocks then lists the block (count 1).
+- setName: answers YES and changes the name (measured on macOS); the port also sets the release's kMIDIPropertyName of both
+  ends, which the release reads back (differential-ump.m). setEnabled:YES answers YES and enables, which is the state the
+  port keeps. Not measured on macOS, and not done here: whether a disabled endpoint still delivers to its block (the port's
+  destination delivers while disabled), and the function block IDs (every block gets 0). Both are crutches in
+  coordination/crutches.md. registerFunctionBlocks:markAsStatic:error: answers YES, and the endpoint's functionBlocks then
+  lists the block (count 1).
 - A MIDIUMPMutableFunctionBlock is made for each group, direction and stream value tried (the groups 0 + 17 and 15 + 2 included,
   a total of 0 included): the header's validation is not what macOS does here. Its name, first group, groups and enabled state
   are the ones given.

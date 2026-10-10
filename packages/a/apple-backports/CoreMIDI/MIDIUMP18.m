@@ -234,8 +234,18 @@ static NSMutableArray *charon_endpoints(void)
 - (void)setMutableFunctionBlocks:(NSArray<MIDIUMPMutableFunctionBlock *> *)mutableFunctionBlocks { _mutableBlocks = [mutableFunctionBlocks copy]; }
 - (BOOL)isEnabled { return _enabled; }
 
+// The name is the release's own name of the endpoint's two ends (kMIDIPropertyName): the server shows it, and the release
+// answers it. An error of the release is returned, not swallowed.
 - (BOOL)setName:(NSString *)name error:(NSError **)error
 {
+    OSStatus status = MIDIObjectSetStringProperty(_MIDIDestination, kMIDIPropertyName, (__bridge CFStringRef)name);
+    if (status == noErr)
+        status = MIDIObjectSetStringProperty(_MIDISource, kMIDIPropertyName, (__bridge CFStringRef)name);
+    if (status != noErr) {
+        if (error)
+            *error = [NSError errorWithDomain:NSOSStatusErrorDomain code:status userInfo:nil];
+        return NO;
+    }
     _name = [name copy];
     return YES;
 }

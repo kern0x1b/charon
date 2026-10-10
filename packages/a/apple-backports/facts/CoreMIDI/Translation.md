@@ -32,9 +32,9 @@ conversion rounds.
 - Running status: the release never gives a packet with running status (CoreMIDI's documentation: "Running status is not
   allowed" in a MIDIPacket). The parser reads it as a running status; macOS, given such a packet to send, reads a stray data
   byte as a continuation of a SysEx. That difference is in a case the release does not produce, and is not reproduced.
-- Not measured: the 2.0 port's answer to a 1.0 RPN sequence (CC 101, 100, 6, 38). macOS combines it into one 2.0 RPN
-  event (probe2: `20B06500 20B06400 20B00600` into `40200000 18000000`); this library does not combine, and the
-  combination is not built.
+- Measured (probe2), not built: the 2.0 port's answer to a 1.0 RPN sequence (CC 101, 100, 6, 38). macOS combines it into one
+  2.0 RPN event (`20B06500 20B06400 20B00600` into `40200000 18000000`); this library sends each controller as its own
+  message and does not combine them. A crutch in coordination/crutches.md.
 
 ## 2.0 to 1.0 (a list sent or received through a 1.0 endpoint)
 
