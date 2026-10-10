@@ -212,33 +212,76 @@ def string_typedefs(sdk, fw):
     for f in (fw, "Foundation", "CoreFoundation"):
         base = os.path.join(sdk, "System", "Library", "Frameworks", f + ".framework", "Headers", "*.h")
         for path in glob.glob(base):
-            for match in re.finditer(r"typedef\s+(?:const\s+)?(?:NSString\s*\*?|CFStringRef)\s*\*?\s*(?!const\b)(\w+)\b[^;]*;",
+            # `typedef NSString *const X` is a string typedef: the const after the star belongs to the typedef, not to X
+            for match in re.finditer(r"typedef\s+(?:const\s+)?(?:NSString\s*(?:<[^>]*>)?\s*\*?|CFStringRef)\s*\*?\s*(?:const\s+)?(\w+)\b[^;]*;",
                                      read_any(path)):
                 names.add(match.group(1))
     return names
 
 
+def const_typedefs(sdk, fw):
+    """The string typedefs that are constant pointers (`typedef NSString *const X`): a declaration of type X is itself const."""
+    names = set()
+    for f in (fw, "Foundation", "CoreFoundation"):
+        base = os.path.join(sdk, "System", "Library", "Frameworks", f + ".framework", "Headers", "*.h")
+        for path in glob.glob(base):
+            for match in re.finditer(r"typedef\s+(?:const\s+)?NSString\s*(?:<[^>]*>)?\s*\*\s*const\s+(\w+)\b[^;]*;", read_any(path)):
+                names.add(match.group(1))
+    return names
+
+
+def declaration_statements(text):
+    """The statements of the iOS view of a header (ios_text) as (text, masked) pairs. Comments, backslash continuations and preprocessor
+    lines are removed; a statement ends at a ';' or a brace outside parentheses, and at an Objective-C @end, @interface,
+    @implementation or @protocol. masked blanks the contents of each string literal, so a name is never matched inside one; text keeps
+    them, because an availability macro's argument may be a string."""
+    text = re.sub(r"/\*.*?\*/", lambda m: re.sub(r"[^\n]", " ", m.group(0)), text, flags=re.S)
+    text = re.sub(r"//[^\n]*", " ", text)
+    text = re.sub(r"\\\n", " ", text)
+    text = ios_text(text)[0]
+    text = re.sub(r"(?m)^[ \t]*#[^\n]*", " ", text)
+    text = re.sub(r"@(?:end|interface|implementation|protocol)\b[^\n]*", ";", text)
+    masked = re.sub(r'"(?:[^"\\\n]|\\.)*"', lambda m: '"' + "_" * (len(m.group(0)) - 2) + '"', text)
+    out, start, paren = [], 0, 0
+    for i, ch in enumerate(masked):
+        if ch == "(":
+            paren += 1
+        elif ch == ")":
+            paren -= 1
+        elif paren == 0 and ch in ";{}":
+            out.append((text[start:i], masked[start:i]))
+            start = i + 1
+    out.append((text[start:], masked[start:]))
+    return out
+
+
+def declared_type(before):
+    """The type as the declaration writes it: the text before the name, without the availability and project macros written before
+    or after the type (API_AVAILABLE, FOUNDATION_EXPORT, CV_NONNULL), the linkage word and the nullability words."""
+    text = re.sub(r"\b[A-Z][A-Z0-9]*_[A-Z0-9_]+\b", " ", strip_macros(before)[0])
+    return " ".join(w for w in text.split() if w not in ("extern", "_Nonnull", "__nonnull", "_Nullable", "__nullable")
+                    and not re.match(r"^\w*(?:EXTERN|EXPORT)\w*$", w))
+
+
 def constant_decls(sdk, fw, names, typedefs):
     wanted, found = set(names), {}
+    consts = const_typedefs(sdk, fw)
     for path in sorted(glob.glob(os.path.join(sdk, "System", "Library", "Frameworks", fw + ".framework", "Headers", "*.h"))):
-        # a comment on a declaration's line can name another constant: the comment is not part of any declaration
-        for line in re.sub(r"/\*.*?\*/", " ", read_any(path), flags=re.S).splitlines():
-            line = re.sub(r"//.*", "", line)
-            marked = "extern" in line or "EXTERN" in line or "EXPORT" in line
-            for token in set(re.findall(r"\b[A-Za-z_]\w*\b", line)) & wanted:
+        for text, masked in declaration_statements(read_any(path)):
+            for token in set(re.findall(r"\b[A-Za-z_]\w*\b", masked)) & wanted:
                 if token in found:
                     continue
-                typed = re.match(r"^\s*(?:const\s+)?(\w+)\s+" + re.escape(token) + r"\b", line)
-                if typed and typed.group(1) not in typedefs | STRING_TYPES:
-                    typed = None
+                at = re.search(r"\b" + re.escape(token) + r"\b", masked).start()
+                marked = re.search(r"\bextern\b|EXTERN|EXPORT", masked[:at]) is not None
+                decl = declared_type(text[:at])
+                words = decl.split()
                 # a CF header declares a constant with no marker of its own: `const CFStringRef kName API_AVAILABLE(...)`
-                if not marked and not typed:
+                if not marked and not any(w in typedefs | STRING_TYPES for w in words):
                     continue
-                before = re.sub(r"\b" + re.escape(token) + r"\b.*", "", line)
-                before = re.sub(r"^\s*(\w*EXTERN\w*|\w*EXPORT\w*|extern)\s*", "", before)
-                clean, avail = strip_macros(line)
-                decl = " ".join(w for w in before.split() if w not in ("_Nonnull", "__nonnull", "_Nullable", "__nullable"))
-                found[token] = (decl.strip(), avail)
+                if "const" not in words and any(w in consts for w in words):
+                    decl = "const " + decl
+                avail = " ".join(" ".join(AVAIL.findall(text)).split())
+                found[token] = (decl, avail)
     return found
 
 
@@ -359,6 +402,9 @@ def measured_releases(path):
         cols = line.split("\t")
         if len(cols) == 3 and cols[1].startswith("_") and cols[1] != "MIXED-RELEASES":
             out[cols[1][1:]] = cols[2]
+        # the committed snapshot, spec/<F>/measured.held-caches.tsv: "symbol<TAB>release" under a header line
+        elif len(cols) == 2 and cols[0] != "symbol":
+            out[cols[0]] = cols[1]
     return out
 
 
@@ -384,11 +430,18 @@ def surface_frameworks():
     return seen
 
 
+def c_headers(sdk, fw):
+    """The C and Objective-C headers of a framework in the SDK, subfolders and symlinked folders included: none when the SDK lacks the
+    framework, or it is Swift-only (a Swift interface has no header to read, so it has no constant to record)."""
+    return glob.glob(os.path.join(sdk, "System", "Library", "Frameworks", fw + ".framework", "Headers", "**", "*.h"), recursive=True)
+
+
 def cmd_input_all(args):
-    """The spec snapshot of every surface framework that has a ledger; the rest (C header sets) are listed as skipped."""
+    """The spec snapshot of every surface framework that has a ledger and a C or Objective-C header in the SDK; the rest are listed as
+    skipped (the surface names 17 folders that are not frameworks, and the SDK's Swift-only frameworks have no header)."""
     done, skipped, kept = [], [], []
     for fw in surface_frameworks():
-        if not os.path.exists(os.path.join(LEDGER_DIR, "ledger-w45", fw + ".tsv")):
+        if not os.path.exists(os.path.join(LEDGER_DIR, "ledger-w45", fw + ".tsv")) or not c_headers(args.sdk, fw):
             skipped.append(fw)
             continue
         if os.path.exists(spec_path(args.tree, fw)):
@@ -428,8 +481,10 @@ def cmd_input(args):
     typedefs = string_typedefs(args.sdk, fw)
     rows = []
     owned = {}
-    if args.owned:
-        for line in read_any(args.owned).splitlines():
+    # the owned decisions are the framework's committed snapshot unless --owned names another file (round 15: the owner's rule)
+    owned_path = args.owned or os.path.join(snap_dir(args.tree, fw), "owned.tsv")
+    if os.path.exists(owned_path):
+        for line in read_any(owned_path).splitlines():
             if line.strip():
                 name, branch = line.split("\t")
                 owned[name] = branch
@@ -453,7 +508,9 @@ def cmd_input(args):
         foundation_symbols, _ = tbd_exports(args.sdk, "Foundation")
         symbols = symbols | foundation_symbols
     cf = cf_typedefs(args.sdk, fw)
-    measured = measured_releases(args.measured) if args.measured else {}
+    # the measured releases are the committed snapshot's unless --measured names the gate's output (the Lua reads the same default)
+    measured_path = args.measured or os.path.join(snap_dir(args.tree, fw), "measured.held-caches.tsv")
+    measured = measured_releases(measured_path) if os.path.exists(measured_path) else {}
     ios_path = args.ios_constants or IOS_CONSTANTS
     if not (os.path.exists(ios_path) or os.path.exists(ios_path + ".gz")):
         raise SystemExit("no iOS 26.2 constants table at %s (.gz)" % ios_path)
