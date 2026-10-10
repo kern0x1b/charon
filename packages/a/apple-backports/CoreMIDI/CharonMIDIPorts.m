@@ -671,38 +671,41 @@ static void charon_ump_send_done(MIDISysexSendRequest *request)
     }
 }
 
-// Sends UMP words to a destination of the release as MIDI 1.0 bytes, through its sysex send: the bytes are made here, and the
-// release's completion frees them. 1 when the release has the bytes (its completion then completes the request, if there is one), and
-// 0 when it has not, in which case nothing is kept and the caller completes the request.
+// Sends UMP words to a destination of the release as MIDI 1.0 bytes, through its sysex send. The words are converted in stack storage
+// (a short list needs no allocation for the conversion), and the bytes are copied once into the block the release's completion frees:
+// the release's sysex send is asynchronous and keeps its request and data until it completes, so that block is the one allocation the
+// send makes (crutches.md, the UMP sysex entry). 1 when the release has the bytes (its completion then completes the request, if there
+// is one), and 0 when it has not, in which case nothing is kept and the caller completes the request.
 int CharonMIDIUMPReleaseSend(MIDISysexSendRequestUMP *umpRequest, MIDIEndpointRef dest, const UInt32 *words, UInt32 count)
 {
     CharonMIDIRPN rpn[16];
     memset(rpn, 0, sizeof(rpn));
+    uint8_t stackBytes[CHARON_STACK_BYTES];
     CharonMIDIBytes bytes;
-    memset(&bytes, 0, sizeof(bytes));
+    CharonMIDIBytesUseStorage(&bytes, stackBytes, CHARON_STACK_BYTES);
     CharonMIDIUMPToBytes(words, count, rpn, &bytes);
     int queued = 0;
     if (bytes.count > 0 && !bytes.failed) {
-        charon_ump_send *send = calloc(1, sizeof(charon_ump_send));
+        size_t total = sizeof(charon_ump_send);
+        charon_ump_send *send = charon_size_add(&total, bytes.count) ? calloc(1, total) : NULL;
         if (send) {
+            UInt8 *data = (UInt8 *)(send + 1);
+            memcpy(data, bytes.bytes, bytes.count);
             send->umpRequest = umpRequest;
-            send->bytes = bytes.bytes;
             send->request.destination = dest;
-            send->request.data = send->bytes;
+            send->request.data = data;
             send->request.bytesToSend = (UInt32)bytes.count;
             send->request.completionProc = charon_ump_send_done;
             send->request.completionRefCon = send;
-            bytes.bytes = NULL;
             if (MIDISendSysex(&send->request) == noErr) {
                 queued = 1;
             } else {
                 charon_refused("a UMP sysex the release refused");
-                free(send->bytes);
                 free(send);
             }
         }
     }
-    free(bytes.bytes);
+    CharonMIDIBytesRelease(&bytes);
     return queued;
 }
 
