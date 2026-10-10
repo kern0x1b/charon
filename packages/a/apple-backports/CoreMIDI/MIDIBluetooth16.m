@@ -202,6 +202,7 @@ static NSString *charon_peripheral_key(CBPeripheral *peripheral)
     MIDIEndpointRef source = 0;
     OSStatus status = MIDISourceCreate(self.client, (__bridge CFStringRef)name, &source);
     if (status == noErr) {
+        CharonMIDIForgetRoute(source);
         device.source = source;
     } else {
         NSLog(@"charon: the release refused a virtual source for a Bluetooth MIDI device (status %d); its bytes are dropped (facts/CoreMIDI/CoreMIDI.md)", (int)status);

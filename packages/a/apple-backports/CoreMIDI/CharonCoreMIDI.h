@@ -215,6 +215,8 @@ Boolean CharonMIDIDeliverInProcess(MIDIEndpointRef endpoint, const UInt32 *words
 // Records the retained block of a port or destination the library made through the release's function form (MIDIBlocks9.m):
 // the block is released when the object is gone.
 void CharonMIDIOwnBlock(MIDIObjectRef object, void *retainedBlock);
+// Drops the route of a reference the library gives to a new object it makes outside CharonMIDIPorts.m (the Bluetooth source).
+void CharonMIDIForgetRoute(MIDIObjectRef object);
 
 // The request of MIDISendUMPSysex and MIDISendUMPSysex8, as the 26.2 SDK declares it (MIDIServices.h). An SDK declares it from
 // iOS 17 and macOS 14, and the port's package builds against an older one (16.4): the version the SDK gives itself decides, not

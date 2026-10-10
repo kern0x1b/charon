@@ -489,7 +489,8 @@ static void charon_sweep(void)
 }
 
 // The route of an endpoint is the selection state of a reference the release may have given to another object: a new object
-// that takes the reference must not inherit the state of the old one. The route is dropped when a row is made for the reference.
+// that takes the reference must not inherit the state of the old one. The route is dropped when the library makes an object for
+// the reference: a row (charon_own), a source (CharonMIDISource) or the Bluetooth source (CharonMIDIForgetRoute).
 static void charon_route_forget(MIDIObjectRef object)
 {
     charon_route *dropped = NULL;
@@ -938,6 +939,13 @@ void CharonMIDIOwnBlock(MIDIObjectRef object, void *retainedBlock)
     charon_own(object, 0, NULL, retainedBlock);
 }
 
+// Drops the route of a reference the library has just given to a new object that it makes outside this file (the Bluetooth source
+// of MIDIBluetooth16.m): the route of the object the release had before is not the new object's.
+void CharonMIDIForgetRoute(MIDIObjectRef object)
+{
+    charon_route_forget(object);
+}
+
 OSStatus CharonMIDISource(MIDIClientRef client, CFStringRef name, MIDIProtocolID protocol, MIDIEndpointRef *outSrc)
 {
     if (protocol != kMIDIProtocol_1_0 && protocol != kMIDIProtocol_2_0)
@@ -951,6 +959,9 @@ OSStatus CharonMIDISource(MIDIClientRef client, CFStringRef name, MIDIProtocolID
             charon_refused("the dispose of a source whose protocol was refused");
         return status;
     }
+    // A source takes no row (sources are not swept), so its reference's route is dropped here: a source of the release's reference
+    // that an old endpoint held would otherwise translate its first RPN with the old endpoint's selection.
+    charon_route_forget(*outSrc);
     return noErr;
 }
 
