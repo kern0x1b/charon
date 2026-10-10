@@ -544,7 +544,10 @@ static void charon_own(MIDIObjectRef object, int destination, charon_port *port,
 // The newest destination row this process made for an endpoint, with its port retained for the caller (who releases it), and the
 // stamp the row was taken with. NULL when the endpoint is not one of this process's destinations. The search reads no property: the
 // object is checked by the delivery, before the block is called (charon_drain). The table's lock is held for the search alone.
-static charon_port *charon_destination_port(MIDIEndpointRef endpoint, int *stamped, SInt32 *stamp)
+// With twoOnly (the 2.0 send), a row of a 1.0 destination answers NULL with nothing retained: the port's protocol is set once, when
+// the port is made, and the row holds the port while it is in the table; a row leaves the table under the lock, and its port is
+// released after the lock is dropped (charon_sweep_owned_window), so the protocol is read under the lock and no reference is needed.
+static charon_port *charon_destination_port(MIDIEndpointRef endpoint, int twoOnly, int *stamped, SInt32 *stamp)
 {
     charon_port *port = NULL;
     pthread_mutex_lock(&charon_owned_lock);
@@ -552,6 +555,8 @@ static charon_port *charon_destination_port(MIDIEndpointRef endpoint, int *stamp
     while (i > 0 && charon_owned_rows[i - 1].object == endpoint) {
         const charon_owned *row = &charon_owned_rows[--i];
         if (row->destination && row->port) {
+            if (twoOnly && row->port->protocol != kMIDIProtocol_2_0)
+                break;
             port = row->port;
             *stamped = row->stamped;
             *stamp = row->stamp;
@@ -796,7 +801,7 @@ Boolean CharonMIDIDeliverInProcess(MIDIEndpointRef endpoint, const UInt32 *words
 {
     int stamped = 0;
     SInt32 stamp = 0;
-    charon_port *port = charon_destination_port(endpoint, &stamped, &stamp);
+    charon_port *port = charon_destination_port(endpoint, 0, &stamped, &stamp);
     if (!port)
         return false;
     if (!port->block) {
@@ -841,13 +846,9 @@ static int charon_deliver_2_0(MIDIPortRef out, MIDIEndpointRef endpoint, const M
 {
     int stamped = 0;
     SInt32 stamp = 0;
-    charon_port *port = charon_destination_port(endpoint, &stamped, &stamp);
+    charon_port *port = charon_destination_port(endpoint, 1, &stamped, &stamp);
     if (!port)
         return 0;
-    if (port->protocol != kMIDIProtocol_2_0) {
-        charon_port_release(port);
-        return 0;
-    }
     *status = noErr;
     if (!port->block) {
         charon_port_release(port);
