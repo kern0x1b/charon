@@ -13,16 +13,12 @@ local stream = import("stream", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
 local layout = import("layout", {anonymous = true})
 local files = import("files", {anonymous = true})
-
--- The frameworks whose typedef, class and protocol names every framework's types may come from: the frameworks the header parser
--- reads for the declared names (gen.py TYPE_INDEX_FRAMEWORKS, and AVFAudio).
-local TYPE_INDEX_FRAMEWORKS = {"Foundation", "CoreFoundation", "CoreAudio", "CoreAudioTypes", "AudioToolbox", "AudioUnit", "CoreMedia",
-                               "CoreGraphics", "CoreMIDI", "CoreVideo", "AVFAudio"}
+local order = import("order", {anonymous = true})
 
 local injected = nil
--- The typedef index and the declared names of the type-index frameworks, read once per tree (the shards are read once per process).
+-- The typedef index and the declared names of the tree, read once per tree (the shards are read once per process).
 local typedef_memo = {}
-local type_name_memo = {}
+local declared_memo = {}
 
 -- Makes facts(...), shard_facts(...), typedef_index(...) and declared_names(...) answer from source(fw, sdk) instead of the parser and
 -- the shards. For tests, which must not parse headers. source returns the four kinds of facts, and members may carry the typed fields
@@ -117,7 +113,7 @@ local function shard_files(tree)
             table.insert(found, filepath)
         end
     end
-    table.sort(found)
+    table.sort(found, order.less)
     return found
 end
 
@@ -211,11 +207,10 @@ local function ios_unavailable(availability)
     return false
 end
 
--- Adds the typedef, class and protocol names of one framework's shard to names, and the classes the iOS SDK marks unavailable to
--- unavailable (the names gen.py's declared_names reads, with the same frameworks).
-local function add_type_names(tree, fw, names, unavailable)
+-- Adds the typedef, class and protocol names of one shard to names, and the classes the iOS SDK marks unavailable to unavailable.
+local function add_type_names(tree, filepath, names, unavailable)
     local shard = import("found.shard", {rootdir = path.join(tree, "tools"), anonymous = true})
-    for _, r in ipairs(read_rows(shard_path(tree, fw), {typedef = true, interface = true, protocol = true})) do
+    for _, r in ipairs(read_rows(filepath, {typedef = true, interface = true, protocol = true})) do
         local name = row_name(shard, r)
         names[name] = true
         if r.kind == "interface" and ios_unavailable(r.availability) then
@@ -224,32 +219,33 @@ local function add_type_names(tree, fw, names, unavailable)
     end
 end
 
--- The declared names of a framework (gen.py declared_names): the typedef, class and protocol names of the framework and of the
--- type-index frameworks, less the classes the iOS SDK marks unavailable. A set. With a source injected, its declared set.
+-- The declared names of the tree: the typedef, class and protocol names of every shard (nested frameworks included), less the
+-- classes the iOS SDK marks unavailable in any shard. Read once per tree.
+local function declared_index(tree)
+    if declared_memo[tree] == nil then
+        local names, unavailable = {}, {}
+        for _, filepath in ipairs(shard_files(tree)) do
+            add_type_names(tree, filepath, names, unavailable)
+        end
+        for name in pairs(unavailable) do
+            names[name] = nil
+        end
+        declared_memo[tree] = names
+    end
+    return declared_memo[tree]
+end
+
+-- The declared names the iOS build sees (gen.py declared_names, read over every shard instead of a list of frameworks): a set, a copy of
+-- the tree's declared names. fw is the framework asked for; its own shard is one of the tree's. With a source injected, its declared set.
 function declared_names(tree, fw)
     if injected then
         return injected(fw, nil).declared or {}
     end
-    if type_name_memo[tree] == nil then
-        local names, unavailable = {}, {}
-        for _, other in ipairs(TYPE_INDEX_FRAMEWORKS) do
-            add_type_names(tree, other, names, unavailable)
-        end
-        type_name_memo[tree] = {names = names, unavailable = unavailable}
+    local out = {}
+    for name in pairs(declared_index(tree)) do
+        out[name] = true
     end
-    local base = type_name_memo[tree]
-    local names, unavailable = {}, {}
-    for name in pairs(base.names) do
-        names[name] = true
-    end
-    for name in pairs(base.unavailable) do
-        unavailable[name] = true
-    end
-    add_type_names(tree, fw, names, unavailable)
-    for name in pairs(unavailable) do
-        names[name] = nil
-    end
-    return names
+    return out
 end
 
 -- The type of each extern variable of a framework, by its name: the constants' type column (design-foundation.md 5.7, the typed

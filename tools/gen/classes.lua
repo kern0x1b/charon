@@ -4,6 +4,7 @@
 
 local surface = import("surface", {anonymous = true})
 local hand = import("hand", {anonymous = true})
+local order = import("order", {anonymous = true})
 
 -- The ledger status of a row the header parse covers with no symbol to generate.
 local HEADER_OK = "header-ok"
@@ -19,7 +20,7 @@ local function sorted_unique(list)
             table.insert(out, item)
         end
     end
-    table.sort(out)
+    table.sort(out, order.less)
     return out
 end
 
@@ -87,7 +88,7 @@ function decisions(input)
     for cls in pairs(candidate_set) do
         table.insert(candidates, cls)
     end
-    table.sort(candidates)
+    table.sort(candidates, order.less)
     local reasons = class_reasons(input, spec_apis, owned, hand_classes, candidates)
     local generated = {}
     for cls, why in pairs(reasons) do

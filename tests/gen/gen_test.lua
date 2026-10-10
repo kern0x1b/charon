@@ -1,6 +1,7 @@
--- Behaviour of the generator's support modules: the SHA-256 digest, the one writer (emit), and the pipe stream. Run:
+-- Behaviour of the generator's support modules: the SHA-256 digest, the one writer (emit), the pipe stream, and the header interface's
+-- injected facts. The real header parser is tested in parser_real_test.lua. Run:
 --   xmake l tests/gen/gen_test.lua
--- The writer's test works in a scratch directory under the system temp directory, removed when the test ends.
+-- The writer's test works in a scratch directory under .agent-work/runs of this checkout, removed when the test ends.
 
 local TOOLS = path.join(os.scriptdir(), "..", "..", "tools")
 
@@ -37,7 +38,8 @@ end
 
 local function test_emit(check)
     local emit = import("gen.emit", {rootdir = TOOLS, anonymous = true})
-    local dir = path.join(os.tmpdir(), "charon-gen-test-" .. tostring(os.time()))
+    local dir = path.join(os.scriptdir(), "..", "..", ".agent-work", "runs", "gen-test-" .. tostring(os.time()) .. "-"
+                          .. tostring(math.random(1000000)))
     os.mkdir(dir)
     local target = path.join(dir, "nested", "out.txt")
     local before = emit.count()
@@ -57,8 +59,7 @@ local function test_emit(check)
     os.rm(dir)
 end
 
--- The header interface: injected facts come back untouched, and the real parser (when an SDK is named by CHARON_SDK26) gives
--- the members, the declared names and the typedefs of a framework.
+-- The header interface: injected facts come back untouched (the real parser is parser_real_test.lua).
 local function test_headers(check)
     local headers = import("gen.headers", {rootdir = TOOLS, anonymous = true})
     headers.use(function(fw, sdk)
@@ -69,15 +70,6 @@ local function test_headers(check)
     check(#fixture.members == 1 and fixture.members[1].api == "-[FKThing reset]" and fixture.declared.FKThing == true
           and fixture.typedefs.FKFlag == "NSInteger", "an injected fact source answers in place of the parser")
     headers.use(nil)
-    local sdk = os.getenv("CHARON_SDK26")
-    if sdk and os.isdir(sdk) then
-        local real = headers.facts(path.join(TOOLS, ".."), "AVFAudio", sdk)
-        check(#real.members > 0 and real.members[1].kind ~= nil, "the parser gives the members of AVFAudio")
-        check(real.declared.AVAudioApplication == true, "the parser gives the declared names")
-        check(real.superclasses.AVAudioApplication == "NSObject", "the parser gives the superclass each class names")
-    else
-        print("skip the real header parser: set CHARON_SDK26 to an iOS 26.2 SDK to test it")
-    end
 end
 
 -- A second `gen --all` on an unchanged tree writes no file: the emitter compares before it writes (design-spec-driven.md D2).

@@ -7,8 +7,12 @@
 local decl = import("decl", {anonymous = true})
 local strings = import("strings", {anonymous = true})
 local surface = import("surface", {anonymous = true})
+local order = import("order", {anonymous = true})
 
--- The names the iOS build spells as its own types: a declaration may use them without the framework declaring them.
+-- The names the iOS build spells as its own types that no declaration shard records: the typedefs of the SDK's base headers (objc.h,
+-- NSObjCRuntime.h, the Core Audio and Core Foundation base types), which the sweep records no row for. Measured on the 26.2 tree: without
+-- this list, BOOL, NSInteger and NSUInteger alone give 187 UIKit members a "type not declared for iOS" reason they do not earn. The list
+-- goes when the shards record those typedefs (an extractor change).
 local BUILTIN_TYPES = strings.set({"BOOL", "NSInteger", "NSUInteger", "CGFloat", "NSTimeInterval", "NSError", "NSString", "NSNumber",
     "NSArray", "NSDictionary", "NSSet", "NSData", "NSURL", "NSDate", "NSUUID", "NSLocale", "NSMapTable", "NSPointerArray",
     "NSMeasurement", "NSIndexPath", "NSProgress", "NSOperationQueue", "NSNotificationName", "NSNotificationCenter",
@@ -51,7 +55,7 @@ local function undeclared_types(text, declared)
             table.insert(out, word)
         end
     end
-    table.sort(out)
+    table.sort(out, order.less)
     return out
 end
 

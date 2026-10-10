@@ -1,6 +1,6 @@
 -- The shard reader of the header interface: rows are read by the column names of the shard's own header line, so a reordered or
--- extended column list reads the same. Run: xmake l tests/gen/headers_test.lua. The fixture tree is a scratch directory under the
--- system temp directory, removed when the test ends; the real AVFAudio shard is read from this repository and must give the counts
+-- extended column list reads the same. Run: xmake l tests/gen/headers_test.lua. The fixture tree is a scratch directory under
+-- .agent-work/runs of this checkout, removed when the test ends; the real AVFAudio shard is read from this repository and must give the counts
 -- it gave when the reader was checked against an independent pass (656 members, 567 declared names).
 
 local TOOLS = path.join(os.scriptdir(), "..", "..", "tools")
@@ -27,7 +27,8 @@ function main()
     end
 
     -- A fixture shard whose columns come in a different order from the extractor's, with a comment line before the header.
-    local root = path.join(os.tmpdir(), "charon-headers-test-" .. tostring(os.time()))
+    local root = path.join(os.scriptdir(), "..", "..", ".agent-work", "runs", "headers-test-" .. tostring(os.time()) .. "-"
+                           .. tostring(math.random(1000000)))
     local folder = path.join(root, "packages", "a", "apple-backports", "spec", "Fixture")
     os.mkdir(folder)
     local shard = io.open(path.join(folder, "declarations.tsv"), "wb")

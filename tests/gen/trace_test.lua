@@ -6,8 +6,9 @@
 -- functions, the typedefs, the declared names and the superclasses) are injected through headers.use, so no header is parsed and no
 -- shard is read; the fixture header is written only so that the program compiles. The typed rules (the spelling of a type, the kind a
 -- type is, the parameters, the NSError ** test) and the stub text are checked case by case.
--- Run: xmake l tests/gen/trace_test.lua (needs clang; exits 1 on any failure). Scratch files live in a folder under the system
--- temporary directory, removed when the test ends.
+-- Run: xmake l tests/gen/trace_test.lua (needs clang; exits 1 on any failure). Scratch files live in a folder under
+-- .agent-work/runs of this checkout, removed when the test ends. The compile runs with warnings on: its warnings are listed below and
+-- any other warning fails the test.
 
 local TOOLS = path.join(os.scriptdir(), "..", "..", "tools")
 
@@ -70,6 +71,12 @@ local EXPECTED_LOG = {
     "unimplemented: FixtureKit -[FKThing reset]", "unimplemented: FixtureKit -[FKThing name]",
     "unimplemented: FixtureKit FKCountThings",
 }
+
+-- The warnings the compile gives, by flag, with the reason each is expected (the test fails on any other). -Wincomplete-implementation: the
+-- program's @implementation FKThing has none of the three methods, which the stubs define in their category in another unit. -Wobjc-
+-- protocol-method-implementation: the stub category implements the three methods the header declares for FKThing (the trace layer
+-- overrides a class's own method by a category, one per stub). Neither is a fault of the fixture's values; a new flag fails the test.
+local EXPECTED_WARNINGS = {["-Wincomplete-implementation"] = 3, ["-Wobjc-protocol-method-implementation"] = 3}
 
 local PROGRAM = [==[#import <FixtureKit/FixtureKit.h>
 #include <stdio.h>
@@ -180,7 +187,8 @@ local function test_typed_rules(check)
     end
     local index = {FKFlags = "enum FKFlags", FKBox = "struct FKBoxS", FKAlias = "FKOther", FKOther = "long", FKCount = "unsigned int",
                    FKTypedefObj = "NSString *", CFStringRef = "const struct __CFString *", CGRect = "struct CGRect",
-                   CBLAS_TRANSPOSE = "enum CBLAS_TRANSPOSE", A = "B", B = "C", C = "D", D = "E", E = "F", F = "G", G = "long"}
+                   CBLAS_TRANSPOSE = "enum CBLAS_TRANSPOSE", A = "B", B = "C", C = "D", D = "E", E = "F", F = "G", G = "long",
+                   LOOP_A = "LOOP_B", LOOP_B = "LOOP_A", SELF = "SELF"}
     same("canonical drops nullability", decl.canonical("NSString * _Nullable", index), "NSString *")
     same("canonical joins the stars of a nullable out-error", decl.canonical("NSError * _Nullable * _Nullable", index), "NSError **")
     same("canonical attached nullability", decl.canonical("NSString *_Nullable", index), "NSString *")
@@ -192,7 +200,11 @@ local function test_typed_rules(check)
     same("canonical keeps __kindof", decl.canonical("__kindof UIView *", index), "__kindof UIView *")
     local kinds = {
         {"void", "void"}, {"NSInteger", "scalar"}, {"NSString *", "object"}, {"id", "object"}, {"instancetype", "object"},
-        {"CGRect", "struct"}, {"FKFlags", "scalar"}, {"FKBox", "struct"}, {"FKAlias", "scalar"}, {"A", nil},
+        {"CGRect", "struct"}, {"FKFlags", "scalar"}, {"FKBox", "struct"}, {"FKAlias", "scalar"},
+        -- a chain of seven typedefs (A through G, then long) is followed to its end: there is no depth cap
+        {"A", "scalar"},
+        -- a typedef cycle is not followed: the kind is unknown (nil), and the walk stops
+        {"LOOP_A", nil}, {"SELF", nil},
         {"NSUInteger", "scalar"}, {"CBLAS_TRANSPOSE", "scalar"}, {"FKCount", "scalar"}, {"FKTypedefObj", "object"},
         {"const NSInteger", "scalar"}, {"NSArray<NSString *> *", "object"}, {"BOOL", "scalar"}, {"_Bool", "scalar"},
         {"char *", "object"}, {"enum Thing", "scalar"}, {"struct Thing", "struct"}, {"void (^)(int)", "object"},
@@ -329,8 +341,8 @@ local function write_fixture(root)
     return tree, sdk, corpus
 end
 
--- Compiles the stubs with the program, runs it, and returns the compile status, the run status and the program's lines (stdout and
--- stderr together).
+-- Compiles the stubs with the program, runs it, and returns the compile status, the compiler's diagnostics (its standard error), the run
+-- status and the program's lines (stdout and stderr together).
 local function build_and_run(root, tree, sdk)
     local emit = import("gen.emit", {rootdir = TOOLS, anonymous = true})
     local stream = import("gen.stream", {rootdir = TOOLS, anonymous = true})
@@ -339,18 +351,31 @@ local function build_and_run(root, tree, sdk)
     emit.file(program, PROGRAM)
     local binary = path.join(root, "run")
     local frameworks = path.join(sdk, "System", "Library", "Frameworks")
-    local compiled = stream.lines("clang", {"-fobjc-arc", "-DCHARON_TRACE_DEFAULTS", "-F", frameworks, "-I",
-                                             path.join(frameworks, FRAMEWORK .. ".framework", "Headers"), "-framework", "Foundation",
-                                             "-w", program, trace_files.defaults_file(tree, FRAMEWORK), "-o", binary},
-                                  function() end)
+    local compiled, diagnostics = stream.run("clang", {"-fobjc-arc", "-DCHARON_TRACE_DEFAULTS", "-F", frameworks, "-I",
+                                                        path.join(frameworks, FRAMEWORK .. ".framework", "Headers"), "-framework",
+                                                        "Foundation", program, trace_files.defaults_file(tree, FRAMEWORK), "-o", binary},
+                                             function() end)
     local output = {}
     if compiled ~= 0 then
-        return compiled, nil, output
+        return compiled, diagnostics, nil, output
     end
     local ran = stream.lines("sh", {"-c", "'" .. binary .. "' 2>&1"}, function(line)
         table.insert(output, line)
     end)
-    return compiled, ran, output
+    return compiled, diagnostics, ran, output
+end
+
+-- The warnings of a compile, counted by their flag ("[-Wincomplete-implementation]" -> "-Wincomplete-implementation"). A warning with no
+-- flag is counted as "(none)".
+local function warnings_by_flag(diagnostics)
+    local counts = {}
+    for line in string.gmatch(diagnostics or "", "[^\n]+") do
+        if string.find(line, ": warning: ", 1, true) then
+            local flag = string.match(line, "%[(%-W[%w%-]+)%]$") or "(none)"
+            counts[flag] = (counts[flag] or 0) + 1
+        end
+    end
+    return counts
 end
 
 local function test_trace_run(check, root)
@@ -361,10 +386,18 @@ local function test_trace_run(check, root)
     local tree, sdk, corpus = write_fixture(root)
     local status = trace.run({tree = tree, framework = FRAMEWORK, sdk = sdk, coordination = corpus})
     check(status == 0, "the trace layer writes the fixture")
-    local compiled, ran, output = build_and_run(root, tree, sdk)
+    local compiled, diagnostics, ran, output = build_and_run(root, tree, sdk)
     check(compiled == 0, "the stubs compile with CHARON_TRACE_DEFAULTS")
     if compiled ~= 0 then
+        print(diagnostics)
         return
+    end
+    local warned = warnings_by_flag(diagnostics)
+    for flag, n in pairs(warned) do
+        check(EXPECTED_WARNINGS[flag] == n, string.format("compiler warnings: %d of %s, listed as %s", n, flag, tostring(EXPECTED_WARNINGS[flag])))
+    end
+    for flag, n in pairs(EXPECTED_WARNINGS) do
+        check(warned[flag] == n, string.format("compiler warnings: the listed %s did not occur %d times", flag, n))
     end
     local logged, seen = {}, {}
     for _, line in ipairs(output) do
@@ -397,7 +430,8 @@ function main()
     test_selectors(check)
     test_superclass(check)
     test_stub_text(check)
-    local root = path.join(os.tmpdir(), "charon-trace-test-" .. tostring(os.time()) .. "-" .. tostring(math.random(1000000)))
+    local root = path.join(os.scriptdir(), "..", "..", ".agent-work", "runs", "trace-test-" .. tostring(os.time()) .. "-"
+                           .. tostring(math.random(1000000)))
     os.mkdir(root)
     local err = nil
     try {

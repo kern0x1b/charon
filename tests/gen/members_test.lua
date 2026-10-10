@@ -23,7 +23,7 @@ function main()
     }
     local rows = members.rows(facts, {Fixture = true}, "Fixture")
     check(#rows == 3, "the first occurrence of each api is one row (got " .. #rows .. ")")
-    check(rows[1].key == "Fixture_setLevel_" or rows[1].key == "Fixture_setLevel", "the instance key is a C identifier (got " .. rows[1].key .. ")")
+    check(rows[1].key == "Fixture_setLevel", "the instance key is the C identifier of the selector, with no trailing underscore (got " .. rows[1].key .. ")")
     check(rows[2].key == "class_Fixture_shared", "a class member's key starts with class_ (got " .. rows[2].key .. ")")
     check(rows[1].hash == "aaaaaaaaaaaaaaaa", "the hash is the declaration hash of the row")
     check(rows[1].availability == "API_AVAILABLE(ios(14.0))" and rows[2].availability == "-", "availability is the rendered text or -")

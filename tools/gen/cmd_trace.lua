@@ -16,13 +16,12 @@ local functions = import("functions", {anonymous = true})
 local trace_files = import("trace_files", {anonymous = true})
 local emit = import("emit", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
-local strings = import("strings", {anonymous = true})
+local nsobject = import("nsobject", {anonymous = true})
+local order = import("order", {anonymous = true})
 local gen = import("cmd_gen", {anonymous = true})
 
 -- The release whose ledger lists the members the 6.1.3 release lacks.
 local LEDGER_RELEASE = "ledger-w45"
--- The selectors whose bare form the surface does not list is the inherited NSObject behaviour, which a call reaches.
-local INHERITED_SELECTORS = strings.set({"init", "new", "copy", "mutableCopy"})
 local INHERITED_REASON = "init/new/copy the surface does not list: the inherited NSObject behaviour is what a call reaches"
 -- The status of a C function the trace layer stubs.
 local GENERABLE = "generable"
@@ -42,6 +41,19 @@ local function preamble(fw)
     }
 end
 
+-- Sorts a list of records in place by the order.less of their fields, in the order given (the first field that differs decides).
+local function sort_by(list, fields)
+    table.sort(list, function(a, b)
+        for _, field in ipairs(fields) do
+            if a[field] ~= b[field] then
+                return order.less(a[field], b[field])
+            end
+        end
+        return false
+    end)
+    return list
+end
+
 -- The stub rows, each {api, kind}, unique and sorted by api and then kind (sorted(set(stub_rows)) of tools/gen.py).
 local function sorted_stub_rows(rows)
     local seen, out = {}, {}
@@ -52,23 +64,17 @@ local function sorted_stub_rows(rows)
             table.insert(out, row)
         end
     end
-    table.sort(out, function(a, b)
-        if a[1] ~= b[1] then
-            return a[1] < b[1]
-        end
-        return a[2] < b[2]
-    end)
-    return out
+    return sort_by(out, {1, 2})
 end
 
 -- The members the spec names for one class, after the inherited selectors the surface does not list are left out. Returns the
 -- classes in the order the spec names them, each with its members kept, and appends the members left out to skipped.
 local function without_inherited(found, surface_methods, skipped)
-    local order = {}
+    local kept_classes = {}
     for _, cls in ipairs(found.order) do
         local kept = {}
         for _, m in ipairs(found.members[cls]) do
-            if m.kind == "method" and INHERITED_SELECTORS[m.selector] and not surface_methods[m.api] then
+            if m.kind == "method" and nsobject.trace_inherited(m.selector) and not surface_methods[m.api] then
                 table.insert(skipped, {api = m.api, reason = INHERITED_REASON})
             else
                 table.insert(kept, m)
@@ -76,12 +82,12 @@ local function without_inherited(found, surface_methods, skipped)
         end
         if #kept > 0 then
             found.members[cls] = kept
-            table.insert(order, cls)
+            table.insert(kept_classes, cls)
         else
             found.members[cls] = nil
         end
     end
-    found.order = order
+    found.order = kept_classes
 end
 
 -- The stub keys of the members: a method by its api, a property by the property it belongs to.
@@ -134,10 +140,7 @@ local function generable_functions(tree, fw)
             table.insert(rows, row)
         end
     end
-    table.sort(rows, function(a, b)
-        return a.api < b.api
-    end)
-    return rows
+    return sort_by(rows, {"api"})
 end
 
 -- The environment of the stub rule for one framework: the typed facts of its members by api, the functions by name, the typedef index and
@@ -247,7 +250,7 @@ local function trace_one(args, fw)
     local stub_rows = {}
     local stubbed = 0
     local class_names = table.move(found.order, 1, #found.order, 1, {})
-    table.sort(class_names)
+    table.sort(class_names, order.less)
     for _, cls in ipairs(class_names) do
         local generated = decisions[cls] ~= nil and decisions[cls].generated
         stubbed = stubbed + class_lines(fw, cls, found.members[cls], generated, lines, stub_rows, skipped)
@@ -269,9 +272,7 @@ local function trace_one(args, fw)
     for cls, d in pairs(decisions) do
         table.insert(class_rows, {cls, d.generated and "yes" or "no", d.reason})
     end
-    table.sort(class_rows, function(a, b)
-        return a[1] < b[1]
-    end)
+    sort_by(class_rows, {1})
     emit.file(trace_files.classes_file(tree, fw), tsv.table_text({"class", "generated", "reason"}, class_rows))
     print(string.format("trace %s: %d stubs in %d classes, %d members left out (skipped.tsv)", fw, stubbed, #found.order, #skipped))
 end

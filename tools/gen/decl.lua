@@ -23,9 +23,6 @@ local KEYWORD_WORDS = strings.set({"void", "char", "short", "int", "long", "floa
 -- The words a parameter's last word is not a name after: the tag or the qualifier of an unnamed type.
 local TYPE_LEADERS = strings.set({"struct", "enum", "union", "const", "volatile"})
 
--- A typedef chain longer than this is not followed: the kind is then not known.
-local MAX_TYPEDEF_DEPTH = 6
-
 -- True when a word is a macro the extractor leaves in a type: all capitals with an underscore after the first letter (API_AVAILABLE,
 -- NS_REFINED_FOR_SWIFT, __TVOS_PROHIBITED). A typedef named so (CBLAS_TRANSPOSE) is not one.
 local function is_macro_word(word)
@@ -53,10 +50,12 @@ function canonical(text, index)
 end
 
 -- 'void', 'object', 'scalar' or 'struct' for a type, through the typedefs (index: typedef name -> the underlying type the shard gives).
--- nil when the type is not known: a name no typedef names and no scalar spells is not guessed.
-function kind_of(type_text, index, depth)
+-- nil when the type is not known: a name no typedef names and no scalar spells is not guessed. A typedef chain is followed to its end;
+-- a name met again on the chain (a typedef that names itself, through others) is a cycle and gives nil, so no depth is capped.
+-- visited: the typedef names already on the chain (for the callers' use, nil at the top).
+function kind_of(type_text, index, visited)
     index = index or {}
-    depth = depth or 0
+    visited = visited or {}
     local text = canonical(type_text, index)
     if text == "void" then
         return "void"
@@ -75,8 +74,9 @@ function kind_of(type_text, index, depth)
     if string.sub(bare, 1, 7) == "struct " or string.sub(bare, 1, 6) == "union " then
         return "struct"
     end
-    if index[bare] ~= nil and depth < MAX_TYPEDEF_DEPTH then
-        return kind_of(index[bare], index, depth + 1)
+    if index[bare] ~= nil and not visited[bare] then
+        visited[bare] = true
+        return kind_of(index[bare], index, visited)
     end
     return nil
 end
