@@ -29,9 +29,36 @@ function tail(text, n)
     return string.sub(stripped, -n)
 end
 
--- The JSON object xmake printed on its standard output.
-local function json_of(text)
-    return json.decode(string.sub(text, (string.find(text, "{", 1, true))))
+-- The first 200 bytes of xmake's output, for an error message that must show what was printed.
+local function head(text)
+    return string.sub(string.gsub(text or "", "%s+$", ""), 1, 200)
+end
+
+-- The JSON object xmake printed on its standard output, decoded. The object starts at the beginning of a line: a message xmake
+-- prints before it may hold a brace (the first "{" of the text is then not the object's), so the search is for a line that opens
+-- with one. A text with no such line, or an object that does not decode, is an error that names what was asked and shows the head
+-- of the output, never a decode error on a substring of it.
+function json_of(text, what)
+    local body = nil
+    if string.sub(text, 1, 1) == "{" then
+        body = text
+    else
+        local start = string.find(text, "\n{", 1, true)
+        body = start and string.sub(text, start + 1) or nil
+    end
+    assert(body, what .. ": xmake printed no JSON object; its output begins: " .. head(text))
+    local value = nil
+    try {
+        function()
+            value = json.decode(body)
+        end,
+        catch {
+            function(e)
+                raise(what .. ": the JSON object does not decode (" .. tostring(e) .. "); its output begins: " .. head(text))
+            end
+        }
+    }
+    return value
 end
 
 -- Runs a program and returns ok (exit status 0), its standard output (one line per line of the program, each ended by a line feed),
@@ -77,7 +104,7 @@ end
 function target_product(cwd, project, name)
     local ok, out, err = xmake_at(cwd, project, {"show", "-t", name, "--format=json"})
     assert(ok, "xmake show failed for " .. name .. " of " .. project .. ": " .. tail(err, 300))
-    local file = json_of(out).targetfile
+    local file = json_of(out, "xmake show -t " .. name .. " of " .. project).targetfile
     if not path.is_absolute(file) then
         file = path.join(project, file)
     end
@@ -95,7 +122,7 @@ function builddir()
     if builddir_cache == nil then
         local ok, out, err = xmake({"show", "--format=json"})
         assert(ok, "xmake show failed: " .. tail(err, 300))
-        local dir = json_of(out).project.builddir
+        local dir = json_of(out, "xmake show").project.builddir
         if not path.is_absolute(dir) then
             dir = path.join(PROJECT, dir)
         end
