@@ -25,7 +25,10 @@ set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/../../../.." && pwd)
 build=${BUILD:-$root/.agent-work/runs/matter-behaviour}
-clusters=${CLUSTERS:-"MTRBaseClusterIdentify:IdentifyTime MTRBaseClusterOnOff:OnTime MTRBaseClusterLevelControl:OnLevel MTRBaseClusterTestCluster:Boolean:MTRBaseClusterUnitTesting MTRBaseClusterUnitTesting:Boolean"}
+# MTRBaseClusterUnitTesting is not asked for on its own: alone it is not a queue superclass, so the generator writes
+# a different object from the one the tree ships. The TestCluster pair asks for it with its alias, and its object is
+# compared with the committed one there.
+clusters=${CLUSTERS:-"MTRBaseClusterIdentify:IdentifyTime MTRBaseClusterOnOff:OnTime MTRBaseClusterLevelControl:OnLevel MTRBaseClusterTestCluster:Boolean:MTRBaseClusterUnitTesting"}
 
 sdk26=""
 for candidate in "${MATTER_SDK_262:-}" "$root/.agent-work/sdk-26.2/iPhoneOS26.2.sdk" "$root/.agent-work/sdk262"; do
