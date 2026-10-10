@@ -1,0 +1,5 @@
+kind	api	cls	key	introduced	type	availability	hash	value_status	value	host_value	value_source	owned	tbd	shape	measured	declhash
+constant	ASPickerDisplaySettingsDiscoveryTimeoutLong	-	ASPickerDisplaySettingsDiscoveryTimeoutLong	26.0	const ASPickerDisplaySettingsDiscoveryTimeout	API_AVAILABLE( ios( 26.0 ) )	99df43b6055796bd	numeric	-	-	host-macos	-	exported	ns	-	d54f53e8502dfcf6
+constant	ASPickerDisplaySettingsDiscoveryTimeoutMedium	-	ASPickerDisplaySettingsDiscoveryTimeoutMedium	26.0	const ASPickerDisplaySettingsDiscoveryTimeout	API_AVAILABLE( ios( 26.0 ) )	5dfe0406e8eaec5d	numeric	-	-	host-macos	-	exported	ns	-	a6fbda454a56adf5
+constant	ASPickerDisplaySettingsDiscoveryTimeoutShort	-	ASPickerDisplaySettingsDiscoveryTimeoutShort	26.0	const ASPickerDisplaySettingsDiscoveryTimeout	API_AVAILABLE( ios( 26.0 ) )	394c31bca811a5ff	numeric	-	-	host-macos	-	exported	ns	-	a54b92026f3fdfc5
+constant	ASPickerDisplaySettingsDiscoveryTimeoutUnbounded	-	ASPickerDisplaySettingsDiscoveryTimeoutUnbounded	26.1	const ASPickerDisplaySettingsDiscoveryTimeout	API_AVAILABLE( ios( 26.1 ) )	9bdd70f18531250d	numeric	-	-	host-macos	-	exported	ns	-	c1d75c32e36f7077

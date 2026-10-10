@@ -1,0 +1,7 @@
+kind	api	cls	key	introduced	type	availability	hash	value_status	value	host_value	value_source	owned	tbd	shape	measured	declhash
+constant	BAAssetPackIdentifierErrorKey	-	BAAssetPackIdentifierErrorKey	26	const NSErrorUserInfoKey	API_AVAILABLE(ios(26), macos(26), tvos(26), visionos(26)) API_UNAVAILABLE(watchos)	72a806b7d8e7af34	found	BAAssetPackIdentifier	BAAssetPackIdentifier	ios-26.2-cache	-	exported	ns	-	b86767bf31c0fbbf
+constant	BADownloaderPriorityDefault	-	BADownloaderPriorityDefault	16.1	const BADownloaderPriority	-	9bbd95366325a841	numeric	-	-	host-macos	-	exported	ns	-	4dda5348ed39c475
+constant	BADownloaderPriorityMax	-	BADownloaderPriorityMax	16.1	const BADownloaderPriority	-	81762cc203ef3e07	numeric	-	-	host-macos	-	exported	ns	-	2801f4d96da307cc
+constant	BADownloaderPriorityMin	-	BADownloaderPriorityMin	16.1	const BADownloaderPriority	-	4bfe274cd68ea1b6	numeric	-	-	host-macos	-	exported	ns	-	f40c3495ba4bb236
+constant	BAErrorDomain	-	BAErrorDomain	17.0	NSString *const	-	50a7ee2795428dff	undeclared	-	-	host-macos	-	exported	ns	-	2a1031e95ede96d7
+constant	BAManagedErrorDomain	-	BAManagedErrorDomain	26	const NSErrorDomain	API_AVAILABLE(ios(26), macos(26), tvos(26), visionos(26)) API_UNAVAILABLE(watchos)	7b876d8321ef9188	found	BAManagedErrorDomain	BAManagedErrorDomain	ios-26.2-cache	-	exported	ns	-	9fe01b8d0fb377a7

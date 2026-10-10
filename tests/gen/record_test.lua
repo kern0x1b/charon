@@ -1,11 +1,15 @@
 -- The record rules of gen (design-spec-driven.md, "Records"), on a fixture tree under .agent-work/runs of this checkout: a pinned member
 -- whose declaration changed is refused and named; gen --record re-records exactly that pin (pinned-by repin) and changes no other row;
--- a member with no pin whose declaration changed is not refused. The shard's members are injected (headers.use), so no SDK is read.
+-- a member with no pin whose declaration changed is not refused; a constant of the constant record whose shard declaration changed is
+-- refused and named, and gen --record re-records exactly its declhash; a constant that no shard declares ("-") is not refused. The
+-- shard's members are injected (headers.use), so no SDK is read; the shard's var rows are read from its file.
 -- Run: xmake l tests/gen/record_test.lua
 
 local TOOLS = path.join(os.scriptdir(), "..", "..", "tools")
 local FRAMEWORK = "FixKit"
 local OUT = "packages/a/apple-backports"
+local SHARD_COLUMNS = "kind,usr,container,name,side,type,params,attrs,availability,message,declhash"
+local CONSTANT_HASH = "1111111111111111"
 
 local function checks()
     local failures = 0
@@ -32,14 +36,36 @@ local function read(filepath)
     return files.read_text(filepath)
 end
 
--- Writes the fixture's committed inputs: the shard, the registry (two implemented overrides), and the pins of the two overridden
--- members. count has no override and no pin.
+-- The fixture's shard file: its header and one var row for the constant FKConst, declared with the given declaration hash. The row
+-- has the cells of a shard row (kind, usr, container, name, side, type, params, attrs, availability, message, declhash).
+local function shard_text(constant_declhash)
+    return "#libclang=fixture\tsdk=fixture\tcolumns=" .. SHARD_COLUMNS .. "\n"
+        .. "var\tc:@FKConst\t-\t\t-\tNSString *const\t-\t-\t-\t-\t" .. constant_declhash .. "\n"
+end
+
+-- The fixture's constant record: FKConst (declared, recorded against CONSTANT_HASH) and FKNoDecl (no shard declares it: "-").
+local function constant_record()
+    local tsv = import("gen.tsv", {rootdir = TOOLS, anonymous = true})
+    local layout = import("gen.layout", {rootdir = TOOLS, anonymous = true})
+    local columns = {}
+    for _, name in ipairs(layout.constants().SPEC_COLUMNS) do
+        table.insert(columns, name)
+    end
+    table.insert(columns, "declhash")
+    local function row(api, declhash)
+        return {"constant", api, "-", api, "7.0", "NSString *const", "API_AVAILABLE(macos(10.9), ios(7.0))", "2222222222222222",
+                "found", api, api, "ios-26.2-cache", "-", "exported", "ns", "7.0", declhash}
+    end
+    return tsv.table_text(columns, {row("FKConst", CONSTANT_HASH), row("FKNoDecl", "-")})
+end
+
+-- Writes the fixture's committed inputs: the shard, the registry (two implemented overrides), the pins of the two overridden members,
+-- and the constant record. count has no override and no pin.
 local function write_inputs(tree)
     local emit = import("gen.emit", {rootdir = TOOLS, anonymous = true})
     local layout = import("gen.layout", {rootdir = TOOLS, anonymous = true})
     local snapshot = import("gen.spec", {rootdir = TOOLS, anonymous = true})
-    emit.file(layout.shard_path(tree, FRAMEWORK), "#libclang=fixture\tsdk=fixture\tcolumns=kind,usr,container,name,side,type,params,"
-        .. "attrs,availability,message,declhash\n")
+    emit.file(layout.shard_path(tree, FRAMEWORK), shard_text(CONSTANT_HASH))
     emit.file(path.join(tree, layout.registry_dir(FRAMEWORK), "ios.json"),
         '{"entries":[{"api":"-[FKThing reset]","kind":"method","status":"implemented","owner":"hand"},'
         .. '{"api":"-[FKThing setLevel:]","kind":"method","status":"implemented","owner":"hand"}]}\n')
@@ -48,6 +74,7 @@ local function write_inputs(tree)
         {api = "-[FKThing reset]", key = "FKThing_reset", pinned = "bbbbbbbbbbbbbbbb", ["pinned-by"] = "bootstrap", registry = registry},
         {api = "-[FKThing setLevel:]", key = "FKThing_setLevel", pinned = "aaaaaaaaaaaaaaaa", ["pinned-by"] = "bootstrap", registry = registry},
     }))
+    emit.file(layout.constant_record_path(tree, FRAMEWORK), constant_record())
 end
 
 -- The rows of a text as lines, and the rows that differ between two texts (by line position).
@@ -72,6 +99,7 @@ function main()
     local snapshot = import("gen.spec", {rootdir = TOOLS, anonymous = true})
     local headers = import("gen.headers", {rootdir = TOOLS, anonymous = true})
     local layout = import("gen.layout", {rootdir = TOOLS, anonymous = true})
+    local emit = import("gen.emit", {rootdir = TOOLS, anonymous = true})
     local root = path.join(os.scriptdir(), "..", "..", ".agent-work", "runs", "record-test-" .. tostring(os.time()) .. "-"
                            .. tostring(math.random(1000000)))
     local tree = path.join(root, "tree")
@@ -82,11 +110,13 @@ function main()
     write_inputs(tree)
     local pins_path = layout.pins_path(tree, FRAMEWORK)
     local spec_path = layout.spec_path(tree, FRAMEWORK)
+    local constants_path = layout.constant_record_path(tree, FRAMEWORK)
 
-    -- Baseline: the pins match the shard, so gen writes and nothing is refused.
-    check(gen.run({tree = tree, framework = FRAMEWORK}) == 0, "gen with every pin matching the shard succeeds")
-    check(#snapshot.refused(tree, FRAMEWORK) == 0, "no pin is refused at the baseline")
+    -- Baseline: the pins and the constant record match the shard, so gen writes and nothing is refused.
+    check(gen.run({tree = tree, framework = FRAMEWORK}) == 0, "gen with every pin and constant matching the shard succeeds")
+    check(#snapshot.refused(tree, FRAMEWORK) == 0, "no pin and no constant is refused at the baseline")
     local pins_before = read(pins_path)
+    local constants_before = read(constants_path)
 
     -- (c) An unpinned member changes: it is not refused, it regenerates from the shard.
     current = members({reset = "bbbbbbbbbbbbbbbb", setLevel = "aaaaaaaaaaaaaaaa", count = "c2c2c2c2c2c2c2c2"})
@@ -125,6 +155,32 @@ function main()
           "gen --record changes exactly the refused pin's row, to the new hash with pinned-by repin (got " .. table.concat(diff, "; ") .. ")")
     check(#snapshot.refused(tree, FRAMEWORK) == 0, "after the re-record nothing is refused")
     check(gen.run({tree = tree, framework = FRAMEWORK}) == 0, "gen succeeds after the re-record, with no --record")
+    -- the members change above is re-recorded by the pins only: the constant record still matches, so it is unchanged
+    check(read(constants_path) == constants_before, "the constant record is unchanged by the member changes")
+
+    -- (d) A constant's shard declaration changes: refused and named; gen --record re-records exactly its declhash; a constant no shard
+    -- declares ("-") is not refused.
+    local pins_mid = read(pins_path)
+    emit.file(layout.shard_path(tree, FRAMEWORK), shard_text("3333333333333333"))
+    snapshot.forget()
+    refused = snapshot.refused(tree, FRAMEWORK)
+    check(#refused == 1 and refused[1].kind == "constant" and refused[1].key == "FKConst",
+          "a constant whose shard declaration changed is refused, by name, and no other constant is (got " .. #refused .. ")")
+    check(#refused == 1 and refused[1].old == CONSTANT_HASH and refused[1].new == "3333333333333333",
+          "the constant's refusal carries the recorded and the shard's declaration hash")
+    if #refused == 1 then
+        local message = gen.refusal(tree, FRAMEWORK, refused[1])
+        check(string.find(message, "REFUSED constant FKConst", 1, true) ~= nil, "the constant's refusal names the constant")
+    end
+    check(gen.run({tree = tree, framework = FRAMEWORK}) == 1, "gen refuses a changed constant with exit status 1")
+    check(read(constants_path) == constants_before, "a refused constant leaves the constant record as it was")
+    check(gen.run({tree = tree, framework = FRAMEWORK, record = true}) == 0, "gen --record re-records the constant and succeeds")
+    local constant_diff = differing(constants_before, read(constants_path))
+    check(#constant_diff == 1 and string.find(constant_diff[1], "FKConst", 1, true) ~= nil
+          and string.find(constant_diff[1], "3333333333333333", 1, true) ~= nil and string.find(constant_diff[1], "FKNoDecl", 1, true) == nil,
+          "gen --record changes exactly the constant's declhash, and no other row (got " .. table.concat(constant_diff, "; ") .. ")")
+    check(read(pins_path) == pins_mid, "re-recording a constant leaves the pins as they were")
+    check(#snapshot.refused(tree, FRAMEWORK) == 0, "after the constant's re-record nothing is refused")
 
     headers.use(nil)
     os.rm(root)

@@ -37,7 +37,8 @@ local function complete(r)
     return r
 end
 
--- The rows of the constant record (the rows of kind constant of the legacy spec file, read as data), or none.
+-- The rows of the constant record (constants.tsv: the measured constant rows, one record per framework, committed as data), or none.
+-- Each row keeps the declaration hash it was recorded against (declhash); "-" for a constant no shard declares.
 local function constant_rows(tree, fw)
     local out = {}
     local text = files.read_text(layout.constant_record_path(tree, fw))
@@ -46,7 +47,9 @@ local function constant_rows(tree, fw)
     end
     for _, r in ipairs(tsv.records(text)) do
         if r.kind == "constant" then
-            table.insert(out, complete(r))
+            local row = complete(r)
+            row.declhash = r.declhash or "-"
+            table.insert(out, row)
         end
     end
     return out
@@ -79,18 +82,7 @@ function load(tree, fw)
 end
 
 function build(tree, fw)
-    local rows, count = shard_rows(tree, fw)
-    if count == 0 and not os.isfile(layout.shard_path(tree, fw)) then
-        rows = {}
-        local text = files.read_text(layout.constant_record_path(tree, fw))
-        if text ~= nil then
-            for _, r in ipairs(tsv.records(text)) do
-                if r.kind == "method" or r.kind == "property" then
-                    table.insert(rows, complete(r))
-                end
-            end
-        end
-    end
+    local rows = shard_rows(tree, fw)
     for _, r in ipairs(constant_rows(tree, fw)) do
         table.insert(rows, r)
     end
@@ -205,7 +197,21 @@ function refused(tree, fw)
     for _, p in ipairs(pins(tree, fw)) do
         local r = current[p.key]
         if r ~= nil and r.hash ~= p.pinned then
-            table.insert(out, {key = p.key, api = p.api, old = p.pinned, new = r.hash})
+            table.insert(out, {key = p.key, api = p.api, old = p.pinned, new = r.hash, kind = "pinned"})
+        end
+    end
+    -- The constant record is data, changed only through this refusal, as the pins are: a constant is refused when the declaration the
+    -- shard holds under its name (its USR, c:@<name>) differs from the hash its record row was made against ("-" when no shard declares it).
+    local declared = {}
+    for _, r in ipairs(headers.shard_records(tree, fw)) do
+        if r.kind == "var" then
+            declared[r.usr] = r.declhash
+        end
+    end
+    for _, c in ipairs(constant_rows(tree, fw)) do
+        local now = declared["c:@" .. c.key] or "-"
+        if now ~= c.declhash then
+            table.insert(out, {key = c.key, api = c.api, old = c.declhash, new = now, kind = "constant"})
         end
     end
     table.sort(out, function(a, b) return order.less(a.key, b.key) end)

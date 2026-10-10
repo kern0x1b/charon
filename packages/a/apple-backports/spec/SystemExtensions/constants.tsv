@@ -1,0 +1,4 @@
+kind	api	cls	key	introduced	type	availability	hash	value_status	value	host_value	value_source	owned	tbd	shape	measured	declhash
+constant	NSSystemExtensionUsageDescriptionKey	-	NSSystemExtensionUsageDescriptionKey	18.4	NSString *const	-	71b27b46c384d865	undeclared	-	-	host-macos	-	exported	ns	-	5f6b8d2a89e053b6
+constant	OSBundleUsageDescriptionKey	-	OSBundleUsageDescriptionKey	18.4	NSString *const	-	6af9ad33c91f2382	undeclared	-	-	host-macos	-	exported	ns	-	733698839799647e
+constant	OSSystemExtensionErrorDomain	-	OSSystemExtensionErrorDomain	18.4	const NSErrorDomain	-	158161a7aa2d7db8	undeclared	-	-	host-macos	-	exported	ns	-	5ae30eefdfcf7a1d

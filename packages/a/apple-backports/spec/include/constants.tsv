@@ -1,0 +1,5 @@
+kind	api	cls	key	introduced	type	availability	hash	value_status	value	host_value	value_source	owned	tbd	shape	measured	declhash
+constant	_dispatch_data_destructor_munmap	-	dispatch_data_destructor_munmap	7.0	-	-	a6ca48e2fa82662b	undeclared	-	-	host-macos	-	not-exported	ns	-	-
+constant	_dispatch_source_type_data_replace	-	dispatch_source_type_data_replace	11.0	-	-	1c7bd5b7dd793039	undeclared	-	-	host-macos	-	not-exported	ns	-	-
+constant	_dispatch_source_type_memorypressure	-	dispatch_source_type_memorypressure	8.0	-	-	555d5fa5cad0d2f3	undeclared	-	-	host-macos	-	not-exported	ns	-	-
+constant	kDNSServiceAttributeAAAAFallback	-	kDNSServiceAttributeAAAAFallback	16.0	-	-	b17aedac7240cae3	undeclared	-	-	host-macos	-	not-exported	ns	-	-

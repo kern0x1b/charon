@@ -1,0 +1,9 @@
+kind	api	cls	key	introduced	type	availability	hash	value_status	value	host_value	value_source	owned	tbd	shape	measured	declhash
+constant	CADynamicRangeAutomatic	-	CADynamicRangeAutomatic	26.0	const CADynamicRange	-	e985d45343d1ae99	found	automatic	automatic	ios-26.2-cache	-	exported	ns	-	af419920123e09ce
+constant	CADynamicRangeConstrainedHigh	-	CADynamicRangeConstrainedHigh	26.0	const CADynamicRange	-	3d57fc36366f217e	found	constrainedHigh	constrainedHigh	ios-26.2-cache	-	exported	ns	-	49154cfc75a6fa34
+constant	CADynamicRangeHigh	-	CADynamicRangeHigh	26.0	const CADynamicRange	-	1328b0917beffd88	found	high	high	ios-26.2-cache	-	exported	ns	-	0b932b1529ced2f3
+constant	CADynamicRangeStandard	-	CADynamicRangeStandard	26.0	const CADynamicRange	-	fcec06182b460e68	found	standard	standard	ios-26.2-cache	-	exported	ns	-	c381c99b0b44e463
+constant	CAToneMapModeAutomatic	-	CAToneMapModeAutomatic	18.0	const CAToneMapMode	-	39d63a16922f9e8a	found	automatic	automatic	ios-26.2-cache	-	exported	ns	-	0bf66853f8a450ff
+constant	CAToneMapModeIfSupported	-	CAToneMapModeIfSupported	18.0	const CAToneMapMode	-	7bf769e562d86208	found	ifSupported	ifSupported	ios-26.2-cache	-	exported	ns	-	c35a6a76d6519ec1
+constant	CAToneMapModeNever	-	CAToneMapModeNever	18.0	const CAToneMapMode	-	d2fef851ec710b64	found	never	never	ios-26.2-cache	-	exported	ns	-	94d105a5f1098808
+constant	kCAContentsFormatAutomatic	-	kCAContentsFormatAutomatic	12.0	const NS_SWIFT_NAME  const CALayerContentsFormat	-	a66169e578f7ed92	found	Automatic	Automatic	ios-26.2-cache	-	exported	ns	-	633fd622ebf2e87e

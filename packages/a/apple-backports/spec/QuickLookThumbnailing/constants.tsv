@@ -1,0 +1,2 @@
+kind	api	cls	key	introduced	type	availability	hash	value_status	value	host_value	value_source	owned	tbd	shape	measured	declhash
+constant	QLThumbnailErrorDomain	-	QLThumbnailErrorDomain	13.0	const NSErrorDomain	API_AVAILABLE(macos(10.15), ios(13.0))	80e95735ea8adba3	found	QLThumbnailErrorDomain	QLThumbnailErrorDomain	ios-26.2-cache	-	exported	ns	-	2c2a5ce16689f118

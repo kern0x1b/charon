@@ -1,0 +1,57 @@
+kind	api	cls	key	introduced	type	availability	hash	value_status	value	host_value	value_source	owned	tbd	shape	measured	declhash
+constant	kCFBanglaCalendar	-	kCFBanglaCalendar	26.0	const CFCalendarIdentifier	API_AVAILABLE(macos(26.0), ios(26.0), watchos(26.0), tvos(26.0), visionos(26.0))	7658fbedfa65cc73	found	bangla	bangla	ios-26.2-cache	-	exported	cf	none	216c676c67fd8930
+constant	kCFDangiCalendar	-	kCFDangiCalendar	26.0	const CFCalendarIdentifier	API_AVAILABLE(macos(26.0), ios(26.0), watchos(26.0), tvos(26.0), visionos(26.0))	682fbea813b2e7d9	found	dangi	dangi	ios-26.2-cache	-	exported	cf	none	24f5dc75ce05df9f
+constant	kCFErrorLocalizedFailureKey	-	kCFErrorLocalizedFailureKey	11.0	const CFStringRef	API_AVAILABLE(macos(10.13), ios(11.0), watchos(4.0), tvos(11.0))	b172494ab3c99397	found	NSLocalizedFailure	NSLocalizedFailure	ios-26.2-cache	-	exported	cf	11.0	52d26a801875d7dd
+constant	kCFGujaratiCalendar	-	kCFGujaratiCalendar	26.0	const CFCalendarIdentifier	API_AVAILABLE(macos(26.0), ios(26.0), watchos(26.0), tvos(26.0), visionos(26.0))	303cd1b957f92b64	found	gujarati	gujarati	ios-26.2-cache	-	exported	cf	none	11fbff913885d104
+constant	kCFIslamicTabularCalendar	-	kCFIslamicTabularCalendar	8.0	const CFCalendarIdentifier	API_AVAILABLE(macos(10.10), ios(8.0), watchos(2.0), tvos(9.0))	47b2ffc7904dd819	found	islamic-tbla	islamic-tbla	ios-26.2-cache	-	exported	cf	8.0	b00ddd310d9355c4
+constant	kCFIslamicUmmAlQuraCalendar	-	kCFIslamicUmmAlQuraCalendar	8.0	const CFCalendarIdentifier	API_AVAILABLE(macos(10.10), ios(8.0), watchos(2.0), tvos(9.0))	811956dbffd29bf7	found	islamic-umalqura	islamic-umalqura	ios-26.2-cache	-	exported	cf	8.0	0042c3ff22304179
+constant	kCFKannadaCalendar	-	kCFKannadaCalendar	26.0	const CFCalendarIdentifier	API_AVAILABLE(macos(26.0), ios(26.0), watchos(26.0), tvos(26.0), visionos(26.0))	ebe304ecf1a1bc6c	found	kannada	kannada	ios-26.2-cache	-	exported	cf	none	2cf5e279a352b779
+constant	kCFMalayalamCalendar	-	kCFMalayalamCalendar	26.0	const CFCalendarIdentifier	API_AVAILABLE(macos(26.0), ios(26.0), watchos(26.0), tvos(26.0), visionos(26.0))	71ff62fb5336398c	found	malayalam	malayalam	ios-26.2-cache	-	exported	cf	none	4ca83827dc338760
+constant	kCFMarathiCalendar	-	kCFMarathiCalendar	26.0	const CFCalendarIdentifier	API_AVAILABLE(macos(26.0), ios(26.0), watchos(26.0), tvos(26.0), visionos(26.0))	9db227d60df34a7b	found	marathi	marathi	ios-26.2-cache	-	exported	cf	none	f8a1ce865a54f181
+constant	kCFNumberFormatterMinGroupingDigits	-	kCFNumberFormatterMinGroupingDigits	18.0	const CFNumberFormatterKey	API_AVAILABLE(macos(15.0), ios(18.0), watchos(11.0), tvos(18.0), visionos(2.0))	80929e3976f86ea8	found	kCFNumberFormatterMinGroupingDigitsKey	kCFNumberFormatterMinGroupingDigitsKey	ios-26.2-cache	-	exported	cf	18.0	1620faa71cbb6a96
+constant	kCFOdiaCalendar	-	kCFOdiaCalendar	26.0	const CFCalendarIdentifier	API_AVAILABLE(macos(26.0), ios(26.0), watchos(26.0), tvos(26.0), visionos(26.0))	76312b446d4638dc	found	odia	odia	ios-26.2-cache	-	exported	cf	none	84af34ef9037401a
+constant	kCFTamilCalendar	-	kCFTamilCalendar	26.0	const CFCalendarIdentifier	API_AVAILABLE(macos(26.0), ios(26.0), watchos(26.0), tvos(26.0), visionos(26.0))	9357d61fd22f6f25	found	tamil	tamil	ios-26.2-cache	-	exported	cf	none	329f8d0521b45a73
+constant	kCFTeluguCalendar	-	kCFTeluguCalendar	26.0	const CFCalendarIdentifier	API_AVAILABLE(macos(26.0), ios(26.0), watchos(26.0), tvos(26.0), visionos(26.0))	f545ca869be9170c	found	telugu	telugu	ios-26.2-cache	-	exported	cf	none	ca4bc3c7c708b82f
+constant	kCFURLAddedToDirectoryDateKey	-	kCFURLAddedToDirectoryDateKey	8.0	const CFStringRef	-	5149d903cbd2fa1e	undeclared	-	-	host-macos	-	exported	ns	-	c4882974f34ed7f5
+constant	kCFURLCanonicalPathKey	-	kCFURLCanonicalPathKey	10.0	const CFStringRef	-	e143e8a0556bafef	undeclared	-	-	host-macos	-	exported	ns	-	8853c7877bb263a9
+constant	kCFURLDirectoryEntryCountKey	-	kCFURLDirectoryEntryCountKey	17.0	const CFStringRef	-	eb7c92b5a080a321	undeclared	-	-	host-macos	-	exported	ns	-	f4b59a40fd492287
+constant	kCFURLDocumentIdentifierKey	-	kCFURLDocumentIdentifierKey	8.0	const CFStringRef	-	0c4fd72680cb3349	undeclared	-	-	host-macos	-	exported	ns	-	eacfc81f21e28780
+constant	kCFURLFileContentIdentifierKey	-	kCFURLFileContentIdentifierKey	14.0	const CFStringRef	-	c0eaafcd1939f96f	undeclared	-	-	host-macos	-	exported	ns	-	2590e2f2ad21b75b
+constant	kCFURLFileIdentifierKey	-	kCFURLFileIdentifierKey	16.4	const CFStringRef	-	b641862c15236686	undeclared	-	-	host-macos	-	exported	ns	-	81c1ddebed750a55
+constant	kCFURLFileProtectionComplete	-	kCFURLFileProtectionComplete	9.0	const CFStringRef	-	0a1d1c5ab92bc5bd	undeclared	-	-	host-macos	-	exported	ns	-	55918d74f1b7df7c
+constant	kCFURLFileProtectionCompleteUnlessOpen	-	kCFURLFileProtectionCompleteUnlessOpen	9.0	const CFStringRef	-	4765043f553b15e2	undeclared	-	-	host-macos	-	exported	ns	-	1672555862f2b712
+constant	kCFURLFileProtectionCompleteUntilFirstUserAuthentication	-	kCFURLFileProtectionCompleteUntilFirstUserAuthentication	9.0	const CFStringRef	-	ed73ed0708ef78c9	undeclared	-	-	host-macos	-	exported	ns	-	333e48b8b8aee814
+constant	kCFURLFileProtectionCompleteWhenUserInactive	-	kCFURLFileProtectionCompleteWhenUserInactive	17.0	const CFStringRef	-	22ca49af3e886ce6	undeclared	-	-	host-macos	-	exported	ns	-	caf29298fcbe6b15
+constant	kCFURLFileProtectionKey	-	kCFURLFileProtectionKey	9.0	const CFStringRef	-	31b267b0b1e62625	undeclared	-	-	host-macos	-	exported	ns	-	fa53ecc2baeb1849
+constant	kCFURLFileProtectionNone	-	kCFURLFileProtectionNone	9.0	const CFStringRef	-	7be8183b4de4e873	undeclared	-	-	host-macos	-	exported	ns	-	2eb01cb227f7e601
+constant	kCFURLGenerationIdentifierKey	-	kCFURLGenerationIdentifierKey	8.0	const CFStringRef	-	a719cb409a040a44	undeclared	-	-	host-macos	-	exported	ns	-	e5297f3d714c8678
+constant	kCFURLIsApplicationKey	-	kCFURLIsApplicationKey	9.0	const CFStringRef	-	9256f3079c32419d	undeclared	-	-	host-macos	-	exported	ns	-	935cc027dda59878
+constant	kCFURLIsPurgeableKey	-	kCFURLIsPurgeableKey	14.0	const CFStringRef	-	e1881796e9a7dc68	undeclared	-	-	host-macos	-	exported	ns	-	073ca205c988b337
+constant	kCFURLIsSparseKey	-	kCFURLIsSparseKey	14.0	const CFStringRef	-	a83ade3a261c3031	undeclared	-	-	host-macos	-	exported	ns	-	3a84f4ae0b9e873f
+constant	kCFURLMayHaveExtendedAttributesKey	-	kCFURLMayHaveExtendedAttributesKey	14.0	const CFStringRef	-	49a1b09a5aba9c4c	undeclared	-	-	host-macos	-	exported	ns	-	bc7adcdd3d30d1ac
+constant	kCFURLMayShareFileContentKey	-	kCFURLMayShareFileContentKey	14.0	const CFStringRef	-	a201e4ef6de4c383	undeclared	-	-	host-macos	-	exported	ns	-	b65997f63ff02e8c
+constant	kCFURLUbiquitousItemDownloadingErrorKey	-	kCFURLUbiquitousItemDownloadingErrorKey	7.0	const CFStringRef	-	637d95a552fd9efe	undeclared	-	-	host-macos	-	exported	ns	-	d0e533e323b4db71
+constant	kCFURLUbiquitousItemDownloadingStatusCurrent	-	kCFURLUbiquitousItemDownloadingStatusCurrent	7.0	const CFStringRef	-	11db6dcd7552be4a	undeclared	-	-	host-macos	-	exported	ns	-	ebe35cc93bb428b3
+constant	kCFURLUbiquitousItemDownloadingStatusDownloaded	-	kCFURLUbiquitousItemDownloadingStatusDownloaded	7.0	const CFStringRef	-	09ea13b4f832e75d	undeclared	-	-	host-macos	-	exported	ns	-	b6298e69c602ad14
+constant	kCFURLUbiquitousItemDownloadingStatusKey	-	kCFURLUbiquitousItemDownloadingStatusKey	7.0	const CFStringRef	-	3c6568b62ec5d703	undeclared	-	-	host-macos	-	exported	ns	-	435eed63915ab9f5
+constant	kCFURLUbiquitousItemDownloadingStatusNotDownloaded	-	kCFURLUbiquitousItemDownloadingStatusNotDownloaded	7.0	const CFStringRef	-	e815658cc13b860b	undeclared	-	-	host-macos	-	exported	ns	-	1e9e26aaf3d87812
+constant	kCFURLUbiquitousItemIsExcludedFromSyncKey	-	kCFURLUbiquitousItemIsExcludedFromSyncKey	14.5	const CFStringRef	-	a773f26cdb00d460	undeclared	-	-	host-macos	-	exported	ns	-	1b0f4f33330bca90
+constant	kCFURLUbiquitousItemIsSyncPausedKey	-	kCFURLUbiquitousItemIsSyncPausedKey	26.0	const CFStringRef	-	935fdcd904d6967c	undeclared	-	-	host-macos	-	exported	ns	-	0257076be7b5ae77
+constant	kCFURLUbiquitousItemSupportedSyncControlsKey	-	kCFURLUbiquitousItemSupportedSyncControlsKey	26.0	const CFStringRef	-	03b3df9db87a28bf	undeclared	-	-	host-macos	-	exported	ns	-	df4cf545c80b66ba
+constant	kCFURLUbiquitousItemUploadingErrorKey	-	kCFURLUbiquitousItemUploadingErrorKey	7.0	const CFStringRef	-	42308add9ad1e4c9	undeclared	-	-	host-macos	-	exported	ns	-	b91860b51f6cdc84
+constant	kCFURLVolumeAvailableCapacityForImportantUsageKey	-	kCFURLVolumeAvailableCapacityForImportantUsageKey	11.0	const CFStringRef	-	0a2cb7d22a86c621	undeclared	-	-	host-macos	-	exported	ns	-	4be437cc795cafe0
+constant	kCFURLVolumeAvailableCapacityForOpportunisticUsageKey	-	kCFURLVolumeAvailableCapacityForOpportunisticUsageKey	11.0	const CFStringRef	-	c8c866c0e86428ed	undeclared	-	-	host-macos	-	exported	ns	-	dde99f145b00d624
+constant	kCFURLVolumeIsEncryptedKey	-	kCFURLVolumeIsEncryptedKey	10.0	const CFStringRef	-	0888845d93b72fac	undeclared	-	-	host-macos	-	exported	ns	-	328ea93d24aaef5e
+constant	kCFURLVolumeIsRootFileSystemKey	-	kCFURLVolumeIsRootFileSystemKey	10.0	const CFStringRef	-	91fd5cac65db3566	undeclared	-	-	host-macos	-	exported	ns	-	b7ac58845b89ea75
+constant	kCFURLVolumeMountFromLocationKey	-	kCFURLVolumeMountFromLocationKey	16.4	const CFStringRef	-	4404833e104d3e93	undeclared	-	-	host-macos	-	exported	ns	-	5e7c47af4d208b42
+constant	kCFURLVolumeSubtypeKey	-	kCFURLVolumeSubtypeKey	16.4	const CFStringRef	-	1c65fb3eec730bed	undeclared	-	-	host-macos	-	exported	ns	-	cb4d1e1a359890c5
+constant	kCFURLVolumeSupportsAccessPermissionsKey	-	kCFURLVolumeSupportsAccessPermissionsKey	11.0	const CFStringRef	-	9afc91165ae17916	undeclared	-	-	host-macos	-	exported	ns	-	d897c2531ffcb907
+constant	kCFURLVolumeSupportsCompressionKey	-	kCFURLVolumeSupportsCompressionKey	10.0	const CFStringRef	-	b820375debb90060	undeclared	-	-	host-macos	-	exported	ns	-	e14f06b49a0d1cb6
+constant	kCFURLVolumeSupportsExclusiveRenamingKey	-	kCFURLVolumeSupportsExclusiveRenamingKey	10.0	const CFStringRef	-	ee8e208f497e8183	undeclared	-	-	host-macos	-	exported	ns	-	d428628445c3da1f
+constant	kCFURLVolumeSupportsFileCloningKey	-	kCFURLVolumeSupportsFileCloningKey	10.0	const CFStringRef	-	11e63faabd9f8ffa	undeclared	-	-	host-macos	-	exported	ns	-	f543b65585623329
+constant	kCFURLVolumeSupportsFileProtectionKey	-	kCFURLVolumeSupportsFileProtectionKey	14.0	const CFStringRef	-	aa61d37bd97fc57b	undeclared	-	-	host-macos	-	exported	ns	-	54f7105efcf738ef
+constant	kCFURLVolumeSupportsImmutableFilesKey	-	kCFURLVolumeSupportsImmutableFilesKey	11.0	const CFStringRef	-	6f63a1165c265516	undeclared	-	-	host-macos	-	exported	ns	-	060a92c837f1ad07
+constant	kCFURLVolumeSupportsSwapRenamingKey	-	kCFURLVolumeSupportsSwapRenamingKey	10.0	const CFStringRef	-	fcf503deec77ea7c	undeclared	-	-	host-macos	-	exported	ns	-	7f006d84a2dcadb6
+constant	kCFURLVolumeTypeNameKey	-	kCFURLVolumeTypeNameKey	16.4	const CFStringRef	-	c5bcd89aef635467	undeclared	-	-	host-macos	-	exported	ns	-	ce81bd38153cd723
+constant	kCFVietnameseCalendar	-	kCFVietnameseCalendar	26.0	const CFCalendarIdentifier	API_AVAILABLE(macos(26.0), ios(26.0), watchos(26.0), tvos(26.0), visionos(26.0))	eed6beab5730e7de	found	vietnamese	vietnamese	ios-26.2-cache	-	exported	cf	none	3457f2e17130eedb
+constant	kCFVikramCalendar	-	kCFVikramCalendar	26.0	const CFCalendarIdentifier	API_AVAILABLE(macos(26.0), ios(26.0), watchos(26.0), tvos(26.0), visionos(26.0))	ba6defb3da22e429	found	vikram	vikram	ios-26.2-cache	-	exported	cf	none	0e877979c41c3443

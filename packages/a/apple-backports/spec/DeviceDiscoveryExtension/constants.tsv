@@ -1,0 +1,4 @@
+kind	api	cls	key	introduced	type	availability	hash	value_status	value	host_value	value_source	owned	tbd	shape	measured	declhash
+constant	DDDeviceProtocolStringDIAL	-	DDDeviceProtocolStringDIAL	16.0	const DDDeviceProtocolString	-	bf41e3daa95dea95	found	DIAL	DIAL	ios-26.2-cache	-	exported	ns	-	a049912085f14140
+constant	DDDeviceProtocolStringInvalid	-	DDDeviceProtocolStringInvalid	16.0	const DDDeviceProtocolString	-	6e70984b2207723e	found	Invalid	Invalid	ios-26.2-cache	-	exported	ns	-	9bfb4613f5f2b132
+constant	DDErrorDomain	-	DDErrorDomain	16.0	NSString *const	-	2026c1d736896fe2	found	DDErrorDomain	DDErrorDomain	ios-26.2-cache	-	exported	ns	-	e60c67ff2856ff86

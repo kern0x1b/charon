@@ -1,0 +1,10 @@
+kind	api	cls	key	introduced	type	availability	hash	value_status	value	host_value	value_source	owned	tbd	shape	measured	declhash
+constant	GCInputGripButton	-	GCInputGripButton	26.0	const GCInputButtonName	API_AVAILABLE(macos(26.0), ios(26.0), tvos(26.0), visionos(26.0))	c7192d51ebaa5c88	numeric	-	-	host-macos	-	exported	ns	-	010ec4e7cd925f2f
+constant	GCInputLeftBumper	-	GCInputLeftBumper	17.4	const GCInputButtonName	API_AVAILABLE(macos(14.4), ios(17.4), tvos(17.4), visionos(1.1))	b1c2ac025557f161	numeric	-	-	host-macos	-	exported	ns	-	2c18b8ca4206ff9f
+constant	GCInputRightBumper	-	GCInputRightBumper	17.4	const GCInputButtonName	API_AVAILABLE(macos(14.4), ios(17.4), tvos(17.4), visionos(1.1))	0af99f1509779453	numeric	-	-	host-macos	-	exported	ns	-	d21d53334627c630
+constant	GCInputThumbstick	-	GCInputThumbstick	26.0	const GCInputDirectionPadName	API_AVAILABLE(macos(26.0), ios(26.0), tvos(26.0), visionos(26.0))	3cc3c692cb6e5c7a	numeric	-	-	host-macos	-	exported	ns	-	8367e04c5abf3e44
+constant	GCInputThumbstickButton	-	GCInputThumbstickButton	26.0	const GCInputButtonName	API_AVAILABLE(macos(26.0), ios(26.0), tvos(26.0), visionos(26.0))	4c6b397de600f602	numeric	-	-	host-macos	-	exported	ns	-	20b6aebb96e46ffa
+constant	GCInputTrigger	-	GCInputTrigger	26.0	const GCInputButtonName	API_AVAILABLE(macos(26.0), ios(26.0), tvos(26.0), visionos(26.0))	3e2dbf38f23be994	numeric	-	-	host-macos	-	exported	ns	-	b25cfbb316cc33ad
+constant	GCPoint2Zero	-	GCPoint2Zero	17.4	const GCPoint2	API_AVAILABLE(macos(14.3), ios(17.4), tvos(17.4), visionos(1.1))	bc1e2b1a0104628c	numeric	-	-	host-macos	-	exported	ns	-	0bdd5daec81e384f
+constant	GCProductCategoryArcadeStick	-	GCProductCategoryArcadeStick	17.0	NSString *const	API_AVAILABLE(macos(14.0), ios(17.0), tvos(17.0))	6c8defd0a66a0d28	found	Arcade Stick	Arcade Stick	ios-26.2-cache	-	exported	ns	-	c9775103ea658ab6
+constant	GCProductCategorySpatialController	-	GCProductCategorySpatialController	26.0	NSString *const	API_AVAILABLE(macos(26.0), ios(26.0), tvos(26.0), visionos(26.0))	bcc304c7809e7d66	found	Spatial Controller	Spatial Controller	ios-26.2-cache	-	exported	ns	-	d5d727c870421fab

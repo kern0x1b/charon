@@ -1,0 +1,2 @@
+kind	api	cls	key	introduced	type	availability	hash	value_status	value	host_value	value_source	owned	tbd	shape	measured	declhash
+constant	SFSpeechErrorDomain	-	SFSpeechErrorDomain	17	const NSErrorDomain	-	2066ca372d9a7e1d	found	SFSpeechErrorDomain	SFSpeechErrorDomain	ios-26.2-cache	-	exported	ns	-	20f2b1e8a69da7c1

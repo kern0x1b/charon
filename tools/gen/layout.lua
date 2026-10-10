@@ -31,11 +31,11 @@ function shard_path(tree, fw)
     return path.join(snap_dir(tree, fw), LAYOUT.SHARD_FILE)
 end
 
--- The constant record of a framework: the rows of kind constant of the spec the 26.2 cache and the held caches measured, which the
--- shards do not carry (their values come from the iOS cache table outside the repository). It is read from the legacy spec file
--- under snap_dir until the owner rules where the constant layer is committed (design-spec-driven.md, "Records"). Nothing writes it.
+-- The constant record of a framework: constants.tsv under snap_dir, one row per measured constant (the host-oracle values the shards
+-- do not carry), with the declaration hash each row was recorded against. It is committed as data and changed only through the
+-- refusal of gen (gen --record re-records it), the same discipline as the pins (design-spec-driven.md, "Records").
 function constant_record_path(tree, fw)
-    return path.join(snap_dir(tree, fw), "spec." .. LAYOUT.SDK_ID .. ".tsv")
+    return path.join(snap_dir(tree, fw), "constants.tsv")
 end
 
 -- The build directory of a framework: every file the generator emits, the spec and the members listing and the manifest included.
