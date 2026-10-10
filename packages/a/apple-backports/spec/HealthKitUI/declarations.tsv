@@ -1,7 +1,7 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
-interface	c:objc(cs)HKActivityRingView	-			ios=9.3/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	e18615cbb968798c
-super	-	HKActivityRingView	UIView		-	-	828dd55d941b0208
-property	c:objc(cs)HKActivityRingView(py)activitySummary	-			ios=9.3/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	ec7c887d524ffa8d
-method	c:objc(cs)HKActivityRingView(im)setActivitySummary:animated:	-			ios=9.3/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	56e2934ddd106d68
-category	c:objc(cy)HKHealthStore@UIKit	-			ios=8.0/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=2.0/-/-/0	-	462e11d6bae90dbf
-property	c:objc(cs)HKHealthStore(py)authorizationViewControllerPresenter	UIKit			ios=17.0/-/-/0,watchos=-/-/-/1	-	b9f8ddf1b3d3dc98
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
+interface	c:objc(cs)HKActivityRingView	-			-	-	ios=9.3/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	e18615cbb968798c
+super	-	HKActivityRingView	UIView		-	-	-	-	828dd55d941b0208
+property	c:objc(cs)HKActivityRingView(py)activitySummary	-			HKActivitySummary *	strong,nonatomic	ios=9.3/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	19c2c582c40a5a3b
+method	c:objc(cs)HKActivityRingView(im)setActivitySummary:animated:	-			void	-	ios=9.3/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	022e565600be8bb1
+category	c:objc(cy)HKHealthStore@UIKit	-			-	-	ios=8.0/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=2.0/-/-/0	-	462e11d6bae90dbf
+property	c:objc(cs)HKHealthStore(py)authorizationViewControllerPresenter	UIKit			API_AVAILABLE UIViewController *	weak,nonatomic	ios=17.0/-/-/0,watchos=-/-/-/1	-	745041a265254fc1

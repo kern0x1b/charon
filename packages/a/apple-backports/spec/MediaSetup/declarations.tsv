@@ -1,27 +1,27 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
-var	c:@MediaSetupVersionNumber	-			-	-	4b5c43038dd001e8
-var	c:@MediaSetupVersionString	-			-	-	88057a931929d976
-interface	c:objc(cs)MSServiceAccount	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8e32295ab7877dcd
-super	-	MSServiceAccount	NSObject		-	-	85d6027eca751133
-method	c:objc(cs)MSServiceAccount(im)initWithServiceName:accountName:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3a1b491bf39a031f
-property	c:objc(cs)MSServiceAccount(py)serviceName	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f067054aa90d1a16
-property	c:objc(cs)MSServiceAccount(py)accountName	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	bfe8a0ef94a35911
-property	c:objc(cs)MSServiceAccount(py)clientID	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0d4277d53eb9bb45
-property	c:objc(cs)MSServiceAccount(py)clientSecret	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	20369059f8ddba26
-property	c:objc(cs)MSServiceAccount(py)configurationURL	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5c6a8ca83c79e9ea
-property	c:objc(cs)MSServiceAccount(py)authorizationTokenURL	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	52d816a67859752d
-property	c:objc(cs)MSServiceAccount(py)authorizationScope	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	69c26de6c22e858c
-method	c:objc(cs)MSServiceAccount(im)init	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	cdf7ff7192d75a46
-method	c:objc(cs)MSServiceAccount(cm)new	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a0231c6d8dc0dad1
-typedef	c:@T@MSPresentationAnchor	-			-	-	fe72ed1889bec7d8
-protocol	c:objc(pl)MSAuthenticationPresentationContext	-			-	-	8365f5a7ef020deb
-conforms	-	MSAuthenticationPresentationContext	NSObject		-	-	3b880a2f117e75a9
-method	c:objc(pl)MSAuthenticationPresentationContext(im)presentationAnchor	-			-	-	ebf9c8116959a167
-interface	c:objc(cs)MSSetupSession	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d2aa446a92dd3af6
-super	-	MSSetupSession	NSObject		-	-	49d4bd2e5614d9ba
-method	c:objc(cs)MSSetupSession(im)init	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2a5093da635cd53a
-method	c:objc(cs)MSSetupSession(cm)new	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1c49eb2a7ea6b932
-method	c:objc(cs)MSSetupSession(im)initWithServiceAccount:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5399cb58001c2b08
-method	c:objc(cs)MSSetupSession(im)startWithError:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4e2c9129cc99f4b6
-property	c:objc(cs)MSSetupSession(py)presentationContext	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ad3f78a8c3b05939
-property	c:objc(cs)MSSetupSession(py)account	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0e07ee5333d6ddad
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
+var	c:@MediaSetupVersionNumber	-			double	-	-	-	4b5c43038dd001e8
+var	c:@MediaSetupVersionString	-			const unsigned char[]	-	-	-	88057a931929d976
+interface	c:objc(cs)MSServiceAccount	-			-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8e32295ab7877dcd
+super	-	MSServiceAccount	NSObject		-	-	-	-	85d6027eca751133
+method	c:objc(cs)MSServiceAccount(im)initWithServiceName:accountName:	-			instancetype	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	670b260d36530426
+property	c:objc(cs)MSServiceAccount(py)serviceName	-			NSString *	readonly,copy,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	bd03f2878a4a8a4f
+property	c:objc(cs)MSServiceAccount(py)accountName	-			NSString *	readonly,copy,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	df956d9a1ce28e5e
+property	c:objc(cs)MSServiceAccount(py)clientID	-			NSString *	copy,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9fdc6f6cc8510f29
+property	c:objc(cs)MSServiceAccount(py)clientSecret	-			NSString *	copy,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7993d5dc1baf4d7b
+property	c:objc(cs)MSServiceAccount(py)configurationURL	-			NSURL *	copy,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	390c56e7bb9c2d5a
+property	c:objc(cs)MSServiceAccount(py)authorizationTokenURL	-			NSURL *	copy,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d85cb3473bfe4b24
+property	c:objc(cs)MSServiceAccount(py)authorizationScope	-			NSString *	copy,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b9129156ce024797
+method	c:objc(cs)MSServiceAccount(im)init	-			instancetype	-	*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fe4fbf2d0de41e4b
+method	c:objc(cs)MSServiceAccount(cm)new	-			instancetype	-	*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	01abb599dd6b60cb
+typedef	c:@T@MSPresentationAnchor	-			UIWindow *	-	-	-	fe72ed1889bec7d8
+protocol	c:objc(pl)MSAuthenticationPresentationContext	-			-	-	-	-	8365f5a7ef020deb
+conforms	-	MSAuthenticationPresentationContext	NSObject		-	-	-	-	3b880a2f117e75a9
+method	c:objc(pl)MSAuthenticationPresentationContext(im)presentationAnchor	-			MSPresentationAnchor	-	-	-	d2b559b3ca1c0cc5
+interface	c:objc(cs)MSSetupSession	-			-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d2aa446a92dd3af6
+super	-	MSSetupSession	NSObject		-	-	-	-	49d4bd2e5614d9ba
+method	c:objc(cs)MSSetupSession(im)init	-			instancetype	-	*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7397c67305880636
+method	c:objc(cs)MSSetupSession(cm)new	-			instancetype	-	*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e716d5cebc77c5df
+method	c:objc(cs)MSSetupSession(im)initWithServiceAccount:	-			instancetype	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	de9b51e53a2117a6
+method	c:objc(cs)MSSetupSession(im)startWithError:	-			BOOL	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ac2c558a06ef25da
+property	c:objc(cs)MSSetupSession(py)presentationContext	-			id<MSAuthenticationPresentationContext>	weak,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c2d7c04d3f50ce83
+property	c:objc(cs)MSSetupSession(py)account	-			MSServiceAccount *	readonly,strong,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	51858f6a6d87fed4

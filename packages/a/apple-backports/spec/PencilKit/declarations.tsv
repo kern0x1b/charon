@@ -1,256 +1,256 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
-typedef	c:@T@PKContentVersion	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	bf3f08b99d66a453
-enum	c:@E@PKContentVersion	-			-	-	4f77a374de55e63b
-enumconst	c:@E@PKContentVersion@PKContentVersion1	PKContentVersion			-	-	658676e8ccb20136
-enumconst	c:@E@PKContentVersion@PKContentVersion2	PKContentVersion			-	-	67625a9dd4a82f3a
-enumconst	c:@E@PKContentVersion@PKContentVersion3	PKContentVersion			ios=17.5/-/-/0,macos=14.5/-/-/0	-	abc82e079eee1e7c
-enumconst	c:@E@PKContentVersion@PKContentVersion4	PKContentVersion			ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	4bc5b8124fd662be
-enumconst	c:@E@PKContentVersion@PKContentVersionLatest	PKContentVersion			-	-	e36cc61278fb74c3
-protocol	c:objc(pl)PKToolPickerObserver	-			ios=13.0/-/-/0	deprecated: Use toolPickerSelectedToolItemDidChange instead.	8cc660703c5ef3ac
-conforms	-	PKToolPickerObserver	NSObject		-	-	adda01dc760079b2
-method	c:objc(pl)PKToolPickerObserver(im)toolPickerSelectedToolDidChange:	-			ios=13.0/18.0/-/0,xros=1.0/2.0/-/0	deprecated: Use toolPickerSelectedToolItemDidChange instead.	54d0ee79c1c73ce6
-method	c:objc(pl)PKToolPickerObserver(im)toolPickerSelectedToolItemDidChange:	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	61b89975f83cd803
-method	c:objc(pl)PKToolPickerObserver(im)toolPickerIsRulerActiveDidChange:	-			ios=13.0/-/-/0	-	e5092d9a5795bb2a
-method	c:objc(pl)PKToolPickerObserver(im)toolPickerVisibilityDidChange:	-			ios=13.0/-/-/0	-	574960c2bbb7559f
-method	c:objc(pl)PKToolPickerObserver(im)toolPickerFramesObscuredDidChange:	-			ios=13.0/-/-/0	-	cd801cf1b863f77a
-protocol	c:objc(pl)PKToolPickerDelegate	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	9d66a4d0632a599e
-conforms	-	PKToolPickerDelegate	NSObject		-	-	866ad95dce31522b
-method	c:objc(pl)PKToolPickerDelegate(im)toolPickerWillDismiss:	-			ios=-/-/-/1,xros=2.0/-/-/0	-	4a11a1efa5eb172b
-interface	c:objc(cs)PKToolPicker	-			ios=13.0/-/-/0	deprecated: Use selectedToolItem instead.	f7d14b0a5f6f7c90
-super	-	PKToolPicker	NSObject		-	-	0183815de4305a4c
-method	c:objc(cs)PKToolPicker(im)addObserver:	-			ios=13.0/-/-/0	-	f8f85c8510bd25c6
-method	c:objc(cs)PKToolPicker(im)removeObserver:	-			ios=13.0/-/-/0	-	4b6e7baab3c3d498
-method	c:objc(cs)PKToolPicker(im)setVisible:forFirstResponder:	-			ios=13.0/-/-/0	-	9590109bb26ab64f
-property	c:objc(cs)PKToolPicker(py)delegate	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	6032b2dfc6747a5f
-property	c:objc(cs)PKToolPicker(py)selectedTool	-			ios=13.0/18.0/-/0,xros=1.0/2.0/-/0	-	0fbf3adb0660efc1
-property	c:objc(cs)PKToolPicker(py)selectedToolItem	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	bc60eb5637fc60c8
-property	c:objc(cs)PKToolPicker(py)selectedToolItemIdentifier	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	7f8473008ef7f991
-property	c:objc(cs)PKToolPicker(py)toolItems	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	067b55d7fe591c97
-property	c:objc(cs)PKToolPicker(cpy)defaultToolItems	-			ios=26.0/-/-/0,xros=26.0/-/-/0	-	e60c0db21da5bc35
-property	c:objc(cs)PKToolPicker(py)rulerActive	-			ios=13.0/-/-/0	-	d92f7d89a2cb8d56
-property	c:objc(cs)PKToolPicker(py)isVisible	-			ios=13.0/-/-/0	-	cb8c5d26307f7836
-property	c:objc(cs)PKToolPicker(py)stateAutosaveName	-			ios=14.0/-/-/0	-	c58e66bbfbfcbce3
-property	c:objc(cs)PKToolPicker(py)maximumSupportedContentVersion	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	d76cfc6f1f771995
-method	c:objc(cs)PKToolPicker(im)frameObscuredInView:	-			ios=13.0/-/-/0	-	eaf42014ffdd9a9f
-property	c:objc(cs)PKToolPicker(py)overrideUserInterfaceStyle	-			ios=13.0/-/-/0	-	72c4253d2deb1351
-property	c:objc(cs)PKToolPicker(py)colorUserInterfaceStyle	-			ios=13.0/-/-/0	-	a1f630bf57346dd8
-property	c:objc(cs)PKToolPicker(py)showsDrawingPolicyControls	-			ios=14.0/-/-/0	-	47749a2997967951
-property	c:objc(cs)PKToolPicker(py)prefersDismissControlVisible	-			ios=-/-/-/1,xros=2.0/-/-/0	-	5e62e13cb80707bc
-property	c:objc(cs)PKToolPicker(py)accessoryItem	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	5eefc5a220f44ba2
-method	c:objc(cs)PKToolPicker(cm)sharedToolPickerForWindow:	-			ios=13.0/14.0/-/0	deprecated: Create individual instances instead.	bc8774fc483e011a
-method	c:objc(cs)PKToolPicker(im)init	-			ios=14.0/-/-/0	-	665d07a42a3720cd
-method	c:objc(cs)PKToolPicker(im)initWithToolItems:	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	368065ec532f46d8
-property	c:objc(cs)PKToolPicker(py)colorMaximumLinearExposure	-			ios=26.0/-/-/0,xros=26.0/-/-/0	-	248a17cbf2bf0470
-protocol	c:objc(pl)PKCanvasViewDelegate	-			ios=13.0/-/-/0	-	8c1d50bfa828b5c2
-conforms	-	PKCanvasViewDelegate	NSObject		-	-	696f78963b3e41c1
-conforms	-	PKCanvasViewDelegate	UIScrollViewDelegate		-	-	f714039f7c57261a
-method	c:objc(pl)PKCanvasViewDelegate(im)canvasViewDrawingDidChange:	-			ios=13.0/-/-/0	-	328e7d9d11065376
-method	c:objc(pl)PKCanvasViewDelegate(im)canvasViewDidFinishRendering:	-			ios=13.0/-/-/0	-	749fc61df354a770
-method	c:objc(pl)PKCanvasViewDelegate(im)canvasViewDidBeginUsingTool:	-			ios=13.0/-/-/0	-	2a06495b21a24d0a
-method	c:objc(pl)PKCanvasViewDelegate(im)canvasViewDidEndUsingTool:	-			ios=13.0/-/-/0	-	a22ed091c54beb75
-typedef	c:@T@PKCanvasViewDrawingPolicy	-			-	-	3657340f76a61eb5
-enum	c:@E@PKCanvasViewDrawingPolicy	-			-	-	0a29f678ed4fa09c
-enumconst	c:@E@PKCanvasViewDrawingPolicy@PKCanvasViewDrawingPolicyDefault	PKCanvasViewDrawingPolicy			-	-	c8aefd6a52de28fc
-enumconst	c:@E@PKCanvasViewDrawingPolicy@PKCanvasViewDrawingPolicyAnyInput	PKCanvasViewDrawingPolicy			-	-	aa7454c9fb687d6c
-enumconst	c:@E@PKCanvasViewDrawingPolicy@PKCanvasViewDrawingPolicyPencilOnly	PKCanvasViewDrawingPolicy			-	-	266ae4723fa80fb9
-interface	c:objc(cs)PKCanvasView	-			ios=13.0/-/-/0	deprecated: Use 'drawingPolicy' property.	da9daf9fe2cdba07
-super	-	PKCanvasView	UIScrollView		-	-	f3c828f7980217a7
-conforms	-	PKCanvasView	PKToolPickerObserver		-	-	4bbce1d3e1eb422d
-property	c:objc(cs)PKCanvasView(py)delegate	-			ios=13.0/-/-/0	-	8de0748c582be3da
-property	c:objc(cs)PKCanvasView(py)drawing	-			ios=13.0/-/-/0	-	001a8191c354aee7
-property	c:objc(cs)PKCanvasView(py)tool	-			ios=13.0/-/-/0	-	28d34343c256ab9a
-property	c:objc(cs)PKCanvasView(py)rulerActive	-			ios=13.0/-/-/0	-	f6047285c8e8fabb
-property	c:objc(cs)PKCanvasView(py)drawingGestureRecognizer	-			ios=13.0/-/-/0	-	1f191707330915ba
-property	c:objc(cs)PKCanvasView(py)drawingEnabled	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	274b618c93eff913
-property	c:objc(cs)PKCanvasView(py)allowsFingerDrawing	-			ios=13.0/14.0/-/0	-	fea7f55239446f06
-property	c:objc(cs)PKCanvasView(py)drawingPolicy	-			ios=14.0/-/-/0	-	f2591ed590911f75
-property	c:objc(cs)PKCanvasView(py)maximumSupportedContentVersion	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	5bd94b526f19a37b
-interface	c:objc(cs)PKToolPickerItem	-			ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	e9ff25162ce98584
-super	-	PKToolPickerItem	NSObject		-	-	f8532d4e5b6a8e73
-conforms	-	PKToolPickerItem	NSCopying		-	-	d25c33db908ee6e8
-method	c:objc(cs)PKToolPickerItem(im)init	-			*unavailable ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	a36d42229ee061c9
-property	c:objc(cs)PKToolPickerItem(py)identifier	-			ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	005f3f306ab8f154
-property	c:objc(cs)PKToolPickerItem(py)tool	-			ios=26.0/-/-/0,xros=26.0/-/-/0	-	d54b08e5a1a83a37
-interface	c:objc(cs)PKToolPickerCustomItem	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	acb801a66468342f
-super	-	PKToolPickerCustomItem	PKToolPickerItem		-	-	682fe8852f094071
-method	c:objc(cs)PKToolPickerCustomItem(im)initWithConfiguration:	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	cf4aad4013438813
-property	c:objc(cs)PKToolPickerCustomItem(py)configuration	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	f011341b7c87959a
-property	c:objc(cs)PKToolPickerCustomItem(py)color	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	2bea56640810796e
-property	c:objc(cs)PKToolPickerCustomItem(py)allowsColorSelection	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	ec558a37e91d2fcf
-property	c:objc(cs)PKToolPickerCustomItem(py)width	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	59d8a18b6a3b6046
-method	c:objc(cs)PKToolPickerCustomItem(im)reloadImage	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	6685301421ecd261
-typedef	c:@T@PKToolPickerCustomItemControlOptions	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	7f2f116a060108c0
-enum	c:@E@PKToolPickerCustomItemControlOptions	-			-	-	a50df3c9c317150a
-enumconst	c:@E@PKToolPickerCustomItemControlOptions@PKToolPickerCustomItemControlNone	PKToolPickerCustomItemControlOptions			-	-	28475bb45e1dc359
-enumconst	c:@E@PKToolPickerCustomItemControlOptions@PKToolPickerCustomItemControlWidth	PKToolPickerCustomItemControlOptions			-	-	5342e666ec72eadb
-enumconst	c:@E@PKToolPickerCustomItemControlOptions@PKToolPickerCustomItemControlOpacity	PKToolPickerCustomItemControlOptions			-	-	edc40542a30ae3b6
-interface	c:objc(cs)PKToolPickerCustomItemConfiguration	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	4bbdc9814b12ba6d
-super	-	PKToolPickerCustomItemConfiguration	NSObject		-	-	ebe5584e6f46c50c
-conforms	-	PKToolPickerCustomItemConfiguration	NSCopying		-	-	559b1de4e2a1ae8a
-method	c:objc(cs)PKToolPickerCustomItemConfiguration(im)initWithIdentifier:name:	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	5c94513b77c102bc
-method	c:objc(cs)PKToolPickerCustomItemConfiguration(im)init	-			*unavailable ios=18.0/-/-/0,xros=2.0/-/-/0	-	7244c82fef82b90b
-property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)identifier	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	87f05115fb9d2baa
-property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)name	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	39e116cb5cc0ef6f
-property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)imageProvider	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	b40e42066a6679c7
-property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)viewControllerProvider	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	cf0614bcf670e0b7
-property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)defaultWidth	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	727549992acd2a54
-property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)widthVariants	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	064408d5b95ff4dd
-property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)defaultColor	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	b930a600ac73d8c5
-property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)allowsColorSelection	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	6e99cbb14354a7ed
-property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)toolAttributeControls	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	324c738bbc51423d
-interface	c:objc(cs)PKToolPickerLassoItem	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	b13efd827658150f
-super	-	PKToolPickerLassoItem	PKToolPickerItem		-	-	db54e897383a418c
-method	c:objc(cs)PKToolPickerLassoItem(im)init	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	0bcbd6a07e85c9b6
-property	c:objc(cs)PKToolPickerLassoItem(py)lassoTool	-			ios=18.0/-/-/0,xros=2.0/-/-/0	-	926903cecd36481f
-interface	c:objc(cs)PKToolPickerRulerItem	-			ios=18.0/-/-/0,xros=-/-/-/1	-	37034adadb757eff
-super	-	PKToolPickerRulerItem	PKToolPickerItem		-	-	5f2e293ad259a51f
-method	c:objc(cs)PKToolPickerRulerItem(im)init	-			ios=18.0/-/-/0,xros=-/-/-/1	-	f941e968d1f14f48
-interface	c:objc(cs)PKToolPickerScribbleItem	-			ios=18.0/-/-/0,xros=-/-/-/1	-	305bd114f5f69d4a
-super	-	PKToolPickerScribbleItem	PKToolPickerItem		-	-	ddb4d3454b658d36
-method	c:objc(cs)PKToolPickerScribbleItem(im)init	-			ios=18.0/-/-/0,xros=-/-/-/1	-	7e0d5b7b7684a903
-typedef	c:@T@PKToolPickerVisibility	-			ios=26.0/-/-/0,xros=26.0/-/-/0	-	e702a67455fe326a
-enum	c:@E@PKToolPickerVisibility	-			-	-	1f44e07a13a340b5
-enumconst	c:@E@PKToolPickerVisibility@PKToolPickerVisibilityInherited	PKToolPickerVisibility			-	-	27b44a9e1f903818
-enumconst	c:@E@PKToolPickerVisibility@PKToolPickerVisibilityInactive	PKToolPickerVisibility			-	-	4b43acfff390c120
-enumconst	c:@E@PKToolPickerVisibility@PKToolPickerVisibilityHidden	PKToolPickerVisibility			-	-	6596ebb7a3198a31
-enumconst	c:@E@PKToolPickerVisibility@PKToolPickerVisibilityVisible	PKToolPickerVisibility			-	-	3ab36429e4c8ea50
-interface	c:objc(cs)PKResponderState	-			ios=26.0/-/-/0,xros=26.0/-/-/0	-	242d190eb81c81c4
-super	-	PKResponderState	NSObject		-	-	3819b8ed61a045d1
-property	c:objc(cs)PKResponderState(py)toolPickerVisibility	-			ios=26.0/-/-/0,xros=26.0/-/-/0	-	226e7a6b5e2250b0
-property	c:objc(cs)PKResponderState(py)activeToolPicker	-			ios=26.0/-/-/0,xros=26.0/-/-/0	-	9f347801e863287a
-category	c:objc(cy)UIResponder@PKResponderState	-			ios=26.0/-/-/0,xros=26.0/-/-/0	-	c58244955d0c37b8
-property	c:objc(cs)UIResponder(py)pencilKitResponderState	PKResponderState			ios=26.0/-/-/0,xros=26.0/-/-/0	-	acd690a23b1f7d95
-interface	c:objc(cs)PKTool	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	84dbd7f3d1fe681e
-super	-	PKTool	NSObject		-	-	a9f1212d3d842bca
-conforms	-	PKTool	NSCopying		-	-	dd2b05a3612e776f
-method	c:objc(cs)PKTool(im)init	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0	-	288e59ae6d726467
-interface	c:objc(cs)PKLassoTool	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	3c8ace4b5100dac0
-super	-	PKLassoTool	PKTool		-	-	7661aa3e249dd44c
-method	c:objc(cs)PKLassoTool(im)init	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	37dfa5f794daec21
-typedef	c:@T@PKEraserType	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	9391a0350e73e9e3
-enum	c:@E@PKEraserType	-			-	-	4d44ebacf8031c9c
-enumconst	c:@E@PKEraserType@PKEraserTypeVector	PKEraserType			-	-	babadee62b910523
-enumconst	c:@E@PKEraserType@PKEraserTypeBitmap	PKEraserType			-	-	d9e34ea0e0c88bbf
-enumconst	c:@E@PKEraserType@PKEraserTypeFixedWidthBitmap	PKEraserType			ios=16.4/-/-/0,macos=13.3/-/-/0	-	0b96112beddce1f8
-interface	c:objc(cs)PKEraserTool	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	6677e7a14e773381
-super	-	PKEraserTool	PKTool		-	-	b8dd18dcfee76da2
-property	c:objc(cs)PKEraserTool(py)eraserType	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	727c6e9fb2a66659
-method	c:objc(cs)PKEraserTool(im)initWithEraserType:	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	f895a8404d05c123
-method	c:objc(cs)PKEraserTool(im)initWithEraserType:width:	-			ios=16.4/-/-/0,macos=13.3/-/-/0	-	9a303267848638ca
-property	c:objc(cs)PKEraserTool(py)width	-			ios=16.4/-/-/0,macos=13.3/-/-/0	-	a65d8d25b45232e1
-method	c:objc(cs)PKEraserTool(cm)defaultWidthForEraserType:	-			ios=16.4/-/-/0,macos=13.3/-/-/0	-	87e9abb15363b407
-method	c:objc(cs)PKEraserTool(cm)minimumWidthForEraserType:	-			ios=16.4/-/-/0,macos=13.3/-/-/0	-	7fb9129d4703f36e
-method	c:objc(cs)PKEraserTool(cm)maximumWidthForEraserType:	-			ios=16.4/-/-/0,macos=13.3/-/-/0	-	4a6fd908edd83d80
-typedef	c:@T@PKInkType	-			ios=13.0/-/-/0	-	2fc66d9b9efe76aa
-var	c:@PKInkTypePen	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	e2370862c6f8bc3f
-var	c:@PKInkTypePencil	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	0e669f12d5fed909
-var	c:@PKInkTypeMarker	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	966170b48a45b554
-var	c:@PKInkTypeMonoline	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	54c7f36ae5c14cf3
-var	c:@PKInkTypeFountainPen	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	9996217e54dbef7b
-var	c:@PKInkTypeWatercolor	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	7cc42d25137415e8
-var	c:@PKInkTypeReed	-			ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	db59a33bbd77a646
-var	c:@PKInkTypeCrayon	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	90f7810fa420d657
-interface	c:objc(cs)PKInkingTool	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	67e8c778043e8527
-super	-	PKInkingTool	PKTool		-	-	dbf789b2bd9f04af
-method	c:objc(cs)PKInkingTool(im)initWithInkType:color:width:	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	14de5e9edba76107
-method	c:objc(cs)PKInkingTool(im)initWithInkType:color:width:azimuth:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	10a4e9387670b09b
-method	c:objc(cs)PKInkingTool(im)initWithInkType:color:	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	a03eaf80a4990b91
-method	c:objc(cs)PKInkingTool(im)initWithInk:width:	-			ios=14.0/-/-/0	-	c4c0a4845fbfd23b
-method	c:objc(cs)PKInkingTool(cm)defaultWidthForInkType:	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	53ab19b1a936d7a1
-method	c:objc(cs)PKInkingTool(cm)minimumWidthForInkType:	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	52cf88f37fe12883
-method	c:objc(cs)PKInkingTool(cm)maximumWidthForInkType:	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	ba8698fb99639e05
-property	c:objc(cs)PKInkingTool(py)inkType	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	49c79aca32a0ad0e
-property	c:objc(cs)PKInkingTool(py)color	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	59162c45a6afd29a
-method	c:objc(cs)PKInkingTool(cm)convertColor:fromUserInterfaceStyle:to:	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	92b2fa67abb9d03b
-property	c:objc(cs)PKInkingTool(py)width	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	fb5823fdefa4125d
-property	c:objc(cs)PKInkingTool(py)azimuth	-			ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	a34045ae8849db86
-property	c:objc(cs)PKInkingTool(py)ink	-			ios=14.0/-/-/0	-	cb82532fca746c2e
-property	c:objc(cs)PKInkingTool(py)requiredContentVersion	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	8792ccd69ed5fbf0
-interface	c:objc(cs)PKToolPickerEraserItem	-			ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	95cc0f7b24859b51
-super	-	PKToolPickerEraserItem	PKToolPickerItem		-	-	34e8cec54802628e
-method	c:objc(cs)PKToolPickerEraserItem(im)initWithEraserType:	-			ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	02af552fc3fcbf20
-method	c:objc(cs)PKToolPickerEraserItem(im)initWithEraserType:width:	-			ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	17ec189233a79c8f
-property	c:objc(cs)PKToolPickerEraserItem(py)eraserTool	-			ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	31054d054343fd3c
-interface	c:objc(cs)PKToolPickerInkingItem	-			ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	480278650d374d1c
-super	-	PKToolPickerInkingItem	PKToolPickerItem		-	-	3abe0d2d153f713a
-method	c:objc(cs)PKToolPickerInkingItem(im)initWithInkType:	-			ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	5cc70709564d6dc5
-method	c:objc(cs)PKToolPickerInkingItem(im)initWithInkType:color:	-			ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	f9a4e33b15bca810
-method	c:objc(cs)PKToolPickerInkingItem(im)initWithInkType:width:	-			ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	4616dad4977c68fb
-method	c:objc(cs)PKToolPickerInkingItem(im)initWithInkType:color:width:	-			ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	ee1b84a965813552
-method	c:objc(cs)PKToolPickerInkingItem(im)initWithInkType:color:width:identifier:	-			ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	d6201ebe1fc27a90
-method	c:objc(cs)PKToolPickerInkingItem(im)initWithInkType:color:width:azimuth:identifier:	-			ios=26.0/-/-/0,xros=26.0/-/-/0	-	af458a1ddef8576a
-property	c:objc(cs)PKToolPickerInkingItem(py)inkingTool	-			ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	a1d717e039724bce
-property	c:objc(cs)PKToolPickerInkingItem(py)allowsColorSelection	-			ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	2375661522f200f0
-var	c:@PKAppleDrawingTypeIdentifier	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	7a14d6c8ab213aa4
-interface	c:objc(cs)PKDrawing	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	fb4dd6716d516d5f
-super	-	PKDrawing	NSObject		-	-	41f5afdfdeb4320f
-conforms	-	PKDrawing	NSCopying		-	-	f422575c756d0c59
-conforms	-	PKDrawing	NSSecureCoding		-	-	fbd1cec4c9704088
-method	c:objc(cs)PKDrawing(im)init	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	8037ddd94efb2e97
-method	c:objc(cs)PKDrawing(im)initWithStrokes:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	b30ca2b5bc18f6de
-method	c:objc(cs)PKDrawing(im)initWithData:error:	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	8dfdfe4bd1fa52ea
-method	c:objc(cs)PKDrawing(im)dataRepresentation	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	496a570521887584
-property	c:objc(cs)PKDrawing(py)strokes	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	17cb13de74f7daec
-property	c:objc(cs)PKDrawing(py)bounds	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	70e6bafb94a3d6a6
-property	c:objc(cs)PKDrawing(py)requiredContentVersion	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	7f817c3ccffdfddd
-method	c:objc(cs)PKDrawing(im)imageFromRect:scale:	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	81ed58e3aaaf2582
-method	c:objc(cs)PKDrawing(im)drawingByApplyingTransform:	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	2910a21710333b66
-method	c:objc(cs)PKDrawing(im)drawingByAppendingDrawing:	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	edbc857ecc737d92
-method	c:objc(cs)PKDrawing(im)drawingByAppendingStrokes:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	e6e9b70a11887d23
-interface	c:objc(cs)PKStroke	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	e0c32625222be2cb
-super	-	PKStroke	NSObject		-	-	e9b1827c1f5f9d62
-conforms	-	PKStroke	NSCopying		-	-	b03c73fa47925fc3
-method	c:objc(cs)PKStroke(im)initWithInk:strokePath:transform:mask:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	c8352e03c3ff356a
-method	c:objc(cs)PKStroke(im)initWithInk:strokePath:transform:mask:randomSeed:	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	56df179eb590008f
-property	c:objc(cs)PKStroke(py)ink	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	96e4c266cc047b5b
-property	c:objc(cs)PKStroke(py)transform	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	1193c3b01beed006
-property	c:objc(cs)PKStroke(py)path	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	bd4c44ee60dc10ab
-property	c:objc(cs)PKStroke(py)mask	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	d7e07ee443953167
-property	c:objc(cs)PKStroke(py)renderBounds	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	4e5aeeaca429905e
-property	c:objc(cs)PKStroke(py)maskedPathRanges	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	c552019dd8229177
-property	c:objc(cs)PKStroke(py)randomSeed	-			ios=16.0/-/-/0,macos=13.0/-/-/0	-	593af89e26119dcd
-property	c:objc(cs)PKStroke(py)requiredContentVersion	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	0054d76273a84991
-interface	c:objc(cs)PKFloatRange	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	3a6c3897c92a5473
-super	-	PKFloatRange	NSObject		-	-	4b0ffcf6e2ba4033
-conforms	-	PKFloatRange	NSCopying		-	-	791f1f962b9de607
-property	c:objc(cs)PKFloatRange(py)lowerBound	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	f56d48b06d2aaeda
-property	c:objc(cs)PKFloatRange(py)upperBound	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	b1d2635a1c4c1fa4
-method	c:objc(cs)PKFloatRange(im)initWithLowerBound:upperBound:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	249b911ee1d18a19
-interface	c:objc(cs)PKStrokePath	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	b130defd89026846
-super	-	PKStrokePath	NSObject		-	-	53cb0de727aabb6a
-conforms	-	PKStrokePath	NSCopying		-	-	c7c0ff6ce73f3a87
-method	c:objc(cs)PKStrokePath(im)initWithControlPoints:creationDate:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	09ff011a847f24b2
-property	c:objc(cs)PKStrokePath(py)count	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	da9141fd80c7983d
-property	c:objc(cs)PKStrokePath(py)creationDate	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	ca1d22e16be3fc33
-method	c:objc(cs)PKStrokePath(im)pointAtIndex:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	c89b0034a328c6c2
-method	c:objc(cs)PKStrokePath(im)objectAtIndexedSubscript:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	6fcf71ff2b8a05c2
-method	c:objc(cs)PKStrokePath(im)interpolatedLocationAt:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	38596f934a36b6ea
-method	c:objc(cs)PKStrokePath(im)interpolatedPointAt:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	33ddf39dffcdf0dd
-method	c:objc(cs)PKStrokePath(im)enumerateInterpolatedPointsInRange:strideByDistance:usingBlock:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	8af3afaa2fc059a7
-method	c:objc(cs)PKStrokePath(im)enumerateInterpolatedPointsInRange:strideByTime:usingBlock:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	bf0128f8f263a73c
-method	c:objc(cs)PKStrokePath(im)enumerateInterpolatedPointsInRange:strideByParametricStep:usingBlock:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	f09efc6ebe4de49e
-method	c:objc(cs)PKStrokePath(im)parametricValue:offsetByDistance:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	ca045e87b97cec94
-method	c:objc(cs)PKStrokePath(im)parametricValue:offsetByTime:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	634b37c420293fa1
-interface	c:objc(cs)PKStrokePoint	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	d1f16104c1dbdc7f
-super	-	PKStrokePoint	NSObject		-	-	d884095c33c42495
-conforms	-	PKStrokePoint	NSCopying		-	-	36ef17d3ffbdadd6
-method	c:objc(cs)PKStrokePoint(im)init	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0	-	515124c59941b11d
-method	c:objc(cs)PKStrokePoint(im)initWithLocation:timeOffset:size:opacity:force:azimuth:altitude:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	dcbd4d966f0ae742
-method	c:objc(cs)PKStrokePoint(im)initWithLocation:timeOffset:size:opacity:force:azimuth:altitude:secondaryScale:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	622bb7377f088bc8
-method	c:objc(cs)PKStrokePoint(im)initWithLocation:timeOffset:size:opacity:force:azimuth:altitude:secondaryScale:threshold:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	eb455aef596e6d90
-property	c:objc(cs)PKStrokePoint(py)location	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	c953ba7fbd966dc1
-property	c:objc(cs)PKStrokePoint(py)timeOffset	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	22681708479166bb
-property	c:objc(cs)PKStrokePoint(py)size	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	5680a984e5939754
-property	c:objc(cs)PKStrokePoint(py)opacity	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	c9e6ce94d81085e6
-property	c:objc(cs)PKStrokePoint(py)azimuth	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	bd164732fd01c579
-property	c:objc(cs)PKStrokePoint(py)force	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	2429df7cd5c9fbe6
-property	c:objc(cs)PKStrokePoint(py)altitude	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	6fffd211ba2ee893
-property	c:objc(cs)PKStrokePoint(py)secondaryScale	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	ea4fa6d78e915bfb
-property	c:objc(cs)PKStrokePoint(py)threshold	-			ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	011ecd4ee5d0262f
-interface	c:objc(cs)PKInk	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	ecb4386f01df3717
-super	-	PKInk	NSObject		-	-	f2fa90f1b5c63b39
-conforms	-	PKInk	NSCopying		-	-	d33369bdf365506a
-method	c:objc(cs)PKInk(im)initWithInkType:color:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	9f31359a1489e6e2
-property	c:objc(cs)PKInk(py)inkType	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	9eef58c26b4ec038
-property	c:objc(cs)PKInk(py)color	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	77b179ddcd0669ee
-property	c:objc(cs)PKInk(py)requiredContentVersion	-			ios=17.0/-/-/0,macos=14.0/-/-/0	-	27d88bc8036e4f6a
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
+typedef	c:@T@PKContentVersion	-			enum PKContentVersion	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	bf3f08b99d66a453
+enum	c:@E@PKContentVersion	-			NSInteger	-	-	-	4f77a374de55e63b
+enumconst	c:@E@PKContentVersion@PKContentVersion1	PKContentVersion			-	-	-	-	658676e8ccb20136
+enumconst	c:@E@PKContentVersion@PKContentVersion2	PKContentVersion			-	-	-	-	67625a9dd4a82f3a
+enumconst	c:@E@PKContentVersion@PKContentVersion3	PKContentVersion			-	-	ios=17.5/-/-/0,macos=14.5/-/-/0	-	abc82e079eee1e7c
+enumconst	c:@E@PKContentVersion@PKContentVersion4	PKContentVersion			-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	4bc5b8124fd662be
+enumconst	c:@E@PKContentVersion@PKContentVersionLatest	PKContentVersion			-	-	-	-	e36cc61278fb74c3
+protocol	c:objc(pl)PKToolPickerObserver	-			-	-	ios=13.0/-/-/0	deprecated: Use toolPickerSelectedToolItemDidChange instead.	8cc660703c5ef3ac
+conforms	-	PKToolPickerObserver	NSObject		-	-	-	-	adda01dc760079b2
+method	c:objc(pl)PKToolPickerObserver(im)toolPickerSelectedToolDidChange:	-			void	optional	ios=13.0/18.0/-/0,xros=1.0/2.0/-/0	deprecated: Use toolPickerSelectedToolItemDidChange instead.	199b8127545f9f09
+method	c:objc(pl)PKToolPickerObserver(im)toolPickerSelectedToolItemDidChange:	-			void	optional	ios=18.0/-/-/0,xros=2.0/-/-/0	-	4b44f03ea91ecc6c
+method	c:objc(pl)PKToolPickerObserver(im)toolPickerIsRulerActiveDidChange:	-			void	optional	ios=13.0/-/-/0	-	b41b12cf85741148
+method	c:objc(pl)PKToolPickerObserver(im)toolPickerVisibilityDidChange:	-			void	optional	ios=13.0/-/-/0	-	26b34a075dd4235d
+method	c:objc(pl)PKToolPickerObserver(im)toolPickerFramesObscuredDidChange:	-			void	optional	ios=13.0/-/-/0	-	3a8a3d2eab667e0b
+protocol	c:objc(pl)PKToolPickerDelegate	-			-	-	ios=18.0/-/-/0,xros=2.0/-/-/0	-	9d66a4d0632a599e
+conforms	-	PKToolPickerDelegate	NSObject		-	-	-	-	866ad95dce31522b
+method	c:objc(pl)PKToolPickerDelegate(im)toolPickerWillDismiss:	-			BOOL	optional	ios=-/-/-/1,xros=2.0/-/-/0	-	15efc0c0a35fc74d
+interface	c:objc(cs)PKToolPicker	-			-	-	ios=13.0/-/-/0	deprecated: Use selectedToolItem instead.	f7d14b0a5f6f7c90
+super	-	PKToolPicker	NSObject		-	-	-	-	0183815de4305a4c
+method	c:objc(cs)PKToolPicker(im)addObserver:	-			void	-	ios=13.0/-/-/0	-	885a0e455d9c1fc0
+method	c:objc(cs)PKToolPicker(im)removeObserver:	-			void	-	ios=13.0/-/-/0	-	fdeec5f05197c86a
+method	c:objc(cs)PKToolPicker(im)setVisible:forFirstResponder:	-			void	-	ios=13.0/-/-/0	-	1b511c8fc7312114
+property	c:objc(cs)PKToolPicker(py)delegate	-			id<PKToolPickerDelegate>	weak,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	c1ff3345b226a2ce
+property	c:objc(cs)PKToolPicker(py)selectedTool	-			NS_REFINED_FOR_SWIFT PKTool *	strong,nonatomic	ios=13.0/18.0/-/0,xros=1.0/2.0/-/0	-	d3347bc9c75e3f42
+property	c:objc(cs)PKToolPicker(py)selectedToolItem	-			PKToolPickerItem *	strong,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	375bd3410e869cf3
+property	c:objc(cs)PKToolPicker(py)selectedToolItemIdentifier	-			NSString *	copy,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	b2e61a76dfe2fe9c
+property	c:objc(cs)PKToolPicker(py)toolItems	-			NSArray<PKToolPickerItem *> *	readonly,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	6f34da74da8c836b
+property	c:objc(cs)PKToolPicker(cpy)defaultToolItems	-			NSArray<PKToolPickerItem *> *	readonly,nonatomic,class	ios=26.0/-/-/0,xros=26.0/-/-/0	-	485214233cd6a85c
+property	c:objc(cs)PKToolPicker(py)rulerActive	-			BOOL	nonatomic,getter=isRulerActive	ios=13.0/-/-/0	-	d92f7d89a2cb8d56
+property	c:objc(cs)PKToolPicker(py)isVisible	-			BOOL	readonly,nonatomic	ios=13.0/-/-/0	-	cb8c5d26307f7836
+property	c:objc(cs)PKToolPicker(py)stateAutosaveName	-			API_AVAILABLE NSString *	copy,nonatomic	ios=14.0/-/-/0	-	7c471f58050a23af
+property	c:objc(cs)PKToolPicker(py)maximumSupportedContentVersion	-			PKContentVersion	assign,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0	-	d76cfc6f1f771995
+method	c:objc(cs)PKToolPicker(im)frameObscuredInView:	-			CGRect	-	ios=13.0/-/-/0	-	35e574f14bd26839
+property	c:objc(cs)PKToolPicker(py)overrideUserInterfaceStyle	-			UIUserInterfaceStyle	nonatomic	ios=13.0/-/-/0	-	72c4253d2deb1351
+property	c:objc(cs)PKToolPicker(py)colorUserInterfaceStyle	-			UIUserInterfaceStyle	nonatomic	ios=13.0/-/-/0	-	a1f630bf57346dd8
+property	c:objc(cs)PKToolPicker(py)showsDrawingPolicyControls	-			BOOL	nonatomic	ios=14.0/-/-/0	-	47749a2997967951
+property	c:objc(cs)PKToolPicker(py)prefersDismissControlVisible	-			BOOL	nonatomic	ios=-/-/-/1,xros=2.0/-/-/0	-	5e62e13cb80707bc
+property	c:objc(cs)PKToolPicker(py)accessoryItem	-			UIBarButtonItem *	strong,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	bf82388c89324da2
+method	c:objc(cs)PKToolPicker(cm)sharedToolPickerForWindow:	-			PKToolPicker *	-	ios=13.0/14.0/-/0	deprecated: Create individual instances instead.	414ab660f8d9ef74
+method	c:objc(cs)PKToolPicker(im)init	-			instancetype	-	ios=14.0/-/-/0	-	4815e2b27beecf1e
+method	c:objc(cs)PKToolPicker(im)initWithToolItems:	-			instancetype	-	ios=18.0/-/-/0,xros=2.0/-/-/0	-	cbbb847c33462c30
+property	c:objc(cs)PKToolPicker(py)colorMaximumLinearExposure	-			CGFloat	assign,nonatomic	ios=26.0/-/-/0,xros=26.0/-/-/0	-	248a17cbf2bf0470
+protocol	c:objc(pl)PKCanvasViewDelegate	-			-	-	ios=13.0/-/-/0	-	8c1d50bfa828b5c2
+conforms	-	PKCanvasViewDelegate	NSObject		-	-	-	-	696f78963b3e41c1
+conforms	-	PKCanvasViewDelegate	UIScrollViewDelegate		-	-	-	-	f714039f7c57261a
+method	c:objc(pl)PKCanvasViewDelegate(im)canvasViewDrawingDidChange:	-			void	optional	ios=13.0/-/-/0	-	1c5930c247ac2509
+method	c:objc(pl)PKCanvasViewDelegate(im)canvasViewDidFinishRendering:	-			void	optional	ios=13.0/-/-/0	-	afed1ff198fabc27
+method	c:objc(pl)PKCanvasViewDelegate(im)canvasViewDidBeginUsingTool:	-			void	optional	ios=13.0/-/-/0	-	d37ef1a2c483f66b
+method	c:objc(pl)PKCanvasViewDelegate(im)canvasViewDidEndUsingTool:	-			void	optional	ios=13.0/-/-/0	-	aa87a021fd4be708
+typedef	c:@T@PKCanvasViewDrawingPolicy	-			enum PKCanvasViewDrawingPolicy	-	-	-	3657340f76a61eb5
+enum	c:@E@PKCanvasViewDrawingPolicy	-			NSUInteger	-	-	-	0a29f678ed4fa09c
+enumconst	c:@E@PKCanvasViewDrawingPolicy@PKCanvasViewDrawingPolicyDefault	PKCanvasViewDrawingPolicy			-	-	-	-	c8aefd6a52de28fc
+enumconst	c:@E@PKCanvasViewDrawingPolicy@PKCanvasViewDrawingPolicyAnyInput	PKCanvasViewDrawingPolicy			-	-	-	-	aa7454c9fb687d6c
+enumconst	c:@E@PKCanvasViewDrawingPolicy@PKCanvasViewDrawingPolicyPencilOnly	PKCanvasViewDrawingPolicy			-	-	-	-	266ae4723fa80fb9
+interface	c:objc(cs)PKCanvasView	-			-	-	ios=13.0/-/-/0	deprecated: Use 'drawingPolicy' property.	da9daf9fe2cdba07
+super	-	PKCanvasView	UIScrollView		-	-	-	-	f3c828f7980217a7
+conforms	-	PKCanvasView	PKToolPickerObserver		-	-	-	-	4bbce1d3e1eb422d
+property	c:objc(cs)PKCanvasView(py)delegate	-			id<PKCanvasViewDelegate>	weak,nonatomic	ios=13.0/-/-/0	-	515fea457336d8c4
+property	c:objc(cs)PKCanvasView(py)drawing	-			PKDrawing *	copy,nonatomic	ios=13.0/-/-/0	-	7d5860c5a922ea27
+property	c:objc(cs)PKCanvasView(py)tool	-			NS_REFINED_FOR_SWIFT PKTool *	copy,nonatomic	ios=13.0/-/-/0	-	401126e44b966a27
+property	c:objc(cs)PKCanvasView(py)rulerActive	-			BOOL	nonatomic,getter=isRulerActive	ios=13.0/-/-/0	-	f6047285c8e8fabb
+property	c:objc(cs)PKCanvasView(py)drawingGestureRecognizer	-			UIGestureRecognizer *	readonly,nonatomic	ios=13.0/-/-/0	-	49e69113f7c34934
+property	c:objc(cs)PKCanvasView(py)drawingEnabled	-			BOOL	assign,nonatomic,getter=isDrawingEnabled	ios=18.0/-/-/0,xros=2.0/-/-/0	-	274b618c93eff913
+property	c:objc(cs)PKCanvasView(py)allowsFingerDrawing	-			BOOL	nonatomic	ios=13.0/14.0/-/0	-	fea7f55239446f06
+property	c:objc(cs)PKCanvasView(py)drawingPolicy	-			PKCanvasViewDrawingPolicy	assign,nonatomic	ios=14.0/-/-/0	-	f2591ed590911f75
+property	c:objc(cs)PKCanvasView(py)maximumSupportedContentVersion	-			PKContentVersion	assign,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0	-	5bd94b526f19a37b
+interface	c:objc(cs)PKToolPickerItem	-			-	-	ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	e9ff25162ce98584
+super	-	PKToolPickerItem	NSObject		-	-	-	-	f8532d4e5b6a8e73
+conforms	-	PKToolPickerItem	NSCopying		-	-	-	-	d25c33db908ee6e8
+method	c:objc(cs)PKToolPickerItem(im)init	-			instancetype	-	*unavailable ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	adb11a46ceaa32bd
+property	c:objc(cs)PKToolPickerItem(py)identifier	-			NSString *	readonly,nonatomic	ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	b01853efce40c75f
+property	c:objc(cs)PKToolPickerItem(py)tool	-			NS_REFINED_FOR_SWIFT PKTool *	readonly,nonatomic	ios=26.0/-/-/0,xros=26.0/-/-/0	-	64b57301bd1cef67
+interface	c:objc(cs)PKToolPickerCustomItem	-			-	-	ios=18.0/-/-/0,xros=2.0/-/-/0	-	acb801a66468342f
+super	-	PKToolPickerCustomItem	PKToolPickerItem		-	-	-	-	682fe8852f094071
+method	c:objc(cs)PKToolPickerCustomItem(im)initWithConfiguration:	-			instancetype	-	ios=18.0/-/-/0,xros=2.0/-/-/0	-	068c52b909000141
+property	c:objc(cs)PKToolPickerCustomItem(py)configuration	-			NS_REFINED_FOR_SWIFT PKToolPickerCustomItemConfiguration *	readonly,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	e43d98947ca6483a
+property	c:objc(cs)PKToolPickerCustomItem(py)color	-			UIColor *	strong,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	10b2a70a6dc63820
+property	c:objc(cs)PKToolPickerCustomItem(py)allowsColorSelection	-			BOOL	assign,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	ec558a37e91d2fcf
+property	c:objc(cs)PKToolPickerCustomItem(py)width	-			CGFloat	assign,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	59d8a18b6a3b6046
+method	c:objc(cs)PKToolPickerCustomItem(im)reloadImage	-			void	-	ios=18.0/-/-/0,xros=2.0/-/-/0	-	6685301421ecd261
+typedef	c:@T@PKToolPickerCustomItemControlOptions	-			enum PKToolPickerCustomItemControlOptions	-	ios=18.0/-/-/0,xros=2.0/-/-/0	-	7f2f116a060108c0
+enum	c:@E@PKToolPickerCustomItemControlOptions	-			NSUInteger	-	-	-	a50df3c9c317150a
+enumconst	c:@E@PKToolPickerCustomItemControlOptions@PKToolPickerCustomItemControlNone	PKToolPickerCustomItemControlOptions			-	-	-	-	28475bb45e1dc359
+enumconst	c:@E@PKToolPickerCustomItemControlOptions@PKToolPickerCustomItemControlWidth	PKToolPickerCustomItemControlOptions			-	-	-	-	5342e666ec72eadb
+enumconst	c:@E@PKToolPickerCustomItemControlOptions@PKToolPickerCustomItemControlOpacity	PKToolPickerCustomItemControlOptions			-	-	-	-	edc40542a30ae3b6
+interface	c:objc(cs)PKToolPickerCustomItemConfiguration	-			-	-	ios=18.0/-/-/0,xros=2.0/-/-/0	-	4bbdc9814b12ba6d
+super	-	PKToolPickerCustomItemConfiguration	NSObject		-	-	-	-	ebe5584e6f46c50c
+conforms	-	PKToolPickerCustomItemConfiguration	NSCopying		-	-	-	-	559b1de4e2a1ae8a
+method	c:objc(cs)PKToolPickerCustomItemConfiguration(im)initWithIdentifier:name:	-			instancetype	-	ios=18.0/-/-/0,xros=2.0/-/-/0	-	e2f10bb7619b6d4e
+method	c:objc(cs)PKToolPickerCustomItemConfiguration(im)init	-			instancetype	-	*unavailable ios=18.0/-/-/0,xros=2.0/-/-/0	-	5e7229ea587e661c
+property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)identifier	-			NSString *	copy,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	994ff59ffbe4e218
+property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)name	-			NSString *	copy,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	df1e996093302ffd
+property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)imageProvider	-			UIImage * _Nonnull (^)(PKToolPickerCustomItem * _Nonnull)	copy,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	b711adec18ea6718
+property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)viewControllerProvider	-			UIViewController * _Nonnull (^)(PKToolPickerCustomItem * _Nonnull)	copy,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	250b0d89c5f5da4a
+property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)defaultWidth	-			CGFloat	assign,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	727549992acd2a54
+property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)widthVariants	-			NSDictionary<NSNumber *,UIImage *> *	copy,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	ad66a43ff801958f
+property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)defaultColor	-			UIColor *	strong,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	776c78105a518969
+property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)allowsColorSelection	-			BOOL	assign,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	6e99cbb14354a7ed
+property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)toolAttributeControls	-			PKToolPickerCustomItemControlOptions	assign,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	324c738bbc51423d
+interface	c:objc(cs)PKToolPickerLassoItem	-			-	-	ios=18.0/-/-/0,xros=2.0/-/-/0	-	b13efd827658150f
+super	-	PKToolPickerLassoItem	PKToolPickerItem		-	-	-	-	db54e897383a418c
+method	c:objc(cs)PKToolPickerLassoItem(im)init	-			instancetype	-	ios=18.0/-/-/0,xros=2.0/-/-/0	-	6b46993a5a0a0cb1
+property	c:objc(cs)PKToolPickerLassoItem(py)lassoTool	-			NS_REFINED_FOR_SWIFT PKLassoTool *	readonly,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	f03565be02f71904
+interface	c:objc(cs)PKToolPickerRulerItem	-			-	-	ios=18.0/-/-/0,xros=-/-/-/1	-	37034adadb757eff
+super	-	PKToolPickerRulerItem	PKToolPickerItem		-	-	-	-	5f2e293ad259a51f
+method	c:objc(cs)PKToolPickerRulerItem(im)init	-			instancetype	-	ios=18.0/-/-/0,xros=-/-/-/1	-	55956f8094946dd3
+interface	c:objc(cs)PKToolPickerScribbleItem	-			-	-	ios=18.0/-/-/0,xros=-/-/-/1	-	305bd114f5f69d4a
+super	-	PKToolPickerScribbleItem	PKToolPickerItem		-	-	-	-	ddb4d3454b658d36
+method	c:objc(cs)PKToolPickerScribbleItem(im)init	-			instancetype	-	ios=18.0/-/-/0,xros=-/-/-/1	-	aef6964ac36e5108
+typedef	c:@T@PKToolPickerVisibility	-			enum PKToolPickerVisibility	-	ios=26.0/-/-/0,xros=26.0/-/-/0	-	e702a67455fe326a
+enum	c:@E@PKToolPickerVisibility	-			NSInteger	-	-	-	1f44e07a13a340b5
+enumconst	c:@E@PKToolPickerVisibility@PKToolPickerVisibilityInherited	PKToolPickerVisibility			-	-	-	-	27b44a9e1f903818
+enumconst	c:@E@PKToolPickerVisibility@PKToolPickerVisibilityInactive	PKToolPickerVisibility			-	-	-	-	4b43acfff390c120
+enumconst	c:@E@PKToolPickerVisibility@PKToolPickerVisibilityHidden	PKToolPickerVisibility			-	-	-	-	6596ebb7a3198a31
+enumconst	c:@E@PKToolPickerVisibility@PKToolPickerVisibilityVisible	PKToolPickerVisibility			-	-	-	-	3ab36429e4c8ea50
+interface	c:objc(cs)PKResponderState	-			-	-	ios=26.0/-/-/0,xros=26.0/-/-/0	-	242d190eb81c81c4
+super	-	PKResponderState	NSObject		-	-	-	-	3819b8ed61a045d1
+property	c:objc(cs)PKResponderState(py)toolPickerVisibility	-			PKToolPickerVisibility	assign,nonatomic	ios=26.0/-/-/0,xros=26.0/-/-/0	-	226e7a6b5e2250b0
+property	c:objc(cs)PKResponderState(py)activeToolPicker	-			PKToolPicker *	strong,nonatomic	ios=26.0/-/-/0,xros=26.0/-/-/0	-	6ed409c5d199bac9
+category	c:objc(cy)UIResponder@PKResponderState	-			-	-	ios=26.0/-/-/0,xros=26.0/-/-/0	-	c58244955d0c37b8
+property	c:objc(cs)UIResponder(py)pencilKitResponderState	PKResponderState			PKResponderState *	readonly,nonatomic	ios=26.0/-/-/0,xros=26.0/-/-/0	-	092fe95f8702ccc0
+interface	c:objc(cs)PKTool	-			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	84dbd7f3d1fe681e
+super	-	PKTool	NSObject		-	-	-	-	a9f1212d3d842bca
+conforms	-	PKTool	NSCopying		-	-	-	-	dd2b05a3612e776f
+method	c:objc(cs)PKTool(im)init	-			instancetype	-	*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0	-	15972579f773d73d
+interface	c:objc(cs)PKLassoTool	-			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	3c8ace4b5100dac0
+super	-	PKLassoTool	PKTool		-	-	-	-	7661aa3e249dd44c
+method	c:objc(cs)PKLassoTool(im)init	-			instancetype	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	7db492c8494d3885
+typedef	c:@T@PKEraserType	-			enum PKEraserType	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	9391a0350e73e9e3
+enum	c:@E@PKEraserType	-			NSInteger	-	-	-	4d44ebacf8031c9c
+enumconst	c:@E@PKEraserType@PKEraserTypeVector	PKEraserType			-	-	-	-	babadee62b910523
+enumconst	c:@E@PKEraserType@PKEraserTypeBitmap	PKEraserType			-	-	-	-	d9e34ea0e0c88bbf
+enumconst	c:@E@PKEraserType@PKEraserTypeFixedWidthBitmap	PKEraserType			-	-	ios=16.4/-/-/0,macos=13.3/-/-/0	-	0b96112beddce1f8
+interface	c:objc(cs)PKEraserTool	-			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	6677e7a14e773381
+super	-	PKEraserTool	PKTool		-	-	-	-	b8dd18dcfee76da2
+property	c:objc(cs)PKEraserTool(py)eraserType	-			PKEraserType	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0	-	727c6e9fb2a66659
+method	c:objc(cs)PKEraserTool(im)initWithEraserType:	-			instancetype	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	78221ca244b39791
+method	c:objc(cs)PKEraserTool(im)initWithEraserType:width:	-			instancetype	-	ios=16.4/-/-/0,macos=13.3/-/-/0	-	462ea3398f849922
+property	c:objc(cs)PKEraserTool(py)width	-			CGFloat	readonly,nonatomic	ios=16.4/-/-/0,macos=13.3/-/-/0	-	a65d8d25b45232e1
+method	c:objc(cs)PKEraserTool(cm)defaultWidthForEraserType:	-			CGFloat	-	ios=16.4/-/-/0,macos=13.3/-/-/0	-	87e9abb15363b407
+method	c:objc(cs)PKEraserTool(cm)minimumWidthForEraserType:	-			CGFloat	-	ios=16.4/-/-/0,macos=13.3/-/-/0	-	7fb9129d4703f36e
+method	c:objc(cs)PKEraserTool(cm)maximumWidthForEraserType:	-			CGFloat	-	ios=16.4/-/-/0,macos=13.3/-/-/0	-	4a6fd908edd83d80
+typedef	c:@T@PKInkType	-			NSString *	-	ios=13.0/-/-/0	-	2fc66d9b9efe76aa
+var	c:@PKInkTypePen	-			const PKInkType	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	e2370862c6f8bc3f
+var	c:@PKInkTypePencil	-			const PKInkType	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	0e669f12d5fed909
+var	c:@PKInkTypeMarker	-			const PKInkType	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	966170b48a45b554
+var	c:@PKInkTypeMonoline	-			const PKInkType	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	54c7f36ae5c14cf3
+var	c:@PKInkTypeFountainPen	-			const PKInkType	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	9996217e54dbef7b
+var	c:@PKInkTypeWatercolor	-			const PKInkType	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	7cc42d25137415e8
+var	c:@PKInkTypeReed	-			const PKInkType	-	ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	db59a33bbd77a646
+var	c:@PKInkTypeCrayon	-			const PKInkType	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	90f7810fa420d657
+interface	c:objc(cs)PKInkingTool	-			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	67e8c778043e8527
+super	-	PKInkingTool	PKTool		-	-	-	-	dbf789b2bd9f04af
+method	c:objc(cs)PKInkingTool(im)initWithInkType:color:width:	-			instancetype	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	40785537be466265
+method	c:objc(cs)PKInkingTool(im)initWithInkType:color:width:azimuth:	-			instancetype	-	ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	1ae83d8c2b9a1386
+method	c:objc(cs)PKInkingTool(im)initWithInkType:color:	-			instancetype	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	eb8b646691029412
+method	c:objc(cs)PKInkingTool(im)initWithInk:width:	-			instancetype	-	ios=14.0/-/-/0	-	b3ea6430a1696ef6
+method	c:objc(cs)PKInkingTool(cm)defaultWidthForInkType:	-			CGFloat	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	2e6b2330f0ac2809
+method	c:objc(cs)PKInkingTool(cm)minimumWidthForInkType:	-			CGFloat	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	717b206e762757c8
+method	c:objc(cs)PKInkingTool(cm)maximumWidthForInkType:	-			CGFloat	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	475a9b9701c1390a
+property	c:objc(cs)PKInkingTool(py)inkType	-			PKInkType	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0	-	0f75e184e7b45d15
+property	c:objc(cs)PKInkingTool(py)color	-			UIColor *	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0	-	23b084bf08108b9f
+method	c:objc(cs)PKInkingTool(cm)convertColor:fromUserInterfaceStyle:to:	-			UIColor *	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	b1bfa2f1feaddff1
+property	c:objc(cs)PKInkingTool(py)width	-			CGFloat	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0	-	fb5823fdefa4125d
+property	c:objc(cs)PKInkingTool(py)azimuth	-			CGFloat	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	a34045ae8849db86
+property	c:objc(cs)PKInkingTool(py)ink	-			API_AVAILABLE PKInk *	readonly,nonatomic	ios=14.0/-/-/0	-	4583bede8d003967
+property	c:objc(cs)PKInkingTool(py)requiredContentVersion	-			PKContentVersion	readonly,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0	-	8792ccd69ed5fbf0
+interface	c:objc(cs)PKToolPickerEraserItem	-			-	-	ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	95cc0f7b24859b51
+super	-	PKToolPickerEraserItem	PKToolPickerItem		-	-	-	-	34e8cec54802628e
+method	c:objc(cs)PKToolPickerEraserItem(im)initWithEraserType:	-			instancetype	-	ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	466affa9507decdc
+method	c:objc(cs)PKToolPickerEraserItem(im)initWithEraserType:width:	-			instancetype	-	ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	0a5a299c13c335c4
+property	c:objc(cs)PKToolPickerEraserItem(py)eraserTool	-			NS_REFINED_FOR_SWIFT PKEraserTool *	readonly,nonatomic	ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	b39d6d0e91478b40
+interface	c:objc(cs)PKToolPickerInkingItem	-			-	-	ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	480278650d374d1c
+super	-	PKToolPickerInkingItem	PKToolPickerItem		-	-	-	-	3abe0d2d153f713a
+method	c:objc(cs)PKToolPickerInkingItem(im)initWithInkType:	-			instancetype	-	ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	27af020092ba36c6
+method	c:objc(cs)PKToolPickerInkingItem(im)initWithInkType:color:	-			instancetype	-	ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	7eddc8727aad9edc
+method	c:objc(cs)PKToolPickerInkingItem(im)initWithInkType:width:	-			instancetype	-	ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	ff599ad02c89f93c
+method	c:objc(cs)PKToolPickerInkingItem(im)initWithInkType:color:width:	-			instancetype	-	ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	b3ef3dd2d159ae70
+method	c:objc(cs)PKToolPickerInkingItem(im)initWithInkType:color:width:identifier:	-			instancetype	-	ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	9aff94809d1752cb
+method	c:objc(cs)PKToolPickerInkingItem(im)initWithInkType:color:width:azimuth:identifier:	-			instancetype	-	ios=26.0/-/-/0,xros=26.0/-/-/0	-	ec75987b637f3bbd
+property	c:objc(cs)PKToolPickerInkingItem(py)inkingTool	-			NS_REFINED_FOR_SWIFT PKInkingTool *	readonly,nonatomic	ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	91c6925792504b66
+property	c:objc(cs)PKToolPickerInkingItem(py)allowsColorSelection	-			BOOL	assign,nonatomic	ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	2375661522f200f0
+var	c:@PKAppleDrawingTypeIdentifier	-			const CFStringRef	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	849f0218111b180c
+interface	c:objc(cs)PKDrawing	-			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	fb4dd6716d516d5f
+super	-	PKDrawing	NSObject		-	-	-	-	41f5afdfdeb4320f
+conforms	-	PKDrawing	NSCopying		-	-	-	-	f422575c756d0c59
+conforms	-	PKDrawing	NSSecureCoding		-	-	-	-	fbd1cec4c9704088
+method	c:objc(cs)PKDrawing(im)init	-			instancetype	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	884ccb303c88f6ba
+method	c:objc(cs)PKDrawing(im)initWithStrokes:	-			instancetype	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	054a88ee2f27427e
+method	c:objc(cs)PKDrawing(im)initWithData:error:	-			instancetype	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	e8732be300ded0aa
+method	c:objc(cs)PKDrawing(im)dataRepresentation	-			NSData *	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	3cb1bf2d53da5b0b
+property	c:objc(cs)PKDrawing(py)strokes	-			NSArray<PKStroke *> *	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	d01baa764c19579d
+property	c:objc(cs)PKDrawing(py)bounds	-			CGRect	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0	-	70e6bafb94a3d6a6
+property	c:objc(cs)PKDrawing(py)requiredContentVersion	-			PKContentVersion	readonly,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0	-	7f817c3ccffdfddd
+method	c:objc(cs)PKDrawing(im)imageFromRect:scale:	-			UIImage *	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	9337cca02e0d52d1
+method	c:objc(cs)PKDrawing(im)drawingByApplyingTransform:	-			PKDrawing *	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	6e765cc04c6f5729
+method	c:objc(cs)PKDrawing(im)drawingByAppendingDrawing:	-			PKDrawing *	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	1c14e0acfc160203
+method	c:objc(cs)PKDrawing(im)drawingByAppendingStrokes:	-			PKDrawing *	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	bb409e115db303a2
+interface	c:objc(cs)PKStroke	-			-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	e0c32625222be2cb
+super	-	PKStroke	NSObject		-	-	-	-	e9b1827c1f5f9d62
+conforms	-	PKStroke	NSCopying		-	-	-	-	b03c73fa47925fc3
+method	c:objc(cs)PKStroke(im)initWithInk:strokePath:transform:mask:	-			instancetype	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	acf33a2278bfcb7c
+method	c:objc(cs)PKStroke(im)initWithInk:strokePath:transform:mask:randomSeed:	-			instancetype	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	9344809edcc4eeb5
+property	c:objc(cs)PKStroke(py)ink	-			PKInk *	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	0b55b56a206e8dfc
+property	c:objc(cs)PKStroke(py)transform	-			CGAffineTransform	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	1193c3b01beed006
+property	c:objc(cs)PKStroke(py)path	-			PKStrokePath *	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	5a52f18b509da23f
+property	c:objc(cs)PKStroke(py)mask	-			UIBezierPath *	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	1042b1923e1c640c
+property	c:objc(cs)PKStroke(py)renderBounds	-			CGRect	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	4e5aeeaca429905e
+property	c:objc(cs)PKStroke(py)maskedPathRanges	-			NSArray<PKFloatRange *> *	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	cad7a3192ae94d0b
+property	c:objc(cs)PKStroke(py)randomSeed	-			uint32_t	readonly,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	593af89e26119dcd
+property	c:objc(cs)PKStroke(py)requiredContentVersion	-			PKContentVersion	readonly,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0	-	0054d76273a84991
+interface	c:objc(cs)PKFloatRange	-			-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	3a6c3897c92a5473
+super	-	PKFloatRange	NSObject		-	-	-	-	4b0ffcf6e2ba4033
+conforms	-	PKFloatRange	NSCopying		-	-	-	-	791f1f962b9de607
+property	c:objc(cs)PKFloatRange(py)lowerBound	-			CGFloat	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	f56d48b06d2aaeda
+property	c:objc(cs)PKFloatRange(py)upperBound	-			CGFloat	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	b1d2635a1c4c1fa4
+method	c:objc(cs)PKFloatRange(im)initWithLowerBound:upperBound:	-			instancetype	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	a8d2cfddb997f5c5
+interface	c:objc(cs)PKStrokePath	-			-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	b130defd89026846
+super	-	PKStrokePath	NSObject		-	-	-	-	53cb0de727aabb6a
+conforms	-	PKStrokePath	NSCopying		-	-	-	-	c7c0ff6ce73f3a87
+method	c:objc(cs)PKStrokePath(im)initWithControlPoints:creationDate:	-			instancetype	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	f5d23f6e8d91d0aa
+property	c:objc(cs)PKStrokePath(py)count	-			NSUInteger	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	da9141fd80c7983d
+property	c:objc(cs)PKStrokePath(py)creationDate	-			NSDate *	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	21d97bce8d48315e
+method	c:objc(cs)PKStrokePath(im)pointAtIndex:	-			PKStrokePoint *	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	30a5768565e4f6bf
+method	c:objc(cs)PKStrokePath(im)objectAtIndexedSubscript:	-			PKStrokePoint *	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	db65bae342f9abe2
+method	c:objc(cs)PKStrokePath(im)interpolatedLocationAt:	-			CGPoint	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	38596f934a36b6ea
+method	c:objc(cs)PKStrokePath(im)interpolatedPointAt:	-			PKStrokePoint *	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	64a9e39051df48c9
+method	c:objc(cs)PKStrokePath(im)enumerateInterpolatedPointsInRange:strideByDistance:usingBlock:	-			void	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	a8e48ac74bdfaeb4
+method	c:objc(cs)PKStrokePath(im)enumerateInterpolatedPointsInRange:strideByTime:usingBlock:	-			void	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	d9e26e4f86fdf321
+method	c:objc(cs)PKStrokePath(im)enumerateInterpolatedPointsInRange:strideByParametricStep:usingBlock:	-			void	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	f573d5fc36cb2c4b
+method	c:objc(cs)PKStrokePath(im)parametricValue:offsetByDistance:	-			CGFloat	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	ca045e87b97cec94
+method	c:objc(cs)PKStrokePath(im)parametricValue:offsetByTime:	-			CGFloat	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	634b37c420293fa1
+interface	c:objc(cs)PKStrokePoint	-			-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	d1f16104c1dbdc7f
+super	-	PKStrokePoint	NSObject		-	-	-	-	d884095c33c42495
+conforms	-	PKStrokePoint	NSCopying		-	-	-	-	36ef17d3ffbdadd6
+method	c:objc(cs)PKStrokePoint(im)init	-			instancetype	-	*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0	-	f64ef26ec08692eb
+method	c:objc(cs)PKStrokePoint(im)initWithLocation:timeOffset:size:opacity:force:azimuth:altitude:	-			instancetype	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	5b954572d7c522f0
+method	c:objc(cs)PKStrokePoint(im)initWithLocation:timeOffset:size:opacity:force:azimuth:altitude:secondaryScale:	-			instancetype	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	c52f919adc86ea36
+method	c:objc(cs)PKStrokePoint(im)initWithLocation:timeOffset:size:opacity:force:azimuth:altitude:secondaryScale:threshold:	-			instancetype	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	5e7dffb057ce68a5
+property	c:objc(cs)PKStrokePoint(py)location	-			CGPoint	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	c953ba7fbd966dc1
+property	c:objc(cs)PKStrokePoint(py)timeOffset	-			NSTimeInterval	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	22681708479166bb
+property	c:objc(cs)PKStrokePoint(py)size	-			CGSize	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	5680a984e5939754
+property	c:objc(cs)PKStrokePoint(py)opacity	-			CGFloat	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	c9e6ce94d81085e6
+property	c:objc(cs)PKStrokePoint(py)azimuth	-			CGFloat	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	bd164732fd01c579
+property	c:objc(cs)PKStrokePoint(py)force	-			CGFloat	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	2429df7cd5c9fbe6
+property	c:objc(cs)PKStrokePoint(py)altitude	-			CGFloat	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	6fffd211ba2ee893
+property	c:objc(cs)PKStrokePoint(py)secondaryScale	-			CGFloat	readonly,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0	-	ea4fa6d78e915bfb
+property	c:objc(cs)PKStrokePoint(py)threshold	-			CGFloat	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	011ecd4ee5d0262f
+interface	c:objc(cs)PKInk	-			-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	ecb4386f01df3717
+super	-	PKInk	NSObject		-	-	-	-	f2fa90f1b5c63b39
+conforms	-	PKInk	NSCopying		-	-	-	-	d33369bdf365506a
+method	c:objc(cs)PKInk(im)initWithInkType:color:	-			instancetype	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	888e615014db71aa
+property	c:objc(cs)PKInk(py)inkType	-			PKInkType	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	2c2d53115459a482
+property	c:objc(cs)PKInk(py)color	-			UIColor *	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	ce70755675691a72
+property	c:objc(cs)PKInk(py)requiredContentVersion	-			PKContentVersion	readonly,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0	-	27d88bc8036e4f6a

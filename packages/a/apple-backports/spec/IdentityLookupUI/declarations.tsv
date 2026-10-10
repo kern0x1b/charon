@@ -1,9 +1,9 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
-interface	c:objc(cs)ILClassificationUIExtensionContext	-			ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d055dd8ca90bee9b
-super	-	ILClassificationUIExtensionContext	NSExtensionContext		-	-	b5331aac299e9918
-property	c:objc(cs)ILClassificationUIExtensionContext(py)readyForClassificationResponse	-			ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0ccc08f29dd8137e
-interface	c:objc(cs)ILClassificationUIExtensionViewController	-			ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2cfcc521b99a0c50
-super	-	ILClassificationUIExtensionViewController	UIViewController		-	-	67e132b2574d654e
-property	c:objc(cs)ILClassificationUIExtensionViewController(py)extensionContext	-			ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d6228b851ba29d48
-method	c:objc(cs)ILClassificationUIExtensionViewController(im)prepareForClassificationRequest:	-			ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	08a2bd354ca3fae0
-method	c:objc(cs)ILClassificationUIExtensionViewController(im)classificationResponseForRequest:	-			ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	524a96afa71e0e2a
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
+interface	c:objc(cs)ILClassificationUIExtensionContext	-			-	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d055dd8ca90bee9b
+super	-	ILClassificationUIExtensionContext	NSExtensionContext		-	-	-	-	b5331aac299e9918
+property	c:objc(cs)ILClassificationUIExtensionContext(py)readyForClassificationResponse	-			BOOL	nonatomic,getter=isReadyForClassificationResponse	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0ccc08f29dd8137e
+interface	c:objc(cs)ILClassificationUIExtensionViewController	-			-	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2cfcc521b99a0c50
+super	-	ILClassificationUIExtensionViewController	UIViewController		-	-	-	-	67e132b2574d654e
+property	c:objc(cs)ILClassificationUIExtensionViewController(py)extensionContext	-			ILClassificationUIExtensionContext *	readonly,strong,nonatomic	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d3982c3c33513334
+method	c:objc(cs)ILClassificationUIExtensionViewController(im)prepareForClassificationRequest:	-			void	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0edcb3c8df923102
+method	c:objc(cs)ILClassificationUIExtensionViewController(im)classificationResponseForRequest:	-			ILClassificationResponse *	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	63a7a6cfd813aede

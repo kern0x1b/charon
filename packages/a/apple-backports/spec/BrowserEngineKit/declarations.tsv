@@ -1,468 +1,468 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
-interface	c:objc(cs)BELayerHierarchyHandle	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	21801f31cd5e9a2f
-super	-	BELayerHierarchyHandle	NSObject		-	-	ffb195f1f55ed61f
-conforms	-	BELayerHierarchyHandle	NSSecureCoding		-	-	f68327fdc492c450
-method	c:objc(cs)BELayerHierarchyHandle(im)init	-			*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	20f9adde6c29613d
-method	c:objc(cs)BELayerHierarchyHandle(cm)new	-			*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7d495c6fc3aef899
-method	c:objc(cs)BELayerHierarchyHandle(cm)handleWithXPCRepresentation:error:	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	21da4f0ba1f1a73a
-method	c:objc(cs)BELayerHierarchyHandle(im)createXPCRepresentation	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f1fc97a7df5cdbc6
-method	c:objc(cs)BELayerHierarchyHandle(cm)handleWithPort:data:error:	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	45cc56e12dd5a6e7
-method	c:objc(cs)BELayerHierarchyHandle(im)encodeWithBlock:	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	19a5a9cf9f1a63b5
-interface	c:objc(cs)BELayerHierarchy	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d2c8ee81e1aeefda
-super	-	BELayerHierarchy	NSObject		-	-	8c35af11269d2cc0
-method	c:objc(cs)BELayerHierarchy(im)init	-			*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e1e7d37b58d6ad5f
-method	c:objc(cs)BELayerHierarchy(cm)new	-			*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3d0f9447186d77e2
-method	c:objc(cs)BELayerHierarchy(cm)layerHierarchyWithError:	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	72f64224c36f3c2d
-property	c:objc(cs)BELayerHierarchy(py)handle	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3cf0c48b6de4c3ba
-property	c:objc(cs)BELayerHierarchy(py)layer	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8787de1ed2d44673
-method	c:objc(cs)BELayerHierarchy(im)invalidate	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3ddc44db7401c862
-interface	c:objc(cs)BELayerHierarchyHostingView	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b70857018504d559
-super	-	BELayerHierarchyHostingView	UIView		-	-	2fdc1759ee613614
-property	c:objc(cs)BELayerHierarchyHostingView(py)handle	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	582e1e8440ae5219
-interface	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	78ba4a533532eb89
-super	-	BELayerHierarchyHostingTransactionCoordinator	NSObject		-	-	de1d45baea9e3ff1
-conforms	-	BELayerHierarchyHostingTransactionCoordinator	NSSecureCoding		-	-	42b93d5a4ef5769e
-method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(im)init	-			*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2b3c477adccdf68f
-method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(cm)new	-			*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fca56b93b75f0ac9
-method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(cm)coordinatorWithError:	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a4897457328bd8be
-method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(cm)coordinatorWithXPCRepresentation:error:	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0d55a30e5371c6ac
-method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(im)createXPCRepresentation	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0f0f98b1dcfb5b8a
-method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(im)addLayerHierarchy:	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6e8a60f525e634f8
-method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(im)addLayerHierarchyHostingView:	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e5c3e22eb52de48e
-method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(im)commit	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ad80a3928c516b46
-method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(cm)coordinatorWithPort:data:error:	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	10a4bc8fcc3c3652
-method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(im)encodeWithBlock:	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9aceae037984c26a
-interface	c:objc(cs)BEContextMenuConfiguration	-			ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f0c3c192da8c46bb
-super	-	BEContextMenuConfiguration	UIContextMenuConfiguration		-	-	e53905cdf66df1d7
-method	c:objc(cs)BEContextMenuConfiguration(im)fulfillUsingConfiguration:	-			ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4b83843e8cb20233
-method	c:objc(cs)BEContextMenuConfiguration(im)init	-			ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1074dbd7e399e2be
-method	c:objc(cs)BEContextMenuConfiguration(cm)configurationWithIdentifier:previewProvider:actionProvider:	-			*unavailable ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	dfbbdb254f9641e7
-protocol	c:objc(pl)BEDragInteractionDelegate	-			ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ffdb922763fce0a1
-conforms	-	BEDragInteractionDelegate	UIDragInteractionDelegate		-	-	072e0a7ede197b2a
-method	c:objc(pl)BEDragInteractionDelegate(im)dragInteraction:prepareDragSession:completion:	-			ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8501d0ead885c1cd
-method	c:objc(pl)BEDragInteractionDelegate(im)dragInteraction:itemsForAddingToSession:forTouchAtPoint:completion:	-			ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b3c4c5cd9e1a4125
-interface	c:objc(cs)BEDragInteraction	-			ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	28df5ed4b7ad5828
-super	-	BEDragInteraction	UIDragInteraction		-	-	1b03d82670c557f1
-property	c:objc(cs)BEDragInteraction(py)delegate	-			ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4e901174fe59a4ee
-method	c:objc(cs)BEDragInteraction(im)initWithDelegate:	-			ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	98aba9bbabefa7dc
-protocol	c:objc(pl)BEScrollViewDelegate	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	c76ca049de2e5a33
-conforms	-	BEScrollViewDelegate	UIScrollViewDelegate		-	-	81e155938410e9b2
-method	c:objc(pl)BEScrollViewDelegate(im)scrollView:handleScrollUpdate:completion:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	79cbdce792276ee8
-method	c:objc(pl)BEScrollViewDelegate(im)parentScrollViewForScrollView:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	e352e4c99ead21e2
-interface	c:objc(cs)BEScrollView	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	6e23c5adc3036eeb
-super	-	BEScrollView	UIScrollView		-	-	826c40de7a1667dd
-property	c:objc(cs)BEScrollView(py)delegate	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	b9e83157dbfc7446
-typedef	c:@T@BEScrollViewScrollUpdatePhase	-			-	-	fa215a96d6c986c6
-enum	c:@E@BEScrollViewScrollUpdatePhase	-			ios=17.4/-/-/0	-	c8561113a7f661be
-enumconst	c:@E@BEScrollViewScrollUpdatePhase@BEScrollViewScrollUpdatePhaseBegan	BEScrollViewScrollUpdatePhase			ios=17.4/-/-/0	-	4cb491116ffb5d44
-enumconst	c:@E@BEScrollViewScrollUpdatePhase@BEScrollViewScrollUpdatePhaseChanged	BEScrollViewScrollUpdatePhase			ios=17.4/-/-/0	-	b4e7a0506f0194f8
-enumconst	c:@E@BEScrollViewScrollUpdatePhase@BEScrollViewScrollUpdatePhaseEnded	BEScrollViewScrollUpdatePhase			ios=17.4/-/-/0	-	b19f30d2e6ce60b2
-enumconst	c:@E@BEScrollViewScrollUpdatePhase@BEScrollViewScrollUpdatePhaseCancelled	BEScrollViewScrollUpdatePhase			ios=17.4/-/-/0	-	157168660afa2dce
-interface	c:objc(cs)BEScrollViewScrollUpdate	-			ios=17.4/-/-/0	-	3b9e97831cb6688c
-super	-	BEScrollViewScrollUpdate	NSObject		-	-	ffb23b91705d0221
-method	c:objc(cs)BEScrollViewScrollUpdate(im)init	-			*unavailable ios=17.4/-/-/0	-	750ddea915335130
-method	c:objc(cs)BEScrollViewScrollUpdate(cm)new	-			*unavailable ios=17.4/-/-/0	-	54e3969a55898095
-property	c:objc(cs)BEScrollViewScrollUpdate(py)timestamp	-			ios=17.4/-/-/0	-	41f1e051e6e2df0d
-property	c:objc(cs)BEScrollViewScrollUpdate(py)phase	-			ios=17.4/-/-/0	-	149daabb77761ae1
-method	c:objc(cs)BEScrollViewScrollUpdate(im)locationInView:	-			ios=17.4/-/-/0	-	b7cd9f6b41b2a6a1
-method	c:objc(cs)BEScrollViewScrollUpdate(im)translationInView:	-			ios=17.4/-/-/0	-	eca21906eef3ca4a
-protocol	c:objc(pl)BEExtensionProcess	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a7f27203a9720836
-conforms	-	BEExtensionProcess	NSObject		-	-	72f69fcaeb6cfdcc
-method	c:objc(pl)BEExtensionProcess(im)invalidate	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9a9dff486b2108ad
-method	c:objc(pl)BEExtensionProcess(im)makeLibXPCConnectionError:	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	37a9996910716e8a
-interface	c:objc(cs)BEWebContentProcess	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	26bfd22aae7aee74
-super	-	BEWebContentProcess	NSObject		-	-	22e5562194d662e5
-method	c:objc(cs)BEWebContentProcess(im)init	-			*unavailable ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4937483cd259fb59
-method	c:objc(cs)BEWebContentProcess(cm)new	-			*unavailable ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	46764d119f0a3da7
-method	c:objc(cs)BEWebContentProcess(cm)webContentProcessWithInterruptionHandler:completion:	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7258eb59d22a3f29
-method	c:objc(cs)BEWebContentProcess(cm)webContentProcessWithBundleID:interruptionHandler:completion:	-			ios=18.2/-/-/0	-	fd2f32dea73b81f4
-method	c:objc(cs)BEWebContentProcess(im)invalidate	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	657ec10fb92ffba3
-method	c:objc(cs)BEWebContentProcess(im)makeLibXPCConnectionError:	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	70221b1601fe82d0
-method	c:objc(cs)BEWebContentProcess(im)createVisibilityPropagationInteraction	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c945898f49edb324
-category	c:objc(cy)BEWebContentProcess@BEExtensionProcessConformance	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f45de112d092b864
-conforms	-	BEWebContentProcess	BEExtensionProcess		-	-	eafabbd4bf14c6be
-interface	c:objc(cs)BENetworkingProcess	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	176ae79e6d310810
-super	-	BENetworkingProcess	NSObject		-	-	8d8e7e2bda985f16
-method	c:objc(cs)BENetworkingProcess(im)init	-			*unavailable ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	36d67ee9879f1291
-method	c:objc(cs)BENetworkingProcess(cm)new	-			*unavailable ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cb5c6388294ce153
-method	c:objc(cs)BENetworkingProcess(cm)networkProcessWithInterruptionHandler:completion:	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b885152e79a18612
-method	c:objc(cs)BENetworkingProcess(cm)networkProcessWithBundleID:interruptionHandler:completion:	-			ios=18.2/-/-/0	-	2e1fc11434bb1844
-method	c:objc(cs)BENetworkingProcess(im)invalidate	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	264dca9cf9c27e83
-method	c:objc(cs)BENetworkingProcess(im)makeLibXPCConnectionError:	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4fcd0227332cf183
-category	c:objc(cy)BENetworkingProcess@BEExtensionProcessConformance	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	44cd71cf5fef83a7
-conforms	-	BENetworkingProcess	BEExtensionProcess		-	-	59a58b3d7cb05fb2
-interface	c:objc(cs)BERenderingProcess	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	abdb98a48bc0a3df
-super	-	BERenderingProcess	NSObject		-	-	6456172e5a7fca3a
-method	c:objc(cs)BERenderingProcess(im)init	-			*unavailable ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	adaf62d7377b446c
-method	c:objc(cs)BERenderingProcess(cm)new	-			*unavailable ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	629b93f6e8de8167
-method	c:objc(cs)BERenderingProcess(cm)renderingProcessWithInterruptionHandler:completion:	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8a832cacec8fef01
-method	c:objc(cs)BERenderingProcess(cm)renderingProcessWithBundleID:interruptionHandler:completion:	-			ios=18.2/-/-/0	-	95f49e3a42643abd
-method	c:objc(cs)BERenderingProcess(im)invalidate	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	757bfc0768f06db4
-method	c:objc(cs)BERenderingProcess(im)makeLibXPCConnectionError:	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f5f49998c927ac9a
-method	c:objc(cs)BERenderingProcess(im)createVisibilityPropagationInteraction	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	841f0e3904c028c3
-category	c:objc(cy)BERenderingProcess@BEExtensionProcessConformance	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	80e72ed6276993cd
-conforms	-	BERenderingProcess	BEExtensionProcess		-	-	f703595594cc5f0c
-protocol	c:objc(pl)BETextInputDelegate	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	bcd9f0e1ecc79e3b
-method	c:objc(pl)BETextInputDelegate(im)shouldDeferEventHandlingToSystemForTextInput:context:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	53dcebccaf652793
-method	c:objc(pl)BETextInputDelegate(im)textInput:setCandidateSuggestions:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	3c82de2ab1b74989
-method	c:objc(pl)BETextInputDelegate(im)selectionWillChangeForTextInput:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	06d8149af4e708e4
-method	c:objc(pl)BETextInputDelegate(im)selectionDidChangeForTextInput:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	70474395b7da7dc3
-method	c:objc(pl)BETextInputDelegate(im)textInput:deferReplaceTextActionToSystem:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	fccf5208a196dde6
-method	c:objc(pl)BETextInputDelegate(im)invalidateTextEntryContextForTextInput:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	278e9bd7755ce2e8
-typedef	c:@T@BEKeyPressState	-			-	-	6a812c177d210331
-enum	c:@E@BEKeyPressState	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	5f1b1e86c0af6d03
-enumconst	c:@E@BEKeyPressState@BEKeyPressStateDown	BEKeyPressState			ios=17.4/-/-/0,watchos=-/-/-/1	-	9faf22ee3b26ca8b
-enumconst	c:@E@BEKeyPressState@BEKeyPressStateUp	BEKeyPressState			ios=17.4/-/-/0,watchos=-/-/-/1	-	11ef63d7c847cf92
-interface	c:objc(cs)BEKeyEntry	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	d5a0736198aca142
-super	-	BEKeyEntry	NSObject		-	-	5612cd53a51adff0
-property	c:objc(cs)BEKeyEntry(py)key	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	8828ba9ea3e69cf0
-property	c:objc(cs)BEKeyEntry(py)state	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	fc655a2cd642d731
-property	c:objc(cs)BEKeyEntry(py)keyRepeating	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	df91b58a61140350
-property	c:objc(cs)BEKeyEntry(py)timestamp	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	fc221b8cce64c5de
-method	c:objc(cs)BEKeyEntry(im)init	-			*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	2d49c8fa695d0eca
-method	c:objc(cs)BEKeyEntry(cm)new	-			*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	6fbb476eaa42b3fe
-typedef	c:@T@BEGestureType	-			-	-	83cdfc1a05ccfd5f
-enum	c:@E@BEGestureType	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	b5d6e7dcaba4118a
-enumconst	c:@E@BEGestureType@BEGestureTypeLoupe	BEGestureType			ios=17.4/-/-/0,watchos=-/-/-/1	-	13d6ea98772d6e69
-enumconst	c:@E@BEGestureType@BEGestureTypeOneFingerTap	BEGestureType			ios=17.4/-/-/0,watchos=-/-/-/1	-	7295fa21acfae6b3
-enumconst	c:@E@BEGestureType@BEGestureTypeDoubleTapAndHold	BEGestureType			ios=17.4/-/-/0,watchos=-/-/-/1	-	52ce2cbccacd66a8
-enumconst	c:@E@BEGestureType@BEGestureTypeDoubleTap	BEGestureType			ios=17.4/-/-/0,watchos=-/-/-/1	-	793cc0b7572843a1
-enumconst	c:@E@BEGestureType@BEGestureTypeOneFingerDoubleTap	BEGestureType			ios=17.4/-/-/0,watchos=-/-/-/1	-	277f055d52e50678
-enumconst	c:@E@BEGestureType@BEGestureTypeOneFingerTripleTap	BEGestureType			ios=17.4/-/-/0,watchos=-/-/-/1	-	1fb63a44dfd54426
-enumconst	c:@E@BEGestureType@BEGestureTypeTwoFingerSingleTap	BEGestureType			ios=17.4/-/-/0,watchos=-/-/-/1	-	f7464321d3a9d6ad
-enumconst	c:@E@BEGestureType@BEGestureTypeTwoFingerRangedSelectGesture	BEGestureType			ios=17.4/-/-/0,watchos=-/-/-/1	-	9a2456ff5bc46025
-enumconst	c:@E@BEGestureType@BEGestureTypeIMPhraseBoundaryDrag	BEGestureType			ios=17.4/-/-/0,watchos=-/-/-/1	-	3c378a818b7af23c
-enumconst	c:@E@BEGestureType@BEGestureTypeForceTouch	BEGestureType			ios=17.4/-/-/0,watchos=-/-/-/1	-	a739a1d7b70279e8
-typedef	c:@T@BESelectionTouchPhase	-			-	-	a43b2bce31205c99
-enum	c:@E@BESelectionTouchPhase	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	92fcf3e6a9f00eca
-enumconst	c:@E@BESelectionTouchPhase@BESelectionTouchPhaseStarted	BESelectionTouchPhase			ios=17.4/-/-/0,watchos=-/-/-/1	-	977f7b48d3dff285
-enumconst	c:@E@BESelectionTouchPhase@BESelectionTouchPhaseMoved	BESelectionTouchPhase			ios=17.4/-/-/0,watchos=-/-/-/1	-	8853110e2035b24f
-enumconst	c:@E@BESelectionTouchPhase@BESelectionTouchPhaseEnded	BESelectionTouchPhase			ios=17.4/-/-/0,watchos=-/-/-/1	-	aa2aee7dec4853a5
-enumconst	c:@E@BESelectionTouchPhase@BESelectionTouchPhaseEndedMovingForward	BESelectionTouchPhase			ios=17.4/-/-/0,watchos=-/-/-/1	-	07a1b78e33e083ec
-enumconst	c:@E@BESelectionTouchPhase@BESelectionTouchPhaseEndedMovingBackward	BESelectionTouchPhase			ios=17.4/-/-/0,watchos=-/-/-/1	-	88cc33124d0272fd
-enumconst	c:@E@BESelectionTouchPhase@BESelectionTouchPhaseEndedNotMoving	BESelectionTouchPhase			ios=17.4/-/-/0,watchos=-/-/-/1	-	6d6b83fac5f2779e
-typedef	c:@T@BESelectionFlags	-			-	-	cd5bbd7a0388fb84
-enum	c:@E@BESelectionFlags	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	20226f03dd86f6f5
-enumconst	c:@E@BESelectionFlags@BESelectionFlagsNone	BESelectionFlags			ios=17.4/-/-/0,watchos=-/-/-/1	-	5874adf335f25a4d
-enumconst	c:@E@BESelectionFlags@BEWordIsNearTap	BESelectionFlags			ios=17.4/-/-/0,watchos=-/-/-/1	-	ce0ce3e78a3e3c27
-enumconst	c:@E@BESelectionFlags@BESelectionFlipped	BESelectionFlags			ios=17.4/-/-/0,watchos=-/-/-/1	-	3fd58cad29fc54ca
-enumconst	c:@E@BESelectionFlags@BEPhraseBoundaryChanged	BESelectionFlags			ios=17.4/-/-/0,watchos=-/-/-/1	-	0ac24bf6902b91e1
-interface	c:objc(cs)BETextAlternatives	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	f913fbd31e35c7a2
-super	-	BETextAlternatives	NSObject		-	-	4d22e060328395c6
-property	c:objc(cs)BETextAlternatives(py)primaryString	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	7fb345a9084d4c35
-property	c:objc(cs)BETextAlternatives(py)alternativeStrings	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	b5650d8ae7e43ef5
-method	c:objc(cs)BETextAlternatives(im)new	-			*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	6cbcc8a6aa05dd1d
-method	c:objc(cs)BETextAlternatives(im)init	-			*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	fc52e8eccbeea20e
-struct	c:@SA@BEDirectionalTextRange	-			-	-	e021ab55b8d7c52f
-field	c:@SA@BEDirectionalTextRange@FI@offset	BEDirectionalTextRange			-	-	7d8251bba83ea4d3
-field	c:@SA@BEDirectionalTextRange@FI@length	BEDirectionalTextRange			-	-	cdc09e23251ad5c2
-typedef	c:@T@BEDirectionalTextRange	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	ec196fdbd3528c9d
-typedef	c:@T@BETextReplacementOptions	-			-	-	a10c868872bbe815
-enum	c:@E@BETextReplacementOptions	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	d3f6a8d781171837
-enumconst	c:@E@BETextReplacementOptions@BETextReplacementOptionsNone	BETextReplacementOptions			ios=17.4/-/-/0,watchos=-/-/-/1	-	b6e451f4d5757bc9
-enumconst	c:@E@BETextReplacementOptions@BETextReplacementOptionsAddUnderline	BETextReplacementOptions			ios=17.4/-/-/0,watchos=-/-/-/1	-	cabf4833ee41602b
-typedef	c:@T@BEKeyModifierFlags	-			-	-	2db1d6fa23f5858a
-enum	c:@E@BEKeyModifierFlags	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	7a6be902286c870e
-enumconst	c:@E@BEKeyModifierFlags@BEKeyModifierFlagNone	BEKeyModifierFlags			ios=17.4/-/-/0,watchos=-/-/-/1	-	e608bb87c51ec053
-enumconst	c:@E@BEKeyModifierFlags@BEKeyModifierFlagShift	BEKeyModifierFlags			ios=17.4/-/-/0,watchos=-/-/-/1	-	9be28c2905c6f7da
-enumconst	c:@E@BEKeyModifierFlags@BEKeyModifierFlagCapsLock	BEKeyModifierFlags			ios=17.4/-/-/0,watchos=-/-/-/1	-	94545554071275c7
-protocol	c:objc(pl)BEResponderEditActions	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	5d8d9c0e5371d349
-conforms	-	BEResponderEditActions	UIResponderStandardEditActions		-	-	e8f3e8965a3d59ab
-method	c:objc(pl)BEResponderEditActions(im)share:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	951aacbeba6d093c
-method	c:objc(pl)BEResponderEditActions(im)addShortcut:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	59b1dd70bd797bf6
-method	c:objc(pl)BEResponderEditActions(im)lookup:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	32760b99dc61d523
-method	c:objc(pl)BEResponderEditActions(im)findSelected:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	4a98382d558e8638
-method	c:objc(pl)BEResponderEditActions(im)promptForReplace:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	2d22b2e78bd40de9
-method	c:objc(pl)BEResponderEditActions(im)replace:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	c6bc2e3eb1025d5d
-method	c:objc(pl)BEResponderEditActions(im)translate:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	865ab0245c4bb475
-method	c:objc(pl)BEResponderEditActions(im)transliterateChinese:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	a17fc1214c6f16e0
-protocol	c:objc(pl)BETextSelectionDirectionNavigation	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	6f34b5a5e0bba6ad
-method	c:objc(pl)BETextSelectionDirectionNavigation(im)moveInLayoutDirection:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	a9418f1738941154
-method	c:objc(pl)BETextSelectionDirectionNavigation(im)extendInLayoutDirection:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	0aeaf79401877231
-method	c:objc(pl)BETextSelectionDirectionNavigation(im)moveInStorageDirection:byGranularity:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	852642dac988cc7d
-method	c:objc(pl)BETextSelectionDirectionNavigation(im)extendInStorageDirection:byGranularity:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	f658bdd6aab4388e
-protocol	c:objc(pl)BEExtendedTextInputTraits	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	163619834a43c627
-conforms	-	BEExtendedTextInputTraits	UITextInputTraits		-	-	0f7bb86c3d4560c1
-property	c:objc(pl)BEExtendedTextInputTraits(py)singleLineDocument	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	a3d531bcecf992ba
-property	c:objc(pl)BEExtendedTextInputTraits(py)typingAdaptationEnabled	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	bf519bdfbb82c116
-property	c:objc(pl)BEExtendedTextInputTraits(py)insertionPointColor	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	0a067bdccfa3e26b
-property	c:objc(pl)BEExtendedTextInputTraits(py)selectionHandleColor	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	e80c02a266e24103
-property	c:objc(pl)BEExtendedTextInputTraits(py)selectionHighlightColor	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	803f605987c4775a
-protocol	c:objc(pl)BETextInput	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	37ee2cc73a81e58e
-conforms	-	BETextInput	UIKeyInput		-	-	35821038336ace55
-conforms	-	BETextInput	BETextSelectionDirectionNavigation		-	-	6f26eae87cd13e61
-conforms	-	BETextInput	BEResponderEditActions		-	-	3f3599f0160c043d
-property	c:objc(pl)BETextInput(py)asyncInputDelegate	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	afb1eec99c02d07b
-method	c:objc(pl)BETextInput(im)canPerformAction:withSender:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	6f84839aa1a0240d
-property	c:objc(pl)BETextInput(py)editable	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	0e15dd134acdda7e
-method	c:objc(pl)BETextInput(im)handleKeyEntry:withCompletionHandler:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	fc5f2e49e7781069
-method	c:objc(pl)BETextInput(im)shiftKeyStateChangedFromState:toState:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	c20473fe016afd3e
-method	c:objc(pl)BETextInput(im)textInRange:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	650ba60490d84c06
-method	c:objc(pl)BETextInput(im)offsetFromPosition:toPosition:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	07b36d50a9a7ece4
-method	c:objc(pl)BETextInput(im)setBaseWritingDirection:forRange:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	8bf1e7901b1e792f
-method	c:objc(pl)BETextInput(im)deleteInDirection:toGranularity:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	aee928adc3065b78
-method	c:objc(pl)BETextInput(im)transposeCharactersAroundSelection	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	03557aef954a0ea6
-method	c:objc(pl)BETextInput(im)replaceText:withText:options:completionHandler:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	55ca356213ceff73
-method	c:objc(pl)BETextInput(im)requestTextContextForAutocorrectionWithCompletionHandler:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	c5253e66c4a95a6e
-method	c:objc(pl)BETextInput(im)requestTextRectsForString:withCompletionHandler:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	5c3f14241de3a300
-property	c:objc(pl)BETextInput(py)automaticallyPresentEditMenu	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	4433e4f9d04f3039
-method	c:objc(pl)BETextInput(im)requestPreferredArrowDirectionForEditMenuWithCompletionHandler:	-			tvos=-/-/-/1,watchos=-/-/-/1	-	b43886303517c17b
-method	c:objc(pl)BETextInput(im)systemWillPresentEditMenuWithAnimator:	-			tvos=-/-/-/1,watchos=-/-/-/1	-	4625299f8f97a612
-method	c:objc(pl)BETextInput(im)systemWillDismissEditMenuWithAnimator:	-			tvos=-/-/-/1,watchos=-/-/-/1	-	bcceb6b5c750c1a6
-property	c:objc(pl)BETextInput(py)extendedTextInputTraits	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	8a65bc74b0e1d374
-method	c:objc(pl)BETextInput(im)textStylingAtPosition:inDirection:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	261f55ae3c29d7b6
-property	c:objc(pl)BETextInput(py)replaceAllowed	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	d57df3be369a6a49
-method	c:objc(pl)BETextInput(im)replaceSelectedText:withText:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	86e48025a05d1464
-method	c:objc(pl)BETextInput(im)updateCurrentSelectionTo:fromGesture:inState:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	1567a5bc4d9332e0
-method	c:objc(pl)BETextInput(im)setSelectionFromPoint:toPoint:gesture:state:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	55f8a76f1859da35
-method	c:objc(pl)BETextInput(im)adjustSelectionBoundaryToPoint:touchPhase:baseIsStart:flags:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	5b4e6fe7f64ce889
-method	c:objc(pl)BETextInput(im)textInteractionGesture:shouldBeginAtPoint:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	9f28d2e38c607edd
-property	c:objc(pl)BETextInput(py)selectionContainerViewBelowText	-			ios=26.0/-/-/0	-	245d5c6e8d9005be
-property	c:objc(pl)BETextInput(py)selectionContainerViewAboveText	-			ios=26.0/-/-/0	-	6fbde73d98e64c64
-property	c:objc(pl)BETextInput(py)selectedText	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	037b655193a122e2
-property	c:objc(pl)BETextInput(py)selectedTextRange	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	8215a2d02f1342fe
-property	c:objc(pl)BETextInput(py)selectionAtDocumentStart	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	8612f2727475247e
-method	c:objc(pl)BETextInput(im)caretRectForPosition:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	6b224a00aed4f0b9
-method	c:objc(pl)BETextInput(im)selectionRectsForRange:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	7dda783aa6b4baf5
-method	c:objc(pl)BETextInput(im)selectWordForReplacement	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	219ed96a29f7b625
-method	c:objc(pl)BETextInput(im)updateSelectionWithExtentPoint:boundary:completionHandler:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	bd0470135c3a227d
-method	c:objc(pl)BETextInput(im)selectTextInGranularity:atPoint:completionHandler:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	9db3745802664a84
-method	c:objc(pl)BETextInput(im)selectPositionAtPoint:completionHandler:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	73ede2df9b0c4042
-method	c:objc(pl)BETextInput(im)selectPositionAtPoint:withContextRequest:completionHandler:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	f883d11d02611cc2
-method	c:objc(pl)BETextInput(im)adjustSelectionByRange:completionHandler:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	efb5a822c12dbdd3
-method	c:objc(pl)BETextInput(im)moveByOffset:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	d337b181091ceec4
-method	c:objc(pl)BETextInput(im)moveSelectionAtBoundary:inStorageDirection:completionHandler:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	8aad1350e4a284a0
-method	c:objc(pl)BETextInput(im)selectTextForEditMenuWithLocationInView:completionHandler:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	9e78dd62e2e34a1c
-property	c:objc(pl)BETextInput(py)markedText	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	fd78e322bd442147
-property	c:objc(pl)BETextInput(py)attributedMarkedText	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	946bf22235d73f78
-property	c:objc(pl)BETextInput(py)markedTextRange	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	9c95271234bf0e40
-property	c:objc(pl)BETextInput(py)hasMarkedText	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	b762843a6b74bb67
-method	c:objc(pl)BETextInput(im)setMarkedText:selectedRange:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	85c80f3fca48bcde
-method	c:objc(pl)BETextInput(im)setAttributedMarkedText:selectedRange:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	3f220ebd9636812f
-method	c:objc(pl)BETextInput(im)unmarkText	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	677b8b0129d474cd
-method	c:objc(pl)BETextInput(im)isPointNearMarkedText:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	bd2a2d3aa9c9b120
-method	c:objc(pl)BETextInput(im)requestDocumentContext:completionHandler:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	34cc651fd0fe1f5b
-method	c:objc(pl)BETextInput(im)willInsertFinalDictationResult	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	c84c51c26652b41b
-method	c:objc(pl)BETextInput(im)replaceDictatedText:withText:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	c424961084727701
-method	c:objc(pl)BETextInput(im)didInsertFinalDictationResult	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	7ef0b479ee5e3c90
-method	c:objc(pl)BETextInput(im)alternativesForSelectedText	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	2f0fc04add6c574b
-method	c:objc(pl)BETextInput(im)addTextAlternatives:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	f70482a008cb4d78
-method	c:objc(pl)BETextInput(im)insertTextAlternatives:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	f3411676628fb124
-method	c:objc(pl)BETextInput(im)removeTextAlternatives	-			ios=18.0/-/-/0	-	a074ae53991f7781
-method	c:objc(pl)BETextInput(im)insertTextPlaceholderWithSize:completionHandler:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	3fd54a791b869063
-method	c:objc(pl)BETextInput(im)removeTextPlaceholder:willInsertText:completionHandler:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	e126d1285470e79a
-method	c:objc(pl)BETextInput(im)insertTextSuggestion:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	01631bd851c0f318
-property	c:objc(pl)BETextInput(py)textInputView	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	d5f65693f2aa5939
-property	c:objc(pl)BETextInput(py)textFirstRect	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	bddd52deeb69c114
-property	c:objc(pl)BETextInput(py)textLastRect	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	1dedf1ae0588c433
-property	c:objc(pl)BETextInput(py)unobscuredContentRect	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	18e628eb52ca6002
-property	c:objc(pl)BETextInput(py)unscaledView	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	597c956bf297de72
-property	c:objc(pl)BETextInput(py)selectionClipRect	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	943e119e5fde563c
-method	c:objc(pl)BETextInput(im)autoscrollToPoint:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	51fef15c7816bab5
-method	c:objc(pl)BETextInput(im)cancelAutoscroll	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	19b65fddcf23f1b7
-method	c:objc(pl)BETextInput(im)keyboardWillDismiss	-			ios=18.0/-/-/0	-	e506f8f5974d9d5b
-interface	c:objc(cs)BETextSuggestion	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	a7f10d6dad015c0e
-super	-	BETextSuggestion	NSObject		-	-	7a0939da29a2dc42
-method	c:objc(cs)BETextSuggestion(im)initWithInputText:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	eb5cbef857de383c
-property	c:objc(cs)BETextSuggestion(py)inputText	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	10e5dceb737e5371
-method	c:objc(cs)BETextSuggestion(im)new	-			*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	9dff1f6be170de80
-method	c:objc(cs)BETextSuggestion(im)init	-			*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	5882ecbd32536802
-interface	c:objc(cs)BEAutoFillTextSuggestion	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	2c97f658c312173d
-super	-	BEAutoFillTextSuggestion	BETextSuggestion		-	-	be9073727c4c2fe2
-property	c:objc(cs)BEAutoFillTextSuggestion(py)contents	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	e55b1eb016ffa49c
-method	c:objc(cs)BEAutoFillTextSuggestion(im)new	-			*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	a5cda8bfaf8775e5
-method	c:objc(cs)BEAutoFillTextSuggestion(im)init	-			*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	64e7dcaf2d5adff1
-interface	c:objc(cs)BETextInteraction	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	6b26fbdfdf89b2a2
-super	-	BETextInteraction	NSObject		-	-	e577fcbf6db1e1af
-conforms	-	BETextInteraction	UIInteraction		-	-	09181aa41fb02a61
-property	c:objc(cs)BETextInteraction(py)delegate	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	086d3dfdf071b32e
-method	c:objc(cs)BETextInteraction(im)addShortcutForText:fromRect:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	278f94c1b8d88804
-method	c:objc(cs)BETextInteraction(im)shareText:fromRect:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	3ee5ed878f815948
-method	c:objc(cs)BETextInteraction(im)showDictionaryForTextInContext:definingTextInRange:fromRect:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	6ecb832489f0b834
-method	c:objc(cs)BETextInteraction(im)translateText:fromRect:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	b9927bfe725a02d2
-method	c:objc(cs)BETextInteraction(im)showReplacementsForText:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	2b9fa27848f6fb7d
-method	c:objc(cs)BETextInteraction(im)transliterateChineseForText:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	e17a6ff65a75dd28
-method	c:objc(cs)BETextInteraction(im)presentEditMenuForSelection	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	01b3e6558a7e2790
-method	c:objc(cs)BETextInteraction(im)dismissEditMenuForSelection	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	d316b2ff5969b732
-method	c:objc(cs)BETextInteraction(im)editabilityChanged	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	bedc688f5a5d338e
-method	c:objc(cs)BETextInteraction(im)refreshKeyboardUI	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	c297d189bfc22fd0
-method	c:objc(cs)BETextInteraction(im)selectionChangedWithGestureAtPoint:gesture:state:flags:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	41e6803a2cf5b39e
-method	c:objc(cs)BETextInteraction(im)selectionBoundaryAdjustedToPoint:touchPhase:flags:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	f6d6a59eb52e5e83
-property	c:objc(cs)BETextInteraction(py)textSelectionDisplayInteraction	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	55ec11f9a6181313
-property	c:objc(cs)BETextInteraction(py)contextMenuInteractionDelegate	-			tvos=-/-/-/1,watchos=-/-/-/1	-	7232b5d1d95f4cad
-property	c:objc(cs)BETextInteraction(py)contextMenuInteraction	-			tvos=-/-/-/1,watchos=-/-/-/1	-	71b72d1ef13aa26c
-protocol	c:objc(pl)BETextInteractionDelegate	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	130cccbb85f7aebf
-method	c:objc(pl)BETextInteractionDelegate(im)systemWillChangeSelectionForInteraction:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	3ccb13cce5b27e40
-method	c:objc(pl)BETextInteractionDelegate(im)systemDidChangeSelectionForInteraction:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	000adc403db0970f
-interface	c:objc(cs)BEKeyEntryContext	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	99a5ae98d333cd79
-super	-	BEKeyEntryContext	NSObject		-	-	852a5342d0ae95d9
-property	c:objc(cs)BEKeyEntryContext(py)keyEntry	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	2b6841b35c4e93df
-property	c:objc(cs)BEKeyEntryContext(py)documentEditable	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	70c141d2e17a4a00
-property	c:objc(cs)BEKeyEntryContext(py)shouldInsertCharacter	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	520342b6d12fc474
-property	c:objc(cs)BEKeyEntryContext(py)shouldEvaluateForInputSystemHandling	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	3eba6936025e039d
-method	c:objc(cs)BEKeyEntryContext(im)initWithKeyEntry:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	10817772f339ba47
-method	c:objc(cs)BEKeyEntryContext(im)init	-			*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	e5c506d99811982d
-method	c:objc(cs)BEKeyEntryContext(cm)new	-			*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	d58a725608f69096
-typedef	c:@T@BETextDocumentRequestOptions	-			-	-	3d77d374ff4a3c45
-enum	c:@E@BETextDocumentRequestOptions	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	522b8f0328fffe9e
-enumconst	c:@E@BETextDocumentRequestOptions@BETextDocumentOptionNone	BETextDocumentRequestOptions			ios=17.4/-/-/0,watchos=-/-/-/1	-	d22706376b221328
-enumconst	c:@E@BETextDocumentRequestOptions@BETextDocumentOptionText	BETextDocumentRequestOptions			ios=17.4/-/-/0,watchos=-/-/-/1	-	443df60324cd6843
-enumconst	c:@E@BETextDocumentRequestOptions@BETextDocumentOptionAttributedText	BETextDocumentRequestOptions			ios=17.4/-/-/0,watchos=-/-/-/1	-	5bd7dee577823672
-enumconst	c:@E@BETextDocumentRequestOptions@BETextDocumentOptionTextRects	BETextDocumentRequestOptions			ios=17.4/-/-/0,watchos=-/-/-/1	-	80388848a87f4252
-enumconst	c:@E@BETextDocumentRequestOptions@BETextDocumentOptionMarkedTextRects	BETextDocumentRequestOptions			ios=17.4/-/-/0,watchos=-/-/-/1	-	54278c1cae6957ab
-enumconst	c:@E@BETextDocumentRequestOptions@BETextDocumentOptionAutocorrectedRanges	BETextDocumentRequestOptions			ios=17.4/-/-/0,watchos=-/-/-/1	-	21665f7e0ffcbca6
-interface	c:objc(cs)BETextDocumentRequest	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	c4066bd0f4ea8c40
-super	-	BETextDocumentRequest	NSObject		-	-	a16bcbc20f8d696c
-property	c:objc(cs)BETextDocumentRequest(py)options	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	969077924a6b0752
-property	c:objc(cs)BETextDocumentRequest(py)surroundingGranularity	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	cc48e9367aa1c16c
-property	c:objc(cs)BETextDocumentRequest(py)granularityCount	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	217559257fab60e8
-method	c:objc(cs)BETextDocumentRequest(im)new	-			*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	6eff24292fc8b88e
-method	c:objc(cs)BETextDocumentRequest(im)init	-			*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	c4c4bdffdb4f0a66
-interface	c:objc(cs)BETextDocumentContext	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	7eb900b3f60a91a1
-super	-	BETextDocumentContext	NSObject		-	-	e9b172671e2dcd4a
-method	c:objc(cs)BETextDocumentContext(im)initWithSelectedText:contextBefore:contextAfter:markedText:selectedRangeInMarkedText:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	f3d8da39dc37ead2
-method	c:objc(cs)BETextDocumentContext(im)initWithAttributedSelectedText:contextBefore:contextAfter:markedText:selectedRangeInMarkedText:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	edba246f4a3657cd
-method	c:objc(cs)BETextDocumentContext(im)addTextRect:forCharacterRange:	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	324bb9702c4516cc
-property	c:objc(cs)BETextDocumentContext(py)autocorrectedRanges	-			ios=17.4/-/-/0,watchos=-/-/-/1	-	f49f872778bd47aa
-method	c:objc(cs)BETextDocumentContext(im)new	-			*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	28af7cbea1fe03f3
-method	c:objc(cs)BETextDocumentContext(im)init	-			*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	6acad1699e233e4a
-protocol	c:objc(pl)BEProcessCapabilityGrant	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0aac33783c044c41
-conforms	-	BEProcessCapabilityGrant	NSObject		-	-	4a6c618adf141d8e
-method	c:objc(pl)BEProcessCapabilityGrant(im)invalidate	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7d1f34423e5dd00c
-property	c:objc(pl)BEProcessCapabilityGrant(py)valid	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	eaf5e067a9da6751
-interface	c:objc(cs)BEMediaEnvironment	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	dc8dd0e6a820cbcc
-super	-	BEMediaEnvironment	NSObject		-	-	fe1d862e46972ccb
-method	c:objc(cs)BEMediaEnvironment(im)init	-			*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2b81f927c2419cf1
-method	c:objc(cs)BEMediaEnvironment(cm)new	-			*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e50a853721812699
-method	c:objc(cs)BEMediaEnvironment(im)initWithWebPageURL:	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f2a59a9b48a8713c
-method	c:objc(cs)BEMediaEnvironment(im)initWithXPCRepresentation:error:	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0a1e3a58d75c2215
-method	c:objc(cs)BEMediaEnvironment(im)createXPCRepresentation	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2600d79c9afe73c9
-method	c:objc(cs)BEMediaEnvironment(im)activateWithError:	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	99a8d921e3e43906
-method	c:objc(cs)BEMediaEnvironment(im)suspendWithError:	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e4251f12b2500417
-method	c:objc(cs)BEMediaEnvironment(im)makeCaptureSessionWithError:	-			ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	77441204abbc4e70
-interface	c:objc(cs)BEProcessCapability	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c507f767ceff8aa8
-super	-	BEProcessCapability	NSObject		-	-	8fef9a9f73a9dc17
-method	c:objc(cs)BEProcessCapability(cm)mediaPlaybackAndCaptureWithEnvironment:	-			macos=-/-/-/1	-	542880311579eaf4
-method	c:objc(cs)BEProcessCapability(cm)background	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9093c4efc5a0b7b2
-method	c:objc(cs)BEProcessCapability(cm)foreground	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8cfd1e6420fd7eee
-method	c:objc(cs)BEProcessCapability(cm)suspended	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	92d48467feeba104
-method	c:objc(cs)BEProcessCapability(im)requestWithError:	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b53df5d891ab0f38
-category	c:objc(cy)BEWebContentProcess@Capability	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9496620afb08a26b
-method	c:objc(cs)BEWebContentProcess(im)grantCapability:error:	Capability			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7d5bb4f2bbe19a2b
-category	c:objc(cy)BEWebContentProcess@CapabilityInvalidationHandler	-			ios=17.6/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	505fa8706fede4cf
-method	c:objc(cs)BEWebContentProcess(im)grantCapability:error:invalidationHandler:	CapabilityInvalidationHandler			ios=17.6/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a3ef21b2d0c333ca
-category	c:objc(cy)BERenderingProcess@Capability	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b5c7e9ddabac7d91
-method	c:objc(cs)BERenderingProcess(im)grantCapability:error:	Capability			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4f2b7b9e6ad83f29
-category	c:objc(cy)BERenderingProcess@CapabilityInvalidationHandler	-			ios=17.6/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f256725f754b7130
-method	c:objc(cs)BERenderingProcess(im)grantCapability:error:invalidationHandler:	CapabilityInvalidationHandler			ios=17.6/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	545aa0c9d49ae12b
-category	c:objc(cy)BENetworkingProcess@Capability	-			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5ba91b709ab6dad5
-method	c:objc(cs)BENetworkingProcess(im)grantCapability:error:	Capability			ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	67b8d43f2de70437
-category	c:objc(cy)BENetworkingProcess@CapabilityInvalidationHandler	-			ios=17.6/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f5874ca25aca231d
-method	c:objc(cs)BENetworkingProcess(im)grantCapability:error:invalidationHandler:	CapabilityInvalidationHandler			ios=17.6/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	65e8975c42c49ea0
-interface	c:objc(cs)BEWebAppManifest	-			ios=17.5/-/-/0	-	d5bba542680b2510
-super	-	BEWebAppManifest	NSObject		-	-	5e32de09975eb924
-method	c:objc(cs)BEWebAppManifest(im)init	-			*unavailable ios=17.5/-/-/0	-	4e91c1548d9ccde1
-method	c:objc(cs)BEWebAppManifest(im)initWithJSONData:manifestURL:	-			ios=17.5/-/-/0	-	b22b309920f8f0ca
-property	c:objc(cs)BEWebAppManifest(py)jsonData	-			ios=17.5/-/-/0	-	cf0d269476541e1b
-property	c:objc(cs)BEWebAppManifest(py)manifestURL	-			ios=17.5/-/-/0	-	27acbcb8d20a9a96
-interface	c:objc(cs)BEWebContentFilter	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	30128e2a1d09b1af
-super	-	BEWebContentFilter	NSObject		-	-	0f5070b8d10773f5
-property	c:objc(cs)BEWebContentFilter(cpy)shouldEvaluateURLs	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3363378c51b9a4cb
-method	c:objc(cs)BEWebContentFilter(im)evaluateURL:completionHandler:	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	77ea663929892900
-method	c:objc(cs)BEWebContentFilter(im)allowURL:completionHandler:	-			ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f8041259b50ec272
-typedef	c:@T@BEAccessibilityPressedState	-			-	-	47db87774ee89430
-enum	c:@E@BEAccessibilityPressedState	-			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	10e9ada9b9b74524
-enumconst	c:@E@BEAccessibilityPressedState@BEAccessibilityPressedStateUndefined	BEAccessibilityPressedState			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	fd9971baece9a29a
-enumconst	c:@E@BEAccessibilityPressedState@BEAccessibilityPressedStateFalse	BEAccessibilityPressedState			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	1f528b21a5f3314d
-enumconst	c:@E@BEAccessibilityPressedState@BEAccessibilityPressedStateTrue	BEAccessibilityPressedState			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	f2c163dcf20d340d
-enumconst	c:@E@BEAccessibilityPressedState@BEAccessibilityPressedStateMixed	BEAccessibilityPressedState			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	6adc67acc19ef58f
-typedef	c:@T@BEAccessibilityContainerType	-			-	-	2443f56e0a7fe766
-enum	c:@E@BEAccessibilityContainerType	-			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	bcc737d12fcfcef0
-enumconst	c:@E@BEAccessibilityContainerType@BEAccessibilityContainerTypeNone	BEAccessibilityContainerType			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	3df9c26fda7c0fd8
-enumconst	c:@E@BEAccessibilityContainerType@BEAccessibilityContainerTypeLandmark	BEAccessibilityContainerType			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	7df81e7b79dc411b
-enumconst	c:@E@BEAccessibilityContainerType@BEAccessibilityContainerTypeTable	BEAccessibilityContainerType			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	a4f0f5e7515ca762
-enumconst	c:@E@BEAccessibilityContainerType@BEAccessibilityContainerTypeList	BEAccessibilityContainerType			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	d05f984e45c9747e
-enumconst	c:@E@BEAccessibilityContainerType@BEAccessibilityContainerTypeFieldset	BEAccessibilityContainerType			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	03f56caddab6382b
-enumconst	c:@E@BEAccessibilityContainerType@BEAccessibilityContainerTypeDialog	BEAccessibilityContainerType			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	d7dd4b6dedd28a18
-enumconst	c:@E@BEAccessibilityContainerType@BEAccessibilityContainerTypeTree	BEAccessibilityContainerType			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	fa99c7a15cb14b84
-enumconst	c:@E@BEAccessibilityContainerType@BEAccessibilityContainerTypeFrame	BEAccessibilityContainerType			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	5c03c254f1f72f4b
-enumconst	c:@E@BEAccessibilityContainerType@BEAccessibilityContainerTypeArticle	BEAccessibilityContainerType			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	44c6afab1e54d1fe
-enumconst	c:@E@BEAccessibilityContainerType@BEAccessibilityContainerTypeSemanticGroup	BEAccessibilityContainerType			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	b20e3c5ea05fbcd2
-enumconst	c:@E@BEAccessibilityContainerType@BEAccessibilityContainerTypeScrollArea	BEAccessibilityContainerType			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	97faa0a75a98331c
-enumconst	c:@E@BEAccessibilityContainerType@BEAccessibilityContainerTypeAlert	BEAccessibilityContainerType			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	352bd93116317b59
-enumconst	c:@E@BEAccessibilityContainerType@BEAccessibilityContainerTypeDescriptionList	BEAccessibilityContainerType			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	b646dbd1d5131b71
-category	c:objc(cy)NSObject@BEAccessibility	-			ios=2.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	2f3cb1db568f7cce
-property	c:objc(cs)NSObject(py)browserAccessibilityCurrentStatus	BEAccessibility			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	84cd1f829786a008
-property	c:objc(cs)NSObject(py)browserAccessibilitySortDirection	BEAccessibility			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	38e42065fed1dd3f
-property	c:objc(cs)NSObject(py)browserAccessibilityRoleDescription	BEAccessibility			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	2bf02242b57553bc
-property	c:objc(cs)NSObject(py)browserAccessibilityIsRequired	BEAccessibility			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	d92bc76b580fd4ed
-property	c:objc(cs)NSObject(py)browserAccessibilityPressedState	BEAccessibility			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	dc4e4a8cd5f05c94
-property	c:objc(cs)NSObject(py)browserAccessibilityHasDOMFocus	BEAccessibility			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	fbe353b6b16a63a0
-property	c:objc(cs)NSObject(py)browserAccessibilityContainerType	BEAccessibility			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	7e73a09318b1fa75
-method	c:objc(cs)NSObject(im)browserAccessibilitySelectedTextRange	BEAccessibility			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	c01d1ab310e1a144
-method	c:objc(cs)NSObject(im)browserAccessibilitySetSelectedTextRange:	BEAccessibility			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	97c3dc4ccaa7eadb
-method	c:objc(cs)NSObject(im)browserAccessibilityValueInRange:	BEAccessibility			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	cf397f3f3da42f9d
-method	c:objc(cs)NSObject(im)browserAccessibilityAttributedValueInRange:	BEAccessibility			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	2783dab70f7181f4
-method	c:objc(cs)NSObject(im)browserAccessibilityInsertTextAtCursor:	BEAccessibility			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	1fd90dda49b237ec
-method	c:objc(cs)NSObject(im)browserAccessibilityDeleteTextAtCursor:	BEAccessibility			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	e9a17f4017abf72b
-method	c:objc(cs)NSObject(im)accessibilityLineEndPositionFromCurrentSelection	BEAccessibility			ios=18.2/-/-/0,xros=2.2/-/-/0	-	b8bde00b36bea0a7
-method	c:objc(cs)NSObject(im)accessibilityLineStartPositionFromCurrentSelection	BEAccessibility			ios=18.2/-/-/0,xros=2.2/-/-/0	-	a0a644990e704c5b
-method	c:objc(cs)NSObject(im)accessibilityLineRangeForPosition:	BEAccessibility			ios=18.2/-/-/0,xros=2.2/-/-/0	-	4c6b0183fe7c96b7
-interface	c:objc(cs)BEAccessibilityTextMarker	-			ios=18.2/-/-/0,xros=2.2/-/-/0	-	09c03d6ab5f17459
-super	-	BEAccessibilityTextMarker	NSObject		-	-	320fae1f8e90b00e
-conforms	-	BEAccessibilityTextMarker	NSCopying		-	-	5931a5222a15025b
-conforms	-	BEAccessibilityTextMarker	NSSecureCoding		-	-	a306585138745e3f
-interface	c:objc(cs)BEAccessibilityTextMarkerRange	-			ios=18.2/-/-/0,xros=2.2/-/-/0	-	04f872af8d124e6f
-super	-	BEAccessibilityTextMarkerRange	NSObject		-	-	170610efc8f34a8f
-conforms	-	BEAccessibilityTextMarkerRange	NSCopying		-	-	51c8bf8f4869aa34
-conforms	-	BEAccessibilityTextMarkerRange	NSSecureCoding		-	-	c3beb2cae1b586d0
-property	c:objc(cs)BEAccessibilityTextMarkerRange(py)startMarker	-			ios=18.2/-/-/0,xros=2.2/-/-/0	-	cde6c3ff182551c4
-property	c:objc(cs)BEAccessibilityTextMarkerRange(py)endMarker	-			ios=18.2/-/-/0,xros=2.2/-/-/0	-	585d6121c61f1495
-protocol	c:objc(pl)BEAccessibilityTextMarkerSupport	-			ios=18.2/-/-/0,xros=2.2/-/-/0	-	0271658792e26064
-conforms	-	BEAccessibilityTextMarkerSupport	NSObject		-	-	a51a8e640065ee71
-method	c:objc(pl)BEAccessibilityTextMarkerSupport(im)accessibilityBoundsForTextMarkerRange:	-			ios=18.2/-/-/0,xros=2.2/-/-/0	-	e6ccfda123924121
-method	c:objc(pl)BEAccessibilityTextMarkerSupport(im)accessibilityContentForTextMarkerRange:	-			ios=18.2/-/-/0,xros=2.2/-/-/0	-	fe22e63764f8d37e
-method	c:objc(pl)BEAccessibilityTextMarkerSupport(im)accessibilityTextMarkerRangeForCurrentSelection	-			ios=18.2/-/-/0,xros=2.2/-/-/0	-	203706c31ded73cb
-method	c:objc(pl)BEAccessibilityTextMarkerSupport(im)accessibilityTextMarkerRange	-			ios=18.2/-/-/0,xros=2.2/-/-/0	-	f8ad771783b0a329
-method	c:objc(pl)BEAccessibilityTextMarkerSupport(im)accessibilityNextTextMarker:	-			ios=18.2/-/-/0,xros=2.2/-/-/0	-	75a336eaae00d2a8
-method	c:objc(pl)BEAccessibilityTextMarkerSupport(im)accessibilityPreviousTextMarker:	-			ios=18.2/-/-/0,xros=2.2/-/-/0	-	2462d304ae7483cd
-method	c:objc(pl)BEAccessibilityTextMarkerSupport(im)accessibilityLineEndMarkerForMarker:	-			ios=18.2/-/-/0,xros=2.2/-/-/0	-	bbf5e63966780591
-method	c:objc(pl)BEAccessibilityTextMarkerSupport(im)accessibilityLineStartMarkerForMarker:	-			ios=18.2/-/-/0,xros=2.2/-/-/0	-	159bf69ab2aded3e
-method	c:objc(pl)BEAccessibilityTextMarkerSupport(im)accessibilityMarkerForPoint:	-			ios=18.2/-/-/0,xros=2.2/-/-/0	-	9c6c9ba0fe629828
-method	c:objc(pl)BEAccessibilityTextMarkerSupport(im)accessibilityTextMarkerForPosition:	-			ios=18.2/-/-/0,xros=2.2/-/-/0	-	a7637bb4ac71b5d9
-method	c:objc(pl)BEAccessibilityTextMarkerSupport(im)accessibilityTextMarkerRangeForRange:	-			ios=18.2/-/-/0,xros=2.2/-/-/0	-	c8c2db720d11acb5
-method	c:objc(pl)BEAccessibilityTextMarkerSupport(im)accessibilityRangeForTextMarkerRange:	-			ios=18.2/-/-/0,xros=2.2/-/-/0	-	c4245ba09cbb2ef4
-var	c:@BEAccessibilityTraitMenuItem	-			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	11c76540aa4ce7b9
-var	c:@BEAccessibilityTraitPopUpButton	-			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	96d2eb9ccf0f6bba
-var	c:@BEAccessibilityTraitRadioButton	-			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	9bc1dc3839aad205
-var	c:@BEAccessibilityTraitReadOnly	-			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	03fbcc67d54fb882
-var	c:@BEAccessibilityTraitVisited	-			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	f43744fe3955c198
-var	c:@BEAccessibilitySelectionChangedNotification	-			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	7c4c073303eb162b
-var	c:@BEAccessibilityValueChangedNotification	-			ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	f828a8485e138d20
-interface	c:objc(cs)BEAccessibilityRemoteHostElement	-			ios=26.0/-/-/0,xros=26.0/-/-/0	-	41a9b12376c850fc
-super	-	BEAccessibilityRemoteHostElement	NSObject		-	-	f0b2cdc93db6f036
-method	c:objc(cs)BEAccessibilityRemoteHostElement(im)init	-			*unavailable ios=26.0/-/-/0,xros=26.0/-/-/0	-	57138865decd149f
-method	c:objc(cs)BEAccessibilityRemoteHostElement(im)initWithIdentifier:remotePid:	-			ios=26.0/-/-/0,xros=26.0/-/-/0	-	53e51230298d0682
-property	c:objc(cs)BEAccessibilityRemoteHostElement(py)accessibilityContainer	-			ios=26.0/-/-/0,xros=26.0/-/-/0	-	acecde9aa6e0f99e
-interface	c:objc(cs)BEAccessibilityRemoteElement	-			ios=26.0/-/-/0,xros=26.0/-/-/0	-	687918cf7b7121ad
-super	-	BEAccessibilityRemoteElement	NSObject		-	-	41855554d9cb4f18
-method	c:objc(cs)BEAccessibilityRemoteElement(im)init	-			*unavailable ios=26.0/-/-/0,xros=26.0/-/-/0	-	cadfd9c06cfe6b35
-method	c:objc(cs)BEAccessibilityRemoteElement(im)initWithIdentifier:hostPid:	-			ios=26.0/-/-/0,xros=26.0/-/-/0	-	80c3fd5c60f73e39
-interface	c:objc(cs)BEDownloadMonitorLocation	-			ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c7f553c265782535
-super	-	BEDownloadMonitorLocation	NSObject		-	-	ecb286878c8b34d7
-method	c:objc(cs)BEDownloadMonitorLocation(im)init	-			*unavailable ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	886fce9f8f11a1cf
-method	c:objc(cs)BEDownloadMonitorLocation(cm)new	-			*unavailable ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	db276189eca47263
-property	c:objc(cs)BEDownloadMonitorLocation(py)url	-			ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ebec1f7c3369d6b7
-property	c:objc(cs)BEDownloadMonitorLocation(py)bookmarkData	-			ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c8c0a72a0843cf2e
-interface	c:objc(cs)BEDownloadMonitor	-			ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cfd2123303d443c3
-super	-	BEDownloadMonitor	NSObject		-	-	de5ece3991cd9da8
-method	c:objc(cs)BEDownloadMonitor(im)init	-			*unavailable ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c0e48150198ee067
-method	c:objc(cs)BEDownloadMonitor(cm)new	-			*unavailable ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f35852502ce1fe75
-method	c:objc(cs)BEDownloadMonitor(im)initWithSourceURL:destinationURL:observedProgress:liveActivityAccessToken:	-			ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	750f7b0e6cd49278
-method	c:objc(cs)BEDownloadMonitor(im)useDownloadsFolderWithPlaceholderType:finalFileCreatedHandler:	-			ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8aaa11fac8abad93
-method	c:objc(cs)BEDownloadMonitor(im)beginMonitoring:	-			ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	04c78a496cdd16b9
-method	c:objc(cs)BEDownloadMonitor(im)resumeMonitoring:completionHandler:	-			ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	867789e83fdcbf5d
-property	c:objc(cs)BEDownloadMonitor(py)identifier	-			ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	aa09cc21a629e8c8
-property	c:objc(cs)BEDownloadMonitor(py)sourceURL	-			ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ba5efa27f7a54494
-property	c:objc(cs)BEDownloadMonitor(py)destinationURL	-			ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b9e0d22dbc641665
-method	c:objc(cs)BEDownloadMonitor(cm)createAccessToken	-			ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4b9af2a6118c73a4
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
+interface	c:objc(cs)BELayerHierarchyHandle	-			-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	21801f31cd5e9a2f
+super	-	BELayerHierarchyHandle	NSObject		-	-	-	-	ffb195f1f55ed61f
+conforms	-	BELayerHierarchyHandle	NSSecureCoding		-	-	-	-	f68327fdc492c450
+method	c:objc(cs)BELayerHierarchyHandle(im)init	-			instancetype	-	*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e5742ccbb3b7c9e0
+method	c:objc(cs)BELayerHierarchyHandle(cm)new	-			instancetype	-	*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7421b7ba3ba383e2
+method	c:objc(cs)BELayerHierarchyHandle(cm)handleWithXPCRepresentation:error:	-			BELayerHierarchyHandle *	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0af96cb6cd7bea63
+method	c:objc(cs)BELayerHierarchyHandle(im)createXPCRepresentation	-			xpc_object_t	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7dd943704a55cb70
+method	c:objc(cs)BELayerHierarchyHandle(cm)handleWithPort:data:error:	-			BELayerHierarchyHandle *	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	23af9c9c2a4ebf8e
+method	c:objc(cs)BELayerHierarchyHandle(im)encodeWithBlock:	-			void	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a71cf857a2bc1242
+interface	c:objc(cs)BELayerHierarchy	-			-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d2c8ee81e1aeefda
+super	-	BELayerHierarchy	NSObject		-	-	-	-	8c35af11269d2cc0
+method	c:objc(cs)BELayerHierarchy(im)init	-			instancetype	-	*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	579847bfde2c64ad
+method	c:objc(cs)BELayerHierarchy(cm)new	-			instancetype	-	*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b522a37afacbcd2e
+method	c:objc(cs)BELayerHierarchy(cm)layerHierarchyWithError:	-			BELayerHierarchy *	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	05a73932ccabbde8
+property	c:objc(cs)BELayerHierarchy(py)handle	-			NS_SWIFT_NAME BELayerHierarchyHandle *	readonly,strong,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6f768a5f4356037a
+property	c:objc(cs)BELayerHierarchy(py)layer	-			NS_SWIFT_NAME CALayer *	strong,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4c3765c562c441f3
+method	c:objc(cs)BELayerHierarchy(im)invalidate	-			void	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3ddc44db7401c862
+interface	c:objc(cs)BELayerHierarchyHostingView	-			-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b70857018504d559
+super	-	BELayerHierarchyHostingView	UIView		-	-	-	-	2fdc1759ee613614
+property	c:objc(cs)BELayerHierarchyHostingView(py)handle	-			NS_SWIFT_NAME BELayerHierarchyHandle *	strong,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	aa9f60e27bf9889d
+interface	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator	-			-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	78ba4a533532eb89
+super	-	BELayerHierarchyHostingTransactionCoordinator	NSObject		-	-	-	-	de1d45baea9e3ff1
+conforms	-	BELayerHierarchyHostingTransactionCoordinator	NSSecureCoding		-	-	-	-	42b93d5a4ef5769e
+method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(im)init	-			instancetype	-	*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8ca1524243d7f967
+method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(cm)new	-			instancetype	-	*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	484ac6fa1ccf34f8
+method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(cm)coordinatorWithError:	-			BELayerHierarchyHostingTransactionCoordinator *	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	32e82642da37f2d9
+method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(cm)coordinatorWithXPCRepresentation:error:	-			BELayerHierarchyHostingTransactionCoordinator *	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e0548e8684e9a372
+method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(im)createXPCRepresentation	-			xpc_object_t	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	44d35287ed6b6268
+method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(im)addLayerHierarchy:	-			void	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	63abfc2a903c85c8
+method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(im)addLayerHierarchyHostingView:	-			void	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9b8049ff16d9afec
+method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(im)commit	-			void	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ad80a3928c516b46
+method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(cm)coordinatorWithPort:data:error:	-			BELayerHierarchyHostingTransactionCoordinator *	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	878274008a0829b9
+method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(im)encodeWithBlock:	-			void	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bb8a9350722a3585
+interface	c:objc(cs)BEContextMenuConfiguration	-			-	-	ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f0c3c192da8c46bb
+super	-	BEContextMenuConfiguration	UIContextMenuConfiguration		-	-	-	-	e53905cdf66df1d7
+method	c:objc(cs)BEContextMenuConfiguration(im)fulfillUsingConfiguration:	-			BOOL	-	ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bb2d10c6196ea7c0
+method	c:objc(cs)BEContextMenuConfiguration(im)init	-			instancetype	-	ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9750cab3206a35ca
+method	c:objc(cs)BEContextMenuConfiguration(cm)configurationWithIdentifier:previewProvider:actionProvider:	-			instancetype	-	*unavailable ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	42870c86e182587a
+protocol	c:objc(pl)BEDragInteractionDelegate	-			-	-	ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ffdb922763fce0a1
+conforms	-	BEDragInteractionDelegate	UIDragInteractionDelegate		-	-	-	-	072e0a7ede197b2a
+method	c:objc(pl)BEDragInteractionDelegate(im)dragInteraction:prepareDragSession:completion:	-			void	optional	ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	772c4473f3b1c9c1
+method	c:objc(pl)BEDragInteractionDelegate(im)dragInteraction:itemsForAddingToSession:forTouchAtPoint:completion:	-			void	optional	ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d0c080a9f4928202
+interface	c:objc(cs)BEDragInteraction	-			-	-	ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	28df5ed4b7ad5828
+super	-	BEDragInteraction	UIDragInteraction		-	-	-	-	1b03d82670c557f1
+property	c:objc(cs)BEDragInteraction(py)delegate	-			id<BEDragInteractionDelegate>	readonly,weak,nonatomic	ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	05d5c5274142f062
+method	c:objc(cs)BEDragInteraction(im)initWithDelegate:	-			instancetype	-	ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4b7e861be0eedb7a
+protocol	c:objc(pl)BEScrollViewDelegate	-			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	c76ca049de2e5a33
+conforms	-	BEScrollViewDelegate	UIScrollViewDelegate		-	-	-	-	81e155938410e9b2
+method	c:objc(pl)BEScrollViewDelegate(im)scrollView:handleScrollUpdate:completion:	-			void	optional	ios=17.4/-/-/0,watchos=-/-/-/1	-	6d8ec6b00fcc4e71
+method	c:objc(pl)BEScrollViewDelegate(im)parentScrollViewForScrollView:	-			BEScrollView *	optional	ios=17.4/-/-/0,watchos=-/-/-/1	-	c02fae1c1e536251
+interface	c:objc(cs)BEScrollView	-			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	6e23c5adc3036eeb
+super	-	BEScrollView	UIScrollView		-	-	-	-	826c40de7a1667dd
+property	c:objc(cs)BEScrollView(py)delegate	-			id<BEScrollViewDelegate>	weak,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	d711f457b13e0fd3
+typedef	c:@T@BEScrollViewScrollUpdatePhase	-			enum BEScrollViewScrollUpdatePhase	-	-	-	fa215a96d6c986c6
+enum	c:@E@BEScrollViewScrollUpdatePhase	-			NSInteger	-	ios=17.4/-/-/0	-	c8561113a7f661be
+enumconst	c:@E@BEScrollViewScrollUpdatePhase@BEScrollViewScrollUpdatePhaseBegan	BEScrollViewScrollUpdatePhase			-	-	ios=17.4/-/-/0	-	4cb491116ffb5d44
+enumconst	c:@E@BEScrollViewScrollUpdatePhase@BEScrollViewScrollUpdatePhaseChanged	BEScrollViewScrollUpdatePhase			-	-	ios=17.4/-/-/0	-	b4e7a0506f0194f8
+enumconst	c:@E@BEScrollViewScrollUpdatePhase@BEScrollViewScrollUpdatePhaseEnded	BEScrollViewScrollUpdatePhase			-	-	ios=17.4/-/-/0	-	b19f30d2e6ce60b2
+enumconst	c:@E@BEScrollViewScrollUpdatePhase@BEScrollViewScrollUpdatePhaseCancelled	BEScrollViewScrollUpdatePhase			-	-	ios=17.4/-/-/0	-	157168660afa2dce
+interface	c:objc(cs)BEScrollViewScrollUpdate	-			-	-	ios=17.4/-/-/0	-	3b9e97831cb6688c
+super	-	BEScrollViewScrollUpdate	NSObject		-	-	-	-	ffb23b91705d0221
+method	c:objc(cs)BEScrollViewScrollUpdate(im)init	-			instancetype	-	*unavailable ios=17.4/-/-/0	-	a9d8a935346a2bd6
+method	c:objc(cs)BEScrollViewScrollUpdate(cm)new	-			instancetype	-	*unavailable ios=17.4/-/-/0	-	e09a087a4a61f5e3
+property	c:objc(cs)BEScrollViewScrollUpdate(py)timestamp	-			NSTimeInterval	readonly,nonatomic	ios=17.4/-/-/0	-	41f1e051e6e2df0d
+property	c:objc(cs)BEScrollViewScrollUpdate(py)phase	-			BEScrollViewScrollUpdatePhase	readonly,nonatomic	ios=17.4/-/-/0	-	149daabb77761ae1
+method	c:objc(cs)BEScrollViewScrollUpdate(im)locationInView:	-			CGPoint	-	ios=17.4/-/-/0	-	89c30a53a54b1ea9
+method	c:objc(cs)BEScrollViewScrollUpdate(im)translationInView:	-			CGPoint	-	ios=17.4/-/-/0	-	455c21a6e4828316
+protocol	c:objc(pl)BEExtensionProcess	-			-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a7f27203a9720836
+conforms	-	BEExtensionProcess	NSObject		-	-	-	-	72f69fcaeb6cfdcc
+method	c:objc(pl)BEExtensionProcess(im)invalidate	-			void	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9a9dff486b2108ad
+method	c:objc(pl)BEExtensionProcess(im)makeLibXPCConnectionError:	-			xpc_connection_t	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5baffaddbd3b6d1b
+interface	c:objc(cs)BEWebContentProcess	-			-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	26bfd22aae7aee74
+super	-	BEWebContentProcess	NSObject		-	-	-	-	22e5562194d662e5
+method	c:objc(cs)BEWebContentProcess(im)init	-			instancetype	-	*unavailable ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e7c2153a935fe173
+method	c:objc(cs)BEWebContentProcess(cm)new	-			instancetype	-	*unavailable ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	77b154b34ccd5a19
+method	c:objc(cs)BEWebContentProcess(cm)webContentProcessWithInterruptionHandler:completion:	-			void	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	eae8253adcfc1e0f
+method	c:objc(cs)BEWebContentProcess(cm)webContentProcessWithBundleID:interruptionHandler:completion:	-			void	-	ios=18.2/-/-/0	-	c163cc25a33d4519
+method	c:objc(cs)BEWebContentProcess(im)invalidate	-			void	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	657ec10fb92ffba3
+method	c:objc(cs)BEWebContentProcess(im)makeLibXPCConnectionError:	-			xpc_connection_t	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d40b48ceaa2a6a6d
+method	c:objc(cs)BEWebContentProcess(im)createVisibilityPropagationInteraction	-			id<UIInteraction>	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	935283b697704d0e
+category	c:objc(cy)BEWebContentProcess@BEExtensionProcessConformance	-			-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f45de112d092b864
+conforms	-	BEWebContentProcess	BEExtensionProcess		-	-	-	-	eafabbd4bf14c6be
+interface	c:objc(cs)BENetworkingProcess	-			-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	176ae79e6d310810
+super	-	BENetworkingProcess	NSObject		-	-	-	-	8d8e7e2bda985f16
+method	c:objc(cs)BENetworkingProcess(im)init	-			instancetype	-	*unavailable ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5120bd79429256a9
+method	c:objc(cs)BENetworkingProcess(cm)new	-			instancetype	-	*unavailable ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ac00e54e27bebee8
+method	c:objc(cs)BENetworkingProcess(cm)networkProcessWithInterruptionHandler:completion:	-			void	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	82693347242cadbc
+method	c:objc(cs)BENetworkingProcess(cm)networkProcessWithBundleID:interruptionHandler:completion:	-			void	-	ios=18.2/-/-/0	-	cd7f66b84665161d
+method	c:objc(cs)BENetworkingProcess(im)invalidate	-			void	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	264dca9cf9c27e83
+method	c:objc(cs)BENetworkingProcess(im)makeLibXPCConnectionError:	-			xpc_connection_t	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a15cecee74d73546
+category	c:objc(cy)BENetworkingProcess@BEExtensionProcessConformance	-			-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	44cd71cf5fef83a7
+conforms	-	BENetworkingProcess	BEExtensionProcess		-	-	-	-	59a58b3d7cb05fb2
+interface	c:objc(cs)BERenderingProcess	-			-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	abdb98a48bc0a3df
+super	-	BERenderingProcess	NSObject		-	-	-	-	6456172e5a7fca3a
+method	c:objc(cs)BERenderingProcess(im)init	-			instancetype	-	*unavailable ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	609627fd5e2736e8
+method	c:objc(cs)BERenderingProcess(cm)new	-			instancetype	-	*unavailable ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9a871c8e3ea8b249
+method	c:objc(cs)BERenderingProcess(cm)renderingProcessWithInterruptionHandler:completion:	-			void	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4cbceef9b24cdfef
+method	c:objc(cs)BERenderingProcess(cm)renderingProcessWithBundleID:interruptionHandler:completion:	-			void	-	ios=18.2/-/-/0	-	bfc13f5fbbf79cab
+method	c:objc(cs)BERenderingProcess(im)invalidate	-			void	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	757bfc0768f06db4
+method	c:objc(cs)BERenderingProcess(im)makeLibXPCConnectionError:	-			xpc_connection_t	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	487859de707d6823
+method	c:objc(cs)BERenderingProcess(im)createVisibilityPropagationInteraction	-			id<UIInteraction>	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6f98fb0683643d32
+category	c:objc(cy)BERenderingProcess@BEExtensionProcessConformance	-			-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	80e72ed6276993cd
+conforms	-	BERenderingProcess	BEExtensionProcess		-	-	-	-	f703595594cc5f0c
+protocol	c:objc(pl)BETextInputDelegate	-			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	bcd9f0e1ecc79e3b
+method	c:objc(pl)BETextInputDelegate(im)shouldDeferEventHandlingToSystemForTextInput:context:	-			BOOL	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	f5183b60ab9a4548
+method	c:objc(pl)BETextInputDelegate(im)textInput:setCandidateSuggestions:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	eeee039526a52334
+method	c:objc(pl)BETextInputDelegate(im)selectionWillChangeForTextInput:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	49d55e49aa8a2fe5
+method	c:objc(pl)BETextInputDelegate(im)selectionDidChangeForTextInput:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	9a3e3d816cb406b4
+method	c:objc(pl)BETextInputDelegate(im)textInput:deferReplaceTextActionToSystem:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	527002651ecf28e0
+method	c:objc(pl)BETextInputDelegate(im)invalidateTextEntryContextForTextInput:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	ccab288800a0c8b7
+typedef	c:@T@BEKeyPressState	-			enum BEKeyPressState	-	-	-	6a812c177d210331
+enum	c:@E@BEKeyPressState	-			NSInteger	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	5f1b1e86c0af6d03
+enumconst	c:@E@BEKeyPressState@BEKeyPressStateDown	BEKeyPressState			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	9faf22ee3b26ca8b
+enumconst	c:@E@BEKeyPressState@BEKeyPressStateUp	BEKeyPressState			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	11ef63d7c847cf92
+interface	c:objc(cs)BEKeyEntry	-			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	d5a0736198aca142
+super	-	BEKeyEntry	NSObject		-	-	-	-	5612cd53a51adff0
+property	c:objc(cs)BEKeyEntry(py)key	-			UIKey *	readonly,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	a7a513734639648e
+property	c:objc(cs)BEKeyEntry(py)state	-			BEKeyPressState	readonly,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	fc655a2cd642d731
+property	c:objc(cs)BEKeyEntry(py)keyRepeating	-			BOOL	readonly,nonatomic,getter=isKeyRepeating	ios=17.4/-/-/0,watchos=-/-/-/1	-	df91b58a61140350
+property	c:objc(cs)BEKeyEntry(py)timestamp	-			NSTimeInterval	readonly,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	fc221b8cce64c5de
+method	c:objc(cs)BEKeyEntry(im)init	-			instancetype	-	*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	3d34fa40ff2aada5
+method	c:objc(cs)BEKeyEntry(cm)new	-			instancetype	-	*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	97c622922a67847d
+typedef	c:@T@BEGestureType	-			enum BEGestureType	-	-	-	83cdfc1a05ccfd5f
+enum	c:@E@BEGestureType	-			NSInteger	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	b5d6e7dcaba4118a
+enumconst	c:@E@BEGestureType@BEGestureTypeLoupe	BEGestureType			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	13d6ea98772d6e69
+enumconst	c:@E@BEGestureType@BEGestureTypeOneFingerTap	BEGestureType			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	7295fa21acfae6b3
+enumconst	c:@E@BEGestureType@BEGestureTypeDoubleTapAndHold	BEGestureType			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	52ce2cbccacd66a8
+enumconst	c:@E@BEGestureType@BEGestureTypeDoubleTap	BEGestureType			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	793cc0b7572843a1
+enumconst	c:@E@BEGestureType@BEGestureTypeOneFingerDoubleTap	BEGestureType			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	277f055d52e50678
+enumconst	c:@E@BEGestureType@BEGestureTypeOneFingerTripleTap	BEGestureType			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	1fb63a44dfd54426
+enumconst	c:@E@BEGestureType@BEGestureTypeTwoFingerSingleTap	BEGestureType			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	f7464321d3a9d6ad
+enumconst	c:@E@BEGestureType@BEGestureTypeTwoFingerRangedSelectGesture	BEGestureType			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	9a2456ff5bc46025
+enumconst	c:@E@BEGestureType@BEGestureTypeIMPhraseBoundaryDrag	BEGestureType			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	3c378a818b7af23c
+enumconst	c:@E@BEGestureType@BEGestureTypeForceTouch	BEGestureType			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	a739a1d7b70279e8
+typedef	c:@T@BESelectionTouchPhase	-			enum BESelectionTouchPhase	-	-	-	a43b2bce31205c99
+enum	c:@E@BESelectionTouchPhase	-			NSInteger	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	92fcf3e6a9f00eca
+enumconst	c:@E@BESelectionTouchPhase@BESelectionTouchPhaseStarted	BESelectionTouchPhase			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	977f7b48d3dff285
+enumconst	c:@E@BESelectionTouchPhase@BESelectionTouchPhaseMoved	BESelectionTouchPhase			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	8853110e2035b24f
+enumconst	c:@E@BESelectionTouchPhase@BESelectionTouchPhaseEnded	BESelectionTouchPhase			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	aa2aee7dec4853a5
+enumconst	c:@E@BESelectionTouchPhase@BESelectionTouchPhaseEndedMovingForward	BESelectionTouchPhase			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	07a1b78e33e083ec
+enumconst	c:@E@BESelectionTouchPhase@BESelectionTouchPhaseEndedMovingBackward	BESelectionTouchPhase			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	88cc33124d0272fd
+enumconst	c:@E@BESelectionTouchPhase@BESelectionTouchPhaseEndedNotMoving	BESelectionTouchPhase			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	6d6b83fac5f2779e
+typedef	c:@T@BESelectionFlags	-			enum BESelectionFlags	-	-	-	cd5bbd7a0388fb84
+enum	c:@E@BESelectionFlags	-			NSUInteger	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	20226f03dd86f6f5
+enumconst	c:@E@BESelectionFlags@BESelectionFlagsNone	BESelectionFlags			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	5874adf335f25a4d
+enumconst	c:@E@BESelectionFlags@BEWordIsNearTap	BESelectionFlags			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	ce0ce3e78a3e3c27
+enumconst	c:@E@BESelectionFlags@BESelectionFlipped	BESelectionFlags			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	3fd58cad29fc54ca
+enumconst	c:@E@BESelectionFlags@BEPhraseBoundaryChanged	BESelectionFlags			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	0ac24bf6902b91e1
+interface	c:objc(cs)BETextAlternatives	-			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	f913fbd31e35c7a2
+super	-	BETextAlternatives	NSObject		-	-	-	-	4d22e060328395c6
+property	c:objc(cs)BETextAlternatives(py)primaryString	-			NSString *	readonly	ios=17.4/-/-/0,watchos=-/-/-/1	-	5bb49fc167d0ff1e
+property	c:objc(cs)BETextAlternatives(py)alternativeStrings	-			NSArray<NSString *> *	readonly	ios=17.4/-/-/0,watchos=-/-/-/1	-	7c416e09dab852d8
+method	c:objc(cs)BETextAlternatives(im)new	-			instancetype	-	*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	fa6456f312de7cb8
+method	c:objc(cs)BETextAlternatives(im)init	-			instancetype	-	*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	4e720fe13debd35d
+struct	c:@SA@BEDirectionalTextRange	-			-	-	-	-	e021ab55b8d7c52f
+field	c:@SA@BEDirectionalTextRange@FI@offset	BEDirectionalTextRange			NSInteger	-	-	-	7d8251bba83ea4d3
+field	c:@SA@BEDirectionalTextRange@FI@length	BEDirectionalTextRange			NSInteger	-	-	-	cdc09e23251ad5c2
+typedef	c:@T@BEDirectionalTextRange	-			struct BEDirectionalTextRange	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	ec196fdbd3528c9d
+typedef	c:@T@BETextReplacementOptions	-			enum BETextReplacementOptions	-	-	-	a10c868872bbe815
+enum	c:@E@BETextReplacementOptions	-			NSUInteger	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	d3f6a8d781171837
+enumconst	c:@E@BETextReplacementOptions@BETextReplacementOptionsNone	BETextReplacementOptions			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	b6e451f4d5757bc9
+enumconst	c:@E@BETextReplacementOptions@BETextReplacementOptionsAddUnderline	BETextReplacementOptions			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	cabf4833ee41602b
+typedef	c:@T@BEKeyModifierFlags	-			enum BEKeyModifierFlags	-	-	-	2db1d6fa23f5858a
+enum	c:@E@BEKeyModifierFlags	-			NSInteger	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	7a6be902286c870e
+enumconst	c:@E@BEKeyModifierFlags@BEKeyModifierFlagNone	BEKeyModifierFlags			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	e608bb87c51ec053
+enumconst	c:@E@BEKeyModifierFlags@BEKeyModifierFlagShift	BEKeyModifierFlags			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	9be28c2905c6f7da
+enumconst	c:@E@BEKeyModifierFlags@BEKeyModifierFlagCapsLock	BEKeyModifierFlags			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	94545554071275c7
+protocol	c:objc(pl)BEResponderEditActions	-			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	5d8d9c0e5371d349
+conforms	-	BEResponderEditActions	UIResponderStandardEditActions		-	-	-	-	e8f3e8965a3d59ab
+method	c:objc(pl)BEResponderEditActions(im)share:	-			void	optional	ios=17.4/-/-/0,watchos=-/-/-/1	-	53ba5d2df8e7134d
+method	c:objc(pl)BEResponderEditActions(im)addShortcut:	-			void	optional	ios=17.4/-/-/0,watchos=-/-/-/1	-	a168d532b4550fa0
+method	c:objc(pl)BEResponderEditActions(im)lookup:	-			void	optional	ios=17.4/-/-/0,watchos=-/-/-/1	-	1b78aebf6ef2fca0
+method	c:objc(pl)BEResponderEditActions(im)findSelected:	-			void	optional	ios=17.4/-/-/0,watchos=-/-/-/1	-	014c049db14c90cf
+method	c:objc(pl)BEResponderEditActions(im)promptForReplace:	-			void	optional	ios=17.4/-/-/0,watchos=-/-/-/1	-	3c2ed19985b2f5a9
+method	c:objc(pl)BEResponderEditActions(im)replace:	-			void	optional	ios=17.4/-/-/0,watchos=-/-/-/1	-	1d92cc1c32556f59
+method	c:objc(pl)BEResponderEditActions(im)translate:	-			void	optional	ios=17.4/-/-/0,watchos=-/-/-/1	-	819e53fcfe494ff5
+method	c:objc(pl)BEResponderEditActions(im)transliterateChinese:	-			void	optional	ios=17.4/-/-/0,watchos=-/-/-/1	-	746862977be0854e
+protocol	c:objc(pl)BETextSelectionDirectionNavigation	-			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	6f34b5a5e0bba6ad
+method	c:objc(pl)BETextSelectionDirectionNavigation(im)moveInLayoutDirection:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	a9418f1738941154
+method	c:objc(pl)BETextSelectionDirectionNavigation(im)extendInLayoutDirection:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	0aeaf79401877231
+method	c:objc(pl)BETextSelectionDirectionNavigation(im)moveInStorageDirection:byGranularity:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	852642dac988cc7d
+method	c:objc(pl)BETextSelectionDirectionNavigation(im)extendInStorageDirection:byGranularity:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	f658bdd6aab4388e
+protocol	c:objc(pl)BEExtendedTextInputTraits	-			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	163619834a43c627
+conforms	-	BEExtendedTextInputTraits	UITextInputTraits		-	-	-	-	0f7bb86c3d4560c1
+property	c:objc(pl)BEExtendedTextInputTraits(py)singleLineDocument	-			BOOL	readonly,nonatomic,getter=isSingleLineDocument	ios=17.4/-/-/0,watchos=-/-/-/1	-	a3d531bcecf992ba
+property	c:objc(pl)BEExtendedTextInputTraits(py)typingAdaptationEnabled	-			BOOL	readonly,nonatomic,getter=isTypingAdaptationEnabled	ios=17.4/-/-/0,watchos=-/-/-/1	-	bf519bdfbb82c116
+property	c:objc(pl)BEExtendedTextInputTraits(py)insertionPointColor	-			UIColor *	readonly,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	9d5c1ab1f715fa4a
+property	c:objc(pl)BEExtendedTextInputTraits(py)selectionHandleColor	-			UIColor *	readonly,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	5fd41ed8c649b514
+property	c:objc(pl)BEExtendedTextInputTraits(py)selectionHighlightColor	-			UIColor *	readonly,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	a3a51a5c8ed64ade
+protocol	c:objc(pl)BETextInput	-			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	37ee2cc73a81e58e
+conforms	-	BETextInput	UIKeyInput		-	-	-	-	35821038336ace55
+conforms	-	BETextInput	BETextSelectionDirectionNavigation		-	-	-	-	6f26eae87cd13e61
+conforms	-	BETextInput	BEResponderEditActions		-	-	-	-	3f3599f0160c043d
+property	c:objc(pl)BETextInput(py)asyncInputDelegate	-			id<BETextInputDelegate>	weak,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	fb600b93d32b487f
+method	c:objc(pl)BETextInput(im)canPerformAction:withSender:	-			BOOL	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	6e17b6b3b8735e4a
+property	c:objc(pl)BETextInput(py)editable	-			BOOL	readonly,nonatomic,getter=isEditable	ios=17.4/-/-/0,watchos=-/-/-/1	-	0e15dd134acdda7e
+method	c:objc(pl)BETextInput(im)handleKeyEntry:withCompletionHandler:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	0b407ce55ef38211
+method	c:objc(pl)BETextInput(im)shiftKeyStateChangedFromState:toState:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	c20473fe016afd3e
+method	c:objc(pl)BETextInput(im)textInRange:	-			NSString *	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	dcaa61a352e3a9bb
+method	c:objc(pl)BETextInput(im)offsetFromPosition:toPosition:	-			NSInteger	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	db1802a1dbe23022
+method	c:objc(pl)BETextInput(im)setBaseWritingDirection:forRange:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	e33861cf9e86391a
+method	c:objc(pl)BETextInput(im)deleteInDirection:toGranularity:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	aee928adc3065b78
+method	c:objc(pl)BETextInput(im)transposeCharactersAroundSelection	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	03557aef954a0ea6
+method	c:objc(pl)BETextInput(im)replaceText:withText:options:completionHandler:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	7d4e99b8e854c989
+method	c:objc(pl)BETextInput(im)requestTextContextForAutocorrectionWithCompletionHandler:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	5ecdb65b1957217d
+method	c:objc(pl)BETextInput(im)requestTextRectsForString:withCompletionHandler:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	b6ce45d8745cb7cb
+property	c:objc(pl)BETextInput(py)automaticallyPresentEditMenu	-			BOOL	readonly,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	4433e4f9d04f3039
+method	c:objc(pl)BETextInput(im)requestPreferredArrowDirectionForEditMenuWithCompletionHandler:	-			void	-	tvos=-/-/-/1,watchos=-/-/-/1	-	2dea9f8fcaeb7344
+method	c:objc(pl)BETextInput(im)systemWillPresentEditMenuWithAnimator:	-			void	-	tvos=-/-/-/1,watchos=-/-/-/1	-	f38e25b996581831
+method	c:objc(pl)BETextInput(im)systemWillDismissEditMenuWithAnimator:	-			void	-	tvos=-/-/-/1,watchos=-/-/-/1	-	e1ded5280cc5bf80
+property	c:objc(pl)BETextInput(py)extendedTextInputTraits	-			id<BEExtendedTextInputTraits>	readonly,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	248575306f4cb614
+method	c:objc(pl)BETextInput(im)textStylingAtPosition:inDirection:	-			NSDictionary<NSAttributedStringKey,id> *	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	ae42bb8178cfd39d
+property	c:objc(pl)BETextInput(py)replaceAllowed	-			BOOL	readonly,nonatomic,getter=isReplaceAllowed	ios=17.4/-/-/0,watchos=-/-/-/1	-	d57df3be369a6a49
+method	c:objc(pl)BETextInput(im)replaceSelectedText:withText:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	6996ba43a554bdd7
+method	c:objc(pl)BETextInput(im)updateCurrentSelectionTo:fromGesture:inState:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	1567a5bc4d9332e0
+method	c:objc(pl)BETextInput(im)setSelectionFromPoint:toPoint:gesture:state:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	55f8a76f1859da35
+method	c:objc(pl)BETextInput(im)adjustSelectionBoundaryToPoint:touchPhase:baseIsStart:flags:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	5b4e6fe7f64ce889
+method	c:objc(pl)BETextInput(im)textInteractionGesture:shouldBeginAtPoint:	-			BOOL	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	9f28d2e38c607edd
+property	c:objc(pl)BETextInput(py)selectionContainerViewBelowText	-			API_AVAILABLE UIView *	readonly,nonatomic	ios=26.0/-/-/0	-	be360c1a10f7e10f
+property	c:objc(pl)BETextInput(py)selectionContainerViewAboveText	-			API_AVAILABLE UIView *	readonly,nonatomic	ios=26.0/-/-/0	-	190637b4387f72e0
+property	c:objc(pl)BETextInput(py)selectedText	-			NSString *	readonly	ios=17.4/-/-/0,watchos=-/-/-/1	-	b7bc17cd7262cf74
+property	c:objc(pl)BETextInput(py)selectedTextRange	-			UITextRange *	copy	ios=17.4/-/-/0,watchos=-/-/-/1	-	ea1d08f6b4816083
+property	c:objc(pl)BETextInput(py)selectionAtDocumentStart	-			BOOL	readonly,nonatomic,getter=isSelectionAtDocumentStart	ios=17.4/-/-/0,watchos=-/-/-/1	-	8612f2727475247e
+method	c:objc(pl)BETextInput(im)caretRectForPosition:	-			CGRect	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	a2ebda22d9c7d18a
+method	c:objc(pl)BETextInput(im)selectionRectsForRange:	-			NSArray<UITextSelectionRect *> *	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	523996010fca7dd5
+method	c:objc(pl)BETextInput(im)selectWordForReplacement	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	219ed96a29f7b625
+method	c:objc(pl)BETextInput(im)updateSelectionWithExtentPoint:boundary:completionHandler:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	4824a7cfe46f7817
+method	c:objc(pl)BETextInput(im)selectTextInGranularity:atPoint:completionHandler:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	2091b0eadd061b34
+method	c:objc(pl)BETextInput(im)selectPositionAtPoint:completionHandler:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	c8a74eb840c24bad
+method	c:objc(pl)BETextInput(im)selectPositionAtPoint:withContextRequest:completionHandler:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	f103811219a129be
+method	c:objc(pl)BETextInput(im)adjustSelectionByRange:completionHandler:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	1b29117d877fd03e
+method	c:objc(pl)BETextInput(im)moveByOffset:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	d337b181091ceec4
+method	c:objc(pl)BETextInput(im)moveSelectionAtBoundary:inStorageDirection:completionHandler:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	a5b61046f0c0c3b7
+method	c:objc(pl)BETextInput(im)selectTextForEditMenuWithLocationInView:completionHandler:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	446cde37d3cb16e0
+property	c:objc(pl)BETextInput(py)markedText	-			NSString *	readonly,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	b6fd7fe668f14a7c
+property	c:objc(pl)BETextInput(py)attributedMarkedText	-			NSAttributedString *	readonly,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	ad34b81f2dfff39e
+property	c:objc(pl)BETextInput(py)markedTextRange	-			UITextRange *	readonly,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	53c9e956040596a0
+property	c:objc(pl)BETextInput(py)hasMarkedText	-			BOOL	readonly,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	b762843a6b74bb67
+method	c:objc(pl)BETextInput(im)setMarkedText:selectedRange:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	bfb211cf9dbd8b77
+method	c:objc(pl)BETextInput(im)setAttributedMarkedText:selectedRange:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	44921c7ed5233d1f
+method	c:objc(pl)BETextInput(im)unmarkText	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	677b8b0129d474cd
+method	c:objc(pl)BETextInput(im)isPointNearMarkedText:	-			BOOL	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	bd2a2d3aa9c9b120
+method	c:objc(pl)BETextInput(im)requestDocumentContext:completionHandler:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	f28531e10c06a8dd
+method	c:objc(pl)BETextInput(im)willInsertFinalDictationResult	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	c84c51c26652b41b
+method	c:objc(pl)BETextInput(im)replaceDictatedText:withText:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	7492c86746e23f1b
+method	c:objc(pl)BETextInput(im)didInsertFinalDictationResult	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	7ef0b479ee5e3c90
+method	c:objc(pl)BETextInput(im)alternativesForSelectedText	-			NSArray<BETextAlternatives *> *	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	16dab8323916d239
+method	c:objc(pl)BETextInput(im)addTextAlternatives:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	b705eb6e841f2f4d
+method	c:objc(pl)BETextInput(im)insertTextAlternatives:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	e8188768fd35e47a
+method	c:objc(pl)BETextInput(im)removeTextAlternatives	-			void	optional	ios=18.0/-/-/0	-	a074ae53991f7781
+method	c:objc(pl)BETextInput(im)insertTextPlaceholderWithSize:completionHandler:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	715d9f08ca346320
+method	c:objc(pl)BETextInput(im)removeTextPlaceholder:willInsertText:completionHandler:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	d829970ce0e740c4
+method	c:objc(pl)BETextInput(im)insertTextSuggestion:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	a4df786d18697e7e
+property	c:objc(pl)BETextInput(py)textInputView	-			__kindof UIView *	readonly,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	cd0c460382bae8c6
+property	c:objc(pl)BETextInput(py)textFirstRect	-			CGRect	readonly,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	bddd52deeb69c114
+property	c:objc(pl)BETextInput(py)textLastRect	-			CGRect	readonly,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	1dedf1ae0588c433
+property	c:objc(pl)BETextInput(py)unobscuredContentRect	-			CGRect	readonly,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	18e628eb52ca6002
+property	c:objc(pl)BETextInput(py)unscaledView	-			UIView *	readonly,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	60e334959b1f8b37
+property	c:objc(pl)BETextInput(py)selectionClipRect	-			CGRect	readonly,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	943e119e5fde563c
+method	c:objc(pl)BETextInput(im)autoscrollToPoint:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	51fef15c7816bab5
+method	c:objc(pl)BETextInput(im)cancelAutoscroll	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	19b65fddcf23f1b7
+method	c:objc(pl)BETextInput(im)keyboardWillDismiss	-			void	optional	ios=18.0/-/-/0	-	e506f8f5974d9d5b
+interface	c:objc(cs)BETextSuggestion	-			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	a7f10d6dad015c0e
+super	-	BETextSuggestion	NSObject		-	-	-	-	7a0939da29a2dc42
+method	c:objc(cs)BETextSuggestion(im)initWithInputText:	-			instancetype	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	c97afee6c773e6c1
+property	c:objc(cs)BETextSuggestion(py)inputText	-			NSString *	readonly,copy,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	6518b261b06e64b8
+method	c:objc(cs)BETextSuggestion(im)new	-			instancetype	-	*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	122c3e5a8a310d2c
+method	c:objc(cs)BETextSuggestion(im)init	-			instancetype	-	*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	a058c3002fd77964
+interface	c:objc(cs)BEAutoFillTextSuggestion	-			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	2c97f658c312173d
+super	-	BEAutoFillTextSuggestion	BETextSuggestion		-	-	-	-	be9073727c4c2fe2
+property	c:objc(cs)BEAutoFillTextSuggestion(py)contents	-			NSDictionary<UITextContentType,NSString *> *	readonly,copy,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	80174730dbdcf8ca
+method	c:objc(cs)BEAutoFillTextSuggestion(im)new	-			instancetype	-	*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	8a9da8a21c392226
+method	c:objc(cs)BEAutoFillTextSuggestion(im)init	-			instancetype	-	*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	5c86aa9170c4f8b2
+interface	c:objc(cs)BETextInteraction	-			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	6b26fbdfdf89b2a2
+super	-	BETextInteraction	NSObject		-	-	-	-	e577fcbf6db1e1af
+conforms	-	BETextInteraction	UIInteraction		-	-	-	-	09181aa41fb02a61
+property	c:objc(cs)BETextInteraction(py)delegate	-			id<BETextInteractionDelegate>	weak,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	211fcedae6c54efc
+method	c:objc(cs)BETextInteraction(im)addShortcutForText:fromRect:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	a017e9766f165991
+method	c:objc(cs)BETextInteraction(im)shareText:fromRect:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	ea2b671c2dff6009
+method	c:objc(cs)BETextInteraction(im)showDictionaryForTextInContext:definingTextInRange:fromRect:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	a8af2afab089800a
+method	c:objc(cs)BETextInteraction(im)translateText:fromRect:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	6efac4653a8bf4c1
+method	c:objc(cs)BETextInteraction(im)showReplacementsForText:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	04ac95ea6068c938
+method	c:objc(cs)BETextInteraction(im)transliterateChineseForText:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	b89a78a49e649460
+method	c:objc(cs)BETextInteraction(im)presentEditMenuForSelection	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	01b3e6558a7e2790
+method	c:objc(cs)BETextInteraction(im)dismissEditMenuForSelection	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	d316b2ff5969b732
+method	c:objc(cs)BETextInteraction(im)editabilityChanged	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	bedc688f5a5d338e
+method	c:objc(cs)BETextInteraction(im)refreshKeyboardUI	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	c297d189bfc22fd0
+method	c:objc(cs)BETextInteraction(im)selectionChangedWithGestureAtPoint:gesture:state:flags:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	41e6803a2cf5b39e
+method	c:objc(cs)BETextInteraction(im)selectionBoundaryAdjustedToPoint:touchPhase:flags:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	f6d6a59eb52e5e83
+property	c:objc(cs)BETextInteraction(py)textSelectionDisplayInteraction	-			UITextSelectionDisplayInteraction *	readonly,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	430f1071c3f073e9
+property	c:objc(cs)BETextInteraction(py)contextMenuInteractionDelegate	-			id<UIContextMenuInteractionDelegate>	weak,nonatomic	tvos=-/-/-/1,watchos=-/-/-/1	-	376fafe9abda7561
+property	c:objc(cs)BETextInteraction(py)contextMenuInteraction	-			UIContextMenuInteraction *	readonly,nonatomic	tvos=-/-/-/1,watchos=-/-/-/1	-	a41ed473614091d3
+protocol	c:objc(pl)BETextInteractionDelegate	-			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	130cccbb85f7aebf
+method	c:objc(pl)BETextInteractionDelegate(im)systemWillChangeSelectionForInteraction:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	1678489bab285309
+method	c:objc(pl)BETextInteractionDelegate(im)systemDidChangeSelectionForInteraction:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	20132b1cf0493de4
+interface	c:objc(cs)BEKeyEntryContext	-			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	99a5ae98d333cd79
+super	-	BEKeyEntryContext	NSObject		-	-	-	-	852a5342d0ae95d9
+property	c:objc(cs)BEKeyEntryContext(py)keyEntry	-			BEKeyEntry *	readonly,strong,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	fcf4fa25ffc369f2
+property	c:objc(cs)BEKeyEntryContext(py)documentEditable	-			BOOL	assign,nonatomic,getter=isDocumentEditable	ios=17.4/-/-/0,watchos=-/-/-/1	-	70c141d2e17a4a00
+property	c:objc(cs)BEKeyEntryContext(py)shouldInsertCharacter	-			BOOL	assign,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	520342b6d12fc474
+property	c:objc(cs)BEKeyEntryContext(py)shouldEvaluateForInputSystemHandling	-			BOOL	assign,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	3eba6936025e039d
+method	c:objc(cs)BEKeyEntryContext(im)initWithKeyEntry:	-			instancetype	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	72d6725da890a111
+method	c:objc(cs)BEKeyEntryContext(im)init	-			instancetype	-	*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	09baa2eae2c9883c
+method	c:objc(cs)BEKeyEntryContext(cm)new	-			instancetype	-	*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	c689e1d166e3f5f3
+typedef	c:@T@BETextDocumentRequestOptions	-			enum BETextDocumentRequestOptions	-	-	-	3d77d374ff4a3c45
+enum	c:@E@BETextDocumentRequestOptions	-			NSInteger	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	522b8f0328fffe9e
+enumconst	c:@E@BETextDocumentRequestOptions@BETextDocumentOptionNone	BETextDocumentRequestOptions			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	d22706376b221328
+enumconst	c:@E@BETextDocumentRequestOptions@BETextDocumentOptionText	BETextDocumentRequestOptions			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	443df60324cd6843
+enumconst	c:@E@BETextDocumentRequestOptions@BETextDocumentOptionAttributedText	BETextDocumentRequestOptions			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	5bd7dee577823672
+enumconst	c:@E@BETextDocumentRequestOptions@BETextDocumentOptionTextRects	BETextDocumentRequestOptions			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	80388848a87f4252
+enumconst	c:@E@BETextDocumentRequestOptions@BETextDocumentOptionMarkedTextRects	BETextDocumentRequestOptions			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	54278c1cae6957ab
+enumconst	c:@E@BETextDocumentRequestOptions@BETextDocumentOptionAutocorrectedRanges	BETextDocumentRequestOptions			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	21665f7e0ffcbca6
+interface	c:objc(cs)BETextDocumentRequest	-			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	c4066bd0f4ea8c40
+super	-	BETextDocumentRequest	NSObject		-	-	-	-	a16bcbc20f8d696c
+property	c:objc(cs)BETextDocumentRequest(py)options	-			BETextDocumentRequestOptions	assign,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	969077924a6b0752
+property	c:objc(cs)BETextDocumentRequest(py)surroundingGranularity	-			UITextGranularity	assign,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	cc48e9367aa1c16c
+property	c:objc(cs)BETextDocumentRequest(py)granularityCount	-			NSInteger	assign,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	217559257fab60e8
+method	c:objc(cs)BETextDocumentRequest(im)new	-			instancetype	-	*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	7312769e2aac5abc
+method	c:objc(cs)BETextDocumentRequest(im)init	-			instancetype	-	*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	7bc722b859cef073
+interface	c:objc(cs)BETextDocumentContext	-			-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	7eb900b3f60a91a1
+super	-	BETextDocumentContext	NSObject		-	-	-	-	e9b172671e2dcd4a
+method	c:objc(cs)BETextDocumentContext(im)initWithSelectedText:contextBefore:contextAfter:markedText:selectedRangeInMarkedText:	-			instancetype	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	f7a270fe724c6d7d
+method	c:objc(cs)BETextDocumentContext(im)initWithAttributedSelectedText:contextBefore:contextAfter:markedText:selectedRangeInMarkedText:	-			instancetype	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	5e55339ed844bdd7
+method	c:objc(cs)BETextDocumentContext(im)addTextRect:forCharacterRange:	-			void	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	324bb9702c4516cc
+property	c:objc(cs)BETextDocumentContext(py)autocorrectedRanges	-			NSArray<NSValue *> *	copy,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	025a1479a653f79d
+method	c:objc(cs)BETextDocumentContext(im)new	-			instancetype	-	*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	cae0850337a6e599
+method	c:objc(cs)BETextDocumentContext(im)init	-			instancetype	-	*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	44010a4876f8296c
+protocol	c:objc(pl)BEProcessCapabilityGrant	-			-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0aac33783c044c41
+conforms	-	BEProcessCapabilityGrant	NSObject		-	-	-	-	4a6c618adf141d8e
+method	c:objc(pl)BEProcessCapabilityGrant(im)invalidate	-			BOOL	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7d1f34423e5dd00c
+property	c:objc(pl)BEProcessCapabilityGrant(py)valid	-			BOOL	readonly,getter=isValid	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	eaf5e067a9da6751
+interface	c:objc(cs)BEMediaEnvironment	-			-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	dc8dd0e6a820cbcc
+super	-	BEMediaEnvironment	NSObject		-	-	-	-	fe1d862e46972ccb
+method	c:objc(cs)BEMediaEnvironment(im)init	-			instancetype	-	*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a74a6be4a44a9167
+method	c:objc(cs)BEMediaEnvironment(cm)new	-			instancetype	-	*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2eb8b635030ed124
+method	c:objc(cs)BEMediaEnvironment(im)initWithWebPageURL:	-			instancetype	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7e57d54982950cea
+method	c:objc(cs)BEMediaEnvironment(im)initWithXPCRepresentation:error:	-			instancetype	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1096f4cf603c3ae4
+method	c:objc(cs)BEMediaEnvironment(im)createXPCRepresentation	-			xpc_object_t	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	29fc7cb920240c4f
+method	c:objc(cs)BEMediaEnvironment(im)activateWithError:	-			BOOL	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b380ae7c2d8776d9
+method	c:objc(cs)BEMediaEnvironment(im)suspendWithError:	-			BOOL	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c704df51058a987f
+method	c:objc(cs)BEMediaEnvironment(im)makeCaptureSessionWithError:	-			AVCaptureSession *	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2f5b16881d5feabf
+interface	c:objc(cs)BEProcessCapability	-			-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c507f767ceff8aa8
+super	-	BEProcessCapability	NSObject		-	-	-	-	8fef9a9f73a9dc17
+method	c:objc(cs)BEProcessCapability(cm)mediaPlaybackAndCaptureWithEnvironment:	-			instancetype	-	macos=-/-/-/1	-	2e82bf3e1ea2e9c3
+method	c:objc(cs)BEProcessCapability(cm)background	-			instancetype	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	33ee7c285363166e
+method	c:objc(cs)BEProcessCapability(cm)foreground	-			instancetype	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	dbec0cbebc710bbd
+method	c:objc(cs)BEProcessCapability(cm)suspended	-			instancetype	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a9969d46e8b7b2c8
+method	c:objc(cs)BEProcessCapability(im)requestWithError:	-			id<BEProcessCapabilityGrant>	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3d5a3bd1bfd3a4bd
+category	c:objc(cy)BEWebContentProcess@Capability	-			-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9496620afb08a26b
+method	c:objc(cs)BEWebContentProcess(im)grantCapability:error:	Capability			id<BEProcessCapabilityGrant>	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bc6b61085e59c1fb
+category	c:objc(cy)BEWebContentProcess@CapabilityInvalidationHandler	-			-	-	ios=17.6/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	505fa8706fede4cf
+method	c:objc(cs)BEWebContentProcess(im)grantCapability:error:invalidationHandler:	CapabilityInvalidationHandler			id<BEProcessCapabilityGrant>	-	ios=17.6/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4b9018bf4d9f80f8
+category	c:objc(cy)BERenderingProcess@Capability	-			-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b5c7e9ddabac7d91
+method	c:objc(cs)BERenderingProcess(im)grantCapability:error:	Capability			id<BEProcessCapabilityGrant>	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	309d1f1287db102d
+category	c:objc(cy)BERenderingProcess@CapabilityInvalidationHandler	-			-	-	ios=17.6/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f256725f754b7130
+method	c:objc(cs)BERenderingProcess(im)grantCapability:error:invalidationHandler:	CapabilityInvalidationHandler			id<BEProcessCapabilityGrant>	-	ios=17.6/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7390f2c8a3f5849d
+category	c:objc(cy)BENetworkingProcess@Capability	-			-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5ba91b709ab6dad5
+method	c:objc(cs)BENetworkingProcess(im)grantCapability:error:	Capability			id<BEProcessCapabilityGrant>	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	134d71361d8d300d
+category	c:objc(cy)BENetworkingProcess@CapabilityInvalidationHandler	-			-	-	ios=17.6/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f5874ca25aca231d
+method	c:objc(cs)BENetworkingProcess(im)grantCapability:error:invalidationHandler:	CapabilityInvalidationHandler			id<BEProcessCapabilityGrant>	-	ios=17.6/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ff4f3523df896888
+interface	c:objc(cs)BEWebAppManifest	-			-	-	ios=17.5/-/-/0	-	d5bba542680b2510
+super	-	BEWebAppManifest	NSObject		-	-	-	-	5e32de09975eb924
+method	c:objc(cs)BEWebAppManifest(im)init	-			instancetype	-	*unavailable ios=17.5/-/-/0	-	ac2d2dcfbf72c71f
+method	c:objc(cs)BEWebAppManifest(im)initWithJSONData:manifestURL:	-			BEWebAppManifest *	-	ios=17.5/-/-/0	-	9bebc30c56a3efb0
+property	c:objc(cs)BEWebAppManifest(py)jsonData	-			NSData *	readonly,copy,nonatomic	ios=17.5/-/-/0	-	6a169abbb766200c
+property	c:objc(cs)BEWebAppManifest(py)manifestURL	-			NSURL *	readonly,copy,nonatomic	ios=17.5/-/-/0	-	bc43cb8424cd9fdb
+interface	c:objc(cs)BEWebContentFilter	-			-	-	ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	30128e2a1d09b1af
+super	-	BEWebContentFilter	NSObject		-	-	-	-	0f5070b8d10773f5
+property	c:objc(cs)BEWebContentFilter(cpy)shouldEvaluateURLs	-			BOOL	readonly,class	ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3363378c51b9a4cb
+method	c:objc(cs)BEWebContentFilter(im)evaluateURL:completionHandler:	-			void	-	ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7dbd47502c19c853
+method	c:objc(cs)BEWebContentFilter(im)allowURL:completionHandler:	-			void	-	ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	50baa716c3c72888
+typedef	c:@T@BEAccessibilityPressedState	-			enum BEAccessibilityPressedState	-	-	-	47db87774ee89430
+enum	c:@E@BEAccessibilityPressedState	-			NSInteger	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	10e9ada9b9b74524
+enumconst	c:@E@BEAccessibilityPressedState@BEAccessibilityPressedStateUndefined	BEAccessibilityPressedState			-	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	fd9971baece9a29a
+enumconst	c:@E@BEAccessibilityPressedState@BEAccessibilityPressedStateFalse	BEAccessibilityPressedState			-	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	1f528b21a5f3314d
+enumconst	c:@E@BEAccessibilityPressedState@BEAccessibilityPressedStateTrue	BEAccessibilityPressedState			-	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	f2c163dcf20d340d
+enumconst	c:@E@BEAccessibilityPressedState@BEAccessibilityPressedStateMixed	BEAccessibilityPressedState			-	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	6adc67acc19ef58f
+typedef	c:@T@BEAccessibilityContainerType	-			enum BEAccessibilityContainerType	-	-	-	2443f56e0a7fe766
+enum	c:@E@BEAccessibilityContainerType	-			NSUInteger	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	bcc737d12fcfcef0
+enumconst	c:@E@BEAccessibilityContainerType@BEAccessibilityContainerTypeNone	BEAccessibilityContainerType			-	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	3df9c26fda7c0fd8
+enumconst	c:@E@BEAccessibilityContainerType@BEAccessibilityContainerTypeLandmark	BEAccessibilityContainerType			-	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	7df81e7b79dc411b
+enumconst	c:@E@BEAccessibilityContainerType@BEAccessibilityContainerTypeTable	BEAccessibilityContainerType			-	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	a4f0f5e7515ca762
+enumconst	c:@E@BEAccessibilityContainerType@BEAccessibilityContainerTypeList	BEAccessibilityContainerType			-	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	d05f984e45c9747e
+enumconst	c:@E@BEAccessibilityContainerType@BEAccessibilityContainerTypeFieldset	BEAccessibilityContainerType			-	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	03f56caddab6382b
+enumconst	c:@E@BEAccessibilityContainerType@BEAccessibilityContainerTypeDialog	BEAccessibilityContainerType			-	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	d7dd4b6dedd28a18
+enumconst	c:@E@BEAccessibilityContainerType@BEAccessibilityContainerTypeTree	BEAccessibilityContainerType			-	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	fa99c7a15cb14b84
+enumconst	c:@E@BEAccessibilityContainerType@BEAccessibilityContainerTypeFrame	BEAccessibilityContainerType			-	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	5c03c254f1f72f4b
+enumconst	c:@E@BEAccessibilityContainerType@BEAccessibilityContainerTypeArticle	BEAccessibilityContainerType			-	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	44c6afab1e54d1fe
+enumconst	c:@E@BEAccessibilityContainerType@BEAccessibilityContainerTypeSemanticGroup	BEAccessibilityContainerType			-	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	b20e3c5ea05fbcd2
+enumconst	c:@E@BEAccessibilityContainerType@BEAccessibilityContainerTypeScrollArea	BEAccessibilityContainerType			-	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	97faa0a75a98331c
+enumconst	c:@E@BEAccessibilityContainerType@BEAccessibilityContainerTypeAlert	BEAccessibilityContainerType			-	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	352bd93116317b59
+enumconst	c:@E@BEAccessibilityContainerType@BEAccessibilityContainerTypeDescriptionList	BEAccessibilityContainerType			-	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	b646dbd1d5131b71
+category	c:objc(cy)NSObject@BEAccessibility	-			-	-	ios=2.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	2f3cb1db568f7cce
+property	c:objc(cs)NSObject(py)browserAccessibilityCurrentStatus	BEAccessibility			NSString *	strong,nonatomic	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	c99064973ebfed5f
+property	c:objc(cs)NSObject(py)browserAccessibilitySortDirection	BEAccessibility			NSString *	strong,nonatomic	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	549592a630134dd0
+property	c:objc(cs)NSObject(py)browserAccessibilityRoleDescription	BEAccessibility			NSString *	strong,nonatomic	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	cebdce8a04e886b1
+property	c:objc(cs)NSObject(py)browserAccessibilityIsRequired	BEAccessibility			BOOL	assign,nonatomic	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	d92bc76b580fd4ed
+property	c:objc(cs)NSObject(py)browserAccessibilityPressedState	BEAccessibility			BEAccessibilityPressedState	assign,nonatomic	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	dc4e4a8cd5f05c94
+property	c:objc(cs)NSObject(py)browserAccessibilityHasDOMFocus	BEAccessibility			BOOL	assign,nonatomic	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	fbe353b6b16a63a0
+property	c:objc(cs)NSObject(py)browserAccessibilityContainerType	BEAccessibility			BEAccessibilityContainerType	assign,nonatomic	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	7e73a09318b1fa75
+method	c:objc(cs)NSObject(im)browserAccessibilitySelectedTextRange	BEAccessibility			NSRange	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	c01d1ab310e1a144
+method	c:objc(cs)NSObject(im)browserAccessibilitySetSelectedTextRange:	BEAccessibility			void	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	97c3dc4ccaa7eadb
+method	c:objc(cs)NSObject(im)browserAccessibilityValueInRange:	BEAccessibility			NSString *	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	6094760e57718cda
+method	c:objc(cs)NSObject(im)browserAccessibilityAttributedValueInRange:	BEAccessibility			NSAttributedString *	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	f66c4c41544cb813
+method	c:objc(cs)NSObject(im)browserAccessibilityInsertTextAtCursor:	BEAccessibility			void	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	c871ef641f5df11b
+method	c:objc(cs)NSObject(im)browserAccessibilityDeleteTextAtCursor:	BEAccessibility			void	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	e9a17f4017abf72b
+method	c:objc(cs)NSObject(im)accessibilityLineEndPositionFromCurrentSelection	BEAccessibility			NSInteger	-	ios=18.2/-/-/0,xros=2.2/-/-/0	-	b8bde00b36bea0a7
+method	c:objc(cs)NSObject(im)accessibilityLineStartPositionFromCurrentSelection	BEAccessibility			NSInteger	-	ios=18.2/-/-/0,xros=2.2/-/-/0	-	a0a644990e704c5b
+method	c:objc(cs)NSObject(im)accessibilityLineRangeForPosition:	BEAccessibility			NSRange	-	ios=18.2/-/-/0,xros=2.2/-/-/0	-	4c6b0183fe7c96b7
+interface	c:objc(cs)BEAccessibilityTextMarker	-			-	-	ios=18.2/-/-/0,xros=2.2/-/-/0	-	09c03d6ab5f17459
+super	-	BEAccessibilityTextMarker	NSObject		-	-	-	-	320fae1f8e90b00e
+conforms	-	BEAccessibilityTextMarker	NSCopying		-	-	-	-	5931a5222a15025b
+conforms	-	BEAccessibilityTextMarker	NSSecureCoding		-	-	-	-	a306585138745e3f
+interface	c:objc(cs)BEAccessibilityTextMarkerRange	-			-	-	ios=18.2/-/-/0,xros=2.2/-/-/0	-	04f872af8d124e6f
+super	-	BEAccessibilityTextMarkerRange	NSObject		-	-	-	-	170610efc8f34a8f
+conforms	-	BEAccessibilityTextMarkerRange	NSCopying		-	-	-	-	51c8bf8f4869aa34
+conforms	-	BEAccessibilityTextMarkerRange	NSSecureCoding		-	-	-	-	c3beb2cae1b586d0
+property	c:objc(cs)BEAccessibilityTextMarkerRange(py)startMarker	-			BEAccessibilityTextMarker *	strong,nonatomic	ios=18.2/-/-/0,xros=2.2/-/-/0	-	e3045662d9c63766
+property	c:objc(cs)BEAccessibilityTextMarkerRange(py)endMarker	-			BEAccessibilityTextMarker *	strong,nonatomic	ios=18.2/-/-/0,xros=2.2/-/-/0	-	12b195d91a4a8a4d
+protocol	c:objc(pl)BEAccessibilityTextMarkerSupport	-			-	-	ios=18.2/-/-/0,xros=2.2/-/-/0	-	0271658792e26064
+conforms	-	BEAccessibilityTextMarkerSupport	NSObject		-	-	-	-	a51a8e640065ee71
+method	c:objc(pl)BEAccessibilityTextMarkerSupport(im)accessibilityBoundsForTextMarkerRange:	-			CGRect	-	ios=18.2/-/-/0,xros=2.2/-/-/0	-	ebe39cb61929ee81
+method	c:objc(pl)BEAccessibilityTextMarkerSupport(im)accessibilityContentForTextMarkerRange:	-			NSString *	-	ios=18.2/-/-/0,xros=2.2/-/-/0	-	14f986d5a8070295
+method	c:objc(pl)BEAccessibilityTextMarkerSupport(im)accessibilityTextMarkerRangeForCurrentSelection	-			BEAccessibilityTextMarkerRange *	-	ios=18.2/-/-/0,xros=2.2/-/-/0	-	643fe96d9d61a3a6
+method	c:objc(pl)BEAccessibilityTextMarkerSupport(im)accessibilityTextMarkerRange	-			BEAccessibilityTextMarkerRange *	-	ios=18.2/-/-/0,xros=2.2/-/-/0	-	d52afbd54e74bc48
+method	c:objc(pl)BEAccessibilityTextMarkerSupport(im)accessibilityNextTextMarker:	-			BEAccessibilityTextMarker *	-	ios=18.2/-/-/0,xros=2.2/-/-/0	-	dcb8737721cf068e
+method	c:objc(pl)BEAccessibilityTextMarkerSupport(im)accessibilityPreviousTextMarker:	-			BEAccessibilityTextMarker *	-	ios=18.2/-/-/0,xros=2.2/-/-/0	-	cd87e161f7c2e943
+method	c:objc(pl)BEAccessibilityTextMarkerSupport(im)accessibilityLineEndMarkerForMarker:	-			BEAccessibilityTextMarker *	-	ios=18.2/-/-/0,xros=2.2/-/-/0	-	f0202d91782a322c
+method	c:objc(pl)BEAccessibilityTextMarkerSupport(im)accessibilityLineStartMarkerForMarker:	-			BEAccessibilityTextMarker *	-	ios=18.2/-/-/0,xros=2.2/-/-/0	-	122827edc1026373
+method	c:objc(pl)BEAccessibilityTextMarkerSupport(im)accessibilityMarkerForPoint:	-			BEAccessibilityTextMarker *	-	ios=18.2/-/-/0,xros=2.2/-/-/0	-	d41820259c8acc1b
+method	c:objc(pl)BEAccessibilityTextMarkerSupport(im)accessibilityTextMarkerForPosition:	-			BEAccessibilityTextMarker *	-	ios=18.2/-/-/0,xros=2.2/-/-/0	-	a6f52aba450485ee
+method	c:objc(pl)BEAccessibilityTextMarkerSupport(im)accessibilityTextMarkerRangeForRange:	-			BEAccessibilityTextMarkerRange *	-	ios=18.2/-/-/0,xros=2.2/-/-/0	-	c70e7d1dd1f395b2
+method	c:objc(pl)BEAccessibilityTextMarkerSupport(im)accessibilityRangeForTextMarkerRange:	-			NSRange	-	ios=18.2/-/-/0,xros=2.2/-/-/0	-	1de537a624400fb9
+var	c:@BEAccessibilityTraitMenuItem	-			UIAccessibilityTraits	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	11c76540aa4ce7b9
+var	c:@BEAccessibilityTraitPopUpButton	-			UIAccessibilityTraits	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	96d2eb9ccf0f6bba
+var	c:@BEAccessibilityTraitRadioButton	-			UIAccessibilityTraits	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	9bc1dc3839aad205
+var	c:@BEAccessibilityTraitReadOnly	-			UIAccessibilityTraits	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	03fbcc67d54fb882
+var	c:@BEAccessibilityTraitVisited	-			UIAccessibilityTraits	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	f43744fe3955c198
+var	c:@BEAccessibilitySelectionChangedNotification	-			UIAccessibilityNotifications	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	7c4c073303eb162b
+var	c:@BEAccessibilityValueChangedNotification	-			UIAccessibilityNotifications	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	f828a8485e138d20
+interface	c:objc(cs)BEAccessibilityRemoteHostElement	-			-	-	ios=26.0/-/-/0,xros=26.0/-/-/0	-	41a9b12376c850fc
+super	-	BEAccessibilityRemoteHostElement	NSObject		-	-	-	-	f0b2cdc93db6f036
+method	c:objc(cs)BEAccessibilityRemoteHostElement(im)init	-			instancetype	-	*unavailable ios=26.0/-/-/0,xros=26.0/-/-/0	-	4258213318ba6dfb
+method	c:objc(cs)BEAccessibilityRemoteHostElement(im)initWithIdentifier:remotePid:	-			id	-	ios=26.0/-/-/0,xros=26.0/-/-/0	-	78519211f37ae787
+property	c:objc(cs)BEAccessibilityRemoteHostElement(py)accessibilityContainer	-			id	weak,nonatomic	ios=26.0/-/-/0,xros=26.0/-/-/0	-	fcb36f7ea8cc8d24
+interface	c:objc(cs)BEAccessibilityRemoteElement	-			-	-	ios=26.0/-/-/0,xros=26.0/-/-/0	-	687918cf7b7121ad
+super	-	BEAccessibilityRemoteElement	NSObject		-	-	-	-	41855554d9cb4f18
+method	c:objc(cs)BEAccessibilityRemoteElement(im)init	-			instancetype	-	*unavailable ios=26.0/-/-/0,xros=26.0/-/-/0	-	07a39f3eccc0e3b3
+method	c:objc(cs)BEAccessibilityRemoteElement(im)initWithIdentifier:hostPid:	-			id	-	ios=26.0/-/-/0,xros=26.0/-/-/0	-	6d8581085135264b
+interface	c:objc(cs)BEDownloadMonitorLocation	-			-	-	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c7f553c265782535
+super	-	BEDownloadMonitorLocation	NSObject		-	-	-	-	ecb286878c8b34d7
+method	c:objc(cs)BEDownloadMonitorLocation(im)init	-			instancetype	-	*unavailable ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3fa32dfa0bee621e
+method	c:objc(cs)BEDownloadMonitorLocation(cm)new	-			instancetype	-	*unavailable ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	28bd4a04106c8df7
+property	c:objc(cs)BEDownloadMonitorLocation(py)url	-			NSURL *	readonly	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	644a2e925fda27be
+property	c:objc(cs)BEDownloadMonitorLocation(py)bookmarkData	-			NSData *	readonly	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5d7e4eb6e5f31fcf
+interface	c:objc(cs)BEDownloadMonitor	-			-	-	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cfd2123303d443c3
+super	-	BEDownloadMonitor	NSObject		-	-	-	-	de5ece3991cd9da8
+method	c:objc(cs)BEDownloadMonitor(im)init	-			instancetype	-	*unavailable ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6332dc7b4ff34f47
+method	c:objc(cs)BEDownloadMonitor(cm)new	-			instancetype	-	*unavailable ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	257a19466697f6ea
+method	c:objc(cs)BEDownloadMonitor(im)initWithSourceURL:destinationURL:observedProgress:liveActivityAccessToken:	-			instancetype	-	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e33eefa258e1eafe
+method	c:objc(cs)BEDownloadMonitor(im)useDownloadsFolderWithPlaceholderType:finalFileCreatedHandler:	-			void	-	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	861deae177c5c650
+method	c:objc(cs)BEDownloadMonitor(im)beginMonitoring:	-			void	-	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5ec4c7a4ce759fc7
+method	c:objc(cs)BEDownloadMonitor(im)resumeMonitoring:completionHandler:	-			void	-	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6e45fca9e3783cfe
+property	c:objc(cs)BEDownloadMonitor(py)identifier	-			NS_SWIFT_NAME NSUUID *	readonly	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e4411ce1b9327ecf
+property	c:objc(cs)BEDownloadMonitor(py)sourceURL	-			NSURL *	readonly	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c0a367dd76ef8633
+property	c:objc(cs)BEDownloadMonitor(py)destinationURL	-			NSURL *	readonly	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	327c447d16a94fcb
+method	c:objc(cs)BEDownloadMonitor(cm)createAccessToken	-			NSData *	-	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1ef55b33eaf05ae5

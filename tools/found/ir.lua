@@ -5,7 +5,7 @@
 --
 -- What is committed is the spec's shard per framework, packages/a/apple-backports/spec/<Framework>/declarations.tsv (a nested
 -- framework's is spec/<Outer>/<Inner>/declarations.tsv): only the columns the generator reads (SHARD_NAMES), uncompressed, with a
--- header line that records the libclang and the SDK that made it. The full 17-column IR, for documentation, is a build product: write
+-- header line that records the libclang and the SDK that made it. The full 18-column IR, for documentation, is a build product: write
 -- it to IR_FULL when that is set.
 --
 -- usage (from the repository root): IR_SDK=<iPhoneOS26.2.sdk> [IR_MODE=write|check|conflicts] xmake l ./tools/found/ir.lua
@@ -16,6 +16,11 @@
 --                 the shards record (a re-pin is a reviewed event), when a shard differs, when a shard is stale, or on a conflict list
 --                 mismatch.
 --   IR_MODE=conflicts prints every conflict the extractor found, for review, and writes nothing.
+--   IR_MODE=gaps prints each framework of IR_SNAPSHOT (one folder per framework) that has no shard, with the category the
+--                 extractor's own result gives it, and writes nothing.
+--   IR_MODE=docs runs the doc-time pass (decls --doc) over every framework and prints its rows to stdout, one line per declaration,
+--                 and writes nothing; the last line is a # comment with the counts and the time. The doc generator reads the same
+--                 rows from decls directly; this mode is the measurement of the pass over the whole SDK.
 --   IR_SPEC    the spec folder (default packages/a/apple-backports/spec).
 --   IR_CONFLICTS and IR_UNPARSED the reviewed conflict list and the unparsed list (default tools/found/conflicts.tsv and
 --                 tools/found/unparsed.tsv; the tests use their own).
@@ -33,12 +38,12 @@ local UNPARSED = os.getenv("IR_UNPARSED") or path.join("tools", "found", "unpars
 local TRIPLE = "arm64-apple-ios26.2"
 local CLANG = "/Library/Developer/CommandLineTools/usr/bin/clang"
 local COLUMNS = 18
--- The columns a shard keeps: kind, usr, container, name, side, avail, message, declhash. The IR's other columns are derived or are
+-- The columns a shard keeps: kind, usr, container, name, side, type (typedef rows only), avail, message, declhash. The IR's other columns are derived or are
 -- build products: framework is the folder, availhash is derived from avail, header and line are for documentation, decl is for the
 -- docs (ruling D8: re-derived from clang at doc time), and type, params, nullab, attrs and value are inside the declaration hash.
 -- name and side are stored only where the USR does not give them (shard.lua). avail and message are rendered by the generator
 -- (avail.lua, ruling D7).
-local SHARD_NAMES = "kind,usr,container,name,side,avail,message,declhash"
+local SHARD_NAMES = "kind,usr,container,name,side,type,attrs,availability,message,declhash"
 local shard = import("shard", {rootdir = path.join(os.curdir(), "tools", "found")})
 local avail = import("avail", {rootdir = path.join(os.curdir(), "tools", "found")})
 local RESOURCE  -- the compiler's resource directory, read from CLANG below
@@ -47,7 +52,9 @@ local SDK_NAME  -- the SDK's name without its path or .sdk suffix, as the shards
 if not SDK then raise("IR_SDK must name the iPhoneOS SDK (for example .../iPhoneOS26.2.sdk)") end
 SDK = path.absolute(SDK)
 SPEC = path.absolute(SPEC)
-if MODE ~= "write" and MODE ~= "check" and MODE ~= "conflicts" then raise("IR_MODE must be write, check or conflicts, not " .. MODE) end
+if MODE ~= "write" and MODE ~= "check" and MODE ~= "conflicts" and MODE ~= "gaps" and MODE ~= "docs" then
+    raise("IR_MODE must be write, check, conflicts, gaps or docs, not " .. MODE)
+end
 
 local function trim(s)
     return (s:gsub("^%s+", ""):gsub("%s+$", ""))
@@ -219,10 +226,45 @@ local libclang = trim(os.iorunv(DECLS, {"--version"}))
 SDK_NAME = (path.basename(SDK):gsub("%.sdk$", ""))
 
 local frameworks = all_frameworks()
+-- The doc-time rows of one framework (decls --doc), or nil when the extractor does not parse it (its own status is an error).
+local function doc_rows(f, headers)
+    local argv = {"--doc", "--timeout", TIMEOUT, SDK, f.name, f.root, TRIPLE, RESOURCE}
+    for _, file in ipairs(headers) do table.insert(argv, file) end
+    local out
+    try {
+        function () out = os.iorunv(DECLS, argv) end,
+        catch {
+            function () out = nil end
+        }
+    }
+    return out
+end
+
+-- The doc-time pass over the SDK (IR_MODE=docs): the rows of every framework that parses, on stdout; nothing is written.
+if MODE == "docs" then
+    local started = os.mclock()
+    local seen, parsed, rows, bytes = 0, 0, 0, 0
+    for _, f in ipairs(frameworks) do
+        local headers = headers_of(f)
+        local out = #headers > 0 and doc_rows(f, headers) or nil
+        seen = seen + 1
+        if out then
+            parsed = parsed + 1
+            bytes = bytes + #out
+            for _ in out:gmatch("\n") do rows = rows + 1 end
+            io.write(out)
+        end
+    end
+    print(string.format("# doc frameworks %d, parsed %d, rows %d, bytes %d, %.1f s", seen, parsed, rows, bytes,
+        (os.mclock() - started) / 1000))
+    return
+end
+
 local parsed, rows = 0, 0
 local full = {table.concat({"-", "meta", "-", "-", "-", "-", "-", "-", "-", "-", "libclang=" .. libclang, "triple=" .. TRIPLE,
     "sdk=" .. SDK_NAME, "-", "-", "-", "-", "-"}, "\t") .. "\n"}
 local shards, unparsed, conflicts = {}, {}, {}
+local census_of = {}  -- framework -> {own, foreign}: the extractor's count of the declarations its translation unit reaches
 for _, f in ipairs(frameworks) do
     local headers, reason = headers_of(f)
     local out
@@ -233,7 +275,10 @@ for _, f in ipairs(frameworks) do
         local order, group, marks = {}, {}, {}
         for line in out:gmatch("[^\n]+") do
             local c = cells_of(line)
-            if c[2] == "conflict" then
+            if c[2] == "census" then
+                census_of[f.name] = {own = tonumber(c[5]:match("own=(%d+)")), foreign = tonumber(c[11]:match("foreign=(%d+)"))}
+                table.insert(full, line .. "\n")
+            elseif c[2] == "conflict" then
                 -- the marker names the key (kind, usr, container, name, side) and how the extractor resolved it
                 table.insert(marks, {key = table.concat({c[1], c[7], c[3], c[4], c[5], c[6], c[9]}, "\t"), resolution = c[9],
                     variants = c[11], entity = table.concat({c[7], c[3], c[4], c[5], c[6]}, "\t")})
@@ -279,8 +324,13 @@ for _, f in ipairs(frameworks) do
                 raise(f.name .. ": the name or side of a " .. kind .. " row does not round trip: " .. usr)
             end
             -- an accessor is derived from its property, so the shards leave it out; the full IR keeps it
+            -- the typed set: a column is in a shard only when a committed stage reads it (ruling of 2026-10-10, per column). The type is
+            -- the return type of a method or a function, the field or variable type (with its qualifiers), the underlying type of a
+            -- typedef; the attributes are the property's, which the property stubs read. The parameters, the nullability and the value
+            -- have no committed reader and stay in the full IR; decl and the locations are not in a shard.
             if kind ~= "accessor" then
-                table.insert(lines, table.concat({kind, usr, row[4], stored_name, stored_side, row[9], row[18], row[15]}, "\t"))
+                table.insert(lines, table.concat({kind, usr, row[4], stored_name, stored_side, row[11], row[13], row[9], row[18],
+                    row[15]}, "\t"))
             end
             table.insert(full, table.concat(row, "\t") .. "\n")
         end
@@ -290,6 +340,60 @@ for _, f in ipairs(frameworks) do
         table.insert(unparsed, {f.name, reason})
         table.insert(full, unparsed_row(f.name, reason))
     end
+end
+
+-- The gaps: each framework of the snapshot (IR_SNAPSHOT, one folder per framework) that has no shard, named with the extractor's own
+-- result: not an SDK framework, no public header, Swift only, skipped by the extractor (its parse failed, with the reason), or parsed
+-- with no declaration of its own (its translation unit reaches declarations of other frameworks, or none at all).
+if MODE == "gaps" then
+    local snapshot = os.getenv("IR_SNAPSHOT") or raise("IR_SNAPSHOT must name the snapshot folder whose frameworks are classified")
+    local skipped, sdk_framework = {}, {}
+    for _, u in ipairs(unparsed) do skipped[u[1]] = u[2] end
+    for _, f in ipairs(frameworks) do sdk_framework[f.name] = f end
+    local names = {}
+    for _, dir in ipairs(os.dirs(path.join(snapshot, "*"))) do
+        local name = path.filename(dir)
+        if not os.isfile(shard_path(name)) then table.insert(names, name) end
+    end
+    table.sort(names)
+    local tally = {}
+    for _, name in ipairs(names) do
+        local f = sdk_framework[name]
+        local category, count, detail
+        if not f then
+            local module_headers = #os.files(path.join(SDK, "usr", "include", name, "**.h"))
+            local swift_stdlib = os.isdir(path.join(SDK, "usr", "lib", "swift", name .. ".swiftmodule"))
+            category = "not-an-sdk-framework"
+            count = module_headers
+            detail = "usr/include headers " .. module_headers .. ", Swift stdlib module " .. (swift_stdlib and "yes" or "no")
+        else
+            local headers, reason = headers_of(f)
+            count = #headers
+            local swift = #os.dirs(path.join(f.root, "Modules", "*.swiftmodule")) > 0
+            if #headers == 0 then
+                category = reason:find("Swift interface only", 1, true) and "swift-only" or "no-public-header"
+                detail = reason
+            elseif skipped[name] then
+                category = "skipped-by-extractor"
+                detail = skipped[name]
+            elseif census_of[name] and census_of[name].own == 0 then
+                if census_of[name].foreign > 0 then
+                    category = "imports-other-frameworks"
+                    detail = "no declaration of its own; " .. census_of[name].foreign .. " declarations of other SDK headers reach its unit"
+                else
+                    category = swift and "swift-only" or "no-declaration-reaches-target"
+                    detail = "parsed clean; no declaration of its own or of another SDK header reaches the arm64 iOS unit"
+                end
+            else
+                category = "unexplained"
+                detail = "the extractor parsed it, and its census disagrees with its shard status"
+            end
+        end
+        tally[category] = (tally[category] or 0) + 1
+        print(string.format("%s\t%s\t%d\t%s", name, category, count, detail))
+    end
+    for category, n in pairs(tally) do print(string.format("summary\t%s\t%d", category, n)) end
+    return
 end
 
 -- The conflicts: every one must be listed, and every listed one must be a conflict.

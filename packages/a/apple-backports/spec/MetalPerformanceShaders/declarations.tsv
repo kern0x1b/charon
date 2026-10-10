@@ -1,10 +1,10 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
-function	c:@F@MPSSupportsMTLDevice	-			ios=9.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=9.0/-/-/0	-	9170c85b30aa5a99
-function	c:@F@MPSHintTemporaryMemoryHighWaterMark	-			-	-	1976843c4d77f8a4
-function	c:@F@MPSSetHeapCacheDuration	-			-	-	fe16340a0aad5f3c
-typedef	c:MetalPerformanceShaders.h@T@MPSDeviceOptions	-			-	-	120de0af3d057331
-enum	c:@E@MPSDeviceOptions	-			-	-	805ca0ae63361ba4
-enumconst	c:@E@MPSDeviceOptions@MPSDeviceOptionsDefault	MPSDeviceOptions			ios=12.2/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14.4/-/-/0,tvos=12.2/-/-/0	-	3f6c61358cd20101
-enumconst	c:@E@MPSDeviceOptions@MPSDeviceOptionsLowPower	MPSDeviceOptions			ios=12.2/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14.4/-/-/0,tvos=12.2/-/-/0	-	c08850a1296af527
-enumconst	c:@E@MPSDeviceOptions@MPSDeviceOptionsSkipRemovable	MPSDeviceOptions			ios=12.2/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14.4/-/-/0,tvos=12.2/-/-/0	-	add6cec53cbd8088
-function	c:@F@MPSGetPreferredDevice	-			ios=12.2/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14.4/-/-/0,tvos=12.2/-/-/0	-	e070164993733b5c
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
+function	c:@F@MPSSupportsMTLDevice	-			BOOL (id<MTLDevice> _Nullable)	-	ios=9.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=9.0/-/-/0	-	6b483b508e8f871a
+function	c:@F@MPSHintTemporaryMemoryHighWaterMark	-			void (id<MTLCommandBuffer> _Nonnull, NSUInteger)	-	-	-	f334694cfe5f91a7
+function	c:@F@MPSSetHeapCacheDuration	-			void (id<MTLCommandBuffer> _Nonnull, double)	-	-	-	d8fa56b478da66f5
+typedef	c:MetalPerformanceShaders.h@T@MPSDeviceOptions	-			enum MPSDeviceOptions	-	-	-	120de0af3d057331
+enum	c:@E@MPSDeviceOptions	-			NSUInteger	-	-	-	805ca0ae63361ba4
+enumconst	c:@E@MPSDeviceOptions@MPSDeviceOptionsDefault	MPSDeviceOptions			-	-	ios=12.2/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14.4/-/-/0,tvos=12.2/-/-/0	-	3f6c61358cd20101
+enumconst	c:@E@MPSDeviceOptions@MPSDeviceOptionsLowPower	MPSDeviceOptions			-	-	ios=12.2/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14.4/-/-/0,tvos=12.2/-/-/0	-	c08850a1296af527
+enumconst	c:@E@MPSDeviceOptions@MPSDeviceOptionsSkipRemovable	MPSDeviceOptions			-	-	ios=12.2/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14.4/-/-/0,tvos=12.2/-/-/0	-	add6cec53cbd8088
+function	c:@F@MPSGetPreferredDevice	-			id<MTLDevice>  _Nullable (MPSDeviceOptions)	-	ios=12.2/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14.4/-/-/0,tvos=12.2/-/-/0	-	65649208039f146c

@@ -1,7 +1,7 @@
 -- The header facts of one framework, read from its declaration shard (ir.lua writes the shards; shard.lua decodes them). These are the
 -- four kinds headers.lua produces today, so the generator can read the shard in place of the regex parse: members (the class members
 -- of the framework's @interface and category declarations, one row per method or property), declared (the names of the framework's
--- declared entities), typedefs (name and declaration) and superclasses (the superclass and the protocols of each class).
+-- declared entities), typedefs (name and underlying type) and superclasses (the superclass and the protocols of each class).
 --
 -- A member row: cls (the class, from the USR), kind (method or property), api (-[Cls sel], +[Cls sel] or -[Cls prop], the spec's key),
 -- alias (the api for a method, Cls.prop for a property), avail and message (the IR's availability fields), text (the spec's
@@ -22,8 +22,8 @@ function rows(spec, framework)
             local c = {}
             for cell in (line .. "\t"):gmatch("([^\t]*)\t") do table.insert(c, cell) end
             local name, side = shard.decode(c[1], c[2], c[4], c[5])
-            table.insert(out, {kind = c[1], usr = c[2], key = c[3], name = name, side = side, avail = c[6], message = c[7],
-                hash = c[8]})
+            table.insert(out, {kind = c[1], usr = c[2], key = c[3], name = name, side = side, type = c[6], attrs = c[7],
+                avail = c[8], message = c[9], hash = c[10]})
         end
     end
     return out
@@ -64,12 +64,12 @@ function declared(spec, framework)
     return out
 end
 
--- The typedefs by name. Their written definitions are not in the shards (ruling D8: decl is display only), so the shape of a typedef
--- is not a fact the shards give; see the report.
+-- The typedefs: their names and their underlying types (the type column, which only typedef rows carry). The written definition of a
+-- typedef is not in a shard (ruling D8: decl is display only); the underlying type is what the shape needs.
 function typedefs(spec, framework)
     local out = {}
     for _, r in ipairs(rows(spec, framework)) do
-        if r.kind == "typedef" then table.insert(out, {name = r.name}) end
+        if r.kind == "typedef" then table.insert(out, {name = r.name, type = r.type}) end
     end
     return out
 end

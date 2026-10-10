@@ -1,2 +1,2 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
-var	c:@CoreTransferableVersionNumber	-			-	-	77937387acc1b0f8
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
+var	c:@CoreTransferableVersionNumber	-			double	-	-	-	77937387acc1b0f8

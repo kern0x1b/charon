@@ -32,6 +32,16 @@ local function decl_of(usr)
     return nil
 end
 
+-- every cell of the full IR row of a usr (the parameters, the nullability and the value included)
+local function full_of(usr)
+    for line in io.lines(FULL) do
+        local c = {}
+        for cell in (line .. "\t"):gmatch("([^\t]*)\t") do table.insert(c, cell) end
+        if c[3] == usr then return c end
+    end
+    return nil
+end
+
 -- 2. the golden shards, decoded: one row per declaration, the name and the side as the IR has them
 local rows = {}
 for _, file in ipairs({path.join(SPEC, "Fixture", "declarations.tsv"), path.join(SPEC, "Fixture", "Inner", "declarations.tsv")}) do
@@ -40,10 +50,10 @@ for _, file in ipairs({path.join(SPEC, "Fixture", "declarations.tsv"), path.join
         if not line:find("^#") then
             local c = {}
             for cell in (line .. "\t"):gmatch("([^\t]*)\t") do table.insert(c, cell) end
-            expect(#c == 8, "every shard row has 8 columns: " .. line)
+            expect(#c == 10, "every shard row has 10 columns: " .. line)
             local name, side = shard.decode(c[1], c[2], c[4], c[5])
             table.insert(rows, {framework = framework, kind = c[1], usr = c[2], container = c[3], name = name, side = side,
-                avail = c[6], message = c[7], hash = c[8]})
+                type = c[6], attrs = c[7], avail = c[8], message = c[9], hash = c[10]})
         end
     end
 end
@@ -64,6 +74,22 @@ end
 count(function (r) return r.usr == "c:@F@FXRun" end, 1, "FXRun is one function")
 expect(decl_of("c:@F@FXRun") == "void FXRun(int total)", "FXRun is emitted from Repeat.h")
 count(function (r) return r.usr == "c:Repeat.h@T@FXCount" and r.kind == "typedef" end, 1, "FXCount is one typedef")
+-- the typed columns (ruling of 2026-10-10, per column): the type of every row and the attributes of a property are in the shard
+expect(find(function (r) return r.usr == "c:Repeat.h@T@FXCount" end)[1].type == "int", "a typedef row keeps its underlying type")
+expect(find(function (r) return r.usr == "c:Fixture.h@T@FXOpaque" end)[1].type == "struct FXOpaque",
+    "an opaque typedef keeps the struct it names")
+local widget_named = find(function (r) return r.usr == "c:objc(cs)FXWidget(cm)widgetNamed:" end)[1]
+expect(widget_named.type == "instancetype", "a method keeps its return type")
+-- the columns no committed stage reads stay in the full IR: the parameters, the nullability and the value
+expect(full_of("c:@F@FXRun")[12] == "int total", "a function keeps its parameter types and names (full IR)")
+expect(full_of("c:objc(cs)FXWidget(cm)widgetNamed:")[10] == "-|l",
+    "a method's nullability is the result, then the parameters (full IR)")
+expect(full_of("c:@E@FXState@FXStateOn")[14] == "1", "an enum constant keeps its value (full IR)")
+expect(find(function (r) return r.usr == "c:@FXScale" end)[1].type == "const double", "a qualifier is part of the type")
+local enabled_row = find(function (r) return r.usr == "c:objc(cs)FXWidget(py)enabled" end)[1]
+expect(enabled_row.attrs == "readonly,nonatomic,getter=isEnabledNow" and enabled_row.type == "_Bool",
+    "a property keeps its attributes and its type")
+count(function (r) return r.type == "" end, 0, "every row fills its type cell")
 count(function (r) return r.usr == "c:@E@FXState" end, 1, "FXState is one enum (definition only)")
 count(function (r) return r.usr == "c:@S@FXOpaque" end, 1, "FXOpaque is one struct")
 
@@ -102,11 +128,11 @@ local old = find(function (r) return r.usr == "c:objc(cs)FXLegacy(im)old" end)
 expect(#old == 1 and old[1].avail == "ios=16.0/-/-/0", "a later extension availability overrides the class's")
 local tweak = find(function (r) return r.usr == "c:objc(cs)FXLegacy(im)tweak" end)
 expect(#tweak == 1 and tweak[1].avail == "ios=14.0/-/-/0", "an earlier extension availability is ignored")
--- two declarations of a C function that disagree are one merged row (avail.lua): the second declares no availability here (clang
--- drops an availability attribute that does not match the first declaration), so the first is not unrestricted and the rule
--- makes the function unannotated
+-- two declarations of a C function that disagree are one merged row (avail.lua): the second names no availability in the IR (clang
+-- drops an availability attribute that does not match the first declaration), so it carries no fact and the annotated one decides
 count(function (r) return r.usr == "c:@F@FXVersioned" end, 1, "a merged C function is one row")
-expect(find(function (r) return r.usr == "c:@F@FXVersioned" end)[1].avail == "-", "the merged availability of the C function")
+expect(find(function (r) return r.usr == "c:@F@FXVersioned" end)[1].avail == "ios=17.0/-/-/0",
+    "the merged availability of the C function is the annotated declaration's")
 
 -- categories: a class extension is keyed by its class name (no file or offset), its protocols belong to the class, and a named
 -- category's members carry the category as their container
@@ -165,6 +191,11 @@ expect(byapi["-[FXWidget isEnabledNow]"] == nil and byapi["+[FXWidget label]"] =
     "the accessors synthesised from a property are not members: the property is")
 local conforms = facts.conformances(SPEC, "Fixture")
 expect(#conforms == 1 and conforms[1].cls == "FXWidget" and conforms[1].protocol == "FXSource", "the conformance fact")
+local typedef_fact = nil
+for _, t in ipairs(facts.typedefs(SPEC, "Fixture")) do
+    if t.name == "FXCount" then typedef_fact = t end
+end
+expect(typedef_fact ~= nil and typedef_fact.type == "int", "the typedef fact carries the underlying type")
 
 -- the availability rule for the merged conflicts (introduced: the earliest declaration; deprecated and obsoleted: the latest, and only
 -- when every declaration that is available on the platform says so; unavailable only when every declaration says so; a declaration
@@ -193,8 +224,15 @@ eq(avail.merge({row("ios=2.0/-/9.0/0"), row("ios=2.0/-/11.0/0")}).avail, "ios=2.
 -- available if any declaration is available; unavailable only when every declaration is
 eq(avail.merge({row("ios=-/-/-/1"), row("ios=5.0/-/-/0")}).avail, "ios=5.0/-/-/0", "available if any declaration is available")
 eq(avail.merge({row("ios=-/-/-/1"), row("ios=-/-/-/1")}).avail, "ios=-/-/-/1", "unavailable when every declaration is")
--- a declaration that names no platform at all is available since the beginning, so an unrestricted platform stays unrestricted
-eq(avail.merge({row("-"), row("ios=18.0/-/-/0")}).avail, "-", "an unannotated declaration makes the platform available since the beginning")
+-- a declaration that names no platform at all carries no availability fact: it does not vote, and the annotated one decides
+-- (ruling of 2026-10-10: the OpenGLES entry point glResolveMultisampleFramebufferAPPLE and the PDFKit typedef PDFSelectionGranularity)
+eq(avail.merge({row("-"), row("ios=4.0/12.0/-/0,tvos=9.0/12.0/-/0")}).avail, "ios=4.0/12.0/-/0,tvos=9.0/12.0/-/0",
+    "an unannotated declaration is ignored: the annotated OpenGLES entry decides")
+eq(avail.merge({row("-"), row("ios=18.0/-/-/0")}).avail, "ios=18.0/-/-/0",
+    "an unannotated declaration is ignored: the annotated PDFKit typedef decides")
+eq(avail.merge({row("-"), row("-")}).avail, "-", "when no declaration is annotated the key has no availability")
+eq(avail.merge({row("-"), row("ios=4.0/12.0/-/0", "deprecated: Gone"), row("-", "deprecated: Other")}).message,
+    "deprecated: Gone", "an unannotated declaration's message is not the key's message")
 -- the message follows the latest deprecation
 eq(avail.merge({row("ios=2.0/9.0/-/0", "deprecated: A"), row("ios=2.0/12.0/-/0", "deprecated: B")}).message, "deprecated: B",
     "the message of the declaration that gives the latest deprecation")
@@ -218,5 +256,36 @@ dep, unav = avail.split_message("deprecated: X | unavailable: Y")
 expect(dep == "X" and unav == "Y", "a deprecation and an unavailability text, in that order")
 dep, unav = avail.split_message("unavailable: removed in 2.0")
 expect(dep == nil and unav == "removed in 2.0", "an unavailability text alone")
+
+-- the doc-time mode (ir.lua's docs mode, which runs decls --doc over the fixture): one line per declaration of ten escaped cells, the
+-- doc comment's brief and raw text, the parameter names and the declaration as written; nothing is written
+local docs = os.iorunv("xmake", {"l", "./tools/found/ir.lua"}, {envs = {IR_SDK = path.join(ROOT, "fixture", "sdk"), IR_MODE = "docs"}})
+local doc_lines = {}
+for line in docs:gmatch("[^\n]+") do
+    if line:find("\t", 1, true) then table.insert(doc_lines, line) end
+end
+local function doc_cells(line)
+    local c = {}
+    for cell in (line .. "\t"):gmatch("([^\t]*)\t") do table.insert(c, cell) end
+    return c
+end
+for _, line in ipairs(doc_lines) do
+    expect(#doc_cells(line) == 10, "every doc row has 10 cells: " .. line)
+end
+local function doc_of(usr)
+    for _, line in ipairs(doc_lines) do
+        local c = doc_cells(line)
+        if c[3] == usr then return c end
+    end
+    return nil
+end
+local run_doc = doc_of("c:@F@FXRun")
+expect(run_doc ~= nil and run_doc[8] == "Runs the total. The total is added to the sum.", "a doc row carries the brief as clang parses it")
+expect(run_doc ~= nil and run_doc[9]:find("\\n", 1, true) ~= nil, "the raw doc comment is one cell, its line breaks escaped")
+expect(run_doc ~= nil and run_doc[7] == "total" and run_doc[10] == "void FXRun(int total)",
+    "a doc row carries the parameter names and the declaration as written")
+local widget_doc = doc_of("c:objc(cs)FXWidget(cm)widgetNamed:")
+expect(widget_doc ~= nil and widget_doc[7] == "name" and widget_doc[8] == "", "a method with no doc comment has an empty brief")
+expect(doc_of("c:Repeat.h@T@FXCount") ~= nil and doc_of("c:Repeat.h@T@FXCount")[9] == "", "a declaration with no comment has an empty raw text")
 
 print(string.format("extractor tests passed: %d checks", checks))

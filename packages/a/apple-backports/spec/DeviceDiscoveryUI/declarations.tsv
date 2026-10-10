@@ -1,7 +1,7 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
-interface	c:objc(cs)DDDevicePickerViewController	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=16.0/-/-/0,watchos=-/-/-/1	-	ed2f576dc302b12f
-super	-	DDDevicePickerViewController	UIViewController		-	-	c04eca3f997d6980
-method	c:objc(cs)DDDevicePickerViewController(cm)new	-			*unavailable ios=26.0/-/-/0,macos=-/-/-/1,tvos=16.0/-/-/0,watchos=-/-/-/1	-	fd83711873c1d1ca
-method	c:objc(cs)DDDevicePickerViewController(im)init	-			*unavailable ios=26.0/-/-/0,macos=-/-/-/1,tvos=16.0/-/-/0,watchos=-/-/-/1	-	d53df475a682fed2
-method	c:objc(cs)DDDevicePickerViewController(im)initWithNibName:bundle:	-			*unavailable ios=26.0/-/-/0,macos=-/-/-/1,tvos=16.0/-/-/0,watchos=-/-/-/1	-	18ee199758bbf3db
-method	c:objc(cs)DDDevicePickerViewController(im)initWithCoder:	-			*unavailable ios=26.0/-/-/0,macos=-/-/-/1,tvos=16.0/-/-/0,watchos=-/-/-/1	-	012359946c3d0c35
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
+interface	c:objc(cs)DDDevicePickerViewController	-			-	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=16.0/-/-/0,watchos=-/-/-/1	-	ed2f576dc302b12f
+super	-	DDDevicePickerViewController	UIViewController		-	-	-	-	c04eca3f997d6980
+method	c:objc(cs)DDDevicePickerViewController(cm)new	-			instancetype	-	*unavailable ios=26.0/-/-/0,macos=-/-/-/1,tvos=16.0/-/-/0,watchos=-/-/-/1	-	24e3587be969096a
+method	c:objc(cs)DDDevicePickerViewController(im)init	-			instancetype	-	*unavailable ios=26.0/-/-/0,macos=-/-/-/1,tvos=16.0/-/-/0,watchos=-/-/-/1	-	56c3c64ab225f4cd
+method	c:objc(cs)DDDevicePickerViewController(im)initWithNibName:bundle:	-			instancetype	-	*unavailable ios=26.0/-/-/0,macos=-/-/-/1,tvos=16.0/-/-/0,watchos=-/-/-/1	-	2c629e1aca66d906
+method	c:objc(cs)DDDevicePickerViewController(im)initWithCoder:	-			instancetype	-	*unavailable ios=26.0/-/-/0,macos=-/-/-/1,tvos=16.0/-/-/0,watchos=-/-/-/1	-	f12da654f02a3568

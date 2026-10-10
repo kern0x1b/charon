@@ -1,11 +1,18 @@
 // The declarations of one framework, from clang's own AST through libclang: the source of the spec's Objective-C and C facts.
 //
 // usage: decls --version
-//        decls [--timeout SECONDS] <sdk-root> <framework> <framework-root> <target-triple> <clang-resource-dir> <header>...
+//        decls [--doc] [--timeout SECONDS] <sdk-root> <framework> <framework-root> <target-triple> <clang-resource-dir> <header>...
 // <framework> is the name the rows carry (a nested framework has its own name). <framework-root> is its .framework directory;
 // its declarations are the ones written under <framework-root>/Headers. Each <header> is an absolute path of a public header
 // of the module (the driver reads the module map and passes the header set); the headers become one unsaved buffer of #import
 // lines, so nothing is written to disk. <clang-resource-dir> holds the compiler's own headers (stdarg.h, stddef.h).
+//
+// --doc (the doc-time mode, for the doc generator): the same pass and the same keys, but the output is one row per declaration
+// with ten cells instead of the IR's rows: framework, kind, usr, container, name, side (the IR's own values), the parameter names
+// (separated by " | "), the brief of the doc comment and its raw text as clang parses them (libclang's brief and raw comment text),
+// and the declaration as written. Each cell is escaped (a backslash, a tab, a line feed and a carriage return as \\, \t, \n, \r),
+// so a declaration is one line; an empty cell has no such text. Nothing is written to a file, no IR row, conflict or census is
+// written, and a module that does not parse is an error (status 1, its count on stderr, no output).
 //
 // The preprocessor evaluates every #if (TARGET_OS_*, __has_feature, availability macros) the way the iOS compile does, so the
 // AST holds the declarations of the iOS branch and nothing else. A declaration is emitted when its spelling location (or, for a
@@ -133,12 +140,20 @@ std::string declared_name(CXCursor c) {
   return text(clang_getCursorSpelling(c));
 }
 
+// The type without the nullability written on it, which the nullability column holds. The parse keeps the attributed type of a written
+// nullability (CXTranslationUnit_IncludeAttributedTypes); its modified type is the type the spelling names. An instancetype is also
+// attributed, but it has no nullability, so it keeps its spelling.
+CXType unqualified(CXType t) {
+  while (t.kind == CXType_Attributed && clang_Type_getNullability(t) != CXTypeNullability_Invalid) t = clang_Type_getModifiedType(t);
+  return t;
+}
+
 // clang spells an anonymous type with its location and sometimes its kind: "enum (unnamed at /abs/path/NSString.h:68:1)",
 // "union (unnamed union at /abs/path/...)", and "union (unnamed)" in another version. The location is the host's SDK path and a
 // line of the header, and the words inside the parentheses differ between versions, so every anonymous type is spelled
 // "(unnamed)" (or "(anonymous)"); the kind outside the parentheses is kept.
 std::string spelled(CXType t) {
-  std::string s = text(clang_getTypeSpelling(t));
+  std::string s = text(clang_getTypeSpelling(unqualified(t)));
   for (const char* open : {"(unnamed", "(anonymous"}) {
     for (size_t at = s.find(open); at != std::string::npos; at = s.find(open, at + 1)) {
       size_t close = s.find(')', at);
@@ -280,6 +295,7 @@ std::string decl_text(CXTranslationUnit tu, const std::map<std::string, std::str
 // One declaration's row (the 13 fields the extractor writes per declaration, and the decl text).
 struct Row {
   std::string kind, usr, container, name, side, header, line, avail, nullab, type, params, attrs, value, decl, message;
+  std::string brief, comment, params_names;  // the doc mode only (--doc): the doc comment and the parameter names
 };
 
 // A declaration with the facts resolution needs. defining: it is the defining declaration of its entity (a definition, or a
@@ -300,6 +316,7 @@ struct Context {
   std::set<std::string> tags;   // the tags emitted, by USR: each is one declaration
   std::map<std::string, std::string> macro_at;  // file:offset of a macro use -> the macro's name
   std::string out;              // the rows, written only when the parse has no error
+  bool doc = false;             // the doc mode (--doc): the doc rows of the declarations only
 };
 
 // The file and line where a declaration is written. A declaration a macro produces (AV_INIT_UNAVAILABLE expands to init and new)
@@ -344,8 +361,49 @@ std::string declaration_hash(const Row& r) {
   return digest16(canonical);
 }
 
+// The doc-time text of a declaration (--doc): its brief and raw doc comment as clang parses them, and the names of its parameters.
+// It is attached when the record is made, while the cursor is at hand.
+void attach_doc(CXCursor c, Row* r) {
+  r->brief = text(clang_Cursor_getBriefCommentText(c));
+  r->comment = text(clang_Cursor_getRawCommentText(c));
+  int n = clang_Cursor_getNumArguments(c);
+  for (int i = 0; i < n; ++i) {
+    if (i) r->params_names += " | ";
+    r->params_names += text(clang_getCursorSpelling(clang_Cursor_getArgument(c, (unsigned)i)));
+  }
+}
+
+// A cell of the doc mode with its backslashes, tabs and line breaks escaped, so that a declaration is one line.
+std::string escaped(const std::string& s) {
+  std::string out;
+  for (char ch : s) {
+    switch (ch) {
+      case '\\': out += "\\\\"; break;
+      case '\t': out += "\\t"; break;
+      case '\n': out += "\\n"; break;
+      case '\r': out += "\\r"; break;
+      default: out += ch;
+    }
+  }
+  return out;
+}
+
+// The doc-time row of a declaration (--doc): ten escaped cells, tab separated and newline terminated.
+void write_doc(Context& ctx, const Row& r) {
+  const std::string cells[] = {ctx.framework, r.kind, r.usr, r.container, r.name, r.side, r.params_names, r.brief, r.comment, r.decl};
+  for (size_t i = 0; i < sizeof cells / sizeof cells[0]; ++i) {
+    if (i) ctx.out += '\t';
+    ctx.out += escaped(cells[i]);
+  }
+  ctx.out += '\n';
+}
+
 // The 17 cells of a declaration row, tab separated and newline terminated.
 void write_row(Context& ctx, const Row& r) {
+  if (ctx.doc) {
+    write_doc(ctx, r);
+    return;
+  }
   const std::string cells[] = {cell(ctx.framework), r.kind,                 filled(cell(r.usr)),
                                filled(cell(r.container)), filled(cell(r.name)), r.side,
                                filled(cell(r.header)), r.line,              filled(cell(r.avail)),
@@ -362,6 +420,7 @@ void write_row(Context& ctx, const Row& r) {
 // A conflict row: the key of a declaration that is declared more than once with different availability, how it was resolved
 // ("defining", "stricter-extension" or "merged"), and the availability variants. ir.lua lists these for review.
 void write_conflict(Context& ctx, const Row& key, const std::string& resolution, const std::string& variants) {
+  if (ctx.doc) return;  // the doc mode writes declarations only
   const std::string cells[] = {cell(ctx.framework), "conflict",   filled(cell(key.usr)), filled(cell(key.container)),
                                filled(cell(key.name)), key.side,  key.kind,              "-",
                                resolution,            "-",        variants,              "-",
@@ -374,8 +433,10 @@ void write_conflict(Context& ctx, const Row& key, const std::string& resolution,
   ctx.out += '\n';
 }
 
-void record(Context& ctx, const Row& r, bool defining, bool extension, int intro) {
-  ctx.records.push_back(Record{r, defining, extension, intro});
+void record(Context& ctx, CXCursor c, const Row& r, bool defining, bool extension, int intro) {
+  Row kept = r;
+  if (ctx.doc) attach_doc(c, &kept);
+  ctx.records.push_back(Record{kept, defining, extension, intro});
 }
 
 // The rule of section 5.2 and the ruling D3. Records of one key are grouped in source order.
@@ -519,7 +580,7 @@ void method_row(Context& ctx, CXCursor c, bool klass, const Nest& nest) {
   // a getter or setter clang synthesises from a property is no declaration of its own: it is an accessor row (the spec's members are
   // the properties, and ir.lua keeps accessors out of the shards)
   if (r.decl == "-") r.kind = "accessor";
-  record(ctx, r, !nest.extension && nest.defining_context, nest.extension, introduced_ios(c));
+  record(ctx, c, r, !nest.extension && nest.defining_context, nest.extension, introduced_ios(c));
 }
 
 void property_row(Context& ctx, CXCursor c, const Nest& nest) {
@@ -560,7 +621,7 @@ void property_row(Context& ctx, CXCursor c, const Nest& nest) {
   r.value = "-";
   r.message = message_of(ctx.tu, c);
   r.decl = decl_text(ctx.tu, ctx.macro_at, c);
-  record(ctx, r, !nest.extension && nest.defining_context, nest.extension, introduced_ios(c));
+  record(ctx, c, r, !nest.extension && nest.defining_context, nest.extension, introduced_ios(c));
 }
 
 void function_row(Context& ctx, CXCursor c) {
@@ -584,7 +645,7 @@ void function_row(Context& ctx, CXCursor c) {
   r.value = "-";
   r.message = message_of(ctx.tu, c);
   r.decl = decl_text(ctx.tu, ctx.macro_at, c);
-  record(ctx, r, clang_isCursorDefinition(c), false, introduced_ios(c));
+  record(ctx, c, r, clang_isCursorDefinition(c), false, introduced_ios(c));
 }
 
 // A declaration with one type (a variable, typedef, field, enum or struct) or one value (an enum constant).
@@ -609,7 +670,7 @@ void simple_row(Context& ctx, CXCursor c, const char* kind, const std::string& t
   r.value = value;
   r.message = message_of(ctx.tu, c);
   r.decl = decl_text(ctx.tu, ctx.macro_at, c);
-  record(ctx, r, defining, false, introduced_ios(c));
+  record(ctx, c, r, defining, false, introduced_ios(c));
 }
 
 // The class a category or class extension extends: the ObjCClassRef among its children.
@@ -664,7 +725,7 @@ CXChildVisitResult visit(CXCursor c, CXCursor parent, CXClientData data) {
       r.value = "-";
       r.message = message_of(ctx.tu, c);
       r.decl = decl_text(ctx.tu, ctx.macro_at, c);
-      record(ctx, r, kind != CXCursor_ObjCCategoryDecl && definition, kind == CXCursor_ObjCCategoryDecl, introduced_ios(c));
+      record(ctx, c, r, kind != CXCursor_ObjCCategoryDecl && definition, kind == CXCursor_ObjCCategoryDecl, introduced_ios(c));
       // the protocols a category lists belong to the class it extends, not to the category
       std::string owner = kind == CXCursor_ObjCCategoryDecl ? category_class(c) : r.name;
       bool category = kind == CXCursor_ObjCCategoryDecl;
@@ -691,7 +752,7 @@ CXChildVisitResult visit(CXCursor c, CXCursor parent, CXClientData data) {
       r.attrs = "-";
       r.value = "-";
       r.decl = "-";
-      record(ctx, r, true, false, 0);
+      record(ctx, c, r, true, false, 0);
       return CXChildVisit_Continue;
     }
     case CXCursor_ObjCInstanceMethodDecl:
@@ -713,7 +774,8 @@ CXChildVisitResult visit(CXCursor c, CXCursor parent, CXClientData data) {
       if (own) function_row(ctx, c);
       return CXChildVisit_Continue;
     case CXCursor_TypedefDecl:
-      if (own) simple_row(ctx, c, "typedef", spelled(clang_getTypedefDeclUnderlyingType(c)), "-", "-", "-", false);
+      if (own) simple_row(ctx, c, "typedef", spelled(clang_getTypedefDeclUnderlyingType(c)),
+                          nullability(clang_getTypedefDeclUnderlyingType(c)), "-", "-", false);
       return CXChildVisit_Continue;
     case CXCursor_EnumDecl:
       if (own && tag_is_emitted(c, ctx)) {
@@ -749,14 +811,65 @@ CXChildVisitResult visit(CXCursor c, CXCursor parent, CXClientData data) {
   }
 }
 
+// The census of the translation unit: the declarations of the kinds the extractor reads, counted by where they are written: the
+// framework's own, and those of other SDK headers the translation unit reaches. One census row per parsed framework; the gaps mode of
+// ir.lua classifies the frameworks that have no declaration of their own with it.
+struct Census {
+  Context* ctx;
+  std::string sdk;
+  long own;
+  long foreign;
+};
+
+CXChildVisitResult census_visit(CXCursor c, CXCursor parent, CXClientData data) {
+  (void)parent;
+  Census* census = static_cast<Census*>(data);
+  switch (clang_getCursorKind(c)) {
+    case CXCursor_ObjCInterfaceDecl:
+    case CXCursor_ObjCCategoryDecl:
+    case CXCursor_ObjCProtocolDecl:
+    case CXCursor_FunctionDecl:
+    case CXCursor_VarDecl:
+    case CXCursor_TypedefDecl:
+    case CXCursor_EnumDecl:
+    case CXCursor_StructDecl:
+    case CXCursor_UnionDecl:
+      break;
+    default:
+      return CXChildVisit_Continue;
+  }
+  std::string file;
+  unsigned line = 0;
+  if (in_framework(c, *census->ctx, &file, &line)) {
+    census->own++;
+    return CXChildVisit_Continue;
+  }
+  CXFile written = nullptr;
+  unsigned column = 0, offset = 0;
+  clang_getExpansionLocation(clang_getCursorLocation(c), &written, &line, &column, &offset);
+  if (written && text(clang_getFileName(written)).compare(0, census->sdk.size(), census->sdk) == 0) census->foreign++;
+  return CXChildVisit_Continue;
+}
+
 void usage() {
   std::fprintf(stderr,
                "usage: decls --version\n"
-               "       decls [--timeout SECONDS] <sdk-root> <framework> <framework-root> <target-triple> "
+               "       decls [--doc] [--timeout SECONDS] <sdk-root> <framework> <framework-root> <target-triple> "
                "<clang-resource-dir> <header>...\n");
 }
 
 }  // namespace
+
+// The census row: a row of kind census, the framework's own and foreign declaration counts in the name and type cells (ir.lua reads
+// them to classify the frameworks that have no shard).
+void census_row(Context& ctx, const char* sdk, CXTranslationUnit tu) {
+  Census census{&ctx, sdk, 0, 0};
+  clang_visitChildren(clang_getTranslationUnitCursor(tu), census_visit, &census);
+  std::string row = cell(ctx.framework) + "\tcensus\t-\t-\town=" + std::to_string(census.own) + "\t-\t-\t-\t-\t-\tforeign=" +
+                    std::to_string(census.foreign);
+  for (int i = 11; i < 18; ++i) row += "\t-";
+  ctx.out += row + "\n";
+}
 
 int main(int argc, char** argv) {
   if (argc == 2 && std::strcmp(argv[1], "--version") == 0) {
@@ -769,9 +882,14 @@ int main(int argc, char** argv) {
     return 0;
   }
   int first = 1;
-  if (argc > 2 && std::strcmp(argv[1], "--timeout") == 0) {
-    alarm((unsigned)std::atoi(argv[2]));
-    first = 3;
+  bool doc = false;
+  if (argc > first && std::strcmp(argv[first], "--doc") == 0) {
+    doc = true;
+    ++first;
+  }
+  if (argc > first + 1 && std::strcmp(argv[first], "--timeout") == 0) {
+    alarm((unsigned)std::atoi(argv[first + 1]));
+    first += 2;
   }
   if (argc - first < 6) {
     usage();
@@ -779,6 +897,7 @@ int main(int argc, char** argv) {
   }
   const char* sdk = argv[first];
   Context ctx;
+  ctx.doc = doc;
   ctx.framework = argv[first + 1];
   ctx.headers = std::string(argv[first + 2]) + "/Headers/";
   const char* triple = argv[first + 3];
@@ -791,7 +910,8 @@ int main(int argc, char** argv) {
   CXTranslationUnit tu = nullptr;
   CXErrorCode code = clang_parseTranslationUnit2(
       index, "charon-module.m", args, sizeof args / sizeof args[0], &unsaved, 1,
-      CXTranslationUnit_SkipFunctionBodies | CXTranslationUnit_DetailedPreprocessingRecord, &tu);
+      CXTranslationUnit_SkipFunctionBodies | CXTranslationUnit_DetailedPreprocessingRecord | CXTranslationUnit_IncludeAttributedTypes,
+      &tu);
   if (code != CXError_Success || !tu) {
     std::fprintf(stderr, "decls: parse failed for %s (code %d)\n", ctx.framework.c_str(), (int)code);
     return 1;
@@ -813,7 +933,13 @@ int main(int argc, char** argv) {
     Nest root{&ctx, "-", "", false, true};
     clang_visitChildren(clang_getTranslationUnitCursor(tu), visit, &root);
     resolve(ctx);
+    if (!doc) census_row(ctx, sdk, tu);
     std::fwrite(ctx.out.data(), 1, ctx.out.size(), stdout);
+  } else if (doc) {
+    std::fprintf(stderr, "decls: %s: %ld error diagnostics\n", ctx.framework.c_str(), errors);
+    clang_disposeTranslationUnit(tu);
+    clang_disposeIndex(index);
+    return 1;
   } else {
     // A module that does not parse is one row of kind unparsed, its reason in the name column; no declaration of it is written.
     // The SDK's absolute path is redacted: the snapshot must not depend on where the SDK is installed.

@@ -1,36 +1,36 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
-interface	c:objc(cs)STScreenTimeConfiguration	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	6e72ac2b18c9ad6e
-super	-	STScreenTimeConfiguration	NSObject		-	-	e270afe76286f376
-property	c:objc(cs)STScreenTimeConfiguration(py)enforcesChildRestrictions	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	34f4710f188e563c
-method	c:objc(cs)STScreenTimeConfiguration(im)init	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0	-	c2b11fa3b5958d80
-method	c:objc(cs)STScreenTimeConfiguration(cm)new	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0	-	2c743a6dfc27a9dd
-interface	c:objc(cs)STScreenTimeConfigurationObserver	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	693b5371dad475f2
-super	-	STScreenTimeConfigurationObserver	NSObject		-	-	91fa77fadcb00e15
-method	c:objc(cs)STScreenTimeConfigurationObserver(im)initWithUpdateQueue:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	a9bc2658a92199f7
-method	c:objc(cs)STScreenTimeConfigurationObserver(im)startObserving	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	239a929c3baad89a
-method	c:objc(cs)STScreenTimeConfigurationObserver(im)stopObserving	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	c5b4ed3fa018e565
-property	c:objc(cs)STScreenTimeConfigurationObserver(py)configuration	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	afa90c259d56cb2a
-method	c:objc(cs)STScreenTimeConfigurationObserver(im)init	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0	-	f4f251697c62d981
-method	c:objc(cs)STScreenTimeConfigurationObserver(cm)new	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0	-	08dc8e90a2b122ec
-typedef	c:@T@STWebHistoryProfileIdentifier	-			ios=18.4/-/-/0,macos=15.4/-/-/0	-	c1894dbfd421f7df
-interface	c:objc(cs)STWebHistory	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	468b28b4bf423afa
-super	-	STWebHistory	NSObject		-	-	b9e06ffb79f8485c
-method	c:objc(cs)STWebHistory(im)initWithBundleIdentifier:profileIdentifier:error:	-			ios=18.4/-/-/0,macos=15.4/-/-/0	-	cd3afbece37c2092
-method	c:objc(cs)STWebHistory(im)initWithProfileIdentifier:	-			ios=18.4/-/-/0,macos=15.4/-/-/0	-	f5e5cb2e53de5023
-method	c:objc(cs)STWebHistory(im)initWithBundleIdentifier:error:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	a997b5cc6fe97900
-method	c:objc(cs)STWebHistory(im)fetchHistoryDuringInterval:completionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0	-	5fd613d1b8cb988d
-method	c:objc(cs)STWebHistory(im)fetchAllHistoryWithCompletionHandler:	-			ios=18.4/-/-/0,macos=15.4/-/-/0	-	28cda5b8bb7e951f
-method	c:objc(cs)STWebHistory(im)deleteHistoryForURL:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	be911cbf73961015
-method	c:objc(cs)STWebHistory(im)deleteHistoryDuringInterval:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	0c4be1f66715fce7
-method	c:objc(cs)STWebHistory(im)deleteAllHistory	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	f8b24ea2066d626b
-interface	c:objc(cs)STWebpageController	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	679ef506baf2f997
-super	-	STWebpageController	UIViewController		-	-	566aa898fed1e183
-property	c:objc(cs)STWebpageController(py)suppressUsageRecording	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	45ff26f5fb11434d
-property	c:objc(cs)STWebpageController(py)URL	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	bfead9c4663d2711
-property	c:objc(cs)STWebpageController(py)URLIsPlayingVideo	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	88cda2c9e5e6737c
-property	c:objc(cs)STWebpageController(py)URLIsPictureInPicture	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	520fa8ad1835bc69
-property	c:objc(cs)STWebpageController(py)URLIsBlocked	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	62ea64abea1aae07
-property	c:objc(cs)STWebpageController(py)profileIdentifier	-			ios=18.4/-/-/0,macos=15.4/-/-/0	-	d58461feabefd478
-method	c:objc(cs)STWebpageController(im)setBundleIdentifier:error:	-			ios=14.0/-/-/0,macos=11.0/-/-/0	-	ff556029ad7f2d1b
-method	c:objc(cs)STWebpageController(im)initWithNibName:bundle:	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0	-	9e1ffa4a1fd768ff
-method	c:objc(cs)STWebpageController(im)initWithCoder:	-			*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0	-	c36ff33479597e5e
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
+interface	c:objc(cs)STScreenTimeConfiguration	-			-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	6e72ac2b18c9ad6e
+super	-	STScreenTimeConfiguration	NSObject		-	-	-	-	e270afe76286f376
+property	c:objc(cs)STScreenTimeConfiguration(py)enforcesChildRestrictions	-			BOOL	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0	-	34f4710f188e563c
+method	c:objc(cs)STScreenTimeConfiguration(im)init	-			instancetype	-	*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0	-	5e716afbae8d63fb
+method	c:objc(cs)STScreenTimeConfiguration(cm)new	-			instancetype	-	*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0	-	e8a6473f14af9b3b
+interface	c:objc(cs)STScreenTimeConfigurationObserver	-			-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	693b5371dad475f2
+super	-	STScreenTimeConfigurationObserver	NSObject		-	-	-	-	91fa77fadcb00e15
+method	c:objc(cs)STScreenTimeConfigurationObserver(im)initWithUpdateQueue:	-			instancetype	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	1ef9f61d6bbda57b
+method	c:objc(cs)STScreenTimeConfigurationObserver(im)startObserving	-			void	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	239a929c3baad89a
+method	c:objc(cs)STScreenTimeConfigurationObserver(im)stopObserving	-			void	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	c5b4ed3fa018e565
+property	c:objc(cs)STScreenTimeConfigurationObserver(py)configuration	-			STScreenTimeConfiguration *	readonly,strong	ios=14.0/-/-/0,macos=11.0/-/-/0	-	81fc0ca075b17deb
+method	c:objc(cs)STScreenTimeConfigurationObserver(im)init	-			instancetype	-	*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0	-	67c4828c4868bb5f
+method	c:objc(cs)STScreenTimeConfigurationObserver(cm)new	-			instancetype	-	*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0	-	0b37148247fb0e4c
+typedef	c:@T@STWebHistoryProfileIdentifier	-			NSString *	-	ios=18.4/-/-/0,macos=15.4/-/-/0	-	c1894dbfd421f7df
+interface	c:objc(cs)STWebHistory	-			-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	468b28b4bf423afa
+super	-	STWebHistory	NSObject		-	-	-	-	b9e06ffb79f8485c
+method	c:objc(cs)STWebHistory(im)initWithBundleIdentifier:profileIdentifier:error:	-			instancetype	-	ios=18.4/-/-/0,macos=15.4/-/-/0	-	5c10d0387e8aa4cd
+method	c:objc(cs)STWebHistory(im)initWithProfileIdentifier:	-			instancetype	-	ios=18.4/-/-/0,macos=15.4/-/-/0	-	790de5ee03a8de9a
+method	c:objc(cs)STWebHistory(im)initWithBundleIdentifier:error:	-			instancetype	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	f0d06f9244fd754d
+method	c:objc(cs)STWebHistory(im)fetchHistoryDuringInterval:completionHandler:	-			void	-	ios=18.4/-/-/0,macos=15.4/-/-/0	-	53c3784b03dc9a2a
+method	c:objc(cs)STWebHistory(im)fetchAllHistoryWithCompletionHandler:	-			void	-	ios=18.4/-/-/0,macos=15.4/-/-/0	-	ed720eafff63eade
+method	c:objc(cs)STWebHistory(im)deleteHistoryForURL:	-			void	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	96e8435032f9eea5
+method	c:objc(cs)STWebHistory(im)deleteHistoryDuringInterval:	-			void	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	1ec5a25dafb78174
+method	c:objc(cs)STWebHistory(im)deleteAllHistory	-			void	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	f8b24ea2066d626b
+interface	c:objc(cs)STWebpageController	-			-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	679ef506baf2f997
+super	-	STWebpageController	UIViewController		-	-	-	-	566aa898fed1e183
+property	c:objc(cs)STWebpageController(py)suppressUsageRecording	-			BOOL	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	45ff26f5fb11434d
+property	c:objc(cs)STWebpageController(py)URL	-			NSURL *	copy,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	f313af80e1795f44
+property	c:objc(cs)STWebpageController(py)URLIsPlayingVideo	-			BOOL	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	88cda2c9e5e6737c
+property	c:objc(cs)STWebpageController(py)URLIsPictureInPicture	-			BOOL	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	520fa8ad1835bc69
+property	c:objc(cs)STWebpageController(py)URLIsBlocked	-			BOOL	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0	-	62ea64abea1aae07
+property	c:objc(cs)STWebpageController(py)profileIdentifier	-			STWebHistoryProfileIdentifier	copy,nonatomic	ios=18.4/-/-/0,macos=15.4/-/-/0	-	ff649f00cb48cc05
+method	c:objc(cs)STWebpageController(im)setBundleIdentifier:error:	-			BOOL	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	6f49a4391c62d09e
+method	c:objc(cs)STWebpageController(im)initWithNibName:bundle:	-			instancetype	-	*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0	-	6e7834917e983a45
+method	c:objc(cs)STWebpageController(im)initWithCoder:	-			instancetype	-	*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0	-	64f0c89c9f956121

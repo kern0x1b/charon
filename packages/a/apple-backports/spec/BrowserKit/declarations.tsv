@@ -1,7 +1,7 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
-typedef	c:@T@BEEligibilityContext	-			-	-	3e5e0890e52fdf51
-enum	c:@E@BEEligibilityContext	-			ios=18.4/-/-/0	-	8de3a75a413ec75d
-enumconst	c:@E@BEEligibilityContext@BEEligibilityContextWebBrowser	BEEligibilityContext			ios=18.4/-/-/0	-	117511f6f0d68f0b
-interface	c:objc(cs)BEAvailability	-			ios=18.4/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cc6b32a7df5673e4
-super	-	BEAvailability	NSObject		-	-	917acefb8aa15397
-method	c:objc(cs)BEAvailability(cm)isEligibleForContext:completionHandler:	-			ios=18.4/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	062add4550051089
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
+typedef	c:@T@BEEligibilityContext	-			enum BEEligibilityContext	-	-	-	3e5e0890e52fdf51
+enum	c:@E@BEEligibilityContext	-			NSInteger	-	ios=18.4/-/-/0	-	8de3a75a413ec75d
+enumconst	c:@E@BEEligibilityContext@BEEligibilityContextWebBrowser	BEEligibilityContext			-	-	ios=18.4/-/-/0	-	117511f6f0d68f0b
+interface	c:objc(cs)BEAvailability	-			-	-	ios=18.4/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cc6b32a7df5673e4
+super	-	BEAvailability	NSObject		-	-	-	-	917acefb8aa15397
+method	c:objc(cs)BEAvailability(cm)isEligibleForContext:completionHandler:	-			void	-	ios=18.4/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cef0e9316deaae41

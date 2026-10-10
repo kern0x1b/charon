@@ -1,65 +1,65 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
-typedef	c:@T@QLThumbnailRepresentationType	-			-	-	227d465327aee04c
-enum	c:@E@QLThumbnailRepresentationType	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9ab43de98ecfdd49
-enumconst	c:@E@QLThumbnailRepresentationType@QLThumbnailRepresentationTypeIcon	QLThumbnailRepresentationType			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7207793c78dbbfbd
-enumconst	c:@E@QLThumbnailRepresentationType@QLThumbnailRepresentationTypeLowQualityThumbnail	QLThumbnailRepresentationType			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	db0395cf41869fe6
-enumconst	c:@E@QLThumbnailRepresentationType@QLThumbnailRepresentationTypeThumbnail	QLThumbnailRepresentationType			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ad204615f90e0e8b
-interface	c:objc(cs)QLThumbnailRepresentation	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4a6dd13d468f295b
-super	-	QLThumbnailRepresentation	NSObject		-	-	9fc2e1336f353cf7
-property	c:objc(cs)QLThumbnailRepresentation(py)type	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3ff4a6f67954991b
-property	c:objc(cs)QLThumbnailRepresentation(py)CGImage	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	66d0a97d9901839f
-property	c:objc(cs)QLThumbnailRepresentation(py)UIImage	-			macos=-/-/-/1	-	6561d618327edc20
-property	c:objc(cs)QLThumbnailRepresentation(py)NSImage	-			ios=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7fcba28385331f80
-property	c:objc(cs)QLThumbnailRepresentation(py)contentRect	-			ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1299eef6267dc1fd
-interface	c:objc(cs)QLThumbnailProvider	-			ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	491fbb1756f22673
-super	-	QLThumbnailProvider	NSObject		-	-	4ac853216bb9cd7a
-method	c:objc(cs)QLThumbnailProvider(im)provideThumbnailForFileRequest:completionHandler:	-			ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f1372b5da856f0b8
-interface	c:objc(cs)QLThumbnailReply	-			ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	de8bc391c205237e
-super	-	QLThumbnailReply	NSObject		-	-	21dd7360f6c02ef4
-property	c:objc(cs)QLThumbnailReply(py)extensionBadge	-			ios=15.0/-/-/0,macos=12.0/-/-/0	-	d9aaf513d0ed8a83
-method	c:objc(cs)QLThumbnailReply(im)init	-			*unavailable ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4cd014ce2a50ea54
-method	c:objc(cs)QLThumbnailReply(cm)replyWithContextSize:drawingBlock:	-			ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3ea92179cbadba45
-method	c:objc(cs)QLThumbnailReply(cm)replyWithContextSize:currentContextDrawingBlock:	-			ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0cf7e41b7590b61d
-method	c:objc(cs)QLThumbnailReply(cm)replyWithImageFileURL:	-			ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c305ba778a874035
-interface	c:objc(cs)QLFileThumbnailRequest	-			ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2880789346c9fd2d
-super	-	QLFileThumbnailRequest	NSObject		-	-	09cd43289bad1cd4
-property	c:objc(cs)QLFileThumbnailRequest(py)maximumSize	-			ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	360d615f29a51291
-property	c:objc(cs)QLFileThumbnailRequest(py)minimumSize	-			ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9f4128ae4601f862
-property	c:objc(cs)QLFileThumbnailRequest(py)scale	-			ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	07c52f0e4494e251
-property	c:objc(cs)QLFileThumbnailRequest(py)fileURL	-			ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8658b18d267a29d9
-typedef	c:@T@QLThumbnailGenerationRequestRepresentationTypes	-			-	-	4a9e3550f1276e1b
-enum	c:@E@QLThumbnailGenerationRequestRepresentationTypes	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	21e3d46aca6e141b
-enumconst	c:@E@QLThumbnailGenerationRequestRepresentationTypes@QLThumbnailGenerationRequestRepresentationTypeIcon	QLThumbnailGenerationRequestRepresentationTypes			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6b614470df9ba3bb
-enumconst	c:@E@QLThumbnailGenerationRequestRepresentationTypes@QLThumbnailGenerationRequestRepresentationTypeLowQualityThumbnail	QLThumbnailGenerationRequestRepresentationTypes			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	43fc1cc730071d43
-enumconst	c:@E@QLThumbnailGenerationRequestRepresentationTypes@QLThumbnailGenerationRequestRepresentationTypeThumbnail	QLThumbnailGenerationRequestRepresentationTypes			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	40814cbf8d5ff999
-enumconst	c:@E@QLThumbnailGenerationRequestRepresentationTypes@QLThumbnailGenerationRequestRepresentationTypeAll	QLThumbnailGenerationRequestRepresentationTypes			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4288d80fdcbde043
-interface	c:objc(cs)QLThumbnailGenerationRequest	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c686adac2c6e4b4d
-super	-	QLThumbnailGenerationRequest	NSObject		-	-	7f076baf67dfe3b9
-conforms	-	QLThumbnailGenerationRequest	NSCopying		-	-	e679a13e8204d344
-conforms	-	QLThumbnailGenerationRequest	NSSecureCoding		-	-	9f58598e1f720f1c
-method	c:objc(cs)QLThumbnailGenerationRequest(im)init	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2830910c5f989da6
-method	c:objc(cs)QLThumbnailGenerationRequest(cm)new	-			*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	130d3bba87f31c73
-method	c:objc(cs)QLThumbnailGenerationRequest(im)initWithFileAtURL:size:scale:representationTypes:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	233593262113e02c
-property	c:objc(cs)QLThumbnailGenerationRequest(py)contentType	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b26c3cc43d25ed98
-property	c:objc(cs)QLThumbnailGenerationRequest(py)minimumDimension	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f9b5d952b950c10a
-property	c:objc(cs)QLThumbnailGenerationRequest(py)iconMode	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6dfdf0f6d1ed35e8
-property	c:objc(cs)QLThumbnailGenerationRequest(py)size	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b584698e64c773d7
-property	c:objc(cs)QLThumbnailGenerationRequest(py)scale	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	32d21bf646769368
-property	c:objc(cs)QLThumbnailGenerationRequest(py)representationTypes	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5dd1544365a38d73
-var	c:@QLThumbnailErrorDomain	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	2c2a5ce16689f118
-typedef	c:@T@QLThumbnailError	-			-	-	c3cc6c517943333c
-enum	c:@E@QLThumbnailError	-			ios=13.0/-/-/0,macos=10.15/-/-/0	-	c5ef9a6d19fee85a
-enumconst	c:@E@QLThumbnailError@QLThumbnailErrorGenerationFailed	QLThumbnailError			ios=13.0/-/-/0,macos=10.15/-/-/0	-	037337b34e159a4d
-enumconst	c:@E@QLThumbnailError@QLThumbnailErrorSavingToURLFailed	QLThumbnailError			ios=13.0/-/-/0,macos=10.15/-/-/0	-	e8cd109913a6138d
-enumconst	c:@E@QLThumbnailError@QLThumbnailErrorNoCachedThumbnail	QLThumbnailError			ios=13.0/-/-/0,macos=10.15/-/-/0	-	4e4e262e4c8be9e8
-enumconst	c:@E@QLThumbnailError@QLThumbnailErrorNoCloudThumbnail	QLThumbnailError			ios=13.0/-/-/0,macos=10.15/-/-/0	-	734f64da07b88829
-enumconst	c:@E@QLThumbnailError@QLThumbnailErrorRequestInvalid	QLThumbnailError			ios=13.0/-/-/0,macos=10.15/-/-/0	-	9b471c553e3c6d61
-enumconst	c:@E@QLThumbnailError@QLThumbnailErrorRequestCancelled	QLThumbnailError			ios=13.0/-/-/0,macos=10.15/-/-/0	-	2d894a1aae13c619
-interface	c:objc(cs)QLThumbnailGenerator	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use saveBestRepresentationForRequest:toFileAtURL:asContentType:completionHandler: instead	165f179fb5e36dc0
-super	-	QLThumbnailGenerator	NSObject		-	-	e45ceef627f31328
-property	c:objc(cs)QLThumbnailGenerator(cpy)sharedGenerator	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c0ad6a888e54b144
-method	c:objc(cs)QLThumbnailGenerator(im)generateBestRepresentationForRequest:completionHandler:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d4ca6859bda82348
-method	c:objc(cs)QLThumbnailGenerator(im)generateRepresentationsForRequest:updateHandler:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1ea3b8d4b327b6de
-method	c:objc(cs)QLThumbnailGenerator(im)cancelRequest:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f4fe69aca60fe8f3
-method	c:objc(cs)QLThumbnailGenerator(im)saveBestRepresentationForRequest:toFileAtURL:asContentType:completionHandler:	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e210ecdc14d38978
-method	c:objc(cs)QLThumbnailGenerator(im)saveBestRepresentationForRequest:toFileAtURL:withContentType:completionHandler:	-			ios=14.0/18.0/-/0,macos=11.0/15.0/-/0	deprecated: Use saveBestRepresentationForRequest:toFileAtURL:asContentType:completionHandler: instead	ccabac1fb72dc892
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
+typedef	c:@T@QLThumbnailRepresentationType	-			enum QLThumbnailRepresentationType	-	-	-	227d465327aee04c
+enum	c:@E@QLThumbnailRepresentationType	-			NSInteger	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9ab43de98ecfdd49
+enumconst	c:@E@QLThumbnailRepresentationType@QLThumbnailRepresentationTypeIcon	QLThumbnailRepresentationType			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7207793c78dbbfbd
+enumconst	c:@E@QLThumbnailRepresentationType@QLThumbnailRepresentationTypeLowQualityThumbnail	QLThumbnailRepresentationType			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	db0395cf41869fe6
+enumconst	c:@E@QLThumbnailRepresentationType@QLThumbnailRepresentationTypeThumbnail	QLThumbnailRepresentationType			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ad204615f90e0e8b
+interface	c:objc(cs)QLThumbnailRepresentation	-			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4a6dd13d468f295b
+super	-	QLThumbnailRepresentation	NSObject		-	-	-	-	9fc2e1336f353cf7
+property	c:objc(cs)QLThumbnailRepresentation(py)type	-			QLThumbnailRepresentationType	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3ff4a6f67954991b
+property	c:objc(cs)QLThumbnailRepresentation(py)CGImage	-			CGImageRef	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e8bbbddb5e2e5798
+property	c:objc(cs)QLThumbnailRepresentation(py)UIImage	-			API_UNAVAILABLE UIImage *	readonly,strong,nonatomic	macos=-/-/-/1	-	8d9a38b53d01e5cc
+property	c:objc(cs)QLThumbnailRepresentation(py)NSImage	-			NSImage *	readonly,strong,nonatomic	ios=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	74ee5f51b69460c9
+property	c:objc(cs)QLThumbnailRepresentation(py)contentRect	-			CGRect	readonly,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1299eef6267dc1fd
+interface	c:objc(cs)QLThumbnailProvider	-			-	-	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	491fbb1756f22673
+super	-	QLThumbnailProvider	NSObject		-	-	-	-	4ac853216bb9cd7a
+method	c:objc(cs)QLThumbnailProvider(im)provideThumbnailForFileRequest:completionHandler:	-			void	-	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	84e702c181a5d718
+interface	c:objc(cs)QLThumbnailReply	-			-	-	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	de8bc391c205237e
+super	-	QLThumbnailReply	NSObject		-	-	-	-	21dd7360f6c02ef4
+property	c:objc(cs)QLThumbnailReply(py)extensionBadge	-			NSString *	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0	-	c5b469fc2b5e7a70
+method	c:objc(cs)QLThumbnailReply(im)init	-			instancetype	-	*unavailable ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	15acd1e6d70d2905
+method	c:objc(cs)QLThumbnailReply(cm)replyWithContextSize:drawingBlock:	-			instancetype	-	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	10e4fdb91c17df99
+method	c:objc(cs)QLThumbnailReply(cm)replyWithContextSize:currentContextDrawingBlock:	-			instancetype	-	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	732d791dd2b9c1b1
+method	c:objc(cs)QLThumbnailReply(cm)replyWithImageFileURL:	-			instancetype	-	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4210adb9f7b6498a
+interface	c:objc(cs)QLFileThumbnailRequest	-			-	-	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2880789346c9fd2d
+super	-	QLFileThumbnailRequest	NSObject		-	-	-	-	09cd43289bad1cd4
+property	c:objc(cs)QLFileThumbnailRequest(py)maximumSize	-			CGSize	readonly,nonatomic	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	360d615f29a51291
+property	c:objc(cs)QLFileThumbnailRequest(py)minimumSize	-			CGSize	readonly,nonatomic	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9f4128ae4601f862
+property	c:objc(cs)QLFileThumbnailRequest(py)scale	-			CGFloat	readonly,nonatomic	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	07c52f0e4494e251
+property	c:objc(cs)QLFileThumbnailRequest(py)fileURL	-			NSURL *	readonly,copy,nonatomic	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	163b47b96349eb15
+typedef	c:@T@QLThumbnailGenerationRequestRepresentationTypes	-			enum QLThumbnailGenerationRequestRepresentationTypes	-	-	-	4a9e3550f1276e1b
+enum	c:@E@QLThumbnailGenerationRequestRepresentationTypes	-			NSUInteger	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	21e3d46aca6e141b
+enumconst	c:@E@QLThumbnailGenerationRequestRepresentationTypes@QLThumbnailGenerationRequestRepresentationTypeIcon	QLThumbnailGenerationRequestRepresentationTypes			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6b614470df9ba3bb
+enumconst	c:@E@QLThumbnailGenerationRequestRepresentationTypes@QLThumbnailGenerationRequestRepresentationTypeLowQualityThumbnail	QLThumbnailGenerationRequestRepresentationTypes			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	43fc1cc730071d43
+enumconst	c:@E@QLThumbnailGenerationRequestRepresentationTypes@QLThumbnailGenerationRequestRepresentationTypeThumbnail	QLThumbnailGenerationRequestRepresentationTypes			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	40814cbf8d5ff999
+enumconst	c:@E@QLThumbnailGenerationRequestRepresentationTypes@QLThumbnailGenerationRequestRepresentationTypeAll	QLThumbnailGenerationRequestRepresentationTypes			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4288d80fdcbde043
+interface	c:objc(cs)QLThumbnailGenerationRequest	-			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c686adac2c6e4b4d
+super	-	QLThumbnailGenerationRequest	NSObject		-	-	-	-	7f076baf67dfe3b9
+conforms	-	QLThumbnailGenerationRequest	NSCopying		-	-	-	-	e679a13e8204d344
+conforms	-	QLThumbnailGenerationRequest	NSSecureCoding		-	-	-	-	9f58598e1f720f1c
+method	c:objc(cs)QLThumbnailGenerationRequest(im)init	-			instancetype	-	*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	98a118bcca503b01
+method	c:objc(cs)QLThumbnailGenerationRequest(cm)new	-			instancetype	-	*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e334882a69700846
+method	c:objc(cs)QLThumbnailGenerationRequest(im)initWithFileAtURL:size:scale:representationTypes:	-			instancetype	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ce2123457f1891eb
+property	c:objc(cs)QLThumbnailGenerationRequest(py)contentType	-			UTType *	copy,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	22a913ef8877102d
+property	c:objc(cs)QLThumbnailGenerationRequest(py)minimumDimension	-			CGFloat	assign,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f9b5d952b950c10a
+property	c:objc(cs)QLThumbnailGenerationRequest(py)iconMode	-			BOOL	assign,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6dfdf0f6d1ed35e8
+property	c:objc(cs)QLThumbnailGenerationRequest(py)size	-			CGSize	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b584698e64c773d7
+property	c:objc(cs)QLThumbnailGenerationRequest(py)scale	-			CGFloat	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	32d21bf646769368
+property	c:objc(cs)QLThumbnailGenerationRequest(py)representationTypes	-			QLThumbnailGenerationRequestRepresentationTypes	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5dd1544365a38d73
+var	c:@QLThumbnailErrorDomain	-			const NSErrorDomain	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	2c2a5ce16689f118
+typedef	c:@T@QLThumbnailError	-			enum QLThumbnailError	-	-	-	c3cc6c517943333c
+enum	c:@E@QLThumbnailError	-			NSInteger	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	c5ef9a6d19fee85a
+enumconst	c:@E@QLThumbnailError@QLThumbnailErrorGenerationFailed	QLThumbnailError			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	037337b34e159a4d
+enumconst	c:@E@QLThumbnailError@QLThumbnailErrorSavingToURLFailed	QLThumbnailError			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	e8cd109913a6138d
+enumconst	c:@E@QLThumbnailError@QLThumbnailErrorNoCachedThumbnail	QLThumbnailError			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	4e4e262e4c8be9e8
+enumconst	c:@E@QLThumbnailError@QLThumbnailErrorNoCloudThumbnail	QLThumbnailError			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	734f64da07b88829
+enumconst	c:@E@QLThumbnailError@QLThumbnailErrorRequestInvalid	QLThumbnailError			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	9b471c553e3c6d61
+enumconst	c:@E@QLThumbnailError@QLThumbnailErrorRequestCancelled	QLThumbnailError			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	2d894a1aae13c619
+interface	c:objc(cs)QLThumbnailGenerator	-			-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use saveBestRepresentationForRequest:toFileAtURL:asContentType:completionHandler: instead	165f179fb5e36dc0
+super	-	QLThumbnailGenerator	NSObject		-	-	-	-	e45ceef627f31328
+property	c:objc(cs)QLThumbnailGenerator(cpy)sharedGenerator	-			NS_SWIFT_NAME QLThumbnailGenerator *	readonly,class	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8b7778cb533fa34a
+method	c:objc(cs)QLThumbnailGenerator(im)generateBestRepresentationForRequest:completionHandler:	-			void	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	095390e60c5e6b8c
+method	c:objc(cs)QLThumbnailGenerator(im)generateRepresentationsForRequest:updateHandler:	-			void	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	dcbd2d348eea5bdd
+method	c:objc(cs)QLThumbnailGenerator(im)cancelRequest:	-			void	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	892869137d64ba77
+method	c:objc(cs)QLThumbnailGenerator(im)saveBestRepresentationForRequest:toFileAtURL:asContentType:completionHandler:	-			void	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9ca442ebdede31ee
+method	c:objc(cs)QLThumbnailGenerator(im)saveBestRepresentationForRequest:toFileAtURL:withContentType:completionHandler:	-			void	-	ios=14.0/18.0/-/0,macos=11.0/15.0/-/0	deprecated: Use saveBestRepresentationForRequest:toFileAtURL:asContentType:completionHandler: instead	68a069a6c9099264

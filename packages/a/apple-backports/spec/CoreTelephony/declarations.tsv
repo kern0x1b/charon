@@ -1,116 +1,116 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
-enum	c:@Ea@kCTErrorDomainNoError	-	-		-	-	ca563931923b9d4e
-enumconst	c:@Ea@kCTErrorDomainNoError@kCTErrorDomainNoError	-			-	-	640bafc97d8293f0
-enumconst	c:@Ea@kCTErrorDomainNoError@kCTErrorDomainPOSIX	-			-	-	66b50b12c0516514
-enumconst	c:@Ea@kCTErrorDomainNoError@kCTErrorDomainMach	-			-	-	94584bf9cafe4f38
-struct	c:@SA@CTError	-			-	-	2df860d26a4eae55
-field	c:@SA@CTError@FI@domain	CTError			-	-	efbccc757c5cd1a7
-field	c:@SA@CTError@FI@error	CTError			-	-	ac48a4cce5563b83
-typedef	c:@T@CTError	-			-	-	703eb4ec02efc99a
-var	c:@CTCallStateDialing	-			ios=4.0/10.0/-/0	-	502ed8097fed2893
-var	c:@CTCallStateIncoming	-			ios=4.0/10.0/-/0	-	802f19dc755727ec
-var	c:@CTCallStateConnected	-			ios=4.0/10.0/-/0	-	4bd0b3ced3e941a1
-var	c:@CTCallStateDisconnected	-			ios=4.0/10.0/-/0	-	c9fd5ed0481852cf
-interface	c:objc(cs)CTCall	-			ios=4.0/10.0/-/0	-	987366c0b8c2ace6
-super	-	CTCall	NSObject		-	-	f810ed850b058abb
-property	c:objc(cs)CTCall(py)callState	-			ios=4.0/10.0/-/0	-	76a3819246851a3f
-property	c:objc(cs)CTCall(py)callID	-			ios=4.0/10.0/-/0	-	431bbb0164f80164
-interface	c:objc(cs)CTCallCenter	-			ios=4.0/10.0/-/0	-	a55d9dab1dc7c59c
-super	-	CTCallCenter	NSObject		-	-	fd8d55eedcfdd2a4
-property	c:objc(cs)CTCallCenter(py)currentCalls	-			ios=4.0/10.0/-/0	-	a4de2a4a5888b5a4
-property	c:objc(cs)CTCallCenter(py)callEventHandler	-			ios=4.0/10.0/-/0	-	b14e725c3b1e6db0
-interface	c:objc(cs)CTCarrier	-			ios=4.0/16.0/-/0	deprecated: Deprecated; returns '--' at some point in the future	0eea9cd2decd26e7
-super	-	CTCarrier	NSObject		-	-	6fd273bcd37984cd
-property	c:objc(cs)CTCarrier(py)carrierName	-			ios=4.0/16.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/9.0/-/0	-	96efeb47289ac9cb
-property	c:objc(cs)CTCarrier(py)mobileCountryCode	-			ios=4.0/16.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/9.0/-/0	-	0cac269062d99cf9
-property	c:objc(cs)CTCarrier(py)mobileNetworkCode	-			ios=4.0/16.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/9.0/-/0	-	fd300e0fa7361699
-property	c:objc(cs)CTCarrier(py)isoCountryCode	-			ios=4.0/16.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/9.0/-/0	-	bc47a8df62129a28
-property	c:objc(cs)CTCarrier(py)allowsVOIP	-			ios=4.0/16.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/9.0/-/0	-	0e0714fe03083f8e
-typedef	c:CTCellularData.h@T@CTCellularDataRestrictedState	-			-	-	db37dab71514890f
-enum	c:@E@CTCellularDataRestrictedState	-			-	-	8214a9c94cd90109
-enumconst	c:@E@CTCellularDataRestrictedState@kCTCellularDataRestrictedStateUnknown	CTCellularDataRestrictedState			-	-	97545f02635596ef
-enumconst	c:@E@CTCellularDataRestrictedState@kCTCellularDataRestricted	CTCellularDataRestrictedState			-	-	4961d9924a6379f3
-enumconst	c:@E@CTCellularDataRestrictedState@kCTCellularDataNotRestricted	CTCellularDataRestrictedState			-	-	8ed5b966bd194d12
-typedef	c:CTCellularData.h@T@CellularDataRestrictionDidUpdateNotifier	-			-	-	d385fa5f6cab4669
-interface	c:objc(cs)CTCellularData	-			ios=9.0/-/-/0	-	e5fab17644f28238
-super	-	CTCellularData	NSObject		-	-	8450211648c52094
-property	c:objc(cs)CTCellularData(py)cellularDataRestrictionDidUpdateNotifier	-			ios=9.0/-/-/0,macos=-/-/-/1	-	3036d73f8f7bc919
-property	c:objc(cs)CTCellularData(py)restrictedState	-			ios=9.0/-/-/0,macos=-/-/-/1	-	b6d8e63c469ef47c
-typedef	c:CTCellularPlanProperties.h@T@CTCellularPlanCapability	-			ios=26.0/-/-/0,watchos=26.0/-/-/0	-	e893c34fd8c57e49
-enum	c:@E@CTCellularPlanCapability	-			ios=26.0/-/-/0,watchos=26.0/-/-/0	-	23e881f2cc219b55
-enumconst	c:@E@CTCellularPlanCapability@CTCellularPlanCapabilityDataOnly	CTCellularPlanCapability			ios=26.0/-/-/0,watchos=26.0/-/-/0	-	0292542a8a584914
-enumconst	c:@E@CTCellularPlanCapability@CTCellularPlanCapabilityDataAndVoice	CTCellularPlanCapability			ios=26.0/-/-/0,watchos=26.0/-/-/0	-	d699e97ed5eb5922
-interface	c:objc(cs)CTCellularPlanProperties	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=26.0/-/-/0	-	1a59b98d3f06eeef
-super	-	CTCellularPlanProperties	NSObject		-	-	bbe7f4a82575b0cb
-conforms	-	CTCellularPlanProperties	NSSecureCoding		-	-	68f321bd4ca961c5
-property	c:objc(cs)CTCellularPlanProperties(py)associatedIccid	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=26.0/-/-/0	-	17815cfe6a24b8c8
-property	c:objc(cs)CTCellularPlanProperties(py)simCapability	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=26.0/-/-/0	-	6988826182a3f8d5
-property	c:objc(cs)CTCellularPlanProperties(py)supportedRegionCodes	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=26.0/-/-/0	-	068e02875621c103
-typedef	c:@T@CTCellularPlanProvisioningAddPlanResult	-			ios=12.0/-/-/0,watchos=5.0/-/-/0	-	466a7525f12055d4
-enum	c:@E@CTCellularPlanProvisioningAddPlanResult	-			ios=12.0/-/-/0,watchos=5.0/-/-/0	-	c3ce59c0ae3fe177
-enumconst	c:@E@CTCellularPlanProvisioningAddPlanResult@CTCellularPlanProvisioningAddPlanResultUnknown	CTCellularPlanProvisioningAddPlanResult			ios=12.0/-/-/0,watchos=5.0/-/-/0	-	842043bc356a0f30
-enumconst	c:@E@CTCellularPlanProvisioningAddPlanResult@CTCellularPlanProvisioningAddPlanResultFail	CTCellularPlanProvisioningAddPlanResult			ios=12.0/-/-/0,watchos=5.0/-/-/0	-	140282e318f02adb
-enumconst	c:@E@CTCellularPlanProvisioningAddPlanResult@CTCellularPlanProvisioningAddPlanResultSuccess	CTCellularPlanProvisioningAddPlanResult			ios=12.0/-/-/0,watchos=5.0/-/-/0	-	eaf4995d7faac1c2
-enumconst	c:@E@CTCellularPlanProvisioningAddPlanResult@CTCellularPlanProvisioningAddPlanResultCancel	CTCellularPlanProvisioningAddPlanResult			ios=17.0/-/-/0,watchos=5.0/-/-/0	-	6269965d0ac24208
-interface	c:objc(cs)CTCellularPlanProvisioningRequest	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	cc1a0e010dfa7444
-super	-	CTCellularPlanProvisioningRequest	NSObject		-	-	48d6013ae2719a41
-conforms	-	CTCellularPlanProvisioningRequest	NSSecureCoding		-	-	dc62d1f9b43e011c
-property	c:objc(cs)CTCellularPlanProvisioningRequest(py)address	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	105fd1369510409f
-property	c:objc(cs)CTCellularPlanProvisioningRequest(py)matchingID	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	19054626fe2e617f
-property	c:objc(cs)CTCellularPlanProvisioningRequest(py)OID	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	5bc09090ccff7a73
-property	c:objc(cs)CTCellularPlanProvisioningRequest(py)confirmationCode	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	a3757840f3f3bd3a
-property	c:objc(cs)CTCellularPlanProvisioningRequest(py)ICCID	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	63417d990dcb4f00
-property	c:objc(cs)CTCellularPlanProvisioningRequest(py)EID	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	d2028ca3cb8d0d55
-interface	c:objc(cs)CTCellularPlanProvisioning	-			ios=12.0/-/-/0	-	f35d165cdda43985
-super	-	CTCellularPlanProvisioning	NSObject		-	-	c6f180b1a0461a11
-property	c:objc(cs)CTCellularPlanProvisioning(py)supportsEmbeddedSIM	-			ios=16.0/-/-/0	-	f17217759c437a0b
-method	c:objc(cs)CTCellularPlanProvisioning(im)supportsCellularPlan	-			ios=12.0/-/-/0	-	4bb602a48501efa0
-method	c:objc(cs)CTCellularPlanProvisioning(im)addPlanWith:completionHandler:	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	a14538d063732234
-method	c:objc(cs)CTCellularPlanProvisioning(im)addPlanWithRequest:properties:completionHandler:	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	3b0002d89dea30a1
-method	c:objc(cs)CTCellularPlanProvisioning(im)updateCellularPlanProperties:completionHandler:	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	59619c29dd70ab08
-interface	c:objc(cs)CTCellularPlanStatus	-			ios=26.0/-/-/0	-	98e57db6cdf69a72
-super	-	CTCellularPlanStatus	NSObject		-	-	8661e2d083866352
-method	c:objc(cs)CTCellularPlanStatus(cm)getTokenWithCompletion:	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	92861d06bfc3c78c
-method	c:objc(cs)CTCellularPlanStatus(cm)checkValidityOfToken:completionHandler:	-			ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8be11d1556247390
-var	c:@CTSubscriberTokenRefreshed	-			ios=7.0/12.1/-/0,macos=-/-/-/1	-	111cec15ed0bb6e5
-protocol	c:objc(pl)CTSubscriberDelegate	-			ios=12.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	dd4abe82906670b5
-method	c:objc(pl)CTSubscriberDelegate(im)subscriberTokenRefreshed:	-			ios=12.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	81d96a88d78a53dc
-interface	c:objc(cs)CTSubscriber	-			ios=7.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	07d8c18fb9fe481a
-super	-	CTSubscriber	NSObject		-	-	c05b2ef992d805df
-property	c:objc(cs)CTSubscriber(py)carrierToken	-			ios=7.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=26.0/-/-/0,xros=-/-/-/1	-	8adddf766b8b41da
-method	c:objc(cs)CTSubscriber(im)refreshCarrierToken	-			ios=6.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=26.0/-/-/0,xros=-/-/-/1	-	1ada6ead84e75d54
-property	c:objc(cs)CTSubscriber(py)identifier	-			ios=12.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	276c60d08cba55ba
-property	c:objc(cs)CTSubscriber(py)SIMInserted	-			ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=11.0/-/-/0,xros=-/-/-/1	-	ec7529dc75b002af
-property	c:objc(cs)CTSubscriber(py)delegate	-			ios=12.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ce7967a8b064f118
-interface	c:objc(cs)CTSubscriberInfo	-			ios=6.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use Use subscribers instead instead	f4d1a926db8215b0
-super	-	CTSubscriberInfo	NSObject		-	-	a7b76166f9821004
-method	c:objc(cs)CTSubscriberInfo(cm)subscribers	-			ios=12.1/-/-/0,maccatalyst=-/-/-/1,watchos=-/-/-/1	-	b8a31cdcc5354f35
-method	c:objc(cs)CTSubscriberInfo(cm)subscriber	-			ios=6.0/12.1/-/0	deprecated: Use Use subscribers instead instead	5245155ffa3ea70d
-var	c:@CTServiceRadioAccessTechnologyDidChangeNotification	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	dc77b4655c69b5b9
-var	c:@CTRadioAccessTechnologyDidChangeNotification	-			ios=7.0/12.0/-/0,macos=-/-/-/1	-	0ccef499eb75ff79
-var	c:@CTRadioAccessTechnologyGPRS	-			ios=7.0/-/-/0,macos=-/-/-/1	-	a3a077cfd6e362eb
-var	c:@CTRadioAccessTechnologyEdge	-			ios=7.0/-/-/0,macos=-/-/-/1	-	7715314a85ecad88
-var	c:@CTRadioAccessTechnologyWCDMA	-			ios=7.0/-/-/0,macos=-/-/-/1	-	4d078e6c0cdb20c5
-var	c:@CTRadioAccessTechnologyHSDPA	-			ios=7.0/-/-/0,macos=-/-/-/1	-	6265c1f0400826c2
-var	c:@CTRadioAccessTechnologyHSUPA	-			ios=7.0/-/-/0,macos=-/-/-/1	-	b6c4dabbcd68731e
-var	c:@CTRadioAccessTechnologyCDMA1x	-			ios=7.0/-/-/0,macos=-/-/-/1	-	32e001aafe191662
-var	c:@CTRadioAccessTechnologyCDMAEVDORev0	-			ios=7.0/-/-/0,macos=-/-/-/1	-	e2addb32733502d3
-var	c:@CTRadioAccessTechnologyCDMAEVDORevA	-			ios=7.0/-/-/0,macos=-/-/-/1	-	2b5b7cf69a8863ee
-var	c:@CTRadioAccessTechnologyCDMAEVDORevB	-			ios=7.0/-/-/0,macos=-/-/-/1	-	bd8c6c56cfbab41c
-var	c:@CTRadioAccessTechnologyeHRPD	-			ios=7.0/-/-/0,macos=-/-/-/1	-	7dc9900fae1e0200
-var	c:@CTRadioAccessTechnologyLTE	-			ios=7.0/-/-/0,macos=-/-/-/1	-	76d3fab03c9f7b4f
-var	c:@CTRadioAccessTechnologyNRNSA	-			ios=14.1/-/-/0,macos=-/-/-/1	-	9fb7a8e6ca536ed4
-var	c:@CTRadioAccessTechnologyNR	-			ios=14.1/-/-/0,macos=-/-/-/1	-	95f1726d56a89e71
-protocol	c:objc(pl)CTTelephonyNetworkInfoDelegate	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/-/-/0	-	803a4bfcca8ece74
-conforms	-	CTTelephonyNetworkInfoDelegate	NSObject		-	-	c72e7034898025f8
-method	c:objc(pl)CTTelephonyNetworkInfoDelegate(im)dataServiceIdentifierDidChange:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/-/-/0	-	0955d7893531b182
-interface	c:objc(cs)CTTelephonyNetworkInfo	-			ios=4.0/-/-/0	deprecated: Deprecated with no replacement	de9f905ded91e21e
-super	-	CTTelephonyNetworkInfo	NSObject		-	-	8ce0b5279e0fa120
-property	c:objc(cs)CTTelephonyNetworkInfo(py)dataServiceIdentifier	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/-/-/0	-	7e5baa5065071273
-property	c:objc(cs)CTTelephonyNetworkInfo(py)delegate	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/-/-/0	-	91dcec820ef0da99
-property	c:objc(cs)CTTelephonyNetworkInfo(py)serviceSubscriberCellularProviders	-			ios=12.0/16.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/9.0/-/0	-	a22d68af7a8b18b4
-property	c:objc(cs)CTTelephonyNetworkInfo(py)subscriberCellularProvider	-			ios=4.0/12.0/-/0,macos=-/-/-/1	-	d7b3ab3a3f7c4c82
-property	c:objc(cs)CTTelephonyNetworkInfo(py)serviceSubscriberCellularProvidersDidUpdateNotifier	-			ios=12.0/16.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/9.0/-/0	-	13f61e7e36035141
-property	c:objc(cs)CTTelephonyNetworkInfo(py)subscriberCellularProviderDidUpdateNotifier	-			ios=4.0/12.0/-/0,macos=-/-/-/1	-	2cb6c237604a667e
-property	c:objc(cs)CTTelephonyNetworkInfo(py)serviceCurrentRadioAccessTechnology	-			ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	7acb1ca88d5d978c
-property	c:objc(cs)CTTelephonyNetworkInfo(py)currentRadioAccessTechnology	-			ios=7.0/12.0/-/0,macos=-/-/-/1	-	3fb7b49df4ee6a3a
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
+enum	c:@Ea@kCTErrorDomainNoError	-	-		unsigned int	-	-	-	ca563931923b9d4e
+enumconst	c:@Ea@kCTErrorDomainNoError@kCTErrorDomainNoError	-			-	-	-	-	640bafc97d8293f0
+enumconst	c:@Ea@kCTErrorDomainNoError@kCTErrorDomainPOSIX	-			-	-	-	-	66b50b12c0516514
+enumconst	c:@Ea@kCTErrorDomainNoError@kCTErrorDomainMach	-			-	-	-	-	94584bf9cafe4f38
+struct	c:@SA@CTError	-			-	-	-	-	2df860d26a4eae55
+field	c:@SA@CTError@FI@domain	CTError			SInt32	-	-	-	efbccc757c5cd1a7
+field	c:@SA@CTError@FI@error	CTError			SInt32	-	-	-	ac48a4cce5563b83
+typedef	c:@T@CTError	-			struct CTError	-	-	-	703eb4ec02efc99a
+var	c:@CTCallStateDialing	-			__OSX_AVAILABLE_BUT_DEPRECATED_MSG NSString *const	-	ios=4.0/10.0/-/0	-	c3e672c1d3ca47ce
+var	c:@CTCallStateIncoming	-			__OSX_AVAILABLE_BUT_DEPRECATED_MSG NSString *const	-	ios=4.0/10.0/-/0	-	9982f3eb713b28df
+var	c:@CTCallStateConnected	-			__OSX_AVAILABLE_BUT_DEPRECATED_MSG NSString *const	-	ios=4.0/10.0/-/0	-	53faeba3c4022d70
+var	c:@CTCallStateDisconnected	-			__OSX_AVAILABLE_BUT_DEPRECATED_MSG NSString *const	-	ios=4.0/10.0/-/0	-	c6840e66d718ad0a
+interface	c:objc(cs)CTCall	-			-	-	ios=4.0/10.0/-/0	-	987366c0b8c2ace6
+super	-	CTCall	NSObject		-	-	-	-	f810ed850b058abb
+property	c:objc(cs)CTCall(py)callState	-			__OSX_AVAILABLE_BUT_DEPRECATED_MSG NSString *	readonly,copy,nonatomic	ios=4.0/10.0/-/0	-	9f95589edb37b6b1
+property	c:objc(cs)CTCall(py)callID	-			__OSX_AVAILABLE_BUT_DEPRECATED_MSG NSString *	readonly,copy,nonatomic	ios=4.0/10.0/-/0	-	88893d495ddb749a
+interface	c:objc(cs)CTCallCenter	-			-	-	ios=4.0/10.0/-/0	-	a55d9dab1dc7c59c
+super	-	CTCallCenter	NSObject		-	-	-	-	fd8d55eedcfdd2a4
+property	c:objc(cs)CTCallCenter(py)currentCalls	-			__OSX_AVAILABLE_BUT_DEPRECATED_MSG NSSet<CTCall *> *	readonly,retain	ios=4.0/10.0/-/0	-	89480926c1e81f79
+property	c:objc(cs)CTCallCenter(py)callEventHandler	-			__OSX_AVAILABLE_BUT_DEPRECATED_MSG void (^)(CTCall * _Nonnull)	copy,nonatomic	ios=4.0/10.0/-/0	-	6bb5dcbd582efff9
+interface	c:objc(cs)CTCarrier	-			-	-	ios=4.0/16.0/-/0	deprecated: Deprecated; returns '--' at some point in the future	0eea9cd2decd26e7
+super	-	CTCarrier	NSObject		-	-	-	-	6fd273bcd37984cd
+property	c:objc(cs)CTCarrier(py)carrierName	-			NSString *	readonly,retain,nonatomic	ios=4.0/16.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/9.0/-/0	-	a9253d389b8af64e
+property	c:objc(cs)CTCarrier(py)mobileCountryCode	-			NSString *	readonly,retain,nonatomic	ios=4.0/16.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/9.0/-/0	-	8627c430e9f77921
+property	c:objc(cs)CTCarrier(py)mobileNetworkCode	-			NSString *	readonly,retain,nonatomic	ios=4.0/16.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/9.0/-/0	-	387f815e542430b7
+property	c:objc(cs)CTCarrier(py)isoCountryCode	-			NSString *	readonly,retain,nonatomic	ios=4.0/16.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/9.0/-/0	-	c7211d4b9211d051
+property	c:objc(cs)CTCarrier(py)allowsVOIP	-			BOOL	readonly,assign,nonatomic	ios=4.0/16.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/9.0/-/0	-	0e0714fe03083f8e
+typedef	c:CTCellularData.h@T@CTCellularDataRestrictedState	-			enum CTCellularDataRestrictedState	-	-	-	db37dab71514890f
+enum	c:@E@CTCellularDataRestrictedState	-			NSUInteger	-	-	-	8214a9c94cd90109
+enumconst	c:@E@CTCellularDataRestrictedState@kCTCellularDataRestrictedStateUnknown	CTCellularDataRestrictedState			-	-	-	-	97545f02635596ef
+enumconst	c:@E@CTCellularDataRestrictedState@kCTCellularDataRestricted	CTCellularDataRestrictedState			-	-	-	-	4961d9924a6379f3
+enumconst	c:@E@CTCellularDataRestrictedState@kCTCellularDataNotRestricted	CTCellularDataRestrictedState			-	-	-	-	8ed5b966bd194d12
+typedef	c:CTCellularData.h@T@CellularDataRestrictionDidUpdateNotifier	-			void (^)(CTCellularDataRestrictedState)	-	-	-	d385fa5f6cab4669
+interface	c:objc(cs)CTCellularData	-			-	-	ios=9.0/-/-/0	-	e5fab17644f28238
+super	-	CTCellularData	NSObject		-	-	-	-	8450211648c52094
+property	c:objc(cs)CTCellularData(py)cellularDataRestrictionDidUpdateNotifier	-			API_AVAILABLE CellularDataRestrictionDidUpdateNotifier	copy	ios=9.0/-/-/0,macos=-/-/-/1	-	c2eb81da7879227c
+property	c:objc(cs)CTCellularData(py)restrictedState	-			CTCellularDataRestrictedState	readonly,nonatomic	ios=9.0/-/-/0,macos=-/-/-/1	-	b6d8e63c469ef47c
+typedef	c:CTCellularPlanProperties.h@T@CTCellularPlanCapability	-			enum CTCellularPlanCapability	-	ios=26.0/-/-/0,watchos=26.0/-/-/0	-	e893c34fd8c57e49
+enum	c:@E@CTCellularPlanCapability	-			NSInteger	-	ios=26.0/-/-/0,watchos=26.0/-/-/0	-	23e881f2cc219b55
+enumconst	c:@E@CTCellularPlanCapability@CTCellularPlanCapabilityDataOnly	CTCellularPlanCapability			-	-	ios=26.0/-/-/0,watchos=26.0/-/-/0	-	0292542a8a584914
+enumconst	c:@E@CTCellularPlanCapability@CTCellularPlanCapabilityDataAndVoice	CTCellularPlanCapability			-	-	ios=26.0/-/-/0,watchos=26.0/-/-/0	-	d699e97ed5eb5922
+interface	c:objc(cs)CTCellularPlanProperties	-			-	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=26.0/-/-/0	-	1a59b98d3f06eeef
+super	-	CTCellularPlanProperties	NSObject		-	-	-	-	bbe7f4a82575b0cb
+conforms	-	CTCellularPlanProperties	NSSecureCoding		-	-	-	-	68f321bd4ca961c5
+property	c:objc(cs)CTCellularPlanProperties(py)associatedIccid	-			NSString *	nonatomic	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=26.0/-/-/0	-	43172be435ed191f
+property	c:objc(cs)CTCellularPlanProperties(py)simCapability	-			CTCellularPlanCapability	nonatomic	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=26.0/-/-/0	-	6988826182a3f8d5
+property	c:objc(cs)CTCellularPlanProperties(py)supportedRegionCodes	-			NS_REFINED_FOR_SWIFT NSArray<NSString *> *	nonatomic	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=26.0/-/-/0	-	9fee04c86e12510f
+typedef	c:@T@CTCellularPlanProvisioningAddPlanResult	-			enum CTCellularPlanProvisioningAddPlanResult	-	ios=12.0/-/-/0,watchos=5.0/-/-/0	-	466a7525f12055d4
+enum	c:@E@CTCellularPlanProvisioningAddPlanResult	-			NSUInteger	-	ios=12.0/-/-/0,watchos=5.0/-/-/0	-	c3ce59c0ae3fe177
+enumconst	c:@E@CTCellularPlanProvisioningAddPlanResult@CTCellularPlanProvisioningAddPlanResultUnknown	CTCellularPlanProvisioningAddPlanResult			-	-	ios=12.0/-/-/0,watchos=5.0/-/-/0	-	842043bc356a0f30
+enumconst	c:@E@CTCellularPlanProvisioningAddPlanResult@CTCellularPlanProvisioningAddPlanResultFail	CTCellularPlanProvisioningAddPlanResult			-	-	ios=12.0/-/-/0,watchos=5.0/-/-/0	-	140282e318f02adb
+enumconst	c:@E@CTCellularPlanProvisioningAddPlanResult@CTCellularPlanProvisioningAddPlanResultSuccess	CTCellularPlanProvisioningAddPlanResult			-	-	ios=12.0/-/-/0,watchos=5.0/-/-/0	-	eaf4995d7faac1c2
+enumconst	c:@E@CTCellularPlanProvisioningAddPlanResult@CTCellularPlanProvisioningAddPlanResultCancel	CTCellularPlanProvisioningAddPlanResult			-	-	ios=17.0/-/-/0,watchos=5.0/-/-/0	-	6269965d0ac24208
+interface	c:objc(cs)CTCellularPlanProvisioningRequest	-			-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	cc1a0e010dfa7444
+super	-	CTCellularPlanProvisioningRequest	NSObject		-	-	-	-	48d6013ae2719a41
+conforms	-	CTCellularPlanProvisioningRequest	NSSecureCoding		-	-	-	-	dc62d1f9b43e011c
+property	c:objc(cs)CTCellularPlanProvisioningRequest(py)address	-			NSString *	strong,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	67261e1f81133e6c
+property	c:objc(cs)CTCellularPlanProvisioningRequest(py)matchingID	-			NSString *	strong,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	70d13575d544812c
+property	c:objc(cs)CTCellularPlanProvisioningRequest(py)OID	-			NSString *	strong,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	6f8b5a305bea203f
+property	c:objc(cs)CTCellularPlanProvisioningRequest(py)confirmationCode	-			NSString *	strong,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	29d9ef898a60784b
+property	c:objc(cs)CTCellularPlanProvisioningRequest(py)ICCID	-			NSString *	strong,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	d6308e9cfd871bb9
+property	c:objc(cs)CTCellularPlanProvisioningRequest(py)EID	-			NSString *	strong,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	c4ce34e33db643ae
+interface	c:objc(cs)CTCellularPlanProvisioning	-			-	-	ios=12.0/-/-/0	-	f35d165cdda43985
+super	-	CTCellularPlanProvisioning	NSObject		-	-	-	-	c6f180b1a0461a11
+property	c:objc(cs)CTCellularPlanProvisioning(py)supportsEmbeddedSIM	-			BOOL	readonly,nonatomic	ios=16.0/-/-/0	-	f17217759c437a0b
+method	c:objc(cs)CTCellularPlanProvisioning(im)supportsCellularPlan	-			BOOL	-	ios=12.0/-/-/0	-	4bb602a48501efa0
+method	c:objc(cs)CTCellularPlanProvisioning(im)addPlanWith:completionHandler:	-			void	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	d2f09663f87d1948
+method	c:objc(cs)CTCellularPlanProvisioning(im)addPlanWithRequest:properties:completionHandler:	-			void	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	848406437cb34518
+method	c:objc(cs)CTCellularPlanProvisioning(im)updateCellularPlanProperties:completionHandler:	-			void	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	7f8eb315ede0f1d3
+interface	c:objc(cs)CTCellularPlanStatus	-			-	-	ios=26.0/-/-/0	-	98e57db6cdf69a72
+super	-	CTCellularPlanStatus	NSObject		-	-	-	-	8661e2d083866352
+method	c:objc(cs)CTCellularPlanStatus(cm)getTokenWithCompletion:	-			void	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	04c0349f8017e53f
+method	c:objc(cs)CTCellularPlanStatus(cm)checkValidityOfToken:completionHandler:	-			void	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ee7706081c3fabfb
+var	c:@CTSubscriberTokenRefreshed	-			API_UNAVAILABLE NSString *const	-	ios=7.0/12.1/-/0,macos=-/-/-/1	-	e673de61e9236cff
+protocol	c:objc(pl)CTSubscriberDelegate	-			-	-	ios=12.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	dd4abe82906670b5
+method	c:objc(pl)CTSubscriberDelegate(im)subscriberTokenRefreshed:	-			void	-	ios=12.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5fe3936594699547
+interface	c:objc(cs)CTSubscriber	-			-	-	ios=7.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	07d8c18fb9fe481a
+super	-	CTSubscriber	NSObject		-	-	-	-	c05b2ef992d805df
+property	c:objc(cs)CTSubscriber(py)carrierToken	-			NSData *	readonly,retain,nonatomic	ios=7.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=26.0/-/-/0,xros=-/-/-/1	-	56a38b74f1864677
+method	c:objc(cs)CTSubscriber(im)refreshCarrierToken	-			BOOL	-	ios=6.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=26.0/-/-/0,xros=-/-/-/1	-	1ada6ead84e75d54
+property	c:objc(cs)CTSubscriber(py)identifier	-			API_AVAILABLE NSString *	readonly,nonatomic	ios=12.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2fa801726e892054
+property	c:objc(cs)CTSubscriber(py)SIMInserted	-			BOOL	readonly,getter=isSIMInserted	ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=11.0/-/-/0,xros=-/-/-/1	-	ec7529dc75b002af
+property	c:objc(cs)CTSubscriber(py)delegate	-			API_AVAILABLE id<CTSubscriberDelegate>	weak,nonatomic	ios=12.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2328d60920f7163a
+interface	c:objc(cs)CTSubscriberInfo	-			-	-	ios=6.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use Use subscribers instead instead	f4d1a926db8215b0
+super	-	CTSubscriberInfo	NSObject		-	-	-	-	a7b76166f9821004
+method	c:objc(cs)CTSubscriberInfo(cm)subscribers	-			NSArray<CTSubscriber *> *	-	ios=12.1/-/-/0,maccatalyst=-/-/-/1,watchos=-/-/-/1	-	1807dece42ed1906
+method	c:objc(cs)CTSubscriberInfo(cm)subscriber	-			CTSubscriber *	-	ios=6.0/12.1/-/0	deprecated: Use Use subscribers instead instead	c420a568d05ce083
+var	c:@CTServiceRadioAccessTechnologyDidChangeNotification	-			NSString *const	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	191344c942387872
+var	c:@CTRadioAccessTechnologyDidChangeNotification	-			API_DEPRECATED_WITH_REPLACEMENT NSString *const	-	ios=7.0/12.0/-/0,macos=-/-/-/1	-	9faaf399344ad75a
+var	c:@CTRadioAccessTechnologyGPRS	-			API_AVAILABLE NSString *const	-	ios=7.0/-/-/0,macos=-/-/-/1	-	36e966db556d3891
+var	c:@CTRadioAccessTechnologyEdge	-			API_AVAILABLE NSString *const	-	ios=7.0/-/-/0,macos=-/-/-/1	-	116256c4ce1c0b07
+var	c:@CTRadioAccessTechnologyWCDMA	-			API_AVAILABLE NSString *const	-	ios=7.0/-/-/0,macos=-/-/-/1	-	ffde41353fef1471
+var	c:@CTRadioAccessTechnologyHSDPA	-			API_AVAILABLE NSString *const	-	ios=7.0/-/-/0,macos=-/-/-/1	-	04260c82425f8c3a
+var	c:@CTRadioAccessTechnologyHSUPA	-			API_AVAILABLE NSString *const	-	ios=7.0/-/-/0,macos=-/-/-/1	-	65152223a942c292
+var	c:@CTRadioAccessTechnologyCDMA1x	-			API_AVAILABLE NSString *const	-	ios=7.0/-/-/0,macos=-/-/-/1	-	e0d64ef6e1eefa16
+var	c:@CTRadioAccessTechnologyCDMAEVDORev0	-			API_AVAILABLE NSString *const	-	ios=7.0/-/-/0,macos=-/-/-/1	-	bf41b23a317477ba
+var	c:@CTRadioAccessTechnologyCDMAEVDORevA	-			API_AVAILABLE NSString *const	-	ios=7.0/-/-/0,macos=-/-/-/1	-	ad6fba12a171abe5
+var	c:@CTRadioAccessTechnologyCDMAEVDORevB	-			API_AVAILABLE NSString *const	-	ios=7.0/-/-/0,macos=-/-/-/1	-	38259a13b16e8ebe
+var	c:@CTRadioAccessTechnologyeHRPD	-			API_AVAILABLE NSString *const	-	ios=7.0/-/-/0,macos=-/-/-/1	-	cfcf46f2bf8acd79
+var	c:@CTRadioAccessTechnologyLTE	-			API_AVAILABLE NSString *const	-	ios=7.0/-/-/0,macos=-/-/-/1	-	c87781822990646c
+var	c:@CTRadioAccessTechnologyNRNSA	-			API_AVAILABLE NSString *const	-	ios=14.1/-/-/0,macos=-/-/-/1	-	8159f84f55dc23a5
+var	c:@CTRadioAccessTechnologyNR	-			API_AVAILABLE NSString *const	-	ios=14.1/-/-/0,macos=-/-/-/1	-	fdeabc4742b16e45
+protocol	c:objc(pl)CTTelephonyNetworkInfoDelegate	-			-	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/-/-/0	-	803a4bfcca8ece74
+conforms	-	CTTelephonyNetworkInfoDelegate	NSObject		-	-	-	-	c72e7034898025f8
+method	c:objc(pl)CTTelephonyNetworkInfoDelegate(im)dataServiceIdentifierDidChange:	-			void	optional	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/-/-/0	-	f31c353a8b8aca42
+interface	c:objc(cs)CTTelephonyNetworkInfo	-			-	-	ios=4.0/-/-/0	deprecated: Deprecated with no replacement	de9f905ded91e21e
+super	-	CTTelephonyNetworkInfo	NSObject		-	-	-	-	8ce0b5279e0fa120
+property	c:objc(cs)CTTelephonyNetworkInfo(py)dataServiceIdentifier	-			NSString *	readonly,copy	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/-/-/0	-	8a146182045dcbd5
+property	c:objc(cs)CTTelephonyNetworkInfo(py)delegate	-			id<CTTelephonyNetworkInfoDelegate>	weak	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/-/-/0	-	aa7b393b502eb096
+property	c:objc(cs)CTTelephonyNetworkInfo(py)serviceSubscriberCellularProviders	-			NSDictionary<NSString *,CTCarrier *> *	readonly,retain	ios=12.0/16.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/9.0/-/0	-	5cb3bfb0761d43b5
+property	c:objc(cs)CTTelephonyNetworkInfo(py)subscriberCellularProvider	-			API_DEPRECATED_WITH_REPLACEMENT CTCarrier *	readonly,retain	ios=4.0/12.0/-/0,macos=-/-/-/1	-	8b1201434a379812
+property	c:objc(cs)CTTelephonyNetworkInfo(py)serviceSubscriberCellularProvidersDidUpdateNotifier	-			void (^)(NSString * _Nonnull)	copy,nonatomic	ios=12.0/16.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/9.0/-/0	-	7eb1abc830d9b86f
+property	c:objc(cs)CTTelephonyNetworkInfo(py)subscriberCellularProviderDidUpdateNotifier	-			API_DEPRECATED_WITH_REPLACEMENT void (^)(CTCarrier * _Nonnull)	copy,nonatomic	ios=4.0/12.0/-/0,macos=-/-/-/1	-	30f6f286fd66a52b
+property	c:objc(cs)CTTelephonyNetworkInfo(py)serviceCurrentRadioAccessTechnology	-			NSDictionary<NSString *,NSString *> *	readonly,retain,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	2d1027c3f9989e3a
+property	c:objc(cs)CTTelephonyNetworkInfo(py)currentRadioAccessTechnology	-			API_DEPRECATED_WITH_REPLACEMENT NSString *	readonly,retain,nonatomic	ios=7.0/12.0/-/0,macos=-/-/-/1	-	aa377e7af91f3894

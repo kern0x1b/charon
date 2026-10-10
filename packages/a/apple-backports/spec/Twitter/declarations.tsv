@@ -1,31 +1,31 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
-enum	c:@Ea@TWRequestMethodGET	-	-		-	-	a4c4d3964c94efb7
-enumconst	c:@Ea@TWRequestMethodGET@TWRequestMethodGET	-			-	-	43896cb3d06a0464
-enumconst	c:@Ea@TWRequestMethodGET@TWRequestMethodPOST	-			-	-	0281374913574c8d
-enumconst	c:@Ea@TWRequestMethodGET@TWRequestMethodDELETE	-			-	-	c7d3595d14435fde
-typedef	c:@T@TWRequestMethod	-			-	-	9187adec53164608
-typedef	c:@T@TWRequestHandler	-			-	-	bb498157d7bb4cf4
-interface	c:objc(cs)TWRequest	-			ios=5.0/6.0/-/0	-	0dbd76965d0cde90
-super	-	TWRequest	NSObject		-	-	0d38c5ae736e8e8d
-method	c:objc(cs)TWRequest(im)initWithURL:parameters:requestMethod:	-			ios=5.0/6.0/-/0	-	ef24e45c2f69167e
-property	c:objc(cs)TWRequest(py)account	-			ios=5.0/6.0/-/0	-	8c69e10a5a96a6a2
-property	c:objc(cs)TWRequest(py)requestMethod	-			ios=5.0/6.0/-/0	-	d561aa50c627f611
-property	c:objc(cs)TWRequest(py)URL	-			ios=5.0/6.0/-/0	-	512ec9d9f62308ad
-property	c:objc(cs)TWRequest(py)parameters	-			ios=5.0/6.0/-/0	-	8b269a73b520a2f3
-method	c:objc(cs)TWRequest(im)addMultiPartData:withName:type:	-			ios=5.0/6.0/-/0	-	8ae40b82ae3f6544
-method	c:objc(cs)TWRequest(im)signedURLRequest	-			ios=5.0/6.0/-/0	-	3e3ae05ab8322bc8
-method	c:objc(cs)TWRequest(im)performRequestWithHandler:	-			ios=5.0/6.0/-/0	-	34d9e035cc9a93d4
-enum	c:@Ea@TWTweetComposeViewControllerResultCancelled	-	-		-	-	bb0cee28126e693c
-enumconst	c:@Ea@TWTweetComposeViewControllerResultCancelled@TWTweetComposeViewControllerResultCancelled	-			-	-	fb1bb3d46b1c6dfb
-enumconst	c:@Ea@TWTweetComposeViewControllerResultCancelled@TWTweetComposeViewControllerResultDone	-			-	-	49a1f4f91de4ea1a
-typedef	c:@T@TWTweetComposeViewControllerResult	-			-	-	4ca080bf5f522e51
-typedef	c:@T@TWTweetComposeViewControllerCompletionHandler	-			-	-	bba70832683d71e2
-interface	c:objc(cs)TWTweetComposeViewController	-			ios=5.0/6.0/-/0	-	8de4a1bf24bbd2b4
-super	-	TWTweetComposeViewController	UIViewController		-	-	31a05cc580a40c9a
-method	c:objc(cs)TWTweetComposeViewController(cm)canSendTweet	-			ios=5.0/6.0/-/0	-	d7d74e4a31b8e550
-method	c:objc(cs)TWTweetComposeViewController(im)setInitialText:	-			ios=5.0/6.0/-/0	-	9bde7c8038928560
-method	c:objc(cs)TWTweetComposeViewController(im)addImage:	-			ios=5.0/6.0/-/0	-	af059a073b79fb3c
-method	c:objc(cs)TWTweetComposeViewController(im)removeAllImages	-			ios=5.0/6.0/-/0	-	544d00d6a25d8d79
-method	c:objc(cs)TWTweetComposeViewController(im)addURL:	-			ios=5.0/6.0/-/0	-	3d1a07366d2ab6da
-method	c:objc(cs)TWTweetComposeViewController(im)removeAllURLs	-			ios=5.0/6.0/-/0	-	16a3b6de6f0ecc07
-property	c:objc(cs)TWTweetComposeViewController(py)completionHandler	-			ios=5.0/6.0/-/0	-	094330b4bef2fea8
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
+enum	c:@Ea@TWRequestMethodGET	-	-		unsigned int	-	-	-	a4c4d3964c94efb7
+enumconst	c:@Ea@TWRequestMethodGET@TWRequestMethodGET	-			-	-	-	-	43896cb3d06a0464
+enumconst	c:@Ea@TWRequestMethodGET@TWRequestMethodPOST	-			-	-	-	-	0281374913574c8d
+enumconst	c:@Ea@TWRequestMethodGET@TWRequestMethodDELETE	-			-	-	-	-	c7d3595d14435fde
+typedef	c:@T@TWRequestMethod	-			SLRequestMethod	-	-	-	9187adec53164608
+typedef	c:@T@TWRequestHandler	-			SLRequestHandler	-	-	-	bb498157d7bb4cf4
+interface	c:objc(cs)TWRequest	-			-	-	ios=5.0/6.0/-/0	-	0dbd76965d0cde90
+super	-	TWRequest	NSObject		-	-	-	-	0d38c5ae736e8e8d
+method	c:objc(cs)TWRequest(im)initWithURL:parameters:requestMethod:	-			id	-	ios=5.0/6.0/-/0	-	ef24e45c2f69167e
+property	c:objc(cs)TWRequest(py)account	-			ACAccount *	retain,nonatomic	ios=5.0/6.0/-/0	-	8c69e10a5a96a6a2
+property	c:objc(cs)TWRequest(py)requestMethod	-			TWRequestMethod	readonly,nonatomic	ios=5.0/6.0/-/0	-	d561aa50c627f611
+property	c:objc(cs)TWRequest(py)URL	-			NSURL *	readonly,nonatomic	ios=5.0/6.0/-/0	-	512ec9d9f62308ad
+property	c:objc(cs)TWRequest(py)parameters	-			NSDictionary *	readonly,nonatomic	ios=5.0/6.0/-/0	-	8b269a73b520a2f3
+method	c:objc(cs)TWRequest(im)addMultiPartData:withName:type:	-			void	-	ios=5.0/6.0/-/0	-	8ae40b82ae3f6544
+method	c:objc(cs)TWRequest(im)signedURLRequest	-			NSURLRequest *	-	ios=5.0/6.0/-/0	-	3e3ae05ab8322bc8
+method	c:objc(cs)TWRequest(im)performRequestWithHandler:	-			void	-	ios=5.0/6.0/-/0	-	34d9e035cc9a93d4
+enum	c:@Ea@TWTweetComposeViewControllerResultCancelled	-	-		unsigned int	-	-	-	bb0cee28126e693c
+enumconst	c:@Ea@TWTweetComposeViewControllerResultCancelled@TWTweetComposeViewControllerResultCancelled	-			-	-	-	-	fb1bb3d46b1c6dfb
+enumconst	c:@Ea@TWTweetComposeViewControllerResultCancelled@TWTweetComposeViewControllerResultDone	-			-	-	-	-	49a1f4f91de4ea1a
+typedef	c:@T@TWTweetComposeViewControllerResult	-			SLComposeViewControllerResult	-	-	-	4ca080bf5f522e51
+typedef	c:@T@TWTweetComposeViewControllerCompletionHandler	-			SLComposeViewControllerCompletionHandler	-	-	-	bba70832683d71e2
+interface	c:objc(cs)TWTweetComposeViewController	-			-	-	ios=5.0/6.0/-/0	-	8de4a1bf24bbd2b4
+super	-	TWTweetComposeViewController	UIViewController		-	-	-	-	31a05cc580a40c9a
+method	c:objc(cs)TWTweetComposeViewController(cm)canSendTweet	-			BOOL	-	ios=5.0/6.0/-/0	-	d7d74e4a31b8e550
+method	c:objc(cs)TWTweetComposeViewController(im)setInitialText:	-			BOOL	-	ios=5.0/6.0/-/0	-	9bde7c8038928560
+method	c:objc(cs)TWTweetComposeViewController(im)addImage:	-			BOOL	-	ios=5.0/6.0/-/0	-	af059a073b79fb3c
+method	c:objc(cs)TWTweetComposeViewController(im)removeAllImages	-			BOOL	-	ios=5.0/6.0/-/0	-	544d00d6a25d8d79
+method	c:objc(cs)TWTweetComposeViewController(im)addURL:	-			BOOL	-	ios=5.0/6.0/-/0	-	3d1a07366d2ab6da
+method	c:objc(cs)TWTweetComposeViewController(im)removeAllURLs	-			BOOL	-	ios=5.0/6.0/-/0	-	16a3b6de6f0ecc07
+property	c:objc(cs)TWTweetComposeViewController(py)completionHandler	-			TWTweetComposeViewControllerCompletionHandler	copy,nonatomic	ios=5.0/6.0/-/0	-	094330b4bef2fea8

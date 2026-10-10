@@ -1,397 +1,397 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
-interface	c:objc(cs)SKAdImpression	-			ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	273aa698400aef65
-super	-	SKAdImpression	NSObject		-	-	7b104eae006016c0
-method	c:objc(cs)SKAdImpression(im)initWithSourceAppStoreItemIdentifier:advertisedAppStoreItemIdentifier:adNetworkIdentifier:adCampaignIdentifier:adImpressionIdentifier:timestamp:signature:version:	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d83376a42b32fe2b
-property	c:objc(cs)SKAdImpression(py)sourceAppStoreItemIdentifier	-			ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c93b440ab8c285f2
-property	c:objc(cs)SKAdImpression(py)advertisedAppStoreItemIdentifier	-			ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3a5a1b744be1604b
-property	c:objc(cs)SKAdImpression(py)adNetworkIdentifier	-			ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	800b83af91b15b62
-property	c:objc(cs)SKAdImpression(py)adCampaignIdentifier	-			ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5a184d113194d71b
-property	c:objc(cs)SKAdImpression(py)sourceIdentifier	-			ios=16.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	517b011235dff902
-property	c:objc(cs)SKAdImpression(py)adImpressionIdentifier	-			ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2e9a4f77986adc9d
-property	c:objc(cs)SKAdImpression(py)adType	-			ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9e13d91320149dba
-property	c:objc(cs)SKAdImpression(py)adDescription	-			ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d7b3fc23d2b1162a
-property	c:objc(cs)SKAdImpression(py)adPurchaserName	-			ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	447c6b3c0eb9c52e
-property	c:objc(cs)SKAdImpression(py)timestamp	-			ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	039201f2d4f7b6eb
-property	c:objc(cs)SKAdImpression(py)signature	-			ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	716a6fb7cb94374f
-property	c:objc(cs)SKAdImpression(py)version	-			ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f7d6332012230936
-typedef	c:@T@SKAdNetworkCoarseConversionValue	-			ios=16.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6e7228ddfcf51aa8
-var	c:@SKAdNetworkCoarseConversionValueHigh	-			ios=16.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d62c0f503fcf2ec6
-var	c:@SKAdNetworkCoarseConversionValueMedium	-			ios=16.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	166c31c719b86ee5
-var	c:@SKAdNetworkCoarseConversionValueLow	-			ios=16.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cc74281105226be7
-interface	c:objc(cs)SKAdNetwork	-			ios=11.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use updatePostbackConversionValue:completionHandler: instead.	d627855e136fe0b9
-super	-	SKAdNetwork	NSObject		-	-	a1382e7c5d83281f
-method	c:objc(cs)SKAdNetwork(cm)startImpression:completionHandler:	-			ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e0354025308308e2
-method	c:objc(cs)SKAdNetwork(cm)endImpression:completionHandler:	-			ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	10985268a7016adf
-method	c:objc(cs)SKAdNetwork(cm)registerAppForAdNetworkAttribution	-			ios=11.3/15.4/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use updatePostbackConversionValue:completionHandler: instead.	3fefe3f38fb78e37
-method	c:objc(cs)SKAdNetwork(cm)updateConversionValue:	-			ios=14.0/15.4/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use updatePostbackConversionValue:completionHandler: instead.	d0da56b416d0cb13
-method	c:objc(cs)SKAdNetwork(cm)updatePostbackConversionValue:completionHandler:	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b13b765804acef47
-method	c:objc(cs)SKAdNetwork(cm)updatePostbackConversionValue:coarseValue:completionHandler:	-			ios=16.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	09049b708549c20b
-method	c:objc(cs)SKAdNetwork(cm)updatePostbackConversionValue:coarseValue:lockWindow:completionHandler:	-			ios=16.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a4ae485e7f27f9fd
-var	c:@SKStoreProductParameterAdNetworkAttributionSignature	-			ios=11.3/-/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	df9cca417fabe04a
-var	c:@SKStoreProductParameterAdNetworkCampaignIdentifier	-			ios=11.3/-/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6eb3612b75454fa6
-var	c:@SKStoreProductParameterAdNetworkSourceIdentifier	-			ios=16.1/-/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ed88f5ec6ab546ca
-var	c:@SKStoreProductParameterAdNetworkIdentifier	-			ios=11.3/-/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6b762355343261de
-var	c:@SKStoreProductParameterAdNetworkNonce	-			ios=11.3/-/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b2b088f921a8637b
-var	c:@SKStoreProductParameterAdNetworkTimestamp	-			ios=11.3/-/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cb3dfa43e97b331b
-var	c:@SKStoreProductParameterAdNetworkSourceAppStoreIdentifier	-			ios=14.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	02dd777c30ba5f1c
-var	c:@SKStoreProductParameterAdNetworkVersion	-			ios=14.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	de420c8576db433f
-interface	c:objc(cs)SKArcadeService	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	4ccafcd7d39cb32a
-super	-	SKArcadeService	NSObject		-	-	5beaaa446f923e6c
-method	c:objc(cs)SKArcadeService(cm)registerArcadeAppWithRandomFromLib:randomFromLibLength:resultHandler:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	5b91d60598899cc9
-method	c:objc(cs)SKArcadeService(cm)arcadeSubscriptionStatusWithNonce:resultHandler:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	5efb6a2284099a28
-method	c:objc(cs)SKArcadeService(cm)repairArcadeApp	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	f5ab998749eb5e2f
-var	c:@SKANErrorDomain	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	d5ed266b1ca64d25
-typedef	c:@T@SKANError	-			-	-	c705e2a655ea7966
-enum	c:@E@SKANError	-			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	af94742fb333ea16
-enumconst	c:@E@SKANError@SKANErrorImpressionMissingRequiredValue	SKANError			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	58131b22aa72f933
-enumconst	c:@E@SKANError@SKANErrorUnsupported	SKANError			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	11fa0b03895115c9
-enumconst	c:@E@SKANError@SKANErrorAdNetworkIdMissing	SKANError			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	3ec642765cb791b9
-enumconst	c:@E@SKANError@SKANErrorMismatchedSourceAppId	SKANError			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	df7d2033eece8d31
-enumconst	c:@E@SKANError@SKANErrorImpressionNotFound	SKANError			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	5ea666eb47cc6e56
-enumconst	c:@E@SKANError@SKANErrorInvalidCampaignId	SKANError			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	5b2985ff7b4ad746
-enumconst	c:@E@SKANError@SKANErrorInvalidConversionValue	SKANError			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	0ce76dcb81da44fd
-enumconst	c:@E@SKANError@SKANErrorInvalidSourceAppId	SKANError			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	249a44675fd0ec53
-enumconst	c:@E@SKANError@SKANErrorInvalidAdvertisedAppId	SKANError			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	994ecd51e3f48cec
-enumconst	c:@E@SKANError@SKANErrorInvalidVersion	SKANError			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	3bfa89c9d981dce1
-enumconst	c:@E@SKANError@SKANErrorUnknown	SKANError			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	7202bf5a1d78bf86
-enumconst	c:@E@SKANError@SKANErrorImpressionTooShort	SKANError			ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	8b2aa828262144f4
-typedef	c:@T@SKCloudServiceAuthorizationStatus	-			-	-	fee2a4f14b812b56
-enum	c:@E@SKCloudServiceAuthorizationStatus	-			ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0,xros=-/-/-/1	-	7e39cc42385a4b55
-enumconst	c:@E@SKCloudServiceAuthorizationStatus@SKCloudServiceAuthorizationStatusNotDetermined	SKCloudServiceAuthorizationStatus			ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0,xros=-/-/-/1	-	c21a43d34a7d325e
-enumconst	c:@E@SKCloudServiceAuthorizationStatus@SKCloudServiceAuthorizationStatusDenied	SKCloudServiceAuthorizationStatus			ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0,xros=-/-/-/1	-	d94d6a599d43822b
-enumconst	c:@E@SKCloudServiceAuthorizationStatus@SKCloudServiceAuthorizationStatusRestricted	SKCloudServiceAuthorizationStatus			ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0,xros=-/-/-/1	-	a46c0056c0800138
-enumconst	c:@E@SKCloudServiceAuthorizationStatus@SKCloudServiceAuthorizationStatusAuthorized	SKCloudServiceAuthorizationStatus			ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0,xros=-/-/-/1	-	2052134ad0846318
-typedef	c:@T@SKCloudServiceCapability	-			-	-	7e1fbfde51e0f44e
-enum	c:@E@SKCloudServiceCapability	-			ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0,xros=-/-/-/1	-	06885ce056ec54cc
-enumconst	c:@E@SKCloudServiceCapability@SKCloudServiceCapabilityNone	SKCloudServiceCapability			ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0,xros=-/-/-/1	-	b194fa8616bf5db1
-enumconst	c:@E@SKCloudServiceCapability@SKCloudServiceCapabilityMusicCatalogPlayback	SKCloudServiceCapability			ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0,xros=-/-/-/1	-	9eb7e13dc0bc279c
-enumconst	c:@E@SKCloudServiceCapability@SKCloudServiceCapabilityMusicCatalogSubscriptionEligible	SKCloudServiceCapability			ios=10.1/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=10.1/18.0/-/0,watchos=7.0/11.0/-/0	deprecated: Use the canBecomeSubscriber property of MusicSubscription from MusicKit.	24b346f65e2fa89b
-enumconst	c:@E@SKCloudServiceCapability@SKCloudServiceCapabilityAddToCloudMusicLibrary	SKCloudServiceCapability			ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0,xros=-/-/-/1	-	0a7f8272436500bb
-interface	c:objc(cs)SKCloudServiceController	-			ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0,xros=-/-/-/1	deprecated: Use MusicAuthorization.currentStatus from MusicKit.	c0af0547079034db
-super	-	SKCloudServiceController	NSObject		-	-	21874d58a7cb2611
-method	c:objc(cs)SKCloudServiceController(cm)authorizationStatus	-			ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0	deprecated: Use MusicAuthorization.currentStatus from MusicKit.	c55b4f252ac39d0d
-method	c:objc(cs)SKCloudServiceController(cm)requestAuthorization:	-			ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0	deprecated: Use MusicAuthorization.request() from MusicKit.	2924f62abec9d9ec
-method	c:objc(cs)SKCloudServiceController(im)requestCapabilitiesWithCompletionHandler:	-			ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0	deprecated: Use MusicSubscription.current from MusicKit.	dc6c2722a65bfdf4
-method	c:objc(cs)SKCloudServiceController(im)requestStorefrontCountryCodeWithCompletionHandler:	-			ios=11.0/18.0/-/0,maccatalyst=13.1/18.0/-/0,macos=11.0/15.0/-/0,tvos=11.0/18.0/-/0,watchos=7.0/11.0/-/0	deprecated: Use MusicDataRequest.currentCountryCode from MusicKit.	1137b5d1ca2aea69
-method	c:objc(cs)SKCloudServiceController(im)requestStorefrontIdentifierWithCompletionHandler:	-			ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0	deprecated: Use Storefront.current.id.	ea7f204042d67a52
-method	c:objc(cs)SKCloudServiceController(im)requestUserTokenForDeveloperToken:completionHandler:	-			ios=11.0/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=11.0/18.0/-/0,watchos=7.0/11.0/-/0	deprecated: Use MusicKit.	c5cfdb41583a822f
-method	c:objc(cs)SKCloudServiceController(im)requestPersonalizationTokenForClientToken:withCompletionHandler:	-			ios=10.3/11.0/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=10.3/11.0/-/0,watchos=-/-/-/1	deprecated: Use requestUserTokenForDeveloperToken:completionHandler: instead	4235ffe603e76f7e
-var	c:@SKCloudServiceCapabilitiesDidChangeNotification	-			ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0,xros=-/-/-/1	-	b44954778334bf3c
-var	c:@SKStorefrontCountryCodeDidChangeNotification	-			ios=11.0/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=11.0/18.0/-/0,watchos=7.0/11.0/-/0,xros=-/-/-/1	-	459e779d2344409c
-var	c:@SKStorefrontIdentifierDidChangeNotification	-			ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0,xros=-/-/-/1	-	4a91e4ff6689c1cf
-typedef	c:@T@SKCloudServiceSetupOptionsKey	-			-	-	db4bf8f9b7dab909
-typedef	c:@T@SKCloudServiceSetupAction	-			-	-	d7a2268dac0e278d
-typedef	c:@T@SKCloudServiceSetupMessageIdentifier	-			-	-	ed8ff26d8999c0c1
-interface	c:objc(cs)SKCloudServiceSetupViewController	-			ios=10.1/18.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	9e3e4a4f8586863f
-super	-	SKCloudServiceSetupViewController	UIViewController		-	-	5806fe40bcf3e3a2
-property	c:objc(cs)SKCloudServiceSetupViewController(py)delegate	-			ios=10.1/18.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	794b333ba5b3d4e0
-method	c:objc(cs)SKCloudServiceSetupViewController(im)loadWithOptions:completionHandler:	-			ios=10.1/18.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	7cc422806b33dd59
-protocol	c:objc(pl)SKCloudServiceSetupViewControllerDelegate	-			ios=10.1/18.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	86b2e5ef94654730
-conforms	-	SKCloudServiceSetupViewControllerDelegate	NSObject		-	-	42dd91f67bbfd801
-method	c:objc(pl)SKCloudServiceSetupViewControllerDelegate(im)cloudServiceSetupViewControllerDidDismiss:	-			ios=10.1/18.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	9892dedc77141c85
-var	c:@SKCloudServiceSetupOptionsActionKey	-			ios=10.1/18.0/-/0,macos=-/-/-/1,xros=-/-/-/1	-	8bf0dff821d1bc59
-var	c:@SKCloudServiceSetupOptionsITunesItemIdentifierKey	-			ios=10.1/18.0/-/0,macos=-/-/-/1,xros=-/-/-/1	-	d34baeab39445da8
-var	c:@SKCloudServiceSetupOptionsAffiliateTokenKey	-			ios=10.3/18.0/-/0,macos=-/-/-/1,xros=-/-/-/1	-	c894a242e2b7075a
-var	c:@SKCloudServiceSetupOptionsCampaignTokenKey	-			ios=10.3/18.0/-/0,macos=-/-/-/1,xros=-/-/-/1	-	d9bc6ba6c3b4d71e
-var	c:@SKCloudServiceSetupOptionsMessageIdentifierKey	-			ios=11.0/18.0/-/0,macos=-/-/-/1,xros=-/-/-/1	-	9b105be2c9c6c947
-var	c:@SKCloudServiceSetupActionSubscribe	-			ios=10.1/18.0/-/0,macos=-/-/-/1,xros=-/-/-/1	-	36fa67a3ed73571a
-var	c:@SKCloudServiceSetupMessageIdentifierJoin	-			ios=11.0/18.0/-/0,macos=-/-/-/1,xros=-/-/-/1	-	0875003af4f5ad53
-var	c:@SKCloudServiceSetupMessageIdentifierConnect	-			ios=11.0/18.0/-/0,macos=-/-/-/1,xros=-/-/-/1	-	e1f97ef67581e0b2
-var	c:@SKCloudServiceSetupMessageIdentifierAddMusic	-			ios=11.0/18.0/-/0,macos=-/-/-/1,xros=-/-/-/1	-	870cdd98a3829afd
-var	c:@SKCloudServiceSetupMessageIdentifierPlayMusic	-			ios=11.0/18.0/-/0,macos=-/-/-/1,xros=-/-/-/1	-	583c559e8ae1fa88
-typedef	c:@T@SKDownloadState	-			-	-	999e222b18b79b55
-enum	c:@E@SKDownloadState	-			ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	a1dda4b493901f09
-enumconst	c:@E@SKDownloadState@SKDownloadStateWaiting	SKDownloadState			ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	edd7c4c220259b5b
-enumconst	c:@E@SKDownloadState@SKDownloadStateActive	SKDownloadState			ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	9b7fbd2d70c94682
-enumconst	c:@E@SKDownloadState@SKDownloadStatePaused	SKDownloadState			ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	1bdb020fc8651fe3
-enumconst	c:@E@SKDownloadState@SKDownloadStateFinished	SKDownloadState			ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	b91f4269bbd52238
-enumconst	c:@E@SKDownloadState@SKDownloadStateFailed	SKDownloadState			ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	112859cc158bc943
-enumconst	c:@E@SKDownloadState@SKDownloadStateCancelled	SKDownloadState			ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	448d8547095957af
-var	c:@SKDownloadTimeRemainingUnknown	-			ios=6.0/16.0/-/0,macos=10.14/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	4c014968224a680c
-interface	c:objc(cs)SKDownload	-			ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	deprecated: Hosted content is no longer supported.	ae8ce02b0d1b9938
-super	-	SKDownload	NSObject		-	-	ecd566c146e85222
-property	c:objc(cs)SKDownload(py)state	-			ios=12.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=12.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	29ddbf0ee7ce730a
-property	c:objc(cs)SKDownload(py)downloadState	-			ios=6.0/12.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5362730a3e38fe99
-property	c:objc(cs)SKDownload(py)contentLength	-			ios=6.0/13.0/-/0,maccatalyst=13.0/13.0/-/0,macos=-/-/-/1,tvos=9.0/13.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	c9b7275a3c2fcbf3
-property	c:objc(cs)SKDownload(py)expectedContentLength	-			ios=13.0/16.0/-/0,macos=10.15/13.0/-/0,tvos=13.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	93f1c201478c14a8
-property	c:objc(cs)SKDownload(py)contentIdentifier	-			ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	3d6caa125a883c7d
-property	c:objc(cs)SKDownload(py)contentURL	-			ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	23d798383f701c36
-property	c:objc(cs)SKDownload(py)contentVersion	-			ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	be1bfc3ef3bd7a02
-property	c:objc(cs)SKDownload(py)error	-			ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	b788d86b270c0ed5
-property	c:objc(cs)SKDownload(py)progress	-			ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	a89129254b91914f
-property	c:objc(cs)SKDownload(py)timeRemaining	-			ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	4707c1a3b05a153c
-property	c:objc(cs)SKDownload(py)transaction	-			ios=6.0/16.0/-/0,macos=10.11/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	22e33ddf4aa84d4f
-method	c:objc(cs)SKDownload(cm)contentURLForProductID:	-			ios=-/-/-/1,maccatalyst=13.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Hosted content is no longer supported.	817d945b4a143bfd
-method	c:objc(cs)SKDownload(cm)deleteContentForProductID:	-			ios=-/-/-/1,maccatalyst=13.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Hosted content is no longer supported.	8a8c30d23af87963
-protocol	c:objc(pl)SKDownloaderExtension	-			ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	103431bdb25f4281
-conforms	-	SKDownloaderExtension	BAManagedDownloaderExtension		-	-	9f8274d44b082d1b
-var	c:@SKErrorDomain	-			ios=3.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	b644b2c60b9535ec
-typedef	c:@T@SKErrorCode	-			-	-	263991cba242204e
-enum	c:@E@SKErrorCode	-			ios=3.0/-/-/0,macos=10.7/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	0a634121b91aaa33
-enumconst	c:@E@SKErrorCode@SKErrorUnknown	SKErrorCode			ios=3.0/-/-/0,macos=10.7/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	8b0239b6bf6a5cdb
-enumconst	c:@E@SKErrorCode@SKErrorClientInvalid	SKErrorCode			ios=3.0/-/-/0,macos=10.7/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	ffe9705bfd9db6d9
-enumconst	c:@E@SKErrorCode@SKErrorPaymentCancelled	SKErrorCode			ios=3.0/-/-/0,macos=10.7/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	26b5ae4a69c001db
-enumconst	c:@E@SKErrorCode@SKErrorPaymentInvalid	SKErrorCode			ios=3.0/-/-/0,macos=10.7/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	2701012743e91572
-enumconst	c:@E@SKErrorCode@SKErrorPaymentNotAllowed	SKErrorCode			ios=3.0/-/-/0,macos=10.7/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	f3d1e1d9a1028837
-enumconst	c:@E@SKErrorCode@SKErrorStoreProductNotAvailable	SKErrorCode			ios=3.0/-/-/0,macos=10.15/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	8f02008225e5e91f
-enumconst	c:@E@SKErrorCode@SKErrorCloudServicePermissionDenied	SKErrorCode			ios=9.3/-/-/0,macos=11.0/-/-/0,tvos=9.3/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	bf52f832c41e6bc2
-enumconst	c:@E@SKErrorCode@SKErrorCloudServiceNetworkConnectionFailed	SKErrorCode			ios=9.3/-/-/0,macos=11.0/-/-/0,tvos=9.3/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	2daa986964ec547d
-enumconst	c:@E@SKErrorCode@SKErrorCloudServiceRevoked	SKErrorCode			ios=10.3/-/-/0,macos=11.0/-/-/0,tvos=10.3/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	0745003006164a24
-enumconst	c:@E@SKErrorCode@SKErrorPrivacyAcknowledgementRequired	SKErrorCode			ios=12.2/-/-/0,macos=10.14.4/-/-/0,tvos=12.2/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	e27a4a5d4366d7ab
-enumconst	c:@E@SKErrorCode@SKErrorUnauthorizedRequestData	SKErrorCode			ios=12.2/-/-/0,macos=10.14.4/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	55a9ae628df8ca96
-enumconst	c:@E@SKErrorCode@SKErrorInvalidOfferIdentifier	SKErrorCode			ios=12.2/-/-/0,macos=10.14.4/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	56191f4b8956605a
-enumconst	c:@E@SKErrorCode@SKErrorInvalidSignature	SKErrorCode			ios=12.2/-/-/0,macos=10.14.4/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	888321321d9c9b82
-enumconst	c:@E@SKErrorCode@SKErrorMissingOfferParams	SKErrorCode			ios=12.2/-/-/0,macos=10.14.4/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	47d972a76016abfd
-enumconst	c:@E@SKErrorCode@SKErrorInvalidOfferPrice	SKErrorCode			ios=12.2/-/-/0,macos=10.14.4/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	6cdb76008a473435
-enumconst	c:@E@SKErrorCode@SKErrorOverlayCancelled	SKErrorCode			ios=12.2/-/-/0,macos=10.14.4/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	444d6d170a2b5f31
-enumconst	c:@E@SKErrorCode@SKErrorOverlayInvalidConfiguration	SKErrorCode			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	5dedc2ddc24855ba
-enumconst	c:@E@SKErrorCode@SKErrorOverlayTimeout	SKErrorCode			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	fd17b5b73f936f7d
-enumconst	c:@E@SKErrorCode@SKErrorIneligibleForOffer	SKErrorCode			ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0,xros=1.0/-/-/0	-	5aba5db43a6fd253
-enumconst	c:@E@SKErrorCode@SKErrorUnsupportedPlatform	SKErrorCode			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=7.0/-/-/0,xros=1.0/-/-/0	-	922f687a8ba04932
-enumconst	c:@E@SKErrorCode@SKErrorOverlayPresentedInBackgroundScene	SKErrorCode			ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	b690b134120e7af8
-protocol	c:objc(pl)SKOverlayDelegate	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	240c963fc2a5b823
-conforms	-	SKOverlayDelegate	NSObject		-	-	0b3ce98c38f9bf29
-method	c:objc(pl)SKOverlayDelegate(im)storeOverlay:didFailToLoadWithError:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	f03069cdc252fcfa
-method	c:objc(pl)SKOverlayDelegate(im)storeOverlay:willStartPresentation:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	6ebcab714d95867f
-method	c:objc(pl)SKOverlayDelegate(im)storeOverlay:didFinishPresentation:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	a8f185861b45e65d
-method	c:objc(pl)SKOverlayDelegate(im)storeOverlay:willStartDismissal:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	1a223924396408a0
-method	c:objc(pl)SKOverlayDelegate(im)storeOverlay:didFinishDismissal:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	4b1efc3bf31587a4
-interface	c:objc(cs)SKOverlay	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	1270fe79c00d5f92
-super	-	SKOverlay	NSObject		-	-	211fd0cdf93f5b07
-method	c:objc(cs)SKOverlay(im)init	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	fdf8cbef7b7695ed
-method	c:objc(cs)SKOverlay(cm)new	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	1dfa90629622f082
-method	c:objc(cs)SKOverlay(im)initWithConfiguration:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	2efe73e63a6c416c
-method	c:objc(cs)SKOverlay(im)presentInScene:	-			ios=14.0/-/-/0,ios_app_extension=-/-/-/1,macos_app_extension=-/-/-/1,xros=1.0/-/-/0	-	7f97ea140b88cf3a
-method	c:objc(cs)SKOverlay(cm)dismissOverlayInScene:	-			ios=14.0/-/-/0,ios_app_extension=-/-/-/1,macos_app_extension=-/-/-/1,xros=1.0/-/-/0	-	56b0e69248f73e77
-property	c:objc(cs)SKOverlay(py)delegate	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	73a5428400ee3015
-property	c:objc(cs)SKOverlay(py)configuration	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	655f29fd88f6328d
-typedef	c:@T@SKOverlayPosition	-			-	-	4e526649f403df31
-enum	c:@E@SKOverlayPosition	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	387ee4af36c382cf
-enumconst	c:@E@SKOverlayPosition@SKOverlayPositionBottom	SKOverlayPosition			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	736aea82bbf8fc2a
-enumconst	c:@E@SKOverlayPosition@SKOverlayPositionBottomRaised	SKOverlayPosition			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	a8ef20c247d24865
-interface	c:objc(cs)SKOverlayConfiguration	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	eb35c79d06b6aebc
-super	-	SKOverlayConfiguration	NSObject		-	-	fd02bf3e07f12f90
-method	c:objc(cs)SKOverlayConfiguration(im)init	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	3c59181906be10e4
-method	c:objc(cs)SKOverlayConfiguration(cm)new	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	ecc84fec74f4bc58
-interface	c:objc(cs)SKOverlayAppConfiguration	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	786decc918245f34
-super	-	SKOverlayAppConfiguration	SKOverlayConfiguration		-	-	31a5c30fb97e606a
-method	c:objc(cs)SKOverlayAppConfiguration(im)init	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	d08860502af69765
-method	c:objc(cs)SKOverlayAppConfiguration(cm)new	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	afdd6c3b10d16488
-method	c:objc(cs)SKOverlayAppConfiguration(im)initWithAppIdentifier:position:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	f565115e83c90d41
-property	c:objc(cs)SKOverlayAppConfiguration(py)appIdentifier	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	d3a680d6a2590e4b
-property	c:objc(cs)SKOverlayAppConfiguration(py)campaignToken	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	85c397cee9530f20
-property	c:objc(cs)SKOverlayAppConfiguration(py)providerToken	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	07535cc071b6f0b4
-property	c:objc(cs)SKOverlayAppConfiguration(py)customProductPageIdentifier	-			ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	9712c71dc7427dc2
-property	c:objc(cs)SKOverlayAppConfiguration(py)latestReleaseID	-			ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	ab84476af05e77f3
-property	c:objc(cs)SKOverlayAppConfiguration(py)position	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	a396258c0157b587
-property	c:objc(cs)SKOverlayAppConfiguration(py)userDismissible	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	4066842dfff4e985
-method	c:objc(cs)SKOverlayAppConfiguration(im)setAdditionalValue:forKey:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	7e8f835d2ae2de40
-method	c:objc(cs)SKOverlayAppConfiguration(im)additionalValueForKey:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	22bec5dec1c0de1f
-method	c:objc(cs)SKOverlayAppConfiguration(im)setAdImpression:	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	84890ef0e5036c1b
-interface	c:objc(cs)SKOverlayAppClipConfiguration	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	ce52de1cee5a360c
-super	-	SKOverlayAppClipConfiguration	SKOverlayConfiguration		-	-	5765d44bce498f68
-method	c:objc(cs)SKOverlayAppClipConfiguration(im)init	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	92f041f7cb02acae
-method	c:objc(cs)SKOverlayAppClipConfiguration(cm)new	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	ebe1c4f75d1e7fa4
-method	c:objc(cs)SKOverlayAppClipConfiguration(im)initWithPosition:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	22fc167608dccc36
-property	c:objc(cs)SKOverlayAppClipConfiguration(py)campaignToken	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	55a9d4c8867a804a
-property	c:objc(cs)SKOverlayAppClipConfiguration(py)providerToken	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	106f70a49fc9f372
-property	c:objc(cs)SKOverlayAppClipConfiguration(py)customProductPageIdentifier	-			ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	c03984d83af42e74
-property	c:objc(cs)SKOverlayAppClipConfiguration(py)latestReleaseID	-			ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	b785f4b9d863d47e
-property	c:objc(cs)SKOverlayAppClipConfiguration(py)position	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	2520ca2c89fe3f3b
-method	c:objc(cs)SKOverlayAppClipConfiguration(im)setAdditionalValue:forKey:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	b3e0237ed27341a7
-method	c:objc(cs)SKOverlayAppClipConfiguration(im)additionalValueForKey:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	3f8c6c1a6edeaeb3
-interface	c:objc(cs)SKOverlayTransitionContext	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	d9efbb7c538a07f7
-super	-	SKOverlayTransitionContext	NSObject		-	-	475e250013f0c162
-method	c:objc(cs)SKOverlayTransitionContext(im)init	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	710ac8d866436c76
-method	c:objc(cs)SKOverlayTransitionContext(cm)new	-			*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	ea0d08d5e78f9c3b
-method	c:objc(cs)SKOverlayTransitionContext(im)addAnimationBlock:	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cd8536319690e926
-property	c:objc(cs)SKOverlayTransitionContext(py)startFrame	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6f0edf7501ca80e9
-property	c:objc(cs)SKOverlayTransitionContext(py)endFrame	-			ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	be849f159bfa21de
-interface	c:objc(cs)SKPayment	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use +[SKPayment paymentWithProduct:] instead	fccea1926daa8c58
-super	-	SKPayment	NSObject		-	-	07cd4eae12d7919a
-conforms	-	SKPayment	NSCopying		-	-	865169ad2a63a8ed
-conforms	-	SKPayment	NSMutableCopying		-	-	bf570122f1dec3d3
-method	c:objc(cs)SKPayment(cm)paymentWithProduct:	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	3ca0d072809d7d88
-method	c:objc(cs)SKPayment(cm)paymentWithProductIdentifier:	-			ios=3.0/5.0/-/0,maccatalyst=13.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use +[SKPayment paymentWithProduct:] instead	fb15a77dbf4dd32e
-property	c:objc(cs)SKPayment(py)productIdentifier	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	99b604f372ec9829
-property	c:objc(cs)SKPayment(py)requestData	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	0514c0370a959df9
-property	c:objc(cs)SKPayment(py)quantity	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	f549b62e01545fe5
-property	c:objc(cs)SKPayment(py)applicationUsername	-			ios=7.0/18.0/-/0,macos=10.9/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	e7b843e6fec06e1b
-property	c:objc(cs)SKPayment(py)simulatesAskToBuyInSandbox	-			ios=8.3/18.0/-/0,macos=10.14/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	75337a7bac01cdec
-property	c:objc(cs)SKPayment(py)paymentDiscount	-			ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	1985b9240c33c1bc
-interface	c:objc(cs)SKMutablePayment	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Create a Product.PurchaseOption.appAccountToken to use in Product.purchase(confirmIn:options:).	731e013323ae2ace
-super	-	SKMutablePayment	SKPayment		-	-	68b180e6232fe997
-property	c:objc(cs)SKMutablePayment(py)applicationUsername	-			ios=7.0/18.0/-/0,macos=10.9/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	ea002df5a799bae1
-property	c:objc(cs)SKMutablePayment(py)paymentDiscount	-			ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	f1ea05ad6cd793e8
-property	c:objc(cs)SKMutablePayment(py)productIdentifier	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	d9654b07bfc4afd6
-property	c:objc(cs)SKMutablePayment(py)quantity	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	f1673a36ab97253c
-property	c:objc(cs)SKMutablePayment(py)requestData	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	512f9c693dae4a67
-property	c:objc(cs)SKMutablePayment(py)simulatesAskToBuyInSandbox	-			ios=8.3/18.0/-/0,macos=10.14/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	14ba043fe0a1463d
-interface	c:objc(cs)SKPaymentDiscount	-			ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,tvos=12.2/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	05e4c31464d312d8
-super	-	SKPaymentDiscount	NSObject		-	-	0279ba97e70fcf3b
-method	c:objc(cs)SKPaymentDiscount(im)initWithIdentifier:keyIdentifier:nonce:signature:timestamp:	-			ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,tvos=12.2/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	974ea4028fad72cb
-property	c:objc(cs)SKPaymentDiscount(py)identifier	-			ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,tvos=12.2/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	3b88abb26c76ad58
-property	c:objc(cs)SKPaymentDiscount(py)keyIdentifier	-			ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,tvos=12.2/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	c218a48187b97bf8
-property	c:objc(cs)SKPaymentDiscount(py)nonce	-			ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,tvos=12.2/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	4f956f7c49f0893d
-property	c:objc(cs)SKPaymentDiscount(py)signature	-			ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,tvos=12.2/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	a6c60ce18d018b8e
-property	c:objc(cs)SKPaymentDiscount(py)timestamp	-			ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,tvos=12.2/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	db3b5f1f7291d1e2
-interface	c:objc(cs)SKPaymentQueue	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: No longer supported.	0a502d303122e652
-super	-	SKPaymentQueue	NSObject		-	-	73d5829db948a7ec
-property	c:objc(cs)SKPaymentQueue(py)delegate	-			ios=13.0/18.0/-/0,macos=10.15/15.0/-/0,tvos=13.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	640aa54ae23367a2
-property	c:objc(cs)SKPaymentQueue(py)storefront	-			ios=13.0/18.0/-/0,macos=10.15/15.0/-/0,tvos=13.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	7e73390469b617f4
-method	c:objc(cs)SKPaymentQueue(cm)defaultQueue	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	12d642468db328eb
-method	c:objc(cs)SKPaymentQueue(cm)canMakePayments	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use AppStore.canMakePayments.	8df4463069cd1725
-method	c:objc(cs)SKPaymentQueue(im)addPayment:	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use Product.purchase(confirmIn:options:).	050e4d98d03955b3
-method	c:objc(cs)SKPaymentQueue(im)restoreCompletedTransactions	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use AppStore.sync().	70b7e0d970896289
-method	c:objc(cs)SKPaymentQueue(im)restoreCompletedTransactionsWithApplicationUsername:	-			ios=7.0/18.0/-/0,macos=10.9/15.0/-/0,tvos=7.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use AppStore.sync().	6827c96e5145c135
-method	c:objc(cs)SKPaymentQueue(im)finishTransaction:	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use Transaction.finish().	baf5e492bfebfd7c
-method	c:objc(cs)SKPaymentQueue(im)startDownloads:	-			ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	deprecated: Hosted content is no longer supported.	7b5e8e43639ea97b
-method	c:objc(cs)SKPaymentQueue(im)pauseDownloads:	-			ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	deprecated: Hosted content is no longer supported.	f80ba923d6aaeb82
-method	c:objc(cs)SKPaymentQueue(im)resumeDownloads:	-			ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	deprecated: Hosted content is no longer supported.	561dad6d4ed89868
-method	c:objc(cs)SKPaymentQueue(im)cancelDownloads:	-			ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	deprecated: Hosted content is no longer supported.	acdcc37d2cf2aa55
-method	c:objc(cs)SKPaymentQueue(im)addTransactionObserver:	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use Transaction.updates or PurchaseResult from Product.purchase(confirmIn:options:).	2e31a6186cac4f37
-method	c:objc(cs)SKPaymentQueue(im)removeTransactionObserver:	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: No longer supported.	d212223fbdaf64a9
-property	c:objc(cs)SKPaymentQueue(py)transactionObservers	-			ios=14.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=14.0/18.0/-/0,watchos=7.0/11.0/-/0,xros=1.0/2.0/-/0	-	070a620c8decb7a5
-property	c:objc(cs)SKPaymentQueue(py)transactions	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	5d7ac180c88b05e6
-method	c:objc(cs)SKPaymentQueue(im)showPriceConsentIfNeeded	-			ios=13.4/18.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use Message.messages and Message.display(in:).	aa4c7f19e03bb075
-method	c:objc(cs)SKPaymentQueue(im)presentCodeRedemptionSheet	-			ios=14.0/18.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use AppStore.presentOfferCodeRedeemSheet(in:).	052b6beabf3d9fc7
-protocol	c:objc(pl)SKPaymentQueueDelegate	-			ios=13.0/18.0/-/0,macos=10.15/15.0/-/0,tvos=13.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Pass Product.PurchaseOption.onStorefrontChange(shouldContinuePurchase:) to product.purchase(options:).	5e5fad527c613d12
-conforms	-	SKPaymentQueueDelegate	NSObject		-	-	7c0f3f279a610907
-method	c:objc(pl)SKPaymentQueueDelegate(im)paymentQueue:shouldContinueTransaction:inStorefront:	-			ios=13.0/18.0/-/0,macos=10.15/15.0/-/0,tvos=13.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Pass Product.PurchaseOption.onStorefrontChange(shouldContinuePurchase:) to product.purchase(options:).	e4293e09e0d9187a
-method	c:objc(pl)SKPaymentQueueDelegate(im)paymentQueueShouldShowPriceConsent:	-			ios=13.4/18.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use Message.messages and Message.display(in:).	8d86e82f214bf93a
-protocol	c:objc(pl)SKPaymentTransactionObserver	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use AppStore.sync().	c2c8cac2ffcdb4c8
-conforms	-	SKPaymentTransactionObserver	NSObject		-	-	0d19b9891b6e63cd
-method	c:objc(pl)SKPaymentTransactionObserver(im)paymentQueue:updatedTransactions:	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	8dc802164f6f8136
-method	c:objc(pl)SKPaymentTransactionObserver(im)paymentQueue:removedTransactions:	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	1e954bfa5969c5eb
-method	c:objc(pl)SKPaymentTransactionObserver(im)paymentQueue:restoreCompletedTransactionsFailedWithError:	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use AppStore.sync().	f8d35a1da47b525b
-method	c:objc(pl)SKPaymentTransactionObserver(im)paymentQueueRestoreCompletedTransactionsFinished:	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use AppStore.sync().	8ee6ace5c1590750
-method	c:objc(pl)SKPaymentTransactionObserver(im)paymentQueue:updatedDownloads:	-			ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	deprecated: Hosted content is no longer supported.	4cbe6c48893da2b9
-method	c:objc(pl)SKPaymentTransactionObserver(im)paymentQueue:shouldAddStorePayment:forProduct:	-			ios=11.0/18.0/-/0,maccatalyst=14.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=11.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use PurchaseIntent.intents.	693add888321fc6b
-method	c:objc(pl)SKPaymentTransactionObserver(im)paymentQueueDidChangeStorefront:	-			ios=13.0/18.0/-/0,macos=10.15/15.0/-/0,tvos=13.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use Storefront.updates.	1e7ddd816e7f4f35
-method	c:objc(pl)SKPaymentTransactionObserver(im)paymentQueue:didRevokeEntitlementsForProductIdentifiers:	-			ios=14.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=14.0/18.0/-/0,watchos=7.0/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use Transaction.updates.	1369df787db7086f
-typedef	c:@T@SKPaymentTransactionState	-			-	-	37c37f48a02421b9
-enum	c:@E@SKPaymentTransactionState	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	9421c7ad774e3805
-enumconst	c:@E@SKPaymentTransactionState@SKPaymentTransactionStatePurchasing	SKPaymentTransactionState			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	70cf2713774d3dcd
-enumconst	c:@E@SKPaymentTransactionState@SKPaymentTransactionStatePurchased	SKPaymentTransactionState			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	87fcb8def774d5da
-enumconst	c:@E@SKPaymentTransactionState@SKPaymentTransactionStateFailed	SKPaymentTransactionState			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	78b1bec439dad7d1
-enumconst	c:@E@SKPaymentTransactionState@SKPaymentTransactionStateRestored	SKPaymentTransactionState			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	b5b9970e8abb3dcf
-enumconst	c:@E@SKPaymentTransactionState@SKPaymentTransactionStateDeferred	SKPaymentTransactionState			ios=8.0/18.0/-/0,macos=10.10/15.0/-/0,watchos=6.2/11.0/-/0	-	46214d935d54e370
-interface	c:objc(cs)SKPaymentTransaction	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Hosted content is no longer supported.	39106f9330f789d2
-super	-	SKPaymentTransaction	NSObject		-	-	6c81b7079bc95969
-property	c:objc(cs)SKPaymentTransaction(py)error	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	c47916622d102b16
-property	c:objc(cs)SKPaymentTransaction(py)originalTransaction	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	fffcff19167930ec
-property	c:objc(cs)SKPaymentTransaction(py)payment	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	d042ff9466555629
-property	c:objc(cs)SKPaymentTransaction(py)downloads	-			ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	34d4face2efc399b
-property	c:objc(cs)SKPaymentTransaction(py)transactionDate	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	30d55c4cac8a572e
-property	c:objc(cs)SKPaymentTransaction(py)transactionIdentifier	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	0686015e507a9652
-property	c:objc(cs)SKPaymentTransaction(py)transactionReceipt	-			ios=3.0/7.0/-/0,maccatalyst=13.0/13.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f49bccd71a704bcc
-property	c:objc(cs)SKPaymentTransaction(py)transactionState	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	ae010e2b0b9c692b
-typedef	c:@T@SKProductPeriodUnit	-			-	-	d45de754c67c26d6
-enum	c:@E@SKProductPeriodUnit	-			ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	059a0f843885f4fe
-enumconst	c:@E@SKProductPeriodUnit@SKProductPeriodUnitDay	SKProductPeriodUnit			ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	7e695ea3e143b033
-enumconst	c:@E@SKProductPeriodUnit@SKProductPeriodUnitWeek	SKProductPeriodUnit			ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	66356018b949109b
-enumconst	c:@E@SKProductPeriodUnit@SKProductPeriodUnitMonth	SKProductPeriodUnit			ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	973f497a93ad54e3
-enumconst	c:@E@SKProductPeriodUnit@SKProductPeriodUnitYear	SKProductPeriodUnit			ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	fc7c4e0bf9ff19d0
-interface	c:objc(cs)SKProductSubscriptionPeriod	-			ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	091e108384a11682
-super	-	SKProductSubscriptionPeriod	NSObject		-	-	db408db72591b460
-property	c:objc(cs)SKProductSubscriptionPeriod(py)numberOfUnits	-			ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	ef790f8c33cc1f97
-property	c:objc(cs)SKProductSubscriptionPeriod(py)unit	-			ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	f3ee8b7d84f82b25
-interface	c:objc(cs)SKProduct	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use Product.description.	514b361ba6fe7d4f
-super	-	SKProduct	NSObject		-	-	db8c16d66bf65202
-property	c:objc(cs)SKProduct(py)localizedDescription	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	adf2a46c3e8cc331
-property	c:objc(cs)SKProduct(py)localizedTitle	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	925186c3c5c587e6
-property	c:objc(cs)SKProduct(py)price	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	44e334d3d01cf938
-property	c:objc(cs)SKProduct(py)priceLocale	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	99979dec980492e1
-property	c:objc(cs)SKProduct(py)productIdentifier	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	f9c12623c66c11f5
-property	c:objc(cs)SKProduct(py)isDownloadable	-			ios=6.0/16.0/-/0,macos=10.15/13.0/-/0,watchos=6.2/9.0/-/0,xros=1.0/2.0/-/0	-	7468a6e85a6d0f23
-property	c:objc(cs)SKProduct(py)downloadable	-			ios=-/-/-/1,macos=10.8/10.15/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	ec1db8d6dec264c3
-property	c:objc(cs)SKProduct(py)isFamilyShareable	-			ios=14.0/18.0/-/0,macos=11.0/15.0/-/0,watchos=7.0/11.0/-/0,xros=1.0/2.0/-/0	-	08069e3c411d6516
-property	c:objc(cs)SKProduct(py)contentLengths	-			ios=-/-/-/1,macos=10.8/10.14/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7ee5b64e0ea0f799
-property	c:objc(cs)SKProduct(py)downloadContentLengths	-			ios=6.0/16.0/-/0,macos=10.14/13.0/-/0,watchos=6.2/9.0/-/0,xros=1.0/2.0/-/0	-	ca40db3f94b065ac
-property	c:objc(cs)SKProduct(py)contentVersion	-			macos=10.8/10.14/-/0,xros=-/-/-/1	-	c6921c4441bd78a5
-property	c:objc(cs)SKProduct(py)downloadContentVersion	-			ios=6.0/16.0/-/0,macos=10.14/13.0/-/0,watchos=6.2/9.0/-/0,xros=1.0/2.0/-/0	-	f34792303c66af62
-property	c:objc(cs)SKProduct(py)subscriptionPeriod	-			ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	b4d315f4d46aed1e
-property	c:objc(cs)SKProduct(py)introductoryPrice	-			ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	280b2294bfbcf868
-property	c:objc(cs)SKProduct(py)subscriptionGroupIdentifier	-			ios=12.0/18.0/-/0,macos=10.14/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	19f07674a800e38f
-property	c:objc(cs)SKProduct(py)discounts	-			ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	7d6bcfb7c4d3cf39
-typedef	c:@T@SKProductDiscountPaymentMode	-			-	-	0ec8995d7398a16d
-enum	c:@E@SKProductDiscountPaymentMode	-			ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	7fd490391277dcb2
-enumconst	c:@E@SKProductDiscountPaymentMode@SKProductDiscountPaymentModePayAsYouGo	SKProductDiscountPaymentMode			ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	09d40a1e849957be
-enumconst	c:@E@SKProductDiscountPaymentMode@SKProductDiscountPaymentModePayUpFront	SKProductDiscountPaymentMode			ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	80895901b47f6b2b
-enumconst	c:@E@SKProductDiscountPaymentMode@SKProductDiscountPaymentModeFreeTrial	SKProductDiscountPaymentMode			ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	94e0b787d847cc65
-typedef	c:@T@SKProductDiscountType	-			-	-	4e0d146c1941f300
-enum	c:@E@SKProductDiscountType	-			ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	54f28efe0667004b
-enumconst	c:@E@SKProductDiscountType@SKProductDiscountTypeIntroductory	SKProductDiscountType			ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	df2a3a950dfa908e
-enumconst	c:@E@SKProductDiscountType@SKProductDiscountTypeSubscription	SKProductDiscountType			ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	d99b87d9b4bece47
-interface	c:objc(cs)SKProductDiscount	-			ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use Product.SubscriptionOffer.displayPrice.	07098ee8015f82e0
-super	-	SKProductDiscount	NSObject		-	-	47bdf8535dccf8fa
-property	c:objc(cs)SKProductDiscount(py)price	-			ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	57e5f07acff541a2
-property	c:objc(cs)SKProductDiscount(py)priceLocale	-			ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	9b5207c9506f9696
-property	c:objc(cs)SKProductDiscount(py)identifier	-			ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	e177e60faf235a1e
-property	c:objc(cs)SKProductDiscount(py)subscriptionPeriod	-			ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	f48ace1f991c3264
-property	c:objc(cs)SKProductDiscount(py)numberOfPeriods	-			ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	6cb56adef72ccd1a
-property	c:objc(cs)SKProductDiscount(py)paymentMode	-			ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	49a76839d0f99919
-property	c:objc(cs)SKProductDiscount(py)type	-			ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	c88a2fe4c0ce722c
-interface	c:objc(cs)SKRequest	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	3a180622d80761b0
-super	-	SKRequest	NSObject		-	-	2f7a565ea7b75c63
-property	c:objc(cs)SKRequest(py)delegate	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	025ac8e10e1e0265
-method	c:objc(cs)SKRequest(im)cancel	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	b236ea771666a50d
-method	c:objc(cs)SKRequest(im)start	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	9027b0933738d19b
-protocol	c:objc(pl)SKRequestDelegate	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	7dc501205e934da0
-conforms	-	SKRequestDelegate	NSObject		-	-	6330890740d70897
-method	c:objc(pl)SKRequestDelegate(im)requestDidFinish:	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	16cac899a66e7f55
-method	c:objc(pl)SKRequestDelegate(im)request:didFailWithError:	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	eb3689ba3c8c4023
-protocol	c:objc(pl)SKProductsRequestDelegate	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	ed9ae85fd56c9f8c
-conforms	-	SKProductsRequestDelegate	SKRequestDelegate		-	-	d1360dcf68821265
-method	c:objc(pl)SKProductsRequestDelegate(im)productsRequest:didReceiveResponse:	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	1571846db9d12c3e
-interface	c:objc(cs)SKProductsRequest	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	7c77982c0d0a12e8
-super	-	SKProductsRequest	SKRequest		-	-	8e735bed4d9f348a
-method	c:objc(cs)SKProductsRequest(im)initWithProductIdentifiers:	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	8fdcf3bfd91391d0
-property	c:objc(cs)SKProductsRequest(py)delegate	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	ed7445f6a369506d
-interface	c:objc(cs)SKProductsResponse	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	2cc5aa02cdf691c5
-super	-	SKProductsResponse	NSObject		-	-	605e9e7457219d88
-property	c:objc(cs)SKProductsResponse(py)products	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	310776cd3e22fbe6
-property	c:objc(cs)SKProductsResponse(py)invalidProductIdentifiers	-			ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	dde385e3f15d826f
-typedef	c:@T@SKProductStorePromotionVisibility	-			-	-	11b627690d64a428
-enum	c:@E@SKProductStorePromotionVisibility	-			ios=11.0/18.0/-/0,maccatalyst=14.0/18.0/-/0,macos=11.0/15.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	35e7b09a96f001d4
-enumconst	c:@E@SKProductStorePromotionVisibility@SKProductStorePromotionVisibilityDefault	SKProductStorePromotionVisibility			ios=11.0/18.0/-/0,maccatalyst=14.0/18.0/-/0,macos=11.0/15.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	7c9c2357fdb8cdf0
-enumconst	c:@E@SKProductStorePromotionVisibility@SKProductStorePromotionVisibilityShow	SKProductStorePromotionVisibility			ios=11.0/18.0/-/0,maccatalyst=14.0/18.0/-/0,macos=11.0/15.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	200b98dd600d5101
-enumconst	c:@E@SKProductStorePromotionVisibility@SKProductStorePromotionVisibilityHide	SKProductStorePromotionVisibility			ios=11.0/18.0/-/0,maccatalyst=14.0/18.0/-/0,macos=11.0/15.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	014c6d110650fa57
-interface	c:objc(cs)SKProductStorePromotionController	-			ios=11.0/18.0/-/0,maccatalyst=14.0/18.0/-/0,macos=11.0/15.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Get visibility from Product.PromotionInfo.currentOrder.	e0b820d10d59fc08
-super	-	SKProductStorePromotionController	NSObject		-	-	f8ad154cd0a58da1
-method	c:objc(cs)SKProductStorePromotionController(cm)defaultController	-			ios=11.0/18.0/-/0,maccatalyst=14.0/18.0/-/0,macos=11.0/15.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	77c1fa0eb4b7b1b4
-method	c:objc(cs)SKProductStorePromotionController(im)fetchStorePromotionVisibilityForProduct:completionHandler:	-			ios=11.0/18.0/-/0,maccatalyst=14.0/18.0/-/0,macos=11.0/15.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Get visibility from Product.PromotionInfo.currentOrder.	cbeb3d8434fbac69
-method	c:objc(cs)SKProductStorePromotionController(im)updateStorePromotionVisibility:forProduct:completionHandler:	-			ios=11.0/18.0/-/0,maccatalyst=14.0/18.0/-/0,macos=11.0/15.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use Product.PromotionInfo.updateProductVisibility(_:for:).	2f7fea9cde7cdfd1
-method	c:objc(cs)SKProductStorePromotionController(im)fetchStorePromotionOrderWithCompletionHandler:	-			ios=11.0/18.0/-/0,maccatalyst=14.0/18.0/-/0,macos=11.0/15.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use Product.PromotionInfo.currentOrder.	6cb2260938a95f90
-method	c:objc(cs)SKProductStorePromotionController(im)updateStorePromotionOrder:completionHandler:	-			ios=11.0/18.0/-/0,maccatalyst=14.0/18.0/-/0,macos=11.0/15.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use Product.PromotionInfo.updateProductOrder(byID:).	d4fbbcf08b13288d
-interface	c:objc(cs)SKReceiptRefreshRequest	-			ios=7.0/18.0/-/0,macos=10.9/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	0a7b996ffcab43f7
-super	-	SKReceiptRefreshRequest	SKRequest		-	-	23820608a611616f
-method	c:objc(cs)SKReceiptRefreshRequest(im)initWithReceiptProperties:	-			ios=7.0/18.0/-/0,macos=10.9/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	fb0f87a04024a735
-property	c:objc(cs)SKReceiptRefreshRequest(py)receiptProperties	-			ios=7.0/18.0/-/0,macos=10.9/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	681d4243c31c74f6
-function	c:@F@SKTerminateForInvalidReceipt	-			ios=7.1/-/-/0,macos=10.14/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	d955dc1d2deb63a8
-var	c:@SKReceiptPropertyIsExpired	-			ios=7.0/18.0/-/0,macos=10.9/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	3a18517c3f3387b9
-var	c:@SKReceiptPropertyIsRevoked	-			ios=7.0/18.0/-/0,macos=10.9/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	379c735af6737cef
-var	c:@SKReceiptPropertyIsVolumePurchase	-			ios=7.0/18.0/-/0,macos=10.9/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	45c3687d44f14b0c
-interface	c:objc(cs)SKStorefront	-			ios=13.0/18.0/-/0,macos=10.15/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use 'Storefront.countryCode'.	fdcfed58e2a84db7
-super	-	SKStorefront	NSObject		-	-	0ae8d92a2693a940
-property	c:objc(cs)SKStorefront(py)countryCode	-			ios=13.0/18.0/-/0,macos=10.15/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	9fac08b6ff67df88
-property	c:objc(cs)SKStorefront(py)identifier	-			ios=13.0/18.0/-/0,macos=10.15/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	4cc78def2afa715f
-interface	c:objc(cs)SKStoreProductViewController	-			ios=6.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,xros=-/-/-/1	-	93c00faec32f24d8
-super	-	SKStoreProductViewController	UIViewController		-	-	e79a49dd76686b55
-property	c:objc(cs)SKStoreProductViewController(py)delegate	-			ios=6.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,xros=-/-/-/1	-	d710e086023a642a
-method	c:objc(cs)SKStoreProductViewController(im)loadProductWithParameters:completionBlock:	-			ios=6.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,xros=-/-/-/1	-	fe32eeaaaab3a8c6
-method	c:objc(cs)SKStoreProductViewController(im)loadProductWithParameters:impression:completionBlock:	-			ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5f9a4bd0dc5c0dcb
-protocol	c:objc(pl)SKStoreProductViewControllerDelegate	-			ios=6.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,xros=-/-/-/1	-	baa76b3ebf3ef910
-conforms	-	SKStoreProductViewControllerDelegate	NSObject		-	-	a6d0781e658a4a12
-method	c:objc(pl)SKStoreProductViewControllerDelegate(im)productViewControllerDidFinish:	-			ios=6.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,xros=-/-/-/1	-	268b951da20850a6
-var	c:@SKStoreProductParameterITunesItemIdentifier	-			ios=6.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,xros=-/-/-/1	-	7e55a869b8276c1e
-var	c:@SKStoreProductParameterProductIdentifier	-			ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,xros=-/-/-/1	-	7493e72a560e8fc3
-var	c:@SKStoreProductParameterCustomProductPageIdentifier	-			ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,xros=-/-/-/1	-	4c4132caaf464974
-var	c:@SKStoreProductParameterAffiliateToken	-			ios=8.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,xros=-/-/-/1	-	27ed515584e7e9c0
-var	c:@SKStoreProductParameterCampaignToken	-			ios=8.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,xros=-/-/-/1	-	25c701a722c4c0f4
-var	c:@SKStoreProductParameterProviderToken	-			ios=8.3/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,xros=-/-/-/1	-	1dd0c3bcfd95f06e
-var	c:@SKStoreProductParameterAdvertisingPartnerToken	-			ios=9.3/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,xros=-/-/-/1	-	fa3fb901f51cbb2a
-interface	c:objc(cs)SKStoreReviewController	-			ios=10.3/18.0/-/0,macos=10.14/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use -[SKStoreReviewController requestReviewInScene:].	650623ef3e70c70c
-super	-	SKStoreReviewController	NSObject		-	-	5cd0f0456c041466
-method	c:objc(cs)SKStoreReviewController(cm)requestReview	-			ios=10.3/14.0/-/0,macos=10.14/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use -[SKStoreReviewController requestReviewInScene:].	1258c91ec7898374
-method	c:objc(cs)SKStoreReviewController(cm)requestReviewInScene:	-			ios=14.0/18.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use AppStore.requestReview(in:).	0218881b0bfb26c2
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
+interface	c:objc(cs)SKAdImpression	-			-	-	ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	273aa698400aef65
+super	-	SKAdImpression	NSObject		-	-	-	-	7b104eae006016c0
+method	c:objc(cs)SKAdImpression(im)initWithSourceAppStoreItemIdentifier:advertisedAppStoreItemIdentifier:adNetworkIdentifier:adCampaignIdentifier:adImpressionIdentifier:timestamp:signature:version:	-			instancetype	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d8eb887d7321b09a
+property	c:objc(cs)SKAdImpression(py)sourceAppStoreItemIdentifier	-			NSNumber *	strong,nonatomic	ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0ddab8ef51160edb
+property	c:objc(cs)SKAdImpression(py)advertisedAppStoreItemIdentifier	-			NSNumber *	strong,nonatomic	ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c4d3552e065162e6
+property	c:objc(cs)SKAdImpression(py)adNetworkIdentifier	-			NSString *	strong,nonatomic	ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5605bcdf0dff246c
+property	c:objc(cs)SKAdImpression(py)adCampaignIdentifier	-			NSNumber *	strong,nonatomic	ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	92e4c928ed0963d2
+property	c:objc(cs)SKAdImpression(py)sourceIdentifier	-			API_AVAILABLE NSNumber *	strong,nonatomic	ios=16.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b0df8c56af9886eb
+property	c:objc(cs)SKAdImpression(py)adImpressionIdentifier	-			NSString *	strong,nonatomic	ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	deb26a50bee189b0
+property	c:objc(cs)SKAdImpression(py)adType	-			NSString *	strong,nonatomic	ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d4e27e1e3e272d36
+property	c:objc(cs)SKAdImpression(py)adDescription	-			NSString *	strong,nonatomic	ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1c10065ed7f89ffa
+property	c:objc(cs)SKAdImpression(py)adPurchaserName	-			NSString *	strong,nonatomic	ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	66e487df8eee7d7d
+property	c:objc(cs)SKAdImpression(py)timestamp	-			NSNumber *	strong,nonatomic	ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c3ee6968c059eb15
+property	c:objc(cs)SKAdImpression(py)signature	-			NSString *	strong,nonatomic	ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1cd0d13329848b48
+property	c:objc(cs)SKAdImpression(py)version	-			NSString *	strong,nonatomic	ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	acf5c34c170a1a09
+typedef	c:@T@SKAdNetworkCoarseConversionValue	-			NSString *	-	ios=16.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6e7228ddfcf51aa8
+var	c:@SKAdNetworkCoarseConversionValueHigh	-			API_AVAILABLE const SKAdNetworkCoarseConversionValue	-	ios=16.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	58a53ea28be72400
+var	c:@SKAdNetworkCoarseConversionValueMedium	-			API_AVAILABLE const SKAdNetworkCoarseConversionValue	-	ios=16.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	77a09d5cb1610d02
+var	c:@SKAdNetworkCoarseConversionValueLow	-			API_AVAILABLE const SKAdNetworkCoarseConversionValue	-	ios=16.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ddfa7aa3b1a93f45
+interface	c:objc(cs)SKAdNetwork	-			-	-	ios=11.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use updatePostbackConversionValue:completionHandler: instead.	d627855e136fe0b9
+super	-	SKAdNetwork	NSObject		-	-	-	-	a1382e7c5d83281f
+method	c:objc(cs)SKAdNetwork(cm)startImpression:completionHandler:	-			void	-	ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f571651928e82444
+method	c:objc(cs)SKAdNetwork(cm)endImpression:completionHandler:	-			void	-	ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fcf9f2ffd8d19846
+method	c:objc(cs)SKAdNetwork(cm)registerAppForAdNetworkAttribution	-			void	-	ios=11.3/15.4/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use updatePostbackConversionValue:completionHandler: instead.	3fefe3f38fb78e37
+method	c:objc(cs)SKAdNetwork(cm)updateConversionValue:	-			void	-	ios=14.0/15.4/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use updatePostbackConversionValue:completionHandler: instead.	d0da56b416d0cb13
+method	c:objc(cs)SKAdNetwork(cm)updatePostbackConversionValue:completionHandler:	-			void	-	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1776d5a17f04a31f
+method	c:objc(cs)SKAdNetwork(cm)updatePostbackConversionValue:coarseValue:completionHandler:	-			void	-	ios=16.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3bfc73055bc665d6
+method	c:objc(cs)SKAdNetwork(cm)updatePostbackConversionValue:coarseValue:lockWindow:completionHandler:	-			void	-	ios=16.1/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e680895496bc9805
+var	c:@SKStoreProductParameterAdNetworkAttributionSignature	-			API_AVAILABLE NSString *const	-	ios=11.3/-/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e2e6bb6ece3ee901
+var	c:@SKStoreProductParameterAdNetworkCampaignIdentifier	-			API_AVAILABLE NSString *const	-	ios=11.3/-/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1c51a1f5eb901950
+var	c:@SKStoreProductParameterAdNetworkSourceIdentifier	-			API_AVAILABLE NSString *const	-	ios=16.1/-/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e4e7fa80d116c2ea
+var	c:@SKStoreProductParameterAdNetworkIdentifier	-			API_AVAILABLE NSString *const	-	ios=11.3/-/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1eeb20b87b5adb7b
+var	c:@SKStoreProductParameterAdNetworkNonce	-			API_AVAILABLE NSString *const	-	ios=11.3/-/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	24cd09780acb5ae5
+var	c:@SKStoreProductParameterAdNetworkTimestamp	-			API_AVAILABLE NSString *const	-	ios=11.3/-/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	30e2d15e2a91c8fd
+var	c:@SKStoreProductParameterAdNetworkSourceAppStoreIdentifier	-			API_AVAILABLE NSString *const	-	ios=14.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	991c905b953ce72a
+var	c:@SKStoreProductParameterAdNetworkVersion	-			API_AVAILABLE NSString *const	-	ios=14.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1667366f5f2408cb
+interface	c:objc(cs)SKArcadeService	-			-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	4ccafcd7d39cb32a
+super	-	SKArcadeService	NSObject		-	-	-	-	5beaaa446f923e6c
+method	c:objc(cs)SKArcadeService(cm)registerArcadeAppWithRandomFromLib:randomFromLibLength:resultHandler:	-			void	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	6faefc5a5b387877
+method	c:objc(cs)SKArcadeService(cm)arcadeSubscriptionStatusWithNonce:resultHandler:	-			void	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	2cb2e89bbf87a952
+method	c:objc(cs)SKArcadeService(cm)repairArcadeApp	-			void	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	f5ab998749eb5e2f
+var	c:@SKANErrorDomain	-			__TVOS_PROHIBITED NSString *const	-	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	11a3a29d7c862d42
+typedef	c:@T@SKANError	-			enum SKANError	-	-	-	c705e2a655ea7966
+enum	c:@E@SKANError	-			NSInteger	-	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	af94742fb333ea16
+enumconst	c:@E@SKANError@SKANErrorImpressionMissingRequiredValue	SKANError			-	-	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	58131b22aa72f933
+enumconst	c:@E@SKANError@SKANErrorUnsupported	SKANError			-	-	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	11fa0b03895115c9
+enumconst	c:@E@SKANError@SKANErrorAdNetworkIdMissing	SKANError			-	-	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	3ec642765cb791b9
+enumconst	c:@E@SKANError@SKANErrorMismatchedSourceAppId	SKANError			-	-	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	df7d2033eece8d31
+enumconst	c:@E@SKANError@SKANErrorImpressionNotFound	SKANError			-	-	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	5ea666eb47cc6e56
+enumconst	c:@E@SKANError@SKANErrorInvalidCampaignId	SKANError			-	-	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	5b2985ff7b4ad746
+enumconst	c:@E@SKANError@SKANErrorInvalidConversionValue	SKANError			-	-	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	0ce76dcb81da44fd
+enumconst	c:@E@SKANError@SKANErrorInvalidSourceAppId	SKANError			-	-	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	249a44675fd0ec53
+enumconst	c:@E@SKANError@SKANErrorInvalidAdvertisedAppId	SKANError			-	-	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	994ecd51e3f48cec
+enumconst	c:@E@SKANError@SKANErrorInvalidVersion	SKANError			-	-	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	3bfa89c9d981dce1
+enumconst	c:@E@SKANError@SKANErrorUnknown	SKANError			-	-	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	7202bf5a1d78bf86
+enumconst	c:@E@SKANError@SKANErrorImpressionTooShort	SKANError			-	-	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	8b2aa828262144f4
+typedef	c:@T@SKCloudServiceAuthorizationStatus	-			enum SKCloudServiceAuthorizationStatus	-	-	-	fee2a4f14b812b56
+enum	c:@E@SKCloudServiceAuthorizationStatus	-			NSInteger	-	ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0,xros=-/-/-/1	-	7e39cc42385a4b55
+enumconst	c:@E@SKCloudServiceAuthorizationStatus@SKCloudServiceAuthorizationStatusNotDetermined	SKCloudServiceAuthorizationStatus			-	-	ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0,xros=-/-/-/1	-	c21a43d34a7d325e
+enumconst	c:@E@SKCloudServiceAuthorizationStatus@SKCloudServiceAuthorizationStatusDenied	SKCloudServiceAuthorizationStatus			-	-	ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0,xros=-/-/-/1	-	d94d6a599d43822b
+enumconst	c:@E@SKCloudServiceAuthorizationStatus@SKCloudServiceAuthorizationStatusRestricted	SKCloudServiceAuthorizationStatus			-	-	ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0,xros=-/-/-/1	-	a46c0056c0800138
+enumconst	c:@E@SKCloudServiceAuthorizationStatus@SKCloudServiceAuthorizationStatusAuthorized	SKCloudServiceAuthorizationStatus			-	-	ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0,xros=-/-/-/1	-	2052134ad0846318
+typedef	c:@T@SKCloudServiceCapability	-			enum SKCloudServiceCapability	-	-	-	7e1fbfde51e0f44e
+enum	c:@E@SKCloudServiceCapability	-			NSUInteger	-	ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0,xros=-/-/-/1	-	06885ce056ec54cc
+enumconst	c:@E@SKCloudServiceCapability@SKCloudServiceCapabilityNone	SKCloudServiceCapability			-	-	ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0,xros=-/-/-/1	-	b194fa8616bf5db1
+enumconst	c:@E@SKCloudServiceCapability@SKCloudServiceCapabilityMusicCatalogPlayback	SKCloudServiceCapability			-	-	ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0,xros=-/-/-/1	-	9eb7e13dc0bc279c
+enumconst	c:@E@SKCloudServiceCapability@SKCloudServiceCapabilityMusicCatalogSubscriptionEligible	SKCloudServiceCapability			-	-	ios=10.1/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=10.1/18.0/-/0,watchos=7.0/11.0/-/0	deprecated: Use the canBecomeSubscriber property of MusicSubscription from MusicKit.	24b346f65e2fa89b
+enumconst	c:@E@SKCloudServiceCapability@SKCloudServiceCapabilityAddToCloudMusicLibrary	SKCloudServiceCapability			-	-	ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0,xros=-/-/-/1	-	0a7f8272436500bb
+interface	c:objc(cs)SKCloudServiceController	-			-	-	ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0,xros=-/-/-/1	deprecated: Use MusicAuthorization.currentStatus from MusicKit.	c0af0547079034db
+super	-	SKCloudServiceController	NSObject		-	-	-	-	21874d58a7cb2611
+method	c:objc(cs)SKCloudServiceController(cm)authorizationStatus	-			SKCloudServiceAuthorizationStatus	-	ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0	deprecated: Use MusicAuthorization.currentStatus from MusicKit.	c55b4f252ac39d0d
+method	c:objc(cs)SKCloudServiceController(cm)requestAuthorization:	-			void	-	ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0	deprecated: Use MusicAuthorization.request() from MusicKit.	d2a3bcedff60a0f0
+method	c:objc(cs)SKCloudServiceController(im)requestCapabilitiesWithCompletionHandler:	-			void	-	ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0	deprecated: Use MusicSubscription.current from MusicKit.	91b7fb5ef603a966
+method	c:objc(cs)SKCloudServiceController(im)requestStorefrontCountryCodeWithCompletionHandler:	-			void	-	ios=11.0/18.0/-/0,maccatalyst=13.1/18.0/-/0,macos=11.0/15.0/-/0,tvos=11.0/18.0/-/0,watchos=7.0/11.0/-/0	deprecated: Use MusicDataRequest.currentCountryCode from MusicKit.	f9962c0a5558588d
+method	c:objc(cs)SKCloudServiceController(im)requestStorefrontIdentifierWithCompletionHandler:	-			void	-	ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0	deprecated: Use Storefront.current.id.	97253fe40b9bd1fd
+method	c:objc(cs)SKCloudServiceController(im)requestUserTokenForDeveloperToken:completionHandler:	-			void	-	ios=11.0/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=11.0/18.0/-/0,watchos=7.0/11.0/-/0	deprecated: Use MusicKit.	1077424d78bf7ada
+method	c:objc(cs)SKCloudServiceController(im)requestPersonalizationTokenForClientToken:withCompletionHandler:	-			void	-	ios=10.3/11.0/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=10.3/11.0/-/0,watchos=-/-/-/1	deprecated: Use requestUserTokenForDeveloperToken:completionHandler: instead	678d8cf5ca8e29f9
+var	c:@SKCloudServiceCapabilitiesDidChangeNotification	-			API_UNAVAILABLE const NSNotificationName	-	ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0,xros=-/-/-/1	-	801f7b345af20942
+var	c:@SKStorefrontCountryCodeDidChangeNotification	-			API_UNAVAILABLE const NSNotificationName	-	ios=11.0/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=11.0/18.0/-/0,watchos=7.0/11.0/-/0,xros=-/-/-/1	-	2517169af4e2fa29
+var	c:@SKStorefrontIdentifierDidChangeNotification	-			API_UNAVAILABLE const NSNotificationName	-	ios=9.3/18.0/-/0,maccatalyst=13.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=9.3/18.0/-/0,watchos=7.0/11.0/-/0,xros=-/-/-/1	-	e1020216f0d2f909
+typedef	c:@T@SKCloudServiceSetupOptionsKey	-			NSString *	-	-	-	db4bf8f9b7dab909
+typedef	c:@T@SKCloudServiceSetupAction	-			NSString *	-	-	-	d7a2268dac0e278d
+typedef	c:@T@SKCloudServiceSetupMessageIdentifier	-			NSString *	-	-	-	ed8ff26d8999c0c1
+interface	c:objc(cs)SKCloudServiceSetupViewController	-			-	-	ios=10.1/18.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	9e3e4a4f8586863f
+super	-	SKCloudServiceSetupViewController	UIViewController		-	-	-	-	5806fe40bcf3e3a2
+property	c:objc(cs)SKCloudServiceSetupViewController(py)delegate	-			id<SKCloudServiceSetupViewControllerDelegate>	weak,nonatomic	ios=10.1/18.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	f6a71e9409ffa1e9
+method	c:objc(cs)SKCloudServiceSetupViewController(im)loadWithOptions:completionHandler:	-			void	-	ios=10.1/18.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	0f5262e3e76aaae0
+protocol	c:objc(pl)SKCloudServiceSetupViewControllerDelegate	-			-	-	ios=10.1/18.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	86b2e5ef94654730
+conforms	-	SKCloudServiceSetupViewControllerDelegate	NSObject		-	-	-	-	42dd91f67bbfd801
+method	c:objc(pl)SKCloudServiceSetupViewControllerDelegate(im)cloudServiceSetupViewControllerDidDismiss:	-			void	optional	ios=10.1/18.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	91305cc1f09ffa89
+var	c:@SKCloudServiceSetupOptionsActionKey	-			NS_SWIFT_NAME const SKCloudServiceSetupOptionsKey	-	ios=10.1/18.0/-/0,macos=-/-/-/1,xros=-/-/-/1	-	ce767b77c84e8c4b
+var	c:@SKCloudServiceSetupOptionsITunesItemIdentifierKey	-			NS_SWIFT_NAME const SKCloudServiceSetupOptionsKey	-	ios=10.1/18.0/-/0,macos=-/-/-/1,xros=-/-/-/1	-	b89588735f4b35a8
+var	c:@SKCloudServiceSetupOptionsAffiliateTokenKey	-			NS_SWIFT_NAME const SKCloudServiceSetupOptionsKey	-	ios=10.3/18.0/-/0,macos=-/-/-/1,xros=-/-/-/1	-	53a096126c3bd7de
+var	c:@SKCloudServiceSetupOptionsCampaignTokenKey	-			NS_SWIFT_NAME const SKCloudServiceSetupOptionsKey	-	ios=10.3/18.0/-/0,macos=-/-/-/1,xros=-/-/-/1	-	51dd10be575659e6
+var	c:@SKCloudServiceSetupOptionsMessageIdentifierKey	-			NS_SWIFT_NAME const SKCloudServiceSetupOptionsKey	-	ios=11.0/18.0/-/0,macos=-/-/-/1,xros=-/-/-/1	-	c467d8966ab7ca0f
+var	c:@SKCloudServiceSetupActionSubscribe	-			API_DEPRECATED const SKCloudServiceSetupAction	-	ios=10.1/18.0/-/0,macos=-/-/-/1,xros=-/-/-/1	-	b3f17a6abaaf1507
+var	c:@SKCloudServiceSetupMessageIdentifierJoin	-			API_DEPRECATED const SKCloudServiceSetupMessageIdentifier	-	ios=11.0/18.0/-/0,macos=-/-/-/1,xros=-/-/-/1	-	83a70d9f75914e5c
+var	c:@SKCloudServiceSetupMessageIdentifierConnect	-			API_DEPRECATED const SKCloudServiceSetupMessageIdentifier	-	ios=11.0/18.0/-/0,macos=-/-/-/1,xros=-/-/-/1	-	086f4ab221aa5218
+var	c:@SKCloudServiceSetupMessageIdentifierAddMusic	-			API_DEPRECATED const SKCloudServiceSetupMessageIdentifier	-	ios=11.0/18.0/-/0,macos=-/-/-/1,xros=-/-/-/1	-	8754cb868514e1b5
+var	c:@SKCloudServiceSetupMessageIdentifierPlayMusic	-			API_DEPRECATED const SKCloudServiceSetupMessageIdentifier	-	ios=11.0/18.0/-/0,macos=-/-/-/1,xros=-/-/-/1	-	54a32e4f689c8642
+typedef	c:@T@SKDownloadState	-			enum SKDownloadState	-	-	-	999e222b18b79b55
+enum	c:@E@SKDownloadState	-			NSInteger	-	ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	a1dda4b493901f09
+enumconst	c:@E@SKDownloadState@SKDownloadStateWaiting	SKDownloadState			-	-	ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	edd7c4c220259b5b
+enumconst	c:@E@SKDownloadState@SKDownloadStateActive	SKDownloadState			-	-	ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	9b7fbd2d70c94682
+enumconst	c:@E@SKDownloadState@SKDownloadStatePaused	SKDownloadState			-	-	ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	1bdb020fc8651fe3
+enumconst	c:@E@SKDownloadState@SKDownloadStateFinished	SKDownloadState			-	-	ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	b91f4269bbd52238
+enumconst	c:@E@SKDownloadState@SKDownloadStateFailed	SKDownloadState			-	-	ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	112859cc158bc943
+enumconst	c:@E@SKDownloadState@SKDownloadStateCancelled	SKDownloadState			-	-	ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	448d8547095957af
+var	c:@SKDownloadTimeRemainingUnknown	-			NSTimeInterval	-	ios=6.0/16.0/-/0,macos=10.14/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	4c014968224a680c
+interface	c:objc(cs)SKDownload	-			-	-	ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	deprecated: Hosted content is no longer supported.	ae8ce02b0d1b9938
+super	-	SKDownload	NSObject		-	-	-	-	ecd566c146e85222
+property	c:objc(cs)SKDownload(py)state	-			SKDownloadState	readonly,nonatomic	ios=12.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=12.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	29ddbf0ee7ce730a
+property	c:objc(cs)SKDownload(py)downloadState	-			SKDownloadState	readonly,nonatomic	ios=6.0/12.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5362730a3e38fe99
+property	c:objc(cs)SKDownload(py)contentLength	-			long long	readonly,nonatomic	ios=6.0/13.0/-/0,maccatalyst=13.0/13.0/-/0,macos=-/-/-/1,tvos=9.0/13.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	c9b7275a3c2fcbf3
+property	c:objc(cs)SKDownload(py)expectedContentLength	-			long long	readonly,nonatomic	ios=13.0/16.0/-/0,macos=10.15/13.0/-/0,tvos=13.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	93f1c201478c14a8
+property	c:objc(cs)SKDownload(py)contentIdentifier	-			API_UNAVAILABLE NSString *	readonly,nonatomic	ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	65654818f72e79cf
+property	c:objc(cs)SKDownload(py)contentURL	-			API_UNAVAILABLE NSURL *	readonly,nonatomic	ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	005a681f9bf4f424
+property	c:objc(cs)SKDownload(py)contentVersion	-			API_UNAVAILABLE NSString *	readonly,nonatomic	ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	c6bfc613ff79eaa2
+property	c:objc(cs)SKDownload(py)error	-			API_UNAVAILABLE NSError *	readonly,nonatomic	ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	950f2e19110a2863
+property	c:objc(cs)SKDownload(py)progress	-			float	readonly,nonatomic	ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	a89129254b91914f
+property	c:objc(cs)SKDownload(py)timeRemaining	-			NSTimeInterval	readonly,nonatomic	ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	4707c1a3b05a153c
+property	c:objc(cs)SKDownload(py)transaction	-			API_UNAVAILABLE SKPaymentTransaction *	readonly,nonatomic	ios=6.0/16.0/-/0,macos=10.11/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	b3f4a21180605f88
+method	c:objc(cs)SKDownload(cm)contentURLForProductID:	-			NSURL *	-	ios=-/-/-/1,maccatalyst=13.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Hosted content is no longer supported.	6dd21b48c8401e83
+method	c:objc(cs)SKDownload(cm)deleteContentForProductID:	-			void	-	ios=-/-/-/1,maccatalyst=13.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Hosted content is no longer supported.	e916254c35550c70
+protocol	c:objc(pl)SKDownloaderExtension	-			-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	103431bdb25f4281
+conforms	-	SKDownloaderExtension	BAManagedDownloaderExtension		-	-	-	-	9f8274d44b082d1b
+var	c:@SKErrorDomain	-			NSString *const	-	ios=3.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	fa4486e653501719
+typedef	c:@T@SKErrorCode	-			enum SKErrorCode	-	-	-	263991cba242204e
+enum	c:@E@SKErrorCode	-			NSInteger	-	ios=3.0/-/-/0,macos=10.7/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	0a634121b91aaa33
+enumconst	c:@E@SKErrorCode@SKErrorUnknown	SKErrorCode			-	-	ios=3.0/-/-/0,macos=10.7/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	8b0239b6bf6a5cdb
+enumconst	c:@E@SKErrorCode@SKErrorClientInvalid	SKErrorCode			-	-	ios=3.0/-/-/0,macos=10.7/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	ffe9705bfd9db6d9
+enumconst	c:@E@SKErrorCode@SKErrorPaymentCancelled	SKErrorCode			-	-	ios=3.0/-/-/0,macos=10.7/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	26b5ae4a69c001db
+enumconst	c:@E@SKErrorCode@SKErrorPaymentInvalid	SKErrorCode			-	-	ios=3.0/-/-/0,macos=10.7/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	2701012743e91572
+enumconst	c:@E@SKErrorCode@SKErrorPaymentNotAllowed	SKErrorCode			-	-	ios=3.0/-/-/0,macos=10.7/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	f3d1e1d9a1028837
+enumconst	c:@E@SKErrorCode@SKErrorStoreProductNotAvailable	SKErrorCode			-	-	ios=3.0/-/-/0,macos=10.15/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	8f02008225e5e91f
+enumconst	c:@E@SKErrorCode@SKErrorCloudServicePermissionDenied	SKErrorCode			-	-	ios=9.3/-/-/0,macos=11.0/-/-/0,tvos=9.3/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	bf52f832c41e6bc2
+enumconst	c:@E@SKErrorCode@SKErrorCloudServiceNetworkConnectionFailed	SKErrorCode			-	-	ios=9.3/-/-/0,macos=11.0/-/-/0,tvos=9.3/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	2daa986964ec547d
+enumconst	c:@E@SKErrorCode@SKErrorCloudServiceRevoked	SKErrorCode			-	-	ios=10.3/-/-/0,macos=11.0/-/-/0,tvos=10.3/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	0745003006164a24
+enumconst	c:@E@SKErrorCode@SKErrorPrivacyAcknowledgementRequired	SKErrorCode			-	-	ios=12.2/-/-/0,macos=10.14.4/-/-/0,tvos=12.2/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	e27a4a5d4366d7ab
+enumconst	c:@E@SKErrorCode@SKErrorUnauthorizedRequestData	SKErrorCode			-	-	ios=12.2/-/-/0,macos=10.14.4/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	55a9ae628df8ca96
+enumconst	c:@E@SKErrorCode@SKErrorInvalidOfferIdentifier	SKErrorCode			-	-	ios=12.2/-/-/0,macos=10.14.4/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	56191f4b8956605a
+enumconst	c:@E@SKErrorCode@SKErrorInvalidSignature	SKErrorCode			-	-	ios=12.2/-/-/0,macos=10.14.4/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	888321321d9c9b82
+enumconst	c:@E@SKErrorCode@SKErrorMissingOfferParams	SKErrorCode			-	-	ios=12.2/-/-/0,macos=10.14.4/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	47d972a76016abfd
+enumconst	c:@E@SKErrorCode@SKErrorInvalidOfferPrice	SKErrorCode			-	-	ios=12.2/-/-/0,macos=10.14.4/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	6cdb76008a473435
+enumconst	c:@E@SKErrorCode@SKErrorOverlayCancelled	SKErrorCode			-	-	ios=12.2/-/-/0,macos=10.14.4/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	444d6d170a2b5f31
+enumconst	c:@E@SKErrorCode@SKErrorOverlayInvalidConfiguration	SKErrorCode			-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	5dedc2ddc24855ba
+enumconst	c:@E@SKErrorCode@SKErrorOverlayTimeout	SKErrorCode			-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	fd17b5b73f936f7d
+enumconst	c:@E@SKErrorCode@SKErrorIneligibleForOffer	SKErrorCode			-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0,xros=1.0/-/-/0	-	5aba5db43a6fd253
+enumconst	c:@E@SKErrorCode@SKErrorUnsupportedPlatform	SKErrorCode			-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=7.0/-/-/0,xros=1.0/-/-/0	-	922f687a8ba04932
+enumconst	c:@E@SKErrorCode@SKErrorOverlayPresentedInBackgroundScene	SKErrorCode			-	-	ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	b690b134120e7af8
+protocol	c:objc(pl)SKOverlayDelegate	-			-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	240c963fc2a5b823
+conforms	-	SKOverlayDelegate	NSObject		-	-	-	-	0b3ce98c38f9bf29
+method	c:objc(pl)SKOverlayDelegate(im)storeOverlay:didFailToLoadWithError:	-			void	optional	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	95f69d98ad5b873c
+method	c:objc(pl)SKOverlayDelegate(im)storeOverlay:willStartPresentation:	-			void	optional	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	b3a251f91f0edc64
+method	c:objc(pl)SKOverlayDelegate(im)storeOverlay:didFinishPresentation:	-			void	optional	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	47d92b0e7ebfc1b7
+method	c:objc(pl)SKOverlayDelegate(im)storeOverlay:willStartDismissal:	-			void	optional	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	27f1be950e540bea
+method	c:objc(pl)SKOverlayDelegate(im)storeOverlay:didFinishDismissal:	-			void	optional	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	132ce61e03440ef5
+interface	c:objc(cs)SKOverlay	-			-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	1270fe79c00d5f92
+super	-	SKOverlay	NSObject		-	-	-	-	211fd0cdf93f5b07
+method	c:objc(cs)SKOverlay(im)init	-			instancetype	-	*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	5de22f9f1ae97dde
+method	c:objc(cs)SKOverlay(cm)new	-			instancetype	-	*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	05bf4785ed47633c
+method	c:objc(cs)SKOverlay(im)initWithConfiguration:	-			instancetype	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	eadb2e6de5ab0873
+method	c:objc(cs)SKOverlay(im)presentInScene:	-			void	-	ios=14.0/-/-/0,ios_app_extension=-/-/-/1,macos_app_extension=-/-/-/1,xros=1.0/-/-/0	-	dbe1d79076179fca
+method	c:objc(cs)SKOverlay(cm)dismissOverlayInScene:	-			void	-	ios=14.0/-/-/0,ios_app_extension=-/-/-/1,macos_app_extension=-/-/-/1,xros=1.0/-/-/0	-	da359046ea8c3e8c
+property	c:objc(cs)SKOverlay(py)delegate	-			id<SKOverlayDelegate>	weak,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	9159208467e27e65
+property	c:objc(cs)SKOverlay(py)configuration	-			SKOverlayConfiguration *	readonly,copy	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	756c581f69b0470e
+typedef	c:@T@SKOverlayPosition	-			enum SKOverlayPosition	-	-	-	4e526649f403df31
+enum	c:@E@SKOverlayPosition	-			NSInteger	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	387ee4af36c382cf
+enumconst	c:@E@SKOverlayPosition@SKOverlayPositionBottom	SKOverlayPosition			-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	736aea82bbf8fc2a
+enumconst	c:@E@SKOverlayPosition@SKOverlayPositionBottomRaised	SKOverlayPosition			-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	a8ef20c247d24865
+interface	c:objc(cs)SKOverlayConfiguration	-			-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	eb35c79d06b6aebc
+super	-	SKOverlayConfiguration	NSObject		-	-	-	-	fd02bf3e07f12f90
+method	c:objc(cs)SKOverlayConfiguration(im)init	-			instancetype	-	*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	09332ad9d4582e65
+method	c:objc(cs)SKOverlayConfiguration(cm)new	-			instancetype	-	*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	b25e65860528525a
+interface	c:objc(cs)SKOverlayAppConfiguration	-			-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	786decc918245f34
+super	-	SKOverlayAppConfiguration	SKOverlayConfiguration		-	-	-	-	31a5c30fb97e606a
+method	c:objc(cs)SKOverlayAppConfiguration(im)init	-			instancetype	-	*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	5d34e8918fec3c56
+method	c:objc(cs)SKOverlayAppConfiguration(cm)new	-			instancetype	-	*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	7ffe1660bbf0980b
+method	c:objc(cs)SKOverlayAppConfiguration(im)initWithAppIdentifier:position:	-			instancetype	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	958a1d6f47cb8fba
+property	c:objc(cs)SKOverlayAppConfiguration(py)appIdentifier	-			NSString *	retain,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	eff21db7b27f9b3a
+property	c:objc(cs)SKOverlayAppConfiguration(py)campaignToken	-			NSString *	retain,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	01db095c15fe35d9
+property	c:objc(cs)SKOverlayAppConfiguration(py)providerToken	-			NSString *	retain,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	aea6fda6ec7ddf85
+property	c:objc(cs)SKOverlayAppConfiguration(py)customProductPageIdentifier	-			__TVOS_PROHIBITED NSString *	retain,nonatomic	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	9b892ea3578c7987
+property	c:objc(cs)SKOverlayAppConfiguration(py)latestReleaseID	-			__TVOS_PROHIBITED NSString *	retain,nonatomic	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	ced0528223075cc2
+property	c:objc(cs)SKOverlayAppConfiguration(py)position	-			SKOverlayPosition	nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	a396258c0157b587
+property	c:objc(cs)SKOverlayAppConfiguration(py)userDismissible	-			BOOL	nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	4066842dfff4e985
+method	c:objc(cs)SKOverlayAppConfiguration(im)setAdditionalValue:forKey:	-			void	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	31eed71aa3e6874a
+method	c:objc(cs)SKOverlayAppConfiguration(im)additionalValueForKey:	-			id	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	6ecdcbb502f612bb
+method	c:objc(cs)SKOverlayAppConfiguration(im)setAdImpression:	-			void	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1474659912658c97
+interface	c:objc(cs)SKOverlayAppClipConfiguration	-			-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	ce52de1cee5a360c
+super	-	SKOverlayAppClipConfiguration	SKOverlayConfiguration		-	-	-	-	5765d44bce498f68
+method	c:objc(cs)SKOverlayAppClipConfiguration(im)init	-			instancetype	-	*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	35b3872cc3fbcf02
+method	c:objc(cs)SKOverlayAppClipConfiguration(cm)new	-			instancetype	-	*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	c2bdead80be0b72b
+method	c:objc(cs)SKOverlayAppClipConfiguration(im)initWithPosition:	-			instancetype	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	7d75bbdfaddf0ad4
+property	c:objc(cs)SKOverlayAppClipConfiguration(py)campaignToken	-			NSString *	retain,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	0dd5b1cc08fe4b57
+property	c:objc(cs)SKOverlayAppClipConfiguration(py)providerToken	-			NSString *	retain,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	ca671b7599105968
+property	c:objc(cs)SKOverlayAppClipConfiguration(py)customProductPageIdentifier	-			__TVOS_PROHIBITED NSString *	retain,nonatomic	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	cbadf5884856a362
+property	c:objc(cs)SKOverlayAppClipConfiguration(py)latestReleaseID	-			__TVOS_PROHIBITED NSString *	retain,nonatomic	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	1339847cc7819608
+property	c:objc(cs)SKOverlayAppClipConfiguration(py)position	-			SKOverlayPosition	nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	2520ca2c89fe3f3b
+method	c:objc(cs)SKOverlayAppClipConfiguration(im)setAdditionalValue:forKey:	-			void	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	5ed9e8160b3e281a
+method	c:objc(cs)SKOverlayAppClipConfiguration(im)additionalValueForKey:	-			id	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	fd5ba926f991e0c3
+interface	c:objc(cs)SKOverlayTransitionContext	-			-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	d9efbb7c538a07f7
+super	-	SKOverlayTransitionContext	NSObject		-	-	-	-	475e250013f0c162
+method	c:objc(cs)SKOverlayTransitionContext(im)init	-			instancetype	-	*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	24b2b0fbe1675600
+method	c:objc(cs)SKOverlayTransitionContext(cm)new	-			instancetype	-	*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	ce16675dfd337f4b
+method	c:objc(cs)SKOverlayTransitionContext(im)addAnimationBlock:	-			void	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	268e99198c863b98
+property	c:objc(cs)SKOverlayTransitionContext(py)startFrame	-			CGRect	readonly,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6f0edf7501ca80e9
+property	c:objc(cs)SKOverlayTransitionContext(py)endFrame	-			CGRect	readonly,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	be849f159bfa21de
+interface	c:objc(cs)SKPayment	-			-	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use +[SKPayment paymentWithProduct:] instead	fccea1926daa8c58
+super	-	SKPayment	NSObject		-	-	-	-	07cd4eae12d7919a
+conforms	-	SKPayment	NSCopying		-	-	-	-	865169ad2a63a8ed
+conforms	-	SKPayment	NSMutableCopying		-	-	-	-	bf570122f1dec3d3
+method	c:objc(cs)SKPayment(cm)paymentWithProduct:	-			instancetype	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	5d296dbd8c2f08c1
+method	c:objc(cs)SKPayment(cm)paymentWithProductIdentifier:	-			id	-	ios=3.0/5.0/-/0,maccatalyst=13.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use +[SKPayment paymentWithProduct:] instead	7e890c45fe7eb5d5
+property	c:objc(cs)SKPayment(py)productIdentifier	-			NSString *	readonly,copy,nonatomic	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	69b5b842601aaba5
+property	c:objc(cs)SKPayment(py)requestData	-			NSData *	readonly,copy,nonatomic	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	994db8aaff1f0d85
+property	c:objc(cs)SKPayment(py)quantity	-			NSInteger	readonly,nonatomic	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	f549b62e01545fe5
+property	c:objc(cs)SKPayment(py)applicationUsername	-			NSString *	readonly,copy,nonatomic	ios=7.0/18.0/-/0,macos=10.9/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	e650b4b4e22bc75a
+property	c:objc(cs)SKPayment(py)simulatesAskToBuyInSandbox	-			BOOL	readonly,nonatomic	ios=8.3/18.0/-/0,macos=10.14/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	75337a7bac01cdec
+property	c:objc(cs)SKPayment(py)paymentDiscount	-			SKPaymentDiscount *	readonly,copy,nonatomic	ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	e6ec59ba62245743
+interface	c:objc(cs)SKMutablePayment	-			-	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Create a Product.PurchaseOption.appAccountToken to use in Product.purchase(confirmIn:options:).	731e013323ae2ace
+super	-	SKMutablePayment	SKPayment		-	-	-	-	68b180e6232fe997
+property	c:objc(cs)SKMutablePayment(py)applicationUsername	-			NSString *	copy,nonatomic	ios=7.0/18.0/-/0,macos=10.9/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	34805b2a24334f4b
+property	c:objc(cs)SKMutablePayment(py)paymentDiscount	-			SKPaymentDiscount *	copy,nonatomic	ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	fbcd73ba90310d52
+property	c:objc(cs)SKMutablePayment(py)productIdentifier	-			NSString *	copy,nonatomic	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	73aeaf685931c304
+property	c:objc(cs)SKMutablePayment(py)quantity	-			NSInteger	nonatomic	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	f1673a36ab97253c
+property	c:objc(cs)SKMutablePayment(py)requestData	-			NSData *	copy,nonatomic	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	b260f6d127a5528d
+property	c:objc(cs)SKMutablePayment(py)simulatesAskToBuyInSandbox	-			BOOL	nonatomic	ios=8.3/18.0/-/0,macos=10.14/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	14ba043fe0a1463d
+interface	c:objc(cs)SKPaymentDiscount	-			-	-	ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,tvos=12.2/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	05e4c31464d312d8
+super	-	SKPaymentDiscount	NSObject		-	-	-	-	0279ba97e70fcf3b
+method	c:objc(cs)SKPaymentDiscount(im)initWithIdentifier:keyIdentifier:nonce:signature:timestamp:	-			instancetype	-	ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,tvos=12.2/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	b6a369c3b3719404
+property	c:objc(cs)SKPaymentDiscount(py)identifier	-			NSString *	readonly,copy,nonatomic	ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,tvos=12.2/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	4f6f5601d68267e7
+property	c:objc(cs)SKPaymentDiscount(py)keyIdentifier	-			NSString *	readonly,copy,nonatomic	ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,tvos=12.2/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	e5e403c717477464
+property	c:objc(cs)SKPaymentDiscount(py)nonce	-			NSUUID *	readonly,copy,nonatomic	ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,tvos=12.2/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	c00876c60d08f4f8
+property	c:objc(cs)SKPaymentDiscount(py)signature	-			NSString *	readonly,copy,nonatomic	ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,tvos=12.2/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	f39ffbc0f8daad2c
+property	c:objc(cs)SKPaymentDiscount(py)timestamp	-			NSNumber *	readonly,copy,nonatomic	ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,tvos=12.2/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	00f0dbf41219c1ff
+interface	c:objc(cs)SKPaymentQueue	-			-	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: No longer supported.	0a502d303122e652
+super	-	SKPaymentQueue	NSObject		-	-	-	-	73d5829db948a7ec
+property	c:objc(cs)SKPaymentQueue(py)delegate	-			id<SKPaymentQueueDelegate>	weak,nonatomic	ios=13.0/18.0/-/0,macos=10.15/15.0/-/0,tvos=13.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	6e3f12914e403fda
+property	c:objc(cs)SKPaymentQueue(py)storefront	-			SKStorefront *	readonly,nonatomic	ios=13.0/18.0/-/0,macos=10.15/15.0/-/0,tvos=13.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	4f7b8708fa146ea9
+method	c:objc(cs)SKPaymentQueue(cm)defaultQueue	-			instancetype	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	dd74a57d95c78a78
+method	c:objc(cs)SKPaymentQueue(cm)canMakePayments	-			BOOL	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use AppStore.canMakePayments.	8df4463069cd1725
+method	c:objc(cs)SKPaymentQueue(im)addPayment:	-			void	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use Product.purchase(confirmIn:options:).	a94ce0ae94f147a4
+method	c:objc(cs)SKPaymentQueue(im)restoreCompletedTransactions	-			void	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use AppStore.sync().	70b7e0d970896289
+method	c:objc(cs)SKPaymentQueue(im)restoreCompletedTransactionsWithApplicationUsername:	-			void	-	ios=7.0/18.0/-/0,macos=10.9/15.0/-/0,tvos=7.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use AppStore.sync().	80d99636bfe22487
+method	c:objc(cs)SKPaymentQueue(im)finishTransaction:	-			void	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use Transaction.finish().	d5a21954efc281f3
+method	c:objc(cs)SKPaymentQueue(im)startDownloads:	-			void	-	ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	deprecated: Hosted content is no longer supported.	1088c0d2f9e0476e
+method	c:objc(cs)SKPaymentQueue(im)pauseDownloads:	-			void	-	ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	deprecated: Hosted content is no longer supported.	b8b4d0be639d41e1
+method	c:objc(cs)SKPaymentQueue(im)resumeDownloads:	-			void	-	ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	deprecated: Hosted content is no longer supported.	f1358e903c7f6b48
+method	c:objc(cs)SKPaymentQueue(im)cancelDownloads:	-			void	-	ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	deprecated: Hosted content is no longer supported.	a7a8f5a251dca0f3
+method	c:objc(cs)SKPaymentQueue(im)addTransactionObserver:	-			void	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use Transaction.updates or PurchaseResult from Product.purchase(confirmIn:options:).	1270b5a05571f507
+method	c:objc(cs)SKPaymentQueue(im)removeTransactionObserver:	-			void	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: No longer supported.	337ad43cedf251ff
+property	c:objc(cs)SKPaymentQueue(py)transactionObservers	-			NSArray<id<SKPaymentTransactionObserver>> *	readonly,nonatomic	ios=14.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=14.0/18.0/-/0,watchos=7.0/11.0/-/0,xros=1.0/2.0/-/0	-	bf7307259e6819d0
+property	c:objc(cs)SKPaymentQueue(py)transactions	-			NSArray<SKPaymentTransaction *> *	readonly,nonatomic	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	0b0aa5721bb87761
+method	c:objc(cs)SKPaymentQueue(im)showPriceConsentIfNeeded	-			void	-	ios=13.4/18.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use Message.messages and Message.display(in:).	aa4c7f19e03bb075
+method	c:objc(cs)SKPaymentQueue(im)presentCodeRedemptionSheet	-			void	-	ios=14.0/18.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use AppStore.presentOfferCodeRedeemSheet(in:).	052b6beabf3d9fc7
+protocol	c:objc(pl)SKPaymentQueueDelegate	-			-	-	ios=13.0/18.0/-/0,macos=10.15/15.0/-/0,tvos=13.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Pass Product.PurchaseOption.onStorefrontChange(shouldContinuePurchase:) to product.purchase(options:).	5e5fad527c613d12
+conforms	-	SKPaymentQueueDelegate	NSObject		-	-	-	-	7c0f3f279a610907
+method	c:objc(pl)SKPaymentQueueDelegate(im)paymentQueue:shouldContinueTransaction:inStorefront:	-			BOOL	optional	ios=13.0/18.0/-/0,macos=10.15/15.0/-/0,tvos=13.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Pass Product.PurchaseOption.onStorefrontChange(shouldContinuePurchase:) to product.purchase(options:).	4341fa813f14db37
+method	c:objc(pl)SKPaymentQueueDelegate(im)paymentQueueShouldShowPriceConsent:	-			BOOL	optional	ios=13.4/18.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use Message.messages and Message.display(in:).	c911bcea275ee7ec
+protocol	c:objc(pl)SKPaymentTransactionObserver	-			-	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use AppStore.sync().	c2c8cac2ffcdb4c8
+conforms	-	SKPaymentTransactionObserver	NSObject		-	-	-	-	0d19b9891b6e63cd
+method	c:objc(pl)SKPaymentTransactionObserver(im)paymentQueue:updatedTransactions:	-			void	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	1f445f008a3ab6d1
+method	c:objc(pl)SKPaymentTransactionObserver(im)paymentQueue:removedTransactions:	-			void	optional	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	6e028bf505dc8b92
+method	c:objc(pl)SKPaymentTransactionObserver(im)paymentQueue:restoreCompletedTransactionsFailedWithError:	-			void	optional	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use AppStore.sync().	5801f47e1cc7fbf7
+method	c:objc(pl)SKPaymentTransactionObserver(im)paymentQueueRestoreCompletedTransactionsFinished:	-			void	optional	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use AppStore.sync().	65ebe801ba97fe7b
+method	c:objc(pl)SKPaymentTransactionObserver(im)paymentQueue:updatedDownloads:	-			void	optional	ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	deprecated: Hosted content is no longer supported.	d200cfe4fe519c47
+method	c:objc(pl)SKPaymentTransactionObserver(im)paymentQueue:shouldAddStorePayment:forProduct:	-			BOOL	optional	ios=11.0/18.0/-/0,maccatalyst=14.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=11.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use PurchaseIntent.intents.	84ab42cb8d29795f
+method	c:objc(pl)SKPaymentTransactionObserver(im)paymentQueueDidChangeStorefront:	-			void	optional	ios=13.0/18.0/-/0,macos=10.15/15.0/-/0,tvos=13.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use Storefront.updates.	2b4405d6bd09b2fa
+method	c:objc(pl)SKPaymentTransactionObserver(im)paymentQueue:didRevokeEntitlementsForProductIdentifiers:	-			void	optional	ios=14.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=14.0/18.0/-/0,watchos=7.0/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use Transaction.updates.	830037c9f6e154da
+typedef	c:@T@SKPaymentTransactionState	-			enum SKPaymentTransactionState	-	-	-	37c37f48a02421b9
+enum	c:@E@SKPaymentTransactionState	-			NSInteger	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	9421c7ad774e3805
+enumconst	c:@E@SKPaymentTransactionState@SKPaymentTransactionStatePurchasing	SKPaymentTransactionState			-	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	70cf2713774d3dcd
+enumconst	c:@E@SKPaymentTransactionState@SKPaymentTransactionStatePurchased	SKPaymentTransactionState			-	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	87fcb8def774d5da
+enumconst	c:@E@SKPaymentTransactionState@SKPaymentTransactionStateFailed	SKPaymentTransactionState			-	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	78b1bec439dad7d1
+enumconst	c:@E@SKPaymentTransactionState@SKPaymentTransactionStateRestored	SKPaymentTransactionState			-	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	b5b9970e8abb3dcf
+enumconst	c:@E@SKPaymentTransactionState@SKPaymentTransactionStateDeferred	SKPaymentTransactionState			-	-	ios=8.0/18.0/-/0,macos=10.10/15.0/-/0,watchos=6.2/11.0/-/0	-	46214d935d54e370
+interface	c:objc(cs)SKPaymentTransaction	-			-	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Hosted content is no longer supported.	39106f9330f789d2
+super	-	SKPaymentTransaction	NSObject		-	-	-	-	6c81b7079bc95969
+property	c:objc(cs)SKPaymentTransaction(py)error	-			NSError *	readonly,nonatomic	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	8c936b652554eba8
+property	c:objc(cs)SKPaymentTransaction(py)originalTransaction	-			SKPaymentTransaction *	readonly,nonatomic	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	04f0307b43a21904
+property	c:objc(cs)SKPaymentTransaction(py)payment	-			SKPayment *	readonly,nonatomic	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	d4ab779c60139159
+property	c:objc(cs)SKPaymentTransaction(py)downloads	-			API_UNAVAILABLE NSArray<SKDownload *> *	readonly,nonatomic	ios=6.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=9.0/16.0/-/0,watchos=6.2/9.0/-/0,xros=-/-/-/1	-	fe753d5d9c42d634
+property	c:objc(cs)SKPaymentTransaction(py)transactionDate	-			NSDate *	readonly,nonatomic	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	b529abdc5a8f0e1e
+property	c:objc(cs)SKPaymentTransaction(py)transactionIdentifier	-			NSString *	readonly,nonatomic	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	ebefb1b8826b846c
+property	c:objc(cs)SKPaymentTransaction(py)transactionReceipt	-			API_UNAVAILABLE NSData *	readonly,nonatomic	ios=3.0/7.0/-/0,maccatalyst=13.0/13.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	43fa2bfd12a61526
+property	c:objc(cs)SKPaymentTransaction(py)transactionState	-			SKPaymentTransactionState	readonly,nonatomic	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	ae010e2b0b9c692b
+typedef	c:@T@SKProductPeriodUnit	-			enum SKProductPeriodUnit	-	-	-	d45de754c67c26d6
+enum	c:@E@SKProductPeriodUnit	-			NSUInteger	-	ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	059a0f843885f4fe
+enumconst	c:@E@SKProductPeriodUnit@SKProductPeriodUnitDay	SKProductPeriodUnit			-	-	ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	7e695ea3e143b033
+enumconst	c:@E@SKProductPeriodUnit@SKProductPeriodUnitWeek	SKProductPeriodUnit			-	-	ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	66356018b949109b
+enumconst	c:@E@SKProductPeriodUnit@SKProductPeriodUnitMonth	SKProductPeriodUnit			-	-	ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	973f497a93ad54e3
+enumconst	c:@E@SKProductPeriodUnit@SKProductPeriodUnitYear	SKProductPeriodUnit			-	-	ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	fc7c4e0bf9ff19d0
+interface	c:objc(cs)SKProductSubscriptionPeriod	-			-	-	ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	091e108384a11682
+super	-	SKProductSubscriptionPeriod	NSObject		-	-	-	-	db408db72591b460
+property	c:objc(cs)SKProductSubscriptionPeriod(py)numberOfUnits	-			NSUInteger	readonly,nonatomic	ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	ef790f8c33cc1f97
+property	c:objc(cs)SKProductSubscriptionPeriod(py)unit	-			SKProductPeriodUnit	readonly,nonatomic	ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	f3ee8b7d84f82b25
+interface	c:objc(cs)SKProduct	-			-	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use Product.description.	514b361ba6fe7d4f
+super	-	SKProduct	NSObject		-	-	-	-	db8c16d66bf65202
+property	c:objc(cs)SKProduct(py)localizedDescription	-			NSString *	readonly,nonatomic	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	ed942af98a366be5
+property	c:objc(cs)SKProduct(py)localizedTitle	-			NSString *	readonly,nonatomic	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	d4f0ae9e0bf4e97e
+property	c:objc(cs)SKProduct(py)price	-			NSDecimalNumber *	readonly,nonatomic	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	a74b6f614dd53238
+property	c:objc(cs)SKProduct(py)priceLocale	-			NSLocale *	readonly,nonatomic	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	8c095c0360375e00
+property	c:objc(cs)SKProduct(py)productIdentifier	-			NSString *	readonly,nonatomic	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	c6f4fad826a723ba
+property	c:objc(cs)SKProduct(py)isDownloadable	-			BOOL	readonly,nonatomic	ios=6.0/16.0/-/0,macos=10.15/13.0/-/0,watchos=6.2/9.0/-/0,xros=1.0/2.0/-/0	-	7468a6e85a6d0f23
+property	c:objc(cs)SKProduct(py)downloadable	-			BOOL	readonly,nonatomic	ios=-/-/-/1,macos=10.8/10.15/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	ec1db8d6dec264c3
+property	c:objc(cs)SKProduct(py)isFamilyShareable	-			BOOL	readonly,nonatomic	ios=14.0/18.0/-/0,macos=11.0/15.0/-/0,watchos=7.0/11.0/-/0,xros=1.0/2.0/-/0	-	08069e3c411d6516
+property	c:objc(cs)SKProduct(py)contentLengths	-			API_DEPRECATED_WITH_REPLACEMENT NSArray<NSNumber *> *	readonly,nonatomic	ios=-/-/-/1,macos=10.8/10.14/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ec22944c3066adc4
+property	c:objc(cs)SKProduct(py)downloadContentLengths	-			NSArray<NSNumber *> *	readonly,nonatomic	ios=6.0/16.0/-/0,macos=10.14/13.0/-/0,watchos=6.2/9.0/-/0,xros=1.0/2.0/-/0	-	71e0a0dd7b358911
+property	c:objc(cs)SKProduct(py)contentVersion	-			API_DEPRECATED_WITH_REPLACEMENT NSString *	readonly,nonatomic	macos=10.8/10.14/-/0,xros=-/-/-/1	-	c10bae37f67b8812
+property	c:objc(cs)SKProduct(py)downloadContentVersion	-			NSString *	readonly,nonatomic	ios=6.0/16.0/-/0,macos=10.14/13.0/-/0,watchos=6.2/9.0/-/0,xros=1.0/2.0/-/0	-	3bd1116fe84d80f3
+property	c:objc(cs)SKProduct(py)subscriptionPeriod	-			SKProductSubscriptionPeriod *	readonly,nonatomic	ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	064678456c6931da
+property	c:objc(cs)SKProduct(py)introductoryPrice	-			SKProductDiscount *	readonly,nonatomic	ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	c7f65d928d4ef552
+property	c:objc(cs)SKProduct(py)subscriptionGroupIdentifier	-			NSString *	readonly,nonatomic	ios=12.0/18.0/-/0,macos=10.14/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	a9bf397c63977181
+property	c:objc(cs)SKProduct(py)discounts	-			NSArray<SKProductDiscount *> *	readonly,nonatomic	ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	97940afcac6c5774
+typedef	c:@T@SKProductDiscountPaymentMode	-			enum SKProductDiscountPaymentMode	-	-	-	0ec8995d7398a16d
+enum	c:@E@SKProductDiscountPaymentMode	-			NSUInteger	-	ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	7fd490391277dcb2
+enumconst	c:@E@SKProductDiscountPaymentMode@SKProductDiscountPaymentModePayAsYouGo	SKProductDiscountPaymentMode			-	-	ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	09d40a1e849957be
+enumconst	c:@E@SKProductDiscountPaymentMode@SKProductDiscountPaymentModePayUpFront	SKProductDiscountPaymentMode			-	-	ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	80895901b47f6b2b
+enumconst	c:@E@SKProductDiscountPaymentMode@SKProductDiscountPaymentModeFreeTrial	SKProductDiscountPaymentMode			-	-	ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	94e0b787d847cc65
+typedef	c:@T@SKProductDiscountType	-			enum SKProductDiscountType	-	-	-	4e0d146c1941f300
+enum	c:@E@SKProductDiscountType	-			NSUInteger	-	ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	54f28efe0667004b
+enumconst	c:@E@SKProductDiscountType@SKProductDiscountTypeIntroductory	SKProductDiscountType			-	-	ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	df2a3a950dfa908e
+enumconst	c:@E@SKProductDiscountType@SKProductDiscountTypeSubscription	SKProductDiscountType			-	-	ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	d99b87d9b4bece47
+interface	c:objc(cs)SKProductDiscount	-			-	-	ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use Product.SubscriptionOffer.displayPrice.	07098ee8015f82e0
+super	-	SKProductDiscount	NSObject		-	-	-	-	47bdf8535dccf8fa
+property	c:objc(cs)SKProductDiscount(py)price	-			NSDecimalNumber *	readonly,nonatomic	ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	e8b2565db0fa82bd
+property	c:objc(cs)SKProductDiscount(py)priceLocale	-			NSLocale *	readonly,nonatomic	ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	0c4e76491866c351
+property	c:objc(cs)SKProductDiscount(py)identifier	-			NSString *	readonly,nonatomic	ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	01784f05b5f917fe
+property	c:objc(cs)SKProductDiscount(py)subscriptionPeriod	-			SKProductSubscriptionPeriod *	readonly,nonatomic	ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	2402b49cf6823583
+property	c:objc(cs)SKProductDiscount(py)numberOfPeriods	-			NSUInteger	readonly,nonatomic	ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	6cb56adef72ccd1a
+property	c:objc(cs)SKProductDiscount(py)paymentMode	-			SKProductDiscountPaymentMode	readonly,nonatomic	ios=11.2/18.0/-/0,macos=10.13.2/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	49a76839d0f99919
+property	c:objc(cs)SKProductDiscount(py)type	-			SKProductDiscountType	readonly,nonatomic	ios=12.2/18.0/-/0,macos=10.14.4/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	c88a2fe4c0ce722c
+interface	c:objc(cs)SKRequest	-			-	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	3a180622d80761b0
+super	-	SKRequest	NSObject		-	-	-	-	2f7a565ea7b75c63
+property	c:objc(cs)SKRequest(py)delegate	-			id<SKRequestDelegate>	weak,nonatomic	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	ac538002987b3a80
+method	c:objc(cs)SKRequest(im)cancel	-			void	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	b236ea771666a50d
+method	c:objc(cs)SKRequest(im)start	-			void	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	9027b0933738d19b
+protocol	c:objc(pl)SKRequestDelegate	-			-	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	7dc501205e934da0
+conforms	-	SKRequestDelegate	NSObject		-	-	-	-	6330890740d70897
+method	c:objc(pl)SKRequestDelegate(im)requestDidFinish:	-			void	optional	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	9522381bd72e1647
+method	c:objc(pl)SKRequestDelegate(im)request:didFailWithError:	-			void	optional	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	71436e5c59de7b94
+protocol	c:objc(pl)SKProductsRequestDelegate	-			-	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	ed9ae85fd56c9f8c
+conforms	-	SKProductsRequestDelegate	SKRequestDelegate		-	-	-	-	d1360dcf68821265
+method	c:objc(pl)SKProductsRequestDelegate(im)productsRequest:didReceiveResponse:	-			void	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	4266188b4036efcf
+interface	c:objc(cs)SKProductsRequest	-			-	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	7c77982c0d0a12e8
+super	-	SKProductsRequest	SKRequest		-	-	-	-	8e735bed4d9f348a
+method	c:objc(cs)SKProductsRequest(im)initWithProductIdentifiers:	-			instancetype	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	1f4e2fb444939a1a
+property	c:objc(cs)SKProductsRequest(py)delegate	-			id<SKProductsRequestDelegate>	weak,nonatomic	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	6d7768701653c222
+interface	c:objc(cs)SKProductsResponse	-			-	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	2cc5aa02cdf691c5
+super	-	SKProductsResponse	NSObject		-	-	-	-	605e9e7457219d88
+property	c:objc(cs)SKProductsResponse(py)products	-			NSArray<SKProduct *> *	readonly,nonatomic	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	581859e91247e04b
+property	c:objc(cs)SKProductsResponse(py)invalidProductIdentifiers	-			NSArray<NSString *> *	readonly,nonatomic	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	59bc9298107443c0
+typedef	c:@T@SKProductStorePromotionVisibility	-			enum SKProductStorePromotionVisibility	-	-	-	11b627690d64a428
+enum	c:@E@SKProductStorePromotionVisibility	-			NSInteger	-	ios=11.0/18.0/-/0,maccatalyst=14.0/18.0/-/0,macos=11.0/15.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	35e7b09a96f001d4
+enumconst	c:@E@SKProductStorePromotionVisibility@SKProductStorePromotionVisibilityDefault	SKProductStorePromotionVisibility			-	-	ios=11.0/18.0/-/0,maccatalyst=14.0/18.0/-/0,macos=11.0/15.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	7c9c2357fdb8cdf0
+enumconst	c:@E@SKProductStorePromotionVisibility@SKProductStorePromotionVisibilityShow	SKProductStorePromotionVisibility			-	-	ios=11.0/18.0/-/0,maccatalyst=14.0/18.0/-/0,macos=11.0/15.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	200b98dd600d5101
+enumconst	c:@E@SKProductStorePromotionVisibility@SKProductStorePromotionVisibilityHide	SKProductStorePromotionVisibility			-	-	ios=11.0/18.0/-/0,maccatalyst=14.0/18.0/-/0,macos=11.0/15.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	014c6d110650fa57
+interface	c:objc(cs)SKProductStorePromotionController	-			-	-	ios=11.0/18.0/-/0,maccatalyst=14.0/18.0/-/0,macos=11.0/15.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Get visibility from Product.PromotionInfo.currentOrder.	e0b820d10d59fc08
+super	-	SKProductStorePromotionController	NSObject		-	-	-	-	f8ad154cd0a58da1
+method	c:objc(cs)SKProductStorePromotionController(cm)defaultController	-			instancetype	-	ios=11.0/18.0/-/0,maccatalyst=14.0/18.0/-/0,macos=11.0/15.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	99b0c4b0cc26a37b
+method	c:objc(cs)SKProductStorePromotionController(im)fetchStorePromotionVisibilityForProduct:completionHandler:	-			void	-	ios=11.0/18.0/-/0,maccatalyst=14.0/18.0/-/0,macos=11.0/15.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Get visibility from Product.PromotionInfo.currentOrder.	c5d4350891fa43ca
+method	c:objc(cs)SKProductStorePromotionController(im)updateStorePromotionVisibility:forProduct:completionHandler:	-			void	-	ios=11.0/18.0/-/0,maccatalyst=14.0/18.0/-/0,macos=11.0/15.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use Product.PromotionInfo.updateProductVisibility(_:for:).	f7e9407e5de135f0
+method	c:objc(cs)SKProductStorePromotionController(im)fetchStorePromotionOrderWithCompletionHandler:	-			void	-	ios=11.0/18.0/-/0,maccatalyst=14.0/18.0/-/0,macos=11.0/15.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use Product.PromotionInfo.currentOrder.	eed29901f7773238
+method	c:objc(cs)SKProductStorePromotionController(im)updateStorePromotionOrder:completionHandler:	-			void	-	ios=11.0/18.0/-/0,maccatalyst=14.0/18.0/-/0,macos=11.0/15.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use Product.PromotionInfo.updateProductOrder(byID:).	6e56275ebc753cfe
+interface	c:objc(cs)SKReceiptRefreshRequest	-			-	-	ios=7.0/18.0/-/0,macos=10.9/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	0a7b996ffcab43f7
+super	-	SKReceiptRefreshRequest	SKRequest		-	-	-	-	23820608a611616f
+method	c:objc(cs)SKReceiptRefreshRequest(im)initWithReceiptProperties:	-			instancetype	-	ios=7.0/18.0/-/0,macos=10.9/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	d2ed9dbb48094d18
+property	c:objc(cs)SKReceiptRefreshRequest(py)receiptProperties	-			NSDictionary<NSString *,id> *	readonly,nonatomic	ios=7.0/18.0/-/0,macos=10.9/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	78bdede3b2665217
+function	c:@F@SKTerminateForInvalidReceipt	-			void (void)	-	ios=7.1/-/-/0,macos=10.14/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	d955dc1d2deb63a8
+var	c:@SKReceiptPropertyIsExpired	-			NSString *const	-	ios=7.0/18.0/-/0,macos=10.9/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	2b13ff9d12691f4e
+var	c:@SKReceiptPropertyIsRevoked	-			NSString *const	-	ios=7.0/18.0/-/0,macos=10.9/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	2e86a2bf1897f406
+var	c:@SKReceiptPropertyIsVolumePurchase	-			NSString *const	-	ios=7.0/18.0/-/0,macos=10.9/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	bc1b81081e952d7e
+interface	c:objc(cs)SKStorefront	-			-	-	ios=13.0/18.0/-/0,macos=10.15/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use 'Storefront.countryCode'.	fdcfed58e2a84db7
+super	-	SKStorefront	NSObject		-	-	-	-	0ae8d92a2693a940
+property	c:objc(cs)SKStorefront(py)countryCode	-			NSString *	readonly,copy,nonatomic	ios=13.0/18.0/-/0,macos=10.15/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	174f54ac76c897ca
+property	c:objc(cs)SKStorefront(py)identifier	-			NSString *	readonly,copy,nonatomic	ios=13.0/18.0/-/0,macos=10.15/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	54e4bbd209c2051a
+interface	c:objc(cs)SKStoreProductViewController	-			-	-	ios=6.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,xros=-/-/-/1	-	93c00faec32f24d8
+super	-	SKStoreProductViewController	UIViewController		-	-	-	-	e79a49dd76686b55
+property	c:objc(cs)SKStoreProductViewController(py)delegate	-			API_UNAVAILABLE id<SKStoreProductViewControllerDelegate>	weak,nonatomic	ios=6.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,xros=-/-/-/1	-	cb8cc4ee6b7187c7
+method	c:objc(cs)SKStoreProductViewController(im)loadProductWithParameters:completionBlock:	-			void	-	ios=6.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,xros=-/-/-/1	-	38d868686478ccf3
+method	c:objc(cs)SKStoreProductViewController(im)loadProductWithParameters:impression:completionBlock:	-			void	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fe700d82b86ff335
+protocol	c:objc(pl)SKStoreProductViewControllerDelegate	-			-	-	ios=6.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,xros=-/-/-/1	-	baa76b3ebf3ef910
+conforms	-	SKStoreProductViewControllerDelegate	NSObject		-	-	-	-	a6d0781e658a4a12
+method	c:objc(pl)SKStoreProductViewControllerDelegate(im)productViewControllerDidFinish:	-			void	optional	ios=6.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,xros=-/-/-/1	-	e2d28e8d103e1ef5
+var	c:@SKStoreProductParameterITunesItemIdentifier	-			API_UNAVAILABLE NSString *const	-	ios=6.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,xros=-/-/-/1	-	0e776dfdfbde1b94
+var	c:@SKStoreProductParameterProductIdentifier	-			API_UNAVAILABLE NSString *const	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,xros=-/-/-/1	-	8a61397f4e812cee
+var	c:@SKStoreProductParameterCustomProductPageIdentifier	-			API_UNAVAILABLE NSString *const	-	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,xros=-/-/-/1	-	a3d6340364e9d29f
+var	c:@SKStoreProductParameterAffiliateToken	-			API_UNAVAILABLE NSString *const	-	ios=8.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,xros=-/-/-/1	-	16aa2abd52687c30
+var	c:@SKStoreProductParameterCampaignToken	-			API_UNAVAILABLE NSString *const	-	ios=8.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,xros=-/-/-/1	-	1502d1993ada25f5
+var	c:@SKStoreProductParameterProviderToken	-			API_UNAVAILABLE NSString *const	-	ios=8.3/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,xros=-/-/-/1	-	ea898651f36cbf10
+var	c:@SKStoreProductParameterAdvertisingPartnerToken	-			API_UNAVAILABLE NSString *const	-	ios=9.3/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,xros=-/-/-/1	-	bbe9279ad0624d14
+interface	c:objc(cs)SKStoreReviewController	-			-	-	ios=10.3/18.0/-/0,macos=10.14/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use -[SKStoreReviewController requestReviewInScene:].	650623ef3e70c70c
+super	-	SKStoreReviewController	NSObject		-	-	-	-	5cd0f0456c041466
+method	c:objc(cs)SKStoreReviewController(cm)requestReview	-			void	-	ios=10.3/14.0/-/0,macos=10.14/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use -[SKStoreReviewController requestReviewInScene:].	1258c91ec7898374
+method	c:objc(cs)SKStoreReviewController(cm)requestReviewInScene:	-			void	-	ios=14.0/18.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use AppStore.requestReview(in:).	73484cf3e64795bb

@@ -1,26 +1,26 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
-typedef	c:@T@UNNotificationContentExtensionMediaPlayPauseButtonType	-			-	-	dc4dd39798fd7b5b
-enum	c:@E@UNNotificationContentExtensionMediaPlayPauseButtonType	-			ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	36bb62dabfea9af3
-enumconst	c:@E@UNNotificationContentExtensionMediaPlayPauseButtonType@UNNotificationContentExtensionMediaPlayPauseButtonTypeNone	UNNotificationContentExtensionMediaPlayPauseButtonType			ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c37708111499bf12
-enumconst	c:@E@UNNotificationContentExtensionMediaPlayPauseButtonType@UNNotificationContentExtensionMediaPlayPauseButtonTypeDefault	UNNotificationContentExtensionMediaPlayPauseButtonType			ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bd84fc8608612210
-enumconst	c:@E@UNNotificationContentExtensionMediaPlayPauseButtonType@UNNotificationContentExtensionMediaPlayPauseButtonTypeOverlay	UNNotificationContentExtensionMediaPlayPauseButtonType			ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8693b1eaf856d627
-typedef	c:@T@UNNotificationContentExtensionResponseOption	-			-	-	edff153b1ad75e19
-enum	c:@E@UNNotificationContentExtensionResponseOption	-			ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	df2c3c07131f5539
-enumconst	c:@E@UNNotificationContentExtensionResponseOption@UNNotificationContentExtensionResponseOptionDoNotDismiss	UNNotificationContentExtensionResponseOption			ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3baf118eaba76bc2
-enumconst	c:@E@UNNotificationContentExtensionResponseOption@UNNotificationContentExtensionResponseOptionDismiss	UNNotificationContentExtensionResponseOption			ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a462930bb0576558
-enumconst	c:@E@UNNotificationContentExtensionResponseOption@UNNotificationContentExtensionResponseOptionDismissAndForwardAction	UNNotificationContentExtensionResponseOption			ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	db52f833e7221e45
-protocol	c:objc(pl)UNNotificationContentExtension	-			ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f3bcb2281f51a297
-conforms	-	UNNotificationContentExtension	NSObject		-	-	edf2520b8a1fbe0f
-method	c:objc(pl)UNNotificationContentExtension(im)didReceiveNotification:	-			ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	865878140b0870aa
-method	c:objc(pl)UNNotificationContentExtension(im)didReceiveNotificationResponse:completionHandler:	-			ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d63eb5555ef19713
-property	c:objc(pl)UNNotificationContentExtension(py)mediaPlayPauseButtonType	-			ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bc6a22fa278b8fc4
-property	c:objc(pl)UNNotificationContentExtension(py)mediaPlayPauseButtonFrame	-			ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	208ede43ecb29fa0
-property	c:objc(pl)UNNotificationContentExtension(py)mediaPlayPauseButtonTintColor	-			ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	26938e4373d4d983
-method	c:objc(pl)UNNotificationContentExtension(im)mediaPlay	-			ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7410ddd4c1d329ee
-method	c:objc(pl)UNNotificationContentExtension(im)mediaPause	-			ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	68eafb125fce7140
-category	c:objc(cy)NSExtensionContext@UNNotificationContentExtension	-			ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	4c803644c62c11d6
-property	c:objc(cs)NSExtensionContext(py)notificationActions	UNNotificationContentExtension			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	37be91a52a9af32a
-method	c:objc(cs)NSExtensionContext(im)performNotificationDefaultAction	UNNotificationContentExtension			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7cfb77743b708628
-method	c:objc(cs)NSExtensionContext(im)dismissNotificationContentExtension	UNNotificationContentExtension			ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	89d27279df9b0238
-method	c:objc(cs)NSExtensionContext(im)mediaPlayingStarted	UNNotificationContentExtension			ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	00a1da6434e2b155
-method	c:objc(cs)NSExtensionContext(im)mediaPlayingPaused	UNNotificationContentExtension			ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	06f77f8826ee4493
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
+typedef	c:@T@UNNotificationContentExtensionMediaPlayPauseButtonType	-			enum UNNotificationContentExtensionMediaPlayPauseButtonType	-	-	-	dc4dd39798fd7b5b
+enum	c:@E@UNNotificationContentExtensionMediaPlayPauseButtonType	-			NSUInteger	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	36bb62dabfea9af3
+enumconst	c:@E@UNNotificationContentExtensionMediaPlayPauseButtonType@UNNotificationContentExtensionMediaPlayPauseButtonTypeNone	UNNotificationContentExtensionMediaPlayPauseButtonType			-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c37708111499bf12
+enumconst	c:@E@UNNotificationContentExtensionMediaPlayPauseButtonType@UNNotificationContentExtensionMediaPlayPauseButtonTypeDefault	UNNotificationContentExtensionMediaPlayPauseButtonType			-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bd84fc8608612210
+enumconst	c:@E@UNNotificationContentExtensionMediaPlayPauseButtonType@UNNotificationContentExtensionMediaPlayPauseButtonTypeOverlay	UNNotificationContentExtensionMediaPlayPauseButtonType			-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8693b1eaf856d627
+typedef	c:@T@UNNotificationContentExtensionResponseOption	-			enum UNNotificationContentExtensionResponseOption	-	-	-	edff153b1ad75e19
+enum	c:@E@UNNotificationContentExtensionResponseOption	-			NSUInteger	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	df2c3c07131f5539
+enumconst	c:@E@UNNotificationContentExtensionResponseOption@UNNotificationContentExtensionResponseOptionDoNotDismiss	UNNotificationContentExtensionResponseOption			-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3baf118eaba76bc2
+enumconst	c:@E@UNNotificationContentExtensionResponseOption@UNNotificationContentExtensionResponseOptionDismiss	UNNotificationContentExtensionResponseOption			-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a462930bb0576558
+enumconst	c:@E@UNNotificationContentExtensionResponseOption@UNNotificationContentExtensionResponseOptionDismissAndForwardAction	UNNotificationContentExtensionResponseOption			-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	db52f833e7221e45
+protocol	c:objc(pl)UNNotificationContentExtension	-			-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f3bcb2281f51a297
+conforms	-	UNNotificationContentExtension	NSObject		-	-	-	-	edf2520b8a1fbe0f
+method	c:objc(pl)UNNotificationContentExtension(im)didReceiveNotification:	-			void	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	da425ef0f496a88e
+method	c:objc(pl)UNNotificationContentExtension(im)didReceiveNotificationResponse:completionHandler:	-			void	optional	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b7f5cf262d1e5b52
+property	c:objc(pl)UNNotificationContentExtension(py)mediaPlayPauseButtonType	-			UNNotificationContentExtensionMediaPlayPauseButtonType	readonly,assign,nonatomic	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bc6a22fa278b8fc4
+property	c:objc(pl)UNNotificationContentExtension(py)mediaPlayPauseButtonFrame	-			CGRect	readonly,assign,nonatomic	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	208ede43ecb29fa0
+property	c:objc(pl)UNNotificationContentExtension(py)mediaPlayPauseButtonTintColor	-			UIColor *	readonly,copy,nonatomic	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9ec6047e53cca8a9
+method	c:objc(pl)UNNotificationContentExtension(im)mediaPlay	-			void	optional	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7410ddd4c1d329ee
+method	c:objc(pl)UNNotificationContentExtension(im)mediaPause	-			void	optional	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	68eafb125fce7140
+category	c:objc(cy)NSExtensionContext@UNNotificationContentExtension	-			-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	4c803644c62c11d6
+property	c:objc(cs)NSExtensionContext(py)notificationActions	UNNotificationContentExtension			NSArray<UNNotificationAction *> *	copy,nonatomic	ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3e4512293dfae50d
+method	c:objc(cs)NSExtensionContext(im)performNotificationDefaultAction	UNNotificationContentExtension			void	-	ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7cfb77743b708628
+method	c:objc(cs)NSExtensionContext(im)dismissNotificationContentExtension	UNNotificationContentExtension			void	-	ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	89d27279df9b0238
+method	c:objc(cs)NSExtensionContext(im)mediaPlayingStarted	UNNotificationContentExtension			void	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	00a1da6434e2b155
+method	c:objc(cs)NSExtensionContext(im)mediaPlayingPaused	UNNotificationContentExtension			void	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	06f77f8826ee4493

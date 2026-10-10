@@ -1,312 +1,312 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
-interface	c:objc(cs)MPSAccelerationStructureGroup	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	5e802794552cfaca
-super	-	MPSAccelerationStructureGroup	NSObject		-	-	ff873d2652fc2b32
-property	c:objc(cs)MPSAccelerationStructureGroup(py)device	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	7d8c4125f52657bc
-method	c:objc(cs)MPSAccelerationStructureGroup(im)init	-			*unavailable ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	f9caf199116a9a41
-method	c:objc(cs)MPSAccelerationStructureGroup(im)initWithDevice:	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	5ccc0ee7db03653d
-struct	c:@S@_MPSPackedFloat3	-			-	-	091581f2d4198904
-union	c:@S@_MPSPackedFloat3@Ua	-	-		-	-	f2a5f0dc9c84810c
-struct	c:@S@_MPSPackedFloat3@Ua@Sa	-	-		-	-	043bdc90867bb2c4
-field	c:@S@_MPSPackedFloat3@Ua@Sa@FI@x	-			-	-	cdaee8d170918df8
-field	c:@S@_MPSPackedFloat3@Ua@Sa@FI@y	-			-	-	3e873110f9c1dfac
-field	c:@S@_MPSPackedFloat3@Ua@Sa@FI@z	-			-	-	2e1069e27d26c198
-field	c:@S@_MPSPackedFloat3@Ua@FI@elements	-			-	-	75b8e9e626056044
-typedef	c:MPSRayIntersectorTypes.h@T@MPSPackedFloat3	-			-	-	4de4d61f8426f56a
-struct	c:@S@_MPSAxisAlignedBoundingBox	-			-	-	f02c47a6f7ed14c9
-field	c:@S@_MPSAxisAlignedBoundingBox@FI@min	_MPSAxisAlignedBoundingBox			-	-	a14605883585746e
-field	c:@S@_MPSAxisAlignedBoundingBox@FI@max	_MPSAxisAlignedBoundingBox			-	-	33682da1750ed399
-typedef	c:MPSRayIntersectorTypes.h@T@MPSAxisAlignedBoundingBox	-			-	-	95c31c9b12f2a456
-struct	c:@SA@MPSRayOriginDirection	-			-	-	94eca00c8701daac
-field	c:@SA@MPSRayOriginDirection@FI@origin	MPSRayOriginDirection			-	-	368e736d65f64543
-field	c:@SA@MPSRayOriginDirection@FI@direction	MPSRayOriginDirection			-	-	1f0a8d542dec12b9
-typedef	c:@T@MPSRayOriginDirection	-			-	-	b7fbcf7ec598b2bf
-struct	c:@SA@MPSRayPackedOriginDirection	-			-	-	bbb50f2a43dfd78a
-field	c:@SA@MPSRayPackedOriginDirection@FI@origin	MPSRayPackedOriginDirection			-	-	273c177a96671192
-field	c:@SA@MPSRayPackedOriginDirection@FI@direction	MPSRayPackedOriginDirection			-	-	4498f9e8df83bd76
-typedef	c:@T@MPSRayPackedOriginDirection	-			-	-	6089017cd02e42a5
-struct	c:@SA@MPSRayOriginMinDistanceDirectionMaxDistance	-			-	-	7de3fbb433824051
-field	c:@SA@MPSRayOriginMinDistanceDirectionMaxDistance@FI@origin	MPSRayOriginMinDistanceDirectionMaxDistance			-	-	212f3abd43036ef3
-field	c:@SA@MPSRayOriginMinDistanceDirectionMaxDistance@FI@minDistance	MPSRayOriginMinDistanceDirectionMaxDistance			-	-	d54ec25a2e32458e
-field	c:@SA@MPSRayOriginMinDistanceDirectionMaxDistance@FI@direction	MPSRayOriginMinDistanceDirectionMaxDistance			-	-	7878512509556a4d
-field	c:@SA@MPSRayOriginMinDistanceDirectionMaxDistance@FI@maxDistance	MPSRayOriginMinDistanceDirectionMaxDistance			-	-	cba24f0fd9372d80
-typedef	c:@T@MPSRayOriginMinDistanceDirectionMaxDistance	-			-	-	cd5e89c041a52da3
-struct	c:@SA@MPSRayOriginMaskDirectionMaxDistance	-			-	-	bad7e306ca5de9c7
-field	c:@SA@MPSRayOriginMaskDirectionMaxDistance@FI@origin	MPSRayOriginMaskDirectionMaxDistance			-	-	1ada58d522d4f7a3
-field	c:@SA@MPSRayOriginMaskDirectionMaxDistance@FI@mask	MPSRayOriginMaskDirectionMaxDistance			-	-	bf86979e9004548c
-field	c:@SA@MPSRayOriginMaskDirectionMaxDistance@FI@direction	MPSRayOriginMaskDirectionMaxDistance			-	-	6de889e71417575c
-field	c:@SA@MPSRayOriginMaskDirectionMaxDistance@FI@maxDistance	MPSRayOriginMaskDirectionMaxDistance			-	-	c81b589024d4d450
-typedef	c:@T@MPSRayOriginMaskDirectionMaxDistance	-			-	-	6dd96fc9a6a64dfb
-struct	c:@SA@MPSIntersectionDistance	-			-	-	2f222a7fe8b12517
-field	c:@SA@MPSIntersectionDistance@FI@distance	MPSIntersectionDistance			-	-	36a625babda48189
-typedef	c:@T@MPSIntersectionDistance	-			-	-	899001e88ac2c586
-struct	c:@SA@MPSIntersectionDistancePrimitiveIndex	-			-	-	3aa5d91a59858a00
-field	c:@SA@MPSIntersectionDistancePrimitiveIndex@FI@distance	MPSIntersectionDistancePrimitiveIndex			-	-	bb98f8d3bf3e0a30
-field	c:@SA@MPSIntersectionDistancePrimitiveIndex@FI@primitiveIndex	MPSIntersectionDistancePrimitiveIndex			-	-	e5f7957c3d9cf57c
-typedef	c:@T@MPSIntersectionDistancePrimitiveIndex	-			-	-	0793f6d610772741
-struct	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndex	-			-	-	2fb17461406dd128
-field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndex@FI@distance	MPSIntersectionDistancePrimitiveIndexBufferIndex			-	-	11ba03d6b3925d39
-field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndex@FI@primitiveIndex	MPSIntersectionDistancePrimitiveIndexBufferIndex			-	-	d806e20e3ac48306
-field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndex@FI@bufferIndex	MPSIntersectionDistancePrimitiveIndexBufferIndex			-	-	d75faab5f4e4722a
-typedef	c:@T@MPSIntersectionDistancePrimitiveIndexBufferIndex	-			-	-	ce17f75b064d49c8
-struct	c:@SA@MPSIntersectionDistancePrimitiveIndexCoordinates	-			-	-	8bfe844a503ef362
-field	c:@SA@MPSIntersectionDistancePrimitiveIndexCoordinates@FI@distance	MPSIntersectionDistancePrimitiveIndexCoordinates			-	-	7a6c01a6a1ff077c
-field	c:@SA@MPSIntersectionDistancePrimitiveIndexCoordinates@FI@primitiveIndex	MPSIntersectionDistancePrimitiveIndexCoordinates			-	-	680a68c6fb6ac140
-field	c:@SA@MPSIntersectionDistancePrimitiveIndexCoordinates@FI@coordinates	MPSIntersectionDistancePrimitiveIndexCoordinates			-	-	b3815eac96d284e4
-typedef	c:@T@MPSIntersectionDistancePrimitiveIndexCoordinates	-			-	-	102bb89ca30f2cf1
-struct	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexCoordinates	-			-	-	fbe6f5d498ff9c86
-field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexCoordinates@FI@distance	MPSIntersectionDistancePrimitiveIndexBufferIndexCoordinates			-	-	5599803026cd853a
-field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexCoordinates@FI@primitiveIndex	MPSIntersectionDistancePrimitiveIndexBufferIndexCoordinates			-	-	b21eb6aa8f81da4e
-field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexCoordinates@FI@bufferIndex	MPSIntersectionDistancePrimitiveIndexBufferIndexCoordinates			-	-	ccfc03d1704abc98
-field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexCoordinates@FI@coordinates	MPSIntersectionDistancePrimitiveIndexBufferIndexCoordinates			-	-	d96e67ca60c76016
-typedef	c:@T@MPSIntersectionDistancePrimitiveIndexBufferIndexCoordinates	-			-	-	ceb2f408ad738daf
-struct	c:@SA@MPSIntersectionDistancePrimitiveIndexInstanceIndex	-			-	-	aaad2c94802cd46f
-field	c:@SA@MPSIntersectionDistancePrimitiveIndexInstanceIndex@FI@distance	MPSIntersectionDistancePrimitiveIndexInstanceIndex			-	-	c3f50506063f50c8
-field	c:@SA@MPSIntersectionDistancePrimitiveIndexInstanceIndex@FI@primitiveIndex	MPSIntersectionDistancePrimitiveIndexInstanceIndex			-	-	1d6b645d2e1544a7
-field	c:@SA@MPSIntersectionDistancePrimitiveIndexInstanceIndex@FI@instanceIndex	MPSIntersectionDistancePrimitiveIndexInstanceIndex			-	-	9d8436031b03fb99
-typedef	c:@T@MPSIntersectionDistancePrimitiveIndexInstanceIndex	-			-	-	bd20b779b9896acf
-struct	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndex	-			-	-	41fec3ccca7f9269
-field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndex@FI@distance	MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndex			-	-	4519a3a0dd185d41
-field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndex@FI@primitiveIndex	MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndex			-	-	58265c9acf237411
-field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndex@FI@bufferIndex	MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndex			-	-	8f5c471d281dd610
-field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndex@FI@instanceIndex	MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndex			-	-	016d0c8535b54e56
-typedef	c:@T@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndex	-			-	-	e362ff0acbaca956
-struct	c:@SA@MPSIntersectionDistancePrimitiveIndexInstanceIndexCoordinates	-			-	-	360050c354a96c9b
-field	c:@SA@MPSIntersectionDistancePrimitiveIndexInstanceIndexCoordinates@FI@distance	MPSIntersectionDistancePrimitiveIndexInstanceIndexCoordinates			-	-	498b53a4ac1f9508
-field	c:@SA@MPSIntersectionDistancePrimitiveIndexInstanceIndexCoordinates@FI@primitiveIndex	MPSIntersectionDistancePrimitiveIndexInstanceIndexCoordinates			-	-	68fe1cf25c42e527
-field	c:@SA@MPSIntersectionDistancePrimitiveIndexInstanceIndexCoordinates@FI@instanceIndex	MPSIntersectionDistancePrimitiveIndexInstanceIndexCoordinates			-	-	2af57cc27e4c2e94
-field	c:@SA@MPSIntersectionDistancePrimitiveIndexInstanceIndexCoordinates@FI@coordinates	MPSIntersectionDistancePrimitiveIndexInstanceIndexCoordinates			-	-	10415589eb626875
-typedef	c:@T@MPSIntersectionDistancePrimitiveIndexInstanceIndexCoordinates	-			-	-	6bd96c8f4d66e9ee
-struct	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates	-			-	-	38eb9c90e861db03
-field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates@FI@distance	MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates			-	-	2e589fbfb0736f08
-field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates@FI@primitiveIndex	MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates			-	-	d56ba2beb88c4b08
-field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates@FI@bufferIndex	MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates			-	-	381bc352f1fb8b35
-field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates@FI@instanceIndex	MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates			-	-	c3ffe834bd1ff0a4
-field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates@FI@coordinates	MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates			-	-	eb363764c4cc3798
-typedef	c:@T@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates	-			-	-	2d619c9554a9b20d
-typedef	c:MPSAccelerationStructure.h@T@MPSAccelerationStructureCompletionHandler	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	a05edd2c9fc3d832
-typedef	c:MPSAccelerationStructure.h@T@MPSAccelerationStructureUsage	-			-	-	6b731b2877575839
-enum	c:@E@MPSAccelerationStructureUsage	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	5d09bc83ba4d478a
-enumconst	c:@E@MPSAccelerationStructureUsage@MPSAccelerationStructureUsageNone	MPSAccelerationStructureUsage			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	6525855c7118841d
-enumconst	c:@E@MPSAccelerationStructureUsage@MPSAccelerationStructureUsageRefit	MPSAccelerationStructureUsage			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	bc028303fd52c8a7
-enumconst	c:@E@MPSAccelerationStructureUsage@MPSAccelerationStructureUsageFrequentRebuild	MPSAccelerationStructureUsage			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	b013fe9b31eb0412
-enumconst	c:@E@MPSAccelerationStructureUsage@MPSAccelerationStructureUsagePreferGPUBuild	MPSAccelerationStructureUsage			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	249fcea73fc22200
-enumconst	c:@E@MPSAccelerationStructureUsage@MPSAccelerationStructureUsagePreferCPUBuild	MPSAccelerationStructureUsage			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	a35118fa979b18c8
-typedef	c:MPSAccelerationStructure.h@T@MPSAccelerationStructureStatus	-			-	-	1d0b061e1295f94a
-enum	c:@E@MPSAccelerationStructureStatus	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	23bf2ccbc92bfb48
-enumconst	c:@E@MPSAccelerationStructureStatus@MPSAccelerationStructureStatusUnbuilt	MPSAccelerationStructureStatus			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	95f573ab51ccca02
-enumconst	c:@E@MPSAccelerationStructureStatus@MPSAccelerationStructureStatusBuilt	MPSAccelerationStructureStatus			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	b56d6d2a805ee9c0
-interface	c:objc(cs)MPSAccelerationStructure	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	438b098af3523392
-super	-	MPSAccelerationStructure	MPSKernel		-	-	dfb55aa2966f85b7
-conforms	-	MPSAccelerationStructure	NSSecureCoding		-	-	cdfee64f3beeeb2f
-conforms	-	MPSAccelerationStructure	NSCopying		-	-	724847b9afa8dc8d
-property	c:objc(cs)MPSAccelerationStructure(py)group	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	38f5685d4c2c3f98
-property	c:objc(cs)MPSAccelerationStructure(py)boundingBox	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	9e880cbc2a828326
-property	c:objc(cs)MPSAccelerationStructure(py)status	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	83ee235eaa63cb4c
-property	c:objc(cs)MPSAccelerationStructure(py)usage	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	4b510949b7c7cd1b
-method	c:objc(cs)MPSAccelerationStructure(im)init	-			*unavailable ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	627b762dfd3d782e
-method	c:objc(cs)MPSAccelerationStructure(im)initWithDevice:	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	a2d21b19f86f8400
-method	c:objc(cs)MPSAccelerationStructure(im)initWithCoder:device:	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	d2255a2368bf85b3
-method	c:objc(cs)MPSAccelerationStructure(im)initWithGroup:	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	053abc83832a5177
-method	c:objc(cs)MPSAccelerationStructure(im)initWithCoder:group:	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	7e669229736c249a
-method	c:objc(cs)MPSAccelerationStructure(im)rebuild	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	5c96657fb28ce7e1
-method	c:objc(cs)MPSAccelerationStructure(im)rebuildWithCompletionHandler:	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	ef1032474a07dfce
-method	c:objc(cs)MPSAccelerationStructure(im)encodeRefitToCommandBuffer:	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	20682c59380ef226
-method	c:objc(cs)MPSAccelerationStructure(im)copyWithZone:device:	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	332fc63d4895ee7d
-method	c:objc(cs)MPSAccelerationStructure(im)copyWithZone:group:	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	9379df24b3db8e47
-method	c:objc(cs)MPSAccelerationStructure(im)encodeWithCoder:	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	cd8699336210c4d3
-interface	c:objc(cs)MPSPolygonBuffer	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	a404cad9b534f294
-super	-	MPSPolygonBuffer	NSObject		-	-	fb7015f58dec1dee
-conforms	-	MPSPolygonBuffer	NSCopying		-	-	52b0e72bbe536321
-conforms	-	MPSPolygonBuffer	NSSecureCoding		-	-	b3602dd99b7bc37b
-method	c:objc(cs)MPSPolygonBuffer(im)init	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	a75a45d82673a18c
-method	c:objc(cs)MPSPolygonBuffer(im)initWithCoder:	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	87a2a646a7ae8bf9
-method	c:objc(cs)MPSPolygonBuffer(cm)polygonBuffer	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	230d54ea8a04d7ee
-method	c:objc(cs)MPSPolygonBuffer(im)copyWithZone:	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	b3d6e4d2e4a76f33
-property	c:objc(cs)MPSPolygonBuffer(py)vertexBuffer	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	3d47d29b562dc77b
-property	c:objc(cs)MPSPolygonBuffer(py)vertexBufferOffset	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	14a6a0fc53e49270
-property	c:objc(cs)MPSPolygonBuffer(py)indexBuffer	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	b226b7da15a4b0e2
-property	c:objc(cs)MPSPolygonBuffer(py)indexBufferOffset	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	6c156c635d1effd0
-property	c:objc(cs)MPSPolygonBuffer(py)maskBuffer	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	f0a67765a1c0bdc9
-property	c:objc(cs)MPSPolygonBuffer(py)maskBufferOffset	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	df029f8155622422
-property	c:objc(cs)MPSPolygonBuffer(py)polygonCount	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	1d838d7843347d24
-typedef	c:MPSPolygonAccelerationStructure.h@T@MPSPolygonType	-			-	-	8320e2615fbe2265
-enum	c:@E@MPSPolygonType	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	a63dbc802972ba95
-enumconst	c:@E@MPSPolygonType@MPSPolygonTypeTriangle	MPSPolygonType			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	6156751b43047699
-enumconst	c:@E@MPSPolygonType@MPSPolygonTypeQuadrilateral	MPSPolygonType			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	48b345ba20d0a09c
-interface	c:objc(cs)MPSPolygonAccelerationStructure	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	f0e741056d5f44e2
-super	-	MPSPolygonAccelerationStructure	MPSAccelerationStructure		-	-	cfa30ae749d782df
-property	c:objc(cs)MPSPolygonAccelerationStructure(py)polygonType	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	edd5938c39550c1d
-property	c:objc(cs)MPSPolygonAccelerationStructure(py)vertexStride	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	74173af750e23676
-property	c:objc(cs)MPSPolygonAccelerationStructure(py)indexType	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	70ee975284315d25
-property	c:objc(cs)MPSPolygonAccelerationStructure(py)vertexBuffer	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	d0378413a37645a9
-property	c:objc(cs)MPSPolygonAccelerationStructure(py)vertexBufferOffset	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	5a4da38a8d8381ea
-property	c:objc(cs)MPSPolygonAccelerationStructure(py)indexBuffer	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	62515185393c9408
-property	c:objc(cs)MPSPolygonAccelerationStructure(py)indexBufferOffset	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	1f3c3587c3f91cd8
-property	c:objc(cs)MPSPolygonAccelerationStructure(py)maskBuffer	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	528e5441e7571d80
-property	c:objc(cs)MPSPolygonAccelerationStructure(py)maskBufferOffset	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	af6538eb0211df0c
-property	c:objc(cs)MPSPolygonAccelerationStructure(py)polygonCount	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	5f895235fa9a360e
-property	c:objc(cs)MPSPolygonAccelerationStructure(py)polygonBuffers	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	2b75ec5080af24c4
-interface	c:objc(cs)MPSTriangleAccelerationStructure	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	069de631ce2e123b
-super	-	MPSTriangleAccelerationStructure	MPSPolygonAccelerationStructure		-	-	0030a9edd3c19aac
-property	c:objc(cs)MPSTriangleAccelerationStructure(py)triangleCount	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	3fd87a3113d266d9
-interface	c:objc(cs)MPSQuadrilateralAccelerationStructure	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	ee27cdadbc044d88
-super	-	MPSQuadrilateralAccelerationStructure	MPSPolygonAccelerationStructure		-	-	6e02312b60281934
-property	c:objc(cs)MPSQuadrilateralAccelerationStructure(py)quadrilateralCount	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	8b86dfeb09587452
-typedef	c:MPSInstanceAccelerationStructure.h@T@MPSTransformType	-			-	-	21b9dc8a77f01c45
-enum	c:@E@MPSTransformType	-			ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	29462d07cffd1350
-enumconst	c:@E@MPSTransformType@MPSTransformTypeFloat4x4	MPSTransformType			ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	0b18379c99c43410
-enumconst	c:@E@MPSTransformType@MPSTransformTypeIdentity	MPSTransformType			ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	c9ab23095135d5e9
-interface	c:objc(cs)MPSInstanceAccelerationStructure	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	3c872e73c3450bc2
-super	-	MPSInstanceAccelerationStructure	MPSAccelerationStructure		-	-	956dc44ca63b78af
-property	c:objc(cs)MPSInstanceAccelerationStructure(py)accelerationStructures	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	5c7257252200ab35
-property	c:objc(cs)MPSInstanceAccelerationStructure(py)instanceBuffer	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	502ba32c5ca71d74
-property	c:objc(cs)MPSInstanceAccelerationStructure(py)instanceBufferOffset	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	fe7b58c8579b48b5
-property	c:objc(cs)MPSInstanceAccelerationStructure(py)transformBuffer	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	6527f73bdb7836ea
-property	c:objc(cs)MPSInstanceAccelerationStructure(py)transformBufferOffset	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	2251f283f0297973
-property	c:objc(cs)MPSInstanceAccelerationStructure(py)transformType	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	4c3d0a30822148ea
-property	c:objc(cs)MPSInstanceAccelerationStructure(py)maskBuffer	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	fcdf2b70c1b7a680
-property	c:objc(cs)MPSInstanceAccelerationStructure(py)maskBufferOffset	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	b732abfc3c354212
-property	c:objc(cs)MPSInstanceAccelerationStructure(py)instanceCount	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	af8d7f4714f12c63
-typedef	c:MPSSVGF.h@T@MPSTemporalWeighting	-			-	-	661b9eda3382dd79
-enum	c:@E@MPSTemporalWeighting	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	be8d3ed11a489197
-enumconst	c:@E@MPSTemporalWeighting@MPSTemporalWeightingAverage	MPSTemporalWeighting			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	6651bddaa1e1e6c8
-enumconst	c:@E@MPSTemporalWeighting@MPSTemporalWeightingExponentialMovingAverage	MPSTemporalWeighting			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	8a6d9fe2bb897df1
-interface	c:objc(cs)MPSSVGF	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	360edcf3e67946ea
-super	-	MPSSVGF	MPSKernel		-	-	3f3e07fc4fe5f72f
-conforms	-	MPSSVGF	NSSecureCoding		-	-	27924f68ea8b4db7
-conforms	-	MPSSVGF	NSCopying		-	-	eca7ca727d5af0ab
-property	c:objc(cs)MPSSVGF(py)depthWeight	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	e43526390f70d8f0
-property	c:objc(cs)MPSSVGF(py)normalWeight	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	3f5a4cff9346d100
-property	c:objc(cs)MPSSVGF(py)luminanceWeight	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	b8ff7c6a68376412
-property	c:objc(cs)MPSSVGF(py)temporalWeighting	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	92d6d0b445bf5229
-property	c:objc(cs)MPSSVGF(py)temporalReprojectionBlendFactor	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	c2b79909f90ae8b3
-property	c:objc(cs)MPSSVGF(py)reprojectionThreshold	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	a429d6ceaca8dc64
-property	c:objc(cs)MPSSVGF(py)minimumFramesForVarianceEstimation	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	70e3566dd9ee8f79
-property	c:objc(cs)MPSSVGF(py)varianceEstimationRadius	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	38f7106a0c09a7a0
-property	c:objc(cs)MPSSVGF(py)varianceEstimationSigma	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	f164162a37f74c94
-property	c:objc(cs)MPSSVGF(py)variancePrefilterSigma	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	24922abef29249b4
-property	c:objc(cs)MPSSVGF(py)variancePrefilterRadius	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	2f23748a21e789f1
-property	c:objc(cs)MPSSVGF(py)bilateralFilterSigma	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	7abd1d60f96608df
-property	c:objc(cs)MPSSVGF(py)bilateralFilterRadius	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	e9d51bc1010aac88
-property	c:objc(cs)MPSSVGF(py)channelCount	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	8745790ab219a1d9
-property	c:objc(cs)MPSSVGF(py)channelCount2	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	af621d579180ff04
-method	c:objc(cs)MPSSVGF(im)initWithDevice:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	a61377968f8c67b5
-method	c:objc(cs)MPSSVGF(im)initWithCoder:device:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	cf1dc05d74ba0799
-method	c:objc(cs)MPSSVGF(im)copyWithZone:device:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	35c2ab554b794beb
-method	c:objc(cs)MPSSVGF(im)encodeWithCoder:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	56f4497f35241c9b
-method	c:objc(cs)MPSSVGF(im)encodeReprojectionToCommandBuffer:sourceTexture:previousTexture:destinationTexture:previousLuminanceMomentsTexture:destinationLuminanceMomentsTexture:previousFrameCountTexture:destinationFrameCountTexture:motionVectorTexture:depthNormalTexture:previousDepthNormalTexture:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	c8f1fa58e75e53b4
-method	c:objc(cs)MPSSVGF(im)encodeReprojectionToCommandBuffer:sourceTexture:previousTexture:destinationTexture:previousLuminanceMomentsTexture:destinationLuminanceMomentsTexture:sourceTexture2:previousTexture2:destinationTexture2:previousLuminanceMomentsTexture2:destinationLuminanceMomentsTexture2:previousFrameCountTexture:destinationFrameCountTexture:motionVectorTexture:depthNormalTexture:previousDepthNormalTexture:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	2445c59d380276de
-method	c:objc(cs)MPSSVGF(im)encodeVarianceEstimationToCommandBuffer:sourceTexture:luminanceMomentsTexture:destinationTexture:frameCountTexture:depthNormalTexture:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	7d3cc95bb076297c
-method	c:objc(cs)MPSSVGF(im)encodeVarianceEstimationToCommandBuffer:sourceTexture:luminanceMomentsTexture:destinationTexture:sourceTexture2:luminanceMomentsTexture2:destinationTexture2:frameCountTexture:depthNormalTexture:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	6247b982b7f0dabe
-method	c:objc(cs)MPSSVGF(im)encodeBilateralFilterToCommandBuffer:stepDistance:sourceTexture:destinationTexture:depthNormalTexture:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	17e82537c83fadaf
-method	c:objc(cs)MPSSVGF(im)encodeBilateralFilterToCommandBuffer:stepDistance:sourceTexture:destinationTexture:sourceTexture2:destinationTexture2:depthNormalTexture:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	2001676742155be5
-protocol	c:objc(pl)MPSSVGFTextureAllocator	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	6ca0e10dbe89b9ce
-conforms	-	MPSSVGFTextureAllocator	NSObject		-	-	7bce8affe9249e00
-method	c:objc(pl)MPSSVGFTextureAllocator(im)textureWithPixelFormat:width:height:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	d570f5bbaaa5f477
-method	c:objc(pl)MPSSVGFTextureAllocator(im)returnTexture:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	065fe962db482302
-interface	c:objc(cs)MPSSVGFDefaultTextureAllocator	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	5ad60e2229228392
-super	-	MPSSVGFDefaultTextureAllocator	NSObject		-	-	7fd5816653a7ffd4
-conforms	-	MPSSVGFDefaultTextureAllocator	MPSSVGFTextureAllocator		-	-	d64f7362757c9e87
-property	c:objc(cs)MPSSVGFDefaultTextureAllocator(py)device	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	57bfc16ce2191573
-property	c:objc(cs)MPSSVGFDefaultTextureAllocator(py)allocatedTextureCount	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	537c0306e8464f81
-method	c:objc(cs)MPSSVGFDefaultTextureAllocator(im)initWithDevice:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	760b37df97952ee6
-method	c:objc(cs)MPSSVGFDefaultTextureAllocator(im)textureWithPixelFormat:width:height:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	bd151e24f689fc00
-method	c:objc(cs)MPSSVGFDefaultTextureAllocator(im)returnTexture:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	2a49bd3f9743ef13
-method	c:objc(cs)MPSSVGFDefaultTextureAllocator(im)reset	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	dda85fa1054c4389
-interface	c:objc(cs)MPSSVGFDenoiser	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	7ef418bdd2f3bbc8
-super	-	MPSSVGFDenoiser	NSObject		-	-	8dae13c254736294
-property	c:objc(cs)MPSSVGFDenoiser(py)svgf	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	6ebb2f62068de53a
-property	c:objc(cs)MPSSVGFDenoiser(py)textureAllocator	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	52b90084cb3ff6c0
-property	c:objc(cs)MPSSVGFDenoiser(py)bilateralFilterIterations	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	067a1d7e8ca3e679
-method	c:objc(cs)MPSSVGFDenoiser(im)initWithDevice:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	4c71786f1e7aa9bf
-method	c:objc(cs)MPSSVGFDenoiser(im)initWithSVGF:textureAllocator:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	037df5b142796a71
-method	c:objc(cs)MPSSVGFDenoiser(im)clearTemporalHistory	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	820c2148dd47da65
-method	c:objc(cs)MPSSVGFDenoiser(im)releaseTemporaryTextures	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	1cd7b914dde9cc97
-method	c:objc(cs)MPSSVGFDenoiser(im)encodeToCommandBuffer:sourceTexture:motionVectorTexture:depthNormalTexture:previousDepthNormalTexture:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	ce00cdece3ee533c
-method	c:objc(cs)MPSSVGFDenoiser(im)encodeToCommandBuffer:sourceTexture:destinationTexture:sourceTexture2:destinationTexture2:motionVectorTexture:depthNormalTexture:previousDepthNormalTexture:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	1ee0264576b2e100
-interface	c:objc(cs)MPSTemporalAA	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	6a3f82acac7c779c
-super	-	MPSTemporalAA	MPSKernel		-	-	8a5f23b0d6fc1b86
-conforms	-	MPSTemporalAA	NSSecureCoding		-	-	3e27276cb31278e5
-conforms	-	MPSTemporalAA	NSCopying		-	-	aad31b1c9ecb0826
-property	c:objc(cs)MPSTemporalAA(py)blendFactor	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	340a63be82c19ac4
-method	c:objc(cs)MPSTemporalAA(im)initWithDevice:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	1d7808d2017f8df5
-method	c:objc(cs)MPSTemporalAA(im)initWithCoder:device:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	1dab68b9732eb104
-method	c:objc(cs)MPSTemporalAA(im)copyWithZone:device:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	674767a35bd0784f
-method	c:objc(cs)MPSTemporalAA(im)encodeWithCoder:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	6dcfb969049e0fe1
-method	c:objc(cs)MPSTemporalAA(im)encodeToCommandBuffer:sourceTexture:previousTexture:destinationTexture:motionVectorTexture:depthTexture:	-			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	6f19938091b2401a
-typedef	c:MPSRayIntersector.h@T@MPSIntersectionType	-			-	-	ad4de5293992f9aa
-enum	c:@E@MPSIntersectionType	-			ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	131a39b6b81d0cbe
-enumconst	c:@E@MPSIntersectionType@MPSIntersectionTypeNearest	MPSIntersectionType			ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	4dae3de165b7bc26
-enumconst	c:@E@MPSIntersectionType@MPSIntersectionTypeAny	MPSIntersectionType			ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	94c8d8b77b359eb1
-typedef	c:MPSRayIntersector.h@T@MPSTriangleIntersectionTestType	-			-	-	ecceb7032bb9a0c7
-enum	c:@E@MPSTriangleIntersectionTestType	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	2002887d25b35689
-enumconst	c:@E@MPSTriangleIntersectionTestType@MPSTriangleIntersectionTestTypeDefault	MPSTriangleIntersectionTestType			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	c627610c4eaf20ed
-enumconst	c:@E@MPSTriangleIntersectionTestType@MPSTriangleIntersectionTestTypeWatertight	MPSTriangleIntersectionTestType			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	7db588e1b884bf2f
-typedef	c:MPSRayIntersector.h@T@MPSBoundingBoxIntersectionTestType	-			-	-	92c036a2b7e1db50
-enum	c:@E@MPSBoundingBoxIntersectionTestType	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	7032c40cd4ace7c8
-enumconst	c:@E@MPSBoundingBoxIntersectionTestType@MPSBoundingBoxIntersectionTestTypeDefault	MPSBoundingBoxIntersectionTestType			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	7cc1b0367672e288
-enumconst	c:@E@MPSBoundingBoxIntersectionTestType@MPSBoundingBoxIntersectionTestTypeAxisAligned	MPSBoundingBoxIntersectionTestType			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	994d2576f439738d
-enumconst	c:@E@MPSBoundingBoxIntersectionTestType@MPSBoundingBoxIntersectionTestTypeFast	MPSBoundingBoxIntersectionTestType			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	a50b495c0273ad4a
-typedef	c:MPSRayIntersector.h@T@MPSRayMaskOptions	-			-	-	f3c36f01cd65b817
-enum	c:@E@MPSRayMaskOptions	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	1e98e0da6253f11d
-enumconst	c:@E@MPSRayMaskOptions@MPSRayMaskOptionNone	MPSRayMaskOptions			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	3b59e6ba9384aba1
-enumconst	c:@E@MPSRayMaskOptions@MPSRayMaskOptionPrimitive	MPSRayMaskOptions			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	7cfe2078f7c138f6
-enumconst	c:@E@MPSRayMaskOptions@MPSRayMaskOptionInstance	MPSRayMaskOptions			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	265aefd7df415107
-typedef	c:MPSRayIntersector.h@T@MPSRayDataType	-			-	-	0fd8ea7deb45d482
-enum	c:@E@MPSRayDataType	-			ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	17644fcde6af08b7
-enumconst	c:@E@MPSRayDataType@MPSRayDataTypeOriginDirection	MPSRayDataType			ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	411b4709a1835789
-enumconst	c:@E@MPSRayDataType@MPSRayDataTypeOriginMinDistanceDirectionMaxDistance	MPSRayDataType			ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	10436244c6a8bcb2
-enumconst	c:@E@MPSRayDataType@MPSRayDataTypeOriginMaskDirectionMaxDistance	MPSRayDataType			ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	7f587c217573bc93
-enumconst	c:@E@MPSRayDataType@MPSRayDataTypePackedOriginDirection	MPSRayDataType			ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	901928d96be66ec9
-typedef	c:MPSRayIntersector.h@T@MPSIntersectionDataType	-			-	-	1b86ef6db064170e
-enum	c:@E@MPSIntersectionDataType	-			ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	4cb5561fb65b6cee
-enumconst	c:@E@MPSIntersectionDataType@MPSIntersectionDataTypeDistance	MPSIntersectionDataType			ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	ee3108a8ce8bd36d
-enumconst	c:@E@MPSIntersectionDataType@MPSIntersectionDataTypeDistancePrimitiveIndex	MPSIntersectionDataType			ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	e99b5f2fe9635ca6
-enumconst	c:@E@MPSIntersectionDataType@MPSIntersectionDataTypeDistancePrimitiveIndexCoordinates	MPSIntersectionDataType			ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	69893e4289689780
-enumconst	c:@E@MPSIntersectionDataType@MPSIntersectionDataTypeDistancePrimitiveIndexInstanceIndex	MPSIntersectionDataType			ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	7235cd0c88ab9b61
-enumconst	c:@E@MPSIntersectionDataType@MPSIntersectionDataTypeDistancePrimitiveIndexInstanceIndexCoordinates	MPSIntersectionDataType			ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	c865e2f8cb278fc0
-enumconst	c:@E@MPSIntersectionDataType@MPSIntersectionDataTypeDistancePrimitiveIndexBufferIndex	MPSIntersectionDataType			ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	001396fd5fa24396
-enumconst	c:@E@MPSIntersectionDataType@MPSIntersectionDataTypeDistancePrimitiveIndexBufferIndexCoordinates	MPSIntersectionDataType			ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	b82e8e38054d9847
-enumconst	c:@E@MPSIntersectionDataType@MPSIntersectionDataTypeDistancePrimitiveIndexBufferIndexInstanceIndex	MPSIntersectionDataType			ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	1fc776438d76e22b
-enumconst	c:@E@MPSIntersectionDataType@MPSIntersectionDataTypeDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates	MPSIntersectionDataType			ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	38759ce6b1beeb84
-typedef	c:MPSRayIntersector.h@T@MPSRayMaskOperator	-			-	-	a11c5683554fab36
-enum	c:@E@MPSRayMaskOperator	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	5e6b87b7da6026e6
-enumconst	c:@E@MPSRayMaskOperator@MPSRayMaskOperatorAnd	MPSRayMaskOperator			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	c2291ffa7e2986e9
-enumconst	c:@E@MPSRayMaskOperator@MPSRayMaskOperatorNotAnd	MPSRayMaskOperator			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	7c426bc1e03924e5
-enumconst	c:@E@MPSRayMaskOperator@MPSRayMaskOperatorOr	MPSRayMaskOperator			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	55da49719ada5d4d
-enumconst	c:@E@MPSRayMaskOperator@MPSRayMaskOperatorNotOr	MPSRayMaskOperator			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	fb3f6ffb251d9ce2
-enumconst	c:@E@MPSRayMaskOperator@MPSRayMaskOperatorXor	MPSRayMaskOperator			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	e2e18aea87044db7
-enumconst	c:@E@MPSRayMaskOperator@MPSRayMaskOperatorNotXor	MPSRayMaskOperator			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	c038a9e03a4dfa61
-enumconst	c:@E@MPSRayMaskOperator@MPSRayMaskOperatorLessThan	MPSRayMaskOperator			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	1dcfeb9ec61c3efd
-enumconst	c:@E@MPSRayMaskOperator@MPSRayMaskOperatorLessThanOrEqualTo	MPSRayMaskOperator			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	2761eeb75793b8e6
-enumconst	c:@E@MPSRayMaskOperator@MPSRayMaskOperatorGreaterThan	MPSRayMaskOperator			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	97785e1afd913673
-enumconst	c:@E@MPSRayMaskOperator@MPSRayMaskOperatorGreaterThanOrEqualTo	MPSRayMaskOperator			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	5605feb16bc82742
-enumconst	c:@E@MPSRayMaskOperator@MPSRayMaskOperatorEqual	MPSRayMaskOperator			ios=13.4/17.0/-/0,maccatalyst=13.4/17.0/-/0,macos=10.15.4/14.0/-/0,tvos=13.4/17.0/-/0	-	eaf64c8fab84025b
-enumconst	c:@E@MPSRayMaskOperator@MPSRayMaskOperatorNotEqual	MPSRayMaskOperator			ios=13.4/17.0/-/0,maccatalyst=13.4/17.0/-/0,macos=10.15.4/14.0/-/0,tvos=13.4/17.0/-/0	-	c40d305b2a3ba3d4
-interface	c:objc(cs)MPSRayIntersector	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	06d7091606d5766b
-super	-	MPSRayIntersector	MPSKernel		-	-	79d860579c9639dc
-conforms	-	MPSRayIntersector	NSSecureCoding		-	-	429c89f74b2e5f80
-conforms	-	MPSRayIntersector	NSCopying		-	-	0beb5f0209b3c54e
-property	c:objc(cs)MPSRayIntersector(py)cullMode	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	c60e7f8d88942906
-property	c:objc(cs)MPSRayIntersector(py)frontFacingWinding	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	ae66bb07dee89109
-property	c:objc(cs)MPSRayIntersector(py)triangleIntersectionTestType	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	948ac8004de5b4b7
-property	c:objc(cs)MPSRayIntersector(py)boundingBoxIntersectionTestType	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	fbbd5c7856b07a3b
-property	c:objc(cs)MPSRayIntersector(py)rayMaskOptions	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	dcd76a5321ca4534
-property	c:objc(cs)MPSRayIntersector(py)rayMaskOperator	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	4a7af1470af28408
-property	c:objc(cs)MPSRayIntersector(py)rayStride	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	130f0277123e6b77
-property	c:objc(cs)MPSRayIntersector(py)intersectionStride	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	f6978d98c6b4eb59
-property	c:objc(cs)MPSRayIntersector(py)rayDataType	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	d3adc103af488df7
-property	c:objc(cs)MPSRayIntersector(py)intersectionDataType	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	edb46dde9a316e9f
-property	c:objc(cs)MPSRayIntersector(py)rayIndexDataType	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	61dcdb772c13f302
-property	c:objc(cs)MPSRayIntersector(py)rayMask	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	897ed7c3aea5b457
-method	c:objc(cs)MPSRayIntersector(im)init	-			*unavailable ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	44efb42f1386ad8c
-method	c:objc(cs)MPSRayIntersector(im)initWithDevice:	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	2224865b1b429028
-method	c:objc(cs)MPSRayIntersector(im)initWithCoder:device:	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	3e7e5d2243356e47
-method	c:objc(cs)MPSRayIntersector(im)copyWithZone:device:	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	2365c9aaa3d3b499
-method	c:objc(cs)MPSRayIntersector(im)recommendedMinimumRayBatchSizeForRayCount:	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	72b4b9b9b51488dc
-method	c:objc(cs)MPSRayIntersector(im)encodeWithCoder:	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	374a1cb59bd717b5
-method	c:objc(cs)MPSRayIntersector(im)encodeIntersectionToCommandBuffer:intersectionType:rayBuffer:rayBufferOffset:intersectionBuffer:intersectionBufferOffset:rayCount:accelerationStructure:	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	ce44c5f980e95fbb
-method	c:objc(cs)MPSRayIntersector(im)encodeIntersectionToCommandBuffer:intersectionType:rayBuffer:rayBufferOffset:intersectionBuffer:intersectionBufferOffset:rayCountBuffer:rayCountBufferOffset:accelerationStructure:	-			ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	30ab02203f3c356f
-method	c:objc(cs)MPSRayIntersector(im)encodeIntersectionToCommandBuffer:intersectionType:rayBuffer:rayBufferOffset:rayIndexBuffer:rayIndexBufferOffset:intersectionBuffer:intersectionBufferOffset:rayIndexCount:accelerationStructure:	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	88e27c1f9fab75da
-method	c:objc(cs)MPSRayIntersector(im)encodeIntersectionToCommandBuffer:intersectionType:rayBuffer:rayBufferOffset:rayIndexBuffer:rayIndexBufferOffset:intersectionBuffer:intersectionBufferOffset:rayIndexCountBuffer:rayIndexCountBufferOffset:accelerationStructure:	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	accb4886da8f2fcc
-method	c:objc(cs)MPSRayIntersector(im)encodeIntersectionToCommandBuffer:intersectionType:rayTexture:intersectionTexture:accelerationStructure:	-			ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	9a1cb70f96fed4d5
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
+interface	c:objc(cs)MPSAccelerationStructureGroup	-			-	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	5e802794552cfaca
+super	-	MPSAccelerationStructureGroup	NSObject		-	-	-	-	ff873d2652fc2b32
+property	c:objc(cs)MPSAccelerationStructureGroup(py)device	-			id<MTLDevice>	readonly,nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	cb827997c5a76b8d
+method	c:objc(cs)MPSAccelerationStructureGroup(im)init	-			instancetype	-	*unavailable ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	5c30abc6f1bcc335
+method	c:objc(cs)MPSAccelerationStructureGroup(im)initWithDevice:	-			instancetype	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	521328353e30ebfa
+struct	c:@S@_MPSPackedFloat3	-			-	-	-	-	091581f2d4198904
+union	c:@S@_MPSPackedFloat3@Ua	-	-		-	-	-	-	f2a5f0dc9c84810c
+struct	c:@S@_MPSPackedFloat3@Ua@Sa	-	-		-	-	-	-	043bdc90867bb2c4
+field	c:@S@_MPSPackedFloat3@Ua@Sa@FI@x	-			float	-	-	-	cdaee8d170918df8
+field	c:@S@_MPSPackedFloat3@Ua@Sa@FI@y	-			float	-	-	-	3e873110f9c1dfac
+field	c:@S@_MPSPackedFloat3@Ua@Sa@FI@z	-			float	-	-	-	2e1069e27d26c198
+field	c:@S@_MPSPackedFloat3@Ua@FI@elements	-			float[3]	-	-	-	75b8e9e626056044
+typedef	c:MPSRayIntersectorTypes.h@T@MPSPackedFloat3	-			struct _MPSPackedFloat3	-	-	-	4de4d61f8426f56a
+struct	c:@S@_MPSAxisAlignedBoundingBox	-			-	-	-	-	f02c47a6f7ed14c9
+field	c:@S@_MPSAxisAlignedBoundingBox@FI@min	_MPSAxisAlignedBoundingBox			vector_float3	-	-	-	a14605883585746e
+field	c:@S@_MPSAxisAlignedBoundingBox@FI@max	_MPSAxisAlignedBoundingBox			vector_float3	-	-	-	33682da1750ed399
+typedef	c:MPSRayIntersectorTypes.h@T@MPSAxisAlignedBoundingBox	-			struct _MPSAxisAlignedBoundingBox	-	-	-	95c31c9b12f2a456
+struct	c:@SA@MPSRayOriginDirection	-			-	-	-	-	94eca00c8701daac
+field	c:@SA@MPSRayOriginDirection@FI@origin	MPSRayOriginDirection			vector_float3	-	-	-	368e736d65f64543
+field	c:@SA@MPSRayOriginDirection@FI@direction	MPSRayOriginDirection			vector_float3	-	-	-	1f0a8d542dec12b9
+typedef	c:@T@MPSRayOriginDirection	-			struct MPSRayOriginDirection	-	-	-	b7fbcf7ec598b2bf
+struct	c:@SA@MPSRayPackedOriginDirection	-			-	-	-	-	bbb50f2a43dfd78a
+field	c:@SA@MPSRayPackedOriginDirection@FI@origin	MPSRayPackedOriginDirection			MPSPackedFloat3	-	-	-	273c177a96671192
+field	c:@SA@MPSRayPackedOriginDirection@FI@direction	MPSRayPackedOriginDirection			MPSPackedFloat3	-	-	-	4498f9e8df83bd76
+typedef	c:@T@MPSRayPackedOriginDirection	-			struct MPSRayPackedOriginDirection	-	-	-	6089017cd02e42a5
+struct	c:@SA@MPSRayOriginMinDistanceDirectionMaxDistance	-			-	-	-	-	7de3fbb433824051
+field	c:@SA@MPSRayOriginMinDistanceDirectionMaxDistance@FI@origin	MPSRayOriginMinDistanceDirectionMaxDistance			MPSPackedFloat3	-	-	-	212f3abd43036ef3
+field	c:@SA@MPSRayOriginMinDistanceDirectionMaxDistance@FI@minDistance	MPSRayOriginMinDistanceDirectionMaxDistance			float	-	-	-	d54ec25a2e32458e
+field	c:@SA@MPSRayOriginMinDistanceDirectionMaxDistance@FI@direction	MPSRayOriginMinDistanceDirectionMaxDistance			MPSPackedFloat3	-	-	-	7878512509556a4d
+field	c:@SA@MPSRayOriginMinDistanceDirectionMaxDistance@FI@maxDistance	MPSRayOriginMinDistanceDirectionMaxDistance			float	-	-	-	cba24f0fd9372d80
+typedef	c:@T@MPSRayOriginMinDistanceDirectionMaxDistance	-			struct MPSRayOriginMinDistanceDirectionMaxDistance	-	-	-	cd5e89c041a52da3
+struct	c:@SA@MPSRayOriginMaskDirectionMaxDistance	-			-	-	-	-	bad7e306ca5de9c7
+field	c:@SA@MPSRayOriginMaskDirectionMaxDistance@FI@origin	MPSRayOriginMaskDirectionMaxDistance			MPSPackedFloat3	-	-	-	1ada58d522d4f7a3
+field	c:@SA@MPSRayOriginMaskDirectionMaxDistance@FI@mask	MPSRayOriginMaskDirectionMaxDistance			unsigned int	-	-	-	bf86979e9004548c
+field	c:@SA@MPSRayOriginMaskDirectionMaxDistance@FI@direction	MPSRayOriginMaskDirectionMaxDistance			MPSPackedFloat3	-	-	-	6de889e71417575c
+field	c:@SA@MPSRayOriginMaskDirectionMaxDistance@FI@maxDistance	MPSRayOriginMaskDirectionMaxDistance			float	-	-	-	c81b589024d4d450
+typedef	c:@T@MPSRayOriginMaskDirectionMaxDistance	-			struct MPSRayOriginMaskDirectionMaxDistance	-	-	-	6dd96fc9a6a64dfb
+struct	c:@SA@MPSIntersectionDistance	-			-	-	-	-	2f222a7fe8b12517
+field	c:@SA@MPSIntersectionDistance@FI@distance	MPSIntersectionDistance			float	-	-	-	36a625babda48189
+typedef	c:@T@MPSIntersectionDistance	-			struct MPSIntersectionDistance	-	-	-	899001e88ac2c586
+struct	c:@SA@MPSIntersectionDistancePrimitiveIndex	-			-	-	-	-	3aa5d91a59858a00
+field	c:@SA@MPSIntersectionDistancePrimitiveIndex@FI@distance	MPSIntersectionDistancePrimitiveIndex			float	-	-	-	bb98f8d3bf3e0a30
+field	c:@SA@MPSIntersectionDistancePrimitiveIndex@FI@primitiveIndex	MPSIntersectionDistancePrimitiveIndex			unsigned int	-	-	-	e5f7957c3d9cf57c
+typedef	c:@T@MPSIntersectionDistancePrimitiveIndex	-			struct MPSIntersectionDistancePrimitiveIndex	-	-	-	0793f6d610772741
+struct	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndex	-			-	-	-	-	2fb17461406dd128
+field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndex@FI@distance	MPSIntersectionDistancePrimitiveIndexBufferIndex			float	-	-	-	11ba03d6b3925d39
+field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndex@FI@primitiveIndex	MPSIntersectionDistancePrimitiveIndexBufferIndex			unsigned int	-	-	-	d806e20e3ac48306
+field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndex@FI@bufferIndex	MPSIntersectionDistancePrimitiveIndexBufferIndex			unsigned int	-	-	-	d75faab5f4e4722a
+typedef	c:@T@MPSIntersectionDistancePrimitiveIndexBufferIndex	-			struct MPSIntersectionDistancePrimitiveIndexBufferIndex	-	-	-	ce17f75b064d49c8
+struct	c:@SA@MPSIntersectionDistancePrimitiveIndexCoordinates	-			-	-	-	-	8bfe844a503ef362
+field	c:@SA@MPSIntersectionDistancePrimitiveIndexCoordinates@FI@distance	MPSIntersectionDistancePrimitiveIndexCoordinates			float	-	-	-	7a6c01a6a1ff077c
+field	c:@SA@MPSIntersectionDistancePrimitiveIndexCoordinates@FI@primitiveIndex	MPSIntersectionDistancePrimitiveIndexCoordinates			unsigned int	-	-	-	680a68c6fb6ac140
+field	c:@SA@MPSIntersectionDistancePrimitiveIndexCoordinates@FI@coordinates	MPSIntersectionDistancePrimitiveIndexCoordinates			vector_float2	-	-	-	b3815eac96d284e4
+typedef	c:@T@MPSIntersectionDistancePrimitiveIndexCoordinates	-			struct MPSIntersectionDistancePrimitiveIndexCoordinates	-	-	-	102bb89ca30f2cf1
+struct	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexCoordinates	-			-	-	-	-	fbe6f5d498ff9c86
+field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexCoordinates@FI@distance	MPSIntersectionDistancePrimitiveIndexBufferIndexCoordinates			float	-	-	-	5599803026cd853a
+field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexCoordinates@FI@primitiveIndex	MPSIntersectionDistancePrimitiveIndexBufferIndexCoordinates			unsigned int	-	-	-	b21eb6aa8f81da4e
+field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexCoordinates@FI@bufferIndex	MPSIntersectionDistancePrimitiveIndexBufferIndexCoordinates			unsigned int	-	-	-	ccfc03d1704abc98
+field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexCoordinates@FI@coordinates	MPSIntersectionDistancePrimitiveIndexBufferIndexCoordinates			vector_float2	-	-	-	d96e67ca60c76016
+typedef	c:@T@MPSIntersectionDistancePrimitiveIndexBufferIndexCoordinates	-			struct MPSIntersectionDistancePrimitiveIndexBufferIndexCoordinates	-	-	-	ceb2f408ad738daf
+struct	c:@SA@MPSIntersectionDistancePrimitiveIndexInstanceIndex	-			-	-	-	-	aaad2c94802cd46f
+field	c:@SA@MPSIntersectionDistancePrimitiveIndexInstanceIndex@FI@distance	MPSIntersectionDistancePrimitiveIndexInstanceIndex			float	-	-	-	c3f50506063f50c8
+field	c:@SA@MPSIntersectionDistancePrimitiveIndexInstanceIndex@FI@primitiveIndex	MPSIntersectionDistancePrimitiveIndexInstanceIndex			unsigned int	-	-	-	1d6b645d2e1544a7
+field	c:@SA@MPSIntersectionDistancePrimitiveIndexInstanceIndex@FI@instanceIndex	MPSIntersectionDistancePrimitiveIndexInstanceIndex			unsigned int	-	-	-	9d8436031b03fb99
+typedef	c:@T@MPSIntersectionDistancePrimitiveIndexInstanceIndex	-			struct MPSIntersectionDistancePrimitiveIndexInstanceIndex	-	-	-	bd20b779b9896acf
+struct	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndex	-			-	-	-	-	41fec3ccca7f9269
+field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndex@FI@distance	MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndex			float	-	-	-	4519a3a0dd185d41
+field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndex@FI@primitiveIndex	MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndex			unsigned int	-	-	-	58265c9acf237411
+field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndex@FI@bufferIndex	MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndex			unsigned int	-	-	-	8f5c471d281dd610
+field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndex@FI@instanceIndex	MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndex			unsigned int	-	-	-	016d0c8535b54e56
+typedef	c:@T@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndex	-			struct MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndex	-	-	-	e362ff0acbaca956
+struct	c:@SA@MPSIntersectionDistancePrimitiveIndexInstanceIndexCoordinates	-			-	-	-	-	360050c354a96c9b
+field	c:@SA@MPSIntersectionDistancePrimitiveIndexInstanceIndexCoordinates@FI@distance	MPSIntersectionDistancePrimitiveIndexInstanceIndexCoordinates			float	-	-	-	498b53a4ac1f9508
+field	c:@SA@MPSIntersectionDistancePrimitiveIndexInstanceIndexCoordinates@FI@primitiveIndex	MPSIntersectionDistancePrimitiveIndexInstanceIndexCoordinates			unsigned int	-	-	-	68fe1cf25c42e527
+field	c:@SA@MPSIntersectionDistancePrimitiveIndexInstanceIndexCoordinates@FI@instanceIndex	MPSIntersectionDistancePrimitiveIndexInstanceIndexCoordinates			unsigned int	-	-	-	2af57cc27e4c2e94
+field	c:@SA@MPSIntersectionDistancePrimitiveIndexInstanceIndexCoordinates@FI@coordinates	MPSIntersectionDistancePrimitiveIndexInstanceIndexCoordinates			vector_float2	-	-	-	10415589eb626875
+typedef	c:@T@MPSIntersectionDistancePrimitiveIndexInstanceIndexCoordinates	-			struct MPSIntersectionDistancePrimitiveIndexInstanceIndexCoordinates	-	-	-	6bd96c8f4d66e9ee
+struct	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates	-			-	-	-	-	38eb9c90e861db03
+field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates@FI@distance	MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates			float	-	-	-	2e589fbfb0736f08
+field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates@FI@primitiveIndex	MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates			unsigned int	-	-	-	d56ba2beb88c4b08
+field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates@FI@bufferIndex	MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates			unsigned int	-	-	-	381bc352f1fb8b35
+field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates@FI@instanceIndex	MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates			unsigned int	-	-	-	c3ffe834bd1ff0a4
+field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates@FI@coordinates	MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates			vector_float2	-	-	-	eb363764c4cc3798
+typedef	c:@T@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates	-			struct MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates	-	-	-	2d619c9554a9b20d
+typedef	c:MPSAccelerationStructure.h@T@MPSAccelerationStructureCompletionHandler	-			void (^)(MPSAccelerationStructure * _Nullable)	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	a05edd2c9fc3d832
+typedef	c:MPSAccelerationStructure.h@T@MPSAccelerationStructureUsage	-			enum MPSAccelerationStructureUsage	-	-	-	6b731b2877575839
+enum	c:@E@MPSAccelerationStructureUsage	-			NSUInteger	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	5d09bc83ba4d478a
+enumconst	c:@E@MPSAccelerationStructureUsage@MPSAccelerationStructureUsageNone	MPSAccelerationStructureUsage			-	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	6525855c7118841d
+enumconst	c:@E@MPSAccelerationStructureUsage@MPSAccelerationStructureUsageRefit	MPSAccelerationStructureUsage			-	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	bc028303fd52c8a7
+enumconst	c:@E@MPSAccelerationStructureUsage@MPSAccelerationStructureUsageFrequentRebuild	MPSAccelerationStructureUsage			-	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	b013fe9b31eb0412
+enumconst	c:@E@MPSAccelerationStructureUsage@MPSAccelerationStructureUsagePreferGPUBuild	MPSAccelerationStructureUsage			-	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	249fcea73fc22200
+enumconst	c:@E@MPSAccelerationStructureUsage@MPSAccelerationStructureUsagePreferCPUBuild	MPSAccelerationStructureUsage			-	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	a35118fa979b18c8
+typedef	c:MPSAccelerationStructure.h@T@MPSAccelerationStructureStatus	-			enum MPSAccelerationStructureStatus	-	-	-	1d0b061e1295f94a
+enum	c:@E@MPSAccelerationStructureStatus	-			NSUInteger	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	23bf2ccbc92bfb48
+enumconst	c:@E@MPSAccelerationStructureStatus@MPSAccelerationStructureStatusUnbuilt	MPSAccelerationStructureStatus			-	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	95f573ab51ccca02
+enumconst	c:@E@MPSAccelerationStructureStatus@MPSAccelerationStructureStatusBuilt	MPSAccelerationStructureStatus			-	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	b56d6d2a805ee9c0
+interface	c:objc(cs)MPSAccelerationStructure	-			-	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	438b098af3523392
+super	-	MPSAccelerationStructure	MPSKernel		-	-	-	-	dfb55aa2966f85b7
+conforms	-	MPSAccelerationStructure	NSSecureCoding		-	-	-	-	cdfee64f3beeeb2f
+conforms	-	MPSAccelerationStructure	NSCopying		-	-	-	-	724847b9afa8dc8d
+property	c:objc(cs)MPSAccelerationStructure(py)group	-			MPSAccelerationStructureGroup *	readonly,nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	a3bfa975cbb631cb
+property	c:objc(cs)MPSAccelerationStructure(py)boundingBox	-			MPSAxisAlignedBoundingBox	readonly,nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	9e880cbc2a828326
+property	c:objc(cs)MPSAccelerationStructure(py)status	-			MPSAccelerationStructureStatus	readonly,nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	83ee235eaa63cb4c
+property	c:objc(cs)MPSAccelerationStructure(py)usage	-			MPSAccelerationStructureUsage	nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	4b510949b7c7cd1b
+method	c:objc(cs)MPSAccelerationStructure(im)init	-			instancetype	-	*unavailable ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	5131c520af7a54df
+method	c:objc(cs)MPSAccelerationStructure(im)initWithDevice:	-			instancetype	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	db562c5f3cdef428
+method	c:objc(cs)MPSAccelerationStructure(im)initWithCoder:device:	-			instancetype	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	506c26b54ea0a2c7
+method	c:objc(cs)MPSAccelerationStructure(im)initWithGroup:	-			instancetype	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	c5af7f5544f959a4
+method	c:objc(cs)MPSAccelerationStructure(im)initWithCoder:group:	-			instancetype	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	d9c8ba7de48bd8ec
+method	c:objc(cs)MPSAccelerationStructure(im)rebuild	-			void	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	5c96657fb28ce7e1
+method	c:objc(cs)MPSAccelerationStructure(im)rebuildWithCompletionHandler:	-			void	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	da4f143dc8936673
+method	c:objc(cs)MPSAccelerationStructure(im)encodeRefitToCommandBuffer:	-			void	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	522441da44b7a700
+method	c:objc(cs)MPSAccelerationStructure(im)copyWithZone:device:	-			instancetype	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	04e9dac7fc6a46a6
+method	c:objc(cs)MPSAccelerationStructure(im)copyWithZone:group:	-			instancetype	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	5ec946815b1355cf
+method	c:objc(cs)MPSAccelerationStructure(im)encodeWithCoder:	-			void	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	9fa1ef05f91fbced
+interface	c:objc(cs)MPSPolygonBuffer	-			-	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	a404cad9b534f294
+super	-	MPSPolygonBuffer	NSObject		-	-	-	-	fb7015f58dec1dee
+conforms	-	MPSPolygonBuffer	NSCopying		-	-	-	-	52b0e72bbe536321
+conforms	-	MPSPolygonBuffer	NSSecureCoding		-	-	-	-	b3602dd99b7bc37b
+method	c:objc(cs)MPSPolygonBuffer(im)init	-			instancetype	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	5aa25a0fe0589a22
+method	c:objc(cs)MPSPolygonBuffer(im)initWithCoder:	-			instancetype	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	1f0d4d07b7bd31bc
+method	c:objc(cs)MPSPolygonBuffer(cm)polygonBuffer	-			instancetype	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	8fdf7d4774be01e7
+method	c:objc(cs)MPSPolygonBuffer(im)copyWithZone:	-			instancetype	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	bbd7392bf5041d56
+property	c:objc(cs)MPSPolygonBuffer(py)vertexBuffer	-			id<MTLBuffer>	retain,nonatomic	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	31c34344efe61076
+property	c:objc(cs)MPSPolygonBuffer(py)vertexBufferOffset	-			NSUInteger	nonatomic	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	14a6a0fc53e49270
+property	c:objc(cs)MPSPolygonBuffer(py)indexBuffer	-			id<MTLBuffer>	retain,nonatomic	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	b028e76c73b4c803
+property	c:objc(cs)MPSPolygonBuffer(py)indexBufferOffset	-			NSUInteger	nonatomic	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	6c156c635d1effd0
+property	c:objc(cs)MPSPolygonBuffer(py)maskBuffer	-			id<MTLBuffer>	retain,nonatomic	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	c8f7a8c1de2b4287
+property	c:objc(cs)MPSPolygonBuffer(py)maskBufferOffset	-			NSUInteger	nonatomic	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	df029f8155622422
+property	c:objc(cs)MPSPolygonBuffer(py)polygonCount	-			NSUInteger	nonatomic	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	1d838d7843347d24
+typedef	c:MPSPolygonAccelerationStructure.h@T@MPSPolygonType	-			enum MPSPolygonType	-	-	-	8320e2615fbe2265
+enum	c:@E@MPSPolygonType	-			NSUInteger	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	a63dbc802972ba95
+enumconst	c:@E@MPSPolygonType@MPSPolygonTypeTriangle	MPSPolygonType			-	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	6156751b43047699
+enumconst	c:@E@MPSPolygonType@MPSPolygonTypeQuadrilateral	MPSPolygonType			-	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	48b345ba20d0a09c
+interface	c:objc(cs)MPSPolygonAccelerationStructure	-			-	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	f0e741056d5f44e2
+super	-	MPSPolygonAccelerationStructure	MPSAccelerationStructure		-	-	-	-	cfa30ae749d782df
+property	c:objc(cs)MPSPolygonAccelerationStructure(py)polygonType	-			MPSPolygonType	nonatomic	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	edd5938c39550c1d
+property	c:objc(cs)MPSPolygonAccelerationStructure(py)vertexStride	-			NSUInteger	nonatomic	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	74173af750e23676
+property	c:objc(cs)MPSPolygonAccelerationStructure(py)indexType	-			MPSDataType	nonatomic	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	70ee975284315d25
+property	c:objc(cs)MPSPolygonAccelerationStructure(py)vertexBuffer	-			id<MTLBuffer>	retain,nonatomic	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	0ceeecedc0cd06d5
+property	c:objc(cs)MPSPolygonAccelerationStructure(py)vertexBufferOffset	-			NSUInteger	nonatomic	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	5a4da38a8d8381ea
+property	c:objc(cs)MPSPolygonAccelerationStructure(py)indexBuffer	-			id<MTLBuffer>	retain,nonatomic	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	027a60dd605c3e90
+property	c:objc(cs)MPSPolygonAccelerationStructure(py)indexBufferOffset	-			NSUInteger	nonatomic	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	1f3c3587c3f91cd8
+property	c:objc(cs)MPSPolygonAccelerationStructure(py)maskBuffer	-			id<MTLBuffer>	retain,nonatomic	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	d47ff1ae5b4580e5
+property	c:objc(cs)MPSPolygonAccelerationStructure(py)maskBufferOffset	-			NSUInteger	nonatomic	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	af6538eb0211df0c
+property	c:objc(cs)MPSPolygonAccelerationStructure(py)polygonCount	-			NSUInteger	nonatomic	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	5f895235fa9a360e
+property	c:objc(cs)MPSPolygonAccelerationStructure(py)polygonBuffers	-			NSArray<MPSPolygonBuffer *> *	retain,nonatomic	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	79b198dc32e337ec
+interface	c:objc(cs)MPSTriangleAccelerationStructure	-			-	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	069de631ce2e123b
+super	-	MPSTriangleAccelerationStructure	MPSPolygonAccelerationStructure		-	-	-	-	0030a9edd3c19aac
+property	c:objc(cs)MPSTriangleAccelerationStructure(py)triangleCount	-			NSUInteger	nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	3fd87a3113d266d9
+interface	c:objc(cs)MPSQuadrilateralAccelerationStructure	-			-	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	ee27cdadbc044d88
+super	-	MPSQuadrilateralAccelerationStructure	MPSPolygonAccelerationStructure		-	-	-	-	6e02312b60281934
+property	c:objc(cs)MPSQuadrilateralAccelerationStructure(py)quadrilateralCount	-			NSUInteger	nonatomic	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	8b86dfeb09587452
+typedef	c:MPSInstanceAccelerationStructure.h@T@MPSTransformType	-			enum MPSTransformType	-	-	-	21b9dc8a77f01c45
+enum	c:@E@MPSTransformType	-			NSUInteger	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	29462d07cffd1350
+enumconst	c:@E@MPSTransformType@MPSTransformTypeFloat4x4	MPSTransformType			-	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	0b18379c99c43410
+enumconst	c:@E@MPSTransformType@MPSTransformTypeIdentity	MPSTransformType			-	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	c9ab23095135d5e9
+interface	c:objc(cs)MPSInstanceAccelerationStructure	-			-	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	3c872e73c3450bc2
+super	-	MPSInstanceAccelerationStructure	MPSAccelerationStructure		-	-	-	-	956dc44ca63b78af
+property	c:objc(cs)MPSInstanceAccelerationStructure(py)accelerationStructures	-			NSArray<MPSPolygonAccelerationStructure *> *	retain,nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	15ea2e3e9fdb2993
+property	c:objc(cs)MPSInstanceAccelerationStructure(py)instanceBuffer	-			id<MTLBuffer>	retain,nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	60d397164a5c5561
+property	c:objc(cs)MPSInstanceAccelerationStructure(py)instanceBufferOffset	-			NSUInteger	nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	fe7b58c8579b48b5
+property	c:objc(cs)MPSInstanceAccelerationStructure(py)transformBuffer	-			id<MTLBuffer>	retain,nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	0f329e40aeb6dda2
+property	c:objc(cs)MPSInstanceAccelerationStructure(py)transformBufferOffset	-			NSUInteger	nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	2251f283f0297973
+property	c:objc(cs)MPSInstanceAccelerationStructure(py)transformType	-			MPSTransformType	nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	4c3d0a30822148ea
+property	c:objc(cs)MPSInstanceAccelerationStructure(py)maskBuffer	-			id<MTLBuffer>	retain,nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	94c2833c4e997b2e
+property	c:objc(cs)MPSInstanceAccelerationStructure(py)maskBufferOffset	-			NSUInteger	nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	b732abfc3c354212
+property	c:objc(cs)MPSInstanceAccelerationStructure(py)instanceCount	-			NSUInteger	nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	af8d7f4714f12c63
+typedef	c:MPSSVGF.h@T@MPSTemporalWeighting	-			enum MPSTemporalWeighting	-	-	-	661b9eda3382dd79
+enum	c:@E@MPSTemporalWeighting	-			NSUInteger	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	be8d3ed11a489197
+enumconst	c:@E@MPSTemporalWeighting@MPSTemporalWeightingAverage	MPSTemporalWeighting			-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	6651bddaa1e1e6c8
+enumconst	c:@E@MPSTemporalWeighting@MPSTemporalWeightingExponentialMovingAverage	MPSTemporalWeighting			-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	8a6d9fe2bb897df1
+interface	c:objc(cs)MPSSVGF	-			-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	360edcf3e67946ea
+super	-	MPSSVGF	MPSKernel		-	-	-	-	3f3e07fc4fe5f72f
+conforms	-	MPSSVGF	NSSecureCoding		-	-	-	-	27924f68ea8b4db7
+conforms	-	MPSSVGF	NSCopying		-	-	-	-	eca7ca727d5af0ab
+property	c:objc(cs)MPSSVGF(py)depthWeight	-			float	nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	e43526390f70d8f0
+property	c:objc(cs)MPSSVGF(py)normalWeight	-			float	nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	3f5a4cff9346d100
+property	c:objc(cs)MPSSVGF(py)luminanceWeight	-			float	nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	b8ff7c6a68376412
+property	c:objc(cs)MPSSVGF(py)temporalWeighting	-			MPSTemporalWeighting	nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	92d6d0b445bf5229
+property	c:objc(cs)MPSSVGF(py)temporalReprojectionBlendFactor	-			float	nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	c2b79909f90ae8b3
+property	c:objc(cs)MPSSVGF(py)reprojectionThreshold	-			float	nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	a429d6ceaca8dc64
+property	c:objc(cs)MPSSVGF(py)minimumFramesForVarianceEstimation	-			NSUInteger	nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	70e3566dd9ee8f79
+property	c:objc(cs)MPSSVGF(py)varianceEstimationRadius	-			NSUInteger	nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	38f7106a0c09a7a0
+property	c:objc(cs)MPSSVGF(py)varianceEstimationSigma	-			float	nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	f164162a37f74c94
+property	c:objc(cs)MPSSVGF(py)variancePrefilterSigma	-			float	nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	24922abef29249b4
+property	c:objc(cs)MPSSVGF(py)variancePrefilterRadius	-			NSUInteger	nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	2f23748a21e789f1
+property	c:objc(cs)MPSSVGF(py)bilateralFilterSigma	-			float	nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	7abd1d60f96608df
+property	c:objc(cs)MPSSVGF(py)bilateralFilterRadius	-			NSUInteger	nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	e9d51bc1010aac88
+property	c:objc(cs)MPSSVGF(py)channelCount	-			NSUInteger	nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	8745790ab219a1d9
+property	c:objc(cs)MPSSVGF(py)channelCount2	-			NSUInteger	nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	af621d579180ff04
+method	c:objc(cs)MPSSVGF(im)initWithDevice:	-			instancetype	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	c381c9e0e2d49c4f
+method	c:objc(cs)MPSSVGF(im)initWithCoder:device:	-			instancetype	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	e93d1c32bd26f962
+method	c:objc(cs)MPSSVGF(im)copyWithZone:device:	-			instancetype	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	652fa7f163043952
+method	c:objc(cs)MPSSVGF(im)encodeWithCoder:	-			void	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	74666c0d433dd708
+method	c:objc(cs)MPSSVGF(im)encodeReprojectionToCommandBuffer:sourceTexture:previousTexture:destinationTexture:previousLuminanceMomentsTexture:destinationLuminanceMomentsTexture:previousFrameCountTexture:destinationFrameCountTexture:motionVectorTexture:depthNormalTexture:previousDepthNormalTexture:	-			void	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	ce31d43286508e4f
+method	c:objc(cs)MPSSVGF(im)encodeReprojectionToCommandBuffer:sourceTexture:previousTexture:destinationTexture:previousLuminanceMomentsTexture:destinationLuminanceMomentsTexture:sourceTexture2:previousTexture2:destinationTexture2:previousLuminanceMomentsTexture2:destinationLuminanceMomentsTexture2:previousFrameCountTexture:destinationFrameCountTexture:motionVectorTexture:depthNormalTexture:previousDepthNormalTexture:	-			void	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	b23d7996627b5144
+method	c:objc(cs)MPSSVGF(im)encodeVarianceEstimationToCommandBuffer:sourceTexture:luminanceMomentsTexture:destinationTexture:frameCountTexture:depthNormalTexture:	-			void	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	7709e40dcebf947c
+method	c:objc(cs)MPSSVGF(im)encodeVarianceEstimationToCommandBuffer:sourceTexture:luminanceMomentsTexture:destinationTexture:sourceTexture2:luminanceMomentsTexture2:destinationTexture2:frameCountTexture:depthNormalTexture:	-			void	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	26f3e5cf0534d59c
+method	c:objc(cs)MPSSVGF(im)encodeBilateralFilterToCommandBuffer:stepDistance:sourceTexture:destinationTexture:depthNormalTexture:	-			void	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	0a654443a3e5a3a7
+method	c:objc(cs)MPSSVGF(im)encodeBilateralFilterToCommandBuffer:stepDistance:sourceTexture:destinationTexture:sourceTexture2:destinationTexture2:depthNormalTexture:	-			void	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	bb66a316b411c28d
+protocol	c:objc(pl)MPSSVGFTextureAllocator	-			-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	6ca0e10dbe89b9ce
+conforms	-	MPSSVGFTextureAllocator	NSObject		-	-	-	-	7bce8affe9249e00
+method	c:objc(pl)MPSSVGFTextureAllocator(im)textureWithPixelFormat:width:height:	-			id<MTLTexture>	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	77633908e2db32c3
+method	c:objc(pl)MPSSVGFTextureAllocator(im)returnTexture:	-			void	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	e94c2aa0335fff69
+interface	c:objc(cs)MPSSVGFDefaultTextureAllocator	-			-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	5ad60e2229228392
+super	-	MPSSVGFDefaultTextureAllocator	NSObject		-	-	-	-	7fd5816653a7ffd4
+conforms	-	MPSSVGFDefaultTextureAllocator	MPSSVGFTextureAllocator		-	-	-	-	d64f7362757c9e87
+property	c:objc(cs)MPSSVGFDefaultTextureAllocator(py)device	-			id<MTLDevice>	readonly,nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	9a5aa0a03eaa6cc0
+property	c:objc(cs)MPSSVGFDefaultTextureAllocator(py)allocatedTextureCount	-			NSUInteger	readonly,nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	537c0306e8464f81
+method	c:objc(cs)MPSSVGFDefaultTextureAllocator(im)initWithDevice:	-			instancetype	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	43fa1cc902772ff0
+method	c:objc(cs)MPSSVGFDefaultTextureAllocator(im)textureWithPixelFormat:width:height:	-			id<MTLTexture>	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	0ffcc01a0175bf79
+method	c:objc(cs)MPSSVGFDefaultTextureAllocator(im)returnTexture:	-			void	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	b2ae8a8f77a334fc
+method	c:objc(cs)MPSSVGFDefaultTextureAllocator(im)reset	-			void	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	dda85fa1054c4389
+interface	c:objc(cs)MPSSVGFDenoiser	-			-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	7ef418bdd2f3bbc8
+super	-	MPSSVGFDenoiser	NSObject		-	-	-	-	8dae13c254736294
+property	c:objc(cs)MPSSVGFDenoiser(py)svgf	-			MPSSVGF *	readonly,nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	7d9993798bf26995
+property	c:objc(cs)MPSSVGFDenoiser(py)textureAllocator	-			id<MPSSVGFTextureAllocator>	readonly,nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	6c54dd9f337fafd1
+property	c:objc(cs)MPSSVGFDenoiser(py)bilateralFilterIterations	-			NSUInteger	nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	067a1d7e8ca3e679
+method	c:objc(cs)MPSSVGFDenoiser(im)initWithDevice:	-			instancetype	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	4c90023eacc9b88a
+method	c:objc(cs)MPSSVGFDenoiser(im)initWithSVGF:textureAllocator:	-			instancetype	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	a37b3a5ef0c55bf9
+method	c:objc(cs)MPSSVGFDenoiser(im)clearTemporalHistory	-			void	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	820c2148dd47da65
+method	c:objc(cs)MPSSVGFDenoiser(im)releaseTemporaryTextures	-			void	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	1cd7b914dde9cc97
+method	c:objc(cs)MPSSVGFDenoiser(im)encodeToCommandBuffer:sourceTexture:motionVectorTexture:depthNormalTexture:previousDepthNormalTexture:	-			id<MTLTexture>	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	9f3a6ae230d254e1
+method	c:objc(cs)MPSSVGFDenoiser(im)encodeToCommandBuffer:sourceTexture:destinationTexture:sourceTexture2:destinationTexture2:motionVectorTexture:depthNormalTexture:previousDepthNormalTexture:	-			void	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	3ec9417c189d3b4f
+interface	c:objc(cs)MPSTemporalAA	-			-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	6a3f82acac7c779c
+super	-	MPSTemporalAA	MPSKernel		-	-	-	-	8a5f23b0d6fc1b86
+conforms	-	MPSTemporalAA	NSSecureCoding		-	-	-	-	3e27276cb31278e5
+conforms	-	MPSTemporalAA	NSCopying		-	-	-	-	aad31b1c9ecb0826
+property	c:objc(cs)MPSTemporalAA(py)blendFactor	-			float	nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	340a63be82c19ac4
+method	c:objc(cs)MPSTemporalAA(im)initWithDevice:	-			instancetype	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	169934ff42b98c46
+method	c:objc(cs)MPSTemporalAA(im)initWithCoder:device:	-			instancetype	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	50da1b05ab7a61c9
+method	c:objc(cs)MPSTemporalAA(im)copyWithZone:device:	-			instancetype	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	4b6d0653d0beb21a
+method	c:objc(cs)MPSTemporalAA(im)encodeWithCoder:	-			void	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	c8c8e1c2265d9c50
+method	c:objc(cs)MPSTemporalAA(im)encodeToCommandBuffer:sourceTexture:previousTexture:destinationTexture:motionVectorTexture:depthTexture:	-			void	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	10a90d280b100977
+typedef	c:MPSRayIntersector.h@T@MPSIntersectionType	-			enum MPSIntersectionType	-	-	-	ad4de5293992f9aa
+enum	c:@E@MPSIntersectionType	-			NSUInteger	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	131a39b6b81d0cbe
+enumconst	c:@E@MPSIntersectionType@MPSIntersectionTypeNearest	MPSIntersectionType			-	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	4dae3de165b7bc26
+enumconst	c:@E@MPSIntersectionType@MPSIntersectionTypeAny	MPSIntersectionType			-	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	94c8d8b77b359eb1
+typedef	c:MPSRayIntersector.h@T@MPSTriangleIntersectionTestType	-			enum MPSTriangleIntersectionTestType	-	-	-	ecceb7032bb9a0c7
+enum	c:@E@MPSTriangleIntersectionTestType	-			NSUInteger	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	2002887d25b35689
+enumconst	c:@E@MPSTriangleIntersectionTestType@MPSTriangleIntersectionTestTypeDefault	MPSTriangleIntersectionTestType			-	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	c627610c4eaf20ed
+enumconst	c:@E@MPSTriangleIntersectionTestType@MPSTriangleIntersectionTestTypeWatertight	MPSTriangleIntersectionTestType			-	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	7db588e1b884bf2f
+typedef	c:MPSRayIntersector.h@T@MPSBoundingBoxIntersectionTestType	-			enum MPSBoundingBoxIntersectionTestType	-	-	-	92c036a2b7e1db50
+enum	c:@E@MPSBoundingBoxIntersectionTestType	-			NSUInteger	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	7032c40cd4ace7c8
+enumconst	c:@E@MPSBoundingBoxIntersectionTestType@MPSBoundingBoxIntersectionTestTypeDefault	MPSBoundingBoxIntersectionTestType			-	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	7cc1b0367672e288
+enumconst	c:@E@MPSBoundingBoxIntersectionTestType@MPSBoundingBoxIntersectionTestTypeAxisAligned	MPSBoundingBoxIntersectionTestType			-	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	994d2576f439738d
+enumconst	c:@E@MPSBoundingBoxIntersectionTestType@MPSBoundingBoxIntersectionTestTypeFast	MPSBoundingBoxIntersectionTestType			-	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	a50b495c0273ad4a
+typedef	c:MPSRayIntersector.h@T@MPSRayMaskOptions	-			enum MPSRayMaskOptions	-	-	-	f3c36f01cd65b817
+enum	c:@E@MPSRayMaskOptions	-			NSUInteger	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	1e98e0da6253f11d
+enumconst	c:@E@MPSRayMaskOptions@MPSRayMaskOptionNone	MPSRayMaskOptions			-	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	3b59e6ba9384aba1
+enumconst	c:@E@MPSRayMaskOptions@MPSRayMaskOptionPrimitive	MPSRayMaskOptions			-	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	7cfe2078f7c138f6
+enumconst	c:@E@MPSRayMaskOptions@MPSRayMaskOptionInstance	MPSRayMaskOptions			-	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	265aefd7df415107
+typedef	c:MPSRayIntersector.h@T@MPSRayDataType	-			enum MPSRayDataType	-	-	-	0fd8ea7deb45d482
+enum	c:@E@MPSRayDataType	-			NSUInteger	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	17644fcde6af08b7
+enumconst	c:@E@MPSRayDataType@MPSRayDataTypeOriginDirection	MPSRayDataType			-	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	411b4709a1835789
+enumconst	c:@E@MPSRayDataType@MPSRayDataTypeOriginMinDistanceDirectionMaxDistance	MPSRayDataType			-	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	10436244c6a8bcb2
+enumconst	c:@E@MPSRayDataType@MPSRayDataTypeOriginMaskDirectionMaxDistance	MPSRayDataType			-	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	7f587c217573bc93
+enumconst	c:@E@MPSRayDataType@MPSRayDataTypePackedOriginDirection	MPSRayDataType			-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	901928d96be66ec9
+typedef	c:MPSRayIntersector.h@T@MPSIntersectionDataType	-			enum MPSIntersectionDataType	-	-	-	1b86ef6db064170e
+enum	c:@E@MPSIntersectionDataType	-			NSUInteger	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	4cb5561fb65b6cee
+enumconst	c:@E@MPSIntersectionDataType@MPSIntersectionDataTypeDistance	MPSIntersectionDataType			-	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	ee3108a8ce8bd36d
+enumconst	c:@E@MPSIntersectionDataType@MPSIntersectionDataTypeDistancePrimitiveIndex	MPSIntersectionDataType			-	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	e99b5f2fe9635ca6
+enumconst	c:@E@MPSIntersectionDataType@MPSIntersectionDataTypeDistancePrimitiveIndexCoordinates	MPSIntersectionDataType			-	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	69893e4289689780
+enumconst	c:@E@MPSIntersectionDataType@MPSIntersectionDataTypeDistancePrimitiveIndexInstanceIndex	MPSIntersectionDataType			-	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	7235cd0c88ab9b61
+enumconst	c:@E@MPSIntersectionDataType@MPSIntersectionDataTypeDistancePrimitiveIndexInstanceIndexCoordinates	MPSIntersectionDataType			-	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	c865e2f8cb278fc0
+enumconst	c:@E@MPSIntersectionDataType@MPSIntersectionDataTypeDistancePrimitiveIndexBufferIndex	MPSIntersectionDataType			-	-	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	001396fd5fa24396
+enumconst	c:@E@MPSIntersectionDataType@MPSIntersectionDataTypeDistancePrimitiveIndexBufferIndexCoordinates	MPSIntersectionDataType			-	-	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	b82e8e38054d9847
+enumconst	c:@E@MPSIntersectionDataType@MPSIntersectionDataTypeDistancePrimitiveIndexBufferIndexInstanceIndex	MPSIntersectionDataType			-	-	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	1fc776438d76e22b
+enumconst	c:@E@MPSIntersectionDataType@MPSIntersectionDataTypeDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates	MPSIntersectionDataType			-	-	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	38759ce6b1beeb84
+typedef	c:MPSRayIntersector.h@T@MPSRayMaskOperator	-			enum MPSRayMaskOperator	-	-	-	a11c5683554fab36
+enum	c:@E@MPSRayMaskOperator	-			NSUInteger	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	5e6b87b7da6026e6
+enumconst	c:@E@MPSRayMaskOperator@MPSRayMaskOperatorAnd	MPSRayMaskOperator			-	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	c2291ffa7e2986e9
+enumconst	c:@E@MPSRayMaskOperator@MPSRayMaskOperatorNotAnd	MPSRayMaskOperator			-	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	7c426bc1e03924e5
+enumconst	c:@E@MPSRayMaskOperator@MPSRayMaskOperatorOr	MPSRayMaskOperator			-	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	55da49719ada5d4d
+enumconst	c:@E@MPSRayMaskOperator@MPSRayMaskOperatorNotOr	MPSRayMaskOperator			-	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	fb3f6ffb251d9ce2
+enumconst	c:@E@MPSRayMaskOperator@MPSRayMaskOperatorXor	MPSRayMaskOperator			-	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	e2e18aea87044db7
+enumconst	c:@E@MPSRayMaskOperator@MPSRayMaskOperatorNotXor	MPSRayMaskOperator			-	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	c038a9e03a4dfa61
+enumconst	c:@E@MPSRayMaskOperator@MPSRayMaskOperatorLessThan	MPSRayMaskOperator			-	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	1dcfeb9ec61c3efd
+enumconst	c:@E@MPSRayMaskOperator@MPSRayMaskOperatorLessThanOrEqualTo	MPSRayMaskOperator			-	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	2761eeb75793b8e6
+enumconst	c:@E@MPSRayMaskOperator@MPSRayMaskOperatorGreaterThan	MPSRayMaskOperator			-	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	97785e1afd913673
+enumconst	c:@E@MPSRayMaskOperator@MPSRayMaskOperatorGreaterThanOrEqualTo	MPSRayMaskOperator			-	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	5605feb16bc82742
+enumconst	c:@E@MPSRayMaskOperator@MPSRayMaskOperatorEqual	MPSRayMaskOperator			-	-	ios=13.4/17.0/-/0,maccatalyst=13.4/17.0/-/0,macos=10.15.4/14.0/-/0,tvos=13.4/17.0/-/0	-	eaf64c8fab84025b
+enumconst	c:@E@MPSRayMaskOperator@MPSRayMaskOperatorNotEqual	MPSRayMaskOperator			-	-	ios=13.4/17.0/-/0,maccatalyst=13.4/17.0/-/0,macos=10.15.4/14.0/-/0,tvos=13.4/17.0/-/0	-	c40d305b2a3ba3d4
+interface	c:objc(cs)MPSRayIntersector	-			-	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	06d7091606d5766b
+super	-	MPSRayIntersector	MPSKernel		-	-	-	-	79d860579c9639dc
+conforms	-	MPSRayIntersector	NSSecureCoding		-	-	-	-	429c89f74b2e5f80
+conforms	-	MPSRayIntersector	NSCopying		-	-	-	-	0beb5f0209b3c54e
+property	c:objc(cs)MPSRayIntersector(py)cullMode	-			MTLCullMode	nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	c60e7f8d88942906
+property	c:objc(cs)MPSRayIntersector(py)frontFacingWinding	-			MTLWinding	nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	ae66bb07dee89109
+property	c:objc(cs)MPSRayIntersector(py)triangleIntersectionTestType	-			MPSTriangleIntersectionTestType	nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	948ac8004de5b4b7
+property	c:objc(cs)MPSRayIntersector(py)boundingBoxIntersectionTestType	-			MPSBoundingBoxIntersectionTestType	nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	fbbd5c7856b07a3b
+property	c:objc(cs)MPSRayIntersector(py)rayMaskOptions	-			MPSRayMaskOptions	nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	dcd76a5321ca4534
+property	c:objc(cs)MPSRayIntersector(py)rayMaskOperator	-			MPSRayMaskOperator	nonatomic	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	4a7af1470af28408
+property	c:objc(cs)MPSRayIntersector(py)rayStride	-			NSUInteger	nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	130f0277123e6b77
+property	c:objc(cs)MPSRayIntersector(py)intersectionStride	-			NSUInteger	nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	f6978d98c6b4eb59
+property	c:objc(cs)MPSRayIntersector(py)rayDataType	-			MPSRayDataType	nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	d3adc103af488df7
+property	c:objc(cs)MPSRayIntersector(py)intersectionDataType	-			MPSIntersectionDataType	nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	edb46dde9a316e9f
+property	c:objc(cs)MPSRayIntersector(py)rayIndexDataType	-			MPSDataType	nonatomic	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	61dcdb772c13f302
+property	c:objc(cs)MPSRayIntersector(py)rayMask	-			unsigned int	nonatomic	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	897ed7c3aea5b457
+method	c:objc(cs)MPSRayIntersector(im)init	-			instancetype	-	*unavailable ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	18c75a848c598ff2
+method	c:objc(cs)MPSRayIntersector(im)initWithDevice:	-			instancetype	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	06f6adbccfcd858a
+method	c:objc(cs)MPSRayIntersector(im)initWithCoder:device:	-			instancetype	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	70f48591d6666fe3
+method	c:objc(cs)MPSRayIntersector(im)copyWithZone:device:	-			instancetype	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	857a29c20e86e587
+method	c:objc(cs)MPSRayIntersector(im)recommendedMinimumRayBatchSizeForRayCount:	-			NSUInteger	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	72b4b9b9b51488dc
+method	c:objc(cs)MPSRayIntersector(im)encodeWithCoder:	-			void	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	e76dfbb00e266f1b
+method	c:objc(cs)MPSRayIntersector(im)encodeIntersectionToCommandBuffer:intersectionType:rayBuffer:rayBufferOffset:intersectionBuffer:intersectionBufferOffset:rayCount:accelerationStructure:	-			void	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	e16a9a1c2ba9a7c3
+method	c:objc(cs)MPSRayIntersector(im)encodeIntersectionToCommandBuffer:intersectionType:rayBuffer:rayBufferOffset:intersectionBuffer:intersectionBufferOffset:rayCountBuffer:rayCountBufferOffset:accelerationStructure:	-			void	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	a21dc0abe0b4100a
+method	c:objc(cs)MPSRayIntersector(im)encodeIntersectionToCommandBuffer:intersectionType:rayBuffer:rayBufferOffset:rayIndexBuffer:rayIndexBufferOffset:intersectionBuffer:intersectionBufferOffset:rayIndexCount:accelerationStructure:	-			void	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	f2858bb3687c1dc3
+method	c:objc(cs)MPSRayIntersector(im)encodeIntersectionToCommandBuffer:intersectionType:rayBuffer:rayBufferOffset:rayIndexBuffer:rayIndexBufferOffset:intersectionBuffer:intersectionBufferOffset:rayIndexCountBuffer:rayIndexCountBufferOffset:accelerationStructure:	-			void	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	645274410bdb2033
+method	c:objc(cs)MPSRayIntersector(im)encodeIntersectionToCommandBuffer:intersectionType:rayTexture:intersectionTexture:accelerationStructure:	-			void	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	9a7ca3bbd8024f81

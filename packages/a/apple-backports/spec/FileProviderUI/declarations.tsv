@@ -1,18 +1,18 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
-var	c:@FPUIErrorDomain	-			ios=11.0/-/-/0,maccatalyst=-/-/-/1,tvos=-/-/-/1	-	6d878b52c8af190f
-typedef	c:@T@FPUIActionIdentifier	-			-	-	df4368d8e4ee06e9
-typedef	c:@T@FPUIExtensionErrorCode	-			-	-	cf63293277d5d576
-enum	c:@E@FPUIExtensionErrorCode	-			ios=11.0/-/-/0,maccatalyst=-/-/-/1,tvos=-/-/-/1	-	c8f6413405f5f566
-enumconst	c:@E@FPUIExtensionErrorCode@FPUIExtensionErrorCodeUserCancelled	FPUIExtensionErrorCode			ios=11.0/-/-/0,maccatalyst=-/-/-/1,tvos=-/-/-/1	-	1ac73db016c9259f
-enumconst	c:@E@FPUIExtensionErrorCode@FPUIExtensionErrorCodeFailed	FPUIExtensionErrorCode			ios=11.0/-/-/0,maccatalyst=-/-/-/1,tvos=-/-/-/1	-	ea1e6c5f3753d5b2
-interface	c:objc(cs)FPUIActionExtensionContext	-			ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=10.15/-/-/0	-	cc6d5992ebd8c827
-super	-	FPUIActionExtensionContext	NSExtensionContext		-	-	f9c2321299024db5
-property	c:objc(cs)FPUIActionExtensionContext(py)domainIdentifier	-			ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=10.15/-/-/0	-	6a99a61cb89d8ee0
-method	c:objc(cs)FPUIActionExtensionContext(im)completeRequest	-			ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=10.15/-/-/0	-	6e28685611ed15c0
-method	c:objc(cs)FPUIActionExtensionContext(im)completeRequestReturningItems:completionHandler:	-			*unavailable ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=10.15/-/-/0	-	8619137884837a1b
-method	c:objc(cs)FPUIActionExtensionContext(im)cancelRequestWithError:	-			ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=10.15/-/-/0	-	9dfb256f96564c66
-interface	c:objc(cs)FPUIActionExtensionViewController	-			ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=10.15/-/-/0	-	6e2fd41548e57e74
-super	-	FPUIActionExtensionViewController	UIViewController		-	-	e4f7ecf1aa10f180
-property	c:objc(cs)FPUIActionExtensionViewController(py)extensionContext	-			ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=10.15/-/-/0	-	dbb17138e92c55ed
-method	c:objc(cs)FPUIActionExtensionViewController(im)prepareForError:	-			ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=10.15/-/-/0	-	4258f52648c69963
-method	c:objc(cs)FPUIActionExtensionViewController(im)prepareForActionWithIdentifier:itemIdentifiers:	-			ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=10.15/-/-/0	-	073f839bed6d488c
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
+var	c:@FPUIErrorDomain	-			API_AVAILABLE NSString *const	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,tvos=-/-/-/1	-	62f6e55e4102535c
+typedef	c:@T@FPUIActionIdentifier	-			NSString *	-	-	-	df4368d8e4ee06e9
+typedef	c:@T@FPUIExtensionErrorCode	-			enum FPUIExtensionErrorCode	-	-	-	cf63293277d5d576
+enum	c:@E@FPUIExtensionErrorCode	-			NSUInteger	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,tvos=-/-/-/1	-	c8f6413405f5f566
+enumconst	c:@E@FPUIExtensionErrorCode@FPUIExtensionErrorCodeUserCancelled	FPUIExtensionErrorCode			-	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,tvos=-/-/-/1	-	1ac73db016c9259f
+enumconst	c:@E@FPUIExtensionErrorCode@FPUIExtensionErrorCodeFailed	FPUIExtensionErrorCode			-	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,tvos=-/-/-/1	-	ea1e6c5f3753d5b2
+interface	c:objc(cs)FPUIActionExtensionContext	-			-	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=10.15/-/-/0	-	cc6d5992ebd8c827
+super	-	FPUIActionExtensionContext	NSExtensionContext		-	-	-	-	f9c2321299024db5
+property	c:objc(cs)FPUIActionExtensionContext(py)domainIdentifier	-			NSFileProviderDomainIdentifier	readonly,copy	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=10.15/-/-/0	-	97326e62c8c6f4d7
+method	c:objc(cs)FPUIActionExtensionContext(im)completeRequest	-			void	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=10.15/-/-/0	-	6e28685611ed15c0
+method	c:objc(cs)FPUIActionExtensionContext(im)completeRequestReturningItems:completionHandler:	-			void	-	*unavailable ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=10.15/-/-/0	-	3334d419024474ad
+method	c:objc(cs)FPUIActionExtensionContext(im)cancelRequestWithError:	-			void	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=10.15/-/-/0	-	1e047c1e37e4e533
+interface	c:objc(cs)FPUIActionExtensionViewController	-			-	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=10.15/-/-/0	-	6e2fd41548e57e74
+super	-	FPUIActionExtensionViewController	UIViewController		-	-	-	-	e4f7ecf1aa10f180
+property	c:objc(cs)FPUIActionExtensionViewController(py)extensionContext	-			FPUIActionExtensionContext *	readonly,strong,nonatomic	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=10.15/-/-/0	-	cd4606701e7e16c3
+method	c:objc(cs)FPUIActionExtensionViewController(im)prepareForError:	-			void	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=10.15/-/-/0	-	3221a5c273436593
+method	c:objc(cs)FPUIActionExtensionViewController(im)prepareForActionWithIdentifier:itemIdentifiers:	-			void	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=10.15/-/-/0	-	f32b95240df455c6

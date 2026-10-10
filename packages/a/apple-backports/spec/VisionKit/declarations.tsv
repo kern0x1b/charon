@@ -1,19 +1,19 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
-interface	c:objc(cs)VNDocumentCameraViewController	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	09bd270f5a2cd9ea
-super	-	VNDocumentCameraViewController	UIViewController		-	-	a8aed9fae7b18673
-property	c:objc(cs)VNDocumentCameraViewController(py)delegate	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6849eedc0fce4eed
-property	c:objc(cs)VNDocumentCameraViewController(cpy)supported	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	85c33aec35fbd1c7
-method	c:objc(cs)VNDocumentCameraViewController(im)initWithNibName:bundle:	-			*unavailable ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4b7ab43ddf565040
-method	c:objc(cs)VNDocumentCameraViewController(im)initWithCoder:	-			*unavailable ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6900a28e351d5566
-protocol	c:objc(pl)VNDocumentCameraViewControllerDelegate	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9edae8b2c21482b4
-conforms	-	VNDocumentCameraViewControllerDelegate	NSObject		-	-	723cbfdc517cc091
-method	c:objc(pl)VNDocumentCameraViewControllerDelegate(im)documentCameraViewController:didFinishWithScan:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	eeffd5401b67a74e
-method	c:objc(pl)VNDocumentCameraViewControllerDelegate(im)documentCameraViewControllerDidCancel:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5e9f3b569f094bd1
-method	c:objc(pl)VNDocumentCameraViewControllerDelegate(im)documentCameraViewController:didFailWithError:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6c09badb2c8d6d91
-interface	c:objc(cs)VNDocumentCameraScan	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1160f2a46bcc6f06
-super	-	VNDocumentCameraScan	NSObject		-	-	67472b25910f0335
-property	c:objc(cs)VNDocumentCameraScan(py)pageCount	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	780051df458dd4d4
-method	c:objc(cs)VNDocumentCameraScan(im)imageOfPageAtIndex:	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	243705a73ef3d689
-property	c:objc(cs)VNDocumentCameraScan(py)title	-			ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fcfee3bf062aaa01
-method	c:objc(cs)VNDocumentCameraScan(cm)new	-			*unavailable ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3f3b5b1806b41a67
-method	c:objc(cs)VNDocumentCameraScan(im)init	-			*unavailable ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	12ce1a2a590dfd45
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
+interface	c:objc(cs)VNDocumentCameraViewController	-			-	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	09bd270f5a2cd9ea
+super	-	VNDocumentCameraViewController	UIViewController		-	-	-	-	a8aed9fae7b18673
+property	c:objc(cs)VNDocumentCameraViewController(py)delegate	-			id<VNDocumentCameraViewControllerDelegate>	weak,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	17e5fadd44c92c72
+property	c:objc(cs)VNDocumentCameraViewController(cpy)supported	-			BOOL	readonly,nonatomic,class,getter=isSupported	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	85c33aec35fbd1c7
+method	c:objc(cs)VNDocumentCameraViewController(im)initWithNibName:bundle:	-			instancetype	-	*unavailable ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f2507779c253a498
+method	c:objc(cs)VNDocumentCameraViewController(im)initWithCoder:	-			instancetype	-	*unavailable ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	cba9a4837960ab3a
+protocol	c:objc(pl)VNDocumentCameraViewControllerDelegate	-			-	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9edae8b2c21482b4
+conforms	-	VNDocumentCameraViewControllerDelegate	NSObject		-	-	-	-	723cbfdc517cc091
+method	c:objc(pl)VNDocumentCameraViewControllerDelegate(im)documentCameraViewController:didFinishWithScan:	-			void	optional	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a43e49f8d415f35b
+method	c:objc(pl)VNDocumentCameraViewControllerDelegate(im)documentCameraViewControllerDidCancel:	-			void	optional	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b83472427cb934a7
+method	c:objc(pl)VNDocumentCameraViewControllerDelegate(im)documentCameraViewController:didFailWithError:	-			void	optional	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c66a67a1e83db7be
+interface	c:objc(cs)VNDocumentCameraScan	-			-	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1160f2a46bcc6f06
+super	-	VNDocumentCameraScan	NSObject		-	-	-	-	67472b25910f0335
+property	c:objc(cs)VNDocumentCameraScan(py)pageCount	-			NSUInteger	readonly,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	780051df458dd4d4
+method	c:objc(cs)VNDocumentCameraScan(im)imageOfPageAtIndex:	-			UIImage *	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5982ada2cf596759
+property	c:objc(cs)VNDocumentCameraScan(py)title	-			NSString *	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	349d10efc96a5091
+method	c:objc(cs)VNDocumentCameraScan(cm)new	-			instancetype	-	*unavailable ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	714042071e90d7ef
+method	c:objc(cs)VNDocumentCameraScan(im)init	-			instancetype	-	*unavailable ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2a5ccfe0e75504df

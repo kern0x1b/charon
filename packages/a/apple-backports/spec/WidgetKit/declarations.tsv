@@ -1,5 +1,5 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
-var	c:@WGWidgetUserInfoKeyKind	-			-	-	a754232aafef0b6d
-var	c:@WGWidgetUserInfoKeyFamily	-			-	-	18e0daf3ee80d6aa
-var	c:@WGWidgetUserInfoKeyActivityID	-			-	-	45107b5ec168c2b2
-var	c:@NSUserActivityTypeLiveActivity	-			-	-	b674c409296aa079
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
+var	c:@WGWidgetUserInfoKeyKind	-			NSString *const	-	-	-	a754232aafef0b6d
+var	c:@WGWidgetUserInfoKeyFamily	-			NSString *const	-	-	-	18e0daf3ee80d6aa
+var	c:@WGWidgetUserInfoKeyActivityID	-			NSString *const	-	-	-	45107b5ec168c2b2
+var	c:@NSUserActivityTypeLiveActivity	-			NSString *const	-	-	-	b674c409296aa079

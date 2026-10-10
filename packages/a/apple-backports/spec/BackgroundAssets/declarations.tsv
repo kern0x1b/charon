@@ -1,153 +1,153 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
-typedef	c:@T@BAContentRequest	-			-	-	0f6f43307e475ae6
-enum	c:@E@BAContentRequest	-			-	-	33fd9ad860fe5ee9
-enumconst	c:@E@BAContentRequest@BAContentRequestInstall	BAContentRequest			-	-	4084bc6230e6112c
-enumconst	c:@E@BAContentRequest@BAContentRequestUpdate	BAContentRequest			-	-	119034bc84fea8e8
-enumconst	c:@E@BAContentRequest@BAContentRequestPeriodic	BAContentRequest			-	-	bce3ce65958a9c81
-typedef	c:@T@BADownloadState	-			-	-	81131a1c2cb7a09c
-enum	c:@E@BADownloadState	-			-	-	a267bcf5549fc4f6
-enumconst	c:@E@BADownloadState@BADownloadStateFailed	BADownloadState			-	-	ecff0feb81cbba79
-enumconst	c:@E@BADownloadState@BADownloadStateCreated	BADownloadState			-	-	519d558de578ab65
-enumconst	c:@E@BADownloadState@BADownloadStateWaiting	BADownloadState			-	-	c66f4c617b4b9b79
-enumconst	c:@E@BADownloadState@BADownloadStateDownloading	BADownloadState			-	-	084330942cd4733e
-enumconst	c:@E@BADownloadState@BADownloadStateFinished	BADownloadState			-	-	ba1f6673e2471403
-typedef	c:@T@BADownloaderPriority	-			-	-	a7248ac6001ee6e3
-var	c:@BADownloaderPriorityMin	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	f40c3495ba4bb236
-var	c:@BADownloaderPriorityDefault	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	4dda5348ed39c475
-var	c:@BADownloaderPriorityMax	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	2801f4d96da307cc
-interface	c:objc(cs)BADownload	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	ad35cd56dbbec014
-super	-	BADownload	NSObject		-	-	22acc200ce80e62f
-conforms	-	BADownload	NSCoding		-	-	e3bf6cdbb180edaa
-conforms	-	BADownload	NSSecureCoding		-	-	bc75464ca4ba0c69
-conforms	-	BADownload	NSCopying		-	-	0bed24e27f5185ea
-property	c:objc(cs)BADownload(py)state	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	384ab57c2aff386a
-property	c:objc(cs)BADownload(py)identifier	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	cc153a4f35b7bc4e
-property	c:objc(cs)BADownload(py)uniqueIdentifier	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	c53f2f74fe787615
-property	c:objc(cs)BADownload(py)priority	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	21a5f47aa20acf27
-property	c:objc(cs)BADownload(py)isEssential	-			ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	50fb1e5848c3c067
-method	c:objc(cs)BADownload(im)copyAsNonEssential	-			ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	21d8e805816226ea
-method	c:objc(cs)BADownload(im)init	-			*unavailable ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	d0a194cff8afce22
-method	c:objc(cs)BADownload(cm)new	-			*unavailable ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	7cf037594df47fa5
-interface	c:objc(cs)BAAppExtensionInfo	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	b13b4ea122ea7222
-super	-	BAAppExtensionInfo	NSObject		-	-	38b443db1e0f064b
-conforms	-	BAAppExtensionInfo	NSSecureCoding		-	-	82fe233705522169
-property	c:objc(cs)BAAppExtensionInfo(py)restrictedDownloadSizeRemaining	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	e6a420713356ebd8
-property	c:objc(cs)BAAppExtensionInfo(py)restrictedEssentialDownloadSizeRemaining	-			ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	c4fb69ea735befac
-method	c:objc(cs)BAAppExtensionInfo(im)init	-			*unavailable ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	1b75036ff1e33cad
-method	c:objc(cs)BAAppExtensionInfo(cm)new	-			*unavailable ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	50d452755f99d1cc
-protocol	c:objc(pl)BADownloaderExtension	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	deprecated: extensionWillTerminate will not be invoked in all applicable circumstances and should not be relied upon.	b60be8b47cb012bb
-conforms	-	BADownloaderExtension	NSObject		-	-	ddd8dac8604726aa
-method	c:objc(pl)BADownloaderExtension(im)downloadsForRequest:manifestURL:extensionInfo:	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	4a73b68f285bfa09
-method	c:objc(pl)BADownloaderExtension(im)backgroundDownload:didReceiveChallenge:completionHandler:	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	ca08a879019ce0ca
-method	c:objc(pl)BADownloaderExtension(im)backgroundDownload:failedWithError:	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	07c58c623fbfbec5
-method	c:objc(pl)BADownloaderExtension(im)backgroundDownload:finishedWithFileURL:	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	5d93885386f5f04b
-method	c:objc(pl)BADownloaderExtension(im)extensionWillTerminate	-			ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: extensionWillTerminate will not be invoked in all applicable circumstances and should not be relied upon.	100d8289d499e3b7
-protocol	c:objc(pl)BADownloadManagerDelegate	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	d4abb0aefb5a3299
-conforms	-	BADownloadManagerDelegate	NSObject		-	-	b46d7502601ac234
-method	c:objc(pl)BADownloadManagerDelegate(im)downloadDidBegin:	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	ae86069c76f6e9ad
-method	c:objc(pl)BADownloadManagerDelegate(im)downloadDidPause:	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	c2d7c41c7679b180
-method	c:objc(pl)BADownloadManagerDelegate(im)download:didWriteBytes:totalBytesWritten:totalBytesExpectedToWrite:	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	8917e28eaf24775d
-method	c:objc(pl)BADownloadManagerDelegate(im)download:didReceiveChallenge:completionHandler:	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	e41b6acb52e056aa
-method	c:objc(pl)BADownloadManagerDelegate(im)download:failedWithError:	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	251d18e53b0d1db1
-method	c:objc(pl)BADownloadManagerDelegate(im)download:finishedWithFileURL:	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	e5b4b3931d8f262d
-interface	c:objc(cs)BADownloadManager	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	a5b738f71856b0b0
-super	-	BADownloadManager	NSObject		-	-	6720b38755cd80d1
-method	c:objc(cs)BADownloadManager(im)init	-			*unavailable ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	123fc130f2bbb611
-method	c:objc(cs)BADownloadManager(cm)new	-			*unavailable ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	e062ac43adab46ac
-property	c:objc(cs)BADownloadManager(cpy)sharedManager	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	7aff6abeaf81c8fb
-property	c:objc(cs)BADownloadManager(py)delegate	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	b88b377ca84c9da2
-method	c:objc(cs)BADownloadManager(im)fetchCurrentDownloads:	-			ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	5c9be6ef46102bc6
-method	c:objc(cs)BADownloadManager(im)fetchCurrentDownloadsWithCompletionHandler:	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	f0f489228d90425b
-method	c:objc(cs)BADownloadManager(im)scheduleDownload:error:	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	8b114ce1c3da573b
-method	c:objc(cs)BADownloadManager(im)performWithExclusiveControl:	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	549e198cf27c3a71
-method	c:objc(cs)BADownloadManager(im)performWithExclusiveControlBeforeDate:performHandler:	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	74ae9007a89b8d7a
-method	c:objc(cs)BADownloadManager(im)startForegroundDownload:error:	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	082be44eff0b83b4
-method	c:objc(cs)BADownloadManager(im)cancelDownload:error:	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	cb5801d1ca8981c5
-interface	c:objc(cs)BAURLDownload	-			ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	deprecated: Use initWithIdentifier:request:fileSize:applicationGroupIdentifier: instead	defe9e8021afa892
-super	-	BAURLDownload	BADownload		-	-	b69be2c60b4b67f3
-conforms	-	BAURLDownload	NSCopying		-	-	2a4ddb554b86e6c5
-method	c:objc(cs)BAURLDownload(cm)new	-			*unavailable ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	96a4968e71d5e35b
-method	c:objc(cs)BAURLDownload(im)init	-			*unavailable ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	dfad2e16998c66df
-method	c:objc(cs)BAURLDownload(im)initWithIdentifier:request:fileSize:applicationGroupIdentifier:	-			ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	6a0edb4cfd5de5d8
-method	c:objc(cs)BAURLDownload(im)initWithIdentifier:request:essential:fileSize:applicationGroupIdentifier:priority:	-			ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	e42faa8b9c275c2b
-method	c:objc(cs)BAURLDownload(im)initWithIdentifier:request:applicationGroupIdentifier:	-			ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use initWithIdentifier:request:fileSize:applicationGroupIdentifier: instead	5733cb70768180bc
-method	c:objc(cs)BAURLDownload(im)initWithIdentifier:request:applicationGroupIdentifier:priority:	-			ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use initWithIdentifier:request:essential:fileSize:applicationGroupIdentifier:priority: instead	c4edb891ca8ec901
-var	c:@BAErrorDomain	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	229457f524115b1a
-typedef	c:@T@BAErrorCode	-			-	-	77ebcbc51d2f0e89
-enum	c:@E@BAErrorCode	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	10029d7068404133
-enumconst	c:@E@BAErrorCode@BAErrorCodeDownloadInvalid	BAErrorCode			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	c8875de741fa9bad
-enumconst	c:@E@BAErrorCode@BAErrorCodeCallFromExtensionNotAllowed	BAErrorCode			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	a3324fbd358e1261
-enumconst	c:@E@BAErrorCode@BAErrorCodeCallFromInactiveProcessNotAllowed	BAErrorCode			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	43a5df77bbd338ae
-enumconst	c:@E@BAErrorCode@BAErrorCodeCallerConnectionNotAccepted	BAErrorCode			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	b0bea4dd4a888f9b
-enumconst	c:@E@BAErrorCode@BAErrorCodeCallerConnectionInvalid	BAErrorCode			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	b4fb6ea8ec84dac4
-enumconst	c:@E@BAErrorCode@BAErrorCodeDownloadAlreadyScheduled	BAErrorCode			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	14c1e99064d554aa
-enumconst	c:@E@BAErrorCode@BAErrorCodeDownloadNotScheduled	BAErrorCode			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	db8034d8caa92cff
-enumconst	c:@E@BAErrorCode@BAErrorCodeDownloadFailedToStart	BAErrorCode			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	f083874656ce9204
-enumconst	c:@E@BAErrorCode@BAErrorCodeDownloadAlreadyFailed	BAErrorCode			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	b7b78cb1fe862ee5
-enumconst	c:@E@BAErrorCode@BAErrorCodeDownloadEssentialDownloadNotPermitted	BAErrorCode			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	1bfd9b6ddef0ffa2
-enumconst	c:@E@BAErrorCode@BAErrorCodeDownloadBackgroundActivityProhibited	BAErrorCode			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	8533069ebd8944c3
-enumconst	c:@E@BAErrorCode@BAErrorCodeDownloadWouldExceedAllowance	BAErrorCode			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	73f8c991d2e8057d
-enumconst	c:@E@BAErrorCode@BAErrorCodeDownloadDoesNotExist	BAErrorCode			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	2cd6ef440a14a1a8
-enumconst	c:@E@BAErrorCode@BAErrorCodeSessionDownloadDisallowedByDomain	BAErrorCode			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	52a61b3a922a64ba
-enumconst	c:@E@BAErrorCode@BAErrorCodeSessionDownloadDisallowedByAllowance	BAErrorCode			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	dd97290e01784915
-enumconst	c:@E@BAErrorCode@BAErrorCodeSessionDownloadAllowanceExceeded	BAErrorCode			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	b223798086bcb039
-enumconst	c:@E@BAErrorCode@BAErrorCodeSessionDownloadNotPermittedBeforeAppLaunch	BAErrorCode			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	6bacf580b099d6b5
-interface	c:objc(cs)BAAssetPack	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	dc45b288d9979aa2
-super	-	BAAssetPack	NSObject		-	-	e7ba38e0bc69cc19
-property	c:objc(cs)BAAssetPack(py)identifier	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	71e98fb9cdcf4749
-property	c:objc(cs)BAAssetPack(py)downloadSize	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	52c3dc15e0210a79
-property	c:objc(cs)BAAssetPack(py)version	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	b88c5b757c39c62d
-property	c:objc(cs)BAAssetPack(py)userInfo	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	f480f8b7089f1dc9
-method	c:objc(cs)BAAssetPack(im)init	-			*unavailable ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	9c91514d992abc31
-method	c:objc(cs)BAAssetPack(cm)new	-			*unavailable ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	4df8aac0dbca4387
-method	c:objc(cs)BAAssetPack(im)download	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	1737de52d5d31059
-method	c:objc(cs)BAAssetPack(im)downloadForContentRequest:	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	cd135c331f2c0920
-typedef	c:@T@BAAssetPackStatus	-			-	-	78be02bdc2781952
-enum	c:@E@BAAssetPackStatus	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	1f2044cb54a2e96d
-enumconst	c:@E@BAAssetPackStatus@BAAssetPackStatusDownloadAvailable	BAAssetPackStatus			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	c1df77a03223ce8e
-enumconst	c:@E@BAAssetPackStatus@BAAssetPackStatusUpdateAvailable	BAAssetPackStatus			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	29c7b7997c7f8b6c
-enumconst	c:@E@BAAssetPackStatus@BAAssetPackStatusUpToDate	BAAssetPackStatus			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	1e0364a9a27876e2
-enumconst	c:@E@BAAssetPackStatus@BAAssetPackStatusOutOfDate	BAAssetPackStatus			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	20380f85c80964ef
-enumconst	c:@E@BAAssetPackStatus@BAAssetPackStatusObsolete	BAAssetPackStatus			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	8bba9741805c45a7
-enumconst	c:@E@BAAssetPackStatus@BAAssetPackStatusDownloading	BAAssetPackStatus			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	ea3c21513d47f738
-enumconst	c:@E@BAAssetPackStatus@BAAssetPackStatusDownloaded	BAAssetPackStatus			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	36c062d2964ce0a5
-protocol	c:objc(pl)BAManagedAssetPackDownloadDelegate	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	efef786b5d150be6
-conforms	-	BAManagedAssetPackDownloadDelegate	NSObject		-	-	81d30af46acd2b2b
-method	c:objc(pl)BAManagedAssetPackDownloadDelegate(im)downloadOfAssetPackBegan:	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	af658a76e62025cd
-method	c:objc(pl)BAManagedAssetPackDownloadDelegate(im)downloadOfAssetPackPaused:	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	c151ff751b22e385
-method	c:objc(pl)BAManagedAssetPackDownloadDelegate(im)downloadOfAssetPack:hasProgress:	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	5cebbf4034320c63
-method	c:objc(pl)BAManagedAssetPackDownloadDelegate(im)downloadOfAssetPackFinished:	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	ca6bffcda48f3852
-method	c:objc(pl)BAManagedAssetPackDownloadDelegate(im)downloadOfAssetPack:failedWithError:	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	13a6ac892ce1a2f1
-interface	c:objc(cs)BAAssetPackManager	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	4dc545c96968004a
-super	-	BAAssetPackManager	NSObject		-	-	526f557159ab4589
-property	c:objc(cs)BAAssetPackManager(cpy)sharedManager	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	64fb18f146f68baf
-property	c:objc(cs)BAAssetPackManager(py)delegate	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	9d7b7eff6ff5d0aa
-method	c:objc(cs)BAAssetPackManager(im)init	-			*unavailable ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	4c92352bbbead7b5
-method	c:objc(cs)BAAssetPackManager(cm)new	-			*unavailable ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	1839afd12ea4d380
-method	c:objc(cs)BAAssetPackManager(im)getAllAssetPacksWithCompletionHandler:	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	328fb9ed51312082
-method	c:objc(cs)BAAssetPackManager(im)getAssetPackWithIdentifier:completionHandler:	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	ae1f97d9b97400ee
-method	c:objc(cs)BAAssetPackManager(im)getStatusOfAssetPackWithIdentifier:completionHandler:	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	15938dc0fad930d5
-method	c:objc(cs)BAAssetPackManager(im)ensureLocalAvailabilityOfAssetPack:completionHandler:	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	5c8b57def13e161d
-method	c:objc(cs)BAAssetPackManager(im)checkForUpdatesWithCompletionHandler:	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	74323f2872692015
-method	c:objc(cs)BAAssetPackManager(im)contentsAtPath:searchingInAssetPackWithIdentifier:options:error:	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	29c48901cb15997f
-method	c:objc(cs)BAAssetPackManager(im)fileDescriptorForPath:searchingInAssetPackWithIdentifier:error:	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	8c4ffd30a380ab1c
-method	c:objc(cs)BAAssetPackManager(im)URLForPath:error:	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	334147f0db032b7f
-method	c:objc(cs)BAAssetPackManager(im)removeAssetPackWithIdentifier:completionHandler:	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	f099598572ab9eb1
-interface	c:objc(cs)BAAssetPackManifest	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	c761390e2f07d5c3
-super	-	BAAssetPackManifest	NSObject		-	-	6a52612d581adf8d
-property	c:objc(cs)BAAssetPackManifest(py)assetPacks	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	938835c1b7124f7d
-method	c:objc(cs)BAAssetPackManifest(im)init	-			*unavailable ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	c87f568bdf0b1603
-method	c:objc(cs)BAAssetPackManifest(im)initWithContentsOfURL:applicationGroupIdentifier:error:	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	334215e88dcadccf
-method	c:objc(cs)BAAssetPackManifest(im)initFromData:applicationGroupIdentifier:error:	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	2a7f981e0d519f49
-method	c:objc(cs)BAAssetPackManifest(cm)new	-			*unavailable ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	6e6ba20a6d8216c3
-method	c:objc(cs)BAAssetPackManifest(im)allDownloads	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	02bcd0560fa85f95
-method	c:objc(cs)BAAssetPackManifest(im)allDownloadsForContentRequest:	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	6b6f4430d32948b0
-protocol	c:objc(pl)BAManagedDownloaderExtension	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	cbe7e1a15851cc5c
-conforms	-	BAManagedDownloaderExtension	BADownloaderExtension		-	-	f12cb55feb2734ad
-method	c:objc(pl)BAManagedDownloaderExtension(im)shouldDownloadAssetPack:	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	03c0211d7240ed92
-var	c:@BAManagedErrorDomain	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	b32b2a00f91fc887
-var	c:@BAAssetPackIdentifierErrorKey	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	b956ceeb3ee1b1c9
-typedef	c:@T@BAManagedErrorCode	-			-	-	3e22970851cc6144
-enum	c:@E@BAManagedErrorCode	-			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	fff62db294452707
-enumconst	c:@E@BAManagedErrorCode@BAManagedErrorCodeAssetPackNotFound	BAManagedErrorCode			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	577c6a5907606943
-enumconst	c:@E@BAManagedErrorCode@BAManagedErrorCodeFileNotFound	BAManagedErrorCode			ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	56852cea47453def
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
+typedef	c:@T@BAContentRequest	-			enum BAContentRequest	-	-	-	0f6f43307e475ae6
+enum	c:@E@BAContentRequest	-			NSInteger	-	-	-	33fd9ad860fe5ee9
+enumconst	c:@E@BAContentRequest@BAContentRequestInstall	BAContentRequest			-	-	-	-	4084bc6230e6112c
+enumconst	c:@E@BAContentRequest@BAContentRequestUpdate	BAContentRequest			-	-	-	-	119034bc84fea8e8
+enumconst	c:@E@BAContentRequest@BAContentRequestPeriodic	BAContentRequest			-	-	-	-	bce3ce65958a9c81
+typedef	c:@T@BADownloadState	-			enum BADownloadState	-	-	-	81131a1c2cb7a09c
+enum	c:@E@BADownloadState	-			NSInteger	-	-	-	a267bcf5549fc4f6
+enumconst	c:@E@BADownloadState@BADownloadStateFailed	BADownloadState			-	-	-	-	ecff0feb81cbba79
+enumconst	c:@E@BADownloadState@BADownloadStateCreated	BADownloadState			-	-	-	-	519d558de578ab65
+enumconst	c:@E@BADownloadState@BADownloadStateWaiting	BADownloadState			-	-	-	-	c66f4c617b4b9b79
+enumconst	c:@E@BADownloadState@BADownloadStateDownloading	BADownloadState			-	-	-	-	084330942cd4733e
+enumconst	c:@E@BADownloadState@BADownloadStateFinished	BADownloadState			-	-	-	-	ba1f6673e2471403
+typedef	c:@T@BADownloaderPriority	-			NSInteger	-	-	-	a7248ac6001ee6e3
+var	c:@BADownloaderPriorityMin	-			const BADownloaderPriority	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	f40c3495ba4bb236
+var	c:@BADownloaderPriorityDefault	-			const BADownloaderPriority	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	4dda5348ed39c475
+var	c:@BADownloaderPriorityMax	-			const BADownloaderPriority	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	2801f4d96da307cc
+interface	c:objc(cs)BADownload	-			-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	ad35cd56dbbec014
+super	-	BADownload	NSObject		-	-	-	-	22acc200ce80e62f
+conforms	-	BADownload	NSCoding		-	-	-	-	e3bf6cdbb180edaa
+conforms	-	BADownload	NSSecureCoding		-	-	-	-	bc75464ca4ba0c69
+conforms	-	BADownload	NSCopying		-	-	-	-	0bed24e27f5185ea
+property	c:objc(cs)BADownload(py)state	-			BADownloadState	readonly,nonatomic	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	384ab57c2aff386a
+property	c:objc(cs)BADownload(py)identifier	-			API_UNAVAILABLE NSString *	readonly,nonatomic	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	28b3c226ad56ce7f
+property	c:objc(cs)BADownload(py)uniqueIdentifier	-			API_UNAVAILABLE NSString *	readonly,nonatomic	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	1e925f9b6bc59f9e
+property	c:objc(cs)BADownload(py)priority	-			BADownloaderPriority	readonly	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	21a5f47aa20acf27
+property	c:objc(cs)BADownload(py)isEssential	-			BOOL	readonly	ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	50fb1e5848c3c067
+method	c:objc(cs)BADownload(im)copyAsNonEssential	-			instancetype	-	ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	dfad78f8cb97683e
+method	c:objc(cs)BADownload(im)init	-			instancetype	-	*unavailable ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	0f9df0fb81b0635b
+method	c:objc(cs)BADownload(cm)new	-			instancetype	-	*unavailable ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	9c8c0d4f34c07874
+interface	c:objc(cs)BAAppExtensionInfo	-			-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	b13b4ea122ea7222
+super	-	BAAppExtensionInfo	NSObject		-	-	-	-	38b443db1e0f064b
+conforms	-	BAAppExtensionInfo	NSSecureCoding		-	-	-	-	82fe233705522169
+property	c:objc(cs)BAAppExtensionInfo(py)restrictedDownloadSizeRemaining	-			NS_REFINED_FOR_SWIFT NSNumber *	readonly,strong	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	c5bae7595d0daeca
+property	c:objc(cs)BAAppExtensionInfo(py)restrictedEssentialDownloadSizeRemaining	-			API_UNAVAILABLE NSNumber *	readonly,strong	ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	136cf115772f70d3
+method	c:objc(cs)BAAppExtensionInfo(im)init	-			instancetype	-	*unavailable ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	712a51aea01906bc
+method	c:objc(cs)BAAppExtensionInfo(cm)new	-			instancetype	-	*unavailable ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	d74fed1b8aff38d0
+protocol	c:objc(pl)BADownloaderExtension	-			-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	deprecated: extensionWillTerminate will not be invoked in all applicable circumstances and should not be relied upon.	b60be8b47cb012bb
+conforms	-	BADownloaderExtension	NSObject		-	-	-	-	ddd8dac8604726aa
+method	c:objc(pl)BADownloaderExtension(im)downloadsForRequest:manifestURL:extensionInfo:	-			NSSet<BADownload *> *	optional	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	2d5cb53c54269416
+method	c:objc(pl)BADownloaderExtension(im)backgroundDownload:didReceiveChallenge:completionHandler:	-			void	optional	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	c9c1237d65cc0608
+method	c:objc(pl)BADownloaderExtension(im)backgroundDownload:failedWithError:	-			void	optional	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	09cf408810ff61bf
+method	c:objc(pl)BADownloaderExtension(im)backgroundDownload:finishedWithFileURL:	-			void	optional	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	1868e0f472091f42
+method	c:objc(pl)BADownloaderExtension(im)extensionWillTerminate	-			void	optional	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: extensionWillTerminate will not be invoked in all applicable circumstances and should not be relied upon.	100d8289d499e3b7
+protocol	c:objc(pl)BADownloadManagerDelegate	-			-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	d4abb0aefb5a3299
+conforms	-	BADownloadManagerDelegate	NSObject		-	-	-	-	b46d7502601ac234
+method	c:objc(pl)BADownloadManagerDelegate(im)downloadDidBegin:	-			void	optional	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	045b593ede4572d2
+method	c:objc(pl)BADownloadManagerDelegate(im)downloadDidPause:	-			void	optional	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	babe7ac71be9b84b
+method	c:objc(pl)BADownloadManagerDelegate(im)download:didWriteBytes:totalBytesWritten:totalBytesExpectedToWrite:	-			void	optional	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	ee88e688f8e4cc44
+method	c:objc(pl)BADownloadManagerDelegate(im)download:didReceiveChallenge:completionHandler:	-			void	optional	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	19588bc59888ad6a
+method	c:objc(pl)BADownloadManagerDelegate(im)download:failedWithError:	-			void	optional	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	f01295b1ef5c1b29
+method	c:objc(pl)BADownloadManagerDelegate(im)download:finishedWithFileURL:	-			void	optional	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	0dbde307b4c180d0
+interface	c:objc(cs)BADownloadManager	-			-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	a5b738f71856b0b0
+super	-	BADownloadManager	NSObject		-	-	-	-	6720b38755cd80d1
+method	c:objc(cs)BADownloadManager(im)init	-			instancetype	-	*unavailable ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	0843c7ad9fb3a2d5
+method	c:objc(cs)BADownloadManager(cm)new	-			instancetype	-	*unavailable ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	b7d82842d85346d8
+property	c:objc(cs)BADownloadManager(cpy)sharedManager	-			API_UNAVAILABLE BADownloadManager *	readonly,strong,class	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	c8c919592775426d
+property	c:objc(cs)BADownloadManager(py)delegate	-			API_UNAVAILABLE id<BADownloadManagerDelegate>	weak	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	5351bbaf442b37ea
+method	c:objc(cs)BADownloadManager(im)fetchCurrentDownloads:	-			NSArray<BADownload *> *	-	ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	49eb699f2a80d6f1
+method	c:objc(cs)BADownloadManager(im)fetchCurrentDownloadsWithCompletionHandler:	-			void	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	bbe391200d8188f3
+method	c:objc(cs)BADownloadManager(im)scheduleDownload:error:	-			BOOL	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	3cafb0b9219fd4b3
+method	c:objc(cs)BADownloadManager(im)performWithExclusiveControl:	-			void	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	1076f6ed62de79a8
+method	c:objc(cs)BADownloadManager(im)performWithExclusiveControlBeforeDate:performHandler:	-			void	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	f742b6e3dd6ab2d7
+method	c:objc(cs)BADownloadManager(im)startForegroundDownload:error:	-			BOOL	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	74bf88e6c39f5546
+method	c:objc(cs)BADownloadManager(im)cancelDownload:error:	-			BOOL	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	ab00de536b2d55ac
+interface	c:objc(cs)BAURLDownload	-			-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	deprecated: Use initWithIdentifier:request:fileSize:applicationGroupIdentifier: instead	defe9e8021afa892
+super	-	BAURLDownload	BADownload		-	-	-	-	b69be2c60b4b67f3
+conforms	-	BAURLDownload	NSCopying		-	-	-	-	2a4ddb554b86e6c5
+method	c:objc(cs)BAURLDownload(cm)new	-			instancetype	-	*unavailable ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	718ea52060a4d4ce
+method	c:objc(cs)BAURLDownload(im)init	-			instancetype	-	*unavailable ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	010b233b1d93b327
+method	c:objc(cs)BAURLDownload(im)initWithIdentifier:request:fileSize:applicationGroupIdentifier:	-			instancetype	-	ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	4bc1d677956eabe3
+method	c:objc(cs)BAURLDownload(im)initWithIdentifier:request:essential:fileSize:applicationGroupIdentifier:priority:	-			instancetype	-	ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	e206e0267de43bdf
+method	c:objc(cs)BAURLDownload(im)initWithIdentifier:request:applicationGroupIdentifier:	-			instancetype	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use initWithIdentifier:request:fileSize:applicationGroupIdentifier: instead	94d6a8aa34d8658e
+method	c:objc(cs)BAURLDownload(im)initWithIdentifier:request:applicationGroupIdentifier:priority:	-			instancetype	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use initWithIdentifier:request:essential:fileSize:applicationGroupIdentifier:priority: instead	b40cca254d376c00
+var	c:@BAErrorDomain	-			API_UNAVAILABLE NSString *const	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	722e199fc4911717
+typedef	c:@T@BAErrorCode	-			enum BAErrorCode	-	-	-	77ebcbc51d2f0e89
+enum	c:@E@BAErrorCode	-			NSInteger	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	10029d7068404133
+enumconst	c:@E@BAErrorCode@BAErrorCodeDownloadInvalid	BAErrorCode			-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	c8875de741fa9bad
+enumconst	c:@E@BAErrorCode@BAErrorCodeCallFromExtensionNotAllowed	BAErrorCode			-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	a3324fbd358e1261
+enumconst	c:@E@BAErrorCode@BAErrorCodeCallFromInactiveProcessNotAllowed	BAErrorCode			-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	43a5df77bbd338ae
+enumconst	c:@E@BAErrorCode@BAErrorCodeCallerConnectionNotAccepted	BAErrorCode			-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	b0bea4dd4a888f9b
+enumconst	c:@E@BAErrorCode@BAErrorCodeCallerConnectionInvalid	BAErrorCode			-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	b4fb6ea8ec84dac4
+enumconst	c:@E@BAErrorCode@BAErrorCodeDownloadAlreadyScheduled	BAErrorCode			-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	14c1e99064d554aa
+enumconst	c:@E@BAErrorCode@BAErrorCodeDownloadNotScheduled	BAErrorCode			-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	db8034d8caa92cff
+enumconst	c:@E@BAErrorCode@BAErrorCodeDownloadFailedToStart	BAErrorCode			-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	f083874656ce9204
+enumconst	c:@E@BAErrorCode@BAErrorCodeDownloadAlreadyFailed	BAErrorCode			-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	b7b78cb1fe862ee5
+enumconst	c:@E@BAErrorCode@BAErrorCodeDownloadEssentialDownloadNotPermitted	BAErrorCode			-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	1bfd9b6ddef0ffa2
+enumconst	c:@E@BAErrorCode@BAErrorCodeDownloadBackgroundActivityProhibited	BAErrorCode			-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	8533069ebd8944c3
+enumconst	c:@E@BAErrorCode@BAErrorCodeDownloadWouldExceedAllowance	BAErrorCode			-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	73f8c991d2e8057d
+enumconst	c:@E@BAErrorCode@BAErrorCodeDownloadDoesNotExist	BAErrorCode			-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	2cd6ef440a14a1a8
+enumconst	c:@E@BAErrorCode@BAErrorCodeSessionDownloadDisallowedByDomain	BAErrorCode			-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	52a61b3a922a64ba
+enumconst	c:@E@BAErrorCode@BAErrorCodeSessionDownloadDisallowedByAllowance	BAErrorCode			-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	dd97290e01784915
+enumconst	c:@E@BAErrorCode@BAErrorCodeSessionDownloadAllowanceExceeded	BAErrorCode			-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	b223798086bcb039
+enumconst	c:@E@BAErrorCode@BAErrorCodeSessionDownloadNotPermittedBeforeAppLaunch	BAErrorCode			-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	6bacf580b099d6b5
+interface	c:objc(cs)BAAssetPack	-			-	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	dc45b288d9979aa2
+super	-	BAAssetPack	NSObject		-	-	-	-	e7ba38e0bc69cc19
+property	c:objc(cs)BAAssetPack(py)identifier	-			NS_SWIFT_NAME NSString *	readonly,copy	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	76525379906cc765
+property	c:objc(cs)BAAssetPack(py)downloadSize	-			NSInteger	readonly,assign	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	52c3dc15e0210a79
+property	c:objc(cs)BAAssetPack(py)version	-			NSInteger	readonly,assign	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	b88c5b757c39c62d
+property	c:objc(cs)BAAssetPack(py)userInfo	-			NSData *	readonly,copy	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	3ccedc36d5d228d6
+method	c:objc(cs)BAAssetPack(im)init	-			instancetype	-	*unavailable ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	5681e0cf0624a4e5
+method	c:objc(cs)BAAssetPack(cm)new	-			instancetype	-	*unavailable ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	30953ffb8aa9441c
+method	c:objc(cs)BAAssetPack(im)download	-			BADownload *	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	fb03b3cecb14a053
+method	c:objc(cs)BAAssetPack(im)downloadForContentRequest:	-			BADownload *	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	acef83f39185f40c
+typedef	c:@T@BAAssetPackStatus	-			enum BAAssetPackStatus	-	-	-	78be02bdc2781952
+enum	c:@E@BAAssetPackStatus	-			NSUInteger	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	1f2044cb54a2e96d
+enumconst	c:@E@BAAssetPackStatus@BAAssetPackStatusDownloadAvailable	BAAssetPackStatus			-	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	c1df77a03223ce8e
+enumconst	c:@E@BAAssetPackStatus@BAAssetPackStatusUpdateAvailable	BAAssetPackStatus			-	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	29c7b7997c7f8b6c
+enumconst	c:@E@BAAssetPackStatus@BAAssetPackStatusUpToDate	BAAssetPackStatus			-	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	1e0364a9a27876e2
+enumconst	c:@E@BAAssetPackStatus@BAAssetPackStatusOutOfDate	BAAssetPackStatus			-	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	20380f85c80964ef
+enumconst	c:@E@BAAssetPackStatus@BAAssetPackStatusObsolete	BAAssetPackStatus			-	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	8bba9741805c45a7
+enumconst	c:@E@BAAssetPackStatus@BAAssetPackStatusDownloading	BAAssetPackStatus			-	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	ea3c21513d47f738
+enumconst	c:@E@BAAssetPackStatus@BAAssetPackStatusDownloaded	BAAssetPackStatus			-	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	36c062d2964ce0a5
+protocol	c:objc(pl)BAManagedAssetPackDownloadDelegate	-			-	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	efef786b5d150be6
+conforms	-	BAManagedAssetPackDownloadDelegate	NSObject		-	-	-	-	81d30af46acd2b2b
+method	c:objc(pl)BAManagedAssetPackDownloadDelegate(im)downloadOfAssetPackBegan:	-			void	optional	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	9f70b036061b1263
+method	c:objc(pl)BAManagedAssetPackDownloadDelegate(im)downloadOfAssetPackPaused:	-			void	optional	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	51b4afaf0def50ba
+method	c:objc(pl)BAManagedAssetPackDownloadDelegate(im)downloadOfAssetPack:hasProgress:	-			void	optional	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	bae096184058811d
+method	c:objc(pl)BAManagedAssetPackDownloadDelegate(im)downloadOfAssetPackFinished:	-			void	optional	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	d1fc44c886917b30
+method	c:objc(pl)BAManagedAssetPackDownloadDelegate(im)downloadOfAssetPack:failedWithError:	-			void	optional	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	b0a7db4974785d11
+interface	c:objc(cs)BAAssetPackManager	-			-	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	4dc545c96968004a
+super	-	BAAssetPackManager	NSObject		-	-	-	-	526f557159ab4589
+property	c:objc(cs)BAAssetPackManager(cpy)sharedManager	-			NS_SWIFT_NAME BAAssetPackManager *	readonly,strong,class	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	aedfaa9f2ec79928
+property	c:objc(cs)BAAssetPackManager(py)delegate	-			id<BAManagedAssetPackDownloadDelegate>	weak	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	ca7f233ea5271a23
+method	c:objc(cs)BAAssetPackManager(im)init	-			instancetype	-	*unavailable ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	3aa64337c0f0abb4
+method	c:objc(cs)BAAssetPackManager(cm)new	-			instancetype	-	*unavailable ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	fca83fb2a135b7c3
+method	c:objc(cs)BAAssetPackManager(im)getAllAssetPacksWithCompletionHandler:	-			void	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	0be0a4cefb300122
+method	c:objc(cs)BAAssetPackManager(im)getAssetPackWithIdentifier:completionHandler:	-			void	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	75521c69bcf5e2ac
+method	c:objc(cs)BAAssetPackManager(im)getStatusOfAssetPackWithIdentifier:completionHandler:	-			void	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	3dec0ea646f4fa06
+method	c:objc(cs)BAAssetPackManager(im)ensureLocalAvailabilityOfAssetPack:completionHandler:	-			void	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	614645537184b049
+method	c:objc(cs)BAAssetPackManager(im)checkForUpdatesWithCompletionHandler:	-			void	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	61c48b4a2b33729f
+method	c:objc(cs)BAAssetPackManager(im)contentsAtPath:searchingInAssetPackWithIdentifier:options:error:	-			NSData *	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	defd9a63f8dd8679
+method	c:objc(cs)BAAssetPackManager(im)fileDescriptorForPath:searchingInAssetPackWithIdentifier:error:	-			int	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	2b3794f09db57e5e
+method	c:objc(cs)BAAssetPackManager(im)URLForPath:error:	-			NSURL *	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	06b094d23251b35e
+method	c:objc(cs)BAAssetPackManager(im)removeAssetPackWithIdentifier:completionHandler:	-			void	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	8c9b5c1f74cbe874
+interface	c:objc(cs)BAAssetPackManifest	-			-	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	c761390e2f07d5c3
+super	-	BAAssetPackManifest	NSObject		-	-	-	-	6a52612d581adf8d
+property	c:objc(cs)BAAssetPackManifest(py)assetPacks	-			NSSet<BAAssetPack *> *	readonly,copy	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	248d3fc695755225
+method	c:objc(cs)BAAssetPackManifest(im)init	-			instancetype	-	*unavailable ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	9a58f0b063866d2d
+method	c:objc(cs)BAAssetPackManifest(im)initWithContentsOfURL:applicationGroupIdentifier:error:	-			instancetype	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	daa54b4bd6823c67
+method	c:objc(cs)BAAssetPackManifest(im)initFromData:applicationGroupIdentifier:error:	-			instancetype	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	d05aebe915062947
+method	c:objc(cs)BAAssetPackManifest(cm)new	-			instancetype	-	*unavailable ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	1057ae219bee1b9b
+method	c:objc(cs)BAAssetPackManifest(im)allDownloads	-			NSSet<BADownload *> *	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	77dbaff0d37eb173
+method	c:objc(cs)BAAssetPackManifest(im)allDownloadsForContentRequest:	-			NSSet<BADownload *> *	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	f8e4f00a376c6d55
+protocol	c:objc(pl)BAManagedDownloaderExtension	-			-	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	cbe7e1a15851cc5c
+conforms	-	BAManagedDownloaderExtension	BADownloaderExtension		-	-	-	-	f12cb55feb2734ad
+method	c:objc(pl)BAManagedDownloaderExtension(im)shouldDownloadAssetPack:	-			BOOL	optional	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	81c01b9fc7467839
+var	c:@BAManagedErrorDomain	-			API_UNAVAILABLE const NSErrorDomain	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	3ff6b22aac048192
+var	c:@BAAssetPackIdentifierErrorKey	-			API_UNAVAILABLE const NSErrorUserInfoKey	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	95510760bc1f6bfa
+typedef	c:@T@BAManagedErrorCode	-			enum BAManagedErrorCode	-	-	-	3e22970851cc6144
+enum	c:@E@BAManagedErrorCode	-			NSInteger	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	fff62db294452707
+enumconst	c:@E@BAManagedErrorCode@BAManagedErrorCodeAssetPackNotFound	BAManagedErrorCode			-	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	577c6a5907606943
+enumconst	c:@E@BAManagedErrorCode@BAManagedErrorCodeFileNotFound	BAManagedErrorCode			-	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	56852cea47453def

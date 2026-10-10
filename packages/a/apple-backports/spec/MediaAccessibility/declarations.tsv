@@ -1,85 +1,85 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
-var	c:@kMACaptionAppearanceSettingsChangedNotification	-			-	-	178f5e1174b55b86
-typedef	c:@T@MACaptionAppearanceDomain	-			-	-	4100255991cdc202
-enum	c:@E@MACaptionAppearanceDomain	-			ios=7.0/-/-/0	-	ea4131064cc91054
-enumconst	c:@E@MACaptionAppearanceDomain@kMACaptionAppearanceDomainDefault	MACaptionAppearanceDomain			ios=7.0/-/-/0	-	be3c40822b637d55
-enumconst	c:@E@MACaptionAppearanceDomain@kMACaptionAppearanceDomainUser	MACaptionAppearanceDomain			ios=7.0/-/-/0	-	af7de1ac22a2ff6c
-typedef	c:@T@MACaptionAppearanceDisplayType	-			-	-	9beb4c057e5dc6f5
-enum	c:@E@MACaptionAppearanceDisplayType	-			ios=7.0/-/-/0	-	38762d9bb2bcabb1
-enumconst	c:@E@MACaptionAppearanceDisplayType@kMACaptionAppearanceDisplayTypeForcedOnly	MACaptionAppearanceDisplayType			ios=7.0/-/-/0	-	3772cfde9eb641d2
-enumconst	c:@E@MACaptionAppearanceDisplayType@kMACaptionAppearanceDisplayTypeAutomatic	MACaptionAppearanceDisplayType			ios=7.0/-/-/0	-	7d6e052031795780
-enumconst	c:@E@MACaptionAppearanceDisplayType@kMACaptionAppearanceDisplayTypeAlwaysOn	MACaptionAppearanceDisplayType			ios=7.0/-/-/0	-	694b34c3dd110f38
-typedef	c:@T@MACaptionAppearanceBehavior	-			-	-	c1e18f74b64aa08f
-enum	c:@E@MACaptionAppearanceBehavior	-			ios=7.0/-/-/0	-	f8aab8fe8d58eabe
-enumconst	c:@E@MACaptionAppearanceBehavior@kMACaptionAppearanceBehaviorUseValue	MACaptionAppearanceBehavior			ios=7.0/-/-/0	-	c051c139e0e8c6c4
-enumconst	c:@E@MACaptionAppearanceBehavior@kMACaptionAppearanceBehaviorUseContentIfAvailable	MACaptionAppearanceBehavior			ios=7.0/-/-/0	-	bc9ae25bf1ad3dc8
-typedef	c:@T@MACaptionAppearanceFontStyle	-			-	-	09c979a9636edbab
-enum	c:@E@MACaptionAppearanceFontStyle	-			ios=7.0/-/-/0	-	afc1d9f19655c6fa
-enumconst	c:@E@MACaptionAppearanceFontStyle@kMACaptionAppearanceFontStyleDefault	MACaptionAppearanceFontStyle			ios=7.0/-/-/0	-	f8e6956d1b242924
-enumconst	c:@E@MACaptionAppearanceFontStyle@kMACaptionAppearanceFontStyleMonospacedWithSerif	MACaptionAppearanceFontStyle			ios=7.0/-/-/0	-	2520db0c9325596a
-enumconst	c:@E@MACaptionAppearanceFontStyle@kMACaptionAppearanceFontStyleProportionalWithSerif	MACaptionAppearanceFontStyle			ios=7.0/-/-/0	-	fd3f55296a5f12e6
-enumconst	c:@E@MACaptionAppearanceFontStyle@kMACaptionAppearanceFontStyleMonospacedWithoutSerif	MACaptionAppearanceFontStyle			ios=7.0/-/-/0	-	96ab85f81497ec84
-enumconst	c:@E@MACaptionAppearanceFontStyle@kMACaptionAppearanceFontStyleProportionalWithoutSerif	MACaptionAppearanceFontStyle			ios=7.0/-/-/0	-	3e90f20cb64102c7
-enumconst	c:@E@MACaptionAppearanceFontStyle@kMACaptionAppearanceFontStyleCasual	MACaptionAppearanceFontStyle			ios=7.0/-/-/0	-	1f2a481487525241
-enumconst	c:@E@MACaptionAppearanceFontStyle@kMACaptionAppearanceFontStyleCursive	MACaptionAppearanceFontStyle			ios=7.0/-/-/0	-	c13facb6d11c75e6
-enumconst	c:@E@MACaptionAppearanceFontStyle@kMACaptionAppearanceFontStyleSmallCapital	MACaptionAppearanceFontStyle			ios=7.0/-/-/0	-	248f730642914041
-typedef	c:@T@MACaptionAppearanceTextEdgeStyle	-			-	-	553733f5af8c0f95
-enum	c:@E@MACaptionAppearanceTextEdgeStyle	-			ios=7.0/-/-/0	-	e2f19d7f44b4b0c7
-enumconst	c:@E@MACaptionAppearanceTextEdgeStyle@kMACaptionAppearanceTextEdgeStyleUndefined	MACaptionAppearanceTextEdgeStyle			ios=7.0/-/-/0	-	fe93a27bfdddd2b3
-enumconst	c:@E@MACaptionAppearanceTextEdgeStyle@kMACaptionAppearanceTextEdgeStyleNone	MACaptionAppearanceTextEdgeStyle			ios=7.0/-/-/0	-	19c55ef1b3463341
-enumconst	c:@E@MACaptionAppearanceTextEdgeStyle@kMACaptionAppearanceTextEdgeStyleRaised	MACaptionAppearanceTextEdgeStyle			ios=7.0/-/-/0	-	5041c80b51ae8296
-enumconst	c:@E@MACaptionAppearanceTextEdgeStyle@kMACaptionAppearanceTextEdgeStyleDepressed	MACaptionAppearanceTextEdgeStyle			ios=7.0/-/-/0	-	dc547e161bc5036c
-enumconst	c:@E@MACaptionAppearanceTextEdgeStyle@kMACaptionAppearanceTextEdgeStyleUniform	MACaptionAppearanceTextEdgeStyle			ios=7.0/-/-/0	-	375443c99a25e4e3
-enumconst	c:@E@MACaptionAppearanceTextEdgeStyle@kMACaptionAppearanceTextEdgeStyleDropShadow	MACaptionAppearanceTextEdgeStyle			ios=7.0/-/-/0	-	57404e00301bf881
-var	c:@MAMediaCharacteristicDescribesMusicAndSoundForAccessibility	-			ios=7.0/-/-/0	-	943b20896c2bba66
-var	c:@MAMediaCharacteristicTranscribesSpokenDialogForAccessibility	-			ios=7.0/-/-/0	-	33885709ba1688a3
-function	c:@F@MACaptionAppearanceDidDisplayCaptions	-			-	-	7880d7cad0e9aeba
-function	c:@F@MACaptionAppearanceAddSelectedLanguage	-			ios=7.0/-/-/0	-	5ba864d16c698388
-function	c:@F@MACaptionAppearanceCopySelectedLanguages	-			ios=7.0/-/-/0	-	e1dcda07e023f180
-function	c:@F@MACaptionAppearanceGetDisplayType	-			ios=7.0/-/-/0	-	b669974240e09c55
-function	c:@F@MACaptionAppearanceSetDisplayType	-			ios=7.0/-/-/0	-	f548885b8613960b
-function	c:@F@MACaptionAppearanceCopyPreferredCaptioningMediaCharacteristics	-			ios=7.0/-/-/0	-	f6abe0e386ca76a1
-function	c:@F@MACaptionAppearanceIsCustomized	-			ios=18.0/-/-/0	-	ef2b43270c33b6ee
-function	c:@F@MACaptionAppearanceCopyForegroundColor	-			ios=7.0/-/-/0	-	219aaeb2c9046aa7
-function	c:@F@MACaptionAppearanceCopyBackgroundColor	-			ios=7.0/-/-/0	-	9b697894e5034e11
-function	c:@F@MACaptionAppearanceCopyWindowColor	-			ios=7.0/-/-/0	-	c6287fc10b6d534d
-function	c:@F@MACaptionAppearanceGetForegroundOpacity	-			ios=7.0/-/-/0	-	3d9ebfb5254fb33a
-function	c:@F@MACaptionAppearanceGetBackgroundOpacity	-			ios=7.0/-/-/0	-	0694e0e6bc1a6711
-function	c:@F@MACaptionAppearanceGetWindowOpacity	-			ios=7.0/-/-/0	-	7130fb8d4917a47f
-function	c:@F@MACaptionAppearanceGetWindowRoundedCornerRadius	-			ios=7.0/-/-/0	-	81059ae007cd3954
-function	c:@F@MACaptionAppearanceCopyFontDescriptorForStyle	-			ios=7.0/-/-/0	-	7150514fe91496c5
-function	c:@F@MACaptionAppearanceGetRelativeCharacterSize	-			ios=7.0/-/-/0	-	983cafe7a0afe5dc
-function	c:@F@MACaptionAppearanceGetTextEdgeStyle	-			ios=7.0/-/-/0	-	d600525933dc6715
-function	c:@F@MACaptionAppearanceCopyProfileIDs	-			ios=26.0/-/-/0	-	daa5858834e0c372
-function	c:@F@MACaptionAppearanceSetActiveProfileID	-			ios=26.0/-/-/0	-	d30ac58d6a51002c
-function	c:@F@MACaptionAppearanceCopyActiveProfileID	-			ios=26.0/-/-/0	-	ddd74cff5213b8c1
-function	c:@F@MACaptionAppearanceCopyProfileName	-			ios=26.0/-/-/0	-	0364ebdbef05497f
-function	c:@F@MACaptionAppearanceExecuteBlockForProfileID	-			ios=26.0/-/-/0	-	a01778ff818d9b4d
-var	c:@kMAAudibleMediaSettingsChangedNotification	-			-	-	829ca733b360cfe8
-var	c:@MAMediaCharacteristicDescribesVideoForAccessibility	-			ios=8.0/-/-/0	-	60baeb7a12c4208e
-function	c:@F@MAAudibleMediaCopyPreferredCharacteristics	-			ios=8.0/-/-/0	-	7aa7117d3e0d1d8f
-function	c:@F@MAImageCaptioningCopyCaption	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	16b2f27460cc4c05
-function	c:@F@MAImageCaptioningSetCaption	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	0c1bfa49ce53c819
-function	c:@F@MAImageCaptioningCopyMetadataTagPath	-			ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	2e1fb2be195a5775
-function	c:@F@MADimFlashingLightsEnabled	-			ios=16.4/-/-/0	-	9b14905c69f96493
-var	c:@kMADimFlashingLightsChangedNotification	-			ios=16.4/-/-/0	-	53e2ca25019209a5
-interface	c:objc(cs)MAFlashingLightsProcessorResult	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	a5023764e952d61a
-super	-	MAFlashingLightsProcessorResult	NSObject		-	-	eb060e86fe979c1e
-property	c:objc(cs)MAFlashingLightsProcessorResult(py)surfaceProcessed	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	ca4d7a3b710cf13c
-property	c:objc(cs)MAFlashingLightsProcessorResult(py)mitigationLevel	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	d596d28f796fcf56
-property	c:objc(cs)MAFlashingLightsProcessorResult(py)intensityLevel	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	c3e0ccdb0215dbaa
-typedef	c:@T@MAFlashingLightsProcessorOptionKey	-			-	-	7d5b21bd006cbb47
-interface	c:objc(cs)MAFlashingLightsProcessor	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	46bfe2cebd36bfb3
-super	-	MAFlashingLightsProcessor	NSObject		-	-	c771764b4b57b538
-method	c:objc(cs)MAFlashingLightsProcessor(im)canProcessSurface:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	d180bccc2fb25adb
-method	c:objc(cs)MAFlashingLightsProcessor(im)processSurface:outSurface:timestamp:options:	-			ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	4911cb019180d008
-var	c:@MAMusicHapticsManagerActiveStatusDidChangeNotification	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	48943ed98dcc374a
-interface	c:objc(cs)MAMusicHapticsManager	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	45621a3a432bc75b
-super	-	MAMusicHapticsManager	NSObject		-	-	06c9c64db37ea88f
-property	c:objc(cs)MAMusicHapticsManager(cpy)sharedManager	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	5ac59365da6e028f
-property	c:objc(cs)MAMusicHapticsManager(py)isActive	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	ec52ce45d141e0fc
-method	c:objc(cs)MAMusicHapticsManager(im)checkHapticTrackAvailabilityForMediaMatchingCode:completionHandler:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	a4c097641c8062ac
-method	c:objc(cs)MAMusicHapticsManager(im)addStatusObserver:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	7daaaab6f847e3ab
-method	c:objc(cs)MAMusicHapticsManager(im)removeStatusObserver:	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	5a4515a177f2ade7
-method	c:objc(cs)MAMusicHapticsManager(im)init	-			*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	50a3ad3f1e99faa8
-method	c:objc(cs)MAMusicHapticsManager(cm)new	-			*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	eeb3120223aac9a1
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
+var	c:@kMACaptionAppearanceSettingsChangedNotification	-			const CFStringRef	-	-	-	389878dd18091f92
+typedef	c:@T@MACaptionAppearanceDomain	-			enum MACaptionAppearanceDomain	-	-	-	4100255991cdc202
+enum	c:@E@MACaptionAppearanceDomain	-			CFIndex	-	ios=7.0/-/-/0	-	ea4131064cc91054
+enumconst	c:@E@MACaptionAppearanceDomain@kMACaptionAppearanceDomainDefault	MACaptionAppearanceDomain			-	-	ios=7.0/-/-/0	-	be3c40822b637d55
+enumconst	c:@E@MACaptionAppearanceDomain@kMACaptionAppearanceDomainUser	MACaptionAppearanceDomain			-	-	ios=7.0/-/-/0	-	af7de1ac22a2ff6c
+typedef	c:@T@MACaptionAppearanceDisplayType	-			enum MACaptionAppearanceDisplayType	-	-	-	9beb4c057e5dc6f5
+enum	c:@E@MACaptionAppearanceDisplayType	-			CFIndex	-	ios=7.0/-/-/0	-	38762d9bb2bcabb1
+enumconst	c:@E@MACaptionAppearanceDisplayType@kMACaptionAppearanceDisplayTypeForcedOnly	MACaptionAppearanceDisplayType			-	-	ios=7.0/-/-/0	-	3772cfde9eb641d2
+enumconst	c:@E@MACaptionAppearanceDisplayType@kMACaptionAppearanceDisplayTypeAutomatic	MACaptionAppearanceDisplayType			-	-	ios=7.0/-/-/0	-	7d6e052031795780
+enumconst	c:@E@MACaptionAppearanceDisplayType@kMACaptionAppearanceDisplayTypeAlwaysOn	MACaptionAppearanceDisplayType			-	-	ios=7.0/-/-/0	-	694b34c3dd110f38
+typedef	c:@T@MACaptionAppearanceBehavior	-			enum MACaptionAppearanceBehavior	-	-	-	c1e18f74b64aa08f
+enum	c:@E@MACaptionAppearanceBehavior	-			CFIndex	-	ios=7.0/-/-/0	-	f8aab8fe8d58eabe
+enumconst	c:@E@MACaptionAppearanceBehavior@kMACaptionAppearanceBehaviorUseValue	MACaptionAppearanceBehavior			-	-	ios=7.0/-/-/0	-	c051c139e0e8c6c4
+enumconst	c:@E@MACaptionAppearanceBehavior@kMACaptionAppearanceBehaviorUseContentIfAvailable	MACaptionAppearanceBehavior			-	-	ios=7.0/-/-/0	-	bc9ae25bf1ad3dc8
+typedef	c:@T@MACaptionAppearanceFontStyle	-			enum MACaptionAppearanceFontStyle	-	-	-	09c979a9636edbab
+enum	c:@E@MACaptionAppearanceFontStyle	-			CFIndex	-	ios=7.0/-/-/0	-	afc1d9f19655c6fa
+enumconst	c:@E@MACaptionAppearanceFontStyle@kMACaptionAppearanceFontStyleDefault	MACaptionAppearanceFontStyle			-	-	ios=7.0/-/-/0	-	f8e6956d1b242924
+enumconst	c:@E@MACaptionAppearanceFontStyle@kMACaptionAppearanceFontStyleMonospacedWithSerif	MACaptionAppearanceFontStyle			-	-	ios=7.0/-/-/0	-	2520db0c9325596a
+enumconst	c:@E@MACaptionAppearanceFontStyle@kMACaptionAppearanceFontStyleProportionalWithSerif	MACaptionAppearanceFontStyle			-	-	ios=7.0/-/-/0	-	fd3f55296a5f12e6
+enumconst	c:@E@MACaptionAppearanceFontStyle@kMACaptionAppearanceFontStyleMonospacedWithoutSerif	MACaptionAppearanceFontStyle			-	-	ios=7.0/-/-/0	-	96ab85f81497ec84
+enumconst	c:@E@MACaptionAppearanceFontStyle@kMACaptionAppearanceFontStyleProportionalWithoutSerif	MACaptionAppearanceFontStyle			-	-	ios=7.0/-/-/0	-	3e90f20cb64102c7
+enumconst	c:@E@MACaptionAppearanceFontStyle@kMACaptionAppearanceFontStyleCasual	MACaptionAppearanceFontStyle			-	-	ios=7.0/-/-/0	-	1f2a481487525241
+enumconst	c:@E@MACaptionAppearanceFontStyle@kMACaptionAppearanceFontStyleCursive	MACaptionAppearanceFontStyle			-	-	ios=7.0/-/-/0	-	c13facb6d11c75e6
+enumconst	c:@E@MACaptionAppearanceFontStyle@kMACaptionAppearanceFontStyleSmallCapital	MACaptionAppearanceFontStyle			-	-	ios=7.0/-/-/0	-	248f730642914041
+typedef	c:@T@MACaptionAppearanceTextEdgeStyle	-			enum MACaptionAppearanceTextEdgeStyle	-	-	-	553733f5af8c0f95
+enum	c:@E@MACaptionAppearanceTextEdgeStyle	-			CFIndex	-	ios=7.0/-/-/0	-	e2f19d7f44b4b0c7
+enumconst	c:@E@MACaptionAppearanceTextEdgeStyle@kMACaptionAppearanceTextEdgeStyleUndefined	MACaptionAppearanceTextEdgeStyle			-	-	ios=7.0/-/-/0	-	fe93a27bfdddd2b3
+enumconst	c:@E@MACaptionAppearanceTextEdgeStyle@kMACaptionAppearanceTextEdgeStyleNone	MACaptionAppearanceTextEdgeStyle			-	-	ios=7.0/-/-/0	-	19c55ef1b3463341
+enumconst	c:@E@MACaptionAppearanceTextEdgeStyle@kMACaptionAppearanceTextEdgeStyleRaised	MACaptionAppearanceTextEdgeStyle			-	-	ios=7.0/-/-/0	-	5041c80b51ae8296
+enumconst	c:@E@MACaptionAppearanceTextEdgeStyle@kMACaptionAppearanceTextEdgeStyleDepressed	MACaptionAppearanceTextEdgeStyle			-	-	ios=7.0/-/-/0	-	dc547e161bc5036c
+enumconst	c:@E@MACaptionAppearanceTextEdgeStyle@kMACaptionAppearanceTextEdgeStyleUniform	MACaptionAppearanceTextEdgeStyle			-	-	ios=7.0/-/-/0	-	375443c99a25e4e3
+enumconst	c:@E@MACaptionAppearanceTextEdgeStyle@kMACaptionAppearanceTextEdgeStyleDropShadow	MACaptionAppearanceTextEdgeStyle			-	-	ios=7.0/-/-/0	-	57404e00301bf881
+var	c:@MAMediaCharacteristicDescribesMusicAndSoundForAccessibility	-			CF_AVAILABLE const CFStringRef	-	ios=7.0/-/-/0	-	c0b0dd23e6b3fb5e
+var	c:@MAMediaCharacteristicTranscribesSpokenDialogForAccessibility	-			CF_AVAILABLE const CFStringRef	-	ios=7.0/-/-/0	-	13304b6f5ba2e815
+function	c:@F@MACaptionAppearanceDidDisplayCaptions	-			void (CFArrayRef _Nonnull)	-	-	-	b205f016d52301bb
+function	c:@F@MACaptionAppearanceAddSelectedLanguage	-			_Bool (MACaptionAppearanceDomain, CFStringRef _Nonnull)	-	ios=7.0/-/-/0	-	18800138da768443
+function	c:@F@MACaptionAppearanceCopySelectedLanguages	-			CFArrayRef  _Nonnull (MACaptionAppearanceDomain)	-	ios=7.0/-/-/0	-	b59a3275e3fc102f
+function	c:@F@MACaptionAppearanceGetDisplayType	-			MACaptionAppearanceDisplayType (MACaptionAppearanceDomain)	-	ios=7.0/-/-/0	-	b669974240e09c55
+function	c:@F@MACaptionAppearanceSetDisplayType	-			void (MACaptionAppearanceDomain, MACaptionAppearanceDisplayType)	-	ios=7.0/-/-/0	-	f548885b8613960b
+function	c:@F@MACaptionAppearanceCopyPreferredCaptioningMediaCharacteristics	-			CFArrayRef  _Nonnull (MACaptionAppearanceDomain)	-	ios=7.0/-/-/0	-	0d0d081114b57be0
+function	c:@F@MACaptionAppearanceIsCustomized	-			_Bool (MACaptionAppearanceDomain)	-	ios=18.0/-/-/0	-	ef2b43270c33b6ee
+function	c:@F@MACaptionAppearanceCopyForegroundColor	-			CGColorRef  _Nonnull (MACaptionAppearanceDomain, MACaptionAppearanceBehavior * _Nullable)	-	ios=7.0/-/-/0	-	e25c5cc77c645c19
+function	c:@F@MACaptionAppearanceCopyBackgroundColor	-			CGColorRef  _Nonnull (MACaptionAppearanceDomain, MACaptionAppearanceBehavior * _Nullable)	-	ios=7.0/-/-/0	-	51542144fb378f36
+function	c:@F@MACaptionAppearanceCopyWindowColor	-			CGColorRef  _Nonnull (MACaptionAppearanceDomain, MACaptionAppearanceBehavior * _Nullable)	-	ios=7.0/-/-/0	-	c28abd00ce56a975
+function	c:@F@MACaptionAppearanceGetForegroundOpacity	-			CGFloat (MACaptionAppearanceDomain, MACaptionAppearanceBehavior * _Nullable)	-	ios=7.0/-/-/0	-	7034bf5de2f88f5d
+function	c:@F@MACaptionAppearanceGetBackgroundOpacity	-			CGFloat (MACaptionAppearanceDomain, MACaptionAppearanceBehavior * _Nullable)	-	ios=7.0/-/-/0	-	274441f30850b216
+function	c:@F@MACaptionAppearanceGetWindowOpacity	-			CGFloat (MACaptionAppearanceDomain, MACaptionAppearanceBehavior * _Nullable)	-	ios=7.0/-/-/0	-	3359a982f74dde2e
+function	c:@F@MACaptionAppearanceGetWindowRoundedCornerRadius	-			CGFloat (MACaptionAppearanceDomain, MACaptionAppearanceBehavior * _Nullable)	-	ios=7.0/-/-/0	-	d375dff260e118a5
+function	c:@F@MACaptionAppearanceCopyFontDescriptorForStyle	-			CTFontDescriptorRef  _Nonnull (MACaptionAppearanceDomain, MACaptionAppearanceBehavior * _Nullable, MACaptionAppearanceFontStyle)	-	ios=7.0/-/-/0	-	0fd903c534b19129
+function	c:@F@MACaptionAppearanceGetRelativeCharacterSize	-			CGFloat (MACaptionAppearanceDomain, MACaptionAppearanceBehavior * _Nullable)	-	ios=7.0/-/-/0	-	65c88c1d7631686f
+function	c:@F@MACaptionAppearanceGetTextEdgeStyle	-			MACaptionAppearanceTextEdgeStyle (MACaptionAppearanceDomain, MACaptionAppearanceBehavior * _Nullable)	-	ios=7.0/-/-/0	-	5c1b1247ad468a13
+function	c:@F@MACaptionAppearanceCopyProfileIDs	-			CFArrayRef  _Nonnull (void)	-	ios=26.0/-/-/0	-	431619d5af79ebe2
+function	c:@F@MACaptionAppearanceSetActiveProfileID	-			void (CFStringRef _Nonnull)	-	ios=26.0/-/-/0	-	1f0126bc5f09c2de
+function	c:@F@MACaptionAppearanceCopyActiveProfileID	-			CFStringRef  _Nonnull (void)	-	ios=26.0/-/-/0	-	4ca2d489fd974afe
+function	c:@F@MACaptionAppearanceCopyProfileName	-			CFStringRef  _Nonnull (CFStringRef _Nonnull)	-	ios=26.0/-/-/0	-	d8fbadfe67582f52
+function	c:@F@MACaptionAppearanceExecuteBlockForProfileID	-			void (CFStringRef _Nonnull, void (^ _Nonnull)(void))	-	ios=26.0/-/-/0	-	4b29cbba3ae72788
+var	c:@kMAAudibleMediaSettingsChangedNotification	-			const CFStringRef	-	-	-	ae10ceaee74182b8
+var	c:@MAMediaCharacteristicDescribesVideoForAccessibility	-			CF_AVAILABLE const CFStringRef	-	ios=8.0/-/-/0	-	9a2f25af9cce1f91
+function	c:@F@MAAudibleMediaCopyPreferredCharacteristics	-			CFArrayRef  _Nonnull (void)	-	ios=8.0/-/-/0	-	18cddf71a7075993
+function	c:@F@MAImageCaptioningCopyCaption	-			CFStringRef  _Nullable (CFURLRef _Nonnull, CF_RETURNS_RETAINED CFErrorRef  _Nullable *)	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	17391ca60a4e51d7
+function	c:@F@MAImageCaptioningSetCaption	-			_Bool (CFURLRef _Nonnull, CFStringRef _Nullable, CF_RETURNS_RETAINED CFErrorRef  _Nullable *)	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	5063eb5915764d12
+function	c:@F@MAImageCaptioningCopyMetadataTagPath	-			CFStringRef  _Nonnull (void)	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	ae9c3ac1e13c3e61
+function	c:@F@MADimFlashingLightsEnabled	-			_Bool (void)	-	ios=16.4/-/-/0	-	9b14905c69f96493
+var	c:@kMADimFlashingLightsChangedNotification	-			CF_AVAILABLE const CFStringRef	-	ios=16.4/-/-/0	-	af64e98caa9acf1b
+interface	c:objc(cs)MAFlashingLightsProcessorResult	-			-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	a5023764e952d61a
+super	-	MAFlashingLightsProcessorResult	NSObject		-	-	-	-	eb060e86fe979c1e
+property	c:objc(cs)MAFlashingLightsProcessorResult(py)surfaceProcessed	-			BOOL	readonly,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	ca4d7a3b710cf13c
+property	c:objc(cs)MAFlashingLightsProcessorResult(py)mitigationLevel	-			float	readonly,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	d596d28f796fcf56
+property	c:objc(cs)MAFlashingLightsProcessorResult(py)intensityLevel	-			float	readonly,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	c3e0ccdb0215dbaa
+typedef	c:@T@MAFlashingLightsProcessorOptionKey	-			NSString *	-	-	-	7d5b21bd006cbb47
+interface	c:objc(cs)MAFlashingLightsProcessor	-			-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	46bfe2cebd36bfb3
+super	-	MAFlashingLightsProcessor	NSObject		-	-	-	-	c771764b4b57b538
+method	c:objc(cs)MAFlashingLightsProcessor(im)canProcessSurface:	-			BOOL	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	1a6dffafdcebf10a
+method	c:objc(cs)MAFlashingLightsProcessor(im)processSurface:outSurface:timestamp:options:	-			MAFlashingLightsProcessorResult *	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	6b9f3bf6424df3c8
+var	c:@MAMusicHapticsManagerActiveStatusDidChangeNotification	-			NS_SWIFT_NAME const NSNotificationName	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	447b3d35abdab9ab
+interface	c:objc(cs)MAMusicHapticsManager	-			-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	45621a3a432bc75b
+super	-	MAMusicHapticsManager	NSObject		-	-	-	-	06c9c64db37ea88f
+property	c:objc(cs)MAMusicHapticsManager(cpy)sharedManager	-			MAMusicHapticsManager *	readonly,nonatomic,class	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	bfd9b460ef595a27
+property	c:objc(cs)MAMusicHapticsManager(py)isActive	-			BOOL	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	ec52ce45d141e0fc
+method	c:objc(cs)MAMusicHapticsManager(im)checkHapticTrackAvailabilityForMediaMatchingCode:completionHandler:	-			void	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	e2c4b41d826685aa
+method	c:objc(cs)MAMusicHapticsManager(im)addStatusObserver:	-			id<NSCopying>	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	a39f54126711dc61
+method	c:objc(cs)MAMusicHapticsManager(im)removeStatusObserver:	-			void	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	deac9cdbf9abfff3
+method	c:objc(cs)MAMusicHapticsManager(im)init	-			instancetype	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	7bc54739311d8cd9
+method	c:objc(cs)MAMusicHapticsManager(cm)new	-			instancetype	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	893dff5345a3a1f4

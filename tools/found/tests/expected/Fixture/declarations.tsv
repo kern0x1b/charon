@@ -1,33 +1,33 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=sdk	columns=kind,usr,container,name,side,avail,message,declhash
-function	c:@F@FXSubtract	-			-	-	49740040529ed9bb
-typedef	c:Repeat.h@T@FXCount	-			-	-	1f7328e81f8a9e5e
-function	c:@F@FXRun	-			-	-	0020c5ef8e076e6b
-function	c:@F@FXVersioned	-			-		8a738ebf802e0c1f
-var	c:@FXScale	-			-	-	70e1ccb0f2967fb8
-struct	c:@S@FXPoint	-			-	-	79ac717304052e6e
-field	c:@S@FXPoint@FI@x	FXPoint			-	-	d57c6c524cc3877a
-field	c:@S@FXPoint@FI@y	FXPoint			-	-	aea8cdd159577569
-struct	c:@S@FXOpaque	-			-	-	2d3142c1f1a06c74
-typedef	c:Fixture.h@T@FXOpaque	-			-	-	d084e5c93d8db134
-enum	c:@E@FXState	-			-	-	868e2214eb512deb
-enumconst	c:@E@FXState@FXStateOn	FXState			-	-	a1509e83c3907824
-enumconst	c:@E@FXState@FXStateOff	FXState			-	-	df0288ad9c043590
-enum	c:@Ea@FXLimit	-	-		-	-	71f9fa8c9398775b
-enumconst	c:@Ea@FXLimit@FXLimit	-			-	-	e85ecff37ce1ff37
-protocol	c:objc(pl)FXSource	-			-	-	5dd124b557c4904c
-method	c:objc(pl)FXSource(im)valueForKey:	-			-	-	002ce1d469e52b84
-interface	c:objc(cs)FXWidget	-			-	-	00774d9345f1e0fe
-property	c:objc(cs)FXWidget(py)enabled	-			-	-	490dbde2fff05d89
-property	c:objc(cs)FXWidget(cpy)label	-			-	-	99ce86ca6bf4a115
-method	c:objc(cs)FXWidget(cm)widgetNamed:	-			ios=16.0/-/-/0	-	7dfc264720645f52
-method	c:objc(cs)FXWidget(im)init	-			*unavailable	-	36eb21001b5d4408
-category	c:objc(ext)FXWidget	-	-		-	-	2d199e471c75a539
-conforms	-	FXWidget	FXSource		-	-	8e1428223c764207
-category	c:objc(cy)FXWidget@Extras	-			-	-	39fe4cee6a15a9f7
-method	c:objc(cs)FXWidget(im)extraAction	Extras			-	-	fd4bd3a3406bc2c7
-interface	c:objc(cs)FXLegacy	-			ios=14.0/-/-/0	-	236718cedc83a3bb
-method	c:objc(cs)FXLegacy(im)old	-			ios=16.0/-/-/0	-	a5563db05f86525d
-method	c:objc(cs)FXLegacy(im)tweak	-			ios=14.0/-/-/0	-	9bd075e036e7bd59
-category	c:objc(ext)FXLegacy	-	-		ios=14.0/-/-/0	-	2d1fa164a3a5f01f
-function	c:@F@FXOld	-			ios=2.0/9.0/-/0	deprecated: Use newWay	067690961a858a55
-function	c:@F@FXGone	-			*unavailable	unavailable: removed in 2.0	8fa92eb3a8eba839
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=sdk	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
+function	c:@F@FXSubtract	-			int (int, int)	-	-	-	49740040529ed9bb
+typedef	c:Repeat.h@T@FXCount	-			int	-	-	-	1f7328e81f8a9e5e
+function	c:@F@FXRun	-			void (int)	-	-	-	0020c5ef8e076e6b
+function	c:@F@FXVersioned	-			void (void)	-	ios=17.0/-/-/0		8a738ebf802e0c1f
+var	c:@FXScale	-			const double	-	-	-	70e1ccb0f2967fb8
+struct	c:@S@FXPoint	-			-	-	-	-	79ac717304052e6e
+field	c:@S@FXPoint@FI@x	FXPoint			double	-	-	-	d57c6c524cc3877a
+field	c:@S@FXPoint@FI@y	FXPoint			double	-	-	-	aea8cdd159577569
+struct	c:@S@FXOpaque	-			-	-	-	-	2d3142c1f1a06c74
+typedef	c:Fixture.h@T@FXOpaque	-			struct FXOpaque	-	-	-	d084e5c93d8db134
+enum	c:@E@FXState	-			unsigned int	-	-	-	868e2214eb512deb
+enumconst	c:@E@FXState@FXStateOn	FXState			-	-	-	-	a1509e83c3907824
+enumconst	c:@E@FXState@FXStateOff	FXState			-	-	-	-	df0288ad9c043590
+enum	c:@Ea@FXLimit	-	-		unsigned int	-	-	-	71f9fa8c9398775b
+enumconst	c:@Ea@FXLimit@FXLimit	-			-	-	-	-	e85ecff37ce1ff37
+protocol	c:objc(pl)FXSource	-			-	-	-	-	5dd124b557c4904c
+method	c:objc(pl)FXSource(im)valueForKey:	-			id	optional	-	-	e4095b7c1d8f3d61
+interface	c:objc(cs)FXWidget	-			-	-	-	-	00774d9345f1e0fe
+property	c:objc(cs)FXWidget(py)enabled	-			_Bool	readonly,nonatomic,getter=isEnabledNow	-	-	490dbde2fff05d89
+property	c:objc(cs)FXWidget(cpy)label	-			id	copy,nonatomic,class	-	-	b49c765f988436ce
+method	c:objc(cs)FXWidget(cm)widgetNamed:	-			instancetype	-	ios=16.0/-/-/0	-	951adc7ea4238d0c
+method	c:objc(cs)FXWidget(im)init	-			instancetype	-	*unavailable	-	36eb21001b5d4408
+category	c:objc(ext)FXWidget	-	-		-	-	-	-	2d199e471c75a539
+conforms	-	FXWidget	FXSource		-	-	-	-	8e1428223c764207
+category	c:objc(cy)FXWidget@Extras	-			-	-	-	-	39fe4cee6a15a9f7
+method	c:objc(cs)FXWidget(im)extraAction	Extras			void	-	-	-	fd4bd3a3406bc2c7
+interface	c:objc(cs)FXLegacy	-			-	-	ios=14.0/-/-/0	-	236718cedc83a3bb
+method	c:objc(cs)FXLegacy(im)old	-			void	-	ios=16.0/-/-/0	-	a5563db05f86525d
+method	c:objc(cs)FXLegacy(im)tweak	-			void	-	ios=14.0/-/-/0	-	9bd075e036e7bd59
+category	c:objc(ext)FXLegacy	-	-		-	-	ios=14.0/-/-/0	-	2d1fa164a3a5f01f
+function	c:@F@FXOld	-			void (void)	-	ios=2.0/9.0/-/0	deprecated: Use newWay	067690961a858a55
+function	c:@F@FXGone	-			void (void)	-	*unavailable	unavailable: removed in 2.0	8fa92eb3a8eba839

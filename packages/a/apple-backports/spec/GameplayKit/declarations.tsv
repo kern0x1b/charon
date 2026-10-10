@@ -1,568 +1,568 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
-interface	c:objc(cs)GKComponent	-			ios=9.0/-/-/0	-	2eeb41511970ac2c
-super	-	GKComponent	NSObject		-	-	4950e2bdfeab4ddb
-conforms	-	GKComponent	NSCopying		-	-	befe3d7143870087
-conforms	-	GKComponent	NSSecureCoding		-	-	98c7706ba3f732f9
-property	c:objc(cs)GKComponent(py)entity	-			ios=9.0/-/-/0	-	e9b2d2b1942f7191
-method	c:objc(cs)GKComponent(im)updateWithDeltaTime:	-			ios=9.0/-/-/0	-	1698466973b4c1cf
-method	c:objc(cs)GKComponent(im)didAddToEntity	-			ios=9.0/-/-/0	-	63eabff7d40a5da9
-method	c:objc(cs)GKComponent(im)willRemoveFromEntity	-			ios=9.0/-/-/0	-	149d16dd97e517c8
-interface	c:objc(cs)GKComponentSystem	-			ios=9.0/-/-/0	-	376508885d41059d
-super	-	GKComponentSystem	NSObject		-	-	288f2aca969de120
-conforms	-	GKComponentSystem	NSFastEnumeration		-	-	ccd9fa63319ef2b4
-property	c:objc(cs)GKComponentSystem(py)componentClass	-			ios=9.0/-/-/0	-	8f72837f61ae7487
-property	c:objc(cs)GKComponentSystem(py)components	-			ios=9.0/-/-/0	-	ceecde6052c42048
-method	c:objc(cs)GKComponentSystem(im)objectAtIndexedSubscript:	-			ios=9.0/-/-/0	-	f50ce8e60fb6e2f1
-method	c:objc(cs)GKComponentSystem(im)initWithComponentClass:	-			ios=9.0/-/-/0	-	08522eb8e20e9056
-method	c:objc(cs)GKComponentSystem(im)addComponent:	-			ios=9.0/-/-/0	-	ff8d7ce5456994e3
-method	c:objc(cs)GKComponentSystem(im)addComponentWithEntity:	-			ios=9.0/-/-/0	-	1f846637f7101291
-method	c:objc(cs)GKComponentSystem(im)removeComponentWithEntity:	-			ios=9.0/-/-/0	-	b2b39c34805c3c47
-method	c:objc(cs)GKComponentSystem(im)removeComponent:	-			ios=9.0/-/-/0	-	654be230f100b55e
-method	c:objc(cs)GKComponentSystem(im)updateWithDeltaTime:	-			ios=9.0/-/-/0	-	bfbbf854b23b7a13
-method	c:objc(cs)GKComponentSystem(im)classForGenericArgumentAtIndex:	-			ios=9.0/-/-/0	-	6698602263a90d75
-interface	c:objc(cs)GKObstacle	-			ios=9.0/-/-/0	-	891fe041c8e9c20d
-super	-	GKObstacle	NSObject		-	-	a4198313030de666
-interface	c:objc(cs)GKCircleObstacle	-			ios=9.0/-/-/0	-	ede7950b74092e38
-super	-	GKCircleObstacle	GKObstacle		-	-	4f19e0836cdbb722
-property	c:objc(cs)GKCircleObstacle(py)radius	-			ios=9.0/-/-/0	-	29871124771da437
-property	c:objc(cs)GKCircleObstacle(py)position	-			ios=9.0/-/-/0	-	4604e6f37e1d4076
-method	c:objc(cs)GKCircleObstacle(cm)obstacleWithRadius:	-			ios=9.0/-/-/0	-	f5da9d4c00ada742
-method	c:objc(cs)GKCircleObstacle(im)initWithRadius:	-			ios=9.0/-/-/0	-	2660f39987d4fa3d
-interface	c:objc(cs)GKPolygonObstacle	-			ios=9.0/-/-/0	-	67b5494a6f53da2c
-super	-	GKPolygonObstacle	GKObstacle		-	-	f59deea5cd28e473
-conforms	-	GKPolygonObstacle	NSSecureCoding		-	-	7ea46688b16dec5e
-property	c:objc(cs)GKPolygonObstacle(py)vertexCount	-			ios=9.0/-/-/0	-	58f15fb46324461d
-method	c:objc(cs)GKPolygonObstacle(cm)obstacleWithPoints:count:	-			ios=9.0/-/-/0	-	fc5c0416561878fa
-method	c:objc(cs)GKPolygonObstacle(im)initWithPoints:count:	-			ios=9.0/-/-/0	-	8bd0016c2ae1ccad
-method	c:objc(cs)GKPolygonObstacle(im)vertexAtIndex:	-			ios=9.0/-/-/0	-	5875441e94a3e16f
-interface	c:objc(cs)GKSphereObstacle	-			ios=10.0/-/-/0	-	a1e9501a3b3e6337
-super	-	GKSphereObstacle	GKObstacle		-	-	e38174e4af8a69b9
-property	c:objc(cs)GKSphereObstacle(py)radius	-			ios=10.0/-/-/0	-	2293fcfa04a2c0a2
-property	c:objc(cs)GKSphereObstacle(py)position	-			ios=10.0/-/-/0	-	5867876215d19578
-method	c:objc(cs)GKSphereObstacle(cm)obstacleWithRadius:	-			ios=10.0/-/-/0	-	d6f36c50bcdddb17
-method	c:objc(cs)GKSphereObstacle(im)initWithRadius:	-			ios=10.0/-/-/0	-	4585b7cc96496780
-interface	c:objc(cs)GKBehavior	-			ios=9.0/-/-/0	-	e70073eec1840326
-super	-	GKBehavior	NSObject		-	-	00426b019ce8fc51
-conforms	-	GKBehavior	NSFastEnumeration		-	-	3bda983dbca0a064
-conforms	-	GKBehavior	NSCopying		-	-	e6a138ae46a43c1f
-property	c:objc(cs)GKBehavior(py)goalCount	-			ios=9.0/-/-/0	-	daf46056f7143dfa
-method	c:objc(cs)GKBehavior(cm)behaviorWithGoal:weight:	-			ios=9.0/-/-/0	-	fe2f3c5d174ebd71
-method	c:objc(cs)GKBehavior(cm)behaviorWithGoals:	-			ios=9.0/-/-/0	-	5404cd8866db08c4
-method	c:objc(cs)GKBehavior(cm)behaviorWithGoals:andWeights:	-			ios=9.0/-/-/0	-	37ee3b343d2bd74c
-method	c:objc(cs)GKBehavior(cm)behaviorWithWeightedGoals:	-			ios=9.0/-/-/0	-	bcd1fa8f8ee16320
-method	c:objc(cs)GKBehavior(im)setWeight:forGoal:	-			ios=9.0/-/-/0	-	e3c1a0c79385d947
-method	c:objc(cs)GKBehavior(im)weightForGoal:	-			ios=9.0/-/-/0	-	5257627073b8bf16
-method	c:objc(cs)GKBehavior(im)removeGoal:	-			ios=9.0/-/-/0	-	766044a1c81842d0
-method	c:objc(cs)GKBehavior(im)removeAllGoals	-			ios=9.0/-/-/0	-	859919159fc30aa4
-method	c:objc(cs)GKBehavior(im)objectAtIndexedSubscript:	-			ios=9.0/-/-/0	-	040837029b6d2293
-method	c:objc(cs)GKBehavior(im)setObject:forKeyedSubscript:	-			ios=9.0/-/-/0	-	fe503250618931e5
-method	c:objc(cs)GKBehavior(im)objectForKeyedSubscript:	-			ios=9.0/-/-/0	-	986d2e918e030e10
-interface	c:objc(cs)GKGoal	-			ios=9.0/-/-/0	-	d5278e1e6179917f
-super	-	GKGoal	NSObject		-	-	ed36eb6b66187ae3
-conforms	-	GKGoal	NSCopying		-	-	527b1fe475d6270d
-method	c:objc(cs)GKGoal(cm)goalToSeekAgent:	-			ios=9.0/-/-/0	-	7c1a2c1d4762c594
-method	c:objc(cs)GKGoal(cm)goalToFleeAgent:	-			ios=9.0/-/-/0	-	1f40c5aed42210df
-method	c:objc(cs)GKGoal(cm)goalToAvoidObstacles:maxPredictionTime:	-			ios=9.0/-/-/0	-	e242a3435c3ce98b
-method	c:objc(cs)GKGoal(cm)goalToAvoidAgents:maxPredictionTime:	-			ios=9.0/-/-/0	-	a40315eea54fc598
-method	c:objc(cs)GKGoal(cm)goalToSeparateFromAgents:maxDistance:maxAngle:	-			ios=9.0/-/-/0	-	8d7e066881395e73
-method	c:objc(cs)GKGoal(cm)goalToAlignWithAgents:maxDistance:maxAngle:	-			ios=9.0/-/-/0	-	7c1c5250b4a23818
-method	c:objc(cs)GKGoal(cm)goalToCohereWithAgents:maxDistance:maxAngle:	-			ios=9.0/-/-/0	-	8242d859d066bc1c
-method	c:objc(cs)GKGoal(cm)goalToReachTargetSpeed:	-			ios=9.0/-/-/0	-	fe06579a29141c21
-method	c:objc(cs)GKGoal(cm)goalToWander:	-			ios=9.0/-/-/0	-	34a03f34a5d5e3c1
-method	c:objc(cs)GKGoal(cm)goalToInterceptAgent:maxPredictionTime:	-			ios=9.0/-/-/0	-	179f834551e4eb69
-method	c:objc(cs)GKGoal(cm)goalToFollowPath:maxPredictionTime:forward:	-			ios=9.0/-/-/0	-	1eef52f44fcc6bc2
-method	c:objc(cs)GKGoal(cm)goalToStayOnPath:maxPredictionTime:	-			ios=9.0/-/-/0	-	d1a6d23555b2f300
-protocol	c:objc(pl)GKAgentDelegate	-			-	-	bf5e46059882bc5d
-conforms	-	GKAgentDelegate	NSObject		-	-	5b479dec64f09a32
-method	c:objc(pl)GKAgentDelegate(im)agentWillUpdate:	-			-	-	5fb14a0b9e8113f9
-method	c:objc(pl)GKAgentDelegate(im)agentDidUpdate:	-			-	-	8c43e310c9dbf56f
-interface	c:objc(cs)GKAgent	-			ios=9.0/-/-/0	-	290642375ee36209
-super	-	GKAgent	GKComponent		-	-	c42e239d31a7ffa1
-conforms	-	GKAgent	NSSecureCoding		-	-	9981fef2e4a38e24
-property	c:objc(cs)GKAgent(py)delegate	-			ios=9.0/-/-/0	-	2bf9f5c4d1e88294
-property	c:objc(cs)GKAgent(py)behavior	-			ios=9.0/-/-/0	-	01d4901680a134fc
-property	c:objc(cs)GKAgent(py)mass	-			ios=9.0/-/-/0	-	0c53fe8fb8f86ec8
-property	c:objc(cs)GKAgent(py)radius	-			ios=9.0/-/-/0	-	ac6e6772e918540b
-property	c:objc(cs)GKAgent(py)speed	-			ios=9.0/-/-/0	-	e99d411b7aa34ae5
-property	c:objc(cs)GKAgent(py)maxAcceleration	-			ios=9.0/-/-/0	-	5ec128aa0d9093c1
-property	c:objc(cs)GKAgent(py)maxSpeed	-			ios=9.0/-/-/0	-	6767f39ec2a32796
-interface	c:objc(cs)GKAgent2D	-			ios=9.0/-/-/0	-	cf888fad8d814343
-super	-	GKAgent2D	GKAgent		-	-	dfde3481d9c486e6
-conforms	-	GKAgent2D	NSSecureCoding		-	-	43d1245756f2a483
-property	c:objc(cs)GKAgent2D(py)position	-			ios=9.0/-/-/0	-	c95d4a4ab443cc93
-property	c:objc(cs)GKAgent2D(py)velocity	-			ios=9.0/-/-/0	-	250b695e91ae1223
-property	c:objc(cs)GKAgent2D(py)rotation	-			ios=9.0/-/-/0	-	405769adda950b38
-method	c:objc(cs)GKAgent2D(im)updateWithDeltaTime:	-			ios=9.0/-/-/0	-	dad2da0893d7c470
-interface	c:objc(cs)GKAgent3D	-			ios=9.0/-/-/0	-	abc79d1ae27528b1
-super	-	GKAgent3D	GKAgent		-	-	b5e83d0fd14ea131
-property	c:objc(cs)GKAgent3D(py)position	-			ios=9.0/-/-/0	-	69822aac2148b421
-property	c:objc(cs)GKAgent3D(py)velocity	-			ios=9.0/-/-/0	-	c4e7f88c787b3f5f
-property	c:objc(cs)GKAgent3D(py)rightHanded	-			ios=9.0/-/-/0	-	8fda4c57472e0f57
-property	c:objc(cs)GKAgent3D(py)rotation	-			ios=9.0/-/-/0	-	f726787ab03ca29e
-method	c:objc(cs)GKAgent3D(im)updateWithDeltaTime:	-			ios=9.0/-/-/0	-	9d1aacf403de5a6a
-interface	c:objc(cs)GKCompositeBehavior	-			-	-	807ecc1109590736
-super	-	GKCompositeBehavior	GKBehavior		-	-	2b78a70d93c7d265
-property	c:objc(cs)GKCompositeBehavior(py)behaviorCount	-			-	-	49e32cdddc2c6978
-method	c:objc(cs)GKCompositeBehavior(cm)behaviorWithBehaviors:	-			-	-	56b373319e7880b7
-method	c:objc(cs)GKCompositeBehavior(cm)behaviorWithBehaviors:andWeights:	-			-	-	02087cd4a9ec4500
-method	c:objc(cs)GKCompositeBehavior(im)setWeight:forBehavior:	-			-	-	b29c0e511376bc01
-method	c:objc(cs)GKCompositeBehavior(im)weightForBehavior:	-			-	-	e125f1082cfeb9c9
-method	c:objc(cs)GKCompositeBehavior(im)removeBehavior:	-			-	-	375ca5858b1c581c
-method	c:objc(cs)GKCompositeBehavior(im)removeAllBehaviors	-			-	-	3f3a3ed1dd8b9392
-method	c:objc(cs)GKCompositeBehavior(im)objectAtIndexedSubscript:	-			-	-	3b93343635b0353d
-method	c:objc(cs)GKCompositeBehavior(im)setObject:forKeyedSubscript:	-			-	-	d1e9a04792d9a166
-method	c:objc(cs)GKCompositeBehavior(im)objectForKeyedSubscript:	-			-	-	70674f14841c45d2
-interface	c:objc(cs)GKEntity	-			ios=9.0/-/-/0	-	5589d6c306d9362c
-super	-	GKEntity	NSObject		-	-	f08b361dc99fd108
-conforms	-	GKEntity	NSCopying		-	-	100a8c9fafbe627d
-conforms	-	GKEntity	NSSecureCoding		-	-	0a10f9191bedf3c2
-method	c:objc(cs)GKEntity(cm)entity	-			ios=9.0/-/-/0	-	f24b1601da56551e
-method	c:objc(cs)GKEntity(im)init	-			ios=9.0/-/-/0	-	423f3ed0a2f60e70
-method	c:objc(cs)GKEntity(im)updateWithDeltaTime:	-			ios=9.0/-/-/0	-	c1b70fbc1b4742a8
-property	c:objc(cs)GKEntity(py)components	-			ios=9.0/-/-/0	-	752adecad1c7ff02
-method	c:objc(cs)GKEntity(im)addComponent:	-			ios=9.0/-/-/0	-	06341cbde4018070
-method	c:objc(cs)GKEntity(im)removeComponentForClass:	-			ios=9.0/-/-/0	-	9c6e807aad4bc8c7
-method	c:objc(cs)GKEntity(im)componentForClass:	-			swift=-/-/-/1	-	ac28258d95854855
-protocol	c:objc(pl)GKGameModelUpdate	-			-	-	df294846687fd7a3
-conforms	-	GKGameModelUpdate	NSObject		-	-	4cdc6c7f3e5d914c
-property	c:objc(pl)GKGameModelUpdate(py)value	-			-	-	df3a621d2c30c814
-protocol	c:objc(pl)GKGameModelPlayer	-			-	-	c6083beddfa8c1cd
-conforms	-	GKGameModelPlayer	NSObject		-	-	075bb28e962fd7c0
-property	c:objc(pl)GKGameModelPlayer(py)playerId	-			-	-	69246b874c5c9045
-protocol	c:objc(pl)GKGameModel	-			-	-	4168243cdbd49e9a
-conforms	-	GKGameModel	NSObject		-	-	1ce906f5acc1b768
-conforms	-	GKGameModel	NSCopying		-	-	f13cbfc1645ff591
-property	c:objc(pl)GKGameModel(py)players	-			-	-	0628296a6dbaf90b
-property	c:objc(pl)GKGameModel(py)activePlayer	-			-	-	9361df54a1dc6640
-method	c:objc(pl)GKGameModel(im)setGameModel:	-			-	-	dfed151cda037a3b
-method	c:objc(pl)GKGameModel(im)gameModelUpdatesForPlayer:	-			-	-	ef57c114324d0c70
-method	c:objc(pl)GKGameModel(im)applyGameModelUpdate:	-			-	-	a394d25419aba1ae
-method	c:objc(pl)GKGameModel(im)scoreForPlayer:	-			-	-	e791c7b79312780b
-method	c:objc(pl)GKGameModel(im)isWinForPlayer:	-			-	-	dfe96662d1ddf25f
-method	c:objc(pl)GKGameModel(im)isLossForPlayer:	-			-	-	d03ea38c1e4c3189
-method	c:objc(pl)GKGameModel(im)unapplyGameModelUpdate:	-			-	-	9aad8411943b4527
-interface	c:objc(cs)GKGraph	-			ios=9.0/-/-/0	-	5d4581115e9e79c4
-super	-	GKGraph	NSObject		-	-	24f4fab366b20bf1
-conforms	-	GKGraph	NSCopying		-	-	dad42099cec4a744
-conforms	-	GKGraph	NSSecureCoding		-	-	400e9c9658555647
-property	c:objc(cs)GKGraph(py)nodes	-			ios=9.0/-/-/0	-	79ebbc7d132cd0e1
-method	c:objc(cs)GKGraph(cm)graphWithNodes:	-			ios=9.0/-/-/0	-	2b0f52ccb46dce42
-method	c:objc(cs)GKGraph(im)initWithNodes:	-			ios=9.0/-/-/0	-	8f3c861c997e2ab4
-method	c:objc(cs)GKGraph(im)connectNodeToLowestCostNode:bidirectional:	-			ios=9.0/-/-/0	-	208393cc2766be92
-method	c:objc(cs)GKGraph(im)removeNodes:	-			ios=9.0/-/-/0	-	14b3145590a9ea74
-method	c:objc(cs)GKGraph(im)addNodes:	-			ios=9.0/-/-/0	-	e69403912c75a671
-method	c:objc(cs)GKGraph(im)findPathFromNode:toNode:	-			ios=9.0/-/-/0	-	81880b2510613eea
-interface	c:objc(cs)GKGridGraph	-			ios=9.0/-/-/0	-	f3995562c5a9b0dc
-super	-	GKGridGraph	GKGraph		-	-	c7cb69426c5e6866
-property	c:objc(cs)GKGridGraph(py)gridOrigin	-			ios=9.0/-/-/0	-	a382a111aa324f6e
-property	c:objc(cs)GKGridGraph(py)gridWidth	-			ios=9.0/-/-/0	-	5449e5e3cd9f6f33
-property	c:objc(cs)GKGridGraph(py)gridHeight	-			ios=9.0/-/-/0	-	c35b045b61a67dc0
-property	c:objc(cs)GKGridGraph(py)diagonalsAllowed	-			ios=9.0/-/-/0	-	28900fda1fbc7640
-method	c:objc(cs)GKGridGraph(cm)graphFromGridStartingAt:width:height:diagonalsAllowed:	-			ios=9.0/-/-/0	-	a2b06a975107e880
-method	c:objc(cs)GKGridGraph(im)initFromGridStartingAt:width:height:diagonalsAllowed:	-			ios=9.0/-/-/0	-	489e419487f00c0d
-method	c:objc(cs)GKGridGraph(cm)graphFromGridStartingAt:width:height:diagonalsAllowed:nodeClass:	-			ios=9.0/-/-/0	-	7bad13da448dafd7
-method	c:objc(cs)GKGridGraph(im)initFromGridStartingAt:width:height:diagonalsAllowed:nodeClass:	-			ios=9.0/-/-/0	-	bb8a671641fbdf3a
-method	c:objc(cs)GKGridGraph(im)nodeAtGridPosition:	-			ios=9.0/-/-/0	-	926649e913250d21
-method	c:objc(cs)GKGridGraph(im)connectNodeToAdjacentNodes:	-			ios=9.0/-/-/0	-	ff4acbe61f578739
-method	c:objc(cs)GKGridGraph(im)classForGenericArgumentAtIndex:	-			ios=9.0/-/-/0	-	104048bfd204ebdd
-interface	c:objc(cs)GKObstacleGraph	-			ios=9.0/-/-/0	-	319f45435d06693e
-super	-	GKObstacleGraph	GKGraph		-	-	1e5df4cc52448b52
-property	c:objc(cs)GKObstacleGraph(py)obstacles	-			ios=9.0/-/-/0	-	3275dd8ad5cc88cc
-property	c:objc(cs)GKObstacleGraph(py)bufferRadius	-			ios=9.0/-/-/0	-	b32c87a8d211fa5a
-method	c:objc(cs)GKObstacleGraph(cm)graphWithObstacles:bufferRadius:	-			ios=9.0/-/-/0	-	b7b49dfcdcfa28f2
-method	c:objc(cs)GKObstacleGraph(im)initWithObstacles:bufferRadius:	-			ios=9.0/-/-/0	-	0a89a1c6f64868dc
-method	c:objc(cs)GKObstacleGraph(cm)graphWithObstacles:bufferRadius:nodeClass:	-			ios=9.0/-/-/0	-	83418a7b060795ba
-method	c:objc(cs)GKObstacleGraph(im)initWithObstacles:bufferRadius:nodeClass:	-			ios=9.0/-/-/0	-	48f75c55643656c0
-method	c:objc(cs)GKObstacleGraph(im)connectNodeUsingObstacles:	-			ios=9.0/-/-/0	-	c3967551c1bf86c2
-method	c:objc(cs)GKObstacleGraph(im)connectNodeUsingObstacles:ignoringObstacles:	-			ios=9.0/-/-/0	-	e75b71e1f130d56d
-method	c:objc(cs)GKObstacleGraph(im)connectNodeUsingObstacles:ignoringBufferRadiusOfObstacles:	-			ios=9.0/-/-/0	-	3038169ef162b14f
-method	c:objc(cs)GKObstacleGraph(im)addObstacles:	-			ios=9.0/-/-/0	-	37675277f7b6f33a
-method	c:objc(cs)GKObstacleGraph(im)removeObstacles:	-			ios=9.0/-/-/0	-	a148695be443175d
-method	c:objc(cs)GKObstacleGraph(im)removeAllObstacles	-			ios=9.0/-/-/0	-	57252c5deacda39f
-method	c:objc(cs)GKObstacleGraph(im)nodesForObstacle:	-			ios=9.0/-/-/0	-	0587cdd233cacca8
-method	c:objc(cs)GKObstacleGraph(im)lockConnectionFromNode:toNode:	-			ios=9.0/-/-/0	-	dbada8ea505568e0
-method	c:objc(cs)GKObstacleGraph(im)unlockConnectionFromNode:toNode:	-			ios=9.0/-/-/0	-	b2300615d2162d5a
-method	c:objc(cs)GKObstacleGraph(im)isConnectionLockedFromNode:toNode:	-			ios=9.0/-/-/0	-	565e64f92c6b1e9f
-method	c:objc(cs)GKObstacleGraph(im)classForGenericArgumentAtIndex:	-			ios=9.0/-/-/0	-	2bff9eacbb2c1a0a
-interface	c:objc(cs)GKGraphNode	-			ios=9.0/-/-/0	-	8614442b3a0d930b
-super	-	GKGraphNode	NSObject		-	-	16ce082ee3d9d87c
-conforms	-	GKGraphNode	NSSecureCoding		-	-	6ff3ca256cf2d2f0
-property	c:objc(cs)GKGraphNode(py)connectedNodes	-			ios=9.0/-/-/0	-	3adb671bb914346f
-method	c:objc(cs)GKGraphNode(im)addConnectionsToNodes:bidirectional:	-			ios=9.0/-/-/0	-	aff6afd516a2bf4e
-method	c:objc(cs)GKGraphNode(im)removeConnectionsToNodes:bidirectional:	-			ios=9.0/-/-/0	-	fa1e2c0e90e87d01
-method	c:objc(cs)GKGraphNode(im)estimatedCostToNode:	-			ios=9.0/-/-/0	-	77ec5376f1e392d3
-method	c:objc(cs)GKGraphNode(im)costToNode:	-			ios=9.0/-/-/0	-	896f32dd12b27065
-method	c:objc(cs)GKGraphNode(im)findPathToNode:	-			ios=9.0/-/-/0	-	94e04c3892919b12
-method	c:objc(cs)GKGraphNode(im)findPathFromNode:	-			ios=9.0/-/-/0	-	dea5c01663ee8ec3
-interface	c:objc(cs)GKGraphNode2D	-			ios=9.0/-/-/0	-	dec516e9ed399c3e
-super	-	GKGraphNode2D	GKGraphNode		-	-	e10af43f42cbecab
-property	c:objc(cs)GKGraphNode2D(py)position	-			ios=9.0/-/-/0	-	3a3db5e62a3559eb
-method	c:objc(cs)GKGraphNode2D(cm)nodeWithPoint:	-			ios=9.0/-/-/0	-	91144136475d53e7
-method	c:objc(cs)GKGraphNode2D(im)initWithPoint:	-			ios=9.0/-/-/0	-	fc6dcb4ed9dc40e0
-interface	c:objc(cs)GKGraphNode3D	-			ios=10.0/-/-/0	-	a25071780235e444
-super	-	GKGraphNode3D	GKGraphNode		-	-	7f2bd18a263da560
-property	c:objc(cs)GKGraphNode3D(py)position	-			ios=10.0/-/-/0	-	9903426f7ba28717
-method	c:objc(cs)GKGraphNode3D(cm)nodeWithPoint:	-			ios=10.0/-/-/0	-	02f4824e3394ad95
-method	c:objc(cs)GKGraphNode3D(im)initWithPoint:	-			ios=10.0/-/-/0	-	6c18e8075fec2c62
-interface	c:objc(cs)GKGridGraphNode	-			ios=9.0/-/-/0	-	5d4b58fe155703cc
-super	-	GKGridGraphNode	GKGraphNode		-	-	5c7cc3119cc90e0e
-property	c:objc(cs)GKGridGraphNode(py)gridPosition	-			ios=9.0/-/-/0	-	ca64761a59ff0ef2
-method	c:objc(cs)GKGridGraphNode(cm)nodeWithGridPosition:	-			ios=9.0/-/-/0	-	b6163e64b532b8d9
-method	c:objc(cs)GKGridGraphNode(im)initWithGridPosition:	-			ios=9.0/-/-/0	-	8c9433b772dd2f56
-protocol	c:objc(pl)GKRandom	-			-	-	1fe27f2b573e0ac3
-method	c:objc(pl)GKRandom(im)nextInt	-			-	-	8930a0b25e3b2980
-method	c:objc(pl)GKRandom(im)nextIntWithUpperBound:	-			-	-	9a8064d9b30cb3a0
-method	c:objc(pl)GKRandom(im)nextUniform	-			-	-	82c523395fac0632
-method	c:objc(pl)GKRandom(im)nextBool	-			-	-	b174f2c94f4fc9f6
-interface	c:objc(cs)GKRandomSource	-			ios=9.0/-/-/0	-	fa4325351d3001be
-super	-	GKRandomSource	NSObject		-	-	fdc15dcc55ff1b56
-conforms	-	GKRandomSource	GKRandom		-	-	e6bef24dcb479e50
-conforms	-	GKRandomSource	NSSecureCoding		-	-	03f40fc7aaab8de4
-conforms	-	GKRandomSource	NSCopying		-	-	50e13fdb517935d1
-method	c:objc(cs)GKRandomSource(im)init	-			ios=9.0/-/-/0	-	8d55257a466f20eb
-method	c:objc(cs)GKRandomSource(im)initWithCoder:	-			ios=9.0/-/-/0	-	d03161c69b84d3b9
-method	c:objc(cs)GKRandomSource(cm)sharedRandom	-			ios=9.0/-/-/0	-	863d367060cd2466
-method	c:objc(cs)GKRandomSource(im)arrayByShufflingObjectsInArray:	-			ios=9.0/-/-/0	-	017dff30335514b6
-category	c:objc(cy)NSArray@GameplayKit	-			-	-	3c976edbffe66cd8
-method	c:objc(cs)NSArray(im)shuffledArrayWithRandomSource:	GameplayKit			-	-	6d4c92201cf19382
-method	c:objc(cs)NSArray(im)shuffledArray	GameplayKit			-	-	336f53d9112b06b3
-interface	c:objc(cs)GKARC4RandomSource	-			ios=9.0/-/-/0	-	b82804847c868fed
-super	-	GKARC4RandomSource	GKRandomSource		-	-	edbbe2c454c4e13c
-property	c:objc(cs)GKARC4RandomSource(py)seed	-			ios=9.0/-/-/0	-	e3a47a8962c16280
-method	c:objc(cs)GKARC4RandomSource(im)init	-			ios=9.0/-/-/0	-	9729607af6b6fd06
-method	c:objc(cs)GKARC4RandomSource(im)initWithSeed:	-			ios=9.0/-/-/0	-	29c12f0d5297231e
-method	c:objc(cs)GKARC4RandomSource(im)dropValuesWithCount:	-			ios=9.0/-/-/0	-	af277b5db9d53b6f
-interface	c:objc(cs)GKLinearCongruentialRandomSource	-			ios=9.0/-/-/0	-	b737c569d365d7da
-super	-	GKLinearCongruentialRandomSource	GKRandomSource		-	-	ac268272c5e3b25b
-property	c:objc(cs)GKLinearCongruentialRandomSource(py)seed	-			ios=9.0/-/-/0	-	f96df14b03a1ddce
-method	c:objc(cs)GKLinearCongruentialRandomSource(im)init	-			ios=9.0/-/-/0	-	926b523bdf13cae6
-method	c:objc(cs)GKLinearCongruentialRandomSource(im)initWithSeed:	-			ios=9.0/-/-/0	-	07b030cc27f81fa5
-interface	c:objc(cs)GKMersenneTwisterRandomSource	-			ios=9.0/-/-/0	-	0ce21bd9a4618e15
-super	-	GKMersenneTwisterRandomSource	GKRandomSource		-	-	d8b13178dcda21f4
-property	c:objc(cs)GKMersenneTwisterRandomSource(py)seed	-			ios=9.0/-/-/0	-	ba9d440173dbaf77
-method	c:objc(cs)GKMersenneTwisterRandomSource(im)init	-			ios=9.0/-/-/0	-	d564cb665f17f667
-method	c:objc(cs)GKMersenneTwisterRandomSource(im)initWithSeed:	-			ios=9.0/-/-/0	-	574f50f967b8b1aa
-protocol	c:objc(pl)GKStrategist	-			-	-	fd29e061e4b616d4
-conforms	-	GKStrategist	NSObject		-	-	c2b31d5e903eb874
-property	c:objc(pl)GKStrategist(py)gameModel	-			-	-	fe2c37df3545a91e
-property	c:objc(pl)GKStrategist(py)randomSource	-			-	-	5ef3b0b291217b2d
-method	c:objc(pl)GKStrategist(im)bestMoveForActivePlayer	-			-	-	363b52e373aa644d
-struct	c:@S@GKBox	-			-	-	60b46adc830dfdcb
-field	c:@S@GKBox@FI@boxMin	GKBox			-	-	9c4e9c74938be900
-field	c:@S@GKBox@FI@boxMax	GKBox			-	-	93652a97bc82b87e
-typedef	c:@T@GKBox	-			-	-	3b76a40328868757
-struct	c:@S@GKQuad	-			-	-	fc2f59761385e37a
-field	c:@S@GKQuad@FI@quadMin	GKQuad			-	-	258780e023009cae
-field	c:@S@GKQuad@FI@quadMax	GKQuad			-	-	a4bcfc0df0c7d3a9
-typedef	c:@T@GKQuad	-			-	-	0a66db5feaadaaf9
-struct	c:@S@GKTriangle	-			-	-	5f703cd4c111f989
-field	c:@S@GKTriangle@FI@points	GKTriangle			-	-	bd03b3211350e836
-typedef	c:@T@GKTriangle	-			-	-	9228708777faf21b
-typedef	c:@T@GKMeshGraphTriangulationMode	-			-	-	aa27a040ecdaa1c1
-enum	c:@E@GKMeshGraphTriangulationMode	-			-	-	0dbc82fc522840e7
-enumconst	c:@E@GKMeshGraphTriangulationMode@GKMeshGraphTriangulationModeVertices	GKMeshGraphTriangulationMode			-	-	ea8d34536b45acf9
-enumconst	c:@E@GKMeshGraphTriangulationMode@GKMeshGraphTriangulationModeCenters	GKMeshGraphTriangulationMode			-	-	02817800df6c9e47
-enumconst	c:@E@GKMeshGraphTriangulationMode@GKMeshGraphTriangulationModeEdgeMidpoints	GKMeshGraphTriangulationMode			-	-	a0d2d6f44480c356
-interface	c:objc(cs)GKMeshGraph	-			ios=10.0/-/-/0	-	c9c82e57716dbf42
-super	-	GKMeshGraph	GKGraph		-	-	4119942263db8d06
-property	c:objc(cs)GKMeshGraph(py)obstacles	-			ios=10.0/-/-/0	-	2c23d5df1bee1157
-property	c:objc(cs)GKMeshGraph(py)bufferRadius	-			ios=10.0/-/-/0	-	9bec9a92d632e60f
-property	c:objc(cs)GKMeshGraph(py)triangulationMode	-			ios=10.0/-/-/0	-	1d774af34e464d72
-property	c:objc(cs)GKMeshGraph(py)triangleCount	-			ios=10.0/-/-/0	-	b20dd41e737bd2b7
-method	c:objc(cs)GKMeshGraph(cm)graphWithBufferRadius:minCoordinate:maxCoordinate:nodeClass:	-			ios=10.0/-/-/0	-	724a214c5c53d912
-method	c:objc(cs)GKMeshGraph(im)initWithBufferRadius:minCoordinate:maxCoordinate:nodeClass:	-			ios=10.0/-/-/0	-	3d91b27e766a32b5
-method	c:objc(cs)GKMeshGraph(cm)graphWithBufferRadius:minCoordinate:maxCoordinate:	-			ios=10.0/-/-/0	-	1d66c6d78bb757c7
-method	c:objc(cs)GKMeshGraph(im)initWithBufferRadius:minCoordinate:maxCoordinate:	-			ios=10.0/-/-/0	-	9550979172958509
-method	c:objc(cs)GKMeshGraph(im)addObstacles:	-			ios=10.0/-/-/0	-	9186a99c4a6819e1
-method	c:objc(cs)GKMeshGraph(im)removeObstacles:	-			ios=10.0/-/-/0	-	64d8c77c427ea07d
-method	c:objc(cs)GKMeshGraph(im)connectNodeUsingObstacles:	-			ios=10.0/-/-/0	-	99b32cab82a47734
-method	c:objc(cs)GKMeshGraph(im)triangulate	-			ios=10.0/-/-/0	-	7bebe85eb0376043
-method	c:objc(cs)GKMeshGraph(im)triangleAtIndex:	-			ios=10.0/-/-/0	-	2b9080eb1fb72bac
-method	c:objc(cs)GKMeshGraph(im)classForGenericArgumentAtIndex:	-			ios=10.0/-/-/0	-	5478ea82dfa9c285
-interface	c:objc(cs)GKMinmaxStrategist	-			ios=9.0/-/-/0	-	3e13bacc330ecadf
-super	-	GKMinmaxStrategist	NSObject		-	-	a20c1b8fdd914d09
-conforms	-	GKMinmaxStrategist	GKStrategist		-	-	818594e6fd3dd568
-property	c:objc(cs)GKMinmaxStrategist(py)maxLookAheadDepth	-			ios=9.0/-/-/0	-	42afbfae2124226d
-method	c:objc(cs)GKMinmaxStrategist(im)bestMoveForPlayer:	-			ios=9.0/-/-/0	-	a07b5f3688d59cf9
-method	c:objc(cs)GKMinmaxStrategist(im)randomMoveForPlayer:fromNumberOfBestMoves:	-			ios=9.0/-/-/0	-	62171e328e947d57
-interface	c:objc(cs)GKMonteCarloStrategist	-			ios=10.0/-/-/0	-	4dea64a44abff91c
-super	-	GKMonteCarloStrategist	NSObject		-	-	b5260b7fa4a51861
-conforms	-	GKMonteCarloStrategist	GKStrategist		-	-	e6c7527541ee408b
-property	c:objc(cs)GKMonteCarloStrategist(py)budget	-			ios=10.0/-/-/0	-	fc0e9095e9970a1a
-property	c:objc(cs)GKMonteCarloStrategist(py)explorationParameter	-			ios=10.0/-/-/0	-	5bfc84d3086e664b
-interface	c:objc(cs)GKDecisionNode	-			ios=10.0/-/-/0	-	3da22a49660a1133
-super	-	GKDecisionNode	NSObject		-	-	1b6743e7f024234a
-method	c:objc(cs)GKDecisionNode(im)createBranchWithValue:attribute:	-			ios=10.0/-/-/0	-	e2b5a71a7cf3abfd
-method	c:objc(cs)GKDecisionNode(im)createBranchWithPredicate:attribute:	-			ios=10.0/-/-/0	-	fac4843e0487d63f
-method	c:objc(cs)GKDecisionNode(im)createBranchWithWeight:attribute:	-			ios=10.0/-/-/0	-	c281b63d009c7d0f
-interface	c:objc(cs)GKDecisionTree	-			ios=10.0/-/-/0	-	f459fc3642cdd49d
-super	-	GKDecisionTree	NSObject		-	-	423178e6da9a0a62
-conforms	-	GKDecisionTree	NSSecureCoding		-	-	458c363a0ea22eaf
-property	c:objc(cs)GKDecisionTree(py)rootNode	-			ios=10.0/-/-/0	-	0e7883667f4a35bb
-property	c:objc(cs)GKDecisionTree(py)randomSource	-			ios=10.0/-/-/0	-	b9d6d961357cb81d
-method	c:objc(cs)GKDecisionTree(im)initWithAttribute:	-			ios=10.0/-/-/0	-	b3b2882471673b47
-method	c:objc(cs)GKDecisionTree(im)initWithExamples:actions:attributes:	-			ios=10.0/-/-/0	-	90747ab198f9163b
-method	c:objc(cs)GKDecisionTree(im)initWithURL:error:	-			ios=10.0/-/-/0	-	42b0b2052d57b49c
-method	c:objc(cs)GKDecisionTree(im)exportToURL:error:	-			ios=10.0/-/-/0	-	80fb22311809b176
-method	c:objc(cs)GKDecisionTree(im)findActionForAnswers:	-			ios=10.0/-/-/0	-	8302490dff160b47
-interface	c:objc(cs)GKNoiseSource	-			ios=10.0/-/-/0	-	6ff84d984edb103e
-super	-	GKNoiseSource	NSObject		-	-	b75acd5b46a9f403
-interface	c:objc(cs)GKCoherentNoiseSource	-			ios=10.0/-/-/0	-	b86d202d9bf0df35
-super	-	GKCoherentNoiseSource	GKNoiseSource		-	-	0e1461aee4de47f8
-property	c:objc(cs)GKCoherentNoiseSource(py)frequency	-			ios=10.0/-/-/0	-	61b25fe9260458a3
-property	c:objc(cs)GKCoherentNoiseSource(py)octaveCount	-			ios=10.0/-/-/0	-	4068800fb0ae309a
-property	c:objc(cs)GKCoherentNoiseSource(py)lacunarity	-			ios=10.0/-/-/0	-	9c518caa2fed3058
-property	c:objc(cs)GKCoherentNoiseSource(py)seed	-			ios=10.0/-/-/0	-	dd6afca9b26ba31a
-interface	c:objc(cs)GKPerlinNoiseSource	-			ios=10.0/-/-/0	-	e3e47052ab1b6850
-super	-	GKPerlinNoiseSource	GKCoherentNoiseSource		-	-	660f0edcfb33ffda
-property	c:objc(cs)GKPerlinNoiseSource(py)persistence	-			ios=10.0/-/-/0	-	af73c93531fce1ea
-method	c:objc(cs)GKPerlinNoiseSource(cm)perlinNoiseSourceWithFrequency:octaveCount:persistence:lacunarity:seed:	-			ios=10.0/-/-/0	-	0c4e3f9b47adcaa7
-method	c:objc(cs)GKPerlinNoiseSource(im)initWithFrequency:octaveCount:persistence:lacunarity:seed:	-			ios=10.0/-/-/0	-	c6df25de797336c4
-interface	c:objc(cs)GKBillowNoiseSource	-			ios=10.0/-/-/0	-	64000e27c3068782
-super	-	GKBillowNoiseSource	GKCoherentNoiseSource		-	-	c1cfe49bf8148d30
-property	c:objc(cs)GKBillowNoiseSource(py)persistence	-			ios=10.0/-/-/0	-	04a2ae98d4917428
-method	c:objc(cs)GKBillowNoiseSource(cm)billowNoiseSourceWithFrequency:octaveCount:persistence:lacunarity:seed:	-			ios=10.0/-/-/0	-	2c9a3b10d5d76faf
-method	c:objc(cs)GKBillowNoiseSource(im)initWithFrequency:octaveCount:persistence:lacunarity:seed:	-			ios=10.0/-/-/0	-	c30ca6d5561c30db
-interface	c:objc(cs)GKRidgedNoiseSource	-			ios=10.0/-/-/0	-	66d6ebff193e038d
-super	-	GKRidgedNoiseSource	GKCoherentNoiseSource		-	-	e3e547746cd618f5
-method	c:objc(cs)GKRidgedNoiseSource(cm)ridgedNoiseSourceWithFrequency:octaveCount:lacunarity:seed:	-			ios=10.0/-/-/0	-	e983169bf72679d3
-method	c:objc(cs)GKRidgedNoiseSource(im)initWithFrequency:octaveCount:lacunarity:seed:	-			ios=10.0/-/-/0	-	6b7ac59fc95aab98
-interface	c:objc(cs)GKVoronoiNoiseSource	-			ios=10.0/-/-/0	-	363ce9548bbf782e
-super	-	GKVoronoiNoiseSource	GKNoiseSource		-	-	fd299eb08524c91b
-property	c:objc(cs)GKVoronoiNoiseSource(py)frequency	-			ios=10.0/-/-/0	-	e11198dc1811ab87
-property	c:objc(cs)GKVoronoiNoiseSource(py)displacement	-			ios=10.0/-/-/0	-	0ab9faaf20326340
-property	c:objc(cs)GKVoronoiNoiseSource(py)distanceEnabled	-			ios=10.0/-/-/0	-	bba339b4aeb38b25
-property	c:objc(cs)GKVoronoiNoiseSource(py)seed	-			ios=10.0/-/-/0	-	6f5b5c60b2ca8572
-method	c:objc(cs)GKVoronoiNoiseSource(cm)voronoiNoiseWithFrequency:displacement:distanceEnabled:seed:	-			ios=10.0/-/-/0	-	6cae2033df3c1405
-method	c:objc(cs)GKVoronoiNoiseSource(im)initWithFrequency:displacement:distanceEnabled:seed:	-			ios=10.0/-/-/0	-	67efb6fcbcfa1162
-interface	c:objc(cs)GKConstantNoiseSource	-			ios=10.0/-/-/0	-	3f3a5fea49e486c9
-super	-	GKConstantNoiseSource	GKNoiseSource		-	-	f920c38376781ad9
-property	c:objc(cs)GKConstantNoiseSource(py)value	-			ios=10.0/-/-/0	-	cbc1dd0f878141ba
-method	c:objc(cs)GKConstantNoiseSource(cm)constantNoiseWithValue:	-			ios=10.0/-/-/0	-	0702ac53f5c6be62
-method	c:objc(cs)GKConstantNoiseSource(im)initWithValue:	-			ios=10.0/-/-/0	-	b8657455cd99abb9
-interface	c:objc(cs)GKCylindersNoiseSource	-			ios=10.0/-/-/0	-	96d9626f9ffc3e8a
-super	-	GKCylindersNoiseSource	GKNoiseSource		-	-	b38315f7298d8238
-property	c:objc(cs)GKCylindersNoiseSource(py)frequency	-			ios=10.0/-/-/0	-	15ac6d3a32581286
-method	c:objc(cs)GKCylindersNoiseSource(cm)cylindersNoiseWithFrequency:	-			ios=10.0/-/-/0	-	17122e0254d6b98b
-method	c:objc(cs)GKCylindersNoiseSource(im)initWithFrequency:	-			ios=10.0/-/-/0	-	89bc3a0c8d03f0a2
-interface	c:objc(cs)GKSpheresNoiseSource	-			ios=10.0/-/-/0	-	a7583d1ad210e7eb
-super	-	GKSpheresNoiseSource	GKNoiseSource		-	-	c989569c4360f006
-property	c:objc(cs)GKSpheresNoiseSource(py)frequency	-			ios=10.0/-/-/0	-	8a387b1a27eff5c1
-method	c:objc(cs)GKSpheresNoiseSource(cm)spheresNoiseWithFrequency:	-			ios=10.0/-/-/0	-	52705832544f0155
-method	c:objc(cs)GKSpheresNoiseSource(im)initWithFrequency:	-			ios=10.0/-/-/0	-	281d13e7cf40ed82
-interface	c:objc(cs)GKCheckerboardNoiseSource	-			ios=10.0/-/-/0	-	d835a8d95440ff71
-super	-	GKCheckerboardNoiseSource	GKNoiseSource		-	-	e5981f1a254cfb7d
-property	c:objc(cs)GKCheckerboardNoiseSource(py)squareSize	-			ios=10.0/-/-/0	-	f3eb5ed029eee1f0
-method	c:objc(cs)GKCheckerboardNoiseSource(cm)checkerboardNoiseWithSquareSize:	-			ios=10.0/-/-/0	-	756511fa66a134be
-method	c:objc(cs)GKCheckerboardNoiseSource(im)initWithSquareSize:	-			ios=10.0/-/-/0	-	13871d03142ad4df
-interface	c:objc(cs)GKNoise	-			ios=10.0/-/-/0	-	dfcbd057c475e0dc
-super	-	GKNoise	NSObject		-	-	7965bda47e39b0b2
-property	c:objc(cs)GKNoise(py)gradientColors	-			ios=10.0/-/-/0	-	653269b4bbec8850
-method	c:objc(cs)GKNoise(im)init	-			ios=10.0/-/-/0	-	e02409040d3a4bd5
-method	c:objc(cs)GKNoise(cm)noiseWithNoiseSource:	-			ios=10.0/-/-/0	-	863a8ac0c1a2b314
-method	c:objc(cs)GKNoise(cm)noiseWithNoiseSource:gradientColors:	-			ios=10.0/-/-/0	-	8ea1405dd45d4ad7
-method	c:objc(cs)GKNoise(im)initWithNoiseSource:	-			ios=10.0/-/-/0	-	ca67ec7c45eb5031
-method	c:objc(cs)GKNoise(im)initWithNoiseSource:gradientColors:	-			ios=10.0/-/-/0	-	960c911635e2dd11
-method	c:objc(cs)GKNoise(cm)noiseWithComponentNoises:selectionNoise:	-			ios=10.0/-/-/0	-	84cb7d1af2983c7f
-method	c:objc(cs)GKNoise(cm)noiseWithComponentNoises:selectionNoise:componentBoundaries:boundaryBlendDistances:	-			ios=10.0/-/-/0	-	61cef93f7640fe1f
-method	c:objc(cs)GKNoise(im)valueAtPosition:	-			ios=10.0/-/-/0	-	cd2df39915cd1c19
-method	c:objc(cs)GKNoise(im)applyAbsoluteValue	-			ios=10.0/-/-/0	-	b0aba17367843b40
-method	c:objc(cs)GKNoise(im)clampWithLowerBound:upperBound:	-			ios=10.0/-/-/0	-	75f784c95eb4b926
-method	c:objc(cs)GKNoise(im)raiseToPower:	-			ios=10.0/-/-/0	-	210e393738065149
-method	c:objc(cs)GKNoise(im)invert	-			ios=10.0/-/-/0	-	35c63395a547a944
-method	c:objc(cs)GKNoise(im)applyTurbulenceWithFrequency:power:roughness:seed:	-			ios=10.0/-/-/0	-	90ea06b0d5d2a43c
-method	c:objc(cs)GKNoise(im)remapValuesToCurveWithControlPoints:	-			ios=10.0/-/-/0	-	6b1f556585a8d651
-method	c:objc(cs)GKNoise(im)remapValuesToTerracesWithPeaks:terracesInverted:	-			ios=10.0/-/-/0	-	839230f892ec740a
-method	c:objc(cs)GKNoise(im)moveBy:	-			ios=10.0/-/-/0	-	8e7e85796a032457
-method	c:objc(cs)GKNoise(im)scaleBy:	-			ios=10.0/-/-/0	-	f6acbb19e51c59c4
-method	c:objc(cs)GKNoise(im)rotateBy:	-			ios=10.0/-/-/0	-	77191659953e858e
-method	c:objc(cs)GKNoise(im)addWithNoise:	-			ios=10.0/-/-/0	-	4596a9228bfb5515
-method	c:objc(cs)GKNoise(im)multiplyWithNoise:	-			ios=10.0/-/-/0	-	698b345a96521895
-method	c:objc(cs)GKNoise(im)minimumWithNoise:	-			ios=10.0/-/-/0	-	c08cab0574af2949
-method	c:objc(cs)GKNoise(im)maximumWithNoise:	-			ios=10.0/-/-/0	-	f0ca7d323f3285ce
-method	c:objc(cs)GKNoise(im)raiseToPowerWithNoise:	-			ios=10.0/-/-/0	-	1d41ee763abc2333
-method	c:objc(cs)GKNoise(im)displaceXWithNoise:yWithNoise:zWithNoise:	-			ios=10.0/-/-/0	-	cf72c6b09110650f
-interface	c:objc(cs)GKNoiseMap	-			ios=10.0/-/-/0	-	981a1a17508371ae
-super	-	GKNoiseMap	NSObject		-	-	851ab59e27d05628
-property	c:objc(cs)GKNoiseMap(py)size	-			ios=10.0/-/-/0	-	c43d4c043ebd60d8
-property	c:objc(cs)GKNoiseMap(py)origin	-			ios=10.0/-/-/0	-	91b8bf7eda0debfa
-property	c:objc(cs)GKNoiseMap(py)sampleCount	-			ios=10.0/-/-/0	-	5061a10325a5e1d8
-property	c:objc(cs)GKNoiseMap(py)seamless	-			ios=10.0/-/-/0	-	f98161d904244913
-method	c:objc(cs)GKNoiseMap(im)init	-			ios=10.0/-/-/0	-	17eab607bb459917
-method	c:objc(cs)GKNoiseMap(cm)noiseMapWithNoise:	-			ios=10.0/-/-/0	-	8639b7b8b61228b5
-method	c:objc(cs)GKNoiseMap(cm)noiseMapWithNoise:size:origin:sampleCount:seamless:	-			ios=10.0/-/-/0	-	73a68cff6288af7c
-method	c:objc(cs)GKNoiseMap(im)initWithNoise:	-			ios=10.0/-/-/0	-	79ab3c9cd40312d7
-method	c:objc(cs)GKNoiseMap(im)initWithNoise:size:origin:sampleCount:seamless:	-			ios=10.0/-/-/0	-	37ee555c6f941327
-method	c:objc(cs)GKNoiseMap(im)valueAtPosition:	-			ios=10.0/-/-/0	-	220498218aeaace6
-method	c:objc(cs)GKNoiseMap(im)interpolatedValueAtPosition:	-			ios=10.0/-/-/0	-	d65cf889472bc0af
-method	c:objc(cs)GKNoiseMap(im)setValue:atPosition:	-			ios=10.0/-/-/0	-	0724eb32c8f51df8
-interface	c:objc(cs)GKOctreeNode	-			ios=10.0/-/-/0	-	14beb67d791d492a
-super	-	GKOctreeNode	NSObject		-	-	b14c10502aa58e57
-property	c:objc(cs)GKOctreeNode(py)box	-			ios=10.0/-/-/0	-	c4b1d54cd98b742e
-interface	c:objc(cs)GKOctree	-			ios=10.0/-/-/0	-	ed734caac148b3a2
-super	-	GKOctree	NSObject		-	-	cd87c685d1bcbdf7
-method	c:objc(cs)GKOctree(cm)octreeWithBoundingBox:minimumCellSize:	-			ios=10.0/-/-/0	-	dcb000bf6d9c827a
-method	c:objc(cs)GKOctree(im)initWithBoundingBox:minimumCellSize:	-			ios=10.0/-/-/0	-	2c8f07bd79997bd9
-method	c:objc(cs)GKOctree(im)addElement:withPoint:	-			ios=10.0/-/-/0	-	327ce3b76320bffa
-method	c:objc(cs)GKOctree(im)addElement:withBox:	-			ios=10.0/-/-/0	-	71b79d8e62b84014
-method	c:objc(cs)GKOctree(im)elementsAtPoint:	-			ios=10.0/-/-/0	-	f4acc0e68ed6b045
-method	c:objc(cs)GKOctree(im)elementsInBox:	-			ios=10.0/-/-/0	-	22fb10ef07cfc664
-method	c:objc(cs)GKOctree(im)removeElement:	-			ios=10.0/-/-/0	-	7735f752ad9ba581
-method	c:objc(cs)GKOctree(im)removeElement:withNode:	-			ios=10.0/-/-/0	-	88df0cb01abf6958
-interface	c:objc(cs)GKPath	-			ios=9.0/-/-/0	-	c8057c41545fb269
-super	-	GKPath	NSObject		-	-	e3be664ed1b0136b
-property	c:objc(cs)GKPath(py)radius	-			ios=9.0/-/-/0	-	f10212430cbe4586
-property	c:objc(cs)GKPath(py)numPoints	-			ios=9.0/-/-/0	-	c3a740cd9c591b78
-property	c:objc(cs)GKPath(py)cyclical	-			ios=9.0/-/-/0	-	8d2943686e495517
-method	c:objc(cs)GKPath(cm)pathWithPoints:count:radius:cyclical:	-			ios=9.0/-/-/0	-	8648c9526c6e3e26
-method	c:objc(cs)GKPath(im)initWithPoints:count:radius:cyclical:	-			ios=9.0/-/-/0	-	0e15b98b17ca4856
-method	c:objc(cs)GKPath(cm)pathWithFloat3Points:count:radius:cyclical:	-			ios=10.0/-/-/0	-	204ba465de338075
-method	c:objc(cs)GKPath(im)initWithFloat3Points:count:radius:cyclical:	-			ios=10.0/-/-/0	-	9a8b849c8ee2fba3
-method	c:objc(cs)GKPath(cm)pathWithGraphNodes:radius:	-			ios=9.0/-/-/0	-	b0aa357d91ff7064
-method	c:objc(cs)GKPath(im)initWithGraphNodes:radius:	-			ios=9.0/-/-/0	-	ded59de4b346fa9a
-method	c:objc(cs)GKPath(im)pointAtIndex:	-			ios=9.0/10.0/-/0	-	bc750a44cc7db79e
-method	c:objc(cs)GKPath(im)float2AtIndex:	-			ios=10.0/-/-/0	-	e50ccec614ec6e4d
-method	c:objc(cs)GKPath(im)float3AtIndex:	-			ios=10.0/-/-/0	-	01c9472031843c91
-interface	c:objc(cs)GKQuadtreeNode	-			ios=10.0/-/-/0	-	4e0bb64af782fa4b
-super	-	GKQuadtreeNode	NSObject		-	-	3a2bf3a14fc8758a
-property	c:objc(cs)GKQuadtreeNode(py)quad	-			ios=10.0/-/-/0	-	9d55e8c12c97076e
-interface	c:objc(cs)GKQuadtree	-			ios=10.0/-/-/0	-	867832782ee1858b
-super	-	GKQuadtree	NSObject		-	-	04396a7887f7f9b2
-method	c:objc(cs)GKQuadtree(cm)quadtreeWithBoundingQuad:minimumCellSize:	-			ios=10.0/-/-/0	-	127e0818f3efc072
-method	c:objc(cs)GKQuadtree(im)initWithBoundingQuad:minimumCellSize:	-			ios=10.0/-/-/0	-	6aec48f1c1242fc4
-method	c:objc(cs)GKQuadtree(im)addElement:withPoint:	-			ios=10.0/-/-/0	-	0d5909a0e89d277e
-method	c:objc(cs)GKQuadtree(im)addElement:withQuad:	-			ios=10.0/-/-/0	-	640a1c6fdec8880b
-method	c:objc(cs)GKQuadtree(im)elementsAtPoint:	-			ios=10.0/-/-/0	-	9f8403a4c5a6190a
-method	c:objc(cs)GKQuadtree(im)elementsInQuad:	-			ios=10.0/-/-/0	-	536bcd9db73e6039
-method	c:objc(cs)GKQuadtree(im)removeElement:	-			ios=10.0/-/-/0	-	1c11ab48b642558d
-method	c:objc(cs)GKQuadtree(im)removeElement:withNode:	-			ios=10.0/-/-/0	-	addb5e1c7a4f7a19
-interface	c:objc(cs)GKRandomDistribution	-			ios=9.0/-/-/0	-	1aae909595cd45df
-super	-	GKRandomDistribution	NSObject		-	-	ee6776e05d0ec32a
-conforms	-	GKRandomDistribution	GKRandom		-	-	d1c378b41dabfd7b
-property	c:objc(cs)GKRandomDistribution(py)lowestValue	-			ios=9.0/-/-/0	-	2306acc7941e4ec0
-property	c:objc(cs)GKRandomDistribution(py)highestValue	-			ios=9.0/-/-/0	-	42386b6bcbe9712f
-property	c:objc(cs)GKRandomDistribution(py)numberOfPossibleOutcomes	-			ios=9.0/-/-/0	-	6878c8591aebb808
-method	c:objc(cs)GKRandomDistribution(im)initWithRandomSource:lowestValue:highestValue:	-			ios=9.0/-/-/0	-	a992b4c34c822b55
-method	c:objc(cs)GKRandomDistribution(im)nextInt	-			ios=9.0/-/-/0	-	67a70bbf34bc52a5
-method	c:objc(cs)GKRandomDistribution(im)nextIntWithUpperBound:	-			ios=9.0/-/-/0	-	ea72ca9646f359bf
-method	c:objc(cs)GKRandomDistribution(im)nextUniform	-			ios=9.0/-/-/0	-	e2e928047de2cdaf
-method	c:objc(cs)GKRandomDistribution(im)nextBool	-			ios=9.0/-/-/0	-	8ca1c4e43942682f
-method	c:objc(cs)GKRandomDistribution(cm)distributionWithLowestValue:highestValue:	-			ios=9.0/-/-/0	-	568265a359216134
-method	c:objc(cs)GKRandomDistribution(cm)distributionForDieWithSideCount:	-			ios=9.0/-/-/0	-	661aae23410d917e
-method	c:objc(cs)GKRandomDistribution(cm)d6	-			ios=9.0/-/-/0	-	66aee614ca985af3
-method	c:objc(cs)GKRandomDistribution(cm)d20	-			ios=9.0/-/-/0	-	b93039ab046dd531
-interface	c:objc(cs)GKGaussianDistribution	-			ios=9.0/-/-/0	-	c5479257313267d4
-super	-	GKGaussianDistribution	GKRandomDistribution		-	-	c838e35d44fa2f99
-property	c:objc(cs)GKGaussianDistribution(py)mean	-			ios=9.0/-/-/0	-	4127e462b3a57bb2
-property	c:objc(cs)GKGaussianDistribution(py)deviation	-			ios=9.0/-/-/0	-	8ac73005cc2abe55
-method	c:objc(cs)GKGaussianDistribution(im)initWithRandomSource:lowestValue:highestValue:	-			ios=9.0/-/-/0	-	c916a2bc9d03b8a2
-method	c:objc(cs)GKGaussianDistribution(im)initWithRandomSource:mean:deviation:	-			ios=9.0/-/-/0	-	a4ca97cace35166d
-interface	c:objc(cs)GKShuffledDistribution	-			ios=9.0/-/-/0	-	f5d80cd71e738839
-super	-	GKShuffledDistribution	GKRandomDistribution		-	-	e45a589523dc2c4b
-typedef	c:@T@GKRTreeSplitStrategy	-			-	-	d63c2de3eeb708cc
-enum	c:@E@GKRTreeSplitStrategy	-			-	-	5bae661e9fbd7dca
-enumconst	c:@E@GKRTreeSplitStrategy@GKRTreeSplitStrategyHalve	GKRTreeSplitStrategy			-	-	8730f277957afdb0
-enumconst	c:@E@GKRTreeSplitStrategy@GKRTreeSplitStrategyLinear	GKRTreeSplitStrategy			-	-	6b2074e0054ae335
-enumconst	c:@E@GKRTreeSplitStrategy@GKRTreeSplitStrategyQuadratic	GKRTreeSplitStrategy			-	-	8bf66ea3a7108008
-enumconst	c:@E@GKRTreeSplitStrategy@GKRTreeSplitStrategyReduceOverlap	GKRTreeSplitStrategy			-	-	386f5e02e5642561
-interface	c:objc(cs)GKRTree	-			ios=10.0/-/-/0	-	2d6a3c1a7c88ab48
-super	-	GKRTree	NSObject		-	-	03327e830b50e755
-property	c:objc(cs)GKRTree(py)queryReserve	-			ios=10.0/-/-/0	-	f14812ee49101243
-method	c:objc(cs)GKRTree(cm)treeWithMaxNumberOfChildren:	-			ios=10.0/-/-/0	-	2856987e5f417f50
-method	c:objc(cs)GKRTree(im)initWithMaxNumberOfChildren:	-			ios=10.0/-/-/0	-	84be02949c654912
-method	c:objc(cs)GKRTree(im)addElement:boundingRectMin:boundingRectMax:splitStrategy:	-			ios=10.0/-/-/0	-	6a0ba78cfa718aa9
-method	c:objc(cs)GKRTree(im)removeElement:boundingRectMin:boundingRectMax:	-			ios=10.0/-/-/0	-	c12399ae11ebbab6
-method	c:objc(cs)GKRTree(im)elementsInBoundingRectMin:rectMax:	-			ios=10.0/-/-/0	-	b6935d13d13eba9e
-interface	c:objc(cs)GKRuleSystem	-			ios=9.0/-/-/0	-	fcb600a8231dd80f
-super	-	GKRuleSystem	NSObject		-	-	9bebac5c6d7415f0
-method	c:objc(cs)GKRuleSystem(im)init	-			ios=9.0/-/-/0	-	088e4ef7c4993af1
-method	c:objc(cs)GKRuleSystem(im)evaluate	-			ios=9.0/-/-/0	-	fb71e1785a63fa47
-property	c:objc(cs)GKRuleSystem(py)state	-			ios=9.0/-/-/0	-	8f465e0ca92fd240
-property	c:objc(cs)GKRuleSystem(py)rules	-			ios=9.0/-/-/0	-	17e6a6eab7fc7065
-method	c:objc(cs)GKRuleSystem(im)addRule:	-			ios=9.0/-/-/0	-	d52834faa48946c6
-method	c:objc(cs)GKRuleSystem(im)addRulesFromArray:	-			ios=9.0/-/-/0	-	5253cc144a5e211e
-method	c:objc(cs)GKRuleSystem(im)removeAllRules	-			ios=9.0/-/-/0	-	6a5c3439e7847d85
-property	c:objc(cs)GKRuleSystem(py)agenda	-			ios=9.0/-/-/0	-	0a755e3ad90901a5
-property	c:objc(cs)GKRuleSystem(py)executed	-			ios=9.0/-/-/0	-	4096dda3de280ed4
-property	c:objc(cs)GKRuleSystem(py)facts	-			ios=9.0/-/-/0	-	ca9164639b064e38
-method	c:objc(cs)GKRuleSystem(im)gradeForFact:	-			ios=9.0/-/-/0	-	d429b93666f72bd0
-method	c:objc(cs)GKRuleSystem(im)minimumGradeForFacts:	-			ios=9.0/-/-/0	-	5b53fcc72c88e9b1
-method	c:objc(cs)GKRuleSystem(im)maximumGradeForFacts:	-			ios=9.0/-/-/0	-	b32ddc2658c79fd3
-method	c:objc(cs)GKRuleSystem(im)assertFact:	-			ios=9.0/-/-/0	-	c7461df2726e48fc
-method	c:objc(cs)GKRuleSystem(im)assertFact:grade:	-			ios=9.0/-/-/0	-	d460be62b6a4766e
-method	c:objc(cs)GKRuleSystem(im)retractFact:	-			ios=9.0/-/-/0	-	6bb7c5c715b65db1
-method	c:objc(cs)GKRuleSystem(im)retractFact:grade:	-			ios=9.0/-/-/0	-	5d61ddd6581d59a6
-method	c:objc(cs)GKRuleSystem(im)reset	-			ios=9.0/-/-/0	-	ff9092fa97fca094
-interface	c:objc(cs)GKRule	-			ios=9.0/-/-/0	-	0b2e60e3b143ccbb
-super	-	GKRule	NSObject		-	-	6a1bc3dcfcc563c0
-property	c:objc(cs)GKRule(py)salience	-			ios=9.0/-/-/0	-	4747d6d46ff8dce0
-method	c:objc(cs)GKRule(im)evaluatePredicateWithSystem:	-			ios=9.0/-/-/0	-	35ba6eb6aaa8a67b
-method	c:objc(cs)GKRule(im)performActionWithSystem:	-			ios=9.0/-/-/0	-	1a3e312b978377e2
-method	c:objc(cs)GKRule(cm)ruleWithPredicate:assertingFact:grade:	-			ios=9.0/-/-/0	-	768c96ddaf24ea09
-method	c:objc(cs)GKRule(cm)ruleWithPredicate:retractingFact:grade:	-			ios=9.0/-/-/0	-	7835eeb06efb9cc4
-method	c:objc(cs)GKRule(cm)ruleWithBlockPredicate:action:	-			ios=9.0/-/-/0	-	b0c777f183df92e3
-interface	c:objc(cs)GKNSPredicateRule	-			ios=9.0/-/-/0	-	15a1bd8aa46a401f
-super	-	GKNSPredicateRule	GKRule		-	-	7024d558a824cdbe
-property	c:objc(cs)GKNSPredicateRule(py)predicate	-			ios=9.0/-/-/0	-	1dcfc5644275cf0d
-method	c:objc(cs)GKNSPredicateRule(im)initWithPredicate:	-			ios=9.0/-/-/0	-	cb7002c82fc0d2d4
-method	c:objc(cs)GKNSPredicateRule(im)evaluatePredicateWithSystem:	-			ios=9.0/-/-/0	-	6ed0a8acebaa5d48
-interface	c:objc(cs)GKState	-			ios=9.0/-/-/0	-	40f91a745d39a15b
-super	-	GKState	NSObject		-	-	e2a42cd57bfa37fc
-property	c:objc(cs)GKState(py)stateMachine	-			ios=9.0/-/-/0	-	e0dca86343cab824
-method	c:objc(cs)GKState(cm)state	-			ios=9.0/-/-/0	-	930d16e329fad85e
-method	c:objc(cs)GKState(im)init	-			ios=9.0/-/-/0	-	19a2a62b64a49a3c
-method	c:objc(cs)GKState(im)isValidNextState:	-			ios=9.0/-/-/0	-	15fda45b29e70be6
-method	c:objc(cs)GKState(im)didEnterWithPreviousState:	-			ios=9.0/-/-/0	-	c35d8aae87a27c04
-method	c:objc(cs)GKState(im)updateWithDeltaTime:	-			ios=9.0/-/-/0	-	fbeb945866b82456
-method	c:objc(cs)GKState(im)willExitWithNextState:	-			ios=9.0/-/-/0	-	5cfb14792785fbd1
-interface	c:objc(cs)GKStateMachine	-			ios=9.0/-/-/0	-	a6853d392d33c014
-super	-	GKStateMachine	NSObject		-	-	1a4b2c10db116ead
-property	c:objc(cs)GKStateMachine(py)currentState	-			ios=9.0/-/-/0	-	3c07c6b83d984f03
-method	c:objc(cs)GKStateMachine(cm)stateMachineWithStates:	-			ios=9.0/-/-/0	-	d911c70e6a27ba8c
-method	c:objc(cs)GKStateMachine(im)initWithStates:	-			ios=9.0/-/-/0	-	127f896f9b3548b8
-method	c:objc(cs)GKStateMachine(im)updateWithDeltaTime:	-			ios=9.0/-/-/0	-	9a07d321a9bfbeb8
-method	c:objc(cs)GKStateMachine(im)stateForClass:	-			swift=-/-/-/1	-	f57973f8cdaa0b5e
-method	c:objc(cs)GKStateMachine(im)canEnterState:	-			ios=9.0/-/-/0	-	50593543ee17d6fc
-method	c:objc(cs)GKStateMachine(im)enterState:	-			ios=9.0/-/-/0	-	0aa79ca476474464
-protocol	c:objc(pl)GKSceneRootNodeType	-			-	-	64d3d07067e0156f
-conforms	-	GKSceneRootNodeType	NSObject		-	-	93a6ace4ccc7dee5
-interface	c:objc(cs)GKScene	-			ios=10.0/-/-/0	-	9cdd868ab26f820b
-super	-	GKScene	NSObject		-	-	a260e0bf0be20f28
-conforms	-	GKScene	NSCopying		-	-	29c8446416ed5eb1
-conforms	-	GKScene	NSSecureCoding		-	-	08c8a5b8e9b975fd
-method	c:objc(cs)GKScene(cm)sceneWithFileNamed:	-			ios=10.0/-/-/0	-	3e6dd9f46c941004
-method	c:objc(cs)GKScene(cm)sceneWithFileNamed:rootNode:	-			ios=10.0/-/-/0	-	fcda464bab1caa23
-property	c:objc(cs)GKScene(py)entities	-			ios=10.0/-/-/0	-	e2f74e72d5fd20ce
-property	c:objc(cs)GKScene(py)rootNode	-			ios=10.0/-/-/0	-	1fbcc22569fafe95
-property	c:objc(cs)GKScene(py)graphs	-			ios=10.0/-/-/0	-	30c05b47eb34659e
-method	c:objc(cs)GKScene(im)addEntity:	-			ios=10.0/-/-/0	-	dd9e0f1c74756d6b
-method	c:objc(cs)GKScene(im)removeEntity:	-			ios=10.0/-/-/0	-	2f5f8d1acaef42a8
-method	c:objc(cs)GKScene(im)addGraph:name:	-			ios=10.0/-/-/0	-	aa49d741fc0ce1e0
-method	c:objc(cs)GKScene(im)removeGraph:	-			ios=10.0/-/-/0	-	bf9f0f41de019b68
-interface	c:objc(cs)GKSKNodeComponent	-			ios=10.0/-/-/0	-	8dabe0d80ef5517f
-super	-	GKSKNodeComponent	GKComponent		-	-	437b741ebc3d2bb8
-conforms	-	GKSKNodeComponent	GKAgentDelegate		-	-	6670387e4f37a509
-method	c:objc(cs)GKSKNodeComponent(cm)componentWithNode:	-			ios=10.0/-/-/0	-	af66d725ddc694d2
-method	c:objc(cs)GKSKNodeComponent(im)initWithNode:	-			ios=10.0/-/-/0	-	9799533bd662a63e
-property	c:objc(cs)GKSKNodeComponent(py)node	-			ios=10.0/-/-/0	-	46101e7df85218e9
-category	c:objc(cy)SKNode@GameplayKit	-			-	-	3b1d948726e590ce
-method	c:objc(cs)SKNode(cm)obstaclesFromSpriteTextures:accuracy:	GameplayKit			-	-	ee1a3072cf0142a6
-method	c:objc(cs)SKNode(cm)obstaclesFromNodeBounds:	GameplayKit			-	-	fa0b7e49b793355a
-method	c:objc(cs)SKNode(cm)obstaclesFromNodePhysicsBodies:	GameplayKit			-	-	3243cbd1dd98e3b1
-property	c:objc(cs)SKNode(py)entity	GameplayKit			ios=10.0/-/-/0	-	b412b9e56e89049b
-category	c:objc(cy)SKScene@GameplayKit	-			-	-	6b662b92cb6ed9dd
-conforms	-	SKScene	GKSceneRootNodeType		-	-	2ee58c238cb7a1c9
-category	c:objc(cy)SKTileMapNode@GameplayKit	-			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	6aea3763fa32fc8a
-method	c:objc(cs)SKTileMapNode(cm)tileMapNodesWithTileSet:columns:rows:tileSize:fromNoiseMap:tileTypeNoiseMapThresholds:	GameplayKit			ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	4cb6a2beab737322
-category	c:objc(cy)SKTexture@GameplayKit	-			-	-	5f31f657dfb00ab4
-method	c:objc(cs)SKTexture(cm)textureWithNoiseMap:	GameplayKit			ios=10.0/-/-/0	-	aaf76cf36c9f0f33
-interface	c:objc(cs)GKSCNNodeComponent	-			ios=11.0/-/-/0	-	21516f1c617d13ec
-super	-	GKSCNNodeComponent	GKComponent		-	-	bd8aa20f7ff18533
-conforms	-	GKSCNNodeComponent	GKAgentDelegate		-	-	b4c6ead87fde4d57
-method	c:objc(cs)GKSCNNodeComponent(cm)componentWithNode:	-			ios=11.0/-/-/0	-	0fa61c72a0ba76e8
-method	c:objc(cs)GKSCNNodeComponent(im)initWithNode:	-			ios=11.0/-/-/0	-	37370c25b475e8c6
-property	c:objc(cs)GKSCNNodeComponent(py)node	-			ios=11.0/-/-/0	-	846e64c8f385c8bd
-category	c:objc(cy)SCNNode@GameplayKit	-			-	-	c18d895cd74de8c1
-property	c:objc(cs)SCNNode(py)entity	GameplayKit			ios=11.0/-/-/0	-	d59d398f59cc9c40
-category	c:objc(cy)SCNScene@GameplayKit	-			-	-	0a7bc5c536aa3dfe
-conforms	-	SCNScene	GKSceneRootNodeType		-	-	ef7dbcfe76592faa
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
+interface	c:objc(cs)GKComponent	-			-	-	ios=9.0/-/-/0	-	2eeb41511970ac2c
+super	-	GKComponent	NSObject		-	-	-	-	4950e2bdfeab4ddb
+conforms	-	GKComponent	NSCopying		-	-	-	-	befe3d7143870087
+conforms	-	GKComponent	NSSecureCoding		-	-	-	-	98c7706ba3f732f9
+property	c:objc(cs)GKComponent(py)entity	-			GKEntity *	readonly,weak,nonatomic	ios=9.0/-/-/0	-	51df7dddb0a124db
+method	c:objc(cs)GKComponent(im)updateWithDeltaTime:	-			void	-	ios=9.0/-/-/0	-	1698466973b4c1cf
+method	c:objc(cs)GKComponent(im)didAddToEntity	-			void	-	ios=9.0/-/-/0	-	63eabff7d40a5da9
+method	c:objc(cs)GKComponent(im)willRemoveFromEntity	-			void	-	ios=9.0/-/-/0	-	149d16dd97e517c8
+interface	c:objc(cs)GKComponentSystem	-			-	-	ios=9.0/-/-/0	-	376508885d41059d
+super	-	GKComponentSystem	NSObject		-	-	-	-	288f2aca969de120
+conforms	-	GKComponentSystem	NSFastEnumeration		-	-	-	-	ccd9fa63319ef2b4
+property	c:objc(cs)GKComponentSystem(py)componentClass	-			Class	readonly,nonatomic	ios=9.0/-/-/0	-	df01976dd203ca02
+property	c:objc(cs)GKComponentSystem(py)components	-			NSArray<ComponentType> *	readonly,retain,nonatomic	ios=9.0/-/-/0	-	ab0a61570321cdb5
+method	c:objc(cs)GKComponentSystem(im)objectAtIndexedSubscript:	-			ComponentType	-	ios=9.0/-/-/0	-	ec4d1a3a5f2baa44
+method	c:objc(cs)GKComponentSystem(im)initWithComponentClass:	-			instancetype	-	ios=9.0/-/-/0	-	06961b7a3e38a103
+method	c:objc(cs)GKComponentSystem(im)addComponent:	-			void	-	ios=9.0/-/-/0	-	c22b01ece45f865e
+method	c:objc(cs)GKComponentSystem(im)addComponentWithEntity:	-			void	-	ios=9.0/-/-/0	-	0c69e946c2bd7d6b
+method	c:objc(cs)GKComponentSystem(im)removeComponentWithEntity:	-			void	-	ios=9.0/-/-/0	-	13fc1ecf25242c03
+method	c:objc(cs)GKComponentSystem(im)removeComponent:	-			void	-	ios=9.0/-/-/0	-	a0bbb41d71cee1e0
+method	c:objc(cs)GKComponentSystem(im)updateWithDeltaTime:	-			void	-	ios=9.0/-/-/0	-	bfbbf854b23b7a13
+method	c:objc(cs)GKComponentSystem(im)classForGenericArgumentAtIndex:	-			Class	-	ios=9.0/-/-/0	-	d837d6f2c4804ede
+interface	c:objc(cs)GKObstacle	-			-	-	ios=9.0/-/-/0	-	891fe041c8e9c20d
+super	-	GKObstacle	NSObject		-	-	-	-	a4198313030de666
+interface	c:objc(cs)GKCircleObstacle	-			-	-	ios=9.0/-/-/0	-	ede7950b74092e38
+super	-	GKCircleObstacle	GKObstacle		-	-	-	-	4f19e0836cdbb722
+property	c:objc(cs)GKCircleObstacle(py)radius	-			float	assign,nonatomic	ios=9.0/-/-/0	-	29871124771da437
+property	c:objc(cs)GKCircleObstacle(py)position	-			vector_float2	assign,nonatomic	ios=9.0/-/-/0	-	4604e6f37e1d4076
+method	c:objc(cs)GKCircleObstacle(cm)obstacleWithRadius:	-			instancetype	-	ios=9.0/-/-/0	-	f004586e10652b41
+method	c:objc(cs)GKCircleObstacle(im)initWithRadius:	-			instancetype	-	ios=9.0/-/-/0	-	046425d39b0b41f0
+interface	c:objc(cs)GKPolygonObstacle	-			-	-	ios=9.0/-/-/0	-	67b5494a6f53da2c
+super	-	GKPolygonObstacle	GKObstacle		-	-	-	-	f59deea5cd28e473
+conforms	-	GKPolygonObstacle	NSSecureCoding		-	-	-	-	7ea46688b16dec5e
+property	c:objc(cs)GKPolygonObstacle(py)vertexCount	-			NSUInteger	readonly,nonatomic	ios=9.0/-/-/0	-	58f15fb46324461d
+method	c:objc(cs)GKPolygonObstacle(cm)obstacleWithPoints:count:	-			instancetype	-	ios=9.0/-/-/0	-	7098d7b6153d1dda
+method	c:objc(cs)GKPolygonObstacle(im)initWithPoints:count:	-			instancetype	-	ios=9.0/-/-/0	-	38f95dd753ae381e
+method	c:objc(cs)GKPolygonObstacle(im)vertexAtIndex:	-			vector_float2	-	ios=9.0/-/-/0	-	5875441e94a3e16f
+interface	c:objc(cs)GKSphereObstacle	-			-	-	ios=10.0/-/-/0	-	a1e9501a3b3e6337
+super	-	GKSphereObstacle	GKObstacle		-	-	-	-	e38174e4af8a69b9
+property	c:objc(cs)GKSphereObstacle(py)radius	-			float	assign,nonatomic	ios=10.0/-/-/0	-	2293fcfa04a2c0a2
+property	c:objc(cs)GKSphereObstacle(py)position	-			vector_float3	assign,nonatomic	ios=10.0/-/-/0	-	5867876215d19578
+method	c:objc(cs)GKSphereObstacle(cm)obstacleWithRadius:	-			instancetype	-	ios=10.0/-/-/0	-	c9b864748bd72a84
+method	c:objc(cs)GKSphereObstacle(im)initWithRadius:	-			instancetype	-	ios=10.0/-/-/0	-	b9edaf7cb9e5751e
+interface	c:objc(cs)GKBehavior	-			-	-	ios=9.0/-/-/0	-	e70073eec1840326
+super	-	GKBehavior	NSObject		-	-	-	-	00426b019ce8fc51
+conforms	-	GKBehavior	NSFastEnumeration		-	-	-	-	3bda983dbca0a064
+conforms	-	GKBehavior	NSCopying		-	-	-	-	e6a138ae46a43c1f
+property	c:objc(cs)GKBehavior(py)goalCount	-			NSInteger	readonly	ios=9.0/-/-/0	-	daf46056f7143dfa
+method	c:objc(cs)GKBehavior(cm)behaviorWithGoal:weight:	-			instancetype	-	ios=9.0/-/-/0	-	36809d0404b8ff76
+method	c:objc(cs)GKBehavior(cm)behaviorWithGoals:	-			instancetype	-	ios=9.0/-/-/0	-	f64ed0f63666af61
+method	c:objc(cs)GKBehavior(cm)behaviorWithGoals:andWeights:	-			instancetype	-	ios=9.0/-/-/0	-	6569fd2aff32a7ae
+method	c:objc(cs)GKBehavior(cm)behaviorWithWeightedGoals:	-			instancetype	-	ios=9.0/-/-/0	-	565b3f5f2b49b6b6
+method	c:objc(cs)GKBehavior(im)setWeight:forGoal:	-			void	-	ios=9.0/-/-/0	-	d84eff1bd1d61526
+method	c:objc(cs)GKBehavior(im)weightForGoal:	-			float	-	ios=9.0/-/-/0	-	158e5558348f051f
+method	c:objc(cs)GKBehavior(im)removeGoal:	-			void	-	ios=9.0/-/-/0	-	05726393894fda0b
+method	c:objc(cs)GKBehavior(im)removeAllGoals	-			void	-	ios=9.0/-/-/0	-	859919159fc30aa4
+method	c:objc(cs)GKBehavior(im)objectAtIndexedSubscript:	-			GKGoal *	-	ios=9.0/-/-/0	-	b168e52aaf910232
+method	c:objc(cs)GKBehavior(im)setObject:forKeyedSubscript:	-			void	-	ios=9.0/-/-/0	-	eec35deb3f6485dc
+method	c:objc(cs)GKBehavior(im)objectForKeyedSubscript:	-			NSNumber *	-	ios=9.0/-/-/0	-	0f44d55ebf1f4e76
+interface	c:objc(cs)GKGoal	-			-	-	ios=9.0/-/-/0	-	d5278e1e6179917f
+super	-	GKGoal	NSObject		-	-	-	-	ed36eb6b66187ae3
+conforms	-	GKGoal	NSCopying		-	-	-	-	527b1fe475d6270d
+method	c:objc(cs)GKGoal(cm)goalToSeekAgent:	-			instancetype	-	ios=9.0/-/-/0	-	9c048e46d2894800
+method	c:objc(cs)GKGoal(cm)goalToFleeAgent:	-			instancetype	-	ios=9.0/-/-/0	-	2992ab1823a906ef
+method	c:objc(cs)GKGoal(cm)goalToAvoidObstacles:maxPredictionTime:	-			instancetype	-	ios=9.0/-/-/0	-	9bb5e79fc378a904
+method	c:objc(cs)GKGoal(cm)goalToAvoidAgents:maxPredictionTime:	-			instancetype	-	ios=9.0/-/-/0	-	a9e07807871c71da
+method	c:objc(cs)GKGoal(cm)goalToSeparateFromAgents:maxDistance:maxAngle:	-			instancetype	-	ios=9.0/-/-/0	-	7d52ac4d18375496
+method	c:objc(cs)GKGoal(cm)goalToAlignWithAgents:maxDistance:maxAngle:	-			instancetype	-	ios=9.0/-/-/0	-	44ed944a9f14aea8
+method	c:objc(cs)GKGoal(cm)goalToCohereWithAgents:maxDistance:maxAngle:	-			instancetype	-	ios=9.0/-/-/0	-	67e2745e2e5db03d
+method	c:objc(cs)GKGoal(cm)goalToReachTargetSpeed:	-			instancetype	-	ios=9.0/-/-/0	-	e38a2eb367d1682d
+method	c:objc(cs)GKGoal(cm)goalToWander:	-			instancetype	-	ios=9.0/-/-/0	-	973a2e6557f026c2
+method	c:objc(cs)GKGoal(cm)goalToInterceptAgent:maxPredictionTime:	-			instancetype	-	ios=9.0/-/-/0	-	89d185966471e3ff
+method	c:objc(cs)GKGoal(cm)goalToFollowPath:maxPredictionTime:forward:	-			instancetype	-	ios=9.0/-/-/0	-	7fd77a813d7ae78f
+method	c:objc(cs)GKGoal(cm)goalToStayOnPath:maxPredictionTime:	-			instancetype	-	ios=9.0/-/-/0	-	af4524f38645e5a2
+protocol	c:objc(pl)GKAgentDelegate	-			-	-	-	-	bf5e46059882bc5d
+conforms	-	GKAgentDelegate	NSObject		-	-	-	-	5b479dec64f09a32
+method	c:objc(pl)GKAgentDelegate(im)agentWillUpdate:	-			void	optional	-	-	86abdc78869ac45d
+method	c:objc(pl)GKAgentDelegate(im)agentDidUpdate:	-			void	optional	-	-	60c01b25c08997eb
+interface	c:objc(cs)GKAgent	-			-	-	ios=9.0/-/-/0	-	290642375ee36209
+super	-	GKAgent	GKComponent		-	-	-	-	c42e239d31a7ffa1
+conforms	-	GKAgent	NSSecureCoding		-	-	-	-	9981fef2e4a38e24
+property	c:objc(cs)GKAgent(py)delegate	-			id<GKAgentDelegate>	weak,nonatomic	ios=9.0/-/-/0	-	e184981a95d82926
+property	c:objc(cs)GKAgent(py)behavior	-			GKBehavior *	retain,nonatomic	ios=9.0/-/-/0	-	2effdb3c45bee6a4
+property	c:objc(cs)GKAgent(py)mass	-			float	nonatomic	ios=9.0/-/-/0	-	0c53fe8fb8f86ec8
+property	c:objc(cs)GKAgent(py)radius	-			float	nonatomic	ios=9.0/-/-/0	-	ac6e6772e918540b
+property	c:objc(cs)GKAgent(py)speed	-			float	nonatomic	ios=9.0/-/-/0	-	e99d411b7aa34ae5
+property	c:objc(cs)GKAgent(py)maxAcceleration	-			float	nonatomic	ios=9.0/-/-/0	-	5ec128aa0d9093c1
+property	c:objc(cs)GKAgent(py)maxSpeed	-			float	nonatomic	ios=9.0/-/-/0	-	6767f39ec2a32796
+interface	c:objc(cs)GKAgent2D	-			-	-	ios=9.0/-/-/0	-	cf888fad8d814343
+super	-	GKAgent2D	GKAgent		-	-	-	-	dfde3481d9c486e6
+conforms	-	GKAgent2D	NSSecureCoding		-	-	-	-	43d1245756f2a483
+property	c:objc(cs)GKAgent2D(py)position	-			vector_float2	assign,nonatomic	ios=9.0/-/-/0	-	c95d4a4ab443cc93
+property	c:objc(cs)GKAgent2D(py)velocity	-			vector_float2	readonly,nonatomic	ios=9.0/-/-/0	-	250b695e91ae1223
+property	c:objc(cs)GKAgent2D(py)rotation	-			float	nonatomic	ios=9.0/-/-/0	-	405769adda950b38
+method	c:objc(cs)GKAgent2D(im)updateWithDeltaTime:	-			void	-	ios=9.0/-/-/0	-	dad2da0893d7c470
+interface	c:objc(cs)GKAgent3D	-			-	-	ios=9.0/-/-/0	-	abc79d1ae27528b1
+super	-	GKAgent3D	GKAgent		-	-	-	-	b5e83d0fd14ea131
+property	c:objc(cs)GKAgent3D(py)position	-			vector_float3	assign,nonatomic	ios=9.0/-/-/0	-	69822aac2148b421
+property	c:objc(cs)GKAgent3D(py)velocity	-			vector_float3	readonly,nonatomic	ios=9.0/-/-/0	-	c4e7f88c787b3f5f
+property	c:objc(cs)GKAgent3D(py)rightHanded	-			BOOL	nonatomic	ios=9.0/-/-/0	-	8fda4c57472e0f57
+property	c:objc(cs)GKAgent3D(py)rotation	-			matrix_float3x3	assign,nonatomic	ios=9.0/-/-/0	-	f726787ab03ca29e
+method	c:objc(cs)GKAgent3D(im)updateWithDeltaTime:	-			void	-	ios=9.0/-/-/0	-	9d1aacf403de5a6a
+interface	c:objc(cs)GKCompositeBehavior	-			-	-	-	-	807ecc1109590736
+super	-	GKCompositeBehavior	GKBehavior		-	-	-	-	2b78a70d93c7d265
+property	c:objc(cs)GKCompositeBehavior(py)behaviorCount	-			NSInteger	readonly	-	-	49e32cdddc2c6978
+method	c:objc(cs)GKCompositeBehavior(cm)behaviorWithBehaviors:	-			instancetype	-	-	-	4621054143a20a09
+method	c:objc(cs)GKCompositeBehavior(cm)behaviorWithBehaviors:andWeights:	-			instancetype	-	-	-	e9c360582eb0f335
+method	c:objc(cs)GKCompositeBehavior(im)setWeight:forBehavior:	-			void	-	-	-	922d9eb6bb0625bc
+method	c:objc(cs)GKCompositeBehavior(im)weightForBehavior:	-			float	-	-	-	2f1327ffefc0ae68
+method	c:objc(cs)GKCompositeBehavior(im)removeBehavior:	-			void	-	-	-	449c65d4fee1c9cc
+method	c:objc(cs)GKCompositeBehavior(im)removeAllBehaviors	-			void	-	-	-	3f3a3ed1dd8b9392
+method	c:objc(cs)GKCompositeBehavior(im)objectAtIndexedSubscript:	-			GKBehavior *	-	-	-	17714083c603d1b0
+method	c:objc(cs)GKCompositeBehavior(im)setObject:forKeyedSubscript:	-			void	-	-	-	805aea95b10515f3
+method	c:objc(cs)GKCompositeBehavior(im)objectForKeyedSubscript:	-			NSNumber *	-	-	-	f901b094d03c6ca1
+interface	c:objc(cs)GKEntity	-			-	-	ios=9.0/-/-/0	-	5589d6c306d9362c
+super	-	GKEntity	NSObject		-	-	-	-	f08b361dc99fd108
+conforms	-	GKEntity	NSCopying		-	-	-	-	100a8c9fafbe627d
+conforms	-	GKEntity	NSSecureCoding		-	-	-	-	0a10f9191bedf3c2
+method	c:objc(cs)GKEntity(cm)entity	-			instancetype	-	ios=9.0/-/-/0	-	d63b9d9a2fe166a1
+method	c:objc(cs)GKEntity(im)init	-			instancetype	-	ios=9.0/-/-/0	-	c76ec157ead95475
+method	c:objc(cs)GKEntity(im)updateWithDeltaTime:	-			void	-	ios=9.0/-/-/0	-	c1b70fbc1b4742a8
+property	c:objc(cs)GKEntity(py)components	-			NSArray<GKComponent *> *	readonly,retain,nonatomic	ios=9.0/-/-/0	-	08aa64bf5f9c2023
+method	c:objc(cs)GKEntity(im)addComponent:	-			void	-	ios=9.0/-/-/0	-	3c236fd01a7f0087
+method	c:objc(cs)GKEntity(im)removeComponentForClass:	-			void	-	ios=9.0/-/-/0	-	94f98c4cac4bed80
+method	c:objc(cs)GKEntity(im)componentForClass:	-			GKComponent *	-	swift=-/-/-/1	-	3976b086363d34dd
+protocol	c:objc(pl)GKGameModelUpdate	-			-	-	-	-	df294846687fd7a3
+conforms	-	GKGameModelUpdate	NSObject		-	-	-	-	4cdc6c7f3e5d914c
+property	c:objc(pl)GKGameModelUpdate(py)value	-			NSInteger	assign,nonatomic	-	-	df3a621d2c30c814
+protocol	c:objc(pl)GKGameModelPlayer	-			-	-	-	-	c6083beddfa8c1cd
+conforms	-	GKGameModelPlayer	NSObject		-	-	-	-	075bb28e962fd7c0
+property	c:objc(pl)GKGameModelPlayer(py)playerId	-			NSInteger	readonly,nonatomic	-	-	69246b874c5c9045
+protocol	c:objc(pl)GKGameModel	-			-	-	-	-	4168243cdbd49e9a
+conforms	-	GKGameModel	NSObject		-	-	-	-	1ce906f5acc1b768
+conforms	-	GKGameModel	NSCopying		-	-	-	-	f13cbfc1645ff591
+property	c:objc(pl)GKGameModel(py)players	-			NSArray<id<GKGameModelPlayer>> *	readonly,nonatomic	-	-	475fcdd1f2053f1e
+property	c:objc(pl)GKGameModel(py)activePlayer	-			id<GKGameModelPlayer>	readonly,nonatomic	-	-	03c75ac47776739c
+method	c:objc(pl)GKGameModel(im)setGameModel:	-			void	-	-	-	1f7024257fc33ef5
+method	c:objc(pl)GKGameModel(im)gameModelUpdatesForPlayer:	-			NSArray<id<GKGameModelUpdate>> *	-	-	-	e5a3b79066adc052
+method	c:objc(pl)GKGameModel(im)applyGameModelUpdate:	-			void	-	-	-	80e427f20bcd2334
+method	c:objc(pl)GKGameModel(im)scoreForPlayer:	-			NSInteger	optional	-	-	78dd62b4038f3bb6
+method	c:objc(pl)GKGameModel(im)isWinForPlayer:	-			BOOL	optional	-	-	99210aacf07477c5
+method	c:objc(pl)GKGameModel(im)isLossForPlayer:	-			BOOL	optional	-	-	55681b9674fc17fc
+method	c:objc(pl)GKGameModel(im)unapplyGameModelUpdate:	-			void	optional	-	-	fc33ab4406cea0a8
+interface	c:objc(cs)GKGraph	-			-	-	ios=9.0/-/-/0	-	5d4581115e9e79c4
+super	-	GKGraph	NSObject		-	-	-	-	24f4fab366b20bf1
+conforms	-	GKGraph	NSCopying		-	-	-	-	dad42099cec4a744
+conforms	-	GKGraph	NSSecureCoding		-	-	-	-	400e9c9658555647
+property	c:objc(cs)GKGraph(py)nodes	-			NSArray<GKGraphNode *> *	readonly,nonatomic	ios=9.0/-/-/0	-	9de1407961d9df7c
+method	c:objc(cs)GKGraph(cm)graphWithNodes:	-			instancetype	-	ios=9.0/-/-/0	-	76e087971cc28242
+method	c:objc(cs)GKGraph(im)initWithNodes:	-			instancetype	-	ios=9.0/-/-/0	-	6bcbff88b36dfff4
+method	c:objc(cs)GKGraph(im)connectNodeToLowestCostNode:bidirectional:	-			void	-	ios=9.0/-/-/0	-	2a27ee880eda3c26
+method	c:objc(cs)GKGraph(im)removeNodes:	-			void	-	ios=9.0/-/-/0	-	84005a5c2da5c93a
+method	c:objc(cs)GKGraph(im)addNodes:	-			void	-	ios=9.0/-/-/0	-	85eb18b5988023a9
+method	c:objc(cs)GKGraph(im)findPathFromNode:toNode:	-			NSArray<__kindof GKGraphNode *> *	-	ios=9.0/-/-/0	-	55b835422261a60b
+interface	c:objc(cs)GKGridGraph	-			-	-	ios=9.0/-/-/0	-	f3995562c5a9b0dc
+super	-	GKGridGraph	GKGraph		-	-	-	-	c7cb69426c5e6866
+property	c:objc(cs)GKGridGraph(py)gridOrigin	-			vector_int2	readonly,nonatomic	ios=9.0/-/-/0	-	a382a111aa324f6e
+property	c:objc(cs)GKGridGraph(py)gridWidth	-			NSUInteger	readonly,nonatomic	ios=9.0/-/-/0	-	5449e5e3cd9f6f33
+property	c:objc(cs)GKGridGraph(py)gridHeight	-			NSUInteger	readonly,nonatomic	ios=9.0/-/-/0	-	c35b045b61a67dc0
+property	c:objc(cs)GKGridGraph(py)diagonalsAllowed	-			BOOL	readonly,nonatomic	ios=9.0/-/-/0	-	28900fda1fbc7640
+method	c:objc(cs)GKGridGraph(cm)graphFromGridStartingAt:width:height:diagonalsAllowed:	-			instancetype	-	ios=9.0/-/-/0	-	05ca1d0046fc04e0
+method	c:objc(cs)GKGridGraph(im)initFromGridStartingAt:width:height:diagonalsAllowed:	-			instancetype	-	ios=9.0/-/-/0	-	bc71e9843fcaace8
+method	c:objc(cs)GKGridGraph(cm)graphFromGridStartingAt:width:height:diagonalsAllowed:nodeClass:	-			instancetype	-	ios=9.0/-/-/0	-	89f450fba1619c90
+method	c:objc(cs)GKGridGraph(im)initFromGridStartingAt:width:height:diagonalsAllowed:nodeClass:	-			instancetype	-	ios=9.0/-/-/0	-	05f7a964387e5f5c
+method	c:objc(cs)GKGridGraph(im)nodeAtGridPosition:	-			NodeType	-	ios=9.0/-/-/0	-	aaad93a2942fdcd0
+method	c:objc(cs)GKGridGraph(im)connectNodeToAdjacentNodes:	-			void	-	ios=9.0/-/-/0	-	6c338cb7fa3f641e
+method	c:objc(cs)GKGridGraph(im)classForGenericArgumentAtIndex:	-			Class	-	ios=9.0/-/-/0	-	aa5f55921fb4722f
+interface	c:objc(cs)GKObstacleGraph	-			-	-	ios=9.0/-/-/0	-	319f45435d06693e
+super	-	GKObstacleGraph	GKGraph		-	-	-	-	1e5df4cc52448b52
+property	c:objc(cs)GKObstacleGraph(py)obstacles	-			NSArray<GKPolygonObstacle *> *	readonly,nonatomic	ios=9.0/-/-/0	-	a16fbb62b1ec3e38
+property	c:objc(cs)GKObstacleGraph(py)bufferRadius	-			float	readonly,nonatomic	ios=9.0/-/-/0	-	b32c87a8d211fa5a
+method	c:objc(cs)GKObstacleGraph(cm)graphWithObstacles:bufferRadius:	-			instancetype	-	ios=9.0/-/-/0	-	047f01da08d6644d
+method	c:objc(cs)GKObstacleGraph(im)initWithObstacles:bufferRadius:	-			instancetype	-	ios=9.0/-/-/0	-	da909268cc06e799
+method	c:objc(cs)GKObstacleGraph(cm)graphWithObstacles:bufferRadius:nodeClass:	-			instancetype	-	ios=9.0/-/-/0	-	dd7f561efb90b554
+method	c:objc(cs)GKObstacleGraph(im)initWithObstacles:bufferRadius:nodeClass:	-			instancetype	-	ios=9.0/-/-/0	-	d552a3759eba6d40
+method	c:objc(cs)GKObstacleGraph(im)connectNodeUsingObstacles:	-			void	-	ios=9.0/-/-/0	-	14185b65f772a9e6
+method	c:objc(cs)GKObstacleGraph(im)connectNodeUsingObstacles:ignoringObstacles:	-			void	-	ios=9.0/-/-/0	-	435055d484cbe809
+method	c:objc(cs)GKObstacleGraph(im)connectNodeUsingObstacles:ignoringBufferRadiusOfObstacles:	-			void	-	ios=9.0/-/-/0	-	6056b146f2b436aa
+method	c:objc(cs)GKObstacleGraph(im)addObstacles:	-			void	-	ios=9.0/-/-/0	-	6f86c7c3a4ccd4ed
+method	c:objc(cs)GKObstacleGraph(im)removeObstacles:	-			void	-	ios=9.0/-/-/0	-	6bce867b72010553
+method	c:objc(cs)GKObstacleGraph(im)removeAllObstacles	-			void	-	ios=9.0/-/-/0	-	57252c5deacda39f
+method	c:objc(cs)GKObstacleGraph(im)nodesForObstacle:	-			NSArray<NodeType> *	-	ios=9.0/-/-/0	-	46fdf715fa088355
+method	c:objc(cs)GKObstacleGraph(im)lockConnectionFromNode:toNode:	-			void	-	ios=9.0/-/-/0	-	979b029ca97f2ee7
+method	c:objc(cs)GKObstacleGraph(im)unlockConnectionFromNode:toNode:	-			void	-	ios=9.0/-/-/0	-	cd0bf13f12a0858d
+method	c:objc(cs)GKObstacleGraph(im)isConnectionLockedFromNode:toNode:	-			BOOL	-	ios=9.0/-/-/0	-	814cac621be7f743
+method	c:objc(cs)GKObstacleGraph(im)classForGenericArgumentAtIndex:	-			Class	-	ios=9.0/-/-/0	-	f65412c90491cefc
+interface	c:objc(cs)GKGraphNode	-			-	-	ios=9.0/-/-/0	-	8614442b3a0d930b
+super	-	GKGraphNode	NSObject		-	-	-	-	16ce082ee3d9d87c
+conforms	-	GKGraphNode	NSSecureCoding		-	-	-	-	6ff3ca256cf2d2f0
+property	c:objc(cs)GKGraphNode(py)connectedNodes	-			NSArray<GKGraphNode *> *	readonly,nonatomic	ios=9.0/-/-/0	-	16c794fc39bcab21
+method	c:objc(cs)GKGraphNode(im)addConnectionsToNodes:bidirectional:	-			void	-	ios=9.0/-/-/0	-	49d51700130e1c6a
+method	c:objc(cs)GKGraphNode(im)removeConnectionsToNodes:bidirectional:	-			void	-	ios=9.0/-/-/0	-	8ebb8dd900ed705c
+method	c:objc(cs)GKGraphNode(im)estimatedCostToNode:	-			float	-	ios=9.0/-/-/0	-	f9fe1a453fb67f9b
+method	c:objc(cs)GKGraphNode(im)costToNode:	-			float	-	ios=9.0/-/-/0	-	af3d5751004fa8f7
+method	c:objc(cs)GKGraphNode(im)findPathToNode:	-			NSArray<__kindof GKGraphNode *> *	-	ios=9.0/-/-/0	-	91c5f05881619a83
+method	c:objc(cs)GKGraphNode(im)findPathFromNode:	-			NSArray<__kindof GKGraphNode *> *	-	ios=9.0/-/-/0	-	904048a42a500013
+interface	c:objc(cs)GKGraphNode2D	-			-	-	ios=9.0/-/-/0	-	dec516e9ed399c3e
+super	-	GKGraphNode2D	GKGraphNode		-	-	-	-	e10af43f42cbecab
+property	c:objc(cs)GKGraphNode2D(py)position	-			vector_float2	nonatomic	ios=9.0/-/-/0	-	3a3db5e62a3559eb
+method	c:objc(cs)GKGraphNode2D(cm)nodeWithPoint:	-			instancetype	-	ios=9.0/-/-/0	-	34ab786b43f81539
+method	c:objc(cs)GKGraphNode2D(im)initWithPoint:	-			instancetype	-	ios=9.0/-/-/0	-	9ecc66cd3f9425ac
+interface	c:objc(cs)GKGraphNode3D	-			-	-	ios=10.0/-/-/0	-	a25071780235e444
+super	-	GKGraphNode3D	GKGraphNode		-	-	-	-	7f2bd18a263da560
+property	c:objc(cs)GKGraphNode3D(py)position	-			vector_float3	nonatomic	ios=10.0/-/-/0	-	9903426f7ba28717
+method	c:objc(cs)GKGraphNode3D(cm)nodeWithPoint:	-			instancetype	-	ios=10.0/-/-/0	-	ce1959549ab261a2
+method	c:objc(cs)GKGraphNode3D(im)initWithPoint:	-			instancetype	-	ios=10.0/-/-/0	-	ff34599fa0766851
+interface	c:objc(cs)GKGridGraphNode	-			-	-	ios=9.0/-/-/0	-	5d4b58fe155703cc
+super	-	GKGridGraphNode	GKGraphNode		-	-	-	-	5c7cc3119cc90e0e
+property	c:objc(cs)GKGridGraphNode(py)gridPosition	-			vector_int2	readonly,nonatomic	ios=9.0/-/-/0	-	ca64761a59ff0ef2
+method	c:objc(cs)GKGridGraphNode(cm)nodeWithGridPosition:	-			instancetype	-	ios=9.0/-/-/0	-	f8beed0c72a37eb7
+method	c:objc(cs)GKGridGraphNode(im)initWithGridPosition:	-			instancetype	-	ios=9.0/-/-/0	-	edf7fedab2511770
+protocol	c:objc(pl)GKRandom	-			-	-	-	-	1fe27f2b573e0ac3
+method	c:objc(pl)GKRandom(im)nextInt	-			NSInteger	-	-	-	8930a0b25e3b2980
+method	c:objc(pl)GKRandom(im)nextIntWithUpperBound:	-			NSUInteger	-	-	-	9a8064d9b30cb3a0
+method	c:objc(pl)GKRandom(im)nextUniform	-			float	-	-	-	82c523395fac0632
+method	c:objc(pl)GKRandom(im)nextBool	-			BOOL	-	-	-	b174f2c94f4fc9f6
+interface	c:objc(cs)GKRandomSource	-			-	-	ios=9.0/-/-/0	-	fa4325351d3001be
+super	-	GKRandomSource	NSObject		-	-	-	-	fdc15dcc55ff1b56
+conforms	-	GKRandomSource	GKRandom		-	-	-	-	e6bef24dcb479e50
+conforms	-	GKRandomSource	NSSecureCoding		-	-	-	-	03f40fc7aaab8de4
+conforms	-	GKRandomSource	NSCopying		-	-	-	-	50e13fdb517935d1
+method	c:objc(cs)GKRandomSource(im)init	-			instancetype	-	ios=9.0/-/-/0	-	61b980dacdbe0fa6
+method	c:objc(cs)GKRandomSource(im)initWithCoder:	-			instancetype	-	ios=9.0/-/-/0	-	7a77c48eb8ce1f5a
+method	c:objc(cs)GKRandomSource(cm)sharedRandom	-			GKRandomSource *	-	ios=9.0/-/-/0	-	a401adabe399b4ad
+method	c:objc(cs)GKRandomSource(im)arrayByShufflingObjectsInArray:	-			NSArray *	-	ios=9.0/-/-/0	-	dcdab015073f14d3
+category	c:objc(cy)NSArray@GameplayKit	-			-	-	-	-	3c976edbffe66cd8
+method	c:objc(cs)NSArray(im)shuffledArrayWithRandomSource:	GameplayKit			NSArray<ObjectType> *	-	-	-	a564e32e0f863af1
+method	c:objc(cs)NSArray(im)shuffledArray	GameplayKit			NSArray<ObjectType> *	-	-	-	7d1e6624be2de978
+interface	c:objc(cs)GKARC4RandomSource	-			-	-	ios=9.0/-/-/0	-	b82804847c868fed
+super	-	GKARC4RandomSource	GKRandomSource		-	-	-	-	edbbe2c454c4e13c
+property	c:objc(cs)GKARC4RandomSource(py)seed	-			NSData *	copy,nonatomic	ios=9.0/-/-/0	-	e08fceebf5951283
+method	c:objc(cs)GKARC4RandomSource(im)init	-			instancetype	-	ios=9.0/-/-/0	-	b4df77337f0eaedd
+method	c:objc(cs)GKARC4RandomSource(im)initWithSeed:	-			instancetype	-	ios=9.0/-/-/0	-	0e3ad411199de634
+method	c:objc(cs)GKARC4RandomSource(im)dropValuesWithCount:	-			void	-	ios=9.0/-/-/0	-	af277b5db9d53b6f
+interface	c:objc(cs)GKLinearCongruentialRandomSource	-			-	-	ios=9.0/-/-/0	-	b737c569d365d7da
+super	-	GKLinearCongruentialRandomSource	GKRandomSource		-	-	-	-	ac268272c5e3b25b
+property	c:objc(cs)GKLinearCongruentialRandomSource(py)seed	-			uint64_t	assign,nonatomic	ios=9.0/-/-/0	-	f96df14b03a1ddce
+method	c:objc(cs)GKLinearCongruentialRandomSource(im)init	-			instancetype	-	ios=9.0/-/-/0	-	a178a0f3d5e79681
+method	c:objc(cs)GKLinearCongruentialRandomSource(im)initWithSeed:	-			instancetype	-	ios=9.0/-/-/0	-	8bb4197d3e523695
+interface	c:objc(cs)GKMersenneTwisterRandomSource	-			-	-	ios=9.0/-/-/0	-	0ce21bd9a4618e15
+super	-	GKMersenneTwisterRandomSource	GKRandomSource		-	-	-	-	d8b13178dcda21f4
+property	c:objc(cs)GKMersenneTwisterRandomSource(py)seed	-			uint64_t	assign,nonatomic	ios=9.0/-/-/0	-	ba9d440173dbaf77
+method	c:objc(cs)GKMersenneTwisterRandomSource(im)init	-			instancetype	-	ios=9.0/-/-/0	-	9f1282b529c0cf7b
+method	c:objc(cs)GKMersenneTwisterRandomSource(im)initWithSeed:	-			instancetype	-	ios=9.0/-/-/0	-	33657321b1aca648
+protocol	c:objc(pl)GKStrategist	-			-	-	-	-	fd29e061e4b616d4
+conforms	-	GKStrategist	NSObject		-	-	-	-	c2b31d5e903eb874
+property	c:objc(pl)GKStrategist(py)gameModel	-			id<GKGameModel>	retain,nonatomic	-	-	a35e88eae17e0df3
+property	c:objc(pl)GKStrategist(py)randomSource	-			id<GKRandom>	retain,nonatomic	-	-	ab4b60e9fb2ad55d
+method	c:objc(pl)GKStrategist(im)bestMoveForActivePlayer	-			id<GKGameModelUpdate>	-	-	-	e703578db3bee53b
+struct	c:@S@GKBox	-			-	-	-	-	60b46adc830dfdcb
+field	c:@S@GKBox@FI@boxMin	GKBox			vector_float3	-	-	-	9c4e9c74938be900
+field	c:@S@GKBox@FI@boxMax	GKBox			vector_float3	-	-	-	93652a97bc82b87e
+typedef	c:@T@GKBox	-			struct GKBox	-	-	-	3b76a40328868757
+struct	c:@S@GKQuad	-			-	-	-	-	fc2f59761385e37a
+field	c:@S@GKQuad@FI@quadMin	GKQuad			vector_float2	-	-	-	258780e023009cae
+field	c:@S@GKQuad@FI@quadMax	GKQuad			vector_float2	-	-	-	a4bcfc0df0c7d3a9
+typedef	c:@T@GKQuad	-			struct GKQuad	-	-	-	0a66db5feaadaaf9
+struct	c:@S@GKTriangle	-			-	-	-	-	5f703cd4c111f989
+field	c:@S@GKTriangle@FI@points	GKTriangle			vector_float3[3]	-	-	-	bd03b3211350e836
+typedef	c:@T@GKTriangle	-			struct GKTriangle	-	-	-	9228708777faf21b
+typedef	c:@T@GKMeshGraphTriangulationMode	-			enum GKMeshGraphTriangulationMode	-	-	-	aa27a040ecdaa1c1
+enum	c:@E@GKMeshGraphTriangulationMode	-			NSUInteger	-	-	-	0dbc82fc522840e7
+enumconst	c:@E@GKMeshGraphTriangulationMode@GKMeshGraphTriangulationModeVertices	GKMeshGraphTriangulationMode			-	-	-	-	ea8d34536b45acf9
+enumconst	c:@E@GKMeshGraphTriangulationMode@GKMeshGraphTriangulationModeCenters	GKMeshGraphTriangulationMode			-	-	-	-	02817800df6c9e47
+enumconst	c:@E@GKMeshGraphTriangulationMode@GKMeshGraphTriangulationModeEdgeMidpoints	GKMeshGraphTriangulationMode			-	-	-	-	a0d2d6f44480c356
+interface	c:objc(cs)GKMeshGraph	-			-	-	ios=10.0/-/-/0	-	c9c82e57716dbf42
+super	-	GKMeshGraph	GKGraph		-	-	-	-	4119942263db8d06
+property	c:objc(cs)GKMeshGraph(py)obstacles	-			NSArray<GKPolygonObstacle *> *	readonly,nonatomic	ios=10.0/-/-/0	-	56a2be8b1fb9c3ba
+property	c:objc(cs)GKMeshGraph(py)bufferRadius	-			float	readonly,nonatomic	ios=10.0/-/-/0	-	9bec9a92d632e60f
+property	c:objc(cs)GKMeshGraph(py)triangulationMode	-			GKMeshGraphTriangulationMode	nonatomic	ios=10.0/-/-/0	-	1d774af34e464d72
+property	c:objc(cs)GKMeshGraph(py)triangleCount	-			NSUInteger	readonly,nonatomic	ios=10.0/-/-/0	-	b20dd41e737bd2b7
+method	c:objc(cs)GKMeshGraph(cm)graphWithBufferRadius:minCoordinate:maxCoordinate:nodeClass:	-			instancetype	-	ios=10.0/-/-/0	-	8464c54af54757ba
+method	c:objc(cs)GKMeshGraph(im)initWithBufferRadius:minCoordinate:maxCoordinate:nodeClass:	-			instancetype	-	ios=10.0/-/-/0	-	441cb6afe9f60cd5
+method	c:objc(cs)GKMeshGraph(cm)graphWithBufferRadius:minCoordinate:maxCoordinate:	-			instancetype	-	ios=10.0/-/-/0	-	7504dad4136ba633
+method	c:objc(cs)GKMeshGraph(im)initWithBufferRadius:minCoordinate:maxCoordinate:	-			instancetype	-	ios=10.0/-/-/0	-	faa333fcb3672b4e
+method	c:objc(cs)GKMeshGraph(im)addObstacles:	-			void	-	ios=10.0/-/-/0	-	1dc771cdabdf6423
+method	c:objc(cs)GKMeshGraph(im)removeObstacles:	-			void	-	ios=10.0/-/-/0	-	4cde603b0f579405
+method	c:objc(cs)GKMeshGraph(im)connectNodeUsingObstacles:	-			void	-	ios=10.0/-/-/0	-	071a38771f2a538a
+method	c:objc(cs)GKMeshGraph(im)triangulate	-			void	-	ios=10.0/-/-/0	-	7bebe85eb0376043
+method	c:objc(cs)GKMeshGraph(im)triangleAtIndex:	-			GKTriangle	-	ios=10.0/-/-/0	-	2b9080eb1fb72bac
+method	c:objc(cs)GKMeshGraph(im)classForGenericArgumentAtIndex:	-			Class	-	ios=10.0/-/-/0	-	f12cbf1e92e3f295
+interface	c:objc(cs)GKMinmaxStrategist	-			-	-	ios=9.0/-/-/0	-	3e13bacc330ecadf
+super	-	GKMinmaxStrategist	NSObject		-	-	-	-	a20c1b8fdd914d09
+conforms	-	GKMinmaxStrategist	GKStrategist		-	-	-	-	818594e6fd3dd568
+property	c:objc(cs)GKMinmaxStrategist(py)maxLookAheadDepth	-			NSInteger	assign,nonatomic	ios=9.0/-/-/0	-	42afbfae2124226d
+method	c:objc(cs)GKMinmaxStrategist(im)bestMoveForPlayer:	-			id<GKGameModelUpdate>	-	ios=9.0/-/-/0	-	4b794ec6a2d1f4fb
+method	c:objc(cs)GKMinmaxStrategist(im)randomMoveForPlayer:fromNumberOfBestMoves:	-			id<GKGameModelUpdate>	-	ios=9.0/-/-/0	-	9d1c5c9e665cde4e
+interface	c:objc(cs)GKMonteCarloStrategist	-			-	-	ios=10.0/-/-/0	-	4dea64a44abff91c
+super	-	GKMonteCarloStrategist	NSObject		-	-	-	-	b5260b7fa4a51861
+conforms	-	GKMonteCarloStrategist	GKStrategist		-	-	-	-	e6c7527541ee408b
+property	c:objc(cs)GKMonteCarloStrategist(py)budget	-			NSUInteger	assign,nonatomic	ios=10.0/-/-/0	-	fc0e9095e9970a1a
+property	c:objc(cs)GKMonteCarloStrategist(py)explorationParameter	-			NSUInteger	assign,nonatomic	ios=10.0/-/-/0	-	5bfc84d3086e664b
+interface	c:objc(cs)GKDecisionNode	-			-	-	ios=10.0/-/-/0	-	3da22a49660a1133
+super	-	GKDecisionNode	NSObject		-	-	-	-	1b6743e7f024234a
+method	c:objc(cs)GKDecisionNode(im)createBranchWithValue:attribute:	-			instancetype	-	ios=10.0/-/-/0	-	e7ad6ff621bbaba0
+method	c:objc(cs)GKDecisionNode(im)createBranchWithPredicate:attribute:	-			instancetype	-	ios=10.0/-/-/0	-	0393926b6d47d2b8
+method	c:objc(cs)GKDecisionNode(im)createBranchWithWeight:attribute:	-			instancetype	-	ios=10.0/-/-/0	-	1436205b56b9277a
+interface	c:objc(cs)GKDecisionTree	-			-	-	ios=10.0/-/-/0	-	f459fc3642cdd49d
+super	-	GKDecisionTree	NSObject		-	-	-	-	423178e6da9a0a62
+conforms	-	GKDecisionTree	NSSecureCoding		-	-	-	-	458c363a0ea22eaf
+property	c:objc(cs)GKDecisionTree(py)rootNode	-			GKDecisionNode *	readonly,nonatomic	ios=10.0/-/-/0	-	10415b4c30ebb604
+property	c:objc(cs)GKDecisionTree(py)randomSource	-			GKRandomSource *	copy,nonatomic	ios=10.0/-/-/0	-	4e821ba8b3f17377
+method	c:objc(cs)GKDecisionTree(im)initWithAttribute:	-			instancetype	-	ios=10.0/-/-/0	-	742221cfa41eee57
+method	c:objc(cs)GKDecisionTree(im)initWithExamples:actions:attributes:	-			instancetype	-	ios=10.0/-/-/0	-	7269733798ec7d86
+method	c:objc(cs)GKDecisionTree(im)initWithURL:error:	-			instancetype	-	ios=10.0/-/-/0	-	219f28259f48e788
+method	c:objc(cs)GKDecisionTree(im)exportToURL:error:	-			BOOL	-	ios=10.0/-/-/0	-	6f3c4cf200c59a26
+method	c:objc(cs)GKDecisionTree(im)findActionForAnswers:	-			id<NSObject>	-	ios=10.0/-/-/0	-	b6409fdc88117a2b
+interface	c:objc(cs)GKNoiseSource	-			-	-	ios=10.0/-/-/0	-	6ff84d984edb103e
+super	-	GKNoiseSource	NSObject		-	-	-	-	b75acd5b46a9f403
+interface	c:objc(cs)GKCoherentNoiseSource	-			-	-	ios=10.0/-/-/0	-	b86d202d9bf0df35
+super	-	GKCoherentNoiseSource	GKNoiseSource		-	-	-	-	0e1461aee4de47f8
+property	c:objc(cs)GKCoherentNoiseSource(py)frequency	-			double	nonatomic	ios=10.0/-/-/0	-	61b25fe9260458a3
+property	c:objc(cs)GKCoherentNoiseSource(py)octaveCount	-			NSInteger	nonatomic	ios=10.0/-/-/0	-	4068800fb0ae309a
+property	c:objc(cs)GKCoherentNoiseSource(py)lacunarity	-			double	nonatomic	ios=10.0/-/-/0	-	9c518caa2fed3058
+property	c:objc(cs)GKCoherentNoiseSource(py)seed	-			int32_t	nonatomic	ios=10.0/-/-/0	-	dd6afca9b26ba31a
+interface	c:objc(cs)GKPerlinNoiseSource	-			-	-	ios=10.0/-/-/0	-	e3e47052ab1b6850
+super	-	GKPerlinNoiseSource	GKCoherentNoiseSource		-	-	-	-	660f0edcfb33ffda
+property	c:objc(cs)GKPerlinNoiseSource(py)persistence	-			double	nonatomic	ios=10.0/-/-/0	-	af73c93531fce1ea
+method	c:objc(cs)GKPerlinNoiseSource(cm)perlinNoiseSourceWithFrequency:octaveCount:persistence:lacunarity:seed:	-			instancetype	-	ios=10.0/-/-/0	-	9b22ef3dfbc2725c
+method	c:objc(cs)GKPerlinNoiseSource(im)initWithFrequency:octaveCount:persistence:lacunarity:seed:	-			instancetype	-	ios=10.0/-/-/0	-	aee93859a07cff4b
+interface	c:objc(cs)GKBillowNoiseSource	-			-	-	ios=10.0/-/-/0	-	64000e27c3068782
+super	-	GKBillowNoiseSource	GKCoherentNoiseSource		-	-	-	-	c1cfe49bf8148d30
+property	c:objc(cs)GKBillowNoiseSource(py)persistence	-			double	nonatomic	ios=10.0/-/-/0	-	04a2ae98d4917428
+method	c:objc(cs)GKBillowNoiseSource(cm)billowNoiseSourceWithFrequency:octaveCount:persistence:lacunarity:seed:	-			instancetype	-	ios=10.0/-/-/0	-	d931a76ebcd8d136
+method	c:objc(cs)GKBillowNoiseSource(im)initWithFrequency:octaveCount:persistence:lacunarity:seed:	-			instancetype	-	ios=10.0/-/-/0	-	921afb17f3f080fc
+interface	c:objc(cs)GKRidgedNoiseSource	-			-	-	ios=10.0/-/-/0	-	66d6ebff193e038d
+super	-	GKRidgedNoiseSource	GKCoherentNoiseSource		-	-	-	-	e3e547746cd618f5
+method	c:objc(cs)GKRidgedNoiseSource(cm)ridgedNoiseSourceWithFrequency:octaveCount:lacunarity:seed:	-			instancetype	-	ios=10.0/-/-/0	-	b512b6793c49023d
+method	c:objc(cs)GKRidgedNoiseSource(im)initWithFrequency:octaveCount:lacunarity:seed:	-			instancetype	-	ios=10.0/-/-/0	-	57aa7af69b010cb3
+interface	c:objc(cs)GKVoronoiNoiseSource	-			-	-	ios=10.0/-/-/0	-	363ce9548bbf782e
+super	-	GKVoronoiNoiseSource	GKNoiseSource		-	-	-	-	fd299eb08524c91b
+property	c:objc(cs)GKVoronoiNoiseSource(py)frequency	-			double	nonatomic	ios=10.0/-/-/0	-	e11198dc1811ab87
+property	c:objc(cs)GKVoronoiNoiseSource(py)displacement	-			double	nonatomic	ios=10.0/-/-/0	-	0ab9faaf20326340
+property	c:objc(cs)GKVoronoiNoiseSource(py)distanceEnabled	-			BOOL	nonatomic,getter=isDistanceEnabled	ios=10.0/-/-/0	-	bba339b4aeb38b25
+property	c:objc(cs)GKVoronoiNoiseSource(py)seed	-			int32_t	nonatomic	ios=10.0/-/-/0	-	6f5b5c60b2ca8572
+method	c:objc(cs)GKVoronoiNoiseSource(cm)voronoiNoiseWithFrequency:displacement:distanceEnabled:seed:	-			instancetype	-	ios=10.0/-/-/0	-	8be7cf6d106017c9
+method	c:objc(cs)GKVoronoiNoiseSource(im)initWithFrequency:displacement:distanceEnabled:seed:	-			instancetype	-	ios=10.0/-/-/0	-	91dff250fa302ac9
+interface	c:objc(cs)GKConstantNoiseSource	-			-	-	ios=10.0/-/-/0	-	3f3a5fea49e486c9
+super	-	GKConstantNoiseSource	GKNoiseSource		-	-	-	-	f920c38376781ad9
+property	c:objc(cs)GKConstantNoiseSource(py)value	-			double	nonatomic	ios=10.0/-/-/0	-	cbc1dd0f878141ba
+method	c:objc(cs)GKConstantNoiseSource(cm)constantNoiseWithValue:	-			instancetype	-	ios=10.0/-/-/0	-	e2ee21fe39c05711
+method	c:objc(cs)GKConstantNoiseSource(im)initWithValue:	-			instancetype	-	ios=10.0/-/-/0	-	567582bca6378012
+interface	c:objc(cs)GKCylindersNoiseSource	-			-	-	ios=10.0/-/-/0	-	96d9626f9ffc3e8a
+super	-	GKCylindersNoiseSource	GKNoiseSource		-	-	-	-	b38315f7298d8238
+property	c:objc(cs)GKCylindersNoiseSource(py)frequency	-			double	nonatomic	ios=10.0/-/-/0	-	15ac6d3a32581286
+method	c:objc(cs)GKCylindersNoiseSource(cm)cylindersNoiseWithFrequency:	-			instancetype	-	ios=10.0/-/-/0	-	7af45aa75783e209
+method	c:objc(cs)GKCylindersNoiseSource(im)initWithFrequency:	-			instancetype	-	ios=10.0/-/-/0	-	9004807041b6963d
+interface	c:objc(cs)GKSpheresNoiseSource	-			-	-	ios=10.0/-/-/0	-	a7583d1ad210e7eb
+super	-	GKSpheresNoiseSource	GKNoiseSource		-	-	-	-	c989569c4360f006
+property	c:objc(cs)GKSpheresNoiseSource(py)frequency	-			double	nonatomic	ios=10.0/-/-/0	-	8a387b1a27eff5c1
+method	c:objc(cs)GKSpheresNoiseSource(cm)spheresNoiseWithFrequency:	-			instancetype	-	ios=10.0/-/-/0	-	9c2d35a1a013bac7
+method	c:objc(cs)GKSpheresNoiseSource(im)initWithFrequency:	-			instancetype	-	ios=10.0/-/-/0	-	e59379c9799d1d09
+interface	c:objc(cs)GKCheckerboardNoiseSource	-			-	-	ios=10.0/-/-/0	-	d835a8d95440ff71
+super	-	GKCheckerboardNoiseSource	GKNoiseSource		-	-	-	-	e5981f1a254cfb7d
+property	c:objc(cs)GKCheckerboardNoiseSource(py)squareSize	-			double	nonatomic	ios=10.0/-/-/0	-	f3eb5ed029eee1f0
+method	c:objc(cs)GKCheckerboardNoiseSource(cm)checkerboardNoiseWithSquareSize:	-			instancetype	-	ios=10.0/-/-/0	-	0e66556fafdebe00
+method	c:objc(cs)GKCheckerboardNoiseSource(im)initWithSquareSize:	-			instancetype	-	ios=10.0/-/-/0	-	0052ac385492adb3
+interface	c:objc(cs)GKNoise	-			-	-	ios=10.0/-/-/0	-	dfcbd057c475e0dc
+super	-	GKNoise	NSObject		-	-	-	-	7965bda47e39b0b2
+property	c:objc(cs)GKNoise(py)gradientColors	-			NSDictionary<NSNumber *,UIColor *> *	copy,nonatomic	ios=10.0/-/-/0	-	fb384260262dff78
+method	c:objc(cs)GKNoise(im)init	-			instancetype	-	ios=10.0/-/-/0	-	dbcf402a5e528ac5
+method	c:objc(cs)GKNoise(cm)noiseWithNoiseSource:	-			instancetype	-	ios=10.0/-/-/0	-	cd7d7c53ff91a145
+method	c:objc(cs)GKNoise(cm)noiseWithNoiseSource:gradientColors:	-			instancetype	-	ios=10.0/-/-/0	-	6e6617ce804bab3c
+method	c:objc(cs)GKNoise(im)initWithNoiseSource:	-			instancetype	-	ios=10.0/-/-/0	-	bef15f3aec8f6d88
+method	c:objc(cs)GKNoise(im)initWithNoiseSource:gradientColors:	-			instancetype	-	ios=10.0/-/-/0	-	23eadf24c4a30029
+method	c:objc(cs)GKNoise(cm)noiseWithComponentNoises:selectionNoise:	-			instancetype	-	ios=10.0/-/-/0	-	e9593565d49361c5
+method	c:objc(cs)GKNoise(cm)noiseWithComponentNoises:selectionNoise:componentBoundaries:boundaryBlendDistances:	-			instancetype	-	ios=10.0/-/-/0	-	2cab7696dd706cd1
+method	c:objc(cs)GKNoise(im)valueAtPosition:	-			float	-	ios=10.0/-/-/0	-	cd2df39915cd1c19
+method	c:objc(cs)GKNoise(im)applyAbsoluteValue	-			void	-	ios=10.0/-/-/0	-	b0aba17367843b40
+method	c:objc(cs)GKNoise(im)clampWithLowerBound:upperBound:	-			void	-	ios=10.0/-/-/0	-	75f784c95eb4b926
+method	c:objc(cs)GKNoise(im)raiseToPower:	-			void	-	ios=10.0/-/-/0	-	210e393738065149
+method	c:objc(cs)GKNoise(im)invert	-			void	-	ios=10.0/-/-/0	-	35c63395a547a944
+method	c:objc(cs)GKNoise(im)applyTurbulenceWithFrequency:power:roughness:seed:	-			void	-	ios=10.0/-/-/0	-	90ea06b0d5d2a43c
+method	c:objc(cs)GKNoise(im)remapValuesToCurveWithControlPoints:	-			void	-	ios=10.0/-/-/0	-	660ff67810e612ec
+method	c:objc(cs)GKNoise(im)remapValuesToTerracesWithPeaks:terracesInverted:	-			void	-	ios=10.0/-/-/0	-	c8ae9984278ff0fe
+method	c:objc(cs)GKNoise(im)moveBy:	-			void	-	ios=10.0/-/-/0	-	8e7e85796a032457
+method	c:objc(cs)GKNoise(im)scaleBy:	-			void	-	ios=10.0/-/-/0	-	f6acbb19e51c59c4
+method	c:objc(cs)GKNoise(im)rotateBy:	-			void	-	ios=10.0/-/-/0	-	77191659953e858e
+method	c:objc(cs)GKNoise(im)addWithNoise:	-			void	-	ios=10.0/-/-/0	-	7dba14ce65915647
+method	c:objc(cs)GKNoise(im)multiplyWithNoise:	-			void	-	ios=10.0/-/-/0	-	1e6ff8a601d5e333
+method	c:objc(cs)GKNoise(im)minimumWithNoise:	-			void	-	ios=10.0/-/-/0	-	7088d28eca71f35d
+method	c:objc(cs)GKNoise(im)maximumWithNoise:	-			void	-	ios=10.0/-/-/0	-	3bbdcccc0ce2110b
+method	c:objc(cs)GKNoise(im)raiseToPowerWithNoise:	-			void	-	ios=10.0/-/-/0	-	dc44e48d52304a64
+method	c:objc(cs)GKNoise(im)displaceXWithNoise:yWithNoise:zWithNoise:	-			void	-	ios=10.0/-/-/0	-	43d8c6d466c4d800
+interface	c:objc(cs)GKNoiseMap	-			-	-	ios=10.0/-/-/0	-	981a1a17508371ae
+super	-	GKNoiseMap	NSObject		-	-	-	-	851ab59e27d05628
+property	c:objc(cs)GKNoiseMap(py)size	-			vector_double2	readonly,nonatomic	ios=10.0/-/-/0	-	c43d4c043ebd60d8
+property	c:objc(cs)GKNoiseMap(py)origin	-			vector_double2	readonly,nonatomic	ios=10.0/-/-/0	-	91b8bf7eda0debfa
+property	c:objc(cs)GKNoiseMap(py)sampleCount	-			vector_int2	readonly,nonatomic	ios=10.0/-/-/0	-	5061a10325a5e1d8
+property	c:objc(cs)GKNoiseMap(py)seamless	-			BOOL	readonly,nonatomic,getter=isSeamless	ios=10.0/-/-/0	-	f98161d904244913
+method	c:objc(cs)GKNoiseMap(im)init	-			instancetype	-	ios=10.0/-/-/0	-	99dfa07570e0bc84
+method	c:objc(cs)GKNoiseMap(cm)noiseMapWithNoise:	-			instancetype	-	ios=10.0/-/-/0	-	f59ca32fc94dd69c
+method	c:objc(cs)GKNoiseMap(cm)noiseMapWithNoise:size:origin:sampleCount:seamless:	-			instancetype	-	ios=10.0/-/-/0	-	9a4774ccbbba53d1
+method	c:objc(cs)GKNoiseMap(im)initWithNoise:	-			instancetype	-	ios=10.0/-/-/0	-	8076e58b8c24bd9b
+method	c:objc(cs)GKNoiseMap(im)initWithNoise:size:origin:sampleCount:seamless:	-			instancetype	-	ios=10.0/-/-/0	-	33966218feca93a1
+method	c:objc(cs)GKNoiseMap(im)valueAtPosition:	-			float	-	ios=10.0/-/-/0	-	220498218aeaace6
+method	c:objc(cs)GKNoiseMap(im)interpolatedValueAtPosition:	-			float	-	ios=10.0/-/-/0	-	d65cf889472bc0af
+method	c:objc(cs)GKNoiseMap(im)setValue:atPosition:	-			void	-	ios=10.0/-/-/0	-	0724eb32c8f51df8
+interface	c:objc(cs)GKOctreeNode	-			-	-	ios=10.0/-/-/0	-	14beb67d791d492a
+super	-	GKOctreeNode	NSObject		-	-	-	-	b14c10502aa58e57
+property	c:objc(cs)GKOctreeNode(py)box	-			struct GKBox	readonly	ios=10.0/-/-/0	-	c4b1d54cd98b742e
+interface	c:objc(cs)GKOctree	-			-	-	ios=10.0/-/-/0	-	ed734caac148b3a2
+super	-	GKOctree	NSObject		-	-	-	-	cd87c685d1bcbdf7
+method	c:objc(cs)GKOctree(cm)octreeWithBoundingBox:minimumCellSize:	-			instancetype	-	ios=10.0/-/-/0	-	9a9858f5dfd779e7
+method	c:objc(cs)GKOctree(im)initWithBoundingBox:minimumCellSize:	-			instancetype	-	ios=10.0/-/-/0	-	77320410432da0e7
+method	c:objc(cs)GKOctree(im)addElement:withPoint:	-			GKOctreeNode *	-	ios=10.0/-/-/0	-	018c1682b513ec71
+method	c:objc(cs)GKOctree(im)addElement:withBox:	-			GKOctreeNode *	-	ios=10.0/-/-/0	-	5f754951f9927285
+method	c:objc(cs)GKOctree(im)elementsAtPoint:	-			NSArray<ElementType> *	-	ios=10.0/-/-/0	-	4d81c72e20636460
+method	c:objc(cs)GKOctree(im)elementsInBox:	-			NSArray<ElementType> *	-	ios=10.0/-/-/0	-	4fb9c42d5e8673eb
+method	c:objc(cs)GKOctree(im)removeElement:	-			BOOL	-	ios=10.0/-/-/0	-	747024263d12f78b
+method	c:objc(cs)GKOctree(im)removeElement:withNode:	-			BOOL	-	ios=10.0/-/-/0	-	bb928215eb73546e
+interface	c:objc(cs)GKPath	-			-	-	ios=9.0/-/-/0	-	c8057c41545fb269
+super	-	GKPath	NSObject		-	-	-	-	e3be664ed1b0136b
+property	c:objc(cs)GKPath(py)radius	-			float	assign,nonatomic	ios=9.0/-/-/0	-	f10212430cbe4586
+property	c:objc(cs)GKPath(py)numPoints	-			NSUInteger	readonly	ios=9.0/-/-/0	-	c3a740cd9c591b78
+property	c:objc(cs)GKPath(py)cyclical	-			BOOL	assign,nonatomic,getter=isCyclical	ios=9.0/-/-/0	-	8d2943686e495517
+method	c:objc(cs)GKPath(cm)pathWithPoints:count:radius:cyclical:	-			instancetype	-	ios=9.0/-/-/0	-	f11999781e42bd57
+method	c:objc(cs)GKPath(im)initWithPoints:count:radius:cyclical:	-			instancetype	-	ios=9.0/-/-/0	-	5285431d90743035
+method	c:objc(cs)GKPath(cm)pathWithFloat3Points:count:radius:cyclical:	-			instancetype	-	ios=10.0/-/-/0	-	93441159d9685801
+method	c:objc(cs)GKPath(im)initWithFloat3Points:count:radius:cyclical:	-			instancetype	-	ios=10.0/-/-/0	-	995d9563020eb296
+method	c:objc(cs)GKPath(cm)pathWithGraphNodes:radius:	-			instancetype	-	ios=9.0/-/-/0	-	d21ca6db4ac77aba
+method	c:objc(cs)GKPath(im)initWithGraphNodes:radius:	-			instancetype	-	ios=9.0/-/-/0	-	a0f054b3dddd091d
+method	c:objc(cs)GKPath(im)pointAtIndex:	-			vector_float2	-	ios=9.0/10.0/-/0	-	bc750a44cc7db79e
+method	c:objc(cs)GKPath(im)float2AtIndex:	-			vector_float2	-	ios=10.0/-/-/0	-	e50ccec614ec6e4d
+method	c:objc(cs)GKPath(im)float3AtIndex:	-			vector_float3	-	ios=10.0/-/-/0	-	01c9472031843c91
+interface	c:objc(cs)GKQuadtreeNode	-			-	-	ios=10.0/-/-/0	-	4e0bb64af782fa4b
+super	-	GKQuadtreeNode	NSObject		-	-	-	-	3a2bf3a14fc8758a
+property	c:objc(cs)GKQuadtreeNode(py)quad	-			GKQuad	readonly,nonatomic	ios=10.0/-/-/0	-	9d55e8c12c97076e
+interface	c:objc(cs)GKQuadtree	-			-	-	ios=10.0/-/-/0	-	867832782ee1858b
+super	-	GKQuadtree	NSObject		-	-	-	-	04396a7887f7f9b2
+method	c:objc(cs)GKQuadtree(cm)quadtreeWithBoundingQuad:minimumCellSize:	-			instancetype	-	ios=10.0/-/-/0	-	9df3fed92e400cf6
+method	c:objc(cs)GKQuadtree(im)initWithBoundingQuad:minimumCellSize:	-			instancetype	-	ios=10.0/-/-/0	-	c7450fbe5498c742
+method	c:objc(cs)GKQuadtree(im)addElement:withPoint:	-			GKQuadtreeNode *	-	ios=10.0/-/-/0	-	0447ae191510d993
+method	c:objc(cs)GKQuadtree(im)addElement:withQuad:	-			GKQuadtreeNode *	-	ios=10.0/-/-/0	-	ee7071d7f6adb732
+method	c:objc(cs)GKQuadtree(im)elementsAtPoint:	-			NSArray<ElementType> *	-	ios=10.0/-/-/0	-	2e72a307f2c579cb
+method	c:objc(cs)GKQuadtree(im)elementsInQuad:	-			NSArray<ElementType> *	-	ios=10.0/-/-/0	-	4a59cc025637c00a
+method	c:objc(cs)GKQuadtree(im)removeElement:	-			BOOL	-	ios=10.0/-/-/0	-	127e2e30f4f753ab
+method	c:objc(cs)GKQuadtree(im)removeElement:withNode:	-			BOOL	-	ios=10.0/-/-/0	-	193bc2b1cc90cf2d
+interface	c:objc(cs)GKRandomDistribution	-			-	-	ios=9.0/-/-/0	-	1aae909595cd45df
+super	-	GKRandomDistribution	NSObject		-	-	-	-	ee6776e05d0ec32a
+conforms	-	GKRandomDistribution	GKRandom		-	-	-	-	d1c378b41dabfd7b
+property	c:objc(cs)GKRandomDistribution(py)lowestValue	-			NSInteger	readonly,assign,nonatomic	ios=9.0/-/-/0	-	2306acc7941e4ec0
+property	c:objc(cs)GKRandomDistribution(py)highestValue	-			NSInteger	readonly,assign,nonatomic	ios=9.0/-/-/0	-	42386b6bcbe9712f
+property	c:objc(cs)GKRandomDistribution(py)numberOfPossibleOutcomes	-			NSUInteger	readonly,assign,nonatomic	ios=9.0/-/-/0	-	6878c8591aebb808
+method	c:objc(cs)GKRandomDistribution(im)initWithRandomSource:lowestValue:highestValue:	-			instancetype	-	ios=9.0/-/-/0	-	03be3f5ddb4af73f
+method	c:objc(cs)GKRandomDistribution(im)nextInt	-			NSInteger	-	ios=9.0/-/-/0	-	67a70bbf34bc52a5
+method	c:objc(cs)GKRandomDistribution(im)nextIntWithUpperBound:	-			NSUInteger	-	ios=9.0/-/-/0	-	ea72ca9646f359bf
+method	c:objc(cs)GKRandomDistribution(im)nextUniform	-			float	-	ios=9.0/-/-/0	-	e2e928047de2cdaf
+method	c:objc(cs)GKRandomDistribution(im)nextBool	-			BOOL	-	ios=9.0/-/-/0	-	8ca1c4e43942682f
+method	c:objc(cs)GKRandomDistribution(cm)distributionWithLowestValue:highestValue:	-			instancetype	-	ios=9.0/-/-/0	-	3fa0182c4d83eba0
+method	c:objc(cs)GKRandomDistribution(cm)distributionForDieWithSideCount:	-			instancetype	-	ios=9.0/-/-/0	-	2a427950e211b0f2
+method	c:objc(cs)GKRandomDistribution(cm)d6	-			instancetype	-	ios=9.0/-/-/0	-	055e204f5a7f1234
+method	c:objc(cs)GKRandomDistribution(cm)d20	-			instancetype	-	ios=9.0/-/-/0	-	3e21f76d61644ab3
+interface	c:objc(cs)GKGaussianDistribution	-			-	-	ios=9.0/-/-/0	-	c5479257313267d4
+super	-	GKGaussianDistribution	GKRandomDistribution		-	-	-	-	c838e35d44fa2f99
+property	c:objc(cs)GKGaussianDistribution(py)mean	-			float	readonly,assign,nonatomic	ios=9.0/-/-/0	-	4127e462b3a57bb2
+property	c:objc(cs)GKGaussianDistribution(py)deviation	-			float	readonly,assign,nonatomic	ios=9.0/-/-/0	-	8ac73005cc2abe55
+method	c:objc(cs)GKGaussianDistribution(im)initWithRandomSource:lowestValue:highestValue:	-			instancetype	-	ios=9.0/-/-/0	-	fc7c0cf518dca3da
+method	c:objc(cs)GKGaussianDistribution(im)initWithRandomSource:mean:deviation:	-			instancetype	-	ios=9.0/-/-/0	-	bfaeceea43a2edd7
+interface	c:objc(cs)GKShuffledDistribution	-			-	-	ios=9.0/-/-/0	-	f5d80cd71e738839
+super	-	GKShuffledDistribution	GKRandomDistribution		-	-	-	-	e45a589523dc2c4b
+typedef	c:@T@GKRTreeSplitStrategy	-			enum GKRTreeSplitStrategy	-	-	-	d63c2de3eeb708cc
+enum	c:@E@GKRTreeSplitStrategy	-			NSInteger	-	-	-	5bae661e9fbd7dca
+enumconst	c:@E@GKRTreeSplitStrategy@GKRTreeSplitStrategyHalve	GKRTreeSplitStrategy			-	-	-	-	8730f277957afdb0
+enumconst	c:@E@GKRTreeSplitStrategy@GKRTreeSplitStrategyLinear	GKRTreeSplitStrategy			-	-	-	-	6b2074e0054ae335
+enumconst	c:@E@GKRTreeSplitStrategy@GKRTreeSplitStrategyQuadratic	GKRTreeSplitStrategy			-	-	-	-	8bf66ea3a7108008
+enumconst	c:@E@GKRTreeSplitStrategy@GKRTreeSplitStrategyReduceOverlap	GKRTreeSplitStrategy			-	-	-	-	386f5e02e5642561
+interface	c:objc(cs)GKRTree	-			-	-	ios=10.0/-/-/0	-	2d6a3c1a7c88ab48
+super	-	GKRTree	NSObject		-	-	-	-	03327e830b50e755
+property	c:objc(cs)GKRTree(py)queryReserve	-			NSUInteger	-	ios=10.0/-/-/0	-	f14812ee49101243
+method	c:objc(cs)GKRTree(cm)treeWithMaxNumberOfChildren:	-			instancetype	-	ios=10.0/-/-/0	-	49168cc82c18a14a
+method	c:objc(cs)GKRTree(im)initWithMaxNumberOfChildren:	-			instancetype	-	ios=10.0/-/-/0	-	a2012d67c59ef852
+method	c:objc(cs)GKRTree(im)addElement:boundingRectMin:boundingRectMax:splitStrategy:	-			void	-	ios=10.0/-/-/0	-	16394085571ec24a
+method	c:objc(cs)GKRTree(im)removeElement:boundingRectMin:boundingRectMax:	-			void	-	ios=10.0/-/-/0	-	a0c113b36e9911f6
+method	c:objc(cs)GKRTree(im)elementsInBoundingRectMin:rectMax:	-			NSArray<ElementType> *	-	ios=10.0/-/-/0	-	e80cccfdceb0d992
+interface	c:objc(cs)GKRuleSystem	-			-	-	ios=9.0/-/-/0	-	fcb600a8231dd80f
+super	-	GKRuleSystem	NSObject		-	-	-	-	9bebac5c6d7415f0
+method	c:objc(cs)GKRuleSystem(im)init	-			instancetype	-	ios=9.0/-/-/0	-	7c20a2f4b0de1e08
+method	c:objc(cs)GKRuleSystem(im)evaluate	-			void	-	ios=9.0/-/-/0	-	fb71e1785a63fa47
+property	c:objc(cs)GKRuleSystem(py)state	-			NSMutableDictionary *	readonly,retain,nonatomic	ios=9.0/-/-/0	-	4fb5a8f6167c626a
+property	c:objc(cs)GKRuleSystem(py)rules	-			NSArray<GKRule *> *	readonly,retain,nonatomic	ios=9.0/-/-/0	-	ec205839ffd71700
+method	c:objc(cs)GKRuleSystem(im)addRule:	-			void	-	ios=9.0/-/-/0	-	608955e178f846b4
+method	c:objc(cs)GKRuleSystem(im)addRulesFromArray:	-			void	-	ios=9.0/-/-/0	-	d325d68ffd9d9a02
+method	c:objc(cs)GKRuleSystem(im)removeAllRules	-			void	-	ios=9.0/-/-/0	-	6a5c3439e7847d85
+property	c:objc(cs)GKRuleSystem(py)agenda	-			NSArray<GKRule *> *	readonly,retain,nonatomic	ios=9.0/-/-/0	-	56c964f4400b89bf
+property	c:objc(cs)GKRuleSystem(py)executed	-			NSArray<GKRule *> *	readonly,retain,nonatomic	ios=9.0/-/-/0	-	6d170002b38d9afd
+property	c:objc(cs)GKRuleSystem(py)facts	-			NSArray *	readonly,retain,nonatomic	ios=9.0/-/-/0	-	ecc7ff6e9651b3bc
+method	c:objc(cs)GKRuleSystem(im)gradeForFact:	-			float	-	ios=9.0/-/-/0	-	ed0777a39ba21af9
+method	c:objc(cs)GKRuleSystem(im)minimumGradeForFacts:	-			float	-	ios=9.0/-/-/0	-	92cbe278ab73ae62
+method	c:objc(cs)GKRuleSystem(im)maximumGradeForFacts:	-			float	-	ios=9.0/-/-/0	-	1ee6e12878d0cb28
+method	c:objc(cs)GKRuleSystem(im)assertFact:	-			void	-	ios=9.0/-/-/0	-	cd4822f281e05124
+method	c:objc(cs)GKRuleSystem(im)assertFact:grade:	-			void	-	ios=9.0/-/-/0	-	c7ce212df7f40317
+method	c:objc(cs)GKRuleSystem(im)retractFact:	-			void	-	ios=9.0/-/-/0	-	3839c82c297b4a9c
+method	c:objc(cs)GKRuleSystem(im)retractFact:grade:	-			void	-	ios=9.0/-/-/0	-	e925ab024ed528d2
+method	c:objc(cs)GKRuleSystem(im)reset	-			void	-	ios=9.0/-/-/0	-	ff9092fa97fca094
+interface	c:objc(cs)GKRule	-			-	-	ios=9.0/-/-/0	-	0b2e60e3b143ccbb
+super	-	GKRule	NSObject		-	-	-	-	6a1bc3dcfcc563c0
+property	c:objc(cs)GKRule(py)salience	-			NSInteger	assign,nonatomic	ios=9.0/-/-/0	-	4747d6d46ff8dce0
+method	c:objc(cs)GKRule(im)evaluatePredicateWithSystem:	-			BOOL	-	ios=9.0/-/-/0	-	8b9a5f2e4d02e130
+method	c:objc(cs)GKRule(im)performActionWithSystem:	-			void	-	ios=9.0/-/-/0	-	93160d07b52b1c84
+method	c:objc(cs)GKRule(cm)ruleWithPredicate:assertingFact:grade:	-			instancetype	-	ios=9.0/-/-/0	-	f2e3eb66f96d7ecd
+method	c:objc(cs)GKRule(cm)ruleWithPredicate:retractingFact:grade:	-			instancetype	-	ios=9.0/-/-/0	-	0838453e4c86aba0
+method	c:objc(cs)GKRule(cm)ruleWithBlockPredicate:action:	-			instancetype	-	ios=9.0/-/-/0	-	a7941d7e781564b7
+interface	c:objc(cs)GKNSPredicateRule	-			-	-	ios=9.0/-/-/0	-	15a1bd8aa46a401f
+super	-	GKNSPredicateRule	GKRule		-	-	-	-	7024d558a824cdbe
+property	c:objc(cs)GKNSPredicateRule(py)predicate	-			NSPredicate *	readonly,retain,nonatomic	ios=9.0/-/-/0	-	e2a283a018be1c57
+method	c:objc(cs)GKNSPredicateRule(im)initWithPredicate:	-			instancetype	-	ios=9.0/-/-/0	-	a299c48f165c1a5c
+method	c:objc(cs)GKNSPredicateRule(im)evaluatePredicateWithSystem:	-			BOOL	-	ios=9.0/-/-/0	-	0eec6aacdf9fcfef
+interface	c:objc(cs)GKState	-			-	-	ios=9.0/-/-/0	-	40f91a745d39a15b
+super	-	GKState	NSObject		-	-	-	-	e2a42cd57bfa37fc
+property	c:objc(cs)GKState(py)stateMachine	-			GKStateMachine *	readonly,weak,nonatomic	ios=9.0/-/-/0	-	a6481081e4008cdf
+method	c:objc(cs)GKState(cm)state	-			instancetype	-	ios=9.0/-/-/0	-	6122d5d58af2e03e
+method	c:objc(cs)GKState(im)init	-			instancetype	-	ios=9.0/-/-/0	-	1e16956ecffc80b6
+method	c:objc(cs)GKState(im)isValidNextState:	-			BOOL	-	ios=9.0/-/-/0	-	a3e6607f7c695aca
+method	c:objc(cs)GKState(im)didEnterWithPreviousState:	-			void	-	ios=9.0/-/-/0	-	4e9939fff6f9392d
+method	c:objc(cs)GKState(im)updateWithDeltaTime:	-			void	-	ios=9.0/-/-/0	-	fbeb945866b82456
+method	c:objc(cs)GKState(im)willExitWithNextState:	-			void	-	ios=9.0/-/-/0	-	c9756f73284f0165
+interface	c:objc(cs)GKStateMachine	-			-	-	ios=9.0/-/-/0	-	a6853d392d33c014
+super	-	GKStateMachine	NSObject		-	-	-	-	1a4b2c10db116ead
+property	c:objc(cs)GKStateMachine(py)currentState	-			GKState *	readonly,nonatomic	ios=9.0/-/-/0	-	1c760f92a078c314
+method	c:objc(cs)GKStateMachine(cm)stateMachineWithStates:	-			instancetype	-	ios=9.0/-/-/0	-	8de0130d0598cc46
+method	c:objc(cs)GKStateMachine(im)initWithStates:	-			instancetype	-	ios=9.0/-/-/0	-	7ead79b1c1b07f74
+method	c:objc(cs)GKStateMachine(im)updateWithDeltaTime:	-			void	-	ios=9.0/-/-/0	-	9a07d321a9bfbeb8
+method	c:objc(cs)GKStateMachine(im)stateForClass:	-			GKState *	-	swift=-/-/-/1	-	d590b945bfc9627e
+method	c:objc(cs)GKStateMachine(im)canEnterState:	-			BOOL	-	ios=9.0/-/-/0	-	041851852e24e368
+method	c:objc(cs)GKStateMachine(im)enterState:	-			BOOL	-	ios=9.0/-/-/0	-	1e25c01e172510a5
+protocol	c:objc(pl)GKSceneRootNodeType	-			-	-	-	-	64d3d07067e0156f
+conforms	-	GKSceneRootNodeType	NSObject		-	-	-	-	93a6ace4ccc7dee5
+interface	c:objc(cs)GKScene	-			-	-	ios=10.0/-/-/0	-	9cdd868ab26f820b
+super	-	GKScene	NSObject		-	-	-	-	a260e0bf0be20f28
+conforms	-	GKScene	NSCopying		-	-	-	-	29c8446416ed5eb1
+conforms	-	GKScene	NSSecureCoding		-	-	-	-	08c8a5b8e9b975fd
+method	c:objc(cs)GKScene(cm)sceneWithFileNamed:	-			instancetype	-	ios=10.0/-/-/0	-	ac2373fdfe0f95e8
+method	c:objc(cs)GKScene(cm)sceneWithFileNamed:rootNode:	-			instancetype	-	ios=10.0/-/-/0	-	4c90453ae8bf6c5b
+property	c:objc(cs)GKScene(py)entities	-			NSArray<GKEntity *> *	readonly,nonatomic	ios=10.0/-/-/0	-	dcd0f7c765bbb906
+property	c:objc(cs)GKScene(py)rootNode	-			id<GKSceneRootNodeType>	nonatomic	ios=10.0/-/-/0	-	a42224fbcac5183a
+property	c:objc(cs)GKScene(py)graphs	-			NSDictionary<NSString *,GKGraph *> *	readonly,nonatomic	ios=10.0/-/-/0	-	fc47d5cc95a64775
+method	c:objc(cs)GKScene(im)addEntity:	-			void	-	ios=10.0/-/-/0	-	fcfb45b66d8bee9d
+method	c:objc(cs)GKScene(im)removeEntity:	-			void	-	ios=10.0/-/-/0	-	947e34fc3ad98fe2
+method	c:objc(cs)GKScene(im)addGraph:name:	-			void	-	ios=10.0/-/-/0	-	3eaf143d453f4173
+method	c:objc(cs)GKScene(im)removeGraph:	-			void	-	ios=10.0/-/-/0	-	c89b9252872b3a2f
+interface	c:objc(cs)GKSKNodeComponent	-			-	-	ios=10.0/-/-/0	-	8dabe0d80ef5517f
+super	-	GKSKNodeComponent	GKComponent		-	-	-	-	437b741ebc3d2bb8
+conforms	-	GKSKNodeComponent	GKAgentDelegate		-	-	-	-	6670387e4f37a509
+method	c:objc(cs)GKSKNodeComponent(cm)componentWithNode:	-			instancetype	-	ios=10.0/-/-/0	-	b86ab4dbed69cb7d
+method	c:objc(cs)GKSKNodeComponent(im)initWithNode:	-			instancetype	-	ios=10.0/-/-/0	-	c775ade202fd3d16
+property	c:objc(cs)GKSKNodeComponent(py)node	-			SKNode *	strong,nonatomic	ios=10.0/-/-/0	-	51bb03fe966927ce
+category	c:objc(cy)SKNode@GameplayKit	-			-	-	-	-	3b1d948726e590ce
+method	c:objc(cs)SKNode(cm)obstaclesFromSpriteTextures:accuracy:	GameplayKit			NSArray<GKPolygonObstacle *> *	-	-	-	6493664b9014f8cc
+method	c:objc(cs)SKNode(cm)obstaclesFromNodeBounds:	GameplayKit			NSArray<GKPolygonObstacle *> *	-	-	-	bdf86d8645b84094
+method	c:objc(cs)SKNode(cm)obstaclesFromNodePhysicsBodies:	GameplayKit			NSArray<GKPolygonObstacle *> *	-	-	-	fa4b433019362110
+property	c:objc(cs)SKNode(py)entity	GameplayKit			NS_AVAILABLE GKEntity *	weak,nonatomic	ios=10.0/-/-/0	-	32ee2f79b24a778d
+category	c:objc(cy)SKScene@GameplayKit	-			-	-	-	-	6b662b92cb6ed9dd
+conforms	-	SKScene	GKSceneRootNodeType		-	-	-	-	2ee58c238cb7a1c9
+category	c:objc(cy)SKTileMapNode@GameplayKit	-			-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	6aea3763fa32fc8a
+method	c:objc(cs)SKTileMapNode(cm)tileMapNodesWithTileSet:columns:rows:tileSize:fromNoiseMap:tileTypeNoiseMapThresholds:	GameplayKit			NSArray<SKTileMapNode *> *	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	4fbffcd31156d73e
+category	c:objc(cy)SKTexture@GameplayKit	-			-	-	-	-	5f31f657dfb00ab4
+method	c:objc(cs)SKTexture(cm)textureWithNoiseMap:	GameplayKit			instancetype	-	ios=10.0/-/-/0	-	94e88bc9b03ee353
+interface	c:objc(cs)GKSCNNodeComponent	-			-	-	ios=11.0/-/-/0	-	21516f1c617d13ec
+super	-	GKSCNNodeComponent	GKComponent		-	-	-	-	bd8aa20f7ff18533
+conforms	-	GKSCNNodeComponent	GKAgentDelegate		-	-	-	-	b4c6ead87fde4d57
+method	c:objc(cs)GKSCNNodeComponent(cm)componentWithNode:	-			instancetype	-	ios=11.0/-/-/0	-	834a34e63c8e08b6
+method	c:objc(cs)GKSCNNodeComponent(im)initWithNode:	-			instancetype	-	ios=11.0/-/-/0	-	3c8444825b8ad99f
+property	c:objc(cs)GKSCNNodeComponent(py)node	-			SCNNode *	readonly,nonatomic	ios=11.0/-/-/0	-	ab4be802e124f936
+category	c:objc(cy)SCNNode@GameplayKit	-			-	-	-	-	c18d895cd74de8c1
+property	c:objc(cs)SCNNode(py)entity	GameplayKit			NS_AVAILABLE GKEntity *	weak,nonatomic	ios=11.0/-/-/0	-	863b532c648ef235
+category	c:objc(cy)SCNScene@GameplayKit	-			-	-	-	-	0a7bc5c536aa3dfe
+conforms	-	SCNScene	GKSceneRootNodeType		-	-	-	-	ef7dbcfe76592faa

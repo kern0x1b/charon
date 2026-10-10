@@ -1,214 +1,214 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
-typedef	c:@T@IOSurfaceID	-			-	-	d9884c40658207fc
-typedef	c:@T@IOSurfaceLockOptions	-			-	-	1779b96e184bb016
-enum	c:@E@IOSurfaceLockOptions	-			-	-	7bad9d94215ec4fe
-enumconst	c:@E@IOSurfaceLockOptions@kIOSurfaceLockReadOnly	IOSurfaceLockOptions			-	-	dc27c7d0f39fd7c0
-enumconst	c:@E@IOSurfaceLockOptions@kIOSurfaceLockAvoidSync	IOSurfaceLockOptions			-	-	9724a366c81ab00f
-typedef	c:@T@IOSurfacePurgeabilityState	-			-	-	553cc9163e0800f0
-enum	c:@E@IOSurfacePurgeabilityState	-			-	-	9b0af01b51c6789f
-enumconst	c:@E@IOSurfacePurgeabilityState@kIOSurfacePurgeableNonVolatile	IOSurfacePurgeabilityState			-	-	5f701342b17e47cf
-enumconst	c:@E@IOSurfacePurgeabilityState@kIOSurfacePurgeableVolatile	IOSurfacePurgeabilityState			-	-	c7abf9f6b114a092
-enumconst	c:@E@IOSurfacePurgeabilityState@kIOSurfacePurgeableEmpty	IOSurfacePurgeabilityState			-	-	3e5b27394d91b61a
-enumconst	c:@E@IOSurfacePurgeabilityState@kIOSurfacePurgeableKeepCurrent	IOSurfacePurgeabilityState			-	-	97255b1c03661bb0
-enum	c:@Ea@kIOSurfaceDefaultCache	-	-		-	-	3ccb06df61b4b740
-enumconst	c:@Ea@kIOSurfaceDefaultCache@kIOSurfaceDefaultCache	-			-	-	a42619b41fb96271
-enumconst	c:@Ea@kIOSurfaceDefaultCache@kIOSurfaceInhibitCache	-			-	-	6f0645534a5af725
-enumconst	c:@Ea@kIOSurfaceDefaultCache@kIOSurfaceWriteThruCache	-			-	-	5beaa5d7a434f950
-enumconst	c:@Ea@kIOSurfaceDefaultCache@kIOSurfaceCopybackCache	-			-	-	708f7afa016ea218
-enumconst	c:@Ea@kIOSurfaceDefaultCache@kIOSurfaceWriteCombineCache	-			-	-	332c318c7ab7beec
-enumconst	c:@Ea@kIOSurfaceDefaultCache@kIOSurfaceCopybackInnerCache	-			-	-	bfaf8f3fbc43137b
-enum	c:@Ea@kIOSurfaceMapCacheShift	-	-		-	-	e8aef5a88ff91d99
-enumconst	c:@Ea@kIOSurfaceMapCacheShift@kIOSurfaceMapCacheShift	-			-	-	1d583be4f99afc99
-enumconst	c:@Ea@kIOSurfaceMapCacheShift@kIOSurfaceMapDefaultCache	-			-	-	20976eb19956f5e2
-enumconst	c:@Ea@kIOSurfaceMapCacheShift@kIOSurfaceMapInhibitCache	-			-	-	e5f323f257135b9f
-enumconst	c:@Ea@kIOSurfaceMapCacheShift@kIOSurfaceMapWriteThruCache	-			-	-	32d81730e812646d
-enumconst	c:@Ea@kIOSurfaceMapCacheShift@kIOSurfaceMapCopybackCache	-			-	-	5349963921c0ec06
-enumconst	c:@Ea@kIOSurfaceMapCacheShift@kIOSurfaceMapWriteCombineCache	-			-	-	b93b776bcb7b1e46
-enumconst	c:@Ea@kIOSurfaceMapCacheShift@kIOSurfaceMapCopybackInnerCache	-			-	-	66fa9c16720fae7b
-struct	c:@S@__IOSurface	-			-	-	e1d6a87e345c5762
-typedef	c:@T@IOSurfaceRef	-			-	-	b3d7dabcf5bf59d2
-var	c:@kIOSurfaceAllocSize	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	78be2e7d3f51816c
-var	c:@kIOSurfaceWidth	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	10bf0ec70dad0ad4
-var	c:@kIOSurfaceHeight	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c496527a5f3e2d5d
-var	c:@kIOSurfaceBytesPerRow	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0d2a8565543b37fb
-var	c:@kIOSurfaceBytesPerElement	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e1ec2ddd222a7711
-var	c:@kIOSurfaceElementWidth	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	09f56fe48e0cf77b
-var	c:@kIOSurfaceElementHeight	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	da58168acaa7ec58
-var	c:@kIOSurfaceOffset	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	993c1952e9cc2823
-var	c:@kIOSurfacePlaneInfo	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a1f6560175523d92
-var	c:@kIOSurfacePlaneWidth	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	8c5648d8e8e0a23d
-var	c:@kIOSurfacePlaneHeight	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	80198822bb4f6e8e
-var	c:@kIOSurfacePlaneBytesPerRow	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0f1a9648a2fa80c1
-var	c:@kIOSurfacePlaneOffset	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	1804444c0d1bb72d
-var	c:@kIOSurfacePlaneSize	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	05727c52fc164cbe
-var	c:@kIOSurfacePlaneBase	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	afdff8439518810b
-var	c:@kIOSurfacePlaneBitsPerElement	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	38f42ec907708959
-var	c:@kIOSurfacePlaneBytesPerElement	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e4461d24e4e95fbf
-var	c:@kIOSurfacePlaneElementWidth	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b884206c2851eef4
-var	c:@kIOSurfacePlaneElementHeight	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	34b1e87276658123
-var	c:@kIOSurfaceCacheMode	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f4103b97ee470645
-var	c:@kIOSurfaceIsGlobal	-			ios=11.0/11.0/-/0,macos=10.6/10.11/-/0,tvos=11.0/11.0/-/0,watchos=4.0/4.0/-/0	-	097305460c4d66cc
-var	c:@kIOSurfacePixelFormat	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	fbdde85cff610eb4
-var	c:@kIOSurfacePixelSizeCastingAllowed	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ccc98429c404cbe4
-var	c:@kIOSurfacePlaneComponentBitDepths	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	61aee8451b3a8d89
-var	c:@kIOSurfacePlaneComponentBitOffsets	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ced8d0fc6986be26
-var	c:@kIOSurfaceName	-			ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	5680e6a2e1486c83
-typedef	c:@T@IOSurfaceComponentName	-			-	-	bc430766f18b7cdb
-enum	c:@E@IOSurfaceComponentName	-			-	-	52149b486936584a
-enumconst	c:@E@IOSurfaceComponentName@kIOSurfaceComponentNameUnknown	IOSurfaceComponentName			-	-	d1a027e023204d8b
-enumconst	c:@E@IOSurfaceComponentName@kIOSurfaceComponentNameAlpha	IOSurfaceComponentName			-	-	cc6d76943bef9626
-enumconst	c:@E@IOSurfaceComponentName@kIOSurfaceComponentNameRed	IOSurfaceComponentName			-	-	558aafc421ae2d0a
-enumconst	c:@E@IOSurfaceComponentName@kIOSurfaceComponentNameGreen	IOSurfaceComponentName			-	-	e163d1985ea8e2c2
-enumconst	c:@E@IOSurfaceComponentName@kIOSurfaceComponentNameBlue	IOSurfaceComponentName			-	-	ada9c8fe804fbe13
-enumconst	c:@E@IOSurfaceComponentName@kIOSurfaceComponentNameLuma	IOSurfaceComponentName			-	-	b72afd3eb90b7089
-enumconst	c:@E@IOSurfaceComponentName@kIOSurfaceComponentNameChromaRed	IOSurfaceComponentName			-	-	4b34cc57d95d31f0
-enumconst	c:@E@IOSurfaceComponentName@kIOSurfaceComponentNameChromaBlue	IOSurfaceComponentName			-	-	6af0c44cf6616850
-var	c:@kIOSurfacePlaneComponentNames	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	58595564a947019c
-typedef	c:@T@IOSurfaceComponentType	-			-	-	88312e40e9d3ee1e
-enum	c:@E@IOSurfaceComponentType	-			-	-	757e4c9fdfa69e58
-enumconst	c:@E@IOSurfaceComponentType@kIOSurfaceComponentTypeUnknown	IOSurfaceComponentType			-	-	689492f6d4673e1d
-enumconst	c:@E@IOSurfaceComponentType@kIOSurfaceComponentTypeUnsignedInteger	IOSurfaceComponentType			-	-	d18e7e2cb4eef9c5
-enumconst	c:@E@IOSurfaceComponentType@kIOSurfaceComponentTypeSignedInteger	IOSurfaceComponentType			-	-	78c876f1e8ca521f
-enumconst	c:@E@IOSurfaceComponentType@kIOSurfaceComponentTypeFloat	IOSurfaceComponentType			-	-	8cad30c62cfbb719
-enumconst	c:@E@IOSurfaceComponentType@kIOSurfaceComponentTypeSignedNormalized	IOSurfaceComponentType			-	-	16ca5afb94c37732
-var	c:@kIOSurfacePlaneComponentTypes	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	aa41bc2013743905
-typedef	c:@T@IOSurfaceComponentRange	-			-	-	9a2ba87e7b9eaa74
-enum	c:@E@IOSurfaceComponentRange	-			-	-	986143b96f508267
-enumconst	c:@E@IOSurfaceComponentRange@kIOSurfaceComponentRangeUnknown	IOSurfaceComponentRange			-	-	3858079a8832df64
-enumconst	c:@E@IOSurfaceComponentRange@kIOSurfaceComponentRangeFullRange	IOSurfaceComponentRange			-	-	5d418a0a591dbf5d
-enumconst	c:@E@IOSurfaceComponentRange@kIOSurfaceComponentRangeVideoRange	IOSurfaceComponentRange			-	-	338addc192bdd227
-enumconst	c:@E@IOSurfaceComponentRange@kIOSurfaceComponentRangeWideRange	IOSurfaceComponentRange			-	-	0124ffe40afad570
-var	c:@kIOSurfacePlaneComponentRanges	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d8d8f202ae09e8c9
-typedef	c:@T@IOSurfaceSubsampling	-			-	-	1e5e33c3d5be3856
-enum	c:@E@IOSurfaceSubsampling	-			-	-	3056bacd74fc45d5
-enumconst	c:@E@IOSurfaceSubsampling@kIOSurfaceSubsamplingUnknown	IOSurfaceSubsampling			-	-	25fba53c71173168
-enumconst	c:@E@IOSurfaceSubsampling@kIOSurfaceSubsamplingNone	IOSurfaceSubsampling			-	-	14e3be575d3a716c
-enumconst	c:@E@IOSurfaceSubsampling@kIOSurfaceSubsampling422	IOSurfaceSubsampling			-	-	625cb1f16c8ed1f7
-enumconst	c:@E@IOSurfaceSubsampling@kIOSurfaceSubsampling420	IOSurfaceSubsampling			-	-	3d7debda310f3d06
-enumconst	c:@E@IOSurfaceSubsampling@kIOSurfaceSubsampling411	IOSurfaceSubsampling			-	-	1551ecd859e7f44c
-var	c:@kIOSurfaceSubsampling	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f945fb15f2b7bb6d
-function	c:@F@IOSurfaceGetTypeID	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e25ac0dd918c3b5e
-function	c:@F@IOSurfaceCreate	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0e2ac1cde74ad01a
-function	c:@F@IOSurfaceLookup	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4c9a2047d1785dec
-function	c:@F@IOSurfaceGetID	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	2de37df2da058c7e
-function	c:@F@IOSurfaceLock	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	fd9e9a7d9a8680e7
-function	c:@F@IOSurfaceUnlock	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	be0d01776bbfa7bf
-function	c:@F@IOSurfaceGetAllocSize	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	765f7bf24a8352c4
-function	c:@F@IOSurfaceGetWidth	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f2eeb634d8fae93c
-function	c:@F@IOSurfaceGetHeight	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0017d8e6186d4369
-function	c:@F@IOSurfaceGetBytesPerElement	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	8d4266507d4fb810
-function	c:@F@IOSurfaceGetBytesPerRow	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	3d28b9a8b0b5438b
-function	c:@F@IOSurfaceGetBaseAddress	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ae829dc58c5aa752
-function	c:@F@IOSurfaceGetElementWidth	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	1668e9dae61a8554
-function	c:@F@IOSurfaceGetElementHeight	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f806d4baed8f29b8
-function	c:@F@IOSurfaceGetPixelFormat	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a78de80ace93c6e6
-function	c:@F@IOSurfaceGetSeed	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	34bf5f1aab79071f
-function	c:@F@IOSurfaceGetPlaneCount	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e2fe35b1e09a1643
-function	c:@F@IOSurfaceGetWidthOfPlane	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0eff624bc52e7de8
-function	c:@F@IOSurfaceGetHeightOfPlane	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ad36029b1a216045
-function	c:@F@IOSurfaceGetBytesPerElementOfPlane	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a6eeb6df8f0e78cc
-function	c:@F@IOSurfaceGetBytesPerRowOfPlane	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f1a5071048e8d72e
-function	c:@F@IOSurfaceGetBaseAddressOfPlane	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	2d51e66ba7598843
-function	c:@F@IOSurfaceGetElementWidthOfPlane	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	11a533620b917061
-function	c:@F@IOSurfaceGetElementHeightOfPlane	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5dfc2d63812237af
-function	c:@F@IOSurfaceGetNumberOfComponentsOfPlane	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ba6fdbf498e08e89
-function	c:@F@IOSurfaceGetNameOfComponentOfPlane	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	618b93a309b0765c
-function	c:@F@IOSurfaceGetTypeOfComponentOfPlane	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	cace2c6f0dd35fe8
-function	c:@F@IOSurfaceGetRangeOfComponentOfPlane	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	54757f28a64f0830
-function	c:@F@IOSurfaceGetBitDepthOfComponentOfPlane	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	83e8c85faf9b1adf
-function	c:@F@IOSurfaceGetBitOffsetOfComponentOfPlane	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	dbd4eca95735d13b
-function	c:@F@IOSurfaceGetSubsampling	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4a091254b8cb65e4
-var	c:@kIOSurfaceColorSpace	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0394931ee33a0d31
-var	c:@kIOSurfaceICCProfile	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	320674f738ff3c53
-var	c:@kIOSurfaceContentHeadroom	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	57d36d3adc2431f1
-function	c:@F@IOSurfaceSetValue	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	fa5cca6448a8b93b
-function	c:@F@IOSurfaceCopyValue	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	8da1e5c6e7430ee9
-function	c:@F@IOSurfaceRemoveValue	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4dea4aa7e9af4a39
-function	c:@F@IOSurfaceSetValues	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	32414b578828e21f
-function	c:@F@IOSurfaceCopyAllValues	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	aef9bd18b9344a53
-function	c:@F@IOSurfaceRemoveAllValues	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b07f93ae9cd97d2d
-function	c:@F@IOSurfaceCreateMachPort	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	6a773606f67acdd1
-function	c:@F@IOSurfaceLookupFromMachPort	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	83c225154458b9e5
-function	c:@F@IOSurfaceGetPropertyMaximum	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	396a9bdf02157d2f
-function	c:@F@IOSurfaceGetPropertyAlignment	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	3eb534ccdf155c64
-function	c:@F@IOSurfaceAlignProperty	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	992f7cd145775d5a
-function	c:@F@IOSurfaceIncrementUseCount	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	917b7e9bc0714abd
-function	c:@F@IOSurfaceDecrementUseCount	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	8f9f6993106dc50f
-function	c:@F@IOSurfaceGetUseCount	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	508e6f75486633a4
-function	c:@F@IOSurfaceIsInUse	-			ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	efe5c009419fada1
-function	c:@F@IOSurfaceAllowsPixelSizeCasting	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	09f7dd75f971a4ea
-function	c:@F@IOSurfaceSetPurgeable	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	865e36f800a353c9
-typedef	c:@T@IOSurfaceMemoryLedgerTags	-			-	-	9656d24ded734e6d
-enum	c:@E@IOSurfaceMemoryLedgerTags	-			-	-	c467418c82babd35
-enumconst	c:@E@IOSurfaceMemoryLedgerTags@kIOSurfaceMemoryLedgerTagDefault	IOSurfaceMemoryLedgerTags			-	-	ceac472921d299f7
-enumconst	c:@E@IOSurfaceMemoryLedgerTags@kIOSurfaceMemoryLedgerTagNetwork	IOSurfaceMemoryLedgerTags			-	-	586e7a5ec097660b
-enumconst	c:@E@IOSurfaceMemoryLedgerTags@kIOSurfaceMemoryLedgerTagMedia	IOSurfaceMemoryLedgerTags			-	-	b8df720874745a6c
-enumconst	c:@E@IOSurfaceMemoryLedgerTags@kIOSurfaceMemoryLedgerTagGraphics	IOSurfaceMemoryLedgerTags			-	-	b9935fb6eb5fa790
-enumconst	c:@E@IOSurfaceMemoryLedgerTags@kIOSurfaceMemoryLedgerTagNeural	IOSurfaceMemoryLedgerTags			-	-	13c9463f79029343
-typedef	c:@T@IOSurfaceMemoryLedgerFlags	-			-	-	b7b57ed61abbdc92
-enum	c:@E@IOSurfaceMemoryLedgerFlags	-			-	-	f5e2d928df69ab40
-enumconst	c:@E@IOSurfaceMemoryLedgerFlags@kIOSurfaceMemoryLedgerFlagNoFootprint	IOSurfaceMemoryLedgerFlags			-	-	ad58d987e2772e41
-function	c:@F@IOSurfaceSetOwnershipIdentity	-			ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	800176122d874273
-typedef	c:IOSurfaceObjC.h@T@IOSurfacePropertyKey	-			-	-	6e43895b406251b3
-var	c:@IOSurfacePropertyKeyAllocSize	-			ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	3de3df63eb99d5db
-var	c:@IOSurfacePropertyKeyWidth	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	1d0b8280a8f6fbee
-var	c:@IOSurfacePropertyKeyHeight	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e1c2f306ec937407
-var	c:@IOSurfacePropertyKeyBytesPerRow	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	bd3c740bedb607c2
-var	c:@IOSurfacePropertyKeyBytesPerElement	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c218adff55befd22
-var	c:@IOSurfacePropertyKeyElementWidth	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	587efdc0a79f4745
-var	c:@IOSurfacePropertyKeyElementHeight	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	aca003152eec974b
-var	c:@IOSurfacePropertyKeyOffset	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b2302a0ee2d937a3
-var	c:@IOSurfacePropertyKeyPlaneInfo	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	8e6415627ba99342
-var	c:@IOSurfacePropertyKeyPlaneWidth	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	38401fff47c1a976
-var	c:@IOSurfacePropertyKeyPlaneHeight	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	7063b5e8aadf8489
-var	c:@IOSurfacePropertyKeyPlaneBytesPerRow	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	953336db899b9d68
-var	c:@IOSurfacePropertyKeyPlaneOffset	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	1be9f6a4a83bfe12
-var	c:@IOSurfacePropertyKeyPlaneSize	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	84b63b7a50592b43
-var	c:@IOSurfacePropertyKeyPlaneBase	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	127e0d585f084c74
-var	c:@IOSurfacePropertyKeyPlaneBytesPerElement	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	8c8e56137d004090
-var	c:@IOSurfacePropertyKeyPlaneElementWidth	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5711796e5851cd99
-var	c:@IOSurfacePropertyKeyPlaneElementHeight	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	069bcc6487e61ae8
-var	c:@IOSurfacePropertyKeyCacheMode	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	2016245594e54825
-var	c:@IOSurfacePropertyKeyPixelFormat	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f91c19ed493e064e
-var	c:@IOSurfacePropertyKeyPixelSizeCastingAllowed	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	9f578a0757422f0e
-var	c:@IOSurfacePropertyKeyName	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	42afc8c17436fa3d
-interface	c:objc(cs)IOSurface	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ee90a614aa67eba8
-super	-	IOSurface	NSObject		-	-	39e9ad321c671ba5
-conforms	-	IOSurface	NSSecureCoding		-	-	75f42611806dd911
-method	c:objc(cs)IOSurface(im)initWithProperties:	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	492919ac6bd9cfe9
-method	c:objc(cs)IOSurface(im)lockWithOptions:seed:	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4dc533daf3032412
-method	c:objc(cs)IOSurface(im)unlockWithOptions:seed:	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	1766cbd93e2bf790
-property	c:objc(cs)IOSurface(py)allocationSize	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	3bb2cce99e06d38e
-property	c:objc(cs)IOSurface(py)width	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	75e32a7e75757fe4
-property	c:objc(cs)IOSurface(py)height	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	9e0a856183cd4553
-property	c:objc(cs)IOSurface(py)baseAddress	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	7fc9abad68391001
-property	c:objc(cs)IOSurface(py)pixelFormat	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	497d98d701a459fc
-property	c:objc(cs)IOSurface(py)bytesPerRow	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d33b6224f68f2a3a
-property	c:objc(cs)IOSurface(py)bytesPerElement	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f6ebb74e2d2269b7
-property	c:objc(cs)IOSurface(py)elementWidth	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	09fb840833db4810
-property	c:objc(cs)IOSurface(py)elementHeight	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5898b799610c33dc
-property	c:objc(cs)IOSurface(py)surfaceID	-			ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	1f0998f79240fee5
-property	c:objc(cs)IOSurface(py)seed	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4b90b48e04e2bb29
-property	c:objc(cs)IOSurface(py)planeCount	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	513f9b4519a3a033
-method	c:objc(cs)IOSurface(im)widthOfPlaneAtIndex:	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	032848636c910bfb
-method	c:objc(cs)IOSurface(im)heightOfPlaneAtIndex:	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4504404502cd99c1
-method	c:objc(cs)IOSurface(im)bytesPerRowOfPlaneAtIndex:	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e42148f06edbc513
-method	c:objc(cs)IOSurface(im)bytesPerElementOfPlaneAtIndex:	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	dd0e09a078479f92
-method	c:objc(cs)IOSurface(im)elementWidthOfPlaneAtIndex:	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e4f6fc85eea342a2
-method	c:objc(cs)IOSurface(im)elementHeightOfPlaneAtIndex:	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	58a681fc707b15f0
-method	c:objc(cs)IOSurface(im)baseAddressOfPlaneAtIndex:	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	7a19588f3ec7fa77
-method	c:objc(cs)IOSurface(im)setAttachment:forKey:	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	1076abc8665dfd97
-method	c:objc(cs)IOSurface(im)attachmentForKey:	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	8925815269a26697
-method	c:objc(cs)IOSurface(im)removeAttachmentForKey:	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	960c3f8bc583c247
-method	c:objc(cs)IOSurface(im)setAllAttachments:	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	be14a0384b8feb85
-method	c:objc(cs)IOSurface(im)allAttachments	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	fa619e803e8cc0af
-method	c:objc(cs)IOSurface(im)removeAllAttachments	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5a9dfe53521841f4
-property	c:objc(cs)IOSurface(py)inUse	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0d79ee155838c82b
-method	c:objc(cs)IOSurface(im)incrementUseCount	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	22b097878994c02d
-method	c:objc(cs)IOSurface(im)decrementUseCount	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	9d9307817a7b0252
-property	c:objc(cs)IOSurface(py)localUseCount	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	2cc8bd7ab3041dbb
-property	c:objc(cs)IOSurface(py)allowsPixelSizeCasting	-			ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	821200d66ffa925a
-method	c:objc(cs)IOSurface(im)setPurgeable:oldState:	-			ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	220b9fe3f5028aae
-var	c:@IOSurfacePropertyAllocSizeKey	-			ios=11.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=11.0/12.0/-/0,watchos=4.0/5.0/-/0	-	e018270c04356828
-function	c:IOSurfaceObjC.h@F@_IOSurfaceRefToObj	-			-	-	b13736002ddceb27
-function	c:IOSurfaceObjC.h@F@_IOSurfaceObjToRef	-			-	-	d932accf9c2cbd1c
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
+typedef	c:@T@IOSurfaceID	-			uint32_t	-	-	-	d9884c40658207fc
+typedef	c:@T@IOSurfaceLockOptions	-			enum IOSurfaceLockOptions	-	-	-	1779b96e184bb016
+enum	c:@E@IOSurfaceLockOptions	-			uint32_t	-	-	-	7bad9d94215ec4fe
+enumconst	c:@E@IOSurfaceLockOptions@kIOSurfaceLockReadOnly	IOSurfaceLockOptions			-	-	-	-	dc27c7d0f39fd7c0
+enumconst	c:@E@IOSurfaceLockOptions@kIOSurfaceLockAvoidSync	IOSurfaceLockOptions			-	-	-	-	9724a366c81ab00f
+typedef	c:@T@IOSurfacePurgeabilityState	-			enum IOSurfacePurgeabilityState	-	-	-	553cc9163e0800f0
+enum	c:@E@IOSurfacePurgeabilityState	-			uint32_t	-	-	-	9b0af01b51c6789f
+enumconst	c:@E@IOSurfacePurgeabilityState@kIOSurfacePurgeableNonVolatile	IOSurfacePurgeabilityState			-	-	-	-	5f701342b17e47cf
+enumconst	c:@E@IOSurfacePurgeabilityState@kIOSurfacePurgeableVolatile	IOSurfacePurgeabilityState			-	-	-	-	c7abf9f6b114a092
+enumconst	c:@E@IOSurfacePurgeabilityState@kIOSurfacePurgeableEmpty	IOSurfacePurgeabilityState			-	-	-	-	3e5b27394d91b61a
+enumconst	c:@E@IOSurfacePurgeabilityState@kIOSurfacePurgeableKeepCurrent	IOSurfacePurgeabilityState			-	-	-	-	97255b1c03661bb0
+enum	c:@Ea@kIOSurfaceDefaultCache	-	-		unsigned int	-	-	-	3ccb06df61b4b740
+enumconst	c:@Ea@kIOSurfaceDefaultCache@kIOSurfaceDefaultCache	-			-	-	-	-	a42619b41fb96271
+enumconst	c:@Ea@kIOSurfaceDefaultCache@kIOSurfaceInhibitCache	-			-	-	-	-	6f0645534a5af725
+enumconst	c:@Ea@kIOSurfaceDefaultCache@kIOSurfaceWriteThruCache	-			-	-	-	-	5beaa5d7a434f950
+enumconst	c:@Ea@kIOSurfaceDefaultCache@kIOSurfaceCopybackCache	-			-	-	-	-	708f7afa016ea218
+enumconst	c:@Ea@kIOSurfaceDefaultCache@kIOSurfaceWriteCombineCache	-			-	-	-	-	332c318c7ab7beec
+enumconst	c:@Ea@kIOSurfaceDefaultCache@kIOSurfaceCopybackInnerCache	-			-	-	-	-	bfaf8f3fbc43137b
+enum	c:@Ea@kIOSurfaceMapCacheShift	-	-		unsigned int	-	-	-	e8aef5a88ff91d99
+enumconst	c:@Ea@kIOSurfaceMapCacheShift@kIOSurfaceMapCacheShift	-			-	-	-	-	1d583be4f99afc99
+enumconst	c:@Ea@kIOSurfaceMapCacheShift@kIOSurfaceMapDefaultCache	-			-	-	-	-	20976eb19956f5e2
+enumconst	c:@Ea@kIOSurfaceMapCacheShift@kIOSurfaceMapInhibitCache	-			-	-	-	-	e5f323f257135b9f
+enumconst	c:@Ea@kIOSurfaceMapCacheShift@kIOSurfaceMapWriteThruCache	-			-	-	-	-	32d81730e812646d
+enumconst	c:@Ea@kIOSurfaceMapCacheShift@kIOSurfaceMapCopybackCache	-			-	-	-	-	5349963921c0ec06
+enumconst	c:@Ea@kIOSurfaceMapCacheShift@kIOSurfaceMapWriteCombineCache	-			-	-	-	-	b93b776bcb7b1e46
+enumconst	c:@Ea@kIOSurfaceMapCacheShift@kIOSurfaceMapCopybackInnerCache	-			-	-	-	-	66fa9c16720fae7b
+struct	c:@S@__IOSurface	-			-	-	-	-	e1d6a87e345c5762
+typedef	c:@T@IOSurfaceRef	-			struct __IOSurface *	-	-	-	b3d7dabcf5bf59d2
+var	c:@kIOSurfaceAllocSize	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b7303b35d20677ee
+var	c:@kIOSurfaceWidth	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0462dbaddbd756a7
+var	c:@kIOSurfaceHeight	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	59ab87c7e892058f
+var	c:@kIOSurfaceBytesPerRow	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b0bf14d33e627a5d
+var	c:@kIOSurfaceBytesPerElement	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	81b38fcaebf47c65
+var	c:@kIOSurfaceElementWidth	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d157e6d4b64aaeef
+var	c:@kIOSurfaceElementHeight	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	35215bc272d9ef94
+var	c:@kIOSurfaceOffset	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4d54ec398ff8c4c1
+var	c:@kIOSurfacePlaneInfo	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	914564f6e2c759dc
+var	c:@kIOSurfacePlaneWidth	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	6830a79f83ce1b36
+var	c:@kIOSurfacePlaneHeight	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b399f2108f48955e
+var	c:@kIOSurfacePlaneBytesPerRow	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	020a43abb7d3a380
+var	c:@kIOSurfacePlaneOffset	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	183cc5867be2e67b
+var	c:@kIOSurfacePlaneSize	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	35120fa56546f037
+var	c:@kIOSurfacePlaneBase	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	8b08bdf209dce8c6
+var	c:@kIOSurfacePlaneBitsPerElement	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a28af663565de062
+var	c:@kIOSurfacePlaneBytesPerElement	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c9b90e819ed1f4d1
+var	c:@kIOSurfacePlaneElementWidth	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	41e17c2707bceece
+var	c:@kIOSurfacePlaneElementHeight	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	6b1e139a80d17548
+var	c:@kIOSurfaceCacheMode	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c220d2dd0a3bb7b8
+var	c:@kIOSurfaceIsGlobal	-			const CFStringRef	-	ios=11.0/11.0/-/0,macos=10.6/10.11/-/0,tvos=11.0/11.0/-/0,watchos=4.0/4.0/-/0	-	329d822a92cd5244
+var	c:@kIOSurfacePixelFormat	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	2e80514e0e913caa
+var	c:@kIOSurfacePixelSizeCastingAllowed	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	158526f7faeb6514
+var	c:@kIOSurfacePlaneComponentBitDepths	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5613aaddf22971f5
+var	c:@kIOSurfacePlaneComponentBitOffsets	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4ac0e37d606f11eb
+var	c:@kIOSurfaceName	-			const CFStringRef	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	e73d9c35be165357
+typedef	c:@T@IOSurfaceComponentName	-			enum IOSurfaceComponentName	-	-	-	bc430766f18b7cdb
+enum	c:@E@IOSurfaceComponentName	-			int32_t	-	-	-	52149b486936584a
+enumconst	c:@E@IOSurfaceComponentName@kIOSurfaceComponentNameUnknown	IOSurfaceComponentName			-	-	-	-	d1a027e023204d8b
+enumconst	c:@E@IOSurfaceComponentName@kIOSurfaceComponentNameAlpha	IOSurfaceComponentName			-	-	-	-	cc6d76943bef9626
+enumconst	c:@E@IOSurfaceComponentName@kIOSurfaceComponentNameRed	IOSurfaceComponentName			-	-	-	-	558aafc421ae2d0a
+enumconst	c:@E@IOSurfaceComponentName@kIOSurfaceComponentNameGreen	IOSurfaceComponentName			-	-	-	-	e163d1985ea8e2c2
+enumconst	c:@E@IOSurfaceComponentName@kIOSurfaceComponentNameBlue	IOSurfaceComponentName			-	-	-	-	ada9c8fe804fbe13
+enumconst	c:@E@IOSurfaceComponentName@kIOSurfaceComponentNameLuma	IOSurfaceComponentName			-	-	-	-	b72afd3eb90b7089
+enumconst	c:@E@IOSurfaceComponentName@kIOSurfaceComponentNameChromaRed	IOSurfaceComponentName			-	-	-	-	4b34cc57d95d31f0
+enumconst	c:@E@IOSurfaceComponentName@kIOSurfaceComponentNameChromaBlue	IOSurfaceComponentName			-	-	-	-	6af0c44cf6616850
+var	c:@kIOSurfacePlaneComponentNames	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	1c6d7d93352cb2a1
+typedef	c:@T@IOSurfaceComponentType	-			enum IOSurfaceComponentType	-	-	-	88312e40e9d3ee1e
+enum	c:@E@IOSurfaceComponentType	-			int32_t	-	-	-	757e4c9fdfa69e58
+enumconst	c:@E@IOSurfaceComponentType@kIOSurfaceComponentTypeUnknown	IOSurfaceComponentType			-	-	-	-	689492f6d4673e1d
+enumconst	c:@E@IOSurfaceComponentType@kIOSurfaceComponentTypeUnsignedInteger	IOSurfaceComponentType			-	-	-	-	d18e7e2cb4eef9c5
+enumconst	c:@E@IOSurfaceComponentType@kIOSurfaceComponentTypeSignedInteger	IOSurfaceComponentType			-	-	-	-	78c876f1e8ca521f
+enumconst	c:@E@IOSurfaceComponentType@kIOSurfaceComponentTypeFloat	IOSurfaceComponentType			-	-	-	-	8cad30c62cfbb719
+enumconst	c:@E@IOSurfaceComponentType@kIOSurfaceComponentTypeSignedNormalized	IOSurfaceComponentType			-	-	-	-	16ca5afb94c37732
+var	c:@kIOSurfacePlaneComponentTypes	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	62b868c85f3a969e
+typedef	c:@T@IOSurfaceComponentRange	-			enum IOSurfaceComponentRange	-	-	-	9a2ba87e7b9eaa74
+enum	c:@E@IOSurfaceComponentRange	-			int32_t	-	-	-	986143b96f508267
+enumconst	c:@E@IOSurfaceComponentRange@kIOSurfaceComponentRangeUnknown	IOSurfaceComponentRange			-	-	-	-	3858079a8832df64
+enumconst	c:@E@IOSurfaceComponentRange@kIOSurfaceComponentRangeFullRange	IOSurfaceComponentRange			-	-	-	-	5d418a0a591dbf5d
+enumconst	c:@E@IOSurfaceComponentRange@kIOSurfaceComponentRangeVideoRange	IOSurfaceComponentRange			-	-	-	-	338addc192bdd227
+enumconst	c:@E@IOSurfaceComponentRange@kIOSurfaceComponentRangeWideRange	IOSurfaceComponentRange			-	-	-	-	0124ffe40afad570
+var	c:@kIOSurfacePlaneComponentRanges	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	1cfb2579a9d0f3fd
+typedef	c:@T@IOSurfaceSubsampling	-			enum IOSurfaceSubsampling	-	-	-	1e5e33c3d5be3856
+enum	c:@E@IOSurfaceSubsampling	-			int32_t	-	-	-	3056bacd74fc45d5
+enumconst	c:@E@IOSurfaceSubsampling@kIOSurfaceSubsamplingUnknown	IOSurfaceSubsampling			-	-	-	-	25fba53c71173168
+enumconst	c:@E@IOSurfaceSubsampling@kIOSurfaceSubsamplingNone	IOSurfaceSubsampling			-	-	-	-	14e3be575d3a716c
+enumconst	c:@E@IOSurfaceSubsampling@kIOSurfaceSubsampling422	IOSurfaceSubsampling			-	-	-	-	625cb1f16c8ed1f7
+enumconst	c:@E@IOSurfaceSubsampling@kIOSurfaceSubsampling420	IOSurfaceSubsampling			-	-	-	-	3d7debda310f3d06
+enumconst	c:@E@IOSurfaceSubsampling@kIOSurfaceSubsampling411	IOSurfaceSubsampling			-	-	-	-	1551ecd859e7f44c
+var	c:@kIOSurfaceSubsampling	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a89ffa8946c675b8
+function	c:@F@IOSurfaceGetTypeID	-			CFTypeID (void)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e25ac0dd918c3b5e
+function	c:@F@IOSurfaceCreate	-			IOSurfaceRef  _Nullable (CFDictionaryRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a31c7db4b5bda8ac
+function	c:@F@IOSurfaceLookup	-			IOSurfaceRef  _Nullable (IOSurfaceID)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	58a44dd7696146bd
+function	c:@F@IOSurfaceGetID	-			IOSurfaceID (IOSurfaceRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4c788e3829041979
+function	c:@F@IOSurfaceLock	-			kern_return_t (IOSurfaceRef _Nonnull, IOSurfaceLockOptions, uint32_t * _Nullable)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	21eb0829c548100d
+function	c:@F@IOSurfaceUnlock	-			kern_return_t (IOSurfaceRef _Nonnull, IOSurfaceLockOptions, uint32_t * _Nullable)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	140aa050880b26df
+function	c:@F@IOSurfaceGetAllocSize	-			size_t (IOSurfaceRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d45ea289c2f62c52
+function	c:@F@IOSurfaceGetWidth	-			size_t (IOSurfaceRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	2d023ce45943b60c
+function	c:@F@IOSurfaceGetHeight	-			size_t (IOSurfaceRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0b5d745eb33babc6
+function	c:@F@IOSurfaceGetBytesPerElement	-			size_t (IOSurfaceRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f75eacd88f033a6c
+function	c:@F@IOSurfaceGetBytesPerRow	-			size_t (IOSurfaceRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	3c61267f6c460a6f
+function	c:@F@IOSurfaceGetBaseAddress	-			void * _Nonnull (IOSurfaceRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	cb6a0971c125d5b5
+function	c:@F@IOSurfaceGetElementWidth	-			size_t (IOSurfaceRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0a7a8d9e48f927fe
+function	c:@F@IOSurfaceGetElementHeight	-			size_t (IOSurfaceRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	7f651250345c8752
+function	c:@F@IOSurfaceGetPixelFormat	-			OSType (IOSurfaceRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	801536476c734c7c
+function	c:@F@IOSurfaceGetSeed	-			uint32_t (IOSurfaceRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	de9d575ab7e8aacc
+function	c:@F@IOSurfaceGetPlaneCount	-			size_t (IOSurfaceRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	37f8ed17250949d9
+function	c:@F@IOSurfaceGetWidthOfPlane	-			size_t (IOSurfaceRef _Nonnull, size_t)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b58328889715cd5f
+function	c:@F@IOSurfaceGetHeightOfPlane	-			size_t (IOSurfaceRef _Nonnull, size_t)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	fa1feece06d3fe44
+function	c:@F@IOSurfaceGetBytesPerElementOfPlane	-			size_t (IOSurfaceRef _Nonnull, size_t)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5fd9839d21e81f4a
+function	c:@F@IOSurfaceGetBytesPerRowOfPlane	-			size_t (IOSurfaceRef _Nonnull, size_t)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	90f83400cdb82a15
+function	c:@F@IOSurfaceGetBaseAddressOfPlane	-			void * _Nonnull (IOSurfaceRef _Nonnull, size_t)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	35a8990f24e93c1d
+function	c:@F@IOSurfaceGetElementWidthOfPlane	-			size_t (IOSurfaceRef _Nonnull, size_t)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	54b96bbd4a8e8783
+function	c:@F@IOSurfaceGetElementHeightOfPlane	-			size_t (IOSurfaceRef _Nonnull, size_t)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	81e2408a4f6779d4
+function	c:@F@IOSurfaceGetNumberOfComponentsOfPlane	-			size_t (IOSurfaceRef _Nonnull, size_t)	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	01b740d7d8ce766a
+function	c:@F@IOSurfaceGetNameOfComponentOfPlane	-			IOSurfaceComponentName (IOSurfaceRef _Nonnull, size_t, size_t)	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d3198985890eaffc
+function	c:@F@IOSurfaceGetTypeOfComponentOfPlane	-			IOSurfaceComponentType (IOSurfaceRef _Nonnull, size_t, size_t)	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	7160c1a81334beeb
+function	c:@F@IOSurfaceGetRangeOfComponentOfPlane	-			IOSurfaceComponentRange (IOSurfaceRef _Nonnull, size_t, size_t)	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5be5ef0d4f6ac997
+function	c:@F@IOSurfaceGetBitDepthOfComponentOfPlane	-			size_t (IOSurfaceRef _Nonnull, size_t, size_t)	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	aca54d663ac03d6c
+function	c:@F@IOSurfaceGetBitOffsetOfComponentOfPlane	-			size_t (IOSurfaceRef _Nonnull, size_t, size_t)	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	8225b625a1eee7ab
+function	c:@F@IOSurfaceGetSubsampling	-			IOSurfaceSubsampling (IOSurfaceRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c2c35d2763c71198
+var	c:@kIOSurfaceColorSpace	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c7f6f43e349b1fbf
+var	c:@kIOSurfaceICCProfile	-			const CFStringRef	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	16a1cd658cad933f
+var	c:@kIOSurfaceContentHeadroom	-			const CFStringRef	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	17d009f683207849
+function	c:@F@IOSurfaceSetValue	-			void (IOSurfaceRef _Nonnull, CFStringRef _Nonnull, CFTypeRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	effa29276afc0c66
+function	c:@F@IOSurfaceCopyValue	-			CFTypeRef  _Nullable (IOSurfaceRef _Nonnull, CFStringRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c273fdc02da5dedb
+function	c:@F@IOSurfaceRemoveValue	-			void (IOSurfaceRef _Nonnull, CFStringRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	53d58cae1fbf8a6e
+function	c:@F@IOSurfaceSetValues	-			void (IOSurfaceRef _Nonnull, CFDictionaryRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	71ef68d4d358634c
+function	c:@F@IOSurfaceCopyAllValues	-			CFDictionaryRef  _Nullable (IOSurfaceRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a1f595c6ecb9c05b
+function	c:@F@IOSurfaceRemoveAllValues	-			void (IOSurfaceRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c8a1e6b772828ec4
+function	c:@F@IOSurfaceCreateMachPort	-			mach_port_t (IOSurfaceRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	fe59773265c1a193
+function	c:@F@IOSurfaceLookupFromMachPort	-			IOSurfaceRef  _Nullable (mach_port_t)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	9db1734c00ddc5f7
+function	c:@F@IOSurfaceGetPropertyMaximum	-			size_t (CFStringRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	1cbab7b6f9883cc9
+function	c:@F@IOSurfaceGetPropertyAlignment	-			size_t (CFStringRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	8c326b2bf2d93593
+function	c:@F@IOSurfaceAlignProperty	-			size_t (CFStringRef _Nonnull, size_t)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	6a3049be99a8f320
+function	c:@F@IOSurfaceIncrementUseCount	-			void (IOSurfaceRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b140e446b71c9b68
+function	c:@F@IOSurfaceDecrementUseCount	-			void (IOSurfaceRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	dde6cab8cd10bf45
+function	c:@F@IOSurfaceGetUseCount	-			int32_t (IOSurfaceRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	758907c675e96d95
+function	c:@F@IOSurfaceIsInUse	-			Boolean (IOSurfaceRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	9295118516b04e91
+function	c:@F@IOSurfaceAllowsPixelSizeCasting	-			Boolean (IOSurfaceRef _Nonnull)	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	7b65e83de2e2d8b8
+function	c:@F@IOSurfaceSetPurgeable	-			kern_return_t (IOSurfaceRef _Nonnull, uint32_t, uint32_t * _Nullable)	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	05919e792dd93757
+typedef	c:@T@IOSurfaceMemoryLedgerTags	-			enum IOSurfaceMemoryLedgerTags	-	-	-	9656d24ded734e6d
+enum	c:@E@IOSurfaceMemoryLedgerTags	-			int	-	-	-	c467418c82babd35
+enumconst	c:@E@IOSurfaceMemoryLedgerTags@kIOSurfaceMemoryLedgerTagDefault	IOSurfaceMemoryLedgerTags			-	-	-	-	ceac472921d299f7
+enumconst	c:@E@IOSurfaceMemoryLedgerTags@kIOSurfaceMemoryLedgerTagNetwork	IOSurfaceMemoryLedgerTags			-	-	-	-	586e7a5ec097660b
+enumconst	c:@E@IOSurfaceMemoryLedgerTags@kIOSurfaceMemoryLedgerTagMedia	IOSurfaceMemoryLedgerTags			-	-	-	-	b8df720874745a6c
+enumconst	c:@E@IOSurfaceMemoryLedgerTags@kIOSurfaceMemoryLedgerTagGraphics	IOSurfaceMemoryLedgerTags			-	-	-	-	b9935fb6eb5fa790
+enumconst	c:@E@IOSurfaceMemoryLedgerTags@kIOSurfaceMemoryLedgerTagNeural	IOSurfaceMemoryLedgerTags			-	-	-	-	13c9463f79029343
+typedef	c:@T@IOSurfaceMemoryLedgerFlags	-			enum IOSurfaceMemoryLedgerFlags	-	-	-	b7b57ed61abbdc92
+enum	c:@E@IOSurfaceMemoryLedgerFlags	-			uint32_t	-	-	-	f5e2d928df69ab40
+enumconst	c:@E@IOSurfaceMemoryLedgerFlags@kIOSurfaceMemoryLedgerFlagNoFootprint	IOSurfaceMemoryLedgerFlags			-	-	-	-	ad58d987e2772e41
+function	c:@F@IOSurfaceSetOwnershipIdentity	-			kern_return_t (IOSurfaceRef _Nonnull, task_id_token_t, int, uint32_t)	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	26e472776f9937bb
+typedef	c:IOSurfaceObjC.h@T@IOSurfacePropertyKey	-			NSString *	-	-	-	6e43895b406251b3
+var	c:@IOSurfacePropertyKeyAllocSize	-			IOSurfacePropertyKey	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	f801e2da0b216de0
+var	c:@IOSurfacePropertyKeyWidth	-			IOSurfacePropertyKey	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f1831efdb72bfa8a
+var	c:@IOSurfacePropertyKeyHeight	-			IOSurfacePropertyKey	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	502a748f18e73011
+var	c:@IOSurfacePropertyKeyBytesPerRow	-			IOSurfacePropertyKey	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	20ac2c777b7c95d9
+var	c:@IOSurfacePropertyKeyBytesPerElement	-			IOSurfacePropertyKey	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a77ff622c6578743
+var	c:@IOSurfacePropertyKeyElementWidth	-			IOSurfacePropertyKey	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f2c499a394ba8be5
+var	c:@IOSurfacePropertyKeyElementHeight	-			IOSurfacePropertyKey	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	6f8cd744c5ab11d9
+var	c:@IOSurfacePropertyKeyOffset	-			IOSurfacePropertyKey	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ab25b370f9977996
+var	c:@IOSurfacePropertyKeyPlaneInfo	-			IOSurfacePropertyKey	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b2060b7884fcd498
+var	c:@IOSurfacePropertyKeyPlaneWidth	-			IOSurfacePropertyKey	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0a7f03b4b8bd650d
+var	c:@IOSurfacePropertyKeyPlaneHeight	-			IOSurfacePropertyKey	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c2652ca648ce422e
+var	c:@IOSurfacePropertyKeyPlaneBytesPerRow	-			IOSurfacePropertyKey	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f179e06363e10f9d
+var	c:@IOSurfacePropertyKeyPlaneOffset	-			IOSurfacePropertyKey	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	3a9e9fa58d9a5b47
+var	c:@IOSurfacePropertyKeyPlaneSize	-			IOSurfacePropertyKey	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	3393edcc51f587f7
+var	c:@IOSurfacePropertyKeyPlaneBase	-			IOSurfacePropertyKey	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	8d6e91369a78f652
+var	c:@IOSurfacePropertyKeyPlaneBytesPerElement	-			IOSurfacePropertyKey	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e8abdd8810729f51
+var	c:@IOSurfacePropertyKeyPlaneElementWidth	-			IOSurfacePropertyKey	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	803f4abc1356527f
+var	c:@IOSurfacePropertyKeyPlaneElementHeight	-			IOSurfacePropertyKey	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	332e32b18c2c4e49
+var	c:@IOSurfacePropertyKeyCacheMode	-			IOSurfacePropertyKey	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	9a7205e1bbee83ba
+var	c:@IOSurfacePropertyKeyPixelFormat	-			IOSurfacePropertyKey	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	79f66723753fd48e
+var	c:@IOSurfacePropertyKeyPixelSizeCastingAllowed	-			IOSurfacePropertyKey	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	eab2331783d91d55
+var	c:@IOSurfacePropertyKeyName	-			IOSurfacePropertyKey	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	a023b536eead8c6b
+interface	c:objc(cs)IOSurface	-			-	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ee90a614aa67eba8
+super	-	IOSurface	NSObject		-	-	-	-	39e9ad321c671ba5
+conforms	-	IOSurface	NSSecureCoding		-	-	-	-	75f42611806dd911
+method	c:objc(cs)IOSurface(im)initWithProperties:	-			instancetype	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	9f04a04d8d86dd75
+method	c:objc(cs)IOSurface(im)lockWithOptions:seed:	-			kern_return_t	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a399167ad9d49ccd
+method	c:objc(cs)IOSurface(im)unlockWithOptions:seed:	-			kern_return_t	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b2f5a9bf93cc0406
+property	c:objc(cs)IOSurface(py)allocationSize	-			NSInteger	readonly	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	3bb2cce99e06d38e
+property	c:objc(cs)IOSurface(py)width	-			NSInteger	readonly	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	75e32a7e75757fe4
+property	c:objc(cs)IOSurface(py)height	-			NSInteger	readonly	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	9e0a856183cd4553
+property	c:objc(cs)IOSurface(py)baseAddress	-			NS_RETURNS_INNER_POINTER void *	readonly	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e5501fb28e0c2813
+property	c:objc(cs)IOSurface(py)pixelFormat	-			OSType	readonly	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	497d98d701a459fc
+property	c:objc(cs)IOSurface(py)bytesPerRow	-			NSInteger	readonly	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d33b6224f68f2a3a
+property	c:objc(cs)IOSurface(py)bytesPerElement	-			NSInteger	readonly	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f6ebb74e2d2269b7
+property	c:objc(cs)IOSurface(py)elementWidth	-			NSInteger	readonly	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	09fb840833db4810
+property	c:objc(cs)IOSurface(py)elementHeight	-			NSInteger	readonly	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5898b799610c33dc
+property	c:objc(cs)IOSurface(py)surfaceID	-			uint32_t	readonly	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	1f0998f79240fee5
+property	c:objc(cs)IOSurface(py)seed	-			uint32_t	readonly	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4b90b48e04e2bb29
+property	c:objc(cs)IOSurface(py)planeCount	-			NSUInteger	readonly	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	513f9b4519a3a033
+method	c:objc(cs)IOSurface(im)widthOfPlaneAtIndex:	-			NSInteger	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	032848636c910bfb
+method	c:objc(cs)IOSurface(im)heightOfPlaneAtIndex:	-			NSInteger	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4504404502cd99c1
+method	c:objc(cs)IOSurface(im)bytesPerRowOfPlaneAtIndex:	-			NSInteger	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e42148f06edbc513
+method	c:objc(cs)IOSurface(im)bytesPerElementOfPlaneAtIndex:	-			NSInteger	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	dd0e09a078479f92
+method	c:objc(cs)IOSurface(im)elementWidthOfPlaneAtIndex:	-			NSInteger	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e4f6fc85eea342a2
+method	c:objc(cs)IOSurface(im)elementHeightOfPlaneAtIndex:	-			NSInteger	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	58a681fc707b15f0
+method	c:objc(cs)IOSurface(im)baseAddressOfPlaneAtIndex:	-			void *	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5993e091dba42ea3
+method	c:objc(cs)IOSurface(im)setAttachment:forKey:	-			void	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	19486ef008dd1fdc
+method	c:objc(cs)IOSurface(im)attachmentForKey:	-			id	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a129358881770dad
+method	c:objc(cs)IOSurface(im)removeAttachmentForKey:	-			void	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d473ccae66c9beb0
+method	c:objc(cs)IOSurface(im)setAllAttachments:	-			void	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	82a71aebf2ec1c08
+method	c:objc(cs)IOSurface(im)allAttachments	-			NSDictionary<NSString *,id> *	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	694c99aab8f21701
+method	c:objc(cs)IOSurface(im)removeAllAttachments	-			void	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5a9dfe53521841f4
+property	c:objc(cs)IOSurface(py)inUse	-			BOOL	readonly,getter=isInUse	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0d79ee155838c82b
+method	c:objc(cs)IOSurface(im)incrementUseCount	-			void	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	22b097878994c02d
+method	c:objc(cs)IOSurface(im)decrementUseCount	-			void	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	9d9307817a7b0252
+property	c:objc(cs)IOSurface(py)localUseCount	-			int32_t	readonly	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	2cc8bd7ab3041dbb
+property	c:objc(cs)IOSurface(py)allowsPixelSizeCasting	-			BOOL	readonly	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	821200d66ffa925a
+method	c:objc(cs)IOSurface(im)setPurgeable:oldState:	-			kern_return_t	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b1dfdd9f58cf1559
+var	c:@IOSurfacePropertyAllocSizeKey	-			IOSurfacePropertyKey	-	ios=11.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=11.0/12.0/-/0,watchos=4.0/5.0/-/0	-	9176e692ef68a09d
+function	c:IOSurfaceObjC.h@F@_IOSurfaceRefToObj	-			IOSurface * _Nonnull (IOSurfaceRef _Nonnull)	-	-	-	71f66da349809bad
+function	c:IOSurfaceObjC.h@F@_IOSurfaceObjToRef	-			IOSurfaceRef  _Nonnull (IOSurface * _Nonnull)	-	-	-	b3c2f28e0feee6c4

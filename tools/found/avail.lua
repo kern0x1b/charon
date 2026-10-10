@@ -9,9 +9,9 @@
 -- The message column holds the texts: "deprecated: TEXT" (the API_DEPRECATED message) and "unavailable: TEXT" (an unavailable
 -- attribute's message), the second after " | " (split_message reads it; a deprecation text may contain " | " itself).
 --
--- The rule for a key whose declarations disagree (merge): per platform, a declaration that names the platform votes; one that names
--- no platform votes "available since the beginning" only when it names no platform at all; the declarations that name the platform
--- as unavailable do not introduce it.
+-- The rule for a key whose declarations disagree (merge): per platform, a declaration that names the platform votes; the declarations
+-- that name the platform as unavailable do not introduce it. A declaration that names no platform at all carries no availability
+-- fact and does not vote: the annotated declarations decide (ruling of 2026-10-10).
 --   introduced   the earliest introduction of the available votes (an unrestricted vote makes it unrestricted)
 --   deprecated   the latest deprecation, and only when every available vote deprecates the platform
 --   obsoleted    the latest obsoletion, and only when every available vote obsoletes the platform
@@ -26,10 +26,9 @@ function version_number(text)
     return tonumber(major) * 10000 + (tonumber(minor) or 0) * 100 + (tonumber(sub) or 0)
 end
 
--- The parsed availability of one declaration: its flags, its platforms (intro, dep, obs as text; unavailable as a boolean), and
--- whether it names no platform at all.
+-- The parsed availability of one declaration: its flags and its platforms (intro, dep, obs as text; unavailable as a boolean).
 function parse_availability(text)
-    local out = {always_unavailable = false, always_deprecated = false, entries = {}, unannotated = false}
+    local out = {always_unavailable = false, always_deprecated = false, entries = {}}
     local body = text
     while body:sub(1, 1) == "*" do
         local flag, after = body:match("^(%*%a+)%s*(.*)$")
@@ -37,10 +36,7 @@ function parse_availability(text)
         if flag == "*deprecated" then out.always_deprecated = true end
         body = after
     end
-    if body == "" or body == "-" then
-        out.unannotated = not (out.always_unavailable or out.always_deprecated)
-        return out
-    end
+    if body == "" or body == "-" then return out end
     for entry in body:gmatch("[^,]+") do
         local platform, intro, dep, obs, unavailable = entry:match("^([^=]+)=([^/]+)/([^/]+)/([^/]+)/([01])$")
         out.entries[platform] = {intro = intro, dep = dep, obs = obs, unavailable = unavailable == "1"}
@@ -118,8 +114,6 @@ function merge(rows)
                 unavailable = true
             elseif e then
                 table.insert(votes, {intro = e.intro, dep = e.dep, obs = e.obs})
-            elseif p.unannotated then
-                table.insert(votes, {intro = "-", dep = "-", obs = "-"})
             end
         end
         if #votes == 0 then

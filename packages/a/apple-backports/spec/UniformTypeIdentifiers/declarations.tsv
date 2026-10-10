@@ -1,192 +1,192 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,avail,message,declhash
-var	c:@UTTagClassFilenameExtension	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1e0d4dad54260ee7
-var	c:@UTTagClassMIMEType	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	6a1964c1e5647104
-interface	c:objc(cs)UTType	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	30b52ca97a83257e
-super	-	UTType	NSObject		-	-	dabd7688c29466c2
-conforms	-	UTType	NSCopying		-	-	dc888b241dbee0e8
-conforms	-	UTType	NSSecureCoding		-	-	92e75a1f573b943c
-method	c:objc(cs)UTType(cm)new	-			*unavailable ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	b17d10df39e9f347
-method	c:objc(cs)UTType(im)init	-			*unavailable ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	80e0b6dd45de9632
-method	c:objc(cs)UTType(cm)typeWithIdentifier:	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	7428476128efa08f
-method	c:objc(cs)UTType(cm)typeWithFilenameExtension:	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	c081e3dcc47e8dd7
-method	c:objc(cs)UTType(cm)typeWithFilenameExtension:conformingToType:	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	7b143a47a1459957
-method	c:objc(cs)UTType(cm)typeWithMIMEType:	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1fd686bf4bea0bd5
-method	c:objc(cs)UTType(cm)typeWithMIMEType:conformingToType:	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	11794c08ad0013c8
-property	c:objc(cs)UTType(py)identifier	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	04b2806d1f613550
-property	c:objc(cs)UTType(py)preferredFilenameExtension	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	a17f14972c233f6a
-property	c:objc(cs)UTType(py)preferredMIMEType	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	fb44c768f99aa73c
-property	c:objc(cs)UTType(py)localizedDescription	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	e7cf3386dbed55fc
-property	c:objc(cs)UTType(py)version	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1c493470197b214b
-property	c:objc(cs)UTType(py)referenceURL	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	69c00dd68ddf91c6
-property	c:objc(cs)UTType(py)dynamic	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	fd9d56912b817531
-property	c:objc(cs)UTType(py)declared	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	77a838bb143dfc56
-property	c:objc(cs)UTType(py)publicType	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	c08c64f2fa775c08
-category	c:objc(cy)UTType@Conformance	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	3060816e31471caf
-method	c:objc(cs)UTType(im)conformsToType:	Conformance			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	a6ea4a82f1872d40
-method	c:objc(cs)UTType(im)isSupertypeOfType:	Conformance			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	9b40fbad3b56d98c
-method	c:objc(cs)UTType(im)isSubtypeOfType:	Conformance			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	083f303586ec2205
-property	c:objc(cs)UTType(py)supertypes	Conformance			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	d531781c6c359b90
-category	c:objc(cy)UTType@UTTagSpecification	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	9969b963aa72c6ed
-method	c:objc(cs)UTType(cm)typeWithTag:tagClass:conformingToType:	UTTagSpecification			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	008c4e131d5b4c0a
-method	c:objc(cs)UTType(cm)typesWithTag:tagClass:conformingToType:	UTTagSpecification			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	6ed21bff84449c98
-property	c:objc(cs)UTType(py)tags	UTTagSpecification			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	57888e9319a3c086
-category	c:objc(cy)UTType@LocalConstants	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	5b14074ccf6de3eb
-method	c:objc(cs)UTType(cm)exportedTypeWithIdentifier:	LocalConstants			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	56a99b44dec94f64
-method	c:objc(cs)UTType(cm)exportedTypeWithIdentifier:conformingToType:	LocalConstants			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	426e3c3f7f962ac5
-method	c:objc(cs)UTType(cm)importedTypeWithIdentifier:	LocalConstants			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	cc988364cf1608fd
-method	c:objc(cs)UTType(cm)importedTypeWithIdentifier:conformingToType:	LocalConstants			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	97f075c19394c073
-var	c:@UTTypeItem	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	0c69c31bf720fe9b
-var	c:@UTTypeContent	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	4acccf53869ce74e
-var	c:@UTTypeCompositeContent	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ef8465cb5f6b5f29
-var	c:@UTTypeDiskImage	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	e283f31a5cc05947
-var	c:@UTTypeData	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	45d37905786b18dd
-var	c:@UTTypeDirectory	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	963ea55e2e7ecf7a
-var	c:@UTTypeResolvable	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	4f9f3d2fc54ca0c9
-var	c:@UTTypeSymbolicLink	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	f3d8276db77ce5d6
-var	c:@UTTypeExecutable	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	bf49c97d76d1197d
-var	c:@UTTypeMountPoint	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	29b0e4a706833768
-var	c:@UTTypeAliasFile	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	32e126d30ed19b4f
-var	c:@UTTypeURLBookmarkData	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	20ddfc81a13670de
-var	c:@UTTypeURL	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	366dd51a35d29b29
-var	c:@UTTypeFileURL	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	52ea895114c407b2
-var	c:@UTTypeText	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	7d2bc9ad781a21d8
-var	c:@UTTypePlainText	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	78e3556cb2930745
-var	c:@UTTypeUTF8PlainText	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	8d8db98cdfe0324f
-var	c:@UTTypeUTF16ExternalPlainText	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ed069805132ac2f3
-var	c:@UTTypeUTF16PlainText	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	85dc92eace87320a
-var	c:@UTTypeDelimitedText	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	040631e696e26df9
-var	c:@UTTypeCommaSeparatedText	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	84cb50b419b1a2d9
-var	c:@UTTypeTabSeparatedText	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	634634b6b368d526
-var	c:@UTTypeUTF8TabSeparatedText	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	4b9e4291e9f45457
-var	c:@UTTypeRTF	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	98e0dfc8a78c05c6
-var	c:@UTTypeHTML	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	4ef79e19fc7964de
-var	c:@UTTypeXML	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	5520ccf0fb8d23ac
-var	c:@UTTypeYAML	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	bfe5e3a405b4eaa5
-var	c:@UTTypeCSS	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	f6c9714d74bcc7a7
-var	c:@UTTypeSourceCode	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	2e53c3b6b6a332a3
-var	c:@UTTypeAssemblyLanguageSource	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	d1f37a8e59312eb0
-var	c:@UTTypeCSource	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	982bd551e0cb7bff
-var	c:@UTTypeObjectiveCSource	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	e0eee71b1bd6bf8f
-var	c:@UTTypeSwiftSource	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	87636f6b7696ea49
-var	c:@UTTypeCPlusPlusSource	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	0a0dadba826a95cc
-var	c:@UTTypeObjectiveCPlusPlusSource	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ec822d73088cc41f
-var	c:@UTTypeCHeader	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	64b38ef3e0ac5b22
-var	c:@UTTypeCPlusPlusHeader	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	44be1e9e2cd04b8b
-var	c:@UTTypeScript	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1041f76418f69e93
-var	c:@UTTypeAppleScript	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	7d2c807178b62ba3
-var	c:@UTTypeOSAScript	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	b4e2c8245b8f4af7
-var	c:@UTTypeOSAScriptBundle	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	514e745446bfc640
-var	c:@UTTypeJavaScript	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1489863d6e44b95f
-var	c:@UTTypeShellScript	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	c5d794761a7b33e4
-var	c:@UTTypePerlScript	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	a45f09c12c0b978e
-var	c:@UTTypePythonScript	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1e2879916dbb8975
-var	c:@UTTypeRubyScript	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	46640ef34edcc489
-var	c:@UTTypePHPScript	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	7bc6117e5bdfaa5e
-var	c:@UTTypeMakefile	-			ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	67db15e2028a5b69
-var	c:@UTTypeJSON	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	a7c9ae8c5b092913
-var	c:@UTTypePropertyList	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ece16f4d1611536b
-var	c:@UTTypeXMLPropertyList	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	bbb85c6134e8209c
-var	c:@UTTypeBinaryPropertyList	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	4ca303df9d3170ba
-var	c:@UTTypePDF	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	941866d7b4d980e9
-var	c:@UTTypeRTFD	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	63d532073a3dcc78
-var	c:@UTTypeFlatRTFD	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	b120f1c97a6c4004
-var	c:@UTTypeWebArchive	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	08260394896a5779
-var	c:@UTTypeImage	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	3fac409e2e683651
-var	c:@UTTypeJPEG	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ea35f4578508078b
-var	c:@UTTypeTIFF	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	dc5e307fa6b86a39
-var	c:@UTTypeGIF	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	327f716dd501b9c2
-var	c:@UTTypePNG	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	dd468650447d7393
-var	c:@UTTypeICNS	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	16e5e6c34a8500e5
-var	c:@UTTypeBMP	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	622d545bce34d662
-var	c:@UTTypeICO	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	83539abc2fc8a218
-var	c:@UTTypeRAWImage	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	f526709260806b98
-var	c:@UTTypeSVG	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	9c2733b088645e90
-var	c:@UTTypeLivePhoto	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1ebb2085b7d133d9
-var	c:@UTTypeHEIF	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	b65ea42b87bc420d
-var	c:@UTTypeHEIC	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1127b82e15b13ffa
-var	c:@UTTypeHEICS	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	7be12f31dc9fe478
-var	c:@UTTypeWebP	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	847c6731986f2a91
-var	c:@UTTypeEXR	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	95dc7edfcf7efa7c
-var	c:@UTTypeDNG	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	99397fc9590d61e2
-var	c:@UTTypeJPEGXL	-			ios=18.2/-/-/0,maccatalyst=18.2/-/-/0,macos=15.2/-/-/0,tvos=18.2/-/-/0,watchos=11.2/-/-/0	-	8f09d24c35b9c926
-var	c:@UTType3DContent	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	9cabf1c6c0c2843b
-var	c:@UTTypeUSD	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	9a40a758eeaf4abe
-var	c:@UTTypeUSDZ	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1b560caf5f171192
-var	c:@UTTypeRealityFile	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	8a144cd4b8154a02
-var	c:@UTTypeSceneKitScene	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	7110d73c244b92d5
-var	c:@UTTypeARReferenceObject	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	882407b5bef7e419
-var	c:@UTTypeAudiovisualContent	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	e85e055a65d59bb0
-var	c:@UTTypeMovie	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	fad1d54e304c179c
-var	c:@UTTypeVideo	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	5af1d47839583e9b
-var	c:@UTTypeAudio	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1ca2b2ce83d0f77f
-var	c:@UTTypeQuickTimeMovie	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	9f80b4a6b245f8d8
-var	c:@UTTypeMPEG	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	0c300d78ea75763d
-var	c:@UTTypeMPEG2Video	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	4e437da94c0b6926
-var	c:@UTTypeMPEG2TransportStream	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	6196170d53342d55
-var	c:@UTTypeMP3	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	231dec54fab3dadc
-var	c:@UTTypeMPEG4Movie	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	658ff941a965240b
-var	c:@UTTypeMPEG4Audio	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	834a66957c7adf77
-var	c:@UTTypeAppleProtectedMPEG4Audio	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	cf82f7f952edb779
-var	c:@UTTypeAppleProtectedMPEG4Video	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	5e44378ade3ef807
-var	c:@UTTypeAVI	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	fab3c236235e9b00
-var	c:@UTTypeAIFF	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	e8bd314458bae01d
-var	c:@UTTypeWAV	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	0cd2c1381f0834e0
-var	c:@UTTypeMIDI	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	92a0108586cd6801
-var	c:@UTTypePlaylist	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ab09b67aa7d4a9ae
-var	c:@UTTypeM3UPlaylist	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	6cfb92fd0f7d2b21
-var	c:@UTTypeFolder	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	323c121616f05e65
-var	c:@UTTypeVolume	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	dfe6565a29b49433
-var	c:@UTTypePackage	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	a3a9ec50e7e472e6
-var	c:@UTTypeBundle	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	29a22ba8a24b9bb0
-var	c:@UTTypePluginBundle	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	d03f8a03dfbe7be0
-var	c:@UTTypeSpotlightImporter	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	7364d8e4c0d2df52
-var	c:@UTTypeQuickLookGenerator	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	57dc9b9cd9c42833
-var	c:@UTTypeXPCService	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	64e2054f92886b47
-var	c:@UTTypeFramework	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	280be86732ec3334
-var	c:@UTTypeApplication	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	325e12667ad10724
-var	c:@UTTypeApplicationBundle	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	6c34ba67de0e51b1
-var	c:@UTTypeApplicationExtension	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	6b8dff2942aac5cc
-var	c:@UTTypeUnixExecutable	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ac74fc511dc9c23f
-var	c:@UTTypeEXE	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	539c1d129f0441fc
-var	c:@UTTypeSystemPreferencesPane	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	e6e99c4663f98bb0
-var	c:@UTTypeArchive	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	2ae8d99d1871d3df
-var	c:@UTTypeGZIP	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	efe8a396d3d10888
-var	c:@UTTypeBZ2	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	bf1f2e2373f2a6fe
-var	c:@UTTypeZIP	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	b9ffe72e892f3970
-var	c:@UTTypeAppleArchive	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1e5be85890aa1bcc
-var	c:@UTTypeTarArchive	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	c9a4f5558c27fe38
-var	c:@UTTypeSpreadsheet	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	46a18f1f2fd7eaf0
-var	c:@UTTypePresentation	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	42bc84911eede5e1
-var	c:@UTTypeDatabase	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	935c798abcc09b74
-var	c:@UTTypeMessage	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	a944b306b88f26f6
-var	c:@UTTypeContact	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	f7bc6036b148ef2c
-var	c:@UTTypeVCard	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	609743761d33f084
-var	c:@UTTypeToDoItem	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ac00e54142d939e4
-var	c:@UTTypeCalendarEvent	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	5de61630b20f0d73
-var	c:@UTTypeEmailMessage	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	084bd869596b7d56
-var	c:@UTTypeInternetLocation	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	7f19555c59de6d25
-var	c:@UTTypeInternetShortcut	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	4520917e88cb96cb
-var	c:@UTTypeFont	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	036ed8003b43aca1
-var	c:@UTTypeBookmark	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	dbd6b4a3961bddf9
-var	c:@UTTypePKCS12	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	174632a93b11507b
-var	c:@UTTypeX509Certificate	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	f9da7661c5a98da1
-var	c:@UTTypeEPUB	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	33dedab3668e9fe9
-var	c:@UTTypeLog	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	e6e2582164600739
-var	c:@UTTypeAHAP	-			ios=17.0/-/-/0,maccatalyst=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	ab73c53af4a16a04
-var	c:@UTTypeGeoJSON	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	af24cd658cad2579
-var	c:@UTTypeLinkPresentationMetadata	-			ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	bf0d21e96dcb23fa
-category	c:objc(cy)NSString@UTAdditions	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1ed891ad46ee59ba
-method	c:objc(cs)NSString(im)stringByAppendingPathComponent:conformingToType:	UTAdditions			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	75bf6620f2f70dca
-method	c:objc(cs)NSString(im)stringByAppendingPathExtensionForType:	UTAdditions			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	15bf999712769dc9
-category	c:objc(cy)NSURL@UTAdditions	-			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	3e656869560a5e2b
-method	c:objc(cs)NSURL(im)URLByAppendingPathComponent:conformingToType:	UTAdditions			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	fac32b38577b47b7
-method	c:objc(cs)NSURL(im)URLByAppendingPathExtensionForType:	UTAdditions			ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	582417a6f1b37204
-category	c:objc(cy)NSItemProvider@UTType	-			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	ed092e1415b1e05a
-method	c:objc(cs)NSItemProvider(im)initWithContentsOfURL:contentType:openInPlace:coordinated:visibility:	UTType			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	4cdd965c92de4d38
-method	c:objc(cs)NSItemProvider(im)registerDataRepresentationForContentType:visibility:loadHandler:	UTType			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	1ff3008421a25ea5
-method	c:objc(cs)NSItemProvider(im)registerFileRepresentationForContentType:visibility:openInPlace:loadHandler:	UTType			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	233f0f4b981cfb1e
-property	c:objc(cs)NSItemProvider(py)registeredContentTypes	UTType			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	eae0724b58b78cf8
-property	c:objc(cs)NSItemProvider(py)registeredContentTypesForOpenInPlace	UTType			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	2b48e42b5c8ddda6
-method	c:objc(cs)NSItemProvider(im)registeredContentTypesConformingToContentType:	UTType			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	9c5ace1fea137677
-method	c:objc(cs)NSItemProvider(im)loadDataRepresentationForContentType:completionHandler:	UTType			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	577fb5bd27eb38b6
-method	c:objc(cs)NSItemProvider(im)loadFileRepresentationForContentType:openInPlace:completionHandler:	UTType			ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	44d81cb543c6c1e7
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,attrs,availability,message,declhash
+var	c:@UTTagClassFilenameExtension	-			NS_REFINED_FOR_SWIFT NSString *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	e36c9b8a451066ea
+var	c:@UTTagClassMIMEType	-			NS_REFINED_FOR_SWIFT NSString *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	b527f73a4368ee63
+interface	c:objc(cs)UTType	-			-	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	30b52ca97a83257e
+super	-	UTType	NSObject		-	-	-	-	dabd7688c29466c2
+conforms	-	UTType	NSCopying		-	-	-	-	dc888b241dbee0e8
+conforms	-	UTType	NSSecureCoding		-	-	-	-	92e75a1f573b943c
+method	c:objc(cs)UTType(cm)new	-			instancetype	-	*unavailable ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	25eb972c763de96c
+method	c:objc(cs)UTType(im)init	-			instancetype	-	*unavailable ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	0da2b5c8f122ab0a
+method	c:objc(cs)UTType(cm)typeWithIdentifier:	-			instancetype	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1d1cd79d10e2a75b
+method	c:objc(cs)UTType(cm)typeWithFilenameExtension:	-			instancetype	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	b030c61b48ec7abf
+method	c:objc(cs)UTType(cm)typeWithFilenameExtension:conformingToType:	-			instancetype	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	b9290b13d9e1373b
+method	c:objc(cs)UTType(cm)typeWithMIMEType:	-			instancetype	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	615597e8120afecf
+method	c:objc(cs)UTType(cm)typeWithMIMEType:conformingToType:	-			instancetype	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	46ae65a542962aa6
+property	c:objc(cs)UTType(py)identifier	-			NSString *	readonly	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	9d79e464dd0f3759
+property	c:objc(cs)UTType(py)preferredFilenameExtension	-			NSString *	readonly	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	05ac0de425b15a23
+property	c:objc(cs)UTType(py)preferredMIMEType	-			NSString *	readonly	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1ae45ab81120cf1d
+property	c:objc(cs)UTType(py)localizedDescription	-			NSString *	readonly	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	e23e1fb12a8ed8c5
+property	c:objc(cs)UTType(py)version	-			NSNumber *	readonly	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1fe88d62e981f301
+property	c:objc(cs)UTType(py)referenceURL	-			NSURL *	readonly	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	0035b109ca981e3d
+property	c:objc(cs)UTType(py)dynamic	-			BOOL	readonly,getter=isDynamic	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	fd9d56912b817531
+property	c:objc(cs)UTType(py)declared	-			BOOL	readonly,getter=isDeclared	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	77a838bb143dfc56
+property	c:objc(cs)UTType(py)publicType	-			BOOL	readonly,getter=isPublicType	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	c08c64f2fa775c08
+category	c:objc(cy)UTType@Conformance	-			-	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	3060816e31471caf
+method	c:objc(cs)UTType(im)conformsToType:	Conformance			BOOL	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	f4275e48a587fa79
+method	c:objc(cs)UTType(im)isSupertypeOfType:	Conformance			BOOL	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	5cb3c1d61d390d59
+method	c:objc(cs)UTType(im)isSubtypeOfType:	Conformance			BOOL	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	45cad0f386ffc2ec
+property	c:objc(cs)UTType(py)supertypes	Conformance			NSSet<UTType *> *	readonly	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	23a79bcbc4c6a6f9
+category	c:objc(cy)UTType@UTTagSpecification	-			-	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	9969b963aa72c6ed
+method	c:objc(cs)UTType(cm)typeWithTag:tagClass:conformingToType:	UTTagSpecification			instancetype	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	0e229e3039a89996
+method	c:objc(cs)UTType(cm)typesWithTag:tagClass:conformingToType:	UTTagSpecification			NSArray<UTType *> *	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	abe849930f5c1749
+property	c:objc(cs)UTType(py)tags	UTTagSpecification			NSDictionary<NSString *,NSArray<NSString *> *> *	readonly	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1bd96b11e6dbeb5f
+category	c:objc(cy)UTType@LocalConstants	-			-	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	5b14074ccf6de3eb
+method	c:objc(cs)UTType(cm)exportedTypeWithIdentifier:	LocalConstants			UTType *	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	8a4914dad84d2e5a
+method	c:objc(cs)UTType(cm)exportedTypeWithIdentifier:conformingToType:	LocalConstants			UTType *	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	a7076c0e2904712a
+method	c:objc(cs)UTType(cm)importedTypeWithIdentifier:	LocalConstants			UTType *	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	f77eb6145e2af6db
+method	c:objc(cs)UTType(cm)importedTypeWithIdentifier:conformingToType:	LocalConstants			UTType *	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	3ac351157326abd4
+var	c:@UTTypeItem	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	abdec472cef7284b
+var	c:@UTTypeContent	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ef07ed1706709c13
+var	c:@UTTypeCompositeContent	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ad21c31b219675e1
+var	c:@UTTypeDiskImage	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	25b859c197a2b16b
+var	c:@UTTypeData	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	2ee14a1d8ae27898
+var	c:@UTTypeDirectory	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ea3446b541332ea4
+var	c:@UTTypeResolvable	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	8e6827ae60f3e264
+var	c:@UTTypeSymbolicLink	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	10f308f9794cead5
+var	c:@UTTypeExecutable	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	63c35e9d6afc9f0c
+var	c:@UTTypeMountPoint	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	4ed0bd799a833a38
+var	c:@UTTypeAliasFile	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	fcd6fd5b0ec3346b
+var	c:@UTTypeURLBookmarkData	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	4ae9c1b38df12c29
+var	c:@UTTypeURL	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	8cc7b474d71ae616
+var	c:@UTTypeFileURL	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	a45e0a2ae2b9ba55
+var	c:@UTTypeText	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	09dd2953c105a6fe
+var	c:@UTTypePlainText	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	0502ac6ee97f68c4
+var	c:@UTTypeUTF8PlainText	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	766c8bd56edaf64f
+var	c:@UTTypeUTF16ExternalPlainText	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	7c4f0240881e9c6f
+var	c:@UTTypeUTF16PlainText	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	c4b700f423e4e027
+var	c:@UTTypeDelimitedText	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	71422c1873688f47
+var	c:@UTTypeCommaSeparatedText	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	7f170fca1ac84efa
+var	c:@UTTypeTabSeparatedText	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	0e25eebdd3eb1529
+var	c:@UTTypeUTF8TabSeparatedText	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	c39216c1ad3e25cf
+var	c:@UTTypeRTF	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	5982cf0b9469414b
+var	c:@UTTypeHTML	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	c08fe7d5b422fad2
+var	c:@UTTypeXML	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	6ff12e59b7831787
+var	c:@UTTypeYAML	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ee71d1ed7b8ce0b4
+var	c:@UTTypeCSS	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	306aa17b04e18684
+var	c:@UTTypeSourceCode	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	d3b7e5a665c7a15c
+var	c:@UTTypeAssemblyLanguageSource	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	5b4c4653fc11f373
+var	c:@UTTypeCSource	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	846bbdc94f5bd712
+var	c:@UTTypeObjectiveCSource	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	9d9c1da534989753
+var	c:@UTTypeSwiftSource	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	03a1c1a9f0f10ab4
+var	c:@UTTypeCPlusPlusSource	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	0f28134d8096e687
+var	c:@UTTypeObjectiveCPlusPlusSource	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	68a8d6a706413c84
+var	c:@UTTypeCHeader	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	d113b2568e850413
+var	c:@UTTypeCPlusPlusHeader	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	bd7057eec7a2cbdb
+var	c:@UTTypeScript	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	122e202403c13a72
+var	c:@UTTypeAppleScript	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	bfb416d83ee32e72
+var	c:@UTTypeOSAScript	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	19fae0598e6d9923
+var	c:@UTTypeOSAScriptBundle	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	463dce0c46540c78
+var	c:@UTTypeJavaScript	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	6c534ad00f7a7ab4
+var	c:@UTTypeShellScript	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	51f9a7d40bf74fbb
+var	c:@UTTypePerlScript	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	62de07639adb58f6
+var	c:@UTTypePythonScript	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	07d6ee453ed40ffb
+var	c:@UTTypeRubyScript	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	7e458a1d448a20f9
+var	c:@UTTypePHPScript	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	270e4e6d9bc8d0da
+var	c:@UTTypeMakefile	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	4340c1154a42340c
+var	c:@UTTypeJSON	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	792e79d4693bfe16
+var	c:@UTTypePropertyList	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	be894756f3b41923
+var	c:@UTTypeXMLPropertyList	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	16e1022412a9c34c
+var	c:@UTTypeBinaryPropertyList	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	08c057d8ea7e196e
+var	c:@UTTypePDF	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	cee23b1e41f42115
+var	c:@UTTypeRTFD	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	64c5f8ea069f300c
+var	c:@UTTypeFlatRTFD	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	8a5ad7c8373baeb1
+var	c:@UTTypeWebArchive	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	da0abf197d94d2ac
+var	c:@UTTypeImage	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1aedd74bc915c8c9
+var	c:@UTTypeJPEG	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	e746a845f4d768e7
+var	c:@UTTypeTIFF	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	30f871935ffc6584
+var	c:@UTTypeGIF	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	c956fcc3e963d75d
+var	c:@UTTypePNG	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	38feb1f98676ae00
+var	c:@UTTypeICNS	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	8cb3a9477f4424c6
+var	c:@UTTypeBMP	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	0d98a2836d1d35da
+var	c:@UTTypeICO	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	e552a17a562f32b9
+var	c:@UTTypeRAWImage	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ff4838c9dc2158e6
+var	c:@UTTypeSVG	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	37ad55b44904814e
+var	c:@UTTypeLivePhoto	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	0177c32cf1566e7b
+var	c:@UTTypeHEIF	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	4d9efdab215f59d5
+var	c:@UTTypeHEIC	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	e808f061dbfbb6eb
+var	c:@UTTypeHEICS	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	1eadff65e2efbd94
+var	c:@UTTypeWebP	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	5acef66d349f7821
+var	c:@UTTypeEXR	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	9c7660338ddd63b6
+var	c:@UTTypeDNG	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	f6c06880e2a8fc77
+var	c:@UTTypeJPEGXL	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=18.2/-/-/0,maccatalyst=18.2/-/-/0,macos=15.2/-/-/0,tvos=18.2/-/-/0,watchos=11.2/-/-/0	-	79beb54a9bb0870b
+var	c:@UTType3DContent	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	bce9726cc9fb4f4f
+var	c:@UTTypeUSD	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	9b762f07e172cd92
+var	c:@UTTypeUSDZ	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	2a943990baaae4f3
+var	c:@UTTypeRealityFile	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	28a40752373ff276
+var	c:@UTTypeSceneKitScene	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ece22627335f451a
+var	c:@UTTypeARReferenceObject	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	aa8a39c3f20526fa
+var	c:@UTTypeAudiovisualContent	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	7c3e329dfad38955
+var	c:@UTTypeMovie	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	262fef926b0501f9
+var	c:@UTTypeVideo	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	dae15bf16e4dff22
+var	c:@UTTypeAudio	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	9f74f926a8d7f368
+var	c:@UTTypeQuickTimeMovie	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	278babe20fe557ed
+var	c:@UTTypeMPEG	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	31ef9d386aaaabde
+var	c:@UTTypeMPEG2Video	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	537f166e81c5c6f4
+var	c:@UTTypeMPEG2TransportStream	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	d8c9a5d164e8e828
+var	c:@UTTypeMP3	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	15eaeed908547339
+var	c:@UTTypeMPEG4Movie	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	064529473b9a54de
+var	c:@UTTypeMPEG4Audio	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	3a71cc31029b205e
+var	c:@UTTypeAppleProtectedMPEG4Audio	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	13477332d14d9baa
+var	c:@UTTypeAppleProtectedMPEG4Video	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	603a7904d31fee78
+var	c:@UTTypeAVI	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	cfe867c5276614c2
+var	c:@UTTypeAIFF	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	98c8878399d34f7e
+var	c:@UTTypeWAV	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ced6fbda8eef976f
+var	c:@UTTypeMIDI	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	5ed36e937434bb4b
+var	c:@UTTypePlaylist	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	c5e195f8f2bc1968
+var	c:@UTTypeM3UPlaylist	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	91d3c449f3a8d665
+var	c:@UTTypeFolder	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	c56a77546bf7c385
+var	c:@UTTypeVolume	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	c6bae002f96ff776
+var	c:@UTTypePackage	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	c234294617b8bf5d
+var	c:@UTTypeBundle	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	6ac3cba8db47938b
+var	c:@UTTypePluginBundle	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	a1c96a8ded102274
+var	c:@UTTypeSpotlightImporter	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1117e6d111506517
+var	c:@UTTypeQuickLookGenerator	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	02f22015783b5352
+var	c:@UTTypeXPCService	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	84b0800c78b1c90c
+var	c:@UTTypeFramework	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	e9a71da9e47b2059
+var	c:@UTTypeApplication	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	a93fed712d3673f1
+var	c:@UTTypeApplicationBundle	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	b71f73cd68fed92d
+var	c:@UTTypeApplicationExtension	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	70db191938931d3b
+var	c:@UTTypeUnixExecutable	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	51c8ed14f1db1905
+var	c:@UTTypeEXE	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	c9ffaad054423232
+var	c:@UTTypeSystemPreferencesPane	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1d5c2b3d6d33a97c
+var	c:@UTTypeArchive	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	6b662d74a4551d20
+var	c:@UTTypeGZIP	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	d56f3ad40df1d8ff
+var	c:@UTTypeBZ2	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	eff1ab9dc0099d45
+var	c:@UTTypeZIP	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	234a62484a1a1874
+var	c:@UTTypeAppleArchive	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	35482e792bd6079a
+var	c:@UTTypeTarArchive	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	dbc3d97af2a86268
+var	c:@UTTypeSpreadsheet	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1c286bafecf86b2f
+var	c:@UTTypePresentation	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	d62b230f76e3cb51
+var	c:@UTTypeDatabase	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	f37f7e5714c41d58
+var	c:@UTTypeMessage	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	e2aa8fbbfc4ba3db
+var	c:@UTTypeContact	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	7edced67cf576812
+var	c:@UTTypeVCard	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	53d7d3859b00b0d8
+var	c:@UTTypeToDoItem	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	03c5752990b8ea98
+var	c:@UTTypeCalendarEvent	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	0c714c0cb929a051
+var	c:@UTTypeEmailMessage	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	b48feb406df13b6c
+var	c:@UTTypeInternetLocation	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	f3fcb6f0241efec7
+var	c:@UTTypeInternetShortcut	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	6d7eef3e2e389e84
+var	c:@UTTypeFont	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	c5aa50c86d785109
+var	c:@UTTypeBookmark	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	4297a38e6aea07c4
+var	c:@UTTypePKCS12	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	81799d260a8bff8d
+var	c:@UTTypeX509Certificate	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	31d48a427fa6bf91
+var	c:@UTTypeEPUB	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	91334c93cc731bff
+var	c:@UTTypeLog	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	34c83fc8c8ff88c6
+var	c:@UTTypeAHAP	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=17.0/-/-/0,maccatalyst=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	4ec21d254dfefdee
+var	c:@UTTypeGeoJSON	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	f51699ad4cdb5974
+var	c:@UTTypeLinkPresentationMetadata	-			NS_REFINED_FOR_SWIFT UTType *const	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	7c677e80ea6f9e49
+category	c:objc(cy)NSString@UTAdditions	-			-	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1ed891ad46ee59ba
+method	c:objc(cs)NSString(im)stringByAppendingPathComponent:conformingToType:	UTAdditions			NSString *	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	4ed5362e999da735
+method	c:objc(cs)NSString(im)stringByAppendingPathExtensionForType:	UTAdditions			NSString *	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	eeb172fe51232edd
+category	c:objc(cy)NSURL@UTAdditions	-			-	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	3e656869560a5e2b
+method	c:objc(cs)NSURL(im)URLByAppendingPathComponent:conformingToType:	UTAdditions			NSURL *	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	6d6dd916cd477c2e
+method	c:objc(cs)NSURL(im)URLByAppendingPathExtensionForType:	UTAdditions			NSURL *	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	2f0f619cdf99d4db
+category	c:objc(cy)NSItemProvider@UTType	-			-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	ed092e1415b1e05a
+method	c:objc(cs)NSItemProvider(im)initWithContentsOfURL:contentType:openInPlace:coordinated:visibility:	UTType			instancetype	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	913b1fc267bbc2c4
+method	c:objc(cs)NSItemProvider(im)registerDataRepresentationForContentType:visibility:loadHandler:	UTType			void	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	0a8dc8c46d99fcae
+method	c:objc(cs)NSItemProvider(im)registerFileRepresentationForContentType:visibility:openInPlace:loadHandler:	UTType			void	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	0758697664622059
+property	c:objc(cs)NSItemProvider(py)registeredContentTypes	UTType			NSArray<UTType *> *	readonly,copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	2eeba426e69a3b8d
+property	c:objc(cs)NSItemProvider(py)registeredContentTypesForOpenInPlace	UTType			NSArray<UTType *> *	readonly,copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	a76945b1c74e7d14
+method	c:objc(cs)NSItemProvider(im)registeredContentTypesConformingToContentType:	UTType			NSArray<UTType *> *	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	6446a9397e63ed96
+method	c:objc(cs)NSItemProvider(im)loadDataRepresentationForContentType:completionHandler:	UTType			NSProgress *	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	02123e35cf7b0175
+method	c:objc(cs)NSItemProvider(im)loadFileRepresentationForContentType:openInPlace:completionHandler:	UTType			NSProgress *	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	90fa615acf3b8c41
