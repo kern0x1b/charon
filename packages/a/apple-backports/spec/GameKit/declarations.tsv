@@ -54,12 +54,12 @@ var	c:@GKPlayerIDNoLongerAvailable	-			NSString *const	-	-	ios=14.0/-/-/0,macos=
 interface	c:objc(cs)GKPlayer	-			-	-	-	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	28de113d42c9c46e
 super	-	GKPlayer	GKBasePlayer		-	-	-	-	-	102bdb44fbab39ee
 method	c:objc(cs)GKPlayer(im)scopedIDsArePersistent	-			BOOL	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	4f970389dad1d0ab
-property	c:objc(cs)GKPlayer(py)gamePlayerID	-			API_UNAVAILABLE NSString *	-	readonly,retain,nonatomic	ios=12.4/-/-/0,macos=10.14.6/-/-/0,tvos=12.4/-/-/0,watchos=-/-/-/1	-	6d92ffdcad28cad0
-property	c:objc(cs)GKPlayer(py)teamPlayerID	-			API_UNAVAILABLE NSString *	-	readonly,retain,nonatomic	ios=12.4/-/-/0,macos=10.14.6/-/-/0,tvos=12.4/-/-/0,watchos=-/-/-/1	-	e593de8386a3b21a
+property	c:objc(cs)GKPlayer(py)gamePlayerID	-			NSString *	-	readonly,retain,nonatomic	ios=12.4/-/-/0,macos=10.14.6/-/-/0,tvos=12.4/-/-/0,watchos=-/-/-/1	-	8f9c374676ddc282
+property	c:objc(cs)GKPlayer(py)teamPlayerID	-			NSString *	-	readonly,retain,nonatomic	ios=12.4/-/-/0,macos=10.14.6/-/-/0,tvos=12.4/-/-/0,watchos=-/-/-/1	-	15540d78d1f9a63c
 property	c:objc(cs)GKPlayer(py)displayName	-			NSString *	-	readonly,nonatomic	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	74d99b7f72dc6718
 property	c:objc(cs)GKPlayer(py)alias	-			NSString *	-	readonly,copy,nonatomic	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	f9a53e831a9f0afd
 method	c:objc(cs)GKPlayer(cm)anonymousGuestPlayerWithIdentifier:	-			instancetype	NSString * guestIdentifier	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	48e7558041730c62
-property	c:objc(cs)GKPlayer(py)guestIdentifier	-			API_UNAVAILABLE NSString *	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	46ccfe83aeba6292
+property	c:objc(cs)GKPlayer(py)guestIdentifier	-			NSString *	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	034f7bfff37eecf2
 property	c:objc(cs)GKPlayer(py)isInvitable	-			BOOL	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	4cad64e38c098a5f
 category	c:objc(cy)GKPlayer@UI	-			-	-	-	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	7cc540efbc542429
 method	c:objc(cs)GKPlayer(im)loadPhotoForSize:withCompletionHandler:	UI			void	GKPhotoSize size | void (^)(UIImage * _Nullable, NSError * _Nullable) completionHandler	-	ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	3963d0c1360d2374
@@ -111,7 +111,7 @@ method	c:objc(cs)GKLeaderboard(im)submitScore:context:player:completionHandler:	
 method	c:objc(cs)GKLeaderboard(im)loadEntriesForPlayerScope:timeScope:range:completionHandler:	-			void	GKLeaderboardPlayerScope playerScope | GKLeaderboardTimeScope timeScope | NSRange range | void (^)(GKLeaderboardEntry * _Nullable_result, NSArray<GKLeaderboardEntry *> * _Nullable, NSInteger, NSError * _Nullable) completionHandler	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	97fafcbcfb41fb20
 method	c:objc(cs)GKLeaderboard(im)loadEntriesForPlayers:timeScope:completionHandler:	-			void	NSArray<GKPlayer *> * players | GKLeaderboardTimeScope timeScope | void (^)(GKLeaderboardEntry * _Nullable_result, NSArray<GKLeaderboardEntry *> * _Nullable, NSError * _Nullable) completionHandler	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	2e269d9cda68e3f6
 category	c:objc(cy)GKLeaderboard@Deprecated	-			-	-	-	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	deprecated: Use Use the ``GKLeaderboard/loadEntries(for:timeScope:range:completionHandler:)`` method instead. instead	b3b869d4bf4c6cd2
-property	c:objc(cs)GKLeaderboard(py)category	Deprecated			API_UNAVAILABLE NSString *	-	copy,nonatomic	ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	68648855fea52485
+property	c:objc(cs)GKLeaderboard(py)category	Deprecated			NSString *	-	copy,nonatomic	ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	86bd3908b92f48b1
 method	c:objc(cs)GKLeaderboard(im)initWithPlayerIDs:	Deprecated			instancetype	NSArray<NSString *> * playerIDs	-	ios=4.1/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	deprecated: Use Use the ``GKLeaderboard/loadEntries(for:timeScope:completionHandler:)`` method instead. instead	767adbd4f535442d
 method	c:objc(cs)GKLeaderboard(cm)loadCategoriesWithCompletionHandler:	Deprecated			void	void (^)(NSArray<NSString *> * _Nullable, NSArray<NSString *> * _Nullable, NSError * _Nullable) completionHandler	-	ios=4.1/6.0/-/0,macos=10.8/10.9/-/0,tvos=-/-/-/1	deprecated: Use Use the ``GKLeaderboard/loadLeaderboards(completionHandler:)`` method instead. instead	2815eff12494ef24
 method	c:objc(cs)GKLeaderboard(cm)setDefaultLeaderboard:withCompletionHandler:	Deprecated			void	NSString * leaderboardIdentifier | void (^)(NSError * _Nullable) completionHandler	-	ios=5.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	deprecated: Use Use the ``GKLocalPlayer/setDefaultLeaderboardIdentifier(_:completionHandler:)`` method instead. instead	9cec1b33689a2b7d
@@ -149,7 +149,7 @@ method	c:objc(cs)GKAchievement(im)reportAchievementWithCompletionHandler:	Deprec
 property	c:objc(cs)GKAchievement(py)hidden	Deprecated			BOOL	-	readonly,assign,nonatomic,getter=isHidden	ios=4.1/6.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	62460a16135b2ae5
 category	c:objc(cy)GKAchievement@Obsoleted	-			-	-	-	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	deprecated: Use Use ``GKAchievement/init(identifier:player:)`` instead. instead	f4917f0cbda36f94
 method	c:objc(cs)GKAchievement(im)initWithIdentifier:forPlayer:	Obsoleted			instancetype	NSString * identifier | NSString * playerID	-	ios=7.0/8.0/-/0,macos=10.9/10.10/-/0,tvos=-/-/-/1	deprecated: Use Use ``GKAchievement/init(identifier:player:)`` instead. instead	af2f5e241d76a762
-property	c:objc(cs)GKAchievement(py)playerID	Obsoleted			API_UNAVAILABLE NSString *	-	readonly,copy,nonatomic	ios=7.0/8.0/-/0,macos=10.9/10.10/-/0,tvos=-/-/-/1	-	dfaa3c1969a80e51
+property	c:objc(cs)GKAchievement(py)playerID	Obsoleted			NSString *	-	readonly,copy,nonatomic	ios=7.0/8.0/-/0,macos=10.9/10.10/-/0,tvos=-/-/-/1	-	fdceccebca013ba1
 typedef	c:@T@GKGameCenterViewControllerState	-			enum GKGameCenterViewControllerState	-	-	watchos=-/-/-/1	-	0ba96eaeed8f9cd1
 enum	c:@E@GKGameCenterViewControllerState	-			NSInteger	-	-	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	60b10bf6d0034187
 enumconst	c:@E@GKGameCenterViewControllerState@GKGameCenterViewControllerStateDefault	GKGameCenterViewControllerState			-	-	-	watchos=-/-/-/1	-	e5aac915436fbf7f
@@ -173,7 +173,7 @@ category	c:objc(cy)GKGameCenterViewController@Deprecated	-			-	-	-	watchos=-/-/-
 property	c:objc(cs)GKGameCenterViewController(py)viewState	Deprecated			GKGameCenterViewControllerState	-	assign,nonatomic	ios=6.0/14.0/-/0,macos=10.9/11.0/-/0,tvos=9.0/14.0/-/0,watchos=-/-/-/1	-	d779d64b1cb336b4
 property	c:objc(cs)GKGameCenterViewController(py)leaderboardTimeScope	Deprecated			GKLeaderboardTimeScope	-	assign,nonatomic	ios=4.1/14.0/-/0,macos=10.8/11.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	950f4b1b9d98868b
 property	c:objc(cs)GKGameCenterViewController(py)leaderboardIdentifier	Deprecated			NSString *	-	strong,nonatomic	ios=7.0/14.0/-/0,macos=10.10/11.0/-/0,tvos=9.0/14.0/-/0,watchos=-/-/-/1	-	8d56b20810f0fab4
-property	c:objc(cs)GKGameCenterViewController(py)leaderboardCategory	Deprecated			API_UNAVAILABLE NSString *	-	strong,nonatomic	ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e23c9ac3a39c0803
+property	c:objc(cs)GKGameCenterViewController(py)leaderboardCategory	Deprecated			NSString *	-	strong,nonatomic	ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fcbd405beee7623a
 protocol	c:objc(pl)GKGameCenterControllerDelegate	-			-	-	-	ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	-	152879e9f93f86a3
 conforms	-	GKGameCenterControllerDelegate	NSObject		-	-	-	-	-	696e0b35181e776a
 method	c:objc(pl)GKGameCenterControllerDelegate(im)gameCenterViewControllerDidFinish:	-			void	GKGameCenterViewController * gameCenterViewController	-	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	fee478b834b609a1
@@ -220,12 +220,12 @@ property	c:objc(cs)GKAchievementDescription(py)unachievedDescription	-			NSStrin
 property	c:objc(cs)GKAchievementDescription(py)maximumPoints	-			NSInteger	-	readonly,assign,nonatomic	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	3324f80771ea72c9
 property	c:objc(cs)GKAchievementDescription(py)hidden	-			BOOL	-	readonly,assign,nonatomic,getter=isHidden	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	e974a56d12b7b38a
 property	c:objc(cs)GKAchievementDescription(py)replayable	-			BOOL	-	readonly,assign,nonatomic,getter=isReplayable	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	87f04775d80f7639
-property	c:objc(cs)GKAchievementDescription(py)rarityPercent	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	84f14ffe3d3fba34
+property	c:objc(cs)GKAchievementDescription(py)rarityPercent	-			NSNumber *	-	readonly,copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	050f9931f109d075
 property	c:objc(cs)GKAchievementDescription(py)releaseState	-			GKReleaseState	-	readonly,assign,nonatomic	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0,xros=2.4/-/-/0	-	cd00d3bac1702182
 property	c:objc(cs)GKAchievementDescription(py)activityIdentifier	-			NSString *	-	readonly,copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	84bf7f6af109316c
 property	c:objc(cs)GKAchievementDescription(py)activityProperties	-			NSDictionary<NSString *,NSString *> *	-	readonly,strong,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	3132b1959b327a90
 category	c:objc(cy)GKAchievementDescription@UI	-			-	-	-	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	deprecated: Use Use ``GKAchievementDescription/loadImage(completionHandler:)`` instead. instead	e716b92a3bca4d7b
-property	c:objc(cs)GKAchievementDescription(py)image	UI			API_UNAVAILABLE UIImage *	-	readonly,retain,nonatomic	ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=9.0/17.2/-/0,watchos=-/-/-/1	-	5cb3316236afcfda
+property	c:objc(cs)GKAchievementDescription(py)image	UI			UIImage *	-	readonly,retain,nonatomic	ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=9.0/17.2/-/0,watchos=-/-/-/1	-	45873d2e67818d9f
 method	c:objc(cs)GKAchievementDescription(im)loadImageWithCompletionHandler:	UI			void	void (^)(UIImage * _Nullable, NSError * _Nullable) completionHandler	-	watchos=-/-/-/1	-	7407df967bcdc903
 method	c:objc(cs)GKAchievementDescription(cm)incompleteAchievementImage	UI			UIImage *	-	-	watchos=-/-/-/1	-	b94c585ed73afdad
 method	c:objc(cs)GKAchievementDescription(cm)placeholderCompletedAchievementImage	UI			UIImage *	-	-	watchos=-/-/-/1	-	674d033d2ee90688
@@ -253,10 +253,10 @@ method	c:objc(cs)GKScore(cm)reportScores:withCompletionHandler:	-			void	NSArray
 category	c:objc(cy)GKScore@Deprecated	-			-	-	-	ios=4.1/14.0/-/0,macos=10.8/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use ``GKLeaderboardScore`` instead. instead	6da78b50b1f21939
 method	c:objc(cs)GKScore(im)reportScoreWithCompletionHandler:	Deprecated			void	void (^)(NSError * _Nullable) completionHandler	-	ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use ``GKLeaderboardScore`` instead. instead	bfd8997b2555785c
 method	c:objc(cs)GKScore(im)initWithCategory:	Deprecated			instancetype	NSString * category	-	ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use ``GKLeaderboardScore`` instead. instead	d6e21b946faaf67b
-property	c:objc(cs)GKScore(py)category	Deprecated			API_UNAVAILABLE NSString *	-	copy,nonatomic	ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	1925acc992c6138f
+property	c:objc(cs)GKScore(py)category	Deprecated			NSString *	-	copy,nonatomic	ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	e9cf690547b66600
 category	c:objc(cy)GKScore@Obsoleted	-			-	-	-	tvos=-/-/-/1	deprecated: Use Use ``GKLeaderboardScore`` instead. instead	8a4236ce28b2710c
 method	c:objc(cs)GKScore(im)initWithLeaderboardIdentifier:forPlayer:	Obsoleted			instancetype	NSString * identifier | NSString * playerID	-	ios=7.0/8.0/-/0,macos=10.9/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use ``GKLeaderboardScore`` instead. instead	649362fb05359cb4
-property	c:objc(cs)GKScore(py)playerID	Obsoleted			API_UNAVAILABLE NSString *	-	readonly,retain,nonatomic	ios=4.1/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	f4ab68bd1fba1e24
+property	c:objc(cs)GKScore(py)playerID	Obsoleted			NSString *	-	readonly,retain,nonatomic	ios=4.1/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	6ec7b9b47d003ce0
 interface	c:objc(cs)GKLeaderboardEntry	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	f477c365a71679a3
 super	-	GKLeaderboardEntry	NSObject		-	-	-	-	-	c8cd348969dc8616
 property	c:objc(cs)GKLeaderboardEntry(py)player	-			GKPlayer *	-	readonly,strong,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	2d6196b71f327d4f
@@ -284,8 +284,8 @@ conforms	-	GKChallenge	NSCoding		-	-	-	-	-	7d2a60ed94ac2b5c
 conforms	-	GKChallenge	NSSecureCoding		-	-	-	-	-	d6e551a46d4eebe1
 method	c:objc(cs)GKChallenge(cm)loadReceivedChallengesWithCompletionHandler:	-			void	void (^)(NSArray<GKChallenge *> * _Nullable, NSError * _Nullable) completionHandler	-	ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	-	2592332c10473f79
 method	c:objc(cs)GKChallenge(im)decline	-			void	-	-	ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	-	a83c34bd56ea7f5d
-property	c:objc(cs)GKChallenge(py)issuingPlayer	-			API_UNAVAILABLE GKPlayer *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	fbdf165d5c2eb321
-property	c:objc(cs)GKChallenge(py)receivingPlayer	-			API_UNAVAILABLE GKPlayer *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	6d2ec59fb2cd7ff7
+property	c:objc(cs)GKChallenge(py)issuingPlayer	-			GKPlayer *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	0403548eb485f692
+property	c:objc(cs)GKChallenge(py)receivingPlayer	-			GKPlayer *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	eefefcd17e0a9ed0
 property	c:objc(cs)GKChallenge(py)state	-			GKChallengeState	-	readonly,assign,nonatomic	ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	-	05b05156f42f806d
 property	c:objc(cs)GKChallenge(py)issueDate	-			NSDate *	-	readonly,retain,nonatomic	ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	-	f4d6bacd17940d7f
 property	c:objc(cs)GKChallenge(py)completionDate	-			NSDate *	-	readonly,retain,nonatomic	ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	-	da7116b83c7efa67
@@ -295,8 +295,8 @@ property	c:objc(cs)GKChallenge(py)issuingPlayerID	Obsoleted			NSString *	-	reado
 property	c:objc(cs)GKChallenge(py)receivingPlayerID	Obsoleted			NSString *	-	readonly,copy,nonatomic	ios=6.0/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	136c6ab275d4dbbd
 interface	c:objc(cs)GKScoreChallenge	-			-	-	-	ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	deprecated: Use Use ``GKChallenge/leaderboardEntry`` instead instead	e4475464b41fe4c7
 super	-	GKScoreChallenge	GKChallenge		-	-	-	-	-	200f0e5d74a9e758
-property	c:objc(cs)GKScoreChallenge(py)score	-			API_UNAVAILABLE GKScore *	-	readonly,retain,nonatomic	ios=6.0/17.4/-/0,macos=10.8/14.4/-/0,tvos=9.0/17.4/-/0,watchos=-/-/-/1,xros=1.0/1.1/-/0	-	c8d133c45e9c95ce
-property	c:objc(cs)GKScoreChallenge(py)leaderboardEntry	-			API_UNAVAILABLE GKLeaderboardEntry *	-	readonly,retain,nonatomic	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=-/-/-/1	-	15a42fefc10a54af
+property	c:objc(cs)GKScoreChallenge(py)score	-			GKScore *	-	readonly,retain,nonatomic	ios=6.0/17.4/-/0,macos=10.8/14.4/-/0,tvos=9.0/17.4/-/0,watchos=-/-/-/1,xros=1.0/1.1/-/0	-	2ac42e539362641b
+property	c:objc(cs)GKScoreChallenge(py)leaderboardEntry	-			GKLeaderboardEntry *	-	readonly,retain,nonatomic	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=-/-/-/1	-	f8a4efa9e25b0aab
 interface	c:objc(cs)GKAchievementChallenge	-			-	-	-	ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	-	4350f88472665ad4
 super	-	GKAchievementChallenge	GKChallenge		-	-	-	-	-	d1a764b7420374be
 property	c:objc(cs)GKAchievementChallenge(py)achievement	-			GKAchievement *	-	readonly,retain,nonatomic	ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	-	e3abb9a8193f8435
@@ -311,8 +311,8 @@ method	c:objc(cs)GKScore(im)issueChallengeToPlayers:message:	GKChallengeObsolete
 category	c:objc(cy)GKAchievement@GKChallengeObsoleted	-			-	-	-	watchos=-/-/-/1	deprecated: Use Use the ``GKAchievement/challengeComposeController(withMessage:players:completionHandler:)`` method of the ``GKAchievement`` class instead. instead	84cc54acc8adc678
 method	c:objc(cs)GKAchievement(im)issueChallengeToPlayers:message:	GKChallengeObsoleted			void	NSArray<NSString *> * playerIDs | NSString * message	-	ios=6.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use Use the ``GKAchievement/challengeComposeController(withMessage:players:completionHandler:)`` method of the ``GKAchievement`` class instead. instead	8cbc33e5020186b1
 method	c:objc(cs)GKAchievement(im)selectChallengeablePlayerIDs:withCompletionHandler:	GKChallengeObsoleted			void	NSArray<NSString *> * playerIDs | void (^)(NSArray<NSString *> * _Nullable, NSError * _Nullable) completionHandler	-	ios=6.0/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: This method is obsolete.	6330f0fdefba86c0
-typedef	c:@T@GKChallengeComposeCompletionBlock	-			void (^)(UIViewController * _Nonnull, BOOL, NSArray<NSString *> * _Nullable)	-	-	ios=8.0/17.0/-/0,tvos=9.0/17.0/-/0,watchos=-/-/-/1	-	ea8c40b7adb3c7b6
-typedef	c:@T@GKChallengeComposeHandler	-			void (^)(UIViewController * _Nonnull, BOOL, NSArray<GKPlayer *> * _Nullable)	-	-	ios=17.0/26.0/-/0,tvos=17.0/26.0/-/0,watchos=-/-/-/1	-	0880db345a6ff156
+typedef	c:@T@GKChallengeComposeCompletionBlock	-			void ((^))(UIViewController *, BOOL, NSArray<NSString *> *)	-	-	ios=8.0/17.0/-/0,tvos=9.0/17.0/-/0,watchos=-/-/-/1	-	5c6c0c7ce71a09f4
+typedef	c:@T@GKChallengeComposeHandler	-			void ((^))(UIViewController *, BOOL, NSArray<GKPlayer *> *)	-	-	ios=17.0/26.0/-/0,tvos=17.0/26.0/-/0,watchos=-/-/-/1	-	180b0ce73aef3503
 category	c:objc(cy)GKScore@GKChallengeUI	-			-	-	-	watchos=-/-/-/1	deprecated: Use Use the ``GKAchievement/challengeComposeController(withMessage:players:completion:)`` method instead. instead	e90a35df3f8944b2
 method	c:objc(cs)GKScore(im)challengeComposeControllerWithMessage:players:completionHandler:	GKChallengeUI			UIViewController *	NSString * message | NSArray<GKPlayer *> * players | GKChallengeComposeCompletionBlock completionHandler	-	ios=8.0/17.0/-/0,tvos=9.0/17.0/-/0,watchos=-/-/-/1	deprecated: Use Use the ``GKAchievement/challengeComposeController(withMessage:players:completion:)`` method instead. instead	b517da8c18f4636f
 method	c:objc(cs)GKScore(im)challengeComposeControllerWithMessage:players:completion:	GKChallengeUI			UIViewController *	NSString * message | NSArray<GKPlayer *> * players | GKChallengeComposeHandler completionHandler	-	ios=17.0/26.0/-/0,tvos=17.0/26.0/-/0,watchos=-/-/-/1	deprecated: Use Replaced by developer defined challenges, see ``GKChallengeDefinition`` instead	adae225e32594395
@@ -432,8 +432,8 @@ property	c:objc(cs)GKGameActivityDefinition(py)details	-			NSString *	-	readonly
 property	c:objc(cs)GKGameActivityDefinition(py)defaultProperties	-			NSDictionary<NSString *,NSString *> *	-	readonly,copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	28fbb28452ae474f
 property	c:objc(cs)GKGameActivityDefinition(py)fallbackURL	-			NSURL *	-	readonly,strong,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	24530939b9c4de69
 property	c:objc(cs)GKGameActivityDefinition(py)supportsPartyCode	-			BOOL	-	readonly,assign,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	bfeb511885958f68
-property	c:objc(cs)GKGameActivityDefinition(py)maxPlayers	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,strong,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	096fa1dc4612253a
-property	c:objc(cs)GKGameActivityDefinition(py)minPlayers	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,strong,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	865b8dcf499bc907
+property	c:objc(cs)GKGameActivityDefinition(py)maxPlayers	-			NSNumber *	-	readonly,strong,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	f8f1b3b830539639
+property	c:objc(cs)GKGameActivityDefinition(py)minPlayers	-			NSNumber *	-	readonly,strong,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	56ae41d0a8c5f85e
 property	c:objc(cs)GKGameActivityDefinition(py)supportsUnlimitedPlayers	-			BOOL	-	readonly,assign,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	9c3cef0bcbd20512
 property	c:objc(cs)GKGameActivityDefinition(py)playStyle	-			GKGameActivityPlayStyle	-	readonly,assign,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	12d182bf7d0616ce
 property	c:objc(cs)GKGameActivityDefinition(py)releaseState	-			GKReleaseState	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	ba4932461fc2ce91
@@ -563,7 +563,7 @@ property	c:objc(cs)GKTurnBasedParticipant(py)status	-			GKTurnBasedParticipantSt
 property	c:objc(cs)GKTurnBasedParticipant(py)matchOutcome	-			GKTurnBasedMatchOutcome	-	assign,nonatomic	ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	4091f6275fd1f33a
 property	c:objc(cs)GKTurnBasedParticipant(py)timeoutDate	-			NSDate *	-	readonly,copy,nonatomic	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	6dc2b8d109e8201d
 category	c:objc(cy)GKTurnBasedParticipant@Obsoleted	-			-	-	-	ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	deprecated: Use Use ``GKTurnBasedParticipant/player`` instead. instead	9c940ec0cc10a3ab
-property	c:objc(cs)GKTurnBasedParticipant(py)playerID	Obsoleted			API_UNAVAILABLE NSString *	-	readonly,copy,nonatomic	ios=5.0/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	6e9d8a997e40a09f
+property	c:objc(cs)GKTurnBasedParticipant(py)playerID	Obsoleted			NSString *	-	readonly,copy,nonatomic	ios=5.0/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	66ec56a3d39c3bba
 protocol	c:objc(pl)GKTurnBasedEventListener	-			-	-	-	ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	deprecated: Use Use the ``GKTurnBasedEventListener/player(_:didRequestMatchWithOtherPlayers:)`` method instead. instead	9b74ef4f220234d8
 method	c:objc(pl)GKTurnBasedEventListener(im)player:didRequestMatchWithOtherPlayers:	-			void	GKPlayer * player | NSArray<GKPlayer *> * playersToInvite	optional	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	f244dd71add49edf
 method	c:objc(pl)GKTurnBasedEventListener(im)player:receivedTurnEventForMatch:didBecomeActive:	-			void	GKPlayer * player | GKTurnBasedMatch * match | BOOL didBecomeActive	optional	ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	6ce2884a5698934a
@@ -648,7 +648,7 @@ method	c:objc(pl)GKTurnBasedEventHandlerDelegate(im)handleMatchEnded:	-			void	G
 interface	c:objc(cs)GKTurnBasedEventHandler	-			-	-	-	ios=5.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use the ``GKLocalPlayer/register(_:)`` method of the ``GKLocalPlayer`` class instead. instead	d22e80aa9cad6d63
 super	-	GKTurnBasedEventHandler	NSObject		-	-	-	-	-	af6ae1d4542d9dda
 method	c:objc(cs)GKTurnBasedEventHandler(cm)sharedTurnBasedEventHandler	-			GKTurnBasedEventHandler *	-	-	ios=5.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use the ``GKLocalPlayer/register(_:)`` method of the ``GKLocalPlayer`` class instead. instead	1a6d4f1c41b5533e
-property	c:objc(cs)GKTurnBasedEventHandler(py)delegate	-			API_UNAVAILABLE NSObject<GKTurnBasedEventHandlerDelegate> *	-	weak,nonatomic	ios=5.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	7f0a477878196d0a
+property	c:objc(cs)GKTurnBasedEventHandler(py)delegate	-			NSObject<GKTurnBasedEventHandlerDelegate> *	-	weak,nonatomic	ios=5.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	ba501c3284d03689
 typedef	c:@T@GKInviteRecipientResponse	-			enum GKInviteRecipientResponse	-	-	-	-	24f2f1cb5702a26d
 enum	c:@E@GKInviteRecipientResponse	-			NSInteger	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	ab0241013bd3b23d
 enumconst	c:@E@GKInviteRecipientResponse@GKInviteRecipientResponseAccepted	GKInviteRecipientResponse			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	f3572b51fc0e71bb
@@ -675,9 +675,9 @@ property	c:objc(cs)GKMatchRequest(py)inviteMessage	-			NSString *	-	copy	ios=6.0
 property	c:objc(cs)GKMatchRequest(py)defaultNumberOfPlayers	-			NSUInteger	-	assign	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	b0e390cf77c34e68
 property	c:objc(cs)GKMatchRequest(py)restrictToAutomatch	-			BOOL	-	assign	ios=13.0/14.0/-/0,macos=10.15/11.0/-/0,tvos=13.0/14.0/-/0	-	61c7faff7380bace
 property	c:objc(cs)GKMatchRequest(py)recipientResponseHandler	-			void (^)(GKPlayer * _Nonnull, GKInviteRecipientResponse)	-	copy	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	a16c55b305c39278
-property	c:objc(cs)GKMatchRequest(py)inviteeResponseHandler	-			API_UNAVAILABLE void (^)(NSString * _Nonnull, GKInviteeResponse)	-	copy	ios=6.0/8.0/-/0,macos=10.9/10.10/-/0,tvos=-/-/-/1	-	f24c02d41d346ac2
+property	c:objc(cs)GKMatchRequest(py)inviteeResponseHandler	-			void (^)(NSString * _Nonnull, GKInviteeResponse)	-	copy	ios=6.0/8.0/-/0,macos=10.9/10.10/-/0,tvos=-/-/-/1	-	9045e5a76fb93c59
 method	c:objc(cs)GKMatchRequest(cm)maxPlayersAllowedForMatchOfType:	-			NSUInteger	GKMatchType matchType	-	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	5d24863a2421ddfc
-property	c:objc(cs)GKMatchRequest(py)playersToInvite	-			API_UNAVAILABLE NSArray<NSString *> *	-	retain	ios=4.1/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	ac7a338aa202aea9
+property	c:objc(cs)GKMatchRequest(py)playersToInvite	-			NSArray<NSString *> *	-	retain	ios=4.1/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	6faf56995574a5c2
 property	c:objc(cs)GKMatchRequest(py)queueName	-			NSString *	-	copy	ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=10.2/-/-/0,xros=1.1/-/-/0	-	b2978df83f8de849
 property	c:objc(cs)GKMatchRequest(py)properties	-			GKMatchProperties *	-	copy	ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=10.2/-/-/0,xros=1.1/-/-/0	-	c98fcc87d308ea1d
 property	c:objc(cs)GKMatchRequest(py)recipientProperties	-			NSDictionary<GKPlayer *,GKMatchProperties *> *	-	copy	ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=10.2/-/-/0,xros=1.1/-/-/0	-	7ce5438e81bee7a3
@@ -688,7 +688,7 @@ enumconst	c:@E@GKMatchType@GKMatchTypeHosted	GKMatchType			-	-	-	ios=6.0/-/-/0,m
 enumconst	c:@E@GKMatchType@GKMatchTypeTurnBased	GKMatchType			-	-	-	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	8cbc7c341a9d1bbe
 interface	c:objc(cs)GKInvite	-			-	-	-	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	deprecated: Use Use the ``GKInvite/sender`` property instead. instead	609ad3151d820747
 super	-	GKInvite	NSObject		-	-	-	-	-	856865cb47f2e745
-property	c:objc(cs)GKInvite(py)sender	-			API_UNAVAILABLE GKPlayer *	-	readonly,retain,nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	4edda9661eebb6c1
+property	c:objc(cs)GKInvite(py)sender	-			GKPlayer *	-	readonly,retain,nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	a1474da8571cc530
 property	c:objc(cs)GKInvite(py)hosted	-			BOOL	-	readonly,nonatomic,getter=isHosted	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	ad468f237d00dc6a
 property	c:objc(cs)GKInvite(py)playerGroup	-			NSUInteger	-	readonly,nonatomic	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	fe442683e013d40f
 property	c:objc(cs)GKInvite(py)playerAttributes	-			uint32_t	-	readonly,nonatomic	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	63db8e059081b785
@@ -732,7 +732,7 @@ method	c:objc(pl)GKSavedGameListener(im)player:didModifySavedGame:	-			void	GKPl
 method	c:objc(pl)GKSavedGameListener(im)player:hasConflictingSavedGames:	-			void	GKPlayer * player | NSArray<GKSavedGame *> * savedGames	optional	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a94ad8cbebdd5b24
 interface	c:objc(cs)GKLocalPlayer	-			-	-	-	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	86cdbe9b7acdcc51
 super	-	GKLocalPlayer	GKPlayer		-	-	-	-	-	99b1dd6d30d9d1a7
-property	c:objc(cs)GKLocalPlayer(cpy)local	-			API_UNAVAILABLE GKLocalPlayer *	-	readonly,class	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	ce63c6c23e715e8a
+property	c:objc(cs)GKLocalPlayer(cpy)local	-			GKLocalPlayer *	-	readonly,class	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	febaaf67bbe4e12f
 property	c:objc(cs)GKLocalPlayer(cpy)localPlayer	-			GKLocalPlayer *	-	readonly,class	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	c65aca619251b9ce
 property	c:objc(cs)GKLocalPlayer(py)authenticated	-			BOOL	-	readonly,nonatomic,getter=isAuthenticated	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	18ce52c7252e2038
 property	c:objc(cs)GKLocalPlayer(py)underage	-			BOOL	-	readonly,nonatomic,getter=isUnderage	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	f3c69193fa8c17ee
@@ -762,7 +762,7 @@ method	c:objc(cs)GKLocalPlayer(im)loadDefaultLeaderboardIdentifierWithCompletion
 method	c:objc(cs)GKLocalPlayer(im)setDefaultLeaderboardIdentifier:completionHandler:	Deprecated			void	NSString * leaderboardIdentifier | void (^)(NSError * _Nullable) completionHandler	-	ios=7.0/26.2/-/0,macos=10.10/26.2/-/0,tvos=9.0/26.2/-/0,watchos=3.0/26.2/-/0,xros=1.0/26.2/-/0	deprecated: No longer supported	fc35af1c29bb7074
 category	c:objc(cy)GKLocalPlayer@Obsoleted	-			-	-	-	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	deprecated: Use Use ``GKLocalPlayer/loadFriends(_:)`` instead. instead	adfd2745604befd8
 method	c:objc(cs)GKLocalPlayer(im)loadFriendsWithCompletionHandler:	Obsoleted			void	void (^)(NSArray<NSString *> * _Nullable, NSError * _Nullable) completionHandler	-	ios=4.1/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use ``GKLocalPlayer/loadFriends(_:)`` instead. instead	9e05e77bbc88b82b
-property	c:objc(cs)GKLocalPlayer(py)friends	Obsoleted			API_UNAVAILABLE NSArray<NSString *> *	-	readonly,retain,nonatomic	ios=4.1/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	62aa6a2935ec9260
+property	c:objc(cs)GKLocalPlayer(py)friends	Obsoleted			NSArray<NSString *> *	-	readonly,retain,nonatomic	ios=4.1/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	6a09cfe0605e079d
 typedef	c:@T@GKFriendsAuthorizationStatus	-			enum GKFriendsAuthorizationStatus	-	-	-	-	3c6da22b2b17c39a
 enum	c:@E@GKFriendsAuthorizationStatus	-			NSInteger	-	-	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.3/-/-/0,xros=1.0/-/-/0	-	e8e8f29890157b2c
 enumconst	c:@E@GKFriendsAuthorizationStatus@GKFriendsAuthorizationStatusNotDetermined	GKFriendsAuthorizationStatus			-	-	-	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0,watchos=7.3/-/-/0,xros=1.0/-/-/0	-	de7b315c3746e1b1
@@ -789,11 +789,11 @@ enumconst	c:@E@GKPlayerConnectionState@GKPlayerStateConnected	GKPlayerConnection
 enumconst	c:@E@GKPlayerConnectionState@GKPlayerStateDisconnected	GKPlayerConnectionState			-	-	-	ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	11d7aaafe1016912
 interface	c:objc(cs)GKMatch	-			-	-	-	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	deprecated: No longer supported	bd202328ed2dc7a4
 super	-	GKMatch	NSObject		-	-	-	-	-	f9e9a0e50b044c71
-property	c:objc(cs)GKMatch(py)players	-			API_UNAVAILABLE NSArray<GKPlayer *> *	-	readonly,nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	e2b42de6683e6073
+property	c:objc(cs)GKMatch(py)players	-			NSArray<GKPlayer *> *	-	readonly,nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	841432121cc61666
 property	c:objc(cs)GKMatch(py)delegate	-			id<GKMatchDelegate>	-	weak,nonatomic	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	a2d190d4c1904a18
 property	c:objc(cs)GKMatch(py)expectedPlayerCount	-			NSUInteger	-	readonly,nonatomic	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	0661865b3b7d586a
-property	c:objc(cs)GKMatch(py)properties	-			API_UNAVAILABLE GKMatchProperties *	-	readonly,nonatomic	ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=-/-/-/1,xros=1.1/-/-/0	-	08618d94867384fe
-property	c:objc(cs)GKMatch(py)playerProperties	-			API_UNAVAILABLE NSDictionary<GKPlayer *,GKMatchProperties *> *	-	readonly,nonatomic	ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=-/-/-/1,xros=1.1/-/-/0	-	1ee8b75a6fb31318
+property	c:objc(cs)GKMatch(py)properties	-			GKMatchProperties *	-	readonly,nonatomic	ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=-/-/-/1,xros=1.1/-/-/0	-	bb1d336e9f198cb1
+property	c:objc(cs)GKMatch(py)playerProperties	-			NSDictionary<GKPlayer *,GKMatchProperties *> *	-	readonly,nonatomic	ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=-/-/-/1,xros=1.1/-/-/0	-	ec050de5048a49f5
 method	c:objc(cs)GKMatch(im)sendData:toPlayers:dataMode:error:	-			BOOL	NSData * data | NSArray<GKPlayer *> * players | GKMatchSendDataMode mode | NSError * _Nullable * error	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	ed5f21c9d70022d1
 method	c:objc(cs)GKMatch(im)sendDataToAllPlayers:withDataMode:error:	-			BOOL	NSData * data | GKMatchSendDataMode mode | NSError * _Nullable * error	-	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	566bf15416f5fd0b
 method	c:objc(cs)GKMatch(im)disconnect	-			void	-	-	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	cf3e0189778fa7c6
@@ -996,11 +996,11 @@ super	-	GKVoiceChat	NSObject		-	-	-	-	-	df2a3f3abdd39313
 method	c:objc(cs)GKVoiceChat(im)start	-			void	-	-	ios=4.1/18.0/-/0,macos=10.8/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	edd66f5e0695e829
 method	c:objc(cs)GKVoiceChat(im)stop	-			void	-	-	ios=4.1/18.0/-/0,macos=10.8/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	f72d38ca4a2ff641
 method	c:objc(cs)GKVoiceChat(im)setPlayer:muted:	-			void	GKPlayer * player | BOOL isMuted	-	ios=8.0/18.0/-/0,macos=10.10/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: No longer supported	0fee81040578669f
-property	c:objc(cs)GKVoiceChat(py)playerVoiceChatStateDidChangeHandler	-			API_UNAVAILABLE void (^)(GKPlayer * _Nonnull, GKVoiceChatPlayerState)	-	copy,nonatomic	ios=8.0/18.0/-/0,macos=10.10/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	5c8e5a907297c985
+property	c:objc(cs)GKVoiceChat(py)playerVoiceChatStateDidChangeHandler	-			void (^)(GKPlayer * _Nonnull, GKVoiceChatPlayerState)	-	copy,nonatomic	ios=8.0/18.0/-/0,macos=10.10/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	8bc6a9934d3bbbdf
 property	c:objc(cs)GKVoiceChat(py)name	-			NSString *	-	readonly,copy,nonatomic	ios=4.1/18.0/-/0,macos=10.8/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	3367eaec2f587566
 property	c:objc(cs)GKVoiceChat(py)active	-			BOOL	-	assign,nonatomic,getter=isActive	ios=4.1/18.0/-/0,macos=10.8/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	e33f646c71456fa2
 property	c:objc(cs)GKVoiceChat(py)volume	-			float	-	assign,nonatomic	ios=4.1/18.0/-/0,macos=10.8/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	9b6727d483377b46
-property	c:objc(cs)GKVoiceChat(py)players	-			API_UNAVAILABLE NSArray<GKPlayer *> *	-	readonly,nonatomic	ios=8.0/18.0/-/0,macos=10.10/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	43449aced86f4da2
+property	c:objc(cs)GKVoiceChat(py)players	-			NSArray<GKPlayer *> *	-	readonly,nonatomic	ios=8.0/18.0/-/0,macos=10.10/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	eb0e071abdb3eadf
 method	c:objc(cs)GKVoiceChat(cm)isVoIPAllowed	-			BOOL	-	-	ios=4.1/18.0/-/0,macos=10.8/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	1bacb706799d03ef
 category	c:objc(cy)GKVoiceChat@Deprecated	-			-	-	-	ios=4.1/18.0/-/0,macos=10.8/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use Use the ``GKVoiceChat/playerVoiceChatStateDidChangeHandler`` property instead. instead	a0f99899a6ae6fae
 property	c:objc(cs)GKVoiceChat(py)playerStateUpdateHandler	Deprecated			void (^)(NSString * _Nonnull, GKVoiceChatPlayerState)	-	copy,nonatomic	ios=4.1/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	be766ad966dc2457

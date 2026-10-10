@@ -299,7 +299,7 @@ property	c:objc(cs)NSFetchRequest(py)fetchBatchSize	-			NSUInteger	-	nonatomic	i
 property	c:objc(cs)NSFetchRequest(py)shouldRefreshRefetchedObjects	-			BOOL	-	nonatomic	ios=5.0/-/-/0,macos=10.7/-/-/0	-	a0ff447632a51a53
 property	c:objc(cs)NSFetchRequest(py)propertiesToGroupBy	-			NSArray *	-	copy,nonatomic	ios=5.0/-/-/0,macos=10.7/-/-/0	-	e0794423de0f1d5b
 property	c:objc(cs)NSFetchRequest(py)havingPredicate	-			NSPredicate *	-	strong,nonatomic	ios=5.0/-/-/0,macos=10.7/-/-/0	-	34d58bf1701346d2
-typedef	c:@T@NSPersistentStoreAsynchronousFetchResultCompletionBlock	-			void (^)(NSAsynchronousFetchResult * _Nonnull)	-	-	-	-	fe24dece0db7e767
+typedef	c:@T@NSPersistentStoreAsynchronousFetchResultCompletionBlock	-			void ((^))(NSAsynchronousFetchResult *)	-	-	-	-	49d19dd8142c78eb
 interface	c:objc(cs)NSAsynchronousFetchRequest	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0	-	6c538bd5ed91b241
 super	-	NSAsynchronousFetchRequest	NSPersistentStoreRequest		-	-	-	-	-	71158c5164afcf4c
 property	c:objc(cs)NSAsynchronousFetchRequest(py)fetchRequest	-			NSFetchRequest<ResultType> *	-	readonly,strong	ios=8.0/-/-/0,macos=10.10/-/-/0	-	b3003ec79a0f4a81
@@ -963,8 +963,8 @@ interface	c:objc(cs)NSCustomMigrationStage	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-
 super	-	NSCustomMigrationStage	NSMigrationStage		-	-	-	-	-	cf29104e078fdba9
 property	c:objc(cs)NSCustomMigrationStage(py)currentModel	-			NSManagedObjectModelReference *	-	readonly,strong	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	bd1224b85750318f
 property	c:objc(cs)NSCustomMigrationStage(py)nextModel	-			NSManagedObjectModelReference *	-	readonly,strong	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	b50f92c1fadf93b8
-property	c:objc(cs)NSCustomMigrationStage(py)willMigrateHandler	-			NS_REFINED_FOR_SWIFT BOOL (^)(NSStagedMigrationManager * _Nonnull, NSCustomMigrationStage * _Nonnull, NSError * _Nullable * _Nullable)	-	copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	d0acfeff93608666
-property	c:objc(cs)NSCustomMigrationStage(py)didMigrateHandler	-			NS_REFINED_FOR_SWIFT BOOL (^)(NSStagedMigrationManager * _Nonnull, NSCustomMigrationStage * _Nonnull, NSError * _Nullable * _Nullable)	-	copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	9a93c73f8025b80d
+property	c:objc(cs)NSCustomMigrationStage(py)willMigrateHandler	-			BOOL (^)(NSStagedMigrationManager * _Nonnull, NSCustomMigrationStage * _Nonnull, NSError * _Nullable * _Nullable)	-	copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	c7183c19b4a9fde4
+property	c:objc(cs)NSCustomMigrationStage(py)didMigrateHandler	-			BOOL (^)(NSStagedMigrationManager * _Nonnull, NSCustomMigrationStage * _Nonnull, NSError * _Nullable * _Nullable)	-	copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	28a0b65d84d776a5
 method	c:objc(cs)NSCustomMigrationStage(im)init	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	be14a7adbadfe955
 method	c:objc(cs)NSCustomMigrationStage(im)initWithCurrentModelReference:nextModelReference:	-			instancetype	NSManagedObjectModelReference * currentModel | NSManagedObjectModelReference * nextModel	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	7c5f91691ad2e453
 interface	c:objc(cs)NSLightweightMigrationStage	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	ddf25d371e22c0ba

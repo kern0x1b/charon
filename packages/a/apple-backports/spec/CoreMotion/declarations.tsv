@@ -27,8 +27,8 @@ super	-	CMAbsoluteAltitudeData	CMLogItem		-	-	-	-	-	11b611765363e599
 property	c:objc(cs)CMAbsoluteAltitudeData(py)altitude	-			double	-	readonly,nonatomic	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	afeafee9cbfd643d
 property	c:objc(cs)CMAbsoluteAltitudeData(py)accuracy	-			double	-	readonly,nonatomic	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	04736a6f7f809808
 property	c:objc(cs)CMAbsoluteAltitudeData(py)precision	-			double	-	readonly,nonatomic	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	43a1286c914c6316
-typedef	c:@T@CMAltitudeHandler	-			void (^)(CMAltitudeData * _Nullable, NSError * _Nullable)	-	-	ios=8.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	1c74399db7ee8e1d
-typedef	c:@T@CMAbsoluteAltitudeHandler	-			void (^)(CMAbsoluteAltitudeData * _Nullable, NSError * _Nullable)	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	f875f664b4836a29
+typedef	c:@T@CMAltitudeHandler	-			void ((^))(CMAltitudeData *, NSError *)	-	-	ios=8.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	e6c0a545eef00dbc
+typedef	c:@T@CMAbsoluteAltitudeHandler	-			void ((^))(CMAbsoluteAltitudeData *, NSError *)	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	39638531b7018a0c
 interface	c:objc(cs)CMAltimeter	-			-	-	-	ios=8.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	12867bd49aa28242
 super	-	CMAltimeter	NSObject		-	-	-	-	-	ef9b07992853d482
 method	c:objc(cs)CMAltimeter(cm)isRelativeAltitudeAvailable	-			BOOL	-	-	ios=8.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	beeb62c22d6adafb
@@ -164,8 +164,8 @@ property	c:objc(cs)CMMotionActivity(py)walking	-			BOOL	-	readonly,nonatomic	ios
 property	c:objc(cs)CMMotionActivity(py)running	-			BOOL	-	readonly,nonatomic	ios=7.0/-/-/0,macos=15.0/-/-/0,xros=-/-/-/1	-	0ab2928dcf94a8bc
 property	c:objc(cs)CMMotionActivity(py)automotive	-			BOOL	-	readonly,nonatomic	ios=7.0/-/-/0,macos=15.0/-/-/0,xros=-/-/-/1	-	7d4ed2441b1c42c6
 property	c:objc(cs)CMMotionActivity(py)cycling	-			BOOL	-	readonly,nonatomic	ios=8.0/-/-/0,macos=-/-/-/1	-	dfe4a9d58d0a5cd9
-typedef	c:@T@CMMotionActivityHandler	-			void (^)(CMMotionActivity * _Nullable)	-	-	ios=7.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	51fc663b38736b1c
-typedef	c:@T@CMMotionActivityQueryHandler	-			void (^)(NSArray<CMMotionActivity *> * _Nullable, NSError * _Nullable)	-	-	ios=7.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	d9fcd2477c5c9bcc
+typedef	c:@T@CMMotionActivityHandler	-			void ((^))(CMMotionActivity *)	-	-	ios=7.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	02082c4f93f8f423
+typedef	c:@T@CMMotionActivityQueryHandler	-			void ((^))(NSArray<CMMotionActivity *> *, NSError *)	-	-	ios=7.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	955ba4e9f51e2577
 interface	c:objc(cs)CMMotionActivityManager	-			-	-	-	ios=7.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	a0dc3fb79a6cd54b
 super	-	CMMotionActivityManager	NSObject		-	-	-	-	-	deb53cb02e5b48c1
 method	c:objc(cs)CMMotionActivityManager(cm)isActivityAvailable	-			BOOL	-	-	ios=7.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	581b3313b74e3eb0
@@ -173,30 +173,30 @@ method	c:objc(cs)CMMotionActivityManager(cm)authorizationStatus	-			CMAuthorizat
 method	c:objc(cs)CMMotionActivityManager(im)queryActivityStartingFromDate:toDate:toQueue:withHandler:	-			void	NSDate * start | NSDate * end | NSOperationQueue * queue | CMMotionActivityQueryHandler handler	-	ios=7.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	01349fea32cf91c2
 method	c:objc(cs)CMMotionActivityManager(im)startActivityUpdatesToQueue:withHandler:	-			void	NSOperationQueue * queue | CMMotionActivityHandler handler	-	ios=7.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	f52c9a2ffc0fa5ce
 method	c:objc(cs)CMMotionActivityManager(im)stopActivityUpdates	-			void	-	-	ios=7.0/-/-/0,macos=-/-/-/1,xros=-/-/-/1	-	5a73d12f2f389ea6
-typedef	c:@T@CMAccelerometerHandler	-			void (^)(CMAccelerometerData * _Nullable, NSError * _Nullable)	-	-	tvos=-/-/-/1	-	0d2eb07a29da7dfb
-typedef	c:@T@CMGyroHandler	-			void (^)(CMGyroData * _Nullable, NSError * _Nullable)	-	-	tvos=-/-/-/1	-	bb1ed388fa999b67
-typedef	c:@T@CMDeviceMotionHandler	-			void (^)(CMDeviceMotion * _Nullable, NSError * _Nullable)	-	-	tvos=-/-/-/1	-	f047fc49369411de
-typedef	c:@T@CMMagnetometerHandler	-			void (^)(CMMagnetometerData * _Nullable, NSError * _Nullable)	-	-	ios=5.0/-/-/0,tvos=-/-/-/1,xros=-/-/-/1	-	dfdef5c12ff2f6a2
+typedef	c:@T@CMAccelerometerHandler	-			void ((^))(CMAccelerometerData *, NSError *)	-	-	tvos=-/-/-/1	-	4cbe04690410402d
+typedef	c:@T@CMGyroHandler	-			void ((^))(CMGyroData *, NSError *)	-	-	tvos=-/-/-/1	-	3e223418139ff4b8
+typedef	c:@T@CMDeviceMotionHandler	-			void ((^))(CMDeviceMotion *, NSError *)	-	-	tvos=-/-/-/1	-	b59b3e01e6a39b4d
+typedef	c:@T@CMMagnetometerHandler	-			void ((^))(CMMagnetometerData *, NSError *)	-	-	ios=5.0/-/-/0,tvos=-/-/-/1,xros=-/-/-/1	-	39d6c900f5552692
 interface	c:objc(cs)CMMotionManager	-			-	-	-	ios=4.0/-/-/0,macos=-/-/-/1	-	cef2ad511b87d4cd
 super	-	CMMotionManager	NSObject		-	-	-	-	-	9afea41ae1d66fc4
 property	c:objc(cs)CMMotionManager(py)accelerometerUpdateInterval	-			NSTimeInterval	-	assign,nonatomic	tvos=-/-/-/1	-	ed24ca2e22241f79
 property	c:objc(cs)CMMotionManager(py)accelerometerAvailable	-			BOOL	-	readonly,nonatomic,getter=isAccelerometerAvailable	tvos=-/-/-/1	-	9999f7e783369d66
 property	c:objc(cs)CMMotionManager(py)accelerometerActive	-			BOOL	-	readonly,nonatomic,getter=isAccelerometerActive	tvos=-/-/-/1	-	cea267ab3a01ded4
-property	c:objc(cs)CMMotionManager(py)accelerometerData	-			API_UNAVAILABLE CMAccelerometerData *	-	readonly	tvos=-/-/-/1	-	cb9f50e7f806556e
+property	c:objc(cs)CMMotionManager(py)accelerometerData	-			CMAccelerometerData *	-	readonly	tvos=-/-/-/1	-	f2c99680b03cd2b0
 method	c:objc(cs)CMMotionManager(im)startAccelerometerUpdates	-			void	-	-	tvos=-/-/-/1	-	559fee53ea67e2a0
 method	c:objc(cs)CMMotionManager(im)startAccelerometerUpdatesToQueue:withHandler:	-			void	NSOperationQueue * queue | CMAccelerometerHandler handler	-	tvos=-/-/-/1	-	3996580bdfb32910
 method	c:objc(cs)CMMotionManager(im)stopAccelerometerUpdates	-			void	-	-	tvos=-/-/-/1	-	d811b4c8fd176f59
 property	c:objc(cs)CMMotionManager(py)gyroUpdateInterval	-			NSTimeInterval	-	assign,nonatomic	tvos=-/-/-/1	-	887bfd0150634ba2
 property	c:objc(cs)CMMotionManager(py)gyroAvailable	-			BOOL	-	readonly,nonatomic,getter=isGyroAvailable	tvos=-/-/-/1	-	ce2795f3918e8ec3
 property	c:objc(cs)CMMotionManager(py)gyroActive	-			BOOL	-	readonly,nonatomic,getter=isGyroActive	tvos=-/-/-/1	-	be41adc22febdeab
-property	c:objc(cs)CMMotionManager(py)gyroData	-			API_UNAVAILABLE CMGyroData *	-	readonly	tvos=-/-/-/1	-	d77872f4e837b4c0
+property	c:objc(cs)CMMotionManager(py)gyroData	-			CMGyroData *	-	readonly	tvos=-/-/-/1	-	fe71b77f253e4b4b
 method	c:objc(cs)CMMotionManager(im)startGyroUpdates	-			void	-	-	tvos=-/-/-/1	-	cf5aab50a7a016e3
 method	c:objc(cs)CMMotionManager(im)startGyroUpdatesToQueue:withHandler:	-			void	NSOperationQueue * queue | CMGyroHandler handler	-	tvos=-/-/-/1	-	fa952de3b2a6bea6
 method	c:objc(cs)CMMotionManager(im)stopGyroUpdates	-			void	-	-	tvos=-/-/-/1	-	65e35cf1cd0b78fa
 property	c:objc(cs)CMMotionManager(py)magnetometerUpdateInterval	-			NSTimeInterval	-	assign,nonatomic	ios=5.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	726f262e55b2cce3
 property	c:objc(cs)CMMotionManager(py)magnetometerAvailable	-			BOOL	-	readonly,nonatomic,getter=isMagnetometerAvailable	ios=5.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	1930fe476634b0d0
 property	c:objc(cs)CMMotionManager(py)magnetometerActive	-			BOOL	-	readonly,nonatomic,getter=isMagnetometerActive	ios=5.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	21f9acaca5ac98ae
-property	c:objc(cs)CMMotionManager(py)magnetometerData	-			COREMOTION_EXPORT CMMagnetometerData *	-	readonly	ios=5.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	d844c6d113ef63ad
+property	c:objc(cs)CMMotionManager(py)magnetometerData	-			CMMagnetometerData *	-	readonly	ios=5.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	d876642f009a1561
 method	c:objc(cs)CMMotionManager(im)startMagnetometerUpdates	-			void	-	-	ios=5.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	5255b8eaffc4c711
 method	c:objc(cs)CMMotionManager(im)startMagnetometerUpdatesToQueue:withHandler:	-			void	NSOperationQueue * queue | CMMagnetometerHandler handler	-	ios=5.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	f01754b528ced0e4
 method	c:objc(cs)CMMotionManager(im)stopMagnetometerUpdates	-			void	-	-	ios=5.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	4a58b960c05fe898
@@ -205,14 +205,14 @@ method	c:objc(cs)CMMotionManager(cm)availableAttitudeReferenceFrames	-			CMAttit
 property	c:objc(cs)CMMotionManager(py)attitudeReferenceFrame	-			CMAttitudeReferenceFrame	-	readonly,nonatomic	ios=5.0/-/-/0,tvos=-/-/-/1	-	2c3ce0f3ddf708e1
 property	c:objc(cs)CMMotionManager(py)deviceMotionAvailable	-			BOOL	-	readonly,nonatomic,getter=isDeviceMotionAvailable	tvos=-/-/-/1	-	11402cf2c26ad7e6
 property	c:objc(cs)CMMotionManager(py)deviceMotionActive	-			BOOL	-	readonly,nonatomic,getter=isDeviceMotionActive	tvos=-/-/-/1	-	eedc2890b12d6c8c
-property	c:objc(cs)CMMotionManager(py)deviceMotion	-			API_UNAVAILABLE CMDeviceMotion *	-	readonly	tvos=-/-/-/1	-	1652ab689060c19f
+property	c:objc(cs)CMMotionManager(py)deviceMotion	-			CMDeviceMotion *	-	readonly	tvos=-/-/-/1	-	df788ab8163e71c8
 method	c:objc(cs)CMMotionManager(im)startDeviceMotionUpdates	-			void	-	-	tvos=-/-/-/1	-	da978427ea19083f
 method	c:objc(cs)CMMotionManager(im)startDeviceMotionUpdatesToQueue:withHandler:	-			void	NSOperationQueue * queue | CMDeviceMotionHandler handler	-	tvos=-/-/-/1	-	a168c48b4cbdd9e3
 method	c:objc(cs)CMMotionManager(im)startDeviceMotionUpdatesUsingReferenceFrame:	-			void	CMAttitudeReferenceFrame referenceFrame	-	ios=5.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	02b7f2e4ee5112e5
 method	c:objc(cs)CMMotionManager(im)startDeviceMotionUpdatesUsingReferenceFrame:toQueue:withHandler:	-			void	CMAttitudeReferenceFrame referenceFrame | NSOperationQueue * queue | CMDeviceMotionHandler handler	-	ios=5.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	5e3f05c9db5e92cb
 method	c:objc(cs)CMMotionManager(im)stopDeviceMotionUpdates	-			void	-	-	tvos=-/-/-/1	-	798b11024ac6c065
 property	c:objc(cs)CMMotionManager(py)showsDeviceMovementDisplay	-			BOOL	-	assign,nonatomic	ios=5.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	5e09b6bcf16c14fe
-typedef	c:@T@CMHeadphoneDeviceMotionHandler	-			void (^)(CMDeviceMotion * _Nullable, NSError * _Nullable)	-	-	-	-	747c598fa8a1dd1e
+typedef	c:@T@CMHeadphoneDeviceMotionHandler	-			void ((^))(CMDeviceMotion *, NSError *)	-	-	-	-	22d14a9a1a1a173e
 interface	c:objc(cs)CMHeadphoneMotionManager	-			-	-	-	ios=14.0/-/-/0,macos=14.0/-/-/0,watchos=7.0/-/-/0,xros=-/-/-/1	-	1f00ddfdf08fb64f
 super	-	CMHeadphoneMotionManager	NSObject		-	-	-	-	-	dc27fa8b4dae509a
 method	c:objc(cs)CMHeadphoneMotionManager(cm)authorizationStatus	-			CMAuthorizationStatus	-	-	ios=14.0/-/-/0,macos=14.0/-/-/0,watchos=7.0/-/-/0,xros=-/-/-/1	-	2982f9dcad86afd9
@@ -250,8 +250,8 @@ property	c:objc(cs)CMTremorResult(py)percentSlight	-			float	-	readonly,nonatomi
 property	c:objc(cs)CMTremorResult(py)percentMild	-			float	-	readonly,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	8fe8760cc8cca3b3
 property	c:objc(cs)CMTremorResult(py)percentModerate	-			float	-	readonly,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	00f968c4591a1405
 property	c:objc(cs)CMTremorResult(py)percentStrong	-			float	-	readonly,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	ede1244153377639
-typedef	c:@T@CMDyskineticSymptomResultHandler	-			void (^)(NSArray<CMDyskineticSymptomResult *> * _Nonnull, NSError * _Nullable)	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	e90ea06d88377611
-typedef	c:@T@CMTremorResultHandler	-			void (^)(NSArray<CMTremorResult *> * _Nonnull, NSError * _Nullable)	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	d059ebfa460b98b0
+typedef	c:@T@CMDyskineticSymptomResultHandler	-			void ((^))(NSArray<CMDyskineticSymptomResult *> *, NSError *)	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	e8ec8b15f318660a
+typedef	c:@T@CMTremorResultHandler	-			void ((^))(NSArray<CMTremorResult *> *, NSError *)	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	f4cf0f56de48eacd
 interface	c:objc(cs)CMMovementDisorderManager	-			-	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	9f53fc2cfa7947d0
 super	-	CMMovementDisorderManager	NSObject		-	-	-	-	-	aacabad5d0f8c8b8
 method	c:objc(cs)CMMovementDisorderManager(cm)isAvailable	-			BOOL	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	9264d26917d2b9ba
@@ -272,9 +272,9 @@ property	c:objc(cs)CMPedometerData(py)numberOfSteps	-			NSNumber *	-	readonly,no
 property	c:objc(cs)CMPedometerData(py)distance	-			NSNumber *	-	readonly,nonatomic	ios=8.0/-/-/0,xros=-/-/-/1	-	67c544d4bd39033e
 property	c:objc(cs)CMPedometerData(py)floorsAscended	-			NSNumber *	-	readonly,nonatomic	ios=8.0/-/-/0,xros=-/-/-/1	-	29a66e9e7f083ee0
 property	c:objc(cs)CMPedometerData(py)floorsDescended	-			NSNumber *	-	readonly,nonatomic	ios=8.0/-/-/0,xros=-/-/-/1	-	522699454058e81f
-property	c:objc(cs)CMPedometerData(py)currentPace	-			COREMOTION_EXPORT NSNumber *	-	readonly,nonatomic	ios=9.0/-/-/0	-	27ea272238dee7ec
-property	c:objc(cs)CMPedometerData(py)currentCadence	-			COREMOTION_EXPORT NSNumber *	-	readonly,nonatomic	ios=9.0/-/-/0	-	3574c458418b1edc
-property	c:objc(cs)CMPedometerData(py)averageActivePace	-			COREMOTION_EXPORT NSNumber *	-	readonly,nonatomic	ios=10.0/-/-/0	-	3bb7f83399e01339
+property	c:objc(cs)CMPedometerData(py)currentPace	-			NSNumber *	-	readonly,nonatomic	ios=9.0/-/-/0	-	d8d617b5fd0ee3be
+property	c:objc(cs)CMPedometerData(py)currentCadence	-			NSNumber *	-	readonly,nonatomic	ios=9.0/-/-/0	-	0c4b8f515a9f1ec2
+property	c:objc(cs)CMPedometerData(py)averageActivePace	-			NSNumber *	-	readonly,nonatomic	ios=10.0/-/-/0	-	4792ec4f20c3b27f
 typedef	c:@T@CMPedometerEventType	-			enum CMPedometerEventType	-	-	-	-	1c2ad5df720cfabc
 enum	c:@E@CMPedometerEventType	-			NSInteger	-	-	ios=10.0/-/-/0,watchos=3.0/-/-/0	-	6cb6bfd4e83bdb72
 enumconst	c:@E@CMPedometerEventType@CMPedometerEventTypePause	CMPedometerEventType			-	-	-	ios=10.0/-/-/0,watchos=3.0/-/-/0	-	1509599f427e345c
@@ -285,8 +285,8 @@ conforms	-	CMPedometerEvent	NSSecureCoding		-	-	-	-	-	626186da244bf3da
 conforms	-	CMPedometerEvent	NSCopying		-	-	-	-	-	5dc64854c3b95983
 property	c:objc(cs)CMPedometerEvent(py)date	-			NSDate *	-	readonly,nonatomic	ios=10.0/-/-/0,watchos=3.0/-/-/0	-	088b5fafded3382d
 property	c:objc(cs)CMPedometerEvent(py)type	-			CMPedometerEventType	-	readonly,nonatomic	ios=10.0/-/-/0,watchos=3.0/-/-/0	-	6ccb7e2e749c927b
-typedef	c:@T@CMPedometerHandler	-			void (^)(CMPedometerData * _Nullable, NSError * _Nullable)	-	-	xros=-/-/-/1	-	c3eb7e7326144a6e
-typedef	c:@T@CMPedometerEventHandler	-			void (^)(CMPedometerEvent * _Nullable, NSError * _Nullable)	-	-	ios=10.0/-/-/0,watchos=3.0/-/-/0,xros=-/-/-/1	-	82c1b16d9743070a
+typedef	c:@T@CMPedometerHandler	-			void ((^))(CMPedometerData *, NSError *)	-	-	xros=-/-/-/1	-	e614809ed28e70bc
+typedef	c:@T@CMPedometerEventHandler	-			void ((^))(CMPedometerEvent *, NSError *)	-	-	ios=10.0/-/-/0,watchos=3.0/-/-/0,xros=-/-/-/1	-	f040b69e8f8cac18
 interface	c:objc(cs)CMPedometer	-			-	-	-	ios=8.0/-/-/0,xros=-/-/-/1	-	3b2a3e383e231de5
 super	-	CMPedometer	NSObject		-	-	-	-	-	10e5fe913b539711
 method	c:objc(cs)CMPedometer(cm)isStepCountingAvailable	-			BOOL	-	-	ios=8.0/-/-/0,xros=-/-/-/1	-	9dfc97d3c3df2e54
@@ -307,8 +307,8 @@ property	c:objc(cs)CMRotationRateData(py)rotationRate	-			CMRotationRate	-	reado
 interface	c:objc(cs)CMRecordedRotationRateData	-			-	-	-	ios=14.0/-/-/0,watchos=7.0/-/-/0	-	40f4d19bb71f9398
 super	-	CMRecordedRotationRateData	CMRotationRateData		-	-	-	-	-	1be3e1719a401560
 property	c:objc(cs)CMRecordedRotationRateData(py)startDate	-			NSDate *	-	readonly	ios=14.0/-/-/0,watchos=7.0/-/-/0	-	b013322c60bed312
-typedef	c:@T@CMStepQueryHandler	-			void (^)(NSInteger, NSError * _Nullable)	-	-	tvos=-/-/-/1,watchos=-/-/-/1	-	9d8884814b57dd21
-typedef	c:@T@CMStepUpdateHandler	-			void (^)(NSInteger, NSDate * _Nonnull, NSError * _Nullable)	-	-	watchos=-/-/-/1	-	f5333e0beab55129
+typedef	c:@T@CMStepQueryHandler	-			void ((^))(NSInteger, NSError *)	-	-	tvos=-/-/-/1,watchos=-/-/-/1	-	dbf118af640442c2
+typedef	c:@T@CMStepUpdateHandler	-			void ((^))(NSInteger, NSDate *, NSError *)	-	-	watchos=-/-/-/1	-	a526d8df6997bd1d
 interface	c:objc(cs)CMStepCounter	-			-	-	-	ios=7.0/8.0/-/0,watchos=-/-/-/1	-	4cf9d45c3ba0f8de
 super	-	CMStepCounter	NSObject		-	-	-	-	-	cb00e0307513f209
 method	c:objc(cs)CMStepCounter(cm)isStepCountingAvailable	-			BOOL	-	-	ios=7.0/8.0/-/0,watchos=-/-/-/1	-	1f5f69ffbaaf7904
@@ -367,8 +367,8 @@ property	c:objc(cs)CMOdometerData(py)gpsDate	-			NSDate *	-	readonly,strong,nona
 property	c:objc(cs)CMOdometerData(py)deltaAltitude	-			CLLocationDistance	-	readonly,nonatomic	ios=17.0/-/-/0,watchos=10.0/-/-/0	-	5162d3c3981c50dd
 property	c:objc(cs)CMOdometerData(py)verticalAccuracy	-			CLLocationAccuracy	-	readonly,nonatomic	ios=17.0/-/-/0,watchos=10.0/-/-/0	-	e0e7ce123f075bad
 property	c:objc(cs)CMOdometerData(py)originDevice	-			CMOdometerOriginDevice	-	readonly,assign,nonatomic	ios=15.4/-/-/0,watchos=8.4/-/-/0	-	8dcfb7b174383728
-property	c:objc(cs)CMOdometerData(py)slope	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,strong,nonatomic	ios=17.0/-/-/0,watchos=10.0/-/-/0	-	9d4430844143bdf7
-property	c:objc(cs)CMOdometerData(py)maxAbsSlope	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,strong,nonatomic	ios=17.0/-/-/0,watchos=10.0/-/-/0	-	b8e4c4406375ebb7
+property	c:objc(cs)CMOdometerData(py)slope	-			NSNumber *	-	readonly,strong,nonatomic	ios=17.0/-/-/0,watchos=10.0/-/-/0	-	e1d1947623a94822
+property	c:objc(cs)CMOdometerData(py)maxAbsSlope	-			NSNumber *	-	readonly,strong,nonatomic	ios=17.0/-/-/0,watchos=10.0/-/-/0	-	d4259e6a92cde621
 typedef	c:@T@CMWaterSubmersionState	-			enum CMWaterSubmersionState	-	-	-	-	f72e5121d55e313a
 enum	c:@E@CMWaterSubmersionState	-			NSInteger	-	-	-	-	344117101e6550ad
 enumconst	c:@E@CMWaterSubmersionState@CMWaterSubmersionStateUnknown	CMWaterSubmersionState			-	-	-	-	-	b871622b3b357188
@@ -438,8 +438,8 @@ typedef	c:@T@CMHeadphoneActivityStatus	-			enum CMHeadphoneActivityStatus	-	-	-	
 enum	c:@E@CMHeadphoneActivityStatus	-			NSInteger	-	-	-	-	97d2710c79cf6eef
 enumconst	c:@E@CMHeadphoneActivityStatus@CMHeadphoneActivityStatusDisconnected	CMHeadphoneActivityStatus			-	-	-	-	-	6fe840f5d053395e
 enumconst	c:@E@CMHeadphoneActivityStatus@CMHeadphoneActivityStatusConnected	CMHeadphoneActivityStatus			-	-	-	-	-	a6e1200ec6c74e63
-typedef	c:@T@CMHeadphoneActivityStatusHandler	-			void (^)(CMHeadphoneActivityStatus, NSError * _Nullable)	-	-	-	-	3247ece4721967c9
-typedef	c:@T@CMHeadphoneActivityHandler	-			void (^)(CMMotionActivity * _Nullable, NSError * _Nullable)	-	-	xros=-/-/-/1	-	205369f82b918f6d
+typedef	c:@T@CMHeadphoneActivityStatusHandler	-			void ((^))(CMHeadphoneActivityStatus, NSError *)	-	-	-	-	30d2b5aea044348d
+typedef	c:@T@CMHeadphoneActivityHandler	-			void ((^))(CMMotionActivity *, NSError *)	-	-	xros=-/-/-/1	-	b0aedf87977e13c5
 interface	c:objc(cs)CMHeadphoneActivityManager	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=-/-/-/1	-	80cef1f4ae03efcf
 super	-	CMHeadphoneActivityManager	NSObject		-	-	-	-	-	09452ee4b5456489
 method	c:objc(cs)CMHeadphoneActivityManager(cm)authorizationStatus	-			CMAuthorizationStatus	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=-/-/-/1	-	659dd99d4c883845

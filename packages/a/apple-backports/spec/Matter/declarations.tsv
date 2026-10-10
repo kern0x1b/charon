@@ -3,16 +3,16 @@ typedef	c:@T@MTRTLVBytes	-			NSData *	-	-	-	-	9fff7cb8e153d6c7
 typedef	c:@T@MTRCSRDERBytes	-			NSData *	-	-	-	-	1fc9ede64d007d3f
 typedef	c:@T@MTRCertificateDERBytes	-			NSData *	-	-	-	-	4f001afe833a3137
 typedef	c:@T@MTRCertificateTLVBytes	-			NSData *	-	-	-	-	e2d4a84ed7bd5543
-typedef	c:@T@ResponseHandler	-			void (^)(id _Nullable, NSError * _Nullable)	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	bdef06aa867369d6
-typedef	c:@T@StatusCompletion	-			void (^)(NSError * _Nullable)	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	264f41250faef250
-typedef	c:@T@SubscriptionEstablishedHandler	-			void (^)(void)	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	39ee96fcc9c76064
-typedef	c:@T@MTRStatusCompletion	-			void (^)(NSError * _Nullable)	-	-	-	-	0ede458bb598bc42
-typedef	c:@T@MTRSubscriptionEstablishedHandler	-			void (^)(void)	-	-	-	-	f60c91f1d6119625
+typedef	c:@T@ResponseHandler	-			void ((^))(id, NSError *)	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	9e865c95478a723d
+typedef	c:@T@StatusCompletion	-			void ((^))(NSError *)	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	1a00a553d7329ded
+typedef	c:@T@SubscriptionEstablishedHandler	-			void ((^))(void)	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	3b5e9e00cb403806
+typedef	c:@T@MTRStatusCompletion	-			void ((^))(NSError *)	-	-	-	-	0acdfb6fff960398
+typedef	c:@T@MTRSubscriptionEstablishedHandler	-			void ((^))(void)	-	-	-	-	ca257cbc1a385e3f
 interface	c:objc(cs)MTRCluster	-			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	8e17ce24dd4bf9bf
 super	-	MTRCluster	NSObject		-	-	-	-	-	b09ff080abde6ef3
 method	c:objc(cs)MTRCluster(im)init	-			instancetype	-	-	*unavailable ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	ad1c331100fb7bbb
 method	c:objc(cs)MTRCluster(cm)new	-			instancetype	-	-	*unavailable ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	936e31ea8841c4a2
-property	c:objc(cs)MTRCluster(py)endpointID	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,nonatomic	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	4290e4a412415fc6
+property	c:objc(cs)MTRCluster(py)endpointID	-			NSNumber *	-	readonly,nonatomic	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	73dee5d5bc972d58
 interface	c:objc(cs)MTRGenericBaseCluster	-			-	-	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	fa1d60e2a23f4534
 super	-	MTRGenericBaseCluster	MTRCluster		-	-	-	-	-	3807ce52bc58fd2d
 interface	c:objc(cs)MTRGenericCluster	-			-	-	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	a910ca19e6755397
@@ -53,11 +53,11 @@ enum	c:@E@MTRDiagnosticLogType	-			NSInteger	-	-	ios=17.6/-/-/0,macos=14.6/-/-/0
 enumconst	c:@E@MTRDiagnosticLogType@MTRDiagnosticLogTypeEndUserSupport	MTRDiagnosticLogType			-	-	-	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	367e93ebe3fed526
 enumconst	c:@E@MTRDiagnosticLogType@MTRDiagnosticLogTypeNetworkDiagnostics	MTRDiagnosticLogType			-	-	-	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	b89adaf5c71384b4
 enumconst	c:@E@MTRDiagnosticLogType@MTRDiagnosticLogTypeCrash	MTRDiagnosticLogType			-	-	-	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	52feedbb880ba00b
-typedef	c:@T@MTRDeviceResponseHandler	-			void (^)(NSArray<NSDictionary<NSString *,id> *> * _Nullable, NSError * _Nullable)	-	-	-	-	5fe0b7db731ef813
-typedef	c:@T@MTRDeviceReportHandler	-			void (^)(NSArray * _Nonnull)	-	-	-	-	3999944b0e2c5105
-typedef	c:@T@MTRDeviceErrorHandler	-			void (^)(NSError * _Nonnull)	-	-	-	-	537e386c5ebb9043
-typedef	c:@T@MTRDeviceResubscriptionScheduledHandler	-			void (^)(NSError * _Nonnull, NSNumber * _Nonnull)	-	-	-	-	5797e2af0c3b06da
-typedef	c:@T@MTRDeviceOpenCommissioningWindowHandler	-			void (^)(MTRSetupPayload * _Nullable, NSError * _Nullable)	-	-	ios=16.2/-/-/0,macos=13.1/-/-/0,tvos=16.2/-/-/0,watchos=9.2/-/-/0	-	8505fa9d1a0b465c
+typedef	c:@T@MTRDeviceResponseHandler	-			void ((^))(NSArray<NSDictionary<NSString *,id> *> *, NSError *)	-	-	-	-	038fdb982cd0cf10
+typedef	c:@T@MTRDeviceReportHandler	-			void ((^))(NSArray *)	-	-	-	-	47d31ef23c058d3b
+typedef	c:@T@MTRDeviceErrorHandler	-			void ((^))(NSError *)	-	-	-	-	9558f40224ca9523
+typedef	c:@T@MTRDeviceResubscriptionScheduledHandler	-			void ((^))(NSError *, NSNumber *)	-	-	-	-	a9b52892ef4ff3c8
+typedef	c:@T@MTRDeviceOpenCommissioningWindowHandler	-			void ((^))(MTRSetupPayload *, NSError *)	-	-	ios=16.2/-/-/0,macos=13.1/-/-/0,tvos=16.2/-/-/0,watchos=9.2/-/-/0	-	3b8a916624a5f231
 var	c:@MTRAttributePathKey	-			NSString *const	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	71c524a4f96f4af6
 var	c:@MTRCommandPathKey	-			NSString *const	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	aab04f3cca92b4f3
 var	c:@MTREventPathKey	-			NSString *const	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	38e188b50ab36bdd
@@ -6565,11 +6565,11 @@ property	c:objc(cs)MTROperationalCertificateChain(py)adminSubject	-			NSNumber *
 protocol	c:objc(pl)MTROperationalCertificateIssuer	-			-	-	-	ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=9.4/-/-/0	-	d9cfe6b9074b3864
 method	c:objc(pl)MTROperationalCertificateIssuer(im)issueOperationalCertificateForRequest:attestationInfo:controller:completion:	-			void	MTROperationalCSRInfo * csrInfo | MTRDeviceAttestationInfo * attestationInfo | MTRDeviceController * controller | void (^)(MTROperationalCertificateChain * _Nullable, NSError * _Nullable) completion	-	ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=9.4/-/-/0	-	63558d06bb0d1755
 property	c:objc(pl)MTROperationalCertificateIssuer(py)shouldSkipAttestationCertificateValidation	-			BOOL	-	readonly,nonatomic	ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=9.4/-/-/0	-	fe2a96d3d8ff599d
-typedef	c:@T@MTRNOCChainGenerationCompleteHandler	-			void (^)(NSData * _Nonnull, NSData * _Nonnull, NSData * _Nonnull, NSData * _Nullable, NSNumber * _Nullable, NSError * _Nullable * _Nullable)	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	5b27358878c1585c
+typedef	c:@T@MTRNOCChainGenerationCompleteHandler	-			void ((^))(NSData *, NSData *, NSData *, NSData *, NSNumber *, NSError * _Nullable *)	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	a8ee9a8634b7ca69
 protocol	c:objc(pl)MTRNOCChainIssuer	-			-	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	989fe7f3e32b0e8a
 conforms	-	MTRNOCChainIssuer	NSObject		-	-	-	-	-	8134161cca2e52f1
 method	c:objc(pl)MTRNOCChainIssuer(im)onNOCChainGenerationNeeded:attestationInfo:onNOCChainGenerationComplete:	-			void	CSRInfo * csrInfo | AttestationInfo * attestationInfo | MTRNOCChainGenerationCompleteHandler onNOCChainGenerationComplete	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	b68f61a11f06b455
-typedef	c:@T@MTRDeviceConnectionCallback	-			void (^)(MTRBaseDevice * _Nullable, NSError * _Nullable)	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	a9b1d84790a8954d
+typedef	c:@T@MTRDeviceConnectionCallback	-			void ((^))(MTRBaseDevice *, NSError *)	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	b4d4ea0f241f3de5
 interface	c:objc(cs)MTRDeviceController	-			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	6e15eeff3b78de20
 super	-	MTRDeviceController	NSObject		-	-	-	-	-	6d7c46b26f84d78a
 method	c:objc(cs)MTRDeviceController(im)init	-			instancetype	-	-	*unavailable ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	bde4e0e854b2eb36
@@ -21556,7 +21556,7 @@ method	c:objc(cs)MTRAccessGrant(cm)accessGrantForAllNodesWithPrivilege:	-			MTRA
 property	c:objc(cs)MTRAccessGrant(py)subjectID	-			NSNumber *	-	readonly,copy,nonatomic	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	20fe514b30224116
 property	c:objc(cs)MTRAccessGrant(py)grantedPrivilege	-			MTRAccessControlEntryPrivilege	-	readonly,assign,nonatomic	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	25626ecf11326deb
 property	c:objc(cs)MTRAccessGrant(py)authenticationMode	-			MTRAccessControlEntryAuthMode	-	readonly,assign,nonatomic	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	de1019b3b017a3bb
-typedef	c:@T@MTRAsyncCallbackReadyHandler	-			void (^)(id _Nonnull, NSUInteger)	-	-	-	-	44268481f9a0b29c
+typedef	c:@T@MTRAsyncCallbackReadyHandler	-			void ((^))(id, NSUInteger)	-	-	-	-	a3871395d41b3bce
 interface	c:objc(cs)MTRAsyncCallbackWorkQueue	-			-	-	-	ios=16.1/17.2/-/0,macos=13.0/14.2/-/0,tvos=16.1/17.2/-/0,watchos=9.1/10.2/-/0	-	0b596d1dd96a109c
 super	-	MTRAsyncCallbackWorkQueue	NSObject		-	-	-	-	-	cfa5a926161fb0ac
 method	c:objc(cs)MTRAsyncCallbackWorkQueue(im)init	-			instancetype	-	-	*unavailable ios=16.1/17.2/-/0,macos=13.0/14.2/-/0,tvos=16.1/17.2/-/0,watchos=9.1/10.2/-/0	-	d07f1be154c97b0d
@@ -21601,7 +21601,7 @@ property	c:objc(cs)MTRDevice(py)state	-			MTRDeviceState	-	readonly,nonatomic	io
 property	c:objc(cs)MTRDevice(py)deviceCachePrimed	-			BOOL	-	readonly	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	3e39358f69eec5f7
 property	c:objc(cs)MTRDevice(py)estimatedStartTime	-			NSDate *	-	readonly,nonatomic	ios=16.5/-/-/0,macos=13.4/-/-/0,tvos=16.5/-/-/0,watchos=9.5/-/-/0	-	eced4e7d1cac0555
 property	c:objc(cs)MTRDevice(py)deviceController	-			MTRDeviceController *	-	readonly,nonatomic	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	fc14610547b80992
-property	c:objc(cs)MTRDevice(py)nodeID	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	fb60e452b2b35506
+property	c:objc(cs)MTRDevice(py)nodeID	-			NSNumber *	-	readonly,copy,nonatomic	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	e1be4d963c1ad551
 property	c:objc(cs)MTRDevice(py)estimatedSubscriptionLatency	-			NSNumber *	-	readonly,copy,nonatomic	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	2ab99f1b09aff127
 property	c:objc(cs)MTRDevice(py)vendorID	-			NSNumber *	-	readonly,copy,nonatomic	ios=18.3/-/-/0,macos=15.3/-/-/0,tvos=18.3/-/-/0,watchos=11.3/-/-/0	-	8734b6bed18fb645
 property	c:objc(cs)MTRDevice(py)productID	-			NSNumber *	-	readonly,copy,nonatomic	ios=18.3/-/-/0,macos=15.3/-/-/0,tvos=18.3/-/-/0,watchos=11.3/-/-/0	-	8538be83ac035788
@@ -31653,11 +31653,11 @@ enumconst	c:@E@MTRDeviceTypeIDType@MTRDeviceTypeIDTypeElectricalEnergyTariffID	M
 enumconst	c:@E@MTRDeviceTypeIDType@MTRDeviceTypeIDTypeElectricalMeterID	MTRDeviceTypeIDType			-	-	-	*unavailable	-	45599a8ecb4997f5
 enumconst	c:@E@MTRDeviceTypeIDType@MTRDeviceTypeIDTypeControlBridgeID	MTRDeviceTypeIDType			-	-	-	ios=18.2/-/-/0,macos=15.2/-/-/0,tvos=18.2/-/-/0,watchos=11.2/-/-/0	-	9a19e3e28612ad06
 enumconst	c:@E@MTRDeviceTypeIDType@MTRDeviceTypeIDTypeOnOffSensorID	MTRDeviceTypeIDType			-	-	-	ios=18.2/-/-/0,macos=15.2/-/-/0,tvos=18.2/-/-/0,watchos=11.2/-/-/0	-	7686d12e764726e1
-function	c:@F@MTRClusterNameForID	-			NSString *(MTRClusterIDType)	MTRClusterIDType clusterID	-	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	64dc34a7bc2189e7
-function	c:@F@MTRAttributeNameForID	-			NSString *(MTRClusterIDType, MTRAttributeIDType)	MTRClusterIDType clusterID | MTRAttributeIDType attributeID	-	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	420e9ad646c2d61e
-function	c:@F@MTRRequestCommandNameForID	-			NSString *(MTRClusterIDType, MTRCommandIDType)	MTRClusterIDType clusterID | MTRCommandIDType commandID	-	ios=18.2/-/-/0,macos=15.2/-/-/0,tvos=18.2/-/-/0,watchos=11.2/-/-/0	-	b7672ed233f001a1
-function	c:@F@MTRResponseCommandNameForID	-			NSString *(MTRClusterIDType, MTRCommandIDType)	MTRClusterIDType clusterID | MTRCommandIDType commandID	-	ios=18.2/-/-/0,macos=15.2/-/-/0,tvos=18.2/-/-/0,watchos=11.2/-/-/0	-	a3e7c3c4e4634d8c
-function	c:@F@MTREventNameForID	-			NSString *(MTRClusterIDType, MTREventIDType)	MTRClusterIDType clusterID | MTREventIDType eventID	-	ios=18.2/-/-/0,macos=15.2/-/-/0,tvos=18.2/-/-/0,watchos=11.2/-/-/0	-	9a778cb8c8bd5646
+function	c:@F@MTRClusterNameForID	-			NSString * (MTRClusterIDType)	MTRClusterIDType clusterID	-	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	aa0a19427b423c8a
+function	c:@F@MTRAttributeNameForID	-			NSString * (MTRClusterIDType, MTRAttributeIDType)	MTRClusterIDType clusterID | MTRAttributeIDType attributeID	-	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	a6b3c3be0a6ee565
+function	c:@F@MTRRequestCommandNameForID	-			NSString * (MTRClusterIDType, MTRCommandIDType)	MTRClusterIDType clusterID | MTRCommandIDType commandID	-	ios=18.2/-/-/0,macos=15.2/-/-/0,tvos=18.2/-/-/0,watchos=11.2/-/-/0	-	09a7494fa648aec5
+function	c:@F@MTRResponseCommandNameForID	-			NSString * (MTRClusterIDType, MTRCommandIDType)	MTRClusterIDType clusterID | MTRCommandIDType commandID	-	ios=18.2/-/-/0,macos=15.2/-/-/0,tvos=18.2/-/-/0,watchos=11.2/-/-/0	-	495ff96e7ff17970
+function	c:@F@MTREventNameForID	-			NSString * (MTRClusterIDType, MTREventIDType)	MTRClusterIDType clusterID | MTREventIDType eventID	-	ios=18.2/-/-/0,macos=15.2/-/-/0,tvos=18.2/-/-/0,watchos=11.2/-/-/0	-	de9e4842d61dc1a9
 interface	c:objc(cs)MTRCommissionableBrowserResult	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	0003a66bf09fc562
 super	-	MTRCommissionableBrowserResult	NSObject		-	-	-	-	-	0c33ae9e472bfcb5
 property	c:objc(cs)MTRCommissionableBrowserResult(py)instanceName	-			NSString *	-	readonly,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	466b741748e22087
@@ -31746,9 +31746,9 @@ method	c:objc(cs)MTRCommissioningOperation(im)initWithParameters:setupPayload:de
 method	c:objc(cs)MTRCommissioningOperation(im)startWithController:	-			void	MTRDeviceController * controller	-	ios=26.2/-/-/0,macos=26.2/-/-/0,tvos=26.2/-/-/0,watchos=26.2/-/-/0	-	9a5f1f3480439ecb
 method	c:objc(cs)MTRCommissioningOperation(im)stop	-			BOOL	-	-	ios=26.2/-/-/0,macos=26.2/-/-/0,tvos=26.2/-/-/0,watchos=26.2/-/-/0	-	a52a5d69d60f19eb
 property	c:objc(cs)MTRCommissioningOperation(py)matchedPayload	-			MTRSetupPayload *	-	readonly,strong,nonatomic	ios=26.2/-/-/0,macos=26.2/-/-/0,tvos=26.2/-/-/0,watchos=26.2/-/-/0	-	545ca6834b48469b
-typedef	c:@T@MTRXPCConnectBlock	-			NSXPCConnection * _Nonnull (^)(void)	-	-	-	-	ebad9d38af074be2
-typedef	c:@T@MTRDeviceControllerGetterHandler	-			void (^)(id _Nullable, NSError * _Nullable)	-	-	-	-	bd2cd04804bcb35b
-typedef	c:@T@MTRValuesHandler	-			void (^)(id _Nullable, NSError * _Nullable)	-	-	-	-	e9c53a31bb522d6a
+typedef	c:@T@MTRXPCConnectBlock	-			NSXPCConnection * ((^))(void)	-	-	-	-	64c6601c0f036fc5
+typedef	c:@T@MTRDeviceControllerGetterHandler	-			void ((^))(id, NSError *)	-	-	-	-	c7a8c15fabb11989
+typedef	c:@T@MTRValuesHandler	-			void ((^))(id, NSError *)	-	-	-	-	819ced6f9e9f96cf
 category	c:objc(cy)MTRDeviceController@XPC	-			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	59be05e26abed718
 method	c:objc(cs)MTRDeviceController(cm)sharedControllerWithID:xpcConnectBlock:	XPC			MTRDeviceController *	id<NSCopying> controllerID | MTRXPCConnectBlock xpcConnectBlock	-	ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=9.4/-/-/0	-	1126f8b6722040e0
 method	c:objc(cs)MTRDeviceController(cm)encodeXPCResponseValues:	XPC			NSArray<NSDictionary<NSString *,id> *> *	NSArray<NSDictionary<NSString *,id> *> * values	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	f10cbf62f3997c3a
@@ -31828,7 +31828,7 @@ method	c:objc(cs)MTRDeviceControllerFactory(im)stopControllerFactory	-			void	-	
 method	c:objc(cs)MTRDeviceControllerFactory(im)createControllerOnExistingFabric:error:	-			MTRDeviceController *	MTRDeviceControllerStartupParams * startupParams | NSError * _Nullable * error	-	ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=9.4/-/-/0	-	a88cb3e5c5821173
 method	c:objc(cs)MTRDeviceControllerFactory(im)createControllerOnNewFabric:error:	-			MTRDeviceController *	MTRDeviceControllerStartupParams * startupParams | NSError * _Nullable * error	-	ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=9.4/-/-/0	-	969aebeae63ffe7f
 method	c:objc(cs)MTRDeviceControllerFactory(im)preWarmCommissioningSession	-			void	-	-	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	1b2dcd0b7bd07bff
-function	c:@F@MTRSetMessageReliabilityParameters	-			void (NSNumber * _Nullable, NSNumber * _Nullable, NSNumber * _Nullable, NSNumber * _Nullable)	NSNumber * idleRetransmitMs | NSNumber * activeRetransmitMs | NSNumber * activeThresholdMs | NSNumber * additionalRetransmitDelayMs	-	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	15155453ad19d07e
+function	c:@F@MTRSetMessageReliabilityParameters	-			void (NSNumber *, NSNumber *, NSNumber *, NSNumber *)	NSNumber * idleRetransmitMs | NSNumber * activeRetransmitMs | NSNumber * activeThresholdMs | NSNumber * additionalRetransmitDelayMs	-	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	2da9c9e14e49a829
 interface	c:objc(cs)MTRControllerFactoryParams	-			-	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	afb6a4852981649b
 super	-	MTRControllerFactoryParams	MTRDeviceControllerFactoryParams		-	-	-	-	-	2aad948045be753d
 property	c:objc(cs)MTRControllerFactoryParams(py)storageDelegate	-			id<MTRPersistentStorageDelegate>	-	readonly,strong,nonatomic	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	305e14916fb25141
@@ -31862,7 +31862,7 @@ method	c:objc(pl)MTRDeviceControllerStorageDelegate(im)controller:storeValue:for
 method	c:objc(pl)MTRDeviceControllerStorageDelegate(im)controller:removeValueForKey:securityLevel:sharingType:	-			BOOL	MTRDeviceController * controller | NSString * key | MTRStorageSecurityLevel securityLevel | MTRStorageSharingType sharingType	-	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	876e80dae9196265
 method	c:objc(pl)MTRDeviceControllerStorageDelegate(im)valuesForController:securityLevel:sharingType:	-			NSDictionary<NSString *,id<NSSecureCoding>> *	MTRDeviceController * controller | MTRStorageSecurityLevel securityLevel | MTRStorageSharingType sharingType	optional	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	51dc0bc8db54a26c
 method	c:objc(pl)MTRDeviceControllerStorageDelegate(im)controller:storeValues:securityLevel:sharingType:	-			BOOL	MTRDeviceController * controller | NSDictionary<NSString *,id<NSSecureCoding>> * values | MTRStorageSecurityLevel securityLevel | MTRStorageSharingType sharingType	optional	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	63f733de6993f790
-function	c:@F@MTRDeviceControllerStorageClasses	-			NSSet<Class> * _Nonnull (void)	-	-	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	ec421ed719efce24
+function	c:@F@MTRDeviceControllerStorageClasses	-			NSSet<Class> * (void)	-	-	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	608b41e57dce9cbc
 interface	c:objc(cs)MTRDeviceStorageBehaviorConfiguration	-			-	-	-	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	c0dc7e2603dd22b2
 super	-	MTRDeviceStorageBehaviorConfiguration	NSObject		-	-	-	-	-	d6e06b1bdce756ad
 conforms	-	MTRDeviceStorageBehaviorConfiguration	NSCopying		-	-	-	-	-	bbb111b5a25a8323
@@ -32057,8 +32057,8 @@ enum	c:@E@MTRLogType	-			NSInteger	-	-	-	-	da5724f4b92ce0e2
 enumconst	c:@E@MTRLogType@MTRLogTypeError	MTRLogType			-	-	-	-	-	76cb5bc592453e8d
 enumconst	c:@E@MTRLogType@MTRLogTypeProgress	MTRLogType			-	-	-	-	-	4ce798acf5f58e6b
 enumconst	c:@E@MTRLogType@MTRLogTypeDetail	MTRLogType			-	-	-	-	-	bf169444b118e840
-typedef	c:@T@MTRLogCallback	-			void (^)(MTRLogType, NSString * _Nonnull, NSString * _Nonnull)	-	-	-	-	524917a5be473a10
-function	c:@F@MTRSetLogCallback	-			void (MTRLogType, MTRLogCallback _Nullable)	MTRLogType logTypeThreshold | MTRLogCallback callback	-	ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=9.4/-/-/0	-	6b2e66f96b0c4d4b
+typedef	c:@T@MTRLogCallback	-			void ((^))(MTRLogType, NSString *, NSString *)	-	-	-	-	ceae35bcc6a0fca0
+function	c:@F@MTRSetLogCallback	-			void (MTRLogType, MTRLogCallback)	MTRLogType logTypeThreshold | MTRLogCallback callback	-	ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=9.4/-/-/0	-	b103bbe01be68096
 interface	c:objc(cs)MTRManualSetupPayloadParser	-			-	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	afafc3713f76236c
 super	-	MTRManualSetupPayloadParser	NSObject		-	-	-	-	-	ced5d102c7114991
 method	c:objc(cs)MTRManualSetupPayloadParser(im)initWithDecimalStringRepresentation:	-			instancetype	NSString * decimalStringRepresentation	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	4840ae82cea9a795

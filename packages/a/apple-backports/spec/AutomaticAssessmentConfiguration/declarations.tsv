@@ -3,7 +3,7 @@ interface	c:objc(cs)AEAssessmentApplication	-			-	-	-	ios=15.0/-/-/0,maccatalyst
 super	-	AEAssessmentApplication	NSObject		-	-	-	-	-	c245b4d04132777f
 conforms	-	AEAssessmentApplication	NSCopying		-	-	-	-	-	04088d26ac806cd7
 property	c:objc(cs)AEAssessmentApplication(py)bundleIdentifier	-			NSString *	-	readonly,copy,nonatomic	ios=17.5/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	d9541eccb8780eec
-property	c:objc(cs)AEAssessmentApplication(py)teamIdentifier	-			API_UNAVAILABLE NSString *	-	readonly,copy,nonatomic	ios=-/-/-/1,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	beefacc2bdbfb15d
+property	c:objc(cs)AEAssessmentApplication(py)teamIdentifier	-			NSString *	-	readonly,copy,nonatomic	ios=-/-/-/1,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	33af959eb4e670b6
 property	c:objc(cs)AEAssessmentApplication(py)requiresSignatureValidation	-			BOOL	-	assign,nonatomic	ios=-/-/-/1,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	c46b164f249904c6
 method	c:objc(cs)AEAssessmentApplication(im)initWithBundleIdentifier:	-			instancetype	NSString * bundleIdentifier	-	ios=17.5/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	6da79d017aa7a150
 method	c:objc(cs)AEAssessmentApplication(im)initWithBundleIdentifier:teamIdentifier:	-			instancetype	NSString * bundleIdentifier | NSString * teamIdentifier	-	ios=-/-/-/1,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	52c7c97977e17874

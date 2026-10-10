@@ -35,7 +35,7 @@ enum	c:@E@HKAuthorizationRequestStatus	-			NSInteger	-	-	ios=12.0/-/-/0,maccatal
 enumconst	c:@E@HKAuthorizationRequestStatus@HKAuthorizationRequestStatusUnknown	HKAuthorizationRequestStatus			-	-	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=5.0/-/-/0	-	3314f439ef46aaf7
 enumconst	c:@E@HKAuthorizationRequestStatus@HKAuthorizationRequestStatusShouldRequest	HKAuthorizationRequestStatus			-	-	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=5.0/-/-/0	-	72152a54f70afe48
 enumconst	c:@E@HKAuthorizationRequestStatus@HKAuthorizationRequestStatusUnnecessary	HKAuthorizationRequestStatus			-	-	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=5.0/-/-/0	-	f41e0f9e09999c22
-function	c:@F@HKCategoryValueSleepAnalysisAsleepValues	-			NSSet<NSNumber *> * _Nonnull (void)	-	-	ios=16.0/-/-/0,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,watchos=9.0/-/-/0	deprecated: Use HKUnknownError instead	18fc1c49fad39359
+function	c:@F@HKCategoryValueSleepAnalysisAsleepValues	-			NSSet<NSNumber *> * (void)	-	-	ios=16.0/-/-/0,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,watchos=9.0/-/-/0	deprecated: Use HKUnknownError instead	4bb574e34cde7b60
 typedef	c:@T@HKCategoryValue	-			enum HKCategoryValue	-	-	-	-	ad3e022e95c22d2f
 enum	c:@E@HKCategoryValue	-			NSInteger	-	-	ios=9.0/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=2.0/-/-/0	-	6cb9547d0393be9f
 enumconst	c:@E@HKCategoryValue@HKCategoryValueNotApplicable	HKCategoryValue			-	-	-	ios=9.0/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=2.0/-/-/0	-	e73d6cc526c72823
@@ -191,7 +191,7 @@ interface	c:objc(cs)HKObject	-			-	-	-	ios=8.0/-/-/0,maccatalyst=13.0/-/-/0,maco
 super	-	HKObject	NSObject		-	-	-	-	-	c6e9af378612fb0d
 conforms	-	HKObject	NSSecureCoding		-	-	-	-	-	f93e6ef4c3e9ed4a
 property	c:objc(cs)HKObject(py)UUID	-			NSUUID *	-	readonly,strong	ios=8.0/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=2.0/-/-/0	-	96e9843cd1f8cb91
-property	c:objc(cs)HKObject(py)source	-			API_DEPRECATED_WITH_REPLACEMENT HKSource *	-	readonly,strong	ios=8.0/9.0/-/0	-	bc5b57d79cd0d480
+property	c:objc(cs)HKObject(py)source	-			HKSource *	-	readonly,strong	ios=8.0/9.0/-/0	-	fd5fb4b7541c8af0
 property	c:objc(cs)HKObject(py)sourceRevision	-			HKSourceRevision *	-	readonly,strong	ios=9.0/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=2.0/-/-/0	-	281ebea9b17594e7
 property	c:objc(cs)HKObject(py)device	-			HKDevice *	-	readonly,strong	ios=9.0/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=2.0/-/-/0	-	d65fe5e1128b0fbe
 property	c:objc(cs)HKObject(py)metadata	-			NSDictionary<NSString *,id> *	-	readonly,copy	ios=8.0/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=2.0/-/-/0	-	0a11a1b4d89902b0
@@ -259,7 +259,7 @@ interface	c:objc(cs)HKFHIRResource	-			-	-	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-
 super	-	HKFHIRResource	NSObject		-	-	-	-	-	6ae789601ce0d96d
 conforms	-	HKFHIRResource	NSSecureCoding		-	-	-	-	-	f9087a09d8da6495
 conforms	-	HKFHIRResource	NSCopying		-	-	-	-	-	5e39b16a7374b5fd
-property	c:objc(cs)HKFHIRResource(py)FHIRVersion	-			API_UNAVAILABLE HKFHIRVersion *	-	readonly,copy	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	9262b735c9141d80
+property	c:objc(cs)HKFHIRResource(py)FHIRVersion	-			HKFHIRVersion *	-	readonly,copy	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	a92c5966825c6f0b
 property	c:objc(cs)HKFHIRResource(py)resourceType	-			HKFHIRResourceType	-	readonly,copy	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	5bcc0be3998722a8
 property	c:objc(cs)HKFHIRResource(py)identifier	-			NSString *	-	readonly,copy	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	7bb58e5603447a6f
 property	c:objc(cs)HKFHIRResource(py)data	-			NSData *	-	readonly,copy	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	17513954cc051cc0
@@ -285,8 +285,8 @@ property	c:objc(cs)HKMedicationDoseEvent(py)medicationDoseEventType	-			HKMedica
 property	c:objc(cs)HKMedicationDoseEvent(py)scheduleType	-			HKMedicationDoseEventScheduleType	-	readonly,assign,nonatomic	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	c46fece4d729713f
 property	c:objc(cs)HKMedicationDoseEvent(py)medicationConceptIdentifier	-			HKHealthConceptIdentifier *	-	readonly,copy,nonatomic	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	ee11e01ddff1170e
 property	c:objc(cs)HKMedicationDoseEvent(py)scheduledDate	-			NSDate *	-	readonly,copy,nonatomic	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	95f349d073acb09b
-property	c:objc(cs)HKMedicationDoseEvent(py)scheduledDoseQuantity	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	0f8564d5b45669a0
-property	c:objc(cs)HKMedicationDoseEvent(py)doseQuantity	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	c933981d640ca077
+property	c:objc(cs)HKMedicationDoseEvent(py)scheduledDoseQuantity	-			NSNumber *	-	readonly,copy,nonatomic	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	bd2863e724b493a3
+property	c:objc(cs)HKMedicationDoseEvent(py)doseQuantity	-			NSNumber *	-	readonly,copy,nonatomic	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	2e2360a18aa4fbad
 property	c:objc(cs)HKMedicationDoseEvent(py)logStatus	-			HKMedicationDoseEventLogStatus	-	readonly,assign,nonatomic	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	06f91bbce28a620c
 property	c:objc(cs)HKMedicationDoseEvent(py)unit	-			HKUnit *	-	readonly,copy,nonatomic	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	7b7a5b3f7146a944
 method	c:objc(cs)HKMedicationDoseEvent(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	a95897bba49d0af5
@@ -304,7 +304,7 @@ enumconst	c:@E@HKStateOfMindValenceClassification@HKStateOfMindValenceClassifica
 enumconst	c:@E@HKStateOfMindValenceClassification@HKStateOfMindValenceClassificationSlightlyPleasant	HKStateOfMindValenceClassification			-	-	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	ec0ac026140eef0d
 enumconst	c:@E@HKStateOfMindValenceClassification@HKStateOfMindValenceClassificationPleasant	HKStateOfMindValenceClassification			-	-	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	5b3d9ba62a83da84
 enumconst	c:@E@HKStateOfMindValenceClassification@HKStateOfMindValenceClassificationVeryPleasant	HKStateOfMindValenceClassification			-	-	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	0c3b2da2694c5652
-function	c:@F@HKStateOfMindValenceClassificationForValence	-			NSNumber * _Nullable (double)	double valence	-	-	-	0051a337586f2dab
+function	c:@F@HKStateOfMindValenceClassificationForValence	-			NSNumber * (double)	double valence	-	-	-	05864d80ec1eee90
 typedef	c:@T@HKStateOfMindLabel	-			enum HKStateOfMindLabel	-	-	-	-	b53040ca0cd3f26f
 enum	c:@E@HKStateOfMindLabel	-			NSInteger	-	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	8f69cc704f1d74b1
 enumconst	c:@E@HKStateOfMindLabel@HKStateOfMindLabelAmazed	HKStateOfMindLabel			-	-	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	90dd977c09d0d726
@@ -376,8 +376,8 @@ conforms	-	HKStateOfMind	NSCopying		-	-	-	-	-	4e0809ff7e1dca8c
 property	c:objc(cs)HKStateOfMind(py)kind	-			HKStateOfMindKind	-	readonly,assign,nonatomic	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	cc0062f0c2c4ae77
 property	c:objc(cs)HKStateOfMind(py)valence	-			double	-	readonly,assign,nonatomic	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	199b885a3175c5bc
 property	c:objc(cs)HKStateOfMind(py)valenceClassification	-			HKStateOfMindValenceClassification	-	readonly,assign,nonatomic	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	e2bc4725373b970f
-property	c:objc(cs)HKStateOfMind(py)labels	-			NS_REFINED_FOR_SWIFT NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	ca58e62f46916be7
-property	c:objc(cs)HKStateOfMind(py)associations	-			NS_REFINED_FOR_SWIFT NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	d66b8ec6486ec975
+property	c:objc(cs)HKStateOfMind(py)labels	-			NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	621c77678b7facd5
+property	c:objc(cs)HKStateOfMind(py)associations	-			NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	777bccf8c243eed0
 method	c:objc(cs)HKStateOfMind(cm)stateOfMindWithDate:kind:valence:labels:associations:	-			instancetype	NSDate * date | HKStateOfMindKind kind | double valence | NSArray<NSNumber *> * labels | NSArray<NSNumber *> * associations	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	bc24c531248fe633
 method	c:objc(cs)HKStateOfMind(cm)stateOfMindWithDate:kind:valence:labels:associations:metadata:	-			instancetype	NSDate * date | HKStateOfMindKind kind | double valence | NSArray<NSNumber *> * labels | NSArray<NSNumber *> * associations | NSDictionary<NSString *,id> * metadata	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	6744cc0100f899e8
 method	c:objc(cs)HKStateOfMind(im)init	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	91d44b0a2922b2af
@@ -918,16 +918,16 @@ typedef	c:@T@HKAppleSleepingBreathingDisturbancesClassification	-			enum HKApple
 enum	c:@E@HKAppleSleepingBreathingDisturbancesClassification	-			NSInteger	-	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	f02ccdb2f8936756
 enumconst	c:@E@HKAppleSleepingBreathingDisturbancesClassification@HKAppleSleepingBreathingDisturbancesClassificationNotElevated	HKAppleSleepingBreathingDisturbancesClassification			-	-	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	6605dbd69d4049e8
 enumconst	c:@E@HKAppleSleepingBreathingDisturbancesClassification@HKAppleSleepingBreathingDisturbancesClassificationElevated	HKAppleSleepingBreathingDisturbancesClassification			-	-	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	b9d432c4315df206
-function	c:@F@HKAppleSleepingBreathingDisturbancesClassificationForQuantity	-			NSNumber * _Nullable (HKQuantity * _Nonnull)	HKQuantity * value	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	2075a2b0750245da
-function	c:@F@HKAppleSleepingBreathingDisturbancesMinimumQuantityForClassification	-			HKQuantity * _Nonnull (HKAppleSleepingBreathingDisturbancesClassification)	HKAppleSleepingBreathingDisturbancesClassification classification	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	cf4b94f22599f4cb
+function	c:@F@HKAppleSleepingBreathingDisturbancesClassificationForQuantity	-			NSNumber * (HKQuantity *)	HKQuantity * value	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	f78c5f7562e6aef1
+function	c:@F@HKAppleSleepingBreathingDisturbancesMinimumQuantityForClassification	-			HKQuantity * (HKAppleSleepingBreathingDisturbancesClassification)	HKAppleSleepingBreathingDisturbancesClassification classification	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	86cb16ebb386e5e6
 typedef	c:@T@HKAppleWalkingSteadinessClassification	-			enum HKAppleWalkingSteadinessClassification	-	-	-	-	f750005029ae9750
 enum	c:@E@HKAppleWalkingSteadinessClassification	-			NSInteger	-	-	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=13.0/-/-/0,watchos=8.0/-/-/0	-	6989e45d611dee80
 enumconst	c:@E@HKAppleWalkingSteadinessClassification@HKAppleWalkingSteadinessClassificationOK	HKAppleWalkingSteadinessClassification			-	-	-	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=13.0/-/-/0,watchos=8.0/-/-/0	-	748d96fc75386373
 enumconst	c:@E@HKAppleWalkingSteadinessClassification@HKAppleWalkingSteadinessClassificationLow	HKAppleWalkingSteadinessClassification			-	-	-	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=13.0/-/-/0,watchos=8.0/-/-/0	-	e8b2e489767cc2c0
 enumconst	c:@E@HKAppleWalkingSteadinessClassification@HKAppleWalkingSteadinessClassificationVeryLow	HKAppleWalkingSteadinessClassification			-	-	-	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=13.0/-/-/0,watchos=8.0/-/-/0	-	f70238f62b30454c
-function	c:@F@HKAppleWalkingSteadinessClassificationForQuantity	-			BOOL (HKQuantity * _Nonnull, HKAppleWalkingSteadinessClassification * _Nonnull, NSError * _Nullable * _Nullable)	HKQuantity * value | HKAppleWalkingSteadinessClassification * classificationOut | NSError * _Nullable * errorOut	-	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=13.0/-/-/0,watchos=8.0/-/-/0	-	b0041b0ed161bef1
-function	c:@F@HKAppleWalkingSteadinessMinimumQuantityForClassification	-			HKQuantity * _Nonnull (HKAppleWalkingSteadinessClassification)	HKAppleWalkingSteadinessClassification classification	-	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=13.0/-/-/0,watchos=8.0/-/-/0	-	5ac467ed1a0b3563
-function	c:@F@HKAppleWalkingSteadinessMaximumQuantityForClassification	-			HKQuantity * _Nonnull (HKAppleWalkingSteadinessClassification)	HKAppleWalkingSteadinessClassification classification	-	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=13.0/-/-/0,watchos=8.0/-/-/0	-	b89aad97fd1869bd
+function	c:@F@HKAppleWalkingSteadinessClassificationForQuantity	-			BOOL (HKQuantity *, HKAppleWalkingSteadinessClassification *, NSError * _Nullable *)	HKQuantity * value | HKAppleWalkingSteadinessClassification * classificationOut | NSError * _Nullable * errorOut	-	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=13.0/-/-/0,watchos=8.0/-/-/0	-	af8d74189bc0b025
+function	c:@F@HKAppleWalkingSteadinessMinimumQuantityForClassification	-			HKQuantity * (HKAppleWalkingSteadinessClassification)	HKAppleWalkingSteadinessClassification classification	-	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=13.0/-/-/0,watchos=8.0/-/-/0	-	7601222d43cc191b
+function	c:@F@HKAppleWalkingSteadinessMaximumQuantityForClassification	-			HKQuantity * (HKAppleWalkingSteadinessClassification)	HKAppleWalkingSteadinessClassification classification	-	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=13.0/-/-/0,watchos=8.0/-/-/0	-	ba818c61b016ca57
 interface	c:objc(cs)HKAttachment	-			-	-	-	ios=16.0/-/-/0,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,watchos=9.0/-/-/0	-	36d8265d8a3d74ce
 super	-	HKAttachment	NSObject		-	-	-	-	-	1a4357bf8f4e3b5e
 conforms	-	HKAttachment	NSSecureCoding		-	-	-	-	-	52fada365d3711bf
@@ -1255,7 +1255,7 @@ function	c:@F@HKMinimumScoreForGAD7AssessmentRisk	-			NSInteger (HKGAD7Assessmen
 function	c:@F@HKMaximumScoreForGAD7AssessmentRisk	-			NSInteger (HKGAD7AssessmentRisk)	HKGAD7AssessmentRisk risk	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=-/-/-/1,watchos=-/-/-/1	-	c6ffaf60cf76537e
 interface	c:objc(cs)HKGAD7Assessment	-			-	-	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	870f679686921d00
 super	-	HKGAD7Assessment	HKScoredAssessment		-	-	-	-	-	5dfa7740a544bd6e
-property	c:objc(cs)HKGAD7Assessment(py)answers	-			NS_REFINED_FOR_SWIFT NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	fa3dbc9f51663d5d
+property	c:objc(cs)HKGAD7Assessment(py)answers	-			NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	2cf45de32119f1b0
 property	c:objc(cs)HKGAD7Assessment(py)risk	-			HKGAD7AssessmentRisk	-	readonly,assign,nonatomic	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	bb1f83bbe00570cc
 method	c:objc(cs)HKGAD7Assessment(cm)assessmentWithDate:answers:	-			instancetype	NSDate * date | NSArray<NSNumber *> * answers	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	fc9b8a10126d7cc7
 method	c:objc(cs)HKGAD7Assessment(cm)assessmentWithDate:answers:metadata:	-			instancetype	NSDate * date | NSArray<NSNumber *> * answers | NSDictionary<NSString *,id> * metadata	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	954c438a9c60347e
@@ -1308,7 +1308,7 @@ method	c:objc(cs)HKHealthStore(im)fitzpatrickSkinTypeWithError:	-			HKFitzpatric
 method	c:objc(cs)HKHealthStore(im)wheelchairUseWithError:	-			HKWheelchairUseObject *	NSError * _Nullable * error	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=3.0/-/-/0	-	ea0b52253e76a579
 method	c:objc(cs)HKHealthStore(im)activityMoveModeWithError:	-			HKActivityMoveModeObject *	NSError * _Nullable * error	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=13.0/-/-/0,watchos=7.0/-/-/0	-	f1697772e867d1cb
 category	c:objc(cy)HKHealthStore@HKWorkout	-			-	-	-	ios=8.0/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=2.0/-/-/0	deprecated: Use HKWorkoutBuilder	8871c65cd1b18d69
-property	c:objc(cs)HKHealthStore(py)workoutSessionMirroringStartHandler	HKWorkout			API_AVAILABLE void (^)(HKWorkoutSession * _Nonnull)	-	copy	ios=17.0/-/-/0	-	c298a1b936ee6669
+property	c:objc(cs)HKHealthStore(py)workoutSessionMirroringStartHandler	HKWorkout			void (^)(HKWorkoutSession * _Nonnull)	-	copy	ios=17.0/-/-/0	-	ad10690400fde6c5
 method	c:objc(cs)HKHealthStore(im)addSamples:toWorkout:completion:	HKWorkout			void	NSArray<HKSample *> * samples | HKWorkout * workout | void (^)(BOOL, NSError * _Nullable) completion	-	ios=8.0/17.0/-/0,maccatalyst=13.0/16.0/-/0,macos=13.0/14.0/-/0,watchos=2.0/10.0/-/0	deprecated: Use HKWorkoutBuilder	9b00ccbebb2fd43d
 method	c:objc(cs)HKHealthStore(im)startWorkoutSession:	HKWorkout			void	HKWorkoutSession * workoutSession	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=-/-/-/1,watchos=2.0/5.0/-/0	deprecated: Use HKWorkoutSession's start method	bc53fc8789942a7b
 method	c:objc(cs)HKHealthStore(im)endWorkoutSession:	HKWorkout			void	HKWorkoutSession * workoutSession	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=-/-/-/1,watchos=2.0/5.0/-/0	deprecated: Use HKWorkoutSession's end method	4952ae7cb3f95437
@@ -1401,7 +1401,7 @@ property	c:objc(cs)HKLiveWorkoutBuilder(py)workoutSession	-			HKWorkoutSession *
 property	c:objc(cs)HKLiveWorkoutBuilder(py)shouldCollectWorkoutEvents	-			BOOL	-	assign	ios=26.0/-/-/0,watchos=5.0/-/-/0,xros=-/-/-/1	-	332bf289c6fe1905
 property	c:objc(cs)HKLiveWorkoutBuilder(py)dataSource	-			HKLiveWorkoutDataSource *	-	strong	ios=26.0/-/-/0,watchos=5.0/-/-/0,xros=-/-/-/1	-	61ce62424b9b040f
 property	c:objc(cs)HKLiveWorkoutBuilder(py)elapsedTime	-			NSTimeInterval	-	readonly,assign	ios=26.0/-/-/0,watchos=5.0/-/-/0,xros=-/-/-/1	-	cfa92bd883d28d1b
-property	c:objc(cs)HKLiveWorkoutBuilder(py)currentWorkoutActivity	-			API_UNAVAILABLE HKWorkoutActivity *	-	readonly,copy	ios=26.0/-/-/0,watchos=9.0/-/-/0,xros=-/-/-/1	-	a034182f8acc87f5
+property	c:objc(cs)HKLiveWorkoutBuilder(py)currentWorkoutActivity	-			HKWorkoutActivity *	-	readonly,copy	ios=26.0/-/-/0,watchos=9.0/-/-/0,xros=-/-/-/1	-	55d1361e0e4c21aa
 typedef	c:@T@HKMedicationGeneralForm	-			NSString *	-	-	-	-	9a2fb62cca4af7e3
 var	c:@HKMedicationGeneralFormCapsule	-			const HKMedicationGeneralForm	-	-	-	-	b294fe506d69a232
 var	c:@HKMedicationGeneralFormCream	-			const HKMedicationGeneralForm	-	-	-	-	09c2376beb4fe017
@@ -1621,7 +1621,7 @@ var	c:@HKMetadataKeyCyclingFunctionalThresholdPowerTestType	-			NSString *const	
 var	c:@HKMetadataKeyActivityType	-			NSString *const	-	-	ios=17.0/-/-/0,maccatalyst=17.0/-/-/0,macos=14.0/-/-/0,watchos=10.0/-/-/0	-	995fc150e4c4c371
 var	c:@HKMetadataKeyPhysicalEffortEstimationType	-			NSString *const	-	-	ios=17.0/-/-/0,maccatalyst=17.0/-/-/0,macos=14.0/-/-/0,watchos=10.0/-/-/0	-	7f8b14f498345f26
 var	c:@HKMetadataKeyMaximumLightIntensity	-			NSString *const	-	-	ios=17.0/-/-/0,maccatalyst=17.0/-/-/0,macos=14.0/-/-/0,watchos=10.0/-/-/0	-	86b8b9cef7e7860c
-typedef	c:@T@HKObserverQueryCompletionHandler	-			void (^)(void)	-	-	-	-	1285cb6ba2c13e24
+typedef	c:@T@HKObserverQueryCompletionHandler	-			void ((^))(void)	-	-	-	-	93db84c76d4a9d02
 interface	c:objc(cs)HKObserverQuery	-			-	-	-	ios=8.0/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=2.0/-/-/0	-	e5efbebe4ba6054a
 super	-	HKObserverQuery	HKQuery		-	-	-	-	-	2e683e0b05009723
 method	c:objc(cs)HKObserverQuery(im)initWithSampleType:predicate:updateHandler:	-			instancetype	HKSampleType * sampleType | NSPredicate * predicate | void (^)(HKObserverQuery * _Nonnull, HKObserverQueryCompletionHandler _Nonnull, NSError * _Nullable) updateHandler	-	ios=8.0/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=2.0/-/-/0	-	123d872b3e3feba5
@@ -1644,7 +1644,7 @@ function	c:@F@HKMinimumScoreForPHQ9AssessmentRisk	-			NSInteger (HKPHQ9Assessmen
 function	c:@F@HKMaximumScoreForPHQ9AssessmentRisk	-			NSInteger (HKPHQ9AssessmentRisk)	HKPHQ9AssessmentRisk risk	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=-/-/-/1,watchos=-/-/-/1	-	e4454a7f69d6172b
 interface	c:objc(cs)HKPHQ9Assessment	-			-	-	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	bbd7b379cbc6cda1
 super	-	HKPHQ9Assessment	HKScoredAssessment		-	-	-	-	-	f67bfc2b2514f10b
-property	c:objc(cs)HKPHQ9Assessment(py)answers	-			NS_REFINED_FOR_SWIFT NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	f85dcf39b96728a5
+property	c:objc(cs)HKPHQ9Assessment(py)answers	-			NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	99f44200542bb388
 property	c:objc(cs)HKPHQ9Assessment(py)risk	-			HKPHQ9AssessmentRisk	-	readonly,assign,nonatomic	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	580f1bf586206875
 method	c:objc(cs)HKPHQ9Assessment(cm)assessmentWithDate:answers:	-			instancetype	NSDate * date | NSArray<NSNumber *> * answers	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	a5ddfef384a3c8c9
 method	c:objc(cs)HKPHQ9Assessment(cm)assessmentWithDate:answers:metadata:	-			instancetype	NSDate * date | NSArray<NSNumber *> * answers | NSDictionary<NSString *,id> * metadata	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	d3422febb5929694
@@ -1900,7 +1900,7 @@ property	c:objc(cs)HKVerifiableClinicalRecord(py)expirationDate	-			NSDate *	-	r
 property	c:objc(cs)HKVerifiableClinicalRecord(py)itemNames	-			NSArray<NSString *> *	-	readonly,copy	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	0c509c395a4c1280
 property	c:objc(cs)HKVerifiableClinicalRecord(py)sourceType	-			HKVerifiableClinicalRecordSourceType	-	readonly,copy	ios=15.4/-/-/0,maccatalyst=15.4/-/-/0,macos=13.0/-/-/0	-	e9ac1f3c2a45daa5
 property	c:objc(cs)HKVerifiableClinicalRecord(py)dataRepresentation	-			NSData *	-	readonly,copy	ios=15.4/-/-/0,maccatalyst=15.4/-/-/0,macos=13.0/-/-/0	-	2fcbb73809c0c529
-property	c:objc(cs)HKVerifiableClinicalRecord(py)JWSRepresentation	-			API_DEPRECATED_WITH_REPLACEMENT NSData *	-	readonly,copy	ios=15.0/15.4/-/0	-	a46dbd6140d43d63
+property	c:objc(cs)HKVerifiableClinicalRecord(py)JWSRepresentation	-			NSData *	-	readonly,copy	ios=15.0/15.4/-/0	-	18f592785e340994
 method	c:objc(cs)HKVerifiableClinicalRecord(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	e6d5cda0af1f620d
 method	c:objc(cs)HKVerifiableClinicalRecord(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	fb49cd4f3a31c196
 interface	c:objc(cs)HKVerifiableClinicalRecordQuery	-			-	-	-	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	645c63549385dd23

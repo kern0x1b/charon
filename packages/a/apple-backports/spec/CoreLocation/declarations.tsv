@@ -70,8 +70,8 @@ super	-	CLBeaconIdentityCondition	CLCondition		-	-	-	-	-	387a9cd8088fa918
 conforms	-	CLBeaconIdentityCondition	NSCopying		-	-	-	-	-	90361e2b6f5ae707
 conforms	-	CLBeaconIdentityCondition	NSSecureCoding		-	-	-	-	-	51529bce7d49582d
 property	c:objc(cs)CLBeaconIdentityCondition(py)UUID	-			NSUUID *	-	readonly,copy,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1a4fce2266599741
-property	c:objc(cs)CLBeaconIdentityCondition(py)major	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	96bb6d38f238dd8f
-property	c:objc(cs)CLBeaconIdentityCondition(py)minor	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	05cf9b84b8ad53e6
+property	c:objc(cs)CLBeaconIdentityCondition(py)major	-			NSNumber *	-	readonly,copy,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4cc6c80a4f20fc4b
+property	c:objc(cs)CLBeaconIdentityCondition(py)minor	-			NSNumber *	-	readonly,copy,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1f03a263b04929e1
 method	c:objc(cs)CLBeaconIdentityCondition(im)initWithUUID:	-			instancetype	NSUUID * uuid	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e4edda9b1d5aa257
 method	c:objc(cs)CLBeaconIdentityCondition(im)initWithUUID:major:	-			instancetype	NSUUID * uuid | CLBeaconMajorValue major	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4bf7cad4a77b8fd5
 method	c:objc(cs)CLBeaconIdentityCondition(im)initWithUUID:major:minor:	-			instancetype	NSUUID * uuid | CLBeaconMajorValue major | CLBeaconMinorValue minor	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9c68d73ddb721eb3
@@ -91,7 +91,7 @@ method	c:objc(cs)CLBeaconRegion(im)initWithBeaconIdentityConstraint:identifier:	
 method	c:objc(cs)CLBeaconRegion(im)peripheralDataWithMeasuredPower:	-			NSMutableDictionary<NSString *,id> *	NSNumber * measuredPower	-	ios=7.0/100000/-/0,macos=10.15/100000/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a28335e5b541c49d
 property	c:objc(cs)CLBeaconRegion(py)beaconIdentityConstraint	-			CLBeaconIdentityConstraint *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a5f7ed97a8debb1b
 property	c:objc(cs)CLBeaconRegion(py)UUID	-			NSUUID *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	44da2f9b2b9435d5
-property	c:objc(cs)CLBeaconRegion(py)proximityUUID	-			API_UNAVAILABLE NSUUID *	-	readonly,copy,nonatomic	ios=7.0/13.0/-/0,macos=10.15/10.15/-/0,xros=-/-/-/1	-	55857edfad7d91df
+property	c:objc(cs)CLBeaconRegion(py)proximityUUID	-			NSUUID *	-	readonly,copy,nonatomic	ios=7.0/13.0/-/0,macos=10.15/10.15/-/0,xros=-/-/-/1	-	d170a0a92585501d
 property	c:objc(cs)CLBeaconRegion(py)major	-			NSNumber *	-	readonly,copy,nonatomic	ios=7.0/100000/-/0,macos=10.15/100000/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	52e24f1b17f8423e
 property	c:objc(cs)CLBeaconRegion(py)minor	-			NSNumber *	-	readonly,copy,nonatomic	ios=7.0/100000/-/0,macos=10.15/100000/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	abac49102fb66de9
 property	c:objc(cs)CLBeaconRegion(py)notifyEntryStateOnDisplay	-			BOOL	-	assign,atomic	ios=7.0/100000/-/0,macos=10.15/100000/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c40ccd609b682fd0
@@ -101,7 +101,7 @@ conforms	-	CLBeacon	NSCopying		-	-	-	-	-	9c6c23f5c6adc2c3
 conforms	-	CLBeacon	NSSecureCoding		-	-	-	-	-	4411eb1056ea5e08
 property	c:objc(cs)CLBeacon(py)timestamp	-			NSDate *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7ec3af6829da3643
 property	c:objc(cs)CLBeacon(py)UUID	-			NSUUID *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2c4de2bcfcc7796c
-property	c:objc(cs)CLBeacon(py)proximityUUID	-			API_UNAVAILABLE NSUUID *	-	readonly,copy,nonatomic	ios=7.0/13.0/-/0,macos=10.15/10.15/-/0,xros=-/-/-/1	-	e3337875746f56c3
+property	c:objc(cs)CLBeacon(py)proximityUUID	-			NSUUID *	-	readonly,copy,nonatomic	ios=7.0/13.0/-/0,macos=10.15/10.15/-/0,xros=-/-/-/1	-	14f4e9228f3dd053
 property	c:objc(cs)CLBeacon(py)major	-			NSNumber *	-	readonly,copy,nonatomic	ios=7.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2c3f115e65a489e6
 property	c:objc(cs)CLBeacon(py)minor	-			NSNumber *	-	readonly,copy,nonatomic	ios=7.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9e01bb59fea910f2
 property	c:objc(cs)CLBeacon(py)proximity	-			CLProximity	-	readonly,nonatomic	ios=7.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	416bb6b114521d50
@@ -325,9 +325,9 @@ method	c:objc(cs)CLPlacemark(im)init	-			instancetype	-	-	ios=-/-/-/1,macos=-/-/
 method	c:objc(cs)CLPlacemark(cm)new	-			instancetype	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	dab1d148681cd4cb
 method	c:objc(cs)CLPlacemark(im)initWithPlacemark:	-			instancetype	CLPlacemark * placemark	-	ios=5.0/100000/-/0,macos=10.8/100000/-/0	-	b890105d861903c3
 property	c:objc(cs)CLPlacemark(py)location	-			CLLocation *	-	readonly,copy,nonatomic	ios=5.0/100000/-/0,macos=10.8/100000/-/0	-	13686c28f21a8b62
-property	c:objc(cs)CLPlacemark(py)region	-			API_UNAVAILABLE CLRegion *	-	readonly,copy,nonatomic	xros=-/-/-/1	-	8913d679b85faccb
-property	c:objc(cs)CLPlacemark(py)timeZone	-			NS_AVAILABLE NSTimeZone *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	463e345806f5681e
-property	c:objc(cs)CLPlacemark(py)addressDictionary	-			API_UNAVAILABLE NSDictionary *	-	readonly,copy,nonatomic	ios=5.0/11.0/-/0,macos=10.8/10.13/-/0,watchos=1.0/4.0/-/0,xros=-/-/-/1	-	f3ab7e2d6b19801d
+property	c:objc(cs)CLPlacemark(py)region	-			CLRegion *	-	readonly,copy,nonatomic	xros=-/-/-/1	-	eb6ea2afc0354eb4
+property	c:objc(cs)CLPlacemark(py)timeZone	-			NSTimeZone *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	86f94d5081aeec86
+property	c:objc(cs)CLPlacemark(py)addressDictionary	-			NSDictionary *	-	readonly,copy,nonatomic	ios=5.0/11.0/-/0,macos=10.8/10.13/-/0,watchos=1.0/4.0/-/0,xros=-/-/-/1	-	ec1a4e45846cf336
 property	c:objc(cs)CLPlacemark(py)name	-			NSString *	-	readonly,copy,nonatomic	ios=5.0/100000/-/0,macos=10.8/100000/-/0	-	625630556dec381e
 property	c:objc(cs)CLPlacemark(py)thoroughfare	-			NSString *	-	readonly,copy,nonatomic	ios=5.0/100000/-/0,macos=10.8/100000/-/0	-	cd01233a59dba379
 property	c:objc(cs)CLPlacemark(py)subThoroughfare	-			NSString *	-	readonly,copy,nonatomic	ios=5.0/100000/-/0,macos=10.8/100000/-/0	-	378fa77ef12252ac
@@ -342,8 +342,8 @@ property	c:objc(cs)CLPlacemark(py)inlandWater	-			NSString *	-	readonly,copy,non
 property	c:objc(cs)CLPlacemark(py)ocean	-			NSString *	-	readonly,copy,nonatomic	ios=5.0/100000/-/0,macos=10.8/100000/-/0	-	124e19a362654bde
 property	c:objc(cs)CLPlacemark(py)areasOfInterest	-			NSArray<NSString *> *	-	readonly,copy,nonatomic	ios=5.0/100000/-/0,macos=10.8/100000/-/0	-	22e69e6ba97cb586
 category	c:objc(cy)CLPlacemark@ContactsAdditions	-			-	-	-	ios=5.0/100000/-/0,macos=10.8/100000/-/0	deprecated: Use either GeoToolbox.PlaceDescriptor or MapKit	4b9a0d68e2f1bc80
-property	c:objc(cs)CLPlacemark(py)postalAddress	ContactsAdditions			API_UNAVAILABLE CNPostalAddress *	-	readonly,nonatomic	ios=11.0/100000/-/0,macos=10.13/100000/-/0,tvos=-/-/-/1,watchos=4.0/100000/-/0	-	8d99580f6d870786
-typedef	c:@T@CLGeocodeCompletionHandler	-			void (^)(NSArray<CLPlacemark *> * _Nullable, NSError * _Nullable)	-	-	-	-	f8e6e6f191ac72b6
+property	c:objc(cs)CLPlacemark(py)postalAddress	ContactsAdditions			CNPostalAddress *	-	readonly,nonatomic	ios=11.0/100000/-/0,macos=10.13/100000/-/0,tvos=-/-/-/1,watchos=4.0/100000/-/0	-	c898f1f838a87d7c
+typedef	c:@T@CLGeocodeCompletionHandler	-			void ((^))(NSArray<CLPlacemark *> *, NSError *)	-	-	-	-	a5f827f37fd35f55
 interface	c:objc(cs)CLGeocoder	-			-	-	-	ios=5.0/26.0/-/0,macos=10.8/26.0/-/0	deprecated: Use MKReverseGeocodingRequest	06d0e6ea4d513dd6
 super	-	CLGeocoder	NSObject		-	-	-	-	-	e321b65eaeb43cbb
 property	c:objc(cs)CLGeocoder(py)geocoding	-			BOOL	-	readonly,nonatomic,getter=isGeocoding	ios=5.0/26.0/-/0,macos=10.8/26.0/-/0	-	30ef5f02680e7e2a

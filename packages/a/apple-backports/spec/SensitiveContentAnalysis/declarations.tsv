@@ -18,11 +18,11 @@ typedef	c:@T@SCVideoStreamAnalyzerStreamDirection	-			enum SCVideoStreamAnalyzer
 enum	c:@E@SCVideoStreamAnalyzerStreamDirection	-			NSInteger	-	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	24a2f08d12761996
 enumconst	c:@E@SCVideoStreamAnalyzerStreamDirection@SCVideoStreamAnalyzerStreamDirectionOutgoing	SCVideoStreamAnalyzerStreamDirection			-	-	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	7ecb13db688499a9
 enumconst	c:@E@SCVideoStreamAnalyzerStreamDirection@SCVideoStreamAnalyzerStreamDirectionIncoming	SCVideoStreamAnalyzerStreamDirection			-	-	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	8ef0d5e086755939
-typedef	c:@T@SCVideoStreamAnalysisChangeHandler	-			void (^)(SCSensitivityAnalysis * _Nullable, NSError * _Nullable)	-	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,swift=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	233f898fefb92497
+typedef	c:@T@SCVideoStreamAnalysisChangeHandler	-			void ((^))(SCSensitivityAnalysis *, NSError *)	-	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,swift=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	42cd62f303e6fcfd
 interface	c:objc(cs)SCVideoStreamAnalyzer	-			-	-	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	194d9f4c7c3e40f8
 super	-	SCVideoStreamAnalyzer	NSObject		-	-	-	-	-	e2ebdc2efc61bee2
 property	c:objc(cs)SCVideoStreamAnalyzer(py)analysis	-			SCSensitivityAnalysis *	-	readonly	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	dab4f6f845b49157
-property	c:objc(cs)SCVideoStreamAnalyzer(py)analysisChangedHandler	-			NS_REFINED_FOR_SWIFT SCVideoStreamAnalysisChangeHandler	-	copy	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	f0d94e9d46e6f270
+property	c:objc(cs)SCVideoStreamAnalyzer(py)analysisChangedHandler	-			SCVideoStreamAnalysisChangeHandler	-	copy	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	a99df8b2af44fbb0
 method	c:objc(cs)SCVideoStreamAnalyzer(im)initWithParticipantUUID:streamDirection:error:	-			instancetype	NSString * participantUUID | SCVideoStreamAnalyzerStreamDirection streamDirection | NSError * _Nullable * error	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	65514c5d58c0d554
 method	c:objc(cs)SCVideoStreamAnalyzer(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	66c4c2dedcbc0ff0
 method	c:objc(cs)SCVideoStreamAnalyzer(im)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	3be7ce63792223b5

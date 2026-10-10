@@ -33,34 +33,34 @@ enumconst	c:@E@MACaptionAppearanceTextEdgeStyle@kMACaptionAppearanceTextEdgeStyl
 enumconst	c:@E@MACaptionAppearanceTextEdgeStyle@kMACaptionAppearanceTextEdgeStyleDropShadow	MACaptionAppearanceTextEdgeStyle			-	-	-	ios=7.0/-/-/0	-	57404e00301bf881
 var	c:@MAMediaCharacteristicDescribesMusicAndSoundForAccessibility	-			const CFStringRef	-	-	ios=7.0/-/-/0	-	cad266c3776f3ed1
 var	c:@MAMediaCharacteristicTranscribesSpokenDialogForAccessibility	-			const CFStringRef	-	-	ios=7.0/-/-/0	-	c9de8641ee71339e
-function	c:@F@MACaptionAppearanceDidDisplayCaptions	-			void (CFArrayRef _Nonnull)	CFArrayRef strings	-	-	-	b205f016d52301bb
-function	c:@F@MACaptionAppearanceAddSelectedLanguage	-			_Bool (MACaptionAppearanceDomain, CFStringRef _Nonnull)	MACaptionAppearanceDomain domain | CFStringRef language	-	ios=7.0/-/-/0	-	18800138da768443
-function	c:@F@MACaptionAppearanceCopySelectedLanguages	-			CFArrayRef  _Nonnull (MACaptionAppearanceDomain)	MACaptionAppearanceDomain domain	-	ios=7.0/-/-/0	-	b59a3275e3fc102f
+function	c:@F@MACaptionAppearanceDidDisplayCaptions	-			void (CFArrayRef)	CFArrayRef strings	-	-	-	82a15758e5095c56
+function	c:@F@MACaptionAppearanceAddSelectedLanguage	-			_Bool (MACaptionAppearanceDomain, CFStringRef)	MACaptionAppearanceDomain domain | CFStringRef language	-	ios=7.0/-/-/0	-	326f28ec6e4a6736
+function	c:@F@MACaptionAppearanceCopySelectedLanguages	-			CFArrayRef (MACaptionAppearanceDomain)	MACaptionAppearanceDomain domain	-	ios=7.0/-/-/0	-	88a5a51e4a97dec1
 function	c:@F@MACaptionAppearanceGetDisplayType	-			MACaptionAppearanceDisplayType (MACaptionAppearanceDomain)	MACaptionAppearanceDomain domain	-	ios=7.0/-/-/0	-	b669974240e09c55
 function	c:@F@MACaptionAppearanceSetDisplayType	-			void (MACaptionAppearanceDomain, MACaptionAppearanceDisplayType)	MACaptionAppearanceDomain domain | MACaptionAppearanceDisplayType displayType	-	ios=7.0/-/-/0	-	f548885b8613960b
-function	c:@F@MACaptionAppearanceCopyPreferredCaptioningMediaCharacteristics	-			CFArrayRef  _Nonnull (MACaptionAppearanceDomain)	MACaptionAppearanceDomain domain	-	ios=7.0/-/-/0	-	0d0d081114b57be0
+function	c:@F@MACaptionAppearanceCopyPreferredCaptioningMediaCharacteristics	-			CFArrayRef (MACaptionAppearanceDomain)	MACaptionAppearanceDomain domain	-	ios=7.0/-/-/0	-	ffdc3d7a16d62aa5
 function	c:@F@MACaptionAppearanceIsCustomized	-			_Bool (MACaptionAppearanceDomain)	MACaptionAppearanceDomain domain	-	ios=18.0/-/-/0	-	ef2b43270c33b6ee
-function	c:@F@MACaptionAppearanceCopyForegroundColor	-			CGColorRef  _Nonnull (MACaptionAppearanceDomain, MACaptionAppearanceBehavior * _Nullable)	MACaptionAppearanceDomain domain | MACaptionAppearanceBehavior * behavior	-	ios=7.0/-/-/0	-	e25c5cc77c645c19
-function	c:@F@MACaptionAppearanceCopyBackgroundColor	-			CGColorRef  _Nonnull (MACaptionAppearanceDomain, MACaptionAppearanceBehavior * _Nullable)	MACaptionAppearanceDomain domain | MACaptionAppearanceBehavior * behavior	-	ios=7.0/-/-/0	-	51542144fb378f36
-function	c:@F@MACaptionAppearanceCopyWindowColor	-			CGColorRef  _Nonnull (MACaptionAppearanceDomain, MACaptionAppearanceBehavior * _Nullable)	MACaptionAppearanceDomain domain | MACaptionAppearanceBehavior * behavior	-	ios=7.0/-/-/0	-	c28abd00ce56a975
-function	c:@F@MACaptionAppearanceGetForegroundOpacity	-			CGFloat (MACaptionAppearanceDomain, MACaptionAppearanceBehavior * _Nullable)	MACaptionAppearanceDomain domain | MACaptionAppearanceBehavior * behavior	-	ios=7.0/-/-/0	-	7034bf5de2f88f5d
-function	c:@F@MACaptionAppearanceGetBackgroundOpacity	-			CGFloat (MACaptionAppearanceDomain, MACaptionAppearanceBehavior * _Nullable)	MACaptionAppearanceDomain domain | MACaptionAppearanceBehavior * behavior	-	ios=7.0/-/-/0	-	274441f30850b216
-function	c:@F@MACaptionAppearanceGetWindowOpacity	-			CGFloat (MACaptionAppearanceDomain, MACaptionAppearanceBehavior * _Nullable)	MACaptionAppearanceDomain domain | MACaptionAppearanceBehavior * behavior	-	ios=7.0/-/-/0	-	3359a982f74dde2e
-function	c:@F@MACaptionAppearanceGetWindowRoundedCornerRadius	-			CGFloat (MACaptionAppearanceDomain, MACaptionAppearanceBehavior * _Nullable)	MACaptionAppearanceDomain domain | MACaptionAppearanceBehavior * behavior	-	ios=7.0/-/-/0	-	d375dff260e118a5
-function	c:@F@MACaptionAppearanceCopyFontDescriptorForStyle	-			CTFontDescriptorRef  _Nonnull (MACaptionAppearanceDomain, MACaptionAppearanceBehavior * _Nullable, MACaptionAppearanceFontStyle)	MACaptionAppearanceDomain domain | MACaptionAppearanceBehavior * behavior | MACaptionAppearanceFontStyle fontStyle	-	ios=7.0/-/-/0	-	0fd903c534b19129
-function	c:@F@MACaptionAppearanceGetRelativeCharacterSize	-			CGFloat (MACaptionAppearanceDomain, MACaptionAppearanceBehavior * _Nullable)	MACaptionAppearanceDomain domain | MACaptionAppearanceBehavior * behavior	-	ios=7.0/-/-/0	-	65c88c1d7631686f
-function	c:@F@MACaptionAppearanceGetTextEdgeStyle	-			MACaptionAppearanceTextEdgeStyle (MACaptionAppearanceDomain, MACaptionAppearanceBehavior * _Nullable)	MACaptionAppearanceDomain domain | MACaptionAppearanceBehavior * behavior	-	ios=7.0/-/-/0	-	5c1b1247ad468a13
-function	c:@F@MACaptionAppearanceCopyProfileIDs	-			CFArrayRef  _Nonnull (void)	-	-	ios=26.0/-/-/0	-	431619d5af79ebe2
-function	c:@F@MACaptionAppearanceSetActiveProfileID	-			void (CFStringRef _Nonnull)	CFStringRef profileID	-	ios=26.0/-/-/0	-	1f0126bc5f09c2de
-function	c:@F@MACaptionAppearanceCopyActiveProfileID	-			CFStringRef  _Nonnull (void)	-	-	ios=26.0/-/-/0	-	4ca2d489fd974afe
-function	c:@F@MACaptionAppearanceCopyProfileName	-			CFStringRef  _Nonnull (CFStringRef _Nonnull)	CFStringRef profileID	-	ios=26.0/-/-/0	-	d8fbadfe67582f52
-function	c:@F@MACaptionAppearanceExecuteBlockForProfileID	-			void (CFStringRef _Nonnull, void (^ _Nonnull)(void))	CFStringRef profileID | void (^)(void) aBlock	-	ios=26.0/-/-/0	-	4b29cbba3ae72788
+function	c:@F@MACaptionAppearanceCopyForegroundColor	-			CGColorRef (MACaptionAppearanceDomain, MACaptionAppearanceBehavior *)	MACaptionAppearanceDomain domain | MACaptionAppearanceBehavior * behavior	-	ios=7.0/-/-/0	-	306cf567031d8c31
+function	c:@F@MACaptionAppearanceCopyBackgroundColor	-			CGColorRef (MACaptionAppearanceDomain, MACaptionAppearanceBehavior *)	MACaptionAppearanceDomain domain | MACaptionAppearanceBehavior * behavior	-	ios=7.0/-/-/0	-	b80f11387745b152
+function	c:@F@MACaptionAppearanceCopyWindowColor	-			CGColorRef (MACaptionAppearanceDomain, MACaptionAppearanceBehavior *)	MACaptionAppearanceDomain domain | MACaptionAppearanceBehavior * behavior	-	ios=7.0/-/-/0	-	cf068b2fc225d221
+function	c:@F@MACaptionAppearanceGetForegroundOpacity	-			CGFloat (MACaptionAppearanceDomain, MACaptionAppearanceBehavior *)	MACaptionAppearanceDomain domain | MACaptionAppearanceBehavior * behavior	-	ios=7.0/-/-/0	-	1630ec616c80177b
+function	c:@F@MACaptionAppearanceGetBackgroundOpacity	-			CGFloat (MACaptionAppearanceDomain, MACaptionAppearanceBehavior *)	MACaptionAppearanceDomain domain | MACaptionAppearanceBehavior * behavior	-	ios=7.0/-/-/0	-	bd783b8d9a4f18f5
+function	c:@F@MACaptionAppearanceGetWindowOpacity	-			CGFloat (MACaptionAppearanceDomain, MACaptionAppearanceBehavior *)	MACaptionAppearanceDomain domain | MACaptionAppearanceBehavior * behavior	-	ios=7.0/-/-/0	-	d8cb1ce6ca1673a4
+function	c:@F@MACaptionAppearanceGetWindowRoundedCornerRadius	-			CGFloat (MACaptionAppearanceDomain, MACaptionAppearanceBehavior *)	MACaptionAppearanceDomain domain | MACaptionAppearanceBehavior * behavior	-	ios=7.0/-/-/0	-	6eff483cd541708d
+function	c:@F@MACaptionAppearanceCopyFontDescriptorForStyle	-			CTFontDescriptorRef (MACaptionAppearanceDomain, MACaptionAppearanceBehavior *, MACaptionAppearanceFontStyle)	MACaptionAppearanceDomain domain | MACaptionAppearanceBehavior * behavior | MACaptionAppearanceFontStyle fontStyle	-	ios=7.0/-/-/0	-	cdafb9af44d7935f
+function	c:@F@MACaptionAppearanceGetRelativeCharacterSize	-			CGFloat (MACaptionAppearanceDomain, MACaptionAppearanceBehavior *)	MACaptionAppearanceDomain domain | MACaptionAppearanceBehavior * behavior	-	ios=7.0/-/-/0	-	0a3991030a6e4837
+function	c:@F@MACaptionAppearanceGetTextEdgeStyle	-			MACaptionAppearanceTextEdgeStyle (MACaptionAppearanceDomain, MACaptionAppearanceBehavior *)	MACaptionAppearanceDomain domain | MACaptionAppearanceBehavior * behavior	-	ios=7.0/-/-/0	-	49736658f8557834
+function	c:@F@MACaptionAppearanceCopyProfileIDs	-			CFArrayRef (void)	-	-	ios=26.0/-/-/0	-	457a49a072803631
+function	c:@F@MACaptionAppearanceSetActiveProfileID	-			void (CFStringRef)	CFStringRef profileID	-	ios=26.0/-/-/0	-	2ab57c9de367d9b7
+function	c:@F@MACaptionAppearanceCopyActiveProfileID	-			CFStringRef (void)	-	-	ios=26.0/-/-/0	-	c40ee85649aeb0fe
+function	c:@F@MACaptionAppearanceCopyProfileName	-			CFStringRef (CFStringRef)	CFStringRef profileID	-	ios=26.0/-/-/0	-	b2d43827df2caa27
+function	c:@F@MACaptionAppearanceExecuteBlockForProfileID	-			void (CFStringRef, void (^)(void))	CFStringRef profileID | void (^)(void) aBlock	-	ios=26.0/-/-/0	-	5a33219a035190d6
 var	c:@kMAAudibleMediaSettingsChangedNotification	-			const CFStringRef	-	-	-	-	ae10ceaee74182b8
 var	c:@MAMediaCharacteristicDescribesVideoForAccessibility	-			const CFStringRef	-	-	ios=8.0/-/-/0	-	6c05db8e7263f217
-function	c:@F@MAAudibleMediaCopyPreferredCharacteristics	-			CFArrayRef  _Nonnull (void)	-	-	ios=8.0/-/-/0	-	18cddf71a7075993
-function	c:@F@MAImageCaptioningCopyCaption	-			CFStringRef  _Nullable (CFURLRef _Nonnull, CF_RETURNS_RETAINED CFErrorRef  _Nullable *)	CFURLRef url | CF_RETURNS_RETAINED CFErrorRef  _Nullable * error	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	17391ca60a4e51d7
-function	c:@F@MAImageCaptioningSetCaption	-			_Bool (CFURLRef _Nonnull, CFStringRef _Nullable, CF_RETURNS_RETAINED CFErrorRef  _Nullable *)	CFURLRef url | CFStringRef string | CF_RETURNS_RETAINED CFErrorRef  _Nullable * error	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	5063eb5915764d12
-function	c:@F@MAImageCaptioningCopyMetadataTagPath	-			CFStringRef  _Nonnull (void)	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	ae9c3ac1e13c3e61
+function	c:@F@MAAudibleMediaCopyPreferredCharacteristics	-			CFArrayRef (void)	-	-	ios=8.0/-/-/0	-	305eb3108093af52
+function	c:@F@MAImageCaptioningCopyCaption	-			CFStringRef (CFURLRef, CFErrorRef  _Nullable *)	CFURLRef url | CFErrorRef  _Nullable * error	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	fe9b9fde63c49e40
+function	c:@F@MAImageCaptioningSetCaption	-			_Bool (CFURLRef, CFStringRef, CFErrorRef  _Nullable *)	CFURLRef url | CFStringRef string | CFErrorRef  _Nullable * error	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	01398bd18c22123d
+function	c:@F@MAImageCaptioningCopyMetadataTagPath	-			CFStringRef (void)	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	173ab2c956919fe6
 function	c:@F@MADimFlashingLightsEnabled	-			_Bool (void)	-	-	ios=16.4/-/-/0	-	9b14905c69f96493
 var	c:@kMADimFlashingLightsChangedNotification	-			const CFStringRef	-	-	ios=16.4/-/-/0	-	caf2f4e0b49d8500
 interface	c:objc(cs)MAFlashingLightsProcessorResult	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	a5023764e952d61a

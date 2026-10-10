@@ -10,7 +10,7 @@ enumconst	c:@E@MSMessagesAppPresentationContext@MSMessagesAppPresentationContext
 enumconst	c:@E@MSMessagesAppPresentationContext@MSMessagesAppPresentationContextMedia	MSMessagesAppPresentationContext			-	-	-	ios=12.0/-/-/0	-	d546bccace4bdd66
 protocol	c:objc(pl)MSMessagesAppTranscriptPresentation	-			-	-	-	ios=11.0/-/-/0	-	9e2b0b9ace1b1e3e
 method	c:objc(pl)MSMessagesAppTranscriptPresentation(im)contentSizeThatFits:	-			CGSize	CGSize size	-	ios=11.0/-/-/0	-	2168ad4f5d6d3915
-property	c:objc(pl)MSMessagesAppTranscriptPresentation(py)messageTintColor	-			API_AVAILABLE UIColor *	-	readonly,nonatomic	ios=26.0/-/-/0	-	67539235201cf6f5
+property	c:objc(pl)MSMessagesAppTranscriptPresentation(py)messageTintColor	-			UIColor *	-	readonly,nonatomic	ios=26.0/-/-/0	-	ce386db79d10e524
 property	c:objc(pl)MSMessagesAppTranscriptPresentation(py)messageCornerRadius	-			CGFloat	-	readonly,assign,nonatomic	ios=26.0/-/-/0	-	6be9921badf1e38e
 method	c:objc(pl)MSMessagesAppTranscriptPresentation(im)invalidateMessageTintColor	-			void	-	-	ios=26.0/-/-/0	-	421bf7ac5d1b0272
 interface	c:objc(cs)MSMessagesAppViewController	-			-	-	-	ios=10.0/-/-/0	-	121814994c383c2c

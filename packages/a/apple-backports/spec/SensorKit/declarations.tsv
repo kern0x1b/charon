@@ -47,7 +47,7 @@ property	c:objc(cs)SRDevice(py)name	-			NSString *	-	readonly,copy	ios=14.0/-/-/
 property	c:objc(cs)SRDevice(py)model	-			NSString *	-	readonly,copy	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	768dcc56443c1ef1
 property	c:objc(cs)SRDevice(py)systemName	-			NSString *	-	readonly,copy	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1c1dc3c362669169
 property	c:objc(cs)SRDevice(py)systemVersion	-			NSString *	-	readonly,copy	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	658a0e128e4cc699
-property	c:objc(cs)SRDevice(py)productType	-			API_AVAILABLE NSString *	-	readonly,copy	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	319ce6056eaab75c
+property	c:objc(cs)SRDevice(py)productType	-			NSString *	-	readonly,copy	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e384237087b5c113
 interface	c:objc(cs)SRFetchRequest	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bf938dbf5698c123
 super	-	SRFetchRequest	NSObject		-	-	-	-	-	1f5babefdd0f49b2
 property	c:objc(cs)SRFetchRequest(py)from	-			SRAbsoluteTime	-	assign	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fd67e3cadbaf7965
@@ -171,7 +171,7 @@ property	c:objc(cs)SRDeviceUsageReport(py)webUsageByCategory	-			NSDictionary<SR
 property	c:objc(cs)SRDeviceUsageReport(py)totalScreenWakes	-			NSInteger	-	readonly	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5f822a1ad58bd89b
 property	c:objc(cs)SRDeviceUsageReport(py)totalUnlocks	-			NSInteger	-	readonly	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b4dcc7dbc27c6f2a
 property	c:objc(cs)SRDeviceUsageReport(py)totalUnlockDuration	-			NSTimeInterval	-	readonly	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1486a3db91071a58
-property	c:objc(cs)SRDeviceUsageReport(py)version	-			API_AVAILABLE NSString *	-	readonly,copy,nonatomic	ios=16.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	bba69a7cd358bc25
+property	c:objc(cs)SRDeviceUsageReport(py)version	-			NSString *	-	readonly,copy,nonatomic	ios=16.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f920d978de0540e1
 typedef	c:@T@SRTextInputSessionType	-			enum SRTextInputSessionType	-	-	-	-	61a3e22ea9bcc680
 enum	c:@E@SRTextInputSessionType	-			NSInteger	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	83b9f5a2ebe38c07
 enumconst	c:@E@SRTextInputSessionType@SRTextInputSessionTypeKeyboard	SRTextInputSessionType			-	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e7bfed5e4197d363
@@ -182,14 +182,14 @@ interface	c:objc(cs)SRTextInputSession	-			-	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tv
 super	-	SRTextInputSession	NSObject		-	-	-	-	-	073df59e5689bc1c
 property	c:objc(cs)SRTextInputSession(py)duration	-			NSTimeInterval	-	readonly	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bac9da9a1519ab23
 property	c:objc(cs)SRTextInputSession(py)sessionType	-			SRTextInputSessionType	-	readonly	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cd9a542307d880ef
-property	c:objc(cs)SRTextInputSession(py)sessionIdentifier	-			API_AVAILABLE NSString *	-	readonly,copy	ios=16.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d47ca1179a568773
+property	c:objc(cs)SRTextInputSession(py)sessionIdentifier	-			NSString *	-	readonly,copy	ios=16.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	36eac6e894eeb65a
 interface	c:objc(cs)SRApplicationUsage	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b96a835217fa7c39
 super	-	SRApplicationUsage	NSObject		-	-	-	-	-	1713aa34a07dd32a
 property	c:objc(cs)SRApplicationUsage(py)bundleIdentifier	-			NSString *	-	readonly,copy	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8a9e11ded3c1ffa4
 property	c:objc(cs)SRApplicationUsage(py)usageTime	-			NSTimeInterval	-	readonly	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	12747f8201c011c5
-property	c:objc(cs)SRApplicationUsage(py)reportApplicationIdentifier	-			API_AVAILABLE NSString *	-	readonly,copy	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8d11d4756eb1c64c
-property	c:objc(cs)SRApplicationUsage(py)textInputSessions	-			API_AVAILABLE NSArray<SRTextInputSession *> *	-	readonly,copy	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	412dcc49ddd5bc23
-property	c:objc(cs)SRApplicationUsage(py)supplementalCategories	-			API_AVAILABLE NSArray<SRSupplementalCategory *> *	-	readonly,copy,nonatomic	ios=16.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7a0e6ec23afcefd6
+property	c:objc(cs)SRApplicationUsage(py)reportApplicationIdentifier	-			NSString *	-	readonly,copy	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4cb146f18afe3f13
+property	c:objc(cs)SRApplicationUsage(py)textInputSessions	-			NSArray<SRTextInputSession *> *	-	readonly,copy	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6f6bb5501a8fa2d4
+property	c:objc(cs)SRApplicationUsage(py)supplementalCategories	-			NSArray<SRSupplementalCategory *> *	-	readonly,copy,nonatomic	ios=16.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c61b1d56247b59a6
 property	c:objc(cs)SRApplicationUsage(py)relativeStartTime	-			NSTimeInterval	-	readonly,nonatomic	ios=16.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d27c8d3f03736b13
 typedef	c:@T@SRNotificationEvent	-			enum SRNotificationEvent	-	-	-	-	2b2aa0ff712afa50
 enum	c:@E@SRNotificationEvent	-			NSInteger	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7b8a47fe23ade8d2
@@ -237,8 +237,8 @@ property	c:objc(cs)SRKeyboardMetrics(py)keyboardIdentifier	-			NSString *	-	read
 property	c:objc(cs)SRKeyboardMetrics(py)version	-			NSString *	-	readonly,copy	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	200a23c6fa8576a8
 property	c:objc(cs)SRKeyboardMetrics(py)width	-			NSMeasurement<NSUnitLength *> *	-	readonly	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1a5c8e19b9063f39
 property	c:objc(cs)SRKeyboardMetrics(py)height	-			NSMeasurement<NSUnitLength *> *	-	readonly	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	63ca2cbb91ee45fd
-property	c:objc(cs)SRKeyboardMetrics(py)inputModes	-			API_AVAILABLE NSArray<NSString *> *	-	readonly,copy	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9867412198491eaa
-property	c:objc(cs)SRKeyboardMetrics(py)sessionIdentifiers	-			API_AVAILABLE NSArray<NSString *> *	-	readonly,copy	ios=16.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e3a569158404df7c
+property	c:objc(cs)SRKeyboardMetrics(py)inputModes	-			NSArray<NSString *> *	-	readonly,copy	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	79c96ac8f59fe6e7
+property	c:objc(cs)SRKeyboardMetrics(py)sessionIdentifiers	-			NSArray<NSString *> *	-	readonly,copy	ios=16.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fc3489824c062b73
 category	c:objc(cy)SRKeyboardMetrics@ScalarMetrics	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f43da60e27ecfc53
 property	c:objc(cs)SRKeyboardMetrics(py)totalWords	ScalarMetrics			NSInteger	-	readonly	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	73e8cca2f08294d4
 property	c:objc(cs)SRKeyboardMetrics(py)totalAlteredWords	ScalarMetrics			NSInteger	-	readonly	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	27b61e2a14928c60
@@ -276,7 +276,7 @@ property	c:objc(cs)SRKeyboardMetrics(py)spaceTouchDownUp	ProbabilityMetrics			SR
 property	c:objc(cs)SRKeyboardMetrics(py)deleteTouchDownUp	ProbabilityMetrics			SRKeyboardProbabilityMetric<NSUnitDuration *> *	-	readonly,strong	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e2fcc1636beece8d
 property	c:objc(cs)SRKeyboardMetrics(py)shortWordCharKeyTouchDownUp	ProbabilityMetrics			SRKeyboardProbabilityMetric<NSUnitDuration *> *	-	readonly,strong	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	98370d221fe9aa9a
 property	c:objc(cs)SRKeyboardMetrics(py)touchDownDown	ProbabilityMetrics			SRKeyboardProbabilityMetric<NSUnitDuration *> *	-	readonly,strong	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	037e19c67b9b43cf
-property	c:objc(cs)SRKeyboardMetrics(py)touchUpDown	ProbabilityMetrics			API_AVAILABLE SRKeyboardProbabilityMetric<NSUnitDuration *> *	-	readonly,strong	ios=16.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2b9379e3c8584464
+property	c:objc(cs)SRKeyboardMetrics(py)touchUpDown	ProbabilityMetrics			SRKeyboardProbabilityMetric<NSUnitDuration *> *	-	readonly,strong	ios=16.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6f56f5dd3693e78e
 property	c:objc(cs)SRKeyboardMetrics(py)charKeyToPrediction	ProbabilityMetrics			SRKeyboardProbabilityMetric<NSUnitDuration *> *	-	readonly,strong	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9c011ef4f2ed06fc
 property	c:objc(cs)SRKeyboardMetrics(py)shortWordCharKeyToCharKey	ProbabilityMetrics			SRKeyboardProbabilityMetric<NSUnitDuration *> *	-	readonly,strong	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bbf8b8877701871e
 property	c:objc(cs)SRKeyboardMetrics(py)charKeyToAnyTapKey	ProbabilityMetrics			SRKeyboardProbabilityMetric<NSUnitDuration *> *	-	readonly,strong	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9cf369323c9c4553
@@ -309,7 +309,7 @@ property	c:objc(cs)SRKeyboardMetrics(py)longWordUpErrorDistance	PositionalMetric
 property	c:objc(cs)SRKeyboardMetrics(py)longWordDownErrorDistance	PositionalMetrics			NSArray<SRKeyboardProbabilityMetric<NSUnitLength *> *> *	-	readonly,strong	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ca84a988b22cb705
 property	c:objc(cs)SRKeyboardMetrics(py)longWordTouchDownUp	PositionalMetrics			NSArray<SRKeyboardProbabilityMetric<NSUnitDuration *> *> *	-	readonly,strong	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4d2719dfe53e9c96
 property	c:objc(cs)SRKeyboardMetrics(py)longWordTouchDownDown	PositionalMetrics			NSArray<SRKeyboardProbabilityMetric<NSUnitDuration *> *> *	-	readonly,strong	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f48bf138d5c7ec31
-property	c:objc(cs)SRKeyboardMetrics(py)longWordTouchUpDown	PositionalMetrics			API_AVAILABLE NSArray<SRKeyboardProbabilityMetric<NSUnitDuration *> *> *	-	readonly,strong	ios=16.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	cff6e7a7628f8bf4
+property	c:objc(cs)SRKeyboardMetrics(py)longWordTouchUpDown	PositionalMetrics			NSArray<SRKeyboardProbabilityMetric<NSUnitDuration *> *> *	-	readonly,strong	ios=16.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	98191c210502505a
 property	c:objc(cs)SRKeyboardMetrics(py)deleteToDeletes	PositionalMetrics			NSArray<SRKeyboardProbabilityMetric<NSUnitDuration *> *> *	-	readonly,strong	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a35f7b98886ed552
 category	c:objc(cy)SRKeyboardMetrics@SpeedMetrics	-			-	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e99ab1e2453a0462
 property	c:objc(cs)SRKeyboardMetrics(py)totalPauses	SpeedMetrics			NSInteger	-	readonly	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cd565d6c4af62574
@@ -360,8 +360,8 @@ super	-	SRWristDetection	NSObject		-	-	-	-	-	ef1290a6c045bcf7
 property	c:objc(cs)SRWristDetection(py)onWrist	-			BOOL	-	readonly	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	02be37c7d5250755
 property	c:objc(cs)SRWristDetection(py)wristLocation	-			SRWristLocation	-	readonly	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8a16991835e63c35
 property	c:objc(cs)SRWristDetection(py)crownOrientation	-			SRCrownOrientation	-	readonly	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	484fb0f8f111d408
-property	c:objc(cs)SRWristDetection(py)onWristDate	-			API_AVAILABLE NSDate *	-	readonly,strong	ios=16.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d600370d3ddafce2
-property	c:objc(cs)SRWristDetection(py)offWristDate	-			API_AVAILABLE NSDate *	-	readonly,strong	ios=16.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	00a6c11929665294
+property	c:objc(cs)SRWristDetection(py)onWristDate	-			NSDate *	-	readonly,strong	ios=16.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b3923b20774dd715
+property	c:objc(cs)SRWristDetection(py)offWristDate	-			NSDate *	-	readonly,strong	ios=16.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	084e670990fc2828
 typedef	c:@T@SRWristTemperatureCondition	-			enum SRWristTemperatureCondition	-	-	-	-	751d2fc815cb7e47
 enum	c:@E@SRWristTemperatureCondition	-			NSUInteger	-	-	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4f770ef4e479584c
 enumconst	c:@E@SRWristTemperatureCondition@SRWristTemperatureConditionNone	SRWristTemperatureCondition			-	-	-	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a1f5e12013eaca80
@@ -387,7 +387,7 @@ method	c:objc(cs)SRWristTemperatureSession(cm)new	-			instancetype	-	-	*unavaila
 property	c:objc(cs)SRWristTemperatureSession(py)startDate	-			NSDate *	-	readonly,strong,nonatomic	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	adfa5c77d0fae508
 property	c:objc(cs)SRWristTemperatureSession(py)duration	-			NSTimeInterval	-	readonly,nonatomic	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1c7f89b834ee2153
 property	c:objc(cs)SRWristTemperatureSession(py)version	-			NSString *	-	readonly,copy,nonatomic	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bbedd98933e6cf7d
-property	c:objc(cs)SRWristTemperatureSession(py)temperatures	-			NS_REFINED_FOR_SWIFT NSEnumerator<SRWristTemperature *> *	-	readonly,copy,nonatomic	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2910f533fb91c0e5
+property	c:objc(cs)SRWristTemperatureSession(py)temperatures	-			NSEnumerator<SRWristTemperature *> *	-	readonly,copy,nonatomic	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	dbc0019e5a5e571d
 typedef	c:@T@SRMediaEventType	-			enum SRMediaEventType	-	-	-	-	f644faf4dc63665d
 enum	c:@E@SRMediaEventType	-			NSInteger	-	-	ios=16.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2d646b2c7e1bdf3a
 enumconst	c:@E@SRMediaEventType@SRMediaEventOnScreen	SRMediaEventType			-	-	-	ios=16.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7622bc6f4e6bbc9b
@@ -523,11 +523,11 @@ property	c:objc(cs)SRPhotoplethysmogramOpticalSample(py)nominalWavelength	-			NS
 property	c:objc(cs)SRPhotoplethysmogramOpticalSample(py)effectiveWavelength	-			NSMeasurement<NSUnitLength *> *	-	readonly,strong,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2f76221717174818
 property	c:objc(cs)SRPhotoplethysmogramOpticalSample(py)samplingFrequency	-			NSMeasurement<NSUnitFrequency *> *	-	readonly,strong,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	61083a63f3711a59
 property	c:objc(cs)SRPhotoplethysmogramOpticalSample(py)nanosecondsSinceStart	-			int64_t	-	readonly,assign,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0a3d5af8f7fe9c4e
-property	c:objc(cs)SRPhotoplethysmogramOpticalSample(py)normalizedReflectance	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,strong,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	218b9fff62ae9741
-property	c:objc(cs)SRPhotoplethysmogramOpticalSample(py)whiteNoise	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,strong,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ae89c14165de9f52
-property	c:objc(cs)SRPhotoplethysmogramOpticalSample(py)pinkNoise	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,strong,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	05fad5a63ce3479c
-property	c:objc(cs)SRPhotoplethysmogramOpticalSample(py)backgroundNoise	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,strong,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7b0f9101edc4c4ab
-property	c:objc(cs)SRPhotoplethysmogramOpticalSample(py)backgroundNoiseOffset	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,strong,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a396278e233d618e
+property	c:objc(cs)SRPhotoplethysmogramOpticalSample(py)normalizedReflectance	-			NSNumber *	-	readonly,strong,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5d11aa8a731fbc91
+property	c:objc(cs)SRPhotoplethysmogramOpticalSample(py)whiteNoise	-			NSNumber *	-	readonly,strong,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4633b48b2576b2a9
+property	c:objc(cs)SRPhotoplethysmogramOpticalSample(py)pinkNoise	-			NSNumber *	-	readonly,strong,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	583f45bd2e8dbbc4
+property	c:objc(cs)SRPhotoplethysmogramOpticalSample(py)backgroundNoise	-			NSNumber *	-	readonly,strong,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	aa6abe1a0895040f
+property	c:objc(cs)SRPhotoplethysmogramOpticalSample(py)backgroundNoiseOffset	-			NSNumber *	-	readonly,strong,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a3735ab70d613f2f
 property	c:objc(cs)SRPhotoplethysmogramOpticalSample(py)conditions	-			NSArray<SRPhotoplethysmogramOpticalSampleCondition> *	-	readonly,copy,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	231eb5f276264c5f
 interface	c:objc(cs)SRPhotoplethysmogramAccelerometerSample	-			-	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	86fba2817b82c339
 super	-	SRPhotoplethysmogramAccelerometerSample	NSObject		-	-	-	-	-	65d4b15cba4af864

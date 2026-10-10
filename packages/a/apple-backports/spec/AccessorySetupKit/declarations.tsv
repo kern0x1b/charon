@@ -48,7 +48,7 @@ property	c:objc(cs)ASAccessory(py)descriptor	-			ASDiscoveryDescriptor *	-	reado
 interface	c:objc(cs)ASDiscoveredAccessory	-			-	-	-	ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7ba64e3fea6d830c
 super	-	ASDiscoveredAccessory	ASAccessory		-	-	-	-	-	fb57a9aba072b539
 property	c:objc(cs)ASDiscoveredAccessory(py)bluetoothAdvertisementData	-			NSDictionary *	-	readonly,copy,nonatomic	ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	025e5514b1cdf7ab
-property	c:objc(cs)ASDiscoveredAccessory(py)bluetoothRSSI	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	98c6e386bc7c44b1
+property	c:objc(cs)ASDiscoveredAccessory(py)bluetoothRSSI	-			NSNumber *	-	readonly,copy,nonatomic	ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1e31f46585cb9f44
 typedef	c:@T@ASAccessoryEventType	-			enum ASAccessoryEventType	-	-	-	-	704de4f62b8c9af1
 enum	c:@E@ASAccessoryEventType	-			NSInteger	-	-	-	-	76250332c885a60f
 enumconst	c:@E@ASAccessoryEventType@ASAccessoryEventTypeUnknown	ASAccessoryEventType			-	-	-	-	-	d9e1e1200745367a
@@ -75,7 +75,7 @@ method	c:objc(cs)ASAccessoryEvent(im)new	-			instancetype	-	-	*unavailable ios=1
 interface	c:objc(cs)ASAccessorySession	-			-	-	-	ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2fa6e070d49e9a36
 super	-	ASAccessorySession	NSObject		-	-	-	-	-	e6309937a9d6b1bf
 property	c:objc(cs)ASAccessorySession(py)accessories	-			NSArray<ASAccessory *> *	-	readonly,copy,nonatomic	ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cb6fd2d6e26005a5
-property	c:objc(cs)ASAccessorySession(py)pickerDisplaySettings	-			API_AVAILABLE ASPickerDisplaySettings *	-	copy,nonatomic	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d68ae3f16435322d
+property	c:objc(cs)ASAccessorySession(py)pickerDisplaySettings	-			ASPickerDisplaySettings *	-	copy,nonatomic	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1f82a43783b6e741
 method	c:objc(cs)ASAccessorySession(im)activateWithQueue:eventHandler:	-			void	dispatch_queue_t queue | void (^)(ASAccessoryEvent * _Nonnull) eventHandler	-	ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f8bc36e7941653e4
 method	c:objc(cs)ASAccessorySession(im)invalidate	-			void	-	-	ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5bde9417d7321a94
 method	c:objc(cs)ASAccessorySession(im)showPickerWithCompletionHandler:	-			void	void (^)(NSError * _Nullable) completionHandler	-	ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	865a690ab54355b8
@@ -114,10 +114,10 @@ property	c:objc(cs)ASDiscoveryDescriptor(py)bluetoothServiceDataMask	-			NSData 
 property	c:objc(cs)ASDiscoveryDescriptor(py)bluetoothServiceUUID	-			CBUUID *	-	copy,nonatomic	ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4518485ceaf02739
 property	c:objc(cs)ASDiscoveryDescriptor(py)SSID	-			NSString *	-	copy,nonatomic	ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9605c7814d55c5c2
 property	c:objc(cs)ASDiscoveryDescriptor(py)SSIDPrefix	-			NSString *	-	copy,nonatomic	ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b3678d9f87894a82
-property	c:objc(cs)ASDiscoveryDescriptor(py)wifiAwareServiceName	-			API_AVAILABLE NSString *	-	copy,nonatomic	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	207fde5731b14f6e
+property	c:objc(cs)ASDiscoveryDescriptor(py)wifiAwareServiceName	-			NSString *	-	copy,nonatomic	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ba6e0a5fe0a123d5
 property	c:objc(cs)ASDiscoveryDescriptor(py)wifiAwareServiceRole	-			ASDiscoveryDescriptorWiFiAwareServiceRole	-	assign,nonatomic	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f9bf78a0b8728bd2
-property	c:objc(cs)ASDiscoveryDescriptor(py)wifiAwareModelNameMatch	-			API_AVAILABLE ASPropertyCompareString *	-	copy,nonatomic	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b43c2e8b1c36d3c2
-property	c:objc(cs)ASDiscoveryDescriptor(py)wifiAwareVendorNameMatch	-			API_AVAILABLE ASPropertyCompareString *	-	copy,nonatomic	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3bcaf771eb52ed06
+property	c:objc(cs)ASDiscoveryDescriptor(py)wifiAwareModelNameMatch	-			ASPropertyCompareString *	-	copy,nonatomic	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8fa7b709584b2ab6
+property	c:objc(cs)ASDiscoveryDescriptor(py)wifiAwareVendorNameMatch	-			ASPropertyCompareString *	-	copy,nonatomic	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9b68a66560de0f13
 typedef	c:@T@ASPickerDisplayItemSetupOptions	-			enum ASPickerDisplayItemSetupOptions	-	-	-	-	2d1ab5663bfa1618
 enum	c:@E@ASPickerDisplayItemSetupOptions	-			NSUInteger	-	-	-	-	cddcdca0a9fd08d4
 enumconst	c:@E@ASPickerDisplayItemSetupOptions@ASPickerDisplayItemSetupRename	ASPickerDisplayItemSetupOptions			-	-	-	-	-	2d3a83f55e269d5a

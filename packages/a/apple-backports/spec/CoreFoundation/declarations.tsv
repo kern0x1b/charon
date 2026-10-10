@@ -58,12 +58,12 @@ function	c:@F@CFAllocatorSetDefault	-			void (CFAllocatorRef)	CFAllocatorRef all
 function	c:@F@CFAllocatorGetDefault	-			CFAllocatorRef (void)	-	-	-	-	dc897ce3739b6221
 function	c:@F@CFAllocatorCreate	-			CFAllocatorRef (CFAllocatorRef, CFAllocatorContext *)	CFAllocatorRef allocator | CFAllocatorContext * context	-	-	-	c58f1e0fe20b1075
 function	c:@F@CFAllocatorCreateWithZone	-			CFAllocatorRef (CFAllocatorRef, struct _malloc_zone_t *)	CFAllocatorRef allocator | struct _malloc_zone_t * zone	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a6ea69b4a218d3f5
-function	c:@F@CFAllocatorAllocateTyped	-			void *(CFAllocatorRef, CFIndex, CFAllocatorTypeID, CFOptionFlags)	CFAllocatorRef allocator | CFIndex size | CFAllocatorTypeID descriptor | CFOptionFlags hint	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	3c69729e4bfc6b0f
-function	c:@F@CFAllocatorReallocateTyped	-			void *(CFAllocatorRef, void *, CFIndex, CFAllocatorTypeID, CFOptionFlags)	CFAllocatorRef allocator | void * ptr | CFIndex newsize | CFAllocatorTypeID descriptor | CFOptionFlags hint	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	906b198d5da29256
-function	c:@F@CFAllocatorAllocateBytes	-			void *(CFAllocatorRef, CFIndex, CFOptionFlags)	CFAllocatorRef allocator | CFIndex size | CFOptionFlags hint	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	7419e294cc997cdf
-function	c:@F@CFAllocatorReallocateBytes	-			void *(CFAllocatorRef, void *, CFIndex, CFOptionFlags)	CFAllocatorRef allocator | void * ptr | CFIndex newsize | CFOptionFlags hint	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	9f8aabad70bd96be
-function	c:@F@CFAllocatorAllocate	-			void *(CFAllocatorRef, CFIndex, CFOptionFlags)	CFAllocatorRef allocator | CFIndex size | CFOptionFlags hint	-	-	-	432eea72957c7541
-function	c:@F@CFAllocatorReallocate	-			void *(CFAllocatorRef, void *, CFIndex, CFOptionFlags)	CFAllocatorRef allocator | void * ptr | CFIndex newsize | CFOptionFlags hint	-	-	-	7c8c11caa35ad91a
+function	c:@F@CFAllocatorAllocateTyped	-			void * (CFAllocatorRef, CFIndex, CFAllocatorTypeID, CFOptionFlags)	CFAllocatorRef allocator | CFIndex size | CFAllocatorTypeID descriptor | CFOptionFlags hint	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	8f4bd41b780093b7
+function	c:@F@CFAllocatorReallocateTyped	-			void * (CFAllocatorRef, void *, CFIndex, CFAllocatorTypeID, CFOptionFlags)	CFAllocatorRef allocator | void * ptr | CFIndex newsize | CFAllocatorTypeID descriptor | CFOptionFlags hint	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	59f0b11da6fcc3db
+function	c:@F@CFAllocatorAllocateBytes	-			void * (CFAllocatorRef, CFIndex, CFOptionFlags)	CFAllocatorRef allocator | CFIndex size | CFOptionFlags hint	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	69afc32b25be0a48
+function	c:@F@CFAllocatorReallocateBytes	-			void * (CFAllocatorRef, void *, CFIndex, CFOptionFlags)	CFAllocatorRef allocator | void * ptr | CFIndex newsize | CFOptionFlags hint	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	e4ffda18977970dc
+function	c:@F@CFAllocatorAllocate	-			void * (CFAllocatorRef, CFIndex, CFOptionFlags)	CFAllocatorRef allocator | CFIndex size | CFOptionFlags hint	-	-	-	5e5d5f2bb0d1e4fe
+function	c:@F@CFAllocatorReallocate	-			void * (CFAllocatorRef, void *, CFIndex, CFOptionFlags)	CFAllocatorRef allocator | void * ptr | CFIndex newsize | CFOptionFlags hint	-	-	-	1b5698377b82896c
 function	c:@F@CFAllocatorDeallocate	-			void (CFAllocatorRef, void *)	CFAllocatorRef allocator | void * ptr	-	-	-	42547fa88389aeb5
 function	c:@F@CFAllocatorGetPreferredSizeForSize	-			CFIndex (CFAllocatorRef, CFIndex, CFOptionFlags)	CFAllocatorRef allocator | CFIndex size | CFOptionFlags hint	-	-	-	5bdf8ca1203bafd1
 function	c:@F@CFAllocatorGetContext	-			void (CFAllocatorRef, CFAllocatorContext *)	CFAllocatorRef allocator | CFAllocatorContext * context	-	-	-	e9dd6802b1742345
@@ -102,9 +102,9 @@ function	c:@F@CFArrayCreateMutableCopy	-			CFMutableArrayRef (CFAllocatorRef, CF
 function	c:@F@CFArrayGetCount	-			CFIndex (CFArrayRef)	CFArrayRef theArray	-	-	-	2ac773e13f3b9487
 function	c:@F@CFArrayGetCountOfValue	-			CFIndex (CFArrayRef, CFRange, const void *)	CFArrayRef theArray | CFRange range | const void * value	-	-	-	8c7980bf6b35720f
 function	c:@F@CFArrayContainsValue	-			Boolean (CFArrayRef, CFRange, const void *)	CFArrayRef theArray | CFRange range | const void * value	-	-	-	3b31d658133d0880
-function	c:@F@CFArrayGetValueAtIndex	-			const void *(CFArrayRef, CFIndex)	CFArrayRef theArray | CFIndex idx	-	-	-	609e8ac6c88a6045
+function	c:@F@CFArrayGetValueAtIndex	-			const void * (CFArrayRef, CFIndex)	CFArrayRef theArray | CFIndex idx	-	-	-	e8f84467b098a3fb
 function	c:@F@CFArrayGetValues	-			void (CFArrayRef, CFRange, const void **)	CFArrayRef theArray | CFRange range | const void ** values	-	-	-	cca384157c31e7a2
-function	c:@F@CFArrayApplyFunction	-			void (CFArrayRef, CFRange, __attribute__((noescape)) CFArrayApplierFunction, void *)	CFArrayRef theArray | CFRange range | CFArrayApplierFunction applier | void * context	-	-	-	5f09be2c98285613
+function	c:@F@CFArrayApplyFunction	-			void (CFArrayRef, CFRange, CFArrayApplierFunction, void *)	CFArrayRef theArray | CFRange range | CFArrayApplierFunction applier | void * context	-	-	-	b69bb3545c547df8
 function	c:@F@CFArrayGetFirstIndexOfValue	-			CFIndex (CFArrayRef, CFRange, const void *)	CFArrayRef theArray | CFRange range | const void * value	-	-	-	530d597d7268bba1
 function	c:@F@CFArrayGetLastIndexOfValue	-			CFIndex (CFArrayRef, CFRange, const void *)	CFArrayRef theArray | CFRange range | const void * value	-	-	-	2054b538d49d5e82
 function	c:@F@CFArrayBSearchValues	-			CFIndex (CFArrayRef, CFRange, const void *, CFComparatorFunction, void *)	CFArrayRef theArray | CFRange range | const void * value | CFComparatorFunction comparator | void * context	-	-	-	ba073d3e9d2e970d
@@ -154,10 +154,10 @@ function	c:@F@CFDictionaryGetCountOfKey	-			CFIndex (CFDictionaryRef, const void
 function	c:@F@CFDictionaryGetCountOfValue	-			CFIndex (CFDictionaryRef, const void *)	CFDictionaryRef theDict | const void * value	-	-	-	895840e2044b8511
 function	c:@F@CFDictionaryContainsKey	-			Boolean (CFDictionaryRef, const void *)	CFDictionaryRef theDict | const void * key	-	-	-	861462ec3c5ced51
 function	c:@F@CFDictionaryContainsValue	-			Boolean (CFDictionaryRef, const void *)	CFDictionaryRef theDict | const void * value	-	-	-	03e3bc40961adf9e
-function	c:@F@CFDictionaryGetValue	-			const void *(CFDictionaryRef, const void *)	CFDictionaryRef theDict | const void * key	-	-	-	919aa7c810dcde40
+function	c:@F@CFDictionaryGetValue	-			const void * (CFDictionaryRef, const void *)	CFDictionaryRef theDict | const void * key	-	-	-	8728ace61c857a1c
 function	c:@F@CFDictionaryGetValueIfPresent	-			Boolean (CFDictionaryRef, const void *, const void **)	CFDictionaryRef theDict | const void * key | const void ** value	-	-	-	d95338b4d756d5f7
 function	c:@F@CFDictionaryGetKeysAndValues	-			void (CFDictionaryRef, const void **, const void **)	CFDictionaryRef theDict | const void ** keys | const void ** values	-	-	-	fdb7f6229017779f
-function	c:@F@CFDictionaryApplyFunction	-			void (CFDictionaryRef, __attribute__((noescape)) CFDictionaryApplierFunction, void *)	CFDictionaryRef theDict | CFDictionaryApplierFunction applier | void * context	-	-	-	b73dbc76538519e5
+function	c:@F@CFDictionaryApplyFunction	-			void (CFDictionaryRef, CFDictionaryApplierFunction, void *)	CFDictionaryRef theDict | CFDictionaryApplierFunction applier | void * context	-	-	-	2b2c04f9d1641834
 function	c:@F@CFDictionaryAddValue	-			void (CFMutableDictionaryRef, const void *, const void *)	CFMutableDictionaryRef theDict | const void * key | const void * value	-	-	-	4bf6de0bd10ef50e
 function	c:@F@CFDictionarySetValue	-			void (CFMutableDictionaryRef, const void *, const void *)	CFMutableDictionaryRef theDict | const void * key | const void * value	-	-	-	3d0bdede9d2b6d23
 function	c:@F@CFDictionaryReplaceValue	-			void (CFMutableDictionaryRef, const void *, const void *)	CFMutableDictionaryRef theDict | const void * key | const void * value	-	-	-	c0a07debc8f8c744
@@ -197,8 +197,8 @@ function	c:@F@CFDataCreateCopy	-			CFDataRef (CFAllocatorRef, CFDataRef)	CFAlloc
 function	c:@F@CFDataCreateMutable	-			CFMutableDataRef (CFAllocatorRef, CFIndex)	CFAllocatorRef allocator | CFIndex capacity	-	-	-	402a167916cd60a5
 function	c:@F@CFDataCreateMutableCopy	-			CFMutableDataRef (CFAllocatorRef, CFIndex, CFDataRef)	CFAllocatorRef allocator | CFIndex capacity | CFDataRef theData	-	-	-	1c99b6f020339f96
 function	c:@F@CFDataGetLength	-			CFIndex (CFDataRef)	CFDataRef theData	-	-	-	9545a9f978f17a9f
-function	c:@F@CFDataGetBytePtr	-			const UInt8 *(CFDataRef)	CFDataRef theData	-	-	-	3f621d2f4a2dc7d8
-function	c:@F@CFDataGetMutableBytePtr	-			UInt8 *(CFMutableDataRef)	CFMutableDataRef theData	-	-	-	b1ab047bce399e6c
+function	c:@F@CFDataGetBytePtr	-			const UInt8 * (CFDataRef)	CFDataRef theData	-	-	-	ffdae8354c1238a2
+function	c:@F@CFDataGetMutableBytePtr	-			UInt8 * (CFMutableDataRef)	CFMutableDataRef theData	-	-	-	04e4f7f1926cd2e9
 function	c:@F@CFDataGetBytes	-			void (CFDataRef, CFRange, UInt8 *)	CFDataRef theData | CFRange range | UInt8 * buffer	-	-	-	d01655349082c039
 function	c:@F@CFDataSetLength	-			void (CFMutableDataRef, CFIndex)	CFMutableDataRef theData | CFIndex length	-	-	-	9588310f428dda5e
 function	c:@F@CFDataIncreaseLength	-			void (CFMutableDataRef, CFIndex)	CFMutableDataRef theData | CFIndex extraLength	-	-	-	9005e4072bc780da
@@ -393,8 +393,8 @@ function	c:@F@CFStringGetCharacters	-			void (CFStringRef, CFRange, UniChar *)	C
 function	c:@F@CFStringGetPascalString	-			Boolean (CFStringRef, StringPtr, CFIndex, CFStringEncoding)	CFStringRef theString | StringPtr buffer | CFIndex bufferSize | CFStringEncoding encoding	-	-	-	c46c18af39a679e8
 function	c:@F@CFStringGetCString	-			Boolean (CFStringRef, char *, CFIndex, CFStringEncoding)	CFStringRef theString | char * buffer | CFIndex bufferSize | CFStringEncoding encoding	-	-	-	75c396d914818019
 function	c:@F@CFStringGetPascalStringPtr	-			ConstStringPtr (CFStringRef, CFStringEncoding)	CFStringRef theString | CFStringEncoding encoding	-	-	-	bfc9bfe845908887
-function	c:@F@CFStringGetCStringPtr	-			const char *(CFStringRef, CFStringEncoding)	CFStringRef theString | CFStringEncoding encoding	-	-	-	abe427b294cdd59c
-function	c:@F@CFStringGetCharactersPtr	-			const UniChar *(CFStringRef)	CFStringRef theString	-	-	-	77b724b507d5beac
+function	c:@F@CFStringGetCStringPtr	-			const char * (CFStringRef, CFStringEncoding)	CFStringRef theString | CFStringEncoding encoding	-	-	-	5ceda6de98dd7eee
+function	c:@F@CFStringGetCharactersPtr	-			const UniChar * (CFStringRef)	CFStringRef theString	-	-	-	8bfa33640a468ad7
 function	c:@F@CFStringGetBytes	-			CFIndex (CFStringRef, CFRange, CFStringEncoding, UInt8, Boolean, UInt8 *, CFIndex, CFIndex *)	CFStringRef theString | CFRange range | CFStringEncoding encoding | UInt8 lossByte | Boolean isExternalRepresentation | UInt8 * buffer | CFIndex maxBufLen | CFIndex * usedBufLen	-	-	-	41f0674c60fa5477
 function	c:@F@CFStringCreateFromExternalRepresentation	-			CFStringRef (CFAllocatorRef, CFDataRef, CFStringEncoding)	CFAllocatorRef alloc | CFDataRef data | CFStringEncoding encoding	-	-	-	7876507c70075451
 function	c:@F@CFStringCreateExternalRepresentation	-			CFDataRef (CFAllocatorRef, CFStringRef, CFStringEncoding, UInt8)	CFAllocatorRef alloc | CFStringRef theString | CFStringEncoding encoding | UInt8 lossByte	-	-	-	5b431a8d16d201a7
@@ -479,7 +479,7 @@ var	c:@kCFStringTransformToXMLHex	-			const CFStringRef	-	-	-	-	d7a87e1c0071dc6f
 var	c:@kCFStringTransformToUnicodeName	-			const CFStringRef	-	-	-	-	39eb276ffdafab49
 var	c:@kCFStringTransformStripDiacritics	-			const CFStringRef	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	b7dbd33c62366e16
 function	c:@F@CFStringIsEncodingAvailable	-			Boolean (CFStringEncoding)	CFStringEncoding encoding	-	-	-	1f40439d3456a9b7
-function	c:@F@CFStringGetListOfAvailableEncodings	-			const CFStringEncoding *(void)	-	-	-	-	45a1570c8a510d78
+function	c:@F@CFStringGetListOfAvailableEncodings	-			const CFStringEncoding * (void)	-	-	-	-	7961dab6c1561810
 function	c:@F@CFStringGetNameOfEncoding	-			CFStringRef (CFStringEncoding)	CFStringEncoding encoding	-	-	-	85855cbdfb870bca
 function	c:@F@CFStringConvertEncodingToNSStringEncoding	-			unsigned long (CFStringEncoding)	CFStringEncoding encoding	-	-	-	25797edbeaa11950
 function	c:@F@CFStringConvertNSStringEncodingToEncoding	-			CFStringEncoding (unsigned long)	unsigned long encoding	-	-	-	9facc3cddea4e7fa
@@ -798,10 +798,10 @@ function	c:@F@CFBundleLoadExecutableAndReturnError	-			Boolean (CFBundleRef, CFE
 function	c:@F@CFBundleLoadExecutable	-			Boolean (CFBundleRef)	CFBundleRef bundle	-	-	-	34547e622a96936f
 function	c:@F@CFBundleIsExecutableLoaded	-			Boolean (CFBundleRef)	CFBundleRef bundle	-	-	-	389bc29a2e15bf21
 function	c:@F@CFBundleUnloadExecutable	-			void (CFBundleRef)	CFBundleRef bundle	-	-	-	099c2f92cf8576da
-function	c:@F@CFBundleGetFunctionPointerForName	-			void *(CFBundleRef, CFStringRef)	CFBundleRef bundle | CFStringRef functionName	-	-	-	4d775036bf8f4808
-function	c:@F@CFBundleGetFunctionPointersForNames	-			void (CFBundleRef, CFArrayRef, void **)	CFBundleRef bundle | CFArrayRef functionNames | void *[] ftbl	-	-	-	f12ccba0d2d4f52e
-function	c:@F@CFBundleGetDataPointerForName	-			void *(CFBundleRef, CFStringRef)	CFBundleRef bundle | CFStringRef symbolName	-	-	-	797df27cc2c7cca7
-function	c:@F@CFBundleGetDataPointersForNames	-			void (CFBundleRef, CFArrayRef, void **)	CFBundleRef bundle | CFArrayRef symbolNames | void *[] stbl	-	-	-	8f82e2351fb0a7ba
+function	c:@F@CFBundleGetFunctionPointerForName	-			void * (CFBundleRef, CFStringRef)	CFBundleRef bundle | CFStringRef functionName	-	-	-	b12a1acf634dd7fe
+function	c:@F@CFBundleGetFunctionPointersForNames	-			void (CFBundleRef, CFArrayRef, void *[])	CFBundleRef bundle | CFArrayRef functionNames | void *[] ftbl	-	-	-	2140601f30592b29
+function	c:@F@CFBundleGetDataPointerForName	-			void * (CFBundleRef, CFStringRef)	CFBundleRef bundle | CFStringRef symbolName	-	-	-	e7a2440a9f073d2b
+function	c:@F@CFBundleGetDataPointersForNames	-			void (CFBundleRef, CFArrayRef, void *[])	CFBundleRef bundle | CFArrayRef symbolNames | void *[] stbl	-	-	-	52ee9d67262c889d
 function	c:@F@CFBundleCopyAuxiliaryExecutableURL	-			CFURLRef (CFBundleRef, CFStringRef)	CFBundleRef bundle | CFStringRef executableName	-	-	-	6f2204ccf2f7af14
 function	c:@F@CFBundleIsExecutableLoadable	-			Boolean (CFBundleRef)	CFBundleRef bundle	-	ios=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	77a7ae7734f78abc
 function	c:@F@CFBundleIsExecutableLoadableForURL	-			Boolean (CFURLRef)	CFURLRef url	-	ios=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4f1d0e735d562d53
@@ -854,7 +854,7 @@ function	c:@F@CFPlugInSetLoadOnDemand	-			void (CFPlugInRef, Boolean)	CFPlugInRe
 function	c:@F@CFPlugInIsLoadOnDemand	-			Boolean (CFPlugInRef)	CFPlugInRef plugIn	-	-	-	8eb2b6e2045a0d06
 function	c:@F@CFPlugInFindFactoriesForPlugInType	-			CFArrayRef (CFUUIDRef)	CFUUIDRef typeUUID	-	-	-	b31687f616cbdb21
 function	c:@F@CFPlugInFindFactoriesForPlugInTypeInPlugIn	-			CFArrayRef (CFUUIDRef, CFPlugInRef)	CFUUIDRef typeUUID | CFPlugInRef plugIn	-	-	-	200560feca3b579f
-function	c:@F@CFPlugInInstanceCreate	-			void *(CFAllocatorRef, CFUUIDRef, CFUUIDRef)	CFAllocatorRef allocator | CFUUIDRef factoryUUID | CFUUIDRef typeUUID	-	-	-	2bcc95079bc09867
+function	c:@F@CFPlugInInstanceCreate	-			void * (CFAllocatorRef, CFUUIDRef, CFUUIDRef)	CFAllocatorRef allocator | CFUUIDRef factoryUUID | CFUUIDRef typeUUID	-	-	-	e467ce8b16f29838
 function	c:@F@CFPlugInRegisterFactoryFunction	-			Boolean (CFUUIDRef, CFPlugInFactoryFunction)	CFUUIDRef factoryUUID | CFPlugInFactoryFunction func	-	-	-	3a3878075fa9546d
 function	c:@F@CFPlugInRegisterFactoryFunctionByName	-			Boolean (CFUUIDRef, CFPlugInRef, CFStringRef)	CFUUIDRef factoryUUID | CFPlugInRef plugIn | CFStringRef functionName	-	-	-	cb172b1565520569
 function	c:@F@CFPlugInUnregisterFactory	-			Boolean (CFUUIDRef)	CFUUIDRef factoryUUID	-	-	-	0ecb030ecc08687e
@@ -868,7 +868,7 @@ typedef	c:@T@CFPlugInInstanceGetInterfaceFunction	-			Boolean (*)(CFPlugInInstan
 typedef	c:@T@CFPlugInInstanceDeallocateInstanceDataFunction	-			void (*)(void *)	-	-	-	-	b579c1a09af84a86
 function	c:@F@CFPlugInInstanceGetInterfaceFunctionTable	-			Boolean (CFPlugInInstanceRef, CFStringRef, void **)	CFPlugInInstanceRef instance | CFStringRef interfaceName | void ** ftbl	-	-	-	d1838c67cb58905f
 function	c:@F@CFPlugInInstanceGetFactoryName	-			CFStringRef (CFPlugInInstanceRef)	CFPlugInInstanceRef instance	-	-	-	9ab18c2628d539bc
-function	c:@F@CFPlugInInstanceGetInstanceData	-			void *(CFPlugInInstanceRef)	CFPlugInInstanceRef instance	-	-	-	c708bccbae21cd30
+function	c:@F@CFPlugInInstanceGetInstanceData	-			void * (CFPlugInInstanceRef)	CFPlugInInstanceRef instance	-	-	-	8567f9e8f44d8520
 function	c:@F@CFPlugInInstanceGetTypeID	-			CFTypeID (void)	-	-	-	-	bbaf5fb9cb17dad8
 function	c:@F@CFPlugInInstanceCreateWithInstanceDataSize	-			CFPlugInInstanceRef (CFAllocatorRef, CFIndex, CFPlugInInstanceDeallocateInstanceDataFunction, CFStringRef, CFPlugInInstanceGetInterfaceFunction)	CFAllocatorRef allocator | CFIndex instanceDataSize | CFPlugInInstanceDeallocateInstanceDataFunction deallocateInstanceFunction | CFStringRef factoryName | CFPlugInInstanceGetInterfaceFunction getInterfaceFunction	-	-	-	ac94a71d32a4ec76
 typedef	c:CFPlugInCOM.h@T@HRESULT	-			SInt32	-	-	-	-	a50916b6c20fe96c
@@ -908,10 +908,10 @@ function	c:@F@CFBagCreateMutableCopy	-			CFMutableBagRef (CFAllocatorRef, CFInde
 function	c:@F@CFBagGetCount	-			CFIndex (CFBagRef)	CFBagRef theBag	-	-	-	2058fa5eeaa10f6a
 function	c:@F@CFBagGetCountOfValue	-			CFIndex (CFBagRef, const void *)	CFBagRef theBag | const void * value	-	-	-	e1ceb63addc8a26a
 function	c:@F@CFBagContainsValue	-			Boolean (CFBagRef, const void *)	CFBagRef theBag | const void * value	-	-	-	8a31c3084316692d
-function	c:@F@CFBagGetValue	-			const void *(CFBagRef, const void *)	CFBagRef theBag | const void * value	-	-	-	0afbd2b2fe08c0fc
+function	c:@F@CFBagGetValue	-			const void * (CFBagRef, const void *)	CFBagRef theBag | const void * value	-	-	-	e8b8b10aeb192f4d
 function	c:@F@CFBagGetValueIfPresent	-			Boolean (CFBagRef, const void *, const void **)	CFBagRef theBag | const void * candidate | const void ** value	-	-	-	6ecf29c0ddef0054
 function	c:@F@CFBagGetValues	-			void (CFBagRef, const void **)	CFBagRef theBag | const void ** values	-	-	-	4bb4f1e749721c71
-function	c:@F@CFBagApplyFunction	-			void (CFBagRef, __attribute__((noescape)) CFBagApplierFunction, void *)	CFBagRef theBag | CFBagApplierFunction applier | void * context	-	-	-	46d812c170ae18fd
+function	c:@F@CFBagApplyFunction	-			void (CFBagRef, CFBagApplierFunction, void *)	CFBagRef theBag | CFBagApplierFunction applier | void * context	-	-	-	3d59f16f400860aa
 function	c:@F@CFBagAddValue	-			void (CFMutableBagRef, const void *)	CFMutableBagRef theBag | const void * value	-	-	-	c7bd805302fb1a19
 function	c:@F@CFBagReplaceValue	-			void (CFMutableBagRef, const void *)	CFMutableBagRef theBag | const void * value	-	-	-	53aa08e4832a9d91
 function	c:@F@CFBagSetValue	-			void (CFMutableBagRef, const void *)	CFMutableBagRef theBag | const void * value	-	-	-	cf3f911e5e26f071
@@ -941,10 +941,10 @@ function	c:@F@CFBinaryHeapCreateCopy	-			CFBinaryHeapRef (CFAllocatorRef, CFInde
 function	c:@F@CFBinaryHeapGetCount	-			CFIndex (CFBinaryHeapRef)	CFBinaryHeapRef heap	-	-	-	341b8822069b5a73
 function	c:@F@CFBinaryHeapGetCountOfValue	-			CFIndex (CFBinaryHeapRef, const void *)	CFBinaryHeapRef heap | const void * value	-	-	-	8bba6176bc7ab70e
 function	c:@F@CFBinaryHeapContainsValue	-			Boolean (CFBinaryHeapRef, const void *)	CFBinaryHeapRef heap | const void * value	-	-	-	072c558decb7194e
-function	c:@F@CFBinaryHeapGetMinimum	-			const void *(CFBinaryHeapRef)	CFBinaryHeapRef heap	-	-	-	c58456df8afc485e
+function	c:@F@CFBinaryHeapGetMinimum	-			const void * (CFBinaryHeapRef)	CFBinaryHeapRef heap	-	-	-	91a3dc5a1f597189
 function	c:@F@CFBinaryHeapGetMinimumIfPresent	-			Boolean (CFBinaryHeapRef, const void **)	CFBinaryHeapRef heap | const void ** value	-	-	-	b9e1b68535301ab6
 function	c:@F@CFBinaryHeapGetValues	-			void (CFBinaryHeapRef, const void **)	CFBinaryHeapRef heap | const void ** values	-	-	-	fc41d2a364c49988
-function	c:@F@CFBinaryHeapApplyFunction	-			void (CFBinaryHeapRef, __attribute__((noescape)) CFBinaryHeapApplierFunction, void *)	CFBinaryHeapRef heap | CFBinaryHeapApplierFunction applier | void * context	-	-	-	eada15513b74c524
+function	c:@F@CFBinaryHeapApplyFunction	-			void (CFBinaryHeapRef, CFBinaryHeapApplierFunction, void *)	CFBinaryHeapRef heap | CFBinaryHeapApplierFunction applier | void * context	-	-	-	ef51c457c70d0758
 function	c:@F@CFBinaryHeapAddValue	-			void (CFBinaryHeapRef, const void *)	CFBinaryHeapRef heap | const void * value	-	-	-	af34b03075eefe8b
 function	c:@F@CFBinaryHeapRemoveMinimumValue	-			void (CFBinaryHeapRef)	CFBinaryHeapRef heap	-	-	-	76a5a63d1e242645
 function	c:@F@CFBinaryHeapRemoveAllValues	-			void (CFBinaryHeapRef)	CFBinaryHeapRef heap	-	-	-	ba37072947fa8704
@@ -1357,21 +1357,21 @@ var	c:@kCFPreferencesAnyHost	-			const CFStringRef	-	-	-	-	02dc57bd2b2c28fb
 var	c:@kCFPreferencesCurrentHost	-			const CFStringRef	-	-	-	-	00c427f6260ff055
 var	c:@kCFPreferencesAnyUser	-			const CFStringRef	-	-	-	-	8a455f068822b23f
 var	c:@kCFPreferencesCurrentUser	-			const CFStringRef	-	-	-	-	be851f56d80bad2e
-function	c:@F@CFPreferencesCopyAppValue	-			CFPropertyListRef  _Nullable (CFStringRef _Nonnull, CFStringRef _Nonnull)	CFStringRef key | CFStringRef applicationID	-	-	-	08d101f449b6ac84
-function	c:@F@CFPreferencesGetAppBooleanValue	-			Boolean (CFStringRef _Nonnull, CFStringRef _Nonnull, Boolean * _Nullable)	CFStringRef key | CFStringRef applicationID | Boolean * keyExistsAndHasValidFormat	-	-	-	dd51d56cb70bbebd
-function	c:@F@CFPreferencesGetAppIntegerValue	-			CFIndex (CFStringRef _Nonnull, CFStringRef _Nonnull, Boolean * _Nullable)	CFStringRef key | CFStringRef applicationID | Boolean * keyExistsAndHasValidFormat	-	-	-	8150677376d7f425
-function	c:@F@CFPreferencesSetAppValue	-			void (CFStringRef _Nonnull, CFPropertyListRef _Nullable, CFStringRef _Nonnull)	CFStringRef key | CFPropertyListRef value | CFStringRef applicationID	-	-	-	4355d9088af3e029
-function	c:@F@CFPreferencesAddSuitePreferencesToApp	-			void (CFStringRef _Nonnull, CFStringRef _Nonnull)	CFStringRef applicationID | CFStringRef suiteID	-	-	-	6acec030e4ca35be
-function	c:@F@CFPreferencesRemoveSuitePreferencesFromApp	-			void (CFStringRef _Nonnull, CFStringRef _Nonnull)	CFStringRef applicationID | CFStringRef suiteID	-	-	-	aa7044c2f10b1d63
-function	c:@F@CFPreferencesAppSynchronize	-			Boolean (CFStringRef _Nonnull)	CFStringRef applicationID	-	-	-	a500f58553ae36a1
-function	c:@F@CFPreferencesCopyValue	-			CFPropertyListRef  _Nullable (CFStringRef _Nonnull, CFStringRef _Nonnull, CFStringRef _Nonnull, CFStringRef _Nonnull)	CFStringRef key | CFStringRef applicationID | CFStringRef userName | CFStringRef hostName	-	-	-	336edbe8598c6eb3
-function	c:@F@CFPreferencesCopyMultiple	-			CFDictionaryRef  _Nonnull (CFArrayRef _Nullable, CFStringRef _Nonnull, CFStringRef _Nonnull, CFStringRef _Nonnull)	CFArrayRef keysToFetch | CFStringRef applicationID | CFStringRef userName | CFStringRef hostName	-	-	-	f434ea135977baac
-function	c:@F@CFPreferencesSetValue	-			void (CFStringRef _Nonnull, CFPropertyListRef _Nullable, CFStringRef _Nonnull, CFStringRef _Nonnull, CFStringRef _Nonnull)	CFStringRef key | CFPropertyListRef value | CFStringRef applicationID | CFStringRef userName | CFStringRef hostName	-	-	-	e0063708f821e86a
-function	c:@F@CFPreferencesSetMultiple	-			void (CFDictionaryRef _Nullable, CFArrayRef _Nullable, CFStringRef _Nonnull, CFStringRef _Nonnull, CFStringRef _Nonnull)	CFDictionaryRef keysToSet | CFArrayRef keysToRemove | CFStringRef applicationID | CFStringRef userName | CFStringRef hostName	-	-	-	e16ef398fe4f2f84
-function	c:@F@CFPreferencesSynchronize	-			Boolean (CFStringRef _Nonnull, CFStringRef _Nonnull, CFStringRef _Nonnull)	CFStringRef applicationID | CFStringRef userName | CFStringRef hostName	-	-	-	9c965c2b9cce9ac2
-function	c:@F@CFPreferencesCopyApplicationList	-			CFArrayRef  _Nullable (CFStringRef _Nonnull, CFStringRef _Nonnull)	CFStringRef userName | CFStringRef hostName	-	ios=2.0/7.0/-/0,macos=10.0/10.9/-/0,tvos=9.0/9.0/-/0,watchos=2.0/2.0/-/0	-	54aaa8ba204dd22d
-function	c:@F@CFPreferencesCopyKeyList	-			CFArrayRef  _Nullable (CFStringRef _Nonnull, CFStringRef _Nonnull, CFStringRef _Nonnull)	CFStringRef applicationID | CFStringRef userName | CFStringRef hostName	-	-	-	09235a3e780925de
-function	c:@F@CFPreferencesAppValueIsForced	-			Boolean (CFStringRef _Nonnull, CFStringRef _Nonnull)	CFStringRef key | CFStringRef applicationID	-	-	-	dc0186223331f616
+function	c:@F@CFPreferencesCopyAppValue	-			CFPropertyListRef (CFStringRef, CFStringRef)	CFStringRef key | CFStringRef applicationID	-	-	-	69b1b23646ff3116
+function	c:@F@CFPreferencesGetAppBooleanValue	-			Boolean (CFStringRef, CFStringRef, Boolean *)	CFStringRef key | CFStringRef applicationID | Boolean * keyExistsAndHasValidFormat	-	-	-	fc02a606b61c01a3
+function	c:@F@CFPreferencesGetAppIntegerValue	-			CFIndex (CFStringRef, CFStringRef, Boolean *)	CFStringRef key | CFStringRef applicationID | Boolean * keyExistsAndHasValidFormat	-	-	-	6b1e3ca9c324033c
+function	c:@F@CFPreferencesSetAppValue	-			void (CFStringRef, CFPropertyListRef, CFStringRef)	CFStringRef key | CFPropertyListRef value | CFStringRef applicationID	-	-	-	f3f6ff57a22cf7c2
+function	c:@F@CFPreferencesAddSuitePreferencesToApp	-			void (CFStringRef, CFStringRef)	CFStringRef applicationID | CFStringRef suiteID	-	-	-	c8a917f1a1c61091
+function	c:@F@CFPreferencesRemoveSuitePreferencesFromApp	-			void (CFStringRef, CFStringRef)	CFStringRef applicationID | CFStringRef suiteID	-	-	-	a07135efef778e98
+function	c:@F@CFPreferencesAppSynchronize	-			Boolean (CFStringRef)	CFStringRef applicationID	-	-	-	5234e5c28cf0d99e
+function	c:@F@CFPreferencesCopyValue	-			CFPropertyListRef (CFStringRef, CFStringRef, CFStringRef, CFStringRef)	CFStringRef key | CFStringRef applicationID | CFStringRef userName | CFStringRef hostName	-	-	-	cdb16e551cf24569
+function	c:@F@CFPreferencesCopyMultiple	-			CFDictionaryRef (CFArrayRef, CFStringRef, CFStringRef, CFStringRef)	CFArrayRef keysToFetch | CFStringRef applicationID | CFStringRef userName | CFStringRef hostName	-	-	-	bc611afff9ff3cc4
+function	c:@F@CFPreferencesSetValue	-			void (CFStringRef, CFPropertyListRef, CFStringRef, CFStringRef, CFStringRef)	CFStringRef key | CFPropertyListRef value | CFStringRef applicationID | CFStringRef userName | CFStringRef hostName	-	-	-	005922f02fc5ac74
+function	c:@F@CFPreferencesSetMultiple	-			void (CFDictionaryRef, CFArrayRef, CFStringRef, CFStringRef, CFStringRef)	CFDictionaryRef keysToSet | CFArrayRef keysToRemove | CFStringRef applicationID | CFStringRef userName | CFStringRef hostName	-	-	-	e886264a39c126c0
+function	c:@F@CFPreferencesSynchronize	-			Boolean (CFStringRef, CFStringRef, CFStringRef)	CFStringRef applicationID | CFStringRef userName | CFStringRef hostName	-	-	-	621d27c1ad11813b
+function	c:@F@CFPreferencesCopyApplicationList	-			CFArrayRef (CFStringRef, CFStringRef)	CFStringRef userName | CFStringRef hostName	-	ios=2.0/7.0/-/0,macos=10.0/10.9/-/0,tvos=9.0/9.0/-/0,watchos=2.0/2.0/-/0	-	82ddaae0bb494e08
+function	c:@F@CFPreferencesCopyKeyList	-			CFArrayRef (CFStringRef, CFStringRef, CFStringRef)	CFStringRef applicationID | CFStringRef userName | CFStringRef hostName	-	-	-	cfdd8724bc0b908d
+function	c:@F@CFPreferencesAppValueIsForced	-			Boolean (CFStringRef, CFStringRef)	CFStringRef key | CFStringRef applicationID	-	-	-	f8a5bb87f808334f
 typedef	c:@T@CFRunLoopMode	-			CFStringRef	-	-	-	-	3cb817db034ab34f
 struct	c:@S@__CFRunLoop	-			-	-	-	-	-	30b9dae14526c1de
 typedef	c:@T@CFRunLoopRef	-			struct __CFRunLoop *	-	-	-	-	2c9d9bba83d0f9bf
@@ -1597,12 +1597,12 @@ typedef	c:@T@CFWriteStreamClientCallBack	-			void (*)(CFWriteStreamRef _Null_uns
 function	c:@F@CFReadStreamGetTypeID	-			CFTypeID (void)	-	-	-	-	e86d107d02642e00
 function	c:@F@CFWriteStreamGetTypeID	-			CFTypeID (void)	-	-	-	-	622f20ea15c96d48
 var	c:@kCFStreamPropertyDataWritten	-			const CFStreamPropertyKey	-	-	-	-	6cc68a4fcfc543b1
-function	c:@F@CFReadStreamCreateWithBytesNoCopy	-			CFReadStreamRef  _Null_unspecified (CFAllocatorRef _Null_unspecified, const UInt8 * _Null_unspecified, CFIndex, CFAllocatorRef _Null_unspecified)	CFAllocatorRef alloc | const UInt8 * bytes | CFIndex length | CFAllocatorRef bytesDeallocator	-	-	-	f64801190d6ac30f
-function	c:@F@CFWriteStreamCreateWithBuffer	-			CFWriteStreamRef  _Null_unspecified (CFAllocatorRef _Null_unspecified, UInt8 * _Null_unspecified, CFIndex)	CFAllocatorRef alloc | UInt8 * buffer | CFIndex bufferCapacity	-	-	-	9d4835e4e1782bb1
-function	c:@F@CFWriteStreamCreateWithAllocatedBuffers	-			CFWriteStreamRef  _Null_unspecified (CFAllocatorRef _Null_unspecified, CFAllocatorRef _Null_unspecified)	CFAllocatorRef alloc | CFAllocatorRef bufferAllocator	-	-	-	31de18be879ef9b0
-function	c:@F@CFReadStreamCreateWithFile	-			CFReadStreamRef  _Null_unspecified (CFAllocatorRef _Null_unspecified, CFURLRef _Null_unspecified)	CFAllocatorRef alloc | CFURLRef fileURL	-	-	-	ded5293a1f17a72c
-function	c:@F@CFWriteStreamCreateWithFile	-			CFWriteStreamRef  _Null_unspecified (CFAllocatorRef _Null_unspecified, CFURLRef _Null_unspecified)	CFAllocatorRef alloc | CFURLRef fileURL	-	-	-	6dec06d5d95da296
-function	c:@F@CFStreamCreateBoundPair	-			void (CFAllocatorRef _Null_unspecified, CFReadStreamRef  _Null_unspecified * _Null_unspecified, CFWriteStreamRef  _Null_unspecified * _Null_unspecified, CFIndex)	CFAllocatorRef alloc | CFReadStreamRef  _Null_unspecified * readStream | CFWriteStreamRef  _Null_unspecified * writeStream | CFIndex transferBufferSize	-	-	-	799b99b186b24b3a
+function	c:@F@CFReadStreamCreateWithBytesNoCopy	-			CFReadStreamRef (CFAllocatorRef, const UInt8 *, CFIndex, CFAllocatorRef)	CFAllocatorRef alloc | const UInt8 * bytes | CFIndex length | CFAllocatorRef bytesDeallocator	-	-	-	38c3da9acb72a358
+function	c:@F@CFWriteStreamCreateWithBuffer	-			CFWriteStreamRef (CFAllocatorRef, UInt8 *, CFIndex)	CFAllocatorRef alloc | UInt8 * buffer | CFIndex bufferCapacity	-	-	-	d8bf7362bdef0042
+function	c:@F@CFWriteStreamCreateWithAllocatedBuffers	-			CFWriteStreamRef (CFAllocatorRef, CFAllocatorRef)	CFAllocatorRef alloc | CFAllocatorRef bufferAllocator	-	-	-	b3ae1fff1938f5e1
+function	c:@F@CFReadStreamCreateWithFile	-			CFReadStreamRef (CFAllocatorRef, CFURLRef)	CFAllocatorRef alloc | CFURLRef fileURL	-	-	-	780798ea1b0fde23
+function	c:@F@CFWriteStreamCreateWithFile	-			CFWriteStreamRef (CFAllocatorRef, CFURLRef)	CFAllocatorRef alloc | CFURLRef fileURL	-	-	-	f5946b99cd78482b
+function	c:@F@CFStreamCreateBoundPair	-			void (CFAllocatorRef, CFReadStreamRef  _Null_unspecified *, CFWriteStreamRef  _Null_unspecified *, CFIndex)	CFAllocatorRef alloc | CFReadStreamRef  _Null_unspecified * readStream | CFWriteStreamRef  _Null_unspecified * writeStream | CFIndex transferBufferSize	-	-	-	f384bfe16a4b565e
 var	c:@kCFStreamPropertyAppendToFile	-			const CFStreamPropertyKey	-	-	-	-	5e57c0104f77eead
 var	c:@kCFStreamPropertyFileCurrentOffset	-			const CFStreamPropertyKey	-	-	-	-	21521197ffcb120a
 var	c:@kCFStreamPropertySocketNativeHandle	-			const CFStreamPropertyKey	-	-	-	-	7f885bf9f867af83
@@ -1625,43 +1625,43 @@ var	c:@kCFStreamSocketSecurityLevelSSLv3	-			const CFStringRef	-	-	ios=2.0/10.0/
 var	c:@kCFStreamSocketSecurityLevelTLSv1	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	be510ed6cbcb9563
 var	c:@kCFStreamSocketSecurityLevelNegotiatedSSL	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	0053e3d9b7d6e852
 var	c:@kCFStreamPropertyShouldCloseNativeSocket	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	f017d5ce8cd6743b
-function	c:@F@CFStreamCreatePairWithSocket	-			void (CFAllocatorRef _Null_unspecified, CFSocketNativeHandle, CFReadStreamRef  _Null_unspecified * _Null_unspecified, CFWriteStreamRef  _Null_unspecified * _Null_unspecified)	CFAllocatorRef alloc | CFSocketNativeHandle sock | CFReadStreamRef  _Null_unspecified * readStream | CFWriteStreamRef  _Null_unspecified * writeStream	-	ios=2.0/100000/-/0,macos=10.1/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	61f44fbe531b6bf7
-function	c:@F@CFStreamCreatePairWithSocketToHost	-			void (CFAllocatorRef _Null_unspecified, CFStringRef _Null_unspecified, UInt32, CFReadStreamRef  _Null_unspecified * _Null_unspecified, CFWriteStreamRef  _Null_unspecified * _Null_unspecified)	CFAllocatorRef alloc | CFStringRef host | UInt32 port | CFReadStreamRef  _Null_unspecified * readStream | CFWriteStreamRef  _Null_unspecified * writeStream	-	ios=2.0/100000/-/0,macos=10.1/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	da95190d7d38479e
-function	c:@F@CFStreamCreatePairWithPeerSocketSignature	-			void (CFAllocatorRef _Null_unspecified, const CFSocketSignature * _Null_unspecified, CFReadStreamRef  _Null_unspecified * _Null_unspecified, CFWriteStreamRef  _Null_unspecified * _Null_unspecified)	CFAllocatorRef alloc | const CFSocketSignature * signature | CFReadStreamRef  _Null_unspecified * readStream | CFWriteStreamRef  _Null_unspecified * writeStream	-	ios=2.0/100000/-/0,macos=10.1/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	66c1369c3016b639
-function	c:@F@CFReadStreamGetStatus	-			CFStreamStatus (CFReadStreamRef _Null_unspecified)	CFReadStreamRef stream	-	-	-	d117a5aa7a133341
-function	c:@F@CFWriteStreamGetStatus	-			CFStreamStatus (CFWriteStreamRef _Null_unspecified)	CFWriteStreamRef stream	-	-	-	a98a236b495ac525
-function	c:@F@CFReadStreamCopyError	-			CFErrorRef  _Null_unspecified (CFReadStreamRef _Null_unspecified)	CFReadStreamRef stream	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	39fe00b6a914cb97
-function	c:@F@CFWriteStreamCopyError	-			CFErrorRef  _Null_unspecified (CFWriteStreamRef _Null_unspecified)	CFWriteStreamRef stream	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	3e97385b06aa5a0f
-function	c:@F@CFReadStreamOpen	-			Boolean (CFReadStreamRef _Null_unspecified)	CFReadStreamRef stream	-	-	-	0e6257a89a38b68d
-function	c:@F@CFWriteStreamOpen	-			Boolean (CFWriteStreamRef _Null_unspecified)	CFWriteStreamRef stream	-	-	-	99f78a03592c0fd1
-function	c:@F@CFReadStreamClose	-			void (CFReadStreamRef _Null_unspecified)	CFReadStreamRef stream	-	-	-	f971f8d7ec5bcd1a
-function	c:@F@CFWriteStreamClose	-			void (CFWriteStreamRef _Null_unspecified)	CFWriteStreamRef stream	-	-	-	e88fe8d09c6fd45b
-function	c:@F@CFReadStreamHasBytesAvailable	-			Boolean (CFReadStreamRef _Null_unspecified)	CFReadStreamRef stream	-	-	-	1f881d919272d055
-function	c:@F@CFReadStreamRead	-			CFIndex (CFReadStreamRef _Null_unspecified, UInt8 * _Null_unspecified, CFIndex)	CFReadStreamRef stream | UInt8 * buffer | CFIndex bufferLength	-	-	-	9be29f94d5bbc983
-function	c:@F@CFReadStreamGetBuffer	-			const UInt8 * _Null_unspecified (CFReadStreamRef _Null_unspecified, CFIndex, CFIndex * _Null_unspecified)	CFReadStreamRef stream | CFIndex maxBytesToRead | CFIndex * numBytesRead	-	-	-	09203e14d2edbaeb
-function	c:@F@CFWriteStreamCanAcceptBytes	-			Boolean (CFWriteStreamRef _Null_unspecified)	CFWriteStreamRef stream	-	-	-	795f2f5011bb2a68
-function	c:@F@CFWriteStreamWrite	-			CFIndex (CFWriteStreamRef _Null_unspecified, const UInt8 * _Null_unspecified, CFIndex)	CFWriteStreamRef stream | const UInt8 * buffer | CFIndex bufferLength	-	-	-	9b6f95bf84a9937a
-function	c:@F@CFReadStreamCopyProperty	-			CFTypeRef  _Null_unspecified (CFReadStreamRef _Null_unspecified, CFStreamPropertyKey _Null_unspecified)	CFReadStreamRef stream | CFStreamPropertyKey propertyName	-	-	-	1ee19059fe9b6294
-function	c:@F@CFWriteStreamCopyProperty	-			CFTypeRef  _Null_unspecified (CFWriteStreamRef _Null_unspecified, CFStreamPropertyKey _Null_unspecified)	CFWriteStreamRef stream | CFStreamPropertyKey propertyName	-	-	-	f3aba20ac22465e2
-function	c:@F@CFReadStreamSetProperty	-			Boolean (CFReadStreamRef _Null_unspecified, CFStreamPropertyKey _Null_unspecified, CFTypeRef _Null_unspecified)	CFReadStreamRef stream | CFStreamPropertyKey propertyName | CFTypeRef propertyValue	-	-	-	8b7d3036e929af92
-function	c:@F@CFWriteStreamSetProperty	-			Boolean (CFWriteStreamRef _Null_unspecified, CFStreamPropertyKey _Null_unspecified, CFTypeRef _Null_unspecified)	CFWriteStreamRef stream | CFStreamPropertyKey propertyName | CFTypeRef propertyValue	-	-	-	91cab34a27417497
-function	c:@F@CFReadStreamSetClient	-			Boolean (CFReadStreamRef _Null_unspecified, CFOptionFlags, CFReadStreamClientCallBack _Null_unspecified, CFStreamClientContext * _Null_unspecified)	CFReadStreamRef stream | CFOptionFlags streamEvents | CFReadStreamClientCallBack clientCB | CFStreamClientContext * clientContext	-	-	-	8942e72923c100c3
-function	c:@F@CFWriteStreamSetClient	-			Boolean (CFWriteStreamRef _Null_unspecified, CFOptionFlags, CFWriteStreamClientCallBack _Null_unspecified, CFStreamClientContext * _Null_unspecified)	CFWriteStreamRef stream | CFOptionFlags streamEvents | CFWriteStreamClientCallBack clientCB | CFStreamClientContext * clientContext	-	-	-	f721a30ddec6c343
-function	c:@F@CFReadStreamScheduleWithRunLoop	-			void (CFReadStreamRef _Null_unspecified, CFRunLoopRef _Null_unspecified, CFRunLoopMode _Null_unspecified)	CFReadStreamRef stream | CFRunLoopRef runLoop | CFRunLoopMode runLoopMode	-	-	-	691e5fa89319986c
-function	c:@F@CFWriteStreamScheduleWithRunLoop	-			void (CFWriteStreamRef _Null_unspecified, CFRunLoopRef _Null_unspecified, CFRunLoopMode _Null_unspecified)	CFWriteStreamRef stream | CFRunLoopRef runLoop | CFRunLoopMode runLoopMode	-	-	-	a14c67f2ede75a69
-function	c:@F@CFReadStreamUnscheduleFromRunLoop	-			void (CFReadStreamRef _Null_unspecified, CFRunLoopRef _Null_unspecified, CFRunLoopMode _Null_unspecified)	CFReadStreamRef stream | CFRunLoopRef runLoop | CFRunLoopMode runLoopMode	-	-	-	3e9161091888489d
-function	c:@F@CFWriteStreamUnscheduleFromRunLoop	-			void (CFWriteStreamRef _Null_unspecified, CFRunLoopRef _Null_unspecified, CFRunLoopMode _Null_unspecified)	CFWriteStreamRef stream | CFRunLoopRef runLoop | CFRunLoopMode runLoopMode	-	-	-	d3a0dd9441926655
-function	c:@F@CFReadStreamSetDispatchQueue	-			void (CFReadStreamRef _Null_unspecified, dispatch_queue_t _Null_unspecified)	CFReadStreamRef stream | dispatch_queue_t q	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	eb81811bef9ef7ba
-function	c:@F@CFWriteStreamSetDispatchQueue	-			void (CFWriteStreamRef _Null_unspecified, dispatch_queue_t _Null_unspecified)	CFWriteStreamRef stream | dispatch_queue_t q	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	7af4bff8d2ee3a14
-function	c:@F@CFReadStreamCopyDispatchQueue	-			dispatch_queue_t  _Null_unspecified (CFReadStreamRef _Null_unspecified)	CFReadStreamRef stream	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	3cc48893e860f0a4
-function	c:@F@CFWriteStreamCopyDispatchQueue	-			dispatch_queue_t  _Null_unspecified (CFWriteStreamRef _Null_unspecified)	CFWriteStreamRef stream	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	9be2ba5b60da3671
+function	c:@F@CFStreamCreatePairWithSocket	-			void (CFAllocatorRef, CFSocketNativeHandle, CFReadStreamRef  _Null_unspecified *, CFWriteStreamRef  _Null_unspecified *)	CFAllocatorRef alloc | CFSocketNativeHandle sock | CFReadStreamRef  _Null_unspecified * readStream | CFWriteStreamRef  _Null_unspecified * writeStream	-	ios=2.0/100000/-/0,macos=10.1/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	6c4c2e41586992a2
+function	c:@F@CFStreamCreatePairWithSocketToHost	-			void (CFAllocatorRef, CFStringRef, UInt32, CFReadStreamRef  _Null_unspecified *, CFWriteStreamRef  _Null_unspecified *)	CFAllocatorRef alloc | CFStringRef host | UInt32 port | CFReadStreamRef  _Null_unspecified * readStream | CFWriteStreamRef  _Null_unspecified * writeStream	-	ios=2.0/100000/-/0,macos=10.1/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	3faf97df324e1011
+function	c:@F@CFStreamCreatePairWithPeerSocketSignature	-			void (CFAllocatorRef, const CFSocketSignature *, CFReadStreamRef  _Null_unspecified *, CFWriteStreamRef  _Null_unspecified *)	CFAllocatorRef alloc | const CFSocketSignature * signature | CFReadStreamRef  _Null_unspecified * readStream | CFWriteStreamRef  _Null_unspecified * writeStream	-	ios=2.0/100000/-/0,macos=10.1/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	cf25130bbfbdca36
+function	c:@F@CFReadStreamGetStatus	-			CFStreamStatus (CFReadStreamRef)	CFReadStreamRef stream	-	-	-	ae9b53ae8acdff37
+function	c:@F@CFWriteStreamGetStatus	-			CFStreamStatus (CFWriteStreamRef)	CFWriteStreamRef stream	-	-	-	6378665e1d581644
+function	c:@F@CFReadStreamCopyError	-			CFErrorRef (CFReadStreamRef)	CFReadStreamRef stream	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	edcbce777f1d0b72
+function	c:@F@CFWriteStreamCopyError	-			CFErrorRef (CFWriteStreamRef)	CFWriteStreamRef stream	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	92eecd6b9141984c
+function	c:@F@CFReadStreamOpen	-			Boolean (CFReadStreamRef)	CFReadStreamRef stream	-	-	-	186a8bffcd6b4fa2
+function	c:@F@CFWriteStreamOpen	-			Boolean (CFWriteStreamRef)	CFWriteStreamRef stream	-	-	-	e3402f78e48efd03
+function	c:@F@CFReadStreamClose	-			void (CFReadStreamRef)	CFReadStreamRef stream	-	-	-	738178594f7c3ac5
+function	c:@F@CFWriteStreamClose	-			void (CFWriteStreamRef)	CFWriteStreamRef stream	-	-	-	d30c582f03df8930
+function	c:@F@CFReadStreamHasBytesAvailable	-			Boolean (CFReadStreamRef)	CFReadStreamRef stream	-	-	-	cb465894121fe2eb
+function	c:@F@CFReadStreamRead	-			CFIndex (CFReadStreamRef, UInt8 *, CFIndex)	CFReadStreamRef stream | UInt8 * buffer | CFIndex bufferLength	-	-	-	6dbecea83cfd0fe2
+function	c:@F@CFReadStreamGetBuffer	-			const UInt8 * (CFReadStreamRef, CFIndex, CFIndex *)	CFReadStreamRef stream | CFIndex maxBytesToRead | CFIndex * numBytesRead	-	-	-	d044b72f5f29c20c
+function	c:@F@CFWriteStreamCanAcceptBytes	-			Boolean (CFWriteStreamRef)	CFWriteStreamRef stream	-	-	-	3af47152dbd8fa8a
+function	c:@F@CFWriteStreamWrite	-			CFIndex (CFWriteStreamRef, const UInt8 *, CFIndex)	CFWriteStreamRef stream | const UInt8 * buffer | CFIndex bufferLength	-	-	-	2a611380567d310f
+function	c:@F@CFReadStreamCopyProperty	-			CFTypeRef (CFReadStreamRef, CFStreamPropertyKey)	CFReadStreamRef stream | CFStreamPropertyKey propertyName	-	-	-	d6dbe961beb414e1
+function	c:@F@CFWriteStreamCopyProperty	-			CFTypeRef (CFWriteStreamRef, CFStreamPropertyKey)	CFWriteStreamRef stream | CFStreamPropertyKey propertyName	-	-	-	4b61725daac230f2
+function	c:@F@CFReadStreamSetProperty	-			Boolean (CFReadStreamRef, CFStreamPropertyKey, CFTypeRef)	CFReadStreamRef stream | CFStreamPropertyKey propertyName | CFTypeRef propertyValue	-	-	-	67b8c2a79a14883c
+function	c:@F@CFWriteStreamSetProperty	-			Boolean (CFWriteStreamRef, CFStreamPropertyKey, CFTypeRef)	CFWriteStreamRef stream | CFStreamPropertyKey propertyName | CFTypeRef propertyValue	-	-	-	e12c109d08c4e522
+function	c:@F@CFReadStreamSetClient	-			Boolean (CFReadStreamRef, CFOptionFlags, CFReadStreamClientCallBack, CFStreamClientContext *)	CFReadStreamRef stream | CFOptionFlags streamEvents | CFReadStreamClientCallBack clientCB | CFStreamClientContext * clientContext	-	-	-	9529f8c5e4449692
+function	c:@F@CFWriteStreamSetClient	-			Boolean (CFWriteStreamRef, CFOptionFlags, CFWriteStreamClientCallBack, CFStreamClientContext *)	CFWriteStreamRef stream | CFOptionFlags streamEvents | CFWriteStreamClientCallBack clientCB | CFStreamClientContext * clientContext	-	-	-	ffc8b9fe1956d3f6
+function	c:@F@CFReadStreamScheduleWithRunLoop	-			void (CFReadStreamRef, CFRunLoopRef, CFRunLoopMode)	CFReadStreamRef stream | CFRunLoopRef runLoop | CFRunLoopMode runLoopMode	-	-	-	696a2cd257a15913
+function	c:@F@CFWriteStreamScheduleWithRunLoop	-			void (CFWriteStreamRef, CFRunLoopRef, CFRunLoopMode)	CFWriteStreamRef stream | CFRunLoopRef runLoop | CFRunLoopMode runLoopMode	-	-	-	1995ae1fa105af64
+function	c:@F@CFReadStreamUnscheduleFromRunLoop	-			void (CFReadStreamRef, CFRunLoopRef, CFRunLoopMode)	CFReadStreamRef stream | CFRunLoopRef runLoop | CFRunLoopMode runLoopMode	-	-	-	e9517c874e9d4293
+function	c:@F@CFWriteStreamUnscheduleFromRunLoop	-			void (CFWriteStreamRef, CFRunLoopRef, CFRunLoopMode)	CFWriteStreamRef stream | CFRunLoopRef runLoop | CFRunLoopMode runLoopMode	-	-	-	2ce1eb1238962423
+function	c:@F@CFReadStreamSetDispatchQueue	-			void (CFReadStreamRef, dispatch_queue_t)	CFReadStreamRef stream | dispatch_queue_t q	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	cbe07d919c99d5c2
+function	c:@F@CFWriteStreamSetDispatchQueue	-			void (CFWriteStreamRef, dispatch_queue_t)	CFWriteStreamRef stream | dispatch_queue_t q	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	766c56d19fcb265a
+function	c:@F@CFReadStreamCopyDispatchQueue	-			dispatch_queue_t (CFReadStreamRef)	CFReadStreamRef stream	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	c41dae6b8a4631e6
+function	c:@F@CFWriteStreamCopyDispatchQueue	-			dispatch_queue_t (CFWriteStreamRef)	CFWriteStreamRef stream	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	60053980979179ca
 typedef	c:@T@CFStreamErrorDomain	-			enum CFStreamErrorDomain	-	-	-	-	dcd4fc83e59dad6c
 enum	c:@E@CFStreamErrorDomain	-			CFIndex	-	-	-	-	dc004d442fe505c7
 enumconst	c:@E@CFStreamErrorDomain@kCFStreamErrorDomainCustom	CFStreamErrorDomain			-	-	-	-	-	27e399d7f6e7e259
 enumconst	c:@E@CFStreamErrorDomain@kCFStreamErrorDomainPOSIX	CFStreamErrorDomain			-	-	-	-	-	a469fa01abbc1428
 enumconst	c:@E@CFStreamErrorDomain@kCFStreamErrorDomainMacOSStatus	CFStreamErrorDomain			-	-	-	-	-	86b72d0bc5dd2afb
-function	c:@F@CFReadStreamGetError	-			CFStreamError (CFReadStreamRef _Null_unspecified)	CFReadStreamRef stream	-	-	-	36fa552cd2db9e47
-function	c:@F@CFWriteStreamGetError	-			CFStreamError (CFWriteStreamRef _Null_unspecified)	CFWriteStreamRef stream	-	-	-	057ebdc80e31d0a6
+function	c:@F@CFReadStreamGetError	-			CFStreamError (CFReadStreamRef)	CFReadStreamRef stream	-	-	-	ae10ccc6dba925c3
+function	c:@F@CFWriteStreamGetError	-			CFStreamError (CFWriteStreamRef)	CFWriteStreamRef stream	-	-	-	effe2d0053b42172
 typedef	c:@T@CFPropertyListMutabilityOptions	-			enum CFPropertyListMutabilityOptions	-	-	-	-	8d93f4bb1a8632f0
 enum	c:@E@CFPropertyListMutabilityOptions	-			CFOptionFlags	-	-	-	-	41b9bd34736b5910
 enumconst	c:@E@CFPropertyListMutabilityOptions@kCFPropertyListImmutable	CFPropertyListMutabilityOptions			-	-	-	-	-	551011ff7eb0bb44
@@ -1714,10 +1714,10 @@ function	c:@F@CFSetCreateMutableCopy	-			CFMutableSetRef (CFAllocatorRef, CFInde
 function	c:@F@CFSetGetCount	-			CFIndex (CFSetRef)	CFSetRef theSet	-	-	-	afc6049c8a4d4b1b
 function	c:@F@CFSetGetCountOfValue	-			CFIndex (CFSetRef, const void *)	CFSetRef theSet | const void * value	-	-	-	1a137face917b65b
 function	c:@F@CFSetContainsValue	-			Boolean (CFSetRef, const void *)	CFSetRef theSet | const void * value	-	-	-	884584591c3284c5
-function	c:@F@CFSetGetValue	-			const void *(CFSetRef, const void *)	CFSetRef theSet | const void * value	-	-	-	c67fab20381fbe26
+function	c:@F@CFSetGetValue	-			const void * (CFSetRef, const void *)	CFSetRef theSet | const void * value	-	-	-	50eaeadcae4749f9
 function	c:@F@CFSetGetValueIfPresent	-			Boolean (CFSetRef, const void *, const void **)	CFSetRef theSet | const void * candidate | const void ** value	-	-	-	08c4d6e71b5589fb
 function	c:@F@CFSetGetValues	-			void (CFSetRef, const void **)	CFSetRef theSet | const void ** values	-	-	-	14636ae5735e4860
-function	c:@F@CFSetApplyFunction	-			void (CFSetRef, __attribute__((noescape)) CFSetApplierFunction, void *)	CFSetRef theSet | CFSetApplierFunction applier | void * context	-	-	-	c3abba02070579bc
+function	c:@F@CFSetApplyFunction	-			void (CFSetRef, CFSetApplierFunction, void *)	CFSetRef theSet | CFSetApplierFunction applier | void * context	-	-	-	116f7f5223251f42
 function	c:@F@CFSetAddValue	-			void (CFMutableSetRef, const void *)	CFMutableSetRef theSet | const void * value	-	-	-	1e5a08340c702d26
 function	c:@F@CFSetReplaceValue	-			void (CFMutableSetRef, const void *)	CFMutableSetRef theSet | const void * value	-	-	-	9ea3832a9dd77bbd
 function	c:@F@CFSetSetValue	-			void (CFMutableSetRef, const void *)	CFMutableSetRef theSet | const void * value	-	-	-	e77c9dc4f46ce9e0
@@ -1876,7 +1876,7 @@ function	c:@F@CFTreeGetContext	-			void (CFTreeRef, CFTreeContext *)	CFTreeRef t
 function	c:@F@CFTreeGetChildCount	-			CFIndex (CFTreeRef)	CFTreeRef tree	-	-	-	02c0ce31be491bb8
 function	c:@F@CFTreeGetChildAtIndex	-			CFTreeRef (CFTreeRef, CFIndex)	CFTreeRef tree | CFIndex idx	-	-	-	9c1510c5a1239830
 function	c:@F@CFTreeGetChildren	-			void (CFTreeRef, CFTreeRef *)	CFTreeRef tree | CFTreeRef * children	-	-	-	74badeb492deff80
-function	c:@F@CFTreeApplyFunctionToChildren	-			void (CFTreeRef, __attribute__((noescape)) CFTreeApplierFunction, void *)	CFTreeRef tree | CFTreeApplierFunction applier | void * context	-	-	-	db7b9ffee9048f02
+function	c:@F@CFTreeApplyFunctionToChildren	-			void (CFTreeRef, CFTreeApplierFunction, void *)	CFTreeRef tree | CFTreeApplierFunction applier | void * context	-	-	-	f58682150161c41b
 function	c:@F@CFTreeFindRoot	-			CFTreeRef (CFTreeRef)	CFTreeRef tree	-	-	-	1bd4a2322b0a3c6e
 function	c:@F@CFTreeSetContext	-			void (CFTreeRef, const CFTreeContext *)	CFTreeRef tree | const CFTreeContext * context	-	-	-	9c7baca438ee874e
 function	c:@F@CFTreePrependChild	-			void (CFTreeRef, CFTreeRef)	CFTreeRef tree | CFTreeRef newChild	-	-	-	03a8f4b5afeb3d60

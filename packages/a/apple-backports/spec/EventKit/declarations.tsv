@@ -128,14 +128,14 @@ property	c:objc(cs)EKAlarm(py)absoluteDate	-			NSDate *	-	copy,nonatomic	ios=4.0
 property	c:objc(cs)EKAlarm(py)structuredLocation	-			EKStructuredLocation *	-	copy,nonatomic	ios=4.0/-/-/0	-	30da59050fccc6be
 property	c:objc(cs)EKAlarm(py)proximity	-			EKAlarmProximity	-	nonatomic	ios=4.0/-/-/0	-	dc26bcfabf344ceb
 property	c:objc(cs)EKAlarm(py)type	-			EKAlarmType	-	readonly,nonatomic	ios=-/-/-/1	-	6116c98054df4802
-property	c:objc(cs)EKAlarm(py)emailAddress	-			NS_AVAILABLE NSString *	-	copy,nonatomic	ios=-/-/-/1	-	eee7456994a974dc
-property	c:objc(cs)EKAlarm(py)soundName	-			NS_AVAILABLE NSString *	-	copy,nonatomic	ios=-/-/-/1	-	30de9a192d2b3313
-property	c:objc(cs)EKAlarm(py)url	-			NS_DEPRECATED NSURL *	-	copy,nonatomic	ios=-/-/-/1	-	a36714c4c563ea78
+property	c:objc(cs)EKAlarm(py)emailAddress	-			NSString *	-	copy,nonatomic	ios=-/-/-/1	-	fb6c6a40a2c2f4f0
+property	c:objc(cs)EKAlarm(py)soundName	-			NSString *	-	copy,nonatomic	ios=-/-/-/1	-	581aef3d72f5774f
+property	c:objc(cs)EKAlarm(py)url	-			NSURL *	-	copy,nonatomic	ios=-/-/-/1	-	fac8bbb7c9bf7fc7
 typedef	c:@T@EKSpan	-			enum EKSpan	-	-	-	-	cb29dedfc8d988f9
 enum	c:@E@EKSpan	-			NSInteger	-	-	-	-	dc90f289caf19309
 enumconst	c:@E@EKSpan@EKSpanThisEvent	EKSpan			-	-	-	-	-	dd7da587603f8aa9
 enumconst	c:@E@EKSpan@EKSpanFutureEvents	EKSpan			-	-	-	-	-	ba9b11573f592ed7
-typedef	c:@T@EKEventSearchCallback	-			void (^)(EKEvent * _Nonnull, BOOL * _Nonnull)	-	-	-	-	378c9d9613d2859f
+typedef	c:@T@EKEventSearchCallback	-			void ((^))(EKEvent *, BOOL *)	-	-	-	-	ae5ec7c679e759d0
 interface	c:objc(cs)EKEventStore	-			-	-	-	ios=4.0/-/-/0	deprecated: Use -requestFullAccessToEventsWithCompletion:, -requestWriteOnlyAccessToEventsWithCompletion:, or -requestFullAccessToRemindersWithCompletion:	7b631bb226606fc9
 super	-	EKEventStore	NSObject		-	-	-	-	-	43843f98d4a7ba86
 method	c:objc(cs)EKEventStore(cm)authorizationStatusForEntityType:	-			EKAuthorizationStatus	EKEntityType entityType	-	ios=6.0/-/-/0	-	6a57e7059e07e970
@@ -147,10 +147,10 @@ method	c:objc(cs)EKEventStore(im)requestWriteOnlyAccessToEventsWithCompletion:	-
 method	c:objc(cs)EKEventStore(im)requestFullAccessToRemindersWithCompletion:	-			void	EKEventStoreRequestAccessCompletionHandler completion	-	ios=17.0/-/-/0,macos=14.0/-/-/0,watchos=10.0/-/-/0	-	538c0bce60d2eaee
 method	c:objc(cs)EKEventStore(im)requestAccessToEntityType:completion:	-			void	EKEntityType entityType | EKEventStoreRequestAccessCompletionHandler completion	-	ios=6.0/17.0/-/0,macos=10.0/14.0/-/0,watchos=1.0/10.0/-/0	deprecated: Use -requestFullAccessToEventsWithCompletion:, -requestWriteOnlyAccessToEventsWithCompletion:, or -requestFullAccessToRemindersWithCompletion:	ba139b8513ddc714
 property	c:objc(cs)EKEventStore(py)eventStoreIdentifier	-			NSString *	-	readonly,nonatomic	ios=4.0/-/-/0	-	fceaecd984a92292
-property	c:objc(cs)EKEventStore(py)delegateSources	-			NS_AVAILABLE NSArray<EKSource *> *	-	readonly,nonatomic	ios=12.0/-/-/0	-	f17842ec9ce4cc0d
-property	c:objc(cs)EKEventStore(py)sources	-			NS_AVAILABLE NSArray<EKSource *> *	-	readonly,nonatomic	ios=5.0/-/-/0	-	e40b7481d6413567
+property	c:objc(cs)EKEventStore(py)delegateSources	-			NSArray<EKSource *> *	-	readonly,nonatomic	ios=12.0/-/-/0	-	ce6e2f04bb844f0d
+property	c:objc(cs)EKEventStore(py)sources	-			NSArray<EKSource *> *	-	readonly,nonatomic	ios=5.0/-/-/0	-	ae03847445ee7c87
 method	c:objc(cs)EKEventStore(im)sourceWithIdentifier:	-			EKSource *	NSString * identifier	-	ios=5.0/-/-/0	-	1d3f176c69b9b7dd
-property	c:objc(cs)EKEventStore(py)calendars	-			NS_DEPRECATED NSArray<EKCalendar *> *	-	readonly,nonatomic	ios=4.0/6.0/-/0	-	6545722651112ac5
+property	c:objc(cs)EKEventStore(py)calendars	-			NSArray<EKCalendar *> *	-	readonly,nonatomic	ios=4.0/6.0/-/0	-	07783d4fbc0713fd
 method	c:objc(cs)EKEventStore(im)calendarsForEntityType:	-			NSArray<EKCalendar *> *	EKEntityType entityType	-	ios=6.0/-/-/0	-	8a80729f736364a9
 property	c:objc(cs)EKEventStore(py)defaultCalendarForNewEvents	-			EKCalendar *	-	readonly,nonatomic	ios=4.0/-/-/0	-	8018920c64feee4a
 method	c:objc(cs)EKEventStore(im)defaultCalendarForNewReminders	-			EKCalendar *	-	-	ios=6.0/-/-/0	-	0e56522f3b940a86
@@ -177,14 +177,14 @@ method	c:objc(cs)EKEventStore(im)predicateForCompletedRemindersWithCompletionDat
 method	c:objc(cs)EKEventStore(im)commit:	-			BOOL	NSError * _Nullable * error	-	ios=5.0/-/-/0,watchos=-/-/-/1	-	f2f4cddca894360f
 method	c:objc(cs)EKEventStore(im)reset	-			void	-	-	ios=5.0/-/-/0	-	d8c60e3f4713e8c3
 method	c:objc(cs)EKEventStore(im)refreshSourcesIfNecessary	-			void	-	-	ios=5.0/-/-/0,watchos=-/-/-/1	-	98c68a19e0459ef6
-typedef	c:@T@EKEventStoreRequestAccessCompletionHandler	-			void (^)(BOOL, NSError * _Nullable)	-	-	-	-	357ae1949140be96
+typedef	c:@T@EKEventStoreRequestAccessCompletionHandler	-			void ((^))(BOOL, NSError *)	-	-	-	-	28bfb5c4b1241a0f
 var	c:@EKEventStoreChangedNotification	-			NSString *const	-	-	ios=4.0/-/-/0	-	49ee0936a9c0d865
 interface	c:objc(cs)EKCalendar	-			-	-	-	ios=4.0/-/-/0	-	d6e883d8b427e27f
 super	-	EKCalendar	EKObject		-	-	-	-	-	d1f543263c8d685d
 method	c:objc(cs)EKCalendar(cm)calendarWithEventStore:	-			EKCalendar *	EKEventStore * eventStore	-	ios=4.0/6.0/-/0	-	7d22df29c2f9a49a
 method	c:objc(cs)EKCalendar(cm)calendarForEntityType:eventStore:	-			EKCalendar *	EKEntityType entityType | EKEventStore * eventStore	-	ios=6.0/-/-/0	-	c151e8440ba69ff3
 property	c:objc(cs)EKCalendar(py)source	-			EKSource *	-	strong,nonatomic	ios=4.0/-/-/0	-	220a1785cd1c81d2
-property	c:objc(cs)EKCalendar(py)calendarIdentifier	-			NS_AVAILABLE NSString *	-	readonly,nonatomic	ios=5.0/-/-/0	-	6c859e59f0559cb8
+property	c:objc(cs)EKCalendar(py)calendarIdentifier	-			NSString *	-	readonly,nonatomic	ios=5.0/-/-/0	-	d86efebd87ce33c2
 property	c:objc(cs)EKCalendar(py)title	-			NSString *	-	copy,nonatomic	ios=4.0/-/-/0	-	59c61d647571556a
 property	c:objc(cs)EKCalendar(py)type	-			EKCalendarType	-	readonly,nonatomic	ios=4.0/-/-/0	-	77997f57839e2540
 property	c:objc(cs)EKCalendar(py)allowsContentModifications	-			BOOL	-	readonly,nonatomic	ios=4.0/-/-/0	-	be53b8bb97c6e87a
@@ -236,17 +236,17 @@ enumconst	c:@E@EKErrorCode@EKErrorReminderAlarmContainsEmailOrUrl	EKErrorCode			
 enumconst	c:@E@EKErrorCode@EKErrorLast	EKErrorCode			-	-	-	-	-	6cf57204d169d498
 interface	c:objc(cs)EKCalendarItem	-			-	-	-	ios=5.0/-/-/0	-	b7951d92a48a5b9b
 super	-	EKCalendarItem	EKObject		-	-	-	-	-	76b4d69342d8e2b4
-property	c:objc(cs)EKCalendarItem(py)UUID	-			NS_DEPRECATED NSString *	-	readonly,nonatomic	ios=5.0/6.0/-/0	-	50429828c7352af5
+property	c:objc(cs)EKCalendarItem(py)UUID	-			NSString *	-	readonly,nonatomic	ios=5.0/6.0/-/0	-	67c24a12cbd401a6
 property	c:objc(cs)EKCalendarItem(py)calendar	-			EKCalendar *	-	strong,nonatomic	ios=5.0/-/-/0	-	a701824ecb5fb409
-property	c:objc(cs)EKCalendarItem(py)calendarItemIdentifier	-			NS_AVAILABLE NSString *	-	readonly,nonatomic	ios=6.0/-/-/0	-	9753c52f99790142
-property	c:objc(cs)EKCalendarItem(py)calendarItemExternalIdentifier	-			NS_AVAILABLE NSString *	-	readonly,nonatomic	ios=6.0/-/-/0	-	385b598098c24b88
+property	c:objc(cs)EKCalendarItem(py)calendarItemIdentifier	-			NSString *	-	readonly,nonatomic	ios=6.0/-/-/0	-	7b5f28e7e16a2d00
+property	c:objc(cs)EKCalendarItem(py)calendarItemExternalIdentifier	-			NSString *	-	readonly,nonatomic	ios=6.0/-/-/0	-	06f1fccfc12622fa
 property	c:objc(cs)EKCalendarItem(py)title	-			NSString *	-	copy,nonatomic	ios=5.0/-/-/0	-	79ad22b6f7e194e1
 property	c:objc(cs)EKCalendarItem(py)location	-			NSString *	-	copy,nonatomic	ios=5.0/-/-/0	-	405c8b08ce104b1c
 property	c:objc(cs)EKCalendarItem(py)notes	-			NSString *	-	copy,nonatomic	ios=5.0/-/-/0	-	3cc0301dc55dd60c
-property	c:objc(cs)EKCalendarItem(py)URL	-			NS_AVAILABLE NSURL *	-	copy,nonatomic	ios=5.0/-/-/0	-	676455fcdbe8854a
+property	c:objc(cs)EKCalendarItem(py)URL	-			NSURL *	-	copy,nonatomic	ios=5.0/-/-/0	-	8d94e0151a2f52cd
 property	c:objc(cs)EKCalendarItem(py)lastModifiedDate	-			NSDate *	-	readonly,nonatomic	ios=5.0/-/-/0	-	389a6e0c4f8c6113
-property	c:objc(cs)EKCalendarItem(py)creationDate	-			NS_AVAILABLE NSDate *	-	readonly,strong,nonatomic	ios=5.0/-/-/0	-	8b57020079d3b5a2
-property	c:objc(cs)EKCalendarItem(py)timeZone	-			NS_AVAILABLE NSTimeZone *	-	copy,nonatomic	ios=5.0/-/-/0	-	920be81f844cbcbc
+property	c:objc(cs)EKCalendarItem(py)creationDate	-			NSDate *	-	readonly,strong,nonatomic	ios=5.0/-/-/0	-	3e0d37db163ae87d
+property	c:objc(cs)EKCalendarItem(py)timeZone	-			NSTimeZone *	-	copy,nonatomic	ios=5.0/-/-/0	-	c4ee0a3fcdda08b4
 property	c:objc(cs)EKCalendarItem(py)hasAlarms	-			BOOL	-	readonly,nonatomic	ios=5.0/-/-/0	-	dea0442f86f1fe5b
 property	c:objc(cs)EKCalendarItem(py)hasRecurrenceRules	-			BOOL	-	readonly,nonatomic	ios=5.0/-/-/0	-	527fe8964bc249fc
 property	c:objc(cs)EKCalendarItem(py)hasAttendees	-			BOOL	-	readonly,nonatomic	ios=5.0/-/-/0	-	a584a7fbde0b5df2
@@ -255,7 +255,7 @@ property	c:objc(cs)EKCalendarItem(py)attendees	-			NSArray<__kindof EKParticipan
 property	c:objc(cs)EKCalendarItem(py)alarms	-			NSArray<EKAlarm *> *	-	copy,nonatomic	ios=5.0/-/-/0	-	a2a47ee95e5115bc
 method	c:objc(cs)EKCalendarItem(im)addAlarm:	-			void	EKAlarm * alarm	-	ios=5.0/-/-/0	-	7347c30680cc9ad5
 method	c:objc(cs)EKCalendarItem(im)removeAlarm:	-			void	EKAlarm * alarm	-	ios=5.0/-/-/0	-	b1383ccf708701f2
-property	c:objc(cs)EKCalendarItem(py)recurrenceRules	-			NS_AVAILABLE NSArray<EKRecurrenceRule *> *	-	copy,nonatomic	ios=5.0/-/-/0	-	446681305aa5322c
+property	c:objc(cs)EKCalendarItem(py)recurrenceRules	-			NSArray<EKRecurrenceRule *> *	-	copy,nonatomic	ios=5.0/-/-/0	-	f8677bc12ebf814d
 method	c:objc(cs)EKCalendarItem(im)addRecurrenceRule:	-			void	EKRecurrenceRule * rule	-	ios=5.0/-/-/0	-	20020f4c659b6058
 method	c:objc(cs)EKCalendarItem(im)removeRecurrenceRule:	-			void	EKRecurrenceRule * rule	-	ios=5.0/-/-/0	-	9ed4330d2aeb9eed
 typedef	c:@T@EKEventAvailability	-			enum EKEventAvailability	-	-	-	-	1f994fec144e7381
@@ -278,17 +278,17 @@ property	c:objc(cs)EKEvent(py)eventIdentifier	-			NSString *	-	readonly,nonatomi
 property	c:objc(cs)EKEvent(py)allDay	-			BOOL	-	nonatomic,getter=isAllDay	ios=4.0/-/-/0	-	98da413811b7366b
 property	c:objc(cs)EKEvent(py)startDate	-			NSDate *	-	copy,nonatomic	ios=4.0/-/-/0	-	8a7ca1a6a0213ef1
 property	c:objc(cs)EKEvent(py)endDate	-			NSDate *	-	copy,nonatomic	ios=4.0/-/-/0	-	d2eb9e91615a74d9
-property	c:objc(cs)EKEvent(py)structuredLocation	-			NS_AVAILABLE EKStructuredLocation *	-	copy,nonatomic	ios=9.0/-/-/0	-	a057cb2b56a0789d
+property	c:objc(cs)EKEvent(py)structuredLocation	-			EKStructuredLocation *	-	copy,nonatomic	ios=9.0/-/-/0	-	70873bb0d3286048
 method	c:objc(cs)EKEvent(im)compareStartDateWithEvent:	-			NSComparisonResult	EKEvent * other	-	ios=4.0/-/-/0	-	9274bdbef57bfeed
 property	c:objc(cs)EKEvent(py)organizer	-			EKParticipant *	-	readonly,nonatomic	ios=4.0/-/-/0	-	a63b34f56747882c
 property	c:objc(cs)EKEvent(py)availability	-			EKEventAvailability	-	nonatomic	ios=4.0/-/-/0	-	fef0a6850a9aa74c
 property	c:objc(cs)EKEvent(py)status	-			EKEventStatus	-	readonly,nonatomic	ios=4.0/-/-/0	-	197dffe40ed7d42e
 property	c:objc(cs)EKEvent(py)isDetached	-			BOOL	-	readonly,nonatomic	ios=4.0/-/-/0	-	772af368910c4e9b
-property	c:objc(cs)EKEvent(py)occurrenceDate	-			NS_AVAILABLE NSDate *	-	readonly,nonatomic	ios=9.0/-/-/0	-	543c60a5c047ba76
+property	c:objc(cs)EKEvent(py)occurrenceDate	-			NSDate *	-	readonly,nonatomic	ios=9.0/-/-/0	-	52b1b44b1172b122
 method	c:objc(cs)EKEvent(im)refresh	-			BOOL	-	-	ios=4.0/-/-/0	-	62d38a4b106845e5
-property	c:objc(cs)EKEvent(py)birthdayContactIdentifier	-			NS_AVAILABLE NSString *	-	readonly,nonatomic	ios=9.0/-/-/0	-	3996c0f6b7db37e6
+property	c:objc(cs)EKEvent(py)birthdayContactIdentifier	-			NSString *	-	readonly,nonatomic	ios=9.0/-/-/0	-	c8ff2d7b5a0bf2a2
 property	c:objc(cs)EKEvent(py)birthdayPersonID	-			NSInteger	-	readonly,nonatomic	ios=5.0/9.0/-/0	-	eaf3fc3e80b6312d
-property	c:objc(cs)EKEvent(py)birthdayPersonUniqueID	-			NS_DEPRECATED_MAC NSString *	-	readonly,nonatomic	ios=-/-/-/1	-	cb8cf94466150f8a
+property	c:objc(cs)EKEvent(py)birthdayPersonUniqueID	-			NSString *	-	readonly,nonatomic	ios=-/-/-/1	-	6a3320ab6f4da9b0
 typedef	c:@T@ABRecordRef	-			CFTypeRef	-	-	ios=2.0/9.0/-/0	-	4aad0ec3b8eb5112
 typedef	c:@T@ABAddressBookRef	-			CFTypeRef	-	-	ios=2.0/9.0/-/0	-	e3c5508ecd595536
 interface	c:objc(cs)EKParticipant	-			-	-	-	ios=4.0/-/-/0	deprecated: Use contactPredicate instead	35cf0c7630573afc
@@ -300,7 +300,7 @@ property	c:objc(cs)EKParticipant(py)participantStatus	-			EKParticipantStatus	-	
 property	c:objc(cs)EKParticipant(py)participantRole	-			EKParticipantRole	-	readonly,nonatomic	ios=4.0/-/-/0	-	c7f90d2cc7aff38e
 property	c:objc(cs)EKParticipant(py)participantType	-			EKParticipantType	-	readonly,nonatomic	ios=4.0/-/-/0	-	7dd35957642cfe47
 property	c:objc(cs)EKParticipant(py)currentUser	-			BOOL	-	readonly,nonatomic,getter=isCurrentUser	ios=6.0/-/-/0	-	247e9bee41c655a9
-property	c:objc(cs)EKParticipant(py)contactPredicate	-			NS_AVAILABLE NSPredicate *	-	readonly,nonatomic	ios=9.0/-/-/0	-	1cd7504700ea01d1
+property	c:objc(cs)EKParticipant(py)contactPredicate	-			NSPredicate *	-	readonly,nonatomic	ios=9.0/-/-/0	-	73db3acf1a71286f
 method	c:objc(cs)EKParticipant(im)ABRecordWithAddressBook:	-			ABRecordRef	ABAddressBookRef addressBook	-	ios=4.0/-/-/0,maccatalyst=14.0/-/-/0,watchos=-/-/-/1	deprecated: Use contactPredicate instead	0b6c3319ec8ffbd6
 interface	c:objc(cs)EKRecurrenceEnd	-			-	-	-	ios=4.0/-/-/0	-	77bf71b87207ac08
 super	-	EKRecurrenceEnd	NSObject		-	-	-	-	-	c4452e3debc2e0e5
@@ -348,7 +348,7 @@ super	-	EKSource	EKObject		-	-	-	-	-	1a17b00cb445173b
 property	c:objc(cs)EKSource(py)sourceIdentifier	-			NSString *	-	readonly,nonatomic	ios=5.0/-/-/0	-	cdf41ec9c206be94
 property	c:objc(cs)EKSource(py)sourceType	-			EKSourceType	-	readonly,nonatomic	ios=5.0/-/-/0	-	ebed01bee600f3fa
 property	c:objc(cs)EKSource(py)title	-			NSString *	-	readonly,nonatomic	ios=5.0/-/-/0	-	02bbcae95fe2ca91
-property	c:objc(cs)EKSource(py)calendars	-			NS_DEPRECATED NSSet<EKCalendar *> *	-	readonly,nonatomic	ios=4.0/6.0/-/0	-	f9997e261d74f4ce
+property	c:objc(cs)EKSource(py)calendars	-			NSSet<EKCalendar *> *	-	readonly,nonatomic	ios=4.0/6.0/-/0	-	0d2ac939e699b2c4
 method	c:objc(cs)EKSource(im)calendarsForEntityType:	-			NSSet<EKCalendar *> *	EKEntityType entityType	-	ios=6.0/-/-/0	-	d0eae72867b84925
 property	c:objc(cs)EKSource(py)isDelegate	-			BOOL	-	readonly,assign,nonatomic	ios=16.0/-/-/0	-	c7dc3cb56e000838
 interface	c:objc(cs)EKStructuredLocation	-			-	-	-	ios=6.0/-/-/0	-	92d94af38d5176aa

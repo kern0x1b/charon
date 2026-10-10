@@ -110,7 +110,7 @@ method	c:objc(pl)CHHapticPatternPlayer(im)sendParameters:atTime:error:	-			BOOL	
 method	c:objc(pl)CHHapticPatternPlayer(im)scheduleParameterCurve:atTime:error:	-			BOOL	CHHapticParameterCurve * parameterCurve | NSTimeInterval time | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	833587091a48df87
 method	c:objc(pl)CHHapticPatternPlayer(im)cancelAndReturnError:	-			BOOL	NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	de7d9edac4523b00
 property	c:objc(pl)CHHapticPatternPlayer(py)isMuted	-			BOOL	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	c808d409248c1bc1
-typedef	c:@T@CHHapticAdvancedPatternPlayerCompletionHandler	-			void (^)(NSError * _Nullable)	-	-	-	-	ccfae8cce9eef6c4
+typedef	c:@T@CHHapticAdvancedPatternPlayerCompletionHandler	-			void ((^))(NSError *)	-	-	-	-	ad63618a36f00e40
 protocol	c:objc(pl)CHHapticAdvancedPatternPlayer	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	5b304cddf1a48622
 conforms	-	CHHapticAdvancedPatternPlayer	CHHapticPatternPlayer		-	-	-	-	-	b6ba7e8008be2345
 method	c:objc(pl)CHHapticAdvancedPatternPlayer(im)pauseAtTime:error:	-			BOOL	NSTimeInterval time | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	7417485653b0f11b
@@ -121,12 +121,12 @@ property	c:objc(pl)CHHapticAdvancedPatternPlayer(py)loopEnd	-			NSTimeInterval	-
 property	c:objc(pl)CHHapticAdvancedPatternPlayer(py)playbackRate	-			float	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	a0baf0a6b8bee2ee
 property	c:objc(pl)CHHapticAdvancedPatternPlayer(py)isMuted	-			BOOL	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	2121f09d706fba93
 property	c:objc(pl)CHHapticAdvancedPatternPlayer(py)completionHandler	-			CHHapticAdvancedPatternPlayerCompletionHandler	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	0e56f10d4b939642
-typedef	c:@T@CHHapticCompletionHandler	-			void (^)(NSError * _Nullable)	-	-	-	-	d2037222de688f55
+typedef	c:@T@CHHapticCompletionHandler	-			void ((^))(NSError *)	-	-	-	-	0f7d32f67be3ca67
 typedef	c:@T@CHHapticEngineFinishedAction	-			enum CHHapticEngineFinishedAction	-	-	-	-	8f58749fc61c1f01
 enum	c:@E@CHHapticEngineFinishedAction	-			NSInteger	-	-	-	-	b07252f83890f036
 enumconst	c:@E@CHHapticEngineFinishedAction@CHHapticEngineFinishedActionStopEngine	CHHapticEngineFinishedAction			-	-	-	-	-	d09d6762b5ee4ae9
 enumconst	c:@E@CHHapticEngineFinishedAction@CHHapticEngineFinishedActionLeaveEngineRunning	CHHapticEngineFinishedAction			-	-	-	-	-	43856184bffa201c
-typedef	c:@T@CHHapticEngineFinishedHandler	-			CHHapticEngineFinishedAction (^)(NSError * _Nullable)	-	-	-	-	51bfac0a9c5a7dad
+typedef	c:@T@CHHapticEngineFinishedHandler	-			CHHapticEngineFinishedAction ((^))(NSError *)	-	-	-	-	3c138c22fd99b042
 typedef	c:@T@CHHapticEngineStoppedReason	-			enum CHHapticEngineStoppedReason	-	-	-	-	a8da3f5548958dc2
 enum	c:@E@CHHapticEngineStoppedReason	-			NSInteger	-	-	-	-	d5d9cdf187285426
 enumconst	c:@E@CHHapticEngineStoppedReason@CHHapticEngineStoppedReasonAudioSessionInterrupt	CHHapticEngineStoppedReason			-	-	-	-	-	7ece6a523481e1b4
@@ -136,8 +136,8 @@ enumconst	c:@E@CHHapticEngineStoppedReason@CHHapticEngineStoppedReasonNotifyWhen
 enumconst	c:@E@CHHapticEngineStoppedReason@CHHapticEngineStoppedReasonEngineDestroyed	CHHapticEngineStoppedReason			-	-	-	-	-	2ebe1a6d4180a285
 enumconst	c:@E@CHHapticEngineStoppedReason@CHHapticEngineStoppedReasonGameControllerDisconnect	CHHapticEngineStoppedReason			-	-	-	-	-	8c3597bdc120c467
 enumconst	c:@E@CHHapticEngineStoppedReason@CHHapticEngineStoppedReasonSystemError	CHHapticEngineStoppedReason			-	-	-	-	-	4a49ca1329c56170
-typedef	c:@T@CHHapticEngineStoppedHandler	-			void (^)(CHHapticEngineStoppedReason)	-	-	-	-	882a7a139a50d848
-typedef	c:@T@CHHapticEngineResetHandler	-			void (^)(void)	-	-	-	-	5b0f10912ac382ac
+typedef	c:@T@CHHapticEngineStoppedHandler	-			void ((^))(CHHapticEngineStoppedReason)	-	-	-	-	2860607d6eb67c45
+typedef	c:@T@CHHapticEngineResetHandler	-			void ((^))(void)	-	-	-	-	7bcb7ed42f9dc51d
 interface	c:objc(cs)CHHapticEngine	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	f86ce45ddc5e6a2b
 super	-	CHHapticEngine	NSObject		-	-	-	-	-	e8dc146d88d2bcda
 method	c:objc(cs)CHHapticEngine(cm)capabilitiesForHardware	-			id<CHHapticDeviceCapability>	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	678b4fdd6dbb6579
@@ -162,7 +162,7 @@ method	c:objc(cs)CHHapticEngine(im)registerAudioResource:options:error:	-			CHHa
 method	c:objc(cs)CHHapticEngine(im)unregisterAudioResource:error:	-			BOOL	CHHapticAudioResourceID resourceID | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	b62b88c65958eae1
 method	c:objc(cs)CHHapticEngine(im)playPatternFromURL:error:	-			BOOL	NSURL * fileURL | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	edfaa96619322245
 method	c:objc(cs)CHHapticEngine(im)playPatternFromData:error:	-			BOOL	NSData * data | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	8712b5ac84bba0ac
-property	c:objc(cs)CHHapticEngine(py)intendedSpatialExperience	-			API_AVAILABLE CASpatialAudioExperience *	-	copy	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	c578f8117a9a4276
+property	c:objc(cs)CHHapticEngine(py)intendedSpatialExperience	-			CASpatialAudioExperience *	-	copy	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	050de09298bd17f5
 typedef	c:@T@CHHapticAudioResourceKey	-			NSString *	-	-	-	-	30e3ca6910d3d251
 var	c:@CHHapticAudioResourceKeyUseVolumeEnvelope	-			CHHapticAudioResourceKey	-	-	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1	-	df6e6934683ca7f9
 var	c:@CHHapticAudioResourceKeyLoopEnabled	-			CHHapticAudioResourceKey	-	-	ios=16.0/-/-/0,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	6e8b5f4b77d8fa62

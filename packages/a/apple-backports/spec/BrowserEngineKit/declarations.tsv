@@ -13,12 +13,12 @@ super	-	BELayerHierarchy	NSObject		-	-	-	-	-	8c35af11269d2cc0
 method	c:objc(cs)BELayerHierarchy(im)init	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	579847bfde2c64ad
 method	c:objc(cs)BELayerHierarchy(cm)new	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b522a37afacbcd2e
 method	c:objc(cs)BELayerHierarchy(cm)layerHierarchyWithError:	-			BELayerHierarchy *	NSError * _Nullable * error	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	05a73932ccabbde8
-property	c:objc(cs)BELayerHierarchy(py)handle	-			NS_SWIFT_NAME BELayerHierarchyHandle *	-	readonly,strong,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6f768a5f4356037a
-property	c:objc(cs)BELayerHierarchy(py)layer	-			NS_SWIFT_NAME CALayer *	-	strong,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4c3765c562c441f3
+property	c:objc(cs)BELayerHierarchy(py)handle	-			BELayerHierarchyHandle *	-	readonly,strong,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	76c0684380e0a36a
+property	c:objc(cs)BELayerHierarchy(py)layer	-			CALayer *	-	strong,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	32826487dd2491c6
 method	c:objc(cs)BELayerHierarchy(im)invalidate	-			void	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3ddc44db7401c862
 interface	c:objc(cs)BELayerHierarchyHostingView	-			-	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b70857018504d559
 super	-	BELayerHierarchyHostingView	UIView		-	-	-	-	-	2fdc1759ee613614
-property	c:objc(cs)BELayerHierarchyHostingView(py)handle	-			NS_SWIFT_NAME BELayerHierarchyHandle *	-	strong,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	aa9f60e27bf9889d
+property	c:objc(cs)BELayerHierarchyHostingView(py)handle	-			BELayerHierarchyHandle *	-	strong,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1234a574e36eebe7
 interface	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator	-			-	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	78ba4a533532eb89
 super	-	BELayerHierarchyHostingTransactionCoordinator	NSObject		-	-	-	-	-	de1d45baea9e3ff1
 conforms	-	BELayerHierarchyHostingTransactionCoordinator	NSSecureCoding		-	-	-	-	-	42b93d5a4ef5769e
@@ -217,8 +217,8 @@ method	c:objc(pl)BETextInput(im)updateCurrentSelectionTo:fromGesture:inState:	-	
 method	c:objc(pl)BETextInput(im)setSelectionFromPoint:toPoint:gesture:state:	-			void	CGPoint from | CGPoint to | BEGestureType gesture | UIGestureRecognizerState state	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	55f8a76f1859da35
 method	c:objc(pl)BETextInput(im)adjustSelectionBoundaryToPoint:touchPhase:baseIsStart:flags:	-			void	CGPoint point | BESelectionTouchPhase touch | BOOL boundaryIsStart | BESelectionFlags flags	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	5b4e6fe7f64ce889
 method	c:objc(pl)BETextInput(im)textInteractionGesture:shouldBeginAtPoint:	-			BOOL	BEGestureType gestureType | CGPoint point	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	9f28d2e38c607edd
-property	c:objc(pl)BETextInput(py)selectionContainerViewBelowText	-			API_AVAILABLE UIView *	-	readonly,nonatomic	ios=26.0/-/-/0	-	be360c1a10f7e10f
-property	c:objc(pl)BETextInput(py)selectionContainerViewAboveText	-			API_AVAILABLE UIView *	-	readonly,nonatomic	ios=26.0/-/-/0	-	190637b4387f72e0
+property	c:objc(pl)BETextInput(py)selectionContainerViewBelowText	-			UIView *	-	readonly,nonatomic	ios=26.0/-/-/0	-	20e827fca7f84d96
+property	c:objc(pl)BETextInput(py)selectionContainerViewAboveText	-			UIView *	-	readonly,nonatomic	ios=26.0/-/-/0	-	af50b268ced4daeb
 property	c:objc(pl)BETextInput(py)selectedText	-			NSString *	-	readonly	ios=17.4/-/-/0,watchos=-/-/-/1	-	b7bc17cd7262cf74
 property	c:objc(pl)BETextInput(py)selectedTextRange	-			UITextRange *	-	copy	ios=17.4/-/-/0,watchos=-/-/-/1	-	ea1d08f6b4816083
 property	c:objc(pl)BETextInput(py)selectionAtDocumentStart	-			BOOL	-	readonly,nonatomic,getter=isSelectionAtDocumentStart	ios=17.4/-/-/0,watchos=-/-/-/1	-	8612f2727475247e
@@ -462,7 +462,7 @@ method	c:objc(cs)BEDownloadMonitor(im)initWithSourceURL:destinationURL:observedP
 method	c:objc(cs)BEDownloadMonitor(im)useDownloadsFolderWithPlaceholderType:finalFileCreatedHandler:	-			void	UTType * type | void (^)(BEDownloadMonitorLocation * _Nullable) finalFileCreatedHandler	-	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	861deae177c5c650
 method	c:objc(cs)BEDownloadMonitor(im)beginMonitoring:	-			void	void (^)(BEDownloadMonitorLocation * _Nullable, NSError * _Nullable) completion	-	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5ec4c7a4ce759fc7
 method	c:objc(cs)BEDownloadMonitor(im)resumeMonitoring:completionHandler:	-			void	NSURL * url | void (^)(NSError * _Nullable) completionHandler	-	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6e45fca9e3783cfe
-property	c:objc(cs)BEDownloadMonitor(py)identifier	-			NS_SWIFT_NAME NSUUID *	-	readonly	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e4411ce1b9327ecf
+property	c:objc(cs)BEDownloadMonitor(py)identifier	-			NSUUID *	-	readonly	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	91bedb96fcec8dc9
 property	c:objc(cs)BEDownloadMonitor(py)sourceURL	-			NSURL *	-	readonly	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c0a367dd76ef8633
 property	c:objc(cs)BEDownloadMonitor(py)destinationURL	-			NSURL *	-	readonly	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	327c447d16a94fcb
 method	c:objc(cs)BEDownloadMonitor(cm)createAccessToken	-			NSData *	-	-	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1ef55b33eaf05ae5

@@ -714,12 +714,12 @@ super	-	MTLIntersectionFunctionDescriptor	MTLFunctionDescriptor		-	-	-	-	-	06dca
 conforms	-	MTLIntersectionFunctionDescriptor	NSCopying		-	-	-	-	-	9ac85a7fd2f64f53
 typedef	c:@T@MTLAutoreleasedRenderPipelineReflection	-			MTLRenderPipelineReflection *	-	-	-	-	d5ed08bf2c226bcc
 typedef	c:@T@MTLAutoreleasedComputePipelineReflection	-			MTLComputePipelineReflection *	-	-	-	-	d0be30ca744a22cf
-typedef	c:@T@MTLNewLibraryCompletionHandler	-			void (^)(id<MTLLibrary> _Nullable, NSError * _Nullable)	-	-	-	-	d27644a0c51f09c9
-typedef	c:@T@MTLNewRenderPipelineStateCompletionHandler	-			void (^)(id<MTLRenderPipelineState> _Nullable, NSError * _Nullable)	-	-	-	-	7c62ba348a540c67
-typedef	c:@T@MTLNewRenderPipelineStateWithReflectionCompletionHandler	-			void (^)(id<MTLRenderPipelineState> _Nullable, MTLRenderPipelineReflection * _Nullable_result, NSError * _Nullable)	-	-	-	-	eddeb00c934a2128
-typedef	c:@T@MTLNewComputePipelineStateCompletionHandler	-			void (^)(id<MTLComputePipelineState> _Nullable, NSError * _Nullable)	-	-	-	-	79bc63bfbd85b4cb
-typedef	c:@T@MTLNewComputePipelineStateWithReflectionCompletionHandler	-			void (^)(id<MTLComputePipelineState> _Nullable, MTLComputePipelineReflection * _Nullable_result, NSError * _Nullable)	-	-	-	-	7f825fe38b63bdf1
-typedef	c:@T@MTLNewDynamicLibraryCompletionHandler	-			void (^)(id<MTLDynamicLibrary> _Nullable, NSError * _Nullable)	-	-	-	-	0d8bce1cd2ddb144
+typedef	c:@T@MTLNewLibraryCompletionHandler	-			void ((^))(id<MTLLibrary>, NSError *)	-	-	-	-	03d487b6810cede3
+typedef	c:@T@MTLNewRenderPipelineStateCompletionHandler	-			void ((^))(id<MTLRenderPipelineState>, NSError *)	-	-	-	-	a9dfade441b45fe3
+typedef	c:@T@MTLNewRenderPipelineStateWithReflectionCompletionHandler	-			void ((^))(id<MTLRenderPipelineState>, MTLRenderPipelineReflection *, NSError *)	-	-	-	-	5f762c4e12b6ac33
+typedef	c:@T@MTLNewComputePipelineStateCompletionHandler	-			void ((^))(id<MTLComputePipelineState>, NSError *)	-	-	-	-	91b7b00a59600acc
+typedef	c:@T@MTLNewComputePipelineStateWithReflectionCompletionHandler	-			void ((^))(id<MTLComputePipelineState>, MTLComputePipelineReflection *, NSError *)	-	-	-	-	7a3318174af94c78
+typedef	c:@T@MTLNewDynamicLibraryCompletionHandler	-			void ((^))(id<MTLDynamicLibrary>, NSError *)	-	-	-	-	bac31ec84641c745
 typedef	c:@T@MTLAutoreleasedArgument	-			MTLArgument *	-	-	ios=8.0/16.0/-/0,macos=10.11/13.0/-/0	-	9705cf227757cd05
 typedef	c:@T@MTLPatchType	-			enum MTLPatchType	-	-	-	-	50897efc8e6cd98e
 enum	c:@E@MTLPatchType	-			NSUInteger	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0	-	ab301a92232109f1
@@ -939,8 +939,8 @@ interface	c:objc(cs)MTL4CompilerTaskOptions	-			-	-	-	ios=26.0/-/-/0,macos=26.0/
 super	-	MTL4CompilerTaskOptions	NSObject		-	-	-	-	-	fe8ca950deb92473
 conforms	-	MTL4CompilerTaskOptions	NSCopying		-	-	-	-	-	5048f97554e117f0
 property	c:objc(cs)MTL4CompilerTaskOptions(py)lookupArchives	-			NSArray<id<MTL4Archive>> *	-	copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	7095830401ca0df1
-typedef	c:@T@MTL4NewBinaryFunctionCompletionHandler	-			void (^)(id<MTL4BinaryFunction> _Nullable, NSError * _Nullable)	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	d7baf1fb6a55337d
-typedef	c:@T@MTL4NewMachineLearningPipelineStateCompletionHandler	-			void (^)(id<MTL4MachineLearningPipelineState> _Nullable, NSError * _Nullable)	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	fa5bcbbde1e1bbc5
+typedef	c:@T@MTL4NewBinaryFunctionCompletionHandler	-			void ((^))(id<MTL4BinaryFunction>, NSError *)	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	e58603acdda32aad
+typedef	c:@T@MTL4NewMachineLearningPipelineStateCompletionHandler	-			void ((^))(id<MTL4MachineLearningPipelineState>, NSError *)	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	76574045239dcc95
 protocol	c:objc(pl)MTL4Compiler	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	c3352e751ef70db4
 conforms	-	MTL4Compiler	NSObject		-	-	-	-	-	0462662ca6359663
 property	c:objc(pl)MTL4Compiler(py)device	-			id<MTLDevice>	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	6390bba5736198bd
@@ -996,8 +996,8 @@ enumconst	c:@E@MTLIOCompressionMethod@MTLIOCompressionMethodLZFSE	MTLIOCompressi
 enumconst	c:@E@MTLIOCompressionMethod@MTLIOCompressionMethodLZ4	MTLIOCompressionMethod			-	-	-	-	-	ae86c79b33b4144a
 enumconst	c:@E@MTLIOCompressionMethod@MTLIOCompressionMethodLZMA	MTLIOCompressionMethod			-	-	-	-	-	ca154357418384b3
 enumconst	c:@E@MTLIOCompressionMethod@MTLIOCompressionMethodLZBitmap	MTLIOCompressionMethod			-	-	-	-	-	0e9182753cc6e554
-function	c:@F@MTLCreateSystemDefaultDevice	-			NS_RETURNS_RETAINED id<MTLDevice>  _Nullable (void)	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	d51ca67a4f594f1d
-function	c:@F@MTLCopyAllDevices	-			NS_RETURNS_RETAINED NSArray<id<MTLDevice>> * _Nonnull (void)	-	-	ios=18.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.11/-/-/0	-	d5eaa463783e865d
+function	c:@F@MTLCreateSystemDefaultDevice	-			id<MTLDevice> (void)	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	96a0e74eac63345d
+function	c:@F@MTLCopyAllDevices	-			NSArray<id<MTLDevice>> * (void)	-	-	ios=18.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.11/-/-/0	-	cd3c663c03102105
 typedef	c:@T@MTLFeatureSet	-			enum MTLFeatureSet	-	-	-	-	4dbc0f822f64d8de
 enum	c:@E@MTLFeatureSet	-			NSUInteger	-	-	ios=8.0/16.0/-/0,macos=10.11/13.0/-/0,tvos=9.0/16.0/-/0	-	6a5ca7e23d2799f0
 enumconst	c:@E@MTLFeatureSet@MTLFeatureSet_iOS_GPUFamily1_v1	MTLFeatureSet			-	-	-	ios=8.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1	-	a203431fd9a9acae
@@ -1473,7 +1473,7 @@ conforms	-	MTLCommandBufferEncoderInfo	NSObject		-	-	-	-	-	c7c7962cf21aeaf1
 property	c:objc(pl)MTLCommandBufferEncoderInfo(py)label	-			NSString *	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	fa10bc6d873188ff
 property	c:objc(pl)MTLCommandBufferEncoderInfo(py)debugSignposts	-			NSArray<NSString *> *	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	299de649c38ad0fd
 property	c:objc(pl)MTLCommandBufferEncoderInfo(py)errorState	-			MTLCommandEncoderErrorState	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	1cd40f9773a7e964
-typedef	c:@T@MTLCommandBufferHandler	-			void (^)(id<MTLCommandBuffer> _Nonnull)	-	-	-	-	c5dc95f35ed0a266
+typedef	c:@T@MTLCommandBufferHandler	-			void ((^))(id<MTLCommandBuffer>)	-	-	-	-	8aa032b7c86187ed
 typedef	c:@T@MTLDispatchType	-			enum MTLDispatchType	-	-	-	-	5aa4787be45ac834
 enum	c:@E@MTLDispatchType	-			NSUInteger	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	69f3e9f513b8f175
 enumconst	c:@E@MTLDispatchType@MTLDispatchTypeSerial	MTLDispatchType			-	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	85a52cf463ac848c
@@ -1517,7 +1517,7 @@ method	c:objc(pl)MTLCommandBuffer(im)accelerationStructureCommandEncoderWithDesc
 method	c:objc(pl)MTLCommandBuffer(im)pushDebugGroup:	-			void	NSString * string	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	16adf857aed68851
 method	c:objc(pl)MTLCommandBuffer(im)popDebugGroup	-			void	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	9560d58e5d6faeda
 method	c:objc(pl)MTLCommandBuffer(im)useResidencySet:	-			void	id<MTLResidencySet> residencySet	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	7cffea5b6873304b
-method	c:objc(pl)MTLCommandBuffer(im)useResidencySets:count:	-			void	id<MTLResidencySet>  _Nonnull const[] residencySets | NSUInteger count	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	317646d9310fcabb
+method	c:objc(pl)MTLCommandBuffer(im)useResidencySets:count:	-			void	const id<MTLResidencySet>  _Nonnull const[] residencySets | NSUInteger count	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	967937bc02d0272b
 interface	c:objc(cs)MTLComputePassSampleBufferAttachmentDescriptor	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	357c451c6f37c8a1
 super	-	MTLComputePassSampleBufferAttachmentDescriptor	NSObject		-	-	-	-	-	0c447497c8858381
 conforms	-	MTLComputePassSampleBufferAttachmentDescriptor	NSCopying		-	-	-	-	-	e50bbf6c7420e8d0
@@ -1552,22 +1552,22 @@ method	c:objc(pl)MTLComputeCommandEncoder(im)setComputePipelineState:	-			void	i
 method	c:objc(pl)MTLComputeCommandEncoder(im)setBytes:length:atIndex:	-			void	const void * bytes | NSUInteger length | NSUInteger index	-	ios=8.3/-/-/0,macos=10.11/-/-/0	-	2944e5b2cceeaa58
 method	c:objc(pl)MTLComputeCommandEncoder(im)setBuffer:offset:atIndex:	-			void	id<MTLBuffer> buffer | NSUInteger offset | NSUInteger index	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	a2d80bc415e3e78c
 method	c:objc(pl)MTLComputeCommandEncoder(im)setBufferOffset:atIndex:	-			void	NSUInteger offset | NSUInteger index	-	ios=8.3/-/-/0,macos=10.11/-/-/0	-	08fddcd619fddea7
-method	c:objc(pl)MTLComputeCommandEncoder(im)setBuffers:offsets:withRange:	-			void	id<MTLBuffer>  _Nullable const[] buffers | const NSUInteger[] offsets | NSRange range	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	476475d4389d5645
+method	c:objc(pl)MTLComputeCommandEncoder(im)setBuffers:offsets:withRange:	-			void	const id<MTLBuffer>  _Nullable const[] buffers | const NSUInteger[] offsets | NSRange range	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	00e1037d28dd4ed4
 method	c:objc(pl)MTLComputeCommandEncoder(im)setBuffer:offset:attributeStride:atIndex:	-			void	id<MTLBuffer> buffer | NSUInteger offset | NSUInteger stride | NSUInteger index	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	d31dee2fb34514b2
-method	c:objc(pl)MTLComputeCommandEncoder(im)setBuffers:offsets:attributeStrides:withRange:	-			void	id<MTLBuffer>  _Nullable const[] buffers | const NSUInteger[] offsets | const NSUInteger[] strides | NSRange range	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	b6e8d90bcdf0f960
+method	c:objc(pl)MTLComputeCommandEncoder(im)setBuffers:offsets:attributeStrides:withRange:	-			void	const id<MTLBuffer>  _Nullable const[] buffers | const NSUInteger[] offsets | const NSUInteger[] strides | NSRange range	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	0b7cff5e026436e6
 method	c:objc(pl)MTLComputeCommandEncoder(im)setBufferOffset:attributeStride:atIndex:	-			void	NSUInteger offset | NSUInteger stride | NSUInteger index	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	6b20f59be0c2d11d
 method	c:objc(pl)MTLComputeCommandEncoder(im)setBytes:length:attributeStride:atIndex:	-			void	const void * bytes | NSUInteger length | NSUInteger stride | NSUInteger index	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	6751c741a5fe6321
 method	c:objc(pl)MTLComputeCommandEncoder(im)setVisibleFunctionTable:atBufferIndex:	-			void	id<MTLVisibleFunctionTable> visibleFunctionTable | NSUInteger bufferIndex	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	a3f7f76be06ff979
-method	c:objc(pl)MTLComputeCommandEncoder(im)setVisibleFunctionTables:withBufferRange:	-			void	id<MTLVisibleFunctionTable>  _Nullable const[] visibleFunctionTables | NSRange range	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	6ff9f93dd25a8c8e
+method	c:objc(pl)MTLComputeCommandEncoder(im)setVisibleFunctionTables:withBufferRange:	-			void	const id<MTLVisibleFunctionTable>  _Nullable const[] visibleFunctionTables | NSRange range	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	9ced31a1179a8b20
 method	c:objc(pl)MTLComputeCommandEncoder(im)setIntersectionFunctionTable:atBufferIndex:	-			void	id<MTLIntersectionFunctionTable> intersectionFunctionTable | NSUInteger bufferIndex	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	d49596752204ddc7
-method	c:objc(pl)MTLComputeCommandEncoder(im)setIntersectionFunctionTables:withBufferRange:	-			void	id<MTLIntersectionFunctionTable>  _Nullable const[] intersectionFunctionTables | NSRange range	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	dc67ff61cc7427fc
+method	c:objc(pl)MTLComputeCommandEncoder(im)setIntersectionFunctionTables:withBufferRange:	-			void	const id<MTLIntersectionFunctionTable>  _Nullable const[] intersectionFunctionTables | NSRange range	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	924ed3da16ca69c5
 method	c:objc(pl)MTLComputeCommandEncoder(im)setAccelerationStructure:atBufferIndex:	-			void	id<MTLAccelerationStructure> accelerationStructure | NSUInteger bufferIndex	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	d6eec19aba423e7c
 method	c:objc(pl)MTLComputeCommandEncoder(im)setTexture:atIndex:	-			void	id<MTLTexture> texture | NSUInteger index	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	fe8cb673ed556242
-method	c:objc(pl)MTLComputeCommandEncoder(im)setTextures:withRange:	-			void	id<MTLTexture>  _Nullable const[] textures | NSRange range	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	98df4313ff1e568d
+method	c:objc(pl)MTLComputeCommandEncoder(im)setTextures:withRange:	-			void	const id<MTLTexture>  _Nullable const[] textures | NSRange range	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	1bdc9e01b5084953
 method	c:objc(pl)MTLComputeCommandEncoder(im)setSamplerState:atIndex:	-			void	id<MTLSamplerState> sampler | NSUInteger index	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	38ba4a135a9f407f
-method	c:objc(pl)MTLComputeCommandEncoder(im)setSamplerStates:withRange:	-			void	id<MTLSamplerState>  _Nullable const[] samplers | NSRange range	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	4bc9bd95fcf1a9a6
+method	c:objc(pl)MTLComputeCommandEncoder(im)setSamplerStates:withRange:	-			void	const id<MTLSamplerState>  _Nullable const[] samplers | NSRange range	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	215370b199b0c029
 method	c:objc(pl)MTLComputeCommandEncoder(im)setSamplerState:lodMinClamp:lodMaxClamp:atIndex:	-			void	id<MTLSamplerState> sampler | float lodMinClamp | float lodMaxClamp | NSUInteger index	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	c486f4162b77212c
-method	c:objc(pl)MTLComputeCommandEncoder(im)setSamplerStates:lodMinClamps:lodMaxClamps:withRange:	-			void	id<MTLSamplerState>  _Nullable const[] samplers | const float[] lodMinClamps | const float[] lodMaxClamps | NSRange range	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	5c2d631aa54f2661
+method	c:objc(pl)MTLComputeCommandEncoder(im)setSamplerStates:lodMinClamps:lodMaxClamps:withRange:	-			void	const id<MTLSamplerState>  _Nullable const[] samplers | const float[] lodMinClamps | const float[] lodMaxClamps | NSRange range	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	897a30e25a6821a2
 method	c:objc(pl)MTLComputeCommandEncoder(im)setThreadgroupMemoryLength:atIndex:	-			void	NSUInteger length | NSUInteger index	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	fbc2b9c130f30141
 method	c:objc(pl)MTLComputeCommandEncoder(im)setImageblockWidth:height:	-			void	NSUInteger width | NSUInteger height	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.5/-/-/0	-	a907f5fe00819ee6
 method	c:objc(pl)MTLComputeCommandEncoder(im)setStageInRegion:	-			void	MTLRegion region	-	ios=10.0/-/-/0,macos=10.12/-/-/0	-	c83d9b7737a09728
@@ -1578,13 +1578,13 @@ method	c:objc(pl)MTLComputeCommandEncoder(im)dispatchThreads:threadsPerThreadgro
 method	c:objc(pl)MTLComputeCommandEncoder(im)updateFence:	-			void	id<MTLFence> fence	-	ios=10.0/-/-/0,macos=10.13/-/-/0	-	b0d67495f547f966
 method	c:objc(pl)MTLComputeCommandEncoder(im)waitForFence:	-			void	id<MTLFence> fence	-	ios=10.0/-/-/0,macos=10.13/-/-/0	-	507ef488c5c55316
 method	c:objc(pl)MTLComputeCommandEncoder(im)useResource:usage:	-			void	id<MTLResource> resource | MTLResourceUsage usage	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	07ede582d2692d16
-method	c:objc(pl)MTLComputeCommandEncoder(im)useResources:count:usage:	-			void	id<MTLResource>  _Nonnull const[] resources | NSUInteger count | MTLResourceUsage usage	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	a1465fda5c0ac87f
+method	c:objc(pl)MTLComputeCommandEncoder(im)useResources:count:usage:	-			void	const id<MTLResource>  _Nonnull const[] resources | NSUInteger count | MTLResourceUsage usage	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	be35ec61edd9817d
 method	c:objc(pl)MTLComputeCommandEncoder(im)useHeap:	-			void	id<MTLHeap> heap	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	68b08a74a7a9b39d
-method	c:objc(pl)MTLComputeCommandEncoder(im)useHeaps:count:	-			void	id<MTLHeap>  _Nonnull const[] heaps | NSUInteger count	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	b76b55f8f0a21308
+method	c:objc(pl)MTLComputeCommandEncoder(im)useHeaps:count:	-			void	const id<MTLHeap>  _Nonnull const[] heaps | NSUInteger count	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	afa991b9682ba960
 method	c:objc(pl)MTLComputeCommandEncoder(im)executeCommandsInBuffer:withRange:	-			void	id<MTLIndirectCommandBuffer> indirectCommandBuffer | NSRange executionRange	-	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0	-	84f3391986c97caa
 method	c:objc(pl)MTLComputeCommandEncoder(im)executeCommandsInBuffer:indirectBuffer:indirectBufferOffset:	-			void	id<MTLIndirectCommandBuffer> indirectCommandbuffer | id<MTLBuffer> indirectRangeBuffer | NSUInteger indirectBufferOffset	-	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0	-	a21367d2547460c1
 method	c:objc(pl)MTLComputeCommandEncoder(im)memoryBarrierWithScope:	-			void	MTLBarrierScope scope	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	09bf8fde05ae7b58
-method	c:objc(pl)MTLComputeCommandEncoder(im)memoryBarrierWithResources:count:	-			void	id<MTLResource>  _Nonnull const[] resources | NSUInteger count	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	61210a69eaf880fe
+method	c:objc(pl)MTLComputeCommandEncoder(im)memoryBarrierWithResources:count:	-			void	const id<MTLResource>  _Nonnull const[] resources | NSUInteger count	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	b989b9dd5df101ed
 method	c:objc(pl)MTLComputeCommandEncoder(im)sampleCountersInBuffer:atSampleIndex:withBarrier:	-			void	id<MTLCounterSampleBuffer> sampleBuffer | NSUInteger sampleIndex | BOOL barrier	-	ios=14.0/-/-/0,macos=10.15/-/-/0	-	ea1696fefb4ed978
 protocol	c:objc(pl)MTLCommandQueue	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	deprecated: Use MTLCaptureScope instead	06277cd563ba1395
 conforms	-	MTLCommandQueue	NSObject		-	-	-	-	-	5657cd1e50bef313
@@ -1595,9 +1595,9 @@ method	c:objc(pl)MTLCommandQueue(im)commandBufferWithDescriptor:	-			id<MTLComma
 method	c:objc(pl)MTLCommandQueue(im)commandBufferWithUnretainedReferences	-			id<MTLCommandBuffer>	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	47a2e234a1a1d1d6
 method	c:objc(pl)MTLCommandQueue(im)insertDebugCaptureBoundary	-			void	-	-	ios=8.0/11.0/-/0,macos=10.11/10.13/-/0	deprecated: Use MTLCaptureScope instead	6a1eaff91d195307
 method	c:objc(pl)MTLCommandQueue(im)addResidencySet:	-			void	id<MTLResidencySet> residencySet	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	64601ace688abac0
-method	c:objc(pl)MTLCommandQueue(im)addResidencySets:count:	-			void	id<MTLResidencySet>  _Nonnull const[] residencySets | NSUInteger count	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	5c14e2b8c0ddba7e
+method	c:objc(pl)MTLCommandQueue(im)addResidencySets:count:	-			void	const id<MTLResidencySet>  _Nonnull const[] residencySets | NSUInteger count	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	aa5fb40af287d27a
 method	c:objc(pl)MTLCommandQueue(im)removeResidencySet:	-			void	id<MTLResidencySet> residencySet	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	5a5f80e6206d4b09
-method	c:objc(pl)MTLCommandQueue(im)removeResidencySets:count:	-			void	id<MTLResidencySet>  _Nonnull const[] residencySets | NSUInteger count	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	7f1881e9dc6ec33d
+method	c:objc(pl)MTLCommandQueue(im)removeResidencySets:count:	-			void	const id<MTLResidencySet>  _Nonnull const[] residencySets | NSUInteger count	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	dec58ff77e52423d
 interface	c:objc(cs)MTLCommandQueueDescriptor	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	ac9fb7c8653f97e1
 super	-	MTLCommandQueueDescriptor	NSObject		-	-	-	-	-	963af66b4d8dcc20
 conforms	-	MTLCommandQueueDescriptor	NSCopying		-	-	-	-	-	3a9c93dc19d9bb3b
@@ -1654,7 +1654,7 @@ conforms	-	MTLDepthStencilState	NSObject		-	-	-	-	-	215d0b3208af4b72
 property	c:objc(pl)MTLDepthStencilState(py)label	-			NSString *	-	readonly	ios=8.0/-/-/0,macos=10.11/-/-/0	-	bad6abcba9de3c69
 property	c:objc(pl)MTLDepthStencilState(py)device	-			id<MTLDevice>	-	readonly	ios=8.0/-/-/0,macos=10.11/-/-/0	-	91755a16d5ee1cde
 property	c:objc(pl)MTLDepthStencilState(py)gpuResourceID	-			MTLResourceID	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	b1026b399ec1aec6
-typedef	c:@T@MTLDrawablePresentedHandler	-			void (^)(id<MTLDrawable> _Nonnull)	-	-	-	-	167a719f95a77993
+typedef	c:@T@MTLDrawablePresentedHandler	-			void ((^))(id<MTLDrawable>)	-	-	-	-	5e1c480819993a2d
 protocol	c:objc(pl)MTLDrawable	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	f82e47e750c0dd3d
 conforms	-	MTLDrawable	NSObject		-	-	-	-	-	be7e873575ea44b2
 method	c:objc(pl)MTLDrawable(im)present	-			void	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	091673fa2edeea16
@@ -2006,21 +2006,21 @@ method	c:objc(pl)MTLRenderCommandEncoder(im)setRenderPipelineState:	-			void	id<
 method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexBytes:length:atIndex:	-			void	const void * bytes | NSUInteger length | NSUInteger index	-	ios=8.3/-/-/0,macos=10.11/-/-/0	-	45373c414c39de91
 method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexBuffer:offset:atIndex:	-			void	id<MTLBuffer> buffer | NSUInteger offset | NSUInteger index	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	b8b894c17014d4dc
 method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexBufferOffset:atIndex:	-			void	NSUInteger offset | NSUInteger index	-	ios=8.3/-/-/0,macos=10.11/-/-/0	-	cac03b1ece415d28
-method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexBuffers:offsets:withRange:	-			void	id<MTLBuffer>  _Nullable const[] buffers | const NSUInteger[] offsets | NSRange range	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	9c92b21923bd91d6
+method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexBuffers:offsets:withRange:	-			void	const id<MTLBuffer>  _Nullable const[] buffers | const NSUInteger[] offsets | NSRange range	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	ddf01f2fde176cf0
 method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexBuffer:offset:attributeStride:atIndex:	-			void	id<MTLBuffer> buffer | NSUInteger offset | NSUInteger stride | NSUInteger index	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	004cc95dc08bbfe7
-method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexBuffers:offsets:attributeStrides:withRange:	-			void	id<MTLBuffer>  _Nullable const[] buffers | const NSUInteger[] offsets | const NSUInteger[] strides | NSRange range	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	5b3a7e916592b8ad
+method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexBuffers:offsets:attributeStrides:withRange:	-			void	const id<MTLBuffer>  _Nullable const[] buffers | const NSUInteger[] offsets | const NSUInteger[] strides | NSRange range	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	4c813aaf947f9676
 method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexBufferOffset:attributeStride:atIndex:	-			void	NSUInteger offset | NSUInteger stride | NSUInteger index	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	3d1813a70acc3865
 method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexBytes:length:attributeStride:atIndex:	-			void	const void * bytes | NSUInteger length | NSUInteger stride | NSUInteger index	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	d2b4d20a51344f41
 method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexTexture:atIndex:	-			void	id<MTLTexture> texture | NSUInteger index	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	714c700da4734147
-method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexTextures:withRange:	-			void	id<MTLTexture>  _Nullable const[] textures | NSRange range	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	7f86f0b2e4c6f61e
+method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexTextures:withRange:	-			void	const id<MTLTexture>  _Nullable const[] textures | NSRange range	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	0c202208bed6975d
 method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexSamplerState:atIndex:	-			void	id<MTLSamplerState> sampler | NSUInteger index	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	2df9d0cdcf686f92
-method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexSamplerStates:withRange:	-			void	id<MTLSamplerState>  _Nullable const[] samplers | NSRange range	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	c3f2ce0104d71ed6
+method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexSamplerStates:withRange:	-			void	const id<MTLSamplerState>  _Nullable const[] samplers | NSRange range	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	e92ac15da91c4c82
 method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexSamplerState:lodMinClamp:lodMaxClamp:atIndex:	-			void	id<MTLSamplerState> sampler | float lodMinClamp | float lodMaxClamp | NSUInteger index	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	606dc5bccd6eae51
-method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexSamplerStates:lodMinClamps:lodMaxClamps:withRange:	-			void	id<MTLSamplerState>  _Nullable const[] samplers | const float[] lodMinClamps | const float[] lodMaxClamps | NSRange range	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	bd3e595027bcb073
+method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexSamplerStates:lodMinClamps:lodMaxClamps:withRange:	-			void	const id<MTLSamplerState>  _Nullable const[] samplers | const float[] lodMinClamps | const float[] lodMaxClamps | NSRange range	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	e3365ca8920b2165
 method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexVisibleFunctionTable:atBufferIndex:	-			void	id<MTLVisibleFunctionTable> functionTable | NSUInteger bufferIndex	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0	-	cb3e6a9ea28b7f88
-method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexVisibleFunctionTables:withBufferRange:	-			void	id<MTLVisibleFunctionTable>  _Nullable const[] functionTables | NSRange range	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0	-	7a87d43b349dc679
+method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexVisibleFunctionTables:withBufferRange:	-			void	const id<MTLVisibleFunctionTable>  _Nullable const[] functionTables | NSRange range	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0	-	fd665806060ba630
 method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexIntersectionFunctionTable:atBufferIndex:	-			void	id<MTLIntersectionFunctionTable> intersectionFunctionTable | NSUInteger bufferIndex	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0	-	bdfb7470c4d14de9
-method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexIntersectionFunctionTables:withBufferRange:	-			void	id<MTLIntersectionFunctionTable>  _Nullable const[] intersectionFunctionTables | NSRange range	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0	-	1c459a2f48b704ee
+method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexIntersectionFunctionTables:withBufferRange:	-			void	const id<MTLIntersectionFunctionTable>  _Nullable const[] intersectionFunctionTables | NSRange range	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0	-	8e200ac304e6906c
 method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexAccelerationStructure:atBufferIndex:	-			void	id<MTLAccelerationStructure> accelerationStructure | NSUInteger bufferIndex	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0	-	f50fe077b2f1bd7f
 method	c:objc(pl)MTLRenderCommandEncoder(im)setViewport:	-			void	MTLViewport viewport	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	f45f896222f291be
 method	c:objc(pl)MTLRenderCommandEncoder(im)setViewports:count:	-			void	const MTLViewport[] viewports | NSUInteger count	-	ios=12.0/-/-/0,macos=10.13/-/-/0,tvos=14.5/-/-/0	-	554acc43e87162ba
@@ -2036,17 +2036,17 @@ method	c:objc(pl)MTLRenderCommandEncoder(im)setTriangleFillMode:	-			void	MTLTri
 method	c:objc(pl)MTLRenderCommandEncoder(im)setFragmentBytes:length:atIndex:	-			void	const void * bytes | NSUInteger length | NSUInteger index	-	ios=8.3/-/-/0,macos=10.11/-/-/0	-	88975c2ab97907f2
 method	c:objc(pl)MTLRenderCommandEncoder(im)setFragmentBuffer:offset:atIndex:	-			void	id<MTLBuffer> buffer | NSUInteger offset | NSUInteger index	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	d7eb3180054782be
 method	c:objc(pl)MTLRenderCommandEncoder(im)setFragmentBufferOffset:atIndex:	-			void	NSUInteger offset | NSUInteger index	-	ios=8.3/-/-/0,macos=10.11/-/-/0	-	0c0a2452badff31b
-method	c:objc(pl)MTLRenderCommandEncoder(im)setFragmentBuffers:offsets:withRange:	-			void	id<MTLBuffer>  _Nullable const[] buffers | const NSUInteger[] offsets | NSRange range	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	807936939f2eda62
+method	c:objc(pl)MTLRenderCommandEncoder(im)setFragmentBuffers:offsets:withRange:	-			void	const id<MTLBuffer>  _Nullable const[] buffers | const NSUInteger[] offsets | NSRange range	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	cea3ab368a519dd2
 method	c:objc(pl)MTLRenderCommandEncoder(im)setFragmentTexture:atIndex:	-			void	id<MTLTexture> texture | NSUInteger index	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	18da54aa3ef0807a
-method	c:objc(pl)MTLRenderCommandEncoder(im)setFragmentTextures:withRange:	-			void	id<MTLTexture>  _Nullable const[] textures | NSRange range	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	93143987658278d3
+method	c:objc(pl)MTLRenderCommandEncoder(im)setFragmentTextures:withRange:	-			void	const id<MTLTexture>  _Nullable const[] textures | NSRange range	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	25685798f7a50fb7
 method	c:objc(pl)MTLRenderCommandEncoder(im)setFragmentSamplerState:atIndex:	-			void	id<MTLSamplerState> sampler | NSUInteger index	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	20d0794c41f68419
-method	c:objc(pl)MTLRenderCommandEncoder(im)setFragmentSamplerStates:withRange:	-			void	id<MTLSamplerState>  _Nullable const[] samplers | NSRange range	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	548b4cbd2bdb4b6f
+method	c:objc(pl)MTLRenderCommandEncoder(im)setFragmentSamplerStates:withRange:	-			void	const id<MTLSamplerState>  _Nullable const[] samplers | NSRange range	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	855f9d9715ed2239
 method	c:objc(pl)MTLRenderCommandEncoder(im)setFragmentSamplerState:lodMinClamp:lodMaxClamp:atIndex:	-			void	id<MTLSamplerState> sampler | float lodMinClamp | float lodMaxClamp | NSUInteger index	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	69a2429beb99690c
-method	c:objc(pl)MTLRenderCommandEncoder(im)setFragmentSamplerStates:lodMinClamps:lodMaxClamps:withRange:	-			void	id<MTLSamplerState>  _Nullable const[] samplers | const float[] lodMinClamps | const float[] lodMaxClamps | NSRange range	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	44f678aa25b8cbf7
+method	c:objc(pl)MTLRenderCommandEncoder(im)setFragmentSamplerStates:lodMinClamps:lodMaxClamps:withRange:	-			void	const id<MTLSamplerState>  _Nullable const[] samplers | const float[] lodMinClamps | const float[] lodMaxClamps | NSRange range	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	29984d27b86f84f4
 method	c:objc(pl)MTLRenderCommandEncoder(im)setFragmentVisibleFunctionTable:atBufferIndex:	-			void	id<MTLVisibleFunctionTable> functionTable | NSUInteger bufferIndex	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0	-	39f90c78d3165741
-method	c:objc(pl)MTLRenderCommandEncoder(im)setFragmentVisibleFunctionTables:withBufferRange:	-			void	id<MTLVisibleFunctionTable>  _Nullable const[] functionTables | NSRange range	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0	-	58dcf235df8efcd4
+method	c:objc(pl)MTLRenderCommandEncoder(im)setFragmentVisibleFunctionTables:withBufferRange:	-			void	const id<MTLVisibleFunctionTable>  _Nullable const[] functionTables | NSRange range	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0	-	4437a788bf5abc64
 method	c:objc(pl)MTLRenderCommandEncoder(im)setFragmentIntersectionFunctionTable:atBufferIndex:	-			void	id<MTLIntersectionFunctionTable> intersectionFunctionTable | NSUInteger bufferIndex	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0	-	aabb1c5af6f45dca
-method	c:objc(pl)MTLRenderCommandEncoder(im)setFragmentIntersectionFunctionTables:withBufferRange:	-			void	id<MTLIntersectionFunctionTable>  _Nullable const[] intersectionFunctionTables | NSRange range	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0	-	35afdfba0e473c58
+method	c:objc(pl)MTLRenderCommandEncoder(im)setFragmentIntersectionFunctionTables:withBufferRange:	-			void	const id<MTLIntersectionFunctionTable>  _Nullable const[] intersectionFunctionTables | NSRange range	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0	-	d576d1b9d9dab3b2
 method	c:objc(pl)MTLRenderCommandEncoder(im)setFragmentAccelerationStructure:atBufferIndex:	-			void	id<MTLAccelerationStructure> accelerationStructure | NSUInteger bufferIndex	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0	-	ac1cc0cc3e00366f
 method	c:objc(pl)MTLRenderCommandEncoder(im)setBlendColorRed:green:blue:alpha:	-			void	float red | float green | float blue | float alpha	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	2d5a964b781efc41
 method	c:objc(pl)MTLRenderCommandEncoder(im)setDepthStencilState:	-			void	id<MTLDepthStencilState> depthStencilState	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	1376f5c021c0e1fe
@@ -2062,24 +2062,24 @@ method	c:objc(pl)MTLRenderCommandEncoder(im)setStencilStoreActionOptions:	-			vo
 method	c:objc(pl)MTLRenderCommandEncoder(im)setObjectBytes:length:atIndex:	-			void	const void * bytes | NSUInteger length | NSUInteger index	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	1835240bc57383fb
 method	c:objc(pl)MTLRenderCommandEncoder(im)setObjectBuffer:offset:atIndex:	-			void	id<MTLBuffer> buffer | NSUInteger offset | NSUInteger index	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	0e8200813e955a98
 method	c:objc(pl)MTLRenderCommandEncoder(im)setObjectBufferOffset:atIndex:	-			void	NSUInteger offset | NSUInteger index	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	1fc213ae8f76ce2c
-method	c:objc(pl)MTLRenderCommandEncoder(im)setObjectBuffers:offsets:withRange:	-			void	id<MTLBuffer>  _Nullable const[] buffers | const NSUInteger[] offsets | NSRange range	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	57d4581f76b42a29
+method	c:objc(pl)MTLRenderCommandEncoder(im)setObjectBuffers:offsets:withRange:	-			void	const id<MTLBuffer>  _Nullable const[] buffers | const NSUInteger[] offsets | NSRange range	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	7800fb480940c18c
 method	c:objc(pl)MTLRenderCommandEncoder(im)setObjectTexture:atIndex:	-			void	id<MTLTexture> texture | NSUInteger index	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	ccf8f3b1915f59a2
-method	c:objc(pl)MTLRenderCommandEncoder(im)setObjectTextures:withRange:	-			void	id<MTLTexture>  _Nullable const[] textures | NSRange range	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	a22e81e03a34e5a6
+method	c:objc(pl)MTLRenderCommandEncoder(im)setObjectTextures:withRange:	-			void	const id<MTLTexture>  _Nullable const[] textures | NSRange range	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	e948d20c3a67716f
 method	c:objc(pl)MTLRenderCommandEncoder(im)setObjectSamplerState:atIndex:	-			void	id<MTLSamplerState> sampler | NSUInteger index	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	f64dfc44a0a5edee
-method	c:objc(pl)MTLRenderCommandEncoder(im)setObjectSamplerStates:withRange:	-			void	id<MTLSamplerState>  _Nullable const[] samplers | NSRange range	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	a434ef230a43bacb
+method	c:objc(pl)MTLRenderCommandEncoder(im)setObjectSamplerStates:withRange:	-			void	const id<MTLSamplerState>  _Nullable const[] samplers | NSRange range	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	76261b12a4bcfeea
 method	c:objc(pl)MTLRenderCommandEncoder(im)setObjectSamplerState:lodMinClamp:lodMaxClamp:atIndex:	-			void	id<MTLSamplerState> sampler | float lodMinClamp | float lodMaxClamp | NSUInteger index	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	e858513b50b09094
-method	c:objc(pl)MTLRenderCommandEncoder(im)setObjectSamplerStates:lodMinClamps:lodMaxClamps:withRange:	-			void	id<MTLSamplerState>  _Nullable const[] samplers | const float[] lodMinClamps | const float[] lodMaxClamps | NSRange range	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	0b356991b8a2c372
+method	c:objc(pl)MTLRenderCommandEncoder(im)setObjectSamplerStates:lodMinClamps:lodMaxClamps:withRange:	-			void	const id<MTLSamplerState>  _Nullable const[] samplers | const float[] lodMinClamps | const float[] lodMaxClamps | NSRange range	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	1f55e1b98d4db4b9
 method	c:objc(pl)MTLRenderCommandEncoder(im)setObjectThreadgroupMemoryLength:atIndex:	-			void	NSUInteger length | NSUInteger index	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	91fc0092d0376e4c
 method	c:objc(pl)MTLRenderCommandEncoder(im)setMeshBytes:length:atIndex:	-			void	const void * bytes | NSUInteger length | NSUInteger index	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	be1bf1c5c0e3aed8
 method	c:objc(pl)MTLRenderCommandEncoder(im)setMeshBuffer:offset:atIndex:	-			void	id<MTLBuffer> buffer | NSUInteger offset | NSUInteger index	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	ca50dfde53819cd0
 method	c:objc(pl)MTLRenderCommandEncoder(im)setMeshBufferOffset:atIndex:	-			void	NSUInteger offset | NSUInteger index	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	d228b4a2a92fce7b
-method	c:objc(pl)MTLRenderCommandEncoder(im)setMeshBuffers:offsets:withRange:	-			void	id<MTLBuffer>  _Nullable const[] buffers | const NSUInteger[] offsets | NSRange range	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	5a61c434f5aaf68b
+method	c:objc(pl)MTLRenderCommandEncoder(im)setMeshBuffers:offsets:withRange:	-			void	const id<MTLBuffer>  _Nullable const[] buffers | const NSUInteger[] offsets | NSRange range	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	6576d3edaaf814a2
 method	c:objc(pl)MTLRenderCommandEncoder(im)setMeshTexture:atIndex:	-			void	id<MTLTexture> texture | NSUInteger index	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	a4234b80546ed299
-method	c:objc(pl)MTLRenderCommandEncoder(im)setMeshTextures:withRange:	-			void	id<MTLTexture>  _Nullable const[] textures | NSRange range	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	e1ffdbfbb02945dc
+method	c:objc(pl)MTLRenderCommandEncoder(im)setMeshTextures:withRange:	-			void	const id<MTLTexture>  _Nullable const[] textures | NSRange range	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	6c345a85e5d07675
 method	c:objc(pl)MTLRenderCommandEncoder(im)setMeshSamplerState:atIndex:	-			void	id<MTLSamplerState> sampler | NSUInteger index	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	bdee7aea6ed2a9ac
-method	c:objc(pl)MTLRenderCommandEncoder(im)setMeshSamplerStates:withRange:	-			void	id<MTLSamplerState>  _Nullable const[] samplers | NSRange range	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	378d14f80aea925c
+method	c:objc(pl)MTLRenderCommandEncoder(im)setMeshSamplerStates:withRange:	-			void	const id<MTLSamplerState>  _Nullable const[] samplers | NSRange range	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	2ebff119e7e50db1
 method	c:objc(pl)MTLRenderCommandEncoder(im)setMeshSamplerState:lodMinClamp:lodMaxClamp:atIndex:	-			void	id<MTLSamplerState> sampler | float lodMinClamp | float lodMaxClamp | NSUInteger index	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	4fda12e9eb714f96
-method	c:objc(pl)MTLRenderCommandEncoder(im)setMeshSamplerStates:lodMinClamps:lodMaxClamps:withRange:	-			void	id<MTLSamplerState>  _Nullable const[] samplers | const float[] lodMinClamps | const float[] lodMaxClamps | NSRange range	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	4c01a962a0e42afc
+method	c:objc(pl)MTLRenderCommandEncoder(im)setMeshSamplerStates:lodMinClamps:lodMaxClamps:withRange:	-			void	const id<MTLSamplerState>  _Nullable const[] samplers | const float[] lodMinClamps | const float[] lodMaxClamps | NSRange range	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	4cf71efd6c18e389
 method	c:objc(pl)MTLRenderCommandEncoder(im)drawMeshThreadgroups:threadsPerObjectThreadgroup:threadsPerMeshThreadgroup:	-			void	MTLSize threadgroupsPerGrid | MTLSize threadsPerObjectThreadgroup | MTLSize threadsPerMeshThreadgroup	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	03c303cff41e803b
 method	c:objc(pl)MTLRenderCommandEncoder(im)drawMeshThreads:threadsPerObjectThreadgroup:threadsPerMeshThreadgroup:	-			void	MTLSize threadsPerGrid | MTLSize threadsPerObjectThreadgroup | MTLSize threadsPerMeshThreadgroup	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	671deb31a07d3be6
 method	c:objc(pl)MTLRenderCommandEncoder(im)drawMeshThreadgroupsWithIndirectBuffer:indirectBufferOffset:threadsPerObjectThreadgroup:threadsPerMeshThreadgroup:	-			void	id<MTLBuffer> indirectBuffer | NSUInteger indirectBufferOffset | MTLSize threadsPerObjectThreadgroup | MTLSize threadsPerMeshThreadgroup	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	3c4f9ab9ae9ba9de
@@ -2105,32 +2105,32 @@ property	c:objc(pl)MTLRenderCommandEncoder(py)tileHeight	-			NSUInteger	-	readon
 method	c:objc(pl)MTLRenderCommandEncoder(im)setTileBytes:length:atIndex:	-			void	const void * bytes | NSUInteger length | NSUInteger index	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.5/-/-/0	-	5dea80cb4663fd3e
 method	c:objc(pl)MTLRenderCommandEncoder(im)setTileBuffer:offset:atIndex:	-			void	id<MTLBuffer> buffer | NSUInteger offset | NSUInteger index	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.5/-/-/0	-	c2787761465fdb6b
 method	c:objc(pl)MTLRenderCommandEncoder(im)setTileBufferOffset:atIndex:	-			void	NSUInteger offset | NSUInteger index	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.5/-/-/0	-	b1d333f33eb2e60b
-method	c:objc(pl)MTLRenderCommandEncoder(im)setTileBuffers:offsets:withRange:	-			void	id<MTLBuffer>  _Nullable const[] buffers | const NSUInteger[] offsets | NSRange range	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.5/-/-/0	-	9598578a77a798e6
+method	c:objc(pl)MTLRenderCommandEncoder(im)setTileBuffers:offsets:withRange:	-			void	const id<MTLBuffer>  _Nullable const[] buffers | const NSUInteger[] offsets | NSRange range	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.5/-/-/0	-	45d90ff1124ac957
 method	c:objc(pl)MTLRenderCommandEncoder(im)setTileTexture:atIndex:	-			void	id<MTLTexture> texture | NSUInteger index	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.5/-/-/0	-	88dadff5af23e803
-method	c:objc(pl)MTLRenderCommandEncoder(im)setTileTextures:withRange:	-			void	id<MTLTexture>  _Nullable const[] textures | NSRange range	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.5/-/-/0	-	0cce816cad7da120
+method	c:objc(pl)MTLRenderCommandEncoder(im)setTileTextures:withRange:	-			void	const id<MTLTexture>  _Nullable const[] textures | NSRange range	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.5/-/-/0	-	7d9487ab72de8368
 method	c:objc(pl)MTLRenderCommandEncoder(im)setTileSamplerState:atIndex:	-			void	id<MTLSamplerState> sampler | NSUInteger index	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.5/-/-/0	-	393fc4fd93611cd1
-method	c:objc(pl)MTLRenderCommandEncoder(im)setTileSamplerStates:withRange:	-			void	id<MTLSamplerState>  _Nullable const[] samplers | NSRange range	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.5/-/-/0	-	63a987c733d31c22
+method	c:objc(pl)MTLRenderCommandEncoder(im)setTileSamplerStates:withRange:	-			void	const id<MTLSamplerState>  _Nullable const[] samplers | NSRange range	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.5/-/-/0	-	acc22cf6833021b7
 method	c:objc(pl)MTLRenderCommandEncoder(im)setTileSamplerState:lodMinClamp:lodMaxClamp:atIndex:	-			void	id<MTLSamplerState> sampler | float lodMinClamp | float lodMaxClamp | NSUInteger index	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.5/-/-/0	-	d23830ac0d9cf0b0
-method	c:objc(pl)MTLRenderCommandEncoder(im)setTileSamplerStates:lodMinClamps:lodMaxClamps:withRange:	-			void	id<MTLSamplerState>  _Nullable const[] samplers | const float[] lodMinClamps | const float[] lodMaxClamps | NSRange range	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.5/-/-/0	-	c7b13dd7eeca232d
+method	c:objc(pl)MTLRenderCommandEncoder(im)setTileSamplerStates:lodMinClamps:lodMaxClamps:withRange:	-			void	const id<MTLSamplerState>  _Nullable const[] samplers | const float[] lodMinClamps | const float[] lodMaxClamps | NSRange range	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.5/-/-/0	-	739af6a14bf95fd6
 method	c:objc(pl)MTLRenderCommandEncoder(im)setTileVisibleFunctionTable:atBufferIndex:	-			void	id<MTLVisibleFunctionTable> functionTable | NSUInteger bufferIndex	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0	-	4dfe065f6f1c8a24
-method	c:objc(pl)MTLRenderCommandEncoder(im)setTileVisibleFunctionTables:withBufferRange:	-			void	id<MTLVisibleFunctionTable>  _Nullable const[] functionTables | NSRange range	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0	-	7059d62dce824ed9
+method	c:objc(pl)MTLRenderCommandEncoder(im)setTileVisibleFunctionTables:withBufferRange:	-			void	const id<MTLVisibleFunctionTable>  _Nullable const[] functionTables | NSRange range	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0	-	0adcbae64d520a85
 method	c:objc(pl)MTLRenderCommandEncoder(im)setTileIntersectionFunctionTable:atBufferIndex:	-			void	id<MTLIntersectionFunctionTable> intersectionFunctionTable | NSUInteger bufferIndex	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0	-	73cf4a0402e0bdc4
-method	c:objc(pl)MTLRenderCommandEncoder(im)setTileIntersectionFunctionTables:withBufferRange:	-			void	id<MTLIntersectionFunctionTable>  _Nullable const[] intersectionFunctionTables | NSRange range	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0	-	2485076235474817
+method	c:objc(pl)MTLRenderCommandEncoder(im)setTileIntersectionFunctionTables:withBufferRange:	-			void	const id<MTLIntersectionFunctionTable>  _Nullable const[] intersectionFunctionTables | NSRange range	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0	-	cdd507a2119669f6
 method	c:objc(pl)MTLRenderCommandEncoder(im)setTileAccelerationStructure:atBufferIndex:	-			void	id<MTLAccelerationStructure> accelerationStructure | NSUInteger bufferIndex	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0	-	5396a877a54610fa
 method	c:objc(pl)MTLRenderCommandEncoder(im)dispatchThreadsPerTile:	-			void	MTLSize threadsPerTile	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.5/-/-/0	-	4e51ff1d88b2cb14
 method	c:objc(pl)MTLRenderCommandEncoder(im)setThreadgroupMemoryLength:offset:atIndex:	-			void	NSUInteger length | NSUInteger offset | NSUInteger index	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.5/-/-/0	-	ad928131eac3f44d
 method	c:objc(pl)MTLRenderCommandEncoder(im)useResource:usage:	-			void	id<MTLResource> resource | MTLResourceUsage usage	-	ios=11.0/16.0/-/0,macos=10.13/13.0/-/0	deprecated: Use Use useResource:usage:stages: instead instead	9fd546657c38c322
-method	c:objc(pl)MTLRenderCommandEncoder(im)useResources:count:usage:	-			void	id<MTLResource>  _Nonnull const[] resources | NSUInteger count | MTLResourceUsage usage	-	ios=11.0/16.0/-/0,macos=10.13/13.0/-/0	deprecated: Use Use useResources:count:usage:stages: instead instead	463701194bf6019c
+method	c:objc(pl)MTLRenderCommandEncoder(im)useResources:count:usage:	-			void	const id<MTLResource>  _Nonnull const[] resources | NSUInteger count | MTLResourceUsage usage	-	ios=11.0/16.0/-/0,macos=10.13/13.0/-/0	deprecated: Use Use useResources:count:usage:stages: instead instead	76ef316d27fdc5a4
 method	c:objc(pl)MTLRenderCommandEncoder(im)useResource:usage:stages:	-			void	id<MTLResource> resource | MTLResourceUsage usage | MTLRenderStages stages	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	5980bf7f19970d0b
-method	c:objc(pl)MTLRenderCommandEncoder(im)useResources:count:usage:stages:	-			void	id<MTLResource>  _Nonnull const[] resources | NSUInteger count | MTLResourceUsage usage | MTLRenderStages stages	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	1c69073bd064bbc4
+method	c:objc(pl)MTLRenderCommandEncoder(im)useResources:count:usage:stages:	-			void	const id<MTLResource>  _Nonnull const[] resources | NSUInteger count | MTLResourceUsage usage | MTLRenderStages stages	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	170458be4f987840
 method	c:objc(pl)MTLRenderCommandEncoder(im)useHeap:	-			void	id<MTLHeap> heap	-	ios=11.0/16.0/-/0,macos=10.13/13.0/-/0	deprecated: Use Use useHeap:stages: instead instead	0603a341eaefe9b1
-method	c:objc(pl)MTLRenderCommandEncoder(im)useHeaps:count:	-			void	id<MTLHeap>  _Nonnull const[] heaps | NSUInteger count	-	ios=11.0/16.0/-/0,macos=10.13/13.0/-/0	deprecated: Use Use useHeaps:count:stages: instead instead	0dc4dfc8e8174449
+method	c:objc(pl)MTLRenderCommandEncoder(im)useHeaps:count:	-			void	const id<MTLHeap>  _Nonnull const[] heaps | NSUInteger count	-	ios=11.0/16.0/-/0,macos=10.13/13.0/-/0	deprecated: Use Use useHeaps:count:stages: instead instead	d99b9d4103156396
 method	c:objc(pl)MTLRenderCommandEncoder(im)useHeap:stages:	-			void	id<MTLHeap> heap | MTLRenderStages stages	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	1f8bda64a8362835
-method	c:objc(pl)MTLRenderCommandEncoder(im)useHeaps:count:stages:	-			void	id<MTLHeap>  _Nonnull const[] heaps | NSUInteger count | MTLRenderStages stages	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	f7b8f8949c12594e
+method	c:objc(pl)MTLRenderCommandEncoder(im)useHeaps:count:stages:	-			void	const id<MTLHeap>  _Nonnull const[] heaps | NSUInteger count | MTLRenderStages stages	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	6ea0e8269c64dd2a
 method	c:objc(pl)MTLRenderCommandEncoder(im)executeCommandsInBuffer:withRange:	-			void	id<MTLIndirectCommandBuffer> indirectCommandBuffer | NSRange executionRange	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	5bfd7cdf6650d09d
 method	c:objc(pl)MTLRenderCommandEncoder(im)executeCommandsInBuffer:indirectBuffer:indirectBufferOffset:	-			void	id<MTLIndirectCommandBuffer> indirectCommandbuffer | id<MTLBuffer> indirectRangeBuffer | NSUInteger indirectBufferOffset	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0	-	a7eb3ecd5927c4ea
 method	c:objc(pl)MTLRenderCommandEncoder(im)memoryBarrierWithScope:afterStages:beforeStages:	-			void	MTLBarrierScope scope | MTLRenderStages after | MTLRenderStages before	-	ios=16.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0	-	6a837cc1962f523d
-method	c:objc(pl)MTLRenderCommandEncoder(im)memoryBarrierWithResources:count:afterStages:beforeStages:	-			void	id<MTLResource>  _Nonnull const[] resources | NSUInteger count | MTLRenderStages after | MTLRenderStages before	-	ios=16.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0	-	6ee9a384c706328c
+method	c:objc(pl)MTLRenderCommandEncoder(im)memoryBarrierWithResources:count:afterStages:beforeStages:	-			void	const id<MTLResource>  _Nonnull const[] resources | NSUInteger count | MTLRenderStages after | MTLRenderStages before	-	ios=16.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0	-	103a94a27d113ba8
 method	c:objc(pl)MTLRenderCommandEncoder(im)sampleCountersInBuffer:atSampleIndex:withBarrier:	-			void	id<MTLCounterSampleBuffer> sampleBuffer | NSUInteger sampleIndex | BOOL barrier	-	ios=14.0/-/-/0,macos=10.15/-/-/0	-	895d0cce487916ba
 method	c:objc(pl)MTLRenderCommandEncoder(im)setColorAttachmentMap:	-			void	MTLLogicalToPhysicalColorAttachmentMap * mapping	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	7ef6eb9e1b82c061
 protocol	c:objc(pl)MTLFunctionHandle	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	e798c88784fac093
@@ -2148,7 +2148,7 @@ protocol	c:objc(pl)MTLVisibleFunctionTable	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-
 conforms	-	MTLVisibleFunctionTable	MTLResource		-	-	-	-	-	3c4f9060a86b6012
 property	c:objc(pl)MTLVisibleFunctionTable(py)gpuResourceID	-			MTLResourceID	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0	-	6f3085d3007aa994
 method	c:objc(pl)MTLVisibleFunctionTable(im)setFunction:atIndex:	-			void	id<MTLFunctionHandle> function | NSUInteger index	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	e3c12cb37f731692
-method	c:objc(pl)MTLVisibleFunctionTable(im)setFunctions:withRange:	-			void	id<MTLFunctionHandle>  _Nullable const[] functions | NSRange range	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	29226b8d1f720312
+method	c:objc(pl)MTLVisibleFunctionTable(im)setFunctions:withRange:	-			void	const id<MTLFunctionHandle>  _Nullable const[] functions | NSRange range	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	dd399d8d678d7798
 typedef	c:@T@MTLBlendFactor	-			enum MTLBlendFactor	-	-	-	-	1febe9bdd921e9af
 enum	c:@E@MTLBlendFactor	-			NSUInteger	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	7a7931fb420f2564
 enumconst	c:@E@MTLBlendFactor@MTLBlendFactorZero	MTLBlendFactor			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	4c98b7d19a2c8abc
@@ -2767,26 +2767,26 @@ property	c:objc(pl)MTLArgumentEncoder(py)alignment	-			NSUInteger	-	readonly	ios
 method	c:objc(pl)MTLArgumentEncoder(im)setArgumentBuffer:offset:	-			void	id<MTLBuffer> argumentBuffer | NSUInteger offset	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	67e9e67c2143bcea
 method	c:objc(pl)MTLArgumentEncoder(im)setArgumentBuffer:startOffset:arrayElement:	-			void	id<MTLBuffer> argumentBuffer | NSUInteger startOffset | NSUInteger arrayElement	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	bc688c53085fd4ce
 method	c:objc(pl)MTLArgumentEncoder(im)setBuffer:offset:atIndex:	-			void	id<MTLBuffer> buffer | NSUInteger offset | NSUInteger index	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	65f0e85d6de5bf9c
-method	c:objc(pl)MTLArgumentEncoder(im)setBuffers:offsets:withRange:	-			void	id<MTLBuffer>  _Nullable const[] buffers | const NSUInteger[] offsets | NSRange range	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	f0dfea0c927172fd
+method	c:objc(pl)MTLArgumentEncoder(im)setBuffers:offsets:withRange:	-			void	const id<MTLBuffer>  _Nullable const[] buffers | const NSUInteger[] offsets | NSRange range	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	f75200fc850803ba
 method	c:objc(pl)MTLArgumentEncoder(im)setTexture:atIndex:	-			void	id<MTLTexture> texture | NSUInteger index	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	76937aab810f0979
-method	c:objc(pl)MTLArgumentEncoder(im)setTextures:withRange:	-			void	id<MTLTexture>  _Nullable const[] textures | NSRange range	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	327d464fecfc833c
+method	c:objc(pl)MTLArgumentEncoder(im)setTextures:withRange:	-			void	const id<MTLTexture>  _Nullable const[] textures | NSRange range	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	305d27828bf91d76
 method	c:objc(pl)MTLArgumentEncoder(im)setSamplerState:atIndex:	-			void	id<MTLSamplerState> sampler | NSUInteger index	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	a4886a8d8d9a2b7f
-method	c:objc(pl)MTLArgumentEncoder(im)setSamplerStates:withRange:	-			void	id<MTLSamplerState>  _Nullable const[] samplers | NSRange range	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	212ba453b38a2b42
+method	c:objc(pl)MTLArgumentEncoder(im)setSamplerStates:withRange:	-			void	const id<MTLSamplerState>  _Nullable const[] samplers | NSRange range	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	e3536a4cd2edf087
 method	c:objc(pl)MTLArgumentEncoder(im)constantDataAtIndex:	-			void *	NSUInteger index	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	8eb666e1c9b8244c
 method	c:objc(pl)MTLArgumentEncoder(im)setRenderPipelineState:atIndex:	-			void	id<MTLRenderPipelineState> pipeline | NSUInteger index	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0	-	a9dae589dcf6d757
-method	c:objc(pl)MTLArgumentEncoder(im)setRenderPipelineStates:withRange:	-			void	id<MTLRenderPipelineState>  _Nullable const[] pipelines | NSRange range	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0	-	ba4e9729af4d4b28
+method	c:objc(pl)MTLArgumentEncoder(im)setRenderPipelineStates:withRange:	-			void	const id<MTLRenderPipelineState>  _Nullable const[] pipelines | NSRange range	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0	-	b7c6fb8ff62d4bd9
 method	c:objc(pl)MTLArgumentEncoder(im)setComputePipelineState:atIndex:	-			void	id<MTLComputePipelineState> pipeline | NSUInteger index	-	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0	-	c9448fdb9d86099f
-method	c:objc(pl)MTLArgumentEncoder(im)setComputePipelineStates:withRange:	-			void	id<MTLComputePipelineState>  _Nullable const[] pipelines | NSRange range	-	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0	-	dcc851d53084c488
+method	c:objc(pl)MTLArgumentEncoder(im)setComputePipelineStates:withRange:	-			void	const id<MTLComputePipelineState>  _Nullable const[] pipelines | NSRange range	-	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0	-	7739a740edb58fca
 method	c:objc(pl)MTLArgumentEncoder(im)setIndirectCommandBuffer:atIndex:	-			void	id<MTLIndirectCommandBuffer> indirectCommandBuffer | NSUInteger index	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	0c29efabb64abdf4
-method	c:objc(pl)MTLArgumentEncoder(im)setIndirectCommandBuffers:withRange:	-			void	id<MTLIndirectCommandBuffer>  _Nullable const[] buffers | NSRange range	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	cd2238b2820b120a
+method	c:objc(pl)MTLArgumentEncoder(im)setIndirectCommandBuffers:withRange:	-			void	const id<MTLIndirectCommandBuffer>  _Nullable const[] buffers | NSRange range	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	5f16cc518b53901c
 method	c:objc(pl)MTLArgumentEncoder(im)setAccelerationStructure:atIndex:	-			void	id<MTLAccelerationStructure> accelerationStructure | NSUInteger index	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	90b74d3bcc9540c7
 method	c:objc(pl)MTLArgumentEncoder(im)newArgumentEncoderForBufferAtIndex:	-			id<MTLArgumentEncoder>	NSUInteger index	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	ea5924260641cbcf
 method	c:objc(pl)MTLArgumentEncoder(im)setVisibleFunctionTable:atIndex:	-			void	id<MTLVisibleFunctionTable> visibleFunctionTable | NSUInteger index	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	e90bd62f1a220384
-method	c:objc(pl)MTLArgumentEncoder(im)setVisibleFunctionTables:withRange:	-			void	id<MTLVisibleFunctionTable>  _Nullable const[] visibleFunctionTables | NSRange range	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	e18a6c1f1da4871b
+method	c:objc(pl)MTLArgumentEncoder(im)setVisibleFunctionTables:withRange:	-			void	const id<MTLVisibleFunctionTable>  _Nullable const[] visibleFunctionTables | NSRange range	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	f311137702904516
 method	c:objc(pl)MTLArgumentEncoder(im)setIntersectionFunctionTable:atIndex:	-			void	id<MTLIntersectionFunctionTable> intersectionFunctionTable | NSUInteger index	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	1ff464f38e0d8cc2
-method	c:objc(pl)MTLArgumentEncoder(im)setIntersectionFunctionTables:withRange:	-			void	id<MTLIntersectionFunctionTable>  _Nullable const[] intersectionFunctionTables | NSRange range	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	a0f59fc5d2509cde
+method	c:objc(pl)MTLArgumentEncoder(im)setIntersectionFunctionTables:withRange:	-			void	const id<MTLIntersectionFunctionTable>  _Nullable const[] intersectionFunctionTables | NSRange range	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	4e03db2ae44df76d
 method	c:objc(pl)MTLArgumentEncoder(im)setDepthStencilState:atIndex:	-			void	id<MTLDepthStencilState> depthStencilState | NSUInteger index	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	6168862e0e41a5ec
-method	c:objc(pl)MTLArgumentEncoder(im)setDepthStencilStates:withRange:	-			void	id<MTLDepthStencilState>  _Nullable const[] depthStencilStates | NSRange range	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	113d9666d4bfb7ca
+method	c:objc(pl)MTLArgumentEncoder(im)setDepthStencilStates:withRange:	-			void	const id<MTLDepthStencilState>  _Nullable const[] depthStencilStates | NSRange range	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	2ac0b763a161e307
 typedef	c:@T@MTL4VisibilityOptions	-			enum MTL4VisibilityOptions	-	-	-	-	f0d270ade9c44a2b
 enum	c:@E@MTL4VisibilityOptions	-			NSUInteger	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	2032f2747f026ab4
 enumconst	c:@E@MTL4VisibilityOptions@MTL4VisibilityOptionNone	MTL4VisibilityOptions			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	faebe43de06df0fe
@@ -2869,7 +2869,7 @@ method	c:objc(pl)MTL4CommandBuffer(im)renderCommandEncoderWithDescriptor:options
 method	c:objc(pl)MTL4CommandBuffer(im)computeCommandEncoder	-			id<MTL4ComputeCommandEncoder>	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	11e2467c32fe4ea0
 method	c:objc(pl)MTL4CommandBuffer(im)machineLearningCommandEncoder	-			id<MTL4MachineLearningCommandEncoder>	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	a246a6f72b08c8a1
 method	c:objc(pl)MTL4CommandBuffer(im)useResidencySet:	-			void	id<MTLResidencySet> residencySet	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	f630711c0492be1d
-method	c:objc(pl)MTL4CommandBuffer(im)useResidencySets:count:	-			void	id<MTLResidencySet>  _Nonnull const[] residencySets | NSUInteger count	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	f2d9797e947f84ff
+method	c:objc(pl)MTL4CommandBuffer(im)useResidencySets:count:	-			void	const id<MTLResidencySet>  _Nonnull const[] residencySets | NSUInteger count	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	8d6f647662e7722b
 method	c:objc(pl)MTL4CommandBuffer(im)pushDebugGroup:	-			void	NSString * string	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	62f139c24f8682dd
 method	c:objc(pl)MTL4CommandBuffer(im)popDebugGroup	-			void	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	af64fffaad6bc8d1
 method	c:objc(pl)MTL4CommandBuffer(im)writeTimestampIntoHeap:atIndex:	-			void	id<MTL4CounterHeap> counterHeap | NSUInteger index	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	272d69c804210f5e
@@ -2884,7 +2884,7 @@ method	c:objc(cs)MTLSharedEventListener(im)init	-			instancetype	-	-	ios=12.0/-/
 method	c:objc(cs)MTLSharedEventListener(im)initWithDispatchQueue:	-			instancetype	dispatch_queue_t dispatchQueue	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	dc5763ad08d7cb87
 property	c:objc(cs)MTLSharedEventListener(py)dispatchQueue	-			dispatch_queue_t	-	readonly	ios=12.0/-/-/0,macos=10.14/-/-/0	-	8a9d7d2a3a3860fd
 method	c:objc(cs)MTLSharedEventListener(cm)sharedListener	-			MTLSharedEventListener *	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	ce729d4943099154
-typedef	c:@T@MTLSharedEventNotificationBlock	-			void (^)(id<MTLSharedEvent> _Nonnull, uint64_t)	-	-	-	-	62fffde2a829a9ec
+typedef	c:@T@MTLSharedEventNotificationBlock	-			void ((^))(id<MTLSharedEvent>, uint64_t)	-	-	-	-	676baa1806694f07
 protocol	c:objc(pl)MTLSharedEvent	-			-	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	547cefce04f5d7ea
 conforms	-	MTLSharedEvent	MTLEvent		-	-	-	-	-	809a3bb8e1b1eee9
 method	c:objc(pl)MTLSharedEvent(im)notifyListener:atValue:block:	-			void	MTLSharedEventListener * listener | uint64_t value | MTLSharedEventNotificationBlock block	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	9c51b14038698979
@@ -2896,7 +2896,7 @@ super	-	MTLSharedEventHandle	NSObject		-	-	-	-	-	5953fc15caa235ff
 conforms	-	MTLSharedEventHandle	NSSecureCoding		-	-	-	-	-	34ee1777fe74f33d
 struct	c:@S@MTLSharedEventHandlePrivate	-			-	-	-	-	-	8b9cc44e5a62ac66
 property	c:objc(cs)MTLSharedEventHandle(py)label	-			NSString *	-	readonly	ios=12.0/-/-/0,macos=10.14/-/-/0	-	cc2ead8f7253fcde
-typedef	c:@T@MTL4CommitFeedbackHandler	-			void (^)(id<MTL4CommitFeedback> _Nonnull)	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	bac818cdc0c3ffbe
+typedef	c:@T@MTL4CommitFeedbackHandler	-			void ((^))(id<MTL4CommitFeedback>)	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	0d7c38120a467abd
 protocol	c:objc(pl)MTL4CommitFeedback	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	afdb86eee48bd5f1
 conforms	-	MTL4CommitFeedback	NSObject		-	-	-	-	-	3d979c719c35ac8f
 property	c:objc(pl)MTL4CommitFeedback(py)error	-			NSError *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	ff722750bb35ada0
@@ -2948,16 +2948,16 @@ protocol	c:objc(pl)MTL4CommandQueue	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	
 conforms	-	MTL4CommandQueue	NSObject		-	-	-	-	-	4db62c8908ce94b8
 property	c:objc(pl)MTL4CommandQueue(py)device	-			id<MTLDevice>	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	2f2ba601502c92ca
 property	c:objc(pl)MTL4CommandQueue(py)label	-			NSString *	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	bcacac9edff671cb
-method	c:objc(pl)MTL4CommandQueue(im)commit:count:	-			void	id<MTL4CommandBuffer>  _Nonnull const[] commandBuffers | NSUInteger count	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	f1e2878926b2947c
-method	c:objc(pl)MTL4CommandQueue(im)commit:count:options:	-			void	id<MTL4CommandBuffer>  _Nonnull const[] commandBuffers | NSUInteger count | MTL4CommitOptions * options	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	e9bdaecb31653ed0
+method	c:objc(pl)MTL4CommandQueue(im)commit:count:	-			void	const id<MTL4CommandBuffer>  _Nonnull const[] commandBuffers | NSUInteger count	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	25d63b6f5535855c
+method	c:objc(pl)MTL4CommandQueue(im)commit:count:options:	-			void	const id<MTL4CommandBuffer>  _Nonnull const[] commandBuffers | NSUInteger count | MTL4CommitOptions * options	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	17185c8bc1fcb12e
 method	c:objc(pl)MTL4CommandQueue(im)signalEvent:value:	-			void	id<MTLEvent> event | uint64_t value	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	26410ce9dcbce819
 method	c:objc(pl)MTL4CommandQueue(im)waitForEvent:value:	-			void	id<MTLEvent> event | uint64_t value	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	42af9854e05ff46e
 method	c:objc(pl)MTL4CommandQueue(im)signalDrawable:	-			void	id<MTLDrawable> drawable	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	5161d6f3715c2027
 method	c:objc(pl)MTL4CommandQueue(im)waitForDrawable:	-			void	id<MTLDrawable> drawable	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	1e4a8e9128ceec03
 method	c:objc(pl)MTL4CommandQueue(im)addResidencySet:	-			void	id<MTLResidencySet> residencySet	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	fd73a05ef6098dd9
-method	c:objc(pl)MTL4CommandQueue(im)addResidencySets:count:	-			void	id<MTLResidencySet>  _Nonnull const[] residencySets | NSUInteger count	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	dcdfd91411dcbea2
+method	c:objc(pl)MTL4CommandQueue(im)addResidencySets:count:	-			void	const id<MTLResidencySet>  _Nonnull const[] residencySets | NSUInteger count	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	9bd92a32452856fd
 method	c:objc(pl)MTL4CommandQueue(im)removeResidencySet:	-			void	id<MTLResidencySet> residencySet	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	44fa3c7726901289
-method	c:objc(pl)MTL4CommandQueue(im)removeResidencySets:count:	-			void	id<MTLResidencySet>  _Nonnull const[] residencySets | NSUInteger count	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	d28dcfbe98486134
+method	c:objc(pl)MTL4CommandQueue(im)removeResidencySets:count:	-			void	const id<MTLResidencySet>  _Nonnull const[] residencySets | NSUInteger count	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	1b9fd53628dfbb74
 method	c:objc(pl)MTL4CommandQueue(im)updateTextureMappings:heap:operations:count:	-			void	id<MTLTexture> texture | id<MTLHeap> heap | const MTL4UpdateSparseTextureMappingOperation[] operations | NSUInteger count	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	7a7ed8002a3de4c0
 method	c:objc(pl)MTL4CommandQueue(im)copyTextureMappingsFromTexture:toTexture:operations:count:	-			void	id<MTLTexture> sourceTexture | id<MTLTexture> destinationTexture | const MTL4CopySparseTextureMappingOperation[] operations | NSUInteger count	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	da87f25a683812d1
 method	c:objc(pl)MTL4CommandQueue(im)updateBufferMappings:heap:operations:count:	-			void	id<MTLBuffer> buffer | id<MTLHeap> heap | const MTL4UpdateSparseBufferMappingOperation[] operations | NSUInteger count	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	9eb6d53991914e9e
@@ -3112,9 +3112,9 @@ method	c:objc(pl)MTLAccelerationStructureCommandEncoder(im)copyAndCompactAcceler
 method	c:objc(pl)MTLAccelerationStructureCommandEncoder(im)updateFence:	-			void	id<MTLFence> fence	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	e0b1de1219c18881
 method	c:objc(pl)MTLAccelerationStructureCommandEncoder(im)waitForFence:	-			void	id<MTLFence> fence	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	f953fc09bea7b9ea
 method	c:objc(pl)MTLAccelerationStructureCommandEncoder(im)useResource:usage:	-			void	id<MTLResource> resource | MTLResourceUsage usage	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	deff63f44c8acc6d
-method	c:objc(pl)MTLAccelerationStructureCommandEncoder(im)useResources:count:usage:	-			void	id<MTLResource>  _Nonnull const[] resources | NSUInteger count | MTLResourceUsage usage	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	1cf0aeb5098a0293
+method	c:objc(pl)MTLAccelerationStructureCommandEncoder(im)useResources:count:usage:	-			void	const id<MTLResource>  _Nonnull const[] resources | NSUInteger count | MTLResourceUsage usage	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	34c5560a4b0f281d
 method	c:objc(pl)MTLAccelerationStructureCommandEncoder(im)useHeap:	-			void	id<MTLHeap> heap	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	e485eb28d988a0a6
-method	c:objc(pl)MTLAccelerationStructureCommandEncoder(im)useHeaps:count:	-			void	id<MTLHeap>  _Nonnull const[] heaps | NSUInteger count	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	90684c1a26379b0b
+method	c:objc(pl)MTLAccelerationStructureCommandEncoder(im)useHeaps:count:	-			void	const id<MTLHeap>  _Nonnull const[] heaps | NSUInteger count	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	21a353f192180278
 method	c:objc(pl)MTLAccelerationStructureCommandEncoder(im)sampleCountersInBuffer:atSampleIndex:withBarrier:	-			void	id<MTLCounterSampleBuffer> sampleBuffer | NSUInteger sampleIndex | BOOL barrier	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	b88fe907ba50b559
 interface	c:objc(cs)MTLAccelerationStructurePassSampleBufferAttachmentDescriptor	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	92740bf7d4034e25
 super	-	MTLAccelerationStructurePassSampleBufferAttachmentDescriptor	NSObject		-	-	-	-	-	9c408e08fc087834
@@ -3261,16 +3261,16 @@ property	c:objc(cs)MTLIntersectionFunctionTableDescriptor(py)functionCount	-			N
 protocol	c:objc(pl)MTLIntersectionFunctionTable	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	7edaba2ad7a7b045
 conforms	-	MTLIntersectionFunctionTable	MTLResource		-	-	-	-	-	f876a61a54b497e3
 method	c:objc(pl)MTLIntersectionFunctionTable(im)setBuffer:offset:atIndex:	-			void	id<MTLBuffer> buffer | NSUInteger offset | NSUInteger index	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	a59103b6bc0005ca
-method	c:objc(pl)MTLIntersectionFunctionTable(im)setBuffers:offsets:withRange:	-			void	id<MTLBuffer>  _Nullable const[] buffers | const NSUInteger[] offsets | NSRange range	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	2e15df5da921006f
+method	c:objc(pl)MTLIntersectionFunctionTable(im)setBuffers:offsets:withRange:	-			void	const id<MTLBuffer>  _Nullable const[] buffers | const NSUInteger[] offsets | NSRange range	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	bc4d3fe291711af8
 property	c:objc(pl)MTLIntersectionFunctionTable(py)gpuResourceID	-			MTLResourceID	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0	-	fe60b747bdc7bf23
 method	c:objc(pl)MTLIntersectionFunctionTable(im)setFunction:atIndex:	-			void	id<MTLFunctionHandle> function | NSUInteger index	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	e413be1287724df7
-method	c:objc(pl)MTLIntersectionFunctionTable(im)setFunctions:withRange:	-			void	id<MTLFunctionHandle>  _Nullable const[] functions | NSRange range	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	463697219727a37d
+method	c:objc(pl)MTLIntersectionFunctionTable(im)setFunctions:withRange:	-			void	const id<MTLFunctionHandle>  _Nullable const[] functions | NSRange range	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	0b8a83a10ade900e
 method	c:objc(pl)MTLIntersectionFunctionTable(im)setOpaqueTriangleIntersectionFunctionWithSignature:atIndex:	-			void	MTLIntersectionFunctionSignature signature | NSUInteger index	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	5b97eb37e220bef4
 method	c:objc(pl)MTLIntersectionFunctionTable(im)setOpaqueTriangleIntersectionFunctionWithSignature:withRange:	-			void	MTLIntersectionFunctionSignature signature | NSRange range	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	7db03a357d9bef52
 method	c:objc(pl)MTLIntersectionFunctionTable(im)setOpaqueCurveIntersectionFunctionWithSignature:atIndex:	-			void	MTLIntersectionFunctionSignature signature | NSUInteger index	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	ce6c2e57e70791ad
 method	c:objc(pl)MTLIntersectionFunctionTable(im)setOpaqueCurveIntersectionFunctionWithSignature:withRange:	-			void	MTLIntersectionFunctionSignature signature | NSRange range	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	6ca23a21ce86f6a0
 method	c:objc(pl)MTLIntersectionFunctionTable(im)setVisibleFunctionTable:atBufferIndex:	-			void	id<MTLVisibleFunctionTable> functionTable | NSUInteger bufferIndex	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	d1f9dfc7663fb511
-method	c:objc(pl)MTLIntersectionFunctionTable(im)setVisibleFunctionTables:withBufferRange:	-			void	id<MTLVisibleFunctionTable>  _Nullable const[] functionTables | NSRange bufferRange	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	31900fa69e83f826
+method	c:objc(pl)MTLIntersectionFunctionTable(im)setVisibleFunctionTables:withBufferRange:	-			void	const id<MTLVisibleFunctionTable>  _Nullable const[] functionTables | NSRange bufferRange	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	09f7955fb50032c7
 typedef	c:@T@MTLStitchedLibraryOptions	-			enum MTLStitchedLibraryOptions	-	-	-	-	fc059f006ea2bac3
 enum	c:@E@MTLStitchedLibraryOptions	-			NSUInteger	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	6f775b3b313bf9c7
 enumconst	c:@E@MTLStitchedLibraryOptions@MTLStitchedLibraryOptionNone	MTLStitchedLibraryOptions			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	b696c97640b156eb
@@ -3354,7 +3354,7 @@ enumconst	c:@E@MTLIOStatus@MTLIOStatusPending	MTLIOStatus			-	-	-	ios=16.0/-/-/0
 enumconst	c:@E@MTLIOStatus@MTLIOStatusCancelled	MTLIOStatus			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	265ac0cec1d43e35
 enumconst	c:@E@MTLIOStatus@MTLIOStatusError	MTLIOStatus			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	49d7782fd410d258
 enumconst	c:@E@MTLIOStatus@MTLIOStatusComplete	MTLIOStatus			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	338aae1885e9d168
-typedef	c:@T@MTLIOCommandBufferHandler	-			void (^)(id<MTLIOCommandBuffer> _Nonnull)	-	-	-	-	31ca8bae89289755
+typedef	c:@T@MTLIOCommandBufferHandler	-			void ((^))(id<MTLIOCommandBuffer>)	-	-	-	-	9f0a08bf52a2b91a
 protocol	c:objc(pl)MTLIOCommandBuffer	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	26381b615300ce11
 conforms	-	MTLIOCommandBuffer	NSObject		-	-	-	-	-	a970fc974016579a
 method	c:objc(pl)MTLIOCommandBuffer(im)addCompletedHandler:	-			void	MTLIOCommandBufferHandler block	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	e08ff36f715ee6fa
@@ -3380,9 +3380,9 @@ enumconst	c:@E@MTLIOCompressionStatus@MTLIOCompressionStatusComplete	MTLIOCompre
 enumconst	c:@E@MTLIOCompressionStatus@MTLIOCompressionStatusError	MTLIOCompressionStatus			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	13c1d1b69c5e4111
 typedef	c:@T@MTLIOCompressionContext	-			void *	-	-	-	-	9f2e27da0efd3ae0
 function	c:@F@MTLIOCompressionContextDefaultChunkSize	-			size_t (void)	-	-	-	-	48ff06d0be50e269
-function	c:@F@MTLIOCreateCompressionContext	-			MTLIOCompressionContext  _Nullable (const char * _Nonnull, MTLIOCompressionMethod, size_t)	const char * path | MTLIOCompressionMethod type | size_t chunkSize	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	813dbfac0207c564
-function	c:@F@MTLIOCompressionContextAppendData	-			void (MTLIOCompressionContext _Nonnull, const void * _Nonnull, size_t)	MTLIOCompressionContext context | const void * data | size_t size	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	9c30d6c2ea175ac1
-function	c:@F@MTLIOFlushAndDestroyCompressionContext	-			MTLIOCompressionStatus (MTLIOCompressionContext _Nonnull)	MTLIOCompressionContext context	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	1ecd2d19bafb27ed
+function	c:@F@MTLIOCreateCompressionContext	-			MTLIOCompressionContext (const char *, MTLIOCompressionMethod, size_t)	const char * path | MTLIOCompressionMethod type | size_t chunkSize	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	ec35a6b2922da5df
+function	c:@F@MTLIOCompressionContextAppendData	-			void (MTLIOCompressionContext, const void *, size_t)	MTLIOCompressionContext context | const void * data | size_t size	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	bd94e4e3e8880527
+function	c:@F@MTLIOFlushAndDestroyCompressionContext	-			MTLIOCompressionStatus (MTLIOCompressionContext)	MTLIOCompressionContext context	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	6747a11b5d8cb18d
 interface	c:objc(cs)MTLResidencySetDescriptor	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	61cac300f9e41fbf
 super	-	MTLResidencySetDescriptor	NSObject		-	-	-	-	-	87742a8f20f50ae4
 conforms	-	MTLResidencySetDescriptor	NSCopying		-	-	-	-	-	6cc955a8a0405e67
@@ -3396,9 +3396,9 @@ property	c:objc(pl)MTLResidencySet(py)allocatedSize	-			uint64_t	-	readonly	ios=
 method	c:objc(pl)MTLResidencySet(im)requestResidency	-			void	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	23de81b449041ed5
 method	c:objc(pl)MTLResidencySet(im)endResidency	-			void	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	f5a356c4a5b1c5cc
 method	c:objc(pl)MTLResidencySet(im)addAllocation:	-			void	id<MTLAllocation> allocation	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	c86bd2a4f6461e22
-method	c:objc(pl)MTLResidencySet(im)addAllocations:count:	-			void	id<MTLAllocation>  _Nonnull const[] allocations | NSUInteger count	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	5fa3ea425608abb4
+method	c:objc(pl)MTLResidencySet(im)addAllocations:count:	-			void	const id<MTLAllocation>  _Nonnull const[] allocations | NSUInteger count	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	ec4e0364eadecf3a
 method	c:objc(pl)MTLResidencySet(im)removeAllocation:	-			void	id<MTLAllocation> allocation	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	3010a2567b34a18d
-method	c:objc(pl)MTLResidencySet(im)removeAllocations:count:	-			void	id<MTLAllocation>  _Nonnull const[] allocations | NSUInteger count	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	f91fb80bac2c9fee
+method	c:objc(pl)MTLResidencySet(im)removeAllocations:count:	-			void	const id<MTLAllocation>  _Nonnull const[] allocations | NSUInteger count	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	b5d36938997bd3eb
 method	c:objc(pl)MTLResidencySet(im)removeAllAllocations	-			void	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	87048e27a3ce6229
 method	c:objc(pl)MTLResidencySet(im)containsAllocation:	-			BOOL	id<MTLAllocation> anAllocation	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	43d2ee0b8a8cdd92
 property	c:objc(pl)MTLResidencySet(py)allAllocations	-			NSArray<id<MTLAllocation>> *	-	readonly,copy	ios=18.0/-/-/0,macos=15.0/-/-/0	-	f444459e9e63cb39

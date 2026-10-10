@@ -112,9 +112,9 @@ enumconst	c:@E@MPSGraphReducedPrecisionFastMath@MPSGraphReducedPrecisionFastMath
 enumconst	c:@E@MPSGraphReducedPrecisionFastMath@MPSGraphReducedPrecisionFastMathDefault	MPSGraphReducedPrecisionFastMath			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	7e13bc4a7ef2eac9
 typedef	c:@T@MPSGraphTensorDataDictionary	-			NSDictionary<MPSGraphTensor *,MPSGraphTensorData *>	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	e9a30b31910064da
 typedef	c:@T@MPSGraphTensorShapedTypeDictionary	-			NSDictionary<MPSGraphTensor *,MPSGraphShapedType *>	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	86e0fa74127ae1aa
-typedef	c:@T@MPSGraphCompletionHandler	-			void (^)(MPSGraphTensorDataDictionary * _Nonnull, NSError * _Nullable)	-	-	-	-	19537fbafae69f88
-typedef	c:@T@MPSGraphScheduledHandler	-			void (^)(MPSGraphTensorDataDictionary * _Nonnull, NSError * _Nullable)	-	-	-	-	6c3ecc7e6488685a
-typedef	c:@T@MPSGraphCompilationCompletionHandler	-			void (^)(MPSGraphExecutable * _Nonnull, NSError * _Nullable)	-	-	-	-	f19de4341385cb85
+typedef	c:@T@MPSGraphCompletionHandler	-			void ((^))(MPSGraphTensorDataDictionary *, NSError *)	-	-	-	-	81306661b0e62c67
+typedef	c:@T@MPSGraphScheduledHandler	-			void ((^))(MPSGraphTensorDataDictionary *, NSError *)	-	-	-	-	30a45e2f0e3a16d4
+typedef	c:@T@MPSGraphCompilationCompletionHandler	-			void ((^))(MPSGraphExecutable *, NSError *)	-	-	-	-	16569b56c4e5b272
 typedef	c:@T@MPSGraphCallableMap	-			NSDictionary<NSString *,MPSGraphExecutable *>	-	-	ios=17.1/-/-/0,macos=14.1/-/-/0,tvos=17.1/-/-/0	-	2a7c3050e7f9cb95
 interface	c:objc(cs)MPSGraphCompilationDescriptor	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	e9abe7a168d04af1
 super	-	MPSGraphCompilationDescriptor	MPSGraphObject		-	-	-	-	-	98397a47d28be6f5
@@ -150,8 +150,8 @@ method	c:objc(cs)MPSGraph(im)runAsyncWithMTLCommandQueue:feeds:targetTensors:tar
 method	c:objc(cs)MPSGraph(im)runAsyncWithMTLCommandQueue:feeds:targetOperations:resultsDictionary:executionDescriptor:	-			void	id<MTLCommandQueue> commandQueue | MPSGraphTensorDataDictionary * feeds | NSArray<MPSGraphOperation *> * targetOperations | MPSGraphTensorDataDictionary * resultsDictionary | MPSGraphExecutionDescriptor * executionDescriptor	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	7a5dc36a0a3ee4bc
 method	c:objc(cs)MPSGraph(im)encodeToCommandBuffer:feeds:targetTensors:targetOperations:executionDescriptor:	-			MPSGraphTensorDataDictionary *	MPSCommandBuffer * commandBuffer | MPSGraphTensorDataDictionary * feeds | NSArray<MPSGraphTensor *> * targetTensors | NSArray<MPSGraphOperation *> * targetOperations | MPSGraphExecutionDescriptor * executionDescriptor	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	5d133b35b1b78bc3
 method	c:objc(cs)MPSGraph(im)encodeToCommandBuffer:feeds:targetOperations:resultsDictionary:executionDescriptor:	-			void	MPSCommandBuffer * commandBuffer | MPSGraphTensorDataDictionary * feeds | NSArray<MPSGraphOperation *> * targetOperations | MPSGraphTensorDataDictionary * resultsDictionary | MPSGraphExecutionDescriptor * executionDescriptor	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	6a291492c8da4ac0
-typedef	c:@T@MPSGraphExecutableCompletionHandler	-			void (^)(NSArray<MPSGraphTensorData *> * _Nonnull, NSError * _Nullable)	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	96f0279c877d24f7
-typedef	c:@T@MPSGraphExecutableScheduledHandler	-			void (^)(NSArray<MPSGraphTensorData *> * _Nonnull, NSError * _Nullable)	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	29b9322c0ff7080f
+typedef	c:@T@MPSGraphExecutableCompletionHandler	-			void ((^))(NSArray<MPSGraphTensorData *> *, NSError *)	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	e8f6fa7dcf915d68
+typedef	c:@T@MPSGraphExecutableScheduledHandler	-			void ((^))(NSArray<MPSGraphTensorData *> *, NSError *)	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	7bd275732d83a5b0
 interface	c:objc(cs)MPSGraphExecutableExecutionDescriptor	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	959775735b4793bd
 super	-	MPSGraphExecutableExecutionDescriptor	MPSGraphObject		-	-	-	-	-	9902c09caf6c18a6
 conforms	-	MPSGraphExecutableExecutionDescriptor	NSCopying		-	-	-	-	-	4f59bdfa383290c3
@@ -340,11 +340,11 @@ method	c:objc(cs)MPSGraph(im)ifWithPredicateTensor:thenBlock:elseBlock:name:	MPS
 method	c:objc(cs)MPSGraph(im)whileWithInitialInputs:before:after:name:	MPSGraphControlFlowOps			NSArray<MPSGraphTensor *> *	NSArray<MPSGraphTensor *> * initialInputs | MPSGraphWhileBeforeBlock before | MPSGraphWhileAfterBlock after | NSString * name	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	947f86b30313a2e3
 method	c:objc(cs)MPSGraph(im)forLoopWithLowerBound:upperBound:step:initialBodyArguments:body:name:	MPSGraphControlFlowOps			NSArray<MPSGraphTensor *> *	MPSGraphTensor * lowerBound | MPSGraphTensor * upperBound | MPSGraphTensor * step | NSArray<MPSGraphTensor *> * initialBodyArguments | MPSGraphForLoopBodyBlock body | NSString * name	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	ff87d7f237931a3c
 method	c:objc(cs)MPSGraph(im)forLoopWithNumberOfIterations:initialBodyArguments:body:name:	MPSGraphControlFlowOps			NSArray<MPSGraphTensor *> *	MPSGraphTensor * numberOfIterations | NSArray<MPSGraphTensor *> * initialBodyArguments | MPSGraphForLoopBodyBlock body | NSString * name	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	8ebc9757eaccdca8
-typedef	c:@T@MPSGraphControlFlowDependencyBlock	-			NSArray<MPSGraphTensor *> * _Nonnull (^)()	-	-	-	-	81a6f59dc59bd567
-typedef	c:@T@MPSGraphIfThenElseBlock	-			NSArray<MPSGraphTensor *> * _Nonnull (^)()	-	-	-	-	19d85cf0ec07c514
-typedef	c:@T@MPSGraphWhileBeforeBlock	-			MPSGraphTensor * _Nonnull (^)(NSArray<MPSGraphTensor *> * _Nonnull, NSMutableArray<MPSGraphTensor *> * _Nonnull)	-	-	-	-	f8119a3fb0069462
-typedef	c:@T@MPSGraphWhileAfterBlock	-			NSArray<MPSGraphTensor *> * _Nonnull (^)(NSArray<MPSGraphTensor *> * _Nonnull)	-	-	-	-	d9a71ab3d9e4ef64
-typedef	c:@T@MPSGraphForLoopBodyBlock	-			NSArray<MPSGraphTensor *> * _Nonnull (^)(MPSGraphTensor * _Nonnull, NSArray<MPSGraphTensor *> * _Nonnull)	-	-	-	-	a971a4380e08b592
+typedef	c:@T@MPSGraphControlFlowDependencyBlock	-			NSArray<MPSGraphTensor *> * ((^))(...)	-	-	-	-	9febb6d50b62e81e
+typedef	c:@T@MPSGraphIfThenElseBlock	-			NSArray<MPSGraphTensor *> * ((^))(...)	-	-	-	-	bd0ae0e47a09190a
+typedef	c:@T@MPSGraphWhileBeforeBlock	-			MPSGraphTensor * ((^))(NSArray<MPSGraphTensor *> *, NSMutableArray<MPSGraphTensor *> *)	-	-	-	-	c7b1be24224e2648
+typedef	c:@T@MPSGraphWhileAfterBlock	-			NSArray<MPSGraphTensor *> * ((^))(NSArray<MPSGraphTensor *> *)	-	-	-	-	57b19805fee0c979
+typedef	c:@T@MPSGraphForLoopBodyBlock	-			NSArray<MPSGraphTensor *> * ((^))(MPSGraphTensor *, NSArray<MPSGraphTensor *> *)	-	-	-	-	6b86ffe5897458fa
 category	c:objc(cy)MPSGraph@MPSGraphCumulativeOps	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	bccfbf5552f090bf
 method	c:objc(cs)MPSGraph(im)cumulativeSumWithTensor:axis:exclusive:reverse:name:	MPSGraphCumulativeOps			MPSGraphTensor *	MPSGraphTensor * tensor | NSInteger axis | BOOL exclusive | BOOL reverse | NSString * name	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	0445261d41eded30
 method	c:objc(cs)MPSGraph(im)cumulativeSumWithTensor:axisTensor:exclusive:reverse:name:	MPSGraphCumulativeOps			MPSGraphTensor *	MPSGraphTensor * tensor | MPSGraphTensor * axisTensor | BOOL exclusive | BOOL reverse | NSString * name	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	89c0ca6af9155ec9

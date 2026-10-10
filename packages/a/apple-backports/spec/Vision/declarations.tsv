@@ -175,7 +175,7 @@ method	c:objc(cs)VNFaceLandmarkRegion(im)init	-			instancetype	-	-	*unavailable 
 property	c:objc(cs)VNFaceLandmarkRegion(py)pointCount	-			NSUInteger	-	readonly	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	a079a6b23c2941c8
 interface	c:objc(cs)VNFaceLandmarkRegion2D	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	fe492f73eccf3102
 super	-	VNFaceLandmarkRegion2D	VNFaceLandmarkRegion		-	-	-	-	-	345c58346df748ab
-property	c:objc(cs)VNFaceLandmarkRegion2D(py)normalizedPoints	-			NS_RETURNS_INNER_POINTER const CGPoint *	-	readonly,assign	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	3c1ea1b8576e6805
+property	c:objc(cs)VNFaceLandmarkRegion2D(py)normalizedPoints	-			const CGPoint *	-	readonly,assign	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	3be8287ab17f512c
 method	c:objc(cs)VNFaceLandmarkRegion2D(im)pointsInImageOfSize:	-			const CGPoint *	CGSize imageSize	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	22596ab6a8750fae
 property	c:objc(cs)VNFaceLandmarkRegion2D(py)precisionEstimatesPerPoint	-			NSArray<NSNumber *> *	-	readonly	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	1d56f3602d6de07f
 property	c:objc(cs)VNFaceLandmarkRegion2D(py)pointsClassification	-			VNPointsClassification	-	readonly,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	2f660d0e31c37b4c
@@ -263,8 +263,8 @@ property	c:objc(cs)VNContour(py)childContourCount	-			NSInteger	-	readonly	ios=1
 property	c:objc(cs)VNContour(py)childContours	-			NSArray<VNContour *> *	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	8c36183453835ec8
 method	c:objc(cs)VNContour(im)childContourAtIndex:error:	-			VNContour *	NSUInteger childContourIndex | NSError * _Nullable * error	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	bc2eb33d810e6a7f
 property	c:objc(cs)VNContour(py)pointCount	-			NSInteger	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	6e050f565c139c71
-property	c:objc(cs)VNContour(py)normalizedPoints	-			NS_RETURNS_INNER_POINTER const simd_float2 *	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	7aabf2974f1210eb
-property	c:objc(cs)VNContour(py)normalizedPath	-			NS_RETURNS_INNER_POINTER CGPathRef	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	a5b088eb365963c1
+property	c:objc(cs)VNContour(py)normalizedPoints	-			const simd_float2 *	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	a81723c706139da3
+property	c:objc(cs)VNContour(py)normalizedPath	-			CGPathRef	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	e0259baed151d1dc
 property	c:objc(cs)VNContour(py)aspectRatio	-			float	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	dc84746319507af5
 method	c:objc(cs)VNContour(im)polygonApproximationWithEpsilon:error:	-			VNContour *	float epsilon | NSError * _Nullable * error	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	55e1e3790da1e037
 interface	c:objc(cs)VNDetectedPoint	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	3258ceebb9d4d842
@@ -316,7 +316,7 @@ property	c:objc(cs)VNCoreMLFeatureValueObservation(py)featureValue	-			MLFeature
 property	c:objc(cs)VNCoreMLFeatureValueObservation(py)featureName	-			NSString *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	17efe2151b19728a
 interface	c:objc(cs)VNPixelBufferObservation	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	06f6084f1c23322d
 super	-	VNPixelBufferObservation	VNObservation		-	-	-	-	-	4d4a5188bff4c081
-property	c:objc(cs)VNPixelBufferObservation(py)pixelBuffer	-			CF_RETURNS_NOT_RETAINED CVPixelBufferRef	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	b773a1c7056cd5f0
+property	c:objc(cs)VNPixelBufferObservation(py)pixelBuffer	-			CVPixelBufferRef	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	f5dedbfc876b24ad
 property	c:objc(cs)VNPixelBufferObservation(py)featureName	-			NSString *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	dc4065ed56f69aba
 interface	c:objc(cs)VNRectangleObservation	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	deprecated: Use rectangleObservationWithRequestRevision:topLeft:topRight:bottomRight:bottomLeft: instead	4416871eb34100d0
 super	-	VNRectangleObservation	VNDetectedObjectObservation		-	-	-	-	-	098d0d7ce56d7a0c
@@ -386,7 +386,7 @@ method	c:objc(cs)VNContoursObservation(im)contourAtIndex:error:	-			VNContour *	
 property	c:objc(cs)VNContoursObservation(py)topLevelContourCount	-			NSInteger	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	5619d8be4ed04ce0
 property	c:objc(cs)VNContoursObservation(py)topLevelContours	-			NSArray<VNContour *> *	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	79de9076b4789d89
 method	c:objc(cs)VNContoursObservation(im)contourAtIndexPath:error:	-			VNContour *	NSIndexPath * indexPath | NSError * _Nullable * error	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	653f2fceef1414e3
-property	c:objc(cs)VNContoursObservation(py)normalizedPath	-			CF_RETURNS_NOT_RETAINED CGPathRef	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	6e56e8f4f262ec12
+property	c:objc(cs)VNContoursObservation(py)normalizedPath	-			CGPathRef	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	b67a8d65517b1156
 var	c:@VNRecognizedPointGroupKeyAll	-			const VNRecognizedPointGroupKey	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	602c440806dacea7
 interface	c:objc(cs)VNRecognizedPointsObservation	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	cce3492ad0f14be6
 super	-	VNRecognizedPointsObservation	VNObservation		-	-	-	-	-	ca04cc29e81dbe3d
@@ -402,7 +402,7 @@ super	-	VNHumanObservation	VNDetectedObjectObservation		-	-	-	-	-	ea9bc1b65b99a3
 property	c:objc(cs)VNHumanObservation(py)upperBodyOnly	-			BOOL	-	readonly,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	1aa7347d45ea21f1
 interface	c:objc(cs)VNInstanceMaskObservation	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	cea3be234d612a21
 super	-	VNInstanceMaskObservation	VNObservation		-	-	-	-	-	972616ce8ae0daed
-property	c:objc(cs)VNInstanceMaskObservation(py)instanceMask	-			CF_RETURNS_NOT_RETAINED CVPixelBufferRef	-	readonly,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	0254822f91d789b3
+property	c:objc(cs)VNInstanceMaskObservation(py)instanceMask	-			CVPixelBufferRef	-	readonly,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	b155265092a33671
 property	c:objc(cs)VNInstanceMaskObservation(py)allInstances	-			NSIndexSet *	-	readonly,copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	30964fbe874a25dd
 method	c:objc(cs)VNInstanceMaskObservation(im)generateMaskForInstances:error:	-			CVPixelBufferRef	NSIndexSet * instances | NSError * _Nullable * error	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	93c38c82e1a1cb28
 method	c:objc(cs)VNInstanceMaskObservation(im)generateMaskedImageOfInstances:fromRequestHandler:croppedToInstancesExtent:error:	-			CVPixelBufferRef	NSIndexSet * instances | VNImageRequestHandler * requestHandler | BOOL cropResult | NSError * _Nullable * error	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	0eeb10fb7242afd6
@@ -443,7 +443,7 @@ super	-	VNImageAestheticsScoresObservation	VNObservation		-	-	-	-	-	85e2db5011cf
 method	c:objc(cs)VNImageAestheticsScoresObservation(im)init	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	f9821792f1255967
 property	c:objc(cs)VNImageAestheticsScoresObservation(py)isUtility	-			BOOL	-	readonly,assign,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	5f67e520372969cb
 property	c:objc(cs)VNImageAestheticsScoresObservation(py)overallScore	-			float	-	readonly,assign,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	97ea9271eada55d9
-typedef	c:@T@VNRequestCompletionHandler	-			void (^)(VNRequest * _Nonnull, NSError * _Nullable)	-	-	-	-	f385f3091ebd8ba6
+typedef	c:@T@VNRequestCompletionHandler	-			void ((^))(VNRequest *, NSError *)	-	-	-	-	8256303479cdb856
 interface	c:objc(cs)VNRequest	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	deprecated: Use -setComputeDevice:forComputeStage: instead	1448a85ff060598a
 super	-	VNRequest	NSObject		-	-	-	-	-	c1ba15a4fdcf76f8
 conforms	-	VNRequest	NSCopying		-	-	-	-	-	2ccb0fa0130ab403
@@ -465,7 +465,7 @@ method	c:objc(cs)VNRequest(im)setComputeDevice:forComputeStage:	-			void	id<MLCo
 interface	c:objc(cs)VNImageBasedRequest	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	439f1785d4a47882
 super	-	VNImageBasedRequest	VNRequest		-	-	-	-	-	02f0375d35bbc416
 property	c:objc(cs)VNImageBasedRequest(py)regionOfInterest	-			CGRect	-	assign,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	f7cbd9c8f6d6b4d0
-typedef	c:@T@VNRequestProgressHandler	-			void (^)(VNRequest * _Nonnull, double, NSError * _Nullable)	-	-	-	-	e3d0567c2856f796
+typedef	c:@T@VNRequestProgressHandler	-			void ((^))(VNRequest *, double, NSError *)	-	-	-	-	d9215c90d744c24c
 protocol	c:objc(pl)VNRequestProgressProviding	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	4ac00cfe8c2f077f
 conforms	-	VNRequestProgressProviding	NSObject		-	-	-	-	-	ac6c3e7513f6116e
 property	c:objc(pl)VNRequestProgressProviding(py)progressHandler	-			VNRequestProgressHandler	-	copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	6c98fd2003628275

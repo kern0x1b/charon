@@ -386,7 +386,7 @@ property	c:objc(cs)MPSCNNConvolutionDescriptor(py)groups	-			NSUInteger	-	nonato
 property	c:objc(cs)MPSCNNConvolutionDescriptor(py)dilationRateX	-			NSUInteger	-	nonatomic	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=10.0/-/-/0	-	82bf29af3c4f928d
 property	c:objc(cs)MPSCNNConvolutionDescriptor(py)dilationRateY	-			NSUInteger	-	nonatomic	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=10.0/-/-/0	-	54f42bf11d1c242d
 property	c:objc(cs)MPSCNNConvolutionDescriptor(py)fusedNeuronDescriptor	-			MPSNNNeuronDescriptor *	-	retain,nonatomic	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	94f439c3dafb5297
-property	c:objc(cs)MPSCNNConvolutionDescriptor(py)neuron	-			MPS_UNAVAILABLE const MPSCNNNeuron *	-	retain,nonatomic	ios=10.0/11.0/-/0,maccatalyst=-/-/-/1,tvos=10.0/11.0/-/0	-	4c53a0c1f75e4910
+property	c:objc(cs)MPSCNNConvolutionDescriptor(py)neuron	-			const MPSCNNNeuron *	-	retain,nonatomic	ios=10.0/11.0/-/0,maccatalyst=-/-/-/1,tvos=10.0/11.0/-/0	-	dc3270e33249c2b0
 property	c:objc(cs)MPSCNNConvolutionDescriptor(cpy)supportsSecureCoding	-			BOOL	-	readonly,class	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	22dff769b30ee0f4
 method	c:objc(cs)MPSCNNConvolutionDescriptor(im)encodeWithCoder:	-			void	NSCoder * aCoder	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	2bdb2bf1109d0d76
 method	c:objc(cs)MPSCNNConvolutionDescriptor(im)initWithCoder:	-			instancetype	NSCoder * aDecoder	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	045eae44f9efb877
@@ -459,7 +459,7 @@ property	c:objc(cs)MPSCNNConvolution(py)outputFeatureChannels	-			NSUInteger	-	r
 property	c:objc(cs)MPSCNNConvolution(py)groups	-			NSUInteger	-	readonly,nonatomic	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=10.0/-/-/0	-	0fa9d2a51d0347bd
 property	c:objc(cs)MPSCNNConvolution(py)dataSource	-			id<MPSCNNConvolutionDataSource>	-	readonly,retain,nonatomic	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=10.0/-/-/0	-	6a584db98b96d3b3
 property	c:objc(cs)MPSCNNConvolution(py)subPixelScaleFactor	-			NSUInteger	-	readonly,nonatomic	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=10.0/-/-/0	-	c865f6c295a09a85
-property	c:objc(cs)MPSCNNConvolution(py)neuron	-			MPS_UNAVAILABLE const MPSCNNNeuron *	-	readonly,nonatomic	ios=10.0/11.0/-/0,maccatalyst=-/-/-/1,tvos=10.0/11.0/-/0	-	c05f92c034f76fb6
+property	c:objc(cs)MPSCNNConvolution(py)neuron	-			const MPSCNNNeuron *	-	readonly,nonatomic	ios=10.0/11.0/-/0,maccatalyst=-/-/-/1,tvos=10.0/11.0/-/0	-	31a3468c6cd32e9f
 property	c:objc(cs)MPSCNNConvolution(py)neuronType	-			MPSCNNNeuronType	-	readonly,nonatomic	ios=10.0/12.0/-/0,maccatalyst=-/-/-/1,macos=10.13/10.14/-/0,tvos=10.0/12.0/-/0	-	7d7475b082a7dc03
 property	c:objc(cs)MPSCNNConvolution(py)neuronParameterA	-			float	-	readonly,nonatomic	ios=10.0/12.0/-/0,maccatalyst=-/-/-/1,macos=10.13/10.14/-/0,tvos=10.0/12.0/-/0	-	ed9d54d1e7bf5790
 property	c:objc(cs)MPSCNNConvolution(py)neuronParameterB	-			float	-	readonly,nonatomic	ios=10.0/12.0/-/0,maccatalyst=-/-/-/1,macos=10.13/10.14/-/0,tvos=10.0/12.0/-/0	-	75463513c4b5c38e
@@ -1574,7 +1574,7 @@ interface	c:objc(cs)MPSNNMultiaryGradientStateNode	-			-	-	-	ios=13.0/-/-/0,macc
 super	-	MPSNNMultiaryGradientStateNode	MPSNNStateNode		-	-	-	-	-	1495de0150facc38
 interface	c:objc(cs)MPSNNArithmeticGradientStateNode	-			-	-	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	31fae1c6321a2a9b
 super	-	MPSNNArithmeticGradientStateNode	MPSNNBinaryGradientStateNode		-	-	-	-	-	1e1ca0ec8129b0fd
-typedef	c:MPSNNGraphNodes.h@T@MPSGradientNodeBlock	-			void (^)(MPSNNFilterNode * _Nonnull, MPSNNFilterNode * _Nonnull, MPSNNImageNode * _Nonnull, MPSNNImageNode * _Nonnull)	-	-	-	-	e9bff0c4cb979b17
+typedef	c:MPSNNGraphNodes.h@T@MPSGradientNodeBlock	-			void ((^))(MPSNNFilterNode *, MPSNNFilterNode *, MPSNNImageNode *, MPSNNImageNode *)	-	-	-	-	4a780b9aa6a175d4
 interface	c:objc(cs)MPSNNFilterNode	-			-	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	91df0ec4da1fc64c
 super	-	MPSNNFilterNode	NSObject		-	-	-	-	-	2f42698c6fecb1d8
 method	c:objc(cs)MPSNNFilterNode(im)init	-			instancetype	-	-	*unavailable ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	8d113c42147d8608
@@ -1612,7 +1612,7 @@ method	c:objc(cs)MPSCNNBinaryConvolutionNode(cm)nodeWithSource:weights:scaleValu
 method	c:objc(cs)MPSCNNBinaryConvolutionNode(im)initWithSource:weights:scaleValue:type:flags:	-			instancetype	MPSNNImageNode * sourceNode | id<MPSCNNConvolutionDataSource> weights | float scaleValue | MPSCNNBinaryConvolutionType type | MPSCNNBinaryConvolutionFlags flags	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	1b1ce8ab82c31d12
 method	c:objc(cs)MPSCNNBinaryConvolutionNode(cm)nodeWithSource:weights:outputBiasTerms:outputScaleTerms:inputBiasTerms:inputScaleTerms:type:flags:	-			instancetype	MPSNNImageNode * sourceNode | id<MPSCNNConvolutionDataSource> weights | const float * outputBiasTerms | const float * outputScaleTerms | const float * inputBiasTerms | const float * inputScaleTerms | MPSCNNBinaryConvolutionType type | MPSCNNBinaryConvolutionFlags flags	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	0e73bd52c33e26a8
 method	c:objc(cs)MPSCNNBinaryConvolutionNode(im)initWithSource:weights:outputBiasTerms:outputScaleTerms:inputBiasTerms:inputScaleTerms:type:flags:	-			instancetype	MPSNNImageNode * sourceNode | id<MPSCNNConvolutionDataSource> weights | const float * outputBiasTerms | const float * outputScaleTerms | const float * inputBiasTerms | const float * inputScaleTerms | MPSCNNBinaryConvolutionType type | MPSCNNBinaryConvolutionFlags flags	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	0cd6f2a075513b02
-property	c:objc(cs)MPSCNNBinaryConvolutionNode(py)convolutionGradientState	-			NS_UNAVAILABLE MPSCNNConvolutionGradientStateNode *	-	readonly,nonatomic	*unavailable ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	2ade38244544c2e1
+property	c:objc(cs)MPSCNNBinaryConvolutionNode(py)convolutionGradientState	-			MPSCNNConvolutionGradientStateNode *	-	readonly,nonatomic	*unavailable ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	a18d958a0510fa68
 interface	c:objc(cs)MPSCNNBinaryFullyConnectedNode	-			-	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	5be925625708b47f
 super	-	MPSCNNBinaryFullyConnectedNode	MPSCNNBinaryConvolutionNode		-	-	-	-	-	01b405b422273d5b
 method	c:objc(cs)MPSCNNBinaryFullyConnectedNode(cm)nodeWithSource:weights:scaleValue:type:flags:	-			instancetype	MPSNNImageNode * sourceNode | id<MPSCNNConvolutionDataSource> weights | float scaleValue | MPSCNNBinaryConvolutionType type | MPSCNNBinaryConvolutionFlags flags	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	30c185cdda7bf673
@@ -1623,7 +1623,7 @@ interface	c:objc(cs)MPSCNNConvolutionTransposeNode	-			-	-	-	ios=11.0/-/-/0,macc
 super	-	MPSCNNConvolutionTransposeNode	MPSCNNConvolutionNode		-	-	-	-	-	a7c9cbbc4f99b48f
 method	c:objc(cs)MPSCNNConvolutionTransposeNode(cm)nodeWithSource:convolutionGradientState:weights:	-			instancetype	MPSNNImageNode * sourceNode | MPSCNNConvolutionGradientStateNode * convolutionGradientState | id<MPSCNNConvolutionDataSource> weights	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	d94d29702693cfa6
 method	c:objc(cs)MPSCNNConvolutionTransposeNode(im)initWithSource:convolutionGradientState:weights:	-			instancetype	MPSNNImageNode * sourceNode | MPSCNNConvolutionGradientStateNode * convolutionGradientState | id<MPSCNNConvolutionDataSource> weights	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	bf60f01f07beb4fe
-property	c:objc(cs)MPSCNNConvolutionTransposeNode(py)convolutionGradientState	-			NS_UNAVAILABLE MPSCNNConvolutionGradientStateNode *	-	readonly,nonatomic	*unavailable ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	967d101a9cf063e4
+property	c:objc(cs)MPSCNNConvolutionTransposeNode(py)convolutionGradientState	-			MPSCNNConvolutionGradientStateNode *	-	readonly,nonatomic	*unavailable ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	29f124cda54b5663
 interface	c:objc(cs)MPSCNNConvolutionGradientNode	-			-	-	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	8c2210e9225d7347
 super	-	MPSCNNConvolutionGradientNode	MPSNNGradientFilterNode		-	-	-	-	-	21d1c539cf31380a
 conforms	-	MPSCNNConvolutionGradientNode	MPSNNTrainableNode		-	-	-	-	-	18467477622c95ca
@@ -2144,7 +2144,7 @@ super	-	MPSNNInitialGradientNode	MPSNNFilterNode		-	-	-	-	-	044e961723ca493a
 method	c:objc(cs)MPSNNInitialGradientNode(cm)nodeWithSource:	-			instancetype	MPSNNImageNode * source	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15.0/-/-/0,tvos=13.0/-/-/0	-	f7eab94d8f8122e3
 method	c:objc(cs)MPSNNInitialGradientNode(im)initWithSource:	-			instancetype	MPSNNImageNode * source	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15.0/-/-/0,tvos=13.0/-/-/0	-	5068f7c0eaaf3bbf
 method	c:objc(cs)MPSNNInitialGradientNode(im)gradientFilterWithSources:	-			MPSNNGradientFilterNode *	NSArray<MPSNNImageNode *> * gradientImages	-	*unavailable ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15.0/-/-/0,tvos=13.0/-/-/0	-	fe67d04cb92d7d7e
-typedef	c:MPSNNGraph.h@T@MPSNNGraphCompletionHandler	-			void (^)(MPSImage * _Nullable, NSError * _Nullable)	-	-	-	-	ded4480efb40a196
+typedef	c:MPSNNGraph.h@T@MPSNNGraphCompletionHandler	-			void ((^))(MPSImage *, NSError *)	-	-	-	-	600268b387d3c43c
 interface	c:objc(cs)MPSNNGraph	-			-	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	1843c432e56ef797
 super	-	MPSNNGraph	MPSKernel		-	-	-	-	-	38ed05b5f068d3c8
 conforms	-	MPSNNGraph	NSCopying		-	-	-	-	-	3958fe6e3145c66e

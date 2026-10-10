@@ -187,7 +187,7 @@ field	c:@U@_GLKQuaternion@Sa@FI@s	-			float	-	-	-	-	86938c6559f1a48f
 field	c:@U@_GLKQuaternion@FI@q	_GLKQuaternion			float[4]	-	-	-	-	edc8639ccbc16238
 typedef	c:@T@GLKQuaternion	-			union _GLKQuaternion	-	-	-	-	70f1e5f82448e924
 function	c:@F@GLKVector3Make	-			GLKVector3 (float, float, float)	float x | float y | float z	-	-	-	88051a092a125892
-function	c:@F@GLKVector3MakeWithArray	-			GLKVector3 (float *)	float[3] values	-	-	-	6ff8bd3c8ad1f8ff
+function	c:@F@GLKVector3MakeWithArray	-			GLKVector3 (float[3])	float[3] values	-	-	-	d32bd39956316f03
 function	c:@F@GLKVector3Negate	-			GLKVector3 (GLKVector3)	GLKVector3 vector	-	-	-	282bb2421491215d
 function	c:@F@GLKVector3Add	-			GLKVector3 (GLKVector3, GLKVector3)	GLKVector3 vectorLeft | GLKVector3 vectorRight	-	-	-	9493513d7fe6115a
 function	c:@F@GLKVector3Subtract	-			GLKVector3 (GLKVector3, GLKVector3)	GLKVector3 vectorLeft | GLKVector3 vectorRight	-	-	-	df66887315c3d37b
@@ -213,7 +213,7 @@ function	c:@F@GLKVector3Lerp	-			GLKVector3 (GLKVector3, GLKVector3, float)	GLKV
 function	c:@F@GLKVector3CrossProduct	-			GLKVector3 (GLKVector3, GLKVector3)	GLKVector3 vectorLeft | GLKVector3 vectorRight	-	-	-	4575daac3abb3db8
 function	c:@F@GLKVector3Project	-			GLKVector3 (GLKVector3, GLKVector3)	GLKVector3 vectorToProject | GLKVector3 projectionVector	-	-	-	1f9e719f0a277319
 function	c:@F@GLKVector4Make	-			GLKVector4 (float, float, float, float)	float x | float y | float z | float w	-	-	-	c022b206cc2ed7f8
-function	c:@F@GLKVector4MakeWithArray	-			GLKVector4 (float *)	float[4] values	-	-	-	ebcf8ecbafeb4a96
+function	c:@F@GLKVector4MakeWithArray	-			GLKVector4 (float[4])	float[4] values	-	-	-	d60e63507a4cf03c
 function	c:@F@GLKVector4MakeWithVector3	-			GLKVector4 (GLKVector3, float)	GLKVector3 vector | float w	-	-	-	774825c587fb62bf
 function	c:@F@GLKVector4Negate	-			GLKVector4 (GLKVector4)	GLKVector4 vector	-	-	-	0ed613c1ab34f584
 function	c:@F@GLKVector4Add	-			GLKVector4 (GLKVector4, GLKVector4)	GLKVector4 vectorLeft | GLKVector4 vectorRight	-	-	-	5b88ea7c8cb9cd97
@@ -242,7 +242,7 @@ function	c:@F@GLKVector4Project	-			GLKVector4 (GLKVector4, GLKVector4)	GLKVecto
 var	c:@GLKQuaternionIdentity	-			const GLKQuaternion	-	-	-	-	33ee3699892d3a4a
 function	c:@F@GLKQuaternionMake	-			GLKQuaternion (float, float, float, float)	float x | float y | float z | float w	-	-	-	cf14fbeb71fbde78
 function	c:@F@GLKQuaternionMakeWithVector3	-			GLKQuaternion (GLKVector3, float)	GLKVector3 vector | float scalar	-	-	-	daea6c44418cb22c
-function	c:@F@GLKQuaternionMakeWithArray	-			GLKQuaternion (float *)	float[4] values	-	-	-	873186cc65645479
+function	c:@F@GLKQuaternionMakeWithArray	-			GLKQuaternion (float[4])	float[4] values	-	-	-	41a508c4818dcd43
 function	c:@F@GLKQuaternionMakeWithAngleAndAxis	-			GLKQuaternion (float, float, float, float)	float radians | float x | float y | float z	-	-	-	d271920766daa251
 function	c:@F@GLKQuaternionMakeWithAngleAndVector3Axis	-			GLKQuaternion (float, GLKVector3)	float radians | GLKVector3 axisVector	-	-	-	780befdef000a5dd
 function	c:@F@GLKQuaternionMakeWithMatrix3	-			GLKQuaternion (GLKMatrix3)	GLKMatrix3 matrix	-	-	-	216ce06bba1a394e
@@ -258,14 +258,14 @@ function	c:@F@GLKQuaternionConjugate	-			GLKQuaternion (GLKQuaternion)	GLKQuater
 function	c:@F@GLKQuaternionInvert	-			GLKQuaternion (GLKQuaternion)	GLKQuaternion quaternion	-	-	-	d07ee00f9e75282c
 function	c:@F@GLKQuaternionNormalize	-			GLKQuaternion (GLKQuaternion)	GLKQuaternion quaternion	-	-	-	5a30cb92dd522bfa
 function	c:@F@GLKQuaternionRotateVector3	-			GLKVector3 (GLKQuaternion, GLKVector3)	GLKQuaternion quaternion | GLKVector3 vector	-	-	-	53ff80d9fd3c6408
-function	c:@F@GLKQuaternionRotateVector3Array	-			void (GLKQuaternion, GLKVector3 * _Nonnull, size_t)	GLKQuaternion quaternion | GLKVector3 * vectors | size_t vectorCount	-	-	-	431e25ca1ee84204
+function	c:@F@GLKQuaternionRotateVector3Array	-			void (GLKQuaternion, GLKVector3 *, size_t)	GLKQuaternion quaternion | GLKVector3 * vectors | size_t vectorCount	-	-	-	600e94f7af391128
 function	c:@F@GLKQuaternionRotateVector4	-			GLKVector4 (GLKQuaternion, GLKVector4)	GLKQuaternion quaternion | GLKVector4 vector	-	-	-	c4644d5f7bdc9371
-function	c:@F@GLKQuaternionRotateVector4Array	-			void (GLKQuaternion, GLKVector4 * _Nonnull, size_t)	GLKQuaternion quaternion | GLKVector4 * vectors | size_t vectorCount	-	-	-	1062af596dc7879d
+function	c:@F@GLKQuaternionRotateVector4Array	-			void (GLKQuaternion, GLKVector4 *, size_t)	GLKQuaternion quaternion | GLKVector4 * vectors | size_t vectorCount	-	-	-	446feac96b5d3462
 var	c:@GLKMatrix3Identity	-			const GLKMatrix3	-	-	-	-	371a8a4535bdd1d6
 function	c:@F@GLKMatrix3Make	-			GLKMatrix3 (float, float, float, float, float, float, float, float, float)	float m00 | float m01 | float m02 | float m10 | float m11 | float m12 | float m20 | float m21 | float m22	-	-	-	5e296ff39b49562b
 function	c:@F@GLKMatrix3MakeAndTranspose	-			GLKMatrix3 (float, float, float, float, float, float, float, float, float)	float m00 | float m01 | float m02 | float m10 | float m11 | float m12 | float m20 | float m21 | float m22	-	-	-	f5640c4f726adfbf
-function	c:@F@GLKMatrix3MakeWithArray	-			GLKMatrix3 (float *)	float[9] values	-	-	-	d0cc3008bd00f9ff
-function	c:@F@GLKMatrix3MakeWithArrayAndTranspose	-			GLKMatrix3 (float *)	float[9] values	-	-	-	3718e8b6a5ed02b8
+function	c:@F@GLKMatrix3MakeWithArray	-			GLKMatrix3 (float[9])	float[9] values	-	-	-	6a58622951dde18a
+function	c:@F@GLKMatrix3MakeWithArrayAndTranspose	-			GLKMatrix3 (float[9])	float[9] values	-	-	-	3a64d31840f33daa
 function	c:@F@GLKMatrix3MakeWithRows	-			GLKMatrix3 (GLKVector3, GLKVector3, GLKVector3)	GLKVector3 row0 | GLKVector3 row1 | GLKVector3 row2	-	-	-	ea2e5c78ccc9c342
 function	c:@F@GLKMatrix3MakeWithColumns	-			GLKMatrix3 (GLKVector3, GLKVector3, GLKVector3)	GLKVector3 column0 | GLKVector3 column1 | GLKVector3 column2	-	-	-	e2951080010b4de8
 function	c:@F@GLKMatrix3MakeWithQuaternion	-			GLKMatrix3 (GLKQuaternion)	GLKQuaternion quaternion	-	-	-	00a62dd843caaea5
@@ -295,12 +295,12 @@ function	c:@F@GLKMatrix3RotateX	-			GLKMatrix3 (GLKMatrix3, float)	GLKMatrix3 ma
 function	c:@F@GLKMatrix3RotateY	-			GLKMatrix3 (GLKMatrix3, float)	GLKMatrix3 matrix | float radians	-	-	-	3e64695a09ee8281
 function	c:@F@GLKMatrix3RotateZ	-			GLKMatrix3 (GLKMatrix3, float)	GLKMatrix3 matrix | float radians	-	-	-	76d8f99cabb2477d
 function	c:@F@GLKMatrix3MultiplyVector3	-			GLKVector3 (GLKMatrix3, GLKVector3)	GLKMatrix3 matrixLeft | GLKVector3 vectorRight	-	-	-	06ac29040abd973f
-function	c:@F@GLKMatrix3MultiplyVector3Array	-			void (GLKMatrix3, GLKVector3 * _Nonnull, size_t)	GLKMatrix3 matrix | GLKVector3 * vectors | size_t vectorCount	-	-	-	089ab1fd3316e841
+function	c:@F@GLKMatrix3MultiplyVector3Array	-			void (GLKMatrix3, GLKVector3 *, size_t)	GLKMatrix3 matrix | GLKVector3 * vectors | size_t vectorCount	-	-	-	0cc7b36557352c99
 var	c:@GLKMatrix4Identity	-			const GLKMatrix4	-	-	-	-	6504f6872306f9fc
 function	c:@F@GLKMatrix4Make	-			GLKMatrix4 (float, float, float, float, float, float, float, float, float, float, float, float, float, float, float, float)	float m00 | float m01 | float m02 | float m03 | float m10 | float m11 | float m12 | float m13 | float m20 | float m21 | float m22 | float m23 | float m30 | float m31 | float m32 | float m33	-	-	-	87fdbd11766f2081
 function	c:@F@GLKMatrix4MakeAndTranspose	-			GLKMatrix4 (float, float, float, float, float, float, float, float, float, float, float, float, float, float, float, float)	float m00 | float m01 | float m02 | float m03 | float m10 | float m11 | float m12 | float m13 | float m20 | float m21 | float m22 | float m23 | float m30 | float m31 | float m32 | float m33	-	-	-	dfaba11344bf3f75
-function	c:@F@GLKMatrix4MakeWithArray	-			GLKMatrix4 (float *)	float[16] values	-	-	-	4e4da74de9d02577
-function	c:@F@GLKMatrix4MakeWithArrayAndTranspose	-			GLKMatrix4 (float *)	float[16] values	-	-	-	cfaf9672497a60ae
+function	c:@F@GLKMatrix4MakeWithArray	-			GLKMatrix4 (float[16])	float[16] values	-	-	-	f51a34fd50a92553
+function	c:@F@GLKMatrix4MakeWithArrayAndTranspose	-			GLKMatrix4 (float[16])	float[16] values	-	-	-	e1e86d45dc1f3e4d
 function	c:@F@GLKMatrix4MakeWithRows	-			GLKMatrix4 (GLKVector4, GLKVector4, GLKVector4, GLKVector4)	GLKVector4 row0 | GLKVector4 row1 | GLKVector4 row2 | GLKVector4 row3	-	-	-	11545acf17243632
 function	c:@F@GLKMatrix4MakeWithColumns	-			GLKMatrix4 (GLKVector4, GLKVector4, GLKVector4, GLKVector4)	GLKVector4 column0 | GLKVector4 column1 | GLKVector4 column2 | GLKVector4 column3	-	-	-	5d851e97d3344ed8
 function	c:@F@GLKMatrix4MakeWithQuaternion	-			GLKMatrix4 (GLKQuaternion)	GLKQuaternion quaternion	-	-	-	630d2e185c836935
@@ -321,8 +321,8 @@ function	c:@F@GLKMatrix4GetColumn	-			GLKVector4 (GLKMatrix4, int)	GLKMatrix4 ma
 function	c:@F@GLKMatrix4SetRow	-			GLKMatrix4 (GLKMatrix4, int, GLKVector4)	GLKMatrix4 matrix | int row | GLKVector4 vector	-	-	-	c3a198ddb86f4d5c
 function	c:@F@GLKMatrix4SetColumn	-			GLKMatrix4 (GLKMatrix4, int, GLKVector4)	GLKMatrix4 matrix | int column | GLKVector4 vector	-	-	-	a5fe047950a2a793
 function	c:@F@GLKMatrix4Transpose	-			GLKMatrix4 (GLKMatrix4)	GLKMatrix4 matrix	-	-	-	bc8fa6e95de3d837
-function	c:@F@GLKMatrix4Invert	-			GLKMatrix4 (GLKMatrix4, _Bool * _Nullable)	GLKMatrix4 matrix | _Bool * isInvertible	-	-	-	40c8ba36db5e0fd3
-function	c:@F@GLKMatrix4InvertAndTranspose	-			GLKMatrix4 (GLKMatrix4, _Bool * _Nullable)	GLKMatrix4 matrix | _Bool * isInvertible	-	-	-	4d6470dc1c9857b2
+function	c:@F@GLKMatrix4Invert	-			GLKMatrix4 (GLKMatrix4, _Bool *)	GLKMatrix4 matrix | _Bool * isInvertible	-	-	-	a0d7d9970876733c
+function	c:@F@GLKMatrix4InvertAndTranspose	-			GLKMatrix4 (GLKMatrix4, _Bool *)	GLKMatrix4 matrix | _Bool * isInvertible	-	-	-	14832c6659617e65
 function	c:@F@GLKMatrix4Multiply	-			GLKMatrix4 (GLKMatrix4, GLKMatrix4)	GLKMatrix4 matrixLeft | GLKMatrix4 matrixRight	-	-	-	19296805579b5c60
 function	c:@F@GLKMatrix4Add	-			GLKMatrix4 (GLKMatrix4, GLKMatrix4)	GLKMatrix4 matrixLeft | GLKMatrix4 matrixRight	-	-	-	d67f988ab05d2311
 function	c:@F@GLKMatrix4Subtract	-			GLKMatrix4 (GLKMatrix4, GLKMatrix4)	GLKMatrix4 matrixLeft | GLKMatrix4 matrixRight	-	-	-	4717517303080e45
@@ -341,13 +341,13 @@ function	c:@F@GLKMatrix4RotateZ	-			GLKMatrix4 (GLKMatrix4, float)	GLKMatrix4 ma
 function	c:@F@GLKMatrix4MultiplyVector3	-			GLKVector3 (GLKMatrix4, GLKVector3)	GLKMatrix4 matrixLeft | GLKVector3 vectorRight	-	-	-	1dff8bf8e39b91f0
 function	c:@F@GLKMatrix4MultiplyVector3WithTranslation	-			GLKVector3 (GLKMatrix4, GLKVector3)	GLKMatrix4 matrixLeft | GLKVector3 vectorRight	-	-	-	44360996afd54183
 function	c:@F@GLKMatrix4MultiplyAndProjectVector3	-			GLKVector3 (GLKMatrix4, GLKVector3)	GLKMatrix4 matrixLeft | GLKVector3 vectorRight	-	-	-	9e1dcde1dcbae782
-function	c:@F@GLKMatrix4MultiplyVector3Array	-			void (GLKMatrix4, GLKVector3 * _Nonnull, size_t)	GLKMatrix4 matrix | GLKVector3 * vectors | size_t vectorCount	-	-	-	0292414da722c60a
-function	c:@F@GLKMatrix4MultiplyVector3ArrayWithTranslation	-			void (GLKMatrix4, GLKVector3 * _Nonnull, size_t)	GLKMatrix4 matrix | GLKVector3 * vectors | size_t vectorCount	-	-	-	75817cd5c76e92b7
-function	c:@F@GLKMatrix4MultiplyAndProjectVector3Array	-			void (GLKMatrix4, GLKVector3 * _Nonnull, size_t)	GLKMatrix4 matrix | GLKVector3 * vectors | size_t vectorCount	-	-	-	8aef4292b13de426
+function	c:@F@GLKMatrix4MultiplyVector3Array	-			void (GLKMatrix4, GLKVector3 *, size_t)	GLKMatrix4 matrix | GLKVector3 * vectors | size_t vectorCount	-	-	-	2552cf5a288dc9c8
+function	c:@F@GLKMatrix4MultiplyVector3ArrayWithTranslation	-			void (GLKMatrix4, GLKVector3 *, size_t)	GLKMatrix4 matrix | GLKVector3 * vectors | size_t vectorCount	-	-	-	48f3ae752c3a7068
+function	c:@F@GLKMatrix4MultiplyAndProjectVector3Array	-			void (GLKMatrix4, GLKVector3 *, size_t)	GLKMatrix4 matrix | GLKVector3 * vectors | size_t vectorCount	-	-	-	cacea7afebf5d0d4
 function	c:@F@GLKMatrix4MultiplyVector4	-			GLKVector4 (GLKMatrix4, GLKVector4)	GLKMatrix4 matrixLeft | GLKVector4 vectorRight	-	-	-	e8171fb138f28125
-function	c:@F@GLKMatrix4MultiplyVector4Array	-			void (GLKMatrix4, GLKVector4 * _Nonnull, size_t)	GLKMatrix4 matrix | GLKVector4 * vectors | size_t vectorCount	-	-	-	66ca91c6390c7c96
+function	c:@F@GLKMatrix4MultiplyVector4Array	-			void (GLKMatrix4, GLKVector4 *, size_t)	GLKMatrix4 matrix | GLKVector4 * vectors | size_t vectorCount	-	-	-	bc66c07b08a8431e
 function	c:@F@GLKVector2Make	-			GLKVector2 (float, float)	float x | float y	-	-	-	f7061107787d895f
-function	c:@F@GLKVector2MakeWithArray	-			GLKVector2 (float *)	float[2] values	-	-	-	4a4bca393cfdd3ff
+function	c:@F@GLKVector2MakeWithArray	-			GLKVector2 (float[2])	float[2] values	-	-	-	6d7f739d20f0ee45
 function	c:@F@GLKVector2Negate	-			GLKVector2 (GLKVector2)	GLKVector2 vector	-	-	-	a412aaac010332e2
 function	c:@F@GLKVector2Add	-			GLKVector2 (GLKVector2, GLKVector2)	GLKVector2 vectorLeft | GLKVector2 vectorRight	-	-	-	518f4429c4cc8cc2
 function	c:@F@GLKVector2Subtract	-			GLKVector2 (GLKVector2, GLKVector2)	GLKVector2 vectorLeft | GLKVector2 vectorRight	-	-	-	c8e1323a84058cb9
@@ -373,44 +373,44 @@ function	c:@F@GLKVector2Lerp	-			GLKVector2 (GLKVector2, GLKVector2, float)	GLKV
 function	c:@F@GLKVector2Project	-			GLKVector2 (GLKVector2, GLKVector2)	GLKVector2 vectorToProject | GLKVector2 projectionVector	-	-	-	50910c029ab173dc
 struct	c:@S@_GLKMatrixStack	-			-	-	-	-	-	d117dd4de3fea809
 typedef	c:@T@GLKMatrixStackRef	-			struct _GLKMatrixStack *	-	-	-	-	3f046cae98984da3
-function	c:@F@GLKMatrixStackCreate	-			GLKMatrixStackRef  _Nullable (CFAllocatorRef _Nullable)	CFAllocatorRef alloc	-	-	-	945a456914eb89b6
+function	c:@F@GLKMatrixStackCreate	-			GLKMatrixStackRef (CFAllocatorRef)	CFAllocatorRef alloc	-	-	-	5915cf9b736920f2
 function	c:@F@GLKMatrixStackGetTypeID	-			CFTypeID (void)	-	-	-	-	cb400c3c023f6b8f
-function	c:@F@GLKMatrixStackPush	-			void (GLKMatrixStackRef _Nonnull)	GLKMatrixStackRef stack	-	-	-	3edc7dff28eb1b0c
-function	c:@F@GLKMatrixStackPop	-			void (GLKMatrixStackRef _Nonnull)	GLKMatrixStackRef stack	-	-	-	2f1165e3c8c3c2d4
-function	c:@F@GLKMatrixStackSize	-			int (GLKMatrixStackRef _Nonnull)	GLKMatrixStackRef stack	-	-	-	bed8ee145f1e9b64
-function	c:@F@GLKMatrixStackLoadMatrix4	-			void (GLKMatrixStackRef _Nonnull, GLKMatrix4)	GLKMatrixStackRef stack | GLKMatrix4 matrix	-	-	-	5ca23223529c005c
-function	c:@F@GLKMatrixStackGetMatrix4	-			GLKMatrix4 (GLKMatrixStackRef _Nonnull)	GLKMatrixStackRef stack	-	-	-	6c66df44615e6227
-function	c:@F@GLKMatrixStackGetMatrix3	-			GLKMatrix3 (GLKMatrixStackRef _Nonnull)	GLKMatrixStackRef stack	-	-	-	9fd40600867a758b
-function	c:@F@GLKMatrixStackGetMatrix2	-			GLKMatrix2 (GLKMatrixStackRef _Nonnull)	GLKMatrixStackRef stack	-	-	-	fb8b578551f7e401
-function	c:@F@GLKMatrixStackGetMatrix4Inverse	-			GLKMatrix4 (GLKMatrixStackRef _Nonnull)	GLKMatrixStackRef stack	-	-	-	3aca0fa0d60174a9
-function	c:@F@GLKMatrixStackGetMatrix4InverseTranspose	-			GLKMatrix4 (GLKMatrixStackRef _Nonnull)	GLKMatrixStackRef stack	-	-	-	9aea2bfe33d5f67e
-function	c:@F@GLKMatrixStackGetMatrix3Inverse	-			GLKMatrix3 (GLKMatrixStackRef _Nonnull)	GLKMatrixStackRef stack	-	-	-	1d24b1e2ecca3ea7
-function	c:@F@GLKMatrixStackGetMatrix3InverseTranspose	-			GLKMatrix3 (GLKMatrixStackRef _Nonnull)	GLKMatrixStackRef stack	-	-	-	f2a1cc3857217158
-function	c:@F@GLKMatrixStackMultiplyMatrix4	-			void (GLKMatrixStackRef _Nonnull, GLKMatrix4)	GLKMatrixStackRef stack | GLKMatrix4 matrix	-	-	-	fc3ec5456c31d125
-function	c:@F@GLKMatrixStackMultiplyMatrixStack	-			void (GLKMatrixStackRef _Nonnull, GLKMatrixStackRef _Nonnull)	GLKMatrixStackRef stackLeft | GLKMatrixStackRef stackRight	-	-	-	3e4a988b8f8d9a0e
-function	c:@F@GLKMatrixStackTranslate	-			void (GLKMatrixStackRef _Nonnull, float, float, float)	GLKMatrixStackRef stack | float tx | float ty | float tz	-	-	-	5206113e70f4c069
-function	c:@F@GLKMatrixStackTranslateWithVector3	-			void (GLKMatrixStackRef _Nonnull, GLKVector3)	GLKMatrixStackRef stack | GLKVector3 translationVector	-	-	-	0a5c8cd1c3e0ddf0
-function	c:@F@GLKMatrixStackTranslateWithVector4	-			void (GLKMatrixStackRef _Nonnull, GLKVector4)	GLKMatrixStackRef stack | GLKVector4 translationVector	-	-	-	24c8ecfdfa9b318a
-function	c:@F@GLKMatrixStackScale	-			void (GLKMatrixStackRef _Nonnull, float, float, float)	GLKMatrixStackRef stack | float sx | float sy | float sz	-	-	-	51a2ac12d2624f42
-function	c:@F@GLKMatrixStackScaleWithVector3	-			void (GLKMatrixStackRef _Nonnull, GLKVector3)	GLKMatrixStackRef stack | GLKVector3 scaleVector	-	-	-	473527586fb99762
-function	c:@F@GLKMatrixStackScaleWithVector4	-			void (GLKMatrixStackRef _Nonnull, GLKVector4)	GLKMatrixStackRef stack | GLKVector4 scaleVector	-	-	-	04b6689f5cc82f06
-function	c:@F@GLKMatrixStackRotate	-			void (GLKMatrixStackRef _Nonnull, float, float, float, float)	GLKMatrixStackRef stack | float radians | float x | float y | float z	-	-	-	785d4410679405ea
-function	c:@F@GLKMatrixStackRotateWithVector3	-			void (GLKMatrixStackRef _Nonnull, float, GLKVector3)	GLKMatrixStackRef stack | float radians | GLKVector3 axisVector	-	-	-	3094694cdffe1d75
-function	c:@F@GLKMatrixStackRotateWithVector4	-			void (GLKMatrixStackRef _Nonnull, float, GLKVector4)	GLKMatrixStackRef stack | float radians | GLKVector4 axisVector	-	-	-	7380591021489c67
-function	c:@F@GLKMatrixStackRotateX	-			void (GLKMatrixStackRef _Nonnull, float)	GLKMatrixStackRef stack | float radians	-	-	-	5abf89f9e86395fe
-function	c:@F@GLKMatrixStackRotateY	-			void (GLKMatrixStackRef _Nonnull, float)	GLKMatrixStackRef stack | float radians	-	-	-	f400250df24a720a
-function	c:@F@GLKMatrixStackRotateZ	-			void (GLKMatrixStackRef _Nonnull, float)	GLKMatrixStackRef stack | float radians	-	-	-	b267a178c575d83a
+function	c:@F@GLKMatrixStackPush	-			void (GLKMatrixStackRef)	GLKMatrixStackRef stack	-	-	-	244246a828d2177a
+function	c:@F@GLKMatrixStackPop	-			void (GLKMatrixStackRef)	GLKMatrixStackRef stack	-	-	-	40312fe0d68af92c
+function	c:@F@GLKMatrixStackSize	-			int (GLKMatrixStackRef)	GLKMatrixStackRef stack	-	-	-	a94c6e66694b7186
+function	c:@F@GLKMatrixStackLoadMatrix4	-			void (GLKMatrixStackRef, GLKMatrix4)	GLKMatrixStackRef stack | GLKMatrix4 matrix	-	-	-	3401461bf5498efb
+function	c:@F@GLKMatrixStackGetMatrix4	-			GLKMatrix4 (GLKMatrixStackRef)	GLKMatrixStackRef stack	-	-	-	94f19dee2739b61c
+function	c:@F@GLKMatrixStackGetMatrix3	-			GLKMatrix3 (GLKMatrixStackRef)	GLKMatrixStackRef stack	-	-	-	63cd52bb9cd07f64
+function	c:@F@GLKMatrixStackGetMatrix2	-			GLKMatrix2 (GLKMatrixStackRef)	GLKMatrixStackRef stack	-	-	-	0819b3a403938276
+function	c:@F@GLKMatrixStackGetMatrix4Inverse	-			GLKMatrix4 (GLKMatrixStackRef)	GLKMatrixStackRef stack	-	-	-	590afa8decda7a88
+function	c:@F@GLKMatrixStackGetMatrix4InverseTranspose	-			GLKMatrix4 (GLKMatrixStackRef)	GLKMatrixStackRef stack	-	-	-	7571d2bcd9f11cf7
+function	c:@F@GLKMatrixStackGetMatrix3Inverse	-			GLKMatrix3 (GLKMatrixStackRef)	GLKMatrixStackRef stack	-	-	-	74edaab2f90f3fb9
+function	c:@F@GLKMatrixStackGetMatrix3InverseTranspose	-			GLKMatrix3 (GLKMatrixStackRef)	GLKMatrixStackRef stack	-	-	-	f519ab65a3b514a9
+function	c:@F@GLKMatrixStackMultiplyMatrix4	-			void (GLKMatrixStackRef, GLKMatrix4)	GLKMatrixStackRef stack | GLKMatrix4 matrix	-	-	-	da5dc9edb74456e5
+function	c:@F@GLKMatrixStackMultiplyMatrixStack	-			void (GLKMatrixStackRef, GLKMatrixStackRef)	GLKMatrixStackRef stackLeft | GLKMatrixStackRef stackRight	-	-	-	38045ca18e8978ae
+function	c:@F@GLKMatrixStackTranslate	-			void (GLKMatrixStackRef, float, float, float)	GLKMatrixStackRef stack | float tx | float ty | float tz	-	-	-	f0d7d1ae2c683336
+function	c:@F@GLKMatrixStackTranslateWithVector3	-			void (GLKMatrixStackRef, GLKVector3)	GLKMatrixStackRef stack | GLKVector3 translationVector	-	-	-	1263d40fc1de15b7
+function	c:@F@GLKMatrixStackTranslateWithVector4	-			void (GLKMatrixStackRef, GLKVector4)	GLKMatrixStackRef stack | GLKVector4 translationVector	-	-	-	b6c2832d215f85ae
+function	c:@F@GLKMatrixStackScale	-			void (GLKMatrixStackRef, float, float, float)	GLKMatrixStackRef stack | float sx | float sy | float sz	-	-	-	8641ebed7edee13e
+function	c:@F@GLKMatrixStackScaleWithVector3	-			void (GLKMatrixStackRef, GLKVector3)	GLKMatrixStackRef stack | GLKVector3 scaleVector	-	-	-	3e5b8c2649a8586e
+function	c:@F@GLKMatrixStackScaleWithVector4	-			void (GLKMatrixStackRef, GLKVector4)	GLKMatrixStackRef stack | GLKVector4 scaleVector	-	-	-	d7ab7483880eeecf
+function	c:@F@GLKMatrixStackRotate	-			void (GLKMatrixStackRef, float, float, float, float)	GLKMatrixStackRef stack | float radians | float x | float y | float z	-	-	-	396ef70d7278a62a
+function	c:@F@GLKMatrixStackRotateWithVector3	-			void (GLKMatrixStackRef, float, GLKVector3)	GLKMatrixStackRef stack | float radians | GLKVector3 axisVector	-	-	-	d927778f5a8dca49
+function	c:@F@GLKMatrixStackRotateWithVector4	-			void (GLKMatrixStackRef, float, GLKVector4)	GLKMatrixStackRef stack | float radians | GLKVector4 axisVector	-	-	-	5aa351f602b9a6fc
+function	c:@F@GLKMatrixStackRotateX	-			void (GLKMatrixStackRef, float)	GLKMatrixStackRef stack | float radians	-	-	-	ba3224ce10a600b7
+function	c:@F@GLKMatrixStackRotateY	-			void (GLKMatrixStackRef, float)	GLKMatrixStackRef stack | float radians	-	-	-	6a3a95ba7c8b6b15
+function	c:@F@GLKMatrixStackRotateZ	-			void (GLKMatrixStackRef, float)	GLKMatrixStackRef stack | float radians	-	-	-	2388d30f364974ea
 function	c:@F@GLKMathDegreesToRadians	-			float (float)	float degrees	-	-	-	f314c75485289486
 function	c:@F@GLKMathRadiansToDegrees	-			float (float)	float radians	-	-	-	da4296debe00e873
-function	c:@F@GLKMathProject	-			GLKVector3 (GLKVector3, GLKMatrix4, GLKMatrix4, int * _Nonnull)	GLKVector3 object | GLKMatrix4 model | GLKMatrix4 projection | int * viewport	-	-	-	3d7f63dff6a1445a
-function	c:@F@GLKMathUnproject	-			GLKVector3 (GLKVector3, GLKMatrix4, GLKMatrix4, int * _Nonnull, _Bool * _Nullable)	GLKVector3 window | GLKMatrix4 model | GLKMatrix4 projection | int * viewport | _Bool * success	-	-	-	1fa79ea20836c046
-function	c:@F@NSStringFromGLKMatrix2	-			NSString * _Nonnull (GLKMatrix2)	GLKMatrix2 matrix	-	-	-	030921599929e4b2
-function	c:@F@NSStringFromGLKMatrix3	-			NSString * _Nonnull (GLKMatrix3)	GLKMatrix3 matrix	-	-	-	465cba9bb9fcd15b
-function	c:@F@NSStringFromGLKMatrix4	-			NSString * _Nonnull (GLKMatrix4)	GLKMatrix4 matrix	-	-	-	82445eb0de41d2fe
-function	c:@F@NSStringFromGLKVector2	-			NSString * _Nonnull (GLKVector2)	GLKVector2 vector	-	-	-	91f62a70fda49e7d
-function	c:@F@NSStringFromGLKVector3	-			NSString * _Nonnull (GLKVector3)	GLKVector3 vector	-	-	-	1db81bacb06449ff
-function	c:@F@NSStringFromGLKVector4	-			NSString * _Nonnull (GLKVector4)	GLKVector4 vector	-	-	-	1c5a07464f5589c1
-function	c:@F@NSStringFromGLKQuaternion	-			NSString * _Nonnull (GLKQuaternion)	GLKQuaternion quaternion	-	-	-	2309ead6d28dfc69
+function	c:@F@GLKMathProject	-			GLKVector3 (GLKVector3, GLKMatrix4, GLKMatrix4, int *)	GLKVector3 object | GLKMatrix4 model | GLKMatrix4 projection | int * viewport	-	-	-	0c993c2a168a7fe9
+function	c:@F@GLKMathUnproject	-			GLKVector3 (GLKVector3, GLKMatrix4, GLKMatrix4, int *, _Bool *)	GLKVector3 window | GLKMatrix4 model | GLKMatrix4 projection | int * viewport | _Bool * success	-	-	-	859b45d8857b381e
+function	c:@F@NSStringFromGLKMatrix2	-			NSString * (GLKMatrix2)	GLKMatrix2 matrix	-	-	-	fbf4f1a807d610d6
+function	c:@F@NSStringFromGLKMatrix3	-			NSString * (GLKMatrix3)	GLKMatrix3 matrix	-	-	-	c93bf85a2f81fbd0
+function	c:@F@NSStringFromGLKMatrix4	-			NSString * (GLKMatrix4)	GLKMatrix4 matrix	-	-	-	f4fdabc596384021
+function	c:@F@NSStringFromGLKVector2	-			NSString * (GLKVector2)	GLKVector2 vector	-	-	-	98e1f3723d24597d
+function	c:@F@NSStringFromGLKVector3	-			NSString * (GLKVector3)	GLKVector3 vector	-	-	-	4c3d69494b0ed128
+function	c:@F@NSStringFromGLKVector4	-			NSString * (GLKVector4)	GLKVector4 vector	-	-	-	58d91c374f837404
+function	c:@F@NSStringFromGLKQuaternion	-			NSString * (GLKQuaternion)	GLKQuaternion quaternion	-	-	-	29187d48817c2dd0
 struct	c:@S@GLKEffectPropertyPrv	-			-	-	-	-	-	cce095d214508cbc
 typedef	c:@T@GLKEffectPropertyPrvPtr	-			struct GLKEffectPropertyPrv *	-	-	-	-	77ec71548ed4d85a
 interface	c:objc(cs)GLKEffectProperty	-			-	-	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	cfb3a9a1a6464513
@@ -572,7 +572,7 @@ property	c:objc(cs)GLKTextureInfo(py)textureOrigin	-			GLKTextureInfoOrigin	-	re
 property	c:objc(cs)GLKTextureInfo(py)containsMipmaps	-			BOOL	-	readonly	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	d03514497b4aca33
 property	c:objc(cs)GLKTextureInfo(py)mimapLevelCount	-			GLuint	-	readonly	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	0ab9edf8c127ba10
 property	c:objc(cs)GLKTextureInfo(py)arrayLength	-			GLuint	-	readonly	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	c491f93afca4ff47
-typedef	c:@T@GLKTextureLoaderCallback	-			void (^)(GLKTextureInfo * _Nullable, NSError * _Nullable)	-	-	-	-	7c90653d3cc23764
+typedef	c:@T@GLKTextureLoaderCallback	-			void ((^))(GLKTextureInfo *, NSError *)	-	-	-	-	4bfe0a0a111ba9d7
 interface	c:objc(cs)GLKTextureLoader	-			-	-	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	99e942649e9a2e00
 super	-	GLKTextureLoader	NSObject		-	-	-	-	-	276a58c6dd69539e
 method	c:objc(cs)GLKTextureLoader(cm)textureWithContentsOfFile:options:error:	-			GLKTextureInfo *	NSString * path | NSDictionary<NSString *,NSNumber *> * options | NSError * _Nullable * outError	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	d6f21109a36e4229

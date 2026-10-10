@@ -196,7 +196,7 @@ method	c:objc(cs)NLLanguageRecognizer(im)processString:	-			void	NSString * stri
 method	c:objc(cs)NLLanguageRecognizer(im)reset	-			void	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	1cac2f143de290b4
 property	c:objc(cs)NLLanguageRecognizer(py)dominantLanguage	-			NLLanguage	-	readonly,copy,nonatomic	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	69ca69a206a92196
 method	c:objc(cs)NLLanguageRecognizer(im)languageHypothesesWithMaximum:	-			NSDictionary<NLLanguage,NSNumber *> *	NSUInteger maxHypotheses	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	f5152ea346760ab9
-property	c:objc(cs)NLLanguageRecognizer(py)languageHints	-			NS_REFINED_FOR_SWIFT NSDictionary<NLLanguage,NSNumber *> *	-	copy,nonatomic	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	6d72f88cb66b3250
+property	c:objc(cs)NLLanguageRecognizer(py)languageHints	-			NSDictionary<NLLanguage,NSNumber *> *	-	copy,nonatomic	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	b3664a75fb8e0df8
 property	c:objc(cs)NLLanguageRecognizer(py)languageConstraints	-			NSArray<NLLanguage> *	-	copy,nonatomic	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	7e5300441b774d7f
 typedef	c:@T@NLModelType	-			enum NLModelType	-	-	-	-	ec24f2a1269c5a5a
 enum	c:@E@NLModelType	-			NSInteger	-	-	-	-	e27f208041a7f6f4

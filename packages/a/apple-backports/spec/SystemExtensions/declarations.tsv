@@ -31,11 +31,11 @@ super	-	OSSystemExtensionRequest	NSObject		-	-	-	-	-	62e616844e39f09d
 method	c:objc(cs)OSSystemExtensionRequest(cm)activationRequestForExtension:queue:	-			instancetype	NSString * identifier | dispatch_queue_t queue	-	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	be65c590c7b33d37
 method	c:objc(cs)OSSystemExtensionRequest(cm)deactivationRequestForExtension:queue:	-			instancetype	NSString * identifier | dispatch_queue_t queue	-	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a8171340e58d91aa
 method	c:objc(cs)OSSystemExtensionRequest(cm)propertiesRequestForExtension:queue:	-			instancetype	NSString * identifier | dispatch_queue_t queue	-	ios=-/-/-/1,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0559ed9d350cbc38
-property	c:objc(cs)OSSystemExtensionRequest(py)delegate	-			API_AVAILABLE id<OSSystemExtensionRequestDelegate>	-	weak,nonatomic	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cf59bb2e86a0179b
-property	c:objc(cs)OSSystemExtensionRequest(py)identifier	-			API_AVAILABLE NSString *	-	readonly,nonatomic	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	89b17db80aa8d4ed
+property	c:objc(cs)OSSystemExtensionRequest(py)delegate	-			id<OSSystemExtensionRequestDelegate>	-	weak,nonatomic	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	85c6e69e443d0bbf
+property	c:objc(cs)OSSystemExtensionRequest(py)identifier	-			NSString *	-	readonly,nonatomic	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6e16264149ce6037
 interface	c:objc(cs)OSSystemExtensionProperties	-			-	-	-	ios=18.4/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e836b530af3f30a3
 super	-	OSSystemExtensionProperties	NSObject		-	-	-	-	-	a2548e23fa569c07
-property	c:objc(cs)OSSystemExtensionProperties(py)URL	-			API_AVAILABLE NSURL *	-	readonly,strong	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cc94135181f9a6b5
+property	c:objc(cs)OSSystemExtensionProperties(py)URL	-			NSURL *	-	readonly,strong	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5ef4e660d3417233
 property	c:objc(cs)OSSystemExtensionProperties(py)bundleIdentifier	-			NSString *	-	readonly,strong	ios=18.4/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ca0cdca54996814f
 property	c:objc(cs)OSSystemExtensionProperties(py)bundleVersion	-			NSString *	-	readonly,strong	ios=18.4/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1cd0f8532ed3f272
 property	c:objc(cs)OSSystemExtensionProperties(py)bundleShortVersion	-			NSString *	-	readonly,strong	ios=18.4/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8f4c8b93a102a1ca
@@ -53,7 +53,7 @@ interface	c:objc(cs)OSSystemExtensionManager	-			-	-	-	ios=-/-/-/1,macos=10.15/-
 super	-	OSSystemExtensionManager	NSObject		-	-	-	-	-	8d63a19ae284c7f4
 method	c:objc(cs)OSSystemExtensionManager(im)init	-			instancetype	-	-	*unavailable ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c47b2e56cfa0e0b4
 method	c:objc(cs)OSSystemExtensionManager(im)new	-			instancetype	-	-	*unavailable ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5a8215a279f9d471
-property	c:objc(cs)OSSystemExtensionManager(cpy)sharedManager	-			API_AVAILABLE OSSystemExtensionManager *	-	readonly,class	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6f0ae6c8f9071ade
+property	c:objc(cs)OSSystemExtensionManager(cpy)sharedManager	-			OSSystemExtensionManager *	-	readonly,class	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e3a785f4141bb18e
 method	c:objc(cs)OSSystemExtensionManager(im)submitRequest:	-			void	OSSystemExtensionRequest * request	-	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0f89f4e81cd743c1
 interface	c:objc(cs)OSSystemExtensionInfo	-			-	-	-	ios=-/-/-/1,macos=15.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2c470324da55c80e
 super	-	OSSystemExtensionInfo	NSObject		-	-	-	-	-	33bc26bbaf8be304

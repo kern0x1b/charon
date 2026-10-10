@@ -1,6 +1,6 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 var	c:@NSReadAccessURLDocumentOption	-			const NSAttributedStringDocumentReadingOptionKey	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	5e28af31e9409dae
-typedef	c:@T@NSAttributedStringCompletionHandler	-			void (^)(NSAttributedString * _Nullable, NSDictionary<NSAttributedStringDocumentAttributeKey,id> * _Nullable, NSError * _Nullable)	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	4810150da8b49770
+typedef	c:@T@NSAttributedStringCompletionHandler	-			void ((^))(NSAttributedString *, NSDictionary<NSAttributedStringDocumentAttributeKey,id> *, NSError *)	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	5530694e16317f66
 category	c:objc(cy)NSAttributedString@NSAttributedStringWebKitAdditions	-			-	-	-	ios=3.2/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	199d36663f1d06b8
 method	c:objc(cs)NSAttributedString(cm)loadFromHTMLWithRequest:options:completionHandler:	NSAttributedStringWebKitAdditions			void	NSURLRequest * request | NSDictionary<NSAttributedStringDocumentReadingOptionKey,id> * options | NSAttributedStringCompletionHandler completionHandler	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	74b37b8ccf73ed7f
 method	c:objc(cs)NSAttributedString(cm)loadFromHTMLWithFileURL:options:completionHandler:	NSAttributedStringWebKitAdditions			void	NSURL * fileURL | NSDictionary<NSAttributedStringDocumentReadingOptionKey,id> * options | NSAttributedStringCompletionHandler completionHandler	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	f55636ee053e8861
@@ -51,7 +51,7 @@ property	c:objc(cs)WKDownload(py)webView	-			WKWebView *	-	readonly,weak,nonatom
 property	c:objc(cs)WKDownload(py)delegate	-			id<WKDownloadDelegate>	-	weak,nonatomic	ios=14.5/-/-/0,macos=11.3/-/-/0	-	a99a09c3d23b5112
 property	c:objc(cs)WKDownload(py)userInitiated	-			BOOL	-	readonly,nonatomic,getter=isUserInitiated	ios=18.2/-/-/0,macos=15.2/-/-/0	-	6694edc6845fafa9
 property	c:objc(cs)WKDownload(py)originatingFrame	-			WKFrameInfo *	-	readonly,nonatomic	ios=18.2/-/-/0,macos=15.2/-/-/0	-	4983e1559e32e968
-method	c:objc(cs)WKDownload(im)cancel:	-			void	WK_SWIFT_UI_ACTOR void (^ _Nullable)(NSData * _Nullable) completionHandler	-	ios=14.5/-/-/0,macos=11.3/-/-/0	-	096e9e5deefd29d1
+method	c:objc(cs)WKDownload(im)cancel:	-			void	void (^ _Nullable)(NSData * _Nullable) completionHandler	-	ios=14.5/-/-/0,macos=11.3/-/-/0	-	5ed1bbcd3c5f7d04
 typedef	c:@T@WKDownloadRedirectPolicy	-			enum WKDownloadRedirectPolicy	-	-	-	-	c371423c3f4235d8
 enum	c:@E@WKDownloadRedirectPolicy	-			NSInteger	-	-	ios=14.5/-/-/0,macos=11.3/-/-/0	-	b598582d1263db15
 enumconst	c:@E@WKDownloadRedirectPolicy@WKDownloadRedirectPolicyCancel	WKDownloadRedirectPolicy			-	-	-	ios=14.5/-/-/0,macos=11.3/-/-/0	-	041e02f149fdcc75
@@ -62,13 +62,13 @@ enumconst	c:@E@WKDownloadPlaceholderPolicy@WKDownloadPlaceholderPolicyDisable	WK
 enumconst	c:@E@WKDownloadPlaceholderPolicy@WKDownloadPlaceholderPolicyEnable	WKDownloadPlaceholderPolicy			-	-	-	ios=18.2/-/-/0,xros=2.2/-/-/0	-	bf9f31b5a8d651e7
 protocol	c:objc(pl)WKDownloadDelegate	-			-	-	-	-	-	aaeb8742a57ec1b7
 conforms	-	WKDownloadDelegate	NSObject		-	-	-	-	-	ceba851f821485e3
-method	c:objc(pl)WKDownloadDelegate(im)download:decideDestinationUsingResponse:suggestedFilename:completionHandler:	-			void	WKDownload * download | NSURLResponse * response | NSString * suggestedFilename | WK_SWIFT_UI_ACTOR void (^)(NSURL * _Nullable) completionHandler	-	-	-	1da79e0b789a8263
-method	c:objc(pl)WKDownloadDelegate(im)download:willPerformHTTPRedirection:newRequest:decisionHandler:	-			void	WKDownload * download | NSHTTPURLResponse * response | NSURLRequest * request | WK_SWIFT_UI_ACTOR void (^)(WKDownloadRedirectPolicy) decisionHandler	optional	-	-	d1c6bee3f7387ee3
-method	c:objc(pl)WKDownloadDelegate(im)download:didReceiveAuthenticationChallenge:completionHandler:	-			void	WKDownload * download | NSURLAuthenticationChallenge * challenge | WK_SWIFT_UI_ACTOR void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable) completionHandler	optional	-	-	94e2ef61df9ec76e
+method	c:objc(pl)WKDownloadDelegate(im)download:decideDestinationUsingResponse:suggestedFilename:completionHandler:	-			void	WKDownload * download | NSURLResponse * response | NSString * suggestedFilename | void (^)(NSURL * _Nullable) completionHandler	-	-	-	ec9d8851bec827b1
+method	c:objc(pl)WKDownloadDelegate(im)download:willPerformHTTPRedirection:newRequest:decisionHandler:	-			void	WKDownload * download | NSHTTPURLResponse * response | NSURLRequest * request | void (^)(WKDownloadRedirectPolicy) decisionHandler	optional	-	-	276e0cf0ec235dc1
+method	c:objc(pl)WKDownloadDelegate(im)download:didReceiveAuthenticationChallenge:completionHandler:	-			void	WKDownload * download | NSURLAuthenticationChallenge * challenge | void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable) completionHandler	optional	-	-	9ec670bb30f33e6b
 method	c:objc(pl)WKDownloadDelegate(im)downloadDidFinish:	-			void	WKDownload * download	optional	-	-	98e634b528ab2633
 method	c:objc(pl)WKDownloadDelegate(im)download:didFailWithError:resumeData:	-			void	WKDownload * download | NSError * error | NSData * resumeData	optional	-	-	cc6c2b7329c35882
-method	c:objc(pl)WKDownloadDelegate(im)download:decidePlaceholderPolicy:	-			void	WKDownload * download | WK_SWIFT_UI_ACTOR void (^)(WKDownloadPlaceholderPolicy, NSURL * _Nullable) completionHandler	optional	ios=18.2/-/-/0,xros=2.2/-/-/0	-	253c6efad945c047
-method	c:objc(pl)WKDownloadDelegate(im)download:didReceivePlaceholderURL:completionHandler:	-			void	WKDownload * download | NSURL * url | WK_SWIFT_UI_ACTOR void (^)(void) completionHandler	optional	ios=18.2/-/-/0,xros=2.2/-/-/0	-	97b55309dde2a2d5
+method	c:objc(pl)WKDownloadDelegate(im)download:decidePlaceholderPolicy:	-			void	WKDownload * download | void (^)(WKDownloadPlaceholderPolicy, NSURL * _Nullable) completionHandler	optional	ios=18.2/-/-/0,xros=2.2/-/-/0	-	c116aec3590eaec6
+method	c:objc(pl)WKDownloadDelegate(im)download:didReceivePlaceholderURL:completionHandler:	-			void	WKDownload * download | NSURL * url | void (^)(void) completionHandler	optional	ios=18.2/-/-/0,xros=2.2/-/-/0	-	bfc8ef3d5aacd40e
 method	c:objc(pl)WKDownloadDelegate(im)download:didReceiveFinalURL:	-			void	WKDownload * download | NSURL * url	optional	ios=18.2/-/-/0,xros=2.2/-/-/0	-	2180cced55bfc938
 var	c:@WKErrorDomain	-			NSString *const	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0	-	e79ec347ec4c5876
 typedef	c:@T@WKErrorCode	-			enum WKErrorCode	-	-	-	-	b5e496a3b1a4769f
@@ -133,34 +133,34 @@ method	c:objc(cs)WKWebView(im)goForward	-			WKNavigation *	-	-	ios=8.0/-/-/0,mac
 method	c:objc(cs)WKWebView(im)reload	-			WKNavigation *	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0	-	c4599c923ae3f54b
 method	c:objc(cs)WKWebView(im)reloadFromOrigin	-			WKNavigation *	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0	-	b86beba07d3a2160
 method	c:objc(cs)WKWebView(im)stopLoading	-			void	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0	-	d65440d0fb2e2061
-method	c:objc(cs)WKWebView(im)evaluateJavaScript:completionHandler:	-			void	NSString * javaScriptString | WK_SWIFT_UI_ACTOR void (^ _Nullable)(id _Nullable_result, NSError * _Nullable) completionHandler	-	ios=8.0/-/-/0,macos=10.10/-/-/0	-	3d1d8883bad81136
-method	c:objc(cs)WKWebView(im)evaluateJavaScript:inFrame:inContentWorld:completionHandler:	-			void	NSString * javaScriptString | WKFrameInfo * frame | WKContentWorld * contentWorld | WK_SWIFT_UI_ACTOR void (^ _Nullable)(id _Nullable_result, NSError * _Nullable) completionHandler	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	859b0d3a0a880c6b
-method	c:objc(cs)WKWebView(im)callAsyncJavaScript:arguments:inFrame:inContentWorld:completionHandler:	-			void	NSString * functionBody | NSDictionary<NSString *,id> * arguments | WKFrameInfo * frame | WKContentWorld * contentWorld | WK_SWIFT_UI_ACTOR void (^ _Nullable)(id _Nullable_result, NSError * _Nullable) completionHandler	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	4992312dee70b6dc
-method	c:objc(cs)WKWebView(im)closeAllMediaPresentationsWithCompletionHandler:	-			void	WK_SWIFT_UI_ACTOR void (^ _Nullable)(void) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	7d6fa4575b6c8fb2
+method	c:objc(cs)WKWebView(im)evaluateJavaScript:completionHandler:	-			void	NSString * javaScriptString | void (^ _Nullable)(id _Nullable_result, NSError * _Nullable) completionHandler	-	ios=8.0/-/-/0,macos=10.10/-/-/0	-	60b1f93fc72be124
+method	c:objc(cs)WKWebView(im)evaluateJavaScript:inFrame:inContentWorld:completionHandler:	-			void	NSString * javaScriptString | WKFrameInfo * frame | WKContentWorld * contentWorld | void (^ _Nullable)(id _Nullable_result, NSError * _Nullable) completionHandler	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	226c0600bea64555
+method	c:objc(cs)WKWebView(im)callAsyncJavaScript:arguments:inFrame:inContentWorld:completionHandler:	-			void	NSString * functionBody | NSDictionary<NSString *,id> * arguments | WKFrameInfo * frame | WKContentWorld * contentWorld | void (^ _Nullable)(id _Nullable_result, NSError * _Nullable) completionHandler	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	a74c97e47ab4b182
+method	c:objc(cs)WKWebView(im)closeAllMediaPresentationsWithCompletionHandler:	-			void	void (^ _Nullable)(void) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	9a97a0509d46af3b
 method	c:objc(cs)WKWebView(im)closeAllMediaPresentations	-			void	-	-	ios=14.5/15.0/-/0,macos=11.3/12.0/-/0	deprecated: Use closeAllMediaPresentationsWithCompletionHandler: instead	9f348b237ebd2544
-method	c:objc(cs)WKWebView(im)pauseAllMediaPlaybackWithCompletionHandler:	-			void	WK_SWIFT_UI_ACTOR void (^ _Nullable)(void) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	77be6c8a70e5a18e
-method	c:objc(cs)WKWebView(im)pauseAllMediaPlayback:	-			void	WK_SWIFT_UI_ACTOR void (^ _Nullable)(void) completionHandler	-	ios=14.5/15.0/-/0,macos=11.3/12.0/-/0	deprecated: Use pauseAllMediaPlaybackWithCompletionHandler: instead	bb7f0ab82c02e764
-method	c:objc(cs)WKWebView(im)setAllMediaPlaybackSuspended:completionHandler:	-			void	BOOL suspended | WK_SWIFT_UI_ACTOR void (^ _Nullable)(void) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	34b155d8291614e4
-method	c:objc(cs)WKWebView(im)resumeAllMediaPlayback:	-			void	WK_SWIFT_UI_ACTOR void (^ _Nullable)(void) completionHandler	-	ios=14.5/15.0/-/0,macos=11.3/12.0/-/0	deprecated: Use setAllMediaPlaybackSuspended:completionHandler: instead	1dd118d17a216474
-method	c:objc(cs)WKWebView(im)suspendAllMediaPlayback:	-			void	WK_SWIFT_UI_ACTOR void (^ _Nullable)(void) completionHandler	-	ios=14.5/15.0/-/0,macos=11.3/12.0/-/0	deprecated: Use setAllMediaPlaybackSuspended:completionHandler: instead	50ceb2ad89099b10
-method	c:objc(cs)WKWebView(im)requestMediaPlaybackStateWithCompletionHandler:	-			void	WK_SWIFT_UI_ACTOR void (^)(WKMediaPlaybackState) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	2a99d164315937a9
-method	c:objc(cs)WKWebView(im)requestMediaPlaybackState:	-			void	WK_SWIFT_UI_ACTOR void (^)(WKMediaPlaybackState) completionHandler	-	ios=14.5/15.0/-/0,macos=11.3/12.0/-/0	deprecated: Use requestMediaPlaybackStateWithCompletionHandler: instead	2b6401fd153e9aef
+method	c:objc(cs)WKWebView(im)pauseAllMediaPlaybackWithCompletionHandler:	-			void	void (^ _Nullable)(void) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	894247852c53eb5b
+method	c:objc(cs)WKWebView(im)pauseAllMediaPlayback:	-			void	void (^ _Nullable)(void) completionHandler	-	ios=14.5/15.0/-/0,macos=11.3/12.0/-/0	deprecated: Use pauseAllMediaPlaybackWithCompletionHandler: instead	876d7d61a6a3693c
+method	c:objc(cs)WKWebView(im)setAllMediaPlaybackSuspended:completionHandler:	-			void	BOOL suspended | void (^ _Nullable)(void) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	320de3978a8e52df
+method	c:objc(cs)WKWebView(im)resumeAllMediaPlayback:	-			void	void (^ _Nullable)(void) completionHandler	-	ios=14.5/15.0/-/0,macos=11.3/12.0/-/0	deprecated: Use setAllMediaPlaybackSuspended:completionHandler: instead	c48c2dfe61d77537
+method	c:objc(cs)WKWebView(im)suspendAllMediaPlayback:	-			void	void (^ _Nullable)(void) completionHandler	-	ios=14.5/15.0/-/0,macos=11.3/12.0/-/0	deprecated: Use setAllMediaPlaybackSuspended:completionHandler: instead	4e19427f194b9076
+method	c:objc(cs)WKWebView(im)requestMediaPlaybackStateWithCompletionHandler:	-			void	void (^)(WKMediaPlaybackState) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	12adceaedf7c85ee
+method	c:objc(cs)WKWebView(im)requestMediaPlaybackState:	-			void	void (^)(WKMediaPlaybackState) completionHandler	-	ios=14.5/15.0/-/0,macos=11.3/12.0/-/0	deprecated: Use requestMediaPlaybackStateWithCompletionHandler: instead	02dc8e06bdb9250b
 property	c:objc(cs)WKWebView(py)cameraCaptureState	-			WKMediaCaptureState	-	readonly,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0	-	449946f767aa1755
 property	c:objc(cs)WKWebView(py)microphoneCaptureState	-			WKMediaCaptureState	-	readonly,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0	-	5c557f1db7b6ce1e
-method	c:objc(cs)WKWebView(im)setCameraCaptureState:completionHandler:	-			void	WKMediaCaptureState state | WK_SWIFT_UI_ACTOR void (^ _Nullable)(void) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	5bc3bb56273d5590
-method	c:objc(cs)WKWebView(im)setMicrophoneCaptureState:completionHandler:	-			void	WKMediaCaptureState state | WK_SWIFT_UI_ACTOR void (^ _Nullable)(void) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	ca8e60fcbb27564e
-method	c:objc(cs)WKWebView(im)takeSnapshotWithConfiguration:completionHandler:	-			void	WKSnapshotConfiguration * snapshotConfiguration | WK_SWIFT_UI_ACTOR void (^)(UIImage * _Nullable, NSError * _Nullable) completionHandler	-	ios=11.0/-/-/0	-	90c279d55589f888
-method	c:objc(cs)WKWebView(im)createPDFWithConfiguration:completionHandler:	-			void	WKPDFConfiguration * pdfConfiguration | WK_SWIFT_UI_ACTOR void (^)(NSData * _Nullable, NSError * _Nullable) completionHandler	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	4327ec8f074a2266
-method	c:objc(cs)WKWebView(im)createWebArchiveDataWithCompletionHandler:	-			void	WK_SWIFT_UI_ACTOR void (^)(NSData * _Nullable, NSError * _Nullable) completionHandler	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	fdc962f5bb518649
+method	c:objc(cs)WKWebView(im)setCameraCaptureState:completionHandler:	-			void	WKMediaCaptureState state | void (^ _Nullable)(void) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	24a1a2972e4a02f2
+method	c:objc(cs)WKWebView(im)setMicrophoneCaptureState:completionHandler:	-			void	WKMediaCaptureState state | void (^ _Nullable)(void) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	02905a091b589a84
+method	c:objc(cs)WKWebView(im)takeSnapshotWithConfiguration:completionHandler:	-			void	WKSnapshotConfiguration * snapshotConfiguration | void (^)(UIImage * _Nullable, NSError * _Nullable) completionHandler	-	ios=11.0/-/-/0	-	a2d1d88646e47caf
+method	c:objc(cs)WKWebView(im)createPDFWithConfiguration:completionHandler:	-			void	WKPDFConfiguration * pdfConfiguration | void (^)(NSData * _Nullable, NSError * _Nullable) completionHandler	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	36d6826a50d3e320
+method	c:objc(cs)WKWebView(im)createWebArchiveDataWithCompletionHandler:	-			void	void (^)(NSData * _Nullable, NSError * _Nullable) completionHandler	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	c97fdec5432baddc
 property	c:objc(cs)WKWebView(py)allowsBackForwardNavigationGestures	-			BOOL	-	nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0	-	c06c5825133fc601
 property	c:objc(cs)WKWebView(py)customUserAgent	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0	-	f68735ecd9d4eb50
 property	c:objc(cs)WKWebView(py)allowsLinkPreview	-			BOOL	-	nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0	-	29925f8aad284b0c
 property	c:objc(cs)WKWebView(py)scrollView	-			UIScrollView *	-	readonly,strong,nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0	-	bd2b27480e180fef
 property	c:objc(cs)WKWebView(py)pageZoom	-			CGFloat	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	cd3e3d018c1595b0
-method	c:objc(cs)WKWebView(im)findString:withConfiguration:completionHandler:	-			void	NSString * string | WKFindConfiguration * configuration | WK_SWIFT_UI_ACTOR void (^)(WKFindResult * _Nonnull) completionHandler	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	333d2a823f7f6002
+method	c:objc(cs)WKWebView(im)findString:withConfiguration:completionHandler:	-			void	NSString * string | WKFindConfiguration * configuration | void (^)(WKFindResult * _Nonnull) completionHandler	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	06630953b81ba733
 method	c:objc(cs)WKWebView(cm)handlesURLScheme:	-			BOOL	NSString * urlScheme	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	aa585e60926d9797
-method	c:objc(cs)WKWebView(im)startDownloadUsingRequest:completionHandler:	-			void	NSURLRequest * request | WK_SWIFT_UI_ACTOR void (^)(WKDownload * _Nonnull) completionHandler	-	ios=14.5/-/-/0,macos=11.3/-/-/0	-	5808e23209efb937
-method	c:objc(cs)WKWebView(im)resumeDownloadFromResumeData:completionHandler:	-			void	NSData * resumeData | WK_SWIFT_UI_ACTOR void (^)(WKDownload * _Nonnull) completionHandler	-	ios=14.5/-/-/0,macos=11.3/-/-/0	-	b95bc1f503060781
+method	c:objc(cs)WKWebView(im)startDownloadUsingRequest:completionHandler:	-			void	NSURLRequest * request | void (^)(WKDownload * _Nonnull) completionHandler	-	ios=14.5/-/-/0,macos=11.3/-/-/0	-	f6c43ead3492ffa1
+method	c:objc(cs)WKWebView(im)resumeDownloadFromResumeData:completionHandler:	-			void	NSData * resumeData | void (^)(WKDownload * _Nonnull) completionHandler	-	ios=14.5/-/-/0,macos=11.3/-/-/0	-	efd5ec37a57f30f3
 property	c:objc(cs)WKWebView(py)mediaType	-			NSString *	-	copy,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	41ecd0e00c74fa94
 property	c:objc(cs)WKWebView(py)interactionState	-			id	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0	-	0c57a581fe90d028
 property	c:objc(cs)WKWebView(py)isBlockedByScreenTime	-			BOOL	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,xros=-/-/-/1	-	5bc74d89efccb249
@@ -169,19 +169,19 @@ method	c:objc(cs)WKWebView(im)loadSimulatedRequest:withResponse:responseData:	-	
 method	c:objc(cs)WKWebView(im)loadFileRequest:allowingReadAccessToURL:	-			WKNavigation *	NSURLRequest * request | NSURL * readAccessURL	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	fae987776892b0c8
 method	c:objc(cs)WKWebView(im)loadSimulatedRequest:responseHTMLString:	-			WKNavigation *	NSURLRequest * request | NSString * string	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	3e172f7fa7e44498
 method	c:objc(cs)WKWebView(im)loadSimulatedRequest:withResponseHTMLString:	-			WKNavigation *	NSURLRequest * request | NSString * string	-	ios=15.0/15.0/-/0,macos=12.0/12.0/-/0	deprecated: Use loadSimulatedRequest:responseHTMLString: instead	395b05c0e1537638
-property	c:objc(cs)WKWebView(py)themeColor	-			API_AVAILABLE UIColor *	-	readonly,nonatomic	ios=15.0/-/-/0	-	54f3f5539f8b93b3
-property	c:objc(cs)WKWebView(py)underPageBackgroundColor	-			API_AVAILABLE UIColor *	-	copy,nonatomic	ios=15.0/-/-/0	-	be2c6530e7987ea3
+property	c:objc(cs)WKWebView(py)themeColor	-			UIColor *	-	readonly,nonatomic	ios=15.0/-/-/0	-	3e777efb8cfa3c06
+property	c:objc(cs)WKWebView(py)underPageBackgroundColor	-			UIColor *	-	copy,nonatomic	ios=15.0/-/-/0	-	5a1023f414687684
 property	c:objc(cs)WKWebView(py)fullscreenState	-			WKFullscreenState	-	readonly,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	c005035a6e4def9f
 property	c:objc(cs)WKWebView(py)minimumViewportInset	-			UIEdgeInsets	-	readonly,nonatomic	ios=15.5/-/-/0	-	b688217159caf810
 property	c:objc(cs)WKWebView(py)maximumViewportInset	-			UIEdgeInsets	-	readonly,nonatomic	ios=15.5/-/-/0	-	7d4556c5bc0e4bb4
 method	c:objc(cs)WKWebView(im)setMinimumViewportInset:maximumViewportInset:	-			void	UIEdgeInsets minimumViewportInset | UIEdgeInsets maximumViewportInset	-	ios=15.5/-/-/0	-	fafd1c8b2589e700
 property	c:objc(cs)WKWebView(py)findInteractionEnabled	-			BOOL	-	nonatomic,getter=isFindInteractionEnabled	ios=16.0/-/-/0	-	3f5b2483a4594855
-property	c:objc(cs)WKWebView(py)findInteraction	-			API_AVAILABLE UIFindInteraction *	-	readonly,nonatomic	ios=16.0/-/-/0	-	f7fb41e0205a3fd5
-property	c:objc(cs)WKWebView(py)conversationContext	-			API_AVAILABLE UIConversationContext *	-	strong,nonatomic	ios=26.0/-/-/0,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	163923275a45de34
+property	c:objc(cs)WKWebView(py)findInteraction	-			UIFindInteraction *	-	readonly,nonatomic	ios=16.0/-/-/0	-	5dfc90f0e6a981ca
+property	c:objc(cs)WKWebView(py)conversationContext	-			UIConversationContext *	-	strong,nonatomic	ios=26.0/-/-/0,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7783eadd2b636084
 property	c:objc(cs)WKWebView(py)inspectable	-			BOOL	-	nonatomic,getter=isInspectable	ios=16.4/-/-/0,macos=13.3/-/-/0	-	2ccab03c3975e400
 property	c:objc(cs)WKWebView(py)writingToolsActive	-			BOOL	-	readonly,nonatomic,getter=isWritingToolsActive	ios=18.0/-/-/0,macos=15.0/-/-/0,xros=2.4/-/-/0	-	4aeb72c3635fcb2f
-method	c:objc(cs)WKWebView(im)fetchDataOfTypes:completionHandler:	-			void	WKWebViewDataType dataTypes | WK_SWIFT_UI_ACTOR void (^)(NSData * _Nullable, NSError * _Nullable) completionHandler	-	ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	275aa5c9cbb5465c
-method	c:objc(cs)WKWebView(im)restoreData:completionHandler:	-			void	NSData * data | WK_SWIFT_UI_ACTOR void (^)(NSError * _Nullable) completionHandler	-	ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	16ec4fc29f4d88dd
+method	c:objc(cs)WKWebView(im)fetchDataOfTypes:completionHandler:	-			void	WKWebViewDataType dataTypes | void (^)(NSData * _Nullable, NSError * _Nullable) completionHandler	-	ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	8da74377a69374f8
+method	c:objc(cs)WKWebView(im)restoreData:completionHandler:	-			void	NSData * data | void (^)(NSError * _Nullable) completionHandler	-	ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	5accd35679e297fb
 property	c:objc(cs)WKWebView(py)obscuredContentInsets	-			UIEdgeInsets	-	nonatomic	ios=26.0/-/-/0,xros=26.0/-/-/0	-	a66ed54cd9d6174f
 typedef	c:@T@WKMediaPlaybackState	-			enum WKMediaPlaybackState	-	-	-	-	8bf1912b058a18ec
 enum	c:@E@WKMediaPlaybackState	-			NSInteger	-	-	ios=14.5/-/-/0,macos=11.3/-/-/0	-	6e2c513e1d9c9894
@@ -222,14 +222,14 @@ method	c:objc(pl)WKHTTPCookieStoreObserver(im)cookiesDidChangeInCookieStore:	-		
 interface	c:objc(cs)WKHTTPCookieStore	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	d396636cc67f7950
 super	-	WKHTTPCookieStore	NSObject		-	-	-	-	-	f365f72944719724
 method	c:objc(cs)WKHTTPCookieStore(im)init	-			instancetype	-	-	*unavailable ios=11.0/-/-/0,macos=10.13/-/-/0	-	3873e6d684347c49
-method	c:objc(cs)WKHTTPCookieStore(im)getAllCookies:	-			void	WK_SWIFT_UI_ACTOR void (^)(NSArray<NSHTTPCookie *> * _Nonnull) completionHandler	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	f3df628d757bcf65
-method	c:objc(cs)WKHTTPCookieStore(im)setCookie:completionHandler:	-			void	NSHTTPCookie * cookie | WK_SWIFT_UI_ACTOR void (^ _Nullable)(void) completionHandler	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	0c469838cab27a45
-method	c:objc(cs)WKHTTPCookieStore(im)setCookies:completionHandler:	-			void	NSArray<NSHTTPCookie *> * cookies | WK_SWIFT_UI_ACTOR void (^ _Nullable)(void) completionHandler	-	ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	0231824acc905889
-method	c:objc(cs)WKHTTPCookieStore(im)deleteCookie:completionHandler:	-			void	NSHTTPCookie * cookie | WK_SWIFT_UI_ACTOR void (^ _Nullable)(void) completionHandler	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	ab538b57fe94e72a
+method	c:objc(cs)WKHTTPCookieStore(im)getAllCookies:	-			void	void (^)(NSArray<NSHTTPCookie *> * _Nonnull) completionHandler	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	2781ebed9daf3e82
+method	c:objc(cs)WKHTTPCookieStore(im)setCookie:completionHandler:	-			void	NSHTTPCookie * cookie | void (^ _Nullable)(void) completionHandler	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	8048466930461d48
+method	c:objc(cs)WKHTTPCookieStore(im)setCookies:completionHandler:	-			void	NSArray<NSHTTPCookie *> * cookies | void (^ _Nullable)(void) completionHandler	-	ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	53ebf77ea1184e91
+method	c:objc(cs)WKHTTPCookieStore(im)deleteCookie:completionHandler:	-			void	NSHTTPCookie * cookie | void (^ _Nullable)(void) completionHandler	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	012c5a788eb9d628
 method	c:objc(cs)WKHTTPCookieStore(im)addObserver:	-			void	id<WKHTTPCookieStoreObserver> observer	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	fc797a7c44e5b995
 method	c:objc(cs)WKHTTPCookieStore(im)removeObserver:	-			void	id<WKHTTPCookieStoreObserver> observer	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	859c32d4bd2f961b
-method	c:objc(cs)WKHTTPCookieStore(im)setCookiePolicy:completionHandler:	-			void	WKCookiePolicy policy | WK_SWIFT_UI_ACTOR void (^ _Nullable)(void) completionHandler	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	271963a10bd208d5
-method	c:objc(cs)WKHTTPCookieStore(im)getCookiePolicy:	-			void	WK_SWIFT_UI_ACTOR void (^)(WKCookiePolicy) completionHandler	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	5597745694d1bd59
+method	c:objc(cs)WKHTTPCookieStore(im)setCookiePolicy:completionHandler:	-			void	WKCookiePolicy policy | void (^ _Nullable)(void) completionHandler	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	dfcbdecbd96fb682
+method	c:objc(cs)WKHTTPCookieStore(im)getCookiePolicy:	-			void	void (^)(WKCookiePolicy) completionHandler	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	37c66436a0396330
 typedef	c:@T@WKContentMode	-			enum WKContentMode	-	-	-	-	ce0701b4227ceabb
 enum	c:@E@WKContentMode	-			NSInteger	-	-	ios=13.0/-/-/0	-	992ca81c9b61c0c1
 enumconst	c:@E@WKContentMode@WKContentModeRecommended	WKContentMode			-	-	-	ios=13.0/-/-/0	-	073e5ab47033a1d3
@@ -280,18 +280,18 @@ enumconst	c:@E@WKNavigationResponsePolicy@WKNavigationResponsePolicyAllow	WKNavi
 enumconst	c:@E@WKNavigationResponsePolicy@WKNavigationResponsePolicyDownload	WKNavigationResponsePolicy			-	-	-	ios=14.5/-/-/0,macos=11.3/-/-/0	-	87e1b183545abe7c
 protocol	c:objc(pl)WKNavigationDelegate	-			-	-	-	-	-	21a7bb2712aa406f
 conforms	-	WKNavigationDelegate	NSObject		-	-	-	-	-	b17814e2af8553b3
-method	c:objc(pl)WKNavigationDelegate(im)webView:decidePolicyForNavigationAction:decisionHandler:	-			void	WKWebView * webView | WKNavigationAction * navigationAction | WK_SWIFT_UI_ACTOR void (^)(WKNavigationActionPolicy) decisionHandler	optional	-	-	7452aa6b3bab061a
-method	c:objc(pl)WKNavigationDelegate(im)webView:decidePolicyForNavigationAction:preferences:decisionHandler:	-			void	WKWebView * webView | WKNavigationAction * navigationAction | WKWebpagePreferences * preferences | WK_SWIFT_UI_ACTOR void (^)(WKNavigationActionPolicy, WKWebpagePreferences * _Nonnull) decisionHandler	optional	ios=13.0/-/-/0,macos=10.15/-/-/0	-	923fab335d9ea6a5
-method	c:objc(pl)WKNavigationDelegate(im)webView:decidePolicyForNavigationResponse:decisionHandler:	-			void	WKWebView * webView | WKNavigationResponse * navigationResponse | WK_SWIFT_UI_ACTOR void (^)(WKNavigationResponsePolicy) decisionHandler	optional	-	-	0e6ec0c39c337cd1
+method	c:objc(pl)WKNavigationDelegate(im)webView:decidePolicyForNavigationAction:decisionHandler:	-			void	WKWebView * webView | WKNavigationAction * navigationAction | void (^)(WKNavigationActionPolicy) decisionHandler	optional	-	-	73bfb3c4966da61a
+method	c:objc(pl)WKNavigationDelegate(im)webView:decidePolicyForNavigationAction:preferences:decisionHandler:	-			void	WKWebView * webView | WKNavigationAction * navigationAction | WKWebpagePreferences * preferences | void (^)(WKNavigationActionPolicy, WKWebpagePreferences * _Nonnull) decisionHandler	optional	ios=13.0/-/-/0,macos=10.15/-/-/0	-	2ee2a9e61c4e628e
+method	c:objc(pl)WKNavigationDelegate(im)webView:decidePolicyForNavigationResponse:decisionHandler:	-			void	WKWebView * webView | WKNavigationResponse * navigationResponse | void (^)(WKNavigationResponsePolicy) decisionHandler	optional	-	-	c085ac4baacc7af0
 method	c:objc(pl)WKNavigationDelegate(im)webView:didStartProvisionalNavigation:	-			void	WKWebView * webView | WKNavigation * navigation	optional	-	-	d3dc51ba3691dff3
 method	c:objc(pl)WKNavigationDelegate(im)webView:didReceiveServerRedirectForProvisionalNavigation:	-			void	WKWebView * webView | WKNavigation * navigation	optional	-	-	30fc1f4c229290a8
 method	c:objc(pl)WKNavigationDelegate(im)webView:didFailProvisionalNavigation:withError:	-			void	WKWebView * webView | WKNavigation * navigation | NSError * error	optional	-	-	c5c86584f23a300b
 method	c:objc(pl)WKNavigationDelegate(im)webView:didCommitNavigation:	-			void	WKWebView * webView | WKNavigation * navigation	optional	-	-	f711b86854042814
 method	c:objc(pl)WKNavigationDelegate(im)webView:didFinishNavigation:	-			void	WKWebView * webView | WKNavigation * navigation	optional	-	-	feecebdac5f66381
 method	c:objc(pl)WKNavigationDelegate(im)webView:didFailNavigation:withError:	-			void	WKWebView * webView | WKNavigation * navigation | NSError * error	optional	-	-	7302a367e11e636d
-method	c:objc(pl)WKNavigationDelegate(im)webView:didReceiveAuthenticationChallenge:completionHandler:	-			void	WKWebView * webView | NSURLAuthenticationChallenge * challenge | WK_SWIFT_UI_ACTOR void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable) completionHandler	optional	-	-	78b5b0304974f52b
+method	c:objc(pl)WKNavigationDelegate(im)webView:didReceiveAuthenticationChallenge:completionHandler:	-			void	WKWebView * webView | NSURLAuthenticationChallenge * challenge | void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable) completionHandler	optional	-	-	2ce745f15aae052a
 method	c:objc(pl)WKNavigationDelegate(im)webViewWebContentProcessDidTerminate:	-			void	WKWebView * webView	optional	ios=9.0/-/-/0,macos=10.11/-/-/0	-	aca69989bc252f56
-method	c:objc(pl)WKNavigationDelegate(im)webView:authenticationChallenge:shouldAllowDeprecatedTLS:	-			void	WKWebView * webView | NSURLAuthenticationChallenge * challenge | WK_SWIFT_UI_ACTOR void (^)(BOOL) decisionHandler	optional	ios=14.0/-/-/0,macos=11.0/-/-/0	-	a92bf8d1586fc6c1
+method	c:objc(pl)WKNavigationDelegate(im)webView:authenticationChallenge:shouldAllowDeprecatedTLS:	-			void	WKWebView * webView | NSURLAuthenticationChallenge * challenge | void (^)(BOOL) decisionHandler	optional	ios=14.0/-/-/0,macos=11.0/-/-/0	-	d51984db04c4af27
 method	c:objc(pl)WKNavigationDelegate(im)webView:navigationAction:didBecomeDownload:	-			void	WKWebView * webView | WKNavigationAction * navigationAction | WKDownload * download	optional	ios=14.5/-/-/0,macos=11.3/-/-/0	-	726cd40e6899ac5e
 method	c:objc(pl)WKNavigationDelegate(im)webView:navigationResponse:didBecomeDownload:	-			void	WKWebView * webView | WKNavigationResponse * navigationResponse | WKDownload * download	optional	ios=14.5/-/-/0,macos=11.3/-/-/0	-	7ac9784af3a71fde
 method	c:objc(pl)WKNavigationDelegate(im)webView:shouldGoToBackForwardListItem:willUseInstantBack:completionHandler:	-			void	WKWebView * webView | WKBackForwardListItem * backForwardListItem | BOOL willUseInstantBack | void (^)(BOOL) completionHandler	optional	ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	b44a36f8a3fbb209
@@ -354,7 +354,7 @@ conforms	-	WKScriptMessageHandler	NSObject		-	-	-	-	-	5cd9ca80207cf36e
 method	c:objc(pl)WKScriptMessageHandler(im)userContentController:didReceiveScriptMessage:	-			void	WKUserContentController * userContentController | WKScriptMessage * message	-	-	-	2508d1e4d2cf1b28
 protocol	c:objc(pl)WKScriptMessageHandlerWithReply	-			-	-	-	-	-	ae1ad6632ae8daec
 conforms	-	WKScriptMessageHandlerWithReply	NSObject		-	-	-	-	-	05b8c51215c107a2
-method	c:objc(pl)WKScriptMessageHandlerWithReply(im)userContentController:didReceiveScriptMessage:replyHandler:	-			void	WKUserContentController * userContentController | WKScriptMessage * message | WK_SWIFT_UI_ACTOR void (^)(id _Nullable, NSString * _Nullable) replyHandler	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	3fa120319f44e503
+method	c:objc(pl)WKScriptMessageHandlerWithReply(im)userContentController:didReceiveScriptMessage:replyHandler:	-			void	WKUserContentController * userContentController | WKScriptMessage * message | void (^)(id _Nullable, NSString * _Nullable) replyHandler	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	302a610c63f782ae
 interface	c:objc(cs)WKSnapshotConfiguration	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	85488fca8adb6f2b
 super	-	WKSnapshotConfiguration	NSObject		-	-	-	-	-	ae42b6bba49e7b5a
 conforms	-	WKSnapshotConfiguration	NSCopying		-	-	-	-	-	d890ea61e3cb03ed
@@ -380,22 +380,22 @@ protocol	c:objc(pl)WKUIDelegate	-			-	-	-	-	deprecated: Use webView:contextMenuC
 conforms	-	WKUIDelegate	NSObject		-	-	-	-	-	46090acae9480e0e
 method	c:objc(pl)WKUIDelegate(im)webView:createWebViewWithConfiguration:forNavigationAction:windowFeatures:	-			WKWebView *	WKWebView * webView | WKWebViewConfiguration * configuration | WKNavigationAction * navigationAction | WKWindowFeatures * windowFeatures	optional	-	-	708a683af0aed193
 method	c:objc(pl)WKUIDelegate(im)webViewDidClose:	-			void	WKWebView * webView	optional	ios=9.0/-/-/0,macos=10.11/-/-/0	-	3977d99ab9623bce
-method	c:objc(pl)WKUIDelegate(im)webView:runJavaScriptAlertPanelWithMessage:initiatedByFrame:completionHandler:	-			void	WKWebView * webView | NSString * message | WKFrameInfo * frame | WK_SWIFT_UI_ACTOR void (^)(void) completionHandler	optional	-	-	d8f8c4588b0e43a6
-method	c:objc(pl)WKUIDelegate(im)webView:runJavaScriptConfirmPanelWithMessage:initiatedByFrame:completionHandler:	-			void	WKWebView * webView | NSString * message | WKFrameInfo * frame | WK_SWIFT_UI_ACTOR void (^)(BOOL) completionHandler	optional	-	-	0da05182b48641b3
-method	c:objc(pl)WKUIDelegate(im)webView:runJavaScriptTextInputPanelWithPrompt:defaultText:initiatedByFrame:completionHandler:	-			void	WKWebView * webView | NSString * prompt | NSString * defaultText | WKFrameInfo * frame | WK_SWIFT_UI_ACTOR void (^)(NSString * _Nullable) completionHandler	optional	-	-	163987c9ee601300
-method	c:objc(pl)WKUIDelegate(im)webView:requestMediaCapturePermissionForOrigin:initiatedByFrame:type:decisionHandler:	-			void	WKWebView * webView | WKSecurityOrigin * origin | WKFrameInfo * frame | WKMediaCaptureType type | WK_SWIFT_UI_ACTOR void (^)(WKPermissionDecision) decisionHandler	optional	ios=15.0/-/-/0,macos=12.0/-/-/0	-	82fd389c1797c51f
-method	c:objc(pl)WKUIDelegate(im)webView:requestDeviceOrientationAndMotionPermissionForOrigin:initiatedByFrame:decisionHandler:	-			void	WKWebView * webView | WKSecurityOrigin * origin | WKFrameInfo * frame | WK_SWIFT_UI_ACTOR void (^)(WKPermissionDecision) decisionHandler	optional	ios=15.0/-/-/0,macos=-/-/-/1	-	acdaafdfcfacb595
+method	c:objc(pl)WKUIDelegate(im)webView:runJavaScriptAlertPanelWithMessage:initiatedByFrame:completionHandler:	-			void	WKWebView * webView | NSString * message | WKFrameInfo * frame | void (^)(void) completionHandler	optional	-	-	80ee0a864dfc4b94
+method	c:objc(pl)WKUIDelegate(im)webView:runJavaScriptConfirmPanelWithMessage:initiatedByFrame:completionHandler:	-			void	WKWebView * webView | NSString * message | WKFrameInfo * frame | void (^)(BOOL) completionHandler	optional	-	-	0809054f86aa3855
+method	c:objc(pl)WKUIDelegate(im)webView:runJavaScriptTextInputPanelWithPrompt:defaultText:initiatedByFrame:completionHandler:	-			void	WKWebView * webView | NSString * prompt | NSString * defaultText | WKFrameInfo * frame | void (^)(NSString * _Nullable) completionHandler	optional	-	-	8525fc1c5b4655a3
+method	c:objc(pl)WKUIDelegate(im)webView:requestMediaCapturePermissionForOrigin:initiatedByFrame:type:decisionHandler:	-			void	WKWebView * webView | WKSecurityOrigin * origin | WKFrameInfo * frame | WKMediaCaptureType type | void (^)(WKPermissionDecision) decisionHandler	optional	ios=15.0/-/-/0,macos=12.0/-/-/0	-	46858ef488c171da
+method	c:objc(pl)WKUIDelegate(im)webView:requestDeviceOrientationAndMotionPermissionForOrigin:initiatedByFrame:decisionHandler:	-			void	WKWebView * webView | WKSecurityOrigin * origin | WKFrameInfo * frame | void (^)(WKPermissionDecision) decisionHandler	optional	ios=15.0/-/-/0,macos=-/-/-/1	-	6e399b130c9bd9ed
 method	c:objc(pl)WKUIDelegate(im)webView:shouldPreviewElement:	-			BOOL	WKWebView * webView | WKPreviewElementInfo * elementInfo	optional	ios=10.0/13.0/-/0	deprecated: Use webView:contextMenuConfigurationForElement:completionHandler: instead	8f03e401fbf98479
 method	c:objc(pl)WKUIDelegate(im)webView:previewingViewControllerForElement:defaultActions:	-			UIViewController *	WKWebView * webView | WKPreviewElementInfo * elementInfo | NSArray<id<WKPreviewActionItem>> * previewActions	optional	ios=10.0/13.0/-/0	deprecated: Use webView:contextMenuConfigurationForElement:completionHandler: instead	320cfb6393cd03ca
 method	c:objc(pl)WKUIDelegate(im)webView:commitPreviewingViewController:	-			void	WKWebView * webView | UIViewController * previewingViewController	optional	ios=10.0/13.0/-/0	deprecated: Use webView:contextMenuForElement:willCommitWithAnimator: instead	769f1e978bdc7ac6
-method	c:objc(pl)WKUIDelegate(im)webView:contextMenuConfigurationForElement:completionHandler:	-			void	WKWebView * webView | WKContextMenuElementInfo * elementInfo | WK_SWIFT_UI_ACTOR void (^)(UIContextMenuConfiguration * _Nullable) completionHandler	optional	ios=13.0/-/-/0	-	c0cba2e02013f142
+method	c:objc(pl)WKUIDelegate(im)webView:contextMenuConfigurationForElement:completionHandler:	-			void	WKWebView * webView | WKContextMenuElementInfo * elementInfo | void (^)(UIContextMenuConfiguration * _Nullable) completionHandler	optional	ios=13.0/-/-/0	-	1502b936a16bef14
 method	c:objc(pl)WKUIDelegate(im)webView:contextMenuWillPresentForElement:	-			void	WKWebView * webView | WKContextMenuElementInfo * elementInfo	optional	ios=13.0/-/-/0	-	555b306c7723309b
 method	c:objc(pl)WKUIDelegate(im)webView:contextMenuForElement:willCommitWithAnimator:	-			void	WKWebView * webView | WKContextMenuElementInfo * elementInfo | id<UIContextMenuInteractionCommitAnimating> animator	optional	ios=13.0/-/-/0	-	e860eaf84805b5cf
 method	c:objc(pl)WKUIDelegate(im)webView:contextMenuDidEndForElement:	-			void	WKWebView * webView | WKContextMenuElementInfo * elementInfo	optional	ios=13.0/-/-/0	-	52d350e14b4fe61a
-method	c:objc(pl)WKUIDelegate(im)webView:showLockdownModeFirstUseMessage:completionHandler:	-			void	WKWebView * webView | NSString * message | WK_SWIFT_UI_ACTOR void (^)(WKDialogResult) completionHandler	optional	ios=16.0/-/-/0	-	05b4ec002a1c2800
+method	c:objc(pl)WKUIDelegate(im)webView:showLockdownModeFirstUseMessage:completionHandler:	-			void	WKWebView * webView | NSString * message | void (^)(WKDialogResult) completionHandler	optional	ios=16.0/-/-/0	-	b4ff0872874f46d4
 method	c:objc(pl)WKUIDelegate(im)webView:willPresentEditMenuWithAnimator:	-			void	WKWebView * webView | id<UIEditMenuInteractionAnimating> animator	optional	ios=16.4/-/-/0	-	0f7bd3c7d7f966de
 method	c:objc(pl)WKUIDelegate(im)webView:willDismissEditMenuWithAnimator:	-			void	WKWebView * webView | id<UIEditMenuInteractionAnimating> animator	optional	ios=16.4/-/-/0	-	aec0334365bbfe41
-method	c:objc(pl)WKUIDelegate(im)webView:runOpenPanelWithParameters:initiatedByFrame:completionHandler:	-			void	WKWebView * webView | WKOpenPanelParameters * parameters | WKFrameInfo * frame | WK_SWIFT_UI_ACTOR void (^)(NSArray<NSURL *> * _Nullable) completionHandler	optional	ios=18.4/-/-/0,macos=10.12/-/-/0,xros=2.4/-/-/0	-	f15ae9849ea885c5
+method	c:objc(pl)WKUIDelegate(im)webView:runOpenPanelWithParameters:initiatedByFrame:completionHandler:	-			void	WKWebView * webView | WKOpenPanelParameters * parameters | WKFrameInfo * frame | void (^)(NSArray<NSURL *> * _Nullable) completionHandler	optional	ios=18.4/-/-/0,macos=10.12/-/-/0,xros=2.4/-/-/0	-	efa5269ffa8eb831
 method	c:objc(pl)WKUIDelegate(im)webView:insertInputSuggestion:	-			void	WKWebView * webView | UIInputSuggestion * inputSuggestion	optional	ios=26.0/-/-/0,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9f38173305b51872
 protocol	c:objc(pl)WKURLSchemeHandler	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	0e098c8363913a90
 conforms	-	WKURLSchemeHandler	NSObject		-	-	-	-	-	29db3158e9934b57
@@ -554,7 +554,7 @@ super	-	WKWebExtensionCommand	NSObject		-	-	-	-	-	12124b99a9cdc961
 method	c:objc(cs)WKWebExtensionCommand(cm)new	-			instancetype	-	-	*unavailable ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	b3d067b9a5770492
 method	c:objc(cs)WKWebExtensionCommand(im)init	-			instancetype	-	-	*unavailable ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	0f3b5de97bb0a6ab
 property	c:objc(cs)WKWebExtensionCommand(py)webExtensionContext	-			WKWebExtensionContext *	-	readonly,weak,nonatomic	ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	adef0a648dea700c
-property	c:objc(cs)WKWebExtensionCommand(py)identifier	-			NS_SWIFT_NAME NSString *	-	readonly,copy,nonatomic	ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	2ce5f7aebedc685e
+property	c:objc(cs)WKWebExtensionCommand(py)identifier	-			NSString *	-	readonly,copy,nonatomic	ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	f652d65a7a94b88b
 property	c:objc(cs)WKWebExtensionCommand(py)title	-			NSString *	-	readonly,copy,nonatomic	ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	4ba6e2b452a4aca3
 property	c:objc(cs)WKWebExtensionCommand(py)activationKey	-			NSString *	-	copy,nonatomic	ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	0823dbce4b70d78e
 property	c:objc(cs)WKWebExtensionCommand(py)modifierFlags	-			UIKeyModifierFlags	-	nonatomic	ios=18.4/-/-/0,macos=15.4/-/-/0,xros=2.4/-/-/0	-	95610cecddfb4522
@@ -927,17 +927,17 @@ method	c:objc(cs)WKWebsiteDataStore(im)new	-			instancetype	-	-	*unavailable ios
 method	c:objc(cs)WKWebsiteDataStore(im)init	-			instancetype	-	-	*unavailable ios=9.0/-/-/0,macos=10.11/-/-/0	-	79ae42f98dfbcc62
 property	c:objc(cs)WKWebsiteDataStore(py)persistent	-			BOOL	-	readonly,nonatomic,getter=isPersistent	ios=9.0/-/-/0,macos=10.11/-/-/0	-	e5f50b67474783cf
 method	c:objc(cs)WKWebsiteDataStore(cm)allWebsiteDataTypes	-			NSSet<NSString *> *	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	a41a8451c55144a0
-method	c:objc(cs)WKWebsiteDataStore(im)fetchDataRecordsOfTypes:completionHandler:	-			void	NSSet<NSString *> * dataTypes | WK_SWIFT_UI_ACTOR void (^)(NSArray<WKWebsiteDataRecord *> * _Nonnull) completionHandler	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	3904cfa3927e755d
-method	c:objc(cs)WKWebsiteDataStore(im)removeDataOfTypes:forDataRecords:completionHandler:	-			void	NSSet<NSString *> * dataTypes | NSArray<WKWebsiteDataRecord *> * dataRecords | WK_SWIFT_UI_ACTOR void (^)(void) completionHandler	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	4d424a85f40da824
-method	c:objc(cs)WKWebsiteDataStore(im)removeDataOfTypes:modifiedSince:completionHandler:	-			void	NSSet<NSString *> * dataTypes | NSDate * date | WK_SWIFT_UI_ACTOR void (^)(void) completionHandler	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	f9be38fee1214607
+method	c:objc(cs)WKWebsiteDataStore(im)fetchDataRecordsOfTypes:completionHandler:	-			void	NSSet<NSString *> * dataTypes | void (^)(NSArray<WKWebsiteDataRecord *> * _Nonnull) completionHandler	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	31d5d6b3a401c1e5
+method	c:objc(cs)WKWebsiteDataStore(im)removeDataOfTypes:forDataRecords:completionHandler:	-			void	NSSet<NSString *> * dataTypes | NSArray<WKWebsiteDataRecord *> * dataRecords | void (^)(void) completionHandler	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	8f3767d7ed4de818
+method	c:objc(cs)WKWebsiteDataStore(im)removeDataOfTypes:modifiedSince:completionHandler:	-			void	NSSet<NSString *> * dataTypes | NSDate * date | void (^)(void) completionHandler	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	d9f52b8b7137f270
 property	c:objc(cs)WKWebsiteDataStore(py)httpCookieStore	-			WKHTTPCookieStore *	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0	-	b7f064b9a6c7f2a4
 property	c:objc(cs)WKWebsiteDataStore(py)identifier	-			NSUUID *	-	readonly,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0	-	992fc72000a52221
-method	c:objc(cs)WKWebsiteDataStore(im)fetchDataOfTypes:completionHandler:	-			void	NSSet<NSString *> * dataTypes | WK_SWIFT_UI_ACTOR void (^)(NSData * _Nullable, NSError * _Nullable) completionHandler	-	ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	8f1fef14a76a62ea
-method	c:objc(cs)WKWebsiteDataStore(im)restoreData:completionHandler:	-			void	NSData * data | WK_SWIFT_UI_ACTOR void (^)(NSError * _Nullable) completionHandler	-	ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	7c7ca7e729071c7f
+method	c:objc(cs)WKWebsiteDataStore(im)fetchDataOfTypes:completionHandler:	-			void	NSSet<NSString *> * dataTypes | void (^)(NSData * _Nullable, NSError * _Nullable) completionHandler	-	ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	08def4c5007a0bb4
+method	c:objc(cs)WKWebsiteDataStore(im)restoreData:completionHandler:	-			void	NSData * data | void (^)(NSError * _Nullable) completionHandler	-	ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	1d00f290a8d35adb
 method	c:objc(cs)WKWebsiteDataStore(cm)dataStoreForIdentifier:	-			WKWebsiteDataStore *	NSUUID * identifier	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	b58cb04a9eebf53a
-method	c:objc(cs)WKWebsiteDataStore(cm)removeDataStoreForIdentifier:completionHandler:	-			void	NSUUID * identifier | WK_SWIFT_UI_ACTOR void (^)(NSError * _Nullable) completionHandler	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	0a26feee840e679c
-method	c:objc(cs)WKWebsiteDataStore(cm)fetchAllDataStoreIdentifiers:	-			void	WK_SWIFT_UI_ACTOR void (^)(NSArray<NSUUID *> * _Nonnull) completionHandler	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	b8312b6834a7f166
-property	c:objc(cs)WKWebsiteDataStore(py)proxyConfigurations	-			NS_REFINED_FOR_SWIFT NSArray<nw_proxy_config_t> *	-	copy,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0	-	dfe6762f0c6edfbd
+method	c:objc(cs)WKWebsiteDataStore(cm)removeDataStoreForIdentifier:completionHandler:	-			void	NSUUID * identifier | void (^)(NSError * _Nullable) completionHandler	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	7b0522d62a25c5b8
+method	c:objc(cs)WKWebsiteDataStore(cm)fetchAllDataStoreIdentifiers:	-			void	void (^)(NSArray<NSUUID *> * _Nonnull) completionHandler	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	183bb4d2478c763e
+property	c:objc(cs)WKWebsiteDataStore(py)proxyConfigurations	-			NSArray<nw_proxy_config_t> *	-	copy,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0	-	5365575b52b0b080
 interface	c:objc(cs)WKWindowFeatures	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0	-	97c837196ee9ef1c
 super	-	WKWindowFeatures	NSObject		-	-	-	-	-	f43c180ebba56cec
 property	c:objc(cs)WKWindowFeatures(py)menuBarVisibility	-			NSNumber *	-	readonly,nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0	-	5649e064cfb03d4a

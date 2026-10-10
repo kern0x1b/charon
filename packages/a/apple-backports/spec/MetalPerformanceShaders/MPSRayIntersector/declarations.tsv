@@ -83,7 +83,7 @@ field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordin
 field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates@FI@instanceIndex	MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates			unsigned int	-	-	-	-	c3ffe834bd1ff0a4
 field	c:@SA@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates@FI@coordinates	MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates			vector_float2	-	-	-	-	eb363764c4cc3798
 typedef	c:@T@MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates	-			struct MPSIntersectionDistancePrimitiveIndexBufferIndexInstanceIndexCoordinates	-	-	-	-	2d619c9554a9b20d
-typedef	c:MPSAccelerationStructure.h@T@MPSAccelerationStructureCompletionHandler	-			void (^)(MPSAccelerationStructure * _Nullable)	-	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	a05edd2c9fc3d832
+typedef	c:MPSAccelerationStructure.h@T@MPSAccelerationStructureCompletionHandler	-			void ((^))(MPSAccelerationStructure *)	-	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	486b95ab00e732d6
 typedef	c:MPSAccelerationStructure.h@T@MPSAccelerationStructureUsage	-			enum MPSAccelerationStructureUsage	-	-	-	-	6b731b2877575839
 enum	c:@E@MPSAccelerationStructureUsage	-			NSUInteger	-	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	5d09bc83ba4d478a
 enumconst	c:@E@MPSAccelerationStructureUsage@MPSAccelerationStructureUsageNone	MPSAccelerationStructureUsage			-	-	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	6525855c7118841d

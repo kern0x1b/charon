@@ -350,7 +350,7 @@ method	c:objc(cs)PHASEPushStreamNode(im)scheduleBuffer:	-			void	AVAudioPCMBuffe
 method	c:objc(cs)PHASEPushStreamNode(im)scheduleBuffer:completionCallbackType:completionHandler:	-			void	AVAudioPCMBuffer * buffer | PHASEPushStreamCompletionCallbackCondition completionCallbackType | void (^)(PHASEPushStreamCompletionCallbackCondition) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	3e6996e04c239d40
 method	c:objc(cs)PHASEPushStreamNode(im)scheduleBuffer:atTime:options:	-			void	AVAudioPCMBuffer * buffer | AVAudioTime * when | PHASEPushStreamBufferOptions options	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	83816b7f3e0ca61c
 method	c:objc(cs)PHASEPushStreamNode(im)scheduleBuffer:atTime:options:completionCallbackType:completionHandler:	-			void	AVAudioPCMBuffer * buffer | AVAudioTime * when | PHASEPushStreamBufferOptions options | PHASEPushStreamCompletionCallbackCondition completionCallbackType | void (^)(PHASEPushStreamCompletionCallbackCondition) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	e773b9be8f6d38a7
-typedef	c:@T@PHASEPullStreamRenderBlock	-			OSStatus (^)(BOOL * _Nonnull, const AudioTimeStamp * _Nonnull, AVAudioFrameCount, AudioBufferList * _Nonnull)	-	-	-	-	1a43e8c4c4f9dc2b
+typedef	c:@T@PHASEPullStreamRenderBlock	-			OSStatus ((^))(BOOL *, const AudioTimeStamp *, AVAudioFrameCount, AudioBufferList *)	-	-	-	-	00e3573d9e078f45
 interface	c:objc(cs)PHASEPullStreamNodeDefinition	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	11dafb219f10397d
 super	-	PHASEPullStreamNodeDefinition	PHASEGeneratorNodeDefinition		-	-	-	-	-	9ca8b3e89cb1ca9b
 method	c:objc(cs)PHASEPullStreamNodeDefinition(im)init	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	4c36f6bae65d699e
@@ -363,7 +363,7 @@ interface	c:objc(cs)PHASEPullStreamNode	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/
 super	-	PHASEPullStreamNode	PHASEStreamNode		-	-	-	-	-	dc1f90334543f86f
 method	c:objc(cs)PHASEPullStreamNode(im)init	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	fb11e861fc98a708
 method	c:objc(cs)PHASEPullStreamNode(cm)new	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	5de2716a266fbf60
-property	c:objc(cs)PHASEPullStreamNode(py)renderBlock	-			NS_SWIFT_NAME PHASEPullStreamRenderBlock	-	strong,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	37104a9977510624
+property	c:objc(cs)PHASEPullStreamNode(py)renderBlock	-			PHASEPullStreamRenderBlock	-	strong,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	a1d312c11d3d60bf
 interface	c:objc(cs)PHASEAsset	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	78cdf6136464b1c1
 super	-	PHASEAsset	NSObject		-	-	-	-	-	678c637d811bdc15
 method	c:objc(cs)PHASEAsset(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	621923bfabaf184a
@@ -523,7 +523,7 @@ property	c:objc(cs)PHASESoundEvent(py)prepareState	-			PHASESoundEventPrepareSta
 property	c:objc(cs)PHASESoundEvent(py)metaParameters	-			NSDictionary<NSString *,PHASEMetaParameter *> *	-	readonly,copy	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	e89a16b05d167877
 property	c:objc(cs)PHASESoundEvent(py)mixers	-			NSDictionary<NSString *,PHASEMixer *> *	-	readonly,copy	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	fcdf69b2467fa1d5
 property	c:objc(cs)PHASESoundEvent(py)pushStreamNodes	-			NSDictionary<NSString *,PHASEPushStreamNode *> *	-	readonly,copy	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	2c4ad6d2c73eafff
-property	c:objc(cs)PHASESoundEvent(py)pullStreamNodes	-			API_UNAVAILABLE NSDictionary<NSString *,PHASEPullStreamNode *> *	-	readonly,copy	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	dffad73d514022ab
+property	c:objc(cs)PHASESoundEvent(py)pullStreamNodes	-			NSDictionary<NSString *,PHASEPullStreamNode *> *	-	readonly,copy	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	b32146b317450a13
 property	c:objc(cs)PHASESoundEvent(py)indefinite	-			BOOL	-	readonly,getter=isIndefinite	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	a278c9c5914ee506
 interface	c:objc(cs)PHASEEngine	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	9f024664fd348332
 super	-	PHASEEngine	NSObject		-	-	-	-	-	00712feca9b360f2
@@ -547,7 +547,7 @@ property	c:objc(cs)PHASEEngine(py)soundEvents	-			NSArray<PHASESoundEvent *> *	-
 property	c:objc(cs)PHASEEngine(py)groups	-			NSDictionary<NSString *,PHASEGroup *> *	-	readonly,copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	aad59f1e1bc86873
 property	c:objc(cs)PHASEEngine(py)duckers	-			NSArray<PHASEDucker *> *	-	readonly,copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	783b10931df5ee36
 property	c:objc(cs)PHASEEngine(py)activeGroupPreset	-			PHASEGroupPreset *	-	readonly,strong,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	735cabe58cf58c0d
-property	c:objc(cs)PHASEEngine(py)lastRenderTime	-			API_UNAVAILABLE AVAudioTime *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	aa63627ed8a42ffd
+property	c:objc(cs)PHASEEngine(py)lastRenderTime	-			AVAudioTime *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	da5cee6b883fb307
 interface	c:objc(cs)PHASEListener	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	6a914ff2954da06c
 super	-	PHASEListener	PHASEObject		-	-	-	-	-	959b2b6867bb9ed4
 method	c:objc(cs)PHASEListener(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	28d416e84e9fa392

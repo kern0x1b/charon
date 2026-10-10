@@ -4,9 +4,9 @@ super	-	ABPeoplePickerNavigationController	UINavigationController		-	-	-	-	-	bbf
 property	c:objc(cs)ABPeoplePickerNavigationController(py)peoplePickerDelegate	-			id<ABPeoplePickerNavigationControllerDelegate>	-	assign,nonatomic	ios=2.0/9.0/-/0	-	ec2cf2c7511c792d
 property	c:objc(cs)ABPeoplePickerNavigationController(py)displayedProperties	-			NSArray<NSNumber *> *	-	copy,nonatomic	ios=2.0/9.0/-/0	-	4bdf5b38ff9ca22d
 property	c:objc(cs)ABPeoplePickerNavigationController(py)addressBook	-			ABAddressBookRef	-	nonatomic	ios=2.0/9.0/-/0	-	f3a891865ee87836
-property	c:objc(cs)ABPeoplePickerNavigationController(py)predicateForEnablingPerson	-			NS_AVAILABLE_IOS NSPredicate *	-	copy,nonatomic	ios=8.0/-/-/0	-	64576529aaaf951d
-property	c:objc(cs)ABPeoplePickerNavigationController(py)predicateForSelectionOfPerson	-			NS_AVAILABLE_IOS NSPredicate *	-	copy,nonatomic	ios=8.0/-/-/0	-	86db5dd9b38506ca
-property	c:objc(cs)ABPeoplePickerNavigationController(py)predicateForSelectionOfProperty	-			NS_AVAILABLE_IOS NSPredicate *	-	copy,nonatomic	ios=8.0/-/-/0	-	407f24a83db73aca
+property	c:objc(cs)ABPeoplePickerNavigationController(py)predicateForEnablingPerson	-			NSPredicate *	-	copy,nonatomic	ios=8.0/-/-/0	-	b18cd8f1fd9c8f9a
+property	c:objc(cs)ABPeoplePickerNavigationController(py)predicateForSelectionOfPerson	-			NSPredicate *	-	copy,nonatomic	ios=8.0/-/-/0	-	f070c9bdffe28a00
+property	c:objc(cs)ABPeoplePickerNavigationController(py)predicateForSelectionOfProperty	-			NSPredicate *	-	copy,nonatomic	ios=8.0/-/-/0	-	2b8828dc7bc338d6
 var	c:@ABPersonNamePrefixProperty	-			NSString *const	-	-	ios=8.0/-/-/0	-	31ef81d952ce65bd
 var	c:@ABPersonGivenNameProperty	-			NSString *const	-	-	ios=8.0/-/-/0	-	5889c3d99e2b644b
 var	c:@ABPersonMiddleNameProperty	-			NSString *const	-	-	ios=8.0/-/-/0	-	85210393851ad1c8
@@ -74,4 +74,4 @@ protocol	c:objc(pl)ABUnknownPersonViewControllerDelegate	-			-	-	-	-	-	165958bf3
 conforms	-	ABUnknownPersonViewControllerDelegate	NSObject		-	-	-	-	-	43c624b3ca80d727
 method	c:objc(pl)ABUnknownPersonViewControllerDelegate(im)unknownPersonViewController:didResolveToPerson:	-			void	ABUnknownPersonViewController * unknownCardViewController | ABRecordRef person	-	-	-	c3dab032acc47cc9
 method	c:objc(pl)ABUnknownPersonViewControllerDelegate(im)unknownPersonViewController:shouldPerformDefaultActionForPerson:property:identifier:	-			BOOL	ABUnknownPersonViewController * personViewController | ABRecordRef person | ABPropertyID property | ABMultiValueIdentifier identifier	optional	ios=3.0/-/-/0	-	467ab225dde7bda8
-function	c:@F@ABCreateStringWithAddressDictionary	-			NS_RETURNS_RETAINED NSString * _Nonnull (NSDictionary * _Nonnull, BOOL)	NSDictionary * address | BOOL addCountryName	-	ios=2.0/9.0/-/0	-	e3dc3cc181d5ba2e
+function	c:@F@ABCreateStringWithAddressDictionary	-			NSString * (NSDictionary *, BOOL)	NSDictionary * address | BOOL addCountryName	-	ios=2.0/9.0/-/0	-	1ea6449934b89a6f

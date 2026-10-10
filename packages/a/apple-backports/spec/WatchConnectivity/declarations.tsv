@@ -39,7 +39,7 @@ property	c:objc(cs)WCSession(py)paired	-			BOOL	-	readonly,nonatomic,getter=isPa
 property	c:objc(cs)WCSession(py)watchAppInstalled	-			BOOL	-	readonly,nonatomic,getter=isWatchAppInstalled	watchos=-/-/-/1	-	da471d44021dd08c
 property	c:objc(cs)WCSession(py)complicationEnabled	-			BOOL	-	readonly,nonatomic,getter=isComplicationEnabled	watchos=-/-/-/1	-	b57009c8028544ea
 property	c:objc(cs)WCSession(py)remainingComplicationUserInfoTransfers	-			NSUInteger	-	readonly,nonatomic	ios=10.0/-/-/0,watchos=-/-/-/1	-	cd3e6374c863946d
-property	c:objc(cs)WCSession(py)watchDirectoryURL	-			__WATCHOS_UNAVAILABLE NSURL *	-	readonly,nonatomic	watchos=-/-/-/1	-	bd69b34b02058b45
+property	c:objc(cs)WCSession(py)watchDirectoryURL	-			NSURL *	-	readonly,nonatomic	watchos=-/-/-/1	-	fbfb45bb9c6f148f
 property	c:objc(cs)WCSession(py)companionAppInstalled	-			BOOL	-	readonly,nonatomic,getter=isCompanionAppInstalled	ios=-/-/-/1,watchos=6.0/-/-/0	-	b35251435e67a68e
 property	c:objc(cs)WCSession(py)reachable	-			BOOL	-	readonly,nonatomic,getter=isReachable	ios=9.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=2.0/-/-/0	-	8a1324a2a9c9b143
 property	c:objc(cs)WCSession(py)iOSDeviceNeedsUnlockAfterRebootForReachability	-			BOOL	-	readonly,nonatomic	ios=-/-/-/1,watchos=2.0/-/-/0	-	d54df9075ebac9be

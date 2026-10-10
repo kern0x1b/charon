@@ -15,7 +15,7 @@ typedef	c:@T@ALvoid	-			void	-	-	-	-	d73edb1785e23368
 function	c:@F@alEnable	-			void (ALenum)	ALenum capability	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated in favor of AVAudioEngine	077aba8c27561bcd
 function	c:@F@alDisable	-			void (ALenum)	ALenum capability	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated in favor of AVAudioEngine	8b9122b61f155852
 function	c:@F@alIsEnabled	-			ALboolean (ALenum)	ALenum capability	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated in favor of AVAudioEngine	7e9c454d408d15eb
-function	c:@F@alGetString	-			const ALchar *(ALenum)	ALenum param	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated in favor of AVAudioEngine	02974ed38cdcd16d
+function	c:@F@alGetString	-			const ALchar * (ALenum)	ALenum param	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated in favor of AVAudioEngine	4b1607bc7324c497
 function	c:@F@alGetBooleanv	-			void (ALenum, ALboolean *)	ALenum param | ALboolean * data	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated in favor of AVAudioEngine	8414b3c31209e0bc
 function	c:@F@alGetIntegerv	-			void (ALenum, ALint *)	ALenum param | ALint * data	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated in favor of AVAudioEngine	75679f7af1e5c622
 function	c:@F@alGetFloatv	-			void (ALenum, ALfloat *)	ALenum param | ALfloat * data	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated in favor of AVAudioEngine	1ae686019bc443c2
@@ -26,7 +26,7 @@ function	c:@F@alGetFloat	-			ALfloat (ALenum)	ALenum param	-	ios=2.0/13.0/-/0,ma
 function	c:@F@alGetDouble	-			ALdouble (ALenum)	ALenum param	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated in favor of AVAudioEngine	089fb1a1e7c2c03b
 function	c:@F@alGetError	-			ALenum (void)	-	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated in favor of AVAudioEngine	ca7c565ed98ae508
 function	c:@F@alIsExtensionPresent	-			ALboolean (const ALchar *)	const ALchar * extname	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated in favor of AVAudioEngine	4072fd257a519961
-function	c:@F@alGetProcAddress	-			void *(const ALchar *)	const ALchar * fname	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated in favor of AVAudioEngine	e4d0955b9cddfc32
+function	c:@F@alGetProcAddress	-			void * (const ALchar *)	const ALchar * fname	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated in favor of AVAudioEngine	d725dfb1be772ec3
 function	c:@F@alGetEnumValue	-			ALenum (const ALchar *)	const ALchar * ename	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated in favor of AVAudioEngine	2d7c10fafb33be94
 function	c:@F@alListenerf	-			void (ALenum, ALfloat)	ALenum param | ALfloat value	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated in favor of AVAudioEngine	e086f0c9b9487fcf
 function	c:@F@alListener3f	-			void (ALenum, ALfloat, ALfloat, ALfloat)	ALenum param | ALfloat value1 | ALfloat value2 | ALfloat value3	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated in favor of AVAudioEngine	f2390d291dedd32a
@@ -175,22 +175,22 @@ typedef	c:@T@ALCenum	-			int	-	-	-	-	001a41c8eff8ff78
 typedef	c:@T@ALCfloat	-			float	-	-	-	-	b34cfa542f69b108
 typedef	c:@T@ALCdouble	-			double	-	-	-	-	685ed663d2e192ae
 typedef	c:@T@ALCvoid	-			void	-	-	-	-	fe5791b12cfecd06
-function	c:@F@alcCreateContext	-			ALCcontext *(ALCdevice *, const ALCint *)	ALCdevice * device | const ALCint * attrlist	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated	2ed23832a4737fff
+function	c:@F@alcCreateContext	-			ALCcontext * (ALCdevice *, const ALCint *)	ALCdevice * device | const ALCint * attrlist	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated	a4ef3b6003efc074
 function	c:@F@alcMakeContextCurrent	-			ALCboolean (ALCcontext *)	ALCcontext * context	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated	aad6f87f700ed349
 function	c:@F@alcProcessContext	-			void (ALCcontext *)	ALCcontext * context	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated	3585c98149466cf2
 function	c:@F@alcSuspendContext	-			void (ALCcontext *)	ALCcontext * context	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated	38a8151866dead09
 function	c:@F@alcDestroyContext	-			void (ALCcontext *)	ALCcontext * context	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated	955c7ede281bd6ec
-function	c:@F@alcGetCurrentContext	-			ALCcontext *(void)	-	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated	5ef5adfad49b8b63
-function	c:@F@alcGetContextsDevice	-			ALCdevice *(ALCcontext *)	ALCcontext * context	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated	6e0f2051f254034d
-function	c:@F@alcOpenDevice	-			ALCdevice *(const ALCchar *)	const ALCchar * devicename	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated	cac77fd2ef3ffde7
+function	c:@F@alcGetCurrentContext	-			ALCcontext * (void)	-	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated	2b99aa9082f94253
+function	c:@F@alcGetContextsDevice	-			ALCdevice * (ALCcontext *)	ALCcontext * context	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated	f5620933e0269dca
+function	c:@F@alcOpenDevice	-			ALCdevice * (const ALCchar *)	const ALCchar * devicename	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated	7fea69ecc850be6f
 function	c:@F@alcCloseDevice	-			ALCboolean (ALCdevice *)	ALCdevice * device	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated	772bf02372e5a71f
 function	c:@F@alcGetError	-			ALCenum (ALCdevice *)	ALCdevice * device	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated	8cd36d82b12368aa
 function	c:@F@alcIsExtensionPresent	-			ALCboolean (ALCdevice *, const ALCchar *)	ALCdevice * device | const ALCchar * extname	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated	9db42853263d8bf5
-function	c:@F@alcGetProcAddress	-			void *(ALCdevice *, const ALCchar *)	ALCdevice * device | const ALCchar * funcname	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated	b987d16b4ad44211
+function	c:@F@alcGetProcAddress	-			void * (ALCdevice *, const ALCchar *)	ALCdevice * device | const ALCchar * funcname	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated	b857cfa1739456b3
 function	c:@F@alcGetEnumValue	-			ALCenum (ALCdevice *, const ALCchar *)	ALCdevice * device | const ALCchar * enumname	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated	3eb2dcc8e3afa583
-function	c:@F@alcGetString	-			const ALCchar *(ALCdevice *, ALCenum)	ALCdevice * device | ALCenum param	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated	6a87e278b9d82fc5
+function	c:@F@alcGetString	-			const ALCchar * (ALCdevice *, ALCenum)	ALCdevice * device | ALCenum param	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated	e06f5a55debdd7e9
 function	c:@F@alcGetIntegerv	-			void (ALCdevice *, ALCenum, ALCsizei, ALCint *)	ALCdevice * device | ALCenum param | ALCsizei size | ALCint * data	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated	b3f05ca609433697
-function	c:@F@alcCaptureOpenDevice	-			ALCdevice *(const ALCchar *, ALCuint, ALCenum, ALCsizei)	const ALCchar * devicename | ALCuint frequency | ALCenum format | ALCsizei buffersize	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated	79956a046f7fcbb6
+function	c:@F@alcCaptureOpenDevice	-			ALCdevice * (const ALCchar *, ALCuint, ALCenum, ALCsizei)	const ALCchar * devicename | ALCuint frequency | ALCenum format | ALCsizei buffersize	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated	8ac01ca14a23be25
 function	c:@F@alcCaptureCloseDevice	-			ALCboolean (ALCdevice *)	ALCdevice * device	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated	db1ed35880c8044b
 function	c:@F@alcCaptureStart	-			void (ALCdevice *)	ALCdevice * device	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated	85c46875a59400ed
 function	c:@F@alcCaptureStop	-			void (ALCdevice *)	ALCdevice * device	-	ios=2.0/13.0/-/0,macos=10.4/10.15/-/0	deprecated: OpenAL is deprecated	db45a49be19f8e77

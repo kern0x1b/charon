@@ -13,12 +13,12 @@ var	c:@CTCallStateConnected	-			NSString *const	-	-	ios=4.0/10.0/-/0	-	b1b188f5f
 var	c:@CTCallStateDisconnected	-			NSString *const	-	-	ios=4.0/10.0/-/0	-	fcc5488cee7d3dc1
 interface	c:objc(cs)CTCall	-			-	-	-	ios=4.0/10.0/-/0	-	987366c0b8c2ace6
 super	-	CTCall	NSObject		-	-	-	-	-	f810ed850b058abb
-property	c:objc(cs)CTCall(py)callState	-			__OSX_AVAILABLE_BUT_DEPRECATED_MSG NSString *	-	readonly,copy,nonatomic	ios=4.0/10.0/-/0	-	9f95589edb37b6b1
-property	c:objc(cs)CTCall(py)callID	-			__OSX_AVAILABLE_BUT_DEPRECATED_MSG NSString *	-	readonly,copy,nonatomic	ios=4.0/10.0/-/0	-	88893d495ddb749a
+property	c:objc(cs)CTCall(py)callState	-			NSString *	-	readonly,copy,nonatomic	ios=4.0/10.0/-/0	-	522308f6654e0494
+property	c:objc(cs)CTCall(py)callID	-			NSString *	-	readonly,copy,nonatomic	ios=4.0/10.0/-/0	-	4798439f058299cc
 interface	c:objc(cs)CTCallCenter	-			-	-	-	ios=4.0/10.0/-/0	-	a55d9dab1dc7c59c
 super	-	CTCallCenter	NSObject		-	-	-	-	-	fd8d55eedcfdd2a4
-property	c:objc(cs)CTCallCenter(py)currentCalls	-			__OSX_AVAILABLE_BUT_DEPRECATED_MSG NSSet<CTCall *> *	-	readonly,retain	ios=4.0/10.0/-/0	-	89480926c1e81f79
-property	c:objc(cs)CTCallCenter(py)callEventHandler	-			__OSX_AVAILABLE_BUT_DEPRECATED_MSG void (^)(CTCall * _Nonnull)	-	copy,nonatomic	ios=4.0/10.0/-/0	-	6bb5dcbd582efff9
+property	c:objc(cs)CTCallCenter(py)currentCalls	-			NSSet<CTCall *> *	-	readonly,retain	ios=4.0/10.0/-/0	-	f3b5da97efc194ce
+property	c:objc(cs)CTCallCenter(py)callEventHandler	-			void (^)(CTCall * _Nonnull)	-	copy,nonatomic	ios=4.0/10.0/-/0	-	ac67a285ab0a322a
 interface	c:objc(cs)CTCarrier	-			-	-	-	ios=4.0/16.0/-/0	deprecated: Deprecated; returns '--' at some point in the future	0eea9cd2decd26e7
 super	-	CTCarrier	NSObject		-	-	-	-	-	6fd273bcd37984cd
 property	c:objc(cs)CTCarrier(py)carrierName	-			NSString *	-	readonly,retain,nonatomic	ios=4.0/16.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/9.0/-/0	-	a9253d389b8af64e
@@ -31,10 +31,10 @@ enum	c:@E@CTCellularDataRestrictedState	-			NSUInteger	-	-	-	-	8214a9c94cd90109
 enumconst	c:@E@CTCellularDataRestrictedState@kCTCellularDataRestrictedStateUnknown	CTCellularDataRestrictedState			-	-	-	-	-	97545f02635596ef
 enumconst	c:@E@CTCellularDataRestrictedState@kCTCellularDataRestricted	CTCellularDataRestrictedState			-	-	-	-	-	4961d9924a6379f3
 enumconst	c:@E@CTCellularDataRestrictedState@kCTCellularDataNotRestricted	CTCellularDataRestrictedState			-	-	-	-	-	8ed5b966bd194d12
-typedef	c:CTCellularData.h@T@CellularDataRestrictionDidUpdateNotifier	-			void (^)(CTCellularDataRestrictedState)	-	-	-	-	d385fa5f6cab4669
+typedef	c:CTCellularData.h@T@CellularDataRestrictionDidUpdateNotifier	-			void ((^))(CTCellularDataRestrictedState)	-	-	-	-	185dae7897838796
 interface	c:objc(cs)CTCellularData	-			-	-	-	ios=9.0/-/-/0	-	e5fab17644f28238
 super	-	CTCellularData	NSObject		-	-	-	-	-	8450211648c52094
-property	c:objc(cs)CTCellularData(py)cellularDataRestrictionDidUpdateNotifier	-			API_AVAILABLE CellularDataRestrictionDidUpdateNotifier	-	copy	ios=9.0/-/-/0,macos=-/-/-/1	-	c2eb81da7879227c
+property	c:objc(cs)CTCellularData(py)cellularDataRestrictionDidUpdateNotifier	-			CellularDataRestrictionDidUpdateNotifier	-	copy	ios=9.0/-/-/0,macos=-/-/-/1	-	7b064bd06162fe18
 property	c:objc(cs)CTCellularData(py)restrictedState	-			CTCellularDataRestrictedState	-	readonly,nonatomic	ios=9.0/-/-/0,macos=-/-/-/1	-	b6d8e63c469ef47c
 typedef	c:CTCellularPlanProperties.h@T@CTCellularPlanCapability	-			enum CTCellularPlanCapability	-	-	ios=26.0/-/-/0,watchos=26.0/-/-/0	-	e893c34fd8c57e49
 enum	c:@E@CTCellularPlanCapability	-			NSInteger	-	-	ios=26.0/-/-/0,watchos=26.0/-/-/0	-	23e881f2cc219b55
@@ -45,7 +45,7 @@ super	-	CTCellularPlanProperties	NSObject		-	-	-	-	-	bbe7f4a82575b0cb
 conforms	-	CTCellularPlanProperties	NSSecureCoding		-	-	-	-	-	68f321bd4ca961c5
 property	c:objc(cs)CTCellularPlanProperties(py)associatedIccid	-			NSString *	-	nonatomic	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=26.0/-/-/0	-	43172be435ed191f
 property	c:objc(cs)CTCellularPlanProperties(py)simCapability	-			CTCellularPlanCapability	-	nonatomic	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=26.0/-/-/0	-	6988826182a3f8d5
-property	c:objc(cs)CTCellularPlanProperties(py)supportedRegionCodes	-			NS_REFINED_FOR_SWIFT NSArray<NSString *> *	-	nonatomic	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=26.0/-/-/0	-	9fee04c86e12510f
+property	c:objc(cs)CTCellularPlanProperties(py)supportedRegionCodes	-			NSArray<NSString *> *	-	nonatomic	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=26.0/-/-/0	-	6479643d74efe058
 typedef	c:@T@CTCellularPlanProvisioningAddPlanResult	-			enum CTCellularPlanProvisioningAddPlanResult	-	-	ios=12.0/-/-/0,watchos=5.0/-/-/0	-	466a7525f12055d4
 enum	c:@E@CTCellularPlanProvisioningAddPlanResult	-			NSUInteger	-	-	ios=12.0/-/-/0,watchos=5.0/-/-/0	-	c3ce59c0ae3fe177
 enumconst	c:@E@CTCellularPlanProvisioningAddPlanResult@CTCellularPlanProvisioningAddPlanResultUnknown	CTCellularPlanProvisioningAddPlanResult			-	-	-	ios=12.0/-/-/0,watchos=5.0/-/-/0	-	842043bc356a0f30
@@ -79,9 +79,9 @@ interface	c:objc(cs)CTSubscriber	-			-	-	-	ios=7.0/-/-/0,maccatalyst=-/-/-/1,mac
 super	-	CTSubscriber	NSObject		-	-	-	-	-	c05b2ef992d805df
 property	c:objc(cs)CTSubscriber(py)carrierToken	-			NSData *	-	readonly,retain,nonatomic	ios=7.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=26.0/-/-/0,xros=-/-/-/1	-	56a38b74f1864677
 method	c:objc(cs)CTSubscriber(im)refreshCarrierToken	-			BOOL	-	-	ios=6.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=26.0/-/-/0,xros=-/-/-/1	-	1ada6ead84e75d54
-property	c:objc(cs)CTSubscriber(py)identifier	-			API_AVAILABLE NSString *	-	readonly,nonatomic	ios=12.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2fa801726e892054
+property	c:objc(cs)CTSubscriber(py)identifier	-			NSString *	-	readonly,nonatomic	ios=12.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f5da4edb0b9dc623
 property	c:objc(cs)CTSubscriber(py)SIMInserted	-			BOOL	-	readonly,getter=isSIMInserted	ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=11.0/-/-/0,xros=-/-/-/1	-	ec7529dc75b002af
-property	c:objc(cs)CTSubscriber(py)delegate	-			API_AVAILABLE id<CTSubscriberDelegate>	-	weak,nonatomic	ios=12.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2328d60920f7163a
+property	c:objc(cs)CTSubscriber(py)delegate	-			id<CTSubscriberDelegate>	-	weak,nonatomic	ios=12.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9d34e640943ed508
 interface	c:objc(cs)CTSubscriberInfo	-			-	-	-	ios=6.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use Use subscribers instead instead	f4d1a926db8215b0
 super	-	CTSubscriberInfo	NSObject		-	-	-	-	-	a7b76166f9821004
 method	c:objc(cs)CTSubscriberInfo(cm)subscribers	-			NSArray<CTSubscriber *> *	-	-	ios=12.1/-/-/0,maccatalyst=-/-/-/1,watchos=-/-/-/1	-	1807dece42ed1906
@@ -109,8 +109,8 @@ super	-	CTTelephonyNetworkInfo	NSObject		-	-	-	-	-	8ce0b5279e0fa120
 property	c:objc(cs)CTTelephonyNetworkInfo(py)dataServiceIdentifier	-			NSString *	-	readonly,copy	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/-/-/0	-	8a146182045dcbd5
 property	c:objc(cs)CTTelephonyNetworkInfo(py)delegate	-			id<CTTelephonyNetworkInfoDelegate>	-	weak	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/-/-/0	-	aa7b393b502eb096
 property	c:objc(cs)CTTelephonyNetworkInfo(py)serviceSubscriberCellularProviders	-			NSDictionary<NSString *,CTCarrier *> *	-	readonly,retain	ios=12.0/16.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/9.0/-/0	-	5cb3bfb0761d43b5
-property	c:objc(cs)CTTelephonyNetworkInfo(py)subscriberCellularProvider	-			API_DEPRECATED_WITH_REPLACEMENT CTCarrier *	-	readonly,retain	ios=4.0/12.0/-/0,macos=-/-/-/1	-	8b1201434a379812
+property	c:objc(cs)CTTelephonyNetworkInfo(py)subscriberCellularProvider	-			CTCarrier *	-	readonly,retain	ios=4.0/12.0/-/0,macos=-/-/-/1	-	fce89481eb73f06b
 property	c:objc(cs)CTTelephonyNetworkInfo(py)serviceSubscriberCellularProvidersDidUpdateNotifier	-			void (^)(NSString * _Nonnull)	-	copy,nonatomic	ios=12.0/16.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/9.0/-/0	-	7eb1abc830d9b86f
-property	c:objc(cs)CTTelephonyNetworkInfo(py)subscriberCellularProviderDidUpdateNotifier	-			API_DEPRECATED_WITH_REPLACEMENT void (^)(CTCarrier * _Nonnull)	-	copy,nonatomic	ios=4.0/12.0/-/0,macos=-/-/-/1	-	30f6f286fd66a52b
+property	c:objc(cs)CTTelephonyNetworkInfo(py)subscriberCellularProviderDidUpdateNotifier	-			void (^)(CTCarrier * _Nonnull)	-	copy,nonatomic	ios=4.0/12.0/-/0,macos=-/-/-/1	-	86ffbb4a55fff979
 property	c:objc(cs)CTTelephonyNetworkInfo(py)serviceCurrentRadioAccessTechnology	-			NSDictionary<NSString *,NSString *> *	-	readonly,retain,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	2d1027c3f9989e3a
-property	c:objc(cs)CTTelephonyNetworkInfo(py)currentRadioAccessTechnology	-			API_DEPRECATED_WITH_REPLACEMENT NSString *	-	readonly,retain,nonatomic	ios=7.0/12.0/-/0,macos=-/-/-/1	-	aa377e7af91f3894
+property	c:objc(cs)CTTelephonyNetworkInfo(py)currentRadioAccessTechnology	-			NSString *	-	readonly,retain,nonatomic	ios=7.0/12.0/-/0,macos=-/-/-/1	-	12b178117197ee62

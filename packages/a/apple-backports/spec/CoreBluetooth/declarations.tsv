@@ -134,7 +134,7 @@ interface	c:objc(cs)CBPeer	-			-	-	-	ios=8.0/-/-/0	-	4a0d285dceb55d3a
 super	-	CBPeer	NSObject		-	-	-	-	-	8b967225489afe20
 conforms	-	CBPeer	NSCopying		-	-	-	-	-	9d0814911babd5f4
 method	c:objc(cs)CBPeer(im)init	-			instancetype	-	-	*unavailable ios=8.0/-/-/0	-	921183a528373d7e
-property	c:objc(cs)CBPeer(py)identifier	-			NS_AVAILABLE NSUUID *	-	readonly,nonatomic	ios=7.0/-/-/0	-	c2b6958b41ce1528
+property	c:objc(cs)CBPeer(py)identifier	-			NSUUID *	-	readonly,nonatomic	ios=7.0/-/-/0	-	a153747865edd709
 typedef	c:@T@CBL2CAPPSM	-			uint16_t	-	-	-	-	76eb511688773b9c
 interface	c:objc(cs)CBL2CAPChannel	-			-	-	-	ios=11.0/-/-/0	-	ab0b19ec20acc240
 super	-	CBL2CAPChannel	NSObject		-	-	-	-	-	7b47d09069c8a999
@@ -211,7 +211,7 @@ interface	c:objc(cs)CBPeripheral	-			-	-	-	ios=5.0/-/-/0	-	c312d6c8eae20f0a
 super	-	CBPeripheral	CBPeer		-	-	-	-	-	5cd29280eb30a0ed
 property	c:objc(cs)CBPeripheral(py)delegate	-			id<CBPeripheralDelegate>	-	weak,nonatomic	ios=5.0/-/-/0	-	6182d7ed2899728b
 property	c:objc(cs)CBPeripheral(py)name	-			NSString *	-	readonly,retain	ios=5.0/-/-/0	-	828c3865caf38c6c
-property	c:objc(cs)CBPeripheral(py)RSSI	-			NS_DEPRECATED NSNumber *	-	readonly,retain	ios=5.0/8.0/-/0	-	21d96ab46a0d6b85
+property	c:objc(cs)CBPeripheral(py)RSSI	-			NSNumber *	-	readonly,retain	ios=5.0/8.0/-/0	-	d0f01b44af7c402d
 property	c:objc(cs)CBPeripheral(py)state	-			CBPeripheralState	-	readonly	ios=5.0/-/-/0	-	67f09a8941062d97
 property	c:objc(cs)CBPeripheral(py)services	-			NSArray<CBService *> *	-	readonly,retain	ios=5.0/-/-/0	-	65ef260b29a6036e
 property	c:objc(cs)CBPeripheral(py)canSendWriteWithoutResponse	-			BOOL	-	readonly	ios=11.0/-/-/0	-	4416d1efa4b77d3b
@@ -292,7 +292,7 @@ enumconst	c:@E@CBAttributePermissions@CBAttributePermissionsWriteEncryptionRequi
 interface	c:objc(cs)CBMutableCharacteristic	-			-	-	-	ios=6.0/-/-/0	-	759165f3667e3dcf
 super	-	CBMutableCharacteristic	CBCharacteristic		-	-	-	-	-	4e5d97587c2038de
 property	c:objc(cs)CBMutableCharacteristic(py)permissions	-			CBAttributePermissions	-	assign,nonatomic	ios=6.0/-/-/0	-	2b2dc6807788d29e
-property	c:objc(cs)CBMutableCharacteristic(py)subscribedCentrals	-			NS_AVAILABLE NSArray<CBCentral *> *	-	readonly,retain	ios=7.0/-/-/0	-	a433717cd66ba958
+property	c:objc(cs)CBMutableCharacteristic(py)subscribedCentrals	-			NSArray<CBCentral *> *	-	readonly,retain	ios=7.0/-/-/0	-	15b3647b6b23f38e
 property	c:objc(cs)CBMutableCharacteristic(py)properties	-			CBCharacteristicProperties	-	assign,nonatomic	ios=6.0/-/-/0	-	64f5ed14e7063b31
 property	c:objc(cs)CBMutableCharacteristic(py)value	-			NSData *	-	retain	ios=6.0/-/-/0	-	8a6e6449bdf6fa76
 property	c:objc(cs)CBMutableCharacteristic(py)descriptors	-			NSArray<CBDescriptor *> *	-	retain	ios=6.0/-/-/0	-	010c207e3643068e
@@ -317,7 +317,7 @@ interface	c:objc(cs)CBUUID	-			-	-	-	ios=5.0/-/-/0	-	1ade1536986adf2d
 super	-	CBUUID	NSObject		-	-	-	-	-	0d17cb7597f4363f
 conforms	-	CBUUID	NSCopying		-	-	-	-	-	1d1506bec658b123
 property	c:objc(cs)CBUUID(py)data	-			NSData *	-	readonly,nonatomic	ios=5.0/-/-/0	-	ead18baa715b6a0f
-property	c:objc(cs)CBUUID(py)UUIDString	-			NS_AVAILABLE NSString *	-	readonly,nonatomic	ios=7.1/-/-/0	-	6cbb40a311d6f1bc
+property	c:objc(cs)CBUUID(py)UUIDString	-			NSString *	-	readonly,nonatomic	ios=7.1/-/-/0	-	8bdf7916ee64b888
 method	c:objc(cs)CBUUID(cm)UUIDWithString:	-			CBUUID *	NSString * theString	-	ios=5.0/-/-/0	-	dc49c2e137331620
 method	c:objc(cs)CBUUID(cm)UUIDWithData:	-			CBUUID *	NSData * theData	-	ios=5.0/-/-/0	-	840b5fc66db927fc
 method	c:objc(cs)CBUUID(cm)UUIDWithCFUUID:	-			CBUUID *	CFUUIDRef theUUID	-	ios=5.0/9.0/-/0	-	7ac11b2d6539d456

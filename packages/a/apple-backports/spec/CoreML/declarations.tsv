@@ -22,7 +22,7 @@ enumconst	c:@E@MLMultiArrayDataType@MLMultiArrayDataTypeInt8	MLMultiArrayDataTyp
 interface	c:objc(cs)MLMultiArray	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	deprecated: Use getBytesWithHandler or getMutableBytesWithHandler instead. For Swift, use withUnsafeBytes or withUnsafeMutableBytes.	8c4bb80f38b98959
 super	-	MLMultiArray	NSObject		-	-	-	-	-	397522c9d0353987
 conforms	-	MLMultiArray	NSSecureCoding		-	-	-	-	-	d8e137612b74cf32
-property	c:objc(cs)MLMultiArray(py)dataPointer	-			NS_RETURNS_INNER_POINTER void *	-	readonly,nonatomic	ios=11.0/100000/-/0,macos=10.13/100000/-/0,tvos=11.0/100000/-/0,watchos=4.0/100000/-/0	-	83cecf6fb6d60367
+property	c:objc(cs)MLMultiArray(py)dataPointer	-			void *	-	readonly,nonatomic	ios=11.0/100000/-/0,macos=10.13/100000/-/0,tvos=11.0/100000/-/0,watchos=4.0/100000/-/0	-	d41d6495ac69aa3d
 property	c:objc(cs)MLMultiArray(py)dataType	-			MLMultiArrayDataType	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e9c982c24a0b63e0
 property	c:objc(cs)MLMultiArray(py)shape	-			NSArray<NSNumber *> *	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f5d4869ef57c911f
 property	c:objc(cs)MLMultiArray(py)strides	-			NSArray<NSNumber *> *	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0c053bd0af580717
@@ -147,7 +147,7 @@ property	c:objc(cs)MLSequenceConstraint(py)countRange	-			NSRange	-	readonly,non
 interface	c:objc(cs)MLStateConstraint	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	39a307e60b5b374a
 super	-	MLStateConstraint	NSObject		-	-	-	-	-	7f4ddee9123039ae
 conforms	-	MLStateConstraint	NSSecureCoding		-	-	-	-	-	ae20868c8eb8d595
-property	c:objc(cs)MLStateConstraint(py)bufferShape	-			NS_REFINED_FOR_SWIFT NSArray<NSNumber *> *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	56876c62199455db
+property	c:objc(cs)MLStateConstraint(py)bufferShape	-			NSArray<NSNumber *> *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	660da0247e25ebdb
 property	c:objc(cs)MLStateConstraint(py)dataType	-			MLMultiArrayDataType	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	231fdbfab061dae6
 interface	c:objc(cs)MLFeatureDescription	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0f2c6251294de240
 super	-	MLFeatureDescription	NSObject		-	-	-	-	-	866f5b69aeb219fd
@@ -234,7 +234,7 @@ conforms	-	MLModelConfiguration	NSCopying		-	-	-	-	-	1e1b08125309e51f
 conforms	-	MLModelConfiguration	NSSecureCoding		-	-	-	-	-	eb10a12e0eba40c9
 property	c:objc(cs)MLModelConfiguration(py)modelDisplayName	-			NSString *	-	copy	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	e870df409da82c0a
 property	c:objc(cs)MLModelConfiguration(py)computeUnits	-			MLComputeUnits	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	361b5d76049fd5dd
-property	c:objc(cs)MLModelConfiguration(py)optimizationHints	-			NS_REFINED_FOR_SWIFT MLOptimizationHints *	-	copy,nonatomic	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	59b12fbceeb6f5c7
+property	c:objc(cs)MLModelConfiguration(py)optimizationHints	-			MLOptimizationHints *	-	copy,nonatomic	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	00859ba6ab6d90a7
 category	c:objc(cy)MLModelConfiguration@MLGPUConfigurationOptions	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	aea9bf94686fead5
 property	c:objc(cs)MLModelConfiguration(py)allowLowPrecisionAccumulationOnGPU	MLGPUConfigurationOptions			BOOL	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	d05aba3ec6eaec45
 property	c:objc(cs)MLModelConfiguration(py)preferredMetalDevice	MLGPUConfigurationOptions			id<MTLDevice>	-	nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	d0c33080e59ac72b
@@ -271,7 +271,7 @@ category	c:objc(cy)MLModel@MLModelCompilation	-			-	-	-	ios=11.0/-/-/0,macos=10.
 method	c:objc(cs)MLModel(cm)compileModelAtURL:error:	MLModelCompilation			NSURL *	NSURL * modelURL | NSError * _Nullable * error	-	ios=11.0/100000/-/0,macos=10.13/100000/-/0,tvos=11.0/100000/-/0,watchos=-/-/-/1	deprecated: Use the asynchronous interface compileModelAtURL:completionHandler:error: instead.	94a779e496b88976
 method	c:objc(cs)MLModel(cm)compileModelAtURL:completionHandler:	MLModelCompilation			void	NSURL * modelURL | void (^)(NSURL * _Nullable, NSError * _Nullable) handler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	aa30bfd87437c41d
 category	c:objc(cy)MLModel@MLComputeDevice	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	32d7ea9d61fcd73d
-property	c:objc(cs)MLModel(cpy)availableComputeDevices	MLComputeDevice			NS_REFINED_FOR_SWIFT NSArray<id<MLComputeDeviceProtocol>> *	-	readonly,copy,nonatomic,class	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	c4e8c1874ad4b319
+property	c:objc(cs)MLModel(cpy)availableComputeDevices	MLComputeDevice			NSArray<id<MLComputeDeviceProtocol>> *	-	readonly,copy,nonatomic,class	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	15b1d3c2028bc136
 category	c:objc(cy)MLModel@MLState	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	03d18d7d16abda6f
 method	c:objc(cs)MLModel(im)newState	MLState			MLState *	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	173d81446040725d
 method	c:objc(cs)MLModel(im)predictionFromFeatures:usingState:error:	MLState			id<MLFeatureProvider>	id<MLFeatureProvider> inputFeatures | MLState * state | NSError * _Nullable * error	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	0ff901bfc9071c3b
@@ -397,22 +397,22 @@ category	c:objc(cy)MLParameterKey@MLScopedParameters	-			-	-	-	ios=13.0/-/-/0,ma
 method	c:objc(cs)MLParameterKey(im)scopedTo:	MLScopedParameters			MLParameterKey *	NSString * scope	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	6e0ba31c0e96d20c
 interface	c:objc(cs)MLModelCollectionEntry	-			-	-	-	ios=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	45583634f235e410
 super	-	MLModelCollectionEntry	NSObject		-	-	-	-	-	f4450f81d60e50b7
-property	c:objc(cs)MLModelCollectionEntry(py)modelIdentifier	-			MODELCOLLECTION_SUNSET NSString *	-	readonly,nonatomic	ios=-/-/-/1	-	dc82c4cac5af5098
-property	c:objc(cs)MLModelCollectionEntry(py)modelURL	-			MODELCOLLECTION_SUNSET NSURL *	-	readonly,nonatomic	ios=-/-/-/1	-	2e75be7e2f5a4649
+property	c:objc(cs)MLModelCollectionEntry(py)modelIdentifier	-			NSString *	-	readonly,nonatomic	ios=-/-/-/1	-	1ceef91cd88736b6
+property	c:objc(cs)MLModelCollectionEntry(py)modelURL	-			NSURL *	-	readonly,nonatomic	ios=-/-/-/1	-	d973d06352123313
 method	c:objc(cs)MLModelCollectionEntry(im)isEqualToModelCollectionEntry:	-			BOOL	MLModelCollectionEntry * entry	-	ios=-/-/-/1	-	c788a015b0dae740
 method	c:objc(cs)MLModelCollectionEntry(im)init	-			instancetype	-	-	*unavailable ios=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1b2c4e7e8508f15b
 method	c:objc(cs)MLModelCollectionEntry(cm)new	-			id	-	-	*unavailable ios=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1bc2c2190cc76b43
 interface	c:objc(cs)MLModelCollection	-			-	-	-	ios=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	869c52bf3a16afc4
 super	-	MLModelCollection	NSObject		-	-	-	-	-	d927137cad32bffb
-property	c:objc(cs)MLModelCollection(py)identifier	-			MODELCOLLECTION_SUNSET NSString *	-	readonly,copy,nonatomic	ios=-/-/-/1	-	975437780192ee64
-property	c:objc(cs)MLModelCollection(py)entries	-			MODELCOLLECTION_SUNSET NSDictionary<NSString *,MLModelCollectionEntry *> *	-	readonly,copy,nonatomic	ios=-/-/-/1	-	870d761c98406ccd
-property	c:objc(cs)MLModelCollection(py)deploymentID	-			MODELCOLLECTION_SUNSET NSString *	-	readonly,copy,nonatomic	ios=-/-/-/1	-	d9a8f24bd25b15b4
+property	c:objc(cs)MLModelCollection(py)identifier	-			NSString *	-	readonly,copy,nonatomic	ios=-/-/-/1	-	9c7f442009ee09da
+property	c:objc(cs)MLModelCollection(py)entries	-			NSDictionary<NSString *,MLModelCollectionEntry *> *	-	readonly,copy,nonatomic	ios=-/-/-/1	-	7d8cb575cb82939d
+property	c:objc(cs)MLModelCollection(py)deploymentID	-			NSString *	-	readonly,copy,nonatomic	ios=-/-/-/1	-	8daafad16858a94a
 method	c:objc(cs)MLModelCollection(cm)beginAccessingModelCollectionWithIdentifier:completionHandler:	-			NSProgress *	NSString * identifier | void (^)(MLModelCollection * _Nullable, NSError * _Nullable) completionHandler	-	ios=-/-/-/1	-	6f3bee07e002696e
 method	c:objc(cs)MLModelCollection(cm)endAccessingModelCollectionWithIdentifier:completionHandler:	-			void	NSString * identifier | void (^)(BOOL, NSError * _Nullable) completionHandler	-	ios=-/-/-/1	-	b341925595cb2284
 method	c:objc(cs)MLModelCollection(im)init	-			instancetype	-	-	*unavailable ios=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b4ce8ee77327120a
 method	c:objc(cs)MLModelCollection(cm)new	-			id	-	-	*unavailable ios=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	72cdb20da1da6a7a
 var	c:@MLModelCollectionDidChangeNotification	-			const NSNotificationName	-	-	ios=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6e4db029eda7fc25
-function	c:@F@MLAllComputeDevices	-			NSArray<id<MLComputeDeviceProtocol>> * _Nonnull (void)	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	4c77a581a9bbaece
+function	c:@F@MLAllComputeDevices	-			NSArray<id<MLComputeDeviceProtocol>> * (void)	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	a0ee23e60e521e8b
 protocol	c:objc(pl)MLComputeDeviceProtocol	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	aebd55e0a7408864
 conforms	-	MLComputeDeviceProtocol	NSObject		-	-	-	-	-	c77d390f2fbb576e
 interface	c:objc(cs)MLCPUComputeDevice	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	8af51f6fd368bc92
@@ -530,5 +530,5 @@ interface	c:objc(cs)MLComputePlanDeviceUsage	-			-	-	-	ios=17.4/-/-/0,macos=14.4
 super	-	MLComputePlanDeviceUsage	NSObject		-	-	-	-	-	da8659867612dc67
 method	c:objc(cs)MLComputePlanDeviceUsage(im)init	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	25782707c59645ac
 method	c:objc(cs)MLComputePlanDeviceUsage(cm)new	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	34f948632cc52e86
-property	c:objc(cs)MLComputePlanDeviceUsage(py)supportedComputeDevices	-			NS_SWIFT_NAME NSArray<id<MLComputeDeviceProtocol>> *	-	readonly,copy,nonatomic	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	e2c9fff9ba3d9a6c
-property	c:objc(cs)MLComputePlanDeviceUsage(py)preferredComputeDevice	-			NS_SWIFT_NAME id<MLComputeDeviceProtocol>	-	readonly,strong,nonatomic	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	72fe786d0888d9af
+property	c:objc(cs)MLComputePlanDeviceUsage(py)supportedComputeDevices	-			NSArray<id<MLComputeDeviceProtocol>> *	-	readonly,copy,nonatomic	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	fb119f4d7d2287f1
+property	c:objc(cs)MLComputePlanDeviceUsage(py)preferredComputeDevice	-			id<MLComputeDeviceProtocol>	-	readonly,strong,nonatomic	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	bf6734c9a27d94c5

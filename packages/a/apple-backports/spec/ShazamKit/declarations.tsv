@@ -55,8 +55,8 @@ property	c:objc(cs)SHMediaItem(py)artworkURL	-			NSURL *	-	readonly,strong,nonat
 property	c:objc(cs)SHMediaItem(py)videoURL	-			NSURL *	-	readonly,strong,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	3950ffa5dd617338
 property	c:objc(cs)SHMediaItem(py)explicitContent	-			BOOL	-	readonly,assign,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	dd155cdea1bfafa8
 property	c:objc(cs)SHMediaItem(py)isrc	-			NSString *	-	readonly,copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	4633d9f1db18377e
-property	c:objc(cs)SHMediaItem(py)timeRanges	-			NS_REFINED_FOR_SWIFT NSArray<SHRange *> *	-	readonly,strong,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	3b2ca6494e64bbe7
-property	c:objc(cs)SHMediaItem(py)frequencySkewRanges	-			NS_REFINED_FOR_SWIFT NSArray<SHRange *> *	-	readonly,strong,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	d2a5abb3537267ec
+property	c:objc(cs)SHMediaItem(py)timeRanges	-			NSArray<SHRange *> *	-	readonly,strong,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	535a02742d0a5086
+property	c:objc(cs)SHMediaItem(py)frequencySkewRanges	-			NSArray<SHRange *> *	-	readonly,strong,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	20da2c536b2be589
 property	c:objc(cs)SHMediaItem(py)creationDate	-			NSDate *	-	readonly,strong,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	6721835850e9e0b7
 method	c:objc(cs)SHMediaItem(cm)mediaItemWithProperties:	-			instancetype	NSDictionary<SHMediaItemProperty,id> * properties	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	d35c4d9501d2a8ea
 method	c:objc(cs)SHMediaItem(cm)fetchMediaItemWithShazamID:completionHandler:	-			void	NSString * shazamID | void (^)(SHMediaItem * _Nullable, NSError * _Nullable) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	234c55996df0dc94
@@ -127,5 +127,5 @@ method	c:objc(cs)SHMediaLibrary(im)addMediaItems:completionHandler:	-			void	NSA
 method	c:objc(cs)SHMediaLibrary(im)init	-			instancetype	-	-	*unavailable ios=15.0/18.0/-/0,macos=12.0/15.0/-/0,tvos=15.0/18.0/-/0,watchos=8.0/11.0/-/0	-	2b3e475e805a71d0
 method	c:objc(cs)SHMediaLibrary(cm)new	-			instancetype	-	-	*unavailable ios=15.0/18.0/-/0,macos=12.0/15.0/-/0,tvos=15.0/18.0/-/0,watchos=8.0/11.0/-/0	-	8af2b3df576cf7f7
 category	c:objc(cy)UTType@SHShazamAdditions	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	9cef406b18d7f822
-property	c:objc(cs)UTType(cpy)SHSignatureContentType	SHShazamAdditions			NS_REFINED_FOR_SWIFT UTType *	-	readonly,strong,nonatomic,class	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	9d5a0b9ca0201bd0
-property	c:objc(cs)UTType(cpy)SHCustomCatalogContentType	SHShazamAdditions			NS_REFINED_FOR_SWIFT UTType *	-	readonly,strong,nonatomic,class	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	d2c227f53cfd568f
+property	c:objc(cs)UTType(cpy)SHSignatureContentType	SHShazamAdditions			UTType *	-	readonly,strong,nonatomic,class	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	fcb7d4cec235061d
+property	c:objc(cs)UTType(cpy)SHCustomCatalogContentType	SHShazamAdditions			UTType *	-	readonly,strong,nonatomic,class	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	daf2981ed70b40a3

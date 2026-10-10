@@ -17,7 +17,7 @@ var	c:@NIAlgorithmConvergenceStatusReasonInsufficientHorizontalSweep	-			const N
 var	c:@NIAlgorithmConvergenceStatusReasonInsufficientVerticalSweep	-			const NIAlgorithmConvergenceStatusReason	-	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	8f6945700d4b2134
 var	c:@NIAlgorithmConvergenceStatusReasonInsufficientMovement	-			const NIAlgorithmConvergenceStatusReason	-	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	fec002a2322b18ed
 var	c:@NIAlgorithmConvergenceStatusReasonInsufficientLighting	-			const NIAlgorithmConvergenceStatusReason	-	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	ceae32e09842953b
-function	c:@F@NIAlgorithmConvergenceStatusReasonDescription	-			NSString * _Nonnull (const NIAlgorithmConvergenceStatusReason _Nonnull)	const NIAlgorithmConvergenceStatusReason reason	-	ios=16.0/-/-/0,macos=-/-/-/1,swift=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	90147c8a27a4dc62
+function	c:@F@NIAlgorithmConvergenceStatusReasonDescription	-			NSString * (const NIAlgorithmConvergenceStatusReason)	const NIAlgorithmConvergenceStatusReason reason	-	ios=16.0/-/-/0,macos=-/-/-/1,swift=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	036fb15974535b7b
 protocol	c:objc(pl)NIDeviceCapability	-			-	-	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	5bb6d679ae0d799a
 property	c:objc(pl)NIDeviceCapability(py)supportsPreciseDistanceMeasurement	-			BOOL	-	readonly,nonatomic	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	8227b3656453d223
 property	c:objc(pl)NIDeviceCapability(py)supportsDirectionMeasurement	-			BOOL	-	readonly,nonatomic	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	114cc19f84b212c0
@@ -131,7 +131,7 @@ super	-	NIAlgorithmConvergence	NSObject		-	-	-	-	-	099d0298ae016c5b
 conforms	-	NIAlgorithmConvergence	NSCopying		-	-	-	-	-	3b6fbd22ed12c466
 conforms	-	NIAlgorithmConvergence	NSSecureCoding		-	-	-	-	-	f7eb989a931e8afd
 property	c:objc(cs)NIAlgorithmConvergence(py)status	-			NIAlgorithmConvergenceStatus	-	readonly,nonatomic	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	9a95e24bb05b16b6
-property	c:objc(cs)NIAlgorithmConvergence(py)reasons	-			NS_SWIFT_UNAVAILABLE NSArray<NIAlgorithmConvergenceStatusReason> *	-	readonly,nonatomic	swift=-/-/-/1	-	e2fa6f62ea4e20c3
+property	c:objc(cs)NIAlgorithmConvergence(py)reasons	-			NSArray<NIAlgorithmConvergenceStatusReason> *	-	readonly,nonatomic	swift=-/-/-/1	-	2eaf04e2c9d01f5a
 method	c:objc(cs)NIAlgorithmConvergence(im)init	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	1a9a12eeb2c79ddb
 method	c:objc(cs)NIAlgorithmConvergence(cm)new	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	20c7456891fb5513
 protocol	c:objc(pl)NISessionDelegate	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.3/-/-/0	-	00de594710acdf79

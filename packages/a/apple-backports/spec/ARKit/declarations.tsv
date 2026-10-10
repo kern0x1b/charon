@@ -19,8 +19,8 @@ super	-	ARAnchor	NSObject		-	-	-	-	-	e43712e8fbce24be
 conforms	-	ARAnchor	ARAnchorCopying		-	-	-	-	-	4a3d6862ef468909
 conforms	-	ARAnchor	NSSecureCoding		-	-	-	-	-	a6f4e0c4e5f7164b
 property	c:objc(cs)ARAnchor(py)identifier	-			NSUUID *	-	readonly,nonatomic	ios=11.0/-/-/0	-	80016cf25d579c76
-property	c:objc(cs)ARAnchor(py)name	-			API_AVAILABLE NSString *	-	readonly,nonatomic	ios=12.0/-/-/0	-	bee4c38af3c9954a
-property	c:objc(cs)ARAnchor(py)sessionIdentifier	-			API_AVAILABLE NSUUID *	-	readonly,nonatomic	ios=13.0/-/-/0	-	65d862e0c8084f11
+property	c:objc(cs)ARAnchor(py)name	-			NSString *	-	readonly,nonatomic	ios=12.0/-/-/0	-	3d0f35aebb7b4a4e
+property	c:objc(cs)ARAnchor(py)sessionIdentifier	-			NSUUID *	-	readonly,nonatomic	ios=13.0/-/-/0	-	cd7f987903e5fca8
 property	c:objc(cs)ARAnchor(py)transform	-			simd_float4x4	-	readonly,nonatomic	ios=11.0/-/-/0	-	5c24c305e1dd231c
 method	c:objc(cs)ARAnchor(im)initWithTransform:	-			instancetype	simd_float4x4 transform	-	ios=11.0/-/-/0	-	ae4c2c6e711294fb
 method	c:objc(cs)ARAnchor(im)initWithName:transform:	-			instancetype	NSString * name | simd_float4x4 transform	-	ios=12.0/-/-/0	-	5a67efe9086bf6c8
@@ -41,7 +41,7 @@ property	c:objc(cs)ARSkeletonDefinition(cpy)defaultBody3DSkeletonDefinition	-			
 property	c:objc(cs)ARSkeletonDefinition(cpy)defaultBody2DSkeletonDefinition	-			ARSkeletonDefinition *	-	readonly,nonatomic,class	ios=13.0/-/-/0	-	e9aafeb32919033e
 property	c:objc(cs)ARSkeletonDefinition(py)jointCount	-			NSUInteger	-	readonly,nonatomic	ios=13.0/-/-/0	-	b863d3b353416862
 property	c:objc(cs)ARSkeletonDefinition(py)jointNames	-			NSArray<NSString *> *	-	readonly,nonatomic	ios=13.0/-/-/0	-	4a8842b5ee7eff2d
-property	c:objc(cs)ARSkeletonDefinition(py)parentIndices	-			NS_REFINED_FOR_SWIFT NSArray<NSNumber *> *	-	readonly,nonatomic	ios=13.0/-/-/0	-	93675a41466c6a8f
+property	c:objc(cs)ARSkeletonDefinition(py)parentIndices	-			NSArray<NSNumber *> *	-	readonly,nonatomic	ios=13.0/-/-/0	-	0ed1d4831fedbda3
 property	c:objc(cs)ARSkeletonDefinition(py)neutralBodySkeleton3D	-			ARSkeleton3D *	-	readonly,nonatomic	ios=13.0/-/-/0	-	89a2f7ffa6ec31bb
 method	c:objc(cs)ARSkeletonDefinition(im)indexForJointName:	-			NSUInteger	ARSkeletonJointName jointName	-	ios=13.0/-/-/0	-	ca8b923719ceadf9
 method	c:objc(cs)ARSkeletonDefinition(im)init	-			instancetype	-	-	*unavailable ios=13.0/-/-/0	-	4f0d40ef0874b3b8
@@ -55,19 +55,19 @@ method	c:objc(cs)ARSkeleton(im)init	-			instancetype	-	-	*unavailable ios=13.0/-
 method	c:objc(cs)ARSkeleton(cm)new	-			instancetype	-	-	*unavailable ios=13.0/-/-/0	-	260e1d809fc37e32
 interface	c:objc(cs)ARSkeleton3D	-			-	-	-	ios=13.0/-/-/0	-	86a6f2f80717b97c
 super	-	ARSkeleton3D	ARSkeleton		-	-	-	-	-	a3fa63bf4de40cee
-property	c:objc(cs)ARSkeleton3D(py)jointModelTransforms	-			NS_REFINED_FOR_SWIFT const simd_float4x4 *	-	readonly,nonatomic	ios=13.0/-/-/0	-	f77b11fd0d34a1d3
-property	c:objc(cs)ARSkeleton3D(py)jointLocalTransforms	-			NS_REFINED_FOR_SWIFT const simd_float4x4 *	-	readonly,nonatomic	ios=13.0/-/-/0	-	074195c14b11f141
+property	c:objc(cs)ARSkeleton3D(py)jointModelTransforms	-			const simd_float4x4 *	-	readonly,nonatomic	ios=13.0/-/-/0	-	066673b369e8ce69
+property	c:objc(cs)ARSkeleton3D(py)jointLocalTransforms	-			const simd_float4x4 *	-	readonly,nonatomic	ios=13.0/-/-/0	-	d2a3dbce0b6156dc
 method	c:objc(cs)ARSkeleton3D(im)modelTransformForJointName:	-			simd_float4x4	ARSkeletonJointName jointName	-	ios=13.0/-/-/0	-	0418a32292fe9d9a
 method	c:objc(cs)ARSkeleton3D(im)localTransformForJointName:	-			simd_float4x4	ARSkeletonJointName jointName	-	ios=13.0/-/-/0	-	a3b6c9de4cd892a7
 method	c:objc(cs)ARSkeleton3D(im)init	-			instancetype	-	-	*unavailable ios=13.0/-/-/0	-	62750dec00d04a6d
 method	c:objc(cs)ARSkeleton3D(cm)new	-			instancetype	-	-	*unavailable ios=13.0/-/-/0	-	463d1fd5f10fd47b
 interface	c:objc(cs)ARSkeleton2D	-			-	-	-	ios=13.0/-/-/0	-	67f7afbae17a5f44
 super	-	ARSkeleton2D	ARSkeleton		-	-	-	-	-	319ebab482cee87e
-property	c:objc(cs)ARSkeleton2D(py)jointLandmarks	-			NS_REFINED_FOR_SWIFT const simd_float2 *	-	readonly,nonatomic	ios=13.0/-/-/0	-	54557a9a0d8c62a9
+property	c:objc(cs)ARSkeleton2D(py)jointLandmarks	-			const simd_float2 *	-	readonly,nonatomic	ios=13.0/-/-/0	-	0ff56d57ef8fdc91
 method	c:objc(cs)ARSkeleton2D(im)landmarkForJointNamed:	-			simd_float2	ARSkeletonJointName jointName	-	ios=13.0/-/-/0	-	ccbe5ab00bf71c1c
 method	c:objc(cs)ARSkeleton2D(im)init	-			instancetype	-	-	*unavailable ios=13.0/-/-/0	-	9edb0792b03418be
 method	c:objc(cs)ARSkeleton2D(cm)new	-			instancetype	-	-	*unavailable ios=13.0/-/-/0	-	73a2cb545b8cd68f
-function	c:@F@ARSkeletonJointNameForRecognizedPointKey	-			ARSkeletonJointName  _Nullable (VNRecognizedPointKey _Nonnull)	VNRecognizedPointKey recognizedPointKey	-	ios=14.0/-/-/0	-	77d01a3b90405d99
+function	c:@F@ARSkeletonJointNameForRecognizedPointKey	-			ARSkeletonJointName (VNRecognizedPointKey)	VNRecognizedPointKey recognizedPointKey	-	ios=14.0/-/-/0	-	c1447442d0804ab4
 interface	c:objc(cs)ARBody2D	-			-	-	-	ios=13.0/-/-/0	-	a2d034397f014142
 super	-	ARBody2D	NSObject		-	-	-	-	-	cd275fb200cbf5e5
 property	c:objc(cs)ARBody2D(py)skeleton	-			ARSkeleton2D *	-	readonly,nonatomic	ios=13.0/-/-/0	-	aa9cc9b3ece69175
@@ -144,16 +144,16 @@ interface	c:objc(cs)ARConfiguration	-			-	-	-	ios=11.0/-/-/0	-	7b710cde1a694451
 super	-	ARConfiguration	NSObject		-	-	-	-	-	84c3972bfc95e1b7
 conforms	-	ARConfiguration	NSCopying		-	-	-	-	-	4ad1e791266b151c
 property	c:objc(cs)ARConfiguration(cpy)isSupported	-			BOOL	-	readonly,nonatomic,class	ios=11.0/-/-/0	-	4756ca77f1c2e4b9
-property	c:objc(cs)ARConfiguration(cpy)supportedVideoFormats	-			API_AVAILABLE NSArray<ARVideoFormat *> *	-	readonly,nonatomic,class	ios=11.3/-/-/0	-	3699763b7f9f0cfe
-property	c:objc(cs)ARConfiguration(py)videoFormat	-			API_AVAILABLE ARVideoFormat *	-	strong,nonatomic	ios=11.3/-/-/0	-	11870cb608dfdaac
+property	c:objc(cs)ARConfiguration(cpy)supportedVideoFormats	-			NSArray<ARVideoFormat *> *	-	readonly,nonatomic,class	ios=11.3/-/-/0	-	50ec18c9694cb840
+property	c:objc(cs)ARConfiguration(py)videoFormat	-			ARVideoFormat *	-	strong,nonatomic	ios=11.3/-/-/0	-	ddbee27cd1a1d6bf
 property	c:objc(cs)ARConfiguration(py)worldAlignment	-			ARWorldAlignment	-	assign,nonatomic	ios=11.0/-/-/0	-	00d8ff66a9a50fc5
 property	c:objc(cs)ARConfiguration(py)lightEstimationEnabled	-			BOOL	-	assign,nonatomic,getter=isLightEstimationEnabled	ios=11.0/-/-/0	-	62231434927733e5
 property	c:objc(cs)ARConfiguration(py)providesAudioData	-			BOOL	-	assign,nonatomic	ios=11.0/-/-/0	-	cb04d1814fb02bfb
 property	c:objc(cs)ARConfiguration(py)frameSemantics	-			ARFrameSemantics	-	assign,nonatomic	ios=13.0/-/-/0	-	de42dbf8c822ed6a
 method	c:objc(cs)ARConfiguration(cm)supportsFrameSemantics:	-			BOOL	ARFrameSemantics frameSemantics	-	ios=13.0/-/-/0	-	6fe6ebda9feb7c5e
-property	c:objc(cs)ARConfiguration(cpy)configurableCaptureDeviceForPrimaryCamera	-			API_AVAILABLE AVCaptureDevice *	-	readonly,nonatomic,class	ios=16.0/-/-/0	-	08d1f2e6ddc352eb
-property	c:objc(cs)ARConfiguration(cpy)recommendedVideoFormatFor4KResolution	-			API_AVAILABLE ARVideoFormat *	-	readonly,nonatomic,class	ios=16.0/-/-/0	-	7f49dc325405241b
-property	c:objc(cs)ARConfiguration(cpy)recommendedVideoFormatForHighResolutionFrameCapturing	-			API_AVAILABLE ARVideoFormat *	-	readonly,nonatomic,class	ios=16.0/-/-/0	-	bfa5f85aa98e3fc8
+property	c:objc(cs)ARConfiguration(cpy)configurableCaptureDeviceForPrimaryCamera	-			AVCaptureDevice *	-	readonly,nonatomic,class	ios=16.0/-/-/0	-	5e73995412583d86
+property	c:objc(cs)ARConfiguration(cpy)recommendedVideoFormatFor4KResolution	-			ARVideoFormat *	-	readonly,nonatomic,class	ios=16.0/-/-/0	-	7351755dbfc17135
+property	c:objc(cs)ARConfiguration(cpy)recommendedVideoFormatForHighResolutionFrameCapturing	-			ARVideoFormat *	-	readonly,nonatomic,class	ios=16.0/-/-/0	-	a6e2652cec560db2
 property	c:objc(cs)ARConfiguration(py)videoHDRAllowed	-			BOOL	-	assign,nonatomic	ios=16.0/-/-/0	-	564c3eb4171340f0
 method	c:objc(cs)ARConfiguration(im)init	-			instancetype	-	-	*unavailable ios=11.0/-/-/0	-	cccc4517060107da
 method	c:objc(cs)ARConfiguration(cm)new	-			instancetype	-	-	*unavailable ios=11.0/-/-/0	-	810d31389e67dfc8
@@ -163,11 +163,11 @@ property	c:objc(cs)ARWorldTrackingConfiguration(py)autoFocusEnabled	-			BOOL	-	a
 property	c:objc(cs)ARWorldTrackingConfiguration(py)environmentTexturing	-			AREnvironmentTexturing	-	assign,nonatomic	ios=12.0/-/-/0	-	4250060d2e7cc1d7
 property	c:objc(cs)ARWorldTrackingConfiguration(py)wantsHDREnvironmentTextures	-			BOOL	-	assign,nonatomic	ios=13.0/-/-/0	-	27fe6cfcd07b149a
 property	c:objc(cs)ARWorldTrackingConfiguration(py)planeDetection	-			ARPlaneDetection	-	assign,nonatomic	ios=11.0/-/-/0	-	a6d4a28e3644c22e
-property	c:objc(cs)ARWorldTrackingConfiguration(py)initialWorldMap	-			API_AVAILABLE ARWorldMap *	-	strong,nonatomic	ios=12.0/-/-/0	-	1c464e97d1f8d67c
-property	c:objc(cs)ARWorldTrackingConfiguration(py)detectionImages	-			API_AVAILABLE NSSet<ARReferenceImage *> *	-	copy,nonatomic	ios=11.3/-/-/0	-	5c6011251914a781
+property	c:objc(cs)ARWorldTrackingConfiguration(py)initialWorldMap	-			ARWorldMap *	-	strong,nonatomic	ios=12.0/-/-/0	-	caf912b02eccca67
+property	c:objc(cs)ARWorldTrackingConfiguration(py)detectionImages	-			NSSet<ARReferenceImage *> *	-	copy,nonatomic	ios=11.3/-/-/0	-	6192e36deb4a1b2e
 property	c:objc(cs)ARWorldTrackingConfiguration(py)automaticImageScaleEstimationEnabled	-			BOOL	-	assign,nonatomic	ios=13.0/-/-/0	-	6fc982be247c9753
 property	c:objc(cs)ARWorldTrackingConfiguration(py)maximumNumberOfTrackedImages	-			NSInteger	-	assign,nonatomic	ios=12.0/-/-/0	-	982afdb8e87b1c73
-property	c:objc(cs)ARWorldTrackingConfiguration(py)detectionObjects	-			API_AVAILABLE NSSet<ARReferenceObject *> *	-	copy,nonatomic	ios=12.0/-/-/0	-	b5e1a613caaa2d8c
+property	c:objc(cs)ARWorldTrackingConfiguration(py)detectionObjects	-			NSSet<ARReferenceObject *> *	-	copy,nonatomic	ios=12.0/-/-/0	-	0234c25e0e854e19
 property	c:objc(cs)ARWorldTrackingConfiguration(py)collaborationEnabled	-			BOOL	-	assign,nonatomic,getter=isCollaborationEnabled	ios=13.0/-/-/0	-	982f81dd270a6c7b
 property	c:objc(cs)ARWorldTrackingConfiguration(cpy)supportsUserFaceTracking	-			BOOL	-	readonly,nonatomic,class	ios=13.0/-/-/0	-	7bb2aaad3f7ea379
 property	c:objc(cs)ARWorldTrackingConfiguration(py)userFaceTrackingEnabled	-			BOOL	-	assign,nonatomic,getter=userFaceTrackingEnabled	ios=13.0/-/-/0	-	918475c6892c9fc5
@@ -286,7 +286,7 @@ enumconst	c:@E@ARSessionRunOptions@ARSessionRunOptionStopTrackedRaycasts	ARSessi
 enumconst	c:@E@ARSessionRunOptions@ARSessionRunOptionResetSceneReconstruction	ARSessionRunOptions			-	-	-	-	-	b995d2676c8e47e9
 interface	c:objc(cs)ARSession	-			-	-	-	ios=11.0/-/-/0	-	290eafe16525973c
 super	-	ARSession	NSObject		-	-	-	-	-	9482659f27da67b7
-property	c:objc(cs)ARSession(py)identifier	-			API_AVAILABLE NSUUID *	-	readonly,strong,atomic	ios=13.0/-/-/0	-	868bf9671c9cc2d5
+property	c:objc(cs)ARSession(py)identifier	-			NSUUID *	-	readonly,strong,atomic	ios=13.0/-/-/0	-	401afd690f502749
 property	c:objc(cs)ARSession(py)delegate	-			id<ARSessionDelegate>	-	weak,nonatomic	ios=11.0/-/-/0	-	2548e8f9fdbdfe38
 property	c:objc(cs)ARSession(py)delegateQueue	-			dispatch_queue_t	-	strong,nonatomic	ios=11.0/-/-/0	-	3ce17f072968a66e
 property	c:objc(cs)ARSession(py)currentFrame	-			ARFrame *	-	readonly,copy,nonatomic	ios=11.0/-/-/0	-	fd7dccad1104faf8
@@ -431,11 +431,11 @@ super	-	ARFaceGeometry	NSObject		-	-	-	-	-	55401c308a6b1f01
 conforms	-	ARFaceGeometry	NSSecureCoding		-	-	-	-	-	2528767b49abf3e6
 conforms	-	ARFaceGeometry	NSCopying		-	-	-	-	-	c61539235f28807a
 property	c:objc(cs)ARFaceGeometry(py)vertexCount	-			NSUInteger	-	readonly,nonatomic	ios=11.0/-/-/0	-	5ce26319cbea03d3
-property	c:objc(cs)ARFaceGeometry(py)vertices	-			NS_REFINED_FOR_SWIFT const simd_float3 *	-	readonly,nonatomic	ios=11.0/-/-/0	-	10fc121c31b2eb21
+property	c:objc(cs)ARFaceGeometry(py)vertices	-			const simd_float3 *	-	readonly,nonatomic	ios=11.0/-/-/0	-	6356425e004dd4f5
 property	c:objc(cs)ARFaceGeometry(py)textureCoordinateCount	-			NSUInteger	-	readonly,nonatomic	ios=11.0/-/-/0	-	c27aa1b6e31dab5d
-property	c:objc(cs)ARFaceGeometry(py)textureCoordinates	-			NS_REFINED_FOR_SWIFT const simd_float2 *	-	readonly,nonatomic	ios=11.0/-/-/0	-	c0668cf9d4cc59ad
+property	c:objc(cs)ARFaceGeometry(py)textureCoordinates	-			const simd_float2 *	-	readonly,nonatomic	ios=11.0/-/-/0	-	ac331d836e5beff1
 property	c:objc(cs)ARFaceGeometry(py)triangleCount	-			NSUInteger	-	readonly,nonatomic	ios=11.0/-/-/0	-	016a1b75a4849cde
-property	c:objc(cs)ARFaceGeometry(py)triangleIndices	-			NS_REFINED_FOR_SWIFT const int16_t *	-	readonly,nonatomic	ios=11.0/-/-/0	-	0a2cf3901825f86c
+property	c:objc(cs)ARFaceGeometry(py)triangleIndices	-			const int16_t *	-	readonly,nonatomic	ios=11.0/-/-/0	-	729dab849e5eb842
 method	c:objc(cs)ARFaceGeometry(im)initWithBlendShapes:	-			instancetype	NSDictionary<ARBlendShapeLocation,NSNumber *> * blendShapes	-	ios=11.0/-/-/0	-	225da303b98889b8
 method	c:objc(cs)ARFaceGeometry(im)init	-			instancetype	-	-	*unavailable ios=11.0/-/-/0	-	1fc9489b78583e94
 method	c:objc(cs)ARFaceGeometry(cm)new	-			instancetype	-	-	*unavailable ios=11.0/-/-/0	-	17df2074cd41288a
@@ -490,8 +490,8 @@ super	-	ARFrame	NSObject		-	-	-	-	-	a15e81b0abc0c3d8
 conforms	-	ARFrame	NSCopying		-	-	-	-	-	badecaee2fc63c68
 property	c:objc(cs)ARFrame(py)timestamp	-			NSTimeInterval	-	readonly,nonatomic	ios=11.0/-/-/0	-	fe94b39130f0c9e7
 property	c:objc(cs)ARFrame(py)capturedImage	-			CVPixelBufferRef	-	readonly,nonatomic	ios=11.0/-/-/0	-	0722afc18819173c
-property	c:objc(cs)ARFrame(py)exifData	-			API_AVAILABLE NSDictionary<NSString *,id> *	-	readonly,strong,nonatomic	ios=16.0/-/-/0	-	09770c70b9c90c7f
-property	c:objc(cs)ARFrame(py)cameraGrainTexture	-			API_AVAILABLE id<MTLTexture>	-	readonly,nonatomic	ios=13.0/-/-/0	-	c9a5ff9899914645
+property	c:objc(cs)ARFrame(py)exifData	-			NSDictionary<NSString *,id> *	-	readonly,strong,nonatomic	ios=16.0/-/-/0	-	12fe908d52280d13
+property	c:objc(cs)ARFrame(py)cameraGrainTexture	-			id<MTLTexture>	-	readonly,nonatomic	ios=13.0/-/-/0	-	7a497cd34fad3697
 property	c:objc(cs)ARFrame(py)cameraGrainIntensity	-			float	-	readonly,nonatomic	ios=13.0/-/-/0	-	b4ffca7b523b6e65
 property	c:objc(cs)ARFrame(py)capturedDepthData	-			AVDepthData *	-	readonly,strong,nonatomic	ios=11.0/-/-/0	-	ea5526303d85b9c3
 property	c:objc(cs)ARFrame(py)capturedDepthDataTimestamp	-			NSTimeInterval	-	readonly,nonatomic	ios=11.0/-/-/0	-	e35bfc3e8db7bf8c
@@ -500,12 +500,12 @@ property	c:objc(cs)ARFrame(py)anchors	-			NSArray<__kindof ARAnchor *> *	-	reado
 property	c:objc(cs)ARFrame(py)lightEstimate	-			ARLightEstimate *	-	readonly,strong,nonatomic	ios=11.0/-/-/0	-	7300511acf938cd0
 property	c:objc(cs)ARFrame(py)rawFeaturePoints	-			ARPointCloud *	-	readonly,strong,nonatomic	ios=11.0/-/-/0	-	957f3e10cf23b669
 property	c:objc(cs)ARFrame(py)worldMappingStatus	-			ARWorldMappingStatus	-	readonly,nonatomic	ios=12.0/-/-/0	-	354748d2b769bf9c
-property	c:objc(cs)ARFrame(py)segmentationBuffer	-			API_AVAILABLE CVPixelBufferRef	-	readonly,nonatomic	ios=13.0/-/-/0	-	4d870a4dd170b138
-property	c:objc(cs)ARFrame(py)estimatedDepthData	-			API_AVAILABLE CVPixelBufferRef	-	readonly,nonatomic	ios=13.0/-/-/0	-	1d80c5f1cdb43cf4
-property	c:objc(cs)ARFrame(py)detectedBody	-			API_AVAILABLE ARBody2D *	-	readonly,nonatomic	ios=13.0/-/-/0	-	03423b598a86e7cb
-property	c:objc(cs)ARFrame(py)geoTrackingStatus	-			API_AVAILABLE ARGeoTrackingStatus *	-	readonly,strong,nonatomic	ios=14.0/-/-/0	-	619cf396ee6c053a
-property	c:objc(cs)ARFrame(py)sceneDepth	-			API_AVAILABLE ARDepthData *	-	readonly,strong,nonatomic	ios=14.0/-/-/0	-	cecd18c7ec2ad982
-property	c:objc(cs)ARFrame(py)smoothedSceneDepth	-			API_AVAILABLE ARDepthData *	-	readonly,strong,nonatomic	ios=14.0/-/-/0	-	dfae7520a86e35d7
+property	c:objc(cs)ARFrame(py)segmentationBuffer	-			CVPixelBufferRef	-	readonly,nonatomic	ios=13.0/-/-/0	-	e883163e93487312
+property	c:objc(cs)ARFrame(py)estimatedDepthData	-			CVPixelBufferRef	-	readonly,nonatomic	ios=13.0/-/-/0	-	c2fcd11bee99f616
+property	c:objc(cs)ARFrame(py)detectedBody	-			ARBody2D *	-	readonly,nonatomic	ios=13.0/-/-/0	-	eb7298aa86688890
+property	c:objc(cs)ARFrame(py)geoTrackingStatus	-			ARGeoTrackingStatus *	-	readonly,strong,nonatomic	ios=14.0/-/-/0	-	c928088549da6d57
+property	c:objc(cs)ARFrame(py)sceneDepth	-			ARDepthData *	-	readonly,strong,nonatomic	ios=14.0/-/-/0	-	5baa150fd06b5960
+property	c:objc(cs)ARFrame(py)smoothedSceneDepth	-			ARDepthData *	-	readonly,strong,nonatomic	ios=14.0/-/-/0	-	28aa620c3b611aa6
 method	c:objc(cs)ARFrame(im)hitTest:types:	-			NSArray<ARHitTestResult *> *	CGPoint point | ARHitTestResultType types	-	ios=11.0/14.0/-/0	deprecated: Use [ARSession raycast:]	05eeab097752502e
 method	c:objc(cs)ARFrame(im)raycastQueryFromPoint:allowingTarget:alignment:	-			ARRaycastQuery *	CGPoint point | ARRaycastTarget target | ARRaycastTargetAlignment alignment	-	ios=13.0/-/-/0	-	bdd5473e5c1c934f
 method	c:objc(cs)ARFrame(im)displayTransformForOrientation:viewportSize:	-			CGAffineTransform	UIInterfaceOrientation orientation | CGSize viewportSize	-	ios=11.0/-/-/0	-	3c1f4f2c0ffec689
@@ -642,8 +642,8 @@ property	c:objc(cs)ARPlaneAnchor(cpy)classificationSupported	-			BOOL	-	readonly
 property	c:objc(cs)ARPlaneAnchor(py)alignment	-			ARPlaneAnchorAlignment	-	readonly,nonatomic	ios=11.0/-/-/0	-	4e6f16488d195f87
 property	c:objc(cs)ARPlaneAnchor(py)center	-			simd_float3	-	readonly,nonatomic	ios=11.0/-/-/0	-	3da83618317612f0
 property	c:objc(cs)ARPlaneAnchor(py)extent	-			simd_float3	-	readonly,nonatomic	ios=11.0/16.0/-/0	-	24187c4e7b2a14a3
-property	c:objc(cs)ARPlaneAnchor(py)planeExtent	-			API_AVAILABLE ARPlaneExtent *	-	readonly,nonatomic	ios=16.0/-/-/0	-	9ccc13020cc77697
-property	c:objc(cs)ARPlaneAnchor(py)geometry	-			API_AVAILABLE ARPlaneGeometry *	-	readonly,strong,nonatomic	ios=11.3/-/-/0	-	df82975a35ad0447
+property	c:objc(cs)ARPlaneAnchor(py)planeExtent	-			ARPlaneExtent *	-	readonly,nonatomic	ios=16.0/-/-/0	-	28316cb0328f4443
+property	c:objc(cs)ARPlaneAnchor(py)geometry	-			ARPlaneGeometry *	-	readonly,strong,nonatomic	ios=11.3/-/-/0	-	ed5d2e6363d59378
 property	c:objc(cs)ARPlaneAnchor(py)classificationStatus	-			ARPlaneClassificationStatus	-	readonly,assign,nonatomic	ios=12.0/-/-/0	-	67d9301b72574add
 property	c:objc(cs)ARPlaneAnchor(py)classification	-			ARPlaneClassification	-	readonly,assign,nonatomic	ios=12.0/-/-/0	-	1752e13aab0d52ee
 method	c:objc(cs)ARPlaneAnchor(im)initWithTransform:	-			instancetype	simd_float4x4 transform	-	*unavailable ios=11.0/-/-/0	-	37a962bbb6214769
@@ -652,21 +652,21 @@ interface	c:objc(cs)ARPlaneGeometry	-			-	-	-	ios=11.3/-/-/0	-	deb40bfaf50994da
 super	-	ARPlaneGeometry	NSObject		-	-	-	-	-	6a4a9fa803824ae3
 conforms	-	ARPlaneGeometry	NSSecureCoding		-	-	-	-	-	acd4c1ee4754a03a
 property	c:objc(cs)ARPlaneGeometry(py)vertexCount	-			NSUInteger	-	readonly,nonatomic	ios=11.3/-/-/0	-	fa41e1cb3cf57250
-property	c:objc(cs)ARPlaneGeometry(py)vertices	-			NS_REFINED_FOR_SWIFT const simd_float3 *	-	readonly,nonatomic	ios=11.3/-/-/0	-	9efaa6bd244ee2be
+property	c:objc(cs)ARPlaneGeometry(py)vertices	-			const simd_float3 *	-	readonly,nonatomic	ios=11.3/-/-/0	-	b933931917c2b8fa
 property	c:objc(cs)ARPlaneGeometry(py)textureCoordinateCount	-			NSUInteger	-	readonly,nonatomic	ios=11.3/-/-/0	-	39c4e0fa1cfb7592
-property	c:objc(cs)ARPlaneGeometry(py)textureCoordinates	-			NS_REFINED_FOR_SWIFT const simd_float2 *	-	readonly,nonatomic	ios=11.3/-/-/0	-	e3c099554519f8c2
+property	c:objc(cs)ARPlaneGeometry(py)textureCoordinates	-			const simd_float2 *	-	readonly,nonatomic	ios=11.3/-/-/0	-	491871afe4eb1b4f
 property	c:objc(cs)ARPlaneGeometry(py)triangleCount	-			NSUInteger	-	readonly,nonatomic	ios=11.3/-/-/0	-	0deebe0944f94de7
-property	c:objc(cs)ARPlaneGeometry(py)triangleIndices	-			NS_REFINED_FOR_SWIFT const int16_t *	-	readonly,nonatomic	ios=11.3/-/-/0	-	be2ef34cb264e06d
+property	c:objc(cs)ARPlaneGeometry(py)triangleIndices	-			const int16_t *	-	readonly,nonatomic	ios=11.3/-/-/0	-	8d9d8569b4d86e71
 property	c:objc(cs)ARPlaneGeometry(py)boundaryVertexCount	-			NSUInteger	-	readonly,nonatomic	ios=11.3/-/-/0	-	18df47e012a34198
-property	c:objc(cs)ARPlaneGeometry(py)boundaryVertices	-			NS_REFINED_FOR_SWIFT const simd_float3 *	-	readonly,nonatomic	ios=11.3/-/-/0	-	7225209dd0943f53
+property	c:objc(cs)ARPlaneGeometry(py)boundaryVertices	-			const simd_float3 *	-	readonly,nonatomic	ios=11.3/-/-/0	-	1e311a6efec1e93a
 method	c:objc(cs)ARPlaneGeometry(im)init	-			instancetype	-	-	*unavailable ios=11.3/-/-/0	-	67fff39ea6d7100a
 method	c:objc(cs)ARPlaneGeometry(cm)new	-			instancetype	-	-	*unavailable ios=11.3/-/-/0	-	a5d3bc975ead12ea
 interface	c:objc(cs)ARPointCloud	-			-	-	-	ios=11.0/-/-/0	-	1a19f7550c58abf4
 super	-	ARPointCloud	NSObject		-	-	-	-	-	6cbb6b5ffd819b4e
 conforms	-	ARPointCloud	NSSecureCoding		-	-	-	-	-	ea718bfe2a675dfb
 property	c:objc(cs)ARPointCloud(py)count	-			NSUInteger	-	readonly,nonatomic	ios=11.0/-/-/0	-	e69914284930f00e
-property	c:objc(cs)ARPointCloud(py)points	-			NS_REFINED_FOR_SWIFT const simd_float3 *	-	readonly,nonatomic	ios=11.0/-/-/0	-	f8f207e71fcfd625
-property	c:objc(cs)ARPointCloud(py)identifiers	-			NS_REFINED_FOR_SWIFT const uint64_t *	-	readonly,nonatomic	ios=11.0/-/-/0	-	b17fa03615dd615f
+property	c:objc(cs)ARPointCloud(py)points	-			const simd_float3 *	-	readonly,nonatomic	ios=11.0/-/-/0	-	487c617e74c38b53
+property	c:objc(cs)ARPointCloud(py)identifiers	-			const uint64_t *	-	readonly,nonatomic	ios=11.0/-/-/0	-	bbb3e5c65cb68920
 method	c:objc(cs)ARPointCloud(im)init	-			instancetype	-	-	*unavailable ios=11.0/-/-/0	-	46a7443ef7706d4a
 method	c:objc(cs)ARPointCloud(cm)new	-			instancetype	-	-	*unavailable ios=11.0/-/-/0	-	726f8b13c7a7934d
 interface	c:objc(cs)ARRaycastResult	-			-	-	-	ios=13.0/-/-/0	-	58df851479a56481
@@ -681,7 +681,7 @@ interface	c:objc(cs)ARReferenceImage	-			-	-	-	ios=11.3/-/-/0	-	cca06e01542a58a6
 super	-	ARReferenceImage	NSObject		-	-	-	-	-	863fc06991303a09
 property	c:objc(cs)ARReferenceImage(py)name	-			NSString *	-	copy,nonatomic	ios=11.3/-/-/0	-	e07b8ab25a97dfd5
 property	c:objc(cs)ARReferenceImage(py)physicalSize	-			CGSize	-	readonly,nonatomic	ios=11.3/-/-/0	-	3f4b1fcd57b463d6
-property	c:objc(cs)ARReferenceImage(py)resourceGroupName	-			API_AVAILABLE NSString *	-	readonly,strong,nonatomic	ios=13.0/-/-/0	-	e398696f37596c91
+property	c:objc(cs)ARReferenceImage(py)resourceGroupName	-			NSString *	-	readonly,strong,nonatomic	ios=13.0/-/-/0	-	fbeed80b4b88e29a
 method	c:objc(cs)ARReferenceImage(im)validateWithCompletionHandler:	-			void	void (^)(NSError * _Nullable) completionHandler	-	ios=13.0/-/-/0	-	862049fd907f925d
 method	c:objc(cs)ARReferenceImage(im)initWithCGImage:orientation:physicalWidth:	-			instancetype	CGImageRef image | CGImagePropertyOrientation orientation | CGFloat physicalWidth	-	ios=11.3/-/-/0	-	9c1caaffbfae632c
 method	c:objc(cs)ARReferenceImage(im)initWithPixelBuffer:orientation:physicalWidth:	-			instancetype	CVPixelBufferRef pixelBuffer | CGImagePropertyOrientation orientation | CGFloat physicalWidth	-	ios=11.3/-/-/0	-	ec71d4b7b715c474
@@ -696,7 +696,7 @@ property	c:objc(cs)ARReferenceObject(py)name	-			NSString *	-	copy,nonatomic	ios
 property	c:objc(cs)ARReferenceObject(py)center	-			simd_float3	-	readonly,nonatomic	ios=12.0/-/-/0	-	5516e8b4ea7c5ead
 property	c:objc(cs)ARReferenceObject(py)extent	-			simd_float3	-	readonly,nonatomic	ios=12.0/-/-/0	-	7e4a243d3ddd3381
 property	c:objc(cs)ARReferenceObject(py)scale	-			simd_float3	-	readonly,nonatomic	ios=12.0/-/-/0	-	280ad08344e3fc82
-property	c:objc(cs)ARReferenceObject(py)resourceGroupName	-			API_AVAILABLE NSString *	-	readonly,strong,nonatomic	ios=13.0/-/-/0	-	0e3b2d272e04cb2b
+property	c:objc(cs)ARReferenceObject(py)resourceGroupName	-			NSString *	-	readonly,strong,nonatomic	ios=13.0/-/-/0	-	f776aca73bbbd5a2
 property	c:objc(cs)ARReferenceObject(py)rawFeaturePoints	-			ARPointCloud *	-	readonly,strong,nonatomic	ios=12.0/-/-/0	-	b878d44b6f63a644
 method	c:objc(cs)ARReferenceObject(cm)referenceObjectsInGroupNamed:bundle:	-			NSSet<ARReferenceObject *> *	NSString * name | NSBundle * bundle	-	ios=12.0/-/-/0	-	267b59e839ebf6fb
 method	c:objc(cs)ARReferenceObject(im)initWithArchiveURL:error:	-			instancetype	NSURL * url | NSError * _Nullable * error	-	ios=12.0/-/-/0	-	ec2460d75996d2e0
@@ -714,13 +714,13 @@ interface	c:objc(cs)ARVideoFormat	-			-	-	-	ios=11.3/-/-/0	-	bc01a1fb3f6b7b1e
 super	-	ARVideoFormat	NSObject		-	-	-	-	-	4fbe6d13048a506c
 conforms	-	ARVideoFormat	NSCopying		-	-	-	-	-	7dd2e3ff72620b2d
 property	c:objc(cs)ARVideoFormat(py)captureDevicePosition	-			AVCaptureDevicePosition	-	readonly,nonatomic	ios=13.0/-/-/0	-	37685de088fb75cb
-property	c:objc(cs)ARVideoFormat(py)captureDeviceType	-			API_AVAILABLE AVCaptureDeviceType	-	readonly,nonatomic	ios=14.5/-/-/0	-	671be57cd1f48fcc
+property	c:objc(cs)ARVideoFormat(py)captureDeviceType	-			AVCaptureDeviceType	-	readonly,nonatomic	ios=14.5/-/-/0	-	129328ca7b148d64
 property	c:objc(cs)ARVideoFormat(py)imageResolution	-			CGSize	-	readonly,nonatomic	ios=11.3/-/-/0	-	6ce38fd38ab0777e
 property	c:objc(cs)ARVideoFormat(py)framesPerSecond	-			NSInteger	-	readonly,nonatomic	ios=11.3/-/-/0	-	fad05a870374c030
 property	c:objc(cs)ARVideoFormat(py)isRecommendedForHighResolutionFrameCapturing	-			BOOL	-	readonly,nonatomic	ios=16.0/-/-/0	-	a7a32b1950d7da44
 property	c:objc(cs)ARVideoFormat(py)videoHDRSupported	-			BOOL	-	readonly,nonatomic,getter=isVideoHDRSupported	ios=16.0/-/-/0	-	837395e678abd1e8
 property	c:objc(cs)ARVideoFormat(py)defaultColorSpace	-			AVCaptureColorSpace	-	readonly,nonatomic	ios=26.0/-/-/0	-	a2a362d521ce1c36
-property	c:objc(cs)ARVideoFormat(py)defaultPhotoSettings	-			API_AVAILABLE AVCapturePhotoSettings *	-	readonly,nonatomic	ios=26.0/-/-/0	-	a0fa0d1d9967c3af
+property	c:objc(cs)ARVideoFormat(py)defaultPhotoSettings	-			AVCapturePhotoSettings *	-	readonly,nonatomic	ios=26.0/-/-/0	-	22aaaaaa0bce4990
 method	c:objc(cs)ARVideoFormat(im)init	-			instancetype	-	-	*unavailable ios=11.3/-/-/0	-	c49c3c8eed5ee9fd
 method	c:objc(cs)ARVideoFormat(cm)new	-			instancetype	-	-	*unavailable ios=11.3/-/-/0	-	8d9cc7be19dd5c55
 interface	c:objc(cs)ARWorldMap	-			-	-	-	ios=12.0/-/-/0	-	e2d411ca74edd15c

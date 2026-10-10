@@ -3,7 +3,7 @@ typedef	c:@T@AVAudioFramePosition	-			int64_t	-	-	-	-	314bb8f50ba75f9b
 typedef	c:@T@AVAudioFrameCount	-			uint32_t	-	-	-	-	2bfc456a841f49a8
 typedef	c:@T@AVAudioPacketCount	-			uint32_t	-	-	-	-	daa7cdbb3ac9018e
 typedef	c:@T@AVAudioChannelCount	-			uint32_t	-	-	-	-	858a7f7c8e97b82a
-typedef	c:@T@AVAudioNodeCompletionHandler	-			void (^)(void)	-	-	-	-	ee4eced538809078
+typedef	c:@T@AVAudioNodeCompletionHandler	-			void ((^))(void)	-	-	-	-	3f11bd6d24349525
 typedef	c:@T@AVAudioNodeBus	-			NSUInteger	-	-	-	-	24c95efd1be3b0d8
 typedef	c:@T@AVMusicTimeStamp	-			double	-	-	-	-	b3f171b4d5c03f08
 struct	c:@S@AVAudio3DPoint	-			-	-	-	-	-	888b929e177b778b
@@ -53,7 +53,7 @@ property	c:objc(cs)AVAudioCompressedBuffer(py)data	-			void *	-	readonly,nonatom
 property	c:objc(cs)AVAudioCompressedBuffer(py)byteCapacity	-			uint32_t	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ae6cb3b070755522
 property	c:objc(cs)AVAudioCompressedBuffer(py)byteLength	-			uint32_t	-	nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b19d20340bd13c6a
 property	c:objc(cs)AVAudioCompressedBuffer(py)packetDescriptions	-			AudioStreamPacketDescription *	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	6d0b873432ea9737
-property	c:objc(cs)AVAudioCompressedBuffer(py)packetDependencies	-			NS_REFINED_FOR_SWIFT AudioStreamPacketDependencyDescription *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	d66bbb76287cc01f
+property	c:objc(cs)AVAudioCompressedBuffer(py)packetDependencies	-			AudioStreamPacketDependencyDescription *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	a0abdfee258b04fd
 interface	c:objc(cs)AVAudioChannelLayout	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	127cb18a0bdfaa41
 super	-	AVAudioChannelLayout	NSObject		-	-	-	-	-	36049e74d63064a9
 conforms	-	AVAudioChannelLayout	NSSecureCoding		-	-	-	-	-	4cb4292cfe7b0c95
@@ -205,7 +205,7 @@ enumconst	c:@E@AVAudioConverterOutputStatus@AVAudioConverterOutputStatus_HaveDat
 enumconst	c:@E@AVAudioConverterOutputStatus@AVAudioConverterOutputStatus_InputRanDry	AVAudioConverterOutputStatus			-	-	-	ios=9.0/-/-/0	-	0494a7f6d4e202de
 enumconst	c:@E@AVAudioConverterOutputStatus@AVAudioConverterOutputStatus_EndOfStream	AVAudioConverterOutputStatus			-	-	-	ios=9.0/-/-/0	-	03e0acf97d35c656
 enumconst	c:@E@AVAudioConverterOutputStatus@AVAudioConverterOutputStatus_Error	AVAudioConverterOutputStatus			-	-	-	ios=9.0/-/-/0	-	dc0cbc3cf49f362f
-typedef	c:@T@AVAudioConverterInputBlock	-			AVAudioBuffer * _Nullable (^)(AVAudioPacketCount, AVAudioConverterInputStatus * _Nonnull)	-	-	-	-	f4cf1c0a9fa3cfc2
+typedef	c:@T@AVAudioConverterInputBlock	-			AVAudioBuffer * ((^))(AVAudioPacketCount, AVAudioConverterInputStatus *)	-	-	-	-	7e96fd5c99eb2554
 interface	c:objc(cs)AVAudioConverter	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	b64a0d04ef6d6742
 super	-	AVAudioConverter	NSObject		-	-	-	-	-	1f4afd43c5255e89
 method	c:objc(cs)AVAudioConverter(im)initFromFormat:toFormat:	-			instancetype	AVAudioFormat * fromFormat | AVAudioFormat * toFormat	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	0cdd43726094a6bd
@@ -234,7 +234,7 @@ property	c:objc(cs)AVAudioConverter(py)applicableEncodeBitRates	Encoding			NSArr
 property	c:objc(cs)AVAudioConverter(py)availableEncodeSampleRates	Encoding			NSArray<NSNumber *> *	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	6a0f7b3838e89fd8
 property	c:objc(cs)AVAudioConverter(py)applicableEncodeSampleRates	Encoding			NSArray<NSNumber *> *	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	97281f4e70622af8
 property	c:objc(cs)AVAudioConverter(py)availableEncodeChannelLayoutTags	Encoding			NSArray<NSNumber *> *	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	b2aa89d609b1ec3f
-typedef	c:@T@AVAudioNodeTapBlock	-			void (^)(AVAudioPCMBuffer * _Nonnull, AVAudioTime * _Nonnull)	-	-	-	-	2381f86052fbf392
+typedef	c:@T@AVAudioNodeTapBlock	-			void ((^))(AVAudioPCMBuffer *, AVAudioTime *)	-	-	-	-	17a1918d5128a0b4
 interface	c:objc(cs)AVAudioNode	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	b448e799ba3521b8
 super	-	AVAudioNode	NSObject		-	-	-	-	-	32f60e802674fac0
 method	c:objc(cs)AVAudioNode(im)reset	-			void	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	a1937748ab4d5a2d
@@ -293,7 +293,7 @@ super	-	AVAudioMixingDestination	NSObject		-	-	-	-	-	da7a6567d150ba73
 conforms	-	AVAudioMixingDestination	AVAudioMixing		-	-	-	-	-	4e7d4cfab0dca107
 method	c:objc(cs)AVAudioMixingDestination(im)init	-			instancetype	-	-	*unavailable ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	3e6829a7148221a7
 property	c:objc(cs)AVAudioMixingDestination(py)connectionPoint	-			AVAudioConnectionPoint *	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	a9bdfa27b980b092
-typedef	c:@T@AVAudioIONodeInputBlock	-			const AudioBufferList * _Nullable (^)(AVAudioFrameCount)	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	7ead718f3933acdb
+typedef	c:@T@AVAudioIONodeInputBlock	-			const AudioBufferList * ((^))(AVAudioFrameCount)	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0eda9486f2a57a57
 typedef	c:@T@AVAudioVoiceProcessingSpeechActivityEvent	-			enum AVAudioVoiceProcessingSpeechActivityEvent	-	-	-	-	9733b523f037286f
 enum	c:@E@AVAudioVoiceProcessingSpeechActivityEvent	-			NSInteger	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	f822aea3d940c740
 enumconst	c:@E@AVAudioVoiceProcessingSpeechActivityEvent@AVAudioVoiceProcessingSpeechActivityStarted	AVAudioVoiceProcessingSpeechActivityEvent			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	c463f8cd881f0146
@@ -327,7 +327,7 @@ property	c:objc(cs)AVAudioInputNode(py)voiceProcessingOtherAudioDuckingConfigura
 interface	c:objc(cs)AVAudioOutputNode	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	1f228863303f21db
 super	-	AVAudioOutputNode	AVAudioIONode		-	-	-	-	-	379329cc2bfb4a6e
 method	c:objc(cs)AVAudioOutputNode(im)init	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	d4e4ae94438b6712
-property	c:objc(cs)AVAudioOutputNode(py)intendedSpatialExperience	-			API_AVAILABLE CASpatialAudioExperience *	-	copy	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	d008abff57ee7119
+property	c:objc(cs)AVAudioOutputNode(py)intendedSpatialExperience	-			CASpatialAudioExperience *	-	copy	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	5392281c4d36a50d
 typedef	c:@T@AVAudioEngineManualRenderingError	-			enum AVAudioEngineManualRenderingError	-	-	-	-	5e95d28ec7ecc769
 enum	c:@E@AVAudioEngineManualRenderingError	-			OSStatus	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d41668b354cb60df
 enumconst	c:@E@AVAudioEngineManualRenderingError@AVAudioEngineManualRenderingErrorInvalidMode	AVAudioEngineManualRenderingError			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ce2c931a7eebad9f
@@ -343,7 +343,7 @@ typedef	c:@T@AVAudioEngineManualRenderingMode	-			enum AVAudioEngineManualRender
 enum	c:@E@AVAudioEngineManualRenderingMode	-			NSInteger	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e4799c6028c45ddf
 enumconst	c:@E@AVAudioEngineManualRenderingMode@AVAudioEngineManualRenderingModeOffline	AVAudioEngineManualRenderingMode			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	65954c7948ae510a
 enumconst	c:@E@AVAudioEngineManualRenderingMode@AVAudioEngineManualRenderingModeRealtime	AVAudioEngineManualRenderingMode			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	79c51175906d0385
-typedef	c:@T@AVAudioEngineManualRenderingBlock	-			AVAudioEngineManualRenderingStatus (^)(AVAudioFrameCount, AudioBufferList * _Nonnull, OSStatus * _Nullable)	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b236f6e95139f0a9
+typedef	c:@T@AVAudioEngineManualRenderingBlock	-			AVAudioEngineManualRenderingStatus ((^))(AVAudioFrameCount, AudioBufferList *, OSStatus *)	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	411245c172ba8b91
 interface	c:objc(cs)AVAudioEngine	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	deprecated: Use connectMIDI:to:format:eventListBlock: instead	92eacd4e30da6684
 super	-	AVAudioEngine	NSObject		-	-	-	-	-	7680ead3e7f98457
 method	c:objc(cs)AVAudioEngine(im)init	-			instancetype	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	f721b1b02ab28bce
@@ -681,16 +681,16 @@ var	c:@AVAudioSessionPolarPatternSubcardioid	-			const AVAudioSessionPolarPatter
 var	c:@AVAudioSessionPolarPatternStereo	-			const AVAudioSessionPolarPattern	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	209f052f382c8a10
 interface	c:objc(cs)AVAudioSessionChannelDescription	-			-	-	-	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	63e7a7ce63aed109
 super	-	AVAudioSessionChannelDescription	NSObject		-	-	-	-	-	4e8ed60509199d29
-property	c:objc(cs)AVAudioSessionChannelDescription(py)channelName	-			API_UNAVAILABLE NSString *	-	readonly,nonatomic	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	373c4a34a0cfb165
-property	c:objc(cs)AVAudioSessionChannelDescription(py)owningPortUID	-			API_UNAVAILABLE NSString *	-	readonly,nonatomic	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	110d3deeccf42aac
+property	c:objc(cs)AVAudioSessionChannelDescription(py)channelName	-			NSString *	-	readonly,nonatomic	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	6ab774823e124569
+property	c:objc(cs)AVAudioSessionChannelDescription(py)owningPortUID	-			NSString *	-	readonly,nonatomic	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	2b4c05c9a39c8ec1
 property	c:objc(cs)AVAudioSessionChannelDescription(py)channelNumber	-			NSUInteger	-	readonly,nonatomic	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	f172389bb5bd6b3b
 property	c:objc(cs)AVAudioSessionChannelDescription(py)channelLabel	-			AudioChannelLabel	-	readonly,nonatomic	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	1ac905b8f524292c
 interface	c:objc(cs)AVAudioSessionDataSourceDescription	-			-	-	-	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	9e9a89ba270c670a
 super	-	AVAudioSessionDataSourceDescription	NSObject		-	-	-	-	-	3bf3c158889ca5b1
-property	c:objc(cs)AVAudioSessionDataSourceDescription(py)dataSourceID	-			API_UNAVAILABLE NSNumber *	-	readonly	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	cd655677ac6e7ab2
-property	c:objc(cs)AVAudioSessionDataSourceDescription(py)dataSourceName	-			API_UNAVAILABLE NSString *	-	readonly	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	62dc6b3b90c4ee19
-property	c:objc(cs)AVAudioSessionDataSourceDescription(py)location	-			API_UNAVAILABLE AVAudioSessionLocation	-	readonly	ios=7.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	d849fe765e1f824b
-property	c:objc(cs)AVAudioSessionDataSourceDescription(py)orientation	-			API_UNAVAILABLE AVAudioSessionOrientation	-	readonly	ios=7.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	380258ba7ab7e224
+property	c:objc(cs)AVAudioSessionDataSourceDescription(py)dataSourceID	-			NSNumber *	-	readonly	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	6a4a09de9e9bb29c
+property	c:objc(cs)AVAudioSessionDataSourceDescription(py)dataSourceName	-			NSString *	-	readonly	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	fe425ea6cf2c8e5a
+property	c:objc(cs)AVAudioSessionDataSourceDescription(py)location	-			AVAudioSessionLocation	-	readonly	ios=7.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	e9bb6538000ba9dd
+property	c:objc(cs)AVAudioSessionDataSourceDescription(py)orientation	-			AVAudioSessionOrientation	-	readonly	ios=7.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	fc5f211864f23fa9
 property	c:objc(cs)AVAudioSessionDataSourceDescription(py)supportedPolarPatterns	-			NSArray<AVAudioSessionPolarPattern> *	-	readonly	ios=7.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=-/-/-/1	-	5ac30b60d0ef7920
 property	c:objc(cs)AVAudioSessionDataSourceDescription(py)selectedPolarPattern	-			AVAudioSessionPolarPattern	-	readonly	ios=7.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=-/-/-/1	-	0d0c064538ae6b28
 property	c:objc(cs)AVAudioSessionDataSourceDescription(py)preferredPolarPattern	-			AVAudioSessionPolarPattern	-	readonly	ios=7.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=-/-/-/1	-	1be8c114ef467d8f
@@ -705,36 +705,36 @@ property	c:objc(cs)AVAudioSessionPortExtensionBluetoothMicrophone(py)highQuality
 property	c:objc(cs)AVAudioSessionPortExtensionBluetoothMicrophone(py)farFieldCapture	-			AVAudioSessionCapability *	-	readonly,strong,nonatomic	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	aa32c17b1846982c
 interface	c:objc(cs)AVAudioSessionPortDescription	-			-	-	-	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	323bde034c7122e7
 super	-	AVAudioSessionPortDescription	NSObject		-	-	-	-	-	33b8f00ff8b734b4
-property	c:objc(cs)AVAudioSessionPortDescription(py)portType	-			API_UNAVAILABLE AVAudioSessionPort	-	readonly,nonatomic	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	4b887a6203128e68
-property	c:objc(cs)AVAudioSessionPortDescription(py)portName	-			API_UNAVAILABLE NSString *	-	readonly,nonatomic	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	8b965dc495c6c68d
-property	c:objc(cs)AVAudioSessionPortDescription(py)UID	-			API_UNAVAILABLE NSString *	-	readonly,nonatomic	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	1a76db5de201bcce
+property	c:objc(cs)AVAudioSessionPortDescription(py)portType	-			AVAudioSessionPort	-	readonly,nonatomic	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	f8b260801fbdce08
+property	c:objc(cs)AVAudioSessionPortDescription(py)portName	-			NSString *	-	readonly,nonatomic	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	eb00751a597208da
+property	c:objc(cs)AVAudioSessionPortDescription(py)UID	-			NSString *	-	readonly,nonatomic	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	e21fa5fb9808908b
 property	c:objc(cs)AVAudioSessionPortDescription(py)hasHardwareVoiceCallProcessing	-			BOOL	-	readonly	ios=10.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	2192999066dc35f3
 property	c:objc(cs)AVAudioSessionPortDescription(py)spatialAudioEnabled	-			BOOL	-	readonly,getter=isSpatialAudioEnabled	ios=15.0/-/-/0,macos=-/-/-/1,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	b8bdd046aa4471cb
-property	c:objc(cs)AVAudioSessionPortDescription(py)channels	-			API_UNAVAILABLE NSArray<AVAudioSessionChannelDescription *> *	-	readonly,nonatomic	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	da704ae95ddf89a6
+property	c:objc(cs)AVAudioSessionPortDescription(py)channels	-			NSArray<AVAudioSessionChannelDescription *> *	-	readonly,nonatomic	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	e6e53a4bdfbc506b
 property	c:objc(cs)AVAudioSessionPortDescription(py)dataSources	-			NSArray<AVAudioSessionDataSourceDescription *> *	-	readonly,nonatomic	ios=7.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=-/-/-/1	-	2eb5e8dd26b0b850
 property	c:objc(cs)AVAudioSessionPortDescription(py)selectedDataSource	-			AVAudioSessionDataSourceDescription *	-	readonly,nonatomic	ios=7.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=-/-/-/1	-	2c2b3eb9caee19b4
 property	c:objc(cs)AVAudioSessionPortDescription(py)preferredDataSource	-			AVAudioSessionDataSourceDescription *	-	readonly,nonatomic	ios=7.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=-/-/-/1	-	9cf1ccc1152bcb48
 method	c:objc(cs)AVAudioSessionPortDescription(im)setPreferredDataSource:error:	-			BOOL	AVAudioSessionDataSourceDescription * dataSource | NSError * _Nullable * outError	-	ios=7.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=-/-/-/1	-	54d37f4cbb83c871
 category	c:objc(cy)AVAudioSessionPortDescription@BluetoothMicrophoneExtension	-			-	-	-	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	55911ec70842fedf
-property	c:objc(cs)AVAudioSessionPortDescription(py)bluetoothMicrophoneExtension	BluetoothMicrophoneExtension			API_UNAVAILABLE AVAudioSessionPortExtensionBluetoothMicrophone *	-	readonly,nonatomic	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	3215b691bffbb8ba
+property	c:objc(cs)AVAudioSessionPortDescription(py)bluetoothMicrophoneExtension	BluetoothMicrophoneExtension			AVAudioSessionPortExtensionBluetoothMicrophone *	-	readonly,nonatomic	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	8f3281ea33d4b937
 interface	c:objc(cs)AVAudioSessionRouteDescription	-			-	-	-	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	5b63028f3df3655f
 super	-	AVAudioSessionRouteDescription	NSObject		-	-	-	-	-	442d2d7f8d8a9321
-property	c:objc(cs)AVAudioSessionRouteDescription(py)inputs	-			API_UNAVAILABLE NSArray<AVAudioSessionPortDescription *> *	-	readonly,nonatomic	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	2ebae264e369acb1
-property	c:objc(cs)AVAudioSessionRouteDescription(py)outputs	-			API_UNAVAILABLE NSArray<AVAudioSessionPortDescription *> *	-	readonly,nonatomic	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	d8bcfb6f0b7b6acd
+property	c:objc(cs)AVAudioSessionRouteDescription(py)inputs	-			NSArray<AVAudioSessionPortDescription *> *	-	readonly,nonatomic	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	c92aa96a78a39726
+property	c:objc(cs)AVAudioSessionRouteDescription(py)outputs	-			NSArray<AVAudioSessionPortDescription *> *	-	readonly,nonatomic	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	b08e9cbb891269f2
 interface	c:objc(cs)AVAudioSession	-			-	-	-	ios=3.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	deprecated: Please use AVAudioApplication recordPermission	4f9361cfaae3ce4f
 super	-	AVAudioSession	NSObject		-	-	-	-	-	b32421b8aee023fb
 method	c:objc(cs)AVAudioSession(cm)sharedInstance	-			AVAudioSession *	-	-	ios=3.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	7fd893cf60e4dd42
-property	c:objc(cs)AVAudioSession(py)availableCategories	-			API_UNAVAILABLE NSArray<AVAudioSessionCategory> *	-	readonly,nonatomic	ios=9.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	dce509e131226e1a
+property	c:objc(cs)AVAudioSession(py)availableCategories	-			NSArray<AVAudioSessionCategory> *	-	readonly,nonatomic	ios=9.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	7f13f13763a7b6ac
 method	c:objc(cs)AVAudioSession(im)setCategory:error:	-			BOOL	AVAudioSessionCategory category | NSError * _Nullable * outError	-	ios=3.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	56ce21a4c74c330c
 method	c:objc(cs)AVAudioSession(im)setCategory:withOptions:error:	-			BOOL	AVAudioSessionCategory category | AVAudioSessionCategoryOptions options | NSError * _Nullable * outError	-	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	76697af7305512f2
 method	c:objc(cs)AVAudioSession(im)setCategory:mode:options:error:	-			BOOL	AVAudioSessionCategory category | AVAudioSessionMode mode | AVAudioSessionCategoryOptions options | NSError * _Nullable * outError	-	ios=10.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	53fad37399f7c51b
 method	c:objc(cs)AVAudioSession(im)setCategory:mode:routeSharingPolicy:options:error:	-			BOOL	AVAudioSessionCategory category | AVAudioSessionMode mode | AVAudioSessionRouteSharingPolicy policy | AVAudioSessionCategoryOptions options | NSError * _Nullable * outError	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=5.0/-/-/0	-	7a607eac94514dd3
-property	c:objc(cs)AVAudioSession(py)category	-			API_UNAVAILABLE AVAudioSessionCategory	-	readonly	ios=3.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	d2521fced6cbf322
+property	c:objc(cs)AVAudioSession(py)category	-			AVAudioSessionCategory	-	readonly	ios=3.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	b69974373e18cd39
 property	c:objc(cs)AVAudioSession(py)categoryOptions	-			AVAudioSessionCategoryOptions	-	readonly	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	e7a764918ef5be10
 property	c:objc(cs)AVAudioSession(py)routeSharingPolicy	-			AVAudioSessionRouteSharingPolicy	-	readonly	ios=11.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=5.0/-/-/0	-	9ba400d2ab9d7d9d
-property	c:objc(cs)AVAudioSession(py)availableModes	-			API_UNAVAILABLE NSArray<AVAudioSessionMode> *	-	readonly	ios=9.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	26003686a9d0f87c
+property	c:objc(cs)AVAudioSession(py)availableModes	-			NSArray<AVAudioSessionMode> *	-	readonly	ios=9.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	f8bbaf95a820d618
 method	c:objc(cs)AVAudioSession(im)setMode:error:	-			BOOL	AVAudioSessionMode mode | NSError * _Nullable * outError	-	ios=5.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	bc4802070e817ecf
-property	c:objc(cs)AVAudioSession(py)mode	-			API_UNAVAILABLE AVAudioSessionMode	-	readonly	ios=5.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	6e195b874af99d45
+property	c:objc(cs)AVAudioSession(py)mode	-			AVAudioSessionMode	-	readonly	ios=5.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	363c547ae986ad2b
 method	c:objc(cs)AVAudioSession(im)setAllowHapticsAndSystemSoundsDuringRecording:error:	-			BOOL	BOOL inValue | NSError * _Nullable * outError	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	42218e65b238e19b
 property	c:objc(cs)AVAudioSession(py)allowHapticsAndSystemSoundsDuringRecording	-			BOOL	-	readonly	ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	6da0bd48b4f31e33
 property	c:objc(cs)AVAudioSession(py)recordPermission	-			AVAudioSessionRecordPermission	-	readonly	ios=8.0/17.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=4.0/10.0/-/0	-	54717e2f9066d3d1
@@ -773,11 +773,11 @@ method	c:objc(cs)AVAudioSession(im)setInputGain:error:	AVAudioSessionHardwareCon
 property	c:objc(cs)AVAudioSession(py)inputGain	AVAudioSessionHardwareConfiguration			float	-	readonly	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=-/-/-/1	-	1843dbf5fe29bc0d
 property	c:objc(cs)AVAudioSession(py)inputGainSettable	AVAudioSessionHardwareConfiguration			BOOL	-	readonly,getter=isInputGainSettable	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=-/-/-/1	-	19e8c9740bb9a604
 property	c:objc(cs)AVAudioSession(py)inputAvailable	AVAudioSessionHardwareConfiguration			BOOL	-	readonly,getter=isInputAvailable	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	f95cf6876114c8fd
-property	c:objc(cs)AVAudioSession(py)inputDataSources	AVAudioSessionHardwareConfiguration			API_UNAVAILABLE NSArray<AVAudioSessionDataSourceDescription *> *	-	readonly	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	9f04583d0007d424
-property	c:objc(cs)AVAudioSession(py)inputDataSource	AVAudioSessionHardwareConfiguration			API_UNAVAILABLE AVAudioSessionDataSourceDescription *	-	readonly	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	0a66877e3ec22ccf
+property	c:objc(cs)AVAudioSession(py)inputDataSources	AVAudioSessionHardwareConfiguration			NSArray<AVAudioSessionDataSourceDescription *> *	-	readonly	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	58d70d1032cf49eb
+property	c:objc(cs)AVAudioSession(py)inputDataSource	AVAudioSessionHardwareConfiguration			AVAudioSessionDataSourceDescription *	-	readonly	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	764f6e1f9059c4b9
 method	c:objc(cs)AVAudioSession(im)setInputDataSource:error:	AVAudioSessionHardwareConfiguration			BOOL	AVAudioSessionDataSourceDescription * dataSource | NSError * _Nullable * outError	-	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=-/-/-/1	-	b2ab986b3c470b17
-property	c:objc(cs)AVAudioSession(py)outputDataSources	AVAudioSessionHardwareConfiguration			API_UNAVAILABLE NSArray<AVAudioSessionDataSourceDescription *> *	-	readonly	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	fdd0515afba78c6f
-property	c:objc(cs)AVAudioSession(py)outputDataSource	AVAudioSessionHardwareConfiguration			API_UNAVAILABLE AVAudioSessionDataSourceDescription *	-	readonly	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	e60bdcdbe4669ba1
+property	c:objc(cs)AVAudioSession(py)outputDataSources	AVAudioSessionHardwareConfiguration			NSArray<AVAudioSessionDataSourceDescription *> *	-	readonly	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	7ace47413e2bb3be
+property	c:objc(cs)AVAudioSession(py)outputDataSource	AVAudioSessionHardwareConfiguration			AVAudioSessionDataSourceDescription *	-	readonly	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	cb11dfe446740566
 method	c:objc(cs)AVAudioSession(im)setOutputDataSource:error:	AVAudioSessionHardwareConfiguration			BOOL	AVAudioSessionDataSourceDescription * dataSource | NSError * _Nullable * outError	-	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=-/-/-/1	-	41fd49fcd60e82f3
 property	c:objc(cs)AVAudioSession(py)sampleRate	AVAudioSessionHardwareConfiguration			double	-	readonly	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	8990259036d8706a
 property	c:objc(cs)AVAudioSession(py)inputNumberOfChannels	AVAudioSessionHardwareConfiguration			NSInteger	-	readonly	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	e02873f7725ef06e
@@ -792,8 +792,8 @@ property	c:objc(cs)AVAudioSession(py)secondaryAudioShouldBeSilencedHint	Observat
 property	c:objc(cs)AVAudioSession(py)outputVolume	Observation			float	-	readonly	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	6d5042fe00be23f6
 property	c:objc(cs)AVAudioSession(py)promptStyle	Observation			AVAudioSessionPromptStyle	-	readonly	ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	5e96b70cf4f1cc44
 category	c:objc(cy)AVAudioSession@RoutingConfiguration	-			-	-	-	ios=3.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	6486c9c7ce9cf771
-property	c:objc(cs)AVAudioSession(py)availableInputs	RoutingConfiguration			API_UNAVAILABLE NSArray<AVAudioSessionPortDescription *> *	-	readonly	ios=7.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	b1e01aed3edc01b7
-property	c:objc(cs)AVAudioSession(py)currentRoute	RoutingConfiguration			API_UNAVAILABLE AVAudioSessionRouteDescription *	-	readonly	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	fffd8ba7a959847d
+property	c:objc(cs)AVAudioSession(py)availableInputs	RoutingConfiguration			NSArray<AVAudioSessionPortDescription *> *	-	readonly	ios=7.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	79477e64c026e146
+property	c:objc(cs)AVAudioSession(py)currentRoute	RoutingConfiguration			AVAudioSessionRouteDescription *	-	readonly	ios=6.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	7f03797416ca314e
 method	c:objc(cs)AVAudioSession(im)setAggregatedIOPreference:error:	RoutingConfiguration			BOOL	AVAudioSessionIOType inIOType | NSError * _Nullable * outError	-	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6d21d70d26c8f830
 method	c:objc(cs)AVAudioSession(im)setSupportsMultichannelContent:error:	RoutingConfiguration			BOOL	BOOL inValue | NSError * _Nullable * outError	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	d90000afcd3a5816
 property	c:objc(cs)AVAudioSession(py)supportsMultichannelContent	RoutingConfiguration			BOOL	-	readonly	ios=15.0/-/-/0,macos=-/-/-/1,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	0861452a200153a6
@@ -804,7 +804,7 @@ method	c:objc(cs)AVAudioSession(im)setPreferredMicrophoneInjectionMode:error:	Mi
 property	c:objc(cs)AVAudioSession(py)preferredMicrophoneInjectionMode	MicrophoneInjection			AVAudioSessionMicrophoneInjectionMode	-	readonly	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.2/-/-/0	-	b0aa4fa9ac5154f8
 property	c:objc(cs)AVAudioSession(py)isMicrophoneInjectionAvailable	MicrophoneInjection			BOOL	-	readonly	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.2/-/-/0	-	b8b682ba0abe12a5
 category	c:objc(cy)AVAudioSession@AVAudioSessionDeprecated	-			-	-	-	ios=3.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	deprecated: No longer supported	528af00519685177
-property	c:objc(cs)AVAudioSession(py)delegate	AVAudioSessionDeprecated			API_UNAVAILABLE id<AVAudioSessionDelegate>	-	assign	ios=4.0/6.0/-/0,maccatalyst=14.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0cb0490bb08bfa49
+property	c:objc(cs)AVAudioSession(py)delegate	AVAudioSessionDeprecated			id<AVAudioSessionDelegate>	-	assign	ios=4.0/6.0/-/0,maccatalyst=14.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	57a7c8cc6bb179fd
 method	c:objc(cs)AVAudioSession(im)init	AVAudioSessionDeprecated			instancetype	-	-	ios=3.0/10.0/-/0,maccatalyst=14.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use +sharedInstance instead	2463cc01d824162b
 method	c:objc(cs)AVAudioSession(im)setActive:withFlags:error:	AVAudioSessionDeprecated			BOOL	BOOL active | NSInteger flags | NSError * _Nullable * outError	-	ios=4.0/6.0/-/0,maccatalyst=14.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use -setActive:withOptions:error: instead	f4329893e07112be
 property	c:objc(cs)AVAudioSession(py)inputIsAvailable	AVAudioSessionDeprecated			BOOL	-	readonly	ios=3.0/6.0/-/0,maccatalyst=14.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	922fed38ae4494ae
@@ -837,7 +837,7 @@ method	c:objc(cs)AVAudioPlayer(im)stop	-			void	-	-	ios=2.2/-/-/0,macos=10.7/-/-
 property	c:objc(cs)AVAudioPlayer(py)playing	-			BOOL	-	readonly,getter=isPlaying	ios=2.2/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0	-	90215a3865e553cd
 property	c:objc(cs)AVAudioPlayer(py)numberOfChannels	-			NSUInteger	-	readonly	ios=2.2/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0	-	769a32e19ba0ceac
 property	c:objc(cs)AVAudioPlayer(py)duration	-			NSTimeInterval	-	readonly	ios=2.2/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0	-	21cf324ee86ba4f3
-property	c:objc(cs)AVAudioPlayer(py)currentDevice	-			API_AVAILABLE NSString *	-	copy	ios=-/-/-/1,macos=10.13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	65dae121f574b990
+property	c:objc(cs)AVAudioPlayer(py)currentDevice	-			NSString *	-	copy	ios=-/-/-/1,macos=10.13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bc5674b39def8525
 property	c:objc(cs)AVAudioPlayer(py)delegate	-			id<AVAudioPlayerDelegate>	-	weak	ios=2.2/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0	-	4dfaefe3bffc77dd
 property	c:objc(cs)AVAudioPlayer(py)url	-			NSURL *	-	readonly	ios=2.2/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0	-	84f20d1a1a099e0d
 property	c:objc(cs)AVAudioPlayer(py)data	-			NSData *	-	readonly	ios=2.2/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0	-	d35ae7fdd70ede38
@@ -855,8 +855,8 @@ property	c:objc(cs)AVAudioPlayer(py)meteringEnabled	-			BOOL	-	getter=isMetering
 method	c:objc(cs)AVAudioPlayer(im)updateMeters	-			void	-	-	ios=2.2/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0	-	d8abf9837b7ba042
 method	c:objc(cs)AVAudioPlayer(im)peakPowerForChannel:	-			float	NSUInteger channelNumber	-	ios=2.2/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0	-	9f6a36afc866cf39
 method	c:objc(cs)AVAudioPlayer(im)averagePowerForChannel:	-			float	NSUInteger channelNumber	-	ios=2.2/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0	-	e0d51e12bc850ee4
-property	c:objc(cs)AVAudioPlayer(py)channelAssignments	-			API_UNAVAILABLE NSArray<AVAudioSessionChannelDescription *> *	-	copy,nonatomic	ios=7.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	cd70de1dc4fc1922
-property	c:objc(cs)AVAudioPlayer(py)intendedSpatialExperience	-			API_AVAILABLE CASpatialAudioExperience *	-	copy	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	d52672691a461eb6
+property	c:objc(cs)AVAudioPlayer(py)channelAssignments	-			NSArray<AVAudioSessionChannelDescription *> *	-	copy,nonatomic	ios=7.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	6b19668ab6f789b7
+property	c:objc(cs)AVAudioPlayer(py)intendedSpatialExperience	-			CASpatialAudioExperience *	-	copy	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	013f5add0ae316b9
 protocol	c:objc(pl)AVAudioPlayerDelegate	-			-	-	-	watchos=3.0/-/-/0	-	1695d7dd9c4cebd2
 conforms	-	AVAudioPlayerDelegate	NSObject		-	-	-	-	-	3f58466f65610a7e
 method	c:objc(pl)AVAudioPlayerDelegate(im)audioPlayerDidFinishPlaying:successfully:	-			void	AVAudioPlayer * player | BOOL flag	optional	watchos=3.0/-/-/0	-	c3c780914e504b8f
@@ -875,7 +875,7 @@ enum	c:@E@AVAudioPlayerNodeCompletionCallbackType	-			NSInteger	-	-	-	-	0a492f17
 enumconst	c:@E@AVAudioPlayerNodeCompletionCallbackType@AVAudioPlayerNodeCompletionDataConsumed	AVAudioPlayerNodeCompletionCallbackType			-	-	-	-	-	522e3f113039948d
 enumconst	c:@E@AVAudioPlayerNodeCompletionCallbackType@AVAudioPlayerNodeCompletionDataRendered	AVAudioPlayerNodeCompletionCallbackType			-	-	-	-	-	ab6263f047791624
 enumconst	c:@E@AVAudioPlayerNodeCompletionCallbackType@AVAudioPlayerNodeCompletionDataPlayedBack	AVAudioPlayerNodeCompletionCallbackType			-	-	-	-	-	fe0f30f8ef6ad411
-typedef	c:@T@AVAudioPlayerNodeCompletionHandler	-			void (^)(AVAudioPlayerNodeCompletionCallbackType)	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	79989ae1a2393e20
+typedef	c:@T@AVAudioPlayerNodeCompletionHandler	-			void ((^))(AVAudioPlayerNodeCompletionCallbackType)	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	743e3fa1af30021f
 interface	c:objc(cs)AVAudioPlayerNode	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	164567fcde5ef9a8
 super	-	AVAudioPlayerNode	AVAudioNode		-	-	-	-	-	e2f29bfbbe3a6bf8
 conforms	-	AVAudioPlayerNode	AVAudioMixing		-	-	-	-	-	8ee90c6780564005
@@ -919,7 +919,7 @@ property	c:objc(cs)AVAudioRecorder(py)meteringEnabled	-			BOOL	-	getter=isMeteri
 method	c:objc(cs)AVAudioRecorder(im)updateMeters	-			void	-	-	ios=3.0/-/-/0,macos=10.7/-/-/0,tvos=17.0/-/-/0,watchos=4.0/-/-/0	-	32941bb9b8af4d32
 method	c:objc(cs)AVAudioRecorder(im)peakPowerForChannel:	-			float	NSUInteger channelNumber	-	ios=3.0/-/-/0,macos=10.7/-/-/0,tvos=17.0/-/-/0,watchos=4.0/-/-/0	-	ac584fa669c3646d
 method	c:objc(cs)AVAudioRecorder(im)averagePowerForChannel:	-			float	NSUInteger channelNumber	-	ios=3.0/-/-/0,macos=10.7/-/-/0,tvos=17.0/-/-/0,watchos=4.0/-/-/0	-	7ed852fc75cda62b
-property	c:objc(cs)AVAudioRecorder(py)channelAssignments	-			API_UNAVAILABLE NSArray<AVAudioSessionChannelDescription *> *	-	copy,nonatomic	ios=7.0/-/-/0,macos=-/-/-/1,tvos=17.0/-/-/0,watchos=4.0/-/-/0	-	774bc066107223fa
+property	c:objc(cs)AVAudioRecorder(py)channelAssignments	-			NSArray<AVAudioSessionChannelDescription *> *	-	copy,nonatomic	ios=7.0/-/-/0,macos=-/-/-/1,tvos=17.0/-/-/0,watchos=4.0/-/-/0	-	ee313e86bc4a3aaf
 protocol	c:objc(pl)AVAudioRecorderDelegate	-			-	-	-	ios=3.0/-/-/0,macos=10.7/-/-/0,tvos=17.0/-/-/0,watchos=4.0/-/-/0	deprecated: Deprecated - use AVAudioSession instead	82823bef50652533
 conforms	-	AVAudioRecorderDelegate	NSObject		-	-	-	-	-	88d0b18838fae7d3
 method	c:objc(pl)AVAudioRecorderDelegate(im)audioRecorderDidFinishRecording:successfully:	-			void	AVAudioRecorder * recorder | BOOL flag	optional	ios=3.0/-/-/0,macos=10.7/-/-/0,tvos=17.0/-/-/0,watchos=4.0/-/-/0	-	84b1c53704bdbbfd
@@ -989,7 +989,7 @@ method	c:objc(cs)AVAudioSequencer(im)setUserCallback:	-			void	AVAudioSequencerU
 property	c:objc(cs)AVAudioSequencer(py)tracks	-			NSArray<AVMusicTrack *> *	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	2500f94f87f505cd
 property	c:objc(cs)AVAudioSequencer(py)tempoTrack	-			AVMusicTrack *	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	ca2f27f73c244fff
 property	c:objc(cs)AVAudioSequencer(py)userInfo	-			NSDictionary<NSString *,id> *	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	c42470170c1bad27
-typedef	c:@T@AVAudioSequencerUserCallback	-			void (^)(AVMusicTrack * _Nonnull, NSData * _Nonnull, AVMusicTimeStamp)	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	d25a065094106cd1
+typedef	c:@T@AVAudioSequencerUserCallback	-			void ((^))(AVMusicTrack *, NSData *, AVMusicTimeStamp)	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	7807daab488f6281
 category	c:objc(cy)AVAudioSequencer@AVAudioSequencer_Player	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	eaa3d87420d2ea81
 property	c:objc(cs)AVAudioSequencer(py)currentPositionInSeconds	AVAudioSequencer_Player			NSTimeInterval	-	nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	4f2dc6b4b34cbb30
 property	c:objc(cs)AVAudioSequencer(py)currentPositionInBeats	AVAudioSequencer_Player			NSTimeInterval	-	nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	ba353e14acfce668
@@ -1025,13 +1025,13 @@ method	c:objc(cs)AVMusicTrack(im)cutEventsInRange:	AVMusicTrackEditor			void	AVB
 method	c:objc(cs)AVMusicTrack(im)copyEventsInRange:fromTrack:insertAtBeat:	AVMusicTrackEditor			void	AVBeatRange range | AVMusicTrack * sourceTrack | AVMusicTimeStamp insertStartBeat	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	6ce57fcc2dc828e8
 method	c:objc(cs)AVMusicTrack(im)copyAndMergeEventsInRange:fromTrack:mergeAtBeat:	AVMusicTrackEditor			void	AVBeatRange range | AVMusicTrack * sourceTrack | AVMusicTimeStamp mergeStartBeat	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	7e427be14dcbd700
 method	c:objc(cs)AVMusicTrack(im)enumerateEventsInRange:usingBlock:	AVMusicTrackEditor			void	AVBeatRange range | AVMusicEventEnumerationBlock block	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	7bfe1083d3218f40
-typedef	c:@T@AVMusicEventEnumerationBlock	-			void (^)(AVMusicEvent * _Nonnull, AVMusicTimeStamp * _Nonnull, BOOL * _Nonnull)	-	-	-	-	dfd1525f59597878
-typedef	c:@T@AVAudioSinkNodeReceiverBlock	-			OSStatus (^)(const AudioTimeStamp * _Nonnull, AVAudioFrameCount, const AudioBufferList * _Nonnull)	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	70b1962e4301ea57
+typedef	c:@T@AVMusicEventEnumerationBlock	-			void ((^))(AVMusicEvent *, AVMusicTimeStamp *, BOOL *)	-	-	-	-	9c12e0dd0fc95101
+typedef	c:@T@AVAudioSinkNodeReceiverBlock	-			OSStatus ((^))(const AudioTimeStamp *, AVAudioFrameCount, const AudioBufferList *)	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	841fc470996c75d4
 interface	c:objc(cs)AVAudioSinkNode	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	0eed5c15e483ed62
 super	-	AVAudioSinkNode	AVAudioNode		-	-	-	-	-	1790d67273e25f5e
 method	c:objc(cs)AVAudioSinkNode(im)init	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	e782002030f33423
 method	c:objc(cs)AVAudioSinkNode(im)initWithReceiverBlock:	-			instancetype	AVAudioSinkNodeReceiverBlock block	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	b9c7d29148073821
-typedef	c:@T@AVAudioSourceNodeRenderBlock	-			OSStatus (^)(BOOL * _Nonnull, const AudioTimeStamp * _Nonnull, AVAudioFrameCount, AudioBufferList * _Nonnull)	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	26d423a52f235ad5
+typedef	c:@T@AVAudioSourceNodeRenderBlock	-			OSStatus ((^))(BOOL *, const AudioTimeStamp *, AVAudioFrameCount, AudioBufferList *)	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	123c06a9d1e3469a
 interface	c:objc(cs)AVAudioSourceNode	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	b5df13dcd27979a7
 super	-	AVAudioSourceNode	AVAudioNode		-	-	-	-	-	57ae237d7ca1494f
 conforms	-	AVAudioSourceNode	AVAudioMixing		-	-	-	-	-	f95f884f7b84f31b
@@ -1057,17 +1057,17 @@ property	c:objc(cs)AVAudioUnitComponent(py)localizedTypeName	-			NSString *	-	re
 property	c:objc(cs)AVAudioUnitComponent(py)manufacturerName	-			NSString *	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	d827397c37bf6e83
 property	c:objc(cs)AVAudioUnitComponent(py)version	-			NSUInteger	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	7f446eb30585bea4
 property	c:objc(cs)AVAudioUnitComponent(py)versionString	-			NSString *	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	36c703bfdb2de1da
-property	c:objc(cs)AVAudioUnitComponent(py)componentURL	-			NS_DEPRECATED NSURL *	-	readonly,nonatomic	ios=-/-/-/1	-	8f8c27439aeee358
-property	c:objc(cs)AVAudioUnitComponent(py)availableArchitectures	-			API_AVAILABLE NSArray<NSNumber *> *	-	readonly,nonatomic	ios=-/-/-/1,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cc34a88b0d16b407
+property	c:objc(cs)AVAudioUnitComponent(py)componentURL	-			NSURL *	-	readonly,nonatomic	ios=-/-/-/1	-	3dcf2941e887d516
+property	c:objc(cs)AVAudioUnitComponent(py)availableArchitectures	-			NSArray<NSNumber *> *	-	readonly,nonatomic	ios=-/-/-/1,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	02ff6c2c57170264
 property	c:objc(cs)AVAudioUnitComponent(py)sandboxSafe	-			BOOL	-	readonly,nonatomic,getter=isSandboxSafe	ios=9.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	db4aa73e1bc8c9c9
 property	c:objc(cs)AVAudioUnitComponent(py)hasMIDIInput	-			BOOL	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	523b2ea258da5820
 property	c:objc(cs)AVAudioUnitComponent(py)hasMIDIOutput	-			BOOL	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	2b278e5a627340a7
 property	c:objc(cs)AVAudioUnitComponent(py)audioComponent	-			AudioComponent	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	6598f8e9f498e4c9
-property	c:objc(cs)AVAudioUnitComponent(py)userTagNames	-			API_AVAILABLE NSArray<NSString *> *	-	copy	ios=-/-/-/1,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	21624bfb3e3af9e7
+property	c:objc(cs)AVAudioUnitComponent(py)userTagNames	-			NSArray<NSString *> *	-	copy	ios=-/-/-/1,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6e447f033df19c46
 property	c:objc(cs)AVAudioUnitComponent(py)allTagNames	-			NSArray<NSString *> *	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	61996fda6f8b0dde
 property	c:objc(cs)AVAudioUnitComponent(py)audioComponentDescription	-			AudioComponentDescription	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	d7ba15276bbe8034
-property	c:objc(cs)AVAudioUnitComponent(py)iconURL	-			API_AVAILABLE NSURL *	-	readonly,nonatomic	ios=-/-/-/1,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ffa4cd03c2099458
-property	c:objc(cs)AVAudioUnitComponent(py)icon	-			API_UNAVAILABLE UIImage *	-	readonly,nonatomic	ios=16.0/-/-/0,macos=-/-/-/1,tvos=16.0/-/-/0,watchos=-/-/-/1	-	9adf5d7d3b699b43
+property	c:objc(cs)AVAudioUnitComponent(py)iconURL	-			NSURL *	-	readonly,nonatomic	ios=-/-/-/1,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d172a5615e3d0001
+property	c:objc(cs)AVAudioUnitComponent(py)icon	-			UIImage *	-	readonly,nonatomic	ios=16.0/-/-/0,macos=-/-/-/1,tvos=16.0/-/-/0,watchos=-/-/-/1	-	fa6eedaece8b7424
 property	c:objc(cs)AVAudioUnitComponent(py)passesAUVal	-			BOOL	-	readonly,nonatomic	ios=16.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	76b0a71797282ad8
 property	c:objc(cs)AVAudioUnitComponent(py)hasCustomView	-			BOOL	-	readonly,nonatomic	ios=-/-/-/1,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d8e53e8f76a79390
 property	c:objc(cs)AVAudioUnitComponent(py)configurationDictionary	-			NSDictionary<NSString *,id> *	-	readonly,nonatomic	ios=16.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3d4f8d177f001c8b
@@ -1159,7 +1159,7 @@ property	c:objc(cs)AVAudioUnitTimePitch(py)overlap	-			float	-	nonatomic	ios=8.0
 interface	c:objc(cs)AVAudioUnitVarispeed	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	10146233b1ed47eb
 super	-	AVAudioUnitVarispeed	AVAudioUnitTimeEffect		-	-	-	-	-	1090f1b100823882
 property	c:objc(cs)AVAudioUnitVarispeed(py)rate	-			float	-	nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	aa5ad89de0f52c56
-typedef	c:@T@AVMIDIPlayerCompletionHandler	-			void (^)(void)	-	-	-	-	728a0bc3f616e2be
+typedef	c:@T@AVMIDIPlayerCompletionHandler	-			void ((^))(void)	-	-	-	-	637ce4d5190cdc6e
 interface	c:objc(cs)AVMIDIPlayer	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	34e6155190f370db
 super	-	AVMIDIPlayer	NSObject		-	-	-	-	-	07ed51d6c116076c
 method	c:objc(cs)AVMIDIPlayer(im)initWithContentsOfURL:soundBankURL:error:	-			instancetype	NSURL * inURL | NSURL * bankURL | NSError * _Nullable * outError	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	e78bacce7f571d07
@@ -1325,8 +1325,8 @@ var	c:@AVSpeechUtteranceMaximumSpeechRate	-			const float	-	-	ios=7.0/-/-/0,maco
 var	c:@AVSpeechUtteranceDefaultSpeechRate	-			const float	-	-	ios=7.0/-/-/0,macos=10.14/-/-/0,tvos=7.0/-/-/0,watchos=1.0/-/-/0	-	ba286e93198b21bd
 var	c:@AVSpeechSynthesisVoiceIdentifierAlex	-			NSString *const	-	-	ios=9.0/-/-/0,macos=10.14/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	1b13c58f6e189610
 var	c:@AVSpeechSynthesisIPANotationAttribute	-			NSString *const	-	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	e4f13e0ea093a006
-typedef	c:@T@AVSpeechSynthesizerBufferCallback	-			void (^)(AVAudioBuffer * _Nonnull)	-	-	-	-	9fccc2b822688e8e
-typedef	c:@T@AVSpeechSynthesizerMarkerCallback	-			void (^)(NSArray<AVSpeechSynthesisMarker *> * _Nonnull)	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	e1fd893dec3baf58
+typedef	c:@T@AVSpeechSynthesizerBufferCallback	-			void ((^))(AVAudioBuffer *)	-	-	-	-	73074611a455d2d8
+typedef	c:@T@AVSpeechSynthesizerMarkerCallback	-			void ((^))(NSArray<AVSpeechSynthesisMarker *> *)	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	0285d30ae9f102b0
 typedef	c:@T@AVSpeechSynthesisPersonalVoiceAuthorizationStatus	-			enum AVSpeechSynthesisPersonalVoiceAuthorizationStatus	-	-	-	-	6a1a935fc918cc1d
 enum	c:@E@AVSpeechSynthesisPersonalVoiceAuthorizationStatus	-			NSUInteger	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	04d857bc02f07f45
 enumconst	c:@E@AVSpeechSynthesisPersonalVoiceAuthorizationStatus@AVSpeechSynthesisPersonalVoiceAuthorizationStatusNotDetermined	AVSpeechSynthesisPersonalVoiceAuthorizationStatus			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	b83ccf421ebda27a
@@ -1383,7 +1383,7 @@ method	c:objc(cs)AVSpeechSynthesizer(im)writeUtterance:toBufferCallback:toMarker
 method	c:objc(cs)AVSpeechSynthesizer(im)stopSpeakingAtBoundary:	-			BOOL	AVSpeechBoundary boundary	-	ios=7.0/-/-/0	-	cdb7c3858e4de500
 method	c:objc(cs)AVSpeechSynthesizer(im)pauseSpeakingAtBoundary:	-			BOOL	AVSpeechBoundary boundary	-	ios=7.0/-/-/0	-	3b6076fc1e001a69
 method	c:objc(cs)AVSpeechSynthesizer(im)continueSpeaking	-			BOOL	-	-	ios=7.0/-/-/0	-	44c4ccceb4908407
-property	c:objc(cs)AVSpeechSynthesizer(py)outputChannels	-			API_UNAVAILABLE NSArray<AVAudioSessionChannelDescription *> *	-	retain,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	1ac227cb67a838f0
+property	c:objc(cs)AVSpeechSynthesizer(py)outputChannels	-			NSArray<AVAudioSessionChannelDescription *> *	-	retain,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	ed253e407bbed09f
 property	c:objc(cs)AVSpeechSynthesizer(py)usesApplicationAudioSession	-			BOOL	-	assign,nonatomic	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	d2c7a3f6cac8355a
 property	c:objc(cs)AVSpeechSynthesizer(py)mixToTelephonyUplink	-			BOOL	-	assign,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/-/-/0	-	1e97cc0d9d185374
 method	c:objc(cs)AVSpeechSynthesizer(cm)requestPersonalVoiceAuthorizationWithCompletionHandler:	-			void	void (^)(AVSpeechSynthesisPersonalVoiceAuthorizationStatus) handler	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	fda51120a99622a0
@@ -1404,8 +1404,8 @@ conforms	-	AVSpeechSynthesisMarker	NSCopying		-	-	-	-	-	fbc007e27ff5a36c
 property	c:objc(cs)AVSpeechSynthesisMarker(py)mark	-			AVSpeechSynthesisMarkerMark	-	assign,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	0b0d92d6d346774b
 property	c:objc(cs)AVSpeechSynthesisMarker(py)byteSampleOffset	-			NSUInteger	-	assign,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	70ec6f6849013780
 property	c:objc(cs)AVSpeechSynthesisMarker(py)textRange	-			NSRange	-	assign,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	2d1d3a4f455dcf15
-property	c:objc(cs)AVSpeechSynthesisMarker(py)bookmarkName	-			NS_AVAILABLE NSString *	-	copy,nonatomic	ios=17.0/-/-/0	-	0789757a1e4e6884
-property	c:objc(cs)AVSpeechSynthesisMarker(py)phoneme	-			NS_AVAILABLE NSString *	-	copy,nonatomic	ios=17.0/-/-/0	-	2b1c1d6df6e7e82f
+property	c:objc(cs)AVSpeechSynthesisMarker(py)bookmarkName	-			NSString *	-	copy,nonatomic	ios=17.0/-/-/0	-	8b94d5ab45786b87
+property	c:objc(cs)AVSpeechSynthesisMarker(py)phoneme	-			NSString *	-	copy,nonatomic	ios=17.0/-/-/0	-	5a22be10c20ec37a
 method	c:objc(cs)AVSpeechSynthesisMarker(im)initWithMarkerType:forTextRange:atByteSampleOffset:	-			instancetype	AVSpeechSynthesisMarkerMark type | NSRange range | NSUInteger byteSampleOffset	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	6c3b00a912b87bcb
 method	c:objc(cs)AVSpeechSynthesisMarker(im)initWithWordRange:atByteSampleOffset:	-			instancetype	NSRange range | NSInteger byteSampleOffset	-	ios=17.0/-/-/0	-	1820d4b17c98071a
 method	c:objc(cs)AVSpeechSynthesisMarker(im)initWithSentenceRange:atByteSampleOffset:	-			instancetype	NSRange range | NSInteger byteSampleOffset	-	ios=17.0/-/-/0	-	4c3e8a40eb5652e0
@@ -1443,7 +1443,7 @@ property	c:objc(cs)AVSpeechSynthesisProviderAudioUnit(py)speechVoices	-			NSArra
 property	c:objc(cs)AVSpeechSynthesisProviderAudioUnit(py)speechSynthesisOutputMetadataBlock	-			AVSpeechSynthesisProviderOutputBlock	-	copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	64bdd6be8cf86f11
 method	c:objc(cs)AVSpeechSynthesisProviderAudioUnit(im)synthesizeSpeechRequest:	-			void	AVSpeechSynthesisProviderRequest * speechRequest	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	21f60f523cd91b84
 method	c:objc(cs)AVSpeechSynthesisProviderAudioUnit(im)cancelSpeechRequest	-			void	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	832060843932d81e
-typedef	c:@T@AVSpeechSynthesisProviderOutputBlock	-			void (^)(NSArray<AVSpeechSynthesisMarker *> * _Nonnull, AVSpeechSynthesisProviderRequest * _Nonnull)	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	8f4f9293955af835
+typedef	c:@T@AVSpeechSynthesisProviderOutputBlock	-			void ((^))(NSArray<AVSpeechSynthesisMarker *> *, AVSpeechSynthesisProviderRequest *)	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	d910ab3a9ccd2639
 typedef	c:@T@AVAudioApplicationRecordPermission	-			enum AVAudioApplicationRecordPermission	-	-	-	-	005e07a364a7ad14
 enum	c:@E@AVAudioApplicationRecordPermission	-			NSInteger	-	-	-	-	4eace3554493ef2f
 enumconst	c:@E@AVAudioApplicationRecordPermission@AVAudioApplicationRecordPermissionUndetermined	AVAudioApplicationRecordPermission			-	-	-	-	-	60d1aed9bb2e2526
@@ -1459,7 +1459,7 @@ var	c:@AVAudioApplicationInputMuteStateChangeNotification	-			const NSNotificati
 var	c:@AVAudioApplicationMuteStateKey	-			NSString *const	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0,xros=26.0/-/-/0	-	145c3ebc37aad53b
 interface	c:objc(cs)AVAudioApplication	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	5beaf9882c92e8e1
 super	-	AVAudioApplication	NSObject		-	-	-	-	-	00111bd488eb2079
-property	c:objc(cs)AVAudioApplication(cpy)sharedInstance	-			NS_SWIFT_NAME AVAudioApplication *	-	readonly,class	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	3c642e99a9bdd61b
+property	c:objc(cs)AVAudioApplication(cpy)sharedInstance	-			AVAudioApplication *	-	readonly,class	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	d8f3569636ea6f6a
 method	c:objc(cs)AVAudioApplication(im)init	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	e0759f8bd8ce47f6
 method	c:objc(cs)AVAudioApplication(im)setInputMuted:error:	-			BOOL	BOOL muted | NSError * _Nullable * outError	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0,xros=26.0/-/-/0	-	22bbb8d37b61acc4
 property	c:objc(cs)AVAudioApplication(py)inputMuted	-			BOOL	-	readonly,nonatomic,getter=isInputMuted	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0,xros=26.0/-/-/0	-	c2e8ad9cda2347f8

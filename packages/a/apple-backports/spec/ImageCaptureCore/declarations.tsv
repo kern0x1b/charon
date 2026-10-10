@@ -52,12 +52,12 @@ property	c:objc(cs)ICDevice(py)icon	-			CGImageRef	-	readonly,nonatomic	ios=13.0
 property	c:objc(cs)ICDevice(py)systemSymbolName	-			NSString *	-	readonly,copy,nonatomic	ios=15.2/-/-/0,macos=12.0/-/-/0	-	b859551786856f69
 property	c:objc(cs)ICDevice(py)transportType	-			NSString *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=10.4/-/-/0	-	2e9ae501fda701dc
 property	c:objc(cs)ICDevice(py)UUIDString	-			NSString *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=10.4/-/-/0	-	ebc52c129d23921f
-property	c:objc(cs)ICDevice(py)locationDescription	-			IC_AVAILABLE NSString *	-	readonly,nonatomic	ios=-/-/-/1,macos=10.4/-/-/0	-	3e8f7fa0b0b69983
+property	c:objc(cs)ICDevice(py)locationDescription	-			NSString *	-	readonly,nonatomic	ios=-/-/-/1,macos=10.4/-/-/0	-	3010f86952857616
 property	c:objc(cs)ICDevice(py)hasOpenSession	-			BOOL	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.4/-/-/0	-	c87870b0dbd0bc95
 property	c:objc(cs)ICDevice(py)userData	-			NSMutableDictionary *	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.4/-/-/0	-	95340257ed26350c
-property	c:objc(cs)ICDevice(py)modulePath	-			IC_AVAILABLE NSString *	-	readonly,nonatomic	ios=-/-/-/1,macos=10.4/-/-/0	-	a97bfff34eab8c42
-property	c:objc(cs)ICDevice(py)moduleVersion	-			IC_AVAILABLE NSString *	-	readonly,nonatomic	ios=-/-/-/1,macos=10.4/-/-/0	-	5ca750ab39ef4b0d
-property	c:objc(cs)ICDevice(py)serialNumberString	-			IC_AVAILABLE NSString *	-	readonly,nonatomic	ios=-/-/-/1,macos=10.4/-/-/0	-	65419e5773491c35
+property	c:objc(cs)ICDevice(py)modulePath	-			NSString *	-	readonly,nonatomic	ios=-/-/-/1,macos=10.4/-/-/0	-	2b7cb6939e7050b1
+property	c:objc(cs)ICDevice(py)moduleVersion	-			NSString *	-	readonly,nonatomic	ios=-/-/-/1,macos=10.4/-/-/0	-	2d429119696199d9
+property	c:objc(cs)ICDevice(py)serialNumberString	-			NSString *	-	readonly,nonatomic	ios=-/-/-/1,macos=10.4/-/-/0	-	3c8fddf3442e4316
 property	c:objc(cs)ICDevice(py)usbLocationID	-			int	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.4/-/-/0	-	2e25426c24b6bf59
 property	c:objc(cs)ICDevice(py)usbProductID	-			int	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.4/-/-/0	-	8ac3732a26328ede
 property	c:objc(cs)ICDevice(py)usbVendorID	-			int	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.4/-/-/0	-	e54ae6f0bd252816
@@ -67,9 +67,9 @@ method	c:objc(cs)ICDevice(im)requestEject	-			void	-	-	ios=13.0/-/-/0,macos=10.4
 method	c:objc(cs)ICDevice(im)requestOpenSessionWithOptions:completion:	-			void	NSDictionary<ICSessionOptions,id> * options | void (^)(NSError * _Nullable) completion	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	db5c3c76ec14c5c1
 method	c:objc(cs)ICDevice(im)requestCloseSessionWithOptions:completion:	-			void	NSDictionary<ICSessionOptions,id> * options | void (^)(NSError * _Nullable) completion	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	6ac6348aa774c9a0
 method	c:objc(cs)ICDevice(im)requestEjectWithCompletion:	-			void	void (^)(NSError * _Nullable) completion	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	42084542f18a1e87
-property	c:objc(cs)ICDevice(py)autolaunchApplicationPath	-			IC_AVAILABLE NSString *	-	copy,nonatomic	ios=-/-/-/1,macos=10.4/-/-/0	-	27f70b3a199c6f3b
+property	c:objc(cs)ICDevice(py)autolaunchApplicationPath	-			NSString *	-	copy,nonatomic	ios=-/-/-/1,macos=10.4/-/-/0	-	7228e4bbcc4fd20d
 property	c:objc(cs)ICDevice(py)remote	-			BOOL	-	readonly,getter=isRemote	ios=-/-/-/1,macos=10.4/-/-/0	-	7a07a9894d01a54b
-property	c:objc(cs)ICDevice(py)persistentIDString	-			IC_AVAILABLE NSString *	-	readonly,nonatomic	ios=-/-/-/1,macos=10.4/-/-/0	-	651305ecbd8d29bd
+property	c:objc(cs)ICDevice(py)persistentIDString	-			NSString *	-	readonly,nonatomic	ios=-/-/-/1,macos=10.4/-/-/0	-	5c54e85ac170e7aa
 method	c:objc(cs)ICDevice(im)requestSendMessage:outData:maxReturnedDataSize:sendMessageDelegate:didSendMessageSelector:contextInfo:	-			void	unsigned int messageCode | NSData * data | unsigned int maxReturnedDataSize | id sendMessageDelegate | SEL selector | void * contextInfo	-	ios=-/-/-/1,macos=10.4/-/-/0	-	e5d77f92a65f35bf
 method	c:objc(cs)ICDevice(im)requestEjectOrDisconnect	-			void	-	-	ios=-/-/-/1,macos=10.4/10.15/-/0	-	65af2c9b55bb73dc
 method	c:objc(cs)ICDevice(im)requestYield	-			void	-	-	ios=-/-/-/1,macos=10.4/10.15/-/0	-	65e46177c109a702
@@ -231,7 +231,7 @@ property	c:objc(cs)ICCameraItem(py)device	-			ICCameraDevice *	-	readonly,nonato
 property	c:objc(cs)ICCameraItem(py)parentFolder	-			ICCameraFolder *	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.4/-/-/0	-	bf1909615f7afaff
 property	c:objc(cs)ICCameraItem(py)name	-			NSString *	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.4/-/-/0	-	ea3b3b9d3bb9379a
 property	c:objc(cs)ICCameraItem(py)UTI	-			NSString *	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.4/-/-/0	-	f5282e36560fa02f
-property	c:objc(cs)ICCameraItem(py)fileSystemPath	-			IC_AVAILABLE NSString *	-	readonly,nonatomic	ios=-/-/-/1,macos=10.4/-/-/0	-	8e2d7c03fde29022
+property	c:objc(cs)ICCameraItem(py)fileSystemPath	-			NSString *	-	readonly,nonatomic	ios=-/-/-/1,macos=10.4/-/-/0	-	c1c0a028c889f17e
 property	c:objc(cs)ICCameraItem(py)locked	-			BOOL	-	readonly,nonatomic,getter=isLocked	ios=13.0/-/-/0,macos=10.4/-/-/0	-	cb03c99dbc8e072e
 property	c:objc(cs)ICCameraItem(py)raw	-			BOOL	-	readonly,nonatomic,getter=isRaw	ios=13.0/-/-/0,macos=10.4/-/-/0	-	a783571038f6be00
 property	c:objc(cs)ICCameraItem(py)inTemporaryStore	-			BOOL	-	readonly,nonatomic,getter=isInTemporaryStore	ios=13.0/-/-/0,macos=10.4/-/-/0	-	85add56f5694f261
@@ -246,9 +246,9 @@ method	c:objc(cs)ICCameraItem(im)requestThumbnail	-			void	-	-	ios=13.0/-/-/0,ma
 method	c:objc(cs)ICCameraItem(im)requestMetadata	-			void	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	268a70e3e69ae848
 method	c:objc(cs)ICCameraItem(im)flushThumbnailCache	-			void	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	f7b179cdd73e9795
 method	c:objc(cs)ICCameraItem(im)flushMetadataCache	-			void	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	51d1c63284f85564
-property	c:objc(cs)ICCameraItem(py)thumbnailIfAvailable	-			IC_DEPRECATED_WITH_REPLACEMENT CGImageRef	-	readonly	macos=10.4/10.15/-/0	-	46ba471131ce36f3
-property	c:objc(cs)ICCameraItem(py)largeThumbnailIfAvailable	-			IC_DEPRECATED_WITH_REPLACEMENT CGImageRef	-	readonly	macos=10.4/10.15/-/0	-	77624e25428467d1
-property	c:objc(cs)ICCameraItem(py)metadataIfAvailable	-			IC_DEPRECATED_WITH_REPLACEMENT NSDictionary<NSString *,id> *	-	readonly	macos=10.4/10.15/-/0	-	e90022d22d5fdc4f
+property	c:objc(cs)ICCameraItem(py)thumbnailIfAvailable	-			CGImageRef	-	readonly	macos=10.4/10.15/-/0	-	a605b22c01e6582c
+property	c:objc(cs)ICCameraItem(py)largeThumbnailIfAvailable	-			CGImageRef	-	readonly	macos=10.4/10.15/-/0	-	1385d44c465ea641
+property	c:objc(cs)ICCameraItem(py)metadataIfAvailable	-			NSDictionary<NSString *,id> *	-	readonly	macos=10.4/10.15/-/0	-	ded10a56f44a7e21
 interface	c:objc(cs)ICCameraFile	-			-	-	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	a439c6fa127cfc53
 super	-	ICCameraFile	ICCameraItem		-	-	-	-	-	4fbad6fd3a0a9af6
 property	c:objc(cs)ICCameraFile(py)width	-			NSInteger	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.4/-/-/0	-	f296ca3da7a985c4
@@ -316,7 +316,7 @@ property	c:objc(cs)ICCameraDevice(py)ejectable	-			BOOL	-	readonly,nonatomic,get
 property	c:objc(cs)ICCameraDevice(py)locked	-			BOOL	-	readonly,nonatomic,getter=isLocked	ios=13.0/-/-/0,macos=10.4/-/-/0	-	4726b1e3d5b39208
 property	c:objc(cs)ICCameraDevice(py)accessRestrictedAppleDevice	-			BOOL	-	readonly,nonatomic,getter=isAccessRestrictedAppleDevice	ios=13.0/-/-/0,macos=10.4/-/-/0	-	f2d071bdefa795a4
 property	c:objc(cs)ICCameraDevice(py)iCloudPhotosEnabled	-			BOOL	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.4/-/-/0	-	f92506de834291b7
-property	c:objc(cs)ICCameraDevice(py)mountPoint	-			IC_AVAILABLE NSString *	-	readonly,nonatomic	ios=-/-/-/1,macos=10.4/-/-/0	-	d03efde5ac591879
+property	c:objc(cs)ICCameraDevice(py)mountPoint	-			NSString *	-	readonly,nonatomic	ios=-/-/-/1,macos=10.4/-/-/0	-	50b443dbf3ed7b3d
 property	c:objc(cs)ICCameraDevice(py)mediaPresentation	-			ICMediaPresentation	-	nonatomic	ios=14.0/-/-/0,macos=10.11/-/-/0	-	e91c4ec587684466
 method	c:objc(cs)ICCameraDevice(im)filesOfType:	-			NSArray<NSString *> *	NSString * fileUTType	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	c546305e05296bc8
 method	c:objc(cs)ICCameraDevice(im)requestReadDataFromFile:atOffset:length:readDelegate:didReadDataSelector:contextInfo:	-			void	ICCameraFile * file | off_t offset | off_t length | id readDelegate | SEL selector | void * contextInfo	-	ios=15.2/-/-/0,macos=10.4/-/-/0	-	c2848ea501b171c9
@@ -384,13 +384,13 @@ property	c:objc(cs)ICDeviceBrowser(py)browsing	-			BOOL	-	readonly,getter=isBrow
 property	c:objc(cs)ICDeviceBrowser(py)suspended	-			BOOL	-	readonly,getter=isSuspended	ios=14.0/-/-/0,macos=-/-/-/1	-	87622e3f42238d19
 property	c:objc(cs)ICDeviceBrowser(py)browsedDeviceTypeMask	-			ICDeviceTypeMask	-	-	ios=15.2/-/-/0,macos=10.4/-/-/0	-	1caf79bf1815b4ba
 property	c:objc(cs)ICDeviceBrowser(py)devices	-			NSArray<ICDevice *> *	-	readonly	ios=13.0/-/-/0,macos=10.4/-/-/0	-	85817ee1c15e72d6
-property	c:objc(cs)ICDeviceBrowser(py)preferredDevice	-			IC_AVAILABLE ICDevice *	-	readonly,strong,nonatomic	ios=-/-/-/1,macos=10.4/-/-/0	-	8ed997bc66f9d351
+property	c:objc(cs)ICDeviceBrowser(py)preferredDevice	-			ICDevice *	-	readonly,strong,nonatomic	ios=-/-/-/1,macos=10.4/-/-/0	-	92701e0495bbbb67
 method	c:objc(cs)ICDeviceBrowser(im)init	-			instancetype	-	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	3ee4c8dca67913ff
 method	c:objc(cs)ICDeviceBrowser(im)start	-			void	-	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	3e598a77dbdb5fd8
 method	c:objc(cs)ICDeviceBrowser(im)stop	-			void	-	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	bfa6df8a59649b7a
-property	c:objc(cs)ICDeviceBrowser(py)contentsAuthorizationStatus	-			IC_UNAVAILABLE ICAuthorizationStatus	-	readonly,copy,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1	-	4921e0fe10474024
+property	c:objc(cs)ICDeviceBrowser(py)contentsAuthorizationStatus	-			ICAuthorizationStatus	-	readonly,copy,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1	-	7b4a6693f6ad63d7
 method	c:objc(cs)ICDeviceBrowser(im)requestContentsAuthorizationWithCompletion:	-			void	void (^)(ICAuthorizationStatus _Nonnull) completion	-	ios=14.0/-/-/0,macos=-/-/-/1	-	521bf41918659556
-property	c:objc(cs)ICDeviceBrowser(py)controlAuthorizationStatus	-			IC_UNAVAILABLE ICAuthorizationStatus	-	readonly,copy,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1	-	34020b79a5286cd0
+property	c:objc(cs)ICDeviceBrowser(py)controlAuthorizationStatus	-			ICAuthorizationStatus	-	readonly,copy,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1	-	6311e838630b12fb
 method	c:objc(cs)ICDeviceBrowser(im)requestControlAuthorizationWithCompletion:	-			void	void (^)(ICAuthorizationStatus _Nonnull) completion	-	ios=14.0/-/-/0,macos=-/-/-/1	-	d7278951ba83030f
 method	c:objc(cs)ICDeviceBrowser(im)resetContentsAuthorizationWithCompletion:	-			void	void (^)(ICAuthorizationStatus _Nonnull) completion	-	ios=15.0/-/-/0,macos=-/-/-/1	-	2a1db8102d829db4
 method	c:objc(cs)ICDeviceBrowser(im)resetControlAuthorizationWithCompletion:	-			void	void (^)(ICAuthorizationStatus _Nonnull) completion	-	ios=15.0/-/-/0,macos=-/-/-/1	-	c586cc7218067f59
@@ -606,12 +606,12 @@ property	c:objc(cs)ICScannerBandData(py)bitsPerComponent	-			NSUInteger	-	readon
 property	c:objc(cs)ICScannerBandData(py)numComponents	-			NSUInteger	-	readonly	ios=-/-/-/1,macos=10.4/-/-/0	-	e6b16deaf9fb3b02
 property	c:objc(cs)ICScannerBandData(py)bigEndian	-			BOOL	-	readonly,getter=isBigEndian	ios=-/-/-/1,macos=10.4/-/-/0	-	153e77614e3e4d2c
 property	c:objc(cs)ICScannerBandData(py)pixelDataType	-			ICScannerPixelDataType	-	readonly	ios=-/-/-/1,macos=10.4/-/-/0	-	46c12cf24c91cb77
-property	c:objc(cs)ICScannerBandData(py)colorSyncProfilePath	-			IC_AVAILABLE NSString *	-	readonly,strong	ios=-/-/-/1,macos=10.4/-/-/0	-	212dd882c1f922c8
+property	c:objc(cs)ICScannerBandData(py)colorSyncProfilePath	-			NSString *	-	readonly,strong	ios=-/-/-/1,macos=10.4/-/-/0	-	2b7e6ee823713ee0
 property	c:objc(cs)ICScannerBandData(py)bytesPerRow	-			NSUInteger	-	readonly	ios=-/-/-/1,macos=10.4/-/-/0	-	c5085b8294d3482e
 property	c:objc(cs)ICScannerBandData(py)dataStartRow	-			NSUInteger	-	readonly	ios=-/-/-/1,macos=10.4/-/-/0	-	8e818b64db6cdb43
 property	c:objc(cs)ICScannerBandData(py)dataNumRows	-			NSUInteger	-	readonly	ios=-/-/-/1,macos=10.4/-/-/0	-	e5813a4d5746ff0c
 property	c:objc(cs)ICScannerBandData(py)dataSize	-			NSUInteger	-	readonly	ios=-/-/-/1,macos=10.4/-/-/0	-	b5d42b38a2e12daf
-property	c:objc(cs)ICScannerBandData(py)dataBuffer	-			IC_AVAILABLE NSData *	-	readonly,strong	ios=-/-/-/1,macos=10.4/-/-/0	-	6639a96cf1d8172d
+property	c:objc(cs)ICScannerBandData(py)dataBuffer	-			NSData *	-	readonly,strong	ios=-/-/-/1,macos=10.4/-/-/0	-	3f9d7cd06ba79947
 var	c:@ICButtonTypeScan	-			NSString *const	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	94c4ca70dcb67d28
 var	c:@ICButtonTypeMail	-			NSString *const	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	fb6795f5cb33a6e6
 var	c:@ICButtonTypeCopy	-			NSString *const	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	cf637c7d38f46d11
@@ -636,14 +636,14 @@ method	c:objc(pl)ICScannerDeviceDelegate(im)scannerDevice:didCompleteOverviewSca
 method	c:objc(pl)ICScannerDeviceDelegate(im)scannerDevice:didCompleteScanWithError:	-			void	ICScannerDevice * scanner | NSError * error	optional	ios=-/-/-/1,macos=10.4/-/-/0	-	b72f92b3ad9c4bc7
 interface	c:objc(cs)ICScannerDevice	-			-	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	a6762ef2b07a39d5
 super	-	ICScannerDevice	ICDevice		-	-	-	-	-	53d4647602409ca1
-property	c:objc(cs)ICScannerDevice(py)availableFunctionalUnitTypes	-			IC_AVAILABLE NSArray<NSNumber *> *	-	readonly	ios=-/-/-/1,macos=10.4/-/-/0	-	dbd97b92b5fc70c4
-property	c:objc(cs)ICScannerDevice(py)selectedFunctionalUnit	-			IC_AVAILABLE ICScannerFunctionalUnit *	-	readonly	ios=-/-/-/1,macos=10.4/-/-/0	-	d2a38f494ae8f5e8
+property	c:objc(cs)ICScannerDevice(py)availableFunctionalUnitTypes	-			NSArray<NSNumber *> *	-	readonly	ios=-/-/-/1,macos=10.4/-/-/0	-	81236e70b5ce53d1
+property	c:objc(cs)ICScannerDevice(py)selectedFunctionalUnit	-			ICScannerFunctionalUnit *	-	readonly	ios=-/-/-/1,macos=10.4/-/-/0	-	166c556ae5562599
 property	c:objc(cs)ICScannerDevice(py)transferMode	-			ICScannerTransferMode	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	a10e93fa59be40fe
 property	c:objc(cs)ICScannerDevice(py)maxMemoryBandSize	-			UInt32	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	280890c930715ad8
-property	c:objc(cs)ICScannerDevice(py)downloadsDirectory	-			IC_AVAILABLE NSURL *	-	retain	ios=-/-/-/1,macos=10.4/-/-/0	-	1ff37fc764773b60
-property	c:objc(cs)ICScannerDevice(py)documentName	-			IC_AVAILABLE NSString *	-	copy	ios=-/-/-/1,macos=10.4/-/-/0	-	d0a57d15f7066eb4
-property	c:objc(cs)ICScannerDevice(py)documentUTI	-			IC_AVAILABLE NSString *	-	copy	ios=-/-/-/1,macos=10.4/-/-/0	-	5318c14dc8e8d72a
-property	c:objc(cs)ICScannerDevice(py)defaultUsername	-			IC_AVAILABLE NSString *	-	copy	ios=-/-/-/1,macos=10.4/-/-/0	-	0ca5d0711ab7a7b1
+property	c:objc(cs)ICScannerDevice(py)downloadsDirectory	-			NSURL *	-	retain	ios=-/-/-/1,macos=10.4/-/-/0	-	2c4da96f0280c409
+property	c:objc(cs)ICScannerDevice(py)documentName	-			NSString *	-	copy	ios=-/-/-/1,macos=10.4/-/-/0	-	4db23cf0bce39c1e
+property	c:objc(cs)ICScannerDevice(py)documentUTI	-			NSString *	-	copy	ios=-/-/-/1,macos=10.4/-/-/0	-	33952768151b7c0e
+property	c:objc(cs)ICScannerDevice(py)defaultUsername	-			NSString *	-	copy	ios=-/-/-/1,macos=10.4/-/-/0	-	e42e04f359be85a6
 method	c:objc(cs)ICScannerDevice(im)requestOpenSessionWithCredentials:password:	-			void	NSString * username | NSString * password	-	ios=-/-/-/1,macos=10.4/-/-/0	-	15e61f023d6fab65
 method	c:objc(cs)ICScannerDevice(im)requestSelectFunctionalUnit:	-			void	ICScannerFunctionalUnitType type	-	ios=-/-/-/1,macos=10.4/-/-/0	-	a872d614267bbb6b
 method	c:objc(cs)ICScannerDevice(im)requestOverviewScan	-			void	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	c989b00b85d355a6

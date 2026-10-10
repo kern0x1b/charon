@@ -117,7 +117,7 @@ interface	c:objc(cs)CIFilter	-			-	-	-	ios=5.0/-/-/0	-	14dce4d3d67750c2
 super	-	CIFilter	NSObject		-	-	-	-	-	2a97821f41c2001e
 conforms	-	CIFilter	NSSecureCoding		-	-	-	-	-	be6ed53bccf8d855
 conforms	-	CIFilter	NSCopying		-	-	-	-	-	27da604c6314f644
-property	c:objc(cs)CIFilter(py)outputImage	-			NS_AVAILABLE CIImage *	-	readonly,nonatomic	ios=5.0/-/-/0	-	526277be3b06e9da
+property	c:objc(cs)CIFilter(py)outputImage	-			CIImage *	-	readonly,nonatomic	ios=5.0/-/-/0	-	cf78ba479a66d33c
 property	c:objc(cs)CIFilter(py)name	-			NSString *	-	copy,nonatomic	ios=5.0/-/-/0	-	11f26712e3326e76
 method	c:objc(cs)CIFilter(im)name	-			NSString *	-	-	ios=5.0/-/-/0	-	302a55f3bbaedbc1
 method	c:objc(cs)CIFilter(im)setName:	-			void	NSString * aString	-	ios=10.0/-/-/0	-	c5c9e98c5b832903
@@ -1451,23 +1451,23 @@ method	c:objc(cs)CIColor(im)initWithRed:green:blue:	-			instancetype	CGFloat red
 method	c:objc(cs)CIColor(im)initWithRed:green:blue:alpha:colorSpace:	-			instancetype	CGFloat red | CGFloat green | CGFloat blue | CGFloat alpha | CGColorSpaceRef colorSpace	-	ios=10.0/-/-/0	-	f577831698e7b835
 method	c:objc(cs)CIColor(im)initWithRed:green:blue:colorSpace:	-			instancetype	CGFloat red | CGFloat green | CGFloat blue | CGColorSpaceRef colorSpace	-	ios=10.0/-/-/0	-	3a8f5842e1324418
 property	c:objc(cs)CIColor(py)numberOfComponents	-			size_t	-	readonly	ios=5.0/-/-/0	-	df60cedd9edf0ed2
-property	c:objc(cs)CIColor(py)components	-			NS_RETURNS_INNER_POINTER const CGFloat *	-	readonly	ios=5.0/-/-/0	-	29c0f3edd4c13a4c
+property	c:objc(cs)CIColor(py)components	-			const CGFloat *	-	readonly	ios=5.0/-/-/0	-	57e65358e298899d
 property	c:objc(cs)CIColor(py)alpha	-			CGFloat	-	readonly	ios=5.0/-/-/0	-	2612cd0733d70e3e
-property	c:objc(cs)CIColor(py)colorSpace	-			CF_RETURNS_NOT_RETAINED CGColorSpaceRef	-	readonly	ios=5.0/-/-/0	-	dafeda6c41a0c376
+property	c:objc(cs)CIColor(py)colorSpace	-			CGColorSpaceRef	-	readonly	ios=5.0/-/-/0	-	fa6947538e4b9ecd
 property	c:objc(cs)CIColor(py)red	-			CGFloat	-	readonly	ios=5.0/-/-/0	-	8f2ab63ff2eb5c09
 property	c:objc(cs)CIColor(py)green	-			CGFloat	-	readonly	ios=5.0/-/-/0	-	29f19aa37cedbfee
 property	c:objc(cs)CIColor(py)blue	-			CGFloat	-	readonly	ios=5.0/-/-/0	-	a30566a4cf226411
 property	c:objc(cs)CIColor(py)stringRepresentation	-			NSString *	-	readonly	ios=5.0/-/-/0	-	00ce41cbcfd27746
-property	c:objc(cs)CIColor(cpy)blackColor	-			NS_AVAILABLE CIColor *	-	readonly,strong,class	ios=10.0/-/-/0	-	a8d680d705cdfe44
-property	c:objc(cs)CIColor(cpy)whiteColor	-			NS_AVAILABLE CIColor *	-	readonly,strong,class	ios=10.0/-/-/0	-	7bc180782a2c2e58
-property	c:objc(cs)CIColor(cpy)grayColor	-			NS_AVAILABLE CIColor *	-	readonly,strong,class	ios=10.0/-/-/0	-	c6ab61adcff6b6c2
-property	c:objc(cs)CIColor(cpy)redColor	-			NS_AVAILABLE CIColor *	-	readonly,strong,class	ios=10.0/-/-/0	-	e1f37bcb39da8c88
-property	c:objc(cs)CIColor(cpy)greenColor	-			NS_AVAILABLE CIColor *	-	readonly,strong,class	ios=10.0/-/-/0	-	268b956a1f20dfa3
-property	c:objc(cs)CIColor(cpy)blueColor	-			NS_AVAILABLE CIColor *	-	readonly,strong,class	ios=10.0/-/-/0	-	33f2dca62756ed7d
-property	c:objc(cs)CIColor(cpy)cyanColor	-			NS_AVAILABLE CIColor *	-	readonly,strong,class	ios=10.0/-/-/0	-	6e5d3697ad7ab2a7
-property	c:objc(cs)CIColor(cpy)magentaColor	-			NS_AVAILABLE CIColor *	-	readonly,strong,class	ios=10.0/-/-/0	-	5f0f0915adca1b1f
-property	c:objc(cs)CIColor(cpy)yellowColor	-			NS_AVAILABLE CIColor *	-	readonly,strong,class	ios=10.0/-/-/0	-	cbfe2e86b90fc3f0
-property	c:objc(cs)CIColor(cpy)clearColor	-			NS_AVAILABLE CIColor *	-	readonly,strong,class	ios=10.0/-/-/0	-	21efa987b18832c7
+property	c:objc(cs)CIColor(cpy)blackColor	-			CIColor *	-	readonly,strong,class	ios=10.0/-/-/0	-	db92b6db6bc259ff
+property	c:objc(cs)CIColor(cpy)whiteColor	-			CIColor *	-	readonly,strong,class	ios=10.0/-/-/0	-	b95ad1b03e7a833e
+property	c:objc(cs)CIColor(cpy)grayColor	-			CIColor *	-	readonly,strong,class	ios=10.0/-/-/0	-	1cc473a5453a2368
+property	c:objc(cs)CIColor(cpy)redColor	-			CIColor *	-	readonly,strong,class	ios=10.0/-/-/0	-	b798d0fd7837a69c
+property	c:objc(cs)CIColor(cpy)greenColor	-			CIColor *	-	readonly,strong,class	ios=10.0/-/-/0	-	957c5a3d6f93ed1e
+property	c:objc(cs)CIColor(cpy)blueColor	-			CIColor *	-	readonly,strong,class	ios=10.0/-/-/0	-	7fa64dc07cc2b113
+property	c:objc(cs)CIColor(cpy)cyanColor	-			CIColor *	-	readonly,strong,class	ios=10.0/-/-/0	-	37ea33e984c207bd
+property	c:objc(cs)CIColor(cpy)magentaColor	-			CIColor *	-	readonly,strong,class	ios=10.0/-/-/0	-	8126b2f5a1e46447
+property	c:objc(cs)CIColor(cpy)yellowColor	-			CIColor *	-	readonly,strong,class	ios=10.0/-/-/0	-	9dd17697cba08bf3
+property	c:objc(cs)CIColor(cpy)clearColor	-			CIColor *	-	readonly,strong,class	ios=10.0/-/-/0	-	40d5730e2522927a
 interface	c:objc(cs)CIImage	-			-	-	-	ios=5.0/-/-/0	-	e375fe7661fd3a85
 super	-	CIImage	NSObject		-	-	-	-	-	36b9964e42af3035
 conforms	-	CIImage	NSSecureCoding		-	-	-	-	-	3f2883e2684e382d
@@ -1493,16 +1493,16 @@ method	c:objc(cs)CIImage(cm)imageWithIOSurface:	-			CIImage *	IOSurfaceRef surfa
 method	c:objc(cs)CIImage(cm)imageWithIOSurface:options:	-			CIImage *	IOSurfaceRef surface | NSDictionary<CIImageOption,id> * options	-	ios=5.0/-/-/0	-	598a32b4642161b7
 method	c:objc(cs)CIImage(cm)imageWithColor:	-			CIImage *	CIColor * color	-	ios=5.0/-/-/0	-	eea2772c954e9a70
 method	c:objc(cs)CIImage(cm)emptyImage	-			CIImage *	-	-	ios=5.0/-/-/0	-	b3439726be812f83
-property	c:objc(cs)CIImage(cpy)blackImage	-			NS_AVAILABLE CIImage *	-	readonly,strong,class	ios=13.0/-/-/0	-	77b976bd4aa2a872
-property	c:objc(cs)CIImage(cpy)whiteImage	-			NS_AVAILABLE CIImage *	-	readonly,strong,class	ios=13.0/-/-/0	-	3a2d33277c6dbf50
-property	c:objc(cs)CIImage(cpy)grayImage	-			NS_AVAILABLE CIImage *	-	readonly,strong,class	ios=13.0/-/-/0	-	b133f40c42476803
-property	c:objc(cs)CIImage(cpy)redImage	-			NS_AVAILABLE CIImage *	-	readonly,strong,class	ios=13.0/-/-/0	-	cc73f6219ff5f640
-property	c:objc(cs)CIImage(cpy)greenImage	-			NS_AVAILABLE CIImage *	-	readonly,strong,class	ios=13.0/-/-/0	-	8c4f6406cbe2c96a
-property	c:objc(cs)CIImage(cpy)blueImage	-			NS_AVAILABLE CIImage *	-	readonly,strong,class	ios=13.0/-/-/0	-	3425ba699c90dd4c
-property	c:objc(cs)CIImage(cpy)cyanImage	-			NS_AVAILABLE CIImage *	-	readonly,strong,class	ios=13.0/-/-/0	-	d13f5c06c5831177
-property	c:objc(cs)CIImage(cpy)magentaImage	-			NS_AVAILABLE CIImage *	-	readonly,strong,class	ios=13.0/-/-/0	-	f20b7efe5ca47fab
-property	c:objc(cs)CIImage(cpy)yellowImage	-			NS_AVAILABLE CIImage *	-	readonly,strong,class	ios=13.0/-/-/0	-	1e599f80e295faeb
-property	c:objc(cs)CIImage(cpy)clearImage	-			NS_AVAILABLE CIImage *	-	readonly,strong,class	ios=13.0/-/-/0	-	4f43cfbce2345b2d
+property	c:objc(cs)CIImage(cpy)blackImage	-			CIImage *	-	readonly,strong,class	ios=13.0/-/-/0	-	5e60221a3c823272
+property	c:objc(cs)CIImage(cpy)whiteImage	-			CIImage *	-	readonly,strong,class	ios=13.0/-/-/0	-	a57f195cc36b34c2
+property	c:objc(cs)CIImage(cpy)grayImage	-			CIImage *	-	readonly,strong,class	ios=13.0/-/-/0	-	f9ae7b1507dc528b
+property	c:objc(cs)CIImage(cpy)redImage	-			CIImage *	-	readonly,strong,class	ios=13.0/-/-/0	-	c4b4d243b3765572
+property	c:objc(cs)CIImage(cpy)greenImage	-			CIImage *	-	readonly,strong,class	ios=13.0/-/-/0	-	7465eb1a12dde223
+property	c:objc(cs)CIImage(cpy)blueImage	-			CIImage *	-	readonly,strong,class	ios=13.0/-/-/0	-	6afdc73f3481b003
+property	c:objc(cs)CIImage(cpy)cyanImage	-			CIImage *	-	readonly,strong,class	ios=13.0/-/-/0	-	d11b9680a33a6faa
+property	c:objc(cs)CIImage(cpy)magentaImage	-			CIImage *	-	readonly,strong,class	ios=13.0/-/-/0	-	10598621d5db6cf6
+property	c:objc(cs)CIImage(cpy)yellowImage	-			CIImage *	-	readonly,strong,class	ios=13.0/-/-/0	-	dbfbbd986ca2e82f
+property	c:objc(cs)CIImage(cpy)clearImage	-			CIImage *	-	readonly,strong,class	ios=13.0/-/-/0	-	26d2b45b39dd67a5
 method	c:objc(cs)CIImage(im)initWithCGImage:	-			instancetype	CGImageRef image	-	ios=5.0/-/-/0	-	ea38d987bfabbe38
 method	c:objc(cs)CIImage(im)initWithCGImage:options:	-			instancetype	CGImageRef image | NSDictionary<CIImageOption,id> * options	-	ios=5.0/-/-/0	-	49e53a2bf3224a1d
 method	c:objc(cs)CIImage(im)initWithCGImageSource:index:options:	-			instancetype	CGImageSourceRef source | size_t index | NSDictionary<CIImageOption,id> * dict	-	ios=13.0/-/-/0	-	08e7cebb742bd4b1
@@ -1553,15 +1553,15 @@ method	c:objc(cs)CIImage(im)imageBySettingContentHeadroom:	-			CIImage *	float h
 method	c:objc(cs)CIImage(im)imageBySettingContentAverageLightLevel:	-			CIImage *	float average	-	ios=26.0/-/-/0	-	60ffa351c30215fd
 property	c:objc(cs)CIImage(py)extent	-			CGRect	-	readonly,nonatomic	ios=5.0/-/-/0	-	bfc6a655cbc57c8e
 property	c:objc(cs)CIImage(py)opaque	-			BOOL	-	readonly,nonatomic,getter=isOpaque	ios=5.0/-/-/0	-	b548093ad743ab4c
-property	c:objc(cs)CIImage(py)properties	-			NS_AVAILABLE NSDictionary<NSString *,id> *	-	readonly,atomic	ios=5.0/-/-/0	-	66fcd0336e9a73b6
-property	c:objc(cs)CIImage(py)definition	-			NS_AVAILABLE_MAC CIFilterShape *	-	readonly,atomic	ios=-/-/-/1	-	fee2f0bbb08fde49
-property	c:objc(cs)CIImage(py)url	-			NS_AVAILABLE NSURL *	-	readonly,atomic	ios=9.0/-/-/0	-	7d14533d4b8937a9
-property	c:objc(cs)CIImage(py)colorSpace	-			NS_AVAILABLE CGColorSpaceRef	-	readonly,atomic	ios=9.0/-/-/0	-	b2fd04dc92cdda51
+property	c:objc(cs)CIImage(py)properties	-			NSDictionary<NSString *,id> *	-	readonly,atomic	ios=5.0/-/-/0	-	5dc7a09524e4b365
+property	c:objc(cs)CIImage(py)definition	-			CIFilterShape *	-	readonly,atomic	ios=-/-/-/1	-	2cfa8028612be1d4
+property	c:objc(cs)CIImage(py)url	-			NSURL *	-	readonly,atomic	ios=9.0/-/-/0	-	28d5ddcb040fc7fe
+property	c:objc(cs)CIImage(py)colorSpace	-			CGColorSpaceRef	-	readonly,atomic	ios=9.0/-/-/0	-	244e06dadc93de75
 property	c:objc(cs)CIImage(py)contentHeadroom	-			float	-	readonly,nonatomic	ios=18.0/-/-/0	-	658fa659a29afc5f
 property	c:objc(cs)CIImage(py)contentAverageLightLevel	-			float	-	readonly,nonatomic	ios=26.0/-/-/0	-	c6f9654ad6c4634b
-property	c:objc(cs)CIImage(py)pixelBuffer	-			NS_AVAILABLE CVPixelBufferRef	-	readonly,nonatomic	ios=10.0/-/-/0	-	1999e3be119cdb06
-property	c:objc(cs)CIImage(py)CGImage	-			NS_AVAILABLE CGImageRef	-	readonly,nonatomic	ios=10.0/-/-/0	-	dce87c3d0ee65cad
-property	c:objc(cs)CIImage(py)metalTexture	-			NS_AVAILABLE id<MTLTexture>	-	readonly,nonatomic	ios=18.0/-/-/0	-	87861ec5af5fed17
+property	c:objc(cs)CIImage(py)pixelBuffer	-			CVPixelBufferRef	-	readonly,nonatomic	ios=10.0/-/-/0	-	45524d0b9b83e3a5
+property	c:objc(cs)CIImage(py)CGImage	-			CGImageRef	-	readonly,nonatomic	ios=10.0/-/-/0	-	f84e048373da6ea0
+property	c:objc(cs)CIImage(py)metalTexture	-			id<MTLTexture>	-	readonly,nonatomic	ios=18.0/-/-/0	-	5b0cff17e9d27bae
 method	c:objc(cs)CIImage(im)regionOfInterestForImage:inRect:	-			CGRect	CIImage * image | CGRect rect	-	ios=6.0/-/-/0	-	cabc2993af123931
 typedef	c:@T@CIFormat	-			int	-	-	-	-	b2bef5fd9a66049f
 var	c:@kCIFormatARGB8	-			const CIFormat	-	-	ios=6.0/-/-/0	-	0249413a59c55905
@@ -1631,19 +1631,19 @@ category	c:objc(cy)CIImage@LabConversion	-			-	-	-	ios=5.0/-/-/0	-	ccaa486f44aad
 method	c:objc(cs)CIImage(im)imageByConvertingWorkingSpaceToLab	LabConversion			CIImage *	-	-	ios=16.0/-/-/0	-	b1ec30c58faa4519
 method	c:objc(cs)CIImage(im)imageByConvertingLabToWorkingSpace	LabConversion			CIImage *	-	-	ios=16.0/-/-/0	-	1ac219c6fbc87c8e
 category	c:objc(cy)CIImage@AVDepthData	-			-	-	-	ios=5.0/-/-/0	-	c121fcea9a153803
-property	c:objc(cs)CIImage(py)depthData	AVDepthData			NS_AVAILABLE AVDepthData *	-	readonly,nonatomic	ios=11.0/-/-/0	-	f7b15d4b0fbb57f5
+property	c:objc(cs)CIImage(py)depthData	AVDepthData			AVDepthData *	-	readonly,nonatomic	ios=11.0/-/-/0	-	9f56870f2661e098
 method	c:objc(cs)CIImage(im)initWithDepthData:options:	AVDepthData			instancetype	AVDepthData * data | NSDictionary<NSString *,id> * options	-	ios=11.0/-/-/0	-	9a9da0e124d5b11f
 method	c:objc(cs)CIImage(im)initWithDepthData:	AVDepthData			instancetype	AVDepthData * data	-	ios=11.0/-/-/0	-	ff6e52842eeec452
 method	c:objc(cs)CIImage(cm)imageWithDepthData:options:	AVDepthData			instancetype	AVDepthData * data | NSDictionary<NSString *,id> * options	-	ios=11.0/-/-/0	-	9362dd83d1722d96
 method	c:objc(cs)CIImage(cm)imageWithDepthData:	AVDepthData			instancetype	AVDepthData * data	-	ios=11.0/-/-/0	-	df76f10d8c62a257
 category	c:objc(cy)CIImage@AVPortraitEffectsMatte	-			-	-	-	ios=5.0/-/-/0	-	d4933f21b11cbbe2
-property	c:objc(cs)CIImage(py)portraitEffectsMatte	AVPortraitEffectsMatte			NS_AVAILABLE AVPortraitEffectsMatte *	-	readonly,nonatomic	ios=12.0/-/-/0	-	3387fac6d38781d1
+property	c:objc(cs)CIImage(py)portraitEffectsMatte	AVPortraitEffectsMatte			AVPortraitEffectsMatte *	-	readonly,nonatomic	ios=12.0/-/-/0	-	fd8b96d1eeb230ee
 method	c:objc(cs)CIImage(im)initWithPortaitEffectsMatte:options:	AVPortraitEffectsMatte			instancetype	AVPortraitEffectsMatte * matte | NSDictionary<CIImageOption,id> * options	-	ios=12.0/-/-/0	-	c32643b337e49577
 method	c:objc(cs)CIImage(im)initWithPortaitEffectsMatte:	AVPortraitEffectsMatte			instancetype	AVPortraitEffectsMatte * matte	-	ios=11.0/-/-/0	-	7692d047b8e0f846
 method	c:objc(cs)CIImage(cm)imageWithPortaitEffectsMatte:options:	AVPortraitEffectsMatte			instancetype	AVPortraitEffectsMatte * matte | NSDictionary<CIImageOption,id> * options	-	ios=12.0/-/-/0	-	cb0fb76755caa0de
 method	c:objc(cs)CIImage(cm)imageWithPortaitEffectsMatte:	AVPortraitEffectsMatte			instancetype	AVPortraitEffectsMatte * matte	-	ios=12.0/-/-/0	-	9b81ade5c09cf8ff
 category	c:objc(cy)CIImage@AVSemanticSegmentationMatte	-			-	-	-	ios=5.0/-/-/0	-	7d54b1afb5c7f0ad
-property	c:objc(cs)CIImage(py)semanticSegmentationMatte	AVSemanticSegmentationMatte			NS_AVAILABLE AVSemanticSegmentationMatte *	-	readonly,nonatomic	ios=13.0/-/-/0	-	4bcd8f877903d9f2
+property	c:objc(cs)CIImage(py)semanticSegmentationMatte	AVSemanticSegmentationMatte			AVSemanticSegmentationMatte *	-	readonly,nonatomic	ios=13.0/-/-/0	-	6e32f43594847185
 method	c:objc(cs)CIImage(im)initWithSemanticSegmentationMatte:options:	AVSemanticSegmentationMatte			instancetype	AVSemanticSegmentationMatte * matte | NSDictionary<CIImageOption,id> * options	-	ios=13.0/-/-/0	-	3d8a67000c35d951
 method	c:objc(cs)CIImage(im)initWithSemanticSegmentationMatte:	AVSemanticSegmentationMatte			instancetype	AVSemanticSegmentationMatte * matte	-	ios=13.0/-/-/0	-	4610310cea65ad42
 method	c:objc(cs)CIImage(cm)imageWithSemanticSegmentationMatte:options:	AVSemanticSegmentationMatte			instancetype	AVSemanticSegmentationMatte * matte | NSDictionary<CIImageOption,id> * options	-	ios=13.0/-/-/0	-	77c630a20a3ff019
@@ -1661,7 +1661,7 @@ method	c:objc(cs)CIContext(cm)contextWithMTLDevice:	-			CIContext *	id<MTLDevice
 method	c:objc(cs)CIContext(cm)contextWithMTLDevice:options:	-			CIContext *	id<MTLDevice> device | NSDictionary<CIContextOption,id> * options	-	ios=9.0/-/-/0	-	d56855f29733b61b
 method	c:objc(cs)CIContext(cm)contextWithMTLCommandQueue:	-			CIContext *	id<MTLCommandQueue> commandQueue	-	ios=13.0/-/-/0	-	5b87eafb9a28d542
 method	c:objc(cs)CIContext(cm)contextWithMTLCommandQueue:options:	-			CIContext *	id<MTLCommandQueue> commandQueue | NSDictionary<CIContextOption,id> * options	-	ios=13.0/-/-/0	-	8ddecbb781677bff
-property	c:objc(cs)CIContext(py)workingColorSpace	-			NS_AVAILABLE CGColorSpaceRef	-	readonly,nonatomic	ios=9.0/-/-/0	-	2c9c34c57eac8c44
+property	c:objc(cs)CIContext(py)workingColorSpace	-			CGColorSpaceRef	-	readonly,nonatomic	ios=9.0/-/-/0	-	13c8fcded9dd5918
 property	c:objc(cs)CIContext(py)workingFormat	-			CIFormat	-	readonly,nonatomic	ios=9.0/-/-/0	-	200e643fa376a710
 method	c:objc(cs)CIContext(im)drawImage:atPoint:fromRect:	-			void	CIImage * image | CGPoint atPoint | CGRect fromRect	-	ios=5.0/6.0/-/0	-	163b99052562bf20
 method	c:objc(cs)CIContext(im)drawImage:inRect:fromRect:	-			void	CIImage * image | CGRect inRect | CGRect fromRect	-	ios=5.0/-/-/0	-	40f1d78dd0d4e646
@@ -1734,7 +1734,7 @@ method	c:objc(cs)CIContext(im)depthBlurEffectFilterForImageData:options:	CIDepth
 method	c:objc(cs)CIContext(im)depthBlurEffectFilterForImage:disparityImage:portraitEffectsMatte:orientation:options:	CIDepthBlurEffect			CIFilter *	CIImage * image | CIImage * disparityImage | CIImage * portraitEffectsMatte | CGImagePropertyOrientation orientation | NSDictionary * options	-	ios=12.0/-/-/0	-	63790e0ca08c9c21
 method	c:objc(cs)CIContext(im)depthBlurEffectFilterForImage:disparityImage:portraitEffectsMatte:hairSemanticSegmentation:orientation:options:	CIDepthBlurEffect			CIFilter *	CIImage * image | CIImage * disparityImage | CIImage * portraitEffectsMatte | CIImage * hairSemanticSegmentation | CGImagePropertyOrientation orientation | NSDictionary * options	-	ios=13.0/-/-/0	-	ce510435be4f7435
 method	c:objc(cs)CIContext(im)depthBlurEffectFilterForImage:disparityImage:portraitEffectsMatte:hairSemanticSegmentation:glassesMatte:gainMap:orientation:options:	CIDepthBlurEffect			CIFilter *	CIImage * image | CIImage * disparityImage | CIImage * portraitEffectsMatte | CIImage * hairSemanticSegmentation | CIImage * glassesMatte | CIImage * gainMap | CGImagePropertyOrientation orientation | NSDictionary * options	-	ios=14.1/-/-/0	-	14dfbfacb14c323e
-typedef	c:@T@CIKernelROICallback	-			CGRect (^)(int, CGRect)	-	-	-	-	1a219c86e3eb5aa9
+typedef	c:@T@CIKernelROICallback	-			CGRect ((^))(int, CGRect)	-	-	-	-	a1e79d813fa539a3
 interface	c:objc(cs)CIKernel	-			-	-	-	ios=8.0/-/-/0	-	22ea6a8ad8c6117e
 super	-	CIKernel	NSObject		-	-	-	-	-	edc84a9eacaa2fa3
 method	c:objc(cs)CIKernel(cm)kernelsWithString:	-			NSArray<CIKernel *> *	NSString * string	-	ios=8.0/12.0/-/0	-	6d3f92faf625b42e
@@ -1743,7 +1743,7 @@ method	c:objc(cs)CIKernel(cm)kernelWithString:	-			instancetype	NSString * strin
 method	c:objc(cs)CIKernel(cm)kernelWithFunctionName:fromMetalLibraryData:error:	-			instancetype	NSString * name | NSData * data | NSError * _Nullable * error	-	ios=11.0/-/-/0	-	3411499c1ba75bc1
 method	c:objc(cs)CIKernel(cm)kernelWithFunctionName:fromMetalLibraryData:outputPixelFormat:error:	-			instancetype	NSString * name | NSData * data | CIFormat format | NSError * _Nullable * error	-	ios=11.0/-/-/0	-	7c1aee01fb7a6d53
 method	c:objc(cs)CIKernel(cm)kernelNamesFromMetalLibraryData:	-			NSArray<NSString *> *	NSData * data	-	ios=14.0/-/-/0	-	1e2d66caa238df8b
-property	c:objc(cs)CIKernel(py)name	-			NS_AVAILABLE NSString *	-	readonly,atomic	ios=8.0/-/-/0	-	0508574cdf579ad1
+property	c:objc(cs)CIKernel(py)name	-			NSString *	-	readonly,atomic	ios=8.0/-/-/0	-	2b6e09cc483e6ca1
 method	c:objc(cs)CIKernel(im)setROISelector:	-			void	SEL method	-	ios=9.0/-/-/0	-	398e10437d130af8
 method	c:objc(cs)CIKernel(im)applyWithExtent:roiCallback:arguments:	-			CIImage *	CGRect extent | CIKernelROICallback callback | NSArray<id> * args	-	ios=8.0/-/-/0	-	79822390809d468a
 interface	c:objc(cs)CIColorKernel	-			-	-	-	ios=8.0/-/-/0	-	e27d451c099363dd
@@ -1866,7 +1866,7 @@ property	c:objc(cs)CIQRCodeFeature(py)topRight	-			CGPoint	-	readonly	ios=8.0/-/
 property	c:objc(cs)CIQRCodeFeature(py)bottomLeft	-			CGPoint	-	readonly	ios=8.0/-/-/0	-	eb1f05159788930c
 property	c:objc(cs)CIQRCodeFeature(py)bottomRight	-			CGPoint	-	readonly	ios=8.0/-/-/0	-	e7c734047686a6a1
 property	c:objc(cs)CIQRCodeFeature(py)messageString	-			NSString *	-	readonly	ios=8.0/-/-/0	-	ee8afc7acfcd4863
-property	c:objc(cs)CIQRCodeFeature(py)symbolDescriptor	-			NS_AVAILABLE CIQRCodeDescriptor *	-	readonly	ios=11.0/-/-/0	-	45aec4f8f55b9632
+property	c:objc(cs)CIQRCodeFeature(py)symbolDescriptor	-			CIQRCodeDescriptor *	-	readonly	ios=11.0/-/-/0	-	c0fbdda83247d32f
 interface	c:objc(cs)CITextFeature	-			-	-	-	ios=9.0/-/-/0	-	036ebd72bd8dadde
 super	-	CITextFeature	CIFeature		-	-	-	-	-	a5ed66a1b2f38faa
 property	c:objc(cs)CITextFeature(py)bounds	-			CGRect	-	readonly	ios=9.0/-/-/0	-	5a622e681705ed2d
@@ -1901,7 +1901,7 @@ protocol	c:objc(pl)CIImageProcessorInput	-			-	-	-	ios=10.0/-/-/0	-	3db4d0c713b8
 property	c:objc(pl)CIImageProcessorInput(py)region	-			CGRect	-	readonly,nonatomic	ios=10.0/-/-/0	-	dff1cfe501e0a012
 property	c:objc(pl)CIImageProcessorInput(py)bytesPerRow	-			size_t	-	readonly,nonatomic	ios=10.0/-/-/0	-	03b1c67942553d88
 property	c:objc(pl)CIImageProcessorInput(py)format	-			CIFormat	-	readonly,nonatomic	ios=10.0/-/-/0	-	9cf5a40134a0e96c
-property	c:objc(pl)CIImageProcessorInput(py)baseAddress	-			NS_RETURNS_INNER_POINTER const void *	-	readonly,nonatomic	ios=10.0/-/-/0	-	ae7fb8566baf1327
+property	c:objc(pl)CIImageProcessorInput(py)baseAddress	-			const void *	-	readonly,nonatomic	ios=10.0/-/-/0	-	4e76888956d0a511
 property	c:objc(pl)CIImageProcessorInput(py)surface	-			IOSurfaceRef	-	readonly,nonatomic	ios=10.0/-/-/0	-	14fa4916ad570268
 property	c:objc(pl)CIImageProcessorInput(py)pixelBuffer	-			CVPixelBufferRef	-	readonly,nonatomic	ios=10.0/-/-/0	-	90e46b29d700c5a3
 property	c:objc(pl)CIImageProcessorInput(py)metalTexture	-			id<MTLTexture>	-	readonly,nonatomic	ios=10.0/-/-/0	-	136e21f54889291e
@@ -1912,7 +1912,7 @@ protocol	c:objc(pl)CIImageProcessorOutput	-			-	-	-	ios=10.0/-/-/0	-	d03d4e1f8c3
 property	c:objc(pl)CIImageProcessorOutput(py)region	-			CGRect	-	readonly,nonatomic	ios=10.0/-/-/0	-	f6a040009a875d0e
 property	c:objc(pl)CIImageProcessorOutput(py)bytesPerRow	-			size_t	-	readonly,nonatomic	ios=10.0/-/-/0	-	6949231c96e9f46d
 property	c:objc(pl)CIImageProcessorOutput(py)format	-			CIFormat	-	readonly,nonatomic	ios=10.0/-/-/0	-	fe819f4b04bc496d
-property	c:objc(pl)CIImageProcessorOutput(py)baseAddress	-			NS_RETURNS_INNER_POINTER void *	-	readonly,nonatomic	ios=10.0/-/-/0	-	7edd69b7f7f63e6e
+property	c:objc(pl)CIImageProcessorOutput(py)baseAddress	-			void *	-	readonly,nonatomic	ios=10.0/-/-/0	-	ed84f5a539477c21
 property	c:objc(pl)CIImageProcessorOutput(py)surface	-			IOSurfaceRef	-	readonly,nonatomic	ios=10.0/-/-/0	-	729c03e5a655d278
 property	c:objc(pl)CIImageProcessorOutput(py)pixelBuffer	-			CVPixelBufferRef	-	readonly,nonatomic	ios=10.0/-/-/0	-	c129e5b8ce640f98
 property	c:objc(pl)CIImageProcessorOutput(py)metalTexture	-			id<MTLTexture>	-	readonly,nonatomic	ios=10.0/-/-/0	-	80f2aef2dcc18785
@@ -2075,7 +2075,7 @@ property	c:objc(cs)CIRenderDestination(py)clamped	-			BOOL	-	getter=isClamped	io
 property	c:objc(cs)CIRenderDestination(py)colorSpace	-			CGColorSpaceRef	-	nonatomic	ios=11.0/-/-/0	-	8054ba15da2ca7f8
 property	c:objc(cs)CIRenderDestination(py)blendKernel	-			CIBlendKernel *	-	retain,nonatomic	ios=11.0/-/-/0	-	0b2ce7b98fbe2dfe
 property	c:objc(cs)CIRenderDestination(py)blendsInDestinationColorSpace	-			BOOL	-	-	ios=11.0/-/-/0	-	dbeb7708e342dda6
-property	c:objc(cs)CIRenderDestination(py)captureTraceURL	-			NS_AVAILABLE NSURL *	-	retain,nonatomic	ios=26.0/-/-/0	-	a122c9f05beb2721
+property	c:objc(cs)CIRenderDestination(py)captureTraceURL	-			NSURL *	-	retain,nonatomic	ios=26.0/-/-/0	-	7005cfbf8114d9f5
 typedef	c:@T@CIRenderDestinationAlphaMode	-			enum CIRenderDestinationAlphaMode	-	-	-	-	a17df4835ba4817c
 enum	c:@E@CIRenderDestinationAlphaMode	-			NSUInteger	-	-	-	-	4965a0bf86f40a94
 enumconst	c:@E@CIRenderDestinationAlphaMode@CIRenderDestinationAlphaNone	CIRenderDestinationAlphaMode			-	-	-	-	-	13954a3fac55ffee

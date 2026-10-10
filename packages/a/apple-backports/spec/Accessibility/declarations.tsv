@@ -18,7 +18,7 @@ property	c:objc(cs)AXNumericDataAxisDescriptor(py)scaleType	-			AXNumericDataAxi
 property	c:objc(cs)AXNumericDataAxisDescriptor(py)lowerBound	-			double	-	assign,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	63e468047a7c063a
 property	c:objc(cs)AXNumericDataAxisDescriptor(py)upperBound	-			double	-	assign,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	6aa7f0ff661c5f14
 property	c:objc(cs)AXNumericDataAxisDescriptor(py)valueDescriptionProvider	-			NSString * _Nonnull (^)(double)	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	3aae8afd4612c1d8
-property	c:objc(cs)AXNumericDataAxisDescriptor(py)gridlinePositions	-			NS_REFINED_FOR_SWIFT NSArray<NSNumber *> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	842674b6ff197f16
+property	c:objc(cs)AXNumericDataAxisDescriptor(py)gridlinePositions	-			NSArray<NSNumber *> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	26eb5c505d2e1402
 method	c:objc(cs)AXNumericDataAxisDescriptor(im)initWithTitle:lowerBound:upperBound:gridlinePositions:valueDescriptionProvider:	-			instancetype	NSString * title | double lowerbound | double upperBound | NSArray<NSNumber *> * gridlinePositions | NSString * _Nonnull (^)(double) valueDescriptionProvider	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	9ac0d1e218914755
 method	c:objc(cs)AXNumericDataAxisDescriptor(im)initWithAttributedTitle:lowerBound:upperBound:gridlinePositions:valueDescriptionProvider:	-			instancetype	NSAttributedString * attributedTitle | double lowerbound | double upperBound | NSArray<NSNumber *> * gridlinePositions | NSString * _Nonnull (^)(double) valueDescriptionProvider	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	d2471f2800cb700d
 method	c:objc(cs)AXNumericDataAxisDescriptor(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	446e1df00f3fa0c2
@@ -35,7 +35,7 @@ interface	c:objc(cs)AXDataPointValue	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,t
 super	-	AXDataPointValue	NSObject		-	-	-	-	-	cbb1a160532cefb8
 conforms	-	AXDataPointValue	NSCopying		-	-	-	-	-	d74a394e94e5b118
 property	c:objc(cs)AXDataPointValue(py)number	-			double	-	assign,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	1b5c81bddacd90b9
-property	c:objc(cs)AXDataPointValue(py)category	-			NS_REFINED_FOR_SWIFT NSString *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	c5dc7bd261e00b7b
+property	c:objc(cs)AXDataPointValue(py)category	-			NSString *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	e1078a8db29a28ff
 method	c:objc(cs)AXDataPointValue(cm)valueWithNumber:	-			instancetype	double number	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	7d5d200761bba0c3
 method	c:objc(cs)AXDataPointValue(cm)valueWithCategory:	-			instancetype	NSString * category	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	5f41e0b0843406a3
 method	c:objc(cs)AXDataPointValue(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	4af4c5d04c4ce349
@@ -45,7 +45,7 @@ super	-	AXDataPoint	NSObject		-	-	-	-	-	33e2ef9c6fc8129f
 conforms	-	AXDataPoint	NSCopying		-	-	-	-	-	f0611b80e1c1301a
 property	c:objc(cs)AXDataPoint(py)xValue	-			AXDataPointValue *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	477056c822a1b0af
 property	c:objc(cs)AXDataPoint(py)yValue	-			AXDataPointValue *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	00e6ca0d601a47c3
-property	c:objc(cs)AXDataPoint(py)additionalValues	-			NS_REFINED_FOR_SWIFT NSArray<AXDataPointValue *> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	e09c6bac22acb524
+property	c:objc(cs)AXDataPoint(py)additionalValues	-			NSArray<AXDataPointValue *> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	cb2abd3a0ce63121
 property	c:objc(cs)AXDataPoint(py)label	-			NSString *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	21fac39ba17206a3
 property	c:objc(cs)AXDataPoint(py)attributedLabel	-			NSAttributedString *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	91167290242d4061
 method	c:objc(cs)AXDataPoint(im)initWithX:y:	-			instancetype	AXDataPointValue * xValue | AXDataPointValue * yValue	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	4ea059eb679de2c5
@@ -81,9 +81,9 @@ property	c:objc(cs)AXChartDescriptor(py)summary	-			NSString *	-	copy,nonatomic	
 property	c:objc(cs)AXChartDescriptor(py)contentDirection	-			AXChartDescriptorContentDirection	-	assign,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	1bb86c03561dd8ed
 property	c:objc(cs)AXChartDescriptor(py)contentFrame	-			CGRect	-	assign,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	3533e4beff4b30c1
 property	c:objc(cs)AXChartDescriptor(py)series	-			NSArray<AXDataSeriesDescriptor *> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	da94949d3226526d
-property	c:objc(cs)AXChartDescriptor(py)xAxis	-			NS_REFINED_FOR_SWIFT id<AXDataAxisDescriptor>	-	strong,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	bfb02e2725e1dd61
+property	c:objc(cs)AXChartDescriptor(py)xAxis	-			id<AXDataAxisDescriptor>	-	strong,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	5989632820a29cc0
 property	c:objc(cs)AXChartDescriptor(py)yAxis	-			AXNumericDataAxisDescriptor *	-	strong,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	abd54be14e865f48
-property	c:objc(cs)AXChartDescriptor(py)additionalAxes	-			NS_REFINED_FOR_SWIFT NSArray<id<AXDataAxisDescriptor>> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	d23985f6b36f5e65
+property	c:objc(cs)AXChartDescriptor(py)additionalAxes	-			NSArray<id<AXDataAxisDescriptor>> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	4388810fe7f24fe6
 method	c:objc(cs)AXChartDescriptor(im)initWithTitle:summary:xAxisDescriptor:yAxisDescriptor:series:	-			instancetype	NSString * title | NSString * summary | id<AXDataAxisDescriptor> xAxis | AXNumericDataAxisDescriptor * yAxis | NSArray<AXDataSeriesDescriptor *> * series	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	44a2c79616bf8db0
 method	c:objc(cs)AXChartDescriptor(im)initWithAttributedTitle:summary:xAxisDescriptor:yAxisDescriptor:series:	-			instancetype	NSAttributedString * attributedTitle | NSString * summary | id<AXDataAxisDescriptor> xAxis | AXNumericDataAxisDescriptor * yAxis | NSArray<AXDataSeriesDescriptor *> * series	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	5c7bcfbb08a6f86d
 method	c:objc(cs)AXChartDescriptor(im)initWithTitle:summary:xAxisDescriptor:yAxisDescriptor:additionalAxes:series:	-			instancetype	NSString * title | NSString * summary | id<AXDataAxisDescriptor> xAxis | AXNumericDataAxisDescriptor * yAxis | NSArray<id<AXDataAxisDescriptor>> * additionalAxes | NSArray<AXDataSeriesDescriptor *> * series	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	9f27fde3dee17cf9
@@ -109,7 +109,7 @@ protocol	c:objc(pl)AXBrailleMapRenderer	-			-	-	-	-	-	edbffbab6f99e177
 conforms	-	AXBrailleMapRenderer	NSObject		-	-	-	-	-	6d754d6008ba31b2
 property	c:objc(pl)AXBrailleMapRenderer(py)accessibilityBrailleMapRenderRegion	-			CGRect	-	assign,nonatomic	ios=15.2/-/-/0,macos=12.1/-/-/0,tvos=15.2/-/-/0,watchos=8.2/-/-/0	-	2a23fd92b6a54c7b
 property	c:objc(pl)AXBrailleMapRenderer(py)accessibilityBrailleMapRenderer	-			void (^)(AXBrailleMap * _Nonnull)	-	copy,nonatomic	ios=15.2/-/-/0,macos=12.1/-/-/0,tvos=15.2/-/-/0,watchos=8.2/-/-/0	-	2f59206a34c85cdf
-function	c:@F@AXNameFromColor	-			NSString * _Nonnull (CGColorRef _Nonnull)	CGColorRef color	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	3e091e90138f570c
+function	c:@F@AXNameFromColor	-			NSString * (CGColorRef)	CGColorRef color	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	c13a7421ed4e8ee8
 typedef	c:@T@AXCustomContentImportance	-			enum AXCustomContentImportance	-	-	-	-	6edf8fc9c64a7042
 enum	c:@E@AXCustomContentImportance	-			NSUInteger	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	95d8ee302fe9a666
 enumconst	c:@E@AXCustomContentImportance@AXCustomContentImportanceDefault	AXCustomContentImportance			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	d03521b0f5e9b60f
@@ -131,7 +131,7 @@ protocol	c:objc(pl)AXCustomContentProvider	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-
 conforms	-	AXCustomContentProvider	NSObject		-	-	-	-	-	6529c81b67718308
 property	c:objc(pl)AXCustomContentProvider(py)accessibilityCustomContent	-			NSArray<AXCustomContent *> *	-	copy,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	19654ca12a16e245
 property	c:objc(pl)AXCustomContentProvider(py)accessibilityCustomContentBlock	-			AXCustomContentReturnBlock	-	copy,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	1a41a3b8e15e3952
-typedef	c:@T@AXCustomContentReturnBlock	-			NSArray<AXCustomContent *> * _Nullable (^)(void)	-	-	-	-	f61d271bff5b1a7c
+typedef	c:@T@AXCustomContentReturnBlock	-			NSArray<AXCustomContent *> * ((^))(void)	-	-	-	-	10e980737aa34819
 typedef	c:@T@AXHearingDeviceEar	-			enum AXHearingDeviceEar	-	-	-	-	2244d9d69f025538
 enum	c:@E@AXHearingDeviceEar	-			NSUInteger	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	3c8d09e61ac077df
 enumconst	c:@E@AXHearingDeviceEar@AXHearingDeviceEarNone	AXHearingDeviceEar			-	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	841cfd32ab4ca172
@@ -141,7 +141,7 @@ enumconst	c:@E@AXHearingDeviceEar@AXHearingDeviceEarBoth	AXHearingDeviceEar			-	
 function	c:@F@AXMFiHearingDeviceStreamingEar	-			AXHearingDeviceEar (void)	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	bdc10d95eb578a76
 var	c:@AXMFiHearingDeviceStreamingEarDidChangeNotification	-			const NSNotificationName	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	8c6f19c5b2d8da8b
 function	c:@F@AXSupportsBidirectionalAXMFiHearingDeviceStreaming	-			BOOL (void)	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	d63bde52897293c5
-function	c:@F@AXMFiHearingDevicePairedUUIDs	-			NSArray<NSUUID *> * _Nonnull (void)	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	6ef567aa2cc85779
+function	c:@F@AXMFiHearingDevicePairedUUIDs	-			NSArray<NSUUID *> * (void)	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	990d93dbe50cc939
 var	c:@AXMFiHearingDevicePairedUUIDsDidChangeNotification	-			const NSNotificationName	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	160dbb0cc13a5301
 typedef	c:@T@AXTechnology	-			NSString *const	-	-	-	-	03eaa19ad40c22e6
 var	c:@AXTechnologyVoiceOver	-			const AXTechnology	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	7e5bdcfbb9606f51
@@ -158,8 +158,8 @@ conforms	-	AXRequest	NSCopying		-	-	-	-	-	bb58dbed308a2b26
 conforms	-	AXRequest	NSSecureCoding		-	-	-	-	-	77198f2eb07e403d
 method	c:objc(cs)AXRequest(im)init	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	da27897d8e1c1ed2
 method	c:objc(cs)AXRequest(cm)new	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	36410970a5d29557
-property	c:objc(cs)AXRequest(cpy)currentRequest	-			NS_SWIFT_NAME AXRequest *	-	readonly,nonatomic,class	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	71e8a696f83cb72a
-property	c:objc(cs)AXRequest(py)technology	-			AXTechnology	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	06aec20746403c92
+property	c:objc(cs)AXRequest(cpy)currentRequest	-			AXRequest *	-	readonly,nonatomic,class	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	bb98927c55970488
+property	c:objc(cs)AXRequest(py)technology	-			const AXTechnology	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	9b47c4e64308c854
 function	c:@F@AXPrefersHorizontalTextLayout	-			BOOL (void)	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	bd5571daa672530d
 var	c:@AXPrefersHorizontalTextLayoutDidChangeNotification	-			const NSNotificationName	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	8b677e0fdf13abd4
 function	c:@F@AXAnimatedImagesEnabled	-			BOOL (void)	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	4f8c5250842cdbb8
@@ -178,7 +178,7 @@ enumconst	c:@E@AXSettingsFeature@AXSettingsFeatureAllowAppsToAddAudioToCalls	AXS
 enumconst	c:@E@AXSettingsFeature@AXSettingsFeatureAssistiveTouch	AXSettingsFeature			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	e5555625e7bb5ec8
 enumconst	c:@E@AXSettingsFeature@AXSettingsFeatureAssistiveTouchDevices	AXSettingsFeature			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	e434052f5be905c7
 enumconst	c:@E@AXSettingsFeature@AXSettingsFeatureDwellControl	AXSettingsFeature			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	91dfdfd8065fafce
-function	c:@F@AXOpenSettingsFeature	-			void (AXSettingsFeature, void (^ _Nullable)(NSError * _Nullable))	AXSettingsFeature feature | void (^)(NSError * _Nullable) completionHandler	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	ed575868d7f6c213
+function	c:@F@AXOpenSettingsFeature	-			void (AXSettingsFeature, void (^)(NSError * _Nullable))	AXSettingsFeature feature | void (^)(NSError * _Nullable) completionHandler	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	4461d46f2df5e131
 interface	c:objc(cs)AXMathExpression	-			-	-	-	ios=18.2/-/-/0,macos=15.2/-/-/0,tvos=18.2/-/-/0,watchos=11.2/-/-/0,xros=2.2/-/-/0	-	ea7e891f94c6761b
 super	-	AXMathExpression	NSObject		-	-	-	-	-	828c986d8115caaa
 interface	c:objc(cs)AXMathExpressionNumber	-			-	-	-	ios=18.2/-/-/0,macos=15.2/-/-/0,tvos=18.2/-/-/0,watchos=11.2/-/-/0,xros=2.2/-/-/0	-	fb6aff8746ff42e8
@@ -283,7 +283,7 @@ property	c:objc(cs)AXBrailleTable(py)identifier	-			NSString *	-	readonly,nonato
 property	c:objc(cs)AXBrailleTable(py)localizedName	-			NSString *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	08af3a5c2c967ea2
 property	c:objc(cs)AXBrailleTable(py)providerIdentifier	-			NSString *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	8c85c2137cac2c3b
 property	c:objc(cs)AXBrailleTable(py)localizedProviderName	-			NSString *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	dde2cb84e47dd029
-property	c:objc(cs)AXBrailleTable(py)language	-			NS_REFINED_FOR_SWIFT NSString *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	194c6071f54362a9
+property	c:objc(cs)AXBrailleTable(py)language	-			NSString *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	a68d20d7f2562553
 property	c:objc(cs)AXBrailleTable(py)locales	-			NSSet<NSLocale *> *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	2391c0e3fdc10607
 property	c:objc(cs)AXBrailleTable(py)isEightDot	-			BOOL	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	c12782a458de46cf
 method	c:objc(cs)AXBrailleTable(cm)supportedLocales	-			NSSet<NSLocale *> *	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	ee2f78d70730e25d
@@ -298,7 +298,7 @@ super	-	AXBrailleTranslationResult	NSObject		-	-	-	-	-	db4043055e1034ff
 conforms	-	AXBrailleTranslationResult	NSCopying		-	-	-	-	-	223d67063895e550
 conforms	-	AXBrailleTranslationResult	NSCoding		-	-	-	-	-	ab738d1ce91c41e3
 property	c:objc(cs)AXBrailleTranslationResult(py)resultString	-			NSString *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	73db7489b5b3eefc
-property	c:objc(cs)AXBrailleTranslationResult(py)locationMap	-			NS_REFINED_FOR_SWIFT NSArray<NSNumber *> *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	947c57e18e6a1165
+property	c:objc(cs)AXBrailleTranslationResult(py)locationMap	-			NSArray<NSNumber *> *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	469f7af90a1db0d4
 method	c:objc(cs)AXBrailleTranslationResult(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	5e3ea44b2a1c9e5a
 method	c:objc(cs)AXBrailleTranslationResult(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	01d9dd21e3a07a51
 interface	c:objc(cs)AXBrailleTranslator	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	4e8a36ebbb7064e9

@@ -44,7 +44,7 @@ super	-	SFSpeechRecognitionRequest	NSObject		-	-	-	-	-	25ac622139d88070
 property	c:objc(cs)SFSpeechRecognitionRequest(py)taskHint	-			SFSpeechRecognitionTaskHint	-	nonatomic	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	f3549eaa231d9616
 property	c:objc(cs)SFSpeechRecognitionRequest(py)shouldReportPartialResults	-			BOOL	-	nonatomic	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	ce0e00ec06e7ceda
 property	c:objc(cs)SFSpeechRecognitionRequest(py)contextualStrings	-			NSArray<NSString *> *	-	copy,nonatomic	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	ccf37e7c60809d23
-property	c:objc(cs)SFSpeechRecognitionRequest(py)interactionIdentifier	-			NS_DEPRECATED NSString *	-	copy,nonatomic	ios=10.0/15.0/-/0	-	42952d72bcd54ada
+property	c:objc(cs)SFSpeechRecognitionRequest(py)interactionIdentifier	-			NSString *	-	copy,nonatomic	ios=10.0/15.0/-/0	-	03e4854b8874b59c
 property	c:objc(cs)SFSpeechRecognitionRequest(py)requiresOnDeviceRecognition	-			BOOL	-	nonatomic	ios=13/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	f1f06e3d0cf66721
 property	c:objc(cs)SFSpeechRecognitionRequest(py)addsPunctuation	-			BOOL	-	nonatomic	ios=16/-/-/0,macos=13/-/-/0,tvos=18/-/-/0	-	b3dfd719a0d80495
 property	c:objc(cs)SFSpeechRecognitionRequest(py)customizedLanguageModel	-			SFSpeechLanguageModelConfiguration *	-	copy,nonatomic	ios=17/-/-/0,macos=14/-/-/0,tvos=18/-/-/0	-	a156ecc71579c07a
@@ -133,7 +133,7 @@ property	c:objc(cs)SFTranscriptionSegment(py)timestamp	-			NSTimeInterval	-	read
 property	c:objc(cs)SFTranscriptionSegment(py)duration	-			NSTimeInterval	-	readonly,nonatomic	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	31bcc7d9d9e6f080
 property	c:objc(cs)SFTranscriptionSegment(py)confidence	-			float	-	readonly,nonatomic	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	8b7123b0fb42b9be
 property	c:objc(cs)SFTranscriptionSegment(py)alternativeSubstrings	-			NSArray<NSString *> *	-	readonly,nonatomic	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	ce4960b4aa9a6d8a
-property	c:objc(cs)SFTranscriptionSegment(py)voiceAnalytics	-			NS_DEPRECATED SFVoiceAnalytics *	-	readonly,nonatomic	ios=13.0/14.5/-/0	-	cff95091f49431aa
+property	c:objc(cs)SFTranscriptionSegment(py)voiceAnalytics	-			SFVoiceAnalytics *	-	readonly,nonatomic	ios=13.0/14.5/-/0	-	684213ecbc477c16
 interface	c:objc(cs)SFAcousticFeature	-			-	-	-	ios=13/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	be9e622463ff5668
 super	-	SFAcousticFeature	NSObject		-	-	-	-	-	e71497b847a175c4
 conforms	-	SFAcousticFeature	NSCopying		-	-	-	-	-	a6b3158c111bd2e8

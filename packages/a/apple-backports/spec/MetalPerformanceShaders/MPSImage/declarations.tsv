@@ -4,7 +4,7 @@ enum	c:@E@MPSAlphaType	-			NSUInteger	-	-	-	-	fa42ebf96e2ec8a2
 enumconst	c:@E@MPSAlphaType@MPSAlphaTypeNonPremultiplied	MPSAlphaType			-	-	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=10.0/-/-/0	-	4cbc555e22f5f0ee
 enumconst	c:@E@MPSAlphaType@MPSAlphaTypeAlphaIsOne	MPSAlphaType			-	-	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=10.0/-/-/0	-	ea6ed37d6501f5a2
 enumconst	c:@E@MPSAlphaType@MPSAlphaTypePremultiplied	MPSAlphaType			-	-	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=10.0/-/-/0	-	ef9fcb85e827e523
-typedef	c:MPSImageKernel.h@T@MPSCopyAllocator	-			NS_RETURNS_RETAINED NS_RETURNS_RETAINED id<MTLTexture> ((^))(MPSKernel * _Nonnull, id<MTLCommandBuffer> _Nonnull, id<MTLTexture> _Nonnull)	-	-	-	-	5ee0a640987c14f5
+typedef	c:MPSImageKernel.h@T@MPSCopyAllocator	-			id<MTLTexture> ((^))(MPSKernel *, id<MTLCommandBuffer>, id<MTLTexture>)	-	-	-	-	37cefdaf497c0139
 interface	c:objc(cs)MPSUnaryImageKernel	-			-	-	-	ios=9.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=9.0/-/-/0	-	bd2724d645fbc436
 super	-	MPSUnaryImageKernel	MPSKernel		-	-	-	-	-	7b579d609edf7a28
 property	c:objc(cs)MPSUnaryImageKernel(py)offset	-			MPSOffset	-	nonatomic	ios=9.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=9.0/-/-/0	-	e670f541d647ca0f

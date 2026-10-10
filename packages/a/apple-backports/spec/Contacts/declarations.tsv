@@ -42,9 +42,9 @@ conforms	-	CNPostalAddress	NSCopying		-	-	-	-	-	a52d6456bd002696
 conforms	-	CNPostalAddress	NSMutableCopying		-	-	-	-	-	fc87e8e8fe3f3bc1
 conforms	-	CNPostalAddress	NSSecureCoding		-	-	-	-	-	95e0dd98d31bffd9
 property	c:objc(cs)CNPostalAddress(py)street	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	115711ca436d729f
-property	c:objc(cs)CNPostalAddress(py)subLocality	-			NS_AVAILABLE NSString *	-	readonly,copy,nonatomic	ios=10.3/-/-/0	-	5eea286ead75bba8
+property	c:objc(cs)CNPostalAddress(py)subLocality	-			NSString *	-	readonly,copy,nonatomic	ios=10.3/-/-/0	-	d6b9145e5113d382
 property	c:objc(cs)CNPostalAddress(py)city	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	b51a4c0a9e4ba4bd
-property	c:objc(cs)CNPostalAddress(py)subAdministrativeArea	-			NS_AVAILABLE NSString *	-	readonly,copy,nonatomic	ios=10.3/-/-/0	-	610a875bb99dd2fd
+property	c:objc(cs)CNPostalAddress(py)subAdministrativeArea	-			NSString *	-	readonly,copy,nonatomic	ios=10.3/-/-/0	-	c82ebb61cbfaf093
 property	c:objc(cs)CNPostalAddress(py)state	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	db6a6c0955d7fe23
 property	c:objc(cs)CNPostalAddress(py)postalCode	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	f98495c546fb2225
 property	c:objc(cs)CNPostalAddress(py)country	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	58fef6ef7f77e4cc
@@ -362,7 +362,7 @@ property	c:objc(cs)CNContact(py)jobTitle	-			NSString *	-	readonly,copy,nonatomi
 property	c:objc(cs)CNContact(py)phoneticGivenName	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	9ddf81a52f8d0b28
 property	c:objc(cs)CNContact(py)phoneticMiddleName	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	5574eb22ea850537
 property	c:objc(cs)CNContact(py)phoneticFamilyName	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	3d9993f0a325cc6a
-property	c:objc(cs)CNContact(py)phoneticOrganizationName	-			NS_AVAILABLE NSString *	-	readonly,copy,nonatomic	ios=10.0/-/-/0	-	0e6c11d4b410f61e
+property	c:objc(cs)CNContact(py)phoneticOrganizationName	-			NSString *	-	readonly,copy,nonatomic	ios=10.0/-/-/0	-	76f9d83efbd60da7
 property	c:objc(cs)CNContact(py)note	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	c2e1af9c4cb49513
 property	c:objc(cs)CNContact(py)imageData	-			NSData *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	2e4347400f72ac87
 property	c:objc(cs)CNContact(py)thumbnailImageData	-			NSData *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	9a2f3e59d6354d76
@@ -580,9 +580,9 @@ conforms	-	CNContact	NSItemProviderWriting		-	-	-	-	-	c65c0b94ad0a0186
 interface	c:objc(cs)CNMutablePostalAddress	-			-	-	-	ios=9.0/-/-/0	-	8ef99d01e1523da5
 super	-	CNMutablePostalAddress	CNPostalAddress		-	-	-	-	-	719981969316e4f1
 property	c:objc(cs)CNMutablePostalAddress(py)street	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	6aa442b1092a9f7f
-property	c:objc(cs)CNMutablePostalAddress(py)subLocality	-			NS_AVAILABLE NSString *	-	copy,nonatomic	ios=10.3/-/-/0	-	f1a2e1f7b95cb07e
+property	c:objc(cs)CNMutablePostalAddress(py)subLocality	-			NSString *	-	copy,nonatomic	ios=10.3/-/-/0	-	a184653ea7ee8afb
 property	c:objc(cs)CNMutablePostalAddress(py)city	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	6535d01bf0873ed2
-property	c:objc(cs)CNMutablePostalAddress(py)subAdministrativeArea	-			NS_AVAILABLE NSString *	-	copy,nonatomic	ios=10.3/-/-/0	-	faba5c773d7a5917
+property	c:objc(cs)CNMutablePostalAddress(py)subAdministrativeArea	-			NSString *	-	copy,nonatomic	ios=10.3/-/-/0	-	668f4c852b1b2fef
 property	c:objc(cs)CNMutablePostalAddress(py)state	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	b1470c99e81bb8a3
 property	c:objc(cs)CNMutablePostalAddress(py)postalCode	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	6ca0be3cbefd9818
 property	c:objc(cs)CNMutablePostalAddress(py)country	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	cbaf92fb6636947c

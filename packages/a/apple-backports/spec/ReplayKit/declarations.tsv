@@ -65,7 +65,7 @@ property	c:objc(cs)RPScreenRecorder(py)recording	-			BOOL	-	readonly,nonatomic,g
 property	c:objc(cs)RPScreenRecorder(py)microphoneEnabled	-			BOOL	-	nonatomic,getter=isMicrophoneEnabled	tvos=-/-/-/1	-	ad5bdab18888c25e
 property	c:objc(cs)RPScreenRecorder(py)cameraEnabled	-			BOOL	-	nonatomic,getter=isCameraEnabled	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1	-	203d18f7e58993fb
 property	c:objc(cs)RPScreenRecorder(py)cameraPosition	-			RPCameraPosition	-	nonatomic	ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1	-	a636aeb08c163bc0
-property	c:objc(cs)RPScreenRecorder(py)cameraPreviewView	-			API_AVAILABLE UIView *	-	readonly,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	a2d372e98d5e59da
+property	c:objc(cs)RPScreenRecorder(py)cameraPreviewView	-			UIView *	-	readonly,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	249f205ba8f35da1
 protocol	c:objc(pl)RPScreenRecorderDelegate	-			-	-	-	ios=9.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	deprecated: No longer supported	9a10642d72d60401
 conforms	-	RPScreenRecorderDelegate	NSObject		-	-	-	-	-	6ab2fea5fd7b30f5
 method	c:objc(pl)RPScreenRecorderDelegate(im)screenRecorder:didStopRecordingWithError:previewViewController:	-			void	RPScreenRecorder * screenRecorder | NSError * error | RPPreviewViewController * previewViewController	optional	ios=9.0/10.0/-/0,macos=-/-/-/1,tvos=10.0/10.0/-/0	deprecated: No longer supported	ad8967dead245d30
@@ -86,7 +86,7 @@ property	c:objc(cs)RPBroadcastController(py)paused	-			BOOL	-	readonly,nonatomic
 property	c:objc(cs)RPBroadcastController(py)broadcastURL	-			NSURL *	-	readonly,nonatomic	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	277cfcb329ff4fee
 property	c:objc(cs)RPBroadcastController(py)serviceInfo	-			NSDictionary<NSString *,NSObject<NSCoding> *> *	-	readonly,nonatomic	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	dcbe2a92341911e6
 property	c:objc(cs)RPBroadcastController(py)delegate	-			id<RPBroadcastControllerDelegate>	-	weak,nonatomic	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	365829b256e6b227
-property	c:objc(cs)RPBroadcastController(py)broadcastExtensionBundleID	-			API_UNAVAILABLE NSString *	-	readonly,nonatomic	ios=10.0/11.0/-/0,macos=-/-/-/1,tvos=10.0/11.0/-/0	-	a0953ede65735211
+property	c:objc(cs)RPBroadcastController(py)broadcastExtensionBundleID	-			NSString *	-	readonly,nonatomic	ios=10.0/11.0/-/0,macos=-/-/-/1,tvos=10.0/11.0/-/0	-	4f81194e8b291f40
 method	c:objc(cs)RPBroadcastController(im)startBroadcastWithHandler:	-			void	void (^)(NSError * _Nullable) handler	-	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	2d35adf0b015bb41
 method	c:objc(cs)RPBroadcastController(im)pauseBroadcast	-			void	-	-	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	1454a1703d7de33d
 method	c:objc(cs)RPBroadcastController(im)resumeBroadcast	-			void	-	-	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	8f6b8cd524e8bea0

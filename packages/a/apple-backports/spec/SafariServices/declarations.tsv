@@ -50,10 +50,10 @@ method	c:objc(cs)SFSafariViewController(im)initWithNibName:bundle:	-			instancet
 method	c:objc(cs)SFSafariViewController(im)initWithURL:configuration:	-			instancetype	NSURL * URL | SFSafariViewControllerConfiguration * configuration	-	ios=11.0/-/-/0	-	e8b173dd060ad407
 method	c:objc(cs)SFSafariViewController(im)initWithURL:entersReaderIfAvailable:	-			instancetype	NSURL * URL | BOOL entersReaderIfAvailable	-	ios=9.0/11.0/-/0,xros=-/-/-/1	deprecated: Use -initWithURL:configuration: instead	bad0cc16eb219903
 method	c:objc(cs)SFSafariViewController(im)initWithURL:	-			instancetype	NSURL * URL	-	ios=9.0/-/-/0,watchos=-/-/-/1	-	2b089d895de15228
-property	c:objc(cs)SFSafariViewController(py)delegate	-			API_UNAVAILABLE id<SFSafariViewControllerDelegate>	-	weak,nonatomic	xros=-/-/-/1	-	f0ba39652f750622
-property	c:objc(cs)SFSafariViewController(py)configuration	-			API_AVAILABLE SFSafariViewControllerConfiguration *	-	readonly,copy,nonatomic	ios=11.0/-/-/0	-	c46ba4cb565e69f0
-property	c:objc(cs)SFSafariViewController(py)preferredBarTintColor	-			API_DEPRECATED UIColor *	-	nonatomic	ios=10.0/26.0/-/0,xros=-/-/-/1	-	0d4353f87a3da408
-property	c:objc(cs)SFSafariViewController(py)preferredControlTintColor	-			API_DEPRECATED UIColor *	-	nonatomic	ios=10.0/26.0/-/0,xros=-/-/-/1	-	aa9e297f8cee6a86
+property	c:objc(cs)SFSafariViewController(py)delegate	-			id<SFSafariViewControllerDelegate>	-	weak,nonatomic	xros=-/-/-/1	-	0c5d9a78b74170a6
+property	c:objc(cs)SFSafariViewController(py)configuration	-			SFSafariViewControllerConfiguration *	-	readonly,copy,nonatomic	ios=11.0/-/-/0	-	e6aa6a42d5b7ac72
+property	c:objc(cs)SFSafariViewController(py)preferredBarTintColor	-			UIColor *	-	nonatomic	ios=10.0/26.0/-/0,xros=-/-/-/1	-	e6b44e3000dd68a3
+property	c:objc(cs)SFSafariViewController(py)preferredControlTintColor	-			UIColor *	-	nonatomic	ios=10.0/26.0/-/0,xros=-/-/-/1	-	c0587d60cb1f9b7e
 property	c:objc(cs)SFSafariViewController(py)dismissButtonStyle	-			SFSafariViewControllerDismissButtonStyle	-	nonatomic	ios=11.0/-/-/0,xros=-/-/-/1	-	ef42ca27f5ca2ad0
 method	c:objc(cs)SFSafariViewController(cm)prewarmConnectionsToURLs:	-			SFSafariViewControllerPrewarmingToken *	NSArray<NSURL *> * URLs	-	ios=15.0/-/-/0,xros=-/-/-/1	-	25d7cdf9f261db26
 protocol	c:objc(pl)SFSafariViewControllerDelegate	-			-	-	-	ios=9.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	2cd6cce73618a778
@@ -78,8 +78,8 @@ super	-	SFSafariViewControllerConfiguration	NSObject		-	-	-	-	-	bab19c4e923ee30b
 conforms	-	SFSafariViewControllerConfiguration	NSCopying		-	-	-	-	-	b0d63bb4bc7af038
 property	c:objc(cs)SFSafariViewControllerConfiguration(py)entersReaderIfAvailable	-			BOOL	-	nonatomic	ios=11.0/-/-/0	-	c0f6029ed8932d7f
 property	c:objc(cs)SFSafariViewControllerConfiguration(py)barCollapsingEnabled	-			BOOL	-	nonatomic	xros=-/-/-/1	-	e15ff27c361a46ec
-property	c:objc(cs)SFSafariViewControllerConfiguration(py)activityButton	-			API_AVAILABLE SFSafariViewControllerActivityButton *	-	copy,nonatomic	ios=15.0/-/-/0,xros=-/-/-/1	-	680d8d62caecee79
-property	c:objc(cs)SFSafariViewControllerConfiguration(py)eventAttribution	-			API_AVAILABLE UIEventAttribution *	-	copy,nonatomic	ios=15.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4412b4bc1380458c
+property	c:objc(cs)SFSafariViewControllerConfiguration(py)activityButton	-			SFSafariViewControllerActivityButton *	-	copy,nonatomic	ios=15.0/-/-/0,xros=-/-/-/1	-	80bf979865de40de
+property	c:objc(cs)SFSafariViewControllerConfiguration(py)eventAttribution	-			UIEventAttribution *	-	copy,nonatomic	ios=15.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	88e37b9484abdd68
 interface	c:objc(cs)SFSafariViewControllerDataStore	-			-	-	-	ios=16.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9bbe2b4a1f0870ed
 super	-	SFSafariViewControllerDataStore	NSObject		-	-	-	-	-	ea148715f9f56192
 method	c:objc(cs)SFSafariViewControllerDataStore(im)init	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0ba6f9a14f32daad
@@ -105,7 +105,7 @@ var	c:@SFAuthenticationErrorDomain	-			NSString *const	-	-	ios=11.0/12.0/-/0	-	3
 typedef	c:@T@SFAuthenticationError	-			enum SFAuthenticationError	-	-	-	-	f58483e3e3e696d4
 enum	c:@E@SFAuthenticationError	-			NSInteger	-	-	ios=11.0/12.0/-/0	-	462a64379863fa20
 enumconst	c:@E@SFAuthenticationError@SFAuthenticationErrorCanceledLogin	SFAuthenticationError			-	-	-	ios=11.0/12.0/-/0	-	10472ae5c37a3959
-typedef	c:@T@SFAuthenticationCompletionHandler	-			void (^)(NSURL * _Nullable, NSError * _Nullable)	-	-	-	-	b67715d5eb9d4855
+typedef	c:@T@SFAuthenticationCompletionHandler	-			void ((^))(NSURL *, NSError *)	-	-	-	-	460efe4316694f6d
 interface	c:objc(cs)SFAuthenticationSession	-			-	-	-	ios=11.0/12.0/-/0	-	5f87d5fbd82ca637
 super	-	SFAuthenticationSession	NSObject		-	-	-	-	-	3aefc56c67751a4c
 method	c:objc(cs)SFAuthenticationSession(im)init	-			instancetype	-	-	*unavailable ios=11.0/12.0/-/0	-	e4db43ad70a7cc66
@@ -116,8 +116,8 @@ interface	c:objc(cs)SFSafariSettings	-			-	-	-	ios=26.0/-/-/0,maccatalyst=-/-/-/
 super	-	SFSafariSettings	NSObject		-	-	-	-	-	2ca510f28aeb8a61
 method	c:objc(cs)SFSafariSettings(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	4aec790b8fafd565
 method	c:objc(cs)SFSafariSettings(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	9cfd1193598f50d0
-method	c:objc(cs)SFSafariSettings(cm)openExportBrowsingDataSettingsWithCompletionHandler:	-			void	NS_SWIFT_UI_ACTOR void (^ _Nullable)(NSError * _Nullable) completionHandler	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	1cc96b0d28187f7e
-method	c:objc(cs)SFSafariSettings(cm)openExtensionsSettingsForIdentifiers:completionHandler:	-			void	NSArray<NSString *> * extensionIdentifiers | NS_SWIFT_UI_ACTOR void (^ _Nullable)(NSError * _Nullable) completionHandler	-	ios=26.2/-/-/0,xros=26.2/-/-/0	-	428ca5c747d201aa
+method	c:objc(cs)SFSafariSettings(cm)openExportBrowsingDataSettingsWithCompletionHandler:	-			void	void (^ _Nullable)(NSError * _Nullable) completionHandler	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	b0b794f29cb896f5
+method	c:objc(cs)SFSafariSettings(cm)openExtensionsSettingsForIdentifiers:completionHandler:	-			void	NSArray<NSString *> * extensionIdentifiers | void (^ _Nullable)(NSError * _Nullable) completionHandler	-	ios=26.2/-/-/0,xros=26.2/-/-/0	-	19b61656229f48c9
 interface	c:objc(cs)SFSafariExtensionManager	-			-	-	-	ios=26.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	3bc0f087c7ad23b7
 super	-	SFSafariExtensionManager	NSObject		-	-	-	-	-	13ab2e03240ab769
 method	c:objc(cs)SFSafariExtensionManager(cm)new	-			instancetype	-	-	*unavailable ios=26.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	e281ecd657960e0a

@@ -78,38 +78,38 @@ super	-	UNNotificationContent	NSObject		-	-	-	-	-	b1ac0fe8433d0b51
 conforms	-	UNNotificationContent	NSCopying		-	-	-	-	-	849554c0b92c8ac9
 conforms	-	UNNotificationContent	NSMutableCopying		-	-	-	-	-	e66e9cedb86ab6dc
 conforms	-	UNNotificationContent	NSSecureCoding		-	-	-	-	-	bd7e7d8e7600231f
-property	c:objc(cs)UNNotificationContent(py)attachments	-			API_UNAVAILABLE NSArray<UNNotificationAttachment *> *	-	readonly,copy,nonatomic	tvos=-/-/-/1	-	cb8e741b655b7ec0
+property	c:objc(cs)UNNotificationContent(py)attachments	-			NSArray<UNNotificationAttachment *> *	-	readonly,copy,nonatomic	tvos=-/-/-/1	-	f6f86e6745dc5721
 property	c:objc(cs)UNNotificationContent(py)badge	-			NSNumber *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	2792f81ad6b0fea7
-property	c:objc(cs)UNNotificationContent(py)body	-			API_UNAVAILABLE NSString *	-	readonly,copy,nonatomic	tvos=-/-/-/1	-	c9cfa7b5ea98873c
-property	c:objc(cs)UNNotificationContent(py)categoryIdentifier	-			API_UNAVAILABLE NSString *	-	readonly,copy,nonatomic	tvos=-/-/-/1	-	85f454621cac1533
+property	c:objc(cs)UNNotificationContent(py)body	-			NSString *	-	readonly,copy,nonatomic	tvos=-/-/-/1	-	5add4d8ad0547359
+property	c:objc(cs)UNNotificationContent(py)categoryIdentifier	-			NSString *	-	readonly,copy,nonatomic	tvos=-/-/-/1	-	048b63b98b85d8dc
 property	c:objc(cs)UNNotificationContent(py)launchImageName	-			NSString *	-	readonly,copy,nonatomic	macos=-/-/-/1,tvos=-/-/-/1	-	d0b8ba3ba0c2c584
-property	c:objc(cs)UNNotificationContent(py)sound	-			API_UNAVAILABLE UNNotificationSound *	-	readonly,copy,nonatomic	tvos=-/-/-/1	-	2b3125624e35dd78
-property	c:objc(cs)UNNotificationContent(py)subtitle	-			API_UNAVAILABLE NSString *	-	readonly,copy,nonatomic	tvos=-/-/-/1	-	b9312c4ee470b37e
-property	c:objc(cs)UNNotificationContent(py)threadIdentifier	-			API_UNAVAILABLE NSString *	-	readonly,copy,nonatomic	tvos=-/-/-/1	-	d3f04aab9825870a
-property	c:objc(cs)UNNotificationContent(py)title	-			API_UNAVAILABLE NSString *	-	readonly,copy,nonatomic	tvos=-/-/-/1	-	a33d75d88918a7af
-property	c:objc(cs)UNNotificationContent(py)userInfo	-			API_UNAVAILABLE NSDictionary *	-	readonly,copy,nonatomic	tvos=-/-/-/1	-	10001c4a083a0e83
+property	c:objc(cs)UNNotificationContent(py)sound	-			UNNotificationSound *	-	readonly,copy,nonatomic	tvos=-/-/-/1	-	12be8d93418c2af7
+property	c:objc(cs)UNNotificationContent(py)subtitle	-			NSString *	-	readonly,copy,nonatomic	tvos=-/-/-/1	-	a0869e6ff5b9650c
+property	c:objc(cs)UNNotificationContent(py)threadIdentifier	-			NSString *	-	readonly,copy,nonatomic	tvos=-/-/-/1	-	a3a4cd862fbb9d2d
+property	c:objc(cs)UNNotificationContent(py)title	-			NSString *	-	readonly,copy,nonatomic	tvos=-/-/-/1	-	474016fa6bb76cde
+property	c:objc(cs)UNNotificationContent(py)userInfo	-			NSDictionary *	-	readonly,copy,nonatomic	tvos=-/-/-/1	-	d793941b078780a8
 property	c:objc(cs)UNNotificationContent(py)summaryArgument	-			NSString *	-	readonly,copy,nonatomic	ios=12.0/15.0/-/0,tvos=12.0/15.0/-/0,watchos=5.0/8.0/-/0	-	1873cc0bd6620f73
 property	c:objc(cs)UNNotificationContent(py)summaryArgumentCount	-			NSUInteger	-	readonly,assign,nonatomic	ios=12.0/15.0/-/0,tvos=12.0/15.0/-/0,watchos=5.0/8.0/-/0	-	400b77cc36efb0dd
-property	c:objc(cs)UNNotificationContent(py)targetContentIdentifier	-			API_AVAILABLE NSString *	-	readonly,copy,nonatomic	ios=13.0/-/-/0	-	9f515e1123a3cebe
+property	c:objc(cs)UNNotificationContent(py)targetContentIdentifier	-			NSString *	-	readonly,copy,nonatomic	ios=13.0/-/-/0	-	1f15a19bf391fe02
 property	c:objc(cs)UNNotificationContent(py)interruptionLevel	-			UNNotificationInterruptionLevel	-	readonly,assign,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	6b43607970d74152
 property	c:objc(cs)UNNotificationContent(py)relevanceScore	-			double	-	readonly,assign,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	760d138b4e758deb
-property	c:objc(cs)UNNotificationContent(py)filterCriteria	-			API_UNAVAILABLE NSString *	-	readonly,copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=9.0/-/-/0	-	c4b39232af7e076c
+property	c:objc(cs)UNNotificationContent(py)filterCriteria	-			NSString *	-	readonly,copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=9.0/-/-/0	-	1bde9aedc8b89665
 method	c:objc(cs)UNNotificationContent(im)contentByUpdatingWithProvider:error:	-			UNNotificationContent *	id<UNNotificationContentProviding> provider | NSError * _Nullable * outError	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	077a91074805c0e2
 interface	c:objc(cs)UNMutableNotificationContent	-			-	-	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	deprecated: summaryArgument is ignored	a4b9ea3da96abf0c
 super	-	UNMutableNotificationContent	UNNotificationContent		-	-	-	-	-	e37620f334fe19d5
-property	c:objc(cs)UNMutableNotificationContent(py)attachments	-			API_UNAVAILABLE NSArray<UNNotificationAttachment *> *	-	copy,nonatomic	tvos=-/-/-/1	-	03105a21d38290cd
+property	c:objc(cs)UNMutableNotificationContent(py)attachments	-			NSArray<UNNotificationAttachment *> *	-	copy,nonatomic	tvos=-/-/-/1	-	d7b785897f1b0d99
 property	c:objc(cs)UNMutableNotificationContent(py)badge	-			NSNumber *	-	copy,nonatomic	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	895caf7a5acea037
-property	c:objc(cs)UNMutableNotificationContent(py)body	-			API_UNAVAILABLE NSString *	-	copy,nonatomic	tvos=-/-/-/1	-	8a14e572e43502c6
-property	c:objc(cs)UNMutableNotificationContent(py)categoryIdentifier	-			API_UNAVAILABLE NSString *	-	copy,nonatomic	tvos=-/-/-/1	-	c70d9e5783c28aa9
+property	c:objc(cs)UNMutableNotificationContent(py)body	-			NSString *	-	copy,nonatomic	tvos=-/-/-/1	-	419944620756da19
+property	c:objc(cs)UNMutableNotificationContent(py)categoryIdentifier	-			NSString *	-	copy,nonatomic	tvos=-/-/-/1	-	52e13d5a2d7515d9
 property	c:objc(cs)UNMutableNotificationContent(py)launchImageName	-			NSString *	-	copy,nonatomic	macos=-/-/-/1,tvos=-/-/-/1	-	bfcce55e9103db5c
-property	c:objc(cs)UNMutableNotificationContent(py)sound	-			API_UNAVAILABLE UNNotificationSound *	-	copy,nonatomic	tvos=-/-/-/1	-	becfe7c2444f524d
-property	c:objc(cs)UNMutableNotificationContent(py)subtitle	-			API_UNAVAILABLE NSString *	-	copy,nonatomic	tvos=-/-/-/1	-	679fe22f7a2c61fe
-property	c:objc(cs)UNMutableNotificationContent(py)threadIdentifier	-			API_UNAVAILABLE NSString *	-	copy,nonatomic	tvos=-/-/-/1	-	6ec006f58cbb8e6d
-property	c:objc(cs)UNMutableNotificationContent(py)title	-			API_UNAVAILABLE NSString *	-	copy,nonatomic	tvos=-/-/-/1	-	4839731b05b619f6
-property	c:objc(cs)UNMutableNotificationContent(py)userInfo	-			API_UNAVAILABLE NSDictionary *	-	copy,nonatomic	tvos=-/-/-/1	-	ee3745fe4a6eb099
+property	c:objc(cs)UNMutableNotificationContent(py)sound	-			UNNotificationSound *	-	copy,nonatomic	tvos=-/-/-/1	-	599d568eee0b5348
+property	c:objc(cs)UNMutableNotificationContent(py)subtitle	-			NSString *	-	copy,nonatomic	tvos=-/-/-/1	-	9970f286991557c2
+property	c:objc(cs)UNMutableNotificationContent(py)threadIdentifier	-			NSString *	-	copy,nonatomic	tvos=-/-/-/1	-	7cb7729dd1096c38
+property	c:objc(cs)UNMutableNotificationContent(py)title	-			NSString *	-	copy,nonatomic	tvos=-/-/-/1	-	3349d7a2f90b65eb
+property	c:objc(cs)UNMutableNotificationContent(py)userInfo	-			NSDictionary *	-	copy,nonatomic	tvos=-/-/-/1	-	e186b050135b320e
 property	c:objc(cs)UNMutableNotificationContent(py)summaryArgument	-			NSString *	-	copy,nonatomic	ios=12.0/15.0/-/0,tvos=12.0/15.0/-/0,watchos=5.0/8.0/-/0	-	ba16f8771c991698
 property	c:objc(cs)UNMutableNotificationContent(py)summaryArgumentCount	-			NSUInteger	-	assign,nonatomic	ios=12.0/15.0/-/0,tvos=12.0/15.0/-/0,watchos=5.0/8.0/-/0	-	1e0732e8cd83fa67
-property	c:objc(cs)UNMutableNotificationContent(py)targetContentIdentifier	-			API_AVAILABLE NSString *	-	copy,nonatomic	ios=13.0/-/-/0	-	1a48def1d9d23fad
+property	c:objc(cs)UNMutableNotificationContent(py)targetContentIdentifier	-			NSString *	-	copy,nonatomic	ios=13.0/-/-/0	-	5bb50ab1f81d46ec
 property	c:objc(cs)UNMutableNotificationContent(py)interruptionLevel	-			UNNotificationInterruptionLevel	-	assign,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	003de5a74bfc6c5a
 property	c:objc(cs)UNMutableNotificationContent(py)relevanceScore	-			double	-	assign,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	6ad896c4a51b196d
 property	c:objc(cs)UNMutableNotificationContent(py)filterCriteria	-			NSString *	-	copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,watchos=9.0/-/-/0	-	f47348eb307b56a0
@@ -133,8 +133,8 @@ property	c:objc(cs)UNNotificationCategory(py)identifier	-			NSString *	-	readonl
 property	c:objc(cs)UNNotificationCategory(py)actions	-			NSArray<UNNotificationAction *> *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	7b8da7b6564a8aa4
 property	c:objc(cs)UNNotificationCategory(py)intentIdentifiers	-			NSArray<NSString *> *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	48a9fab0409d8c2f
 property	c:objc(cs)UNNotificationCategory(py)options	-			UNNotificationCategoryOptions	-	readonly,nonatomic	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	ec4248f5d4f113d2
-property	c:objc(cs)UNNotificationCategory(py)hiddenPreviewsBodyPlaceholder	-			API_AVAILABLE NSString *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a5362d13107fb688
-property	c:objc(cs)UNNotificationCategory(py)categorySummaryFormat	-			API_AVAILABLE NSString *	-	readonly,copy,nonatomic	ios=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b8b9e8630ad426e1
+property	c:objc(cs)UNNotificationCategory(py)hiddenPreviewsBodyPlaceholder	-			NSString *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2b7468ecde919e80
+property	c:objc(cs)UNNotificationCategory(py)categorySummaryFormat	-			NSString *	-	readonly,copy,nonatomic	ios=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bab0aa7e61069079
 method	c:objc(cs)UNNotificationCategory(cm)categoryWithIdentifier:actions:intentIdentifiers:options:	-			instancetype	NSString * identifier | NSArray<UNNotificationAction *> * actions | NSArray<NSString *> * intentIdentifiers | UNNotificationCategoryOptions options	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	5f12183bb3ca1fbf
 method	c:objc(cs)UNNotificationCategory(cm)categoryWithIdentifier:actions:intentIdentifiers:hiddenPreviewsBodyPlaceholder:options:	-			instancetype	NSString * identifier | NSArray<UNNotificationAction *> * actions | NSArray<NSString *> * intentIdentifiers | NSString * hiddenPreviewsBodyPlaceholder | UNNotificationCategoryOptions options	-	ios=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4881b33da6c08d30
 method	c:objc(cs)UNNotificationCategory(cm)categoryWithIdentifier:actions:intentIdentifiers:hiddenPreviewsBodyPlaceholder:categorySummaryFormat:options:	-			instancetype	NSString * identifier | NSArray<UNNotificationAction *> * actions | NSArray<NSString *> * intentIdentifiers | NSString * hiddenPreviewsBodyPlaceholder | NSString * categorySummaryFormat | UNNotificationCategoryOptions options	-	ios=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ed4bb872abaf455b
@@ -212,8 +212,8 @@ super	-	UNNotificationSound	NSObject		-	-	-	-	-	4c92c636084e7146
 conforms	-	UNNotificationSound	NSCopying		-	-	-	-	-	269589e2544f72dc
 conforms	-	UNNotificationSound	NSSecureCoding		-	-	-	-	-	aa57795a0747ff52
 property	c:objc(cs)UNNotificationSound(cpy)defaultSound	-			UNNotificationSound *	-	readonly,copy,nonatomic,class	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	cd58a7506e9eb7e2
-property	c:objc(cs)UNNotificationSound(cpy)defaultRingtoneSound	-			API_AVAILABLE UNNotificationSound *	-	readonly,copy,nonatomic,class	ios=15.2/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	01b2ee76d7bc1e0d
-property	c:objc(cs)UNNotificationSound(cpy)defaultCriticalSound	-			API_UNAVAILABLE UNNotificationSound *	-	readonly,copy,nonatomic,class	ios=12.0/-/-/0,tvos=-/-/-/1,watchos=5.0/-/-/0	-	9010d29cf8d85d2b
+property	c:objc(cs)UNNotificationSound(cpy)defaultRingtoneSound	-			UNNotificationSound *	-	readonly,copy,nonatomic,class	ios=15.2/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c6e205077a4a3503
+property	c:objc(cs)UNNotificationSound(cpy)defaultCriticalSound	-			UNNotificationSound *	-	readonly,copy,nonatomic,class	ios=12.0/-/-/0,tvos=-/-/-/1,watchos=5.0/-/-/0	-	fe6cccb74c843768
 method	c:objc(cs)UNNotificationSound(cm)defaultCriticalSoundWithAudioVolume:	-			instancetype	float volume	-	ios=12.0/-/-/0,tvos=-/-/-/1,watchos=5.0/-/-/0	-	9dab2c8b8f13d7c4
 method	c:objc(cs)UNNotificationSound(cm)soundNamed:	-			instancetype	UNNotificationSoundName name	-	tvos=-/-/-/1,watchos=-/-/-/1	-	41cf25c9a0df7bc5
 method	c:objc(cs)UNNotificationSound(cm)ringtoneSoundNamed:	-			instancetype	UNNotificationSoundName name	-	ios=15.2/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	dace63593f1348cd

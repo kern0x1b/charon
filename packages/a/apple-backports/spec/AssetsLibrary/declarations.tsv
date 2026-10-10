@@ -24,12 +24,12 @@ enumconst	c:@E@ALAuthorizationStatus@ALAuthorizationStatusNotDetermined	ALAuthor
 enumconst	c:@E@ALAuthorizationStatus@ALAuthorizationStatusRestricted	ALAuthorizationStatus			-	-	-	ios=6/9/26.0/0,macos=-/-/-/1	-	d24c764e8310d3c9
 enumconst	c:@E@ALAuthorizationStatus@ALAuthorizationStatusDenied	ALAuthorizationStatus			-	-	-	ios=6/9/26.0/0,macos=-/-/-/1	-	9c0ca2b0fa95e055
 enumconst	c:@E@ALAuthorizationStatus@ALAuthorizationStatusAuthorized	ALAuthorizationStatus			-	-	-	ios=6/9/26.0/0,macos=-/-/-/1	-	b19c8eabac67022f
-typedef	c:@T@ALAssetsLibraryGroupsEnumerationResultsBlock	-			void (^)(ALAssetsGroup *, BOOL *)	-	-	ios=4/9/26.0/0,macos=-/-/-/1	-	8605b13ce60367e2
-typedef	c:@T@ALAssetsLibraryAssetForURLResultBlock	-			void (^)(ALAsset *)	-	-	ios=4/9/26.0/0,macos=-/-/-/1	-	d7b02489a0f649c6
-typedef	c:@T@ALAssetsLibraryGroupResultBlock	-			void (^)(ALAssetsGroup *)	-	-	ios=5/9/26.0/0,macos=-/-/-/1	-	71d4ea5a4c210376
-typedef	c:@T@ALAssetsLibraryAccessFailureBlock	-			void (^)(NSError *)	-	-	ios=4/9/26.0/0,macos=-/-/-/1	-	405db1ac96b330e8
-typedef	c:@T@ALAssetsLibraryWriteImageCompletionBlock	-			void (^)(NSURL *, NSError *)	-	-	ios=4/9/26.0/0,macos=-/-/-/1	-	c7a7c08aca8db2d3
-typedef	c:@T@ALAssetsLibraryWriteVideoCompletionBlock	-			void (^)(NSURL *, NSError *)	-	-	ios=4/9/26.0/0,macos=-/-/-/1	-	dffef39b86a82d53
+typedef	c:@T@ALAssetsLibraryGroupsEnumerationResultsBlock	-			void ((^))(ALAssetsGroup *, BOOL *)	-	-	ios=4/9/26.0/0,macos=-/-/-/1	-	2a1d65919fff6cfa
+typedef	c:@T@ALAssetsLibraryAssetForURLResultBlock	-			void ((^))(ALAsset *)	-	-	ios=4/9/26.0/0,macos=-/-/-/1	-	73f377c294c14301
+typedef	c:@T@ALAssetsLibraryGroupResultBlock	-			void ((^))(ALAssetsGroup *)	-	-	ios=5/9/26.0/0,macos=-/-/-/1	-	d9d605b414f7743a
+typedef	c:@T@ALAssetsLibraryAccessFailureBlock	-			void ((^))(NSError *)	-	-	ios=4/9/26.0/0,macos=-/-/-/1	-	3d14d601c63523ab
+typedef	c:@T@ALAssetsLibraryWriteImageCompletionBlock	-			void ((^))(NSURL *, NSError *)	-	-	ios=4/9/26.0/0,macos=-/-/-/1	-	4c52ab54c748728d
+typedef	c:@T@ALAssetsLibraryWriteVideoCompletionBlock	-			void ((^))(NSURL *, NSError *)	-	-	ios=4/9/26.0/0,macos=-/-/-/1	-	92af47735f4c9a05
 interface	c:objc(cs)ALAssetsLibrary	-			-	-	-	ios=4/9/26.0/0,macos=-/-/-/1	-	a5ae4256318ebc48
 super	-	ALAssetsLibrary	NSObject		-	-	-	-	-	d4c08b159d058a21
 method	c:objc(cs)ALAssetsLibrary(im)enumerateGroupsWithTypes:usingBlock:failureBlock:	-			void	ALAssetsGroupType types | ALAssetsLibraryGroupsEnumerationResultsBlock enumerationBlock | ALAssetsLibraryAccessFailureBlock failureBlock	-	ios=4/9/26.0/0,macos=-/-/-/1	-	a7fc0e3f63c71f15
@@ -90,7 +90,7 @@ super	-	ALAssetsFilter	NSObject		-	-	-	-	-	659dd4592838abd4
 method	c:objc(cs)ALAssetsFilter(cm)allPhotos	-			ALAssetsFilter *	-	-	ios=4/9/26.0/0,macos=-/-/-/1	-	fea2f543d7e98f58
 method	c:objc(cs)ALAssetsFilter(cm)allVideos	-			ALAssetsFilter *	-	-	ios=4/9/26.0/0,macos=-/-/-/1	-	270919fcfbaae078
 method	c:objc(cs)ALAssetsFilter(cm)allAssets	-			ALAssetsFilter *	-	-	ios=4/9/26.0/0,macos=-/-/-/1	-	e6e5de55ec1b27e4
-typedef	c:@T@ALAssetsGroupEnumerationResultsBlock	-			void (^)(ALAsset *, NSUInteger, BOOL *)	-	-	ios=4/9/26.0/0,macos=-/-/-/1	-	2c72a044b878ee4b
+typedef	c:@T@ALAssetsGroupEnumerationResultsBlock	-			void ((^))(ALAsset *, NSUInteger, BOOL *)	-	-	ios=4/9/26.0/0,macos=-/-/-/1	-	71c0e1e59cb5d78a
 var	c:@ALAssetsGroupPropertyName	-			NSString *const	-	-	ios=4/9/26.0/0,macos=-/-/-/1	-	afc293301ff10432
 var	c:@ALAssetsGroupPropertyType	-			NSString *const	-	-	ios=4/9/26.0/0,macos=-/-/-/1	-	b97c698ab8f41320
 var	c:@ALAssetsGroupPropertyPersistentID	-			NSString *const	-	-	ios=4/9/26.0/0,macos=-/-/-/1	-	1ebe8a7a17182d7e

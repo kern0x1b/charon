@@ -21,10 +21,10 @@ field	c:@S@_IODataQueueAppendix@FI@version	_IODataQueueAppendix			UInt32	-	-	-	-
 field	c:@S@_IODataQueueAppendix@FI@msgh	_IODataQueueAppendix			mach_msg_header_t	-	-	-	-	e8886a75727669fb
 typedef	c:@T@IODataQueueAppendix	-			struct _IODataQueueAppendix	-	-	-	-	b66b05162309dd23
 function	c:@F@IODataQueueDataAvailable	-			Boolean (IODataQueueMemory *)	IODataQueueMemory * dataQueue	-	-	-	2827484e028eddcd
-function	c:@F@IODataQueuePeek	-			IODataQueueEntry *(IODataQueueMemory *)	IODataQueueMemory * dataQueue	-	-	-	b5b49f73f6d22d94
+function	c:@F@IODataQueuePeek	-			IODataQueueEntry * (IODataQueueMemory *)	IODataQueueMemory * dataQueue	-	-	-	6f61ee3f8afb968a
 function	c:@F@IODataQueueDequeue	-			IOReturn (IODataQueueMemory *, void *, uint32_t *)	IODataQueueMemory * dataQueue | void * data | uint32_t * dataSize	-	-	-	f6a1db7b7adba38f
 function	c:@F@IODataQueueWaitForAvailableData	-			IOReturn (IODataQueueMemory *, mach_port_t)	IODataQueueMemory * dataQueue | mach_port_t notificationPort	-	-	-	0f1013495a0f5380
-function	c:@F@IODataQueueAllocateNotificationPort	-			mach_port_t ()	-	-	-	-	69ea281530cbe049
+function	c:@F@IODataQueueAllocateNotificationPort	-			mach_port_t (...)	-	-	-	-	cae2bab46abcd583
 function	c:@F@IODataQueueEnqueue	-			IOReturn (IODataQueueMemory *, void *, uint32_t)	IODataQueueMemory * dataQueue | void * data | uint32_t dataSize	-	ios=4.0/-/-/0	-	340c70f41c1d7350
 function	c:@F@IODataQueueSetNotificationPort	-			IOReturn (IODataQueueMemory *, mach_port_t)	IODataQueueMemory * dataQueue | mach_port_t notifyPort	-	ios=4.0/-/-/0	-	bf80855a46f29e87
 enum	c:@Ea@kIOSystemStateSleepDescriptionHibernateStateInactive	-	-		unsigned int	-	-	-	-	41d540bd279f017b
@@ -199,11 +199,11 @@ function	c:@F@IODispatchCalloutFromMessage	-			void (void *, mach_msg_header_t *
 function	c:@F@IOCreateReceivePort	-			kern_return_t (uint32_t, mach_port_t *)	uint32_t msgType | mach_port_t * recvPort	-	-	-	4d71bb9d7e06591d
 function	c:@F@IOObjectRelease	-			kern_return_t (io_object_t)	io_object_t object	-	-	-	73d0f92cd2d5bdae
 function	c:@F@IOObjectRetain	-			kern_return_t (io_object_t)	io_object_t object	-	-	-	b8ea4f45e692edf7
-function	c:@F@IOObjectGetClass	-			kern_return_t (io_object_t, char *)	io_object_t object | io_name_t className	-	-	-	cb25393136a98730
+function	c:@F@IOObjectGetClass	-			kern_return_t (io_object_t, io_name_t)	io_object_t object | io_name_t className	-	-	-	19a096fb3ea27977
 function	c:@F@IOObjectCopyClass	-			CFStringRef (io_object_t)	io_object_t object	-	ios=4.0/-/-/0	-	7c38b2fcf3d73534
 function	c:@F@IOObjectCopySuperclassForClass	-			CFStringRef (CFStringRef)	CFStringRef classname	-	ios=4.0/-/-/0	-	e40cd0365a52e1a6
 function	c:@F@IOObjectCopyBundleIdentifierForClass	-			CFStringRef (CFStringRef)	CFStringRef classname	-	ios=4.0/-/-/0	-	b190d31c446311da
-function	c:@F@IOObjectConformsTo	-			boolean_t (io_object_t, const char *)	io_object_t object | const io_name_t className	-	-	-	7716a6712167f54f
+function	c:@F@IOObjectConformsTo	-			boolean_t (io_object_t, const io_name_t)	io_object_t object | const io_name_t className	-	-	-	50fb54df75dd6cf2
 function	c:@F@IOObjectIsEqualTo	-			boolean_t (io_object_t, io_object_t)	io_object_t object | io_object_t anObject	-	-	-	88dbcca0ac8da917
 function	c:@F@IOObjectGetKernelRetainCount	-			uint32_t (io_object_t)	io_object_t object	-	ios=4.0/-/-/0	-	385c65962aa92fc6
 function	c:@F@IOObjectGetUserRetainCount	-			uint32_t (io_object_t)	io_object_t object	-	ios=4.0/-/-/0	-	23f695da86e1f224
@@ -213,9 +213,9 @@ function	c:@F@IOIteratorReset	-			void (io_iterator_t)	io_iterator_t iterator	-	
 function	c:@F@IOIteratorIsValid	-			boolean_t (io_iterator_t)	io_iterator_t iterator	-	-	-	221a7f22d30b4275
 function	c:@F@IOServiceGetMatchingService	-			io_service_t (mach_port_t, CFDictionaryRef)	mach_port_t mainPort | CFDictionaryRef matching	-	-	-	17dba7c8c8768c12
 function	c:@F@IOServiceGetMatchingServices	-			kern_return_t (mach_port_t, CFDictionaryRef, io_iterator_t *)	mach_port_t mainPort | CFDictionaryRef matching | io_iterator_t * existing	-	-	-	d1f863bb62283ad5
-function	c:@F@IOServiceAddNotification	-			kern_return_t (mach_port_t, const char *, CFDictionaryRef, mach_port_t, uintptr_t, io_iterator_t *)	mach_port_t mainPort | const io_name_t notificationType | CFDictionaryRef matching | mach_port_t wakePort | uintptr_t reference | io_iterator_t * notification	-	*deprecated ios=-/-/-/1,maccatalyst=-/-/-/1	-	c83fc3a2a5bd62a5
-function	c:@F@IOServiceAddMatchingNotification	-			kern_return_t (IONotificationPortRef, const char *, CFDictionaryRef, IOServiceMatchingCallback, void *, io_iterator_t *)	IONotificationPortRef notifyPort | const io_name_t notificationType | CFDictionaryRef matching | IOServiceMatchingCallback callback | void * refCon | io_iterator_t * notification	-	-	-	21bc95ad8ab9a980
-function	c:@F@IOServiceAddInterestNotification	-			kern_return_t (IONotificationPortRef, io_service_t, const char *, IOServiceInterestCallback, void *, io_object_t *)	IONotificationPortRef notifyPort | io_service_t service | const io_name_t interestType | IOServiceInterestCallback callback | void * refCon | io_object_t * notification	-	-	-	9d5377a1c3c0deae
+function	c:@F@IOServiceAddNotification	-			kern_return_t (mach_port_t, const io_name_t, CFDictionaryRef, mach_port_t, uintptr_t, io_iterator_t *)	mach_port_t mainPort | const io_name_t notificationType | CFDictionaryRef matching | mach_port_t wakePort | uintptr_t reference | io_iterator_t * notification	-	*deprecated ios=-/-/-/1,maccatalyst=-/-/-/1	-	2cd0a3c897a8ee49
+function	c:@F@IOServiceAddMatchingNotification	-			kern_return_t (IONotificationPortRef, const io_name_t, CFDictionaryRef, IOServiceMatchingCallback, void *, io_iterator_t *)	IONotificationPortRef notifyPort | const io_name_t notificationType | CFDictionaryRef matching | IOServiceMatchingCallback callback | void * refCon | io_iterator_t * notification	-	-	-	0ab6a575653705c5
+function	c:@F@IOServiceAddInterestNotification	-			kern_return_t (IONotificationPortRef, io_service_t, const io_name_t, IOServiceInterestCallback, void *, io_object_t *)	IONotificationPortRef notifyPort | io_service_t service | const io_name_t interestType | IOServiceInterestCallback callback | void * refCon | io_object_t * notification	-	-	-	2b5105317c6c9f6d
 function	c:@F@IOServiceMatchPropertyTable	-			kern_return_t (io_service_t, CFDictionaryRef, boolean_t *)	io_service_t service | CFDictionaryRef matching | boolean_t * matches	-	-	-	e0fe22cdd7917a8e
 function	c:@F@IOServiceGetBusyState	-			kern_return_t (io_service_t, uint32_t *)	io_service_t service | uint32_t * busyState	-	-	-	1ae1bac767bb1426
 function	c:@F@IOServiceWaitQuiet	-			kern_return_t (io_service_t, mach_timespec_t *)	io_service_t service | mach_timespec_t * waitTime	-	-	-	b6324b90f50f9faa
@@ -254,46 +254,46 @@ function	c:@F@IOConnectTrap5	-			kern_return_t (io_connect_t, uint32_t, uintptr_
 function	c:@F@IOConnectTrap6	-			kern_return_t (io_connect_t, uint32_t, uintptr_t, uintptr_t, uintptr_t, uintptr_t, uintptr_t, uintptr_t)	io_connect_t connect | uint32_t index | uintptr_t p1 | uintptr_t p2 | uintptr_t p3 | uintptr_t p4 | uintptr_t p5 | uintptr_t p6	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=1.0/-/-/0	-	20a5492640cba9e5
 function	c:@F@IOConnectAddClient	-			kern_return_t (io_connect_t, io_connect_t)	io_connect_t connect | io_connect_t client	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=1.0/-/-/0	-	91bc157c9f0ba205
 function	c:@F@IORegistryGetRootEntry	-			io_registry_entry_t (mach_port_t)	mach_port_t mainPort	-	-	-	584e6aeae37d6709
-function	c:@F@IORegistryEntryFromPath	-			io_registry_entry_t (mach_port_t, const char *)	mach_port_t mainPort | const io_string_t path	-	-	-	1e99f4487d14d44c
+function	c:@F@IORegistryEntryFromPath	-			io_registry_entry_t (mach_port_t, const io_string_t)	mach_port_t mainPort | const io_string_t path	-	-	-	1767f483e3a85145
 function	c:@F@IORegistryEntryCopyFromPath	-			io_registry_entry_t (mach_port_t, CFStringRef)	mach_port_t mainPort | CFStringRef path	-	ios=9.0/-/-/0	-	077b3d2ec8ece6d7
 enum	c:@Ea@kIORegistryIterateRecursively	-	-		unsigned int	-	-	-	-	a9067c5878e0a135
 enumconst	c:@Ea@kIORegistryIterateRecursively@kIORegistryIterateRecursively	-			-	-	-	-	-	6fa07c86b8ca3fb3
 enumconst	c:@Ea@kIORegistryIterateRecursively@kIORegistryIterateParents	-			-	-	-	-	-	c71f5478286791f4
-function	c:@F@IORegistryCreateIterator	-			kern_return_t (mach_port_t, const char *, IOOptionBits, io_iterator_t *)	mach_port_t mainPort | const io_name_t plane | IOOptionBits options | io_iterator_t * iterator	-	-	-	79d936c53bcef877
-function	c:@F@IORegistryEntryCreateIterator	-			kern_return_t (io_registry_entry_t, const char *, IOOptionBits, io_iterator_t *)	io_registry_entry_t entry | const io_name_t plane | IOOptionBits options | io_iterator_t * iterator	-	-	-	9707fa5474c5862b
+function	c:@F@IORegistryCreateIterator	-			kern_return_t (mach_port_t, const io_name_t, IOOptionBits, io_iterator_t *)	mach_port_t mainPort | const io_name_t plane | IOOptionBits options | io_iterator_t * iterator	-	-	-	9bfa2256d2c320c3
+function	c:@F@IORegistryEntryCreateIterator	-			kern_return_t (io_registry_entry_t, const io_name_t, IOOptionBits, io_iterator_t *)	io_registry_entry_t entry | const io_name_t plane | IOOptionBits options | io_iterator_t * iterator	-	-	-	b7646d3d6c17ebbd
 function	c:@F@IORegistryIteratorEnterEntry	-			kern_return_t (io_iterator_t)	io_iterator_t iterator	-	-	-	cbfb409b85b485db
 function	c:@F@IORegistryIteratorExitEntry	-			kern_return_t (io_iterator_t)	io_iterator_t iterator	-	-	-	8316cb0c063bc223
-function	c:@F@IORegistryEntryGetName	-			kern_return_t (io_registry_entry_t, char *)	io_registry_entry_t entry | io_name_t name	-	-	-	a7fd2e20c22a9193
-function	c:@F@IORegistryEntryGetNameInPlane	-			kern_return_t (io_registry_entry_t, const char *, char *)	io_registry_entry_t entry | const io_name_t plane | io_name_t name	-	-	-	2c5ea6e52d9dbb6d
-function	c:@F@IORegistryEntryGetLocationInPlane	-			kern_return_t (io_registry_entry_t, const char *, char *)	io_registry_entry_t entry | const io_name_t plane | io_name_t location	-	-	-	5034b9fe1f24ec42
-function	c:@F@IORegistryEntryGetPath	-			kern_return_t (io_registry_entry_t, const char *, char *)	io_registry_entry_t entry | const io_name_t plane | io_string_t path	-	-	-	9d1c34d9f58f7009
-function	c:@F@IORegistryEntryCopyPath	-			CFStringRef (io_registry_entry_t, const char *)	io_registry_entry_t entry | const io_name_t plane	-	ios=9.0/-/-/0	-	59b1f6e0430aecad
+function	c:@F@IORegistryEntryGetName	-			kern_return_t (io_registry_entry_t, io_name_t)	io_registry_entry_t entry | io_name_t name	-	-	-	8e65c877f33ef51d
+function	c:@F@IORegistryEntryGetNameInPlane	-			kern_return_t (io_registry_entry_t, const io_name_t, io_name_t)	io_registry_entry_t entry | const io_name_t plane | io_name_t name	-	-	-	b12b91ab1990bf42
+function	c:@F@IORegistryEntryGetLocationInPlane	-			kern_return_t (io_registry_entry_t, const io_name_t, io_name_t)	io_registry_entry_t entry | const io_name_t plane | io_name_t location	-	-	-	59689d6c58816da7
+function	c:@F@IORegistryEntryGetPath	-			kern_return_t (io_registry_entry_t, const io_name_t, io_string_t)	io_registry_entry_t entry | const io_name_t plane | io_string_t path	-	-	-	e9e454aeeb64177e
+function	c:@F@IORegistryEntryCopyPath	-			CFStringRef (io_registry_entry_t, const io_name_t)	io_registry_entry_t entry | const io_name_t plane	-	ios=9.0/-/-/0	-	219f0ab596c824d4
 function	c:@F@IORegistryEntryGetRegistryEntryID	-			kern_return_t (io_registry_entry_t, uint64_t *)	io_registry_entry_t entry | uint64_t * entryID	-	-	-	3fcd2263e4999d08
 function	c:@F@IORegistryEntryCreateCFProperties	-			kern_return_t (io_registry_entry_t, CFMutableDictionaryRef *, CFAllocatorRef, IOOptionBits)	io_registry_entry_t entry | CFMutableDictionaryRef * properties | CFAllocatorRef allocator | IOOptionBits options	-	-	-	589853d1f7f1c9df
 function	c:@F@IORegistryEntryCreateCFProperty	-			CFTypeRef (io_registry_entry_t, CFStringRef, CFAllocatorRef, IOOptionBits)	io_registry_entry_t entry | CFStringRef key | CFAllocatorRef allocator | IOOptionBits options	-	-	-	55a8f5464aa114a6
-function	c:@F@IORegistryEntrySearchCFProperty	-			CFTypeRef (io_registry_entry_t, const char *, CFStringRef, CFAllocatorRef, IOOptionBits)	io_registry_entry_t entry | const io_name_t plane | CFStringRef key | CFAllocatorRef allocator | IOOptionBits options	-	-	-	a4cf8f47f1d9dec1
-function	c:@F@IORegistryEntryGetProperty	-			kern_return_t (io_registry_entry_t, const char *, char *, uint32_t *)	io_registry_entry_t entry | const io_name_t propertyName | io_struct_inband_t buffer | uint32_t * size	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=1.0/-/-/0	-	e73024e3bbc482f0
+function	c:@F@IORegistryEntrySearchCFProperty	-			CFTypeRef (io_registry_entry_t, const io_name_t, CFStringRef, CFAllocatorRef, IOOptionBits)	io_registry_entry_t entry | const io_name_t plane | CFStringRef key | CFAllocatorRef allocator | IOOptionBits options	-	-	-	41181e834d7d0257
+function	c:@F@IORegistryEntryGetProperty	-			kern_return_t (io_registry_entry_t, const io_name_t, io_struct_inband_t, uint32_t *)	io_registry_entry_t entry | const io_name_t propertyName | io_struct_inband_t buffer | uint32_t * size	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=1.0/-/-/0	-	c92423cd64827cbb
 function	c:@F@IORegistryEntrySetCFProperties	-			kern_return_t (io_registry_entry_t, CFTypeRef)	io_registry_entry_t entry | CFTypeRef properties	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=1.0/-/-/0	-	3bb102ba2eb40c99
 function	c:@F@IORegistryEntrySetCFProperty	-			kern_return_t (io_registry_entry_t, CFStringRef, CFTypeRef)	io_registry_entry_t entry | CFStringRef propertyName | CFTypeRef property	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=1.0/-/-/0	-	60de9bb416ea0ef5
-function	c:@F@IORegistryEntryGetChildIterator	-			kern_return_t (io_registry_entry_t, const char *, io_iterator_t *)	io_registry_entry_t entry | const io_name_t plane | io_iterator_t * iterator	-	-	-	8c1a1bc646afedfc
-function	c:@F@IORegistryEntryGetChildEntry	-			kern_return_t (io_registry_entry_t, const char *, io_registry_entry_t *)	io_registry_entry_t entry | const io_name_t plane | io_registry_entry_t * child	-	-	-	43da4a41f1a6bab8
-function	c:@F@IORegistryEntryGetParentIterator	-			kern_return_t (io_registry_entry_t, const char *, io_iterator_t *)	io_registry_entry_t entry | const io_name_t plane | io_iterator_t * iterator	-	-	-	c0787ae229b12819
-function	c:@F@IORegistryEntryGetParentEntry	-			kern_return_t (io_registry_entry_t, const char *, io_registry_entry_t *)	io_registry_entry_t entry | const io_name_t plane | io_registry_entry_t * parent	-	-	-	633526380b457881
-function	c:@F@IORegistryEntryInPlane	-			boolean_t (io_registry_entry_t, const char *)	io_registry_entry_t entry | const io_name_t plane	-	-	-	82d4a696b8e5554b
+function	c:@F@IORegistryEntryGetChildIterator	-			kern_return_t (io_registry_entry_t, const io_name_t, io_iterator_t *)	io_registry_entry_t entry | const io_name_t plane | io_iterator_t * iterator	-	-	-	4e2924dcdead46d4
+function	c:@F@IORegistryEntryGetChildEntry	-			kern_return_t (io_registry_entry_t, const io_name_t, io_registry_entry_t *)	io_registry_entry_t entry | const io_name_t plane | io_registry_entry_t * child	-	-	-	b96e1890866424d9
+function	c:@F@IORegistryEntryGetParentIterator	-			kern_return_t (io_registry_entry_t, const io_name_t, io_iterator_t *)	io_registry_entry_t entry | const io_name_t plane | io_iterator_t * iterator	-	-	-	d2b77553a9417ef6
+function	c:@F@IORegistryEntryGetParentEntry	-			kern_return_t (io_registry_entry_t, const io_name_t, io_registry_entry_t *)	io_registry_entry_t entry | const io_name_t plane | io_registry_entry_t * parent	-	-	-	d15caee3b374c9ca
+function	c:@F@IORegistryEntryInPlane	-			boolean_t (io_registry_entry_t, const io_name_t)	io_registry_entry_t entry | const io_name_t plane	-	-	-	6e160d456a02abb1
 function	c:@F@IOServiceMatching	-			CFMutableDictionaryRef (const char *)	const char * name	-	-	-	0a82df1c986cd753
 function	c:@F@IOServiceNameMatching	-			CFMutableDictionaryRef (const char *)	const char * name	-	-	-	152264093ae41969
 function	c:@F@IOBSDNameMatching	-			CFMutableDictionaryRef (mach_port_t, uint32_t, const char *)	mach_port_t mainPort | uint32_t options | const char * bsdName	-	-	-	68c0ee6869d55811
 function	c:@F@IOOpenFirmwarePathMatching	-			CFMutableDictionaryRef (mach_port_t, uint32_t, const char *)	mach_port_t mainPort | uint32_t options | const char * path	-	*deprecated ios=-/-/-/1,maccatalyst=-/-/-/1	-	951565230a9c7a55
 function	c:@F@IORegistryEntryIDMatching	-			CFMutableDictionaryRef (uint64_t)	uint64_t entryID	-	-	-	0c810eed89c0a766
-function	c:@F@IOServiceOFPathToBSDName	-			kern_return_t (mach_port_t, const char *, char *)	mach_port_t mainPort | const io_name_t openFirmwarePath | io_name_t bsdName	-	*deprecated ios=-/-/-/1,maccatalyst=-/-/-/1	-	65fc48fe51a5b472
+function	c:@F@IOServiceOFPathToBSDName	-			kern_return_t (mach_port_t, const io_name_t, io_name_t)	mach_port_t mainPort | const io_name_t openFirmwarePath | io_name_t bsdName	-	*deprecated ios=-/-/-/1,maccatalyst=-/-/-/1	-	fddff438e15c58df
 typedef	c:IOKitLib.h@T@IOAsyncCallback0	-			void (*)(void *, IOReturn)	-	-	-	-	c7ccb55dfe65be87
 typedef	c:IOKitLib.h@T@IOAsyncCallback1	-			void (*)(void *, IOReturn, void *)	-	-	-	-	a9d19b54253d4188
 typedef	c:IOKitLib.h@T@IOAsyncCallback2	-			void (*)(void *, IOReturn, void *, void *)	-	-	-	-	c9aad961695ec5b3
 typedef	c:IOKitLib.h@T@IOAsyncCallback	-			void (*)(void *, IOReturn, void **, uint32_t)	-	-	-	-	946b853488ff394c
 function	c:@F@OSGetNotificationFromMessage	-			kern_return_t (mach_msg_header_t *, uint32_t, uint32_t *, uintptr_t *, void **, vm_size_t *)	mach_msg_header_t * msg | uint32_t index | uint32_t * type | uintptr_t * reference | void ** content | vm_size_t * size	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=1.0/-/-/0	-	982ecf1df269b598
 function	c:@F@IOCatalogueSendData	-			kern_return_t (mach_port_t, uint32_t, const char *, uint32_t)	mach_port_t mainPort | uint32_t flag | const char * buffer | uint32_t size	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=1.0/-/-/0	-	426479de18b376f6
-function	c:@F@IOCatalogueTerminate	-			kern_return_t (mach_port_t, uint32_t, char *)	mach_port_t mainPort | uint32_t flag | io_name_t description	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=1.0/-/-/0	-	9251af5d409a6faa
+function	c:@F@IOCatalogueTerminate	-			kern_return_t (mach_port_t, uint32_t, io_name_t)	mach_port_t mainPort | uint32_t flag | io_name_t description	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=1.0/-/-/0	-	7960f51b1b96ec4b
 function	c:@F@IOCatalogueGetData	-			kern_return_t (mach_port_t, uint32_t, char **, uint32_t *)	mach_port_t mainPort | uint32_t flag | char ** buffer | uint32_t * size	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=1.0/-/-/0	-	6cd1f1fdf4f516c0
-function	c:@F@IOCatalogueModuleLoaded	-			kern_return_t (mach_port_t, char *)	mach_port_t mainPort | io_name_t name	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=1.0/-/-/0	-	6abc443b76eea882
+function	c:@F@IOCatalogueModuleLoaded	-			kern_return_t (mach_port_t, io_name_t)	mach_port_t mainPort | io_name_t name	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=1.0/-/-/0	-	04a9ab595475df0c
 function	c:@F@IOCatalogueReset	-			kern_return_t (mach_port_t, uint32_t)	mach_port_t mainPort | uint32_t flag	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=1.0/-/-/0	-	05717f62ed86e93c
 typedef	c:IOMessage.h@T@IOMessage	-			UInt32	-	-	-	-	0b90e429448bc856

@@ -10,7 +10,7 @@ enumconst	c:@E@SLRequestMethod@SLRequestMethodGET	SLRequestMethod			-	-	-	-	-	1b
 enumconst	c:@E@SLRequestMethod@SLRequestMethodPOST	SLRequestMethod			-	-	-	-	-	4520a84f00b4044c
 enumconst	c:@E@SLRequestMethod@SLRequestMethodDELETE	SLRequestMethod			-	-	-	-	-	1d1b1526b1f984b1
 enumconst	c:@E@SLRequestMethod@SLRequestMethodPUT	SLRequestMethod			-	-	-	-	-	7b0aea09816fb550
-typedef	c:@T@SLRequestHandler	-			void (^)(NSData *, NSHTTPURLResponse *, NSError *)	-	-	-	-	bff6b740fee988b1
+typedef	c:@T@SLRequestHandler	-			void ((^))(NSData *, NSHTTPURLResponse *, NSError *)	-	-	-	-	d4ea6f697a33b123
 interface	c:objc(cs)SLRequest	-			-	-	-	ios=6.0/-/-/0	-	77484e8ad7da9e31
 super	-	SLRequest	NSObject		-	-	-	-	-	fdfbd9d58d511643
 method	c:objc(cs)SLRequest(cm)requestForServiceType:requestMethod:URL:parameters:	-			SLRequest *	NSString * serviceType | SLRequestMethod requestMethod | NSURL * url | NSDictionary * parameters	-	ios=6.0/-/-/0	-	1b3111ba46e16858
@@ -44,7 +44,7 @@ typedef	c:@T@SLComposeViewControllerResult	-			enum SLComposeViewControllerResul
 enum	c:@E@SLComposeViewControllerResult	-			NSInteger	-	-	-	-	fa3f5dbb2e9ab449
 enumconst	c:@E@SLComposeViewControllerResult@SLComposeViewControllerResultCancelled	SLComposeViewControllerResult			-	-	-	-	-	fdbcd697a90de9ac
 enumconst	c:@E@SLComposeViewControllerResult@SLComposeViewControllerResultDone	SLComposeViewControllerResult			-	-	-	-	-	584a331db8f789b4
-typedef	c:@T@SLComposeViewControllerCompletionHandler	-			void (^)(SLComposeViewControllerResult)	-	-	-	-	e4e3de65c30bf0cb
+typedef	c:@T@SLComposeViewControllerCompletionHandler	-			void ((^))(SLComposeViewControllerResult)	-	-	-	-	733a5049fb7cde90
 interface	c:objc(cs)SLComposeViewController	-			-	-	-	ios=6.0/-/-/0	-	e7e6f1d386e12faa
 super	-	SLComposeViewController	UIViewController		-	-	-	-	-	e7aa874664b60c7d
 method	c:objc(cs)SLComposeViewController(cm)isAvailableForServiceType:	-			BOOL	NSString * serviceType	-	ios=6.0/-/-/0	-	9f379c13bab17e6e
@@ -56,7 +56,7 @@ method	c:objc(cs)SLComposeViewController(im)removeAllImages	-			BOOL	-	-	ios=6.0
 method	c:objc(cs)SLComposeViewController(im)addURL:	-			BOOL	NSURL * url	-	ios=6.0/-/-/0	-	46dd16c8284ee3ac
 method	c:objc(cs)SLComposeViewController(im)removeAllURLs	-			BOOL	-	-	ios=6.0/-/-/0	-	b11c19adeeda0067
 property	c:objc(cs)SLComposeViewController(py)completionHandler	-			SLComposeViewControllerCompletionHandler	-	copy,nonatomic	ios=6.0/-/-/0	-	5dffb4f5eb4e9668
-typedef	c:@T@SLComposeSheetConfigurationItemTapHandler	-			void (^)(void)	-	-	-	-	c004ecc21050d36c
+typedef	c:@T@SLComposeSheetConfigurationItemTapHandler	-			void ((^))(void)	-	-	-	-	faaa124b4404c569
 interface	c:objc(cs)SLComposeSheetConfigurationItem	-			-	-	-	ios=8.0/-/-/0	-	0b737b7950f1a35e
 super	-	SLComposeSheetConfigurationItem	NSObject		-	-	-	-	-	7347125f0b7f7591
 method	c:objc(cs)SLComposeSheetConfigurationItem(im)init	-			instancetype	-	-	ios=8.0/-/-/0	-	edb95e102ea4294c

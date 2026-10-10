@@ -49,7 +49,7 @@ super	-	ILMessageFilterQueryRequest	NSObject		-	-	-	-	-	854c542461be0a31
 conforms	-	ILMessageFilterQueryRequest	NSSecureCoding		-	-	-	-	-	dbd7056737e6d9ae
 property	c:objc(cs)ILMessageFilterQueryRequest(py)sender	-			NSString *	-	readonly,nonatomic	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	742a349dd3c9276a
 property	c:objc(cs)ILMessageFilterQueryRequest(py)messageBody	-			NSString *	-	readonly,nonatomic	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	288c3577534b7593
-property	c:objc(cs)ILMessageFilterQueryRequest(py)receiverISOCountryCode	-			API_UNAVAILABLE NSString *	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b34dc98a00a1f50e
+property	c:objc(cs)ILMessageFilterQueryRequest(py)receiverISOCountryCode	-			NSString *	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	26fa02af81eab4ac
 method	c:objc(cs)ILMessageFilterQueryRequest(im)init	-			instancetype	-	-	*unavailable ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6a4b90b86a85cd2e
 method	c:objc(cs)ILMessageFilterQueryRequest(cm)new	-			instancetype	-	-	*unavailable ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c034acffd4b09b26
 interface	c:objc(cs)ILMessageFilterQueryResponse	-			-	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d06d59e3f777be4a
@@ -98,7 +98,7 @@ interface	c:objc(cs)ILClassificationResponse	-			-	-	-	ios=12.0/-/-/0,maccatalys
 super	-	ILClassificationResponse	NSObject		-	-	-	-	-	b26ff9b07a87e4db
 conforms	-	ILClassificationResponse	NSSecureCoding		-	-	-	-	-	49cfc51458d8a296
 property	c:objc(cs)ILClassificationResponse(py)action	-			ILClassificationAction	-	readonly,assign,nonatomic	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fe2ccbeab2839d46
-property	c:objc(cs)ILClassificationResponse(py)userString	-			API_AVAILABLE NSString *	-	copy,nonatomic	ios=12.1/-/-/0	-	8cbe3562c58c80a9
+property	c:objc(cs)ILClassificationResponse(py)userString	-			NSString *	-	copy,nonatomic	ios=12.1/-/-/0	-	d8d78a52d43b4efd
 property	c:objc(cs)ILClassificationResponse(py)userInfo	-			NSDictionary<NSString *,id> *	-	copy,nonatomic	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c86106e7374070ca
 method	c:objc(cs)ILClassificationResponse(im)initWithClassificationAction:	-			instancetype	ILClassificationAction action	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3720b2c0e13dbe48
 method	c:objc(cs)ILClassificationResponse(im)init	-			instancetype	-	-	*unavailable ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e560e72e7c689866

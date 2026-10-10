@@ -76,7 +76,7 @@ property	c:objc(cs)AVPictureInPictureController(cpy)pictureInPictureButtonStartI
 property	c:objc(cs)AVPictureInPictureController(cpy)pictureInPictureButtonStopImage	-			UIImage *	-	readonly,nonatomic,class	ios=13.0/-/-/0,tvos=14.0/-/-/0,xros=1.0/-/-/0	-	1c30e577a50b219f
 method	c:objc(cs)AVPictureInPictureController(im)initWithContentSource:	-			instancetype	AVPictureInPictureControllerContentSource * contentSource	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	a05cd60951322e71
 method	c:objc(cs)AVPictureInPictureController(im)initWithPlayerLayer:	-			instancetype	AVPlayerLayer * playerLayer	-	ios=9.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	8f2477076eff9399
-property	c:objc(cs)AVPictureInPictureController(py)contentSource	-			API_UNAVAILABLE AVPictureInPictureControllerContentSource *	-	strong,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	707894a1a08d93eb
+property	c:objc(cs)AVPictureInPictureController(py)contentSource	-			AVPictureInPictureControllerContentSource *	-	strong,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	dca515e117510ae0
 property	c:objc(cs)AVPictureInPictureController(py)playerLayer	-			AVPlayerLayer *	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	b6a1138e8280528a
 property	c:objc(cs)AVPictureInPictureController(py)delegate	-			id<AVPictureInPictureControllerDelegate>	-	weak,nonatomic	ios=9.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	e742447b782a6190
 method	c:objc(cs)AVPictureInPictureController(im)startPictureInPicture	-			void	-	-	ios=9.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	fd8884978c314dce
@@ -130,7 +130,7 @@ category	c:objc(cy)AVAudioSession@AVPlaybackRouteSelecting	-			-	-	-	ios=13.0/-/
 method	c:objc(cs)AVAudioSession(im)prepareRouteSelectionForPlaybackWithCompletionHandler:	AVPlaybackRouteSelecting			void	void (^)(BOOL, AVAudioSessionRouteSelection) completionHandler	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	8983f0c7f2ecf53e
 category	c:objc(cy)AVPlayerItem@AVKitAdditions	-			-	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	f53c0e5849fec9a2
 property	c:objc(cs)AVPlayerItem(py)externalMetadata	AVKitAdditions			NSArray<AVMetadataItem *> *	-	copy,nonatomic	ios=12.2/-/-/0,xros=1.0/-/-/0	-	bf34e6ad0e290e0f
-property	c:objc(cs)AVPlayerItem(py)interstitialTimeRanges	AVKitAdditions			API_UNAVAILABLE NSArray<AVInterstitialTimeRange *> *	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,xros=1.0/-/-/0	-	831ef5202f57db32
+property	c:objc(cs)AVPlayerItem(py)interstitialTimeRanges	AVKitAdditions			NSArray<AVInterstitialTimeRange *> *	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,xros=1.0/-/-/0	-	fa2bf37d0d7e1a91
 typedef	c:@T@AVPlayerViewControllerSkippingBehavior	-			enum AVPlayerViewControllerSkippingBehavior	-	-	-	-	262388577d1c1e54
 enum	c:@E@AVPlayerViewControllerSkippingBehavior	-			NSInteger	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	88ff7e62e0bafb43
 enumconst	c:@E@AVPlayerViewControllerSkippingBehavior@AVPlayerViewControllerSkippingBehaviorDefault	AVPlayerViewControllerSkippingBehavior			-	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	9eee2fa99998d87f
@@ -143,11 +143,11 @@ property	c:objc(cs)AVPlayerViewController(py)showsTimecodes	-			BOOL	-	nonatomic
 property	c:objc(cs)AVPlayerViewController(py)videoGravity	-			AVLayerVideoGravity	-	copy,nonatomic	ios=8.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	196068e1fe5c81b7
 property	c:objc(cs)AVPlayerViewController(py)readyForDisplay	-			BOOL	-	readonly,nonatomic,getter=isReadyForDisplay	watchos=-/-/-/1,xros=-/-/-/1	-	c198f827cb5ba77b
 property	c:objc(cs)AVPlayerViewController(py)videoBounds	-			CGRect	-	readonly,nonatomic	tvos=-/-/-/1,watchos=-/-/-/1	-	2ebb79a5d8be68e4
-property	c:objc(cs)AVPlayerViewController(py)contentOverlayView	-			API_UNAVAILABLE UIView *	-	readonly,nonatomic	watchos=-/-/-/1	-	7a8a4b3a9dcf1fda
+property	c:objc(cs)AVPlayerViewController(py)contentOverlayView	-			UIView *	-	readonly,nonatomic	watchos=-/-/-/1	-	3e8365fffa0f4a22
 property	c:objc(cs)AVPlayerViewController(py)allowsPictureInPicturePlayback	-			BOOL	-	nonatomic	ios=9.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	5d50d7211d6f4f67
 property	c:objc(cs)AVPlayerViewController(py)allowsVideoFrameAnalysis	-			BOOL	-	nonatomic	ios=16.0/-/-/0,maccatalyst=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e6a52c5d5f47a852
 property	c:objc(cs)AVPlayerViewController(py)videoFrameAnalysisTypes	-			AVVideoFrameAnalysisType	-	nonatomic	ios=17.0/-/-/0,maccatalyst=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ac4a3c47d1aae09b
-property	c:objc(cs)AVPlayerViewController(py)toggleLookupAction	-			API_UNAVAILABLE UIAction *	-	readonly,nonatomic	ios=17.0/-/-/0,maccatalyst=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f264af85927aec21
+property	c:objc(cs)AVPlayerViewController(py)toggleLookupAction	-			UIAction *	-	readonly,nonatomic	ios=17.0/-/-/0,maccatalyst=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fae3ea8fea92a9f7
 property	c:objc(cs)AVPlayerViewController(py)canStartPictureInPictureAutomaticallyFromInline	-			BOOL	-	nonatomic	ios=14.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	2b95c2e5f7177c67
 property	c:objc(cs)AVPlayerViewController(py)updatesNowPlayingInfoCenter	-			BOOL	-	nonatomic	ios=10.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	7d7cd634d67f5be3
 property	c:objc(cs)AVPlayerViewController(py)entersFullScreenWhenPlaybackBegins	-			BOOL	-	nonatomic	ios=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	112a3c76a5a9c72a
@@ -155,12 +155,12 @@ property	c:objc(cs)AVPlayerViewController(py)exitsFullScreenWhenPlaybackEnds	-		
 property	c:objc(cs)AVPlayerViewController(py)requiresLinearPlayback	-			BOOL	-	nonatomic	ios=11.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	d9484e7bc18bc2c3
 property	c:objc(cs)AVPlayerViewController(py)appliesPreferredDisplayCriteriaAutomatically	-			BOOL	-	nonatomic	ios=-/-/-/1,tvos=11.2/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	ea7879454af0863d
 property	c:objc(cs)AVPlayerViewController(py)pixelBufferAttributes	-			NSDictionary<NSString *,id> *	-	copy,nonatomic	ios=9.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	10f2ef305fa8998b
-property	c:objc(cs)AVPlayerViewController(py)delegate	-			API_UNAVAILABLE id<AVPlayerViewControllerDelegate>	-	weak,nonatomic	ios=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	bc87bcba5f8fd614
-property	c:objc(cs)AVPlayerViewController(py)speeds	-			API_UNAVAILABLE NSArray<AVPlaybackSpeed *> *	-	copy,nonatomic	ios=16.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	7ef9094f3bada3ac
-property	c:objc(cs)AVPlayerViewController(py)selectedSpeed	-			API_UNAVAILABLE AVPlaybackSpeed *	-	readonly,nonatomic	ios=16.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	50a98831731615a5
+property	c:objc(cs)AVPlayerViewController(py)delegate	-			id<AVPlayerViewControllerDelegate>	-	weak,nonatomic	ios=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	fd950e664df529fe
+property	c:objc(cs)AVPlayerViewController(py)speeds	-			NSArray<AVPlaybackSpeed *> *	-	copy,nonatomic	ios=16.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	f3fdb2e9de6c5ab7
+property	c:objc(cs)AVPlayerViewController(py)selectedSpeed	-			AVPlaybackSpeed *	-	readonly,nonatomic	ios=16.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	12288ca480307cd2
 method	c:objc(cs)AVPlayerViewController(im)selectSpeed:	-			void	AVPlaybackSpeed * speed	-	ios=16.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	cf6ce4cbd3486005
-property	c:objc(cs)AVPlayerViewController(py)unobscuredContentGuide	-			API_AVAILABLE UILayoutGuide *	-	readonly,nonatomic	ios=-/-/-/1,tvos=11.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	18a28b95a58e6e21
-property	c:objc(cs)AVPlayerViewController(py)allowedSubtitleOptionLanguages	-			API_AVAILABLE NSArray<NSString *> *	-	copy,nonatomic	ios=-/-/-/1,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	89fdfa7f82fa3d5b
+property	c:objc(cs)AVPlayerViewController(py)unobscuredContentGuide	-			UILayoutGuide *	-	readonly,nonatomic	ios=-/-/-/1,tvos=11.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	2c75bb160a8bd4e8
+property	c:objc(cs)AVPlayerViewController(py)allowedSubtitleOptionLanguages	-			NSArray<NSString *> *	-	copy,nonatomic	ios=-/-/-/1,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	b7cde228b83a39b3
 property	c:objc(cs)AVPlayerViewController(py)requiresFullSubtitles	-			BOOL	-	nonatomic	ios=-/-/-/1,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	ed0219ecfb86bf6c
 property	c:objc(cs)AVPlayerViewController(py)skippingBehavior	-			AVPlayerViewControllerSkippingBehavior	-	nonatomic	ios=-/-/-/1,tvos=10.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	b2389e621ea9de16
 property	c:objc(cs)AVPlayerViewController(py)skipForwardEnabled	-			BOOL	-	nonatomic,getter=isSkipForwardEnabled	ios=-/-/-/1,tvos=10.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	2eb34f6d6c0a6d0d
@@ -168,16 +168,16 @@ property	c:objc(cs)AVPlayerViewController(py)skipBackwardEnabled	-			BOOL	-	nona
 property	c:objc(cs)AVPlayerViewController(py)playbackControlsIncludeTransportBar	-			BOOL	-	nonatomic	ios=-/-/-/1,tvos=11.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	08d520dd1de96e45
 property	c:objc(cs)AVPlayerViewController(py)playbackControlsIncludeInfoViews	-			BOOL	-	nonatomic	ios=-/-/-/1,tvos=11.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	9971bb40f1d30393
 property	c:objc(cs)AVPlayerViewController(py)transportBarIncludesTitleView	-			BOOL	-	nonatomic	ios=-/-/-/1,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	26f06d35dc9bbaeb
-property	c:objc(cs)AVPlayerViewController(py)customOverlayViewController	-			API_AVAILABLE UIViewController *	-	strong,nonatomic	ios=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	c4e3fae17d6eea4a
-property	c:objc(cs)AVPlayerViewController(py)transportBarCustomMenuItems	-			API_AVAILABLE NSArray<__kindof UIMenuElement *> *	-	copy,nonatomic	ios=-/-/-/1,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	87b86fd90c940c8a
+property	c:objc(cs)AVPlayerViewController(py)customOverlayViewController	-			UIViewController *	-	strong,nonatomic	ios=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	3723eb16170fd59f
+property	c:objc(cs)AVPlayerViewController(py)transportBarCustomMenuItems	-			NSArray<__kindof UIMenuElement *> *	-	copy,nonatomic	ios=-/-/-/1,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	7edbf6a93ffa6aaa
 property	c:objc(cs)AVPlayerViewController(py)requiresMonoscopicViewingMode	-			BOOL	-	nonatomic	ios=-/-/-/1,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	a07e77d3dc42d206
 property	c:objc(cs)AVPlayerViewController(py)preferredDisplayDynamicRange	-			AVDisplayDynamicRange	-	assign,nonatomic	ios=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	70401c7a38dc7185
 property	c:objc(cs)AVPlayerViewController(py)contextualActions	-			NSArray<UIAction *> *	-	copy,nonatomic	ios=-/-/-/1,maccatalyst=-/-/-/1,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	c89283a353d04db0
-property	c:objc(cs)AVPlayerViewController(py)contextualActionsInfoView	-			API_AVAILABLE UIView *	-	readonly,nonatomic	ios=-/-/-/1,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	80afacc656b051e9
-property	c:objc(cs)AVPlayerViewController(py)contextualActionsPreviewImage	-			API_AVAILABLE UIImage *	-	copy,nonatomic	ios=-/-/-/1,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	d490c017f948ce78
-property	c:objc(cs)AVPlayerViewController(py)groupExperienceCoordinator	-			API_AVAILABLE AVGroupExperienceCoordinator *	-	readonly,nonatomic	ios=-/-/-/1,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	4e10c8fe55a1fdb0
-property	c:objc(cs)AVPlayerViewController(py)customInfoViewControllers	-			API_UNAVAILABLE NSArray<UIViewController *> *	-	copy,nonatomic	ios=-/-/-/1,maccatalyst=-/-/-/1,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	f11e32cf0b21de40
-property	c:objc(cs)AVPlayerViewController(py)infoViewActions	-			API_UNAVAILABLE NSArray<UIAction *> *	-	copy,nonatomic	ios=-/-/-/1,maccatalyst=-/-/-/1,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	65ef49f1ab9a7ffd
+property	c:objc(cs)AVPlayerViewController(py)contextualActionsInfoView	-			UIView *	-	readonly,nonatomic	ios=-/-/-/1,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	177cf130633cf987
+property	c:objc(cs)AVPlayerViewController(py)contextualActionsPreviewImage	-			UIImage *	-	copy,nonatomic	ios=-/-/-/1,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	854304e221dad017
+property	c:objc(cs)AVPlayerViewController(py)groupExperienceCoordinator	-			AVGroupExperienceCoordinator *	-	readonly,nonatomic	ios=-/-/-/1,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	02339ac7aea325a3
+property	c:objc(cs)AVPlayerViewController(py)customInfoViewControllers	-			NSArray<UIViewController *> *	-	copy,nonatomic	ios=-/-/-/1,maccatalyst=-/-/-/1,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	e056edd9dc6f1702
+property	c:objc(cs)AVPlayerViewController(py)infoViewActions	-			NSArray<UIAction *> *	-	copy,nonatomic	ios=-/-/-/1,maccatalyst=-/-/-/1,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	2dc68e0baa35004c
 property	c:objc(cs)AVPlayerViewController(py)canBeginTrimming	-			BOOL	-	readonly	ios=-/-/-/1,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	9eb0b708b5d4f69e
 method	c:objc(cs)AVPlayerViewController(im)beginTrimmingWithCompletionHandler:	-			void	void (^)(BOOL) handler	-	ios=-/-/-/1,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	46f9f36605c61198
 property	c:objc(cs)AVPlayerViewController(cpy)mediaCharacteristicsForSupportedCustomMediaSelectionSchemes	-			NSArray<AVMediaCharacteristic> *	-	readonly,class	ios=26.0/-/-/0,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	cb57556757abb900
@@ -216,7 +216,7 @@ protocol	c:objc(pl)AVPlayerViewControllerAnimationCoordinator	-			-	-	-	ios=-/-/
 conforms	-	AVPlayerViewControllerAnimationCoordinator	NSObject		-	-	-	-	-	8ad70c308ac54c5b
 method	c:objc(pl)AVPlayerViewControllerAnimationCoordinator(im)addCoordinatedAnimations:completion:	-			void	void (^)(void) animations | void (^)(BOOL) completion	-	ios=-/-/-/1,tvos=11.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	c2803b9f435344dd
 category	c:objc(cy)AVPlayerViewController@Deprecated	-			-	-	-	ios=8.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	deprecated: Use Use customInfoViewControllers instead	46ab77c1e3cd1b6e
-property	c:objc(cs)AVPlayerViewController(py)customInfoViewController	Deprecated			API_DEPRECATED_WITH_REPLACEMENT UIViewController *	-	strong,nonatomic	ios=-/-/-/1,tvos=11.0/15.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	03cd1e273db5a67f
+property	c:objc(cs)AVPlayerViewController(py)customInfoViewController	Deprecated			UIViewController *	-	strong,nonatomic	ios=-/-/-/1,tvos=11.0/15.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	5d5c0ea04ec36209
 typedef	c:@T@AVRoutePickerViewButtonState	-			enum AVRoutePickerViewButtonState	-	-	-	-	ee769a0a902577ba
 enum	c:@E@AVRoutePickerViewButtonState	-			NSInteger	-	-	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	23d7112254ef5d27
 enumconst	c:@E@AVRoutePickerViewButtonState@AVRoutePickerViewButtonStateNormal	AVRoutePickerViewButtonState			-	-	-	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fc5e18ceb0f38185
@@ -226,14 +226,14 @@ enumconst	c:@E@AVRoutePickerViewButtonState@AVRoutePickerViewButtonStateActiveHi
 interface	c:objc(cs)AVRoutePickerView	-			-	-	-	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	8f375ada125b4e4b
 super	-	AVRoutePickerView	UIView		-	-	-	-	-	91051b6c4987c340
 property	c:objc(cs)AVRoutePickerView(py)delegate	-			id<AVRoutePickerViewDelegate>	-	weak,nonatomic	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	f70f6d14273a680b
-property	c:objc(cs)AVRoutePickerView(py)player	-			API_AVAILABLE AVPlayer *	-	strong,nonatomic	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c1b05aad7c36517b
+property	c:objc(cs)AVRoutePickerView(py)player	-			AVPlayer *	-	strong,nonatomic	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e1e0aa04a96a10e2
 method	c:objc(cs)AVRoutePickerView(im)routePickerButtonColorForState:	-			UIColor *	AVRoutePickerViewButtonState state	-	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	dce8f9bac1b0e86f
 method	c:objc(cs)AVRoutePickerView(im)setRoutePickerButtonColor:forState:	-			void	UIColor * color | AVRoutePickerViewButtonState state	-	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	614a9c93500d6d0b
 property	c:objc(cs)AVRoutePickerView(py)routePickerButtonBordered	-			BOOL	-	nonatomic,getter=isRoutePickerButtonBordered	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2b9e3d1c3d411a75
-property	c:objc(cs)AVRoutePickerView(py)activeTintColor	-			API_UNAVAILABLE UIColor *	-	strong,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	ce0819176f1a87c1
+property	c:objc(cs)AVRoutePickerView(py)activeTintColor	-			UIColor *	-	strong,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	fc7624b08da11c0a
 property	c:objc(cs)AVRoutePickerView(py)routePickerButtonStyle	-			AVRoutePickerViewButtonStyle	-	nonatomic	ios=-/-/-/1,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	ef231e7883577273
 property	c:objc(cs)AVRoutePickerView(py)prioritizesVideoDevices	-			BOOL	-	nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	ba5cf94ed790cad6
-property	c:objc(cs)AVRoutePickerView(py)customRoutingController	-			API_AVAILABLE AVCustomRoutingController *	-	retain,nonatomic	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bb7525d25b080d1a
+property	c:objc(cs)AVRoutePickerView(py)customRoutingController	-			AVCustomRoutingController *	-	retain,nonatomic	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	14e2f6ca351906a3
 typedef	c:@T@AVRoutePickerViewButtonStyle	-			enum AVRoutePickerViewButtonStyle	-	-	-	-	5daaefcba43caff8
 enum	c:@E@AVRoutePickerViewButtonStyle	-			NSInteger	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	aa1e2fc2f03ceb59
 enumconst	c:@E@AVRoutePickerViewButtonStyle@AVRoutePickerViewButtonStyleSystem	AVRoutePickerViewButtonStyle			-	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	0fd290b756df9be9

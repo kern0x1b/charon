@@ -131,10 +131,10 @@ method	c:objc(cs)MPSImageDescriptor(cm)imageDescriptorWithChannelFormat:width:he
 method	c:objc(cs)MPSImageDescriptor(cm)imageDescriptorWithChannelFormat:width:height:featureChannels:numberOfImages:usage:	-			instancetype	MPSImageFeatureChannelFormat channelFormat | NSUInteger width | NSUInteger height | NSUInteger featureChannels | NSUInteger numberOfImages | MTLTextureUsage usage	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=10.0/-/-/0	-	9c193528110fbfcb
 method	c:objc(cs)MPSImageDescriptor(im)copyWithZone:	-			instancetype	NSZone * zone	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	7ff856aae61238e0
 typedef	c:MPSImage.h@T@MPSImageBatch	-			NSArray<MPSImage *>	-	-	-	-	f6dc56e5940505a8
-function	c:@F@MPSImageBatchIncrementReadCount	-			NSUInteger (MPSImageBatch * _Nonnull, NSInteger)	MPSImageBatch * batch | NSInteger amount	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	367e8ce775093769
-function	c:@F@MPSImageBatchSynchronize	-			void (MPSImageBatch * _Nonnull, id<MTLCommandBuffer> _Nonnull)	MPSImageBatch * batch | id<MTLCommandBuffer> cmdBuf	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	b0154c721c047525
-function	c:@F@MPSImageBatchResourceSize	-			NSUInteger (MPSImageBatch * _Nonnull)	MPSImageBatch * batch	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	e694fab080b42fb7
-function	c:@F@MPSImageBatchIterate	-			NSInteger (MPSImageBatch * _Nonnull, NSInteger (^ _Nonnull)(MPSImage * _Nonnull, NSUInteger))	MPSImageBatch * batch | NSInteger (^)(MPSImage * _Nonnull, NSUInteger) iteratorBlock	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	eb9d4d9bb64a3b3f
+function	c:@F@MPSImageBatchIncrementReadCount	-			NSUInteger (MPSImageBatch *, NSInteger)	MPSImageBatch * batch | NSInteger amount	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	8423dbede84c7e84
+function	c:@F@MPSImageBatchSynchronize	-			void (MPSImageBatch *, id<MTLCommandBuffer>)	MPSImageBatch * batch | id<MTLCommandBuffer> cmdBuf	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	dc87e56967073315
+function	c:@F@MPSImageBatchResourceSize	-			NSUInteger (MPSImageBatch *)	MPSImageBatch * batch	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	90388e2c432a4d83
+function	c:@F@MPSImageBatchIterate	-			NSInteger (MPSImageBatch *, NSInteger (^)(MPSImage * _Nonnull, NSUInteger))	MPSImageBatch * batch | NSInteger (^)(MPSImage * _Nonnull, NSUInteger) iteratorBlock	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	c55582c21cbbe266
 protocol	c:objc(pl)MPSImageAllocator	-			-	-	-	-	-	5c12d1b63ad2bbfc
 conforms	-	MPSImageAllocator	NSObject		-	-	-	-	-	0bb744e906f85eca
 conforms	-	MPSImageAllocator	NSSecureCoding		-	-	-	-	-	4aea96502c90a4dd
@@ -346,11 +346,11 @@ method	c:objc(cs)MPSState(im)resourceTypeAtIndex:	-			MPSStateResourceType	NSUIn
 method	c:objc(cs)MPSState(im)synchronizeOnCommandBuffer:	-			void	id<MTLCommandBuffer> commandBuffer	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	704277a0eb280648
 method	c:objc(cs)MPSState(im)resourceSize	-			NSUInteger	-	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	f65a8309461212fc
 method	c:objc(cs)MPSState(im)destinationImageDescriptorForSourceImages:sourceStates:forKernel:suggestedDescriptor:	-			MPSImageDescriptor *	NSArray<MPSImage *> * sourceImages | NSArray<MPSState *> * sourceStates | MPSKernel * kernel | MPSImageDescriptor * inDescriptor	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	2fa69a42d20e356a
-property	c:objc(cs)MPSState(py)resource	-			MPS_UNAVAILABLE id<MTLResource>	-	readonly,retain,nonatomic	ios=11.0/12.0/-/0,maccatalyst=-/-/-/1,macos=10.13/10.13.4/-/0,tvos=11.0/12.0/-/0	-	eb37652d1d519804
+property	c:objc(cs)MPSState(py)resource	-			id<MTLResource>	-	readonly,retain,nonatomic	ios=11.0/12.0/-/0,maccatalyst=-/-/-/1,macos=10.13/10.13.4/-/0,tvos=11.0/12.0/-/0	-	94655adc00629de6
 typedef	c:MPSState.h@T@MPSStateBatch	-			NSArray<MPSState *>	-	-	-	-	da42432d50042f25
-function	c:@F@MPSStateBatchIncrementReadCount	-			NSUInteger (MPSStateBatch * _Nullable, NSInteger)	MPSStateBatch * batch | NSInteger amount	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	4de43b73622c6ae3
-function	c:@F@MPSStateBatchSynchronize	-			void (MPSStateBatch * _Nonnull, id<MTLCommandBuffer> _Nonnull)	MPSStateBatch * batch | id<MTLCommandBuffer> cmdBuf	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	83551db022067c50
-function	c:@F@MPSStateBatchResourceSize	-			NSUInteger (MPSStateBatch * _Nullable)	MPSStateBatch * batch	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14.0/-/-/0,tvos=12.0/-/-/0	-	a317574aac9c6074
+function	c:@F@MPSStateBatchIncrementReadCount	-			NSUInteger (MPSStateBatch *, NSInteger)	MPSStateBatch * batch | NSInteger amount	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	6f0ed6a9db359bbc
+function	c:@F@MPSStateBatchSynchronize	-			void (MPSStateBatch *, id<MTLCommandBuffer>)	MPSStateBatch * batch | id<MTLCommandBuffer> cmdBuf	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	d8efbee13a7d47aa
+function	c:@F@MPSStateBatchResourceSize	-			NSUInteger (MPSStateBatch *)	MPSStateBatch * batch	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14.0/-/-/0,tvos=12.0/-/-/0	-	f6cdb9d52f912c26
 enum	c:@EA@MPSDeviceCapsValues	-			uint32_t	-	-	-	-	7faa5c48b3ea8634
 enumconst	c:@EA@MPSDeviceCapsValues@MPSDeviceCapsNull	MPSDeviceCapsValues			-	-	-	-	-	04a5377671080b74
 enumconst	c:@EA@MPSDeviceCapsValues@MPSDeviceSupportsReadableArrayOfTextures	MPSDeviceCapsValues			-	-	-	-	-	849850277cfb86ff
@@ -433,7 +433,7 @@ enumconst	c:@EA@MPSImageType@MPSImageType2d_array_noAlpha	MPSImageType			-	-	-	-
 enumconst	c:@EA@MPSImageType@MPSImageTypeArray2d_noAlpha	MPSImageType			-	-	-	-	-	be7ab07539801e87
 enumconst	c:@EA@MPSImageType@MPSImageTypeArray2d_array_noAlpha	MPSImageType			-	-	-	-	-	6c8e5cf6f84d6d9d
 typedef	c:@T@MPSImageType	-			enum MPSImageType	-	-	-	-	9ee3310e4d70c683
-function	c:@F@MPSGetImageType	-			MPSImageType (MPSImage * _Nonnull)	MPSImage * image	-	-	-	83f3d0c87aff1c54
+function	c:@F@MPSGetImageType	-			MPSImageType (MPSImage *)	MPSImage * image	-	-	-	831fdd726ec20d6f
 typedef	c:MPSKernelTypes.h@T@MPSFunctionConstant	-			int64_t	-	-	-	-	d60ea6e20945c022
 typedef	c:MPSKernelTypes.h@T@MPSFunctionConstantInMetal	-			uint32_t	-	-	-	-	5ff4155fb921a48b
 function	c:MPSKernelTypes.h@F@MPSFindIntegerDivisionParams	-			MPSIntegerDivisionParams (uint16_t)	uint16_t divisor	-	-	-	1e9701b7ebc571c6

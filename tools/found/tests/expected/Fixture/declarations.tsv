@@ -14,6 +14,13 @@ var	c:@FXConstInt	-			const int	-	-	-	-	0e620458124bfac1
 var	c:@FXMacroConst	-			const FXStringRef	-	-	ios=16.0/-/-/0	-	7ad999c2eaf96056
 var	c:@FXMacroPointer	-			char *const	-	-	ios=16.0/-/-/0	-	706ee8a95c202e67
 var	c:@FXRefinedName	-			const FXStringRef	-	-	-	-	b190bcd0cdd809bc
+typedef	c:Repeat.h@T@FXStringAlias	-			FXStringRef	-	-	ios=16.0/-/-/0	-	212fe52f025f745e
+function	c:@F@FXFetch	-			FXStringRef (const char *)	const char * key	-	ios=16.0/-/-/0	-	862d7a98b622928e
+interface	c:objc(cs)FXMacroBox	-			-	-	-	-	-	337fff37e1b6f2a7
+property	c:objc(cs)FXMacroBox(py)macroProperty	-			const FXStringRef	-	nonatomic	ios=16.0/-/-/0	-	738533ba377bb65e
+method	c:objc(cs)FXMacroBox(im)macroReturn	-			FXStringRef	-	-	-	-	280b98793114a330
+method	c:objc(cs)FXMacroBox(im)macroTake:	-			void	const char * value	-	-	-	d01c2a3f6b9fc834
+typedef	c:Repeat.h@T@FXBlock	-			id ((^))(int)	-	-	ios=16.0/-/-/0	-	0f378803a3e13b38
 var	c:@FXScale	-			const double	-	-	-	-	70e1ccb0f2967fb8
 struct	c:@S@FXPoint	-			-	-	-	-	-	79ac717304052e6e
 field	c:@S@FXPoint@FI@x	FXPoint			double	-	-	-	-	d57c6c524cc3877a

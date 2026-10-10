@@ -95,6 +95,18 @@ expect(type_of_var("c:@FXMacroConst") == "const FXStringRef", "an attribute macr
 expect(type_of_var("c:@FXMacroPointer") == "char *const", "an attribute macro does not hide a pointer's const")
 expect(type_of_var("c:@FXRefinedName") == "const FXStringRef", "a Swift attribute macro in front of the type is not part of it")
 expect(full_of("c:@FXConstName")[10] == "n", "a nullability word stays in the nullability column, not the type")
+-- the macro words of the declared types of methods, properties, parameters, functions and typedefs (the rule of 2026-10-10)
+local function type_of_usr(usr)
+    return find(function (r) return r.usr == usr end)[1].type
+end
+expect(type_of_usr("c:Repeat.h@T@FXStringAlias") == "FXStringRef", "a typedef's underlying type is spelled without its macro")
+expect(type_of_usr("c:@F@FXFetch") == "FXStringRef (const char *)", "a function's result and parameters are spelled without their macros")
+expect(find(function (r) return r.usr == "c:@F@FXFetch" end)[1].params == "const char * key", "a function's parameter keeps its type and name")
+expect(type_of_usr("c:objc(cs)FXMacroBox(py)macroProperty") == "const FXStringRef", "a property's type is spelled without its macro, const kept")
+expect(type_of_usr("c:objc(cs)FXMacroBox(im)macroReturn") == "FXStringRef", "a method's result is spelled without its macro")
+local take = find(function (r) return r.usr == "c:objc(cs)FXMacroBox(im)macroTake:" end)[1]
+expect(take.params == "const char * value", "a method's parameter is spelled without its macro")
+expect(type_of_usr("c:Repeat.h@T@FXBlock") == "id ((^))(int)", "a block typedef is spelled with its block marker, without macros or nullability")
 -- the columns no committed stage reads stay in the full IR: the nullability and the value
 expect(full_of("c:objc(cs)FXWidget(cm)widgetNamed:")[10] == "-|l",
     "a method's nullability is the result, then the parameters (full IR)")

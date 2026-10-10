@@ -132,10 +132,10 @@ property	c:objc(cs)CALayer(py)contentsRect	-			CGRect	-	-	ios=2.0/-/-/0,macos=10
 property	c:objc(cs)CALayer(py)contentsGravity	-			CALayerContentsGravity	-	copy	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	ac805a781a0ed5cf
 property	c:objc(cs)CALayer(py)contentsScale	-			CGFloat	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	68104013c4e6dd35
 property	c:objc(cs)CALayer(py)contentsCenter	-			CGRect	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	cb950c76059d7ab0
-property	c:objc(cs)CALayer(py)contentsFormat	-			API_UNAVAILABLE CALayerContentsFormat	-	copy	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=-/-/-/1	-	57c5d51e74835da4
+property	c:objc(cs)CALayer(py)contentsFormat	-			CALayerContentsFormat	-	copy	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=-/-/-/1	-	f6b81a68ffd0706e
 property	c:objc(cs)CALayer(py)wantsExtendedDynamicRangeContent	-			BOOL	-	-	ios=17.0/26.0/-/0,macos=14.0/26.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b0549037ca61955e
-property	c:objc(cs)CALayer(py)toneMapMode	-			API_UNAVAILABLE CAToneMapMode	-	copy	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	4eff17ddbda6da2b
-property	c:objc(cs)CALayer(py)preferredDynamicRange	-			API_UNAVAILABLE CADynamicRange	-	copy	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	fed5d12b4965b0f9
+property	c:objc(cs)CALayer(py)toneMapMode	-			CAToneMapMode	-	copy	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	69075cf57aa30a8a
+property	c:objc(cs)CALayer(py)preferredDynamicRange	-			CADynamicRange	-	copy	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	3d52906f6309fda6
 property	c:objc(cs)CALayer(py)contentsHeadroom	-			CGFloat	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	980174fa6fb33bbb
 property	c:objc(cs)CALayer(py)wantsDynamicContentScaling	-			BOOL	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	c574520abc3c43b6
 property	c:objc(cs)CALayer(py)minificationFilter	-			CALayerContentsFilter	-	copy	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	f75847b504fc89f8
@@ -156,7 +156,7 @@ property	c:objc(cs)CALayer(py)allowsEdgeAntialiasing	-			BOOL	-	-	ios=2.0/-/-/0,
 property	c:objc(cs)CALayer(py)backgroundColor	-			CGColorRef	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	716575430b988b10
 property	c:objc(cs)CALayer(py)cornerRadius	-			CGFloat	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	2067171bac16cdc7
 property	c:objc(cs)CALayer(py)maskedCorners	-			CACornerMask	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	3ee12efd499996e3
-property	c:objc(cs)CALayer(py)cornerCurve	-			API_UNAVAILABLE CALayerCornerCurve	-	copy	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	cc1391ad354eff5c
+property	c:objc(cs)CALayer(py)cornerCurve	-			CALayerCornerCurve	-	copy	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	b8a5dd90ff1ffa24
 method	c:objc(cs)CALayer(cm)cornerCurveExpansionFactor:	-			CGFloat	CALayerCornerCurve curve	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	f358807039438905
 property	c:objc(cs)CALayer(py)borderWidth	-			CGFloat	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	3f49860b6ccf5c30
 property	c:objc(cs)CALayer(py)borderColor	-			CGColorRef	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	1baa5447029b9f61
@@ -173,7 +173,7 @@ property	c:objc(cs)CALayer(py)shadowOffset	-			CGSize	-	-	ios=2.0/-/-/0,macos=10
 property	c:objc(cs)CALayer(py)shadowRadius	-			CGFloat	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	5bb2eeac9c3dffb5
 property	c:objc(cs)CALayer(py)shadowPath	-			CGPathRef	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	4d55c383ede2df88
 property	c:objc(cs)CALayer(py)autoresizingMask	-			CAAutoresizingMask	-	-	ios=-/-/-/1,maccatalyst=13.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	874ffcede327e616
-property	c:objc(cs)CALayer(py)layoutManager	-			API_AVAILABLE id<CALayoutManager>	-	strong	ios=-/-/-/1,maccatalyst=13.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d42448b31e3205c8
+property	c:objc(cs)CALayer(py)layoutManager	-			id<CALayoutManager>	-	strong	ios=-/-/-/1,maccatalyst=13.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6c9ddbef750377ad
 method	c:objc(cs)CALayer(im)preferredFrameSize	-			CGSize	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	03738d9149ceb59b
 method	c:objc(cs)CALayer(im)setNeedsLayout	-			void	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	42b45cc8a705954d
 method	c:objc(cs)CALayer(im)needsLayout	-			BOOL	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	4c518a83a3323617
@@ -308,7 +308,7 @@ property	c:objc(cs)CATransition(py)type	-			CATransitionType	-	copy	ios=2.0/-/-/
 property	c:objc(cs)CATransition(py)subtype	-			CATransitionSubtype	-	copy	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	40b7621e0018163b
 property	c:objc(cs)CATransition(py)startProgress	-			float	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	0c4ea70dc5102fee
 property	c:objc(cs)CATransition(py)endProgress	-			float	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	20f35ca954003bb8
-property	c:objc(cs)CATransition(py)filter	-			API_AVAILABLE id	-	strong	ios=-/-/-/1,maccatalyst=13.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e4d69d0805a4d7bd
+property	c:objc(cs)CATransition(py)filter	-			id	-	strong	ios=-/-/-/1,maccatalyst=13.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f71e62ee15cd96ad
 var	c:@kCATransitionFade	-			const CATransitionType	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	60ad4f4c179f7e10
 var	c:@kCATransitionMoveIn	-			const CATransitionType	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	ab00dead7f545a8d
 var	c:@kCATransitionPush	-			const CATransitionType	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	065e75dd58832ed8
@@ -387,7 +387,7 @@ interface	c:objc(cs)CAMetalLayer	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0,tvos=
 super	-	CAMetalLayer	CALayer		-	-	-	-	-	45bdb553918ee9f5
 struct	c:@S@_CAMetalLayerPrivate	-			-	-	-	-	-	3bce17c7cbd53c49
 property	c:objc(cs)CAMetalLayer(py)device	-			id<MTLDevice>	-	retain	ios=8.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	0b76ac4e50361307
-property	c:objc(cs)CAMetalLayer(py)preferredDevice	-			API_UNAVAILABLE id<MTLDevice>	-	readonly	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	86fa2c295a3caf3e
+property	c:objc(cs)CAMetalLayer(py)preferredDevice	-			id<MTLDevice>	-	readonly	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	400f9d3e84e452a4
 property	c:objc(cs)CAMetalLayer(py)pixelFormat	-			MTLPixelFormat	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	6ae11a360719797b
 property	c:objc(cs)CAMetalLayer(py)framebufferOnly	-			BOOL	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	1424c62ba21f73a7
 property	c:objc(cs)CAMetalLayer(py)drawableSize	-			CGSize	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	af78ccabf6db39eb
@@ -399,8 +399,8 @@ property	c:objc(cs)CAMetalLayer(py)wantsExtendedDynamicRangeContent	-			BOOL	-	-
 property	c:objc(cs)CAMetalLayer(py)EDRMetadata	-			CAEDRMetadata *	-	strong	ios=16.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3f76d5f34a548c53
 property	c:objc(cs)CAMetalLayer(py)displaySyncEnabled	-			BOOL	-	-	ios=-/-/-/1,maccatalyst=13.1/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	552974445be88b25
 property	c:objc(cs)CAMetalLayer(py)allowsNextDrawableTimeout	-			BOOL	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	69880534065d6cb7
-property	c:objc(cs)CAMetalLayer(py)developerHUDProperties	-			API_UNAVAILABLE NSDictionary *	-	copy	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	07ef08380108d439
-property	c:objc(cs)CAMetalLayer(py)residencySet	-			API_UNAVAILABLE id<MTLResidencySet>	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	23025681c154d3b1
+property	c:objc(cs)CAMetalLayer(py)developerHUDProperties	-			NSDictionary *	-	copy	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	6c813ad3dbad5d24
+property	c:objc(cs)CAMetalLayer(py)residencySet	-			id<MTLResidencySet>	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	1619d07240e9644e
 interface	c:objc(cs)CAMetalDisplayLinkUpdate	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	e368eeb5a6bfed44
 super	-	CAMetalDisplayLinkUpdate	NSObject		-	-	-	-	-	bfe00a2545ab8029
 property	c:objc(cs)CAMetalDisplayLinkUpdate(py)drawable	-			id<CAMetalDrawable>	-	readonly,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	531b09cb3a28de02

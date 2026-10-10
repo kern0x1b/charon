@@ -549,7 +549,7 @@ category	c:objc(cy)SKNode@GameplayKit	-			-	-	-	-	-	3b1d948726e590ce
 method	c:objc(cs)SKNode(cm)obstaclesFromSpriteTextures:accuracy:	GameplayKit			NSArray<GKPolygonObstacle *> *	NSArray<SKNode *> * sprites | float accuracy	-	-	-	6493664b9014f8cc
 method	c:objc(cs)SKNode(cm)obstaclesFromNodeBounds:	GameplayKit			NSArray<GKPolygonObstacle *> *	NSArray<SKNode *> * nodes	-	-	-	bdf86d8645b84094
 method	c:objc(cs)SKNode(cm)obstaclesFromNodePhysicsBodies:	GameplayKit			NSArray<GKPolygonObstacle *> *	NSArray<SKNode *> * nodes	-	-	-	fa4b433019362110
-property	c:objc(cs)SKNode(py)entity	GameplayKit			NS_AVAILABLE GKEntity *	-	weak,nonatomic	ios=10.0/-/-/0	-	32ee2f79b24a778d
+property	c:objc(cs)SKNode(py)entity	GameplayKit			GKEntity *	-	weak,nonatomic	ios=10.0/-/-/0	-	500201b1b0701f1c
 category	c:objc(cy)SKScene@GameplayKit	-			-	-	-	-	-	6b662b92cb6ed9dd
 conforms	-	SKScene	GKSceneRootNodeType		-	-	-	-	-	2ee58c238cb7a1c9
 category	c:objc(cy)SKTileMapNode@GameplayKit	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	6aea3763fa32fc8a
@@ -563,6 +563,6 @@ method	c:objc(cs)GKSCNNodeComponent(cm)componentWithNode:	-			instancetype	SCNNo
 method	c:objc(cs)GKSCNNodeComponent(im)initWithNode:	-			instancetype	SCNNode * node	-	ios=11.0/-/-/0	-	3c8444825b8ad99f
 property	c:objc(cs)GKSCNNodeComponent(py)node	-			SCNNode *	-	readonly,nonatomic	ios=11.0/-/-/0	-	ab4be802e124f936
 category	c:objc(cy)SCNNode@GameplayKit	-			-	-	-	-	-	c18d895cd74de8c1
-property	c:objc(cs)SCNNode(py)entity	GameplayKit			NS_AVAILABLE GKEntity *	-	weak,nonatomic	ios=11.0/-/-/0	-	863b532c648ef235
+property	c:objc(cs)SCNNode(py)entity	GameplayKit			GKEntity *	-	weak,nonatomic	ios=11.0/-/-/0	-	fad3081a9bc17e8b
 category	c:objc(cy)SCNScene@GameplayKit	-			-	-	-	-	-	0a7bc5c536aa3dfe
 conforms	-	SCNScene	GKSceneRootNodeType		-	-	-	-	-	ef7dbcfe76592faa

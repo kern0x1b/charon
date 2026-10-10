@@ -66,44 +66,44 @@ var	c:@kColorSyncSigViewingConditionsTag	-			CFStringRef	-	-	ios=16.0/-/-/0,maco
 var	c:@kColorSyncSigViewingCondDescTag	-			CFStringRef	-	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	e89e9bb6765e6c19
 var	c:@kColorSyncSigMediaWhitePointTag	-			CFStringRef	-	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	d4130dd7bada5eda
 function	c:@F@ColorSyncProfileGetTypeID	-			CFTypeID (void)	-	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	92ea3b64c7d69d67
-function	c:@F@ColorSyncProfileCreate	-			ColorSyncProfileRef  _Nullable (CFDataRef _Nonnull, CFErrorRef  _Nullable * _Nullable)	CFDataRef data | CFErrorRef  _Nullable * error	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	0f263ffc481a8449
-function	c:@F@ColorSyncProfileCreateWithURL	-			ColorSyncProfileRef  _Nullable (CFURLRef _Nonnull, CFErrorRef  _Nullable * _Nullable)	CFURLRef url | CFErrorRef  _Nullable * error	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	5145c9b382326cca
+function	c:@F@ColorSyncProfileCreate	-			ColorSyncProfileRef (CFDataRef, CFErrorRef  _Nullable *)	CFDataRef data | CFErrorRef  _Nullable * error	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	2712426a0a823961
+function	c:@F@ColorSyncProfileCreateWithURL	-			ColorSyncProfileRef (CFURLRef, CFErrorRef  _Nullable *)	CFURLRef url | CFErrorRef  _Nullable * error	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	1db42dacaa046a72
 var	c:@kColorSyncDoNotSubstituteProfiles	-			CFStringRef	-	-	ios=26.1/-/-/0,macos=26.1/-/-/0	-	367436b7c9844db1
-function	c:@F@ColorSyncProfileCreateWithURLAndOptions	-			ColorSyncProfileRef  _Nullable (CFURLRef _Nonnull, CFDictionaryRef _Nullable, CFErrorRef  _Nullable * _Nullable)	CFURLRef url | CFDictionaryRef options | CFErrorRef  _Nullable * error	-	ios=26.1/-/-/0,macos=26.1/-/-/0	-	3590766c5ad15a50
-function	c:@F@ColorSyncProfileCreateWithName	-			ColorSyncProfileRef  _Nullable (CFStringRef _Nonnull)	CFStringRef name	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	bd045e673c2f51c0
-function	c:@F@ColorSyncProfileCreateMutable	-			ColorSyncMutableProfileRef  _Nullable (void)	-	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	72867da6e5cf20d8
-function	c:@F@ColorSyncProfileCreateMutableCopy	-			ColorSyncMutableProfileRef  _Nullable (ColorSyncProfileRef _Nonnull)	ColorSyncProfileRef prof	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	8cdf4b9de76520c9
-function	c:@F@ColorSyncProfileCreateLink	-			ColorSyncProfileRef  _Nullable (CFArrayRef _Nonnull, CFDictionaryRef _Nullable)	CFArrayRef profileInfo | CFDictionaryRef options	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	1ebb02fcc7b691bd
-function	c:@F@ColorSyncProfileVerify	-			_Bool (ColorSyncProfileRef _Nonnull, CFErrorRef  _Nullable * _Nullable, CFErrorRef  _Nullable * _Nullable)	ColorSyncProfileRef prof | CFErrorRef  _Nullable * errors | CFErrorRef  _Nullable * warnings	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	9a0384b682503153
-function	c:@F@ColorSyncProfileIsWideGamut	-			_Bool (ColorSyncProfileRef _Nonnull)	ColorSyncProfileRef 	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	ddeb9524cf5d3446
-function	c:@F@ColorSyncProfileIsMatrixBased	-			_Bool (ColorSyncProfileRef _Nonnull)	ColorSyncProfileRef 	-	ios=16.0/-/-/0,macos=11.0/-/-/0	-	ca1149d1e4bb0eaa
-function	c:@F@ColorSyncProfileIsPQBased	-			_Bool (ColorSyncProfileRef _Nonnull)	ColorSyncProfileRef 	-	ios=16.0/-/-/0,macos=11.0/-/-/0	-	ace39c1e9fa6f226
-function	c:@F@ColorSyncProfileIsHLGBased	-			_Bool (ColorSyncProfileRef _Nonnull)	ColorSyncProfileRef 	-	ios=16.0/-/-/0,macos=11.0/-/-/0	-	5ede7fdc8558c106
-function	c:@F@ColorSyncProfileEstimateGamma	-			float (ColorSyncProfileRef _Nonnull, CFErrorRef  _Nullable * _Nullable)	ColorSyncProfileRef prof | CFErrorRef  _Nullable * error	-	ios=26.1/-/-/0,macos=10.4/-/-/0	-	ad4a825b2ff3945d
+function	c:@F@ColorSyncProfileCreateWithURLAndOptions	-			ColorSyncProfileRef (CFURLRef, CFDictionaryRef, CFErrorRef  _Nullable *)	CFURLRef url | CFDictionaryRef options | CFErrorRef  _Nullable * error	-	ios=26.1/-/-/0,macos=26.1/-/-/0	-	5c59df35c1b3aca0
+function	c:@F@ColorSyncProfileCreateWithName	-			ColorSyncProfileRef (CFStringRef)	CFStringRef name	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	17cdee2524b16131
+function	c:@F@ColorSyncProfileCreateMutable	-			ColorSyncMutableProfileRef (void)	-	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	246680bbf7e5f8f9
+function	c:@F@ColorSyncProfileCreateMutableCopy	-			ColorSyncMutableProfileRef (ColorSyncProfileRef)	ColorSyncProfileRef prof	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	b6b90949b517fe71
+function	c:@F@ColorSyncProfileCreateLink	-			ColorSyncProfileRef (CFArrayRef, CFDictionaryRef)	CFArrayRef profileInfo | CFDictionaryRef options	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	0d9cae993b005ed5
+function	c:@F@ColorSyncProfileVerify	-			_Bool (ColorSyncProfileRef, CFErrorRef  _Nullable *, CFErrorRef  _Nullable *)	ColorSyncProfileRef prof | CFErrorRef  _Nullable * errors | CFErrorRef  _Nullable * warnings	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	3d2d1de6c262b98e
+function	c:@F@ColorSyncProfileIsWideGamut	-			_Bool (ColorSyncProfileRef)	ColorSyncProfileRef 	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	6d40dae0f75cb574
+function	c:@F@ColorSyncProfileIsMatrixBased	-			_Bool (ColorSyncProfileRef)	ColorSyncProfileRef 	-	ios=16.0/-/-/0,macos=11.0/-/-/0	-	3794c451519efb5a
+function	c:@F@ColorSyncProfileIsPQBased	-			_Bool (ColorSyncProfileRef)	ColorSyncProfileRef 	-	ios=16.0/-/-/0,macos=11.0/-/-/0	-	830ded525c519a90
+function	c:@F@ColorSyncProfileIsHLGBased	-			_Bool (ColorSyncProfileRef)	ColorSyncProfileRef 	-	ios=16.0/-/-/0,macos=11.0/-/-/0	-	0b196e78f7204ca9
+function	c:@F@ColorSyncProfileEstimateGamma	-			float (ColorSyncProfileRef, CFErrorRef  _Nullable *)	ColorSyncProfileRef prof | CFErrorRef  _Nullable * error	-	ios=26.1/-/-/0,macos=10.4/-/-/0	-	ab002179004c03d1
 struct	c:@SA@ColorSyncMD5	-			-	-	-	-	-	11ba0b0eea6552f0
 field	c:@SA@ColorSyncMD5@FI@digest	ColorSyncMD5			uint8_t[16]	-	-	-	-	133f53d0e7b26e8e
 typedef	c:@T@ColorSyncMD5	-			struct ColorSyncMD5	-	-	-	-	2fda7efd013e7fa6
-function	c:@F@ColorSyncProfileGetMD5	-			ColorSyncMD5 (ColorSyncProfileRef _Nonnull)	ColorSyncProfileRef prof	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	02d517c74d258cf3
-function	c:@F@ColorSyncProfileCopyData	-			CFDataRef  _Nonnull (ColorSyncProfileRef _Nonnull, CFErrorRef  _Nullable * _Nullable)	ColorSyncProfileRef prof | CFErrorRef  _Nullable * error	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	ff8f7f50a6b3a442
-function	c:@F@ColorSyncProfileGetURL	-			CFURLRef  _Nonnull (ColorSyncProfileRef _Nonnull, CFErrorRef  _Nullable * _Nullable)	ColorSyncProfileRef prof | CFErrorRef  _Nullable * error	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	9f390ad2b47bd116
-function	c:@F@ColorSyncProfileCopyHeader	-			CFDataRef  _Nonnull (ColorSyncProfileRef _Nonnull)	ColorSyncProfileRef prof	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	a7e5b016b3bb4958
-function	c:@F@ColorSyncProfileSetHeader	-			void (ColorSyncMutableProfileRef _Nonnull, CFDataRef _Nonnull)	ColorSyncMutableProfileRef prof | CFDataRef header	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	c34fc85f0fb906e8
-function	c:@F@ColorSyncProfileCopyDescriptionString	-			CFStringRef  _Nullable (ColorSyncProfileRef _Nonnull)	ColorSyncProfileRef prof	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	785cd20c3e27ddd3
-function	c:@F@ColorSyncProfileCopyTagSignatures	-			CFArrayRef  _Nullable (ColorSyncProfileRef _Nonnull)	ColorSyncProfileRef prof	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	ab68abed0ad685d5
-function	c:@F@ColorSyncProfileContainsTag	-			_Bool (ColorSyncProfileRef _Nonnull, CFStringRef _Nonnull)	ColorSyncProfileRef prof | CFStringRef signature	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	ec3ee9a5784aebdd
-function	c:@F@ColorSyncProfileCopyTag	-			CFDataRef  _Nullable (ColorSyncProfileRef _Nonnull, CFStringRef _Nonnull)	ColorSyncProfileRef prof | CFStringRef signature	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	9db48d0cab76d48f
-function	c:@F@ColorSyncProfileSetTag	-			void (ColorSyncMutableProfileRef _Nonnull, CFStringRef _Nonnull, CFDataRef _Nonnull)	ColorSyncMutableProfileRef prof | CFStringRef signature | CFDataRef data	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	60928468ee51d681
-function	c:@F@ColorSyncProfileRemoveTag	-			void (ColorSyncMutableProfileRef _Nonnull, CFStringRef _Nonnull)	ColorSyncMutableProfileRef prof | CFStringRef signature	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	265c72f9537d65a4
+function	c:@F@ColorSyncProfileGetMD5	-			ColorSyncMD5 (ColorSyncProfileRef)	ColorSyncProfileRef prof	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	5ad0e497428e25b8
+function	c:@F@ColorSyncProfileCopyData	-			CFDataRef (ColorSyncProfileRef, CFErrorRef  _Nullable *)	ColorSyncProfileRef prof | CFErrorRef  _Nullable * error	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	bbd9ae1a01dabbda
+function	c:@F@ColorSyncProfileGetURL	-			CFURLRef (ColorSyncProfileRef, CFErrorRef  _Nullable *)	ColorSyncProfileRef prof | CFErrorRef  _Nullable * error	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	b245e3dc281c7696
+function	c:@F@ColorSyncProfileCopyHeader	-			CFDataRef (ColorSyncProfileRef)	ColorSyncProfileRef prof	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	9e5668bafa1f7eae
+function	c:@F@ColorSyncProfileSetHeader	-			void (ColorSyncMutableProfileRef, CFDataRef)	ColorSyncMutableProfileRef prof | CFDataRef header	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	21c0968231604f0a
+function	c:@F@ColorSyncProfileCopyDescriptionString	-			CFStringRef (ColorSyncProfileRef)	ColorSyncProfileRef prof	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	d48e60d4a9fe18d6
+function	c:@F@ColorSyncProfileCopyTagSignatures	-			CFArrayRef (ColorSyncProfileRef)	ColorSyncProfileRef prof	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	8d5a4bf4c990dc0d
+function	c:@F@ColorSyncProfileContainsTag	-			_Bool (ColorSyncProfileRef, CFStringRef)	ColorSyncProfileRef prof | CFStringRef signature	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	22609d188cc08711
+function	c:@F@ColorSyncProfileCopyTag	-			CFDataRef (ColorSyncProfileRef, CFStringRef)	ColorSyncProfileRef prof | CFStringRef signature	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	66db98fbacb81867
+function	c:@F@ColorSyncProfileSetTag	-			void (ColorSyncMutableProfileRef, CFStringRef, CFDataRef)	ColorSyncMutableProfileRef prof | CFStringRef signature | CFDataRef data	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	144179d2546ea356
+function	c:@F@ColorSyncProfileRemoveTag	-			void (ColorSyncMutableProfileRef, CFStringRef)	ColorSyncMutableProfileRef prof | CFStringRef signature	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	27aa20693bfced31
 typedef	c:@T@ColorSyncProfileIterateCallback	-			_Bool (*)(CFDictionaryRef _Nonnull, void * _Nonnull)	-	-	-	-	21361eb544b8fc11
 var	c:@kColorSyncProfileCacheSeed	-			CFStringRef	-	-	-	-	6cd687a0fd63f3d3
-function	c:@F@ColorSyncIterateInstalledProfiles	-			void (ColorSyncProfileIterateCallback _Nullable, uint32_t * _Nullable, void * _Nullable, CFErrorRef  _Nullable * _Nullable)	ColorSyncProfileIterateCallback callBack | uint32_t * seed | void * userInfo | CFErrorRef  _Nullable * error	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	1d793dd4b0b18c68
+function	c:@F@ColorSyncIterateInstalledProfiles	-			void (ColorSyncProfileIterateCallback, uint32_t *, void *, CFErrorRef  _Nullable *)	ColorSyncProfileIterateCallback callBack | uint32_t * seed | void * userInfo | CFErrorRef  _Nullable * error	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	4d8eddfb27a10e4a
 struct	c:@S@ColorSyncTransform	-			-	-	-	-	-	ab30c00053a237d4
 typedef	c:@T@ColorSyncTransformRef	-			struct ColorSyncTransform *	-	-	-	-	8f9b2a59855e7ffd
 function	c:@F@ColorSyncTransformGetTypeID	-			CFTypeID (void)	-	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	a391995d7d3998b1
-function	c:@F@ColorSyncTransformCreate	-			ColorSyncTransformRef  _Nullable (CFArrayRef _Nullable, CFDictionaryRef _Nullable)	CFArrayRef profileSequence | CFDictionaryRef options	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	3c3f4923701a0eb2
-function	c:@F@ColorSyncTransformCopyProperty	-			CFTypeRef  _Nullable (ColorSyncTransformRef _Nonnull, CFTypeRef _Nonnull, CFDictionaryRef _Nullable)	ColorSyncTransformRef transform | CFTypeRef key | CFDictionaryRef options	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	33467d6496e1f19a
-function	c:@F@ColorSyncTransformSetProperty	-			void (ColorSyncTransformRef _Nonnull, CFTypeRef _Nonnull, CFTypeRef _Nullable)	ColorSyncTransformRef transform | CFTypeRef key | CFTypeRef property	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	5590c8ec1c657688
-function	c:@F@ColorSyncTransformGetProfileSequence	-			CFArrayRef  _Nullable (ColorSyncTransformRef _Nonnull)	ColorSyncTransformRef transform	-	ios=16.0/-/-/0,macos=11.0/-/-/0	-	6df9486ac7f3f88d
+function	c:@F@ColorSyncTransformCreate	-			ColorSyncTransformRef (CFArrayRef, CFDictionaryRef)	CFArrayRef profileSequence | CFDictionaryRef options	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	806a9ddc3c084427
+function	c:@F@ColorSyncTransformCopyProperty	-			CFTypeRef (ColorSyncTransformRef, CFTypeRef, CFDictionaryRef)	ColorSyncTransformRef transform | CFTypeRef key | CFDictionaryRef options	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	7ad1d7414360b8a1
+function	c:@F@ColorSyncTransformSetProperty	-			void (ColorSyncTransformRef, CFTypeRef, CFTypeRef)	ColorSyncTransformRef transform | CFTypeRef key | CFTypeRef property	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	2426b27f35cebd91
+function	c:@F@ColorSyncTransformGetProfileSequence	-			CFArrayRef (ColorSyncTransformRef)	ColorSyncTransformRef transform	-	ios=16.0/-/-/0,macos=11.0/-/-/0	-	8d689ff62fc85a41
 enum	c:@E@ColorSyncDataDepth	-			unsigned int	-	-	-	-	e97faee6b7e2cd86
 enumconst	c:@E@ColorSyncDataDepth@kColorSync1BitGamut	ColorSyncDataDepth			-	-	-	-	-	7cf9961379b3e46e
 enumconst	c:@E@ColorSyncDataDepth@kColorSync8BitInteger	ColorSyncDataDepth			-	-	-	-	-	f83f9d946a7f93fc
@@ -132,7 +132,7 @@ enumconst	c:@Ea@kColorSyncAlphaInfoMask@kColorSyncByteOrder32Little	-			-	-	-	-	
 enumconst	c:@Ea@kColorSyncAlphaInfoMask@kColorSyncByteOrder16Big	-			-	-	-	-	-	cbbfd556e159c133
 enumconst	c:@Ea@kColorSyncAlphaInfoMask@kColorSyncByteOrder32Big	-			-	-	-	-	-	6ab3811746749443
 typedef	c:@T@ColorSyncDataLayout	-			uint32_t	-	-	-	-	f9e0982e4d420ea1
-function	c:@F@ColorSyncTransformConvert	-			_Bool (ColorSyncTransformRef _Nonnull, size_t, size_t, void * _Nonnull, ColorSyncDataDepth, ColorSyncDataLayout, size_t, const void * _Nonnull, ColorSyncDataDepth, ColorSyncDataLayout, size_t, CFDictionaryRef _Nullable)	ColorSyncTransformRef transform | size_t width | size_t height | void * dst | ColorSyncDataDepth dstDepth | ColorSyncDataLayout dstLayout | size_t dstBytesPerRow | const void * src | ColorSyncDataDepth srcDepth | ColorSyncDataLayout srcLayout | size_t srcBytesPerRow | CFDictionaryRef options	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	246ca9ea581435c3
+function	c:@F@ColorSyncTransformConvert	-			_Bool (ColorSyncTransformRef, size_t, size_t, void *, ColorSyncDataDepth, ColorSyncDataLayout, size_t, const void *, ColorSyncDataDepth, ColorSyncDataLayout, size_t, CFDictionaryRef)	ColorSyncTransformRef transform | size_t width | size_t height | void * dst | ColorSyncDataDepth dstDepth | ColorSyncDataLayout dstLayout | size_t dstBytesPerRow | const void * src | ColorSyncDataDepth srcDepth | ColorSyncDataLayout srcLayout | size_t srcBytesPerRow | CFDictionaryRef options	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	33ffa97794aebeeb
 var	c:@kColorSyncProfile	-			CFStringRef	-	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	96706fb68f0a63ad
 var	c:@kColorSyncRenderingIntent	-			CFStringRef	-	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	83105d83e393d4c2
 var	c:@kColorSyncRenderingIntentPerceptual	-			CFStringRef	-	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	446da954115aa222
@@ -183,5 +183,5 @@ var	c:@kColorSyncConversionInpChan	-			CFStringRef	-	-	ios=16.0/-/-/0,macos=10.4
 var	c:@kColorSyncConversionOutChan	-			CFStringRef	-	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	02f1c1970f45885f
 var	c:@kColorSyncConversionBPC	-			CFStringRef	-	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	e40d1ab00b37eb87
 var	c:@kColorSyncFixedPointRange	-			CFStringRef	-	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	ee35a6394f6b3ba3
-function	c:@F@ColorSyncCreateCodeFragment	-			CFTypeRef  _Nonnull (CFArrayRef _Nonnull, CFDictionaryRef _Nonnull)	CFArrayRef profileSequence | CFDictionaryRef options	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	2ad66f04bc6f320e
+function	c:@F@ColorSyncCreateCodeFragment	-			CFTypeRef (CFArrayRef, CFDictionaryRef)	CFArrayRef profileSequence | CFDictionaryRef options	-	ios=16.0/-/-/0,macos=10.4/-/-/0	-	6d981c96d4a55d48
 function	c:@F@ColorSyncAPIVersion	-			uint32_t (void)	-	-	-	-	39b5934f408e31c3

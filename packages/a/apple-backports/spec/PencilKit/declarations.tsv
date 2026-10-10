@@ -22,14 +22,14 @@ method	c:objc(cs)PKToolPicker(im)addObserver:	-			void	id<PKToolPickerObserver> 
 method	c:objc(cs)PKToolPicker(im)removeObserver:	-			void	id<PKToolPickerObserver> observer	-	ios=13.0/-/-/0	-	fdeec5f05197c86a
 method	c:objc(cs)PKToolPicker(im)setVisible:forFirstResponder:	-			void	BOOL visible | UIResponder * responder	-	ios=13.0/-/-/0	-	1b511c8fc7312114
 property	c:objc(cs)PKToolPicker(py)delegate	-			id<PKToolPickerDelegate>	-	weak,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	c1ff3345b226a2ce
-property	c:objc(cs)PKToolPicker(py)selectedTool	-			NS_REFINED_FOR_SWIFT PKTool *	-	strong,nonatomic	ios=13.0/18.0/-/0,xros=1.0/2.0/-/0	-	d3347bc9c75e3f42
+property	c:objc(cs)PKToolPicker(py)selectedTool	-			PKTool *	-	strong,nonatomic	ios=13.0/18.0/-/0,xros=1.0/2.0/-/0	-	79dd0e70f016ed8b
 property	c:objc(cs)PKToolPicker(py)selectedToolItem	-			PKToolPickerItem *	-	strong,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	375bd3410e869cf3
 property	c:objc(cs)PKToolPicker(py)selectedToolItemIdentifier	-			NSString *	-	copy,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	b2e61a76dfe2fe9c
 property	c:objc(cs)PKToolPicker(py)toolItems	-			NSArray<PKToolPickerItem *> *	-	readonly,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	6f34da74da8c836b
 property	c:objc(cs)PKToolPicker(cpy)defaultToolItems	-			NSArray<PKToolPickerItem *> *	-	readonly,nonatomic,class	ios=26.0/-/-/0,xros=26.0/-/-/0	-	485214233cd6a85c
 property	c:objc(cs)PKToolPicker(py)rulerActive	-			BOOL	-	nonatomic,getter=isRulerActive	ios=13.0/-/-/0	-	d92f7d89a2cb8d56
 property	c:objc(cs)PKToolPicker(py)isVisible	-			BOOL	-	readonly,nonatomic	ios=13.0/-/-/0	-	cb8c5d26307f7836
-property	c:objc(cs)PKToolPicker(py)stateAutosaveName	-			API_AVAILABLE NSString *	-	copy,nonatomic	ios=14.0/-/-/0	-	7c471f58050a23af
+property	c:objc(cs)PKToolPicker(py)stateAutosaveName	-			NSString *	-	copy,nonatomic	ios=14.0/-/-/0	-	a47652c0e5687e2f
 property	c:objc(cs)PKToolPicker(py)maximumSupportedContentVersion	-			PKContentVersion	-	assign,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0	-	d76cfc6f1f771995
 method	c:objc(cs)PKToolPicker(im)frameObscuredInView:	-			CGRect	UIView * view	-	ios=13.0/-/-/0	-	35e574f14bd26839
 property	c:objc(cs)PKToolPicker(py)overrideUserInterfaceStyle	-			UIUserInterfaceStyle	-	nonatomic	ios=13.0/-/-/0	-	72c4253d2deb1351
@@ -58,7 +58,7 @@ super	-	PKCanvasView	UIScrollView		-	-	-	-	-	f3c828f7980217a7
 conforms	-	PKCanvasView	PKToolPickerObserver		-	-	-	-	-	4bbce1d3e1eb422d
 property	c:objc(cs)PKCanvasView(py)delegate	-			id<PKCanvasViewDelegate>	-	weak,nonatomic	ios=13.0/-/-/0	-	515fea457336d8c4
 property	c:objc(cs)PKCanvasView(py)drawing	-			PKDrawing *	-	copy,nonatomic	ios=13.0/-/-/0	-	7d5860c5a922ea27
-property	c:objc(cs)PKCanvasView(py)tool	-			NS_REFINED_FOR_SWIFT PKTool *	-	copy,nonatomic	ios=13.0/-/-/0	-	401126e44b966a27
+property	c:objc(cs)PKCanvasView(py)tool	-			PKTool *	-	copy,nonatomic	ios=13.0/-/-/0	-	5bd33d6e7b0a8a98
 property	c:objc(cs)PKCanvasView(py)rulerActive	-			BOOL	-	nonatomic,getter=isRulerActive	ios=13.0/-/-/0	-	f6047285c8e8fabb
 property	c:objc(cs)PKCanvasView(py)drawingGestureRecognizer	-			UIGestureRecognizer *	-	readonly,nonatomic	ios=13.0/-/-/0	-	49e69113f7c34934
 property	c:objc(cs)PKCanvasView(py)drawingEnabled	-			BOOL	-	assign,nonatomic,getter=isDrawingEnabled	ios=18.0/-/-/0,xros=2.0/-/-/0	-	274b618c93eff913
@@ -70,11 +70,11 @@ super	-	PKToolPickerItem	NSObject		-	-	-	-	-	f8532d4e5b6a8e73
 conforms	-	PKToolPickerItem	NSCopying		-	-	-	-	-	d25c33db908ee6e8
 method	c:objc(cs)PKToolPickerItem(im)init	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	adb11a46ceaa32bd
 property	c:objc(cs)PKToolPickerItem(py)identifier	-			NSString *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	b01853efce40c75f
-property	c:objc(cs)PKToolPickerItem(py)tool	-			NS_REFINED_FOR_SWIFT PKTool *	-	readonly,nonatomic	ios=26.0/-/-/0,xros=26.0/-/-/0	-	64b57301bd1cef67
+property	c:objc(cs)PKToolPickerItem(py)tool	-			PKTool *	-	readonly,nonatomic	ios=26.0/-/-/0,xros=26.0/-/-/0	-	edfb7556735c4fe5
 interface	c:objc(cs)PKToolPickerCustomItem	-			-	-	-	ios=18.0/-/-/0,xros=2.0/-/-/0	-	acb801a66468342f
 super	-	PKToolPickerCustomItem	PKToolPickerItem		-	-	-	-	-	682fe8852f094071
 method	c:objc(cs)PKToolPickerCustomItem(im)initWithConfiguration:	-			instancetype	PKToolPickerCustomItemConfiguration * configuration	-	ios=18.0/-/-/0,xros=2.0/-/-/0	-	068c52b909000141
-property	c:objc(cs)PKToolPickerCustomItem(py)configuration	-			NS_REFINED_FOR_SWIFT PKToolPickerCustomItemConfiguration *	-	readonly,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	e43d98947ca6483a
+property	c:objc(cs)PKToolPickerCustomItem(py)configuration	-			PKToolPickerCustomItemConfiguration *	-	readonly,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	7f6545f16f39a49f
 property	c:objc(cs)PKToolPickerCustomItem(py)color	-			UIColor *	-	strong,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	10b2a70a6dc63820
 property	c:objc(cs)PKToolPickerCustomItem(py)allowsColorSelection	-			BOOL	-	assign,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	ec558a37e91d2fcf
 property	c:objc(cs)PKToolPickerCustomItem(py)width	-			CGFloat	-	assign,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	59d8a18b6a3b6046
@@ -101,7 +101,7 @@ property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)toolAttributeControls	
 interface	c:objc(cs)PKToolPickerLassoItem	-			-	-	-	ios=18.0/-/-/0,xros=2.0/-/-/0	-	b13efd827658150f
 super	-	PKToolPickerLassoItem	PKToolPickerItem		-	-	-	-	-	db54e897383a418c
 method	c:objc(cs)PKToolPickerLassoItem(im)init	-			instancetype	-	-	ios=18.0/-/-/0,xros=2.0/-/-/0	-	6b46993a5a0a0cb1
-property	c:objc(cs)PKToolPickerLassoItem(py)lassoTool	-			NS_REFINED_FOR_SWIFT PKLassoTool *	-	readonly,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	f03565be02f71904
+property	c:objc(cs)PKToolPickerLassoItem(py)lassoTool	-			PKLassoTool *	-	readonly,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	e8a99d74e0af911c
 interface	c:objc(cs)PKToolPickerRulerItem	-			-	-	-	ios=18.0/-/-/0,xros=-/-/-/1	-	37034adadb757eff
 super	-	PKToolPickerRulerItem	PKToolPickerItem		-	-	-	-	-	5f2e293ad259a51f
 method	c:objc(cs)PKToolPickerRulerItem(im)init	-			instancetype	-	-	ios=18.0/-/-/0,xros=-/-/-/1	-	55956f8094946dd3
@@ -164,13 +164,13 @@ property	c:objc(cs)PKInkingTool(py)color	-			UIColor *	-	readonly,nonatomic	ios=
 method	c:objc(cs)PKInkingTool(cm)convertColor:fromUserInterfaceStyle:to:	-			UIColor *	UIColor * color | UIUserInterfaceStyle fromUserInterfaceStyle | UIUserInterfaceStyle toUserInterfaceStyle	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	b1bfa2f1feaddff1
 property	c:objc(cs)PKInkingTool(py)width	-			CGFloat	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0	-	fb5823fdefa4125d
 property	c:objc(cs)PKInkingTool(py)azimuth	-			CGFloat	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	a34045ae8849db86
-property	c:objc(cs)PKInkingTool(py)ink	-			API_AVAILABLE PKInk *	-	readonly,nonatomic	ios=14.0/-/-/0	-	4583bede8d003967
+property	c:objc(cs)PKInkingTool(py)ink	-			PKInk *	-	readonly,nonatomic	ios=14.0/-/-/0	-	14252acadb179c69
 property	c:objc(cs)PKInkingTool(py)requiredContentVersion	-			PKContentVersion	-	readonly,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0	-	8792ccd69ed5fbf0
 interface	c:objc(cs)PKToolPickerEraserItem	-			-	-	-	ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	95cc0f7b24859b51
 super	-	PKToolPickerEraserItem	PKToolPickerItem		-	-	-	-	-	34e8cec54802628e
 method	c:objc(cs)PKToolPickerEraserItem(im)initWithEraserType:	-			instancetype	PKEraserType eraserType	-	ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	466affa9507decdc
 method	c:objc(cs)PKToolPickerEraserItem(im)initWithEraserType:width:	-			instancetype	PKEraserType eraserType | CGFloat width	-	ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	0a5a299c13c335c4
-property	c:objc(cs)PKToolPickerEraserItem(py)eraserTool	-			NS_REFINED_FOR_SWIFT PKEraserTool *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	b39d6d0e91478b40
+property	c:objc(cs)PKToolPickerEraserItem(py)eraserTool	-			PKEraserTool *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	66cf5501119b4bb4
 interface	c:objc(cs)PKToolPickerInkingItem	-			-	-	-	ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	480278650d374d1c
 super	-	PKToolPickerInkingItem	PKToolPickerItem		-	-	-	-	-	3abe0d2d153f713a
 method	c:objc(cs)PKToolPickerInkingItem(im)initWithInkType:	-			instancetype	PKInkType inkType	-	ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	27af020092ba36c6
@@ -179,7 +179,7 @@ method	c:objc(cs)PKToolPickerInkingItem(im)initWithInkType:width:	-			instancety
 method	c:objc(cs)PKToolPickerInkingItem(im)initWithInkType:color:width:	-			instancetype	PKInkType inkType | UIColor * color | CGFloat width	-	ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	b3ef3dd2d159ae70
 method	c:objc(cs)PKToolPickerInkingItem(im)initWithInkType:color:width:identifier:	-			instancetype	PKInkType inkType | UIColor * color | CGFloat width | NSString * identifier	-	ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	9aff94809d1752cb
 method	c:objc(cs)PKToolPickerInkingItem(im)initWithInkType:color:width:azimuth:identifier:	-			instancetype	PKInkType inkType | UIColor * color | CGFloat width | CGFloat azimuth | NSString * identifier	-	ios=26.0/-/-/0,xros=26.0/-/-/0	-	ec75987b637f3bbd
-property	c:objc(cs)PKToolPickerInkingItem(py)inkingTool	-			NS_REFINED_FOR_SWIFT PKInkingTool *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	91c6925792504b66
+property	c:objc(cs)PKToolPickerInkingItem(py)inkingTool	-			PKInkingTool *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	14b56a4892a0e176
 property	c:objc(cs)PKToolPickerInkingItem(py)allowsColorSelection	-			BOOL	-	assign,nonatomic	ios=18.0/-/-/0,macos=26.0/-/-/0,xros=2.0/-/-/0	-	2375661522f200f0
 var	c:@PKAppleDrawingTypeIdentifier	-			const CFStringRef	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	849f0218111b180c
 interface	c:objc(cs)PKDrawing	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	fb4dd6716d516d5f

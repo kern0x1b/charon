@@ -1,18 +1,18 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
-typedef	c:@T@HMErrorBlock	-			void (^)(NSError * _Nullable)	-	-	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	cf98c60c8d987017
+typedef	c:@T@HMErrorBlock	-			void ((^))(NSError *)	-	-	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	663a200b506e6cea
 interface	c:objc(cs)HMAccessory	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	deprecated: No longer supported.	8bd0fc6f45f17667
 super	-	HMAccessory	NSObject		-	-	-	-	-	21e9f77e8ca9ff08
-property	c:objc(cs)HMAccessory(py)home	-			API_UNAVAILABLE HMHome *	-	readonly,weak,nonatomic	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	83a686805bf35ee0
+property	c:objc(cs)HMAccessory(py)home	-			HMHome *	-	readonly,weak,nonatomic	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	991916c596786630
 property	c:objc(cs)HMAccessory(py)name	-			NSString *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	506f0ae7306171a9
-property	c:objc(cs)HMAccessory(py)identifier	-			API_DEPRECATED NSUUID *	-	readonly,copy,nonatomic	ios=8.0/9.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ad5b3d08d885d555
-property	c:objc(cs)HMAccessory(py)uniqueIdentifier	-			API_AVAILABLE NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	b87ae1f30f5ad180
+property	c:objc(cs)HMAccessory(py)identifier	-			NSUUID *	-	readonly,copy,nonatomic	ios=8.0/9.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	807eef130cf723c4
+property	c:objc(cs)HMAccessory(py)uniqueIdentifier	-			NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	66f3480464c77446
 property	c:objc(cs)HMAccessory(py)delegate	-			id<HMAccessoryDelegate>	-	weak,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	3b6f0a6b1a3a7e73
 property	c:objc(cs)HMAccessory(py)reachable	-			BOOL	-	readonly,nonatomic,getter=isReachable	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	0b865bcd14bdf230
 property	c:objc(cs)HMAccessory(py)bridged	-			BOOL	-	readonly,nonatomic,getter=isBridged	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	b0d7dc330ae93abc
-property	c:objc(cs)HMAccessory(py)identifiersForBridgedAccessories	-			API_DEPRECATED NSArray<NSUUID *> *	-	readonly,copy,nonatomic	ios=8.0/9.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	25f51fac14362aba
-property	c:objc(cs)HMAccessory(py)uniqueIdentifiersForBridgedAccessories	-			API_AVAILABLE NSArray<NSUUID *> *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	0233221c4f21e13c
-property	c:objc(cs)HMAccessory(py)bridgedAccessories	-			API_UNAVAILABLE NSArray<HMAccessory *> *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	b3925347403719e3
-property	c:objc(cs)HMAccessory(py)category	-			API_AVAILABLE HMAccessoryCategory *	-	readonly,strong,nonatomic	ios=9.0/-/-/0	-	88a1019fb1b374fe
+property	c:objc(cs)HMAccessory(py)identifiersForBridgedAccessories	-			NSArray<NSUUID *> *	-	readonly,copy,nonatomic	ios=8.0/9.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	249c11ffd1514062
+property	c:objc(cs)HMAccessory(py)uniqueIdentifiersForBridgedAccessories	-			NSArray<NSUUID *> *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	4ed83f13d00836e9
+property	c:objc(cs)HMAccessory(py)bridgedAccessories	-			NSArray<HMAccessory *> *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	49e89fcf7b495ee9
+property	c:objc(cs)HMAccessory(py)category	-			HMAccessoryCategory *	-	readonly,strong,nonatomic	ios=9.0/-/-/0	-	70795c8474f20ddf
 property	c:objc(cs)HMAccessory(py)room	-			HMRoom *	-	readonly,weak,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	48efa8731dc6e647
 property	c:objc(cs)HMAccessory(py)services	-			NSArray<HMService *> *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	167b1b4ca4ca5a10
 property	c:objc(cs)HMAccessory(py)profiles	-			NSArray<HMAccessoryProfile *> *	-	readonly,copy	ios=11.0/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	2fb6ba14345f1d0e
@@ -21,7 +21,7 @@ property	c:objc(cs)HMAccessory(py)model	-			NSString *	-	readonly,copy,nonatomic
 property	c:objc(cs)HMAccessory(py)manufacturer	-			NSString *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ccd3b44c4e4817fc
 property	c:objc(cs)HMAccessory(py)firmwareVersion	-			NSString *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	179cdc51aa7ec96c
 property	c:objc(cs)HMAccessory(py)supportsIdentify	-			BOOL	-	readonly	ios=11.3/-/-/0,tvos=11.3/-/-/0,watchos=4.3/-/-/0	-	a7377167c51d2d44
-property	c:objc(cs)HMAccessory(py)matterNodeID	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=16.1/-/-/0,maccatalyst=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	1f9e00dd4f09b220
+property	c:objc(cs)HMAccessory(py)matterNodeID	-			NSNumber *	-	readonly,copy,nonatomic	ios=16.1/-/-/0,maccatalyst=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	cd2e990371c720c3
 method	c:objc(cs)HMAccessory(im)updateName:completionHandler:	-			void	NSString * name | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	f95a163f17f8447e
 method	c:objc(cs)HMAccessory(im)identifyWithCompletionHandler:	-			void	void (^)(NSError * _Nullable) completion	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	e6045b6535c99fce
 method	c:objc(cs)HMAccessory(im)init	-			instancetype	-	-	ios=8.0/8.0/-/0,maccatalyst=14.0/14.0/-/0,tvos=10.0/10.0/-/0,watchos=2.0/2.0/-/0	deprecated: HMAccessory objects are created by their parent container objects. Directly creating them is not supported.	50598c4be2d5daad
@@ -89,15 +89,15 @@ interface	c:objc(cs)HMAction	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,maco
 super	-	HMAction	NSObject		-	-	-	-	-	2fc16281e15bb7a8
 method	c:objc(cs)HMAction(im)init	-			instancetype	-	-	ios=8.0/16.4/-/0,maccatalyst=14.0/16.4/-/0,macos=10.14/13.3/-/0,tvos=10.0/16.4/-/0,watchos=2.0/9.4/-/0	deprecated: HMAction is abstract	36a7bdc98540f3e9
 method	c:objc(cs)HMAction(cm)new	-			instancetype	-	-	ios=8.0/16.4/-/0,maccatalyst=14.0/16.4/-/0,macos=10.14/13.3/-/0,tvos=10.0/16.4/-/0,watchos=2.0/9.4/-/0	deprecated: HMAction is abstract	c7e8d12aea565188
-property	c:objc(cs)HMAction(py)uniqueIdentifier	-			API_AVAILABLE NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	64f88852ed0e03a8
+property	c:objc(cs)HMAction(py)uniqueIdentifier	-			NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	d063d726f9476cf0
 interface	c:objc(cs)HMActionSet	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	b55b6a81b72aab9c
 super	-	HMActionSet	NSObject		-	-	-	-	-	efafe63cb6784b6b
 method	c:objc(cs)HMActionSet(im)init	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	f6b642516b116e8f
 property	c:objc(cs)HMActionSet(py)name	-			NSString *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	64937b7e45c41a59
 property	c:objc(cs)HMActionSet(py)actions	-			NSSet<HMAction *> *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	735452139dbca22c
 property	c:objc(cs)HMActionSet(py)executing	-			BOOL	-	readonly,nonatomic,getter=isExecuting	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	e3feff7411ea2282
-property	c:objc(cs)HMActionSet(py)actionSetType	-			API_AVAILABLE NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	4e8409b992050aa1
-property	c:objc(cs)HMActionSet(py)uniqueIdentifier	-			API_AVAILABLE NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	788d2835eb091b2e
+property	c:objc(cs)HMActionSet(py)actionSetType	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	92598dc21699dad6
+property	c:objc(cs)HMActionSet(py)uniqueIdentifier	-			NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	c6e06bc9ea5a18df
 property	c:objc(cs)HMActionSet(py)lastExecutionDate	-			NSDate *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	c425ff7510a14bab
 method	c:objc(cs)HMActionSet(im)updateName:completionHandler:	-			void	NSString * name | HMErrorBlock completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	a2aba152c579c539
 method	c:objc(cs)HMActionSet(im)addAction:completionHandler:	-			void	HMAction * action | HMErrorBlock completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	240ebe07449023b2
@@ -254,13 +254,13 @@ var	c:@HMCharacteristicTypeWiFiSatelliteStatus	-			NSString *const	-	-	ios=18.0/
 interface	c:objc(cs)HMCharacteristic	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	deprecated: HMCharacteristic objects are created by their parent container objects. Directly creating them is not supported.	0b80bee524e90ec3
 super	-	HMCharacteristic	NSObject		-	-	-	-	-	11b32092e068fd7e
 property	c:objc(cs)HMCharacteristic(py)characteristicType	-			NSString *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	c13176df081593af
-property	c:objc(cs)HMCharacteristic(py)localizedDescription	-			API_AVAILABLE NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	d19d4e82316a7603
+property	c:objc(cs)HMCharacteristic(py)localizedDescription	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	b6ba2a2787991e09
 property	c:objc(cs)HMCharacteristic(py)service	-			HMService *	-	readonly,weak,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	8b4921426d187e7e
 property	c:objc(cs)HMCharacteristic(py)properties	-			NSArray<NSString *> *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	d8553c97bee8ca0b
 property	c:objc(cs)HMCharacteristic(py)metadata	-			HMCharacteristicMetadata *	-	readonly,strong,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	90f7c9be02fbe70e
 property	c:objc(cs)HMCharacteristic(py)value	-			id	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	eb51b0189496f4ce
 property	c:objc(cs)HMCharacteristic(py)notificationEnabled	-			BOOL	-	readonly,nonatomic,getter=isNotificationEnabled	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	7cbb40f6973b1958
-property	c:objc(cs)HMCharacteristic(py)uniqueIdentifier	-			API_AVAILABLE NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	be5412a96aa085a5
+property	c:objc(cs)HMCharacteristic(py)uniqueIdentifier	-			NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	066f3b3921ab7aa2
 method	c:objc(cs)HMCharacteristic(im)writeValue:completionHandler:	-			void	id value | void (^)(NSError * _Nullable) completion	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	db76e3e4b3df158b
 method	c:objc(cs)HMCharacteristic(im)readValueWithCompletionHandler:	-			void	void (^)(NSError * _Nullable) completion	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	79654680b38fe92f
 method	c:objc(cs)HMCharacteristic(im)enableNotification:completionHandler:	-			void	BOOL enable | void (^)(NSError * _Nullable) completion	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	318bfa030b58e245
@@ -649,7 +649,7 @@ property	c:objc(cs)HMHome(py)delegate	-			id<HMHomeDelegate>	-	weak,nonatomic	io
 property	c:objc(cs)HMHome(py)name	-			NSString *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	81e34bc2f1520470
 property	c:objc(cs)HMHome(py)primary	-			BOOL	-	readonly,nonatomic,getter=isPrimary	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	bfc17b9476b9063d
 property	c:objc(cs)HMHome(py)homeHubState	-			HMHomeHubState	-	readonly,nonatomic	ios=11.0/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d0a12741ca847278
-property	c:objc(cs)HMHome(py)uniqueIdentifier	-			API_AVAILABLE NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	af31641b66d22ada
+property	c:objc(cs)HMHome(py)uniqueIdentifier	-			NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	23f1ee0034b40d6d
 method	c:objc(cs)HMHome(im)updateName:completionHandler:	-			void	NSString * name | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	3f3ded06af2e3b7b
 category	c:objc(cy)HMHome@HMAccessory	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	deprecated: Use -[HMAccessorySetupManager performAccessorySetupUsingRequest:completionHandler:] instead	ad0c91e83541a371
 property	c:objc(cs)HMHome(py)accessories	HMAccessory			NSArray<HMAccessory *> *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	4735699d4eddb27e
@@ -663,7 +663,7 @@ method	c:objc(cs)HMHome(im)addAndSetupAccessoriesWithPayload:completionHandler:	
 property	c:objc(cs)HMHome(py)supportsAddingNetworkRouter	HMAccessory			BOOL	-	readonly,assign,nonatomic	ios=13.2/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=13.2/-/-/0,watchos=6.1/-/-/0	-	3be3362684adf84e
 category	c:objc(cy)HMHome@HMUser	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	deprecated: No longer supported.	cdde02479312d126
 property	c:objc(cs)HMHome(py)currentUser	HMUser			HMUser *	-	readonly,strong,nonatomic	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0	-	14274edbe3533660
-property	c:objc(cs)HMHome(py)users	HMUser			API_DEPRECATED NSArray<HMUser *> *	-	readonly,copy,nonatomic	ios=8.0/9.0/-/0,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6977f4bde629108e
+property	c:objc(cs)HMHome(py)users	HMUser			NSArray<HMUser *> *	-	readonly,copy,nonatomic	ios=8.0/9.0/-/0,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	dba7e7423763e40b
 method	c:objc(cs)HMHome(im)manageUsersWithCompletionHandler:	HMUser			void	void (^)(NSError * _Nullable) completion	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	762078c19b9a56b7
 method	c:objc(cs)HMHome(im)addUserWithCompletionHandler:	HMUser			void	void (^)(HMUser * _Nullable, NSError * _Nullable) completion	-	ios=8.0/9.0/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use -manageUsersWithCompletionHandler: instead	2581983f367a24d0
 method	c:objc(cs)HMHome(im)removeUser:completionHandler:	HMUser			void	HMUser * user | void (^)(NSError * _Nullable) completion	-	ios=8.0/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use -manageUsersWithCompletionHandler: instead	482b0b825f8a116f
@@ -692,9 +692,9 @@ property	c:objc(cs)HMHome(py)triggers	HMTrigger			NSArray<HMTrigger *> *	-	reado
 method	c:objc(cs)HMHome(im)addTrigger:completionHandler:	HMTrigger			void	HMTrigger * trigger | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	6d8cb46be469fd74
 method	c:objc(cs)HMHome(im)removeTrigger:completionHandler:	HMTrigger			void	HMTrigger * trigger | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	f8bd4737aae65525
 category	c:objc(cy)HMHome@Matter	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	71cfa143b1685e0f
-property	c:objc(cs)HMHome(py)matterControllerID	Matter			API_AVAILABLE NSString *	-	readonly,copy,nonatomic	ios=16.1/-/-/0	-	69b41279b1856221
-property	c:objc(cs)HMHome(py)matterControllerXPCConnectBlock	Matter			API_AVAILABLE NSXPCConnection * _Nonnull (^)(void)	-	readonly,strong,nonatomic	ios=16.1/-/-/0	-	120ceb25a0f2c079
-property	c:objc(cs)HMHome(py)matterStartupParametersXPCConnectBlock	Matter			API_AVAILABLE NSXPCConnection * _Nonnull (^)(void)	-	readonly,strong,nonatomic	ios=18.2/-/-/0	-	5c0364ea18acd08d
+property	c:objc(cs)HMHome(py)matterControllerID	Matter			NSString *	-	readonly,copy,nonatomic	ios=16.1/-/-/0	-	0d49e7d9b967eaf2
+property	c:objc(cs)HMHome(py)matterControllerXPCConnectBlock	Matter			NSXPCConnection * _Nonnull (^)(void)	-	readonly,strong,nonatomic	ios=16.1/-/-/0	-	c9beb49a1937f9ac
+property	c:objc(cs)HMHome(py)matterStartupParametersXPCConnectBlock	Matter			NSXPCConnection * _Nonnull (^)(void)	-	readonly,strong,nonatomic	ios=18.2/-/-/0	-	2bdaeb7841093d0f
 protocol	c:objc(pl)HMHomeDelegate	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	426ac7fdc6132903
 conforms	-	HMHomeDelegate	NSObject		-	-	-	-	-	84a88c077a1ae196
 method	c:objc(pl)HMHomeDelegate(im)homeDidUpdateName:	-			void	HMHome * home	optional	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	1c631f8df48d1d7a
@@ -765,7 +765,7 @@ super	-	HMRoom	NSObject		-	-	-	-	-	650c79809d72bb21
 method	c:objc(cs)HMRoom(im)init	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	5d997d2c44d967c0
 property	c:objc(cs)HMRoom(py)name	-			NSString *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	4ea9d50b590e3732
 property	c:objc(cs)HMRoom(py)accessories	-			NSArray<HMAccessory *> *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	6b28f88a743fd18d
-property	c:objc(cs)HMRoom(py)uniqueIdentifier	-			API_AVAILABLE NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	61320c03f8a6949f
+property	c:objc(cs)HMRoom(py)uniqueIdentifier	-			NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	661ad8bdab9521a8
 method	c:objc(cs)HMRoom(im)updateName:completionHandler:	-			void	NSString * name | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	8531ae3bb465c4c7
 var	c:@HMServiceTypeSwitch	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	6ce86467c12223c3
 var	c:@HMServiceTypeThermostat	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	c99cf3b0ab7c8b91
@@ -817,15 +817,15 @@ interface	c:objc(cs)HMService	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,mac
 super	-	HMService	NSObject		-	-	-	-	-	2c0ab4a840a3528e
 property	c:objc(cs)HMService(py)accessory	-			HMAccessory *	-	readonly,weak,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	950ae828dc2957f0
 property	c:objc(cs)HMService(py)serviceType	-			NSString *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	a9f10950a642d1bd
-property	c:objc(cs)HMService(py)localizedDescription	-			API_AVAILABLE NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	4e475805bc143dbd
+property	c:objc(cs)HMService(py)localizedDescription	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	64a572234eaa3552
 property	c:objc(cs)HMService(py)name	-			NSString *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	54dafd461ec825e5
 property	c:objc(cs)HMService(py)associatedServiceType	-			NSString *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	2ec8e8f319a41178
 property	c:objc(cs)HMService(py)characteristics	-			NSArray<HMCharacteristic *> *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	04df2b2e27672c08
-property	c:objc(cs)HMService(py)uniqueIdentifier	-			API_AVAILABLE NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	11478be2d31b926b
+property	c:objc(cs)HMService(py)uniqueIdentifier	-			NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	8d0ad346044c16b9
 property	c:objc(cs)HMService(py)userInteractive	-			BOOL	-	readonly,nonatomic,getter=isUserInteractive	ios=9.0/-/-/0	-	1759137590589a5f
 property	c:objc(cs)HMService(py)primaryService	-			BOOL	-	readonly,nonatomic,getter=isPrimaryService	ios=10.0/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	f370690ca9bf83b2
 property	c:objc(cs)HMService(py)linkedServices	-			NSArray<HMService *> *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	45970ed5aeb4fda9
-property	c:objc(cs)HMService(py)matterEndpointID	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	0cdc5149dccb7f7d
+property	c:objc(cs)HMService(py)matterEndpointID	-			NSNumber *	-	readonly,copy,nonatomic	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	f04eb9b69b453de1
 method	c:objc(cs)HMService(im)updateName:completionHandler:	-			void	NSString * name | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	347cd7593d980637
 method	c:objc(cs)HMService(im)updateAssociatedServiceType:completionHandler:	-			void	NSString * serviceType | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	0fc816320fd51169
 method	c:objc(cs)HMService(im)init	-			instancetype	-	-	ios=8.0/8.0/-/0,maccatalyst=14.0/14.0/-/0,tvos=10.0/10.0/-/0,watchos=2.0/2.0/-/0	deprecated: HMService objects are created by their parent container objects. Directly creating them is not supported.	abeae1aefee9a768
@@ -834,7 +834,7 @@ super	-	HMServiceGroup	NSObject		-	-	-	-	-	6a8cc4b2a1ff9c4b
 method	c:objc(cs)HMServiceGroup(im)init	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	252a56aa4267b88c
 property	c:objc(cs)HMServiceGroup(py)name	-			NSString *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	0e58598b11c1c37c
 property	c:objc(cs)HMServiceGroup(py)services	-			NSArray<HMService *> *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	4e210657d7f062bb
-property	c:objc(cs)HMServiceGroup(py)uniqueIdentifier	-			API_AVAILABLE NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	19158c062105bfba
+property	c:objc(cs)HMServiceGroup(py)uniqueIdentifier	-			NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	bb1947c7effe33c2
 method	c:objc(cs)HMServiceGroup(im)updateName:completionHandler:	-			void	NSString * name | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	58d72af300a081d1
 method	c:objc(cs)HMServiceGroup(im)addService:completionHandler:	-			void	HMService * service | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	6503ca29cbc5972b
 method	c:objc(cs)HMServiceGroup(im)removeService:completionHandler:	-			void	HMService * service | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	2d1d5475f5744bf7
@@ -845,7 +845,7 @@ property	c:objc(cs)HMTrigger(py)name	-			NSString *	-	readonly,copy,nonatomic	io
 property	c:objc(cs)HMTrigger(py)enabled	-			BOOL	-	readonly,nonatomic,getter=isEnabled	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	b18146c59420b203
 property	c:objc(cs)HMTrigger(py)actionSets	-			NSArray<HMActionSet *> *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	65670fe2412304a1
 property	c:objc(cs)HMTrigger(py)lastFireDate	-			NSDate *	-	readonly,copy,nonatomic	ios=8.0/17.0/-/0,macos=11.0/14.0/-/0,tvos=10.0/17.0/-/0,watchos=2.0/10.0/-/0	-	c4cf2190238d1ed7
-property	c:objc(cs)HMTrigger(py)uniqueIdentifier	-			API_AVAILABLE NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	87979b50acb36d95
+property	c:objc(cs)HMTrigger(py)uniqueIdentifier	-			NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	3bf885b7fd985dc3
 method	c:objc(cs)HMTrigger(im)updateName:completionHandler:	-			void	NSString * name | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	e301dcac46a5ccf2
 method	c:objc(cs)HMTrigger(im)addActionSet:completionHandler:	-			void	HMActionSet * actionSet | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	02278c7a5e63a559
 method	c:objc(cs)HMTrigger(im)removeActionSet:completionHandler:	-			void	HMActionSet * actionSet | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	335834866c7e7a40
@@ -866,13 +866,13 @@ interface	c:objc(cs)HMUser	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=
 super	-	HMUser	NSObject		-	-	-	-	-	44f0ee43fe707c87
 method	c:objc(cs)HMUser(im)init	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	98f40e4a7f3d50cf
 property	c:objc(cs)HMUser(py)name	-			NSString *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	9616e3aad9ddb6ca
-property	c:objc(cs)HMUser(py)uniqueIdentifier	-			API_AVAILABLE NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	026b4d67785b469d
+property	c:objc(cs)HMUser(py)uniqueIdentifier	-			NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	ffa0bfb0a32dc62b
 interface	c:objc(cs)HMZone	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	162dddb4da94d5d8
 super	-	HMZone	NSObject		-	-	-	-	-	d9b2ca3fb0f5f781
 method	c:objc(cs)HMZone(im)init	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	765e1159368a7f2a
 property	c:objc(cs)HMZone(py)name	-			NSString *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	256689e545d19f25
 property	c:objc(cs)HMZone(py)rooms	-			NSArray<HMRoom *> *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	7636ff5880d98814
-property	c:objc(cs)HMZone(py)uniqueIdentifier	-			API_AVAILABLE NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	b4748dbe74f4fc6c
+property	c:objc(cs)HMZone(py)uniqueIdentifier	-			NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	a89ec9d9ba9d9348
 method	c:objc(cs)HMZone(im)updateName:completionHandler:	-			void	NSString * name | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	062d7fc5fff8f552
 method	c:objc(cs)HMZone(im)addRoom:completionHandler:	-			void	HMRoom * room | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	203ae9f82c851c35
 method	c:objc(cs)HMZone(im)removeRoom:completionHandler:	-			void	HMRoom * room | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	d7f19a157fb9340b
@@ -1172,7 +1172,7 @@ super	-	HMCameraView	UIView		-	-	-	-	-	f3ecc7b8ab896e78
 method	c:objc(cs)HMCameraView(im)init	-			instancetype	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,tvos=10.0/-/-/0,watchos=-/-/-/1	-	fc6b359a95611edb
 property	c:objc(cs)HMCameraView(py)cameraSource	-			HMCameraSource *	-	strong,nonatomic	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,tvos=10.0/-/-/0,watchos=-/-/-/1	-	458957a140e5b47b
 category	c:objc(cy)HMAccessory@Camera	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	d2bb35309c9fc66e
-property	c:objc(cs)HMAccessory(py)cameraProfiles	Camera			API_UNAVAILABLE NSArray<HMCameraProfile *> *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	a344fef8fc94af34
+property	c:objc(cs)HMAccessory(py)cameraProfiles	Camera			NSArray<HMCameraProfile *> *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	a9cae9cdd21b7ec1
 interface	c:objc(cs)HMCameraControl	-			-	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	deprecated: HMCameraControl is a base class for other types. Directly creating one is not supported.	4c6cf8720f907bcd
 super	-	HMCameraControl	NSObject		-	-	-	-	-	f25034aed8effabc
 method	c:objc(cs)HMCameraControl(im)init	-			instancetype	-	-	ios=10.0/10.0/-/0,maccatalyst=14.0/14.0/-/0,tvos=10.0/10.0/-/0,watchos=3.0/3.0/-/0	deprecated: HMCameraControl is a base class for other types. Directly creating one is not supported.	c47e517c6f583511
@@ -1281,6 +1281,6 @@ method	c:objc(cs)HMAccessorySetupResult(im)init	-			instancetype	-	-	*unavailabl
 method	c:objc(cs)HMAccessorySetupResult(cm)new	-			instancetype	-	-	*unavailable ios=15.4/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8382b9aa91ec8924
 category	c:objc(ext)HMAccessory	-	-		-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	780bf80df6397780
 property	c:objc(cs)HMAccessory(py)vendorAccessory	-			BOOL	-	readonly,nonatomic,getter=isVendorAccessory	ios=26.1/-/-/0,macos=-/-/-/1,tvos=26.1/-/-/0,watchos=26.1/-/-/0	-	b65461a2a6b56062
-property	c:objc(cs)HMAccessory(py)HAPInstanceID	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=26.1/-/-/0,macos=-/-/-/1,tvos=26.1/-/-/0,watchos=26.1/-/-/0	-	243228520d1e840b
+property	c:objc(cs)HMAccessory(py)HAPInstanceID	-			NSNumber *	-	readonly,copy,nonatomic	ios=26.1/-/-/0,macos=-/-/-/1,tvos=26.1/-/-/0,watchos=26.1/-/-/0	-	1f6bfee8d13a337c
 category	c:objc(cy)HMHomeManager@Vendor	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	8db43da08a5e91c8
 method	c:objc(cs)HMHomeManager(im)findVendorAccessoryWithHAPPublicKey:completionHandler:	Vendor			void	NSData * hapPublicKey | void (^)(HMAccessory * _Nullable_result, NSError * _Nullable) completion	-	ios=26.1/-/-/0,macos=-/-/-/1,tvos=26.1/-/-/0,watchos=26.1/-/-/0	-	f25527ac28be5596

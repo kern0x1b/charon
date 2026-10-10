@@ -6,7 +6,7 @@ typedef	c:@T@GCPoint2	-			struct GCPoint2	-	-	-	-	fecc52f62b933b28
 var	c:@GCPoint2Zero	-			const GCPoint2	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=17.4/-/-/0,xros=1.1/-/-/0	-	0bdd5daec81e384f
 function	c:@F@GCPoint2Make	-			GCPoint2 (float, float)	float x | float y	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=17.4/-/-/0,xros=1.1/-/-/0	-	b2ee5f6d70532bf2
 function	c:@F@GCPoint2Equal	-			_Bool (GCPoint2, GCPoint2)	GCPoint2 point1 | GCPoint2 point2	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=17.4/-/-/0,xros=1.1/-/-/0	-	e46587356d4877d3
-function	c:@F@NSStringFromGCPoint2	-			NSString * _Nonnull (GCPoint2)	GCPoint2 point	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=17.4/-/-/0,xros=1.1/-/-/0	-	5604106b3014c11c
+function	c:@F@NSStringFromGCPoint2	-			NSString * (GCPoint2)	GCPoint2 point	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=17.4/-/-/0,xros=1.1/-/-/0	-	e82e042b21bfe1ac
 category	c:objc(cy)NSValue@GCTypes	-			-	-	-	-	-	f1d006fdf1e1d0f5
 method	c:objc(cs)NSValue(cm)valueWithGCPoint2:	GCTypes			instancetype	GCPoint2 point	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=17.4/-/-/0,xros=1.1/-/-/0	-	7e1f9fd3c153938c
 property	c:objc(cs)NSValue(py)GCPoint2Value	GCTypes			GCPoint2	-	readonly,nonatomic	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=17.4/-/-/0,xros=1.1/-/-/0	-	7074cc7b7f685f1f
@@ -73,8 +73,8 @@ var	c:@GCInputRightBumper	-			const GCInputButtonName	-	-	ios=17.4/-/-/0,macos=1
 var	c:@GCInputTrigger	-			const GCInputButtonName	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,xros=26.0/-/-/0	-	b25cfbb316cc33ad
 var	c:@GCInputLeftTrigger	-			const GCInputButtonName	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	936f2cefde9959fb
 var	c:@GCInputRightTrigger	-			const GCInputButtonName	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	6ce377f42a13abec
-function	c:@F@GCInputBackLeftButton	-			GCInputButtonName (NSInteger)	NSInteger position	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,xros=1.1/-/-/0	-	48631344931a54cf
-function	c:@F@GCInputBackRightButton	-			GCInputButtonName (NSInteger)	NSInteger position	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,xros=1.1/-/-/0	-	a59b019a5e9e5424
+function	c:@F@GCInputBackLeftButton	-			const GCInputButtonName (NSInteger)	NSInteger position	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,xros=1.1/-/-/0	-	1a6916568d1678ce
+function	c:@F@GCInputBackRightButton	-			const GCInputButtonName (NSInteger)	NSInteger position	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,xros=1.1/-/-/0	-	c67e957fcffd2299
 var	c:@GCInputButtonHome	-			const GCInputButtonName	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	294d900e99df71dc
 var	c:@GCInputButtonMenu	-			const GCInputButtonName	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	3ca67b57674e17f7
 var	c:@GCInputButtonOptions	-			const GCInputButtonName	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	4b55835f7f256c87
@@ -93,7 +93,7 @@ var	c:@GCInputPedalBrake	-			const GCInputButtonName	-	-	ios=-/-/-/1,maccatalyst
 var	c:@GCInputPedalClutch	-			const GCInputButtonName	-	-	ios=-/-/-/1,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	0d341a7b161ec2f7
 var	c:@GCInputLeftPaddle	-			const GCInputButtonName	-	-	ios=-/-/-/1,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	c8cb97574a48ee80
 var	c:@GCInputRightPaddle	-			const GCInputButtonName	-	-	ios=-/-/-/1,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	b0499434d74b9827
-function	c:@F@GCInputArcadeButtonName	-			GCInputButtonName (NSInteger, NSInteger)	NSInteger row | NSInteger column	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	be342e2e9e67fd94
+function	c:@F@GCInputArcadeButtonName	-			const GCInputButtonName (NSInteger, NSInteger)	NSInteger row | NSInteger column	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	03b929237d05aba9
 var	c:@GCInputStylusTip	-			const GCInputButtonName	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=26.0/-/-/0	-	10820c0a674c7b28
 var	c:@GCInputStylusPrimaryButton	-			const GCInputButtonName	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=26.0/-/-/0	-	075d9d32cec08f99
 var	c:@GCInputStylusSecondaryButton	-			const GCInputButtonName	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=26.0/-/-/0	-	de711cdf627987a3
@@ -197,12 +197,12 @@ conforms	-	GCDevicePhysicalInputState	NSObject		-	-	-	-	-	9f792d1cd2d6ad8e
 property	c:objc(pl)GCDevicePhysicalInputState(py)device	-			id<GCDevice>	-	readonly,weak	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	0c902c4529c8dc43
 property	c:objc(pl)GCDevicePhysicalInputState(py)lastEventTimestamp	-			NSTimeInterval	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	31f03807b29631a2
 property	c:objc(pl)GCDevicePhysicalInputState(py)lastEventLatency	-			NSTimeInterval	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	10c7ddeb79f70d0e
-property	c:objc(pl)GCDevicePhysicalInputState(py)elements	-			NS_REFINED_FOR_SWIFT GCPhysicalInputElementCollection<NSString<GCPhysicalInputElementName> *,id<GCPhysicalInputElement>> *	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	68fab916f31b9e24
-property	c:objc(pl)GCDevicePhysicalInputState(py)buttons	-			NS_REFINED_FOR_SWIFT GCPhysicalInputElementCollection<NSString<GCButtonElementName> *,id<GCButtonElement>> *	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	bc84e1f23262b298
-property	c:objc(pl)GCDevicePhysicalInputState(py)axes	-			NS_REFINED_FOR_SWIFT GCPhysicalInputElementCollection<NSString<GCAxisElementName> *,id<GCAxisElement>> *	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	d418c33ab8ba4e72
-property	c:objc(pl)GCDevicePhysicalInputState(py)switches	-			NS_REFINED_FOR_SWIFT GCPhysicalInputElementCollection<NSString<GCSwitchElementName> *,id<GCSwitchElement>> *	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	48fb9b4e71414588
-property	c:objc(pl)GCDevicePhysicalInputState(py)dpads	-			NS_REFINED_FOR_SWIFT GCPhysicalInputElementCollection<NSString<GCDirectionPadElementName> *,id<GCDirectionPadElement>> *	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	adb691f0cd8747ea
-method	c:objc(pl)GCDevicePhysicalInputState(im)objectForKeyedSubscript:	-			__kindof id<GCPhysicalInputElement>	NSString * key	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	05e6627d09cafaad
+property	c:objc(pl)GCDevicePhysicalInputState(py)elements	-			GCPhysicalInputElementCollection<NSString<GCPhysicalInputElementName> *,id<GCPhysicalInputElement>> *	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	1f5c5bfc3df35511
+property	c:objc(pl)GCDevicePhysicalInputState(py)buttons	-			GCPhysicalInputElementCollection<NSString<GCButtonElementName> *,id<GCButtonElement>> *	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	f6f6a7d819eb9f05
+property	c:objc(pl)GCDevicePhysicalInputState(py)axes	-			GCPhysicalInputElementCollection<NSString<GCAxisElementName> *,id<GCAxisElement>> *	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	430c4a9da676838f
+property	c:objc(pl)GCDevicePhysicalInputState(py)switches	-			GCPhysicalInputElementCollection<NSString<GCSwitchElementName> *,id<GCSwitchElement>> *	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	c512e93b1efe80c6
+property	c:objc(pl)GCDevicePhysicalInputState(py)dpads	-			GCPhysicalInputElementCollection<NSString<GCDirectionPadElementName> *,id<GCDirectionPadElement>> *	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	932dcb7eede07a9b
+method	c:objc(pl)GCDevicePhysicalInputState(im)objectForKeyedSubscript:	-			id<GCPhysicalInputElement>	NSString * key	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	40e1c34610ec2799
 typedef	c:@T@GCDevicePhysicalInputElementChange	-			enum GCDevicePhysicalInputElementChange	-	-	-	-	aa378a0a67082030
 enum	c:@E@GCDevicePhysicalInputElementChange	-			NSInteger	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	e586165e99ea551e
 enumconst	c:@E@GCDevicePhysicalInputElementChange@GCDevicePhysicalInputElementUnknownChange	GCDevicePhysicalInputElementChange			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	bc2d6335ba85da50
@@ -217,10 +217,10 @@ conforms	-	GCDevicePhysicalInput	GCDevicePhysicalInputState		-	-	-	-	-	2a1c82caf
 property	c:objc(pl)GCDevicePhysicalInput(py)device	-			id<GCDevice>	-	readonly,weak	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	0d196d1810f2b31f
 property	c:objc(pl)GCDevicePhysicalInput(py)queue	-			dispatch_queue_t	-	strong,atomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	4d18a8b04cb2d249
 property	c:objc(pl)GCDevicePhysicalInput(py)elementValueDidChangeHandler	-			void (^)(__kindof id<GCDevicePhysicalInput> _Nonnull, __kindof id<GCPhysicalInputElement> _Nonnull)	-	copy,atomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	0fe47648733035bf
-method	c:objc(pl)GCDevicePhysicalInput(im)capture	-			__kindof id<GCDevicePhysicalInputState>	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	674a5e8ecd326422
+method	c:objc(pl)GCDevicePhysicalInput(im)capture	-			id<GCDevicePhysicalInputState>	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	82339ea005c970d5
 property	c:objc(pl)GCDevicePhysicalInput(py)inputStateAvailableHandler	-			void (^)(__kindof id<GCDevicePhysicalInput> _Nonnull)	-	copy,atomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	0342ce20fb143c96
 property	c:objc(pl)GCDevicePhysicalInput(py)inputStateQueueDepth	-			NSInteger	-	atomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	71e99c7fafdef13e
-method	c:objc(pl)GCDevicePhysicalInput(im)nextInputState	-			__kindof id<GCDevicePhysicalInputState,GCDevicePhysicalInputStateDiff>	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	722ed96932937cc5
+method	c:objc(pl)GCDevicePhysicalInput(im)nextInputState	-			id<GCDevicePhysicalInputState,GCDevicePhysicalInputStateDiff>	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	6127de79b9c3214c
 typedef	c:@T@GCPhysicalInputSourceDirection	-			enum GCPhysicalInputSourceDirection	-	-	-	-	3d5d46f5e025b4be
 enum	c:@E@GCPhysicalInputSourceDirection	-			NSUInteger	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	fe8b7fe89bae4ccc
 enumconst	c:@E@GCPhysicalInputSourceDirection@GCPhysicalInputSourceDirectionNotApplicable	GCPhysicalInputSourceDirection			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	dbe0348311cd056e
@@ -275,7 +275,7 @@ super	-	GCControllerAxisInput	GCControllerElement		-	-	-	-	-	b1fa98b27e9fa8cf
 property	c:objc(cs)GCControllerAxisInput(py)valueChangedHandler	-			GCControllerAxisValueChangedHandler	-	copy,nonatomic	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0	-	2c84cd8f7ba80508
 property	c:objc(cs)GCControllerAxisInput(py)value	-			float	-	readonly,nonatomic	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0	-	68c822f780f69bbc
 method	c:objc(cs)GCControllerAxisInput(im)setValue:	-			void	float value	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	1fd6e4c23af068ba
-typedef	c:@T@GCControllerAxisValueChangedHandler	-			void (^)(GCControllerAxisInput * _Nonnull, float)	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0	-	427130776d821c91
+typedef	c:@T@GCControllerAxisValueChangedHandler	-			void ((^))(GCControllerAxisInput *, float)	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0	-	6613f1e043d00059
 interface	c:objc(cs)GCControllerButtonInput	-			-	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0	-	7546b7bfc5aedf16
 super	-	GCControllerButtonInput	GCControllerElement		-	-	-	-	-	9383b6cde70cce5c
 property	c:objc(cs)GCControllerButtonInput(py)valueChangedHandler	-			GCControllerButtonValueChangedHandler	-	copy,nonatomic	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0	-	414b1c150a0c80b8
@@ -285,8 +285,8 @@ property	c:objc(cs)GCControllerButtonInput(py)value	-			float	-	readonly,nonatom
 property	c:objc(cs)GCControllerButtonInput(py)pressed	-			BOOL	-	readonly,nonatomic,getter=isPressed	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0	-	8b1c89f7d0581bca
 property	c:objc(cs)GCControllerButtonInput(py)touched	-			BOOL	-	readonly,nonatomic,getter=isTouched	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0	-	ec9af8e7e1cb5e61
 method	c:objc(cs)GCControllerButtonInput(im)setValue:	-			void	float value	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	75d61bbb0e7244fa
-typedef	c:@T@GCControllerButtonValueChangedHandler	-			void (^)(GCControllerButtonInput * _Nonnull, float, BOOL)	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0	-	32576c8db9426da2
-typedef	c:@T@GCControllerButtonTouchedChangedHandler	-			void (^)(GCControllerButtonInput * _Nonnull, float, BOOL, BOOL)	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	f8833f2dd36d786f
+typedef	c:@T@GCControllerButtonValueChangedHandler	-			void ((^))(GCControllerButtonInput *, float, BOOL)	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0	-	4787484aacd383e0
+typedef	c:@T@GCControllerButtonTouchedChangedHandler	-			void ((^))(GCControllerButtonInput *, float, BOOL, BOOL)	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	6998d6cbf981a2b2
 interface	c:objc(cs)GCControllerDirectionPad	-			-	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0	-	714c3b828f2b5bae
 super	-	GCControllerDirectionPad	GCControllerElement		-	-	-	-	-	2ff2b9c7182bf001
 property	c:objc(cs)GCControllerDirectionPad(py)valueChangedHandler	-			GCControllerDirectionPadValueChangedHandler	-	copy,nonatomic	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0	-	9d18e1e1b78ef421
@@ -297,7 +297,7 @@ property	c:objc(cs)GCControllerDirectionPad(py)down	-			GCControllerButtonInput 
 property	c:objc(cs)GCControllerDirectionPad(py)left	-			GCControllerButtonInput *	-	readonly,nonatomic	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0	-	9497a033a7d9a403
 property	c:objc(cs)GCControllerDirectionPad(py)right	-			GCControllerButtonInput *	-	readonly,nonatomic	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0	-	1c94aa49f39dcc46
 method	c:objc(cs)GCControllerDirectionPad(im)setValueForXAxis:yAxis:	-			void	float xAxis | float yAxis	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	123a616d472a562c
-typedef	c:@T@GCControllerDirectionPadValueChangedHandler	-			void (^)(GCControllerDirectionPad * _Nonnull, float, float)	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0	-	41159da00e1d2954
+typedef	c:@T@GCControllerDirectionPadValueChangedHandler	-			void ((^))(GCControllerDirectionPad *, float, float)	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0	-	4ec491eba653c169
 typedef	c:@T@GCTouchState	-			enum GCTouchState	-	-	-	-	cb9afdbcce1f2c95
 enum	c:@E@GCTouchState	-			NSInteger	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	9540d19e865f67ed
 enumconst	c:@E@GCTouchState@GCTouchStateUp	GCTouchState			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	3051e5e3594f8fc8
@@ -313,7 +313,7 @@ property	c:objc(cs)GCControllerTouchpad(py)touchSurface	-			GCControllerDirectio
 property	c:objc(cs)GCControllerTouchpad(py)touchState	-			GCTouchState	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	651ff221b75e287c
 property	c:objc(cs)GCControllerTouchpad(py)reportsAbsoluteTouchSurfaceValues	-			BOOL	-	nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	4531e8642f9f9b83
 method	c:objc(cs)GCControllerTouchpad(im)setValueForXAxis:yAxis:touchDown:buttonValue:	-			void	float xAxis | float yAxis | BOOL touchDown | float buttonValue	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	109d66ca21a5f7e3
-typedef	c:@T@GCControllerTouchpadHandler	-			void (^)(GCControllerTouchpad * _Nonnull, float, float, float, BOOL)	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	8b569271cba864b3
+typedef	c:@T@GCControllerTouchpadHandler	-			void ((^))(GCControllerTouchpad *, float, float, float, BOOL)	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	be2b75a22b9cd5ec
 enum	c:@Ea@GCDualSenseAdaptiveTriggerDiscretePositionCount	-	-		unsigned int	-	-	-	-	4f4a60581eaa9f00
 enumconst	c:@Ea@GCDualSenseAdaptiveTriggerDiscretePositionCount@GCDualSenseAdaptiveTriggerDiscretePositionCount	-			-	-	-	ios=15.4/-/-/0,macos=12.3/-/-/0,tvos=15.4/-/-/0	-	9dc5600fdf51a05a
 typedef	c:@T@GCDualSenseAdaptiveTriggerMode	-			enum GCDualSenseAdaptiveTriggerMode	-	-	-	-	62c730b82fac52cf
@@ -398,7 +398,7 @@ method	c:objc(cs)GCMotion(im)setAcceleration:	-			void	GCAcceleration accelerati
 method	c:objc(cs)GCMotion(im)setAttitude:	-			void	GCQuaternion attitude	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	370c4a0de8f08a06
 method	c:objc(cs)GCMotion(im)setRotationRate:	-			void	GCRotationRate rotationRate	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	3ab373dc0450fc1c
 method	c:objc(cs)GCMotion(im)setStateFromMotion:	-			void	GCMotion * motion	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	8ae9cb055881e9c1
-typedef	c:@T@GCMotionValueChangedHandler	-			void (^)(GCMotion * _Nonnull)	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0	-	7d7f9d72246790b7
+typedef	c:@T@GCMotionValueChangedHandler	-			void ((^))(GCMotion *)	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0	-	280cceb01ab4e98c
 interface	c:objc(cs)GCPhysicalInputProfile	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	203a7f09fbe2bdf3
 super	-	GCPhysicalInputProfile	NSObject		-	-	-	-	-	e99692ca87bef491
 property	c:objc(cs)GCPhysicalInputProfile(py)device	-			id<GCDevice>	-	readonly,weak,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	fd9869bcc95d570d
@@ -432,7 +432,7 @@ property	c:objc(cs)GCGamepad(py)buttonX	-			GCControllerButtonInput *	-	readonly
 property	c:objc(cs)GCGamepad(py)buttonY	-			GCControllerButtonInput *	-	readonly,nonatomic	ios=7.0/10.0/-/0,macos=10.9/10.12/-/0,tvos=9.0/10.0/-/0	-	806481578a51271c
 property	c:objc(cs)GCGamepad(py)leftShoulder	-			GCControllerButtonInput *	-	readonly,nonatomic	ios=7.0/10.0/-/0,macos=10.9/10.12/-/0,tvos=9.0/10.0/-/0	-	b2dc2ecb363cb4ea
 property	c:objc(cs)GCGamepad(py)rightShoulder	-			GCControllerButtonInput *	-	readonly,nonatomic	ios=7.0/10.0/-/0,macos=10.9/10.12/-/0,tvos=9.0/10.0/-/0	-	b5d4bf3cc464264f
-typedef	c:@T@GCGamepadValueChangedHandler	-			void (^)(GCGamepad * _Nonnull, GCControllerElement * _Nonnull)	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0	-	15c13f8d5eadd4e0
+typedef	c:@T@GCGamepadValueChangedHandler	-			void ((^))(GCGamepad *, GCControllerElement *)	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0	-	a72c919cff67fed4
 interface	c:objc(cs)GCGamepadSnapshot	-			-	-	-	ios=7.0/13.0/-/0,macos=10.9/10.15/-/0,tvos=9.0/13.0/-/0	-	e8fed6e29d4a50ea
 super	-	GCGamepadSnapshot	GCGamepad		-	-	-	-	-	fdab64bf1f8b26be
 property	c:objc(cs)GCGamepadSnapshot(py)snapshotData	-			NSData *	-	copy,atomic	ios=7.0/13.0/-/0,macos=10.9/10.15/-/0,tvos=9.0/13.0/-/0	-	7d8e9a8c833f71cc
@@ -450,8 +450,8 @@ field	c:@SA@GCGamepadSnapShotDataV100@FI@buttonY	GCGamepadSnapShotDataV100			flo
 field	c:@SA@GCGamepadSnapShotDataV100@FI@leftShoulder	GCGamepadSnapShotDataV100			float	-	-	-	-	34df97198f6fafb9
 field	c:@SA@GCGamepadSnapShotDataV100@FI@rightShoulder	GCGamepadSnapShotDataV100			float	-	-	-	-	1792aefe62eef172
 typedef	c:@T@GCGamepadSnapShotDataV100	-			struct GCGamepadSnapShotDataV100	-	-	ios=7.0/13.0/-/0,macos=10.9/10.15/-/0,tvos=9.0/13.0/-/0	-	23ea49fc9ac427e7
-function	c:@F@GCGamepadSnapShotDataV100FromNSData	-			BOOL (GCGamepadSnapShotDataV100 * _Nullable, NSData * _Nullable)	GCGamepadSnapShotDataV100 * snapshotData | NSData * data	-	ios=7.0/13.0/-/0,macos=10.9/10.15/-/0,tvos=9.0/13.0/-/0	deprecated: Use GCExtendedGamepad instead	1731d506555ac86d
-function	c:@F@NSDataFromGCGamepadSnapShotDataV100	-			NSData * _Nullable (GCGamepadSnapShotDataV100 * _Nullable)	GCGamepadSnapShotDataV100 * snapshotData	-	ios=7.0/13.0/-/0,macos=10.9/10.15/-/0,tvos=9.0/13.0/-/0	deprecated: Use GCExtendedGamepad instead	7178a70dc0b24dd3
+function	c:@F@GCGamepadSnapShotDataV100FromNSData	-			BOOL (GCGamepadSnapShotDataV100 *, NSData *)	GCGamepadSnapShotDataV100 * snapshotData | NSData * data	-	ios=7.0/13.0/-/0,macos=10.9/10.15/-/0,tvos=9.0/13.0/-/0	deprecated: Use GCExtendedGamepad instead	fd0d4ab11094e005
+function	c:@F@NSDataFromGCGamepadSnapShotDataV100	-			NSData * (GCGamepadSnapShotDataV100 *)	GCGamepadSnapShotDataV100 * snapshotData	-	ios=7.0/13.0/-/0,macos=10.9/10.15/-/0,tvos=9.0/13.0/-/0	deprecated: Use GCExtendedGamepad instead	1b01e3b7370e86a6
 interface	c:objc(cs)GCExtendedGamepad	-			-	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0	deprecated: Use the -[GCController capture] method instead	2ce8aeb245e15c4e
 super	-	GCExtendedGamepad	GCPhysicalInputProfile		-	-	-	-	-	185e0c2c38353b95
 property	c:objc(cs)GCExtendedGamepad(py)controller	-			GCController *	-	readonly,weak,nonatomic	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0	-	1347e670b816cdf0
@@ -474,7 +474,7 @@ property	c:objc(cs)GCExtendedGamepad(py)rightTrigger	-			GCControllerButtonInput
 property	c:objc(cs)GCExtendedGamepad(py)leftThumbstickButton	-			GCControllerButtonInput *	-	readonly,nonatomic	ios=12.1/-/-/0,macos=10.14.1/-/-/0,tvos=12.1/-/-/0	-	5dcb31970b3ee544
 property	c:objc(cs)GCExtendedGamepad(py)rightThumbstickButton	-			GCControllerButtonInput *	-	readonly,nonatomic	ios=12.1/-/-/0,macos=10.14.1/-/-/0,tvos=12.1/-/-/0	-	ad977156b4223caa
 method	c:objc(cs)GCExtendedGamepad(im)setStateFromExtendedGamepad:	-			void	GCExtendedGamepad * extendedGamepad	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	8678c1c47c657e11
-typedef	c:@T@GCExtendedGamepadValueChangedHandler	-			void (^)(GCExtendedGamepad * _Nonnull, GCControllerElement * _Nonnull)	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0	-	d8a3b49d09765d83
+typedef	c:@T@GCExtendedGamepadValueChangedHandler	-			void ((^))(GCExtendedGamepad *, GCControllerElement *)	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0	-	842e0972c92b5102
 interface	c:objc(cs)GCExtendedGamepadSnapshot	-			-	-	-	ios=7.0/13.0/-/0,macos=10.9/10.15/-/0,tvos=9.0/13.0/-/0	-	9ee3f078ced64f41
 super	-	GCExtendedGamepadSnapshot	GCExtendedGamepad		-	-	-	-	-	bf353ae1da879d19
 property	c:objc(cs)GCExtendedGamepadSnapshot(py)snapshotData	-			NSData *	-	copy,atomic	ios=7.0/13.0/-/0,macos=10.9/10.15/-/0,tvos=9.0/13.0/-/0	-	96ddfa3b5499fd0b
@@ -506,8 +506,8 @@ field	c:@SA@GCExtendedGamepadSnapshotData@FI@supportsClickableThumbsticks	GCExte
 field	c:@SA@GCExtendedGamepadSnapshotData@FI@leftThumbstickButton	GCExtendedGamepadSnapshotData			BOOL	-	-	ios=12.1/-/-/0,macos=10.14.1/-/-/0,tvos=12.1/-/-/0	-	7182cab8d90de97f
 field	c:@SA@GCExtendedGamepadSnapshotData@FI@rightThumbstickButton	GCExtendedGamepadSnapshotData			BOOL	-	-	ios=12.1/-/-/0,macos=10.14.1/-/-/0,tvos=12.1/-/-/0	-	0ad56de95925d4fa
 typedef	c:@T@GCExtendedGamepadSnapshotData	-			struct GCExtendedGamepadSnapshotData	-	-	ios=13.0/13.0/-/0,macos=10.15/10.15/-/0,tvos=13.0/13.0/-/0	-	97f8c63892c87c53
-function	c:@F@GCExtendedGamepadSnapshotDataFromNSData	-			BOOL (GCExtendedGamepadSnapshotData * _Nullable, NSData * _Nullable)	GCExtendedGamepadSnapshotData * snapshotData | NSData * data	-	ios=13.0/13.0/-/0,macos=10.15/10.15/-/0,tvos=13.0/13.0/-/0	deprecated: Use the -[GCController controllerWithExtendedGamepad] method instead	7ad2cebbe8adcde3
-function	c:@F@NSDataFromGCExtendedGamepadSnapshotData	-			NSData * _Nullable (GCExtendedGamepadSnapshotData * _Nullable)	GCExtendedGamepadSnapshotData * snapshotData	-	ios=13.0/13.0/-/0,macos=10.15/10.15/-/0,tvos=13.0/13.0/-/0	deprecated: Use the -[GCController controllerWithExtendedGamepad] method instead	5f6ea99c1b61cecc
+function	c:@F@GCExtendedGamepadSnapshotDataFromNSData	-			BOOL (GCExtendedGamepadSnapshotData *, NSData *)	GCExtendedGamepadSnapshotData * snapshotData | NSData * data	-	ios=13.0/13.0/-/0,macos=10.15/10.15/-/0,tvos=13.0/13.0/-/0	deprecated: Use the -[GCController controllerWithExtendedGamepad] method instead	4d3664fcd3193f14
+function	c:@F@NSDataFromGCExtendedGamepadSnapshotData	-			NSData * (GCExtendedGamepadSnapshotData *)	GCExtendedGamepadSnapshotData * snapshotData	-	ios=13.0/13.0/-/0,macos=10.15/10.15/-/0,tvos=13.0/13.0/-/0	deprecated: Use the -[GCController controllerWithExtendedGamepad] method instead	d6e5ab8284243a31
 struct	c:@SA@GCExtendedGamepadSnapShotDataV100	-			-	-	-	-	-	d26acccbfc48672e
 field	c:@SA@GCExtendedGamepadSnapShotDataV100@FI@version	GCExtendedGamepadSnapShotDataV100			uint16_t	-	-	-	-	cd87e07d35fb6e18
 field	c:@SA@GCExtendedGamepadSnapShotDataV100@FI@size	GCExtendedGamepadSnapShotDataV100			uint16_t	-	-	-	-	34560968d11905b9
@@ -526,8 +526,8 @@ field	c:@SA@GCExtendedGamepadSnapShotDataV100@FI@rightThumbstickY	GCExtendedGame
 field	c:@SA@GCExtendedGamepadSnapShotDataV100@FI@leftTrigger	GCExtendedGamepadSnapShotDataV100			float	-	-	-	-	b4aa6121359f88fd
 field	c:@SA@GCExtendedGamepadSnapShotDataV100@FI@rightTrigger	GCExtendedGamepadSnapShotDataV100			float	-	-	-	-	53945184f23003d7
 typedef	c:@T@GCExtendedGamepadSnapShotDataV100	-			struct GCExtendedGamepadSnapShotDataV100	-	-	ios=7.0/13.0/-/0,macos=10.9/10.15/-/0,tvos=9.0/13.0/-/0	-	99c4b384c998998f
-function	c:@F@GCExtendedGamepadSnapShotDataV100FromNSData	-			BOOL (GCExtendedGamepadSnapShotDataV100 * _Nullable, NSData * _Nullable)	GCExtendedGamepadSnapShotDataV100 * snapshotData | NSData * data	-	ios=7.0/13.0/-/0,macos=10.9/10.15/-/0,tvos=9.0/13.0/-/0	deprecated: Use the -[GCController controllerWithExtendedGamepad] method instead	378c697f5b367c83
-function	c:@F@NSDataFromGCExtendedGamepadSnapShotDataV100	-			NSData * _Nullable (GCExtendedGamepadSnapShotDataV100 * _Nullable)	GCExtendedGamepadSnapShotDataV100 * snapshotData	-	ios=7.0/13.0/-/0,macos=10.9/10.15/-/0,tvos=9.0/13.0/-/0	deprecated: Use the -[GCController controllerWithExtendedGamepad] method instead	c5d35eccd1450f62
+function	c:@F@GCExtendedGamepadSnapShotDataV100FromNSData	-			BOOL (GCExtendedGamepadSnapShotDataV100 *, NSData *)	GCExtendedGamepadSnapShotDataV100 * snapshotData | NSData * data	-	ios=7.0/13.0/-/0,macos=10.9/10.15/-/0,tvos=9.0/13.0/-/0	deprecated: Use the -[GCController controllerWithExtendedGamepad] method instead	1cc3df051937cea1
+function	c:@F@NSDataFromGCExtendedGamepadSnapShotDataV100	-			NSData * (GCExtendedGamepadSnapShotDataV100 *)	GCExtendedGamepadSnapShotDataV100 * snapshotData	-	ios=7.0/13.0/-/0,macos=10.9/10.15/-/0,tvos=9.0/13.0/-/0	deprecated: Use the -[GCController controllerWithExtendedGamepad] method instead	3f0d09a69dccbd28
 typedef	c:@T@GCKeyCode	-			CFIndex	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	5fb796e2904a1cd5
 var	c:@GCKeyCodeKeyA	-			const GCKeyCode	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	72613a19da2806f4
 var	c:@GCKeyCodeKeyB	-			const GCKeyCode	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	5ceecdad20536f55
@@ -802,7 +802,7 @@ super	-	GCKeyboardInput	GCPhysicalInputProfile		-	-	-	-	-	50091783b1a7a208
 property	c:objc(cs)GCKeyboardInput(py)keyChangedHandler	-			GCKeyboardValueChangedHandler	-	copy,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	9e5a3be6f79fda81
 property	c:objc(cs)GCKeyboardInput(py)anyKeyPressed	-			BOOL	-	readonly,nonatomic,getter=isAnyKeyPressed	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	85d509e12204eee5
 method	c:objc(cs)GCKeyboardInput(im)buttonForKeyCode:	-			GCControllerButtonInput *	GCKeyCode code	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	65fed04b83b411df
-typedef	c:@T@GCKeyboardValueChangedHandler	-			void (^)(GCKeyboardInput * _Nonnull, GCControllerButtonInput * _Nonnull, GCKeyCode, BOOL)	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	15bead07a1869b77
+typedef	c:@T@GCKeyboardValueChangedHandler	-			void ((^))(GCKeyboardInput *, GCControllerButtonInput *, GCKeyCode, BOOL)	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	e484cca16a1d8a83
 interface	c:objc(cs)GCMouseInput	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	cbe23dfe01754dd3
 super	-	GCMouseInput	GCPhysicalInputProfile		-	-	-	-	-	f4f4086b4717afec
 property	c:objc(cs)GCMouseInput(py)mouseMovedHandler	-			GCMouseMoved	-	copy,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	b088e4fb5707c724
@@ -811,7 +811,7 @@ property	c:objc(cs)GCMouseInput(py)leftButton	-			GCControllerButtonInput *	-	re
 property	c:objc(cs)GCMouseInput(py)rightButton	-			GCControllerButtonInput *	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	2eb2925d6ee0e96e
 property	c:objc(cs)GCMouseInput(py)middleButton	-			GCControllerButtonInput *	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	72bc415da48b0d63
 property	c:objc(cs)GCMouseInput(py)auxiliaryButtons	-			NSArray<GCControllerButtonInput *> *	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	2cfd949881f7d59c
-typedef	c:@T@GCMouseMoved	-			void (^)(GCMouseInput * _Nonnull, float, float)	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	6d68000fe6ec3326
+typedef	c:@T@GCMouseMoved	-			void ((^))(GCMouseInput *, float, float)	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	d51cab9c5bd61a34
 interface	c:objc(cs)GCXboxGamepad	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	d2c214a3ca5779eb
 super	-	GCXboxGamepad	GCExtendedGamepad		-	-	-	-	-	81d576a8efafff4a
 property	c:objc(cs)GCXboxGamepad(py)paddleButton1	-			GCControllerButtonInput *	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	f6c1d8867001186c
@@ -847,7 +847,7 @@ property	c:objc(cs)GCMicroGamepad(py)buttonMenu	-			GCControllerButtonInput *	-	
 property	c:objc(cs)GCMicroGamepad(py)reportsAbsoluteDpadValues	-			BOOL	-	nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	7e75c5cafad070df
 property	c:objc(cs)GCMicroGamepad(py)allowsRotation	-			BOOL	-	nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	d6c9d4e0418173fa
 method	c:objc(cs)GCMicroGamepad(im)setStateFromMicroGamepad:	-			void	GCMicroGamepad * microGamepad	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	52b1f33fe9afad7b
-typedef	c:@T@GCMicroGamepadValueChangedHandler	-			void (^)(GCMicroGamepad * _Nonnull, GCControllerElement * _Nonnull)	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	841c36ec67bc4fae
+typedef	c:@T@GCMicroGamepadValueChangedHandler	-			void ((^))(GCMicroGamepad *, GCControllerElement *)	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	7ad1c4230be7c916
 interface	c:objc(cs)GCMicroGamepadSnapshot	-			-	-	-	ios=9.0/13.0/-/0,macos=10.11/10.15/-/0,tvos=9.0/13.0/-/0	-	155c1a3d20ebcee3
 super	-	GCMicroGamepadSnapshot	GCMicroGamepad		-	-	-	-	-	7e63a413b893c4a3
 property	c:objc(cs)GCMicroGamepadSnapshot(py)snapshotData	-			NSData *	-	copy,atomic	ios=9.0/13.0/-/0,macos=10.11/10.15/-/0,tvos=9.0/13.0/-/0	-	43751a43d53d2753
@@ -865,8 +865,8 @@ field	c:@SA@GCMicroGamepadSnapshotData@FI@dpadY	GCMicroGamepadSnapshotData			flo
 field	c:@SA@GCMicroGamepadSnapshotData@FI@buttonA	GCMicroGamepadSnapshotData			float	-	-	-	-	bc2785a23431f0a8
 field	c:@SA@GCMicroGamepadSnapshotData@FI@buttonX	GCMicroGamepadSnapshotData			float	-	-	-	-	97deff518f7a6150
 typedef	c:@T@GCMicroGamepadSnapshotData	-			struct GCMicroGamepadSnapshotData	-	-	ios=13.0/13.0/-/0,macos=10.15/10.15/-/0,tvos=13.0/13.0/-/0	-	c8260f8afbf0ed53
-function	c:@F@GCMicroGamepadSnapshotDataFromNSData	-			BOOL (GCMicroGamepadSnapshotData * _Nullable, NSData * _Nullable)	GCMicroGamepadSnapshotData * snapshotData | NSData * data	-	ios=13.0/13.0/-/0,macos=10.15/10.15/-/0,tvos=13.0/13.0/-/0	deprecated: Use the -[GCController controllerWithMicroGamepad] method instead	021f159188662163
-function	c:@F@NSDataFromGCMicroGamepadSnapshotData	-			NSData * _Nullable (GCMicroGamepadSnapshotData * _Nullable)	GCMicroGamepadSnapshotData * snapshotData	-	ios=13.0/13.0/-/0,macos=10.15/10.15/-/0,tvos=13.0/13.0/-/0	deprecated: Use the -[GCController controllerWithMicroGamepad] method instead	2e4abcbd724fa6f7
+function	c:@F@GCMicroGamepadSnapshotDataFromNSData	-			BOOL (GCMicroGamepadSnapshotData *, NSData *)	GCMicroGamepadSnapshotData * snapshotData | NSData * data	-	ios=13.0/13.0/-/0,macos=10.15/10.15/-/0,tvos=13.0/13.0/-/0	deprecated: Use the -[GCController controllerWithMicroGamepad] method instead	227e42b4c975ae96
+function	c:@F@NSDataFromGCMicroGamepadSnapshotData	-			NSData * (GCMicroGamepadSnapshotData *)	GCMicroGamepadSnapshotData * snapshotData	-	ios=13.0/13.0/-/0,macos=10.15/10.15/-/0,tvos=13.0/13.0/-/0	deprecated: Use the -[GCController controllerWithMicroGamepad] method instead	4a36daff558f6b78
 struct	c:@SA@GCMicroGamepadSnapShotDataV100	-			-	-	-	-	-	159166017be286c0
 field	c:@SA@GCMicroGamepadSnapShotDataV100@FI@version	GCMicroGamepadSnapShotDataV100			uint16_t	-	-	-	-	ba12fd9e609324d8
 field	c:@SA@GCMicroGamepadSnapShotDataV100@FI@size	GCMicroGamepadSnapShotDataV100			uint16_t	-	-	-	-	7acf54faef3ee299
@@ -875,8 +875,8 @@ field	c:@SA@GCMicroGamepadSnapShotDataV100@FI@dpadY	GCMicroGamepadSnapShotDataV1
 field	c:@SA@GCMicroGamepadSnapShotDataV100@FI@buttonA	GCMicroGamepadSnapShotDataV100			float	-	-	-	-	eb3b6930e7eaa264
 field	c:@SA@GCMicroGamepadSnapShotDataV100@FI@buttonX	GCMicroGamepadSnapShotDataV100			float	-	-	-	-	753781a3ef17e36d
 typedef	c:@T@GCMicroGamepadSnapShotDataV100	-			struct GCMicroGamepadSnapShotDataV100	-	-	ios=9.0/13.0/-/0,macos=10.11/10.15/-/0,tvos=9.0/13.0/-/0	-	d0dbca36bf0f78cd
-function	c:@F@GCMicroGamepadSnapShotDataV100FromNSData	-			BOOL (GCMicroGamepadSnapShotDataV100 * _Nullable, NSData * _Nullable)	GCMicroGamepadSnapShotDataV100 * snapshotData | NSData * data	-	ios=9.0/13.0/-/0,macos=10.11/10.15/-/0,tvos=9.0/13.0/-/0	deprecated: Use the -[GCController controllerWithMicroGamepad] method instead	fdad0dae1d918aef
-function	c:@F@NSDataFromGCMicroGamepadSnapShotDataV100	-			NSData * _Nullable (GCMicroGamepadSnapShotDataV100 * _Nullable)	GCMicroGamepadSnapShotDataV100 * snapshotData	-	ios=9.0/13.0/-/0,macos=10.11/10.15/-/0,tvos=9.0/13.0/-/0	deprecated: Use the -[GCController controllerWithMicroGamepad] method instead	446010da27046d96
+function	c:@F@GCMicroGamepadSnapShotDataV100FromNSData	-			BOOL (GCMicroGamepadSnapShotDataV100 *, NSData *)	GCMicroGamepadSnapShotDataV100 * snapshotData | NSData * data	-	ios=9.0/13.0/-/0,macos=10.11/10.15/-/0,tvos=9.0/13.0/-/0	deprecated: Use the -[GCController controllerWithMicroGamepad] method instead	dd4973ad5f353a9b
+function	c:@F@NSDataFromGCMicroGamepadSnapShotDataV100	-			NSData * (GCMicroGamepadSnapShotDataV100 *)	GCMicroGamepadSnapShotDataV100 * snapshotData	-	ios=9.0/13.0/-/0,macos=10.11/10.15/-/0,tvos=9.0/13.0/-/0	deprecated: Use the -[GCController controllerWithMicroGamepad] method instead	10bc01f59ca0da28
 var	c:@GCInputDirectionalDpad	-			NSString *const	-	-	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	25532a3bdaf45a75
 var	c:@GCInputDirectionalTouchSurfaceButton	-			NSString *const	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	6332197293682ad6
 var	c:@GCInputDirectionalCardinalDpad	-			NSString *const	-	-	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	3c061ef746e36423

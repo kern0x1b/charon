@@ -20,7 +20,7 @@ property	c:objc(cs)MKAddressRepresentations(py)cityName	-			NSString *	-	readonl
 property	c:objc(cs)MKAddressRepresentations(py)cityWithContext	-			NSString *	-	readonly,copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	a830acef0156fe4e
 method	c:objc(cs)MKAddressRepresentations(im)cityWithContextUsingStyle:	-			NSString *	MKAddressRepresentationsContextStyle style	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	56a6e846102a3259
 property	c:objc(cs)MKAddressRepresentations(py)regionName	-			NSString *	-	readonly,copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	060c1e66bcc3b16b
-property	c:objc(cs)MKAddressRepresentations(py)regionCode	-			NS_REFINED_FOR_SWIFT NSString *	-	readonly,copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	e5f8a13a131c282f
+property	c:objc(cs)MKAddressRepresentations(py)regionCode	-			NSString *	-	readonly,copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	cdc5d9339ebe7871
 typedef	c:@T@MKAddressFilterOption	-			enum MKAddressFilterOption	-	-	-	-	bc9ff70cbb5f0858
 enum	c:@E@MKAddressFilterOption	-			NSUInteger	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	4de0160e33611812
 enumconst	c:@E@MKAddressFilterOption@MKAddressFilterOptionCountry	MKAddressFilterOption			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	96b9bbba99f43c33
@@ -33,8 +33,8 @@ interface	c:objc(cs)MKAddressFilter	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tv
 super	-	MKAddressFilter	NSObject		-	-	-	-	-	be6d8e14b2d14c2f
 conforms	-	MKAddressFilter	NSSecureCoding		-	-	-	-	-	c351157bc88fb59e
 conforms	-	MKAddressFilter	NSCopying		-	-	-	-	-	69b621c95e148287
-property	c:objc(cs)MKAddressFilter(cpy)filterIncludingAll	-			NS_SWIFT_NAME MKAddressFilter *	-	readonly,nonatomic,class	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	d0e796efaa3eadf4
-property	c:objc(cs)MKAddressFilter(cpy)filterExcludingAll	-			NS_SWIFT_NAME MKAddressFilter *	-	readonly,nonatomic,class	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	2182702c7f6c99f3
+property	c:objc(cs)MKAddressFilter(cpy)filterIncludingAll	-			MKAddressFilter *	-	readonly,nonatomic,class	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	075adec3b5028412
+property	c:objc(cs)MKAddressFilter(cpy)filterExcludingAll	-			MKAddressFilter *	-	readonly,nonatomic,class	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	cb2f2f6176042996
 method	c:objc(cs)MKAddressFilter(im)initIncludingOptions:	-			instancetype	MKAddressFilterOption options	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	8950b6632bb771cc
 method	c:objc(cs)MKAddressFilter(im)initExcludingOptions:	-			instancetype	MKAddressFilterOption options	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	feec5af646e009b5
 method	c:objc(cs)MKAddressFilter(im)includesOptions:	-			BOOL	MKAddressFilterOption options	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	34efb38427f524e3
@@ -124,14 +124,14 @@ function	c:@F@MKMapSizeEqualToSize	-			BOOL (MKMapSize, MKMapSize)	MKMapSize siz
 function	c:@F@MKMapRectEqualToRect	-			BOOL (MKMapRect, MKMapRect)	MKMapRect rect1 | MKMapRect rect2	-	-	-	df1229054b283d86
 function	c:@F@MKMapRectIsNull	-			BOOL (MKMapRect)	MKMapRect rect	-	-	-	df807d0641266e4e
 function	c:@F@MKMapRectIsEmpty	-			BOOL (MKMapRect)	MKMapRect rect	-	-	-	35d2d2605c6cc115
-function	c:@F@MKStringFromMapPoint	-			NSString * _Nonnull (MKMapPoint)	MKMapPoint point	-	-	-	ce6c94f59605bb5c
-function	c:@F@MKStringFromMapSize	-			NSString * _Nonnull (MKMapSize)	MKMapSize size	-	-	-	aa9a6540c151bb36
-function	c:@F@MKStringFromMapRect	-			NSString * _Nonnull (MKMapRect)	MKMapRect rect	-	-	-	781cc773d1123e43
+function	c:@F@MKStringFromMapPoint	-			NSString * (MKMapPoint)	MKMapPoint point	-	-	-	9b69e3bf5a020308
+function	c:@F@MKStringFromMapSize	-			NSString * (MKMapSize)	MKMapSize size	-	-	-	cb488f6f1dd4f9a2
+function	c:@F@MKStringFromMapRect	-			NSString * (MKMapRect)	MKMapRect rect	-	-	-	5f20b699cf9f7fe3
 function	c:@F@MKMapRectUnion	-			MKMapRect (MKMapRect, MKMapRect)	MKMapRect rect1 | MKMapRect rect2	-	ios=4.0/-/-/0,tvos=9.2/-/-/0	-	9ca15b3b8e2df063
 function	c:@F@MKMapRectIntersection	-			MKMapRect (MKMapRect, MKMapRect)	MKMapRect rect1 | MKMapRect rect2	-	ios=4.0/-/-/0,tvos=9.2/-/-/0	-	f7021f6b84918440
 function	c:@F@MKMapRectInset	-			MKMapRect (MKMapRect, double, double)	MKMapRect rect | double dx | double dy	-	ios=4.0/-/-/0,tvos=9.2/-/-/0	-	36efff034bac1969
 function	c:@F@MKMapRectOffset	-			MKMapRect (MKMapRect, double, double)	MKMapRect rect | double dx | double dy	-	ios=4.0/-/-/0,tvos=9.2/-/-/0	-	721b9c01ffe8a081
-function	c:@F@MKMapRectDivide	-			void (MKMapRect, MKMapRect * _Nonnull, MKMapRect * _Nonnull, double, CGRectEdge)	MKMapRect rect | MKMapRect * slice | MKMapRect * remainder | double amount | CGRectEdge edge	-	ios=4.0/-/-/0,tvos=9.2/-/-/0	-	605e02332a1270ad
+function	c:@F@MKMapRectDivide	-			void (MKMapRect, MKMapRect *, MKMapRect *, double, CGRectEdge)	MKMapRect rect | MKMapRect * slice | MKMapRect * remainder | double amount | CGRectEdge edge	-	ios=4.0/-/-/0,tvos=9.2/-/-/0	-	96c9b5fa48482061
 function	c:@F@MKMapRectContainsPoint	-			BOOL (MKMapRect, MKMapPoint)	MKMapRect rect | MKMapPoint point	-	ios=4.0/-/-/0,tvos=9.2/-/-/0	-	634de5a6c9c2fd74
 function	c:@F@MKMapRectContainsRect	-			BOOL (MKMapRect, MKMapRect)	MKMapRect rect1 | MKMapRect rect2	-	ios=4.0/-/-/0,tvos=9.2/-/-/0	-	0cd09705c42a3347
 function	c:@F@MKMapRectIntersectsRect	-			BOOL (MKMapRect, MKMapRect)	MKMapRect rect1 | MKMapRect rect2	-	ios=4.0/-/-/0,tvos=9.2/-/-/0	-	4aab34218629ea06
@@ -157,8 +157,8 @@ method	c:objc(cs)MKCircle(cm)circleWithMapRect:	-			instancetype	MKMapRect mapRe
 property	c:objc(cs)MKCircle(py)coordinate	-			CLLocationCoordinate2D	-	readonly,nonatomic	ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	4239b6cae8d20168
 property	c:objc(cs)MKCircle(py)radius	-			CLLocationDistance	-	readonly,nonatomic	ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	55ea8d7087286b35
 property	c:objc(cs)MKCircle(py)boundingMapRect	-			MKMapRect	-	readonly,nonatomic	ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	61a5a8b2bb74a971
-typedef	c:@T@MKDirectionsHandler	-			void (^)(MKDirectionsResponse * _Nullable, NSError * _Nullable)	-	-	-	-	1bb220e78601467b
-typedef	c:@T@MKETAHandler	-			void (^)(MKETAResponse * _Nullable, NSError * _Nullable)	-	-	-	-	5c99ecc4bd3018ec
+typedef	c:@T@MKDirectionsHandler	-			void ((^))(MKDirectionsResponse *, NSError *)	-	-	-	-	994f06dacb21db2a
+typedef	c:@T@MKETAHandler	-			void ((^))(MKETAResponse *, NSError *)	-	-	-	-	352fbc448c559662
 interface	c:objc(cs)MKDirections	-			-	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	b5403612f162bbc7
 super	-	MKDirections	NSObject		-	-	-	-	-	a8e5a6bc8df63be1
 method	c:objc(cs)MKDirections(im)initWithRequest:	-			instancetype	MKDirectionsRequest * request	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	b1a64da77c5fdd46
@@ -173,7 +173,7 @@ conforms	-	MKMapItemIdentifier	NSSecureCoding		-	-	-	-	-	1bda74eac8349155
 method	c:objc(cs)MKMapItemIdentifier(im)init	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	180979c7fb451902
 method	c:objc(cs)MKMapItemIdentifier(cm)new	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	56754d53604ee67f
 method	c:objc(cs)MKMapItemIdentifier(im)initWithIdentifierString:	-			instancetype	NSString * string	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	09f760878e1fce90
-property	c:objc(cs)MKMapItemIdentifier(py)identifierString	-			NS_SWIFT_NAME NSString *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	077b31f0d297e6f4
+property	c:objc(cs)MKMapItemIdentifier(py)identifierString	-			NSString *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	4e42c02395272a97
 interface	c:objc(cs)MKPlacemark	-			-	-	-	ios=3.0/26.0/-/0,macos=10.9/26.0/-/0,tvos=9.2/26.0/-/0,watchos=2.0/26.0/-/0,xros=1.0/26.0/-/0	-	6dd0b2b9ac7bcb5b
 super	-	MKPlacemark	CLPlacemark		-	-	-	-	-	6d9747a37dbaaede
 conforms	-	MKPlacemark	MKAnnotation		-	-	-	-	-	27e7552f04a073f0
@@ -267,7 +267,7 @@ property	c:objc(cs)MKMapItem(py)addressRepresentations	-			MKAddressRepresentati
 property	c:objc(cs)MKMapItem(py)name	-			NSString *	-	copy,nonatomic	ios=6.0/-/-/0,tvos=9.2/-/-/0	-	59efbe0ab9993066
 property	c:objc(cs)MKMapItem(py)phoneNumber	-			NSString *	-	copy,nonatomic	ios=6.0/-/-/0,tvos=9.2/-/-/0	-	42df2a9b244246e9
 property	c:objc(cs)MKMapItem(py)url	-			NSURL *	-	strong,nonatomic	ios=6.0/-/-/0,tvos=9.2/-/-/0	-	0b9c839db0b703a6
-property	c:objc(cs)MKMapItem(py)timeZone	-			NS_AVAILABLE NSTimeZone *	-	copy,nonatomic	ios=9.0/-/-/0	-	b3878c39ddf19e86
+property	c:objc(cs)MKMapItem(py)timeZone	-			NSTimeZone *	-	copy,nonatomic	ios=9.0/-/-/0	-	ec1fd6d86928e7bc
 property	c:objc(cs)MKMapItem(py)pointOfInterestCategory	-			MKPointOfInterestCategory	-	copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	34fa93fb73682121
 method	c:objc(cs)MKMapItem(cm)mapItemForCurrentLocation	-			MKMapItem *	-	-	ios=6.0/-/-/0,tvos=9.2/-/-/0	-	465eb06854839aa6
 method	c:objc(cs)MKMapItem(im)initWithPlacemark:	-			instancetype	MKPlacemark * placemark	-	ios=6.0/26.0/-/0,macos=10.9/26.0/-/0,tvos=9.2/26.0/-/0,watchos=2.0/26.0/-/0,xros=1.0/26.0/-/0	deprecated: Use init(location:address:)	56a21a268c2ba0bb
@@ -313,8 +313,8 @@ method	c:objc(cs)MKDirectionsRequest(im)setDestination:	-			void	MKMapItem * des
 category	c:objc(cy)MKDirectionsRequest@MKRequestOptions	-			-	-	-	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	58a71b93ae484f3a
 property	c:objc(cs)MKDirectionsRequest(py)transportType	MKRequestOptions			MKDirectionsTransportType	-	nonatomic	ios=7.0/-/-/0	-	e2cb75688bc97f06
 property	c:objc(cs)MKDirectionsRequest(py)requestsAlternateRoutes	MKRequestOptions			BOOL	-	nonatomic	ios=7.0/-/-/0	-	7488e38369434c12
-property	c:objc(cs)MKDirectionsRequest(py)departureDate	MKRequestOptions			NS_AVAILABLE NSDate *	-	copy,nonatomic	ios=7.0/-/-/0	-	219d1a6256f0ef1d
-property	c:objc(cs)MKDirectionsRequest(py)arrivalDate	MKRequestOptions			NS_AVAILABLE NSDate *	-	copy,nonatomic	ios=7.0/-/-/0	-	ade75d267b21c7fa
+property	c:objc(cs)MKDirectionsRequest(py)departureDate	MKRequestOptions			NSDate *	-	copy,nonatomic	ios=7.0/-/-/0	-	6f6c4eb3191b9864
+property	c:objc(cs)MKDirectionsRequest(py)arrivalDate	MKRequestOptions			NSDate *	-	copy,nonatomic	ios=7.0/-/-/0	-	11877418678ada06
 property	c:objc(cs)MKDirectionsRequest(py)tollPreference	MKRequestOptions			MKDirectionsRoutePreference	-	nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	7a9b2fb258cafb2b
 property	c:objc(cs)MKDirectionsRequest(py)highwayPreference	MKRequestOptions			MKDirectionsRoutePreference	-	nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	7dcbce422c359adc
 category	c:objc(cy)MKDirectionsRequest@MKDirectionsURL	-			-	-	-	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	4489b5e3e4b70077
@@ -349,8 +349,8 @@ property	c:objc(cs)MKETAResponse(py)source	-			MKMapItem *	-	readonly,nonatomic	
 property	c:objc(cs)MKETAResponse(py)destination	-			MKMapItem *	-	readonly,nonatomic	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	ffbbbf82967ee0a0
 property	c:objc(cs)MKETAResponse(py)expectedTravelTime	-			NSTimeInterval	-	readonly,nonatomic	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	311f317e34cc0b3f
 property	c:objc(cs)MKETAResponse(py)distance	-			CLLocationDistance	-	readonly,nonatomic	ios=9.0/-/-/0	-	32b11260bfc1872b
-property	c:objc(cs)MKETAResponse(py)expectedArrivalDate	-			NS_AVAILABLE NSDate *	-	readonly,nonatomic	ios=9.0/-/-/0	-	c135844f2edf4e75
-property	c:objc(cs)MKETAResponse(py)expectedDepartureDate	-			NS_AVAILABLE NSDate *	-	readonly,nonatomic	ios=9.0/-/-/0	-	43f5e586187fccf5
+property	c:objc(cs)MKETAResponse(py)expectedArrivalDate	-			NSDate *	-	readonly,nonatomic	ios=9.0/-/-/0	-	f6a8f8e02422d766
+property	c:objc(cs)MKETAResponse(py)expectedDepartureDate	-			NSDate *	-	readonly,nonatomic	ios=9.0/-/-/0	-	097b3c480251057e
 property	c:objc(cs)MKETAResponse(py)transportType	-			MKDirectionsTransportType	-	readonly,nonatomic	ios=9.0/-/-/0	-	46fe6be411bc6c92
 interface	c:objc(cs)MKDistanceFormatter	-			-	-	-	ios=7.0/-/-/0,tvos=9.2/-/-/0	-	4221dbb9020a0a81
 super	-	MKDistanceFormatter	NSFormatter		-	-	-	-	-	ee41ca39457bfdae
@@ -380,7 +380,7 @@ property	c:objc(cs)MKGeocodingRequest(py)preferredLocale	-			NSLocale *	-	strong
 method	c:objc(cs)MKGeocodingRequest(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	3d8417dc64f4979f
 method	c:objc(cs)MKGeocodingRequest(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	32dc932d77571913
 method	c:objc(cs)MKGeocodingRequest(im)initWithAddressString:	-			instancetype	NSString * addressString	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	91afe39862e9a18a
-method	c:objc(cs)MKGeocodingRequest(im)getMapItemsWithCompletionHandler:	-			void	NS_SWIFT_UI_ACTOR void (^)(NSArray<MKMapItem *> * _Nullable, NSError * _Nullable) completionHandler	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	bb3b9f1171618614
+method	c:objc(cs)MKGeocodingRequest(im)getMapItemsWithCompletionHandler:	-			void	void (^)(NSArray<MKMapItem *> * _Nullable, NSError * _Nullable) completionHandler	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	cf4af4ed4c4d82d9
 method	c:objc(cs)MKGeocodingRequest(im)cancel	-			void	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	cf3ab97b7e9ea5fc
 interface	c:objc(cs)MKPointAnnotation	-			-	-	-	ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	829329cbdef5d367
 super	-	MKPointAnnotation	MKShape		-	-	-	-	-	cda3771257bb6cd3
@@ -466,12 +466,12 @@ property	c:objc(cs)MKLocalPointsOfInterestRequest(py)coordinate	-			CLLocationCo
 property	c:objc(cs)MKLocalPointsOfInterestRequest(py)radius	-			CLLocationDistance	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ebfd18b554e1afef
 property	c:objc(cs)MKLocalPointsOfInterestRequest(py)region	-			MKCoordinateRegion	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	12e8ceef4cac9244
 property	c:objc(cs)MKLocalPointsOfInterestRequest(py)pointOfInterestFilter	-			MKPointOfInterestFilter *	-	copy,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	17d3bf8986f15d82
-typedef	c:@T@MKLocalSearchCompletionHandler	-			void (^)(MKLocalSearchResponse * _Nullable, NSError * _Nullable)	-	-	-	-	316610dec50257c4
+typedef	c:@T@MKLocalSearchCompletionHandler	-			void ((^))(MKLocalSearchResponse *, NSError *)	-	-	-	-	058439e8d391eec5
 interface	c:objc(cs)MKLocalSearch	-			-	-	-	ios=6.1/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	01ff5447b9c1908a
 super	-	MKLocalSearch	NSObject		-	-	-	-	-	2637cdca7e832d67
 method	c:objc(cs)MKLocalSearch(im)initWithRequest:	-			instancetype	MKLocalSearchRequest * request	-	ios=6.1/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	21c01e40e0541fa7
 method	c:objc(cs)MKLocalSearch(im)initWithPointsOfInterestRequest:	-			instancetype	MKLocalPointsOfInterestRequest * request	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	f8cc838a8c1d207a
-method	c:objc(cs)MKLocalSearch(im)startWithCompletionHandler:	-			void	NS_SWIFT_UI_ACTOR MKLocalSearchCompletionHandler completionHandler	-	ios=6.1/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	fd094cd04587e9cc
+method	c:objc(cs)MKLocalSearch(im)startWithCompletionHandler:	-			void	MKLocalSearchCompletionHandler completionHandler	-	ios=6.1/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	db704aedfb26aa85
 method	c:objc(cs)MKLocalSearch(im)cancel	-			void	-	-	ios=6.1/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	bc77e801f6ee849a
 property	c:objc(cs)MKLocalSearch(py)searching	-			BOOL	-	readonly,nonatomic,getter=isSearching	ios=6.1/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	5621ff28429eadf7
 typedef	c:@T@MKLocalSearchResultType	-			enum MKLocalSearchResultType	-	-	-	-	1e7f199ed89acfea
@@ -560,7 +560,7 @@ method	c:objc(cs)MKMapItemRequest(im)init	-			instancetype	-	-	*unavailable ios=
 method	c:objc(cs)MKMapItemRequest(cm)new	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=1.0/-/-/0	-	332fee8a0ed9ff16
 method	c:objc(cs)MKMapItemRequest(im)initWithMapItemIdentifier:	-			instancetype	MKMapItemIdentifier * identifier	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	c190ddfb30715c4d
 method	c:objc(cs)MKMapItemRequest(im)initWithMapFeatureAnnotation:	-			instancetype	MKMapFeatureAnnotation * mapFeatureAnnotation	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	5f3476550dab8ffe
-method	c:objc(cs)MKMapItemRequest(im)getMapItemWithCompletionHandler:	-			void	NS_SWIFT_UI_ACTOR void (^)(MKMapItem * _Nullable, NSError * _Nullable) completionHandler	-	ios=16.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=1.0/-/-/0	-	2dfe5928e81d61f2
+method	c:objc(cs)MKMapItemRequest(im)getMapItemWithCompletionHandler:	-			void	void (^)(MKMapItem * _Nullable, NSError * _Nullable) completionHandler	-	ios=16.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=1.0/-/-/0	-	715fa41c6de4c1c3
 method	c:objc(cs)MKMapItemRequest(im)cancel	-			void	-	-	ios=16.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=1.0/-/-/0	-	7690054a8a04b2ce
 property	c:objc(cs)MKMapItemRequest(py)mapItemIdentifier	-			MKMapItemIdentifier *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	e88b4733cade38aa
 property	c:objc(cs)MKMapItemRequest(py)mapFeatureAnnotation	-			MKMapFeatureAnnotation *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	09f5e46fa800120b
@@ -571,7 +571,7 @@ interface	c:objc(cs)MKMapSnapshot	-			-	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=
 super	-	MKMapSnapshot	NSObject		-	-	-	-	-	f25ac7175ad08f20
 property	c:objc(cs)MKMapSnapshot(py)image	-			UIImage *	-	readonly,nonatomic	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	0d80c8448fc60703
 method	c:objc(cs)MKMapSnapshot(im)pointForCoordinate:	-			CGPoint	CLLocationCoordinate2D coordinate	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	93fc9d52a3e3f831
-property	c:objc(cs)MKMapSnapshot(py)traitCollection	-			API_UNAVAILABLE UITraitCollection *	-	readonly,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	ea6d8ed4073858b9
+property	c:objc(cs)MKMapSnapshot(py)traitCollection	-			UITraitCollection *	-	readonly,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	916d2c9117ab4d11
 var	c:@MKAnnotationCalloutInfoDidChangeNotification	-			NSString *const	-	-	-	-	88ca776c8a56b94c
 typedef	c:@T@MKAnnotationViewDragState	-			enum MKAnnotationViewDragState	-	-	-	-	7c4cf3523e0ce2d0
 enum	c:@E@MKAnnotationViewDragState	-			NSUInteger	-	-	ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	251246365621ac32
@@ -608,12 +608,12 @@ method	c:objc(cs)MKAnnotationView(im)setSelected:animated:	-			void	BOOL selecte
 property	c:objc(cs)MKAnnotationView(py)canShowCallout	-			BOOL	-	nonatomic	ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	e015683480b3ea44
 property	c:objc(cs)MKAnnotationView(py)leftCalloutAccessoryView	-			UIView *	-	strong,nonatomic	ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	5cd24eec7b793b48
 property	c:objc(cs)MKAnnotationView(py)rightCalloutAccessoryView	-			UIView *	-	strong,nonatomic	ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	3ad7941f5dc0244a
-property	c:objc(cs)MKAnnotationView(py)detailCalloutAccessoryView	-			API_UNAVAILABLE UIView *	-	strong,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	e545efa8f89337dc
+property	c:objc(cs)MKAnnotationView(py)detailCalloutAccessoryView	-			UIView *	-	strong,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	145003ac42317029
 property	c:objc(cs)MKAnnotationView(py)draggable	-			BOOL	-	nonatomic,getter=isDraggable	ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	112e0a4f8b5df561
 property	c:objc(cs)MKAnnotationView(py)dragState	-			MKAnnotationViewDragState	-	nonatomic	ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	dfbb1e396a3955f2
 method	c:objc(cs)MKAnnotationView(im)setDragState:animated:	-			void	MKAnnotationViewDragState newDragState | BOOL animated	-	ios=4.2/-/-/0,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a9a204da248a1f5b
-property	c:objc(cs)MKAnnotationView(py)clusteringIdentifier	-			API_UNAVAILABLE NSString *	-	copy,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	9ce9f57f7b208f72
-property	c:objc(cs)MKAnnotationView(py)clusterAnnotationView	-			API_UNAVAILABLE MKAnnotationView *	-	readonly,weak,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	2c22b13d822f6c16
+property	c:objc(cs)MKAnnotationView(py)clusteringIdentifier	-			NSString *	-	copy,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	50a9450efefb2ca8
+property	c:objc(cs)MKAnnotationView(py)clusterAnnotationView	-			MKAnnotationView *	-	readonly,weak,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	89ac0d75d39cbf88
 property	c:objc(cs)MKAnnotationView(py)displayPriority	-			MKFeatureDisplayPriority	-	nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	80bf46efee46b23a
 property	c:objc(cs)MKAnnotationView(py)zPriority	-			MKAnnotationViewZPriority	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	337cadaabd491b58
 property	c:objc(cs)MKAnnotationView(py)selectedZPriority	-			MKAnnotationViewZPriority	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	f613d21aaa7ba4b8
@@ -706,7 +706,7 @@ super	-	MKMapView	UIView		-	-	-	-	-	c5cbcc089a4ff8db
 conforms	-	MKMapView	NSCoding		-	-	-	-	-	5645da5443c96b22
 property	c:objc(cs)MKMapView(py)delegate	-			id<MKMapViewDelegate>	-	weak,nonatomic	ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	e59f8ebc76b6370b
 property	c:objc(cs)MKMapView(py)mapType	-			MKMapType	-	nonatomic	ios=3.0/100000/-/0,macos=10.9/100000/-/0,tvos=9.2/100000/-/0	-	2782605f7437a0f3
-property	c:objc(cs)MKMapView(py)preferredConfiguration	-			API_UNAVAILABLE MKMapConfiguration *	-	copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	81cf49a3f60c5530
+property	c:objc(cs)MKMapView(py)preferredConfiguration	-			MKMapConfiguration *	-	copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	06267a69946728c7
 property	c:objc(cs)MKMapView(py)selectableMapFeatures	-			MKMapFeatureOptions	-	nonatomic	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c7bee90135700d4c
 property	c:objc(cs)MKMapView(py)region	-			MKCoordinateRegion	-	nonatomic	ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	12e03059a27323fa
 method	c:objc(cs)MKMapView(im)setRegion:animated:	-			void	MKCoordinateRegion region | BOOL animated	-	ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	d340ef735dd2b0bf
@@ -718,11 +718,11 @@ method	c:objc(cs)MKMapView(im)setVisibleMapRect:animated:	-			void	MKMapRect map
 method	c:objc(cs)MKMapView(im)mapRectThatFits:	-			MKMapRect	MKMapRect mapRect	-	ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	84140910f937a9aa
 method	c:objc(cs)MKMapView(im)setVisibleMapRect:edgePadding:animated:	-			void	MKMapRect mapRect | UIEdgeInsets insets | BOOL animate	-	ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	30e149e13b339af4
 method	c:objc(cs)MKMapView(im)mapRectThatFits:edgePadding:	-			MKMapRect	MKMapRect mapRect | UIEdgeInsets insets	-	ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	6cc985386dccc6bd
-property	c:objc(cs)MKMapView(py)camera	-			API_UNAVAILABLE MKMapCamera *	-	copy,nonatomic	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	59b2ee76197271e4
+property	c:objc(cs)MKMapView(py)camera	-			MKMapCamera *	-	copy,nonatomic	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	3ff74a59aff01fbe
 method	c:objc(cs)MKMapView(im)setCamera:animated:	-			void	MKMapCamera * camera | BOOL animated	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	96f5c7110e563610
-property	c:objc(cs)MKMapView(py)cameraZoomRange	-			API_UNAVAILABLE MKMapCameraZoomRange *	-	copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	7f990e60eafa1b1a
+property	c:objc(cs)MKMapView(py)cameraZoomRange	-			MKMapCameraZoomRange *	-	copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	338fa7769f324677
 method	c:objc(cs)MKMapView(im)setCameraZoomRange:animated:	-			void	MKMapCameraZoomRange * cameraZoomRange | BOOL animated	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	150d28e3d30983a0
-property	c:objc(cs)MKMapView(py)cameraBoundary	-			API_UNAVAILABLE MKMapCameraBoundary *	-	copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	fe9a9454c8ca1860
+property	c:objc(cs)MKMapView(py)cameraBoundary	-			MKMapCameraBoundary *	-	copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	9dc91d76ac507ee9
 method	c:objc(cs)MKMapView(im)setCameraBoundary:animated:	-			void	MKMapCameraBoundary * cameraBoundary | BOOL animated	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	5e722fa94d7f4e83
 method	c:objc(cs)MKMapView(im)convertCoordinate:toPointToView:	-			CGPoint	CLLocationCoordinate2D coordinate | UIView * view	-	ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	dde952ec3ae69448
 method	c:objc(cs)MKMapView(im)convertPoint:toCoordinateFromView:	-			CLLocationCoordinate2D	CGPoint point | UIView * view	-	ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	bd3fd447c088214a
@@ -738,7 +738,7 @@ property	c:objc(cs)MKMapView(py)showsPitchControl	-			BOOL	-	nonatomic	ios=-/-/-
 property	c:objc(cs)MKMapView(py)showsZoomControls	-			BOOL	-	nonatomic	ios=-/-/-/1,maccatalyst=13.0/-/-/0,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	533f9ff2d4574f86
 property	c:objc(cs)MKMapView(py)showsCompass	-			BOOL	-	nonatomic	ios=9.0/-/-/0,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fb5e1bdbf98c0424
 property	c:objc(cs)MKMapView(py)showsScale	-			BOOL	-	nonatomic	ios=9.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	d13973fae8acf810
-property	c:objc(cs)MKMapView(py)pointOfInterestFilter	-			API_UNAVAILABLE MKPointOfInterestFilter *	-	copy,nonatomic	ios=13.0/100000/-/0,macos=10.15/100000/-/0,tvos=13.0/100000/-/0,watchos=-/-/-/1	-	3f639334114d70d6
+property	c:objc(cs)MKMapView(py)pointOfInterestFilter	-			MKPointOfInterestFilter *	-	copy,nonatomic	ios=13.0/100000/-/0,macos=10.15/100000/-/0,tvos=13.0/100000/-/0,watchos=-/-/-/1	-	7db864551ff2448a
 property	c:objc(cs)MKMapView(py)showsPointsOfInterest	-			BOOL	-	nonatomic	ios=7.0/13.0/-/0,macos=10.9/10.15/-/0,tvos=9.2/13.0/-/0,watchos=-/-/-/1	-	fdd4ebf70eeadfe9
 property	c:objc(cs)MKMapView(py)showsBuildings	-			BOOL	-	nonatomic	ios=7.0/100000/-/0,macos=10.9/100000/-/0,tvos=9.2/100000/-/0,watchos=-/-/-/1	-	b865a248d0bd131c
 property	c:objc(cs)MKMapView(py)showsTraffic	-			BOOL	-	nonatomic	ios=9.0/100000/-/0,macos=10.11/100000/-/0,tvos=9.2/100000/-/0,watchos=-/-/-/1	-	da23f1125493833c
@@ -771,7 +771,7 @@ method	c:objc(cs)MKMapView(im)insertOverlay:atIndex:level:	OverlaysAPI			void	id
 method	c:objc(cs)MKMapView(im)insertOverlay:aboveOverlay:	OverlaysAPI			void	id<MKOverlay> overlay | id<MKOverlay> sibling	-	ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	1009c60a61f35efc
 method	c:objc(cs)MKMapView(im)insertOverlay:belowOverlay:	OverlaysAPI			void	id<MKOverlay> overlay | id<MKOverlay> sibling	-	ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	dabd277b88434027
 method	c:objc(cs)MKMapView(im)exchangeOverlay:withOverlay:	OverlaysAPI			void	id<MKOverlay> overlay1 | id<MKOverlay> overlay2	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	c7d77c81341883c5
-property	c:objc(cs)MKMapView(py)overlays	OverlaysAPI			API_UNAVAILABLE NSArray<id<MKOverlay>> *	-	readonly,nonatomic	ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	679491871589eddd
+property	c:objc(cs)MKMapView(py)overlays	OverlaysAPI			NSArray<id<MKOverlay>> *	-	readonly,nonatomic	ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	07a2e7b98fe349e8
 method	c:objc(cs)MKMapView(im)overlaysInLevel:	OverlaysAPI			NSArray<id<MKOverlay>> *	MKOverlayLevel level	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	e615f554da92fe12
 method	c:objc(cs)MKMapView(im)rendererForOverlay:	OverlaysAPI			MKOverlayRenderer *	id<MKOverlay> overlay	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	4ea9199576cf7bfc
 method	c:objc(cs)MKMapView(im)viewForOverlay:	OverlaysAPI			MKOverlayView *	id<MKOverlay> overlay	-	ios=4.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use -rendererForOverlay:	ba232796d53839d2
@@ -816,17 +816,17 @@ property	c:objc(cs)MKMapSnapshotOptions(py)camera	-			MKMapCamera *	-	copy,nonat
 property	c:objc(cs)MKMapSnapshotOptions(py)mapRect	-			MKMapRect	-	assign,nonatomic	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	31c339ca31a3d71f
 property	c:objc(cs)MKMapSnapshotOptions(py)region	-			MKCoordinateRegion	-	assign,nonatomic	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	042e822cd2700ed1
 property	c:objc(cs)MKMapSnapshotOptions(py)mapType	-			MKMapType	-	assign,nonatomic	ios=7.0/100000/-/0,macos=10.9/100000/-/0,tvos=9.2/100000/-/0,watchos=-/-/-/1	-	308672b6429da030
-property	c:objc(cs)MKMapSnapshotOptions(py)pointOfInterestFilter	-			API_UNAVAILABLE MKPointOfInterestFilter *	-	copy,nonatomic	ios=13.0/100000/-/0,macos=10.15/100000/-/0,tvos=13.0/100000/-/0,watchos=-/-/-/1	-	796a904e1caf791d
+property	c:objc(cs)MKMapSnapshotOptions(py)pointOfInterestFilter	-			MKPointOfInterestFilter *	-	copy,nonatomic	ios=13.0/100000/-/0,macos=10.15/100000/-/0,tvos=13.0/100000/-/0,watchos=-/-/-/1	-	4272a7a347465a42
 property	c:objc(cs)MKMapSnapshotOptions(py)showsPointsOfInterest	-			BOOL	-	nonatomic	ios=7.0/13.0/-/0,macos=10.9/10.15/-/0,tvos=9.2/13.0/-/0,watchos=-/-/-/1	-	ee8db1924331c7e3
 property	c:objc(cs)MKMapSnapshotOptions(py)showsBuildings	-			BOOL	-	nonatomic	ios=7.0/100000/-/0,macos=10.9/100000/-/0,tvos=9.2/100000/-/0,watchos=-/-/-/1	-	f06f7f54708bfa4c
 property	c:objc(cs)MKMapSnapshotOptions(py)size	-			CGSize	-	assign,nonatomic	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	2c4c641feed04129
 property	c:objc(cs)MKMapSnapshotOptions(py)scale	-			CGFloat	-	assign,nonatomic	ios=7.0/100000/-/0,tvos=9.2/100000/-/0	-	2337b6cbd9995c13
-property	c:objc(cs)MKMapSnapshotOptions(py)traitCollection	-			API_UNAVAILABLE UITraitCollection *	-	copy,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	2e2450ddb051d6a5
-typedef	c:@T@MKMapSnapshotCompletionHandler	-			void (^)(MKMapSnapshot * _Nullable, NSError * _Nullable)	-	-	-	-	a7cfce4dc378435e
+property	c:objc(cs)MKMapSnapshotOptions(py)traitCollection	-			UITraitCollection *	-	copy,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	aa25cd4314872c36
+typedef	c:@T@MKMapSnapshotCompletionHandler	-			void ((^))(MKMapSnapshot *, NSError *)	-	-	-	-	0d813606b99ef57d
 interface	c:objc(cs)MKMapSnapshotter	-			-	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	5ce8caaee199fffa
 super	-	MKMapSnapshotter	NSObject		-	-	-	-	-	1d50852e5856dba9
 method	c:objc(cs)MKMapSnapshotter(im)initWithOptions:	-			instancetype	MKMapSnapshotOptions * options	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	aa733b4994227b51
-method	c:objc(cs)MKMapSnapshotter(im)startWithCompletionHandler:	-			void	NS_SWIFT_UI_ACTOR MKMapSnapshotCompletionHandler completionHandler	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	827fe27e09010bd6
+method	c:objc(cs)MKMapSnapshotter(im)startWithCompletionHandler:	-			void	MKMapSnapshotCompletionHandler completionHandler	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	876d36454bc5049a
 method	c:objc(cs)MKMapSnapshotter(im)startWithQueue:completionHandler:	-			void	dispatch_queue_t queue | MKMapSnapshotCompletionHandler completionHandler	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	4cda5597a2631cf3
 method	c:objc(cs)MKMapSnapshotter(im)cancel	-			void	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	c9ac9cd66a7612ce
 property	c:objc(cs)MKMapSnapshotter(py)loading	-			BOOL	-	readonly,nonatomic,getter=isLoading	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	1cc5ab9c0323c234
@@ -839,7 +839,7 @@ property	c:objc(cs)MKReverseGeocodingRequest(py)preferredLocale	-			NSLocale *	-
 method	c:objc(cs)MKReverseGeocodingRequest(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	4bf55033a2aa8ce7
 method	c:objc(cs)MKReverseGeocodingRequest(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	e98b21a7b7c4b93a
 method	c:objc(cs)MKReverseGeocodingRequest(im)initWithLocation:	-			instancetype	CLLocation * location	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	7016879fdf0e60ca
-method	c:objc(cs)MKReverseGeocodingRequest(im)getMapItemsWithCompletionHandler:	-			void	NS_SWIFT_UI_ACTOR void (^)(NSArray<MKMapItem *> * _Nullable, NSError * _Nullable) completionHandler	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	1d9496ac114e073f
+method	c:objc(cs)MKReverseGeocodingRequest(im)getMapItemsWithCompletionHandler:	-			void	void (^)(NSArray<MKMapItem *> * _Nullable, NSError * _Nullable) completionHandler	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	6be457722a09b89b
 method	c:objc(cs)MKReverseGeocodingRequest(im)cancel	-			void	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	362d8ae7a415526e
 typedef	c:@T@MKStandardMapEmphasisStyle	-			enum MKStandardMapEmphasisStyle	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	1934709b93cd66f3
 enum	c:@E@MKStandardMapEmphasisStyle	-			NSInteger	-	-	-	-	f4536da2cf6631c5
@@ -860,11 +860,11 @@ interface	c:objc(cs)MKMarkerAnnotationView	-			-	-	-	ios=11.0/-/-/0,macos=11.0/-
 super	-	MKMarkerAnnotationView	MKAnnotationView		-	-	-	-	-	8b56e5c149d482c2
 property	c:objc(cs)MKMarkerAnnotationView(py)titleVisibility	-			MKFeatureVisibility	-	nonatomic	ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	a852a6885562b029
 property	c:objc(cs)MKMarkerAnnotationView(py)subtitleVisibility	-			MKFeatureVisibility	-	nonatomic	ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	9771ba54e37647c5
-property	c:objc(cs)MKMarkerAnnotationView(py)markerTintColor	-			UI_APPEARANCE_SELECTOR UIColor *	-	copy,nonatomic	ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	edcecdd25ca866fc
-property	c:objc(cs)MKMarkerAnnotationView(py)glyphTintColor	-			UI_APPEARANCE_SELECTOR UIColor *	-	copy,nonatomic	ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	c64472f1218795f3
-property	c:objc(cs)MKMarkerAnnotationView(py)glyphText	-			UI_APPEARANCE_SELECTOR NSString *	-	copy,nonatomic	ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	a6dbc6cf8eae84d9
-property	c:objc(cs)MKMarkerAnnotationView(py)glyphImage	-			UI_APPEARANCE_SELECTOR UIImage *	-	copy,nonatomic	ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	fc08a58b529077fe
-property	c:objc(cs)MKMarkerAnnotationView(py)selectedGlyphImage	-			UI_APPEARANCE_SELECTOR UIImage *	-	copy,nonatomic	ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	92e6577b5536ccf4
+property	c:objc(cs)MKMarkerAnnotationView(py)markerTintColor	-			UIColor *	-	copy,nonatomic	ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	692c154be6d9cd36
+property	c:objc(cs)MKMarkerAnnotationView(py)glyphTintColor	-			UIColor *	-	copy,nonatomic	ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	12531c02b1dc7f5c
+property	c:objc(cs)MKMarkerAnnotationView(py)glyphText	-			NSString *	-	copy,nonatomic	ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	7312f760736198b6
+property	c:objc(cs)MKMarkerAnnotationView(py)glyphImage	-			UIImage *	-	copy,nonatomic	ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	fcb5fee3c2aa866a
+property	c:objc(cs)MKMarkerAnnotationView(py)selectedGlyphImage	-			UIImage *	-	copy,nonatomic	ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	7290b4ea0d38513c
 property	c:objc(cs)MKMarkerAnnotationView(py)animatesWhenAdded	-			BOOL	-	nonatomic	ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	241d25f67c691a8f
 typedef	c:@T@MKPinAnnotationColor	-			enum MKPinAnnotationColor	-	-	-	-	14f8d807d1d8bcad
 enum	c:@E@MKPinAnnotationColor	-			NSUInteger	-	-	ios=3.0/9.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	34a00151e5786d09
@@ -876,7 +876,7 @@ super	-	MKPinAnnotationView	MKAnnotationView		-	-	-	-	-	a96c8e64ac3f6b28
 method	c:objc(cs)MKPinAnnotationView(cm)redPinColor	-			UIColor *	-	-	ios=9.0/-/-/0	-	8d36d9d3aad12706
 method	c:objc(cs)MKPinAnnotationView(cm)greenPinColor	-			UIColor *	-	-	ios=9.0/-/-/0	-	d1aebe44a28f1923
 method	c:objc(cs)MKPinAnnotationView(cm)purplePinColor	-			UIColor *	-	-	ios=9.0/-/-/0	-	35fc2ee2adad59f3
-property	c:objc(cs)MKPinAnnotationView(py)pinTintColor	-			NS_AVAILABLE UIColor *	-	strong,nonatomic	ios=9.0/-/-/0	-	9a2d5849b435d77e
+property	c:objc(cs)MKPinAnnotationView(py)pinTintColor	-			UIColor *	-	strong,nonatomic	ios=9.0/-/-/0	-	f02b6b62f2fb3781
 property	c:objc(cs)MKPinAnnotationView(py)animatesDrop	-			BOOL	-	nonatomic	ios=3.0/16.0/-/0,macos=10.9/13.0/-/0,tvos=9.2/16.0/-/0,watchos=-/-/-/1	-	45e738ffcf527907
 property	c:objc(cs)MKPinAnnotationView(py)pinColor	-			MKPinAnnotationColor	-	nonatomic	ios=3.0/9.0/-/0,tvos=-/-/-/1	-	c59c00c1bfb9aa68
 interface	c:objc(cs)MKUserLocation	-			-	-	-	ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	718c02d9058b7d6c
@@ -884,7 +884,7 @@ super	-	MKUserLocation	NSObject		-	-	-	-	-	64f809cca42c04c0
 conforms	-	MKUserLocation	MKAnnotation		-	-	-	-	-	f41f6d05420257ce
 property	c:objc(cs)MKUserLocation(py)updating	-			BOOL	-	readonly,nonatomic,getter=isUpdating	ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	0bd737bad2f58061
 property	c:objc(cs)MKUserLocation(py)location	-			CLLocation *	-	readonly,nonatomic	ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	4c9e711323f666bd
-property	c:objc(cs)MKUserLocation(py)heading	-			NS_AVAILABLE CLHeading *	-	readonly,nonatomic	ios=5.0/-/-/0,tvos=-/-/-/1	-	09cb8b3c8c359f24
+property	c:objc(cs)MKUserLocation(py)heading	-			CLHeading *	-	readonly,nonatomic	ios=5.0/-/-/0,tvos=-/-/-/1	-	c6a6eb6f308db9bd
 property	c:objc(cs)MKUserLocation(py)title	-			NSString *	-	copy,nonatomic	ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	a0d64b7b42d5779f
 property	c:objc(cs)MKUserLocation(py)subtitle	-			NSString *	-	copy,nonatomic	ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	dbef64209badc2b5
 interface	c:objc(cs)MKUserLocationView	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	a3a9fcaed12259af
@@ -943,7 +943,7 @@ property	c:objc(cs)MKPolylineRenderer(py)strokeStart	-			CGFloat	-	assign,nonato
 property	c:objc(cs)MKPolylineRenderer(py)strokeEnd	-			CGFloat	-	assign,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	a8a0d5a5b106fde4
 interface	c:objc(cs)MKGradientPolylineRenderer	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	f46c67edf87b73b5
 super	-	MKGradientPolylineRenderer	MKPolylineRenderer		-	-	-	-	-	a93f7a4628f24758
-property	c:objc(cs)MKGradientPolylineRenderer(py)locations	-			NS_REFINED_FOR_SWIFT NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	7de49b8904a59757
+property	c:objc(cs)MKGradientPolylineRenderer(py)locations	-			NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	251893b2821a73ec
 property	c:objc(cs)MKGradientPolylineRenderer(py)colors	-			NSArray<UIColor *> *	-	readonly,copy,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	5b6838aa84b14dde
 method	c:objc(cs)MKGradientPolylineRenderer(im)setColors:atLocations:	-			void	NSArray<UIColor *> * colors | NSArray<NSNumber *> * locations	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	594256f4cd410d23
 interface	c:objc(cs)MKPolygonRenderer	-			-	-	-	ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	9a19e3baf4ce521d
@@ -1094,7 +1094,7 @@ property	c:objc(cs)MKLookAroundSceneRequest(py)coordinate	-			CLLocationCoordina
 property	c:objc(cs)MKLookAroundSceneRequest(py)mapItem	-			MKMapItem *	-	readonly,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0d9d08950991c027
 property	c:objc(cs)MKLookAroundSceneRequest(py)cancelled	-			BOOL	-	readonly,nonatomic,getter=isCancelled	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b89e27ec06af7aab
 property	c:objc(cs)MKLookAroundSceneRequest(py)loading	-			BOOL	-	readonly,nonatomic,getter=isLoading	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	90588ac77d666b3a
-method	c:objc(cs)MKLookAroundSceneRequest(im)getSceneWithCompletionHandler:	-			void	NS_SWIFT_UI_ACTOR void (^)(MKLookAroundScene * _Nullable_result, NSError * _Nullable) completionHandler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b7ae0fcfee28a2bb
+method	c:objc(cs)MKLookAroundSceneRequest(im)getSceneWithCompletionHandler:	-			void	void (^)(MKLookAroundScene * _Nullable_result, NSError * _Nullable) completionHandler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7bd9e755be4f208b
 method	c:objc(cs)MKLookAroundSceneRequest(im)cancel	-			void	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	60bcd2546ee2a741
 interface	c:objc(cs)MKLookAroundSnapshot	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9312ce6fd2c99801
 super	-	MKLookAroundSnapshot	NSObject		-	-	-	-	-	0fe73d0d7faf9db9
@@ -1109,7 +1109,7 @@ super	-	MKLookAroundSnapshotter	NSObject		-	-	-	-	-	19da6fee7b902995
 method	c:objc(cs)MKLookAroundSnapshotter(cm)new	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4831b54aaea7cd4c
 method	c:objc(cs)MKLookAroundSnapshotter(im)init	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	eb2eb450bcd79974
 method	c:objc(cs)MKLookAroundSnapshotter(im)initWithScene:options:	-			instancetype	MKLookAroundScene * scene | MKLookAroundSnapshotOptions * options	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5fc07094088a28d7
-method	c:objc(cs)MKLookAroundSnapshotter(im)getSnapshotWithCompletionHandler:	-			void	NS_SWIFT_UI_ACTOR void (^)(MKLookAroundSnapshot * _Nullable, NSError * _Nullable) completionHandler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1ea4f77abd82174a
+method	c:objc(cs)MKLookAroundSnapshotter(im)getSnapshotWithCompletionHandler:	-			void	void (^)(MKLookAroundSnapshot * _Nullable, NSError * _Nullable) completionHandler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	613a0f98db05985d
 method	c:objc(cs)MKLookAroundSnapshotter(im)cancel	-			void	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d302608d6a82ffd6
 property	c:objc(cs)MKLookAroundSnapshotter(py)loading	-			BOOL	-	readonly,nonatomic,getter=isLoading	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2ec9f7ba435c1a9c
 typedef	c:@T@MKLookAroundBadgePosition	-			enum MKLookAroundBadgePosition	-	-	-	-	15e7591e885453a6

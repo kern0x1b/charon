@@ -10,7 +10,7 @@ interface	c:objc(cs)PTPushResult	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,ma
 super	-	PTPushResult	NSObject		-	-	-	-	-	d922bacc779b1de5
 method	c:objc(cs)PTPushResult(cm)new	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	aa7dfd5e66c0304b
 method	c:objc(cs)PTPushResult(im)init	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7567be9f461c8353
-property	c:objc(cs)PTPushResult(cpy)leaveChannelPushResult	-			NS_SWIFT_NAME PTPushResult *	-	readonly,nonatomic,class	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8683e3527d7a5d53
+property	c:objc(cs)PTPushResult(cpy)leaveChannelPushResult	-			PTPushResult *	-	readonly,nonatomic,class	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	80cd709d3e9f310d
 method	c:objc(cs)PTPushResult(cm)pushResultForActiveRemoteParticipant:	-			PTPushResult *	PTParticipant * participant	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3a06f55bbc617aec
 interface	c:objc(cs)PTChannelDescriptor	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	87c4604d94eeb09e
 super	-	PTChannelDescriptor	NSObject		-	-	-	-	-	2495bc0500866fe9

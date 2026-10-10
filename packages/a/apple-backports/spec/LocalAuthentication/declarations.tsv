@@ -19,7 +19,7 @@ method	c:objc(cs)LADomainStateBiometry(cm)new	-			instancetype	-	-	*unavailable 
 method	c:objc(cs)LADomainStateBiometry(im)init	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	d4db8d6701b79cd4
 interface	c:objc(cs)LADomainStateCompanion	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	26e9bd98732cf8b9
 super	-	LADomainStateCompanion	NSObject		-	-	-	-	-	fd068c30001ea4a1
-property	c:objc(cs)LADomainStateCompanion(py)availableCompanionTypes	-			NS_REFINED_FOR_SWIFT NSSet<NSNumber *> *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	686e7b3ecfc4fdfd
+property	c:objc(cs)LADomainStateCompanion(py)availableCompanionTypes	-			NSSet<NSNumber *> *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5d5956a00f008e11
 property	c:objc(cs)LADomainStateCompanion(py)stateHash	-			NSData *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9e43a74d9cf2339f
 method	c:objc(cs)LADomainStateCompanion(im)stateHashForCompanionType:	-			NSData *	LACompanionType companionType	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1816c0397ac9a6bb
 method	c:objc(cs)LADomainStateCompanion(cm)new	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	997df8bcada48149

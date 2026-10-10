@@ -52,17 +52,17 @@ enumconst	c:@E@PHPickerCapabilities@PHPickerCapabilitiesSensitivityAnalysisInter
 interface	c:objc(cs)PHPickerFilter	-			-	-	-	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ccb2e91090d54125
 super	-	PHPickerFilter	NSObject		-	-	-	-	-	50948660adb767bc
 conforms	-	PHPickerFilter	NSCopying		-	-	-	-	-	0dbe03586879a666
-property	c:objc(cs)PHPickerFilter(cpy)imagesFilter	-			API_UNAVAILABLE PHPickerFilter *	-	readonly,nonatomic,class	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9c4786a152f73b37
+property	c:objc(cs)PHPickerFilter(cpy)imagesFilter	-			PHPickerFilter *	-	readonly,nonatomic,class	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5342cc6f2b5f3cd7
 property	c:objc(cs)PHPickerFilter(cpy)videosFilter	-			PHPickerFilter *	-	readonly,nonatomic,class	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d67c6abaeac08249
 property	c:objc(cs)PHPickerFilter(cpy)livePhotosFilter	-			PHPickerFilter *	-	readonly,nonatomic,class	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	787cdec5d4127420
-property	c:objc(cs)PHPickerFilter(cpy)depthEffectPhotosFilter	-			API_AVAILABLE PHPickerFilter *	-	readonly,nonatomic,class	ios=16/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8d0d23b11bcf256b
-property	c:objc(cs)PHPickerFilter(cpy)burstsFilter	-			API_AVAILABLE PHPickerFilter *	-	readonly,nonatomic,class	ios=16/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	940f5029536068dc
-property	c:objc(cs)PHPickerFilter(cpy)panoramasFilter	-			API_AVAILABLE PHPickerFilter *	-	readonly,nonatomic,class	ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	32d24e8080e5e2df
-property	c:objc(cs)PHPickerFilter(cpy)screenshotsFilter	-			API_AVAILABLE PHPickerFilter *	-	readonly,nonatomic,class	ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3341d5878998c97e
-property	c:objc(cs)PHPickerFilter(cpy)screenRecordingsFilter	-			API_AVAILABLE PHPickerFilter *	-	readonly,nonatomic,class	ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cc358ed0b7a54cfd
-property	c:objc(cs)PHPickerFilter(cpy)cinematicVideosFilter	-			API_AVAILABLE PHPickerFilter *	-	readonly,nonatomic,class	ios=16/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	332f0064ef2da696
-property	c:objc(cs)PHPickerFilter(cpy)slomoVideosFilter	-			API_AVAILABLE PHPickerFilter *	-	readonly,nonatomic,class	ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e7f1996f0126ebb2
-property	c:objc(cs)PHPickerFilter(cpy)timelapseVideosFilter	-			API_AVAILABLE PHPickerFilter *	-	readonly,nonatomic,class	ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5136bff667b9ac07
+property	c:objc(cs)PHPickerFilter(cpy)depthEffectPhotosFilter	-			PHPickerFilter *	-	readonly,nonatomic,class	ios=16/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e232825539649879
+property	c:objc(cs)PHPickerFilter(cpy)burstsFilter	-			PHPickerFilter *	-	readonly,nonatomic,class	ios=16/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a88b2fc0edb8c656
+property	c:objc(cs)PHPickerFilter(cpy)panoramasFilter	-			PHPickerFilter *	-	readonly,nonatomic,class	ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ed3fe5f11bf71d14
+property	c:objc(cs)PHPickerFilter(cpy)screenshotsFilter	-			PHPickerFilter *	-	readonly,nonatomic,class	ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f7dd11b202cd3ac2
+property	c:objc(cs)PHPickerFilter(cpy)screenRecordingsFilter	-			PHPickerFilter *	-	readonly,nonatomic,class	ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a62e73c2b953f2a9
+property	c:objc(cs)PHPickerFilter(cpy)cinematicVideosFilter	-			PHPickerFilter *	-	readonly,nonatomic,class	ios=16/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	31a9ac07e2df724a
+property	c:objc(cs)PHPickerFilter(cpy)slomoVideosFilter	-			PHPickerFilter *	-	readonly,nonatomic,class	ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	99651638b7b38b97
+property	c:objc(cs)PHPickerFilter(cpy)timelapseVideosFilter	-			PHPickerFilter *	-	readonly,nonatomic,class	ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4aa1e06ff152eeac
 property	c:objc(cs)PHPickerFilter(cpy)spatialMediaFilter	-			PHPickerFilter *	-	readonly,nonatomic,class	ios=18/-/-/0,macos=15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2/-/-/0	-	203d227c92b14047
 method	c:objc(cs)PHPickerFilter(cm)playbackStyleFilter:	-			PHPickerFilter *	PHAssetPlaybackStyle playbackStyle	-	ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	685e1c2ddb0f9c70
 method	c:objc(cs)PHPickerFilter(cm)anyFilterMatchingSubfilters:	-			PHPickerFilter *	NSArray<PHPickerFilter *> * subfilters	-	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	babf075377ab355e
@@ -81,8 +81,8 @@ conforms	-	PHPickerConfiguration	NSCopying		-	-	-	-	-	1477bd036c4dcc5a
 property	c:objc(cs)PHPickerConfiguration(py)preferredAssetRepresentationMode	-			PHPickerConfigurationAssetRepresentationMode	-	nonatomic	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fd5397e0d618c878
 property	c:objc(cs)PHPickerConfiguration(py)selection	-			PHPickerConfigurationSelection	-	nonatomic	ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0cb9e195e50bd9c6
 property	c:objc(cs)PHPickerConfiguration(py)selectionLimit	-			NSInteger	-	nonatomic	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	43c57d08ffd41917
-property	c:objc(cs)PHPickerConfiguration(py)filter	-			API_UNAVAILABLE PHPickerFilter *	-	copy,nonatomic	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b46949ca75b1ef82
-property	c:objc(cs)PHPickerConfiguration(py)preselectedAssetIdentifiers	-			API_AVAILABLE NSArray<NSString *> *	-	copy,nonatomic	ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a3240b688a6191f4
+property	c:objc(cs)PHPickerConfiguration(py)filter	-			PHPickerFilter *	-	copy,nonatomic	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	242f6306beb5728a
+property	c:objc(cs)PHPickerConfiguration(py)preselectedAssetIdentifiers	-			NSArray<NSString *> *	-	copy,nonatomic	ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5fc29d451559c503
 property	c:objc(cs)PHPickerConfiguration(py)mode	-			PHPickerMode	-	nonatomic	ios=17/-/-/0,macos=14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fb1d728dd6bda324
 property	c:objc(cs)PHPickerConfiguration(py)edgesWithoutContentMargins	-			NSDirectionalRectEdge	-	nonatomic	ios=17/-/-/0,macos=14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3e408572abe3139d
 property	c:objc(cs)PHPickerConfiguration(py)disabledCapabilities	-			PHPickerCapabilities	-	nonatomic	ios=17/-/-/0,macos=14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b5e42dfd1ac47c86
@@ -90,8 +90,8 @@ method	c:objc(cs)PHPickerConfiguration(im)initWithPhotoLibrary:	-			instancetype
 method	c:objc(cs)PHPickerConfiguration(im)init	-			instancetype	-	-	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	37ba73f88e47f728
 interface	c:objc(cs)PHPickerResult	-			-	-	-	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cdfebda0972c70d1
 super	-	PHPickerResult	NSObject		-	-	-	-	-	a6886e63181faeeb
-property	c:objc(cs)PHPickerResult(py)itemProvider	-			API_UNAVAILABLE NSItemProvider *	-	readonly,nonatomic	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	62d8ccb8de4e03de
-property	c:objc(cs)PHPickerResult(py)assetIdentifier	-			API_UNAVAILABLE NSString *	-	readonly,nonatomic	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b57f6cb31368e43a
+property	c:objc(cs)PHPickerResult(py)itemProvider	-			NSItemProvider *	-	readonly,nonatomic	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0c677fd1b5a038f5
+property	c:objc(cs)PHPickerResult(py)assetIdentifier	-			NSString *	-	readonly,nonatomic	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ef80ec0f4ffad21d
 method	c:objc(cs)PHPickerResult(cm)new	-			instancetype	-	-	*unavailable ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f3d2bf28ad9aea49
 method	c:objc(cs)PHPickerResult(im)init	-			instancetype	-	-	*unavailable ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1b53358f1bb90f70
 protocol	c:objc(pl)PHPickerViewControllerDelegate	-			-	-	-	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	70f73fd2d65a4d31
@@ -99,8 +99,8 @@ conforms	-	PHPickerViewControllerDelegate	NSObject		-	-	-	-	-	2d6517a15479a4a9
 method	c:objc(pl)PHPickerViewControllerDelegate(im)picker:didFinishPicking:	-			void	PHPickerViewController * picker | NSArray<PHPickerResult *> * results	-	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	faf76cc613f9e952
 interface	c:objc(cs)PHPickerViewController	-			-	-	-	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2b96e066439a8241
 super	-	PHPickerViewController	UIViewController		-	-	-	-	-	d884ad5061327c40
-property	c:objc(cs)PHPickerViewController(py)configuration	-			NS_REFINED_FOR_SWIFT PHPickerConfiguration *	-	readonly,copy,nonatomic	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	beda20b69a7b2bc3
-property	c:objc(cs)PHPickerViewController(py)delegate	-			NS_REFINED_FOR_SWIFT id<PHPickerViewControllerDelegate>	-	weak,nonatomic	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4f3ead3981801e35
+property	c:objc(cs)PHPickerViewController(py)configuration	-			PHPickerConfiguration *	-	readonly,copy,nonatomic	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	35b08b5d394bf8a3
+property	c:objc(cs)PHPickerViewController(py)delegate	-			id<PHPickerViewControllerDelegate>	-	weak,nonatomic	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f0c00431ad057222
 method	c:objc(cs)PHPickerViewController(im)initWithConfiguration:	-			instancetype	PHPickerConfiguration * configuration	-	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7ccdd26758b456d0
 method	c:objc(cs)PHPickerViewController(im)updatePickerUsingConfiguration:	-			void	PHPickerUpdateConfiguration * configuration	-	ios=17/-/-/0,macos=14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d64d2c4338ace7f9
 method	c:objc(cs)PHPickerViewController(im)deselectAssetsWithIdentifiers:	-			void	NSArray<NSString *> * identifiers	-	ios=16/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	dd0132cf50b8def1

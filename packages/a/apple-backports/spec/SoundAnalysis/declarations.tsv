@@ -55,7 +55,7 @@ super	-	SNClassifySoundRequest	NSObject		-	-	-	-	-	43d14d025cba11ca
 conforms	-	SNClassifySoundRequest	SNRequest		-	-	-	-	-	0902be632c0b12d3
 property	c:objc(cs)SNClassifySoundRequest(py)overlapFactor	-			double	-	assign	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	13844563c2c4d953
 property	c:objc(cs)SNClassifySoundRequest(py)windowDuration	-			CMTime	-	assign	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	070762b07256ce83
-property	c:objc(cs)SNClassifySoundRequest(py)windowDurationConstraint	-			NS_REFINED_FOR_SWIFT SNTimeDurationConstraint *	-	readonly,strong	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	500f47d4ca81e942
+property	c:objc(cs)SNClassifySoundRequest(py)windowDurationConstraint	-			SNTimeDurationConstraint *	-	readonly,strong	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	4992c488ba98f433
 property	c:objc(cs)SNClassifySoundRequest(py)knownClassifications	-			NSArray<NSString *> *	-	readonly,copy	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	e8fff4fb28ae902b
 method	c:objc(cs)SNClassifySoundRequest(im)initWithMLModel:error:	-			instancetype	MLModel * mlModel | NSError * _Nullable * error	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	90b0b409ec4761c1
 method	c:objc(cs)SNClassifySoundRequest(im)initWithClassifierIdentifier:error:	-			instancetype	SNClassifierIdentifier classifierIdentifier | NSError * _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	6269e2e8c86f0883

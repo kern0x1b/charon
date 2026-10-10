@@ -45,14 +45,14 @@ var	c:@CLKSimpleGaugeProviderFillFractionEmpty	-			const float	-	-	ios=-/-/-/1,w
 var	c:@CLKLaunchedTimelineEntryDateKey	-			NSString *const	-	-	ios=-/-/-/1,watchos=2.0/100000/-/0	-	17d0c48a6fea2048
 var	c:@CLKLaunchedComplicationIdentifierKey	-			NSString *const	-	-	ios=-/-/-/1,watchos=7.0/100000/-/0	-	0e0309f4db274bc6
 var	c:@CLKDefaultComplicationIdentifier	-			NSString *const	-	-	ios=-/-/-/1,watchos=7.0/-/-/0	-	fc83a50497554f07
-function	c:@F@CLKAllComplicationFamilies	-			NSArray<NSNumber *> *(void)	-	-	ios=-/-/-/1,watchos=7.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	451568ceb5856f72
+function	c:@F@CLKAllComplicationFamilies	-			NSArray<NSNumber *> * (void)	-	-	ios=-/-/-/1,watchos=7.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	a6ccd2be88acccb3
 interface	c:objc(cs)CLKComplication	-			-	-	-	ios=-/-/-/1,watchos=2.0/100000/-/0	-	38d8311320a8812d
 super	-	CLKComplication	NSObject		-	-	-	-	-	8321bcc50772aaae
 conforms	-	CLKComplication	NSCopying		-	-	-	-	-	9dc2b393fa766a06
 property	c:objc(cs)CLKComplication(py)family	-			CLKComplicationFamily	-	readonly,nonatomic	ios=-/-/-/1,watchos=2.0/100000/-/0	-	0950214fc87e1d07
-property	c:objc(cs)CLKComplication(py)identifier	-			API_AVAILABLE NSString *	-	readonly,nonatomic	ios=-/-/-/1,watchos=7.0/-/-/0	-	b5405464103435fd
-property	c:objc(cs)CLKComplication(py)userInfo	-			API_AVAILABLE NSDictionary *	-	readonly,nonatomic	ios=-/-/-/1,watchos=7.0/-/-/0	-	5bde9d9f855785ca
-property	c:objc(cs)CLKComplication(py)userActivity	-			API_AVAILABLE NSUserActivity *	-	readonly,nonatomic	ios=-/-/-/1,watchos=7.0/-/-/0	-	d876dfc3035107ae
+property	c:objc(cs)CLKComplication(py)identifier	-			NSString *	-	readonly,nonatomic	ios=-/-/-/1,watchos=7.0/-/-/0	-	3b9a3c740908505f
+property	c:objc(cs)CLKComplication(py)userInfo	-			NSDictionary *	-	readonly,nonatomic	ios=-/-/-/1,watchos=7.0/-/-/0	-	e5e164780002f20c
+property	c:objc(cs)CLKComplication(py)userActivity	-			NSUserActivity *	-	readonly,nonatomic	ios=-/-/-/1,watchos=7.0/-/-/0	-	666c0200618d5bed
 protocol	c:objc(pl)CLKComplicationDataSource	-			-	-	-	ios=-/-/-/1,watchos=2.0/-/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	72f8d544171accd3
 conforms	-	CLKComplicationDataSource	NSObject		-	-	-	-	-	85c626c388fe9da0
 method	c:objc(pl)CLKComplicationDataSource(im)getTimelineEndDateForComplication:withHandler:	-			void	CLKComplication * complication | void (^)(NSDate * _Nullable) handler	optional	watchos=2.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	df2068c46c06616b
@@ -64,7 +64,7 @@ method	c:objc(pl)CLKComplicationDataSource(im)getTimelineEntriesForComplication:
 method	c:objc(pl)CLKComplicationDataSource(im)getLocalizableSampleTemplateForComplication:withHandler:	-			void	CLKComplication * complication | void (^)(CLKComplicationTemplate * _Nullable) handler	optional	ios=-/-/-/1,watchos=3.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	aacf2447e4f3d37b
 method	c:objc(pl)CLKComplicationDataSource(im)getComplicationDescriptorsWithHandler:	-			void	void (^)(NSArray<CLKComplicationDescriptor *> * _Nonnull) handler	optional	ios=-/-/-/1,watchos=7.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	27af8cb3b290b58d
 method	c:objc(pl)CLKComplicationDataSource(im)handleSharedComplicationDescriptors:	-			void	NSArray<CLKComplicationDescriptor *> * complicationDescriptors	optional	ios=-/-/-/1,watchos=7.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	c4861d81566c4ee6
-property	c:objc(pl)CLKComplicationDataSource(py)widgetMigrator	-			API_AVAILABLE id<CLKComplicationWidgetMigrator>	-	readonly,nonatomic	ios=-/-/-/1,watchos=9.0/-/-/0	-	9523becfd6801ae4
+property	c:objc(pl)CLKComplicationDataSource(py)widgetMigrator	-			id<CLKComplicationWidgetMigrator>	-	readonly,nonatomic	ios=-/-/-/1,watchos=9.0/-/-/0	-	2b82d590f0fc931a
 method	c:objc(pl)CLKComplicationDataSource(im)getPlaceholderTemplateForComplication:withHandler:	-			void	CLKComplication * complication | void (^)(CLKComplicationTemplate * _Nullable) handler	optional	watchos=2.0/4.0/-/0	deprecated: Use getLocalizableSampleTemplateForComplication:withHandler: instead	774280728bad9ac8
 method	c:objc(pl)CLKComplicationDataSource(im)getSupportedTimeTravelDirectionsForComplication:withHandler:	-			void	CLKComplication * complication | void (^)(CLKComplicationTimeTravelDirections) handler	optional	watchos=2.0/7.0/-/0	deprecated: Time Travel is no longer supported. Use CLKComplicationDataSource's getTimelineEndDateForComplication:withHandler: to specify forward timeline support.	8988ba80b29ba7dc
 method	c:objc(pl)CLKComplicationDataSource(im)getTimelineStartDateForComplication:withHandler:	-			void	CLKComplication * complication | void (^)(NSDate * _Nullable) handler	optional	watchos=2.0/7.0/-/0	deprecated: Time Travel and backwards extension of timelines are no longer supported.	3d7e5817e3b38ba0
@@ -80,8 +80,8 @@ property	c:objc(cs)CLKComplicationServer(py)activeComplications	-			NSArray<CLKC
 method	c:objc(cs)CLKComplicationServer(im)reloadTimelineForComplication:	-			void	CLKComplication * complication	-	ios=-/-/-/1,watchos=2.0/100000/-/0	-	dba12ecab3da0f59
 method	c:objc(cs)CLKComplicationServer(im)extendTimelineForComplication:	-			void	CLKComplication * complication	-	ios=-/-/-/1,watchos=2.0/100000/-/0	-	157c8a219fda9f59
 method	c:objc(cs)CLKComplicationServer(im)reloadComplicationDescriptors	-			void	-	-	ios=-/-/-/1,watchos=7.0/-/-/0	-	8dc38b2bf0a8d13d
-property	c:objc(cs)CLKComplicationServer(py)earliestTimeTravelDate	-			API_DEPRECATED NSDate *	-	readonly,nonatomic	watchos=2.0/7.0/-/0	-	342eae24e2c1ae38
-property	c:objc(cs)CLKComplicationServer(py)latestTimeTravelDate	-			API_DEPRECATED NSDate *	-	readonly,nonatomic	watchos=2.0/7.0/-/0	-	819a848fcd5cafd7
+property	c:objc(cs)CLKComplicationServer(py)earliestTimeTravelDate	-			NSDate *	-	readonly,nonatomic	watchos=2.0/7.0/-/0	-	21d352115a720c05
+property	c:objc(cs)CLKComplicationServer(py)latestTimeTravelDate	-			NSDate *	-	readonly,nonatomic	watchos=2.0/7.0/-/0	-	eb949d68fe9c0be5
 interface	c:objc(cs)CLKComplicationTemplate	-			-	-	-	ios=-/-/-/1,watchos=2.0/100000/-/0	deprecated: Initializing a template without parameters is deprecated in watchOS 7.0. Use an init with parameters instead.	23936efdf7115228
 super	-	CLKComplicationTemplate	NSObject		-	-	-	-	-	46f84d8a47df58c9
 conforms	-	CLKComplicationTemplate	NSCopying		-	-	-	-	-	6f742749da911341
@@ -571,7 +571,7 @@ method	c:objc(cs)CLKRelativeDateTextProvider(im)initWithDate:relativeToDate:styl
 method	c:objc(cs)CLKRelativeDateTextProvider(cm)textProviderWithDate:style:units:	-			instancetype	NSDate * date | CLKRelativeDateStyle style | NSCalendarUnit calendarUnits	-	ios=-/-/-/1,watchos=2.0/100000/-/0	-	c602173c7b390b63
 method	c:objc(cs)CLKRelativeDateTextProvider(cm)textProviderWithDate:relativeToDate:style:units:	-			instancetype	NSDate * date | NSDate * relativeToDate | CLKRelativeDateStyle style | NSCalendarUnit calendarUnits	-	ios=-/-/-/1,watchos=7.0/-/-/0	-	52eebd26b0f86e0f
 property	c:objc(cs)CLKRelativeDateTextProvider(py)date	-			NSDate *	-	retain,nonatomic	ios=-/-/-/1,watchos=2.0/100000/-/0	-	24b65c3353aed5c7
-property	c:objc(cs)CLKRelativeDateTextProvider(py)relativeToDate	-			API_AVAILABLE NSDate *	-	retain,nonatomic	ios=-/-/-/1,watchos=7.0/-/-/0	-	3fb0f0e8ff773321
+property	c:objc(cs)CLKRelativeDateTextProvider(py)relativeToDate	-			NSDate *	-	retain,nonatomic	ios=-/-/-/1,watchos=7.0/-/-/0	-	796a6048bd7e25dc
 property	c:objc(cs)CLKRelativeDateTextProvider(py)relativeDateStyle	-			CLKRelativeDateStyle	-	nonatomic	ios=-/-/-/1,watchos=2.0/100000/-/0	-	b3f5053036212597
 property	c:objc(cs)CLKRelativeDateTextProvider(py)calendarUnits	-			NSCalendarUnit	-	nonatomic	ios=-/-/-/1,watchos=2.0/100000/-/0	-	040e4d730ac950a3
 category	c:objc(cy)CLKTextProvider@Localizable	-			-	-	-	ios=-/-/-/1,watchos=2.0/100000/-/0	-	da502c0691020310
@@ -610,7 +610,7 @@ method	c:objc(cs)CLKFullColorImageProvider(im)initWithFullColorImage:tintedImage
 method	c:objc(cs)CLKFullColorImageProvider(cm)providerWithFullColorImage:	-			instancetype	UIImage * image	-	ios=-/-/-/1,watchos=5.0/100000/-/0	-	8d2d3c33de05cab2
 method	c:objc(cs)CLKFullColorImageProvider(cm)providerWithFullColorImage:tintedImageProvider:	-			instancetype	UIImage * image | CLKImageProvider * tintedImageProvider	-	ios=-/-/-/1,watchos=6.0/-/-/0	-	8116dfe7c82dedd3
 property	c:objc(cs)CLKFullColorImageProvider(py)image	-			UIImage *	-	retain,nonatomic	ios=-/-/-/1,watchos=5.0/100000/-/0	-	d930b36ff04231f3
-property	c:objc(cs)CLKFullColorImageProvider(py)tintedImageProvider	-			API_AVAILABLE CLKImageProvider *	-	retain,nonatomic	ios=-/-/-/1,watchos=6.0/-/-/0	-	457faa61b3894e66
+property	c:objc(cs)CLKFullColorImageProvider(py)tintedImageProvider	-			CLKImageProvider *	-	retain,nonatomic	ios=-/-/-/1,watchos=6.0/-/-/0	-	626e68b12c7495e9
 property	c:objc(cs)CLKFullColorImageProvider(py)accessibilityLabel	-			NSString *	-	retain,nonatomic	ios=-/-/-/1,watchos=5.0/100000/-/0	-	188566be023cd833
 var	c:@CLKWatchFaceLibraryErrorDomain	-			NSString *const	-	-	ios=14.0/-/-/0,watchos=7.0/-/-/0	-	385632eed7534607
 typedef	c:@T@CLKWatchFaceLibraryErrorCode	-			enum CLKWatchFaceLibraryErrorCode	-	-	-	-	fbb85bce12a4a591
@@ -627,7 +627,7 @@ interface	c:objc(cs)CLKComplicationDescriptor	-			-	-	-	ios=-/-/-/1,watchos=7.0/
 super	-	CLKComplicationDescriptor	NSObject		-	-	-	-	-	5a715605b196e12f
 property	c:objc(cs)CLKComplicationDescriptor(py)identifier	-			NSString *	-	readonly,nonatomic	ios=-/-/-/1,watchos=7.0/-/-/0	-	30729d52594c14bc
 property	c:objc(cs)CLKComplicationDescriptor(py)displayName	-			NSString *	-	readonly,nonatomic	ios=-/-/-/1,watchos=7.0/-/-/0	-	33f31c37aa060f69
-property	c:objc(cs)CLKComplicationDescriptor(py)supportedFamilies	-			NS_REFINED_FOR_SWIFT NSArray<NSNumber *> *	-	readonly,nonatomic	ios=-/-/-/1,watchos=7.0/-/-/0	-	85711122fbca1ee7
+property	c:objc(cs)CLKComplicationDescriptor(py)supportedFamilies	-			NSArray<NSNumber *> *	-	readonly,nonatomic	ios=-/-/-/1,watchos=7.0/-/-/0	-	fdfab63586006ded
 property	c:objc(cs)CLKComplicationDescriptor(py)userInfo	-			NSDictionary *	-	readonly,nonatomic	ios=-/-/-/1,watchos=7.0/-/-/0	-	ecbd88e43c7ba3f2
 property	c:objc(cs)CLKComplicationDescriptor(py)userActivity	-			NSUserActivity *	-	readonly,nonatomic	ios=-/-/-/1,watchos=7.0/-/-/0	-	cfd4bef07bb45b6b
 method	c:objc(cs)CLKComplicationDescriptor(im)init	-			instancetype	-	-	*unavailable ios=-/-/-/1,watchos=7.0/-/-/0	-	f19800ace724d14f

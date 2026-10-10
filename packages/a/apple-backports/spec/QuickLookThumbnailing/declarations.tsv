@@ -8,7 +8,7 @@ interface	c:objc(cs)QLThumbnailRepresentation	-			-	-	-	ios=13.0/-/-/0,macos=10.
 super	-	QLThumbnailRepresentation	NSObject		-	-	-	-	-	9fc2e1336f353cf7
 property	c:objc(cs)QLThumbnailRepresentation(py)type	-			QLThumbnailRepresentationType	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3ff4a6f67954991b
 property	c:objc(cs)QLThumbnailRepresentation(py)CGImage	-			CGImageRef	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e8bbbddb5e2e5798
-property	c:objc(cs)QLThumbnailRepresentation(py)UIImage	-			API_UNAVAILABLE UIImage *	-	readonly,strong,nonatomic	macos=-/-/-/1	-	8d9a38b53d01e5cc
+property	c:objc(cs)QLThumbnailRepresentation(py)UIImage	-			UIImage *	-	readonly,strong,nonatomic	macos=-/-/-/1	-	19e308ed5c9b0924
 property	c:objc(cs)QLThumbnailRepresentation(py)NSImage	-			NSImage *	-	readonly,strong,nonatomic	ios=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	74ee5f51b69460c9
 property	c:objc(cs)QLThumbnailRepresentation(py)contentRect	-			CGRect	-	readonly,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1299eef6267dc1fd
 interface	c:objc(cs)QLThumbnailProvider	-			-	-	-	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	491fbb1756f22673
@@ -57,7 +57,7 @@ enumconst	c:@E@QLThumbnailError@QLThumbnailErrorRequestInvalid	QLThumbnailError	
 enumconst	c:@E@QLThumbnailError@QLThumbnailErrorRequestCancelled	QLThumbnailError			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	2d894a1aae13c619
 interface	c:objc(cs)QLThumbnailGenerator	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use saveBestRepresentationForRequest:toFileAtURL:asContentType:completionHandler: instead	165f179fb5e36dc0
 super	-	QLThumbnailGenerator	NSObject		-	-	-	-	-	e45ceef627f31328
-property	c:objc(cs)QLThumbnailGenerator(cpy)sharedGenerator	-			NS_SWIFT_NAME QLThumbnailGenerator *	-	readonly,class	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8b7778cb533fa34a
+property	c:objc(cs)QLThumbnailGenerator(cpy)sharedGenerator	-			QLThumbnailGenerator *	-	readonly,class	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5bdced2dce4afb2e
 method	c:objc(cs)QLThumbnailGenerator(im)generateBestRepresentationForRequest:completionHandler:	-			void	QLThumbnailGenerationRequest * request | void (^)(QLThumbnailRepresentation * _Nullable, NSError * _Nullable) completionHandler	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	095390e60c5e6b8c
 method	c:objc(cs)QLThumbnailGenerator(im)generateRepresentationsForRequest:updateHandler:	-			void	QLThumbnailGenerationRequest * request | void (^)(QLThumbnailRepresentation * _Nullable, QLThumbnailRepresentationType, NSError * _Nullable) updateHandler	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	dcbd2d348eea5bdd
 method	c:objc(cs)QLThumbnailGenerator(im)cancelRequest:	-			void	QLThumbnailGenerationRequest * request	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	892869137d64ba77

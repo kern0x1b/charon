@@ -4625,7 +4625,7 @@ function	c:@F@matrix_multiply#$@SA@simd_half4x4#S0_#	-	matrix_multiply		simd_hal
 function	c:@F@matrix_multiply#$@SA@simd_float4x4#S0_#	-	matrix_multiply		simd_float4x4 (simd_float4x4, simd_float4x4)	simd_float4x4 __x | simd_float4x4 __y	-	-	-	d44463f32405092b
 function	c:@F@matrix_multiply#$@SA@simd_double4x4#S0_#	-	matrix_multiply		simd_double4x4 (simd_double4x4, simd_double4x4)	simd_double4x4 __x | simd_double4x4 __y	-	-	-	08d88a9d24a08256
 function	c:@F@simd_quaternion#h#h#h#h#	-	simd_quaternion		simd_quath (_Float16, _Float16, _Float16, _Float16)	_Float16 ix | _Float16 iy | _Float16 iz | _Float16 r	-	-	-	af96c384fa3ef0bc
-function	c:@F@simd_quaternion#*1h#	-	simd_quaternion		simd_quath (const _Float16 *)	const _Float16[4] xyzr	-	-	-	f0e563a2671646cc
+function	c:@F@simd_quaternion#*1h#	-	simd_quaternion		simd_quath (const _Float16[4])	const _Float16[4] xyzr	-	-	-	2732913bb4e58596
 function	c:@F@simd_quaternion#]4h#	-	simd_quaternion		simd_quath (simd_half4)	simd_half4 xyzr	-	-	-	a58342eb8a3bff02
 function	c:@F@simd_quaternion#h#]3h#	-	simd_quaternion		simd_quath (_Float16, simd_half3)	_Float16 angle | simd_half3 axis	-	-	-	1a3a36372577e2f0
 function	c:@F@simd_quaternion#]3h#S0_#	-	simd_quaternion		simd_quath (simd_half3, simd_half3)	simd_half3 from | simd_half3 to	-	-	-	32b4d26530ea1cbb
@@ -4663,7 +4663,7 @@ function	c:@F@_simd_slerp_internal#$@SA@simd_quath#S0_#h#	-	_simd_slerp_internal
 function	c:@F@_simd_intermediate#$@SA@simd_quath#S0_#S0_#	-	_simd_intermediate		simd_quath (simd_quath, simd_quath, simd_quath)	simd_quath q0 | simd_quath q1 | simd_quath q2	-	-	-	7a25a7700331ed20
 function	c:@F@_simd_squad#$@SA@simd_quath#S0_#S0_#S0_#h#	-	_simd_squad		simd_quath (simd_quath, simd_quath, simd_quath, simd_quath, _Float16)	simd_quath q0 | simd_quath qa | simd_quath qb | simd_quath q1 | _Float16 t	-	-	-	365005d33e39a672
 function	c:@F@simd_quaternion#f#f#f#f#	-	simd_quaternion		simd_quatf (float, float, float, float)	float ix | float iy | float iz | float r	-	-	-	927c820856b05f5d
-function	c:@F@simd_quaternion#*1f#	-	simd_quaternion		simd_quatf (const float *)	const float[4] xyzr	-	-	-	8acdecf321bb94fc
+function	c:@F@simd_quaternion#*1f#	-	simd_quaternion		simd_quatf (const float[4])	const float[4] xyzr	-	-	-	61e761e5d03423fe
 function	c:@F@simd_quaternion#]4f#	-	simd_quaternion		simd_quatf (simd_float4)	simd_float4 xyzr	-	-	-	67ad9b3278e882f0
 function	c:@F@simd_quaternion#f#]3f#	-	simd_quaternion		simd_quatf (float, simd_float3)	float angle | simd_float3 axis	-	-	-	cdbda9166bed73d4
 function	c:@F@simd_quaternion#]3f#S0_#	-	simd_quaternion		simd_quatf (simd_float3, simd_float3)	simd_float3 from | simd_float3 to	-	-	-	c102f9edcf16e24c
@@ -4701,7 +4701,7 @@ function	c:@F@_simd_slerp_internal#$@SA@simd_quatf#S0_#f#	-	_simd_slerp_internal
 function	c:@F@_simd_intermediate#$@SA@simd_quatf#S0_#S0_#	-	_simd_intermediate		simd_quatf (simd_quatf, simd_quatf, simd_quatf)	simd_quatf q0 | simd_quatf q1 | simd_quatf q2	-	-	-	a29736f957edc2d5
 function	c:@F@_simd_squad#$@SA@simd_quatf#S0_#S0_#S0_#f#	-	_simd_squad		simd_quatf (simd_quatf, simd_quatf, simd_quatf, simd_quatf, float)	simd_quatf q0 | simd_quatf qa | simd_quatf qb | simd_quatf q1 | float t	-	-	-	65a1ddbaf7256a94
 function	c:@F@simd_quaternion#d#d#d#d#	-	simd_quaternion		simd_quatd (double, double, double, double)	double ix | double iy | double iz | double r	-	-	-	5fc046045540cce6
-function	c:@F@simd_quaternion#*1d#	-	simd_quaternion		simd_quatd (const double *)	const double[4] xyzr	-	-	-	f0596b6551aaf80a
+function	c:@F@simd_quaternion#*1d#	-	simd_quaternion		simd_quatd (const double[4])	const double[4] xyzr	-	-	-	c628258ef944335f
 function	c:@F@simd_quaternion#]4d#	-	simd_quaternion		simd_quatd (simd_double4)	simd_double4 xyzr	-	-	-	6fe70880225e61f8
 function	c:@F@simd_quaternion#d#]3d#	-	simd_quaternion		simd_quatd (double, simd_double3)	double angle | simd_double3 axis	-	-	-	3ba0e21fef330d6f
 function	c:@F@simd_quaternion#]3d#S0_#	-	simd_quaternion		simd_quatd (simd_double3, simd_double3)	simd_double3 from | simd_double3 to	-	-	-	52f99042231673f3

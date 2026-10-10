@@ -4,11 +4,11 @@ enum	c:@E@EAGLRenderingAPI	-			NSUInteger	-	-	-	-	1f505e74a9c8cbb7
 enumconst	c:@E@EAGLRenderingAPI@kEAGLRenderingAPIOpenGLES1	EAGLRenderingAPI			-	-	-	-	-	e78f5d487b589393
 enumconst	c:@E@EAGLRenderingAPI@kEAGLRenderingAPIOpenGLES2	EAGLRenderingAPI			-	-	-	-	-	d6bf85cb33031532
 enumconst	c:@E@EAGLRenderingAPI@kEAGLRenderingAPIOpenGLES3	EAGLRenderingAPI			-	-	-	-	-	4491f007ed77f8e6
-function	c:@F@EAGLGetVersion	-			void (unsigned int * _Nonnull, unsigned int * _Nonnull)	unsigned int * major | unsigned int * minor	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0	-	0fae0482e90dd07c
+function	c:@F@EAGLGetVersion	-			void (unsigned int *, unsigned int *)	unsigned int * major | unsigned int * minor	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0	-	bfedc30ab9918be6
 interface	c:objc(cs)EAGLSharegroup	-			-	-	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0	-	dc5ec831ddf6c90a
 super	-	EAGLSharegroup	NSObject		-	-	-	-	-	8251dc8de2bcddcc
 struct	c:@S@_EAGLSharegroupPrivate	-			-	-	-	-	-	779fd82b662a344c
-property	c:objc(cs)EAGLSharegroup(py)debugLabel	-			API_AVAILABLE NSString *	-	copy,nonatomic	ios=6.0/-/-/0	-	e991924ba99ac1d5
+property	c:objc(cs)EAGLSharegroup(py)debugLabel	-			NSString *	-	copy,nonatomic	ios=6.0/-/-/0	-	5d1b9832d1f37021
 interface	c:objc(cs)EAGLContext	-			-	-	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0	-	3bbfe17c206d141d
 super	-	EAGLContext	NSObject		-	-	-	-	-	b0efd60629450839
 struct	c:@S@_EAGLContextPrivate	-			-	-	-	-	-	8407f7235f32cc16
@@ -19,7 +19,7 @@ method	c:objc(cs)EAGLContext(cm)setCurrentContext:	-			BOOL	EAGLContext * contex
 method	c:objc(cs)EAGLContext(cm)currentContext	-			EAGLContext *	-	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0	-	25aefae5cf5e3c77
 property	c:objc(cs)EAGLContext(py)API	-			EAGLRenderingAPI	-	readonly	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0	-	9e92246b594cb24c
 property	c:objc(cs)EAGLContext(py)sharegroup	-			EAGLSharegroup *	-	readonly	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0	-	2976f376388de9e9
-property	c:objc(cs)EAGLContext(py)debugLabel	-			API_AVAILABLE NSString *	-	copy,nonatomic	ios=6.0/-/-/0	-	eef095e82ea5a928
+property	c:objc(cs)EAGLContext(py)debugLabel	-			NSString *	-	copy,nonatomic	ios=6.0/-/-/0	-	b5767cd82a254735
 property	c:objc(cs)EAGLContext(py)multiThreaded	-			BOOL	-	nonatomic,getter=isMultiThreaded	ios=7.1/-/-/0	-	682ba5d1d0d9ee4d
 var	c:@kEAGLDrawablePropertyRetainedBacking	-			NSString *const	-	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0	-	98a48ab283aaf193
 var	c:@kEAGLDrawablePropertyColorFormat	-			NSString *const	-	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0	-	d1e91cb0d4b8ced0
@@ -140,14 +140,14 @@ function	c:@F@glGenBuffers	-			void (GLsizei, GLuint *)	GLsizei n | GLuint * buf
 function	c:@F@glGenTextures	-			void (GLsizei, GLuint *)	GLsizei n | GLuint * textures	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0		50f1b34af9f0dc80
 function	c:@F@glGetBooleanv	-			void (GLenum, GLboolean *)	GLenum pname | GLboolean * params	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0		0100ab636d07c1ed
 function	c:@F@glGetBufferParameteriv	-			void (GLenum, GLenum, GLint *)	GLenum target | GLenum pname | GLint * params	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0		e8251370d5d9ae1b
-function	c:@F@glGetClipPlanex	-			void (GLenum, GLfixed *)	GLenum pname | GLfixed[4] eqn	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0	-	a8f0443b4473f4f3
+function	c:@F@glGetClipPlanex	-			void (GLenum, GLfixed[4])	GLenum pname | GLfixed[4] eqn	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0	-	1b65ac68faad7ccf
 function	c:@F@glGetError	-			GLenum (void)	-	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0		144bcc1f1b2756a5
 function	c:@F@glGetFixedv	-			void (GLenum, GLfixed *)	GLenum pname | GLfixed * params	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0	-	43dc3cb96cad8c5f
 function	c:@F@glGetIntegerv	-			void (GLenum, GLint *)	GLenum pname | GLint * params	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0		0cfc201d093f2901
 function	c:@F@glGetLightxv	-			void (GLenum, GLenum, GLfixed *)	GLenum light | GLenum pname | GLfixed * params	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0	-	f9cd2abbe1a2d1a7
 function	c:@F@glGetMaterialxv	-			void (GLenum, GLenum, GLfixed *)	GLenum face | GLenum pname | GLfixed * params	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0	-	03205e4d578904f1
 function	c:@F@glGetPointerv	-			void (GLenum, void **)	GLenum pname | void ** params	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0	-	7ba84ec994880fec
-function	c:@F@glGetString	-			const GLubyte *(GLenum)	GLenum name	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0		db091528c74ea7ca
+function	c:@F@glGetString	-			const GLubyte * (GLenum)	GLenum name	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0		41f3dbb12e5aeb77
 function	c:@F@glGetTexEnviv	-			void (GLenum, GLenum, GLint *)	GLenum env | GLenum pname | GLint * params	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0	-	5546f03d9553f004
 function	c:@F@glGetTexEnvxv	-			void (GLenum, GLenum, GLfixed *)	GLenum env | GLenum pname | GLfixed * params	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0	-	c1f821dc859c69dc
 function	c:@F@glGetTexParameteriv	-			void (GLenum, GLenum, GLint *)	GLenum target | GLenum pname | GLint * params	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0		95e94d369657e8d8
@@ -224,7 +224,7 @@ function	c:@F@glInsertEventMarkerEXT	-			GLvoid (GLsizei, const char *)	GLsizei 
 function	c:@F@glPushGroupMarkerEXT	-			GLvoid (GLsizei, const char *)	GLsizei length | const char * marker	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	aa81b7958fc73ce1
 function	c:@F@glPopGroupMarkerEXT	-			GLvoid (void)	-	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	80f039c53336e926
 function	c:@F@glDiscardFramebufferEXT	-			GLvoid (GLenum, GLsizei, const GLenum *)	GLenum target | GLsizei numAttachments | const GLenum * attachments	-	ios=4.0/12.0/-/0,tvos=9.0/12.0/-/0	-	21f94b5db7cded3a
-function	c:@F@glMapBufferRangeEXT	-			GLvoid *(GLenum, GLintptr, GLsizeiptr, GLbitfield)	GLenum target | GLintptr offset | GLsizeiptr length | GLbitfield access	-	ios=6.0/12.0/-/0,tvos=9.0/12.0/-/0	-	f321621abfe77214
+function	c:@F@glMapBufferRangeEXT	-			GLvoid * (GLenum, GLintptr, GLsizeiptr, GLbitfield)	GLenum target | GLintptr offset | GLsizeiptr length | GLbitfield access	-	ios=6.0/12.0/-/0,tvos=9.0/12.0/-/0	-	c98cfdaa15a0937f
 function	c:@F@glFlushMappedBufferRangeEXT	-			GLvoid (GLenum, GLintptr, GLsizeiptr)	GLenum target | GLintptr offset | GLsizeiptr length	-	ios=6.0/12.0/-/0,tvos=9.0/12.0/-/0	-	bae7aaa5b4fd1bac
 function	c:@F@glTexStorage2DEXT	-			GLvoid (GLenum, GLsizei, GLenum, GLsizei, GLsizei)	GLenum target | GLsizei levels | GLenum internalformat | GLsizei width | GLsizei height	-	ios=6.0/12.0/-/0,tvos=9.0/12.0/-/0	-	342587dc976e7ec4
 function	c:@F@glBlendEquationSeparateOES	-			GLvoid (GLenum, GLenum)	GLenum modeRGB | GLenum modeAlpha	-	ios=3.1/12.0/-/0,tvos=9.0/12.0/-/0	-	882362cd2de589e0
@@ -246,7 +246,7 @@ function	c:@F@glFramebufferTexture2DOES	-			GLvoid (GLenum, GLenum, GLenum, GLui
 function	c:@F@glGetFramebufferAttachmentParameterivOES	-			GLvoid (GLenum, GLenum, GLenum, GLint *)	GLenum target | GLenum attachment | GLenum pname | GLint * params	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0	-	01318f07139a8d9e
 function	c:@F@glGenerateMipmapOES	-			GLvoid (GLenum)	GLenum target	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0	-	2b2d9a72485306df
 function	c:@F@glGetBufferPointervOES	-			GLvoid (GLenum, GLenum, GLvoid **)	GLenum target | GLenum pname | GLvoid ** params	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0		6f33e1fadcbce20f
-function	c:@F@glMapBufferOES	-			GLvoid *(GLenum, GLenum)	GLenum target | GLenum access	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0		70969f417aea9683
+function	c:@F@glMapBufferOES	-			GLvoid * (GLenum, GLenum)	GLenum target | GLenum access	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0		02f4c5dde26c1cf3
 function	c:@F@glUnmapBufferOES	-			GLboolean (GLenum)	GLenum target	-	ios=2.0/12.0/-/0,tvos=9.0/12.0/-/0		f29d842ba3291397
 function	c:@F@glBindVertexArrayOES	-			GLvoid (GLuint)	GLuint array	-	ios=4.0/12.0/-/0,tvos=9.0/12.0/-/0	-	6bc7e5b0ebb44157
 function	c:@F@glDeleteVertexArraysOES	-			GLvoid (GLsizei, const GLuint *)	GLsizei n | const GLuint * arrays	-	ios=4.0/12.0/-/0,tvos=9.0/12.0/-/0	-	cb3de714bcd350ae
@@ -409,7 +409,7 @@ function	c:@F@glUniformMatrix4x3fv	-			void (GLint, GLsizei, GLboolean, const GL
 function	c:@F@glBlitFramebuffer	-			void (GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum)	GLint srcX0 | GLint srcY0 | GLint srcX1 | GLint srcY1 | GLint dstX0 | GLint dstY0 | GLint dstX1 | GLint dstY1 | GLbitfield mask | GLenum filter	-	ios=7.0/12.0/-/0,tvos=9.0/12.0/-/0	-	b367211680869e01
 function	c:@F@glRenderbufferStorageMultisample	-			void (GLenum, GLsizei, GLenum, GLsizei, GLsizei)	GLenum target | GLsizei samples | GLenum internalformat | GLsizei width | GLsizei height	-	ios=7.0/12.0/-/0,tvos=9.0/12.0/-/0	-	4dfb4f5fa1324861
 function	c:@F@glFramebufferTextureLayer	-			void (GLenum, GLenum, GLuint, GLint, GLint)	GLenum target | GLenum attachment | GLuint texture | GLint level | GLint layer	-	ios=7.0/12.0/-/0,tvos=9.0/12.0/-/0	-	18322545a131a82a
-function	c:@F@glMapBufferRange	-			GLvoid *(GLenum, GLintptr, GLsizeiptr, GLbitfield)	GLenum target | GLintptr offset | GLsizeiptr length | GLbitfield access	-	ios=7.0/12.0/-/0,tvos=9.0/12.0/-/0	-	c34991c249559ffa
+function	c:@F@glMapBufferRange	-			GLvoid * (GLenum, GLintptr, GLsizeiptr, GLbitfield)	GLenum target | GLintptr offset | GLsizeiptr length | GLbitfield access	-	ios=7.0/12.0/-/0,tvos=9.0/12.0/-/0	-	d7813f4826d7414d
 function	c:@F@glFlushMappedBufferRange	-			void (GLenum, GLintptr, GLsizeiptr)	GLenum target | GLintptr offset | GLsizeiptr length	-	ios=7.0/12.0/-/0,tvos=9.0/12.0/-/0	-	7326792b1f407089
 function	c:@F@glBindVertexArray	-			void (GLuint)	GLuint array	-	ios=7.0/12.0/-/0,tvos=9.0/12.0/-/0	-	85a725ff43ed0126
 function	c:@F@glDeleteVertexArrays	-			void (GLsizei, const GLuint *)	GLsizei n | const GLuint * arrays	-	ios=7.0/12.0/-/0,tvos=9.0/12.0/-/0	-	41ddbc5a936679b8
@@ -443,7 +443,7 @@ function	c:@F@glClearBufferiv	-			void (GLenum, GLint, const GLint *)	GLenum buf
 function	c:@F@glClearBufferuiv	-			void (GLenum, GLint, const GLuint *)	GLenum buffer | GLint drawbuffer | const GLuint * value	-	ios=7.0/12.0/-/0,tvos=9.0/12.0/-/0	-	40827b0e90a0bed9
 function	c:@F@glClearBufferfv	-			void (GLenum, GLint, const GLfloat *)	GLenum buffer | GLint drawbuffer | const GLfloat * value	-	ios=7.0/12.0/-/0,tvos=9.0/12.0/-/0	-	6a71344a5bcc36b0
 function	c:@F@glClearBufferfi	-			void (GLenum, GLint, GLfloat, GLint)	GLenum buffer | GLint drawbuffer | GLfloat depth | GLint stencil	-	ios=7.0/12.0/-/0,tvos=9.0/12.0/-/0	-	5a0cda490b7731d3
-function	c:@F@glGetStringi	-			const GLubyte *(GLenum, GLuint)	GLenum name | GLuint index	-	ios=7.0/12.0/-/0,tvos=9.0/12.0/-/0	-	fe350d38d5162d6f
+function	c:@F@glGetStringi	-			const GLubyte * (GLenum, GLuint)	GLenum name | GLuint index	-	ios=7.0/12.0/-/0,tvos=9.0/12.0/-/0	-	115201d085c20940
 function	c:@F@glCopyBufferSubData	-			void (GLenum, GLenum, GLintptr, GLintptr, GLsizeiptr)	GLenum readTarget | GLenum writeTarget | GLintptr readOffset | GLintptr writeOffset | GLsizeiptr size	-	ios=7.0/12.0/-/0,tvos=9.0/12.0/-/0	-	04e5a2dbe38fcd27
 function	c:@F@glGetUniformIndices	-			void (GLuint, GLsizei, const GLchar *const *, GLuint *)	GLuint program | GLsizei uniformCount | const GLchar *const * uniformNames | GLuint * uniformIndices	-	ios=7.0/12.0/-/0,tvos=9.0/12.0/-/0	-	47e576dec4b748f6
 function	c:@F@glGetActiveUniformsiv	-			void (GLuint, GLsizei, const GLuint *, GLenum, GLint *)	GLuint program | GLsizei uniformCount | const GLuint * uniformIndices | GLenum pname | GLint * params	-	ios=7.0/12.0/-/0,tvos=9.0/12.0/-/0	-	273e31b820ed9eca

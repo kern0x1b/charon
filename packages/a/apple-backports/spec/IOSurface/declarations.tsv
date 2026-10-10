@@ -88,56 +88,56 @@ enumconst	c:@E@IOSurfaceSubsampling@kIOSurfaceSubsampling420	IOSurfaceSubsamplin
 enumconst	c:@E@IOSurfaceSubsampling@kIOSurfaceSubsampling411	IOSurfaceSubsampling			-	-	-	-	-	1551ecd859e7f44c
 var	c:@kIOSurfaceSubsampling	-			const CFStringRef	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a89ffa8946c675b8
 function	c:@F@IOSurfaceGetTypeID	-			CFTypeID (void)	-	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e25ac0dd918c3b5e
-function	c:@F@IOSurfaceCreate	-			IOSurfaceRef  _Nullable (CFDictionaryRef _Nonnull)	CFDictionaryRef properties	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a31c7db4b5bda8ac
-function	c:@F@IOSurfaceLookup	-			IOSurfaceRef  _Nullable (IOSurfaceID)	IOSurfaceID csid	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	58a44dd7696146bd
-function	c:@F@IOSurfaceGetID	-			IOSurfaceID (IOSurfaceRef _Nonnull)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4c788e3829041979
-function	c:@F@IOSurfaceLock	-			kern_return_t (IOSurfaceRef _Nonnull, IOSurfaceLockOptions, uint32_t * _Nullable)	IOSurfaceRef buffer | IOSurfaceLockOptions options | uint32_t * seed	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	21eb0829c548100d
-function	c:@F@IOSurfaceUnlock	-			kern_return_t (IOSurfaceRef _Nonnull, IOSurfaceLockOptions, uint32_t * _Nullable)	IOSurfaceRef buffer | IOSurfaceLockOptions options | uint32_t * seed	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	140aa050880b26df
-function	c:@F@IOSurfaceGetAllocSize	-			size_t (IOSurfaceRef _Nonnull)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d45ea289c2f62c52
-function	c:@F@IOSurfaceGetWidth	-			size_t (IOSurfaceRef _Nonnull)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	2d023ce45943b60c
-function	c:@F@IOSurfaceGetHeight	-			size_t (IOSurfaceRef _Nonnull)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0b5d745eb33babc6
-function	c:@F@IOSurfaceGetBytesPerElement	-			size_t (IOSurfaceRef _Nonnull)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f75eacd88f033a6c
-function	c:@F@IOSurfaceGetBytesPerRow	-			size_t (IOSurfaceRef _Nonnull)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	3c61267f6c460a6f
-function	c:@F@IOSurfaceGetBaseAddress	-			void * _Nonnull (IOSurfaceRef _Nonnull)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	cb6a0971c125d5b5
-function	c:@F@IOSurfaceGetElementWidth	-			size_t (IOSurfaceRef _Nonnull)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0a7a8d9e48f927fe
-function	c:@F@IOSurfaceGetElementHeight	-			size_t (IOSurfaceRef _Nonnull)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	7f651250345c8752
-function	c:@F@IOSurfaceGetPixelFormat	-			OSType (IOSurfaceRef _Nonnull)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	801536476c734c7c
-function	c:@F@IOSurfaceGetSeed	-			uint32_t (IOSurfaceRef _Nonnull)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	de9d575ab7e8aacc
-function	c:@F@IOSurfaceGetPlaneCount	-			size_t (IOSurfaceRef _Nonnull)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	37f8ed17250949d9
-function	c:@F@IOSurfaceGetWidthOfPlane	-			size_t (IOSurfaceRef _Nonnull, size_t)	IOSurfaceRef buffer | size_t planeIndex	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b58328889715cd5f
-function	c:@F@IOSurfaceGetHeightOfPlane	-			size_t (IOSurfaceRef _Nonnull, size_t)	IOSurfaceRef buffer | size_t planeIndex	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	fa1feece06d3fe44
-function	c:@F@IOSurfaceGetBytesPerElementOfPlane	-			size_t (IOSurfaceRef _Nonnull, size_t)	IOSurfaceRef buffer | size_t planeIndex	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5fd9839d21e81f4a
-function	c:@F@IOSurfaceGetBytesPerRowOfPlane	-			size_t (IOSurfaceRef _Nonnull, size_t)	IOSurfaceRef buffer | size_t planeIndex	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	90f83400cdb82a15
-function	c:@F@IOSurfaceGetBaseAddressOfPlane	-			void * _Nonnull (IOSurfaceRef _Nonnull, size_t)	IOSurfaceRef buffer | size_t planeIndex	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	35a8990f24e93c1d
-function	c:@F@IOSurfaceGetElementWidthOfPlane	-			size_t (IOSurfaceRef _Nonnull, size_t)	IOSurfaceRef buffer | size_t planeIndex	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	54b96bbd4a8e8783
-function	c:@F@IOSurfaceGetElementHeightOfPlane	-			size_t (IOSurfaceRef _Nonnull, size_t)	IOSurfaceRef buffer | size_t planeIndex	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	81e2408a4f6779d4
-function	c:@F@IOSurfaceGetNumberOfComponentsOfPlane	-			size_t (IOSurfaceRef _Nonnull, size_t)	IOSurfaceRef buffer | size_t planeIndex	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	01b740d7d8ce766a
-function	c:@F@IOSurfaceGetNameOfComponentOfPlane	-			IOSurfaceComponentName (IOSurfaceRef _Nonnull, size_t, size_t)	IOSurfaceRef buffer | size_t planeIndex | size_t componentIndex	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d3198985890eaffc
-function	c:@F@IOSurfaceGetTypeOfComponentOfPlane	-			IOSurfaceComponentType (IOSurfaceRef _Nonnull, size_t, size_t)	IOSurfaceRef buffer | size_t planeIndex | size_t componentIndex	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	7160c1a81334beeb
-function	c:@F@IOSurfaceGetRangeOfComponentOfPlane	-			IOSurfaceComponentRange (IOSurfaceRef _Nonnull, size_t, size_t)	IOSurfaceRef buffer | size_t planeIndex | size_t componentIndex	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5be5ef0d4f6ac997
-function	c:@F@IOSurfaceGetBitDepthOfComponentOfPlane	-			size_t (IOSurfaceRef _Nonnull, size_t, size_t)	IOSurfaceRef buffer | size_t planeIndex | size_t componentIndex	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	aca54d663ac03d6c
-function	c:@F@IOSurfaceGetBitOffsetOfComponentOfPlane	-			size_t (IOSurfaceRef _Nonnull, size_t, size_t)	IOSurfaceRef buffer | size_t planeIndex | size_t componentIndex	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	8225b625a1eee7ab
-function	c:@F@IOSurfaceGetSubsampling	-			IOSurfaceSubsampling (IOSurfaceRef _Nonnull)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c2c35d2763c71198
+function	c:@F@IOSurfaceCreate	-			IOSurfaceRef (CFDictionaryRef)	CFDictionaryRef properties	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0f6c192acac1d04d
+function	c:@F@IOSurfaceLookup	-			IOSurfaceRef (IOSurfaceID)	IOSurfaceID csid	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	7ad820f9d7f28822
+function	c:@F@IOSurfaceGetID	-			IOSurfaceID (IOSurfaceRef)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	989d4fd13fd567e4
+function	c:@F@IOSurfaceLock	-			kern_return_t (IOSurfaceRef, IOSurfaceLockOptions, uint32_t *)	IOSurfaceRef buffer | IOSurfaceLockOptions options | uint32_t * seed	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c9beb856b1af01c4
+function	c:@F@IOSurfaceUnlock	-			kern_return_t (IOSurfaceRef, IOSurfaceLockOptions, uint32_t *)	IOSurfaceRef buffer | IOSurfaceLockOptions options | uint32_t * seed	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	01fb28661f39b799
+function	c:@F@IOSurfaceGetAllocSize	-			size_t (IOSurfaceRef)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	fa6858c5bedc9648
+function	c:@F@IOSurfaceGetWidth	-			size_t (IOSurfaceRef)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	fe2ded0e0b102928
+function	c:@F@IOSurfaceGetHeight	-			size_t (IOSurfaceRef)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	41abadc52f5e7ef2
+function	c:@F@IOSurfaceGetBytesPerElement	-			size_t (IOSurfaceRef)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	6cb2d55b7ef0cfd9
+function	c:@F@IOSurfaceGetBytesPerRow	-			size_t (IOSurfaceRef)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	47bfa854d208d11e
+function	c:@F@IOSurfaceGetBaseAddress	-			void * (IOSurfaceRef)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	983655a769c08932
+function	c:@F@IOSurfaceGetElementWidth	-			size_t (IOSurfaceRef)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	93e364b8c9b36c8a
+function	c:@F@IOSurfaceGetElementHeight	-			size_t (IOSurfaceRef)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0a1fd3728de92ea6
+function	c:@F@IOSurfaceGetPixelFormat	-			OSType (IOSurfaceRef)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	be47cdb23fa47cb5
+function	c:@F@IOSurfaceGetSeed	-			uint32_t (IOSurfaceRef)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	fa52d22102f2c7ed
+function	c:@F@IOSurfaceGetPlaneCount	-			size_t (IOSurfaceRef)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	585c82aedd162905
+function	c:@F@IOSurfaceGetWidthOfPlane	-			size_t (IOSurfaceRef, size_t)	IOSurfaceRef buffer | size_t planeIndex	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4f32dd009c6d333e
+function	c:@F@IOSurfaceGetHeightOfPlane	-			size_t (IOSurfaceRef, size_t)	IOSurfaceRef buffer | size_t planeIndex	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4a11841ea089cb05
+function	c:@F@IOSurfaceGetBytesPerElementOfPlane	-			size_t (IOSurfaceRef, size_t)	IOSurfaceRef buffer | size_t planeIndex	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	03e2d129d1ce4b79
+function	c:@F@IOSurfaceGetBytesPerRowOfPlane	-			size_t (IOSurfaceRef, size_t)	IOSurfaceRef buffer | size_t planeIndex	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	3e2560d351849e7b
+function	c:@F@IOSurfaceGetBaseAddressOfPlane	-			void * (IOSurfaceRef, size_t)	IOSurfaceRef buffer | size_t planeIndex	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	7a59cc8547e271f7
+function	c:@F@IOSurfaceGetElementWidthOfPlane	-			size_t (IOSurfaceRef, size_t)	IOSurfaceRef buffer | size_t planeIndex	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f7a4afb36247b8e7
+function	c:@F@IOSurfaceGetElementHeightOfPlane	-			size_t (IOSurfaceRef, size_t)	IOSurfaceRef buffer | size_t planeIndex	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	792a5be113b521ba
+function	c:@F@IOSurfaceGetNumberOfComponentsOfPlane	-			size_t (IOSurfaceRef, size_t)	IOSurfaceRef buffer | size_t planeIndex	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	58c923ab65701056
+function	c:@F@IOSurfaceGetNameOfComponentOfPlane	-			IOSurfaceComponentName (IOSurfaceRef, size_t, size_t)	IOSurfaceRef buffer | size_t planeIndex | size_t componentIndex	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	3f7b441a578bcd1d
+function	c:@F@IOSurfaceGetTypeOfComponentOfPlane	-			IOSurfaceComponentType (IOSurfaceRef, size_t, size_t)	IOSurfaceRef buffer | size_t planeIndex | size_t componentIndex	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	08273f3c90b0f21d
+function	c:@F@IOSurfaceGetRangeOfComponentOfPlane	-			IOSurfaceComponentRange (IOSurfaceRef, size_t, size_t)	IOSurfaceRef buffer | size_t planeIndex | size_t componentIndex	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	fabff45ee1d8f5f9
+function	c:@F@IOSurfaceGetBitDepthOfComponentOfPlane	-			size_t (IOSurfaceRef, size_t, size_t)	IOSurfaceRef buffer | size_t planeIndex | size_t componentIndex	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	982771a47b825fd0
+function	c:@F@IOSurfaceGetBitOffsetOfComponentOfPlane	-			size_t (IOSurfaceRef, size_t, size_t)	IOSurfaceRef buffer | size_t planeIndex | size_t componentIndex	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	84a806c70364fb1e
+function	c:@F@IOSurfaceGetSubsampling	-			IOSurfaceSubsampling (IOSurfaceRef)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	04355335547b1966
 var	c:@kIOSurfaceColorSpace	-			const CFStringRef	-	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c7f6f43e349b1fbf
 var	c:@kIOSurfaceICCProfile	-			const CFStringRef	-	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	16a1cd658cad933f
 var	c:@kIOSurfaceContentHeadroom	-			const CFStringRef	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	17d009f683207849
-function	c:@F@IOSurfaceSetValue	-			void (IOSurfaceRef _Nonnull, CFStringRef _Nonnull, CFTypeRef _Nonnull)	IOSurfaceRef buffer | CFStringRef key | CFTypeRef value	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	effa29276afc0c66
-function	c:@F@IOSurfaceCopyValue	-			CFTypeRef  _Nullable (IOSurfaceRef _Nonnull, CFStringRef _Nonnull)	IOSurfaceRef buffer | CFStringRef key	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c273fdc02da5dedb
-function	c:@F@IOSurfaceRemoveValue	-			void (IOSurfaceRef _Nonnull, CFStringRef _Nonnull)	IOSurfaceRef buffer | CFStringRef key	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	53d58cae1fbf8a6e
-function	c:@F@IOSurfaceSetValues	-			void (IOSurfaceRef _Nonnull, CFDictionaryRef _Nonnull)	IOSurfaceRef buffer | CFDictionaryRef keysAndValues	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	71ef68d4d358634c
-function	c:@F@IOSurfaceCopyAllValues	-			CFDictionaryRef  _Nullable (IOSurfaceRef _Nonnull)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a1f595c6ecb9c05b
-function	c:@F@IOSurfaceRemoveAllValues	-			void (IOSurfaceRef _Nonnull)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c8a1e6b772828ec4
-function	c:@F@IOSurfaceCreateMachPort	-			mach_port_t (IOSurfaceRef _Nonnull)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	fe59773265c1a193
-function	c:@F@IOSurfaceLookupFromMachPort	-			IOSurfaceRef  _Nullable (mach_port_t)	mach_port_t port	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	9db1734c00ddc5f7
-function	c:@F@IOSurfaceGetPropertyMaximum	-			size_t (CFStringRef _Nonnull)	CFStringRef property	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	1cbab7b6f9883cc9
-function	c:@F@IOSurfaceGetPropertyAlignment	-			size_t (CFStringRef _Nonnull)	CFStringRef property	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	8c326b2bf2d93593
-function	c:@F@IOSurfaceAlignProperty	-			size_t (CFStringRef _Nonnull, size_t)	CFStringRef property | size_t value	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	6a3049be99a8f320
-function	c:@F@IOSurfaceIncrementUseCount	-			void (IOSurfaceRef _Nonnull)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b140e446b71c9b68
-function	c:@F@IOSurfaceDecrementUseCount	-			void (IOSurfaceRef _Nonnull)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	dde6cab8cd10bf45
-function	c:@F@IOSurfaceGetUseCount	-			int32_t (IOSurfaceRef _Nonnull)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	758907c675e96d95
-function	c:@F@IOSurfaceIsInUse	-			Boolean (IOSurfaceRef _Nonnull)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	9295118516b04e91
-function	c:@F@IOSurfaceAllowsPixelSizeCasting	-			Boolean (IOSurfaceRef _Nonnull)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	7b65e83de2e2d8b8
-function	c:@F@IOSurfaceSetPurgeable	-			kern_return_t (IOSurfaceRef _Nonnull, uint32_t, uint32_t * _Nullable)	IOSurfaceRef buffer | uint32_t newState | uint32_t * oldState	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	05919e792dd93757
+function	c:@F@IOSurfaceSetValue	-			void (IOSurfaceRef, CFStringRef, CFTypeRef)	IOSurfaceRef buffer | CFStringRef key | CFTypeRef value	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	675bce41d2576d7f
+function	c:@F@IOSurfaceCopyValue	-			CFTypeRef (IOSurfaceRef, CFStringRef)	IOSurfaceRef buffer | CFStringRef key	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	bb304ac858a9893a
+function	c:@F@IOSurfaceRemoveValue	-			void (IOSurfaceRef, CFStringRef)	IOSurfaceRef buffer | CFStringRef key	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a42c11462a235f19
+function	c:@F@IOSurfaceSetValues	-			void (IOSurfaceRef, CFDictionaryRef)	IOSurfaceRef buffer | CFDictionaryRef keysAndValues	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	3376076315ee6141
+function	c:@F@IOSurfaceCopyAllValues	-			CFDictionaryRef (IOSurfaceRef)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	10ef9b0ca1183fe6
+function	c:@F@IOSurfaceRemoveAllValues	-			void (IOSurfaceRef)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	fce906e6bbdd1adf
+function	c:@F@IOSurfaceCreateMachPort	-			mach_port_t (IOSurfaceRef)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	67fa2a2702e6cc27
+function	c:@F@IOSurfaceLookupFromMachPort	-			IOSurfaceRef (mach_port_t)	mach_port_t port	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	76ebe8f2e1dbef93
+function	c:@F@IOSurfaceGetPropertyMaximum	-			size_t (CFStringRef)	CFStringRef property	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0d492e632c1cc9db
+function	c:@F@IOSurfaceGetPropertyAlignment	-			size_t (CFStringRef)	CFStringRef property	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	2de25fb8c77404de
+function	c:@F@IOSurfaceAlignProperty	-			size_t (CFStringRef, size_t)	CFStringRef property | size_t value	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b14680120e3a9ccc
+function	c:@F@IOSurfaceIncrementUseCount	-			void (IOSurfaceRef)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	9e30c4d3aa1a0dc2
+function	c:@F@IOSurfaceDecrementUseCount	-			void (IOSurfaceRef)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f2158baee68cd579
+function	c:@F@IOSurfaceGetUseCount	-			int32_t (IOSurfaceRef)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	fec7cac902344361
+function	c:@F@IOSurfaceIsInUse	-			Boolean (IOSurfaceRef)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.6/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5979ba18677d3a9f
+function	c:@F@IOSurfaceAllowsPixelSizeCasting	-			Boolean (IOSurfaceRef)	IOSurfaceRef buffer	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4b02df6f583b9860
+function	c:@F@IOSurfaceSetPurgeable	-			kern_return_t (IOSurfaceRef, uint32_t, uint32_t *)	IOSurfaceRef buffer | uint32_t newState | uint32_t * oldState	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	93916f32f31003c4
 typedef	c:@T@IOSurfaceMemoryLedgerTags	-			enum IOSurfaceMemoryLedgerTags	-	-	-	-	9656d24ded734e6d
 enum	c:@E@IOSurfaceMemoryLedgerTags	-			int	-	-	-	-	c467418c82babd35
 enumconst	c:@E@IOSurfaceMemoryLedgerTags@kIOSurfaceMemoryLedgerTagDefault	IOSurfaceMemoryLedgerTags			-	-	-	-	-	ceac472921d299f7
@@ -148,7 +148,7 @@ enumconst	c:@E@IOSurfaceMemoryLedgerTags@kIOSurfaceMemoryLedgerTagNeural	IOSurfa
 typedef	c:@T@IOSurfaceMemoryLedgerFlags	-			enum IOSurfaceMemoryLedgerFlags	-	-	-	-	b7b57ed61abbdc92
 enum	c:@E@IOSurfaceMemoryLedgerFlags	-			uint32_t	-	-	-	-	f5e2d928df69ab40
 enumconst	c:@E@IOSurfaceMemoryLedgerFlags@kIOSurfaceMemoryLedgerFlagNoFootprint	IOSurfaceMemoryLedgerFlags			-	-	-	-	-	ad58d987e2772e41
-function	c:@F@IOSurfaceSetOwnershipIdentity	-			kern_return_t (IOSurfaceRef _Nonnull, task_id_token_t, int, uint32_t)	IOSurfaceRef buffer | task_id_token_t task_id_token | int newLedgerTag | uint32_t newLedgerOptions	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	26e472776f9937bb
+function	c:@F@IOSurfaceSetOwnershipIdentity	-			kern_return_t (IOSurfaceRef, task_id_token_t, int, uint32_t)	IOSurfaceRef buffer | task_id_token_t task_id_token | int newLedgerTag | uint32_t newLedgerOptions	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	40dd8f905908247c
 typedef	c:IOSurfaceObjC.h@T@IOSurfacePropertyKey	-			NSString *	-	-	-	-	6e43895b406251b3
 var	c:@IOSurfacePropertyKeyAllocSize	-			IOSurfacePropertyKey	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	f801e2da0b216de0
 var	c:@IOSurfacePropertyKeyWidth	-			IOSurfacePropertyKey	-	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f1831efdb72bfa8a
@@ -181,7 +181,7 @@ method	c:objc(cs)IOSurface(im)unlockWithOptions:seed:	-			kern_return_t	IOSurfac
 property	c:objc(cs)IOSurface(py)allocationSize	-			NSInteger	-	readonly	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	3bb2cce99e06d38e
 property	c:objc(cs)IOSurface(py)width	-			NSInteger	-	readonly	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	75e32a7e75757fe4
 property	c:objc(cs)IOSurface(py)height	-			NSInteger	-	readonly	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	9e0a856183cd4553
-property	c:objc(cs)IOSurface(py)baseAddress	-			NS_RETURNS_INNER_POINTER void *	-	readonly	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e5501fb28e0c2813
+property	c:objc(cs)IOSurface(py)baseAddress	-			void *	-	readonly	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	bf41b5a6456ebf13
 property	c:objc(cs)IOSurface(py)pixelFormat	-			OSType	-	readonly	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	497d98d701a459fc
 property	c:objc(cs)IOSurface(py)bytesPerRow	-			NSInteger	-	readonly	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d33b6224f68f2a3a
 property	c:objc(cs)IOSurface(py)bytesPerElement	-			NSInteger	-	readonly	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f6ebb74e2d2269b7
@@ -210,5 +210,5 @@ property	c:objc(cs)IOSurface(py)localUseCount	-			int32_t	-	readonly	ios=11.0/-/
 property	c:objc(cs)IOSurface(py)allowsPixelSizeCasting	-			BOOL	-	readonly	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	821200d66ffa925a
 method	c:objc(cs)IOSurface(im)setPurgeable:oldState:	-			kern_return_t	IOSurfacePurgeabilityState newState | IOSurfacePurgeabilityState * oldState	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b1dfdd9f58cf1559
 var	c:@IOSurfacePropertyAllocSizeKey	-			IOSurfacePropertyKey	-	-	ios=11.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=11.0/12.0/-/0,watchos=4.0/5.0/-/0	-	9176e692ef68a09d
-function	c:IOSurfaceObjC.h@F@_IOSurfaceRefToObj	-			IOSurface * _Nonnull (IOSurfaceRef _Nonnull)	IOSurfaceRef ref	-	-	-	71f66da349809bad
-function	c:IOSurfaceObjC.h@F@_IOSurfaceObjToRef	-			IOSurfaceRef  _Nonnull (IOSurface * _Nonnull)	IOSurface * obj	-	-	-	b3c2f28e0feee6c4
+function	c:IOSurfaceObjC.h@F@_IOSurfaceRefToObj	-			IOSurface * (IOSurfaceRef)	IOSurfaceRef ref	-	-	-	59baa7ac832865e4
+function	c:IOSurfaceObjC.h@F@_IOSurfaceObjToRef	-			IOSurfaceRef (IOSurface *)	IOSurface * obj	-	-	-	d12001974f809b72

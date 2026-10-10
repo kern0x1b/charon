@@ -113,7 +113,7 @@ interface	c:objc(cs)INAnswerCallIntent	-			-	-	-	ios=16.2/-/-/0,macos=13.1/-/-/0
 super	-	INAnswerCallIntent	INIntent		-	-	-	-	-	28d242365eec9e2e
 method	c:objc(cs)INAnswerCallIntent(im)initWithAudioRoute:callIdentifier:	-			instancetype	INCallAudioRoute audioRoute | NSString * callIdentifier	-	ios=16.2/-/-/0,macos=13.1/-/-/0,watchos=9.2/-/-/0	-	0b133b312c0c4b79
 property	c:objc(cs)INAnswerCallIntent(py)audioRoute	-			INCallAudioRoute	-	readonly,assign,nonatomic	tvos=-/-/-/1	-	bb8444e334ff12b4
-property	c:objc(cs)INAnswerCallIntent(py)callIdentifier	-			API_UNAVAILABLE NSString *	-	readonly,copy,nonatomic	tvos=-/-/-/1	-	30a42e66db539588
+property	c:objc(cs)INAnswerCallIntent(py)callIdentifier	-			NSString *	-	readonly,copy,nonatomic	tvos=-/-/-/1	-	dcba12972a825c87
 protocol	c:objc(pl)INAnswerCallIntentHandling	-			-	-	-	ios=16.2/-/-/0,macos=13.1/-/-/0,tvos=-/-/-/1,watchos=9.2/-/-/0	-	b74d9f3a1c28dc96
 conforms	-	INAnswerCallIntentHandling	NSObject		-	-	-	-	-	cc5f6d3e53e1f0b4
 method	c:objc(pl)INAnswerCallIntentHandling(im)handleAnswerCall:completion:	-			void	INAnswerCallIntent * intent | void (^)(INAnswerCallIntentResponse * _Nonnull) completion	-	ios=16.2/-/-/0,macos=13.1/-/-/0,tvos=-/-/-/1,watchos=9.2/-/-/0	-	1e54facf736ffe97
@@ -158,7 +158,7 @@ property	c:objc(cs)INSearchCallHistoryIntent(py)dateCreated	-			INDateComponents
 property	c:objc(cs)INSearchCallHistoryIntent(py)recipient	-			INPerson *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/8.0/-/0	-	3433fa8049d7f50a
 property	c:objc(cs)INSearchCallHistoryIntent(py)callCapabilities	-			INCallCapabilityOptions	-	readonly,assign,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/8.0/-/0	-	49f74098ec921d5d
 property	c:objc(cs)INSearchCallHistoryIntent(py)callTypes	-			INCallRecordTypeOptions	-	readonly,assign,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,watchos=4.0/-/-/0	-	77a0a82cc18e26d8
-property	c:objc(cs)INSearchCallHistoryIntent(py)unseen	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,watchos=4.0/-/-/0	-	6884bae0f7227247
+property	c:objc(cs)INSearchCallHistoryIntent(py)unseen	-			NSNumber *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,watchos=4.0/-/-/0	-	0fae038e36e7022c
 protocol	c:objc(pl)INSearchCallHistoryIntentHandling	-			-	-	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/8.0/-/0	-	63edefd31ff583bc
 conforms	-	INSearchCallHistoryIntentHandling	NSObject		-	-	-	-	-	55a60c17580fc61d
 method	c:objc(pl)INSearchCallHistoryIntentHandling(im)handleSearchCallHistory:completion:	-			void	INSearchCallHistoryIntent * intent | void (^)(INSearchCallHistoryIntentResponse * _Nonnull) completion	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/8.0/-/0	-	638c0ea5d7d23eaa
@@ -270,8 +270,8 @@ method	c:objc(pl)INListCarsIntentHandling(im)confirmListCars:completion:	-			voi
 interface	c:objc(cs)INSaveProfileInCarIntent	-			-	-	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	10372cd0d11c51d8
 super	-	INSaveProfileInCarIntent	INIntent		-	-	-	-	-	a3d4bb110ba93098
 method	c:objc(cs)INSaveProfileInCarIntent(im)initWithProfileNumber:profileName:	-			instancetype	NSNumber * profileNumber | NSString * profileName	-	ios=10.2/-/-/0	-	684436ea3af8d937
-property	c:objc(cs)INSaveProfileInCarIntent(py)profileNumber	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9823afeb26bf442f
-property	c:objc(cs)INSaveProfileInCarIntent(py)profileName	-			API_AVAILABLE NSString *	-	readonly,copy,nonatomic	ios=10.2/-/-/0	-	447ee9712c2649dd
+property	c:objc(cs)INSaveProfileInCarIntent(py)profileNumber	-			NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fc58457a61cb914a
+property	c:objc(cs)INSaveProfileInCarIntent(py)profileName	-			NSString *	-	readonly,copy,nonatomic	ios=10.2/-/-/0	-	45c076dd2e269413
 protocol	c:objc(pl)INSaveProfileInCarIntentHandling	-			-	-	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ef4320b569b43f57
 conforms	-	INSaveProfileInCarIntentHandling	NSObject		-	-	-	-	-	aae5a9a9d154745a
 method	c:objc(pl)INSaveProfileInCarIntentHandling(im)handleSaveProfileInCar:completion:	-			void	INSaveProfileInCarIntent * intent | void (^)(INSaveProfileInCarIntentResponse * _Nonnull) completion	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	576926020367b5bc
@@ -309,7 +309,7 @@ method	c:objc(pl)INSetAudioSourceInCarIntentHandling(im)resolveRelativeAudioSour
 interface	c:objc(cs)INSetCarLockStatusIntent	-			-	-	-	ios=10.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	abe60d9593d74280
 super	-	INSetCarLockStatusIntent	INIntent		-	-	-	-	-	9cc7c06b7c9deb9f
 method	c:objc(cs)INSetCarLockStatusIntent(im)initWithLocked:carName:	-			instancetype	NSNumber * locked | INSpeakableString * carName	-	ios=10.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	4415696415b1eca6
-property	c:objc(cs)INSetCarLockStatusIntent(py)locked	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=10.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	9e4cc13cc700b045
+property	c:objc(cs)INSetCarLockStatusIntent(py)locked	-			NSNumber *	-	readonly,copy,nonatomic	ios=10.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	f094899b63c39404
 property	c:objc(cs)INSetCarLockStatusIntent(py)carName	-			INSpeakableString *	-	readonly,copy,nonatomic	ios=10.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	9c08b5f8a65c5bf3
 protocol	c:objc(pl)INSetCarLockStatusIntentHandling	-			-	-	-	ios=10.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	61ee1e3afb8a3c83
 conforms	-	INSetCarLockStatusIntentHandling	NSObject		-	-	-	-	-	ae37098fc2b701da
@@ -347,18 +347,18 @@ enumconst	c:@E@INRelativeSetting@INRelativeSettingHighest	INRelativeSetting			-	
 interface	c:objc(cs)INSetClimateSettingsInCarIntent	-			-	-	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	db01116c8d29729d
 super	-	INSetClimateSettingsInCarIntent	INIntent		-	-	-	-	-	7ae0ede5f54b1163
 method	c:objc(cs)INSetClimateSettingsInCarIntent(im)initWithEnableFan:enableAirConditioner:enableClimateControl:enableAutoMode:airCirculationMode:fanSpeedIndex:fanSpeedPercentage:relativeFanSpeedSetting:temperature:relativeTemperatureSetting:climateZone:carName:	-			instancetype	NSNumber * enableFan | NSNumber * enableAirConditioner | NSNumber * enableClimateControl | NSNumber * enableAutoMode | INCarAirCirculationMode airCirculationMode | NSNumber * fanSpeedIndex | NSNumber * fanSpeedPercentage | INRelativeSetting relativeFanSpeedSetting | NSMeasurement<NSUnitTemperature *> * temperature | INRelativeSetting relativeTemperatureSetting | INCarSeat climateZone | INSpeakableString * carName	-	ios=12.0/-/-/0	-	c273b158acd6fd72
-property	c:objc(cs)INSetClimateSettingsInCarIntent(py)enableFan	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3d58a70dc3273bb4
-property	c:objc(cs)INSetClimateSettingsInCarIntent(py)enableAirConditioner	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8057ed0f38ebacf8
-property	c:objc(cs)INSetClimateSettingsInCarIntent(py)enableClimateControl	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ff012033667db513
-property	c:objc(cs)INSetClimateSettingsInCarIntent(py)enableAutoMode	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f768e1ea807427a4
+property	c:objc(cs)INSetClimateSettingsInCarIntent(py)enableFan	-			NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	bb00f8e43e84caa9
+property	c:objc(cs)INSetClimateSettingsInCarIntent(py)enableAirConditioner	-			NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	15cc64eeaddfb16a
+property	c:objc(cs)INSetClimateSettingsInCarIntent(py)enableClimateControl	-			NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e5ceb94e3b84c33b
+property	c:objc(cs)INSetClimateSettingsInCarIntent(py)enableAutoMode	-			NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	614575d83f63d026
 property	c:objc(cs)INSetClimateSettingsInCarIntent(py)airCirculationMode	-			INCarAirCirculationMode	-	readonly,assign,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8a3848b2f48e249b
-property	c:objc(cs)INSetClimateSettingsInCarIntent(py)fanSpeedIndex	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6dab5bdbaa364f53
-property	c:objc(cs)INSetClimateSettingsInCarIntent(py)fanSpeedPercentage	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	98e2695c2f4c9473
+property	c:objc(cs)INSetClimateSettingsInCarIntent(py)fanSpeedIndex	-			NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d87edb72d80bcf26
+property	c:objc(cs)INSetClimateSettingsInCarIntent(py)fanSpeedPercentage	-			NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	bbf2fa8b4c628822
 property	c:objc(cs)INSetClimateSettingsInCarIntent(py)relativeFanSpeedSetting	-			INRelativeSetting	-	readonly,assign,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ec47ba945671ed9b
 property	c:objc(cs)INSetClimateSettingsInCarIntent(py)temperature	-			NSMeasurement<NSUnitTemperature *> *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	701c712a2a7937d5
 property	c:objc(cs)INSetClimateSettingsInCarIntent(py)relativeTemperatureSetting	-			INRelativeSetting	-	readonly,assign,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d3923198d2039468
 property	c:objc(cs)INSetClimateSettingsInCarIntent(py)climateZone	-			INCarSeat	-	readonly,assign,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6442ffbba2d547be
-property	c:objc(cs)INSetClimateSettingsInCarIntent(py)carName	-			API_AVAILABLE INSpeakableString *	-	readonly,copy,nonatomic	ios=12.0/-/-/0	-	07c1c91c2b7ca808
+property	c:objc(cs)INSetClimateSettingsInCarIntent(py)carName	-			INSpeakableString *	-	readonly,copy,nonatomic	ios=12.0/-/-/0	-	c1fde92fe52505ca
 protocol	c:objc(pl)INSetClimateSettingsInCarIntentHandling	-			-	-	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7a19ee78f69d9be0
 conforms	-	INSetClimateSettingsInCarIntentHandling	NSObject		-	-	-	-	-	000c7e06dad369b6
 method	c:objc(pl)INSetClimateSettingsInCarIntentHandling(im)handleSetClimateSettingsInCar:completion:	-			void	INSetClimateSettingsInCarIntent * intent | void (^)(INSetClimateSettingsInCarIntentResponse * _Nonnull) completion	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	372adb143788930d
@@ -384,9 +384,9 @@ enumconst	c:@E@INCarDefroster@INCarDefrosterAll	INCarDefroster			-	-	-	ios=10.0/
 interface	c:objc(cs)INSetDefrosterSettingsInCarIntent	-			-	-	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	bb09e44014056e6e
 super	-	INSetDefrosterSettingsInCarIntent	INIntent		-	-	-	-	-	399c2fe6587c3640
 method	c:objc(cs)INSetDefrosterSettingsInCarIntent(im)initWithEnable:defroster:carName:	-			instancetype	NSNumber * enable | INCarDefroster defroster | INSpeakableString * carName	-	ios=12.0/-/-/0	-	da0d0075a8731755
-property	c:objc(cs)INSetDefrosterSettingsInCarIntent(py)enable	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	51caa328eeb519da
+property	c:objc(cs)INSetDefrosterSettingsInCarIntent(py)enable	-			NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f11d5386d60f7bfa
 property	c:objc(cs)INSetDefrosterSettingsInCarIntent(py)defroster	-			INCarDefroster	-	readonly,assign,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	edab08cdcff5d160
-property	c:objc(cs)INSetDefrosterSettingsInCarIntent(py)carName	-			API_AVAILABLE INSpeakableString *	-	readonly,copy,nonatomic	ios=12.0/-/-/0	-	d5beb4affaf6258b
+property	c:objc(cs)INSetDefrosterSettingsInCarIntent(py)carName	-			INSpeakableString *	-	readonly,copy,nonatomic	ios=12.0/-/-/0	-	eff4af7007ca1cab
 protocol	c:objc(pl)INSetDefrosterSettingsInCarIntentHandling	-			-	-	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8ba8c4b055800c8b
 conforms	-	INSetDefrosterSettingsInCarIntentHandling	NSObject		-	-	-	-	-	1a511d0cc56a133c
 method	c:objc(pl)INSetDefrosterSettingsInCarIntentHandling(im)handleSetDefrosterSettingsInCar:completion:	-			void	INSetDefrosterSettingsInCarIntent * intent | void (^)(INSetDefrosterSettingsInCarIntentResponse * _Nonnull) completion	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	481f3c58e215c3bc
@@ -397,10 +397,10 @@ method	c:objc(pl)INSetDefrosterSettingsInCarIntentHandling(im)resolveCarNameForS
 interface	c:objc(cs)INSetProfileInCarIntent	-			-	-	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7fea85be36dba280
 super	-	INSetProfileInCarIntent	INIntent		-	-	-	-	-	463d7cc264450713
 method	c:objc(cs)INSetProfileInCarIntent(im)initWithProfileNumber:profileName:defaultProfile:carName:	-			instancetype	NSNumber * profileNumber | NSString * profileName | NSNumber * defaultProfile | INSpeakableString * carName	-	ios=12.0/-/-/0	-	c570c197dc1545cb
-property	c:objc(cs)INSetProfileInCarIntent(py)profileNumber	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4ce8cc11cb29e4ca
-property	c:objc(cs)INSetProfileInCarIntent(py)profileName	-			API_AVAILABLE NSString *	-	readonly,copy,nonatomic	ios=10.2/-/-/0	-	c674377bc1d72ebc
-property	c:objc(cs)INSetProfileInCarIntent(py)defaultProfile	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2b2a4a9dd647a851
-property	c:objc(cs)INSetProfileInCarIntent(py)carName	-			API_AVAILABLE INSpeakableString *	-	readonly,copy,nonatomic	ios=12.0/-/-/0	-	298973cfc19b8b6e
+property	c:objc(cs)INSetProfileInCarIntent(py)profileNumber	-			NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	879e0fda02c3ba11
+property	c:objc(cs)INSetProfileInCarIntent(py)profileName	-			NSString *	-	readonly,copy,nonatomic	ios=10.2/-/-/0	-	003078bc3dffd7f3
+property	c:objc(cs)INSetProfileInCarIntent(py)defaultProfile	-			NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	14977006b23f4c6f
+property	c:objc(cs)INSetProfileInCarIntent(py)carName	-			INSpeakableString *	-	readonly,copy,nonatomic	ios=12.0/-/-/0	-	faafa932c1f66dd2
 protocol	c:objc(pl)INSetProfileInCarIntentHandling	-			-	-	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: The property doesn't need to be resolved	f7732a75e38ba0a5
 conforms	-	INSetProfileInCarIntentHandling	NSObject		-	-	-	-	-	7e07a268ba989294
 method	c:objc(pl)INSetProfileInCarIntentHandling(im)handleSetProfileInCar:completion:	-			void	INSetProfileInCarIntent * intent | void (^)(INSetProfileInCarIntentResponse * _Nonnull) completion	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a6ca7cc9908e6375
@@ -412,13 +412,13 @@ method	c:objc(pl)INSetProfileInCarIntentHandling(im)resolveDefaultProfileForSetP
 interface	c:objc(cs)INSetSeatSettingsInCarIntent	-			-	-	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ae0ff707e05b93ce
 super	-	INSetSeatSettingsInCarIntent	INIntent		-	-	-	-	-	bf333553c0a02087
 method	c:objc(cs)INSetSeatSettingsInCarIntent(im)initWithEnableHeating:enableCooling:enableMassage:seat:level:relativeLevelSetting:carName:	-			instancetype	NSNumber * enableHeating | NSNumber * enableCooling | NSNumber * enableMassage | INCarSeat seat | NSNumber * level | INRelativeSetting relativeLevelSetting | INSpeakableString * carName	-	ios=12.0/-/-/0	-	10013e11fea22c25
-property	c:objc(cs)INSetSeatSettingsInCarIntent(py)enableHeating	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7d96eeaa3c9566aa
-property	c:objc(cs)INSetSeatSettingsInCarIntent(py)enableCooling	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	618b6fcc46a35b67
-property	c:objc(cs)INSetSeatSettingsInCarIntent(py)enableMassage	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e4a9e7efdf3c72ac
+property	c:objc(cs)INSetSeatSettingsInCarIntent(py)enableHeating	-			NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e795c81c64133ae1
+property	c:objc(cs)INSetSeatSettingsInCarIntent(py)enableCooling	-			NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	53748fe3002cbc93
+property	c:objc(cs)INSetSeatSettingsInCarIntent(py)enableMassage	-			NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	36528bff15c60d43
 property	c:objc(cs)INSetSeatSettingsInCarIntent(py)seat	-			INCarSeat	-	readonly,assign,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5388e03141b41f75
-property	c:objc(cs)INSetSeatSettingsInCarIntent(py)level	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e2b6c012e839fd4d
+property	c:objc(cs)INSetSeatSettingsInCarIntent(py)level	-			NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7bc132dae1224194
 property	c:objc(cs)INSetSeatSettingsInCarIntent(py)relativeLevelSetting	-			INRelativeSetting	-	readonly,assign,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	28b1801df8b6969e
-property	c:objc(cs)INSetSeatSettingsInCarIntent(py)carName	-			API_AVAILABLE INSpeakableString *	-	readonly,copy,nonatomic	ios=12.0/-/-/0	-	b17dfeee1964cec5
+property	c:objc(cs)INSetSeatSettingsInCarIntent(py)carName	-			INSpeakableString *	-	readonly,copy,nonatomic	ios=12.0/-/-/0	-	1b59340e5c1395e5
 protocol	c:objc(pl)INSetSeatSettingsInCarIntentHandling	-			-	-	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d10a58fda194373f
 conforms	-	INSetSeatSettingsInCarIntentHandling	NSObject		-	-	-	-	-	7366dc4c94a77e54
 method	c:objc(pl)INSetSeatSettingsInCarIntentHandling(im)handleSetSeatSettingsInCar:completion:	-			void	INSetSeatSettingsInCarIntent * intent | void (^)(INSetSeatSettingsInCarIntentResponse * _Nonnull) completion	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c99da444260b9769
@@ -488,10 +488,10 @@ interface	c:objc(cs)INStartWorkoutIntent	-			-	-	-	ios=10.0/-/-/0,macos=-/-/-/1,
 super	-	INStartWorkoutIntent	INIntent		-	-	-	-	-	c65ddc53fa3fb54a
 method	c:objc(cs)INStartWorkoutIntent(im)initWithWorkoutName:goalValue:workoutGoalUnitType:workoutLocationType:isOpenEnded:	-			instancetype	INSpeakableString * workoutName | NSNumber * goalValue | INWorkoutGoalUnitType workoutGoalUnitType | INWorkoutLocationType workoutLocationType | NSNumber * isOpenEnded	-	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	e6315bab3403c66c
 property	c:objc(cs)INStartWorkoutIntent(py)workoutName	-			INSpeakableString *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	d3bc59246d95ba06
-property	c:objc(cs)INStartWorkoutIntent(py)goalValue	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	93d128d7685732b2
+property	c:objc(cs)INStartWorkoutIntent(py)goalValue	-			NSNumber *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	c119c49744994651
 property	c:objc(cs)INStartWorkoutIntent(py)workoutGoalUnitType	-			INWorkoutGoalUnitType	-	readonly,assign,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	08f633e4f405873d
 property	c:objc(cs)INStartWorkoutIntent(py)workoutLocationType	-			INWorkoutLocationType	-	readonly,assign,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	f927b6d626405870
-property	c:objc(cs)INStartWorkoutIntent(py)isOpenEnded	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	81fbc23dd7f9fc40
+property	c:objc(cs)INStartWorkoutIntent(py)isOpenEnded	-			NSNumber *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	6dab147bbfe68a73
 protocol	c:objc(pl)INStartWorkoutIntentHandling	-			-	-	-	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	c1d1bbde256b445e
 conforms	-	INStartWorkoutIntentHandling	NSObject		-	-	-	-	-	2b39ad8180581ea7
 method	c:objc(pl)INStartWorkoutIntentHandling(im)handleStartWorkout:completion:	-			void	INStartWorkoutIntent * intent | void (^)(INStartWorkoutIntentResponse * _Nonnull) completion	-	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	653bf40c77d55e73
@@ -538,11 +538,11 @@ super	-	INPlayMediaIntent	INIntent		-	-	-	-	-	16ece15b1ce419b6
 method	c:objc(cs)INPlayMediaIntent(im)initWithMediaItems:mediaContainer:playShuffled:playbackRepeatMode:resumePlayback:playbackQueueLocation:playbackSpeed:mediaSearch:	-			instancetype	NSArray<INMediaItem *> * mediaItems | INMediaItem * mediaContainer | NSNumber * playShuffled | INPlaybackRepeatMode playbackRepeatMode | NSNumber * resumePlayback | INPlaybackQueueLocation playbackQueueLocation | NSNumber * playbackSpeed | INMediaSearch * mediaSearch	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	915eed31f7620c52
 property	c:objc(cs)INPlayMediaIntent(py)mediaItems	-			NSArray<INMediaItem *> *	-	readonly,copy,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=5.0/-/-/0	-	bf7bb5f94d84d4bf
 property	c:objc(cs)INPlayMediaIntent(py)mediaContainer	-			INMediaItem *	-	readonly,copy,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=5.0/-/-/0	-	d2344229fb5e1c69
-property	c:objc(cs)INPlayMediaIntent(py)playShuffled	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=5.0/-/-/0	-	5e4efdaa43da5e44
+property	c:objc(cs)INPlayMediaIntent(py)playShuffled	-			NSNumber *	-	readonly,copy,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=5.0/-/-/0	-	37360cd5d64afad0
 property	c:objc(cs)INPlayMediaIntent(py)playbackRepeatMode	-			INPlaybackRepeatMode	-	readonly,assign,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=5.0/-/-/0	-	db343a3ecf36c305
-property	c:objc(cs)INPlayMediaIntent(py)resumePlayback	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=5.0/-/-/0	-	12a8fce4c8e1ee89
+property	c:objc(cs)INPlayMediaIntent(py)resumePlayback	-			NSNumber *	-	readonly,copy,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=5.0/-/-/0	-	3af27367e083f107
 property	c:objc(cs)INPlayMediaIntent(py)playbackQueueLocation	-			INPlaybackQueueLocation	-	readonly,assign,nonatomic	ios=13.0/-/-/0,watchos=6.0/-/-/0	-	bae01fb92aee1d81
-property	c:objc(cs)INPlayMediaIntent(py)playbackSpeed	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,watchos=6.0/-/-/0	-	18cfc3a530419013
+property	c:objc(cs)INPlayMediaIntent(py)playbackSpeed	-			NSNumber *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,watchos=6.0/-/-/0	-	280bb6814f327b89
 property	c:objc(cs)INPlayMediaIntent(py)mediaSearch	-			INMediaSearch *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,watchos=6.0/-/-/0	-	3850be5a7be6a662
 protocol	c:objc(pl)INPlayMediaIntentHandling	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=5.0/-/-/0	-	91d119c244f97f93
 conforms	-	INPlayMediaIntentHandling	NSObject		-	-	-	-	-	d3128008c353ba76
@@ -593,10 +593,10 @@ interface	c:objc(cs)INSetRadioStationIntent	-			-	-	-	ios=10.0/15.0/-/0,macos=-/
 super	-	INSetRadioStationIntent	INIntent		-	-	-	-	-	a380079de9257bdf
 method	c:objc(cs)INSetRadioStationIntent(im)initWithRadioType:frequency:stationName:channel:presetNumber:	-			instancetype	INRadioType radioType | NSNumber * frequency | NSString * stationName | NSString * channel | NSNumber * presetNumber	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ac5db4c2501d49ec
 property	c:objc(cs)INSetRadioStationIntent(py)radioType	-			INRadioType	-	readonly,assign,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f44412549798e240
-property	c:objc(cs)INSetRadioStationIntent(py)frequency	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	821d54ff3c2498a6
+property	c:objc(cs)INSetRadioStationIntent(py)frequency	-			NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5f12a901b6fbb52d
 property	c:objc(cs)INSetRadioStationIntent(py)stationName	-			NSString *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d233cd1f360362be
 property	c:objc(cs)INSetRadioStationIntent(py)channel	-			NSString *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1db39c16573d48a0
-property	c:objc(cs)INSetRadioStationIntent(py)presetNumber	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	cf91c25aa0441787
+property	c:objc(cs)INSetRadioStationIntent(py)presetNumber	-			NSNumber *	-	readonly,copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	efc7737a023900de
 protocol	c:objc(pl)INSetRadioStationIntentHandling	-			-	-	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7f82df0391da3ff9
 conforms	-	INSetRadioStationIntentHandling	NSObject		-	-	-	-	-	558f7ee834d19e4d
 method	c:objc(pl)INSetRadioStationIntentHandling(im)handleSetRadioStation:completion:	-			void	INSetRadioStationIntent * intent | void (^)(INSetRadioStationIntentResponse * _Nonnull) completion	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	06a47f837bc07548
@@ -643,9 +643,9 @@ property	c:objc(cs)INSearchForMessagesIntent(py)identifiers	-			NSArray<NSString
 property	c:objc(cs)INSearchForMessagesIntent(py)identifiersOperator	-			INConditionalOperator	-	readonly,assign,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	8a6b90ec8fb654d1
 property	c:objc(cs)INSearchForMessagesIntent(py)notificationIdentifiers	-			NSArray<NSString *> *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	dac8e14506e53286
 property	c:objc(cs)INSearchForMessagesIntent(py)notificationIdentifiersOperator	-			INConditionalOperator	-	readonly,assign,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	40f37142be9be4bc
-property	c:objc(cs)INSearchForMessagesIntent(py)speakableGroupNames	-			API_UNAVAILABLE NSArray<INSpeakableString *> *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,watchos=4.0/-/-/0	-	197485132534f36c
+property	c:objc(cs)INSearchForMessagesIntent(py)speakableGroupNames	-			NSArray<INSpeakableString *> *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,watchos=4.0/-/-/0	-	8e3a238728cf7a79
 property	c:objc(cs)INSearchForMessagesIntent(py)speakableGroupNamesOperator	-			INConditionalOperator	-	readonly,assign,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,watchos=4.0/-/-/0	-	8ad755ec10e963e2
-property	c:objc(cs)INSearchForMessagesIntent(py)conversationIdentifiers	-			API_UNAVAILABLE NSArray<NSString *> *	-	readonly,copy,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,watchos=5.0/-/-/0	-	eaaaa61c1aad8c6e
+property	c:objc(cs)INSearchForMessagesIntent(py)conversationIdentifiers	-			NSArray<NSString *> *	-	readonly,copy,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,watchos=5.0/-/-/0	-	f1c5472dcf505bb9
 property	c:objc(cs)INSearchForMessagesIntent(py)conversationIdentifiersOperator	-			INConditionalOperator	-	readonly,assign,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,watchos=5.0/-/-/0	-	21c633a5733cff2f
 protocol	c:objc(pl)INSearchForMessagesIntentHandling	-			-	-	-	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	deprecated: resolveGroupNamesForSearchForMessages:withCompletion: is deprecated. Use resolveSpeakableGroupNamesForSearchForMessages:withCompletion: instead	aa73f8a3b29dbbde
 conforms	-	INSearchForMessagesIntentHandling	NSObject		-	-	-	-	-	6617269bff3ff422
@@ -775,7 +775,7 @@ super	-	INDeleteTasksIntent	INIntent		-	-	-	-	-	6fe571599aaabc13
 method	c:objc(cs)INDeleteTasksIntent(im)initWithTaskList:tasks:all:	-			instancetype	INTaskList * taskList | NSArray<INTask *> * tasks | NSNumber * all	-	ios=13.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/8.0/-/0	-	459a97412a276eb4
 property	c:objc(cs)INDeleteTasksIntent(py)taskList	-			INTaskList *	-	readonly,copy,nonatomic	ios=13.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/8.0/-/0	-	c732183574ac48ef
 property	c:objc(cs)INDeleteTasksIntent(py)tasks	-			NSArray<INTask *> *	-	readonly,copy,nonatomic	ios=13.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/8.0/-/0	-	b6ef385d839da19c
-property	c:objc(cs)INDeleteTasksIntent(py)all	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=13.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/8.0/-/0	-	4d378dac81a5dfe9
+property	c:objc(cs)INDeleteTasksIntent(py)all	-			NSNumber *	-	readonly,copy,nonatomic	ios=13.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/8.0/-/0	-	3bef04916d31be16
 protocol	c:objc(pl)INDeleteTasksIntentHandling	-			-	-	-	ios=13.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/8.0/-/0	-	e20eab0a0cf2a61c
 conforms	-	INDeleteTasksIntentHandling	NSObject		-	-	-	-	-	3287d649797fad3d
 method	c:objc(pl)INDeleteTasksIntentHandling(im)handleDeleteTasks:completion:	-			void	INDeleteTasksIntent * intent | void (^)(INDeleteTasksIntentResponse * _Nonnull) completion	-	ios=13.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/8.0/-/0	-	37a2f50bbed217a7
@@ -861,7 +861,7 @@ super	-	INSnoozeTasksIntent	INIntent		-	-	-	-	-	2bc404b423e5f7fe
 method	c:objc(cs)INSnoozeTasksIntent(im)initWithTasks:nextTriggerTime:all:	-			instancetype	NSArray<INTask *> * tasks | INDateComponentsRange * nextTriggerTime | NSNumber * all	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/-/-/0	-	7f1301b02e31d7cb
 property	c:objc(cs)INSnoozeTasksIntent(py)tasks	-			NSArray<INTask *> *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/-/-/0	-	da31875a282d7e32
 property	c:objc(cs)INSnoozeTasksIntent(py)nextTriggerTime	-			INDateComponentsRange *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/-/-/0	-	e627293e92a8b28f
-property	c:objc(cs)INSnoozeTasksIntent(py)all	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/-/-/0	-	87d47262957457f3
+property	c:objc(cs)INSnoozeTasksIntent(py)all	-			NSNumber *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/-/-/0	-	8be2c37dc24f3e46
 protocol	c:objc(pl)INSnoozeTasksIntentHandling	-			-	-	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/-/-/0	-	b3c6cac4635b2b8f
 conforms	-	INSnoozeTasksIntentHandling	NSObject		-	-	-	-	-	0062762ad1dfcdc5
 method	c:objc(pl)INSnoozeTasksIntentHandling(im)handleSnoozeTasks:completion:	-			void	INSnoozeTasksIntent * intent | void (^)(INSnoozeTasksIntentResponse * _Nonnull) completion	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/-/-/0	-	7e320499bb26187f
@@ -1123,9 +1123,9 @@ method	c:objc(cs)INRequestRideIntent(im)initWithPickupLocation:dropOffLocation:r
 property	c:objc(cs)INRequestRideIntent(py)pickupLocation	-			CLPlacemark *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	24d9685e7ed06c24
 property	c:objc(cs)INRequestRideIntent(py)dropOffLocation	-			CLPlacemark *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	88399403576b8a9f
 property	c:objc(cs)INRequestRideIntent(py)rideOptionName	-			INSpeakableString *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	f383d83964181f08
-property	c:objc(cs)INRequestRideIntent(py)partySize	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	210a5d312a5435b9
+property	c:objc(cs)INRequestRideIntent(py)partySize	-			NSNumber *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	c18b563a16dbbcc8
 property	c:objc(cs)INRequestRideIntent(py)paymentMethod	-			INPaymentMethod *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	b5c47b36dc40c4b4
-property	c:objc(cs)INRequestRideIntent(py)scheduledPickupTime	-			API_AVAILABLE INDateComponentsRange *	-	readonly,copy,nonatomic	ios=10.3/-/-/0	-	d07fbaf067576ec0
+property	c:objc(cs)INRequestRideIntent(py)scheduledPickupTime	-			INDateComponentsRange *	-	readonly,copy,nonatomic	ios=10.3/-/-/0	-	598301cd8c9ca2fb
 protocol	c:objc(pl)INRequestRideIntentHandling	-			-	-	-	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	3c5dc0cade8e9ee9
 conforms	-	INRequestRideIntentHandling	NSObject		-	-	-	-	-	804d1a8b7874be2f
 method	c:objc(pl)INRequestRideIntentHandling(im)handleRequestRide:completion:	-			void	INRequestRideIntent * intent | void (^)(INRequestRideIntentResponse * _Nonnull) completion	-	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	b4f05d55068ecccb
@@ -1338,7 +1338,7 @@ super	-	INSearchCallHistoryIntentResponse	INIntentResponse		-	-	-	-	-	446aebafed
 method	c:objc(cs)INSearchCallHistoryIntentResponse(im)init	-			id	-	-	*unavailable ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/8.0/-/0	-	db07b73da4515b03
 method	c:objc(cs)INSearchCallHistoryIntentResponse(im)initWithCode:userActivity:	-			instancetype	INSearchCallHistoryIntentResponseCode code | NSUserActivity * userActivity	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/8.0/-/0	-	a98593358853063f
 property	c:objc(cs)INSearchCallHistoryIntentResponse(py)code	-			INSearchCallHistoryIntentResponseCode	-	readonly,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/8.0/-/0	-	e9f6ee282b1187cf
-property	c:objc(cs)INSearchCallHistoryIntentResponse(py)callRecords	-			API_AVAILABLE NSArray<INCallRecord *> *	-	copy,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1	-	118dbcb753c9be8f
+property	c:objc(cs)INSearchCallHistoryIntentResponse(py)callRecords	-			NSArray<INCallRecord *> *	-	copy,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1	-	88a513a2d3fd857a
 typedef	c:@T@INStartAudioCallIntentResponseCode	-			enum INStartAudioCallIntentResponseCode	-	-	-	-	847215af79918e74
 enum	c:@E@INStartAudioCallIntentResponseCode	-			NSInteger	-	-	ios=10.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/6.0/-/0	-	f03905114d0135fd
 enumconst	c:@E@INStartAudioCallIntentResponseCode@INStartAudioCallIntentResponseCodeUnspecified	INStartAudioCallIntentResponseCode			-	-	-	ios=10.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/6.0/-/0	-	e4072579d04218cc
@@ -1419,7 +1419,7 @@ super	-	INGetCarLockStatusIntentResponse	INIntentResponse		-	-	-	-	-	36617ccc14f
 method	c:objc(cs)INGetCarLockStatusIntentResponse(im)init	-			id	-	-	*unavailable ios=10.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	7156afa362021a6d
 method	c:objc(cs)INGetCarLockStatusIntentResponse(im)initWithCode:userActivity:	-			instancetype	INGetCarLockStatusIntentResponseCode code | NSUserActivity * userActivity	-	ios=10.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	378a5cf981b1f9c9
 property	c:objc(cs)INGetCarLockStatusIntentResponse(py)code	-			INGetCarLockStatusIntentResponseCode	-	readonly,nonatomic	ios=10.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	1969c69e4398c2c3
-property	c:objc(cs)INGetCarLockStatusIntentResponse(py)locked	-			NS_REFINED_FOR_SWIFT NSNumber *	-	copy,nonatomic	ios=10.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	cab08b0be2315e2a
+property	c:objc(cs)INGetCarLockStatusIntentResponse(py)locked	-			NSNumber *	-	copy,nonatomic	ios=10.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	51d77b7bde16139e
 typedef	c:@T@INCarChargingConnectorType	-			NSString *	-	-	-	-	f9990ce14ed6cc09
 var	c:@INCarChargingConnectorTypeJ1772	-			const INCarChargingConnectorType	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.0/-/-/0	-	46e9c9e9b1e4fe65
 var	c:@INCarChargingConnectorTypeCCS1	-			const INCarChargingConnectorType	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.0/-/-/0	-	c46840e4210ad4a6
@@ -1445,11 +1445,11 @@ method	c:objc(cs)INGetCarPowerLevelStatusIntentResponse(im)init	-			id	-	-	*unav
 method	c:objc(cs)INGetCarPowerLevelStatusIntentResponse(im)initWithCode:userActivity:	-			instancetype	INGetCarPowerLevelStatusIntentResponseCode code | NSUserActivity * userActivity	-	ios=10.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	da29bde5c0f08c72
 property	c:objc(cs)INGetCarPowerLevelStatusIntentResponse(py)code	-			INGetCarPowerLevelStatusIntentResponseCode	-	readonly,nonatomic	ios=10.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	c543bd0c947dbebf
 property	c:objc(cs)INGetCarPowerLevelStatusIntentResponse(py)carIdentifier	-			NSString *	-	copy,nonatomic	ios=14.0/-/-/0,watchos=7.0/-/-/0	-	f1c9ace3848c6652
-property	c:objc(cs)INGetCarPowerLevelStatusIntentResponse(py)fuelPercentRemaining	-			NS_REFINED_FOR_SWIFT NSNumber *	-	copy,nonatomic	ios=10.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	134f3856e0910bb2
-property	c:objc(cs)INGetCarPowerLevelStatusIntentResponse(py)chargePercentRemaining	-			NS_REFINED_FOR_SWIFT NSNumber *	-	copy,nonatomic	ios=10.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	1df2c4ae424386c9
+property	c:objc(cs)INGetCarPowerLevelStatusIntentResponse(py)fuelPercentRemaining	-			NSNumber *	-	copy,nonatomic	ios=10.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	1a52b11b0d05c754
+property	c:objc(cs)INGetCarPowerLevelStatusIntentResponse(py)chargePercentRemaining	-			NSNumber *	-	copy,nonatomic	ios=10.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	af198f0a8183ba83
 property	c:objc(cs)INGetCarPowerLevelStatusIntentResponse(py)distanceRemaining	-			NSMeasurement<NSUnitLength *> *	-	copy,nonatomic	ios=10.3/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	3c805fb129783153
-property	c:objc(cs)INGetCarPowerLevelStatusIntentResponse(py)charging	-			NS_REFINED_FOR_SWIFT NSNumber *	-	copy,nonatomic	ios=12.0/-/-/0,watchos=5.0/-/-/0	-	085aafddd06613bb
-property	c:objc(cs)INGetCarPowerLevelStatusIntentResponse(py)minutesToFull	-			NS_REFINED_FOR_SWIFT NSNumber *	-	copy,nonatomic	ios=12.0/-/-/0,watchos=5.0/-/-/0	-	690a7934b945fcf0
+property	c:objc(cs)INGetCarPowerLevelStatusIntentResponse(py)charging	-			NSNumber *	-	copy,nonatomic	ios=12.0/-/-/0,watchos=5.0/-/-/0	-	200ab8aa1d6e7140
+property	c:objc(cs)INGetCarPowerLevelStatusIntentResponse(py)minutesToFull	-			NSNumber *	-	copy,nonatomic	ios=12.0/-/-/0,watchos=5.0/-/-/0	-	14d46a354246c8fb
 property	c:objc(cs)INGetCarPowerLevelStatusIntentResponse(py)maximumDistance	-			NSMeasurement<NSUnitLength *> *	-	copy,nonatomic	ios=14.0/-/-/0,watchos=7.0/-/-/0	-	94b6695dac20b593
 property	c:objc(cs)INGetCarPowerLevelStatusIntentResponse(py)distanceRemainingElectric	-			NSMeasurement<NSUnitLength *> *	-	copy,nonatomic	ios=14.0/-/-/0,watchos=7.0/-/-/0	-	14edf9c6c05e9827
 property	c:objc(cs)INGetCarPowerLevelStatusIntentResponse(py)maximumDistanceElectric	-			NSMeasurement<NSUnitLength *> *	-	copy,nonatomic	ios=14.0/-/-/0,watchos=7.0/-/-/0	-	678e80e15fab07e0
@@ -2071,7 +2071,7 @@ super	-	INSearchForPhotosIntentResponse	INIntentResponse		-	-	-	-	-	187201fd567b
 method	c:objc(cs)INSearchForPhotosIntentResponse(im)init	-			id	-	-	*unavailable ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/8.0/-/0	-	63e356a59a3dceb6
 method	c:objc(cs)INSearchForPhotosIntentResponse(im)initWithCode:userActivity:	-			instancetype	INSearchForPhotosIntentResponseCode code | NSUserActivity * userActivity	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/8.0/-/0	-	6915ae770ab56eba
 property	c:objc(cs)INSearchForPhotosIntentResponse(py)code	-			INSearchForPhotosIntentResponseCode	-	readonly,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/8.0/-/0	-	f993015ef110af05
-property	c:objc(cs)INSearchForPhotosIntentResponse(py)searchResultsCount	-			NS_REFINED_FOR_SWIFT NSNumber *	-	copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/8.0/-/0	-	fb1c1c1756f38325
+property	c:objc(cs)INSearchForPhotosIntentResponse(py)searchResultsCount	-			NSNumber *	-	copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/8.0/-/0	-	2e58e310844c494e
 typedef	c:@T@INStartPhotoPlaybackIntentResponseCode	-			enum INStartPhotoPlaybackIntentResponseCode	-	-	-	-	fc9a6fbcf914d1c8
 enum	c:@E@INStartPhotoPlaybackIntentResponseCode	-			NSInteger	-	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/8.0/-/0	-	8afd491ab0191157
 enumconst	c:@E@INStartPhotoPlaybackIntentResponseCode@INStartPhotoPlaybackIntentResponseCodeUnspecified	INStartPhotoPlaybackIntentResponseCode			-	-	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/8.0/-/0	-	a5b7b9c4967dd4e7
@@ -2085,7 +2085,7 @@ super	-	INStartPhotoPlaybackIntentResponse	INIntentResponse		-	-	-	-	-	37627b692
 method	c:objc(cs)INStartPhotoPlaybackIntentResponse(im)init	-			id	-	-	*unavailable ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/8.0/-/0	-	5b478d6987e9041d
 method	c:objc(cs)INStartPhotoPlaybackIntentResponse(im)initWithCode:userActivity:	-			instancetype	INStartPhotoPlaybackIntentResponseCode code | NSUserActivity * userActivity	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/8.0/-/0	-	21fdc12a38cf1af1
 property	c:objc(cs)INStartPhotoPlaybackIntentResponse(py)code	-			INStartPhotoPlaybackIntentResponseCode	-	readonly,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/8.0/-/0	-	1d43bae36ef1a86d
-property	c:objc(cs)INStartPhotoPlaybackIntentResponse(py)searchResultsCount	-			NS_REFINED_FOR_SWIFT NSNumber *	-	copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/8.0/-/0	-	e5073d41356c5155
+property	c:objc(cs)INStartPhotoPlaybackIntentResponse(py)searchResultsCount	-			NSNumber *	-	copy,nonatomic	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/8.0/-/0	-	f3fea5da946f7702
 typedef	c:@T@INGetReservationDetailsIntentResponseCode	-			enum INGetReservationDetailsIntentResponseCode	-	-	-	-	d5d586b5d79e8adf
 enum	c:@E@INGetReservationDetailsIntentResponseCode	-			NSInteger	-	-	ios=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0	-	0d161ba3e9728781
 enumconst	c:@E@INGetReservationDetailsIntentResponseCode@INGetReservationDetailsIntentResponseCodeUnspecified	INGetReservationDetailsIntentResponseCode			-	-	-	ios=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0	-	56cbc2af4c6791bc
@@ -2388,11 +2388,11 @@ method	c:objc(cs)INCallRecord(im)initWithIdentifier:dateCreated:callRecordType:c
 property	c:objc(cs)INCallRecord(py)identifier	-			NSString *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=4.0/-/-/0	-	b10896ef6d53a33e
 property	c:objc(cs)INCallRecord(py)dateCreated	-			NSDate *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=4.0/-/-/0	-	5393db9e5d7f7900
 property	c:objc(cs)INCallRecord(py)callRecordType	-			INCallRecordType	-	readonly,assign,nonatomic	ios=11.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=4.0/-/-/0	-	8082a00d7f0bd00a
-property	c:objc(cs)INCallRecord(py)callDuration	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=4.0/-/-/0	-	4ae610721ec5fadd
-property	c:objc(cs)INCallRecord(py)unseen	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=4.0/-/-/0	-	10512e86ef6b7fc7
+property	c:objc(cs)INCallRecord(py)callDuration	-			NSNumber *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=4.0/-/-/0	-	e1a9d0a0f4acbeb4
+property	c:objc(cs)INCallRecord(py)unseen	-			NSNumber *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=4.0/-/-/0	-	f6f4678434a76467
 property	c:objc(cs)INCallRecord(py)callCapability	-			INCallCapability	-	readonly,assign,nonatomic	ios=11.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=4.0/-/-/0	-	e057626f301c5389
-property	c:objc(cs)INCallRecord(py)numberOfCalls	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,watchos=6.0/-/-/0	-	763a731f406a9915
-property	c:objc(cs)INCallRecord(py)isCallerIdBlocked	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=14.5/-/-/0,watchos=7.3/-/-/0	-	f7a2a89ed498a05a
+property	c:objc(cs)INCallRecord(py)numberOfCalls	-			NSNumber *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,watchos=6.0/-/-/0	-	62bc2d340792fa36
+property	c:objc(cs)INCallRecord(py)isCallerIdBlocked	-			NSNumber *	-	readonly,copy,nonatomic	ios=14.5/-/-/0,watchos=7.3/-/-/0	-	b2a252cd3c46becf
 property	c:objc(cs)INCallRecord(py)participants	-			NSArray<INPerson *> *	-	readonly,copy,nonatomic	ios=14.5/-/-/0,watchos=7.3/-/-/0	-	46c980f77512f0de
 interface	c:objc(cs)INCallRecordFilter	-			-	-	-	ios=14.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=7.0/-/-/0	-	fb1000990b7b1312
 super	-	INCallRecordFilter	NSObject		-	-	-	-	-	b3b2009ec20f365b
@@ -2531,7 +2531,7 @@ conforms	-	INFocusStatus	NSCopying		-	-	-	-	-	8c2b23a4aa28bc82
 conforms	-	INFocusStatus	NSSecureCoding		-	-	-	-	-	450d224e88dce9c2
 method	c:objc(cs)INFocusStatus(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=8.0/-/-/0	-	5ef5ea3b32e2ca18
 method	c:objc(cs)INFocusStatus(im)initWithIsFocused:	-			instancetype	NSNumber * isFocused	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=8.0/-/-/0	-	e5ff6d7ec873d7de
-property	c:objc(cs)INFocusStatus(py)isFocused	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=8.0/-/-/0	-	ac4822bd6e9d516f
+property	c:objc(cs)INFocusStatus(py)isFocused	-			NSNumber *	-	readonly,copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=8.0/-/-/0	-	2cc158c85e202f3b
 interface	c:objc(cs)INLocationSearchTypeResolutionResult	-			-	-	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=4.0/-/-/0	-	bdbb38cac98e4ee5
 super	-	INLocationSearchTypeResolutionResult	INIntentResolutionResult		-	-	-	-	-	fea7122d178e8970
 method	c:objc(cs)INLocationSearchTypeResolutionResult(cm)successWithResolvedLocationSearchType:	-			instancetype	INLocationSearchType resolvedLocationSearchType	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=4.0/-/-/0	-	a6a6f4ab7484e8bd
@@ -3193,7 +3193,7 @@ conforms	-	INPersonHandle	NSCopying		-	-	-	-	-	4f676470889f7142
 conforms	-	INPersonHandle	NSSecureCoding		-	-	-	-	-	539dd678a68b09cf
 property	c:objc(cs)INPersonHandle(py)value	-			NSString *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=3.2/-/-/0	-	62d4f14bc3c619e4
 property	c:objc(cs)INPersonHandle(py)type	-			INPersonHandleType	-	readonly,nonatomic	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=3.2/-/-/0	-	6788b5f4f620523e
-property	c:objc(cs)INPersonHandle(py)label	-			API_AVAILABLE INPersonHandleLabel	-	readonly,nonatomic	ios=10.2/-/-/0	-	a5c17de9cc6f77e1
+property	c:objc(cs)INPersonHandle(py)label	-			INPersonHandleLabel	-	readonly,nonatomic	ios=10.2/-/-/0	-	22d55b3bde895849
 method	c:objc(cs)INPersonHandle(im)init	-			instancetype	-	-	*unavailable ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=3.2/-/-/0	-	de7000c6190cc562
 method	c:objc(cs)INPersonHandle(im)initWithValue:type:label:	-			instancetype	NSString * value | INPersonHandleType type | INPersonHandleLabel label	-	ios=10.2/-/-/0	-	f41f7cbba82dd40c
 method	c:objc(cs)INPersonHandle(im)initWithValue:type:	-			instancetype	NSString * value | INPersonHandleType type	-	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=3.2/-/-/0	-	a7c8200556c71925
@@ -3272,7 +3272,7 @@ property	c:objc(cs)INPerson(py)displayName	-			NSString *	-	readonly,copy,nonato
 property	c:objc(cs)INPerson(py)image	-			INImage *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=3.2/-/-/0	-	e2da0a94fed22f4c
 property	c:objc(cs)INPerson(py)contactIdentifier	-			NSString *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=3.2/-/-/0	-	7b19394ceef389cc
 property	c:objc(cs)INPerson(py)customIdentifier	-			NSString *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=3.2/-/-/0	-	2acfa764b3de397d
-property	c:objc(cs)INPerson(py)relationship	-			API_AVAILABLE INPersonRelationship	-	readonly,copy,nonatomic	ios=10.2/-/-/0	-	1a5d7e24dbe7b745
+property	c:objc(cs)INPerson(py)relationship	-			INPersonRelationship	-	readonly,copy,nonatomic	ios=10.2/-/-/0	-	7335e43e43b69957
 property	c:objc(cs)INPerson(py)contactSuggestion	-			BOOL	-	readonly,nonatomic,getter=isContactSuggestion	ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=8.0/-/-/0	-	58964f358abac13e
 category	c:objc(cy)INPerson@INInteraction	-			-	-	-	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=3.2/-/-/0	-	13612b2e5f78cfdd
 property	c:objc(cs)INPerson(py)aliases	INInteraction			NSArray<INPersonHandle *> *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=3.2/-/-/0	-	e09a44387751e1e5
@@ -3436,20 +3436,20 @@ method	c:objc(cs)INMessage(im)initWithIdentifier:conversationIdentifier:content:
 method	c:objc(cs)INMessage(im)initWithIdentifier:conversationIdentifier:content:dateSent:sender:recipients:groupName:serviceName:messageType:referencedMessage:reaction:	-			instancetype	NSString * identifier | NSString * conversationIdentifier | NSString * content | NSDate * dateSent | INPerson * sender | NSArray<INPerson *> * recipients | INSpeakableString * groupName | NSString * serviceName | INMessageType messageType | INMessage * referencedMessage | INMessageReaction * reaction	-	ios=18.0/-/-/0,macos=-/-/-/1,watchos=11.0/-/-/0	-	05e244ed42d8e126
 method	c:objc(cs)INMessage(im)initWithIdentifier:conversationIdentifier:content:dateSent:sender:recipients:groupName:serviceName:messageType:referencedMessage:sticker:reaction:	-			instancetype	NSString * identifier | NSString * conversationIdentifier | NSString * content | NSDate * dateSent | INPerson * sender | NSArray<INPerson *> * recipients | INSpeakableString * groupName | NSString * serviceName | INMessageType messageType | INMessage * referencedMessage | INSticker * sticker | INMessageReaction * reaction	-	ios=18.0/-/-/0,macos=-/-/-/1,watchos=11.0/-/-/0	-	6897fd20d87794c2
 property	c:objc(cs)INMessage(py)identifier	-			NSString *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	01ac62f2c913bda8
-property	c:objc(cs)INMessage(py)conversationIdentifier	-			API_UNAVAILABLE NSString *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,watchos=4.0/-/-/0	-	f420f8d8a912834f
+property	c:objc(cs)INMessage(py)conversationIdentifier	-			NSString *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,watchos=4.0/-/-/0	-	700731827783129f
 property	c:objc(cs)INMessage(py)content	-			NSString *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	dfad672b93e3a4a8
 property	c:objc(cs)INMessage(py)dateSent	-			NSDate *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	a4a79f87d50eeef3
 property	c:objc(cs)INMessage(py)sender	-			INPerson *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	a5e7d2cc60c3aad5
 property	c:objc(cs)INMessage(py)recipients	-			NSArray<INPerson *> *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/-/-/0	-	d4de71e1955a74e9
-property	c:objc(cs)INMessage(py)groupName	-			API_UNAVAILABLE INSpeakableString *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,watchos=4.0/-/-/0	-	b47011e693d46991
+property	c:objc(cs)INMessage(py)groupName	-			INSpeakableString *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,watchos=4.0/-/-/0	-	64c0b8b2787b1314
 property	c:objc(cs)INMessage(py)messageType	-			INMessageType	-	readonly,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,watchos=4.0/-/-/0	-	ef9f6c26811531ef
-property	c:objc(cs)INMessage(py)serviceName	-			API_UNAVAILABLE NSString *	-	readonly,copy,nonatomic	ios=13.2/-/-/0,macos=-/-/-/1,watchos=6.1/-/-/0	-	3a00d8780c23122d
-property	c:objc(cs)INMessage(py)attachmentFiles	-			API_UNAVAILABLE NSArray<INFile *> *	-	readonly,copy,nonatomic	ios=17.0/-/-/0,macos=-/-/-/1,watchos=10.0/-/-/0	-	8e9b9c748e906f17
-property	c:objc(cs)INMessage(py)numberOfAttachments	-			API_UNAVAILABLE NSNumber *	-	readonly,copy,nonatomic	ios=17.0/-/-/0,macos=-/-/-/1,watchos=10.0/-/-/0	-	6845da39169346b3
+property	c:objc(cs)INMessage(py)serviceName	-			NSString *	-	readonly,copy,nonatomic	ios=13.2/-/-/0,macos=-/-/-/1,watchos=6.1/-/-/0	-	50a1f4a723c373c1
+property	c:objc(cs)INMessage(py)attachmentFiles	-			NSArray<INFile *> *	-	readonly,copy,nonatomic	ios=17.0/-/-/0,macos=-/-/-/1,watchos=10.0/-/-/0	-	dd886d782dc2e6d6
+property	c:objc(cs)INMessage(py)numberOfAttachments	-			NSNumber *	-	readonly,copy,nonatomic	ios=17.0/-/-/0,macos=-/-/-/1,watchos=10.0/-/-/0	-	60e9d920f257850e
 property	c:objc(cs)INMessage(py)audioMessageFile	-			INFile *	-	readonly,copy,nonatomic	ios=16.0/17.0/-/0,macos=13.0/14.0/-/0,watchos=9.0/10.0/-/0	-	81245da5d2bd9e47
-property	c:objc(cs)INMessage(py)linkMetadata	-			API_UNAVAILABLE INMessageLinkMetadata *	-	readonly,copy,nonatomic	ios=17.0/-/-/0,macos=-/-/-/1,watchos=10.0/-/-/0	-	5bb755fcbf0e5aa5
+property	c:objc(cs)INMessage(py)linkMetadata	-			INMessageLinkMetadata *	-	readonly,copy,nonatomic	ios=17.0/-/-/0,macos=-/-/-/1,watchos=10.0/-/-/0	-	3fb5615fd07ac7fc
 property	c:objc(cs)INMessage(py)sticker	-			INSticker *	-	copy,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0	-	b212e06a70ad8188
-property	c:objc(cs)INMessage(py)reaction	-			API_UNAVAILABLE INMessageReaction *	-	copy,nonatomic	ios=18.0/-/-/0,macos=-/-/-/1,watchos=11.0/-/-/0	-	ca4544f8ddae5c0e
+property	c:objc(cs)INMessage(py)reaction	-			INMessageReaction *	-	copy,nonatomic	ios=18.0/-/-/0,macos=-/-/-/1,watchos=11.0/-/-/0	-	11a481b16031f84e
 interface	c:objc(cs)INSendMessageAttachment	-			-	-	-	ios=14.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=7.0/-/-/0	-	d4c7477d693917ce
 super	-	INSendMessageAttachment	NSObject		-	-	-	-	-	d156fec1a7c7c05b
 method	c:objc(cs)INSendMessageAttachment(cm)attachmentWithAudioMessageFile:	-			INSendMessageAttachment *	INFile * audioMessageFile	-	ios=14.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=7.0/-/-/0	-	4a85911b4c8701ac
@@ -3486,7 +3486,7 @@ method	c:objc(cs)INRideOption(im)initWithCoder:	-			instancetype	NSCoder * decod
 property	c:objc(cs)INRideOption(py)name	-			NSString *	-	copy,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/-/-/0	-	02cb4284a32d80b6
 property	c:objc(cs)INRideOption(py)estimatedPickupDate	-			NSDate *	-	copy,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/-/-/0	-	a9a38b3d960fbc1f
 property	c:objc(cs)INRideOption(py)priceRange	-			INPriceRange *	-	copy,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/-/-/0	-	223310cf717453d5
-property	c:objc(cs)INRideOption(py)usesMeteredFare	-			NS_REFINED_FOR_SWIFT NSNumber *	-	copy,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/-/-/0	-	8fccc4eff05c6474
+property	c:objc(cs)INRideOption(py)usesMeteredFare	-			NSNumber *	-	copy,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/-/-/0	-	0f37ff1cce15a6b9
 property	c:objc(cs)INRideOption(py)disclaimerMessage	-			NSString *	-	copy,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/-/-/0	-	e57e3c56587aa56f
 property	c:objc(cs)INRideOption(py)availablePartySizeOptions	-			NSArray<INRidePartySizeOption *> *	-	copy,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/-/-/0	-	a83da6fdba0e2398
 property	c:objc(cs)INRideOption(py)availablePartySizeOptionsSelectionPrompt	-			NSString *	-	copy,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.0/-/-/0	-	333db3ec89f58d12
@@ -3606,8 +3606,8 @@ method	c:objc(cs)INLodgingReservation(im)initWithItemReference:reservationNumber
 method	c:objc(cs)INLodgingReservation(im)initWithItemReference:reservationNumber:bookingTime:reservationStatus:reservationHolderName:actions:lodgingBusinessLocation:reservationDuration:numberOfAdults:numberOfChildren:	-			instancetype	INSpeakableString * itemReference | NSString * reservationNumber | NSDate * bookingTime | INReservationStatus reservationStatus | NSString * reservationHolderName | NSArray<INReservationAction *> * actions | CLPlacemark * lodgingBusinessLocation | INDateComponentsRange * reservationDuration | NSNumber * numberOfAdults | NSNumber * numberOfChildren	-	ios=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0	-	4a998ef79c322a09
 property	c:objc(cs)INLodgingReservation(py)lodgingBusinessLocation	-			CLPlacemark *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0	-	57ace9fdb68a0a54
 property	c:objc(cs)INLodgingReservation(py)reservationDuration	-			INDateComponentsRange *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0	-	55907609229a9db2
-property	c:objc(cs)INLodgingReservation(py)numberOfAdults	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0	-	6eb0c45c3e6bfe16
-property	c:objc(cs)INLodgingReservation(py)numberOfChildren	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0	-	15e6d0e9a6044df2
+property	c:objc(cs)INLodgingReservation(py)numberOfAdults	-			NSNumber *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0	-	c4579b437eb9d60e
+property	c:objc(cs)INLodgingReservation(py)numberOfChildren	-			NSNumber *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0	-	6488ccaf4eb2289b
 interface	c:objc(cs)INRentalCarReservation	-			-	-	-	ios=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0	-	0b77839cbb284c7f
 super	-	INRentalCarReservation	INReservation		-	-	-	-	-	6f7e4725401b7071
 conforms	-	INRentalCarReservation	NSCopying		-	-	-	-	-	ded505ac66fe692b
@@ -3625,7 +3625,7 @@ conforms	-	INRestaurantReservation	NSSecureCoding		-	-	-	-	-	982a74c2244d343c
 method	c:objc(cs)INRestaurantReservation(im)initWithItemReference:reservationNumber:bookingTime:reservationStatus:reservationHolderName:actions:URL:reservationDuration:partySize:restaurantLocation:	-			instancetype	INSpeakableString * itemReference | NSString * reservationNumber | NSDate * bookingTime | INReservationStatus reservationStatus | NSString * reservationHolderName | NSArray<INReservationAction *> * actions | NSURL * URL | INDateComponentsRange * reservationDuration | NSNumber * partySize | CLPlacemark * restaurantLocation	-	ios=14.0/-/-/0,watchos=7.0/-/-/0	-	563c85673d634bcb
 method	c:objc(cs)INRestaurantReservation(im)initWithItemReference:reservationNumber:bookingTime:reservationStatus:reservationHolderName:actions:reservationDuration:partySize:restaurantLocation:	-			instancetype	INSpeakableString * itemReference | NSString * reservationNumber | NSDate * bookingTime | INReservationStatus reservationStatus | NSString * reservationHolderName | NSArray<INReservationAction *> * actions | INDateComponentsRange * reservationDuration | NSNumber * partySize | CLPlacemark * restaurantLocation	-	ios=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0	-	e08bf5541d7391c3
 property	c:objc(cs)INRestaurantReservation(py)reservationDuration	-			INDateComponentsRange *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0	-	fb693d47c68784b9
-property	c:objc(cs)INRestaurantReservation(py)partySize	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0	-	c08de7d7aee422e0
+property	c:objc(cs)INRestaurantReservation(py)partySize	-			NSNumber *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0	-	73af3a16a17705dc
 property	c:objc(cs)INRestaurantReservation(py)restaurantLocation	-			CLPlacemark *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0	-	886501f09f87c314
 interface	c:objc(cs)INTicketedEventReservation	-			-	-	-	ios=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0	-	0554a0448d0e82de
 super	-	INTicketedEventReservation	INReservation		-	-	-	-	-	3d9fc6d79eb3504b
@@ -3928,7 +3928,7 @@ method	c:objc(cs)NSString(cm)deferredLocalizedIntentsStringWithFormat:fromTable:
 method	c:objc(cs)NSString(cm)deferredLocalizedIntentsStringWithFormat:fromTable:arguments:	Intents			NSString *	NSString * format | NSString * table | va_list arguments	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=14.0/-/-/0,watchos=5.0/-/-/0	-	dd5cbebda5d50006
 category	c:objc(cy)NSUserActivity@IntentsAdditions	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	1400a42e6148d07b
 property	c:objc(cs)NSUserActivity(py)interaction	IntentsAdditions			INInteraction *	-	readonly,nonatomic	ios=10.0/-/-/0,macos=12.0/-/-/0,tvos=14.0/-/-/0,watchos=3.2/-/-/0	-	c886cd888748abf2
-property	c:objc(cs)NSUserActivity(py)suggestedInvocationPhrase	IntentsAdditions			API_UNAVAILABLE NSString *	-	copy,nonatomic	ios=12.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=5.0/-/-/0	-	e42e6a4dc93080ba
+property	c:objc(cs)NSUserActivity(py)suggestedInvocationPhrase	IntentsAdditions			NSString *	-	copy,nonatomic	ios=12.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=5.0/-/-/0	-	c2745dfd89802b7a
 property	c:objc(cs)NSUserActivity(py)shortcutAvailability	IntentsAdditions			INShortcutAvailabilityOptions	-	assign,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.0/-/-/0	-	dc53b9467518bce1
 interface	c:objc(cs)INUserContext	-			-	-	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=6.0/-/-/0	-	87b0cd408571155b
 super	-	INUserContext	NSObject		-	-	-	-	-	5bfc52c660c3207d
@@ -3944,7 +3944,7 @@ interface	c:objc(cs)INMediaUserContext	-			-	-	-	ios=13.0/-/-/0,macos=-/-/-/1,tv
 super	-	INMediaUserContext	INUserContext		-	-	-	-	-	17f085b7febc10e9
 method	c:objc(cs)INMediaUserContext(im)init	-			instancetype	-	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=6.0/-/-/0	-	f2e29fa161abdc07
 property	c:objc(cs)INMediaUserContext(py)subscriptionStatus	-			INMediaUserContextSubscriptionStatus	-	assign,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=6.0/-/-/0	-	e1dcadfd684d5fa5
-property	c:objc(cs)INMediaUserContext(py)numberOfLibraryItems	-			NS_REFINED_FOR_SWIFT NSNumber *	-	copy,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=6.0/-/-/0	-	31c9ac255448883e
+property	c:objc(cs)INMediaUserContext(py)numberOfLibraryItems	-			NSNumber *	-	copy,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=6.0/-/-/0	-	533cbf6ca4879f31
 interface	c:objc(cs)INNoteContent	-			-	-	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=4.0/-/-/0	-	4a42b64ed2a70d4e
 super	-	INNoteContent	NSObject		-	-	-	-	-	f59b2e8c04dd7e07
 conforms	-	INNoteContent	NSSecureCoding		-	-	-	-	-	c8da7c8f8ccd8188
@@ -4075,7 +4075,7 @@ method	c:objc(cs)INRideDriver(im)initWithHandle:displayName:image:rating:phoneNu
 method	c:objc(cs)INRideDriver(im)initWithHandle:nameComponents:image:rating:phoneNumber:	Deprecated			instancetype	NSString * handle | NSPersonNameComponents * nameComponents | INImage * image | NSString * rating | NSString * phoneNumber	-	ios=10.0/10.0/-/0	deprecated: Use the designated initializer instead	cb5645d777633c80
 category	c:objc(cy)INSaveProfileInCarIntent@Deprecated	-			-	-	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use `-initWithProfileNumber:profileName:` method instead.	8ebe775a32458f52
 method	c:objc(cs)INSaveProfileInCarIntent(im)initWithProfileNumber:profileLabel:	Deprecated			instancetype	NSNumber * profileNumber | NSString * profileLabel	-	ios=10.0/10.2/-/0,watchos=-/-/-/1	deprecated: Use `-initWithProfileNumber:profileName:` method instead.	036f079314307803
-property	c:objc(cs)INSaveProfileInCarIntent(py)profileLabel	Deprecated			API_DEPRECATED NSString *	-	readonly,copy,nonatomic	ios=10.0/10.2/-/0,watchos=-/-/-/1	-	cbca6418dc1e0537
+property	c:objc(cs)INSaveProfileInCarIntent(py)profileLabel	Deprecated			NSString *	-	readonly,copy,nonatomic	ios=10.0/10.2/-/0,watchos=-/-/-/1	-	6f311eb3d01a4cc3
 category	c:objc(cy)INSearchCallHistoryIntent@Deprecated	-			-	-	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/8.0/-/0	deprecated: Use the designated initializer instead	b80edc755570ccc3
 method	c:objc(cs)INSearchCallHistoryIntent(im)initWithCallType:dateCreated:recipient:callCapabilities:	Deprecated			instancetype	INCallRecordType callType | INDateComponentsRange * dateCreated | INPerson * recipient | INCallCapabilityOptions callCapabilities	-	ios=10.0/11.0/-/0,watchos=3.2/4.0/-/0	deprecated: Use the designated initializer instead	61d80d29dbd1b786
 property	c:objc(cs)INSearchCallHistoryIntent(py)callType	Deprecated			INCallRecordType	-	readonly,assign,nonatomic	ios=10.0/11.0/-/0,watchos=3.2/4.0/-/0	-	986802fe1af5273c
@@ -4097,7 +4097,7 @@ property	c:objc(cs)INSendMessageIntent(py)groupName	Deprecated			NSString *	-	re
 category	c:objc(cy)INSetProfileInCarIntent@Deprecated	-			-	-	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use -initWithProfileNumber:profileName:defaultProfile: instead	9f7de2ba5e2bc8f5
 method	c:objc(cs)INSetProfileInCarIntent(im)initWithProfileNumber:profileLabel:defaultProfile:	Deprecated			instancetype	NSNumber * profileNumber | NSString * profileLabel | NSNumber * defaultProfile	-	ios=10.0/10.2/-/0,watchos=-/-/-/1	deprecated: Use -initWithProfileNumber:profileName:defaultProfile: instead	0dc1471c3ab0e0ec
 method	c:objc(cs)INSetProfileInCarIntent(im)initWithProfileNumber:profileName:defaultProfile:	Deprecated			instancetype	NSNumber * profileNumber | NSString * profileName | NSNumber * defaultProfile	-	ios=10.2/12.0/-/0	deprecated: Use -initWithProfileNumber:profileName:defaultProfile:carName: instead	cd49f5622c9a975c
-property	c:objc(cs)INSetProfileInCarIntent(py)profileLabel	Deprecated			API_DEPRECATED_WITH_REPLACEMENT NSString *	-	readonly,copy,nonatomic	ios=10.0/10.2/-/0,watchos=-/-/-/1	-	54aa293e303ce714
+property	c:objc(cs)INSetProfileInCarIntent(py)profileLabel	Deprecated			NSString *	-	readonly,copy,nonatomic	ios=10.0/10.2/-/0,watchos=-/-/-/1	-	5e0cca7ce5b37af9
 category	c:objc(cy)INSetClimateSettingsInCarIntent@Deprecated	-			-	-	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use -initWithEnableFan:enableAirConditioner:enableClimateControl:enableAutoMode:airCirculationMode:fanSpeedIndex:fanSpeedPercentage:relativeFanSpeedSetting:temperature:relativeTemperatureSetting: instead	c514faa95a9a5fae
 method	c:objc(cs)INSetClimateSettingsInCarIntent(im)initWithEnableFan:enableAirConditioner:enableClimateControl:enableAutoMode:airCirculationMode:fanSpeedIndex:fanSpeedPercentage:relativeFanSpeedSetting:temperature:relativeTemperatureSetting:climateZone:	Deprecated			instancetype	NSNumber * enableFan | NSNumber * enableAirConditioner | NSNumber * enableClimateControl | NSNumber * enableAutoMode | INCarAirCirculationMode airCirculationMode | NSNumber * fanSpeedIndex | NSNumber * fanSpeedPercentage | INRelativeSetting relativeFanSpeedSetting | NSMeasurement<NSUnitTemperature *> * temperature | INRelativeSetting relativeTemperatureSetting | INCarSeat climateZone	-	ios=10.0/12.0/-/0	deprecated: Use -initWithEnableFan:enableAirConditioner:enableClimateControl:enableAutoMode:airCirculationMode:fanSpeedIndex:fanSpeedPercentage:relativeFanSpeedSetting:temperature:relativeTemperatureSetting: instead	5a806e4f920a431c
 category	c:objc(cy)INSetDefrosterSettingsInCarIntent@Deprecated	-			-	-	-	ios=10.0/15.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use -initWithEnable:defroster:carName: instead	428a443a498e5efd

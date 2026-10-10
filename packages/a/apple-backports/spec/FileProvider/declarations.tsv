@@ -59,7 +59,7 @@ property	c:objc(pl)NSFileProviderItem(py)itemIdentifier	-			NSFileProviderItemId
 property	c:objc(pl)NSFileProviderItem(py)parentItemIdentifier	-			NSFileProviderItemIdentifier	-	readonly,copy,nonatomic	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	31fd31d3f093d5cc
 property	c:objc(pl)NSFileProviderItem(py)filename	-			NSString *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2290bfc47608cec1
 property	c:objc(pl)NSFileProviderItem(py)contentType	-			UTType *	-	readonly,copy,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	b1a3b2f4fdddbc0f
-property	c:objc(pl)NSFileProviderItem(py)typeIdentifier	-			API_DEPRECATED_WITH_REPLACEMENT NSString *	-	readonly,copy,nonatomic	ios=11.0/15.0/-/0,macos=-/-/-/1	-	cdb6b4bc8de7f837
+property	c:objc(pl)NSFileProviderItem(py)typeIdentifier	-			NSString *	-	readonly,copy,nonatomic	ios=11.0/15.0/-/0,macos=-/-/-/1	-	5d19a3cc308ca3fe
 property	c:objc(pl)NSFileProviderItem(py)typeAndCreator	-			NSFileProviderTypeAndCreator	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	82bd7d2946ed74f3
 property	c:objc(pl)NSFileProviderItem(py)capabilities	-			NSFileProviderItemCapabilities	-	readonly,nonatomic	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b1539fa269688bd1
 property	c:objc(pl)NSFileProviderItem(py)fileSystemFlags	-			NSFileProviderFileSystemFlags	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b94e7cbea7e481ec
@@ -83,7 +83,7 @@ property	c:objc(pl)NSFileProviderItem(py)shared	-			BOOL	-	readonly,nonatomic,ge
 property	c:objc(pl)NSFileProviderItem(py)sharedByCurrentUser	-			BOOL	-	readonly,nonatomic,getter=isSharedByCurrentUser	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	eea255b7a7027a54
 property	c:objc(pl)NSFileProviderItem(py)ownerNameComponents	-			NSPersonNameComponents *	-	readonly,strong,nonatomic	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ada200764a8e7a7e
 property	c:objc(pl)NSFileProviderItem(py)mostRecentEditorNameComponents	-			NSPersonNameComponents *	-	readonly,strong,nonatomic	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	51ba2a0a96664c80
-property	c:objc(pl)NSFileProviderItem(py)versionIdentifier	-			API_AVAILABLE NSData *	-	readonly,strong,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a0e5d63eb5e31207
+property	c:objc(pl)NSFileProviderItem(py)versionIdentifier	-			NSData *	-	readonly,strong,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	35f06abfb4f89c92
 property	c:objc(pl)NSFileProviderItem(py)itemVersion	-			NSFileProviderItemVersion *	-	readonly,strong,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7ced8cc266db53c0
 property	c:objc(pl)NSFileProviderItem(py)symlinkTargetPath	-			NSString *	-	readonly,copy,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	190918a6c8130b6c
 property	c:objc(pl)NSFileProviderItem(py)userInfo	-			NSDictionary *	-	readonly,strong,nonatomic	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2048f8bbc49ebdc6
@@ -101,8 +101,8 @@ method	c:objc(cs)NSFileProviderExtension(im)itemChangedAtURL:	-			void	NSURL * u
 category	c:objc(cy)NSFileProviderExtension@Deprecated	-			-	-	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use the corresponding method on NSFileProviderManager instead	1c27e113f23ae21a
 method	c:objc(cs)NSFileProviderExtension(cm)writePlaceholderAtURL:withMetadata:error:	Deprecated			BOOL	NSURL * placeholderURL | NSDictionary<NSURLResourceKey,id> * metadata | NSError * _Nullable * error	-	ios=8.0/11.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use the corresponding method on NSFileProviderManager instead	fe2429355d24bf2a
 method	c:objc(cs)NSFileProviderExtension(cm)placeholderURLForURL:	Deprecated			NSURL *	NSURL * url	-	ios=8.0/11.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use NSFileProviderManager +placeholderURLForURL: instead	08dfa5fe5df6e1cf
-property	c:objc(cs)NSFileProviderExtension(py)providerIdentifier	Deprecated			API_DEPRECATED_WITH_REPLACEMENT NSString *	-	readonly,nonatomic	ios=8.0/11.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a0d16fe6870649fd
-property	c:objc(cs)NSFileProviderExtension(py)documentStorageURL	Deprecated			API_DEPRECATED_WITH_REPLACEMENT NSURL *	-	readonly,nonatomic	ios=8.0/11.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1513df3f3f2e2ac7
+property	c:objc(cs)NSFileProviderExtension(py)providerIdentifier	Deprecated			NSString *	-	readonly,nonatomic	ios=8.0/11.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ab285c5fcf8a21ef
+property	c:objc(cs)NSFileProviderExtension(py)documentStorageURL	Deprecated			NSURL *	-	readonly,nonatomic	ios=8.0/11.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7a55149955376dd2
 typedef	c:@T@NSFileProviderDomainIdentifier	-			NSString *	-	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5382bf8027f63c73
 interface	c:objc(cs)NSFileProviderDomainVersion	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b6aedb4a8fef07e0
 super	-	NSFileProviderDomainVersion	NSObject		-	-	-	-	-	16fdfd6b73dff88c
@@ -214,7 +214,7 @@ enumconst	c:@E@NSFileProviderDomainRemovalMode@NSFileProviderDomainRemovalModePr
 interface	c:objc(cs)NSFileProviderManager	-			-	-	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6a78c1a6694bc16b
 super	-	NSFileProviderManager	NSObject		-	-	-	-	-	d30a9cd4a9668ccc
 method	c:objc(cs)NSFileProviderManager(im)init	-			instancetype	-	-	*unavailable ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7c3c26a3f3f2ac5a
-property	c:objc(cs)NSFileProviderManager(cpy)defaultManager	-			API_UNAVAILABLE NSFileProviderManager *	-	readonly,strong,class	macos=-/-/-/1	-	a5ed5e56425c6c1e
+property	c:objc(cs)NSFileProviderManager(cpy)defaultManager	-			NSFileProviderManager *	-	readonly,strong,class	macos=-/-/-/1	-	cd485d92448b9a05
 method	c:objc(cs)NSFileProviderManager(cm)managerForDomain:	-			instancetype	NSFileProviderDomain * domain	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4dcc98b479a4cd10
 method	c:objc(cs)NSFileProviderManager(im)signalEnumeratorForContainerItemIdentifier:completionHandler:	-			void	NSFileProviderItemIdentifier containerItemIdentifier | void (^)(NSError * _Nullable) completion	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f16f62568cf1a2e0
 method	c:objc(cs)NSFileProviderManager(im)getUserVisibleURLForItemIdentifier:completionHandler:	-			void	NSFileProviderItemIdentifier itemIdentifier | void (^)(NSURL * _Nullable, NSError * _Nullable) completionHandler	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1f4d4e5126b0a5f4
@@ -306,7 +306,7 @@ interface	c:objc(cs)NSFileProviderRequest	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-
 super	-	NSFileProviderRequest	NSObject		-	-	-	-	-	71b1581baa96bf90
 property	c:objc(cs)NSFileProviderRequest(py)isSystemRequest	-			BOOL	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	20852c3ebd413055
 property	c:objc(cs)NSFileProviderRequest(py)isFileViewerRequest	-			BOOL	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fa0371c186f4b725
-property	c:objc(cs)NSFileProviderRequest(py)requestingExecutable	-			API_UNAVAILABLE NSURL *	-	readonly,copy,nonatomic	ios=-/-/-/1	-	fdbd62b426bf34f6
+property	c:objc(cs)NSFileProviderRequest(py)requestingExecutable	-			NSURL *	-	readonly,copy,nonatomic	ios=-/-/-/1	-	d20603cfe713b7fa
 property	c:objc(cs)NSFileProviderRequest(py)domainVersion	-			NSFileProviderDomainVersion *	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	adf8a779090a164f
 typedef	c:@T@NSFileProviderCreateItemOptions	-			enum NSFileProviderCreateItemOptions	-	-	-	-	d854789ead614caf
 enum	c:@E@NSFileProviderCreateItemOptions	-			NSUInteger	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a9430c31de56c07b

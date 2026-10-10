@@ -31,7 +31,7 @@ property	c:objc(cs)MTKView(py)drawableSize	-			CGSize	-	nonatomic	ios=9.0/-/-/0,
 property	c:objc(cs)MTKView(py)preferredDrawableSize	-			CGSize	-	readonly,nonatomic	macos=10.15/-/-/0	-	85e86d4c88ad4986
 property	c:objc(cs)MTKView(py)preferredDevice	-			id<MTLDevice>	-	readonly	ios=13.0/-/-/0,macos=10.15/-/-/0	-	4f1df05fee14b6e3
 property	c:objc(cs)MTKView(py)paused	-			BOOL	-	nonatomic,getter=isPaused	ios=9.0/-/-/0,macos=10.11/-/-/0	-	b1697533e387f14e
-property	c:objc(cs)MTKView(py)colorspace	-			NS_AVAILABLE_MAC CGColorSpaceRef	-	nonatomic	ios=-/-/-/1	-	3a02a4e32e6e9f46
+property	c:objc(cs)MTKView(py)colorspace	-			CGColorSpaceRef	-	nonatomic	ios=-/-/-/1	-	d9896fd976a1d386
 method	c:objc(cs)MTKView(im)draw	-			void	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	5ca7d45d3e03fb53
 protocol	c:objc(pl)MTKViewDelegate	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	46b138503b2cb5ef
 conforms	-	MTKViewDelegate	NSObject		-	-	-	-	-	9c2c792772ffd64a
@@ -56,8 +56,8 @@ var	c:@MTKTextureLoaderOriginTopLeft	-			const MTKTextureLoaderOrigin	-	-	ios=10
 var	c:@MTKTextureLoaderOriginBottomLeft	-			const MTKTextureLoaderOrigin	-	-	ios=10.0/-/-/0	-	3f49fc2a093c9cce
 var	c:@MTKTextureLoaderOriginFlippedVertically	-			const MTKTextureLoaderOrigin	-	-	ios=10.0/-/-/0	-	23d6c816ee6d2392
 var	c:@MTKTextureLoaderOptionLoadAsArray	-			const MTKTextureLoaderOption	-	-	ios=17.0/-/-/0	-	2fc27a88259f100e
-typedef	c:@T@MTKTextureLoaderCallback	-			void (^)(id<MTLTexture> _Nullable, NSError * _Nullable)	-	-	-	-	b1cc78b51160f210
-typedef	c:@T@MTKTextureLoaderArrayCallback	-			void (^)(NSArray<id<MTLTexture>> * _Nonnull, NSError * _Nullable)	-	-	ios=10.0/-/-/0	-	d975e1e27f264ff1
+typedef	c:@T@MTKTextureLoaderCallback	-			void ((^))(id<MTLTexture>, NSError *)	-	-	-	-	b669e3e3e8c82546
+typedef	c:@T@MTKTextureLoaderArrayCallback	-			void ((^))(NSArray<id<MTLTexture>> *, NSError *)	-	-	ios=10.0/-/-/0	-	eb82cc6a8d8357a1
 interface	c:objc(cs)MTKTextureLoader	-			-	-	-	ios=9.0/-/-/0	-	32417773eeeeef1e
 super	-	MTKTextureLoader	NSObject		-	-	-	-	-	d1d060bc7b6a09d6
 property	c:objc(cs)MTKTextureLoader(py)device	-			id<MTLDevice>	-	readonly,nonatomic	ios=9.0/-/-/0	-	a83b03d4b93162f3
@@ -115,9 +115,9 @@ property	c:objc(cs)MTKMesh(py)vertexDescriptor	-			MDLVertexDescriptor *	-	reado
 property	c:objc(cs)MTKMesh(py)submeshes	-			NSArray<MTKSubmesh *> *	-	readonly,nonatomic	ios=9.0/-/-/0	-	811d1926fc949e3c
 property	c:objc(cs)MTKMesh(py)vertexCount	-			NSUInteger	-	readonly,nonatomic	ios=9.0/-/-/0	-	3918e147299cdbbc
 property	c:objc(cs)MTKMesh(py)name	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	35eff9ba43ad73e2
-function	c:@F@MTKModelIOVertexDescriptorFromMetal	-			MDLVertexDescriptor * _Nonnull (MTLVertexDescriptor * _Nonnull)	MTLVertexDescriptor * metalDescriptor	-	ios=9.0/-/-/0	-	57fff0c44dbb44bf
-function	c:@F@MTKModelIOVertexDescriptorFromMetalWithError	-			MDLVertexDescriptor * _Nonnull (MTLVertexDescriptor * _Nonnull, NSError * _Nullable * _Nullable)	MTLVertexDescriptor * metalDescriptor | NSError * _Nullable * error	-	ios=10.0/-/-/0	-	fd4262635973f79a
-function	c:@F@MTKMetalVertexDescriptorFromModelIO	-			MTLVertexDescriptor * _Nullable (MDLVertexDescriptor * _Nonnull)	MDLVertexDescriptor * modelIODescriptor	-	ios=9.0/-/-/0	-	3b73e95edd736a8c
-function	c:@F@MTKMetalVertexDescriptorFromModelIOWithError	-			MTLVertexDescriptor * _Nullable (MDLVertexDescriptor * _Nonnull, NSError * _Nullable * _Nullable)	MDLVertexDescriptor * modelIODescriptor | NSError * _Nullable * error	-	ios=10.0/-/-/0	-	38ca5815c27e280a
+function	c:@F@MTKModelIOVertexDescriptorFromMetal	-			MDLVertexDescriptor * (MTLVertexDescriptor *)	MTLVertexDescriptor * metalDescriptor	-	ios=9.0/-/-/0	-	f4ec9d0da20eeb53
+function	c:@F@MTKModelIOVertexDescriptorFromMetalWithError	-			MDLVertexDescriptor * (MTLVertexDescriptor *, NSError * _Nullable *)	MTLVertexDescriptor * metalDescriptor | NSError * _Nullable * error	-	ios=10.0/-/-/0	-	6229137c1ec2585b
+function	c:@F@MTKMetalVertexDescriptorFromModelIO	-			MTLVertexDescriptor * (MDLVertexDescriptor *)	MDLVertexDescriptor * modelIODescriptor	-	ios=9.0/-/-/0	-	7dcb78d4e40cb12a
+function	c:@F@MTKMetalVertexDescriptorFromModelIOWithError	-			MTLVertexDescriptor * (MDLVertexDescriptor *, NSError * _Nullable *)	MDLVertexDescriptor * modelIODescriptor | NSError * _Nullable * error	-	ios=10.0/-/-/0	-	06129f66e6aec488
 function	c:@F@MTKModelIOVertexFormatFromMetal	-			MDLVertexFormat (MTLVertexFormat)	MTLVertexFormat vertexFormat	-	ios=9.0/-/-/0	-	954bbab7bf7da1b2
 function	c:@F@MTKMetalVertexFormatFromModelIO	-			MTLVertexFormat (MDLVertexFormat)	MDLVertexFormat vertexFormat	-	ios=9.0/-/-/0	-	1db75beb09dd79ea

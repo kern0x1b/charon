@@ -530,7 +530,7 @@ method	c:objc(cs)MPMusicPlayerController(im)skipToBeginning	-			void	-	-	ios=3.0
 method	c:objc(cs)MPMusicPlayerController(im)skipToPreviousItem	-			void	-	-	ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	8101ae715fc0ac62
 method	c:objc(cs)MPMusicPlayerController(im)beginGeneratingPlaybackNotifications	-			void	-	-	ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	468b1a74888282d7
 method	c:objc(cs)MPMusicPlayerController(im)endGeneratingPlaybackNotifications	-			void	-	-	ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	490aa1f97a5f7f9f
-property	c:objc(cs)MPMusicPlayerController(cpy)iPodMusicPlayer	-			MP_DEPRECATED_WITH_REPLACEMENT MPMusicPlayerController *	-	readonly,nonatomic,class	ios=3.0/8.0/-/0,tvos=-/-/-/1	-	3b9338de5082a99a
+property	c:objc(cs)MPMusicPlayerController(cpy)iPodMusicPlayer	-			MPMusicPlayerController *	-	readonly,nonatomic,class	ios=3.0/8.0/-/0,tvos=-/-/-/1	-	fe25d07700709823
 var	c:@MPMusicPlayerControllerPlaybackStateDidChangeNotification	-			const NSNotificationName	-	-	ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	9f72b349fd5c7304
 var	c:@MPMusicPlayerControllerNowPlayingItemDidChangeNotification	-			const NSNotificationName	-	-	ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	9f654cdf392ec306
 var	c:@MPMusicPlayerControllerVolumeDidChangeNotification	-			const NSNotificationName	-	-	ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6445e254640275fa
@@ -810,7 +810,7 @@ method	c:objc(cs)MPVolumeView(im)setVolumeThumbImage:forState:	-			void	UIImage 
 method	c:objc(cs)MPVolumeView(im)minimumVolumeSliderImageForState:	-			UIImage *	UIControlState state	-	ios=6.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	68483f34b5246386
 method	c:objc(cs)MPVolumeView(im)maximumVolumeSliderImageForState:	-			UIImage *	UIControlState state	-	ios=6.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	ccab6e96cbc6a681
 method	c:objc(cs)MPVolumeView(im)volumeThumbImageForState:	-			UIImage *	UIControlState state	-	ios=6.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	cdc9e17cf6d800f8
-property	c:objc(cs)MPVolumeView(py)volumeWarningSliderImage	-			API_UNAVAILABLE UIImage *	-	strong,nonatomic	ios=7.0/17.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6211a524ead5e339
+property	c:objc(cs)MPVolumeView(py)volumeWarningSliderImage	-			UIImage *	-	strong,nonatomic	ios=7.0/17.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	13e35b912bde0daa
 method	c:objc(cs)MPVolumeView(im)volumeSliderRectForBounds:	-			CGRect	CGRect bounds	-	ios=6.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	3e878596cc6db69d
 method	c:objc(cs)MPVolumeView(im)volumeThumbRectForBounds:volumeSliderRect:value:	-			CGRect	CGRect bounds | CGRect rect | float value	-	ios=6.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	04bc9eebc94cdc28
 method	c:objc(cs)MPVolumeView(im)setRouteButtonImage:forState:	-			void	UIImage * image | UIControlState state	-	ios=6.0/13.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3ab739e1fda4aa0c

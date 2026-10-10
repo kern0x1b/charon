@@ -48,7 +48,7 @@ property	c:objc(cs)SKNode(py)physicsBody	-			SKPhysicsBody *	-	retain,nonatomic	
 property	c:objc(cs)SKNode(py)userData	-			NSMutableDictionary *	-	retain,nonatomic	-	-	1a7c9c433526192e
 property	c:objc(cs)SKNode(py)reachConstraints	-			SKReachConstraints *	-	copy,nonatomic	-	-	c2c63aaa0b31fc00
 property	c:objc(cs)SKNode(py)constraints	-			NSArray<SKConstraint *> *	-	copy,nonatomic	-	-	d2a368cd1e5c153a
-property	c:objc(cs)SKNode(py)attributeValues	-			NS_DEPRECATED NSDictionary<NSString *,SKAttributeValue *> *	-	copy,nonatomic	ios=10.0/10.0/-/0	-	4e3b5de5bc19d6a0
+property	c:objc(cs)SKNode(py)attributeValues	-			NSDictionary<NSString *,SKAttributeValue *> *	-	copy,nonatomic	ios=10.0/10.0/-/0	-	8de9a5c192fcd7fc
 method	c:objc(cs)SKNode(im)valueForAttributeNamed:	-			SKAttributeValue *	NSString * key	-	ios=10.0/10.0/-/0	-	76316f5de66743df
 method	c:objc(cs)SKNode(im)setValue:forAttributeNamed:	-			void	SKAttributeValue * value | NSString * key	-	ios=10.0/10.0/-/0	-	8e742a5f8c5eada8
 method	c:objc(cs)SKNode(im)setScale:	-			void	CGFloat scale	-	-	-	0db8d9f99b7a9a83
@@ -105,7 +105,7 @@ enumconst	c:@E@SKActionTimingMode@SKActionTimingLinear	SKActionTimingMode			-	-	
 enumconst	c:@E@SKActionTimingMode@SKActionTimingEaseIn	SKActionTimingMode			-	-	-	ios=7.0/-/-/0	-	9a83da193d0753f2
 enumconst	c:@E@SKActionTimingMode@SKActionTimingEaseOut	SKActionTimingMode			-	-	-	ios=7.0/-/-/0	-	4fb8b083531aec91
 enumconst	c:@E@SKActionTimingMode@SKActionTimingEaseInEaseOut	SKActionTimingMode			-	-	-	ios=7.0/-/-/0	-	b44de309d66159ca
-typedef	c:@T@SKActionTimingFunction	-			float (^)(float)	-	-	-	-	120ecddfd79b79fe
+typedef	c:@T@SKActionTimingFunction	-			float ((^))(float)	-	-	-	-	988d1cceb77799d0
 interface	c:objc(cs)SKAction	-			-	-	-	-	-	5c0fb9a3080231fc
 super	-	SKAction	NSObject		-	-	-	-	-	40a1a17b4422038f
 conforms	-	SKAction	NSCopying		-	-	-	-	-	95417fa42e52b381
@@ -453,7 +453,7 @@ method	c:objc(cs)SKFieldNode(cm)springField	-			SKFieldNode *	-	-	ios=8.0/-/-/0,
 method	c:objc(cs)SKFieldNode(cm)electricField	-			SKFieldNode *	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	e0063b00a937d6fe
 method	c:objc(cs)SKFieldNode(cm)magneticField	-			SKFieldNode *	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	61686d4d8b67264c
 method	c:objc(cs)SKFieldNode(cm)customFieldWithEvaluationBlock:	-			SKFieldNode *	SKFieldForceEvaluator block	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	175c2a1d45fd21c9
-typedef	c:@T@SKFieldForceEvaluator	-			vector_float3 (^)(vector_float3, vector_float3, float, float, NSTimeInterval)	-	-	-	-	adcd4730b3ea4611
+typedef	c:@T@SKFieldForceEvaluator	-			vector_float3 ((^))(vector_float3, vector_float3, float, float, NSTimeInterval)	-	-	-	-	9d96466e09239bfa
 typedef	c:@T@SKLabelVerticalAlignmentMode	-			enum SKLabelVerticalAlignmentMode	-	-	-	-	e868b18f0ee2a8d1
 enum	c:@E@SKLabelVerticalAlignmentMode	-			NSInteger	-	-	ios=7.0/-/-/0	-	8443bd5483083d14
 enumconst	c:@E@SKLabelVerticalAlignmentMode@SKLabelVerticalAlignmentModeBaseline	SKLabelVerticalAlignmentMode			-	-	-	ios=7.0/-/-/0	-	229d328832a023a7

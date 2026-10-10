@@ -31,7 +31,7 @@ var	c:@NFCTagResponseUnexpectedLengthErrorKey	-			NSString *const	-	-	ios=13.0/-
 protocol	c:objc(pl)NFCReaderSession	-			-	-	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	13010163720585ae
 conforms	-	NFCReaderSession	NSObject		-	-	-	-	-	e19b4819a42a7132
 property	c:objc(pl)NFCReaderSession(py)ready	-			BOOL	-	readonly,nonatomic,getter=isReady	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8d6c40405747df1e
-property	c:objc(pl)NFCReaderSession(py)alertMessage	-			API_AVAILABLE NSString *	-	copy,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0071557c8053daf8
+property	c:objc(pl)NFCReaderSession(py)alertMessage	-			NSString *	-	copy,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6866691f290d2e0c
 method	c:objc(pl)NFCReaderSession(im)beginSession	-			void	-	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8e82cc8cfbb2a9eb
 method	c:objc(pl)NFCReaderSession(im)invalidateSession	-			void	-	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	700372db7a7c221d
 method	c:objc(pl)NFCReaderSession(im)invalidateSessionWithErrorMessage:	-			void	NSString * errorMessage	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0a39b2a80cc4f33f
@@ -43,9 +43,9 @@ method	c:objc(pl)NFCReaderSessionDelegate(im)readerSession:didDetectTags:	-			vo
 interface	c:objc(cs)NFCReaderSession	-			-	-	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	91262bfaa8b7f75d
 super	-	NFCReaderSession	NSObject		-	-	-	-	-	328b2a7bdb083b64
 conforms	-	NFCReaderSession	NFCReaderSession		-	-	-	-	-	d504afb2144d5fbf
-property	c:objc(cs)NFCReaderSession(py)delegate	-			API_AVAILABLE id	-	readonly,weak,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d97898e26286a27e
+property	c:objc(cs)NFCReaderSession(py)delegate	-			id	-	readonly,weak,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6dbace2bf5652022
 property	c:objc(cs)NFCReaderSession(cpy)readingAvailable	-			BOOL	-	readonly,nonatomic,class	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ace8641763295382
-property	c:objc(cs)NFCReaderSession(py)sessionQueue	-			API_AVAILABLE dispatch_queue_t	-	readonly,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	27bd4c9af6f2baa0
+property	c:objc(cs)NFCReaderSession(py)sessionQueue	-			dispatch_queue_t	-	readonly,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c77cf7c73fcb71a5
 method	c:objc(cs)NFCReaderSession(im)init	-			instancetype	-	-	*unavailable ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	22ecd8692ca5bda2
 typedef	c:@T@NFCTagType	-			enum NFCTagType	-	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cbd1b10499be0138
 enum	c:@E@NFCTagType	-			NSUInteger	-	-	-	-	34d9ce19bd6ec0bd
@@ -58,7 +58,7 @@ conforms	-	NFCTag	NSObject		-	-	-	-	-	b3a2e76d61243200
 conforms	-	NFCTag	NSSecureCoding		-	-	-	-	-	ed6f065f509d6f30
 conforms	-	NFCTag	NSCopying		-	-	-	-	-	bcb43e447d5bcad2
 property	c:objc(pl)NFCTag(py)type	-			NFCTagType	-	readonly,assign,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	98b1de7af64867b8
-property	c:objc(pl)NFCTag(py)session	-			API_AVAILABLE id<NFCReaderSession>	-	readonly,weak,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7a8fb80c81de1a13
+property	c:objc(pl)NFCTag(py)session	-			id<NFCReaderSession>	-	readonly,weak,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6317075c6f1fa543
 property	c:objc(pl)NFCTag(py)available	-			BOOL	-	readonly,nonatomic,getter=isAvailable	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0df77d5b786b5f47
 method	c:objc(pl)NFCTag(im)asNFCISO15693Tag	-			id<NFCISO15693Tag>	-	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	379bd3dfebcf6346
 method	c:objc(pl)NFCTag(im)asNFCISO7816Tag	-			id<NFCISO7816Tag>	-	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b4ae452f64cae0cb
@@ -76,7 +76,7 @@ method	c:objc(pl)NFCTagReaderSessionDelegate(im)tagReaderSessionDidBecomeActive:
 method	c:objc(pl)NFCTagReaderSessionDelegate(im)tagReaderSession:didDetectTags:	-			void	NFCTagReaderSession * session | NSArray<__kindof id<NFCTag>> * tags	optional	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0c153816c662f4a6
 interface	c:objc(cs)NFCTagReaderSession	-			-	-	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	07417d41afbc11c8
 super	-	NFCTagReaderSession	NFCReaderSession		-	-	-	-	-	55d7cd2ccf6b11cd
-property	c:objc(cs)NFCTagReaderSession(py)connectedTag	-			API_AVAILABLE id<NFCTag>	-	readonly,retain,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2769cdab30846cb4
+property	c:objc(cs)NFCTagReaderSession(py)connectedTag	-			id<NFCTag>	-	readonly,retain,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f6d97b8a44c62622
 method	c:objc(cs)NFCTagReaderSession(im)init	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e43e1ccfde53c4d5
 method	c:objc(cs)NFCTagReaderSession(im)initWithPollingOption:delegate:queue:	-			instancetype	NFCPollingOption pollingOption | id<NFCTagReaderSessionDelegate> delegate | dispatch_queue_t queue	-	ios=13.0/-/-/0,ios_app_extension=-/-/-/1,macos=-/-/-/1,macos_app_extension=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3b8ced1c8d319496
 method	c:objc(cs)NFCTagReaderSession(im)restartPolling	-			void	-	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fcc94503eb84227f
@@ -100,7 +100,7 @@ method	c:objc(cs)NFCNDEFReaderSession(im)initWithDelegate:queue:invalidateAfterF
 method	c:objc(cs)NFCNDEFReaderSession(im)restartPolling	-			void	-	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f70981306e54d65e
 method	c:objc(cs)NFCNDEFReaderSession(im)connectToTag:completionHandler:	-			void	id<NFCNDEFTag> tag | void (^)(NSError * _Nullable) completionHandler	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a0855206f8027ce2
 category	c:objc(cy)NSUserActivity@CoreNFC	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	edbb286c559fc401
-property	c:objc(cs)NSUserActivity(py)ndefMessagePayload	CoreNFC			API_AVAILABLE NFCNDEFMessage *	-	readonly,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	dfd20f65a69f2845
+property	c:objc(cs)NSUserActivity(py)ndefMessagePayload	CoreNFC			NFCNDEFMessage *	-	readonly,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	08420e2b1fcbb858
 typedef	c:@T@NFCISO15693RequestFlag	-			enum NFCISO15693RequestFlag	-	-	-	-	8aea97a59b8a9735
 enum	c:@E@NFCISO15693RequestFlag	-			uint8_t	-	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b6c225586f1e6f86
 enumconst	c:@E@NFCISO15693RequestFlag@NFCISO15693RequestFlagDualSubCarriers	NFCISO15693RequestFlag			-	-	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e6f4b03e5a266c86
@@ -130,7 +130,7 @@ interface	c:objc(cs)NFCISO15693CustomCommandConfiguration	-			-	-	-	ios=11.0/-/-
 super	-	NFCISO15693CustomCommandConfiguration	NFCTagCommandConfiguration		-	-	-	-	-	0ab1e182fc0d7ef5
 property	c:objc(cs)NFCISO15693CustomCommandConfiguration(py)manufacturerCode	-			NSUInteger	-	assign,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b908a7ed34cd114b
 property	c:objc(cs)NFCISO15693CustomCommandConfiguration(py)customCommandCode	-			NSUInteger	-	assign,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e4c38698baeb36ca
-property	c:objc(cs)NFCISO15693CustomCommandConfiguration(py)requestParameters	-			API_AVAILABLE NSData *	-	copy,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d680d108da6e6524
+property	c:objc(cs)NFCISO15693CustomCommandConfiguration(py)requestParameters	-			NSData *	-	copy,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c9ab000cdc80cefd
 method	c:objc(cs)NFCISO15693CustomCommandConfiguration(im)initWithManufacturerCode:customCommandCode:requestParameters:	-			instancetype	NSUInteger manufacturerCode | NSUInteger customCommandCode | NSData * requestParameters	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	144610edec819461
 method	c:objc(cs)NFCISO15693CustomCommandConfiguration(im)initWithManufacturerCode:customCommandCode:requestParameters:maximumRetries:retryInterval:	-			instancetype	NSUInteger manufacturerCode | NSUInteger customCommandCode | NSData * requestParameters | NSUInteger maximumRetries | NSTimeInterval retryInterval	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ee0bc7f26fdb3454
 interface	c:objc(cs)NFCISO15693ReadMultipleBlocksConfiguration	-			-	-	-	ios=11.0/-/-/0,ios_app_extension=-/-/-/1,macos=-/-/-/1,macos_app_extension=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ca8e9476432cac6b
@@ -142,9 +142,9 @@ method	c:objc(cs)NFCISO15693ReadMultipleBlocksConfiguration(im)initWithRange:chu
 protocol	c:objc(pl)NFCISO15693Tag	-			-	-	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use lockDSFIDWithRequestFlag:completionHandler: instead	1d13920f17d592fe
 conforms	-	NFCISO15693Tag	NFCTag		-	-	-	-	-	94053ce41c204fa1
 conforms	-	NFCISO15693Tag	NFCNDEFTag		-	-	-	-	-	aa6c21d4f562f324
-property	c:objc(pl)NFCISO15693Tag(py)identifier	-			API_AVAILABLE NSData *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c92d890fb811805d
+property	c:objc(pl)NFCISO15693Tag(py)identifier	-			NSData *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4ff702a82a0db5c9
 property	c:objc(pl)NFCISO15693Tag(py)icManufacturerCode	-			NSUInteger	-	readonly,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cb7aed4be7d30a6b
-property	c:objc(pl)NFCISO15693Tag(py)icSerialNumber	-			API_AVAILABLE NSData *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	67be902e2ab00fc2
+property	c:objc(pl)NFCISO15693Tag(py)icSerialNumber	-			NSData *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fc25c0af1ab1719d
 method	c:objc(pl)NFCISO15693Tag(im)sendCustomCommandWithConfiguration:completionHandler:	-			void	NFCISO15693CustomCommandConfiguration * commandConfiguration | void (^)(NSData * _Nonnull, NSError * _Nullable) completionHandler	-	ios=11.0/-/-/0,ios_app_extension=-/-/-/1,macos=-/-/-/1,macos_app_extension=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8233dc518f8303c0
 method	c:objc(pl)NFCISO15693Tag(im)readMultipleBlocksWithConfiguration:completionHandler:	-			void	NFCISO15693ReadMultipleBlocksConfiguration * readConfiguration | void (^)(NSData * _Nonnull, NSError * _Nullable) completionHandler	-	ios=11.0/-/-/0,ios_app_extension=-/-/-/1,macos=-/-/-/1,macos_app_extension=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	69dd9aab184e9c5d
 method	c:objc(pl)NFCISO15693Tag(im)stayQuietWithCompletionHandler:	-			void	void (^)(NSError * _Nullable) completionHandler	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	635bbebb57d61454
@@ -228,8 +228,8 @@ typedef	c:@T@EncryptionId	-			NFCFeliCaEncryptionId	-	-	ios=13.0/14.0/-/0,macos=
 protocol	c:objc(pl)NFCFeliCaTag	-			-	-	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3dc8e628bad396ef
 conforms	-	NFCFeliCaTag	NFCTag		-	-	-	-	-	2e4c0a55f995775d
 conforms	-	NFCFeliCaTag	NFCNDEFTag		-	-	-	-	-	4f3e5d1f3c13d745
-property	c:objc(pl)NFCFeliCaTag(py)currentSystemCode	-			API_AVAILABLE NSData *	-	readonly,retain,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4ab043aff032d484
-property	c:objc(pl)NFCFeliCaTag(py)currentIDm	-			API_AVAILABLE NSData *	-	readonly,retain,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d4d50ff5858cb163
+property	c:objc(pl)NFCFeliCaTag(py)currentSystemCode	-			NSData *	-	readonly,retain,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9f222d52a67a3685
+property	c:objc(pl)NFCFeliCaTag(py)currentIDm	-			NSData *	-	readonly,retain,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	46563f6de3efbff1
 method	c:objc(pl)NFCFeliCaTag(im)pollingWithSystemCode:requestCode:timeSlot:completionHandler:	-			void	NSData * systemCode | NFCFeliCaPollingRequestCode requestCode | NFCFeliCaPollingTimeSlot timeSlot | void (^)(NSData * _Nonnull, NSData * _Nonnull, NSError * _Nullable) completionHandler	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	28fccb1078ab5640
 method	c:objc(pl)NFCFeliCaTag(im)requestServiceWithNodeCodeList:completionHandler:	-			void	NSArray<NSData *> * nodeCodeList | void (^)(NSArray<NSData *> * _Nonnull, NSError * _Nullable) completionHandler	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d2c93ee0b0278bf0
 method	c:objc(pl)NFCFeliCaTag(im)requestResponseWithCompletionHandler:	-			void	void (^)(NSInteger, NSError * _Nullable) completionHandler	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2dfef18f439c6e80
@@ -247,7 +247,7 @@ property	c:objc(cs)NFCISO7816APDU(py)instructionClass	-			uint8_t	-	readonly,ass
 property	c:objc(cs)NFCISO7816APDU(py)instructionCode	-			uint8_t	-	readonly,assign,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6677b078914eb20c
 property	c:objc(cs)NFCISO7816APDU(py)p1Parameter	-			uint8_t	-	readonly,assign,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1e69ed4619f3d183
 property	c:objc(cs)NFCISO7816APDU(py)p2Parameter	-			uint8_t	-	readonly,assign,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b6eb530e12a6e511
-property	c:objc(cs)NFCISO7816APDU(py)data	-			API_AVAILABLE NSData *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	95faa45a09190b12
+property	c:objc(cs)NFCISO7816APDU(py)data	-			NSData *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b97a6e3a4d2b41f7
 property	c:objc(cs)NFCISO7816APDU(py)expectedResponseLength	-			NSInteger	-	readonly,assign,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3c1e85becd16e660
 method	c:objc(cs)NFCISO7816APDU(im)init	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	84a8493fb2fb45be
 method	c:objc(cs)NFCISO7816APDU(im)initWithInstructionClass:instructionCode:p1Parameter:p2Parameter:data:expectedResponseLength:	-			instancetype	uint8_t instructionClass | uint8_t instructionCode | uint8_t p1Parameter | uint8_t p2Parameter | NSData * data | NSInteger expectedResponseLength	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2c933c65128e34ec
@@ -255,10 +255,10 @@ method	c:objc(cs)NFCISO7816APDU(im)initWithData:	-			instancetype	NSData * data	
 protocol	c:objc(pl)NFCISO7816Tag	-			-	-	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	20eec00e757a685e
 conforms	-	NFCISO7816Tag	NFCTag		-	-	-	-	-	8f33fe753b0e97f9
 conforms	-	NFCISO7816Tag	NFCNDEFTag		-	-	-	-	-	42e945e437d5d4a2
-property	c:objc(pl)NFCISO7816Tag(py)initialSelectedAID	-			API_AVAILABLE NSString *	-	readonly,retain,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9d94757c99cf5f5a
-property	c:objc(pl)NFCISO7816Tag(py)identifier	-			API_AVAILABLE NSData *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1b20245262116653
-property	c:objc(pl)NFCISO7816Tag(py)historicalBytes	-			API_AVAILABLE NSData *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	147b77a13dbe0590
-property	c:objc(pl)NFCISO7816Tag(py)applicationData	-			API_AVAILABLE NSData *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2cc61d0083f9629c
+property	c:objc(pl)NFCISO7816Tag(py)initialSelectedAID	-			NSString *	-	readonly,retain,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	eb771a9c0584c339
+property	c:objc(pl)NFCISO7816Tag(py)identifier	-			NSData *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6c631d7cd0c9eb3f
+property	c:objc(pl)NFCISO7816Tag(py)historicalBytes	-			NSData *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0075c777f027c862
+property	c:objc(pl)NFCISO7816Tag(py)applicationData	-			NSData *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e7117e3159b2ba73
 property	c:objc(pl)NFCISO7816Tag(py)proprietaryApplicationDataCoding	-			BOOL	-	readonly,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b67012bad25e7059
 method	c:objc(pl)NFCISO7816Tag(im)sendCommandAPDU:completionHandler:	-			void	NFCISO7816APDU * apdu | void (^)(NSData * _Nonnull, uint8_t, uint8_t, NSError * _Nullable) completionHandler	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6e6127ece3c33976
 typedef	c:@T@NFCMiFareFamily	-			enum NFCMiFareFamily	-	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d5173f89a0ea308a
@@ -271,8 +271,8 @@ protocol	c:objc(pl)NFCMiFareTag	-			-	-	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/
 conforms	-	NFCMiFareTag	NFCTag		-	-	-	-	-	f9c5617da1e3b514
 conforms	-	NFCMiFareTag	NFCNDEFTag		-	-	-	-	-	dac44f66091b480c
 property	c:objc(pl)NFCMiFareTag(py)mifareFamily	-			NFCMiFareFamily	-	readonly,assign,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a321a16e8fc46445
-property	c:objc(pl)NFCMiFareTag(py)identifier	-			API_AVAILABLE NSData *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	274e467965c36595
-property	c:objc(pl)NFCMiFareTag(py)historicalBytes	-			API_AVAILABLE NSData *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	86b6dc55b3fb0c26
+property	c:objc(pl)NFCMiFareTag(py)identifier	-			NSData *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0b91d3afb52ddc0c
+property	c:objc(pl)NFCMiFareTag(py)historicalBytes	-			NSData *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bc5c2fe182e9b0e8
 method	c:objc(pl)NFCMiFareTag(im)sendMiFareCommand:completionHandler:	-			void	NSData * command | void (^)(NSData * _Nonnull, NSError * _Nullable) completionHandler	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4cc8cba91635e7ab
 method	c:objc(pl)NFCMiFareTag(im)sendMiFareISO7816Command:completionHandler:	-			void	NFCISO7816APDU * apdu | void (^)(NSData * _Nonnull, uint8_t, uint8_t, NSError * _Nullable) completionHandler	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	054695072f3ffb91
 typedef	c:@T@NFCTypeNameFormat	-			enum NFCTypeNameFormat	-	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0bd085ad616419e6
@@ -288,9 +288,9 @@ interface	c:objc(cs)NFCNDEFPayload	-			-	-	-	ios=11.0/-/-/0,ios_app_extension=-/
 super	-	NFCNDEFPayload	NSObject		-	-	-	-	-	63002cc4a9bdb98f
 conforms	-	NFCNDEFPayload	NSSecureCoding		-	-	-	-	-	b5c9ca64045b8a21
 property	c:objc(cs)NFCNDEFPayload(py)typeNameFormat	-			NFCTypeNameFormat	-	assign,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	072e8cf233ab7089
-property	c:objc(cs)NFCNDEFPayload(py)type	-			API_AVAILABLE NSData *	-	copy,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f417c173568660cc
-property	c:objc(cs)NFCNDEFPayload(py)identifier	-			API_AVAILABLE NSData *	-	copy,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d15be54fad8fac36
-property	c:objc(cs)NFCNDEFPayload(py)payload	-			API_AVAILABLE NSData *	-	copy,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b225b802a2fb0326
+property	c:objc(cs)NFCNDEFPayload(py)type	-			NSData *	-	copy,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	29fc2ded7571e85d
+property	c:objc(cs)NFCNDEFPayload(py)identifier	-			NSData *	-	copy,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cced204827df8cf1
+property	c:objc(cs)NFCNDEFPayload(py)payload	-			NSData *	-	copy,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	77f44550f62b1e3d
 method	c:objc(cs)NFCNDEFPayload(im)init	-			instancetype	-	-	*unavailable ios=11.0/-/-/0,ios_app_extension=-/-/-/1,macos=-/-/-/1,macos_app_extension=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fdcba126184fe713
 method	c:objc(cs)NFCNDEFPayload(im)initWithFormat:type:identifier:payload:	-			instancetype	NFCTypeNameFormat format | NSData * type | NSData * identifier | NSData * payload	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b50689f9580796c8
 method	c:objc(cs)NFCNDEFPayload(im)initWithFormat:type:identifier:payload:chunkSize:	-			instancetype	NFCTypeNameFormat format | NSData * type | NSData * identifier | NSData * payload | size_t chunkSize	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	437514f929482513
@@ -304,7 +304,7 @@ method	c:objc(cs)NFCNDEFPayload(im)wellKnownTypeTextPayloadWithLocale:	Convenien
 interface	c:objc(cs)NFCNDEFMessage	-			-	-	-	ios=11.0/-/-/0,ios_app_extension=-/-/-/1,macos=-/-/-/1,macos_app_extension=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d88aef683f816a7e
 super	-	NFCNDEFMessage	NSObject		-	-	-	-	-	973874d72ca20a5a
 conforms	-	NFCNDEFMessage	NSSecureCoding		-	-	-	-	-	c37865fd7ade5845
-property	c:objc(cs)NFCNDEFMessage(py)records	-			API_AVAILABLE NSArray<NFCNDEFPayload *> *	-	copy,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b70afec39f2fff76
+property	c:objc(cs)NFCNDEFMessage(py)records	-			NSArray<NFCNDEFPayload *> *	-	copy,nonatomic	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c37ae629227ff3cb
 property	c:objc(cs)NFCNDEFMessage(py)length	-			NSUInteger	-	readonly,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f21e35d6562d5f68
 method	c:objc(cs)NFCNDEFMessage(im)init	-			instancetype	-	-	*unavailable ios=11.0/-/-/0,ios_app_extension=-/-/-/1,macos=-/-/-/1,macos_app_extension=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2a2cc6b986722d3b
 method	c:objc(cs)NFCNDEFMessage(im)initWithNDEFRecords:	-			instancetype	NSArray<NFCNDEFPayload *> * records	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7b104dc0b280fc1c
@@ -320,8 +320,8 @@ interface	c:objc(cs)NFCVASCommandConfiguration	-			-	-	-	ios=13.0/-/-/0,macos=-/
 super	-	NFCVASCommandConfiguration	NSObject		-	-	-	-	-	1cf27a2948b0b643
 conforms	-	NFCVASCommandConfiguration	NSCopying		-	-	-	-	-	8d6429c8c3973fd1
 property	c:objc(cs)NFCVASCommandConfiguration(py)mode	-			NFCVASMode	-	assign,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ce010d7190265aa7
-property	c:objc(cs)NFCVASCommandConfiguration(py)passTypeIdentifier	-			API_AVAILABLE NSString *	-	retain,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7fa0e838e473937a
-property	c:objc(cs)NFCVASCommandConfiguration(py)url	-			API_AVAILABLE NSURL *	-	retain,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b4176937429796e6
+property	c:objc(cs)NFCVASCommandConfiguration(py)passTypeIdentifier	-			NSString *	-	retain,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	617e605c95ac7eb6
+property	c:objc(cs)NFCVASCommandConfiguration(py)url	-			NSURL *	-	retain,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c68f54e64b2d0efa
 method	c:objc(cs)NFCVASCommandConfiguration(im)initWithVASMode:passTypeIdentifier:url:	-			instancetype	NFCVASMode mode | NSString * passTypeIdentifier | NSURL * url	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6b330728e9c27373
 typedef	c:@T@NFCVASErrorCode	-			enum NFCVASErrorCode	-	-	-	-	70867213aeb3fab5
 enum	c:@E@NFCVASErrorCode	-			NSInteger	-	-	ios=13.0/-/-/0	-	5d7d9961f29f2ef6
@@ -346,8 +346,8 @@ interface	c:objc(cs)NFCVASResponse	-			-	-	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-
 super	-	NFCVASResponse	NSObject		-	-	-	-	-	19e6f866c912477e
 conforms	-	NFCVASResponse	NSCopying		-	-	-	-	-	415b2e43d6debe7f
 property	c:objc(cs)NFCVASResponse(py)status	-			NFCVASErrorCode	-	readonly,assign,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	20f9995fbcfc3dcc
-property	c:objc(cs)NFCVASResponse(py)vasData	-			API_AVAILABLE NSData *	-	readonly,retain,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fb706af69cae1cd7
-property	c:objc(cs)NFCVASResponse(py)mobileToken	-			API_AVAILABLE NSData *	-	readonly,retain,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	90426d2f9360bc5a
+property	c:objc(cs)NFCVASResponse(py)vasData	-			NSData *	-	readonly,retain,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	27e6b8a6e427a762
+property	c:objc(cs)NFCVASResponse(py)mobileToken	-			NSData *	-	readonly,retain,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	68e7b806f80bd046
 protocol	c:objc(pl)NFCVASReaderSessionDelegate	-			-	-	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	20d4cebb0a96c5cf
 conforms	-	NFCVASReaderSessionDelegate	NSObject		-	-	-	-	-	b776d6c120bd3e26
 method	c:objc(pl)NFCVASReaderSessionDelegate(im)readerSessionDidBecomeActive:	-			void	NFCVASReaderSession * session	optional	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fc53f0c3db641718

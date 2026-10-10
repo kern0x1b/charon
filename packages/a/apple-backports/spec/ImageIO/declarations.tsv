@@ -5,8 +5,8 @@ struct	c:@S@CGImageMetadata	-			-	-	-	-	-	ca776efe4ef15ac6
 typedef	c:@T@CGImageMetadataRef	-			const struct CGImageMetadata *	-	-	-	-	4648cb0df87d8579
 function	c:@F@CGImageMetadataGetTypeID	-			CFTypeID (void)	-	-	-	-	01f1aa754ab5cce5
 typedef	c:@T@CGMutableImageMetadataRef	-			struct CGImageMetadata *	-	-	-	-	4f094cc870414052
-function	c:@F@CGImageMetadataCreateMutable	-			CGMutableImageMetadataRef  _Nonnull (void)	-	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	5e2b7fc2f080186f
-function	c:@F@CGImageMetadataCreateMutableCopy	-			CGMutableImageMetadataRef  _Nullable (CGImageMetadataRef _Nonnull)	CGImageMetadataRef metadata	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	5d0f6cdf36057dbb
+function	c:@F@CGImageMetadataCreateMutable	-			CGMutableImageMetadataRef (void)	-	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	ba57cca2a0eb72bc
+function	c:@F@CGImageMetadataCreateMutableCopy	-			CGMutableImageMetadataRef (CGImageMetadataRef)	CGImageMetadataRef metadata	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	0991d9e2d5561c1e
 struct	c:@S@CGImageMetadataTag	-			-	-	-	-	-	a44d8933d39ee81d
 typedef	c:@T@CGImageMetadataTagRef	-			struct CGImageMetadataTag *	-	-	-	-	70c389eed54d2d7d
 function	c:@F@CGImageMetadataTagGetTypeID	-			CFTypeID (void)	-	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	146512eb8b052db0
@@ -40,27 +40,27 @@ enumconst	c:@E@CGImageMetadataType@kCGImageMetadataTypeArrayOrdered	CGImageMetad
 enumconst	c:@E@CGImageMetadataType@kCGImageMetadataTypeAlternateArray	CGImageMetadataType			-	-	-	-	-	8499b4300950c003
 enumconst	c:@E@CGImageMetadataType@kCGImageMetadataTypeAlternateText	CGImageMetadataType			-	-	-	-	-	4473a8a1c26f309e
 enumconst	c:@E@CGImageMetadataType@kCGImageMetadataTypeStructure	CGImageMetadataType			-	-	-	-	-	1027dea0c7960525
-function	c:@F@CGImageMetadataTagCreate	-			CGImageMetadataTagRef  _Nullable (CFStringRef _Nonnull, CFStringRef _Nullable, CFStringRef _Nonnull, CGImageMetadataType, CFTypeRef _Nonnull)	CFStringRef xmlns | CFStringRef prefix | CFStringRef name | CGImageMetadataType type | CFTypeRef value	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	a24a03dccfd5caa6
-function	c:@F@CGImageMetadataTagCopyNamespace	-			CFStringRef  _Nullable (CGImageMetadataTagRef _Nonnull)	CGImageMetadataTagRef tag	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	3b4d1781d57bfc96
-function	c:@F@CGImageMetadataTagCopyPrefix	-			CFStringRef  _Nullable (CGImageMetadataTagRef _Nonnull)	CGImageMetadataTagRef tag	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	8bfca305222a5fcf
-function	c:@F@CGImageMetadataTagCopyName	-			CFStringRef  _Nullable (CGImageMetadataTagRef _Nonnull)	CGImageMetadataTagRef tag	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	e8dfb67032e765b1
-function	c:@F@CGImageMetadataTagCopyValue	-			CFTypeRef  _Nullable (CGImageMetadataTagRef _Nonnull)	CGImageMetadataTagRef tag	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	a10d00d02e9c36b3
-function	c:@F@CGImageMetadataTagGetType	-			CGImageMetadataType (CGImageMetadataTagRef _Nonnull)	CGImageMetadataTagRef tag	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	7fe07278cf8126a1
-function	c:@F@CGImageMetadataTagCopyQualifiers	-			CFArrayRef  _Nullable (CGImageMetadataTagRef _Nonnull)	CGImageMetadataTagRef tag	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	82a96e1d9cb75a7f
-function	c:@F@CGImageMetadataCopyTags	-			CFArrayRef  _Nullable (CGImageMetadataRef _Nonnull)	CGImageMetadataRef metadata	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	059dd8e930f6526d
-function	c:@F@CGImageMetadataCopyTagWithPath	-			CGImageMetadataTagRef  _Nullable (CGImageMetadataRef _Nonnull, CGImageMetadataTagRef _Nullable, CFStringRef _Nonnull)	CGImageMetadataRef metadata | CGImageMetadataTagRef parent | CFStringRef path	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	ff15346096e6c5a0
-function	c:@F@CGImageMetadataCopyStringValueWithPath	-			CFStringRef  _Nullable (CGImageMetadataRef _Nonnull, CGImageMetadataTagRef _Nullable, CFStringRef _Nonnull)	CGImageMetadataRef metadata | CGImageMetadataTagRef parent | CFStringRef path	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	9def9c276882e13d
-function	c:@F@CGImageMetadataRegisterNamespaceForPrefix	-			_Bool (CGMutableImageMetadataRef _Nonnull, CFStringRef _Nonnull, CFStringRef _Nonnull, CFErrorRef  _Nullable * _Nullable)	CGMutableImageMetadataRef metadata | CFStringRef xmlns | CFStringRef prefix | CFErrorRef  _Nullable * err	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	6acba2ff98b8ddf1
-function	c:@F@CGImageMetadataSetTagWithPath	-			_Bool (CGMutableImageMetadataRef _Nonnull, CGImageMetadataTagRef _Nullable, CFStringRef _Nonnull, CGImageMetadataTagRef _Nonnull)	CGMutableImageMetadataRef metadata | CGImageMetadataTagRef parent | CFStringRef path | CGImageMetadataTagRef tag	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	0ad76947db4bfc7d
-function	c:@F@CGImageMetadataSetValueWithPath	-			_Bool (CGMutableImageMetadataRef _Nonnull, CGImageMetadataTagRef _Nullable, CFStringRef _Nonnull, CFTypeRef _Nonnull)	CGMutableImageMetadataRef metadata | CGImageMetadataTagRef parent | CFStringRef path | CFTypeRef value	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	f5a6a0c33ba71f10
-function	c:@F@CGImageMetadataRemoveTagWithPath	-			_Bool (CGMutableImageMetadataRef _Nonnull, CGImageMetadataTagRef _Nullable, CFStringRef _Nonnull)	CGMutableImageMetadataRef metadata | CGImageMetadataTagRef parent | CFStringRef path	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	bce1d676a0fb31ef
-typedef	c:@T@CGImageMetadataTagBlock	-			_Bool (^)(CFStringRef _Nonnull, CGImageMetadataTagRef _Nonnull)	-	-	-	-	cbd4c70c1f4bbafa
-function	c:@F@CGImageMetadataEnumerateTagsUsingBlock	-			void (CGImageMetadataRef _Nonnull, CFStringRef _Nullable, CFDictionaryRef _Nullable, CGImageMetadataTagBlock _Nonnull)	CGImageMetadataRef metadata | CFStringRef rootPath | CFDictionaryRef options | CGImageMetadataTagBlock block	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	6769af7d02e9a84a
+function	c:@F@CGImageMetadataTagCreate	-			CGImageMetadataTagRef (CFStringRef, CFStringRef, CFStringRef, CGImageMetadataType, CFTypeRef)	CFStringRef xmlns | CFStringRef prefix | CFStringRef name | CGImageMetadataType type | CFTypeRef value	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	17f2ce96d1b84ce6
+function	c:@F@CGImageMetadataTagCopyNamespace	-			CFStringRef (CGImageMetadataTagRef)	CGImageMetadataTagRef tag	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	ef31518adc3e2005
+function	c:@F@CGImageMetadataTagCopyPrefix	-			CFStringRef (CGImageMetadataTagRef)	CGImageMetadataTagRef tag	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	b0d7890976368251
+function	c:@F@CGImageMetadataTagCopyName	-			CFStringRef (CGImageMetadataTagRef)	CGImageMetadataTagRef tag	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	fe14fde9d6a6d46a
+function	c:@F@CGImageMetadataTagCopyValue	-			CFTypeRef (CGImageMetadataTagRef)	CGImageMetadataTagRef tag	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	d59d166134fec0ab
+function	c:@F@CGImageMetadataTagGetType	-			CGImageMetadataType (CGImageMetadataTagRef)	CGImageMetadataTagRef tag	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	55f61f5af9f00ff4
+function	c:@F@CGImageMetadataTagCopyQualifiers	-			CFArrayRef (CGImageMetadataTagRef)	CGImageMetadataTagRef tag	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	4fb2ca297ad539b2
+function	c:@F@CGImageMetadataCopyTags	-			CFArrayRef (CGImageMetadataRef)	CGImageMetadataRef metadata	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	f6846fd91617eaa7
+function	c:@F@CGImageMetadataCopyTagWithPath	-			CGImageMetadataTagRef (CGImageMetadataRef, CGImageMetadataTagRef, CFStringRef)	CGImageMetadataRef metadata | CGImageMetadataTagRef parent | CFStringRef path	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	12a5d7aaa5abdee0
+function	c:@F@CGImageMetadataCopyStringValueWithPath	-			CFStringRef (CGImageMetadataRef, CGImageMetadataTagRef, CFStringRef)	CGImageMetadataRef metadata | CGImageMetadataTagRef parent | CFStringRef path	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	b20391db497a5976
+function	c:@F@CGImageMetadataRegisterNamespaceForPrefix	-			_Bool (CGMutableImageMetadataRef, CFStringRef, CFStringRef, CFErrorRef  _Nullable *)	CGMutableImageMetadataRef metadata | CFStringRef xmlns | CFStringRef prefix | CFErrorRef  _Nullable * err	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	2ff5c9419765fa6e
+function	c:@F@CGImageMetadataSetTagWithPath	-			_Bool (CGMutableImageMetadataRef, CGImageMetadataTagRef, CFStringRef, CGImageMetadataTagRef)	CGMutableImageMetadataRef metadata | CGImageMetadataTagRef parent | CFStringRef path | CGImageMetadataTagRef tag	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	6e26d18c78111a2d
+function	c:@F@CGImageMetadataSetValueWithPath	-			_Bool (CGMutableImageMetadataRef, CGImageMetadataTagRef, CFStringRef, CFTypeRef)	CGMutableImageMetadataRef metadata | CGImageMetadataTagRef parent | CFStringRef path | CFTypeRef value	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	c589fc71e4676fcc
+function	c:@F@CGImageMetadataRemoveTagWithPath	-			_Bool (CGMutableImageMetadataRef, CGImageMetadataTagRef, CFStringRef)	CGMutableImageMetadataRef metadata | CGImageMetadataTagRef parent | CFStringRef path	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	db534592d6a06877
+typedef	c:@T@CGImageMetadataTagBlock	-			_Bool ((^))(CFStringRef, CGImageMetadataTagRef)	-	-	-	-	15344b49a0f4a529
+function	c:@F@CGImageMetadataEnumerateTagsUsingBlock	-			void (CGImageMetadataRef, CFStringRef, CFDictionaryRef, CGImageMetadataTagBlock)	CGImageMetadataRef metadata | CFStringRef rootPath | CFDictionaryRef options | CGImageMetadataTagBlock block	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	365489cfd3d4af01
 var	c:@kCGImageMetadataEnumerateRecursively	-			const CFStringRef	-	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	f24692fe586d8fb1
-function	c:@F@CGImageMetadataCopyTagMatchingImageProperty	-			CGImageMetadataTagRef  _Nullable (CGImageMetadataRef _Nonnull, CFStringRef _Nonnull, CFStringRef _Nonnull)	CGImageMetadataRef metadata | CFStringRef dictionaryName | CFStringRef propertyName	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	1453a446b01effd3
-function	c:@F@CGImageMetadataSetValueMatchingImageProperty	-			_Bool (CGMutableImageMetadataRef _Nonnull, CFStringRef _Nonnull, CFStringRef _Nonnull, CFTypeRef _Nonnull)	CGMutableImageMetadataRef metadata | CFStringRef dictionaryName | CFStringRef propertyName | CFTypeRef value	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	9fe13b9566dd0d0b
-function	c:@F@CGImageMetadataCreateXMPData	-			CFDataRef  _Nullable (CGImageMetadataRef _Nonnull, CFDictionaryRef _Nullable)	CGImageMetadataRef metadata | CFDictionaryRef options	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	bdf3b2ca96f673e7
-function	c:@F@CGImageMetadataCreateFromXMPData	-			CGImageMetadataRef  _Nullable (CFDataRef _Nonnull)	CFDataRef data	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	681f2f4404019ce8
+function	c:@F@CGImageMetadataCopyTagMatchingImageProperty	-			CGImageMetadataTagRef (CGImageMetadataRef, CFStringRef, CFStringRef)	CGImageMetadataRef metadata | CFStringRef dictionaryName | CFStringRef propertyName	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	21b4acf812f0d408
+function	c:@F@CGImageMetadataSetValueMatchingImageProperty	-			_Bool (CGMutableImageMetadataRef, CFStringRef, CFStringRef, CFTypeRef)	CGMutableImageMetadataRef metadata | CFStringRef dictionaryName | CFStringRef propertyName | CFTypeRef value	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	14843468e50c0a8c
+function	c:@F@CGImageMetadataCreateXMPData	-			CFDataRef (CGImageMetadataRef, CFDictionaryRef)	CGImageMetadataRef metadata | CFDictionaryRef options	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	0b6c7a570c81c617
+function	c:@F@CGImageMetadataCreateFromXMPData	-			CGImageMetadataRef (CFDataRef)	CFDataRef data	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	df0963480296f113
 var	c:@kCFErrorDomainCGImageMetadata	-			const CFStringRef	-	-	-	-	a68ce8b4de6e474a
 typedef	c:@T@CGImageMetadataErrors	-			enum CGImageMetadataErrors	-	-	-	-	a91724ed8a8903df
 enum	c:@E@CGImageMetadataErrors	-			int32_t	-	-	-	-	5405d446f26388fa
@@ -87,32 +87,32 @@ var	c:@kCGImageSourceThumbnailMaxPixelSize	-			const CFStringRef	-	-	ios=4.0/-/-
 var	c:@kCGImageSourceCreateThumbnailWithTransform	-			const CFStringRef	-	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	f2d9ecbbb3f92bb0
 var	c:@kCGImageSourceSubsampleFactor	-			const CFStringRef	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	06e6dbf5235fa3ed
 function	c:@F@CGImageSourceGetTypeID	-			CFTypeID (void)	-	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	5389d43c2086beaa
-function	c:@F@CGImageSourceCopyTypeIdentifiers	-			CFArrayRef  _Nonnull (void)	-	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	c64f9a8dd8c9544b
-function	c:@F@CGImageSourceCreateWithDataProvider	-			CGImageSourceRef  _Nullable (CGDataProviderRef _Nonnull, CFDictionaryRef _Nullable)	CGDataProviderRef provider | CFDictionaryRef options	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	4fd2f63c50d5f559
-function	c:@F@CGImageSourceCreateWithData	-			CGImageSourceRef  _Nullable (CFDataRef _Nonnull, CFDictionaryRef _Nullable)	CFDataRef data | CFDictionaryRef options	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	fc11aa444dcfa6e0
-function	c:@F@CGImageSourceCreateWithURL	-			CGImageSourceRef  _Nullable (CFURLRef _Nonnull, CFDictionaryRef _Nullable)	CFURLRef url | CFDictionaryRef options	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	c1a4e732be5cd394
-function	c:@F@CGImageSourceGetType	-			CFStringRef  _Nullable (CGImageSourceRef _Nonnull)	CGImageSourceRef isrc	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	b1ac466583959541
-function	c:@F@CGImageSourceGetCount	-			size_t (CGImageSourceRef _Nonnull)	CGImageSourceRef isrc	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	ded38d149cd78d8b
-function	c:@F@CGImageSourceCopyProperties	-			CFDictionaryRef  _Nullable (CGImageSourceRef _Nonnull, CFDictionaryRef _Nullable)	CGImageSourceRef isrc | CFDictionaryRef options	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	1179113ca9de46cc
-function	c:@F@CGImageSourceCopyPropertiesAtIndex	-			CFDictionaryRef  _Nullable (CGImageSourceRef _Nonnull, size_t, CFDictionaryRef _Nullable)	CGImageSourceRef isrc | size_t index | CFDictionaryRef options	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	c03327e199a18b34
-function	c:@F@CGImageSourceCopyMetadataAtIndex	-			CGImageMetadataRef  _Nullable (CGImageSourceRef _Nonnull, size_t, CFDictionaryRef _Nullable)	CGImageSourceRef isrc | size_t index | CFDictionaryRef options	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	c70c68c76c7e31b4
-function	c:@F@CGImageSourceCreateImageAtIndex	-			CGImageRef  _Nullable (CGImageSourceRef _Nonnull, size_t, CFDictionaryRef _Nullable)	CGImageSourceRef isrc | size_t index | CFDictionaryRef options	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	8234ba7dcc552f18
-function	c:@F@CGImageSourceRemoveCacheAtIndex	-			void (CGImageSourceRef _Nonnull, size_t)	CGImageSourceRef isrc | size_t index	-	ios=7.0/-/-/0,macos=10.9/-/-/0	-	2ee34a9a443c2ca5
-function	c:@F@CGImageSourceCreateThumbnailAtIndex	-			CGImageRef  _Nullable (CGImageSourceRef _Nonnull, size_t, CFDictionaryRef _Nullable)	CGImageSourceRef isrc | size_t index | CFDictionaryRef options	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	9d788a3f61639de5
-function	c:@F@CGImageSourceCreateIncremental	-			CGImageSourceRef  _Nonnull (CFDictionaryRef _Nullable)	CFDictionaryRef options	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	3adf7174d4cad00e
-function	c:@F@CGImageSourceUpdateData	-			void (CGImageSourceRef _Nonnull, CFDataRef _Nonnull, _Bool)	CGImageSourceRef isrc | CFDataRef data | _Bool final	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	965ac4cb57922db6
-function	c:@F@CGImageSourceUpdateDataProvider	-			void (CGImageSourceRef _Nonnull, CGDataProviderRef _Nonnull, _Bool)	CGImageSourceRef isrc | CGDataProviderRef provider | _Bool final	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	d4221cab84550be6
-function	c:@F@CGImageSourceGetStatus	-			CGImageSourceStatus (CGImageSourceRef _Nonnull)	CGImageSourceRef isrc	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	35eee0c419262177
-function	c:@F@CGImageSourceGetStatusAtIndex	-			CGImageSourceStatus (CGImageSourceRef _Nonnull, size_t)	CGImageSourceRef isrc | size_t index	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	1a810ebad2c5dea6
-function	c:@F@CGImageSourceGetPrimaryImageIndex	-			size_t (CGImageSourceRef _Nonnull)	CGImageSourceRef isrc	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	a960b4db96adac58
-function	c:@F@CGImageSourceCopyAuxiliaryDataInfoAtIndex	-			CFDictionaryRef  _Nullable (CGImageSourceRef _Nonnull, size_t, CFStringRef _Nonnull)	CGImageSourceRef isrc | size_t index | CFStringRef auxiliaryImageDataType	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	c18186163bcba33d
+function	c:@F@CGImageSourceCopyTypeIdentifiers	-			CFArrayRef (void)	-	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	3b7e40104177e5f9
+function	c:@F@CGImageSourceCreateWithDataProvider	-			CGImageSourceRef (CGDataProviderRef, CFDictionaryRef)	CGDataProviderRef provider | CFDictionaryRef options	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	6acab98619d4ba65
+function	c:@F@CGImageSourceCreateWithData	-			CGImageSourceRef (CFDataRef, CFDictionaryRef)	CFDataRef data | CFDictionaryRef options	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	ca0c6dcb43fcc2ce
+function	c:@F@CGImageSourceCreateWithURL	-			CGImageSourceRef (CFURLRef, CFDictionaryRef)	CFURLRef url | CFDictionaryRef options	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	26eae6e74994faa3
+function	c:@F@CGImageSourceGetType	-			CFStringRef (CGImageSourceRef)	CGImageSourceRef isrc	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	e98c1e6a5619f4d6
+function	c:@F@CGImageSourceGetCount	-			size_t (CGImageSourceRef)	CGImageSourceRef isrc	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	411910f2494d3be7
+function	c:@F@CGImageSourceCopyProperties	-			CFDictionaryRef (CGImageSourceRef, CFDictionaryRef)	CGImageSourceRef isrc | CFDictionaryRef options	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	263fc3889d594212
+function	c:@F@CGImageSourceCopyPropertiesAtIndex	-			CFDictionaryRef (CGImageSourceRef, size_t, CFDictionaryRef)	CGImageSourceRef isrc | size_t index | CFDictionaryRef options	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	3dcf1e411360561c
+function	c:@F@CGImageSourceCopyMetadataAtIndex	-			CGImageMetadataRef (CGImageSourceRef, size_t, CFDictionaryRef)	CGImageSourceRef isrc | size_t index | CFDictionaryRef options	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	8219f2a1e7067fd3
+function	c:@F@CGImageSourceCreateImageAtIndex	-			CGImageRef (CGImageSourceRef, size_t, CFDictionaryRef)	CGImageSourceRef isrc | size_t index | CFDictionaryRef options	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	6acf24f5545ca02e
+function	c:@F@CGImageSourceRemoveCacheAtIndex	-			void (CGImageSourceRef, size_t)	CGImageSourceRef isrc | size_t index	-	ios=7.0/-/-/0,macos=10.9/-/-/0	-	9f63731a02384dbb
+function	c:@F@CGImageSourceCreateThumbnailAtIndex	-			CGImageRef (CGImageSourceRef, size_t, CFDictionaryRef)	CGImageSourceRef isrc | size_t index | CFDictionaryRef options	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	23b6074e79e2751b
+function	c:@F@CGImageSourceCreateIncremental	-			CGImageSourceRef (CFDictionaryRef)	CFDictionaryRef options	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	fe1d42670c22ef22
+function	c:@F@CGImageSourceUpdateData	-			void (CGImageSourceRef, CFDataRef, _Bool)	CGImageSourceRef isrc | CFDataRef data | _Bool final	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	4374c3b4af9e16f4
+function	c:@F@CGImageSourceUpdateDataProvider	-			void (CGImageSourceRef, CGDataProviderRef, _Bool)	CGImageSourceRef isrc | CGDataProviderRef provider | _Bool final	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	352052c64d6dddc6
+function	c:@F@CGImageSourceGetStatus	-			CGImageSourceStatus (CGImageSourceRef)	CGImageSourceRef isrc	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	5343eefba07292ba
+function	c:@F@CGImageSourceGetStatusAtIndex	-			CGImageSourceStatus (CGImageSourceRef, size_t)	CGImageSourceRef isrc | size_t index	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	3c15f9c07f8d90d3
+function	c:@F@CGImageSourceGetPrimaryImageIndex	-			size_t (CGImageSourceRef)	CGImageSourceRef isrc	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	83a8c46e4378839a
+function	c:@F@CGImageSourceCopyAuxiliaryDataInfoAtIndex	-			CFDictionaryRef (CGImageSourceRef, size_t, CFStringRef)	CGImageSourceRef isrc | size_t index | CFStringRef auxiliaryImageDataType	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	b32bb78c1157ccdb
 var	c:@kCGImageSourceDecodeRequest	-			const CFStringRef	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	1645b9d2323fcfac
 var	c:@kCGImageSourceDecodeToHDR	-			const CFStringRef	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	d61e1c3c80d95e46
 var	c:@kCGImageSourceDecodeToSDR	-			const CFStringRef	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	61c54ac79dad60d9
 var	c:@kCGImageSourceGenerateImageSpecificLumaScaling	-			const CFStringRef	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	c49d7afe7c43e5c2
 var	c:@kCGImageSourceDecodeRequestOptions	-			const CFStringRef	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	0e8f766e948c5b0e
 var	c:@kCGComputeHDRStats	-			const CFStringRef	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0	-	f644d69592ce4368
-function	c:@F@CGImageSourceSetAllowableTypes	-			OSStatus (CFArrayRef _Nonnull)	CFArrayRef allowableTypes	-	ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=10.2/-/-/0	-	089b49e9f85f9121
+function	c:@F@CGImageSourceSetAllowableTypes	-			OSStatus (CFArrayRef)	CFArrayRef allowableTypes	-	ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=10.2/-/-/0	-	9be55f54a88078cc
 struct	c:@S@CGImageDestination	-			-	-	-	-	-	af88023084b6987b
 typedef	c:@T@CGImageDestinationRef	-			struct CGImageDestination *	-	-	-	-	44a50e9999fc2818
 var	c:@kCGImageDestinationLossyCompressionQuality	-			const CFStringRef	-	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	6dc61b1390849154
@@ -121,15 +121,15 @@ var	c:@kCGImageDestinationImageMaxPixelSize	-			const CFStringRef	-	-	ios=8.0/-/
 var	c:@kCGImageDestinationEmbedThumbnail	-			const CFStringRef	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0	-	99961286d420c7d2
 var	c:@kCGImageDestinationOptimizeColorForSharing	-			const CFStringRef	-	-	ios=9.3/-/-/0,macos=10.12/-/-/0	-	9a36d718d3e9efb3
 function	c:@F@CGImageDestinationGetTypeID	-			CFTypeID (void)	-	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	4e80286fceba976e
-function	c:@F@CGImageDestinationCopyTypeIdentifiers	-			CFArrayRef  _Nonnull (void)	-	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	bb11a4762579c208
-function	c:@F@CGImageDestinationCreateWithDataConsumer	-			CGImageDestinationRef  _Nullable (CGDataConsumerRef _Nonnull, CFStringRef _Nonnull, size_t, CFDictionaryRef _Nullable)	CGDataConsumerRef consumer | CFStringRef type | size_t count | CFDictionaryRef options	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	92f9c3cfb13b4f36
-function	c:@F@CGImageDestinationCreateWithData	-			CGImageDestinationRef  _Nullable (CFMutableDataRef _Nonnull, CFStringRef _Nonnull, size_t, CFDictionaryRef _Nullable)	CFMutableDataRef data | CFStringRef type | size_t count | CFDictionaryRef options	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	889a64c0a61a0504
-function	c:@F@CGImageDestinationCreateWithURL	-			CGImageDestinationRef  _Nullable (CFURLRef _Nonnull, CFStringRef _Nonnull, size_t, CFDictionaryRef _Nullable)	CFURLRef url | CFStringRef type | size_t count | CFDictionaryRef options	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	58859ad0ceba85dc
-function	c:@F@CGImageDestinationSetProperties	-			void (CGImageDestinationRef _Nonnull, CFDictionaryRef _Nullable)	CGImageDestinationRef idst | CFDictionaryRef properties	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	016523d24ed9c46b
-function	c:@F@CGImageDestinationAddImage	-			void (CGImageDestinationRef _Nonnull, CGImageRef _Nonnull, CFDictionaryRef _Nullable)	CGImageDestinationRef idst | CGImageRef image | CFDictionaryRef properties	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	3fcf1450afff7703
-function	c:@F@CGImageDestinationAddImageFromSource	-			void (CGImageDestinationRef _Nonnull, CGImageSourceRef _Nonnull, size_t, CFDictionaryRef _Nullable)	CGImageDestinationRef idst | CGImageSourceRef isrc | size_t index | CFDictionaryRef properties	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	cad4363604cbf3c0
-function	c:@F@CGImageDestinationFinalize	-			_Bool (CGImageDestinationRef _Nonnull)	CGImageDestinationRef idst	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	74fc70a13f37728e
-function	c:@F@CGImageDestinationAddImageAndMetadata	-			void (CGImageDestinationRef _Nonnull, CGImageRef _Nonnull, CGImageMetadataRef _Nullable, CFDictionaryRef _Nullable)	CGImageDestinationRef idst | CGImageRef image | CGImageMetadataRef metadata | CFDictionaryRef options	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	e8abc5eaf8c629c8
+function	c:@F@CGImageDestinationCopyTypeIdentifiers	-			CFArrayRef (void)	-	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	7af68e4520e69cc8
+function	c:@F@CGImageDestinationCreateWithDataConsumer	-			CGImageDestinationRef (CGDataConsumerRef, CFStringRef, size_t, CFDictionaryRef)	CGDataConsumerRef consumer | CFStringRef type | size_t count | CFDictionaryRef options	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	da747849360f7fc0
+function	c:@F@CGImageDestinationCreateWithData	-			CGImageDestinationRef (CFMutableDataRef, CFStringRef, size_t, CFDictionaryRef)	CFMutableDataRef data | CFStringRef type | size_t count | CFDictionaryRef options	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	a85f9eb9e6466fd7
+function	c:@F@CGImageDestinationCreateWithURL	-			CGImageDestinationRef (CFURLRef, CFStringRef, size_t, CFDictionaryRef)	CFURLRef url | CFStringRef type | size_t count | CFDictionaryRef options	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	647072a399e05009
+function	c:@F@CGImageDestinationSetProperties	-			void (CGImageDestinationRef, CFDictionaryRef)	CGImageDestinationRef idst | CFDictionaryRef properties	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	88d81347eae2913f
+function	c:@F@CGImageDestinationAddImage	-			void (CGImageDestinationRef, CGImageRef, CFDictionaryRef)	CGImageDestinationRef idst | CGImageRef image | CFDictionaryRef properties	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	c49499167a380310
+function	c:@F@CGImageDestinationAddImageFromSource	-			void (CGImageDestinationRef, CGImageSourceRef, size_t, CFDictionaryRef)	CGImageDestinationRef idst | CGImageSourceRef isrc | size_t index | CFDictionaryRef properties	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	efeb5d59f0d782bd
+function	c:@F@CGImageDestinationFinalize	-			_Bool (CGImageDestinationRef)	CGImageDestinationRef idst	-	ios=4.0/-/-/0,macos=10.4/-/-/0	-	5aadb38a7d67aa8a
+function	c:@F@CGImageDestinationAddImageAndMetadata	-			void (CGImageDestinationRef, CGImageRef, CGImageMetadataRef, CFDictionaryRef)	CGImageDestinationRef idst | CGImageRef image | CGImageMetadataRef metadata | CFDictionaryRef options	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	df8634993fdf50ef
 var	c:@kCGImageDestinationPreserveGainMap	-			const CFStringRef	-	-	ios=14.1/-/-/0,macos=11.0/-/-/0	-	8f8649e4d27b72dd
 var	c:@kCGImageDestinationMetadata	-			const CFStringRef	-	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	ba7da84fcf242726
 var	c:@kCGImageDestinationMergeMetadata	-			const CFStringRef	-	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	69a6358dd28e840f
@@ -145,8 +145,8 @@ var	c:@kCGImagePropertyBCFormat	-			const CFStringRef	-	-	ios=12.0/-/-/0,macos=1
 var	c:@kCGImagePropertyASTCBlockSize	-			const CFStringRef	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0	-	3901f9b05cbe9947
 var	c:@kCGImagePropertyASTCBlockSize4x4	-			const CFStringRef	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0	-	5b63c81b1732f295
 var	c:@kCGImagePropertyASTCBlockSize8x8	-			const CFStringRef	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0	-	6255ca22ba4d4f8c
-function	c:@F@CGImageDestinationCopyImageSource	-			_Bool (CGImageDestinationRef _Nonnull, CGImageSourceRef _Nonnull, CFDictionaryRef _Nullable, CFErrorRef  _Nullable * _Nullable)	CGImageDestinationRef idst | CGImageSourceRef isrc | CFDictionaryRef options | CFErrorRef  _Nullable * err	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	d8917cba58aa2474
-function	c:@F@CGImageDestinationAddAuxiliaryDataInfo	-			void (CGImageDestinationRef _Nonnull, CFStringRef _Nonnull, CFDictionaryRef _Nonnull)	CGImageDestinationRef idst | CFStringRef auxiliaryImageDataType | CFDictionaryRef auxiliaryDataInfoDictionary	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	7d97361fa5a0556d
+function	c:@F@CGImageDestinationCopyImageSource	-			_Bool (CGImageDestinationRef, CGImageSourceRef, CFDictionaryRef, CFErrorRef  _Nullable *)	CGImageDestinationRef idst | CGImageSourceRef isrc | CFDictionaryRef options | CFErrorRef  _Nullable * err	-	ios=7.0/-/-/0,macos=10.8/-/-/0	-	b4248a70a830475a
+function	c:@F@CGImageDestinationAddAuxiliaryDataInfo	-			void (CGImageDestinationRef, CFStringRef, CFDictionaryRef)	CGImageDestinationRef idst | CFStringRef auxiliaryImageDataType | CFDictionaryRef auxiliaryDataInfoDictionary	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	75468a3cddbfda5c
 var	c:@kCGImageDestinationEncodeRequest	-			const CFStringRef	-	-	ios=18.0/-/-/0,macos=15/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	d725dbb8549c9224
 var	c:@kCGImageDestinationEncodeToSDR	-			const CFStringRef	-	-	ios=18.0/-/-/0,macos=15/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	b68b70b86641d37d
 var	c:@kCGImageDestinationEncodeToISOHDR	-			const CFStringRef	-	-	ios=18.0/-/-/0,macos=15/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	939e6fd461a2c356
@@ -861,6 +861,6 @@ enumconst	c:@E@CGImageAnimationStatus@kCGImageAnimationStatus_AllocationFailure	
 var	c:@kCGImageAnimationStartIndex	-			const CFStringRef	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	7cc83727a7155263
 var	c:@kCGImageAnimationDelayTime	-			const CFStringRef	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	31cc9b8f75465002
 var	c:@kCGImageAnimationLoopCount	-			const CFStringRef	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	4f21b95ce824672f
-typedef	c:@T@CGImageSourceAnimationBlock	-			void (^)(size_t, CGImageRef _Nonnull, _Bool * _Nonnull)	-	-	-	-	d0f7bb82fe26a911
-function	c:@F@CGAnimateImageAtURLWithBlock	-			OSStatus (CFURLRef _Nonnull, CFDictionaryRef _Nullable, CGImageSourceAnimationBlock _Nonnull)	CFURLRef url | CFDictionaryRef options | CGImageSourceAnimationBlock block	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	d0718b49ecc56c47
-function	c:@F@CGAnimateImageDataWithBlock	-			OSStatus (CFDataRef _Nonnull, CFDictionaryRef _Nullable, CGImageSourceAnimationBlock _Nonnull)	CFDataRef data | CFDictionaryRef options | CGImageSourceAnimationBlock block	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	efd302df76aca7fa
+typedef	c:@T@CGImageSourceAnimationBlock	-			void ((^))(size_t, CGImageRef, _Bool *)	-	-	-	-	7e9e396dfb492b73
+function	c:@F@CGAnimateImageAtURLWithBlock	-			OSStatus (CFURLRef, CFDictionaryRef, CGImageSourceAnimationBlock)	CFURLRef url | CFDictionaryRef options | CGImageSourceAnimationBlock block	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	4f791c58904f5c87
+function	c:@F@CGAnimateImageDataWithBlock	-			OSStatus (CFDataRef, CFDictionaryRef, CGImageSourceAnimationBlock)	CFDataRef data | CFDictionaryRef options | CGImageSourceAnimationBlock block	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	6bcf9b22317b9ad4

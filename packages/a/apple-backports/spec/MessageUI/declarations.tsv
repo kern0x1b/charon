@@ -18,9 +18,9 @@ property	c:objc(cs)MFMessageComposeViewController(py)messageComposeDelegate	-			
 method	c:objc(cs)MFMessageComposeViewController(im)disableUserAttachments	-			void	-	-	ios=7.0/-/-/0	-	99f8201578924863
 property	c:objc(cs)MFMessageComposeViewController(py)recipients	-			NSArray<NSString *> *	-	copy,nonatomic	ios=4.0/-/-/0	-	66ed33eb10e590cf
 property	c:objc(cs)MFMessageComposeViewController(py)body	-			NSString *	-	copy,nonatomic	ios=4.0/-/-/0	-	2fb2286fba3ba62b
-property	c:objc(cs)MFMessageComposeViewController(py)subject	-			API_AVAILABLE NSString *	-	copy,nonatomic	ios=7.0/-/-/0	-	cc898d9be193ba86
-property	c:objc(cs)MFMessageComposeViewController(py)attachments	-			API_AVAILABLE NSArray<NSDictionary *> *	-	readonly,copy,nonatomic	ios=7.0/-/-/0	-	7e7a6f6654582551
-property	c:objc(cs)MFMessageComposeViewController(py)message	-			API_AVAILABLE MSMessage *	-	copy,nonatomic	ios=10.0/-/-/0,xros=-/-/-/1	-	760a37566a208ff4
+property	c:objc(cs)MFMessageComposeViewController(py)subject	-			NSString *	-	copy,nonatomic	ios=7.0/-/-/0	-	7a8a14fa4a3871b8
+property	c:objc(cs)MFMessageComposeViewController(py)attachments	-			NSArray<NSDictionary *> *	-	readonly,copy,nonatomic	ios=7.0/-/-/0	-	f93771000a5c9753
+property	c:objc(cs)MFMessageComposeViewController(py)message	-			MSMessage *	-	copy,nonatomic	ios=10.0/-/-/0,xros=-/-/-/1	-	676108603586e96c
 method	c:objc(cs)MFMessageComposeViewController(im)addAttachmentURL:withAlternateFilename:	-			BOOL	NSURL * attachmentURL | NSString * alternateFilename	-	ios=7.0/-/-/0	-	c1a7297f69f19d4c
 method	c:objc(cs)MFMessageComposeViewController(im)addAttachmentData:typeIdentifier:filename:	-			BOOL	NSData * attachmentData | NSString * uti | NSString * filename	-	ios=7.0/-/-/0	-	20bb599b71278559
 method	c:objc(cs)MFMessageComposeViewController(im)insertCollaborationItemProvider:	-			BOOL	NSItemProvider * itemProvider	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	44cac6891cc5f171

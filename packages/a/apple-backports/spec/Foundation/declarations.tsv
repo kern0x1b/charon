@@ -2,13 +2,13 @@
 var	c:@NSFoundationVersionNumber	-			double	-	-	-	-	574ff06646f1d2e0
 typedef	c:@T@NSExceptionName	-			NSString *	-	-	-	-	cbdf7ebff23e705e
 typedef	c:@T@NSRunLoopMode	-			NSString *	-	-	-	-	f7fd0d1c0f082ab6
-function	c:@F@NSStringFromSelector	-			NSString * _Nonnull (SEL _Nonnull)	SEL aSelector	-	-	-	743c92c4995a69b5
-function	c:@F@NSSelectorFromString	-			SEL  _Nonnull (NSString * _Nonnull)	NSString * aSelectorName	-	-	-	8f7fe8bf0d8e0be1
-function	c:@F@NSStringFromClass	-			NSString * _Nonnull (Class _Nonnull)	Class aClass	-	-	-	9804d718bbdfadba
-function	c:@F@NSClassFromString	-			Class  _Nullable (NSString * _Nonnull)	NSString * aClassName	-	-	-	953cd0e9a2e680df
-function	c:@F@NSStringFromProtocol	-			NSString * _Nonnull (Protocol * _Nonnull)	Protocol * proto	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	d315550253ae8bac
-function	c:@F@NSProtocolFromString	-			Protocol * _Nullable (NSString * _Nonnull)	NSString * namestr	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	2eeb30cb64725c40
-function	c:@F@NSGetSizeAndAlignment	-			const char * _Nonnull (const char * _Nonnull, NSUInteger * _Nullable, NSUInteger * _Nullable)	const char * typePtr | NSUInteger * sizep | NSUInteger * alignp	-	-	-	2b35c253ab0f389c
+function	c:@F@NSStringFromSelector	-			NSString * (SEL)	SEL aSelector	-	-	-	06e366591515aec0
+function	c:@F@NSSelectorFromString	-			SEL (NSString *)	NSString * aSelectorName	-	-	-	65bbb46593c99d43
+function	c:@F@NSStringFromClass	-			NSString * (Class)	Class aClass	-	-	-	13735111141a3379
+function	c:@F@NSClassFromString	-			Class (NSString *)	NSString * aClassName	-	-	-	b2d09aa473d91a51
+function	c:@F@NSStringFromProtocol	-			NSString * (Protocol *)	Protocol * proto	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	797cbcd2f6f1f426
+function	c:@F@NSProtocolFromString	-			Protocol * (NSString *)	NSString * namestr	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	dfd3039821ff6bd5
+function	c:@F@NSGetSizeAndAlignment	-			const char * (const char *, NSUInteger *, NSUInteger *)	const char * typePtr | NSUInteger * sizep | NSUInteger * alignp	-	-	-	be53b3bafc6cf1b2
 function	c:@F@NSLog	-			void (id, ...)	NSString * format	variadic	-	-	8710c32d8596e66d
 function	c:@F@NSLogv	-			void (id, __builtin_va_list)	NSString * format | va_list args	-	-	-	5d560d42a89ba198
 typedef	c:@T@NSComparisonResult	-			enum NSComparisonResult	-	-	-	-	98996b4daed97d3d
@@ -16,7 +16,7 @@ enum	c:@E@NSComparisonResult	-			NSInteger	-	-	-	-	c3e1ace7ba0aad8e
 enumconst	c:@E@NSComparisonResult@NSOrderedAscending	NSComparisonResult			-	-	-	-	-	0fc95c4cc3af144e
 enumconst	c:@E@NSComparisonResult@NSOrderedSame	NSComparisonResult			-	-	-	-	-	c1438f11d90267cc
 enumconst	c:@E@NSComparisonResult@NSOrderedDescending	NSComparisonResult			-	-	-	-	-	5885a974ce7ec56f
-typedef	c:@T@NSComparator	-			NSComparisonResult (^)(id _Nonnull, id _Nonnull)	-	-	-	-	bf85517dd0726dc7
+typedef	c:@T@NSComparator	-			NSComparisonResult ((^))(id, id)	-	-	-	-	f072575acbc56a92
 typedef	c:@T@NSEnumerationOptions	-			enum NSEnumerationOptions	-	-	-	-	3949db790379ffe3
 enum	c:@E@NSEnumerationOptions	-			NSUInteger	-	-	-	-	bd35f81e56bd18cd
 enumconst	c:@E@NSEnumerationOptions@NSEnumerationConcurrent	NSEnumerationOptions			-	-	-	-	-	5176f023dcaae31b
@@ -33,24 +33,24 @@ enumconst	c:@E@NSQualityOfService@NSQualityOfServiceUtility	NSQualityOfService		
 enumconst	c:@E@NSQualityOfService@NSQualityOfServiceBackground	NSQualityOfService			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	560246c68f6a879c
 enumconst	c:@E@NSQualityOfService@NSQualityOfServiceDefault	NSQualityOfService			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	69925642516cd20b
 typedef	c:@T@NSZone	-			struct _NSZone	-	-	-	-	a6dc1e3b1b8b2ac5
-function	c:@F@NSDefaultMallocZone	-			NSZone * _Nonnull (void)	-	-	swift=-/-/-/1	-	9701edbfa5a0d45d
-function	c:@F@NSCreateZone	-			NSZone * _Nonnull (NSUInteger, NSUInteger, BOOL)	NSUInteger startSize | NSUInteger granularity | BOOL canFree	-	swift=-/-/-/1	-	fd04c0c8181f6ede
-function	c:@F@NSRecycleZone	-			void (NSZone * _Nonnull)	NSZone * zone	-	swift=-/-/-/1	-	4e2b77febe9030af
-function	c:@F@NSSetZoneName	-			void (NSZone * _Nullable, NSString * _Nonnull)	NSZone * zone | NSString * name	-	swift=-/-/-/1	-	7578a31207c98108
-function	c:@F@NSZoneName	-			NSString * _Nonnull (NSZone * _Nullable)	NSZone * zone	-	swift=-/-/-/1	-	0a8f0848648e9a07
-function	c:@F@NSZoneFromPointer	-			NSZone * _Nullable (void * _Nonnull)	void * ptr	-	swift=-/-/-/1	-	bb35c4574a5b253f
-function	c:@F@NSZoneMalloc	-			void * _Nonnull (NSZone * _Nullable, NSUInteger)	NSZone * zone | NSUInteger size	-	swift=-/-/-/1	-	e351b31dfb99a107
-function	c:@F@NSZoneCalloc	-			void * _Nonnull (NSZone * _Nullable, NSUInteger, NSUInteger)	NSZone * zone | NSUInteger numElems | NSUInteger byteSize	-	swift=-/-/-/1	-	61948e467efada47
-function	c:@F@NSZoneRealloc	-			void * _Nonnull (NSZone * _Nullable, void * _Nullable, NSUInteger)	NSZone * zone | void * ptr | NSUInteger size	-	swift=-/-/-/1	-	ec0710c1bacf9858
-function	c:@F@NSZoneFree	-			void (NSZone * _Nullable, void * _Nonnull)	NSZone * zone | void * ptr	-	swift=-/-/-/1	-	cb780d0fc6acc9de
-function	c:@F@NSMakeCollectable	-			NS_RETURNS_RETAINED id  _Nullable (CF_CONSUMED CFTypeRef)	CF_CONSUMED CFTypeRef cf	-	swift=-/-/-/1	-	f8523f013237d4f1
+function	c:@F@NSDefaultMallocZone	-			NSZone * (void)	-	-	swift=-/-/-/1	-	6a08e3dc704d23ea
+function	c:@F@NSCreateZone	-			NSZone * (NSUInteger, NSUInteger, BOOL)	NSUInteger startSize | NSUInteger granularity | BOOL canFree	-	swift=-/-/-/1	-	5c8e892015f59f18
+function	c:@F@NSRecycleZone	-			void (NSZone *)	NSZone * zone	-	swift=-/-/-/1	-	76af16ba725934ef
+function	c:@F@NSSetZoneName	-			void (NSZone *, NSString *)	NSZone * zone | NSString * name	-	swift=-/-/-/1	-	e555031fb1d0a853
+function	c:@F@NSZoneName	-			NSString * (NSZone *)	NSZone * zone	-	swift=-/-/-/1	-	b2c048abe22b1556
+function	c:@F@NSZoneFromPointer	-			NSZone * (void *)	void * ptr	-	swift=-/-/-/1	-	28d058d877c647ab
+function	c:@F@NSZoneMalloc	-			void * (NSZone *, NSUInteger)	NSZone * zone | NSUInteger size	-	swift=-/-/-/1	-	448e325231f73691
+function	c:@F@NSZoneCalloc	-			void * (NSZone *, NSUInteger, NSUInteger)	NSZone * zone | NSUInteger numElems | NSUInteger byteSize	-	swift=-/-/-/1	-	d083ba7e825fc6b2
+function	c:@F@NSZoneRealloc	-			void * (NSZone *, void *, NSUInteger)	NSZone * zone | void * ptr | NSUInteger size	-	swift=-/-/-/1	-	17bf6cd1e6cfc190
+function	c:@F@NSZoneFree	-			void (NSZone *, void *)	NSZone * zone | void * ptr	-	swift=-/-/-/1	-	b775ce5c58026e6c
+function	c:@F@NSMakeCollectable	-			id (CFTypeRef)	CFTypeRef cf	-	swift=-/-/-/1	-	fa553d640f0d91b8
 function	c:@F@NSPageSize	-			NSUInteger (void)	-	-	-	-	387c416bbe3b28ef
 function	c:@F@NSLogPageSize	-			NSUInteger (void)	-	-	-	-	4e84bba3ba6fb4e3
 function	c:@F@NSRoundUpToMultipleOfPageSize	-			NSUInteger (NSUInteger)	NSUInteger bytes	-	-	-	f9f63a1620b2074a
 function	c:@F@NSRoundDownToMultipleOfPageSize	-			NSUInteger (NSUInteger)	NSUInteger bytes	-	-	-	c8e29021868bb9c7
-function	c:@F@NSAllocateMemoryPages	-			void * _Nonnull (NSUInteger)	NSUInteger bytes	-	-	-	bf9dd68f5564d939
-function	c:@F@NSDeallocateMemoryPages	-			void (void * _Nonnull, NSUInteger)	void * ptr | NSUInteger bytes	-	-	-	2c043241d2554f82
-function	c:@F@NSCopyMemoryPages	-			void (const void * _Nonnull, void * _Nonnull, NSUInteger)	const void * source | void * dest | NSUInteger bytes	-	-	-	f26f75e10a43660e
+function	c:@F@NSAllocateMemoryPages	-			void * (NSUInteger)	NSUInteger bytes	-	-	-	f3d3b8a38c52637b
+function	c:@F@NSDeallocateMemoryPages	-			void (void *, NSUInteger)	void * ptr | NSUInteger bytes	-	-	-	14078ce6a33e627f
+function	c:@F@NSCopyMemoryPages	-			void (const void *, void *, NSUInteger)	const void * source | void * dest | NSUInteger bytes	-	-	-	fb963378dc412912
 function	c:@F@NSRealMemoryAvailable	-			NSUInteger (void)	-	-	ios=2.0/6.0/-/0,macos=10.0/10.8/-/0,tvos=9.0/9.0/-/0,watchos=2.0/2.0/-/0	-	6185af53d35b260a
 protocol	c:objc(pl)NSCopying	-			-	-	-	-	-	0131eea381485d0a
 method	c:objc(pl)NSCopying(im)copyWithZone:	-			id	NSZone * zone	-	-	-	a59239f85f85576f
@@ -75,15 +75,15 @@ method	c:objc(pl)NSDiscardableContent(im)discardContentIfPossible	-			void	-	-	-
 method	c:objc(pl)NSDiscardableContent(im)isContentDiscarded	-			BOOL	-	-	-	-	6ec224a1e8e102f9
 category	c:objc(cy)NSObject@NSDiscardableContentProxy	-			-	-	-	ios=2.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	38f0d0ef5bd35736
 property	c:objc(cs)NSObject(py)autoContentAccessingProxy	NSDiscardableContentProxy			id	-	readonly,retain	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	fbb8ed95136d3ac4
-function	c:@F@NSAllocateObject	-			id  _Nonnull (Class _Nonnull, NSUInteger, NSZone * _Nullable)	Class aClass | NSUInteger extraBytes | NSZone * zone	-	-	-	a2775b9327b25316
-function	c:@F@NSDeallocateObject	-			void (id _Nonnull)	id object	-	-	-	9ed8633031251789
-function	c:@F@NSCopyObject	-			id  _Nonnull (id _Nonnull, NSUInteger, NSZone * _Nullable)	id object | NSUInteger extraBytes | NSZone * zone	-	ios=2.0/6.0/-/0,macos=10.0/10.8/-/0,tvos=9.0/9.0/-/0,watchos=2.0/2.0/-/0	-	0fc8b3f3563f9241
-function	c:@F@NSShouldRetainWithZone	-			BOOL (id _Nonnull, NSZone * _Nullable)	id anObject | NSZone * requestedZone	-	-	-	4374ec6190175898
-function	c:@F@NSIncrementExtraRefCount	-			void (id _Nonnull)	id object	-	-	-	22b0b7b980ac8ad7
-function	c:@F@NSDecrementExtraRefCountWasZero	-			BOOL (id _Nonnull)	id object	-	-	-	9aa3547093be2931
-function	c:@F@NSExtraRefCount	-			NSUInteger (id _Nonnull)	id object	-	-	-	6f2c2a9271ae9133
-function	c:@F@CFBridgingRetain	-			CFTypeRef  _Nullable (id _Nullable)	id X	-	-	-	9b20e5d67fd0df86
-function	c:@F@CFBridgingRelease	-			NS_RETURNS_RETAINED id  _Nullable (CFTypeRef _Nullable)	CFTypeRef X	-	-	-	76c687fff791024e
+function	c:@F@NSAllocateObject	-			id (Class, NSUInteger, NSZone *)	Class aClass | NSUInteger extraBytes | NSZone * zone	-	-	-	438262ee4c9432a6
+function	c:@F@NSDeallocateObject	-			void (id)	id object	-	-	-	34f53bbfcc1cb8b8
+function	c:@F@NSCopyObject	-			id (id, NSUInteger, NSZone *)	id object | NSUInteger extraBytes | NSZone * zone	-	ios=2.0/6.0/-/0,macos=10.0/10.8/-/0,tvos=9.0/9.0/-/0,watchos=2.0/2.0/-/0	-	24533e809bc2b6e4
+function	c:@F@NSShouldRetainWithZone	-			BOOL (id, NSZone *)	id anObject | NSZone * requestedZone	-	-	-	5cad9dfd8141eb21
+function	c:@F@NSIncrementExtraRefCount	-			void (id)	id object	-	-	-	cb559db2b2422d5d
+function	c:@F@NSDecrementExtraRefCountWasZero	-			BOOL (id)	id object	-	-	-	1611b4dd740bdef5
+function	c:@F@NSExtraRefCount	-			NSUInteger (id)	id object	-	-	-	c9bbfe15598a5a6a
+function	c:@F@CFBridgingRetain	-			CFTypeRef (id)	id X	-	-	-	f3e35fcc53dcebf1
+function	c:@F@CFBridgingRelease	-			id (CFTypeRef)	CFTypeRef X	-	-	-	68a4807044de8f1c
 struct	c:@SA@NSFastEnumerationState	-			-	-	-	-	-	93d9f0987aea93b2
 field	c:@SA@NSFastEnumerationState@FI@state	NSFastEnumerationState			unsigned long	-	-	-	-	18fb28940e0558bd
 field	c:@SA@NSFastEnumerationState@FI@itemsPtr	NSFastEnumerationState			id  _Nullable *	-	-	-	-	5e9cb9c6107e24f0
@@ -103,7 +103,7 @@ super	-	NSValue	NSObject		-	-	-	-	-	258e835f215e7806
 conforms	-	NSValue	NSCopying		-	-	-	-	-	dd15eee922b66e74
 conforms	-	NSValue	NSSecureCoding		-	-	-	-	-	7b04a456e8f61f3f
 method	c:objc(cs)NSValue(im)getValue:size:	-			void	void * value | NSUInteger size	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5ca77a9797fdecd2
-property	c:objc(cs)NSValue(py)objCType	-			NS_RETURNS_INNER_POINTER const char *	-	readonly	-	-	a362fe8fcc4b5d36
+property	c:objc(cs)NSValue(py)objCType	-			const char *	-	readonly	-	-	071bb6abe40189bc
 method	c:objc(cs)NSValue(im)initWithBytes:objCType:	-			instancetype	const void * value | const char * type	-	-	-	92481d795a75a0ce
 method	c:objc(cs)NSValue(im)initWithCoder:	-			instancetype	NSCoder * coder	-	-	-	f31a9cdf6e5f89ec
 category	c:objc(cy)NSValue@NSValueCreation	-			-	-	-	-	-	f111a5c16ba1ae54
@@ -181,8 +181,8 @@ function	c:@F@NSLocationInRange	-			BOOL (NSUInteger, NSRange)	NSUInteger loc | 
 function	c:@F@NSEqualRanges	-			BOOL (NSRange, NSRange)	NSRange range1 | NSRange range2	-	-	-	9aece8bf2f08c028
 function	c:@F@NSUnionRange	-			NSRange (NSRange, NSRange)	NSRange range1 | NSRange range2	-	-	-	51b02ef7248a8d8e
 function	c:@F@NSIntersectionRange	-			NSRange (NSRange, NSRange)	NSRange range1 | NSRange range2	-	-	-	d50c32dd56bda7e1
-function	c:@F@NSStringFromRange	-			NSString * _Nonnull (NSRange)	NSRange range	-	-	-	65ccfe703136fde2
-function	c:@F@NSRangeFromString	-			NSRange (NSString * _Nonnull)	NSString * aString	-	-	-	2601f30a1d6d62f5
+function	c:@F@NSStringFromRange	-			NSString * (NSRange)	NSRange range	-	-	-	da225ae4487508b0
+function	c:@F@NSRangeFromString	-			NSRange (NSString *)	NSString * aString	-	-	-	7cb36148f2205d51
 category	c:objc(cy)NSValue@NSValueRangeExtensions	-			-	-	-	-	-	cad5e106ae7f49a0
 method	c:objc(cs)NSValue(cm)valueWithRange:	NSValueRangeExtensions			NSValue *	NSRange range	-	-	-	1dc78c34dd8442ee
 property	c:objc(cs)NSValue(py)rangeValue	NSValueRangeExtensions			NSRange	-	readonly	-	-	a31945c33752a128
@@ -288,7 +288,7 @@ conforms	-	NSArray	NSFastEnumeration		-	-	-	-	-	a94f8977e4d95a3d
 property	c:objc(cs)NSArray(py)count	-			NSUInteger	-	readonly	-	-	a553711b9b432c98
 method	c:objc(cs)NSArray(im)objectAtIndex:	-			ObjectType	NSUInteger index	-	-	-	2f71148af4e90443
 method	c:objc(cs)NSArray(im)init	-			instancetype	-	-	-	-	2803e6846de1e29d
-method	c:objc(cs)NSArray(im)initWithObjects:count:	-			instancetype	ObjectType  _Nonnull const[] objects | NSUInteger cnt	-	-	-	ebedb85939190e7a
+method	c:objc(cs)NSArray(im)initWithObjects:count:	-			instancetype	const ObjectType  _Nonnull const[] objects | NSUInteger cnt	-	-	-	001917df76503040
 method	c:objc(cs)NSArray(im)initWithCoder:	-			instancetype	NSCoder * coder	-	-	-	913f7c35357dc345
 category	c:objc(cy)NSArray@NSExtendedArray	-			-	-	-	-	-	f9c9044fdafdff2d
 method	c:objc(cs)NSArray(im)arrayByAddingObject:	NSExtendedArray			NSArray<ObjectType> *	ObjectType anObject	-	-	-	472c8ce92a9ccd9c
@@ -339,7 +339,7 @@ enumconst	c:@E@NSBinarySearchingOptions@NSBinarySearchingInsertionIndex	NSBinary
 category	c:objc(cy)NSArray@NSArrayCreation	-			-	-	-	-	-	df06f7b5eab0315c
 method	c:objc(cs)NSArray(cm)array	NSArrayCreation			instancetype	-	-	-	-	6b262d397385cfec
 method	c:objc(cs)NSArray(cm)arrayWithObject:	NSArrayCreation			instancetype	ObjectType anObject	-	-	-	815fa500e9db55c1
-method	c:objc(cs)NSArray(cm)arrayWithObjects:count:	NSArrayCreation			instancetype	ObjectType  _Nonnull const[] objects | NSUInteger cnt	-	-	-	1eb8595646c506ac
+method	c:objc(cs)NSArray(cm)arrayWithObjects:count:	NSArrayCreation			instancetype	const ObjectType  _Nonnull const[] objects | NSUInteger cnt	-	-	-	203f41fb93e243a0
 method	c:objc(cs)NSArray(cm)arrayWithObjects:	NSArrayCreation			instancetype	ObjectType firstObj	-	-	-	14bab2b94c96634d
 method	c:objc(cs)NSArray(cm)arrayWithArray:	NSArrayCreation			instancetype	NSArray<ObjectType> * array	-	-	-	4b3f38311b71ab68
 method	c:objc(cs)NSArray(im)initWithObjects:	NSArrayCreation			instancetype	ObjectType firstObj	-	-	-	08cdc90d25365bd0
@@ -426,8 +426,8 @@ protocol	c:objc(pl)NSItemProviderReading	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/
 conforms	-	NSItemProviderReading	NSObject		-	-	-	-	-	2b4005bebd880eec
 property	c:objc(pl)NSItemProviderReading(cpy)readableTypeIdentifiersForItemProvider	-			NSArray<NSString *> *	-	readonly,copy,nonatomic,class	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	070184581507e5b6
 method	c:objc(pl)NSItemProviderReading(cm)objectWithItemProviderData:typeIdentifier:error:	-			instancetype	NSData * data | NSString * typeIdentifier | NSError * _Nullable * outError	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	299073e0e2c80a37
-typedef	c:@T@NSItemProviderCompletionHandler	-			void (^)(__kindof id<NSSecureCoding> _Nullable, NSError * _Null_unspecified)	-	-	-	-	13a93e38e0d14927
-typedef	c:@T@NSItemProviderLoadHandler	-			void (^)(NSItemProviderCompletionHandler _Null_unspecified, Class _Null_unspecified, NSDictionary * _Null_unspecified)	-	-	-	-	0aa84b8c9194c53d
+typedef	c:@T@NSItemProviderCompletionHandler	-			void ((^))(id<NSSecureCoding>, NSError *)	-	-	-	-	0b4e1580521bf7d2
+typedef	c:@T@NSItemProviderLoadHandler	-			void ((^))(NSItemProviderCompletionHandler, Class, NSDictionary *)	-	-	-	-	9a44f6a470d05798
 interface	c:objc(cs)NSItemProvider	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	025409c321677009
 super	-	NSItemProvider	NSObject		-	-	-	-	-	872b61616ac19aa1
 conforms	-	NSItemProvider	NSCopying		-	-	-	-	-	dd1b3b04c5d54024
@@ -566,7 +566,7 @@ method	c:objc(cs)NSString(im)getParagraphStart:end:contentsEnd:forRange:	NSStrin
 method	c:objc(cs)NSString(im)paragraphRangeForRange:	NSStringExtensionMethods			NSRange	NSRange range	-	-	-	749d5bfc1c36bb70
 method	c:objc(cs)NSString(im)enumerateSubstringsInRange:options:usingBlock:	NSStringExtensionMethods			void	NSRange range | NSStringEnumerationOptions opts | void (^)(NSString * _Nullable, NSRange, NSRange, BOOL * _Nonnull) block	-	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	748b95e2c00590af
 method	c:objc(cs)NSString(im)enumerateLinesUsingBlock:	NSStringExtensionMethods			void	void (^)(NSString * _Nonnull, BOOL * _Nonnull) block	-	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	0f2384d33a8493c9
-property	c:objc(cs)NSString(py)UTF8String	NSStringExtensionMethods			NS_RETURNS_INNER_POINTER const char *	-	readonly	-	-	d9165d0ba9bfb59d
+property	c:objc(cs)NSString(py)UTF8String	NSStringExtensionMethods			const char *	-	readonly	-	-	c84a293e97df542d
 property	c:objc(cs)NSString(py)fastestEncoding	NSStringExtensionMethods			NSStringEncoding	-	readonly	-	-	ec21774f4a68413f
 property	c:objc(cs)NSString(py)smallestEncoding	NSStringExtensionMethods			NSStringEncoding	-	readonly	-	-	bb7770b06077d545
 method	c:objc(cs)NSString(im)dataUsingEncoding:allowLossyConversion:	NSStringExtensionMethods			NSData *	NSStringEncoding encoding | BOOL lossy	-	-	-	85d0a8355c3cd652
@@ -727,7 +727,7 @@ property	c:objc(cs)NSDictionary(py)count	-			NSUInteger	-	readonly	-	-	a2e9d0d96
 method	c:objc(cs)NSDictionary(im)objectForKey:	-			ObjectType	KeyType aKey	-	-	-	75729d2f27f32ecb
 method	c:objc(cs)NSDictionary(im)keyEnumerator	-			NSEnumerator<KeyType> *	-	-	-	-	a0aff3d70d6f52a6
 method	c:objc(cs)NSDictionary(im)init	-			instancetype	-	-	-	-	3f0d4a1fbbd26700
-method	c:objc(cs)NSDictionary(im)initWithObjects:forKeys:count:	-			instancetype	ObjectType  _Nonnull const[] objects | id<NSCopying>  _Nonnull const[] keys | NSUInteger cnt	-	-	-	bcffd0d5def96c09
+method	c:objc(cs)NSDictionary(im)initWithObjects:forKeys:count:	-			instancetype	const ObjectType  _Nonnull const[] objects | const id<NSCopying>  _Nonnull const[] keys | NSUInteger cnt	-	-	-	d8e3c066a2760838
 method	c:objc(cs)NSDictionary(im)initWithCoder:	-			instancetype	NSCoder * coder	-	-	-	1d2e6a8aa93c3c1b
 category	c:objc(cy)NSDictionary@NSExtendedDictionary	-			-	-	-	-	-	c8993e54d1dbed76
 property	c:objc(cs)NSDictionary(py)allKeys	NSExtendedDictionary			NSArray<KeyType> *	-	readonly,copy	-	-	6f1d2b154d2578ad
@@ -761,7 +761,7 @@ method	c:objc(cs)NSDictionary(im)writeToURL:atomically:	NSDeprecated			BOOL	NSUR
 category	c:objc(cy)NSDictionary@NSDictionaryCreation	-			-	-	-	-	-	1a1367e5b67a2930
 method	c:objc(cs)NSDictionary(cm)dictionary	NSDictionaryCreation			instancetype	-	-	-	-	2548ca052d83f4c3
 method	c:objc(cs)NSDictionary(cm)dictionaryWithObject:forKey:	NSDictionaryCreation			instancetype	ObjectType object | id<NSCopying> key	-	-	-	d7a35a1e62516040
-method	c:objc(cs)NSDictionary(cm)dictionaryWithObjects:forKeys:count:	NSDictionaryCreation			instancetype	ObjectType  _Nonnull const[] objects | id<NSCopying>  _Nonnull const[] keys | NSUInteger cnt	-	-	-	7dde00f02f305ee8
+method	c:objc(cs)NSDictionary(cm)dictionaryWithObjects:forKeys:count:	NSDictionaryCreation			instancetype	const ObjectType  _Nonnull const[] objects | const id<NSCopying>  _Nonnull const[] keys | NSUInteger cnt	-	-	-	8a3018883407f006
 method	c:objc(cs)NSDictionary(cm)dictionaryWithObjectsAndKeys:	NSDictionaryCreation			instancetype	id firstObject	-	swift=-/-/-/1	-	de52ebae47b5bb12
 method	c:objc(cs)NSDictionary(cm)dictionaryWithDictionary:	NSDictionaryCreation			instancetype	NSDictionary<KeyType,ObjectType> * dict	-	-	-	0cd7ae57c6d5207e
 method	c:objc(cs)NSDictionary(cm)dictionaryWithObjects:forKeys:	NSDictionaryCreation			instancetype	NSArray<ObjectType> * objects | NSArray<id<NSCopying>> * keys	-	-	-	0325048a02c1c461
@@ -806,7 +806,7 @@ property	c:objc(cs)NSSet(py)count	-			NSUInteger	-	readonly	-	-	8b4826eebf247e17
 method	c:objc(cs)NSSet(im)member:	-			ObjectType	ObjectType object	-	-	-	71655f17a36e3f62
 method	c:objc(cs)NSSet(im)objectEnumerator	-			NSEnumerator<ObjectType> *	-	-	-	-	28d574e451a87088
 method	c:objc(cs)NSSet(im)init	-			instancetype	-	-	-	-	3448f92af2c30d0c
-method	c:objc(cs)NSSet(im)initWithObjects:count:	-			instancetype	ObjectType  _Nonnull const[] objects | NSUInteger cnt	-	-	-	3182c308d1497742
+method	c:objc(cs)NSSet(im)initWithObjects:count:	-			instancetype	const ObjectType  _Nonnull const[] objects | NSUInteger cnt	-	-	-	43109f5be5161282
 method	c:objc(cs)NSSet(im)initWithCoder:	-			instancetype	NSCoder * coder	-	-	-	267c9485629577b7
 category	c:objc(cy)NSSet@NSExtendedSet	-			-	-	-	-	-	5ba7b2917c03750e
 property	c:objc(cs)NSSet(py)allObjects	NSExtendedSet			NSArray<ObjectType> *	-	readonly,copy	-	-	0ffaecf5029f3319
@@ -829,7 +829,7 @@ method	c:objc(cs)NSSet(im)objectsWithOptions:passingTest:	NSExtendedSet			NSSet<
 category	c:objc(cy)NSSet@NSSetCreation	-			-	-	-	-	-	9d998dd0041320ed
 method	c:objc(cs)NSSet(cm)set	NSSetCreation			instancetype	-	-	-	-	50903b90bf900f9d
 method	c:objc(cs)NSSet(cm)setWithObject:	NSSetCreation			instancetype	ObjectType object	-	-	-	2d07bf0724a6189f
-method	c:objc(cs)NSSet(cm)setWithObjects:count:	NSSetCreation			instancetype	ObjectType  _Nonnull const[] objects | NSUInteger cnt	-	-	-	f11614c1b66d5827
+method	c:objc(cs)NSSet(cm)setWithObjects:count:	NSSetCreation			instancetype	const ObjectType  _Nonnull const[] objects | NSUInteger cnt	-	-	-	7130df792fd65225
 method	c:objc(cs)NSSet(cm)setWithObjects:	NSSetCreation			instancetype	ObjectType firstObj	-	-	-	3a1a8d03cec17185
 method	c:objc(cs)NSSet(cm)setWithSet:	NSSetCreation			instancetype	NSSet<ObjectType> * set	-	-	-	372bd97c4a6792dd
 method	c:objc(cs)NSSet(cm)setWithArray:	NSSetCreation			instancetype	NSArray<ObjectType> * array	-	-	-	876ad37ed9304c8c
@@ -896,19 +896,19 @@ method	c:objc(cs)NSProgress(im)pause	-			void	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0
 method	c:objc(cs)NSProgress(im)resume	-			void	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	7ae72a255ec2512b
 property	c:objc(cs)NSProgress(py)userInfo	-			NSDictionary<NSProgressUserInfoKey,id> *	-	readonly,copy	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	b9a0e130ecc137c0
 property	c:objc(cs)NSProgress(py)kind	-			NSProgressKind	-	copy	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	89a8daede3c5def9
-property	c:objc(cs)NSProgress(py)estimatedTimeRemaining	-			NS_REFINED_FOR_SWIFT NSNumber *	-	copy	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b9bb551d36d968fd
-property	c:objc(cs)NSProgress(py)throughput	-			NS_REFINED_FOR_SWIFT NSNumber *	-	copy	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	29d1760051a3231f
+property	c:objc(cs)NSProgress(py)estimatedTimeRemaining	-			NSNumber *	-	copy	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	fea71e8df4263eb1
+property	c:objc(cs)NSProgress(py)throughput	-			NSNumber *	-	copy	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	360f69577db6ac31
 property	c:objc(cs)NSProgress(py)fileOperationKind	-			NSProgressFileOperationKind	-	copy	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c86a6632e4325c81
 property	c:objc(cs)NSProgress(py)fileURL	-			NSURL *	-	copy	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0c2a1c89d00db38f
-property	c:objc(cs)NSProgress(py)fileTotalCount	-			NS_REFINED_FOR_SWIFT NSNumber *	-	copy	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	dcab20e4b5072409
-property	c:objc(cs)NSProgress(py)fileCompletedCount	-			NS_REFINED_FOR_SWIFT NSNumber *	-	copy	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	aad9cd3f3e699452
+property	c:objc(cs)NSProgress(py)fileTotalCount	-			NSNumber *	-	copy	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	528fcc435bd81d33
+property	c:objc(cs)NSProgress(py)fileCompletedCount	-			NSNumber *	-	copy	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f5279b7dccb2a85f
 method	c:objc(cs)NSProgress(im)publish	-			void	-	-	ios=-/-/-/1,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b504ad7165cddf95
 method	c:objc(cs)NSProgress(im)unpublish	-			void	-	-	ios=-/-/-/1,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4f2f33b6339d0c36
 method	c:objc(cs)NSProgress(cm)addSubscriberForFileURL:withPublishingHandler:	-			id	NSURL * url | NSProgressPublishingHandler publishingHandler	-	ios=-/-/-/1,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3a0f9f71611c0f27
 method	c:objc(cs)NSProgress(cm)removeSubscriber:	-			void	id subscriber	-	ios=-/-/-/1,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3f5c8f2652b60bea
 property	c:objc(cs)NSProgress(py)old	-			BOOL	-	readonly,getter=isOld	ios=-/-/-/1,macos=10.9/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1d7b03ea684ce02e
-typedef	c:@T@NSProgressUnpublishingHandler	-			void (^)(void)	-	-	-	-	ef5607683fb9a38d
-typedef	c:@T@NSProgressPublishingHandler	-			NSProgressUnpublishingHandler  _Nullable (^)(NSProgress * _Nonnull)	-	-	-	-	68885fc30cce9900
+typedef	c:@T@NSProgressUnpublishingHandler	-			void ((^))(void)	-	-	-	-	3491366a2f0dca2b
+typedef	c:@T@NSProgressPublishingHandler	-			NSProgressUnpublishingHandler ((^))(NSProgress *)	-	-	-	-	b7101e81720fae61
 protocol	c:objc(pl)NSProgressReporting	-			-	-	-	-	-	be22c6f407eccfb5
 conforms	-	NSProgressReporting	NSObject		-	-	-	-	-	481c52817cc71577
 property	c:objc(pl)NSProgressReporting(py)progress	-			NSProgress *	-	readonly	-	-	fcf2ffbd89e8c706
@@ -1472,7 +1472,7 @@ conforms	-	NSData	NSCopying		-	-	-	-	-	d1996719fd2983d3
 conforms	-	NSData	NSMutableCopying		-	-	-	-	-	d711873e93d17ff2
 conforms	-	NSData	NSSecureCoding		-	-	-	-	-	ad9d066f43ea0a1a
 property	c:objc(cs)NSData(py)length	-			NSUInteger	-	readonly	-	-	702c5360011b25d4
-property	c:objc(cs)NSData(py)bytes	-			NS_RETURNS_INNER_POINTER const void *	-	readonly	-	-	cd8ffc3ab6b3ab50
+property	c:objc(cs)NSData(py)bytes	-			const void *	-	readonly	-	-	e169ac6b136b9f73
 category	c:objc(cy)NSData@NSExtendedData	-			-	-	-	-	-	df72953ff55cbdcc
 property	c:objc(cs)NSData(py)description	NSExtendedData			NSString *	-	readonly,copy	-	-	07158004f039c730
 method	c:objc(cs)NSData(im)getBytes:length:	NSExtendedData			void	void * buffer | NSUInteger length	-	-	-	ac392d390f6d8203
@@ -1526,7 +1526,7 @@ method	c:objc(cs)NSData(im)initWithBase64Encoding:	NSDeprecated			id	NSString * 
 method	c:objc(cs)NSData(im)base64Encoding	NSDeprecated			NSString *	-	-	ios=4.0/7.0/-/0,macos=10.6/10.9/-/0,tvos=9.0/9.0/-/0,watchos=2.0/2.0/-/0	deprecated: Use base64EncodedStringWithOptions: instead	73d100cae36d35af
 interface	c:objc(cs)NSMutableData	-			-	-	-	-	-	cc14841da7dec28e
 super	-	NSMutableData	NSData		-	-	-	-	-	1ea6eae4a344f3f2
-property	c:objc(cs)NSMutableData(py)mutableBytes	-			NS_RETURNS_INNER_POINTER void *	-	readonly	-	-	aafc0a33fa3b8b0d
+property	c:objc(cs)NSMutableData(py)mutableBytes	-			void *	-	readonly	-	-	60d3d343b2e12c38
 property	c:objc(cs)NSMutableData(py)length	-			NSUInteger	-	-	-	-	dec6ab564ee696d4
 category	c:objc(cy)NSMutableData@NSExtendedMutableData	-			-	-	-	-	-	389e6280c80d807f
 method	c:objc(cs)NSMutableData(im)appendBytes:length:	NSExtendedMutableData			void	const void * bytes | NSUInteger length	-	-	-	9f1e6376ee41f4d7
@@ -2503,19 +2503,19 @@ field	c:@SA@NSDecimal@FI@_isCompact	NSDecimal			unsigned int	-	-	-	-	89590d72073
 field	c:@SA@NSDecimal@FI@_reserved	NSDecimal			unsigned int	-	-	-	-	daf4ef992e2c7bcf
 field	c:@SA@NSDecimal@FI@_mantissa	NSDecimal			unsigned short[8]	-	-	-	-	244b47e78d6eee12
 typedef	c:@T@NSDecimal	-			struct NSDecimal	-	-	-	-	cf4785fe051a1a94
-function	c:@F@NSDecimalIsNotANumber	-			BOOL (const NSDecimal * _Nonnull)	const NSDecimal * dcm	-	-	-	8dd0b218f53b8182
-function	c:@F@NSDecimalCopy	-			void (NSDecimal * _Nonnull, const NSDecimal * _Nonnull)	NSDecimal * destination | const NSDecimal * source	-	-	-	f3e1c1280e9bdb18
-function	c:@F@NSDecimalCompact	-			void (NSDecimal * _Nonnull)	NSDecimal * number	-	-	-	6dce9a80a75f5571
-function	c:@F@NSDecimalCompare	-			NSComparisonResult (const NSDecimal * _Nonnull, const NSDecimal * _Nonnull)	const NSDecimal * leftOperand | const NSDecimal * rightOperand	-	-	-	21554922ceca082a
-function	c:@F@NSDecimalRound	-			void (NSDecimal * _Nonnull, const NSDecimal * _Nonnull, NSInteger, NSRoundingMode)	NSDecimal * result | const NSDecimal * number | NSInteger scale | NSRoundingMode roundingMode	-	-	-	4d1962ea4f9b555c
-function	c:@F@NSDecimalNormalize	-			NSCalculationError (NSDecimal * _Nonnull, NSDecimal * _Nonnull, NSRoundingMode)	NSDecimal * number1 | NSDecimal * number2 | NSRoundingMode roundingMode	-	-	-	3e3600ad265e60fb
-function	c:@F@NSDecimalAdd	-			NSCalculationError (NSDecimal * _Nonnull, const NSDecimal * _Nonnull, const NSDecimal * _Nonnull, NSRoundingMode)	NSDecimal * result | const NSDecimal * leftOperand | const NSDecimal * rightOperand | NSRoundingMode roundingMode	-	-	-	2eaeb6d656cefc8e
-function	c:@F@NSDecimalSubtract	-			NSCalculationError (NSDecimal * _Nonnull, const NSDecimal * _Nonnull, const NSDecimal * _Nonnull, NSRoundingMode)	NSDecimal * result | const NSDecimal * leftOperand | const NSDecimal * rightOperand | NSRoundingMode roundingMode	-	-	-	356e0b353486217b
-function	c:@F@NSDecimalMultiply	-			NSCalculationError (NSDecimal * _Nonnull, const NSDecimal * _Nonnull, const NSDecimal * _Nonnull, NSRoundingMode)	NSDecimal * result | const NSDecimal * leftOperand | const NSDecimal * rightOperand | NSRoundingMode roundingMode	-	-	-	4b1228566947b2a7
-function	c:@F@NSDecimalDivide	-			NSCalculationError (NSDecimal * _Nonnull, const NSDecimal * _Nonnull, const NSDecimal * _Nonnull, NSRoundingMode)	NSDecimal * result | const NSDecimal * leftOperand | const NSDecimal * rightOperand | NSRoundingMode roundingMode	-	-	-	ae0f6522235648f2
-function	c:@F@NSDecimalPower	-			NSCalculationError (NSDecimal * _Nonnull, const NSDecimal * _Nonnull, NSUInteger, NSRoundingMode)	NSDecimal * result | const NSDecimal * number | NSUInteger power | NSRoundingMode roundingMode	-	-	-	eb50c7856bf905a4
-function	c:@F@NSDecimalMultiplyByPowerOf10	-			NSCalculationError (NSDecimal * _Nonnull, const NSDecimal * _Nonnull, short, NSRoundingMode)	NSDecimal * result | const NSDecimal * number | short power | NSRoundingMode roundingMode	-	-	-	da4bef9ba2e6af6e
-function	c:@F@NSDecimalString	-			NSString * _Nonnull (const NSDecimal * _Nonnull, id _Nullable)	const NSDecimal * dcm | id locale	-	-	-	9a8667a5681d8459
+function	c:@F@NSDecimalIsNotANumber	-			BOOL (const NSDecimal *)	const NSDecimal * dcm	-	-	-	5bdf7b8ae46b5815
+function	c:@F@NSDecimalCopy	-			void (NSDecimal *, const NSDecimal *)	NSDecimal * destination | const NSDecimal * source	-	-	-	784857ef9b3da824
+function	c:@F@NSDecimalCompact	-			void (NSDecimal *)	NSDecimal * number	-	-	-	97ba60bbe07b5b06
+function	c:@F@NSDecimalCompare	-			NSComparisonResult (const NSDecimal *, const NSDecimal *)	const NSDecimal * leftOperand | const NSDecimal * rightOperand	-	-	-	dd767b5ee547a307
+function	c:@F@NSDecimalRound	-			void (NSDecimal *, const NSDecimal *, NSInteger, NSRoundingMode)	NSDecimal * result | const NSDecimal * number | NSInteger scale | NSRoundingMode roundingMode	-	-	-	ec079bbb92dfd9de
+function	c:@F@NSDecimalNormalize	-			NSCalculationError (NSDecimal *, NSDecimal *, NSRoundingMode)	NSDecimal * number1 | NSDecimal * number2 | NSRoundingMode roundingMode	-	-	-	cfb7069d53bb5a48
+function	c:@F@NSDecimalAdd	-			NSCalculationError (NSDecimal *, const NSDecimal *, const NSDecimal *, NSRoundingMode)	NSDecimal * result | const NSDecimal * leftOperand | const NSDecimal * rightOperand | NSRoundingMode roundingMode	-	-	-	d66a4b35ae134512
+function	c:@F@NSDecimalSubtract	-			NSCalculationError (NSDecimal *, const NSDecimal *, const NSDecimal *, NSRoundingMode)	NSDecimal * result | const NSDecimal * leftOperand | const NSDecimal * rightOperand | NSRoundingMode roundingMode	-	-	-	eb56864a7b998118
+function	c:@F@NSDecimalMultiply	-			NSCalculationError (NSDecimal *, const NSDecimal *, const NSDecimal *, NSRoundingMode)	NSDecimal * result | const NSDecimal * leftOperand | const NSDecimal * rightOperand | NSRoundingMode roundingMode	-	-	-	4a0ddda358da5a31
+function	c:@F@NSDecimalDivide	-			NSCalculationError (NSDecimal *, const NSDecimal *, const NSDecimal *, NSRoundingMode)	NSDecimal * result | const NSDecimal * leftOperand | const NSDecimal * rightOperand | NSRoundingMode roundingMode	-	-	-	05949f5fe90a4aea
+function	c:@F@NSDecimalPower	-			NSCalculationError (NSDecimal *, const NSDecimal *, NSUInteger, NSRoundingMode)	NSDecimal * result | const NSDecimal * number | NSUInteger power | NSRoundingMode roundingMode	-	-	-	88e66e48f43cd1bd
+function	c:@F@NSDecimalMultiplyByPowerOf10	-			NSCalculationError (NSDecimal *, const NSDecimal *, short, NSRoundingMode)	NSDecimal * result | const NSDecimal * number | short power | NSRoundingMode roundingMode	-	-	-	3c0e326d2b10f73e
+function	c:@F@NSDecimalString	-			NSString * (const NSDecimal *, id)	const NSDecimal * dcm | id locale	-	-	-	f9f12a774ae262b5
 interface	c:objc(cs)NSScanner	-			-	-	-	-	-	f3fd5733bd9cfcfa
 super	-	NSScanner	NSObject		-	-	-	-	-	d7cb3522f4e34aee
 conforms	-	NSScanner	NSCopying		-	-	-	-	-	89c906cdd453225b
@@ -2574,8 +2574,8 @@ category	c:objc(cy)NSException@NSExceptionRaisingConveniences	-			-	-	-	-	-	0c20
 method	c:objc(cs)NSException(cm)raise:format:	NSExceptionRaisingConveniences			void	NSExceptionName name | NSString * format	-	-	-	8755d6bdf3f04c84
 method	c:objc(cs)NSException(cm)raise:format:arguments:	NSExceptionRaisingConveniences			void	NSExceptionName name | NSString * format | va_list argList	-	-	-	92f6996c76ec246d
 typedef	c:@T@NSUncaughtExceptionHandler	-			void (NSException * _Nonnull)	-	-	-	-	ddcd50a49def8ecf
-function	c:@F@NSGetUncaughtExceptionHandler	-			NSUncaughtExceptionHandler * _Nullable (void)	-	-	-	-	900c18dd5564cc54
-function	c:@F@NSSetUncaughtExceptionHandler	-			void (NSUncaughtExceptionHandler * _Nullable)	NSUncaughtExceptionHandler * 	-	-	-	051a5b216fa17ed5
+function	c:@F@NSGetUncaughtExceptionHandler	-			NSUncaughtExceptionHandler * (void)	-	-	-	-	b1b288cdb53fba34
+function	c:@F@NSSetUncaughtExceptionHandler	-			void (NSUncaughtExceptionHandler *)	NSUncaughtExceptionHandler * 	-	-	-	89667e8883d2a8d1
 var	c:@NSAssertionHandlerKey	-			NSString *const	-	-	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	a45724fbae726ee3
 interface	c:objc(cs)NSAssertionHandler	-			-	-	-	-	-	3fd29e95fc99dfdd
 super	-	NSAssertionHandler	NSObject		-	-	-	-	-	78cfa24475ed9764
@@ -2622,7 +2622,7 @@ method	c:objc(cs)NSDecimalNumber(im)decimalNumberByMultiplyingByPowerOf10:withBe
 method	c:objc(cs)NSDecimalNumber(im)decimalNumberByRoundingAccordingToBehavior:	-			NSDecimalNumber *	id<NSDecimalNumberBehaviors> behavior	-	-	-	3e8318a0240cb5b1
 method	c:objc(cs)NSDecimalNumber(im)compare:	-			NSComparisonResult	NSNumber * decimalNumber	-	-	-	06bfa9e399d1ae04
 property	c:objc(cs)NSDecimalNumber(cpy)defaultBehavior	-			id<NSDecimalNumberBehaviors>	-	strong,class	-	-	752c044dd1a10591
-property	c:objc(cs)NSDecimalNumber(py)objCType	-			NS_RETURNS_INNER_POINTER const char *	-	readonly	-	-	7e17d2e6a4507dcd
+property	c:objc(cs)NSDecimalNumber(py)objCType	-			const char *	-	readonly	-	-	b4c286a37093b4d8
 property	c:objc(cs)NSDecimalNumber(py)doubleValue	-			double	-	readonly	-	-	710b3b1da3bd0d30
 interface	c:objc(cs)NSDecimalNumberHandler	-			-	-	-	-	-	31ce71ad07e8302c
 super	-	NSDecimalNumberHandler	NSObject		-	-	-	-	-	84a933c3c2242559
@@ -2679,7 +2679,7 @@ var	c:@NSDefaultRunLoopMode	-			const NSRunLoopMode	-	-	-	-	f5d473257bb97822
 var	c:@NSRunLoopCommonModes	-			const NSRunLoopMode	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	724f806061464487
 interface	c:objc(cs)NSRunLoop	-			-	-	-	-	-	2e2d87b9578b518a
 super	-	NSRunLoop	NSObject		-	-	-	-	-	e80d2c2e8986ef50
-property	c:objc(cs)NSRunLoop(cpy)currentRunLoop	-			NS_SWIFT_UNAVAILABLE_FROM_ASYNC NSRunLoop *	-	readonly,strong,class	-	-	53bbf01f347cee3c
+property	c:objc(cs)NSRunLoop(cpy)currentRunLoop	-			NSRunLoop *	-	readonly,strong,class	-	-	d99d10506c4a3858
 property	c:objc(cs)NSRunLoop(cpy)mainRunLoop	-			NSRunLoop *	-	readonly,strong,class	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	202f8997854a4584
 property	c:objc(cs)NSRunLoop(py)currentMode	-			NSRunLoopMode	-	readonly,copy	-	-	668a0a8e9ee18919
 method	c:objc(cs)NSRunLoop(im)getCFRunLoop	-			CFRunLoopRef	-	-	-	-	fa3c6cc606d3b650
@@ -2782,16 +2782,16 @@ property	c:objc(cs)NSString(py)stringByStandardizingPath	NSStringPathExtensions	
 property	c:objc(cs)NSString(py)stringByResolvingSymlinksInPath	NSStringPathExtensions			NSString *	-	readonly,copy	-	-	a13626d583505b9a
 method	c:objc(cs)NSString(im)stringsByAppendingPaths:	NSStringPathExtensions			NSArray<NSString *> *	NSArray<NSString *> * paths	-	-	-	63106f5c30f12198
 method	c:objc(cs)NSString(im)completePathIntoString:caseSensitive:matchesIntoArray:filterTypes:	NSStringPathExtensions			NSUInteger	NSString * _Nullable * outputName | BOOL flag | NSArray<NSString *> * _Nullable * outputArray | NSArray<NSString *> * filterTypes	-	-	-	c6d128da500b3a67
-property	c:objc(cs)NSString(py)fileSystemRepresentation	NSStringPathExtensions			NS_RETURNS_INNER_POINTER const char *	-	readonly	-	-	f0f9a2d0bd7e1c42
+property	c:objc(cs)NSString(py)fileSystemRepresentation	NSStringPathExtensions			const char *	-	readonly	-	-	934697ee08f7a9e4
 method	c:objc(cs)NSString(im)getFileSystemRepresentation:maxLength:	NSStringPathExtensions			BOOL	char * cname | NSUInteger max	-	-	-	9cb499564ee72353
 category	c:objc(cy)NSArray@NSArrayPathExtensions	-			-	-	-	-	-	38eb480805a68141
 method	c:objc(cs)NSArray(im)pathsMatchingExtensions:	NSArrayPathExtensions			NSArray<NSString *> *	NSArray<NSString *> * filterTypes	-	-	-	a17edb0055857c5f
-function	c:@F@NSUserName	-			NSString * _Nonnull (void)	-	-	-	-	9363b93348f48c9c
-function	c:@F@NSFullUserName	-			NSString * _Nonnull (void)	-	-	-	-	ed2642fa5b2a3519
-function	c:@F@NSHomeDirectory	-			NSString * _Nonnull (void)	-	-	-	-	d130a6158468b984
-function	c:@F@NSHomeDirectoryForUser	-			NSString * _Nullable (NSString * _Nullable)	NSString * userName	-	-	-	7567733255622b64
-function	c:@F@NSTemporaryDirectory	-			NSString * _Nonnull (void)	-	-	-	-	4fbcc410c5e774b9
-function	c:@F@NSOpenStepRootDirectory	-			NSString * _Nonnull (void)	-	-	-	-	4013a90113746472
+function	c:@F@NSUserName	-			NSString * (void)	-	-	-	-	6dfcd44df16ba901
+function	c:@F@NSFullUserName	-			NSString * (void)	-	-	-	-	900748cb9c546885
+function	c:@F@NSHomeDirectory	-			NSString * (void)	-	-	-	-	8ea361d0e67d914f
+function	c:@F@NSHomeDirectoryForUser	-			NSString * (NSString *)	NSString * userName	-	-	-	25c7e751a766b331
+function	c:@F@NSTemporaryDirectory	-			NSString * (void)	-	-	-	-	52a47caea78ef681
+function	c:@F@NSOpenStepRootDirectory	-			NSString * (void)	-	-	-	-	14f807569a40a21a
 typedef	c:@T@NSSearchPathDirectory	-			enum NSSearchPathDirectory	-	-	-	-	c14d663318dd3b92
 enum	c:@E@NSSearchPathDirectory	-			NSUInteger	-	-	-	-	23763360e8cba413
 enumconst	c:@E@NSSearchPathDirectory@NSApplicationDirectory	NSSearchPathDirectory			-	-	-	-	-	21876a7967edfcd2
@@ -2828,7 +2828,7 @@ enumconst	c:@E@NSSearchPathDomainMask@NSLocalDomainMask	NSSearchPathDomainMask		
 enumconst	c:@E@NSSearchPathDomainMask@NSNetworkDomainMask	NSSearchPathDomainMask			-	-	-	-	-	18adb414cb56a9cd
 enumconst	c:@E@NSSearchPathDomainMask@NSSystemDomainMask	NSSearchPathDomainMask			-	-	-	-	-	5918c0947576920c
 enumconst	c:@E@NSSearchPathDomainMask@NSAllDomainsMask	NSSearchPathDomainMask			-	-	-	-	-	9183e6855d0880f4
-function	c:@F@NSSearchPathForDirectoriesInDomains	-			NSArray<NSString *> * _Nonnull (NSSearchPathDirectory, NSSearchPathDomainMask, BOOL)	NSSearchPathDirectory directory | NSSearchPathDomainMask domainMask | BOOL expandTilde	-	-	-	324f820d93162be2
+function	c:@F@NSSearchPathForDirectoriesInDomains	-			NSArray<NSString *> * (NSSearchPathDirectory, NSSearchPathDomainMask, BOOL)	NSSearchPathDirectory directory | NSSearchPathDomainMask domainMask | BOOL expandTilde	-	-	-	2e9e6ae1d24905d2
 typedef	c:@T@NSURLResourceKey	-			NSString *	-	-	-	-	c81591092e03e76d
 interface	c:objc(cs)NSURL	-			-	-	-	-	deprecated: Use NSURLComponents instead, which lets you create a valid URL with any valid combination of URL components and subcomponents (not just scheme, host and path), and lets you set components and subcomponents with either percent-encoded or un-percent-encoded strings.	88bc36779461ec6e
 super	-	NSURL	NSObject		-	-	-	-	-	02f3065a70a20ae2
@@ -2873,7 +2873,7 @@ property	c:objc(cs)NSURL(py)query	-			NSString *	-	readonly,copy	-	-	a1d0ecc59c5
 property	c:objc(cs)NSURL(py)relativePath	-			NSString *	-	readonly,copy	-	-	054fcf08ed31d052
 property	c:objc(cs)NSURL(py)hasDirectoryPath	-			BOOL	-	readonly	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	30dfa7803593826d
 method	c:objc(cs)NSURL(im)getFileSystemRepresentation:maxLength:	-			BOOL	char * buffer | NSUInteger maxBufferLength	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	0437e9269b8f792f
-property	c:objc(cs)NSURL(py)fileSystemRepresentation	-			NS_RETURNS_INNER_POINTER const char *	-	readonly	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	ee623b9d54c8da47
+property	c:objc(cs)NSURL(py)fileSystemRepresentation	-			const char *	-	readonly	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	7437d72b60757a87
 property	c:objc(cs)NSURL(py)fileURL	-			BOOL	-	readonly,getter=isFileURL	-	-	b187b3dd1db81a13
 property	c:objc(cs)NSURL(py)standardizedURL	-			NSURL *	-	readonly,copy	-	-	7687aba3950ca0a4
 method	c:objc(cs)NSURL(im)isFileReferenceURL	-			BOOL	-	-	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	2dede5105e8ec2f7
@@ -3261,7 +3261,7 @@ enum	c:@E@NSFileManagerUploadLocalVersionConflictPolicy	-			NSInteger	-	-	ios=26
 enumconst	c:@E@NSFileManagerUploadLocalVersionConflictPolicy@NSFileManagerUploadConflictPolicyDefault	NSFileManagerUploadLocalVersionConflictPolicy			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	0d1d151ee0f2fc23
 enumconst	c:@E@NSFileManagerUploadLocalVersionConflictPolicy@NSFileManagerUploadConflictPolicyFailOnConflict	NSFileManagerUploadLocalVersionConflictPolicy			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	cf5fa5c1f8cdbc1b
 category	c:objc(cy)NSFileManager@NSUserInformation	-			-	-	-	-	-	c1c7706720f0ed2d
-property	c:objc(cs)NSFileManager(py)homeDirectoryForCurrentUser	NSUserInformation			API_AVAILABLE NSURL *	-	readonly,copy	ios=-/-/-/1,macos=10.12/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e48afeeeb5c88a47
+property	c:objc(cs)NSFileManager(py)homeDirectoryForCurrentUser	NSUserInformation			NSURL *	-	readonly,copy	ios=-/-/-/1,macos=10.12/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1c5eb78b721d1d57
 property	c:objc(cs)NSFileManager(py)temporaryDirectory	NSUserInformation			NSURL *	-	readonly,copy	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	c30b8822e1b3a774
 method	c:objc(cs)NSFileManager(im)homeDirectoryForUser:	NSUserInformation			NSURL *	NSString * userName	-	ios=-/-/-/1,macos=10.12/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f58eb5cc11539cb7
 category	c:objc(cy)NSObject@NSCopyLinkMoveHandler	-			-	-	-	ios=2.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	deprecated:  Handler API no longer supported	d748144a601ecde5
@@ -3411,21 +3411,21 @@ field	c:@SA@NSHashEnumerator@FI@_pi	NSHashEnumerator			NSUInteger	-	-	-	-	ec0da5
 field	c:@SA@NSHashEnumerator@FI@_si	NSHashEnumerator			NSUInteger	-	-	-	-	eeb2d89661fd4861
 field	c:@SA@NSHashEnumerator@FI@_bs	NSHashEnumerator			void *	-	-	-	-	c8bce6d6e3cb85c2
 typedef	c:@T@NSHashEnumerator	-			struct NSHashEnumerator	-	-	-	-	ac0a23faf78a00c1
-function	c:@F@NSFreeHashTable	-			void (NSHashTable * _Nonnull)	NSHashTable * table	-	-	-	5c354d27c9f78717
-function	c:@F@NSResetHashTable	-			void (NSHashTable * _Nonnull)	NSHashTable * table	-	-	-	2012d07b3723ba8f
-function	c:@F@NSCompareHashTables	-			BOOL (NSHashTable * _Nonnull, NSHashTable * _Nonnull)	NSHashTable * table1 | NSHashTable * table2	-	-	-	93ef025b3882abe2
-function	c:@F@NSCopyHashTableWithZone	-			NSHashTable * _Nonnull (NSHashTable * _Nonnull, NSZone * _Nullable)	NSHashTable * table | NSZone * zone	-	-	-	ede56710604304c1
-function	c:@F@NSHashGet	-			void * _Nonnull (NSHashTable * _Nonnull, const void * _Nullable)	NSHashTable * table | const void * pointer	-	-	-	68cfb507114c61b0
-function	c:@F@NSHashInsert	-			void (NSHashTable * _Nonnull, const void * _Nullable)	NSHashTable * table | const void * pointer	-	-	-	988c5374b2dfdd89
-function	c:@F@NSHashInsertKnownAbsent	-			void (NSHashTable * _Nonnull, const void * _Nullable)	NSHashTable * table | const void * pointer	-	-	-	be3b21177dd5adb6
-function	c:@F@NSHashInsertIfAbsent	-			void * _Nullable (NSHashTable * _Nonnull, const void * _Nullable)	NSHashTable * table | const void * pointer	-	-	-	7ae549d6b1c80fb3
-function	c:@F@NSHashRemove	-			void (NSHashTable * _Nonnull, const void * _Nullable)	NSHashTable * table | const void * pointer	-	-	-	3e6a5e2753f7671e
-function	c:@F@NSEnumerateHashTable	-			NSHashEnumerator (NSHashTable * _Nonnull)	NSHashTable * table	-	-	-	72f0a5cfc04f1db8
-function	c:@F@NSNextHashEnumeratorItem	-			void * _Nullable (NSHashEnumerator * _Nonnull)	NSHashEnumerator * enumerator	-	-	-	70341e869d9e13a9
-function	c:@F@NSEndHashTableEnumeration	-			void (NSHashEnumerator * _Nonnull)	NSHashEnumerator * enumerator	-	-	-	d9f525f756713b2b
-function	c:@F@NSCountHashTable	-			NSUInteger (NSHashTable * _Nonnull)	NSHashTable * table	-	-	-	67a4233468fc92bb
-function	c:@F@NSStringFromHashTable	-			NSString * _Nonnull (NSHashTable * _Nonnull)	NSHashTable * table	-	-	-	5b0e5b9615f77d4a
-function	c:@F@NSAllHashTableObjects	-			NSArray * _Nonnull (NSHashTable * _Nonnull)	NSHashTable * table	-	-	-	7c11a57cdc3ef176
+function	c:@F@NSFreeHashTable	-			void (NSHashTable *)	NSHashTable * table	-	-	-	a5e0cbc9d320d6a7
+function	c:@F@NSResetHashTable	-			void (NSHashTable *)	NSHashTable * table	-	-	-	2daecc7179a30f0b
+function	c:@F@NSCompareHashTables	-			BOOL (NSHashTable *, NSHashTable *)	NSHashTable * table1 | NSHashTable * table2	-	-	-	021e3db84b05b565
+function	c:@F@NSCopyHashTableWithZone	-			NSHashTable * (NSHashTable *, NSZone *)	NSHashTable * table | NSZone * zone	-	-	-	3da6b7c9732e1df5
+function	c:@F@NSHashGet	-			void * (NSHashTable *, const void *)	NSHashTable * table | const void * pointer	-	-	-	02fe0c9610b8a57c
+function	c:@F@NSHashInsert	-			void (NSHashTable *, const void *)	NSHashTable * table | const void * pointer	-	-	-	8686596ab14aa0d6
+function	c:@F@NSHashInsertKnownAbsent	-			void (NSHashTable *, const void *)	NSHashTable * table | const void * pointer	-	-	-	820fa20e65edde4a
+function	c:@F@NSHashInsertIfAbsent	-			void * (NSHashTable *, const void *)	NSHashTable * table | const void * pointer	-	-	-	22d79be06c3fbf2d
+function	c:@F@NSHashRemove	-			void (NSHashTable *, const void *)	NSHashTable * table | const void * pointer	-	-	-	b1e85707816e03e1
+function	c:@F@NSEnumerateHashTable	-			NSHashEnumerator (NSHashTable *)	NSHashTable * table	-	-	-	eed6f429952453c0
+function	c:@F@NSNextHashEnumeratorItem	-			void * (NSHashEnumerator *)	NSHashEnumerator * enumerator	-	-	-	877feae571a1c6db
+function	c:@F@NSEndHashTableEnumeration	-			void (NSHashEnumerator *)	NSHashEnumerator * enumerator	-	-	-	66051b3a6be34a9f
+function	c:@F@NSCountHashTable	-			NSUInteger (NSHashTable *)	NSHashTable * table	-	-	-	904bf96c84814cde
+function	c:@F@NSStringFromHashTable	-			NSString * (NSHashTable *)	NSHashTable * table	-	-	-	f46af6da04894b88
+function	c:@F@NSAllHashTableObjects	-			NSArray * (NSHashTable *)	NSHashTable * table	-	-	-	8d71c7c4a1bfed90
 struct	c:@SA@NSHashTableCallBacks	-			-	-	-	-	-	fbc1481c7739e796
 field	c:@SA@NSHashTableCallBacks@FI@hash	NSHashTableCallBacks			NSUInteger (*)(NSHashTable * _Nonnull, const void * _Nonnull)	-	-	-	-	1f1e9913af74d721
 field	c:@SA@NSHashTableCallBacks@FI@isEqual	NSHashTableCallBacks			BOOL (*)(NSHashTable * _Nonnull, const void * _Nonnull, const void * _Nonnull)	-	-	-	-	169c1a68fe188641
@@ -3433,8 +3433,8 @@ field	c:@SA@NSHashTableCallBacks@FI@retain	NSHashTableCallBacks			void (*)(NSHas
 field	c:@SA@NSHashTableCallBacks@FI@release	NSHashTableCallBacks			void (*)(NSHashTable * _Nonnull, void * _Nonnull)	-	-	-	-	4017df9f9afb2dd1
 field	c:@SA@NSHashTableCallBacks@FI@describe	NSHashTableCallBacks			NSString * _Nullable (*)(NSHashTable * _Nonnull, const void * _Nonnull)	-	-	-	-	bfe9876afe94a011
 typedef	c:@T@NSHashTableCallBacks	-			struct NSHashTableCallBacks	-	-	-	-	0c75d6a55aa414b4
-function	c:@F@NSCreateHashTableWithZone	-			NSHashTable * _Nonnull (NSHashTableCallBacks, NSUInteger, NSZone * _Nullable)	NSHashTableCallBacks callBacks | NSUInteger capacity | NSZone * zone	-	-	-	5bc4395e04587f2e
-function	c:@F@NSCreateHashTable	-			NSHashTable * _Nonnull (NSHashTableCallBacks, NSUInteger)	NSHashTableCallBacks callBacks | NSUInteger capacity	-	-	-	1164e4fc2ac6ac82
+function	c:@F@NSCreateHashTableWithZone	-			NSHashTable * (NSHashTableCallBacks, NSUInteger, NSZone *)	NSHashTableCallBacks callBacks | NSUInteger capacity | NSZone * zone	-	-	-	10d3e8c0c56da1f1
+function	c:@F@NSCreateHashTable	-			NSHashTable * (NSHashTableCallBacks, NSUInteger)	NSHashTableCallBacks callBacks | NSUInteger capacity	-	-	-	8c4e2153d8fad03e
 var	c:@NSIntegerHashCallBacks	-			const NSHashTableCallBacks	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	24e5622e6378aacc
 var	c:@NSNonOwnedPointerHashCallBacks	-			const NSHashTableCallBacks	-	-	-	-	78144212dd9b6eac
 var	c:@NSNonRetainedObjectHashCallBacks	-			const NSHashTableCallBacks	-	-	-	-	7021573519c8edc9
@@ -3579,7 +3579,7 @@ property	c:objc(cs)NSOrderedSet(py)count	-			NSUInteger	-	readonly	ios=5.0/-/-/0
 method	c:objc(cs)NSOrderedSet(im)objectAtIndex:	-			ObjectType	NSUInteger idx	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	85240bb9db19a72b
 method	c:objc(cs)NSOrderedSet(im)indexOfObject:	-			NSUInteger	ObjectType object	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	ee6ca5dbd89f9c59
 method	c:objc(cs)NSOrderedSet(im)init	-			instancetype	-	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	38255e2c871362ec
-method	c:objc(cs)NSOrderedSet(im)initWithObjects:count:	-			instancetype	ObjectType  _Nonnull const[] objects | NSUInteger cnt	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	39af86578154a890
+method	c:objc(cs)NSOrderedSet(im)initWithObjects:count:	-			instancetype	const ObjectType  _Nonnull const[] objects | NSUInteger cnt	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	8e44781dd7784367
 method	c:objc(cs)NSOrderedSet(im)initWithCoder:	-			instancetype	NSCoder * coder	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	561e50a638b16e46
 category	c:objc(cy)NSOrderedSet@NSExtendedOrderedSet	-			-	-	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	47d5c4aa8c37a5fb
 method	c:objc(cs)NSOrderedSet(im)getObjects:range:	NSExtendedOrderedSet			void	ObjectType _Nonnull[] objects | NSRange range	-	swift=-/-/-/1	-	6c90aa6e201f5fb4
@@ -3616,7 +3616,7 @@ method	c:objc(cs)NSOrderedSet(im)descriptionWithLocale:indent:	NSExtendedOrdered
 category	c:objc(cy)NSOrderedSet@NSOrderedSetCreation	-			-	-	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	c0d46c26c1c238da
 method	c:objc(cs)NSOrderedSet(cm)orderedSet	NSOrderedSetCreation			instancetype	-	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	d511908bc1da9d7c
 method	c:objc(cs)NSOrderedSet(cm)orderedSetWithObject:	NSOrderedSetCreation			instancetype	ObjectType object	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	3ab14fe7695459d6
-method	c:objc(cs)NSOrderedSet(cm)orderedSetWithObjects:count:	NSOrderedSetCreation			instancetype	ObjectType  _Nonnull const[] objects | NSUInteger cnt	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	0234878fab340ffe
+method	c:objc(cs)NSOrderedSet(cm)orderedSetWithObjects:count:	NSOrderedSetCreation			instancetype	const ObjectType  _Nonnull const[] objects | NSUInteger cnt	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	a36ec6e79872b54f
 method	c:objc(cs)NSOrderedSet(cm)orderedSetWithObjects:	NSOrderedSetCreation			instancetype	ObjectType firstObj	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	4ca4ce986cfa260c
 method	c:objc(cs)NSOrderedSet(cm)orderedSetWithOrderedSet:	NSOrderedSetCreation			instancetype	NSOrderedSet<ObjectType> * set	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	ff5ac8e556f088b0
 method	c:objc(cs)NSOrderedSet(cm)orderedSetWithOrderedSet:range:copyItems:	NSOrderedSetCreation			instancetype	NSOrderedSet<ObjectType> * set | NSRange range | BOOL flag	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	af019314109ff08c
@@ -3649,14 +3649,14 @@ method	c:objc(cs)NSMutableOrderedSet(im)init	-			instancetype	-	-	ios=5.0/-/-/0,
 method	c:objc(cs)NSMutableOrderedSet(im)initWithCapacity:	-			instancetype	NSUInteger numItems	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	cda657749f1a640a
 category	c:objc(cy)NSMutableOrderedSet@NSExtendedMutableOrderedSet	-			-	-	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	7961b51642dada77
 method	c:objc(cs)NSMutableOrderedSet(im)addObject:	NSExtendedMutableOrderedSet			void	ObjectType object	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	88db5c0d09a210c2
-method	c:objc(cs)NSMutableOrderedSet(im)addObjects:count:	NSExtendedMutableOrderedSet			void	ObjectType  _Nonnull const[] objects | NSUInteger count	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	f49c50fe2c92a692
+method	c:objc(cs)NSMutableOrderedSet(im)addObjects:count:	NSExtendedMutableOrderedSet			void	const ObjectType  _Nonnull const[] objects | NSUInteger count	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	9026df6a5a0ed621
 method	c:objc(cs)NSMutableOrderedSet(im)addObjectsFromArray:	NSExtendedMutableOrderedSet			void	NSArray<ObjectType> * array	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	f7cdc7a42b3027eb
 method	c:objc(cs)NSMutableOrderedSet(im)exchangeObjectAtIndex:withObjectAtIndex:	NSExtendedMutableOrderedSet			void	NSUInteger idx1 | NSUInteger idx2	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	7d497b3d76309523
 method	c:objc(cs)NSMutableOrderedSet(im)moveObjectsAtIndexes:toIndex:	NSExtendedMutableOrderedSet			void	NSIndexSet * indexes | NSUInteger idx	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	4b0073d2089b3696
 method	c:objc(cs)NSMutableOrderedSet(im)insertObjects:atIndexes:	NSExtendedMutableOrderedSet			void	NSArray<ObjectType> * objects | NSIndexSet * indexes	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	2ae860b3a6fff9d4
 method	c:objc(cs)NSMutableOrderedSet(im)setObject:atIndex:	NSExtendedMutableOrderedSet			void	ObjectType obj | NSUInteger idx	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	b418cdd790e13941
 method	c:objc(cs)NSMutableOrderedSet(im)setObject:atIndexedSubscript:	NSExtendedMutableOrderedSet			void	ObjectType obj | NSUInteger idx	-	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	c4bd9b529bb8a613
-method	c:objc(cs)NSMutableOrderedSet(im)replaceObjectsInRange:withObjects:count:	NSExtendedMutableOrderedSet			void	NSRange range | ObjectType  _Nonnull const[] objects | NSUInteger count	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	f5d83f06644015dc
+method	c:objc(cs)NSMutableOrderedSet(im)replaceObjectsInRange:withObjects:count:	NSExtendedMutableOrderedSet			void	NSRange range | const ObjectType  _Nonnull const[] objects | NSUInteger count	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	0fea54f35b22c10d
 method	c:objc(cs)NSMutableOrderedSet(im)replaceObjectsAtIndexes:withObjects:	NSExtendedMutableOrderedSet			void	NSIndexSet * indexes | NSArray<ObjectType> * objects	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	f8bc9e0591b119dd
 method	c:objc(cs)NSMutableOrderedSet(im)removeObjectsInRange:	NSExtendedMutableOrderedSet			void	NSRange range	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	89f0f51e19ae29ef
 method	c:objc(cs)NSMutableOrderedSet(im)removeObjectsAtIndexes:	NSExtendedMutableOrderedSet			void	NSIndexSet * indexes	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	ab1331893dd66cc7
@@ -3787,7 +3787,7 @@ method	c:objc(cs)NSObject(im)didChangeValueForKey:withSetMutation:usingObjects:	
 category	c:objc(cy)NSObject@NSKeyValueObservingCustomization	-			-	-	-	ios=2.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	3a468f0de90c99c9
 method	c:objc(cs)NSObject(cm)keyPathsForValuesAffectingValueForKey:	NSKeyValueObservingCustomization			NSSet<NSString *> *	NSString * key	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	472dbf395549d246
 method	c:objc(cs)NSObject(cm)automaticallyNotifiesObserversForKey:	NSKeyValueObservingCustomization			BOOL	NSString * key	-	ios=2.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	84cc688222ac4cc4
-property	c:objc(cs)NSObject(py)observationInfo	NSKeyValueObservingCustomization			NS_RETURNS_INNER_POINTER void *	-	-	ios=2.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	15e3ec425326901b
+property	c:objc(cs)NSObject(py)observationInfo	NSKeyValueObservingCustomization			void *	-	-	ios=2.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	4471b06b9e23e06b
 interface	c:objc(cs)NSKeyValueSharedObserversSnapshot	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	4b7d2421353f38eb
 super	-	NSKeyValueSharedObserversSnapshot	NSObject		-	-	-	-	-	b1f4e5495b6f1fa5
 method	c:objc(cs)NSKeyValueSharedObserversSnapshot(im)init	-			id	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	5f3404db534f4f1b
@@ -3970,23 +3970,23 @@ field	c:@SA@NSMapEnumerator@FI@_pi	NSMapEnumerator			NSUInteger	-	-	-	-	6baff1bd
 field	c:@SA@NSMapEnumerator@FI@_si	NSMapEnumerator			NSUInteger	-	-	-	-	6f091e77ba88d492
 field	c:@SA@NSMapEnumerator@FI@_bs	NSMapEnumerator			void *	-	-	-	-	6e6db734313d8fdc
 typedef	c:@T@NSMapEnumerator	-			struct NSMapEnumerator	-	-	-	-	9eadf4c8f5481537
-function	c:@F@NSFreeMapTable	-			void (NSMapTable * _Nonnull)	NSMapTable * table	-	-	-	961bf98da5df646b
-function	c:@F@NSResetMapTable	-			void (NSMapTable * _Nonnull)	NSMapTable * table	-	-	-	579b27520c2ee88e
-function	c:@F@NSCompareMapTables	-			BOOL (NSMapTable * _Nonnull, NSMapTable * _Nonnull)	NSMapTable * table1 | NSMapTable * table2	-	-	-	ce0e63931b5e4e0c
-function	c:@F@NSCopyMapTableWithZone	-			NS_RETURNS_RETAINED NSMapTable * _Nonnull (NSMapTable * _Nonnull, NSZone * _Nullable)	NSMapTable * table | NSZone * zone	-	-	-	970fd338bc16d09d
-function	c:@F@NSMapMember	-			BOOL (NSMapTable * _Nonnull, const void * _Nonnull, void * _Nullable * _Nullable, void * _Nullable * _Nullable)	NSMapTable * table | const void * key | void * _Nullable * originalKey | void * _Nullable * value	-	-	-	43710ee8f0fcf30b
-function	c:@F@NSMapGet	-			void * _Nullable (NSMapTable * _Nonnull, const void * _Nullable)	NSMapTable * table | const void * key	-	-	-	0f7288035dec65ac
-function	c:@F@NSMapInsert	-			void (NSMapTable * _Nonnull, const void * _Nullable, const void * _Nullable)	NSMapTable * table | const void * key | const void * value	-	-	-	abf02912443364e9
-function	c:@F@NSMapInsertKnownAbsent	-			void (NSMapTable * _Nonnull, const void * _Nullable, const void * _Nullable)	NSMapTable * table | const void * key | const void * value	-	-	-	e1c075e3ec068d81
-function	c:@F@NSMapInsertIfAbsent	-			void * _Nullable (NSMapTable * _Nonnull, const void * _Nullable, const void * _Nullable)	NSMapTable * table | const void * key | const void * value	-	-	-	0acc140b2d283a88
-function	c:@F@NSMapRemove	-			void (NSMapTable * _Nonnull, const void * _Nullable)	NSMapTable * table | const void * key	-	-	-	44e12615cf3c722a
-function	c:@F@NSEnumerateMapTable	-			NSMapEnumerator (NSMapTable * _Nonnull)	NSMapTable * table	-	-	-	72d24aee42fc1211
-function	c:@F@NSNextMapEnumeratorPair	-			BOOL (NSMapEnumerator * _Nonnull, void * _Nullable * _Nullable, void * _Nullable * _Nullable)	NSMapEnumerator * enumerator | void * _Nullable * key | void * _Nullable * value	-	-	-	2958ed2cc150ec34
-function	c:@F@NSEndMapTableEnumeration	-			void (NSMapEnumerator * _Nonnull)	NSMapEnumerator * enumerator	-	-	-	2e181e4628347fc9
-function	c:@F@NSCountMapTable	-			NSUInteger (NSMapTable * _Nonnull)	NSMapTable * table	-	-	-	eb85abb94c3855e0
-function	c:@F@NSStringFromMapTable	-			NSString * _Nonnull (NSMapTable * _Nonnull)	NSMapTable * table	-	-	-	19b9aaabda277a79
-function	c:@F@NSAllMapTableKeys	-			NSArray * _Nonnull (NSMapTable * _Nonnull)	NSMapTable * table	-	-	-	a7bc883e15e0d94d
-function	c:@F@NSAllMapTableValues	-			NSArray * _Nonnull (NSMapTable * _Nonnull)	NSMapTable * table	-	-	-	12b7c7eaf0a7221a
+function	c:@F@NSFreeMapTable	-			void (NSMapTable *)	NSMapTable * table	-	-	-	4072d1550f471a29
+function	c:@F@NSResetMapTable	-			void (NSMapTable *)	NSMapTable * table	-	-	-	a33efde36c0d408e
+function	c:@F@NSCompareMapTables	-			BOOL (NSMapTable *, NSMapTable *)	NSMapTable * table1 | NSMapTable * table2	-	-	-	21248f6363065bbe
+function	c:@F@NSCopyMapTableWithZone	-			NSMapTable * (NSMapTable *, NSZone *)	NSMapTable * table | NSZone * zone	-	-	-	0b2460f7732bb3f6
+function	c:@F@NSMapMember	-			BOOL (NSMapTable *, const void *, void * _Nullable *, void * _Nullable *)	NSMapTable * table | const void * key | void * _Nullable * originalKey | void * _Nullable * value	-	-	-	8ef793267637930e
+function	c:@F@NSMapGet	-			void * (NSMapTable *, const void *)	NSMapTable * table | const void * key	-	-	-	c6c4abda112fd931
+function	c:@F@NSMapInsert	-			void (NSMapTable *, const void *, const void *)	NSMapTable * table | const void * key | const void * value	-	-	-	e20e6454103686c6
+function	c:@F@NSMapInsertKnownAbsent	-			void (NSMapTable *, const void *, const void *)	NSMapTable * table | const void * key | const void * value	-	-	-	7ecf069d53e737af
+function	c:@F@NSMapInsertIfAbsent	-			void * (NSMapTable *, const void *, const void *)	NSMapTable * table | const void * key | const void * value	-	-	-	5e004abc6fb36a44
+function	c:@F@NSMapRemove	-			void (NSMapTable *, const void *)	NSMapTable * table | const void * key	-	-	-	0f86d4efcbae9bae
+function	c:@F@NSEnumerateMapTable	-			NSMapEnumerator (NSMapTable *)	NSMapTable * table	-	-	-	0f3291b76c2845fe
+function	c:@F@NSNextMapEnumeratorPair	-			BOOL (NSMapEnumerator *, void * _Nullable *, void * _Nullable *)	NSMapEnumerator * enumerator | void * _Nullable * key | void * _Nullable * value	-	-	-	410da4d7f200d416
+function	c:@F@NSEndMapTableEnumeration	-			void (NSMapEnumerator *)	NSMapEnumerator * enumerator	-	-	-	17b35a063c267c02
+function	c:@F@NSCountMapTable	-			NSUInteger (NSMapTable *)	NSMapTable * table	-	-	-	644d584f3836743c
+function	c:@F@NSStringFromMapTable	-			NSString * (NSMapTable *)	NSMapTable * table	-	-	-	ff7392fbd681ded6
+function	c:@F@NSAllMapTableKeys	-			NSArray * (NSMapTable *)	NSMapTable * table	-	-	-	c39d79818b48bdae
+function	c:@F@NSAllMapTableValues	-			NSArray * (NSMapTable *)	NSMapTable * table	-	-	-	277237e09102b3fd
 struct	c:@SA@NSMapTableKeyCallBacks	-			-	-	-	-	-	01e74ef2dfd81511
 field	c:@SA@NSMapTableKeyCallBacks@FI@hash	NSMapTableKeyCallBacks			NSUInteger (*)(NSMapTable * _Nonnull, const void * _Nonnull)	-	-	-	-	66a04799451a62a2
 field	c:@SA@NSMapTableKeyCallBacks@FI@isEqual	NSMapTableKeyCallBacks			BOOL (*)(NSMapTable * _Nonnull, const void * _Nonnull, const void * _Nonnull)	-	-	-	-	27f838ebd6d9a5dd
@@ -4000,8 +4000,8 @@ field	c:@SA@NSMapTableValueCallBacks@FI@retain	NSMapTableValueCallBacks			void (
 field	c:@SA@NSMapTableValueCallBacks@FI@release	NSMapTableValueCallBacks			void (*)(NSMapTable * _Nonnull, void * _Nonnull)	-	-	-	-	a7e25f2b9135fc45
 field	c:@SA@NSMapTableValueCallBacks@FI@describe	NSMapTableValueCallBacks			NSString * _Nullable (*)(NSMapTable * _Nonnull, const void * _Nonnull)	-	-	-	-	007904bb7ce0a7eb
 typedef	c:@T@NSMapTableValueCallBacks	-			struct NSMapTableValueCallBacks	-	-	-	-	317d4a90a376c978
-function	c:@F@NSCreateMapTableWithZone	-			NS_RETURNS_RETAINED NSMapTable * _Nonnull (NSMapTableKeyCallBacks, NSMapTableValueCallBacks, NSUInteger, NSZone * _Nullable)	NSMapTableKeyCallBacks keyCallBacks | NSMapTableValueCallBacks valueCallBacks | NSUInteger capacity | NSZone * zone	-	-	-	98c447a04a147a1b
-function	c:@F@NSCreateMapTable	-			NS_RETURNS_RETAINED NSMapTable * _Nonnull (NSMapTableKeyCallBacks, NSMapTableValueCallBacks, NSUInteger)	NSMapTableKeyCallBacks keyCallBacks | NSMapTableValueCallBacks valueCallBacks | NSUInteger capacity	-	-	-	428b09d4d1c813cc
+function	c:@F@NSCreateMapTableWithZone	-			NSMapTable * (NSMapTableKeyCallBacks, NSMapTableValueCallBacks, NSUInteger, NSZone *)	NSMapTableKeyCallBacks keyCallBacks | NSMapTableValueCallBacks valueCallBacks | NSUInteger capacity | NSZone * zone	-	-	-	69c062ecd9d19ddc
+function	c:@F@NSCreateMapTable	-			NSMapTable * (NSMapTableKeyCallBacks, NSMapTableValueCallBacks, NSUInteger)	NSMapTableKeyCallBacks keyCallBacks | NSMapTableValueCallBacks valueCallBacks | NSUInteger capacity	-	-	-	6e5c2beb0619be8a
 var	c:@NSIntegerMapKeyCallBacks	-			const NSMapTableKeyCallBacks	-	-	ios=-/-/-/1,macos=10.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d8b8fd7d97ac7f06
 var	c:@NSNonOwnedPointerMapKeyCallBacks	-			const NSMapTableKeyCallBacks	-	-	-	-	bdba7937c30d5be1
 var	c:@NSNonOwnedPointerOrNullMapKeyCallBacks	-			const NSMapTableKeyCallBacks	-	-	-	-	73e1b4cafe8c25a2
@@ -4022,7 +4022,7 @@ property	c:objc(cs)NSMethodSignature(py)numberOfArguments	-			NSUInteger	-	reado
 method	c:objc(cs)NSMethodSignature(im)getArgumentTypeAtIndex:	-			const char *	NSUInteger idx	-	swift=-/-/-/1	-	b8d34d31c10145de
 property	c:objc(cs)NSMethodSignature(py)frameLength	-			NSUInteger	-	readonly	swift=-/-/-/1	-	bb54059a0368dce1
 method	c:objc(cs)NSMethodSignature(im)isOneway	-			BOOL	-	-	swift=-/-/-/1	-	e57d286f183a78da
-property	c:objc(cs)NSMethodSignature(py)methodReturnType	-			NS_RETURNS_INNER_POINTER const char *	-	readonly	swift=-/-/-/1	-	d6d6f11c813dbe9f
+property	c:objc(cs)NSMethodSignature(py)methodReturnType	-			const char *	-	readonly	swift=-/-/-/1	-	d0becbe2ae9856b8
 property	c:objc(cs)NSMethodSignature(py)methodReturnLength	-			NSUInteger	-	readonly	swift=-/-/-/1	-	0e84611ce95b8f94
 typedef	c:@T@NSGrammaticalGender	-			enum NSGrammaticalGender	-	-	-	-	01b1f9a7efa47636
 enum	c:@E@NSGrammaticalGender	-			NSInteger	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	57c1f21cf9d453c0
@@ -4369,8 +4369,8 @@ method	c:objc(cs)NSProcessInfo(im)endActivity:	NSProcessInfoActivity			void	id<N
 method	c:objc(cs)NSProcessInfo(im)performActivityWithOptions:reason:usingBlock:	NSProcessInfoActivity			void	NSActivityOptions options | NSString * reason | void (^)(void) block	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	0ea096fcd06f9b7d
 method	c:objc(cs)NSProcessInfo(im)performExpiringActivityWithReason:usingBlock:	NSProcessInfoActivity			void	NSString * reason | void (^)(BOOL) block	-	ios=8.2/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	194eadfc89178e62
 category	c:objc(cy)NSProcessInfo@NSUserInformation	-			-	-	-	-	-	858be59100d849a7
-property	c:objc(cs)NSProcessInfo(py)userName	NSUserInformation			API_AVAILABLE NSString *	-	readonly,copy	ios=-/-/-/1,macos=10.12/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	004eac5f17ce3d1a
-property	c:objc(cs)NSProcessInfo(py)fullUserName	NSUserInformation			API_AVAILABLE NSString *	-	readonly,copy	ios=-/-/-/1,macos=10.12/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c4d8860f75f214d0
+property	c:objc(cs)NSProcessInfo(py)userName	NSUserInformation			NSString *	-	readonly,copy	ios=-/-/-/1,macos=10.12/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	12a9d1472e3b8006
+property	c:objc(cs)NSProcessInfo(py)fullUserName	NSUserInformation			NSString *	-	readonly,copy	ios=-/-/-/1,macos=10.12/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0f381c4270651047
 typedef	c:@T@NSProcessInfoThermalState	-			enum NSProcessInfoThermalState	-	-	-	-	b82a4aabea6eda42
 enum	c:@E@NSProcessInfoThermalState	-			NSInteger	-	-	ios=11.0/-/-/0,macos=10.10.3/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d6e426b08f478698
 enumconst	c:@E@NSProcessInfoThermalState@NSProcessInfoThermalStateNominal	NSProcessInfoThermalState			-	-	-	ios=11.0/-/-/0,macos=10.10.3/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	fc0994e4723bd3af
@@ -4641,7 +4641,7 @@ var	c:@NSStreamNetworkServiceTypeVoice	-			const NSStreamNetworkServiceTypeValue
 var	c:@NSStreamNetworkServiceTypeCallSignaling	-			const NSStreamNetworkServiceTypeValue	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	ea6e3da1b701b382
 interface	c:objc(cs)NSThread	-			-	-	-	-	-	46c20ec7ae651668
 super	-	NSThread	NSObject		-	-	-	-	-	b9bd080d2d42c9e2
-property	c:objc(cs)NSThread(cpy)currentThread	-			NS_SWIFT_UNAVAILABLE_FROM_ASYNC NSThread *	-	readonly,strong,class	-	-	c9300eec9748ebfb
+property	c:objc(cs)NSThread(cpy)currentThread	-			NSThread *	-	readonly,strong,class	-	-	a7569babd81a7259
 method	c:objc(cs)NSThread(cm)detachNewThreadWithBlock:	-			void	void (^)(void) block	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	39aa2b04dc6e4e9f
 method	c:objc(cs)NSThread(cm)detachNewThreadSelector:toTarget:withObject:	-			void	SEL selector | id target | id argument	-	-	-	063d5c15d7575843
 method	c:objc(cs)NSThread(cm)isMultiThreaded	-			BOOL	-	-	-	-	7bb50a0843268d81
@@ -5756,7 +5756,7 @@ protocol	c:objc(pl)NSFilePresenter	-			-	-	-	-	-	e8ee2bc164c45f36
 conforms	-	NSFilePresenter	NSObject		-	-	-	-	-	ac3f45f985b1b848
 property	c:objc(pl)NSFilePresenter(py)presentedItemURL	-			NSURL *	-	readonly,copy	-	-	5e0bff4f4900e561
 property	c:objc(pl)NSFilePresenter(py)presentedItemOperationQueue	-			NSOperationQueue *	-	readonly,retain	-	-	bb3453ed10e9ca0d
-property	c:objc(pl)NSFilePresenter(py)primaryPresentedItemURL	-			API_AVAILABLE NSURL *	-	readonly,copy	ios=-/-/-/1,macos=10.8/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4b7df28c192a777a
+property	c:objc(pl)NSFilePresenter(py)primaryPresentedItemURL	-			NSURL *	-	readonly,copy	ios=-/-/-/1,macos=10.8/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7066617d79eea567
 method	c:objc(pl)NSFilePresenter(im)relinquishPresentedItemToReader:	-			void	void (^)(void (^ _Nullable)(void)) reader	optional	-	-	fa8f2ef9de4163d3
 method	c:objc(pl)NSFilePresenter(im)relinquishPresentedItemToWriter:	-			void	void (^)(void (^ _Nullable)(void)) writer	optional	-	-	cb4c4a626b8d6645
 method	c:objc(pl)NSFilePresenter(im)savePresentedItemChangesWithCompletionHandler:	-			void	void (^)(NSError * _Nullable) completionHandler	optional	-	-	48d77c6129e15556
@@ -6295,7 +6295,7 @@ method	c:objc(cs)NSUndoManager(im)removeAllActions	-			void	-	-	ios=3.0/-/-/0,ma
 method	c:objc(cs)NSUndoManager(im)removeAllActionsWithTarget:	-			void	id target	-	ios=3.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	a77b567b856618ac
 method	c:objc(cs)NSUndoManager(im)registerUndoWithTarget:selector:object:	-			void	id target | SEL selector | id object	-	ios=3.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	cf0cbd9deb9b115f
 method	c:objc(cs)NSUndoManager(im)prepareWithInvocationTarget:	-			id	id target	-	ios=3.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	f9201b5135cb2379
-method	c:objc(cs)NSUndoManager(im)registerUndoWithTarget:handler:	-			void	id target | NS_SWIFT_UI_ACTOR void (^)(id _Nonnull) undoHandler	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	78bdc2ad7fe4483c
+method	c:objc(cs)NSUndoManager(im)registerUndoWithTarget:handler:	-			void	id target | void (^)(id _Nonnull) undoHandler	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	068abd90fb9193a6
 method	c:objc(cs)NSUndoManager(im)setActionIsDiscardable:	-			void	BOOL discardable	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	bd2011d68de97592
 property	c:objc(cs)NSUndoManager(py)undoActionIsDiscardable	-			BOOL	-	readonly	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	f6faab9576fcb80f
 property	c:objc(cs)NSUndoManager(py)redoActionIsDiscardable	-			BOOL	-	readonly	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	e209a45d340bca4c
@@ -6650,7 +6650,7 @@ property	c:objc(cs)NSUserActivity(py)eligibleForHandoff	-			BOOL	-	getter=isElig
 property	c:objc(cs)NSUserActivity(py)eligibleForSearch	-			BOOL	-	getter=isEligibleForSearch	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	416c36a004d49358
 property	c:objc(cs)NSUserActivity(py)eligibleForPublicIndexing	-			BOOL	-	getter=isEligibleForPublicIndexing	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	44f9b84ad6d8976e
 property	c:objc(cs)NSUserActivity(py)eligibleForPrediction	-			BOOL	-	getter=isEligibleForPrediction	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	483884d62ef9465b
-property	c:objc(cs)NSUserActivity(py)persistentIdentifier	-			API_UNAVAILABLE NSUserActivityPersistentIdentifier	-	copy	ios=12.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=5.0/-/-/0	-	c634d9057b37ea29
+property	c:objc(cs)NSUserActivity(py)persistentIdentifier	-			NSUserActivityPersistentIdentifier	-	copy	ios=12.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=5.0/-/-/0	-	f1d149dde3557a16
 method	c:objc(cs)NSUserActivity(cm)deleteSavedUserActivitiesWithPersistentIdentifiers:completionHandler:	-			void	NSArray<NSUserActivityPersistentIdentifier> * persistentIdentifiers | void (^)(void) handler	-	ios=12.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=5.0/-/-/0	-	b304ebcbf6b7be70
 method	c:objc(cs)NSUserActivity(cm)deleteAllSavedUserActivitiesWithCompletionHandler:	-			void	void (^)(void) handler	-	ios=12.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=5.0/-/-/0	-	089508259c9a30d3
 var	c:@NSUserActivityTypeBrowsingWeb	-			NSString *const	-	-	-	-	640de412471e0012
@@ -6666,7 +6666,7 @@ conforms	-	NSUUID	NSSecureCoding		-	-	-	-	-	0ecd19e2e6f2ac09
 method	c:objc(cs)NSUUID(cm)UUID	-			instancetype	-	-	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	2ff7f476bee48787
 method	c:objc(cs)NSUUID(im)init	-			instancetype	-	-	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	8b6de122adeb3eee
 method	c:objc(cs)NSUUID(im)initWithUUIDString:	-			instancetype	NSString * string	-	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	a032e8a51dfd96f5
-method	c:objc(cs)NSUUID(im)initWithUUIDBytes:	-			instancetype	uuid_t bytes	-	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	8a66d5cc5d8873d5
+method	c:objc(cs)NSUUID(im)initWithUUIDBytes:	-			instancetype	const uuid_t bytes	-	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	7e8a09260e18662f
 method	c:objc(cs)NSUUID(im)getUUIDBytes:	-			void	uuid_t uuid	-	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	0f2d3ae20b4e193d
 method	c:objc(cs)NSUUID(im)compare:	-			NSComparisonResult	NSUUID * otherUUID	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	e14d12d9b87e7d2a
 property	c:objc(cs)NSUUID(py)UUIDString	-			NSString *	-	readonly,copy	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	6457580f6d6f087c

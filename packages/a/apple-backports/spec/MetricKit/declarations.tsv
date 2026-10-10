@@ -239,7 +239,7 @@ conforms	-	MXDiagnosticPayload	NSSecureCoding		-	-	-	-	-	34292bd6afbc8e96
 property	c:objc(cs)MXDiagnosticPayload(py)cpuExceptionDiagnostics	-			NSArray<MXCPUExceptionDiagnostic *> *	-	readonly,strong	ios=14.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b0f86572dca51cdc
 property	c:objc(cs)MXDiagnosticPayload(py)diskWriteExceptionDiagnostics	-			NSArray<MXDiskWriteExceptionDiagnostic *> *	-	readonly,strong	ios=14.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	df053e3cb8a6cc66
 property	c:objc(cs)MXDiagnosticPayload(py)hangDiagnostics	-			NSArray<MXHangDiagnostic *> *	-	readonly,strong	ios=14.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	27fd575937627b71
-property	c:objc(cs)MXDiagnosticPayload(py)appLaunchDiagnostics	-			API_AVAILABLE NSArray<MXAppLaunchDiagnostic *> *	-	readonly,strong	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2b8725943a86d283
+property	c:objc(cs)MXDiagnosticPayload(py)appLaunchDiagnostics	-			NSArray<MXAppLaunchDiagnostic *> *	-	readonly,strong	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e8a35c3c488af66d
 property	c:objc(cs)MXDiagnosticPayload(py)crashDiagnostics	-			NSArray<MXCrashDiagnostic *> *	-	readonly,strong	ios=14.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b4c58eb2bb7dd942
 property	c:objc(cs)MXDiagnosticPayload(py)timeStampBegin	-			NSDate *	-	readonly,strong	ios=14.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ddee8fee1f8c7d3f
 property	c:objc(cs)MXDiagnosticPayload(py)timeStampEnd	-			NSDate *	-	readonly,strong	ios=14.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	75c68623f267942d
@@ -254,13 +254,13 @@ property	c:objc(cs)MXMetricManager(cpy)sharedManager	-			MXMetricManager *	-	rea
 method	c:objc(cs)MXMetricManager(cm)makeLogHandleWithCategory:	-			os_log_t	NSString * category	-	ios=13.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	dd3037a1f3475c98
 method	c:objc(cs)MXMetricManager(im)addSubscriber:	-			void	id<MXMetricManagerSubscriber> subscriber	-	ios=13.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7895ad9cf2a22af6
 method	c:objc(cs)MXMetricManager(im)removeSubscriber:	-			void	id<MXMetricManagerSubscriber> subscriber	-	ios=13.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	57fdeceb32ba2241
-method	c:objc(cs)MXMetricManager(cm)extendLaunchMeasurementForTaskID:error:	-			BOOL	MXLaunchTaskID taskID | NSError * _Nullable * error	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8587b4817241ed3b
-method	c:objc(cs)MXMetricManager(cm)finishExtendedLaunchMeasurementForTaskID:error:	-			BOOL	MXLaunchTaskID taskID | NSError * _Nullable * error	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	77e6a284e79fe667
+method	c:objc(cs)MXMetricManager(cm)extendLaunchMeasurementForTaskID:error:	-			BOOL	const MXLaunchTaskID taskID | NSError * _Nullable * error	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7cc52e148edf6af5
+method	c:objc(cs)MXMetricManager(cm)finishExtendedLaunchMeasurementForTaskID:error:	-			BOOL	const MXLaunchTaskID taskID | NSError * _Nullable * error	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fc5b8c211eca1ed3
 protocol	c:objc(pl)MXMetricManagerSubscriber	-			-	-	-	ios=13.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3c2a72b20772e6a8
 conforms	-	MXMetricManagerSubscriber	NSObject		-	-	-	-	-	90296e80c42b46ec
 method	c:objc(pl)MXMetricManagerSubscriber(im)didReceiveMetricPayloads:	-			void	NSArray<MXMetricPayload *> * payloads	optional	macos=10.15/-/-/0	-	ffdf397d74b41c4e
 method	c:objc(pl)MXMetricManagerSubscriber(im)didReceiveDiagnosticPayloads:	-			void	NSArray<MXDiagnosticPayload *> * payloads	optional	ios=14.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d9f2cc0c3dbf4399
-function	c:@F@_MXSignpostMetricsSnapshot	-			void * _Nonnull (void)	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2c41125baa427032
+function	c:@F@_MXSignpostMetricsSnapshot	-			void * (void)	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bbdd88cc5a304adc
 var	c:@MXErrorDomain	-			const NSErrorDomain	-	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	af3dea112a2ba315
 typedef	c:@T@MXErrorCode	-			enum MXErrorCode	-	-	-	-	b1b95d01dada846f
 enum	c:@E@MXErrorCode	-			NSInteger	-	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e0e926241dac708b

@@ -4,8 +4,10 @@
 //        decls [--doc] [--timeout SECONDS] <framework>
 // The SDK is IR_SDK. <framework> is a name --list prints: a framework of System/Library/Frameworks (a nested one is Outer/Inner), or a
 // usr/include module of the sweep (IR_USR_MODULES). decls resolves the framework's headers itself, from its module map, by the rule
-// of ir.lua's sweep (module_headers below): the sweep and the doc mode share that one code path. The headers become one unsaved buffer
-// of #import lines, so nothing is written to disk. IR_RESOURCE, if set, is the compiler's resource directory (default: libclang's).
+// of ir.lua's sweep (module_headers below): the sweep and the doc mode share that one code path. A framework's headers become one
+// unsaved buffer of #import lines; a usr/include module is imported as the module its own map declares (-fmodule-map-file, -fmodules,
+// @import), so the module build compiles its headers as the SDK does. Nothing is written to disk. IR_RESOURCE, if set, is the
+// compiler's resource directory (default: libclang's).
 // A framework's own declarations are those under its Headers/; a usr/include module's are those written in the directories of its
 // headers. --target prints the target the rows are compiled for.
 //
@@ -175,16 +177,19 @@ std::string spelled(CXType t) { return without_location(text(clang_getTypeSpelli
 // The name of the macro clang prints in front of a type it keeps as a macro-qualified type (CF_REFINED_FOR_SWIFT CFStringRef, API_AVAILABLE
 // NSString *const): a leading word of capitals, then the type. A type name is not all capitals followed by a type, and clang prints a
 // const after such a macro, never before it.
-std::string without_macro_word(const std::string& s) {
-  size_t space = s.find(' ');
-  if (space == std::string::npos || space < 2 || s.size() == space + 1) return s;
-  for (size_t i = 0; i < space; ++i) {
-    unsigned char ch = (unsigned char)s[i];
-    if (!(std::isupper(ch) || std::isdigit(ch) || ch == '_')) return s;
+std::string without_macro_word(std::string s) {
+  for (;;) {
+    size_t space = s.find(' ');
+    if (space == std::string::npos || space < 2 || s.size() == space + 1) return s;
+    bool macro = true;
+    for (size_t i = 0; i < space && macro; ++i) {
+      unsigned char ch = (unsigned char)s[i];
+      macro = std::isupper(ch) || std::isdigit(ch) || ch == '_';
+    }
+    unsigned char next = (unsigned char)s[space + 1];
+    if (!macro || !(std::isalpha(next) || next == '_')) return s;
+    s = s.substr(space + 1);  // a macro can stand in front of another (NS_RETURNS_RETAINED NS_RETURNS_RETAINED id<T>)
   }
-  unsigned char next = (unsigned char)s[space + 1];
-  if (!(std::isalpha(next) || next == '_')) return s;
-  return s.substr(space + 1);
 }
 
 // The type of a declared variable or field, as the declaration has it. clang prints attribute sugar in front of the type (an
@@ -193,6 +198,9 @@ std::string without_macro_word(const std::string& s) {
 // variable is const. So the attributes are taken off, and the const is read from the canonical type (every top-level qualifier
 // of the declared type is in it), not from the printed sugar. The nullability column holds the nullability; a pointer's const follows the star.
 std::string declared_type(CXType t) {
+  // instancetype is an attributed type whose spelling is the keyword (its nullability, if any, is in the nullability column)
+  std::string printed = text(clang_getTypeSpelling(t));
+  if (printed.compare(0, 12, "instancetype") == 0) return "instancetype";
   CXType bare = t;
   while (bare.kind == CXType_Attributed) bare = clang_Type_getModifiedType(bare);
   std::string s = text(clang_getTypeSpelling(bare));
@@ -204,6 +212,34 @@ std::string declared_type(CXType t) {
     if (!leading && !trailing && !s.empty()) s = s.back() == '*' ? s + "const" : "const " + s;
   }
   return without_location(s);
+}
+
+// The type of a function as its declaration has it: the result as declared_type gives it, then the rest of the function type as clang
+// spells it (the parameters). The macro in front of a result is the result's sugar, so the result is taken apart and the rest kept.
+// A function type spelled from its declared parts: the result, the marker ("" for a function, ((^)) for a block, the form clang prints),
+// and the parameters, each as declared_type gives it. A function with no prototype is spelled as clang spells it.
+std::string function_spelling(CXType fn, const char* marker) {
+  int n = clang_getNumArgTypes(fn);
+  if (n < 0) return without_location(text(clang_getTypeSpelling(fn)));
+  bool variadic = clang_isFunctionTypeVariadic(fn) != 0;
+  std::string out = declared_type(clang_getResultType(fn)) + " " + marker + "(";
+  for (int i = 0; i < n; ++i) {
+    if (i) out += ", ";
+    out += declared_type(clang_getArgType(fn, (unsigned)i));
+  }
+  if (variadic) out += n ? ", ..." : "...";
+  if (n == 0 && !variadic) out += "void";
+  return without_location(out + ")");
+}
+
+std::string declared_function_type(CXType fn) { return function_spelling(fn, ""); }
+
+// The underlying type of a typedef: a block pointer's function type is spelled with the block marker, anything else is declared_type.
+std::string declared_underlying_type(CXType t) {
+  CXType bare = t;
+  while (bare.kind == CXType_Attributed) bare = clang_Type_getModifiedType(bare);
+  if (bare.kind == CXType_BlockPointer) return function_spelling(clang_getPointeeType(bare), "((^))");
+  return declared_type(t);
 }
 
 // The offset in its file of a source location (the expansion, for a token a macro produced).
@@ -578,7 +614,7 @@ std::string parameters(CXCursor c, std::string* nullab) {
   for (int i = 0; i < n; ++i) {
     CXCursor arg = clang_Cursor_getArgument(c, (unsigned)i);
     if (i) out += " | ";
-    out += spelled(clang_getCursorType(arg)) + " " + text(clang_getCursorSpelling(arg));
+    out += declared_type(clang_getCursorType(arg)) + " " + text(clang_getCursorSpelling(arg));
     if (i) *nullab += ",";
     *nullab += nullability(clang_getCursorType(arg));
   }
@@ -622,7 +658,7 @@ void method_row(Context& ctx, CXCursor c, bool klass, const Nest& nest) {
   std::string params_nullab;
   r.params = parameters(c, &params_nullab);
   r.nullab = nullability(clang_getCursorResultType(c)) + "|" + params_nullab;
-  r.type = spelled(clang_getCursorResultType(c));
+  r.type = declared_type(clang_getCursorResultType(c));
   r.attrs = clang_Cursor_isObjCOptional(c) ? "optional" : "-";
   r.value = "-";
   r.message = message_of(ctx.tu, c);
@@ -647,7 +683,7 @@ void property_row(Context& ctx, CXCursor c, const Nest& nest) {
   r.line = std::to_string(line);
   r.avail = availability(c);
   CXType t = clang_getCursorType(c);
-  r.type = spelled(t);
+  r.type = declared_type(t);
   r.nullab = nullability(t);
   r.params = "-";
   unsigned bits = clang_Cursor_getObjCPropertyAttributes(c, 0);
@@ -690,7 +726,7 @@ void function_row(Context& ctx, CXCursor c) {
   std::string params_nullab;
   r.params = parameters(c, &params_nullab);
   r.nullab = nullability(clang_getCursorResultType(c)) + "|" + params_nullab;
-  r.type = spelled(clang_getCursorType(c));
+  r.type = declared_function_type(clang_getCursorType(c));
   r.attrs = clang_Cursor_isVariadic(c) ? "variadic" : "-";
   r.value = "-";
   r.message = message_of(ctx.tu, c);
@@ -824,7 +860,7 @@ CXChildVisitResult visit(CXCursor c, CXCursor parent, CXClientData data) {
       if (own) function_row(ctx, c);
       return CXChildVisit_Continue;
     case CXCursor_TypedefDecl:
-      if (own) simple_row(ctx, c, "typedef", spelled(clang_getTypedefDeclUnderlyingType(c)),
+      if (own) simple_row(ctx, c, "typedef", declared_underlying_type(clang_getTypedefDeclUnderlyingType(c)),
                           nullability(clang_getTypedefDeclUnderlyingType(c)), "-", "-", false);
       return CXChildVisit_Continue;
     case CXCursor_EnumDecl:
@@ -1232,9 +1268,21 @@ int main(int argc, char** argv) {
     return 0;
   }
   std::string imports;
-  for (const std::string& h : headers) imports += "#import \"" + h + "\"\n";
+  // a usr/include module is the SDK's own module, so it is imported as the module its map declares (the module build compiles the
+  // headers the map names, with the conditions the module build sets); a framework's headers are included as they are listed
+  if (framework->usr) {
+    imports = "@import " + name + ";\n";
+  } else {
+    for (const std::string& h : headers) imports += "#import \"" + h + "\"\n";
+  }
   CXUnsavedFile unsaved = {"charon-module.m", imports.c_str(), (unsigned long)imports.size()};
   std::vector<const char*> args = {"-x", "objective-c", "-target", kTarget, "-isysroot", sdk.c_str()};
+  // the module's own map is the one decls resolved, so the compiler is given that file, not a search of the SDK's maps
+  std::string module_map_arg = framework->usr ? "-fmodule-map-file=" + chosen.map.string() : std::string();
+  if (framework->usr) {
+    args.push_back("-fmodules");
+    args.push_back(module_map_arg.c_str());
+  }
   if (const char* resource = std::getenv("IR_RESOURCE")) {
     args.push_back("-resource-dir");
     args.push_back(resource);

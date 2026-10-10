@@ -150,28 +150,28 @@ interface	c:objc(cs)PDFAnnotation	-			-	-	-	ios=11.0/-/-/0	-	04ebee9c760c5142
 super	-	PDFAnnotation	NSObject		-	-	-	-	-	95d02c5abe76cd77
 conforms	-	PDFAnnotation	NSCopying		-	-	-	-	-	f3b0b1c03f78d6d7
 conforms	-	PDFAnnotation	NSCoding		-	-	-	-	-	23ba8403406d819e
-method	c:objc(cs)PDFAnnotation(im)initWithBounds:forType:withProperties:	-			instancetype	CGRect bounds | PDFAnnotationSubtype annotationType | NSDictionary * properties	-	ios=11.0/-/-/0	-	5db71c584c5c35e0
+method	c:objc(cs)PDFAnnotation(im)initWithBounds:forType:withProperties:	-			instancetype	CGRect bounds | const PDFAnnotationSubtype annotationType | NSDictionary * properties	-	ios=11.0/-/-/0	-	920041a2a742fc00
 property	c:objc(cs)PDFAnnotation(py)page	-			PDFPage *	-	weak,nonatomic	ios=11.0/-/-/0	-	7bf3875a0689ebdb
 property	c:objc(cs)PDFAnnotation(py)type	-			NSString *	-	copy,nonatomic	ios=11.0/-/-/0	-	80461db0886b9bbf
 property	c:objc(cs)PDFAnnotation(py)bounds	-			CGRect	-	nonatomic	ios=11.0/-/-/0	-	618684edf76ec2b2
 property	c:objc(cs)PDFAnnotation(py)shouldDisplay	-			BOOL	-	nonatomic	ios=11.0/-/-/0	-	25e37fe54e770f56
 property	c:objc(cs)PDFAnnotation(py)shouldPrint	-			BOOL	-	nonatomic	ios=11.0/-/-/0	-	7d57c6dc80b0cb4b
-property	c:objc(cs)PDFAnnotation(py)modificationDate	-			PDFKIT_AVAILABLE NSDate *	-	copy,nonatomic	ios=11.0/-/-/0	-	8ec20b640c0b7004
-property	c:objc(cs)PDFAnnotation(py)userName	-			PDFKIT_AVAILABLE NSString *	-	copy,nonatomic	ios=11.0/-/-/0	-	7401a69ae1eb7cd3
-property	c:objc(cs)PDFAnnotation(py)popup	-			PDFKIT_AVAILABLE PDFAnnotation *	-	strong,nonatomic	ios=11.0/-/-/0	-	95abf61a8e1c6daa
-property	c:objc(cs)PDFAnnotation(py)border	-			PDFKIT_AVAILABLE PDFBorder *	-	strong,nonatomic	ios=11.0/-/-/0	-	36f41b11e36fcea0
-property	c:objc(cs)PDFAnnotation(py)color	-			PDFKIT_AVAILABLE UIColor *	-	copy,nonatomic	ios=11.0/-/-/0	-	35be7dad8eeb0bf5
-property	c:objc(cs)PDFAnnotation(py)contents	-			PDFKIT_AVAILABLE NSString *	-	copy,nonatomic	ios=11.0/-/-/0	-	a60ed910c20bc857
-property	c:objc(cs)PDFAnnotation(py)action	-			PDFKIT_AVAILABLE PDFAction *	-	strong,nonatomic	ios=11.0/-/-/0	-	dba76f731b1fcda1
+property	c:objc(cs)PDFAnnotation(py)modificationDate	-			NSDate *	-	copy,nonatomic	ios=11.0/-/-/0	-	fa2cdfd5323cd7eb
+property	c:objc(cs)PDFAnnotation(py)userName	-			NSString *	-	copy,nonatomic	ios=11.0/-/-/0	-	3db9a72f7f0dcb04
+property	c:objc(cs)PDFAnnotation(py)popup	-			PDFAnnotation *	-	strong,nonatomic	ios=11.0/-/-/0	-	1f3723292def28f3
+property	c:objc(cs)PDFAnnotation(py)border	-			PDFBorder *	-	strong,nonatomic	ios=11.0/-/-/0	-	72af2a7224f25683
+property	c:objc(cs)PDFAnnotation(py)color	-			UIColor *	-	copy,nonatomic	ios=11.0/-/-/0	-	da43b2486d28a430
+property	c:objc(cs)PDFAnnotation(py)contents	-			NSString *	-	copy,nonatomic	ios=11.0/-/-/0	-	cd290d83bbeefb60
+property	c:objc(cs)PDFAnnotation(py)action	-			PDFAction *	-	strong,nonatomic	ios=11.0/-/-/0	-	60e626c1a12958ce
 property	c:objc(cs)PDFAnnotation(py)hasAppearanceStream	-			BOOL	-	readonly,nonatomic	ios=11.0/-/-/0	-	dfd6f709e88feb8a
 property	c:objc(cs)PDFAnnotation(py)highlighted	-			BOOL	-	nonatomic,getter=isHighlighted	ios=11.0/-/-/0	-	38c28890a10a4243
 method	c:objc(cs)PDFAnnotation(im)drawWithBox:inContext:	-			void	PDFDisplayBox box | CGContextRef context	-	ios=11.0/-/-/0	-	7d8676dc57ce64e2
-method	c:objc(cs)PDFAnnotation(im)setValue:forAnnotationKey:	-			BOOL	id value | PDFAnnotationKey key	-	ios=11.0/-/-/0	-	e59edb734bde789a
-method	c:objc(cs)PDFAnnotation(im)setBoolean:forAnnotationKey:	-			BOOL	BOOL value | PDFAnnotationKey key	-	ios=11.0/-/-/0	-	47902e17ec7e8025
-method	c:objc(cs)PDFAnnotation(im)setRect:forAnnotationKey:	-			BOOL	CGRect value | PDFAnnotationKey key	-	ios=11.0/-/-/0	-	e7c2edfa54c1bb05
-property	c:objc(cs)PDFAnnotation(py)annotationKeyValues	-			PDFKIT_AVAILABLE NSDictionary *	-	readonly,copy,nonatomic	ios=11.0/-/-/0	-	417d59ef1e2a0d80
-method	c:objc(cs)PDFAnnotation(im)valueForAnnotationKey:	-			id	PDFAnnotationKey key	-	ios=11.0/-/-/0	-	2066b5251d982a79
-method	c:objc(cs)PDFAnnotation(im)removeValueForAnnotationKey:	-			void	PDFAnnotationKey key	-	ios=11.0/-/-/0	-	4f30495cc5bab522
+method	c:objc(cs)PDFAnnotation(im)setValue:forAnnotationKey:	-			BOOL	id value | const PDFAnnotationKey key	-	ios=11.0/-/-/0	-	915f51291044326e
+method	c:objc(cs)PDFAnnotation(im)setBoolean:forAnnotationKey:	-			BOOL	BOOL value | const PDFAnnotationKey key	-	ios=11.0/-/-/0	-	14c318806380ca75
+method	c:objc(cs)PDFAnnotation(im)setRect:forAnnotationKey:	-			BOOL	CGRect value | const PDFAnnotationKey key	-	ios=11.0/-/-/0	-	d1797ee6a11be318
+property	c:objc(cs)PDFAnnotation(py)annotationKeyValues	-			NSDictionary *	-	readonly,copy,nonatomic	ios=11.0/-/-/0	-	343c6e948995952e
+method	c:objc(cs)PDFAnnotation(im)valueForAnnotationKey:	-			id	const PDFAnnotationKey key	-	ios=11.0/-/-/0	-	1c24bef0cf2f2c8c
+method	c:objc(cs)PDFAnnotation(im)removeValueForAnnotationKey:	-			void	const PDFAnnotationKey key	-	ios=11.0/-/-/0	-	51e8517a5be895b8
 typedef	c:@T@PDFLineStyle	-			enum PDFLineStyle	-	-	-	-	d74e75023c5b3e90
 enum	c:@E@PDFLineStyle	-			NSInteger	-	-	-	-	b969d34351b94994
 enumconst	c:@E@PDFLineStyle@kPDFLineStyleNone	PDFLineStyle			-	-	-	-	-	a03855bccbbcd5ef
@@ -258,7 +258,7 @@ method	c:objc(cs)PDFAnnotation(cm)nameForLineStyle:	PDFAnnotationUtilities			NSS
 property	c:objc(cs)PDFAnnotation(py)iconType	PDFAnnotationUtilities			PDFTextAnnotationIconType	-	nonatomic	ios=11.0/-/-/0	-	f9d1445a9d41071d
 property	c:objc(cs)PDFAnnotation(py)quadrilateralPoints	PDFAnnotationUtilities			NSArray<NSValue *> *	-	copy,nonatomic	ios=11.0/-/-/0	-	88e22023adfef7ce
 property	c:objc(cs)PDFAnnotation(py)markupType	PDFAnnotationUtilities			PDFMarkupType	-	nonatomic	ios=11.0/-/-/0	-	579650bf3be236f8
-property	c:objc(cs)PDFAnnotation(py)widgetFieldType	PDFAnnotationUtilities			PDFAnnotationWidgetSubtype	-	copy,nonatomic	ios=11.0/-/-/0	-	8e7aa309dd89c887
+property	c:objc(cs)PDFAnnotation(py)widgetFieldType	PDFAnnotationUtilities			const PDFAnnotationWidgetSubtype	-	copy,nonatomic	ios=11.0/-/-/0	-	3f2a03f869cf715b
 property	c:objc(cs)PDFAnnotation(py)widgetControlType	PDFAnnotationUtilities			PDFWidgetControlType	-	nonatomic	ios=11.0/-/-/0	-	63a6891a28f2ed35
 property	c:objc(cs)PDFAnnotation(py)multiline	PDFAnnotationUtilities			BOOL	-	nonatomic,getter=isMultiline	ios=11.0/-/-/0	-	4509c1625ef81c87
 property	c:objc(cs)PDFAnnotation(py)activatableTextField	PDFAnnotationUtilities			BOOL	-	readonly,getter=isActivatableTextField	ios=11.0/-/-/0	-	40a3a0e4d0118545
@@ -408,7 +408,7 @@ method	c:objc(cs)PDFDocument(im)writeToFile:	-			BOOL	NSString * path	-	ios=11.0
 method	c:objc(cs)PDFDocument(im)writeToFile:withOptions:	-			BOOL	NSString * path | NSDictionary<PDFDocumentWriteOption,id> * options	-	ios=11.0/-/-/0	-	57d6266b6a604aaf
 method	c:objc(cs)PDFDocument(im)writeToURL:	-			BOOL	NSURL * url	-	ios=11.0/-/-/0	-	60431e79ec818b44
 method	c:objc(cs)PDFDocument(im)writeToURL:withOptions:	-			BOOL	NSURL * url | NSDictionary<PDFDocumentWriteOption,id> * options	-	ios=11.0/-/-/0	-	dad19e002df493d8
-property	c:objc(cs)PDFDocument(py)outlineRoot	-			PDFKIT_AVAILABLE PDFOutline *	-	strong,nonatomic	ios=11.0/-/-/0	-	13201e68a07b82b0
+property	c:objc(cs)PDFDocument(py)outlineRoot	-			PDFOutline *	-	strong,nonatomic	ios=11.0/-/-/0	-	07ab22031fe0ac03
 method	c:objc(cs)PDFDocument(im)outlineItemForSelection:	-			PDFOutline *	PDFSelection * selection	-	ios=11.0/-/-/0	-	ffb6cb4af7cac3b8
 property	c:objc(cs)PDFDocument(py)pageCount	-			NSUInteger	-	readonly,nonatomic	ios=11.0/-/-/0	-	fa05b137be4c6154
 method	c:objc(cs)PDFDocument(im)pageAtIndex:	-			PDFPage *	NSUInteger index	-	ios=11.0/-/-/0	-	048e139f245ab703
@@ -442,7 +442,7 @@ interface	c:objc(cs)PDFOutline	-			-	-	-	ios=11.0/-/-/0	-	028037aa6e2f161c
 super	-	PDFOutline	NSObject		-	-	-	-	-	6f1ecb89047c08a9
 method	c:objc(cs)PDFOutline(im)init	-			instancetype	-	-	ios=11.0/-/-/0	-	61d7586035c7a9cd
 property	c:objc(cs)PDFOutline(py)document	-			PDFDocument *	-	readonly,weak,nonatomic	ios=11.0/-/-/0	-	85b006cbd8ddb023
-property	c:objc(cs)PDFOutline(py)parent	-			PDFKIT_AVAILABLE PDFOutline *	-	readonly,nonatomic	ios=11.0/-/-/0	-	14a9ba2f446cb275
+property	c:objc(cs)PDFOutline(py)parent	-			PDFOutline *	-	readonly,nonatomic	ios=11.0/-/-/0	-	6e2441bbb008c141
 property	c:objc(cs)PDFOutline(py)numberOfChildren	-			NSUInteger	-	readonly,nonatomic	ios=11.0/-/-/0	-	03538ff928ba0677
 property	c:objc(cs)PDFOutline(py)index	-			NSUInteger	-	readonly,nonatomic	ios=11.0/-/-/0	-	86ddb0f174eccd98
 method	c:objc(cs)PDFOutline(im)childAtIndex:	-			PDFOutline *	NSUInteger index	-	ios=11.0/-/-/0	-	e0632cc5c408c01c
@@ -451,7 +451,7 @@ method	c:objc(cs)PDFOutline(im)removeFromParent	-			void	-	-	ios=11.0/-/-/0	-	05
 property	c:objc(cs)PDFOutline(py)label	-			NSString *	-	copy,nonatomic	ios=11.0/-/-/0	-	fe6668f51655964d
 property	c:objc(cs)PDFOutline(py)isOpen	-			BOOL	-	nonatomic	ios=11.0/-/-/0	-	8d93e660bdafd850
 property	c:objc(cs)PDFOutline(py)destination	-			PDFDestination *	-	strong,nonatomic	ios=11.0/-/-/0	-	5188e768442d02d2
-property	c:objc(cs)PDFOutline(py)action	-			PDFKIT_AVAILABLE PDFAction *	-	strong,nonatomic	ios=11.0/-/-/0	-	70440f2bd746a738
+property	c:objc(cs)PDFOutline(py)action	-			PDFAction *	-	strong,nonatomic	ios=11.0/-/-/0	-	0c769cf8959e95f9
 enum	c:@E@PDFSelectionGranularity	-			NSUInteger	-	-	-	-	80de31981ce3877e
 enumconst	c:@E@PDFSelectionGranularity@PDFSelectionGranularityCharacter	PDFSelectionGranularity			-	-	-	-	-	44dbc17412f590fc
 enumconst	c:@E@PDFSelectionGranularity@PDFSelectionGranularityWord	PDFSelectionGranularity			-	-	-	-	-	f5aba363a83bd1da
@@ -461,7 +461,7 @@ super	-	PDFSelection	NSObject		-	-	-	-	-	e2a7d3da7c5f422f
 conforms	-	PDFSelection	NSCopying		-	-	-	-	-	29e3f3d9d30fa3ab
 method	c:objc(cs)PDFSelection(im)initWithDocument:	-			instancetype	PDFDocument * document	-	ios=11.0/-/-/0	-	1ea4dbd6aa4d1d43
 property	c:objc(cs)PDFSelection(py)pages	-			NSArray<PDFPage *> *	-	readonly,nonatomic	ios=11.0/-/-/0	-	0950f9d0042bf752
-property	c:objc(cs)PDFSelection(py)color	-			PDFKIT_AVAILABLE UIColor *	-	copy,nonatomic	ios=11.0/-/-/0	-	ac605bbbbad8335b
+property	c:objc(cs)PDFSelection(py)color	-			UIColor *	-	copy,nonatomic	ios=11.0/-/-/0	-	a462219a1c18ea12
 property	c:objc(cs)PDFSelection(py)string	-			NSString *	-	readonly,nonatomic	ios=11.0/-/-/0	-	ba334d968ab0040f
 property	c:objc(cs)PDFSelection(py)attributedString	-			NSAttributedString *	-	readonly,nonatomic	ios=11.0/-/-/0	-	83054942aa588f5f
 method	c:objc(cs)PDFSelection(im)boundsForPage:	-			CGRect	PDFPage * page	-	ios=11.0/-/-/0	-	c89a869ce6bf92e2
@@ -552,7 +552,7 @@ property	c:objc(cs)PDFView(py)pageShadowsEnabled	-			BOOL	-	nonatomic,setter=ena
 method	c:objc(cs)PDFView(im)usePageViewController:withViewOptions:	-			void	BOOL enable | NSDictionary * viewOptions	-	ios=11.0/-/-/0	-	583b244b05d4a377
 property	c:objc(cs)PDFView(py)isUsingPageViewController	-			BOOL	-	readonly,nonatomic	ios=11.0/-/-/0	-	cb51e3a890b286fb
 property	c:objc(cs)PDFView(py)delegate	-			id<PDFViewDelegate>	-	weak,nonatomic	ios=11.0/-/-/0	-	b9157d58d57c4bef
-property	c:objc(cs)PDFView(py)pageOverlayViewProvider	-			PDFKIT_AVAILABLE id<PDFPageOverlayViewProvider>	-	weak,nonatomic	ios=16.0/-/-/0	-	69c98c13b4e3ed6d
+property	c:objc(cs)PDFView(py)pageOverlayViewProvider	-			id<PDFPageOverlayViewProvider>	-	weak,nonatomic	ios=16.0/-/-/0	-	a26eaf5a06876657
 property	c:objc(cs)PDFView(py)scaleFactor	-			CGFloat	-	nonatomic	ios=11.0/-/-/0	-	2a09638862af96d9
 property	c:objc(cs)PDFView(py)minScaleFactor	-			CGFloat	-	nonatomic	ios=11.0/-/-/0	-	e8fd7305c2104e11
 property	c:objc(cs)PDFView(py)maxScaleFactor	-			CGFloat	-	nonatomic	ios=11.0/-/-/0	-	57985d36ed0d2b95
@@ -570,7 +570,7 @@ method	c:objc(cs)PDFView(im)setCurrentSelection:animate:	-			void	PDFSelection *
 method	c:objc(cs)PDFView(im)clearSelection	-			void	-	-	ios=11.0/-/-/0	-	84445890a026de1d
 method	c:objc(cs)PDFView(im)selectAll:	-			void	id sender	-	ios=11.0/-/-/0	-	09cd177967878819
 method	c:objc(cs)PDFView(im)scrollSelectionToVisible:	-			void	id sender	-	ios=11.0/-/-/0	-	07665bbe8c57d0ce
-property	c:objc(cs)PDFView(py)highlightedSelections	-			PDFKIT_AVAILABLE NSArray<PDFSelection *> *	-	copy,nonatomic	ios=11.0/-/-/0	-	f69b4d213c914116
+property	c:objc(cs)PDFView(py)highlightedSelections	-			NSArray<PDFSelection *> *	-	copy,nonatomic	ios=11.0/-/-/0	-	22b2ae6be5430a06
 method	c:objc(cs)PDFView(im)drawPage:toContext:	-			void	PDFPage * page | CGContextRef context	-	ios=11.0/-/-/0	-	a45ec05a357feb05
 method	c:objc(cs)PDFView(im)drawPagePost:toContext:	-			void	PDFPage * page | CGContextRef context	-	ios=11.0/-/-/0	-	8c51704efa716b2b
 method	c:objc(cs)PDFView(im)copy:	-			void	id sender	-	ios=11.0/-/-/0	-	4972a6a50ad35f87
@@ -583,7 +583,7 @@ property	c:objc(cs)PDFView(py)documentView	-			UIView *	-	readonly,nonatomic	ios
 method	c:objc(cs)PDFView(im)layoutDocumentView	-			void	-	-	ios=11.0/-/-/0	-	e636d2d68a1443c0
 method	c:objc(cs)PDFView(im)annotationsChangedOnPage:	-			void	PDFPage * page	-	ios=11.0/-/-/0	-	f98d877aff5beac8
 method	c:objc(cs)PDFView(im)rowSizeForPage:	-			CGSize	PDFPage * page	-	ios=11.0/-/-/0	-	8de681bb3d3462fb
-property	c:objc(cs)PDFView(py)visiblePages	-			PDFKIT_AVAILABLE NSArray<PDFPage *> *	-	readonly,nonatomic	ios=11.0/-/-/0	-	fc262d90ad96d649
+property	c:objc(cs)PDFView(py)visiblePages	-			NSArray<PDFPage *> *	-	readonly,nonatomic	ios=11.0/-/-/0	-	dd8db1be6de9dad6
 property	c:objc(cs)PDFView(py)enableDataDetectors	-			BOOL	-	nonatomic	ios=11.0/18.0/-/0	-	cea211a9e8ce29b5
 property	c:objc(cs)PDFView(py)inMarkupMode	-			BOOL	-	nonatomic,getter=isInMarkupMode	ios=16.0/-/-/0	-	6d7156c83df9cc57
 property	c:objc(cs)PDFView(py)findInteraction	-			UIFindInteraction *	-	readonly,nonatomic	ios=16.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	5c9c7227f7d898fd

@@ -75,7 +75,7 @@ enumconst	c:@Ea@ENRiskWeightDefault@ENRiskWeightDefaultV2	-			-	-	-	ios=12.5/-/-
 enumconst	c:@Ea@ENRiskWeightDefault@ENRiskWeightMin	-			-	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a0aed38fc6fce697
 enumconst	c:@Ea@ENRiskWeightDefault@ENRiskWeightMax	-			-	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	bfd7e28b52969d17
 enumconst	c:@Ea@ENRiskWeightDefault@ENRiskWeightMaxV2	-			-	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ba081bec1d0715c1
-typedef	c:@T@ENErrorHandler	-			void (^)(NSError * _Nullable)	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	092ba96d924a631b
+typedef	c:@T@ENErrorHandler	-			void ((^))(NSError *)	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	52eedba4193346af
 interface	c:objc(cs)ENExposureConfiguration	-			-	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1544cd0baaf230bc
 super	-	ENExposureConfiguration	NSObject		-	-	-	-	-	da72d7eacf6f6ebf
 property	c:objc(cs)ENExposureConfiguration(py)immediateDurationWeight	-			double	-	assign,nonatomic	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9af24f576b410a4a
@@ -172,13 +172,13 @@ enumconst	c:@E@ENActivityFlags@ENActivityFlagsReserved1	ENActivityFlags			-	-	-	
 enumconst	c:@E@ENActivityFlags@ENActivityFlagsReserved2	ENActivityFlags			-	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c7b169dd9a24b4d6
 enumconst	c:@E@ENActivityFlags@ENActivityFlagsPeriodicRun	ENActivityFlags			-	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	13411b54bf92a9a9
 enumconst	c:@E@ENActivityFlags@ENActivityFlagsPreAuthorizedKeyReleaseNotificationTapped	ENActivityFlags			-	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d7115be769e94492
-typedef	c:@T@ENActivityHandler	-			void (^)(ENActivityFlags)	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	dafd2fa6e6d9718f
-typedef	c:@T@ENGetDiagnosisKeysHandler	-			void (^)(NSArray<ENTemporaryExposureKey *> * _Nullable, NSError * _Nullable)	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	28bd0d29034b2800
-typedef	c:@T@ENDetectExposuresHandler	-			void (^)(ENExposureDetectionSummary * _Nullable, NSError * _Nullable)	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d3634a2265974820
-typedef	c:@T@ENDiagnosisKeysAvailableHandler	-			void (^)(NSArray<ENTemporaryExposureKey *> * _Nonnull)	-	-	ios=14.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	136ba4e8e059fbb8
-typedef	c:@T@ENGetExposureInfoHandler	-			void (^)(NSArray<ENExposureInfo *> * _Nullable, NSError * _Nullable)	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	acd3fa7611030130
-typedef	c:@T@ENGetExposureWindowsHandler	-			void (^)(NSArray<ENExposureWindow *> * _Nullable, NSError * _Nullable)	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	25a2b0b8e727f3cf
-typedef	c:@T@ENGetUserTraveledHandler	-			void (^)(BOOL, NSError * _Nullable)	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b3a60cf683d3a859
+typedef	c:@T@ENActivityHandler	-			void ((^))(ENActivityFlags)	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4f9d83ade3c1cf15
+typedef	c:@T@ENGetDiagnosisKeysHandler	-			void ((^))(NSArray<ENTemporaryExposureKey *> *, NSError *)	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c5f623b7b7991ab6
+typedef	c:@T@ENDetectExposuresHandler	-			void ((^))(ENExposureDetectionSummary *, NSError *)	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	84373d8cc8a7702b
+typedef	c:@T@ENDiagnosisKeysAvailableHandler	-			void ((^))(NSArray<ENTemporaryExposureKey *> *)	-	-	ios=14.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	271309b7c216583b
+typedef	c:@T@ENGetExposureInfoHandler	-			void ((^))(NSArray<ENExposureInfo *> *, NSError *)	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8478618a1665a8a7
+typedef	c:@T@ENGetExposureWindowsHandler	-			void ((^))(NSArray<ENExposureWindow *> *, NSError *)	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7c425530518fbc89
+typedef	c:@T@ENGetUserTraveledHandler	-			void ((^))(BOOL, NSError *)	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	82d8ec23ad8b53f5
 interface	c:objc(cs)ENManager	-			-	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use getExposureWindowsFromSummary, if needed.	c1b092df987b80c7
 super	-	ENManager	NSObject		-	-	-	-	-	010a86b5148c7f01
 property	c:objc(cs)ENManager(py)activityHandler	-			ENActivityHandler	-	copy,nonatomic	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f51af0e261eba3ea

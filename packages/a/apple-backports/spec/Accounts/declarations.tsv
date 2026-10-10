@@ -37,10 +37,10 @@ enum	c:@E@ACAccountCredentialRenewResult	-			NSInteger	-	-	-	-	860c5449e2ff689b
 enumconst	c:@E@ACAccountCredentialRenewResult@ACAccountCredentialRenewResultRenewed	ACAccountCredentialRenewResult			-	-	-	-	-	6da1d64501edaae2
 enumconst	c:@E@ACAccountCredentialRenewResult@ACAccountCredentialRenewResultRejected	ACAccountCredentialRenewResult			-	-	-	-	-	2f14eacbd50a3d01
 enumconst	c:@E@ACAccountCredentialRenewResult@ACAccountCredentialRenewResultFailed	ACAccountCredentialRenewResult			-	-	-	-	-	572cc717432ec0a4
-typedef	c:@T@ACAccountStoreSaveCompletionHandler	-			void (^)(BOOL, NSError *)	-	-	-	-	218ef3d24750ae4b
-typedef	c:@T@ACAccountStoreRemoveCompletionHandler	-			void (^)(BOOL, NSError *)	-	-	-	-	054ca15c8118268e
-typedef	c:@T@ACAccountStoreRequestAccessCompletionHandler	-			void (^)(BOOL, NSError *)	-	-	-	-	c09f1f26d5944396
-typedef	c:@T@ACAccountStoreCredentialRenewalHandler	-			void (^)(ACAccountCredentialRenewResult, NSError *)	-	-	-	-	c13a0783700dc93c
+typedef	c:@T@ACAccountStoreSaveCompletionHandler	-			void ((^))(BOOL, NSError *)	-	-	-	-	0540ac945d94a618
+typedef	c:@T@ACAccountStoreRemoveCompletionHandler	-			void ((^))(BOOL, NSError *)	-	-	-	-	6a25d39f78de7cec
+typedef	c:@T@ACAccountStoreRequestAccessCompletionHandler	-			void ((^))(BOOL, NSError *)	-	-	-	-	170a560436195f2f
+typedef	c:@T@ACAccountStoreCredentialRenewalHandler	-			void ((^))(ACAccountCredentialRenewResult, NSError *)	-	-	-	-	a786545ce867a8e3
 interface	c:objc(cs)ACAccountStore	-			-	-	-	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	deprecated: Use -requestAccessToAccountsWithType:options:completion: instead	ed24975201d6003e
 super	-	ACAccountStore	NSObject		-	-	-	-	-	3b1ee02b88edb79d
 property	c:objc(cs)ACAccountStore(py)accounts	-			NSArray *	-	readonly,weak,nonatomic	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	8b68581a43a4e68f

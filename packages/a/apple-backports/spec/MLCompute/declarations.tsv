@@ -1,5 +1,5 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
-typedef	c:@T@MLCGraphCompletionHandler	-			void (^)(MLCTensor * _Nullable, NSError * _Nullable, NSTimeInterval)	-	-	-	-	3d918b4f43a85936
+typedef	c:@T@MLCGraphCompletionHandler	-			void ((^))(MLCTensor *, NSError *, NSTimeInterval)	-	-	-	-	c162f8555c3db521
 typedef	c:@T@MLCDataType	-			enum MLCDataType	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a1fa2f0d74b6b0bb
 enum	c:@E@MLCDataType	-			int32_t	-	-	-	-	0e16969d53c4c336
 enumconst	c:@E@MLCDataType@MLCDataTypeInvalid	MLCDataType			-	-	-	swift=-/-/-/1	-	9bb1846377f0a9fa
@@ -181,19 +181,19 @@ enum	c:@E@MLCGradientClippingType	-			int32_t	-	-	-	-	6959104b6b5d475a
 enumconst	c:@E@MLCGradientClippingType@MLCGradientClippingTypeByValue	MLCGradientClippingType			-	-	-	-	-	eff9b627599bc4b5
 enumconst	c:@E@MLCGradientClippingType@MLCGradientClippingTypeByNorm	MLCGradientClippingType			-	-	-	-	-	af262b05aee885cf
 enumconst	c:@E@MLCGradientClippingType@MLCGradientClippingTypeByGlobalNorm	MLCGradientClippingType			-	-	-	-	-	0db73aa143925e48
-function	c:@F@MLCActivationTypeDebugDescription	-			NSString * _Nonnull (MLCActivationType)	MLCActivationType activationType	-	-	-	0d1e97868f2d00f7
-function	c:@F@MLCArithmeticOperationDebugDescription	-			NSString * _Nonnull (MLCArithmeticOperation)	MLCArithmeticOperation operation	-	-	-	d4510631eff3aaa3
-function	c:@F@MLCPaddingPolicyDebugDescription	-			NSString * _Nonnull (MLCPaddingPolicy)	MLCPaddingPolicy paddingPolicy	-	-	-	4bfe833da9870638
-function	c:@F@MLCLossTypeDebugDescription	-			NSString * _Nonnull (MLCLossType)	MLCLossType lossType	-	-	-	dd78c14160fcea24
-function	c:@F@MLCReductionTypeDebugDescription	-			NSString * _Nonnull (MLCReductionType)	MLCReductionType reductionType	-	-	-	e56a16c0cad67407
-function	c:@F@MLCPaddingTypeDebugDescription	-			NSString * _Nonnull (MLCPaddingType)	MLCPaddingType paddingType	-	-	-	a70895de1b23c225
-function	c:@F@MLCConvolutionTypeDebugDescription	-			NSString * _Nonnull (MLCConvolutionType)	MLCConvolutionType convolutionType	-	-	-	0a890e83df0c220c
-function	c:@F@MLCPoolingTypeDebugDescription	-			NSString * _Nonnull (MLCPoolingType)	MLCPoolingType poolingType	-	-	-	e6613e1a2760f033
-function	c:@F@MLCSoftmaxOperationDebugDescription	-			NSString * _Nonnull (MLCSoftmaxOperation)	MLCSoftmaxOperation operation	-	-	-	42973223f24c3f07
-function	c:@F@MLCSampleModeDebugDescription	-			NSString * _Nonnull (MLCSampleMode)	MLCSampleMode mode	-	-	-	09753bad01a752ae
-function	c:@F@MLCLSTMResultModeDebugDescription	-			NSString * _Nonnull (MLCLSTMResultMode)	MLCLSTMResultMode mode	-	-	-	4b4e1a1dfb8b4932
-function	c:@F@MLCComparisonOperationDebugDescription	-			NSString * _Nonnull (MLCComparisonOperation)	MLCComparisonOperation operation	-	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	e391384f7aaf837b
-function	c:@F@MLCGradientClippingTypeDebugDescription	-			NSString * _Nonnull (MLCGradientClippingType)	MLCGradientClippingType gradientClippingType	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	abfd4777f40c40ac
+function	c:@F@MLCActivationTypeDebugDescription	-			NSString * (MLCActivationType)	MLCActivationType activationType	-	-	-	03d510f9c1586fce
+function	c:@F@MLCArithmeticOperationDebugDescription	-			NSString * (MLCArithmeticOperation)	MLCArithmeticOperation operation	-	-	-	84adff7e82ecfa43
+function	c:@F@MLCPaddingPolicyDebugDescription	-			NSString * (MLCPaddingPolicy)	MLCPaddingPolicy paddingPolicy	-	-	-	f4ff945d503783d8
+function	c:@F@MLCLossTypeDebugDescription	-			NSString * (MLCLossType)	MLCLossType lossType	-	-	-	be41cad22e27cd14
+function	c:@F@MLCReductionTypeDebugDescription	-			NSString * (MLCReductionType)	MLCReductionType reductionType	-	-	-	95fbf182255b0ab5
+function	c:@F@MLCPaddingTypeDebugDescription	-			NSString * (MLCPaddingType)	MLCPaddingType paddingType	-	-	-	886c154872403535
+function	c:@F@MLCConvolutionTypeDebugDescription	-			NSString * (MLCConvolutionType)	MLCConvolutionType convolutionType	-	-	-	9e5d30cdcee8a77f
+function	c:@F@MLCPoolingTypeDebugDescription	-			NSString * (MLCPoolingType)	MLCPoolingType poolingType	-	-	-	ab901948156914d6
+function	c:@F@MLCSoftmaxOperationDebugDescription	-			NSString * (MLCSoftmaxOperation)	MLCSoftmaxOperation operation	-	-	-	956b08aef541632b
+function	c:@F@MLCSampleModeDebugDescription	-			NSString * (MLCSampleMode)	MLCSampleMode mode	-	-	-	19fd2fd289fbfb41
+function	c:@F@MLCLSTMResultModeDebugDescription	-			NSString * (MLCLSTMResultMode)	MLCLSTMResultMode mode	-	-	-	7c556912abb543be
+function	c:@F@MLCComparisonOperationDebugDescription	-			NSString * (MLCComparisonOperation)	MLCComparisonOperation operation	-	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	93ba68882527131e
+function	c:@F@MLCGradientClippingTypeDebugDescription	-			NSString * (MLCGradientClippingType)	MLCGradientClippingType gradientClippingType	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	f19c4c83af111fb6
 interface	c:objc(cs)MLCDevice	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	d1f5e56cf9be8b69
 super	-	MLCDevice	NSObject		-	-	-	-	-	b60a2763438e6e43
 conforms	-	MLCDevice	NSCopying		-	-	-	-	-	5dd97f3c2d9ab2ee
@@ -459,12 +459,12 @@ super	-	MLCTensorDescriptor	NSObject		-	-	-	-	-	3a30e361e99df67b
 conforms	-	MLCTensorDescriptor	NSCopying		-	-	-	-	-	b93c362a21fd0e3f
 property	c:objc(cs)MLCTensorDescriptor(py)dataType	-			MLCDataType	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	056e19dc59b484c2
 property	c:objc(cs)MLCTensorDescriptor(py)dimensionCount	-			NSUInteger	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f984d1547fb7ae9c
-property	c:objc(cs)MLCTensorDescriptor(py)shape	-			NS_REFINED_FOR_SWIFT NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	0866e3dd0c609d4c
-property	c:objc(cs)MLCTensorDescriptor(py)stride	-			NS_REFINED_FOR_SWIFT NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	b2bf8fcfb8d90ca7
+property	c:objc(cs)MLCTensorDescriptor(py)shape	-			NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	ba3c3e5350510c36
+property	c:objc(cs)MLCTensorDescriptor(py)stride	-			NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f1b01a698804f8f8
 property	c:objc(cs)MLCTensorDescriptor(py)tensorAllocationSizeInBytes	-			NSUInteger	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	65e39d04758d6eba
-property	c:objc(cs)MLCTensorDescriptor(py)sequenceLengths	-			NS_REFINED_FOR_SWIFT NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	2d00739cc530d5e5
+property	c:objc(cs)MLCTensorDescriptor(py)sequenceLengths	-			NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	d1acc81cf4a09a6c
 property	c:objc(cs)MLCTensorDescriptor(py)sortedSequences	-			BOOL	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	2a04e59a4f8eb035
-property	c:objc(cs)MLCTensorDescriptor(py)batchSizePerSequenceStep	-			NS_REFINED_FOR_SWIFT NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f926472be8c46c83
+property	c:objc(cs)MLCTensorDescriptor(py)batchSizePerSequenceStep	-			NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	30f60fe572b8e9ea
 method	c:objc(cs)MLCTensorDescriptor(cm)new	-			instancetype	-	-	*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	28ad6a7c4a669fe3
 method	c:objc(cs)MLCTensorDescriptor(im)init	-			instancetype	-	-	*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	5c60654070123cd3
 property	c:objc(cs)MLCTensorDescriptor(cpy)maxTensorDimensions	-			NSUInteger	-	readonly,nonatomic,class	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	fb23a0004ff8514f
@@ -521,11 +521,11 @@ super	-	MLCEmbeddingDescriptor	NSObject		-	-	-	-	-	0aea9abc575ffb92
 conforms	-	MLCEmbeddingDescriptor	NSCopying		-	-	-	-	-	eebbf58cdf8c2bc0
 method	c:objc(cs)MLCEmbeddingDescriptor(cm)new	-			instancetype	-	-	*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	6062ef422dc37c3c
 method	c:objc(cs)MLCEmbeddingDescriptor(im)init	-			instancetype	-	-	*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	14759dbc068d109f
-property	c:objc(cs)MLCEmbeddingDescriptor(py)embeddingCount	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	50fa1cfd1cfed679
-property	c:objc(cs)MLCEmbeddingDescriptor(py)embeddingDimension	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	45e015ad9ec015c5
-property	c:objc(cs)MLCEmbeddingDescriptor(py)paddingIndex	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	d2d394b0bb9db71c
-property	c:objc(cs)MLCEmbeddingDescriptor(py)maximumNorm	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	8b5bb443c5db7bbe
-property	c:objc(cs)MLCEmbeddingDescriptor(py)pNorm	-			NS_REFINED_FOR_SWIFT NSNumber *	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	c17d3b73e0edcce5
+property	c:objc(cs)MLCEmbeddingDescriptor(py)embeddingCount	-			NSNumber *	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	11af0c5ea54a4be7
+property	c:objc(cs)MLCEmbeddingDescriptor(py)embeddingDimension	-			NSNumber *	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	76dce9400c985d86
+property	c:objc(cs)MLCEmbeddingDescriptor(py)paddingIndex	-			NSNumber *	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	127ce24ca9317d48
+property	c:objc(cs)MLCEmbeddingDescriptor(py)maximumNorm	-			NSNumber *	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	dbadd1886438cc06
+property	c:objc(cs)MLCEmbeddingDescriptor(py)pNorm	-			NSNumber *	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f43ae2a6509ab887
 property	c:objc(cs)MLCEmbeddingDescriptor(py)scalesGradientByFrequency	-			BOOL	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	9d59fb71da912ec3
 method	c:objc(cs)MLCEmbeddingDescriptor(cm)descriptorWithEmbeddingCount:embeddingDimension:	-			instancetype	NSNumber * embeddingCount | NSNumber * embeddingDimension	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e272a16ec6fbcf5e
 method	c:objc(cs)MLCEmbeddingDescriptor(cm)descriptorWithEmbeddingCount:embeddingDimension:paddingIndex:maximumNorm:pNorm:scalesGradientByFrequency:	-			instancetype	NSNumber * embeddingCount | NSNumber * embeddingDimension | NSNumber * paddingIndex | NSNumber * maximumNorm | NSNumber * pNorm | BOOL scalesGradientByFrequency	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	43bec8401a47a36f
@@ -641,7 +641,7 @@ method	c:objc(cs)MLCConcatenationLayer(cm)layer	-			instancetype	-	-	ios=14.0/17
 method	c:objc(cs)MLCConcatenationLayer(cm)layerWithDimension:	-			instancetype	NSUInteger dimension	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	91986bccd8fa68c3
 interface	c:objc(cs)MLCLayerNormalizationLayer	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	85b5d1e6262f4d66
 super	-	MLCLayerNormalizationLayer	MLCLayer		-	-	-	-	-	80ca941d8924b0b5
-property	c:objc(cs)MLCLayerNormalizationLayer(py)normalizedShape	-			NS_REFINED_FOR_SWIFT NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	126f2b51b9f2963b
+property	c:objc(cs)MLCLayerNormalizationLayer(py)normalizedShape	-			NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7cf8f3dc4ad631c5
 property	c:objc(cs)MLCLayerNormalizationLayer(py)beta	-			MLCTensor *	-	readonly,retain,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	582620d4db504272
 property	c:objc(cs)MLCLayerNormalizationLayer(py)gamma	-			MLCTensor *	-	readonly,retain,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f8ce886e3a8891d8
 property	c:objc(cs)MLCLayerNormalizationLayer(py)betaParameter	-			MLCTensorParameter *	-	readonly,retain,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	57adebc2eb899b85
@@ -660,7 +660,7 @@ property	c:objc(cs)MLCGroupNormalizationLayer(py)varianceEpsilon	-			float	-	rea
 method	c:objc(cs)MLCGroupNormalizationLayer(cm)layerWithFeatureChannelCount:groupCount:beta:gamma:varianceEpsilon:	-			instancetype	NSUInteger featureChannelCount | NSUInteger groupCount | MLCTensor * beta | MLCTensor * gamma | float varianceEpsilon	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a618c6cb803b6948
 interface	c:objc(cs)MLCReshapeLayer	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	25de1316f1574c6d
 super	-	MLCReshapeLayer	MLCLayer		-	-	-	-	-	ba67c9fcf41c94b5
-property	c:objc(cs)MLCReshapeLayer(py)shape	-			NS_REFINED_FOR_SWIFT NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	fce707a2d7b4d890
+property	c:objc(cs)MLCReshapeLayer(py)shape	-			NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	3b626283771ba11e
 method	c:objc(cs)MLCReshapeLayer(cm)layerWithShape:	-			instancetype	NSArray<NSNumber *> * shape	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	ca10090227065e8a
 interface	c:objc(cs)MLCSoftmaxLayer	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	1e79489fd00d9f87
 super	-	MLCSoftmaxLayer	MLCLayer		-	-	-	-	-	4fbb2b5c271340ad
@@ -714,7 +714,7 @@ method	c:objc(cs)MLCLSTMLayer(cm)layerWithDescriptor:inputWeights:hiddenWeights:
 method	c:objc(cs)MLCLSTMLayer(cm)layerWithDescriptor:inputWeights:hiddenWeights:peepholeWeights:biases:gateActivations:outputResultActivation:	-			instancetype	MLCLSTMDescriptor * descriptor | NSArray<MLCTensor *> * inputWeights | NSArray<MLCTensor *> * hiddenWeights | NSArray<MLCTensor *> * peepholeWeights | NSArray<MLCTensor *> * biases | NSArray<MLCActivationDescriptor *> * gateActivations | MLCActivationDescriptor * outputResultActivation	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	b361f97f53187d8a
 interface	c:objc(cs)MLCUpsampleLayer	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	46ed36bc3c2cb2e1
 super	-	MLCUpsampleLayer	MLCLayer		-	-	-	-	-	f24bf7e19dc7212f
-property	c:objc(cs)MLCUpsampleLayer(py)shape	-			NS_REFINED_FOR_SWIFT NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	319d6779b38325e5
+property	c:objc(cs)MLCUpsampleLayer(py)shape	-			NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e8217f951f4f0ad9
 property	c:objc(cs)MLCUpsampleLayer(py)sampleMode	-			MLCSampleMode	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	95165aeb994b21ea
 property	c:objc(cs)MLCUpsampleLayer(py)alignsCorners	-			BOOL	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	9e32111ff3fd21c4
 method	c:objc(cs)MLCUpsampleLayer(cm)layerWithShape:	-			instancetype	NSArray<NSNumber *> * shape	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a6417751430bf275
@@ -734,13 +734,13 @@ method	c:objc(cs)MLCPaddingLayer(cm)layerWithZeroPadding:	-			instancetype	NSArr
 method	c:objc(cs)MLCPaddingLayer(cm)layerWithConstantPadding:constantValue:	-			instancetype	NSArray<NSNumber *> * padding | float constantValue	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f51db4dd07b9830c
 interface	c:objc(cs)MLCTransposeLayer	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	0070339791db1830
 super	-	MLCTransposeLayer	MLCLayer		-	-	-	-	-	e15693028a9866b3
-property	c:objc(cs)MLCTransposeLayer(py)dimensions	-			NS_REFINED_FOR_SWIFT NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	dadcedebbb502809
+property	c:objc(cs)MLCTransposeLayer(py)dimensions	-			NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	2a1374dd913be6f5
 method	c:objc(cs)MLCTransposeLayer(cm)layerWithDimensions:	-			instancetype	NSArray<NSNumber *> * dimensions	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a0d0cc6a97ee4ea5
 interface	c:objc(cs)MLCReductionLayer	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3b3a2dcade1e43cb
 super	-	MLCReductionLayer	MLCLayer		-	-	-	-	-	0809e7d8b03f2508
 property	c:objc(cs)MLCReductionLayer(py)reductionType	-			MLCReductionType	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	53236cfa974d71b4
 property	c:objc(cs)MLCReductionLayer(py)dimension	-			NSUInteger	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	cfc57b0193240a82
-property	c:objc(cs)MLCReductionLayer(py)dimensions	-			NS_REFINED_FOR_SWIFT NSArray<NSNumber *> *	-	readonly,nonatomic	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	67ef209aa86b2c56
+property	c:objc(cs)MLCReductionLayer(py)dimensions	-			NSArray<NSNumber *> *	-	readonly,nonatomic	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	af2f1ad1b0a702fc
 method	c:objc(cs)MLCReductionLayer(cm)layerWithReductionType:dimension:	-			instancetype	MLCReductionType reductionType | NSUInteger dimension	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	4b65f0f2019a91a4
 method	c:objc(cs)MLCReductionLayer(cm)layerWithReductionType:dimensions:	-			instancetype	MLCReductionType reductionType | NSArray<NSNumber *> * dimensions	-	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=14.5/-/-/0	-	ee4deed01c3fa881
 interface	c:objc(cs)MLCMultiheadAttentionLayer	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7a05619b8af9b3d5
@@ -756,7 +756,7 @@ interface	c:objc(cs)MLCSplitLayer	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/
 super	-	MLCSplitLayer	MLCLayer		-	-	-	-	-	8f55b0c80d1900cd
 property	c:objc(cs)MLCSplitLayer(py)dimension	-			NSUInteger	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	41078d69b6c24559
 property	c:objc(cs)MLCSplitLayer(py)splitCount	-			NSUInteger	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	039120da744ab639
-property	c:objc(cs)MLCSplitLayer(py)splitSectionLengths	-			NS_REFINED_FOR_SWIFT NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	8bc0803ad93f3e72
+property	c:objc(cs)MLCSplitLayer(py)splitSectionLengths	-			NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3fc9e22eea426c0d
 method	c:objc(cs)MLCSplitLayer(cm)layerWithSplitCount:dimension:	-			instancetype	NSUInteger splitCount | NSUInteger dimension	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	530103db6a90865e
 method	c:objc(cs)MLCSplitLayer(cm)layerWithSplitSectionLengths:dimension:	-			instancetype	NSArray<NSNumber *> * splitSectionLengths | NSUInteger dimension	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	5b7ed783f0a1724d
 interface	c:objc(cs)MLCMatMulLayer	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	6232e1a2329f00cc
@@ -765,9 +765,9 @@ property	c:objc(cs)MLCMatMulLayer(py)descriptor	-			MLCMatMulDescriptor *	-	read
 method	c:objc(cs)MLCMatMulLayer(cm)layerWithDescriptor:	-			instancetype	MLCMatMulDescriptor * descriptor	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	6a3c81522cfdb7f4
 interface	c:objc(cs)MLCSliceLayer	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	ae75fb52bf1d7eb9
 super	-	MLCSliceLayer	MLCLayer		-	-	-	-	-	78a6c7f9421b453c
-property	c:objc(cs)MLCSliceLayer(py)start	-			NS_REFINED_FOR_SWIFT NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	fd1e23e212416369
-property	c:objc(cs)MLCSliceLayer(py)end	-			NS_REFINED_FOR_SWIFT NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	61518543c16a35aa
-property	c:objc(cs)MLCSliceLayer(py)stride	-			NS_REFINED_FOR_SWIFT NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	b6b41171e07c02e9
+property	c:objc(cs)MLCSliceLayer(py)start	-			NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	4d90b2a17bca7744
+property	c:objc(cs)MLCSliceLayer(py)end	-			NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	22eda2acb3db32dd
+property	c:objc(cs)MLCSliceLayer(py)stride	-			NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	40ca0f21a522b0e1
 method	c:objc(cs)MLCSliceLayer(cm)sliceLayerWithStart:end:stride:	-			instancetype	NSArray<NSNumber *> * start | NSArray<NSNumber *> * end | NSArray<NSNumber *> * stride	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	cd91b2a5b3c10972
 interface	c:objc(cs)MLCEmbeddingLayer	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	fc049944aa4ead7b
 super	-	MLCEmbeddingLayer	MLCLayer		-	-	-	-	-	1ee9e4cd9ebd257b
