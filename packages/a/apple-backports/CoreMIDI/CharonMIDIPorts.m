@@ -606,9 +606,10 @@ static charon_delivery *charon_pending_tail;
 static int charon_pending_scheduled;
 
 // A drain pass delivers at most CHARON_DRAIN_MESSAGES deliveries and runs for at most one millisecond, and then schedules the next
-// pass. Within a pass, consecutive deliveries to the same row share one check of the object (charon_object_check), which is the one
-// property read of the release a delivery costs: the check is repeated on the next pass, so the window between a check and the call
-// it allows is at most one pass.
+// pass. Each delivery checks its object (charon_object_check) right before its block is called, with no check carried over from the
+// delivery before it: a dispose that has returned is seen by every check that begins after it. The code does not bound the time
+// between a check and the call that follows it (the check's reply, and the drain thread's scheduling): a dispose that returns in
+// that gap is followed by the call. The gap is measured, not bounded (crutches.md, the window entry; delivery.m).
 #define CHARON_DRAIN_MESSAGES 16
 
 static uint64_t charon_drain_ticks(void)
@@ -742,11 +743,6 @@ static void charon_drain(void *context)
     uint64_t start = mach_absolute_time();
     uint64_t limit = charon_drain_ticks();
     size_t done = 0;
-    int checked = 0;
-    MIDIEndpointRef checkedEndpoint = 0;
-    charon_port *checkedPort = NULL;
-    SInt32 checkedStamp = 0;
-    charon_object_state state = charon_object_live;
     for (;;) {
         pthread_mutex_lock(&charon_pending_lock);
         charon_delivery *delivery = charon_pending_head;
@@ -760,14 +756,8 @@ static void charon_drain(void *context)
         pthread_mutex_unlock(&charon_pending_lock);
         if (!delivery)
             return;
-        // The same row is the same endpoint, port and stamp: a port freed during the pass can have its address given to another one.
-        if (!checked || delivery->endpoint != checkedEndpoint || delivery->port != checkedPort || delivery->stamp != checkedStamp) {
-            state = charon_object_check(delivery->endpoint, delivery->stamped, delivery->stamp);
-            checked = 1;
-            checkedEndpoint = delivery->endpoint;
-            checkedPort = delivery->port;
-            checkedStamp = delivery->stamp;
-        }
+        // The object is checked for this delivery, right before its call (see above).
+        charon_object_state state = charon_object_check(delivery->endpoint, delivery->stamped, delivery->stamp);
         charon_deliver_checked(delivery, state);
         done++;
         if (done == CHARON_DRAIN_MESSAGES || mach_absolute_time() - start >= limit) {
