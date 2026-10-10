@@ -57,6 +57,14 @@ function main()
     check(run_status == 4 and table.concat(out, "|") == "out" and err == "err\n",
           "run: the exit status and the standard error are returned, the standard output is the lines")
 
+    local whole_status, whole, whole_err = stream.text("sh", {"-c", "printf abc; exit 3"})
+    check(whole_status == 3 and whole == "abc" and whole_err == "", "text: the exit status is returned and the output is whole")
+    local big_status, big = stream.text("sh", {"-c", "yes | head -c 3000000"})
+    check(big_status == 0 and #big == 3000000 and big == string.rep("y\n", 1500000),
+          "text: a three megabyte output comes back whole, the sentinel cut out of its last read")
+    local mixed_status, mixed, mixed_err = stream.text("sh", {"-c", "echo out; echo err 1>&2"})
+    check(mixed_status == 0 and mixed == "out\n" and mixed_err == "err\n", "text: the standard error is returned apart from the output")
+
     -- The duration is drawn at random, so the ps line of this command (which names no duration) cannot match it.
     local secs = tostring(math.random(3000, 3999))
     local message = error_of(function()

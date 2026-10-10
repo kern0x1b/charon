@@ -80,7 +80,7 @@ end
 
 -- The shared loop: calls each(line) for every stdout line in order, and returns the exit status and the standard error (empty
 -- unless want_err: without it, the program's stderr goes to ours).
-local function drive(program, args, each, want_err)
+local function drive(program, args, each, want_err, raw)
     -- The wrapper runs the program under a shell that prints its own process id, then execs the program (so the id is the program's);
     -- the wrapper waits for the program and prints the sentinel with its exit status.
     local command = {"-c", 'sh -c \'printf "\\177PID %d\\n" $$; exec "$0" "$@"\' "$@" <&0 & wait $! 2>/dev/null; printf "\\177END %d\\n" $?', "sh", program}
@@ -164,28 +164,64 @@ local function drive(program, args, each, want_err)
                     drained = 0
                     last_byte = os.mclock()
                     local text = carry .. buff:str(1, n)
-                    local pos = 1
-                    while not status do
-                        local newline = string.find(text, "\n", pos, true)
-                        if not newline then
-                            break
-                        end
-                        local line = string.sub(text, pos, newline - 1)
-                        local at, _, digits = string.find(line, SENTINEL .. "(%d+)$")
-                        if at then
-                            -- A program whose last line has no line feed leaves that text in front of the sentinel: it is passed on.
-                            if at > 1 then
-                                each(string.sub(line, 1, at - 1))
+                    if raw then
+                        -- The first line is the PID line; after it, the program's bytes are passed on in pieces, never split into
+                        -- lines. The sentinel is searched for in each read: the last bytes of a read that may start one are kept.
+                        local waiting = false
+                        if program_pid == nil then
+                            local newline = string.find(text, "\n", 1, true)
+                            if newline == nil then
+                                carry, waiting = text, true
+                            else
+                                program_pid = tonumber(string.match(string.sub(text, 1, newline - 1), "^" .. PID_LINE .. "(%d+)$"))
+                                assert(program_pid ~= nil, "no process id from " .. program)
+                                text = string.sub(text, newline + 1)
                             end
-                            status = tonumber(digits)
-                        elseif string.match(line, "^" .. PID_LINE .. "%d+$") then
-                            program_pid = tonumber(string.sub(line, #PID_LINE + 1))
-                        else
-                            each(line)
                         end
-                        pos = newline + 1
+                        if not waiting then
+                            local at = string.find(text, SENTINEL, 1, true)
+                            if at then
+                                if at > 1 then
+                                    each(string.sub(text, 1, at - 1))
+                                end
+                                local digits = string.match(text, "^(%d+)\n", at + #SENTINEL)
+                                if digits then
+                                    status = tonumber(digits)
+                                else
+                                    carry = string.sub(text, at)
+                                end
+                            else
+                                local keep = math.min(#text, #SENTINEL)
+                                if #text > keep then
+                                    each(string.sub(text, 1, #text - keep))
+                                end
+                                carry = string.sub(text, #text - keep + 1)
+                            end
+                        end
+                    else
+                        local pos = 1
+                        while not status do
+                            local newline = string.find(text, "\n", pos, true)
+                            if not newline then
+                                break
+                            end
+                            local line = string.sub(text, pos, newline - 1)
+                            local at, _, digits = string.find(line, SENTINEL .. "(%d+)$")
+                            if at then
+                                -- A program whose last line has no line feed leaves that text in front of the sentinel: it is passed on.
+                                if at > 1 then
+                                    each(string.sub(line, 1, at - 1))
+                                end
+                                status = tonumber(digits)
+                            elseif string.match(line, "^" .. PID_LINE .. "%d+$") then
+                                program_pid = tonumber(string.sub(line, #PID_LINE + 1))
+                            else
+                                each(line)
+                            end
+                            pos = newline + 1
+                        end
+                        carry = string.sub(text, pos)
                     end
-                    carry = string.sub(text, pos)
                 elseif n == 0 then
                     assert(os.mclock() - last_byte < STALL_LIMIT, "no output from " .. program .. " for ten minutes")
                     if exited then
@@ -238,12 +274,23 @@ end
 -- Calls each(line) for every line the program prints, in order, and returns the program's exit status. A partial last
 -- line is passed on as it is; the program's stderr goes to ours.
 function lines(program, args, each)
-    local status = drive(program, args, each, false)
+    local status = drive(program, args, each, false, false)
     return status
 end
 
 -- Calls each(line) for every line the program prints, in order. Returns the program's exit status and its standard error (the
 -- last ERROR_LIMIT bytes of it), which is read through a pipe and not shown.
 function run(program, args, each)
-    return drive(program, args, each, true)
+    return drive(program, args, each, true, false)
+end
+
+-- The program's whole standard output, read through the pipe in pieces of up to CHUNK bytes and joined: no line is split out of it
+-- (a dump of hundreds of megabytes is one string, not one callback per line). Returns the exit status, the output, and the
+-- standard error (the last ERROR_LIMIT bytes of it).
+function text(program, args)
+    local parts = {}
+    local status, errors = drive(program, args, function(piece)
+        table.insert(parts, piece)
+    end, true, true)
+    return status, table.concat(parts), errors
 end
