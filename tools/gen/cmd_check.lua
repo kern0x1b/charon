@@ -8,7 +8,9 @@
 -- tests/gen/removed-overrides.tsv: a total that grows is a failure). A run that finds no framework to check fails: a check that checked
 -- nothing is not a pass (review r4 G11; coordinator ruling G11). The registry's targets are checked against their shards too
 -- (targets.problems): an umbrella's entries through its nested targets (no-own.tsv), a product's members through their shards
--- (products.tsv). The gate's half, that the built dylibs export them, is check_registry and needs those dylibs.
+-- (products.tsv). The gate's half, that the built dylibs export them, is check_registry and needs those dylibs. A constants.tsv that
+-- holds no rows fails (input writes none for a framework with no constant), and the snapshots protocols.tsv and functions.tsv are held
+-- to their pins in spec/snapshots.tsv (snapshot_pins), so a clean checkout checks them with no build directory.
 
 local layout = import("layout", {anonymous = true})
 local snapshot = import("spec", {anonymous = true})
@@ -19,6 +21,7 @@ local surface = import("surface", {anonymous = true})
 local protocols = import("protocols", {anonymous = true})
 local target_checks = import("targets", {anonymous = true})
 local gen = import("cmd_gen", {anonymous = true})
+local snapshot_pins = import("snapshot_pins", {anonymous = true})
 
 -- The data lines of a table's text: every line after the header that is not empty.
 local function data_lines(text)
@@ -30,6 +33,16 @@ local function data_lines(text)
         end
     end
     return out
+end
+
+-- The problem of a constant record that holds no rows, or nil. input writes no record for a framework with no constant, so a file of
+-- that kind is stale (Round 14, decision 1).
+function constant_record_problem(tree, fw)
+    local text = files.read_text(layout.constant_record_path(tree, fw))
+    if text ~= nil and #data_lines(text) == 0 then
+        return "constants.tsv holds no rows: input writes no record for a framework with no constant (remove the file)"
+    end
+    return nil
 end
 
 -- The protocols the protocol-set record of a framework names that a registry row implements, sorted. The rule (protocols.rule_set)
@@ -74,6 +87,10 @@ local function diagnose(tree, fw, corpus)
     end
     for _, name in ipairs(record_conflicts(tree, fw)) do
         table.insert(problems, "protocol-set record names a protocol a registry row implements: " .. name)
+    end
+    local rows_problem = constant_record_problem(tree, fw)
+    if rows_problem ~= nil then
+        table.insert(problems, rows_problem)
     end
     local stale = data_lines(emitted["stale.tsv"])
     local removed = data_lines(emitted["removed.tsv"])
@@ -135,5 +152,9 @@ function run(args)
     for _, line in ipairs(target_problems) do
         print("CHECK targets: " .. line)
     end
-    return (failed > 0 or #target_problems > 0) and 1 or 0
+    local snapshot_problems = snapshot_pins.pin_problems(args.tree)
+    for _, line in ipairs(snapshot_problems) do
+        print("CHECK snapshots: " .. line)
+    end
+    return (failed > 0 or #target_problems > 0 or #snapshot_problems > 0) and 1 or 0
 end

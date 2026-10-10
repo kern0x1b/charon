@@ -13,6 +13,7 @@ local order = import("order", {anonymous = true})
 local surface = import("surface", {anonymous = true})
 local emit = import("emit", {anonymous = true})
 local tbd = import("tbd", {anonymous = true})
+local snapshot_pins = import("snapshot_pins", {anonymous = true})
 
 local SDK26 = path.join(os.getenv("HOME") or "", "Git", "projects", "ios", "charon", ".agent-work", "sdk-26.2", "iPhoneOS26.2.sdk")
 local FUNCTION_COLUMNS = {"api", "introduced", "status", "reasons", "returns", "params", "decl"}
@@ -817,6 +818,7 @@ local function one(args, fw, sdk)
         if os.isfile(target) then
             os.rm(target)
         end
+        snapshot_pins.pin_record(args.tree, fw, "functions.tsv")
         return
     end
     local ios = ios_text(header_text_recursive(sdk, fw))
@@ -870,6 +872,7 @@ local function one(args, fw, sdk)
         table.insert(lines, (string.gsub(table.concat(cells, "\t"), "\n", " ")))
     end
     emit.file(target, table.concat(lines, "\n") .. "\n")
+    snapshot_pins.pin_record(args.tree, fw, "functions.tsv")
     local statuses = {}
     for status in pairs(counts) do
         table.insert(statuses, status)

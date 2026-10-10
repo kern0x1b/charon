@@ -15,6 +15,7 @@ local releases = import("releases", {anonymous = true})
 local surface = import("surface", {anonymous = true})
 local emit = import("emit", {anonymous = true})
 local transcribe = import("transcribe", {anonymous = true})
+local snapshot_pins = import("snapshot_pins", {anonymous = true})
 
 local SDK26 = path.join(os.getenv("HOME") or "", "Git", "projects", "ios", "charon", ".agent-work", "sdk-26.2", "iPhoneOS26.2.sdk")
 local SDK16 = path.join(os.getenv("HOME") or "", ".xmake", "packages", "i", "iphoneos-sdk", "16.4", "cccc080d0cbe42c2a85b1369aba6e290",
@@ -225,6 +226,7 @@ local function one(args, fw, sdk, sdk16)
         if os.isfile(path.join(snap, "protocols.tsv")) then
             os.rm(path.join(snap, "protocols.tsv"))
         end
+        snapshot_pins.pin_record(args.tree, fw, "protocols.tsv")
         return true
     end
     local items = {}
@@ -247,6 +249,7 @@ local function one(args, fw, sdk, sdk16)
         return false
     end
     emit.file(path.join(snap, "protocols.tsv"), protocols_tsv(result.records))
+    snapshot_pins.pin_record(args.tree, fw, "protocols.tsv")
     for name, body in pairs(result.headers) do
         emit.file(path.join(snap, "Charon" .. name .. "Protocols.h"), ascii_text(body))
     end
