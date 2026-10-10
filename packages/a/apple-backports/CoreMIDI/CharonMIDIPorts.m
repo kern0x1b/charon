@@ -612,9 +612,10 @@ static int charon_pending_scheduled;
 
 // A drain pass delivers at most CHARON_DRAIN_MESSAGES deliveries and runs for at most one millisecond, and then schedules the next
 // pass. Each delivery checks its object (charon_object_check) right before its block is called, with no check carried over from the
-// delivery before it: a dispose that has returned is seen by every check that begins after it. The code does not bound the time
-// between a check and the call that follows it (the check's reply, and the drain thread's scheduling): a dispose that returns in
-// that gap is followed by the call. The gap is measured, not bounded (crutches.md, the window entry; delivery.m).
+// delivery before it. The queue holds destinations only, and for a destination a dispose that has returned is seen by every check
+// that begins after it: measured on macOS 27 (delivery.m, the hold rounds), not shown for any other object. The code does not bound
+// the time between a check and the call that follows it (the check's reply, and the drain thread's scheduling): a dispose that
+// returns in that gap is followed by the call. The gap is measured, not bounded (crutches.md, the window entry; delivery.m).
 #define CHARON_DRAIN_MESSAGES 16
 
 static uint64_t charon_drain_ticks(void)
