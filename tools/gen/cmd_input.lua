@@ -379,10 +379,34 @@ function run(args)
     assert(args.sdk, "input needs --sdk: the iPhoneOS SDK the declarations are read from")
     assert(args.coordination, "input needs --coordination: the corpus folder (the ledgers and the iOS constants table)")
     local targets = args.all and surface.surface_frameworks(args.coordination) or {args.framework}
-    local written, skipped = 0, 0
+    local written, without_ledger = 0, 0
+    -- a framework the inputs cannot read is named and skipped under --all (the oracle's cmd_input_all: "a framework the inputs
+    -- cannot read is named in the scope, not hidden"); a single --framework run fails with the error
+    local unreadable = {}
     for _, fw in ipairs(targets) do
         if surface.has_ledger(args.coordination, surface.ledger_6_1_3(), fw) then
-            local rows, differences, disagreements, conflicting = write_framework(args, fw)
+            local rows, differences, disagreements, conflicting
+            if args.all then
+                local failure = nil
+                try {
+                    function()
+                        rows, differences, disagreements, conflicting = write_framework(args, fw)
+                    end,
+                    catch {
+                        function(e)
+                            failure = e
+                        end
+                    }
+                }
+                if failure then
+                    local first = string.match(tostring(failure), "^[^\n]*") or ""
+                    table.insert(unreadable, string.format("%s (%s)", fw, string.sub(first, 1, 80)))
+                    print(string.format("input %s: skipped: %s", fw, first))
+                    goto continue
+                end
+            else
+                rows, differences, disagreements, conflicting = write_framework(args, fw)
+            end
             written = written + 1
             print(string.format("input %s: %d constants, %d differ from the host (the iOS value wins), %d cache symbols with conflicting values, %d introduced releases differ from the ledger (the IR wins)",
                 fw, rows, #differences, conflicting, #disagreements))
@@ -390,10 +414,16 @@ function run(args)
                 print(string.format("  introduced %s: ledger %s, IR %s", d[1], d[2], d[3]))
             end
         else
-            skipped = skipped + 1
+            without_ledger = without_ledger + 1
         end
+        ::continue::
     end
-    print(string.format("input: %d record(s) written, %d framework(s) without a ledger", written, skipped))
+    if args.all then
+        print(string.format("input --all: %d built, %d skipped (%s), %d without a ledger", written, #unreadable,
+            table.concat(unreadable, ", "), without_ledger))
+    else
+        print(string.format("input: %d record(s) written, %d framework(s) without a ledger", written, without_ledger))
+    end
     -- a run that wrote nothing (a --framework with no ledger) checked nothing, and is not a pass
     return written > 0 and 0 or 1
 end
