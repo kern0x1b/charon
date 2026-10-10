@@ -41,11 +41,13 @@ local SPACE_BYTES = {[9] = true, [10] = true, [11] = true, [12] = true, [13] = t
 -- The keyword that declares a type the 26.2 SDK declares and the 16.4 SDK does not (TYPES26), by the kind of declaration it is.
 local KEYWORD_OF_KIND = {RecordDecl = "struct", EnumDecl = "enum"}
 
--- Whether a name a qualType spells is a macro spelling the type lookup must not see: the oracle's prefix filter (API_, NS_, CF_, __).
-local function macro_spelling(name)
-    return string.sub(name, 1, 4) == "API_" or string.sub(name, 1, 3) == "NS_" or string.sub(name, 1, 3) == "CF_"
-        or string.sub(name, 1, 2) == "__"
-end
+-- The macro spellings a qualType carries: a name the type lookup must not see, because the header writes it as a macro (a
+-- property's availability or refinement macro in front of its type), not as a type. The oracle drops every name with an API_, NS_,
+-- CF_ or __ prefix; this table is what that filter removes from the 89 frameworks, measured (not the prefixes): a probe of names_of
+-- over every framework's wanted protocols (.agent-work/runs/v-gen3c/drops-all.out) found API_AVAILABLE in BrowserEngineKit and
+-- NS_REFINED_FOR_SWIFT in AuthenticationServices, and no other name with those prefixes. A macro spelling the table does not list is
+-- an undeclared name, and the refusal check refuses it by name, so a new one from a later SDK fails loudly rather than being dropped.
+local MACRO_SPELLINGS = {API_AVAILABLE = true, NS_REFINED_FOR_SWIFT = true}
 
 -- The text of a header with its comments blanked (the oracle's source()): each "//" to the end of its line, and each "/*" to the next
 -- "*/", becomes spaces except its newlines, so every offset stays where it was.
@@ -302,7 +304,7 @@ local function names_of(qual)
     text = string.gsub(text, "%f[%w_]id%s*<[^<>]*>", "id")
     local out = {}
     for name in string.gmatch(text, "[%a_][%w_]*") do
-        if not KEYWORDS[name] and not macro_spelling(name) then
+        if not KEYWORDS[name] and not MACRO_SPELLINGS[name] then
             table.insert(out, name)
         end
     end
