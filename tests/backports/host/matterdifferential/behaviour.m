@@ -156,12 +156,28 @@ static void observeSubscribe(int side, NSString *shape, dispatch_queue_t queue, 
     }
 }
 
+enum { StressWorkers = 8, StressRounds = 3000 };
+
 typedef struct {
     __unsafe_unretained id cluster;
     __unsafe_unretained NSString *attribute;
     int rounds;
     int worker;
+    int reads;      // what this worker read back, one per round
+    int unwritten;  // of those, the reads that are not a value some worker wrote
 } Stress;
+
+// A worker writes worker * 100000 + round, for a worker from 1 to StressWorkers and a round below StressRounds. A
+// read that is anything else - nil, a string, a number no worker wrote - came from nowhere the test can name.
+static BOOL writtenByWorker(id value)
+{
+    if (![value isKindOfClass:[NSNumber class]]) {
+        return NO;
+    }
+    long number = [value longValue];
+    long worker = number / 100000, round = number % 100000;
+    return number >= 0 && worker >= 1 && worker <= StressWorkers && round < StressRounds;
+}
 
 static void *stressMain(void *argument)
 {
@@ -174,7 +190,13 @@ static void *stressMain(void *argument)
             @autoreleasepool {
                 id value = @(work->worker * 100000 + round);
                 void (^status)(NSError *) = ^(NSError *error) {};
-                void (^completion)(id, NSError *) = ^(id read, NSError *error) {};
+                // The port's read completes on the calling thread, so the completion is run before the call returns.
+                void (^completion)(id, NSError *) = ^(id read, NSError *error) {
+                    work->reads++;
+                    if (!writtenByWorker(read)) {
+                        work->unwritten++;
+                    }
+                };
                 ((void (*)(id, SEL, id, id))objc_msgSend)(cluster, writer, value, status);
                 ((void (*)(id, SEL, id))objc_msgSend)(cluster, reader, completion);
             }
@@ -250,27 +272,34 @@ int main(int argc, const char *argv[])
                    definesOwn(cls, subscribeParams) ? @"the class itself" : @"its superclass");
             record(side, @"observe.subscribe[WithMinInterval] defined by",
                    definesOwn(cls, subscribeOld) ? @"the class itself" : @"its superclass");
-            // A shape the port's SDKs do not declare for this cluster is not carried, and is not asked of
-            // either side: the system keeps deprecated shapes the port was never given.
-            if ([cluster respondsToSelector:subscribeParams] && [portClass instancesRespondToSelector:subscribeParams]) {
+            // Each side is asked for the shapes IT declares, and the declaration is an assert row: a shape only one
+            // side declares is a DIFFERENT, not a silence. The system keeps deprecated shapes too, so a port that
+            // does not carry one fails here by name.
+            BOOL declaresParams = [cluster respondsToSelector:subscribeParams];
+            record(side, @"assert.subscribe[WithParams] declared", declaresParams ? @"yes" : @"no");
+            if (declaresParams) {
                 observeSubscribe(side, @"WithParams", queue, NULL, ^(void (^established)(void), void (^report)(id, NSError *)) {
                     ((void (*)(id, SEL, id, id, id))objc_msgSend)(cluster, subscribeParams, params, established, report);
                 });
             }
-            if ([cluster respondsToSelector:subscribeOld] && [portClass instancesRespondToSelector:subscribeOld]) {
+            BOOL declaresOld = [cluster respondsToSelector:subscribeOld];
+            record(side, @"assert.subscribe[WithMinInterval] declared", declaresOld ? @"yes" : @"no");
+            if (declaresOld) {
                 observeSubscribe(side, @"WithMinInterval", queue, NULL, ^(void (^established)(void), void (^report)(id, NSError *)) {
                     ((void (*)(id, SEL, id, id, id, id, id))objc_msgSend)(cluster, subscribeOld, @1, @10, params, established, report);
                 });
             }
 
             // The cached read, with a container that has no cache attached: the framework's own "there is
-            // nothing to read this from" answer.
+            // nothing to read this from" answer. It is a class method, and it is given the queue to complete on.
             SEL cached = NSSelectorFromString([NSString stringWithFormat:
                 @"readAttribute%@WithClusterStateCache:endpoint:queue:completion:", attribute]);
-            if ([cls respondsToSelector:cached]) {
+            BOOL declaresCached = [cls respondsToSelector:cached];
+            record(side, @"assert.cachedRead declared", declaresCached ? @"yes" : @"no");
+            if (declaresCached) {
                 __block id cachedValue = @"unset";
                 __block NSError *cachedError = nil;
-                __block int cachedCalls = 0;
+                __block int cachedCalls = 0, cachedOnQueue = 0;
                 dispatch_semaphore_t done = dispatch_semaphore_create(0);
                 MTRClusterStateCacheContainer *container = [[MTRClusterStateCacheContainer alloc] init];
                 void (^completion)(id, NSError *) = ^(id value, NSError *failure) {
@@ -278,6 +307,10 @@ int main(int argc, const char *argv[])
                         cachedValue = value;
                         cachedError = failure;
                         cachedCalls++;
+                        // The queue the completion ran on, as the queue's own specific key says: the one given.
+                        if (dispatch_get_specific(queueKey)) {
+                            cachedOnQueue++;
+                        }
                     }
                     dispatch_semaphore_signal(done);
                 };
@@ -286,11 +319,18 @@ int main(int argc, const char *argv[])
                 record(side, @"assert.cachedRead.completion calls", [NSString stringWithFormat:@"%d", cachedCalls]);
                 record(side, @"assert.cachedRead.value", describeValue(cachedValue));
                 record(side, @"assert.cachedRead.error", describeError(cachedError));
+                record(side, @"assert.cachedRead.completion ran on the given queue",
+                       cachedCalls > 0 && cachedOnQueue == cachedCalls ? @"yes" : @"no");
             }
         }
 
         // What only the port keeps: a stored value (the system keeps none), that a subscribe leaves it
-        // alone, that another instance has its own table, and that a thread storm corrupts nothing.
+        // alone, that another instance has its own table, and that concurrent writes and reads hand back
+        // values that were written. Each check the port's class is expected to run is named below; one that
+        // does not run is a failure, not a silence.
+        // The own.* checks the port's class is expected to run, by name. A check that does not run is a failure.
+        NSMutableArray *expectedOwn = [NSMutableArray array];
+        BOOL stressBroke = NO;
         {
             id cluster = firstOf[1], other = secondOf[1];
             SEL reader = NSSelectorFromString([NSString stringWithFormat:@"readAttribute%@WithCompletion:", attribute]);
@@ -303,12 +343,18 @@ int main(int argc, const char *argv[])
                 ((void (*)(id, SEL, id))objc_msgSend)(who, reader, completion);
                 return got;
             };
-            if (definesOwn(portClass, reader) && definesOwn(portClass, writer)) {
+            // What the PORT class answers, inherited members included: an alias answers its superclass's accessors and
+            // keeps its table there, and its own checks have to run. (definesOwn is for the SYSTEM side, where an
+            // inherited member is the system's own answer.)
+            if ([portClass instancesRespondToSelector:reader] && [portClass instancesRespondToSelector:writer]) {
+                [expectedOwn addObject:@"own.write then read"];
+                [expectedOwn addObject:@"own.other instance reads"];
                 void (^status)(NSError *) = ^(NSError *failure) {};
                 ((void (*)(id, SEL, id, id))objc_msgSend)(cluster, writer, @30, status);
                 id before = readOnce(cluster);
                 record(1, @"own.write then read", describeValue(before));
-                if (definesOwn(portClass, subscribeParams)) {
+                if ([portClass instancesRespondToSelector:subscribeParams]) {
+                    [expectedOwn addObject:@"own.value after subscribe"];
                     MTRSubscribeParams *params = [[MTRSubscribeParams alloc] initWithMinInterval:@1 maxInterval:@10];
                     dispatch_semaphore_t reported = dispatch_semaphore_create(0);
                     ((void (*)(id, SEL, id, id, id))objc_msgSend)(cluster, subscribeParams, params, ^{},
@@ -318,24 +364,27 @@ int main(int argc, const char *argv[])
                     record(1, @"own.value after subscribe", describeValue(after));
                 }
                 record(1, @"own.other instance reads", describeValue(readOnce(other)));
-                // the system's answer for "another instance reads" is a value of nil as well: it keeps none
-                record(0, @"own.other instance reads", @"nil");
-                record(0, @"own.write then read", @"(the system keeps no stored value)");
-                record(0, @"own.value after subscribe", @"(the system keeps no stored value)");
             }
-            if (stress && definesOwn(portClass, reader) && definesOwn(portClass, writer)) {
-                enum { Workers = 8 };
-                pthread_t threads[Workers];
-                Stress work[Workers];
-                for (int index = 0; index < Workers; index++) {
-                    work[index] = (Stress){cluster, attribute, 3000, index + 1};
+            if (stress && [portClass instancesRespondToSelector:reader] && [portClass instancesRespondToSelector:writer]) {
+                [expectedOwn addObject:@"own.stress"];
+                pthread_t threads[StressWorkers];
+                Stress work[StressWorkers];
+                for (int index = 0; index < StressWorkers; index++) {
+                    work[index] = (Stress){cluster, attribute, StressRounds, index + 1, 0, 0};
                     pthread_create(&threads[index], NULL, stressMain, &work[index]);
                 }
-                for (int index = 0; index < Workers; index++) {
+                for (int index = 0; index < StressWorkers; index++) {
                     pthread_join(threads[index], NULL);
                 }
-                record(1, @"own.stress", @"8 threads x 3000 write+read finished");
-                record(0, @"own.stress", @"8 threads x 3000 write+read finished");
+                int reads = 0, unwritten = 0;
+                for (int index = 0; index < StressWorkers; index++) {
+                    reads += work[index].reads;
+                    unwritten += work[index].unwritten;
+                }
+                // Every read must be a value some worker wrote, and every worker must have read back all of its rounds.
+                stressBroke = unwritten > 0 || reads != StressWorkers * StressRounds;
+                record(1, @"own.stress", [NSString stringWithFormat:@"%d threads x %d write+read: %d reads, %d not a value a worker wrote",
+                                          StressWorkers, StressRounds, reads, unwritten]);
             }
         }
 
@@ -369,6 +418,17 @@ int main(int argc, const char *argv[])
         if (otherInstance && ![otherInstance isEqualToString:@"nil"]) {
             printf("DIFFERENT\town.other instance reads: %s - one instance's table is another's\n",
                    otherInstance.UTF8String);
+            failures++;
+        }
+        // An own.* check the port's class is expected to run, and did not, is a failure: nothing else says it ran.
+        for (NSString *key in expectedOwn) {
+            if (!sides[1][key]) {
+                printf("MISSING\t%s: the check did not run on the port\n", key.UTF8String);
+                failures++;
+            }
+        }
+        if (stressBroke) {
+            printf("DIFFERENT\town.stress: a read was not a value a worker wrote, or a worker lost a round\n");
             failures++;
         }
         printf("checks: %lu, failed: %d\n", (unsigned long)keys.count, failures);

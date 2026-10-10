@@ -95,10 +95,6 @@ int main(int argc, const char *argv[])
             [systemMembers addObject:NSStringFromSelector(method_getName(methods[i]))];
         }
         free(methods);
-        // The port adds one storage helper of its own, an instance method that makes and returns the
-        // object's own table, which the system has no reason to have; it is removed here so the comparison
-        // is about the cluster's members and not the port's bookkeeping.
-        [portMembers removeObject:@"charon_port_values"];
         printf("image\tport class %s\t%s\n", PORT_CLUSTER, portImage ? portImage : "(none)");
         printf("image\tsystem class %s\t%s\n", real.UTF8String,
                image_of(class_getClassMethod(systemClass, @selector(description))));
@@ -160,6 +156,45 @@ int main(int argc, const char *argv[])
         }
         for (NSString *name in [onlySystem.allObjects sortedArrayUsingSelector:@selector(compare:)]) {
             printf("member\tnot carried\t%s\n", name.UTF8String);
+        }
+
+        // THE DECLARED SET: the instance selectors SDK 26.2's own headers declare for this class, read by the
+        // compiler's AST (run.sh writes CHARON_DECLARED from -ast-dump, over the class's own @interface AND its
+        // categories, Deprecated ones included). It is read independently of the generator's reader, so it
+        // cannot agree with the generator by construction. A declared selector the port does not answer is RED,
+        // whether the system answers it or not, and the counts are printed per class.
+        NSMutableSet *declared = [NSMutableSet set];
+        const char *declaredPath = getenv("CHARON_DECLARED");
+        if (!declaredPath) {
+            printf("declared\tRED not read: CHARON_DECLARED is unset, so nothing is checked against the SDK\n");
+            failures++;
+        } else {
+            NSString *text = [NSString stringWithContentsOfFile:@(declaredPath) encoding:NSUTF8StringEncoding error:NULL];
+            for (NSString *line in [text componentsSeparatedByString:@"\n"]) {
+                NSArray *cells = [line componentsSeparatedByString:@"\t"];
+                if (cells.count == 2 && [cells[0] isEqualToString:real]) {
+                    [declared addObject:cells[1]];
+                }
+            }
+            // The designated and new-object selectors are NSObject's, declared here unavailable, and no port
+            // class is asked for them (the same rule the contract applies).
+            [declared removeObject:@"init"];
+            [declared removeObject:@"new"];
+            NSMutableArray *missing = [NSMutableArray array];
+            for (NSString *name in declared) {
+                if (![portClass instancesRespondToSelector:NSSelectorFromString(name)]) {
+                    [missing addObject:name];
+                }
+            }
+            printf("declared by SDK 26.2\t%lu\n", (unsigned long)declared.count);
+            printf("answered by the port\t%lu\n", (unsigned long)(declared.count - missing.count));
+            printf("declared, not answered by the port\t%lu\n", (unsigned long)missing.count);
+            for (NSString *name in [missing sortedArrayUsingSelector:@selector(compare:)]) {
+                printf("member\tRED declared by SDK 26.2, not answered by the port (the system %s it)\t%s\n",
+                       [systemClass instancesRespondToSelector:NSSelectorFromString(name)] ? "answers" : "does not answer",
+                       name.UTF8String);
+                failures++;
+            }
         }
 
         // The round trip, on the port's side only and through the selector the header declares: a value

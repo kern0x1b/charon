@@ -2,9 +2,11 @@
 # matterdifferential/behaviour.sh - what the port's Matter clusters DO when there is nothing to reach, against
 # the system's own classes, on this host. The questions and the oracle are in behaviour.m.
 #
-# One cluster at a time, generated with the SAME arguments the committed tree is generated with (the SDK 26.2
-# declarations, the library's own iPhoneOS 16.4 as the SDK it builds against) and then required to be the
-# committed file byte for byte, so what is compiled here is the committed object and not a lookalike. It is
+# One cluster at a time, generated with the committed tree's flags (the SDK 26.2 declarations, the library's own
+# iPhoneOS 16.4 as the SDK it builds against, --params and the host measurements). The one flag left out is
+# --generic-clusters, which adds the 143 MTRCluster* classes this run does not compile. Each cluster's object,
+# and the queue header it may import, is then required to be the committed file byte for byte, so what is
+# compiled here is the committed object and not a lookalike; a flag that changed one of them fails the run. It is
 # compiled for the host with the class name aliased onto CharonPort<Name> and linked with behaviour.m into one
 # program that also holds the system's class. CharonMatterTypes.h is replaced by an empty header: it declares
 # what the library's SDK lacks, and the host's SDK lacks none of it. The second run is the same program built
@@ -72,7 +74,8 @@ for pair in $clusters; do
     # The generator's status is read: a run that fails (its compile check against the library's SDK and triple, or
     # any other check it makes) has written objects this comparison must not stand on.
     if ! python3 "$root/tools/matter-generate.py" --sdk "$sdk26" --out "$work/port" --contracts "$work/contracts" \
-        --sdk16 "$sdk16" --shared-types --classes-from "$work/classes.txt" > "$work/generate.log" 2>&1; then
+        --sdk16 "$sdk16" --shared-types --params --host-measurements "$here/../matter/host-measurements.tsv" \
+        --classes-from "$work/classes.txt" > "$work/generate.log" 2>&1; then
         echo "behaviour: the generator failed for $cluster; its log says why: $work/generate.log" >&2
         tail -5 "$work/generate.log" >&2
         exit 2
@@ -85,6 +88,19 @@ for pair in $clusters; do
             exit 1
         fi
     done
+    # The queue header holds one block per superclass the generator was asked for, and a run asks for fewer than the
+    # tree does (the full tree's header also has the two Basic aliases' superclasses). So each block this run wrote
+    # must be the committed block, byte for byte, and a block it did not write is not compared.
+    if [ -f "$work/port/CharonMatterQueueStorage.h" ]; then
+        for each in $supers; do
+            want=$(sed -n "/^@interface $each () {/,/^@end/p" "$work/port/CharonMatterQueueStorage.h")
+            have=$(sed -n "/^@interface $each () {/,/^@end/p" "$root/packages/a/apple-backports/Matter/CharonMatterQueueStorage.h")
+            if [ -z "$want" ] || [ "$want" != "$have" ]; then
+                echo "behaviour: DIFFERENT - the queue header's block for $each is not the committed one" >&2
+                exit 1
+            fi
+        done
+    fi
     printf '// the host SDK declares every class this header would declare for the library SDK\n' \
         > "$work/port/CharonMatterTypes.h"
     for mode in plain tsan; do

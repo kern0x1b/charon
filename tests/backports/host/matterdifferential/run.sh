@@ -13,7 +13,7 @@
 # SETS, and that a plain-data attribute round-trips on the port's side. No command, cached read,
 # commissioning or network call is made on either side - those need a fabric and a node.
 #
-# Usage: sh tests/backports/host/matterdifferential/run.sh
+# Usage: MATTER_SDK_262=<iPhoneOS 26.2 SDK> sh tests/backports/host/matterdifferential/run.sh
 #        BUILD=<dir>          where the programs and their output go
 #        CLUSTER_LIST=<file>  the classes to check, one a line
 set -eu
@@ -89,6 +89,36 @@ fi
 # summary printed 144 against 141 DIFFERENT lines and neither number meant what it said. The summary is
 # now counted back out of the log and the two are asserted equal, so a summary that disagrees with its
 # own lines fails the run instead of being read as a verdict.
+# The DECLARED set: the instance selectors each class declares in SDK 26.2's own headers, its @interface AND its
+# categories, read by the compiler's AST. cases.m holds the port to it. It is not read by the generator's reader:
+# a reader that agreed with the generator by construction could not find a declaration the generator did not read.
+sdk262=${MATTER_SDK_262:-}
+if [ -z "$sdk262" ] || [ ! -f "$sdk262/System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h" ]; then
+    echo "MATTER_SDK_262 must name the iPhoneOS 26.2 SDK: the declared set is read from its Matter headers" >&2
+    exit 2
+fi
+headers="$sdk262/System/Library/Frameworks/Matter.framework/Headers"
+printf '#import "%s/MTRBaseClusters.h"\n#import "%s/MTRClusters.h"\n' "$headers" "$headers" > "$build/declared.m"
+xcrun clang -fsyntax-only -fobjc-arc -x objective-c -target arm64-apple-ios16.0 -isysroot "$sdk262" \
+    -Xclang -ast-dump "$build/declared.m" > "$build/declared.ast" 2> "$build/declared.err"
+# A method line is a child of a top-level @interface or @category: `| |-ObjCMethodDecl ... - selector 'type'`. A
+# category's class is named by its child `ObjCInterface 'Name'`, and a top-level line of any other kind ends the
+# class. Instance methods only (`- `), and the selector is the token after the dash.
+awk '
+/^[|`]-ObjCInterfaceDecl/ { kind = "iface"; cls = $NF; next }
+/^[|`]-ObjCCategoryDecl/  { kind = "cat"; cls = ""; next }
+/^[|`]-/                  { kind = ""; cls = ""; next }
+kind == "cat" && cls == "" && /ObjCInterface 0x/ { split($0, q, "\047"); cls = q[2]; next }
+/^(\| |  )[|`]-ObjCMethodDecl/ && cls != "" && / - / {
+    split($0, parts, " - "); split(parts[2], rest, " "); print cls "\t" rest[1]
+}' "$build/declared.ast" | sort -u > "$build/declared.tsv"
+declared_rows=$(awk 'END { print NR }' "$build/declared.tsv")
+if [ "$declared_rows" -lt 1000 ]; then
+    echo "the declared set has $declared_rows rows: the AST did not read the SDK's Matter classes (see $build/declared.err)" >&2
+    exit 1
+fi
+echo "declared set: $declared_rows (class, selector) rows read from $headers"
+
 mkdir -p "$build"
 verdicts="$build/verdicts.txt"
 : > "$verdicts"
@@ -105,10 +135,27 @@ for cluster in $(cat "$list"); do
         no_source=$((no_source + 1))
         continue
     fi
+    # Built from a COPY, as behaviour.sh builds it: the object's own CharonMatterTypes.h is replaced by an empty header,
+    # because the host SDK declares every class that header would, and an alias that imports the real one is a
+    # duplicate interface. A superclass the object reaches (an alias's, through CharonMatterQueueStorage.h) is built
+    # with it and aliased the same way, or the link has no offset to resolve.
+    work="$build/src-$cluster"
+    mkdir -p "$work"
+    cp "$source" "$work/"
+    [ -f "$source_dir/CharonMatterQueueStorage.h" ] && cp "$source_dir/CharonMatterQueueStorage.h" "$work/"
+    printf '// the host SDK declares every class this header would declare for the library SDK\n' > "$work/CharonMatterTypes.h"
+    aliases="-D$cluster=CharonPort$cluster"
+    sources="$work/CharonMatter$cluster.m"
+    for each in $(sed -n 's/.*((\([A-Za-z0-9_]*\) \*)self)->_charon_queue.*/\1/p' "$source" | sort -u); do
+        cp "$source_dir/CharonMatter$each.m" "$work/"
+        aliases="$aliases -D$each=CharonPort$each"
+        sources="$sources $work/CharonMatter$each.m"
+    done
+    # shellcheck disable=SC2086
     if ! xcrun clang -target arm64-apple-macos26.0 -isysroot "$sdk" -fobjc-arc -O0 -Wall \
         -Wno-nonnull -Wno-objc-protocol-property-synthesis -Wno-incomplete-implementation \
-        "-D$cluster=CharonPort$cluster" "-DCHARN_PORT_CLUSTER=\"CharonPort$cluster\"" \
-        "$here/cases.m" "$source" -framework Foundation -framework Matter \
+        $aliases "-DCHARN_PORT_CLUSTER=\"CharonPort$cluster\"" -I"$work" \
+        "$here/cases.m" $sources -framework Foundation -framework Matter \
         -o "$build/$name" 2> "$build/$name.log"; then
         echo "differential did not build for $cluster:" >&2
         tail -10 "$build/$name.log" >&2
@@ -117,7 +164,8 @@ for cluster in $(cat "$list"); do
         continue
     fi
     checked=$((checked + 1))
-    if ! CHARON_CONTRACT="$contracts/CharonMatter$cluster.m.contract" "$build/$name" "$cluster" > "$build/$name.out" 2>&1; then
+    if ! CHARON_DECLARED="$build/declared.tsv" CHARON_CONTRACT="$contracts/CharonMatter$cluster.m.contract" \
+        "$build/$name" "$cluster" > "$build/$name.out" 2>&1; then
         differing=$((differing + 1))
         echo "different $cluster" >> "$verdicts"
         echo "DIFFERENT  $cluster"
