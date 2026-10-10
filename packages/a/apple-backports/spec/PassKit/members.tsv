@@ -80,7 +80,7 @@ PKStoredValuePassBalanceTypeLoyaltyPoints	7f782b3a855e6d4d
 -[PKAddIdentityDocumentConfiguration metadata]	e42114e12c6b12f8
 +[PKAddPassButton addPassButtonWithStyle:]	f5fc7c3acfd70d3b
 -[PKAddPassButton initWithAddPassButtonStyle:]	f61d03fba1dce150
--[PKAddPassButton UI_APPEARANCE_SELECTOR]	de0ed11fe8bcbcfe
+-[PKAddPassButton addPassButtonStyle]	b87966343a8e1af3
 -[PKAddPassesViewController initWithPass:]	afbf3369aa47a290
 -[PKAddPassesViewController initWithPasses:]	46236dd6a7d846bf
 -[PKAddPassesViewController initWithIssuerData:signature:error:]	1c6b71dba586151a
