@@ -82,6 +82,21 @@ xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations \
     "$here/staleness.m" "$CORE/CharonMIDIPorts.m" "$build/CharonCoreMIDI.o" -framework Foundation -framework CoreMIDI -o "$build/staleness"
 "$build/staleness" > "$build/staleness.log" 2>&1 && stale=0 || stale=$?
 cat "$build/staleness.log"
+# The room MIDIEventPacketSysexBytesForGroup asks for and the status of the UMP endpoints' client (bounds.m): the release's calls the
+# two files make are stand-ins, and so are the classes' names, as for the differential.
+xcrun clang $sanitize -c -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" $renames \
+    -DCFDataCreateMutable=charon_test_CFDataCreateMutable "$CORE/MIDISysex17.m" -o "$build/bounds-sysex.o"
+xcrun clang $sanitize -c -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" $renames \
+    -DMIDIClientCreate=charon_test_MIDIClientCreate -DNSLog=charon_test_NSLog "$CORE/MIDIUMP18.m" -o "$build/bounds-ump.o"
+xcrun clang $sanitize -c -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" \
+    -DMIDIDestinationCreate=charon_test_MIDIDestinationCreate -DMIDISourceCreate=charon_test_MIDISourceCreate \
+    -DMIDIObjectGetIntegerProperty=charon_test_MIDIObjectGetIntegerProperty \
+    -DMIDIObjectSetIntegerProperty=charon_test_MIDIObjectSetIntegerProperty "$CORE/CharonMIDIPorts.m" -o "$build/bounds-ports.o"
+xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" $renames "$here/bounds.m" "$build/bounds-sysex.o" \
+    "$build/bounds-ump.o" "$build/bounds-ports.o" "$build/CharonCoreMIDI.o" "$build/MIDICI14.m.o" "$build/MIDICI12.m.o" \
+    -framework Foundation -framework CoreMIDI -o "$build/bounds"
+"$build/bounds" > "$build/bounds.log" 2>&1 && bounded=0 || bounded=$?
+cat "$build/bounds.log"
 # The allocations and property reads of the hot paths (allocations.m): the library's own malloc family is renamed to counting
 # wrappers in the two files that make the paths, and the release's calls the paths make are stand-ins.
 counted="-Dmalloc=charon_count_malloc -Dcalloc=charon_count_calloc -Drealloc=charon_count_realloc"
@@ -96,7 +111,7 @@ xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" "$
     "$build/counted-core.o" -framework Foundation -framework CoreMIDI -o "$build/allocations"
 "$build/allocations" > "$build/allocations.log" 2>&1 && counted_result=0 || counted_result=$?
 cat "$build/allocations.log"
-for step in "$owner" "$entity" "$stale" "$counted_result"; do
+for step in "$owner" "$entity" "$stale" "$bounded" "$counted_result"; do
     if [ "$result" -eq 0 ]; then result=$step; fi
 done
 exit $result

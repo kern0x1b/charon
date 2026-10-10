@@ -5,6 +5,7 @@
 // packet's, or a word that is not SysEx, answers paramErr and no data.
 #import <CoreMIDI/CoreMIDI.h>
 
+#include <limits.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -19,8 +20,21 @@ OSStatus MIDIEventPacketSysexBytesForGroup(const MIDIEventPacket *pkt, UInt8 gro
     UInt32 first = pkt->words[0];
     if ((first >> 28) != 0x3 || ((first >> 24) & 0x0F) != groupIndex)
         return charon_paramErr;
-    // Each two-word SysEx7 part holds at most six data bytes, with at most an F0 before and an F7 after: eight bytes.
-    CFIndex capacity = (CFIndex)(pkt->wordCount / 2) * 8;
+    // Each two-word SysEx7 part holds at most six data bytes, with at most an F0 before and an F7 after: eight bytes. The parts
+    // are counted first, and the room is made for the parts that are there (the loop below stops at the first word that is not
+    // one), so a count the packet claims but does not hold asks for nothing, and the product is checked against the size a
+    // CFIndex holds (a signed 32 bits on armv7).
+    size_t parts = 0;
+    for (size_t i = 0; i + 1 < pkt->wordCount; i += 2) {
+        UInt32 word = pkt->words[i];
+        if ((word >> 28) != 0x3 || ((word >> 24) & 0x0F) != groupIndex)
+            break;
+        parts++;
+    }
+    size_t room = 0;
+    if (!charon_size_mul(&room, parts, 8) || room > (size_t)LONG_MAX)
+        return charon_memFullErr;
+    CFIndex capacity = (CFIndex)room;
     CFMutableDataRef data = CFDataCreateMutable(kCFAllocatorDefault, capacity);
     if (!data)
         return charon_memFullErr;

@@ -22,6 +22,7 @@ int charon_roundtrip_run(void);
 // built with CHARCOREMIDI_PROBE=1 (a separate run: the round trip's own run must end within the emulator's time budget).
 #ifdef CHARON_6_1_3_PROBE
 #include "../../../host/coremidi/oracle/stamp.h"
+#include "../../../host/coremidi/oracle/disposewait.h"
 
 static void charon_probe_read(const MIDIPacketList *packets, void *readRefCon, void *srcConnRefCon)
 {
@@ -307,6 +308,7 @@ static void charon_probe_wrap_add(void)
     charon_probe_objects();
     charon_probe_connection();
     charon_stamp_probe();
+    charon_dispose_wait_probe();
 #endif
     int failures = charon_roundtrip_run();
     printf("application exit: %d\n", failures);

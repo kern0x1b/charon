@@ -16,15 +16,30 @@
 
 #include <pthread.h>
 
-// One MIDI client for the endpoints this file makes, made on first use.
-static MIDIClientRef charon_client(void)
+// One MIDI client for the endpoints this file makes, made on first use. The release's status is returned: a client the release
+// refused is not remembered as a client, so the next endpoint asks again, and the refusal is written for each different status
+// (an endpoint that cannot be made says why).
+static MIDIClientRef charon_client(OSStatus *outStatus)
 {
     static MIDIClientRef client = 0;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        MIDIClientCreate(CFSTR("charon-ump"), NULL, NULL, &client);
-    });
-    return client;
+    static OSStatus lastRefusal = noErr;
+    static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
+    OSStatus status = noErr;
+    pthread_mutex_lock(&lock);
+    if (client == 0) {
+        MIDIClientRef made = 0;
+        status = MIDIClientCreate(CFSTR("charon-ump"), NULL, NULL, &made);
+        if (status == noErr) {
+            client = made;
+        } else if (status != lastRefusal) {
+            lastRefusal = status;
+            NSLog(@"charon: the release would not make the MIDI client of the UMP endpoints (status %d); an endpoint cannot be made", (int)status);
+        }
+    }
+    MIDIClientRef result = client;
+    pthread_mutex_unlock(&lock);
+    *outStatus = status;
+    return result;
 }
 
 // The endpoints a client made, in the order they were made; the manager lists them, enabled or not.
@@ -227,10 +242,14 @@ static NSMutableArray *charon_endpoints(void)
     // The endpoint's two ends are the library's own protocol endpoints; with the release refusing a virtual endpoint
     // (facts/CoreMIDI/CoreMIDI.md) they cannot be made, and the initialiser answers nil.
     MIDIEndpointRef destination = 0, source = 0;
-    OSStatus status = CharonMIDIDestination(charon_client(), (__bridge CFStringRef)name, MIDIProtocol, &destination, _callback);
+    OSStatus status = noErr;
+    MIDIClientRef client = charon_client(&status);
     if (status != noErr)
         return nil;
-    status = CharonMIDISource(charon_client(), (__bridge CFStringRef)name, MIDIProtocol, &source);
+    status = CharonMIDIDestination(client, (__bridge CFStringRef)name, MIDIProtocol, &destination, _callback);
+    if (status != noErr)
+        return nil;
+    status = CharonMIDISource(client, (__bridge CFStringRef)name, MIDIProtocol, &source);
     if (status != noErr) {
         if (MIDIEndpointDispose(destination) != noErr)
             NSLog(@"charon: the destination of a UMP endpoint whose source was refused could not be disposed");
