@@ -1,3 +1,3 @@
-kind	api	cls	key	introduced	type	availability	hash	value_status	value	host_value	value_source	owned	tbd	shape	measured	declhash
-constant	RPApplicationInfoBundleIdentifierKey	-	RPApplicationInfoBundleIdentifierKey	11.2	NSString *const	API_AVAILABLE(ios(11.2), macos(11.0)) API_UNAVAILABLE(tvos)	90a02e074dd980ef	found	RPApplicationInfoBundleIdentifier	RPApplicationInfoBundleIdentifier	ios-26.2-cache	-	exported	ns	-	0b959c541203e4db
-constant	RPVideoSampleOrientationKey	-	RPVideoSampleOrientationKey	11.0	NSString *const	API_AVAILABLE(ios(11.0), tvos(11.0), macos(11.0))	28ca517ff21b996a	found	RPSampleBufferVideoOrientation	RPSampleBufferVideoOrientation	ios-26.2-cache	-	exported	ns	-	9101e566c394f716
+kind	api	cls	key	introduced	type	availability	hash	value_status	value	host_value	value_source	owned	tbd	shape	measured
+constant	RPApplicationInfoBundleIdentifierKey	-	RPApplicationInfoBundleIdentifierKey	11.2	NSString * const	API_AVAILABLE(ios(11.2), macos(11.0)) API_UNAVAILABLE(tvos)	09d121a8f92ca21b	found	RPApplicationInfoBundleIdentifier	RPApplicationInfoBundleIdentifier	ios-26.2-cache	-	exported	ns	-
+constant	RPVideoSampleOrientationKey	-	RPVideoSampleOrientationKey	11.0	NSString * const	API_AVAILABLE(ios(11.0), tvos(11.0), macos(11.0))	e61f559804c4232a	found	RPSampleBufferVideoOrientation	RPSampleBufferVideoOrientation	ios-26.2-cache	-	exported	ns	-
