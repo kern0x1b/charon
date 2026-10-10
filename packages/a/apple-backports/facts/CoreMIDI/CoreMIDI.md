@@ -59,8 +59,10 @@ Both string constants are the values macOS CoreMIDI gives them, read from the ho
   because it covers the objects the notification does not, and a second channel for the destinations and sources would only
   bring the release of a block forward to the moment of the dispose, which needs a client of the library's own and a running
   main run loop; neither is needed for the sweep.
-- The owned row also keeps the UniqueID its object had when it was made, so a reference the release gives to a new object after
-  a dispose is not taken for the old one (CharonMIDIPorts.m, charon_row_stale).
+- The owned row also carries the stamp the library wrote on its object when it took it, so a reference the release gives to a
+  new object after a dispose is not taken for the old one (CharonMIDIPorts.m, charon_object_check; "Which identity" below). The
+  UniqueID is not part of a row: it is the creator's to set (MIDIServices.h, kMIDIPropertyUniqueID), and an application that sets
+  it on its own destination has the same live object.
 - The library learns of a dispose only by the read above, when it makes another object: the release gives it no call for a
   dispose, and the notification above goes to a client's notify proc, not to the library.
 
@@ -98,3 +100,36 @@ question. On macOS a command-line tool creates virtual endpoints (oracle/*.m), a
 
 The translation rules and every measurement behind them are in facts/CoreMIDI/Translation.md; the event list rules are in
 facts/CoreMIDI/EventList.md. The host differential that holds the library to macOS is `tests/backports/host/coremidi/run.sh`.
+
+## Which identity an owned row uses (decision, 2026-10-10; oracle/stamp.h, oracle/stamp-macos.txt)
+
+A row must tell its object from a reference the release gave to a new object, without taking an object whose creator changed
+its UniqueID for a new one (the first rule did: it freed the port and block of a live destination whose application had set
+its UniqueID, while the release still held them). Chosen: the library writes a private integer under its own key
+(`charon.owner`, CHARON_OWNER_KEY) when it takes an object, and a row is the same object while the key reads back the value.
+
+Measured with the same program (oracle/stamp.h) on macOS 27.0.1 (oracle/stamp-macos.txt) and on the emulated 6.1.3 (run folder
+of the band, app-stamp.out):
+
+- Client, input port, output port, destination and source all accept the write (status 0), read it back, and list the key in
+  MIDIObjectGetProperties. Before the write the read is -10835 on every kind, after the dispose -50 on every kind.
+- A destination or source whose creator then sets its UniqueID (status 0, the UniqueID reads the new value) keeps the stamp.
+- Churn: 300 destinations, 300 sources, 300 input ports and 100 clients made and disposed, with a few kept alive across it: no
+  reference was seen again and every reference was above the one before (macOS and 6.1.3 alike). A reuse was never observed;
+  the stamp is for the case that cannot be excluded, and its failure mode (an in-process delivery into the block of a destination
+  that is another object now) is a delivery into the application's freed context.
+- Cost: one write per owned object. The release announces the write to the clients of the process as one property change
+  (macOS: object type 3 and 2 for a destination and a source, -1 for ports and clients, property name `charon.owner`).
+
+Alternatives, and why each lost:
+
+- The UniqueID read at the creation: an application may set it (documented as the creator's job), and the rule then freed a
+  live object's port. It was the rule of the second round (review r2 N11 proposed it; review r3 retracted it).
+- paramErr alone: simple, and free of the write and the notification, but a reference that was given to a live new object reads
+  noErr, so the old row would be kept and the new object's lists delivered to the old block. It cannot detect the one case the
+  identity exists for.
+- The removal notifications (measured above on macOS and 6.1.3): they name a destination, a source and an entity, never a port or a
+  client, and they go to a client's notify proc on that client's run loop; the library would need a client of its own and a thread
+  running a loop, and would still not cover the objects whose blocks it holds most often.
+- Intercepting the library's own dispose entries: the entries are the release's exports (MIDIEndpointDispose, MIDIPortDispose,
+  MIDIClientDispose); the port cannot interpose them (facts/VideoToolbox/PixelRotationSession.md).

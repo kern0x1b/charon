@@ -26,6 +26,12 @@ enum {
 // that set it.
 #define CHARON_PROTOCOL_KEY CFSTR("protocol")
 
+// The library's own mark on every object it takes (CharonMIDIPorts.m): an integer written under this key when the object is
+// taken, and read back to tell the object from a reference the release gave to a new one (the new object has no such key, or
+// another value). The key is the library's, so an application that sets the object's UniqueID (the creator's job, documented
+// at kMIDIPropertyUniqueID) cannot disturb it.
+#define CHARON_OWNER_KEY CFSTR("charon.owner")
+
 // Sizes are summed and multiplied only through these, and only after a check that the result is held by size_t: on armv7
 // size_t is 32 bits, so a count from a caller can wrap a plain sum. Each returns 0 (and leaves the value unchanged) when the
 // result would not fit, and the caller refuses the work instead of allocating less than it writes.

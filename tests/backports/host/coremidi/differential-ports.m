@@ -195,6 +195,32 @@ int charon_ports_run(int *checks)
         int releaseGot = releaseSent == noErr && charon_wait(gDestSignal);
         charon_report(checks, &failures, "ports: the release's own 2.0 destination gets the same 0x1234 (the measured answer)",
                       releaseGot && gDestCount == 2 && charon_same_words(&gDest[gDestCount - 1], words, 2));
+
+        // The creator of a virtual destination may set its UniqueID (MIDIServices.h, kMIDIPropertyUniqueID: the property is
+        // the creator's to set, to keep an identity across launches). The destination is the same object after that, so the
+        // library keeps its port: objects made afterwards sweep the owned rows, and a 2.0 list sent to the destination must
+        // still arrive as it was sent (a freed row would send it down the release's 1.0 route, with the velocity cut to
+        // 0x1200, and its block and port would be freed under the release).
+        OSStatus setStatus = MIDIObjectSetIntegerProperty(dest, kMIDIPropertyUniqueID, 0x2A2A2A2A);
+        SInt32 readBack = 0;
+        MIDIObjectGetIntegerProperty(dest, kMIDIPropertyUniqueID, &readBack);
+        MIDIEndpointRef extraDest = 0;
+        MIDIPortRef extraPort = 0;
+        OSStatus extraDestStatus = CharonMIDIDestination(client, CFSTR("charon-dest-extra"), kMIDIProtocol_2_0, &extraDest, NULL);
+        OSStatus extraPortStatus = CharonMIDIInputPort(client, CFSTR("charon-in-extra"), kMIDIProtocol_2_0, &extraPort, NULL);
+        charon_report(checks, &failures, "ports: the creator set the UniqueID of its library destination, and more objects were made",
+                      setStatus == noErr && readBack == 0x2A2A2A2A && extraDestStatus == noErr && extraPortStatus == noErr);
+        int before = gDestCount;
+        OSStatus setSent = CharonMIDISend(outPort, dest, list);
+        int setGot = setSent == noErr && charon_wait(gDestSignal);
+        charon_report(checks, &failures, "ports: after the creator set its UniqueID, a 2.0 velocity of 0x1234 still arrives as sent",
+                      setGot && gDestCount == before + 1 && charon_same_words(&gDest[gDestCount - 1], words, 2));
+        Boolean setInProcess = CharonMIDIDeliverInProcess(dest, words, 2);
+        int setDelivered = setInProcess && charon_wait(gDestSignal);
+        charon_report(checks, &failures, "ports: and the in-process delivery still reaches its block",
+                      setDelivered && gDestCount == before + 2 && charon_same_words(&gDest[gDestCount - 1], words, 2));
+        if (extraDestStatus == noErr) MIDIEndpointDispose(extraDest);
+        if (extraPortStatus == noErr) MIDIPortDispose(extraPort);
     }
 
 

@@ -58,15 +58,17 @@ static pthread_mutex_t charon_lock = PTHREAD_MUTEX_INITIALIZER;
 // deliver to the destination itself. The release does not tell the library that an object was disposed, so the rows are swept
 // whenever a new one is made. An object the release no longer knows answers paramErr to a UniqueID read (a destination, a
 // source, an input port and a client: oracle/removal-notify-macos.txt on macOS, and the 6.1.3 probe of
-// tests/backports/emulate/coremidi/app/main.m). A row that has a UniqueID also goes stale when the reference answers a
-// different one: the release may give a disposed reference to a new object.
+// tests/backports/emulate/coremidi/app/main.m). The release may give a disposed reference to a new object, so each row also
+// carries the stamp the library wrote on the object (CHARON_OWNER_KEY) when it took it: a live object that answers another
+// stamp, or none, is a reference that was given again. The stamp is the library's own key, so what an application does to the
+// object's UniqueID (the creator's to set) does not change the row.
 typedef struct charon_owned {
     MIDIObjectRef object;
     int destination;
     charon_port *port;
     void *refCon;
-    int hasUniqueID;
-    SInt32 uniqueID;
+    int stamped;
+    SInt32 stamp;
 } charon_owned;
 static charon_owned *charon_owned_rows;
 static size_t charon_owned_count;
@@ -188,14 +190,34 @@ static int charon_gone(MIDIObjectRef object)
     return MIDIObjectGetIntegerProperty(object, kMIDIPropertyUniqueID, &uniqueID) == charon_paramErr;
 }
 
-// Whether an owned row is stale: its object is gone, or its reference answers a different UniqueID than the object had.
+typedef enum {
+    charon_object_live,
+    charon_object_gone,
+    charon_object_replaced
+} charon_object_state;
+
+// What a reference answers now, for the object that was taken with the given stamp (stamped is 0 when the stamp could not be
+// written). paramErr is an object the release no longer knows. For a stamped object the stamp read back is the evidence of
+// identity: noErr with the same value is the object; noErr with another value, or kMIDIUnknownProperty on a live object, is a
+// reference that was given to a new object. Any other status (the server not answering, say) is no evidence: the object is
+// kept, because freeing the port of a live object leaves the release calling into freed memory.
+static charon_object_state charon_object_check(MIDIObjectRef object, int stamped, SInt32 stamp)
+{
+    SInt32 value = 0;
+    OSStatus status = MIDIObjectGetIntegerProperty(object, CHARON_OWNER_KEY, &value);
+    if (status == charon_paramErr)
+        return charon_object_gone;
+    if (!stamped)
+        return charon_object_live;
+    if (status == noErr)
+        return value == stamp ? charon_object_live : charon_object_replaced;
+    return status == kMIDIUnknownProperty ? charon_object_replaced : charon_object_live;
+}
+
+// Whether an owned row is stale: its object is gone, or its reference now belongs to another object.
 static int charon_row_stale(const charon_owned *row)
 {
-    SInt32 uniqueID = 0;
-    OSStatus status = MIDIObjectGetIntegerProperty(row->object, kMIDIPropertyUniqueID, &uniqueID);
-    if (status == charon_paramErr)
-        return 1;
-    return row->hasUniqueID && (status != noErr || uniqueID != row->uniqueID);
+    return charon_object_check(row->object, row->stamped, row->stamp) != charon_object_live;
 }
 
 // Frees what an owned row holds: the port and its block, or the retained block alone.
@@ -245,9 +267,10 @@ static void charon_own(MIDIObjectRef object, int destination, charon_port *port,
     row.destination = destination;
     row.port = port;
     row.refCon = refCon;
-    SInt32 uniqueID = 0;
-    row.hasUniqueID = MIDIObjectGetIntegerProperty(object, kMIDIPropertyUniqueID, &uniqueID) == noErr;
-    row.uniqueID = uniqueID;
+    // The stamp is a value of this process's own choosing: a reused reference may carry another library instance's stamp, and a
+    // random value makes a coincidence a 2^-32 event.
+    row.stamp = (SInt32)arc4random();
+    row.stamped = MIDIObjectSetIntegerProperty(object, CHARON_OWNER_KEY, row.stamp) == noErr;
     pthread_mutex_lock(&charon_owned_lock);
     charon_sweep_owned();
     if (charon_owned_count == charon_owned_capacity) {
@@ -280,13 +303,12 @@ static charon_ownership charon_destination_state(MIDIEndpointRef endpoint, MIDIR
         charon_owned *row = &charon_owned_rows[i];
         if (!row->destination || row->object != endpoint || !row->port)
             continue;
-        SInt32 uniqueID = 0;
-        OSStatus status = MIDIObjectGetIntegerProperty(endpoint, kMIDIPropertyUniqueID, &uniqueID);
         *block = (__bridge MIDIReceiveBlock)row->port->block;
         *protocol = row->port->protocol;
-        if (status == charon_paramErr)
+        charon_object_state object = charon_object_check(endpoint, row->stamped, row->stamp);
+        if (object == charon_object_gone)
             state = charon_ours_gone;
-        else if (!row->hasUniqueID || (status == noErr && uniqueID == row->uniqueID))
+        else if (object == charon_object_live)
             state = charon_ours_live;
         break;
     }
