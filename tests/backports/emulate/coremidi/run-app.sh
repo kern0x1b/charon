@@ -37,7 +37,17 @@ CHARCOREMIDI_ROOT=$root CHARCOREMIDI_MINIMUM=$minimum xmake emulate -d iPhone4,1
 # The launch's output is this run's own file (the run folder is new), and the verdict is read from it alone: the device's log
 # keeps the lines of earlier runs, so it is printed for diagnosis and never searched for the verdict.
 set +e
-CHARCOREMIDI_ROOT=$root CHARCOREMIDI_MINIMUM=$minimum xmake emulate -d iPhone4,1 -r "$minimum" launch local.charon.backports.coremidiapp >"$out/launch.log" 2>&1
+# A run that measures (CHARCOREMIDI_PROBE) does more than the round trip, and a loaded host is slower than the default window of
+# a launch (60 guest seconds, after which the emulator ends the application whatever it was doing): it is given until it exits,
+# up to CHARCOREMIDI_SECONDS guest seconds (default 600) from the moment it is frontmost. The round trip's own run keeps the
+# default window, and has to end inside it.
+launch_options=""
+launch_steps=""
+if [ -n "${CHARCOREMIDI_PROBE:-}" ]; then
+    launch_options="-s ${CHARCOREMIDI_SECONDS:-600}"
+    launch_steps="until-exit"
+fi
+CHARCOREMIDI_ROOT=$root CHARCOREMIDI_MINIMUM=$minimum xmake emulate -d iPhone4,1 -r "$minimum" $launch_options launch local.charon.backports.coremidiapp $launch_steps >"$out/launch.log" 2>&1
 launch_status=$?
 xmake emulate -d iPhone4,1 -r "$minimum" log >"$out/emulate.log" 2>&1
 log_status=$?

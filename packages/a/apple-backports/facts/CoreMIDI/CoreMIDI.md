@@ -68,9 +68,18 @@ Both string constants are the values macOS CoreMIDI gives them, read from the ho
 
 ## What is not built here
 
-CoreMIDI of iOS 16 and 17 and the MIDI-CI and MIDI 2.0 endpoint classes of iOS 18 are not in this library yet: the UMP
-sysex senders (`MIDISendUMPSysex`, `MIDISendUMPSysex8`), `MIDIEventListForEachEvent`, the Bluetooth driver calls, and the
-MIDI-CI and `MIDIUMP*` classes. They stay missing in the registry until each is built.
+What the registry (registry/CoreMIDI/*.json) says is not an implemented API, counted on 2026-10-10 over the 51 rows of the
+eight files (`xmake l` over the files, `json.loadfile`): 41 are `implemented`, 8 are `inert` and 2 are `owed`.
+
+- `owed` (not exported under their names): `MIDIBluetoothDriverActivateAllConnections` and `MIDIBluetoothDriverDisconnect`
+  (iOS 16). The bodies are built (MIDIBluetooth16.m, `charon_bluetooth_*`) and the central has never run on a device; see
+  Bluetooth.md.
+- `inert` (the type exists, and does nothing that a MIDI-CI transport would do, because the port has none; each logs once
+  when an action is asked for): `MIDICISession` (iOS 12), `MIDICIDiscoveredNode`, `MIDICIDiscoveryManager`, `MIDICIResponder` and
+  `MIDICIProfileResponderDelegate` (iOS 14), `MIDICIDevice`, `MIDIUMPCIProfile` and `MIDICIDeviceManager` (iOS 18); see MIDICI.md
+  and UMPClasses.md.
+- Built, and no longer listed as missing: `MIDISendUMPSysex` and `MIDISendUMPSysex8` (MIDISysex17.m), `MIDIEventListForEachEvent`
+  (Visitor.md), and the `MIDIUMP*` endpoint, function-block and manager classes of iOS 18 (MIDIUMP18.m, UMPClasses.md).
 
 ## Virtual endpoints on the emulated iPhone 4S at 6.1.3: which processes the release lets make them
 
@@ -188,3 +197,35 @@ this.
   it covers destinations and sources only, it needs a client of the library's own and a running main run loop, and it brings
   every setup change of the process to that client.
 - A creation that finds a sweep running on another thread does not wait for it: the next creation looks at the window.
+
+## Does the release's dispose wait for a running read procedure? (measured 2026-10-10)
+
+Probe: oracle/disposewait.h (the host program oracle/disposewait.m and the 6.1.3 application, tests/backports/emulate/coremidi/app/main.m,
+run the same code). A read procedure announces that it is running and then waits up to 5 s; another thread disposes the object and
+the probe says whether the dispose came back within 1.5 s while the procedure was still running.
+
+| Object | macOS 27.0.1 (oracle/disposewait-macos.txt) | emulated iPhone 4S at 6.1.3 (run folder of the band, app-r8b.out) |
+| --- | --- | --- |
+| destination (MIDIEndpointDispose, list sent with MIDISend) | not within 1.5 s; returned after the procedure did | the same |
+| input port (MIDIPortDispose, list from MIDIReceived on a connected source) | the same | the same |
+
+What the library's lifetime rule does with that. A row is freed by the sweep only after a UniqueID or stamp read says the object is gone,
+and the read says so only once the dispose has come back, which (measured above) is after any read procedure that was running has
+returned. And the release gives no list to a disposed destination (a send to it delivers 0 calls, above). So the sweep's free of a row
+does not overlap a read procedure of that object; the reference the read holds (charon_port_retain) is for the paths the dispose does
+not order: a queued in-process delivery, and a send that found the row before the sweep removed it. What is not measured: a dispose
+called from inside the object's own read procedure, a dispose while a list is queued but its procedure has not started, and more
+than one object at a time.
+
+## What the owner stamp costs a client (measured 2026-10-10)
+
+The stamp (`charon.owner`, CharonMIDIPorts.m, charon_own) is a property written on each object the library owns. The release posts
+kMIDIMsgPropertyChanged for a property written on an object to every client with a notify proc. Measured by oracle/stamp.h, which makes
+a destination, a source, an input port, an output port and a client in one process and writes the stamp on each: one notification
+for each stamped object, five in all, with the object type (3 destination, 2 source, -1 input port, output port and client) and the
+property name 'charon.owner' (macOS 27.0.1, oracle/stamp-macos.txt: 7 notifications, those five and the two the probe's own UniqueID
+writes make; the emulated 6.1.3, app-r8b.out: 9, the same seven and two more that the application's own earlier steps cause
+through the library: a 'protocol' write and a stamp, both before the probe's objects). So a client with a notify proc, on either release, sees one extra
+property-changed notification with the library's own key name for each object the library takes a row for. It is the price of an
+identity an application cannot disturb; the alternative that was measured against it, the UniqueID, is the creator's to set (the
+decision above).
