@@ -121,6 +121,22 @@ OSStatus charon_test_MIDIReceived(MIDIEndpointRef src, const MIDIPacketList *pkt
     return noErr;
 }
 
+// The release's sysex send, as a stand-in (run.sh renames the library's MIDISendSysex to it): it copies the bytes it is given, then
+// completes the send before it returns, as the release may. The completion frees the library's block during the call, so the
+// stand-in touches the request only before the completion.
+static int gSysexCalls;
+static size_t gSysexCopied;
+static UInt8 gSysexCopy[16];
+
+OSStatus charon_test_MIDISendSysex(MIDISysexSendRequest *request)
+{
+    gSysexCalls++;
+    gSysexCopied = request->bytesToSend < sizeof(gSysexCopy) ? request->bytesToSend : sizeof(gSysexCopy);
+    memcpy(gSysexCopy, request->data, gSysexCopied);
+    request->completionProc(request);
+    return noErr;
+}
+
 static void expect(int passed, const char *what, long allocations)
 {
     printf("%s %s (%ld allocation(s), %ld property read(s))\n", passed ? "ok" : "FAIL", what, allocations, gReads);
@@ -262,6 +278,22 @@ int main(void)
         second = CharonMIDISend(0, 100, list);
         expect(second == noErr && gSent == 1 && gMallocs == 0 && gReads == 0, "a send through an existing route allocates nothing and reads nothing",
                gMallocs);
+
+        // A UMP SysEx of three data bytes sent to a release endpoint: the words are converted in stack storage, and the bytes are copied
+        // once into the block that the release's send keeps until it completes (the stand-in completes it before returning). One
+        // allocation, the block; the bytes are the MIDI 1.0 framing of the data (F0, the data, F7).
+        UInt32 sysex[2] = {0x30030102u, 0x03000000u};
+        MIDISysexSendRequestUMP umpRequest;
+        memset(&umpRequest, 0, sizeof(umpRequest));
+        gMallocs = 0;
+        gSysexCalls = 0;
+        int queuedSysex = CharonMIDIUMPReleaseSend(&umpRequest, 99, sysex, 2);
+        long sysexAllocations = gMallocs;
+        static const UInt8 framed[5] = {0xF0, 0x01, 0x02, 0x03, 0xF7};
+        int framedRight = gSysexCopied == sizeof(framed) && memcmp(gSysexCopy, framed, sizeof(framed)) == 0;
+        expect(queuedSysex == 1 && gSysexCalls == 1 && framedRight && umpRequest.complete == YES && sysexAllocations == 1,
+               "a UMP sysex of three bytes to a release endpoint is sent as its MIDI 1.0 bytes, with one allocation (the block its completion frees)",
+               sysexAllocations);
 
         // A refusal is written once for its reason, and one reason's refusal does not hide another's: the allocator is made to
         // fail, and the same refusal is made three times for each of three reasons. The table of reasons is two here

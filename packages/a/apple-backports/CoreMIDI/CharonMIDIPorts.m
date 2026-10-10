@@ -651,19 +651,19 @@ static void charon_enqueue(charon_delivery *delivery)
         dispatch_async_f(charon_delivery_queue(), NULL, charon_drain);
 }
 
-// The release's completion of a MIDISendSysex this file queued: the UMP request is completed (when there is one), and the bytes are
-// released. The request is one the sender still owns, or none: a delivery that is sent late has no request to complete.
+// The release's completion of a MIDISendSysex this file queued: the UMP request is completed (when there is one), and the block is
+// freed. The block holds the request and its data, which the release reads until it completes. The request is one the sender still
+// owns, or none: a delivery that is sent late has no request to complete.
 typedef struct charon_ump_send {
     MIDISysexSendRequest request;
     MIDISysexSendRequestUMP *umpRequest;
-    UInt8 *bytes;
+    // The bytes the release sends follow the struct, in the same block.
 } charon_ump_send;
 
 static void charon_ump_send_done(MIDISysexSendRequest *request)
 {
     charon_ump_send *send = request->completionRefCon;
     MIDISysexSendRequestUMP *umpRequest = send->umpRequest;
-    free(send->bytes);
     free(send);
     if (umpRequest) {
         umpRequest->complete = YES;
