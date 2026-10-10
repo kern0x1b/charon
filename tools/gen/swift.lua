@@ -118,9 +118,9 @@ function bucket_text(rows)
     return strings.backslash_replace(tsv.table_text(COLUMNS, rows))
 end
 
--- The path of the bucket file under the package tree.
+-- The path of the bucket file under the package tree: derived, so under the build directory (.gen/swift/bucket.tsv), not the snapshot.
 function bucket_path(tree)
-    return path.join(tree, layout.constants().SNAP_ROOT, BUCKET_FILE)
+    return path.join(tree, layout.constants().OUT_ROOT, BUCKET_FILE)
 end
 
 -- The bucket rows of a framework, as the generator wrote them (bucket.tsv read back): framework -> list of records keyed by the

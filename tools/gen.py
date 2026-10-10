@@ -609,7 +609,7 @@ def cmd_input(args):
     for r in rows:
         counts[r["kind"]] = counts.get(r["kind"], 0) + 1
     print("spec %s: %s" % (os.path.relpath(path, args.tree), ", ".join("%s %d" % (k, counts[k]) for k in sorted(counts))))
-    write(os.path.join(snap_dir(args.tree, fw), "value-differences.tsv"),
+    write(os.path.join(gen_dir(args.tree, fw), "value-differences.tsv"),
           "api\thost_macos\tios_26_2\n" + "".join("%s\t%s\t%s\n" % d for d in sorted(differences)))
     print("values: %d constants read from the iOS 26.2 cache (table sha256 %s), %d differ from macOS (iOS wins); %d cache symbols with conflicting values"
           % (sum(1 for r in rows if r["value_source"].startswith("ios")), ios_sha, len(differences), len(ios_conflicts)))
@@ -2478,9 +2478,9 @@ def objc_facts(tree, fw):
 # The surface's Swift rows are the bucket the scope names 'swift: needs the Swift interface source'. v-cache26's Swift interface
 # table (swiftinterface-26.2.tsv: module, kind, qualified name, introduced and deprecation, unavailability, via) describes each
 # one as far as a table can: its name, kind and availability. It has no types, so no signature is written from it. The facts go
-# to spec/swift/bucket.tsv, one row per bucket row, and a doc page per framework.
+# to .gen/swift/bucket.tsv (derived: the build directory, not the snapshot), one row per bucket row, and a doc page per framework.
 SWIFT_TABLE = os.path.join(LEDGER_DIR, "cache-26.2", "swiftinterface-26.2.tsv")
-SWIFT_BUCKET = os.path.join("spec", "swift", "bucket.tsv")
+SWIFT_BUCKET = os.path.join("swift", "bucket.tsv")
 SWIFT_COLUMNS = ["framework", "kind", "api", "introduced", "unavailable", "via", "table_match", "table_kind", "table_introduced",
                  "table_unavailable", "demand_rank", "demand_apps", "impl_lead", "state"]
 
@@ -2506,10 +2506,10 @@ SWIFT_MEMO = {}
 
 
 def swift_bucket(tree):
-    """framework -> the bucket rows of spec/swift/bucket.tsv, read once per run; {} when the file is not generated yet."""
+    """framework -> the bucket rows of .gen/swift/bucket.tsv, read once per run; {} when the file is not generated yet."""
     if "rows" not in SWIFT_MEMO:
         rows = {}
-        path = os.path.join(tree, SNAP_ROOT.rsplit("/", 1)[0], SWIFT_BUCKET)
+        path = os.path.join(tree, OUT_ROOT, SWIFT_BUCKET)
         if os.path.exists(path):
             with open(path, encoding="ascii", newline="") as handle:
                 for row in csv.DictReader(handle, delimiter="\t", quoting=csv.QUOTE_NONE):
@@ -2535,7 +2535,7 @@ def swift_bucket_rows(tree, surface):
 
 
 def cmd_swift(args):
-    """Write spec/swift/bucket.tsv: each Swift bucket row with what the Swift interface table says of it. Nothing is written from
+    """Write .gen/swift/bucket.tsv: each Swift bucket row with what the Swift interface table says of it. Nothing is written from
     the table beyond name, kind and availability."""
     table = {}
     with open(SWIFT_TABLE, newline="") as handle:
@@ -2554,7 +2554,7 @@ def cmd_swift(args):
                                  (match["unavailable"] or "-") if match else "-", row.get("demand-rank") or "-",
                                  row.get("demand-apps") or "-", row.get("impl-lead") or "-", "swift: needs the Swift interface source"]))
     text = "\n".join(lines) + "\n"
-    write(os.path.join(args.tree, SNAP_ROOT.rsplit("/", 1)[0], SWIFT_BUCKET), text.encode("ascii", "backslashreplace").decode("ascii"))
+    write(os.path.join(args.tree, OUT_ROOT, SWIFT_BUCKET), text.encode("ascii", "backslashreplace").decode("ascii"))
     total = len(rows)
     print("swift: %d bucket rows, %d matched by the table (%d frameworks)" % (total, sum(matched.values()), len(matched)))
     return 0
