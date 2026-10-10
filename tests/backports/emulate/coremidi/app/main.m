@@ -25,10 +25,13 @@ static void charon_probe_read(const MIDIPacketList *packets, void *readRefCon, v
 {
 }
 
+static int gProbeRemovals;
+
 static void charon_probe_notify(const MIDINotification *message, void *refCon)
 {
     if (message->messageID != kMIDIMsgObjectRemoved)
         return;
+    gProbeRemovals++;
     const MIDIObjectAddRemoveNotification *note = (const MIDIObjectAddRemoveNotification *)message;
     printf("probe 6.1.3: removal notification: childType %d, child ref %u\n", (int)note->childType, (unsigned)note->child);
     fflush(stdout);
@@ -138,7 +141,15 @@ static void charon_probe_objects(void)
         printf("probe 6.1.3: destination ref after a dispose: first %u, second %u\n", (unsigned)first, (unsigned)second);
         fflush(stdout);
         MIDIEndpointDispose(second);
-        CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.05, false);
+        MIDIEndpointRef noted = 0;
+        if (MIDISourceCreate(notifying, CFSTR("charon-probe-noted-src"), &noted) == noErr)
+            MIDIEndpointDispose(noted);
+        // The release posts a removal to the client's notify proc on the main run loop: the loop is run until the three arrive, or
+        // for 20 s, and the count is printed beside the lines the proc wrote.
+        for (int i = 0; i < 200 && gProbeRemovals < 3; i++)
+            CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.1, false);
+        printf("probe 6.1.3: removal notifications received %d of 3 (two destinations and a source)\n", gProbeRemovals);
+        fflush(stdout);
         MIDIClientDispose(notifying);
     }
 }

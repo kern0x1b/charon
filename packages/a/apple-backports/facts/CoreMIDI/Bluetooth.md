@@ -18,8 +18,8 @@ What the port does:
   notifications, and the parser's state belongs to the device. The cases in tests/backports/host/coremidi/differential.m
   (check_ble_parse) are the specification's framing, not a macOS measurement.
 - The peripheral's key in the central's table is its identifier as a UUID string: the NSUUID `identifier` where the release
-  answers it (iOS 7 and later), else the CFUUIDRef `UUID` of the release (6.1.3). The 6.1.3 answer to `identifier` is not
-  measured here; the cache has no CBPeer class (the ledger's rows for CBPeer.identifier).
+  answers it (iOS 7 and later), else the CFUUIDRef `UUID` of the release (6.1.3). Measured on the emulated 6.1.3: its
+  CBPeripheral does not respond to `identifier` and does respond to `UUID` (the probe, tests/backports/emulate/coremidi/app/main.m).
 - A device's virtual source is disposed when the device disconnects, when its connect fails, and when a disconnect is asked
   for, so a reconnect makes one source of the device's name, not a second.
 - Disconnect cancels the peripheral with that identifier.

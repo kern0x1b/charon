@@ -32,7 +32,7 @@ conversion rounds.
 - Running status: the release never gives a packet with running status (CoreMIDI's documentation: "Running status is not
   allowed" in a MIDIPacket). The parser reads it as a running status; macOS, given such a packet to send, reads a stray data
   byte as a continuation of a SysEx. That difference is in a case the release does not produce, and is not reproduced.
-- Measured (probe2), not built: the 2.0 port's answer to a 1.0 RPN sequence (CC 101, 100, 6, 38). macOS combines it into one
+- Measured (probe2, recorded in oracle/probe2-macos.txt), not built: the 2.0 port's answer to a 1.0 RPN sequence (CC 101, 100, 6, 38). macOS combines it into one
   2.0 RPN event (`20B06500 20B06400 20B00600` into `40200000 18000000`); this library sends each controller as its own
   message and does not combine them. A crutch in coordination/crutches.md.
 
@@ -55,7 +55,7 @@ conversion rounds.
 - Registered and non-registered parameters (opcodes 2 and 3): the controllers that select the parameter, 101 and 100 for
   RPN, 99 and 98 for NRPN, are sent only when the parameter differs from the last one this endpoint sent on the channel.
   Then controller 6 carries `v32 >> 25`, and controller 38 carries `(v32 >> 18) & 0x7F` only when that is not zero.
-  Measured in one sequence on one destination (probe2 and probe4): RPN 0,0, then NRPN 1,35, then RPN 0,0 again, then the
+  Measured in one sequence on one destination (probe2 and probe4, recorded in oracle/probe2-macos.txt and probe4-macos.txt): RPN 0,0, then NRPN 1,35, then RPN 0,0 again, then the
   same RPN with a new value, and the values 0, 0x00800000, 0x02000000, 0x02000001, 0x00000001, 0x01000000, 0x04000000,
   0x3F000000, 0x40000000. Whether the state is kept per destination or per port is not measured; it is kept per
   endpoint here.

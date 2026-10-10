@@ -11,8 +11,9 @@ MIDI 1.0 bytes only.
 ## What is built on what
 
 - `MIDIClientCreateWithBlock` is the release's `MIDIClientCreate` with the block carried in its reference constant. The
-  block is copied once and kept for as long as the client lives, which the release does not tell this library when it ends:
-  the copy is not released (a bounded leak, one block per client, port or destination; logged in coordination/crutches.md). A NULL
+  block is copied once and kept for as long as the client lives. The release does not tell this library when the client ends,
+  so the copy is released when the object is found gone: the rows of CharonMIDIPorts.m are swept whenever the library makes
+  another object, and a client that answers paramErr to a UniqueID read is gone (below). A NULL
   block is accepted and returns noErr, as macOS does (measured, oracle/nullargs.m: `0`). A protocol that is neither 1.0 nor
   2.0 answers `paramErr` here; macOS does not answer it, it terminates the process (measured, the same probe).
 - `MIDIInputPortCreateWithBlock` and `MIDIDestinationCreateWithBlock` are the release's `MIDIInputPortCreate` and
@@ -38,14 +39,30 @@ Both string constants are the values macOS CoreMIDI gives them, read from the ho
 
 - A destination, a virtual source and an input port that are disposed answer a UniqueID read with paramErr (-50), as a
   reference that never existed does. A live destination or source answers noErr; a live input port answers -10835 (a
-  port has no UniqueID). So a reference that answers -50 is gone.
+  port has no UniqueID). So a reference that answers -50 is gone. The status is the OSStatus of the read; the UniqueID
+  value is meaningful only with noErr.
 - A destination's and a source's removal is announced to the client's notify proc as kMIDIMsgObjectRemoved, after the dispose
   call has returned, on the main thread, followed by kMIDIMsgSetupChanged. An input port's dispose announces nothing.
 - A send to a disposed destination delivers nothing to its block (0 calls; the live control gives 1).
-- Not measured: the same answers on the 6.1.3 release. The library relies on them (CharonMIDIPorts.m, the owned rows swept on
-  creation), so the 6.1.3 measurement is the open item the coordinator's crutch entry names.
-- The library learns of a dispose only by the read above, when it makes another object: the release gives the library no
-  call for it, and the client notify proc belongs to the client that made the object.
+- Measured on the emulated 6.1.3 (tests/backports/emulate/coremidi/app/main.m, built with CHARCOREMIDI_PROBE=1; the status of
+  each read, the value only with noErr): a live client -10835 (it has no UniqueID), a live destination 0 and a live virtual
+  source 0, a live input port -10835; each of the four after its dispose -50. The same answers as macOS where macOS was
+  measured (a client's liveness was not measured on macOS: its dispose is only seen in the host differential, where the block
+  a client held is released once the library has swept it). A destination's reference after a dispose was not reused by the
+  next destination in the one run (first 372756, second 372757, with the references of the run before them in sequence).
+- The removal notification is the other way the release says an object is gone, and it is measured on 6.1.3 too (the same
+  probe): a destination (childType 3), a source (childType 2) and an entity (childType 1) post kMIDIMsgObjectRemoved to a
+  client's notify proc, on the main run loop, and the release posts it to a client made after the object was disposed as well
+  (all six removals of the run reached the one client that listened). An input port and a client announce nothing: the
+  port (ref 372753) and the first client (372750) were disposed in that run and none of the six notifications names them, as an
+  input port's dispose announces nothing on macOS. The library keeps the UniqueID sweep
+  because it covers the objects the notification does not, and a second channel for the destinations and sources would only
+  bring the release of a block forward to the moment of the dispose, which needs a client of the library's own and a running
+  main run loop; neither is needed for the sweep.
+- The owned row also keeps the UniqueID its object had when it was made, so a reference the release gives to a new object after
+  a dispose is not taken for the old one (CharonMIDIPorts.m, charon_row_stale).
+- The library learns of a dispose only by the read above, when it makes another object: the release gives it no call for a
+  dispose, and the notification above goes to a client's notify proc, not to the library.
 
 ## What is not built here
 

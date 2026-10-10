@@ -15,7 +15,9 @@ Measured on macOS, 2026-10-10 (`oracle/constants-macos.txt`):
 - The `ump endpoint` value is the framework's key, not a symbol mix-up: a virtual source of this process reads
   `kMIDIPropertyUMPCanTransmitGroupless` back after `MIDIObjectSetIntegerProperty` with the constant as 1 and through the
   literal `"ump endpoint"` as 1; the literal `"UMPCanTransmitGroupless"` finds nothing (-10835). So an application that
-  passes the constant gets the key macOS uses, and the port's constant holds the same string.
+  passes the constant gets the key macOS uses, and the port's constant holds the same string. What an endpoint answers for
+  these keys is the release's own (MIDIObjectGetIntegerProperty is not replaced): on the emulated 6.1.3 an endpoint answers
+  -10835 for each of the three (UMPClasses.md), as a virtual endpoint on macOS does until the key is set.
 - A virtual endpoint reports -10835 (property not present) for each of the three until it is set.
 - The twelve keys and notifications are their own names: `MIDICIDeviceObjectKey` is `MIDICIDeviceObjectKey`, and so on.
 

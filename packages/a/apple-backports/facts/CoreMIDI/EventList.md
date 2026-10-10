@@ -6,8 +6,8 @@ this one, which is what `MIDIEventPacketNext` computes. `MIDIEventListInit` sets
 returns the first packet's place. `MIDIEventListAdd` takes the place where the next packet would begin, and returns the place
 after what it wrote, or NULL when the words do not fit in the buffer the caller gave it.
 
-Measured on macOS on 2026-10-09 (probe2 and probe3 in `tests/backports/host/coremidi/oracle/`; the results are recorded in
-`tests/backports/host/coremidi/differential.m` beside each check):
+Measured on macOS on 2026-10-09 (probe2 and probe3 in `tests/backports/host/coremidi/oracle/`, recorded in probe2-macos.txt and
+probe3-macos.txt; the results are also written in `tests/backports/host/coremidi/differential.m` beside each check):
 
 - Two adds with one time stamp make one packet, with the words of both in order (2 + 2 words make a packet of 4).
 - An add with a time stamp different from the last packet's starts a new packet (time stamps 7, 8, 8 make two packets, of

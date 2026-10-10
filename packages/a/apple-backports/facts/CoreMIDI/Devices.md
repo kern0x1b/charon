@@ -30,5 +30,8 @@ the positive probe (oracle/newentity.m) died at MIDIDeviceCreate with -50, and a
 crutch (coordination/crutches.md). A protocol other than 1.0 and 2.0 answers paramErr; macOS was not measured for it.
 
 On the emulated 6.1.3 the probe of tests/backports/emulate/coremidi/app/main.m (built with CHARCOREMIDI_PROBE=1) counts the
-setup's devices and, where there is one, adds an entity of protocol 2.0, reads the protocol back and removes the entity. An application
-cannot make a device there either (MIDIDeviceCreate is MIDIDriver.h's call and takes a driver).
+setup's devices and, where there is one, adds an entity of protocol 2.0, reads the protocol back and removes the entity. Measured:
+the emulated setup has 1 device; MIDIDeviceNewEntity (protocol 2.0) answers noErr and gives an entity; the entity answers its
+protocol property (the string key `protocol`) with 2, as written; MIDIDeviceRemoveEntity answers noErr. So the entity-level write
+is accepted and read back by the release on 6.1.3. An application cannot make a device there either (MIDIDeviceCreate is
+MIDIDriver.h's call and takes a driver). Whether the entity's endpoints take the protocol is not measured.

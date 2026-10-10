@@ -14,10 +14,22 @@ Measured and held to the port:
   The endpoint manager lists it while it is disabled: 1.
 - setName: answers YES and changes the name (measured on macOS); the port also sets the release's kMIDIPropertyName of both
   ends, which the release reads back (differential-ump.m). setEnabled:YES answers YES and enables, which is the state the
-  port keeps. Not measured on macOS, and not done here: whether a disabled endpoint still delivers to its block (the port's
-  destination delivers while disabled), and the function block IDs (every block gets 0). Both are crutches in
-  coordination/crutches.md. registerFunctionBlocks:markAsStatic:error: answers YES, and the endpoint's functionBlocks then
-  lists the block (count 1).
+  port keeps.
+- A disabled endpoint's destination still delivers to its block, as an enabled one does: 1 call in each of the three sends of
+  oracle/umpgate.m (never enabled, enabled, after setEnabled:NO; umpgate-macos.txt). The port delivers the same way, so the
+  enabled state is reported and does not gate delivery, as on macOS.
+- The function blocks of one registration are numbered from 1 in the order given: three blocks answer 1, 2, 3 (umpgate-macos.txt).
+  The port numbers them the same way (differential-ump.m).
+- registerFunctionBlocks:markAsStatic:error: answers YES, and the endpoint's functionBlocks then lists the block (count 1).
+  hasStaticFunctionBlocks answers the argument: NO for markAsStatic:NO, YES for markAsStatic:YES (oracle/umpstatic.m,
+  umpstatic-macos.txt); the port answers the argument the registration gave.
+- hasJRTSReceiveCapability and hasJRTSTransmitCapability answer NO for an endpoint an application makes, before and after a
+  registration with either static value (umpstatic-macos.txt: 0 and 0 each time). Both are read-only properties in the 26.2
+  header, and nothing in CoreMIDI's headers sets them, so the port answers NO for its own endpoints, which are all virtual.
+- The three UMP property keys (`active group bitmap`, `ump endpoint`, `associated endpoint`) on an endpoint of the emulated 6.1.3
+  release read -10835, property not present (the probe, tests/backports/emulate/coremidi/app/main.m): the release has no such
+  property of its own, as a virtual endpoint on macOS has none until it is set (facts/CoreMIDI/Constants.md). The port does not
+  set them on its endpoints.
 - A MIDIUMPMutableFunctionBlock is made for each group, direction and stream value tried (the groups 0 + 17 and 15 + 2 included,
   a total of 0 included): the header's validation is not what macOS does here. Its name, first group, groups and enabled state
   are the ones given.

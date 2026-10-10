@@ -22,7 +22,8 @@ enum {
 };
 
 // The UMP key of a protocol, as this library names it: the iOS SDK marks kMIDIPropertyProtocolID from 14.0, so the port
-// uses the string the release answers (oracle/probe2.m prints it), declared once here for the three files that set it.
+// uses the string the release answers (oracle/probe2.m prints it: oracle/probe2-macos.txt), declared once here for the three files
+// that set it.
 #define CHARON_PROTOCOL_KEY CFSTR("protocol")
 
 // Sizes are summed and multiplied only through these, and only after a check that the result is held by size_t: on armv7
