@@ -209,9 +209,9 @@ the probe says whether the dispose came back within 1.5 s while the procedure wa
 | destination (MIDIEndpointDispose, list sent with MIDISend) | not within 1.5 s; returned after the procedure did | the same |
 | input port (MIDIPortDispose, list from MIDIReceived on a connected source) | the same | the same |
 
-What the library's lifetime rule does with that. A row is freed by the sweep only after a UniqueID or stamp read says the object is gone,
-and the read says so only once the dispose has come back, which (measured above) is after any read procedure that was running has
-returned. And the release gives no list to a disposed destination (a send to it delivers 0 calls, above). So the sweep's free of a row
+What the library's lifetime rule does with that. A row is freed by the sweep only after the stamp read (charon_object_check) says
+the object is gone or answers another stamp, and the read says so only once the dispose has come back, which (measured above)
+is after any read procedure that was running has returned. And the release gives no list to a disposed destination (a send to it delivers 0 calls, above). So the sweep's free of a row
 does not overlap a read procedure of that object; the reference the read holds (charon_port_retain) is for the paths the dispose does
 not order: a queued in-process delivery, and a send that found the row before the sweep removed it. What is not measured: a dispose
 called from inside the object's own read procedure, a dispose while a list is queued but its procedure has not started, and more
