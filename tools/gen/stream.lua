@@ -16,6 +16,9 @@ local CHILD_CHECK = 1
 -- After the exit: at most DRAIN_READS empty reads of DRAIN_WAIT milliseconds (a bound of 2 s) before the sentinel is declared missing;
 -- and WAIT_ERRORS wait errors in a row are an error. Measured: output reported after an exit came within 2 s.
 local DRAIN_READS = 200
+-- The longest a stream may go without a byte before it is an error (a guard against a hang of the pipe; the program name is in the
+-- message). Ten minutes: the slowest first line of the parser under load is well under it.
+local STALL_LIMIT = 600000
 local DRAIN_WAIT = 10
 local WAIT_ERRORS = 100
 
@@ -36,10 +39,12 @@ function lines(program, args, each)
     -- milliseconds each), and an empty read after the bound means the sentinel never came. A wait result of -1 is an error of the
     -- wait, not an exit: it is retried up to WAIT_ERRORS times.
     local exited, drained, wait_errors = false, 0, 0
+    local last_byte = os.mclock()
     while not status do
         local n = rpipe:read(buff, CHUNK)
         if n > 0 then
             drained = 0
+            last_byte = os.mclock()
             local text = carry .. buff:str(1, n)
             local pos = 1
             while not status do
@@ -57,6 +62,7 @@ function lines(program, args, each)
             end
             carry = string.sub(text, pos)
         elseif n == 0 then
+            assert(os.mclock() - last_byte < STALL_LIMIT, "no output from " .. program .. " for ten minutes")
             if exited then
                 drained = drained + 1
                 assert(drained <= DRAIN_READS, "the program ended without its sentinel: " .. program)
