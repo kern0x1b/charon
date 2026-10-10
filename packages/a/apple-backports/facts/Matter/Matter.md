@@ -97,7 +97,11 @@ writing 26.2's spelling is `nullability specifier '_Nullable' conflicts with exi
 
 The class's own state is one table keyed by the attribute name and guarded by a lock, because armv7 has no
 thread-local storage to rely on. A release with no Matter hardware has no node to read from, so the class
-methods the header declares answer as Apple documents: no value, and an error.
+methods the header declares answer as the framework does when it has nothing to read from: no value, and
+`MTRErrorDomain` code `MTRErrorCodeInvalidState` ("Invalid object state."). Measured on the host by
+`tests/backports/host/matterdifferential/behaviour.sh`: a cached read on a container with no cache attached and
+a read, a write and a subscribe on a controller that has been shut down all answer exactly that, and an earlier
+version of the port answered `NSCocoaErrorDomain` 4096, which no framework answer corresponds to.
 
 ## What is measured
 

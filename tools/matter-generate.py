@@ -3019,9 +3019,15 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                 "    }\n"
                 "    return table;\n}\n\n" % cluster)
     body.append("// The error a member that would need a node answers, on a release with no Matter\n"
-                "// hardware: there is nothing to read from and nothing to commission onto.\n")
+                "// hardware: there is no controller to ask and no node to read from. It is the framework's\n"
+                "// own answer to a cached read on a container with no cache and to any request on a\n"
+                "// controller that has been shut down, measured on the host by\n"
+                "// tests/backports/host/matterdifferential/behaviour.m: MTRErrorDomain, MTRErrorCodeInvalidState,\n"
+                "// \"Invalid object state.\". The domain is written as the string the constant holds: the\n"
+                "// constant is defined by the framework's own build (packages/m/matter), not by this library.\n")
     body.append("+ (NSError *)charon_port_no_node_error\n{\n"
-                "    return [NSError errorWithDomain:NSCocoaErrorDomain code:4096 userInfo:nil];\n}\n\n")
+                "    return [NSError errorWithDomain:@\"MTRErrorDomain\" code:MTRErrorCodeInvalidState\n"
+                "                           userInfo:@{NSLocalizedDescriptionKey: @\"Invalid object state.\"}];\n}\n\n")
     for entry in initialisers:
         body.append(as_comment(shape_line(entry["signature"])))
         # The three arguments go into the three ivars the class extension above declares: an initializer

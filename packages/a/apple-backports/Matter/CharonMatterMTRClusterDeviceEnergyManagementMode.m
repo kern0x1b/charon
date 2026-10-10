@@ -58,10 +58,16 @@
 }
 
 // The error a member that would need a node answers, on a release with no Matter
-// hardware: there is nothing to read from and nothing to commission onto.
+// hardware: there is no controller to ask and no node to read from. It is the framework's
+// own answer to a cached read on a container with no cache and to any request on a
+// controller that has been shut down, measured on the host by
+// tests/backports/host/matterdifferential/behaviour.m: MTRErrorDomain, MTRErrorCodeInvalidState,
+// "Invalid object state.". The domain is written as the string the constant holds: the
+// constant is defined by the framework's own build (packages/m/matter), not by this library.
 + (NSError *)charon_port_no_node_error
 {
-    return [NSError errorWithDomain:NSCocoaErrorDomain code:4096 userInfo:nil];
+    return [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
+                           userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
 }
 
 // - (instancetype)initWithDevice:(MTRDevice *)device

@@ -85,7 +85,8 @@ static BOOL definesOwn(Class cls, SEL selector)
 
 static NSString *describeError(NSError *error)
 {
-    return error ? [NSString stringWithFormat:@"%@/%ld", error.domain, (long)error.code] : @"nil";
+    return error ? [NSString stringWithFormat:@"%@/%ld \"%@\"", error.domain, (long)error.code,
+                    error.localizedDescription] : @"nil";
 }
 
 static NSString *describeValue(id value)
