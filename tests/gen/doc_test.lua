@@ -10,6 +10,7 @@ local tsv = import("gen.tsv", {rootdir = TOOLS, anonymous = true})
 local swift = import("gen.swift", {rootdir = TOOLS, anonymous = true})
 local emit = import("gen.emit", {rootdir = TOOLS, anonymous = true})
 local headers = import("gen.headers", {rootdir = TOOLS, anonymous = true})
+local doc_text = import("gen.doc_text", {rootdir = TOOLS, anonymous = true})
 
 local function checks()
     local failures = 0
@@ -53,6 +54,7 @@ local function write_fixture(tree, corpus)
         {"protocol", "introduced", "status", "reasons", "bases", "section", "kind", "instance", "selector", "decl", "in16"}, {
         {"FKDelegate", "12.0", "transcribed", "", "NSObject", "-", "-", "-", "-", "-", "-"},
         {"FKDelegate", "12.0", "transcribed", "", "NSObject", "required", "method", "yes", "didFinish", "- (void)didFinish;", "yes"},
+        {"FKDelegate", "12.0", "transcribed", "", "NSObject", "required", "method", "no", "make", "+ (instancetype)make;", "yes"},
         {"FKDelegate", "12.0", "transcribed", "", "NSObject", "optional", "property", "yes", "name", "@property NSString *name;", "no"},
     }))
     emit.file(path.join(package, "registry", FIXTURE, "ios.json"),
@@ -109,40 +111,122 @@ local function fixture_rows(fw, fn)
     fn(fw, row("class", "Unrelated", "class", "Unrelated", "@interface Unrelated", "", "0x6", "NSObject"))
 end
 
--- The header facts the fixture injects: a superclass. The header comments and the declaration texts are not derived (ruling 2), so
--- no fact carries them, and the pages must mark them rather than show the spec's decl column.
+-- The header facts the fixture injects: a superclass. The pages take their comments and declarations from the doc rows below (the
+-- extractor's doc mode), and the spec's decl column is never shown.
 local function fixture_headers(fw, sdk)
     return {members = {}, declared = {}, typedefs = {}, superclasses = {FKThing = "NSObject", FKDelegate = "NSObject"}}
 end
 
+-- The extractor's escaping of a cell (decls.cc): a backslash, a tab, a line feed and a carriage return.
+local function escape(text)
+    return (string.gsub(text, "[\\\t\n\r]", {["\\"] = "\\\\", ["\t"] = "\\t", ["\n"] = "\\n", ["\r"] = "\\r"}))
+end
+
+-- A doc row of the fixture as the extractor writes it: ten escaped cells, tab separated.
+local function doc_row(usr, kind, name, side, params, brief, comment, decl)
+    local cells = {FIXTURE, kind, usr, "-", name, side, params, brief, comment, decl}
+    for i, cell in ipairs(cells) do
+        cells[i] = escape(cell)
+    end
+    return table.concat(cells, "\t")
+end
+
+-- The raw comment of reset: a tab, a line feed, a backslash and a non-ASCII apostrophe (UTF-8).
+local RESET_COMMENT = "/// Resets the thing.\n/// Keeps a\\b and a\tTAB\n/// Don\226\128\153t"
+
+-- The doc rows the fixture's extractor gives (the rows of FixtureKit; nil for any other framework, which it does not list). The
+-- literal row has a tab, a line feed and a backslash in its comment, written as the extractor writes them.
+local function fixture_doc_rows(fw, sdk)
+    if fw ~= FIXTURE then
+        return nil
+    end
+    return {
+        doc_row("c:objc(cs)FKThing(im)reset", "method", "reset", "-", "", "Resets the thing.", RESET_COMMENT, "- (void)reset"),
+        -- the same USR again: the first row of a USR is the one kept
+        doc_row("c:objc(cs)FKThing(im)reset", "method", "reset", "-", "", "", "", "- (void)reset NS_SWIFT_UNAVAILABLE(\"x\")"),
+        -- no raw comment: the brief is the comment
+        doc_row("c:objc(cs)FKThing(im)setName:age:", "method", "setName:age:", "-", "n | a", "Sets the name.", "",
+                "- (void)setName:(NSString *)n age:(int)a | pipe"),
+        -- a declaration that quotes backticks, as an API_DEPRECATED message does
+        doc_row("c:objc(cs)FKThing(py)title", "property", "title", "-", "", "", "",
+                "@property (nonatomic, copy) NSString *title API_DEPRECATED(\"Use `other`\", ios(1.0, 2.0))"),
+        -- a row with no USR is no member
+        doc_row("-", "super", "NSObject", "-", "", "", "", "-"),
+        -- a class property: its side is "+" as the shard reader gives it, whatever the extractor's side column says
+        doc_row("c:objc(cs)FKThing(cpy)shared", "property", "shared", "-", "", "", "", "@property (class, readonly) FKThing *shared"),
+        doc_row("c:objc(pl)FKDelegate(im)didFinish", "method", "didFinish", "-", "", "", "", "- (void)didFinish;"),
+        doc_row("c:objc(pl)FKDelegate(cm)make", "method", "make", "+", "", "", "/// Makes one.", "+ (instancetype)make;"),
+        -- the literal row: its comment holds a tab, a line feed and a backslash
+        "FixtureKit\tmethod\tc:objc(cs)FKThing(im)tabbed\t-\ttabbed\t-\t\t\t/// one\\ttwo\\nthree\\\\four\t- (void)tabbed",
+    }
+end
+
+-- The text of a page, or nil when the page is absent.
+local function page_of(dir, name)
+    return page_text(path.join(dir, name))
+end
+
 local function test_pages(check)
     local root = path.join(os.tmpdir(), "charon-doc-test-" .. tostring(os.time()))
-    local tree, corpus, out = path.join(root, "tree"), path.join(root, "corpus"), path.join(root, "out")
+    local tree, corpus = path.join(root, "tree"), path.join(root, "corpus")
+    local out, out_marked = path.join(root, "out"), path.join(root, "out-marked")
     local cmd_doc = import("gen.cmd_doc", {rootdir = TOOLS, anonymous = true})
     write_fixture(tree, corpus)
     headers.use(fixture_headers)
     cmd_doc.use_objc(function(_, frameworks, fn) fixture_rows(FIXTURE, fn) end)
-    local args = {tree = tree, all = true, sdk = "/nonexistent", coordination = corpus, out = out}
-    check(cmd_doc.run(args) == 0, "doc --all on the fixture succeeds")
+
+    -- the decoding of the escaped cells: the literal row's comment is its tab, line feed and backslash
+    local fixture_rows_list = fixture_doc_rows(FIXTURE)
+    local literal = fixture_rows_list[#fixture_rows_list]
+    local cells = doc_text.decode(literal)
+    check(#cells == 10, "a doc row has ten cells")
+    check(cells[9] == "/// one\ttwo\nthree\\four", "a comment cell decodes its escaped tab, line feed and backslash")
+    check(cells[10] == "- (void)tabbed" and cells[5] == "tabbed", "the other cells decode as written")
+    check(#doc_text.decode("a\t\t-") == 3 and doc_text.decode("a\t\t-")[2] == "", "an empty cell is an empty string")
+    doc_text.use(fixture_doc_rows)
+    local doc = doc_text.rows(tree, FIXTURE, "/nonexistent")
+    local rows_usr, rows_api = doc.usr, doc.api
+    check(rows_usr ~= nil and rows_usr["c:objc(cs)FKThing(im)tabbed"].comment == cells[9],
+          "the rows give the decoded comment of a USR")
+    check(rows_usr["c:objc(cs)FKThing(im)reset"].decl == "- (void)reset", "a USR written twice keeps its first row")
+    check(rows_usr["c:objc(cs)FKThing(im)setName:age:"].from_brief == true
+          and rows_usr["c:objc(cs)FKThing(im)setName:age:"].comment == "Sets the name.",
+          "a row with an empty raw comment takes its brief, and says so")
+    check(rows_usr["c:objc(cs)FKThing(im)reset"].from_brief == false, "a row with a raw comment does not take its brief")
+    check(rows_api["method -[FKThing reset]"] == rows_usr["c:objc(cs)FKThing(im)reset"], "the rows are keyed by kind and api")
+    check(rows_api["method +[FKDelegate make]"] ~= nil and rows_api["property -[FKThing title]"] ~= nil,
+          "a class member of a protocol is keyed with its sign")
+    check(rows_api["property +[FKThing shared]"] ~= nil and rows_api["property -[FKThing shared]"] == nil,
+          "a class property is keyed with the sign of a class member, as the shard reader gives it")
+    check(rows_usr["-"] == nil, "a row with no USR is not kept")
+
+    check(cmd_doc.run({tree = tree, all = true, sdk = "/nonexistent", coordination = corpus, out = out}) == 0,
+          "doc --all on the fixture succeeds")
 
     local dir = path.join(out, FIXTURE)
-    local index = page_text(path.join(dir, "index.md"))
+    local index = page_of(dir, "index.md")
     check(has(index, "## Classes (1)"), "the index counts one class")
     check(has(index, "| FKThing | NSObject | 4 | 1 | 2 | [FKThing.md](FKThing.md) |"),
           "the index row counts members, overridden and stubbed (the skipped member is not stubbed)")
-    check(has(index, "| FKDelegate | transcribed | 2 | [FKDelegate.md](FKDelegate.md) |"), "the index lists the protocol with its members")
+    check(has(index, "| FKDelegate | transcribed | 3 | [FKDelegate.md](FKDelegate.md) |"), "the index lists the protocol with its members")
     check(has(index, "Constants: [Constants.md](Constants.md) (1 rows)."), "the index counts the constant rows")
 
-    local class = page_text(path.join(dir, "FKThing.md"))
+    local class = page_of(dir, "FKThing.md")
     check(has(class, "Superclass: NSObject. Status at 6.1.3 and 4.3 is per member below."), "the class page names its superclass")
-    check(has(class, "| method | `not derived: decl (ruling D8)` | API_AVAILABLE(ios(12.0)) | missing | implemented | rank 3, high, 40 apps | lead | - | stub |"),
-          "a member row escapes its pipes, takes its ledger status and its demand, and is a stub")
-    check(has(class, "| method | `not derived: decl (ruling D8)` | - | implemented | implemented | - | - | - | not stubbed: class method not stubbed in the fixture |"),
-          "a member the trace left out reports its reason")
-    check(has(class, "| method | `not derived: decl (ruling D8)` | - | implemented | absent | rank -, -, - apps | - | implemented: packages/a/apple-backports/registry/FixtureKit/ios.json, pin fixture pin | hand/override |"),
-          "an overridden member shows its registry row, its pin and the hand override")
-    check(has(class, "## Header comments\n\n- not derived: the extractor has no comment mode\n"),
-          "the header comments section is marked, not derived")
+    check(has(class, "| method | `- (void)setName:(NSString *)n age:(int)a \\| pipe` | API_AVAILABLE(ios(12.0)) | missing | implemented | rank 3, high, 40 apps | lead | - | stub |"),
+          "a member row shows its extractor declaration (its pipes escaped), its ledger status and its demand, and is a stub")
+    check(has(class, "| method | `not derived: not in the doc rows` | - | implemented | implemented | - | - | - | not stubbed: class method not stubbed in the fixture |"),
+          "a member the extractor does not list is marked, and a member the trace left out reports its reason")
+    check(has(class, "| method | `- (void)reset` | - | implemented | absent | rank -, -, - apps | - | implemented: packages/a/apple-backports/registry/FixtureKit/ios.json, pin fixture pin | hand/override |"),
+          "an overridden member shows its extractor declaration, its registry row, its pin and the hand override")
+    check(has(class, "| property | `` @property (nonatomic, copy) NSString *title API_DEPRECATED(\"Use `other`\", ios(1.0, 2.0)) `` | - |"),
+          "a property row shows its extractor declaration, in a code span that can hold a backtick")
+    check(has(class, "## Header comments\n\n### `-[FKThing reset]`\n\n```\n/// Resets the thing.\n/// Keeps a\\b and a\tTAB\n/// Don\\u{2019}t\n```\n"),
+          "a member with a raw comment shows it in a block, with the non-ASCII character as an escape")
+    check(has(class, "### `-[FKThing setName:age:]`\n\n```\nSets the name.\n```\n"),
+          "a member with only a brief shows the brief as its comment")
+    check(has(class, "- `+[FKThing make]`: not derived: not in the doc rows\n- `-[FKThing title]`: no comment in the doc rows\n"),
+          "the members the extractor does not list, and those with no comment, are listed under the blocks")
     check(not has(class, "@property (nonatomic) NSString *title") and not has(class, "(instancetype)make") and not has(class, "sized"),
           "no declaration text of the spec shows on the page")
     check(has(class, "| item | kind | value | build |"), "the host oracle table is there")
@@ -153,24 +237,45 @@ local function test_pages(check)
     check(has(class, "| `-[FKThing title]` | @16@0:8 | 0x5 |"), "a property's binary row is found by its name")
     check(has(class, "| `+[FKThing make]` | not in the table | - |"), "a member the binary does not hold says so")
 
-    local protocol = page_text(path.join(dir, "FKDelegate.md"))
+    local protocol = page_of(dir, "FKDelegate.md")
     check(has(protocol, "Status in the transcriber's facts: transcribed. Introduced 12.0. Bases: NSObject."), "the protocol page gives its record")
-    check(has(protocol, "| required | method | `not derived: decl (ruling D8)` | yes | header-ok | - | - |"),
-          "a protocol member row shows its section and its status at 6.1.3")
-    check(has(protocol, "## Header comments\n\n- not derived: the extractor has no comment mode\n"),
-          "the protocol's header comments are marked, not derived")
+    check(has(protocol, "| required | method | `- (void)didFinish;` | yes | header-ok | - | - |"),
+          "a protocol member row shows its extractor declaration, its section and its status at 6.1.3")
+    check(has(protocol, "| required | method | `+ (instancetype)make;` | yes | implemented | - | - |"),
+          "a class member of a protocol takes its doc row by its sign")
+    check(has(protocol, "| optional | property | `not derived: not in the doc rows` | no |"),
+          "a protocol member the extractor does not list is marked")
+    check(has(protocol, "## Header comments\n\n### `+[FKDelegate make]`\n\n```\n/// Makes one.\n```\n\n- `-[FKDelegate name]`: not derived: not in the doc rows\n- `-[FKDelegate didFinish]`: no comment in the doc rows\n"),
+          "a protocol's comments: the block of the member with a comment, the bullets of the others")
+    check(not has(protocol, "@property NSString *name;"), "no declaration text of the spec shows on the protocol page")
 
-    local constants = page_text(path.join(dir, "Constants.md"))
+    local constants = page_of(dir, "Constants.md")
     check(has(constants, "| FKConstant | `not derived: decl (ruling D8)` | fk | - | implemented | implemented | generated |"),
-          "a constant row shows its value and its ownership")
-    local swift_page = page_text(path.join(dir, "Swift.md"))
+          "the constants page is unchanged: a constant row shows its value and its ownership")
+    local swift_page = page_of(dir, "Swift.md")
     check(has(swift_page, "| method | `-[FKThing swiftOnly]` | 13.0 | - | no | 5 | lead |"), "the Swift page lists the bucket row")
     check(has(swift_page, "- Whether an armv7 Swift module or runtime loads on iOS 6.1.3: only a device run can show it."),
           "the Swift page ends with the overlay needs")
 
     -- a second run on the unchanged output writes nothing: the pages are compared before they are written
     local before = emit.count()
-    check(cmd_doc.run(args) == 0 and emit.count() == before, "a second doc run on the same output writes no file")
+    check(cmd_doc.run({tree = tree, all = true, sdk = "/nonexistent", coordination = corpus, out = out}) == 0
+          and emit.count() == before, "a second doc run on the same output writes no file")
+
+    -- a framework the extractor gives no rows for keeps the marked text
+    doc_text.use(function() return nil end)
+    check(cmd_doc.run({tree = tree, all = true, sdk = "/nonexistent", coordination = corpus, out = out_marked}) == 0,
+          "doc --all with no doc rows succeeds")
+    local marked = page_of(path.join(out_marked, FIXTURE), "FKThing.md")
+    check(has(marked, "| method | `not derived: decl (ruling D8)` | API_AVAILABLE(ios(12.0)) | missing |"),
+          "without doc rows a member keeps the marked declaration")
+    check(has(marked, "## Header comments\n\n- not derived: the extractor has no comment mode\n"),
+          "without doc rows the header comments section is marked, not derived")
+    local marked_protocol = page_of(path.join(out_marked, FIXTURE), "FKDelegate.md")
+    check(has(marked_protocol, "| required | method | `not derived: decl (ruling D8)` | yes | header-ok | - | - |"),
+          "without doc rows a protocol member keeps the marked declaration")
+    check(has(marked_protocol, "## Header comments\n\n- not derived: the extractor has no comment mode\n"),
+          "without doc rows the protocol's header comments are marked, not derived")
     os.rm(root)
 end
 

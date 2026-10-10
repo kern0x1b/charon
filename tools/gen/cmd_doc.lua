@@ -3,9 +3,10 @@
 -- binary's ObjC metadata), one page per protocol, Constants.md, and Swift.md when the bucket has rows. The inputs: the spec, the
 -- registry, the pins and the trace's skipped list of the tree; the surface, ledgers, oracle defaults and ObjC table of the corpus
 -- (--coordination); the superclasses of the header parse (--sdk, through headers.lua). Pages go through emit, and nothing else is
--- written. Two kinds of text are not derived yet and are marked, not faked: the header comments (the extractor has no comment mode)
--- and every declaration text (ruling D8: re-derived from clang at doc time; the spec and the shard hold no decl). Every other part
--- is the oracle's, byte for byte.
+-- written. The header comments and the declaration text of a class or protocol member are re-derived from clang at doc time
+-- (ruling 2, ruling D8): the extractor's doc mode gives them (doc_text.lua, decls --doc, read through a pipe). A member the extractor
+-- does not list is marked, and a framework the extractor cannot run for keeps the marked text. Every other part is the oracle's, byte
+-- for byte.
 
 local snapshot = import("spec", {anonymous = true})
 local surface = import("surface", {anonymous = true})
@@ -31,12 +32,14 @@ local LEDGER_4_3 = "ledger-w45-4.3"
 local IMPLEMENTED = "implemented"
 local NO_VALUE = "-"
 local MEMBER_KINDS = {method = true, property = true}
--- The text of the two things doc does not derive yet (the coordinator's ruling 2): the header comments, which the extractor cannot
--- give (its token scan skips comments), and every declaration text, which is re-derived from clang at doc time (ruling D8). They are
--- written in place of the oracle's text and are listed in the report; nothing is taken from the spec's or the protocols' decl column.
+-- The text of what the extractor's doc mode does not give: a framework it cannot run for keeps the marked text for its comments and its
+-- declarations (ruling 2 and ruling D8), and a member it does not list is marked as such. Nothing is taken from the spec's or the
+-- protocols' decl column.
 local COMMENTS_NOT_DERIVED = "- not derived: the extractor has no comment mode"
 local DECL_NOT_DERIVED = "not derived: decl (ruling D8)"
-local comment_lines = import("doc_text", {anonymous = true}).comment_lines
+local NOT_IN_ROWS = "not derived: not in the doc rows"
+local NO_COMMENT = "no comment in the doc rows"
+local doc_text = import("doc_text", {anonymous = true})
 -- The host oracle's rows a class page shows, and the cell length a markdown cell is cut to.
 local ORACLE_ROWS_SHOWN = 60
 local CELL_LIMIT = 400
@@ -81,6 +84,142 @@ local function md_cell(value)
     text = string.gsub(text, "|", "\\|")
     text = string.gsub(text, "\n", " ")
     return string.sub(text, 1, CELL_LIMIT)
+end
+
+-- The UTF-8 sequence at byte i of text: its length and its code point, or nil when the bytes there are not one well-formed sequence.
+local function sequence_at(text, i)
+    local lead = string.byte(text, i)
+    local count, code
+    if lead >= 0xC2 and lead <= 0xDF then
+        count, code = 2, lead & 0x1F
+    elseif lead >= 0xE0 and lead <= 0xEF then
+        count, code = 3, lead & 0x0F
+    elseif lead >= 0xF0 and lead <= 0xF4 then
+        count, code = 4, lead & 0x07
+    else
+        return nil
+    end
+    if i + count - 1 > #text then
+        return nil
+    end
+    for k = i + 1, i + count - 1 do
+        local byte = string.byte(text, k)
+        if byte < 0x80 or byte > 0xBF then
+            return nil
+        end
+        code = (code << 6) | (byte & 0x3F)
+    end
+    return count, code
+end
+
+-- The text as ASCII, which emit requires: a UTF-8 character is written \u{hex}, and a byte that is not UTF-8 is written \xhh.
+local function ascii_text(text)
+    return (string.gsub(text, "[\128-\255]+", function(run)
+        local out, i = {}, 1
+        while i <= #run do
+            local count, code = sequence_at(run, i)
+            if count then
+                table.insert(out, string.format("\\u{%x}", code))
+                i = i + count
+            else
+                table.insert(out, string.format("\\x%02x", string.byte(run, i)))
+                i = i + 1
+            end
+        end
+        return table.concat(out)
+    end))
+end
+
+-- A declaration in a markdown table cell: ASCII, with its pipes escaped. It is not cut (a declaration shows whole).
+local function decl_text(text)
+    return (string.gsub(ascii_text(text), "|", "\\|"))
+end
+
+-- A fence for a block that holds the text: three backticks, or one more than the longest run of backticks in it.
+local function fence_of(text)
+    local longest = 0
+    for run in string.gmatch(text, "`+") do
+        longest = math.max(longest, #run)
+    end
+    return string.rep("`", math.max(3, longest + 1))
+end
+
+-- Text as a markdown code span: the delimiter is one backtick longer than the longest run in the text (a declaration can quote
+-- backticks, as an API_DEPRECATED message does), and the text is padded when the delimiter is longer than one backtick.
+local function code_span(text)
+    local longest = 0
+    for run in string.gmatch(text, "`+") do
+        longest = math.max(longest, #run)
+    end
+    if longest == 0 then
+        return "`" .. text .. "`"
+    end
+    local delimiter = string.rep("`", longest + 1)
+    return delimiter .. " " .. text .. " " .. delimiter
+end
+
+-- The declaration cell of a member: the extractor's declaration as a code span, or the marked text when the framework has no doc
+-- rows (docs is nil) or the extractor does not list the member.
+local function decl_cell(docs, kind, api)
+    if docs == nil then
+        return code_span(DECL_NOT_DERIVED)
+    end
+    local row = docs[kind .. " " .. api]
+    if row == nil then
+        return code_span(NOT_IN_ROWS)
+    end
+    return code_span(decl_text(row.decl))
+end
+
+-- The header comments section of a class or a protocol, as lines: the heading, a blank line, then the body. docs is nil when the
+-- framework has no doc rows (the marked text). Otherwise a member with a comment has a heading (its api) and its raw comment text in a
+-- block, and a member with no comment, or that the extractor does not list, is one bullet after the blocks. entries are {kind, api}
+-- in the page's order.
+local function comments_section(docs, entries)
+    local page = {"## Header comments", ""}
+    if docs == nil then
+        page[#page + 1] = COMMENTS_NOT_DERIVED
+        return page
+    end
+    local blocks, bullets = {}, {}
+    for _, entry in ipairs(entries) do
+        local row = docs[entry.kind .. " " .. entry.api]
+        if row == nil then
+            table.insert(bullets, string.format("- `%s`: %s", entry.api, NOT_IN_ROWS))
+        elseif row.comment == "" then
+            table.insert(bullets, string.format("- `%s`: %s", entry.api, NO_COMMENT))
+        else
+            local text = ascii_text(row.comment)
+            local fence = fence_of(text)
+            local block = {"### `" .. entry.api .. "`", "", fence}
+            for line in string.gmatch(text .. "\n", "([^\n]*)\n") do
+                table.insert(block, line)
+            end
+            table.insert(block, fence)
+            table.insert(blocks, block)
+        end
+    end
+    local body = {}
+    for _, block in ipairs(blocks) do
+        if #body > 0 then
+            table.insert(body, "")
+        end
+        for _, line in ipairs(block) do
+            table.insert(body, line)
+        end
+    end
+    if #bullets > 0 then
+        if #body > 0 then
+            table.insert(body, "")
+        end
+        for _, line in ipairs(bullets) do
+            table.insert(body, line)
+        end
+    end
+    for _, line in ipairs(body) do
+        page[#page + 1] = line
+    end
+    return page
 end
 
 -- api.rstrip("]") of the oracle.
@@ -191,7 +330,7 @@ local function read_objc(corpus, needs)
     return state
 end
 
--- The page of one class: its members in (kind, api) order, the oracle's table, and the header comments (not derived: marked).
+-- The page of one class: its members in (kind, api) order, the oracle's table, and the header comments (from the doc rows, or marked).
 local function class_page(parsed, fw, cls, members, ctx)
     local led, led43, surf, regs, pins = ctx.led, ctx.led43, ctx.surf, ctx.regs, ctx.pins
     local stubs_skipped, oracle, meta_of, objc_index = ctx.stubs_skipped, ctx.oracle, ctx.meta_of, ctx.objc_index
@@ -224,14 +363,16 @@ local function class_page(parsed, fw, cls, members, ctx)
         else
             stub = "stub"
         end
-        page[#page + 1] = string.format("| %s | `%s` | %s | %s | %s | %s | %s | %s | %s |", r.kind, DECL_NOT_DERIVED,
+        page[#page + 1] = string.format("| %s | %s | %s | %s | %s | %s | %s | %s | %s |", r.kind, decl_cell(ctx.docs, r.kind, r.api),
                                         md_cell(r.availability ~= NO_VALUE and r.availability or NO_VALUE), s6, s43, demand,
                                         md_cell(either(srow["impl-lead"], NO_VALUE)), md_cell(ours), md_cell(stub))
     end
     page[#page + 1] = ""
-    page[#page + 1] = "## Header comments"
-    page[#page + 1] = ""
-    for _, line in ipairs(comment_lines(ctx.tree, fw, COMMENTS_NOT_DERIVED)) do
+    local entries = {}
+    for _, r in ipairs(sorted) do
+        entries[#entries + 1] = {kind = r.kind, api = r.api}
+    end
+    for _, line in ipairs(comments_section(ctx.docs, entries)) do
         page[#page + 1] = line
     end
     if oracle[cls] then
@@ -281,7 +422,7 @@ local function class_page(parsed, fw, cls, members, ctx)
 end
 
 -- The page of one protocol: its record from the snapshot, its members in (section, kind, selector) order, and the header comments
--- (not derived: marked).
+-- (from the doc rows, or marked). A member's doc row is keyed by its sign: "-" for an instance member, "+" for a class member.
 local function protocol_page(fw, name, record, ctx)
     local led, surf, regs = ctx.led, ctx.surf, ctx.regs
     local page = {"# " .. name .. " (" .. fw .. ", protocol)", "",
@@ -293,6 +434,7 @@ local function protocol_page(fw, name, record, ctx)
                   "| section | kind | declaration (26.2 AST, transcriber rendering) | in 16.4 body | 6.1.3 | demand | ours |",
                   "| --- | --- | --- | --- | --- | --- | --- |"}
     local sorted = sorted_stable(record.members, by_fields({"section", "kind", "selector"}))
+    local entries = {}
     for _, member in ipairs(sorted) do
         local api = "-[" .. name .. " " .. member.selector .. "]"
         local srow = surf[surface.key(member.kind, api)] or {}
@@ -301,13 +443,14 @@ local function protocol_page(fw, name, record, ctx)
             demand = string.format("rank %s, %s apps", srow["demand-rank"], either(srow["demand-apps"], NO_VALUE))
         end
         local ours = regs[api] and "hand/registry" or NO_VALUE
-        page[#page + 1] = string.format("| %s | %s | `%s` | %s | %s | %s | %s |", member.section, member.kind, DECL_NOT_DERIVED,
-                                        member.in16, either(row_of(led, member.kind, api), IMPLEMENTED), demand, ours)
+        local doc_api = (member.instance and "-" or "+") .. "[" .. name .. " " .. member.selector .. "]"
+        entries[#entries + 1] = {kind = member.kind, api = doc_api}
+        page[#page + 1] = string.format("| %s | %s | %s | %s | %s | %s | %s |", member.section, member.kind,
+                                        decl_cell(ctx.docs, member.kind, doc_api), member.in16,
+                                        either(row_of(led, member.kind, api), IMPLEMENTED), demand, ours)
     end
     page[#page + 1] = ""
-    page[#page + 1] = "## Header comments"
-    page[#page + 1] = ""
-    for _, line in ipairs(comment_lines(ctx.tree, fw, COMMENTS_NOT_DERIVED)) do
+    for _, line in ipairs(comments_section(ctx.docs, entries)) do
         page[#page + 1] = line
     end
     page[#page + 1] = ""
@@ -350,6 +493,11 @@ local function write_framework(ctx, fw, objc_state)
     for _, pin in ipairs(snapshot.pins(tree, fw)) do
         pins[pin.api] = pin
     end
+    -- the doc-time rows of the extractor (one pipe per framework); none for a framework it cannot run for: the marked text
+    local doc, why = doc_text.rows(tree, fw, ctx.sdk)
+    if doc == nil then
+        print(string.format("doc %s: no doc rows (%s): its comments and declarations keep the marked text", fw, why))
+    end
     local ctx_fw = {
         led = surface.ledger_status(corpus, fw, LEDGER_6_1_3),
         led43 = surface.ledger_status(corpus, fw, LEDGER_4_3),
@@ -360,6 +508,7 @@ local function write_framework(ctx, fw, objc_state)
         stubs_skipped = skipped,
         meta_of = objc_state.meta,
         objc_index = objc_state.index,
+        docs = doc and doc.api,
     }
     local protos = protocols.records(tree, fw)
     local proto_names = {}
