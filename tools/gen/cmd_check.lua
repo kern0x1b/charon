@@ -1,13 +1,17 @@
 -- `check`: regenerates a framework in memory from its committed inputs (the shard, the overrides, the pins and the constant record) and
 -- compares the result with the build directory .gen. A drift of the build directory, a stale pin (a pinned member whose declaration
--- differs from its pin), or a constants object the generator no longer emits fails the check. A build directory not yet written is a
--- warning, so a fresh checkout checks with no derived file present; a removed override is a warning.
+-- differs from its pin), a protocol-set record that names a protocol a registry row implements, or a constants object the generator
+-- no longer emits fails the check. A build directory not yet written is a warning, so a fresh checkout checks with no derived file
+-- present; a removed override (a registry override the spec no longer holds, kept on purpose for the releases that carry it) is a
+-- warning too. A run that finds no framework to check fails: a check that checked nothing is not a pass (review r4 G11).
 
 local layout = import("layout", {anonymous = true})
 local snapshot = import("spec", {anonymous = true})
 local files = import("files", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
 local order = import("order", {anonymous = true})
+local surface = import("surface", {anonymous = true})
+local protocols = import("protocols", {anonymous = true})
 local gen = import("cmd_gen", {anonymous = true})
 
 -- The data lines of a table's text: every line after the header that is not empty.
@@ -19,6 +23,20 @@ local function data_lines(text)
             table.insert(out, all[i])
         end
     end
+    return out
+end
+
+-- The protocols the protocol-set record of a framework names that a registry row implements, sorted. The rule (protocols.rule_set)
+-- names only protocols no registry row implements, so such a record is a contradiction; this check needs no corpus (review r4 F16).
+function record_conflicts(tree, fw)
+    local registry = surface.registry_entries(tree, fw)
+    local out = {}
+    for name in pairs(protocols.recorded_set(tree, fw)) do
+        if registry[name] ~= nil then
+            table.insert(out, name)
+        end
+    end
+    table.sort(out, order.less)
     return out
 end
 
@@ -48,6 +66,9 @@ local function diagnose(tree, fw, corpus)
             table.insert(problems, "spec member without a hash define: " .. r.api)
         end
     end
+    for _, name in ipairs(record_conflicts(tree, fw)) do
+        table.insert(problems, "protocol-set record names a protocol a registry row implements: " .. name)
+    end
     local stale = data_lines(emitted["stale.tsv"])
     local removed = data_lines(emitted["removed.tsv"])
     local new = data_lines(emitted["new.tsv"])
@@ -60,10 +81,14 @@ local function diagnose(tree, fw, corpus)
     return problems, warnings, #removed, #new
 end
 
--- Returns the exit status: 1 when any framework has a problem.
+-- Returns the exit status: 1 when any framework has a problem, or when there is no framework to check.
 function run(args)
     snapshot.forget()
     local targets = args.all and snapshot.frameworks(args.tree) or {args.framework}
+    if #targets == 0 then
+        print("CHECK: no framework to check in " .. args.tree)
+        return 1
+    end
     local failed = 0
     for _, fw in ipairs(targets) do
         local problems, warnings, removed, new = diagnose(args.tree, fw, args.coordination)
@@ -73,7 +98,7 @@ function run(args)
         for _, line in ipairs(warnings) do
             print("WARN " .. fw .. ": " .. line)
         end
-        print(string.format("check %s: drift and stale %d, removed (warned) %d, members without an override (new) %d",
+        print(string.format("check %s: problems %d, removed %d, members without an override (new) %d",
             fw, #problems, removed, new))
         if #problems > 0 then
             failed = failed + 1

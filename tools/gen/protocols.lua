@@ -34,7 +34,8 @@ function rule_set(tree, fw, corpus)
 end
 
 -- The reviewed set of a framework: the protocols named by its record (protocol-sets/<F>.tsv), and the empty set without a record.
-local function recorded_set(tree, fw)
+-- Read by the check too (cmd_check.record_conflicts), in every clean checkout.
+function recorded_set(tree, fw)
     local out = {}
     local text = files.read_text(layout.protocol_set_path(tree, fw))
     if text then
