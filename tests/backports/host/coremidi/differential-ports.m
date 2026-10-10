@@ -197,6 +197,61 @@ int charon_ports_run(int *checks)
                       releaseGot && gDestCount == 2 && charon_same_words(&gDest[gDestCount - 1], words, 2));
     }
 
+
+    // A 2.0 source's list to a 2.0 input port connected to it. macOS's own source and port keep the 16-bit velocity of 0x1234
+    // (the check below is that measurement). The library's pair routes through the release's MIDI 1.0 bytes: the library
+    // cannot see which ports an application connected to a source (MIDIPortConnectSource is the release's own function, and the
+    // release shows no connection: facts/CoreMIDI/Translation.md, "2.0 sources and input ports"), so the velocity arrives cut to
+    // 7 bits and spread again. That is the crutch of coordination/crutches.md; the line it prints is a measurement, counted
+    // neither as a pass nor as a failure, and it names the macOS value beside the library's.
+    if (made) {
+        UInt32 words[2] = {0x40903C00u, 0x12340000u};
+        Byte buffer[64];
+        MIDIEventList *list = (MIDIEventList *)buffer;
+        MIDIEventPacket *end = MIDIEventListInit(list, kMIDIProtocol_2_0);
+        CharonMIDIEventListAdd(list, sizeof(buffer), end, 0, 2, words);
+
+        MIDIEndpointRef releaseSrc = 0, librarySrc = 0;
+        MIDIPortRef releasePort = 0, libraryPort = 0;
+        OSStatus releaseSrcStatus = MIDISourceCreateWithProtocol(client, CFSTR("charon-release-src-2"), kMIDIProtocol_2_0, &releaseSrc);
+        OSStatus releasePortStatus = MIDIInputPortCreateWithProtocol(client, CFSTR("charon-release-in-2"), kMIDIProtocol_2_0, &releasePort,
+                                                                     ^(const MIDIEventList *received, void *ref) {
+            charon_record_input(received, ref);
+        });
+        OSStatus librarySrcStatus = CharonMIDISource(client, CFSTR("charon-library-src-2"), kMIDIProtocol_2_0, &librarySrc);
+        OSStatus libraryPortStatus = CharonMIDIInputPort(client, CFSTR("charon-library-in-2"), kMIDIProtocol_2_0, &libraryPort,
+                                                         ^(const MIDIEventList *received, void *ref) {
+            charon_record_input(received, ref);
+        });
+        int sourcesMade = releaseSrcStatus == noErr && releasePortStatus == noErr && librarySrcStatus == noErr && libraryPortStatus == noErr;
+        charon_report(checks, &failures, "ports: a 2.0 source and a 2.0 input port of the release, and of the library, for the test", sourcesMade);
+        if (sourcesMade) {
+            int connected = MIDIPortConnectSource(releasePort, releaseSrc, (void *)3) == noErr &&
+                            MIDIPortConnectSource(libraryPort, librarySrc, (void *)4) == noErr;
+            gInputCount = 0;
+            OSStatus releaseSent = MIDIReceivedEventList(releaseSrc, list);
+            int releaseGot = releaseSent == noErr && charon_wait(gInputSignal);
+            unsigned releaseVelocity = releaseGot && gInputCount == 1 && gInput[0].count == 2 ? gInput[0].words[1] >> 16 : 0xFFFFFFFFu;
+            charon_report(checks, &failures, "ports: the release's own 2.0 source gives its 2.0 input port the 0x1234 velocity as sent",
+                          connected && releaseGot && gInputCount == 1 && charon_same_words(&gInput[0], words, 2) && gInput[0].ref == (void *)3);
+            gInputCount = 0;
+            OSStatus librarySent = CharonMIDIReceive(librarySrc, list);
+            int libraryGot = librarySent == noErr && charon_wait(gInputSignal);
+            charon_report(checks, &failures, "ports: the library's 2.0 source delivers its list to its 2.0 input port",
+                          connected && libraryGot && gInputCount == 1 && gInput[0].count == 2 && gInput[0].words[0] == words[0] &&
+                          gInput[0].ref == (void *)4);
+            if (libraryGot && gInputCount == 1 && gInput[0].count == 2)
+                printf("known gap (crutch): a 2.0 source's velocity 0x1234 reaches a 2.0 input port of the library as 0x%04X; the release's own pair gives 0x%04X\n",
+                       (unsigned)(gInput[0].words[1] >> 16), releaseVelocity);
+            MIDIPortDisconnectSource(releasePort, releaseSrc);
+            MIDIPortDisconnectSource(libraryPort, librarySrc);
+        }
+        if (releasePortStatus == noErr) MIDIPortDispose(releasePort);
+        if (libraryPortStatus == noErr) MIDIPortDispose(libraryPort);
+        if (releaseSrcStatus == noErr) MIDIEndpointDispose(releaseSrc);
+        if (librarySrcStatus == noErr) MIDIEndpointDispose(librarySrc);
+    }
+
     // A disposed destination takes nothing: the library's own send and in-process delivery both answer, and no block runs.
     MIDIEndpointRef gone = 0;
     int before = gDestCount;

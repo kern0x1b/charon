@@ -17,8 +17,16 @@ target("charoncoremidiapp")
     add_rules("@addon/charon/app")
     add_files(path.join(root, "tests/backports/emulate/coremidi/app/main.m"))
     add_files(path.join(root, "tests/backports/emulate/coremidi/roundtrip.m"))
-    add_defines("CHARON_APP=1", os.getenv("CHARCOREMIDI_NO_AUDIO") and "CHARON_NO_AUDIO_SESSION=1" or nil,
-        os.getenv("CHARCOREMIDI_PROBE") and "CHARON_6_1_3_PROBE=1" or nil)
+    -- One list: a nil between the arguments of add_defines ends the arguments there, which dropped the probe define whenever
+    -- the audio session was left on.
+    local defines = {"CHARON_APP=1"}
+    if os.getenv("CHARCOREMIDI_NO_AUDIO") then
+        table.insert(defines, "CHARON_NO_AUDIO_SESSION=1")
+    end
+    if os.getenv("CHARCOREMIDI_PROBE") then
+        table.insert(defines, "CHARON_6_1_3_PROBE=1")
+    end
+    add_defines(defines)
     add_mflags("-fobjc-arc")
     add_ldflags("-fobjc-arc", {force = true})
     add_frameworks("Foundation", "UIKit", "CoreMIDI", "AudioToolbox")

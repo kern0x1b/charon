@@ -71,6 +71,39 @@ conversion rounds.
 - Not sent: SysEx8 and mixed data (types 5 and 13 to 15), flex data, the UMP stream and utility messages. The 1.0 side
   cannot carry them. Their handling in macOS was not measured.
 
+## 2.0 sources and the 2.0 input ports connected to them (a measured gap)
+
+A 2.0 list sent to a 2.0 DESTINATION this process made reaches the destination's block as it was sent (CharonMIDIPorts.m,
+charon_deliver_2_0; checked against the release's own 2.0 destination in differential-ports.m). The same is not true of a 2.0
+SOURCE and the 2.0 input port connected to it: `MIDIReceivedEventList` on a source converts the list to MIDI 1.0 bytes and hands
+them to the release's `MIDIReceived`, and the port's read procedure converts them back, so a 16-bit velocity is cut to 7 bits and
+spread again.
+
+Measured, with a note on of velocity 0x1234 (`40903C00 12340000`) sent from a 2.0 source to a 2.0 input port connected to it:
+
+- macOS, the release's own source and port (differential-ports.m, "the release's own 2.0 source gives its 2.0 input port the
+  0x1234 velocity as sent"): `40903C00 12340000`, as sent.
+- the library's source and port, on the host (the same run, the line it prints beginning "known gap"): velocity 0x1200.
+- the library's source and port on the emulated 6.1.3 (tests/backports/emulate/coremidi/app/main.m, built with
+  CHARCOREMIDI_PROBE=1; `MIDIReceivedEventList status 0, arrived 1, protocol 2, 2 words: 40903C00 12000000`): velocity 0x1200.
+
+Why it is not built natively. The library would have to know which input ports are connected to a source, and nothing it can
+read says so:
+
+- The connection is made by the release's own `MIDIPortConnectSource`. The port cannot replace a function the release exports
+  (`modules/apple/backports.lua`'s `band()` drops a port object whose symbols the release exports, and `attach.c` interposes
+  Objective-C classes and categories only: facts/VideoToolbox/PixelRotationSession.md measures the same wall for
+  `VTSessionSetProperty`). `MIDIPortConnectSource` and `MIDIPortDisconnectSource` are the release's own on every band.
+- The release shows no connection. On the emulated 6.1.3, `MIDIObjectGetProperties` of a 2.0 source before and after
+  `MIDIPortConnectSource` lists the same three keys (`uniqueID`, `protocol`, `name`), and that of the input port the same one
+  (`name`), connected or not (the probe's "properties status 0" lines). MIDIServices.h has no call that lists a port's sources.
+- The release calls a port's read procedure with the bytes and the connection reference the application gave; the call names no
+  source, so a 1.0 packet cannot be matched to the 2.0 list it came from without a guess (the same bytes can come from two
+  sources, and the port may not be connected to the one that sent them).
+
+What it costs: a 2.0 source's values above 7 bits are cut on the way to a 2.0 input port; a 2.0 destination of the library is
+not affected, and neither is a 1.0 port. A crutch (coordination/crutches.md, "CoreMIDI 2.0 source to 2.0 input port").
+
 ## SysEx
 
 A SysEx of six data bytes or fewer is one complete packet (status 0). A longer one is a start of six, then continues of six,

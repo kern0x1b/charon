@@ -11,6 +11,8 @@
 #import <CoreMIDI/CoreMIDI.h>
 #include <dlfcn.h>
 #import <objc/runtime.h>
+#include <dispatch/dispatch.h>
+#include <stdlib.h>
 
 int charon_roundtrip_run(void);
 
@@ -141,6 +143,92 @@ static void charon_probe_objects(void)
     }
 }
 
+// What the release shows of a connection, and what a 2.0 source's 2.0 velocity becomes at a 2.0 input port it is connected to.
+// The properties of the source and of the port are listed before and after MIDIPortConnectSource (their keys, the values are
+// not needed): a connection the release shows would let the library route a 2.0 list to the ports connected to a source.
+static void charon_probe_list_keys(const char *label, MIDIObjectRef object)
+{
+    CFPropertyListRef properties = NULL;
+    OSStatus status = MIDIObjectGetProperties(object, &properties, true);
+    if (status != noErr || !properties || CFGetTypeID(properties) != CFDictionaryGetTypeID()) {
+        printf("probe 6.1.3: %s: properties status %d\n", label, (int)status);
+        fflush(stdout);
+        if (properties)
+            CFRelease(properties);
+        return;
+    }
+    CFDictionaryRef dictionary = (CFDictionaryRef)properties;
+    CFIndex count = CFDictionaryGetCount(dictionary);
+    const void **keys = malloc((size_t)count * sizeof(void *));
+    CFDictionaryGetKeysAndValues(dictionary, keys, NULL);
+    printf("probe 6.1.3: %s: properties status %d, %ld keys:", label, (int)status, (long)count);
+    for (CFIndex i = 0; i < count; i++) {
+        char name[128];
+        if (CFGetTypeID(keys[i]) == CFStringGetTypeID() && CFStringGetCString(keys[i], name, sizeof(name), kCFStringEncodingUTF8))
+            printf(" '%s'", name);
+    }
+    printf("\n");
+    fflush(stdout);
+    free(keys);
+    CFRelease(properties);
+}
+
+static dispatch_semaphore_t gProbeArrival;
+static UInt32 gProbeWords[8];
+static int gProbeWordCount = -1;
+static int gProbeProtocol = -1;
+
+static void charon_probe_connection(void)
+{
+    MIDIClientRef client = 0;
+    if (MIDIClientCreate(CFSTR("charon-probe-conn"), NULL, NULL, &client) != noErr)
+        return;
+    gProbeArrival = dispatch_semaphore_create(0);
+    MIDIEndpointRef src = 0;
+    MIDIPortRef port = 0;
+    OSStatus srcStatus = MIDISourceCreateWithProtocol(client, CFSTR("charon-probe-src2"), kMIDIProtocol_2_0, &src);
+    OSStatus portStatus = MIDIInputPortCreateWithProtocol(client, CFSTR("charon-probe-in2"), kMIDIProtocol_2_0, &port,
+        ^(const MIDIEventList *list, void *srcConnRefCon) {
+            if (list->numPackets > 0 && gProbeWordCount < 0) {
+                const MIDIEventPacket *packet = &list->packet[0];
+                gProbeProtocol = (int)list->protocol;
+                gProbeWordCount = packet->wordCount < 8 ? (int)packet->wordCount : 8;
+                for (int i = 0; i < gProbeWordCount; i++)
+                    gProbeWords[i] = packet->words[i];
+            }
+            dispatch_semaphore_signal(gProbeArrival);
+        });
+    printf("probe 6.1.3: 2.0 source status %d, 2.0 input port status %d\n", (int)srcStatus, (int)portStatus);
+    fflush(stdout);
+    if (srcStatus == noErr && portStatus == noErr) {
+        charon_probe_list_keys("source before connect", src);
+        charon_probe_list_keys("port before connect", port);
+        OSStatus connected = MIDIPortConnectSource(port, src, NULL);
+        printf("probe 6.1.3: MIDIPortConnectSource status %d\n", (int)connected);
+        fflush(stdout);
+        charon_probe_list_keys("source after connect", src);
+        charon_probe_list_keys("port after connect", port);
+        Byte buffer[64];
+        MIDIEventList *list = (MIDIEventList *)buffer;
+        UInt32 words[2] = {0x40903C00u, 0x12340000u};
+        MIDIEventPacket *end = MIDIEventListInit(list, kMIDIProtocol_2_0);
+        MIDIEventListAdd(list, sizeof(buffer), end, 0, 2, words);
+        OSStatus received = MIDIReceivedEventList(src, list);
+        int arrived = dispatch_semaphore_wait(gProbeArrival, dispatch_time(DISPATCH_TIME_NOW, 20 * NSEC_PER_SEC)) == 0;
+        printf("probe 6.1.3: MIDIReceivedEventList status %d, arrived %d, protocol %d, %d words:", (int)received, arrived, gProbeProtocol, gProbeWordCount);
+        for (int i = 0; i < gProbeWordCount; i++)
+            printf(" %08X", (unsigned)gProbeWords[i]);
+        printf("\n");
+        fflush(stdout);
+        MIDIPortDisconnectSource(port, src);
+    }
+    if (portStatus == noErr)
+        MIDIPortDispose(port);
+    if (srcStatus == noErr)
+        MIDIEndpointDispose(src);
+    MIDIClientDispose(client);
+}
+
 #endif
 
 // The armv7 wraps: word counts whose byte sizes wrap the 32-bit size_t. The library must refuse them; before its fix, the
@@ -204,6 +292,7 @@ static void charon_probe_wrap_add(void)
     charon_probe_wrap_add();
 #ifdef CHARON_6_1_3_PROBE
     charon_probe_objects();
+    charon_probe_connection();
 #endif
     int failures = charon_roundtrip_run();
     printf("application exit: %d\n", failures);

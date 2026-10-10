@@ -48,6 +48,12 @@ if ! grep -q '^roundtrip: PASS' "$out/launch.log"; then
     echo "the round trip did not pass: no 'roundtrip: PASS' line in this run's $out/launch.log" >&2
     exit 1
 fi
+# A run asked for the 6.1.3 measurements (CHARCOREMIDI_PROBE) has their lines in its own output, or it did not measure: the define
+# that builds them is easy to lose, and a run without them reads as a pass of the round trip alone.
+if [ -n "${CHARCOREMIDI_PROBE:-}" ] && ! grep -q '^probe 6.1.3: ' "$out/launch.log"; then
+    echo "the probe was asked for (CHARCOREMIDI_PROBE) and this run's $out/launch.log has none of its lines" >&2
+    exit 1
+fi
 # A nonzero launch status is accepted only when the application's own device verdict for this run shows a clean exit. The
 # emulator reports an application that ends as its budget is reached as a failed launch (failure "exited", reason "reached"),
 # and the application's exit status is in that verdict (verdict.json beside the emulator log named in launch.log).
