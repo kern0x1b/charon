@@ -359,10 +359,11 @@ local function write_framework(args, fw)
     end
     -- The measured releases: the --measured file, or the committed measured.held-caches.tsv of a framework that has one (the read-back
     -- of its last release split). Without the default, input --all on a clean checkout dropped the measured column of those records
-    -- (Round 14: the data commit's regeneration passed the snapshot by hand). Only --measured writes the snapshot back.
+    -- (Round 14: the data commit's regeneration passed the snapshot by hand). Only --measured writes the snapshot back. Under --all
+    -- the --measured file is neither read nor written, as the oracle's cmd_input_all passes measured=None.
     local held = path.join(layout.snap_dir(tree, fw), "measured.held-caches.tsv")
     local measured = {}
-    if args.measured then
+    if args.measured and not args.all then
         measured = measured_releases(args.measured)
     elseif os.isfile(held) then
         measured = measured_releases(held)
@@ -431,7 +432,7 @@ local function write_framework(args, fw)
     if #lines > 1 then
         emit.file(layout.constant_record_path(tree, fw), table.concat(lines, "\n") .. "\n")
     end
-    if args.measured then
+    if args.measured and not args.all then
         local rows = {}
         for name, release in pairs(measured) do
             table.insert(rows, name .. "\t" .. release)
