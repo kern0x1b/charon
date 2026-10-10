@@ -72,7 +72,8 @@ def write(path, text):
 
 
 def read(path):
-    with open(path, encoding="ascii") as handle:
+    """A text file as it is on disk: UTF-8, no newline translation (the Lua readers take the bytes as they are)."""
+    with open(path, encoding="utf-8", newline="") as handle:
         return handle.read()
 
 
@@ -550,11 +551,6 @@ def frameworks_with_snapshot(tree):
 # hand implementation, compiled only with CHARON_TRACE_DEFAULTS. A stub logs `unimplemented: <framework> <selector>` once per
 # member, then returns the zero of its return type (nil for an object, 0 for a scalar or enum, a zeroed struct), and sets the
 # NSError an `NSError **` parameter names to an error in the framework's own domain. Block parameters are not invoked.
-SCALAR_TYPES = {"BOOL", "bool", "char", "unsigned char", "short", "unsigned short", "int", "unsigned", "unsigned int", "long",
-                "unsigned long", "long long", "unsigned long long", "float", "double", "NSInteger", "NSUInteger", "CGFloat",
-                "NSTimeInterval", "size_t", "int8_t", "int16_t", "int32_t", "int64_t", "uint8_t", "uint16_t", "uint32_t", "uint64_t"}
-TYPE_INDEX_FRAMEWORKS = ("Foundation", "CoreFoundation", "CoreAudio", "CoreAudioTypes", "AudioToolbox", "AudioUnit", "CoreMedia",
-                         "CoreGraphics", "CoreMIDI", "CoreVideo")
 
 
 def strip_platform_blocks(text):
@@ -648,40 +644,6 @@ def ios_text(text):
     return "\n".join(out), undecided
 
 
-def declared_names(sdk, fw):
-    """Every typedef, class and protocol name the iOS build sees in the framework and the frameworks its types come from."""
-    names, unavailable_on_ios = set(), set()
-    for f in (fw,) + TYPE_INDEX_FRAMEWORKS + ("AVFAudio",):
-        for path in glob.glob(os.path.join(sdk, "System", "Library", "Frameworks", f + ".framework", "Headers", "*.h")):
-            text = strip_platform_blocks(re.sub(r"//[^\n]*", " ", re.sub(r"/\*.*?\*/", " ", read_any(path), flags=re.S)))
-            names.update(re.findall(r"typedef\s[^;]*?\b(\w+)\s*(?:NS_\w+|API_\w+|OS_\w+|CF_\w+)?[^;]*;", text))
-            names.update(re.findall(r"@(?:interface|protocol)\s+(\w+)", text))
-            names.update(re.findall(r"typedef\s+(?:NS_ENUM|NS_OPTIONS|NS_TYPED_ENUM|NS_TYPED_EXTENSIBLE_ENUM|CF_ENUM|enum)[^;]*?\b(\w+)\s*;", text, re.S))
-            # a class the iOS SDK marks unavailable is not a type the iOS build can name (CASpatialAudioExperience, visionOS only)
-            for found in re.finditer(r"@interface\s+(\w+)\s*(?=[:<{\n])", text):
-                # a class, not a category: its availability macros are on the line after the previous declaration, or on its own line
-                before = re.split(r"[;}]|@end", text[:found.start()])[-1]
-                after = text[found.end():].split("\n", 1)[0]
-                if re.search(r"API_UNAVAILABLE\s*\([^)]*\bios\b", before + " " + after):
-                    unavailable_on_ios.add(found.group(1))
-    return names - unavailable_on_ios
-
-
-def type_index(sdk, fw):
-    """typedef name -> the text it is defined as, from the framework and the frameworks its types come from."""
-    index = {}
-    for f in (fw,) + TYPE_INDEX_FRAMEWORKS:
-        for path in glob.glob(os.path.join(sdk, "System", "Library", "Frameworks", f + ".framework", "Headers", "*.h")):
-            # comments first: a doc comment that mentions `typedef` would otherwise start a match that runs into the real one
-            text = re.sub(r"/\*.*?\*/", " ", read_any(path), flags=re.S)
-            text = strip_platform_blocks(re.sub(r"//[^\n]*", " ", text))
-            for match in re.finditer(r"typedef\s+([^;{}]*?)\s*\b(\w+)\s*(?:API_\w+\([^;]*?\)\s*)*;", text):
-                index.setdefault(match.group(2), " ".join(match.group(1).split()))
-            for match in re.finditer(r"typedef\s+(?:struct|enum)\b[^{;]*\{[^}]*\}\s*(\w+)\s*;", text, re.S):
-                index.setdefault(match.group(1), "struct")
-    return index
-
-
 NULLABILITY_WORDS = re.compile(r"\b(_Nullable|_Nonnull|__nullable|__nonnull|_Null_unspecified|nullable|nonnull|null_resettable|null_unspecified)\b")
 
 
@@ -694,158 +656,309 @@ def strip_nullability(decl):
     return " ".join(PLATFORM_MACROS.sub(" ", NULLABILITY_WORDS.sub(" ", decl)).split())
 
 
-def resolve_kind(type_text, index, depth=0):
-    """'void', 'object', 'scalar' or 'struct' for a declared type, through its typedefs."""
-    text = " ".join(type_text.replace("*", " * ").split())
-    if text in ("void",):
+# The stub rule of the trace layer, as the scope counts it: which of a framework's declared members a stub would leave out, and why
+# (tools/gen/stubs.lua members, with the environment tools/gen/cmd_trace.lua rule_env builds). Its inputs are the declaration
+# shards' typed columns (type, params, attrs), read by name from each shard's columns=... line, and the shards' typedef, interface
+# and protocol rows (tools/gen/headers.lua, tools/found/shard.lua). The scope keeps the reasons only: whether a stub exists is read
+# from the trace layer's own stubs.tsv.
+
+SCALAR_TYPES = {"BOOL", "bool", "_Bool", "char", "signed char", "unsigned char", "short", "unsigned short", "int", "signed",
+                "unsigned", "unsigned int", "long", "unsigned long", "long long", "unsigned long long", "long double", "float",
+                "double", "NSInteger", "NSUInteger", "CGFloat", "NSTimeInterval", "size_t", "int8_t", "int16_t", "int32_t",
+                "int64_t", "uint8_t", "uint16_t", "uint32_t", "uint64_t"}
+# The words a parameter's name cannot be, and the tags and qualifiers that come before an unnamed parameter's type (decl.lua).
+KEYWORD_WORDS = {"void", "char", "short", "int", "long", "float", "double", "signed", "unsigned", "_Bool", "bool", "const",
+                 "volatile", "restrict", "struct", "enum", "union", "id", "instancetype", "__kindof", "__autoreleasing",
+                 "__strong", "__weak", "__unsafe_unretained"}
+TYPE_LEADERS = {"struct", "enum", "union", "const", "volatile"}
+MACRO_WORD = re.compile(r"_*[A-Z][A-Z0-9]*_[A-Z0-9_]*")
+IDENTIFIER = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
+# A capitalised word with one of these prefixes is a macro, not a type the stub needs (stubs.lua undeclared_types).
+MACRO_PREFIXES = ("NS_", "API_", "CF_")
+# The C whitespace of a Lua pattern's %s.
+SPACE = " \t\n\r\f\v"
+SPACE_RUN = re.compile(r"[ \t\n\r\f\v]+")
+# The directories the hand sources scan leaves out, at every level (hand.lua).
+HAND_SKIP = {".gen", "spec", "registry", "facts", "overrides", "gen"}
+
+
+def shard_path(tree, fw):
+    return os.path.join(tree, SNAP_ROOT, fw, "declarations.tsv")
+
+
+def shard_files(tree):
+    """The declaration shards of the tree, nested frameworks included, in byte order (headers.lua shard_files)."""
+    root = os.path.join(tree, SNAP_ROOT)
+    return sorted(glob.glob(os.path.join(root, "*", "declarations.tsv")) + glob.glob(os.path.join(root, "*", "*", "declarations.tsv")))
+
+
+def shard_rows(path, kinds=None):
+    """The rows of one shard, each a dict keyed by the names of its columns=... line (headers.lua read_rows). kinds, when given,
+    keeps the rows of those kinds. A missing shard has no rows."""
+    if not os.path.exists(path):
+        return []
+    columns, out = None, []
+    for line in read(path).split("\n"):
+        if not line:
+            continue
+        if line.startswith("#"):
+            names = re.search(r"columns=([^\t]*)", line)
+            if names:
+                columns = [name for name in names.group(1).split(",") if name]
+        elif columns is not None and (kinds is None or line.split("\t", 1)[0] in kinds):
+            out.append(dict(zip(columns, line.split("\t"))))
+    return out
+
+
+def usr_name(kind, usr):
+    """The name a USR gives (shard.lua name_of): what follows its last ')' for a member, class or protocol, else what follows its
+    last '@'; none for a row with no USR."""
+    if usr == "-":
+        return ""
+    found = re.search(r"\)([^)]*)$", usr) if kind in ("method", "property", "interface", "protocol") else re.search(r"@([^@]*)$", usr)
+    return found.group(1) if found else ""
+
+
+def shard_name(row):
+    """The name and the side a shard row gives (shard.lua decode): each is the cell the row stores, or else what its USR gives."""
+    kind, usr = row["kind"], row["usr"]
+    name = row.get("name") or usr_name(kind, usr)
+    side = row.get("side") or ("+" if kind == "method" and "(cm)" in usr else "-")
+    return name, side
+
+
+def shard_members(tree, fw):
+    """The method and property rows of a framework's shard that name an ObjC class, as dicts {kind, api, cls, alias, type, params,
+    attrs} in the shard's order (headers.lua shard_facts). An api is side, '[', the class, a space, the name and ']'; a class
+    property takes the '+' of its class accessor, and its alias is the dotted name the ledgers give it."""
+    members = []
+    for row in shard_rows(shard_path(tree, fw), {"method", "property"}):
+        name, side = shard_name(row)
+        if row["kind"] == "property" and "(cpy)" in row["usr"]:
+            side = "+"
+        found = re.match(r"c:objc\(cs\)([^(]+)", row["usr"])
+        if found:
+            cls = found.group(1)
+            api = "%s[%s %s]" % (side, cls, name)
+            alias = api if row["kind"] == "method" else "%s.%s" % (cls, name)
+            members.append({"kind": row["kind"], "api": api, "cls": cls, "alias": alias, "type": row.get("type"),
+                            "params": row.get("params"), "attrs": row.get("attrs")})
+    return members
+
+
+def typedef_index(tree):
+    """typedef name -> the type its shard row gives, the first in the shards' order (headers.lua typedef_index)."""
+    index = {}
+    for path in shard_files(tree):
+        for row in shard_rows(path, {"typedef"}):
+            if row.get("type") is not None and row["type"] != "-":
+                index.setdefault(shard_name(row)[0], row["type"])
+    return index
+
+
+def ios_unavailable(availability):
+    """True when a shard's availability column has the iOS platform unavailable: its ios entry's last field is 1 (headers.lua)."""
+    for entry in re.findall(r"[^,]+", availability or ""):
+        if entry.startswith("ios=") and entry[4:].rsplit("/", 1)[-1] == "1":
+            return True
+    return False
+
+
+def declared_names(tree):
+    """The typedef, class and protocol names the iOS build sees, over every shard, less the classes the iOS SDK marks unavailable
+    (headers.lua declared_names)."""
+    names, unavailable = set(), set()
+    for path in shard_files(tree):
+        for row in shard_rows(path, {"typedef", "interface", "protocol"}):
+            name = shard_name(row)[0]
+            names.add(name)
+            if row["kind"] == "interface" and ios_unavailable(row.get("availability")):
+                unavailable.add(name)
+    return names - unavailable
+
+
+def canonical_type(text, index):
+    """A type as a stub spells it (decl.lua canonical): no nullability word, and no macro word that no typedef names; one space
+    between words; no space before a closing bracket or a comma, or after an opening one; each run of stars one run. index: typedef
+    name -> the type it is defined as."""
+    def drop(found):
+        word = found.group(0)
+        if NULLABILITY_WORDS.fullmatch(word) or (MACRO_WORD.fullmatch(word) and word not in index):
+            return " "
+        return word
+
+    out = SPACE_RUN.sub(" ", re.sub(r"[A-Za-z0-9_]+", drop, text or "")).strip(SPACE)
+    out = re.sub(r"[ \t\n\r\f\v]+([),>])", r"\1", out)
+    out = re.sub(r"([(<])[ \t\n\r\f\v]+", r"\1", out)
+    joined = re.sub(r"\*[ \t\n\r\f\v]+\*", "**", out)
+    while joined != out:
+        out = joined
+        joined = re.sub(r"\*[ \t\n\r\f\v]+\*", "**", out)
+    return out.strip(SPACE)
+
+
+def kind_of(text, index, seen=None):
+    """'void', 'object', 'scalar' or 'struct' for a type, through the typedefs (decl.lua kind_of); None when the type is not known.
+    A typedef chain is followed to its end, and a name met again on the chain is a cycle, which gives None."""
+    seen = set() if seen is None else seen
+    text = canonical_type(text, index)
+    if text == "void":
         return "void"
-    if "*" in text or text in ("id", "instancetype") or re.search(r"<.*>", text):
+    if text in ("id", "instancetype") or "*" in text or "^" in text or "<" in text:
         return "object"
-    name = text.split()[-1] if text.split() else text
-    if text in SCALAR_TYPES or name in SCALAR_TYPES:
+    found = re.match(r"const[ \t\n\r\f\v]+(.*)$", text)
+    bare = found.group(1) if found else text
+    if bare in SCALAR_TYPES or bare.startswith("enum "):
         return "scalar"
-    if name in index and depth < 6:
-        target = index[name]
-        if target == "struct" or target.startswith("struct"):
-            return "struct"
-        kind = resolve_kind(target, index, depth + 1)
-        return kind
-    if re.match(r"^(NS_ENUM|NS_OPTIONS|enum)\b", text) or name.startswith("NS") and name.endswith("Options"):
-        return "scalar"
-    return "struct"
+    if bare.startswith(("struct ", "union ")):
+        return "struct"
+    if bare in index and bare not in seen:
+        seen.add(bare)
+        return kind_of(index[bare], index, seen)
+    return None
 
 
-HAND_MEMO = {}
+def parameter_types(text, index):
+    """The types of a params column ("TYPE NAME | TYPE NAME"; "-" or nothing for none), each without its name (decl.lua parse_params
+    and split_name): the last word is a name when it is an identifier that is no keyword and the word before it is no tag."""
+    if text in (None, "", "-"):
+        return []
+    types = []
+    for part in text.split(" | "):
+        spelled = canonical_type(part, index)
+        words = spelled.split(" ") if spelled else []
+        if len(words) >= 2 and IDENTIFIER.fullmatch(words[-1]) and words[-1] not in KEYWORD_WORDS and words[-2] not in TYPE_LEADERS:
+            types.append(" ".join(words[:-1]))
+        else:
+            types.append(spelled)
+    return types
 
 
-def hand_implementations(tree):
-    """(class, selector) for every method a hand-written source of the package defines, and (class, name) for every
-    @synthesize or @dynamic, so no stub replaces a hand implementation. A signature spans lines until its brace."""
-    if tree in HAND_MEMO:
-        return HAND_MEMO[tree]
-    found = set()
-    root = os.path.join(tree, SOURCES_ROOT)
-    for dirpath, dirnames, filenames in os.walk(root):
-        dirnames[:] = [d for d in dirnames if d not in (".gen", "spec", "registry", "facts", "overrides", "gen")]
-        for name in filenames:
-            if not name.endswith((".m", ".mm")):
-                continue
-            current, signature = None, None
-            for line in read_any(os.path.join(dirpath, name)).splitlines():
-                if signature is not None:
-                    signature += " " + line.strip()
-                    if "{" in line or ";" in line:
-                        sel = selector_of(signature.split("{")[0].split(";")[0])
-                        if sel:
-                            found.add((current, sel))
-                        signature = None
-                    continue
-                impl = re.match(r"^\s*@implementation\s+(\w+)", line)
-                if impl:
-                    current = impl.group(1)
-                    continue
-                if re.match(r"^\s*@end\b", line):
-                    current = None
-                    continue
-                if current is None:
-                    continue
-                synth = re.match(r"^\s*@(?:synthesize|dynamic)\s+(\w+)", line)
-                if synth:
-                    found.add((current, synth.group(1)))
-                if re.match(r"^\s*[-+]\s*\(", line):
-                    if "{" in line or ";" in line:
-                        sel = selector_of(line.split("{")[0].split(";")[0])
-                        if sel:
-                            found.add((current, sel))
-                    else:
-                        signature = line.strip()
-    HAND_MEMO[tree] = found
+def member_name(api):
+    """The name a member row's api ends in: its last word once the closing brackets are gone (decl.lua member_name)."""
+    found = re.search(r"(\S+)\s*$", re.sub(r"\]+$", "", api))
+    return found.group(1) if found else None
+
+
+def attribute_value(attrs, key):
+    """The value of one attribute of a property's attrs column ("nonatomic,getter=isEnabled"), or None (decl.lua attribute_value)."""
+    for entry in re.findall(r"[^,]+", attrs or ""):
+        if entry.startswith(key + "="):
+            return entry[len(key) + 1:].strip(SPACE)
+    return None
+
+
+def has_attribute(attrs, name):
+    """True when the attrs column has the attribute by its bare name (decl.lua has_attribute)."""
+    return any(entry.strip(SPACE) == name for entry in re.findall(r"[^,]+", attrs or ""))
+
+
+def undeclared_types(text, declared):
+    """The capitalised words of a type text that the iOS build does not declare, sorted, a macro word left out (stubs.lua
+    undeclared_types)."""
+    out = set()
+    for word in re.findall(r"[A-Za-z0-9_]+", text):
+        if "A" <= word[0] <= "Z" and word not in declared and not word.startswith(MACRO_PREFIXES):
+            out.add(word)
+    return sorted(out)
+
+
+def hand_sources(tree):
+    """The .m and .mm files of the package, the directories HAND_SKIP names left out at every level, and no symbolic link followed
+    (hand.lua sources)."""
+    found = []
+    for dirpath, dirnames, filenames in os.walk(os.path.join(tree, SOURCES_ROOT)):
+        dirnames[:] = [d for d in dirnames if d not in HAND_SKIP and not os.path.islink(os.path.join(dirpath, d))]
+        found += [os.path.join(dirpath, name) for name in filenames if name.endswith((".m", ".mm"))]
     return found
 
 
-UNDECLARED_CHECK = re.compile(r"\b([A-Z][A-Za-z0-9_]*)\b")
-BUILTIN_TYPES = {"BOOL", "NSInteger", "NSUInteger", "CGFloat", "NSTimeInterval", "NSError", "NSString", "NSNumber", "NSArray",
-                 "NSDictionary", "NSSet", "NSData", "NSURL", "NSDate", "NSUUID", "NSLocale", "NSMapTable", "NSPointerArray",
-                 "NSMeasurement", "NSIndexPath", "NSProgress", "NSOperationQueue", "NSNotificationName", "NSNotificationCenter",
-                 "NSOrderedSet", "NSCountedSet", "NSFileHandle", "NSBundle", "NSLayoutConstraint", "NSRange", "UInt32", "SInt32",
-                 "OSStatus", "Float32", "Float64", "Boolean", "AudioObjectID", "AudioStreamBasicDescription", "AudioBufferList",
-                 "AudioChannelLayout", "AudioComponentDescription", "AudioUnit", "AudioBuffer", "AudioUnitParameterID",
-                 "AudioUnitParameterValue", "AudioTimeStamp", "CFStringRef", "CFTypeRef", "CFURLRef", "CMTime", "CGPoint", "CGSize",
-                 "CGRect", "CFTimeInterval", "MIDIEndpointRef", "MIDIClientRef"}
+def hand_implementations(tree):
+    """class -> the selectors, and the synthesized or dynamic property names, that the package's hand sources define (hand.lua
+    implementations). A method signature spans lines until its brace or its semicolon. A stub must not replace one of these."""
+    found = {}
+
+    def add(cls, selector):
+        if selector:
+            found.setdefault(cls, set()).add(selector)
+
+    for path in hand_sources(tree):
+        with open(path, encoding="utf-8", errors="surrogateescape", newline="") as handle:
+            text = handle.read().replace("\r\n", "\n").replace("\r", "\n")
+        current, signature = None, None
+        for line in text.splitlines():
+            if signature is not None:
+                signature += " " + line.strip(SPACE)
+                if "{" in line or ";" in line:
+                    add(current, selector_of(signature.split("{")[0].split(";")[0]))
+                    signature = None
+                continue
+            impl = re.match(r"[ \t\n\r\f\v]*@implementation[ \t\n\r\f\v]+([A-Za-z0-9_]+)", line)
+            if impl:
+                current = impl.group(1)
+            elif re.match(r"[ \t\n\r\f\v]*@end(?![A-Za-z0-9_])", line):
+                current = None
+            elif current is not None:
+                synth = re.match(r"[ \t\n\r\f\v]*@(?:synthesize|dynamic)[ \t\n\r\f\v]+([A-Za-z0-9_]+)", line)
+                if synth:
+                    found.setdefault(current, set()).add(synth.group(1))
+                if re.match(r"[ \t\n\r\f\v]*[-+][ \t\n\r\f\v]*\(", line):
+                    if "{" in line or ";" in line:
+                        add(current, selector_of(line.split("{")[0].split(";")[0]))
+                    else:
+                        signature = line.strip(SPACE)
+    return found
 
 
-def stub_members(spec, fw, sdk, overridden, hand, release_missing=None):
-    """The stubs for one framework, one per member it does not implement, grouped by class; and the members left out with the reason.
+def member_skip(r, env, seen):
+    """Why the stub rule leaves one spec row out, or None when a stub answers it (stubs.lua consider, with its property and method
+    rules). seen: the (sign, class, selector) keys already taken; a repeat is the same selector declared twice in the class."""
+    api, kind, cls = r["api"], r["kind"], r["cls"]
+    if env["release_missing"] is not None:
+        ledger_api = api if kind == "method" else "%s.%s" % (cls, member_name(api))
+        if (kind, ledger_api) not in env["release_missing"]:
+            return "implemented at 6.1.3: the release answers"
+    fact = env["members"].get(api)
+    if fact is None:
+        return "no typed fact in the shard"
+    params = parameter_types(fact["params"], env["index"])
+    ret = canonical_type(fact["type"], env["index"])
+    undeclared = undeclared_types(" ".join([ret] + params), env["declared"])
+    if undeclared:
+        return "type not declared for iOS: " + ",".join(undeclared)
+    sign, hand = api[0], env["hand"]
+    if kind == "property":
+        name = member_name(api)
+        selector = attribute_value(fact["attrs"], "getter") or name
+        hand_defined = cls in hand and (name in hand[cls] or selector in hand[cls])
+    else:
+        selector = re.match(r"[^ ]* (.*)$", re.sub(r"\]+$", "", api)).group(1)
+        hand_defined = cls in hand and selector in hand[cls]
+    if api in env["overridden"] or hand_defined:
+        return "override or hand implementation"
+    if ret == "":
+        return "no property type in the shard" if kind == "property" else "no return type in the shard"
+    if kind == "method" and selector.count(":") != len(params):
+        return "parameters do not match the selector"
+    if kind_of(ret, env["index"]) is None:
+        return "type not resolved: " + ret
+    key = (sign, cls, selector)
+    if key in seen:
+        return "same selector declared twice in the class"
+    seen.add(key)
+    return None
 
-    release_missing: the (kind, api) rows the 6.1.3 ledger lists. A member the release already has is answered by the release,
-    so it gets no stub; with no ledger every declared member is considered (the pilot's first form)."""
-    index = type_index(sdk, fw)
-    declared = declared_names(sdk, fw)
-    seen = set()
-    by_class, skipped = {}, []
+
+def stub_skips(spec, env):
+    """(api, reason) for each method and property row of the spec the stub rule leaves out, in the order the rule decides them
+    (stubs.lua members)."""
+    seen, skipped = set(), []
     for r in spec:
-        if r["kind"] not in ("method", "property"):
-            continue
-        cls = r["cls"]
-        decl = r["decl"].rstrip(";").strip()
-        if release_missing is not None:
-            ledger_api = r["api"] if r["kind"] == "method" else "%s.%s" % (cls, r["api"].rstrip("]").split()[-1])
-            if (r["kind"], ledger_api) not in release_missing:
-                skipped.append((r["api"], "implemented at 6.1.3: the release answers"))
-                continue
-        undeclared = sorted(set(t for t in UNDECLARED_CHECK.findall(strip_nullability(decl))
-                                if t not in declared and t not in BUILTIN_TYPES and not t.startswith(("NS_", "API_", "CF_"))))
-        if undeclared:
-            skipped.append((r["api"], "type not declared for iOS: " + ",".join(undeclared)))
-            continue
-        if r["kind"] == "property":
-            name = r["api"].rstrip("]").split()[-1]
-            selector = getter_of(decl, name)
-            if r["api"] in overridden or (cls, name) in hand or (cls, selector) in hand:
-                skipped.append((r["api"], "override or hand implementation"))
-                continue
-            decl = strip_nullability(decl)
-            type_text = property_type_text(decl, name)
-            kind = resolve_kind(type_text, index)
-            readwrite = "readonly" not in decl
-            if (cls, selector) in seen:
-                skipped.append((r["api"], "same selector declared twice in the class"))
-                continue
-            seen.add((cls, selector))
-            by_class.setdefault(cls, []).append(("-[%s %s]" % (cls, selector), "property-get", selector, type_text, kind, decl))
-            setter = "set%s%s:" % (name[:1].upper(), name[1:])
-            if readwrite and (cls, setter) not in hand and "-[%s %s]" % (cls, setter) not in overridden:
-                by_class[cls].append(("-[%s %s]" % (cls, setter), "property-set", setter, type_text, "void", decl))
-            continue
-        selector = r["api"].rstrip("]").split(" ", 1)[1]
-        if r["api"] in overridden or (cls, selector) in hand:
-            skipped.append((r["api"], "override or hand implementation"))
-            continue
-        decl = strip_nullability(decl)
-        ret = re.match(r"^[-+]\s*\(\s*([^)]*?)\s*\)", decl)
-        if not ret:
-            skipped.append((r["api"], "no return type parsed"))
-            continue
-        if (cls, selector) in seen:
-            skipped.append((r["api"], "same selector declared twice in the class"))
-            continue
-        seen.add((cls, selector))
-        kind = resolve_kind(ret.group(1), index)
-        by_class.setdefault(cls, []).append((r["api"], "method", selector, ret.group(1), kind, decl))
-    return by_class, skipped
-
-
-def property_type_text(decl, name):
-    text = re.sub(r"\([^()]*\)", " ", decl.replace("@property", " "))
-    text = re.sub(r"\b(_Nullable|_Nonnull|__nullable|__nonnull|_Null_unspecified|nullable|nonnull|null_resettable)\b", " ", text)
-    text = " ".join(text.rstrip(";").split())
-    return " ".join(text[:text.rfind(name)].split()) if name in text else text
-
-
-
-def getter_of(decl, name):
-    found = re.search(r"getter\s*=\s*(\w+)", decl)
-    return found.group(1) if found else name
+        if r["kind"] in ("method", "property"):
+            reason = member_skip(r, env, seen)
+            if reason is not None:
+                skipped.append((r["api"], reason))
+    return skipped
 
 
 # ---------------------------------------------------------------- doc: the worker's page set (untracked, regenerated)
@@ -1087,297 +1200,458 @@ def cmd_doc(args):
 
 # ---------------------------------------------------------------- scope: every surface row, counted from the tables
 
-SCOPE_DIR = os.path.join(os.environ.get("HOME", ""), "Git", "projects", "ios", "coordination", "wave-2026-10-03")
-SCOPE_KINDS = ("class", "method", "property", "constant", "function", "enum", "struct", "typealias", "protocol")
+# The kinds the scope counts. A surface row of any other kind is in the tie-out's total and in no state.
+SCOPE_KINDS = {"class", "method", "property", "constant", "function", "enum", "struct", "typealias", "protocol"}
+# The ledgers the scope counts against: the 6.1.3 release (the members it lacks are the work) and the 4.3 release.
+LEDGER_6_1_3 = "ledger-w45"
+LEDGER_4_3 = "ledger-w45-4.3"
+# The states a generated stub answers: the trace layer's stub list is the one definition of generable.
+GENERABLE_STATES = {"generable stub", "C function: generable stub (trace layer)"}
+# The ledger status of a row the header parse covers with no symbol to generate; the status of a C function the trace layer stubs.
+HEADER_OK = "header-ok"
+GENERABLE = "generable"
+# The state of a row whose framework has no declaration shard, and of a Swift row (the spec is the ObjC headers).
+NO_SNAPSHOT = "no snapshot"
+SWIFT_STATE = "swift: needs the Swift interface source"
+# The frameworks the markdown page lists by demand.
+TOP_RANKS = 60
+# The selectors NSObject implies: the scope reads a bare one of them as implicit, not as a gap of the header parse (nsobject.lua).
+SCOPE_IMPLICIT = {"init", "new", "copy", "mutableCopy", "dealloc", "description"}
+# The decided states: a row the release answers, the registry covers, a stub, a generated constant or object, a hand implementation, or
+# a recorded decision. Every other state is open, and queue_item() queues it.
+DECIDED_STATES = (
+    "implemented at 6.1.3", "header-only (lift)", "overridden", "generable stub", "generable constant", "numeric (not a string object)",
+    "owned by a live branch", "registry decision", "not declared for iOS", "hand implementation (no registry row)",
+    "class object: generated", "class object: hand code covers it", "protocol object: generated from",
+    "protocol member: in the 16.4 body", "protocol member: in the transcribed protocol header", "protocol member: declared by a hand header",
+    "C function: generable stub",
+)
+# The open states the work queue lists: the prefix of a state, the kind of work and the next step. The first prefix that matches names
+# the entry; a state no entry names is still queued, by queue_item()'s fallback.
+QUEUE_NEXT = (
+    ("protocol member: 26.2 only", "protocol member added after the 16.4 body", "a registry decision: the protocol object is the 16.4 body, so the member needs a transcribed or hand body for it"),
+    ("protocol member: not in the 26.2 facts", "protocol member with no 26.2 fact", "read the header by hand; the member's owner is not the protocol the surface names"),
+    ("framework skipped by the extractor", "member of a framework the extractor skips", "a decision on the framework: read its Swift interface or its headers (the reason in the state names what is missing)"),
+    ("not in the extractor's parse", "member the parse of a parsed framework does not declare", "read the framework's declaration for this member by hand (the parse holds none): decide per row"),
+    ("class object: not generated", "class object with uncovered members", "cover each listed member with a stub or a registry decision, or leave the class out"),
+    ("C function: exported by the 26.2 .tbd", "C function exported without a declaration", "find its declaration in the SDK (no header declares it): a decision on the name"),
+    ("not stubbed: not stubbed by the trace layer", "row with no stub and no skip reason", "should be empty: a stub-layer defect"),
+    ("init/new: not spelled", "init or new not spelled by the headers", "decide per class: implicit from NSObject, or unavailable by a macro"),
+    ("not in the header parse (category or other)", "not in the header parse", "read the header by hand"),
+    ("swift: needs the Swift interface source", "Swift row", "declaration from the .swiftinterface text, then a decision on overlay (see the Swift page)"),
+    ("needs a generator: ", "a generator for the kind is missing", "write the generator for the kind (enum, struct or typealias), or decide the row by hand"),
+    ("no snapshot", "framework has no committed declaration shard", "commit the framework's declaration shard (spec/<F>/declarations.tsv), or decide the framework's scope"),
+    ("protocol object: ", "protocol object not generated", "read the transcriber's status for the protocol in the state, and decide the object"),
+    ("protocol member: ", "protocol member not generated", "read the protocol's status in the state, and decide the member"),
+    ("C function: ", "C function not generable", "read the reason in the state, and decide the name"),
+    ("not stubbed: ", "row the trace layer skips", "read the skip reason in the state, and decide the row"),
+    ("not generated: ", "constant not generated", "read the value status in the state, and decide the constant"),
+    ("class object: not a candidate", "class row missing with no member missing", "the class has no missing member to generate: decide the class row by hand"),
+    ("class object: ", "class object not generated", "read the class state, and decide the class"),
+)
+
+
+def table_rows(text):
+    """The rows of a tab-separated table, each a dict keyed by the header's names; a cell a row lacks is None, an empty line is
+    skipped (tools/gen/tsv.lua records). Nothing is quoted: a field is the text between two tabs."""
+    lines = text.split("\n")
+    if lines and lines[-1] == "":
+        lines.pop()
+    header = lines[0].split("\t") if lines else []
+    rows = []
+    for line in lines[1:]:
+        if line:
+            cells = line.split("\t")
+            rows.append({name: cells[i] if i < len(cells) else None for i, name in enumerate(header)})
+    return rows
+
+
+def scope_surface(corpus):
+    """framework -> the rows of the surface table that name it, every row the table names (a row named twice is counted twice), in the
+    table's order; the frameworks come in the order the table first names them (surface.lua all_rows)."""
+    rows = {}
+    for row in table_rows(read(os.path.join(corpus, "sdk-26.2-surface.tsv"))):
+        rows.setdefault(row["framework"], []).append(row)
+    return rows
+
+
+def scope_ledger(corpus, release, fw):
+    """(kind, api) -> the status the framework's ledger of one release gives the row (surface.lua ledger_status). A nested framework's
+    ledger is named with an underscore for its slash. A row the ledger does not list is implemented in that release."""
+    path = os.path.join(corpus, release, fw.replace("/", "_") + ".tsv")
+    out = {}
+    if os.path.exists(path):
+        for row in table_rows(read(path)):
+            if row.get("kind") and row.get("api") and row.get("status") is not None:
+                out[(row["kind"], row["api"])] = row["status"]
+    return out
+
+
+def extractor_skipped(tree):
+    """framework -> the reason the extractor skips it, from its list tools/found/unparsed.tsv (coverage.lua): a comment line and an empty
+    line are not entries. A missing list is an error, not an empty one."""
+    path = os.path.join(tree, "tools", "found", "unparsed.tsv")
+    if not os.path.exists(path):
+        raise SystemExit("no extractor list of skipped frameworks at " + path)
+    out = {}
+    for line in read(path).split("\n"):
+        if line and not line.startswith("#"):
+            cells = line.split("\t")
+            out[cells[0]] = cells[1] if len(cells) > 1 else ""
+    return out
+
+
+def spec_rows(tree, fw):
+    """The spec rows of a framework: the table the generator writes into its build directory (spec.lua load)."""
+    path = spec_path(tree, fw)
+    if not os.path.exists(path):
+        raise SystemExit("no spec table for %s at %s: run gen first" % (fw, path))
+    return table_rows(read(path))
+
+
+def spec_index(spec):
+    """api -> the spec row: each row under its api and, for a property, under the dotted Class.name the registry uses. The first row of a
+    key wins (spec.lua index)."""
+    found = {}
+    for r in spec:
+        found.setdefault(r["api"], r)
+        if r["kind"] == "property":
+            found.setdefault("%s.%s" % (r["cls"], member_name(r["api"])), r)
+    return found
+
+
+def overridden_keys(tree, fw, members):
+    """The canonical keys the framework's registry rows cover, and for a class property the key of its class accessor too (trace.lua
+    overrides_of)."""
+    class_props = {m["alias"]: m["api"] for m in members if m["kind"] == "property" and m["api"].startswith("+[")}
+    keys = set()
+    for canonical, (_, entry) in registry_entries(tree, fw).items():
+        keys.add(canonical)
+        if entry.get("kind") == "property" and entry.get("api") in class_props:
+            keys.add(class_props[entry["api"]])
+    return keys
+
+
+def stub_keys_of(tree, fw, members):
+    """The keys the trace layer's stubs file answers (trace_files.lua load_stub_keys), or None when the trace layer has not written it.
+    A class property's stub is keyed by its class accessor, +[Cls name]; its instance form, -[Cls name], is added beside it, since the
+    surface names the property by its dotted name, which keys as the instance form (scope new_context)."""
+    path = os.path.join(gen_dir(tree, fw), "trace", "stubs.tsv")
+    if not os.path.exists(path):
+        return None
+    keys = {line.split("\t")[0] for line in read(path).split("\n")[1:] if line}
+    for api in {m["api"] for m in members if m["kind"] == "property" and m["api"].startswith("+[")}:
+        if api in keys:
+            keys.add("-" + api[1:])
+    return keys
+
+
+def gap_reason(api, extractor_reason):
+    """Why the header parse does not hold a method or property the surface names (scope gap_reason): a bare init, new, copy, mutableCopy,
+    dealloc or description is implicit from NSObject; a framework the extractor skips takes the extractor's reason; any other member is
+    one the parsed framework does not declare."""
+    if api.startswith(("-[", "+[")):
+        sel = api[api.index(" ") + 1:-1]
+    else:
+        sel = api.split(".", 1)[-1]
+    if sel.split(":", 1)[0] in SCOPE_IMPLICIT:
+        return "init/new: not spelled by the 26.2 headers (implicit, or unavailable by a macro)"
+    if extractor_reason is not None:
+        return "framework skipped by the extractor: " + extractor_reason
+    return "not in the extractor's parse (the framework is parsed and declares no such member)"
 
 
 def protocol_member_state(owner, api, proto):
-    """The state of a member of an objc protocol, by the transcriber's facts for its protocol: in the 16.4 body the lifted
-    protocol object is built from, in a transcribed header, declared by a hand header, or a gap (26.2 only, or no facts)."""
-    record = (proto or {}).get(owner)
+    """The state of a member of an objc protocol, by the transcriber's facts for its protocol: in the 16.4 body the protocol object is built
+    from, in a transcribed header, declared by a hand header, or a gap (26.2 only, or no fact)."""
+    record = proto.get(owner)
     if record is None:
         return "protocol member: protocol not in the transcriber's facts"
-    canon = canonical_member(api, "property" if "." in api and not api.startswith(("-[", "+[")) else "method")
-    selector = re.sub(r"^[-+]\[%s |\]$" % re.escape(owner), "", canon)
+    kind = "property" if "." in api and not api.startswith(("-[", "+[")) else "method"
+    selector = re.sub(r"\]$", "", re.sub(r"^[-+]\[%s " % re.escape(owner), "", canonical_member(api, kind), count=1))
     member = next((m for m in record["members"] if m["selector"] == selector), None)
-    if record["status"] == "sdk16 body":
+    status = record["status"]
+    if status == "sdk16 body":
         if member is None:
             return "protocol member: not in the 26.2 facts (gap)"
-        return ("protocol member: 26.2 only, the 16.4 body the protocol object is built from lacks it (gap)" if member["in16"] == "no"
-                else "protocol member: in the 16.4 body (lifted protocol object)")
-    if record["status"] == "transcribed":
-        return "protocol member: in the transcribed protocol header" if member else "protocol member: not in the 26.2 facts (gap)"
-    if record["status"] == "hand header":
+        if member["in16"] == "no":
+            return "protocol member: 26.2 only, the 16.4 body the protocol object is built from lacks it (gap)"
+        return "protocol member: in the 16.4 body (lifted protocol object)"
+    if status == "transcribed":
+        if member is not None:
+            return "protocol member: in the transcribed protocol header"
+        return "protocol member: not in the 26.2 facts (gap)"
+    if status == "hand header":
         return "protocol member: declared by a hand header (no generator)"
-    return "protocol member: its protocol is " + ("refused by the transcriber" if record["status"] == "refused" else "not in the 26.2 AST")
+    return "protocol member: its protocol is " + ("refused by the transcriber" if status == "refused" else "not in the 26.2 AST")
 
 
-def header_facts(sdk, fw, spec):
-    """(platform_only, names): the members the framework's 26.2 header declares on a branch the iOS build does not read (the parse
-    of ios_text does not carry them), and every identifier the headers spell, comments removed."""
-    full = {api for _, _, api, _, _, _ in members_of(header_text(sdk, fw))}
-    ios = {r["api"] for r in spec if r["kind"] in ("method", "property")}
-    text = re.sub(r"//[^\n]*|/\*.*?\*/", " ", header_text(sdk, fw), flags=re.S)
-    return full - ios, set(re.findall(r"[A-Za-z_]\w*", text))
+def member_state(kind, api, ctx):
+    """The state of a method or property the spec holds: a stub of the trace layer, or the stub rule's reason it has none. A row the spec
+    does not hold is explained by the header parse's gap reason."""
+    r = ctx["spec_by_api"].get(api)
+    if r is None:
+        return gap_reason(api, ctx["extractor_reason"])
+    key = canonical_member(api, kind)
+    if ctx["stub_keys"] is not None:
+        reason = None if key in ctx["stub_keys"] else (ctx["skips"].get(key) or "not stubbed by the trace layer")
+    else:
+        reason = ctx["skips"].get(key)
+    if reason is None:
+        return "generable stub"
+    if reason.startswith("type not declared for iOS"):
+        return "not declared for iOS"
+    if reason.startswith("override or hand implementation"):
+        return "hand implementation (no registry row)"
+    return "not stubbed: " + reason
 
 
-def parse_gap_reason(api, platform_only, names):
-    """Why the header parse does not carry a surface member row, in the order the answer is decided: declared only on another
-    platform's branch; a bare init, new or copy the headers do not spell (implicit from NSObject, or unavailable by a macro); a
-    selector no header of the framework spells (another framework's header, or the runtime only); or a spelling the parse should
-    have read, which is the parse gap."""
-    if api in platform_only:
-        return "not declared for iOS: declared only in another platform's branch"
-    sel = api[api.index(" ") + 1:-1] if api.startswith(("-[", "+[")) else api.split(".", 1)[-1]
-    name = sel.split(":")[0]
-    if name in ("init", "new", "copy", "mutableCopy", "dealloc", "description"):
-        return "init/new: not spelled by the 26.2 headers (implicit, or unavailable by a macro)"
-    if name not in names:
-        return "not spelled by this framework's 26.2 headers (another framework's header, or runtime only)"
-    return "spelled by the headers, not parsed (parse gap)"
+def constant_state(r):
+    """The state of a constant, from its spec row: its owner and its value (nil when the spec holds no row for it)."""
+    if r is None:
+        return "not in the header parse (category or other)"
+    if r["owned"] != "-":
+        return "registry decision" if r["owned"].startswith("registry:") else "owned by a live branch"
+    if r["value_status"] == "found" and r["tbd"] == "exported":
+        return "generable constant"
+    if r["value_status"] == "numeric":
+        return "numeric (not a string object)"
+    return "not generated: " + (r["value_status"] or "-")
+
+
+def class_state(api, ctx):
+    """The state of a class object, by the trace layer's decision for it (classes.tsv)."""
+    decision = ctx["class_decisions"].get(api)
+    if decision is None:
+        return "class object: not a candidate (no missing member rows in the header parse)"
+    generated, reason = decision
+    if generated:
+        return "class object: generated (trace layer; every member a stub)"
+    if "own sources" in reason or "override" in reason:
+        return "class object: hand code covers it (not generated)"
+    return "class object: not generated (a member uncovered, or the superclass is not in the release)"
+
+
+def function_state(api, ctx):
+    """The state of a C function, by the functions snapshot."""
+    record = ctx["functions"].get(api)
+    if record is None:
+        return "C function: not in the functions snapshot"
+    if record["status"] == GENERABLE:
+        return "C function: generable stub (trace layer)"
+    return "C function: " + record["reasons"]
+
+
+def protocol_state(api, ctx):
+    """The state of a protocol object, by the transcriber's status for its protocol."""
+    record = ctx["proto"].get(api)
+    if record is None:
+        return "protocol object: not in the transcriber's list"
+    return PROTOCOL_STATES[record["status"]]
+
+
+def scope_row_state(kind, api, lang, ctx):
+    """The one state a surface row is in, by the tables (scope.lua row_state): the first rule that holds decides it. ctx: the facts of
+    the row's framework, built by scope_framework."""
+    if canonical_member(api, kind) in ctx["registry"]:
+        return "overridden"
+    status = ctx["led6"].get((kind, api))
+    if status is None:
+        return "implemented at 6.1.3: the release answers"
+    if status == HEADER_OK:
+        return "header-only (lift): no symbol to generate"
+    if lang == "swift":
+        return SWIFT_STATE
+    if kind == "class":
+        return class_state(api, ctx)
+    if kind == "function" and lang == "objc":
+        return function_state(api, ctx)
+    if kind == "protocol" and lang == "objc":
+        return protocol_state(api, ctx)
+    if kind not in ("method", "property", "constant"):
+        return "needs a generator: " + kind
+    if kind in ("method", "property"):
+        owner = re.match(r"[-+]\[([A-Za-z0-9_]+)", api) or re.match(r"([A-Za-z0-9_]+)\.", api)
+        if owner and owner.group(1) in ctx["protocols"]:
+            return protocol_member_state(owner.group(1), api, ctx["proto"])
+        return member_state(kind, api, ctx)
+    return constant_state(ctx["spec_by_api"].get(api))
+
+
+def queue_item(state):
+    """The kind of work and the next step of an open state, or None when the state is decided (scope.lua queue_item). A state no queue
+    entry names is still queued, with a fallback entry."""
+    if any(state.startswith(decided) for decided in DECIDED_STATES):
+        return None
+    for prefix, work, step in QUEUE_NEXT:
+        if state.startswith(prefix):
+            return work, step
+    return "open state, no queue entry names it", "decide the row by hand: the state names what is missing"
 
 
 def canonical_member(api, kind):
-    """The key a member row has in the trace layer's stub list: a property written 'Class.name' is '-[Class name]'."""
+    """The key a member has in the trace layer's stub list: a property written 'Class.name' is '-[Class name]'."""
     if kind == "property" and not api.startswith(("-[", "+[")) and "." in api:
         return "-[%s %s]" % tuple(api.split(".", 1))
     return api
 
 
-def scope_row_state(kind, api, registry, spec_by_api, stub_reason, in_missing=True, protocols=frozenset(), lang="objc",
-                    header_only=False, proto=None, gaps=None, functions=None, stubs=None, class_decisions=None):
-    """The one state a surface row is in, by the tables. A row the 6.1.3 release has is answered by the release, so only a
-    missing row is a work item; a missing row is overridden, a stub, a hand implementation, a type iOS does not declare, a
-    protocol member (the spec does not cover protocols), or a kind with no generator yet."""
-    if canonical_member(api, kind) in registry:
-        return "overridden"
-    if not in_missing:
-        return "implemented at 6.1.3: the release answers"
-    if header_only:
-        # the ledger's header-ok rows (lift): declared in the lifted headers, no symbol to generate
-        return "header-only (lift): no symbol to generate"
-    if lang == "swift":
-        # the spec is the ObjC headers; a Swift row of any kind needs the Swift interface, which v-cache26 publishes beside the ObjC tables
-        return "swift: needs the Swift interface source"
-    if kind == "class":
-        if class_decisions is None or api not in class_decisions:
-            return "class object: not a candidate (no missing member rows in the header parse)"
-        generated, why = class_decisions[api]
-        if generated:
-            return "class object: generated (trace layer; every member a stub)"
-        if "own sources" in why or "override" in why:
-            return "class object: hand code covers it (not generated)"
-        return "class object: not generated (a member uncovered, or the superclass is not in the release)"
-    if kind == "function" and lang == "objc":
-        record = (functions or {}).get(api)
-        if record is None:
-            return "C function: not in the functions snapshot"
-        return "C function: generable stub (trace layer)" if record["status"] == "generable" else "C function: " + record["reasons"]
-    if kind == "protocol" and lang == "objc":
-        record = (proto or {}).get(api)
-        return PROTOCOL_STATES[record["status"]] if record else "protocol object: not in the transcriber's list"
-    if kind not in ("method", "property", "constant"):
-        return "needs a generator: " + kind
-    if lang == "swift":
-        # the spec is the ObjC headers; a Swift row needs the Swift interface, which v-cache26 publishes beside the ObjC tables
-        return "swift: needs the Swift interface source"
-    if kind in ("method", "property"):
-        owner = re.search(r"^[-+]\[(\w+)", api) or re.search(r"^(\w+)\.", api)
-        if owner and owner.group(1) in protocols:
-            return protocol_member_state(owner.group(1), api, proto)
-    r = spec_by_api.get(api)
-    if kind in ("method", "property"):
-        if r is None:
-            return gaps(api) if gaps else "not in the header parse (category or other)"
-        # one definition of generable: a stub in the trace layer's list answers the row (trace/stubs.tsv); the skip reasons
-        # are only the explanation of a row no stub answers
-        key = canonical_member(api, kind)
-        if stubs is not None:
-            reason = None if key in stubs else (stub_reason.get(key) or "not stubbed by the trace layer")
-        else:
-            reason = stub_reason.get(key)
-        if reason is None:
-            return "generable stub"
-        if reason.startswith("type not declared for iOS"):
-            return "not declared for iOS"
-        if reason.startswith("override or hand implementation"):
-            return "hand implementation (no registry row)"
-        return "not stubbed: " + reason
-    if r is None:
-        return "not in the header parse (category or other)"
-    if r["owned"] != "-":
-        return "owned by a live branch" if not r["owned"].startswith("registry:") else "registry decision"
-    if r["value_status"] == "found" and r["tbd"] == "exported":
-        return "generable constant"
-    if r["value_status"] == "numeric":
-        return "numeric (not a string object)"
-    return "not generated: " + (r["value_status"] if r["value_status"] else "-")
+def number_of(value):
+    """The integer a demand-apps cell names: 0 for an empty or missing cell."""
+    return 0 if value in (None, "") else int(value)
 
 
-GENERABLE_STATES = {"generable stub", "C function: generable stub (trace layer)"}
+def reconcile(tally):
+    """The rows the scope calls generable against the stubs the trace layer wrote (scope.lua reconcile): the lines of the file (its header
+    first), the number of generable rows, of stubs, of rows both share, the number of differences, and of those marked should be empty
+    (a generable row with no stub: the run fails on those)."""
+    lines = ["framework\tapi\treason"]
+    generable_total = stubbed_total = both = marked = 0
+    for fw in sorted(set(tally["generable"]) | {fw for fw, _ in tally["counts"]}):
+        stubs = tally["stub_sets"].get(fw, set())
+        gen = tally["generable"].get(fw, set())
+        stubbed_total += len(stubs)
+        generable_total += len(gen)
+        both += len(stubs & gen)
+        for api in sorted(stubs - gen):
+            lines.append("%s\t%s\ttrace stub that answers no surface row (spec-only member, or a class the surface does not list)" % (fw, api))
+        for api in sorted(gen - stubs):
+            lines.append("%s\t%s\tsurface row the scope calls generable with no trace stub (should be empty: one definition)" % (fw, api))
+            marked += 1
+    return lines, generable_total, stubbed_total, both, len(lines) - 1, marked
 
-# The open states the work queue lists, each with its kind of work and the next step. A state not here is decided or generated.
-QUEUE_NEXT = [
-    ("protocol member: 26.2 only", "protocol member added after the 16.4 body", "a registry decision: the protocol object is the 16.4 body, so the member needs a transcribed or hand body for it"),
-    ("protocol member: not in the 26.2 facts", "protocol member with no 26.2 fact", "read the header by hand; the member's owner is not the protocol the surface names"),
-    ("spelled by the headers, not parsed", "parse gap", "fix the parser for this declaration (see the scope reason)"),
-    ("class object: not generated", "class object with uncovered members", "cover each listed member with a stub or a registry decision, or leave the class out"),
-    ("C function: exported by the 26.2 .tbd", "C function exported without a declaration", "find its declaration in the SDK (no header declares it): a decision on the name"),
-    ("not stubbed: not stubbed by the trace layer", "row with no stub and no skip reason", "should be empty: a stub-layer defect"),
-    ("not spelled by this framework's 26.2 headers", "name not spelled by the framework's headers", "check the other framework headers (umbrella subframeworks) and the runtime; decide per row"),
-    ("init/new: not spelled", "init or new not spelled by the headers", "decide per class: implicit from NSObject, or unavailable by a macro"),
-    ("not in the header parse (category or other)", "not in the header parse", "read the header by hand"),
-    ("swift: needs the Swift interface source", "Swift row", "declaration from the .swiftinterface text, then a decision on overlay (see the Swift page)"),
-]
 
-
-def queue_item(state):
-    for prefix, kind, step in QUEUE_NEXT:
-        if state.startswith(prefix):
-            return kind, step
-    return None
+def scope_framework(args, fw, rows, shared, skipped, tally):
+    """Counts the rows of one framework into the tally: the facts its rows are stated by (scope.lua new_context), then the state of each
+    row and its count (scope.lua scope_rows). shared: the tree's typedef index, declared names and hand implementations. skipped:
+    framework -> the extractor's reason for skipping it."""
+    tree = args.tree
+    members = shard_members(tree, fw)
+    snap = os.path.isfile(shard_path(tree, fw))
+    led6 = scope_ledger(args.coordination, LEDGER_6_1_3, fw)
+    led43 = scope_ledger(args.coordination, LEDGER_4_3, fw)
+    stub_keys = stub_keys_of(tree, fw, members)
+    tally["stub_sets"][fw] = stub_keys or set()
+    registry = overridden_keys(tree, fw, members)
+    ctx = {"led6": led6, "registry": registry, "stub_keys": stub_keys, "extractor_reason": skipped.get(fw),
+           "protocols": {r["api"] for r in rows if r["kind"] == "protocol" and r.get("lang") == "objc"},
+           "spec_by_api": {}, "functions": {}, "class_decisions": {}, "proto": {}, "skips": {}}
+    if snap:
+        spec = spec_rows(tree, fw)
+        ctx["spec_by_api"] = spec_index(spec)
+        ctx["proto"] = load_protocols(tree, fw)
+        ctx["protocols"] |= set(ctx["proto"])
+        ctx["functions"] = load_functions(tree, fw)
+        ctx["class_decisions"] = load_class_decisions(tree, fw)
+        if any(r["kind"] in ("method", "property") for r in spec):
+            by_api = {}
+            for m in members:
+                by_api.setdefault(m["api"], m)
+            env = {"members": by_api, "index": shared["index"], "declared": shared["declared"], "hand": shared["hand"],
+                   "overridden": registry, "release_missing": led6 or None}
+            ctx["skips"] = dict(stub_skips(spec, env))
+    for row in rows:
+        kind = row["kind"]
+        if kind not in SCOPE_KINDS:
+            continue
+        api = row["api"]
+        lang = row.get("lang")
+        if lang is None:
+            lang = "objc"
+        state = scope_row_state(kind, api, lang, ctx) if snap else NO_SNAPSHOT
+        count = tally["counts"].setdefault((fw, kind), {"surface": 0, "demand_rows": 0, "demand_apps": 0, "missing_6_1_3": 0,
+                                                       "missing_4_3": 0, "states": {}})
+        count["surface"] += 1
+        rank = row.get("demand-rank")
+        ranked = rank is not None and rank != ""
+        if ranked:
+            count["demand_rows"] += 1
+            count["demand_apps"] += number_of(row.get("demand-apps"))
+        if led6.get((kind, api)) is not None:
+            count["missing_6_1_3"] += 1
+        if led43.get((kind, api)) is not None:
+            count["missing_4_3"] += 1
+        count["states"][state] = count["states"].get(state, 0) + 1
+        if state in GENERABLE_STATES:
+            tally["generable"].setdefault(fw, set()).add(canonical_member(api, kind))
+        work = queue_item(state)
+        if work:
+            apps = row.get("demand-apps") or "0"
+            tally["queued"].append({"fw": fw, "kind": kind, "api": api, "state": state, "work": work[0], "step": work[1],
+                                    "unranked": not ranked, "rank": int(rank) if ranked else 0, "apps": int(apps),
+                                    "rank_text": rank if ranked else "-", "apps_text": apps, "seq": len(tally["queued"]) + 1})
 
 
 def cmd_scope(args):
-    """The scope of the surface, from the tables: one row per framework and kind, and the work queue by demand."""
-    sdk = args.sdk or SDK26
-    surface = []
-    with open(os.path.join(LEDGER_DIR, "sdk-26.2-surface.tsv"), newline="") as handle:
-        for row in csv.DictReader(handle, delimiter="\t", quoting=csv.QUOTE_NONE):
-            surface.append(row)
-    by_fw = {}
-    for row in surface:
-        by_fw.setdefault(row["framework"], []).append(row)
-    counts = {}
-    generable = {}
-    queue_items = []
-    frameworks = surface_frameworks()
-    for fw in frameworks:
-        rows = by_fw.get(fw, [])
-        led6 = ledger_status(fw, "ledger-w45") if os.path.exists(os.path.join(LEDGER_DIR, "ledger-w45", fw + ".tsv")) else {}
-        led43 = ledger_status(fw, "ledger-w45-4.3") if os.path.exists(os.path.join(LEDGER_DIR, "ledger-w45-4.3", fw + ".tsv")) else {}
-        snap = os.path.exists(spec_path(args.tree, fw))
-        proto = load_protocols(args.tree, fw) if snap else None
-        fns = load_functions(args.tree, fw) if snap else None
-        cls_dec = load_class_decisions(args.tree, fw) if snap else None
-        # the objc protocols only: a Swift protocol row with a class's name (CLCondition) is not a protocol the class's members belong to
-        protocols = set(row["api"] for row in rows if row["kind"] == "protocol" and row.get("lang") == "objc")
-        protocols |= set(proto or {})
-        reg = registry_entries(args.tree, fw)
-        registry = set(reg)
-        spec_by_api, stub_reason = {}, {}
-        if snap:
-            spec = load_spec(args.tree, fw)
-            for r in spec:
-                spec_by_api.setdefault(r["api"], r)
-                spec_by_api.setdefault(r["api"].replace("-[", "").rstrip("]").replace(" ", ".", 1) if r["kind"] == "property" else r["api"], r)
-            overridden = registry
-            if any(r["kind"] in ("method", "property") for r in spec):
-                index_ok = True
-                try:
-                    release_missing = set(led6.keys()) if led6 else None
-                    _, skipped = stub_members(spec, fw, sdk, overridden, hand_implementations(args.tree), release_missing)
-                except Exception as error:  # a framework whose types cannot be resolved is named, not hidden
-                    skipped, index_ok = [], False
-                    stub_reason["__error__"] = str(error)[:100]
-                stub_reason.update({api: reason for api, reason in skipped})
-        trace_stubs = os.path.join(gen_dir(args.tree, fw), "trace", "stubs.tsv")
-        stub_keys = {line.split("\t")[0] for line in read(trace_stubs).splitlines()[1:] if line} if os.path.exists(trace_stubs) else None
-        header = {}
+    """The scope of the surface (scope.lua run): one row per framework and kind, the state of each row, the work queue by demand, and the
+    reconciliation of the generable rows with the trace layer's stubs. Writes four files into --out and prints the tie-out. Returns 1 when
+    the tie-out does not tie or a reconcile difference is marked should be empty, else 0; the four files are written either way."""
+    if not (args.sdk and args.coordination and args.out):
+        raise SystemExit("scope needs --sdk (the iOS SDK directory), --coordination (the corpus folder) and --out (the folder to write)")
+    out = args.out
+    by_fw = scope_surface(args.coordination)
+    shared = {"index": typedef_index(args.tree), "declared": declared_names(args.tree), "hand": hand_implementations(args.tree)}
+    skipped = extractor_skipped(args.tree)
+    tally = {"counts": {}, "generable": {}, "queued": [], "stub_sets": {}}
+    for fw, rows in by_fw.items():
+        scope_framework(args, fw, rows, shared, skipped, tally)
+    surface_total = sum(len(rows) for rows in by_fw.values())
 
-        def gap_of(api):
-            if not header:
-                header["facts"] = header_facts(sdk, fw, load_spec(args.tree, fw))
-            return parse_gap_reason(api, *header["facts"])
+    reconcile_lines, generable_total, stubbed_total, both, differences, marked = reconcile(tally)
+    write(os.path.join(out, "v-gen-reconcile.tsv"), ("\n".join(reconcile_lines) + "\n").encode("ascii", "backslashreplace").decode("ascii"))
+    print("reconcile: %d generable rows, %d stubs, %d in both, %d differences (%d marked should be empty) -> v-gen-reconcile.tsv"
+          % (generable_total, stubbed_total, both, differences, marked))
 
-        for row in rows:
-            kind = row["kind"]
-            if kind not in SCOPE_KINDS:
-                continue
-            api = row["api"]
-            dotted = api
-            key = (kind, api)
-            in_missing = (kind, api) in led6
-            header_only = led6.get((kind, api)) == "header-ok"
-            state = scope_row_state(kind, api, registry, spec_by_api, stub_reason, in_missing, protocols, row.get("lang", "objc"),
-                                    header_only, proto, gaps=gap_of if snap else None, functions=fns, stubs=stub_keys, class_decisions=cls_dec) if snap else "no snapshot"
-            c = counts.setdefault((fw, kind), {"surface": 0, "demand_rows": 0, "demand_apps": 0, "missing_6_1_3": 0,
-                                               "missing_4_3": 0, "states": {}})
-            c["surface"] += 1
-            if row.get("demand-rank"):
-                c["demand_rows"] += 1
-                c["demand_apps"] += int(row.get("demand-apps") or 0)
-            if led6.get((kind, api)) is not None:
-                c["missing_6_1_3"] += 1
-            if led43.get((kind, api)) is not None:
-                c["missing_4_3"] += 1
-            c["states"][state] = c["states"].get(state, 0) + 1
-            if state in GENERABLE_STATES:
-                generable.setdefault(fw, set()).add(canonical_member(api, kind))
-            item = queue_item(state)
-            if item:
-                queue_items.append((fw, kind, api, state, item[0], item[1], row.get("demand-rank") or "-", row.get("demand-apps") or "0"))
-    # Reconciliation: the rows the scope calls generable against the stubs the trace layer writes (trace/stubs.tsv, one row per
-    # stub, keyed by the surface row it answers). One set: a row is generable exactly when a stub answers it.
-    reconcile, stubbed_total, generable_total, both = [], 0, 0, 0
-    for fw in sorted(set(generable) | set(f for f, _ in counts)):
-        trace = os.path.join(gen_dir(args.tree, fw), "trace", "stubs.tsv")
-        stubs = set()
-        if os.path.exists(trace):
-            stubs = {row.split("\t")[0] for row in read(trace).splitlines()[1:] if row}
-        gen_rows = generable.get(fw, set())
-        stubbed_total += len(stubs)
-        generable_total += len(gen_rows)
-        both += len(stubs & gen_rows)
-        for api in sorted(stubs - gen_rows):
-            reconcile.append((fw, api, "trace stub that answers no surface row (spec-only member, or a class the surface does not list)"))
-        for api in sorted(gen_rows - stubs):
-            reconcile.append((fw, api, "surface row the scope calls generable with no trace stub (should be empty: one definition)"))
-    out_dir = args.out or SCOPE_DIR
-    write(os.path.join(out_dir, "v-gen-reconcile.tsv"), ("framework\tapi\treason\n" + "".join(
-        "%s\t%s\t%s\n" % row for row in reconcile)).encode("ascii", "backslashreplace").decode("ascii"))
-    print("reconcile: %d generable rows, %d stubs, %d in both, %d differences -> v-gen-reconcile.tsv"
-          % (generable_total, stubbed_total, both, len(reconcile)))
     lines = ["framework\tkind\tsurface_rows\tdemand_rows\tdemand_apps\tmissing_6_1_3\tmissing_4_3\tstates"]
-    queue = {}
-    for (fw, kind), c in sorted(counts.items()):
-        states = "; ".join("%s=%d" % (k, v) for k, v in sorted(c["states"].items()))
+    queue_total, surface_of = {}, {}
+    for fw, kind in sorted(tally["counts"]):
+        c = tally["counts"][(fw, kind)]
+        states = "; ".join("%s=%d" % (state, c["states"][state]) for state in sorted(c["states"]))
         lines.append("\t".join([fw, kind, str(c["surface"]), str(c["demand_rows"]), str(c["demand_apps"]),
                                 str(c["missing_6_1_3"]), str(c["missing_4_3"]), states]))
-        queue[fw] = queue.get(fw, 0) + c["demand_apps"]
-    os.makedirs(out_dir, exist_ok=True)
-    write(os.path.join(out_dir, "v-gen-scope.tsv"), "\n".join(lines) + "\n")
-    order = sorted(queue, key=lambda fw: (-queue[fw], fw))
+        queue_total[fw] = queue_total.get(fw, 0) + c["demand_apps"]
+        surface_of[fw] = surface_of.get(fw, 0) + c["surface"]
+    write(os.path.join(out, "v-gen-scope.tsv"), "\n".join(lines) + "\n")
+    by_demand = sorted(queue_total, key=lambda fw: (-queue_total[fw], fw))
+
     md = ["# v-gen scope: every surface row, counted from the tables", "",
           "Generated by `tools/gen.py scope` from sdk-26.2-surface.tsv, the ledgers (6.1.3 and 4.3), the registry, and the spec snapshots.",
           "", "Work queue by demand (apps that call the framework's rows, summed):", "",
           "| rank | framework | demand apps | surface rows |", "| --- | --- | --- | --- |"]
-    surf_total = {}
-    for (fw, kind), c in counts.items():
-        surf_total[fw] = surf_total.get(fw, 0) + c["surface"]
-    for i, fw in enumerate(order[:60], 1):
-        md.append("| %d | %s | %d | %d |" % (i, fw, queue[fw], surf_total.get(fw, 0)))
+    md += ["| %d | %s | %d | %d |" % (i, fw, queue_total[fw], surface_of[fw]) for i, fw in enumerate(by_demand[:TOP_RANKS], 1)]
     totals = {}
-    for (fw, kind), c in counts.items():
+    for c in tally["counts"].values():
         for state, n in c["states"].items():
             totals[state] = totals.get(state, 0) + n
-    md += ["", "State totals over every surface row (each row has exactly one state):", "",
-           "| state | rows |", "| --- | --- |"]
+    md += ["", "State totals over every surface row (each row has exactly one state):", "", "| state | rows |", "| --- | --- |"]
     md += ["| %s | %d |" % (state, n) for state, n in sorted(totals.items(), key=lambda kv: -kv[1])]
-    surface_total = sum(len(v) for v in by_fw.values())
-    # the work queue: every open row, by demand (demand rank first, then apps); swift rows are counted per framework, not listed
-    queued = sorted(queue_items, key=lambda q: (q[6] == "-", int(q[6]) if q[6] != "-" else 0, -int(q[7] or 0), q[0], q[2]))
-    write(os.path.join(out_dir, "v-gen-queue.tsv"), ("framework\tkind\tapi\tstate\twork\tnext_step\tdemand_rank\tdemand_apps\n" + "".join(
-        "\t".join([q[0], q[1], q[2], q[3], q[4], q[5], q[6], q[7]]) + "\n" for q in queued)).encode("ascii", "backslashreplace").decode("ascii"))
-    for item in sorted({q[4] for q in queued}):
-        print("queue: %6d  %s" % (sum(1 for q in queued if q[4] == item), item))
+
+    queued = sorted(tally["queued"], key=lambda q: (q["unranked"], q["rank"], -q["apps"], q["fw"], q["api"], q["seq"]))
+    queue_lines = ["framework\tkind\tapi\tstate\twork\tnext_step\tdemand_rank\tdemand_apps"]
+    queue_lines += ["\t".join([q["fw"], q["kind"], q["api"], q["state"], q["work"], q["step"], q["rank_text"], q["apps_text"]])
+                    for q in queued]
+    write(os.path.join(out, "v-gen-queue.tsv"), ("\n".join(queue_lines) + "\n").encode("ascii", "backslashreplace").decode("ascii"))
+    works = {}
+    for q in queued:
+        works[q["work"]] = works.get(q["work"], 0) + 1
+    for work in sorted(works):
+        print("queue: %6d  %s" % (works[work], work))
+
     tied = sum(totals.values())
-    md += ["", "Tie-out: %d surface rows, %d rows in the state totals: %s." % (surface_total, tied,
-                                                                             "tie" if tied == surface_total else "DO NOT TIE")]
-    write(os.path.join(out_dir, "v-gen-scope.md"), "\n".join(md) + "\n")
+    verdict = "tie" if tied == surface_total else "DO NOT TIE"
+    md += ["", "Tie-out: %d surface rows, %d rows in the state totals: %s." % (surface_total, tied, verdict)]
+    write(os.path.join(out, "v-gen-scope.md"), "\n".join(md) + "\n")
     print("tie-out: %d surface rows, %d in state totals" % (surface_total, tied))
-    print("scope: %d framework-kind rows, %d frameworks -> %s" % (len(counts), len(queue), os.path.join(out_dir, "v-gen-scope.tsv")))
-    return 0
+    print("scope: %d framework-kind rows, %d frameworks -> %s"
+          % (len(tally["counts"]), len(by_demand), os.path.join(out, "v-gen-scope.tsv")))
+    status = 0
+    if tied != surface_total:
+        print("scope: DO NOT TIE: %d surface rows, %d rows in the state totals" % (surface_total, tied))
+        status = 1
+    if marked:
+        print("scope: %d reconcile difference(s) marked should be empty, see v-gen-reconcile.tsv" % marked)
+        status = 1
+    return status
 
 
 # ---------------------------------------------------------------- protocols: the 26.2 protocol objects the 6.1.3 release lacks
@@ -1960,7 +2234,8 @@ def main():
     parser.add_argument("--measured", help="release-split output of the built objects: the first release each symbol is exported in")
     parser.add_argument("--ios-constants", help="v-cache26's constants table of the iOS 26.2 cache (default: coordination/corpus/cache-26.2/)")
     parser.add_argument("--all", action="store_true", help="input, doc, protocols, functions, objc and swift: every framework")
-    parser.add_argument("--out", help="doc: where the page set is written (default: .agent-work/spec-docs under the tree)")
+    parser.add_argument("--out", help="doc: where the page set is written (default: .agent-work/spec-docs under the tree); scope: the folder the four files go to")
+    parser.add_argument("--coordination", help="scope: the corpus folder (the surface table and the ledgers)")
     parser.add_argument("--limit", type=int, default=5, help="behaviour: the number of methods to summarise (default 5)")
     parser.add_argument("--selector", help="behaviour: the one selector to summarise")
     args = parser.parse_args()
