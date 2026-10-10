@@ -123,6 +123,21 @@ static NSString *CharonTypeNameForType(OSType type)
     return [NSString stringWithFormat:@"%u.%u.%u", (unsigned)((version >> 16) & 0xFFFF), (unsigned)((version >> 8) & 0xFF), (unsigned)(version & 0xFF)];
 }
 
+// A component of this release lives in the shared cache, which has no path in the file system, so
+// the location the header asks for is the one such a component can have: none.
+- (nullable NSURL *)componentURL
+{
+    return nil;
+}
+
+// The header documents this as one Mach-O architecture constant per slice the component carries. The
+// slice this library is built for is the one the release holds, and a component of the shared cache
+// carries no other slice, so that is what is answered.
+- (NSArray<NSNumber *> *)availableArchitectures
+{
+    return @[@(CPU_TYPE_ARM)];
+}
+
 // The header's own answer for iOS: "On iOS, this is always YES."
 - (BOOL)isSandboxSafe
 {
@@ -167,16 +182,79 @@ static NSString *CharonTypeNameForType(OSType type)
 }
 
 // This release exports no AudioComponentCopyTags and no AudioComponentGetParameter, so no component
-// of it carries a tag: allTagNames is the empty array, the header's own shape over an empty set, not
-// a stub.
-- (NSArray<NSString *> *)allTagNames
+// of it carries a tag: the array of the current user's tags is empty and setting one has nothing to
+// change. Both are the header's own shapes over an empty set, not a stub.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunguarded-availability"
+- (void)setUserTagNames:(NSArray<NSString *> *)userTagNames
+{
+}
+
+- (NSArray<NSString *> *)userTagNames
 {
     return @[];
 }
 
+- (NSArray<NSString *> *)allTagNames
+{
+    return @[];
+}
+#pragma clang diagnostic pop
+
 - (AudioComponentDescription)audioComponentDescription
 {
     return _charon_description;
+}
+
+- (nullable NSURL *)iconURL
+{
+    return nil;
+}
+
+- (BOOL)hasCustomView
+{
+    return NO;
+}
+
+// The header: "returns YES if the AudioComponent supports the input/output channel configuration".
+// That is asked of a real instance of the component rather than read off its type: a stream format
+// of the requested channel count is offered to the unit's input and output scope, and the unit's own
+// answer decides. A unit that refuses the format does not support that configuration.
+- (BOOL)supportsNumberInputChannels:(NSInteger)numInputChannels outputChannels:(NSInteger)numOutputChannels
+{
+    if (numInputChannels < 0 || numOutputChannels < 0 || _charon_component == NULL) {
+        return NO;
+    }
+    AudioUnit unit = NULL;
+    if (AudioComponentInstanceNew(_charon_component, &unit) != noErr || unit == NULL) {
+        return NO;
+    }
+    BOOL supported = YES;
+    if (numInputChannels == 0 && numOutputChannels == 0) {
+        supported = NO;
+    }
+    AudioStreamBasicDescription probe;
+    memset(&probe, 0, sizeof(probe));
+    probe.mFormatID = kAudioFormatLinearPCM;
+    probe.mSampleRate = 44100.0;
+    probe.mFormatFlags = kAudioFormatFlagIsFloat | kAudioFormatFlagIsPacked;
+    probe.mBitsPerChannel = 32;
+    probe.mFramesPerPacket = 1;
+    probe.mChannelsPerFrame = 1;
+    if (supported && numInputChannels > 0) {
+        probe.mChannelsPerFrame = (UInt32)numInputChannels;
+        if (AudioUnitSetProperty(unit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0, &probe, sizeof(probe)) != noErr) {
+            supported = NO;
+        }
+    }
+    if (supported && numOutputChannels > 0) {
+        probe.mChannelsPerFrame = (UInt32)numOutputChannels;
+        if (AudioUnitSetProperty(unit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 0, &probe, sizeof(probe)) != noErr) {
+            supported = NO;
+        }
+    }
+    AudioComponentInstanceDispose(unit);
+    return supported;
 }
 
 @end
@@ -248,6 +326,7 @@ static NSString *CharonTypeNameForType(OSType type)
             @"version": @(component.version),
             @"versionString": component.versionString ?: @"",
             @"allTagNames": component.allTagNames,
+            @"userTagNames": component.allTagNames,
             @"tags": component.allTagNames,
         };
         @try {

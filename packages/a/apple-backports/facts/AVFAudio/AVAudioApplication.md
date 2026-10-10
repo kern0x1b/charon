@@ -24,12 +24,11 @@ did not earn.
 
 **The mute state** is kept by the shared application object and read back by `isInputMuted`; a change
 made through `-setInputMuted:error:` posts `AVAudioApplicationInputMuteStateChangeNotification` with
-`AVAudioApplicationMuteStateKey` in its `userInfo`. Nothing on this release flips the hardware switch
-on its own, so the notification fires only for a change this process made.
-
-**`-setInputMuteStateChangeHandler:error:`** is not on iOS: the SDK declares it
-`API_UNAVAILABLE(ios, watchos, tvos, macCatalyst, visionos)` (`AVAudioApplication.h:104`, macOS 14
-only), so its registry row is `absent` and no handler can be set through this port.
+`AVAudioApplicationMuteStateKey` in its `userInfo`, and a handler set through
+`-setInputMuteStateChangeHandler:error:` is called with the new state. Nothing on this release flips
+the hardware switch on its own, so the handler fires only for a change this process made - which is
+what the header's own note says the handler is for ("This handler should be set by the process doing
+the call's audio I/O").
 
 **`-init` answers the shared instance** rather than a second object: two `AVAudioApplication`
 objects would each keep their own mute state, and this API has one mute state. `-init` is in the
@@ -42,3 +41,12 @@ session that cannot inject reports; it is not a refusal of the call.
 
 `AVAudioSessionPortContinuityMicrophone` is `ContinuityMicrophone`, read out of the host's own
 AVFAudio - see `AVFAudioStrings.md` for the reader and its control.
+
+## Measured on the iOS 26.2 cache: the SDK annotation does not hold for the mute handler
+
+The SDK declares `-setInputMuteStateChangeHandler:error:` macOS only (AVAudioApplication.h:104,
+`API_UNAVAILABLE(ios, ...)`). The iOS 26.2 cache (23C55, iPhone17,1, arm64e) registers the selector on
+AVAudioApplication: `CHARON_ROOT=<tree> xmake l tools/corpus/objc-inventory.lua <cache>` lists it among
+the class's 31 instance selectors, with `setInputMuted:error:` and `isInputMuted` as controls. The row
+stays `implemented`. Its introduced release is the one the registry records; the iOS 18.0 and 6.1.3
+caches were not read here (review F3).

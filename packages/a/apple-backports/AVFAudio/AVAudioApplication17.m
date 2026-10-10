@@ -72,6 +72,19 @@ NSString * const AVAudioSessionPortContinuityMicrophone = @"ContinuityMicrophone
     return _charon_inputMuted;
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunguarded-availability"
+// macOS-only in the 26.2 header, and in the corpus because the corpus is the whole SDK surface. The
+// handler is kept, because keeping it is what the iOS 17 API is: a process that sets one is told
+// when the state changes. Nothing on this release changes the state on its own, so the handler is
+// called only for a change this process made through -setInputMuted:error:.
+- (BOOL)setInputMuteStateChangeHandler:(BOOL (^)(BOOL))inputMuteHandler error:(NSError **)outError
+{
+    _charon_muteHandler = [inputMuteHandler copy];
+    return YES;
+}
+#pragma clang diagnostic pop
+
 - (AVAudioApplicationRecordPermission)recordPermission
 {
     // The permission is the release's own where this process has an AVAudioSession that reports one,
