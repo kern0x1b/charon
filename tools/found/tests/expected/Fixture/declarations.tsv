@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.4	sdk=sdk	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
+#libclang=<decls --version>	sdk=sdk	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
 function	c:@F@FXSubtract	-			int (int, int)	int a | int b	-	-	-	49740040529ed9bb	-
 typedef	c:Repeat.h@T@FXCount	-			int	-	-	-	-	1f7328e81f8a9e5e	-
 function	c:@F@FXRun	-			void (int)	int total	-	-	-	0020c5ef8e076e6b	-

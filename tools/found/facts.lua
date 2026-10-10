@@ -9,8 +9,8 @@
 -- member is written in, or "-").
 --
 -- usage: facts(spec, framework) where spec is the spec folder (for example packages/a/apple-backports/spec)
-local shard = import("shard", {rootdir = path.join("tools", "found"), anonymous = true})
-local availability = import("avail", {rootdir = path.join("tools", "found"), anonymous = true})
+local shard = import("shard", {rootdir = os.scriptdir(), anonymous = true})
+local availability = import("avail", {rootdir = os.scriptdir(), anonymous = true})
 
 -- The decoded rows of the framework's shard, or none when the framework has no shard (it has no declaration the extractor reads).
 function rows(spec, framework)

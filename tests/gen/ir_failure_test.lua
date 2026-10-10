@@ -8,6 +8,7 @@
 
 local REPO = path.absolute(path.join(os.scriptdir(), "..", ".."))
 local RUNS = path.join(REPO, ".agent-work", "runs", "ir-failure-test")
+local fake = import("fake_decls", {rootdir = os.scriptdir(), anonymous = true})
 
 -- A committed shard of the fixture: the header line and one row, with the eleven columns a shard keeps.
 local SHARD = table.concat({
@@ -26,21 +27,6 @@ do
         table.insert(cells, "-")
     end
     UNPARSED_BODY = "printf '" .. table.concat(cells, "\\t") .. "\\n'"
-end
-
--- Writes the fake extractor: --target, --version and --list answer for the fixture, and any other call runs the body.
-local function fake_decls(file, body)
-    local text = table.concat({
-        "#!/bin/sh",
-        "case \"$1\" in",
-        "  --target) echo arm64-apple-ios ;;",
-        "  --version) echo libclang-fixture ;;",
-        "  --list) printf 'Fixture\\t/fixture/Fixture.framework\\n' ;;",
-        "  *) " .. body .. " ;;",
-        "esac",
-        ""}, "\n")
-    io.writefile(file, text)
-    os.iorunv("chmod", {"755", file})
 end
 
 -- A fresh fixture under RUNS: the shard of Gone (a framework decls no longer lists), a committed shard of Fixture when with_shard, and
@@ -131,7 +117,7 @@ function main()
     local function cases()
         -- write mode, decls fails on the framework: raises, and the tree is the same
         local a = build("write-fails", true)
-        fake_decls(a.decls, FAIL_BODY)
+        fake.write(a.decls, FAIL_BODY)
         local before = snapshot(a)
         local failure = run_driver(a, "write")
         check(names_the_framework(failure), "write mode raises, naming the framework, when decls fails")
@@ -140,7 +126,7 @@ function main()
 
         -- check mode, the same failure: raises, and the tree is the same
         local b = build("check-fails", true)
-        fake_decls(b.decls, FAIL_BODY)
+        fake.write(b.decls, FAIL_BODY)
         before = snapshot(b)
         failure = run_driver(b, "check")
         check(names_the_framework(failure), "check mode raises, naming the framework, when decls fails")
@@ -150,7 +136,7 @@ function main()
         -- decls exits zero with its own unparsed row for a framework the committed tree still has a shard for: no shard is made, and
         -- that shard is not removed here, so the run raises
         local c = build("gives-no-shard", true)
-        fake_decls(c.decls, UNPARSED_BODY)
+        fake.write(c.decls, UNPARSED_BODY)
         before = snapshot(c)
         failure = run_driver(c, "write")
         check(failure ~= nil, "write mode raises when decls gives no shard for a framework that has a committed shard")
@@ -160,7 +146,7 @@ function main()
         -- decls exits zero with its own unparsed row, and nothing is committed for the framework: the row is recorded, and the shard of
         -- the framework decls no longer lists is removed
         local d = build("unparsed", false)
-        fake_decls(d.decls, UNPARSED_BODY)
+        fake.write(d.decls, UNPARSED_BODY)
         local output
         failure, output = run_driver(d, "write")
         check(failure == nil, "decls' own unparsed row is not a failure" .. (failure and (": " .. failure) or ""))

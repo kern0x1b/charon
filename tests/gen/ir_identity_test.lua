@@ -1,28 +1,41 @@
--- The extractor's libclang identity rule (review F8), through tools/found/ir.lua on the extractor's fixture SDK: a shard whose recorded
--- identity (the version, the digest of the dylib, the target) is not this machine's is refused by check and by write, and write
--- re-records it only with IR_REPIN. The golden shard of the fixture is copied into a folder under .agent-work/runs, its digest is
--- changed, and the four runs are checked. Run from the repository root: xmake l tests/gen/ir_identity_test.lua (exits 1 on failure).
+-- The extractor's libclang identity rule (review F8), through tools/found/ir.lua: a shard whose recorded identity (the libclang version,
+-- the SHA-256 of its dylib, the target) is not the extractor's own is refused by check and by write, and write re-records it only with
+-- IR_REPIN. The rule compares the recorded identity line with what `decls --version` prints, so the extractor here is a stand-in
+-- (fake_decls.lua) that prints a chosen identity and one row: no build of the real extractor, no libclang of this machine and no digest
+-- of it is involved, and the run does not depend on the folder it starts from. The real extractor's own identity line is checked by
+-- tools/found/tests/run.lua. Run: xmake l tests/gen/ir_identity_test.lua (exits 1 on failure).
 
-local ROOT = "tools/found/tests"
-local FIXTURE_SDK = path.join(ROOT, "fixture", "sdk")
-local FIXTURE_CONFIG = path.join(ROOT, "fixture", "config")
-local CONFLICTS = path.join(ROOT, "conflicts.tsv")
-local GOLDEN = path.join(ROOT, "expected", "Fixture", "declarations.tsv")
-local RUN = path.join(".agent-work", "runs", "ir-identity-" .. tostring(os.time()))
-local SPEC = path.join(RUN, "spec")
-local SHARD = path.join(SPEC, "Fixture", "declarations.tsv")
-local FOREIGN = "dylib-sha256=" .. string.rep("0", 64)
+local REPO = path.absolute(path.join(os.scriptdir(), "..", ".."))
+local IR = path.join(REPO, "tools", "found", "ir.lua")
+local RUN = path.join(REPO, ".agent-work", "runs", "ir-identity-test")
+local fake = import("fake_decls", {rootdir = os.scriptdir(), anonymous = true})
 
--- Runs ir.lua in a mode with the fixture's inputs. Returns true, or false and the message the run raised.
-local function run_ir(mode, repin)
-    local envs = {IR_SDK = FIXTURE_SDK, IR_CONFIG = FIXTURE_CONFIG, IR_MODE = mode, IR_SPEC = SPEC, IR_CONFLICTS = CONFLICTS,
-                  IR_UNPARSED = path.join(RUN, "unparsed.tsv"), IR_NO_OWN = path.join(FIXTURE_CONFIG, "no-own.tsv")}
+-- Two identities that differ in the digest of the dylib alone, which is the case the rule exists for.
+local VERSION = "Apple clang version 21.0.0 (clang-2100.3.34.2)"
+local RECORDED = VERSION .. " dylib-sha256=" .. string.rep("0", 64) .. " target=arm64-apple-ios26.4"
+local CURRENT = VERSION .. " dylib-sha256=" .. string.rep("1", 64) .. " target=arm64-apple-ios26.4"
+
+-- One function of the framework Fixture: the eighteen cells of the IR (the extractor's row) and the line the shard keeps for it.
+local IR_ROW = {"Fixture", "function", "c:@F@FixtureSum", "-", "FixtureSum", "-", "-", "-", "-", "-", "int", "int a | int b", "-", "-",
+                "49740040529ed9bb", "-", "-", "-"}
+local SHARD_ROW = "function\tc:@F@FixtureSum\t-\t\t\tint\tint a | int b\t-\t-\t-\t49740040529ed9bb\t-\n"
+local SHARD_COLUMNS = "kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value"
+
+-- The shard of Fixture as the driver writes it for an extractor with the given identity.
+local function shard_text(identity)
+    return "#libclang=" .. identity .. "\tsdk=iPhoneOS-fixture\tcolumns=" .. SHARD_COLUMNS .. "\n" .. SHARD_ROW
+end
+
+-- Runs the driver on the stand-in in one mode. Returns true, or false and the message the run raised.
+local function run_ir(p, mode, repin)
+    local envs = {IR_DECLS = p.decls, IR_SDK = p.sdk, IR_SPEC = p.spec, IR_UNPARSED = p.unparsed, IR_CONFLICTS = p.conflicts,
+                  IR_NO_OWN = p.no_own, IR_MODE = mode, IR_TIMEOUT = "5"}
     if repin then
         envs.IR_REPIN = "1"
     end
     local ok, message = true, ""
     try {
-        function () os.iorunv("xmake", {"l", "./tools/found/ir.lua"}, {envs = envs}) end,
+        function () os.iorunv(os.programfile(), {"l", IR}, {envs = envs}) end,
         catch {
             function (errors)
                 ok = false
@@ -33,7 +46,7 @@ local function run_ir(mode, repin)
     return ok, message
 end
 
-function main()
+local function cases()
     local failures, count = 0, 0
     local function check(ok, label)
         count = count + 1
@@ -43,28 +56,53 @@ function main()
         end
     end
 
-    local golden = io.readfile(GOLDEN)
-    local foreign, replaced = golden:gsub("dylib%-sha256=%x+", FOREIGN, 1)
-    check(replaced == 1, "the golden shard records a dylib digest to change")
-    os.mkdir(path.directory(SHARD))
-    io.writefile(SHARD, foreign)
+    os.mkdir(path.join(RUN, "spec", "Fixture"))
+    local p = {spec = path.join(RUN, "spec"), sdk = path.join(RUN, "iPhoneOS-fixture.sdk"), decls = path.join(RUN, "decls"),
+               unparsed = path.join(RUN, "unparsed.tsv"), conflicts = path.join(RUN, "conflicts.tsv"), no_own = path.join(RUN, "no-own.tsv")}
+    local shard = path.join(p.spec, "Fixture", "declarations.tsv")
+    fake.write(p.decls, fake.rows_body({IR_ROW}), CURRENT)
+    -- no framework of this fixture is without a shard, and nothing is unparsed: the lists the driver checks are empty
+    io.writefile(p.no_own, "# the frameworks with no shard whose headers declare nothing of their own: none in this fixture\n")
+    io.writefile(p.unparsed, "# the frameworks of the SDK with no declaration the extractor reads, and why: one line each\n")
+    local recorded = shard_text(RECORDED)
+    io.writefile(shard, recorded)
 
-    local ok, message = run_ir("check", false)
+    local ok, message = run_ir(p, "check", false)
     check(not ok and string.find(message, "libclang identity differs", 1, true) ~= nil,
-          "check refuses a shard recorded by another libclang identity (" .. message:sub(1, 120) .. ")")
+          "check refuses a shard recorded by another libclang identity (" .. message:sub(1, 160) .. ")")
 
-    ok, message = run_ir("write", false)
+    ok, message = run_ir(p, "write", false)
     check(not ok and string.find(message, "libclang identity differs", 1, true) ~= nil,
-          "write refuses it without IR_REPIN (" .. message:sub(1, 120) .. ")")
-    check(io.readfile(SHARD) == foreign, "the refused write left the shard as it was")
+          "write refuses it without IR_REPIN (" .. message:sub(1, 160) .. ")")
+    check(io.readfile(shard) == recorded, "the refused write left the shard as it was")
 
-    ok, message = run_ir("write", true)
+    ok, message = run_ir(p, "write", true)
     check(ok, "write with IR_REPIN re-records the shard (" .. message:sub(1, 160) .. ")")
-    check(io.readfile(SHARD) == golden, "the re-recorded shard equals the golden shard, byte for byte")
+    check(io.readfile(shard) == shard_text(CURRENT), "the re-recorded shard is the extractor's rows under the extractor's identity")
 
-    os.rm(RUN)
-    local verdict = failures == 0 and "OK" or ("FAIL " .. failures)
-    print(string.format("ir identity test: %s (%d checks)", verdict, count))
+    ok, message = run_ir(p, "check", false)
+    check(ok, "check accepts the shard once it records the extractor's identity (" .. message:sub(1, 160) .. ")")
+    return failures, count
+end
+
+function main()
+    os.tryrm(RUN)
+    local failures, count, crashed = 0, 0, nil
+    try {
+        function ()
+            failures, count = cases()
+        end,
+        catch {
+            function (errors)
+                crashed = errors
+            end
+        }
+    }
+    os.tryrm(RUN)
+    if crashed then
+        raise("%s", tostring(crashed))
+    end
+    print(string.format("ir identity test: %s (%d checks)", failures == 0 and "OK" or ("FAIL " .. failures), count))
     if failures > 0 then
         os.exit(1)
     end

@@ -1,13 +1,17 @@
--- The clean-checkout check (review F2, and the v-gen2 ruling): the committed tree is extracted with `git archive HEAD` into a folder under
--- .agent-work/runs of this checkout, and `gen --all` and `check --all` run from that folder with no derived file present. It fails when
+-- The clean-checkout check (review F2, and the v-gen2 ruling): the tree is extracted into a folder under .agent-work/runs of this
+-- checkout (`git archive HEAD` when the checkout is a git work tree, so only committed files; the tree's own files, without its
+-- derived folders, when it is not one: a tree that came from git archive has no .git), and `gen --all` and `check --all` run from that
+-- folder with no derived file present. It fails when
 -- any file outside packages/a/apple-backports/.gen appears or changes (gen may write only that folder), when gen or check exits
 -- non-zero, or when the Python oracle runs: gen and check run with a python3 on the PATH that writes a marker and fails, and the marker
--- must not exist afterwards (the build path reads the committed products and runs no gen.py). It checks HEAD, the last commit: git archive
--- reads committed files only, so an uncommitted change is not tested until it is committed. The archive, the python3 stand-in and the
--- marker are removed at the end. Run: xmake l tests/gen/clean_checkout_test.lua
+-- must not exist afterwards (the build path reads the committed products and runs no gen.py). In a git work tree it checks HEAD, the last
+-- commit: git archive reads committed files only, so an uncommitted change is not tested until it is committed. The archive, the python3
+-- stand-in and the marker are removed at the end. Run: xmake l tests/gen/clean_checkout_test.lua (from any folder)
 
 local ROOT = path.absolute(path.join(os.scriptdir(), "..", ".."))
 local GEN_PREFIX = "packages/a/apple-backports/.gen/"
+-- The folders of a tree that are not its sources: the agent work area, the build products, xmake's state and the generator's output.
+local DERIVED = {".git", ".agent-work", "build", ".xmake", "packages/a/apple-backports/.gen"}
 
 -- Every file under dir, keyed by its path relative to dir, with its size and modification time.
 local function listing(dir)
@@ -26,6 +30,38 @@ local function names_of(list)
     end
     table.sort(out)
     return out
+end
+
+-- Whether ROOT is the top of a git work tree (and not a folder inside another repository, which `git archive` would then take the
+-- folder's own path of, and find empty).
+local function is_work_tree_top()
+    local top = false
+    try {
+        function ()
+            local prefix = os.iorunv("git", {"-C", ROOT, "rev-parse", "--show-prefix"})
+            top = prefix:gsub("%s+", "") == ""
+        end,
+        catch {
+            function () top = false end
+        }
+    }
+    return top
+end
+
+-- Extracts the tree under test into dir. Returns the exit status of the extraction (0 on success).
+local function extract(dir)
+    if is_work_tree_top() then
+        return os.execv("sh", {"-c", 'git -C "$1" archive --format=tar HEAD | tar -x -C "$2"', "sh", ROOT, dir}, {try = true})
+    end
+    local argv = {"-c", "-f", "-"}
+    for _, name in ipairs(DERIVED) do
+        table.insert(argv, "--exclude")
+        table.insert(argv, "./" .. name)
+    end
+    table.insert(argv, "-C")
+    table.insert(argv, ROOT)
+    table.insert(argv, ".")
+    return os.execv("sh", {"-c", 'tar "$@" | tar -x -C "$0"', dir, table.unpack(argv)}, {try = true})
 end
 
 -- The exit status of `xmake l tools/gen.lua <args>` run from dir with the given PATH, or nil when it could not start.
@@ -61,9 +97,11 @@ function main()
     else
         fail("the python3 stand-in does not catch a call, so the no-python result would prove nothing")
     end
-    local extracted = os.execv("sh", {"-c", 'git -C "$1" archive --format=tar HEAD | tar -x -C "$2"', "sh", ROOT, dir}, {try = true})
+    local extracted = extract(dir)
     if extracted ~= 0 then
-        fail("git archive HEAD could not be extracted (status " .. tostring(extracted) .. ")")
+        fail("the tree could not be extracted (status " .. tostring(extracted) .. ")")
+    elseif not os.isfile(path.join(dir, "tools", "gen.lua")) then
+        fail("the extracted tree holds no tools/gen.lua: the extraction is not the tree under test")
     else
         local before = listing(dir)
         local started = os.mclock()

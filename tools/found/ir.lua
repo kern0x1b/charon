@@ -41,13 +41,19 @@ local SDK = os.getenv("IR_SDK")
 if not SDK then raise("IR_SDK must name the iPhoneOS SDK (for example .../iPhoneOS26.2.sdk)") end
 SDK = path.absolute(SDK)
 local MODE = os.getenv("IR_MODE") or "write"
-local SPEC = os.getenv("IR_SPEC") or "packages/a/apple-backports/spec"
+-- The repository this script belongs to: every default below is a path in it, whatever folder the script runs from.
+local FOUND = path.absolute(os.scriptdir())
+local TOOLS = path.directory(FOUND)
+local REPO = path.directory(TOOLS)
+local SPEC = os.getenv("IR_SPEC") or path.join(REPO, "packages", "a", "apple-backports", "spec")
 local FULL = os.getenv("IR_FULL")
-local DECLS = os.getenv("IR_DECLS") or "build/macosx/arm64/release/decls"
 local TIMEOUT = os.getenv("IR_TIMEOUT") or "300"
-local CONFLICTS = os.getenv("IR_CONFLICTS") or path.join("tools", "found", "conflicts.tsv")
-local UNPARSED = os.getenv("IR_UNPARSED") or path.join("tools", "found", "unparsed.tsv")
-local stream = import("gen.stream", {rootdir = path.join(os.scriptdir(), ".."), anonymous = true})
+local CONFLICTS = os.getenv("IR_CONFLICTS") or path.join(FOUND, "conflicts.tsv")
+local UNPARSED = os.getenv("IR_UNPARSED") or path.join(FOUND, "unparsed.tsv")
+local stream = import("gen.stream", {rootdir = TOOLS, anonymous = true})
+local host = import("gen.host", {rootdir = TOOLS, anonymous = true})
+-- The extractor: the decls target of tools/found, where xmake puts it for this repository (the same lookup the doc command uses).
+local DECLS = os.getenv("IR_DECLS") or host.target_product(REPO, FOUND, "decls")
 -- decls, through a pipe (no temporary file): the lines it printed. A run that exits non-zero raises with its own message, so a failed
 -- extractor never reaches a write. decls' exit codes: 2 for a configuration, file system or refusal error (each names its path), 1 for
 -- a doc-mode parse failure.
@@ -65,7 +71,7 @@ local function decls(args)
     end
     return lines
 end
-local NO_OWN = os.getenv("IR_NO_OWN") or path.join("tools", "found", "config", "no-own.tsv")
+local NO_OWN = os.getenv("IR_NO_OWN") or path.join(FOUND, "config", "no-own.tsv")
 -- the target the extractor compiles for (decls owns it: decls --target)
 local TRIPLE = (decls({"--target"})[1]:gsub("%s+$", ""))
 local COLUMNS = 18
@@ -76,10 +82,10 @@ local COLUMNS = 18
 -- name and side are stored only where the USR does not give them (shard.lua). avail and message are rendered by the generator
 -- (avail.lua, ruling D7).
 local SHARD_NAMES = "kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value"
-local shard = import("shard", {rootdir = path.join(os.curdir(), "tools", "found")})
-local avail = import("avail", {rootdir = path.join(os.curdir(), "tools", "found")})
+local shard = import("shard", {rootdir = FOUND})
+local avail = import("avail", {rootdir = FOUND})
 -- the one atomic writer of the generators (tools/atomic.lua, shared with tools/gen/emit.lua)
-local atomic = import("atomic", {rootdir = path.join(os.scriptdir(), ".."), anonymous = true})
+local atomic = import("atomic", {rootdir = TOOLS, anonymous = true})
 local SDK_NAME  -- the SDK's name without its path or .sdk suffix, as the shards record it
 
 SDK = path.absolute(SDK)

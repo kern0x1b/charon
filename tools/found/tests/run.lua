@@ -1,12 +1,20 @@
 -- Tests of the declaration extractor: the driver (ir.lua) runs over tests/fixture/sdk, a small SDK with each case the extractor must
 -- handle. Its output must equal the reviewed golden shards (tests/expected), the reviewed conflict list (tests/conflicts.tsv) and the
--- unparsed list (tests/unparsed.tsv), and named facts about the golden are checked. The golden records the libclang of the machine it
--- was made on; on another machine the check fails and names the difference, which is the toolchain pin working.
+-- unparsed list (tests/unparsed.tsv), and named facts about the golden are checked. The golden shards record no machine identity: the
+-- header line of each holds the token <decls --version> where a shard records the libclang identity (the version, the digest of its
+-- dylib, the target), and the suite writes the goldens to a scratch spec folder under build/ with the token replaced by the identity
+-- the extractor under test prints. Which libclang the committed shards are pinned to is checked by ir.lua's check over the committed
+-- spec (a re-pin is a reviewed event), not by this suite.
 --
--- usage (from the repository root): xmake l ./tools/found/tests/run.lua
-local ROOT = "tools/found/tests"
-local SPEC = path.join(ROOT, "expected")
-local shard = import("shard", {rootdir = path.join("tools", "found"), anonymous = true})
+-- Needs the extractor built (xmake -P tools/found). Run, from any folder: xmake l tools/found/tests/run.lua
+local ROOT = path.absolute(os.scriptdir())
+local FOUND = path.directory(ROOT)
+local REPO = path.directory(path.directory(FOUND))
+local IR = path.join(FOUND, "ir.lua")
+local GOLDEN = path.join(ROOT, "expected")
+local SPEC = path.join(REPO, "build", "found", "test-spec")
+local shard = import("shard", {rootdir = FOUND, anonymous = true})
+local host = import("gen.host", {rootdir = path.join(REPO, "tools"), anonymous = true})
 local checks = 0
 
 local function expect(condition, message)
@@ -18,10 +26,24 @@ end
 -- exclusions of IR_CONFIG's usr-modules.tsv, and a row that names no module is an error. The fixture's config excludes FixtureCExtra;
 -- the checks here write their own configurations under build/ (scratch).
 local FIXTURE_CONFIG = path.join(ROOT, "fixture", "config")
-local DECLS = path.join("build", "macosx", "arm64", "release", "decls")
+local DECLS = host.target_product(REPO, FOUND, "decls")
+assert(os.isfile(DECLS), "the extractor is not built: " .. DECLS .. " (xmake -P tools/found)")
 local FIXTURE_SDK = path.join(ROOT, "fixture", "sdk")
+
+-- The golden shards, with the identity of the extractor under test where their header holds the token.
+local TOKEN = "#libclang=<decls --version>"
+local fixture_identity = (os.iorunv(DECLS, {"--version"}, {envs = {IR_SDK = FIXTURE_SDK}}):gsub("%s+$", ""))
+os.tryrm(SPEC)
+for _, file in ipairs(os.files(path.join(GOLDEN, "**", "declarations.tsv"))) do
+    local golden = io.readfile(file)
+    local name = path.relative(file, GOLDEN)
+    expect(golden:sub(1, #TOKEN) == TOKEN, "the golden shard " .. name .. " holds the token, not an identity of its own")
+    local target = path.join(SPEC, name)
+    os.mkdir(path.directory(target))
+    io.writefile(target, "#libclang=" .. fixture_identity .. golden:sub(#TOKEN + 1))
+end
 local function write_config(name, usr_rows, fallback_rows)
-    local dir = path.join("build", "found", "test-config", name)
+    local dir = path.join(REPO, "build", "found", "test-config", name)
     os.runv("mkdir", {"-p", dir})
     local usr = io.open(path.join(dir, "usr-modules.tsv"), "w")
     usr:write(usr_rows or "# (no exclusions)\n")
@@ -92,7 +114,7 @@ expect(failure_of({"Fixture"}, write_config("stale-map", nil, "Fixture\tFixture 
 -- Float32, Float64 and Boolean in MacTypes.h) are declared by those usr/include modules, so the committed exclusion list must not name
 -- them: a reviewed list that leaves out the module that declares a type leaves the type out of every shard
 local committed = {}
-for line in io.lines(path.join("tools", "found", "config", "usr-modules.tsv")) do
+for line in io.lines(path.join(FOUND, "config", "usr-modules.tsv")) do
     local name = line:match("^([^\t#][^\t]*)\t")
     if name then committed[name] = true end
 end
@@ -155,13 +177,13 @@ expect(enum_value["c:@E@FXState@FXStateOn"] == "1" and enum_value["c:@E@FXState@
 
 -- (ruling 5) ir.lua enforces the contract "every framework with no shard is in unparsed.tsv or no-own.tsv": with an empty no-own list,
 -- the fixture's FixtureUmbrella (no shard, not unparsed) must make the check fail, and the error names it
-os.runv("mkdir", {"-p", path.join("build", "found", "test-config")})
-local empty_no_own = path.join("build", "found", "test-config", "no-own-empty.tsv")
+os.runv("mkdir", {"-p", path.join(REPO, "build", "found", "test-config")})
+local empty_no_own = path.join(REPO, "build", "found", "test-config", "no-own-empty.tsv")
 local empty_file = assert(io.open(empty_no_own, "w")); empty_file:write("# none\n"); empty_file:close()
 local refusal = nil
 try {
     function ()
-        os.runv("xmake", {"l", "./tools/found/ir.lua"}, {envs = {IR_SDK = path.join(ROOT, "fixture", "sdk"), IR_CONFIG = FIXTURE_CONFIG,
+        os.runv("xmake", {"l", IR}, {envs = {IR_SDK = path.join(ROOT, "fixture", "sdk"), IR_CONFIG = FIXTURE_CONFIG,
             IR_MODE = "check", IR_SPEC = SPEC, IR_CONFLICTS = path.join(ROOT, "conflicts.tsv"), IR_UNPARSED = path.join(ROOT, "unparsed.tsv"),
             IR_NO_OWN = empty_no_own}})
     end,
@@ -174,8 +196,8 @@ expect(refusal ~= nil and refusal:find("FixtureUmbrella", 1, true) ~= nil,
 
 -- 1. the driver reproduces the golden exactly (check mode: nothing is written)
 -- the full IR (the build product, with decl) is written to the build directory: the declaration text is checked there
-local FULL = path.join("build", "found", "test-ir.tsv")
-os.runv("xmake", {"l", "./tools/found/ir.lua"}, {envs = {IR_SDK = path.join(ROOT, "fixture", "sdk"), IR_CONFIG = FIXTURE_CONFIG, IR_NO_OWN = path.join(FIXTURE_CONFIG, "no-own.tsv"), IR_MODE = "check",
+local FULL = path.join(REPO, "build", "found", "test-ir.tsv")
+os.runv("xmake", {"l", IR}, {envs = {IR_SDK = path.join(ROOT, "fixture", "sdk"), IR_CONFIG = FIXTURE_CONFIG, IR_NO_OWN = path.join(FIXTURE_CONFIG, "no-own.tsv"), IR_MODE = "check",
     IR_SPEC = SPEC, IR_CONFLICTS = path.join(ROOT, "conflicts.tsv"), IR_UNPARSED = path.join(ROOT, "unparsed.tsv"),
     IR_FULL = FULL}})
 checks = checks + 1
@@ -359,7 +381,7 @@ expect(header:find("^#libclang=") ~= nil and header:find("sdk=sdk", 1, true) ~= 
 
 -- the facts the generator reads from the shards (facts.lua): the spec keys and the availability of the members, the superclass, and
 -- the protocol conformance of the class extension
-local facts = import("facts", {rootdir = path.join("tools", "found"), anonymous = true})
+local facts = import("facts", {rootdir = FOUND, anonymous = true})
 local members = facts.members(SPEC, "Fixture")
 local byapi = {}
 for _, m in ipairs(members) do byapi[m.api] = m end
@@ -384,7 +406,7 @@ expect(typedef_fact ~= nil and typedef_fact.type == "int", "the typedef fact car
 -- the availability rule for the merged conflicts (introduced: the earliest declaration; deprecated and obsoleted: the latest, and only
 -- when every declaration that is available on the platform says so; unavailable only when every declaration says so; a declaration
 -- that names no platform is available since the beginning) and the render contract (ruling D7), on synthetic inputs
-local avail = import("avail", {rootdir = path.join("tools", "found"), anonymous = true})
+local avail = import("avail", {rootdir = FOUND, anonymous = true})
 local function eq(actual, expected, message)
     expect(actual == expected, message .. " (got [" .. tostring(actual) .. "], want [" .. expected .. "])")
 end
@@ -448,7 +470,7 @@ expect(dep == nil and unav == "removed in 2.0", "an unavailability text alone")
 
 -- the doc-time mode (ir.lua's docs mode, which runs decls --doc over the fixture): one line per declaration of ten escaped cells, the
 -- doc comment's brief and raw text, the parameter names and the declaration as written; nothing is written
-local docs = os.iorunv("xmake", {"l", "./tools/found/ir.lua"}, {envs = {IR_SDK = path.join(ROOT, "fixture", "sdk"), IR_CONFIG = FIXTURE_CONFIG, IR_MODE = "docs"}})
+local docs = os.iorunv("xmake", {"l", IR}, {envs = {IR_SDK = path.join(ROOT, "fixture", "sdk"), IR_CONFIG = FIXTURE_CONFIG, IR_MODE = "docs"}})
 local doc_lines = {}
 for line in docs:gmatch("[^\n]+") do
     if line:find("\t", 1, true) then table.insert(doc_lines, line) end
