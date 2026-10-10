@@ -37,18 +37,47 @@ local function complete(r)
     return r
 end
 
+-- The declarations a shard holds under a name: a variable (its USR is c:@<name>) or an enum constant (c:@E@<enum>@<name>), by the name the
+-- USR gives. name -> {declhash, value} for the framework's shard rows; a variable wins where both exist. A name no shard declares is absent.
+local function declarations_by_name(tree, fw)
+    local out = {}
+    for _, r in ipairs(headers.shard_records(tree, fw)) do
+        local name
+        if r.kind == "var" then
+            name = string.match(r.usr, "^c:@([^@]+)$")
+        elseif r.kind == "enumconst" then
+            name = string.match(r.usr, "@([^@]+)$")
+        end
+        if name ~= nil and (out[name] == nil or r.kind == "var") then
+            out[name] = {declhash = r.declhash, value = r.value, kind = r.kind}
+        end
+    end
+    return out
+end
+
 -- The rows of the constant record (constants.tsv: the measured constant rows, one record per framework, committed as data), or none.
--- Each row keeps the declaration hash it was recorded against (declhash); "-" for a constant no shard declares.
+-- Each row keeps the declaration hash it was recorded against (declhash); "-" for a constant no shard declares. A row the record leaves
+-- undeclared (value_status "undeclared") takes its value from the shard when a shard declares the name as an enum constant: the
+-- shard's value column is what clang evaluates (review ruling 2), so the value is derived, not left out.
 local function constant_rows(tree, fw)
     local out = {}
     local text = files.read_text(layout.constant_record_path(tree, fw))
     if text == nil then
         return out
     end
+    local declared = nil
     for _, r in ipairs(tsv.records(text)) do
         if r.kind == "constant" then
             local row = complete(r)
             row.declhash = r.declhash or "-"
+            if row.value_status == "undeclared" then
+                declared = declared or declarations_by_name(tree, fw)
+                local d = declared[row.key]
+                if d ~= nil and d.kind == "enumconst" and d.value ~= nil and d.value ~= "-" then
+                    row.value_status = "found"
+                    row.value = d.value
+                end
+            end
             table.insert(out, row)
         end
     end
@@ -202,14 +231,10 @@ function refused(tree, fw)
     end
     -- The constant record is data, changed only through this refusal, as the pins are: a constant is refused when the declaration the
     -- shard holds under its name (its USR, c:@<name>) differs from the hash its record row was made against ("-" when no shard declares it).
-    local declared = {}
-    for _, r in ipairs(headers.shard_records(tree, fw)) do
-        if r.kind == "var" then
-            declared[r.usr] = r.declhash
-        end
-    end
+    local declared = declarations_by_name(tree, fw)
     for _, c in ipairs(constant_rows(tree, fw)) do
-        local now = declared["c:@" .. c.key] or "-"
+        local d = declared[c.key]
+        local now = d ~= nil and d.declhash or "-"
         if now ~= c.declhash then
             table.insert(out, {key = c.key, api = c.api, old = c.declhash, new = now, kind = "constant"})
         end

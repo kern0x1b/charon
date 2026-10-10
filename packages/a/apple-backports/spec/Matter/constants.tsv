@@ -13,45 +13,45 @@ constant	MTRDeviceControllerRegistrationControllerNodeIDKey	-	MTRDeviceControlle
 constant	MTRDeviceControllerRegistrationDeviceInternalStateKey	-	MTRDeviceControllerRegistrationDeviceInternalStateKey	18.3	NSString *const	MTR_AVAILABLE(ios(18.3), macos(15.3), watchos(11.3), tvos(18.3))	de49866eb0ac9625	found	MTRDeviceControllerRegistrationDeviceInternalState	MTRDeviceControllerRegistrationDeviceInternalState	ios-26.2-cache	-	exported	ns	-	5abb6936d3581aaa
 constant	MTRDeviceControllerRegistrationNodeIDKey	-	MTRDeviceControllerRegistrationNodeIDKey	18.2	NSString *const	MTR_AVAILABLE(ios(18.2), macos(15.2), watchos(11.2), tvos(18.2))	bdf0190bcaaeb14c	found	MTRDeviceControllerRegistrationNodeID	MTRDeviceControllerRegistrationNodeID	ios-26.2-cache	-	exported	ns	-	deed9db757e204e9
 constant	MTRDeviceControllerRegistrationNodeIDsKey	-	MTRDeviceControllerRegistrationNodeIDsKey	18.2	NSString *const	MTR_AVAILABLE(ios(18.2), macos(15.2), watchos(11.2), tvos(18.2))	60a9e4c8d9261b1f	found	MTRDeviceControllerRegistrationNodeIDs	MTRDeviceControllerRegistrationNodeIDs	ios-26.2-cache	-	exported	ns	-	16773b13e57a182f
-constant	MTRDeviceTypeIDTypeAudioDoorbellID	-	MTRDeviceTypeIDTypeAudioDoorbellID	18.2	-	-	435b72aa8857ea87	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRDeviceTypeIDTypeCameraControllerID	-	MTRDeviceTypeIDTypeCameraControllerID	18.2	-	-	52fa7682576c843c	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRDeviceTypeIDTypeCameraID	-	MTRDeviceTypeIDTypeCameraID	18.2	-	-	a4f6cd19bf14ff67	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRDeviceTypeIDTypeChimeID	-	MTRDeviceTypeIDTypeChimeID	18.2	-	-	89c76aaaf5c6c703	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRDeviceTypeIDTypeClosureControllerID	-	MTRDeviceTypeIDTypeClosureControllerID	18.2	-	-	835d61e8e98541e4	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRDeviceTypeIDTypeClosureID	-	MTRDeviceTypeIDTypeClosureID	18.2	-	-	204ab9bf5a42e87b	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRDeviceTypeIDTypeClosurePanelID	-	MTRDeviceTypeIDTypeClosurePanelID	18.2	-	-	26e4d2f2e48241bb	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRDeviceTypeIDTypeDoorbellID	-	MTRDeviceTypeIDTypeDoorbellID	18.2	-	-	3103bbbc8b49d417	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRDeviceTypeIDTypeElectricalEnergyTariffID	-	MTRDeviceTypeIDTypeElectricalEnergyTariffID	18.2	-	-	be5d8e115df6238b	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRDeviceTypeIDTypeElectricalMeterID	-	MTRDeviceTypeIDTypeElectricalMeterID	18.2	-	-	d229c7a49ac0ce1c	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRDeviceTypeIDTypeElectricalUtilityMeterID	-	MTRDeviceTypeIDTypeElectricalUtilityMeterID	18.2	-	-	5cd857418240fee8	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRDeviceTypeIDTypeFloodlightCameraID	-	MTRDeviceTypeIDTypeFloodlightCameraID	18.2	-	-	f67c6331e3bb4ed8	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRDeviceTypeIDTypeIntercomID	-	MTRDeviceTypeIDTypeIntercomID	18.2	-	-	d6133a1bd93c2987	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRDeviceTypeIDTypeJointFabricAdministratorID	-	MTRDeviceTypeIDTypeJointFabricAdministratorID	18.2	-	-	2ec8f287aa83e10e	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRDeviceTypeIDTypeMeterReferencePointID	-	MTRDeviceTypeIDTypeMeterReferencePointID	18.2	-	-	7a3b575e3eccabb6	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRDeviceTypeIDTypeMountedDimmableLoadControlID	-	MTRDeviceTypeIDTypeMountedDimmableLoadControlID	18.2	-	-	70079363906be278	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRDeviceTypeIDTypeMountedOnOffControlID	-	MTRDeviceTypeIDTypeMountedOnOffControlID	18.2	-	-	8f3e021de00d1705	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRDeviceTypeIDTypeSnapshotCameraID	-	MTRDeviceTypeIDTypeSnapshotCameraID	18.2	-	-	ba2cb8a074b34982	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRDeviceTypeIDTypeSoilSensorID	-	MTRDeviceTypeIDTypeSoilSensorID	18.2	-	-	eee53c6c20f284ef	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRDeviceTypeIDTypeThermostatControllerID	-	MTRDeviceTypeIDTypeThermostatControllerID	18.2	-	-	20cb604a767b82be	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRDeviceTypeIDTypeVideoDoorbellID	-	MTRDeviceTypeIDTypeVideoDoorbellID	18.2	-	-	1cd26713c972a8ff	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRDishwasherAlarmAlarmBitmapDrainError	-	MTRDishwasherAlarmAlarmBitmapDrainError	18.4	-	-	8a5d7d9f844e040e	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRDishwasherAlarmAlarmBitmapInflowError	-	MTRDishwasherAlarmAlarmBitmapInflowError	18.4	-	-	6947bdc207ddb885	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRDishwasherAlarmAlarmBitmapTempTooHigh	-	MTRDishwasherAlarmAlarmBitmapTempTooHigh	18.4	-	-	e090fef6ade2ef0f	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRDishwasherAlarmAlarmBitmapTempTooLow	-	MTRDishwasherAlarmAlarmBitmapTempTooLow	18.4	-	-	922105cc8f224412	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRDishwasherAlarmAlarmBitmapWaterLevelError	-	MTRDishwasherAlarmAlarmBitmapWaterLevelError	18.4	-	-	205ee19e89fe2e6d	undeclared	-	-	host-macos	-	not-exported	ns	-	-
+constant	MTRDeviceTypeIDTypeAudioDoorbellID	-	MTRDeviceTypeIDTypeAudioDoorbellID	18.2	-	-	435b72aa8857ea87	undeclared	-	-	host-macos	-	not-exported	ns	-	2a18ad65f04ec9d4
+constant	MTRDeviceTypeIDTypeCameraControllerID	-	MTRDeviceTypeIDTypeCameraControllerID	18.2	-	-	52fa7682576c843c	undeclared	-	-	host-macos	-	not-exported	ns	-	5b274cb392aae0bf
+constant	MTRDeviceTypeIDTypeCameraID	-	MTRDeviceTypeIDTypeCameraID	18.2	-	-	a4f6cd19bf14ff67	undeclared	-	-	host-macos	-	not-exported	ns	-	0f4f98207ac921be
+constant	MTRDeviceTypeIDTypeChimeID	-	MTRDeviceTypeIDTypeChimeID	18.2	-	-	89c76aaaf5c6c703	undeclared	-	-	host-macos	-	not-exported	ns	-	9c0faab262b421a4
+constant	MTRDeviceTypeIDTypeClosureControllerID	-	MTRDeviceTypeIDTypeClosureControllerID	18.2	-	-	835d61e8e98541e4	undeclared	-	-	host-macos	-	not-exported	ns	-	e450717d68bfc9f1
+constant	MTRDeviceTypeIDTypeClosureID	-	MTRDeviceTypeIDTypeClosureID	18.2	-	-	204ab9bf5a42e87b	undeclared	-	-	host-macos	-	not-exported	ns	-	52340f3f30636482
+constant	MTRDeviceTypeIDTypeClosurePanelID	-	MTRDeviceTypeIDTypeClosurePanelID	18.2	-	-	26e4d2f2e48241bb	undeclared	-	-	host-macos	-	not-exported	ns	-	72ae7892d71fcc9e
+constant	MTRDeviceTypeIDTypeDoorbellID	-	MTRDeviceTypeIDTypeDoorbellID	18.2	-	-	3103bbbc8b49d417	undeclared	-	-	host-macos	-	not-exported	ns	-	d1b861fc9bb634d4
+constant	MTRDeviceTypeIDTypeElectricalEnergyTariffID	-	MTRDeviceTypeIDTypeElectricalEnergyTariffID	18.2	-	-	be5d8e115df6238b	undeclared	-	-	host-macos	-	not-exported	ns	-	3a0276a576a90196
+constant	MTRDeviceTypeIDTypeElectricalMeterID	-	MTRDeviceTypeIDTypeElectricalMeterID	18.2	-	-	d229c7a49ac0ce1c	undeclared	-	-	host-macos	-	not-exported	ns	-	45599a8ecb4997f5
+constant	MTRDeviceTypeIDTypeElectricalUtilityMeterID	-	MTRDeviceTypeIDTypeElectricalUtilityMeterID	18.2	-	-	5cd857418240fee8	undeclared	-	-	host-macos	-	not-exported	ns	-	bf5da673f4b728ac
+constant	MTRDeviceTypeIDTypeFloodlightCameraID	-	MTRDeviceTypeIDTypeFloodlightCameraID	18.2	-	-	f67c6331e3bb4ed8	undeclared	-	-	host-macos	-	not-exported	ns	-	d7fefd6a230c2ffc
+constant	MTRDeviceTypeIDTypeIntercomID	-	MTRDeviceTypeIDTypeIntercomID	18.2	-	-	d6133a1bd93c2987	undeclared	-	-	host-macos	-	not-exported	ns	-	c5518d0924e07a71
+constant	MTRDeviceTypeIDTypeJointFabricAdministratorID	-	MTRDeviceTypeIDTypeJointFabricAdministratorID	18.2	-	-	2ec8f287aa83e10e	undeclared	-	-	host-macos	-	not-exported	ns	-	d09a676008f45f4f
+constant	MTRDeviceTypeIDTypeMeterReferencePointID	-	MTRDeviceTypeIDTypeMeterReferencePointID	18.2	-	-	7a3b575e3eccabb6	undeclared	-	-	host-macos	-	not-exported	ns	-	32fd84951d885649
+constant	MTRDeviceTypeIDTypeMountedDimmableLoadControlID	-	MTRDeviceTypeIDTypeMountedDimmableLoadControlID	18.2	-	-	70079363906be278	undeclared	-	-	host-macos	-	not-exported	ns	-	e11c5fc61eafa8a8
+constant	MTRDeviceTypeIDTypeMountedOnOffControlID	-	MTRDeviceTypeIDTypeMountedOnOffControlID	18.2	-	-	8f3e021de00d1705	undeclared	-	-	host-macos	-	not-exported	ns	-	82ddadb16016c7a9
+constant	MTRDeviceTypeIDTypeSnapshotCameraID	-	MTRDeviceTypeIDTypeSnapshotCameraID	18.2	-	-	ba2cb8a074b34982	undeclared	-	-	host-macos	-	not-exported	ns	-	27ebe13048df1c3d
+constant	MTRDeviceTypeIDTypeSoilSensorID	-	MTRDeviceTypeIDTypeSoilSensorID	18.2	-	-	eee53c6c20f284ef	undeclared	-	-	host-macos	-	not-exported	ns	-	8741d492f1f14832
+constant	MTRDeviceTypeIDTypeThermostatControllerID	-	MTRDeviceTypeIDTypeThermostatControllerID	18.2	-	-	20cb604a767b82be	undeclared	-	-	host-macos	-	not-exported	ns	-	aaee151f2f0357ce
+constant	MTRDeviceTypeIDTypeVideoDoorbellID	-	MTRDeviceTypeIDTypeVideoDoorbellID	18.2	-	-	1cd26713c972a8ff	undeclared	-	-	host-macos	-	not-exported	ns	-	825257380da19b6a
+constant	MTRDishwasherAlarmAlarmBitmapDrainError	-	MTRDishwasherAlarmAlarmBitmapDrainError	18.4	-	-	8a5d7d9f844e040e	undeclared	-	-	host-macos	-	not-exported	ns	-	46dcfef805052800
+constant	MTRDishwasherAlarmAlarmBitmapInflowError	-	MTRDishwasherAlarmAlarmBitmapInflowError	18.4	-	-	6947bdc207ddb885	undeclared	-	-	host-macos	-	not-exported	ns	-	5540bc8e7db80f95
+constant	MTRDishwasherAlarmAlarmBitmapTempTooHigh	-	MTRDishwasherAlarmAlarmBitmapTempTooHigh	18.4	-	-	e090fef6ade2ef0f	undeclared	-	-	host-macos	-	not-exported	ns	-	34a1399e852cd63d
+constant	MTRDishwasherAlarmAlarmBitmapTempTooLow	-	MTRDishwasherAlarmAlarmBitmapTempTooLow	18.4	-	-	922105cc8f224412	undeclared	-	-	host-macos	-	not-exported	ns	-	01a8fd19560903b6
+constant	MTRDishwasherAlarmAlarmBitmapWaterLevelError	-	MTRDishwasherAlarmAlarmBitmapWaterLevelError	18.4	-	-	205ee19e89fe2e6d	undeclared	-	-	host-macos	-	not-exported	ns	-	60a64d1139a0d34f
 constant	MTRDoubleValueType	-	MTRDoubleValueType	16.1	NSString *const	MTR_AVAILABLE(ios(16.1), macos(13.0), watchos(9.1), tvos(16.1))	e91d1244f4b9c682	found	Double	Double	ios-26.2-cache	-	exported	ns	-	c6b0c1cc1dd5e287
-constant	MTRElectricalEnergyMeasurementFeatureApparentEnergy	-	MTRElectricalEnergyMeasurementFeatureApparentEnergy	17.6	-	-	72845a52e8814d12	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRElectricalEnergyMeasurementFeatureReactiveEnergy	-	MTRElectricalEnergyMeasurementFeatureReactiveEnergy	17.6	-	-	f0a4ffa1858005ce	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRElectricalEnergyMeasurementMeasurementTypeApparentEnergy	-	MTRElectricalEnergyMeasurementMeasurementTypeApparentEnergy	18.4	-	-	476ded671d5764b2	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRElectricalEnergyMeasurementMeasurementTypeReactiveEnergy	-	MTRElectricalEnergyMeasurementMeasurementTypeReactiveEnergy	18.4	-	-	469e4b1405fa36fd	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRElectricalPowerMeasurementMeasurementTypeApparentEnergy	-	MTRElectricalPowerMeasurementMeasurementTypeApparentEnergy	17.6	-	-	cf6261bb9d248508	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRElectricalPowerMeasurementMeasurementTypeReactiveEnergy	-	MTRElectricalPowerMeasurementMeasurementTypeReactiveEnergy	17.6	-	-	bf807e34b418a8c8	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTREnergyEVSEFeaturePlugAndCharge	-	MTREnergyEVSEFeaturePlugAndCharge	18.4	-	-	7fdf86375d631dac	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTREnergyEVSEFeatureSoCReporting	-	MTREnergyEVSEFeatureSoCReporting	18.4	-	-	89e4954843bab2af	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTREnergyEVSEFeatureV2X	-	MTREnergyEVSEFeatureV2X	18.4	-	-	480d93548ced598f	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTREnergyEVSEStatePluggedInDischarging	-	MTREnergyEVSEStatePluggedInDischarging	18.4	-	-	bdca576f3cc9b2af	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTREnergyEVSESupplyStateDischargingEnabled	-	MTREnergyEVSESupplyStateDischargingEnabled	18.4	-	-	3bcd552d09f72642	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTREnergyEVSESupplyStateEnabled	-	MTREnergyEVSESupplyStateEnabled	18.4	-	-	f46b38b3422dd6e4	undeclared	-	-	host-macos	-	not-exported	ns	-	-
+constant	MTRElectricalEnergyMeasurementFeatureApparentEnergy	-	MTRElectricalEnergyMeasurementFeatureApparentEnergy	17.6	-	-	72845a52e8814d12	undeclared	-	-	host-macos	-	not-exported	ns	-	0082e4ece7d422a6
+constant	MTRElectricalEnergyMeasurementFeatureReactiveEnergy	-	MTRElectricalEnergyMeasurementFeatureReactiveEnergy	17.6	-	-	f0a4ffa1858005ce	undeclared	-	-	host-macos	-	not-exported	ns	-	dde86dd1ac16adc3
+constant	MTRElectricalEnergyMeasurementMeasurementTypeApparentEnergy	-	MTRElectricalEnergyMeasurementMeasurementTypeApparentEnergy	18.4	-	-	476ded671d5764b2	undeclared	-	-	host-macos	-	not-exported	ns	-	2e73e1ebb1fe87c4
+constant	MTRElectricalEnergyMeasurementMeasurementTypeReactiveEnergy	-	MTRElectricalEnergyMeasurementMeasurementTypeReactiveEnergy	18.4	-	-	469e4b1405fa36fd	undeclared	-	-	host-macos	-	not-exported	ns	-	20597337e10ad09e
+constant	MTRElectricalPowerMeasurementMeasurementTypeApparentEnergy	-	MTRElectricalPowerMeasurementMeasurementTypeApparentEnergy	17.6	-	-	cf6261bb9d248508	undeclared	-	-	host-macos	-	not-exported	ns	-	d152bdd78229cb4a
+constant	MTRElectricalPowerMeasurementMeasurementTypeReactiveEnergy	-	MTRElectricalPowerMeasurementMeasurementTypeReactiveEnergy	17.6	-	-	bf807e34b418a8c8	undeclared	-	-	host-macos	-	not-exported	ns	-	6300c357fd7ba167
+constant	MTREnergyEVSEFeaturePlugAndCharge	-	MTREnergyEVSEFeaturePlugAndCharge	18.4	-	-	7fdf86375d631dac	undeclared	-	-	host-macos	-	not-exported	ns	-	28d7d065232ba6a0
+constant	MTREnergyEVSEFeatureSoCReporting	-	MTREnergyEVSEFeatureSoCReporting	18.4	-	-	89e4954843bab2af	undeclared	-	-	host-macos	-	not-exported	ns	-	d7c3b6a9a8f9e8c0
+constant	MTREnergyEVSEFeatureV2X	-	MTREnergyEVSEFeatureV2X	18.4	-	-	480d93548ced598f	undeclared	-	-	host-macos	-	not-exported	ns	-	07bb9c5271602b54
+constant	MTREnergyEVSEStatePluggedInDischarging	-	MTREnergyEVSEStatePluggedInDischarging	18.4	-	-	bdca576f3cc9b2af	undeclared	-	-	host-macos	-	not-exported	ns	-	53bae7028dfe1097
+constant	MTREnergyEVSESupplyStateDischargingEnabled	-	MTREnergyEVSESupplyStateDischargingEnabled	18.4	-	-	3bcd552d09f72642	undeclared	-	-	host-macos	-	not-exported	ns	-	e10636d5d7c07c36
+constant	MTREnergyEVSESupplyStateEnabled	-	MTREnergyEVSESupplyStateEnabled	18.4	-	-	f46b38b3422dd6e4	undeclared	-	-	host-macos	-	not-exported	ns	-	2160ecfd005c44ef
 constant	MTRErrorDomain	-	MTRErrorDomain	16.1	const NSErrorDomain	MTR_AVAILABLE(ios(16.1), macos(13.0), watchos(9.1), tvos(16.1))	3a9bbd073af93182	found	MTRErrorDomain	MTRErrorDomain	ios-26.2-cache	-	exported	ns	-	f0ec115b46291341
 constant	MTRErrorKey	-	MTRErrorKey	16.1	NSString *const	MTR_AVAILABLE(ios(16.1), macos(13.0), watchos(9.1), tvos(16.1))	07ef088106dace81	found	error	error	ios-26.2-cache	-	exported	ns	-	7e688b9f1bc76c34
 constant	MTREventIsHistoricalKey	-	MTREventIsHistoricalKey	17.3	NSString *const	MTR_AVAILABLE(ios(17.3), macos(14.3), watchos(10.3), tvos(17.3))	f2798aef4adeb55b	found	eventIsHistorical	eventIsHistorical	ios-26.2-cache	-	exported	ns	-	59a16c76e10e41dc
@@ -62,33 +62,33 @@ constant	MTREventSystemUpTimeKey	-	MTREventSystemUpTimeKey	16.5	NSString *const	
 constant	MTREventTimeTypeKey	-	MTREventTimeTypeKey	16.5	NSString *const	MTR_AVAILABLE(ios(16.5), macos(13.4), watchos(9.5), tvos(16.5))	f58741f31e675069	found	eventTimeType	eventTimeType	ios-26.2-cache	-	exported	ns	-	9cd905a96af50af9
 constant	MTREventTimestampDateKey	-	MTREventTimestampDateKey	16.5	NSString *const	MTR_AVAILABLE(ios(16.5), macos(13.4), watchos(9.5), tvos(16.5))	def01c76bf839143	found	eventTimestampDate	eventTimestampDate	ios-26.2-cache	-	exported	ns	-	113461023fd3472d
 constant	MTRFloatValueType	-	MTRFloatValueType	16.1	NSString *const	MTR_AVAILABLE(ios(16.1), macos(13.0), watchos(9.1), tvos(16.1))	40576c0f222f82be	found	Float	Float	ios-26.2-cache	-	exported	ns	-	450a25b3ce931762
-constant	MTRGeneralCommissioningCommissioningErrorRequiredTCNotAccepted	-	MTRGeneralCommissioningCommissioningErrorRequiredTCNotAccepted	16.1	-	-	de72e5c3b1a78382	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRGeneralCommissioningCommissioningErrorTCAcknowledgementsNotReceived	-	MTRGeneralCommissioningCommissioningErrorTCAcknowledgementsNotReceived	16.1	-	-	26f3d8efa62b0c01	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRGeneralCommissioningCommissioningErrorTCMinVersionNotMet	-	MTRGeneralCommissioningCommissioningErrorTCMinVersionNotMet	16.1	-	-	861cea601a6d4219	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRInteractionErrorCodeDynamicConstraintError	-	MTRInteractionErrorCodeDynamicConstraintError	16.1	-	-	095a217506b366b4	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRInteractionErrorCodeInvalidTransportType	-	MTRInteractionErrorCodeInvalidTransportType	16.1	-	-	291bc2e63ba0bb7f	undeclared	-	-	host-macos	-	not-exported	ns	-	-
+constant	MTRGeneralCommissioningCommissioningErrorRequiredTCNotAccepted	-	MTRGeneralCommissioningCommissioningErrorRequiredTCNotAccepted	16.1	-	-	de72e5c3b1a78382	undeclared	-	-	host-macos	-	not-exported	ns	-	fab029eb81b5d6c2
+constant	MTRGeneralCommissioningCommissioningErrorTCAcknowledgementsNotReceived	-	MTRGeneralCommissioningCommissioningErrorTCAcknowledgementsNotReceived	16.1	-	-	26f3d8efa62b0c01	undeclared	-	-	host-macos	-	not-exported	ns	-	84d8fdb92748f248
+constant	MTRGeneralCommissioningCommissioningErrorTCMinVersionNotMet	-	MTRGeneralCommissioningCommissioningErrorTCMinVersionNotMet	16.1	-	-	861cea601a6d4219	undeclared	-	-	host-macos	-	not-exported	ns	-	6a80c783ffd11a4d
+constant	MTRInteractionErrorCodeDynamicConstraintError	-	MTRInteractionErrorCodeDynamicConstraintError	16.1	-	-	095a217506b366b4	undeclared	-	-	host-macos	-	not-exported	ns	-	90d8f03d8c4359c0
+constant	MTRInteractionErrorCodeInvalidTransportType	-	MTRInteractionErrorCodeInvalidTransportType	16.1	-	-	291bc2e63ba0bb7f	undeclared	-	-	host-macos	-	not-exported	ns	-	91f05356f8ff9822
 constant	MTRInteractionErrorDomain	-	MTRInteractionErrorDomain	16.1	const NSErrorDomain	MTR_AVAILABLE(ios(16.1), macos(13.0), watchos(9.1), tvos(16.1))	e02558269866fc07	found	MTRInteractionErrorDomain	MTRInteractionErrorDomain	ios-26.2-cache	-	exported	ns	-	9761bb4172b1cc4b
-constant	MTRMicrowaveOvenControlFeaturePowerInWatts	-	MTRMicrowaveOvenControlFeaturePowerInWatts	18.4	-	-	7aa1049368800cdc	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRNetworkCommissioningFeaturePerDeviceCredentials	-	MTRNetworkCommissioningFeaturePerDeviceCredentials	16.1	-	-	d051f1c9ac4abf79	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRNetworkCommissioningWiFiSecurityBitmapWPA3MatterPDC	-	MTRNetworkCommissioningWiFiSecurityBitmapWPA3MatterPDC	17.0	-	-	f1592dbada5da79f	undeclared	-	-	host-macos	-	not-exported	ns	-	-
+constant	MTRMicrowaveOvenControlFeaturePowerInWatts	-	MTRMicrowaveOvenControlFeaturePowerInWatts	18.4	-	-	7aa1049368800cdc	undeclared	-	-	host-macos	-	not-exported	ns	-	f8d4456b86599f07
+constant	MTRNetworkCommissioningFeaturePerDeviceCredentials	-	MTRNetworkCommissioningFeaturePerDeviceCredentials	16.1	-	-	d051f1c9ac4abf79	undeclared	-	-	host-macos	-	not-exported	ns	-	b1b72f9f34556f5a
+constant	MTRNetworkCommissioningWiFiSecurityBitmapWPA3MatterPDC	-	MTRNetworkCommissioningWiFiSecurityBitmapWPA3MatterPDC	17.0	-	-	f1592dbada5da79f	undeclared	-	-	host-macos	-	not-exported	ns	-	1bde462f5f69fd71
 constant	MTRNullValueType	-	MTRNullValueType	16.1	NSString *const	MTR_AVAILABLE(ios(16.1), macos(13.0), watchos(9.1), tvos(16.1))	49a20f1a63da7bb8	found	Null	Null	ios-26.2-cache	-	exported	ns	-	5f1dcde6f9333800
 constant	MTROctetStringValueType	-	MTROctetStringValueType	16.1	NSString *const	MTR_AVAILABLE(ios(16.1), macos(13.0), watchos(9.1), tvos(16.1))	3e186fc5f44587bd	found	OctetString	OctetString	ios-26.2-cache	-	exported	ns	-	bb24d7a75f3bf6d7
-constant	MTRPowerTopologyFeatureElectricalCircuit	-	MTRPowerTopologyFeatureElectricalCircuit	18.4	-	-	fb07c8d2098ddb6e	undeclared	-	-	host-macos	-	not-exported	ns	-	-
+constant	MTRPowerTopologyFeatureElectricalCircuit	-	MTRPowerTopologyFeatureElectricalCircuit	18.4	-	-	fb07c8d2098ddb6e	undeclared	-	-	host-macos	-	not-exported	ns	-	db8ceded6816deea
 constant	MTRPreviousDataKey	-	MTRPreviousDataKey	17.6	NSString *const	MTR_AVAILABLE(ios(17.6), macos(14.6), watchos(10.6), tvos(17.6))	b0591a59aab2d9bb	found	previousData	previousData	ios-26.2-cache	-	exported	ns	-	5fe9036397a42571
-constant	MTRRVCCleanModeFeatureDirectModeChange	-	MTRRVCCleanModeFeatureDirectModeChange	17.4	-	-	4e13e12140c5578c	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRRVCCleanModeModeTagVacuumThenMop	-	MTRRVCCleanModeModeTagVacuumThenMop	17.4	-	-	6ac2a92ad086b7e9	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRRVCOperationalStateErrorStateBrushJammed	-	MTRRVCOperationalStateErrorStateBrushJammed	17.4	-	-	1043f41f18e09d88	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRRVCOperationalStateErrorStateCannotReachTargetArea	-	MTRRVCOperationalStateErrorStateCannotReachTargetArea	17.4	-	-	41d799c94e46e107	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRRVCOperationalStateErrorStateDirtyWaterTankFull	-	MTRRVCOperationalStateErrorStateDirtyWaterTankFull	17.4	-	-	584a6a1ae31eed67	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRRVCOperationalStateErrorStateDirtyWaterTankMissing	-	MTRRVCOperationalStateErrorStateDirtyWaterTankMissing	17.4	-	-	2e8c9c62e8132d33	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRRVCOperationalStateErrorStateLowBattery	-	MTRRVCOperationalStateErrorStateLowBattery	17.4	-	-	40b53a8946b36cb4	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRRVCOperationalStateErrorStateNavigationSensorObscured	-	MTRRVCOperationalStateErrorStateNavigationSensorObscured	17.4	-	-	0ebdf580d1423b3a	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRRVCOperationalStateErrorStateWheelsJammed	-	MTRRVCOperationalStateErrorStateWheelsJammed	17.4	-	-	226e1b894f41e966	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRRVCOperationalStateOperationalStateCleaningMop	-	MTRRVCOperationalStateOperationalStateCleaningMop	17.4	-	-	333dae2c9e2fb298	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRRVCOperationalStateOperationalStateEmptyingDustBin	-	MTRRVCOperationalStateOperationalStateEmptyingDustBin	17.4	-	-	b9650f329d01a026	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRRVCOperationalStateOperationalStateFillingWaterTank	-	MTRRVCOperationalStateOperationalStateFillingWaterTank	17.4	-	-	a6d9b4f3d14c4774	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRRVCOperationalStateOperationalStateUpdatingMaps	-	MTRRVCOperationalStateOperationalStateUpdatingMaps	17.4	-	-	b11704cd9a58a10e	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRRVCRunModeFeatureDirectModeChange	-	MTRRVCRunModeFeatureDirectModeChange	17.4	-	-	7c5b9fe88ede4bd1	undeclared	-	-	host-macos	-	not-exported	ns	-	-
+constant	MTRRVCCleanModeFeatureDirectModeChange	-	MTRRVCCleanModeFeatureDirectModeChange	17.4	-	-	4e13e12140c5578c	undeclared	-	-	host-macos	-	not-exported	ns	-	22732ae982e3fea3
+constant	MTRRVCCleanModeModeTagVacuumThenMop	-	MTRRVCCleanModeModeTagVacuumThenMop	17.4	-	-	6ac2a92ad086b7e9	undeclared	-	-	host-macos	-	not-exported	ns	-	cb25d36dc9d21774
+constant	MTRRVCOperationalStateErrorStateBrushJammed	-	MTRRVCOperationalStateErrorStateBrushJammed	17.4	-	-	1043f41f18e09d88	undeclared	-	-	host-macos	-	not-exported	ns	-	8b2f59e576fcf418
+constant	MTRRVCOperationalStateErrorStateCannotReachTargetArea	-	MTRRVCOperationalStateErrorStateCannotReachTargetArea	17.4	-	-	41d799c94e46e107	undeclared	-	-	host-macos	-	not-exported	ns	-	0126447ab4d59ebe
+constant	MTRRVCOperationalStateErrorStateDirtyWaterTankFull	-	MTRRVCOperationalStateErrorStateDirtyWaterTankFull	17.4	-	-	584a6a1ae31eed67	undeclared	-	-	host-macos	-	not-exported	ns	-	9bedd61ff266b735
+constant	MTRRVCOperationalStateErrorStateDirtyWaterTankMissing	-	MTRRVCOperationalStateErrorStateDirtyWaterTankMissing	17.4	-	-	2e8c9c62e8132d33	undeclared	-	-	host-macos	-	not-exported	ns	-	ab620c34b9acc081
+constant	MTRRVCOperationalStateErrorStateLowBattery	-	MTRRVCOperationalStateErrorStateLowBattery	17.4	-	-	40b53a8946b36cb4	undeclared	-	-	host-macos	-	not-exported	ns	-	b5ad0c9aeffdf222
+constant	MTRRVCOperationalStateErrorStateNavigationSensorObscured	-	MTRRVCOperationalStateErrorStateNavigationSensorObscured	17.4	-	-	0ebdf580d1423b3a	undeclared	-	-	host-macos	-	not-exported	ns	-	474c40ae65428dd3
+constant	MTRRVCOperationalStateErrorStateWheelsJammed	-	MTRRVCOperationalStateErrorStateWheelsJammed	17.4	-	-	226e1b894f41e966	undeclared	-	-	host-macos	-	not-exported	ns	-	756b91a534839750
+constant	MTRRVCOperationalStateOperationalStateCleaningMop	-	MTRRVCOperationalStateOperationalStateCleaningMop	17.4	-	-	333dae2c9e2fb298	undeclared	-	-	host-macos	-	not-exported	ns	-	10750da80d3c2e13
+constant	MTRRVCOperationalStateOperationalStateEmptyingDustBin	-	MTRRVCOperationalStateOperationalStateEmptyingDustBin	17.4	-	-	b9650f329d01a026	undeclared	-	-	host-macos	-	not-exported	ns	-	3b31ba8d38ceb341
+constant	MTRRVCOperationalStateOperationalStateFillingWaterTank	-	MTRRVCOperationalStateOperationalStateFillingWaterTank	17.4	-	-	a6d9b4f3d14c4774	undeclared	-	-	host-macos	-	not-exported	ns	-	a0264961b48e8b82
+constant	MTRRVCOperationalStateOperationalStateUpdatingMaps	-	MTRRVCOperationalStateOperationalStateUpdatingMaps	17.4	-	-	b11704cd9a58a10e	undeclared	-	-	host-macos	-	not-exported	ns	-	ac547477bf2a2b44
+constant	MTRRVCRunModeFeatureDirectModeChange	-	MTRRVCRunModeFeatureDirectModeChange	17.4	-	-	7c5b9fe88ede4bd1	undeclared	-	-	host-macos	-	not-exported	ns	-	eb2633f0899ad6f5
 constant	MTRSignedIntegerValueType	-	MTRSignedIntegerValueType	16.1	NSString *const	MTR_AVAILABLE(ios(16.1), macos(13.0), watchos(9.1), tvos(16.1))	8e1d886ba116a521	found	SignedInteger	SignedInteger	ios-26.2-cache	-	exported	ns	-	12746552e2ec88f1
 constant	MTRSizeThreadExtendedPANID	-	MTRSizeThreadExtendedPANID	16.4	const size_t	MTR_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))	9c640fa33351b277	numeric	-	-	host-macos	-	exported	ns	-	fb36b1f94b9398c2
 constant	MTRSizeThreadExtendedPanId	-	MTRSizeThreadExtendedPanId	16.1	const size_t	-	3bb7dc9899fea926	numeric	-	-	host-macos	-	exported	ns	-	b8060d1dde1ef0b4
@@ -97,8 +97,8 @@ constant	MTRSizeThreadNetworkName	-	MTRSizeThreadNetworkName	16.1	const size_t	M
 constant	MTRSizeThreadPANID	-	MTRSizeThreadPANID	16.4	const size_t	MTR_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))	5f51eda8ebb49338	numeric	-	-	host-macos	-	exported	ns	-	ff5dd74b9591a116
 constant	MTRSizeThreadPSKc	-	MTRSizeThreadPSKc	16.1	const size_t	MTR_AVAILABLE(ios(16.1), macos(13.0), watchos(9.1), tvos(16.1))	e89a9828a03c7540	numeric	-	-	host-macos	-	exported	ns	-	55d0fa7fe0078b1b
 constant	MTRStructureValueType	-	MTRStructureValueType	16.1	NSString *const	MTR_AVAILABLE(ios(16.1), macos(13.0), watchos(9.1), tvos(16.1))	f11542e1a7d91d4d	found	Structure	Structure	ios-26.2-cache	-	exported	ns	-	5fa0dd069e73aeb0
-constant	MTRThermostatFeatureEvents	-	MTRThermostatFeatureEvents	16.1	-	-	b139b65a3b580666	undeclared	-	-	host-macos	-	not-exported	ns	-	-
-constant	MTRThermostatFeatureThermostatSuggestions	-	MTRThermostatFeatureThermostatSuggestions	16.1	-	-	345fc9bcc1d4feb1	undeclared	-	-	host-macos	-	not-exported	ns	-	-
+constant	MTRThermostatFeatureEvents	-	MTRThermostatFeatureEvents	16.1	-	-	b139b65a3b580666	undeclared	-	-	host-macos	-	not-exported	ns	-	1b337386983401f2
+constant	MTRThermostatFeatureThermostatSuggestions	-	MTRThermostatFeatureThermostatSuggestions	16.1	-	-	345fc9bcc1d4feb1	undeclared	-	-	host-macos	-	not-exported	ns	-	8d0d45c707d04f5a
 constant	MTRTypeKey	-	MTRTypeKey	16.1	NSString *const	MTR_AVAILABLE(ios(16.1), macos(13.0), watchos(9.1), tvos(16.1))	6e3aad929f88a6f3	found	type	type	ios-26.2-cache	-	exported	ns	-	9587d5ad122133fa
 constant	MTRUTF8StringValueType	-	MTRUTF8StringValueType	16.1	NSString *const	MTR_AVAILABLE(ios(16.1), macos(13.0), watchos(9.1), tvos(16.1))	366aceba7a844354	found	UTF8String	UTF8String	ios-26.2-cache	-	exported	ns	-	ec5faf20f3c2dcc7
 constant	MTRUnsignedIntegerValueType	-	MTRUnsignedIntegerValueType	16.1	NSString *const	MTR_AVAILABLE(ios(16.1), macos(13.0), watchos(9.1), tvos(16.1))	3b65d636920abe81	found	UnsignedInteger	UnsignedInteger	ios-26.2-cache	-	exported	ns	-	d341c4624ae31795
