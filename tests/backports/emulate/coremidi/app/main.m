@@ -14,14 +14,41 @@
 
 int charon_roundtrip_run(void);
 
-// The measurements the 6.1.3 release owes the port (facts/CoreMIDI/Bluetooth.md, CoreMIDI.md "Disposed objects"): the
-// selectors of CoreBluetooth's peripheral, and a destination's UniqueID before and after its dispose. The framework is
-// loaded by name, so the application's build does not link it. One line per answer; the round trip's verdict is separate.
+// The measurements the 6.1.3 release owes the port (facts/CoreMIDI/Bluetooth.md, CoreMIDI.md "Disposed objects", UMPClasses.md).
+// Every line names what it reads: a "status" is an OSStatus the release returned, a "value" is what the read wrote, and the
+// value is meaningful only with a noErr status. The frameworks are loaded by name, so the build links nothing new. These are
+// built with CHARCOREMIDI_PROBE=1 (a separate run: the round trip's own run must end within the emulator's time budget).
+#ifdef CHARON_6_1_3_PROBE
 static void charon_probe_read(const MIDIPacketList *packets, void *readRefCon, void *srcConnRefCon)
 {
 }
 
-static void charon_probe_6_1_3(void)
+static void charon_probe_notify(const MIDINotification *message, void *refCon)
+{
+    if (message->messageID != kMIDIMsgObjectRemoved)
+        return;
+    const MIDIObjectAddRemoveNotification *note = (const MIDIObjectAddRemoveNotification *)message;
+    printf("probe 6.1.3: removal notification: childType %d, child ref %u\n", (int)note->childType, (unsigned)note->child);
+    fflush(stdout);
+}
+
+static void charon_probe_unique(const char *label, MIDIObjectRef object)
+{
+    SInt32 value = -1;
+    OSStatus status = MIDIObjectGetIntegerProperty(object, kMIDIPropertyUniqueID, &value);
+    printf("probe 6.1.3: %s, ref %u: UniqueID read status %d, value %d\n", label, (unsigned)object, (int)status, (int)value);
+    fflush(stdout);
+}
+
+static void charon_probe_umpkey(const char *label, MIDIObjectRef object, CFStringRef key)
+{
+    SInt32 value = -1;
+    OSStatus status = MIDIObjectGetIntegerProperty(object, key, &value);
+    printf("probe 6.1.3: %s: status %d, value %d\n", label, (int)status, (int)value);
+    fflush(stdout);
+}
+
+static void charon_probe_selectors(void)
 {
     void *handle = dlopen("/System/Library/Frameworks/CoreBluetooth.framework/CoreBluetooth", RTLD_NOW);
     Class peripheral = NSClassFromString(@"CBPeripheral");
@@ -31,20 +58,104 @@ static void charon_probe_6_1_3(void)
                (int)[peripheral instancesRespondToSelector:@selector(identifier)],
                (int)[peripheral instancesRespondToSelector:@selector(UUID)]);
     }
+    fflush(stdout);
+}
+
+static void charon_probe_objects(void)
+{
     MIDIClientRef client = 0;
     OSStatus clientStatus = MIDIClientCreate(CFSTR("charon-probe"), NULL, NULL, &client);
+    printf("probe 6.1.3: client create status %d\n", (int)clientStatus);
+    fflush(stdout);
+    if (clientStatus != noErr)
+        return;
+    charon_probe_unique("client live", client);
+
     MIDIEndpointRef dest = 0;
-    OSStatus created = clientStatus == noErr ? MIDIDestinationCreate(client, CFSTR("charon-probe-dest"), charon_probe_read, NULL, &dest) : clientStatus;
-    SInt32 uniqueID = 0;
-    OSStatus live = created == noErr ? MIDIObjectGetIntegerProperty(dest, kMIDIPropertyUniqueID, &uniqueID) : created;
-    printf("probe 6.1.3: client %d, destination %d, UniqueID before dispose %d\n", (int)clientStatus, (int)created, (int)live);
+    OSStatus created = MIDIDestinationCreate(client, CFSTR("charon-probe-dest"), charon_probe_read, NULL, &dest);
+    printf("probe 6.1.3: destination create status %d\n", (int)created);
+    fflush(stdout);
     if (created == noErr) {
+        charon_probe_unique("destination live", dest);
+        charon_probe_umpkey("destination UMP key 'active group bitmap'", dest, CFSTR("active group bitmap"));
+        charon_probe_umpkey("destination UMP key 'ump endpoint'", dest, CFSTR("ump endpoint"));
+        charon_probe_umpkey("destination UMP key 'associated endpoint'", dest, CFSTR("associated endpoint"));
         MIDIEndpointDispose(dest);
-        OSStatus gone = MIDIObjectGetIntegerProperty(dest, kMIDIPropertyUniqueID, &uniqueID);
-        printf("probe 6.1.3: UniqueID after dispose %d\n", (int)gone);
+        charon_probe_unique("destination disposed", dest);
     }
-    if (clientStatus == noErr)
-        MIDIClientDispose(client);
+
+    MIDIEndpointRef src = 0;
+    OSStatus srcStatus = MIDISourceCreate(client, CFSTR("charon-probe-src"), &src);
+    printf("probe 6.1.3: source create status %d\n", (int)srcStatus);
+    fflush(stdout);
+    if (srcStatus == noErr) {
+        charon_probe_unique("source live", src);
+        MIDIEndpointDispose(src);
+        charon_probe_unique("source disposed", src);
+    }
+
+    MIDIPortRef port = 0;
+    OSStatus portStatus = MIDIInputPortCreate(client, CFSTR("charon-probe-in"), charon_probe_read, NULL, &port);
+    printf("probe 6.1.3: input port create status %d\n", (int)portStatus);
+    fflush(stdout);
+    if (portStatus == noErr) {
+        charon_probe_unique("input port live", port);
+        MIDIPortDispose(port);
+        charon_probe_unique("input port disposed", port);
+    }
+
+    MIDIClientDispose(client);
+    charon_probe_unique("client disposed", client);
+
+    // The reference reuse after a dispose: a new destination's ref against the disposed one's.
+    MIDIClientRef notifying = 0;
+    if (MIDIClientCreate(CFSTR("charon-probe-notify"), charon_probe_notify, NULL, &notifying) == noErr) {
+        MIDIEndpointRef first = 0, second = 0;
+        MIDIDestinationCreate(notifying, CFSTR("charon-probe-first"), charon_probe_read, NULL, &first);
+        MIDIEndpointDispose(first);
+        MIDIDestinationCreate(notifying, CFSTR("charon-probe-second"), charon_probe_read, NULL, &second);
+        printf("probe 6.1.3: destination ref after a dispose: first %u, second %u\n", (unsigned)first, (unsigned)second);
+        fflush(stdout);
+        MIDIEndpointDispose(second);
+        CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.05, false);
+        MIDIClientDispose(notifying);
+    }
+}
+
+#endif
+
+// The armv7 wraps: word counts whose byte sizes wrap the 32-bit size_t. The library must refuse them; before its fix, the
+// send copies or reads far beyond the buffer and the application dies on a signal (the run then fails).
+// MIDISendEventList: one packet of 536870913 words, 8 * count + 26 wraps to 34 bytes, so the capacity is small and the
+// conversion reads the words past the 64-byte list.
+static void charon_probe_wrap_send(void)
+{
+    Byte buffer[64];
+    MIDIEventList *list = (MIDIEventList *)buffer;
+    list->protocol = kMIDIProtocol_2_0;
+    list->numPackets = 1;
+    list->packet[0].timeStamp = 0;
+    list->packet[0].wordCount = 536870913;
+    printf("probe 6.1.3 wrap: MIDISendEventList, one packet of wordCount 536870913, list of 64 bytes\n");
+    fflush(stdout);
+    OSStatus status = MIDISendEventList(0, 0, list);
+    printf("probe 6.1.3 wrap: MIDISendEventList status %d\n", (int)status);
+    fflush(stdout);
+}
+
+// MIDIEventListAdd: end (8) + the packet header and the words (12 + 4 * 1073741819) is 2^32, which wraps to 0, so the room
+// check passes and a 4 GB copy follows into a 64-byte list.
+static void charon_probe_wrap_add(void)
+{
+    Byte buffer[64];
+    MIDIEventList *list = (MIDIEventList *)buffer;
+    list->protocol = kMIDIProtocol_2_0;
+    list->numPackets = 0;
+    UInt32 word = 0;
+    printf("probe 6.1.3 wrap: MIDIEventListAdd, wordCount 1073741819, into 64 bytes\n");
+    fflush(stdout);
+    MIDIEventPacket *next = MIDIEventListAdd(list, sizeof(buffer), &list->packet[0], 0, 1073741819, &word);
+    printf("probe 6.1.3 wrap: MIDIEventListAdd %s, numPackets %u\n", next ? "accepted" : "refused", (unsigned)list->numPackets);
     fflush(stdout);
 }
 
@@ -67,7 +178,14 @@ static void charon_probe_6_1_3(void)
     printf("audio session: not activated (CHARON_NO_AUDIO_SESSION)\n");
     fflush(stdout);
 #endif
-    charon_probe_6_1_3();
+#ifdef CHARON_6_1_3_PROBE
+    charon_probe_selectors();
+#endif
+    charon_probe_wrap_send();
+    charon_probe_wrap_add();
+#ifdef CHARON_6_1_3_PROBE
+    charon_probe_objects();
+#endif
     int failures = charon_roundtrip_run();
     printf("application exit: %d\n", failures);
     fflush(stdout);

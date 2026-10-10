@@ -44,11 +44,25 @@ log_status=$?
 set -e
 cat "$out/launch.log"
 echo "run folder: $out (launch status $launch_status, log status $log_status)"
-if [ "$launch_status" -ne 0 ]; then
-    echo "the launch exited $launch_status: $out/launch.log says why" >&2
-    exit 1
-fi
 if ! grep -q '^roundtrip: PASS' "$out/launch.log"; then
     echo "the round trip did not pass: no 'roundtrip: PASS' line in this run's $out/launch.log" >&2
     exit 1
+fi
+# A nonzero launch status is accepted only when the application's own device verdict for this run shows a clean exit. The
+# emulator reports an application that ends as its budget is reached as a failed launch (failure "exited", reason "reached"),
+# and the application's exit status is in that verdict (verdict.json beside the emulator log named in launch.log).
+if [ "$launch_status" -ne 0 ]; then
+    device=$(sed -n 's|.*emulator log is \(/[^ ]*\)/emulator\.log.*|\1|p' "$out/launch.log" | tail -1)
+    exit_field=""
+    if [ -n "$device" ] && [ -f "$device/verdict.json" ]; then
+        exit_field=$(grep -o '"exit":{[^}]*}' "$device/verdict.json") || exit_field=""
+    fi
+    case "$exit_field" in
+        *'"status":0'*'"signal":0'*|*'"signal":0'*'"status":0'*) ;;
+        *)
+            echo "the launch exited $launch_status and the application's exit is not clean: $device/verdict.json" >&2
+            exit 1
+            ;;
+    esac
+    echo "the launch status $launch_status is the emulator's report of the budget and the exit; the application's own exit is clean ($exit_field)"
 fi
