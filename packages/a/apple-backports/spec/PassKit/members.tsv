@@ -172,8 +172,8 @@ PKStoredValuePassBalanceTypeLoyaltyPoints	7f782b3a855e6d4d
 -[PKBarcodeEventConfigurationRequest configurationData]	15d75d865672d932
 -[PKBarcodeEventConfigurationRequest configurationDataType]	7eeac80e561f7265
 -[PKContact name]	6b5aea9363cfd6af
--[PKContact postalAddress]	b1bbb84cda63812e
--[PKContact phoneNumber]	af61e9dddeb4567c
+-[PKContact postalAddress]	b56ebd37af97c0ed
+-[PKContact phoneNumber]	fd97ea79c513ee7a
 -[PKContact emailAddress]	4237c6fdb9a9e676
 -[PKContact supplementarySubLocality]	122ae3f65048a344
 -[PKDateComponentsRange init]	edc2f96145685626
@@ -348,6 +348,7 @@ PKStoredValuePassBalanceTypeLoyaltyPoints	7f782b3a855e6d4d
 +[PKPaymentAuthorizationController supportsDisbursementsUsingNetworks:]	e514190a9e10d2d9
 +[PKPaymentAuthorizationController supportsDisbursementsUsingNetworks:capabilities:]	87cc5d54ae61a1a6
 -[PKPaymentAuthorizationController initWithDisbursementRequest:]	bcb2b09b9fddecb5
++[PKPaymentAuthorizationViewController canMakePayments]	7709e6f83bf367d8
 +[PKPaymentAuthorizationViewController canMakePaymentsUsingNetworks:]	f44c9e7d80edd4a3
 +[PKPaymentAuthorizationViewController canMakePaymentsUsingNetworks:capabilities:]	5e685300b4271a2c
 -[PKPaymentAuthorizationViewController delegate]	e99bd80f9dc49be3
@@ -356,12 +357,11 @@ PKStoredValuePassBalanceTypeLoyaltyPoints	7f782b3a855e6d4d
 +[PKPaymentAuthorizationViewController supportsDisbursementsUsingNetworks:]	b8ae59cefda5faca
 +[PKPaymentAuthorizationViewController supportsDisbursementsUsingNetworks:capabilities:]	820f2dc87fc675c2
 -[PKPaymentAuthorizationViewController initWithDisbursementRequest:]	161e6ead1af44826
-+[PKPaymentAuthorizationViewController canMakePayments]	7709e6f83bf367d8
++[PKPaymentButton buttonWithType:style:]	165aa2bc80aae231
 -[PKPaymentButton initWithPaymentButtonType:paymentButtonStyle:]	ff66ebcc6b99d287
 +[PKPaymentButton buttonWithType:style:disableCardArt:]	adb9d0fb6241b1a1
 -[PKPaymentButton initWithPaymentButtonType:paymentButtonStyle:disableCardArt:]	4333c50ab79f7d18
 -[PKPaymentButton cornerRadius]	cb1d36090d4644bb
-+[PKPaymentButton buttonWithType:style:]	165aa2bc80aae231
 -[PKPaymentMerchantSession initWithDictionary:]	d9234a783787e219
 -[PKPaymentMethod displayName]	5f7d17ab51762782
 -[PKPaymentMethod network]	fb39b42cc9c9831d

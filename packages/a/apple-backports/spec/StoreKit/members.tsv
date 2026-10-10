@@ -63,11 +63,11 @@ SKStorefrontIdentifierDidChangeNotification	6e2e679019ecc916
 -[SKCloudServiceController requestStorefrontIdentifierWithCompletionHandler:]	8a2c02c6d133a240
 -[SKCloudServiceController requestUserTokenForDeveloperToken:completionHandler:]	b8418a60cb9afb8b
 -[SKCloudServiceController requestPersonalizationTokenForClientToken:withCompletionHandler:]	e5ac6619990b27f4
--[SKCloudServiceSetupViewController loadWithOptions:completionHandler:]	f5669f89079d5d1e
 -[SKCloudServiceSetupViewController delegate]	fc6706c9a9787ec1
+-[SKCloudServiceSetupViewController loadWithOptions:completionHandler:]	f5669f89079d5d1e
 -[SKDownload state]	7694d22886dbc8b4
 -[SKDownload downloadState]	6e8fe50fe611e27b
--[SKDownload contentLength]	0e7b11f5a587b7e5
+-[SKDownload contentLength]	3c186fee754f59f6
 -[SKDownload expectedContentLength]	6411534c62911f60
 -[SKDownload contentIdentifier]	9c12f27c24847766
 -[SKDownload contentURL]	7e78bfade71bdc0e
@@ -200,9 +200,9 @@ SKStorefrontIdentifierDidChangeNotification	6e2e679019ecc916
 -[SKRequest delegate]	681c7f612a3e3b40
 -[SKRequest cancel]	2c74543344072637
 -[SKRequest start]	e4699bb5a3b62a23
+-[SKStoreProductViewController delegate]	11cb14bb64cb6e39
 -[SKStoreProductViewController loadProductWithParameters:completionBlock:]	504b07079d3ef579
 -[SKStoreProductViewController loadProductWithParameters:impression:completionBlock:]	1168837a70a696ca
--[SKStoreProductViewController delegate]	11cb14bb64cb6e39
 +[SKStoreReviewController requestReview]	fabaa8c97fdcaf8d
 +[SKStoreReviewController requestReviewInScene:]	7bdf727242f9f248
 -[SKStorefront countryCode]	9a1874dee3fe8bfd

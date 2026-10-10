@@ -456,11 +456,6 @@ AVSpeechUtteranceMinimumSpeechRate	bb0b390f03dfb2a0
 -[AVAudioSession setPreferredMicrophoneInjectionMode:error:]	cbcdb338872d2a26
 -[AVAudioSession preferredMicrophoneInjectionMode]	b067c3b6d5937093
 -[AVAudioSession isMicrophoneInjectionAvailable]	f44354b6239f2ebf
--[AVAudioSession setIntendedSpatialExperience:options:error:]	d1e92f64a11fcedd
--[AVAudioSession intendedSpatialExperience]	33354aea1a083b03
--[AVAudioSession intendedSpatialExperienceOptions]	1be0c09a53a22ab3
--[AVAudioSession isNowPlayingCandidate]	ef89a3120e432aeb
--[AVAudioSession setIsNowPlayingCandidate:error:]	cc8b890c8f72b61c
 -[AVAudioSession delegate]	1d0112dd75375d5f
 -[AVAudioSession init]	22f37efd80b25f0c
 -[AVAudioSession setActive:withFlags:error:]	b0a3ff430434e151
@@ -545,7 +540,7 @@ AVSpeechUtteranceMinimumSpeechRate	bb0b390f03dfb2a0
 -[AVAudioUnitComponent allTagNames]	02348eab185ca3fb
 -[AVAudioUnitComponent audioComponentDescription]	08b75e13be09d475
 -[AVAudioUnitComponent iconURL]	faf5eda4193991eb
--[AVAudioUnitComponent icon]	4ca8618b202a16a8
+-[AVAudioUnitComponent icon]	47fecd84667c72f6
 -[AVAudioUnitComponent passesAUVal]	da7658973fcabc7a
 -[AVAudioUnitComponent hasCustomView]	1e22d01173ddc4f1
 -[AVAudioUnitComponent configurationDictionary]	dd57af83044ba493
