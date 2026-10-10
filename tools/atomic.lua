@@ -4,6 +4,13 @@
 -- reader sees the old file or the new one, never a partial one, and the sibling never outlives a failed write. The sibling's name is
 -- the target path, the process id and a counter, and a name a file already holds is skipped, so writers of one tree never share a
 -- sibling. A failed write raises.
+--
+-- What it does not do: it does not fsync. The file object of xmake's Lua has no fsync (measured on xmake 3.1.1: its methods are new,
+-- close, flush, read, write, seek, size, lines and the like), and a process per file would cost more than the whole run. The handle is
+-- closed (which flushes it to the kernel) before the rename, so a reader and a killed process see the old file or the new one; only a
+-- loss of power between the rename and the disk can leave a file the disk has not taken yet. Every file written here is regenerated
+-- by the next run or is under version control. A process killed between the open and the rename leaves its sibling
+-- <name>.charon-new.<pid>.<n>: its name is never reused (the process id and the counter), nothing reads it, and .gitignore hides it.
 
 local counter = 0
 
