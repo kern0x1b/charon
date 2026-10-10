@@ -54,10 +54,13 @@ function universal(text)
     return (string.gsub(text, "\r\n?", "\n"))
 end
 
--- The lines of a text as Python's splitlines() gives them: the line breaks are \n, \r\n, \r, \v, \f, \x1c, \x1d and \x1e, and a
--- final break ends the last line rather than starting an empty one.
+-- The lines of a text as Python's str.splitlines() gives them: the line breaks are \n, \r\n, \r, \v, \f, \x1c, \x1d, \x1e, NEL
+-- (U+0085), LS (U+2028) and PS (U+2029) as UTF-8, and a final break ends the last line rather than starting an empty one. The one
+-- definition of a line of a text in the generator (the program output, the hand sources, the markup of ipsw).
 function lines(text)
     local marked = string.gsub(universal(text), "[\11\12\28-\30]", "\n")
+    marked = string.gsub(marked, "\194\133", "\n")
+    marked = string.gsub(marked, "\226\128[\168\169]", "\n")
     return tsv.lines(marked)
 end
 

@@ -4,12 +4,13 @@
 -- a pipe (stream.lua): no staging file is written, in the tree or in the build directory.
 
 local host = import("host", {anonymous = true})
+local strings = import("strings", {anonymous = true})
 local layout = import("layout", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
 
 -- Adds the oracle's lines (name, status, class, value) of a run to the table name -> {status, value}.
 local function parse(out, into)
-    for _, line in ipairs(host.lines(out)) do
+    for _, line in ipairs(strings.lines(out)) do
         if line ~= "" then
             local fields = tsv.fields(line)
             assert(#fields == 4, "oracle line with " .. #fields .. " fields: " .. line)

@@ -7,6 +7,7 @@
 local layout = import("layout", {anonymous = true})
 local snapshot = import("spec", {anonymous = true})
 local host = import("host", {anonymous = true})
+local strings = import("strings", {anonymous = true})
 local probes = import("probe", {anonymous = true})
 local files = import("files", {anonymous = true})
 
@@ -145,7 +146,7 @@ function run(args)
         return 1
     end
     local reference = {}
-    for _, line in ipairs(host.lines(out)) do
+    for _, line in ipairs(strings.lines(out)) do
         local tab = string.find(line, "\t", 1, true)
         if tab then
             reference[string.sub(line, 1, tab - 1)] = string.sub(line, tab + 1)

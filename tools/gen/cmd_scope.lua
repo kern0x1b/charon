@@ -14,12 +14,13 @@ local trace_files = import("trace_files", {anonymous = true})
 local headers = import("headers", {anonymous = true})
 local coverage = import("coverage", {anonymous = true})
 local strings = import("strings", {anonymous = true})
+local nsobject = import("nsobject", {anonymous = true})
 local emit = import("emit", {anonymous = true})
 local order = import("order", {anonymous = true})
 
 -- The ledgers the scope counts against: the 6.1.3 release (the members it lacks are the work) and the 4.3 release.
-local LEDGER_6_1_3 = "ledger-w45"
-local LEDGER_4_3 = "ledger-w45-4.3"
+local LEDGER_6_1_3 = surface.ledger_6_1_3()
+local LEDGER_4_3 = surface.ledger_4_3()
 -- The kinds the scope counts. A surface row of any other kind is in the tie-out's total and in no state.
 local SCOPE_KINDS = strings.set({"class", "method", "property", "constant", "function", "enum", "struct", "typealias", "protocol"})
 -- The states that a generated stub answers (the trace layer's stub list is the one definition of generable).
@@ -31,8 +32,6 @@ local GENERABLE = "generable"
 -- The state of a row the framework has no snapshot for, and of a Swift row (the spec is the ObjC headers).
 local NO_SNAPSHOT = "no snapshot"
 local SWIFT_STATE = "swift: needs the Swift interface source"
--- The selectors whose bare form the header parse does not spell (implicit from NSObject, or unavailable by a macro).
-local IMPLICIT_SELECTORS = strings.set({"init", "new", "copy", "mutableCopy", "dealloc", "description"})
 -- The frameworks the markdown page lists by demand.
 local TOP_RANKS = 60
 -- The state of each protocol object, by the transcriber's status for its protocol.
@@ -278,7 +277,7 @@ function gap_reason(api, skipped_reason)
         sel = dot and string.sub(api, dot + 1) or api
     end
     local name = string.match(sel, "^[^:]*")
-    if IMPLICIT_SELECTORS[name] then
+    if nsobject.scope_implicit(name) then
         return "init/new: not spelled by the 26.2 headers (implicit, or unavailable by a macro)"
     end
     if skipped_reason then

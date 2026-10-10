@@ -11,7 +11,7 @@ local tsv = import("tsv", {anonymous = true})
 local files = import("files", {anonymous = true})
 
 local INTERFACE_FILE = "cache-26.2/swiftinterface-26.2.tsv"
-local LEDGER_RELEASE = "ledger-w45"
+local LEDGER_RELEASE = surface.ledger_6_1_3()
 local BUCKET_FILE = "swift/bucket.tsv"
 local SWIFT_LANG = "swift"
 local HEADER_OK = "header-ok"
@@ -44,7 +44,7 @@ end
 local function bucket_candidates(tree, corpus)
     local out = {}
     for _, fw in ipairs(order.strings(surface.surface_frameworks(corpus))) do
-        if os.isfile(path.join(corpus, LEDGER_RELEASE, fw .. ".tsv")) then
+        if surface.has_ledger(corpus, LEDGER_RELEASE, fw) then
             local led6 = surface.ledger_status(corpus, fw, LEDGER_RELEASE)
             local registry = nil
             for _, row in ipairs(surface.ordered_rows(corpus, fw)) do

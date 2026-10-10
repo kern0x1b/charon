@@ -24,13 +24,34 @@ function canonical_member(api, kind)
     return api
 end
 
+-- The corpus folders of the two ledgers the generator reads: the 6.1.3 release (ledger-w45) and the 4.3 release.
+local LEDGER_6_1_3 = "ledger-w45"
+local LEDGER_4_3 = "ledger-w45-4.3"
+
+function ledger_6_1_3()
+    return LEDGER_6_1_3
+end
+
+function ledger_4_3()
+    return LEDGER_4_3
+end
+
+-- The ledger file of a framework in a release folder. A nested framework (include/AppleArchive, the surface's name) has its ledger as
+-- include_AppleArchive.tsv: the slash of its name is an underscore in the file name, as the corpus writes it. Every reader of a
+-- ledger goes through this one mapping.
+function ledger_file(corpus, release_dir, fw)
+    return path.join(corpus, release_dir, (string.gsub(fw, "/", "_")) .. ".tsv")
+end
+
+-- True when the release folder has a ledger for the framework (without one every member is considered).
+function has_ledger(corpus, release_dir, fw)
+    return os.isfile(ledger_file(corpus, release_dir, fw))
+end
+
 -- (kind, api) -> status for the framework's rows the ledger of a release lists; a row it does not list is implemented in it.
--- A nested framework (include/AppleArchive, the surface's name) has its ledger in the release folder as include_AppleArchive.tsv:
--- the slash of its name is an underscore in the file name, as the corpus writes it.
 function ledger_status(corpus, fw, release_dir)
     local out = {}
-    local file_name = (string.gsub(fw, "/", "_"))
-    local text = files.read_text(path.join(corpus, release_dir, file_name .. ".tsv"))
+    local text = files.read_text(ledger_file(corpus, release_dir, fw))
     if not text then
         return out
     end

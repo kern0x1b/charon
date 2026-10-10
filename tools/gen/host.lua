@@ -8,6 +8,7 @@
 
 local emit = import("emit", {anonymous = true})
 local stream = import("stream", {anonymous = true})
+local strings = import("strings", {anonymous = true})
 local json = import("core.base.json")
 
 -- The project folder, as an absolute path taken when the module loads (xmake reports paths relative to the working folder).
@@ -20,27 +21,6 @@ local product_cache = {}
 -- The text without the colour codes xmake puts in its messages.
 local function plain(text)
     return (string.gsub(text or "", "\27%[[%d;]*m", ""))
-end
-
--- The lines of a program's output, split as Python's str.splitlines splits them (a CR LF is one break; CR, LF, VT, FF, the
--- file, group and record separators, NEL, LS and PS also end a line).
-function lines(text)
-    local marked = string.gsub(text, "\r\n", "\n")
-    marked = string.gsub(marked, "[\r\v\f\28\29\30]", "\n")
-    marked = string.gsub(marked, "\194\133", "\n")
-    marked = string.gsub(marked, "\226\128\168", "\n")
-    marked = string.gsub(marked, "\226\128\169", "\n")
-    local out, pos = {}, 1
-    while pos <= #marked do
-        local newline = string.find(marked, "\n", pos, true)
-        if not newline then
-            table.insert(out, string.sub(marked, pos))
-            break
-        end
-        table.insert(out, string.sub(marked, pos, newline - 1))
-        pos = newline + 1
-    end
-    return out
 end
 
 -- The last n bytes of the text without its surrounding white space (the tail the messages quote).
@@ -147,7 +127,7 @@ function build(name, force)
     if not ok then
         -- xmake ends an error with "> in <absolute path>" lines, which name a host path; the message keeps the rest of the text.
         local kept = {}
-        for _, line in ipairs(lines(err ~= "" and err or out)) do
+        for _, line in ipairs(strings.lines(err ~= "" and err or out)) do
             if not string.find(line, "^%s*>%s+in%s") then
                 table.insert(kept, line)
             end

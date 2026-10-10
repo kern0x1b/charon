@@ -82,6 +82,21 @@ local function test_order(check)
           "the eight-byte word compares as unsigned, and a word is a prefix of a longer string")
 end
 
+local function test_lines(check)
+    local strings = import("gen.strings", {rootdir = TOOLS, anonymous = true})
+    local parts = strings.lines("a\r\nb\rc\vd\fe\28f\29g\30h\194\133i\226\128\168j\226\128\169k\nl")
+    check(#parts == 12 and parts[1] == "a" and parts[2] == "b" and parts[9] == "i" and parts[11] == "k" and parts[12] == "l",
+          "lines splits where Python's str.splitlines does, NEL, LS and PS included")
+    check(#strings.lines("a\n") == 1 and #strings.lines("") == 0 and #strings.lines("\n\n") == 2,
+          "a final break ends the last line, and the empty text has no line")
+    -- the markup of ipsw is split where splitlines does: two instructions in one stream line (a CR between them) are two
+    local behaviour = import("gen.behaviour", {rootdir = TOOLS, anonymous = true})
+    local state = behaviour.new_summary()
+    behaviour.add_line(state, "0x1000:  1f 20 03 d5  bl  _foo\r0x1004:  c0 03 5f d6  ret\194\1330x1008:  1f 20 03 d5  bl  _bar")
+    check(state.instructions == 3 and state.calls[1] == "_foo" and state.calls[2] == "_bar",
+          "a stream line holding three instructions is summarised as three")
+end
+
 local function test_emit(check)
     local emit = import("gen.emit", {rootdir = TOOLS, anonymous = true})
     local dir = path.join(os.scriptdir(), "..", "..", ".agent-work", "runs", "gen-test-" .. tostring(os.time()) .. "-"
@@ -135,6 +150,7 @@ end
 function main()
     local check, failures = checks()
     test_sha256(check)
+    test_lines(check)
     test_order(check)
     test_emit(check)
     test_stream(check)

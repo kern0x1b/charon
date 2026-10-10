@@ -77,15 +77,16 @@ end
 local function test_text(check)
     local cmd = import("gen.cmd_diff", {rootdir = TOOLS, anonymous = true})
     local host = import("gen.host", {rootdir = TOOLS, anonymous = true})
+    local strings = import("gen.strings", {rootdir = TOOLS, anonymous = true})
     check(cmd.repr("abc") == "'abc'", "repr of plain text is single quoted")
     check(cmd.repr("a'b") == '"a\'b"', "repr uses double quotes when the text holds a single quote and no double quote")
     check(cmd.repr("a\"b'c") == "'a\"b\\'c'", "repr escapes the single quote when both quotes are present")
     check(cmd.repr("a\\b\tc\n") == "'a\\\\b\\tc\\n'", "repr escapes backslash, tab and newline")
     check(cmd.repr("\1") == "'\\x01'", "repr escapes other control characters as \\xNN")
-    local parts = host.lines("a\r\nb\rc\vd\fe\n")
+    local parts = strings.lines("a\r\nb\rc\vd\fe\n")
     check(#parts == 5 and parts[1] == "a" and parts[2] == "b" and parts[3] == "c" and parts[4] == "d" and parts[5] == "e",
           "lines splits on CR LF, CR, VT, FF and LF as splitlines does")
-    check(#host.lines("") == 0, "lines of the empty text is empty")
+    check(#strings.lines("") == 0, "lines of the empty text is empty")
     check(host.tail("  abcdef  ", 3) == "def", "tail keeps the last bytes of the stripped text")
     local ok, out, err, status = host.run("/bin/sh", {"-c", "echo kept; echo failure >&2; exit 3"})
     check(ok == false and out == "kept\n" and err == "failure\n" and status == 3,

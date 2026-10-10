@@ -21,7 +21,7 @@ local order = import("order", {anonymous = true})
 local gen = import("cmd_gen", {anonymous = true})
 
 -- The release whose ledger lists the members the 6.1.3 release lacks.
-local LEDGER_RELEASE = "ledger-w45"
+local LEDGER_RELEASE = surface.ledger_6_1_3()
 local INHERITED_REASON = "init/new/copy the surface does not list: the inherited NSObject behaviour is what a call reaches"
 -- The status of a C function the trace layer stubs.
 local GENERABLE = "generable"
@@ -166,7 +166,7 @@ end
 -- The 6.1.3 ledger of one framework and the members it lacks (nil when the ledger is not there: every member is considered).
 local function release_of(corpus, fw)
     local led6 = surface.ledger_status(corpus, fw, LEDGER_RELEASE)
-    if os.isfile(path.join(corpus, LEDGER_RELEASE, fw .. ".tsv")) then
+    if surface.has_ledger(corpus, LEDGER_RELEASE, fw) then
         return led6, led6
     end
     return led6, nil

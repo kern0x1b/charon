@@ -7,6 +7,7 @@
 local stream = import("stream", {anonymous = true})
 local objc = import("objc", {anonymous = true})
 local order = import("order", {anonymous = true})
+local strings = import("strings", {anonymous = true})
 local pages = import("pages", {anonymous = true})
 
 -- The summaries of a framework are written under the tree's untracked spec-docs folder.
@@ -31,8 +32,6 @@ local NOTE_LINES = 12
 local MARKUP = "^0x[0-9a-f]+:%s+" .. string.rep("[0-9a-f][0-9a-f]%s+", 4) .. "(%S+)%s*(.*)$"
 local CONDITIONAL = {cbz = true, cbnz = true, tbz = true, tbnz = true}
 local EQUALITY = {["b.eq"] = true, ["b.ne"] = true}
--- The line breaks Python's splitlines takes on the ASCII range (and universal newlines take the carriage return).
-local LINE_BREAKS = "[\r\v\f\28\29\30]"
 
 -- The heavy job script: <coordination>/heavy.sh, the coordination folder being the parent of the corpus folder.
 function heavy_path(corpus)
@@ -158,14 +157,10 @@ local function add_markup(state, text)
     end
 end
 
--- Adds one line of the stream to a summary, splitting it where Python's splitlines would.
+-- Adds one line of the stream to a summary, splitting it where Python's splitlines would (strings.lines).
 function add_line(state, line)
-    if string.find(line, LINE_BREAKS) then
-        for piece in string.gmatch(string.gsub(line, LINE_BREAKS, "\n"), "[^\n]+") do
-            add_markup(state, piece)
-        end
-    else
-        add_markup(state, line)
+    for _, piece in ipairs(strings.lines(line)) do
+        add_markup(state, piece)
     end
 end
 
