@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 typedef	c:@T@MSMessagesAppPresentationStyle	-			enum MSMessagesAppPresentationStyle	-	-	-	-	bbf60c895b75526b
 enum	c:@E@MSMessagesAppPresentationStyle	-			NSUInteger	-	-	ios=10.0/-/-/0	-	8a7c5fbb3bad1c27
 enumconst	c:@E@MSMessagesAppPresentationStyle@MSMessagesAppPresentationStyleCompact	MSMessagesAppPresentationStyle			-	-	-	ios=10.0/-/-/0	-	a51f48215edab4a5

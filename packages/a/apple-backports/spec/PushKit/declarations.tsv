@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 typedef	c:@T@PKPushType	-			NSString *	-	-	-	-	2677ba8d9f2b4f94
 interface	c:objc(cs)PKPushCredentials	-			-	-	-	ios=8.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	11c2d07df19293b0
 super	-	PKPushCredentials	NSObject		-	-	-	-	-	66e0a671ee80512f

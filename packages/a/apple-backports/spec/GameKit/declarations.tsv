@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 typedef	c:@T@GKMatchProperties	-			NSDictionary<NSString *,id>	-	-	ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=10.2/-/-/0,xros=1.1/-/-/0	-	0a90a8b6e4003a52
 interface	c:objc(cs)GKBasePlayer	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	deprecated: Use Use ``GKPlayer/gamePlayerID`` or ``GKPlayer/teamPlayerID`` instead. instead	3971f50c92761232
 super	-	GKBasePlayer	NSObject		-	-	-	-	-	3e7db57ec2b2606a
@@ -161,7 +161,7 @@ enumconst	c:@E@GKGameCenterViewControllerState@GKGameCenterViewControllerStateDa
 enumconst	c:@E@GKGameCenterViewControllerState@GKGameCenterViewControllerStateLocalPlayerFriendsList	GKGameCenterViewControllerState			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	aba83299885ee6c1
 interface	c:objc(cs)GKGameCenterViewController	-			-	-	-	ios=6.0/26.0/-/0,macos=10.9/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	-	9c58ae1c7cdfa633
 super	-	GKGameCenterViewController	UINavigationController		-	-	-	-	-	1e44e9dd581b32e6
-category	c:objc(ext)GKGameCenterViewController	-	-		-	-	-	watchos=-/-/-/1	-	4192d4c747d9c6c6
+category	c:objc(ext)GKGameCenterViewController	-	-		-	-	-	watchos=-/-/-/1	-	0a32d473a9b536ef
 property	c:objc(cs)GKGameCenterViewController(py)gameCenterDelegate	-			id<GKGameCenterControllerDelegate>	-	weak,nonatomic	watchos=-/-/-/1	-	6f62bf9aebe44461
 method	c:objc(cs)GKGameCenterViewController(im)initWithState:	-			instancetype	GKGameCenterViewControllerState state	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	9a6cc0ba1aaf17d0
 method	c:objc(cs)GKGameCenterViewController(im)initWithLeaderboardID:playerScope:timeScope:	-			instancetype	NSString * leaderboardID | GKLeaderboardPlayerScope playerScope | GKLeaderboardTimeScope timeScope	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	28795d6091d70b7c
@@ -364,7 +364,7 @@ method	c:objc(pl)GKChallengeListener(im)player:didCompleteChallenge:issuedByFrie
 method	c:objc(pl)GKChallengeListener(im)player:issuedChallengeWasCompleted:byFriend:	-			void	GKPlayer * player | GKChallenge * challenge | GKPlayer * friendPlayer	optional	watchos=-/-/-/1	-	0e6dd2a8fe9392d7
 interface	c:objc(cs)GKFriendRequestComposeViewController	-			-	-	-	ios=4.2/10.0/-/0,macos=10.8/10.12/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	694d3d1c0b3eb507
 super	-	GKFriendRequestComposeViewController	UINavigationController		-	-	-	-	-	ba5d747917c54d2b
-category	c:objc(ext)GKFriendRequestComposeViewController	-	-		-	-	-	ios=4.2/10.0/-/0,macos=10.8/10.12/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	deprecated: Use Use ``GKFriendRequestComposeViewController/addRecipientPlayers(_:)`` instead. instead	578435e7ebe45ef3
+category	c:objc(ext)GKFriendRequestComposeViewController	-	-		-	-	-	ios=4.2/10.0/-/0,macos=10.8/10.12/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	deprecated: Use Use ``GKFriendRequestComposeViewController/addRecipientPlayers(_:)`` instead. instead	1d37e67b425c9192
 method	c:objc(cs)GKFriendRequestComposeViewController(cm)maxNumberOfRecipients	-			NSUInteger	-	-	ios=4.2/10.0/-/0,macos=10.8/10.12/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	f2c3f571ff1de06a
 method	c:objc(cs)GKFriendRequestComposeViewController(im)setMessage:	-			void	NSString * message	-	ios=4.2/10.0/-/0,macos=10.8/10.12/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	e6886ad602d6a5e3
 method	c:objc(cs)GKFriendRequestComposeViewController(im)addRecipientPlayers:	-			void	NSArray<GKPlayer *> * players	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	d1f6d2a4b1dbe177
@@ -521,7 +521,7 @@ category	c:objc(cy)GKLeaderboardSet@UI	-			-	-	-	ios=7.0/-/-/0,macos=10.10/-/-/0
 method	c:objc(cs)GKLeaderboardSet(im)loadImageWithCompletionHandler:	UI			void	void (^)(UIImage * _Nullable, NSError * _Nullable) completionHandler	-	ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	a2ec1d1c46dff1d9
 interface	c:objc(cs)GKLeaderboardViewController	-			-	-	-	ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1d44be53f5dd18a4
 super	-	GKLeaderboardViewController	GKGameCenterViewController		-	-	-	-	-	417c54f8c32fe626
-category	c:objc(ext)GKLeaderboardViewController	-	-		-	-	-	ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0478c62a7ba7dbb7
+category	c:objc(ext)GKLeaderboardViewController	-	-		-	-	-	ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fcdeca210f854769
 property	c:objc(cs)GKLeaderboardViewController(py)timeScope	-			GKLeaderboardTimeScope	-	assign,nonatomic	ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	38671ab5eb442648
 property	c:objc(cs)GKLeaderboardViewController(py)category	-			NSString *	-	copy,nonatomic	ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	43926082d7cd3d25
 property	c:objc(cs)GKLeaderboardViewController(py)leaderboardDelegate	-			id<GKLeaderboardViewControllerDelegate>	-	weak,nonatomic	ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ecc5fe27dff7b57b
@@ -973,7 +973,7 @@ enumconst	c:@E@GKSessionError@GKSessionUnknownError	GKSessionError			-	-	-	ios=3
 enumconst	c:@E@GKSessionError@GKSessionSystemError	GKSessionError			-	-	-	ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	8dbd15efc8b4699b
 interface	c:objc(cs)GKTurnBasedMatchmakerViewController	-			-	-	-	ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	2cc383b7fcaac1ec
 super	-	GKTurnBasedMatchmakerViewController	UINavigationController		-	-	-	-	-	72f5e11ebe4e848c
-category	c:objc(ext)GKTurnBasedMatchmakerViewController	-	-		-	-	-	ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	b243becd0c2f2c5a
+category	c:objc(ext)GKTurnBasedMatchmakerViewController	-	-		-	-	-	ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	75595ecb5837d2d8
 property	c:objc(cs)GKTurnBasedMatchmakerViewController(py)turnBasedMatchmakerDelegate	-			id<GKTurnBasedMatchmakerViewControllerDelegate>	-	weak,nonatomic	ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	b92a2782937f1230
 property	c:objc(cs)GKTurnBasedMatchmakerViewController(py)showExistingMatches	-			BOOL	-	assign,nonatomic	ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	28ed15a4103371ae
 property	c:objc(cs)GKTurnBasedMatchmakerViewController(py)matchmakingMode	-			GKMatchmakingMode	-	assign,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	29f61d6e43f2a920

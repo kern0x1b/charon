@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 var	c:@OSSystemExtensionErrorDomain	-			const NSErrorDomain	-	-	ios=18.4/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5ae30eefdfcf7a1d
 var	c:@OSBundleUsageDescriptionKey	-			NSString *const	-	-	ios=18.4/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	733698839799647e
 var	c:@NSSystemExtensionUsageDescriptionKey	-			NSString *const	-	-	ios=18.4/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5f6b8d2a89e053b6

@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 typedef	c:@T@PKEncryptionScheme	-			NSString *	-	-	-	-	5f0031cd98b4f14d
 var	c:@PKEncryptionSchemeECC_V2	-			const PKEncryptionScheme	-	-	ios=9.0/-/-/0	-	f2c2ef41c64d04ef
 var	c:@PKEncryptionSchemeRSA_V2	-			const PKEncryptionScheme	-	-	ios=10.0/-/-/0	-	85a71bd17dd2a8f8
@@ -999,6 +999,6 @@ interface	c:objc(cs)PKPassRelevantDate	-			-	-	-	-	-	bbb0b19c270baab4
 super	-	PKPassRelevantDate	NSObject		-	-	-	-	-	3ab4033298c14a4f
 property	c:objc(cs)PKPassRelevantDate(py)interval	-			NSDateInterval *	-	readonly,copy,nonatomic	-	-	df1598f017686366
 property	c:objc(cs)PKPassRelevantDate(py)date	-			NSDate *	-	readonly,copy,nonatomic	-	-	693fb4269fb5d222
-category	c:objc(ext)PKPassRelevantDate	-	-		-	-	-	-	-	c982124c307095c3
+category	c:objc(ext)PKPassRelevantDate	-	-		-	-	-	-	-	9e2f846b59667843
 method	c:objc(cs)PKPassRelevantDate(cm)new	-			instancetype	-	-	*unavailable	-	d0e177cfcbb55728
 method	c:objc(cs)PKPassRelevantDate(im)init	-			instancetype	-	-	*unavailable	-	ec3f52dcf9eb8dbe

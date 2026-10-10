@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 typedef	c:MPSNeuralNetworkTypes.h@T@MPSCNNConvolutionFlags	-			enum MPSCNNConvolutionFlags	-	-	-	-	78cc1cc018f2c8d0
 enum	c:@E@MPSCNNConvolutionFlags	-			NSUInteger	-	-	-	-	f67986eda32c5379
 enumconst	c:@E@MPSCNNConvolutionFlags@MPSCNNConvolutionFlagsNone	MPSCNNConvolutionFlags			-	-	-	ios=10.0/11.0/-/0,maccatalyst=-/-/-/1,tvos=10.0/11.0/-/0	-	f45d08ca5a325a76

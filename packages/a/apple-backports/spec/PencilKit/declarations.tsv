@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 typedef	c:@T@PKContentVersion	-			enum PKContentVersion	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	bf3f08b99d66a453
 enum	c:@E@PKContentVersion	-			NSInteger	-	-	-	-	4f77a374de55e63b
 enumconst	c:@E@PKContentVersion@PKContentVersion1	PKContentVersion			-	-	-	-	-	658676e8ccb20136

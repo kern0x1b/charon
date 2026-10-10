@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 protocol	c:objc(pl)MDLAssetResolver	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	2a7deea9c976f1c3
 conforms	-	MDLAssetResolver	NSObject		-	-	-	-	-	776fbd5f1fa06748
 method	c:objc(pl)MDLAssetResolver(im)canResolveAssetNamed:	-			BOOL	NSString * name	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	d30e85cef0ebb6ba

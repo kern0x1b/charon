@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 var	c:@kCLErrorDomain	-			NSString *const	-	-	-	-	6d601569a5e1488c
 typedef	c:@T@CLError	-			enum CLError	-	-	-	-	9fded1d62b607a6f
 enum	c:@E@CLError	-			NSInteger	-	-	-	-	f31170111a07d00b

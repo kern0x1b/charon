@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 typedef	c:@T@AAHashFunction	-			uint32_t	-	-	-	-	80083d309292e762
 enum	c:@E@AAHashFunctions	-			uint32_t	-	-	-	-	c3ca618eb12c0ca5
 enumconst	c:@E@AAHashFunctions@AA_HASH_FUNCTION_CRC32	AAHashFunctions			-	-	-	-	-	b6a6c085a702027c

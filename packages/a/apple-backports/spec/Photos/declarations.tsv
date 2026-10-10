@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 typedef	c:@T@PHImageContentMode	-			enum PHImageContentMode	-	-	ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	fe66375e7b787b87
 enum	c:@E@PHImageContentMode	-			NSInteger	-	-	ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	db1eb90c5a0f925c
 enumconst	c:@E@PHImageContentMode@PHImageContentModeAspectFit	PHImageContentMode			-	-	-	ios=8/-/-/0,macos=10.11/-/-/0,tvos=10/-/-/0	-	cd2baf7e2cdfc495
@@ -635,7 +635,7 @@ interface	c:objc(cs)PHLocalIdentifierMapping	-			-	-	-	ios=15/-/-/0,macos=12/-/-
 super	-	PHLocalIdentifierMapping	NSObject		-	-	-	-	-	75cab38ca55d68bf
 property	c:objc(cs)PHLocalIdentifierMapping(py)localIdentifier	-			NSString *	-	readonly,nonatomic	ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	d8ce5049616191f5
 property	c:objc(cs)PHLocalIdentifierMapping(py)error	-			NSError *	-	readonly,nonatomic	ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	a4b8d4b8bc1e6848
-category	c:objc(ext)PHCloudIdentifier	-	-		-	-	-	ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	8b40738ae7b34981
+category	c:objc(ext)PHCloudIdentifier	-	-		-	-	-	ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	1e542cd8508ac71a
 conforms	-	PHCloudIdentifier	NSCopying		-	-	-	-	-	3cd47cccb05c0254
 category	c:objc(cy)PHPhotoLibrary@CloudIdentifiers	-			-	-	-	ios=15/-/-/0,macos=10.13/-/-/0,tvos=15/-/-/0	deprecated: Use -localIdentifierMappingsForCloudIdentifiers: instead	0af77b566e240692
 method	c:objc(cs)PHPhotoLibrary(im)localIdentifierMappingsForCloudIdentifiers:	CloudIdentifiers			NSDictionary<PHCloudIdentifier *,PHLocalIdentifierMapping *> *	NSArray<PHCloudIdentifier *> * cloudIdentifiers	-	ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	d4173b6a324ef823

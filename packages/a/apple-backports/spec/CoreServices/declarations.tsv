@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 var	c:@kUTTypeItem	-			const CFStringRef	-	-	ios=3.0/15.0/-/0,macos=10.4/12.0/-/0,tvos=9.0/15.0/-/0,watchos=1.0/8.0/-/0	-	b382caf74293a2d1
 var	c:@kUTTypeContent	-			const CFStringRef	-	-	ios=3.0/15.0/-/0,macos=10.4/12.0/-/0,tvos=9.0/15.0/-/0,watchos=1.0/8.0/-/0	-	cb17fe05844729c3
 var	c:@kUTTypeCompositeContent	-			const CFStringRef	-	-	ios=3.0/15.0/-/0,macos=10.4/12.0/-/0,tvos=9.0/15.0/-/0,watchos=1.0/8.0/-/0	-	d9034bc703609e08

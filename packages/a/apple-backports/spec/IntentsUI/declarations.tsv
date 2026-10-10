@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 var	c:@IntentsUIVersionNumber	-			double	-	-	-	-	550fc9e880261ab0
 var	c:@IntentsUIVersionString	-			const unsigned char[]	-	-	-	-	6be784dcb5db8530
 category	c:objc(cy)INImage@IntentsUI	-			-	-	-	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=3.2/-/-/0	-	9eb7f110f4a1286a

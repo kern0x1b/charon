@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 var	c:@kCTFontSymbolicTrait	-			const CFStringRef	-	-	ios=3.2/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	3be2f3c9fb61e65b
 var	c:@kCTFontWeightTrait	-			const CFStringRef	-	-	ios=3.2/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	6dd2610cba3b20da
 var	c:@kCTFontWidthTrait	-			const CFStringRef	-	-	ios=3.2/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	a5629affe24ae7f0

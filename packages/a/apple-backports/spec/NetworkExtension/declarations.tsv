@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 typedef	c:@T@NEAppProxyFlowError	-			enum NEAppProxyFlowError	-	-	-	-	6a051c08030fa011
 enum	c:@E@NEAppProxyFlowError	-			NSInteger	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	b94b97e98febfe05
 enumconst	c:@E@NEAppProxyFlowError@NEAppProxyFlowErrorNotConnected	NEAppProxyFlowError			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	139abb6f621e2717

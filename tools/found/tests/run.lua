@@ -14,10 +14,70 @@ local function expect(condition, message)
     if not condition then raise("test failed: " .. message) end
 end
 
+-- 0. the configuration (review F10): the sweep's usr/include modules are the top-level modules the maps declare, minus the reviewed
+-- exclusions of IR_CONFIG's usr-modules.tsv, and a row that names no module is an error. The fixture's config excludes FixtureCExtra;
+-- the checks here write their own configurations under build/ (scratch).
+local FIXTURE_CONFIG = path.join(ROOT, "fixture", "config")
+local DECLS = path.join("build", "macosx", "arm64", "release", "decls")
+local FIXTURE_SDK = path.join(ROOT, "fixture", "sdk")
+local function write_config(name, usr_rows, fallback_rows)
+    local dir = path.join("build", "found", "test-config", name)
+    os.runv("mkdir", {"-p", dir})
+    local usr = io.open(path.join(dir, "usr-modules.tsv"), "w")
+    usr:write(usr_rows or "# (no exclusions)\n")
+    usr:close()
+    local fallback = io.open(path.join(dir, "fallback.tsv"), "w")
+    fallback:write(fallback_rows or "# (no fallbacks)\n")
+    fallback:close()
+    return dir
+end
+local function module_names(config)
+    local names = {}
+    for line in os.iorunv(DECLS, {"--list"}, {envs = {IR_SDK = FIXTURE_SDK, IR_CONFIG = config}}):gmatch("[^\n]+") do
+        table.insert(names, line:match("^([^\t]+)"))
+    end
+    return table.concat(names, " ")
+end
+expect(module_names(FIXTURE_CONFIG) == "Broken Fixture Fixture/Inner FixtureC NoHeader Plain Swiftonly",
+    "the fixture's config lists FixtureC and leaves out its excluded module FixtureCExtra")
+expect(module_names(write_config("no-exclusions")) == "Broken Fixture Fixture/Inner FixtureC FixtureCExtra NoHeader Plain Swiftonly",
+    "a config with no exclusion lists every top-level module the maps declare (FixtureCExtra too)")
+local stale_failure = nil
+try {
+    function () os.iorunv(DECLS, {"--list"}, {envs = {IR_SDK = FIXTURE_SDK, IR_CONFIG = write_config("stale", "NoSuchModule\tnamed by no map\n")}}) end,
+    catch {
+        function (errors) stale_failure = tostring(errors) end
+    }
+}
+expect(stale_failure ~= nil and stale_failure:find("NoSuchModule", 1, true) ~= nil,
+    "an exclusion that no usr/include map declares is an error that names it")
+
+-- F29 (review-v-gen): a framework with no module-map header is read from its Headers/ folder only when fallback.tsv lists it, and a
+-- listed row that does not fit (no such framework, or a framework that has a module map) is an error that names the row
+local function failure_of(args, config)
+    local text = nil
+    try {
+        function () os.iorunv(DECLS, args, {envs = {IR_SDK = FIXTURE_SDK, IR_CONFIG = config}}) end,
+        catch {
+            function (errors) text = tostring(errors) end
+        }
+    }
+    return text or ""
+end
+local refused = failure_of({"Plain"}, write_config("no-fallbacks"))
+expect(refused:find("Plain", 1, true) ~= nil and refused:find("fallback.tsv", 1, true) ~= nil,
+    "a framework with no module map that fallback.tsv does not list is refused, and the error names it and the list (got " .. refused .. ")")
+expect(os.iorunv(DECLS, {"Plain"}, {envs = {IR_SDK = FIXTURE_SDK, IR_CONFIG = FIXTURE_CONFIG}}):find("plain_value", 1, true) ~= nil,
+    "a framework that fallback.tsv lists is read from its Headers/ folder")
+expect(failure_of({"--list"}, write_config("stale-name", nil, "NoSuchFramework\tnamed by no framework\n")):find("NoSuchFramework", 1, true) ~= nil,
+    "a fallback row that names no framework of the SDK is an error that names it")
+expect(failure_of({"Fixture"}, write_config("stale-map", nil, "Fixture\tFixture has a module map\n")):find("module map", 1, true) ~= nil,
+    "a fallback row for a framework that has a module map is an error (the row is stale)")
+
 -- 1. the driver reproduces the golden exactly (check mode: nothing is written)
 -- the full IR (the build product, with decl) is written to the build directory: the declaration text is checked there
 local FULL = path.join("build", "found", "test-ir.tsv")
-os.runv("xmake", {"l", "./tools/found/ir.lua"}, {envs = {IR_SDK = path.join(ROOT, "fixture", "sdk"), IR_USR_MODULES = "FixtureC", IR_MODE = "check",
+os.runv("xmake", {"l", "./tools/found/ir.lua"}, {envs = {IR_SDK = path.join(ROOT, "fixture", "sdk"), IR_CONFIG = FIXTURE_CONFIG, IR_MODE = "check",
     IR_SPEC = SPEC, IR_CONFLICTS = path.join(ROOT, "conflicts.tsv"), IR_UNPARSED = path.join(ROOT, "unparsed.tsv"),
     IR_FULL = FULL}})
 checks = checks + 1
@@ -257,6 +317,11 @@ eq(avail.merge({row("-"), row("ios=4.0/12.0/-/0,tvos=9.0/12.0/-/0")}).avail, "io
 eq(avail.merge({row("-"), row("ios=18.0/-/-/0")}).avail, "ios=18.0/-/-/0",
     "an unannotated declaration is ignored: the annotated PDFKit typedef decides")
 eq(avail.merge({row("-"), row("-")}).avail, "-", "when no declaration is annotated the key has no availability")
+-- F7 (review-v-gen): an unannotated row carries no flag and no platform, so it does not vote in the flags either
+eq(avail.merge({row("*unavailable"), row("-")}).avail, "*unavailable", "an unannotated row does not clear the unavailable flag")
+eq(avail.merge({row("*deprecated"), row("-")}).avail, "*deprecated", "an unannotated row does not clear the deprecated flag")
+eq(avail.merge({row("*unavailable"), row("ios=5.0/-/-/0")}).avail, "ios=5.0/-/-/0",
+    "a row that names a platform without the flag still clears the flag for it")
 eq(avail.merge({row("-"), row("ios=4.0/12.0/-/0", "deprecated: Gone"), row("-", "deprecated: Other")}).message,
     "deprecated: Gone", "an unannotated declaration's message is not the key's message")
 -- the message follows the latest deprecation
@@ -285,7 +350,7 @@ expect(dep == nil and unav == "removed in 2.0", "an unavailability text alone")
 
 -- the doc-time mode (ir.lua's docs mode, which runs decls --doc over the fixture): one line per declaration of ten escaped cells, the
 -- doc comment's brief and raw text, the parameter names and the declaration as written; nothing is written
-local docs = os.iorunv("xmake", {"l", "./tools/found/ir.lua"}, {envs = {IR_SDK = path.join(ROOT, "fixture", "sdk"), IR_USR_MODULES = "FixtureC", IR_MODE = "docs"}})
+local docs = os.iorunv("xmake", {"l", "./tools/found/ir.lua"}, {envs = {IR_SDK = path.join(ROOT, "fixture", "sdk"), IR_CONFIG = FIXTURE_CONFIG, IR_MODE = "docs"}})
 local doc_lines = {}
 for line in docs:gmatch("[^\n]+") do
     if line:find("\t", 1, true) then table.insert(doc_lines, line) end
@@ -348,14 +413,33 @@ expect(usr_doc, "the doc mode covers the usr/include module")
 
 -- the extractor takes a framework name and resolves its headers itself (decls --doc <Framework>): the list, the target and the doc rows of
 -- one framework are the ones the sweep and the doc pass use
-local DECLS = path.join("build", "macosx", "arm64", "release", "decls")
-local fixture_env = {IR_SDK = path.join(ROOT, "fixture", "sdk"), IR_USR_MODULES = "FixtureC"}
+local fixture_env = {IR_SDK = path.join(ROOT, "fixture", "sdk"), IR_CONFIG = FIXTURE_CONFIG}
 local names = {}
 for line in os.iorunv(DECLS, {"--list"}, {envs = fixture_env}):gmatch("[^\n]+") do
     table.insert(names, line:match("^([^\t]+)"))
 end
-expect(table.concat(names, " ") == "Broken Fixture Fixture/Inner FixtureC NoHeader Swiftonly", "decls --list names the sweep's frameworks")
-expect(os.iorunv(DECLS, {"--target"}) == "arm64-apple-ios26.2\n", "decls --target is the pinned target")
+expect(table.concat(names, " ") == "Broken Fixture Fixture/Inner FixtureC NoHeader Plain Swiftonly", "decls --list names the sweep's frameworks")
+-- F11 (review-v-gen): a directory the walk cannot read is an error that names its path, not a shorter framework list. The fixture's
+-- nested Frameworks/ folder is made unreadable for this check, and its mode is restored after it.
+local nested_frameworks = path.join(ROOT, "fixture", "sdk", "System", "Library", "Frameworks", "Fixture.framework", "Frameworks")
+os.iorunv("chmod", {"000", nested_frameworks})
+local unreadable_failure = nil
+try {
+    function () os.iorunv(DECLS, {"--list"}, {envs = fixture_env}) end,
+    catch {
+        function (errors) unreadable_failure = tostring(errors) end
+    }
+}
+os.iorunv("chmod", {"755", nested_frameworks})
+expect(unreadable_failure ~= nil and unreadable_failure:find("Frameworks", 1, true) ~= nil,
+    "an unreadable framework folder is an error that names its path")
+-- F10 (review-v-gen): the target comes from the SDK's version (SDKSettings.json: arm64, the SDK's vendor and system, its deployment
+-- target), not from a literal; the fixture's SDK is version 26.4
+expect(os.iorunv(DECLS, {"--target"}, {envs = fixture_env}) == "arm64-apple-ios26.4\n", "decls --target is derived from the SDK's version")
+-- F8 (review-v-gen): the libclang that runs is identified by the SHA-256 of its dylib, which the shard headers record
+local identity = os.iorunv(DECLS, {"--version"})
+local dylib_sha = identity:match("dylib%-sha256=(%x+)")
+expect(dylib_sha ~= nil and #dylib_sha == 64, "decls --version names the SHA-256 of the libclang it runs (got " .. identity:gsub("\n", " ") .. ")")
 local function rows_of(text, name)
     local out = {}
     for line in text:gmatch("[^\n]+") do
@@ -366,5 +450,35 @@ end
 local direct = os.iorunv(DECLS, {"--doc", "Fixture"}, {envs = fixture_env})
 expect(direct ~= "" and rows_of(direct, "Fixture") == rows_of(docs, "Fixture"),
     "decls --doc Fixture gives the rows the doc pass gives for Fixture")
+
+-- F24 (review-v-gen): the platform records of a declaration are all kept: clang reports at most 14 on this compiler (measured: 17 attributes,
+-- 14 records; repeated attributes of one platform give one record), so the extractor sizes the array from the count, not a fixed 16
+local many_avail = find(function (r) return r.usr == "c:@F@FXManyPlatforms" end)[1].avail
+local many_count = 0
+for _ in string.gmatch(many_avail, "[^,]+") do many_count = many_count + 1 end
+expect(many_count == 14, "every platform record clang reports is kept (got " .. many_count .. ")")
+
+-- F9 (review-v-gen): the declaration hash is the SHA-256 of the canonical text of the cells the IR writes: the ten fields, each followed
+-- by the unit separator (0x1f), first 16 hex digits (design-foundation.md 5.3). Recomputed here with shasum, through a pipe, for every
+-- declaration row of the full IR; the hash must not depend on whether a field is empty in the extractor's memory.
+local function shasum16(text)
+    local out = os.iorunv("/bin/sh", {"-c", "printf '%s' \"$1\" | shasum -a 256 | cut -c1-16", "sh", text})
+    return (out:gsub("%s+$", ""))
+end
+local hash_checked, hash_mismatch = 0, {}
+for line in io.lines(FULL) do
+    local c = {}
+    for cell in (line .. "\t"):gmatch("([^\t]*)\t") do table.insert(c, cell) end
+    if c[2] ~= "census" and c[2] ~= "unparsed" and c[2] ~= "conflict" and c[2] ~= "meta" and c[15] and c[15] ~= "" then
+        local canonical = {}
+        for _, i in ipairs({2, 3, 4, 5, 6, 11, 12, 10, 13, 14}) do table.insert(canonical, c[i] .. "\31") end
+        hash_checked = hash_checked + 1
+        local expected = shasum16(table.concat(canonical))
+        if expected ~= c[15] then table.insert(hash_mismatch, c[2] .. " " .. c[3] .. " " .. c[15] .. " != " .. expected) end
+    end
+end
+expect(hash_checked > 0 and #hash_mismatch == 0,
+    string.format("every declaration hash is the SHA-256 of its canonical cells (%d checked, %d differ: %s)",
+        hash_checked, #hash_mismatch, table.concat(hash_mismatch, "; ", 1, math.min(3, #hash_mismatch))))
 
 print(string.format("extractor tests passed: %d checks", checks))

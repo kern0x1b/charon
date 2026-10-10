@@ -90,19 +90,30 @@ end
 -- The rows of one key, each {avail = IR text, message = IR text}: the merged availability and message (the rule of the header).
 function merge(rows)
     local parsed, names, named = {}, {}, {}
+    -- each flag is ANDed only over the rows that vote on it: a row that names a platform, or carries that flag. A row that names no
+    -- platform and carries no flag is unannotated and votes on nothing (the rule of the header; review F7).
     local all_unavailable, all_deprecated = true, true
+    local voting_unavailable, voting_deprecated = 0, 0
     for _, r in ipairs(rows) do
         local p = parse_availability(r.avail)
         p.message = r.message or ""
         table.insert(parsed, p)
+        local names_platform = false
+        for _ in pairs(p.entries) do names_platform = true end
         for platform in pairs(p.entries) do
             if not named[platform] then
                 named[platform] = true
                 table.insert(names, platform)
             end
         end
-        all_unavailable = all_unavailable and p.always_unavailable
-        all_deprecated = all_deprecated and p.always_deprecated
+        if names_platform or p.always_unavailable then
+            voting_unavailable = voting_unavailable + 1
+            all_unavailable = all_unavailable and p.always_unavailable
+        end
+        if names_platform or p.always_deprecated then
+            voting_deprecated = voting_deprecated + 1
+            all_deprecated = all_deprecated and p.always_deprecated
+        end
     end
     table.sort(names)
     local entries = {}
@@ -133,7 +144,8 @@ function merge(rows)
             if intro ~= "-" or entry.dep ~= "-" or entry.obs ~= "-" then entries[platform] = entry end
         end
     end
-    local flags = {always_unavailable = all_unavailable and #rows > 0, always_deprecated = all_deprecated and #rows > 0}
+    local flags = {always_unavailable = all_unavailable and voting_unavailable > 0,
+        always_deprecated = all_deprecated and voting_deprecated > 0}
     local avail = format_availability(flags, entries)
     -- the messages: the deprecation of the row with the latest deprecation, the unavailable text of the first row that has one
     local deprecated_row, latest_dep = nil, -1

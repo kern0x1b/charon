@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 typedef	c:vImage_Types.h@T@vImagePixelCount	-			unsigned long	-	-	-	-	df569078bb612eed
 struct	c:@S@vImage_Buffer	-			-	-	-	-	-	4218d726c304ef11
 field	c:@S@vImage_Buffer@FI@data	vImage_Buffer			void *	-	-	-	-	432b0dba1ff12201

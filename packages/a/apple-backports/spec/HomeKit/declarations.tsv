@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 typedef	c:@T@HMErrorBlock	-			void ((^))(NSError *)	-	-	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	663a200b506e6cea
 interface	c:objc(cs)HMAccessory	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	deprecated: No longer supported.	8bd0fc6f45f17667
 super	-	HMAccessory	NSObject		-	-	-	-	-	21e9f77e8ca9ff08
@@ -1279,7 +1279,7 @@ property	c:objc(cs)HMAccessorySetupResult(py)homeUniqueIdentifier	-			NSUUID *	-
 property	c:objc(cs)HMAccessorySetupResult(py)accessoryUniqueIdentifiers	-			NSArray<NSUUID *> *	-	readonly,copy	ios=15.4/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	16296df616945dd9
 method	c:objc(cs)HMAccessorySetupResult(im)init	-			instancetype	-	-	*unavailable ios=15.4/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	811662546473d71d
 method	c:objc(cs)HMAccessorySetupResult(cm)new	-			instancetype	-	-	*unavailable ios=15.4/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8382b9aa91ec8924
-category	c:objc(ext)HMAccessory	-	-		-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	780bf80df6397780
+category	c:objc(ext)HMAccessory	-	-		-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	087929edde53e3fd
 property	c:objc(cs)HMAccessory(py)vendorAccessory	-			BOOL	-	readonly,nonatomic,getter=isVendorAccessory	ios=26.1/-/-/0,macos=-/-/-/1,tvos=26.1/-/-/0,watchos=26.1/-/-/0	-	b65461a2a6b56062
 property	c:objc(cs)HMAccessory(py)HAPInstanceID	-			NSNumber *	-	readonly,copy,nonatomic	ios=26.1/-/-/0,macos=-/-/-/1,tvos=26.1/-/-/0,watchos=26.1/-/-/0	-	1f6bfee8d13a337c
 category	c:objc(cy)HMHomeManager@Vendor	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	8db43da08a5e91c8

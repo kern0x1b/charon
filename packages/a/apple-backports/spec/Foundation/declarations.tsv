@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 var	c:@NSFoundationVersionNumber	-			double	-	-	-	-	574ff06646f1d2e0
 typedef	c:@T@NSExceptionName	-			NSString *	-	-	-	-	cbdf7ebff23e705e
 typedef	c:@T@NSRunLoopMode	-			NSString *	-	-	-	-	f7fd0d1c0f082ab6
@@ -2751,7 +2751,7 @@ property	c:objc(cs)NSFileHandle(py)writeabilityHandler	NSFileHandleAsynchronousA
 category	c:objc(cy)NSFileHandle@NSFileHandlePlatformSpecific	-			-	-	-	-	-	a6e1e68848e33733
 method	c:objc(cs)NSFileHandle(im)initWithFileDescriptor:	NSFileHandlePlatformSpecific			instancetype	int fd	-	-	-	67b0f403e232944b
 property	c:objc(cs)NSFileHandle(py)fileDescriptor	NSFileHandlePlatformSpecific			int	-	readonly	-	-	983ec1985e96fcfe
-category	c:objc(ext)NSFileHandle	-	-		-	-	-	-	deprecated: Use readDataToEndOfFileAndReturnError: instead	8eea1c18cd77b687
+category	c:objc(ext)NSFileHandle	-	-		-	-	-	-	deprecated: Use readDataToEndOfFileAndReturnError: instead	e453679ba18073a4
 method	c:objc(cs)NSFileHandle(im)readDataToEndOfFile	-			NSData *	-	-	ios=2.0/100000/-/0,macos=10.0/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	deprecated: Use readDataToEndOfFileAndReturnError: instead	61ad61f6ac3dbfff
 method	c:objc(cs)NSFileHandle(im)readDataOfLength:	-			NSData *	NSUInteger length	-	ios=2.0/100000/-/0,macos=10.0/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	deprecated: Use readDataUpToLength:error: instead	bf26d7f509b7ffff
 method	c:objc(cs)NSFileHandle(im)writeData:	-			void	NSData * data	-	ios=2.0/100000/-/0,macos=10.0/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	deprecated: Use writeData:error: instead	44df81fee89c8c7f

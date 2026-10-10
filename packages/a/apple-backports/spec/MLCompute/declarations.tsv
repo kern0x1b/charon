@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 typedef	c:@T@MLCGraphCompletionHandler	-			void ((^))(MLCTensor *, NSError *, NSTimeInterval)	-	-	-	-	c162f8555c3db521
 typedef	c:@T@MLCDataType	-			enum MLCDataType	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a1fa2f0d74b6b0bb
 enum	c:@E@MLCDataType	-			int32_t	-	-	-	-	0e16969d53c4c336

@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 var	c:@IntentsVersionNumber	-			double	-	-	-	-	a13687ac18f0d4f9
 var	c:@IntentsVersionString	-			const unsigned char[]	-	-	-	-	84c77e33caaf94ad
 typedef	c:@T@INShortcutAvailabilityOptions	-			enum INShortcutAvailabilityOptions	-	-	-	-	9e622b0efeef7dbf
@@ -1264,7 +1264,7 @@ property	c:objc(pl)INSpeakable(py)pronunciationHint	-			NSString *	-	readonly,st
 property	c:objc(pl)INSpeakable(py)vocabularyIdentifier	-			NSString *	-	readonly,strong,nonatomic	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=3.2/-/-/0	-	d43bff7e2ee416c1
 property	c:objc(pl)INSpeakable(py)alternativeSpeakableMatches	-			NSArray<id<INSpeakable>> *	-	readonly,strong,nonatomic	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=3.2/-/-/0	-	f098af2ddf33e901
 property	c:objc(pl)INSpeakable(py)identifier	-			NSString *	-	readonly,strong,nonatomic	ios=10.0/11.0/-/0,watchos=3.2/4.0/-/0	-	b74a030f6c2f7f6b
-category	c:objc(ext)INInteraction	-	-		-	-	-	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=3.2/-/-/0	-	8f0514dfff3e1564
+category	c:objc(ext)INInteraction	-	-		-	-	-	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=3.2/-/-/0	-	10417ba001bc2d7d
 method	c:objc(cs)INInteraction(im)parameterValueForParameter:	-			id	INParameter * parameter	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	806b61326ddf60de
 interface	c:objc(cs)INParameter	-			-	-	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f937b3a327ce00fd
 super	-	INParameter	NSObject		-	-	-	-	-	9e597c092dac7afd

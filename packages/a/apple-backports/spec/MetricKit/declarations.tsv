@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 interface	c:objc(cs)MXMetric	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use Use dictionaryRepresentation instead	ce962933ea17d0d1
 super	-	MXMetric	NSObject		-	-	-	-	-	2be6fba081961c2a
 conforms	-	MXMetric	NSSecureCoding		-	-	-	-	-	ed2579783189e9e5

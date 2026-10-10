@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 typedef	c:CipherSuite.h@T@SSLCipherSuite	-			uint16_t	-	-	-	-	ebb96a94a0b3347b
 enum	c:@Ea@SSL_NULL_WITH_NULL_NULL	-	-		SSLCipherSuite	-	-	-	-	067e6e191a793ec8
 enumconst	c:@Ea@SSL_NULL_WITH_NULL_NULL@SSL_NULL_WITH_NULL_NULL	-			-	-	-	-	-	67fac23cca280640

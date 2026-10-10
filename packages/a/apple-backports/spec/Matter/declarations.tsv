@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 typedef	c:@T@MTRTLVBytes	-			NSData *	-	-	-	-	9fff7cb8e153d6c7
 typedef	c:@T@MTRCSRDERBytes	-			NSData *	-	-	-	-	1fc9ede64d007d3f
 typedef	c:@T@MTRCertificateDERBytes	-			NSData *	-	-	-	-	4f001afe833a3137
@@ -25677,7 +25677,7 @@ method	c:objc(cs)MTRClusterTestCluster(im)testSimpleOptionalArgumentRequestWithP
 method	c:objc(cs)MTRClusterTestCluster(im)testSimpleOptionalArgumentRequestWithExpectedValues:expectedValueInterval:completionHandler:	Deprecated			void	NSArray<NSDictionary<NSString *,id> *> * expectedValues | NSNumber * expectedValueIntervalMs | MTRStatusCompletion completionHandler	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	d20c9d97fbcdf2db
 method	c:objc(cs)MTRClusterTestCluster(im)testEmitTestEventRequestWithParams:expectedValues:expectedValueInterval:completionHandler:	Deprecated			void	MTRTestClusterClusterTestEmitTestEventRequestParams * params | NSArray<NSDictionary<NSString *,id> *> * expectedDataValueDictionaries | NSNumber * expectedValueIntervalMs | void (^)(MTRTestClusterClusterTestEmitTestEventResponseParams * _Nullable, NSError * _Nullable) completionHandler	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	fabb7ade53139692
 method	c:objc(cs)MTRClusterTestCluster(im)testEmitTestFabricScopedEventRequestWithParams:expectedValues:expectedValueInterval:completionHandler:	Deprecated			void	MTRTestClusterClusterTestEmitTestFabricScopedEventRequestParams * params | NSArray<NSDictionary<NSString *,id> *> * expectedDataValueDictionaries | NSNumber * expectedValueIntervalMs | void (^)(MTRTestClusterClusterTestEmitTestFabricScopedEventResponseParams * _Nullable, NSError * _Nullable) completionHandler	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	383b868d5d42f476
-category	c:objc(ext)MTRGroupKeyManagementClusterKeySetReadAllIndicesParams	-	-		-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	0f64a57733eef29c
+category	c:objc(ext)MTRGroupKeyManagementClusterKeySetReadAllIndicesParams	-	-		-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	836a65993d87fee4
 property	c:objc(cs)MTRGroupKeyManagementClusterKeySetReadAllIndicesParams(py)groupKeySetIDs	-			NSArray *	-	copy,nonatomic	ios=16.1/17.0/-/0,macos=13.0/14.0/-/0,tvos=16.1/17.0/-/0,watchos=9.1/10.0/-/0	-	94482736f528ce53
 typedef	c:@T@MTRFanControlWindSettingMask	-			enum MTRFanControlWindSettingMask	-	-	-	-	d6123202a5aaf270
 enum	c:@E@MTRFanControlWindSettingMask	-			uint8_t	-	-	ios=16.1/17.0/-/0,macos=13.0/14.0/-/0,tvos=16.1/17.0/-/0,watchos=9.1/10.0/-/0	-	43e429d2e13a4caa
@@ -31951,7 +31951,7 @@ property	c:objc(cs)MTRDeviceType(py)name	-			NSString *	-	readonly,retain,nonato
 property	c:objc(cs)MTRDeviceType(py)isUtility	-			BOOL	-	readonly,assign,nonatomic	ios=18.2/-/-/0,macos=15.2/-/-/0,tvos=18.2/-/-/0,watchos=11.2/-/-/0	-	e3b615df97920082
 method	c:objc(cs)MTRDeviceType(im)init	-			instancetype	-	-	*unavailable ios=18.2/-/-/0,macos=15.2/-/-/0,tvos=18.2/-/-/0,watchos=11.2/-/-/0	-	5786d9797139a299
 method	c:objc(cs)MTRDeviceType(cm)new	-			instancetype	-	-	*unavailable ios=18.2/-/-/0,macos=15.2/-/-/0,tvos=18.2/-/-/0,watchos=11.2/-/-/0	-	14599a44771415d6
-category	c:objc(ext)MTRDeviceType	-	-		-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	e43c423db15e021e
+category	c:objc(ext)MTRDeviceType	-	-		-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	85830dd01a704ff3
 conforms	-	MTRDeviceType	NSCopying		-	-	-	-	-	e0a0b69ebacc7cfb
 interface	c:objc(cs)MTRDeviceTypeRevision	-			-	-	-	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	5ed5ba50f9934664
 super	-	MTRDeviceTypeRevision	NSObject		-	-	-	-	-	71d4c50edf0c033c
@@ -31963,7 +31963,7 @@ method	c:objc(cs)MTRDeviceTypeRevision(im)initWithDeviceTypeStruct:	-			instance
 property	c:objc(cs)MTRDeviceTypeRevision(py)deviceTypeID	-			NSNumber *	-	readonly,copy,nonatomic	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	3e3117e20e55d7fe
 property	c:objc(cs)MTRDeviceTypeRevision(py)deviceTypeRevision	-			NSNumber *	-	readonly,copy,nonatomic	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	fa6cbf72a230c5a5
 property	c:objc(cs)MTRDeviceTypeRevision(py)typeInformation	-			MTRDeviceType *	-	readonly,copy,nonatomic	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	6741e4310551d8c0
-category	c:objc(ext)MTRDeviceTypeRevision	-	-		-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	5995784482e7f2db
+category	c:objc(ext)MTRDeviceTypeRevision	-	-		-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	76a5631242c71aa9
 conforms	-	MTRDeviceTypeRevision	NSSecureCoding		-	-	-	-	-	5934cd31595d3270
 interface	c:objc(cs)MTREndpointInfo	-			-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	b75681b76224c772
 super	-	MTREndpointInfo	NSObject		-	-	-	-	-	c9fcd3ddb2536ba9
@@ -32117,7 +32117,7 @@ method	c:objc(cs)MTRProductIdentity(cm)new	-			instancetype	-	-	*unavailable ios
 method	c:objc(cs)MTRProductIdentity(im)initWithVendorID:productID:	-			instancetype	NSNumber * vendorID | NSNumber * productID	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	1e79d155d9435fd2
 property	c:objc(cs)MTRProductIdentity(py)vendorID	-			NSNumber *	-	readonly,copy,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	f80cc3e932a59051
 property	c:objc(cs)MTRProductIdentity(py)productID	-			NSNumber *	-	readonly,copy,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	05ea2a7fe435a5f5
-category	c:objc(ext)MTRProductIdentity	-	-		-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	62256ce41dc4a4f1
+category	c:objc(ext)MTRProductIdentity	-	-		-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	1ccaa758cbe01f8b
 conforms	-	MTRProductIdentity	NSCopying		-	-	-	-	-	e17b5c3ef6ee5ab4
 conforms	-	MTRProductIdentity	NSSecureCoding		-	-	-	-	-	07cae27d619a33a3
 interface	c:objc(cs)MTRQRCodeSetupPayloadParser	-			-	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	28278938aa96a150
@@ -32188,7 +32188,7 @@ property	c:objc(cs)MTROptionalQRCodeInfo(py)type	-			MTROptionalQRCodeInfoType	-
 property	c:objc(cs)MTROptionalQRCodeInfo(py)tag	-			NSNumber *	-	readonly,copy,nonatomic	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	dcbc74c3f07b5293
 property	c:objc(cs)MTROptionalQRCodeInfo(py)integerValue	-			NSNumber *	-	readonly,copy,nonatomic	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	b6be224e0b6211af
 property	c:objc(cs)MTROptionalQRCodeInfo(py)stringValue	-			NSString *	-	readonly,copy,nonatomic	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	b204b48c5c9319dd
-category	c:objc(ext)MTROptionalQRCodeInfo	-	-		-	-	-	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	1856ba1821d2ee1c
+category	c:objc(ext)MTROptionalQRCodeInfo	-	-		-	-	-	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	f351ec9f339e737d
 conforms	-	MTROptionalQRCodeInfo	NSCopying		-	-	-	-	-	b3ac561bb65c05e7
 interface	c:objc(cs)MTRSetupPayload	-			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	ca158adda28806ac
 super	-	MTRSetupPayload	NSObject		-	-	-	-	-	8cd182e6a244ea3f
@@ -32215,7 +32215,7 @@ method	c:objc(cs)MTRSetupPayload(im)initWithSetupPasscode:discriminator:	-			ins
 method	c:objc(cs)MTRSetupPayload(im)manualEntryCode	-			NSString *	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	f07f7dd7ae6b966e
 method	c:objc(cs)MTRSetupPayload(im)qrCodeString	-			NSString *	-	-	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	c44fdf8f03b8191b
 method	c:objc(cs)MTRSetupPayload(cm)isValidSetupPasscode:	-			BOOL	NSNumber * setupPasscode	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	d7b93ce941fa4dc5
-category	c:objc(ext)MTRSetupPayload	-	-		-	-	-	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	506b68d358aa0f20
+category	c:objc(ext)MTRSetupPayload	-	-		-	-	-	ios=17.6/-/-/0,macos=14.6/-/-/0,tvos=17.6/-/-/0,watchos=10.6/-/-/0	-	50da881565b6e685
 conforms	-	MTRSetupPayload	NSCopying		-	-	-	-	-	2af56a8a4c81ad7f
 category	c:objc(cy)MTROptionalQRCodeInfo@Deprecated	-			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	ca53f5323967ea03
 method	c:objc(cs)MTROptionalQRCodeInfo(im)init	Deprecated			instancetype	-	-	ios=16.1/17.6/-/0,macos=13.0/14.6/-/0,tvos=16.1/17.6/-/0,watchos=9.1/10.6/-/0	-	fbb6ab89038c012e

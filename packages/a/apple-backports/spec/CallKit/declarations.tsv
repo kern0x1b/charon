@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 var	c:@CXErrorDomain	-			const NSErrorDomain	-	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	1d59ae6dd6f7ca9c
 var	c:@CXErrorDomainIncomingCall	-			const NSErrorDomain	-	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	602a847e1438191a
 var	c:@CXErrorDomainRequestTransaction	-			const NSErrorDomain	-	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	e0626e71988b743f

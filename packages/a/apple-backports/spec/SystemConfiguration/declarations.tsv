@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 function	c:@F@CNSetSupportedSSIDs	-			Boolean (CFArrayRef)	CFArrayRef ssidArray	-	ios=4.0/9.0/-/0,macos=10.8/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use Replaced by <NetworkExtension/NEHotspotHelper.h> instead	40d42648774ac934
 function	c:@F@CNMarkPortalOnline	-			Boolean (CFStringRef)	CFStringRef interfaceName	-	ios=4.0/9.0/-/0,macos=10.8/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use Replaced by <NetworkExtension/NEHotspotHelper.h> instead	a4c1cb683869f6ce
 function	c:@F@CNMarkPortalOffline	-			Boolean (CFStringRef)	CFStringRef interfaceName	-	ios=4.0/9.0/-/0,macos=10.8/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use Replaced by <NetworkExtension/NEHotspotHelper.h> instead	80d5db6103269d4a

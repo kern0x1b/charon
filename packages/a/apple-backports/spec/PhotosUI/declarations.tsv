@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 typedef	c:@T@PHLivePhotoBadgeOptions	-			enum PHLivePhotoBadgeOptions	-	-	ios=9.1/-/-/0,tvos=10/-/-/0	-	2015f1200d7da8bb
 enum	c:@E@PHLivePhotoBadgeOptions	-			NSUInteger	-	-	ios=9.1/-/-/0,tvos=10/-/-/0	-	e80f9f83c2ec06b5
 enumconst	c:@E@PHLivePhotoBadgeOptions@PHLivePhotoBadgeOptionsOverContent	PHLivePhotoBadgeOptions			-	-	-	ios=9.1/-/-/0,tvos=10/-/-/0	-	810fdb8c432b4d69

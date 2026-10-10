@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 var	c:@HKErrorDomain	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=2.0/-/-/0	-	b54b34ef58a88d53
 typedef	c:@T@HKErrorCode	-			enum HKErrorCode	-	-	-	-	c988ec457116ae01
 enum	c:@E@HKErrorCode	-			NSInteger	-	-	ios=8.0/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=2.0/-/-/0	-	1de9c78a007e4fb2

@@ -1,0 +1,2 @@
+# The reviewed usr/include exclusions of the fixture sweep (name, TAB, reason): the top-level modules the maps declare are swept unless listed.
+FixtureCExtra	a second top-level module of FixtureC.modulemap; the fixture sweeps FixtureC alone, as the sweep names its own modules

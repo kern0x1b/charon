@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 typedef	c:@T@ILMessageFilterAction	-			enum ILMessageFilterAction	-	-	-	-	08fc18613def98f2
 enum	c:@E@ILMessageFilterAction	-			NSInteger	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b2a16e008486c4d5
 enumconst	c:@E@ILMessageFilterAction@ILMessageFilterActionNone	ILMessageFilterAction			-	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b96a7f91b21d8d4e

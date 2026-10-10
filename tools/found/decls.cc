@@ -3,13 +3,17 @@
 // usage: decls --version | --target | --digest TEXT | --list
 //        decls [--doc] [--timeout SECONDS] <framework>
 // The SDK is IR_SDK. <framework> is a name --list prints: a framework of System/Library/Frameworks (a nested one is Outer/Inner), or a
-// usr/include module of the sweep (IR_USR_MODULES). decls resolves the framework's headers itself, from its module map, by the rule
+// usr/include module the sweep covers (IR_CONFIG's usr-modules.tsv). decls resolves the framework's headers itself, from its module map, by the rule
 // of ir.lua's sweep (module_headers below): the sweep and the doc mode share that one code path. A framework's headers become one
 // unsaved buffer of #import lines; a usr/include module is imported as the module its own map declares (-fmodule-map-file, -fmodules,
 // @import), so the module build compiles its headers as the SDK does. Nothing is written to disk. IR_RESOURCE, if set, is the
 // compiler's resource directory (default: libclang's).
 // A framework's own declarations are those under its Headers/; a usr/include module's are those written in the directories of its
 // headers. --target prints the target the rows are compiled for.
+// IR_CONFIG names the reviewed configuration folder (default tools/found/config, read from the working directory: decls runs from the
+// repository root, as ir.lua does). usr-modules.tsv leaves usr/include modules out of the sweep, each row with its reason; a row that no
+// module map declares, or a file that cannot be read, is an error. fallback.tsv lists the frameworks with no module-map header that are
+// read from their Headers/ folder (the umbrella header, else every header there); any other such framework is an error.
 //
 // --doc (the doc-time mode, for the doc generator): the same pass and the same keys, but the output is one row per declaration
 // with ten cells instead of the IR's rows: framework, kind, usr, container, name, side (the IR's own values), the parameter names
@@ -36,8 +40,10 @@
 #include <unistd.h>
 
 #include <algorithm>
+#include <cerrno>
 #include <cctype>
 #include <cstdio>
+#include <dlfcn.h>
 #include <cstdlib>
 #include <cstring>
 #include <filesystem>
@@ -47,6 +53,7 @@
 #include <set>
 #include <sstream>
 #include <string>
+#include <system_error>
 #include <vector>
 
 namespace {
@@ -82,15 +89,55 @@ std::string version(CXVersion v) {
 }
 
 // platform=introduced/deprecated/obsoleted/unavailable, for every platform clang has a record for.
-std::string availability(CXCursor c) {
+// The availability of a declaration as libclang reports it: the two flags, the two messages, and one record per platform. The records
+// are sized from the count clang reports (a first call gives the count; there is no fixed array, so none is dropped: review F24), and
+// they are disposed when this goes out of scope.
+struct PlatformAvailability {
   int always_deprecated = 0, always_unavailable = 0;
-  CXString deprecated_message, unavailable_message;
-  CXPlatformAvailability records[16];
-  int n = clang_getCursorPlatformAvailability(c, &always_deprecated, &deprecated_message, &always_unavailable,
-                                              &unavailable_message, records, 16);
-  clang_disposeString(deprecated_message);
-  clang_disposeString(unavailable_message);
-  int count = n < 16 ? n : 16;
+  std::string deprecated_message, unavailable_message;
+  std::vector<CXPlatformAvailability> records;
+  PlatformAvailability() = default;
+  PlatformAvailability(PlatformAvailability&& other) noexcept
+      : always_deprecated(other.always_deprecated), always_unavailable(other.always_unavailable),
+        deprecated_message(std::move(other.deprecated_message)), unavailable_message(std::move(other.unavailable_message)),
+        records(std::move(other.records)) {
+    other.records.clear();
+  }
+  PlatformAvailability(const PlatformAvailability&) = delete;
+  PlatformAvailability& operator=(const PlatformAvailability&) = delete;
+  ~PlatformAvailability() {
+    for (CXPlatformAvailability& r : records) clang_disposeCXPlatformAvailability(&r);
+  }
+};
+
+PlatformAvailability platform_availability(CXCursor c) {
+  PlatformAvailability out;
+  // one call with room for the usual records; a declaration with more is asked again with room for exactly the count it reports.
+  // (A call with no room reports a count that the filled array does not match, so the array is the one that is read.)
+  out.records.resize(64);
+  CXString deprecated, unavailable;
+  int n = clang_getCursorPlatformAvailability(c, &out.always_deprecated, &deprecated, &out.always_unavailable, &unavailable,
+                                              out.records.data(), (int)out.records.size());
+  out.deprecated_message = text(deprecated);
+  out.unavailable_message = text(unavailable);
+  if (n > (int)out.records.size()) {
+    for (CXPlatformAvailability& r : out.records) clang_disposeCXPlatformAvailability(&r);
+    out.records.assign((size_t)n, CXPlatformAvailability());
+    CXString deprecated2, unavailable2;
+    n = clang_getCursorPlatformAvailability(c, &out.always_deprecated, &deprecated2, &out.always_unavailable, &unavailable2,
+                                            out.records.data(), n);
+    clang_disposeString(deprecated2);
+    clang_disposeString(unavailable2);
+  }
+  out.records.resize(n > 0 ? (size_t)n : 0);
+  return out;
+}
+
+std::string availability(CXCursor c) {
+  PlatformAvailability pa = platform_availability(c);
+  const int always_deprecated = pa.always_deprecated, always_unavailable = pa.always_unavailable;
+  const std::vector<CXPlatformAvailability>& records = pa.records;
+  int count = (int)records.size();
   // the platforms in name order: each entry begins with its platform name and '=', which sorts as the name does
   std::vector<std::string> entries;
   for (int i = 0; i < count; ++i) {
@@ -99,7 +146,6 @@ std::string availability(CXCursor c) {
                       version(records[i].Deprecated) + "/" + version(records[i].Obsoleted) + "/" +
                       (records[i].Unavailable ? "1" : "0"));
   }
-  for (int i = 0; i < count; ++i) clang_disposeCXPlatformAvailability(&records[i]);
   std::sort(entries.begin(), entries.end());
   std::string out;
   if (always_unavailable) out += "*unavailable";
@@ -112,22 +158,16 @@ std::string availability(CXCursor c) {
 
 // The iOS introduction of a declaration as major * 10000 + minor * 100 + subminor; 0 when it names no iOS version.
 int introduced_ios(CXCursor c) {
-  int always_deprecated = 0, always_unavailable = 0;
-  CXString deprecated_message, unavailable_message;
-  CXPlatformAvailability records[16];
-  int n = clang_getCursorPlatformAvailability(c, &always_deprecated, &deprecated_message, &always_unavailable,
-                                              &unavailable_message, records, 16);
-  clang_disposeString(deprecated_message);
-  clang_disposeString(unavailable_message);
+  PlatformAvailability pa = platform_availability(c);
+  const std::vector<CXPlatformAvailability>& records = pa.records;
   int intro = 0;
-  int count = n < 16 ? n : 16;
+  int count = (int)records.size();
   for (int i = 0; i < count; ++i) {
     const CXVersion& v = records[i].Introduced;
     if (std::strcmp(clang_getCString(records[i].Platform), "ios") == 0 && v.Major != -1) {
       intro = v.Major * 10000 + (v.Minor < 0 ? 0 : v.Minor) * 100 + (v.Subminor < 0 ? 0 : v.Subminor);
     }
   }
-  for (int i = 0; i < count; ++i) clang_disposeCXPlatformAvailability(&records[i]);
   return intro;
 }
 
@@ -303,18 +343,12 @@ std::string written_deprecation(const std::vector<Token>& toks) {
 
 // The texts of the availability attributes, for the message column: "deprecated: TEXT" and "unavailable: TEXT", joined by " | ".
 std::string message_of(CXTranslationUnit tu, CXCursor c) {
-  int always_deprecated = 0, always_unavailable = 0;
-  CXString deprecated_message, unavailable_message;
-  CXPlatformAvailability records[16];
-  int n = clang_getCursorPlatformAvailability(c, &always_deprecated, &deprecated_message, &always_unavailable,
-                                              &unavailable_message, records, 16);
-  int count = n < 16 ? n : 16;
-  for (int i = 0; i < count; ++i) clang_disposeCXPlatformAvailability(&records[i]);
+  PlatformAvailability pa = platform_availability(c);
   std::string out;
-  std::string deprecated = text(deprecated_message);
+  std::string deprecated = pa.deprecated_message;
   std::string written = written_deprecation(tokens_of(tu, c));
   if (!written.empty()) deprecated = written;
-  std::string unavailable = text(unavailable_message);
+  std::string unavailable = pa.unavailable_message;
   if (!deprecated.empty()) out += "deprecated: " + deprecated;
   if (!unavailable.empty()) out += std::string(out.empty() ? "" : " | ") + "unavailable: " + unavailable;
   return cell(out);
@@ -432,11 +466,14 @@ std::string digest16(const std::string& s) {
 
 // The declaration hash covers what the declaration says and not where it is written: no header, line, availability or decl text.
 // Fields are joined with the unit separator (0x1f), which no field contains.
+// The fields are the cells as the IR writes them (write_row: an empty cell is "-", a line break is a space), so a reader who recomputes
+// the hash from the printed cells gets the same value (review F9).
 std::string declaration_hash(const Row& r) {
-  const char* fields[] = {r.kind.c_str(), r.usr.c_str(), r.container.c_str(), r.name.c_str(), r.side.c_str(), r.type.c_str(),
-                          r.params.c_str(), r.nullab.c_str(), r.attrs.c_str(), r.value.c_str()};
+  const std::string fields[] = {r.kind,           filled(cell(r.usr)),  filled(cell(r.container)), filled(cell(r.name)),
+                                r.side,           filled(cell(r.type)), filled(cell(r.params)),    r.nullab,
+                                filled(cell(r.attrs)), filled(cell(r.value))};
   std::string canonical;
-  for (const char* f : fields) {
+  for (const std::string& f : fields) {
     canonical += f;
     canonical += '\x1f';
   }
@@ -938,7 +975,7 @@ void usage() {
   std::fprintf(stderr,
                "usage: decls --version | --target | --digest TEXT | --list\n"
                "       decls [--doc] [--timeout SECONDS] <framework>\n"
-               "The SDK is IR_SDK. IR_USR_MODULES (a comma list) overrides the usr/include modules of the sweep. IR_RESOURCE, if set,\n"
+               "The SDK is IR_SDK. IR_CONFIG (default tools/found/config) names the reviewed usr-modules.tsv and fallback.tsv. IR_RESOURCE, if set,\n"
                "is the compiler's resource directory; by default libclang finds its own.\n");
 }
 
@@ -947,12 +984,6 @@ void usage() {
 // The frameworks the sweep covers, and the rule that gives each one's headers. The sweep (ir.lua) and the doc mode (--doc) both
 // resolve a framework here, so the rule is written once.
 namespace fs = std::filesystem;
-
-// The target the rows are compiled for: the iOS arm64 target the spec is written against (ir.lua writes it in the meta row).
-const char* const kTarget = "arm64-apple-ios26.2";
-
-// The usr/include modules of the sweep (ruling of 2026-10-10). IR_USR_MODULES, a comma list, overrides it.
-const char* const kUsrModules = "AppleArchive,Dispatch,Spatial,XPC,hvf,os,simd";
 
 struct Framework {
   std::string name;  // as the rows carry it: a nested framework is Outer/Inner
@@ -972,21 +1003,45 @@ std::string trim_space(const std::string& s) {
   return s.substr(begin, end - begin + 1);
 }
 
+// A failure to read the SDK's files is an error that names the path (review F11): a shorter framework list or a missing module map must
+// not pass as a result. A path that does not exist is not a failure; the callers ask for that case.
+[[noreturn]] void fail_path(const fs::path& p, const char* what, const std::error_code& ec) {
+  std::fprintf(stderr, "decls: %s: %s%s%s\n", what, p.string().c_str(), ec ? ": " : "", ec ? ec.message().c_str() : "");
+  std::exit(2);
+}
+
+bool absent(const std::error_code& ec) {
+  return ec == std::errc::no_such_file_or_directory || ec == std::errc::not_a_directory;
+}
+
 bool is_file(const fs::path& p) {
   std::error_code ec;
-  return fs::is_regular_file(p, ec);
+  bool result = fs::is_regular_file(p, ec);
+  if (ec && !absent(ec)) fail_path(p, "cannot read the file status of", ec);
+  return result;
 }
 
 bool is_dir(const fs::path& p) {
   std::error_code ec;
-  return fs::is_directory(p, ec);
+  bool result = fs::is_directory(p, ec);
+  if (ec && !absent(ec)) fail_path(p, "cannot read the file status of", ec);
+  return result;
 }
 
 // The entries of a folder, sorted by path (none when the folder does not exist).
 std::vector<fs::path> entries_of(const fs::path& dir) {
   std::vector<fs::path> out;
   std::error_code ec;
-  for (fs::directory_iterator it(dir, ec), end; !ec && it != end; it.increment(ec)) out.push_back(it->path());
+  if (!fs::exists(dir, ec)) {
+    if (ec && !absent(ec)) fail_path(dir, "cannot read the folder", ec);
+    return out;  // a folder that is not there has no entries
+  }
+  fs::directory_iterator it(dir, ec);
+  if (ec) fail_path(dir, "cannot read the folder", ec);
+  for (fs::directory_iterator end; it != end; it.increment(ec)) {
+    if (ec) fail_path(dir, "cannot read the folder", ec);
+    out.push_back(it->path());
+  }
   std::sort(out.begin(), out.end());
   return out;
 }
@@ -1010,10 +1065,175 @@ void frameworks_in(const fs::path& dir, const std::string& outer, std::vector<Fr
 }
 
 // The name a module map line declares as a top-level module (the line starts at its first column with module or explicit module), or "".
+// The text of a file. A file that cannot be opened or read is an error that names it (review F11).
+std::string text_of(const fs::path& file) {
+  std::ifstream in(file, std::ios::binary);
+  if (!in) fail_path(file, "cannot open", std::error_code(errno, std::generic_category()));
+  std::stringstream all;
+  all << in.rdbuf();
+  if (in.bad()) fail_path(file, "cannot read", std::error_code(errno, std::generic_category()));
+  return all.str();
+}
+
+// The first string value of a JSON key in the text, or "" when the key is not there.
+std::string json_string(const std::string& json, const char* key) {
+  const std::regex value(std::string("\"") + key + "\"\\s*:\\s*\"([^\"]*)\"");
+  std::smatch m;
+  return std::regex_search(json, m, value) ? m[1].str() : std::string();
+}
+
+// The target the rows are compiled for, derived from the SDK's own record (SDKSettings.json, review F10): arm64, the one architecture
+// the spec is written for; the vendor and the system of the iphoneos target; and the SDK's deployment target, which is its version. A
+// record without those keys is an error that names it.
+std::string target_of(const fs::path& sdk) {
+  const fs::path record = sdk / "SDKSettings.json";
+  const std::string json = text_of(record);
+  const std::string version = json_string(json, "DefaultDeploymentTarget");
+  const std::string vendor = json_string(json, "LLVMTargetTripleVendor");
+  const std::string sys_name = json_string(json, "LLVMTargetTripleSys");
+  if (version.empty() || vendor.empty() || sys_name.empty()) {
+    std::fprintf(stderr, "decls: %s has no DefaultDeploymentTarget and LLVMTargetTriple keys\n", record.string().c_str());
+    std::exit(2);
+  }
+  return "arm64-" + vendor + "-" + sys_name + version;
+}
+
+// The SHA-256 of the libclang this process runs: the image that holds a libclang function, read through the file it was loaded from
+// (only the digest is printed; the path is not part of any output). Pins the library the shard headers record (review F8).
+std::string libclang_sha256() {
+  Dl_info info;
+  if (dladdr(reinterpret_cast<const void*>(&clang_getClangVersion), &info) == 0 || info.dli_fname == nullptr) {
+    std::fprintf(stderr, "decls: cannot find the libclang image\n");
+    std::exit(2);
+  }
+  const fs::path image(info.dli_fname);
+  std::ifstream in(image, std::ios::binary);
+  if (!in) fail_path(image, "cannot open the libclang image", std::error_code(errno, std::generic_category()));
+  CC_SHA256_CTX ctx;
+  CC_SHA256_Init(&ctx);
+  std::vector<char> buffer(1 << 20);
+  while (in) {
+    in.read(buffer.data(), (std::streamsize)buffer.size());
+    CC_SHA256_Update(&ctx, buffer.data(), (CC_LONG)in.gcount());
+  }
+  if (in.bad()) fail_path(image, "cannot read the libclang image", std::error_code(errno, std::generic_category()));
+  unsigned char digest[CC_SHA256_DIGEST_LENGTH];
+  CC_SHA256_Final(digest, &ctx);
+  std::string hex;
+  char pair[3];
+  for (unsigned char byte : digest) {
+    std::snprintf(pair, sizeof pair, "%02x", byte);
+    hex += pair;
+  }
+  return hex;
+}
+
+// The enum values this extractor reads (CXCursorKind, CXTypeKind) are numbers from the headers it was built with. Each must name the same
+// kind in the loaded library, or the rows would be decoded wrongly: checked on every start, so the skew between the package's headers and
+// the host's libclang is checked, not assumed (review F8). Returns false with the first mismatch.
+bool check_enum_values(std::string* failure) {
+  struct Kind {
+    unsigned value;
+    const char* name;
+    bool type;
+  };
+  static const Kind kinds[] = {
+      {CXCursor_ObjCInterfaceDecl, "ObjCInterfaceDecl", false},
+      {CXCursor_ObjCCategoryDecl, "ObjCCategoryDecl", false},
+      {CXCursor_ObjCProtocolDecl, "ObjCProtocolDecl", false},
+      {CXCursor_ObjCInstanceMethodDecl, "ObjCInstanceMethodDecl", false},
+      {CXCursor_ObjCClassMethodDecl, "ObjCClassMethodDecl", false},
+      {CXCursor_ObjCPropertyDecl, "ObjCPropertyDecl", false},
+      {CXCursor_ObjCSuperClassRef, "ObjCSuperClassRef", false},
+      {CXCursor_ObjCProtocolRef, "ObjCProtocolRef", false},
+      {CXCursor_ObjCClassRef, "ObjCClassRef", false},
+      {CXCursor_FunctionDecl, "FunctionDecl", false},
+      {CXCursor_VarDecl, "VarDecl", false},
+      {CXCursor_FieldDecl, "FieldDecl", false},
+      {CXCursor_TypedefDecl, "TypedefDecl", false},
+      {CXCursor_EnumDecl, "EnumDecl", false},
+      {CXCursor_EnumConstantDecl, "EnumConstantDecl", false},
+      {CXCursor_StructDecl, "StructDecl", false},
+      {CXCursor_UnionDecl, "UnionDecl", false},
+      {CXCursor_MacroExpansion, "macro expansion", false},
+      {CXType_Attributed, "Attributed", true},
+      {CXType_Unexposed, "Unexposed", true},
+      {CXType_BlockPointer, "BlockPointer", true},
+  };
+  for (const Kind& k : kinds) {
+    std::string got = k.type ? text(clang_getTypeKindSpelling((CXTypeKind)k.value)) : text(clang_getCursorKindSpelling((CXCursorKind)k.value));
+    if (got != k.name) {
+      *failure = std::string("the loaded libclang names enum value ") + std::to_string(k.value) + " '" + got + "', the headers it was " +
+                 "built with name it '" + k.name + "'";
+      return false;
+    }
+  }
+  return true;
+}
+
+// The lines of a text file. A file that cannot be opened or read is an error that names it (review F11): a module map that is not read
+// must not look like a map that declares nothing.
+std::vector<std::string> lines_of(const fs::path& file) {
+  std::ifstream in(file);
+  if (!in) fail_path(file, "cannot open", std::error_code(errno, std::generic_category()));
+  std::vector<std::string> out;
+  for (std::string line; std::getline(in, line);) out.push_back(line);
+  if (in.bad()) fail_path(file, "cannot read", std::error_code(errno, std::generic_category()));
+  return out;
+}
+
 std::string declared_module(const std::string& line) {
   static const std::regex declaration(R"re(^(?:explicit\s+)?module\s+([A-Za-z0-9_]+))re");
   std::smatch m;
   return std::regex_search(line, m, declaration) ? m[1].str() : std::string();
+}
+
+// The reviewed configuration (review F10): IR_CONFIG names its folder, by default tools/found/config. usr-modules.tsv leaves usr/include
+// modules out of the sweep: a row is a name, a TAB and the reason.
+fs::path config_file(const char* name) {
+  const char* env = std::getenv("IR_CONFIG");
+  return (env != nullptr ? fs::path(env) : fs::path("tools/found/config")) / name;
+}
+
+// The rows of a config file, name to reason. A row is a name, a TAB and a reason, both non-empty; a blank line and a # line are skipped,
+// and a name listed twice is an error. A file that cannot be read is an error that names its path (fail_path, review F11).
+std::map<std::string, std::string> config_rows(const fs::path& file) {
+  std::map<std::string, std::string> rows;
+  size_t number = 0;
+  for (const std::string& line : lines_of(file)) {
+    number += 1;
+    std::string text = trim_space(line);
+    if (text.empty() || text[0] == '#') continue;
+    size_t tab = line.find('\t');
+    std::string name = tab == std::string::npos ? "" : trim_space(line.substr(0, tab));
+    std::string reason = tab == std::string::npos ? "" : trim_space(line.substr(tab + 1));
+    if (name.empty() || reason.empty()) {
+      std::fprintf(stderr, "decls: %s:%zu: a row is a name, a TAB and a reason\n", file.string().c_str(), number);
+      std::exit(2);
+    }
+    if (!rows.emplace(name, reason).second) {
+      std::fprintf(stderr, "decls: %s:%zu: %s is listed twice\n", file.string().c_str(), number, name.c_str());
+      std::exit(2);
+    }
+  }
+  return rows;
+}
+
+// The top-level modules the usr/include module maps declare: a map is usr/include/<name>.modulemap or usr/include/<dir>/module.modulemap,
+// as usr_module_map reads them. The sweep covers each of them unless usr-modules.tsv leaves it out.
+std::set<std::string> usr_modules_declared(const fs::path& include) {
+  std::set<std::string> names;
+  auto declared_in = [&names](const fs::path& map) {
+    for (const std::string& line : lines_of(map)) {
+      std::string name = declared_module(line);
+      if (!name.empty()) names.insert(name);
+    }
+  };
+  for (const fs::path& p : entries_of(include)) {
+    if (p.extension() == ".modulemap" && is_file(p)) declared_in(p);
+    if (is_dir(p) && is_file(p / "module.modulemap")) declared_in(p / "module.modulemap");
+  }
+  return names;
 }
 
 // The module map of a usr/include module: the one map (usr/include/*.modulemap, or usr/include/<dir>/module.modulemap) that declares
@@ -1026,8 +1246,7 @@ fs::path usr_module_map(const fs::path& include, const std::string& name, std::s
   }
   std::vector<fs::path> found;
   for (const fs::path& file : candidates) {
-    std::ifstream in(file);
-    for (std::string line; std::getline(in, line);) {
+    for (const std::string& line : lines_of(file)) {
       if (declared_module(line) == name) {
         found.push_back(file);
         break;
@@ -1062,11 +1281,10 @@ std::vector<std::string> module_headers(const fs::path& map, const fs::path& hea
     if (is_named) named.insert(file);
     if (seen.insert(file).second) headers.push_back(file);
   };
-  std::ifstream in(map);
   int depth = 0;
   bool skipping_set = false;
   int skip_at = 0;
-  for (std::string line; std::getline(in, line);) {
+  for (const std::string& line : lines_of(map)) {
     std::string code = trim_space(line.substr(0, line.find("//")));
     int opens = (int)std::count(code.begin(), code.end(), '{');
     int closes = (int)std::count(code.begin(), code.end(), '}');
@@ -1091,7 +1309,11 @@ std::vector<std::string> module_headers(const fs::path& map, const fs::path& hea
       } else if (std::regex_search(code, m, umbrella_dir)) {
         std::vector<std::string> files;
         std::error_code ec;
-        for (fs::recursive_directory_iterator it(dir_base / m[1].str(), ec), end; !ec && it != end; it.increment(ec)) {
+        const fs::path umbrella = dir_base / m[1].str();
+        fs::recursive_directory_iterator it(umbrella, ec), end;
+        if (ec) fail_path(umbrella, "cannot read the umbrella directory", ec);
+        for (; it != end; it.increment(ec)) {
+          if (ec) fail_path(umbrella, "cannot read the umbrella directory", ec);
           if (it->path().extension() == ".h" && is_file(it->path())) files.push_back(normal(it->path()));
         }
         std::sort(files.begin(), files.end());
@@ -1109,46 +1331,75 @@ std::vector<std::string> module_headers(const fs::path& map, const fs::path& hea
   return out;
 }
 
-// The headers a framework is parsed from: its module map's list, else its umbrella header, else its Headers/ files; and the reason it has
-// none. A usr/include module has its map's list and nothing else.
-std::vector<std::string> headers_of(const Framework& f, std::string* reason) {
+// The headers a framework is parsed from: its module map's list. A framework with no module-map header reads its umbrella header, else
+// every header of its Headers/ folder, but only when fallback.tsv lists it (review F29); a listed one that has a module-map header, or
+// no header to read, is a stale row. A usr/include module has its map's list and nothing else. When there are none, *reason says why.
+bool headers_of(const Framework& f, const std::map<std::string, std::string>& fallback, const fs::path& fallback_config,
+                std::vector<std::string>* out, std::string* reason, std::string* error) {
   if (f.usr) {
-    std::vector<std::string> listed = module_headers(f.map, f.map.parent_path(), f.map.parent_path(), f.name);
-    if (!listed.empty()) return listed;
-    *reason = "no module map header";
-    return {};
+    *out = module_headers(f.map, f.map.parent_path(), f.map.parent_path(), f.name);
+    if (out->empty()) *reason = "no module map header";
+    return true;
   }
-  std::vector<std::string> listed = module_headers(f.root / "Modules" / "module.modulemap", f.root / "Headers", f.root, "");
-  if (!listed.empty()) return listed;
+  *out = module_headers(f.root / "Modules" / "module.modulemap", f.root / "Headers", f.root, "");
+  const bool listed = fallback.count(f.name) != 0;
+  if (!out->empty()) {
+    if (listed) {
+      *error = fallback_config.string() + ": " + f.name + " is listed, but it has a module map header (the row is stale)";
+      return false;
+    }
+    return true;
+  }
+  std::vector<std::string> read;
   fs::path umbrella = f.root / "Headers" / (f.base + ".h");
-  if (is_file(umbrella)) return {normal(umbrella)};
-  std::vector<std::string> all;
-  for (const fs::path& p : entries_of(f.root / "Headers")) {
-    if (p.extension() == ".h" && is_file(p)) all.push_back(normal(p));
-  }
-  if (!all.empty()) return all;
-  for (const fs::path& p : entries_of(f.root / "Modules")) {
-    if (p.extension() == ".swiftmodule" && is_dir(p)) {
-      *reason = "no Objective-C or C header; Swift interface only";
-      return {};
+  if (is_file(umbrella)) {
+    read = {normal(umbrella)};
+  } else {
+    for (const fs::path& p : entries_of(f.root / "Headers")) {
+      if (p.extension() == ".h" && is_file(p)) read.push_back(normal(p));
     }
   }
-  *reason = "no public header in Headers/ and no module map header";
-  return {};
+  if (read.empty()) {
+    if (listed) {
+      *error = fallback_config.string() + ": " + f.name + " is listed, but it has no header to read (the row is stale)";
+      return false;
+    }
+    for (const fs::path& p : entries_of(f.root / "Modules")) {
+      if (p.extension() == ".swiftmodule" && is_dir(p)) {
+        *reason = "no Objective-C or C header; Swift interface only";
+        return true;
+      }
+    }
+    *reason = "no public header in Headers/ and no module map header";
+    return true;
+  }
+  if (!listed) {
+    *error = f.name + " has no module map header, so its Headers/ folder is read only when " + fallback_config.string() + " lists it";
+    return false;
+  }
+  *out = read;
+  return true;
 }
 
-// The frameworks the sweep covers, sorted by name: System/Library/Frameworks with those nested in each, and the usr/include modules of
-// IR_USR_MODULES (a comma list; the default is kUsrModules). Two frameworks of one name, or a module with no module map, are errors.
-bool discover(const std::string& sdk, std::vector<Framework>* out, std::string* error) {
+// The frameworks the sweep covers, sorted by name: System/Library/Frameworks with those nested in each, and the usr/include modules the
+// maps declare less the ones usr-modules.tsv leaves out. Two frameworks of one name, or an exclusion that no map declares, are errors.
+bool discover(const std::string& sdk, const fs::path& usr_config, const std::map<std::string, std::string>& excluded,
+              std::vector<Framework>* out, std::string* error) {
   frameworks_in(fs::path(sdk) / "System" / "Library" / "Frameworks", "", out);
-  const char* env = std::getenv("IR_USR_MODULES");
-  std::stringstream names(env != nullptr ? env : kUsrModules);
-  for (std::string name; std::getline(names, name, ',');) {
-    if (name.empty()) continue;
+  const fs::path include = fs::path(sdk) / "usr" / "include";
+  const std::set<std::string> declared = usr_modules_declared(include);
+  for (const auto& row : excluded) {
+    if (declared.count(row.first) == 0) {
+      *error = usr_config.string() + ": " + row.first + " is left out, but no usr/include module map declares it";
+      return false;
+    }
+  }
+  for (const std::string& name : declared) {
+    if (excluded.count(name) != 0) continue;
     Framework f;
     f.name = name;
     f.base = name;
-    f.root = fs::path(sdk) / "usr" / "include";
+    f.root = include;
     f.usr = true;
     out->push_back(f);  // its module map is found when it is the framework asked for (main), not for every listing
   }
@@ -1174,8 +1425,17 @@ void census_row(Context& ctx, const char* sdk, CXTranslationUnit tu) {
 }
 
 int main(int argc, char** argv) {
+  // the identity the shard headers record: the libclang version, the SHA-256 of the dylib that runs, and (when IR_SDK names the SDK) the
+  // target derived from the SDK (review F8, F10); the enum values are checked first
   if (argc == 2 && std::strcmp(argv[1], "--version") == 0) {
-    std::printf("%s\n", text(clang_getClangVersion()).c_str());
+    std::string failure;
+    if (!check_enum_values(&failure)) {
+      std::fprintf(stderr, "decls: %s\n", failure.c_str());
+      return 2;
+    }
+    std::printf("%s dylib-sha256=%s", text(clang_getClangVersion()).c_str(), libclang_sha256().c_str());
+    if (const char* sdk_env = std::getenv("IR_SDK")) std::printf(" target=%s", target_of(fs::absolute(sdk_env)).c_str());
+    std::printf("\n");
     return 0;
   }
   // the hash of one text, as the availability hash is computed: ir.lua hashes the availability it merges with this
@@ -1184,7 +1444,12 @@ int main(int argc, char** argv) {
     return 0;
   }
   if (argc == 2 && std::strcmp(argv[1], "--target") == 0) {
-    std::printf("%s\n", kTarget);
+    const char* sdk_env = std::getenv("IR_SDK");
+    if (sdk_env == nullptr) {
+      std::fprintf(stderr, "decls: --target needs IR_SDK (the target is the SDK's)\n");
+      return 2;
+    }
+    std::printf("%s\n", target_of(fs::absolute(sdk_env)).c_str());
     return 0;
   }
   // the flags, in any order: --doc (the doc rows), --list (the frameworks), --timeout SECONDS
@@ -1212,9 +1477,21 @@ int main(int argc, char** argv) {
   const std::string sdk = fs::absolute(sdk_env).string();
   std::vector<Framework> frameworks;
   std::string error;
-  if (!discover(sdk, &frameworks, &error)) {
+  const fs::path usr_config = config_file("usr-modules.tsv");
+  if (!discover(sdk, usr_config, config_rows(usr_config), &frameworks, &error)) {
     std::fprintf(stderr, "decls: %s\n", error.c_str());
     return 2;
+  }
+  const fs::path fallback_config = config_file("fallback.tsv");
+  const std::map<std::string, std::string> fallback = config_rows(fallback_config);
+  for (const auto& row : fallback) {
+    bool known = false;
+    for (const Framework& f : frameworks) known = known || (!f.usr && f.name == row.first);
+    if (!known) {
+      std::fprintf(stderr, "decls: %s: %s is listed, but the SDK has no framework of that name (the row is stale)\n",
+                   fallback_config.string().c_str(), row.first.c_str());
+      return 2;
+    }
   }
   if (list) {
     for (const Framework& f : frameworks) std::printf("%s\t%s\n", f.name.c_str(), f.root.string().c_str());
@@ -1242,7 +1519,11 @@ int main(int argc, char** argv) {
       return 2;
     }
   }
-  std::vector<std::string> headers = headers_of(chosen, &reason);
+  std::vector<std::string> headers;
+  if (!headers_of(chosen, fallback, fallback_config, &headers, &reason, &error)) {
+    std::fprintf(stderr, "decls: %s\n", error.c_str());
+    return 2;
+  }
   Context ctx;
   ctx.doc = doc;
   ctx.framework = name;
@@ -1273,7 +1554,8 @@ int main(int argc, char** argv) {
     for (const std::string& h : headers) imports += "#import \"" + h + "\"\n";
   }
   CXUnsavedFile unsaved = {"charon-module.m", imports.c_str(), (unsigned long)imports.size()};
-  std::vector<const char*> args = {"-x", "objective-c", "-target", kTarget, "-isysroot", sdk.c_str()};
+  const std::string target = target_of(fs::path(sdk));
+  std::vector<const char*> args = {"-x", "objective-c", "-target", target.c_str(), "-isysroot", sdk.c_str()};
   // the module's own map is the one decls resolved, so the compiler is given that file, not a search of the SDK's maps
   std::string module_map_arg = framework->usr ? "-fmodule-map-file=" + chosen.map.string() : std::string();
   if (framework->usr) {
@@ -1297,6 +1579,7 @@ int main(int argc, char** argv) {
       &tu);
   if (code != CXError_Success || !tu) {
     std::fprintf(stderr, "decls: parse failed for %s (code %d)\n", name.c_str(), (int)code);
+    clang_disposeIndex(index);  // every exit releases the index (review F23)
     return 1;
   }
   ctx.tu = tu;

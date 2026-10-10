@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 interface	c:objc(cs)CKAsset	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	f19beb623c581f4c
 super	-	CKAsset	NSObject		-	-	-	-	-	cd0e9a2c3107b038
 method	c:objc(cs)CKAsset(im)init	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	95dc920158be7c85

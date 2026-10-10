@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 var	c:@NSReadAccessURLDocumentOption	-			const NSAttributedStringDocumentReadingOptionKey	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	5e28af31e9409dae
 typedef	c:@T@NSAttributedStringCompletionHandler	-			void ((^))(NSAttributedString *, NSDictionary<NSAttributedStringDocumentAttributeKey,id> *, NSError *)	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	5530694e16317f66
 category	c:objc(cy)NSAttributedString@NSAttributedStringWebKitAdditions	-			-	-	-	ios=3.2/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	199d36663f1d06b8

@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 var	c:@CBAdvertisementDataLocalNameKey	-			NSString *const	-	-	-	-	0203140e817e16d6
 var	c:@CBAdvertisementDataTxPowerLevelKey	-			NSString *const	-	-	-	-	6994c3d185bf156a
 var	c:@CBAdvertisementDataServiceUUIDsKey	-			NSString *const	-	-	-	-	7baf844dc1678d67

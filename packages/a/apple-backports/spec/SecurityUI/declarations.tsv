@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 interface	c:objc(cs)SFCertificatePresentation	-			-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	ecd6ec0da87057ff
 super	-	SFCertificatePresentation	NSObject		-	-	-	-	-	189d3d599b43f44c
 method	c:objc(cs)SFCertificatePresentation(im)initWithTrust:	-			instancetype	SecTrustRef trust	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	f6ff79ed2ff9f762

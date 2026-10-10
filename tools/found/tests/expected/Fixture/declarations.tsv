@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=sdk	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.4	sdk=sdk	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 function	c:@F@FXSubtract	-			int (int, int)	int a | int b	-	-	-	49740040529ed9bb
 typedef	c:Repeat.h@T@FXCount	-			int	-	-	-	-	1f7328e81f8a9e5e
 function	c:@F@FXRun	-			void (int)	int total	-	-	-	0020c5ef8e076e6b
@@ -22,6 +22,7 @@ method	c:objc(cs)FXMacroBox(im)macroReturn	-			FXStringRef	-	-	-	-	280b98793114a
 method	c:objc(cs)FXMacroBox(im)macroTake:	-			void	const char * value	-	-	-	d01c2a3f6b9fc834
 typedef	c:Repeat.h@T@FXBlock	-			id ((^))(int)	-	-	ios=16.0/-/-/0	-	0f378803a3e13b38
 function	c:@F@FXHalve	-			int (int)	int value	-	-	-	df46b5f8d4feaea8
+function	c:@F@FXManyPlatforms	-			int (void)	-	-	bridgeos=1.0/-/-/0,driverkit=1.0/-/-/0,ios=1.0/-/-/0,ios_app_extension=1.0/-/-/0,maccatalyst=1.0/-/-/0,maccatalyst_app_extension=1.0/-/-/0,macos=1.0/-/-/0,macos_app_extension=1.0/-/-/0,tvos=1.0/-/-/0,tvos_app_extension=1.0/-/-/0,watchos=1.0/-/-/0,watchos_app_extension=1.0/-/-/0,xros=1.0/-/-/0,xros_app_extension=1.0/-/-/0	-	ec0a2fe22235c24a
 var	c:@FXScale	-			const double	-	-	-	-	70e1ccb0f2967fb8
 struct	c:@S@FXPoint	-			-	-	-	-	-	79ac717304052e6e
 field	c:@S@FXPoint@FI@x	FXPoint			double	-	-	-	-	d57c6c524cc3877a
@@ -40,13 +41,13 @@ property	c:objc(cs)FXWidget(py)enabled	-			_Bool	-	readonly,nonatomic,getter=isE
 property	c:objc(cs)FXWidget(cpy)label	-			id	-	copy,nonatomic,class	-	-	b49c765f988436ce
 method	c:objc(cs)FXWidget(cm)widgetNamed:	-			instancetype	id name	-	ios=16.0/-/-/0	-	951adc7ea4238d0c
 method	c:objc(cs)FXWidget(im)init	-			instancetype	-	-	*unavailable	-	36eb21001b5d4408
-category	c:objc(ext)FXWidget	-	-		-	-	-	-	-	2d199e471c75a539
+category	c:objc(ext)FXWidget	-	-		-	-	-	-	-	67f23112573e8ec6
 conforms	-	FXWidget	FXSource		-	-	-	-	-	8e1428223c764207
 category	c:objc(cy)FXWidget@Extras	-			-	-	-	-	-	39fe4cee6a15a9f7
 method	c:objc(cs)FXWidget(im)extraAction	Extras			void	-	-	-	-	fd4bd3a3406bc2c7
 interface	c:objc(cs)FXLegacy	-			-	-	-	ios=14.0/-/-/0	-	236718cedc83a3bb
 method	c:objc(cs)FXLegacy(im)old	-			void	-	-	ios=16.0/-/-/0	-	a5563db05f86525d
 method	c:objc(cs)FXLegacy(im)tweak	-			void	-	-	ios=14.0/-/-/0	-	9bd075e036e7bd59
-category	c:objc(ext)FXLegacy	-	-		-	-	-	ios=14.0/-/-/0	-	2d1fa164a3a5f01f
+category	c:objc(ext)FXLegacy	-	-		-	-	-	ios=14.0/-/-/0	-	988f1eaceef9e3b9
 function	c:@F@FXOld	-			void (void)	-	-	ios=2.0/9.0/-/0	deprecated: Use newWay	067690961a858a55
 function	c:@F@FXGone	-			void (void)	-	-	*unavailable	unavailable: removed in 2.0	8fa92eb3a8eba839

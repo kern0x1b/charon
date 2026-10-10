@@ -1,0 +1,2 @@
+# frameworks with no module-map header that may be read from Headers/*.h (name, TAB, reason).
+Plain	the fixture framework with no module map: its Headers/ folder is its public header set

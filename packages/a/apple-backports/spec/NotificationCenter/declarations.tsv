@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 typedef	c:@T@NCWidgetDisplayMode	-			enum NCWidgetDisplayMode	-	-	-	-	e03a96e2a8e58ef3
 enum	c:@E@NCWidgetDisplayMode	-			NSInteger	-	-	ios=10.0/14.0/-/0	-	258cfe71248d4417
 enumconst	c:@E@NCWidgetDisplayMode@NCWidgetDisplayModeCompact	NCWidgetDisplayMode			-	-	-	ios=10.0/14.0/-/0	-	ba774437d405c158

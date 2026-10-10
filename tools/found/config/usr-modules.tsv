@@ -1,0 +1,84 @@
+# The usr/include modules the sweep leaves out (review F10): the top-level modules the usr/include module maps declare are swept unless
+# listed here. Each row is a name, a TAB and the reason it is left out; a row that no map declares is an error (decls).
+# The sweep covers the seven of the ruling of 2026-10-10 (class D): AppleArchive, Dispatch, Spatial, XPC, hvf, os, simd.
+AppleTextureEncoder	the texture encoder library's C header (AppleTextureEncoder.modulemap); not one of the ruling's seven
+CommonCrypto	the CommonCrypto C API (CommonCrypto/module.modulemap); Security.framework is swept, CommonCrypto is not one of the seven
+Compression	the compression library's C API (compression.modulemap, compression.h); not one of the ruling's seven
+Darwin	the Darwin umbrella of the BSD headers (Darwin.modulemap, first header bitstring.h); not one of the ruling's seven
+DispatchIntrospection	the introspection hooks of libdispatch (dispatch/introspection.h), a second module of dispatch.modulemap; Dispatch itself is one of the seven
+ICU	the ICU Unicode library's C headers (unicode.modulemap, first header unicode/uconfig.h); not one of the ruling's seven
+MacTypes	the classic typedef header MacTypes.h (MacTypes.modulemap); typedefs only; not one of the ruling's seven
+MachO	the Mach-O image-format headers (DarwinBasic.modulemap, umbrella mach-o); a file format, not one of the seven
+ObjectiveC	the Objective-C runtime headers (ObjectiveC.modulemap, umbrella objc); the runtime's C API; not one of the seven
+SQLite3	the SQLite library's C API (SQLite3.modulemap, sqlite3.h); not one of the ruling's seven
+TargetConditionals	the target-platform macro header (DarwinFoundation1.modulemap, _modules/_TargetConditionals.h); macros only; not one of the seven
+XPCOverlay	a second module of xpc.modulemap (XPC is one of the seven); not one of the ruling's seven
+_AvailabilityInternal	the private availability macros (DarwinFoundation1.modulemap, AvailabilityInternal.h); a private module; not one of the seven
+_DarwinFoundation1	a private umbrella of the Darwin libc headers (DarwinFoundation1.modulemap, leading underscore); not one of the seven
+_DarwinFoundation2	a private umbrella of the Darwin libc headers (DarwinFoundation2.modulemap, leading underscore); not one of the seven
+_DarwinFoundation3	a private umbrella of the Darwin libc headers (DarwinFoundation3.modulemap, leading underscore); not one of the seven
+_Darwin_xlocale	a private xlocale umbrella (DarwinBasic.modulemap, _modules/_Darwin_xlocale.h); not one of the seven
+_c_standard_library_obsolete	the obsolete C library headers (DarwinFoundation1.modulemap, requires found_incompatible_headers__check_search_paths); not one of the seven
+_xlocale_ctype_h	the xlocale compatibility header ctype.h (DarwinBasic.modulemap, a private module); not one of the seven
+_xlocale_inttypes_h	the xlocale compatibility header inttypes.h (DarwinBasic.modulemap, a private module); not one of the seven
+_xlocale_stdio_h	the xlocale compatibility header stdio.h (DarwinBasic.modulemap, a private module); not one of the seven
+_xlocale_stdlib_h	the xlocale compatibility header stdlib.h (DarwinBasic.modulemap, a private module); not one of the seven
+_xlocale_string_h	the xlocale compatibility header string.h (DarwinBasic.modulemap, a private module); not one of the seven
+_xlocale_time_h	the xlocale compatibility header time.h (DarwinBasic.modulemap, a private module); not one of the seven
+_xlocale_wchar_h	the xlocale compatibility header wchar.h (DarwinBasic.modulemap, a private module); not one of the seven
+_xlocale_wctype_h	the xlocale compatibility header wctype.h (DarwinBasic.modulemap, a private module); not one of the seven
+alloca	the alloca.h header (DarwinFoundation2.modulemap, _modules/_alloca.h); a libc header; not one of the seven
+asl	the Apple System Log C API (asl.modulemap, asl.h); not one of the ruling's seven
+assert_h	the C standard library's assert.h (c_standard_library.modulemap); the C library's API; not one of the seven
+complex_h	the C standard library's complex.h (c_standard_library.modulemap); the C library's API; not one of the seven
+ctype_h	the C standard library's ctype.h (c_standard_library.modulemap); the C library's API; not one of the seven
+dnssd	the DNS-Service-Discovery C API (dnssd.modulemap, dns_sd.h); not one of the ruling's seven
+errno_h	the C standard library's errno.h (c_standard_library.modulemap); the C library's API; not one of the seven
+fenv_h	the C standard library's fenv.h (c_standard_library.modulemap); the C library's API; not one of the seven
+float_h	the C standard library's float.h (c_standard_library.modulemap); the C library's API; not one of the seven
+inttypes_h	the C standard library's inttypes.h (c_standard_library.modulemap); the C library's API; not one of the seven
+iso646_h	the C standard library's iso646.h (c_standard_library.modulemap); the C library's API; not one of the seven
+libkern	the kernel library's headers (libkern.modulemap, libkern/OSCacheControl.h); kernel-side API; not one of the seven
+libunwind	the libunwind C API (libunwind.modulemap, libunwind.h); not one of the ruling's seven
+libxml2	the libxml2 library's C API (libxml/module.modulemap, HTMLparser.h); not one of the ruling's seven
+limits_h	the C standard library's limits.h (c_standard_library.modulemap); the C library's API; not one of the seven
+locale_h	the C standard library's locale.h (c_standard_library.modulemap); the C library's API; not one of the seven
+math_h	the C standard library's math.h (c_standard_library.modulemap); the C library's API; not one of the seven
+networkext	the NetworkExtension C header set (networkext/module.modulemap); the framework is swept on its own, its C set is not one of the seven
+nl_types	the POSIX message-catalog header nl_types.h (DarwinFoundation2.modulemap, _modules/_nl_types.h); a libc header; not one of the seven
+notify	the notify(3) C API (notify.modulemap, notify.h); not one of the ruling's seven
+os_availability	the os availability macros (DarwinFoundation1.modulemap, _modules/_os_availability.h); macros only; os itself is one of the seven
+os_object	a second module of os.modulemap (os is one of the seven): the os_object header os/object.h; not one of the seven
+os_workgroup	a second module of os.modulemap (os is one of the seven): the os_workgroup header os/workgroup.h; not one of the seven
+pthread	the POSIX threads header pthread.h (DarwinFoundation3.modulemap, _modules/_pthread.h); a libc header; not one of the seven
+rpc	the ONC RPC header set (rpc/module.modulemap, an umbrella of its directory); not one of the ruling's seven
+runetype	the rune-type header runetype.h (DarwinFoundation2.modulemap, _modules/_runetype.h); a libc header; not one of the seven
+sched	the POSIX scheduler header sched.h (DarwinFoundation3.modulemap, _modules/_sched.h); a libc header; not one of the seven
+setjmp_h	the C standard library's setjmp.h (c_standard_library.modulemap); the C library's API; not one of the seven
+signal_h	the C standard library's signal.h (c_standard_library.modulemap); the C library's API; not one of the seven
+stdalign_h	the C standard library's stdalign.h (c_standard_library.modulemap); the C library's API; not one of the seven
+stdarg_h	the C standard library's stdarg.h (c_standard_library.modulemap); the C library's API; not one of the seven
+stdatomic_h	the C standard library's stdatomic.h (c_standard_library.modulemap); the C library's API; not one of the seven
+stdbool_h	the C standard library's stdbool.h (c_standard_library.modulemap); the C library's API; not one of the seven
+stddef_h	the C standard library's stddef.h (c_standard_library.modulemap); the C library's API; not one of the seven
+stdint_h	the C standard library's stdint.h (c_standard_library.modulemap); the C library's API; not one of the seven
+stdio_h	the C standard library's stdio.h (c_standard_library.modulemap); the C library's API; not one of the seven
+stdlib_h	the C standard library's stdlib.h (c_standard_library.modulemap); the C library's API; not one of the seven
+stdnoreturn_h	the C standard library's stdnoreturn.h (c_standard_library.modulemap); the C library's API; not one of the seven
+string_h	the C standard library's string.h (c_standard_library.modulemap); the C library's API; not one of the seven
+sys_appleapiopts	the POSIX header sys/appleapiopts.h (DarwinFoundation1.modulemap, _modules/_sys_appleapiopts.h); a libc header; not one of the seven
+sys_cdefs	the compiler-definitions header sys/cdefs.h (DarwinFoundation1.modulemap); a libc header; not one of the seven
+sys_qos	the quality-of-service header sys/qos.h (DarwinFoundation1.modulemap, _modules/_sys_qos.h); a libc header; not one of the seven
+sys_resource	the POSIX resource-limit header sys/resource.h (DarwinFoundation3.modulemap); a libc header; not one of the seven
+sys_select	the POSIX header sys/select.h (DarwinFoundation3.modulemap); a libc header; not one of the seven
+sys_types	the POSIX header sys/types.h (DarwinFoundation2.modulemap); a libc header; not one of the seven
+sys_wait	the POSIX header sys/wait.h (DarwinFoundation3.modulemap); a libc header; not one of the seven
+tgmath_h	the C standard library's tgmath.h (c_standard_library.modulemap); the C library's API; not one of the seven
+time_h	the C standard library's time.h (c_standard_library.modulemap); the C library's API; not one of the seven
+unistd	the POSIX header unistd.h (DarwinFoundation3.modulemap, _modules/_unistd.h); a libc header; not one of the seven
+unwind_h	the C standard library's unwind.h (c_standard_library.modulemap); the C library's API; not one of the seven
+unwind	the libunwind umbrella (libunwind.modulemap, __libunwind_config.h); not one of the ruling's seven
+wchar_h	the C standard library's wchar.h (c_standard_library.modulemap); the C library's API; not one of the seven
+wctype_h	the C standard library's wctype.h (c_standard_library.modulemap); the C library's API; not one of the seven
+xlocale	the xlocale.h compatibility header (DarwinFoundation3.modulemap, a textual header); a libc header; not one of the seven
+zlib	the zlib library's C API (zlib.modulemap, zconf.h); not one of the ruling's seven

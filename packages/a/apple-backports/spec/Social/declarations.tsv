@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 var	c:@SLServiceTypeTwitter	-			NSString *const	-	-	ios=6.0/11.0/-/0	-	d478d08a4bb35a4d
 var	c:@SLServiceTypeFacebook	-			NSString *const	-	-	ios=6.0/11.0/-/0	-	11f0ecce774b7c8f
 var	c:@SLServiceTypeSinaWeibo	-			NSString *const	-	-	ios=6.0/11.0/-/0	-	5a57ee5ebc586db3

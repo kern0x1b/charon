@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 struct	c:@SA@MTLOrigin	-			-	-	-	-	-	fce56b5490119102
 field	c:@SA@MTLOrigin@FI@x	MTLOrigin			NSUInteger	-	-	-	-	2cc871c3d3586e30
 field	c:@SA@MTLOrigin@FI@y	MTLOrigin			NSUInteger	-	-	-	-	c629d2ca578c26a5
@@ -3147,7 +3147,7 @@ property	c:objc(cs)MTLRasterizationRateLayerDescriptor(py)horizontalSampleStorag
 property	c:objc(cs)MTLRasterizationRateLayerDescriptor(py)verticalSampleStorage	-			float *	-	readonly,nonatomic	ios=13.0/-/-/0,maccatalyst=13.4/-/-/0,macos=10.15.4/-/-/0,tvos=16.0/-/-/0	-	1c6986450d528baf
 property	c:objc(cs)MTLRasterizationRateLayerDescriptor(py)horizontal	-			MTLRasterizationRateSampleArray *	-	readonly,nonatomic	ios=13.0/-/-/0,maccatalyst=13.4/-/-/0,macos=10.15.4/-/-/0,tvos=16.0/-/-/0	-	6bf21cc53057000e
 property	c:objc(cs)MTLRasterizationRateLayerDescriptor(py)vertical	-			MTLRasterizationRateSampleArray *	-	readonly,nonatomic	ios=13.0/-/-/0,maccatalyst=13.4/-/-/0,macos=10.15.4/-/-/0,tvos=16.0/-/-/0	-	cac39930f40d2920
-category	c:objc(ext)MTLRasterizationRateLayerDescriptor	-	-		-	-	-	ios=13.0/-/-/0,maccatalyst=13.4/-/-/0,macos=10.15.4/-/-/0,tvos=16.0/-/-/0	-	d89e52df87b3ce53
+category	c:objc(ext)MTLRasterizationRateLayerDescriptor	-	-		-	-	-	ios=13.0/-/-/0,maccatalyst=13.4/-/-/0,macos=10.15.4/-/-/0,tvos=16.0/-/-/0	-	8bb3b99e347879a3
 interface	c:objc(cs)MTLRasterizationRateLayerArray	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.4/-/-/0,macos=10.15.4/-/-/0,tvos=16.0/-/-/0	-	41ffbefb9eeb2c67
 super	-	MTLRasterizationRateLayerArray	NSObject		-	-	-	-	-	098a59cd168ccaff
 method	c:objc(cs)MTLRasterizationRateLayerArray(im)objectAtIndexedSubscript:	-			MTLRasterizationRateLayerDescriptor *	NSUInteger layerIndex	-	ios=13.0/-/-/0,maccatalyst=13.4/-/-/0,macos=10.15.4/-/-/0,tvos=16.0/-/-/0	-	7f80936161d4e85d

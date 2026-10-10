@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 typedef	c:@T@CLKComplicationFamily	-			enum CLKComplicationFamily	-	-	-	-	2f19a02278d89e89
 enum	c:@E@CLKComplicationFamily	-			NSInteger	-	-	ios=-/-/-/1,watchos=2.0/-/-/0	-	b67f373e2112606d
 enumconst	c:@E@CLKComplicationFamily@CLKComplicationFamilyModularSmall	CLKComplicationFamily			-	-	-	ios=-/-/-/1,watchos=2.0/-/-/0	-	7602f11226e93cd5

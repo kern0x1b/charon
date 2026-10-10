@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 struct	c:@SA@MPSNDArrayOffsets	-			-	-	-	-	-	dd88048c2946543a
 field	c:@SA@MPSNDArrayOffsets@FI@dimensions	MPSNDArrayOffsets			NSInteger[16]	-	-	-	-	5d68b2a43621cdf3
 typedef	c:@T@MPSNDArrayOffsets	-			struct MPSNDArrayOffsets	-	-	-	-	269146c393b1b57a

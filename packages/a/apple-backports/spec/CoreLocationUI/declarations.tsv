@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 var	c:@CoreLocationUIVersionNumber	-			double	-	-	-	-	55525277ed5b4684
 var	c:@CoreLocationUIVersionString	-			const unsigned char[]	-	-	-	-	28d9957817e41b45
 typedef	c:@T@CLLocationButtonIcon	-			enum CLLocationButtonIcon	-	-	ios=15.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	a57dac829e571051

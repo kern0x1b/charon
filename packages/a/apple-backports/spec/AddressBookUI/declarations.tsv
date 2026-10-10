@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 interface	c:objc(cs)ABPeoplePickerNavigationController	-			-	-	-	ios=2.0/9.0/-/0	-	fba9972b26a320b5
 super	-	ABPeoplePickerNavigationController	UINavigationController		-	-	-	-	-	bbf73fd96423c167
 property	c:objc(cs)ABPeoplePickerNavigationController(py)peoplePickerDelegate	-			id<ABPeoplePickerNavigationControllerDelegate>	-	assign,nonatomic	ios=2.0/9.0/-/0	-	ec2cf2c7511c792d

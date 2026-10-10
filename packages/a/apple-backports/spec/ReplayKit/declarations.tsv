@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 interface	c:objc(cs)RPPreviewViewController	-			-	-	-	-	-	eaa39d3248b5a1f9
 super	-	RPPreviewViewController	UIViewController		-	-	-	-	-	e80fb353b84b4d03
 property	c:objc(cs)RPPreviewViewController(py)previewControllerDelegate	-			id<RPPreviewViewControllerDelegate>	-	weak,nonatomic	-	-	a9e9954d1c30ac33

@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 typedef	c:@T@CMItemCount	-			CFIndex	-	-	-	-	5376d25ce0c42dff
 typedef	c:@T@CMItemIndex	-			CFIndex	-	-	-	-	18a7598218998c81
 typedef	c:@T@CMBaseClassVersion	-			uintptr_t	-	-	-	-	23869a168a5b043e

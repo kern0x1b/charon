@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 var	c:@NSCoreDataVersionNumber	-			double	-	-	-	-	98b25552a7191429
 var	c:@NSDetailedErrorsKey	-			NSString *const	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	4f46dda766a1ddf0
 var	c:@NSValidationObjectErrorKey	-			NSString *const	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	f5f15a71943c5de2

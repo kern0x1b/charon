@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 struct	c:@S@__IOSurface	-			-	-	-	-	-	e1d6a87e345c5762
 typedef	c:@T@IOSurfaceRef	-			struct __IOSurface *	-	-	-	-	b3d7dabcf5bf59d2
 var	c:@CGPointZero	-			const CGPoint	-	-	ios=2.0/-/-/0,macos=10.0/-/-/0	-	cdb583469db3ad9e

@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 typedef	c:@T@UIMenuElementState	-			enum UIMenuElementState	-	-	-	-	6017fe9960755b0f
 enum	c:@E@UIMenuElementState	-			NSInteger	-	-	ios=13.0/-/-/0,watchos=-/-/-/1	-	b0a865f496337617
 enumconst	c:@E@UIMenuElementState@UIMenuElementStateOff	UIMenuElementState			-	-	-	ios=13.0/-/-/0,watchos=-/-/-/1	-	ed1d9f803cf3d234
@@ -1304,7 +1304,7 @@ property	c:objc(pl)UIMutableTraits(py)tabAccessoryEnvironment	-			UITabAccessory
 property	c:objc(pl)UIMutableTraits(py)splitViewControllerLayoutEnvironment	-			UISplitViewControllerLayoutEnvironment	-	nonatomic	ios=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	37cb6276fb9d3327
 property	c:objc(pl)UIMutableTraits(py)resolvesNaturalAlignmentWithBaseWritingDirection	-			BOOL	-	nonatomic	ios=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	5cd7399fe6dfbb30
 typedef	c:@T@UITraitMutations	-			void ((^))(id<UIMutableTraits>)	-	-	ios=17.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	44dd97360aca7526
-category	c:objc(ext)UITraitCollection	-	-		-	-	-	ios=17.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	0e26ad28a888fa0a
+category	c:objc(ext)UITraitCollection	-	-		-	-	-	ios=17.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	57b94a1f5b42be17
 method	c:objc(cs)UITraitCollection(cm)traitCollectionWithTraits:	-			UITraitCollection *	UITraitMutations mutations	-	watchos=-/-/-/1	-	11d6c4b8122e77fb
 method	c:objc(cs)UITraitCollection(im)traitCollectionByModifyingTraits:	-			UITraitCollection *	UITraitMutations mutations	-	watchos=-/-/-/1	-	c41692905ea5fa78
 method	c:objc(cs)UITraitCollection(cm)traitCollectionWithCGFloatValue:forTrait:	-			UITraitCollection *	CGFloat value | UICGFloatTrait trait	-	watchos=-/-/-/1	-	b68bde8105085bb0
@@ -1799,7 +1799,7 @@ category	c:objc(cy)UIView@UIContentSizeCategoryLimit	-			-	-	-	ios=2.0/-/-/0,wat
 property	c:objc(cs)UIView(py)minimumContentSizeCategory	UIContentSizeCategoryLimit			UIContentSizeCategory	-	copy,nonatomic	ios=15.0/-/-/0,watchos=-/-/-/1	-	55bb9ef78b14b9b4
 property	c:objc(cs)UIView(py)maximumContentSizeCategory	UIContentSizeCategoryLimit			UIContentSizeCategory	-	copy,nonatomic	ios=15.0/-/-/0,watchos=-/-/-/1	-	6e00463dd021772d
 property	c:objc(cs)UIView(py)appliedContentSizeCategoryLimitsDescription	UIContentSizeCategoryLimit			NSString *	-	readonly,copy,nonatomic	ios=15.0/-/-/0,watchos=-/-/-/1	-	876877b2a613a978
-category	c:objc(ext)UIView	-	-		-	-	-	ios=17.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	ba0c3ab9a1444ed9
+category	c:objc(ext)UIView	-	-		-	-	-	ios=17.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	9e67f8dcda031bec
 conforms	-	UIView	UITraitChangeObservable		-	-	-	-	-	7428b4658a94b631
 property	c:objc(cs)UIView(py)traitOverrides	-			id<UITraitOverrides>	-	readonly,nonatomic	ios=17.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	973b82a109ef94a3
 method	c:objc(cs)UIView(im)updateTraitsIfNeeded	-			void	-	-	ios=17.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	d0f555e160bdddd2
@@ -2485,12 +2485,12 @@ property	c:objc(cs)NSMutableParagraphStyle(py)textLists	-			NSArray<NSTextList *
 method	c:objc(cs)NSMutableParagraphStyle(im)addTabStop:	-			void	NSTextTab * anObject	-	ios=9.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0,xros=1.0/-/-/0	-	de00ce6b74efd872
 method	c:objc(cs)NSMutableParagraphStyle(im)removeTabStop:	-			void	NSTextTab * anObject	-	ios=9.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0,xros=1.0/-/-/0	-	050ac2945a012d64
 method	c:objc(cs)NSMutableParagraphStyle(im)setParagraphStyle:	-			void	NSParagraphStyle * obj	-	ios=9.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0,xros=1.0/-/-/0	-	f047a36f6cf4cd98
-category	c:objc(ext)NSTextTab	-	-		-	-	-	ios=7.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0,xros=1.0/-/-/0	-	07fcdf3a4b146587
+category	c:objc(ext)NSTextTab	-	-		-	-	-	ios=7.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0,xros=1.0/-/-/0	-	b38e3cc3b5c045eb
 method	c:objc(cs)NSTextTab(im)initWithTextAlignment:location:options:	-			instancetype	NSTextAlignment alignment | CGFloat loc | NSDictionary<NSTextTabOptionKey,id> * options	-	ios=7.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0,xros=1.0/-/-/0	-	be65903c34bab8f4
 property	c:objc(cs)NSTextTab(py)alignment	-			NSTextAlignment	-	readonly,nonatomic	ios=7.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0,xros=1.0/-/-/0	-	03758dfeefcf045c
-category	c:objc(ext)NSParagraphStyle	-	-		-	-	-	ios=6.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0,xros=1.0/-/-/0	-	f2fdff964988246a
+category	c:objc(ext)NSParagraphStyle	-	-		-	-	-	ios=6.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0,xros=1.0/-/-/0	-	3217672f6c2a035b
 property	c:objc(cs)NSParagraphStyle(py)alignment	-			NSTextAlignment	-	readonly,nonatomic	ios=6.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0,xros=1.0/-/-/0	-	fad026c7ca541ad6
-category	c:objc(ext)NSMutableParagraphStyle	-	-		-	-	-	ios=6.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0,xros=1.0/-/-/0	-	9a6e6c7417f4eea7
+category	c:objc(ext)NSMutableParagraphStyle	-	-		-	-	-	ios=6.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0,xros=1.0/-/-/0	-	35fb470be1b3589c
 property	c:objc(cs)NSMutableParagraphStyle(py)alignment	-			NSTextAlignment	-	nonatomic	ios=6.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0,xros=1.0/-/-/0	-	2172f4928f2ed079
 interface	c:objc(cs)NSShadow	-			-	-	-	ios=6.0/-/-/0,watchos=2.0/-/-/0	-	91d84e86b3cefb41
 super	-	NSShadow	NSObject		-	-	-	-	-	ea76a9ef4fb05f8d
@@ -2739,7 +2739,7 @@ method	c:objc(cs)UIControl(im)menuAttachmentPointForConfiguration:	-			CGPoint	U
 property	c:objc(cs)UIControl(py)toolTip	-			NSString *	-	copy,nonatomic	ios=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	19ba70e45dab0f18
 property	c:objc(cs)UIControl(py)toolTipInteraction	-			UIToolTipInteraction *	-	readonly,strong,nonatomic	ios=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	162273bd9c78aed9
 property	c:objc(cs)UIControl(py)symbolAnimationEnabled	-			BOOL	-	nonatomic,getter=isSymbolAnimationEnabled	ios=17.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	aca64a784f7eb66b
-category	c:objc(ext)UIControl	-	-		-	-	-	ios=14.0/-/-/0,tvos=17.0/-/-/0	-	cc80a2858cdc3bb8
+category	c:objc(ext)UIControl	-	-		-	-	-	ios=14.0/-/-/0,tvos=17.0/-/-/0	-	2722e26fa35aae94
 conforms	-	UIControl	UIContextMenuInteractionDelegate		-	-	-	-	-	49d5a8b8b4af6613
 method	c:objc(cs)UIControl(im)contextMenuInteraction:configurationForMenuAtLocation:	-			UIContextMenuConfiguration *	UIContextMenuInteraction * interaction | CGPoint location	-	ios=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	4bbe5fcc70642909
 method	c:objc(cs)UIControl(im)contextMenuInteraction:previewForHighlightingMenuWithConfiguration:	-			UITargetedPreview *	UIContextMenuInteraction * interaction | UIContextMenuConfiguration * configuration	-	ios=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	0b254541b1c5fec9
@@ -3616,7 +3616,7 @@ method	c:objc(cs)UITextField(im)drawPlaceholderInRect:	-			void	CGRect rect	-	io
 property	c:objc(cs)UITextField(py)inputView	-			UIView *	-	strong	ios=2.0/-/-/0,watchos=-/-/-/1	-	5b2d7e49a200882a
 property	c:objc(cs)UITextField(py)inputAccessoryView	-			UIView *	-	strong	xros=-/-/-/1	-	7c9dd4f1a47f8b92
 property	c:objc(cs)UITextField(py)clearsOnInsertion	-			BOOL	-	nonatomic	ios=6.0/-/-/0	-	e76ad7ac0e5ff252
-category	c:objc(ext)UITextField	-	-		-	-	-	ios=2.0/-/-/0,watchos=-/-/-/1	-	5133549d909dabab
+category	c:objc(ext)UITextField	-	-		-	-	-	ios=2.0/-/-/0,watchos=-/-/-/1	-	4750788cd91dc7b2
 conforms	-	UITextField	UITextDraggable		-	-	-	-	-	bf115ac62af92ae9
 conforms	-	UITextField	UITextDroppable		-	-	-	-	-	26e7615ff9458f0a
 conforms	-	UITextField	UITextPasteConfigurationSupporting		-	-	-	-	-	e02dcfc930254679
@@ -4225,7 +4225,7 @@ category	c:objc(cy)UIViewController@UIPointerLockSupport	-			-	-	-	ios=2.0/-/-/0
 property	c:objc(cs)UIViewController(py)childViewControllerForPointerLock	UIPointerLockSupport			UIViewController *	-	readonly,nonatomic	ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	09ddc4e255d16c63
 property	c:objc(cs)UIViewController(py)prefersPointerLocked	UIPointerLockSupport			BOOL	-	readonly,nonatomic	ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b9b325e075a90110
 method	c:objc(cs)UIViewController(im)setNeedsUpdateOfPrefersPointerLocked	UIPointerLockSupport			void	-	-	ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3c0d963998dbfd18
-category	c:objc(ext)UIViewController	-	-		-	-	-	ios=2.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1		4ee06455aa63eeae
+category	c:objc(ext)UIViewController	-	-		-	-	-	ios=2.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1		e1b942d109ada4c4
 property	c:objc(cs)UIViewController(py)contentUnavailableConfiguration	-			id<UIContentConfiguration>	-	copy,nonatomic	ios=17.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	f95f1f95e7ac036d
 property	c:objc(cs)UIViewController(py)contentUnavailableConfigurationState	-			UIContentUnavailableConfigurationState *	-	readonly,nonatomic	ios=17.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	2af0b0061f500622
 method	c:objc(cs)UIViewController(im)setNeedsUpdateContentUnavailableConfiguration	-			void	-	-	ios=17.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	e359bdd90496855e
@@ -4568,7 +4568,7 @@ property	c:objc(cs)UIImageView(py)adjustsImageWhenAncestorFocused	-			BOOL	-	non
 property	c:objc(cs)UIImageView(py)focusedFrameGuide	-			UILayoutGuide *	-	readonly,strong	ios=-/-/-/1,tvos=9.0/-/-/0,watchos=-/-/-/1	-	03e7e1a9bc22af09
 property	c:objc(cs)UIImageView(py)overlayContentView	-			UIView *	-	readonly,strong,nonatomic	ios=-/-/-/1,tvos=11.0/-/-/0,watchos=-/-/-/1	-	f5ab96f5820da512
 property	c:objc(cs)UIImageView(py)masksFocusEffectToContents	-			BOOL	-	nonatomic	ios=-/-/-/1,tvos=11.0/-/-/0,watchos=-/-/-/1	-	21cc25e12097a050
-category	c:objc(ext)UIImageView	-	-		-	-	-	ios=2.0/-/-/0,watchos=-/-/-/1	-	01922baaf1593821
+category	c:objc(ext)UIImageView	-	-		-	-	-	ios=2.0/-/-/0,watchos=-/-/-/1	-	a766036d1891b12c
 method	c:objc(cs)UIImageView(im)addSymbolEffect:	-			void	NSSymbolEffect * symbolEffect	-	ios=17.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	f425f27765cb0ca3
 method	c:objc(cs)UIImageView(im)addSymbolEffect:options:	-			void	NSSymbolEffect * symbolEffect | NSSymbolEffectOptions * options	-	ios=17.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	31b8a4940e902bee
 method	c:objc(cs)UIImageView(im)addSymbolEffect:options:animated:	-			void	NSSymbolEffect * symbolEffect | NSSymbolEffectOptions * options | BOOL animated	-	ios=17.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	6ec547c6cd8b211a
@@ -4770,7 +4770,7 @@ property	c:objc(cs)UIButton(py)currentAttributedTitle	-			NSAttributedString *	-
 property	c:objc(cs)UIButton(py)titleLabel	-			UILabel *	-	readonly,strong,nonatomic	ios=3.0/-/-/0	-	846d4b41a1a8959c
 property	c:objc(cs)UIButton(py)imageView	-			UIImageView *	-	readonly,strong,nonatomic	ios=3.0/-/-/0	-	51148ed9daa43b95
 property	c:objc(cs)UIButton(py)subtitleLabel	-			UILabel *	-	readonly,strong,nonatomic	ios=15.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1	-	842d1ce1a665d65c
-category	c:objc(ext)UIButton	-	-		-	-	-	ios=2.0/-/-/0,watchos=-/-/-/1	deprecated: Specify an attributed title with a custom font	32e874e411973047
+category	c:objc(ext)UIButton	-	-		-	-	-	ios=2.0/-/-/0,watchos=-/-/-/1	deprecated: Specify an attributed title with a custom font	4695ec1d0f779c7e
 property	c:objc(cs)UIButton(py)font	-			UIFont *	-	strong,nonatomic	ios=2.0/3.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f9bf427dbc2c2582
 property	c:objc(cs)UIButton(py)lineBreakMode	-			NSLineBreakMode	-	nonatomic	ios=2.0/3.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	56b27102e17795a3
 property	c:objc(cs)UIButton(py)titleShadowOffset	-			CGSize	-	nonatomic	ios=2.0/3.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3371dc901ecb6509
@@ -4927,7 +4927,7 @@ method	c:objc(cs)UIBarButtonItem(im)setBackButtonBackgroundVerticalPositionAdjus
 method	c:objc(cs)UIBarButtonItem(im)backButtonBackgroundVerticalPositionAdjustmentForBarMetrics:	-			CGFloat	UIBarMetrics barMetrics	-	ios=5.0/-/-/0,tvos=-/-/-/1	-	199968fe7d6aa987
 category	c:objc(cy)UIBarButtonItem@SpringLoading	-			-	-	-	ios=2.0/-/-/0,watchos=-/-/-/1	-	11fb93d3d763395e
 conforms	-	UIBarButtonItem	UISpringLoadedInteractionSupporting		-	-	-	-	-	22363dfb82da51ca
-category	c:objc(ext)UIBarButtonItem	-	-		-	-	-	ios=2.0/-/-/0,watchos=-/-/-/1	-	8e71d6ec5eac5b0a
+category	c:objc(ext)UIBarButtonItem	-	-		-	-	-	ios=2.0/-/-/0,watchos=-/-/-/1	-	9e175440bad821bc
 method	c:objc(cs)UIBarButtonItem(im)addSymbolEffect:	-			void	NSSymbolEffect * symbolEffect	-	ios=17.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	358cdc125ae50101
 method	c:objc(cs)UIBarButtonItem(im)addSymbolEffect:options:	-			void	NSSymbolEffect * symbolEffect | NSSymbolEffectOptions * options	-	ios=17.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	4f8230d5b4ab68b7
 method	c:objc(cs)UIBarButtonItem(im)addSymbolEffect:options:animated:	-			void	NSSymbolEffect * symbolEffect | NSSymbolEffectOptions * options | BOOL animated	-	ios=17.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	e173ad54637c7a84
@@ -6828,7 +6828,7 @@ method	c:objc(cs)UIDocument(im)handleError:userInteractionPermitted:	-			void	NS
 method	c:objc(cs)UIDocument(im)finishedHandlingError:recovered:	-			void	NSError * error | BOOL recovered	-	tvos=-/-/-/1	-	82948cea36acdd0a
 method	c:objc(cs)UIDocument(im)userInteractionNoLongerPermittedForError:	-			void	NSError * error	-	tvos=-/-/-/1	-	0b4890dec3974bd2
 method	c:objc(cs)UIDocument(im)revertToContentsOfURL:completionHandler:	-			void	NSURL * url | void (^)(BOOL) completionHandler	-	tvos=-/-/-/1	-	77eb533006d961b2
-category	c:objc(ext)UIDocument	-	-		-	-	-	ios=17.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a80b3f4840b1ae00
+category	c:objc(ext)UIDocument	-	-		-	-	-	ios=17.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	dbd130525637d55b
 conforms	-	UIDocument	UINavigationItemRenameDelegate		-	-	-	-	-	2bf0ffdc0ac576ef
 var	c:@NSUserActivityDocumentURLKey	-			NSString *const	-	-	ios=8.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	60fb8934e6e3c144
 category	c:objc(cy)UIDocument@ActivityContinuation	-			-	-	-	ios=5.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	01066d5c3b5b9d5e
@@ -7517,7 +7517,7 @@ property	c:objc(cs)UIWindowScene(py)keyWindow	-			UIWindow *	-	readonly,strong,n
 property	c:objc(cs)UIWindowScene(py)activityItemsConfigurationSource	-			id<UIActivityItemsConfigurationProviding>	-	weak,nonatomic	ios=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b75a47482144395f
 property	c:objc(cs)UIWindowScene(py)windowingBehaviors	-			UISceneWindowingBehaviors *	-	readonly,nonatomic	ios=16.0/-/-/0,watchos=-/-/-/1	-	dcf4af1c3dd41a62
 property	c:objc(cs)UIWindowScene(py)fullScreen	-			BOOL	-	readonly,nonatomic,getter=isFullScreen	maccatalyst=16.0/-/-/0,watchos=-/-/-/1	-	1c79ea084db1bc6a
-category	c:objc(ext)UIWindowScene	-	-		-	-	-	ios=17.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	3071866bf5188025
+category	c:objc(ext)UIWindowScene	-	-		-	-	-	ios=17.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	42d38e0ab6abdf92
 conforms	-	UIWindowScene	UITraitEnvironment		-	-	-	-	-	2008f22a67c17160
 conforms	-	UIWindowScene	UITraitChangeObservable		-	-	-	-	-	202347a96dace1cf
 property	c:objc(cs)UIWindowScene(py)traitOverrides	-			id<UITraitOverrides>	-	readonly,nonatomic	ios=17.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	93283632e2a18fbe
@@ -8383,7 +8383,7 @@ method	c:objc(cs)UIPresentationController(im)dismissalTransitionWillBegin	-			vo
 method	c:objc(cs)UIPresentationController(im)dismissalTransitionDidEnd:	-			void	BOOL completed	-	ios=8.0/-/-/0,watchos=-/-/-/1	-	bb7e7dae0fd4a39f
 property	c:objc(cs)UIPresentationController(py)overrideTraitCollection	-			UITraitCollection *	-	copy,nonatomic	ios=8.0/17.0/-/0,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	e927d319ffb9b367
 property	c:objc(cs)UIPresentationController(py)backgroundEffect	-			UIVisualEffect *	-	strong,nonatomic	ios=26.1/-/-/0,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c2a7c20a24350702
-category	c:objc(ext)UIPresentationController	-	-		-	-	-	ios=17.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	f02e4dc500c819db
+category	c:objc(ext)UIPresentationController	-	-		-	-	-	ios=17.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	e86ec962e282cf7e
 conforms	-	UIPresentationController	UITraitChangeObservable		-	-	-	-	-	86e478a285a94c86
 property	c:objc(cs)UIPresentationController(py)traitOverrides	-			id<UITraitOverrides>	-	readonly,nonatomic	ios=17.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	a45d54812d972592
 typedef	c:@T@UITimingCurveType	-			enum UITimingCurveType	-	-	-	-	988bbc42a92aed56
@@ -9206,7 +9206,7 @@ property	c:objc(cs)UITextView(py)allowedWritingToolsResultOptions	-			UIWritingT
 property	c:objc(cs)UITextView(py)subclassForWritingToolsCoordinator	-			Class	-	readonly,nonatomic	ios=18.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.4/-/-/0	-	85b0d7492c59b3cb
 property	c:objc(cs)UITextView(py)writingToolsCoordinator	-			UIWritingToolsCoordinator *	-	readonly,nonatomic	ios=18.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.4/-/-/0	-	3ea34ea395eeff76
 property	c:objc(cs)UITextView(py)textFormattingConfiguration	-			UITextFormattingViewControllerConfiguration *	-	copy,nonatomic	ios=18.0/-/-/0,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	563ff642835d0372
-category	c:objc(ext)UITextView	-	-		-	-	-	ios=2.0/-/-/0,watchos=-/-/-/1	-	21bd6f58077df40f
+category	c:objc(ext)UITextView	-	-		-	-	-	ios=2.0/-/-/0,watchos=-/-/-/1	-	4dc954943bf9366d
 conforms	-	UITextView	UITextDraggable		-	-	-	-	-	26ddb33e2850ae04
 conforms	-	UITextView	UITextDroppable		-	-	-	-	-	a55f0c13e0ce611b
 conforms	-	UITextView	UITextPasteConfigurationSupporting		-	-	-	-	-	29c012cf4af19714
@@ -9920,7 +9920,7 @@ method	c:objc(cs)NSTextContainer(im)lineFragmentRectForProposedRect:atIndex:writ
 property	c:objc(cs)NSTextContainer(py)simpleRectangularTextContainer	-			BOOL	-	readonly,nonatomic,getter=isSimpleRectangularTextContainer	ios=9.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	54dc5d3f5d3bf46c
 property	c:objc(cs)NSTextContainer(py)widthTracksTextView	-			BOOL	-	nonatomic	ios=7.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	7fa5fd8c18d5089f
 property	c:objc(cs)NSTextContainer(py)heightTracksTextView	-			BOOL	-	nonatomic	ios=7.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	2cda4e89d8f7ea11
-category	c:objc(ext)NSTextContainer	-	-		-	-	-	ios=7.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	76853138938fcc08
+category	c:objc(ext)NSTextContainer	-	-		-	-	-	ios=7.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	ddd00f8c2e586e55
 conforms	-	NSTextContainer	NSTextLayoutOrientationProvider		-	-	-	-	-	c4d64c15c9b49f28
 property	c:objc(cs)NSTextContainer(py)layoutManager	-			NSLayoutManager *	-	assign,nonatomic	ios=9.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	7909a805994d552c
 method	c:objc(cs)NSTextContainer(im)replaceLayoutManager:	-			void	NSLayoutManager * newLayoutManager	-	ios=9.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	ade35fba9703549a
@@ -10222,7 +10222,7 @@ super	-	UIFeedbackGenerator	NSObject		-	-	-	-	-	27cd8f767cc6998a
 method	c:objc(cs)UIFeedbackGenerator(cm)feedbackGeneratorForView:	-			instancetype	UIView * view	-	ios=17.5/-/-/0,xros=-/-/-/1	-	b005f0247f5f7816
 method	c:objc(cs)UIFeedbackGenerator(im)init	-			instancetype	-	-	ios=10.0/100000/-/0	deprecated: Use +feedbackGeneratorForView: instead	0b2631669bcad5c8
 method	c:objc(cs)UIFeedbackGenerator(im)prepare	-			void	-	-	ios=10.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c290a12395e736fa
-category	c:objc(ext)UIFeedbackGenerator	-	-		-	-	-	ios=17.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	39d5462409a783c4
+category	c:objc(ext)UIFeedbackGenerator	-	-		-	-	-	ios=17.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	24b51f0e0e0449f8
 conforms	-	UIFeedbackGenerator	UIInteraction		-	-	-	-	-	41331f2f4f9cf6d3
 interface	c:objc(cs)UISelectionFeedbackGenerator	-			-	-	-	ios=10.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4ad1ca9226f3eb9d
 super	-	UISelectionFeedbackGenerator	UIFeedbackGenerator		-	-	-	-	-	6f44b610eae0a27f

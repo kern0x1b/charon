@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 typedef	c:@T@VNConfidence	-			float	-	-	-	-	7560c68bbcf95220
 typedef	c:@T@VNAspectRatio	-			float	-	-	-	-	de0db29f54e5f071
 typedef	c:@T@VNDegrees	-			float	-	-	-	-	d74361c7b61ebf12
@@ -458,7 +458,7 @@ property	c:objc(cs)VNRequest(cpy)supportedRevisions	-			NSIndexSet *	-	readonly,
 property	c:objc(cs)VNRequest(cpy)defaultRevision	-			NSUInteger	-	readonly,assign,nonatomic,class	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	0cdd7c246c3b61aa
 property	c:objc(cs)VNRequest(cpy)currentRevision	-			NSUInteger	-	readonly,assign,nonatomic,class	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	cf8a5a475045f7e1
 method	c:objc(cs)VNRequest(im)cancel	-			void	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	9529fd724d22928a
-category	c:objc(ext)VNRequest	-	-		-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	c2f5c74185e12686
+category	c:objc(ext)VNRequest	-	-		-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	f1e8cfc1920dabc7
 method	c:objc(cs)VNRequest(im)supportedComputeStageDevicesAndReturnError:	-			NSDictionary<VNComputeStage,NSArray<id<MLComputeDeviceProtocol>> *> *	NSError * _Nullable * error	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	01606bd06efb6470
 method	c:objc(cs)VNRequest(im)computeDeviceForComputeStage:	-			id<MLComputeDeviceProtocol>	VNComputeStage computeStage	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	1300a62508d5c6a5
 method	c:objc(cs)VNRequest(im)setComputeDevice:forComputeStage:	-			void	id<MLComputeDeviceProtocol> computeDevice | VNComputeStage computeStage	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	ceed3d5831282ea4

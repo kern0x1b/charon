@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 typedef	c:@T@ASPresentationAnchor	-			UIWindow *	-	-	watchos=-/-/-/1	-	0074a10624afb14c
 typedef	c:@T@ASViewController	-			UIViewController	-	-	watchos=-/-/-/1	-	952a87fabbf34e41
 typedef	c:@T@ASImage	-			UIImage	-	-	watchos=-/-/-/1	-	aee3563ec8e28606
@@ -562,7 +562,7 @@ property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertionRequest(py
 property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertionRequest(py)prf	-			ASAuthorizationPublicKeyCredentialPRFAssertionInput *	-	nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	012fdffb68437362
 method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertionRequest(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	dd2b4f72f5e51232
 method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertionRequest(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	205bdc8fbdf3b3f4
-category	c:objc(ext)ASAuthorizationPlatformPublicKeyCredentialAssertionRequest	-	-		-	-	-	ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1		eeffb77a9c1c7f3c
+category	c:objc(ext)ASAuthorizationPlatformPublicKeyCredentialAssertionRequest	-	-		-	-	-	ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1		17049597849896a6
 conforms	-	ASAuthorizationPlatformPublicKeyCredentialAssertionRequest	ASAuthorizationWebBrowserExternallyAuthenticatableRequest		-	-	-	-	-	9ee6c0f0f4fcaa8d
 conforms	-	ASAuthorizationPlatformPublicKeyCredentialAssertionRequest	ASAuthorizationWebBrowserPlatformPublicKeyCredentialAssertionRequest		-	-	-	-	-	5a2e42f3d23707d7
 typedef	c:@T@ASAuthorizationPublicKeyCredentialLargeBlobSupportRequirement	-			enum ASAuthorizationPublicKeyCredentialLargeBlobSupportRequirement	-	-	-	-	f8bd42c6ccb63b1e
@@ -591,7 +591,7 @@ method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest(i
 property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest(py)largeBlob	-			ASAuthorizationPublicKeyCredentialLargeBlobRegistrationInput *	-	nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5ab3aa1280d044e1
 property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest(py)prf	-			ASAuthorizationPublicKeyCredentialPRFRegistrationInput *	-	nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	c7293c3a4338d56d
 property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest(py)requestStyle	-			ASAuthorizationPlatformPublicKeyCredentialRegistrationRequestStyle	-	nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	1b7c1b358311e5e8
-category	c:objc(ext)ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest	-	-		-	-	-	ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d0bccbdc9e7ecd19
+category	c:objc(ext)ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest	-	-		-	-	-	ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2f94795810b47823
 conforms	-	ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest	ASAuthorizationWebBrowserPlatformPublicKeyCredentialRegistrationRequest		-	-	-	-	-	84f37b887cdc7116
 protocol	c:objc(pl)ASAuthorizationWebBrowserPlatformPublicKeyCredentialProvider	-			-	-	-	ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	157c50d0f7c6c7af
 method	c:objc(pl)ASAuthorizationWebBrowserPlatformPublicKeyCredentialProvider(im)createCredentialRegistrationRequestWithClientData:name:userID:	-			ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest *	ASPublicKeyCredentialClientData * clientData | NSString * name | NSData * userID	-	ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0e4113d242bf7d84
@@ -607,7 +607,7 @@ method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialProvider(im)createCre
 property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialProvider(py)relyingPartyIdentifier	-			NSString *	-	readonly,copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	515f55cad604d8b1
 method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialProvider(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	1dd06b48953b6282
 method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialProvider(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	1550fe8494853392
-category	c:objc(ext)ASAuthorizationPlatformPublicKeyCredentialProvider	-	-		-	-	-	ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3b8afe24ead8d522
+category	c:objc(ext)ASAuthorizationPlatformPublicKeyCredentialProvider	-	-		-	-	-	ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e221bf5be48bcff9
 conforms	-	ASAuthorizationPlatformPublicKeyCredentialProvider	ASAuthorizationWebBrowserPlatformPublicKeyCredentialProvider		-	-	-	-	-	37c930bb3be59aaa
 protocol	c:objc(pl)ASAuthorizationPublicKeyCredentialRegistration	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	e85f8ad011c2781f
 conforms	-	ASAuthorizationPublicKeyCredentialRegistration	ASPublicKeyCredential		-	-	-	-	-	e0649db456835d1c
@@ -658,7 +658,7 @@ super	-	ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest	ASAuthoriz
 conforms	-	ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest	ASAuthorizationPublicKeyCredentialAssertionRequest		-	-	-	-	-	7f284452dec78d0c
 property	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest(py)allowedCredentials	-			NSArray<ASAuthorizationSecurityKeyPublicKeyCredentialDescriptor *> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	34b71aeccaf85692
 property	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest(py)appID	-			NSString *	-	copy,nonatomic	ios=17.5/-/-/0,macos=14.5/-/-/0	-	4d6d71ad752b56de
-category	c:objc(ext)ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest	-	-		-	-	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1aecaafbe6ccd7b4
+category	c:objc(ext)ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest	-	-		-	-	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0b411b168fe22c31
 conforms	-	ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest	ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialAssertionRequest		-	-	-	-	-	6de9c430d1a7d9be
 protocol	c:objc(pl)ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialProvider	-			-	-	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f1ff79ea41aee489
 method	c:objc(pl)ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialProvider(im)createCredentialRegistrationRequestWithClientData:displayName:name:userID:	-			ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest *	ASPublicKeyCredentialClientData * clientData | NSString * displayName | NSString * name | NSData * userID	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	64c45eb08f1039f1
@@ -672,7 +672,7 @@ method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialProvider(im)create
 property	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialProvider(py)relyingPartyIdentifier	-			NSString *	-	readonly,copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4e84e2803ee22af3
 method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialProvider(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	54cda91fc18af9a9
 method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialProvider(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2a7a976b6c1ab762
-category	c:objc(ext)ASAuthorizationSecurityKeyPublicKeyCredentialProvider	-	-		-	-	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b71534fd069084dc
+category	c:objc(ext)ASAuthorizationSecurityKeyPublicKeyCredentialProvider	-	-		-	-	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	237c428285503cfd
 conforms	-	ASAuthorizationSecurityKeyPublicKeyCredentialProvider	ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialProvider		-	-	-	-	-	c0e0a4231c709fdb
 interface	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialRegistration	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	67ac723747443d3d
 super	-	ASAuthorizationSecurityKeyPublicKeyCredentialRegistration	NSObject		-	-	-	-	-	30f90316f48a1c1c
@@ -688,7 +688,7 @@ property	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequ
 property	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest(py)residentKeyPreference	-			ASAuthorizationPublicKeyCredentialResidentKeyPreference	-	nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7a7d906d71674bf3
 method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8bf44fbbe25630af
 method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c250096739a69783
-category	c:objc(ext)ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest	-	-		-	-	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0a3bc8b9b57eb634
+category	c:objc(ext)ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest	-	-		-	-	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ef90bb59e84b59a9
 conforms	-	ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest	ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialRegistrationRequest		-	-	-	-	-	5bd06dc5b604f7a0
 interface	c:objc(cs)ASAuthorizationWebBrowserPlatformPublicKeyCredential	-			-	-	-	ios=17.4/-/-/0,maccatalyst=16.4/-/-/0,macos=13.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e52b3c4de6dad05e
 super	-	ASAuthorizationWebBrowserPlatformPublicKeyCredential	NSObject		-	-	-	-	-	2a0d71db73eb5b9b

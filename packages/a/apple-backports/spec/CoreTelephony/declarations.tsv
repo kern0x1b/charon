@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 enum	c:@Ea@kCTErrorDomainNoError	-	-		unsigned int	-	-	-	-	ca563931923b9d4e
 enumconst	c:@Ea@kCTErrorDomainNoError@kCTErrorDomainNoError	-			-	-	-	-	-	640bafc97d8293f0
 enumconst	c:@Ea@kCTErrorDomainNoError@kCTErrorDomainPOSIX	-			-	-	-	-	-	66b50b12c0516514

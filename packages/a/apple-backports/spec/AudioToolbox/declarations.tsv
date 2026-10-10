@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 typedef	c:@T@AudioComponentFlags	-			enum AudioComponentFlags	-	-	-	-	b811786acbed58d9
 enum	c:@E@AudioComponentFlags	-			UInt32	-	-	-	-	e58b22af8e232990
 enumconst	c:@E@AudioComponentFlags@kAudioComponentFlag_Unsearchable	AudioComponentFlags			-	-	-	ios=5.0/-/-/0	-	6bb848cbe5a467e2

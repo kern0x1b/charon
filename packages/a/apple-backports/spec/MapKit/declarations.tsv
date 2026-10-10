@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 interface	c:objc(cs)MKAddress	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	35c1894dc307c1c6
 super	-	MKAddress	NSObject		-	-	-	-	-	fddfb3b7d24cd2e6
 method	c:objc(cs)MKAddress(im)initWithFullAddress:shortAddress:	-			instancetype	NSString * fullAddress | NSString * shortAddress	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	239b0dfe7d1bd0b9
@@ -524,7 +524,7 @@ property	c:objc(cs)MKLocalSearchCompletion(py)title	-			NSString *	-	readonly,st
 property	c:objc(cs)MKLocalSearchCompletion(py)titleHighlightRanges	-			NSArray<NSValue *> *	-	readonly,strong,nonatomic	ios=9.3/-/-/0,macos=10.11.4/-/-/0,tvos=9.2/-/-/0,watchos=3.0/-/-/0	-	372f6e631b877f20
 property	c:objc(cs)MKLocalSearchCompletion(py)subtitle	-			NSString *	-	readonly,strong,nonatomic	ios=9.3/-/-/0,macos=10.11.4/-/-/0,tvos=9.2/-/-/0,watchos=3.0/-/-/0	-	b029f22b192bc285
 property	c:objc(cs)MKLocalSearchCompletion(py)subtitleHighlightRanges	-			NSArray<NSValue *> *	-	readonly,strong,nonatomic	ios=9.3/-/-/0,macos=10.11.4/-/-/0,tvos=9.2/-/-/0,watchos=3.0/-/-/0	-	14383a6f8cb5fe38
-category	c:objc(ext)MKLocalSearchRequest	-	-		-	-	-	ios=6.1/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	101ce79ea5c46eba
+category	c:objc(ext)MKLocalSearchRequest	-	-		-	-	-	ios=6.1/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	45c3811ad8136ad8
 method	c:objc(cs)MKLocalSearchRequest(im)initWithCompletion:	-			instancetype	MKLocalSearchCompletion * completion	-	ios=9.3/-/-/0,macos=10.11.4/-/-/0,tvos=9.2/-/-/0,watchos=3.0/-/-/0	-	e152fc79924f0ae8
 interface	c:objc(cs)MKLocalSearchResponse	-			-	-	-	ios=6.1/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	c8cb5fb4071a6aa1
 super	-	MKLocalSearchResponse	NSObject		-	-	-	-	-	85ed239b5e0f618c

@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 typedef	c:@T@OSLogEntryStoreCategory	-			enum OSLogEntryStoreCategory	-	-	-	-	190a0f1ed23607a1
 enum	c:@E@OSLogEntryStoreCategory	-			NSInteger	-	-	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	191858173a8ac7a1
 enumconst	c:@E@OSLogEntryStoreCategory@OSLogEntryStoreCategoryUndefined	OSLogEntryStoreCategory			-	-	-	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	494f99aeb38d9bd9
@@ -26,7 +26,7 @@ property	c:objc(pl)OSLogEntryWithPayload(py)category	-			NSString *	-	readonly,n
 property	c:objc(pl)OSLogEntryWithPayload(py)components	-			NSArray<OSLogMessageComponent *> *	-	readonly,nonatomic	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	344fcc934fb92733
 property	c:objc(pl)OSLogEntryWithPayload(py)formatString	-			NSString *	-	readonly,nonatomic	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	427d1f6c9710222b
 property	c:objc(pl)OSLogEntryWithPayload(py)subsystem	-			NSString *	-	readonly,nonatomic	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	1cf5a9620b247eb8
-category	c:objc(ext)OSLogEntry	-	-		-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	64db666b92f9c234
+category	c:objc(ext)OSLogEntry	-	-		-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	31f1c57c44b5aac3
 conforms	-	OSLogEntry	NSSecureCoding		-	-	-	-	-	8d4d6be83f806ef3
 interface	c:objc(cs)OSLogEntryActivity	-			-	-	-	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	c62ae8a86b045fb2
 super	-	OSLogEntryActivity	OSLogEntry		-	-	-	-	-	65c538f618ff3e81

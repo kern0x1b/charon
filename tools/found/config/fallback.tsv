@@ -1,0 +1,9 @@
+# The frameworks with no module-map header that decls reads from their Headers/ folder (review F29): the umbrella header Headers/<Name>.h
+# alone when there is one, else every header of Headers/. Any other framework with no module map is an error. A row is a name, a TAB
+# and the reason; a row for a framework that has a module map, or that has no header to read, is an error (decls).
+# Measured at the tip (decls over all 293 frameworks, these five listed): exactly these five take the fallback.
+Accelerate/vImage	no module map; the umbrella header Headers/vImage.h is read and the headers it includes under Headers/ are its own (887 rows, its shard)
+Accelerate/vecLib	no module map; the umbrella header Headers/vecLib.h is read and the headers it includes under Headers/ are its own (4,850 rows, its shard)
+IOKit	no module map and no umbrella header: the 11 headers of Headers/ are read as its public set (299 rows, its shard)
+RealityKit	no module map; only the umbrella header Headers/RealityKit.h is read, not the six other headers of Headers/; the read declares nothing of its own (census own=0, foreign=0), so it has no shard
+_CoreNFC_UIKit	no module map; the umbrella header Headers/_CoreNFC_UIKit.h is the one header read (3 rows, its shard)

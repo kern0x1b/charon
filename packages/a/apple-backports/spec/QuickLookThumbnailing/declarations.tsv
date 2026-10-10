@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 typedef	c:@T@QLThumbnailRepresentationType	-			enum QLThumbnailRepresentationType	-	-	-	-	227d465327aee04c
 enum	c:@E@QLThumbnailRepresentationType	-			NSInteger	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9ab43de98ecfdd49
 enumconst	c:@E@QLThumbnailRepresentationType@QLThumbnailRepresentationTypeIcon	QLThumbnailRepresentationType			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7207793c78dbbfbd

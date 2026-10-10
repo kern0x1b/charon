@@ -1,4 +1,4 @@
-#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2)	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
+#libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash
 typedef	c:@T@AVVideoFrameAnalysisType	-			enum AVVideoFrameAnalysisType	-	-	-	-	e908e8bee0786ea7
 enum	c:@E@AVVideoFrameAnalysisType	-			NSUInteger	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e73214d2ea27e480
 enumconst	c:@E@AVVideoFrameAnalysisType@AVVideoFrameAnalysisTypeNone	AVVideoFrameAnalysisType			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	76fdd043f840894a
@@ -101,7 +101,7 @@ method	c:objc(pl)AVPictureInPictureControllerDelegate(im)pictureInPictureControl
 method	c:objc(pl)AVPictureInPictureControllerDelegate(im)pictureInPictureControllerWillStopPictureInPicture:	-			void	AVPictureInPictureController * pictureInPictureController	optional	ios=9.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	fec5c81f2daa8be0
 method	c:objc(pl)AVPictureInPictureControllerDelegate(im)pictureInPictureControllerDidStopPictureInPicture:	-			void	AVPictureInPictureController * pictureInPictureController	optional	ios=9.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	ee2c87d423b93beb
 method	c:objc(pl)AVPictureInPictureControllerDelegate(im)pictureInPictureController:restoreUserInterfaceForPictureInPictureStopWithCompletionHandler:	-			void	AVPictureInPictureController * pictureInPictureController | void (^)(BOOL) completionHandler	optional	ios=9.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	779ada62448e6dc3
-category	c:objc(ext)AVPictureInPictureController	-	-		-	-	-	ios=9.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	c97de87fe846c8ba
+category	c:objc(ext)AVPictureInPictureController	-	-		-	-	-	ios=9.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	a8b9d631d551e40b
 method	c:objc(cs)AVPictureInPictureController(im)invalidatePlaybackState	-			void	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	804ef67ebde2cd8f
 protocol	c:objc(pl)AVPictureInPictureSampleBufferPlaybackDelegate	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	040bfcc2aa50525a
 conforms	-	AVPictureInPictureSampleBufferPlaybackDelegate	NSObject		-	-	-	-	-	9d8b3dbee3617b4e
