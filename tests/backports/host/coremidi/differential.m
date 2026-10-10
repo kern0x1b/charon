@@ -575,6 +575,18 @@ static void check_sysex_long(void)
     check(failed == 0, name, detail);
 }
 
+// A word count whose byte size wraps is refused, as a list too small is: nothing is copied (CharonMIDIEventListAdd).
+static void check_event_list_wrap(void)
+{
+    Byte buffer[64];
+    MIDIEventList *list = (MIDIEventList *)buffer;
+    list->protocol = kMIDIProtocol_2_0;
+    list->numPackets = 0;
+    UInt32 word = 0;
+    MIDIEventPacket *next = CharonMIDIEventListAdd(list, sizeof(buffer), &list->packet[0], 0, SIZE_MAX / 2, &word);
+    check(next == NULL && list->numPackets == 0, "CharonMIDIEventListAdd refuses a word count whose byte size wraps", "");
+}
+
 static void check_new_entity_device_zero(void)
 {
     MIDIEntityRef entity = 99;
@@ -756,6 +768,7 @@ int main(void)
             gChecks += umpChecks;
         }
         check_new_entity_device_zero();
+        check_event_list_wrap();
         check_ble_parse();
         check_system_words();
         check_visit_word_sizes();

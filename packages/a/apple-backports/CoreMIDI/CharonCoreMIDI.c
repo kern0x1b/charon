@@ -432,9 +432,12 @@ MIDIEventPacket *CharonMIDIEventListAdd(MIDIEventList *list, size_t listSize, MI
 {
     uint8_t *base = (uint8_t *)list;
     size_t end = (size_t)((uint8_t *)curPacket - base);
-    size_t bytes = 4 * wordCount;
     if (wordCount == 0)
         return curPacket;
+    // A count whose byte size, with the packet header, wraps cannot be held in any list: the answer is that of a list too small.
+    if (wordCount > (SIZE_MAX - 16) / 4)
+        return NULL;
+    size_t bytes = 4 * wordCount;
     if (list->numPackets > 0) {
         MIDIEventPacket *last = &list->packet[0];
         for (UInt32 k = 1; k < list->numPackets; k++)
