@@ -455,7 +455,7 @@ local function header_text(tree, framework, entries, defined16, have, protocols1
         end
     end
     local lines = {"// Charon" .. framework .. "Protocols.h \u{2014} the " .. framework .. " protocols the generated protocol sources name, written by",
-                   "// xmake l tools/gen.lua protocols. One the SDK this package compiles against already defines, or a",
+                   "// tools/transcribe-protocols.py. One the SDK this package compiles against already defines, or a",
                    "// header of this folder does, is forward-declared and its body comes from that import; any other is",
                    "// transcribed from the SDK that declares it: the base list, each member with its kind and types,",
                    "// @required and @optional as sections, and API_AVAILABLE(ios(<introduced>)). Facts only.",
