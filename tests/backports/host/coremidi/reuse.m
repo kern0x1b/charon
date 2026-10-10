@@ -6,9 +6,11 @@
 // the owner stamp is kept per reference, and the 1.0 send or receive of a route is recorded instead of sent. Nothing is linked from
 // the release for these calls.
 //
-// The expectations are the answers macOS gave in oracle/probe2-macos.txt (lines 2 to 5, one destination): the first RPN a
-// destination is sent selects its parameter (controllers 101 and 100) before the data entry (6); the same parameter sent again on
-// the same destination is the data entry alone. A new destination is a new endpoint, so its first RPN selects again. The source
+// The expectations are the answers macOS gave in oracle/probe2-macos.txt (one destination): the first RPN a destination is sent
+// selects its parameter (controllers 101 and 100) before the data entry (6), line 4; the same parameter sent again on the same
+// destination is the data entry alone, line 7 (after line 6, which selected it again because an NRPN came between). A new
+// destination is a new endpoint, so its first RPN selects again: that is the library's rule, the oracle has no answer for a new
+// destination. The source
 // case (CharonMIDISource, CharonMIDIReceive) has no macOS oracle of its own: it expects what the destination case expects, because
 // the translation of a route is the same for a send and a receive. That is the library's rule, not a measured answer of the release.
 #import <CoreMIDI/CoreMIDI.h>
@@ -154,12 +156,12 @@ int main(void)
                "the library makes a 1.0 destination at reference 5");
         expect(send_rpn(5, 1u << 25) == noErr, "the first RPN is sent to the destination");
         expect_bytes(kSelectAndData1, sizeof(kSelectAndData1), 5,
-                     "the first RPN of a destination selects its parameter, then sends its data (macOS, probe2 line 3)");
+                     "the first RPN of a destination selects its parameter, then sends its data (macOS, probe2 line 4)");
         // The control: the same parameter on the same destination is the data entry alone, so the selection is kept while the
         // destination is the same. A dropped route would show here as the selection sent again.
         expect(send_rpn(5, 2u << 25) == noErr, "the same parameter is sent again to the same destination");
         expect_bytes(kDataOnly2, sizeof(kDataOnly2), 5,
-                     "the same parameter again on the same destination sends its data alone (macOS, probe2 line 5)");
+                     "the same parameter again on the same destination sends its data alone (macOS, probe2 line 7)");
         // The release gives reference 5 to a new destination of this library: the old destination's selection must not be inherited.
         MIDIEndpointRef second = 0;
         gNextDestination = 5;
@@ -176,9 +178,9 @@ int main(void)
                "the library makes a 2.0 source at reference 7");
         expect(receive_rpn(7, 1u << 25) == noErr, "the first RPN is received from the source");
         expect_bytes(kSelectAndData1, sizeof(kSelectAndData1), 7,
-                     "the first RPN a source receives selects its parameter (macOS, probe2 line 3)");
+                     "the first RPN a source receives selects its parameter (the destination's answer, probe2 line 4)");
         expect(receive_rpn(7, 2u << 25) == noErr, "the same parameter is received again from the same source");
-        expect_bytes(kDataOnly2, sizeof(kDataOnly2), 7, "the same parameter again from the same source sends its data alone (macOS, probe2 line 5)");
+        expect_bytes(kDataOnly2, sizeof(kDataOnly2), 7, "the same parameter again from the same source sends its data alone (the destination's answer, probe2 line 7)");
         MIDIEndpointRef secondSource = 0;
         gNextSource = 7;
         expect(CharonMIDISource(0, CFSTR("second-source"), kMIDIProtocol_2_0, &secondSource) == noErr && secondSource == 7,
