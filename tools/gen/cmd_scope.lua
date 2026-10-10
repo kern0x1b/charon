@@ -94,7 +94,7 @@ local function number_of(value)
     return assert(tonumber(value), "not a number in the surface table: " .. value)
 end
 
--- The state of a protocol member, by the transcriber's facts for its protocol (protocol_member_state of tools/gen.py). proto: the
+-- The state of a protocol member, by the transcriber's facts for its protocol (protocol_member_state of tools/gen.py@52253c0650). proto: the
 -- protocol records of the framework (protocols.records).
 function protocol_member_state(owner, api, proto)
     local record = proto[owner]
@@ -224,7 +224,7 @@ local function constant_state(r)
     return "not generated: " .. value
 end
 
--- The one state a surface row is in, by the tables (scope_row_state of tools/gen.py). ctx: the framework's facts: led6 (the 6.1.3
+-- The one state a surface row is in, by the tables (scope_row_state of tools/gen.py@52253c0650). ctx: the framework's facts: led6 (the 6.1.3
 -- ledger's statuses by surface.key), registry (the canonical keys a registry row covers), protocols (the objc protocol names), proto
 -- (the protocol records), functions (the C function records), class_decisions (the classes.tsv decisions), spec_by_api (the spec
 -- rows by api), stub_reason (the trace layer's skip reason by canonical key), stub_keys (the stub keys, or nil with no stubs file),
@@ -302,7 +302,7 @@ function queue_item(state)
     return "open state, no queue entry names it", "decide the row by hand: the state names what is missing"
 end
 
--- Sorts the work queue by demand (sort key of tools/gen.py): a ranked row first, by rank; then the demand apps, most first; then the
+-- Sorts the work queue by demand (sort key of tools/gen.py@52253c0650): a ranked row first, by rank; then the demand apps, most first; then the
 -- framework and the api, in byte order. A row with the same key keeps the order the table gave it (seq).
 function sort_queue(queued)
     table.sort(queued, function(a, b)
@@ -334,7 +334,7 @@ function tie_out(surface_total, tied)
 end
 
 -- The state totals in the order the page lists them: by count, most first; a tie keeps the order the states were first counted (the
--- stable sort of tools/gen.py). totals: state -> count; first_counted: the states in the order they were first counted.
+-- stable sort of tools/gen.py@52253c0650). totals: state -> count; first_counted: the states in the order they were first counted.
 function ranked_totals(totals, first_counted)
     local rows = {}
     for i, state in ipairs(first_counted) do

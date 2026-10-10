@@ -1,5 +1,5 @@
 -- `protocols`: the snapshot of the objc protocols a framework names that the 6.1.3 release lacks, from the transcriber (transcribe.lua,
--- the port of tools/transcribe-protocols.py). For each framework it writes spec/<F>/protocols.tsv (one row per protocol and one per
+-- the port of tools/transcribe-protocols.py@52253c0650). For each framework it writes spec/<F>/protocols.tsv (one row per protocol and one per
 -- member: what the protocol is, from the 26.2 and 16.4 ASTs) and the header the transcriber writes for it, with the one em dash of the
 -- header written as a hyphen. --all: every surface framework. Returns the exit status: 1 when a transcriber stopped.
 --
@@ -147,7 +147,7 @@ local function protocol_owners(tree, fw, corpus, sdk)
 end
 
 -- The wanted protocols of a framework: the surface's objc protocol rows, then the owners it has no row for, as a list of
--- {name, introduced} sorted by name (protocol_wanted in tools/gen.py).
+-- {name, introduced} sorted by name (protocol_wanted in tools/gen.py@52253c0650).
 local function protocol_wanted(tree, fw, corpus, sdk)
     local wanted = {}
     for _, row in pairs(surface.surface_rows(corpus, fw)) do
@@ -170,7 +170,7 @@ local function protocol_wanted(tree, fw, corpus, sdk)
     return list
 end
 
--- The snapshot's text of the facts: the protocol row, then one row per member (protocol_tsv in tools/gen.py). Each row has the eleven
+-- The snapshot's text of the facts: the protocol row, then one row per member (protocol_tsv in tools/gen.py@52253c0650). Each row has the eleven
 -- columns, and a "-" where the protocol row has no member.
 local function protocols_tsv(records)
     local lines = {table.concat(PROTOCOL_COLUMNS, "\t")}

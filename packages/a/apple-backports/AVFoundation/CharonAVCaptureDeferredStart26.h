@@ -15,7 +15,7 @@
 // what AVCaptureControls18.m and CharonAVCaptureDeviceExternalSync26.h do for the same reason.
 //
 // THE PROTOCOL IS NOT DECLARED HERE: AVCaptureSessionDeferredStartDelegate is in
-// CharonAVFoundationProtocols.h, transcribed from the SDK 26.2 by tools/transcribe-protocols.py and named by the
+// CharonAVFoundationProtocols.h, transcribed from the SDK 26.2 by tools/transcribe-protocols.py@52253c0650 and named by the
 // generated protocol source with @protocol(...). It is named here as a forward declaration only, so the two
 // signatures below resolve.
 //

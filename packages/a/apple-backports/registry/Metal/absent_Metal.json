@@ -390,7 +390,7 @@
       "status": "implemented",
       "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
       "effect": "the port declares the protocol in Protocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
-      "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
+      "source": "written by tools/transcribe-protocols.py@52253c0650 from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
       "facts": "facts/Metal/Descriptors14.md"
     },
     {
@@ -412,7 +412,7 @@
       "status": "implemented",
       "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
       "effect": "the port declares the protocol in Protocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
-      "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
+      "source": "written by tools/transcribe-protocols.py@52253c0650 from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
       "facts": "facts/Metal/Descriptors14.md"
     },
     {
@@ -456,7 +456,7 @@
       "status": "implemented",
       "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
       "effect": "the port declares the protocol in Protocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
-      "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
+      "source": "written by tools/transcribe-protocols.py@52253c0650 from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
       "facts": "facts/Metal/Descriptors14.md"
     },
     {
@@ -489,7 +489,7 @@
       "status": "implemented",
       "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
       "effect": "the port declares the protocol in Protocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
-      "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
+      "source": "written by tools/transcribe-protocols.py@52253c0650 from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
       "facts": "facts/Metal/Descriptors14.md"
     },
     {
@@ -731,7 +731,7 @@
       "status": "implemented",
       "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
       "effect": "the port declares the protocol in Protocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
-      "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
+      "source": "written by tools/transcribe-protocols.py@52253c0650 from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
       "facts": "facts/Metal/Descriptors14.md"
     },
     {
@@ -753,7 +753,7 @@
       "status": "implemented",
       "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
       "effect": "the port declares the protocol in Protocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
-      "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
+      "source": "written by tools/transcribe-protocols.py@52253c0650 from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
       "facts": "facts/Metal/Descriptors14.md"
     },
     {
@@ -775,7 +775,7 @@
       "status": "implemented",
       "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
       "effect": "the port declares the protocol in Protocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
-      "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
+      "source": "written by tools/transcribe-protocols.py@52253c0650 from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
       "facts": "facts/Metal/Descriptors14.md"
     },
     {
@@ -786,7 +786,7 @@
       "status": "implemented",
       "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
       "effect": "the port declares the protocol in Protocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
-      "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
+      "source": "written by tools/transcribe-protocols.py@52253c0650 from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
       "facts": "facts/Metal/Descriptors14.md"
     },
     {
@@ -819,7 +819,7 @@
       "status": "implemented",
       "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
       "effect": "the port declares the protocol in Protocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
-      "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
+      "source": "written by tools/transcribe-protocols.py@52253c0650 from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
       "facts": "facts/Metal/Descriptors14.md"
     },
     {
@@ -874,7 +874,7 @@
       "status": "implemented",
       "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
       "effect": "the port declares the protocol in Protocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
-      "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
+      "source": "written by tools/transcribe-protocols.py@52253c0650 from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
       "facts": "facts/Metal/Descriptors14.md"
     },
     {
@@ -984,7 +984,7 @@
       "status": "implemented",
       "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
       "effect": "the port declares the protocol in Protocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
-      "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
+      "source": "written by tools/transcribe-protocols.py@52253c0650 from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
       "facts": "facts/Metal/Descriptors14.md"
     },
     {
@@ -1178,7 +1178,7 @@
       "minimum": "6.0",
       "status": "absent",
       "reason": "the commands themselves - load a file's bytes into a buffer the GPU reads, read one back out - each a bindless-storage operation; this release's GPU has no bindless resource path, and the queue that would vend one is absent, so nothing in this port encodes, commits or runs a single one of them",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil, and the port declares no such protocol - CharonMetalProtocols.h holds 32 @protocol declarations and this is not one of them (grep -n '@protocol' packages/a/apple-backports/Metal/CharonMetalProtocols.h, the header tools/transcribe-protocols.py writes). ON THIS HOST THE QUERY ANSWERS NON-NIL, because the host's own Metal registers Apple's protocol and class names: that measures the host and not the port, which is the trap the MTLArgumentEncoder row of this same file records, and the answer above is the one a binary linking the port's Metal objects gives on a release. - facts/Metal/Metal16Absence.md",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil, and the port declares no such protocol - CharonMetalProtocols.h holds 32 @protocol declarations and this is not one of them (grep -n '@protocol' packages/a/apple-backports/Metal/CharonMetalProtocols.h, the header tools/transcribe-protocols.py@52253c0650 writes). ON THIS HOST THE QUERY ANSWERS NON-NIL, because the host's own Metal registers Apple's protocol and class names: that measures the host and not the port, which is the trap the MTLArgumentEncoder row of this same file records, and the answer above is the one a binary linking the port's Metal objects gives on a release. - facts/Metal/Metal16Absence.md",
       "source": "SDK 16.4 MTLIOCommandQueue.h for the protocol. The port declares no such protocol: grep -n '@protocol' packages/a/apple-backports/Metal/CharonMetalProtocols.h reads 32 declarations and this is not one of them, and that header is what a caller compiles against, so NSProtocolFromString has nothing of this name to find. python3 tools/cache-index/first-rung.py over the 50-rung ladder reads 16.0 for the name, with a nonsense name reading NONE for the control, so no held release below 16.0 carries it either - facts/Metal/Metal16Absence.md",
       "facts": "facts/Metal/Metal16Absence.md"
     },
@@ -1189,7 +1189,7 @@
       "minimum": "6.0",
       "status": "absent",
       "reason": "a queue that schedules command buffers which read from file handles and write into MTLBuffers, and a load or a read of that kind is a bindless-storage operation; this release's GPU has no bindless resource path, so there is no queue for such commands to be scheduled on and a conformer here would be asked to load nothing",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil, and the port declares no such protocol - CharonMetalProtocols.h holds 32 @protocol declarations and this is not one of them (grep -n '@protocol' packages/a/apple-backports/Metal/CharonMetalProtocols.h, the header tools/transcribe-protocols.py writes). ON THIS HOST THE QUERY ANSWERS NON-NIL, because the host's own Metal registers Apple's protocol and class names: that measures the host and not the port, which is the trap the MTLArgumentEncoder row of this same file records, and the answer above is the one a binary linking the port's Metal objects gives on a release. - facts/Metal/Metal16Absence.md",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil, and the port declares no such protocol - CharonMetalProtocols.h holds 32 @protocol declarations and this is not one of them (grep -n '@protocol' packages/a/apple-backports/Metal/CharonMetalProtocols.h, the header tools/transcribe-protocols.py@52253c0650 writes). ON THIS HOST THE QUERY ANSWERS NON-NIL, because the host's own Metal registers Apple's protocol and class names: that measures the host and not the port, which is the trap the MTLArgumentEncoder row of this same file records, and the answer above is the one a binary linking the port's Metal objects gives on a release. - facts/Metal/Metal16Absence.md",
       "source": "SDK 16.4 MTLIOCommandQueue.h for the protocol. The port declares no such protocol: grep -n '@protocol' packages/a/apple-backports/Metal/CharonMetalProtocols.h reads 32 declarations and this is not one of them, and that header is what a caller compiles against, so NSProtocolFromString has nothing of this name to find. python3 tools/cache-index/first-rung.py over the 50-rung ladder reads 16.0 for the name, with a nonsense name reading NONE for the control, so no held release below 16.0 carries it either - facts/Metal/Metal16Absence.md",
       "facts": "facts/Metal/Metal16Absence.md"
     },
@@ -1241,7 +1241,7 @@
       "minimum": "6.0",
       "status": "absent",
       "reason": "a file as the source of a load command, raw or compressed; the load command is what is missing: this port's own path from a file to the GPU is an ordinary MTLBuffer filled by the application plus a blit encoder (registry/Metal/ios8blit.json), which is not a load command, so a conformer here would be a label on a file nothing reads",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil, and the port declares no such protocol - CharonMetalProtocols.h holds 32 @protocol declarations and this is not one of them (grep -n '@protocol' packages/a/apple-backports/Metal/CharonMetalProtocols.h, the header tools/transcribe-protocols.py writes). ON THIS HOST THE QUERY ANSWERS NON-NIL, because the host's own Metal registers Apple's protocol and class names: that measures the host and not the port, which is the trap the MTLArgumentEncoder row of this same file records, and the answer above is the one a binary linking the port's Metal objects gives on a release. - facts/Metal/Metal16Absence.md",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil, and the port declares no such protocol - CharonMetalProtocols.h holds 32 @protocol declarations and this is not one of them (grep -n '@protocol' packages/a/apple-backports/Metal/CharonMetalProtocols.h, the header tools/transcribe-protocols.py@52253c0650 writes). ON THIS HOST THE QUERY ANSWERS NON-NIL, because the host's own Metal registers Apple's protocol and class names: that measures the host and not the port, which is the trap the MTLArgumentEncoder row of this same file records, and the answer above is the one a binary linking the port's Metal objects gives on a release. - facts/Metal/Metal16Absence.md",
       "source": "SDK 16.4 MTLIOCommandQueue.h for the protocol. The port declares no such protocol: grep -n '@protocol' packages/a/apple-backports/Metal/CharonMetalProtocols.h reads 32 declarations and this is not one of them, and that header is what a caller compiles against, so NSProtocolFromString has nothing of this name to find. python3 tools/cache-index/first-rung.py over the 50-rung ladder reads 16.0 for the name, with a nonsense name reading NONE for the control, so no held release below 16.0 carries it either - facts/Metal/Metal16Absence.md",
       "facts": "facts/Metal/Metal16Absence.md"
     },
@@ -1262,7 +1262,7 @@
       "minimum": "6.0",
       "status": "absent",
       "reason": "the scratch memory an IO command borrows while it runs and returns when it is done; there is no IO command, so nothing ever asks for one, and a conformer would be asked for memory nothing reads",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil, and the port declares no such protocol - CharonMetalProtocols.h holds 32 @protocol declarations and this is not one of them (grep -n '@protocol' packages/a/apple-backports/Metal/CharonMetalProtocols.h, the header tools/transcribe-protocols.py writes). ON THIS HOST THE QUERY ANSWERS NON-NIL, because the host's own Metal registers Apple's protocol and class names: that measures the host and not the port, which is the trap the MTLArgumentEncoder row of this same file records, and the answer above is the one a binary linking the port's Metal objects gives on a release. - facts/Metal/Metal16Absence.md",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil, and the port declares no such protocol - CharonMetalProtocols.h holds 32 @protocol declarations and this is not one of them (grep -n '@protocol' packages/a/apple-backports/Metal/CharonMetalProtocols.h, the header tools/transcribe-protocols.py@52253c0650 writes). ON THIS HOST THE QUERY ANSWERS NON-NIL, because the host's own Metal registers Apple's protocol and class names: that measures the host and not the port, which is the trap the MTLArgumentEncoder row of this same file records, and the answer above is the one a binary linking the port's Metal objects gives on a release. - facts/Metal/Metal16Absence.md",
       "source": "SDK 16.4 MTLIOCommandQueue.h for the protocol. The port declares no such protocol: grep -n '@protocol' packages/a/apple-backports/Metal/CharonMetalProtocols.h reads 32 declarations and this is not one of them, and that header is what a caller compiles against, so NSProtocolFromString has nothing of this name to find. python3 tools/cache-index/first-rung.py over the 50-rung ladder reads 16.0 for the name, with a nonsense name reading NONE for the control, so no held release below 16.0 carries it either - facts/Metal/Metal16Absence.md",
       "facts": "facts/Metal/Metal16Absence.md"
     },
@@ -1273,7 +1273,7 @@
       "minimum": "6.0",
       "status": "absent",
       "reason": "the allocator a queue calls when a load command needs scratch space; there is no queue and no command that needs scratch, so nothing calls newScratchBufferWithMinimumSize: and a conformer is never asked",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil, and the port declares no such protocol - CharonMetalProtocols.h holds 32 @protocol declarations and this is not one of them (grep -n '@protocol' packages/a/apple-backports/Metal/CharonMetalProtocols.h, the header tools/transcribe-protocols.py writes). ON THIS HOST THE QUERY ANSWERS NON-NIL, because the host's own Metal registers Apple's protocol and class names: that measures the host and not the port, which is the trap the MTLArgumentEncoder row of this same file records, and the answer above is the one a binary linking the port's Metal objects gives on a release. - facts/Metal/Metal16Absence.md",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil, and the port declares no such protocol - CharonMetalProtocols.h holds 32 @protocol declarations and this is not one of them (grep -n '@protocol' packages/a/apple-backports/Metal/CharonMetalProtocols.h, the header tools/transcribe-protocols.py@52253c0650 writes). ON THIS HOST THE QUERY ANSWERS NON-NIL, because the host's own Metal registers Apple's protocol and class names: that measures the host and not the port, which is the trap the MTLArgumentEncoder row of this same file records, and the answer above is the one a binary linking the port's Metal objects gives on a release. - facts/Metal/Metal16Absence.md",
       "source": "SDK 16.4 MTLIOCommandQueue.h for the protocol. The port declares no such protocol: grep -n '@protocol' packages/a/apple-backports/Metal/CharonMetalProtocols.h reads 32 declarations and this is not one of them, and that header is what a caller compiles against, so NSProtocolFromString has nothing of this name to find. python3 tools/cache-index/first-rung.py over the 50-rung ladder reads 16.0 for the name, with a nonsense name reading NONE for the control, so no held release below 16.0 carries it either - facts/Metal/Metal16Absence.md",
       "facts": "facts/Metal/Metal16Absence.md"
     },

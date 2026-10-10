@@ -7,7 +7,7 @@ local strings = import("strings", {anonymous = true})
 local decl = import("decl", {anonymous = true})
 local files = import("files", {anonymous = true})
 
--- The package's root, where the hand sources are (SOURCES_ROOT of tools/gen.py).
+-- The package's root, where the hand sources are (SOURCES_ROOT of tools/gen.py@52253c0650).
 local SOURCES_ROOT = layout.constants().SOURCES_ROOT
 -- The directories the implementation scan leaves out, at every level.
 local IMPLEMENTATION_SKIP = strings.set({".gen", "spec", "registry", "facts", "overrides", "gen"})

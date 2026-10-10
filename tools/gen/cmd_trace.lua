@@ -54,7 +54,7 @@ local function sort_by(list, fields)
     return list
 end
 
--- The stub rows, each {api, kind}, unique and sorted by api and then kind (sorted(set(stub_rows)) of tools/gen.py).
+-- The stub rows, each {api, kind}, unique and sorted by api and then kind (sorted(set(stub_rows)) of tools/gen.py@52253c0650).
 local function sorted_stub_rows(rows)
     local seen, out = {}, {}
     for _, row in ipairs(rows) do
@@ -278,7 +278,7 @@ local function trace_one(args, fw)
 end
 
 -- The members the stub rule leaves out of one framework, with the reason each is left out, in the order they were decided: the scope's
--- reasons (stub_members of tools/gen.py, which runs before the inherited-selector rule trace_one adds). tree: the repository tree;
+-- reasons (stub_members of tools/gen.py@52253c0650, which runs before the inherited-selector rule trace_one adds). tree: the repository tree;
 -- fw: the framework; spec: the framework's spec rows; facts: the typed facts of the framework (headers.shard_facts); overridden: the set
 -- of the canonical keys a registry row covers; release_missing: the 6.1.3 ledger's statuses keyed by surface.key, or nil when the rule
 -- considers every declared member.

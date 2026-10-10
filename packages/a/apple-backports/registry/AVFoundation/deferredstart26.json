@@ -7,10 +7,10 @@
       "introduced": "26.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the 16.4 SDK this package compiles against declares no such protocol, so the port's own declaration is the only one a caller can conform to: CharonAVFoundationProtocols.h, transcribed from the SDK 26.2 by tools/transcribe-protocols.py (the command is quoted in that header). This registry row is what makes the generated protocol source emit it into every band: without it the conformance looks present in the source while the runtime has no protocol object to add it to, which is the trap facts/UIKit/UIKit16Absence.md records",
+      "reason": "the 16.4 SDK this package compiles against declares no such protocol, so the port's own declaration is the only one a caller can conform to: CharonAVFoundationProtocols.h, transcribed from the SDK 26.2 by tools/transcribe-protocols.py@52253c0650 (the command is quoted in that header). This registry row is what makes the generated protocol source emit it into every band: without it the conformance looks present in the source while the runtime has no protocol object to add it to, which is the trap facts/UIKit/UIKit16Absence.md records",
       "effect": "the protocol object exists with its two methods, so a caller can declare conformance and implement them. This port never sends either: -setDeferredStartDelegate:deferredStartDelegateCallbackQueue: raises NSObjectInaccessibleException, measured on this host with Apple's own reason, so no delegate is ever set and no callback is ever scheduled. The HOST has the protocol object too (measured: NSProtocolFromString answers present), so unlike the controls protocol this row has a host object and the port's is the one it emits",
       "facts": "facts/AVFoundation/CaptureDeferredStart26.md",
-      "source": "the header of the SDK 26.2 (AVCaptureSession.h:140-147 and :712-722), transcribed into CharonAVFoundationProtocols.h by tools/transcribe-protocols.py"
+      "source": "the header of the SDK 26.2 (AVCaptureSession.h:140-147 and :712-722), transcribed into CharonAVFoundationProtocols.h by tools/transcribe-protocols.py@52253c0650"
     },
     {
       "api": "-[AVCaptureSessionDeferredStartDelegate sessionDidRunDeferredStart:]",

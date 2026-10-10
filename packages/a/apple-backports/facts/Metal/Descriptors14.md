@@ -149,7 +149,7 @@ says it is going no further.
 `MTLVisibleFunctionTable` are declared in `CharonMetalProtocols.h`, so a caller resolving one by its
 own name finds it — the rule from the stack-20 gate failure.
 
-`tools/transcribe-protocols.py` wrote all eleven, and each arrives as a **forward declaration**: the
+`tools/transcribe-protocols.py@52253c0650` wrote all eleven, and each arrives as a **forward declaration**: the
 SDK this package compiles against already declares them, so the body comes from the umbrella import
 and the generator writes only the name. It **refuses** to write anything for the fifteen protocols
 already in that header, so the file is a union of runs — this run's eleven were merged into it, and

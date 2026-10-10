@@ -4,7 +4,7 @@
 -- folder with no derived file present. It fails when
 -- any file outside packages/a/apple-backports/.gen appears or changes (gen may write only that folder), when gen or check exits
 -- non-zero, or when the Python oracle runs: gen and check run with a python3 on the PATH that writes a marker and fails, and the marker
--- must not exist afterwards (the build path reads the committed products and runs no gen.py). In a git work tree it checks HEAD, the last
+-- must not exist afterwards (the build path reads the committed products and runs no generator). In a git work tree it checks HEAD, the last
 -- commit: git archive reads committed files only, so an uncommitted change is not tested until it is committed. The archive, the python3
 -- stand-in and the marker are removed at the end. Run: xmake l tests/gen/clean_checkout_test.lua (from any folder)
 

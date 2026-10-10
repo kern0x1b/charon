@@ -29,5 +29,5 @@ tools/.media-player-include.m.ast
 # The sibling of a file the generators' atomic writer (tools/atomic.lua) was writing when its process was killed.
 *.charon-new.*
 
-# The generated layer of the apple-backports package: written by tools/gen.py from the committed spec/ snapshot at build time.
+# The generated layer of the apple-backports package: written by tools/gen.lua from the committed spec/ snapshot at build time.
 packages/a/apple-backports/.gen/

@@ -1,5 +1,5 @@
 -- The host side of the differential and of the probe: the oracle's values for names (found, missing, probe-crashed for a library
--- the oracle cannot load), the probe of tools/gen.py with its arguments and values, and the text helpers the differential prints
+-- the oracle cannot load), the probe of tools/gen.py@52253c0650 with its arguments and values, and the text helpers the differential prints
 -- with (Python's repr, str.splitlines). The probe builds the host programs through xmake, so this test configures the project
 -- (tools/gen/host). Run from the repository root:
 --   xmake l tests/gen/probe_test.lua

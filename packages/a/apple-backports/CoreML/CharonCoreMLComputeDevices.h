@@ -3,7 +3,7 @@
 // The SDK this package compiles against - the phone's, iOS 16.4 - has no MLAllComputeDevices.h,
 // MLCPUComputeDevice.h, MLComputeDeviceProtocol.h, MLGPUComputeDevice.h, MLNeuralEngineComputeDevice.h or
 // MLModel+MLComputeDevice.h, and every name in them arrived in iOS 17.0, so they are transcribed here from
-// the SDK of iOS 26.2 that declares them. Facts only, as tools/transcribe-protocols.py writes its own
+// the SDK of iOS 26.2 that declares them. Facts only, as tools/transcribe-protocols.py@52253c0650 writes its own
 // headers: no header text and no comment is copied, every signature is spelled as the 26.2 header spells it,
 // and the two types it only names - the compute device protocol and Metal's own device protocol - are
 // declared as the declarations the signatures need.

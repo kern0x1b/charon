@@ -1,4 +1,4 @@
--- The generation set of the protocol objects and the files it emits (tools/gen/protocols.lua, generation_set of tools/gen.py), on a
+-- The generation set of the protocol objects and the files it emits (tools/gen/protocols.lua, generation_set of tools/gen.py@52253c0650), on a
 -- fixture. A protocol is generated when the surface table lists it as an objc protocol, the 6.1.3 ledger lists it with a status other
 -- than header-ok, and no registry row names it (the rule, rule_set). The set the build uses is the reviewed record (protocol-sets/<F>.tsv):
 -- with the corpus, the rule must equal the record, and a difference is an error. Removing a registry row makes its protocol generated,

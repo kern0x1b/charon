@@ -1,6 +1,6 @@
 -- `input`: the constant record of a framework, spec/<F>/constants.tsv (committed data, one row per constant the 6.1.3 ledger lists as
 -- missing and the port has to export), and measured.held-caches.tsv when --measured names the gate's release-split output. It is the
--- port of tools/gen.py cmd_input, which is the oracle during the port; design-spec-driven.md "Records" and the report say where the two
+-- port of tools/gen.py@52253c0650 cmd_input, the oracle until its round-14 deletion; design-spec-driven.md "Records" and the report say where the two
 -- differ. Each row is read from the source that owns the fact:
 --   * the declaration shard (the extractor's IR): the variable's type, its introduced release (the iOS field of its availability) and
 --     the declaration hash the record keeps as declhash;
@@ -138,7 +138,7 @@ local function is_string(decl, typedefs)
     return false
 end
 
--- The text as the body of an ObjC string literal, ASCII only, escaped as gen.py's objc_escape escapes it. The iOS table is read as
+-- The text as the body of an ObjC string literal, ASCII only, escaped as gen.py@52253c0650's objc_escape escapes it. The iOS table is read as
 -- ASCII with errors="replace" (ios_constants), so each byte above 0x7f has already become one U+FFFD: every such byte is one \uFFFD here.
 local function objc_escape(text)
     local out = {}
@@ -253,7 +253,7 @@ local function owned_constants(tree, fw)
 end
 
 -- The typedefs of the shards that name a string type (string) and a CFStringRef (cf), read over the framework and the two it is
--- built on, as tools/gen.py string_typedefs and cf_typedefs read them.
+-- built on, as tools/gen.py@52253c0650 string_typedefs and cf_typedefs read them.
 local function typedefs_of(tree, fws)
     local string_names, cf_names = {}, {}
     for _, fw in ipairs(fws) do

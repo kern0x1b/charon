@@ -1,12 +1,12 @@
--- The NSObject selectors the generator's commands read, in one place. The lists are the oracle's (tools/gen.py): the trace layer leaves
+-- The NSObject selectors the generator's commands read, in one place. The lists are the oracle's (tools/gen.py@52253c0650): the trace layer leaves
 -- out an init, new, copy or mutableCopy the surface does not list (its inherited behaviour is what a call reaches); the scope takes an
 -- implicit NSObject selector or one a macro hides, which adds dealloc and description. cmd_trace and cmd_scope read their
 -- lists here.
 
--- The selectors the trace layer leaves out when the surface does not list them (tools/gen.py stub_members).
+-- The selectors the trace layer leaves out when the surface does not list them (tools/gen.py@52253c0650 stub_members).
 local TRACE_INHERITED = {init = true, new = true, copy = true, mutableCopy = true}
 
--- The selectors whose bare form the header parse does not spell (tools/gen.py scope).
+-- The selectors whose bare form the header parse does not spell (tools/gen.py@52253c0650 scope).
 local SCOPE_IMPLICIT = {init = true, new = true, copy = true, mutableCopy = true, dealloc = true, description = true}
 
 -- True when the trace layer leaves a selector out, when the surface does not list it.

@@ -1,4 +1,4 @@
-// Round-trip oracle for gen.py classify: runs on the host (macOS, or Mac Catalyst for UIKit) and reports, for each class
+// Round-trip oracle for gen.py@52253c0650 classify: runs on the host (macOS, or Mac Catalyst for UIKit) and reports, for each class
 // named in the input, whether it instantiates with -init, and for each property whether it reads back what was set, and
 // whether setting it moves any other property (a derived property).
 //

@@ -7,7 +7,7 @@
 // DECLARATION, and that is what this file is: the class, its base, the members with their attributes
 // and types, and API_AVAILABLE(ios(26.0)) so a band places the row by the release it arrived in.
 //
-// Facts only, the rule tools/transcribe-protocols.py works by: a name, a kind, a type, an attribute.
+// Facts only, the rule tools/transcribe-protocols.py@52253c0650 works by: a name, a kind, a type, an attribute.
 // No header text and no comment of Apple's is copied, and every enumeration case below is the value
 // the 26.2 header gives.
 //
@@ -39,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #if CHARON_METAL_SDK_MAX < 260000
 // ONE PROTOCOL IS HERE RATHER THAN IN CharonMetalProtocols.h, and the reason is which tool writes
-// each: that file is written by tools/transcribe-protocols.py, so a protocol written into it by hand
+// each: that file is written by tools/transcribe-protocols.py@52253c0650, so a protocol written into it by hand
 // is one a regeneration would collide with. MTL4BinaryFunction is Metal 4's own
 // (MTL4BinaryFunction.h:24), it is named by three of the members below, and no source in this folder
 // reads its members - the descriptor family only holds arrays of id<MTL4BinaryFunction> - so the two
@@ -448,7 +448,7 @@ API_AVAILABLE(ios(26.0))
 // spelled in and which arrived with the SDK of 26. Nothing in this header reads its members - the
 // options only hold an id<MTLLogState> - so a forward declaration is the whole of it, and it belongs
 // here rather than in CharonMetalProtocols.h because that file is written by
-// tools/transcribe-protocols.py and a protocol written into it by hand is one a regeneration collides
+// tools/transcribe-protocols.py@52253c0650 and a protocol written into it by hand is one a regeneration collides
 // with.
 @protocol MTLLogState;
 

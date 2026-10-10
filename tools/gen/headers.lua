@@ -229,7 +229,7 @@ local function declared_index(tree)
     return declared_memo[tree]
 end
 
--- The declared names the iOS build sees (gen.py declared_names, read over every shard instead of a list of frameworks): a set, a copy of
+-- The declared names the iOS build sees (gen.py@52253c0650 declared_names, read over every shard instead of a list of frameworks): a set, a copy of
 -- the tree's declared names. fw is the framework asked for; its own shard is one of the tree's. With a source injected, its declared set.
 function declared_names(tree, fw)
     if injected then

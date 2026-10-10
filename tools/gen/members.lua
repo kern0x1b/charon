@@ -1,5 +1,5 @@
 -- The member rows of a framework from its shard facts (headers.shard_facts, design-foundation.md 5.7): the port of member_rows in
--- tools/gen.py on the IR. One row per member, the first occurrence per api. A member's api is side, "[", the class, a space, the
+-- tools/gen.py@52253c0650 on the IR. One row per member, the first occurrence per api. A member's api is side, "[", the class, a space, the
 -- name and "]": the class is the one the USR names (a category member keeps its class), and the side is the shard's: "+" for a
 -- class method or class property (section 3.5). Protocol members are not in the shards (the protocols transcriber owns them).
 -- The spec's type column is the shard's type (the typed shards, design-foundation.md 5.7); the declaration text is not a spec column
@@ -7,7 +7,7 @@
 -- the hash is the declaration hash (the IR's declhash).
 
 -- The mangled key of an api: a C identifier. A class member's key starts with class_, so it never collides with an instance member
--- of the same selector (mangle in tools/gen.py).
+-- of the same selector (mangle in tools/gen.py@52253c0650).
 function mangle(api)
     local body = string.gsub(string.gsub(api, "[^A-Za-z0-9]+", "_"), "^_+", "")
     body = string.gsub(body, "_+$", "")

@@ -7,7 +7,7 @@ Header: `CharonAVCaptureDeferredStart26.h`, transcribed from the SDK 26.2 (`AVCa
 `AVCaptureOutputBase.h:117-131`, `AVCaptureVideoPreviewLayer.h:262-278`).
 
 **The protocol is not declared in that header.** `AVCaptureSessionDeferredStartDelegate` is in
-`CharonAVFoundationProtocols.h`, transcribed from the SDK 26.2 by `tools/transcribe-protocols.py`, and the
+`CharonAVFoundationProtocols.h`, transcribed from the SDK 26.2 by `tools/transcribe-protocols.py@52253c0650`, and the
 protocol row in the registry is what makes the generated protocol source emit it into every band - without the
 row a conformance looks present in the source while the runtime has no protocol object to add it to (the trap
 `facts/UIKit/UIKit16Absence.md` records). The regeneration, its command and its line counts are in the delivery

@@ -33,7 +33,7 @@ function classes_file(tree, fw)
 end
 
 -- The class-object decisions the trace layer wrote: class -> {generated = bool, reason = text}; {} when the trace layer has not run
--- for the framework (load_class_decisions of tools/gen.py).
+-- for the framework (load_class_decisions of tools/gen.py@52253c0650).
 function load_class_decisions(tree, fw)
     local out = {}
     local text = files.read_text(classes_file(tree, fw))

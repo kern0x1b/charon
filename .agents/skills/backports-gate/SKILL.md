@@ -38,7 +38,7 @@ names the rows, so run it too — it is the check that makes the failure cheap r
 that finds it first.
 
 To *declare* a protocol the 16.4 SDK does not have, regenerate the library's header rather than
-editing it — `tools/transcribe-protocols.py` over the 26.2 and 16.4 SDK sysroots, with the wanted
+editing it — `xmake l tools/gen.lua protocols` over the 26.2 and 16.4 SDK sysroots, with the wanted
 list read from the registry. It forward-declares a protocol a header of the library's own folder
 declares and imports that header, so the eight trait protocols of UIKit come from
 `CharonTraits17.h`; the command and the row list are in the commit that regenerated them

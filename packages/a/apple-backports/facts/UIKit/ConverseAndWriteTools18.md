@@ -165,7 +165,7 @@
 //    `UIWritingToolsCoordinatorDelegate` is the one PROTOCOL row, and it is not built for a different
 //    reason: an `implemented` protocol row needs a header that declares it with a body (the gate writes
 //    one source per release a library's protocol rows arrived in, naming the row, and a row no header
-//    declares is a source that does not compile), and tools/transcribe-protocols.py reads BOTH the 26.2
+//    declares is a source that does not compile), and tools/transcribe-protocols.py@52253c0650 reads BOTH the 26.2
 //    and the 16.4 sysroots.  With one of the two missing, transcribing is not possible here.  What closes
 //    it is the 26.2 sysroot too.
 //

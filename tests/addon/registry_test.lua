@@ -854,7 +854,7 @@ local function inline_rows_step(backports, opt, found)
     end
 end
 
--- A generated row (.gen/<Framework>/rows.tsv, written by tools/gen.py before the registry is read) is an implementation and is listed as one, so the
+-- A generated row (.gen/<Framework>/rows.tsv, written by tools/gen.lua before the registry is read) is an implementation and is listed as one, so the
 -- registry check reads it. It has to name the source that defines it: a row with no source, or with a source that is
 -- missing or does not define the name, is refused. A name the registry also holds is refused as a name told by two
 -- files, because an override is a registry row only and the index must not contain it.

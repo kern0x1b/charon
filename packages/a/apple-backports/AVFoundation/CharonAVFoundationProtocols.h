@@ -19,7 +19,7 @@
 
 @protocol AVMetricEventStreamSubscriber;
 
-// Below this one the tool's own output, character for character: `python3 tools/transcribe-protocols.py
+// Below this one the tool's own output, character for character: `python3 tools/transcribe-protocols.py@52253c0650
 // <sdk26> <sdk16> <worktree> <out> AVCaptureDataOutputSynchronizerDelegate:AVFoundation:11.0
 // AVQueuedSampleBufferRendering:AVFoundation:11.0 AVMetricEventStreamSubscriber:AVFoundation:18.0
 // AVCaptureSessionControlsDelegate:AVFoundation:18.0 AVCaptureSessionDeferredStartDelegate:AVFoundation:26.0`

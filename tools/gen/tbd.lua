@@ -22,7 +22,7 @@ local function next_slice(document, pos)
 end
 
 -- The slices of one document: each slice's text, from its header word to the next slice's header. The text before the first header
--- is not a slice (re.split(...)[1:] in tools/gen.py).
+-- is not a slice (re.split(...)[1:] in tools/gen.py@52253c0650).
 local function slices_of(document)
     local starts = {}
     local at, after = next_slice(document, 1)

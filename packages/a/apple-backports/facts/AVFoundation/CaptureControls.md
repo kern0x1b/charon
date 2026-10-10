@@ -61,7 +61,7 @@ Apple never reaches.
 **The host is not the oracle for the protocol.** Its header declares `AVCaptureSessionControlsDelegate` at
 `AVCaptureSession.h:717` and its runtime has no such protocol object: `NSProtocolFromString` answers nil and
 none of the 2141 protocols in the process carries that name. So the protocol row is answered by the port's
-own declaration - `CharonAVFoundationProtocols.h`, transcribed by `tools/transcribe-protocols.py` - and by the
+own declaration - `CharonAVFoundationProtocols.h`, transcribed by `tools/transcribe-protocols.py@52253c0650` - and by the
 generated `AVFoundationBackportsProtocols18.m` that emits its metadata into every band.
 
 ## What the releases carry, measured

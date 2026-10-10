@@ -205,7 +205,7 @@ registry lists for that band - and that file only names what `CharonUIKitProtoco
 per row). This protocol is not in it, so no protocol object is emitted and
 `attach.c:337` - which adds a category's protocols by resolving their names with
 `objc_getProtocol` - finds nothing and adds nothing, while the conformance looks present in the
-source. Transcribing it is a `tools/transcribe-protocols.py` run over a shared header other bands
+source. Transcribing it is a `tools/transcribe-protocols.py@52253c0650` run over a shared header other bands
 are also editing.
 
 The second is the reason the row is worth little on its own: `sourceItem` is the only API that

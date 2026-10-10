@@ -12,7 +12,7 @@
 #import "CharonMetal.h"
 #import "CharonMetal26Types.h"
 // THE TRANSCRIBED @protocol MTL4CommandQueue, which the 16.4 SDK this file compiles against does not
-// declare and which the class below adopts: facts only, written by tools/transcribe-protocols.py.
+// declare and which the class below adopts: facts only, written by tools/transcribe-protocols.py@52253c0650.
 #import "CharonMetalProtocols.h"
 
 // THE METAL 4 QUEUE, over the port's own CharonMetalQueue, which is the queue that works: it holds the
@@ -77,7 +77,7 @@
 // none of them on the queue the queue did not exist as far as the corpus was concerned.
 // **THE CLASS CONFORMS TO @protocol MTL4CommandQueue, and that is what makes the ten member rows
 // answerable.** iOS 6 has no Metal 4 protocol to adopt, so the declaration is transcribed from the SDK that
-// has it into CharonMetalProtocols.h (tools/transcribe-protocols.py, facts only), and this conformance is
+// has it into CharonMetalProtocols.h (tools/transcribe-protocols.py@52253c0650, facts only), and this conformance is
 // what makes clang emit __OBJC_PROTOCOL_$_MTL4CommandQueue with the protocol's method list into this object.
 // The corpus asks for exactly that: MTL4CommandQueue is a `header-ok`, `needs lift` row. Without it the
 // methods are the port's own names on a Charon* class and every row naming the protocol is a row nothing

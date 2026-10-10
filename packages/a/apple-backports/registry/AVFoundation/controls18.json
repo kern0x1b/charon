@@ -18,7 +18,7 @@
       "introduced": "18.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the protocol is declared in CharonAVFoundationProtocols.h, transcribed from the SDK 26.2 by tools/transcribe-protocols.py, and the generated protocol source (AVFoundationBackportsProtocols18.m, written by modules/apple/backports.lua from this row) emits its metadata into every band from this one on, so a caller that conforms to it and links this library gets the protocol object",
+      "reason": "the protocol is declared in CharonAVFoundationProtocols.h, transcribed from the SDK 26.2 by tools/transcribe-protocols.py@52253c0650, and the generated protocol source (AVFoundationBackportsProtocols18.m, written by modules/apple/backports.lua from this row) emits its metadata into every band from this one on, so a caller that conforms to it and links this library gets the protocol object",
       "effect": "the protocol object exists with its four methods, so a caller can declare conformance and implement them. This host's own AVFoundation has no protocol object of this name although its header declares it at AVCaptureSession.h:717 (measured: NSProtocolFromString answers nil and none of the 2141 protocols in the process is AVCaptureSessionControlsDelegate), so the host is not the oracle for this row and the port's own declaration is",
       "facts": "facts/AVFoundation/CaptureControls.md",
       "source": "the header of the SDK 26.2 (AVCaptureSession.h:733-792), transcribed into CharonAVFoundationProtocols.h; the 18.0 arm64e cache's protocol metadata carries the same four methods, read with tools/corpus/objc-inventory.lua"

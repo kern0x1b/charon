@@ -1,7 +1,6 @@
 -- The generator of apple-backports, in Lua: `xmake l tools/gen.lua <command> --tree T [options]`.
--- A command is tools/gen/cmd_<command>.lua: it has run(args) and returns the exit status. A command whose module is not there yet
--- is still in tools/gen.py, the oracle, and the driver says so rather than falling back to Python. The design is in
--- coordination/wave-2026-10-03/design-spec-driven.md.
+-- A command is tools/gen/cmd_<command>.lua: it has run(args) and returns the exit status. Every command in COMMANDS has its module; the
+-- driver names a command that has none. The design is in coordination/wave-2026-10-03/design-spec-driven.md.
 
 local BOOLEAN_OPTIONS = {all = true, record = true, members = true, catalyst = true}
 local VALUE_OPTIONS = {tree = true, framework = true, ledger = true, sdk = true, owned = true, measured = true,
@@ -54,7 +53,7 @@ function main(command, ...)
     end
     local module = path.join(os.scriptdir(), "gen", "cmd_" .. command .. ".lua")
     if not os.isfile(module) then
-        print("gen: " .. command .. " is not ported to Lua yet (it is still in tools/gen.py)")
+        print("gen: " .. command .. " has no module (tools/gen/cmd_" .. command .. ".lua)")
         os.exit(2)
     end
     local args = parse({...})

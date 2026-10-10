@@ -10,7 +10,7 @@
 -- previous stack while CharonUIKitProtocols.h was last regenerated for another delivery.
 --
 -- A row passes when Charon<Folder>Protocols.h declares the protocol - forward (`@protocol X;`) or
--- with a body, which is what tools/transcribe-protocols.py writes for one the 16.4 SDK does not
+-- with a body, which is what tools/transcribe-protocols.py@52253c0650 writes for one the 16.4 SDK does not
 -- declare - or when it declares it in a header that header imports by name. The imports are followed
 -- inside the library's own folder and nowhere else, because that is where the generated source's
 -- include path reaches, and an import of a header the folder does not hold is reported as well: the

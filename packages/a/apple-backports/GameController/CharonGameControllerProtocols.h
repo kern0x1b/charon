@@ -12,7 +12,7 @@
 // compiles against declares it, with a body, in GCDevice.h, which the umbrella import below brings
 // in, so nothing is transcribed here and the forward declaration is the whole of what this file owes
 // it: the same case CharonAccessibilityProtocols.h is in another framework, and the same shape
-// tools/transcribe-protocols.py writes for a protocol the SDK the package compiles against defines.
+// tools/transcribe-protocols.py@52253c0650 writes for a protocol the SDK the package compiles against defines.
 //
 // Usage: nothing imports this by hand. It is the one header the build's own generated sources name.
 #import <GameController/GameController.h>

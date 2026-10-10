@@ -1,4 +1,4 @@
--- The probe of tools/gen.py (`probe`): the value of each named constant as a library holds it, read by the oracle through dlopen
+-- The probe of tools/gen.py@52253c0650 (`probe`): the value of each named constant as a library holds it, read by the oracle through dlopen
 -- and dlsym. The oracle is built from the project's fixed source (tools/gen-objc-constants-oracle.m) by xmake (host.lua), not from
 -- the tree the way the oracle's probe compiles it. The names are passed on the oracle's command line and its output is read through
 -- a pipe (stream.lua): no staging file is written, in the tree or in the build directory.
@@ -43,7 +43,7 @@ function values(library, names)
     return result
 end
 
--- The probe of tools/gen.py with the same arguments: the values of the names in the framework fw of this host. The project is
+-- The probe of tools/gen.py@52253c0650 with the same arguments: the values of the names in the framework fw of this host. The project is
 -- configured for fw and the tree's constants folder of fw, as the differential does; the probe itself reads only the host framework.
 -- Returns name -> {status, value}, as the oracle's probe returns name -> (status, value).
 function probe(tree, fw, names)

@@ -1,4 +1,4 @@
--- `diff`: the host differential of the constants (tools/gen.py cmd_diff). For each constant the spec holds as found, owned by
+-- `diff`: the host differential of the constants (tools/gen.py@52253c0650 cmd_diff). For each constant the spec holds as found, owned by
 -- nobody and exported on iOS, the value macOS holds is read by a reference program built against the host framework, and the
 -- value the generated constants objects hold is read by the oracle from the constants dylib and compared with it. Where macOS
 -- differs from the iOS 26.2 cache, the cache's value is the expectation (iOS wins). Prints one line per difference and a summary;

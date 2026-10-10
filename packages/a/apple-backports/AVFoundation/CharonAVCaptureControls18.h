@@ -26,7 +26,7 @@
 //
 // The protocol is NOT declared here: AVCaptureSessionControlsDelegate belongs to
 // CharonAVFoundationProtocols.h, which is the header modules/apple/backports.lua's generated protocol
-// sources import and the one tools/transcribe-protocols.py writes. A second declaration of the same
+// sources import and the one tools/transcribe-protocols.py@52253c0650 writes. A second declaration of the same
 // protocol in this folder would be a duplicate definition in every translation unit that sees both.
 #if !__has_include(<AVFCore/AVCaptureControl.h>)
 #import <Foundation/Foundation.h>

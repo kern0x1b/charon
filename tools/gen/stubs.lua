@@ -29,7 +29,7 @@ local function has_hand(hand, cls, selector)
     return hand[cls] ~= nil and hand[cls][selector] ~= nil
 end
 
--- The capitalised words of the types a member spells that the framework does not declare, sorted (UNDECLARED_CHECK of tools/gen.py).
+-- The capitalised words of the types a member spells that the framework does not declare, sorted (UNDECLARED_CHECK of tools/gen.py@52253c0650).
 local function undeclared_types(text, declared)
     local seen, out = {}, {}
     for word in string.gmatch(text, "[%w_]+") do
@@ -249,7 +249,7 @@ function functions(rows, env, skipped)
     return out
 end
 
--- The text of one stub (stub_text of tools/gen.py): the signature of the member, then its body. m is a member of members or functions.
+-- The text of one stub (stub_text of tools/gen.py@52253c0650): the signature of the member, then its body. m is a member of members or functions.
 function stub_text(fw, m)
     local log = 'static BOOL charon_logged = NO; if (!charon_logged) { charon_logged = YES; fprintf(stderr, "unimplemented: '
         .. fw .. ' %s\\n", "' .. m.api .. '"); }'

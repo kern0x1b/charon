@@ -1,5 +1,5 @@
 -- `functions`: the C-function snapshot of each framework, spec/<F>/functions.tsv: one row per function the surface lists as missing at
--- 6.1.3, read from the iOS view of the framework's headers (the port of cmd_functions in tools/gen.py). A function no header of the
+-- 6.1.3, read from the iOS view of the framework's headers (the port of cmd_functions in tools/gen.py@52253c0650). A function no header of the
 -- framework declares, or whose declaration does not read as a C function, is a row with its reason. --all: every surface framework.
 -- Returns 0.
 --
@@ -21,7 +21,7 @@ local C_BASE_WORDS = {void = true, char = true, short = true, int = true, long =
                       unsigned = true, bool = true, _Bool = true, const = true, volatile = true, struct = true, enum = true,
                       union = true, id = true, SEL = true, Class = true, BOOL = true, IMP = true, CGFloat = true, NSInteger = true,
                       NSUInteger = true, size_t = true, instancetype = true}
--- The platform values of the TARGET_OS_ macros an #if can name, as the iOS build sees them (gen.py PLATFORM_VALUES).
+-- The platform values of the TARGET_OS_ macros an #if can name, as the iOS build sees them (gen.py@52253c0650 PLATFORM_VALUES).
 local PLATFORM_VALUES = {TARGET_OS_IPHONE = 1, TARGET_OS_IOS = 1, TARGET_OS_EMBEDDED = 1, TARGET_OS_MAC = 0, TARGET_OS_OSX = 0,
                          TARGET_OS_VISION = 0, TARGET_OS_WATCH = 0, TARGET_OS_TV = 0, TARGET_OS_SIMULATOR = 0,
                          TARGET_OS_MACCATALYST = 0, TARGET_OS_DRIVERKIT = 0, TARGET_OS_BRIDGE = 0, TARGET_OS_UIKITFORMAC = 0,
@@ -322,7 +322,7 @@ local function defined_end(text, i)
     return stop
 end
 
--- The Python expression of an #if condition over the TARGET_OS_ values (gen.py platform_value up to eval): defined(NAME) is 1 for a
+-- The Python expression of an #if condition over the TARGET_OS_ values (gen.py@52253c0650 platform_value up to eval): defined(NAME) is 1 for a
 -- platform name, every other name is its value. nil when the condition names anything else or has a character Python would not read here.
 local function platform_value_of(expr)
     for name in string.gmatch(expr, "defined%s*%(%s*([%w_]+)%s*%)") do
@@ -476,7 +476,7 @@ local function evaluate(py)
     return value
 end
 
--- The value of an #if expression for iOS: true or false, or nil when the condition is not decided (gen.py platform_value).
+-- The value of an #if expression for iOS: true or false, or nil when the condition is not decided (gen.py@52253c0650 platform_value).
 local function platform_value(expr)
     local py = platform_value_of(expr)
     if py == nil then
@@ -486,7 +486,7 @@ local function platform_value(expr)
 end
 
 -- The header text as the iOS build reads it: each #if over TARGET_OS_ values keeps the branch that holds for iOS and drops the rest; a
--- condition this cannot decide keeps every branch. Returns the text and the count of undecided conditions (gen.py ios_text).
+-- condition this cannot decide keeps every branch. Returns the text and the count of undecided conditions (gen.py@52253c0650 ios_text).
 local function ios_text(text)
     local out, stack, undecided = {}, {}, 0
     local function active()
@@ -584,7 +584,7 @@ local function without_directive_lines(text)
     end, " ")
 end
 
--- The statements that call name at their top level, as gen.py c_statements: from the ; or } or @end before the name to the ; or { that
+-- The statements that call name at their top level, as gen.py@52253c0650 c_statements: from the ; or } or @end before the name to the ; or { that
 -- ends it. Offsets are the oracle's: 0-based, so the reads below follow its arithmetic. A name on a preprocessor line is no declaration.
 local function c_statements(text, name)
     local out = {}
@@ -648,7 +648,7 @@ local function c_statements(text, name)
     return out
 end
 
--- The arguments of a parameter list, split on the commas outside parentheses (gen.py split_top_level).
+-- The arguments of a parameter list, split on the commas outside parentheses (gen.py@52253c0650 split_top_level).
 local function split_top_level(body)
     local out, depth, current = {}, 0, ""
     for ch in string.gmatch(body, ".") do
@@ -671,7 +671,7 @@ local function split_top_level(body)
     return out
 end
 
--- A parameter with its name: the header's own, or p<index> where the header leaves it unnamed (gen.py named_param; index from 0).
+-- A parameter with its name: the header's own, or p<index> where the header leaves it unnamed (gen.py@52253c0650 named_param; index from 0).
 local function named_param(text, index)
     if string.find(text, "(^)", 1, true) or string.find(text, "(*)", 1, true) then
         local out = text
@@ -697,7 +697,7 @@ local function named_param(text, index)
 end
 
 -- The returns, params, introduced release and declaration text of a C function declared by a statement, or nil when it does not read as
--- one (gen.py c_declaration).
+-- one (gen.py@52253c0650 c_declaration).
 local function c_declaration(statement, name)
     local clean, avail = strip_macros(statement)
     clean = strip_nullability(clean)
@@ -774,7 +774,7 @@ local function c_declaration(statement, name)
 end
 
 -- The objc C functions the 6.1.3 ledger lists as missing (not header-ok) and no registry row names: {api, introduced}, sorted
--- (gen.py function_wanted).
+-- (gen.py@52253c0650 function_wanted).
 local function function_wanted(tree, fw, corpus)
     local led6 = surface.ledger_status(corpus, fw, surface.ledger_6_1_3())
     local registry = surface.registry_entries(tree, fw)
@@ -794,7 +794,7 @@ local function function_wanted(tree, fw, corpus)
     return out
 end
 
--- The header text of a framework's 26.2 headers, every header under Headers (subfolders included), in path order (gen.py
+-- The header text of a framework's 26.2 headers, every header under Headers (subfolders included), in path order (gen.py@52253c0650
 -- header_text_recursive).
 local function header_text_recursive(sdk, fw)
     local base = path.join(sdk, "System", "Library", "Frameworks", fw .. ".framework", "Headers")

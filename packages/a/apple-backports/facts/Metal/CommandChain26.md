@@ -259,7 +259,7 @@ for. The four `inert` rows did not fail because only `implemented` rows are held
 **THE FIX IS THE CONFORMANCE, and the corpus asked for it**: `MTL4CommandQueue` in
 `coordination/corpus/ledger-2026-10-03/Metal.tsv` is a `protocol` row at 26.0 with status `header-ok` and
 `needs lift`. `@protocol MTL4CommandQueue` is transcribed into `CharonMetalProtocols.h` by
-`tools/transcribe-protocols.py` - facts only: the base list, every member with its types, `@required` and
+`tools/transcribe-protocols.py@52253c0650` - facts only: the base list, every member with its types, `@required` and
 `@optional` as sections, and `API_AVAILABLE(ios(26.0))` - and `CharonMetal4CommandQueue` declares conformance,
 which is the only thing that makes clang emit `__OBJC_PROTOCOL_$_MTL4CommandQueue` and its method list. That
 tool's own comment carries the measurement: importing the header, using `id<name>` and naming it in

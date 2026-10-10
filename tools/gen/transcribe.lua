@@ -1,4 +1,4 @@
--- The transcriber, the port of tools/transcribe-protocols.py (the oracle): the Charon headers that declare the protocols the SDK the
+-- The transcriber, the port of tools/transcribe-protocols.py@52253c0650@52253c0650 (the oracle until its round-14 deletion): the Charon headers that declare the protocols the SDK the
 -- package compiles against does not declare, from the SDK that does. run(args) takes the two SDKs, the tree and the wanted protocols
 -- ({name, framework, introduced}, sorted by name), dumps the 26.2 and 16.4 ASTs through the pipe (stream.text: no temp file), and
 -- returns each protocol's facts (what protocols.tsv records), the header text of each framework, and the refusals. Nothing is

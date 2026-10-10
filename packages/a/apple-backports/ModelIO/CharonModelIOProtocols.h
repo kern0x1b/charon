@@ -11,7 +11,7 @@
 // Every protocol this library's implemented rows name is declared, with a body, by the SDK of 16.4
 // this package compiles against, so nothing is transcribed here and each forward declaration below
 // is the whole of what this file owes it: the same case CharonGameControllerProtocols.h is in
-// another framework, and the same shape tools/transcribe-protocols.py writes for a protocol the SDK
+// another framework, and the same shape tools/transcribe-protocols.py@52253c0650 writes for a protocol the SDK
 // the package compiles against defines. Which header declares each, and the ios version clang names
 // for it, measured with -Wunguarded-availability at -target armv7-apple-ios6.1.3:
 //
