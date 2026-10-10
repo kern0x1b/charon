@@ -3,7 +3,8 @@
 MIDIEventListForEachEvent (iOS 15) calls a visitor with each Universal MIDI Packet of an event list, as a
 MIDIUniversalMessage of 28 bytes. The header fixes the fields; the measurements below fix what macOS CoreMIDI puts in
 them where the header is silent. Measured 2026-10-09 on this host by `tests/backports/host/coremidi/oracle/visit.m` and
-`visit-jr.txt`; the bytes are in `tests/backports/host/coremidi/visit-expectations.h`, and differential.m (check_visitor)
+`visit-jr.txt`; the bytes are in `visit-expectations.h`, which run.sh generates into its build folder from those recordings with
+`oracle/visit-expectations.lua` (no copy is committed), and differential.m (check_visitor)
 holds MIDIUniversalMessage's defined bytes to them: 38 messages, all equal.
 
 Measured:

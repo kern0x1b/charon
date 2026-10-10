@@ -48,7 +48,10 @@ xcrun clang $sanitize -c -Wall -Werror -I"$CORE" "$CORE/CharonCoreMIDI.c" -o "$b
 # differential-ports.m is compiled without the renames: it calls the release's own MIDISendEventList and friends as the oracle.
 xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" -c \
     "$here/differential-ports.m" -o "$build/differential-ports.o"
-xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" -I"$here" -I"$here/oracle" $renames \
+# The visitor's expectations are generated here, into the build folder, from the recorded macOS output (oracle/visit-macos.txt and
+# oracle/visit-jr.txt) by oracle/visit-expectations.lua: no generated header is committed, so there is none to go stale.
+(cd "$here/oracle" && xmake l ./visit-expectations.lua "$build/visit-expectations.h")
+xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -I"$build" -I"$CORE" -I"$here" -I"$here/oracle" $renames \
     "$here/differential.m" "$here/differential-ump.m" "$build/differential-ports.o" "$build/CharonCoreMIDI.o" "$build"/*.m.o -framework Foundation -framework CoreMIDI -o "$build/differential"
 "$build/differential" "$here/oracle" > "$build/log" 2>&1 && result=0 || result=$?
 awk '!/^ok /' "$build/log"

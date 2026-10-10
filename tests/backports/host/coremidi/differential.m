@@ -588,8 +588,8 @@ static void check_constants(void)
     check(matched == 12, "constants: the 12 keys and notifications are their names, as on macOS", detail);
 }
 
-// The visitor, held to the bytes macOS handed its own visitor for each input (visit-expectations.h, from
-// oracle/visit.m). Only the bytes a message type defines are compared: the rest of the 28 bytes is stack garbage on
+// The visitor, held to the bytes macOS handed its own visitor for each input (visit-expectations.h, which run.sh
+// generates into its build folder from oracle/visit-macos.txt and visit-jr.txt, the recorded output of oracle/visit.m). Only the bytes a message type defines are compared: the rest of the 28 bytes is stack garbage on
 // macOS, and the visitor's union is not zeroed there.
 #include "visit-expectations.h"
 

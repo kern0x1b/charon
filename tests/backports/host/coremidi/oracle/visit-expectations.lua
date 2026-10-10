@@ -1,4 +1,5 @@
--- Writes ../visit-expectations.h from the recorded visitor output of oracle/visit.m (visit-macos.txt) and of the utility
+-- Writes the header of the visitor's expectations (run.sh generates it into its build folder, at every run; no copy of it is
+-- committed) from the recorded visitor output of oracle/visit.m (visit-macos.txt) and of the utility
 -- probe (visit-jr.txt). Usage (from this directory): xmake l ./visit-expectations.lua <out.h>
 -- The files are read from the current directory, so run it from oracle/.
 

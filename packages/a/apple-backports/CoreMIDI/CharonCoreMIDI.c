@@ -90,7 +90,7 @@ UInt32 CharonMIDIUp32From14(UInt32 value)
 }
 
 // The sizes of the message types, as the macOS visitor reads them (oracle/visit-sizes.m, visit-sizes-macos.txt): types 6 and 7
-// are one word, 8 to 0xA two, 0xB and 0xC three, 0xD, 0xE and 0xF four (0xD and 0xF are in visit-expectations.h).
+// are one word, 8 to 0xA two, 0xB and 0xC three, 0xD, 0xE and 0xF four (0xD and 0xF are in visit-expectations.h, which run.sh generates from the recording).
 int CharonMIDIUMPWordCount(UInt32 word)
 {
     switch (word >> 28) {
