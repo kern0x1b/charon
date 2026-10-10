@@ -78,12 +78,15 @@ function lines(program, args, each)
         end
     end
     rpipe:close()
-    -- child:wait returns 0 while the child runs (the poll timed out), 1 once it has exited, -1 on error.
-    local finished = 0
-    repeat
-        finished = child:wait(CHILD_POLL)
-    until finished ~= 0
-    assert(finished == 1, "could not wait for " .. program)
+    -- An exit the read loop already observed is not waited for again: that wait reaped the child, and a second wait never reports
+    -- it (it spun forever in the doc and trace runs). child:wait returns 0 while the child runs, 1 once it has exited, -1 on error.
+    if not exited then
+        local finished = 0
+        repeat
+            finished = child:wait(CHILD_POLL)
+        until finished ~= 0
+        assert(finished == 1, "could not wait for " .. program)
+    end
     child:close()
     return status
 end

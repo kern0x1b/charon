@@ -4,12 +4,6 @@
 --   declared:     a set of the typedef, class and protocol names the iOS build sees
 --   typedefs:     name -> the text the typedef is defined as
 --   superclasses: class -> the superclass its @interface names in the headers (comments removed; a later line wins)
---   comments:     the comment the doc shows above a member, for the non-empty ones only: keyed by comment_key(class, kind, key)
---                 (kind is "method" or "property"; a method's key is its first selector part, a property's its name). Read with
---                 comment_of(facts, class, kind, key). The comment is taken from the header text the doc reads (platform blocks
---                 stripped, comments kept), by the parser's header_comment.
---   raw:          a set of the apis of the members the headers declare on any platform branch (the iOS view leaves some out)
---   identifiers:  a set of the words the headers spell outside their comments (every platform branch)
 -- The parser is `gen.py headers`, read through a pipe; it is the only part of the generator that reads SDK headers. A replacement
 -- parser prints the same kinds in the same fields, and nothing else changes. Tests inject their facts through use().
 
@@ -24,22 +18,12 @@ function use(source)
     injected = source
 end
 
--- The key of a comment fact: the class, the kind and the key, joined by tabs (a tab never occurs in a field).
-function comment_key(cls, kind, key)
-    return cls .. "\t" .. kind .. "\t" .. key
-end
-
--- The comment the header gives a member (see comments in the header of this module), or "" when it gives none.
-function comment_of(parsed, cls, kind, key)
-    return parsed.comments[comment_key(cls, kind, key)] or ""
-end
-
 -- The facts of one framework (see the header of this module).
 function facts(tree, fw, sdk)
     if injected then
         return injected(fw, sdk)
     end
-    local out = {members = {}, declared = {}, typedefs = {}, superclasses = {}, comments = {}, raw = {}, identifiers = {}}
+    local out = {members = {}, declared = {}, typedefs = {}, superclasses = {}}
     -- The parser is a Python program until it is replaced: this is the one place that names it.
     local status = stream.lines("python3", {path.join(tree, "tools", "gen.py"), "headers", "--tree", tree, "--framework", fw,
                                             "--sdk", sdk}, function(line)
@@ -54,12 +38,6 @@ function facts(tree, fw, sdk)
             out.typedefs[cells[2]] = cells[3]
         elseif cells[1] == "superclass" then
             out.superclasses[cells[2]] = cells[3]
-        elseif cells[1] == "comment" then
-            out.comments[comment_key(cells[2], cells[3], cells[4])] = cells[5] or ""
-        elseif cells[1] == "raw" then
-            out.raw[cells[2]] = true
-        elseif cells[1] == "identifier" then
-            out.identifiers[cells[2]] = true
         else
             error("the header parser printed an unknown fact: " .. cells[1])
         end
