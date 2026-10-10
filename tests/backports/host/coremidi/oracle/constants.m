@@ -1,4 +1,6 @@
 // Host probe: the string each CoreMIDI constant of the iOS 14 to 18 surface has on macOS, read from the framework.
+// The three UMP and association property keys are NULL until a MIDI client exists in the process, so they are read
+// twice: before and after MIDIClientCreate (the client is not persistent: it is disposed at exit and creates nothing).
 #import <CoreMIDI/CoreMIDI.h>
 #import <Foundation/Foundation.h>
 #include <stdio.h>
@@ -9,6 +11,12 @@ static void show(const char *name, CFStringRef value) {
 
 int main(void) {
     @autoreleasepool {
+        show("before MIDIClientCreate kMIDIPropertyAssociatedEndpoint", kMIDIPropertyAssociatedEndpoint);
+        show("before MIDIClientCreate kMIDIPropertyUMPActiveGroupBitmap", kMIDIPropertyUMPActiveGroupBitmap);
+        show("before MIDIClientCreate kMIDIPropertyUMPCanTransmitGroupless", kMIDIPropertyUMPCanTransmitGroupless);
+        MIDIClientRef client = 0;
+        OSStatus status = MIDIClientCreate(CFSTR("charon-constants"), NULL, NULL, &client);
+        printf("MIDIClientCreate=%d\n", (int)status);
         show("kMIDIPropertyAssociatedEndpoint", kMIDIPropertyAssociatedEndpoint);
         show("kMIDIPropertyUMPActiveGroupBitmap", kMIDIPropertyUMPActiveGroupBitmap);
         show("kMIDIPropertyUMPCanTransmitGroupless", kMIDIPropertyUMPCanTransmitGroupless);
@@ -24,6 +32,7 @@ int main(void) {
         show("MIDIUMPEndpointWasUpdatedNotification", MIDIUMPEndpointWasUpdatedNotification);
         show("MIDIUMPFunctionBlockObjectKey", MIDIUMPFunctionBlockObjectKey);
         show("MIDIUMPFunctionBlockWasUpdatedNotification", MIDIUMPFunctionBlockWasUpdatedNotification);
+        MIDIClientDispose(client);
     }
     return 0;
 }

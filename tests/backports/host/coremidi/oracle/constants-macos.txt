@@ -1,6 +1,10 @@
-kMIDIPropertyAssociatedEndpoint=(null)
-kMIDIPropertyUMPActiveGroupBitmap=(null)
-kMIDIPropertyUMPCanTransmitGroupless=(null)
+before MIDIClientCreate kMIDIPropertyAssociatedEndpoint=(null)
+before MIDIClientCreate kMIDIPropertyUMPActiveGroupBitmap=(null)
+before MIDIClientCreate kMIDIPropertyUMPCanTransmitGroupless=(null)
+MIDIClientCreate=0
+kMIDIPropertyAssociatedEndpoint=associated endpoint
+kMIDIPropertyUMPActiveGroupBitmap=active group bitmap
+kMIDIPropertyUMPCanTransmitGroupless=ump endpoint
 MIDICIDeviceObjectKey=MIDICIDeviceObjectKey
 MIDICIDeviceWasAddedNotification=MIDICIDeviceWasAddedNotification
 MIDICIDeviceWasRemovedNotification=MIDICIDeviceWasRemovedNotification

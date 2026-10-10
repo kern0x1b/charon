@@ -7,7 +7,7 @@
       "introduced": "18.0",
       "status": "implemented",
       "facts": "facts/CoreMIDI/Constants.md",
-      "source": "the value macOS CoreMIDI reads through the linked symbol (NULL), tests/backports/host/coremidi/oracle/constants.m"
+      "source": "the key macOS CoreMIDI holds once a client exists (associated endpoint, after MIDIClientCreate), tests/backports/host/coremidi/oracle/constants.m"
     },
     {
       "api": "MIDICIDeviceObjectKey",

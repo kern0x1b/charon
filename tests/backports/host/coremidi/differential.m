@@ -366,9 +366,14 @@ extern NSString *const charon_host_MIDIUMPFunctionBlockWasUpdatedNotification;
 
 static void check_constants(void)
 {
-    check(charon_host_kMIDIPropertyUMPActiveGroupBitmap == NULL, "constant kMIDIPropertyUMPActiveGroupBitmap is NULL, as on macOS", "");
-    check(charon_host_kMIDIPropertyUMPCanTransmitGroupless == NULL, "constant kMIDIPropertyUMPCanTransmitGroupless is NULL, as on macOS", "");
-    check(charon_host_kMIDIPropertyAssociatedEndpoint == NULL, "constant kMIDIPropertyAssociatedEndpoint is NULL, as on macOS", "");
+    // The three property keys, as macOS holds them once a client exists (oracle/constants.m reads them after
+    // MIDIClientCreate; before that they are NULL, which is the answer of a process that never called CoreMIDI).
+    check([(__bridge NSString *)charon_host_kMIDIPropertyUMPActiveGroupBitmap isEqualToString:@"active group bitmap"],
+          "constant kMIDIPropertyUMPActiveGroupBitmap is \"active group bitmap\", as on macOS after MIDIClientCreate", "");
+    check([(__bridge NSString *)charon_host_kMIDIPropertyUMPCanTransmitGroupless isEqualToString:@"ump endpoint"],
+          "constant kMIDIPropertyUMPCanTransmitGroupless is \"ump endpoint\", as on macOS after MIDIClientCreate", "");
+    check([(__bridge NSString *)charon_host_kMIDIPropertyAssociatedEndpoint isEqualToString:@"associated endpoint"],
+          "constant kMIDIPropertyAssociatedEndpoint is \"associated endpoint\", as on macOS after MIDIClientCreate", "");
     NSDictionary *names = @{
         @"MIDICIDeviceObjectKey": charon_host_MIDICIDeviceObjectKey,
         @"MIDICIProfileObjectKey": charon_host_MIDICIProfileObjectKey,

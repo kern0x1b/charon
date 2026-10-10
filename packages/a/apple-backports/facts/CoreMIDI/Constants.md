@@ -5,13 +5,20 @@ The constants of iOS 17 (`kMIDIPropertyUMPActiveGroupBitmap`, `kMIDIPropertyUMPC
 host's own CoreMIDI by `tests/backports/host/coremidi/oracle/constants.m`, and the differential
 (`tests/backports/host/coremidi/differential.m`, check_constants) holds the port's copies to those readings.
 
-Measured on macOS, 2026-10-09:
+Measured on macOS, 2026-10-10 (`oracle/constants-macos.txt`):
 
+- The three property constants read NULL in a process that has not made a MIDI client, through the linked symbol. After
+  `MIDIClientCreate` they are the keys the framework holds:
+  - `kMIDIPropertyUMPActiveGroupBitmap` is `active group bitmap`;
+  - `kMIDIPropertyUMPCanTransmitGroupless` is `ump endpoint`;
+  - `kMIDIPropertyAssociatedEndpoint` is `associated endpoint`.
+- The `ump endpoint` value is the framework's key, not a symbol mix-up: a virtual source of this process reads
+  `kMIDIPropertyUMPCanTransmitGroupless` back after `MIDIObjectSetIntegerProperty` with the constant as 1 and through the
+  literal `"ump endpoint"` as 1; the literal `"UMPCanTransmitGroupless"` finds nothing (-10835). So an application that
+  passes the constant gets the key macOS uses, and the port's constant holds the same string.
+- A virtual endpoint reports -10835 (property not present) for each of the three until it is set.
 - The twelve keys and notifications are their own names: `MIDICIDeviceObjectKey` is `MIDICIDeviceObjectKey`, and so on.
-- `kMIDIPropertyUMPActiveGroupBitmap`, `kMIDIPropertyUMPCanTransmitGroupless` and `kMIDIPropertyAssociatedEndpoint` read
-  as NULL through the linked symbol. The port's copies are NULL, so an application that reads one gets what macOS gives.
-- A dlsym read of the same three gave the same NULL, but the dlsym read is not trusted here: the same read gave NULL for
-  `kMIDIPropertyProtocolID`, which the linked read gives as `protocol`. The linked read is the one an application sees.
 
 Release: `MIDIConstants17.m` holds the two UMP property constants, `MIDIConstants18.m` the rest, so each file defines the
-API of one release.
+API of one release. The earlier facts (commit 408967c66) recorded the NULL reads of a process that had made no client as
+the answer; that reading is kept above as the "before" value and is not what an application gets after it makes one.
