@@ -525,14 +525,6 @@ def load_spec(tree, fw):
         return list(csv.DictReader(handle, delimiter="\t"))
 
 
-def load_pins(tree, fw):
-    path = pins_path(tree, fw)
-    if not os.path.exists(path):
-        return []
-    with open(path, newline="") as handle:
-        return list(csv.DictReader(handle, delimiter="\t"))
-
-
 # ---------------------------------------------------------------- constants and snapshots
 
 
@@ -541,34 +533,12 @@ def constant_base(decl):
     return words[0] if words else "NSString"
 
 
-def frameworks_with_snapshot(tree):
-    return sorted(os.path.basename(os.path.dirname(p)) for p in glob.glob(os.path.join(tree, OUT_ROOT, "*", "spec.%s.tsv" % SDK_ID)))
-
-
 # ---------------------------------------------------------------- trace layer: generated-but-unimplemented members
 
 # The trace layer is the DEFAULTS of the design: a stub for every declared member of a framework that has no override and no
 # hand implementation, compiled only with CHARON_TRACE_DEFAULTS. A stub logs `unimplemented: <framework> <selector>` once per
 # member, then returns the zero of its return type (nil for an object, 0 for a scalar or enum, a zeroed struct), and sets the
 # NSError an `NSError **` parameter names to an error in the framework's own domain. Block parameters are not invoked.
-
-
-def strip_platform_blocks(text):
-    """The text the iOS build sees: #if TARGET_OS_VISION (and its #else-less forms) blocks are removed, nested ones included."""
-    out, depth = [], 0
-    for line in text.split("\n"):
-        stripped = line.strip()
-        if depth == 0 and re.match(r"#\s*if\s+TARGET_OS_VISION\b", stripped):
-            depth = 1
-            continue
-        if depth > 0:
-            if re.match(r"#\s*if", stripped):
-                depth += 1
-            elif re.match(r"#\s*endif", stripped):
-                depth -= 1
-            continue
-        out.append(line)
-    return "\n".join(out)
 
 
 # The TARGET_OS_ values the iOS build sees. A condition over these is decided; one over any other name is not, and both of its
@@ -995,19 +965,6 @@ def surface_rows(fw):
     return SURFACE_MEMO["rows"].get(fw, {})
 
 
-def oracle_defaults(fw):
-    """class -> [(item, value_kind, value, build)] from the host oracle capture in v-cache26's table."""
-    path = os.path.join(LEDGER_DIR, "cache-26.2", "oracle-defaults.tsv")
-    out = {}
-    if not os.path.exists(path):
-        return out
-    with open(path, newline="", errors="replace") as handle:
-        for row in csv.DictReader(handle, delimiter="\t", quoting=csv.QUOTE_NONE):
-            if row.get("framework") == fw:
-                out.setdefault(row["class"], []).append((row["item"], row["value_kind"], row["value"], row["build"]))
-    return out
-
-
 def registry_entries(tree, fw):
     """api -> (registry file, entry) for every registry row of the framework, whatever its status."""
     out = {}
@@ -1020,181 +977,823 @@ def registry_entries(tree, fw):
     return out
 
 
-def header_comment(header, cls, decl, kind, selector_or_name):
-    """The comment the header writes above a member of one class, or '' when it writes none."""
-    block = re.search(r"@interface\s+" + re.escape(cls) + r"\b(.*?)@end", header, re.S)
-    if not block:
-        return ""
-    body = block.group(1)
-    key = selector_or_name.split(":")[0] if kind == "method" else selector_or_name
-    found = re.search(r"(?m)^[^\n]*\b" + re.escape(key) + r"\b[^\n]*$", body)
-    if not found:
-        return ""
-    before = body[:found.start()].rstrip().split("\n")
-    lines = []
-    for line in reversed(before):
-        stripped = line.strip()
-        if re.match(r"^(///|/\*\*|/\*!|\*|//|\*/)", stripped) or stripped.endswith("*/"):
-            lines.insert(0, stripped)
+# The doc command is the port of tools/gen/cmd_doc.lua and the modules it uses. Its inputs are read the way the Lua reads them: the spec
+# table the generator wrote under .gen (one row per member and constant), the declaration shard of each framework (the superclasses),
+# the doc-time rows of the extractor (decls --doc, read through a pipe), the registry, the pins and the trace's skipped list of the tree,
+# and the surface, ledgers, oracle defaults, ObjC table (three gzip parts) and protocol records of --coordination. Every text is read as
+# bytes (one character per byte), a table is split on tabs and its lines on line feeds (tsv.lua), and a page is written only when it is
+# ASCII (emit.lua). The page text the oracle always had is kept, so the output is identical.
+DOC_REGENERATE = "tools/gen.py doc"
+DOC_IMPLEMENTED = "implemented"
+DOC_NO_VALUE = "-"
+DOC_DEFAULT_SUPERCLASS = "NSObject"
+DOC_LEDGER_6_1_3 = "ledger-w45"
+DOC_LEDGER_4_3 = "ledger-w45-4.3"
+DOC_COMMENTS_NOT_DERIVED = "- not derived: the extractor does not run for this framework"
+DOC_DECL_NOT_DERIVED = "not derived: decl (ruling D8)"
+DOC_NOT_IN_ROWS = "not derived: not in the doc rows"
+DOC_NO_COMMENT = "no comment in the doc rows"
+DOC_BEHAVIOUR_NOTE = ("Not part of this page. `xmake l tools/gen.lua behaviour --framework <framework> --coordination <corpus> "
+                      "--ipsw-cache <cache>` writes the summary of the methods it is run on (the calls in the order the code makes "
+                      "them, the register branches, the strings, constants and error domains its comments name; REFERENCE ONLY) "
+                      "to `behaviour/<Class>.md` beside this page. It reads the on-disk iOS 26.2 cache one method at a time through "
+                      "coordination/heavy.sh (--limit and --selector choose the methods). No command produces implementation "
+                      "pseudocode yet.")
+DOC_ORACLE_ROWS = 60
+DOC_CELL_LIMIT = 400
+DOC_FIXED_PAGES = ("index.md", "Constants.md", "Swift.md")
+DOC_EXTENSION = {"class": ".md", "protocol": ".protocol.md"}
+DOC_SUFFIX_LENGTH = 8
+DOC_EXTRACTOR = os.path.join("build", "macosx", "arm64", "release", "decls")
+DOC_CELLS = 10
+DOC_UNESCAPE = {"\\": "\\", "t": "\t", "n": "\n", "r": "\r"}
+DOC_OBJC_ENTITIES = (b"class", b"method", b"property")
+DOC_OBJC_FIELDS = ("entity", "owner", "section", "name", "decl", "types", "address", "superclass", "protocols", "category")
+
+
+def doc_lines(text):
+    """The lines of a text as tsv.lua lines gives them: a line feed ends a line, and a final one ends the last line."""
+    if text == "":
+        return []
+    lines = text.split("\n")
+    if text.endswith("\n"):
+        lines.pop()
+    return lines
+
+
+def doc_records(text):
+    """The rows of a table (tsv.lua records): a dict per row keyed by the header's names, empty lines skipped; a cell the row lacks is None."""
+    lines = doc_lines(text)
+    header = lines[0].split("\t") if lines else [""]
+    out = []
+    for line in lines[1:]:
+        if line == "":
+            continue
+        cells = line.split("\t")
+        out.append({name: (cells[i] if i < len(cells) else None) for i, name in enumerate(header)})
+    return out
+
+
+def doc_read(filepath):
+    """A file as its bytes, one character per byte (latin-1), or None when there is no such file (files.lua read_text)."""
+    if not os.path.isfile(filepath):
+        return None
+    with open(filepath, "rb") as handle:
+        return handle.read().decode("latin-1")
+
+
+def doc_present(value):
+    """Lua's present(): a missing or an empty cell is not present."""
+    return value is not None and value != ""
+
+
+def doc_either(value, fallback):
+    """Lua's either(): the value when it is present, else the fallback."""
+    return value if doc_present(value) else fallback
+
+
+def doc_tostring(value):
+    """Lua's tostring() of a cell: a missing cell is "nil"."""
+    return "nil" if value is None else str(value)
+
+
+def doc_md_cell(value):
+    """A value in a markdown cell (cmd_doc.lua md_cell): "None" when missing, pipes escaped, newlines turned to spaces, length capped."""
+    text = "None" if value is None else str(value)
+    return text.replace("|", "\\|").replace("\n", " ")[:DOC_CELL_LIMIT]
+
+
+def doc_sequence_at(text, i):
+    """The UTF-8 sequence at character i of text (one character per byte): its length and code point, or None when the bytes there are
+    not one well-formed sequence (cmd_doc.lua sequence_at)."""
+    lead = ord(text[i])
+    if 0xC2 <= lead <= 0xDF:
+        count, code = 2, lead & 0x1F
+    elif 0xE0 <= lead <= 0xEF:
+        count, code = 3, lead & 0x0F
+    elif 0xF0 <= lead <= 0xF4:
+        count, code = 4, lead & 0x07
+    else:
+        return None
+    if i + count > len(text):
+        return None
+    for k in range(i + 1, i + count):
+        byte = ord(text[k])
+        if byte < 0x80 or byte > 0xBF:
+            return None
+        code = (code << 6) | (byte & 0x3F)
+    return count, code
+
+
+def doc_ascii(text):
+    """The text as ASCII (cmd_doc.lua ascii_text): a UTF-8 character is written \\u{hex}, a byte that is not UTF-8 is written \\xhh."""
+    out, i = [], 0
+    while i < len(text):
+        code = ord(text[i])
+        if code < 0x80:
+            out.append(text[i])
+            i += 1
+            continue
+        found = doc_sequence_at(text, i)
+        if found is None:
+            out.append("\\x%02x" % code)
+            i += 1
         else:
-            break
-    text = " ".join(re.sub(r"^(///|/\*\*|/\*!|\*/|\*|//)\s?", "", l).rstrip("*/").strip() for l in lines)
-    return " ".join(text.split())[:600].encode("ascii", "replace").decode("ascii")
+            out.append("\\u{%x}" % found[1])
+            i += found[0]
+    return "".join(out)
 
 
-def md_cell(text):
-    return str(text).replace("|", "\\|").replace("\n", " ")[:400]
+def doc_decl_text(text):
+    """A declaration in a markdown table cell: ASCII, with its pipes escaped; it is not cut (cmd_doc.lua decl_text)."""
+    return doc_ascii(text).replace("|", "\\|")
+
+
+def doc_longest_run(text):
+    """The length of the longest run of backticks in the text (0 when there is none)."""
+    return max((len(run) for run in re.findall(r"`+", text)), default=0)
+
+
+def doc_fence(text):
+    """A fence for a block that holds the text: three backticks, or one more than the longest run of backticks in it (fence_of)."""
+    return "`" * max(3, doc_longest_run(text) + 1)
+
+
+def doc_code_span(text):
+    """The text as a markdown code span: its delimiter one backtick longer than the longest run in it, padded when it is longer than one
+    (cmd_doc.lua code_span)."""
+    longest = doc_longest_run(text)
+    if longest == 0:
+        return "`" + text + "`"
+    delimiter = "`" * (longest + 1)
+    return delimiter + " " + text + " " + delimiter
+
+
+def doc_decl_cell(docs, kind, api):
+    """The declaration cell of a member (cmd_doc.lua decl_cell): the extractor's declaration as a code span, the marked text when the
+    framework has no doc rows (docs is None), or when the extractor does not list the member."""
+    if docs is None:
+        return doc_code_span(DOC_DECL_NOT_DERIVED)
+    row = docs.get(kind + " " + api)
+    if row is None:
+        return doc_code_span(DOC_NOT_IN_ROWS)
+    return doc_code_span(doc_decl_text(row["decl"]))
+
+
+def doc_comments_section(docs, entries):
+    """The header comments section of a class or protocol, as lines (cmd_doc.lua comments_section): the heading, a blank line, then the
+    body. A member with a comment has a heading (its api) and its raw comment in a fenced block; a member with no comment, or that the
+    extractor does not list, is one bullet after the blocks. entries are (kind, api) pairs in the page's order."""
+    page = ["## Header comments", ""]
+    if docs is None:
+        page.append(DOC_COMMENTS_NOT_DERIVED)
+        return page
+    blocks, bullets = [], []
+    for kind, api in entries:
+        row = docs.get(kind + " " + api)
+        if row is None:
+            bullets.append("- `%s`: %s" % (api, DOC_NOT_IN_ROWS))
+        elif row["comment"] == "":
+            bullets.append("- `%s`: %s" % (api, DOC_NO_COMMENT))
+        else:
+            text = doc_ascii(row["comment"])
+            fence = doc_fence(text)
+            blocks.append(["### `" + api + "`", "", fence] + (text + "\n").split("\n")[:-1] + [fence])
+    body = []
+    for block in blocks:
+        if body:
+            body.append("")
+        body.extend(block)
+    if bullets:
+        if body:
+            body.append("")
+        body.extend(bullets)
+    return page + body
+
+
+def doc_strip_brackets(api):
+    """api.rstrip("]") of the oracle (cmd_doc.lua strip_brackets)."""
+    return api.rstrip("]")
+
+
+def doc_selector_of(api):
+    """A method's selector: the text after the first space of api.rstrip("]") (cmd_doc.lua selector_of)."""
+    text = doc_strip_brackets(api)
+    space = text.find(" ")
+    return text[space + 1:] if space >= 0 else ""
+
+
+def doc_name_of(api):
+    """A property's name: the last space-separated word of api.rstrip("]") (cmd_doc.lua name_of)."""
+    return doc_strip_brackets(api).rsplit(" ", 1)[-1]
+
+
+def doc_objc_key(entity, owner, section, name):
+    """The key of an ObjC fact: entity, owner, section and name, joined by tabs (objc.lua key_of)."""
+    return "\t".join((entity, owner, section, name))
+
+
+def doc_sorted(items, fields):
+    """The items in the order of their named fields (cmd_doc.lua by_fields with sorted_stable): a stable sort."""
+    return sorted(items, key=lambda item: tuple(item[name] for name in fields))
+
+
+def doc_emit(filepath, lines):
+    """The page's lines written as one text, ending in a line feed (emit.lua)."""
+    write(filepath, "\n".join(lines) + "\n")
+
+
+def doc_frameworks(tree):
+    """The frameworks of the tree that have a declaration shard, in byte order, nested ones named Outer/Inner (spec.lua frameworks)."""
+    root = os.path.join(tree, SNAP_ROOT)
+    names = []
+    for pattern in ("*", "*/*"):
+        for filepath in glob.glob(os.path.join(root, pattern, "declarations.tsv")):
+            if os.path.isfile(filepath):
+                names.append(os.path.relpath(os.path.dirname(filepath), root))
+    return sorted(names)
+
+
+def doc_spec(tree, fw):
+    """The spec rows of a framework: the member and constant rows the generator wrote under .gen, as records."""
+    text = doc_read(spec_path(tree, fw))
+    if text is None:
+        raise SystemExit("doc %s: no spec table at %s (run gen first)" % (fw, spec_path(tree, fw)))
+    return doc_records(text)
+
+
+def doc_needs(spec):
+    """The ObjC keys the framework's pages read: the key of each method and property the spec names, and the owners of its classes."""
+    keys, owners = set(), set()
+    for r in spec:
+        if r["kind"] not in ("method", "property"):
+            continue
+        owners.add(r["cls"])
+        if r["kind"] == "method":
+            section = "instance" if r["api"].startswith("-") else "class"
+            keys.add(doc_objc_key("method", r["cls"], section, doc_selector_of(r["api"])))
+        else:
+            keys.add(doc_objc_key("property", r["cls"], "instance", doc_name_of(r["api"])))
+    return {"keys": keys, "owners": owners}
+
+
+def doc_framework_of(image):
+    """The framework of an ObjC table image (objc.lua framework_of): the folder of the image without its .framework suffix when the
+    folder is a framework, else the image's own name."""
+    folder = image.rpartition("/")[0].rpartition("/")[2]
+    if folder.endswith(".framework"):
+        return folder[:-len(".framework")]
+    return image.rpartition("/")[2]
+
+
+def doc_read_objc(corpus, needs):
+    """One pass over the ObjC table's three gzip parts for every framework of the run (cmd_doc.lua read_objc, objc.lua each): per
+    framework, the first row of each member key the spec names and the last class row of each owner the spec names (the first row of
+    each class key). Returns framework -> {"index", "meta"}."""
+    state = {}
+    for fw, need in needs.items():
+        state[fw] = {"keys": need["keys"], "owners": need["owners"], "index": {}, "meta": {}, "seen": set()}
+    memo = {}
+    header, columns, count = None, {}, 0
+    for part in OBJC_PARTS:
+        filepath = os.path.join(corpus, "cache-26.2", part)
+        if not os.path.isfile(filepath):
+            raise SystemExit("no objc table part: " + filepath)
+        first, number = True, 0
+        with gzip.open(filepath, "rb") as handle:
+            for raw in handle:
+                number += 1
+                line = raw[:-1] if raw.endswith(b"\n") else raw
+                if first:
+                    first = False
+                    if header is None:
+                        header = line
+                        names = line.decode("latin-1").split("\t")
+                        columns = {name: i for i, name in enumerate(names)}
+                        if columns.get("image") != 0 or columns.get("entity") != 1:
+                            raise SystemExit("the objc table's first columns are image and entity")
+                        for name in DOC_OBJC_FIELDS:
+                            if name not in columns:
+                                raise SystemExit("the objc table has no column " + name)
+                        count = len(names)
+                    elif line != header:
+                        raise SystemExit("objc table part %s has another header" % part)
+                    continue
+                t1 = line.find(b"\t")
+                if t1 < 0:
+                    raise SystemExit("objc table %s line %d is a short row (no tab): %s" % (filepath, number, line[:80]))
+                t2 = line.find(b"\t", t1 + 1)
+                entity = line[t1 + 1:(t2 if t2 >= 0 else len(line))]
+                if entity not in DOC_OBJC_ENTITIES:
+                    continue
+                if t2 < 0:
+                    raise SystemExit("objc table %s line %d is a short row (no cell after its entity): %s" % (filepath, number, line[:80]))
+                image = line[:t1].decode("latin-1")
+                fw = memo.get(image)
+                if fw is None:
+                    fw = doc_framework_of(image)
+                    memo[image] = fw
+                if fw not in state:
+                    continue
+                cells = line.decode("latin-1").split("\t")
+                if len(cells) < count:
+                    raise SystemExit("objc table %s line %d is a short row: %d cells where the header has %d" % (filepath, number, len(cells), count))
+                s = state[fw]
+                key = "\t".join((cells[columns["entity"]], cells[columns["owner"]], cells[columns["section"]], cells[columns["name"]]))
+                if entity == b"class":
+                    owner = cells[columns["owner"]]
+                    if owner in s["owners"] and key not in s["seen"]:
+                        s["seen"].add(key)
+                        s["meta"][owner] = {name: cells[columns[name]] for name in DOC_OBJC_FIELDS}
+                elif key in s["keys"] and key not in s["index"]:
+                    s["index"][key] = {name: cells[columns[name]] for name in DOC_OBJC_FIELDS}
+    return state
+
+
+def doc_ledger_status(corpus, fw, release_dir):
+    """(kind, api) -> status for the rows the framework's ledger of one release lists (surface.lua ledger_status); a row the ledger does not
+    list is implemented in that release."""
+    out = {}
+    text = doc_read(os.path.join(corpus, release_dir, fw.replace("/", "_") + ".tsv"))
+    if text is None:
+        return out
+    for row in doc_records(text):
+        if row.get("kind") and row.get("api"):
+            out[(row["kind"], row["api"])] = row.get("status")
+    return out
+
+
+DOC_SURFACE = {}
+
+
+def doc_surface_rows(corpus, fw):
+    """(kind, api) -> the surface row for one framework (surface.lua surface_rows): the table is read once, and a key the table names
+    again keeps the later row."""
+    if corpus not in DOC_SURFACE:
+        rows = {}
+        header = None
+        text = doc_read(os.path.join(corpus, "sdk-26.2-surface.tsv"))
+        if text is None:
+            raise SystemExit("no surface table in the corpus: " + os.path.join(corpus, "sdk-26.2-surface.tsv"))
+        for line in doc_lines(text):
+            cells = line.split("\t")
+            if header is None:
+                header = cells
+                continue
+            row = {name: (cells[i] if i < len(cells) else None) for i, name in enumerate(header)}
+            rows.setdefault(row.get("framework"), {})[(row.get("kind"), row.get("api"))] = row
+        DOC_SURFACE[corpus] = rows
+    return DOC_SURFACE[corpus].get(fw, {})
+
+
+def doc_oracle_defaults(corpus, fw):
+    """class -> [(item, value_kind, value, build)] from the host oracle capture (surface.lua oracle_defaults)."""
+    out = {}
+    text = doc_read(os.path.join(corpus, "cache-26.2", "oracle-defaults.tsv"))
+    if text is None:
+        return out
+    for row in doc_records(text):
+        if row.get("framework") == fw:
+            out.setdefault(row.get("class"), []).append((row.get("item"), row.get("value_kind"), row.get("value"), row.get("build")))
+    return out
+
+
+def doc_pins(tree, fw):
+    """api -> the pin row of the framework's sidecar; the last row of an api wins (snapshot.pins)."""
+    out = {}
+    text = doc_read(os.path.join(tree, PINS_ROOT, fw + ".tsv"))
+    if text is not None:
+        for row in doc_records(text):
+            out[row.get("api")] = row
+    return out
+
+
+def doc_skipped(tree, fw):
+    """api -> the reason the trace layer leaves the member out (trace_files.lua skipped_file); a row with no reason removes the api."""
+    out = {}
+    text = doc_read(os.path.join(gen_dir(tree, fw), "trace", "skipped.tsv"))
+    if text is not None:
+        for row in doc_records(text):
+            if row.get("reason") is None:
+                out.pop(row.get("api"), None)
+            else:
+                out[row.get("api")] = row["reason"]
+    return out
+
+
+def doc_superclasses(tree, fw):
+    """class -> the superclass its @interface names, from the super rows of the framework's declaration shard (headers.lua shard_facts:
+    a super row names its class in container and its superclass in name; a later row of one class replaces an earlier one)."""
+    out = {}
+    text = doc_read(os.path.join(tree, SNAP_ROOT, fw, "declarations.tsv"))
+    if text is None:
+        return out
+    columns = None
+    for line in text.split("\n"):
+        if line == "":
+            continue
+        if line.startswith("#"):
+            found = re.search(r"columns=([^\t]*)", line)
+            if found:
+                columns = [name for name in found.group(1).split(",") if name]
+        elif columns is not None and line.split("\t", 1)[0] == "super":
+            row = dict(zip(columns, line.split("\t")))
+            usr = row.get("usr") or "-"
+            name = row.get("name") or ""
+            if name == "" and usr != "-":
+                found = re.search(r"@([^@]*)$", usr)
+                name = found.group(1) if found else ""
+            out[row.get("container")] = name
+    return out
+
+
+def doc_protocols(tree, fw):
+    """protocol name -> its record from the snapshot, with its members (protocols.lua records); {} without a protocol snapshot."""
+    out = {}
+    text = doc_read(os.path.join(tree, SNAP_ROOT, fw, "protocols.tsv"))
+    if text is None:
+        return out
+    for row in doc_records(text):
+        name = row.get("protocol")
+        record = out.get(name)
+        if record is None:
+            record = {"introduced": row.get("introduced"), "status": row.get("status"), "reasons": row.get("reasons"),
+                      "bases": row.get("bases"), "members": []}
+            out[name] = record
+        if row.get("section") != "-":
+            record["members"].append({"section": row.get("section"), "kind": row.get("kind"),
+                                      "instance": row.get("instance") == "yes", "selector": row.get("selector"),
+                                      "decl": row.get("decl"), "in16": row.get("in16")})
+    return out
+
+
+def doc_swift_rows(tree, fw):
+    """The Swift bucket rows of a framework, as the generator wrote them (swift.lua read_bucket), in the file's order."""
+    text = doc_read(os.path.join(tree, OUT_ROOT, "swift", "bucket.tsv"))
+    if text is None:
+        return []
+    return [row for row in doc_records(text) if row.get("framework") == fw]
+
+
+DOC_UNESCAPE_RE = re.compile(r"\\(.)", re.S)
+
+
+def doc_decode(line):
+    """The cells of one row of the extractor's doc mode, unescaped (doc_text.lua decode)."""
+    return [DOC_UNESCAPE_RE.sub(lambda m: DOC_UNESCAPE.get(m.group(1), m.group(0)), piece) for piece in line.split("\t")]
+
+
+def doc_side_of(kind, usr):
+    """The side of a member as the shard reader gives it: a class method and a class property are "+", every other member "-"."""
+    if kind == "method" and "(cm)" in usr:
+        return "+"
+    if kind == "property" and "(cpy)" in usr:
+        return "+"
+    return "-"
+
+
+def doc_api_of(kind, usr, name):
+    """The api a member row has, as the spec writes it, or None when it is not a member of an ObjC owner (doc_text.lua api_of)."""
+    if kind not in ("method", "property"):
+        return None
+    found = re.match(r"c:objc\([A-Za-z]+\)([^(]+)", usr)
+    if found is None:
+        return None
+    return doc_side_of(kind, usr) + "[" + found.group(1) + " " + name + "]"
+
+
+def doc_run(program, args, sdk, each):
+    """Runs the extractor with IR_SDK set and calls each(line) for every line of its standard output, read through a pipe (nothing is
+    written to a file). Returns the exit status and the last bytes of its standard error (doc_text.lua stream.run)."""
+    import threading
+    env = dict(os.environ)
+    env["IR_SDK"] = sdk
+    proc = subprocess.Popen([program] + args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env)
+    errors = []
+    reader = threading.Thread(target=lambda: errors.append(proc.stderr.read()))
+    reader.daemon = True
+    reader.start()
+    try:
+        for raw in proc.stdout:
+            each(raw[:-1].decode("latin-1") if raw.endswith(b"\n") else raw.decode("latin-1"))
+    except BaseException:
+        proc.kill()
+        proc.wait()
+        raise
+    status = proc.wait()
+    reader.join()
+    return status, b"".join(errors)[-(1 << 20):].decode("latin-1")
+
+
+def doc_decls_binary(tree):
+    """The extractor's binary of a tree: build/macosx/arm64/release/decls under the tree. One that is not built is an error."""
+    program = os.path.join(os.path.abspath(tree), DOC_EXTRACTOR)
+    if not os.path.isfile(program):
+        raise SystemExit("the extractor is not built: %s (build it from the tree: xmake -P tools/found)" % program)
+    return program
+
+
+def doc_listed(program, sdk):
+    """The frameworks the extractor lists for the SDK (decls --list): a set of names."""
+    names = set()
+
+    def take(line):
+        name = line.split("\t", 1)[0]
+        if name != "":
+            names.add(name)
+
+    status, err = doc_run(program, ["--list"], sdk, take)
+    if status != 0:
+        raise SystemExit("decls --list failed (status %d): %s" % (status, err.strip()[-300:]))
+    return names
+
+
+def doc_api_map(program, fw, sdk):
+    """The doc-time rows of a listed framework (doc_text.lua rows): from "kind api" to the first row of each member, the rows of a USR
+    the extractor writes twice counting once. A listed framework whose doc mode fails stops the run."""
+    usr_seen = set()
+    api = {}
+
+    def take(line):
+        cells = doc_decode(line)
+        if len(cells) != DOC_CELLS:
+            raise SystemExit("a doc row of %s has %d cells, not %d" % (fw, len(cells), DOC_CELLS))
+        key = cells[2]
+        if key == "-" or key in usr_seen:
+            return
+        usr_seen.add(key)
+        kind = cells[1]
+        member = doc_api_of(kind, key, cells[4])
+        entry = {"kind": kind, "api": member, "comment": cells[8] if cells[8] != "" else cells[7], "decl": cells[9]}
+        if member is not None:
+            api.setdefault(kind + " " + member, entry)
+
+    status, err = doc_run(program, ["--doc", fw], sdk, take)
+    if status != 0:
+        raise SystemExit("doc %s: the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status %d%s"
+                         % (fw, status, (": " + err.strip()[-300:]) if err.strip() else ""))
+    return api
+
+
+def doc_text_rows(ctx, fw):
+    """The doc-time rows of a framework: (its api map, None), or (None, the reason) when the extractor does not list it (its pages keep
+    the marked text)."""
+    if ctx["binary"] is None:
+        ctx["binary"] = doc_decls_binary(ctx["tree"])
+    if ctx["listed"] is None:
+        ctx["listed"] = doc_listed(ctx["binary"], ctx["sdk"])
+    if fw not in ctx["listed"]:
+        return None, "the extractor does not list it"
+    return doc_api_map(ctx["binary"], fw, ctx["sdk"]), None
+
+
+def doc_page_names(entries, reserved):
+    """The file names of the pages of one folder (pages.lua names): a class is <Name>.md and a protocol <Name>.protocol.md; a name that
+    would be shared on a case-insensitive file system is disambiguated with the first 8 hex digits of the SHA-256 of "<kind> <Name>"."""
+    def fold(name):
+        if not name.isascii():
+            raise SystemExit("a page name is ASCII: " + name)
+        return name.lower()
+
+    plain, count = {}, {}
+    for file in reserved:
+        count[fold(file)] = count.get(fold(file), 0) + 1
+    for kind, name in entries:
+        file = name + DOC_EXTENSION[kind]
+        plain[(kind, name)] = file
+        count[fold(file)] = count.get(fold(file), 0) + 1
+    out, owner = {}, {}
+    for file in reserved:
+        owner[fold(file)] = file
+    for kind, name in entries:
+        ident = kind + " " + name
+        file = plain[(kind, name)]
+        if count[fold(file)] > 1:
+            file = name + "." + hashlib.sha256(ident.encode("ascii")).hexdigest()[:DOC_SUFFIX_LENGTH] + DOC_EXTENSION[kind]
+        clash = owner.get(fold(file))
+        if clash is not None:
+            raise SystemExit("pages of %s and %s have one file name on a case-insensitive file system: %s" % (ident, clash, file))
+        owner[fold(file)] = ident
+        out[(kind, name)] = file
+    return out
+
+
+def doc_class_page(fw, cls, members, ctx):
+    """The page of one class (cmd_doc.lua class_page): its members in (kind, api) order, the oracle's table, the header comments, the
+    binary's ObjC metadata and the behaviour note."""
+    page = ["# %s (%s)" % (cls, fw), "",
+            "Superclass: %s. Status at 6.1.3 and 4.3 is per member below." % doc_either(ctx["superclasses"].get(cls), DOC_NO_VALUE), "",
+            "| kind | declaration (26.2 header, normalised) | availability | 6.1.3 | 4.3 | demand | impl-lead | ours (registry, pin) | stub |",
+            "| --- | --- | --- | --- | --- | --- | --- | --- | --- |"]
+    ordered = doc_sorted(members, ("kind", "api"))
+    for r in ordered:
+        key = (r["kind"], r["api"])
+        s6 = doc_either(ctx["led6"].get(key), DOC_IMPLEMENTED)
+        s43 = doc_either(ctx["led43"].get(key), DOC_IMPLEMENTED)
+        srow = ctx["surf"].get(key) or {}
+        demand = DOC_NO_VALUE
+        if doc_present(srow.get("demand-rank")):
+            demand = "rank %s, %s, %s apps" % (doc_either(srow.get("demand-rank"), DOC_NO_VALUE),
+                                               doc_either(srow.get("demand-severity"), DOC_NO_VALUE),
+                                               doc_either(srow.get("demand-apps"), DOC_NO_VALUE))
+        ours = DOC_NO_VALUE
+        registered = ctx["regs"].get(r["api"])
+        if registered is not None:
+            registry_path, entry = registered
+            status = entry.get("status")
+            pin = ctx["pins"].get(r["api"])
+            pin_text = (", pin " + doc_tostring(pin.get("pinned-by"))) if pin is not None else ""
+            ours = "%s: %s%s" % ("?" if status is None else status, registry_path, pin_text)
+        if registered is not None:
+            stub = "hand/override"
+        elif r["api"] in ctx["skipped"]:
+            stub = "not stubbed: " + ctx["skipped"][r["api"]]
+        else:
+            stub = "stub"
+        availability = r.get("availability")
+        if availability is None or availability == DOC_NO_VALUE:
+            availability = DOC_NO_VALUE
+        page.append("| %s | %s | %s | %s | %s | %s | %s | %s | %s |" % (
+            r["kind"], doc_decl_cell(ctx["docs"], r["kind"], r["api"]), doc_md_cell(availability), s6, s43, demand,
+            doc_md_cell(doc_either(srow.get("impl-lead"), DOC_NO_VALUE)), doc_md_cell(ours), doc_md_cell(stub)))
+    page.append("")
+    page.extend(doc_comments_section(ctx["docs"], [(r["kind"], r["api"]) for r in ordered]))
+    if cls in ctx["oracle"]:
+        page += ["", "## Host oracle (macOS, class state and defaults; v-cache26 capture)", "", "| item | kind | value | build |",
+                 "| --- | --- | --- | --- |"]
+        for row in ctx["oracle"][cls][:DOC_ORACLE_ROWS]:
+            page.append("| %s | %s | %s | %s |" % tuple(doc_md_cell(x) for x in row))
+    page += ["", "## Runtime metadata (26.2 binary, v-cache26 ObjC table; REFERENCE ONLY: the encodings give the binary's argument",
+             "and return types, not what a method does)", ""]
+    meta = ctx["meta"].get(cls)
+    if meta is not None:
+        page.append("Superclass in the binary: %s. Protocols: %s." % (doc_either(meta.get("superclass"), DOC_NO_VALUE),
+                                                                      doc_either(meta.get("protocols"), DOC_NO_VALUE)))
+    else:
+        page.append("No class row for this class in the binary's ObjC table.")
+    page += ["", "| member | binary type encoding | binary address |", "| --- | --- | --- |"]
+    for r in ordered:
+        if r["kind"] == "method":
+            key = doc_objc_key("method", cls, "instance" if r["api"].startswith("-") else "class", doc_selector_of(r["api"]))
+        else:
+            key = doc_objc_key("property", cls, "instance", doc_name_of(r["api"]))
+        row = ctx["objc"].get(key)
+        if row is None:
+            types_cell, address_cell = "not in the table", DOC_NO_VALUE
+        else:
+            types_cell = doc_md_cell(row.get("types"))
+            address_cell = DOC_NO_VALUE if row.get("address") is None else row["address"]
+        page.append("| `%s` | %s | %s |" % (doc_md_cell(r["api"]), types_cell, address_cell))
+    page += ["", "## Behaviour summary", "", DOC_BEHAVIOUR_NOTE, ""]
+    return page
+
+
+def doc_protocol_page(fw, name, record, ctx):
+    """The page of one protocol (cmd_doc.lua protocol_page): its record, its members in (section, kind, selector) order, the header
+    comments (from the doc rows, or marked) and the behaviour note. A member's doc row is keyed by its sign: "-" for an instance member."""
+    page = ["# %s (%s, protocol)" % (name, fw), "",
+            "Status in the transcriber's facts: %s. Introduced %s. Bases: %s." % (record["status"], record["introduced"],
+                                                                               doc_either(record["bases"], DOC_DEFAULT_SUPERCLASS)), "",
+            "Reasons from the transcriber: %s." % doc_either(record["reasons"], "none"), "",
+            "A protocol member has no stub: its implementation is the conforming class's, and a class row of the surface is"
+            " stubbed where the release lacks it. The declaration is the transcriber's rendering of the 26.2 AST.", "",
+            "| section | kind | declaration (26.2 AST, transcriber rendering) | in 16.4 body | 6.1.3 | demand | ours |",
+            "| --- | --- | --- | --- | --- | --- | --- |"]
+    entries = []
+    for member in doc_sorted(record["members"], ("section", "kind", "selector")):
+        api = "-[%s %s]" % (name, member["selector"])
+        srow = ctx["surf"].get((member["kind"], api)) or {}
+        demand = DOC_NO_VALUE
+        if doc_present(srow.get("demand-rank")):
+            demand = "rank %s, %s apps" % (srow["demand-rank"], doc_either(srow.get("demand-apps"), DOC_NO_VALUE))
+        ours = "hand/registry" if ctx["regs"].get(api) is not None else DOC_NO_VALUE
+        doc_api = ("-" if member["instance"] else "+") + "[" + name + " " + member["selector"] + "]"
+        entries.append((member["kind"], doc_api))
+        page.append("| %s | %s | %s | %s | %s | %s | %s |" % (
+            member["section"], member["kind"], doc_decl_cell(ctx["docs"], member["kind"], doc_api), member["in16"],
+            doc_either(ctx["led6"].get((member["kind"], api)), DOC_IMPLEMENTED), demand, ours))
+    page.append("")
+    page.extend(doc_comments_section(ctx["docs"], entries))
+    page += ["", "## Behaviour summary", "", DOC_BEHAVIOUR_NOTE]
+    return page
+
+
+def doc_write_framework(ctx, fw, objc):
+    """Writes the pages of one framework (cmd_doc.lua write_framework). Returns the number of class pages."""
+    tree, corpus = ctx["tree"], ctx["corpus"]
+    spec = doc_spec(tree, fw)
+    superclasses = doc_superclasses(tree, fw)
+    members_by_class, class_names, constant_rows = {}, [], []
+    for r in spec:
+        if r["kind"] in ("method", "property"):
+            if r["cls"] not in members_by_class:
+                members_by_class[r["cls"]] = []
+                class_names.append(r["cls"])
+            members_by_class[r["cls"]].append(r)
+        elif r["kind"] == "constant":
+            constant_rows.append(r)
+    classes = sorted(class_names)
+    member_count = sum(len(members_by_class[cls]) for cls in classes)
+    skipped = doc_skipped(tree, fw)
+    pins = doc_pins(tree, fw)
+    docs, why = doc_text_rows(ctx, fw)
+    if docs is None:
+        print("doc %s: no doc rows (%s): its comments and declarations keep the marked text" % (fw, why))
+    protos = doc_protocols(tree, fw)
+    proto_names = sorted(protos)
+    page_files = doc_page_names([("class", cls) for cls in classes] + [("protocol", name) for name in proto_names], DOC_FIXED_PAGES)
+    fw_ctx = {"led6": doc_ledger_status(corpus, fw, DOC_LEDGER_6_1_3), "led43": doc_ledger_status(corpus, fw, DOC_LEDGER_4_3),
+              "surf": doc_surface_rows(corpus, fw), "regs": registry_entries(tree, fw), "pins": pins,
+              "oracle": doc_oracle_defaults(corpus, fw), "skipped": skipped, "superclasses": superclasses,
+              "meta": objc["meta"], "objc": objc["index"], "docs": docs}
+    out = os.path.join(ctx["out_root"], fw)
+
+    index = ["# %s: worker page set" % fw, "",
+             "Regenerated by `%s %s` from the committed snapshot, the ledgers and the surface table. Do not edit: regenerate." % (
+                 DOC_REGENERATE, fw), "",
+             "- Spec: the 26.2 header of %s, as recorded in `spec/%s/` (%d method and property rows, %d constant rows)." % (
+                 fw, fw, member_count, len(constant_rows)),
+             "- Status at 6.1.3: %s. A member the ledger does not list is implemented in that release. Status at 4.3: %s." % (
+                 DOC_LEDGER_6_1_3, DOC_LEDGER_4_3),
+             "- Demand and impl-lead: sdk-26.2-surface.tsv. Overrides and pins: `registry/%s/` and `overrides/hashes/%s.tsv`." % (fw, fw),
+             "- Behaviour summaries (what a method calls, its strings, constants and error domains) and implementation pseudocode: not part"
+             " of these pages; the Behaviour summary section of a class page says what produces them.",
+             "- REFERENCE ONLY: nothing here is Apple binary, disassembly or pseudocode, and none of it is sent to an external service.", "",
+             "## Classes (%d)" % len(classes), "",
+             "| class | superclass | members | overridden | stub | page |", "| --- | --- | --- | --- | --- | --- |"]
+    for cls in classes:
+        members = members_by_class[cls]
+        overridden, stubbed = 0, 0
+        for r in members:
+            if fw_ctx["regs"].get(r["api"]) is not None:
+                overridden += 1
+            elif r["api"] not in skipped:
+                stubbed += 1
+        file = page_files[("class", cls)]
+        index.append("| %s | %s | %d | %d | %d | [%s](%s) |" % (cls, doc_either(superclasses.get(cls), DOC_NO_VALUE), len(members),
+                                                             overridden, stubbed, file, file))
+    if proto_names:
+        index += ["", "## Protocols (%d)" % len(proto_names), "", "| protocol | status | members | page |", "| --- | --- | --- | --- |"]
+        for name in proto_names:
+            file = page_files[("protocol", name)]
+            index.append("| %s | %s | %d | [%s](%s) |" % (name, protos[name]["status"], len(protos[name]["members"]), file, file))
+    index += ["", "Constants: [Constants.md](Constants.md) (%d rows)." % len(constant_rows), ""]
+    doc_emit(os.path.join(out, "index.md"), index)
+
+    for cls in classes:
+        doc_emit(os.path.join(out, page_files[("class", cls)]), doc_class_page(fw, cls, members_by_class[cls], fw_ctx))
+    for name in proto_names:
+        doc_emit(os.path.join(out, page_files[("protocol", name)]), doc_protocol_page(fw, name, protos[name], fw_ctx))
+
+    constants = ["# %s constants" % fw, "", "| name | declaration | iOS 26.2 value | host value | 6.1.3 | 4.3 | ours |",
+                 "| --- | --- | --- | --- | --- | --- | --- |"]
+    for r in doc_sorted(constant_rows, ("api",)):
+        s6 = doc_either(fw_ctx["led6"].get(("constant", r["api"])), DOC_IMPLEMENTED)
+        s43 = doc_either(fw_ctx["led43"].get(("constant", r["api"])), DOC_IMPLEMENTED)
+        status = r["value_status"]
+        value = r["value"] if (status == "found" and r["value"] is not None) else status
+        owned = r["owned"] if (r["owned"] is not None and r["owned"] != DOC_NO_VALUE) else ("generated" if status == "found" else status)
+        constants.append("| %s | `%s` | %s | %s | %s | %s | %s |" % (
+            r["api"], DOC_DECL_NOT_DERIVED, doc_md_cell(value), doc_md_cell(r.get("host_value")), s6, s43, doc_md_cell(owned)))
+    doc_emit(os.path.join(out, "Constants.md"), constants)
+
+    swift_rows = doc_swift_rows(tree, fw)
+    if swift_rows:
+        page = ["# %s: Swift rows (%d)" % (fw, len(swift_rows)), "",
+                "Rows of the surface in Swift, which the ObjC headers do not describe. The table describes name, kind and availability;"
+                " it has no types, so no signature is shown. Overlay needs: see the list at the end.", "",
+                "| kind | Swift name | introduced | unavailable | table match | demand | impl-lead |",
+                "| --- | --- | --- | --- | --- | --- | --- |"]
+        for row in doc_sorted(swift_rows, ("kind", "api")):
+            page.append("| %s | `%s` | %s | %s | %s | %s | %s |" % (
+                row["kind"], doc_md_cell(row["api"]), row["introduced"], doc_md_cell(row["unavailable"]), row["table_match"],
+                doc_md_cell(row["demand_rank"]), doc_md_cell(row["impl_lead"])))
+        page += ["", "## What a Swift overlay build needs that the project does not have", ""]
+        page += ["- " + need for need in SWIFT_OVERLAY_NEEDS]
+        doc_emit(os.path.join(out, "Swift.md"), page)
+
+    shown = out[len(tree) + 1:] if out.startswith(tree + "/") else out
+    print("doc %s: %d class pages, constants page, index -> %s" % (fw, len(classes), shown))
+    return len(classes)
 
 
 def cmd_doc(args):
-    fws = frameworks_with_snapshot(args.tree) if args.all else [args.framework]
-    out_root = args.out or os.path.join(args.tree, DOC_OUT)
-    sdk = args.sdk or SDK26
-    for fw in fws:
-        spec = load_spec(args.tree, fw)
-        header = strip_platform_blocks(header_text(sdk, fw))
-        supers = dict(re.findall(r"@interface\s+(\w+)\s*:\s*(\w+)", header))
-        led = ledger_status(fw, "ledger-w45")
-        led43 = ledger_status(fw, "ledger-w45-4.3")
-        surf = surface_rows(fw)
-        regs = registry_entries(args.tree, fw)
-        pins = {p["api"]: p for p in load_pins(args.tree, fw)}
-        oracle = oracle_defaults(fw)
-        facts = objc_facts(args.tree, fw)
-        classes_meta = {row["owner"]: row for key, row in facts.items() if key[0] == "class"}
-        stubs_skipped = {}
-        if os.path.exists(os.path.join(gen_dir(args.tree, fw), "trace", "skipped.tsv")):
-            for row in csv.DictReader(open(os.path.join(gen_dir(args.tree, fw), "trace", "skipped.tsv")), delimiter="\t"):
-                stubs_skipped[row["api"]] = row["reason"]
-        out = os.path.join(out_root, fw)
-        os.makedirs(out, exist_ok=True)
-        classes = {}
-        for r in spec:
-            if r["kind"] in ("method", "property"):
-                classes.setdefault(r["cls"], []).append(r)
-        index = [
-            "# %s: worker page set" % fw, "",
-            "Regenerated by `tools/gen.py doc %s` from the committed snapshot, the ledgers and the surface table. Do not edit: regenerate." % fw, "",
-            "- Spec: the 26.2 header of %s, as recorded in `spec/%s/` (%d method and property rows, %d constant rows)." % (
-                fw, fw, sum(1 for r in spec if r["kind"] in ("method", "property")), sum(1 for r in spec if r["kind"] == "constant")),
-            "- Status at 6.1.3: ledger-w45. A member the ledger does not list is implemented in that release. Status at 4.3: ledger-w45-4.3.",
-            "- Demand and impl-lead: sdk-26.2-surface.tsv. Overrides and pins: `registry/%s/` and `overrides/hashes/%s.tsv`." % (fw, fw),
-            "- Behaviour summaries (what a method calls, its strings, constants and error domains): not produced in this run; see the report.",
-            "- REFERENCE ONLY: nothing here is Apple binary, disassembly or pseudocode, and none of it is sent to an external service.", "",
-            "## Classes (%d)" % len(classes), "",
-            "| class | superclass | members | overridden | stub | page |", "| --- | --- | --- | --- | --- | --- |",
-        ]
-        constant_rows = [r for r in spec if r["kind"] == "constant"]
-        for cls in sorted(classes):
-            members = classes[cls]
-            overridden = sum(1 for r in members if r["api"] in regs)
-            stubbed = sum(1 for r in members if r["api"] not in regs and r["api"] not in stubs_skipped)
-            index.append("| %s | %s | %d | %d | %d | [%s.md](%s.md) |" % (cls, supers.get(cls, "-"), len(members), overridden, stubbed, cls, cls))
-        protocols = load_protocols(args.tree, fw)
-        if protocols:
-            index += ["", "## Protocols (%d)" % len(protocols), "", "| protocol | status | members | page |", "| --- | --- | --- | --- |"]
-            for name in sorted(protocols):
-                index.append("| %s | %s | %d | [%s.md](%s.md) |" % (name, protocols[name]["status"], len(protocols[name]["members"]), name, name))
-        index += ["", "Constants: [Constants.md](Constants.md) (%d rows)." % len(constant_rows), ""]
-        write(os.path.join(out, "index.md"), "\n".join(index) + "\n")
-        for cls in sorted(classes):
-            page = ["# %s (%s)" % (cls, fw), "",
-                    "Superclass: %s. Status at 6.1.3 and 4.3 is per member below." % supers.get(cls, "-"), "",
-                    "| kind | declaration (26.2 header, normalised) | availability | 6.1.3 | 4.3 | demand | impl-lead | ours (registry, pin) | stub |",
-                    "| --- | --- | --- | --- | --- | --- | --- | --- | --- |"]
-            notes = []
-            for r in sorted(classes[cls], key=lambda x: (x["kind"], x["api"])):
-                key_kind = "method" if r["kind"] == "method" else "property"
-                ledger_key = (key_kind, r["api"])
-                s6 = led.get(ledger_key, "implemented")
-                s43 = led43.get(ledger_key, "implemented")
-                srow = surf.get(ledger_key, {})
-                demand = ("rank %s, %s, %s apps" % (srow.get("demand-rank") or "-", srow.get("demand-severity") or "-",
-                                                    srow.get("demand-apps") or "-")) if srow.get("demand-rank") else "-"
-                ours = "-"
-                if r["api"] in regs:
-                    path, entry = regs[r["api"]]
-                    pin = pins.get(r["api"])
-                    ours = "%s: %s%s" % (entry.get("status", "?"), path, (", pin %s" % pin["pinned-by"]) if pin else "")
-                stub = "hand/override" if r["api"] in regs else ("not stubbed: " + stubs_skipped[r["api"]] if r["api"] in stubs_skipped else "stub")
-                page.append("| %s | `%s` | %s | %s | %s | %s | %s | %s | %s |" % (
-                    r["kind"], md_cell(r["decl"]), md_cell(r["availability"] if r["availability"] != "-" else "-"), s6, s43, demand,
-                    md_cell(srow.get("impl-lead") or "-"), md_cell(ours), md_cell(stub)))
-                comment = header_comment(header, cls, r["decl"], r["kind"], (r["api"].rstrip("]").split(" ", 1)[1] if r["kind"] == "method" else r["api"].split(".")[-1]))
-                if comment:
-                    notes.append("- `%s`: %s" % (r["api"], comment))
-            page += ["", "## Header comments", ""] + (notes or ["- none in the header"])
-            if cls in oracle:
-                page += ["", "## Host oracle (macOS, class state and defaults; v-cache26 capture)", "", "| item | kind | value | build |", "| --- | --- | --- | --- |"]
-                page += ["| %s | %s | %s | %s |" % tuple(md_cell(x) for x in row) for row in oracle[cls][:60]]
-            meta = classes_meta.get(cls)
-            page += ["", "## Runtime metadata (26.2 binary, v-cache26 ObjC table; REFERENCE ONLY: the encodings give the binary's argument",
-                     "and return types, not what a method does)", ""]
-            if meta:
-                page.append("Superclass in the binary: %s. Protocols: %s." % (meta["superclass"] or "-", meta["protocols"] or "-"))
-            else:
-                page.append("No class row for this class in the binary's ObjC table.")
-            page += ["", "| member | binary type encoding | binary address |", "| --- | --- | --- |"]
-            for r in sorted(classes[cls], key=lambda x: (x["kind"], x["api"])):
-                if r["kind"] == "method":
-                    key = ("method", cls, "instance" if r["api"].startswith("-") else "class", r["api"].rstrip("]").split(" ", 1)[1])
-                else:
-                    key = ("property", cls, "instance", r["api"].rstrip("]").split(" ")[-1])
-                row = facts.get(key)
-                page.append("| `%s` | %s | %s |" % (md_cell(r["api"]), md_cell(row["types"]) if row else "not in the table",
-                                                  row["address"] if row else "-"))
-            page += ["", "## Behaviour summary", "", "The disassembly summary (calls in order, strings, constants, error domains) is not produced: "
-                     "it needs a cache path the coordinator has not granted (see the report).", ""]
-            write(os.path.join(out, cls + ".md"), "\n".join(page) + "\n")
-        for name in sorted(protocols):
-            record = protocols[name]
-            members = sorted(record["members"], key=lambda m: (m["section"], m["kind"], m["selector"]))
-            page = ["# %s (%s, protocol)" % (name, fw), "",
-                    "Status in the transcriber's facts: %s. Introduced %s. Bases: %s." % (
-                        record["status"], record["introduced"], record["bases"] or "NSObject"), "",
-                    "Reasons from the transcriber: %s." % (record["reasons"] or "none"), "",
-                    "A protocol member has no stub: its implementation is the conforming class's, and a class row of the surface is"
-                    " stubbed where the release lacks it. The declaration is the transcriber's rendering of the 26.2 AST.", "",
-                    "| section | kind | declaration (26.2 AST, transcriber rendering) | in 16.4 body | 6.1.3 | demand | ours |",
-                    "| --- | --- | --- | --- | --- | --- | --- |"]
-            notes = []
-            for member in members:
-                api = "-[%s %s]" % (name, member["selector"])
-                key = (member["kind"], api)
-                srow = surf.get(key, {})
-                demand = ("rank %s, %s apps" % (srow.get("demand-rank"), srow.get("demand-apps") or "-")) if srow.get("demand-rank") else "-"
-                ours = "hand/registry" if api in regs else "-"
-                page.append("| %s | %s | `%s` | %s | %s | %s | %s |" % (
-                    member["section"], member["kind"], md_cell(member["decl"]), member["in16"], led.get(key, "implemented"),
-                    demand, ours))
-                comment = header_comment(header, name, member["decl"], member["kind"], member["selector"])
-                if comment:
-                    notes.append("- `%s`: %s" % (api, comment))
-            page += ["", "## Header comments", ""] + (notes or ["- none in the header"])
-            page += ["", "## Behaviour summary", "", "not produced in this run (see the report)."]
-            write(os.path.join(out, name + ".md"), "\n".join(page) + "\n")
-        constants = ["# %s constants" % fw, "", "| name | declaration | iOS 26.2 value | host value | 6.1.3 | 4.3 | ours |", "| --- | --- | --- | --- | --- | --- | --- |"]
-        for r in sorted(constant_rows, key=lambda x: x["api"]):
-            s6 = led.get(("constant", r["api"]), "implemented")
-            s43 = led43.get(("constant", r["api"]), "implemented")
-            constants.append("| %s | `%s` | %s | %s | %s | %s | %s |" % (
-                r["api"], md_cell(r["decl"]), md_cell(r["value"] if r["value_status"] == "found" else r["value_status"]),
-                md_cell(r["host_value"] if r["host_value"] != "-" else "-"), s6, s43,
-                md_cell(r["owned"] if r["owned"] != "-" else ("generated" if r["value_status"] == "found" else r["value_status"]))))
-        write(os.path.join(out, "Constants.md"), "\n".join(constants) + "\n")
-        swift_rows = swift_bucket(args.tree).get(fw, [])
-        if swift_rows:
-            page = ["# %s: Swift rows (%d)" % (fw, len(swift_rows)), "",
-                    "Rows of the surface in Swift, which the ObjC headers do not describe. The table describes name, kind and availability;"
-                    " it has no types, so no signature is shown. Overlay needs: see the list at the end.", "",
-                    "| kind | Swift name | introduced | unavailable | table match | demand | impl-lead |", "| --- | --- | --- | --- | --- | --- | --- |"]
-            for row in sorted(swift_rows, key=lambda r: (r["kind"], r["api"])):
-                page.append("| %s | `%s` | %s | %s | %s | %s | %s |" % (
-                    row["kind"], md_cell(row["api"]), row["introduced"], md_cell(row["unavailable"]), row["table_match"],
-                    md_cell(row["demand_rank"]), md_cell(row["impl_lead"])))
-            page += ["", "## What a Swift overlay build needs that the project does not have", ""] + ["- " + need for need in SWIFT_OVERLAY_NEEDS]
-            write(os.path.join(out, "Swift.md"), "\n".join(page) + "\n")
-        print("doc %s: %d class pages, constants page, index -> %s" % (fw, len(classes), os.path.relpath(out, args.tree)))
+    """`doc`: the worker's page set, written into --out (cmd_doc.lua run). For each framework: an index, one page per class, one page per
+    protocol, Constants.md, and Swift.md when the Swift bucket has rows. --out and --coordination are required: nothing is written
+    to a default folder."""
+    if not args.coordination:
+        raise SystemExit("doc needs --coordination: the corpus folder")
+    if not args.sdk:
+        raise SystemExit("doc needs --sdk: the iOS SDK directory")
+    if not args.out:
+        raise SystemExit("doc needs --out: the folder the page set is written to")
+    tree = args.tree
+    targets = doc_frameworks(tree) if args.all else [args.framework]
+    needs = {fw: doc_needs(doc_spec(tree, fw)) for fw in targets}
+    objc_states = doc_read_objc(args.coordination, needs)
+    ctx = {"tree": tree, "corpus": args.coordination, "sdk": args.sdk, "out_root": args.out, "binary": None, "listed": None}
+    for fw in targets:
+        doc_write_framework(ctx, fw, objc_states[fw])
     return 0
 
 
@@ -2234,7 +2833,7 @@ def main():
     parser.add_argument("--measured", help="release-split output of the built objects: the first release each symbol is exported in")
     parser.add_argument("--ios-constants", help="v-cache26's constants table of the iOS 26.2 cache (default: coordination/corpus/cache-26.2/)")
     parser.add_argument("--all", action="store_true", help="input, doc, protocols, functions, objc and swift: every framework")
-    parser.add_argument("--out", help="doc: where the page set is written (default: .agent-work/spec-docs under the tree); scope: the folder the four files go to")
+    parser.add_argument("--out", help="doc: where the page set is written (required); scope: the folder the four files go to")
     parser.add_argument("--coordination", help="scope: the corpus folder (the surface table and the ledgers)")
     parser.add_argument("--limit", type=int, default=5, help="behaviour: the number of methods to summarise (default 5)")
     parser.add_argument("--selector", help="behaviour: the one selector to summarise")
