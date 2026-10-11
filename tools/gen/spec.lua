@@ -37,54 +37,17 @@ local function complete(r)
     return r
 end
 
--- The declarations a shard holds under a name: a variable (its USR is c:@<name>) or an enum constant (c:@E@<enum>@<name>), by the name the
--- USR gives. name -> {value, kind} for the framework's shard rows; a variable wins where both exist. A name no shard declares is absent.
-local declared_key, declared_map = nil, nil
-
-local function declarations_by_name(tree, fw)
-    local key = tree .. "\n" .. fw
-    if key == declared_key then
-        return declared_map
-    end
-    local out = {}
-    for _, r in ipairs(headers.shard_value_records(tree, fw)) do
-        local name
-        if r.kind == "var" then
-            name = string.match(r.usr, "^c:@([^@]+)$")
-        elseif r.kind == "enumconst" then
-            name = string.match(r.usr, "@([^@]+)$")
-        end
-        if name ~= nil and (out[name] == nil or r.kind == "var") then
-            out[name] = {value = r.value, kind = r.kind}
-        end
-    end
-    -- kept for the framework the commands ask about next (refused and constant_rows both ask): one slot, dropped by forget()
-    declared_key, declared_map = key, out
-    return out
-end
-
 -- The rows of the constant record (constants.tsv: the measured constant rows, one record per framework, committed as data), or none.
--- A row the record leaves undeclared (value_status "undeclared") takes its value from the shard when a shard declares the name as an
--- enum constant: the shard's value column is what clang evaluates (review ruling 2), so the value is derived, not left out.
+-- An enumerator the shard declares is a found row with the shard's value (input writes it so; round 16).
 local function constant_rows(tree, fw)
     local out = {}
     local text = files.read_text(layout.constant_record_path(tree, fw))
     if text == nil then
         return out
     end
-    local declared = nil
     for _, r in ipairs(tsv.records(text)) do
         if r.kind == "constant" then
-            local row = complete(r)
-            if row.value_status == "undeclared" then
-                declared = declared or declarations_by_name(tree, fw)
-                local d = declared[row.key]
-                if d ~= nil and d.kind == "enumconst" and d.value ~= nil and d.value ~= "-" then
-                    row.value_status = "found"
-                    row.value = d.value
-                end
-            end
-            table.insert(out, row)
+            table.insert(out, complete(r))
         end
     end
     return out
@@ -105,7 +68,6 @@ local last_key, last_rows = nil, nil
 
 function forget()
     last_key, last_rows = nil, nil
-    declared_key, declared_map = nil, nil
 end
 
 function load(tree, fw)

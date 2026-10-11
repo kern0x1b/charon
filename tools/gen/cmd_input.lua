@@ -366,6 +366,15 @@ local function write_framework(args, fw)
         end
     end
     local owned = owned_constants(tree, fw)
+    -- An enumerator the shard holds is declared, and its value is the one clang evaluates: the shard's value column (round 16, the
+    -- owner's rule; gen.py's cmd_input reads the same column). The first row a name has wins, as in the oracle.
+    local enum_values = {}
+    for _, r in ipairs(headers.shard_value_records(tree, fw)) do
+        local name = r.kind == "enumconst" and string.match(r.usr, "@([^@]+)$")
+        if name and enum_values[name] == nil then
+            enum_values[name] = r.value
+        end
+    end
     local ios, ios_conflicts = ios_constants(path.join(args.coordination, IOS_TABLE))
     local conflicting = 0
     for _ in pairs(ios_conflicts) do
@@ -408,6 +417,8 @@ local function write_framework(args, fw)
         local status, value = "-", "-"
         if owned[api] ~= nil then
             status, value = "owned:" .. owned[api], "-"
+        elseif d.decl == "" and enum_values[api] ~= nil and enum_values[api] ~= "-" and enum_values[api] ~= "" then
+            status, value = "found", enum_values[api]
         elseif d.decl == "" then
             status, value = "undeclared", "-"
         elseif not is_string(d.decl, typedefs) then
@@ -417,6 +428,10 @@ local function write_framework(args, fw)
             status, value = found[1], found[2]
         end
         local host_value, source = value, "host-macos"
+        if status == "found" and d.decl == "" then
+            -- an enumerator is read from the SDK's declaration, not probed on the host: it has no host value
+            host_value, source = "-", "sdk-enum-value"
+        end
         if status == "found" and ios[api] ~= nil then
             value, source = objc_escape(ios[api]), "ios-26.2-cache"
             if value ~= host_value then
