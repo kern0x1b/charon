@@ -809,7 +809,10 @@ end
 -- Writes one framework's snapshot. Returns nothing; prints the summary line.
 local function one(args, fw, sdk)
     local snap = layout.snap_dir(args.tree, fw)
-    if not os.isfile(layout.spec_path(args.tree, fw)) then
+    -- input builds every surface framework the skip ledger does not name, and the framework's build table is what the oracle's gate
+    -- reads (gen.py cmd_functions): a skipped framework has no functions to read. The Lua reads the ledger, since its gen writes no
+    -- build table for Accelerate's top level (round 16: Accelerate is written, as the oracle writes it).
+    if surface.skip_ledger(args.tree)[fw] ~= nil then
         return
     end
     local target = path.join(snap, "functions.tsv")

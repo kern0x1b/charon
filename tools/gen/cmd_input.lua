@@ -264,18 +264,6 @@ local function measured_releases(path)
     return out
 end
 
--- The frameworks `input --all` skips, each with the reason it names: spec/input-skips.tsv (framework, reason). A skip on the ledger is
--- known and stays named; a skip off it fails the run. Only the names decide: a reason is a note, with the SDK folder written as <sdk>.
-local function skip_ledger(tree)
-    local file = path.join(tree, layout.constants().SNAP_ROOT, "input-skips.tsv")
-    assert(os.isfile(file), "input --all: the skip ledger is not found: " .. file)
-    local known = {}
-    for _, row in ipairs(tsv.records(files.read_text(file))) do
-        known[row.framework] = row.reason
-    end
-    return known
-end
-
 -- The ledger rows the record covers: the constants that are missing at 6.1.3, lifted (code+lift), in the ledger's order.
 local function ledger_constants(corpus, fw)
     local out = {}
@@ -484,7 +472,9 @@ function run(args)
     if args.measured and not args.all then
         assert(os.isfile(args.measured), "input: the --measured file is not found: " .. args.measured)
     end
-    local known_skips = args.all and skip_ledger(args.tree) or {}
+    -- the committed skip ledger (spec/input-skips.tsv): a skip it names stays named; a skip it does not name fails the run. Only the
+    -- names decide: a reason is a note, with the SDK folder written as <sdk>.
+    local known_skips = args.all and surface.skip_ledger(args.tree) or {}
     local targets = args.all and surface.surface_frameworks(args.coordination) or {args.framework}
     local written, without_ledger = 0, 0
     -- a framework the inputs cannot read is named and skipped under --all (the oracle's cmd_input_all: "a framework the inputs

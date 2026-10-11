@@ -48,6 +48,19 @@ function has_ledger(corpus, release_dir, fw)
     return os.isfile(ledger_file(corpus, release_dir, fw))
 end
 
+-- The frameworks `input --all` skips, each with the reason it names: spec/input-skips.tsv (framework, reason), committed. input builds
+-- every other surface framework, so the ledger is the record of what has no constant record and no functions to read (the oracle's
+-- functions command reads the build table input writes; the Lua reads this list instead). Returns name -> reason.
+function skip_ledger(tree)
+    local file = path.join(tree, layout.constants().SNAP_ROOT, "input-skips.tsv")
+    assert(os.isfile(file), "the skip ledger is not found: " .. file)
+    local known = {}
+    for _, row in ipairs(tsv.records(files.read_text(file))) do
+        known[row.framework] = row.reason
+    end
+    return known
+end
+
 -- (kind, api) -> status for the framework's rows the ledger of a release lists; a row it does not list is implemented in it.
 function ledger_status(corpus, fw, release_dir)
     local out = {}
