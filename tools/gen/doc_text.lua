@@ -150,7 +150,12 @@ function rows(tree, fw, sdk)
     end
     local status, err = 0, ""
     if injected then
-        for _, line in ipairs(injected(fw, sdk)) do
+        -- a source returns the framework's rows, and a failure message when the extractor lists it but its doc mode fails
+        local lines, failure = injected(fw, sdk)
+        if failure ~= nil then
+            status, err = 1, failure
+        end
+        for _, line in ipairs(lines) do
             take(line)
         end
     else

@@ -5,6 +5,13 @@
 
 local files = import("files", {anonymous = true})
 
+local injected = nil
+
+-- Replaces the SDK's .tbd by source(fw), which returns the framework's symbols as a set, for the tests of the constant records.
+function use(source)
+    injected = source
+end
+
 local DOCUMENT_MARK = "--- !tapi-tbd"
 
 -- The position of the next slice header at or after pos: a line break, blanks, "-", blanks, then archs: or targets:. Returns the
@@ -93,6 +100,9 @@ end
 -- The exports of a framework's arm64 slice in the SDK: symbols (the leading underscore dropped, as the spec compares them) and
 -- objc-classes, two sets keyed by name with the value true. Both are empty when the framework has no .tbd in the SDK.
 function exports(sdk, fw)
+    if injected then
+        return injected(fw), {}
+    end
     check_sdk(sdk, fw)
     local symbols, classes = {}, {}
     local text = files.read_text(path.join(sdk, "System", "Library", "Frameworks", fw .. ".framework", fw .. ".tbd"))

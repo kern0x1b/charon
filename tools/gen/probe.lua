@@ -8,6 +8,13 @@ local strings = import("strings", {anonymous = true})
 local layout = import("layout", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
 
+local injected = nil
+
+-- Replaces the host probe by source(fw, names), for the tests of the constant records, which must not configure a host project.
+function use(source)
+    injected = source
+end
+
 -- Adds the oracle's lines (name, status, class, value) of a run to the table name -> {status, value}.
 local function parse(out, into)
     for _, line in ipairs(strings.lines(out)) do
@@ -47,6 +54,9 @@ end
 -- configured for fw and the tree's constants folder of fw, as the differential does; the probe itself reads only the host framework.
 -- Returns name -> {status, value}, as the oracle's probe returns name -> (status, value).
 function probe(tree, fw, names)
+    if injected then
+        return injected(fw, names)
+    end
     host.configure(fw, layout.gen_dir(path.absolute(tree), fw))
     local library = host.framework_binary(fw)
     return values(library, names)

@@ -1,0 +1,1 @@
+decls: WiFiInfrastructure: no Objective-C or C header; Swift interface only
