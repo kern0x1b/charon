@@ -13,8 +13,8 @@
 // not carried.
 //
 // The sample the query is made with is found by its own identity, which is what the header of the
-// initialiser points a caller at: "To query for the quantities for a specific quantity sample see:
-// +[HKPredicates predicateForObjectWithUUID:]". This port asks its store by that same UUID, through the
+// initialiser points a caller at the query for one quantity sample's quantities, which the header names
+// as the predicate +[HKPredicates predicateForObjectWithUUID:]. This port asks its store by that same UUID, through the
 // store's own -objectsWithUUIDs:ofType:error:, so the query reads the same SQLite file every other
 // query of this library reads and there is no second way to reach it.
 

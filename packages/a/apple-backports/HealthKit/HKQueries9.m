@@ -25,7 +25,7 @@
                                              NSArray<HKDeletedObject *> *_Nullable, HKQueryAnchor *_Nullable,
                                              NSError *_Nullable))updateHandler
 {
-    // The header says the property may not be modified once the query has been executed, and may only
+    // The header forbids changing the property once the query has run, and allows setting it only
     // be set where the query has no limit. Both are what it says.
     if (self.charon_hasBeenExecuted) {
         [NSException raise:NSInvalidArgumentException
@@ -92,8 +92,8 @@
     });
 }
 
-// The earliest date a sample may have. The header says "on some platforms, only samples with end
-// dates newer than the value returned by earliestPermittedSampleDate may be saved or retrieved", and
+// The earliest date a sample may have. The header says that on some platforms only samples whose end
+// dates come after the earliestPermittedSampleDate value may be saved or retrieved, and
 // it names no date; the release's own value is a fixed date of that release's own. This port's store
 // refuses no date at all, so the earliest date it permits is the earliest a date can be, and that is
 // what is answered here: distantPast, which no NSDate precedes. A caller that reads it and refuses
@@ -146,8 +146,8 @@
     });
 }
 
-// The energy split the release stopped supporting in iOS 11. It needs the user's age, biological sex,
-// body mass and height to compute a basal metabolic rate, and this store has none of them: the user
+// The energy split the release stopped supporting in iOS 11. Computing it needs a basal metabolic rate, which
+// takes the user's age, sex, body mass and height, and this store has none of them: the user
 // enters the three of those it can hold in the Health application, which this release has none of. The
 // call is refused with the release's own error rather than answered with a ratio invented here, and
 // the log says once why.

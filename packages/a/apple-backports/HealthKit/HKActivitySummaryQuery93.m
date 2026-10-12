@@ -40,7 +40,7 @@
 - (void)setUpdateHandler:(nullable void (^)(HKActivitySummaryQuery *, NSArray<HKActivitySummary *> *_Nullable,
                                             NSError *_Nullable))updateHandler
 {
-    // The header says the property may not be modified once the query has been executed.
+    // The header forbids changing the property once the query has run.
     if (self.charon_hasBeenExecuted) {
         [NSException raise:NSInvalidArgumentException
                     format:@"The updateHandler of an HKActivitySummaryQuery may not be modified once the query has been executed."];
