@@ -6,7 +6,7 @@
 //  conforms to it, so the protocol is not an empty declaration on this release.
 //
 //  The two methods the protocol declares are implementable here in full, and this is why: the
-//  `context` argument is an **enumeration** (a Siri result snippet, or a place card within Maps),
+//  `context` argument is an **enumeration** (a Siri snippet or a Maps place card),
 //  not an NSExtensionContext, and the parameters come from the interaction itself - which the port
 //  carries, donation and all. What a release with Siri shows *beside* this view is the system's,
 //  and this class does not pretend to be it: it answers with the size it wants and the parameters
