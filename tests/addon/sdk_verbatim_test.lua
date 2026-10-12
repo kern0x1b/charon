@@ -3,7 +3,10 @@
 -- it has nothing to compare: an unreadable SDK root, or no file at all.
 --
 -- The fixture is sdk-verbatim/: a fake SDK header under sdk/, a source whose line 3 is a line of that
--- header (red/), and the same source with its comment in other words (green/). None of it is Apple's text.
+-- header (red/), and the same source with its comment in other words (green/). Round 3 adds three
+-- sources: the same line in capitals (red-case/, a run hit under case folding), the header's 19-character
+-- heading (heading19/, a run hit under the 19-character floor), and a sentence of the header quoted inside a
+-- longer sentence (quoted/, a words8 hit only). None of it is Apple's text.
 function failures(opt)
     local found = {}
     local tool = import("sdk-verbatim", {rootdir = path.join(opt.modules, "..", "tools"), anonymous = true})
@@ -16,13 +19,43 @@ function failures(opt)
         if not ok then table.insert(found, what) end
     end
 
-    local r = tool.scan(sdk, {red})
-    check(#r.errors == 0, "red: the scan reported " .. table.concat(r.errors, "; "))
-    check(#r.hits == 1 and r.hits[1] == red .. ":3", "red: expected one hit at line 3, got " .. table.concat(r.hits, " "))
+    -- A hit is "mode file:line sdk-file:line"; the check names the mode and our line it must have.
+    local function has_hit(report, mode, ours)
+        for _, hit in ipairs(report.hits) do
+            if hit:find("^" .. mode .. " " .. ours:gsub("%p", "%%%0") .. " ") then return true end
+        end
+        return false
+    end
 
-    local g = tool.scan(sdk, {green})
-    check(#g.errors == 0, "green: the scan reported " .. table.concat(g.errors, "; "))
-    check(#g.hits == 0, "green: expected no hit, got " .. table.concat(g.hits, " "))
+    local function scan_one(file, what)
+        local r = tool.scan(sdk, {file})
+        check(#r.errors == 0, what .. ": the scan reported " .. table.concat(r.errors, "; "))
+        return r
+    end
+
+    -- The copy of the SDK's line, and the same line in capitals: run mode, and words8 for the same line.
+    local r = scan_one(red, "red")
+    check(has_hit(r, "run", red .. ":3"), "red: expected a run hit at line 3, got " .. table.concat(r.hits, " | "))
+    check(has_hit(r, "words8", red .. ":3-3"), "red: expected a words8 hit at line 3, got " .. table.concat(r.hits, " | "))
+
+    local c = scan_one(path.join(fixture, "red-case", "Source.m"), "red-case")
+    check(has_hit(c, "run", path.join(fixture, "red-case", "Source.m") .. ":3"),
+        "red-case: a case-changed copy must be a run hit (case folding), got " .. table.concat(c.hits, " | "))
+
+    -- A 19-character heading, three words: compared only with the 19-character floor.
+    local h = scan_one(path.join(fixture, "heading19", "Source.m"), "heading19")
+    check(has_hit(h, "run", path.join(fixture, "heading19", "Source.m") .. ":3"),
+        "heading19: a 19-character heading must be a run hit (floor 19), got " .. table.concat(h.hits, " | "))
+
+    -- A sentence of the SDK quoted inside a longer sentence: no run hit, a words8 hit.
+    local q = scan_one(path.join(fixture, "quoted", "Source.m"), "quoted")
+    local quoted = path.join(fixture, "quoted", "Source.m")
+    check(not has_hit(q, "run", quoted .. ":3"), "quoted: the longer sentence is not a run copy")
+    check(has_hit(q, "words8", quoted .. ":3-3"), "quoted: a quotation inside a longer sentence must be a words8 hit, got "
+        .. table.concat(q.hits, " | "))
+
+    local g = scan_one(green, "green")
+    check(#g.hits == 0, "green: expected no hit, got " .. table.concat(g.hits, " | "))
 
     local bad_root = tool.scan(path.join(fixture, "no-such-sdk"), {green})
     check(#bad_root.errors > 0, "an unreadable SDK root was not reported as a failure")
