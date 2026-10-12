@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 // Which of the two reasons a sync began: the engine scheduled it, or a caller asked for it.
 typedef NS_ENUM(NSInteger, CKSyncEngineSyncReason) {
-    // This sync was scheduled automatically by the sync engine.
+    // The engine scheduled this sync itself.
     CKSyncEngineSyncReasonScheduled,
     // This sync was requested by a caller through -fetchChangesWithCompletionHandler: or
     // -sendChangesWithCompletionHandler:.

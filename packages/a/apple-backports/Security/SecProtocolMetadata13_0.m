@@ -72,7 +72,7 @@ tls_ciphersuite_t sec_protocol_metadata_get_negotiated_tls_ciphersuite(sec_proto
 //
 // THIS ONE HAS A DOCUMENTED ABSENCE, so it is the one that can be answered properly:
 //
-//    @return Returns true if the PSKs were accessible, false otherwise.
+//    the declared return is a bool: the answer to whether the PSKs can be reached.
 //
 // so it returns false, and - the part worth the assertion - IT DOES NOT RUN THE HANDLER. A block that ran
 // for a caller with no metadata would hand it an identity, a ciphersuite and a PSK that were never

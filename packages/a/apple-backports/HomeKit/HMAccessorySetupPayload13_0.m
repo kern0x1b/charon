@@ -5,11 +5,7 @@
 // is a separate object in HMAccessorySetupPayload11_3.m, and a band from 13.0 up links both, because the
 // 11.3 one is API the device has and this one is API added to it.
 //
-// The 26.2 header, HMAccessorySetupPayload.h:48-57:
-//   /*! Creates a new accessory setup payload to add an accessory to the home.
-//    * @param setupPayloadURL The HomeKit setup payload URL for the accessory being added to the home.`
-//    * @param ownershipToken The token proving ownership of the accessory being added to the home.
-//    * @return Returns an accessory setup payload object if successful or nil on error. */
+// The 26.2 header declares it at HMAccessorySetupPayload.h:48-57, with the two arguments below:
 //   - (nullable instancetype)initWithURL:(NSURL *)setupPayloadURL
 //                    ownershipToken:(nullable HMAccessoryOwnershipToken *)ownershipToken
 //        API_AVAILABLE(ios(13.0))API_UNAVAILABLE(macos, watchos, tvos);

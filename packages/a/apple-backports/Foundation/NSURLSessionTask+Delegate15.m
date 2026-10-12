@@ -21,16 +21,9 @@
    although its session has one, a delegate set on the task reads back, and it is held for as long as
    the caller holds it and not longer.
 
-   The header states three more things about this property, and each was measured the same way before
-   it was written - tests/backports/host/tasksession/run.sh, asking the system's own NSURLSession:
-
-       Sets a task-specific delegate. Methods not implemented on this delegate will
-       still be forwarded to the session delegate.
-       Cannot be modified after task resumes. Not supported on background session.
-       Delegate is strongly referenced until the task completes, after which it is
-       reset to `nil`.
-
-   and on macOS 27.0 build 26A428 arm64 it answered all three:
+   Three more facts about this property were measured the same way before they were written -
+   tests/backports/host/tasksession/run.sh, asking the system's own NSURLSession - and on macOS 27.0
+   build 26A428 arm64 the system answered all three:
 
      - forwarding is PER SELECTOR, not per object. A task delegate implementing nothing of the
        protocol left the session delegate hearing URLSession:task:didCompleteWithError: once; a task
