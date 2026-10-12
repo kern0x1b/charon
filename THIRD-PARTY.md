@@ -3,7 +3,7 @@
 This repository contains almost no third-party source. Every dependency below is
 declared by a recipe or package under `recipes/` and `packages/` that names the
 upstream it fetches and the version it pins; nothing external is vendored into
-the tree. Each package copies its upstream license file under `licenses/` when
+the tree except the one source listed under *Vendored in the tree*. Each package copies its upstream license file under `licenses/` when
 it installs.
 
 The point of this file is that a reader can tell, without building anything,
@@ -49,6 +49,17 @@ into the port binary that ships to a device.
 | SwiftShader | 2026.09.16 | Apache-2.0 | `packages/s/swiftshader` |
 | libplist | 2.7.0 | LGPL-2.1-or-later | `packages/l/libplist` — read/write plist for the ldid signer and the Shade emulator |
 | OpenSSL | 4.0.2 | Apache-2.0 | `packages/o/openssl` — used by the ldid signer and the Shade emulator |
+
+## Vendored in the tree
+
+The one third-party source held in this repository: the Core ML model schema, kept as
+the reference the `createml` package's Swift codec follows. Nothing is generated from
+it, and nothing from it is linked into a port (`packages/c/createml/proto/README.md`).
+
+| Component | Version | License | Where |
+| --- | --- | --- | --- |
+| The Core ML model schema (`Model.proto`, `FeatureTypes.proto`, `Parameters.proto`, `DataStructures.proto`, `TreeEnsemble.proto`, `NeuralNetwork.proto`), from coremltools | `apple/coremltools`, `mlmodel/format/` | BSD-3-Clause, the notice kept in `packages/c/createml/proto/LICENSE.txt` | `packages/c/createml/proto` |
+| The Unicode CLDR locale list (`tools/cldr/locales-6.1.3.txt`, locale names only) and the generator's fixtures; the archive itself is fetched at the pin in `tools/cldr/PIN` | the release named in `tools/cldr/PIN` | Unicode License V3, the notice kept in `tools/cldr/LICENSE` | `tools/cldr` |
 
 ## First-party
 
