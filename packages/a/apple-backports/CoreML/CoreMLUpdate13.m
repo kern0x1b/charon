@@ -7,11 +7,11 @@
 // nothing else is in this file. MLWritable, the protocol MLUpdateContext names in its own declaration,
 // is NOT here and NOT carried: see the row, which says so with the measurement that proves it.
 //
-// WHAT MLTask IS, in the header's own words: "Class that abstracts state transitions and basic task
-// controls" (MLTask.h:26-27). Its three properties are a taskIdentifier (:32-33), a state (:35-36) and
+// WHAT MLTask IS: the header describes it as an object that handles changes of state and the basic control of a task
+// (MLTask.h:26-27). Its three properties are a taskIdentifier (:32-33), a state (:35-36) and
 // an error (:38-39), and its two methods are given as their effect and nothing else:
-//     -resume  "When called, resumes the task and changes state to \"Running\"."   (MLTask.h:41-42)
-//     -cancel  "When called, starts cancelling the task and changes the state to \"Cancelling\"." (:44-45)
+//     -resume  the call resumes the task and sets its state to Running (MLTask.h:41-42).
+//     -cancel  the call starts cancelling the task and sets its state to Cancelling (MLTask.h:44-45).
 // The states are MLTaskState's own five cases (MLTask.h:16-24): Suspended 1, Running 2, Cancelling 3,
 // Completed 4, Failed 5. So a transition from a state the header does not describe moving out of is
 // refused by name, with the state printed, rather than forced: the header says what -resume does to a
@@ -88,7 +88,7 @@
     _state = MLTaskStateRunning;
 }
 
-// -cancel, MLTask.h:44-45: "starts cancelling the task and changes the state to \"Cancelling\"". A task
+// -cancel, MLTask.h:44-45: the call moves the task into the Cancelling state. A task
 // that has already finished, failed or is already cancelling has nothing left to cancel.
 - (void)cancel
 {
