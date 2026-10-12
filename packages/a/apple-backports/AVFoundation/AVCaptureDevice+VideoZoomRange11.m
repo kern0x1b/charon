@@ -3,9 +3,8 @@
 // The zoom range iOS 11.0 asks a device for, over the limit this port already carries at 7.0.
 //
 // 11.0's header (AVCaptureDevice.h:2047-2068) documents each of the two against the non-virtual
-// case, which is every device these releases run on: "On non-virtual devices the
-// minAvailableVideoZoomFactor is always 1.0", and "On non-virtual devices the
-// maxAvailableVideoZoomFactor is always equal to the activeFormat.videoMaxZoomFactor". So neither
+// case, which is every device these releases run on: the minimum is 1.0 and the maximum is the active format's
+// videoMaxZoomFactor. So neither
 // number is a new capability and neither is invented here - both are read out of the port's own
 // 7.0 property, which is itself the release's own limit for its scale and crop.
 //

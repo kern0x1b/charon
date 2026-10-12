@@ -7,24 +7,18 @@
 //
 //   Dynamic aspect ratio (:2718-2736). A device whose sensor can change shape mid-stream lists what it can be
 //   in -supportedDynamicAspectRatios, and the two read-only members are DERIVED from that list by the header:
-//   "This property is initialized to the first AVCaptureAspectRatio listed in the device's activeFormat's
-//   supportedDynamicAspectRatios property. If the activeFormat's supportedDynamicAspectRatios is an empty array,
-//   this property returns nil" (:2722) and "If the device's activeFormat's supportedDynamicAspectRatios is an
-//   empty array, this property returns {0,0}" (:2728). So with no list there is no aspect ratio (nil) and no
+//   The header (:2722) starts it at the first AVCaptureAspectRatio of the format's list, and gives nil for an empty list.
+//   The header (:2728) gives an empty list a size of {0,0}. So with no list there is no aspect ratio (nil) and no
 //   output size ({0, 0}) - which is what the host answers too (measured), for the same reason: its camera's
 //   list is empty.
 //   Camera lens smudge detection (:3862-3895). The header's own defaults are the answer where the feature is
-//   absent: "By default, this property returns false" for -isCameraLensSmudgeDetectionEnabled (:3871),
-//   "By default, this property returns kCMTimeInvalid" for the interval (:3877), and the status enum's first
-//   value is "Indicates that the detection is not enabled" (:3881) - which is the case, because
+//   absent: the header's default for -isCameraLensSmudgeDetectionEnabled is false (:3871), its default interval is kCMTimeInvalid (:3877),
+//   and the status enum's first value means the detection is not enabled (:3881) - which is the case, because
 //   -setCameraLensSmudgeDetectionEnabled:detectionInterval: refuses (below) and -isCameraLensSmudgeDetectionSupported
 //   is NO for every format.
-//   Simulated aperture (:3894-3905 on the format, :443-452 on the input). "This property return a non-zero value
-//   on devices that support the shallow depth of field effect" and "On devices that do not support changing the
-//   simulated aperture value, this returns a value of 0" - so all three are 0, which is what the host answers
-//   for all seven of its formats (measured). The input's own setter refuses by the header's own rule ("you may
-//   only set this property if AVCaptureDevice/activeFormat/minSimulatedAperture returns a non-zero value,
-//   otherwise an NSInvalidArgumentException is thrown", :450).
+//   Simulated aperture (:3894-3905 on the format, :443-452 on the input). The header gives a non-zero value only where the device
+//   can run the shallow depth-of-field effect, and 0 where it cannot change the simulated aperture, so all three are 0,
+//   which is what the host answers for all seven of its formats (measured). The input's own setter refuses unless the format's minSimulatedAperture is non-zero (:450).
 //
 // A SIMULATED APERTURE IS PART OF CINEMATIC VIDEO, and that is why the three aperture rows are here and the
 // three Cinematic Video rows are in AVCaptureDeviceCinematicVideo26.m even though 26.2 declares both halves in
@@ -44,8 +38,8 @@
 //   -setDynamicAspectRatio:completionHandler:
 //     *** -[AVCaptureDALDevice setDynamicAspectRatio:completionHandler:] Dynamic Aspect Ratio not supported by
 //     this device
-//     The header's rule: "This method throws an NSInvalidArgumentException if dynamicAspectRatio is not a
-//     supported aspect ratio found in the device's activeFormat's supportedDynamicAspectRatios" (:2735), and
+//     The header's rule: the method throws NSInvalidArgumentException for a dynamicAspectRatio that is not in the
+//     device's activeFormat list of supportedDynamicAspectRatios (:2735), and
 //     the list is empty, so every value is one that is not in it.
 //
 //   -setSimulatedAperture: (the setter of AVCaptureDeviceInput.simulatedAperture)

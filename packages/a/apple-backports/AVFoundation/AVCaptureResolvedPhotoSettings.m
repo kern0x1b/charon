@@ -85,7 +85,7 @@
     return NO;
 }
 
-// 11.0: "the number of times your -captureOutput:didFinishProcessingPhoto:error: callback will be called". A request
+// 11.0: the header (AVCapturePhotoOutput.h:1934-1936) says how many times the didFinishProcessingPhoto:error: callback is called. A request
 // here delivers one photo, through -captureOutput:didFinishProcessingPhotoSampleBuffer:..., once.
 - (NSUInteger)expectedPhotoCount
 {

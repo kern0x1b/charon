@@ -5,8 +5,8 @@
 
 #pragma clang diagnostic ignored "-Wobjc-protocol-method-implementation"
 
-// The zoom of iOS 7, "a centered crop for all image outputs, scaling as necessary to maintain output
-// dimensions" (the header), made from what 6.1.3 has (facts/AVFoundation/CaptureZoomAudioSession.md):
+// The zoom of iOS 7 is a centred crop for all image outputs, scaled as necessary to keep the output
+// dimensions (the header, AVCaptureDevice.h:1922-1923), made from what 6.1.3 has (facts/AVFoundation/CaptureZoomAudioSession.md):
 // - a connection that scales and crops itself (the still image output's, videoMaxScaleAndCropFactor
 //   above 1) is given the factor as its videoScaleAndCropFactor;
 // - a preview layer, whose video is a sublayer of its own inside bounds it masks, is given the factor as

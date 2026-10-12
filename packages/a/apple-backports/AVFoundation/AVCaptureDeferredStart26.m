@@ -25,16 +25,14 @@
 // the same decision CaptureControls.md records for its NULL-queue rule.
 //
 // -isManualDeferredStartSupported   NO: there is nothing to run manually, and the header's rule for the property
-//                                   beside it is the same - "You can only set the automaticallyRunsDeferredStart
-//                                   property value to false if the session supports manual deferred start" (:673).
-// -automaticallyRunsDeferredStart   YES, the header's OWN default for the release an application links against:
-//                                   "By default, for apps that are linked on or after iOS 26, this value is true"
-//                                   (:685). Measured on the host: 0, and that is macOS's own default rather than
+//                                   beside it is the same: the header (:673) lets automaticallyRunsDeferredStart be made false
+//                                   only where the session supports manual deferred start.
+// -automaticallyRunsDeferredStart   YES, the header's own default for the release an application links against
+//                                   (:685 gives true for apps linked on or after iOS 26). Measured on the host: 0, and that is macOS's own default rather than
 //                                   this rule's, so the two columns differ and the row says why.
-// -setAutomaticallyRunsDeferredStart:   YES is kept; NO refuses with NSInvalidArgumentException, by the header's
-//                                   own note: "If manualDeferredStartSupported is false, setting this property
-//                                   value to false results in the session throwing an NSInvalidArgumentException"
-//                                   (:686). MEASURED DIVERGENCE, named: the host's own session ACCEPTS NO and stays
+// -setAutomaticallyRunsDeferredStart:   YES is kept; NO refuses with NSInvalidArgumentException, which the header names
+//                                   for a session without manual deferred start support (:686).
+//                                   MEASURED DIVERGENCE, named: the host's own session ACCEPTS NO and stays
 //                                   at 0, so here the port follows the header and not the host, which is the
 //                                   same call the coordinator accepted for the locked-frame-duration setter.
 // -deferredStartDelegate, ...CallbackQueue    nil, nil: nothing can be set, so there is no delegate and no queue,
@@ -42,13 +40,10 @@
 //                                   one).
 //
 // THE OUTPUT AND THE PREVIEW LAYER. Both answer NO for their support flag - the release has nothing to defer -
-// and the two flags answer NO, which is each header's own default: "By default, for apps that are linked on or
-// after iOS 26, this property value is true for AVCapturePhotoOutput and AVCaptureFileOutput subclasses if
-// supported, and false otherwise" (AVCaptureOutputBase.h:129) and "By default, this value is false for
-// AVCaptureVideoPreviewLayer objects, since this object is used to display preview"
-// (AVCaptureVideoPreviewLayer.h:271). Setting YES refuses with NSInvalidArgumentException, which both headers
-// name: "If deferredStartSupported is false, setting this property value to true results in the system throwing
-// an NSInvalidArgumentException" (AVCaptureOutputBase.h:128, AVCaptureVideoPreviewLayer.h:275).
+// and the two flags answer NO, which is each header's own default: the output's flag is true by default for apps linked on or
+// after iOS 26 where supported, and false otherwise (AVCaptureOutputBase.h:129); the preview layer's is false because it displays
+// preview (AVCaptureVideoPreviewLayer.h:271). Setting YES refuses with NSInvalidArgumentException, which both headers name for an
+// object without deferred start support (AVCaptureOutputBase.h:128, AVCaptureVideoPreviewLayer.h:275).
 //
 // TWO MORE MEASURED DIVERGENCES from the host, both named on their rows and both followed by the header here:
 //   -setDeferredStartEnabled: on an OUTPUT raises on the host with Apple's own reason, "*** -
@@ -83,7 +78,7 @@ static void charon_deferred_start_unsupported(NSString *selector)
 
 - (BOOL)automaticallyRunsDeferredStart
 {
-    // "By default, for apps that are linked on or after iOS 26, this value is true" (:685). The condition is
+    // The header gives true as the default for apps linked on or after iOS 26 (:685). The condition is
     // about the APPLICATION, not about this port, so it is READ from the main executable's own load command
     // (packages/a/apple-backports/CharonProgramSDK.h): every band of this repository links against SDK 16.4,
     // which is the sdk field of the binary, and so every band here answers NO - the value the same header
@@ -144,9 +139,9 @@ static void charon_deferred_start_unsupported(NSString *selector)
 
 - (BOOL)isDeferredStartEnabled
 {
-    // The header's own sentence needs three things at once (AVCaptureOutputBase.h:129): "By default, for apps
-    // that are linked on or after iOS 26, this property value is true for AVCapturePhotoOutput and
-    // AVCaptureFileOutput subclasses IF SUPPORTED, and false otherwise". The first is read the same way as the
+    // The header's own sentence needs three things at once (AVCaptureOutputBase.h:126): for apps linked on or after iOS 26,
+    // the property is true for AVCapturePhotoOutput and AVCaptureFileOutput subclasses where supported, and false otherwise.
+    // The first is read the same way as the
     // session's default above - one fact, one read - and the second is NO for every output on this port, so
     // the answer is false in EITHER reading of the first, which is what "and false otherwise" says. All three
     // terms are written because the header's rule has three.
@@ -180,8 +175,8 @@ static void charon_deferred_start_unsupported(NSString *selector)
 
 - (BOOL)isDeferredStartEnabled
 {
-    // "By default, this value is false for AVCaptureVideoPreviewLayer objects, since this object is used to
-    // display preview" (AVCaptureVideoPreviewLayer.h:271). This one has NO linked-on-or-after clause of its
+    // The preview layer's own default is false, because the object is used to display preview (AVCaptureVideoPreviewLayer.h:271).
+    // This one has NO linked-on-or-after clause of its
     // own, so the read above does not decide it and the answer is false in both readings; it is asked in both
     // builds anyway, so a header that grew the clause later would be caught here rather than pass unnoticed.
     return NO;

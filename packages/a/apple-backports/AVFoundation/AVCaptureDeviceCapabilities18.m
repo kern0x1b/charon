@@ -26,12 +26,10 @@
 // Row by row, with the line of the header that decides it. Line numbers are 26.2's own.
 //
 //   -isAutoVideoFrameRateEnabled   the value the last accepted -setAutoVideoFrameRateEnabled: was given,
-//                                  defaulting to false: "When you change the device's active format, this
-//                                  property resets to its default value of false" (:399).
+//                                  defaulting to false, and it resets to that default when the active format changes (:399).
 //   -setAutoVideoFrameRateEnabled:
-//                                  the header's own refusal, by its own rule: "Setting this property throws
-//                                  an NSInvalidArgumentException if the active format's
-//                                  autoVideoFrameRateSupported returns false" (:399). Every format of this
+//                                  the header's own refusal, by its own rule: setting it throws NSInvalidArgumentException when the active format's
+//                                  autoVideoFrameRateSupported is false (:399). Every format of this
 //                                  port answers NO for that (below), so every set raises here - the rule,
 //                                  not a constant refusal, and the port keeps the value for a format that
 //                                  supported it. Apple's own reason string, measured on this host:
@@ -42,46 +40,38 @@
 //                                  this port does not have, while the setter below belongs to
 //                                  AVCaptureDevice - the class the port does have.
 //   +isBackgroundReplacementEnabled
-//                                  NO: "A class property indicating whether the user has enabled the
-//                                  Background Replacement feature for this application" (:2521). There is no
+//                                  NO: the header (:2521) describes a class property for whether the user has enabled Background Replacement for this application. There is no
 //                                  such user setting on this release - no feature to enable it for, no
 //                                  Settings switch and no Control Center - so there is no choice for it to
 //                                  report. The host answers 0 here as well (measured).
 //   -isBackgroundReplacementActive
-//                                  NO: "Indicates whether Background Replacement is currently active on a
-//                                  particular AVCaptureDevice" (:2524). Nothing can start it, for the row
+//                                  NO: the header (:2524) reports whether Background Replacement is active on one device. Nothing can start it, for the row
 //                                  above. The host answers 0 here too (measured).
 //   -displayVideoZoomFactorMultiplier
-//                                  1.0: "In some system user interfaces ... the video zoom factor value is
-//                                  displayed in a way most appropriate for visual representation and might
-//                                  differ from the videoZoomFactor property value on the receiver by a fixed
-//                                  ratio" (:1987). The ratio is there for a system UI to display through,
+//                                  1.0: the header (:1987) says a system user interface may display the zoom factor in a form that differs from videoZoomFactor
+//                                  by a fixed ratio. The ratio is there for a system UI to display through,
 //                                  and this release has none - the header's own examples are "the macOS
 //                                  Video Effects Menu" - so the factor is displayed as itself and the ratio
 //                                  is the identity. (This Mac's own is 0.5, measured: its menu shows half
 //                                  the capture value.)
 //   -spatialCaptureDiscomfortReasons
-//                                  an empty set: "the current environmental conditions are amenable to a
-//                                  spatial capture that is comfortable to view" (:2673). This hardware
+//                                  an empty set: the header (:2673) describes conditions under which a spatial capture is comfortable to watch. This hardware
 //                                  cannot capture spatially at all - every format answers NO for
 //                                  -isSpatialVideoCaptureSupported below - so no scene is amenable. The
 //                                  host answers an empty set here as well (measured).
 //   Format -isAutoVideoFrameRateSupported
-//                                  NO: "Indicates whether the device format supports auto video frame rate"
+//                                  NO: the format's own property for auto video frame rate support, described in the header
 //                                  (:3508). The feature is the device lowering its frame rate under low
 //                                  light; this hardware has no such mode. Measured on the host: 0 for all
 //                                  seven of its formats.
 //   Format -isBackgroundReplacementSupported
-//                                  NO, "This property returns YES if the format supports Background
-//                                  Replacement" (:3736), and no format of this hardware does. Measured on
+//                                  NO: the header (:3736) answers YES where the format supports Background Replacement, and no format of this hardware does. Measured on
 //                                  the host: 1 for all seven of its formats, which is the hardware.
 //   Format -isSpatialVideoCaptureSupported
-//                                  NO: "Returns whether or not the format supports capturing spatial video
-//                                  to a file" (:3553). Two lenses recording a depth map are what it takes;
+//                                  NO: the format's property (:3553) says whether it supports capturing spatial video to a file. Two lenses recording a depth map are what it takes;
 //                                  this hardware has one lens per camera. Measured on the host: 0.
 //   Format -systemRecommendedExposureBiasRange
-//                                  nil: "When a recommendation is not available, this property returns nil"
-//                                  (:3309). A recommendation is a system's own range for its own exposure
+//                                  nil when no recommendation is available (:3309). A recommendation is a system's own range for its own exposure
 //                                  controls, and this release has none - AVCaptureSystemExposureBiasSlider
 //                                  arrived with iOS 18 and the class is not a row this port carries. The
 //                                  host answers nil here too (measured).
@@ -89,25 +79,19 @@
 //                                  nil, by the same sentence of the same paragraph (:3277), and for the same
 //                                  reason: AVCaptureSystemZoomSlider is iOS 18's. Measured on the host: nil.
 //   Format -videoFrameRateRangeForBackgroundReplacement
-//                                  nil, the header's own answer for a format that cannot run the feature:
-//                                  "If this device format does not support Background Replacement, this
-//                                  property returns nil" (:3746). Measured on the host: a range, for all
+//                                  nil, the header's own answer for a format that cannot run the feature (:3746). Measured on the host: a range, for all
 //                                  seven formats, because its camera supports Background Replacement.
 //   -isMultichannelAudioModeSupported:
 //                                  YES for AVCaptureMultichannelAudioModeNone and NO for the other two, by
-//                                  the header's own reading of what the modes are (:357-362): None is "no
-//                                  multichannel audio", which is what a single microphone records, and
+//                                  the header's own reading of what the modes are (:357-362): None means no multichannel audio, which is what a single microphone records, and
 //                                  Stereo and first-order ambisonics are two and four microphones' worth of
 //                                  audio respectively, and this device has one. Measured on this host, whose
 //                                  microphone is a single one as well: 1, 0, 0 - the port and the host agree
 //                                  on all three modes.
-//   -multichannelAudioMode          the value, defaulting to AVCaptureMultichannelAudioModeNone: "The default
-//                                  value is AVCaptureMultichannelAudioModeNone, in which case the default
-//                                  single channel audio recording is used" (:395). Measured on the host: 0.
+//   -multichannelAudioMode          the value, defaulting to AVCaptureMultichannelAudioModeNone, which the header (:395) describes as the
+//                                  default single channel recording. Measured on the host: 0.
 //   -setMultichannelAudioMode:      the header's own rule, by which the value the caller may set is exactly
-//                                  the set -isMultichannelAudioModeSupported: answers YES for: "The
-//                                  receiver's multichannelAudioMode property can only be set to a certain
-//                                  mode if this method returns YES for that mode" (:381). So None is
+//                                  the set -isMultichannelAudioModeSupported answers YES for. The header (:381) allows a value only when that method returns YES for it. So None is
 //                                  accepted and kept - measured on this host, which does the same - and
 //                                  Stereo, first-order ambisonics, an out-of-range number and a negative one
 //                                  all raise NSInvalidArgumentException with Apple's own reason, measured on
@@ -115,15 +99,14 @@
 //                                  supported" (sent to an input inside a session, the host names its own
 //                                  internal class there, AVCaptureDeviceInput_Tundra; this port has one
 //                                  class of this name, the one the header declares the member on).
-//   -isWindNoiseRemovalSupported    NO: "YES if the device supports wind noise removal, NO otherwise" (:405).
+//   -isWindNoiseRemovalSupported    NO: the header (:405) answers by whether the device supports wind noise removal.
 //                                  Measured on this host, whose built-in microphone answers NO as well.
 //   -isWindNoiseRemovalEnabled      the value the caller set, defaulting to NO, which is what Apple's own
 //                                  setter does with a device that does not support the feature - measured on
 //                                  this host: set YES answers YES afterwards even though
 //                                  isWindNoiseRemovalSupported is 0, and set NO answers NO again. Nothing on
-//                                  this release acts on it: the header says "Wind noise removal is available
-//                                  when the AVCaptureDeviceInput multichannelAudioMode property is set to
-//                                  any value other than AVCaptureMultichannelAudioModeNone" (:415), and
+//                                  this release acts on it: the header (:415) says wind noise removal is available when the input's multichannelAudioMode is set to
+//                                  any mode except AVCaptureMultichannelAudioModeNone, and
 //                                  this input cannot be set to any other value (above).
 #import "CharonAVCaptureDeviceCapabilities18.h"
 #import <objc/runtime.h>

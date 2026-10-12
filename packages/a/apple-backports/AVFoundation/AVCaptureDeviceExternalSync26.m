@@ -3,18 +3,14 @@
 //
 // WHAT THE TWO FEATURES ARE, in the header's own words, because that is what every answer below follows.
 //
-//   Locked frame duration (:288-303 of AVCaptureInput.h): "Setting this property guarantees the intra-frame
-//   duration delivered by the device input is precisely the frame duration you request", and the header says
-//   where the smallest one a given device can take comes from - "Query AVCaptureDevice/
-//   minSupportedLockedVideoFrameDuration to find the minimum value supported by this AVCaptureDeviceInput".
-//   So a locked duration is exactly as capable as the device's own minimum, and the header says what that
-//   minimum is where the feature is absent: "kCMTimeInvalid is returned when the device or its current
-//   configuration does not support locked frame rate" (AVCaptureDevice.h:383).
+//   Locked frame duration (:288-303 of AVCaptureInput.h): setting it guarantees that the intra-frame duration the device input
+//   delivers is the frame duration asked for. The header says where the smallest one a given device can take comes from: the device's
+//   minSupportedLockedVideoFrameDuration, read for this input. So a locked duration is exactly as capable as the device's own minimum,
+//   and the header (AVCaptureDevice.h:383) gives kCMTimeInvalid for a device that cannot lock.
 //
 //   External sync (:311-350): an input can follow an AVExternalSyncDevice - a genlock or a house-sync box -
 //   at a frame duration the box drives, and the header says what the device reports where it is absent:
-//   "This property returns kCMTimeInvalid when the device's current configuration does not support external
-//   sync device following" (AVCaptureDevice.h:393).
+//   the header (AVCaptureDevice.h:393) gives kCMTimeInvalid when the device's current configuration cannot follow an external sync device.
 //
 // This release has neither. Measured, 6.1.3's AVCaptureDevice owns no member of either feature
 // (tools/corpus/objc-inventory.lua over the 6.1.3 armv7 cache), its capture session has no frame-duration
@@ -25,23 +21,18 @@
 //   -isLockedVideoFrameDurationSupported    the DEVICE's minimum, because the header says that minimum IS
 //                                          this input's minimum; kCMTimeInvalid there means NO here.
 //   -isExternalSyncSupported                the same derivation from -minSupportedExternalSyncFrameDuration.
-//   -videoFrameDurationLocked                NO, by the header's own definition - "Returns true when an
-//                                          AVCaptureDeviceInput associated with the device has its
-//                                          activeLockedVideoFrameDuration property set to something other
-//                                          than kCMTimeInvalid" (:376) - read with this port's own input:
+//   -videoFrameDurationLocked                NO, by the header's own definition (:376): true when an input attached to the device has its
+//                                          activeLockedVideoFrameDuration set to a value other than kCMTimeInvalid - read with this port's own input:
 //                                          no input here can be, because -setActiveLockedVideoFrameDuration:
 //                                          refuses every valid value (below).
-//   -activeLockedVideoFrameDuration         kCMTimeInvalid, the header's own "In order to disable locked video
-//                                          frame duration, set this property to kCMTimeInvalid" (:288) and its
+//   -activeLockedVideoFrameDuration         kCMTimeInvalid, the header's own way to disable locked frame duration (:288), and its
 //                                          default (:281). Nothing is kept: the setter refuses every value
 //                                          that is not kCMTimeInvalid, so there is no last accepted one.
 //   -isFollowingExternalSyncDevice          NO: nothing is followed, because -followExternalSyncDevice:...:...
 //                                          refuses (below).
-//   -activeExternalSyncVideoFrameDuration   kCMTimeInvalid, "The value of this readonly property is
-//                                          kCMTimeInvalid unless the AVExternalSyncDevice is actively
-//                                          driving the AVCaptureDeviceInput" (:338).
-//   -externalSyncDevice                     nil, "This property returns nil when an external sync device is
-//                                          disconnected or fails to calibrate" (:345) - and none is ever
+//   -activeExternalSyncVideoFrameDuration   kCMTimeInvalid, unless the AVExternalSyncDevice is actively driving the
+//                                          AVCaptureDeviceInput (:338).
+//   -externalSyncDevice                     nil when the sync box drops out or cannot calibrate (:345), and none is ever
 //                                          followed here. AVExternalSyncDevice is forward-declared and never
 //                                          instantiated: its class, its six properties, its -init and +new, its
 //                                          discovery session and its delegate protocol are a family of their
@@ -50,11 +41,9 @@
 //                                          "*** -[AVCaptureDeviceInput followExternalSyncDevice:videoFrameDuration:delegate:]
 //                                          followExternalSyncDevice:videoFrameDuration:delegate: is not supported on this
 //                                          device. Check the device minSupportedExternalSyncFrameDuration property."
-//                                          The header's own rule is the same: "Calling this method throws an
-//                                          NSInvalidArgumentException if AVCaptureDeviceInput/
-//                                          externalSyncSupported returns false" (:331).
-//   -unfollowExternalSyncDevice             returns. "This method stops your input from syncing to the
-//                                          external sync device you specified" (:348), and there is none:
+//                                          The header's own rule is the same: the call throws NSInvalidArgumentException when
+//                                          AVCaptureDeviceInput's externalSyncSupported is false (:331).
+//   -unfollowExternalSyncDevice             returns. The header (:348) says it stops the input's syncing, and there is none:
 //                                          nothing to stop. Measured on the host: it returns.
 //
 // ONE DIVERGENCE FROM THE HOST, measured and named rather than smoothed over: sent a valid CMTime,
@@ -77,10 +66,8 @@
 - (CMTime)minSupportedExternalSyncFrameDuration;
 @end
 
-// The device's own minimum, which the header says is this input's minimum, so that the two support flags are
-// derived rather than written: "Query AVCaptureDevice/minSupportedLockedVideoFrameDuration to find the minimum
-// value supported by this AVCaptureDeviceInput" (AVCaptureInput.h:290). kCMTimeInvalid is the header's own
-// answer for a device that cannot lock (:383), and an invalid time is one with no value and a timescale of 1 -
+// The device's own minimum, which the header makes this input's minimum (AVCaptureInput.h:290), so that the two support flags are
+// derived rather than written. kCMTimeInvalid is the header's own answer for a device that cannot lock (:383), and an invalid time is one with no value and a timescale of 1 -
 // which is what CMTIME_IS_INVALID reads.
 static BOOL charon_device_supports_locked_frame_duration(AVCaptureDevice *device)
 {
@@ -130,11 +117,9 @@ static BOOL charon_device_supports_external_sync(AVCaptureDevice *device)
 
 - (void)setActiveLockedVideoFrameDuration:(CMTime)activeLockedVideoFrameDuration API_AVAILABLE(ios(26.0))
 {
-    // The header's own two rules, both about a device that cannot lock: "If you set this property to a valid
-    // value while the receiver's AVCaptureDevice/minSupportedLockedVideoFrameDuration is kCMTimeInvalid, it
-    // throws an NSInvalidArgumentException" (:302), and "If you set this property while the receiver's
-    // lockedVideoFrameDurationSupported property returns false, it throws an NSInvalidArgumentException"
-    // (:303). kCMTimeInvalid is always allowed - it is how a locked duration is disabled (:288) - and nothing
+    // The header's own two rules, both about a device that cannot lock: a valid value throws when the device's minimum locked
+    // duration is kCMTimeInvalid (:302), and any value throws when lockedVideoFrameDurationSupported is false (:303).
+    // kCMTimeInvalid is always allowed - it is how a locked duration is disabled (:288) - and nothing
     // is kept, because a setter that accepts only kCMTimeInvalid has no other value to remember.
     if (CMTIME_IS_INVALID(activeLockedVideoFrameDuration))
         return;

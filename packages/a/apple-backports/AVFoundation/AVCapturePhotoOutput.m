@@ -63,7 +63,7 @@ static BOOL CharonSetCameraFlashMode(AVCaptureDevice *device, AVCaptureFlashMode
     return YES;
 }
 
-// flashActive, "When the flash is active, it will flash if a still image is captured" (iOS 5), is the camera's judgement
+// flashActive, which says whether the flash would fire for a still image now (iOS 5), is the camera's judgement
 // of the frames it delivers: after its flash mode changes it answers for the old mode until a frame is judged for the new
 // one, which took 0.035 s on an iPhone 4S in the dark: a still captured after that change fired the flash in Auto, and one
 // captured at once did not (facts, "The flash waits for the camera"). The wait runs `then` once: at flashActive's first change, or after `bound` seconds
@@ -368,9 +368,8 @@ static void CharonOutputRaise(NSString *format, ...)
     return NO;
 }
 
-// "NO unless you set photoSettingsForSceneMonitoring to a non-nil value" (the header), whose flash mode is on the camera
-// (below). With Auto, the camera's own answer: flashActive, "When the flash is active, it will flash if a still image is
-// captured" (iOS 5), which says whether the flash would fire for the scene now. With On or Off there is no scene to judge
+// NO unless photoSettingsForSceneMonitoring is set to a non-nil value (the header), and its flash mode is on the camera
+// (below). With Auto, the camera's own answer is flashActive: whether a still image would fire the flash now (iOS 5). With On or Off there is no scene to judge
 // and the answer stays NO.
 - (BOOL)isFlashScene
 {
@@ -646,9 +645,8 @@ static void CharonOutputRaise(NSString *format, ...)
         CharonOutputRaise(@"*** -[AVCapturePhotoOutput setEnabledSemanticSegmentationMatteTypes:] enabledSemanticSegmentationMatteTypes may only contain matte types present in availableSemanticSegmentationMatteTypes. Illegal matte types: %@", illegal);
 }
 
-// The longest side of the preview: "Width and height are only honored up to the display dimensions. If you
-// specify a width and height whose aspect ratio differs from the RAW or processed photo, the larger of the two
-// dimensions is honored and aspect ratio of the RAW or processed photo is always preserved" (the header); with
+// The longest side of the preview. The header (AVCapturePhotoOutput.h:1597-1598) honours width and height only up to the display
+// dimensions, and when the two differ in aspect from the photo the larger side is honoured while the photo's aspect is kept; with
 // no dimensions, the display's.
 static size_t CharonPreviewLongestSide(NSDictionary *preview)
 {
@@ -994,8 +992,7 @@ static NSData *CharonJPEGEmbeddingThumbnailOf(NSData *jpeg, CMSampleBufferRef sm
 }
 
 // The longest side of the thumbnail a format asks for: the larger of its AVVideoWidthKey and AVVideoHeightKey, given
-// together ("the larger of the two dimensions is honored and aspect ratio of the RAW or processed photo is always
-// preserved", the header); with neither, the host's own thumbnail size.
+// together (the header, AVCapturePhotoOutput.h:1597-1598: the larger dimension is honoured and the photo's aspect kept); with neither, the host's own thumbnail size.
 static size_t CharonThumbnailLongestSide(NSDictionary *format)
 {
     NSNumber *width = format[AVVideoWidthKey], *height = format[AVVideoHeightKey];
@@ -1141,7 +1138,7 @@ static CMSampleBufferRef CharonCreateSampleWithThumbnail(CMSampleBufferRef still
         CharonOutputRaise(@"%@ previewPhotoFormat's pixel format type must be present in availablePreviewPhotoPixelFormatTypes", method);
     if (preview && (preview[(__bridge NSString *)kCVPixelBufferWidthKey] == nil) != (preview[(__bridge NSString *)kCVPixelBufferHeightKey] == nil))
         CharonOutputRaise(@"%@ previewPhotoFormat must give both kCVPixelBufferWidthKey and kCVPixelBufferHeightKey, or neither", method);
-    // The thumbnail: "If you wish to specify dimensions, you must specify both width and height" (the header).
+    // The thumbnail: the header (AVCapturePhotoOutput.h:1617-1618) requires both width and height when dimensions are given.
     NSDictionary *thumbnail = settings.embeddedThumbnailPhotoFormat;
     if (thumbnail && (thumbnail[AVVideoWidthKey] == nil) != (thumbnail[AVVideoHeightKey] == nil))
         CharonOutputRaise(@"%@ embeddedThumbnailPhotoFormat must give both AVVideoWidthKey and AVVideoHeightKey, or neither", method);
@@ -1169,8 +1166,8 @@ static void CharonAttachMetadata(CMSampleBufferRef still, NSDictionary *metadata
 {
     AVCaptureConnection *connection = [self connectionWithMediaType:AVMediaTypeVideo];
     [self charon_checkSettings:settings connection:connection];
-    // "If format is non-nil, your delegate must respond to -captureOutput:didFinishProcessingPhotoSampleBuffer:..." (the
-    // header's 10.0 rule, which a RAW request, refused above, is the only exception to): the photo is delivered through
+    // The header's 10.0 rule (a delegate must answer the sample-buffer callback when a format is set, and a RAW request, refused above, is
+    // the only exception): the photo is delivered through
     // that callback alone, as on 10.0, which has no AVCapturePhoto. A delegate without it would get no photo, silently:
     // the AVCapturePhoto callback (11.0) is not implemented (facts, "Open"), so a delegate that has only it is refused.
     if (![delegate respondsToSelector:@selector(captureOutput:didFinishProcessingPhotoSampleBuffer:previewPhotoSampleBuffer:resolvedSettings:bracketSettings:error:)])

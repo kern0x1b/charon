@@ -10,12 +10,10 @@
 // export a list of items to translate: when `metadata` is nil the session copies the source asset's own
 // metadata across itself. What 7.0 added is this property and the step that reads it.
 //
-// **The step has exactly one place to live on this release**, and the header names it: "Specifies a filter
-// object to be used during export to determine which metadata items should be transferred from the source
-// asset. If the value of this key is nil, no filter will be applied. This is the default. The filter will
-// not be applied to metadata set with via the metadata property" (AVAssetExportSession.h:383-386). So the
-// filter runs when the export starts and only when the caller has set no metadata of its own, and on this
-// release the only moment the port can act is
+// **The step has exactly one place to live on this release.** The header (AVAssetExportSession.h:379-386) defines an
+// export filter as the object that picks which metadata items are carried over from the source asset. Nil, the default,
+// means no filter, and metadata set through the metadata property is left alone. So the filter runs when the export
+// starts and only when the caller has set no metadata of its own, and on this release the only moment the port can act is
 // -[AVAssetExportSession exportAsynchronouslyWithCompletionHandler:] - 6.1.3's own member, measured
 // present at 4.3 and at 6.0 as well - which every path into an export goes through.
 //
@@ -64,8 +62,8 @@ static const char charon_export_filter;
 static void charon_apply_export_filter(AVAssetExportSession *session)
 {
     AVMetadataItemFilter *filter = objc_getAssociatedObject(session, &charon_export_filter);
-    // The header's own two conditions: no filter means no step, and "The filter will not be applied to
-    // metadata set via the metadata property" means a caller that set its own list keeps it untouched.
+    // The header's own two conditions: no filter means no step, and a metadata property the caller set is
+    // left alone by the filter (AVAssetExportSession.h:384-386), so a caller's own list stays untouched.
     if (!filter || session.metadata)
         return;
     NSArray<AVMetadataItem *> *copied = [AVMetadataItem metadataItemsFromArray:session.asset.commonMetadata

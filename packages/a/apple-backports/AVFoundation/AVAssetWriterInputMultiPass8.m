@@ -14,12 +14,10 @@
 // at 1), with 6.1.3's own whole 113981-name selector set carrying none of them. The control of that search
 // is markAsFinished, which is 4.3's own member and is found at every rung (2, 2, 2, 3, 1).
 //
-// **A single pass is a shape the header allows, not a compromise.** AVAssetWriterInput.h:477, on
-// -currentPassDescription: "During the first pass, the request will contain a single time range from zero
-// to positive infinity, indicating that all media from the source should be appended. This will also be
-// true when canPerformMultiplePasses is NO, in which case only one pass will be performed." And :464, on
-// -canPerformMultiplePasses being NO: "your source for media data only needs to support sequential access.
-// In this case, append all of the source media once and call -markAsFinished." So an input that answers
+// **A single pass is a shape the header allows, not a compromise.** AVAssetWriterInput.h:477 says the first pass
+// of -currentPassDescription covers the whole source, from zero to infinity, and that this holds too when
+// canPerformMultiplePasses is NO, where a single pass is all there is. And :464 says a source that answers NO only
+// has to read sequentially: append all of it once, then finish the input. So an input that answers
 // NO and then runs exactly the pass the header describes is answering as documented.
 //
 // **What Apple's own single-pass input answers, measured, is what this file answers.** Every answer below
@@ -35,19 +33,16 @@
 // **The one measured difference is canPerformMultiplePasses with the switch on, and it is not a
 // convenience.** Apple's own class answers YES as soon as performsMultiPassEncodingIfSupported is YES -
 // measured unattached, attached and after -startWriting - and then runs a genuine second pass, with the
-// description non-nil again after -markCurrentPassAsFinished and -markAsFinished refused in between
-// ("cannot be called between the invocation of markCurrentPassAsFinished and the beginning of the next
-// pass"). 6.1.3's writer has no analysis pass to hand out and no re-read: the second pass here would ask
+// description non-nil again after -markCurrentPassAsFinished, and -markAsFinished refused in between
+// (measured). 6.1.3's writer has no analysis pass to hand out and no re-read: the second pass here would ask
 // the client to append the same media a second time to a writer that has been told it is finished, which
-// is the call that raises. So this file answers NO always, the client takes the header's own NO path, and
-// what the setting does is nothing - which is what the header says of a configuration that cannot benefit
-// from it (AVAssetExportSession.h:433, "In these cases, setting this property to YES has no effect").
+// is the call that raises. So this file answers NO always, the client takes the header's NO path, and what
+// the setting does is nothing: the header says so for a configuration that cannot benefit (AVAssetExportSession.h:433).
 //
-// **Three preconditions, and what it takes to see them.** The header's own words are what is implemented:
-// "This property cannot be set after writing on the receiver's AVAssetWriter has started" (:459),
-// "Before calling this method, you must ensure that the receiver is attached to an AVAssetWriter via a
-// prior call to -addInput: and that -startWriting has been called on the asset writer" (:494 and :514), and
-// "This method throws an exception if called more than once" (:496). None of them can be decided from the
+// **Three preconditions, and what it takes to see them.** The header states what is implemented: the property
+// cannot be set once the receiver's AVAssetWriter has started (:459), the receiver must be attached to a writer
+// through -addInput: and the writer must have been told to start (:494 and :514), and the method throws when it is
+// called a second time (:496). None of them can be decided from the
 // input: AVAssetWriter.h:225 gives a writer its inputs and nothing gives an input its writer, and
 // -isReadyForMoreMediaData goes NO and comes back while media is being processed (:155), so it is not a
 // latch either. The one place the start is visible is -[AVAssetWriter startWriting], which walks its own
@@ -163,9 +158,9 @@ static void charon_raise(NSString *reason)
 
 @implementation AVAssetWriterInput (CharonAVAssetWriterInputMultiPass8)
 
-// The switch is the client's, and it round-trips: the header's default is NO (:455, "The default value is
-// NO, meaning that no additional analysis will occur and no segments will be re-encoded") and the port
-// keeps whatever was set, so a client that sets it and reads it back reads what it set.
+// The switch is the client's, and it round-trips: the header (AVAssetWriterInput.h:455) makes NO the default, meaning
+// no extra analysis pass and no re-encoding of segments. The port keeps whatever was set, so a client that sets it
+// and reads it back reads what it set.
 - (BOOL)performsMultiPassEncodingIfSupported
 {
     NSNumber *stored = objc_getAssociatedObject(self, &charon_multipass_setting);
@@ -205,7 +200,7 @@ static void charon_raise(NSString *reason)
     objc_setAssociatedObject(self, &charon_multipass_callback, [block copy], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     objc_setAssociatedObject(self, &charon_multipass_queue, queue, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     // The first pass has begun by the time this is called, so the block runs now - on the queue it was
-    // given, as the header says ("- Parameter queue: The queue on which the block should be invoked"), and
+    // given, as the header's parameter description says (AVAssetWriterInput.h:214-215), and
     // not before, which is what the measured host does: nothing was invoked at registration and one
     // invocation arrived on the queue once it drained.
     dispatch_async(queue, ^{
@@ -219,11 +214,10 @@ static void charon_raise(NSString *reason)
         charon_raise(@"-[AVAssetWriterInput markCurrentPassAsFinished] cannot be called before the input's asset writer has started writing");
     if (!objc_getAssociatedObject(self, &charon_multipass_description))
         charon_raise(@"-[AVAssetWriterInput markCurrentPassAsFinished] cannot be called when there is no current pass to mark finished");
-    // The header, on what this call does NOT do: "After each pass, you have the option of keeping the most
-    // recent results by calling -markAsFinished instead of this method. If the value of currentPassDescription
-    // is nil at the beginning of a pass, call -markAsFinished" (:510), and "If the value of canPerformMultiplePasses
-    // is NO, the value of currentPassDescription will immediately become nil after calling this method" (:512).
-    // So the pass ends here, the description is nil at once, and the client is the one that finishes the
+    // The header, on what this call does NOT do (AVAssetWriterInput.h:510-512): after each pass the client may keep
+    // the results by calling -markAsFinished instead, and a description that is nil at the start of a pass means the
+    // client should call -markAsFinished. When canPerformMultiplePasses is NO, the description becomes nil straight
+    // after this call. So the pass ends here, and the client is the one that finishes the
     // input - which is what the final invocation of the block is for (:492). The measured host agrees on
     // every one of those, including that -markAsFinished is not called from in here.
     charon_end_pass(self);

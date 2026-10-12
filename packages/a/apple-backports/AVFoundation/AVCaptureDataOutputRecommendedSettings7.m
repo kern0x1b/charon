@@ -15,19 +15,17 @@
 // -vettedVideoSettingsForSettingsDictionary: - the settings are all reachable there, one member at a time.
 // What 7.0 added is the single call that picks them, and both methods are declared `nullable`.
 //
-// **The values come from the live capture, not from this file.** Both headers say so: "Note that the
-// dictionary of settings is dependent on the current configuration of the receiver's AVCaptureSession and
-// its inputs. The settings dictionary may change if the session's configuration changes. As such, you should
-// configure your session first, then query the recommended audio settings" (AVCaptureAudioDataOutput.h:115)
-// and the same sentence for video (AVCaptureVideoDataOutput.h:109). So both dictionaries here are built
+// **The values come from the live capture, not from this file.** Both headers say the settings depend on the receiver's
+// AVCaptureSession and its inputs, may change when that configuration changes, and so the session is configured first and
+// then queried (AVCaptureAudioDataOutput.h:115, and AVCaptureVideoDataOutput.h:109). So both dictionaries here are built
 // out of what the receiver's own connections carry at the moment of the call:
 //
 //   audio  AVSampleRateKey and AVNumberOfChannelsKey out of the AudioStreamBasicDescription of the
 //          connection's own input port's format description - the release's own member, 6.0's.
 //   video  AVVideoWidthKey and AVVideoHeightKey out of the dimensions of the same format description, and
 //          AVVideoCodecKey out of the release's own -availableVideoCodecTypes, which is the list the
-//          header ties this call to: "For QuickTime movie and ISO file types, the recommended video
-//          settings will produce output comparable to that of AVCaptureMovieFileOutput" (:107), and
+//          header ties this call to: for QuickTime and ISO files its output is comparable to AVCaptureMovieFileOutput's
+//          (:107), and
 //          -availableVideoCodecTypes is that output's own codec list.
 //
 // **No bit rate, because Apple's own answer has none.** Measured on this machine's AVFoundation against a
@@ -52,10 +50,8 @@
 // returned nil for the video case only, on the dimensions it had read; the audio case answered a made-up
 // 44100 Hz mono and a made-up bit rate for an output attached to nothing.
 
-// The format the recommendation names for an ISO or QuickTime movie, measured: Apple's own class answers
-// 'aac ' (1633772320) for both, and says so in AVCaptureAudioDataOutput.h:113, "For QuickTime movie and
-// ISO files, the recommended audio settings will always produce output comparable to that of
-// AVCaptureMovieFileOutput". An asset writer's audio input takes the codec the container carries, and
+// 'aac ' (1633772320) for both, and AVCaptureAudioDataOutput.h:113 says the audio settings always give output
+// comparable to AVCaptureMovieFileOutput's for QuickTime and ISO files. An asset writer's audio input takes the codec the container carries, and
 // AAC is the one both of these carry.
 static BOOL charon_recommends_aac(AVFileType outputFileType)
 {

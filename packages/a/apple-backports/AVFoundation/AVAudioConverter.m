@@ -9,8 +9,8 @@
 // written (facts/AVFoundation/AVAudioEngine.md). This class carries no class name that collides
 // with anything native to 6.0/6.1.3 (objc.inventory, same source).
 //
-// -convertToBuffer:fromBuffer:error: is documented by Apple as "a simple conversion ... which does
-// not involve codecs or sample rate conversion" and maps directly onto
+// -convertToBuffer:fromBuffer:error: is documented by Apple (AVAudioConverter.h:273-286) as a simple conversion that
+// involves neither codecs nor a change of sample rate, and it maps directly onto
 // AudioConverterConvertComplexBuffer, which carries the identical restriction (fixed input/output
 // frame count). -convertToBuffer:error:withInputFromBlock: is the general path and maps onto
 // AudioConverterFillComplexBuffer, which does support sample-rate conversion and variable-length

@@ -22,13 +22,10 @@
 
 // 10.0: the header's own three conditions, read against members the release carries.
 //
-//   - WaitingToPlayAtSpecifiedRate holds "when the player has no item to play, i.e. when the receiver's
-//     currentItem is nil" - asked first, because the header names it unconditionally.
-//   - Paused is entered "upon receipt of a -pause message, an invocation of -setRate: with a value of
-//     0.0", so a zero rate with an item to play is Paused.
-//   - Playing against WaitingToPlayAtSpecifiedRate turns on "whether sufficient media data is available
-//     to continue playback", which is what -[AVPlayerItem isPlaybackLikelyToKeepUp] answers ("sufficient
-//     media data ... to continue playback", AVPlayerItem.h) - the property is a
+//   - WaitingToPlayAtSpecifiedRate holds while the player has no item to play (the receiver's currentItem is nil), asked first because the header names it unconditionally.
+//   - Paused is entered on a pause, which reaches the player as -setRate: with 0.0, so a zero rate with an item to play is Paused (AVPlayer.h:185).
+//   - Playing against WaitingToPlayAtSpecifiedRate turns on once the media data is enough to continue playback, which is what
+//     -[AVPlayerItem isPlaybackLikelyToKeepUp] answers (AVPlayerItem.h) - the property is a
 //     `(readonly, getter=isPlaybackLikelyToKeepUp)` and the release carries that getter.
 //
 // The value is right on every read. No KVO notification is sent for it, because there is no state here

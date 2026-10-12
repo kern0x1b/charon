@@ -25,36 +25,29 @@
 // this object to stand on but the header's own words. Row by row:
 //
 //   -cinematicVideoCaptureSceneMonitoringStatuses
-//                                  an empty set. The header: "The current scene monitoring statuses related to
-//                                  Cinematic Video capture ... Monitor this property ... to present a UI
-//                                  informing the user that they should reframe their scene for a better
-//                                  Cinematic Video experience" (AVCaptureDevice.h:2690-2692). The statuses
+//                                  an empty set. The header (AVCaptureDevice.h:2690-2692) describes them as prompts for the user to
+//                                  reframe a scene for a better Cinematic Video experience. The statuses
 //                                  report whether the SCENE suits the feature, and there is no feature here to
 //                                  suit, so no status applies - the same shape as the spatial-capture
 //                                  discomfort reasons in the 18.0 slice. The type's one constant is a 26.0
 //                                  row of its own (code+lift) and is not carried, so nothing a caller can name
 //                                  is ever in the set.
 //   Format -isCinematicVideoCaptureSupported
-//                                  NO: "This property returns true if the format supports Cinematic Video that
-//                                  produces a controllable, simulated depth of field and adds beautiful focus
-//                                  transitions for a cinema-grade look" (:3784). Measured on the host: 0 for
+//                                  NO: the header (:3784) makes the property true only where the format supports a controllable, simulated depth
+//                                  of field and focus transitions. Measured on the host: 0 for
 //                                  all seven of its formats.
 //   Format -videoMinZoomFactorForCinematicVideo / -videoMaxZoomFactorForCinematicVideo
-//                                  1.0, which is the header's own answer for a format that cannot do the
-//                                  feature - "If this device format does not support Cinematic Video capture,
-//                                  this property returns 1.0" (:3805, :3810) - and 1.0 is also this port's own
+//                                  1.0, which is the header's own answer for a format that cannot do the feature (:3805, :3810), and 1.0 is also this port's own
 //                                  zoom floor: the release's minimum video zoom factor is 1 and its own
 //                                  scale-and-crop limit is above it (facts/AVFoundation/Release11.md,
 //                                  "The two zoom rows"). Measured on the host: 1 and 1, for all seven formats.
 //   Format -videoFrameRateRangeForCinematicVideo
-//                                  nil, the header's own answer for the same case: "If this device format does
-//                                  not support Cinematic Video capture, this property returns nil" (:3815).
+//                                  nil, the header's own answer for the same case (:3815).
 //                                  Measured on the host: nil.
 //   -isCinematicVideoCaptureSupported (on the input)
 //                                  whatever the device's ACTIVE FORMAT says, because the header's rule is
-//                                  about the session's configuration: "This property returns true if the
-//                                  session's current configuration allows Cinematic Video capture. When
-//                                  switching cameras or formats, this property may change" (AVCaptureInput.h:427).
+//                                  about the session's configuration: the header (AVCaptureInput.h:427) says the property is true when that configuration
+//                                  allows Cinematic Video capture, and it may change when cameras or formats are switched.
 //                                  A configuration can only allow what a format supports, so the format is
 //                                  what this asks - the release's own -device and -activeFormat, then this
 //                                  port's format member. With no active format (which is what 6.1.3's release
@@ -64,8 +57,7 @@
 //   -isCinematicVideoCaptureEnabled
 //                                  the value the caller set, false until then - "Default is false" (:433).
 //   -setCinematicVideoCaptureEnabled:
-//                                  "You may only set this property to true if cinematicVideoCaptureSupported is
-//                                  true" (:436), so YES refuses and NO is kept. Apple's own reason, measured on
+//                                  the header (:436) allows true only where cinematicVideoCaptureSupported is true, so YES refuses and NO is kept. Apple's own reason, measured on
 //                                  this host: "*** -[AVCaptureDeviceInput setCinematicVideoCaptureEnabled:] Not
 //                                  supported - use isCinematicVideoCaptureSupported", which the port raises
 //                                  unchanged - here the class in Apple's string is the one the header declares

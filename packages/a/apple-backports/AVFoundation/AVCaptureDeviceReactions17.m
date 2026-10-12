@@ -12,47 +12,32 @@
 //
 // Row by row, with the header line that decides it:
 //
-//   -availableReactionTypes          empty set. "Returns a list of reaction types which can be passed to
-//                                    performEffectForReaction" (AVCaptureDevice.h:2478) and "The list may
-//                                    differ between devices" (:2481): this camera supports none, so the list
+//   -availableReactionTypes          empty set: the header (AVCaptureDevice.h:2478, :2481) makes the list the types that can be passed to
+//                                    performEffectForReaction, and says it may differ between devices. This camera supports none, so the list
 //                                    is empty. The host's camera lists all eight (measured), for the same
 //                                    reason it lists them: its camera has the hardware.
-//   -canPerformReactionEffects       NO. "returns YES when resources for reactions are available on the
-//                                    device instance" (:2471).
+//   -canPerformReactionEffects       NO: the header (:2471) answers YES only when reaction resources are available on the device instance.
 //   -reactionEffectsInProgress       an empty array: nothing can start a reaction, so none is running.
-//   +reactionEffectsEnabled          the DOCUMENTED rule, read out of the application: "On iOS, Reaction
-//                                    Effects are enabled by default for video conferencing applications
-//                                    (apps that use \"voip\" as one of their UIBackgroundModes). Non video
-//                                    conferencing applications may opt in ... NSCameraReactionEffectsEnabled"
-//                                    (:2448-2450). The host answers YES because its own rule is "enabled by
-//                                    default for all applications" on macOS (:2447), which is a different
-//                                    platform's rule and not this one's.
-//   +reactionEffectGesturesEnabled   the DOCUMENTED default: "By default, gesture detection is enabled"
-//                                    (:2461), which iOS 17.4 lets an application change with
+//   +reactionEffectsEnabled          the DOCUMENTED rule, read out of the application: on iOS, reaction effects are on by default for
+//                                    video conferencing apps (those with voip among their background modes), and other apps may opt in through
+//                                    NSCameraReactionEffectsEnabled (:2448-2450). The host answers YES because macOS's own rule turns them on for all apps (:2447),
+//                                    which is a different platform's rule and not this one's.
+//   +reactionEffectGesturesEnabled   the DOCUMENTED default (:2461) has gesture detection on, which iOS 17.4 lets an application change with
 //                                    NSCameraReactionEffectGesturesEnabledDefault in its Info.plist. The
 //                                    host answers NO because it reflects this Mac's Control Center Gestures
 //                                    setting (:2458); a release with no such setting stays at its default.
 //   +systemPreferredCamera           the user's choice when there is one, and the release's own best camera
-//                                    otherwise. "This property incorporates userPreferredCamera as well as other
-//                                    factors, such as camera suspension and Apple cameras appearing that should
-//                                    be automatically chosen ... This property always returns a device that is
-//                                    present. If no camera is available nil is returned." (AVCaptureDevice.h:674).
+//                                    otherwise. The header (AVCaptureDevice.h:674) takes userPreferredCamera into account along with camera suspension and Apple cameras arriving, and gives a present device, or nil when there is none.
+//                                    suspension and Apple cameras arriving, and gives a present device, or nil when there is none.
 //                                    The "other factors" this release has are the ones its own
 //                                    +defaultDeviceWithMediaType: answers, and nothing invented: the devices of
 //                                    this port's bands have a camera on each side and the release's answer for
-//                                    AVMediaTypeVideo is "the built in camera that is primarily used for capture
-//                                    and recording" (AVCaptureDevice.h:120), which is the one on the back. The
+//                                    AVMediaTypeVideo, the release's built-in capture camera (AVCaptureDevice.h:120), which is the one on the back. The
 //                                    call, not a position, is what is written here, so the port cannot drift
 //                                    from the release's own choice.
 //   +userPreferredCamera             the camera an application chose, kept across launches, and only ever a
-//                                    camera that is present. Four rules, all of the header's own:
-//                                      "Setting this property allows an application to persist its user's
-//                                       preferred camera across app launches and reboots. The property internally
-//                                       maintains a short history, so if your user's most recent preferred camera
-//                                       is not currently connected, it still reports the next best choice. This
-//                                       property always returns a device that is present. If no camera is
-//                                       available nil is returned. Setting the property to nil has no effect."
-//                                       (AVCaptureDevice.h:661-663)
+//                                    camera that is present. The rules, all from the header (AVCaptureDevice.h:661-663): setting it lets an application keep
+//                                    the user's choice across launches, a short history of choices is kept, a read gives a present device or nil when there is none, and setting nil changes nothing.
 //                                    So: the most recent entry of the history that is in the device list NOW; nil
 //                                    while the history is empty (measured on the host, which answers nil until an
 //                                    application sets one); the release's own best camera once the history is
@@ -60,16 +45,14 @@
 //                                    itself when the device has no camera at all; and a nil set adds nothing, so
 //                                    the choice survives it (measured on the host: after setting nil the getter
 //                                    still answers the camera it was given).
-//   -performEffectForReaction:        raises. "The reactionType requested must be one of those listed in
-//                                    availableReactionTypes or an exception will be thrown" (:2496): the
+//   -performEffectForReaction:        raises. The header (:2496) requires the reactionType to be one of the availableReactionTypes, or it throws: the
 //                                    list is empty, so every type is one that must not be passed. The
 //                                    header names no exception for it, and the port raises
 //                                    NSInvalidArgumentException - the name the two refusals this host's own
 //                                    class raises for unsupported arguments use (measured:
 //                                    "*** -[AVCaptureDALDevice setAutoVideoFrameRateEnabled:] Not supported"
 //                                    and "*** -[AVCaptureDeviceInput setMultichannelAudioMode:] Not supported").
-//                                    "Performing a reaction when canPerformReactionEffects is NO is
-//                                    ignored" (:2496) is the other half of the same rule, and it is what a
+//                                    The header's other half of the rule is that a reaction asked for while canPerformReactionEffects is NO is ignored (:2496), and it is what a
 //                                    type that IS available would get; no type is available here.
 //   Format -reactionEffectsSupported NO, the same hardware answer for a format. The host's camera answers
 //                                    YES for all seven of its formats (measured).
@@ -103,8 +86,7 @@
 //   * identifiers, not devices: an AVCaptureDevice does not outlive the process that made it, and the header's
 //     promise is across launches. -uniqueID is the release's own name for a device across the process boundary.
 //   * a short history, not one value, because the header keeps a short history (:662). Three entries is the
-//     depth here: enough for the "most recent ... is not currently connected, it still reports the next best
-//     choice" case to have a next choice to report, and bounded, which is what "short" says.
+//     depth here: enough for a most-recent entry that has gone missing to have a next choice to report, and bounded.
 #define CHARON_CAPTURE_USER_PREFERRED_HISTORY_KEY @"CharonCaptureUserPreferredCameraHistory"
 #define CHARON_CAPTURE_USER_PREFERRED_HISTORY_DEPTH 3
 
@@ -178,8 +160,7 @@ static NSArray<NSString *> *charon_user_preferred_history(void)
 
 + (AVCaptureDevice *)systemPreferredCamera
 {
-    // "incorporates userPreferredCamera as well as other factors ... always returns a device that is present. If
-    // no camera is available nil is returned" (:674): the user's choice first, and otherwise the release's own
+    // The header (:674) takes userPreferredCamera along with other factors, and gives a present device or nil: the user's choice first, and otherwise the release's own
     // best camera, which is what +defaultDeviceWithMediaType: answers and what it answers nil for on a device
     // with no camera. The choice is asked for through its own property rather than through the history, so the
     // "next best choice" the two properties share is one piece of code.
@@ -190,9 +171,7 @@ static NSArray<NSString *> *charon_user_preferred_history(void)
 {
     NSArray<NSString *> *history = charon_user_preferred_history();
     NSArray<AVCaptureDevice *> *present = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
-    // "The property internally maintains a short history, so if your user's most recent preferred camera is not
-    // currently connected, it still reports the next best choice. This property always returns a device that is
-    // present" (:662-663): the most recent entry of the history that is in the device list now, and never an
+    // The header (:662-663) keeps a short history, so a preferred camera that has gone missing gives the next best choice, and a present device always: the most recent entry of the history that is in the device list now, and never an
     // entry that is not.
     for (NSString *identifier in history) {
         for (AVCaptureDevice *device in present) {
