@@ -10,8 +10,8 @@
 
 // The SDK the PROGRAM was linked against, read out of the main executable's own load command.
 //
-// A few of the properties this package carries are documented with a condition on it - "By default, for apps
-// that are linked on or after iOS 26, this value is true" (AVCaptureSession.h:685,
+// A few of the properties this package carries are documented with a condition on the app: the header
+// gives true as the default where the app is linked against iOS 26 or later (AVCaptureSession.h:685,
 // AVCaptureOutputBase.h:129) - and the condition is a property of the APPLICATION, not of this port: a band
 // links against the SDK its package line names (16.4 for every band this repository builds), which is written
 // into the binary as the load command's sdk field. So it is READ, never assumed, and this is the one place in
