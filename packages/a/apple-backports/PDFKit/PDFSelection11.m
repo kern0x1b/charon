@@ -293,7 +293,7 @@ static NSRange charonTextRangeForRange(PDFPage *page, NSRange range)
 #pragma mark - the mutators
 
 // The spans of the two selections, as ONE ordered list with the overlaps removed - which is what the header
-// says happens: "If the selection added overlaps with this selection, overlaps are removed" (PDFSelection.h:67).
+// says happens when the selection added overlaps this one: the overlapping parts are removed (PDFSelection.h:67).
 // Measured over five shapes: an added span INSIDE one of these is dropped, a crossing one is kept whole, and
 // two spans with a space between them stay two spans - so the merge is by OVERLAP and not by adjacency.
 - (void)charon_unionWith:(NSArray<CharonPDFSelectionSpan *> *)other
@@ -490,8 +490,8 @@ static NSRange charonTextRangeForRange(PDFPage *page, NSRange range)
 
 - (void)extendSelectionForLineBoundaries
 {
-    // "to the beginning and end of the currently selected lines of text ... If the current selection is on a
-    // single line, then this will extend it to the entire line width" (PDFSelection.h:79).  Measured: inside
+    // The header says the selection extends to the beginning and end of the selected lines of text, and that on a
+    // single line it is extended to the full line width (PDFSelection.h:79).  Measured: inside
     // one line of cgfixture-words the whole 36 characters, and across two lines that already contain their
     // rows of text, no change at all.
     if (_spans.count == 0)

@@ -385,8 +385,7 @@ static NSArray<PDFSelection *> *charonMatchesOnPage(PDFPage *page, NSString *nee
         if (backwards)
             to = 0;
     } else {
-        // "beginning after the last character of selection ... (or preceding the first character of the
-        // selection if NSBackwardsSearch is specified)" - PDFDocument.h:274, in its own words.
+        // the search begins after the last character of the selection, or before its first character when NSBackwardsSearch is specified (PDFDocument.h:274).
         NSArray<PDFPage *> *pages = selection.pages;
         if (pages.count == 0)
             return nil;
