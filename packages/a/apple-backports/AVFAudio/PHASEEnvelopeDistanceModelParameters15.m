@@ -4,9 +4,8 @@
 // PHASEEnvelopeDistanceModelParameters: a distance model whose curve is a PHASEEnvelope.
 //
 // The header says what the envelope means here, and it is worth saying in the port's own words
-// because it is the whole contract: "An envelope object where x values are interpreted as distance and
-// the y values interpreted as gain", and on the property, "The x values are interpreted as distance and
-// the y values are interpreted as gain."
+// because it is the whole contract (PHASEDistanceModel.h:108-113): an envelope here has x values that are
+// distance and y values that are gain, and the property reads the same way.
 //
 // There is nothing to translate here - PHASE arrived in iOS 15 and the port's releases are 6.1.3 and
 // 4.3, so no release has a PHASEDistanceModel to convert. What there is to carry is the holding of an

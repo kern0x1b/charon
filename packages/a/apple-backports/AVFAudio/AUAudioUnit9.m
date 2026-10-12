@@ -215,8 +215,8 @@
     _charon_renderBlock = [renderBlock copy];
 }
 
-// The observers the header says are called "by the base class's AURenderBlock before and after each
-// render cycle", which is read here as: the port's render block tells them on the way in and on the
+// The observers are called from the base class's render block on either side of each render cycle
+// (AUAudioUnit.h:147-152). The port's render block tells them on the way in and on the
 // way out, with the PreRender and PostRender flags the header names, so an observer can tell the two
 // apart exactly as it does on a release that has one.
 - (NSInteger)tokenByAddingRenderObserver:(AURenderObserver)observer
@@ -304,9 +304,8 @@
     _charon_parameterTree = parameterTree;
 }
 
-// The unit's own list of overview parameters, through the v2 property AUAudioUnit.h names for this
-// method: "Partially bridged to kAudioUnitProperty_ParametersForOverview (v2 hosts can use that
-// property to access this v3 method of an audio unit)". It answers an array of
+// The unit's own list of overview parameters. AUAudioUnit.h (:583-584) bridges this v3 method only
+// partly, to kAudioUnitProperty_ParametersForOverview, which v2 hosts can read. It answers an array of
 // AUOutputUnitElementCount-pair arrays - [globalScopeElement, globalScopeElement, inputScopeElement,
 // inputScopeElement, ...] - which is turned into the addresses the header's own return type is. A unit
 // that publishes none answers the empty array, which is the truth over the empty set; the unit's list
@@ -451,17 +450,15 @@
 }
 
 // The channel counts the unit accepts on its input busses and the one it produces on its output, which
-// is what the header describes and what the v2 property AUAudioUnit.h names for it
-// ("Bridged to the v2 property kAudioUnitProperty_SupportedNumChannels"). Each is a two-element pair,
-// (max input across the input busses, channels of output), so both sides of the header's own example -
-// "(-16, 2) indicates that a unit can accept up to 16 channels of input across its input busses, but
-// will only produce 2 channels of output" - are answered. A unit that publishes none answers an empty
-// array, which is the truth over the empty set.
+// is what AUAudioUnit.h describes (:1050-1053), and the v2 property it bridges to is
+// kAudioUnitProperty_SupportedNumChannels. Each is a two-element pair, (max input across the input busses,
+// channels of output), so both sides of the header's example are answered: a pair of (-16, 2) is a unit that
+// takes as many as 16 input channels spread over its busses and makes 2 output channels. A unit that publishes
+// none answers an empty array, which is the truth over the empty set.
 - (NSArray<NSNumber *> *)channelCapabilities
 {
-    // The property is an AUChannelInfo *array*: "The size of this property will represent the number
-    // of AUChannelInfo structs that an audio unit provides. Each entry describes a particular number
-    // of channels on any input, matched to a particular number of channels on any output", and
+    // The property is an AUChannelInfo *array*, one entry per input-to-output channel pairing the unit
+    // supports (AudioUnitProperties.h:211-213); its size is the number of structs the unit provides.
     // AUChannelInfo is two SInt16 - inChannels then outChannels - so one entry is four bytes.
     //
     // Reading it as a fixed pair of eight bytes is wrong twice over. A unit that answers one entry

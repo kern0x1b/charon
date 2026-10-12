@@ -20,9 +20,8 @@
 // describe, and the two members the release's parameters cannot express - the ear-model algorithms and
 // the non-point source modes - are kept and answer what this unit can do, which is the sound field.
 
-// AVAudioMixingDestination is the header's own class, and the header's own contract for it is that a
-// reference "could become invalid when there is any disconnection between the source and the mixer
-// node ... should not be retained and should be fetched every time". So it is a fresh object over the
+// AVAudioMixingDestination is the header's own class (AVAudioMixing.h:60-63), and its contract is that a
+// reference goes stale when the source and the mixer node disconnect, so it is fetched again each time. So it is a fresh object over the
 // pair asked for, and its values are the source node's - which is what a mixing destination is: a way
 // to set a particular connection's values rather than the source's own.
 @interface AVAudioMixingDestination (CharonImpl)

@@ -6,8 +6,8 @@
 //
 // The header makes `initWithEngine:` the designated initializer and marks both `-init` and `+new`
 // NS_UNAVAILABLE, so the object is always made against an engine and never bare. The transform is a
-// simd_float4x4, and the header's note on both transforms - "The transform must have orthogonal basis
-// vectors and uniform scale" - is the property the identity satisfies, so an object starts at the
+// simd_float4x4, and the header's note on both transforms asks for orthogonal basis vectors and a uniform
+// scale (PHASEObject.h:92-95). The identity satisfies that, so an object starts at the
 // identity rather than at whatever a zeroed allocation gave (a zero matrix is not a transform, and
 // multiplying a position by one is how a hierarchy composes).
 //
@@ -64,7 +64,7 @@ static const simd_float4x4 CharonIdentityTransform = {{
     return [_charon_children copy];
 }
 
-// The header: "Returns an error if the child already has a parent." An object that is already
+// The header (PHASEObject.h:38-45) makes adding a child that already has a parent an error. An object that is already
 // somewhere else in the hierarchy cannot be added here without the hierarchy becoming a graph, so the
 // call is refused with an error the caller can read rather than silently moving the object.
 - (BOOL)addChild:(PHASEObject *)child error:(NSError **)outError

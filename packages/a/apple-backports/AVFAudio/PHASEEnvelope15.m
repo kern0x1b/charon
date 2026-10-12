@@ -5,8 +5,8 @@
 // PHASEEnvelope: a segmented envelope, and the one place PHASE evaluates a curve of its own.
 //
 // The envelope is a start point and an ordered list of segments, each of which the header says carries
-// no start point of its own - "so we can connect envelope segments together end to end and gaurantee
-// continuity along the x and y axes" - so the segments partition the domain and the value at a point is
+// no start point of its own (PHASEEnvelope.h:58-62): the segments join end to end and stay continuous along the x
+// and y axes, so they partition the domain, and the value at a point is
 // the start point, or one segment's linear or curved run out of the previous one's end.
 //
 // evaluateForValue: maps a domain value onto the range by finding the segment whose x extent holds it

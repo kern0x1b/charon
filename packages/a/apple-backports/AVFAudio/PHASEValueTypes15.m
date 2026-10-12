@@ -88,10 +88,9 @@
 // writing one here is a hard error rather than an override.
 //
 // The default is therefore set on first read rather than in an -init that may not be written. It is
-// the header's own (PHASEDistanceModel.h:87, "Default value is 1.0"), not a value this port chose -
-// and the header goes on to say what each value means, which is the point of carrying it at all:
-// "0.0 is no effect. 0.5 is half the effect. 1.0 is normal. 2.0 is double the effect." A property
-// left at its ivar zero would mean "no effect", which the header names as a *setting* and not as
+// the header's own default (PHASEDistanceModel.h:83-88 gives 1.0), not a value this port chose - and the header
+// goes on to say what the scale means: 0.0 removes the effect, 0.5 halves it, 1.0 is normal and 2.0 doubles it.
+// A property left at its ivar zero would mean no effect, which the header names as a *setting* and not as
 // what a fresh parameter object holds.
 - (double)rolloffFactor
 {

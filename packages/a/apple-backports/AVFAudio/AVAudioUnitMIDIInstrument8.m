@@ -13,10 +13,10 @@
 //   AudioToolbox exports matching _MusicDevice: ['_MusicDeviceMIDIEvent', '_MusicDeviceStartNote',
 //   '_MusicDeviceStopNote', '_MusicDeviceSysEx']
 //
-// MusicDevice.h of SDK 16.4 documents MusicDeviceMIDIEvent as "Used to sent MIDI channel messages to
-// an audio unit", with inUnit "The audio unit", inStatus "The MIDI status byte" and inData1/inData2
-// "exactly as described by the MIDI specification, including the combination of channel and command in
-// the status byte", all API_AVAILABLE(ios(5.0)). MusicDeviceSysEx is the non-channel form, and
+// MusicDevice.h of SDK 16.4 (:185-186) documents MusicDeviceMIDIEvent as the call that sends MIDI channel
+// messages to an audio unit: inUnit is the unit, inStatus the MIDI status byte, and inData1 and inData2 are read
+// as the MIDI specification reads them, the channel and the command both in the status byte. All of it is
+// API_AVAILABLE(ios(5.0)). MusicDeviceSysEx is the non-channel form, and
 // MusicDeviceStartNote/MusicDeviceStopNote are the extended note API that returns the note instance
 // the same API group stops. So every channel message, the system-exclusive message and the note pair
 // are the release's own calls.
@@ -55,8 +55,8 @@
 }
 
 // A note, started with the extended API when the release has it, so that the note instance it returns
-// is what stops it - the header's own "To stop a note it must be stopped with the same API group as
-// was used to start it". A release that answers the note instance is used that way; one that does not
+// is what stops it. The header (MusicDevice.h:32-33) requires a note to stop through the API group that started it.
+// A release that answers the note instance is used that way; one that does not
 // falls back to the MIDI note-on event, which the same header documents as the other legal way and
 // which is stopped with the note-off event.
 - (void)startNote:(uint8_t)note withVelocity:(uint8_t)velocity onChannel:(uint8_t)channel
@@ -135,8 +135,8 @@
 {
     // A banked program change is two bank-select controller events and then the program change, which
     // is what the MIDI specification's bank select and program change are and what the release's unit
-    // reads them as - the header's own "including the combination of channel and command in the status
-    // byte" is the same point.
+    // reads them as. The header (MusicDevice.h:188-191) makes the same point about the channel and the command
+    // sharing the status byte.
     MusicDeviceComponent unit = [self charon_musicDevice];
     MusicDeviceMIDIEvent(unit, 0xB0 | (channel & 0x0F), 0, bankMSB, 0);
     MusicDeviceMIDIEvent(unit, 0xB0 | (channel & 0x0F), 32, bankLSB, 0);
@@ -153,8 +153,8 @@
     MusicDeviceMIDIEvent([self charon_musicDevice], midiStatus, data1, data2, 0);
 }
 
-// A system-exclusive block is the release's own call, with the length the header documents -
-// "The complete MIDI SysEx message including the F0 and F7 start and termination bytes".
+// A system-exclusive block is the release's own call, and its length is the whole message, F0 and F7
+// start and termination bytes included (MusicDevice.h:227-232).
 - (void)sendMIDISysExEvent:(NSData *)midiData
 {
     if (midiData.length == 0) {

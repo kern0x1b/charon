@@ -39,8 +39,8 @@
 }
 
 // A change reaches the observers of the parameter it happened to, and then the observers of every
-// node above it - which is what the header means by "an observer for a parameter or all parameters
-// in a group/tree". The recursion stops at the root, and each node is visited once per change
+// node above it, which is the header's notion of observing one parameter or a whole group (AUParameters.h:162-166).
+// The recursion stops at the root, and each node is visited once per change
 // because a group notifies its own observers and then asks its children to notify theirs only for a
 // change of their own.
 - (void)charon_notifyValue:(AUValue)value atAddress:(AUParameterAddress)address
@@ -168,8 +168,8 @@
     return _charon_children;
 }
 
-// The header: "A parameter group is KVC-compliant for its children; e.g. valueForKey:@\"volume\"
-// will return a child parameter whose identifier is \"volume\"." So the group's own key answers for a
+// The header (AUParameters.h:236-240) makes a parameter group key-value compliant for its children: looking up
+// a child's identifier as a key returns that child, so the group's own key answers for a
 // child, and only for a child - a key it does not hold is left to NSObject, which is how a
 // KVC-compliant-by-convention object behaves.
 - (id)valueForKey:(NSString *)key
@@ -268,8 +268,8 @@
 }
 
 // The keyPath of a node is the identifiers of its parents joined with periods, so this is how a host
-// gets back the node a key path names - the header's own "Passing a node's keyPath to
-// -[tree valueForKeyPath:] should return the same node".
+// gets back the node a key path names. AUParameters.h:146 says the keyPath of a node, passed to
+// valueForKeyPath: on the tree, returns that same node.
 - (id)valueForKeyPath:(NSString *)keyPath
 {
     AUParameterNode *node = self;
