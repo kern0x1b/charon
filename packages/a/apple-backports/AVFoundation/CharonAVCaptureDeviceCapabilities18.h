@@ -15,19 +15,19 @@
 // THE GUARD is the SDK's own knowledge of iOS 18 and not the name of a header, which is what the two
 // headers above this one test for. These members live in AVCaptureDevice.h and AVCaptureInput.h in every SDK
 // that declares them, so there is no header of their own to ask __has_include about, and a guard of the
-// wrong shape would use this transcription beside a newer SDK's own declarations - a duplicate interface,
+// wrong shape would use this copy of the declarations beside a newer SDK's declarations - a duplicate interface,
 // measured as one by tests/backports/host/avf-globals for the controls family. MEASURED, the two SDKs this
 // repository builds against: `clang -dM -E` over <Foundation/Foundation.h> defines __IPHONE_18_0 in the host
 // SDK (MacOSX.sdk) and does not define it in SDK 16.4, and the host SDK's AVCaptureDevice.h declares all
 // fifteen of these members.
 //
-// The declarations are 26.2's own with ONE change, stated here rather than made silently: every
+// The declarations are the 26.2 interface's, written for this port, with ONE change, stated here rather than made silently: every
 // `visionos` word is dropped from the availability annotations. SDK 16.4's os/availability.h expands
 // API_AVAILABLE and API_UNAVAILABLE over the platform names it knows and fails on any other - measured: a
 // typedef carrying `API_AVAILABLE(macos(15.0), ios(18.0), macCatalyst(18.0), tvos(18.0))
 // API_UNAVAILABLE(watchos, visionos)` is `error: expected ','` at the end of the line, and `API_UNAVAILABLE
 // (visionos)` alone is the same error while `API_UNAVAILABLE(watchos)` alone compiles clean. So `watchos`
-// is kept, Apple's own, and only `visionos` goes. Nothing is lost: it marks a platform this port does not
+// is kept, as the interface has it, and only `visionos` goes. Nothing is lost: it marks a platform this port does not
 // build for. (This is the same drop CharonAVCaptureControls18.h makes for the same reason, measured there
 // for API_AVAILABLE alone.)
 //
@@ -42,29 +42,16 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// The modes of multichannel audio, as AVCaptureDeviceInput's multichannelAudioMode and
-/// -isMultichannelAudioModeSupported: take them (AVCaptureInput.h:353-397).
 typedef NS_ENUM(NSInteger, AVCaptureMultichannelAudioMode) {
     AVCaptureMultichannelAudioModeNone                 = 0,
     AVCaptureMultichannelAudioModeStereo               = 1,
     AVCaptureMultichannelAudioModeFirstOrderAmbisonics = 2,
 } API_AVAILABLE(ios(18.0)) API_UNAVAILABLE(watchos);
 
-/// One reason a scene is not comfortable to watch as a spatial capture (AVCaptureDevice.h:2647-2664). The two
-/// constants of this type are 18.0 rows of their own and are not carried here, so nothing in this header
-/// declares them and no caller can read one; the type is what AVCaptureDevice.spatialCaptureDiscomfortReasons
-/// hands back, and an empty set of them.
 typedef NSString *AVSpatialCaptureDiscomfortReason NS_TYPED_ENUM API_AVAILABLE(ios(18.0));
 
-/// A range of supported exposure bias values in EV units, what AVCaptureDeviceFormat's
-/// systemRecommendedExposureBiasRange hands back (AVCaptureDevice.h:2960-2999). The 16.4 SDK declares
-/// neither this class nor its members: its own rows are a family of their own, and this header only needs
-/// the name to spell the property's type, which is what a forward declaration is.
 @class AVExposureBiasRange;
 
-/// A range of supported zoom factors, what AVCaptureDeviceFormat's systemRecommendedVideoZoomRange hands back
-/// (AVCaptureDevice.h:3272-3281). The 16.4 SDK declares no AVZoomRange either; its own rows are a family of
-/// their own.
 @class AVZoomRange;
 
 @interface AVCaptureDevice (CharonCaptureDeviceCapabilities18)

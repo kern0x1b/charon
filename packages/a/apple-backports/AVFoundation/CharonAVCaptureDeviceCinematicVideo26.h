@@ -9,14 +9,14 @@
 //       :2682-2696, :3782-3818
 //   iPhoneOS26.2.sdk/System/Library/Frameworks/AVFoundation.framework/Headers/AVCaptureInput.h:425-439
 //
-// Nothing here names a type the SDK does not declare except the one string enum, which is transcribed below.
+// Nothing here names a type the SDK does not declare except the one string enum, which is declared below.
 //
 // THE GUARD is the SDK's own knowledge of iOS 26, for the reason CharonAVCaptureDeviceCapabilities18.h gives:
 // these members live in AVCaptureDevice.h and AVCaptureInput.h in every SDK that declares them, so there is no
 // header of their own to ask __has_include about. MEASURED: `clang -dM -E` over <Foundation/Foundation.h>
 // __IPHONE_26_0 is defined by the host SDK and absent from SDK 16.4.
 //
-// The declarations are 26.2's own with ONE change, stated here rather than made silently: every `visionos` word
+// The declarations are the 26.2 interface's, written for this port, with ONE change, stated here rather than made silently: every `visionos` word
 // is dropped from the availability annotations, because SDK 16.4's os/availability.h fails to expand one
 // (measured: `API_UNAVAILABLE(visionos)` is `error: expected ','`, `API_UNAVAILABLE(watchos)` compiles clean).
 //
@@ -31,20 +31,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// The focus behaviour when recording a Cinematic Video (AVCaptureDevice.h:1301-1308). None is "no focus mode
-/// is specified, in which case weak focus is used as default", Strong is "the subject should remain in focus
-/// until it exits the scene" and Weak is "the Cinematic Video algorithm should automatically adjust focus
-/// according to the prominence of the subjects in the scene". The three values are the header's own.
 typedef NS_ENUM(NSInteger, AVCaptureCinematicVideoFocusMode) {
     AVCaptureCinematicVideoFocusModeNone   = 0,
     AVCaptureCinematicVideoFocusModeStrong = 1,
     AVCaptureCinematicVideoFocusModeWeak   = 2,
 } API_AVAILABLE(ios(26.0));
 
-/// An informative status about the scene observed by the device (AVCaptureDevice.h:2682). **Its one constant,
-/// AVCaptureSceneMonitoringStatusNotEnoughLight, is a 26.0 row of its own and is not carried here** - it is
-/// an exported symbol whose lift set the coordinator re-measures - so the set this header's property returns is
-/// empty on this release and nothing a caller can name is ever in it.
 typedef NSString *AVCaptureSceneMonitoringStatus NS_TYPED_ENUM API_AVAILABLE(ios(26.0));
 
 @interface AVCaptureDevice (CharonCaptureDeviceCinematicVideo26)
@@ -53,7 +45,7 @@ typedef NSString *AVCaptureSceneMonitoringStatus NS_TYPED_ENUM API_AVAILABLE(ios
 
 // The three focus methods of the same category 26.2 declares (AVCaptureDevice.h:1310-1328). Each one names a
 // point of interest in the device's own normalized coordinate space and a focus mode, and Apple's own refusal
-// for all three names the format member they need. They are one line each because 26.2's own declarations are:
+// for all three names the format member they need. They are one line each because the 26.2 declarations are:
 // a reader comparing the two headers line by line should find the same lines.
 - (void)setCinematicVideoTrackingFocusWithDetectedObjectID:(NSInteger)detectedObjectID focusMode:(AVCaptureCinematicVideoFocusMode)focusMode API_AVAILABLE(ios(26.0));
 - (void)setCinematicVideoTrackingFocusAtPoint:(CGPoint)point focusMode:(AVCaptureCinematicVideoFocusMode)focusMode API_AVAILABLE(ios(26.0));
@@ -61,7 +53,7 @@ typedef NSString *AVCaptureSceneMonitoringStatus NS_TYPED_ENUM API_AVAILABLE(ios
 
 @end
 
-// Six of the seven properties 26.2's AVCaptureDeviceFormatCinematicVideoSupport category declares; the other
+// Six of the seven properties the 26.2 AVCaptureDeviceFormatCinematicVideoSupport category declares; the other
 // three of that category (defaultSimulatedAperture, minSimulatedAperture, maxSimulatedAperture) are the
 // simulated-aperture rows and are declared beside the members that set them.
 @interface AVCaptureDeviceFormat (CharonCaptureDeviceFormatCinematicVideo26)

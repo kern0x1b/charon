@@ -9,18 +9,13 @@
 //   iPhoneOS26.2.sdk/System/Library/Frameworks/AVFoundation.framework/Headers/AVCaptureReactions.h:17-22
 //   iPhoneOS26.2.sdk/System/Library/Frameworks/AVFoundation.framework/Headers/AVCaptureDeviceFormat.h
 //
-// The declarations are 26.2's own with ONE change, stated here rather than made silently: every
+// The declarations are the 26.2 interface's, written for this port, with ONE change, stated here rather than made silently: every
 // `, visionos(<version>)` and `, watchos(<version>)` is dropped, because SDK 16.4's availability.h does not
 // know those words and expanding one there is `error: expected ','` on the line after the macro's own
 // argument. Nothing is lost: the annotations mark platforms this port does not build for.
 //
 // The names the port adds beyond the SDK are listed in the delivery for rule R4.
 #if !__has_include(<AVFCore/AVCaptureReactions.h>)
-/*
- File: AVCaptureReactions.h
-
- Copyright (c) 2016. Apple Inc. All rights reserved.
- */
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVBase.h>
 // AVCaptureDeviceFormat is declared in the 16.4 SDK's AVCaptureDevice.h and nowhere else, which is
@@ -29,17 +24,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// The type of a reaction, as AVFoundation/AVFoundationGlobals180.m already carries its eight values.
 typedef NSString *AVCaptureReactionType NS_TYPED_ENUM;
 
-/// One reaction running on the video stream. The 16.4 SDK declares neither this class nor its members, and
-/// the port does not carry it: nothing on this release can start a reaction (see
-/// AVCaptureDeviceReactions17.m), so no instance of it is ever made and a forward declaration is what a
-/// caller needs to hold what -reactionEffectsInProgress hands back.
 @class AVCaptureReactionEffectState;
 
-/// A zoom range a device format offers, named in AVCaptureDeviceFormat's depth-delivery members. The 16.4
-/// SDK does not declare AVZoomRange either; its own rows are a family of their own.
 @class AVZoomRange;
 
 @interface AVCaptureDevice (CharonCaptureDeviceReactions17)

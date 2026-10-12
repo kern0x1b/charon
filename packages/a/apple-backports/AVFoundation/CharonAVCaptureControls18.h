@@ -1,4 +1,4 @@
-// CharonAVCaptureControls18.h - AVCaptureSession's controls API, transcribed from the SDK 26.2 header the
+// CharonAVCaptureControls18.h - AVCaptureSession's controls API, declared from the SDK 26.2 header the
 // port is written against. SDK 16.4 ships no AVCaptureControl.h and declares none of the controls API on
 // AVCaptureSession (AVCaptureSession.h has no "AVCaptureControl" in it at all), so the class below and the
 // category that carries the session's members are the port's own to declare; this is what this package's
@@ -9,7 +9,7 @@
 //   iPhoneOS26.2.sdk/System/Library/Frameworks/AVFoundation.framework/Headers/AVCaptureSession.h:373-479,
 //                                                                   :578-585, :733-792
 //
-// The declarations below are 26.2's own, with TWO changes, stated here rather than made silently:
+// The declarations below are the 26.2 interface's, written for this port, with TWO changes, stated here rather than made silently:
 //
 //   * all `, visionos(<version>)` and `, watchos(<version>)` are DROPPED from the availability annotations.
 //     SDK 16.4's availability.h does not know the words, and expanding one there is `error: expected ','`
@@ -29,11 +29,6 @@
 // sources import and the one tools/transcribe-protocols.py writes. A second declaration of the same
 // protocol in this folder would be a duplicate definition in every translation unit that sees both.
 #if !__has_include(<AVFCore/AVCaptureControl.h>)
-/*
- File: AVCaptureControl.h
-
- Copyright (c) 2024. Apple Inc. All rights reserved.
- */
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVBase.h>
 #import <AVFoundation/AVCaptureSession.h>
@@ -56,7 +51,7 @@ AV_INIT_UNAVAILABLE
 // The members AVCaptureSession gained with it, as one category on the release's own class. A category
 // declaration adds no metadata: it is here so that a caller, and this package's own sources, can see the
 // selectors Apple's 16.4 headers do not declare. The port adds no member to this list.
-// The availability is 26.2's own, on the category because its signatures name AVCaptureControl, which the
+// The availability is the 26.2 interface's, on the category because its signatures name AVCaptureControl, which the
 // annotation above introduces in iOS 18: without it every declaration below is an unguarded use of an
 // iOS 18 type at this port's deployment target (UIKit/UIAccessibilityBlocks17.h:52 is the same shape).
 API_AVAILABLE(macos(15), ios(18), tvos(18))
