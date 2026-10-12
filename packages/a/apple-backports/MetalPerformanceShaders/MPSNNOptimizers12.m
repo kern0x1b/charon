@@ -10,40 +10,33 @@
 // here: tools/release-split.lua reads band points only, so a 13.0 symbol in this file would pass it
 // and be wrong by a release.
 //
-// THE ARITHMETIC IS THE HEADER'S OWN, TRANSCRIBED. MPSNNOptimizers.h writes each update out in full,
-// and each concrete optimizer has its formula in the header's own words:
+// THE ARITHMETIC, IN THIS FILE'S NOTATION. MPSNNOptimizers.h states each update in full, at the lines
+// cited below. w is the value, g the gradient, lr the learning rate, eps the epsilon, k the step count:
 //
 //   stochastic gradient descent (:250-268)
-//       useNestrovMomentum == NO:  m[t] = momentumScale * m[t-1] + learningRate * g
-//                                  variable = variable - m[t]
-//       useNestrovMomentum == YES: m[t] = momentumScale * m[t-1] + g
-//                                  variable = variable - (learningRate * (g + m[t] * momentumScale))
-//       inputMomentumVector == nil: variable = variable - (learningRate * g)
+//       no Nesterov:         vel = mu * vel + lr * g;   w = w - vel
+//       Nesterov:            vel = mu * vel + g;        w = w - lr * (g + mu * vel)
+//       no momentum vector:  w = w - lr * g
 //
 //   RMSProp (:430-432)
-//       s[t]     = decay * s[t-1] + (1 - decay) * (g ^ 2)
-//       variable = variable - learningRate * g / (sqrt(s[t]) + epsilon)
+//       acc = rho * acc + (1 - rho) * g^2
+//       w   = w - lr * g / (sqrt(acc) + eps)
 //
 //   Adam (:436-438)
-//       t = t + 1
-//       lr[t] = learningRate * sqrt(1 - beta2^t) / (1 - beta1^t)
-//       m[t]     = beta1 * m[t-1] + (1 - beta1) * g
-//       v[t]     = beta2 * v[t-1] + (1 - beta2) * (g ^ 2)
-//       variable = variable - lr[t] * m[t] / (sqrt(v[t]) + epsilon)
+//       k    = k + 1
+//       lr_k = lr * sqrt(1 - b2^k) / (1 - b1^k)
+//       m    = b1 * m + (1 - b1) * g
+//       v    = b2 * v + (1 - b2) * g^2
+//       w    = w - lr_k * m / (sqrt(v) + eps)
 //
-// The bias correction is the reason the header carries timeStep at all - "the number of times update
-// has occurred" (:525) - and the header increments it BEFORE it computes lr[t] (:436), so the step
-// that counts on the first update is 1, which is what makes (1 - beta1^t) non-zero while m and v
+// The bias correction is why the header carries timeStep at all (:525). The header increments it BEFORE it
+// computes lr_k (:436), so the first update counts as step 1, which keeps (1 - b1^k) non-zero while m and v
 // are still zero.
 //
-// THE GRADIENT IS PREPROCESSED BEFORE ANY OF IT, and that is the descriptor's whole job (:61-66):
-// "Before the gradient is used to update the original value, some preprocessing occurs on each
-// gradient where it is scaled or clipped. If regularization is chosen the appropriate regularization
-// loss gradient is added to the value gradient." In that order - clip, scale, then add the
-// regularization gradient. The regularization gradient is the header's own, at :33-41: L1 "turns to
-// be 1 scaled with regularizationScale, so we add that to the incoming gradient of value"; L2
-// "turns to be the original value scaled with regularizationScale" - the original value being the
-// weight, which is why the preprocessing takes it and not only the gradient.
+// THE GRADIENT IS PREPROCESSED BEFORE ANY OF IT, and that is the descriptor's whole job (:61-66). The order
+// is: clip, then scale, then add the regularization gradient. For L1 the added term is regularizationScale
+// times 1; for L2 it is regularizationScale times the weight (set out at :33-41). The weight is the original
+// value, which is why the preprocessing takes it and not only the gradient.
 //
 // DEFAULTS, each from the property's own doc: learningRate 1e-3 (:66), gradientRescale 1.0 (:72),
 // applyGradientClipping NO (:78), regularizationScale 0.0 (:94), regularizationType

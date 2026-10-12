@@ -1,12 +1,11 @@
 /* tasksession.m - what the host's own NSURLSession does with a task's delegate.
 
-   The three rules, from SDK 16.4 NSURLSession.h:296-304, where the property is declared:
+   The three things asked, about the task delegate property that SDK 16.4 NSURLSession.h declares at
+   :296-304:
 
-       Sets a task-specific delegate. Methods not implemented on this delegate will
-       still be forwarded to the session delegate.
-       Cannot be modified after task resumes. Not supported on background session.
-       Delegate is strongly referenced until the task completes, after which it is
-       reset to `nil`.
+       a selector the task delegate does not implement is forwarded on to the session delegate;
+       the delegate cannot change once the task has resumed, and a background session does not take one;
+       the task holds the delegate strongly until it completes, and then clears it.
 
    Each is asked of the system's own Foundation, not of the port: the port's objects are armv7
    iOS 6.1.3 and this program is macOS. Nothing here reads the port.

@@ -2,7 +2,7 @@
 //
 // **The whole specification is one line of the header's Maps comment**, under the declaration:
 //
-//     E[n] = A[n]*B[0] + C[n]*D[0];
+//     out[i] = in1[i] * s1 + in2[i] * s2, with s1 = B[0] and s2 = D[0];
 //
 // **B and D are one scalar each.** `__B` and `__D` are typed as `const float *` because that is how a scalar is
 // spelled, and reading the signature alone invites an array of per-channel scalars with an index that the

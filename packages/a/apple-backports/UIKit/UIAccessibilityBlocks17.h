@@ -60,7 +60,7 @@ API_AVAILABLE(ios(17.0), tvos(17.0)) API_UNAVAILABLE(watchos)
 @property (nullable, nonatomic, copy) AXTraitsReturnBlock accessibilityTraitsBlock;
 @property (nullable, nonatomic, copy) AXStringReturnBlock accessibilityIdentifierBlock;
 
-// Defining accessibility text and language
+// The text and language properties
 @property (nullable, nonatomic, copy) AXArrayReturnBlock accessibilityHeaderElementsBlock;
 @property (nullable, nonatomic, copy) AXAttributedStringReturnBlock accessibilityAttributedLabelBlock;
 @property (nullable, nonatomic, copy) AXAttributedStringReturnBlock accessibilityAttributedHintBlock;
@@ -70,7 +70,7 @@ API_AVAILABLE(ios(17.0), tvos(17.0)) API_UNAVAILABLE(watchos)
 @property (nullable, nonatomic, copy) AXAttributedStringArrayReturnBlock accessibilityAttributedUserInputLabelsBlock;
 @property (nullable, nonatomic, copy) AXAttributedStringReturnBlock accessibilityAttributedValueBlock;
 
-// Configuring behavior
+// The behavior switches
 @property (nullable, nonatomic, copy) AXBoolReturnBlock accessibilityElementsHiddenBlock;
 @property (nullable, nonatomic, copy) AXBoolReturnBlock accessibilityRespondsToUserInteractionBlock;
 @property (nullable, nonatomic, copy) AXBoolReturnBlock accessibilityViewIsModalBlock;

@@ -5,7 +5,7 @@
 //
 // This is a RENAME, not a new capability, and the SDK's own header says which way it went:
 //
-//   /// Use sourceClock instead.
+//   /// (the header's note: masterClock is replaced by sourceClock)
 //   @property (nonatomic, retain, nullable) __attribute__((NSObject)) CMClockRef masterClock
 //       API_DEPRECATED_WITH_REPLACEMENT("sourceClock", macos(10.8, 15.0), ios(6.0, 18.0), ...)
 //

@@ -3,7 +3,7 @@
 //
 // MPMediaEntity.h at SDK 26.2 is the whole contract, quoted:
 //
-//   // Read-only support for Objective-C subscripting syntax with MPMediaEntity property constants.
+//   // (the header's note: keyed subscripting over the property constants, read-only)
 //   - (nullable id)objectForKeyedSubscript:(id)key
 //       MP_API(ios(8.0), tvos(14.0))
 //       API_UNAVAILABLE(watchos, macos)

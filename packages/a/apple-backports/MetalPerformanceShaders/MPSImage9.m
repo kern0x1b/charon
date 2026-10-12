@@ -196,17 +196,14 @@ static BOOL CharonMPSWalkWindowed(MPSImage *source, MPSImage *destination, MTLRe
 
 // ---- MPSImageIntegral and MPSImageIntegralOfSquares: one shared rectangle sum over the source.
 //
-// The rectangle is the header's own, MPSImageIntegral.h:19-20 and :40-41:
-//
-//   sumRect.origin = MPSUnaryImageKernel.offset
-//   sumRect.size   = dest_position - MPSUnaryImageKernel.clipRect.origin
-//
-// so at a destination position the rectangle runs from the offset to that position and the value is
+// The rectangle comes from the header's declarations (MPSImageIntegral.h:19-20 and :40-41). Its origin is
+// the kernel's offset, and its size runs from that origin to the destination position, so at a destination
+// position the rectangle runs from the offset to that position and the value is
 // the sum of the source inside it. `squared` is the whole of the difference between the two classes:
 // MPSImageIntegralOfSquares sums the squares of that same rectangle, MPSImageIntegral.h:38.
 //
-// The offset is MPSUnaryImageKernel's, and MPSImageKernel.h:131-138 states it as "the position of
-// clipRect.origin in source coordinates" defaulting to {0,0,0}. The rectangle's far corner is the
+// The offset is MPSUnaryImageKernel's, and MPSImageKernel.h:131-138 declares it as the position of
+// clipRect.origin in source coordinates, defaulting to {0,0,0}. The rectangle's far corner is the
 // destination position ITSELF, not the one before it: the header's size is the difference of two
 // positions rather than a count, and a rectangle that many samples across holds one more sample per
 // axis than its size. The origin is therefore the offset, which the two encodes below pass as {0,0}

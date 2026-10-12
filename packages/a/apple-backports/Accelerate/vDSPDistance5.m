@@ -2,7 +2,7 @@
 //
 // **The whole specification is one line of the header's Maps comment**, which sits under the declaration:
 //
-//     C[0] = sum((A[n] - B[n]) ** 2, 0 <= n < N);
+//     C[0] = (A[0] - B[0])^2 + (A[1] - B[1])^2 + ... + (A[N-1] - B[N-1])^2;
 //
 // One scalar out. `IA` and `IB` are the strides of the two inputs and there is **no inner count because there
 // is no inner dimension** - the window is N elements long. That is the part worth being explicit about: a

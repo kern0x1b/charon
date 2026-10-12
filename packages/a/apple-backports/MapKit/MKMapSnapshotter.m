@@ -158,7 +158,7 @@
 // The work, off the caller's thread: the header says the snapshotter starts the work on a queue of
 // the caller's choosing and answers on the main queue, and a queue of nil means the snapshotter's
 // own, so both are honoured here -- the drawing happens on the queue that was given, and the answer
-// on the main queue.
+// comes back on the main queue.
 - (void)startWithQueue:(dispatch_queue_t)queue completionHandler:(void (^)(MKMapSnapshot *, NSError *))completionHandler
 {
     if (!completionHandler) {
