@@ -227,8 +227,8 @@ static double CharonMonotonicSeconds(void)
 // (Foundation/CharonOSSignpost.m).
 //
 // The SDK ships the declaration - MetricKit.framework/Headers/MXSignpost_Private.h, the header whose
-// own comment says "implementation details that are not meant for clients to call directly. The
-// header must be public to allow clients to compile properly" - and the declaration is
+// own comment marks it as implementation detail reserved for internal callers, and it has to
+// be public so that clients still compile - and the declaration is
 // `void* _Nonnull _MXSignpostMetricsSnapshot(void)`. What the macros beside it say the pointer is for
 // is exact: every signpost MetricKit emits has `\n%{public, signpost:metrics}@` appended to its format
 // and the snapshot passed as that one argument, so the signpost stream carries the metrics and the
