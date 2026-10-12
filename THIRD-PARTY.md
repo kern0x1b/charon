@@ -3,8 +3,8 @@
 This repository contains almost no third-party source. Every dependency below is
 declared by a recipe or package under `recipes/` and `packages/` that names the
 upstream it fetches and the version it pins; nothing external is vendored into
-the tree except the sources listed under *Vendored in the tree*. Each package copies its upstream license file under `licenses/` when
-it installs.
+the tree except the sources listed under *Vendored in the tree*. Each package copies
+its upstream license file under `licenses/` when it installs.
 
 The point of this file is that a reader can tell, without building anything,
 exactly what a port built with Charon links against, what builds it, and under
