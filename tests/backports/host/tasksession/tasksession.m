@@ -166,7 +166,7 @@ int main(void)
             [plain finishTasksAndInvalidate];
         }
 
-        /* 2. the task's delegate implements NOTHING: the header says the completion is still
+        /* 2. the task's delegate implements NOTHING: this step checks that the completion is still
               forwarded to the session delegate. */
         {
             CharonBareDelegate *bare = [[CharonBareDelegate alloc] init];

@@ -55,10 +55,9 @@
 //     source texture." So offset does not enter this kernel, and the window is an INTERSECTION with
 //     the image rather than a rectangle applied on its own. :44-47 marks the base's -initWithDevice:
 //     NS_UNAVAILABLE - "You must use one of the sub-classes of MPSNNReduceUnary."
-//   - One value the caller sets: MPSNNReduceFeatureChannelsSum's weight, :414-420, the header's scale factor
-//     for each feature channel value, which multiplies the value before the weighted sum or mean
-//     is taken across feature channels, with a default of 1.0. That 1.0
-//     is the header's value, and this file's default comes from it.
+//   - One value the caller sets: the weight of MPSNNReduceFeatureChannelsSum, with a default of 1.0, the
+//     value MPSNNReduce.h:414-420 gives. Each feature channel value is scaled by it before the sum or mean
+//     across the feature channels is taken; this file's default comes from that header.
 //
 // What the header does NOT state, and what no measurement on this host can supply: the destination's
 // width and height. Each class fixes HOW MANY values there are and not their shape. This host's AGX
@@ -133,8 +132,8 @@
         made->_byColumn = byColumn;
         made->_byFeatureChannel = byFeatureChannel;
         made->_operation = operation;
-        // MPSNNReduce.h:418, "The default value is 1.0" - the header's own sentence, not a number
-        // this file chose. It is read only by the two feature-channel classes that declare `weight`,
+        // MPSNNReduce.h:418 gives the default value as 1.0; this file does not choose the number.
+        // It is read only by the two feature-channel classes that declare `weight`,
         // and the release's own cache confirms which those are: MPSNNReduceFeatureChannelsSum lists
         // -weight and -setWeight: and no other concrete class lists either.
         made->_charonWeight = 1.0f;

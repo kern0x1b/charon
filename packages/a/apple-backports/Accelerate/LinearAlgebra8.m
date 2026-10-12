@@ -1062,7 +1062,7 @@ double la_norm_as_double(la_object_t vector, la_norm_t vector_norm)
 
 // Normalizing divides by the norm, so a zero vector cannot be normalized and comes back as it was
 // (measured: the result has status LA_SUCCESS and norm 0). A norm the library does not have is
-// the status LA_INVALID_PARAMETER_ERROR.
+// reported with the status LA_INVALID_PARAMETER_ERROR.
 la_object_t la_normalized_vector(la_object_t vector, la_norm_t vector_norm)
 {
     const CharonLAValue *value = CHARON_LA_VALUE(vector);

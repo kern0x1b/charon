@@ -52,7 +52,7 @@ typedef NS_OPTIONS(NSUInteger, UIAccessibilityDirectTouchOptions) {
 API_AVAILABLE(ios(17.0), tvos(17.0)) API_UNAVAILABLE(watchos)
 @interface NSObject (CharonAccessibilityBlocks17)
 
-// Basic accessibility
+// Whether an element is one, and its label, value, hint, traits and identifier
 @property (nullable, nonatomic, copy) AXBoolReturnBlock isAccessibilityElementBlock;
 @property (nullable, nonatomic, copy) AXStringReturnBlock accessibilityLabelBlock;
 @property (nullable, nonatomic, copy) AXStringReturnBlock accessibilityValueBlock;
@@ -76,7 +76,7 @@ API_AVAILABLE(ios(17.0), tvos(17.0)) API_UNAVAILABLE(watchos)
 @property (nullable, nonatomic, copy) AXBoolReturnBlock accessibilityViewIsModalBlock;
 @property (nullable, nonatomic, copy) AXBoolReturnBlock accessibilityShouldGroupAccessibilityChildrenBlock;
 
-// Navigating elements
+// The elements a container exposes to accessibility, and the automation elements
 @property (nullable, nonatomic, copy) AXArrayReturnBlock accessibilityElementsBlock;
 @property (nullable, nonatomic, copy) AXArrayReturnBlock automationElementsBlock;
 @property (nullable, nonatomic, copy) AXArrayReturnBlock automationElements;
