@@ -19,7 +19,7 @@
 #import <FileProvider/FileProvider.h>
 
 /**
- Specifying a list of known folders.
+ The known-folder declarations below: the folder kinds, and the claim and release methods.
  FILEPROVIDER_API_AVAILABILITY_DESKTOP
  */
 // The macOS SDK the host differential builds against HAS these - NSFileProviderKnownFolders.h:21
