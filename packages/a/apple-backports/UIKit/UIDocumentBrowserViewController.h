@@ -41,61 +41,46 @@ NS_HEADER_AUDIT_BEGIN(nullability, sendability)
 API_AVAILABLE(ios(11.0)) API_UNAVAILABLE(watchos, tvos)
 @interface UIDocumentBrowserViewController : UIViewController <NSCoding>
 
-/* Open the files the user picks. The types allowed are the ones named, or the application's own when
- * none are. */
 - (instancetype)initForOpeningFilesWithContentTypes:(nullable NSArray<NSString *> *)allowedContentTypes
     NS_DESIGNATED_INITIALIZER
     API_DEPRECATED_WITH_REPLACEMENT("use initForOpeningContentTypes: instead", ios(11.0, 14.0));
 
-/* The designated initialiser is a designated one, and the nib one is not available. */
 - (instancetype)initWithNibName:(nullable NSString *)nibName bundle:(nullable NSBundle *)bundle NS_UNAVAILABLE;
 
 @property (nullable, nonatomic, weak) id<UIDocumentBrowserViewControllerDelegate> delegate;
 
-/* Whether the user may create a document from here. */
 @property (assign, nonatomic) BOOL allowsDocumentCreation;
 
-/* Whether more than one document may be picked at a time. */
 @property (assign, nonatomic) BOOL allowsPickingMultipleItems;
 
-/* The document types this browser opens. */
 @property (readonly, copy, nonatomic) NSArray<NSString *> *allowedContentTypes
     API_DEPRECATED("allowedContentTypes is no longer supported", ios(11.0, 14.0));
 
-/* The document types the recents list holds. */
 @property (readonly, copy, nonatomic) NSArray<NSString *> *recentDocumentsContentTypes
     API_DEPRECATED_WITH_REPLACEMENT("use contentTypesForRecentDocuments instead", ios(11.0, 14.0));
 
-/* The buttons added before the browser's own. */
 @property (strong, nonatomic) NSArray<UIBarButtonItem *> *additionalLeadingNavigationBarButtonItems;
 
-/* The buttons added after the browser's own. */
 @property (strong, nonatomic) NSArray<UIBarButtonItem *> *additionalTrailingNavigationBarButtonItems;
 
-/* Show a document, importing it first if it is not already here. */
 - (void)revealDocumentAtURL:(NSURL *)url
              importIfNeeded:(BOOL)importIfNeeded
                  completion:(nullable void (^)(NSURL *_Nullable revealedDocumentURL,
                                                NSError *_Nullable error))completion;
 
-/* Import a document beside another one. */
 - (void)importDocumentAtURL:(NSURL *)documentURL
         nextToDocumentAtURL:(NSURL *)neighbourURL
                       mode:(UIDocumentBrowserImportMode)importMode
          completionHandler:(void (^)(NSURL *_Nullable, NSError *_Nullable))completionHandler;
 
-/* The transition that shows a document, in the 12.0 spelling. */
 - (UIDocumentBrowserTransitionController *)transitionControllerForDocumentAtURL:(NSURL *)documentURL
     API_AVAILABLE(ios(12.0)) NS_SWIFT_NAME(transitionController(forDocumentAt:));
 
-/* The same transition in the 11.0 spelling, which is two rows and not one. */
 - (UIDocumentBrowserTransitionController *)transitionControllerForDocumentURL:(NSURL *)documentURL
     API_DEPRECATED_WITH_REPLACEMENT("transitionControllerForDocumentAtURL:", ios(11.0, 12.0));
 
-/* The actions the user may take on a document. */
 @property (copy, nonatomic) NSArray<UIDocumentBrowserAction *> *customActions;
 
-/* How the browser looks. */
 @property (assign, nonatomic) UIDocumentBrowserUserInterfaceStyle browserUserInterfaceStyle;
 
 @end

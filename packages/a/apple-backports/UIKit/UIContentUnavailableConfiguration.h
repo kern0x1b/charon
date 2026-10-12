@@ -6,7 +6,7 @@
 // this sits beside that header and takes its guard from the same place: __has_include, so a future build
 // SDK that ships these names uses the system's own declaration and this file steps aside.
 //
-// The transcription is read from the SDK that declares these names, charon/.agent-work/sdk-26.2's
+// The declarations are read from the SDK that declares these names, charon/.agent-work/sdk-26.2's
 // iPhoneOS26.2.sdk/System/Library/Frameworks/UIKit.framework/Headers, and every default the
 // implementation sets is what the host measured first
 // (facts/UIKit/UIContentUnavailable17.md, M4) - the header states none of them.
@@ -34,62 +34,39 @@ typedef NS_ENUM(NSInteger, UIContentUnavailableAlignment) {
 API_AVAILABLE(ios(17.0), tvos(17.0)) API_UNAVAILABLE(watchos)
 @interface UIContentUnavailableConfiguration : NSObject <UIContentConfiguration, NSSecureCoding>
 
-/// Returns the default configuration for unavailable content.
 + (instancetype)emptyConfiguration;
-/// Returns the default configuration for content which is loading.
 + (instancetype)loadingConfiguration;
-/// Returns the default configuration for searches which return no results.
 + (instancetype)searchConfiguration;
 
 + (instancetype)new NS_UNAVAILABLE;
 - (instancetype)init NS_UNAVAILABLE;
 
-/// The image to display.
 @property (nonatomic, strong, nullable) UIImage *image;
-/// Additional properties to configure the image.
 @property (nonatomic, readonly) UIContentUnavailableImageProperties *imageProperties;
 
-/// The primary text.
 @property (nonatomic, copy, nullable) NSString *text;
-/// An attributed variant of the primary text.
 @property (nonatomic, copy, nullable) NSAttributedString *attributedText;
-/// Additional properties to configure the primary text.
 @property (nonatomic, readonly) UIContentUnavailableTextProperties *textProperties;
 
-/// The secondary text.
 @property (nonatomic, copy, nullable) NSString *secondaryText;
-/// An attributed variant of the secondary text.
 @property (nonatomic, copy, nullable) NSAttributedString *secondaryAttributedText;
-/// Additional properties to configure the secondary text.
 @property (nonatomic, readonly) UIContentUnavailableTextProperties *secondaryTextProperties;
 
-/// The primary button.
 @property (nonatomic, strong) UIButtonConfiguration *button;
-/// Additional properties to configure the primary button.
 @property (nonatomic, readonly) UIContentUnavailableButtonProperties *buttonProperties;
 
-/// The secondary button.
 @property (nonatomic, strong) UIButtonConfiguration *secondaryButton;
-/// Additional properties to configure the secondary button.
 @property (nonatomic, readonly) UIContentUnavailableButtonProperties *secondaryButtonProperties;
 
-/// The alignment of the image, text and buttons.
 @property (nonatomic) UIContentUnavailableAlignment alignment;
-/// Whether the content view preserves inherited layout margins from its superview on each axis.
 @property (nonatomic) UIAxis axesPreservingSuperviewLayoutMargins;
-/// The margins for the content to the edges of the content view.
 @property (nonatomic) NSDirectionalEdgeInsets directionalLayoutMargins;
 
-/// Padding between the image and text.
 @property (nonatomic) CGFloat imageToTextPadding;
-/// Padding between the text and secondary text.
 @property (nonatomic) CGFloat textToSecondaryTextPadding;
-/// Padding between the button and text.
 @property (nonatomic) CGFloat textToButtonPadding;
-/// Padding between the button and secondary button.
 @property (nonatomic) CGFloat buttonToSecondaryButtonPadding;
 
-/// The background configuration.
 @property (nonatomic, strong) UIBackgroundConfiguration *background;
 
 @end
@@ -104,10 +81,8 @@ API_AVAILABLE(ios(17.0), tvos(17.0)) API_UNAVAILABLE(watchos)
 - (instancetype)init NS_UNAVAILABLE;
 + (instancetype)new NS_UNAVAILABLE;
 
-/// The content unavailable configuration.
 @property (nonatomic, copy) UIContentUnavailableConfiguration *configuration;
 
-/// Whether the content can scroll.  Default is NO.
 @property (nonatomic, getter=isScrollEnabled) BOOL scrollEnabled;
 
 @end
