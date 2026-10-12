@@ -98,7 +98,7 @@ static id<MTLTexture> CharonMTKTextureFromCGImage(id<MTLDevice> device, CGImageR
     if ([options[MTKTextureLoaderOptionTextureStorageMode] isKindOfClass:[NSNumber class]])
         descriptor.storageMode = (MTLStorageMode)[options[MTKTextureLoaderOptionTextureStorageMode] unsignedIntegerValue];
     // MTKTextureLoaderOptionCubeLayout (:86) with MTKTextureLoaderCubeLayoutVertical (:93): six faces
-    // arranged vertically within a single 2D texture. One image is not six faces, so the loader says
+    // stacked vertically in one 2D texture. One image is not six faces, so the loader says
     // so rather than building a cube out of one face's pixels - which is what a cube layout names
     // and what the header says is created.
     if ([options[MTKTextureLoaderOptionCubeLayout] isKindOfClass:[NSString class]]) {
