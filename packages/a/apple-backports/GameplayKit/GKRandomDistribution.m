@@ -164,7 +164,7 @@
 
 // A gaussian given its mean and deviation runs over mean +/- 3 deviations, which is the whole of a
 // gaussian as far as this framework is concerned: its header says values beyond three deviations
-// "are considered so improbable that they are removed from the output set".
+// are dropped from the output set as too improbable to keep.
 - (instancetype)initWithRandomSource:(id<GKRandom>)source mean:(float)mean deviation:(float)deviation
 {
     self = [super initWithRandomSource:source

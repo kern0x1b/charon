@@ -627,8 +627,8 @@
 
 // A quad element goes in the NODE one level above the cell its low corner falls in, and is filed once. The
 // node handed back is that one, which is what the header says the method returns; the node's own -quad
-// answers the NODE, which is what GKQuadtree.h:11-12 means by "the quad associated with the element you
-// want to store" -- and what the host does not answer, which is recorded in the facts file.
+// answers the NODE, which is what GKQuadtree.h:11-12 means by the quad that goes with an element to store,
+// and what the host does not answer, which is recorded in the facts file.
 - (GKQuadtreeNode *)addElement:(id)element withQuad:(GKQuad)quad
 {
     if (element == nil) {

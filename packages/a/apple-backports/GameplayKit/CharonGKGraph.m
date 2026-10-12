@@ -610,7 +610,7 @@ float CharonGKEstimateTo(id from, id goal)
 
 // What the open set is ordered by: the cost reached so far PLUS the cost estimated still to run. That is A*,
 // and it is what -estimatedCostToNode: is for -- GKGraphNode.h:38-41 declares it next to -costToNode: and
-// calls it "the estimated heuristic cost to reach the indicated node from this node".
+// calls it the estimated heuristic cost of reaching the indicated node from this node.
 static float CharonGKSearchPriority(id node, id goal)
 {
     return CharonGKSearchScore(node) + CharonGKEstimateTo(node, goal);
