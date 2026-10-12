@@ -6,7 +6,8 @@
 -- header (red/), and the same source with its comment in other words (green/). Round 3 adds three
 -- sources: the same line in capitals (red-case/, a run hit under case folding), the header's 19-character
 -- heading (heading19/, a run hit under the 19-character floor), and a sentence of the header quoted inside a
--- longer sentence (quoted/, a words8 hit only). None of it is Apple's text.
+-- longer sentence (quoted/, a words8 hit only). Round 4 adds heading19-only/, the same heading as the file's
+-- only comment: the words8 mode compares nothing there, and the hit must still exit 1. None of it is Apple's text.
 function failures(opt)
     local found = {}
     local tool = import("sdk-verbatim", {rootdir = path.join(opt.modules, "..", "tools"), anonymous = true})
@@ -54,14 +55,23 @@ function failures(opt)
     check(has_hit(q, "words8", quoted .. ":3-3"), "quoted: a quotation inside a longer sentence must be a words8 hit, got "
         .. table.concat(q.hits, " | "))
 
+    -- Round 4 (review 8): a file whose only comment is the 19-character heading. The words8 mode compares
+    -- nothing here, and the hit must still exit 1, not 2.
+    local only = path.join(fixture, "heading19-only", "Source.m")
+    local o = scan_one(only, "heading19-only")
+    check(#o.empty > 0, "heading19-only: the words8 mode should compare nothing in this fixture")
+    check(has_hit(o, "run", only .. ":1"), "heading19-only: expected a run hit at line 1, got " .. table.concat(o.hits, " | "))
+    check(tool.status(o) == 1, "heading19-only: a hit must exit 1 even though a mode compared nothing, got " .. tool.status(o))
+
     local g = scan_one(green, "green")
     check(#g.hits == 0, "green: expected no hit, got " .. table.concat(g.hits, " | "))
+    check(tool.status(g) == 0, "green: a clean scan must exit 0, got " .. tool.status(g))
 
     local bad_root = tool.scan(path.join(fixture, "no-such-sdk"), {green})
-    check(#bad_root.errors > 0, "an unreadable SDK root was not reported as a failure")
+    check(#bad_root.errors > 0 and tool.status(bad_root) == 2, "an unreadable SDK root was not reported as a failure")
 
     local none = tool.scan(sdk, {})
-    check(#none.errors > 0, "a scan that compared no comment line was not reported as a failure")
+    check(#none.empty > 0 and tool.status(none) == 2, "a scan that compared no comment line was not reported as a failure")
 
     return found
 end

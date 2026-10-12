@@ -12,15 +12,20 @@
 -- are not read: a signature is a fact, and a port comment that repeats one is not a copy of Apple's prose.
 --
 -- Two modes run on every call:
---   run     one of our comment runs equals one of the SDK's. Compared when it has a letter or digit, and
---           19 characters or 4 words; shorter runs are too common to mean a copy, and a ruler is a shape.
+--   run     one of our comment runs equals one of the SDK's. Compared when it has a letter or digit and is
+--           at least 19 characters OR at least 4 words: the floor is "19 characters or 4 words", so a run of
+--           four words is compared at any length, and a run of up to three words only at 19 characters or
+--           more. Shorter runs are too common to mean a copy, and a ruler is a shape.
 --   words8  8 consecutive words of our comment text occur inside the SDK's comment text. Comment text is
 --           read in blocks here: the maximal run of consecutive comment lines of one file, joined by one
 --           space, so a sentence that Apple wraps over several lines still matches. The windows are exact
---           strings (no hash), so a collision is impossible and the count is 0 by construction.
+--           Lua strings, not hashes, so there is no collision to count; the summary prints how many distinct
+--           windows our files have.
 --
--- Exit status: 0 when neither mode hit; 1 when a mode hit; 2 when the SDK root is unreadable, a file cannot
--- be read, or a mode compared nothing on either side. The text of a hit is not printed, only its places.
+-- Exit status (status()): 2 when an input cannot be read (the SDK root, one of our files, one SDK header);
+-- otherwise 1 when a mode hit, whatever else the scan did, because a hit is never an error; otherwise 2 when
+-- a mode compared nothing on either side, since a run that compared nothing is not a pass; otherwise 0.
+-- The text of a hit is not printed, only its places.
 import("byteorder", {rootdir = path.join(os.scriptdir(), "..", "modules")})
 
 local MIN_CHARS, MIN_WORDS = 19, 4
@@ -149,8 +154,8 @@ local function read_ours(files, report)
 end
 
 function scan(root, files)
-    local report = {errors = {}, hits = {}, files = 0, run_ours = 0, run_sdk = 0, words_ours = 0, words_sdk = 0,
-        sdk_headers = 0}
+    local report = {errors = {}, empty = {}, hits = {}, files = 0, run_ours = 0, run_sdk = 0, words_ours = 0,
+        words_sdk = 0, keys_ours = 0, sdk_headers = 0}
     local frameworks = path.join(root, SDK_DIRS[1])
     if not os.isdir(frameworks) then
         table.insert(report.errors, "SDK root unreadable: no " .. frameworks)
@@ -158,6 +163,7 @@ function scan(root, files)
     end
 
     local runs, windows = read_ours(files, report)
+    for _ in pairs(windows) do report.keys_ours = report.keys_ours + 1 end
     local run_hits, words_hits = {}, {}
 
     -- The SDK's comment runs and 8-word windows, each header read once.
@@ -198,9 +204,18 @@ function scan(root, files)
         table.insert(report.hits, "words8 " .. ours .. " " .. sdk)
     end
     byteorder.sort(report.hits)
-    if report.run_ours == 0 or report.run_sdk == 0 then table.insert(report.errors, "run mode compared nothing") end
-    if report.words_ours == 0 or report.words_sdk == 0 then table.insert(report.errors, "words8 mode compared nothing") end
+    if report.run_ours == 0 or report.run_sdk == 0 then table.insert(report.empty, "run mode compared nothing") end
+    if report.words_ours == 0 or report.words_sdk == 0 then table.insert(report.empty, "words8 mode compared nothing") end
     return report
+end
+
+-- The exit status of a report (see the header): a hit is 1 even when a mode compared nothing, and an input
+-- that could not be read is 2 even when there is a hit.
+function status(report)
+    if #report.errors > 0 then return 2 end
+    if #report.hits > 0 then return 1 end
+    if #report.empty > 0 then return 2 end
+    return 0
 end
 
 function main(root, ...)
@@ -211,10 +226,10 @@ function main(root, ...)
     end
     local report = scan(root, files)
     for _, e in ipairs(report.errors) do print("sdk-verbatim: FAIL " .. e) end
-    print(string.format("sdk-verbatim: compared %d comment run(s) of %d file(s) with %d SDK comment run(s) of %d header(s) (run mode); %d 8-word window(s) with %d of the SDK's (words8 mode, exact keys, 0 collisions)",
-        report.run_ours, report.files, report.run_sdk, report.sdk_headers, report.words_ours, report.words_sdk))
+    for _, e in ipairs(report.empty) do print("sdk-verbatim: " .. (#report.hits > 0 and "NOTE " or "FAIL ") .. e) end
+    print(string.format("sdk-verbatim: compared %d comment run(s) of %d file(s) with %d SDK comment run(s) of %d header(s) (run mode); %d 8-word window(s) with %d of the SDK's (words8 mode, exact keys, no hash; %d distinct window(s) of ours)",
+        report.run_ours, report.files, report.run_sdk, report.sdk_headers, report.words_ours, report.words_sdk, report.keys_ours))
     for _, hit in ipairs(report.hits) do print("HIT " .. hit) end
     print(string.format("sdk-verbatim: %d hit(s)", #report.hits))
-    if #report.errors > 0 then os.exit(2) end
-    if #report.hits > 0 then os.exit(1) end
+    os.exit(status(report))
 end
