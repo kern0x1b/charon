@@ -28,8 +28,8 @@
 // first appears at 16.0 - which is the one place this port parts company with the header and says so
 // below rather than inventing a stand-in for it.
 //
-// THE DEVIATION, in the header's own terms. AVPlaybackSpeed.h:51 documents that the rate "will be
-// set in response to the play button being pressed", and AVPlayerViewController.h:187 documents that
+// THE DEVIATION, in the header's own terms. AVPlaybackSpeed.h:51 documents that the rate takes effect
+// when the play button is pressed, and AVPlayerViewController.h:187 documents that
 // selectedSpeed tracks the associated AVPlayer's `defaultRate` in both directions. This release has
 // no `defaultRate` to track, so the port keeps the selection itself and applies it on the same event
 // the header names: -selectSpeed: takes effect at once when the player is already playing, and
@@ -159,8 +159,8 @@ static const void *CharonSelectedSpeedKey = &CharonSelectedSpeedKey;
 
 - (void)selectSpeed:(AVPlaybackSpeed *)speed
 {
-    // "Calls to selectSpeed with AVPlaybackSpeeds not contained within the speeds property array
-    // will be ignored." A nil speed is ignored by the same rule: there is nothing to select.
+    // The header says that selectSpeed given an AVPlaybackSpeed outside the speeds property array is ignored.
+    // A nil speed is ignored by the same rule: there is nothing to select.
     if (!speed || ![self.speeds containsObject:speed])
         return;
     objc_setAssociatedObject(self, CharonSelectedSpeedKey, speed, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
