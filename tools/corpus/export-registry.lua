@@ -1,8 +1,9 @@
 import("core.base.json")
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..", "..", "modules")})
 
 function main(root, outfile)
     local files = table.join(os.files(path.join(root, "registry", "*.json")), os.files(path.join(root, "registry", "*", "*.json")))
-    table.sort(files)
+    byteorder.sort(files)
     local out = io.open(outfile, "w")
     -- "kind" is appended as a 5th column, not inserted before "introduced": every existing
     -- reader keys columns by position (framework=0, api=1, status=2, introduced=3), and an

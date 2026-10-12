@@ -28,6 +28,7 @@
 import("core.base.json")
 local objc = import("apple.objc", {rootdir = path.join(os.scriptdir(), "..", "modules"), anonymous = true})
 local macho = import("apple.macho", {rootdir = path.join(os.scriptdir(), "..", "modules"), anonymous = true})
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..", "modules")})
 
 local FRAMEWORK = "Matter"
 local MINIMUM = "6.0"
@@ -261,7 +262,7 @@ function main(binary, corpus, outdir, facts, architecture)
     os.mkdir(outdir)
     local counts = {}
     for family, entries in pairs(families) do
-        table.sort(entries, function (left, right) return left.api < right.api end)
+        table.sort(entries, function (left, right) return byteorder.less(left.api, right.api) end)
         io.writefile(path.join(outdir, family .. ".json"), json.encode({framework = FRAMEWORK, entries = entries}))
         counts[family] = #entries
     end
@@ -280,6 +281,6 @@ function main(binary, corpus, outdir, facts, architecture)
     for _, kind in ipairs(table.orderkeys(bykind)) do
         print("  not carried: %s %d", kind, bykind[kind])
     end
-    table.sort(missing)
+    byteorder.sort(missing)
     io.writefile(path.join(os.curdir(), "matter-not-carried.tsv"), table.concat(missing, "\n") .. "\n")
 end

@@ -14,6 +14,7 @@
 
 import("apple.dyld", {rootdir = path.join(os.scriptdir(), "..", "modules")})
 import("apple.sdkstubs", {rootdir = path.join(os.scriptdir(), "..", "modules")})
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..", "modules")})
 
 local function libsystem_documents(sdk)
     local found = {}
@@ -55,7 +56,7 @@ function main(sdkdir, oldsdkdir, output)
     for symbol in pairs(new) do
         table.insert(lines, symbol .. "\t" .. (first[symbol] or "-"))
     end
-    table.sort(lines)
+    byteorder.sort(lines)
     local releases = {}
     for _, rung in ipairs(ladder) do
         table.insert(releases, rung.release)

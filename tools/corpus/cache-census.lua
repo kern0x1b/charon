@@ -31,6 +31,9 @@
 -- reproducible by pasting the command and nothing else. Name releases to read others; the
 -- architecture is the one `dyld.held_ladder` picks for that release, so 16.0 and 18.0 are read as
 -- arm64e and 11.0 and 12.0 as arm64 - a split that is silent otherwise.
+
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..", "..", "modules")})
+
 local SELECTOR_CONTROLS = {"-isEqual:", "-description", "-initWithFrame:"}
 local SELECTOR_NEGATIVE = "-charonNoSuchSelectorAnywhere:"
 
@@ -113,8 +116,8 @@ function main(prefix, ...)
                     table.insert(protocols, name)
                 end
             end
-            table.sort(classes)
-            table.sort(protocols)
+            byteorder.sort(classes)
+            byteorder.sort(protocols)
             found_anywhere = found_anywhere + #classes + #protocols
             print(string.format("%-8s  %s", release, rung.source))
             print(string.format("         images %d, of which naming %s %d", images, prefix, images_named))

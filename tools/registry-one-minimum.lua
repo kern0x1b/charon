@@ -27,6 +27,7 @@
 -- over an object the gate refuses. A class two files implement is carried by both, so both are asked.
 
 import("core.base.json")
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..", "modules")})
 
 -- The registry files the gate reads: registry/<Framework>.json and registry/<Framework>/<part>.json
 local function registry_files(root)
@@ -38,7 +39,7 @@ end
 function rows_of(root, framework)
     local rows = {}
     local files = registry_files(root)
-    table.sort(files)                     -- sorts in place and returns nothing
+    byteorder.sort(files)                     -- sorts in place and returns nothing
     for _, file in ipairs(files) do
         local folder = path.filename(path.directory(file))
         local name = folder == "registry" and path.basename(file) or folder
@@ -106,8 +107,8 @@ function offenders(root, framework)
             end
         end
         if #all > 0 and (values > 1 or (values > 0 and by.minimums["none"])) then
-            table.sort(all)
-            table.sort(by.names)
+            byteorder.sort(all)
+            byteorder.sort(by.names)
             table.insert(found, {object = file, minimums = all, names = by.names})
         end
     end

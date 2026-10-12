@@ -14,6 +14,7 @@
 -- `loaded.image.sections`, which is why it worked and this did not.
 
 local dyld = import("apple.dyld", {rootdir = path.join(os.getenv("CHARON_ROOT"), "modules"), anonymous = true})
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..", "..", "modules")})
 
 function main(cachefile, wanted, prefix)
     local cache = dyld.open_cache(cachefile)
@@ -39,7 +40,7 @@ function main(cachefile, wanted, prefix)
                     table.insert(rows, string.format("%#x\t%s\t(indirect slot)", slot, name))
                 end
             end
-            table.sort(rows)
+            byteorder.sort(rows)
             print(string.format("#exports %d, indirect %d, listed %d",
                                 #(symbols.exports or {}), #(symbols.indirect or {}), #rows))
             for _, row in ipairs(rows) do

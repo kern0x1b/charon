@@ -25,6 +25,8 @@
 -- and a run whose `class` count is 0 for a selector a release is known to define has found a defect in
 -- the search, not a fact about the release.
 
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..", "..", "modules")})
+
 local objc_module = "apple.objc"
 
 function main(cachefile, selector, image)
@@ -49,7 +51,7 @@ function main(cachefile, selector, image)
         end
     end
     local function sorted(list)
-        table.sort(list)
+        byteorder.sort(list)
         for _, line in ipairs(list) do
             print("class\t" .. line)
         end

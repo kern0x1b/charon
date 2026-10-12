@@ -2,6 +2,7 @@
 --
 local dyld = import("apple.dyld", {rootdir = path.join(os.scriptdir(), "..", "..", "modules")})
 local macho = import("apple.macho", {rootdir = path.join(os.scriptdir(), "..", "..", "modules")})
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..", "..", "modules")})
 --
 -- Every name one rung of the dyld ladder carries, one per line on stdout, for
 -- tools/cache-index/build.py to sort, compress and key. SOURCE is what dyld.held_source() names for
@@ -203,7 +204,7 @@ function main(source, architecture)
     -- Measured on the armv7 cache of 6.1.3: print wrote the name "'%" as two lines, "'" and "%'",
     -- so 30235 lines carried a conversion and the index lost the names behind them. A name is data.
     local sorted = table.keys(names)
-    table.sort(sorted)
+    byteorder.sort(sorted)
     for _, name in ipairs(sorted) do
         io.write(name, "\n")
     end

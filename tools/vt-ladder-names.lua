@@ -21,6 +21,7 @@
 
 import("core.base.option")
 import("apple.dyld", {rootdir = path.join(os.scriptdir(), "..", "modules")})
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..", "modules")})
 
 -- FOUND: one of the profile levels the ladder places at 7.0.
 local POSITIVE = "_kVTProfileLevel_H264_Baseline_4_0"
@@ -33,7 +34,7 @@ function names_from(path)
         local name = line:match("^%s*([%w_]+)%s*$")
         if name and name ~= "" then table.insert(names, "_" .. name) end
     end
-    table.sort(names)
+    byteorder.sort(names)
     return names
 end
 

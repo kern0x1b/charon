@@ -13,6 +13,8 @@
 -- such a checkout lives. A checkout this misses only costs its next run a measurement, never a wrong
 -- answer, since the name of a file is the key of everything its content depends on.
 
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..", "modules")})
+
 local FAMILIES = {"sdk-owners", "first-release"}
 
 local function live_checkouts(given)
@@ -40,7 +42,7 @@ end
 local function sdkdirs()
     local found = os.dirs(path.join(os.getenv("HOME"), ".xmake", "packages", "i", "iphoneos-sdk", "*", "*", "Developer.app",
                                     "Contents", "Developer", "Platforms", "iPhoneOS.platform", "Developer", "SDKs", "iPhoneOS*.sdk"))
-    table.sort(found)
+    byteorder.sort(found)
     return found
 end
 

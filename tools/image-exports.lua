@@ -20,6 +20,7 @@
 --   xmake l tools/image-exports.lua 6.1.3 armv7 "IAPAuthentication.framework"
 
 import("apple.dyld", {rootdir = path.join(os.scriptdir(), "..", "modules")})
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..", "modules")})
 
 function main(release, architecture, where, want)
     release, architecture = release or "6.1.3", architecture or "armv7"
@@ -31,7 +32,7 @@ function main(release, architecture, where, want)
     for install in pairs(cache.images) do
         table.insert(installs, install)
     end
-    table.sort(installs)
+    byteorder.sort(installs)
     local found = 0
     for _, install in ipairs(installs) do
         if install:find(where, 1, true) then
@@ -43,7 +44,7 @@ function main(release, architecture, where, want)
                     table.insert(names, name)
                 end
             end
-            table.sort(names)
+            byteorder.sort(names)
             found = found + 1
             print("== %s: %d exports, %d matching %q", install, all, #names, want)
             for _, name in ipairs(names) do

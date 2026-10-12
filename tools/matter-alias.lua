@@ -11,6 +11,7 @@
 -- A target that the library does not carry is *not* emitted and is named here, because a forward to nothing is a
 -- method that lies.
 local objc = import("apple.objc", {rootdir = path.join(os.scriptdir(), "..", "modules"), anonymous = true})
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..", "modules")})
 -- Apple's two spellings, as the rename the SDK's surface shows.
 local function target_of(selector)
     local renamed = selector:gsub("^(%a+Attribute)Apple", "%1"):gsub("^(%a+Attribute)", "%1")
@@ -34,7 +35,7 @@ local function headers_of(framework)
             end
         end
     end
-    table.sort(found)
+    byteorder.sort(found)
     return found
 end
 
@@ -167,7 +168,7 @@ function main(binary, corpus, diff, out, framework)
             end
         end
     end
-    table.sort(forwards, function (a, b) return a.owner .. a.selector < b.owner .. b.selector end)
+    table.sort(forwards, function (a, b) return byteorder.less(a.owner .. a.selector, b.owner .. b.selector) end)
 
     -- One category per class, so a class that gains a spelling gains only its own.
     local byowner = {}

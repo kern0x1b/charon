@@ -71,6 +71,7 @@
 
 import("apple.dyld", {rootdir = path.join(os.scriptdir(), "..", "modules")})
 import("apple.macho", {rootdir = path.join(os.scriptdir(), "..", "modules")})
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..", "modules")})
 
 local EXCLUDED = {
     "^_OBJC_IVAR_%$_",
@@ -149,7 +150,7 @@ local function check(objectsdir, output, sdkdir)
     print("release-split: SDK " .. sdkdir)
     local files = os.files(path.join(objectsdir, "*.o"))
     assert(#files > 0, objectsdir .. " holds no *.o")
-    table.sort(files)
+    byteorder.sort(files)
 
     local by_file, all_symbols = {}, {}
     for _, file in ipairs(files) do

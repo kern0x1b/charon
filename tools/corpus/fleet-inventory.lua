@@ -10,6 +10,9 @@
 --
 -- The exported symbols are not here: modules/apple/macho.lua keeps no symbol reader to call, so the
 -- caller gets those from `nm -gU` per library, which is a few milliseconds each.
+
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..", "..", "modules")})
+
 function main(directory, architecture)
     assert(directory, "usage: fleet-inventory.lua <directory> [architecture]")
     local objc = import("apple.objc", {rootdir = path.join(os.getenv("CHARON_ROOT"), "modules"), anonymous = true})
@@ -17,7 +20,7 @@ function main(directory, architecture)
     local arch = architecture or "armv7"
     local function joined(set)
         local keys = table.keys(set or {})
-        table.sort(keys)
+        byteorder.sort(keys)
         return table.concat(keys, ",")
     end
     local binaries = 0

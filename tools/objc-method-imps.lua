@@ -33,6 +33,7 @@ import("core.base.option")
 local modules = path.join(assert(os.getenv("CHARON_ROOT") or ".", "CHARON_ROOT must name the worktree"), "modules")
 local objc = import("apple.objc", {rootdir = modules, anonymous = true})
 local dyld = import("apple.dyld", {rootdir = modules, anonymous = true})
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..", "modules")})
 
 local OBJDUMP = "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump"
 local RUN = path.join(path.directory(os.scriptdir()), ".agent-work/runs/objc-method-imps")
@@ -262,7 +263,7 @@ function main(cachefile, ...)
                     listed[#listed + 1] = selector
                 end
             end
-            table.sort(listed)
+            byteorder.sort(listed)
             if #listed == 0 then
                 print(string.format("%s -%s ABSENT from the cache", ask.class, tostring(ask.selector)))
             end

@@ -48,6 +48,7 @@ local macho = import("apple.macho", {rootdir = path.join(os.scriptdir(), "..", "
 import("core.base.json")
 local objc = import("apple.objc", {rootdir = path.join(os.scriptdir(), "..", "modules"), anonymous = true})
 local macho = import("apple.macho", {rootdir = path.join(os.scriptdir(), "..", "modules"), anonymous = true})
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..", "modules")})
 
 
 -- A member of a class is answered by the class or by any of its superclasses, and objc.lua keys a class's *own*
@@ -283,7 +284,7 @@ function main(corpus, host, port, architecture)
             table.insert(lines, string.format("%s\t%s\t%s\t%s", answer, row.kind, row.api, row.introduced or ""))
         end
     end
-    table.sort(lines)
+    byteorder.sort(lines)
     print("Matter: %d rows of the SDK 26.2 surface", #rows)
     if haveport then
         for _, answer in ipairs({"both", "host_carries", "port_carries", "surface_only"}) do

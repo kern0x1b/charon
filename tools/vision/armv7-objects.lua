@@ -21,6 +21,7 @@
 import("core.base.json")
 import("core.project.project")
 local backports = import("apple.backports", {rootdir = path.join(os.getenv("CHARON_ROOT"), "modules"), anonymous = true})
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..", "..", "modules")})
 
 local function rev(checkout, ref)
     local out = os.iorunv("git", {"rev-parse", ref}, {curdir = checkout})
@@ -52,7 +53,7 @@ function main(folder, objects, release)
                  includes = {root, base}}
     local sources = table.join(os.files(path.join(base, "*.m")), os.files(path.join(base, "*.c")))
     assert(#sources > 0, base .. " holds no source to compile")
-    table.sort(sources)
+    byteorder.sort(sources)
     for _, source in ipairs(sources) do
         local object = path.join(objects, path.filename(source) .. ".o")
         backports.compile(opt, source, object)
