@@ -456,7 +456,7 @@ static BOOL CharonCKFieldKeyIsValid(NSString *key)
 // not declare the type at all, and the 26.2 headers the host harness compiles against declare it, so
 // declaring it unconditionally is a redefinition on one sysroot and an unknown type on the other.
 typedef NS_ENUM(NSInteger, CKRecordZoneEncryptionScope) {
-    // Zone uses per-record encryption keys for any encrypted values on a record or share. This is the
+    // The zone keys each record separately, so each encrypted value on a record or share uses that record's key. This is the
     // default, and the host answers it for a zone built in memory (measured).
     CKRecordZoneEncryptionScopePerRecord = 0,
     // Zone uses per-zone encryption keys across all records and the zone-wide share.
