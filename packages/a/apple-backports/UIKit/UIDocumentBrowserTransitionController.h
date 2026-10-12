@@ -20,8 +20,10 @@ API_AVAILABLE(ios(11.0)) API_UNAVAILABLE(watchos, tvos)
 
 - (instancetype)init NS_UNAVAILABLE;
 
+/* The progress of the document being loaded, so a transition can show it. */
 @property (strong, nonatomic, nullable) NSProgress *loadingProgress;
 
+/* The view the transition animates to. */
 @property (weak, nullable, nonatomic) UIView *targetView;
 
 @end

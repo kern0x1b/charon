@@ -22,10 +22,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// The extents of a plane: how wide it is, how deep, and how far it is turned about the vertical.
 @interface ARPlaneExtent : NSObject <NSSecureCoding>
 
 @property (nonatomic, readonly) float rotationOnYAxis;
 
+/// applying .rotationOnYAxis.
 @property (nonatomic, readonly) float width;
 
 @property (nonatomic, readonly) float height;

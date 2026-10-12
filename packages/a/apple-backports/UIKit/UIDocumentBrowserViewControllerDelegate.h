@@ -25,14 +25,18 @@ API_AVAILABLE(ios(11.0)) API_UNAVAILABLE(watchos, tvos)
 
 - (void)documentBrowser:(UIDocumentBrowserViewController *)controller didPickDocumentURLs:(NSArray<NSURL *> *)documentURLs;
 
+/* The 12.0 spelling of the same question. */
 - (void)documentBrowser:(UIDocumentBrowserViewController *)controller didPickDocumentsAtURLs:(NSArray<NSURL *> *)documentURLs;
 
+/* The user asked for a new document. */
 - (void)documentBrowser:(UIDocumentBrowserViewController *)controller didRequestDocumentCreationWithHandler:(void (^)(NSURL *_Nullable urlToImport, UIDocumentBrowserImportMode importMode))importHandler;
 
+/* The import finished, and the document is at its destination. */
 - (void)documentBrowser:(UIDocumentBrowserViewController *)controller didImportDocumentAtURL:(NSURL *)sourceURL toDestinationURL:(NSURL *)destinationURL;
 
 - (void)documentBrowser:(UIDocumentBrowserViewController *)controller failedToImportDocumentAtURL:(NSURL *)documentURL error:(NSError *_Nullable)error;
 
+/* The activities to offer for a set of documents. */
 - (NSArray<__kindof UIActivity *> *)documentBrowser:(UIDocumentBrowserViewController *)controller applicationActivitiesForDocumentURLs:(NSArray<NSURL *> *)documentURLs;
 
 - (void)documentBrowser:(UIDocumentBrowserViewController *)controller willPresentActivityViewController:(UIActivityViewController *)activityViewController;
