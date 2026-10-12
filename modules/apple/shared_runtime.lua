@@ -2,6 +2,7 @@ import("bundle")
 import("signing")
 import("dyld")
 import("core.base.json")
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..")})
 
 local ADDON = path.join(os.scriptdir(), "..", "..", "addons", "c", "charon", "xmake.lua")
 
@@ -57,7 +58,7 @@ function unbound_dependencies(image, architecture)
             table.insert(unbound, path.filename(name))
         end
     end
-    table.sort(unbound)
+    byteorder.sort(unbound)
     return unbound
 end
 

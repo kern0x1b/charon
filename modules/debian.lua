@@ -1,4 +1,5 @@
 import("lib.detect.find_tool")
+import("byteorder")
 
 local function octal(value, width)
     return string.format("%0" .. (width - 1) .. "o", value) .. "\0"
@@ -70,7 +71,7 @@ function tree_members(root)
     for _, entry in ipairs(os.filedirs(path.join(root, "**"))) do
         table.insert(entries, path.relative(entry, root))
     end
-    table.sort(entries)
+    byteorder.sort(entries)
     for _, relative in ipairs(entries) do
         local full = path.join(root, relative)
         if os.islink(full) then
@@ -137,7 +138,7 @@ function write(opt)
     local control_members = {{name = "./", directory = true}, {name = "./control", mode = 420, data = control}}
     if opt.scripts and os.isdir(opt.scripts) then
         local names = os.files(path.join(opt.scripts, "*"))
-        table.sort(names)
+        byteorder.sort(names)
         for _, script in ipairs(names) do
             table.insert(control_members, {name = "./" .. path.filename(script), mode = 493,
                                            data = io.readfile(script, {encoding = "binary"})})

@@ -1,4 +1,5 @@
 import("core.base.semver")
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..")})
 
 ARCHITECTURES = {
     armv6 = {first = "2.0", last = "4.2.1"},
@@ -33,7 +34,7 @@ function deployment(architecture, declared)
             table.insert(reached, name)
         end
     end
-    table.sort(reached)
+    byteorder.sort(reached)
     raise("apple_minimum %s is older than %s, the first release an %s device runs; %s", declared, bounds.first, architecture,
           #reached > 0 and ("%s runs it, so build that architecture, or raise apple_minimum to %s"):format(table.concat(reached, " and "), bounds.first)
                         or ("no architecture this toolchain builds runs it, so raise apple_minimum to %s"):format(bounds.first))

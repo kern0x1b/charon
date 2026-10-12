@@ -24,6 +24,7 @@
 -- producing an overlay that lies about what the device has.
 
 import("core.base.json")
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..")})
 
 -- The framework's own availability macros, and what each of them marks. The macro's own definition
 -- (`CS_AVAILABLE(mac, ios)` in CSBase.h) names no version and is never rewritten: the rule below only
@@ -215,7 +216,7 @@ function spotlight_lift(opt)
             table.insert(sorted, api)
         end
     end
-    table.sort(sorted)
+    byteorder.sort(sorted)
     if #sorted == 0 then
         return {ok = false, reason = "the CoreSpotlight registry carries no implemented class"}
     end
@@ -346,7 +347,7 @@ function spotlight_lift(opt)
         end
     end
     if #failures > 0 then
-        table.sort(failures)
+        byteorder.sort(failures)
         raise("the CoreSpotlight overlay is wrong: %s", table.concat(failures, "; "))
     end
     if #roots == 0 then
@@ -358,7 +359,7 @@ function spotlight_lift(opt)
     local vfs = path.join(opt.outputdir, "vfs.yaml")
     json.savefile(vfs, overlay)
     local lifted = table.keys(rewritten)
-    table.sort(lifted)
+    byteorder.sort(lifted)
     return {ok = true, vfs = vfs, lifted = lifted, headers = #roots, members = members}
 end
 

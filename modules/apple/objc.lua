@@ -1,6 +1,7 @@
 import("core.base.json")
 import("dyld")
 import("macho")
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..")})
 
 local RELATIVE_METHODS = 0x80000000
 
@@ -529,7 +530,7 @@ function known_selectors(source)
     for key in pairs(known) do
         table.insert(names, key:sub(2))
     end
-    table.sort(names)
+    byteorder.sort(names)
     io.writefile(list, table.concat(names, "\n") .. "\n")
     io.writefile(written_by, reader_key())
     return known
@@ -554,7 +555,7 @@ function absent_selectors(source, binaries, architecture)
             end
         end
         if #missing > 0 then
-            table.sort(missing)
+            byteorder.sort(missing)
             results[binary] = missing
         end
     end

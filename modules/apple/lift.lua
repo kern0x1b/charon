@@ -24,6 +24,7 @@ import("backports")
 import("compat")
 import("cache")
 import("multidump")
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..")})
 
 local function version(text)
     return (text or ""):gsub("_", ".")
@@ -48,10 +49,10 @@ local function generation_headers(sdk, framework)
     local files = {}
     if not os.isfile(path.join(folder, framework .. ".h")) then
         local generations = os.dirs(path.join(folder, "*"))
-        table.sort(generations)
+        byteorder.sort(generations)
         if #generations > 0 then
             files = os.files(path.join(generations[#generations], "*.h"))
-            table.sort(files)
+            byteorder.sort(files)
         end
     end
     return files
@@ -63,7 +64,7 @@ local function framework_headers(sdk, framework)
     local folder = path.join(sdk, "System", "Library", "Frameworks", framework .. ".framework", "Headers")
     local umbrella = path.join(folder, framework .. ".h")
     local files = os.isfile(umbrella) and {umbrella} or os.files(path.join(folder, "*.h"))
-    table.sort(files)
+    byteorder.sort(files)
     return table.join(files, generation_headers(sdk, framework))
 end
 
@@ -95,8 +96,8 @@ local function nested_frameworks(sdk, frameworks, staging, staged)
                 table.insert(folders, item)
             end
         end
-        table.sort(files)
-        table.sort(folders)
+        byteorder.sort(files)
+        byteorder.sort(folders)
         local entries = {}
         for _, file in ipairs(files) do
             table.insert(entries, {type = "file", name = path.filename(file), ["external-contents"] = staged[file] or file})
@@ -241,7 +242,7 @@ function kept_system_headers(opt, symbols)
         table.insert(parts, name .. "=" .. (os.getenv(name) or ""))
     end
     local files = os.files(path.join(root, "**"))
-    table.sort(files)
+    byteorder.sort(files)
     for _, file in ipairs(files) do
         table.insert(parts, path.relative(file, root) .. " " .. hash.xxhash128(file))
     end
@@ -346,7 +347,7 @@ end
 local GROUP_PREFIX, GROUP_SIZE = 6, 40
 function name_groups(names)
     local sorted = table.join(names)
-    table.sort(sorted)
+    byteorder.sort(sorted)
     local groups, current, prefix = {}, {}, nil
     for _, name in ipairs(sorted) do
         local shared = 0
@@ -417,7 +418,7 @@ local stamps = {}
 function sdk_stamp(sdk)
     if not stamps[sdk] then
         local headers = table.join(os.files(path.join(sdk, "**.h")), os.files(path.join(sdk, "usr", "include", "**.modulemap")))
-        table.sort(headers)
+        byteorder.sort(headers)
         local parts = {sdk}
         for _, file in ipairs(headers) do
             table.insert(parts, path.relative(file, sdk) .. " " .. hash.xxhash128(file))
@@ -1070,7 +1071,7 @@ local function expander(opt, frameworks, headers, languages)
     end
     local keys = table.orderkeys(tested)
     table.sort(keys, function (a, b)
-        return tested[a] ~= tested[b] and tested[a] > tested[b] or tested[a] == tested[b] and a < b
+        return tested[a] ~= tested[b] and tested[a] > tested[b] or tested[a] == tested[b] and byteorder.less(a, b)
     end)
     return function (files)
         local all, roots, staged = {}, {}, {}
@@ -2002,7 +2003,7 @@ local function computed(opt)
     -- framework_headers() both answer an empty list for it, which is how a Swift-only framework in
     -- the surface is carried here.
     local frameworks = table.unique(table.join(registered, opt.frameworks or {}))
-    table.sort(frameworks)
+    byteorder.sort(frameworks)
     if opt.frameworks and #opt.frameworks > 0 then
         local read, asked = #frameworks, #opt.frameworks
         printf("lift: reading %d frameworks - %d the registry names and %d more from the caller's list\n",
@@ -2037,7 +2038,7 @@ local function computed(opt)
         table.insert(entries, entry)
         listed[entry.api] = listed[entry.api] or entry
     end
-    table.sort(entries, function (a, b) return a.api < b.api end)
+    table.sort(entries, function (a, b) return byteorder.less(a.api, b.api) end)
 
     -- Before the surface is asked: the kept accessors a carried property carries. The carried properties of a class
     -- that also has a kept getter, and the kept getters themselves, are one parse's worth of filters (multidump), and
@@ -2090,7 +2091,7 @@ local function computed(opt)
         end
         local conflicts = accessor_conflicts(kept, listed, answers, where_of)
         if #conflicts > 0 then
-            table.sort(conflicts)
+            byteorder.sort(conflicts)
             raise("the registry answers an accessor and the property it is written from differently, and the lift carries the property: %s",
                   table.concat(conflicts, "; "))
         end
@@ -2921,7 +2922,7 @@ local function computed(opt)
         end
     end
     unmatched = left
-    table.sort(undeclared, function (a, b) return a.api < b.api end)
+    table.sort(undeclared, function (a, b) return byteorder.less(a.api, b.api) end)
 
     -- The types the headers alone declare that implemented API names in its signature: the prefixed names its signature
     -- spells, every typedef its type goes through (a function's return type and parameters, a variable's type: the
@@ -3193,7 +3194,7 @@ local function computed(opt)
         return blocking, target
     end
     local names = table.keys(named)
-    table.sort(names)
+    byteorder.sort(names)
     mark("rewrite:before types")
     prefetch(names)
     -- what users() is about to ask one at a time - the owners of the lines a type is used on, the words of their
@@ -3246,7 +3247,7 @@ local function computed(opt)
                     end
                 end
             else
-                table.sort(blocking)
+                byteorder.sort(blocking)
                 kept_types[name] = table.unique(blocking)
             end
         end
@@ -3261,7 +3262,7 @@ local function computed(opt)
     end
     mark("rewrite:preprocessed")
     local sorted_files = table.keys(edits)
-    table.sort(sorted_files)
+    byteorder.sort(sorted_files)
     local copies, unrewritten = {}, {}
     for _, file in ipairs(sorted_files) do
         local content = io.readfile(file)
@@ -3402,7 +3403,7 @@ local function computed(opt)
     -- marked, so that no edit at all still writes `"roots": []`, which clang reads, not `{}`, which it refuses
     local overlay = {version = 0, ["case-sensitive"] = "false", roots = json.mark_as_array({})}
     local folders = table.keys(roots)
-    table.sort(folders)
+    byteorder.sort(folders)
     mark("rewrite:overlay")
     for _, folder in ipairs(folders) do
         table.insert(overlay.roots, {type = "directory", name = folder, contents = roots[folder]})
@@ -3522,10 +3523,10 @@ local function computed(opt)
         end
     end
     if #failures > 0 then
-        table.sort(failures)
+        byteorder.sort(failures)
         raise("the lifted headers are wrong: %s", table.concat(failures, "; "))
     end
-    table.sort(unmatched)
+    byteorder.sort(unmatched)
     -- A plain function or a type can be unmatched honestly (a compiler-rt intrinsic, a private header this dumper does
     -- not read) - lift.lua's own header comment already documents that as expected, and a class with no declaration is
     -- measured as a line for the same reason. So is a protocol: the SDK can have one this port declares itself and no
@@ -3604,12 +3605,12 @@ function lift_key(opt)
         table.insert(parts, name .. "=" .. (os.getenv(name) or ""))
     end
     local code = table.join(code_read(), os.files(path.join(os.scriptdir(), "multidump", "*")))
-    table.sort(code)
+    byteorder.sort(code)
     for _, file in ipairs(code) do
         table.insert(parts, path.relative(file, path.join(os.scriptdir(), "..")) .. " " .. hash.strhash128(io.readfile(file)))
     end
     local registry = os.files(path.join(opt.registry, "registry", "**"))
-    table.sort(registry)
+    byteorder.sort(registry)
     for _, file in ipairs(registry) do
         table.insert(parts, path.relative(file, opt.registry) .. " " .. hash.strhash128(io.readfile(file)))
     end
@@ -3876,7 +3877,7 @@ function left_alone(unmatched, undeclared, listed)
     for _, item in ipairs(undeclared) do
         table.insert(lines, "undeclared\t" .. item.api .. "\t" .. item.how)
     end
-    table.sort(lines)
+    byteorder.sort(lines)
     return lines
 end
 

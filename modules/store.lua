@@ -1,4 +1,5 @@
 import("core.base.option")
+import("byteorder")
 
 -- A store is where xmake keeps what it installs: the .xmake beside a home, or
 -- beside whatever XMAKE_GLOBALDIR names. A session that builds in a store of
@@ -26,7 +27,7 @@ function installs(store, name)
             table.insert(found, folder)
         end
     end
-    table.sort(found)
+    byteorder.sort(found)
     return found
 end
 

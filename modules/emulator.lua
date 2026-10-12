@@ -5,6 +5,7 @@ import("apple.dyld")
 import("apple.macho")
 import("gdb")
 import("apple.firmware")
+import("byteorder")
 
 RESULTS = "private/var/charon"
 REPORTS = "private/var/logs/CrashReporter"
@@ -520,7 +521,7 @@ function reports(rootfs)
         end
         table.insert(collected, {process = name, file = file, reason = reason})
     end
-    table.sort(collected, function (left, right) return left.file < right.file end)
+    table.sort(collected, function (left, right) return byteorder.less(left.file, right.file) end)
     return collected
 end
 
@@ -547,7 +548,7 @@ local function place(tree, rootfs)
     for _, entry in ipairs(os.filedirs(path.join(tree, "**"))) do
         table.insert(entries, path.relative(entry, tree))
     end
-    table.sort(entries)
+    byteorder.sort(entries)
     for _, relative in ipairs(entries) do
         local source = path.join(tree, relative)
         local target = guest_path(rootfs, relative)
@@ -620,7 +621,7 @@ function describe_files(folder)
         table.insert(described, {path = path.relative(file, folder), size = os.filesize(file),
                                  hash = hash.sha256(file)})
     end
-    table.sort(described, function (a, b) return a.path < b.path end)
+    table.sort(described, function (a, b) return byteorder.less(a.path, b.path) end)
     return described
 end
 

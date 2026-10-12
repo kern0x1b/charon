@@ -7,6 +7,8 @@
 -- Two formats are read: tbd-version 4 (`targets: [ armv7-ios ]`, one file may hold many documents) and
 -- the 3 that SDK 26 ships (`archs: [ armv7 ]`, one document per file).
 
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..")})
+
 local FAMILY_UMBRELLA = "/usr/lib/libSystem.B.dylib"
 local FAMILY_FOLDER = "/usr/lib/system/"
 local LISTS = {"symbols", "weak-symbols", "thread-local-symbols"}
@@ -374,7 +376,7 @@ function dropped(older, doc)
     local groups, order = {}, {}
     for _, list in ipairs(LISTS) do
         local symbols = table.keys(missing[list] or {})
-        table.sort(symbols)
+        byteorder.sort(symbols)
         for _, symbol in ipairs(symbols) do
             local archs = {}
             for _, arch in ipairs({"armv7", "armv7s"}) do

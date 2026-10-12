@@ -1,5 +1,6 @@
 import("core.base.option")
 import("lib.detect.find_tool")
+import("byteorder")
 
 CHOSEN = "CHARON_DEVICE"
 
@@ -55,7 +56,7 @@ function bind(root, name)
         for _, found in ipairs(os.files(path.join(root, "device*.env"))) do
             table.insert(known, path.filename(found))
         end
-        table.sort(known)
+        byteorder.sort(known)
         raise("nothing names a phone: %s does not exist and DEVICE_HOST is unset%s. %s:%s is not a safe guess - on a machine with a USB tunnel it reaches whichever phone that tunnel serves.",
               file, #known > 0 and (" (this port has " .. table.concat(known, ", ") .. ")") or "", defaults.host, defaults.port)
     end

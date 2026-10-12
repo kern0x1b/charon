@@ -6,6 +6,7 @@ import("objc")
 import("core.base.json")
 import("core.base.scheduler")
 import("cache")
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..")})
 
 -- A library stands after every library it names in `libraries`: link() finds those in the output folder, so they are built first.
 LIBRARIES = {
@@ -769,7 +770,7 @@ end
 function sources(root, library)
     local found = table.join(os.files(path.join(root, library.folder, "*.m")), os.files(path.join(root, library.folder, "*.mm")),
                              os.files(path.join(root, library.folder, "*.c")))
-    table.sort(found)
+    byteorder.sort(found)
     return found
 end
 
@@ -887,7 +888,7 @@ function protocol_sources(opt, library, folder, umbrella)
     local carried = conforming_protocols(opt, library, wanted)
     local written, floor = {}, {}
     for introduced, names in pairs(bands) do
-        table.sort(names)
+        byteorder.sort(names)
         local file = path.join(folder, library.name .. "Protocols" .. introduced .. ".m")
         local text = string.format([[// %sProtocols%s.m — written by modules/apple/backports.lua, not by hand.
 // Every @protocol() below is named so clang emits __OBJC_PROTOCOL_$_<name> into this object, which is the
@@ -913,7 +914,7 @@ static void charon_%s_protocols(void)
         table.insert(written, file)
         floor[file] = floors_of[introduced]
     end
-    table.sort(written)
+    byteorder.sort(written)
     return written, floor
 end
 
@@ -1081,7 +1082,7 @@ function stubs(architecture, library, reexported, releases, folder)
             if left ~= right then
                 return left < right
             end
-            return a < b
+            return byteorder.less(a, b)
         end)
         chosen[candidates[1]] = chosen[candidates[1]] or {}
         table.insert(chosen[candidates[1]], symbol)
@@ -1097,8 +1098,8 @@ function stubs(architecture, library, reexported, releases, folder)
                 table.insert(symbols, symbol)
             end
         end
-        table.sort(symbols)
-        table.sort(classes)
+        byteorder.sort(symbols)
+        byteorder.sort(classes)
         table.insert(files, write_stub(architecture, folder, install, symbols, classes))
     end
     return files
@@ -1216,7 +1217,7 @@ function cxx_runtime(opt, library, releases, folder)
         end
     end
     local symbols = exported_through(releases[1], libstdcxx, {})
-    table.sort(symbols)
+    byteorder.sort(symbols)
     os.mkdir(folder)
     return {write_stub(opt.architecture, folder, libstdcxx, symbols, {})}
 end
@@ -1432,7 +1433,7 @@ local function link(opt, library, attach, objects, releases, outputdir, checked)
         end
     end
     if #missing > 0 then
-        table.sort(missing)
+        byteorder.sort(missing)
         raise("%s holds %d API it does not export, and a port that links against it takes the weak import of the release instead, which is NULL there: %s",
               output, #missing, table.concat(table.slice(missing, 1, math.min(8, #missing)), " ") .. (#missing > 8 and (" and %d more"):format(#missing - 8) or ""))
     end
@@ -1529,7 +1530,7 @@ function unattached_categories(release, inventory, binaries, architecture)
                         table.insert(members, sign .. selector:sub(2))
                     end
                 end
-                table.sort(members)
+                byteorder.sort(members)
                 local named = string.format("%s(%s: %s) in %s", class or "a class this check cannot name", category.name or "?",
                                             table.concat(members, " "), path.filename(binary))
                 local carried = class and inventory.classes[class]
@@ -1542,7 +1543,7 @@ function unattached_categories(release, inventory, binaries, architecture)
             end
         end
     end
-    table.sort(found)
+    byteorder.sort(found)
     return found
 end
 
@@ -1733,7 +1734,7 @@ end
 function registry(root)
     local listed, told, incomplete, frameworks = {}, {}, {}, {}
     local files = table.join(os.files(path.join(root, "registry", "*.json")), os.files(path.join(root, "registry", "*", "*.json")))
-    table.sort(files)
+    byteorder.sort(files)
     for _, file in ipairs(files) do
         -- registry/<Framework>.json or registry/<Framework>/<part>.json, named from the package root so that a
         -- name named twice names two paths a reader can open
@@ -1886,7 +1887,7 @@ function advice(root, used)
         if ORDER[found[a].status] ~= ORDER[found[b].status] then
             return ORDER[found[a].status] < ORDER[found[b].status]
         end
-        return a < b
+        return byteorder.less(a, b)
     end)
     local advised = {}
     for _, api in ipairs(named) do
@@ -2290,12 +2291,12 @@ function check_registry(root, found, complete, deployment, exports, inventory, s
             end
         end
     end
-    table.sort(unlisted)
-    table.sort(unbuilt)
-    table.sort(answered)
-    table.sort(held)
-    table.sort(missing)
-    table.sort(class_only)
+    byteorder.sort(unlisted)
+    byteorder.sort(unbuilt)
+    byteorder.sort(answered)
+    byteorder.sort(held)
+    byteorder.sort(missing)
+    byteorder.sort(class_only)
     if #unlisted > 0 or #unbuilt > 0 or #answered > 0 or #held > 0 or #missing > 0 or #incomplete > 0 then
         local lines = {"the registry does not describe what the backports carry:"}
         for _, described in ipairs(incomplete) do

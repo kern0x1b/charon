@@ -1,6 +1,7 @@
 import("core.base.json")
 import("core.project.project")
 import("macho")
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..")})
 
 function read_plist(file)
     return json.decode(os.iorunv("plutil", {"-convert", "json", "-o", "-", file}))
@@ -75,7 +76,7 @@ local function package_libraries(target, package, name)
     if #libraries == 0 then
         raise("target(%s) bundles the libraries of %s, and it installs no shared library", target:name(), name)
     end
-    table.sort(libraries)
+    byteorder.sort(libraries)
     local carried = {}
     for _, file in ipairs(libraries) do
         local image = macho.images(macho.read(file))[1]

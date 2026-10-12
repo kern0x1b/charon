@@ -1,3 +1,5 @@
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..")})
+
 local MAGIC32 = "\xce\xfa\xed\xfe"
 local MAGIC64 = "\xcf\xfa\xed\xfe"
 local FAT = "\xca\xfe\xba\xbe"
@@ -69,7 +71,7 @@ function binaries_under(root)
             table.insert(found, path)
         end
     end
-    table.sort(found)
+    byteorder.sort(found)
     return found
 end
 
@@ -527,7 +529,7 @@ function interworking_problems(binary)
                             for _, symbol in ipairs(described) do
                                 table.insert(names, symbol.name)
                             end
-                            table.sort(names)
+                            byteorder.sort(names)
                             if thumb and pointer & 1 == 0 then
                                 table.insert(problems, string.format("the pointer at %#x to Thumb function %s lacks bit 0, so a call through it enters Thumb code in ARM state; the linker dropped it", slot[1], names[1]))
                             elseif not thumb and pointer & 1 ~= 0 then

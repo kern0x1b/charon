@@ -1,6 +1,7 @@
 import("core.base.option")
 import("macho")
 import("compat")
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..")})
 
 local caches = {}
 
@@ -185,7 +186,7 @@ local function single_reexports(data, image)
             table.insert(found, {name = name, ordinal = ordinal, imported = imported ~= "" and imported or name})
         end
     end
-    table.sort(found, function (a, b) return a.name < b.name end)
+    table.sort(found, function (a, b) return byteorder.less(a.name, b.name) end)
     return found
 end
 
@@ -718,7 +719,7 @@ local CODE_KEY
 local function code_key()
     if not CODE_KEY then
         local lines = table.values(code_lines("dyld", {}))
-        table.sort(lines)
+        byteorder.sort(lines)
         CODE_KEY = hash.strhash128(table.concat(lines, "\n"))
     end
     return CODE_KEY
@@ -736,7 +737,7 @@ local function sdk_key(sdkdir)
         for _, file in ipairs(sdk_tbds(sdkdir)) do
             table.insert(lines, path.relative(file, sdkdir) .. " " .. hash.sha256(file))
         end
-        table.sort(lines)
+        byteorder.sort(lines)
         SDK_KEYS[sdkdir] = hash.strhash128(table.concat(lines, "\n"))
     end
     return SDK_KEYS[sdkdir]
@@ -885,7 +886,7 @@ local function ladder_signature(ladder)
         for index, entry in ipairs(ladder) do
             table.insert(lines, rungs[index])
             local files = os.isdir(entry.source) and os.files(path.join(entry.source, "**")) or table.join(entry.source, os.files(entry.source .. ".*"))
-            table.sort(files)
+            byteorder.sort(files)
             for _, file in ipairs(files) do
                 table.insert(lines, file .. " " .. os.filesize(file) .. " " .. os.mtime(file))
             end
@@ -974,7 +975,7 @@ function first_releases(ladder, sdkdir, symbols)
         for symbol, release in pairs(known) do
             table.insert(lines, symbol .. "\t" .. (release or "-"))
         end
-        table.sort(lines)
+        byteorder.sort(lines)
         store(kept, table.concat(lines, "\n") .. "\n")
     end
     local found = {}
@@ -1128,13 +1129,13 @@ function missing_imports(cachefile, binaries, root)
         end
     end
     table.sort(missing, function (a, b)
-        return a[1] == b[1] and a[2] < b[2] or a[1] < b[1]
+        return a[1] == b[1] and byteorder.less(a[2], b[2]) or byteorder.less(a[1], b[1])
     end)
     table.sort(dangling, function (a, b)
-        return a[1] == b[1] and a[2] < b[2] or a[1] < b[1]
+        return a[1] == b[1] and byteorder.less(a[2], b[2]) or byteorder.less(a[1], b[1])
     end)
     table.sort(ordering, function (a, b)
-        return a[1] == b[1] and a[2] < b[2] or a[1] < b[1]
+        return a[1] == b[1] and byteorder.less(a[2], b[2]) or byteorder.less(a[1], b[1])
     end)
     return missing, #found, cache, dangling, ordering
 end
@@ -1231,7 +1232,7 @@ function check(cachefile, binaries, folder, opt)
     end
     if #missing > 0 then
         table.sort(missing, function (a, b)
-            return a[1] == b[1] and a[2] < b[2] or a[1] < b[1]
+            return a[1] == b[1] and byteorder.less(a[2], b[2]) or byteorder.less(a[1], b[1])
         end)
         local lines = {"these imports are not exported by the device's iOS:"}
         for _, entry in ipairs(missing) do
