@@ -1096,14 +1096,14 @@ static NSError *charon_port_no_node_error(void)
 - (void)playWithCompletion:(void (^)(MTRMediaPlaybackClusterPlaybackResponseParams * data, NSError * error))completion
 {
     if (completion) {
-        completion(nil, nil);
+        completion(nil, charon_port_no_node_error());
     }
 }
 
 - (void)playWithCompletionHandler:(void (^)(MTRMediaPlaybackClusterPlaybackResponseParams * data, NSError * error))completionHandler
 {
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
@@ -1112,7 +1112,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil, nil);
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -1121,21 +1121,21 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
 - (void)pauseWithCompletion:(void (^)(MTRMediaPlaybackClusterPlaybackResponseParams * data, NSError * error))completion
 {
     if (completion) {
-        completion(nil, nil);
+        completion(nil, charon_port_no_node_error());
     }
 }
 
 - (void)pauseWithCompletionHandler:(void (^)(MTRMediaPlaybackClusterPlaybackResponseParams * data, NSError * error))completionHandler
 {
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
@@ -1144,7 +1144,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil, nil);
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -1153,14 +1153,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
 - (void)stopWithCompletion:(void (^)(MTRMediaPlaybackClusterPlaybackResponseParams * data, NSError * error))completion
 {
     if (completion) {
-        completion(nil, nil);
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -1169,21 +1169,21 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil, nil);
+        completion(nil, charon_port_no_node_error());
     }
 }
 
 - (void)startOverWithCompletion:(void (^)(MTRMediaPlaybackClusterPlaybackResponseParams * data, NSError * error))completion
 {
     if (completion) {
-        completion(nil, nil);
+        completion(nil, charon_port_no_node_error());
     }
 }
 
 - (void)startOverWithCompletionHandler:(void (^)(MTRMediaPlaybackClusterPlaybackResponseParams * data, NSError * error))completionHandler
 {
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
@@ -1192,7 +1192,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil, nil);
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -1201,21 +1201,21 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
 - (void)previousWithCompletion:(void (^)(MTRMediaPlaybackClusterPlaybackResponseParams * data, NSError * error))completion
 {
     if (completion) {
-        completion(nil, nil);
+        completion(nil, charon_port_no_node_error());
     }
 }
 
 - (void)previousWithCompletionHandler:(void (^)(MTRMediaPlaybackClusterPlaybackResponseParams * data, NSError * error))completionHandler
 {
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
@@ -1224,7 +1224,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil, nil);
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -1233,21 +1233,21 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
 - (void)nextWithCompletion:(void (^)(MTRMediaPlaybackClusterPlaybackResponseParams * data, NSError * error))completion
 {
     if (completion) {
-        completion(nil, nil);
+        completion(nil, charon_port_no_node_error());
     }
 }
 
 - (void)nextWithCompletionHandler:(void (^)(MTRMediaPlaybackClusterPlaybackResponseParams * data, NSError * error))completionHandler
 {
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
@@ -1256,7 +1256,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil, nil);
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -1265,21 +1265,21 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
 - (void)rewindWithCompletion:(void (^)(MTRMediaPlaybackClusterPlaybackResponseParams * data, NSError * error))completion
 {
     if (completion) {
-        completion(nil, nil);
+        completion(nil, charon_port_no_node_error());
     }
 }
 
 - (void)rewindWithCompletionHandler:(void (^)(MTRMediaPlaybackClusterPlaybackResponseParams * data, NSError * error))completionHandler
 {
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
@@ -1288,7 +1288,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil, nil);
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -1297,21 +1297,21 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
 - (void)fastForwardWithCompletion:(void (^)(MTRMediaPlaybackClusterPlaybackResponseParams * data, NSError * error))completion
 {
     if (completion) {
-        completion(nil, nil);
+        completion(nil, charon_port_no_node_error());
     }
 }
 
 - (void)fastForwardWithCompletionHandler:(void (^)(MTRMediaPlaybackClusterPlaybackResponseParams * data, NSError * error))completionHandler
 {
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
@@ -1320,7 +1320,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil, nil);
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -1329,7 +1329,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
@@ -1338,7 +1338,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil, nil);
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -1347,7 +1347,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
@@ -1356,7 +1356,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil, nil);
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -1365,7 +1365,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
@@ -1374,7 +1374,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil, nil);
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -1383,7 +1383,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
@@ -1392,7 +1392,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -1401,14 +1401,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 
 - (void)deactivateTextTrackWithCompletion:(MTRStatusCompletion)completion
 {
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -1417,14 +1417,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 
 - (void)stopPlaybackWithCompletionHandler:(void (^)(MTRMediaPlaybackClusterPlaybackResponseParams * data, NSError * error))completionHandler
 {
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
@@ -1433,7 +1433,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 

@@ -597,7 +597,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)stopWithCompletion:(void (^)(MTROvenCavityOperationalStateClusterOperationalCommandResponseParams * data, NSError * error))completion
 {
     if (completion) {
-        completion(nil, nil);
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -606,14 +606,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil, nil);
+        completion(nil, charon_port_no_node_error());
     }
 }
 
 - (void)startWithCompletion:(void (^)(MTROvenCavityOperationalStateClusterOperationalCommandResponseParams * data, NSError * error))completion
 {
     if (completion) {
-        completion(nil, nil);
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -622,7 +622,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil, nil);
+        completion(nil, charon_port_no_node_error());
     }
 }
 

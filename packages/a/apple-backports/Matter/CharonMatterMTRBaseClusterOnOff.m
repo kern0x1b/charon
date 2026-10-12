@@ -872,14 +872,14 @@ static NSError *charon_port_no_node_error(void)
 - (void)offWithCompletion:(MTRStatusCompletion)completion
 {
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 
 - (void)offWithCompletionHandler:(MTRStatusCompletion)completionHandler
 {
     if (completionHandler) {
-        completionHandler(nil);
+        completionHandler(charon_port_no_node_error());
     }
 }
 
@@ -888,7 +888,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -897,21 +897,21 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil);
+        completionHandler(charon_port_no_node_error());
     }
 }
 
 - (void)onWithCompletion:(MTRStatusCompletion)completion
 {
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 
 - (void)onWithCompletionHandler:(MTRStatusCompletion)completionHandler
 {
     if (completionHandler) {
-        completionHandler(nil);
+        completionHandler(charon_port_no_node_error());
     }
 }
 
@@ -920,7 +920,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -929,21 +929,21 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil);
+        completionHandler(charon_port_no_node_error());
     }
 }
 
 - (void)toggleWithCompletion:(MTRStatusCompletion)completion
 {
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 
 - (void)toggleWithCompletionHandler:(MTRStatusCompletion)completionHandler
 {
     if (completionHandler) {
-        completionHandler(nil);
+        completionHandler(charon_port_no_node_error());
     }
 }
 
@@ -952,7 +952,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -961,7 +961,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil);
+        completionHandler(charon_port_no_node_error());
     }
 }
 
@@ -970,7 +970,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -979,21 +979,21 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil);
+        completionHandler(charon_port_no_node_error());
     }
 }
 
 - (void)onWithRecallGlobalSceneWithCompletion:(MTRStatusCompletion)completion
 {
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 
 - (void)onWithRecallGlobalSceneWithCompletionHandler:(MTRStatusCompletion)completionHandler
 {
     if (completionHandler) {
-        completionHandler(nil);
+        completionHandler(charon_port_no_node_error());
     }
 }
 
@@ -1002,7 +1002,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -1011,7 +1011,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil);
+        completionHandler(charon_port_no_node_error());
     }
 }
 
@@ -1020,7 +1020,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -1029,7 +1029,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil);
+        completionHandler(charon_port_no_node_error());
     }
 }
 

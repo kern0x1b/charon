@@ -691,14 +691,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 
 - (void)cancelPowerAdjustRequestWithCompletion:(MTRStatusCompletion)completion
 {
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -707,7 +707,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -716,7 +716,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -725,14 +725,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 
 - (void)resumeRequestWithCompletion:(MTRStatusCompletion)completion
 {
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -741,7 +741,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -750,7 +750,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -759,14 +759,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 
 - (void)cancelRequestWithCompletion:(MTRStatusCompletion)completion
 {
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -775,7 +775,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 

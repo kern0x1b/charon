@@ -275,7 +275,7 @@ static NSError *charon_port_no_node_error(void)
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -286,7 +286,7 @@ static NSError *charon_port_no_node_error(void)
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -297,7 +297,7 @@ static NSError *charon_port_no_node_error(void)
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
     if (completion) {
-        completion(nil, nil);
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -308,7 +308,7 @@ static NSError *charon_port_no_node_error(void)
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -319,7 +319,7 @@ static NSError *charon_port_no_node_error(void)
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
     if (completion) {
-        completion(nil);
+        completion(charon_port_no_node_error());
     }
 }
 

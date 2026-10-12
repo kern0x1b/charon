@@ -2897,7 +2897,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)testWithCompletionHandler:(MTRStatusCompletion)completionHandler
 {
     if (completionHandler) {
-        completionHandler(nil);
+        completionHandler(charon_port_no_node_error());
     }
 }
 
@@ -2906,14 +2906,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil);
+        completionHandler(charon_port_no_node_error());
     }
 }
 
 - (void)testNotHandledWithCompletionHandler:(MTRStatusCompletion)completionHandler
 {
     if (completionHandler) {
-        completionHandler(nil);
+        completionHandler(charon_port_no_node_error());
     }
 }
 
@@ -2922,14 +2922,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil);
+        completionHandler(charon_port_no_node_error());
     }
 }
 
 - (void)testSpecificWithCompletionHandler:(void (^)(MTRTestClusterClusterTestSpecificResponseParams * data, NSError * error))completionHandler
 {
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
@@ -2938,14 +2938,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
 - (void)testUnknownCommandWithCompletionHandler:(MTRStatusCompletion)completionHandler
 {
     if (completionHandler) {
-        completionHandler(nil);
+        completionHandler(charon_port_no_node_error());
     }
 }
 
@@ -2954,7 +2954,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil);
+        completionHandler(charon_port_no_node_error());
     }
 }
 
@@ -2963,7 +2963,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
@@ -2972,7 +2972,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
@@ -2981,7 +2981,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
@@ -2990,7 +2990,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
@@ -2999,7 +2999,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
@@ -3008,7 +3008,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
@@ -3017,7 +3017,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
@@ -3026,7 +3026,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
@@ -3035,7 +3035,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
@@ -3044,7 +3044,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
@@ -3053,14 +3053,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
 - (void)testNullableOptionalRequestWithCompletionHandler:(void (^)(MTRTestClusterClusterTestNullableOptionalResponseParams * data, NSError * error))completionHandler
 {
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
@@ -3069,7 +3069,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
@@ -3078,7 +3078,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
@@ -3087,14 +3087,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
 - (void)timedInvokeRequestWithCompletionHandler:(MTRStatusCompletion)completionHandler
 {
     if (completionHandler) {
-        completionHandler(nil);
+        completionHandler(charon_port_no_node_error());
     }
 }
 
@@ -3103,14 +3103,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil);
+        completionHandler(charon_port_no_node_error());
     }
 }
 
 - (void)testSimpleOptionalArgumentRequestWithCompletionHandler:(MTRStatusCompletion)completionHandler
 {
     if (completionHandler) {
-        completionHandler(nil);
+        completionHandler(charon_port_no_node_error());
     }
 }
 
@@ -3119,7 +3119,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil);
+        completionHandler(charon_port_no_node_error());
     }
 }
 
@@ -3128,7 +3128,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 
@@ -3137,7 +3137,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(nil, nil);
+        completionHandler(nil, charon_port_no_node_error());
     }
 }
 

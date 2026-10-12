@@ -3483,9 +3483,15 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                 if completion is not None:
                     EMITTED_DECLARED.append((cluster, selector_of(shape)))
                     unused = "".join("    (void)%s;\n" % each for each in names[:-1])
+                    # The framework's answer to a command on a controller with no node, measured on the host for each of
+                    # the four selector families: the completion runs once with MTRErrorDomain/MTRErrorCodeInvalidState.
+                    # No command has a node to reach, so no command succeeds. tests/backports/host/matterdifferential/
+                    # commands.m compares every selector; the ones it still reports as different (the framework answers
+                    # MTRInteractionErrorDomain/135 for them) are not matched by this body.
                     body.append("%s\n{\n%s"
                                 "    if (%s) {\n        %s;\n    }\n}\n\n"
-                                % (shape, unused, completion, completion_call(shape, completion)))
+                                % (shape, unused, completion,
+                                   completion_call(shape, completion, error="charon_port_no_node_error()")))
                 else:
                     OFFENDERS.append((cluster, verb, "command", shape))
             else:
@@ -3507,7 +3513,8 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
             unused = "".join("    (void)%s;\n" % each for each in names if each != completion)
             body.append("%s\n{\n%s"
                         "    if (%s) {\n        %s;\n    }\n}\n\n"
-                        % (shape, unused, completion, completion_call(shape, completion)))
+                        % (shape, unused, completion,
+                           completion_call(shape, completion, error="charon_port_no_node_error()")))
     # The static helpers, written where the @implementation starts and only when a body above calls them.
     # The values table is the object's own, made on first use - an object built through a superclass's
     # initializer never ran this class's. It takes NO lock: the caller holds the object's lock for the whole
