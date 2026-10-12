@@ -11,8 +11,8 @@
 // Measured on this machine against the host's GCDualSenseAdaptiveTrigger with no controller behind it:
 // all three selectors are present, and each call leaves `mode` 0, `status` 0 and `armPosition` 0 - the
 // same answer the four of the 14.5 object measured. The header says why that is the honest answer and
-// not a stub: "mode ... reflects the physical state of the triggers - and requires a response from the
-// controller. It does not update immediately after calling -[GCDualSenseAdaptiveTrigger setMode...]."
+// not a stub: mode reflects the physical state of the triggers, and the controller has to answer before
+// it changes, so it does not update at once after -[GCDualSenseAdaptiveTrigger setMode...] is called.
 // So the public properties answer what the host answers, and what this object records is the mode the
 // caller asked for, through the class's own -charon_setRequestedMode:, for a profile that owns a
 // trigger to send it to when a controller is attached.

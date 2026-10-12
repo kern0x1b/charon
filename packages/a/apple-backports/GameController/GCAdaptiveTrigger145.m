@@ -9,9 +9,8 @@
 // The three properties and the four setMode calls split the way the header says they do, and the
 // host measures the split:
 //
-//   "mode ... reflects the physical state of the triggers - and requires a response from the
-//    controller. It does not update immediately after calling -[GCDualSenseAdaptiveTrigger
-//    setMode...]."
+//   mode reflects the physical state of the triggers: the controller has to answer, so it does not
+//    change at once after -[GCDualSenseAdaptiveTrigger setMode...] is called (the header).
 //
 // Measured on the host's own trigger, built by the application with no controller behind it: every
 // setMode call - off, feedback, weapon, vibration - leaves mode at 0 and status at 0, and armPosition

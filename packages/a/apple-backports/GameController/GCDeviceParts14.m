@@ -13,8 +13,8 @@
 // members are still carried and real, because the port's own profile machinery can and does
 // make one: the class is built so a caller that holds one is not holding a trap.
 
-// The header states the defaults plainly: batteryLevel "ranges from 0.0 (fully discharged) to
-// 1.0 (100% charged) and defaults to 0", batteryState "defaults to GCControllerBatteryStateUnknown".
+// The header states the defaults plainly: batteryLevel runs from empty (0.0) to full (1.0) and
+// defaults to 0, and batteryState defaults to GCControllerBatteryStateUnknown.
 // Nothing about iOS 6 has a controller battery to move either value off those defaults, so a
 // battery this port makes reports them and stays there - which is what a controller with no
 // battery in it means, not a value invented to look busy.

@@ -37,9 +37,8 @@
 // arrived in, and a category cannot add an ivar. -charon_requestedMode: is what the four setMode calls
 // of that object record and what the 15.4 object's three more record through
 // -charon_setRequestedMode:, because the header says the public `mode` is the controller's answer and
-// not the caller's: "mode ... reflects the physical state of the triggers - and requires a response
-// from the controller. It does not update immediately after calling
-// -[GCDualSenseAdaptiveTrigger setMode...]". Measured on the host's own trigger with no controller
+// not the caller's: the header makes mode the physical state of the triggers, which the controller has to
+// answer, so it does not change at once after -[GCDualSenseAdaptiveTrigger setMode...] is called. Measured on the host's own trigger with no controller
 // behind it: each of the seven calls leaves mode and status at 0.
 @interface GCDualSenseAdaptiveTrigger (Charon)
 
