@@ -29,8 +29,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// The delegate an external sync device's owner implements, named by -followExternalSyncDevice:...delegate:.
+/// iOS 26's own protocol with two methods of its own, a family of its own in the ledger, and forward-declared
+/// here for the same reason as the class: a caller that conforms needs the name to resolve, and this port
+/// never sends either message because it never follows a device.
 @protocol AVExternalSyncDeviceDelegate;
 
+/// An external sync device - a genlock or a house-sync box an input can follow. iOS 26's own class, and not
+/// carried here: its rows are a family of their own, so this header only names it, which is what
+/// -externalSyncDevice's signature needs.
 @class AVExternalSyncDevice;
 
 @interface AVCaptureDevice (CharonCaptureDeviceExternalSync26)

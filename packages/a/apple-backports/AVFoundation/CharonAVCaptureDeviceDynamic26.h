@@ -24,8 +24,16 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// (AVCaptureDevice.h:2698). The five values are 26.0 code+lift rows of their own and are not carried.
+/// The availability annotation 26.2 puts on this typedef - API_AVAILABLE(ios(26.0)) API_UNAVAILABLE(macos,
+/// macCatalyst, tvos, visionos) - is NOT repeated here, and that is stated rather than done silently: it marks
+/// this an iOS-only type, and tests/backports/host/avf-capabilities compiles a copy of the port's source
+/// against the HOST SDK to ask the port and Apple's class side by side, where a macOS-unavailable type in a
+/// method signature is an error rather than a warning. Dropping it changes nothing for this port, which builds
+/// for iOS - and CharonAVCaptureControls18.h drops API_UNAVAILABLE(macos) for exactly the same reason.
 typedef NSString *AVCaptureAspectRatio NS_TYPED_ENUM;
 
+/// four values are the header's own, and the ledger reads them header-ok/lift rather than code.
 typedef NS_ENUM(NSInteger, AVCaptureCameraLensSmudgeDetectionStatus) {
     AVCaptureCameraLensSmudgeDetectionStatusDisabled          = 0,
     AVCaptureCameraLensSmudgeDetectionStatusSmudgeNotDetected = 1,

@@ -42,12 +42,18 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// The modes of multichannel audio, as AVCaptureDeviceInput's multichannelAudioMode and
+/// -isMultichannelAudioModeSupported: take them (AVCaptureInput.h:353-397).
 typedef NS_ENUM(NSInteger, AVCaptureMultichannelAudioMode) {
     AVCaptureMultichannelAudioModeNone                 = 0,
     AVCaptureMultichannelAudioModeStereo               = 1,
     AVCaptureMultichannelAudioModeFirstOrderAmbisonics = 2,
 } API_AVAILABLE(ios(18.0)) API_UNAVAILABLE(watchos);
 
+/// One reason a scene is not comfortable to watch as a spatial capture (AVCaptureDevice.h:2647-2664). The two
+/// constants of this type are 18.0 rows of their own and are not carried here, so nothing in this header
+/// declares them and no caller can read one; the type is what AVCaptureDevice.spatialCaptureDiscomfortReasons
+/// hands back, and an empty set of them.
 typedef NSString *AVSpatialCaptureDiscomfortReason NS_TYPED_ENUM API_AVAILABLE(ios(18.0));
 
 /// A range of supported exposure bias values in EV units, what AVCaptureDeviceFormat's
