@@ -9,7 +9,7 @@ CACHES=${CHARON_CACHES_DIR:-$HOME/Git/projects/ios/coordination/corpus/caches}
 mkdir -p "$CACHES/sel"
 for pair in "7.0.1:dyld_shared_cache_arm64" "10.3.4:dyld_shared_cache_armv7s" "12.0:dyld_shared_cache_arm64"; do
   v=${pair%%:*}; f=${pair##*:}
-  strings -a -n 3 "$HOME/.charon/dyld/$v/$f" | sort -u > "$CACHES/sel/$v.strings"
+  strings -a -n 3 "$HOME/.charon/dyld/$v/$f" | LC_ALL=C sort -u > "$CACHES/sel/$v.strings"
   echo "$v: $(wc -l < "$CACHES/sel/$v.strings") strings"
 done
 echo SEL-UNIVERSE-DONE
