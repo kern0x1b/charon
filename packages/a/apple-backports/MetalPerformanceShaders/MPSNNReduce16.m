@@ -55,10 +55,10 @@
 //     source texture." So offset does not enter this kernel, and the window is an INTERSECTION with
 //     the image rather than a rectangle applied on its own. :44-47 marks the base's -initWithDevice:
 //     NS_UNAVAILABLE - "You must use one of the sub-classes of MPSNNReduceUnary."
-//   - One value the caller sets: MPSNNReduceFeatureChannelsSum's weight, :414-420, "The scale factor
-//     to apply to each feature channel value ... Each feature channel is multiplied by the weight value
-//     to compute a weighted sum or mean across feature channels. The default value is 1.0." That 1.0
-//     is the header's own sentence and is where this file's default comes from.
+//   - One value the caller sets: MPSNNReduceFeatureChannelsSum's weight, :414-420, the header's scale factor
+//     for each feature channel value, which multiplies the value before the weighted sum or mean
+//     is taken across feature channels, with a default of 1.0. That 1.0
+//     is the header's value, and this file's default comes from it.
 //
 // What the header does NOT state, and what no measurement on this host can supply: the destination's
 // width and height. Each class fixes HOW MANY values there are and not their shape. This host's AGX
@@ -168,9 +168,9 @@
 }
 
 // The weight. ONE class declares it: MPSNNReduce.h:413-420, on MPSNNReduceFeatureChannelsSum, whose
-// @discussion says "Each feature channel is multiplied by the weight value to compute a weighted sum
-// or mean across feature channels" and whose `weight` property's own @discussion at :414-420 ends "The
-// default value is 1.0." - the header's own sentence, and where this file's default comes from. The
+// description says each feature channel is multiplied by the weight value before the weighted sum
+// or mean is taken, and the `weight` property's own description at :414-420 gives the default
+// as 1.0, the header's own value, and where this file's default comes from. The
 // weight scales each feature channel's value BEFORE the reduction, so it multiplies every value a
 // feature-channel run combines rather than the run's result.
 //
@@ -348,8 +348,8 @@
                 continue;
             double value = CharonMPSImageLoad(from, &slice, CharonMPSImageIndex(&slice, at, which));
             // MPSNNReduce.h:414-420, and the weight applies to the two operations its own sentence names.
-            // The property is on MPSNNReduceFeatureChannelsSum alone and reads "Each feature channel is
-            // multiplied by the weight value to compute a weighted SUM OR MEAN across feature channels" -
+            // The property is on MPSNNReduceFeatureChannelsSum alone and says each feature channel is
+            // multiplied by the weight value before a weighted SUM OR MEAN across feature channels -
             // so it scales the values a sum or a mean combines and nothing else. Scaling a minimum or a
             // maximum would change which value is extremal whenever the weight is negative, and a header
             // that does not ask for it is not read as asking for it. A weight of 0.5, which every

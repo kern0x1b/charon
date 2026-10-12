@@ -304,8 +304,8 @@ static double CharonMPSCnnWindowSum(const CharonMPSCnnInterleaved *view, size_t 
     _c = c;
 }
 
-// MPSCNNKernel.h:271-274 is the encode, and its @discussion says destinationImage "may not alias
-// sourceImage" - so both sides are read before the first write, which is what this does.
+// MPSCNNKernel.h:271-274 is the encode, and the header forbids the destination to alias the source, so
+// both sides are read before the first write, which is what this does.
 - (void)encodeToCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
                   sourceImage:(MPSImage *)sourceImage
                destinationImage:(MPSImage *)destinationImage
