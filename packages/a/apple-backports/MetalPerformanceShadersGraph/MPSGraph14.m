@@ -851,8 +851,8 @@ typedef enum {
 // The shape arrives as data, and a shape that arrives as data is the one thing the release cannot build a
 // graph over - measured: the result tensor's shape is nil at build and after the run, and the process writes
 // the gradient's element 0 into the destination's element 0 and nothing else, whatever the destination's
-// shape. The port reads that shape when the graph runs and answers this gradient, which is the header's own
-// words ("The shape of the forward pass input, that is the shape of the gradient output"); the divergence is
+// shape. The port reads that shape when the graph runs and answers this gradient, as the header describes the
+// gradient output's shape as the forward pass input's shape; the divergence is
 // named in the row of each of the three methods with the release's measurement.
 - (MPSGraphTensor *)sliceGradientTensor:(MPSGraphTensor *)inputGradientTensor
                        fwdInShapeTensor:(MPSGraphTensor *)fwdInShapeTensor

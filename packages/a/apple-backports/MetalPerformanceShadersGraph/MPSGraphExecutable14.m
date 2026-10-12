@@ -147,8 +147,7 @@
 // asks it for: the device and the input types it was given are recorded, and a later
 // -getOutputTypesWithDevice:... answers from the targets the executable holds rather than from the
 // specialization - which is what the header says that call does when no specialization has been done
-// ("in case specialization has not been done yet then calling this function will specialize for the given
-// input shapes").
+// (the header says that without a specialization yet, calling this function specializes for the given input shapes).
 - (void)specializeWithDevice:(MPSGraphDevice *)device
                   inputTypes:(NSArray<MPSGraphType *> *)inputTypes
        compilationDescriptor:(MPSGraphCompilationDescriptor *)compilationDescriptor

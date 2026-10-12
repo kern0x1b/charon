@@ -87,9 +87,8 @@ static void CharonMPSGraphDescriptorApply(NSMutableArray *waited, NSMutableArray
 }
 
 // The two shared-event methods, which MPSGraph.h declares on THIS class as well as on the executable's own
-// descriptor, and which the runs of both take: the header's words are that the executable "waits on these
-// shared events before scheduling execution on the HW, this does not include encoding which can still
-// continue" and "signals these shared events at execution stage and immediately proceeds". See
+// descriptor, and which the runs of both take. The header says the executable waits on these shared events before it
+// schedules execution on the HW, that encoding is not included though it can still go on, and that it signals these events at execution stage and then carries on. See
 // -charon_mps_applyEventsAtStage:named:, which is what a run calls.
 - (void)waitForEvent:(id<MTLSharedEvent>)event value:(uint64_t)value
 {
@@ -153,8 +152,8 @@ static void CharonMPSGraphDescriptorApply(NSMutableArray *waited, NSMutableArray
     _executionDescriptor = executionDescriptor;
 }
 
-// -waitForEvent:value: - "Executable waits on these shared events before scheduling execution on the HW, this
-// does not include encoding which can still continue", which is a fact about a GPU this port does not have:
+// -waitForEvent:value: - the header says the executable waits on these shared events before it schedules execution on the HW,
+// and the encoding part is not included, though encoding can still continue. That is a fact about a GPU this port does not have:
 // the walk is over the host's memory on the CPU and there is nothing to schedule. So the event is KEPT and
 // checked when the run reaches it, and a run whose event has not reached the value the caller named is refused
 // rather than pretended: see -charon_mps_applyEventsAtStage:named:.
@@ -163,8 +162,8 @@ static void CharonMPSGraphDescriptorApply(NSMutableArray *waited, NSMutableArray
     CharonMPSGraphDescriptorWait(_waitedEvents, event, value, @"an executable execution descriptor");
 }
 
-// -signalEvent:atExecutionEvent:value: - "Executable signals these shared events at execution stage and
-// immediately proceeds". Measured: the event's own signaledValue is 0 until a run signals it, and the one
+// -signalEvent:atExecutionEvent:value: - the header says the executable signals these shared events at an execution stage
+// and then carries on at once. Measured: the event's own signaledValue is 0 until a run signals it, and the one
 // stage the header names is MPSGraphExecutionStageCompleted, so a run writes the value into the event when it
 // has finished its walk and then goes on.
 - (void)signalEvent:(id<MTLSharedEvent>)event
