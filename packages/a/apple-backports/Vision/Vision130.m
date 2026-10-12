@@ -113,8 +113,8 @@ NSUInteger VNElementTypeSize(VNElementType elementType)
  * themselves: there is no set of scores here and so no operation points to compare, which is the
  * whole of what the three answers below say.
  *
- * The property is the gate its own header describes -- "if this property is YES, then all other
- * precision/recall related methods in this addition can be called" -- so answering NO is what keeps
+ * The property is the gate its own header describes: when it is YES, every other precision/recall
+ * method in this addition may be called, so answering NO is what keeps
  * a caller from sending the two methods, and the two answering NO is what a caller that sends them
  * anyway gets rather than an answer about a curve that is not there. */
 @implementation VNClassificationObservation (CharonVision130PrecisionRecall)
