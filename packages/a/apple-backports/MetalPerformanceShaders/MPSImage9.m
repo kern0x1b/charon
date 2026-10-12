@@ -18,12 +18,12 @@
 //     sum of the source over that rectangle, and the OfSquares variant sums the squares
 //     (MPSImageIntegral.h:38 "the sum of squared pixels"). That is arithmetic this port does exactly.
 //
-//   MPSImageSobel    MPSImageConvolution.h:282-288 gives the luminance the filter runs on
-//     ("Luminance = v[0] * pixel.x + v[1] * pixel.y + v[2] * pixel.z") and :301-302 its default
-//     transform, BT.601/JPEG {0.299f, 0.587f, 0.114f}. The operator is the 3x3 Sobel pair, which
-//     :350-352 gives the same header's Canny step as G = sqrt(Sx^2 + Sy^2) and G_ang = arctan(Sy/Sx).
-//     NOT the non-maximum suppression of :353-360: that is step 3 of MPSImageCANNY's five, and this
-//     class's own description says only that it implements the Sobel filter. The row says so too.
+//   MPSImageSobel    the grey level the filter runs on is a weighted sum of a pixel's three channels, with the
+//     weights 0.299, 0.587 and 0.114 (BT.601/JPEG; the default transform at MPSImageConvolution.h:301-302, the
+//     sum at :282-288). The operator is the 3x3 Sobel pair; the Canny step at :350-352 is G = sqrt(Sx^2 + Sy^2)
+//     and G_ang = arctan(Sy/Sx). It is NOT the non-maximum suppression of :353-360: that is step 3 of
+//     MPSImageCANNY's five, and this class's own description says only that it implements the Sobel filter.
+//     The row says so too.
 //
 // NO ORACLE FOR APPLE'S CODE ON THIS HOST, and no claim of one: the release's own kernels die encoding
 // here, because this host's AGX family does not implement computeCommandEncoderWithDispatchType:.

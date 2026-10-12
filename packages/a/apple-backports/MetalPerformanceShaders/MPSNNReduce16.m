@@ -42,22 +42,18 @@
 //
 // What the header fixes, and what it does not:
 //
-//   - The axis and the operation per class. MPSNNReduce.h:66 "returning the mininmum value for each row
-//     of an image" (the release's own spelling), :93 and :199 the same for a column's minimum and
-//     maximum, :119 "for feature channels of an image", :173/:199/:225/:279/:305/:331/:357/:383/:410 for
-//     max, mean and sum. So a ROW reduction answers one value per source row, a COLUMN one per source
-//     column, and a FEATURE-CHANNEL one per source pixel - and that count is the header's sentence,
-//     not this file's arithmetic.
-//   - The read window: MPSNNReduce.h:31-42's clipRectSource, "The source rectangle to use when reading
-//     data ... If the clipRectSource does not lie completely within the source image, the intersection
-//     of the image bounds and clipRectSource will be used. The clipRectSource replaces the MPSCNNKernel
-//     offset parameter for this filter. The latter is ignored. Default: MPSRectNoClip, use the entire
-//     source texture." So offset does not enter this kernel, and the window is an INTERSECTION with
-//     the image rather than a rectangle applied on its own. :44-47 marks the base's -initWithDevice:
-//     NS_UNAVAILABLE - "You must use one of the sub-classes of MPSNNReduceUnary."
-//   - One value the caller sets: the weight of MPSNNReduceFeatureChannelsSum, with a default of 1.0, the
-//     value MPSNNReduce.h:414-420 gives. Each feature channel value is scaled by it before the sum or mean
-//     across the feature channels is taken; this file's default comes from that header.
+//   - The axis and the operation per class. The class names fix them: a row, a column or a feature-channel
+//     class, each taking the minimum, the maximum, the mean or the sum over its one axis (MPSNNReduce.h:66,
+//     :93, :119, and the class declarations at :173-410). So a ROW reduction answers one value per source
+//     row, a COLUMN one per source column, and a FEATURE-CHANNEL one per source pixel. That count is set by
+//     the class, not by this file's arithmetic.
+//   - The read window: the clipRectSource property (MPSNNReduce.h:31-42) names the part of the source that
+//     is read, cut to the bounds of the image, and defaults to the whole source. The MPSCNNKernel offset is
+//     not used by this filter (the same property note). The base initializer is marked unavailable
+//     (:44-47), so the concrete sub-classes are the ones to create.
+//   - One value the caller sets: the weight of MPSNNReduceFeatureChannelsSum, default 1.0 (MPSNNReduce.h:413-420).
+//     This file takes that default. The weight scales the value of each feature channel before the sum or
+//     mean across channels is taken.
 //
 // What the header does NOT state, and what no measurement on this host can supply: the destination's
 // width and height. Each class fixes HOW MANY values there are and not their shape. This host's AGX
@@ -166,12 +162,10 @@
     return self;
 }
 
-// The weight. ONE class declares it: MPSNNReduce.h:413-420, on MPSNNReduceFeatureChannelsSum, whose
-// description says each feature channel is multiplied by the weight value before the weighted sum
-// or mean is taken, and the `weight` property's own description at :414-420 gives the default
-// as 1.0, the header's own value, and where this file's default comes from. The
-// weight scales each feature channel's value BEFORE the reduction, so it multiplies every value a
-// feature-channel run combines rather than the run's result.
+// The weight. ONE class declares it: MPSNNReduce.h:413-420, on MPSNNReduceFeatureChannelsSum. That
+// header gives its default as 1.0, and this file starts from that default. The scaling is per value,
+// applied before the combining step, so it changes every value a feature-channel run combines and
+// not the run's result.
 //
 // The accessors are here and not @synthesize'd, because the SDK declares `weight` on the two CONCRETE
 // classes and not on the base, so the base cannot synthesize for it: clang rejects a @synthesize whose
@@ -346,15 +340,11 @@
             if (at >= winCols * winRows || which >= channels)
                 continue;
             double value = CharonMPSImageLoad(from, &slice, CharonMPSImageIndex(&slice, at, which));
-            // MPSNNReduce.h:414-420, and the weight applies to the two operations its own sentence names.
-            // The property is on MPSNNReduceFeatureChannelsSum alone and says each feature channel is
-            // multiplied by the weight value before a weighted SUM OR MEAN across feature channels -
-            // so it scales the values a sum or a mean combines and nothing else. Scaling a minimum or a
-            // maximum would change which value is extremal whenever the weight is negative, and a header
-            // that does not ask for it is not read as asking for it. A weight of 0.5, which every
-            // feature-channel case sets, leaves a min and a max where they were, so the differential
-            // holds the port to the header's own division of the operations rather than to a uniform
-            // scale.
+            // MPSNNReduce.h:413-420 applies the weight to the sum and the mean, so the port scales those two
+            // and no other operation. A minimum or a maximum is not scaled: a negative weight would change
+            // which value is extremal. A weight of 0.5, which every feature-channel case sets, leaves a min
+            // and a max where they were, so the differential holds the port to that division of the
+            // operations rather than to a uniform scale.
             if (_byFeatureChannel && (_operation == CharonMPSReduceSum || _operation == CharonMPSReduceMean))
                 value *= (double)_charonWeight;
             if (s == 0 || value < smallest) smallest = value;
