@@ -24,14 +24,14 @@
 // reports through an OSStatus and a SecTrustResultType rather than through a bool and a CFError. The
 // verdict is therefore the release's own, and the error is this port's translation of the release's
 // OSStatus - errSecSuccess becomes `true` with a NULL error, which is what the header promises at
-// :433-436 ("If the certificate is trusted, the callback will return a result parameter of true and the
-// error will be set to NULL"), and any other OSStatus becomes `false` with an NSError in
+// :433-436 (a trusted certificate gets true with its error set to NULL), and any other OSStatus becomes
+// `false` with an NSError in
 // NSOSStatusErrorDomain carrying that same code.
 //
 // THE TWO EFFECTS, both stated because the header's own words say the port cannot keep them:
 //
-//  1. THE ORDERING. :427-431 requires that this function "MUST be called from that queue" and says the
-//     block "may be called synchronously inline if no asynchronous operations are required". This port
+//  1. THE ORDERING. :427-431 requires that this function is called from that queue, and says the
+//     block may run synchronously inline when no asynchronous operations are needed. This port
 //     evaluates on the CALLING thread and delivers the callback on the queue the caller named, so the
 //     callback arrives after this function returns rather than during it - which the header permits -
 //     and the cost is that the evaluation has already happened by then. MEASURED ON THE HOST over the

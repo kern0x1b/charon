@@ -14,8 +14,8 @@
 //        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the header names THIS function as its replacement
 //
 // Both are on 6.1.3 and on 4.3 (first rung 3.0 each), and the header's own deprecation message says the
-// chain they walk is the one this function returns: :511-512 "Indices run from 0 (leaf) to the anchor
-// (or last certificate found if no anchor was found)". So this is one loop over the release's OWN
+// chain they walk is the one this function returns: :511-512 says the indices run from the leaf, index 0, to the anchor
+// (or to the last certificate found when there is no anchor). So this is one loop over the release's OWN
 // accessors and not a reconstruction of anything.
 //
 // MEASURED ON THE HOST for the shape, because a chain that came out in a different order would be a
@@ -25,10 +25,9 @@
 // The port's loop is what produces that shape here, from the release's own accessors.
 //
 // THE EFFECT IS STATED because THE HEADER SAYS THE TWO DIFFER, at :514-515:
-//   "This API is fundamentally not thread-safe - other threads using the same trust object may trigger
-//    trust evaluations that release the returned certificate or change the certificate chain as a
-//    thread is iterating through it. The replacement function SecTrustCopyCertificateChain provides
-//    thread-safe results."
+//   The header says this API is not thread-safe: threads sharing one trust object can trigger
+//   evaluations that free the returned certificate or alter the chain while a thread is walking it, and
+//   the replacement, SecTrustCopyCertificateChain, provides thread-safe results.
 // So the chain the caller receives is the RELEASE'S OWN evaluated chain, walked through two accessors
 // the header calls not thread-safe: a concurrent evaluation on another thread can change the chain
 // under this loop, and what the caller gets is what the release held while the loop ran rather than a

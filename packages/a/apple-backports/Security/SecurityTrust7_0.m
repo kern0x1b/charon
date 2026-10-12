@@ -292,15 +292,15 @@ CFDictionaryRef SecPolicyCopyProperties(SecPolicyRef policyRef)
 //   kSecPolicyAppleSSL       -> SecPolicyCreateSSL(server, hostname), OID kSecPolicyAppleSSL
 //   anything else            -> NULL, which is the header's own answer for "could not be created"
 //
-// `server` is the absence of kSecPolicyClient: SecPolicy.h:110-113 documents kSecPolicyClient as "a
-// CFBooleanRef value that indicates this evaluation should be for a client certificate", so a policy
+// `server` is the absence of kSecPolicyClient: SecPolicy.h:110-113 documents kSecPolicyClient as a flag
+// that marks the evaluation as one for a client certificate, so a policy
 // carrying it is a client policy and SecPolicyCreateSSL's `server` argument is false. That mapping is
 // the host's too and was measured: the host's own SSL client policy answers a two-key properties
 // dictionary carrying kSecPolicyClient, and its server policy without a host answers a one-key
 // dictionary that does not.
 //
-// `hostname` is kSecPolicyName, which SecPolicy.h:111-115 documents as "a CFStringRef (or CFArrayRef
-// of same) containing a name which must be matched in the certificate", and the first element of the
+// `hostname` is kSecPolicyName, which SecPolicy.h:111-115 documents as a string, or an array of strings, naming
+// what must be matched in the certificate, and the first element of the
 // array is the one SecPolicyCreateSSL's single CFStringRef argument can carry.
 //
 // THE EFFECTS, both stated because a caller can be misled by either. The identifier: only the two
