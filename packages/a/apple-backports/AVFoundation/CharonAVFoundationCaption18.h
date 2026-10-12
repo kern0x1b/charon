@@ -59,6 +59,10 @@ API_AVAILABLE(macos(12.0), ios(18.0), macCatalyst(15.0)) API_UNAVAILABLE(tvos, w
 AVF_EXPORT AVCaptionSize AVCaptionSizeMake( AVCaptionDimension width, AVCaptionDimension height )
 API_AVAILABLE(macos(12.0), ios(18.0), macCatalyst(15.0)) API_UNAVAILABLE(tvos, watchos);
 
+/*!
+ @typedef AVCaptureReactionType
+ @abstract A string that identifies one of the reaction effects the camera can play into the scene.
+*/
 typedef NSString *AVCaptureReactionType NS_TYPED_ENUM API_AVAILABLE(macos(14.0), ios(17.0), macCatalyst(17.0), tvos(17.0)) API_UNAVAILABLE(watchos);
 
 // The eight reaction TYPES are the port's own carried constants - SDK 16.4 declares neither the type nor

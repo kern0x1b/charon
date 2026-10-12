@@ -31,7 +31,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// The focus behaviour when recording a Cinematic Video (AVCaptureDevice.h:1301-1308). None is "no focus mode
+/// The focus behaviour when recording a Cinematic Video (AVCaptureDevice.h:1301-1308), with three values: None, Strong and Weak.
 typedef NS_ENUM(NSInteger, AVCaptureCinematicVideoFocusMode) {
     AVCaptureCinematicVideoFocusModeNone   = 0,
     AVCaptureCinematicVideoFocusModeStrong = 1,
