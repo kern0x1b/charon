@@ -22,7 +22,7 @@
 //     answers with the number it was given in every one of those cases.
 //   - -init leaves every field zero and requestParameters nil. The three- and four-field initialisers
 //     of each subclass set what they name and leave the retry fields of the base at zero, which is what
-//     the header says they do ("Initialize with default zero maximum retry and zero retry interval")
+//     the header describes as the default: zero maximum retries and a zero retry interval
 //     and what the host answers.
 //   - -copy is NSCopying and the copy is independent: setting requestParameters on the copy leaves the
 //     original's alone, and a copy of a subclass is the subclass, carrying the base's retry fields too.
