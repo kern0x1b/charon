@@ -1180,8 +1180,8 @@ static BOOL CharonMLCNormalized(MLCTensor *tensor, NSArray<NSNumber *> *shape)
 {
     // MLCInstanceNormalizationLayer.h:95-99, the momentum overload of the header's own five-argument
     // form. Same layer with the momentum the caller gave instead of the default the form above uses:
-    // the momentum is "the momentum value for the running mean and variance computation" (the header's
-    // own words at :92), and this layer has no running mean and no running variance to compute, so the
+    // the momentum is what the header sets for smoothing the running statistics (:92). This layer has
+    // no running mean and no running variance to compute, so the
     // value is kept and is what -momentum answers.
     MLCInstanceNormalizationLayer *layer = [[MLCInstanceNormalizationLayer alloc] charon_init];
     [layer charon_label:@"InstanceNorm"];
