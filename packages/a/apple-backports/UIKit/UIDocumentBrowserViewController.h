@@ -41,6 +41,8 @@ NS_HEADER_AUDIT_BEGIN(nullability, sendability)
 API_AVAILABLE(ios(11.0)) API_UNAVAILABLE(watchos, tvos)
 @interface UIDocumentBrowserViewController : UIViewController <NSCoding>
 
+/* Open the files the user picks. The types allowed are the ones named, or the application's own when
+ * none are. */
 - (instancetype)initForOpeningFilesWithContentTypes:(nullable NSArray<NSString *> *)allowedContentTypes
     NS_DESIGNATED_INITIALIZER
     API_DEPRECATED_WITH_REPLACEMENT("use initForOpeningContentTypes: instead", ios(11.0, 14.0));

@@ -18,6 +18,10 @@
 #import <Foundation/Foundation.h>
 #import <FileProvider/FileProvider.h>
 
+/**
+ Specifying a list of known folders.
+ FILEPROVIDER_API_AVAILABILITY_DESKTOP
+ */
 // The macOS SDK the host differential builds against HAS these - NSFileProviderKnownFolders.h:21
 // and :46 - and the iOS 16.4 SDK the port builds with does not have the file at all. So the
 // declaration is made where it is missing and skipped where the SDK already has it: a second
@@ -35,6 +39,13 @@ typedef NS_OPTIONS(NSUInteger, NSFileProviderKnownFolders) {
     NSFileProviderDocuments = 1 << 1
 };
 
+/**
+ The locations of the known folders an extension claims, keyed by the folders themselves.
+ 26.2's NSFileProviderKnownFolders.h: `NSFileProviderKnownFolderLocations`, an object the
+ claimKnownFolders: and releaseKnownFolders: methods take. A dictionary of
+ NSFileProviderKnownFolders to NSFileProviderKnownFolderLocation, which is why the claim is
+ "claim ~/Desktop and ~/Documents together".
+ */
 @interface NSFileProviderKnownFolderLocation : NSObject
 @end
 
@@ -42,6 +53,10 @@ typedef NS_OPTIONS(NSUInteger, NSFileProviderKnownFolders) {
 @end
 
 @interface NSFileProviderManager (CharonKnownFolders)
+/**
+ Claim the given known folders, with a reason shown to the user.
+ 26.2's NSFileProviderKnownFolders.h:106-110, verbatim in its spelling and its availability.
+ */
 - (void)claimKnownFolders:(NSFileProviderKnownFolderLocations *)knownFolders
           localizedReason:(NSString *)localizedReason
         completionHandler:(void (^)(NSError * _Nullable))completionHandler
@@ -50,6 +65,9 @@ typedef NS_OPTIONS(NSUInteger, NSFileProviderKnownFolders) {
    define - naming it here would make this a bare identifier and the header would not parse. The
    corpus lists the member at 11.0; the availability is therefore recorded, not applied. */
 
+/**
+ Release the given known folders back to whoever held them.
+ */
 - (void)releaseKnownFolders:(NSFileProviderKnownFolderLocations *)knownFolders
            localizedReason:(NSString *)localizedReason
              completionHandler:(void (^)(NSError * _Nullable))completionHandler
