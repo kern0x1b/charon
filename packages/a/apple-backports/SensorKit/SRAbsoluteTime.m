@@ -11,10 +11,10 @@
 // The header says what each of them is, and the two limits are named here because the release is
 // short of what the header describes:
 //
-//   SRAbsoluteTimeGetCurrent()  "This timestamp ticks across sleeps and reboots."
+//   SRAbsoluteTimeGetCurrent()  a timestamp that keeps ticking across sleeps and reboots (the header).
 //   SRAbsoluteTimeFromContinuousTime(cont)
-//       "Because mach_continuous_time is volatile and hardware specific, the mach_continuous_time must
-//        originate from the same device and boot session..."
+//       mach_continuous_time is volatile and hardware specific, so the times it gives must come from the
+//        same device and boot session (the header).
 //
 // Measured on the armv7 6.1.3 cache's 158 520 exports: mach_absolute_time, mach_timebase_info and
 // CFAbsoluteTimeGetCurrent are all there, and **mach_continuous_time is not** - it arrived in iOS 10.
