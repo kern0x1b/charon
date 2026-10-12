@@ -24,10 +24,17 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// The type of a reaction, as AVFoundation/AVFoundationGlobals180.m already carries its eight values.
 typedef NSString *AVCaptureReactionType NS_TYPED_ENUM;
 
+/// One reaction running on the video stream. The 16.4 SDK declares neither this class nor its members, and
+/// the port does not carry it: nothing on this release can start a reaction (see
+/// AVCaptureDeviceReactions17.m), so no instance of it is ever made and a forward declaration is what a
+/// caller needs to hold what -reactionEffectsInProgress hands back.
 @class AVCaptureReactionEffectState;
 
+/// A zoom range a device format offers, named in AVCaptureDeviceFormat's depth-delivery members. The 16.4
+/// SDK does not declare AVZoomRange either; its own rows are a family of their own.
 @class AVZoomRange;
 
 @interface AVCaptureDevice (CharonCaptureDeviceReactions17)

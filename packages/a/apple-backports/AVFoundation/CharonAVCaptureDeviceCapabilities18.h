@@ -50,8 +50,15 @@ typedef NS_ENUM(NSInteger, AVCaptureMultichannelAudioMode) {
 
 typedef NSString *AVSpatialCaptureDiscomfortReason NS_TYPED_ENUM API_AVAILABLE(ios(18.0));
 
+/// A range of supported exposure bias values in EV units, what AVCaptureDeviceFormat's
+/// systemRecommendedExposureBiasRange hands back (AVCaptureDevice.h:2960-2999). The 16.4 SDK declares
+/// neither this class nor its members: its own rows are a family of their own, and this header only needs
+/// the name to spell the property's type, which is what a forward declaration is.
 @class AVExposureBiasRange;
 
+/// A range of supported zoom factors, what AVCaptureDeviceFormat's systemRecommendedVideoZoomRange hands back
+/// (AVCaptureDevice.h:3272-3281). The 16.4 SDK declares no AVZoomRange either; its own rows are a family of
+/// their own.
 @class AVZoomRange;
 
 @interface AVCaptureDevice (CharonCaptureDeviceCapabilities18)

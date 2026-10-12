@@ -45,6 +45,7 @@ API_AVAILABLE(ios(11.0)) API_UNAVAILABLE(watchos, tvos)
     NS_DESIGNATED_INITIALIZER
     API_DEPRECATED_WITH_REPLACEMENT("use initForOpeningContentTypes: instead", ios(11.0, 14.0));
 
+/* The designated initialiser is a designated one, and the nib one is not available. */
 - (instancetype)initWithNibName:(nullable NSString *)nibName bundle:(nullable NSBundle *)bundle NS_UNAVAILABLE;
 
 @property (nullable, nonatomic, weak) id<UIDocumentBrowserViewControllerDelegate> delegate;
@@ -59,8 +60,10 @@ API_AVAILABLE(ios(11.0)) API_UNAVAILABLE(watchos, tvos)
 @property (readonly, copy, nonatomic) NSArray<NSString *> *recentDocumentsContentTypes
     API_DEPRECATED_WITH_REPLACEMENT("use contentTypesForRecentDocuments instead", ios(11.0, 14.0));
 
+/* The buttons added before the browser's own. */
 @property (strong, nonatomic) NSArray<UIBarButtonItem *> *additionalLeadingNavigationBarButtonItems;
 
+/* The buttons added after the browser's own. */
 @property (strong, nonatomic) NSArray<UIBarButtonItem *> *additionalTrailingNavigationBarButtonItems;
 
 - (void)revealDocumentAtURL:(NSURL *)url
