@@ -18,8 +18,8 @@
 // absence is a fact about the whole release and is invisible to a per-image classlist read.
 //
 // WHAT A CALLER GETS, and the honest limit of it. The header says the family's purpose plainly
-// (MPPlayableContentManager.h:17-21): the manager "manages the interactions between a media application
-// and an external media player interface", an application gives it a data source to browse content with
+// (MPPlayableContentManager.h:17-21): the header says the manager mediates between an application that plays
+// media and an external player interface; an application gives it a data source to browse content with
 // and a delegate to relay playback commands to. The half this object can supply is the application's
 // half - it stores the data source and the delegate, and reaches them. The other half is an EXTERNAL
 // MEDIA PLAYER, which is a head unit or a car: 6.1.3 has no such endpoint, and this port does not build
@@ -49,8 +49,8 @@
 //
 //   - (instancetype)initWithIdentifier:(NSString *)identifier NS_DESIGNATED_INITIALIZER;
 //
-// and the comment above it says what the identifier is for: "A unique identifier is required to identify
-// the item for later use." That is the whole reason this class is not a bare NSObject - it is the handle
+// and the comment above it says what the identifier is for: a unique identifier is needed to name
+// the item later. That is the whole reason this class is not a bare NSObject - it is the handle
 // an external player uses to name this item later, so it is copied and held.
 //
 // playbackProgress is a `float` whose documented default is -1.0 and NOT 0.0, and that default is
@@ -135,8 +135,8 @@
     _nowPlayingIdentifiers = [nowPlayingIdentifiers copy];
 }
 
-// -reloadData is "Tells the content manager that the data source has changed and that we need to reload
-// data from the data source" (MPPlayableContentManager.h:41-42). The release has no content server and
+// -reloadData is the call the header describes as a notice to the manager that its browsing data has changed,
+// and needs reloading from the source (MPPlayableContentManager.h:41-42). The release has no content server and
 // this port builds none, so there is no cache of browsed content to invalidate and no endpoint to notify:
 // the call is recorded and nothing else happens. It is NOT a no-op that pretends to have reloaded - the
 // honest state of this object after -reloadData is that its data source may have changed and nothing has

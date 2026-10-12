@@ -28,8 +28,8 @@
 //   -_isAlternateTrackGroup, -_isKeyValueGroup, -_mediaType.
 //
 // The two "automatic" accessors are the one place this file answers rather than stores, and the answer
-// is NO. MPNowPlayingInfoLanguageOption.h:56-63 documents each as "a special case that is used to
-// represent the best legible/audible language option based on system preferences", each pointing at
+// is NO. MPNowPlayingInfoLanguageOption.h:56-63 documents each as the option that stands for the
+// best legible or audible choice under the system preferences, each pointing at
 // AVPlayerItem-selectMediaOptionAutomaticallyInMediaSelectionGroup: - so what each asks is whether the
 // receiver IS that special case, an option the system inserts into a group to mean "choose for me", and
 // not whether it is an ordinary option of a kind. The system's own class says the same thing: Apple's
@@ -125,8 +125,8 @@
     return _identifier;
 }
 
-// The two "automatic" accessors, quoted from the header at :56-63, each documented as "a special case
-// that is used to represent the best legible/audible language option based on system preferences" and
+// The two automatic accessors, read from the header at :56-63, each documented as a special case that
+// stands for the best legible or audible language option given the system preferences, and
 // each pointing at AVPlayerItem-selectMediaOptionAutomaticallyInMediaSelectionGroup:.
 //
 // NO, because the receiver is never that special case: it is an option the application built through
@@ -158,8 +158,8 @@
 //                     defaultLanguageOption:(nullable MPNowPlayingInfoLanguageOption *)defaultLanguageOption
 //                       allowEmptySelection:(BOOL)allowEmptySelection;
 //
-// The header calls the group "a mutually exclusive group of language options" where "only one language
-// option within a given group may be active at a time" (:86-87). Nothing here enforces that, because
+// The header describes the group as a mutually exclusive group of language options, in which only one
+// option may be active at a time (:86-87). Nothing here enforces that, because
 // this object does not decide which option is active - it holds the set and the one the caller marked
 // active. Enforcing exclusivity would mean silently dropping options the caller passed, which is a
 // different API from the one Apple declares.

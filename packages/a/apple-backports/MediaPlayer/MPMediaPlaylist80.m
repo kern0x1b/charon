@@ -13,8 +13,8 @@
 //
 // WHAT MAKES IT CARRYABLE is -valueForProperty:, which IS one of the 15: the header declares seedItems as
 // `@property (nonatomic, readonly, nullable) NSArray<MPMediaItem *> *seedItems MP_API(ios(8.0));` and the
-// comment above it says what it is - "For playlists with attribute MPMediaPlaylistAttributeGenius, the
-// seedItems are the MPMediaItems which were used to the generate the playlist" - beside a named key,
+// comment above it says what it is: for a playlist with the Genius attribute, the seedItems are the
+// MPMediaItems that were used to generate the playlist - beside a named key,
 // MPMediaPlaylistPropertySeedItems. That is the same shape as the two 9.3 keys MPMediaPlaylist93.m carries:
 // a named property key over -valueForProperty:, which is the one accessor that takes such a key.
 //

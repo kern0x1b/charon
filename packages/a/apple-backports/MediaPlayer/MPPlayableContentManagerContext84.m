@@ -16,12 +16,11 @@
 //   - endpointAvailable          NO. This is the measured state and the only one that is simply true.
 //   - contentLimitsEnforced      NO, for the same reason: nothing is enforcing anything because there is
 //                                no server to enforce limits.
-//   - enforcedContentItemsCount  NSIntegerMax. The header gives the spelling for "will never limit" -
-//                                "Returns NSIntegerMax if the content server will never limit the number
-//                                of items" - and that is the case here, so this is Apple's own value for
+//   - enforcedContentItemsCount  NSIntegerMax. The header gives this value for the case where the
+//                                content server will never cap the number of items, and that is the case here, so this is Apple's own value for
 //                                this state rather than a number chosen to look large.
 //   - enforcedContentTreeDepth   0, and this is the one value that is NOT a measured state. The header
-//                                says "Exceeding this limit will result in a crash", so it is a limit the
+//                                warns that exceeding this limit results in a crash, so it is a limit the
 //                                caller must not exceed rather than a capability. With no endpoint there
 //                                is no tree to navigate and nothing calls this, and 0 says the depth
 //                                allowed is none - which is the honest reading of a hierarchy nobody walks.
