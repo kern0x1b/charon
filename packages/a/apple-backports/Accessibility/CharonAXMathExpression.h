@@ -3,8 +3,8 @@
 //  Accessibility
 //
 //  The declarations of iPhoneOS 26.2's AXMathExpression.h, which the port's own SDK (iPhoneOS 16.4)
-//  does not carry, transcribed in their contract. CharonAccessibility.h says which of the six headers
-//  16.4 lacks are transcribed there and this is one of them; the classes themselves are built in
+//  does not carry, declared here from the interface. CharonAccessibility.h says which of the six headers
+//  16.4 lacks are declared there and this is one of them; the classes themselves are built in
 //  CharonAXMathExpression.m.
 //
 //  **What this group is, measured.** These fifteen classes are the object graph an application hands
@@ -25,7 +25,7 @@
 //     the initialiser is the only source of the value and the property the only way to read it back:
 //     answering one of the elements would throw away what the caller put in, and there is nothing in
 //     the header that says which element that would be. A caller that wants a single expression takes
-//     `firstObject` itself. The declaration below is transcribed as Apple writes it and not corrected
+//     `firstObject` itself. The declaration below is the interface's as written and not corrected
 //     - a backport that fixed the type would stop being the thing an application compiles against.
 //  2. `AXMathExpressionRow` and `AXMathExpressionTable`: their initialiser takes an array their
 //     property then answers **nil** on the host, whatever the array held (measured: nil for one, three
@@ -122,7 +122,7 @@ API_AVAILABLE(ios(18.2), macos(15.2), tvos(18.2), watchos(11.2))
 @property (nonatomic, readonly) AXMathExpression *overExpression;
 @end
 
-// The property is transcribed exactly as Apple declares it - a single expression - and the port's
+// The property is declared exactly as the interface declares it - a single expression - and the port's
 // answer is an array; the header's own header comment above says which and why, and the measurement
 // is one line in the differential.
 API_AVAILABLE(ios(18.2), macos(15.2), tvos(18.2), watchos(11.2))

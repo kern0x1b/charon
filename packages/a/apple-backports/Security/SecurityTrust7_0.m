@@ -283,11 +283,6 @@ CFDictionaryRef SecPolicyCopyProperties(SecPolicyRef policyRef)
 // SecPolicyCreateWithProperties, SecPolicy.h:234-247, __OSX_AVAILABLE_STARTING(__MAC_10_9,
 // __IPHONE_7_0).
 //
-//   234  @abstract Returns a policy object based on an object identifier for the
-//         policy type. ... @param policyIdentifier The identifier for the desired policy type.
-//         @param properties (Optional) A properties dictionary.
-//         @result The returned policy reference, or NULL if the policy could not be created.
-//
 // WHAT 6.1.3 ANSWERS: the two policies it can make and NULL for everything else. Its policy creators
 // are SecPolicyCreateBasicX509 (:167, __IPHONE_2_0) and SecPolicyCreateSSL (:180, __IPHONE_2_0) - both
 // exported by 6.1.3 and 4.3 - and there is no third. So this maps the identifier onto the release's own

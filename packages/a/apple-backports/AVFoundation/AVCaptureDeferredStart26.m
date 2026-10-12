@@ -1,9 +1,8 @@
 // AVCaptureDeferredStart26.m - the deferred-start surface of iOS 26 over the three classes it belongs to.
 //
-// WHAT DEFERRED START IS, and why this release has none of it. "Deferred Start is a feature that allows you to
-// control, on a per-output basis, whether output objects start when or after the session is started. The session
-// defers starting an output when its AVCaptureOutput/deferredStartEnabled property is set to true, and starts
-// it after the session is started." (AVCaptureSession.h:671). It is a STARTUP-LATENCY feature: the session holds
+// WHAT DEFERRED START IS, and why this release has none of it. The 26.2 header describes it at
+// AVCaptureSession.h:671 as a per-output choice of when an output starts, relative to the session's start, which
+// AVCaptureOutput/deferredStartEnabled sets. It is a STARTUP-LATENCY feature: the session holds
 // an output's resources back so an application can put its interface up first. 6.1.3's capture session has no
 // member of any kind for it - measured, tools/corpus/objc-inventory.lua over the 6.1.3 armv7 cache: its
 // AVCaptureSession owns none of the five selectors here and no deferred-start member at all - so this object is
