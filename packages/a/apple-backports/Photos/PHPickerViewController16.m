@@ -11,8 +11,8 @@
 // The two methods of iOS 16 that change a picker's own selection, on the class the 14.0 object
 // implements, so a category and not the class itself: an object carries the API of one release only.
 //
-// Both are the case the header itself names. Each says "Does nothing if asset identifiers are
-// invalid or not selected, or photoLibrary is not specified in the configuration", and on this port
+// Both are the case the header itself names. Each says it does nothing when the identifiers given are
+// missing or unselected, or when photoLibrary is not in the configuration, and on this port
 // the last of those three is always true and the middle one always is too:
 //
 //   - the configuration of this port never names a photo library. -initWithPhotoLibrary: takes one

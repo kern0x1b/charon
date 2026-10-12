@@ -7,9 +7,9 @@
 // direction the SDK's own header takes: PHPhotoLibrary+PhotosUISupport.h declares this method in a
 // category of the class, and the class itself is the port's (PHPhotoLibrary.m).
 //
-// Nothing is presented, and that is the whole answer rather than a gap in it. The header says: "If
-// the user has not enabled limited photo library access mode for this application, then this method
-// will do nothing", and on this port the application can never have enabled it. The release's
+// Nothing is presented, and that is the whole answer rather than a gap in it. The header says that when
+// the picker's access mode is not enabled for this application, nothing is done. On this port the
+// application can never have enabled it. The release's
 // library authorization is ALAuthorizationStatus, which has exactly four values - not determined,
 // restricted, denied, authorized (ALAssetsLibrary.h:45-52) - and PHAuthorizationStatus is that enum
 // plus the three cases of iOS 8 and the limited case of iOS 14 (PHPhotoLibrary.h:26).

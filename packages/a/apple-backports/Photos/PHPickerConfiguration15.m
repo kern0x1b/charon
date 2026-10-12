@@ -42,9 +42,9 @@ static const void *charon_preselected_key = &charon_preselected_key;
     objc_setAssociatedObject(self, charon_selection_key, @(selection), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-// "Local identifiers of assets to be shown as selected when the picker is presented. Default is an
-// empty array", and the header's own rule beside it: it "should be an empty array if selectionLimit
-// is 1 or photoLibrary is not specified". The second half of that rule is always true on this port
+// The local identifiers of the assets to preselect when the picker is presented; the default is an
+// empty array, and the header's rule beside it says the array should be empty if selectionLimit
+// is 1 or photoLibrary is not specified. The second half of that rule is always true on this port
 // and the first is true of the configuration as it is built, so the value is kept and read back
 // while the picker preselects nothing: -[PHPickerResult assetIdentifier] is nil whatever the
 // configuration was made with (PHPickerResult14.m:21), so a preselected asset could not be
