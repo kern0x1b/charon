@@ -184,7 +184,7 @@ static void runCase(const MatterCase *c)
     if ([cluster respondsToSelector:subscribe] && paramsClass && [paramsClass instancesRespondToSelector:paramsInit]) {
         // The params are made with the initialiser the SDK declares: the two intervals, and the three flags the framework's
         // own initialiser sets to YES (MTRCluster.mm:184), reportEventsUrgently among them.
-        id params = [[paramsClass alloc] initWithMinInterval:@1 maxInterval:@10];
+        id params = ((id (*)(id, SEL, id, id))objc_msgSend)([paramsClass alloc], paramsInit, @1, @10);
         __block int reports = 0;
         __block id reported = @"unset";
         __block NSError *reportedError = nil;
