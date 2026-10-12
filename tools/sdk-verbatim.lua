@@ -20,6 +20,8 @@
 -- Exit status: 0 when nothing matched; 1 when at least one comment line matched; 2 when the SDK root is
 -- unreadable, a file cannot be read, or no comment line or no SDK line was compared. The text of a hit is
 -- not printed, only its file and line: the output of a run is kept in a verdict file.
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..", "modules")})
+
 local MIN_CHARS, MIN_WORDS = 20, 4
 local SDK_DIRS = {"System/Library/Frameworks", "usr/include"}
 
@@ -142,7 +144,7 @@ function scan(root, files)
     for text in pairs(matched) do
         for _, where in ipairs(ours[text]) do table.insert(report.hits, where) end
     end
-    table.sort(report.hits)
+    byteorder.sort(report.hits)
     if report.comments == 0 then table.insert(report.errors, "no comment line compared") end
     if report.sdk_comments == 0 then table.insert(report.errors, "no SDK comment line compared") end
     return report
