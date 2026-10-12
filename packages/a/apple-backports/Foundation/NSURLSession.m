@@ -240,8 +240,8 @@ static id charon_session_delegate(NSURLSession *session)
    which is what the system's own does. */
 static id charon_task_delegate(NSURLSession *session, NSURLSessionTask *task, SEL selector)
 {
-    /* Per SELECTOR, and the header says so: "Methods not implemented on this delegate will still be
-       forwarded to the session delegate" (SDK 16.4 NSURLSession.h:296-297). Returning the task's
+    /* Per SELECTOR, and the header says so: methods the task delegate does not implement still reach the
+       session delegate (SDK 16.4 NSURLSession.h:296-297). Returning the task's
        delegate whole made that a per OBJECT answer, so a caller that set one and implemented nothing
        of the protocol heard nothing at all. Measured on the system's own NSURLSession by
        tests/backports/host/tasksession/run.sh: a task delegate implementing nothing left the session
@@ -745,8 +745,8 @@ static void charon_task_complete_event(NSURLSessionTask *task, NSError *error)
             if ([delegate respondsToSelector:@selector(URLSession:task:didCompleteWithError:)])
                 [delegate URLSession:session task:task didCompleteWithError:error];
         }
-        /* The header's third sentence about this delegate: "Delegate is strongly referenced until the
-           task completes, after which it is reset to `nil`" (SDK 16.4 NSURLSession.h:303-304).
+        /* The header's third sentence about this delegate: the delegate stays strongly referenced until the
+           task completes, and is then reset to nil (SDK 16.4 NSURLSession.h:303-304).
            Measured on the system's own NSURLSession by tests/backports/host/tasksession/run.sh: after
            the completion had been delivered, -delegate read nil in both of its runs - the task's
            delegate implementing nothing, and implementing exactly the completion selector.

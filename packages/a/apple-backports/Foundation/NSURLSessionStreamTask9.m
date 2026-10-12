@@ -660,7 +660,7 @@ static NSString *charon_ssl_level_key(void)
        SystemConfiguration, whose reachability this same library already reads for a task that waits
        for connectivity (NSURLSession.m, charon_task_when_connected). What those flags report is
        whether the host is reachable and over which kind of interface; the header's message says the
-       *system* has determined that a better route to the host exists. A change in those flags is
+       *system* now holds a better route to the host. A change in those flags is
        this port's own inference from a reachability answer, and sending it under the system's name
        would be a false report to the application, which is what the header warns the caller about
        when it says a new task may still fail. */

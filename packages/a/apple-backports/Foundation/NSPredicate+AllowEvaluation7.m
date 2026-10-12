@@ -3,7 +3,7 @@
 
 /* -allowEvaluation on a predicate and on a sort descriptor, and the same two on an expression.
 
-   The header: "Force a predicate which was securely decoded to allow evaluation". The restriction is
+   The header says the method forces evaluation of a predicate that was securely decoded. The restriction is
    that a predicate read out of a secure archive must not be evaluated until the application says so.
    iOS 6.1.3 has no such restriction -- its NSCoder has no allow-evaluation flag, and a predicate
    decoded from an archive is evaluable the moment it exists -- so on this release the state the method

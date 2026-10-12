@@ -189,9 +189,9 @@ os_signpost_id_t os_signpost_id_generate(os_log_t log)
 
 // The header says what this does and does not promise, and the M-Z review's measurement agrees with it:
 //
-//   "Mangles the pointer to create a valid os_signpost_id, including removing address randomization."
-//   "@result Returns a valid os_signpost_id_t. Returns OS_SIGNPOST_ID_NULL if signposts are turned
-//    off. Returns OS_SIGNPOST_ID_INVALID if the log handle is system-scoped."
+//   The header says the pointer is mangled into a valid os_signpost_id, with address randomization removed.
+//   Its result is a valid os_signpost_id_t, OS_SIGNPOST_ID_NULL when signposts are turned off, and
+//   OS_SIGNPOST_ID_INVALID when the log handle is system-scoped.
 //
 // So the value is NOT the pointer - the host's own round trip fails, and it is meant to - and a NULL
 // pointer is not one of the two documented failures. The port therefore mangles the address the only way

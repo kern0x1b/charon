@@ -5,9 +5,9 @@
 
 /* The inflection pass of iOS 15.0: the rule a run carries is followed, and what is followed is English.
 
-   -attributedStringByInflectingString is not a function on the text. Its own header says: "if the
-   string has portions tagged with NSInflectionRuleAttributeName that have no format specifiers,
-   create a new string with those portions inflected by following the rule in the attribute". So the
+   -attributedStringByInflectingString is not a function on the text. Its own header says that a string with portions tagged
+   with NSInflectionRuleAttributeName and no format specifiers yields a copy whose portions are inflected by the rule
+   in the attribute. So the
    rule travels in the string, the attribute names the ranges it governs, and the answer is the same
    runs with the same attributes and those ranges inflected.
 

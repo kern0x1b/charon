@@ -26,9 +26,9 @@
 /* The two symbols. Both are API_UNAVAILABLE(macOS), which is why the macOS framework does not emit
    either and why neither value can be measured on this host: they are the header's own words and
    nothing else. The notification is named by its own string, as every NSNotificationName const is;
-   the priority is 1.0 because the property's range is "between 0 and 1, with 1 being the highest" and
-   this one is documented as "the maximum amount of resources available to finishing this request as
-   soon as possible". Facts, not measurements, and the facts file says so. */
+   the priority is 1.0 because the property's range runs from 0 to 1, with 1 the highest, and
+   this one is documented as the maximum amount of resources to make available for finishing this request
+   as soon as possible. Facts, not measurements, and the facts file says so. */
 double const NSBundleResourceRequestLoadingPriorityUrgent = 1.0;
 NSString *const NSBundleResourceRequestLowDiskSpaceNotification = @"NSBundleResourceRequestLowDiskSpaceNotification";
 
@@ -40,8 +40,8 @@ static NSString *const charon_manifest_tags_key = @"NSBundleResourceRequestTags"
 static NSString *const charon_manifest_pack_path_key = @"NSBundleResourceRequestPath";
 
 /* The error a tag that the bundle's manifest does not name completes with: 4994 out of
-   FoundationErrors.h, the host's own header text being "The application specified a tag which the
-   system could not find in the application tag manifest". */
+   FoundationErrors.h, the host's own header text says that the application specified a tag the system
+   cannot locate in its tag manifest. */
 static NSInteger const charon_invalid_tag = 4994;
 
 static NSString *CharonInvalidTagError(NSString *tag)
@@ -134,7 +134,7 @@ static BOOL CharonTagIsResolvable(NSBundle *bundle, NSString *tag)
     self = [super init];
     if (self) {
         _tags = [tags copy];
-        /* "if no bundle is specified then the main bundle is used" */
+        /* The header's default: with no bundle given, the main bundle is used. */
         _bundle = bundle ?: [NSBundle mainBundle];
         /* "The default priority is 0.5" */
         _loadingPriority = 0.5;
@@ -210,8 +210,8 @@ static BOOL CharonTagIsResolvable(NSBundle *bundle, NSString *tag)
 
 - (void)endAccessingResources
 {
-    /* Nothing was taken: the packs never left the bundle. The header's "may only be invoked if you
-       have received a callback from -begin…" is a caller's discipline and the port does not enforce
+    /* Nothing was taken: the packs never left the bundle. The header says the completion may only run after a
+       callback from -begin has been received, which is a caller's discipline and the port does not enforce
        it, because nothing is held and a call out of order cannot leak. */
 }
 

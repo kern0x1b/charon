@@ -11,8 +11,8 @@
 // class and its export trie carries no EN symbol), the entitlement and the per-device authorization
 // behind the service, which no port can grant itself, and the Bluetooth Low Energy subsystem the
 // service broadcasts over, which iOS 6 does not run at all -- the ENManager header says so itself,
-// twice: "Bluetooth is required for Exposure Notification" under ENStatusBluetoothOff, and
-// "Exposure Notification is a system service and can use Bluetooth in situations when apps cannot".
+// twice: that Bluetooth is required for Exposure Notification under ENStatusBluetoothOff, and that the
+// service can use Bluetooth where apps cannot (the header).
 //
 // So there is no detection to perform and no key to hand out, and every member that needs the service
 // answers what Apple's own framework answers for a device that cannot do Exposure Notification at all:
@@ -29,11 +29,10 @@
 //                                 supported" -- or ENErrorCodeInvalidated (6) after -invalidate,
 //                                 which is what that code documents.
 //
-// The handlers run on `dispatchQueue`, which the header says "Defaults to the main queue", and
+// The handlers run on `dispatchQueue`, which the header says defaults to the main queue, and
 // -invalidate is the one member with behaviour that does not need the service: it marks the object
 // unusable and calls -invalidationHandler exactly once, which is precisely what the header promises
-// ("The invalidation handler will be invoked exactly once even if invalidate is called multiple
-// times").
+// (the invalidation handler runs once even when invalidate is called several times, as the header states).
 //
 // One release per object file: every member here arrived in iOS 12.5. The 13.5 and 14.4 members are in
 // ENManagerExposureInfo13.m and ENManagerPreAuthorized14.m beside this one.
@@ -91,7 +90,7 @@ static NSError *CharonENInvalidatedError(void)
     _invalidationHandler = [invalidationHandler copy];
 }
 
-// The header: "Dispatch queue to invoke handlers on. Defaults to the main queue." The queue is what a
+// The header gives the dispatch queue for invoking handlers, defaulting to the main queue. The queue is what a
 // completion handler would be called on, and every handler here is called where it is called -- the
 // completion blocks are invoked synchronously, so there is nothing to dispatch -- but the property is
 // carried because it is what the header declares and a caller may set it.

@@ -6,12 +6,10 @@
 
    The semantics are the SDK header's, read there and not guessed:
 
-     languageIdentifier  "Returns the identifier for the language part of the locale. For
-                          example, returns "en-US" for "en_US@rg=gbzzzz" locale."
-     regionCode          "Returns the region code of the locale. If the `rg` subtag is
-                          present, the value of the subtag will be used. For example,
-                          returns "GB" for "en_US@rg=gbzzzz" locale. If the localeIdentifier
-                          doesn't contain a region, returns nil."
+     languageIdentifier  The identifier of the language part: for en_US@rg=gbzzzz it is en-US.
+                          The header gives this as its example.
+     regionCode          The region of the locale. When the rg subtag is present, its value is used:
+                          for en_US@rg=gbzzzz that is GB. Without a region, the result is nil (the header).
 
    Both are computed from what the release itself carries, measured class-scoped on the 6.0
    armv7 cache (7187 and 11284 classes read in the same runs, so a zero on another rung is
