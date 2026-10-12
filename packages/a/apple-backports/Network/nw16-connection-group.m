@@ -29,8 +29,8 @@
  *
  * The messages are this library's own content contexts, so the four calls that take one read the record
  * the group made when the datagram was read: the address it came from, the address it was sent to, the
- * path it arrived over, the per-protocol metadata, and whether it has been answered - the header's rule
- * that an inbound message may be replied to exactly once.
+ * path it arrived over, the per-protocol metadata, and whether it has been answered. The header allows
+ * one reply per inbound message, and no more.
  *
  * Which object holds what: an object holds the API of one release, and the ladder this port builds has
  * no rung between 12.0 and 16.0 and the 12.0 cache exports no `nw_connection_group_*` at all, so the
