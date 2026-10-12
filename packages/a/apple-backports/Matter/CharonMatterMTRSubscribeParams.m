@@ -6,7 +6,7 @@
 //  objects beside it are: every property below was read out of the header, nothing here is transcribed by
 //  hand, and no line of any other source is copied, translated or derived here.
 //
-//  MTRSubscribeParams is a plain data class: NSCopying,, NSSecureCoding. It arrived in iOS 16.0. Every property the header
+//  MTRSubscribeParams is a plain data class: NSCopying, NSSecureCoding. It arrived in iOS 16.0. Every property the header
 //  declares is synthesised here with its own ivar, and the copy is by declaration so that it owns them.
 //  Nothing in it reaches a fabric - it holds what the caller put in it and hands back what it holds.
 //
@@ -27,6 +27,19 @@
 @synthesize maxInterval = _maxInterval;
 @synthesize reportEventsUrgently = _reportEventsUrgently;
 
+// NSCopying, by declaration: the copy owns its own ivars, so writing to the copy never
+// reaches back into the original.
+- (id)copyWithZone:(NSZone *)zone
+{
+    MTRSubscribeParams *copied = [[MTRSubscribeParams allocWithZone:zone] init];
+    copied->_replaceExistingSubscriptions = self->_replaceExistingSubscriptions;
+    copied->_resubscribeAutomatically = self->_resubscribeAutomatically;
+    copied->_minInterval = self->_minInterval;
+    copied->_maxInterval = self->_maxInterval;
+    copied->_reportEventsUrgently = self->_reportEventsUrgently;
+    return copied;
+}
+
 - (instancetype)init
 {
     self = [super init];
@@ -41,6 +54,20 @@
     return self;
 }
 
+- (instancetype)initWithMinInterval:(NSNumber *)minInterval maxInterval:(NSNumber *)maxInterval
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _reportEventsUrgently = YES;
+    _replaceExistingSubscriptions = YES;
+    _resubscribeAutomatically = YES;
+    _minInterval = [minInterval copy];
+    _maxInterval = [maxInterval copy];
+    return self;
+}
+
 // The properties the SDK declares in a CATEGORY of this class - MTRGroupsClusterAddGroupParams
 // carries the old `groupId` beside the `groupID` of its own @interface, and 17 classes
 // are shaped so. Their accessors are written out over the storage above, because a category
@@ -48,12 +75,12 @@
     // keepPreviousSubscriptions is a NSNumber * and shares the storage of the bool member; the host converts between them, and this is that conversion.
 - (NSNumber *)keepPreviousSubscriptions
 {
-    return [NSNumber numberWithBool:_replaceExistingSubscriptions];
+    return [NSNumber numberWithBool:!_replaceExistingSubscriptions];
 }
 
 - (void)setKeepPreviousSubscriptions:(NSNumber *)keepPreviousSubscriptions
 {
-    _replaceExistingSubscriptions = [keepPreviousSubscriptions boolValue];
+    _replaceExistingSubscriptions = ![keepPreviousSubscriptions boolValue];
 }
 
     // autoResubscribe is a NSNumber * and shares the storage of the bool member; the host converts between them, and this is that conversion.

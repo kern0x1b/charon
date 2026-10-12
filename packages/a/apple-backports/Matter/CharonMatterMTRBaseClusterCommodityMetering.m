@@ -107,7 +107,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"MeteredQuantity"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeMeteredQuantityWithParams:(MTRSubscribeParams *)params
@@ -134,7 +138,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"MeteredQuantityTimestamp"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeMeteredQuantityTimestampWithParams:(MTRSubscribeParams *)params
@@ -161,7 +169,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"TariffUnit"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeTariffUnitWithParams:(MTRSubscribeParams *)params
@@ -188,7 +200,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"MaximumMeteredQuantities"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeMaximumMeteredQuantitiesWithParams:(MTRSubscribeParams *)params
@@ -215,7 +231,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"GeneratedCommandList"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeGeneratedCommandListWithParams:(MTRSubscribeParams *)params
@@ -242,7 +262,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"AcceptedCommandList"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeAcceptedCommandListWithParams:(MTRSubscribeParams *)params
@@ -269,7 +293,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"AttributeList"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeAttributeListWithParams:(MTRSubscribeParams *)params
@@ -296,7 +324,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"FeatureMap"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeFeatureMapWithParams:(MTRSubscribeParams *)params
@@ -323,7 +355,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"ClusterRevision"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeClusterRevisionWithParams:(MTRSubscribeParams *)params

@@ -116,7 +116,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"ExpressedState"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeExpressedStateWithParams:(MTRSubscribeParams *)params
@@ -143,7 +147,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"SmokeState"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeSmokeStateWithParams:(MTRSubscribeParams *)params
@@ -170,7 +178,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"COState"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeCOStateWithParams:(MTRSubscribeParams *)params
@@ -197,7 +209,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"BatteryAlert"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeBatteryAlertWithParams:(MTRSubscribeParams *)params
@@ -224,7 +240,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"DeviceMuted"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeDeviceMutedWithParams:(MTRSubscribeParams *)params
@@ -251,7 +271,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"TestInProgress"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeTestInProgressWithParams:(MTRSubscribeParams *)params
@@ -278,7 +302,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"HardwareFaultAlert"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeHardwareFaultAlertWithParams:(MTRSubscribeParams *)params
@@ -305,7 +333,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"EndOfServiceAlert"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeEndOfServiceAlertWithParams:(MTRSubscribeParams *)params
@@ -332,7 +364,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"InterconnectSmokeAlarm"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeInterconnectSmokeAlarmWithParams:(MTRSubscribeParams *)params
@@ -359,7 +395,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"InterconnectCOAlarm"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeInterconnectCOAlarmWithParams:(MTRSubscribeParams *)params
@@ -386,7 +426,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"ContaminationState"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeContaminationStateWithParams:(MTRSubscribeParams *)params
@@ -413,7 +457,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"SmokeSensitivityLevel"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeSmokeSensitivityLevelWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -460,7 +508,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"ExpiryDate"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeExpiryDateWithParams:(MTRSubscribeParams *)params
@@ -487,7 +539,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"GeneratedCommandList"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeGeneratedCommandListWithParams:(MTRSubscribeParams *)params
@@ -514,7 +570,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"AcceptedCommandList"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeAcceptedCommandListWithParams:(MTRSubscribeParams *)params
@@ -541,7 +601,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"AttributeList"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeAttributeListWithParams:(MTRSubscribeParams *)params
@@ -568,7 +632,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"FeatureMap"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeFeatureMapWithParams:(MTRSubscribeParams *)params
@@ -595,7 +663,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"ClusterRevision"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeClusterRevisionWithParams:(MTRSubscribeParams *)params

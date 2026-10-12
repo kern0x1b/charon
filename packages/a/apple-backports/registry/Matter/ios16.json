@@ -168654,6 +168654,17 @@
       "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
     },
     {
+      "api": "-[MTRSubscribeParams initWithMinInterval:maxInterval:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRCluster.h:213, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "the designated initialiser the SDK declares for the plain data class: its body is the framework's, measured on the host (tests/backports/host/matter/params-init.m)",
+      "effect": "the object keeps the two intervals the caller gives as copies, refuses neither a minimum above the maximum nor nil, and sets reportEventsUrgently, replaceExistingSubscriptions and resubscribeAutomatically to YES"
+    },
+    {
       "api": "-[MTRSubscribeParams keepPreviousSubscriptions]",
       "kind": "method",
       "introduced": "16.1",

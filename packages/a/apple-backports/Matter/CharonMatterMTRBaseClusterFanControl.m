@@ -119,7 +119,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"FanMode"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeFanModeWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeFanModeWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)writeAttributeFanModeWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -144,22 +153,12 @@ static NSError *charon_port_no_node_error(void)
 
 - (void)writeAttributeFanModeWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"FanMode"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeFanModeWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeFanModeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"FanMode"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeFanModeWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeFanModeWithParams:(MTRSubscribeParams *)params
@@ -203,7 +202,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"FanModeSequence"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeFanModeSequenceWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeFanModeSequenceWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)writeAttributeFanModeSequenceWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -228,22 +236,12 @@ static NSError *charon_port_no_node_error(void)
 
 - (void)writeAttributeFanModeSequenceWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"FanModeSequence"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeFanModeSequenceWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeFanModeSequenceWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"FanModeSequence"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeFanModeSequenceWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeFanModeSequenceWithParams:(MTRSubscribeParams *)params
@@ -287,7 +285,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"PercentSetting"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributePercentSettingWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributePercentSettingWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)writeAttributePercentSettingWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -312,22 +319,12 @@ static NSError *charon_port_no_node_error(void)
 
 - (void)writeAttributePercentSettingWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"PercentSetting"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributePercentSettingWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributePercentSettingWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"PercentSetting"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributePercentSettingWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributePercentSettingWithParams:(MTRSubscribeParams *)params
@@ -371,7 +368,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"PercentCurrent"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributePercentCurrentWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributePercentCurrentWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)subscribeAttributePercentCurrentWithParams:(MTRSubscribeParams *)params
@@ -415,7 +421,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"SpeedMax"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeSpeedMaxWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeSpeedMaxWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)subscribeAttributeSpeedMaxWithParams:(MTRSubscribeParams *)params
@@ -459,7 +474,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"SpeedSetting"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeSpeedSettingWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeSpeedSettingWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)writeAttributeSpeedSettingWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -484,22 +508,12 @@ static NSError *charon_port_no_node_error(void)
 
 - (void)writeAttributeSpeedSettingWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"SpeedSetting"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeSpeedSettingWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeSpeedSettingWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"SpeedSetting"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeSpeedSettingWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeSpeedSettingWithParams:(MTRSubscribeParams *)params
@@ -543,7 +557,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"SpeedCurrent"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeSpeedCurrentWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeSpeedCurrentWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)subscribeAttributeSpeedCurrentWithParams:(MTRSubscribeParams *)params
@@ -587,7 +610,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"RockSupport"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeRockSupportWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeRockSupportWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)subscribeAttributeRockSupportWithParams:(MTRSubscribeParams *)params
@@ -631,7 +663,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"RockSetting"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeRockSettingWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeRockSettingWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)writeAttributeRockSettingWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -656,22 +697,12 @@ static NSError *charon_port_no_node_error(void)
 
 - (void)writeAttributeRockSettingWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"RockSetting"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeRockSettingWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeRockSettingWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"RockSetting"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeRockSettingWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeRockSettingWithParams:(MTRSubscribeParams *)params
@@ -715,7 +746,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"WindSupport"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeWindSupportWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeWindSupportWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)subscribeAttributeWindSupportWithParams:(MTRSubscribeParams *)params
@@ -759,7 +799,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"WindSetting"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeWindSettingWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeWindSettingWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)writeAttributeWindSettingWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -784,22 +833,12 @@ static NSError *charon_port_no_node_error(void)
 
 - (void)writeAttributeWindSettingWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"WindSetting"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeWindSettingWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeWindSettingWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"WindSetting"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeWindSettingWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeWindSettingWithParams:(MTRSubscribeParams *)params
@@ -843,7 +882,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"AirflowDirection"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeAirflowDirectionWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -890,7 +933,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"GeneratedCommandList"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeGeneratedCommandListWithCompletionHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeGeneratedCommandListWithCompletion:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)subscribeAttributeGeneratedCommandListWithParams:(MTRSubscribeParams *)params
@@ -934,7 +986,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"AcceptedCommandList"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeAcceptedCommandListWithCompletionHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeAcceptedCommandListWithCompletion:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)subscribeAttributeAcceptedCommandListWithParams:(MTRSubscribeParams *)params
@@ -978,7 +1039,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"AttributeList"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeAttributeListWithCompletionHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeAttributeListWithCompletion:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)subscribeAttributeAttributeListWithParams:(MTRSubscribeParams *)params
@@ -1022,7 +1092,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"FeatureMap"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeFeatureMapWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeFeatureMapWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)subscribeAttributeFeatureMapWithParams:(MTRSubscribeParams *)params
@@ -1066,7 +1145,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"ClusterRevision"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeClusterRevisionWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeClusterRevisionWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)subscribeAttributeClusterRevisionWithParams:(MTRSubscribeParams *)params
@@ -1344,118 +1432,6 @@ static NSError *charon_port_no_node_error(void)
     (void)params;
     if (completion) {
         completion(nil);
-    }
-}
-
-- (void)readAttributeFanModeWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeFanModeSequenceWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributePercentSettingWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributePercentCurrentWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeSpeedMaxWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeSpeedSettingWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeSpeedCurrentWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeRockSupportWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeRockSettingWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeWindSupportWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeWindSettingWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeGeneratedCommandListWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeAcceptedCommandListWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeAttributeListWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeFeatureMapWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeClusterRevisionWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
     }
 }
 

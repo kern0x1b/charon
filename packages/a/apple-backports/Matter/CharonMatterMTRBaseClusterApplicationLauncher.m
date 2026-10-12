@@ -119,7 +119,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"CatalogList"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeCatalogListWithCompletionHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeCatalogListWithCompletion:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)subscribeAttributeCatalogListWithParams:(MTRSubscribeParams *)params
@@ -163,7 +172,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"CurrentApp"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeCurrentAppWithCompletionHandler:(void (^)(MTRApplicationLauncherClusterApplicationEP * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeCurrentAppWithCompletion:(void (^)(MTRApplicationLauncherClusterApplicationEPStruct * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)writeAttributeCurrentAppWithValue:(MTRApplicationLauncherClusterApplicationEPStruct * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -188,22 +206,12 @@ static NSError *charon_port_no_node_error(void)
 
 - (void)writeAttributeCurrentAppWithValue:(MTRApplicationLauncherClusterApplicationEP * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"CurrentApp"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeCurrentAppWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeCurrentAppWithValue:(MTRApplicationLauncherClusterApplicationEP * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"CurrentApp"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeCurrentAppWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeCurrentAppWithParams:(MTRSubscribeParams *)params
@@ -247,7 +255,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"GeneratedCommandList"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeGeneratedCommandListWithCompletionHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeGeneratedCommandListWithCompletion:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)subscribeAttributeGeneratedCommandListWithParams:(MTRSubscribeParams *)params
@@ -291,7 +308,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"AcceptedCommandList"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeAcceptedCommandListWithCompletionHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeAcceptedCommandListWithCompletion:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)subscribeAttributeAcceptedCommandListWithParams:(MTRSubscribeParams *)params
@@ -335,7 +361,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"AttributeList"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeAttributeListWithCompletionHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeAttributeListWithCompletion:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)subscribeAttributeAttributeListWithParams:(MTRSubscribeParams *)params
@@ -379,7 +414,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"FeatureMap"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeFeatureMapWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeFeatureMapWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)subscribeAttributeFeatureMapWithParams:(MTRSubscribeParams *)params
@@ -423,7 +467,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"ClusterRevision"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeClusterRevisionWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeClusterRevisionWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)subscribeAttributeClusterRevisionWithParams:(MTRSubscribeParams *)params
@@ -625,55 +678,6 @@ static NSError *charon_port_no_node_error(void)
 - (void)hideAppWithParams:(MTRApplicationLauncherClusterHideAppParams *)params completionHandler:(void (^)(MTRApplicationLauncherClusterLauncherResponseParams * data, NSError * error))completionHandler
 {
     (void)params;
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeCatalogListWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeCurrentAppWithCompletionHandler:(void (^)(MTRApplicationLauncherClusterApplicationEP * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeGeneratedCommandListWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeAcceptedCommandListWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeAttributeListWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeFeatureMapWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeClusterRevisionWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
     if (completionHandler) {
         completionHandler(nil, nil);
     }

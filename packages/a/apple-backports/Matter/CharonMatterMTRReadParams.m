@@ -6,7 +6,7 @@
 //  objects beside it are: every property below was read out of the header, nothing here is transcribed by
 //  hand, and no line of any other source is copied, translated or derived here.
 //
-//  MTRReadParams is a plain data class: NSCopying,, NSSecureCoding. It arrived in iOS 16.0. Every property the header
+//  MTRReadParams is a plain data class: NSCopying, NSSecureCoding. It arrived in iOS 16.0. Every property the header
 //  declares is synthesised here with its own ivar, and the copy is by declaration so that it owns them.
 //  Nothing in it reaches a fabric - it holds what the caller put in it and hands back what it holds.
 //
@@ -24,6 +24,17 @@
 @synthesize filterByFabric = _filterByFabric;
 @synthesize minEventNumber = _minEventNumber;
 @synthesize assumeUnknownAttributesReportable = _assumeUnknownAttributesReportable;
+
+// NSCopying, by declaration: the copy owns its own ivars, so writing to the copy never
+// reaches back into the original.
+- (id)copyWithZone:(NSZone *)zone
+{
+    MTRReadParams *copied = [[MTRReadParams allocWithZone:zone] init];
+    copied->_filterByFabric = self->_filterByFabric;
+    copied->_minEventNumber = self->_minEventNumber;
+    copied->_assumeUnknownAttributesReportable = self->_assumeUnknownAttributesReportable;
+    return copied;
+}
 
 - (instancetype)init
 {

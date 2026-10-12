@@ -39,21 +39,6 @@
 }
 @end
 
-// The values the caller has written, by attribute name: this object's own table, made on
-// first use. The caller holds the object's lock for the whole of its access, so this takes
-// none. It is not keyed by the class: two objects of one class are two tables, as they are
-// two sets of state in the framework.
-// It takes the table by its address, not the object: naming the class here would not compile
-// where the host SDK marks that class unavailable, as it does for some commodity and closure
-// clusters.
-static NSMutableDictionary *charon_port_values(NSMutableDictionary * __strong *values)
-{
-    if (!*values) {
-        *values = [NSMutableDictionary dictionary];
-    }
-    return *values;
-}
-
 // The error a member that would need a node answers, on a release with no Matter
 // hardware: there is no controller to ask and no node to read from. It is the framework's
 // own answer to a cached read on a container with no cache and to any request on a
@@ -88,25 +73,20 @@ static NSError *charon_port_no_node_error(void)
     return self;
 }
 
-// Boolean, a id.
+// Boolean, a NSNumber.
+- (void)readAttributeBooleanWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeBooleanWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeBooleanWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Boolean"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeBooleanWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeBooleanWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Boolean"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeBooleanWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeBooleanWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -126,25 +106,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// Bitmap8, a id.
+// Bitmap8, a NSNumber.
+- (void)readAttributeBitmap8WithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeBitmap8WithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeBitmap8WithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Bitmap8"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeBitmap8WithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeBitmap8WithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Bitmap8"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeBitmap8WithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeBitmap8WithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -164,25 +139,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// Bitmap16, a id.
+// Bitmap16, a NSNumber.
+- (void)readAttributeBitmap16WithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeBitmap16WithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeBitmap16WithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Bitmap16"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeBitmap16WithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeBitmap16WithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Bitmap16"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeBitmap16WithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeBitmap16WithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -202,25 +172,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// Bitmap32, a id.
+// Bitmap32, a NSNumber.
+- (void)readAttributeBitmap32WithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeBitmap32WithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeBitmap32WithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Bitmap32"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeBitmap32WithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeBitmap32WithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Bitmap32"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeBitmap32WithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeBitmap32WithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -240,25 +205,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// Bitmap64, a id.
+// Bitmap64, a NSNumber.
+- (void)readAttributeBitmap64WithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeBitmap64WithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeBitmap64WithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Bitmap64"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeBitmap64WithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeBitmap64WithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Bitmap64"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeBitmap64WithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeBitmap64WithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -278,25 +238,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// Int8u, a id.
+// Int8u, a NSNumber.
+- (void)readAttributeInt8uWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeInt8uWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeInt8uWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int8u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt8uWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeInt8uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int8u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt8uWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeInt8uWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -316,25 +271,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// Int16u, a id.
+// Int16u, a NSNumber.
+- (void)readAttributeInt16uWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeInt16uWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeInt16uWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int16u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt16uWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeInt16uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int16u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt16uWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeInt16uWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -354,25 +304,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// Int24u, a id.
+// Int24u, a NSNumber.
+- (void)readAttributeInt24uWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeInt24uWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeInt24uWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int24u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt24uWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeInt24uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int24u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt24uWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeInt24uWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -392,25 +337,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// Int32u, a id.
+// Int32u, a NSNumber.
+- (void)readAttributeInt32uWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeInt32uWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeInt32uWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int32u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt32uWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeInt32uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int32u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt32uWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeInt32uWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -430,25 +370,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// Int40u, a id.
+// Int40u, a NSNumber.
+- (void)readAttributeInt40uWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeInt40uWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeInt40uWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int40u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt40uWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeInt40uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int40u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt40uWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeInt40uWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -468,25 +403,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// Int48u, a id.
+// Int48u, a NSNumber.
+- (void)readAttributeInt48uWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeInt48uWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeInt48uWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int48u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt48uWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeInt48uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int48u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt48uWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeInt48uWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -506,25 +436,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// Int56u, a id.
+// Int56u, a NSNumber.
+- (void)readAttributeInt56uWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeInt56uWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeInt56uWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int56u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt56uWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeInt56uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int56u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt56uWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeInt56uWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -544,25 +469,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// Int64u, a id.
+// Int64u, a NSNumber.
+- (void)readAttributeInt64uWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeInt64uWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeInt64uWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int64u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt64uWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeInt64uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int64u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt64uWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeInt64uWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -582,25 +502,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// Int8s, a id.
+// Int8s, a NSNumber.
+- (void)readAttributeInt8sWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeInt8sWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeInt8sWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int8s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt8sWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeInt8sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int8s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt8sWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeInt8sWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -620,25 +535,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// Int16s, a id.
+// Int16s, a NSNumber.
+- (void)readAttributeInt16sWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeInt16sWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeInt16sWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int16s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt16sWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeInt16sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int16s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt16sWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeInt16sWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -658,25 +568,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// Int24s, a id.
+// Int24s, a NSNumber.
+- (void)readAttributeInt24sWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeInt24sWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeInt24sWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int24s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt24sWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeInt24sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int24s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt24sWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeInt24sWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -696,25 +601,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// Int32s, a id.
+// Int32s, a NSNumber.
+- (void)readAttributeInt32sWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeInt32sWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeInt32sWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int32s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt32sWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeInt32sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int32s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt32sWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeInt32sWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -734,25 +634,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// Int40s, a id.
+// Int40s, a NSNumber.
+- (void)readAttributeInt40sWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeInt40sWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeInt40sWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int40s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt40sWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeInt40sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int40s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt40sWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeInt40sWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -772,25 +667,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// Int48s, a id.
+// Int48s, a NSNumber.
+- (void)readAttributeInt48sWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeInt48sWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeInt48sWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int48s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt48sWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeInt48sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int48s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt48sWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeInt48sWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -810,25 +700,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// Int56s, a id.
+// Int56s, a NSNumber.
+- (void)readAttributeInt56sWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeInt56sWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeInt56sWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int56s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt56sWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeInt56sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int56s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt56sWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeInt56sWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -848,25 +733,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// Int64s, a id.
+// Int64s, a NSNumber.
+- (void)readAttributeInt64sWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeInt64sWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeInt64sWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int64s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt64sWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeInt64sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Int64s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeInt64sWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeInt64sWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -886,25 +766,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// Enum8, a id.
+// Enum8, a NSNumber.
+- (void)readAttributeEnum8WithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeEnum8WithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeEnum8WithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Enum8"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeEnum8WithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeEnum8WithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Enum8"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeEnum8WithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeEnum8WithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -924,25 +799,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// Enum16, a id.
+// Enum16, a NSNumber.
+- (void)readAttributeEnum16WithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeEnum16WithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeEnum16WithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Enum16"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeEnum16WithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeEnum16WithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Enum16"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeEnum16WithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeEnum16WithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -962,25 +832,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// FloatSingle, a id.
+// FloatSingle, a NSNumber.
+- (void)readAttributeFloatSingleWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeFloatSingleWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeFloatSingleWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"FloatSingle"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeFloatSingleWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeFloatSingleWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"FloatSingle"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeFloatSingleWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeFloatSingleWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -1000,25 +865,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// FloatDouble, a id.
+// FloatDouble, a NSNumber.
+- (void)readAttributeFloatDoubleWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeFloatDoubleWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeFloatDoubleWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"FloatDouble"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeFloatDoubleWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeFloatDoubleWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"FloatDouble"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeFloatDoubleWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeFloatDoubleWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -1038,25 +898,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// OctetString, a id.
+// OctetString, a NSData.
+- (void)readAttributeOctetStringWithCompletionHandler:(void (^)(NSData * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeOctetStringWithCompletion:(void (^)(NSData * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeOctetStringWithValue:(NSData * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"OctetString"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeOctetStringWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeOctetStringWithValue:(NSData * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"OctetString"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeOctetStringWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeOctetStringWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -1076,25 +931,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// ListInt8u, a id.
+// ListInt8u, a NSArray.
+- (void)readAttributeListInt8uWithCompletionHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeListInt8uWithCompletion:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeListInt8uWithValue:(NSArray * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"ListInt8u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeListInt8uWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeListInt8uWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"ListInt8u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeListInt8uWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeListInt8uWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -1114,25 +964,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// ListOctetString, a id.
+// ListOctetString, a NSArray.
+- (void)readAttributeListOctetStringWithCompletionHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeListOctetStringWithCompletion:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeListOctetStringWithValue:(NSArray * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"ListOctetString"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeListOctetStringWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeListOctetStringWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"ListOctetString"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeListOctetStringWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeListOctetStringWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -1152,25 +997,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// ListStructOctetString, a id.
+// ListStructOctetString, a NSArray.
+- (void)readAttributeListStructOctetStringWithCompletionHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeListStructOctetStringWithCompletion:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeListStructOctetStringWithValue:(NSArray * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"ListStructOctetString"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeListStructOctetStringWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeListStructOctetStringWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"ListStructOctetString"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeListStructOctetStringWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeListStructOctetStringWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -1190,25 +1030,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// LongOctetString, a id.
+// LongOctetString, a NSData.
+- (void)readAttributeLongOctetStringWithCompletionHandler:(void (^)(NSData * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeLongOctetStringWithCompletion:(void (^)(NSData * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeLongOctetStringWithValue:(NSData * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"LongOctetString"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeLongOctetStringWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeLongOctetStringWithValue:(NSData * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"LongOctetString"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeLongOctetStringWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeLongOctetStringWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -1228,25 +1063,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// CharString, a id.
+// CharString, a NSString.
+- (void)readAttributeCharStringWithCompletionHandler:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeCharStringWithCompletion:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeCharStringWithValue:(NSString * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"CharString"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeCharStringWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeCharStringWithValue:(NSString * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"CharString"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeCharStringWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeCharStringWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -1266,25 +1096,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// LongCharString, a id.
+// LongCharString, a NSString.
+- (void)readAttributeLongCharStringWithCompletionHandler:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeLongCharStringWithCompletion:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeLongCharStringWithValue:(NSString * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"LongCharString"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeLongCharStringWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeLongCharStringWithValue:(NSString * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"LongCharString"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeLongCharStringWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeLongCharStringWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -1304,25 +1129,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// EpochUs, a id.
+// EpochUs, a NSNumber.
+- (void)readAttributeEpochUsWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeEpochUsWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeEpochUsWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"EpochUs"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeEpochUsWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeEpochUsWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"EpochUs"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeEpochUsWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeEpochUsWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -1342,25 +1162,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// EpochS, a id.
+// EpochS, a NSNumber.
+- (void)readAttributeEpochSWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeEpochSWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeEpochSWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"EpochS"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeEpochSWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeEpochSWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"EpochS"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeEpochSWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeEpochSWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -1380,25 +1195,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// VendorId, a id.
+// VendorId, a NSNumber.
+- (void)readAttributeVendorIdWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeVendorIdWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeVendorIdWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"VendorId"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeVendorIdWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeVendorIdWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"VendorId"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeVendorIdWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeVendorIdWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -1418,25 +1228,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// ListNullablesAndOptionalsStruct, a id.
+// ListNullablesAndOptionalsStruct, a NSArray.
+- (void)readAttributeListNullablesAndOptionalsStructWithCompletionHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeListNullablesAndOptionalsStructWithCompletion:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeListNullablesAndOptionalsStructWithValue:(NSArray * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"ListNullablesAndOptionalsStruct"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeListNullablesAndOptionalsStructWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeListNullablesAndOptionalsStructWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"ListNullablesAndOptionalsStruct"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeListNullablesAndOptionalsStructWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeListNullablesAndOptionalsStructWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -1456,25 +1261,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// EnumAttr, a id.
+// EnumAttr, a NSNumber.
+- (void)readAttributeEnumAttrWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeEnumAttrWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeEnumAttrWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"EnumAttr"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeEnumAttrWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeEnumAttrWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"EnumAttr"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeEnumAttrWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeEnumAttrWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -1494,25 +1294,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// StructAttr, a id.
+// StructAttr, a MTRTestClusterClusterSimpleStruct.
+- (void)readAttributeStructAttrWithCompletionHandler:(void (^)(MTRTestClusterClusterSimpleStruct * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeStructAttrWithCompletion:(void (^)(MTRUnitTestingClusterSimpleStruct * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeStructAttrWithValue:(MTRTestClusterClusterSimpleStruct * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"StructAttr"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeStructAttrWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeStructAttrWithValue:(MTRTestClusterClusterSimpleStruct * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"StructAttr"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeStructAttrWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeStructAttrWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -1532,25 +1327,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// RangeRestrictedInt8u, a id.
+// RangeRestrictedInt8u, a NSNumber.
+- (void)readAttributeRangeRestrictedInt8uWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeRangeRestrictedInt8uWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeRangeRestrictedInt8uWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"RangeRestrictedInt8u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeRangeRestrictedInt8uWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeRangeRestrictedInt8uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"RangeRestrictedInt8u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeRangeRestrictedInt8uWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeRangeRestrictedInt8uWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -1570,25 +1360,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// RangeRestrictedInt8s, a id.
+// RangeRestrictedInt8s, a NSNumber.
+- (void)readAttributeRangeRestrictedInt8sWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeRangeRestrictedInt8sWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeRangeRestrictedInt8sWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"RangeRestrictedInt8s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeRangeRestrictedInt8sWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeRangeRestrictedInt8sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"RangeRestrictedInt8s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeRangeRestrictedInt8sWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeRangeRestrictedInt8sWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -1608,25 +1393,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// RangeRestrictedInt16u, a id.
+// RangeRestrictedInt16u, a NSNumber.
+- (void)readAttributeRangeRestrictedInt16uWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeRangeRestrictedInt16uWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeRangeRestrictedInt16uWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"RangeRestrictedInt16u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeRangeRestrictedInt16uWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeRangeRestrictedInt16uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"RangeRestrictedInt16u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeRangeRestrictedInt16uWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeRangeRestrictedInt16uWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -1646,25 +1426,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// RangeRestrictedInt16s, a id.
+// RangeRestrictedInt16s, a NSNumber.
+- (void)readAttributeRangeRestrictedInt16sWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeRangeRestrictedInt16sWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeRangeRestrictedInt16sWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"RangeRestrictedInt16s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeRangeRestrictedInt16sWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeRangeRestrictedInt16sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"RangeRestrictedInt16s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeRangeRestrictedInt16sWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeRangeRestrictedInt16sWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -1684,25 +1459,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// ListLongOctetString, a id.
+// ListLongOctetString, a NSArray.
+- (void)readAttributeListLongOctetStringWithCompletionHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeListLongOctetStringWithCompletion:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeListLongOctetStringWithValue:(NSArray * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"ListLongOctetString"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeListLongOctetStringWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeListLongOctetStringWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"ListLongOctetString"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeListLongOctetStringWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeListLongOctetStringWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -1722,25 +1492,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// ListFabricScoped, a id.
+// ListFabricScoped, a NSArray.
+- (void)readAttributeListFabricScopedWithParams:(MTRReadParams * _Nullable)params completionHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeListFabricScopedWithParams:params completion:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeListFabricScopedWithValue:(NSArray * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"ListFabricScoped"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeListFabricScopedWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeListFabricScopedWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"ListFabricScoped"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeListFabricScopedWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeListFabricScopedWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -1760,25 +1525,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// TimedWriteBoolean, a id.
+// TimedWriteBoolean, a NSNumber.
+- (void)readAttributeTimedWriteBooleanWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeTimedWriteBooleanWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeTimedWriteBooleanWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"TimedWriteBoolean"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeTimedWriteBooleanWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeTimedWriteBooleanWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"TimedWriteBoolean"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeTimedWriteBooleanWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeTimedWriteBooleanWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -1798,25 +1558,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// GeneralErrorBoolean, a id.
+// GeneralErrorBoolean, a NSNumber.
+- (void)readAttributeGeneralErrorBooleanWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeGeneralErrorBooleanWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeGeneralErrorBooleanWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"GeneralErrorBoolean"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeGeneralErrorBooleanWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeGeneralErrorBooleanWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"GeneralErrorBoolean"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeGeneralErrorBooleanWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeGeneralErrorBooleanWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -1836,25 +1591,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// ClusterErrorBoolean, a id.
+// ClusterErrorBoolean, a NSNumber.
+- (void)readAttributeClusterErrorBooleanWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeClusterErrorBooleanWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeClusterErrorBooleanWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"ClusterErrorBoolean"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeClusterErrorBooleanWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeClusterErrorBooleanWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"ClusterErrorBoolean"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeClusterErrorBooleanWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeClusterErrorBooleanWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -1874,25 +1624,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// Unsupported, a id.
+// Unsupported, a NSNumber.
+- (void)readAttributeUnsupportedWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeUnsupportedWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeUnsupportedWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Unsupported"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeUnsupportedWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeUnsupportedWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Unsupported"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeUnsupportedWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeUnsupportedWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -1912,25 +1657,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableBoolean, a id.
+// NullableBoolean, a NSNumber.
+- (void)readAttributeNullableBooleanWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableBooleanWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableBooleanWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableBoolean"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableBooleanWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableBooleanWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableBoolean"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableBooleanWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableBooleanWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -1950,25 +1690,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableBitmap8, a id.
+// NullableBitmap8, a NSNumber.
+- (void)readAttributeNullableBitmap8WithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableBitmap8WithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableBitmap8WithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableBitmap8"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableBitmap8WithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableBitmap8WithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableBitmap8"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableBitmap8WithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableBitmap8WithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -1988,25 +1723,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableBitmap16, a id.
+// NullableBitmap16, a NSNumber.
+- (void)readAttributeNullableBitmap16WithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableBitmap16WithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableBitmap16WithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableBitmap16"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableBitmap16WithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableBitmap16WithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableBitmap16"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableBitmap16WithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableBitmap16WithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -2026,25 +1756,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableBitmap32, a id.
+// NullableBitmap32, a NSNumber.
+- (void)readAttributeNullableBitmap32WithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableBitmap32WithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableBitmap32WithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableBitmap32"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableBitmap32WithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableBitmap32WithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableBitmap32"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableBitmap32WithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableBitmap32WithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -2064,25 +1789,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableBitmap64, a id.
+// NullableBitmap64, a NSNumber.
+- (void)readAttributeNullableBitmap64WithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableBitmap64WithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableBitmap64WithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableBitmap64"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableBitmap64WithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableBitmap64WithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableBitmap64"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableBitmap64WithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableBitmap64WithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -2102,25 +1822,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableInt8u, a id.
+// NullableInt8u, a NSNumber.
+- (void)readAttributeNullableInt8uWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableInt8uWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableInt8uWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt8u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt8uWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableInt8uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt8u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt8uWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableInt8uWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -2140,25 +1855,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableInt16u, a id.
+// NullableInt16u, a NSNumber.
+- (void)readAttributeNullableInt16uWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableInt16uWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableInt16uWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt16u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt16uWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableInt16uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt16u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt16uWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableInt16uWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -2178,25 +1888,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableInt24u, a id.
+// NullableInt24u, a NSNumber.
+- (void)readAttributeNullableInt24uWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableInt24uWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableInt24uWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt24u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt24uWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableInt24uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt24u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt24uWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableInt24uWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -2216,25 +1921,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableInt32u, a id.
+// NullableInt32u, a NSNumber.
+- (void)readAttributeNullableInt32uWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableInt32uWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableInt32uWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt32u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt32uWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableInt32uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt32u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt32uWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableInt32uWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -2254,25 +1954,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableInt40u, a id.
+// NullableInt40u, a NSNumber.
+- (void)readAttributeNullableInt40uWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableInt40uWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableInt40uWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt40u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt40uWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableInt40uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt40u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt40uWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableInt40uWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -2292,25 +1987,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableInt48u, a id.
+// NullableInt48u, a NSNumber.
+- (void)readAttributeNullableInt48uWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableInt48uWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableInt48uWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt48u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt48uWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableInt48uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt48u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt48uWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableInt48uWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -2330,25 +2020,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableInt56u, a id.
+// NullableInt56u, a NSNumber.
+- (void)readAttributeNullableInt56uWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableInt56uWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableInt56uWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt56u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt56uWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableInt56uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt56u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt56uWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableInt56uWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -2368,25 +2053,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableInt64u, a id.
+// NullableInt64u, a NSNumber.
+- (void)readAttributeNullableInt64uWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableInt64uWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableInt64uWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt64u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt64uWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableInt64uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt64u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt64uWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableInt64uWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -2406,25 +2086,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableInt8s, a id.
+// NullableInt8s, a NSNumber.
+- (void)readAttributeNullableInt8sWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableInt8sWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableInt8sWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt8s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt8sWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableInt8sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt8s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt8sWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableInt8sWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -2444,25 +2119,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableInt16s, a id.
+// NullableInt16s, a NSNumber.
+- (void)readAttributeNullableInt16sWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableInt16sWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableInt16sWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt16s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt16sWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableInt16sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt16s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt16sWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableInt16sWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -2482,25 +2152,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableInt24s, a id.
+// NullableInt24s, a NSNumber.
+- (void)readAttributeNullableInt24sWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableInt24sWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableInt24sWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt24s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt24sWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableInt24sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt24s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt24sWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableInt24sWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -2520,25 +2185,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableInt32s, a id.
+// NullableInt32s, a NSNumber.
+- (void)readAttributeNullableInt32sWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableInt32sWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableInt32sWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt32s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt32sWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableInt32sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt32s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt32sWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableInt32sWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -2558,25 +2218,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableInt40s, a id.
+// NullableInt40s, a NSNumber.
+- (void)readAttributeNullableInt40sWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableInt40sWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableInt40sWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt40s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt40sWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableInt40sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt40s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt40sWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableInt40sWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -2596,25 +2251,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableInt48s, a id.
+// NullableInt48s, a NSNumber.
+- (void)readAttributeNullableInt48sWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableInt48sWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableInt48sWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt48s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt48sWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableInt48sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt48s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt48sWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableInt48sWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -2634,25 +2284,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableInt56s, a id.
+// NullableInt56s, a NSNumber.
+- (void)readAttributeNullableInt56sWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableInt56sWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableInt56sWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt56s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt56sWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableInt56sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt56s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt56sWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableInt56sWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -2672,25 +2317,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableInt64s, a id.
+// NullableInt64s, a NSNumber.
+- (void)readAttributeNullableInt64sWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableInt64sWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableInt64sWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt64s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt64sWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableInt64sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableInt64s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableInt64sWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableInt64sWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -2710,25 +2350,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableEnum8, a id.
+// NullableEnum8, a NSNumber.
+- (void)readAttributeNullableEnum8WithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableEnum8WithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableEnum8WithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableEnum8"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableEnum8WithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableEnum8WithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableEnum8"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableEnum8WithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableEnum8WithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -2748,25 +2383,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableEnum16, a id.
+// NullableEnum16, a NSNumber.
+- (void)readAttributeNullableEnum16WithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableEnum16WithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableEnum16WithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableEnum16"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableEnum16WithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableEnum16WithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableEnum16"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableEnum16WithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableEnum16WithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -2786,25 +2416,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableFloatSingle, a id.
+// NullableFloatSingle, a NSNumber.
+- (void)readAttributeNullableFloatSingleWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableFloatSingleWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableFloatSingleWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableFloatSingle"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableFloatSingleWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableFloatSingleWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableFloatSingle"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableFloatSingleWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableFloatSingleWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -2824,25 +2449,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableFloatDouble, a id.
+// NullableFloatDouble, a NSNumber.
+- (void)readAttributeNullableFloatDoubleWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableFloatDoubleWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableFloatDoubleWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableFloatDouble"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableFloatDoubleWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableFloatDoubleWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableFloatDouble"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableFloatDoubleWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableFloatDoubleWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -2862,25 +2482,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableOctetString, a id.
+// NullableOctetString, a NSData.
+- (void)readAttributeNullableOctetStringWithCompletionHandler:(void (^)(NSData * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableOctetStringWithCompletion:(void (^)(NSData * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableOctetStringWithValue:(NSData * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableOctetString"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableOctetStringWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableOctetStringWithValue:(NSData * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableOctetString"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableOctetStringWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableOctetStringWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -2900,25 +2515,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableCharString, a id.
+// NullableCharString, a NSString.
+- (void)readAttributeNullableCharStringWithCompletionHandler:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableCharStringWithCompletion:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableCharStringWithValue:(NSString * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableCharString"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableCharStringWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableCharStringWithValue:(NSString * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableCharString"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableCharStringWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableCharStringWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -2938,25 +2548,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableEnumAttr, a id.
+// NullableEnumAttr, a NSNumber.
+- (void)readAttributeNullableEnumAttrWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableEnumAttrWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableEnumAttrWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableEnumAttr"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableEnumAttrWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableEnumAttrWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableEnumAttr"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableEnumAttrWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableEnumAttrWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -2976,25 +2581,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableStruct, a id.
+// NullableStruct, a MTRTestClusterClusterSimpleStruct.
+- (void)readAttributeNullableStructWithCompletionHandler:(void (^)(MTRTestClusterClusterSimpleStruct * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableStructWithCompletion:(void (^)(MTRUnitTestingClusterSimpleStruct * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableStructWithValue:(MTRTestClusterClusterSimpleStruct * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableStruct"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableStructWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableStructWithValue:(MTRTestClusterClusterSimpleStruct * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableStruct"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableStructWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableStructWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -3014,25 +2614,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableRangeRestrictedInt8u, a id.
+// NullableRangeRestrictedInt8u, a NSNumber.
+- (void)readAttributeNullableRangeRestrictedInt8uWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableRangeRestrictedInt8uWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableRangeRestrictedInt8uWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableRangeRestrictedInt8u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableRangeRestrictedInt8uWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableRangeRestrictedInt8uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableRangeRestrictedInt8u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableRangeRestrictedInt8uWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableRangeRestrictedInt8uWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -3052,25 +2647,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableRangeRestrictedInt8s, a id.
+// NullableRangeRestrictedInt8s, a NSNumber.
+- (void)readAttributeNullableRangeRestrictedInt8sWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableRangeRestrictedInt8sWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableRangeRestrictedInt8sWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableRangeRestrictedInt8s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableRangeRestrictedInt8sWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableRangeRestrictedInt8sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableRangeRestrictedInt8s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableRangeRestrictedInt8sWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableRangeRestrictedInt8sWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -3090,25 +2680,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableRangeRestrictedInt16u, a id.
+// NullableRangeRestrictedInt16u, a NSNumber.
+- (void)readAttributeNullableRangeRestrictedInt16uWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableRangeRestrictedInt16uWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableRangeRestrictedInt16uWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableRangeRestrictedInt16u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableRangeRestrictedInt16uWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableRangeRestrictedInt16uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableRangeRestrictedInt16u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableRangeRestrictedInt16uWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableRangeRestrictedInt16uWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -3128,25 +2713,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NullableRangeRestrictedInt16s, a id.
+// NullableRangeRestrictedInt16s, a NSNumber.
+- (void)readAttributeNullableRangeRestrictedInt16sWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNullableRangeRestrictedInt16sWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNullableRangeRestrictedInt16sWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableRangeRestrictedInt16s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableRangeRestrictedInt16sWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNullableRangeRestrictedInt16sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NullableRangeRestrictedInt16s"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNullableRangeRestrictedInt16sWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNullableRangeRestrictedInt16sWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -3166,25 +2746,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// WriteOnlyInt8u, a id.
+// WriteOnlyInt8u, a NSNumber.
+- (void)readAttributeWriteOnlyInt8uWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeWriteOnlyInt8uWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeWriteOnlyInt8uWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"WriteOnlyInt8u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeWriteOnlyInt8uWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeWriteOnlyInt8uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"WriteOnlyInt8u"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeWriteOnlyInt8uWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeWriteOnlyInt8uWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -3204,7 +2779,12 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// GeneratedCommandList, a id.
+// GeneratedCommandList, a NSArray.
+- (void)readAttributeGeneratedCommandListWithCompletionHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeGeneratedCommandListWithCompletion:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)subscribeAttributeGeneratedCommandListWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
                                                        params:(MTRSubscribeParams * _Nullable)params
                                       subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
@@ -3222,7 +2802,12 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// AcceptedCommandList, a id.
+// AcceptedCommandList, a NSArray.
+- (void)readAttributeAcceptedCommandListWithCompletionHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeAcceptedCommandListWithCompletion:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)subscribeAttributeAcceptedCommandListWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
                                                       params:(MTRSubscribeParams * _Nullable)params
                                      subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
@@ -3240,7 +2825,12 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// AttributeList, a id.
+// AttributeList, a NSArray.
+- (void)readAttributeAttributeListWithCompletionHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeAttributeListWithCompletion:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)subscribeAttributeAttributeListWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
                                                 params:(MTRSubscribeParams * _Nullable)params
                                subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
@@ -3258,7 +2848,12 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// FeatureMap, a id.
+// FeatureMap, a NSNumber.
+- (void)readAttributeFeatureMapWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeFeatureMapWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)subscribeAttributeFeatureMapWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
                                              params:(MTRSubscribeParams * _Nullable)params
                             subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
@@ -3276,7 +2871,12 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// ClusterRevision, a id.
+// ClusterRevision, a NSNumber.
+- (void)readAttributeClusterRevisionWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeClusterRevisionWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)subscribeAttributeClusterRevisionWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
                                                   params:(MTRSubscribeParams * _Nullable)params
                                  subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
@@ -3536,617 +3136,6 @@ static NSError *charon_port_no_node_error(void)
 - (void)testEmitTestFabricScopedEventRequestWithParams:(MTRTestClusterClusterTestEmitTestFabricScopedEventRequestParams *)params completionHandler:(void (^)(MTRTestClusterClusterTestEmitTestFabricScopedEventResponseParams * data, NSError * error))completionHandler
 {
     (void)params;
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeBooleanWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeBitmap8WithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeBitmap16WithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeBitmap32WithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeBitmap64WithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeInt8uWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeInt16uWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeInt24uWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeInt32uWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeInt40uWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeInt48uWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeInt56uWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeInt64uWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeInt8sWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeInt16sWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeInt24sWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeInt32sWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeInt40sWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeInt48sWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeInt56sWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeInt64sWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeEnum8WithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeEnum16WithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeFloatSingleWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeFloatDoubleWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeOctetStringWithCompletionHandler:(void (^)(NSData * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeListInt8uWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeListOctetStringWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeListStructOctetStringWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeLongOctetStringWithCompletionHandler:(void (^)(NSData * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeCharStringWithCompletionHandler:(void (^)(NSString * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeLongCharStringWithCompletionHandler:(void (^)(NSString * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeEpochUsWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeEpochSWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeVendorIdWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeListNullablesAndOptionalsStructWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeEnumAttrWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeStructAttrWithCompletionHandler:(void (^)(MTRTestClusterClusterSimpleStruct * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeRangeRestrictedInt8uWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeRangeRestrictedInt8sWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeRangeRestrictedInt16uWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeRangeRestrictedInt16sWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeListLongOctetStringWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-// readAttributeListFabricScoped. It answers: there is nothing to reach on a release with no fabric.
-- (void)readAttributeListFabricScopedWithParams:(MTRReadParams *)params completionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
-{
-    (void)params;
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeTimedWriteBooleanWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeGeneralErrorBooleanWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeClusterErrorBooleanWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeUnsupportedWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableBooleanWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableBitmap8WithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableBitmap16WithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableBitmap32WithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableBitmap64WithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableInt8uWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableInt16uWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableInt24uWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableInt32uWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableInt40uWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableInt48uWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableInt56uWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableInt64uWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableInt8sWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableInt16sWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableInt24sWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableInt32sWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableInt40sWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableInt48sWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableInt56sWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableInt64sWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableEnum8WithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableEnum16WithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableFloatSingleWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableFloatDoubleWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableOctetStringWithCompletionHandler:(void (^)(NSData * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableCharStringWithCompletionHandler:(void (^)(NSString * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableEnumAttrWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableStructWithCompletionHandler:(void (^)(MTRTestClusterClusterSimpleStruct * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableRangeRestrictedInt8uWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableRangeRestrictedInt8sWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableRangeRestrictedInt16uWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNullableRangeRestrictedInt16sWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeWriteOnlyInt8uWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeGeneratedCommandListWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeAcceptedCommandListWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeAttributeListWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeFeatureMapWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeClusterRevisionWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
     if (completionHandler) {
         completionHandler(nil, nil);
     }

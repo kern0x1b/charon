@@ -106,7 +106,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"Boolean"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeBooleanWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -153,7 +157,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"Bitmap8"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeBitmap8WithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -200,7 +208,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"Bitmap16"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeBitmap16WithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -247,7 +259,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"Bitmap32"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeBitmap32WithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -294,7 +310,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"Bitmap64"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeBitmap64WithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -341,7 +361,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"Int8u"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeInt8uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -388,7 +412,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"Int16u"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeInt16uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -435,7 +463,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"Int24u"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeInt24uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -482,7 +514,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"Int32u"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeInt32uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -529,7 +565,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"Int40u"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeInt40uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -576,7 +616,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"Int48u"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeInt48uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -623,7 +667,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"Int56u"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeInt56uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -670,7 +718,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"Int64u"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeInt64uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -717,7 +769,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"Int8s"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeInt8sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -764,7 +820,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"Int16s"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeInt16sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -811,7 +871,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"Int24s"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeInt24sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -858,7 +922,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"Int32s"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeInt32sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -905,7 +973,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"Int40s"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeInt40sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -952,7 +1024,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"Int48s"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeInt48sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -999,7 +1075,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"Int56s"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeInt56sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -1046,7 +1126,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"Int64s"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeInt64sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -1093,7 +1177,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"Enum8"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeEnum8WithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -1140,7 +1228,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"Enum16"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeEnum16WithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -1187,7 +1279,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"FloatSingle"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeFloatSingleWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -1234,7 +1330,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"FloatDouble"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeFloatDoubleWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -1281,7 +1381,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"OctetString"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeOctetStringWithValue:(NSData * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -1328,7 +1432,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"ListInt8u"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeListInt8uWithValue:(NSArray * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -1375,7 +1483,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"ListOctetString"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeListOctetStringWithValue:(NSArray * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -1422,7 +1534,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"ListStructOctetString"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeListStructOctetStringWithValue:(NSArray * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -1469,7 +1585,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"LongOctetString"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeLongOctetStringWithValue:(NSData * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -1516,7 +1636,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"CharString"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeCharStringWithValue:(NSString * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -1563,7 +1687,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"LongCharString"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeLongCharStringWithValue:(NSString * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -1610,7 +1738,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"EpochUs"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeEpochUsWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -1657,7 +1789,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"EpochS"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeEpochSWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -1704,7 +1840,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"VendorId"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeVendorIdWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -1751,7 +1891,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"ListNullablesAndOptionalsStruct"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeListNullablesAndOptionalsStructWithValue:(NSArray * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -1798,7 +1942,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"EnumAttr"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeEnumAttrWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -1845,7 +1993,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"StructAttr"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeStructAttrWithValue:(MTRUnitTestingClusterSimpleStruct * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -1892,7 +2044,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"RangeRestrictedInt8u"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeRangeRestrictedInt8uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -1939,7 +2095,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"RangeRestrictedInt8s"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeRangeRestrictedInt8sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -1986,7 +2146,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"RangeRestrictedInt16u"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeRangeRestrictedInt16uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -2033,7 +2197,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"RangeRestrictedInt16s"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeRangeRestrictedInt16sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -2080,7 +2248,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"ListLongOctetString"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeListLongOctetStringWithValue:(NSArray * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -2128,7 +2300,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"ListFabricScoped"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeListFabricScopedWithValue:(NSArray * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -2175,7 +2351,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"TimedWriteBoolean"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeTimedWriteBooleanWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -2222,7 +2402,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"GeneralErrorBoolean"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeGeneralErrorBooleanWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -2269,7 +2453,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"ClusterErrorBoolean"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeClusterErrorBooleanWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -2316,7 +2504,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"GlobalEnum"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeGlobalEnumWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -2363,7 +2555,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"GlobalStruct"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeGlobalStructWithValue:(MTRDataTypeTestGlobalStruct * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -2410,7 +2606,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"UnsupportedAttributeRequiringAdminPrivilege"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeUnsupportedAttributeRequiringAdminPrivilegeWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -2457,7 +2657,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"Unsupported"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeUnsupportedWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -2504,7 +2708,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"ReadFailureCode"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeReadFailureCodeWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -2551,7 +2759,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"FailureInt32U"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeFailureInt32UWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -2598,7 +2810,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableBoolean"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableBooleanWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -2645,7 +2861,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableBitmap8"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableBitmap8WithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -2692,7 +2912,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableBitmap16"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableBitmap16WithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -2739,7 +2963,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableBitmap32"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableBitmap32WithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -2786,7 +3014,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableBitmap64"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableBitmap64WithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -2833,7 +3065,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableInt8u"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableInt8uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -2880,7 +3116,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableInt16u"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableInt16uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -2927,7 +3167,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableInt24u"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableInt24uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -2974,7 +3218,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableInt32u"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableInt32uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -3021,7 +3269,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableInt40u"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableInt40uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -3068,7 +3320,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableInt48u"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableInt48uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -3115,7 +3371,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableInt56u"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableInt56uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -3162,7 +3422,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableInt64u"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableInt64uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -3209,7 +3473,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableInt8s"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableInt8sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -3256,7 +3524,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableInt16s"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableInt16sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -3303,7 +3575,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableInt24s"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableInt24sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -3350,7 +3626,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableInt32s"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableInt32sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -3397,7 +3677,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableInt40s"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableInt40sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -3444,7 +3728,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableInt48s"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableInt48sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -3491,7 +3779,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableInt56s"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableInt56sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -3538,7 +3830,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableInt64s"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableInt64sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -3585,7 +3881,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableEnum8"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableEnum8WithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -3632,7 +3932,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableEnum16"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableEnum16WithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -3679,7 +3983,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableFloatSingle"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableFloatSingleWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -3726,7 +4034,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableFloatDouble"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableFloatDoubleWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -3773,7 +4085,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableOctetString"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableOctetStringWithValue:(NSData * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -3820,7 +4136,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableCharString"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableCharStringWithValue:(NSString * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -3867,7 +4187,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableEnumAttr"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableEnumAttrWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -3914,7 +4238,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableStruct"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableStructWithValue:(MTRUnitTestingClusterSimpleStruct * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -3961,7 +4289,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableRangeRestrictedInt8u"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableRangeRestrictedInt8uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -4008,7 +4340,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableRangeRestrictedInt8s"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableRangeRestrictedInt8sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -4055,7 +4391,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableRangeRestrictedInt16u"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableRangeRestrictedInt16uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -4102,7 +4442,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableRangeRestrictedInt16s"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableRangeRestrictedInt16sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -4149,7 +4493,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"WriteOnlyInt8u"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeWriteOnlyInt8uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -4196,7 +4544,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableGlobalEnum"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableGlobalEnumWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -4243,7 +4595,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"NullableGlobalStruct"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeNullableGlobalStructWithValue:(MTRDataTypeTestGlobalStruct * _Nullable)value completion:(MTRStatusCompletion)completion
@@ -4290,7 +4646,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"GeneratedCommandList"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeGeneratedCommandListWithParams:(MTRSubscribeParams *)params
@@ -4317,7 +4677,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"AcceptedCommandList"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeAcceptedCommandListWithParams:(MTRSubscribeParams *)params
@@ -4344,7 +4708,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"AttributeList"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeAttributeListWithParams:(MTRSubscribeParams *)params
@@ -4371,7 +4739,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"FeatureMap"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeFeatureMapWithParams:(MTRSubscribeParams *)params
@@ -4398,7 +4770,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"ClusterRevision"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeClusterRevisionWithParams:(MTRSubscribeParams *)params
@@ -4425,7 +4801,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"MeiInt8u"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeMeiInt8uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion

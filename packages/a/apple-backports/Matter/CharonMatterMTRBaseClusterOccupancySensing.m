@@ -119,7 +119,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"Occupancy"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeOccupancyWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeOccupancyWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)subscribeAttributeOccupancyWithParams:(MTRSubscribeParams *)params
@@ -163,7 +172,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"OccupancySensorType"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeOccupancySensorTypeWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeOccupancySensorTypeWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)subscribeAttributeOccupancySensorTypeWithParams:(MTRSubscribeParams *)params
@@ -207,7 +225,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"OccupancySensorTypeBitmap"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeOccupancySensorTypeBitmapWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeOccupancySensorTypeBitmapWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)subscribeAttributeOccupancySensorTypeBitmapWithParams:(MTRSubscribeParams *)params
@@ -251,7 +278,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"HoldTime"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributeHoldTimeWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -298,7 +329,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"HoldTimeLimits"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)subscribeAttributeHoldTimeLimitsWithParams:(MTRSubscribeParams *)params
@@ -325,7 +360,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"PIROccupiedToUnoccupiedDelay"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributePIROccupiedToUnoccupiedDelayWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -372,7 +411,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"PIRUnoccupiedToOccupiedDelay"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributePIRUnoccupiedToOccupiedDelayWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -419,7 +462,11 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"PIRUnoccupiedToOccupiedThreshold"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
 }
 
 - (void)writeAttributePIRUnoccupiedToOccupiedThresholdWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -466,7 +513,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"UltrasonicOccupiedToUnoccupiedDelay"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeUltrasonicOccupiedToUnoccupiedDelayWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeUltrasonicOccupiedToUnoccupiedDelayWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)writeAttributeUltrasonicOccupiedToUnoccupiedDelayWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -491,22 +547,12 @@ static NSError *charon_port_no_node_error(void)
 
 - (void)writeAttributeUltrasonicOccupiedToUnoccupiedDelayWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"UltrasonicOccupiedToUnoccupiedDelay"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeUltrasonicOccupiedToUnoccupiedDelayWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeUltrasonicOccupiedToUnoccupiedDelayWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"UltrasonicOccupiedToUnoccupiedDelay"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeUltrasonicOccupiedToUnoccupiedDelayWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeUltrasonicOccupiedToUnoccupiedDelayWithParams:(MTRSubscribeParams *)params
@@ -550,7 +596,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"UltrasonicUnoccupiedToOccupiedDelay"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeUltrasonicUnoccupiedToOccupiedDelayWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeUltrasonicUnoccupiedToOccupiedDelayWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)writeAttributeUltrasonicUnoccupiedToOccupiedDelayWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -575,22 +630,12 @@ static NSError *charon_port_no_node_error(void)
 
 - (void)writeAttributeUltrasonicUnoccupiedToOccupiedDelayWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"UltrasonicUnoccupiedToOccupiedDelay"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeUltrasonicUnoccupiedToOccupiedDelayWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeUltrasonicUnoccupiedToOccupiedDelayWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"UltrasonicUnoccupiedToOccupiedDelay"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeUltrasonicUnoccupiedToOccupiedDelayWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeUltrasonicUnoccupiedToOccupiedDelayWithParams:(MTRSubscribeParams *)params
@@ -634,7 +679,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"UltrasonicUnoccupiedToOccupiedThreshold"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeUltrasonicUnoccupiedToOccupiedThresholdWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeUltrasonicUnoccupiedToOccupiedThresholdWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)writeAttributeUltrasonicUnoccupiedToOccupiedThresholdWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -659,22 +713,12 @@ static NSError *charon_port_no_node_error(void)
 
 - (void)writeAttributeUltrasonicUnoccupiedToOccupiedThresholdWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"UltrasonicUnoccupiedToOccupiedThreshold"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeUltrasonicUnoccupiedToOccupiedThresholdWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeUltrasonicUnoccupiedToOccupiedThresholdWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"UltrasonicUnoccupiedToOccupiedThreshold"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeUltrasonicUnoccupiedToOccupiedThresholdWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeUltrasonicUnoccupiedToOccupiedThresholdWithParams:(MTRSubscribeParams *)params
@@ -718,7 +762,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"PhysicalContactOccupiedToUnoccupiedDelay"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributePhysicalContactOccupiedToUnoccupiedDelayWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributePhysicalContactOccupiedToUnoccupiedDelayWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)writeAttributePhysicalContactOccupiedToUnoccupiedDelayWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -743,22 +796,12 @@ static NSError *charon_port_no_node_error(void)
 
 - (void)writeAttributePhysicalContactOccupiedToUnoccupiedDelayWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"PhysicalContactOccupiedToUnoccupiedDelay"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributePhysicalContactOccupiedToUnoccupiedDelayWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributePhysicalContactOccupiedToUnoccupiedDelayWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"PhysicalContactOccupiedToUnoccupiedDelay"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributePhysicalContactOccupiedToUnoccupiedDelayWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributePhysicalContactOccupiedToUnoccupiedDelayWithParams:(MTRSubscribeParams *)params
@@ -802,7 +845,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"PhysicalContactUnoccupiedToOccupiedDelay"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributePhysicalContactUnoccupiedToOccupiedDelayWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributePhysicalContactUnoccupiedToOccupiedDelayWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)writeAttributePhysicalContactUnoccupiedToOccupiedDelayWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -827,22 +879,12 @@ static NSError *charon_port_no_node_error(void)
 
 - (void)writeAttributePhysicalContactUnoccupiedToOccupiedDelayWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"PhysicalContactUnoccupiedToOccupiedDelay"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributePhysicalContactUnoccupiedToOccupiedDelayWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributePhysicalContactUnoccupiedToOccupiedDelayWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"PhysicalContactUnoccupiedToOccupiedDelay"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributePhysicalContactUnoccupiedToOccupiedDelayWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributePhysicalContactUnoccupiedToOccupiedDelayWithParams:(MTRSubscribeParams *)params
@@ -886,7 +928,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"PhysicalContactUnoccupiedToOccupiedThreshold"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributePhysicalContactUnoccupiedToOccupiedThresholdWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributePhysicalContactUnoccupiedToOccupiedThresholdWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)writeAttributePhysicalContactUnoccupiedToOccupiedThresholdWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
@@ -911,22 +962,12 @@ static NSError *charon_port_no_node_error(void)
 
 - (void)writeAttributePhysicalContactUnoccupiedToOccupiedThresholdWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"PhysicalContactUnoccupiedToOccupiedThreshold"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributePhysicalContactUnoccupiedToOccupiedThresholdWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributePhysicalContactUnoccupiedToOccupiedThresholdWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"PhysicalContactUnoccupiedToOccupiedThreshold"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributePhysicalContactUnoccupiedToOccupiedThresholdWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributePhysicalContactUnoccupiedToOccupiedThresholdWithParams:(MTRSubscribeParams *)params
@@ -970,7 +1011,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"GeneratedCommandList"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeGeneratedCommandListWithCompletionHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeGeneratedCommandListWithCompletion:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)subscribeAttributeGeneratedCommandListWithParams:(MTRSubscribeParams *)params
@@ -1014,7 +1064,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"AcceptedCommandList"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeAcceptedCommandListWithCompletionHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeAcceptedCommandListWithCompletion:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)subscribeAttributeAcceptedCommandListWithParams:(MTRSubscribeParams *)params
@@ -1058,7 +1117,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"AttributeList"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeAttributeListWithCompletionHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeAttributeListWithCompletion:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)subscribeAttributeAttributeListWithParams:(MTRSubscribeParams *)params
@@ -1102,7 +1170,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"FeatureMap"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeFeatureMapWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeFeatureMapWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)subscribeAttributeFeatureMapWithParams:(MTRSubscribeParams *)params
@@ -1146,7 +1223,16 @@ static NSError *charon_port_no_node_error(void)
     @synchronized (self) {
         written = charon_port_values(&_charon_values)[@"ClusterRevision"];
     }
-    completion(written, nil);
+    if (written) {
+        completion(written, nil);
+    } else {
+        completion(nil, charon_port_no_node_error());
+    }
+}
+
+- (void)readAttributeClusterRevisionWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeClusterRevisionWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
 }
 
 - (void)subscribeAttributeClusterRevisionWithParams:(MTRSubscribeParams *)params
@@ -1180,7 +1266,23 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// PirOccupiedToUnoccupiedDelay, a id.
+// PirOccupiedToUnoccupiedDelay, a NSNumber.
+- (void)readAttributePirOccupiedToUnoccupiedDelayWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    if (!completionHandler) {
+        return;
+    }
+    id written;
+    @synchronized (self) {
+        written = charon_port_values(&_charon_values)[@"PirOccupiedToUnoccupiedDelay"];
+    }
+    if (written) {
+        completionHandler(written, nil);
+    } else {
+        completionHandler(nil, charon_port_no_node_error());
+    }
+}
+
 - (void)writeAttributePirOccupiedToUnoccupiedDelayWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
     @synchronized (self) {
@@ -1218,7 +1320,23 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// PirUnoccupiedToOccupiedDelay, a id.
+// PirUnoccupiedToOccupiedDelay, a NSNumber.
+- (void)readAttributePirUnoccupiedToOccupiedDelayWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    if (!completionHandler) {
+        return;
+    }
+    id written;
+    @synchronized (self) {
+        written = charon_port_values(&_charon_values)[@"PirUnoccupiedToOccupiedDelay"];
+    }
+    if (written) {
+        completionHandler(written, nil);
+    } else {
+        completionHandler(nil, charon_port_no_node_error());
+    }
+}
+
 - (void)writeAttributePirUnoccupiedToOccupiedDelayWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
     @synchronized (self) {
@@ -1256,7 +1374,23 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// PirUnoccupiedToOccupiedThreshold, a id.
+// PirUnoccupiedToOccupiedThreshold, a NSNumber.
+- (void)readAttributePirUnoccupiedToOccupiedThresholdWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    if (!completionHandler) {
+        return;
+    }
+    id written;
+    @synchronized (self) {
+        written = charon_port_values(&_charon_values)[@"PirUnoccupiedToOccupiedThreshold"];
+    }
+    if (written) {
+        completionHandler(written, nil);
+    } else {
+        completionHandler(nil, charon_port_no_node_error());
+    }
+}
+
 - (void)writeAttributePirUnoccupiedToOccupiedThresholdWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
     @synchronized (self) {
@@ -1558,125 +1692,6 @@ static NSError *charon_port_no_node_error(void)
                    ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         completion(nil, charon_port_no_node_error());
     });
-}
-
-- (void)readAttributeOccupancyWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeOccupancySensorTypeWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeOccupancySensorTypeBitmapWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributePirOccupiedToUnoccupiedDelayWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributePirUnoccupiedToOccupiedDelayWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributePirUnoccupiedToOccupiedThresholdWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeUltrasonicOccupiedToUnoccupiedDelayWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeUltrasonicUnoccupiedToOccupiedDelayWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeUltrasonicUnoccupiedToOccupiedThresholdWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributePhysicalContactOccupiedToUnoccupiedDelayWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributePhysicalContactUnoccupiedToOccupiedDelayWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributePhysicalContactUnoccupiedToOccupiedThresholdWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeGeneratedCommandListWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeAcceptedCommandListWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeAttributeListWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeFeatureMapWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeClusterRevisionWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
 }
 
 @end

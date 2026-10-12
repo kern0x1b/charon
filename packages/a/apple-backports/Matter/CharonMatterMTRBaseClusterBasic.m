@@ -39,21 +39,6 @@
 }
 @end
 
-// The values the caller has written, by attribute name: this object's own table, made on
-// first use. The caller holds the object's lock for the whole of its access, so this takes
-// none. It is not keyed by the class: two objects of one class are two tables, as they are
-// two sets of state in the framework.
-// It takes the table by its address, not the object: naming the class here would not compile
-// where the host SDK marks that class unavailable, as it does for some commodity and closure
-// clusters.
-static NSMutableDictionary *charon_port_values(NSMutableDictionary * __strong *values)
-{
-    if (!*values) {
-        *values = [NSMutableDictionary dictionary];
-    }
-    return *values;
-}
-
 // The error a member that would need a node answers, on a release with no Matter
 // hardware: there is no controller to ask and no node to read from. It is the framework's
 // own answer to a cached read on a container with no cache and to any request on a
@@ -88,7 +73,12 @@ static NSError *charon_port_no_node_error(void)
     return self;
 }
 
-// DataModelRevision, a id.
+// DataModelRevision, a NSNumber.
+- (void)readAttributeDataModelRevisionWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeDataModelRevisionWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)subscribeAttributeDataModelRevisionWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
                                                     params:(MTRSubscribeParams * _Nullable)params
                                    subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
@@ -106,7 +96,12 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// VendorName, a id.
+// VendorName, a NSString.
+- (void)readAttributeVendorNameWithCompletionHandler:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeVendorNameWithCompletion:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)subscribeAttributeVendorNameWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
                                              params:(MTRSubscribeParams * _Nullable)params
                             subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
@@ -124,7 +119,12 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// VendorID, a id.
+// VendorID, a NSNumber.
+- (void)readAttributeVendorIDWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeVendorIDWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)subscribeAttributeVendorIDWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
                                            params:(MTRSubscribeParams * _Nullable)params
                           subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
@@ -142,7 +142,12 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// ProductName, a id.
+// ProductName, a NSString.
+- (void)readAttributeProductNameWithCompletionHandler:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeProductNameWithCompletion:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)subscribeAttributeProductNameWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
                                               params:(MTRSubscribeParams * _Nullable)params
                              subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
@@ -160,7 +165,12 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// ProductID, a id.
+// ProductID, a NSNumber.
+- (void)readAttributeProductIDWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeProductIDWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)subscribeAttributeProductIDWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
                                             params:(MTRSubscribeParams * _Nullable)params
                            subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
@@ -178,25 +188,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// NodeLabel, a id.
+// NodeLabel, a NSString.
+- (void)readAttributeNodeLabelWithCompletionHandler:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeNodeLabelWithCompletion:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeNodeLabelWithValue:(NSString * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NodeLabel"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNodeLabelWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeNodeLabelWithValue:(NSString * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"NodeLabel"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeNodeLabelWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeNodeLabelWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -216,25 +221,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// Location, a id.
+// Location, a NSString.
+- (void)readAttributeLocationWithCompletionHandler:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeLocationWithCompletion:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeLocationWithValue:(NSString * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Location"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeLocationWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeLocationWithValue:(NSString * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"Location"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeLocationWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeLocationWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -254,7 +254,12 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// HardwareVersion, a id.
+// HardwareVersion, a NSNumber.
+- (void)readAttributeHardwareVersionWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeHardwareVersionWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)subscribeAttributeHardwareVersionWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
                                                   params:(MTRSubscribeParams * _Nullable)params
                                  subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
@@ -272,7 +277,12 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// HardwareVersionString, a id.
+// HardwareVersionString, a NSString.
+- (void)readAttributeHardwareVersionStringWithCompletionHandler:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeHardwareVersionStringWithCompletion:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)subscribeAttributeHardwareVersionStringWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
                                                         params:(MTRSubscribeParams * _Nullable)params
                                        subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
@@ -290,7 +300,12 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// SoftwareVersion, a id.
+// SoftwareVersion, a NSNumber.
+- (void)readAttributeSoftwareVersionWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeSoftwareVersionWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)subscribeAttributeSoftwareVersionWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
                                                   params:(MTRSubscribeParams * _Nullable)params
                                  subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
@@ -308,7 +323,12 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// SoftwareVersionString, a id.
+// SoftwareVersionString, a NSString.
+- (void)readAttributeSoftwareVersionStringWithCompletionHandler:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeSoftwareVersionStringWithCompletion:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)subscribeAttributeSoftwareVersionStringWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
                                                         params:(MTRSubscribeParams * _Nullable)params
                                        subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
@@ -326,7 +346,12 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// ManufacturingDate, a id.
+// ManufacturingDate, a NSString.
+- (void)readAttributeManufacturingDateWithCompletionHandler:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeManufacturingDateWithCompletion:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)subscribeAttributeManufacturingDateWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
                                                     params:(MTRSubscribeParams * _Nullable)params
                                    subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
@@ -344,7 +369,12 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// PartNumber, a id.
+// PartNumber, a NSString.
+- (void)readAttributePartNumberWithCompletionHandler:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributePartNumberWithCompletion:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)subscribeAttributePartNumberWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
                                              params:(MTRSubscribeParams * _Nullable)params
                             subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
@@ -362,7 +392,12 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// ProductURL, a id.
+// ProductURL, a NSString.
+- (void)readAttributeProductURLWithCompletionHandler:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeProductURLWithCompletion:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)subscribeAttributeProductURLWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
                                              params:(MTRSubscribeParams * _Nullable)params
                             subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
@@ -380,7 +415,12 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// ProductLabel, a id.
+// ProductLabel, a NSString.
+- (void)readAttributeProductLabelWithCompletionHandler:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeProductLabelWithCompletion:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)subscribeAttributeProductLabelWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
                                                params:(MTRSubscribeParams * _Nullable)params
                               subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
@@ -398,7 +438,12 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// SerialNumber, a id.
+// SerialNumber, a NSString.
+- (void)readAttributeSerialNumberWithCompletionHandler:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeSerialNumberWithCompletion:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)subscribeAttributeSerialNumberWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
                                                params:(MTRSubscribeParams * _Nullable)params
                               subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
@@ -416,25 +461,20 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// LocalConfigDisabled, a id.
+// LocalConfigDisabled, a NSNumber.
+- (void)readAttributeLocalConfigDisabledWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeLocalConfigDisabledWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)writeAttributeLocalConfigDisabledWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"LocalConfigDisabled"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeLocalConfigDisabledWithValue:value completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)writeAttributeLocalConfigDisabledWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    @synchronized (self) {
-        charon_port_values(&_charon_values)[@"LocalConfigDisabled"] = value;
-    }
-    if (completionHandler) {
-        completionHandler(nil);
-    }
+    [self writeAttributeLocalConfigDisabledWithValue:value params:params completion:(MTRStatusCompletion)completionHandler];
 }
 
 - (void)subscribeAttributeLocalConfigDisabledWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
@@ -454,7 +494,12 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// Reachable, a id.
+// Reachable, a NSNumber.
+- (void)readAttributeReachableWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeReachableWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)subscribeAttributeReachableWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
                                             params:(MTRSubscribeParams * _Nullable)params
                            subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
@@ -472,7 +517,12 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// UniqueID, a id.
+// UniqueID, a NSString.
+- (void)readAttributeUniqueIDWithCompletionHandler:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeUniqueIDWithCompletion:(void (^)(NSString * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)subscribeAttributeUniqueIDWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
                                            params:(MTRSubscribeParams * _Nullable)params
                           subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
@@ -490,7 +540,12 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// CapabilityMinima, a id.
+// CapabilityMinima, a MTRBasicClusterCapabilityMinimaStruct.
+- (void)readAttributeCapabilityMinimaWithCompletionHandler:(void (^)(MTRBasicClusterCapabilityMinimaStruct * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeCapabilityMinimaWithCompletion:(void (^)(MTRBasicInformationClusterCapabilityMinimaStruct * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)subscribeAttributeCapabilityMinimaWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
                                                    params:(MTRSubscribeParams * _Nullable)params
                                   subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
@@ -508,7 +563,12 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// GeneratedCommandList, a id.
+// GeneratedCommandList, a NSArray.
+- (void)readAttributeGeneratedCommandListWithCompletionHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeGeneratedCommandListWithCompletion:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)subscribeAttributeGeneratedCommandListWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
                                                        params:(MTRSubscribeParams * _Nullable)params
                                       subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
@@ -526,7 +586,12 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// AcceptedCommandList, a id.
+// AcceptedCommandList, a NSArray.
+- (void)readAttributeAcceptedCommandListWithCompletionHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeAcceptedCommandListWithCompletion:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)subscribeAttributeAcceptedCommandListWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
                                                       params:(MTRSubscribeParams * _Nullable)params
                                      subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
@@ -544,7 +609,12 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// AttributeList, a id.
+// AttributeList, a NSArray.
+- (void)readAttributeAttributeListWithCompletionHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeAttributeListWithCompletion:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)subscribeAttributeAttributeListWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
                                                 params:(MTRSubscribeParams * _Nullable)params
                                subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
@@ -562,7 +632,12 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// FeatureMap, a id.
+// FeatureMap, a NSNumber.
+- (void)readAttributeFeatureMapWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeFeatureMapWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)subscribeAttributeFeatureMapWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
                                              params:(MTRSubscribeParams * _Nullable)params
                             subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
@@ -580,7 +655,12 @@ static NSError *charon_port_no_node_error(void)
     }
 }
 
-// ClusterRevision, a id.
+// ClusterRevision, a NSNumber.
+- (void)readAttributeClusterRevisionWithCompletionHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler
+{
+    [self readAttributeClusterRevisionWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completionHandler];
+}
+
 - (void)subscribeAttributeClusterRevisionWithMinInterval:(NSNumber * _Nonnull)minInterval maxInterval:(NSNumber * _Nonnull)maxInterval
                                                   params:(MTRSubscribeParams * _Nullable)params
                                  subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablishedHandler
@@ -611,181 +691,6 @@ static NSError *charon_port_no_node_error(void)
     (void)params;
     if (completionHandler) {
         completionHandler(nil);
-    }
-}
-
-- (void)readAttributeDataModelRevisionWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeVendorNameWithCompletionHandler:(void (^)(NSString * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeVendorIDWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeProductNameWithCompletionHandler:(void (^)(NSString * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeProductIDWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeNodeLabelWithCompletionHandler:(void (^)(NSString * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeLocationWithCompletionHandler:(void (^)(NSString * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeHardwareVersionWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeHardwareVersionStringWithCompletionHandler:(void (^)(NSString * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeSoftwareVersionWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeSoftwareVersionStringWithCompletionHandler:(void (^)(NSString * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeManufacturingDateWithCompletionHandler:(void (^)(NSString * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributePartNumberWithCompletionHandler:(void (^)(NSString * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeProductURLWithCompletionHandler:(void (^)(NSString * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeProductLabelWithCompletionHandler:(void (^)(NSString * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeSerialNumberWithCompletionHandler:(void (^)(NSString * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeLocalConfigDisabledWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeReachableWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeUniqueIDWithCompletionHandler:(void (^)(NSString * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeCapabilityMinimaWithCompletionHandler:(void (^)(MTRBasicClusterCapabilityMinimaStruct * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeGeneratedCommandListWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeAcceptedCommandListWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeAttributeListWithCompletionHandler:(void (^)(NSArray * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeFeatureMapWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
-    }
-}
-
-- (void)readAttributeClusterRevisionWithCompletionHandler:(void (^)(NSNumber * value, NSError * error))completionHandler
-{
-    if (completionHandler) {
-        completionHandler(nil, nil);
     }
 }
 

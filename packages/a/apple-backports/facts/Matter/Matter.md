@@ -480,6 +480,34 @@ holds `0` in it after `[[X alloc] init]` while `initWithMinInterval:maxInterval:
 (`MTRCluster.mm:189`) - so the reading is the category's initialiser and not the other one. That is
 `MTRSubscribeParams`' three readings, and `MTRReadParams`' two are `MTRCluster.mm:120-121`.
 
+**The designated initialiser, measured on the host (tests/backports/host/matter/params-init.m).** SDK 26.2
+declares `initWithMinInterval:maxInterval:` (`MTRCluster.h:213`, "there are no default values") and the port's
+class did not have it. The host, asked with (1, 10): `minInterval` 1 and `maxInterval` 10 as given,
+`reportEventsUrgently`, `replaceExistingSubscriptions` and `resubscribeAutomatically` YES; `keepPreviousSubscriptions`
+0 and `autoResubscribe` 1 read through those. (10, 1) is stored as given, and (nil, nil) stores nil and raises
+nothing. A copy is a different object, and its intervals are the same objects as the original's. A mutable string
+passed as `minInterval` is stored as a COPY, not as the argument. The body the port emits is the framework's
+(`MTRCluster.mm:184-194`): `[super init]`, the three flags YES, and `[minInterval copy]`, `[maxInterval copy]`.
+`keepPreviousSubscriptions` is the NEGATION of `replaceExistingSubscriptions`, through its getter and its setter: with
+replace YES it reads 0, and setting it YES makes replace NO (measured on the host, Round 6 probe; the fresh row of
+tests/backports/host/matter/host-measurements.tsv says NSNumber(0)). `autoResubscribe` is a straight `boolValue` of
+`resubscribeAutomatically`, the setter taking 7 as YES. The generator's NEGATED_ALIASES carries the negation.
+
+**The readers a stub answered, measured on the host (tests/backports/host/matterdifferential/behaviour.m: the
+`assert.unwritten reader, completionHandler: spelling` and `own.handler write then read` rows).** On a controller
+that has been shut down, every request ends in the framework's own no-node answer, MTRErrorDomain/6 "Invalid object
+state.", delivered on the queue given. That holds for an unwritten reader of Identify (IdentifyTime), OnOff (OnOff)
+and LevelControl (OnLevel) in both spellings, for an unwritten TestCluster Boolean through both readers, and for a
+write then a read of TestCluster Boolean through either writer and either reader: the framework's read after the
+write answers the same error, so nothing the write did is visible on the framework's side. The port keeps the value
+written in the object's table and answers it; with nothing written it answers the no-node error, and no reader answers
+nothing. `readAttributeBooleanWithParams:completion:` is not declared for TestCluster Boolean, so the params reader has
+no measurement for Boolean. The WithParams family is measured on TestCluster ListFabricScoped
+(`assert.unwritten reader, WithParams: completionHandler: spelling`, behaviour.sh's fifth entry): the framework's
+answer for an unwritten reader, with nil params, is the same no-node error. The port's deprecated spelling forwards to
+the current `readAttributeListFabricScopedWithParams:completion:`, which MTRBaseClusterUnitTesting declares.
+(The probe the Round 6 measurements came from is not committed; the rows above make the same calls.)
+
 **A store does not decide the value where the two SDKs declare the member differently, and the 10 that do
 not are named.** The framework's own rule is *a nonnull member gets the zero, a nullable one nil* - the
 generated sources write one line per member, `@(0)` for the nonnull ones and `nil` for the nullable ones -

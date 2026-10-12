@@ -71,8 +71,12 @@ ANNOTATIONS = ("MTR_AVAILABLE(", "API_AVAILABLE(",
                "MTR_DEPRECATED(", "API_DEPRECATED(",
                "MTR_UNAVAILABLE(", "API_UNAVAILABLE(")
 INTERFACE = re.compile(r"^@interface\s+(\w+)\s*(?::\s*(\w+))?\s*$")
+# The deprecated `WithCompletionHandler:` spelling is the same reader under its old name, and it is READ here, with
+# the current spelling. It was not: READ ended at `WithCompletion:`, so the spelling fell through to COMMAND_NOPARAMS
+# and was emitted as a parameterless command whose body was `completionHandler(nil, nil)`: 879 readers over 57 objects,
+# and the TestCluster object's 86 of them, answered nothing at all.
 READ = re.compile(
-    r"^-\s*\(void\)readAttribute(\w+)WithCompletion:\(void \(\^\)\(([\w ]+?)\s*\*\s*_Nullable value")
+    r"^-\s*\(void\)readAttribute(\w+)WithCompletion(?:Handler)?:\(void \(\^\)\(([\w ]+?)\s*\*\s*_Nullable value")
 WRITE = re.compile(
     r"^-\s*\(void\)writeAttribute(\w+)WithValue:\([\w ]+?\s*\*\s*_?\w*\)value")
 SUBSCRIBE = re.compile(r"^-\s*\(void\)subscribeAttribute(\w+)With(?:Params|MinInterval):")
@@ -85,7 +89,7 @@ COMMAND = re.compile(r"^-\s*\(void\)(\w+)WithParams:\(\w+\s*\*\s*_?\w*\)params\s
 # patterns and separate bodies rather than a wider one.
 READ_PARAMS = re.compile(
     r"^-\s*\(void\)readAttribute(\w+)WithParams:\(\w+\s*\*\s*_Nullable\)params\s*"
-    r"completion:\(void \(\^\)\(([\w ]+?)\s*\*\s*_Nullable value")
+    r"completion(?:Handler)?:\(void \(\^\)\(([\w ]+?)\s*\*\s*_Nullable value")
 # Any argument type after the colon, not a bare identifier: the framework spells this command's
 # completion type two ways, `MTRStatusCompletion` and a `void (^)(...)` block, and a pattern that
 # demanded an identifier matched only the first - `logoutWithCompletion:` and not `launchAppWithCompletion:`,
@@ -355,6 +359,9 @@ PORT_OWNED_CLASS = []
 # superclass's own object imports the header that declares its queue and may be emitted before its alias.
 QUEUE_SUPERS = set()
 QUEUE_HEADER = "CharonMatterQueueStorage.h"
+# The void declarations, by selector, that each cluster and its superclass give (declared_selectors()), filled by main()
+# with QUEUE_SUPERS, for current_spelling(): a deprecated spelling forwards only to a current one the chain declares.
+DECLARED_SELECTORS = {}
 
 
 def inherits_queue_of(initialisers):
@@ -1352,12 +1359,17 @@ def record_head(found, head, member, announcement=""):
     """
     if head is not None:
         name = head.group(1)
+        # The list is split on the commas too: `<NSCopying, NSSecureCoding>` read as whitespace alone gives the token
+        # `NSCopying,`, which is not NSCopying, so MTRSubscribeParams, MTRReadParams and MTRWriteParams - and the other
+        # seven declarations with two or more protocols that include NSCopying - were read as not copyable (the copy the
+        # port's objects did not have, measured by params-init.m against the framework's copy).
+        protocols = (head.group(3) or "").replace(",", " ").split()
         found.setdefault(name, {"super": head.group(2),
-                                "protocols": (head.group(3) or "").split(),
+                                "protocols": protocols,
                                 "properties": [], "methods": [], "categories": {},
                                 "deprecated_for": None})
         found[name]["super"] = head.group(2)
-        found[name]["protocols"] = (head.group(3) or "").split()
+        found[name]["protocols"] = protocols
         if announcement:
             said = DEPRECATED_FOR.search(announcement)
             if said:
@@ -1908,6 +1920,13 @@ CONVERTERS = {
                                  "%s = [%s unsignedLongLongValue];"),
 }
 
+# The members whose host value is the NEGATION of the storage they share, so CONVERTERS' plain conversion is wrong for
+# them. MTRSubscribeParams' keepPreviousSubscriptions is 0 where replaceExistingSubscriptions is YES, through the getter
+# and through the setter (params-init.m and the r6 probe; host-measurements.tsv has the fresh row NSNumber(0)).
+NEGATED_ALIASES = {
+    "keepPreviousSubscriptions": ("[NSNumber numberWithBool:!%s]", "%s = ![%s boolValue];"),
+}
+
 
 def member_accessors(prop, slots, ivar_type=None):
     """The getter and setter of one category-declared property, written out.
@@ -1926,6 +1945,8 @@ def member_accessors(prop, slots, ivar_type=None):
     attributes = prop["attributes"]
     words = [each.strip() for each in attributes.split(",")]
     conversion = CONVERTERS.get((bare_type(prop), ivar_type or bare_type(prop)))
+    if conversion and prop["name"] in NEGATED_ALIASES:
+        conversion = NEGATED_ALIASES[prop["name"]]
     read = conversion[0] % slot if conversion else slot
     if conversion:
         stored = "    %s\n" % (conversion[1] % (slot, prop["name"]))
@@ -2384,6 +2405,30 @@ def alias_member_accessors(prop, pairs):
     return out
 
 
+# The designated initialiser the SDK declares on a params class, with the framework's own body for it. Declared at
+# MTRCluster.h:213 ("Must provide a minInterval and maxInterval; there are no default values"). The body is the
+# framework's (MTRCluster.mm:184-194, read from the source tree), and tests/backports/host/matter/params-init.m measures
+# it on the host: the stored intervals are COPIES of the arguments, nothing is refused (min above max, nil), and the
+# three flags the (Deprecated) -init does not set are YES. That -init stores reportEventsUrgently NO, minInterval @(1)
+# and maxInterval @(0), so the two differ on those three members.
+DESIGNATED_INITS = {
+    "MTRSubscribeParams": (
+        "- (instancetype)initWithMinInterval:(NSNumber *)minInterval maxInterval:(NSNumber *)maxInterval\n"
+        "{\n"
+        "    self = [super init];\n"
+        "    if (!self) {\n"
+        "        return nil;\n"
+        "    }\n"
+        "    _reportEventsUrgently = YES;\n"
+        "    _replaceExistingSubscriptions = YES;\n"
+        "    _resubscribeAutomatically = YES;\n"
+        "    _minInterval = [minInterval copy];\n"
+        "    _maxInterval = [maxInterval copy];\n"
+        "    return self;\n"
+        "}\n\n"),
+}
+
+
 def emit_params(path, name, info, version, buckets, copying, counts, host=None, unavailable=()):
     """One object for one plain data class: its members, and a copy that is independent.
 
@@ -2581,6 +2626,8 @@ def emit_params(path, name, info, version, buckets, copying, counts, host=None, 
             if value:
                 body.append("    %s = %s;\n" % (slots[prop["name"]], value))
         body.append("    return self;\n}\n\n")
+    if name in DESIGNATED_INITS:
+        body.append(DESIGNATED_INITS[name])
     if members:
         body.append("// The properties the SDK declares in a CATEGORY of this class - MTRGroupsClusterAddGroupParams\n"
                     "// carries the old `groupId` beside the `groupID` of its own @interface, and 17 classes\n"
@@ -3096,6 +3143,55 @@ def stored_value(slot, name, kind):
     return "%s = @(%s);" % (slot, name)
 
 
+def declared_selectors(lines, cluster, supers):
+    """The void declarations the header gives the class and its superclass, by selector, every span of each.
+
+    A declaration the class and the superclass both give keeps the class's own, which is the one a call on the object
+    reaches first. Categories are included, as cluster_declarations() includes them.
+    """
+    found = {}
+    for name in (cluster, supers):
+        if not name:
+            continue
+        for line in cluster_spans(lines, name):
+            if line.lstrip().startswith("- (void)"):
+                found.setdefault(selector_of(signature(line)), signature(line))
+    return found
+
+
+def current_spelling(shape, declared):
+    """The declaration of the current spelling of a deprecated completion-handler shape, or None.
+
+    `readAttributeXWithCompletionHandler:` is `readAttributeXWithCompletion:` under its old name, and the framework
+    answers the one by answering the other. A deprecated member forwards to the current one on self, so both spellings
+    reach the table the current member uses. Before this, a TestCluster Boolean written through the deprecated writer
+    went into the subclass's own table and the inherited reader read the superclass's, so it read back as nothing.
+    None when the shape is not a deprecated completion handler, or when the chain declares no current spelling for it,
+    and the shape then reads or writes the object's own table directly.
+    """
+    old = selector_of(shape)
+    for handler in ("CompletionHandler:", "completionHandler:"):
+        if old.endswith(handler):
+            current = old[:-len("Handler:")] + ":"
+            return declared.get(current)
+    return None
+
+
+def forward_call(current, names):
+    """The call that passes a deprecated shape's arguments on to the current declaration, one per selector part.
+
+    The completion is cast to the current declaration's completion type. A deprecated handler names a deprecated class
+    where the current one names the current class (`MTRApplicationBasicClusterApplicationBasicApplication` for
+    `...ApplicationStruct`), and the two block types are not assignable to each other; the cast is the same block.
+    """
+    labels = re.findall(r"(\w+):", selector_of(current))
+    kinds = dict(arguments(current, typed=True))
+    completion, _ = completion_of(current)
+    args = list(names)
+    args[-1] = "(%s)%s" % (kinds[completion].strip(), args[-1])
+    return "[self %s]" % " ".join("%s:%s" % (label, argument) for label, argument in zip(labels, args))
+
+
 def emit(path, cluster, supers, attributes, commands, version, cache_reads, cache, initialisers):
     """The family as one object, and the object IS the class: the release has no such class.
 
@@ -3180,6 +3276,7 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
     # when there is none.
     queue = ("(_charon_queue ?: ((%s *)self)->_charon_queue)" % supers
              if inherits_queue else "_charon_queue")
+    declared = DECLARED_SELECTORS.get(cluster, {})
     for name, info in attributes.items():
         value = info["value"]
         body.append("// %s, a %s.\n" % (name, value))
@@ -3191,14 +3288,22 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
             if completion is None:
                 OFFENDERS.append((cluster, name, "read", s))
                 continue
+            current = current_spelling(s, declared)
+            if current is not None:
+                body.append("%s\n{\n    %s;\n}\n\n" % (s, forward_call(current, names)))
+                continue
+            # What was written, or the no-node error when nothing was: the framework's answer for an object with no node,
+            # measured on the host for these readers (behaviour.m: Identify, OnOff, LevelControl and TestCluster, both
+            # spellings), where a nil answer with no error is not one the framework gives.
             body.append("%s\n{\n"
                         "    if (!%s) {\n        return;\n    }\n"
                         "    id written;\n"
                         "    @synchronized (self) {\n"
                         "        written = charon_port_values(&_charon_values)[@\"%s\"];\n"
                         "    }\n"
-                        "    %s;\n}\n\n"
-                        % (s, completion, name, completion_call(s, completion, "written")))
+                        "    if (written) {\n        %s;\n    } else {\n        %s;\n    }\n}\n\n"
+                        % (s, completion, name, completion_call(s, completion, "written"),
+                           completion_call(s, completion, error="charon_port_no_node_error()")))
         for s in info.get("read_params", []):
             names = arguments_or_note(s, cluster, name, "read_params")
             if names is None:
@@ -3207,6 +3312,13 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
             if completion is None:
                 OFFENDERS.append((cluster, name, "read_params", s))
                 continue
+            # A deprecated spelling forwards to the current one the chain declares, as the plain readers do (see
+            # current_spelling()); otherwise the object's table answers, with the framework's no-node error when
+            # nothing was written.
+            current = current_spelling(s, declared)
+            if current is not None:
+                body.append("%s\n{\n    %s;\n}\n\n" % (s, forward_call(current, names)))
+                continue
             unused = "".join("    (void)%s;\n" % each for each in names[:-1])
             body.append("%s\n{\n%s"
                         "    if (!%s) {\n        return;\n    }\n"
@@ -3214,9 +3326,10 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                         "    @synchronized (self) {\n"
                         "        written = charon_port_values(&_charon_values)[@\"%s\"];\n"
                         "    }\n"
-                        "    %s;\n}\n\n"
+                        "    if (written) {\n        %s;\n    } else {\n        %s;\n    }\n}\n\n"
                         % (s, unused, completion, name,
-                           completion_call(s, completion, "written")))
+                           completion_call(s, completion, "written"),
+                           completion_call(s, completion, error="charon_port_no_node_error()")))
         for s in info.get("read_sync", []):
             # The synchronous read: what the caller wrote into the table, or nil when nothing was written.
             # The framework reads the attribute off the node; a release with no Matter hardware has no node,
@@ -3241,6 +3354,12 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
             completion, rule = completion_of(s)
             if completion is None:
                 OFFENDERS.append((cluster, name, "write", s))
+                continue
+            # A deprecated writer stores through the current one, so the two spellings share the table the current one
+            # writes (see current_spelling()).
+            current = current_spelling(s, declared)
+            if current is not None:
+                body.append("%s\n{\n    %s;\n}\n\n" % (s, forward_call(current, names)))
                 continue
             body.append("%s\n{\n"
                         "    @synchronized (self) {\n"
@@ -3697,6 +3816,7 @@ def main():
         items = cluster_declarations(cluster, cluster_spans(lines, cluster))
         facts_of = facts(items)
         read_once[cluster] = (block, supers, items, facts_of)
+        DECLARED_SELECTORS[cluster] = declared_selectors(lines, cluster, supers)
         if inherits_queue_of(facts_of[4]) and supers:
             QUEUE_SUPERS.add(supers)
     for cluster in arguments.classes:
