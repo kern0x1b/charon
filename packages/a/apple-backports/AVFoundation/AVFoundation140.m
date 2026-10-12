@@ -6,8 +6,8 @@
 // facts/AVFoundation/AVFoundation140.md.
 //
 // AVAssetWriter.preferredOutputSegmentInterval is the target duration of each segment the writer
-// emits, and AVAssetWriter.h:601 says its default is kCMTimeInvalid, "which means that the receiver
-// will choose an appropriate default value", with a positive numeric value driving the segmentation
+// AVAssetWriter.h:601 says its default is kCMTimeInvalid, leaving the writer to pick a suitable
+// value itself, with a positive numeric value driving the segmentation
 // (AVAssetWriter.h:692) and kCMTimeIndefinite leaving it to -flushSegment. 6.1.3's AVAssetWriter
 // carries -movieFragmentInterval and -setMovieFragmentInterval: among its 35 own instance methods, and
 // that is the release's only segment-duration member: -startSessionAtSourceTime: and

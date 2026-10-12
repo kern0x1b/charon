@@ -13,9 +13,9 @@
 #import <CoreMedia/CoreMedia.h>
 
 // What the synchronizer asks of every renderer attached to it when its rate changes. The renderer
-// answers the header's sentence for AVSampleBufferAudioRendererWasFlushedAutomaticallyNotification -
-// "The renderer may also flush enqueued media data when the playback rate of the attached
-// AVSampleBufferRenderSynchronizer is changed" - by discarding the media it holds and posting that
+// answers the header's statement for AVSampleBufferAudioRendererWasFlushedAutomaticallyNotification, that a
+// renderer may flush its enqueued media when the attached synchronizer's playback rate changes. It does so by
+// discarding the media it holds and posting that
 // notification, and only when it held any, which is what this Mac's own renderer answers for a renderer
 // that holds none (measured, tests/backports/host/avf-samplerender11).
 //

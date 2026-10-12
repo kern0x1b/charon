@@ -21,8 +21,8 @@
 //
 //   -addPublisher:            NO when the argument does not conform to AVMetricEventStreamPublisher, and
 //                             NO when the same publisher is already in the set. Both are checkable here
-//                             and both are what "the publisher should be an AVFoundation instance
-//                             conforming to AVMetricEventStreamPublisher" is for.
+//                             and both are what the header's type requirement on the publisher is for,
+//                             namely conformance to AVMetricEventStreamPublisher.
 //   -setSubscriber:queue:     NO when the argument does not conform to AVMetricEventStreamSubscriber,
 //                             and NO when a subscriber is already set. A nil queue is allowed by the
 //                             header and is kept as nil.

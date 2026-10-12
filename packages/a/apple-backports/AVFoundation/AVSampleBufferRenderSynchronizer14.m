@@ -14,8 +14,8 @@
 //   - a host time still in the future: the clock holds the named time and does not move until that host
 //     time arrives, then it runs at the rate. Measured over fifteen 100 ms steps: exactly 200.0000 at
 //     100 ms, 200.0000 at 900 ms, 200.0463 at 1000 ms, 200.5669 at 1500 ms. The header's paragraph says
-//     instead that "the timebase will immediately start running at the requested rate from an earlier time
-//     so that it will reach the requested time at the requested hostTime", and the class on this Mac does
+//     instead the header's paragraph says the timebase starts at once to run at the requested rate, from a
+//     point before the named time, so that it arrives there at the requested host time, and the class on this Mac does
 //     not do that; what it does is what is implemented here.
 //   - an invalid time leaves the clock's time alone and applies the rate; an invalid host time applies the
 //     named time and the rate at once. Measured, both.
@@ -35,8 +35,8 @@
     if (rate < 0.0f)
         [NSException raise:NSInvalidArgumentException
                     format:@"-[AVSampleBufferRenderSynchronizer setRate:time:atHostTime:] was given %f, and a rate must be greater than or equal to 0.0", (double)rate];
-    // "It is a responsibility of the client to ensure that proper time and hostTime is set. This method
-    // will not attempt to validate improper time, hostTime values." (the header) - so nothing is checked
+    // The header leaves it to the client to make sure a proper time and hostTime are set, and that this method
+    // does no validation of improper time or hostTime values (the header) - so nothing is checked
     // here beyond the rate, which every other entry point on this class refuses too.
     [self charon_setRate:rate time:time hostTime:hostTime];
 }

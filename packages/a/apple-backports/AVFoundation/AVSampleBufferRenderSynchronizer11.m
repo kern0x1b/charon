@@ -204,8 +204,8 @@
         return;
     }
     if (CMTIME_IS_VALID(hostTime)) {
-        // A host time already past: "The timebase is adjusted so that its time will be (or was) time when
-        // host time is (or was) hostTime" (the header), so the time now is the named time plus what that rate
+        // A host time already past: the header says the timebase is set so that the named time is what it
+        // reads at the given host time (the header), so the time now is the named time plus what that rate
         // has run on since then - measured: 101.1051 at the first read after a 100/1 named one second ago at
         // rate 1, and 101.6221 six 100 ms steps later. CMTimebaseSetRateAndAnchorTime is the call that takes
         // a time and a rate together, and the elapsed part is arithmetic on the host clock it is anchored to.
@@ -244,8 +244,8 @@
 
 - (NSArray *)renderers
 {
-    // "The list also includes renderers that have been scheduled to be removed but have not yet been
-    // removed", so this hands back a snapshot rather than the live array.
+    // The header notes that the list also holds renderers scheduled for removal that have not yet been
+    // removed, so this hands back a snapshot rather than the live array.
     return [_renderers copy];
 }
 
@@ -257,7 +257,7 @@
         [NSException raise:NSInvalidArgumentException
                     format:@"-[AVSampleBufferRenderSynchronizer addRenderer:] cannot add the same renderer twice"];
     [_renderers addObject:renderer];
-    // "Adds a renderer to begin operating with the synchronizer's timebase" (the header). The renderer's
+    // The header says adding a renderer makes it run on the synchronizer's timebase. The renderer's
     // own timebase becomes a slave of this one, which is how the two clocks stay in step: measured, the
     // renderer's -timebase is a different object from the synchronizer's after -addRenderer:, the two read
     // the same time, and a rate of 0 on the synchronizer stops the renderer's clock as well.
@@ -272,8 +272,8 @@
       completionHandler:(void (^)(BOOL didRemoveRenderer))completionHandler
 {
     if (![_renderers containsObject:renderer]) {
-        // "If the renderer has not been added to this synchronizer, completionHandler will be called and
-        // didRemoveRenderer will be NO" (the header), and the host calls it before returning (measured).
+        // The header says that when the renderer was never added, the completionHandler is still called and
+        // didRemoveRenderer comes back NO (the header), and the host calls it before returning (measured).
         if (completionHandler)
             completionHandler(NO);
         return;

@@ -9,12 +9,11 @@
 
 // +[AVMutableVideoComposition videoCompositionWithPropertiesOfAsset:prototypeInstruction:], iOS 13.
 //
-// The header defines the method as the release's own one-argument factory plus an override: "Also
-// see videoCompositionWithPropertiesOfAsset:. The returned AVVideoComposition will have instructions
-// that respect the spatial properties and timeRanges of the specified asset's video tracks.
-// Anything not pertaining to spatial layout and timing, such as background color for their
-// composition or post-processing behaviors, is eligible to be specified via a prototype
-// instruction."
+// The header defines the method as the release's own one-argument factory plus an override, and names
+// videoCompositionWithPropertiesOfAsset: as its companion. The returned AVVideoComposition is built from
+// instructions honoring the spatial properties and timeRanges of the asset's video tracks. Anything
+// outside spatial layout and timing, such as the background color of a composition or its
+// post-processing behaviors, is left to a prototype instruction the caller supplies.
 //
 // Both halves are separate halves. 6.1.3's AVMutableVideoComposition carries 12 own instance
 // selectors and 3 class selectors, and the class selectors are +videoComposition,
@@ -55,9 +54,9 @@
 
 // AVCaptureVideoPreviewLayer.previewing, iOS 13, whose getter the header declares isPreviewing.
 //
-// The header states when the value changes: "An AVCaptureVideoPreviewLayer begins previewing when
-// -[AVCaptureSession startRunning] is called. While a session is running, you may enable or disable
-// a video preview layer's connection to re-start or stop the flow of video to the layer." That is the
+// The header gives the moment the value changes: a preview layer begins previewing once startRunning
+// has been called on the session, and while the session runs the layer's connection can be turned on or
+// off to start or stop the video reaching the layer. That is the
 // predicate below, and all four members it asks are public API the release carries at both band
 // ends: -session and -connection on the layer (connection is API_AVAILABLE(ios(6.0))), -isRunning on
 // the session and -isEnabled on the connection.

@@ -11,8 +11,8 @@
 //
 // THE TIMESTAMP IS THE WHOLE POINT, and this is the correction to the previous reading of this row:
 // AudioQueueEnqueueBufferWithParameters takes an inStartTime whose mSampleTime is a queue-relative sample
-// time (AudioQueue.h:1189, and its note at :1181, "the sample time is relative to the time the queue
-// started"), so a buffer CAN be scheduled for the time its presentation timestamp names. The mapping is
+// (AudioQueue.h:1189, and its note at :1181, which says the sample time is measured from the instant the queue
+// started), so a buffer CAN be scheduled for the time its presentation timestamp names. The mapping is
 // read off the queue itself at the instant of the enqueue: -AudioQueueGetCurrentTime answers the queue's
 // sample time and the host time of that instant together, and the synchronizer's clock answers its own
 // time, so the frames between two CMTimes follow from the format's sample rate and the clock's rate.
@@ -50,8 +50,8 @@
 
 // A buffer a client has handed over and the queue has not taken yet. The queue is what bounds a renderer,
 // so a renderer whose queue could not be made holds its media here, which is also why
-// -isReadyForMoreMediaData reads NO as soon as there is any: the property is "Indicates the readiness of
-// the receiver to accept more sample buffers" (the header), and a renderer holding media it cannot hand on
+// -isReadyForMoreMediaData reads NO as soon as there is any: the header describes the property as
+// reporting whether the renderer can take another sample buffer (the header), and a renderer holding media it cannot hand on
 // is not ready for more. Measured on the host on a machine with no output device: isReadyForMoreMediaData
 // is YES at init and NO from the first enqueue on, and stays NO.
 @interface CharonAVPendingBuffer : NSObject
@@ -176,15 +176,13 @@ static void charon_queueReturnedBuffer(void *userData, AudioQueueRef queue, Audi
         @synchronized (self) {
             [_pending addObject:pending];
             if (_status == AVQueuedSampleBufferRenderingStatusUnknown)
-                // "A renderer begins with status AVQueuedSampleBufferRenderingStatusUnknown. As sample
-                // buffers are enqueued for rendering using -enqueueSampleBuffer:, the renderer will
-                // transition to either AVQueuedSampleBufferRenderingStatusRendering or ...Failed" (the
-                // header).
+                // The header says a renderer begins with status AVQueuedSampleBufferRenderingStatusUnknown, and that
+                // enqueueing sample buffers with -enqueueSampleBuffer: moves it to the Rendering or Failed status (the header).
                 _status = AVQueuedSampleBufferRenderingStatusRendering;
         }
     }
     // A buffer whose presentation timestamp is not a number has no place on a timeline: the header plays
-    // every buffer at its output presentation timestamp, as interpreted by the timebase. Measured on the
+    // every buffer at the time its output timestamp names on the timebase. Measured on the
     // host for a buffer with no frames: nothing is raised and the status is unchanged.
     @synchronized (self) {
         [self charon_drainPending];
@@ -194,8 +192,8 @@ static void charon_queueReturnedBuffer(void *userData, AudioQueueRef queue, Audi
 
 - (void)flush
 {
-    // "Instructs the receiver to discard pending enqueued sample buffers. Additional sample buffers can be
-    // appended after -flush" (the header). The status is left alone: measured, a flush on a renderer that
+    // The header says this discards the pending enqueued sample buffers, and that more can be appended
+    // after -flush (the header). The status is left alone: measured, a flush on a renderer that
     // holds no media leaves it Unknown, and a renderer that has rendered is still one that has.
     @synchronized (self) {
         if (_queue)
@@ -208,9 +206,9 @@ static void charon_queueReturnedBuffer(void *userData, AudioQueueRef queue, Audi
 
 - (void)flushFromSourceTime:(CMTime)time completionHandler:(void (^)(BOOL flushSucceeded))completionHandler
 {
-    // "Flushes enqueued sample buffers with presentation time stamps later than or equal to the specified
-    // time", and "A flush can fail because the source time was too close to (or earlier than) the current
-    // time" (the header). Measured on the host, on a renderer holding no media, for a time in the past and
+    // The header describes the flush as dropping enqueued buffers with presentation time stamps at or
+    // after the given time, and notes that a flush can fail when the source time is too close to, or before, the current
+    // time (the header). Measured on the host, on a renderer holding no media, for a time in the past and
     // for one in the future alike: the handler is called with YES and nothing is raised, kCMTimeInvalid
     // included.
     @synchronized (self) {
@@ -242,7 +240,7 @@ static void charon_queueReturnedBuffer(void *userData, AudioQueueRef queue, Audi
 
 - (void)requestMediaDataWhenReadyOnQueue:(dispatch_queue_t)queue usingBlock:(void (^)(void))block
 {
-    // "If this method is called multiple times, only the last call is effective" (the header), so the
+    // When this method runs more than once, only the most recent call takes effect (the header), so the
     // previous request is dropped rather than run beside this one.
     @synchronized (self) {
         _requestQueue = queue ? queue : dispatch_get_main_queue();
@@ -253,7 +251,7 @@ static void charon_queueReturnedBuffer(void *userData, AudioQueueRef queue, Audi
 
 - (void)stopRequestingMediaData
 {
-    // "This method may be called from outside the block or from within the block" (the header), which is
+    // The header permits calling it from either side of the block boundary, which is
     // what dropping the block outright is.
     @synchronized (self) {
         _requestBlock = nil;
@@ -271,8 +269,8 @@ static void charon_queueReturnedBuffer(void *userData, AudioQueueRef queue, Audi
         queue = _requestQueue;
         block = _requestBlock;
     }
-    // Every arrival is a dispatch, so the block runs again once the renderer is ready again: "it will
-    // invoke the block again in order to obtain more" (the header). Measured on the host: it runs at all for
+    // Every arrival is a dispatch, so the block runs again once the renderer is ready again, as the header
+    // describes for obtaining more media. Measured on the host: it runs at all for
     // a renderer that holds no media, and stops on -stopRequestingMediaData.
     dispatch_async(queue, ^{
         block();
@@ -298,8 +296,8 @@ static void charon_queueReturnedBuffer(void *userData, AudioQueueRef queue, Audi
 
 - (void)setAudioTimePitchAlgorithm:(AVAudioTimePitchAlgorithm)audioTimePitchAlgorithm
 {
-    // "The default value for applications linked on or after iOS 15.0 or macOS 12.0 is
-    // AVAudioTimePitchAlgorithmTimeDomain", which is what this Mac's own renderer answers for -init
+    // The header gives the default for applications linked on iOS 15.0 or macOS 12.0 and later as
+    // AVAudioTimePitchAlgorithmTimeDomain, which is what this Mac's own renderer answers for -init
     // (measured: "TimeDomain") and the constant the port carries in AVFoundationConstants70.m. The
     // algorithm has no effect on the audio this class renders, because the release carries no time-pitch
     // unit to apply it with; what was measured instead is in facts/AVFoundation/SampleBufferRender11.md.
@@ -351,8 +349,8 @@ static void charon_queueReturnedBuffer(void *userData, AudioQueueRef queue, Audi
 }
 
 // The one thing the synchronizer says to a renderer it drives: its rate changed. The header is exact about
-// which rate changes flush the media and which do not - "no flush will occur for normal pauses (non-zero ->
-// 0.0) and resumes (0.0 -> same non-zero rate as before)" - so a pause and its matching resume are the one
+// which rate changes flush the media and which do not: a normal pause (non-zero to 0.0) and the
+// resume back to the same non-zero rate - so a pause and its matching resume are the one
 // pair that changes nothing, and every other rate change flushes and says so with the notification the
 // header names for it.
 - (void)charon_renderSynchronizerDidChangeRate
@@ -618,8 +616,8 @@ static void charon_queueReturnedBuffer(void *userData, AudioQueueRef queue, Audi
     });
 }
 
-// AudioQueueReset is the release's own "flushes any queued buffer, removes all buffers from previously
-// scheduled use" (AudioQueue.h:1327); AudioQueueFlush on this platform is only the decoder-state reset of a
+    // AudioQueueReset is the release's own reset, which AudioQueue.h:1327 documents as flushing any queued
+    // buffer and dropping every buffer from its scheduled use. AudioQueueFlush on this platform is only the
 // sequence of encoded buffers (AudioQueue.h:1303). A reset that fails is a flush that did not happen, so its
 // status goes where the header says a failed renderer's does: into -error, with the status that says so.
 // The buffers it hands back stay ours - they are ours until -AudioQueueFreeBuffer - and the callbacks it
