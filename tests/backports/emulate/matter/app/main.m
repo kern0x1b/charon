@@ -3,9 +3,9 @@
 //  The Matter port of the library as an application on iOS 6.1.3. The library's classes are looked up by name, so the
 //  build names none of them: each one is the library's own class, loaded by the release from libMatterClusterBackports.
 //  For each cluster asked for, the application creates the instance on a queue it gives, runs the cached read (a class
-//  method, completed on the queue it is given) and the subscribe, and checks each answer. A write and a read of it back
-//  are printed as observations, not checked (see the comment in runCase). It prints each answer and the queue its
-//  completion ran on, and exits with the number of answers that are wrong.
+//  method, completed on the queue it is given) and the subscribe, and checks each answer. A write, then a read of it back
+//  through each reader spelling the cluster has, is checked against the value written (see the comment in runCase). It
+//  prints each answer and the queue its completion ran on, and exits with the number of answers that are wrong.
 //  The device is a stub object: the library has no node behind it, so the port answers with its own no-node error.
 //  Built with CHARON_MATTER_RED, the cached read expects a different error code, which is the red path: it must fail.
 //
@@ -129,13 +129,16 @@ static void runCase(const MatterCase *c)
         check(cachedOnGiven, [NSString stringWithFormat:@"%@ cached read completes on the given queue", name]);
     }
 
-    // The write, then the read of what was written, OBSERVED and not checked. The first run of this app checked them and
-    // found the port's own defect: MTRBaseClusterTestCluster is a MTRBaseClusterUnitTesting, its Boolean write fills its own
-    // table, and the Boolean reader it inherits reads the superclass's table, so the value written is not the value read.
-    // The defect is open (crutches.md, the Round 5 report); the answers are printed, so the run shows them, and the verdict
-    // covers the cached read and the subscribe, which the port answers correctly.
+    // The write, then the read of what was written through each reader the cluster has. The Boolean writer is the deprecated
+    // completionHandler: spelling, and the readers are the current completion: one and the deprecated completionHandler:
+    // one; the port's deprecated members forward to the current ones, so all three share the object's table, and the value
+    // written reads back through each. A cluster with no write is printed and its read-back is not checked.
     SEL writer = NSSelectorFromString([NSString stringWithFormat:@"writeAttribute%@WithValue:completionHandler:", attribute]);
-    SEL reader = NSSelectorFromString([NSString stringWithFormat:@"readAttribute%@WithCompletion:", attribute]);
+    SEL readers[2] = {
+        NSSelectorFromString([NSString stringWithFormat:@"readAttribute%@WithCompletion:", attribute]),
+        NSSelectorFromString([NSString stringWithFormat:@"readAttribute%@WithCompletionHandler:", attribute]),
+    };
+    const char *spellings[2] = {"completion:", "completionHandler:"};
     NSNumber *written = @(c->value);
     if ([cluster respondsToSelector:writer]) {
         dispatch_semaphore_t writeDone = dispatch_semaphore_create(0);
@@ -146,38 +149,42 @@ static void runCase(const MatterCase *c)
             dispatch_semaphore_signal(writeDone);
         });
         waitFor(writeDone);
+        for (int which = 0; which < 2; which++) {
+            if (![cluster respondsToSelector:readers[which]]) {
+                continue;
+            }
+            __block id readBack = @"unset";
+            __block NSError *readError = nil;
+            dispatch_semaphore_t readDone = dispatch_semaphore_create(0);
+            ((void (*)(id, SEL, id))objc_msgSend)(cluster, readers[which], ^(id value, NSError *error) {
+                readBack = value;
+                readError = error;
+                dispatch_semaphore_signal(readDone);
+            });
+            waitFor(readDone);
+            printf("observed: read %s.%s (%s) after the write: value %s, error %s\n", c->name, c->attribute, spellings[which],
+                   readBack ? [[readBack description] UTF8String] : "nil", [describeError(readError) UTF8String]);
+            fflush(stdout);
+            check([readBack isEqual:written], [NSString stringWithFormat:@"%@ reads back the value written, through %s",
+                                               name, spellings[which]]);
+        }
     } else {
         printf("observed: %s has no write of %s\n", c->name, c->attribute);
-        fflush(stdout);
-    }
-    if ([cluster respondsToSelector:reader]) {
-        __block id readBack = @"unset";
-        __block NSError *readError = nil;
-        dispatch_semaphore_t readDone = dispatch_semaphore_create(0);
-        ((void (*)(id, SEL, id))objc_msgSend)(cluster, reader, ^(id value, NSError *error) {
-            readBack = value;
-            readError = error;
-            dispatch_semaphore_signal(readDone);
-        });
-        waitFor(readDone);
-        printf("observed: read %s.%s after the write: value %s, error %s\n", c->name, c->attribute,
-               readBack ? [[readBack description] UTF8String] : "nil", [describeError(readError) UTF8String]);
         fflush(stdout);
     }
 
     // The subscribe: no node, so the report carries the port's no-node error, and it is reported on the given queue.
     SEL subscribe = NSSelectorFromString([NSString stringWithFormat:
         @"subscribeAttribute%@WithParams:subscriptionEstablished:reportHandler:", attribute]);
+    SEL paramsInit = NSSelectorFromString(@"initWithMinInterval:maxInterval:");
     Class paramsClass = NSClassFromString(@"MTRSubscribeParams");
     check(paramsClass != nil, @"the library's MTRSubscribeParams exists");
-    if ([cluster respondsToSelector:subscribe] && paramsClass) {
-        // The port's MTRSubscribeParams has no initWithMinInterval:maxInterval: that SDK 26.2 declares (a recorded gap), so the
-        // params are made with its init and the three values that initialiser sets in the framework (MTRCluster.mm:184) are
-        // written through the properties: the two intervals, and reportEventsUrgently, which the port's init leaves NO.
-        id params = [[paramsClass alloc] init];
-        [params setValue:@1 forKey:@"minInterval"];
-        [params setValue:@10 forKey:@"maxInterval"];
-        [params setValue:@YES forKey:@"reportEventsUrgently"];
+    check(paramsClass != nil && [paramsClass instancesRespondToSelector:paramsInit],
+          @"the library's MTRSubscribeParams has the initialiser SDK 26.2 declares, initWithMinInterval:maxInterval:");
+    if ([cluster respondsToSelector:subscribe] && paramsClass && [paramsClass instancesRespondToSelector:paramsInit]) {
+        // The params are made with the initialiser the SDK declares: the two intervals, and the three flags the framework's
+        // own initialiser sets to YES (MTRCluster.mm:184), reportEventsUrgently among them.
+        id params = [[paramsClass alloc] initWithMinInterval:@1 maxInterval:@10];
         __block int reports = 0;
         __block id reported = @"unset";
         __block NSError *reportedError = nil;

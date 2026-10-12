@@ -106,6 +106,25 @@ static BOOL waitFor(dispatch_semaphore_t semaphore, double seconds)
     return dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(seconds * NSEC_PER_SEC))) == 0;
 }
 
+// One write through the deprecated completionHandler: writer, then one read of the same object: the answer the read
+// gives. The write is waited for, so the read is the one that comes after it.
+static NSString *writeThenRead(id cluster, SEL writer, SEL reader)
+{
+    dispatch_semaphore_t wrote = dispatch_semaphore_create(0);
+    void (^status)(NSError *) = ^(NSError *failure) { dispatch_semaphore_signal(wrote); };
+    ((void (*)(id, SEL, id, id))objc_msgSend)(cluster, writer, @30, status);
+    waitFor(wrote, 5.0);
+    __block NSString *answer = @"no completion (timeout)";
+    dispatch_semaphore_t read = dispatch_semaphore_create(0);
+    void (^completion)(id, NSError *) = ^(id value, NSError *failure) {
+        answer = failure ? describeError(failure) : describeValue(value);
+        dispatch_semaphore_signal(read);
+    };
+    ((void (*)(id, SEL, id))objc_msgSend)(cluster, reader, completion);
+    waitFor(read, 5.0);
+    return answer;
+}
+
 // What one side answers to a subscribe, in either of the header's two shapes. `invoke` makes the call.
 static void observeSubscribe(int side, NSString *shape, dispatch_queue_t queue, NSInteger *calls,
                              void (^invoke)(void (^established)(void), void (^report)(id, NSError *)))
@@ -316,6 +335,36 @@ int main(int argc, const char *argv[])
                 record(side, @"assert.cachedRead.completion ran on the given queue",
                        cachedCalls > 0 && cachedOnQueue == cachedCalls ? @"yes" : @"no");
             }
+            // The deprecated completionHandler: spelling of the reader, on an instance nothing has written. The framework
+            // answers the no-node error there; an answer of nothing at all (nil, nil) is not that answer.
+            SEL handlerReader = NSSelectorFromString([NSString stringWithFormat:
+                @"readAttribute%@WithCompletionHandler:", attribute]);
+            if ([cls instancesRespondToSelector:handlerReader]) {
+                __block NSString *answer = @"no completion (timeout)";
+                dispatch_semaphore_t answered = dispatch_semaphore_create(0);
+                void (^completion)(id, NSError *) = ^(id value, NSError *failure) {
+                    answer = failure ? describeError(failure) : describeValue(value);
+                    dispatch_semaphore_signal(answered);
+                };
+                ((void (*)(id, SEL, id))objc_msgSend)(secondOf[side], handlerReader, completion);
+                waitFor(answered, 5.0);
+                record(side, @"assert.unwritten reader, completionHandler: spelling", answer);
+            }
+            // The WithParams family: the deprecated readAttribute<X>WithParams:completionHandler: on an instance nothing has
+            // written, with nil params (the declaration takes _Nullable). The same answer as the plain reader above.
+            SEL paramsHandlerReader = NSSelectorFromString([NSString stringWithFormat:
+                @"readAttribute%@WithParams:completionHandler:", attribute]);
+            if ([cls instancesRespondToSelector:paramsHandlerReader]) {
+                __block NSString *answer = @"no completion (timeout)";
+                dispatch_semaphore_t answered = dispatch_semaphore_create(0);
+                void (^completion)(id, NSError *) = ^(id value, NSError *failure) {
+                    answer = failure ? describeError(failure) : describeValue(value);
+                    dispatch_semaphore_signal(answered);
+                };
+                ((void (*)(id, SEL, id, id))objc_msgSend)(secondOf[side], paramsHandlerReader, nil, completion);
+                waitFor(answered, 5.0);
+                record(side, @"assert.unwritten reader, WithParams: completionHandler: spelling", answer);
+            }
         }
 
         // What only the port keeps: a stored value (the system keeps none), that a subscribe leaves it
@@ -359,6 +408,21 @@ int main(int argc, const char *argv[])
                 }
                 record(1, @"own.other instance reads", describeValue(readOnce(other)));
             }
+            // The write through the deprecated completionHandler: spelling, then each reader, on a fresh object of each side.
+            // The port hands back the value written; the framework, with no node, answers its no-node error from the read.
+            // Both answers are recorded and only the port's is judged (the verdict below).
+            SEL handlerWriter = NSSelectorFromString([NSString stringWithFormat:
+                @"writeAttribute%@WithValue:completionHandler:", attribute]);
+            SEL handlerRead = NSSelectorFromString([NSString stringWithFormat:
+                @"readAttribute%@WithCompletionHandler:", attribute]);
+            if ([portClass instancesRespondToSelector:handlerWriter] && [portClass instancesRespondToSelector:handlerRead]) {
+                [expectedOwn addObject:@"own.handler write then read"];
+                SEL designatedInit = NSSelectorFromString(@"initWithDevice:endpointID:queue:");
+                for (int which = 0; which < 2; which++) {
+                    id fresh = ((id (*)(id, SEL, id, id, id))objc_msgSend)([classes[which] alloc], designatedInit, device, @1, queue);
+                    record(which, @"own.handler write then read", writeThenRead(fresh, handlerWriter, handlerRead));
+                }
+            }
             if (stress && [portClass instancesRespondToSelector:reader] && [portClass instancesRespondToSelector:writer]) {
                 [expectedOwn addObject:@"own.stress"];
                 pthread_t threads[StressWorkers];
@@ -400,6 +464,12 @@ int main(int argc, const char *argv[])
         NSString *written = sides[1][@"own.write then read"];
         if (written && ![written hasPrefix:@"30 "]) {
             printf("DIFFERENT\town.write then read: the port does not hand back the value written\n");
+            failures++;
+        }
+        NSString *handlerWritten = sides[1][@"own.handler write then read"];
+        if (handlerWritten && ![handlerWritten hasPrefix:@"30 "]) {
+            printf("DIFFERENT\town.handler write then read: the port does not hand back the value written: %s\n",
+                   handlerWritten.UTF8String);
             failures++;
         }
         NSString *afterSubscribe = sides[1][@"own.value after subscribe"];
