@@ -3,7 +3,7 @@
 This repository contains almost no third-party source. Every dependency below is
 declared by a recipe or package under `recipes/` and `packages/` that names the
 upstream it fetches and the version it pins; nothing external is vendored into
-the tree except the one source listed under *Vendored in the tree*. Each package copies its upstream license file under `licenses/` when
+the tree except the sources listed under *Vendored in the tree*. Each package copies its upstream license file under `licenses/` when
 it installs.
 
 The point of this file is that a reader can tell, without building anything,
@@ -52,7 +52,7 @@ into the port binary that ships to a device.
 
 ## Vendored in the tree
 
-The one third-party source held in this repository: the Core ML model schema, kept as
+Two third-party sources are held in this repository. The first is the Core ML model schema, kept as
 the reference the `createml` package's Swift codec follows. Nothing is generated from
 it, and nothing from it is linked into a port (`packages/c/createml/proto/README.md`).
 

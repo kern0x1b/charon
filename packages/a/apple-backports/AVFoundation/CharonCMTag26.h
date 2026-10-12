@@ -4,7 +4,7 @@
 // CMTag, CMTagCollection and CMTaggedBufferGroup, transcribed from the SDK 26.2 headers the port is
 // written against, which is what every band does for surface that arrived after the SDK the toolchain
 // resolves (Intents' CharonIntents262.h, CloudKit's CharonCKSyncEngine26.h, CarPlay's and WebKit's).
-// The declarations below are 26.2's own, character for character, and nothing here is invented; the
+// The declarations below are the 26.2 interface's, and nothing here is invented; the
 // names the port adds beyond the SDK are listed in the delivery for rule R4.
 //
 //   iPhoneOS26.2.sdk/System/Library/Frameworks/CoreMedia.framework/Headers/CMTag.h
