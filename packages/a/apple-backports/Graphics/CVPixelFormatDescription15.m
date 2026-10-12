@@ -1,9 +1,9 @@
 // Whether a compressed pixel format can be used on this device, which arrived in iOS 15.
 //
 // The header scopes the question to the two blocks of lossless- and lossy-compressed pixel formats
-// it lists, and answers the header's own caveat directly: "Some devices do not support these pixel
-// formats at all. Before using one of these pixel formats, call CVIsCompressedPixelFormatAvailable()
-// to check that it is available on the current device." So the answer is a property of the device and
+// it lists, and answers the header's own caveat directly: some devices lack support for these pixel formats,
+// so the caller is told to check with CVIsCompressedPixelFormatAvailable() on the current device first.
+// So the answer is a property of the device and
 // not of the FourCC, and the release has no function that could answer it either way.
 //
 // What the release does have is the answer to the question the caller is really asking, and it is

@@ -16,8 +16,8 @@
 //     a two- and a three-frame file the host answers 0 with no call at all and the first call arrives within
 //     a millisecond of that return, while a ONE-frame file has its frame drawn inside the call and a loop
 //     count of three still draws it once. So the animation is a timer on the main run loop and not a loop
-//     here: the header's "The block is called on the main queue at time intervals specified by the delay
-//     time of the image".
+//     here: the header describes the block as called on the main queue, at intervals set by the delay
+//     time of each image.
 //   * THE FRAME ORDER IS THE FILE'S, and it wraps: index 0, 1, 2, 0, 1, ... for a three-frame file, and the
 //     block is handed the frame the release's own CGImageSourceCreateImageAtIndex decodes at that index
 //     (the harness compares the pixels, not only the index).

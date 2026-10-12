@@ -54,8 +54,8 @@ static BOOL isTag(id value)
 
 // MARK: - the default prefix of a namespace
 //
-// The header says "For the public namespaces defined above, no prefix is required - ImageIO will use
-// appropriate defaults", and the host answers a NULL prefix with the public prefix of the same namespace
+// The header says a public namespace named above it needs no prefix, since ImageIO uses
+// appropriate defaults, and the host answers a NULL prefix with the public prefix of the same namespace
 // (measured: facts/ImageIO/Metadata.md, "TagCreate with a NULL prefix"). The table is built by asking
 // which public namespace constant the caller passed, so no namespace URI is written here: the release
 // exports most of those constants itself, and the port carries the prefixes (Graphics/ImageIONames70.m).
@@ -110,9 +110,9 @@ static CFStringRef charon_default_prefix(CFStringRef xmlns)
 
 // MARK: - tag values
 //
-// "The elements of a CFArray must be either a CFStringRef or CGImageMetadataTagRef. The keys of a
-// CFDictionary must be CFStringRefs with valid XMP names. The values of a CFDictionary must be either
-// CFStringRefs or CGImageMetadataTagRefs." A bare string inside one of them is turned into a tag of the
+// The header allows a CFArray element to be a CFStringRef or a CGImageMetadataTagRef, and it requires the keys of a
+// CFDictionary to be CFStringRefs with valid XMP names, and its values to be of the same two kinds.
+// A bare string inside one of them is turned into a tag of the
 // enclosing tag's namespace and prefix, which is what the host's own value holds (measured: the value of
 // an ArrayUnordered tag created from @[@"a", @@"b"] describes as two CGImageMetadataTags, not two
 // CFStrings - facts/ImageIO/Metadata.md, "an array value holds tags").
@@ -392,8 +392,8 @@ CFArrayRef CGImageMetadataCopyTags(CGImageMetadataRef metadata)
 //   'path' = CFSTR("foo:product?bar:manufacturer")  a qualifier, '?'
 //
 //   Prefixes after the first are optional and inherited from the nearest parent tag that has one. With a
-//   NULL parent a prefix is required on the first step. "Creating tags will fail if a prefix is
-//   encountered that has not been registered."
+//   NULL parent a prefix is required on the first step. Creating tags fails when a prefix is
+//   encountered without a registration.
 //
 // A step is a dictionary of its own rather than a C struct: a struct of ARC-managed fields travelling
 // through a function and an NSValue made clang emit its own copy, default-copy and destructor helpers
@@ -501,8 +501,8 @@ static NSMutableDictionary *charon_intermediate(NSString *ns, NSString *prefix, 
 }
 
 // A tag out of a container is a COPY, value included, which is what the header says the caller has to
-// assume: "Since tags are normally obtained as a copy, it is typically necessary to use
-// CGImageMetadataSetTagWithPath to commit the changed parent object back to the metadata container."
+// assume: tags are normally obtained as a copy, so the header expects a changed parent to be written back with
+// CGImageMetadataSetTagWithPath, which commits it to the metadata container.
 // Without the copy of the value, changing a tag a path returned would change the container behind the
 // caller's back and that warning would be a lie for this library.
 static NSDictionary *charon_tag_copy(NSDictionary *tag)
@@ -900,8 +900,8 @@ void CGImageMetadataEnumerateTagsUsingBlock(CGImageMetadataRef metadata, CFStrin
     }
     if (![tags isKindOfClass:[NSArray class]])
         return;
-    // "Currently the only supported option is kCGImageMetadataEnumerateRecursively, which should be set to a
-    // CFBoolean. The default is non-recursive."
+    // The only option the header supports is kCGImageMetadataEnumerateRecursively, which takes a CFBoolean.
+    // When it is left out, enumeration stays non-recursive.
     BOOL recursive = options
         ? [[(__bridge NSDictionary *)options objectForKey:(__bridge id)kCGImageMetadataEnumerateRecursively] boolValue]
         : NO;
@@ -940,11 +940,9 @@ void CGImageMetadataEnumerateTagsUsingBlock(CGImageMetadataRef metadata, CFStrin
 
 // MARK: - the image-property bridge
 //
-// CGImageMetadata.h:520-580 says what these two functions are, and the sentence that matters is
-// "Metadata Working Group guidance is factored into the mapping of CGImageProperties to XMP compatible
-// CGImageMetadataTags. For example, kCGImagePropertyExifDateTimeOriginal will get the value of the
-// corresponding XMP tag, which is photoshop:DateCreated", and then "Not all dictionaries and properties are
-// supported at this time."
+// CGImageMetadata.h:520-580 says what these two functions are. The header states that Metadata Working Group guidance is
+// built into the mapping of CGImageProperties to XMP-compatible tags: the Exif original date time property maps to the XMP
+// tag photoshop:DateCreated. It also says that not every dictionary and property is supported yet.
 //
 // So neither function is a search over the names in the tree: both are ONE LOOKUP in the table below, from
 // the (dictionary, property) pair to the (namespace, prefix, name) of the XMP tag, and then this file's own

@@ -1,12 +1,11 @@
 // CIBarcodeDescriptor and its four subclasses, as CIBarcodeDescriptor.h declares them.
 //
 // WHAT A BARCODE DESCRIPTOR IS, and it is the whole of this family: the header calls the base class
-// "an abstract base class that defines an abstract representation of a machine readable code's symbol
-// attributes" and gives each subclass "the formal specification of each symbology". The initializer's
+// an abstract base class that stands for a machine readable code's symbol attributes, and gives each subclass
+// the formal specification of its symbology. The initializer's
 // argument is `errorCorrectedPayload` and the property has the same name, and the header says what those
-// bytes are: "During decode, error correction is applied and if successful, the message is re-ordered to
-// the state immediately following 'Bitstream to codeword coversion.' The errorCorrectedPayload corresponds to
-// this sequence of 8-bit codewords."
+// bytes are, per the header, the codewords after error correction, in the state that follows bitstream-to-codeword
+// conversion; errorCorrectedPayload holds the 8-bit codewords of that sequence.
 //
 // So the payload is the CODEWORD SEQUENCE - bytes the caller has already encoded - and a descriptor holds
 // them as they are. Measured on the host's own CoreImage, 2026-10-03: a descriptor made from "abcdefgh" hands
@@ -270,7 +269,7 @@
 // property is answered from the storage the header describes and the initializer writes that ivar.
 @synthesize errorCorrectedPayload = _errorCorrectedPayload;
 
-// The header gives no ranges for the counts - "The number of rows in the Data Matrix code symbol" and
+// The header gives no ranges for the counts: it describes only the rows of the Data Matrix symbol, and
 // nothing else - and the host agrees with having no floor: measured over rows 1-40 x columns 1-40 x the four
 // eccVersion values, all 6400 answer, 1x1 and 1x40 among them, and so does an eccVersion of 4. So nothing is
 // refused here except a payload of no bytes, and writing a range check would refuse what the host accepts.
