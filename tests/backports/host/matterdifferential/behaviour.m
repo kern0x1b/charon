@@ -23,47 +23,7 @@
 #import <objc/message.h>
 #import <objc/runtime.h>
 #import <pthread.h>
-
-@interface BehaviourStorage : NSObject <MTRStorage>
-@property (nonatomic, strong) NSMutableDictionary *table;
-@end
-@implementation BehaviourStorage
-- (instancetype)init { self = [super init]; _table = [NSMutableDictionary dictionary]; return self; }
-- (NSData *)storageDataForKey:(NSString *)key { @synchronized (self) { return self.table[key]; } }
-- (BOOL)setStorageData:(NSData *)value forKey:(NSString *)key { @synchronized (self) { self.table[key] = value; } return YES; }
-- (BOOL)removeStorageDataForKey:(NSString *)key { @synchronized (self) { [self.table removeObjectForKey:key]; } return YES; }
-@end
-
-// A software P-256 key: the framework asks the operational signer for a public key and a signature while it
-// creates a fabric, and nothing else here signs anything.
-@interface BehaviourKeypair : NSObject <MTRKeypair>
-@property (nonatomic) SecKeyRef privateKey;
-@property (nonatomic) SecKeyRef publicKeyRef;
-@end
-@implementation BehaviourKeypair
-- (instancetype)init
-{
-    self = [super init];
-    NSDictionary *attributes = @{(id)kSecAttrKeyType: (id)kSecAttrKeyTypeECSECPrimeRandom,
-                                 (id)kSecAttrKeySizeInBits: @256};
-    CFErrorRef error = NULL;
-    _privateKey = SecKeyCreateRandomKey((CFDictionaryRef)attributes, &error);
-    if (!_privateKey) {
-        return nil;
-    }
-    _publicKeyRef = SecKeyCopyPublicKey(_privateKey);
-    return self;
-}
-- (SecKeyRef)copyPublicKey { return (SecKeyRef)CFRetain(_publicKeyRef); }
-- (SecKeyRef)publicKey { return _publicKeyRef; }
-- (NSData *)signMessageECDSA_DER:(NSData *)message
-{
-    CFErrorRef error = NULL;
-    CFDataRef signature = SecKeyCreateSignature(_privateKey, kSecKeyAlgorithmECDSASignatureMessageX962SHA256,
-                                                (CFDataRef)message, &error);
-    return (__bridge_transfer NSData *)signature;
-}
-@end
+#import "shutdown-controller.h"
 
 static NSMutableDictionary *sides[2];   // 0 system, 1 port
 static const void *queueKey = &queueKey;
@@ -238,23 +198,10 @@ int main(int argc, const char *argv[])
         sides[0] = [NSMutableDictionary dictionary];
         sides[1] = [NSMutableDictionary dictionary];
 
-        BehaviourStorage *storage = [[BehaviourStorage alloc] init];
-        MTRDeviceControllerFactoryParams *factoryParams =
-            [[MTRDeviceControllerFactoryParams alloc] initWithStorage:storage];
         NSError *error = nil;
-        MTRDeviceControllerFactory *factory = [MTRDeviceControllerFactory sharedInstance];
-        if (![factory startControllerFactory:factoryParams error:&error]) {
-            printf("factory\tdid not start\t%s\n", [[error description] UTF8String]);
-            return 1;
-        }
-        uint8_t ipk[16] = {0};
-        MTRDeviceControllerStartupParams *startup = [[MTRDeviceControllerStartupParams alloc]
-            initWithIPK:[NSData dataWithBytes:ipk length:sizeof(ipk)] fabricID:@1
-              nocSigner:[[BehaviourKeypair alloc] init]];
-        startup.vendorID = @0xFFF1;
-        MTRDeviceController *controller = [factory createControllerOnNewFabric:startup error:&error];
+        MTRDeviceController *controller = StartControllerOnNewFabric(&error);
         if (!controller) {
-            printf("controller\tnot created\t%s\n", [[error description] UTF8String]);
+            printf("controller\tnot started\t%s\n", [[error description] UTF8String]);
             return 1;
         }
         // Stopped: the system's own "this controller cannot answer" path, which is the nearest thing to
