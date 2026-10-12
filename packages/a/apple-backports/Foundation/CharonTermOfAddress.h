@@ -51,42 +51,27 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NSTermOfAddress : NSObject <NSCopying, NSSecureCoding>
 
-/* Term of address that uses gender-neutral pronouns (e.g. they/them/theirs in
-   English), and an epicene grammatical gender when inflecting verbs and
-   adjectives referring to the person
- */
+/* The neutral term: neutral pronouns, and inflection with no masculine or feminine marking. */
 + (instancetype)neutral;
-/* Term of address that uses feminine pronouns (e.g. she/her/hers in English),
-   and a feminine grammatical gender when inflecting verbs and adjectives
-   referring to the person
- */
+/* The feminine term: feminine pronouns, and feminine inflection of verbs and adjectives. */
 + (instancetype)feminine;
-/* Term of address that uses masculine pronouns (e.g. he/him/his in English),
-   and a masculine grammatical gender when inflecting verbs and adjectives
-   referring to the person
- */
+/* The masculine term: masculine pronouns, and masculine inflection of verbs and adjectives. */
 + (instancetype)masculine;
 
-/* The term of address that should be used for addressing the user
-
-   This term of address will only compare equal to another `+[NSTermOfAddress currentUser]`
- */
+/* The term for the user of this device. */
 + (instancetype)currentUser;
 
-/* A term of address restricted to a given language
- @param language ISO language code identifier for the language
- @param pronouns A list of pronouns in the target language that can be used to
-                 refer to the person.
- */
+/* A term limited to one language: `language` is its ISO code and `pronouns` the list of pronouns
+   in that language. */
 + (instancetype)localizedForLanguageIdentifier:(NSString*)language
                                   withPronouns:(NSArray *)pronouns;
 
 + (instancetype)new NS_UNAVAILABLE;
 - (instancetype)init NS_UNAVAILABLE;
 
-/// The ISO language code if this is a localized term of address
+/// The ISO code of a localized term.
 @property(nullable, readonly, copy) NSString* languageIdentifier;
-/// A list of pronouns for a localized term of address
+/// The pronoun list of a localized term.
 @property(nullable, readonly, copy) NSArray *pronouns;
 @end
 
