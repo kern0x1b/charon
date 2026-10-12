@@ -6,9 +6,9 @@
 //
 // Conversion.h writes all of this out, and what it says is what the port does:
 //
-//   - A source narrower than a byte is **big endian within the byte**: "the low-indexed pixel is in the
-//     high-order bits of the byte". Widths are in pixels and rowBytes in whole bytes, so a scanline may end in
-//     the middle of a byte and the unused bits of the last byte are not read.
+//   - A source narrower than a byte is **big endian within the byte**: the low-indexed pixel sits in the
+//     high-order bits of its byte (Conversion.h:4783-4788). Widths are in pixels and rowBytes in whole bytes, so
+//     a scanline can end partway through a byte, and the unused bits of the last byte are not read.
 //   - Expanding multiplies: Planar1 by 255, Planar2 by 85 and Planar4 by 17 - the same
 //     (bits * 255 + half) / max rule the delivered pixel group uses, without a rounding step because there is
 //     none to do. **The multiplier is 255 / (2^bits - 1) and not 255 >> (bits - 1)**, and getting that
@@ -28,9 +28,8 @@
 // throughout because 255 >> 0 happens to be the right answer for one bit - which is exactly why the fault
 // looked like a host defect confined to the two wider forms.
 //   - An indexed expansion looks the index up in the caller's colour table and writes that byte.
-//   - Narrowing with `kvImageConvert_DitherNone` "rounds to the nearest value representable in the
-//     destination format", which is ((value * max) + 127) / 255 - the same shape the header prints for the
-//     sixteen-bit narrowing.
+//   - Narrowing with `kvImageConvert_DitherNone` takes the nearest destination value to the exact one, which is
+//     ((value * max) + 127) / 255 - the same shape the header prints for the sixteen-bit narrowing (Conversion.h:2900-2913).
 //
 // **What is not here, and where it went.** The other dither modes are a separate axis and a separate
 // delivery, because they are not a rounding rule:
@@ -71,7 +70,7 @@ static vImage_Error charon_subbyte_ready(const vImage_Buffer *src, const vImage_
 
 
 // The pixel at `column` of a row of `bits`-wide pixels, big endian within the byte: the low-indexed pixel
-// is in the high-order bits, and a scanline may end in the middle of a byte.
+// is in the high-order bits, and a scanline can end partway through a byte.
 static unsigned char charon_subbyte_at(const uint8_t *row, vImagePixelCount column, int bits)
 {
     int per_byte = 8 / bits;

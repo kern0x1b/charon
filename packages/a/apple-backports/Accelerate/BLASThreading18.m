@@ -13,8 +13,8 @@
 // (facts/Accelerate/BLASThreading.md).
 //
 // What the model does is worth reading before anything is built on it: the two functions are a value kept
-// per thread, and nothing in the library reads it. The header calls the call "set the threading model to
-// use for the subsequent calls into BLAS and LAPACK", and this port does not do that - it cannot, and
+// per thread, and nothing in the library reads it. The header (thread_api.h:24-26) names the call as one
+// that sets the threading model for later BLAS and LAPACK calls, and this port does not do that - it cannot, and
 // neither does the host's own Accelerate, measured the same way: four threads inside cblas_sgemm leave
 // the process with as many threads under the single-threaded model as under the multi-threaded one, so
 // the setting does not bring the count down (facts/Accelerate/BLASThreading.md has the numbers). On the

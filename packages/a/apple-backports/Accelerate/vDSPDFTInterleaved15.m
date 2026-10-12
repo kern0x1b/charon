@@ -2,8 +2,8 @@
 // DestroySetup, and the setup is the PORT's own object from end to end - nothing of the release's is opaque,
 // which is what makes this family different from vDSP_biquad_SetCoefficients.
 //
-// **The supported lengths, measured over 1 to 1024.** The header says `Length = f * 2**n, where f is 2, 3, 5,
-// 3*3, 3*5, or 5*5 and n >= 2`, and that zero is returned when there is no implementation for the case.
+// **The supported lengths, measured over 1 to 1024.** The header (vDSP.h:7523) gives the length as f * 2**n, with f
+// taken from a short list of factors and n at least 2, and returns zero when it has no implementation for the case.
 // Measured: 31 of 1024 lengths are accepted, and they are exactly **f * 2**n with f in {2, 3, 5, 9, 15} and
 // n >= 2**. The header's `5*5 = 25` is not implemented: 25 is refused and so are 100, 200, 400 and 800, every
 // one of which the header's list admits. `3*5 = 15` is implemented. RealtoComplex and ComplextoComplex accept

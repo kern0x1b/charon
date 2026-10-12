@@ -123,8 +123,8 @@ vImage_Error vImagePermuteChannels_RGB888(const vImage_Buffer *src, const vImage
     vImage_Error ready = charon_channels8_ready(src, dest, flags, charon_channels8_rgb888_flags);
     if (ready != kvImageNoError)
         return ready;
-    // **A NULL map is a refusal here, and this header's comment says the opposite**: "permuteMap[3] = {0, 1, 2}
-    // or NULL will produce the same dest pixels as the src". Measured on this Mac's own vImage, the host
+    // **A NULL map is a refusal here, and this header's comment says the opposite** (Conversion.h:9628-9632): it
+    // says a NULL map leaves the destination as an identity order would. Measured on this Mac's own vImage, the host
     // dereferences the map and its process ends on SIGSEGV, leaving the destination untouched
     // (tests/backports/host/vimagechannels asks it in a child process so the measurement survives). So the
     // port refuses a NULL map the way the four-channel forms do rather than answering a header sentence the

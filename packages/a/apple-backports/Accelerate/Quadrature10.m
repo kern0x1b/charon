@@ -1,9 +1,8 @@
 // quadrature_integrate, iOS 10.0: the one entry point of vecLib/Quadrature/Integration.h.
 //
-// The header says what the three integrators are: "The QNG (simple non-adaptive Gauss-Kronrod integration)
-// and QAG (simple adaptive Gauss-Kronrod integration) integrators are C ports of the QUADPACK library
-// corresponding routines. The QAGS integrator provides the functionality offered by the QAGS and QAGI
-// QUADPACK routines." So the port's answer has to be QUADPACK's algorithms and QUADPACK's node tables, and
+// The header (Integration.h:120-122) names the three integrators: QNG is a non-adaptive Gauss-Kronrod rule, QAG
+// an adaptive one, and both are C ports of QUADPACK routines; QAGS covers what QUADPACK's QAGS and QAGI routines
+// do. So the port's answer has to be QUADPACK's algorithms and QUADPACK's node tables, and
 // this is a C translation of them, not an adaptive integrator of our own: the numbers only agree if the
 // rules, the subdivision order and the epsilon extrapolation are the same.
 //
@@ -35,8 +34,8 @@
 //   - An `integrator` the enumeration does not name answers 0 with QUADRATURE_ERROR (-1) and leaves
 //     `abs_error` untouched (measured: 3 and -1, with the caller's -1 still there).
 //   - A bound of a wrong infinity is a refusal: QNG over an infinite bound answers
-//     QUADRATURE_INVALID_ARG_ERROR, and only QAGS takes one, which is the header's "If the integrator is
-//     QAGS, one or both of the interval bounds can be infinite".
+//     QUADRATURE_INVALID_ARG_ERROR, and only QAGS takes one: the header (Integration.h:124-126) allows an
+//     infinite bound on one or both sides of the interval for QAGS alone.
 //
 // **The callback is called the way the host calls it**: one call per rule pass, with every abscissa of that
 // pass in one array. Measured on the host for the same integral: QAG makes one call of 21, 15 or 61 points

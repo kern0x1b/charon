@@ -1,10 +1,9 @@
 // vForce's cube root, the two entry points iOS 8.0 added: vvcbrt and vvcbrtf.
 //
 // Measured from the release's armv7 caches, 8.0 is the first held release that exports the two, so this
-// file holds the API of exactly one release. vForce's header says of the whole family that it "may treat
-// some or all denormal numbers as zero" and that "the exact value returned and treatment of denormal
-// values will vary across different microarchitectures and versions of the operating system", so the two
-// are answered with libm's cbrt - the same number the header's own pseudocode computes - and the host
+// file holds the API of exactly one release. vForce's header (vForce.h:38-40) says that the family may flush
+// some or all denormal numbers to zero, and that a denormal's result depends on the microarchitecture and on
+// the OS version, so the two are answered with libm's cbrt - the same number the header's own pseudocode computes - and the host
 // differential compares them with a tolerance, and its numbers are what facts/Accelerate/vForce.md
 // records.
 

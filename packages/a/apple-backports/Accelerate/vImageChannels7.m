@@ -53,8 +53,8 @@ static vImage_Error charon_channels7_ready(const vImage_Buffer *src, const vImag
     return kvImageNoError;
 }
 
-// The map, which the header gives a range for: "Providing a map value greater than 3 will result in the
-// return of error kvImageInvalidParameter", and which is checked here.
+// The map, which the header (Conversion.h:1711-1716) gives a range for: a map value above 3 is an error,
+// kvImageInvalidParameter, and the port checks it here.
 //
 // **The copyMask has no range, whatever this header says.** It names kvImageInvalidParameter for a mask
 // above 0x0F, and asked of the host over twelve values - 0x00, 0x01, 0x08, 0x0F, 0x10, 0x11, 0x1F, 0x20, 0x40,
