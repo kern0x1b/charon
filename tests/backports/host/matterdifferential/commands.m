@@ -13,6 +13,11 @@
 // Writes and subscribes are not called here: a write stores a value on the port's side by design and behaviour.m
 // asserts that on the port alone, and a subscribe is behaviour.m's. They are counted, so the run says what it skipped.
 //
+// A second pass checks the refusals the port answers (tools/matter-host-refusals.tsv): for each selector whose params class
+// has rows in the table, the params the rows name are built the way the probe built them (params-fill.h), and both sides are
+// called with them. The framework must answer the row's domain, code and description, and the port must answer what the
+// framework answers. A nil params object cannot show a zero or a one clause, so this pass is what does.
+//
 // Usage: commands <ClusterClassName>, with CHARON_DECLARED (class<TAB>selector<TAB>arity, one row per declared
 // instance selector; arity 0 when it takes no completion) in the environment.
 #import <Foundation/Foundation.h>
@@ -20,6 +25,7 @@
 #import <objc/message.h>
 #import <objc/runtime.h>
 #import "shutdown-controller.h"
+#import "params-fill.h"
 
 #ifdef CHARN_PORT_CLUSTER
 #define PORT_CLUSTER CHARN_PORT_CLUSTER
@@ -27,20 +33,8 @@
 #define PORT_CLUSTER "MTRBaseClusterIdentify"
 #endif
 
-static const void *queueKey = &queueKey;
-
-// What one completion received.
-@interface Answer : NSObject
-@property (nonatomic) int calls;
-@property (nonatomic) BOOL onQueue;
-@property (nonatomic) BOOL dataWasNil;
-@property (nonatomic, strong) NSError *error;
-@end
-@implementation Answer
-@end
-
 // The part of an answer the two sides must agree on, as one line.
-static NSString *comparable(Answer *answer, BOOL timedOut)
+static NSString *comparable(MatterAnswer *answer, BOOL timedOut)
 {
     if (timedOut) {
         return @"no completion within 5 s";
@@ -50,44 +44,6 @@ static NSString *comparable(Answer *answer, BOOL timedOut)
                            [[[e.userInfo allKeys] sortedArrayUsingSelector:@selector(compare:)]
                                componentsJoinedByString:@","]] : @"no error";
     return [NSString stringWithFormat:@"calls=%d data-nil=%d %@", answer.calls, answer.dataWasNil, error];
-}
-
-// One call of `selector` on `target`, whose last argument is a completion of `arity` parameters. Returns nil when the
-// selector takes more arguments than this check knows how to pass.
-static Answer *call(id target, SEL selector, NSUInteger arguments, int arity, dispatch_queue_t queue, BOOL *timedOut)
-{
-    Answer *answer = [[Answer alloc] init];
-    dispatch_semaphore_t done = dispatch_semaphore_create(0);
-    void (^record)(id, NSError *) = ^(id data, NSError *error) {
-        @synchronized (answer) {
-            answer.calls++;
-            answer.onQueue = dispatch_get_specific(queueKey) != NULL;
-            answer.dataWasNil = data == nil;
-            answer.error = error;
-        }
-        dispatch_semaphore_signal(done);
-    };
-    // A one-parameter completion (MTRStatusCompletion) is called with its error alone; a two-parameter one with data and
-    // error. The block is built for the arity the header declares, because a block called with fewer arguments than it
-    // takes reads whatever was in the register.
-    id completion;
-    if (arity == 1) {
-        completion = ^(NSError *error) { record(nil, error); };
-    } else if (arity == 2) {
-        completion = record;
-    } else {
-        return nil;
-    }
-    switch (arguments) {
-        case 1: ((void (*)(id, SEL, id))objc_msgSend)(target, selector, completion); break;
-        case 2: ((void (*)(id, SEL, id, id))objc_msgSend)(target, selector, nil, completion); break;
-        case 3: ((void (*)(id, SEL, id, id, id))objc_msgSend)(target, selector, nil, nil, completion); break;
-        case 4: ((void (*)(id, SEL, id, id, id, id))objc_msgSend)(target, selector, nil, nil, nil, completion); break;
-        case 5: ((void (*)(id, SEL, id, id, id, id, id))objc_msgSend)(target, selector, nil, nil, nil, nil, completion); break;
-        default: return nil;
-    }
-    *timedOut = dispatch_semaphore_wait(done, dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC)) != 0;
-    return answer;
 }
 
 static NSArray *argumentsOf(NSString *selector)
@@ -125,6 +81,32 @@ int main(int argc, const char *argv[])
             if (cells.count == 3 && [cells[0] isEqualToString:real]) {
                 arity[cells[1]] = @([cells[2] intValue]);
             }
+        }
+
+        // The refusal table (tools/matter-host-refusals.tsv), read from CHARON_REFUSALS: for each params class, its rows with
+        // the answer, the description and the modes the probe measured each refusal in. Only the refusal pass reads it.
+        NSMutableDictionary *refusals = [NSMutableDictionary dictionary];
+        const char *refusalPath = getenv("CHARON_REFUSALS");
+        if (!refusalPath) {
+            printf("RED not read: CHARON_REFUSALS is unset, so the refusals the port answers are not checked\n");
+            return 1;
+        }
+        NSString *table = [NSString stringWithContentsOfFile:@(refusalPath) encoding:NSUTF8StringEncoding error:NULL];
+        for (NSString *line in [table componentsSeparatedByString:@"\n"]) {
+            if (line.length == 0 || [line hasPrefix:@"#"]) {
+                continue;
+            }
+            NSArray *cells = [line componentsSeparatedByString:@"\t"];
+            if (cells.count != 6) {
+                printf("RED not read: a refusal row has %lu cells, not 6: %s\n", (unsigned long)cells.count, line.UTF8String);
+                return 1;
+            }
+            NSMutableArray *list = refusals[cells[0]];
+            if (!list) {
+                list = [NSMutableArray array];
+                refusals[cells[0]] = list;
+            }
+            [list addObject:@{@"answer": cells[3], @"described": cells[4], @"modes": cells[5]}];
         }
 
         NSError *error = nil;
@@ -211,8 +193,8 @@ int main(int argc, const char *argv[])
                 notCarried++;
                 continue;
             }
-            Answer *system = call(systemCluster, name, arguments, completionArity, queue, &systemTimedOut);
-            Answer *port = call(portCluster, name, arguments, completionArity, queue, &portTimedOut);
+            MatterAnswer *system = invokeAnswer(systemCluster, name, nil, arguments, completionArity, queue, &systemTimedOut);
+            MatterAnswer *port = invokeAnswer(portCluster, name, nil, arguments, completionArity, queue, &portTimedOut);
             if (!system || !port) {
                 printf("DIFFERENT\t%s\t%s\tnot called: %lu arguments, arity %d\n", real.UTF8String, selector.UTF8String,
                        (unsigned long)arguments, completionArity);
@@ -234,6 +216,79 @@ int main(int argc, const char *argv[])
                 differing++;
             }
         }
+        // The refusals (params-fill.h). For each selector whose params class has rows in the refusal table, every mode the
+        // rows name is built as the probe built it, and both sides are called with it. The framework's answer must be the
+        // row's answer (domain, code and description), and the port's must be the framework's: a guard that drops its zero
+        // or one clause is a difference here, where the nil call above cannot see it.
+        int refusalChecks = 0, refusalDiffering = 0;
+        NSString *clusterName = [real hasPrefix:@"MTRBaseCluster"] ? [real substringFromIndex:@"MTRBaseCluster".length]
+                                                                    : [real substringFromIndex:@"MTRCluster".length];
+        NSMutableSet *checkedClasses = [NSMutableSet set];
+        for (NSString *selector in [[arity allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
+            int completionArity = [arity[selector] intValue];
+            Class paramsClass = completionArity == 0 ? nil : paramsClassFor(clusterName, selector);
+            NSArray *rows = paramsClass ? refusals[NSStringFromClass(paramsClass)] : nil;
+            SEL name = NSSelectorFromString(selector);
+            if (!rows) {
+                continue;
+            }
+            [checkedClasses addObject:NSStringFromClass(paramsClass)];
+            if (![portCluster respondsToSelector:name] || ![systemCluster respondsToSelector:name]) {
+                // A row the port or the framework does not carry is a difference: it cannot be compared, so it is not skipped.
+                printf("DIFFERENT\t%s\t%s\trefusal table\tnot carried: framework %s, port %s\n", real.UTF8String,
+                       selector.UTF8String, [systemCluster respondsToSelector:name] ? "yes" : "no",
+                       [portCluster respondsToSelector:name] ? "yes" : "no");
+                refusalChecks++;
+                refusalDiffering++;
+                continue;
+            }
+            NSUInteger arguments = argumentsOf(selector).count - 1;
+            NSMutableSet *modesDone = [NSMutableSet set];
+            for (NSDictionary *row in rows) {
+                for (NSString *mode in [row[@"modes"] componentsSeparatedByString:@" "]) {
+                    if (mode.length == 0 || [modesDone containsObject:mode]) {
+                        continue;
+                    }
+                    [modesDone addObject:mode];
+                    id params = paramsForMode(paramsClass, mode);
+                    BOOL systemTimedOut = NO, portTimedOut = NO;
+                    MatterAnswer *system = invokeAnswer(systemCluster, name, params, arguments, completionArity, queue,
+                                                        &systemTimedOut);
+                    MatterAnswer *port = invokeAnswer(portCluster, name, params, arguments, completionArity, queue,
+                                                      &portTimedOut);
+                    refusalChecks++;
+                    if (!system || !port) {
+                        printf("DIFFERENT\t%s\t%s\trefusal %s\tnot called: %lu arguments, arity %d\n", real.UTF8String,
+                               selector.UTF8String, mode.UTF8String, (unsigned long)arguments, completionArity);
+                        refusalDiffering++;
+                        continue;
+                    }
+                    NSString *systemAnswer = comparable(system, systemTimedOut);
+                    NSString *portAnswer = comparable(port, portTimedOut);
+                    NSString *expected = [NSString stringWithFormat:@"calls=1 data-nil=1 %@ keys=[NSLocalizedDescription]",
+                                                                    row[@"answer"]];
+                    BOOL described = [system.error.localizedDescription isEqualToString:row[@"described"]] &&
+                                     [port.error.localizedDescription isEqualToString:system.error.localizedDescription];
+                    if ([systemAnswer isEqualToString:expected] && [portAnswer isEqualToString:systemAnswer] && described) {
+                        continue;
+                    }
+                    printf("DIFFERENT\t%s\t%s\trefusal %s\tsystem: %s\n\t\t\t\tport:   %s\n\t\t\t\ttable:  %s, \"%s\"\n",
+                           real.UTF8String, selector.UTF8String, mode.UTF8String, systemAnswer.UTF8String,
+                           portAnswer.UTF8String, [row[@"answer"] UTF8String], [row[@"described"] UTF8String]);
+                    refusalDiffering++;
+                }
+            }
+        }
+        // A table class that no selector of this cluster takes is a row nobody checks: a difference, not a skip.
+        for (NSString *cls in refusals) {
+            if ([cls hasPrefix:[NSString stringWithFormat:@"MTR%@Cluster", clusterName]] && ![checkedClasses containsObject:cls]) {
+                printf("DIFFERENT\t%s\t-\trefusal table\trows of %s not checked: no selector takes them\n", real.UTF8String,
+                       cls.UTF8String);
+                refusalDiffering++;
+            }
+        }
+        differing += refusalDiffering;
+        printf("%s\trefusal checks compared %d, differing %d\n", real.UTF8String, refusalChecks, refusalDiffering);
         printf("%s\tcommands compared %d, readers compared %d, synchronous readers compared %d, writes not called %d, "
                "subscribes not called %d, initialisers not called %d, without a completion %d, not carried by the host %d\n",
                real.UTF8String, commands, readers, synchronousReaders, writes, subscribes, initialisers, withoutCompletion,

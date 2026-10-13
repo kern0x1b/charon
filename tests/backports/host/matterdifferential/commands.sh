@@ -24,6 +24,7 @@ root=$(cd "$here/../../../.." && pwd)
 build=${BUILD:-${TMPDIR:-/tmp}/charon-matter-commands}
 source_dir=${MATTER_SOURCE_DIR:-$root/packages/a/apple-backports/Matter}
 sdk262=${MATTER_SDK_262:-}
+refusals=$root/tools/matter-host-refusals.tsv
 if [ -z "$sdk262" ] || [ ! -f "$sdk262/System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h" ]; then
     echo "MATTER_SDK_262 must name the iPhoneOS 26.2 SDK: the selectors and their completion arity are read from its Matter headers" >&2
     exit 2
@@ -33,6 +34,7 @@ if [ ! -f "$sdk/System/Library/Frameworks/Matter.framework/Headers/MTRBaseCluste
     echo "this host has no Matter.framework, so there is no oracle for the port" >&2
     exit 2
 fi
+[ -f "$refusals" ] || { echo "no refusal table at $refusals" >&2; exit 2; }
 base_list=$source_dir/clusters-emitted.txt
 generic_list=$source_dir/generic-clusters-emitted.txt
 for each in "$base_list" "$generic_list"; do
@@ -110,8 +112,8 @@ run_list() {
     list=$1
     skip_file=$2
     for cluster in $(cat "$list"); do
-        # COMMANDS_ONLY=<pattern> runs the classes whose names match, for a quick look; the check itself runs them all.
-        if [ -n "${COMMANDS_ONLY:-}" ] && ! echo "$cluster" | grep -q "$COMMANDS_ONLY"; then continue; fi
+        # COMMANDS_ONLY=<extended regex> runs the classes whose names match, for a quick look; the check itself runs them all.
+        if [ -n "${COMMANDS_ONLY:-}" ] && ! echo "$cluster" | grep -Eq "$COMMANDS_ONLY"; then continue; fi
         source=$source_dir/CharonMatter$cluster.m
         if [ ! -f "$source" ]; then
             echo "no-source  $cluster  (the generator wrote no file for it)"
@@ -169,7 +171,7 @@ run_list() {
         fi
         run_classes=$((run_classes + 1))
         rc=0
-        CHARON_DECLARED="$build/declared-arity.tsv" "$build/$cluster" "$cluster" > "$build/$cluster.out" 2>&1 || rc=$?
+        CHARON_DECLARED="$build/declared-arity.tsv" CHARON_REFUSALS="$refusals" "$build/$cluster" "$cluster" > "$build/$cluster.out" 2>&1 || rc=$?
         summary=$(awk '/commands compared/ { print; exit }' "$build/$cluster.out")
         if [ "$rc" -ne 0 ] && [ -z "$(awk '/^DIFFERENT/ { print; exit }' "$build/$cluster.out")" ] \
             || [ -z "$summary" ]; then
@@ -223,4 +225,6 @@ commands=$1; readers=$2; syncreaders=$3; writes=$4; subscribes=$5; initialisers=
 log_differing=$(awk '/^different / { n++ } END { print n + 0 }' "$verdicts")
 echo "classes run: $run_classes, commands compared: $commands, readers compared: $readers, synchronous readers compared: $syncreaders, writes not called: $writes, subscribes not called: $subscribes, initialisers not called: $initialisers, selectors without a completion: $nocompletion, not carried by the host: $notcarried"
 echo "DIFFERENT lines: $differing (in $log_differing classes), not built: $not_built, skipped: $skipped (not-built.txt), stale: $stale, did not run: $did_not_run, no generated source: $no_source"
-[ "$differing" -eq 0 ] && [ "$not_built" -eq 0 ] && [ "$stale" -eq 0 ] && [ "$did_not_run" -eq 0 ] && [ "$commands" -gt 0 ]
+refusal_checks=$(for each in "$build"/*.out; do awk '/refusal checks compared/ { sub(/.*compared /, ""); sub(/,.*/, ""); print }' "$each"; done | awk '{ n += $1 } END { print n + 0 }')
+echo "refusal checks: $refusal_checks (each table mode of each selector whose params the table names, with non-nil params, on both sides)"
+[ "$differing" -eq 0 ] && [ "$not_built" -eq 0 ] && [ "$stale" -eq 0 ] && [ "$did_not_run" -eq 0 ] && [ "$commands" -gt 0 ] && [ "$refusal_checks" -gt 0 ]
