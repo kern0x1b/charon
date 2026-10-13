@@ -144,7 +144,7 @@
     // by name and returns nil, which is what the rest of this package does rather than aborting a
     // caller that got the class wrong.
     CharonMPSRefuse(@"MPSNNReduceUnary: -initWithDevice: is unavailable on the abstract base, which"
-                    @" MPSNNReduce.h:56-59 says must not be instantiated - use one of the twelve"
+                    @" MPSNNReduce.h:44-47 says must not be instantiated - use one of the twelve"
                     @" concrete classes");
     return nil;
 }
