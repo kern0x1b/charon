@@ -27,9 +27,6 @@ local CHILD_POLL = 100
 local CHILD_CHECK = 1
 -- The milliseconds between two checks of the child while the read loop finds the pipe empty (the wait on the pipe in between).
 local CHILD_INTERVAL = 20
--- After the exit: at most DRAIN_READS empty reads of DRAIN_WAIT milliseconds (a bound of 2 s) before the sentinel is declared missing;
--- and WAIT_ERRORS wait errors in a row are an error. Measured: output reported after an exit came within 2 s.
-local DRAIN_READS = 200
 -- The longest a stream may go without a byte before it is an error (a guard against a hang of the pipe; the program name is in the
 -- message). Ten minutes: the slowest first line of the parser under load is well under it.
 local STALL_LIMIT = 600000
@@ -119,10 +116,12 @@ local function drive(program, args, each, want_err, raw)
             table.insert(errors, ebuff:str(1, m))
         end
     end
-    -- Once the child has exited, what it wrote is in the pipe; the reads that follow are bounded (DRAIN_READS of DRAIN_WAIT
-    -- milliseconds each), and an empty read after the bound means the sentinel never came. A wait result of -1 is an error of the
-    -- wait, not an exit: it is retried up to WAIT_ERRORS times.
-    local exited, drained, wait_errors = false, 0, 0
+    -- Once the child has exited, the pipe is read until its end. The sentinel was written before the exit, so it is in the pipe; an
+    -- empty read after the exit is at the end when the pipe then reports ready with nothing to read (measured: pipe:wait returns 1
+    -- or 17 at the end, and 0 while a writer is still open). The end is confirmed by the next empty read, and only then is the
+    -- sentinel missing. A pipe a process the program started still holds open is waited for (DRAIN_WAIT at a time, under the stall
+    -- limit). A wait result of -1 is an error of the wait, not an exit: it is retried up to WAIT_ERRORS times.
+    local exited, at_end, wait_errors = false, false, 0
     -- when the child was last checked (a time long before the first read, so the first empty read checks it)
     local checked_at = -CHILD_INTERVAL * 1000
     local last_byte = os.mclock()
@@ -165,7 +164,7 @@ local function drive(program, args, each, want_err, raw)
                 read_errors()
                 local n = rpipe:read(buff, CHUNK)
                 if n > 0 then
-                    drained = 0
+                    at_end = false
                     last_byte = os.mclock()
                     local text = carry .. buff:str(1, n)
                     if raw then
@@ -229,9 +228,14 @@ local function drive(program, args, each, want_err, raw)
                 elseif n == 0 then
                     assert(os.mclock() - last_byte < STALL_LIMIT, "no output from " .. program .. " for ten minutes")
                     if exited then
-                        drained = drained + 1
-                        assert(drained <= DRAIN_READS, "the program ended without its sentinel: " .. program)
-                        rpipe:wait(pipe.EV_READ, DRAIN_WAIT)
+                        -- the end was reported ready by the wait before this read, and this read found nothing: the sentinel is missing
+                        assert(not at_end, "the program ended without its sentinel: " .. program)
+                        local ready = rpipe:wait(pipe.EV_READ, DRAIN_WAIT)
+                        if ready < 0 then
+                            wait_errors = wait_errors + 1
+                            assert(wait_errors <= WAIT_ERRORS, "cannot observe the end of " .. program)
+                        end
+                        at_end = ready > 0
                     elseif os.mclock() - checked_at < CHILD_INTERVAL then
                         -- the child is checked at most every CHILD_INTERVAL: a check blocks for CHILD_CHECK, and a program that
                         -- writes in bursts left the read loop checking it a thousand times a second (2 s on a 163 MB dump)
