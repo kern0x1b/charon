@@ -18,15 +18,14 @@
 //
 // What the header fixes, and what it does not:
 //
-//   - The systems each kernel solves. MPSMatrixSolve.h:24-26 "op(A) * X = alpha * B or X * op(A) = alpha
-//     * B. Where A is either upper or lower triangular and op(A) is A**T or A. B is the array of right
-//     hand sides for which the equations are to be solved. X is the resulting matrix of solutions."
-//     MPSMatrixSolve.h:127-129 the same for the LU solve, "op(A) * X = B". So a triangular solve is a
+//   - The systems each kernel solves. MPSMatrixSolve.h:24-26 gives the two forms, op(A) * X = alpha * B in one and
+//     X * op(A) = alpha * B in the other, where A is a triangular matrix of either kind and op(A) is its transpose or itself.
+//     B holds the right-hand sides and X the resulting solutions.
+//     MPSMatrixSolve.h:127-129 gives the same shape for the LU solve, with no alpha. So a triangular solve is a
 //     forward or a backward substitution over one triangle, and op() is the choice of triangle and of
 //     transposition - which is what MPSMatrixBinaryKernel's `transpose` property already carries.
-//   - The two factorizations. MPSMatrixDecomposition.h:138-143 "A = L * L**T or A = U**T * U. A is a
-//     symmetric positive-definite matrix for which the factorization is to be computed. L and U are
-//     lower and upper triangular matrices respectively." So the Cholesky is of a POSITIVE-DEFINITE
+//   - The two factorizations. MPSMatrixDecomposition.h:138-143 gives A = L * L**T in one form and A = U**T * U in the other,
+//     with A a positive-definite symmetric matrix and L and U the lower and upper triangles. So the Cholesky is of a POSITIVE-DEFINITE
 //     matrix and the two forms are the same factorization written for the lower or the upper triangle,
 //     which is the header's own `lower` parameter (:155).
 //   - The statuses. MPSMatrixDecomposition.h:37-40 names four, and their VALUES are the header's own:
@@ -37,8 +36,8 @@
 //
 // What the header does NOT state, and what no measurement on this host can supply: how the release
 // PICKS the pivot in an LU, and therefore the pivot values themselves. The header says
-// MPSMatrixDecomposition.h:92-94 that pivotIndices must hold "an array of size 1xmin(rows, columns)
-// values. Element type must be MPSDataTypeUInt32" and nothing about which row is chosen. Partial pivoting
+// MPSMatrixDecomposition.h:92-94 that pivotIndices has one entry per pivot, of length min(rows, columns) and of type MPSDataTypeUInt32,
+// and nothing about which row is chosen. Partial pivoting
 // - the largest absolute value in the column - is the standard choice and is what this file uses, and it
 // is recorded in the rows below as this file's choice and not as a measurement of the release's pivots.
 // The factorization of a matrix whose LU factors are unique up to those pivots IS pinned: L's and U's
@@ -155,8 +154,8 @@ static inline double CharonMPSCholeskyFactor(const CharonMPSMatrixView *view, BO
             NSUInteger row = _lower ? r : c;
             NSUInteger column = _lower ? c : r;
             // MPSMatrixDecomposition.h:141-143 requires a POSITIVE DEFINITE source, and which triangle
-            // of it is stored is what `lower` says (:155-156, "If lower = YES the lower triangular part
-            // will be used"), so the value read is A(r,c) and never its mirror.
+            // of it is stored is what `lower` says (:155-156, a YES value selects the lower triangle), so the value read
+            // is A(r,c) and never its mirror.
             double sum = CharonMatrixSolveGet(&from, 0, r, c);
             for (NSUInteger k = 0; k < c; k++) {
                 // The factors already computed are read back through the SAME mirror that stored them,
@@ -346,10 +345,10 @@ static inline double CharonMPSCholeskyFactor(const CharonMPSMatrixView *view, BO
     }
     NSUInteger order = _order;
     NSUInteger sides = _numberOfRightHandSides;
-    // MPSMatrixSolve.h:24-26: op(A) * X = alpha * B or X * op(A) = alpha * B. Which of the two this is
+    // MPSMatrixSolve.h:24-26: op(A) * X = alpha * B in one form and X * op(A) = alpha * B in the other. Which of the two this is
     // decides the SHAPE of B and X, not just the loop: with the multiplication on the left B and X are
-    // order x sides, and with it on the right they are sides x order - which is what :53-60 means by
-    // "if right == NO, the number of columns in the solution and right hand side matrices".
+    // order x sides, and with it on the right they are sides x order - which is what the right flag at :53-60
+    // means, since that flag decides which of the solution's dimensions is the column count.
     NSUInteger rows = _right ? sides : order;
     NSUInteger columns = _right ? order : sides;
     if (!CharonMPSMatrixHolds(&a, 0, 0, 0, order, order) ||
@@ -410,9 +409,8 @@ static inline double CharonMPSCholeskyFactor(const CharonMPSMatrixView *view, BO
 }
 
 // MPSMatrixSolve.h:218-233 names the three, and the source matrix is NOT A: MPSMatrixSolve.h:243-245
-// "sourceMatrix A valid MPSMatrix containing the source matrix in factored form" and :253-254 "factors
-// corresponding to the factorization returned by a previous execution of
-// MPSMatrixDecompositionCholesky". So this kernel applies two substitutions to a factor the caller
+// calls it the source in factored form, and :253-254 says the factors come from an earlier run of
+// MPSMatrixDecompositionCholesky. So this kernel applies two substitutions to a factor the caller
 // already has - it factors nothing, and the factorization is not recomputed here. `upper` (:218-219)
 // picks which triangle of the factor is the non-unit one.
 - (instancetype)initWithDevice:(id<MTLDevice>)device

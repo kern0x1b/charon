@@ -6,21 +6,20 @@
 // is ABSTRACT in the release - MPSNDArrayMultiaryBase:92-104 declares offsetsAtSourceIndex:,
 // edgeModeAtSourceIndex:, kernelSizesForSourceIndex:, stridesForSourceIndex: and
 // dilationRatesForSourceIndex: and no arithmetic at all, and MPSNDArrayMultiaryKernel's encodes take
-// "the list of sources for the filter in a NSArray. Ordering to be defined by subclass". So the
+// list of sources in an NSArray, with the ordering left to the subclass. So the
 // arithmetic belongs to a subclass and the classes here own the three things every subclass needs and
 // none of them re-implements:
 //
 //   - the FILTER, per source: the offsets, the kernel sizes, the strides, the dilation rates and the
 //     edge mode, with the defaults the header states. MPSNDArrayUnaryKernel's own comment gives the
-//     offsets' default as "0,0,0...", the kernelSizes' as 1, the strides' as 1 and the edgeMode's as
-//     "MPSImageEdgeModeZero" (MPSNDArrayKernel.h:227-266); MPSNDArrayBinaryKernel repeats all five
+//     offsets' default as zero in every dimension, the kernelSizes' as 1, the strides' as 1, and
+//     the edge mode's as MPSImageEdgeModeZero (MPSNDArrayKernel.h:227-266); MPSNDArrayBinaryKernel repeats all five
 //     for a primary and a secondary source (:389-470). Those are stored once, here, and read back
 //     through the accessors both spellings have - the plural one on the base and the singular one on
 //     the unary and binary forms.
 //   - the DESTINATION, which -destinationArrayDescriptorForSourceArrays:sourceState: and
 //     -resultStateForSourceArrays:sourceStates:destinationArray: answer. The header is explicit that
-//     the object's own properties must already be configured "as if the -encode call was about to be
-//     made, before this method is called. Those properties may affect the results"
+//     the object's own properties need to be in place beforehand, since they may affect the results
 //     (MPSNDArrayKernel.h:150-157), so the descriptor is built from them and not from the sources
 //     alone.
 //   - the ENCODE PLUMBING: taking each source into a host buffer, writing the destination back, and
@@ -54,9 +53,8 @@
 
 
 // What the state records is the FILTER and the SHAPES, which is what a gradient pass needs and what
-// the header's own use says: "A state created to record a MPSCNNKernel properties at the time an
-// -encode call was made. The contents are opaque" (MPSNDArrayGradientState.h:17-23). "The contents
-// are opaque" is why this class adds no accessor of its own beyond the ones MPSState already has: a
+// the header's own use says it records the kernel's properties at the time an encode runs, and that its contents are
+// opaque (MPSNDArrayGradientState.h:17-23). That opacity is why this class adds no accessor of its own beyond the ones MPSState already has: a
 // gradient kernel is handed the state and asks it, and the only public question a caller can ask of
 // an MPSState is the one MPSState answers.
 - (void)charon_mps_recordFor:(MPSNDArrayMultiaryBase *)kernel sources:(NSArray<MPSNDArray *> *)sources
@@ -82,8 +80,8 @@
     // a [3,2] source by three indices has a result of the SAME shape as its source, so nothing in the
     // two arrays says which axis was gathered, and deriving it from the shapes - which this did first -
     // fails on exactly the case where the index count happens to match. The header's RFC comment above
-    // MPSNDArrayUnaryGradientKernel's declarations says where it belongs: "This may not be viewed as a
-    // problem as this information is automatically set by the gradient state" (MPSNDArrayKernel.h:318-321).
+    // MPSNDArrayUnaryGradientKernel's declarations says where it belongs, and that the gradient state supplies it
+    // (MPSNDArrayKernel.h:318-321).
     // So the state records it, read from the kernel through the one selector the release declares for
     // it - `axis`, which is MPSNDArrayGather's own public property (MPSNDArrayGather.h:44-48) - and a
     // kernel that declares no axis answers nothing and the zero is the default.
@@ -287,7 +285,7 @@
 // The descriptor a result of these sources has, which is the shape of the LAST source with the
 // stride and the dilation already applied - a filter with a stride of two and a kernel of three over
 // a 2-D source of 5x5 produces 2x2, and the header's own -destinationArrayDescriptorForSourceArrays:
-// "Return a descriptor suitable for allocating a NSArray to receive the result" says the result is
+// the header's -destinationArrayDescriptorForSourceArrays: returns a descriptor for allocating the receiving array, so the result is
 // what the descriptor is for. The edge mode does not change the SHAPE here: it decides what a walk
 // reads off the end, and the release's -destinationArrayDescriptorForSourceArrays: is asked before an
 // encode, so a shape that grew with the edge mode would be a shape no caller asked for.
@@ -317,7 +315,7 @@
                              sourceStates:(NSArray<MPSState *> *)sourceStates
                          destinationArray:(MPSNDArray *)destinationArray
 {
-    // "A state created to record a MPSCNNKernel properties at the time an -encode call was made"
+    // The header describes such a state as one that records the kernel's properties as they stood when an encode ran
     // (MPSNDArrayGradientState.h:17-23). So the state this makes is one that recorded THIS object's
     // filter and THESE sources' shapes, which is what a gradient pass reads.
     (void)sourceStates;
@@ -444,7 +442,7 @@
     (void)outputStateIsTemporary;
     MPSNDArray *destination = [self encodeToCommandBuffer:cmdBuf sourceArrays:sourceArrays];
     if (outGradientState) {
-        // "the address output gradient state is written to this address"
+        // the header says the state for the gradient is stored at the caller's address
         // (MPSNDArrayKernel.h:143-146), so a caller that asked for one gets a state that recorded
         // the filter and the shapes of THIS encode - the same object -resultStateForSourceArrays:
         // hands out, because the two are asked at the same moment about the same object.
@@ -651,9 +649,8 @@
     // The gradient kernel's own designated initializer is -initWithDevice: (MPSNDArrayKernel.h:332-333)
     // and -initWithDevice:sourceCount:sourceGradientIndex: is marked unavailable on it (:334-335), so
     // the gradient of a unary filter differentiates its only source and the index is 0 - which is what
-    // the RFC comment above the declaration says the design costs: "There is currently no way to
-    // manually set this information for the gradient. This may not be viewed as a problem as this
-    // information is automatically set by the gradient state."
+    // the RFC comment above the declaration says the design costs: the gradient cannot be given this by hand, and
+    // the header does not count that as a real cost, because the gradient state fills it in on its own.
     return [super initWithDevice:device sourceCount:1 sourceGradientIndex:0];
 }
 

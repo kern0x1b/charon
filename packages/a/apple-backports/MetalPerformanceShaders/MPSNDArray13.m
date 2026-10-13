@@ -2,17 +2,16 @@
 // storage half of the 13.0 NDArray family, from the headers of the SDK of iOS 16.4.
 //
 // WHAT THIS IS. The class discussion in MPSCore/MPSNDArray.h is the source of the design. An
-// MPSNDArray is "a MTLBuffer based storage container for multi-dimensional data"; the major row -
-// "the dimension in which successive elements appear adjacent to one another in memory" - is the
-// 0th; "dimensions after the 0th are a densely packed array of rows of size rowBytes"; and a
-// transpose or a slice is a VIEW - "MPS will usually defer doing a physical transpose operation
-// until later, when it becomes clear that one is actually required" - where "the slice is performed
-// first and the result of the slice is transposed". So a descriptor here is a shape (a slice range
+// MPSNDArray is a storage container over an MTLBuffer for multi-dimensional data; the major row (the
+// dimension whose neighbouring elements sit next to each other in memory) is the 0th; the dimensions after
+// it make up a tightly packed set of rows, each rowBytes long; and a transpose or a slice is a VIEW, which
+// the framework usually defers as a physical transpose until one is actually required. Where both happen,
+// the slice comes first and then the transpose. So a descriptor here is a shape (a slice range
 // per dimension) with a permutation over it, and a view is that descriptor applied to its parent's
 // storage: the parent's buffer, an offset, a permutation of the parent's strides, and no copy.
 //
-// The 16-byte row the header recommends - "Generally, it should be at least a multiple of 16 bytes"
-// (MPSCore/MPSNDArray.h's class discussion) - is what MPSNDArrayRoundedRowBytes() produces, so the 0th
+// The 16-byte row the header recommends (MPSCore/MPSNDArray.h's class discussion, which advises a multiple of 16 bytes)
+// is what MPSNDArrayRoundedRowBytes() produces, so the 0th
 // dimension's stride is a rounded row rather than an element and every later dimension is a whole
 // number of rows.
 //
@@ -60,8 +59,8 @@ static void MPSNDArray_plantedCopy(void *destination, const void *source, size_t
 #endif
 
 // The allocator, which MPSCore/MPSNDArray.h:217 asks for by name. Its one method names the kernel
-// that will overwrite the array it makes, and says of that argument: "Note that the MPS
-// implementations of this protocol don't need this field. It is provided for your convenience"
+// that will overwrite the array it makes, and says of that argument that the MPS implementations do not
+// need the field, which exists for the convenience of other implementers (MPSCore/MPSNDArray.h:165-167). So
 // (MPSCore/MPSNDArray.h:165-167). So the kernel is accepted and not asked anything, which is what
 // the release's own allocators do; an allocator that made the array a kernel's private scratch would
 // have to read it, and this one does not pretend to.
@@ -150,8 +149,8 @@ static void MPSNDArray_plantedCopy(void *destination, const void *source, size_t
 // getter alone would say a [2,3] and a [3,2] are the same numbers in a different sequence, and this
 // says they are different shapes.
 //
-// It is the WHOLE length, not the slice's, and the header permits exactly that: "The dimension
-// length is at least as large as the existing slice length" (MPSCore/MPSNDArray.h:235-237). The
+// It is the WHOLE length, not the slice's, and the header permits exactly that: a dimension may keep a
+// length no shorter than the existing slice (MPSCore/MPSNDArray.h:235-237). The
 // release's own answer for a view whose dimension 1 is sliced to 2 of 4 is 4, so a walk that used
 // this number to bound itself would run past the slice - which is why the packed walk below takes
 // its lengths from the slice and only its strides from here.
@@ -186,9 +185,9 @@ static void MPSNDArray_plantedCopy(void *destination, const void *source, size_t
     _slices[dimensionIndex] = subRange;
 }
 
-// The order the dimensions run in. The header's own words (:70-74): "The default ordering is
-// {0,1,2,...,15}. After a transpose of dimensions 0 and 1, it will be: {1,0,2,3,...}", and each
-// element "must contain the new postion of dimenson i". So a transpose swaps the two entries and
+// The order the dimensions run in. The header gives the default as 0 through 15 in turn (:70-74), and after a
+// transpose of dimensions 0 and 1 the order becomes 1, 0, 2, 3 and so on, with each entry holding the new position
+// of its dimension. So a transpose swaps the two entries and
 // touches nothing else - which is why this is two array writes and no shape arithmetic, and why a
 // transposed shape of [a,b] still holds a and b elements and only changes which runs first.
 - (vector_uchar16)dimensionOrder { return _order; }
@@ -203,8 +202,8 @@ static void MPSNDArray_plantedCopy(void *destination, const void *source, size_t
 }
 
 // The whole shape, which the three initialisers below all name. Dimension 0 is the fastest moving
-// one, as MPSCore/MPSNDArray.h:93-104 states for this form: "dimension lengths provided by the user
-// goes from fastest moving to slowest moving dimension".
+// one, as MPSCore/MPSNDArray.h:93-104 states for this form: the lengths given run from the fastest moving
+// dimension to the slowest moving one.
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunavailable-declarations"
 + (instancetype)descriptorWithDataType:(MPSDataType)dataType
@@ -246,11 +245,10 @@ static void MPSNDArray_plantedCopy(void *destination, const void *source, size_t
     return [self descriptorWithDataType:dataType dimensionCount:count dimensionSizes:sizes];
 }
 
-// The shape factory, whose order the header gives separately (MPSCore/MPSNDArray.h:111-119): the
-// array "goes from slowest moving to fastest moving dimension. This is same order as MLMultiArray
-// in coreML and most frameworks in Python", and MPSCoreTypes.h:472 spells the same example out - "A
-// shape @[5, 4, 2] would mean fastest moving 0th dimension is one with size 2, 1st dimension is size
-// 4 finally slowest moving 2nd dimension is size 5". So this is the REVERSE of the dimensionCount:
+// The shape factory, whose order the header gives separately (MPSCore/MPSNDArray.h:111-119): the array runs
+// from the slowest moving dimension to the fastest, which is what MLMultiArray (CoreML) and many Python
+// frameworks do. MPSCoreTypes.h:472 gives the example of a shape [5, 4, 2]: dimension 0 of size 2 moves
+// fastest, then dimension 1 of size 4, and dimension 2 of size 5 moves slowest. So this is the REVERSE of the dimensionCount:
 // form above, and a caller that used both on the same numbers gets two different arrays, which is the
 // header's design and not a slip to be smoothed over here.
 + (instancetype)descriptorWithDataType:(MPSDataType)dataType shape:(NSArray<NSNumber *> *)shape
@@ -366,8 +364,8 @@ static void MPSNDArray_plantedCopy(void *destination, const void *source, size_t
 - (NSString *)label { return _label; }
 - (void)setLabel:(NSString *)label { _label = [label copy]; }
 
-// A NEW descriptor of this array's own shape, which the header promises is made each time "to allow
-// for further customization of the descriptor by the application" (MPSCore/MPSNDArray.h:243-251).
+// A NEW descriptor of this array's own shape, which the header promises is made each time so the app
+// can customise it (MPSCore/MPSNDArray.h:243-251).
 // So the lengths are copied and the order is re-applied by transposing: a caller that transposes
 // the descriptor it is handed must not transpose the array it describes.
 - (MPSNDArrayDescriptor *)descriptor
@@ -395,8 +393,7 @@ static void MPSNDArray_plantedCopy(void *destination, const void *source, size_t
 //     through the order;
 //   - a transposed VIEW of a [2,3] array reports 2 and 3, the array's own shape (case 7), and a view
 //     of a [3,4,2] array sliced on dimension 1 reports 3, 4 and 2 (case 6) - the whole shape, with the
-//     slice not narrowing it, which MPSCore/MPSNDArray.h:235-237 permits: "The dimension length is
-//     at least as large as the existing slice length."
+//     slice not narrowing it, which MPSCore/MPSNDArray.h:235-237 permits: a dimension may keep a length no shorter than its slice.
 //
 // So the accessors answer from the shape and the packed walk answers from the view, and a walk that
 // bounded itself by -lengthOfDimension: would run off the end of every slice.
@@ -431,10 +428,9 @@ static void MPSNDArray_plantedCopy(void *destination, const void *source, size_t
 }
 
 // The buffer, made on the first ask. That is the release's own order, from -resourceSize's own
-// discussion: "most MPSNDArrays are allocated initially without a backing store. The backing store
-// is allocated lazily when it is needed, typically when the MPSNDArray is written to the first
-// time. Consequently, in most cases, it should be inexpensive to make a MPSImage to see how much
-// memory it will need, and release it if it is too large" (MPSCore/MPSNDArray.h:279-286). So
+// discussion: the header says an array starts with no backing store, that the store is allocated lazily (typically
+// on the first write), so measuring an unbacked array is cheap, and a caller may build a throwaway MPSImage to see
+// how much memory it needs and release it if that is too large (MPSCore/MPSNDArray.h:279-286). So
 // -resourceSize is answerable before anything exists, and this is where the allocation happens.
 - (id<MTLBuffer>)charon_mps_makeBuffer
 {
@@ -461,8 +457,8 @@ static void MPSNDArray_plantedCopy(void *destination, const void *source, size_t
 // whole number of the ones before, with no padding between rows.
 //
 // The BUFFER side is what the caller's stride array says, and a nil stride array is the packed form
-// the header documents - the strides are "calculated for you assuming that the data is packed
-// without additional space in between elements, rows, etc" (MPSCore/MPSNDArray.h:389-392) - so with
+// the header documents: with no stride array given, the strides are worked out on the assumption of no
+// padding between elements or rows (MPSCore/MPSNDArray.h:389-392), so with
 // a nil array the two sides agree and the copy is a straight gather, and with a caller's own strides
 // it is the gather those strides describe.
 //
@@ -534,8 +530,8 @@ static void MPSNDArrayViewLayout(MPSNDArrayDescriptor *view, MPSNDArrayDescripto
 }
 
 // -readBytes:strideBytes:, the release's own accessor (MPSCore/MPSNDArray.h:383-392). A nil stride
-// array is the packed form it documents - "calculated for you assuming that the data is packed
-// without additional space in between elements, rows" - and a non-nil one is a caller's own byte
+// array is the packed form it documents, with the strides worked out for the caller on the assumption of no
+// padding between elements or rows, and a non-nil one is a caller's own byte
 // stride per dimension, which is what an export with rowStrides writes through.
 //
 // The walk is an odometer over this array's own shape, dim 0 the fastest running, gathering through
@@ -633,18 +629,17 @@ static void MPSNDArrayViewLayout(MPSNDArrayDescriptor *view, MPSNDArrayDescripto
 
 - (void)synchronizeOnCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
 {
-    // The header's own use for this is narrow: "Use a blit encoder if a discrete device to update
-    // CPU contents of underlying buffer with latest GPU value" (MPSCore/MPSNDArray.h:403). The
+    // The header's own use for this is narrow: on a discrete device it brings the CPU-side copy of the buffer up to date
+    // with the latest GPU value (MPSCore/MPSNDArray.h:403). The
     // buffer here is host memory and both accessors above have already written it, so there is no
     // discrete device and nothing to transfer.
     (void)commandBuffer;
 }
 
 // -arrayViewWithCommandBuffer:descriptor:aliasing:, which the class discussion describes as the way
-// a slice, a transpose or "other change in property" is made, and as usually ALIASING: "Otherwise,
-// it is likely that the new MPSNDArray will share a MTLBuffer with the parent and alias its memory"
-// (MPSCore/MPSNDArray.h:255-262). So the view shares this array's buffer and answers -parent with
-// it, which is the property the header gives for exactly that test.
+// a slice, a transpose or another property change is made, and as usually ALIASING: the header says a new array
+// is likely to share the parent's MTLBuffer and so alias its memory (MPSCore/MPSNDArray.h:255-262). So the view
+// shares this array's buffer and answers -parent with it, which is the property the header gives for exactly that test.
 - (MPSNDArray *)arrayViewWithCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
                                  descriptor:(MPSNDArrayDescriptor *)descriptor
                                   aliasing:(MPSAliasingStrategy)aliasing
@@ -685,8 +680,8 @@ static void MPSNDArrayViewLayout(MPSNDArrayDescriptor *view, MPSNDArrayDescripto
     view->_parent = self;
     // The shape a view reports is its PARENT's, not its own descriptor's slice: a view of a [3,4,2]
     // array whose dimension 1 is sliced to 2 of 4 reports 3, 4 and 2, not 3, 2 and 2. Measured in cases
-    // 6 and 8 of tests/backports/host/mpsndarray/run.sh, and permitted by MPSCore/MPSNDArray.h:235-237
-    // - "The dimension length is at least as large as the existing slice length."
+    // 6 and 8 of tests/backports/host/mpsndarray/run.sh, and the header permits a dimension to keep a length no shorter than its slice
+    // (MPSCore/MPSNDArray.h:235-237).
     view->_shape = _shape;
     return view;
 }
@@ -796,12 +791,12 @@ static void MPSNDArrayViewLayout(MPSNDArrayDescriptor *view, MPSNDArrayDescripto
     NSUInteger _readCount;
 }
 
-// "A MPSNDArray that uses command buffer specific memory to store the array data"
+// The header describes a temporary as one whose data lives in command-buffer-specific memory
 // (MPSCore/MPSNDArray.h:407-416). There is no command-buffer-specific pool to draw from on a device
 // whose buffer is host memory, so what makes this a temporary array is the readCount and the
 // allocator, not a different kind of storage: the readCount starts at the header's documented
-// value of 1, "indicating a MPSNDArray that may be overwritten any number of times, but read only
-// once" (MPSCore/MPSNDArray.h:456-458), and every kernel that reads one decrements it, which is
+// value of 1, which means the array can be rewritten as often as needed but read just once
+// (MPSCore/MPSNDArray.h:456-458), and every kernel that reads one decrements it, which is
 // what CharonMPSConsumeReadCount() does for the whole family.
 + (instancetype)temporaryNDArrayWithCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
                                       descriptor:(MPSNDArrayDescriptor *)descriptor
@@ -830,7 +825,7 @@ static void MPSNDArrayViewLayout(MPSNDArrayDescriptor *view, MPSNDArrayDescripto
 
 - (NSUInteger)readCount { return _readCount; }
 
-// "It is an error to change the readCount once it is zero" (MPSCore/MPSNDArray.h:446-448), which is
+// The header calls it an error to change readCount once it has reached zero (MPSCore/MPSNDArray.h:446-448), which is
 // a promise about when a temporary's storage may be reused. Here there is no pool to return the
 // storage to, so the count is a counter a caller reads rather than one that frees anything - and
 // raising it from zero is refused rather than allowed, so the error the header describes is still
