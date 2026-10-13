@@ -6,8 +6,8 @@
 //
 //   reference, not copied: iPhoneOS26.2.sdk/System/Library/Frameworks/AVFoundation.framework/Headers/AVMetrics.h
 //
-// The names, types, signatures and availability are the interface's. The header's prose, doc comments and
-// copyright banner are not carried. One change from the interface, stated here rather than made silently:
+// The names, types, signatures and availability are the interface's. The header's prose and doc comments are
+// not carried. One change from the interface, stated here rather than made silently:
 // all 26 `, visionos(<version>)` are DROPPED from the availability annotations.
 // SDK 16.4's availability.h does not know the word, and expanding it there is `error: expected ','` on
 // the line after the macro's own argument - one error per annotation. Nothing is lost: the annotation
