@@ -62,7 +62,7 @@
     return [self charon_highlightedAngle];
 }
 
-// :53 gives angles as the remaining angles of this lane guidance, leaving out the highlighted one whenever one is set,
+// :53 lists the angles still left on this lane guidance, leaving out the highlighted one whenever one is set,
 // and the property is `readonly, copy`.
 - (NSArray<NSMeasurement<NSUnitAngle *> *> *)angles
 {

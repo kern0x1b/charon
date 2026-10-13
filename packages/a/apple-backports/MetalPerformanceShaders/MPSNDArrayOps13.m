@@ -8,7 +8,7 @@
 //
 //   MPSNDArrayGather (MPSNDArrayGather.h:39-46): off the gather axis, result[i] is source[i] over the slice's length;
 //       along the axis, result[i] is the source at indices[i], for each index in turn. So the result has the source's
-//       shape on every axis but the gather's, and on the gather's axis it has as many elements as
+//       shape on every axis but the gather's, and on the gather's axis it has one element for each
 //       there are indices - which is the one place the result is NOT the source's shape, and an
 //       implementation that kept the source's length there would answer a different question.
 //
@@ -19,7 +19,7 @@
 //
 //   MPSNDArrayMatrixMultiplication (MPSNDArrayMatrixMultiplication.h:33-37): the result is alpha times A times B
 //       plus beta times C, with each of A, B, C and D held in the two major dimensions of the array. Where an input's
-//       third or fourth dimension is 1, its data is broadcast to the matching dimension of the other input (:36-37).
+//       third or fourth dimension is 1, its data is broadcast to the corresponding axis of the other input (:36-37).
 //       So a 4-D array is a BATCH of 2-D matrices, dimension 2 and 3 being the batch
 //       and the matrices' two most major dimensions, and a 1 there broadcasts.
 //

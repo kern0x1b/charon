@@ -10,7 +10,7 @@
 //  not an NSExtensionContext, and the parameters come from the interaction itself - which the port
 //  carries, donation and all. What a release with Siri shows *beside* this view is the system's,
 //  and this class does not pretend to be it: it answers with the size it wants and the parameters
-//  it configured itself with, which is the whole of what the completion blocks carry.
+//  it set up on its own, which is the whole of what the completion blocks carry.
 //
 //  The class is named as Charon's own (`CharonIntentsUIHostedViewController`) because no SDK
 //  header declares it: the SDK declares the *protocol*, and the class that conforms to it is the

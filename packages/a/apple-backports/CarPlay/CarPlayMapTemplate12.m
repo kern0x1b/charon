@@ -92,7 +92,7 @@ static const NSUInteger CharonMapMaximumPreviews = 12;
 #pragma mark - the panning interface
 
 // CPMapTemplate.h:129-138. The header's own rule: while the panning interface is showing, at most two mapButtons are visible.
-// If more than two are visible when the template moves into panning mode, the system hides one or more map buttons, starting from the end of the
+// If more than two are visible when the template moves into panning mode, the system hides some of the map buttons, working back from the tail of the
 // mapButtons array.
 - (void)showPanningInterfaceAnimated:(BOOL)animated
 {
@@ -177,7 +177,7 @@ static const NSUInteger CharonMapMaximumPreviews = 12;
 #pragma mark - the travel estimates
 
 // CPMapTemplate.h:98-100: the header says the template refreshes the figures for a trip preview or an active
-// navigation trip, with the default color for time remaining.
+// navigation trip, using the default color for the remaining time.
 - (void)updateTravelEstimates:(CPTravelEstimates *)estimates forTrip:(CPTrip *)trip
 {
     // "with the default color for time remaining" is CPMapTemplate.h:37 - CPTimeRemainingColorDefault,
@@ -186,7 +186,7 @@ static const NSUInteger CharonMapMaximumPreviews = 12;
 }
 
 // CPMapTemplate.h:102-105: the header says the template refreshes the arrival, remaining-time and remaining-distance figures,
-// with a specified color for time remaining.
+// with a chosen color for the remaining time.
 - (void)updateTravelEstimates:(CPTravelEstimates *)estimates
                       forTrip:(CPTrip *)trip
          withTimeRemainingColor:(CPTimeRemainingColor)timeRemainingColor

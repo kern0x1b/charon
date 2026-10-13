@@ -6,12 +6,12 @@
 //
 // What this release can answer, and why that is the whole of it
 //
-// Exposure Notification is a system service that arrived in iOS 12.5. It needs three things this
+// Exposure Notification is an OS service that arrived in iOS 12.5. It needs three things this
 // release does not have: the framework, which 6.1.3 has no trace of (its ObjC inventory carries no EN
 // class and its export trie carries no EN symbol), the entitlement and the per-device authorization
 // behind the service, which no port can grant itself, and the Bluetooth Low Energy subsystem the
 // service broadcasts over, which iOS 6 does not run at all -- the ENManager header says so itself,
-// twice: that Bluetooth is required for Exposure Notification under ENStatusBluetoothOff, and that the
+// twice: that Bluetooth must be on for Exposure Notification under ENStatusBluetoothOff, and that the
 // service can use Bluetooth where apps cannot (the header).
 //
 // So there is no detection to perform and no key to hand out, and every member that needs the service

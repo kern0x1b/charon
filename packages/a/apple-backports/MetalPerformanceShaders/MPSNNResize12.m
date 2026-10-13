@@ -24,7 +24,7 @@
 // MPSNNCropAndResizeBilinear's own doc gives for a region outside [0, 1] - except that this kernel
 // extrapolates, which is below.
 //
-// MPSNNCropAndResizeBilinear takes its regions as `const MPSRegion *`, a pointer to an array of as many records
+// MPSNNCropAndResizeBilinear takes its regions as `const MPSRegion *`, a pointer to a run of as many records
 // as there are regions, each giving a crop box in the source image with normalized coordinates. MPSRegion is
 // { MPSOrigin origin; MPSSize size; } and
 // both are doubles (MPSCoreTypes.h:321-338 and :355-359), so a region is read as the array of

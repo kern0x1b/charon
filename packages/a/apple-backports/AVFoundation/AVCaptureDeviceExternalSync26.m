@@ -22,7 +22,7 @@
 //                                          this input's minimum; kCMTimeInvalid there means NO here.
 //   -isExternalSyncSupported                the same derivation from -minSupportedExternalSyncFrameDuration.
 //   -videoFrameDurationLocked                NO, by the header's own definition (:376): true when an input attached to the device has its
-//                                          activeLockedVideoFrameDuration set to a value other than kCMTimeInvalid - read with this port's own input:
+//                                          activeLockedVideoFrameDuration set to any value except kCMTimeInvalid - read with this port's own input:
 //                                          no input here can be, because -setActiveLockedVideoFrameDuration:
 //                                          refuses every valid value (below).
 //   -activeLockedVideoFrameDuration         kCMTimeInvalid, the header's own way to disable locked frame duration (:288), and its

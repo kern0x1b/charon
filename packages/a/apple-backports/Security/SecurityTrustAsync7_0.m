@@ -19,7 +19,7 @@
 // evaluates where it is called.
 //
 // THE EFFECT, STATED because the ORDERING is the contract and the port cannot keep it:
-// SecTrust.h:371-375 documents the queue argument as the dispatch queue on which the result callback runs,
+// SecTrust.h:371-375 documents the queue argument as the dispatch queue that runs the result callback,
 // with NULL meaning the current dispatch queue. This port delivers the callback on
 // the caller's queue when one is given, so the caller sees the callback AFTER this function returns -
 // which is the ordering the contract promises - and the evaluation itself has already run by then.

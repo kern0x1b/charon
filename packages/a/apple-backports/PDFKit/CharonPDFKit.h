@@ -585,7 +585,7 @@ typedef NS_ENUM(NSInteger, PDFActionNamedName) {
 //   -drawForPage:active: and -drawForPage:withBox:active:  a CGContext and a PDFDisplayBox, which a port
 //     that reads documents has no way to be handed.  Inert, as PDFOutline's two write paths are.
 //   -initWithDocument: IS declared and IS the container the mutators fill, which PDFSelection.h:20 says it
-//     is: the header says an empty PDFSelection is returned and can serve as a container into which
+//     is: the header says an empty PDFSelection is returned and can later be filled by
 //     you add selections with -[addSelection] or -[addSelections].
 //
 // THE RANGE MODEL, which is the whole of the class: a selection is a list of spans, each a page and a

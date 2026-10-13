@@ -51,12 +51,12 @@
 //           upcomingManeuvers has to be added first through this method -- so it appends to an ordered
 //           list and tells the template, because the guidance card is what shows them.
 //   :90-91 -addLaneGuidances: adds CPLaneGuidances in chronological order, each as soon as it
-//           is available -- the same accumulation for lane guidance.
+//           is ready -- the same accumulation for lane guidance.
 //   :78    currentLaneGuidance is nil until a guidance is given; the header says a guidance set on it has to be added first with addLaneGuidances:,
 //           so the value is nil until it is given and nil is a real answer, not a missing one.
-//   :96-97 currentRoadNameVariants holds the variants of the current road name, from the wordiest to the least.
+//   :96-97 currentRoadNameVariants holds the wording options for the present road name, from the wordiest to the least.
 //   :101-102 maneuverState is a reading of how close the maneuver is.
-//   :54-57 -resumeTripWithUpdatedRouteInformation: resumes the current trip with updated route
+//   :54-57 -resumeTripWithUpdatedRouteInformation: resumes the active trip, refreshed with new route
 //           information, so the information replaces what the session holds for the current route.
 //
 // The class's own rule about which release owns what is the reason this file exists separately and

@@ -4,7 +4,7 @@
 // the API of exactly one release.
 //
 // The header, at :19-24, says the kernel copies image data into a matrix, one image's data per row. The
-// data layout sets the order in which the feature channels are placed in the matrix, and a batch of images
+// data layout fixes how the feature channels are placed in the matrix, and a batch of images
 // occupies several rows, one for each image.
 //
 // So one image becomes one row of the destination matrix, and dataLayout is what decides the order
@@ -15,7 +15,7 @@
 // -initWithDevice: is given when the caller does not say.
 //
 // Two things bound the copy, and both come from the header:
-//   - :23-24 the origin, measured from [0, 0] in the destination matrix, is where writing starts; it
+//   - :23-24 the origin, measured from the zero corner of the destination matrix, is where writing starts; it
 //     defaults to [0, 0], and its z must be 0. The origin's x is the row the first image goes into and its
 //     y the column that row starts at, which is how :89 reads it for the batch form, where each image gets
 //     its own row beginning at destinationMatrixOrigin.x.

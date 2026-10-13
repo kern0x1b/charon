@@ -14,7 +14,7 @@
 //   '_MusicDeviceStopNote', '_MusicDeviceSysEx']
 //
 // MusicDevice.h of SDK 16.4 (:185-186) documents MusicDeviceMIDIEvent as the call that sends MIDI channel
-// messages to an audio unit: inUnit is the unit, inStatus the MIDI status byte, and inData1 and inData2 are read
+// messages sent to the audio unit: inUnit is the unit, inStatus the MIDI status byte, and inData1 and inData2 are read
 // as the MIDI specification reads them, the channel and the command both in the status byte. All of it is
 // API_AVAILABLE(ios(5.0)). MusicDeviceSysEx is the non-channel form, and
 // MusicDeviceStartNote/MusicDeviceStopNote are the extended note API that returns the note instance
@@ -154,7 +154,7 @@
 }
 
 // A system-exclusive block is the release's own call, and its length is the whole message, F0 and F7
-// start and termination bytes included (MusicDevice.h:227-232).
+// bracketing bytes included (MusicDevice.h:227-232).
 - (void)sendMIDISysExEvent:(NSData *)midiData
 {
     if (midiData.length == 0) {

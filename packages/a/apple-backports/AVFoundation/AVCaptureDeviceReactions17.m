@@ -16,7 +16,7 @@
 //                                    performEffectForReaction, and says it may differ between devices. This camera supports none, so the list
 //                                    is empty. The host's camera lists all eight (measured), for the same
 //                                    reason it lists them: its camera has the hardware.
-//   -canPerformReactionEffects       NO: the header (:2471) answers YES only when reaction resources are available on the device instance.
+//   -canPerformReactionEffects       NO: the header (:2471) answers YES only when reaction resources exist on the device instance.
 //   -reactionEffectsInProgress       an empty array: nothing can start a reaction, so none is running.
 //   +reactionEffectsEnabled          the DOCUMENTED rule, read out of the application: on iOS, reaction effects are on by default for
 //                                    video conferencing apps (those with voip among their background modes), and other apps may opt in through

@@ -11,8 +11,8 @@
 //
 // The header defines the method as the release's own one-argument factory plus an override, and names
 // videoCompositionWithPropertiesOfAsset: as its companion. The returned AVVideoComposition is built from
-// instructions honoring the spatial properties and timeRanges of the asset's video tracks. Anything
-// outside spatial layout and timing, such as the background color of a composition or its
+// instructions honoring each video track's spatial properties and its timeRanges. Anything
+// outside spatial arrangement and timing, such as the background color of a composition or its
 // post-processing behaviors, is left to a prototype instruction the caller supplies.
 //
 // Both halves are separate halves. 6.1.3's AVMutableVideoComposition carries 12 own instance

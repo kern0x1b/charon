@@ -208,7 +208,7 @@ static void charon_queueReturnedBuffer(void *userData, AudioQueueRef queue, Audi
 {
     // The header describes the flush as dropping enqueued buffers with presentation time stamps at or
     // after the given time, and notes that a flush can fail when the source time is too close to, or before, the current
-    // time (the header). Measured on the host, on a renderer holding no media, for a time in the past and
+    // time (the header). Measured on the host, on a renderer holding no media, for an earlier time and
     // for one in the future alike: the handler is called with YES and nothing is raised, kCMTimeInvalid
     // included.
     @synchronized (self) {

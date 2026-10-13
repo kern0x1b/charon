@@ -4,7 +4,7 @@
 
 // Loading a Metal texture out of a Model I/O texture, which is what MetalKit's two MDL methods are.
 //
-// The header uses the same phrase for both - creating a Metal texture and loading image data from the given
+// The header uses the same phrase for both - creating a Metal texture and loading pixel data from the supplied
 // MDLTexture (MTKTextureLoader.h:268 and :332) - and the work is a real one: an MDLTexture is
 // a block of texels of its own channel count and channel encoding (the Model I/O files carry that),
 // and a Metal texture is a block of texels of a Metal pixel format. This maps the first onto the

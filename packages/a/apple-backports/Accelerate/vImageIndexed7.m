@@ -70,7 +70,7 @@ static vImage_Error charon_subbyte_ready(const vImage_Buffer *src, const vImage_
 
 
 // The pixel at `column` of a row of `bits`-wide pixels, big endian within the byte: the low-indexed pixel
-// is in the high-order bits, and a scanline can end partway through a byte.
+// sits in the high-order bits, and a scanline can end partway through a byte.
 static unsigned char charon_subbyte_at(const uint8_t *row, vImagePixelCount column, int bits)
 {
     int per_byte = 8 / bits;

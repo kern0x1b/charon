@@ -7,7 +7,7 @@
 @implementation AVAudioUnitComponent (Charon16)
 
 // The header (AVAudioUnitComponent.h:160-162) describes this as a dictionary of facts about the AudioComponent's
-// capabilities. Which facts it holds depends on the component's type, and the keys are defined in AudioUnitProperties.h.
+// capabilities. Which facts it holds depends on the component's type, and the keys are declared in AudioUnitProperties.h.
 //
 // The release cannot describe a component: iOS 6.1.3 exports no AudioComponentCopyInformation and no
 // AudioComponentGetParameter, which is where a modern release answers it, so there is nothing to ask.

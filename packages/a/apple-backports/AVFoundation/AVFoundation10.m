@@ -22,7 +22,7 @@
 
 // 10.0: the header's own three conditions, read against members the release carries.
 //
-//   - WaitingToPlayAtSpecifiedRate holds while the player has no item to play (the receiver's currentItem is nil), asked first because the header names it unconditionally.
+//   - WaitingToPlayAtSpecifiedRate holds while the player holds no playable item (currentItem reads nil), asked first because the header names it unconditionally.
 //   - Paused is entered on a pause, which reaches the player as -setRate: with 0.0, so a zero rate with an item to play is Paused (AVPlayer.h:185).
 //   - Playing against WaitingToPlayAtSpecifiedRate turns on once the media data is enough to continue playback, which is what
 //     -[AVPlayerItem isPlaybackLikelyToKeepUp] answers (AVPlayerItem.h) - the property is a

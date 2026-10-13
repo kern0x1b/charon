@@ -18,7 +18,7 @@
 //
 // The class discussion also fixes the ORDER every walk below uses: the major row, the dimension whose
 // neighbouring elements sit next to each other in memory, is the 0th, and the dimensions after it are a
-// densely packed array of rows. So a packed host buffer is indexed with dim 0 the fastest running, and
+// densely packed block of rows. So a packed host buffer is indexed with dim 0 the fastest running, and
 // MPSNDArray.h's own initialisers agree - the dimensionSizes array runs from the dimension moving fastest
 // down to the one moving slowest.
 
@@ -77,7 +77,7 @@ static inline BOOL CharonMPSNDArrayUsable(MPSNDArray *_Nullable array, NSString 
     return YES;
 }
 
-// The bytes one row of the major row occupies: `elements` values of `elementSize` bytes, rounded up
+// The bytes one row of the major row occupies: `elements` values of `elementSize` bytes, padded
 // to a multiple of 16. The rounding is the header's own advice, from the class discussion of
 // MPSCore/MPSNDArray.h, which wants each row kept on a 16-byte boundary, and it is why dimension 0's
 // stride is this and not the element's own width: a row that starts mid-line is what the advice is about.

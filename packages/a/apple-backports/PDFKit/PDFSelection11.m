@@ -490,7 +490,7 @@ static NSRange charonTextRangeForRange(PDFPage *page, NSRange range)
 
 - (void)extendSelectionForLineBoundaries
 {
-    // The header says the selection extends to the beginning and end of the selected lines of text, and that on a
+    // The header says the selection reaches from the start to the finish of the selected lines of text, and that on a
     // single line it is extended to the full line width (PDFSelection.h:79).  Measured: inside
     // one line of cgfixture-words the whole 36 characters, and across two lines that already contain their
     // rows of text, no change at all.

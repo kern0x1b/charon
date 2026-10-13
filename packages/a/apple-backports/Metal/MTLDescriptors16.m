@@ -100,8 +100,8 @@
 //
 // A WRITE COPIES, because the header says it always uses copy semantics, and that is measured
 // too: the attachment handed in and the one read back are different objects with the same values. A
-// nil write RESETS the slot to a fresh descriptor, which is what the header means by setting the attachment state at a legal
-// index to nil, which resets it to default values - measured: the slot reads a new object whose indices are MTLCounterDontSample again.
+// nil write RESETS the slot to a fresh descriptor, which is what the header means by setting the attachment state at a valid
+// index set to nil, which returns it to default values - measured: the slot reads a new object whose indices are MTLCounterDontSample again.
 //
 // THIS ARRAY IS NOT SHARED WITH THE THREE IN MTLDescriptors14.m, and it is worth saying why rather than
 // leaving a reviewer to find a near-copy. They are three classes of three other releases' objects, each

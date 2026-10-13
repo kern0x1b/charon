@@ -13,8 +13,8 @@
 // CharonMPSPyramid.h.
 //
 // THE LAPLACIAN PYRAMID (:612-660) is the difference against an interpolated half-resolution level:
-//     LaplacianMipLevel[l] := GaussianMipLevel[l] - Interpolate(GaussianMipLevel[l+1])
-// where Interpolate is the classical 2x signal interpolation (:619-620), which the header spells out
+//     Laplacian level l is the Gaussian level l less the interpolated Gaussian level l+1
+// where Interpolate is the usual twofold upsampling (:619-620), which the header spells out
 // as exactly two steps (:622-633): zero-stuffing, which keeps the source value at each position where x
 // and y are both even and puts zero at the rest, and then filtering with this class's inherited kernel.
 // So the interpolation here is a five-by-five filter over the zero-stuffed source, and a tap that lands

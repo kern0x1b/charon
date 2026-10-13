@@ -18,8 +18,8 @@
 //
 // What the header fixes, and what it does not:
 //
-//   - The systems each kernel solves. MPSMatrixSolve.h:24-26 gives the two forms, op(A) * X = alpha * B in one and
-//     X * op(A) = alpha * B in the other, where A is a triangular matrix of either kind and op(A) is its transpose or itself.
+//   - The systems each kernel solves. MPSMatrixSolve.h:24-26 gives the two forms, with op(A) times X equal to alpha times B in one and
+//     X times op(A) equal to alpha times B in the other, where A is a triangular matrix of either kind and op(A) is its transpose or itself.
 //     B holds the right-hand sides and X the resulting solutions.
 //     MPSMatrixSolve.h:127-129 gives the same shape for the LU solve, with no alpha. So a triangular solve is a
 //     forward or a backward substitution over one triangle, and op() is the choice of triangle and of
@@ -345,7 +345,7 @@ static inline double CharonMPSCholeskyFactor(const CharonMPSMatrixView *view, BO
     }
     NSUInteger order = _order;
     NSUInteger sides = _numberOfRightHandSides;
-    // MPSMatrixSolve.h:24-26: op(A) * X = alpha * B in one form and X * op(A) = alpha * B in the other. Which of the two this is
+    // MPSMatrixSolve.h:24-26: op(A) times X equal to alpha times B in one form and X times op(A) equal to alpha times B in the other. Which of the two this is
     // decides the SHAPE of B and X, not just the loop: with the multiplication on the left B and X are
     // order x sides, and with it on the right they are sides x order - which is what the right flag at :53-60
     // means, since that flag decides which of the solution's dimensions is the column count.

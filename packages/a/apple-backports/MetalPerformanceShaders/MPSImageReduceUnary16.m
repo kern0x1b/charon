@@ -18,8 +18,8 @@
 //     region the walk uses, so the MPSRectNoClip sentinel is resolved against the image before any
 //     texture sees it - a NoClip rectangle has size {-1,-1,0} and to a texture its xoffset + width is -2,
 //     where the framework asserts.
-//  2. clipRect is NOT the read window (:38-40): it fixes the place in the destination where the min and max
-//     values are written, and its width must be at least 2 with a height of at least 1. So clipRect says where the result
+//  2. clipRect is NOT the read window (:38-40): it fixes the place in the destination where the minimum and maximum
+//     entries are stored, and its width must be at least 2 with a height of at least 1. So clipRect says where the result
 //     lands in the destination, and those two lower bounds are preconditions. A clip that fails them is
 //     refused by name and writes nothing, rather than being quietly widened or clipped away.
 //

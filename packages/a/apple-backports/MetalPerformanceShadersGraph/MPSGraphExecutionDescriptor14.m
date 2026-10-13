@@ -87,7 +87,7 @@ static void CharonMPSGraphDescriptorApply(NSMutableArray *waited, NSMutableArray
 }
 
 // The two shared-event methods, which MPSGraph.h declares on THIS class as well as on the executable's own
-// descriptor, and which the runs of both take. The header says the executable waits on these shared events before it
+// descriptor, and which the runs of both take. The header says the executable blocks on these shared events before it
 // schedules execution on the HW, that encoding is not included though it can still go on, and that it signals these events at execution stage and then carries on. See
 // -charon_mps_applyEventsAtStage:named:, which is what a run calls.
 - (void)waitForEvent:(id<MTLSharedEvent>)event value:(uint64_t)value
@@ -152,7 +152,7 @@ static void CharonMPSGraphDescriptorApply(NSMutableArray *waited, NSMutableArray
     _executionDescriptor = executionDescriptor;
 }
 
-// -waitForEvent:value: - the header says the executable waits on these shared events before it schedules execution on the HW,
+// -waitForEvent:value: - the header says the executable blocks on these shared events before it schedules execution on the HW,
 // and the encoding part is not included, though encoding can still continue. That is a fact about a GPU this port does not have:
 // the walk is over the host's memory on the CPU and there is nothing to schedule. So the event is KEPT and
 // checked when the run reaches it, and a run whose event has not reached the value the caller named is refused
@@ -162,7 +162,7 @@ static void CharonMPSGraphDescriptorApply(NSMutableArray *waited, NSMutableArray
     CharonMPSGraphDescriptorWait(_waitedEvents, event, value, @"an executable execution descriptor");
 }
 
-// -signalEvent:atExecutionEvent:value: - the header says the executable signals these shared events at an execution stage
+// -signalEvent:atExecutionEvent:value: - the header says the executable raises these shared events at an execution stage
 // and then carries on at once. Measured: the event's own signaledValue is 0 until a run signals it, and the one
 // stage the header names is MPSGraphExecutionStageCompleted, so a run writes the value into the event when it
 // has finished its walk and then goes on.

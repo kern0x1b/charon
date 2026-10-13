@@ -9,7 +9,7 @@
 //   MPSImageHistogramInfo holds numberOfHistogramEntries (the bin count), histogramForAlpha, minPixelValue
 //   and maxPixelValue. The header's wording on the two bounds gives the range as half-open at the bottom
 //   and closed at the top, and a value outside that range is not binned at all.
-//   :42  clipRectSource - which part of the source to read, intersected with the image, default
+//   :42  clipRectSource - the region of the source to read, intersected with the image, default
 //        MPSRectNoClip. Same rule the reduction family has, from the same wording.
 //   :49  zeroHistogram - when YES (the default) the result memory is zero-initialized first, and when NO it is
 //        left as it was. So a caller that sets NO is asking for the buffer's existing contents to be ADDED to,

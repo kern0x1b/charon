@@ -54,7 +54,7 @@
 // pointer into a dead object always does. A second reason it was wrong: nothing read it.
 //
 // So this accepts the callback, stores nothing, and answers noErr, and here is precisely what a caller gets
-// The 26.2 header says of the installed callback that once it is installed, outputMultiImageCallback is also used when
+// The 26.2 header says of the installed callback that once it is installed, outputMultiImageCallback also applies when
 // DecodeFrame operations fail and hand back a nonzero status.
 // On the host that is true. **On the port a failing decode still reaches the session's single-image
 // callback**, because the session is the RELEASE's session and the release's decode output has no

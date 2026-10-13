@@ -26,14 +26,14 @@
 //
 //   -cinematicVideoCaptureSceneMonitoringStatuses
 //                                  an empty set. The header (AVCaptureDevice.h:2690-2692) describes them as prompts for the user to
-//                                  reframe a scene for a better Cinematic Video experience. The statuses
+//                                  reframe a scene so that Cinematic Video plays back better. The statuses
 //                                  report whether the SCENE suits the feature, and there is no feature here to
 //                                  suit, so no status applies - the same shape as the spatial-capture
 //                                  discomfort reasons in the 18.0 slice. The type's one constant is a 26.0
 //                                  row of its own (code+lift) and is not carried, so nothing a caller can name
 //                                  is ever in the set.
 //   Format -isCinematicVideoCaptureSupported
-//                                  NO: the header (:3784) makes the property true only where the format supports a controllable, simulated depth
+//                                  NO: the header (:3784) makes the property true only where the format can render an adjustable, synthetic depth
 //                                  of field and focus transitions. Measured on the host: 0 for
 //                                  all seven of its formats.
 //   Format -videoMinZoomFactorForCinematicVideo / -videoMaxZoomFactorForCinematicVideo

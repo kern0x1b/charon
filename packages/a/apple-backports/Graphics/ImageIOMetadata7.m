@@ -501,7 +501,7 @@ static NSMutableDictionary *charon_intermediate(NSString *ns, NSString *prefix, 
 }
 
 // A tag out of a container is a COPY, value included, which is what the header says the caller has to
-// assume: tags are normally obtained as a copy, so the header expects a changed parent to be written back with
+// assume: tags usually come back as a copy, so the header expects a changed parent to be written back with
 // CGImageMetadataSetTagWithPath, which commits it to the metadata container.
 // Without the copy of the value, changing a tag a path returned would change the container behind the
 // caller's back and that warning would be a lie for this library.
@@ -941,7 +941,7 @@ void CGImageMetadataEnumerateTagsUsingBlock(CGImageMetadataRef metadata, CFStrin
 // MARK: - the image-property bridge
 //
 // CGImageMetadata.h:520-580 says what these two functions are. The header states that Metadata Working Group guidance is
-// built into the mapping of CGImageProperties to XMP-compatible tags: the Exif original date time property maps to the XMP
+// built into the translation of CGImageProperties into XMP-compatible tags: the Exif original date time property maps to the XMP
 // tag photoshop:DateCreated. It also says that not every dictionary and property is supported yet.
 //
 // So neither function is a search over the names in the tree: both are ONE LOOKUP in the table below, from

@@ -3,7 +3,7 @@
 // -[UIContentView supportsConfiguration:], iOS 16.0.
 //
 // The header says a view is compatible when it can accept the provided configuration: it takes the
-// configuration in its configuration property and can update itself to match. Where the method is not implemented, the view is taken
+// configuration in its configuration property and can update itself to match. Where the method is absent, the view is taken
 // to be compatible with any configuration class that matches the class of its existing configuration.
 //
 // The port has exactly one content view - UIListContentView, the one -[UIListContentConfiguration

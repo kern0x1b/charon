@@ -745,7 +745,7 @@ static void charon_task_complete_event(NSURLSessionTask *task, NSError *error)
             if ([delegate respondsToSelector:@selector(URLSession:task:didCompleteWithError:)])
                 [delegate URLSession:session task:task didCompleteWithError:error];
         }
-        /* The header's third sentence about this delegate: the delegate stays strongly referenced until the
+        /* The header's third sentence about this delegate: the delegate is kept alive until the
            task completes, and is then reset to nil (SDK 16.4 NSURLSession.h:303-304).
            Measured on the system's own NSURLSession by tests/backports/host/tasksession/run.sh: after
            the completion had been delivered, -delegate read nil in both of its runs - the task's

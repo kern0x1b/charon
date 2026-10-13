@@ -5,7 +5,7 @@
 // PHASEEnvelopeSegment: one segment of a segmented envelope, an end point and a curve type.
 //
 // The header (PHASEEnvelope.h:58-62) is explicit that a segment carries no start point of its own, because
-// the segments join end to end and stay continuous along the x and y axes. Continuity is the whole design, and it is why the curve type is
+// the segments join end to end and stay continuous in both x and y directions. Continuity is the whole design, and it is why the curve type is
 // what distinguishes a straight run from a curved one *within* the segment: the segment's start is the
 // previous segment's end, and nothing here can disagree with it because nothing here knows it.
 //

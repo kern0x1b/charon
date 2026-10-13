@@ -19,21 +19,21 @@
 // So every member here answers exactly what SDK 26.2 documents for a device that does not have the
 // hardware, which is what the port's own contract requires of it: `+isSupported` on every
 // configuration class is NO, a session refuses to start with VTFrameProcessorInitializationFailed
-// (the header says the session failed to initialize the processing pipeline), and a frame handed to a processor with
+// (the header reports that setup of the processing pipeline failed), and a frame handed to a processor with
 // no session is refused with VTFrameProcessorSessionNotStarted, which the header describes as a session not yet started,
 // which is the code SDK 26.2 defines for that case and not a substitute.
 //
 // The two things that are NOT the processor's own business are done here rather than faked:
 //
 //   - a nil configuration or a nil parameter is answered with VTFrameProcessorInvalidParameterError,
-//     which is what SDK 26.2 reserves for "one of the provided parameters is not valid", and it is
+//     which is what SDK 26.2 reserves for an invalid argument, and it is
 //     decided BEFORE the hardware question, because a caller that passes nil would get the same
 //     answer on a device that has the hardware;
 //   - every block-taking method RUNS its block, with the error, exactly once. An error channel that
 //     leaves a caller waiting is not the documented behaviour: VTFrameProcessor.h says of
 //     processWithParameters:completionHandler: where the header says the completion runs once processing of frames is done, and an authorization-
 //     or download-shaped completion that never runs is
-//     a hang. So the completion is called on the calling thread before the method returns, which is
+//     a hang. So the completion is called on the calling thread ahead of the method returning, which is
 //     also what "asynchronously performs" means for a call that does no asynchronous work.
 //
 // `processWithCommandBuffer:parameters:` has no error channel AT ALL - it returns void, it takes no

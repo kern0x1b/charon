@@ -299,8 +299,8 @@ CFDictionaryRef SecPolicyCopyProperties(SecPolicyRef policyRef)
 // dictionary carrying kSecPolicyClient, and its server policy without a host answers a one-key
 // dictionary that does not.
 //
-// `hostname` is kSecPolicyName, which SecPolicy.h:111-115 documents as a string, or an array of strings, naming
-// what must be matched in the certificate, and the first element of the
+// `hostname` is kSecPolicyName, which SecPolicy.h:111-115 documents it as either a single string or a list of strings, naming
+// what must be matched in the certificate, and the first entry of the
 // array is the one SecPolicyCreateSSL's single CFStringRef argument can carry.
 //
 // THE EFFECTS, both stated because a caller can be misled by either. The identifier: only the two

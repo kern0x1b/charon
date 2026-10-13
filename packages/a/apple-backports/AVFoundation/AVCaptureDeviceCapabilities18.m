@@ -68,7 +68,7 @@
 //                                  NO: the header (:3736) answers YES where the format supports Background Replacement, and no format of this hardware does. Measured on
 //                                  the host: 1 for all seven of its formats, which is the hardware.
 //   Format -isSpatialVideoCaptureSupported
-//                                  NO: the format's property (:3553) says whether it supports capturing spatial video to a file. Two lenses recording a depth map are what it takes;
+//                                  NO: the format's property (:3553) says whether it can record spatial video into a file. Two lenses recording a depth map are what it takes;
 //                                  this hardware has one lens per camera. Measured on the host: 0.
 //   Format -systemRecommendedExposureBiasRange
 //                                  nil when no recommendation is available (:3309). A recommendation is a system's own range for its own exposure
@@ -105,7 +105,7 @@
 //                                  setter does with a device that does not support the feature - measured on
 //                                  this host: set YES answers YES afterwards even though
 //                                  isWindNoiseRemovalSupported is 0, and set NO answers NO again. Nothing on
-//                                  this release acts on it: the header (:415) says wind noise removal is available when the input's multichannelAudioMode is set to
+//                                  this release acts on it: the header (:415) says the wind filter works when the input's multichannelAudioMode is set to
 //                                  any mode except AVCaptureMultichannelAudioModeNone, and
 //                                  this input cannot be set to any other value (above).
 #import "CharonAVCaptureDeviceCapabilities18.h"

@@ -26,9 +26,9 @@
 //
 // -isManualDeferredStartSupported   NO: there is nothing to run manually, and the header's rule for the property
 //                                   beside it is the same: the header (:673) lets automaticallyRunsDeferredStart be made false
-//                                   only where the session supports manual deferred start.
+//                                   only where the session can start a deferred capture by hand.
 // -automaticallyRunsDeferredStart   YES, the header's own default for the release an application links against
-//                                   (:685 gives true for apps linked on or after iOS 26). Measured on the host: 0, and that is macOS's own default rather than
+//                                   (:685 gives true for an app linked against iOS 26 or later). Measured on the host: 0, and that is macOS's own default rather than
 //                                   this rule's, so the two columns differ and the row says why.
 // -setAutomaticallyRunsDeferredStart:   YES is kept; NO refuses with NSInvalidArgumentException, which the header names
 //                                   for a session without manual deferred start support (:686).
@@ -40,8 +40,8 @@
 //                                   one).
 //
 // THE OUTPUT AND THE PREVIEW LAYER. Both answer NO for their support flag - the release has nothing to defer -
-// and the two flags answer NO, which is each header's own default: the output's flag is true by default for apps linked on or
-// after iOS 26 where supported, and false otherwise (AVCaptureOutputBase.h:129); the preview layer's is false because it displays
+// and the two flags answer NO, which is each header's own default: the output's flag is true by default for an app linked against
+// iOS 26 or later where supported, and false otherwise (AVCaptureOutputBase.h:129); the preview layer's is false because it displays
 // preview (AVCaptureVideoPreviewLayer.h:271). Setting YES refuses with NSInvalidArgumentException, which both headers name for an
 // object without deferred start support (AVCaptureOutputBase.h:128, AVCaptureVideoPreviewLayer.h:275).
 //
@@ -78,7 +78,7 @@ static void charon_deferred_start_unsupported(NSString *selector)
 
 - (BOOL)automaticallyRunsDeferredStart
 {
-    // The header gives true as the default for apps linked on or after iOS 26 (:685). The condition is
+    // The header gives true as the default for an app linked against iOS 26 or later (:685). The condition is
     // about the APPLICATION, not about this port, so it is READ from the main executable's own load command
     // (packages/a/apple-backports/CharonProgramSDK.h): every band of this repository links against SDK 16.4,
     // which is the sdk field of the binary, and so every band here answers NO - the value the same header
@@ -139,7 +139,7 @@ static void charon_deferred_start_unsupported(NSString *selector)
 
 - (BOOL)isDeferredStartEnabled
 {
-    // The header's own sentence needs three things at once (AVCaptureOutputBase.h:126): for apps linked on or after iOS 26,
+    // The header's own sentence needs three things at once (AVCaptureOutputBase.h:126): for an app linked against iOS 26 or later,
     // the property is true for AVCapturePhotoOutput and AVCaptureFileOutput subclasses where supported, and false otherwise.
     // The first is read the same way as the
     // session's default above - one fact, one read - and the second is NO for every output on this port, so

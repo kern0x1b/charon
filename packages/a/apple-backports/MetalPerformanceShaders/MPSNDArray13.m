@@ -59,7 +59,7 @@ static void MPSNDArray_plantedCopy(void *destination, const void *source, size_t
 #endif
 
 // The allocator, which MPSCore/MPSNDArray.h:217 asks for by name. Its one method names the kernel
-// that will overwrite the array it makes, and says of that argument that the MPS implementations do not
+// that will write over the array it makes, and says of that argument that the MPS implementations do not
 // need the field, which exists for the convenience of other implementers (MPSCore/MPSNDArray.h:165-167). So
 // (MPSCore/MPSNDArray.h:165-167). So the kernel is accepted and not asked anything, which is what
 // the release's own allocators do; an allocator that made the array a kernel's private scratch would
@@ -185,8 +185,8 @@ static void MPSNDArray_plantedCopy(void *destination, const void *source, size_t
     _slices[dimensionIndex] = subRange;
 }
 
-// The order the dimensions run in. The header gives the default as 0 through 15 in turn (:70-74), and after a
-// transpose of dimensions 0 and 1 the order becomes 1, 0, 2, 3 and so on, with each entry holding the new position
+// The order the dimensions run in. The header gives the default as 0 through 15 in turn (:70-74), and once the axes have been permuted,
+// swapping dimensions 0 and 1 gives the order 1, 0, 2, 3 and so on, with each entry holding the new position
 // of its dimension. So a transpose swaps the two entries and
 // touches nothing else - which is why this is two array writes and no shape arithmetic, and why a
 // transposed shape of [a,b] still holds a and b elements and only changes which runs first.
@@ -429,8 +429,8 @@ static void MPSNDArray_plantedCopy(void *destination, const void *source, size_t
 
 // The buffer, made on the first ask. That is the release's own order, from -resourceSize's own
 // discussion: the header says an array starts with no backing store, that the store is allocated lazily (typically
-// on the first write), so measuring an unbacked array is cheap, and a caller may build a throwaway MPSImage to see
-// how much memory it needs and release it if that is too large (MPSCore/MPSNDArray.h:279-286). So
+// on the first write), so measuring an unbacked array is cheap, and a caller may build a throwaway MPSImage and ask it
+// how big the backing store would be and discard it if that is too large (MPSCore/MPSNDArray.h:279-286). So
 // -resourceSize is answerable before anything exists, and this is where the allocation happens.
 - (id<MTLBuffer>)charon_mps_makeBuffer
 {

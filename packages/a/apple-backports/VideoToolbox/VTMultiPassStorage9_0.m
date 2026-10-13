@@ -18,7 +18,7 @@
 // options dictionary is one key:
 //
 //     kVTMultiPassStorageCreationOption_DoNotDelete: a file the storage created is deleted when the object is finalized,
-//     unless this option is set to kCFBooleanTrue, which the header describes as the way to keep it.
+//     unless this option holds kCFBooleanTrue, which the header describes as the way to keep it.
 //
 // So the file's lifecycle has three cases, and all three are implemented rather than described:
 //   - the caller named a file that does not exist: this object creates it, owns it, and deletes it on

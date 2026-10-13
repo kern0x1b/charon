@@ -28,7 +28,7 @@
    nothing else. The notification is named by its own string, as every NSNotificationName const is;
    the priority is 1.0 because the property's range runs from 0 to 1, with 1 the highest, and
    this one is documented as the maximum amount of resources to make available for finishing this request
-   as soon as possible. Facts, not measurements, and the facts file says so. */
+   at the earliest possible moment. Facts, not measurements, and the facts file says so. */
 double const NSBundleResourceRequestLoadingPriorityUrgent = 1.0;
 NSString *const NSBundleResourceRequestLowDiskSpaceNotification = @"NSBundleResourceRequestLowDiskSpaceNotification";
 

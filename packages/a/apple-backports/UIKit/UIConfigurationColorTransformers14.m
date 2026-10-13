@@ -38,7 +38,7 @@ const UIConfigurationColorTransformer UIConfigurationColorTransformerGrayscale =
     return CharonGrayscaleColor(color);
 };
 
-// The header describes a transformer that keeps the original color or replaces it with the
+// The header describes a transformer that keeps the original color or swaps in the
 // system accent color: with the accent set to Multicolor it returns the original color, and with any other
 // configured accent color it returns that color. On a platform without an accent color it returns the original color
 // (SDK 26.2, UIConfigurationColorTransformer.h:23-27). The third case is this one: the system accent colour

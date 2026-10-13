@@ -1,7 +1,7 @@
 // CarPlay's voice control on iOS 6: the state a program declares and the template that shows it.
 //
 // Neither of these needs a car, and that is measured rather than assumed. CPVoiceControlTemplate.h
-// says that an app may initialize the template with one or more states, and that it may
+// says that an app may create the template holding one or more states, and that it may
 // call activateVoiceControlState: to switch between states the app has defined -- the states are the
 // program's own, the switch is the program's own call, and the only thing a car adds is a screen to
 // show the result on. `tests/backports/host/carplay/headunit-probe.m` asks Apple's own CarPlay on

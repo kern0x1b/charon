@@ -458,7 +458,7 @@ enum { CharonMetal4TileColorAttachmentSlots = 8 };
         return;
     }
     // The header says this setter has copy semantics, and that a caller can set the color attachment at a
-    // legal index to nil, which resets that attachment's state to the defaults. So a nil resets the slot to the defaults rather than
+    // valid index set to nil, which restores that attachment's default state. So a nil resets the slot to the defaults rather than
     // leaving the old descriptor there - measured against Apple's own array by the differential.
     if (attachment)
         _slots[attachmentIndex] = [attachment copy];

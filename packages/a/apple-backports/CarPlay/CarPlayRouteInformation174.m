@@ -93,7 +93,7 @@
     return _tripTravelEstimates;
 }
 
-// :53-55 gives maneuverTravelEstimates as the travel estimates for the first maneuver of the current ones.
+// :53-55 gives maneuverTravelEstimates as the estimated travel to the first maneuver of the current ones.
 // The object does not check that the estimates belong to that first maneuver --
 // it is a value the program built, and the header describes what a caller is expected to pass rather
 // than what the object refuses.

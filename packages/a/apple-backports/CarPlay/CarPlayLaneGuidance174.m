@@ -50,7 +50,7 @@
     _lanes = [lanes copy];
 }
 
-// :28 `instructionVariants` is `copy` and is an array of NSString values giving the instruction for this
+// :28 `instructionVariants` is `copy` and is an array of NSString values giving the wording for this
 // lane guidance, ordered from the most preferred to the least, with at least one variant required. The
 // order is the program's and is kept as given, since the ordering says which one a driver should read first.
 // The header requires one variant at least, and that is the

@@ -283,7 +283,7 @@ static void CharonMetal4NoteInert(NSString *member, NSString *why)
 // reached (Metal/MTLSharedEvent12.m), and @protocol MTLSharedEvent refines MTLEvent in the 26.2 SDK
 // (MTLEvent.h:52), so the port's own event is an MTLEvent by shape.
 //
-// -signalEvent:value: takes effect after all GPU work prior to this point, and on this backend that
+// -signalEvent:value: takes effect once all earlier GPU work is done, and on this backend that
 // work is complete by the time the call is encoded, so the value is set now rather than scheduled.
 // -waitForEvent:value: blocks until the state reaches the value, which is what the same wait does for
 // `-[MTLSharedEvent waitUntilSignaledValue:timeout:]`; a value that has already been reached returns at

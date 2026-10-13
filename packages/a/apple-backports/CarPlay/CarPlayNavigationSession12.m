@@ -210,7 +210,7 @@
 // the header's, and where the header is silent the measured answer from Apple's own object is followed
 // rather than a value invented -- see facts/CarPlay/NavigationSession174.md.
 
-// :83-86 says to add CPManeuvers in chronological order and to supply them early, as soon as they are known. So each call APPENDS and the order is the order the
+// :83-86 says to append CPManeuvers in time order and to supply them early, as soon as they are known. So each call APPENDS and the order is the order the
 // program called in, which is what "chronological" means for a program feeding guidance as it computes
 // it. The list is what the card reads for its guidance text, so an addition shows at once.
 - (void)charon_addManeuvers:(NSArray<CPManeuver *> *)maneuvers
@@ -240,7 +240,7 @@
     [self charon_tellTemplate];
 }
 
-// :78 requires nil when there is no current lane guidance. So nil is stored and answered as nil,
+// :78 requires nil when no lane guidance is current. So nil is stored and answered as nil,
 // and the value is kept as it was given rather than copied: the header says `copy`, and a
 // CPLaneGuidance is itself an NSCopying value (:17 of its own header), so the copy is the same value.
 - (void)charon_setCurrentLaneGuidance:(CPLaneGuidance *)currentLaneGuidance
@@ -267,7 +267,7 @@
     [self charon_tellTemplate];
 }
 
-// :54-57 says the method resumes the current trip with updated route information. The information is the program's own
+// :54-57 says the method resumes the active trip, refreshed with new route details. The information is the program's own
 // object (CPRouteInformation.h:14 names it as the data a route needs for rerouting), every one of its properties is `copy` (:30-55), and each is copied once here. The
 // maneuvers it carries become what the session's guidance draws, because a resumed trip's maneuvers are
 // the new route's, and the trip is no longer paused -- this is a resume, which is what the header says

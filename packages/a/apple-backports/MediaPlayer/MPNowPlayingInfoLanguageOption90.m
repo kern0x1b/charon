@@ -158,8 +158,8 @@
 //                     defaultLanguageOption:(nullable MPNowPlayingInfoLanguageOption *)defaultLanguageOption
 //                       allowEmptySelection:(BOOL)allowEmptySelection;
 //
-// The header describes the group as a mutually exclusive group of language options, in which only one
-// option may be active at a time (:86-87). Nothing here enforces that, because
+// The header describes the group as one whose language options exclude one another, in which only one
+// option may be active at once (:86-87). Nothing here enforces that, because
 // this object does not decide which option is active - it holds the set and the one the caller marked
 // active. Enforcing exclusivity would mean silently dropping options the caller passed, which is a
 // different API from the one Apple declares.
