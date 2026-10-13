@@ -25,7 +25,7 @@
 // `visionos` word is dropped from the availability annotations. SDK 16.4's os/availability.h expands
 // API_AVAILABLE and API_UNAVAILABLE over the platform names it knows and fails on any other - measured: a
 // typedef carrying `API_AVAILABLE(macos(15.0), ios(18.0), macCatalyst(18.0), tvos(18.0))
-// API_UNAVAILABLE(watchos, visionos)` is `error: expected ','` at the end of the line, and `API_UNAVAILABLE
+// API_UNAVAILABLE(watchos, visionos)` is `error: expected ','` reported at the closing token, and `API_UNAVAILABLE
 // (visionos)` alone is the same error while `API_UNAVAILABLE(watchos)` alone compiles clean. So `watchos`
 // is kept, as the interface has it, and only `visionos` goes. Nothing is lost: it marks a platform this port does not
 // build for. (This is the same drop CharonAVCaptureControls18.h makes for the same reason, measured there
@@ -56,7 +56,7 @@ typedef NS_ENUM(NSInteger, AVCaptureMultichannelAudioMode) {
 /// hands back, and an empty set of them.
 typedef NSString *AVSpatialCaptureDiscomfortReason NS_TYPED_ENUM API_AVAILABLE(ios(18.0));
 
-/// A range of supported exposure bias values in EV units, what AVCaptureDeviceFormat's
+/// The span of exposure bias values a format can take, in EV units: what AVCaptureDeviceFormat's
 /// systemRecommendedExposureBiasRange hands back (AVCaptureDevice.h:2960-2999). The 16.4 SDK declares
 /// neither this class nor its members: its own rows are a family of their own, and this header only needs
 /// the name to spell the property's type, which is what a forward declaration is.
