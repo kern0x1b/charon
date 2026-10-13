@@ -47,10 +47,10 @@ local function members_text(rows)
 end
 
 -- Every file of a framework's build directory that check compares: what the generator emits (render), the spec table built in memory
--- from the shard and the constant record, and the members listing. Nothing is written here.
-function derived(tree, fw, corpus)
+-- from the shard and the constant record, and the members listing. Nothing is written here. sdk (optional) gives the members' tbd column.
+function derived(tree, fw, corpus, sdk)
     local emitted = render.render(tree, fw, corpus)
-    local spec = snapshot.load(tree, fw)
+    local spec = snapshot.load(tree, fw, sdk)
     emitted[SPEC_NAME] = snapshot.table_text(spec)
     emitted[MEMBERS_NAME] = members_text(spec)
     return emitted
@@ -88,7 +88,7 @@ end
 
 -- Writes one framework's derived files into its build directory.
 local function write_framework(args, fw)
-    local emitted = derived(args.tree, fw, args.coordination)
+    local emitted = derived(args.tree, fw, args.coordination, args.sdk)
     emitted[MANIFEST_NAME] = manifest_text(emitted)
     local base = layout.gen_dir(args.tree, fw)
     for _, name in ipairs(stale_constants(base, fw, emitted)) do

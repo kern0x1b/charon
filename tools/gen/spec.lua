@@ -10,6 +10,7 @@ local decl = import("decl", {anonymous = true})
 local order = import("order", {anonymous = true})
 local headers = import("headers", {anonymous = true})
 local members = import("members", {anonymous = true})
+local tbd = import("tbd", {anonymous = true})
 local digest = import("digest", {anonymous = true})
 local json = import("core.base.json")
 
@@ -53,10 +54,12 @@ local function constant_rows(tree, fw)
     return out
 end
 
--- The member rows of a framework's shard (method and property rows), and whether the framework has a shard file at all.
-local function shard_rows(tree, fw)
+-- The member rows of a framework's shard (method and property rows), and whether the framework has a shard file at all. The tbd
+-- column is "-" unless the SDK is given: then each member's class is looked up in the classes the SDK's .tbd chain exports.
+local function shard_rows(tree, fw, sdk)
     local facts = headers.shard_facts(tree, fw)
-    return members.rows(facts.members, nil, fw), #facts.members
+    local classes = sdk and tbd.class_exports(sdk, fw) or nil
+    return members.rows(facts.members, classes, fw), #facts.members
 end
 
 -- The spec rows of a framework, in memory: its members from the shard, then its constants from the constant record. A framework with
@@ -70,17 +73,17 @@ function forget()
     last_key, last_rows = nil, nil
 end
 
-function load(tree, fw)
-    local key = tree .. "\n" .. fw
+function load(tree, fw, sdk)
+    local key = tree .. "\n" .. fw .. "\n" .. (sdk or "")
     if key ~= last_key then
-        last_rows = build(tree, fw)
+        last_rows = build(tree, fw, sdk)
         last_key = key
     end
     return last_rows
 end
 
-function build(tree, fw)
-    local rows = shard_rows(tree, fw)
+function build(tree, fw, sdk)
+    local rows = shard_rows(tree, fw, sdk)
     for _, r in ipairs(constant_rows(tree, fw)) do
         table.insert(rows, r)
     end

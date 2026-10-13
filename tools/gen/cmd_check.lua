@@ -60,8 +60,8 @@ function record_conflicts(tree, fw)
 end
 
 -- The problems and warnings of one framework, in the order the report prints them.
-local function diagnose(tree, fw, corpus)
-    local emitted = gen.derived(tree, fw, corpus)
+local function diagnose(tree, fw, corpus, sdk)
+    local emitted = gen.derived(tree, fw, corpus, sdk)
     local base = layout.gen_dir(tree, fw)
     local names = order.keys(emitted)
     local problems, warnings = {}, {}
@@ -129,7 +129,7 @@ function run(args)
     end
     local failed, removed_total, removed_in = 0, 0, 0
     for _, fw in ipairs(targets) do
-        local problems, warnings, removed, new = diagnose(args.tree, fw, args.coordination)
+        local problems, warnings, removed, new = diagnose(args.tree, fw, args.coordination, args.sdk)
         for _, line in ipairs(problems) do
             print("CHECK " .. fw .. ": " .. line)
         end

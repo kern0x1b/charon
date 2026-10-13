@@ -97,18 +97,9 @@ local function check_sdk(sdk, fw)
     end
 end
 
--- The exports of a framework's arm64 slice in the SDK: symbols (the leading underscore dropped, as the spec compares them) and
--- objc-classes, two sets keyed by name with the value true. Both are empty when the framework has no .tbd in the SDK.
-function exports(sdk, fw)
-    if injected then
-        return injected(fw), {}
-    end
-    check_sdk(sdk, fw)
-    local symbols, classes = {}, {}
-    local text = files.read_text(path.join(sdk, "System", "Library", "Frameworks", fw .. ".framework", fw .. ".tbd"))
-    if text == nil then
-        return symbols, classes
-    end
+-- The arm64 slices of every document of a .tbd text, each as its block of text (the slice's names, then its lists).
+local function arm64_slices(text)
+    local out = {}
     local pos = 1
     while true do
         local mark = string.find(text, DOCUMENT_MARK, pos, true)
@@ -121,15 +112,61 @@ function exports(sdk, fw)
         for _, block in ipairs(slices_of(document)) do
             local names = slice_names(block)
             if names ~= nil and is_arm64(names) then
-                add_list(block, "symbols", symbols)
-                add_list(block, "objc%-classes", classes)
+                table.insert(out, block)
             end
         end
         pos = stop_mark or (#text + 1)
+    end
+    return out
+end
+
+-- The exports of a framework's arm64 slice in the SDK: symbols (the leading underscore dropped, as the spec compares them) and
+-- objc-classes, two sets keyed by name with the value true. Both are empty when the framework has no .tbd in the SDK.
+function exports(sdk, fw)
+    if injected then
+        return injected(fw), {}
+    end
+    check_sdk(sdk, fw)
+    local symbols, classes = {}, {}
+    local text = files.read_text(path.join(sdk, "System", "Library", "Frameworks", fw .. ".framework", fw .. ".tbd"))
+    if text == nil then
+        return symbols, classes
+    end
+    for _, block in ipairs(arm64_slices(text)) do
+        add_list(block, "symbols", symbols)
+        add_list(block, "objc%-classes", classes)
     end
     local stripped = {}
     for name in pairs(symbols) do
         stripped[string.sub(name, 1, 1) == "_" and string.sub(name, 2) or name] = true
     end
     return stripped, classes
+end
+
+-- The Objective-C classes the framework exports on arm64, and those of every framework its .tbd re-exports: ARKit.tbd re-exports
+-- ARKitCore, ARKitFoundation and ARKitUI (in the SDK's PrivateFrameworks folder), and its classes are in those, not in ARKit's own
+-- list. A re-exported path is read from the SDK as <path>.tbd, and each .tbd is read once (tbd_class_exports in tools/gen.py).
+-- Empty when the framework has no .tbd in the SDK.
+function class_exports(sdk, fw)
+    check_sdk(sdk, fw)
+    local classes, done = {}, {}
+    local todo = {path.join(sdk, "System", "Library", "Frameworks", fw .. ".framework", fw .. ".tbd")}
+    while #todo > 0 do
+        local tbd_path = table.remove(todo)
+        if not done[tbd_path] then
+            done[tbd_path] = true
+            local text = files.read_text(tbd_path)
+            if text ~= nil then
+                for _, block in ipairs(arm64_slices(text)) do
+                    add_list(block, "objc%-classes", classes)
+                    local reexports = {}
+                    add_list(block, "re%-exports", reexports)
+                    for target in pairs(reexports) do
+                        table.insert(todo, path.join(sdk, (string.gsub(target, "^/", "")) .. ".tbd"))
+                    end
+                end
+            end
+        end
+    end
+    return classes
 end
