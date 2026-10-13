@@ -3,12 +3,10 @@
 // MPSNNCropAndResizeBilinear` answers 12.0 for both, and every other name this file defines is a
 // member both headers declare at ios(12.0), so this file carries 12.0 API only.
 //
-// WHAT THE HEADERS ASK FOR. Both classes derive from MPSCNNKernel and both are "the source image
-// resized using bilinear interpolation to a destination whose dimensions are given by resizeWidth
-// and resizeHeight", with "the number of output feature channels ... the same as the number of input
-// feature channels". MPSNNResizeBilinear adds one flag, alignCorners: "If YES, the centers of the 4
-// corner pixels of the input and output regions are aligned, preserving the values at the corner
-// pixels. The default is NO."
+// WHAT THE HEADERS ASK FOR. Both classes derive from MPSCNNKernel, and both produce a bilinear-interpolated copy
+// of the source at the size set by resizeWidth and resizeHeight, with the feature channel count left as it was.
+// MPSNNResizeBilinear adds one flag, alignCorners: when YES, the outer pixel centres of the input and output
+// are lined up, so the corner values are kept. It defaults to NO (the header's own default).
 //
 // So there are exactly two sampling conventions and they are both implemented here, each in one
 // place, from the two properties' own wording:
@@ -26,9 +24,9 @@
 // MPSNNCropAndResizeBilinear's own doc gives for a region outside [0, 1] - except that this kernel
 // extrapolates, which is below.
 //
-// MPSNNCropAndResizeBilinear takes its regions as `const MPSRegion *`, "a pointer to numberOfRegions
-// boxes which specify the locations in the source image to use for each box/region ... The
-// coordinates specified are normalized values." MPSRegion is { MPSOrigin origin; MPSSize size; } and
+// MPSNNCropAndResizeBilinear takes its regions as `const MPSRegion *`, a pointer to an array of as many records
+// as there are regions, each giving a crop box in the source image with normalized coordinates. MPSRegion is
+// { MPSOrigin origin; MPSSize size; } and
 // both are doubles (MPSCoreTypes.h:321-338 and :355-359), so a region is read as the array of
 // structs the header declares - not as an NSArray of boxes, and not through a coordinate convention
 // of this file's own. The destination is resizeWidth by (resizeHeight * numberOfRegions), the crops

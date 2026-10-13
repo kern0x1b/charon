@@ -299,8 +299,8 @@
 
 // The concatenation node. MPSNNGraphNodes.h:2438-2449 states the rule exactly: given images with M, N
 // and O feature channels, the result takes [0,M-1] from the first, [M,M+N-1] from the second and so on,
-// and every source is padded out to a multiple of four feature channels, so M, N and O are multiples of
-// four even when the MPSImages are not.
+// and each source is padded up to whole groups of four feature channels, so the sizes M, N and O all come out as multiples
+// of four, even if the MPSImage objects themselves are not.
 @implementation MPSNNConcatenationNode {
     MPSKernel *_kernel;
 }
@@ -514,11 +514,9 @@
     BOOL _walked;
 }
 
-// The walk, MPSNNGraph.h:64-71: "The MPSNNGraph constructor will start with the indicated result image,
-// and look to see what MPSNNFilterNode produced it, then look to its dependencies and so forth to
-// reveal the subsection of the graph necessary to compute the image." Nodes not on the way back to a
-// source are left out, which is MPSNNGraph.h:60-61: "Nodes which are not needed to calculate the result
-// image node are ignored."
+// The walk, MPSNNGraph.h:64-71: the graph constructor starts at the indicated result image, finds the filter node
+// that produced it, then follows that node's dependencies, and so on, to reveal the part of the graph needed for the image.
+// Nodes not on the way back to a source are left out, which MPSNNGraph.h:60-61 also states: nodes not needed for the result image are ignored.
 - (void)charon_mps_walkFrom:(MPSNNImageNode *)result
 {
     [_filters removeAllObjects];
@@ -588,8 +586,8 @@
 // no header. So a graph decoded from an archive is a graph with no result node, its -walkFrom: has
 // nothing to start from, and its -encodeToCommandBuffer: refuses in one line rather than answering with
 // an image nothing produced. That is the whole of what this initializer says, and the comment at
-// MPSNNGraph.h:120-127 says the same thing in the release's words: "since the file can't know which
-// device your data is allocated on, we have to guess and may guess incorrectly."
+// MPSNNGraph.h:120-127 makes the same point in its own terms: the device an archive will be decoded on cannot be known
+// when the file is written, so a guess may be wrong.
 - (instancetype)initWithCoder:(NSCoder *)aDecoder device:(id<MTLDevice>)device
 {
     return [super initWithCoder:aDecoder device:device];
@@ -621,8 +619,8 @@
 @synthesize resultImageIsNeeded = _resultImageIsNeeded;
 
 // Every node with a data source is told to read it again, MPSNNGraph.h:213-217. A node with no data
-// source does not answer the selector and is left as it is, which is what the header says at :217:
-// "Most nodes do not have a data source and will not be modified."
+// source does not answer the selector and is left as it is; the header says so at :217, where most nodes have
+// no data source and so are not changed by the call.
 - (void)reloadFromDataSources
 {
     for (MPSNNFilterNode *filter in _filters)
@@ -679,8 +677,8 @@
 
     MPSNNImageNode *result = _order.lastObject;
     if (!_resultImageIsNeeded || !result)
-        // "If resultIsNeeded is set to NO, nil will be returned from the left hand side of the -encode
-        // call instead, and computation to produce the last image may be pruned away" (MPSNNGraph.h:72).
+        // The header says that with resultIsNeeded set to NO, the -encode call hands back nil for the last image,
+        // and the computation for that image may be pruned away (MPSNNGraph.h:72).
         return nil;
     return result.charon_mps_image;
 }
@@ -708,9 +706,9 @@
     return image;
 }
 
-// "This function will synchronously encode the graph on a private command buffer, commit it to a MPS
-// internal command queue and return... The work will be performed on the MTLDevice that hosts the source
-// images" (MPSNNGraph.h:305-311).
+// The header's description (MPSNNGraph.h:305-311): the call runs the graph's encoding synchronously in a private command buffer,
+// commits that buffer to an internal queue, and returns, with the work done on the device that hosts the source
+// images.
 //
 // THE COMMAND BUFFER COMES OFF A QUEUE, and that is the only place one exists: MTLDevice.h:507-518
 // declares -newCommandQueue and -newCommandQueueWithMaxCommandBufferCount: and nothing else, and

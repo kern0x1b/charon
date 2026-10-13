@@ -19,8 +19,8 @@
 // link-time symbol, and a band that keeps an 11.0 object keeps this one too, so the reference resolves in
 // the same dylib. The base's own initialiser is what an MPSNNGraph of this port calls, and it is here.
 //
-// WHAT THE CLASS IS. MPSNNGraphNodes.h:340 says "This is a virtual base class. Make MPSNNFilterNode
-// subclass objects instead", and :341 marks -init NS_UNAVAILABLE, so the release never builds one by name.
+// WHAT THE CLASS IS. MPSNNGraphNodes.h:340 names it a virtual base class whose subclasses are the objects to make,
+// and :341 marks -init NS_UNAVAILABLE, so the release never builds one by name.
 // What this object carries is everything a node in a graph shares: the node's sources, its one result
 // image position, the kernel it stands for, the device that kernel is made against, the shape its result
 // takes, and the pairing a walk reads to go from a result image back to the filter that produced it.
@@ -76,8 +76,8 @@
 @synthesize label = _label;
 
 // The pairing a walk reads, and it is the whole of the walk: MPSNNGraph.h:64-68 says the constructor
-// "will start with the indicated result image, and look to see what MPSNNFilterNode produced it, then look
-// to its dependencies and so forth".
+// starts from the indicated result image, finds the filter node that produced it, then follows that node's
+// dependencies in turn.
 //
 // It was the second defect the differential caught, and the defect was WHERE it looked rather than that it
 // looked. The walk first searched the list of filters it was building for one whose .resultImage was the
@@ -166,9 +166,8 @@
 - (void)charon_mps_setDevice:(id<MTLDevice>)device { _device = device; }
 - (id<MTLDevice>)charon_mps_device { return _device; }
 
-// The shape of the result, from the shape of the source. What a padding policy decides, in the header's
-// own words: "It principally is responsible for setting the MPSCNNKernel.offset and the size of the
-// image produced" (MPSNNGraphNodes.h:361-363). A node with no padding policy keeps its source's shape,
+// The shape of the result, from the shape of the source. What a padding policy decides is mainly the kernel's
+// offset and the output's size (MPSNNGraphNodes.h:361-363). A node with no padding policy keeps its source's shape,
 // which is what an elementwise node does - MPSNNArithmetic is a per-pixel operation and its header
 // (MPSImageMath.h:34-37) names no spatial term at all.
 //

@@ -6,23 +6,21 @@
 // These are the three classes of the family whose bodies are specified well enough to write from the
 // header, and each one's loop below is the header's own wording rather than a paraphrase of it:
 //
-//   MPSNDArrayGather (MPSNDArrayGather.h:39-46): "For each dimension other than axis
-//       result[i] = source[i]; 0 <= i < array slice length along dimension. Along the specified axis
-//       result[i] = source[indices[i]]; 0 <= i < number of indices." So the result has the source's
+//   MPSNDArrayGather (MPSNDArrayGather.h:39-46): off the gather axis, result[i] is source[i] over the slice's length;
+//       along the axis, result[i] is the source at indices[i], for each index in turn. So the result has the source's
 //       shape on every axis but the gather's, and on the gather's axis it has as many elements as
 //       there are indices - which is the one place the result is NOT the source's shape, and an
 //       implementation that kept the source's length there would answer a different question.
 //
-//   MPSNDArrayStridedSlice (MPSNDArrayStridedSlice.h:20-21): "Extracts a subset of the source array
-//       using the specified slice strides." A stride of s in a dimension of length n therefore holds
+//   MPSNDArrayStridedSlice (MPSNDArrayStridedSlice.h:20-21): the slice keeps a selected subset of the source array,
+//       taking every s-th element along each dimension. A stride of s in a dimension of length n therefore holds
 //       ceil(n/s) elements taken at 0, s, 2s, ... - the count is a CEILING, not a division, which is
 //       what makes a dimension of 5 with a stride of 2 hold three and not two.
 //
-//   MPSNDArrayMatrixMultiplication (MPSNDArrayMatrixMultiplication.h:33-37): "D = alpha * A * B +
-//       beta * C ... A, B, C, and D are matrices which are represented by objects stored in the two
-//       most major dimensions of the MPSNDArray ... If an input's 3rd or 4th dimension is 1 its data
-//       will be broadcast as appropriate to the remaining input's 3rd or 4th dimension
-//       respectively." So a 4-D array is a BATCH of 2-D matrices, dimension 2 and 3 being the batch
+//   MPSNDArrayMatrixMultiplication (MPSNDArrayMatrixMultiplication.h:33-37): the result is alpha times A times B
+//       plus beta times C, with each of A, B, C and D held in the two major dimensions of the array. Where an input's
+//       third or fourth dimension is 1, its data is broadcast to the matching dimension of the other input (:36-37).
+//       So a 4-D array is a BATCH of 2-D matrices, dimension 2 and 3 being the batch
 //       and the matrices' two most major dimensions, and a 1 there broadcasts.
 //
 // The two gradients are the reverse of their forward passes and are the reason the state exists: a
@@ -53,7 +51,7 @@
 - (instancetype)initWithDevice:(id<MTLDevice>)device
 {
     if ((self = [super initWithDevice:device])) {
-        // "The axis along which to apply the gather operation. Defaults to zero."
+        // the header's axis property is the dimension the gather runs along, and it defaults to zero
         // (MPSNDArrayGather.h:44-48).
         _axis = 0;
     }
@@ -65,13 +63,13 @@
 - (void)setAxis:(NSUInteger)axis { _axis = axis; }
 
 // The gather's OWN result shape, which the base class's answer cannot be: the base builds it from the
-// LAST source (MPSNDArrayKernel13.m), and a gather's second source is the 1-D INDEX array
-// ("the secondary array is a 1-D MPSNDArray containing the indices", MPSNDArrayGather.h:33-35), so the
+// LAST source (MPSNDArrayKernel13.m), and a gather's second source is the 1-D INDEX array, which the
+// header describes as a one-dimensional array of indices (MPSNDArrayGather.h:33-35), so the
 // base's descriptor would be a one-dimensional array of the index count. The result is the PRIMARY
-// source's shape with the axis replaced by that count - "For each dimension other than axis result[i]
-// = source[i] ... Along the specified axis result[i] = source[indices[i]]" (:39-46) - and the header
+// source's shape with the axis replaced by that count: every other dimension copies the source, and along the axis
+// each entry is taken from the source at the index given (:39-46). And the header
 // asks for exactly this when it says the object's own properties must be configured before
-// -destinationArrayDescriptorForSourceArrays: is called, "Those properties may affect the results"
+// -destinationArrayDescriptorForSourceArrays: is called, since they may affect the results
 // (MPSNDArrayKernel.h:152-155). The axis is such a property.
 //
 // This was a defect the harness found rather than a reading of the header: with the base's descriptor
@@ -138,8 +136,7 @@
         // answers the identity, and the harness caught it: a [3,2] gathered on axis 0 by [2,0,2] came
         // back as 1 2 3 4 5 6 where the reference is 5 6 1 2 5 6.
         NSUInteger at = (NSUInteger)CharonMPSNDArrayLoad(indices, sourceIndex[axis]);
-        // The offset is the header's "The coordinate of the position read from this source array
-        // which is used to calculate the result value at [0,0,0,...]" (MPSNDArrayKernel.h:31-35), and
+        // The offset is where, in this source array, the value at the origin gets its input (MPSNDArrayKernel.h:31-35), and
         // the edge rule is that filter's own - the zero rule by default, which is what the header gives
         // (:227-236) and what CharonMPSNDArrayApplyEdgeMode reads.
         NSInteger sourceAt = (NSInteger)at + filter.offsets[axis];
@@ -183,9 +180,8 @@
     }
     const CharonMPSNDArrayLayout *source = &sources[0], *indices = &sources[1], *gradient = &sources[2];
     // The axis, from the STATE the forward pass recorded, which is where the header puts it: the RFC
-    // comment above MPSNDArrayUnaryGradientKernel's declarations says "There is currently no way to
-    // manually set this information for the gradient. This may not be viewed as a problem as this
-    // information is automatically set by the gradient state" (MPSNDArrayKernel.h:318-321), and
+    // comment above MPSNDArrayUnaryGradientKernel's declarations says the gradient cannot be given this by hand, and the
+    // gradient state fills it in, which the header does not count as a problem (MPSNDArrayKernel.h:318-321), and
     // MPSNDArrayGatherGradient declares no axis of its own to carry it.
     //
     // It cannot be recovered from the two shapes, and this tried that first and the harness caught it:
@@ -296,7 +292,7 @@
     [self charon_mps_setFilter:filter atSourceIndex:0];
 }
 
-// "Extracts a subset of the source array using the specified slice strides" - so a stride of s in a
+// The strided slice keeps every s-th element of a dimension (MPSNDArrayStridedSlice.h:20-21), so a stride of s in a
 // dimension of length n holds the elements at 0, s, 2s, ... and there are ceil(n/s) of them. The
 // count is a CEILING and not a division: a dimension of 5 with a stride of 2 holds three (0, 2, 4) and
 // a division would say two and drop the last element of every odd dimension.
@@ -362,9 +358,8 @@
     for (NSUInteger linear = 0; linear < CharonMPSNDArrayElementCount(destination); linear++)
         CharonMPSNDArrayStore(destination, linear, 0.0);
     // The STRIDES from the state the forward pass recorded, not from this object's own filter. The
-    // header gives MPSNDArrayStridedSliceGradient no `strides` property of its own, and says why:
-    // "There is currently no way to manually set this information for the gradient ... this
-    // information is automatically set by the gradient state" (MPSNDArrayKernel.h:318-321). Reading
+    // header gives MPSNDArrayStridedSliceGradient no `strides` property of its own, and says why: the gradient cannot
+    // be handed this by hand, and the gradient state supplies it instead (MPSNDArrayKernel.h:318-321). Reading
     // the gradient's own filter instead - which is all ones, the default - scattered the incoming
     // gradient PACKED: a stride of 2 over 5 landed on 0 1 2 where the forward pass read 0 2 4, and the
     // harness reported 7 8 9 0 0 against the reference's 7 0 8 0 9.
@@ -420,13 +415,12 @@
 - (double)beta { return _beta; }
 - (void)setBeta:(double)beta { _beta = beta; }
 
-// D = alpha * A * B + beta * C, for each 2-D matrix of a 4-D array, with a third or fourth dimension
-// of 1 BROADCAST. "A, B, C, and D are matrices which are represented by objects stored in the two most
-// major dimensions of the MPSNDArray" (:33-35) - so a [rows, columns, batch, matrices] array is a
-// batch of matrices, dimensions 2 and 3 being the batch indices and dimensions 0 and 1 the matrix -
-// and "If an input's 3rd or 4th dimension is 1 its data will be broadcast as appropriate to the
-// remaining input's 3rd or 4th dimension respectively" (:36-37), which is a stride of zero on that
-// axis and nothing else: the same element read for every matrix of the batch.
+// D is alpha times A times B plus beta times C, for each 2-D matrix of a 4-D array, with a third or fourth dimension
+// of 1 BROADCAST. The header (:33-35) places the four matrices in the two major dimensions of the array, so a
+// [rows, columns, batch, matrices] array is a batch of matrices, dimensions 2 and 3 being the batch indices and
+// dimensions 0 and 1 the matrix - and the header's rule for a dimension of 1 (:36-37) is that the one element is
+// reused for the other input's index there, which is a stride of zero on that axis and nothing else: the same
+// element read for every matrix of the batch.
 - (void)charon_mps_fillFromSources:(CharonMPSNDArrayLayout *)sources count:(NSUInteger)count state:(MPSState *)state into:(CharonMPSNDArrayLayout *)destination
 {
     (void)state;
@@ -443,10 +437,10 @@
                         (unsigned long)right->dimensions, (unsigned long)destination->dimensions);
         return;
     }
-    // DIMENSION 0 IS THE COLUMN. "The major row (the dimension in which successive elements appear
-    // adjacent to one another in memory) is the 0th dimension" (MPSCore/MPSNDArray.h's class
-    // discussion), and a matrix's major row is its COLUMNS - the same way MPSMatrix's own descriptor
-    // counts, where `columns` is the fast dimension and `rows` the slow one. So for a two dimensional
+    // DIMENSION 0 IS THE COLUMN. The class discussion (MPSCore/MPSNDArray.h) makes the major row, the dimension whose
+    // neighbours sit next to each other in memory, the 0th, and a matrix's major row is its COLUMNS - the same way
+    // MPSMatrix's own descriptor counts, where `columns` is the fast dimension and `rows` the slow one.
+    // So for a two dimensional
     // array dimension 1 counts rows and dimension 0 counts columns, and D = A * B of an M by K and a K
     // by N is an M by N held as [N, M]: the destination's dimension 0 is N and its dimension 1 is M.
     //

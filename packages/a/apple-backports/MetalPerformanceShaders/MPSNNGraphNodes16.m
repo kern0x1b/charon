@@ -101,10 +101,9 @@
 - (instancetype)initWithLeftSource:(MPSNNImageNode *)left rightSource:(MPSNNImageNode *)right
 {
     if ((self = [super initWithDevice:nil])) {
-        // THE HEADER'S DEFAULTS, and the third thing the differential caught. MPSImageMath.h:31-32: "The
-        // default value for primaryScale and secondaryScale is 1.0f. The default value for bias is
-        // 0.0f." MPSImageMath.h:34-37 applies all three: "result = ((primaryScale * x) + (secondaryScale
-        // * y)) + bias". An Objective-C float ivar is zero, and a zero scale answers zero however
+        // THE HEADER'S DEFAULTS, and the third thing the differential caught. MPSImageMath.h:31-32 gives the
+        // default of primaryScale and secondaryScale as 1.0f, and the default of bias as 0.0f. MPSImageMath.h:34-37
+        // applies all three in one expression, with each scale on its own input and the bias added last. An Objective-C float ivar is zero, and a zero scale answers zero however
         // correct the kernel underneath is - which is what this node did until the differential compared
         // it with the same addition run without a graph and got 11 22 33 44 against 0 0 0 0.
         _primaryScale = 1.0f;

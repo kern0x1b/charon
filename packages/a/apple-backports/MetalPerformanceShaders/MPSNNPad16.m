@@ -19,19 +19,17 @@
 // THE SUPERCLASS is carried: MPSNNReshape.h:227 makes MPSNNPad an MPSCNNKernel, and MPSCNNKernel10.m is
 // that class. What MPSNNPad adds over it is the pad.
 //
-// WHAT IT IS, in the header's own words. paddingSizeBefore (:229-241) is the left, the top and the smaller
-// feature-channel indices, paddingSizeAfter (:243-256) the other three ends, and the pad is filled either
-// with one float (fillValue, "Determines the constant value to apply when using MPSImageEdgeModeConstant.
-// Default: 0.0f", :258-263) or with one float per destination feature channel out of the NSData the
-// designated initializer takes (:282-287). Which of the two is in force is the header's own rule at
-// :260-262 - fillValue "is ignored if the filter is initialized with a per-channel fill value" - so an
-// NSData present is what decides and the scalar is not consulted, which is why the encode below reads the
+// WHAT IT IS. paddingSizeBefore (:229-241) is the left, the top and the smaller feature-channel indices,
+// paddingSizeAfter (:243-256) the other three ends, and the pad is filled either with one float (fillValue, the
+// constant for MPSImageEdgeModeConstant, default 0.0f, :258-263) or with one float per destination feature channel
+// out of the NSData the designated initializer takes (:282-287). Which of the two is in force is decided by
+// the header at :260-262, where fillValue is ignored once a per-channel fill value is given, so an
+// NSData present decides and the scalar is not consulted, which is why the encode below reads the
 // array when there is one and the scalar when there is not.
 //
 // WHAT IS NOT CARRIED HERE. -destinationImageDescriptorForSourceImages:sourceStates: is the method
-// paddingSizeBefore exists for ("This property is used for automatically sizing the destination image for
-// the function destinationImageDescriptorForSourceImages:sourceStates:", :230-232); it is MPSCNNKernel's
-// and belongs to the graph layer, which is the release-11 object, so this object carries the pad and the
+// paddingSizeBefore exists for: the sizing of the destination image from the source (:230-232). That method belongs to
+// MPSCNNKernel and the graph layer, which is the release-11 object, so this object carries the pad and the
 // fill and leaves the sizing to whoever carries the graph.
 //
 // WHAT IS NOT CLAIMED. No number in this file is a measurement of Apple's code: the release's own MPS
@@ -77,8 +75,7 @@
 
 // The designated one, :282-287. The array is the header's per-channel fill, kept as a strong ivar so it
 // outlives this method; the array's length is not checked against the destination's channel count here
-// because the header says what happens when it is short - "Failing to pass a large enough array will
-// result in undefined behavior" (:286-287) - and the encode below refuses rather than reading past it.
+// because the header says a short array has undefined results (:286-287), and the encode below refuses rather than reading past it.
 - (instancetype)initWithDevice:(id<MTLDevice>)device
             paddingSizeBefore:(MPSImageCoordinate)paddingSizeBefore
              paddingSizeAfter:(MPSImageCoordinate)paddingSizeAfter
@@ -157,8 +154,7 @@
     CharonMPSCnnTake(destinationImage, &to, &outWidth, &outHeight, &outChannels);
     for (NSUInteger channel = 0; channel < outChannels; channel++) {
         // The fill for this channel: the array's own when there is one, the scalar otherwise. The array's
-        // index is the DESTINATION channel - "the first value of the array will correspond to the first
-        // feature channel written out to the destination image" (:283-284) - not the source's.
+        // index is the DESTINATION channel: entry 0 of the array fills the first output channel, counted in the destination (:283-284), not the source's.
         double filled = fill ? (double)fill[channel] : (double)_fillValue;
         for (NSUInteger oy = 0; oy < outHeight; oy++) {
             for (NSUInteger ox = 0; ox < outWidth; ox++) {

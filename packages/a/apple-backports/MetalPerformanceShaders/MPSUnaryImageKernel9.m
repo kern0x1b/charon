@@ -9,18 +9,17 @@
 // and neither origin/main nor any other band defined it either. So this is the class, written here.
 //
 // What the header gives it, and what this file does with each:
-//   :offset      MPSOffset, default {0,0,0} - "the position of clipRect.origin in source coordinates",
-//                default {0,0,0} meaning "the top left corners of the clipRect and source image align"
-//   :clipRect    MTLRegion, default MPSRectNoClip - "the intersection between clip rectangle and
-//                destination bounds is used", MPSRectNoClip being the whole destination. The sentinel
+//   :offset      MPSOffset, default {0,0,0} - the place in source coordinates where the clip origin sits,
+//                and with that default the two top left corners line up with each other
+//   :clipRect    MTLRegion, default MPSRectNoClip - the overlap of the clip rectangle with the destination is used,
+//                with MPSRectNoClip meaning the whole destination. The sentinel
 //                is resolved against the image by CharonMPSImageResolvedRegion before anything is read,
 //                which is why no texture ever sees xoffset + width = -2.
-//   :edgeMode    MPSImageEdgeMode, default "usually MPSImageEdgeModeZero" - the header's own hedge, and
-//                this is the "usually" case: a filter that reads off the edge is not what this base is.
+//   :edgeMode    MPSImageEdgeMode, default usually MPSImageEdgeModeZero - the header's own hedge, and
+//                this is that case: a filter that reads off the edge is not what this base is.
 //
 // -sourceRegionForDestinationSize: is answered, because it is arithmetic on the two properties above and
-// the header says exactly what it consults: "The function will consult the MPSUnaryImageKernel offset and
-// clipRect parameters, to determine the full region read by the function."
+// the header says exactly what it consults: the offset and clipRect parameters, which together fix how much of the source is read.
 //
 // OWED, and refused by name rather than answered wrongly:
 //   -encodeToCommandBuffer:sourceTexture:destinationTexture: and its in-place and
@@ -75,10 +74,9 @@
 
 - (MPSRegion)sourceRegionForDestinationSize:(MTLSize)destinationSize
 {
-    // "The size of the full (untitled) destination image is provided. The region of the full (untiled)
-    // source image that will be read is returned." - MPSImageKernel.h. The destination's clip rectangle
-    // moved by the offset is the region read, because the offset is "the position of clipRect.origin in
-    // source coordinates". MPSRectNoClip means the whole destination, and MPSRegion is MTLRegion on the
+    // The header (MPSImageKernel.h) takes the size of the full destination image and returns the region of the full
+    // source image that is read. The destination's clip rectangle, moved by the offset, is that region, since the offset gives the
+    // position of the clip origin in source coordinates. MPSRectNoClip means the whole destination, and MPSRegion is MTLRegion on the
     // 16.4 surface, so the two are the same type and no conversion stands between them.
     // MPSRegion is not MTLRegion: MPSCoreTypes.h:355 gives it an MPSOrigin and an MPSSize of doubles,
     // where MTLRegion has an MTLOrigin and an MTLSize of NSUInteger. The sentinel is resolved here, on
