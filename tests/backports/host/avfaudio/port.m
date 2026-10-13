@@ -148,9 +148,8 @@ int main(void)
 
         // ---- channelCapabilities: the (input, output) pair, in that order.
         // This is the member the review mutated by swapping [0] and [1], and it is the one this
-        // harness exists to see: the host's own header documents the order as
-        // "(-16, 2) indicates that a unit can accept up to 16 channels of input across its input
-        // busses, but will only produce 2 channels of output".
+// harness exists to see: the host's own header documents the order as a pair where -16 means up to sixteen input channels
+// across the input busses, and 2 means two output channels.
         // What the release itself answers for the property the header names, on this very unit, read
         // both ways: as the two SInt32 the header's discussion shows, and as a single UInt32, which is
         // what the property's "Value Type: UInt32" line says. A port that reads four bytes and checks

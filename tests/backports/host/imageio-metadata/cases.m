@@ -470,8 +470,8 @@ int main(void)
         // CGImageMetadataCopyTagMatchingImageProperty and CGImageMetadataSetValueMatchingImageProperty over
         // every pair the header declares. 518 pairs, each in a fresh container: the set direction's answer,
         // the tag it wrote, the lookup over that tree and the lookup over an empty one. A pair the host does
-        // not map answers false, writes nothing, and answers NULL for the lookup, and that is the header's
-        // own "Not all dictionaries and properties are supported at this time".
+        // not map answers false, writes nothing, and answers NULL for the lookup, which is the header's own
+        // position as well: not every dictionary and property is supported yet.
         {
             charon_pair pairs[600];
             size_t npairs = charon_pairs(pairs);

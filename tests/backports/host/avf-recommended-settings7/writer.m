@@ -24,8 +24,8 @@
 //  carries and the port does not is a row on one side only, and a key both carry must agree.
 //
 //  The live input is this machine's own microphone and camera on a real AVCaptureSession which is really
-//  started - both headers ask for exactly that ("you should configure your session first, then query the
-//  recommended settings", AVCaptureAudioDataOutput.h:115), and a probe that asked an output attached to
+//  started - both headers ask for exactly that (AVCaptureAudioDataOutput.h:115 says the session must be configured
+//  before the recommended settings are queried), and a probe that asked an output attached to
 //  nothing would measure the answer for no configuration rather than the answer for this one.
 //
 //  Every row is printed as `key | value`. The controls come first.

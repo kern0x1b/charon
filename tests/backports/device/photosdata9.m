@@ -242,7 +242,7 @@ static NSError *add_video(NSURL *url, BOOL move, NSString **identifier)
     return added ? nil : (error ?: [NSError errorWithDomain:@"charon.test" code:0 userInfo:nil]);
 }
 
-// shouldMoveFile: the header's "the original file is removed if the asset is created successfully", and its hard-linked
+// shouldMoveFile: the header says the original file goes away once the asset is created, and its hard-linked
 // file that cannot be moved. Each adds a solid-blue video, 640 by 480, the fixture the fleet keeps. Not smaller: the
 // iPad 2's H.264 encoder refuses 64 by 64 (AVAssetWriter fails with OSStatus -12902, 2026-09-24) and writes 640 by 480.
 static void check_move(void)

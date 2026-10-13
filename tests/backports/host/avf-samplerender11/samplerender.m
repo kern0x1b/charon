@@ -479,8 +479,8 @@ static void probeRendererAttached(AVSampleBufferRenderSynchronizer *sync, AVSamp
         yesno(fabs(secondsBetween(base, CMTimebaseGetTime(renderer.timebase))) < 0.2));
 
     // The time as well as the rate: the synchronizer's clock is set to five seconds and the renderer's is
-    // read again. Measured on the host, both read 5.2032 afterwards, which is the sentence the header's
-    // "Adds a renderer to begin operating with the synchronizer's timebase" is about.
+    // read again. Measured on the host, both read 5.2032 afterwards, which is what the header's remark about adding a renderer
+    // to the synchronizer is about.
     [sync setRate:1.0 time:CMTimeMake(5, 1)];
     usleep(150000);
     row("attached: the renderer's clock reads the synchronizer's new time",

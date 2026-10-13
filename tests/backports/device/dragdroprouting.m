@@ -27,23 +27,22 @@ static NSString *CharonDescribe(NSIndexPath *path)
 // UIDropInteraction.h says, as a fact about when each is sent:
 //
 //   * `dropInteraction:canHandleSession:` gates the rest: if it is not implemented or returns
-//     true, the other methods are called "starting with -dropInteraction:sessionDidEnter:". So
+//     true, the other methods are called, starting with `-dropInteraction:sessionDidEnter:`. So
 //     canHandle is first and sessionDidEnter follows it, and nothing else is sent when it is false.
-//   * `dropInteraction:sessionDidEnter:` is "called when a drag enters the view".
-//   * `dropInteraction:sessionDidUpdate:` is "called when the drag enters the interaction's view,
-//     or when the drag moves while inside the view", and it is the one a delegate must implement to
-//     accept a drop at all -- so it is asked on every move, after the enter, before the drop.
+//   * `dropInteraction:sessionDidEnter:` fires when a drag enters the view.
+//   * `dropInteraction:sessionDidUpdate:` fires as the drag comes into the interaction's view or moves
+//     about inside it, and it is the one a delegate must implement to accept a drop at all -- so it
+//     is asked on every move, after the enter, before the drop.
 //   * `dropInteraction:previewForDroppingItem:withDefault:` is the drop animation's preview, which
 //     the header places after `-dropInteraction:performDrop:` has been called, and the port asks
 //     it for the drop that is about to be performed, so it is between the update and the perform.
-//   * `dropInteraction:performDrop:` is "called when the user drops onto this interaction's view",
-//     and the data may be requested "only during the scope of this method".
-//   * `dropInteraction:concludeDrop:` is called "after -dropInteraction:performDrop: has been
-//     called, and all resulting drop animations have completed", which is the last thing before the
-//     view is told to draw its final state.
-//   * `dropInteraction:sessionDidEnd:` is called "when the drag session ends, for any reason",
-//     "for *every* interaction that ever received sessionDidEnter:, sessionDidUpdate: or
-//     sessionDidExit:" -- so it is last, and it is sent even to an interaction that has seen only
+//   * `dropInteraction:performDrop:` fires as the user lets go over this interaction's view, and the
+//     data may be requested only while this method is running.
+//   * `dropInteraction:concludeDrop:` runs once the perform has finished and every resulting drop
+//     animation has completed, which is the last thing before the view is told to draw its final state.
+//   * `dropInteraction:sessionDidEnd:` fires when the drag session ends, for whatever reason, and
+//     it fires for every interaction that ever received sessionDidEnter:, sessionDidUpdate: or
+//     sessionDidExit: -- so it is last, and it is sent even to an interaction that has seen only
 //     the enter and the exit.
 //
 // The strings are the interaction's own selector names with the arguments each message is given, so

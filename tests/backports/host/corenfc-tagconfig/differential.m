@@ -12,8 +12,8 @@
 // answers. The prefix renames in run.sh give the port's classes CharonHost* names, so the port's
 // classes and the host's coexist in one process and are asked the same questions in the same order.
 //
-// The two sets of classes are spelled differently on purpose. The -D renames apply to this file as
-// well as to the port's sources, so `NFCTagCommandConfiguration` here IS the host's class, and the
+// The two sets of classes are spelled differently on purpose. The -D renames reach this file and the port's sources alike, so
+// `NFCTagCommandConfiguration` here IS the host's class, and the
 // port's own class has to be reached by name: its interface is declared locally, with its real
 // CharonHost name and the properties the port implements, and NSClassFromString hands back the class
 // the port's object file registered under that name.

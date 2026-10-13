@@ -177,8 +177,7 @@ int main(int argc, const char *argv[])
         printf("\n");
 
         // ---- 2. The scene: the framework's own gate ---------------------------------------------
-        // A CarPlay scene is a connection to a head unit. The framework says so in the three headers
-        // ("The CarPlay screen has connected and is ready to present content"), and this asks it
+        // A CarPlay scene is a connection to a head unit. The three headers say that the CarPlay screen connects and is ready to show content, and this asks it
         // directly. Catalytic CarPlay has no `+sharedController` and no scene API at all -- measured
         // by the header, `CPInterfaceController.h` in this SDK declares neither -- so on THIS machine
         // the question is only whether the class exists, and the count of scenes is the part a device
@@ -229,9 +228,7 @@ int main(int argc, const char *argv[])
         printf("\n");
 
         // ---- 3. CPVoiceControlState: a value the app makes, with no car in the picture ------------
-        // `CPVoiceControlTemplate.h`: "Your app may initialize the voice control template with one or
-        // more states, and you may call activateVoiceControlState: to switch between states you've
-        // defined." Nothing in the class's own API is the car's.
+        // `CPVoiceControlTemplate.h`: the app creates the template with one or more states and may switch between them with activateVoiceControlState:. Nothing in the class's own API is the car's.
         printf("== 3. CPVoiceControlState ==\n");
         {
             CPVoiceControlState *state = [[CPVoiceControlState alloc]
@@ -258,7 +255,7 @@ int main(int argc, const char *argv[])
                                                                                 repeats:NO];
             check(@"titleVariants answers nil when it was given nil", bare.titleVariants == nil,
                   describe(bare.titleVariants));
-            // "Voice Control state images may be a maximum of 150 by 150 points" is enforced by the
+            // The header's 150-by-150-point cap on Voice Control state images is enforced by the
             // framework, not only documented: a 300x300 image comes back 150x150. The port scales
             // rather than keeps, because this is what Apple's own object does.
             UIGraphicsBeginImageContextWithOptions(CGSizeMake(300.0, 300.0), NO, 1.0);
@@ -296,9 +293,8 @@ int main(int argc, const char *argv[])
         printf("\n");
 
         // ---- 4. CPVoiceControlTemplate: the app's own template ---------------------------------
-        // `CPVoiceControlTemplate.h`: "You may specify a maximum of 5 voice control states. If you
-        // specify more than 5, only the first 5 will be available." and "By default, the Voice Control
-        // template will begin on the first state specified."
+        // `CPVoiceControlTemplate.h`: the header caps the states at five, and anything past the fifth is dropped. The template starts on the
+        // first state given, which is the default.
         printf("== 4. CPVoiceControlTemplate ==\n");
         {
             NSMutableArray<CPVoiceControlState *> *states = [NSMutableArray array];
@@ -318,9 +314,7 @@ int main(int argc, const char *argv[])
             check(@"the first of the states it was given is the active one",
                   [voice.activeStateIdentifier isEqualToString:@"charon.state0"],
                   describe(voice.activeStateIdentifier));
-            // "@warning You must first present this voice control template through your
-            // CPInterfaceController before activating a voice control state, otherwise this method
-            // will have no effect." Measured on Apple's own framework with no head unit and no
+            // The header warns that the template must first be presented through the interface controller before a state is activated, otherwise the call has no effect. Measured on Apple's own framework with no head unit and no
             // presentation: the active state DOES change. The warning is about what a car then shows,
             // not about the object's own state, so the port switches the state and the car is the
             // wall. This was read off the framework, not assumed from the warning.
@@ -328,8 +322,8 @@ int main(int argc, const char *argv[])
             check(@"activating switches the active state with no car attached (measured)",
                   [voice.activeStateIdentifier isEqualToString:@"charon.state3"],
                   [NSString stringWithFormat:@"active is now %@", describe(voice.activeStateIdentifier)]);
-            // An identifier no state carries. The header says "An identifier corresponding to one of
-            // the voice control states used to initialize this template", and Apple's own object does
+            // An identifier no state carries. The header says an identifier should match one of the states the template was created with,
+            // and Apple's own object does
             // not check: measured here, the active identifier becomes the one that was asked for,
             // even when no such state exists. The port matches that, and draws nothing for an
             // identifier no state carries, because there is no state to draw.
@@ -337,8 +331,8 @@ int main(int argc, const char *argv[])
             check(@"an identifier no state carries becomes the active one anyway (measured)",
                   [voice.activeStateIdentifier isEqualToString:@"charon.state99"],
                   [NSString stringWithFormat:@"active is now %@", describe(voice.activeStateIdentifier)]);
-            // The header's rate limit -- "the template will ignore voice control state changes that
-            // occur too rapidly or frequently in a short period of time" -- measured against the
+            // The header's rate limit says the template drops state changes that come too fast or too often in a short span,
+            // measured against the
             // object's own state: twelve activations in a tight loop, and every one of them takes.
             // The limit the header describes is on what a car then shows, which is the wall; the
             // object follows every activation, and the port must not invent an interval.
@@ -369,8 +363,8 @@ int main(int argc, const char *argv[])
         printf("\n");
 
         // ---- 5. CPSessionConfiguration: the configuration OF a session --------------------------
-        // `CPSessionConfiguration.h`: "The current content style suggested by the connected CarPlay
-        // system." and "A bitmask of what type of user interfaces are limited". Both are readonly and
+        // `CPSessionConfiguration.h`: the header describes the content style as the one the connected CarPlay system
+        // suggests, and the limit as a bitmask of the kinds of user interface that are restricted. Both are readonly and
         // both come from the connected system. This asks with none connected.
         printf("== 5. CPSessionConfiguration, with no head unit ==\n");
         {
@@ -398,8 +392,8 @@ int main(int argc, const char *argv[])
         printf("\n");
 
         // ---- 6. CPNavigationSession: created by the system, never by the app ---------------------
-        // `CPNavigationSession.h`: "A CPNavigationSession will be created for you when calling
-        // startNavigationSessionForTrip: on CPMapTemplate", and `-init`/`+new` are NS_UNAVAILABLE. The
+        // `CPNavigationSession.h`: the header says the system makes a CPNavigationSession for the app when it calls
+        // startNavigationSessionForTrip: on CPMapTemplate, and `-init`/`+new` are NS_UNAVAILABLE. The
         // 16.0 arm64e cache agrees and names the creator: the private protocol
         // CPNavigationSessionProviding declares `-hostStartNavigationSessionForTrip:reply:`.
         printf("== 6. CPNavigationSession ==\n");
@@ -513,8 +507,7 @@ int main(int argc, const char *argv[])
                 check(@"a session the program holds can be made through the runtime", NO,
                       @"no object to ask");
             } else {
-                // -addManeuvers: is "Use this method to add CPManeuvers in chronological order to the
-                // navigation session" (:83-86): the session ACCUMULATES what the program adds, and what
+                // -addManeuvers: is documented as the call that adds CPManeuvers to a navigation session in chronological order (:83-86): the session ACCUMULATES what the program adds, and what
                 // it accumulated is readable, which is a stored value and not a message to a car.
                 SEL addManeuvers = NSSelectorFromString(@"addManeuvers:");
                 // `-maneuvers` is the PRIVATE getter the 18.0 cache carries alongside -setManeuvers: (see
@@ -576,9 +569,8 @@ int main(int argc, const char *argv[])
                 (void)laneGuidance;
                 (void)routeInformation;
                 // The round trip the header describes, on Apple's own objects, with no car attached.
-                // `CPLaneGuidance.h:22-28`: lanes is "an array of CPLane objects, each describes a
-                // single lane" and instructionVariants "an array of NSString representing the
-                // instruction for this lane guidance, arranged from most to least preferred".
+                // `CPLaneGuidance.h:22-28`: lanes is an array of CPLane objects, one per lane, and instructionVariants is an array of
+                // NSStrings, one per variant of the instruction, ordered from most to least preferred.
                 id guidance = [[NSClassFromString(@"CPLaneGuidance") alloc] init];
                 // Measured 2026-10-01 on Apple's own object with no head unit: a fresh CPLaneGuidance
                 // answers NIL for both properties, not an empty array. This is the honest line of this

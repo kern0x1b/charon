@@ -10,8 +10,8 @@
  *      differ from it and nothing else in the port would notice.
  *   2. The zone arithmetic of MTKMeshBufferAllocator: a zone of N bytes hands out windows that do
  *      not overlap, in order, and the first request that does not fit answers nil - which is what
- *      MDLMeshBufferAllocator's own words require ("Returns nil the buffer could not be allocated in
- *      the zone given").
+ *      MDLMeshBufferAllocator's own documentation requires a nil answer when the buffer cannot fit in the zone it was given,
+ *      so that answer is what a request that does not fit gets.
  *
  * What does NOT run here, and why: the loader's own methods build a CGBitmapContext and an
  * MTLTextureDescriptor, and the mesh classes make an MTLBuffer from a device. Both need an EAGL

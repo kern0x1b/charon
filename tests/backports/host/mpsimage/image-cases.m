@@ -390,7 +390,7 @@ int main(int argc, const char **argv)
                         float got[matrixRows * rowElements];
                         memcpy(got, (char *)[buffer contents] + matrix.matrixBytes * 1,
                                matrixRows * rowElements * sizeof(float));
-                        // MPSImageCopy.h:19-24 says the image data is stored in a row of a matrix, so the
+                        // MPSImageCopy.h:19-24 says each image lands in one row of the matrix, so the
                         // first matrix of the batch is not one of them and must still be the zero it was.
                         NSUInteger untouched = 0;
                         float *first = (float *)[buffer contents];
@@ -603,8 +603,8 @@ int main(int argc, const char **argv)
 
         // MPSImageMorphology, MPSImageMorphology.h:22, :72, :96 and :174 - four classes that are all the
         // same walk with two choices in it. The window is 5x5 over a 4x3 image, so it runs off every edge
-        // on purpose: :69 and :93 say "The edgeMode property is assumed to always be
-        // MPSImageEdgeModeClamp for this filter", so an off-edge tap takes the nearest edge VALUE. A
+        // on purpose: :69 and :93 say the edge mode is fixed at clamp for this filter, so an off-edge tap
+        // takes the nearest edge VALUE. A
         // convolution case over the same image and window would use MPSImageEdgeModeZero and get a
         // different answer, and having both is what makes the edge rule visible rather than asserted.
         //
@@ -659,13 +659,12 @@ int main(int argc, const char **argv)
 
         // MPSImageHistogram, MPSImageHistogram.h:33 and :145. A histogram COUNTS, so its answer is exact
         // and is compared exactly - the same argument as the morphology family and the opposite of the
-        // convolution's. The bins are CHANNEL-MAJOR (:206-215, "histogram results for the R channel for all
-        // bins followed by" the G bins...), so a kernel that wrote them bin-major would produce a
+        // convolution's. The bins are CHANNEL-MAJOR (:206-215: all the R bins come first, then G, B and A), so a kernel
+        // that wrote them bin-major would produce a
         // plausible-looking array in the wrong order and this catches it.
         //
-        // histogramForAlpha is set NO (:208 "If histogramInfo.histogramForAlpha is false and the source
-        // image is RGBA then only histogram results for RGB channels are stored"), so the alpha channel's
-        // bins are not compared at all - and a kernel that wrote four channels where three belong would
+        // histogramForAlpha is set NO (:208 gives the rule for an RGBA source with that flag off, so only RGB is stored), and the alpha channel's
+        // bins are therefore not compared at all - and a kernel that wrote four channels where three belong would
         // show up as the first three matching and the buffer size disagreeing.
         {
             static const char *histNames[2] = {"histogram", "normalized-histogram"};

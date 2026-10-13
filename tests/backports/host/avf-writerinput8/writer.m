@@ -123,11 +123,10 @@ static NSString *describeRanges(AVAssetWriterInputPassDescription *description)
 
 // ---- Waiting for the pass description, with a bound and not with a sleep. ----
 //
-// AVAssetWriterInput.h:485 says currentPassDescription "will transition to an initial non-nil value during
-// the call to -startWriting", :504 says after -markCurrentPassAsFinished "After the receiver analyzes
-// whether an additional pass is warranted, the value of currentPassDescription will change (usually
-// asynchronously)", and :492 says the block "will be invoked one final time so the client can invoke
-// -markAsFinished in response". So the deliveries this harness depends on are the release's own promises,
+// AVAssetWriterInput.h:485 says currentPassDescription starts out nil and takes its first non-nil value during
+// the start of writing (-startWriting), and :504 says that after the pass is marked finished, the receiver
+// decides whether another pass is needed and the description changes, usually asynchronously. :492 says the
+// block runs once more so the client can mark the input finished in response. So the deliveries this harness depends on are the release's own promises,
 // and the only question left is WHEN to look. The two waits below are how, and neither is a sleep:
 //
 //   * charon_wait_for_calls waits on a semaphore the block signals, with a deadline. It answers "did the
@@ -266,8 +265,7 @@ static void askUnattachedStates(NSDictionary *settings, BOOL requestMultiplePass
 }
 
 // ---- the precondition the header states, asked on an input that is attached but whose writer has not
-//      started: "Before calling this method, you must ensure that the receiver is attached to an
-//      AVAssetWriter via a prior call to -addInput: and that -startWriting has been called" ----
+//      started: the header requires the receiver to be attached to an AVAssetWriter through an earlier -addInput: and to have had -startWriting called before this method runs ----
 static void askBeforeStartWriting(NSDictionary *settings, BOOL requestMultiplePasses)
 {
     configure(requestMultiplePasses ? @"switch-on before startWriting" : @"switch-off before startWriting");
@@ -351,7 +349,7 @@ static void askFullSequence(NSDictionary *settings, BOOL requestMultiplePasses)
     row(@"startWriting".UTF8String, [writer startWriting] ? @"YES" : @"NO");
     askInputState(@"after startWriting", input);
 
-    // the header: the switch "cannot be set after writing on the receiver's AVAssetWriter has started"
+    // the header: the switch becomes fixed as soon as the writer, the receiver's AVAssetWriter, has started writing
     reportCall(@"performsMultiPassEncodingIfSupported set YES after startWriting", ^{
         input.performsMultiPassEncodingIfSupported = YES;
     });
@@ -387,9 +385,8 @@ static void askFullSequence(NSDictionary *settings, BOOL requestMultiplePasses)
         }];
     });
 
-    // the header: with canPerformMultiplePasses NO, currentPassDescription "will immediately become nil
-    // after calling this method", and the block "will be invoked one final time so the client can invoke
-    // -markAsFinished in response"
+    // the header: with canPerformMultiplePasses NO, currentPassDescription becomes nil straight after the call that
+    // marks the pass finished, and the block is invoked one last time so the client can mark the input finished in response.
     [input.invoked removeAllObjects];
     reportCall(@"markCurrentPassAsFinished after startWriting", ^{
         [input markCurrentPassAsFinished];
@@ -448,8 +445,8 @@ AVURLAsset *written = [AVURLAsset URLAssetWithURL:url options:nil];
             row(@"AVAssetExportSession canPerformMultiplePassesOverSourceMediaData".UTF8String,
                 [NSString stringWithFormat:@"RAISED %@", raised.name]);
         }
-        // the read/write pair, and the header's own "This property cannot be set after the export has
-        // started" - asked with an export actually in flight, because a property that cannot be set after
+        // the read/write pair, and the header's own rule that this property is fixed once the export has begun,
+        // so it is asked with an export actually in flight, because a property that is locked after
         // a start is a different answer from one that cannot be set after nothing.
         reportCall(@"AVAssetExportSession canPerformMultiplePassesOverSourceMediaData set YES", ^{
             session.canPerformMultiplePassesOverSourceMediaData = YES;

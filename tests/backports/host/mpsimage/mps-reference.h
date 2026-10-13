@@ -147,14 +147,11 @@ static void CharonCompareBinary(const char *name, const float *primary, const fl
 
 // CharonReferenceTranspose: the transpose of a region, from the header's own words.
 //
-//   MPSImageTranspose.h:16   "The MPSImageTranspose transposes an image"
-//   MPSImageTranspose.h:18   "This kernel accepts uint and int textures in addition to unorm and
-//                            floating-point textures."
+//   MPSImageTranspose.h:16   the header says it transposes an image
+//   MPSImageTranspose.h:18   the kernel accepts unsigned and signed integer textures as well as normalized and float ones.
 //   MPSImageTranspose.h:21   MPSImageTranspose : MPSUnaryImageKernel
-//   MPSImageKernel.h:141-144 clipRect "A MTLRegion that indicates which part of the destination to
-//                            overwrite. If the clipRect does not lie completely within the destination
-//                            image, the intersection between clip rectangle and destination bounds
-//                            [is] used. Default: MPSRectNoClip … indicating the entire image."
+//   MPSImageKernel.h:141-144 clipRect names the MTLRegion of the destination that is overwritten. If it does not lie wholly within the destination
+//                            image, only its overlap with the destination is used. The default, MPSRectNoClip, means the whole image.
 //
 // So: destination(row, column) takes source(column, row), over the intersection of the clip rectangle
 // with the destination, and MPSRectNoClip is the whole destination. The header says "transposes" and
@@ -186,10 +183,8 @@ static void CharonReferenceTranspose(const char *name, const float *src, NSUInte
 }
 
 
-// MPSImageCopyToMatrix, from MPSImageCopy.h:19-24: "The MPSImageCopyToMatrix copies image data to a
-// MPSMatrix. The image data is stored in a row of a matrix. The dataLayout specifies the order in which
-// the feature channels in the MPSImage get stored in the matrix. If MPSImage stores a batch of images,
-// the images are copied into multiple rows, one row per image." And the two orders, as MPSImage.h:300-303
+// MPSImageCopyToMatrix, from MPSImageCopy.h:19-24: the kernel copies image data into a matrix, one image's data per row. The data layout sets the order in which the feature channels are placed in the matrix, and a batch of images
+// occupies several rows, one for each image. And the two orders, as MPSImage.h:300-303
 // gives them in the surface's own comments:
 //   MPSDataLayoutFeatureChannelsxHeightxWidth   [imageNum][featureChannels][imageHeight][imageWidth]
 //   MPSDataLayoutHeightxWidthxFeatureChannels   [imageNum][imageHeight][imageWidth][featureChannels]
@@ -255,18 +250,15 @@ static void CharonReferenceImageCopyToMatrix(const char *name, const float *src,
 // column. So a row reduction over a rows x cols image answers `rows` values and a column reduction
 // answers `cols`. That much is the header's wording and it is what fixes the count.
 //
-// The read window is MPSImageReduce.h:31-42's clipRectSource: "The source rectangle to use when reading
-// data ... If the clipRectSource does not lie completely within the source image, the intersection of
-// the image bounds and clipRectSource will be used. The clipRectSource replaces the MPSUnaryImageKernel
-// offset parameter for this filter. The latter is ignored. Default: MPSRectNoClip, use the entire source
-// texture." So `offset` does not enter this reduction at all - unlike every other unary kernel in this
+// The read window is MPSImageReduce.h:31-42's clipRectSource, the source rectangle to read. When it does not lie wholly
+// inside the source image, only its overlap with the image is used, and it takes the place of the offset parameter, which this filter
+// ignores; with no clip set, the whole source texture is read. So `offset` does not enter this reduction at all - unlike every other unary kernel in this
 // package - and clipRectSource is INTERSECTED with the image rather than applied on its own. That is
 // why the indices below are clamped to the image and not used raw: the reference models the
 // intersection rather than assuming a caller passes a rectangle that fits.
 //
-// `clipRect` is a different thing and is NOT the read window. MPSImageReduce.h:38-40: "The clipRect
-// specified in MPSUnaryImageKernel is used to control the origin in the destination texture where the
-// min, max values are written. The clipRect.width must be >=2. The clipRect.height must be >= 1." That is
+// `clipRect` is a different thing and is NOT the read window. MPSImageReduce.h:38-40: clipRect sets where the min and max values land in the destination, and its
+// width must be at least 2 with a height of at least 1. That is
 // where the write lands, and the two bounds are a precondition the kernel refuses, not a result.
 //
 // What the header does NOT say is the destination's shape. Each class fixes how many values there are
@@ -343,20 +335,18 @@ static void CharonReferenceImageReduce(const char *name, const float *src, NSUIn
 // weights.
 //
 // What the header gives, and this is the whole of it:
-//   :62-72 bias - "The bias is a value to be added to convolved pixel before it is converted back to the
-//     storage format." So the sum is taken, the bias added, and the result stored - three steps, and the
+//   :62-72 bias - the bias is added to the convolved value, and only then is the result stored. So the sum is taken, the bias added, and the result stored - three steps, and the
 //     order matters: adding the bias before the store is what makes the result a float32 rounding of
 //     (sum + bias), not a float32 rounding of the sum with a float32 bias added afterwards.
 //   :87 -initWithDevice:kernelWidth:kernelHeight:weights: is the designated initializer, and
-//     "kernelWeights A pointer to an array of kernelWidth * kernelHeight values to be used as the kernel",
-//     row-major over kernelWidth.
-//   :154-168 MPSImageBox - the same window, and both dimensions "Must be an odd number", which is what
+//     kernelWeights is a pointer to kernelWidth * kernelHeight values that form the kernel, row-major over kernelWidth.
+//   :154-168 MPSImageBox - the same window, and both dimensions must be odd, which is what
 //     keeps the window centred on the pixel it writes.
 //   :270 MPSImageGaussianBlur and MPSImageBox mark -initWithDevice: NS_UNAVAILABLE, as the reduction
 //     family does: the kernel size or the sigma is part of what the object IS.
 //
 // The edge rule is inherited, not this header's: MPSUnaryImageKernel's edgeMode, whose default MPSImageKernel.h
-// gives as "usually MPSImageEdgeModeZero". So a window that reaches off the edge reads ZERO there, and the
+// gives the zero mode, though only usually. So a window that reaches off the edge reads ZERO there, and the
 // reference clamps by multiplying by zero rather than by replicating the border - replicating would be
 // MPSImageEdgeModeClamp and would answer a different question.
 //
@@ -405,15 +395,13 @@ static void CharonReferenceImageConvolution(const char *name, const float *src, 
 // MPSImageMorphology, from MPSImageMorphology.h of the iPhoneOS 26.2 surface: MPSImageAreaMax (:22),
 // MPSImageAreaMin (:72), MPSImageDilate (:96) and MPSImageErode (:174), all ios(9.0).
 //
-// :17-18 MPSImageAreaMax "finds the maximum pixel value in a rectangular region centered around each pixel
-// in the source image. If there are multiple channels in the source image, each channel is processed in"
-// its own window, so the channel is a third loop and not a divide of the buffer. MPSImageAreaMin is the
-// minimum over the same window; MPSImageDilate is the maximum with the caller's probe (:129 "values The
-// set of values to use as the dilate probe", :116 "Each dilate shape probe defines a 3D surface of
-// values", so one height per tap, row-major); MPSImageErode is the minimum over the same probe.
+// :17-18 MPSImageAreaMax takes the maximum over a rectangular region centred on each pixel. With several channels, each
+// channel is processed on its own window, so the channel is a third loop and not a divide of the buffer. MPSImageAreaMin is the
+// minimum over the same window; MPSImageDilate is the maximum with the caller's probe (:129 gives the probe as the set of values
+// to use, and :116 says each probe describes a 3D surface of values), so one height per tap, row-major; MPSImageErode is the minimum over the same probe.
 //
-// THE EDGE IS CLAMPED, and this is what makes the family unlike the convolution's. :69 and :93 both say
-// "The edgeMode property is assumed to always be MPSImageEdgeModeClamp for this filter." So a tap reaching
+// THE EDGE IS CLAMPED, and this is what makes the family unlike the convolution's. :69 and :93 both say the
+// edge mode is fixed at clamp for this filter. So a tap reaching
 // off the edge takes the nearest edge VALUE, not zero. The convolution reference multiplies an off-edge
 // sample by zero; this one clamps the index instead, and the case runs a window wider than the image
 // precisely so the two cannot both pass.
@@ -471,16 +459,12 @@ static void CharonReferenceImageMorphology(const char *name, const float *src, N
 // MPSImageNormalizedHistogram (:145), both ios(9.0).
 //
 // What the header fixes, and this is the whole contract:
-//   MPSImageHistogramInfo carries numberOfHistogramEntries ("the number of histogram entries, or 'bins'"),
-//   histogramForAlpha, minPixelValue ("Any pixel value less t[han]" it) and maxPixelValue ("Any pixel
-//   value greate[r than]" it) - so the range is half-open at the bottom, closed at the top, and a value
-//   outside it is not binned at all.
-//   :59 minPixelThresholdValue - "The histogram entries will be incremented only if pixel value is >=
-//   minPixelThresholdValue", per channel.
-//   :206-215 the result's layout, verbatim: "histogram results for the R channel for all bins followed by"
-//   the G bins, then the B bins, then the A bins - so CHANNEL-MAJOR, and :208 "If
-//   histogramInfo.histogramForAlpha is false and the source image is RGBA then only histogram results for
-//   RGB channels are stored".
+//   MPSImageHistogramInfo carries numberOfHistogramEntries (the bin count), histogramForAlpha, minPixelValue
+//   and maxPixelValue. The header's wording on the two bounds gives the range as half-open at the bottom and
+//   closed at the top, and a value outside it is not binned at all.
+//   :59 minPixelThresholdValue - an entry is incremented only when the pixel reaches the threshold, per channel.
+//   :206-215 the result layout: R bins first, then G, B and A, each channel's bins in order -- so CHANNEL-MAJOR, and :208
+//   says that with histogramForAlpha off on an RGBA source only the RGB channels are stored.
 //
 // EXACT, and for the same reason the morphology reference is exact: a histogram COUNTS. It selects a bin
 // and adds one, so the answer is an integer and a tolerance could only hide an off-by-one. There is no ulp

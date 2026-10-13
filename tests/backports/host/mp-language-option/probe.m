@@ -1,9 +1,9 @@
 // What Apple's own MediaPlayer answers, measured on THIS machine, for the two accessors
 // MPNowPlayingInfoLanguageOption90.m answers rather than stores.
 //
-// Each header line quotes MPNowPlayingInfoLanguageOption.h, which documents both as "a special case
-// that is used to represent the best legible/audible language option based on system preferences"
-// (:56-63), and :57-59 says a languageTag "with the value of MPLangaugeOptionAutoLangaugeTag" is that
+// Each header line is a paraphrase of MPNowPlayingInfoLanguageOption.h, which documents both as the
+// special option standing for the best legible or audible language, chosen from system preferences (:56-63),
+// and :57-59 says a languageTag holding the auto language-tag constant is that
 // special case - a constant the SDK declares nowhere, so its value cannot be written down from the
 // headers. This program asks the question the other way round: build every option the class's own
 // designated initialiser can build and print what Apple's class answers, so the port's answer is

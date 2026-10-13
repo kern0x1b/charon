@@ -9,8 +9,8 @@
 //                          export is started through the PORT's interposed implementation.
 //
 //  Three cases, because the header names two conditions and the default is the third:
-//  AVAssetExportSession.h:383-386, "If the value of this key is nil, no filter will be applied. This is
-//  the default. The filter will not be applied to metadata set with via the metadata property."
+//  AVAssetExportSession.h:383-386 says a nil value for this key means no filter is applied, which is the default, and that
+//  the filter is not applied to metadata that was set through the metadata property.
 //
 //    no filter            the step must not run, and the session's metadata must stay nil
 //    filter, no metadata  the step runs, and what it leaves is exactly what the release's own filtering

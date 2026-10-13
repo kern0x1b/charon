@@ -306,8 +306,7 @@ static void persist_phase(Class portDevice, const char *mode)
  *
  * SUPPORT asks -[AVCaptureDeviceInput isMultichannelAudioModeSupported:] with each of the three values of the
  * enum, on both sides. It is asked three times and not once because the header's own subject is the value:
- * "The receiver's multichannelAudioMode property can only be set to a certain mode if this method returns YES
- * for that mode" (AVCaptureInput.h:381), so one answer cannot stand for the rule.
+ * the header's rule is that the multichannelAudioMode property can be set to a given mode only when this method returns YES for that mode (AVCaptureInput.h:381), so one answer cannot stand for the rule.
  *
  * SETTER sends each of the three readwrite members of the slice and records what happened, then asks the getter
  * again. A refusal is part of an answer here - two of these three setters refuse on this release and Apple's own
@@ -795,8 +794,8 @@ static void prefcam_phase(Class hostDevice, Class portDevice, const char *mode)
     ((void (*)(Class, SEL, id))objc_msgSend)(portDevice, @selector(setUserPreferredCamera:), nil);
     prefcam_step(portDevice, "after-nil-is-set");
 
-    /* "if your user's most recent preferred camera is not currently connected, it still reports the next best
-       choice" (:662): the back is the most recent and it goes, so the front - the entry before it - answers. */
+    /* the header says that a user's most recent preferred camera, once disconnected, is still reported, and that the
+       next best one is reported in its place (:662): the back is the most recent and it goes, so the front - the entry before it - answers. */
     set_present(portDevice, @[prefcam_front]);
     prefcam_step(portDevice, "most-recent-gone-next-best-answers");
 
