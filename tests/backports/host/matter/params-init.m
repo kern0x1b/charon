@@ -1,5 +1,5 @@
 // matter/params-init.m - the designated initialiser the SDK declares on MTRSubscribeParams, initWithMinInterval:maxInterval:
-// (MTRCluster.h:213: "Must provide a minInterval and maxInterval; there are no default values"), measured on the framework
+// (MTRCluster.h:213 makes both intervals required, with no default for either), measured on the framework
 // and on the port's own committed class, the same calls on both sides.
 //
 // The system side is the host's MTRSubscribeParams. The port side is the committed CharonMatterMTRSubscribeParams.m,
