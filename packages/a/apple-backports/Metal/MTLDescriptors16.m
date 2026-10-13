@@ -98,11 +98,10 @@
 // object and a caller can set one through the array without a write first - measured, and that is
 // what lets a caller fill slot 2 without having filled slot 1.
 //
-// A WRITE COPIES, because the header says "This always uses 'copy' semantics", and that is measured
+// A WRITE COPIES, because the header says it always uses copy semantics, and that is measured
 // too: the attachment handed in and the one read back are different objects with the same values. A
-// nil write RESETS the slot to a fresh descriptor, which is what "safe to set the attachment state at
-// any legal index to nil, which resets that attachment descriptor state to default values" means -
-// measured: the slot reads a new object whose indices are MTLCounterDontSample again.
+// nil write RESETS the slot to a fresh descriptor, which is what the header means by setting the attachment state at a legal
+// index to nil, which resets it to default values - measured: the slot reads a new object whose indices are MTLCounterDontSample again.
 //
 // THIS ARRAY IS NOT SHARED WITH THE THREE IN MTLDescriptors14.m, and it is worth saying why rather than
 // leaving a reviewer to find a near-copy. They are three classes of three other releases' objects, each
@@ -158,8 +157,8 @@ static void CharonMetalRefuseAttachmentIndex(NSString *selector, NSUInteger inde
 
 @end
 
-// THE PASS DESCRIPTOR ITSELF: "a collection of attachments to be used to create a concrete
-// acceleration structure encoder". It declares one member of its own - the array - and the array is
+// THE PASS DESCRIPTOR ITSELF: the header describes it as a collection of attachments for building a concrete
+// acceleration structure encoder. It declares one member of its own - the array - and the array is
 // READONLY, so a fresh descriptor makes one, the way Apple's own does: measured, a fresh
 // `+accelerationStructurePassDescriptor` and a plain `-init` both hand back a non-nil array whose four
 // slots are four distinct descriptors.
@@ -212,8 +211,7 @@ static void CharonMetalRefuseAttachmentIndex(NSString *selector, NSUInteger inde
 // enumeration would suggest: a fresh descriptor answers maxCommandBufferCount 64 - the header says
 // only that it is the maximum, and says nothing about the default - priority MTLIOPriorityNormal (1,
 // while the enumeration's own zero is MTLIOPriorityHigh), type MTLIOCommandQueueTypeConcurrent (0,
-// which IS the enumeration's zero) and maxCommandsInFlight 0, which the header documents as "a zero
-// value defaults to the system dependent maximum value".
+// which IS the enumeration's zero) and maxCommandsInFlight 0, which the header documents as meaning the system chooses the maximum,
 //
 // A COPY CARRIES THREE OF THE FOUR. Measured: a descriptor with 7 / low / serial / 9 set copies to
 // 7 / low / serial / 0 - Apple's own -copyWithZone: does not carry maxCommandsInFlight, and this one

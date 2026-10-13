@@ -35,8 +35,8 @@
 //      (facts/Metal/Blits.md, "The access hints", and facts/Metal/Heaps.md, "Hazard tracking and storage
 //      modes") - so there is no residency a set could add and none it could take away, and a draw is a
 //      call into OpenGL ES 2.0 that has already been made by the time it is encoded, so a drawable is
-//      never waiting for anything and never waiting to be told. `-waitForDrawable:` says in its own
-//      header that it "returns immediately and doesn't perform any synchronization on the current thread",
+//      never waiting for anything and never waiting to be told. The header of `-waitForDrawable:` says that the call returns at once and
+//      takes no lock on the current thread,
 //      which is what this body is; `-signalDrawable:` schedules the signal that says rendering is
 //      complete, and on this backend it already is. This is the same shape as
 //      `-[MTLCommandBuffer optimizeContentsForCPUAccess:]` in facts/Metal/Blits.md: doing nothing,
@@ -283,7 +283,7 @@ static void CharonMetal4NoteInert(NSString *member, NSString *why)
 // reached (Metal/MTLSharedEvent12.m), and @protocol MTLSharedEvent refines MTLEvent in the 26.2 SDK
 // (MTLEvent.h:52), so the port's own event is an MTLEvent by shape.
 //
-// -signalEvent:value: is "after all GPU work prior to this point is complete", and on this backend that
+// -signalEvent:value: takes effect after all GPU work prior to this point, and on this backend that
 // work is complete by the time the call is encoded, so the value is set now rather than scheduled.
 // -waitForEvent:value: blocks until the state reaches the value, which is what the same wait does for
 // `-[MTLSharedEvent waitUntilSignaledValue:timeout:]`; a value that has already been reached returns at

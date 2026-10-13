@@ -15,9 +15,8 @@
 // one index per invocation, because that assertion STOPS the process - measured here, and it is the
 // same shape as the four-slot measurement facts/Metal/Descriptors16.md records for the 14.0 family.
 //
-// A NIL AT A LEGAL INDEX RESETS the slot to the defaults, which is the header's own sentence: "It is
-// safe to set the attachment state at any legal index to nil, which resets that attachment descriptor
-// state to default values." The only default there is one member, and it is MTLPixelFormatInvalid.
+// A NIL AT A LEGAL INDEX RESETS the slot to the defaults, which is what the header's own sentence says about setting it:
+// the attachment state may be set to nil at any legal index, and the defaults are restored. The only default there is one member, and it is MTLPixelFormatInvalid.
 
 enum { CharonMetalTileColorAttachmentSlots = 8 };
 

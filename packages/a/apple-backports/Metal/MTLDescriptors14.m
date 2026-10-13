@@ -64,8 +64,8 @@
 }
 @end
 
-// THE HEADER WARRANTS 24 for the bounding box stride and no other value: "Stride, in bytes,
-// between bounding boxes in the bounding box buffer. Must be at least 24" (MTLAccelerationStructure.h).
+// THE HEADER WARRANTS 24 for the bounding box stride and no other value: the stride, measured in bytes,
+// is the distance between bounding boxes in the buffer, and it must be at least 24 (MTLAccelerationStructure.h).
 // Apple's own fresh object answers 24, which is the header's floor rather than a private default,
 // so the port starts there and the case compares it.
 @implementation MTLAccelerationStructureBoundingBoxGeometryDescriptor

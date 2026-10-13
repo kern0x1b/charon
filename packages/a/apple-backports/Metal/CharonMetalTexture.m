@@ -684,8 +684,8 @@ static BOOL wrapFor(MTLSamplerAddressMode mode, GLint *out)
 // WRONG CLASS: the criterion in tests/backports/host/protocol-members.py reads the protocol's members
 // from the AST rather than from warnings, and it is what found this - -Wprotocol does not see property
 // accessors, and -Wobjc-protocol-property-synthesis cannot tell a hand-written getter from a missing
-// one, so both were clean while the getter sat on the texture. The header calls it a handle of the
-// GPU resource suitable for storing in an Argument Buffer (MTLTexture.h:424) and this device is the
+// one, so both were clean while the getter sat on the texture. MTLTexture.h:424 describes it as a
+// handle to a resource fit for an argument buffer, and this device is the
 // port's own over OpenGL ES 2.0, so the answer is a typed zero rather than a selector that raises.
 - (MTLResourceID)gpuResourceID
 {

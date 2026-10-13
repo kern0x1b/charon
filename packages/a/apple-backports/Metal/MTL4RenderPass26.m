@@ -146,10 +146,9 @@ static BOOL CharonMetal4CoordinateIsInRange(float value)
 }
 
 // THE HEADER'S OWN CONTRACT for the two, and then what the MEASUREMENT says where the two differ.
-// MTL4RenderPass.h:108 says setSamplePositions:count: takes the positions and how many there are, "or
-// 0 to disable custom sample positions"; :113 says getSamplePositions:count: "stores the app's last set
-// custom sample positions into an output array" and "only modifies the array when the `count` parameter
-// consists of a length sufficient to store the number of sample positions".
+// MTL4RenderPass.h:108 says setSamplePositions:count: takes the positions and how many there are, with
+// zero disabling custom sample positions; :113 says getSamplePositions:count: writes the app's last set positions
+// into an output array, and that it only modifies the array when the count argument is big enough to hold them.
 //
 // THE HEADER'S "SUFFICIENT TO STORE" IS NOT WHAT METAL DOES, and the comment that used to stand here
 // said the opposite - that a read into a buffer too small would change nothing - which my own
