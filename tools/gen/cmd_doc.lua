@@ -492,13 +492,7 @@ local function write_framework(ctx, fw, objc_state)
     for _, cls in ipairs(classes) do
         member_count = member_count + #members_by_class[cls]
     end
-    local skipped = {}
-    local skipped_text = files.read_text(trace_files.skipped_file(tree, fw))
-    if skipped_text then
-        for _, row in ipairs(tsv.records(skipped_text)) do
-            skipped[row.api] = row.reason
-        end
-    end
+    local skipped = trace_files.load_skip_reasons(tree, fw)
     local pins = {}
     for _, pin in ipairs(snapshot.pins(tree, fw)) do
         pins[pin.api] = pin

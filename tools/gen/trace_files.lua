@@ -22,6 +22,19 @@ function skipped_file(tree, fw)
     return path.join(trace_dir(tree, fw), "skipped.tsv")
 end
 
+-- The skip reasons the trace layer recorded for a framework: api -> reason, as skipped.tsv gives them; {} when the trace layer has not
+-- run for the framework.
+function load_skip_reasons(tree, fw)
+    local out = {}
+    local text = files.read_text(skipped_file(tree, fw))
+    if text then
+        for _, row in ipairs(tsv.records(text)) do
+            out[row.api] = row.reason
+        end
+    end
+    return out
+end
+
 -- One row per stub: the surface row it answers and the kind of member.
 function stubs_file(tree, fw)
     return path.join(trace_dir(tree, fw), "stubs.tsv")

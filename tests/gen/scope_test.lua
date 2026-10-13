@@ -151,6 +151,23 @@ local function test_coverage(check)
     check(count == 2, "the comment line is no entry (got " .. count .. ")")
 end
 
+-- A member the trace layer left out reports the reason it recorded. A class property is recorded by its class accessor (+[Cls name]) and
+-- the surface names it by its dotted name, which keys as the instance form (-[Cls name]): the recorded reason is reported under both.
+local function test_recorded_reasons(check)
+    local facts = {members = {{kind = "property", api = "+[SCNNode simdLocalFront]", alias = "SCNNode.simdLocalFront"}}}
+    local recorded = {["+[SCNNode simdLocalFront]"] = "type not resolved: simd_float3", ["-[SCNNode simdLocalUp]"] = "override or hand implementation"}
+    local keyed = scope.reasons_by_key(recorded, facts)
+    check(keyed["-[SCNNode simdLocalFront]"] == "type not resolved: simd_float3", "a class property's reason is keyed by its instance form")
+    check(keyed["+[SCNNode simdLocalFront]"] == "type not resolved: simd_float3", "a class property keeps its accessor key")
+    check(keyed["-[SCNNode simdLocalUp]"] == "override or hand implementation", "an instance member's reason keeps its key")
+    local ctx = empty_context()
+    ctx.led6[surface.key("property", "SCNNode.simdLocalFront")] = "missing"
+    ctx.spec_by_api["SCNNode.simdLocalFront"] = {kind = "property", api = "+[SCNNode simdLocalFront]"}
+    ctx.stub_reason_of = function(key) return keyed[key] end
+    check(scope.row_state("property", "SCNNode.simdLocalFront", "objc", ctx) == "not stubbed: type not resolved: simd_float3",
+          "a class property the trace layer left out reports its recorded reason")
+end
+
 function main()
     local check, failures = checks()
     test_states(check)
@@ -158,6 +175,7 @@ function main()
     test_tie_out(check)
     test_escapes(check)
     test_coverage(check)
+    test_recorded_reasons(check)
     print("scope test: " .. (failures() == 0 and "OK" or ("FAIL " .. failures())))
     if failures() > 0 then
         os.exit(1)

@@ -277,16 +277,6 @@ local function trace_one(args, fw)
     print(string.format("trace %s: %d stubs in %d classes, %d members left out (skipped.tsv)", fw, stubbed, #found.order, #skipped))
 end
 
--- The members the stub rule leaves out of one framework, with the reason each is left out, in the order they were decided: the scope's
--- reasons (stub_members of tools/gen.py@52253c0650, which runs before the inherited-selector rule trace_one adds). tree: the repository tree;
--- fw: the framework; spec: the framework's spec rows; facts: the typed facts of the framework (headers.shard_facts); overridden: the set
--- of the canonical keys a registry row covers; release_missing: the 6.1.3 ledger's statuses keyed by surface.key, or nil when the rule
--- considers every declared member.
-function members_left_out(tree, fw, spec, facts, overridden, release_missing)
-    local _, skipped = stubs.members(spec, rule_env(tree, fw, facts, overridden, release_missing))
-    return skipped
-end
-
 -- Returns the exit status.
 function run(args)
     assert(args.coordination, "trace needs --coordination: the corpus folder")

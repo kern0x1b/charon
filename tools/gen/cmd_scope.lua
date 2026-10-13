@@ -79,13 +79,6 @@ local function starts_with(text, prefix)
     return string.sub(text, 1, #prefix) == prefix
 end
 
-local function is_empty(map)
-    for _ in pairs(map) do
-        return false
-    end
-    return true
-end
-
 -- The integer a demand-apps cell names: int(value or 0) of the oracle, an empty or missing cell being 0.
 local function number_of(value)
     if value == nil or value == "" then
@@ -349,6 +342,22 @@ function ranked_totals(totals, first_counted)
     return rows
 end
 
+-- The skip reasons the trace layer recorded (recorded: api -> reason, as its skipped.tsv gives them), by the key the scope reads them by.
+-- A class property is recorded by its class accessor (+[Cls name]); the surface names it by its dotted name, which keys as the instance
+-- form (-[Cls name]), so the instance key is added beside it (the alias stub_keys takes). facts: the typed facts of the framework.
+function reasons_by_key(recorded, facts)
+    local out = {}
+    for api, reason in pairs(recorded) do
+        out[api] = reason
+    end
+    for _, api in pairs(trace.class_property_apis(facts)) do
+        if recorded[api] ~= nil then
+            out["-" .. string.sub(api, 2)] = recorded[api]
+        end
+    end
+    return out
+end
+
 -- The facts one framework's rows are stated by (the fields row_state reads), from the ledgers, the registry, the trace layer's files and
 -- the spec snapshot. The stub keys of the trace layer's stubs file are kept in the tally too, for the reconciliation.
 local function new_context(args, fw, rows, tally)
@@ -380,14 +389,7 @@ local function new_context(args, fw, rows, tally)
         ctx.class_decisions = trace_files.load_class_decisions(tree, fw)
         local spec = snapshot.load(tree, fw)
         ctx.spec_by_api = snapshot.index(spec)
-        local has_members = false
-        for _, r in ipairs(spec) do
-            if r.kind == "method" or r.kind == "property" then
-                has_members = true
-                break
-            end
-        end
-        -- the typed facts of the framework (headers.shard_facts), which the trace layer's skip reasons are decided from: read only when one is read
+        -- the typed facts of the framework (headers.shard_facts), for the class properties among the recorded skip reasons: read only when one is read
         local parsed = nil
         local function facts_of()
             if parsed == nil then
@@ -395,20 +397,11 @@ local function new_context(args, fw, rows, tally)
             end
             return parsed
         end
-        -- the trace layer's skip reasons are read by a row no stub answers, so they are computed only then
+        -- the reason the trace layer recorded for a member it left out (skipped.tsv), read by a row no stub answers
         local reasons = nil
         ctx.stub_reason_of = function(key)
             if reasons == nil then
-                reasons = {}
-                if has_members then
-                    local release_missing = nil
-                    if not is_empty(led6) then
-                        release_missing = led6
-                    end
-                    for _, s in ipairs(trace.members_left_out(tree, fw, spec, facts_of(), registry, release_missing)) do
-                        reasons[s.api] = s.reason
-                    end
-                end
+                reasons = reasons_by_key(trace_files.load_skip_reasons(tree, fw), facts_of())
             end
             return reasons[key]
         end
