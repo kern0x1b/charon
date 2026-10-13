@@ -53,6 +53,7 @@ static void fillParams(id params, BOOL zeros, NSString *zeroField, NSString *one
             continue;
         }
         if (fillDepth == 0 && nilField && [name isEqualToString:nilField]) {
+            [params setValue:nil forKey:name];
             continue;
         }
         BOOL zero = oneField ? ![name isEqualToString:oneField] : (zeros || [name isEqualToString:zeroField]);
@@ -85,6 +86,11 @@ static void fillParams(id params, BOOL zeros, NSString *zeroField, NSString *one
             }
         }
         if (!value) {
+            // An object property this mode does not fill is set to nil, not left as the initialiser made it: -init stores a
+            // child struct, and a member the mode names nil is then not nil.
+            if ([attribute hasPrefix:@"T@\""]) {
+                [params setValue:nil forKey:name];
+            }
             continue;
         }
         NSString *setterName = [NSString stringWithFormat:@"set%@%@:", [[name substringToIndex:1] uppercaseString],
@@ -102,6 +108,17 @@ static void fillParams(id params, BOOL zeros, NSString *zeroField, NSString *one
 static id paramsForMode(Class paramsClass, NSString *mode)
 {
     id params = [[paramsClass alloc] init];
+    // Every object property starts nil, whatever the initialiser stored (-init makes the child structs): the default mode is
+    // every property nil, as the probe's header says, and the other modes fill from there.
+    unsigned int count = 0;
+    objc_property_t *props = class_copyPropertyList(paramsClass, &count);
+    for (unsigned int i = 0; i < count; i++) {
+        NSString *name = @(property_getName(props[i]));
+        if (!isTransportProperty(name) && [@(property_getAttributes(props[i])) hasPrefix:@"T@\""]) {
+            [params setValue:nil forKey:name];
+        }
+    }
+    free(props);
     if ([mode isEqualToString:@"zeros"]) {
         fillParams(params, YES, nil, nil);
     } else if ([mode isEqualToString:@"ones"]) {
