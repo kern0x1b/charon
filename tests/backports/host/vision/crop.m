@@ -58,8 +58,7 @@ static CGImageRef picture(size_t wide, size_t high)
 /* Core ML's own constructor, which is the oracle: it takes the picture, the size to bring it to and
  * the options, and answers a buffer. */
 /* Core ML's own constructor takes a VNImageCropAndScaleOption under the CropAndScale key -- the
- * header says so: "Key for VNImageCropAndScaleOption describing how to crop and scale the image (or
- * region of interest) to the desired size" -- so the oracle for each rule is the same rule handed
+ * header of the key says it describes how an image is cropped and scaled to a desired size, including any region of interest, so the oracle for each rule is the same rule handed
  * over, and the row is a comparison of like with like. A negative option asks for the *default*,
  * which the header does not state; the run measures it and prints it. */
 static CVPixelBufferRef oracle(CGImageRef image, size_t wide, size_t high, int option)

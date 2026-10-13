@@ -41,16 +41,14 @@
 {
     if ((self = [super init])) {
         // The header's documented defaults: unitsPerSecond and unitsPerMeter are 1 each
-        // (PHASEEngine.h:123 and :134, "Values are clamped to the range (0, inf]. Default value is
-        // 1."), the default reverb preset is PHASEReverbPresetNone (:112) and the default medium is
+        // (PHASEEngine.h:123 and :134: values are clamped to the range from zero, exclusive, to infinity, with a default of 1), the default reverb preset is PHASEReverbPresetNone (:112) and the default medium is
         // PHASEMediumPresetAir (:104).
         _charon_unitsPerSecond = 1.0;
         _charon_unitsPerMeter = 1.0;
         _charon_defaultReverbPreset = PHASEReverbPresetNone;
         // outputSpatializationMode has no documented numeric default - the header says only that it
-        // "overrides the default output spatializer and uses the specified one instead" - and the
-        // enumeration's own zero is PHASESpatializationModeAutomatic, which is the mode that means
-        // "let the framework choose". That is the answer here, and it is the enumeration's naming
+        //   the header describes it as replacing the default output spatializer with the one specified, and the
+        //   enumeration's own zero is PHASESpatializationModeAutomatic, which is the mode meaning the framework chooses. That is the answer here, and it is the enumeration's naming
         // rather than a number this port picked.
         _charon_outputSpatializationMode = PHASESpatializationModeAutomatic;
         _charon_renderingState = PHASERenderingStateStopped;

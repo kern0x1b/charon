@@ -264,8 +264,7 @@ int main(int argc, const char **argv)
     }
 
     // THE WEIGHT'S SCOPE, as its own case. MPSNNReduce.h:413-420 puts `weight` on
-    // MPSNNReduceFeatureChannelsSum alone and says the channel is "multiplied by the weight value to
-    // compute a weighted SUM OR MEAN" - so a weight must not reach a minimum or a maximum, and that is a
+    // MPSNNReduceFeatureChannelsSum alone and says each channel is scaled by the weight before the sum or mean is formed, so a weight must not reach a minimum or a maximum, and that is a
     // claim about the BASE's storage, which every feature-channel class reads.
     //
     // It cannot be seen from the twelve cases above, and that is why it is here: the only class that

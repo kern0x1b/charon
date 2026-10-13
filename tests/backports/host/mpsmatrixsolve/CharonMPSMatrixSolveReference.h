@@ -1,12 +1,11 @@
 // CharonMPSMatrixSolveReference.h - the reference the MPSMatrix solve and decomposition kernels are
 // checked against, in plain C.
 //
-// WHAT THE REFERENCE IS, and what it is not. It is the headers' own sentences turned into arithmetic:
-//   MPSMatrixDecomposition.h:138-143  "A = L * L**T or A = U**T * U ... A is a symmetric
-//                                      positive-definite matrix ... L and U are lower and upper
-//                                      triangular matrices respectively"
-//   MPSMatrixSolve.h:24-26            "op(A) * X = alpha * B or X * op(A) = alpha * B ... A is either
-//                                      upper or lower triangular and op(A) is A**T or A"
+// WHAT THE REFERENCE IS, and what it is not. It is the headers' own statements turned into arithmetic:
+//   MPSMatrixDecomposition.h:138-143  the Cholesky forms A = L * L**T and A = U**T * U, for a symmetric positive-definite A,
+//                                      with L and U the lower and upper triangles
+//   MPSMatrixSolve.h:24-26            the triangular solves op(A) * X = alpha * B and X * op(A) = alpha * B, with A on one
+//                                      triangle and op(A) its transpose or itself
 //   MPSMatrixDecomposition.h:37-40    the four statuses, with the header's own values
 // It never names the port's class, so a case that agrees is two implementations of one sentence and not
 // one implementation compared with itself.
@@ -144,8 +143,8 @@ static void CharonMPSMatrixSolveCholeskyCheck(const char *name, const float *sou
 }
 
 // The LU round trip: the decomposition stores L BELOW the diagonal and U ON AND ABOVE it in the SAME
-// matrix - the combined form MPSMatrixDecompositionLU leaves, whose own :86-91 says the result "must have
-// enough space to hold a rows x columns matrix" and nothing more. So the two factors have to be SPLIT,
+// matrix - the combined form MPSMatrixDecompositionLU leaves, whose own :86-91 says the result needs room for a
+// rows-by-columns matrix and nothing more. So the two factors have to be SPLIT,
 // and multiplying the combined matrix by itself - which is what the first version did - gave 18, 16, 18
 // where the source has 4, 5, 6: measured 2026-10-01.
 //

@@ -122,7 +122,7 @@ static void check_system_answers(void)
     // UTType.h documents both results as undefined when the identifier is unknown to the system,
     // so what is asserted is only that the host returns a type carrying that identifier -- which is
     // the rule the port implements for exported, and the starting point of the rule it implements
-    // for imported ("in the general case this method returns a type with the same identifier").
+    // for imported (the general case is a type that carries the same identifier).
     NSString *unknown = @"com.example.nothing-declared-here";
     UTType *exported = [UTType exportedTypeWithIdentifier:unknown];
     checks++;

@@ -7,9 +7,9 @@
 // removed a second data-type table.
 //
 // WHAT THE REFERENCE IS, and what it is not. It is the header's own sentences turned into arithmetic:
-//   MPSNNReduce.h:66   "returning the mininmum value for each row of an image"      (the release's spelling)
+//   MPSNNReduce.h:66   the minimum taken over each row of the image, one answer per row
 //   MPSNNReduce.h:93   the same for each column's minimum
-//   MPSNNReduce.h:119  "for feature channels of an image"
+//   MPSNNReduce.h:119  across the feature channels, one answer per pixel
 //   MPSNNReduce.h:173/:199/:225  max, for each row / column / feature channel
 //   MPSNNReduce.h:279/:305/:331  mean, for each row / column / feature channel
 //   MPSNNReduce.h:357/:383/:410  sum, for each row / column / feature channel

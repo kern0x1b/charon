@@ -77,8 +77,7 @@ int main(void)
         }
 
         // The same array exported with a row stride of 8 bytes per row and 2 rows, which is what
-        // rowStrides is for: "the byte offset from position 0 of the respective dimension to
-        // position 1" (MPSCore/MPSNDArray.h:328-329). So only the two elements of each row are
+        // rowStrides is for: the header defines it as the byte distance between one position and the next along a dimension (MPSCore/MPSNDArray.h:328-329). So only the two elements of each row are
         // written and the six bytes between the rows are the buffer's own, which this harness
         // pre-fills with a sentinel so a row-strided write that overwrote them would show.
         {

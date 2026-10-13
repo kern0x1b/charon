@@ -407,8 +407,8 @@ static void compare_paragraphs(void)
     check_paragraphs(@"one\u2028two\u2029three", @"[0,13)", @"the Unicode line and paragraph separators are not paragraph endings here");
     check_paragraphs(@"plain", @"[0,5)", @"a document with no ending at all is one paragraph");
 
-    // The range's own end decides where the array stops, which is the header's "an array of NSTextElement
-    // intersecting the specified range in sequence": a range over the second paragraph only returns that one,
+    // The range's own end decides where the array stops, as the header describes it: the text elements that meet the range come back in order,
+    //   so a range over the second paragraph only returns that one,
     // and a range over two returns two, with the element that meets the range's end still in it.
     NSTextStorage *backing = [[NSTextStorage alloc] initWithAttributedString:
                               [[NSAttributedString alloc] initWithString:@"one\ntwo\nthree"]];

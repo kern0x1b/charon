@@ -47,8 +47,7 @@ static id<MTLDevice> gDevice = nil;
 // implements - the sibling harness measured that the host SDK declares neither image-path selector
 // while answering the kernels themselves, and says so in its own header.
 // BOTH SIDES ARE FLOAT32, and that is a limit of the walking layer rather than of these kernels.
-// MPSImageIntegral.h:22-26 recommends "if the channels in the source image are normalized, half-float
-// or floating values, the destination image is recommended to be a 32-bit floating-point image" - and
+// MPSImageIntegral.h:22-26 recommends a 32-bit floating-point destination for normalized, half-float or floating source channels, and
 // CharonMPSImageWalk13.m's own walkability check compares the two images' DATA TYPES
 // (CharonMPSImageDataTypeOf), so an Unorm8 source (MPSDataTypeUInt8, 8) into a Float32 destination
 // (0x10000010) is refused by name and nothing is written - measured, 95 mismatches of 96, every value

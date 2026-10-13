@@ -45,10 +45,8 @@ void charon_windowed_run(UIWindow *window)
                          !class_getInstanceMethod([bar class], NSSelectorFromString(@"charonHostSetEnabled:")) && [bar respondsToSelector:NSSelectorFromString(@"isEnabled")],
                      "the port leaves UISearchBar's enabled to the release's own accessors", @"the port answers it");
 
-        // Apple's own words, from UIHoverGestureRecognizer.h of SDK 16.4: "Will always return 0 for
-        // devices that don't support z offset", "0 is returned for devices that don't support
-        // azimuth", "An empty vector is returned for devices that don't support azimuth", "0 is
-        // returned for devices that don't support altitude". The host is such a device - a Mac has no
+        // The header of UIHoverGestureRecognizer in SDK 16.4 gives the fallback values for devices that lack each of z offset, azimuth and altitude: 0 for z offset,
+        // an empty vector for azimuth, and 0 for altitude. The host is such a device - a Mac has no
         // hovering device - so these are the values the port has to answer, and they are asserted
         // here against the host's own class rather than against the port's, so the check does not
         // pass by comparing two wrong numbers.

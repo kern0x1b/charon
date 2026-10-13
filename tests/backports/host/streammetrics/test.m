@@ -29,8 +29,7 @@
        alone does not: the task sat at state 0 for three seconds with its listener gone.
      - and for that stream task URLSession:task:didFinishCollectingMetrics: NEVER fires. Nine endings,
        six of which complete the task with no error at all, and no transaction in any of them.
-       -captureStreams ends the delegate messages by its own contract ("When that message is received,
-       the task object is considered completed and will not receive any more delegate messages"), so a
+       -captureStreams ends the delegate messages by its own contract: once the release's completion message arrives, the task is treated as finished and gets no further delegate messages, so a
        stream task has no shape on this host in which a transaction arrives at all.
      - the same delegate, the same session and this same listener DO get one out of a DATA task, 7 ms
        after its resume: 127.0.0.1, the ephemeral port, 127.0.0.1, this listener's port, and nil for both

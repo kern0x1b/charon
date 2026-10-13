@@ -2,8 +2,8 @@
 // a cube root: the sign change at zero, the perfect cubes and their neighbours, the denormals and the
 // extremes, and a spread of ordinary magnitudes.
 //
-// vForce's header says the exact value returned and the treatment of denormals "will vary across different
-// microarchitectures and versions of the operating system", so the comparison is to a tolerance rather than
+// vForce's header says the exact value returned and the treatment of denormals depend on the machine's microarchitecture and on the operating system version,
+// so the comparison is to a tolerance rather than
 // exact - and the tolerance's size is what the facts file records, with the numbers below as the evidence.
 
 #import <Accelerate/Accelerate.h>

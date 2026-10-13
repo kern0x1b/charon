@@ -146,10 +146,8 @@ int main(void)
             printValues("case5 written", array);
         }
 
-        // CASE 6 - a SLICED view, which is the case the class discussion is about: "the slice is
-        // performed first and the result of the slice is transposed", and the slice of a dimension
-        // starts where the header's own default says - "NSRange(0, lengthOfDimension(i))"
-        // (MPSCore/MPSNDArray.h:60-64) - so slicing dimension 1 of a 4 dimension array to 2..4 is a
+        // CASE 6 - a SLICED view, which is the case the class discussion is about: the slice is taken first and the result is transposed, and the slice of a dimension
+        // starts at the header's own default, the full range of that dimension (MPSCore/MPSNDArray.h:60-64), so slicing dimension 1 of a 4 dimension array to 2..4 is a
         // view of two elements in that dimension and the same as many elsewhere.
         {
             NSUInteger sizes[3] = {3, 4, 2};
@@ -169,7 +167,7 @@ int main(void)
         }
 
         // CASE 7 - a TRANSPOSED view, which is the deferred transpose the class discussion describes:
-        // "MPS will usually defer doing a physical transpose operation until later" - so the view holds
+        // the framework usually defers a physical transpose until later, so the view holds
         // the parent's elements in the other order. A [2,3] array holding 1..6 read transposed is
         // 1 4 2 5 3 6, which is what a [3,2] view of the same six elements must answer.
         {

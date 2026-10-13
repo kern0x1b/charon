@@ -270,9 +270,8 @@ int main(void)
         }
 
         printf("case: matmul batch broadcast\n");
-        // MATRIX MULTIPLICATION with a BATCH and a BROADCAST on BOTH sides: "If an input's 3rd or 4th
-        // dimension is 1 its data will be broadcast as appropriate to the remaining input's 3rd or 4th
-        // dimension respectively" (:36-37). The left is [2,2,2,1] - two batches, ONE matrix each - and
+        // MATRIX MULTIPLICATION with a BATCH and a BROADCAST on BOTH sides: a dimension of 1 on an input is broadcast across the other input's matching dimension (:36-37).
+        // The left is [2,2,2,1] - two batches, ONE matrix each - and
         // the right is [2,2,1,2] - ONE batch, two matrices - so every pair meets, and the result is
         // [2,2,2,2]. Batch 0 of the left is the identity, so batch 0 of the result is the right-hand
         // matrices unchanged and batch 1 is their ordinary products. Dim 0 fastest throughout, so the

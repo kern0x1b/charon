@@ -332,8 +332,7 @@ static void Pooling(id<MTLDevice> device, id<MTLCommandQueue> queue, const char 
            (unsigned long)result.featureChannels);
 }
 
-// resultImageIsNeeded:NO, which MPSNNGraph.h:72 says answers nil on the left of the -encode call "and
-// computation to produce the last image may be pruned away".
+// resultImageIsNeeded:NO, which MPSNNGraph.h:72 says answers nil on the left of the -encode call, and the work that would make the final image may be dropped.
 static void ResultNotNeeded(id<MTLDevice> device, id<MTLCommandQueue> queue)
 {
     static const float left[4] = {1, 2, 3, 4};

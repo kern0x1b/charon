@@ -342,8 +342,8 @@ static void permute_case(const char *what, PermuteFn host, PermuteFn port, int c
 }
 
 // The three-channel eight-bit permute, whose header adds a case the four-channel ones do not have: a NULL map
-// is the identity. Conversion.h says so in so many words - "permuteMap[3] = {0, 1, 2} or NULL will produce
-// the same dest pixels as the src" - so it is asked with a NULL map and compared against the identity.
+// is the identity. Conversion.h says so directly: a NULL map gives the same destination pixels as the source,
+// so it is asked with a NULL map and compared against the identity.
 static void permute3_case(void)
 {
     size_t pixel = 3;
@@ -368,7 +368,7 @@ static void permute3_case(void)
         vImage_Error portAnswer = charon_host_vImagePermuteChannels_RGB888(&s, &pd, m < 0 ? NULL : map, kvImageNoFlags);
         vImage_Error hostAnswer;
         if (m < 0) {
-            // The header: "permuteMap[3] = {0, 1, 2} or NULL will produce the same dest pixels as the src".
+            // Per the header, a NULL map gives the same destination pixels as the identity map.
             // The host's own answer to that sentence is measured in a child, because a host that dereferences
             // the map takes this differential down with it and the measurement is worth more than the run.
             struct Call call = {ShapePermute3, &s, &hd, NULL, 0, 0, NULL, kvImageNoFlags};

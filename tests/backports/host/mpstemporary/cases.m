@@ -9,8 +9,8 @@
 // the selector it raises. What IS checked is the port's own contract, written down below from
 // MPSImage.h:1030-1036, and run.sh plants a build without it and requires the plant to fail.
 //
-// THE CONTRACT, from MPSImage.h:1030-1036 - "each time a MPSTemporaryImage is read by a MPSCNNKernel
-// -encode... method, its readCount is automatically decremented":
+// THE CONTRACT, from MPSImage.h:1030-1036: each read of a temporary image by a CNN kernel's encode method lowers
+// its readCount by one, with nothing for the kernel to do:
 //
 //   1. a fresh temporary answers the count it was given, so a zero can never come from a dead reader
 //   2. readCount 2, one encode that reads it -> 1

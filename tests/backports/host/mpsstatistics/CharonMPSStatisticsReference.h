@@ -2,11 +2,11 @@
 // in plain C.
 //
 // WHAT THE REFERENCE IS, and what it is not. It is the header's own sentences turned into arithmetic:
-//   MPSImageStatistics.h:18  "computes the minimum and maximum pixel values for a given region of an image"
-//   MPSImageStatistics.h:19  "min value is written at pixel location (0, 0)"
-//   MPSImageStatistics.h:20  "max value is written at pixel location (1, 0)"
-//   MPSImageStatistics.h:66  "computes the mean and variance for a given region of an image"
-//   MPSImageStatistics.h:114 "computes the mean for a given region of an image"
+//   MPSImageStatistics.h:18  the minimum and maximum pixel values inside the region chosen
+//   MPSImageStatistics.h:19  the minimum is written at pixel (0, 0)
+//   MPSImageStatistics.h:20  the maximum is written at pixel (1, 0)
+//   MPSImageStatistics.h:66  the mean and variance inside the region chosen
+//   MPSImageStatistics.h:114 the mean inside the region chosen
 // It is written independently of MPSImageStatistics11.m - it takes the source values and says which
 // kernel to compute - and it never names the port's class, so a case that agrees is two
 // implementations of one sentence and not one implementation compared with itself.

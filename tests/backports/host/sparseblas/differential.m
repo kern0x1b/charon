@@ -211,9 +211,8 @@ static Pair pointwise(sparse_dimension M, sparse_dimension N, sparse_dimension c
 // A dense reading of a matrix, through each side's own row extraction, one value at a time. Nothing
 // here knows either side's layout.
 //
-// The walk is the one sparse_extract_sparse_row's own header describes (BLAS.h:1533): "For example if
-// nz is returned, not all nonzero values have been extracted, and a second extract can start from
-// column_end" - so a second call is made only while the buffer came back full, and a row ends at the
+// The walk is the one sparse_extract_sparse_row's own header describes (BLAS.h:1533): when nz comes back set, a second
+// extract can resume from the column where the first left off. So a second call is made only while the buffer came back full, and a row ends at the
 // first answer short of one element. Walking the start column past the end instead is what the host
 // cannot answer: on a matrix that holds nothing at all, every start column past 0 ends the process
 // (32 calls, one per process, 12 of them SIGSEGV at 0x8; facts/Accelerate/SparseBLAS.md has the table),
@@ -888,7 +887,7 @@ static void level2(void)
     sparse_matrix_float ha = host_plain(), pa = port_plain();
     sparse_matrix_float hl = host_lower(), pl = port_lower();
     sparse_matrix_float hu = host_upper(), pu = port_upper();
-    // y = alpha * op(A) * x + y, over both triangles and a plain matrix, three alphas, both transposes.
+    // Computes y as alpha times op(A) times x plus y, over both triangles and a plain matrix, three alphas, both transposes.
     for (int which = 0; which < 3; which++) {
         sparse_matrix_float host = which == 0 ? ha : (which == 1 ? hl : hu);
         sparse_matrix_float port = which == 0 ? pa : (which == 1 ? pl : pu);
@@ -1470,10 +1469,7 @@ static void level3(void)
 // the REAL sparse_matrix_product_sparse_double - sixteen -Wincompatible-pointer-types warnings from
 // run.sh, and a comparison of the first four doubles of an array the function had never been told was
 // one. It is here now, over real matrices, with the values real, and the header's own rule as the
-// expectation: sparse_matrix_product_sparse_double's header (BLAS.h:1010) says "Multiplies the sparse
-// matrix B by the sparse matrix A and adds the result to the dense matrix C (C = alpha * op(A) * B + C,
-// where op(A) is either A or the transpose of A). If A is of size M x K, then B is of size K x N and C
-// is of size M x N."
+// expectation: the header of sparse_matrix_product_sparse_double (BLAS.h:1010) defines it as a product of the sparse B with the sparse A, accumulated onto the dense C. Writing op(A) for A or its transpose, the result is alpha times op(A) times B plus C. If A is M by K, then B is K by N and C is M by N.
 //
 // The rule is computed here by the compiler, from the same inputs, with the indices named - C[i][j]
 // over i and j, the inner index k, and the layout's own place in the output - and both sides are asked
