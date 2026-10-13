@@ -306,7 +306,7 @@ static void persist_phase(Class portDevice, const char *mode)
  *
  * SUPPORT asks -[AVCaptureDeviceInput isMultichannelAudioModeSupported:] with each of the three values of the
  * enum, on both sides. It is asked three times and not once because the header's own subject is the value:
- * the header's rule is that the multichannelAudioMode property can be set to a given mode only when this method returns YES for that mode (AVCaptureInput.h:381), so one answer cannot stand for the rule.
+ * the header's rule is that the multichannelAudioMode property takes a given mode only when this method answers YES for that mode (AVCaptureInput.h:381), so one answer cannot stand for the rule.
  *
  * SETTER sends each of the three readwrite members of the slice and records what happened, then asks the getter
  * again. A refusal is part of an answer here - two of these three setters refuse on this release and Apple's own

@@ -29,19 +29,19 @@ static NSString *CharonDescribe(NSIndexPath *path)
 //   * `dropInteraction:canHandleSession:` gates the rest: if it is not implemented or returns
 //     true, the other methods are called, starting with `-dropInteraction:sessionDidEnter:`. So
 //     canHandle is first and sessionDidEnter follows it, and nothing else is sent when it is false.
-//   * `dropInteraction:sessionDidEnter:` fires when a drag enters the view.
+//   * `dropInteraction:sessionDidEnter:` fires once a drag reaches the view.
 //   * `dropInteraction:sessionDidUpdate:` fires as the drag comes into the interaction's view or moves
 //     about inside it, and it is the one a delegate must implement to accept a drop at all -- so it
 //     is asked on every move, after the enter, before the drop.
 //   * `dropInteraction:previewForDroppingItem:withDefault:` is the drop animation's preview, which
-//     the header places after `-dropInteraction:performDrop:` has been called, and the port asks
+//     the header places it once `-dropInteraction:performDrop:` has run, and the port asks
 //     it for the drop that is about to be performed, so it is between the update and the perform.
 //   * `dropInteraction:performDrop:` fires as the user lets go over this interaction's view, and the
 //     data may be requested only while this method is running.
 //   * `dropInteraction:concludeDrop:` runs once the perform has finished and every resulting drop
 //     animation has completed, which is the last thing before the view is told to draw its final state.
-//   * `dropInteraction:sessionDidEnd:` fires when the drag session ends, for whatever reason, and
-//     it fires for every interaction that ever received sessionDidEnter:, sessionDidUpdate: or
+//   * `dropInteraction:sessionDidEnd:` fires once the drag session is over, for whatever reason, and
+//     it fires for each interaction that has ever been sent sessionDidEnter:, sessionDidUpdate: or
 //     sessionDidExit: -- so it is last, and it is sent even to an interaction that has seen only
 //     the enter and the exit.
 //

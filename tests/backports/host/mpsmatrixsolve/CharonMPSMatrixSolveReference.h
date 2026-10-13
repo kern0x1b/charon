@@ -4,7 +4,7 @@
 // WHAT THE REFERENCE IS, and what it is not. It is the headers' own statements turned into arithmetic:
 //   MPSMatrixDecomposition.h:138-143  the Cholesky forms A = L * L**T and A = U**T * U, for a symmetric positive-definite A,
 //                                      with L and U the lower and upper triangles
-//   MPSMatrixSolve.h:24-26            the triangular solves op(A) * X = alpha * B and X * op(A) = alpha * B, with A on one
+//   MPSMatrixSolve.h:24-26            the triangular solves op(A) times X equal to alpha times B and X times op(A) equal to alpha times B, with A on one
 //                                      triangle and op(A) its transpose or itself
 //   MPSMatrixDecomposition.h:37-40    the four statuses, with the header's own values
 // It never names the port's class, so a case that agrees is two implementations of one sentence and not

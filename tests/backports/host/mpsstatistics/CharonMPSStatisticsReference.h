@@ -2,7 +2,7 @@
 // in plain C.
 //
 // WHAT THE REFERENCE IS, and what it is not. It is the header's own sentences turned into arithmetic:
-//   MPSImageStatistics.h:18  the minimum and maximum pixel values inside the region chosen
+//   MPSImageStatistics.h:18  the lowest and highest pixel values inside the region chosen
 //   MPSImageStatistics.h:19  the minimum is written at pixel (0, 0)
 //   MPSImageStatistics.h:20  the maximum is written at pixel (1, 0)
 //   MPSImageStatistics.h:66  the mean and variance inside the region chosen

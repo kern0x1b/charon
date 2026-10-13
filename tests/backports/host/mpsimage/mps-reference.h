@@ -183,7 +183,7 @@ static void CharonReferenceTranspose(const char *name, const float *src, NSUInte
 }
 
 
-// MPSImageCopyToMatrix, from MPSImageCopy.h:19-24: the kernel copies image data into a matrix, one image's data per row. The data layout sets the order in which the feature channels are placed in the matrix, and a batch of images
+// MPSImageCopyToMatrix, from MPSImageCopy.h:19-24: the kernel copies image data into a matrix, one image's data per row. The data layout fixes how the feature channels are placed in the matrix, and a batch of images
 // occupies several rows, one for each image. And the two orders, as MPSImage.h:300-303
 // gives them in the surface's own comments:
 //   MPSDataLayoutFeatureChannelsxHeightxWidth   [imageNum][featureChannels][imageHeight][imageWidth]

@@ -570,7 +570,7 @@ int main(int argc, const char *argv[])
                 (void)routeInformation;
                 // The round trip the header describes, on Apple's own objects, with no car attached.
                 // `CPLaneGuidance.h:22-28`: lanes is an array of CPLane objects, one per lane, and instructionVariants is an array of
-                // NSStrings, one per variant of the instruction, ordered from most to least preferred.
+                // NSStrings, one per variant of the instruction, ranked from most to least wanted.
                 id guidance = [[NSClassFromString(@"CPLaneGuidance") alloc] init];
                 // Measured 2026-10-01 on Apple's own object with no head unit: a fresh CPLaneGuidance
                 // answers NIL for both properties, not an empty array. This is the honest line of this

@@ -44,7 +44,7 @@
 {
     if ((self = [super init])) {
         // The header's documented defaults: unitsPerSecond and unitsPerMeter are 1 each
-        // (PHASEEngine.h:123 and :134: values are clamped to the range from zero, exclusive, to infinity, with a default of 1), the default reverb preset is PHASEReverbPresetNone (:112) and the default medium is
+        // (PHASEEngine.h:123 and :134: values are limited to the interval from zero, exclusive, to infinity, with a default of 1), the default reverb preset is PHASEReverbPresetNone (:112) and the default medium is
         // PHASEMediumPresetAir (:104).
         _charon_unitsPerSecond = 1.0;
         _charon_unitsPerMeter = 1.0;
