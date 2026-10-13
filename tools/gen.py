@@ -314,16 +314,11 @@ def object_shape(decl, typedefs):
     return "string" if words & (STRING_TYPES | typedefs) else "numeric"
 
 
-def tbd_exports(sdk, fw):
-    """Symbols and classes the framework's .tbd exports on arm64 (the device slice), as two sets.
-
-    A .tbd file holds several documents (the framework, then the private frameworks it re-exports), so every document is
-    read. Version 3 writes `archs:` with arm64; version 4 writes `targets:` with arm64-ios; both are read.
-    """
-    path = os.path.join(sdk, "System", "Library", "Frameworks", fw + ".framework", fw + ".tbd")
-    if not os.path.exists(path):
-        return set(), set()
-    symbols, classes = set(), set()
+def tbd_slices(path):
+    """The arm64 slices of a .tbd file, one dict per slice: its "symbols", "objc-classes" and "re-exports" lists. A .tbd holds
+    several documents, and each document several slices: version 3 writes `archs:` and version 4 writes `targets:`; both are read,
+    and a slice counts when one of its names is arm64 or starts with arm64-."""
+    out = []
     for document in read_any(path).split("--- !tapi-tbd")[1:]:
         for block in re.split(r"\n\s*-\s+(?=archs:|targets:)", document)[1:]:
             head = re.match(r"(?:archs|targets):\s*\[([^\]]*)\]", block)
@@ -332,11 +327,42 @@ def tbd_exports(sdk, fw):
             names = [a.strip() for a in head.group(1).split(",")]
             if not any(n == "arm64" or n.startswith("arm64-") for n in names):
                 continue
-            for key, into in (("symbols", symbols), ("objc-classes", classes)):
+            slice_lists = {}
+            for key in ("symbols", "objc-classes", "re-exports"):
                 found = re.search(r"\n\s*" + key + r":\s*\[(.*?)\]", block, re.S)
-                if found:
-                    into.update(t.strip() for t in found.group(1).replace("\n", " ").split(",") if t.strip())
+                slice_lists[key] = [t.strip() for t in found.group(1).replace("\n", " ").split(",") if t.strip()] if found else []
+            out.append(slice_lists)
+    return out
+
+
+def tbd_exports(sdk, fw):
+    """Symbols and classes the framework's .tbd exports on arm64 (the device slice), as two sets: the framework's own document
+    and no other (tbd_class_exports follows the re-exports for the classes)."""
+    path = os.path.join(sdk, "System", "Library", "Frameworks", fw + ".framework", fw + ".tbd")
+    if not os.path.exists(path):
+        return set(), set()
+    symbols, classes = set(), set()
+    for found in tbd_slices(path):
+        symbols.update(found["symbols"])
+        classes.update(found["objc-classes"])
     return set(s[1:] if s.startswith("_") else s for s in symbols), classes
+
+
+def tbd_class_exports(sdk, fw):
+    """The Objective-C classes the framework exports on arm64, and those of every framework its .tbd re-exports. ARKit.tbd
+    re-exports ARKitCore, ARKitFoundation and ARKitUI (the PrivateFrameworks folder of the SDK), and its classes are in those, not
+    in ARKit's own list. Each .tbd is read once."""
+    frameworks = os.path.join(sdk, "System", "Library", "Frameworks")
+    todo, done, classes = [os.path.join(frameworks, fw + ".framework", fw + ".tbd")], set(), set()
+    while todo:
+        path = todo.pop()
+        if path in done or not os.path.exists(path):
+            continue
+        done.add(path)
+        for found in tbd_slices(path):
+            classes.update(found["objc-classes"])
+            todo.extend(os.path.join(sdk, target.lstrip("/") + ".tbd") for target in found["re-exports"])
+    return classes
 
 
 # ---------------------------------------------------------------- input (builds the spec table)
@@ -522,7 +548,8 @@ def cmd_input(args):
     enum_values = {}
     for shard_row in shard_rows(shard_path(args.tree, fw), {"enumconst"}):
         enum_values.setdefault(shard_row["usr"].rsplit("@", 1)[-1], shard_row["value"])
-    symbols, classes = tbd_exports(args.sdk, fw)
+    symbols, _ = tbd_exports(args.sdk, fw)
+    classes = tbd_class_exports(args.sdk, fw)
     if fw != "Foundation":
         foundation_symbols, _ = tbd_exports(args.sdk, "Foundation")
         symbols = symbols | foundation_symbols
