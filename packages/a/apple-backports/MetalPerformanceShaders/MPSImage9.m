@@ -19,9 +19,9 @@
 //     (MPSImageIntegral.h:38 "the sum of squared pixels"). That is arithmetic this port does exactly.
 //
 //   MPSImageSobel    the grey level the filter runs on is a weighted sum of a pixel's three channels, with the
-//     weights 0.299, 0.587 and 0.114 (BT.601/JPEG; the default transform at MPSImageConvolution.h:301-302, the
-//     sum at :282-288). The operator is the 3x3 Sobel pair; the Canny step at :350-352 is G = sqrt(Sx^2 + Sy^2)
-//     and G_ang = arctan(Sy/Sx). It is NOT the non-maximum suppression of :353-360: that is step 3 of
+//     weights 0.299, 0.587 and 0.114 (BT.601/JPEG; the default transform at MPSImageConvolution.h:294, the
+//     sum at :282-288). The operator is the 3x3 Sobel pair; the Canny step at :352 is G = sqrt(Sx^2 + Sy^2)
+//     and at :353 is G_ang = arctan(Sy/Sx). It is NOT the non-maximum suppression of :354-360: that is step 3 of
 //     MPSImageCANNY's five, and this class's own description says only that it implements the Sobel filter.
 //     The row says so too.
 //
@@ -202,8 +202,8 @@ static BOOL CharonMPSWalkWindowed(MPSImage *source, MPSImage *destination, MTLRe
 // the sum of the source inside it. `squared` is the whole of the difference between the two classes:
 // MPSImageIntegralOfSquares sums the squares of that same rectangle, MPSImageIntegral.h:38.
 //
-// The offset is MPSUnaryImageKernel's, and MPSImageKernel.h:131-138 declares it as the position of
-// clipRect.origin in source coordinates, defaulting to {0,0,0}. The rectangle's far corner is the
+// The offset is MPSUnaryImageKernel's. MPSImageKernel.h:131-138 places it where the clip rectangle's origin
+// sits relative to the source, and the default {0,0,0} puts the two top-left corners together. The rectangle's far corner is the
 // destination position ITSELF, not the one before it: the header's size is the difference of two
 // positions rather than a count, and a rectangle that many samples across holds one more sample per
 // axis than its size. The origin is therefore the offset, which the two encodes below pass as {0,0}
@@ -262,7 +262,8 @@ static double CharonMPSIntegral(const CharonMPSImageWindow *window, NSInteger x,
 
 // ---- MPSImageSobel: the gradient magnitude, per channel, on the luminance when the shapes differ.
 //
-// The 3x3 pair, which is the standard operator MPSImageConvolution.h:350-352 states:
+// The 3x3 pair. The header names its horizontal and vertical filters (MPSImageConvolution.h:350-351) and prints
+// no matrix, so this is the standard pair for them:
 //   Sx = -1  0  +1        Sy = -1  -2  -1
 //        -2  0  +2             0   0   0
 //        -1  0  +1             1   2   1
@@ -285,12 +286,12 @@ static double CharonMPSIntegral(const CharonMPSImageWindow *window, NSInteger x,
     // the header's own "using the default color transform" (:293-300). Passing the default's three
     // values is the same answer as the header's default and keeps the nonnull contract, rather than
     // passing NULL to a parameter the header says cannot be null.
-    static const float kDefault[3] = { 0.299f, 0.587f, 0.114f };   // :301-302, BT.601/JPEG
+    static const float kDefault[3] = { 0.299f, 0.587f, 0.114f };   // :294, BT.601/JPEG
     return [self initWithDevice:device linearGrayColorTransform:kDefault];
 }
 
 // :303-315: the designated initializer takes three floats. NULL means the header's own default,
-// BT.601/JPEG, which :301-302 gives for this class.
+// BT.601/JPEG, which :294 gives for this class.
 - (instancetype)initWithDevice:(id<MTLDevice>)device linearGrayColorTransform:(const float *)transform
 {
     if ((self = [super initWithDevice:device])) {
