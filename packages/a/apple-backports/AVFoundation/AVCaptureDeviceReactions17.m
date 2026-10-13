@@ -238,7 +238,7 @@ static NSArray<NSString *> *charon_user_preferred_history(void)
         [NSException raise:NSInvalidArgumentException
                     format:@"-%@ is not one of the reaction types this device can perform (availableReactionTypes "
                            @"is empty: this camera has no reaction effects), and -performEffectForReaction: throws "
-                           @"for any other type (AVCaptureDevice.h:2496)", NSStringFromSelector(_cmd)];
+                           @"for any other type", NSStringFromSelector(_cmd)];
     }
 }
 

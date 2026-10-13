@@ -103,7 +103,7 @@ static void charon_deferred_start_unsupported(NSString *selector)
     if (!automaticallyRunsDeferredStart) {
         [NSException raise:NSInvalidArgumentException
                     format:@"*** -[AVCaptureSession %@] manualDeferredStartSupported is false, so the deferred"
-                           @" start cannot be run by hand (AVCaptureSession.h:686)",
+                           @" start cannot be run by hand",
                            NSStringFromSelector(_cmd)];
         return;
     }
@@ -196,7 +196,7 @@ static void charon_deferred_start_unsupported(NSString *selector)
         return;
     [NSException raise:NSInvalidArgumentException
                 format:@"*** -[AVCaptureVideoPreviewLayer %@] deferredStartSupported is false, so the preview"
-                       @" layer's start cannot be deferred (AVCaptureVideoPreviewLayer.h:275)",
+                       @" layer's start cannot be deferred",
                            NSStringFromSelector(_cmd)];
 }
 

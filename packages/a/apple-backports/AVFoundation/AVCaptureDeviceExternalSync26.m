@@ -141,7 +141,7 @@ static BOOL charon_device_supports_external_sync(AVCaptureDevice *device)
     [NSException raise:NSInvalidArgumentException
                 format:@"*** -[AVCaptureDeviceInput %@] The device's minSupportedLockedVideoFrameDuration is"
                        @" kCMTimeInvalid, so it cannot lock a frame duration"
-                       @" (AVCaptureInput.h:302), and the property is left at kCMTimeInvalid",
+                       @", and the property is left at kCMTimeInvalid",
                        NSStringFromSelector(_cmd)];
 }
 

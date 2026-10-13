@@ -57,7 +57,7 @@
 // is not a task, so this refuses rather than making one whose every getter answers nil.
 - (instancetype)init
 {
-    CharonMLRefuse(@"CoreML: MLTask.h:47 marks -init NS_UNAVAILABLE with the reason \"cannot construct MLTask"
+    CharonMLRefuse(@"CoreML: MLTask marks -init NS_UNAVAILABLE with the reason \"cannot construct MLTask"
                     @" without parameters\"; a task is made by the framework that runs it");
     return nil;
 }
@@ -67,7 +67,7 @@
     // NSObject's +new is [[self alloc] init], so the refusal above is what this would reach anyway;
     // naming it here is what makes the refusal the caller's own answer rather than a chain through
     // NSObject's convenience.
-    CharonMLRefuse(@"CoreML: MLTask.h:51 marks +new NS_UNAVAILABLE for the same reason -init is");
+    CharonMLRefuse(@"CoreML: MLTask marks +new NS_UNAVAILABLE for the same reason -init is");
     return nil;
 }
 
@@ -80,7 +80,7 @@
 - (void)resume
 {
     if (_state != MLTaskStateSuspended) {
-        CharonMLRefuse(@"CoreML: -[MLTask resume] was called on a task whose state is %ld, and MLTask.h:41"
+        CharonMLRefuse(@"CoreML: -[MLTask resume] was called on a task whose state is %ld, and MLTask"
                         @" describes resuming a Suspended task; nothing was changed",
                         (long)_state);
         return;
@@ -93,7 +93,7 @@
 - (void)cancel
 {
     if (_state != MLTaskStateSuspended && _state != MLTaskStateRunning) {
-        CharonMLRefuse(@"CoreML: -[MLTask cancel] was called on a task whose state is %ld, and MLTask.h:44"
+        CharonMLRefuse(@"CoreML: -[MLTask cancel] was called on a task whose state is %ld, and MLTask"
                         @" describes cancelling a task that is Suspended or Running; nothing was changed",
                         (long)_state);
         return;
@@ -111,14 +111,14 @@
 
 - (instancetype)init
 {
-    CharonMLRefuse(@"CoreML: MLUpdateTask.h:53 marks -init NS_UNAVAILABLE with the reason \"cannot construct"
+    CharonMLRefuse(@"CoreML: MLUpdateTask marks -init NS_UNAVAILABLE with the reason \"cannot construct"
                     @" MLUpdateTask without parameters\", and both of its initialisers are API_AVAILABLE(ios(14.0))");
     return nil;
 }
 
 + (instancetype)new
 {
-    CharonMLRefuse(@"CoreML: MLUpdateTask.h:56 marks +new NS_UNAVAILABLE for the same reason -init is");
+    CharonMLRefuse(@"CoreML: MLUpdateTask marks +new NS_UNAVAILABLE for the same reason -init is");
     return nil;
 }
 
@@ -190,7 +190,7 @@
             completionHandler:(void (^)(MLUpdateContext *))completionHandler
 {
     if (!completionHandler) {
-        CharonMLRefuse(@"CoreML: MLUpdateProgressHandlers.h:22 declares the completion handler nonnull and"
+        CharonMLRefuse(@"CoreML: MLUpdateProgressHandlers declares the completion handler nonnull and"
                         @" none was given, so no handlers were registered");
         return nil;
     }
@@ -204,7 +204,7 @@
 
 - (instancetype)init
 {
-    CharonMLRefuse(@"CoreML: MLUpdateProgressHandlers.h:25 marks -init NS_UNAVAILABLE with the reason"
+    CharonMLRefuse(@"CoreML: MLUpdateProgressHandlers marks -init NS_UNAVAILABLE with the reason"
                     @" \"cannot construct MLUpdateTask without parameters\" - the header's own wording, and it"
                     @" names the other class; use -initForEvents:progressHandler:completionHandler:");
     return nil;
@@ -212,7 +212,7 @@
 
 + (instancetype)new
 {
-    CharonMLRefuse(@"CoreML: MLUpdateProgressHandlers.h:29 marks +new NS_UNAVAILABLE for the same reason -init is");
+    CharonMLRefuse(@"CoreML: MLUpdateProgressHandlers marks +new NS_UNAVAILABLE for the same reason -init is");
     return nil;
 }
 

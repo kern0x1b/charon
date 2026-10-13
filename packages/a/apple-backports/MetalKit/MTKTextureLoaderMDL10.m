@@ -74,7 +74,7 @@ static BOOL CharonMTKFormatForMDL(MDLTexture *texture, MTLPixelFormat *out)
     } else if ([options[MTKTextureLoaderOptionSRGB] boolValue]) {
         why = @"this port holds no sRGB pixel format, so a texture loaded as sRGB would not be the one asked for (facts/Metal/PixelFormats.md)";
     } else if (options[MTKTextureLoaderOptionCubeLayout] != nil) {
-        why = @"MTKTextureLoaderOptionCubeLayout cannot be used with an MDLTexture, which supports cube textures directly (MTKTextureLoader.h:90)";
+        why = @"MTKTextureLoaderOptionCubeLayout cannot be used with an MDLTexture, which supports cube textures directly";
     } else if (texture.isCube) {
         why = @"an MDLTexture that is a cube is six faces and this port holds 2D textures only, so its texels are loaded as the single 2D texture they are";
     } else {
