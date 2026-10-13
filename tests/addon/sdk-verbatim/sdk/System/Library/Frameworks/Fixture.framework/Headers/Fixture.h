@@ -5,3 +5,4 @@
 /* Sample Value Header */
 - (int)fixtureValue;
 @end
+/* The marker is the position of the sample cursor in fixture coordinates. */

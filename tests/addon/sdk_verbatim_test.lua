@@ -7,7 +7,9 @@
 -- sources: the same line in capitals (red-case/, a run hit under case folding), the header's 19-character
 -- heading (heading19/, a run hit under the 19-character floor), and a sentence of the header quoted inside a
 -- longer sentence (quoted/, a words8 hit only). Round 4 adds heading19-only/, the same heading as the file's
--- only comment: the words8 mode compares nothing there, and the hit must still exit 1. None of it is Apple's text.
+-- only comment: the words8 mode compares nothing there, and the hit must still exit 1. Round 5 adds words6/,
+-- a 7-word run shared with the fixture header (its 8th word differs): clean at the default, a words6 hit at --words 6.
+-- None of it is Apple's text.
 function failures(opt)
     local found = {}
     local tool = import("sdk-verbatim", {rootdir = path.join(opt.modules, "..", "tools"), anonymous = true})
@@ -62,6 +64,17 @@ function failures(opt)
     check(#o.empty > 0, "heading19-only: the words8 mode should compare nothing in this fixture")
     check(has_hit(o, "run", only .. ":1"), "heading19-only: expected a run hit at line 1, got " .. table.concat(o.hits, " | "))
     check(tool.status(o) == 1, "heading19-only: a hit must exit 1 even though a mode compared nothing, got " .. tool.status(o))
+
+    -- Round 5 (ruling 2): a 7-word run shared with the SDK is no words8 hit, so the default scan is clean; with
+    -- --words 6 (window = 6) the same line is a words6 hit and the scan exits 1. The tree-wide count stays at 8.
+    local w6 = path.join(fixture, "words6", "Source.m")
+    local d = scan_one(w6, "words6 default")
+    check(#d.hits == 0, "words6 default: a 7-word run must not be a words8 hit, got " .. table.concat(d.hits, " | "))
+    check(tool.status(d) == 0, "words6 default: a clean scan must exit 0, got " .. tool.status(d))
+    local s = tool.scan(sdk, {w6}, 6)
+    check(has_hit(s, "words6", w6 .. ":3-3"), "words6 at --words 6: expected a words6 hit at line 3, got " .. table.concat(s.hits, " | "))
+    check(not has_hit(s, "words8", w6 .. ":3-3"), "words6 at --words 6: the hit must carry the words6 label")
+    check(tool.status(s) == 1, "words6 at --words 6: a hit must exit 1, got " .. tool.status(s))
 
     local g = scan_one(green, "green")
     check(#g.hits == 0, "green: expected no hit, got " .. table.concat(g.hits, " | "))

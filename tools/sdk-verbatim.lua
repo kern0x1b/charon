@@ -1,4 +1,4 @@
--- xmake l tools/sdk-verbatim.lua SDKROOT FILE...
+-- xmake l tools/sdk-verbatim.lua [--words N] SDKROOT FILE...
 --
 -- Finds the comment text of FILE... that occurs verbatim among the comments of the SDK at SDKROOT.
 -- A comment copied from an SDK header is Apple's expression in our tree, which the workspace rule keeps
@@ -16,7 +16,8 @@
 --           at least 19 characters OR at least 4 words: the floor is "19 characters or 4 words", so a run of
 --           four words is compared at any length, and a run of up to three words only at 19 characters or
 --           more. Shorter runs are too common to mean a copy, and a ruler is a shape.
---   words8  8 consecutive words of our comment text occur inside the SDK's comment text. Comment text is
+--   wordsN  N consecutive words of our comment text occur inside the SDK's comment text, N being --words N
+--           (8 by default; the report and its hit labels say which). Comment text is
 --           read in blocks here: the maximal run of consecutive comment lines of one file, joined by one
 --           space, so a sentence that Apple wraps over several lines still matches. The windows are exact
 --           Lua strings, not hashes, so there is no collision to count; the summary prints how many distinct
@@ -29,7 +30,7 @@
 import("byteorder", {rootdir = path.join(os.scriptdir(), "..", "modules")})
 
 local MIN_CHARS, MIN_WORDS = 19, 4
-local WINDOW = 8
+local DEFAULT_WORDS = 8
 local SDK_DIRS = {"System/Library/Frameworks", "usr/include"}
 
 local function normalise(text)
@@ -124,7 +125,7 @@ local function read_comments(file, on_run, on_block)
 end
 
 -- Our side: the comment runs and the 8-word windows of every file, with the places each occurs.
-local function read_ours(files, report)
+local function read_ours(files, report, window)
     local runs, windows = {}, {}
     for _, file in ipairs(files) do
         local ok = read_comments(file,
@@ -137,8 +138,8 @@ local function read_ours(files, report)
             end,
             function(text, first, last)
                 local words = words_of(text)
-                for i = 1, #words - WINDOW + 1 do
-                    local gram = table.concat(words, " ", i, i + WINDOW - 1)
+                for i = 1, #words - window + 1 do
+                    local gram = table.concat(words, " ", i, i + window - 1)
                     report.words_ours = report.words_ours + 1
                     windows[gram] = windows[gram] or {}
                     table.insert(windows[gram], file .. ":" .. first .. "-" .. last)
@@ -153,16 +154,17 @@ local function read_ours(files, report)
     return runs, windows
 end
 
-function scan(root, files)
+function scan(root, files, window)
+    window = window or DEFAULT_WORDS
     local report = {errors = {}, empty = {}, hits = {}, files = 0, run_ours = 0, run_sdk = 0, words_ours = 0,
-        words_sdk = 0, keys_ours = 0, sdk_headers = 0}
+        words_sdk = 0, keys_ours = 0, sdk_headers = 0, window = window}
     local frameworks = path.join(root, SDK_DIRS[1])
     if not os.isdir(frameworks) then
         table.insert(report.errors, "SDK root unreadable: no " .. frameworks)
         return report
     end
 
-    local runs, windows = read_ours(files, report)
+    local runs, windows = read_ours(files, report, window)
     for _ in pairs(windows) do report.keys_ours = report.keys_ours + 1 end
     local run_hits, words_hits = {}, {}
 
@@ -182,8 +184,8 @@ function scan(root, files)
             end,
             function(text, first, last)
                 local words = words_of(text)
-                for i = 1, #words - WINDOW + 1 do
-                    local gram = table.concat(words, " ", i, i + WINDOW - 1)
+                for i = 1, #words - window + 1 do
+                    local gram = table.concat(words, " ", i, i + window - 1)
                     report.words_sdk = report.words_sdk + 1
                     if windows[gram] then
                         for _, ours in ipairs(windows[gram]) do
@@ -201,11 +203,13 @@ function scan(root, files)
         end
     end
     for ours, sdk in pairs(words_hits) do
-        table.insert(report.hits, "words8 " .. ours .. " " .. sdk)
+        table.insert(report.hits, "words" .. window .. " " .. ours .. " " .. sdk)
     end
     byteorder.sort(report.hits)
     if report.run_ours == 0 or report.run_sdk == 0 then table.insert(report.empty, "run mode compared nothing") end
-    if report.words_ours == 0 or report.words_sdk == 0 then table.insert(report.empty, "words8 mode compared nothing") end
+    if report.words_ours == 0 or report.words_sdk == 0 then
+        table.insert(report.empty, "words" .. window .. " mode compared nothing")
+    end
     return report
 end
 
@@ -218,17 +222,33 @@ function status(report)
     return 0
 end
 
-function main(root, ...)
-    local files = {...}
+function main(...)
+    -- --words N may come anywhere before the files; the first argument left is the SDK root.
+    local args, rest, window, i = {...}, {}, DEFAULT_WORDS, 1
+    while i <= #args do
+        if args[i] == "--words" then
+            window = tonumber(args[i + 1] or "")
+            if not window or window < 1 or window % 1 ~= 0 then
+                print("sdk-verbatim: FAIL --words needs a whole number of 1 or more")
+                os.exit(2)
+            end
+            i = i + 2
+        else
+            table.insert(rest, args[i])
+            i = i + 1
+        end
+    end
+    local root = table.remove(rest, 1)
+    local files = rest
     if not root or #files == 0 then
-        print("usage: xmake l tools/sdk-verbatim.lua SDKROOT FILE...")
+        print("usage: xmake l tools/sdk-verbatim.lua [--words N] SDKROOT FILE...")
         os.exit(2)
     end
-    local report = scan(root, files)
+    local report = scan(root, files, window)
     for _, e in ipairs(report.errors) do print("sdk-verbatim: FAIL " .. e) end
     for _, e in ipairs(report.empty) do print("sdk-verbatim: " .. (#report.hits > 0 and "NOTE " or "FAIL ") .. e) end
-    print(string.format("sdk-verbatim: compared %d comment run(s) of %d file(s) with %d SDK comment run(s) of %d header(s) (run mode); %d 8-word window(s) with %d of the SDK's (words8 mode, exact keys, no hash; %d distinct window(s) of ours)",
-        report.run_ours, report.files, report.run_sdk, report.sdk_headers, report.words_ours, report.words_sdk, report.keys_ours))
+    print(string.format("sdk-verbatim: compared %d comment run(s) of %d file(s) with %d SDK comment run(s) of %d header(s) (run mode); %d %d-word window(s) with %d of the SDK's (words%d mode, exact keys, no hash; %d distinct window(s) of ours)",
+        report.run_ours, report.files, report.run_sdk, report.sdk_headers, report.words_ours, window, report.words_sdk, window, report.keys_ours))
     for _, hit in ipairs(report.hits) do print("HIT " .. hit) end
     print(string.format("sdk-verbatim: %d hit(s)", #report.hits))
     os.exit(status(report))
