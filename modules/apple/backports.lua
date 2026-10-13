@@ -1820,7 +1820,7 @@ function registry(root)
         index[path.filename(path.directory(file))] = file
     end
     local read = {}
-    for _, folder in ipairs(order.keys(index)) do
+    for _, folder in ipairs(byteorder.keys(index)) do
         if built[folder] then
             table.insert(read, folder)
         else
@@ -1892,7 +1892,7 @@ function registry(root)
             end
         end
     end
-    return listed, incomplete, order.keys(frameworks), unlibraried
+    return listed, incomplete, byteorder.keys(frameworks), unlibraried
 end
 
 -- The property names a selector may be the accessor of, most specific first: setFoo: and isFoo are the accessor

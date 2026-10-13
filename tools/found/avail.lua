@@ -20,6 +20,8 @@
 -- declaration that makes a platform unavailable.
 
 -- A version as major * 10000 + minor * 100 + subminor; "-" is none, and none is 0.
+local byteorder = import("byteorder", {rootdir = path.join(os.scriptdir(), "..", "..", "modules"), anonymous = true})
+
 function version_number(text)
     if text == "-" then return 0 end
     local major, minor, sub = text:match("^(%d+)%.?(%d*)%.?(%d*)$")
@@ -51,7 +53,7 @@ function format_availability(flags, entries)
     if flags.always_deprecated then table.insert(head, "*deprecated") end
     local names = {}
     for platform in pairs(entries) do table.insert(names, platform) end
-    table.sort(names)
+    byteorder.sort(names)
     local list = {}
     for _, platform in ipairs(names) do
         local e = entries[platform]
@@ -115,7 +117,7 @@ function merge(rows)
             all_deprecated = all_deprecated and p.always_deprecated
         end
     end
-    table.sort(names)
+    byteorder.sort(names)
     local entries = {}
     for _, platform in ipairs(names) do
         local votes, unavailable = {}, false
@@ -184,7 +186,7 @@ function render(avail_text, message)
     local parsed = parse_availability(avail_text)
     local names = {}
     for platform in pairs(parsed.entries) do table.insert(names, platform) end
-    table.sort(names)
+    byteorder.sort(names)
     local available, deprecated, obsoleted, unavailable = {}, {}, {}, {}
     for _, platform in ipairs(names) do
         local e = parsed.entries[platform]

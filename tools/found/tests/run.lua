@@ -15,6 +15,7 @@ local GOLDEN = path.join(ROOT, "expected")
 local SPEC = path.join(REPO, "build", "found", "test-spec")
 local shard = import("shard", {rootdir = FOUND, anonymous = true})
 local host = import("gen.host", {rootdir = path.join(REPO, "tools"), anonymous = true})
+local byteorder = import("byteorder", {rootdir = path.join(REPO, "modules"), anonymous = true})
 local checks = 0
 
 local function expect(condition, message)
@@ -149,7 +150,7 @@ for line in os.iorunv(DECLS, {"--list"}, {envs = {IR_SDK = FIXTURE_SDK, IR_CONFI
         table.insert(unclassified, name)
     end
 end
-table.sort(unclassified)
+byteorder.sort(unclassified)
 expect(#unclassified == 0, "a framework with no shard is classified (unparsed.tsv or no-own.tsv); unclassified: " .. table.concat(unclassified, " "))
 for name in pairs(own_rows) do
     expect(swept[name] and not os.isfile(path.join(SPEC, name, "declarations.tsv")),

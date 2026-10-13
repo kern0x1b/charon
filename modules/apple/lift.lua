@@ -3764,7 +3764,7 @@ function accessor_conflicts(kept, listed, answers, where_of)
                 -- apis member_api() gives a selector, and where_of holds only what listed[Owner.name] answered -
                 -- so the two can never be one row, and a guard for that would be a guard nothing can reach
                 if property and kept[api] and listed[property].status == "implemented" then
-                    local pair = api < property and (api .. " " .. property) or (property .. " " .. api)
+                    local pair = byteorder.less(api, property) and (api .. " " .. property) or (property .. " " .. api)
                     if not seen[pair] then
                         seen[pair] = true
                         table.insert(found, string.format("%s is %s and %s is %s, and the first is written from the second's own availability, so lowering the second lowers the first",

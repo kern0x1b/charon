@@ -298,7 +298,7 @@ local function owned_constants(tree, fw)
     if os.isfile(single) then
         table.insert(found, {full = single, relative = path.join(layout.constants().REGISTRY, fw .. ".json")})
     end
-    table.sort(found, function (a, b) return a.full < b.full end)
+    table.sort(found, function (a, b) return order.less(a.full, b.full) end)
     for _, file in ipairs(found) do
         local data = json.decode(files.read_text(file.full))
         for _, entry in ipairs(data.entries or data) do

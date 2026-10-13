@@ -7,6 +7,7 @@ local TOOLS = path.join(os.scriptdir(), "..", "..", "tools")
 function main()
     local members = import("gen.members", {rootdir = TOOLS, anonymous = true})
     local headers = import("gen.headers", {rootdir = TOOLS, anonymous = true})
+    local byteorder = import("byteorder", {rootdir = path.join(TOOLS, "..", "modules"), anonymous = true})
     local failures = 0
     local function check(ok, label)
         if not ok then
@@ -45,7 +46,7 @@ function main()
     check(found.AVFAudio and found["Accelerate/vImage"], "the shard list names AVFAudio and the nested Accelerate/vImage")
     local sorted = true
     for i = 2, #names do
-        if names[i] < names[i - 1] then
+        if byteorder.less(names[i], names[i - 1]) then
             sorted = false
         end
     end

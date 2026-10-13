@@ -121,15 +121,27 @@ local function test_emit(check)
 end
 
 -- A second `gen --all` on an unchanged tree writes no file: the emitter compares before it writes (design-spec-driven.md D2).
+-- Both runs write the whole .gen of their tree, so they run on a copy of the package without its .gen, under .agent-work/runs: a
+-- checkout that holds a generated .gen would make registry_test depend on which suite ran first (a second run failed on it).
 local function test_zero_writes(check)
     local gen = import("gen.cmd_gen", {rootdir = TOOLS, anonymous = true})
     local emit = import("gen.emit", {rootdir = TOOLS, anonymous = true})
-    local tree = path.absolute(path.join(os.scriptdir(), "..", ".."))
+    local root = path.absolute(path.join(os.scriptdir(), "..", ".."))
+    local tree = path.join(root, ".agent-work", "runs", "gen-zero-writes-" .. tostring(os.time()) .. "-" .. tostring(math.random(1000000)))
+    local package = path.join("packages", "a", "apple-backports")
+    os.mkdir(path.join(tree, "packages", "a"))
+    os.cp(path.join(root, package), path.join(tree, package))
+    os.cp(path.join(root, "tools"), path.join(tree, "tools"))
+    os.cp(path.join(root, "modules"), path.join(tree, "modules"))
+    if os.isdir(path.join(tree, package, ".gen")) then
+        os.rm(path.join(tree, package, ".gen"))
+    end
     local args = {tree = tree, all = true}
     gen.run(args)
     local before = emit.count()
-    check(gen.run(args) == 0, "gen --all on the tree succeeds")
-    check(emit.count() == before, "a second gen --all on the unchanged tree writes no file")
+    check(gen.run(args) == 0, "gen --all on a copy of the tree succeeds")
+    check(emit.count() == before, "a second gen --all on the unchanged copy writes no file")
+    os.rm(tree)
 end
 
 local function test_stream(check)

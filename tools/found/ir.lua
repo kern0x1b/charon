@@ -52,6 +52,7 @@ local CONFLICTS = os.getenv("IR_CONFLICTS") or path.join(FOUND, "conflicts.tsv")
 local UNPARSED = os.getenv("IR_UNPARSED") or path.join(FOUND, "unparsed.tsv")
 local stream = import("gen.stream", {rootdir = TOOLS, anonymous = true})
 local host = import("gen.host", {rootdir = TOOLS, anonymous = true})
+local byteorder = import("byteorder", {rootdir = path.join(REPO, "modules"), anonymous = true})
 -- The extractor: the decls target of tools/found, where xmake puts it for this repository (the same lookup the doc command uses).
 local DECLS = os.getenv("IR_DECLS") or host.target_product(REPO, FOUND, "decls")
 -- decls, through a pipe (no temporary file): the lines it printed. A run that exits non-zero raises with its own message, so a failed
@@ -310,7 +311,7 @@ if MODE == "write" or MODE == "check" then
     for name in pairs(no_own) do
         if not swept[name] or shards[name] then table.insert(stale, name) end
     end
-    table.sort(unclassified); table.sort(stale); table.sort(both)
+    byteorder.sort(unclassified); byteorder.sort(stale); byteorder.sort(both)
     if #unclassified > 0 then
         raise("a framework with no shard is neither unparsed nor in " .. NO_OWN .. ": " .. table.concat(unclassified, " "))
     end
@@ -331,7 +332,7 @@ if MODE == "gaps" then
         local name = path.filename(dir)
         if not os.isfile(shard_path(name)) then table.insert(names, name) end
     end
-    table.sort(names)
+    byteorder.sort(names)
     local tally = {}
     for _, name in ipairs(names) do
         local f = sdk_framework[name]
@@ -422,8 +423,8 @@ for file in pairs(existing) do
         table.insert(without_shard, label)
     end
 end
-table.sort(stale_shards)
-table.sort(without_shard)
+byteorder.sort(stale_shards)
+byteorder.sort(without_shard)
 if #without_shard > 0 then
     raise(string.format("decls gives no shard for %s, but a committed shard is there: a framework decls still lists keeps its committed "
         .. "shard, so its removal is a reviewed change (delete the shard by hand)", table.concat(without_shard, ", ")))
@@ -439,7 +440,7 @@ for label, text in pairs(shards) do
     local old = os.isfile(file) and io.readfile(file) or nil
     if old ~= text then table.insert(changed, label) end
 end
-table.sort(changed)
+byteorder.sort(changed)
 
 local unparsed_text = {"# the frameworks of the SDK with no declaration the extractor reads, and why: one line each"}
 for _, u in ipairs(unparsed) do table.insert(unparsed_text, u[1] .. "\t" .. redact(u[2])) end
@@ -455,7 +456,7 @@ if MODE == "check" or MODE == "write" then
             table.insert(differs, file:sub(#SPEC + 2, #file - #"/declarations.tsv"))
         end
     end
-    table.sort(differs)
+    byteorder.sort(differs)
     if #differs > 0 and (MODE == "check" or not os.getenv("IR_REPIN")) then
         raise(string.format("libclang identity differs in %d shards (%s): this machine has [%s]%s", #differs,
             table.concat(differs, ", "), libclang, MODE == "check" and "" or "; re-record with IR_REPIN=1 as a reviewed re-pin"))

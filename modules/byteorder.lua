@@ -24,3 +24,13 @@ end
 function sort(list)
     table.sort(list, less)
 end
+
+-- The keys of a map, or the members of a set, sorted in byte order (a new list).
+function keys(map)
+    local out = {}
+    for key in pairs(map) do
+        table.insert(out, key)
+    end
+    sort(out)
+    return out
+end
