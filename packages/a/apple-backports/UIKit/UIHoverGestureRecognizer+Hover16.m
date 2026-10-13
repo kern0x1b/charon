@@ -29,13 +29,13 @@
 
 - (CGFloat)altitudeAngle
 {
-    // UIHoverGestureRecognizer.h:38 - "0 is returned for devices that don't support altitude".
+    // UIHoverGestureRecognizer.h:38 - the header gives 0 as the altitude for a device without altitude support.
     return 0;
 }
 
 - (CGFloat)azimuthAngleInView:(UIView *)view
 {
-    // UIHoverGestureRecognizer.h:31 - "0 is returned for devices that don't support azimuth".
+    // UIHoverGestureRecognizer.h:31 - the header gives 0 for a device without azimuth support.
     return 0;
 }
 

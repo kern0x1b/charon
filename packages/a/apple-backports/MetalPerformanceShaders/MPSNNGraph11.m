@@ -297,10 +297,7 @@
 @end
 
 
-// The concatenation node. MPSNNGraphNodes.h:2438-2449 states the rule exactly: given images with M, N
-// and O feature channels, the result takes [0,M-1] from the first, [M,M+N-1] from the second and so on,
-// and each source is padded up to whole groups of four feature channels, so the sizes M, N and O all come out as multiples
-// of four, even if the MPSImage objects themselves are not.
+// The concatenation node. MPSNNGraphNodes.h:2438-2449 gives the layout: the channels of the first source fill the output from channel zero, the second source's channels come next, and so on. Each source is first rounded up to whole four-channel groups, so the channel counts M, N and O are multiples of four even when the MPSImage objects are not.
 @implementation MPSNNConcatenationNode {
     MPSKernel *_kernel;
 }
