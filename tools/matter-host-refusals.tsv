@@ -8,22 +8,23 @@
 #       one         the member is present and one, a value the framework reserves
 # Not listed, because the probe could not separate them: the members of a struct that is itself nil (the probe leaves a
 # nil struct nil in every nil: and one: mode), and the nodeID of AddACLToNode (nil with aclEntry nil in every mode).
-# answer: MTRInteractionErrorDomain/135, "Out of range error or set to a reserved value." on every row.
+# answer: the error domain and code the framework answers, as domain/code. described: its localized description.
+# The generator emits both from these columns, and the differential checks each row's modes against them.
 #
-# class	member	kind	answer	modes
-MTRColorControlClusterStepHueParams	stepMode	nil-or-zero	MTRInteractionErrorDomain/135	default nil:stepMode zero:stepMode
-MTRColorControlClusterEnhancedStepHueParams	stepMode	nil-or-zero	MTRInteractionErrorDomain/135	default nil:stepMode zero:stepMode
-MTRColorControlClusterStepSaturationParams	stepMode	nil-or-zero	MTRInteractionErrorDomain/135	default nil:stepMode zero:stepMode
-MTRColorControlClusterStepColorTemperatureParams	stepMode	nil-or-zero	MTRInteractionErrorDomain/135	default nil:stepMode zero:stepMode
-MTROperationalCredentialsClusterCertificateChainRequestParams	certificateType	nil-or-zero	MTRInteractionErrorDomain/135	default nil:certificateType zero:certificateType
-MTRJointFabricDatastoreClusterAddGroupParams	groupPermission	nil-or-zero	MTRInteractionErrorDomain/135	default nil:groupPermission zero:groupPermission
-MTRJointFabricDatastoreClusterUpdateGroupParams	groupPermission	zero	MTRInteractionErrorDomain/135	zero:groupPermission
-MTRJointFabricDatastoreClusterAddACLToNodeParams	aclEntry	nil	MTRInteractionErrorDomain/135	default ones
-MTRJointFabricDatastoreClusterAddACLToNodeParams	aclEntry.privilege	zero	MTRInteractionErrorDomain/135	path:aclEntry.privilege
-MTRJointFabricDatastoreClusterAddACLToNodeParams	aclEntry.authMode	zero	MTRInteractionErrorDomain/135	path:aclEntry.authMode
-MTRDoorLockClusterAppleGetAliroCredentialStatusParams	credential	nil	MTRInteractionErrorDomain/135	default ones nil:credential
-MTRDoorLockClusterAppleGetAliroCredentialStatusParams	credential.credentialType	zero	MTRInteractionErrorDomain/135	path:credential.credentialType
-MTRDoorLockClusterAppleSetAliroCredentialParams	credential	nil	MTRInteractionErrorDomain/135	default ones nil:credential
-MTRDoorLockClusterAppleSetAliroCredentialParams	credential.credentialType	zero	MTRInteractionErrorDomain/135	path:credential.credentialType
-MTRDoorLockClusterAppleClearAliroCredentialParams	credential.credentialType	zero	MTRInteractionErrorDomain/135	path:credential.credentialType
-MTRIdentifyClusterTriggerEffectParams	effectVariant	one	MTRInteractionErrorDomain/135	one:effectVariant ones
+# class	member	kind	answer	described	modes
+MTRColorControlClusterStepHueParams	stepMode	nil-or-zero	MTRInteractionErrorDomain/135	Out of range error or set to a reserved value.	default nil:stepMode zero:stepMode
+MTRColorControlClusterEnhancedStepHueParams	stepMode	nil-or-zero	MTRInteractionErrorDomain/135	Out of range error or set to a reserved value.	default nil:stepMode zero:stepMode
+MTRColorControlClusterStepSaturationParams	stepMode	nil-or-zero	MTRInteractionErrorDomain/135	Out of range error or set to a reserved value.	default nil:stepMode zero:stepMode
+MTRColorControlClusterStepColorTemperatureParams	stepMode	nil-or-zero	MTRInteractionErrorDomain/135	Out of range error or set to a reserved value.	default nil:stepMode zero:stepMode
+MTROperationalCredentialsClusterCertificateChainRequestParams	certificateType	nil-or-zero	MTRInteractionErrorDomain/135	Out of range error or set to a reserved value.	default nil:certificateType zero:certificateType
+MTRJointFabricDatastoreClusterAddGroupParams	groupPermission	nil-or-zero	MTRInteractionErrorDomain/135	Out of range error or set to a reserved value.	default nil:groupPermission zero:groupPermission
+MTRJointFabricDatastoreClusterUpdateGroupParams	groupPermission	zero	MTRInteractionErrorDomain/135	Out of range error or set to a reserved value.	zero:groupPermission
+MTRJointFabricDatastoreClusterAddACLToNodeParams	aclEntry	nil	MTRInteractionErrorDomain/135	Out of range error or set to a reserved value.	default ones
+MTRJointFabricDatastoreClusterAddACLToNodeParams	aclEntry.privilege	zero	MTRInteractionErrorDomain/135	Out of range error or set to a reserved value.	path:aclEntry.privilege
+MTRJointFabricDatastoreClusterAddACLToNodeParams	aclEntry.authMode	zero	MTRInteractionErrorDomain/135	Out of range error or set to a reserved value.	path:aclEntry.authMode
+MTRDoorLockClusterAppleGetAliroCredentialStatusParams	credential	nil	MTRInteractionErrorDomain/135	Out of range error or set to a reserved value.	default ones nil:credential
+MTRDoorLockClusterAppleGetAliroCredentialStatusParams	credential.credentialType	zero	MTRInteractionErrorDomain/135	Out of range error or set to a reserved value.	path:credential.credentialType
+MTRDoorLockClusterAppleSetAliroCredentialParams	credential	nil	MTRInteractionErrorDomain/135	Out of range error or set to a reserved value.	default ones nil:credential
+MTRDoorLockClusterAppleSetAliroCredentialParams	credential.credentialType	zero	MTRInteractionErrorDomain/135	Out of range error or set to a reserved value.	path:credential.credentialType
+MTRDoorLockClusterAppleClearAliroCredentialParams	credential.credentialType	zero	MTRInteractionErrorDomain/135	Out of range error or set to a reserved value.	path:credential.credentialType
+MTRIdentifyClusterTriggerEffectParams	effectVariant	one	MTRInteractionErrorDomain/135	Out of range error or set to a reserved value.	one:effectVariant ones

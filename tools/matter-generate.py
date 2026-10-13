@@ -184,8 +184,31 @@ EXCLUDED = load_excluded()
 NAME_ERRORS = []
 EMITTED = []
 # What the host framework refuses of a params object before it looks for a node: keyed by params class, a list of
-# (member, kind). Read once from tools/matter-host-refusals.tsv by host_refusals(), and used by refusal_expression().
+# (member, kind, domain, code, description). Read once from tools/matter-host-refusals.tsv by host_refusals(), and used by
+# refusal_guards().
 REFUSALS = {}
+# The answers the emitted errors carry, by the name of the constant each is emitted under: (domain, code, description) as C
+# expressions. An answer is one constant per object that uses it, so a call site is an address and not three arguments.
+ANSWERS = {}
+
+
+def answer_name(domain, code, description):
+    """The constant's name for an answer, read from its domain and code, and the answer registered under it.
+
+    domain is the framework's name (MTRErrorDomain), code a C expression (135 or MTRErrorCodeInvalidState) and description
+    the text the framework gives. Two answers with one domain and code and different text would share a name; none do.
+    """
+    domain_key = re.sub(r"^MTR|Domain$", "", domain).lower()
+    code_key = re.sub(r"^MTRErrorCode", "", code).lower()
+    name = "charon_port_answer_%s_%s" % (domain_key, code_key)
+    ANSWERS[name] = ('@"%s"' % domain, code, '@"%s"' % description)
+    return name
+
+
+# The error a member that would need a node answers with, on a controller with no node: the framework's own answer,
+# measured on the host (tests/backports/host/matterdifferential/behaviour.m). Emitted through charon_port_error().
+NO_NODE_ERROR = "charon_port_error(&%s)" % answer_name("MTRErrorDomain", "MTRErrorCodeInvalidState",
+                                                     "Invalid object state.")
 PARAMS_MISSING = []
 EMITTED_FILES = {}
 FORWARDED = []
@@ -920,7 +943,7 @@ PREAMBLE = '''//
 //  and read and written under the object's lock, so two threads on one object are not a race.
 //  Every command answers through its completion. Nothing here reaches a fabric: the {cache} cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
-//  read from. A cached read completes with no value and the error of charon_port_no_node_error();
+//  read from. A cached read completes with no value and the no-node error (NO_NODE_ERROR);
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
 //  queue, never calls its established handler, and leaves the stored value alone.
 //
@@ -1747,48 +1770,64 @@ def host_refusals(path):
       zero         the member is present and zero; an absent member is accepted
       one          the member is present and one, a value the framework reserves
 
-    Keyed by params class, as a list of (member, kind). A class with no rows is absent.
+    Each row also carries the answer the framework gives, as domain/code, and its localized description: the generator
+    emits both from these columns, so a row that names another code is emitted with that code.
+
+    Keyed by params class, as a list of (member, kind, domain, code, description). A class with no rows is absent.
     """
     found = {}
-    if not path or not os.path.exists(path):
+    if not path:
         return found
+    # A missing file is an error, not an empty table: an empty table emits no refusal guard at all, and nothing says so.
     with open(path) as handle:
         for line in handle:
             if line.startswith("#") or not line.strip():
                 continue
             fields = line.rstrip("\n").split("\t")
-            if len(fields) < 3:
-                continue
-            found.setdefault(fields[0], []).append((fields[1], fields[2]))
+            if len(fields) < 5:
+                raise ValueError("a refusal row has %d fields, not 5 or 6: %r in %s" % (len(fields), line.rstrip("\n"), path))
+            # The answer is domain/code, the framework's own names: the code is what follows the last slash.
+            domain, _, code = fields[3].rpartition("/")
+            if not domain or not code.isdigit():
+                raise ValueError("no domain/code in the answer %r of %r in %s" % (fields[3], fields[0], path))
+            found.setdefault(fields[0], []).append((fields[1], fields[2], domain, int(code), fields[4]))
     return found
 
 
-def refusal_expression(shape):
-    """(condition, params name) for the framework's refusal of this command's params, or (None, None) for none.
+def refusal_guards(shape, completion):
+    """(params name, C text) for the framework's refusals of this command's params; (None, "") when it refuses none.
 
-    The class is read off the shape's own params argument, and the argument's name is the one the shape gives it.
-    Each member is read with valueForKeyPath:, so a nil struct on the way reads as nil, and a nil NSNumber reads as
-    zero through unsignedLongLongValue - which is how the framework reads them, and what the host measured.
+    The class is read off the shape's own params argument, and the argument's name is the one the shape gives it. Each
+    row is one condition on one member, read with valueForKeyPath:, so a nil struct on the way reads as nil, and a nil
+    NSNumber reads as zero through unsignedLongLongValue - which is how the framework reads them, and what the host
+    measured. The rows that answer the same domain, code and description share one if; the error is built from the
+    table's own columns and is not written here.
     """
     match = re.search(r"\((MTR\w+Params)\s*\*[^)]*\)\s*(\w+)", shape)
     if not match or match.group(1) not in REFUSALS:
-        return None, None
+        return None, ""
     params = match.group(2)
-    tests = []
-    for member, kind in REFUSALS[match.group(1)]:
+    answers = collections.OrderedDict()
+    for member, kind, domain, code, described in REFUSALS[match.group(1)]:
         value = '[%s valueForKeyPath:@"%s"]' % (params, member)
         number = "[%s unsignedLongLongValue]" % value
         if kind == "nil":
-            tests.append("%s == nil" % value)
+            test = "%s == nil" % value
         elif kind == "nil-or-zero":
-            tests.append("%s == 0" % number)
+            test = "%s == 0" % number
         elif kind == "zero":
-            tests.append("(%s != nil && %s == 0)" % (value, number))
+            test = "(%s != nil && %s == 0)" % (value, number)
         elif kind == "one":
-            tests.append("%s == 1" % number)
+            test = "%s == 1" % number
         else:
             raise ValueError("no refusal kind %r for %r of %r" % (kind, member, match.group(1)))
-    return " || ".join(tests), params
+        answers.setdefault((domain, code, described), []).append(test)
+    text = ""
+    for (domain, code, described), tests in answers.items():
+        error = "charon_port_error(&%s)" % answer_name(domain, str(code), described)
+        text += ("    if (%s) {\n        if (%s) {\n            %s;\n        }\n        return;\n    }\n"
+                 % (" || ".join(tests), completion, completion_call(shape, completion, error=error)))
+    return params, text
 
 
 def init_defaults(path):
@@ -3364,7 +3403,7 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                         "    }\n"
                         "    if (written) {\n        %s;\n    } else {\n        %s;\n    }\n}\n\n"
                         % (s, completion, name, completion_call(s, completion, "written"),
-                           completion_call(s, completion, error="charon_port_no_node_error()")))
+                           completion_call(s, completion, error=NO_NODE_ERROR)))
         for s in info.get("read_params", []):
             names = arguments_or_note(s, cluster, name, "read_params")
             if names is None:
@@ -3390,7 +3429,7 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                         "    if (written) {\n        %s;\n    } else {\n        %s;\n    }\n}\n\n"
                         % (s, unused, completion, name,
                            completion_call(s, completion, "written"),
-                           completion_call(s, completion, error="charon_port_no_node_error()")))
+                           completion_call(s, completion, error=NO_NODE_ERROR)))
         for s in info.get("read_sync", []):
             # The synchronous read: what the caller wrote into the table, or nil when nothing was written.
             # The framework reads the attribute off the node; a release with no Matter hardware has no node,
@@ -3471,7 +3510,7 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                         "    }\n}\n\n"
                         % (s, unused, handler, queue,
                            completion_call(s, handler,
-                                           error="charon_port_no_node_error()")))
+                                           error=NO_NODE_ERROR)))
     for name, info in cache.items():
         body.append("// The cached read of %s: no value and the error, because there is no node.\n" % name)
         args = arguments_or_note(info["signature"], cluster, name, "cached read")
@@ -3499,7 +3538,7 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                     "    });\n}\n\n"
                     % (info["signature"], unused, completion, target,
                        completion_call(info["signature"], completion,
-                                       error="charon_port_no_node_error()")))
+                                       error=NO_NODE_ERROR)))
     # Every shape this object emits has to match the interface it lives under. For a cluster whose
     # declaration is in the shared header, that means the header's region nullability, not the 26.2
     # header's per-parameter annotation.
@@ -3552,7 +3591,7 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                     body.append("%s\n{\n%s"
                                 "    if (%s) {\n        %s;\n    }\n}\n\n"
                                 % (shape, unused, completion,
-                                   completion_call(shape, completion, error="charon_port_no_node_error()")))
+                                   completion_call(shape, completion, error=NO_NODE_ERROR)))
                 else:
                     OFFENDERS.append((cluster, verb, "command", shape))
             else:
@@ -3571,20 +3610,15 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                 OFFENDERS.append((cluster, verb, "command", shape))
                 continue
             EMITTED_DECLARED.append((cluster, selector_of(shape)))
-            # The framework refuses some params before it looks for a node, with MTRInteractionErrorDomain/135, so the
+            # The framework refuses some params before it looks for a node, with the answer the table's row gives, so the
             # refusal is answered first; the rule and the measurement are in host_refusals().
-            refused, params = refusal_expression(shape)
+            params, guard = refusal_guards(shape, completion)
             unused = "".join("    (void)%s;\n" % each for each in names
-                             if each != completion and not (refused and each == params))
-            guard = ""
-            if refused:
-                guard = ("    if (%s) {\n        if (%s) {\n            %s;\n        }\n        return;\n    }\n"
-                         % (refused, completion,
-                            completion_call(shape, completion, error="charon_port_constraint_error()")))
+                             if each != completion and not (params and each == params))
             body.append("%s\n{\n%s%s"
                         "    if (%s) {\n        %s;\n    }\n}\n\n"
                         % (shape, unused, guard, completion,
-                           completion_call(shape, completion, error="charon_port_no_node_error()")))
+                           completion_call(shape, completion, error=NO_NODE_ERROR)))
     # The static helpers, written where the @implementation starts and only when a body above calls them.
     # The values table is the object's own, made on first use - an object built through a superclass's
     # initializer never ran this class's. It takes NO lock: the caller holds the object's lock for the whole
@@ -3603,36 +3637,26 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                        "        *values = [NSMutableDictionary dictionary];\n"
                        "    }\n"
                        "    return *values;\n}\n\n")
-    if any("charon_port_no_node_error()" in each for each in body):
-        helpers.append("// The error a member that would need a node answers, on a release with no Matter\n"
-                       "// hardware: there is no controller to ask and no node to read from. It is the framework's\n"
-                       "// own answer to a cached read on a container with no cache and to any request on a\n"
-                       "// controller that has been shut down, measured on the host by\n"
-                       "// tests/backports/host/matterdifferential/behaviour.m: MTRErrorDomain, MTRErrorCodeInvalidState,\n"
-                       "// \"Invalid object state.\". The domain is written as the string the constant holds: the\n"
-                       "// constant is defined by the framework's own build (packages/m/matter), not by this library.\n"
-                       "// Built once: every caller gets the same object, and it is made on first use.\n"
-                       "static NSError *charon_port_no_node_error(void)\n{\n"
-                       "    static NSError *error;\n"
-                       "    static dispatch_once_t once;\n"
-                       "    dispatch_once(&once, ^{\n"
-                       "        error = [NSError errorWithDomain:@\"MTRErrorDomain\" code:MTRErrorCodeInvalidState\n"
-                       "                                userInfo:@{NSLocalizedDescriptionKey: @\"Invalid object state.\"}];\n"
-                       "    });\n"
-                       "    return error;\n}\n\n")
-    if any("charon_port_constraint_error()" in each for each in body):
-        helpers.append("// The error a request answers when the framework refuses a field of its params before it looks for a\n"
-                       "// node: a field it reads as out of range, or a reserved value. Which field, and for which value, is in\n"
-                       "// tools/matter-host-refusals.tsv, measured by tests/backports/host/matterdifferential/probe-params-modes.m.\n"
-                       "// Built once, as charon_port_no_node_error() is.\n"
-                       "static NSError *charon_port_constraint_error(void)\n{\n"
-                       "    static NSError *error;\n"
-                       "    static dispatch_once_t once;\n"
-                       "    dispatch_once(&once, ^{\n"
-                       "        error = [NSError errorWithDomain:@\"MTRInteractionErrorDomain\" code:135\n"
-                       "                                userInfo:@{NSLocalizedDescriptionKey: @\"Out of range error or set to a reserved value.\"}];\n"
-                       "    });\n"
-                       "    return error;\n}\n\n")
+    # One error helper for every answer this object gives, each answer a constant of its own: the domain, the code and the
+    # description the framework gives. The answers are measured on the host by tests/backports/host/matterdifferential/.
+    used = sorted(set(re.findall(r"charon_port_error\(&(charon_port_answer_\w+)\)", "".join(body))))
+    if used:
+        lines = ["// The answer an error carries: the domain, the code and the description the framework gives for the case,\n"
+                 "// a member it has no node to reach for or a params member it refuses before it looks for a node. Each answer\n"
+                 "// the object gives is one constant below, so a call names it by address.\n"
+                 "typedef struct {\n"
+                 "    NSString *domain;\n"
+                 "    NSInteger code;\n"
+                 "    NSString *description;\n"
+                 "} charon_port_answer;\n\n"]
+        for name in used:
+            domain, code, description = ANSWERS[name]
+            lines.append("static const charon_port_answer %s = {%s, %s,\n    %s};\n" % (name, domain, code, description))
+        lines.append("\n// The error for an answer: built on each call, as a request answers once.\n"
+                     "static NSError *charon_port_error(const charon_port_answer *answer)\n{\n"
+                     "    return [NSError errorWithDomain:answer->domain code:answer->code\n"
+                     "                           userInfo:@{NSLocalizedDescriptionKey: answer->description}];\n}\n\n")
+        helpers.append("".join(lines))
     body[helpers_at:helpers_at] = helpers
     body.append("@end\n")
     text = "".join(body)
