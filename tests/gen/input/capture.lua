@@ -2,7 +2,8 @@
 -- (xmake -P tools/found), with the SDK and the coordination corpus at hand. Run from the tree's root:
 --   xmake l tests/gen/input/capture.lua <tree> <sdk> <corpus>
 -- It writes tests/gen/input/fixtures under the tree: for each of the four frameworks the ledger's constant rows (corpus/ledger-w45),
--- the extractor's doc rows of those constants (decls --doc, as written), the exports the SDK's .tbd gives, the host probe's values of
+-- the extractor's doc rows of those constants (decls --doc, their comment cells replaced by synthetic text: see synthetic_row), the exports
+-- the SDK's .tbd gives, the host probe's values of
 -- those constants, and, for the Swift-only framework, the doc failure the extractor gives; and the iOS 26.2 cache rows of the same
 -- names (corpus/cache-26.2, gzip). The fixtures hold no absolute path: the SDK and the corpus are read, not written.
 
@@ -15,6 +16,45 @@ local function write_file(filepath, text)
     local handle = assert(io.open(filepath, "w"))
     handle:write(text)
     handle:close()
+end
+
+-- A doc row with its comment cells replaced by synthetic text of the same shape: the brief (cell 8) becomes one line of ours, and the
+-- raw comment (cell 9) keeps its lines and their forms (a /*! block line for line, a /// line). The input test reads the USR and the
+-- declaration only, so it sees the same rows; the SDK's comment text is not written into the fixtures. The extractor writes a line feed
+-- as the two characters \n, and the cells are joined back the same way.
+local BRIEF_CELL, RAW_CELL, NAME_CELL = 8, 9, 5
+local ESCAPED_LINE_FEED = "\\n"
+
+local function synthetic_row(tsv, line)
+    local cells = tsv.fields(line)
+    local name = cells[NAME_CELL]
+    if cells[BRIEF_CELL] ~= "" then
+        cells[BRIEF_CELL] = "Fixture brief of " .. name .. ", written for the input test."
+    end
+    if cells[RAW_CELL] ~= "" then
+        local lines, pos = {}, 1
+        while true do
+            local at = string.find(cells[RAW_CELL], ESCAPED_LINE_FEED, pos, true)
+            if at == nil then
+                table.insert(lines, string.sub(cells[RAW_CELL], pos))
+                break
+            end
+            table.insert(lines, string.sub(cells[RAW_CELL], pos, at - 1))
+            pos = at + #ESCAPED_LINE_FEED
+        end
+        local content = 0
+        for i, text in ipairs(lines) do
+            local opens_block = string.sub(text, 1, 2) == "/*"
+            local closes_block = string.find(text, "^%s*%*/$") ~= nil
+            if not opens_block and not closes_block then
+                content = content + 1
+                local lead = string.match(text, "^(%s*%*%s*)") or string.match(text, "^(///%s*)") or ""
+                lines[i] = lead .. "Fixture comment line " .. content .. " of " .. name .. "."
+            end
+        end
+        cells[RAW_CELL] = table.concat(lines, ESCAPED_LINE_FEED)
+    end
+    return table.concat(cells, "\t")
 end
 
 function main(tree, sdk, corpus)
@@ -74,7 +114,13 @@ function main(tree, sdk, corpus)
                     table.insert(keep, line)
                 end
             end
-            write_file(path.join(fixtures, "doc", fw .. ".txt"), table.concat(keep, "\n") .. (#keep > 0 and "\n" or ""))
+            -- the SDK's rows stay out of the fixtures: they go to the tree's .agent-work (ignored by git) for a local comparison
+            write_file(path.join(tree, ".agent-work", "runs", "capture", "doc", fw .. ".txt"), table.concat(keep, "\n") .. (#keep > 0 and "\n" or ""))
+            local synthetic = {}
+            for _, line in ipairs(keep) do
+                table.insert(synthetic, synthetic_row(tsv, line))
+            end
+            write_file(path.join(fixtures, "doc", fw .. ".txt"), table.concat(synthetic, "\n") .. (#synthetic > 0 and "\n" or ""))
         end
         local symbols = tbd.exports(sdk, fw)
         local exported = {}
