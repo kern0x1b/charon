@@ -50,7 +50,7 @@ static NSString *CharonPathComponentForType(NSString *partialName, UTType *conte
     }
     NSString *extension = contentType.preferredFilenameExtension;
     if (!extension.length) {
-        // "If the extension could not be appended, this method returns a copy of self."
+        // If the extension cannot be appended, the method gives back a copy of self.
         *appended = NO;
         return partialName;
     }

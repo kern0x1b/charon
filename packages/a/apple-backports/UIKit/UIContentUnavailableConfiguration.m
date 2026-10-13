@@ -583,8 +583,8 @@ static UIColor *charon_unavailable_secondary_label_color(void)
 
 // The margins the content is laid out in.  The configuration's own margins are a minimum on each axis the
 // header says is preserved, and the superview's are the other minimum - the header says so in as many words
-// about directionalLayoutMargins: "When preserving superview layout margins on one or both axes, these are
-// just minimum margins, as inherited margins may be larger."
+// about directionalLayoutMargins: when superview layout margins are preserved on one or both axes, these are
+// minimum margins only, since inherited margins may be larger.
 - (NSDirectionalEdgeInsets)charon_effectiveMargins
 {
     NSDirectionalEdgeInsets margins = _configuration.directionalLayoutMargins;

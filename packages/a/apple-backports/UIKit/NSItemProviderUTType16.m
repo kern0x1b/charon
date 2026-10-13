@@ -109,7 +109,7 @@ static NSItemProviderFileOptions CharonItemProviderOpenInPlace(BOOL openInPlace)
 
 - (NSArray<UTType *> *)registeredContentTypesConformingToContentType:(UTType *)contentType
 {
-    // "Registered content types that conform to a given content type", in the order they were
+    // The list of registered types that are conformant to a given type, in the order they were
     // registered, which is the order -registeredTypeIdentifiers hands them over in. The conformance
     // test is the release's own UTTypeConformsTo, which -[UTType conformsToType:] already calls.
     NSMutableArray<UTType *> *types = [NSMutableArray array];

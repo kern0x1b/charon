@@ -38,19 +38,18 @@ const UIConfigurationColorTransformer UIConfigurationColorTransformerGrayscale =
     return CharonGrayscaleColor(color);
 };
 
-// "A color transformer that either passes the original color through, or replaces it with the
-// system accent color. - When the system accent color is set to Multicolor: Returns the original
-// color. - When the system accent color is configured to any other color: Returns that color. -
-// On platforms without a system accent color: Returns the original color." (SDK 26.2,
-// UIConfigurationColorTransformer.h:23-27). The third case is this one: the system accent colour
+// The header describes a transformer that keeps the original color or replaces it with the
+// system accent color: with the accent set to Multicolor it returns the original color, and with any other
+// configured accent color it returns that color. On a platform without an accent color it returns the original color
+// (SDK 26.2, UIConfigurationColorTransformer.h:23-27). The third case is this one: the system accent colour
 // is iOS 15's, and the tint a control carries is the one the application gives it - there is no
 // accent the system picks, so the original colour is the original colour.
 const UIConfigurationColorTransformer UIConfigurationColorTransformerPreferredTint = ^UIColor *(UIColor *color) {
     return color;
 };
 
-// "A color transformer that gives the color a monochrome tint. Use this to deemphasize the tinted
-// item. It remains monochrome regardless of the system accent color (if the platform has one)."
+// The header describes a transformer that gives a color a monochrome tint, meant to deemphasize the tinted
+// item: it stays monochrome whatever the system accent color is, where the platform has one.
 // (SDK 26.2, UIConfigurationColorTransformer.h:29-31). The two documents read together: the
 // difference from PreferredTint is that the accent colour does not reach this one, so the colour
 // the system would have substituted is the input itself, made monochrome. A platform with no

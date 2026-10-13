@@ -14,9 +14,8 @@
 //   - a previewProvider set beforehand is STILL SET afterwards, so the call does not consume, clear or
 //     run it.
 //
-// Its own header says the same thing in a sentence: "Requests for the drop preview to be updated if an
-// active drop animation is in progress, and can handle updates. If no active drop animation is in
-// progress for the specified item, then nothing happens."
+// Its own header says the same thing in one sentence: a request for the drop preview to be updated is honoured when
+// a drop animation is in progress and the item can take updates. With no drop animation running for the item, nothing happens.
 //
 // WHICH IS EXACTLY WHAT HAPPENS HERE, and why that is not a stub. A drop animation is the SYSTEM's:
 // this release has no drop animation a drag item can be inside, because a drag that leaves the

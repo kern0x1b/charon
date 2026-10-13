@@ -32,10 +32,10 @@
 // conformingToType: forms are the same answer narrowed by the parent the header says the result is
 // "expected to conform to", tested with the release's own UTTypeConformsTo.
 //
-// +importedTypeWithIdentifier: is the one with a rule of its own, and UTType.h states it: "In the
-// general case, this method returns a type with the same identifier, but if that type has a
-// preferred filename extension and another type is the preferred type for that extension, then that
-// other type is substituted." Both halves are the release's own functions -- UTTypeCopyPreferredTagWithClass
+// +importedTypeWithIdentifier: is the one with a rule of its own, and UTType.h states it: in the
+// general case the method hands back a type sharing the identifier, unless that type names a preferred extension of its own,
+// and then the extension is preferred by a different type, which is substituted.
+// Both halves are the release's own functions -- UTTypeCopyPreferredTagWithClass
 // for the extension and UTTypeCreatePreferredIdentifierForTag for the preferred type -- so the rule
 // is carried out literally rather than approximated.
 

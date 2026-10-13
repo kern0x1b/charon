@@ -3,9 +3,8 @@
 
 // -[UIViewController activePresentationController], iOS 16.0.
 //
-// The header: "Gets the presentation controller managing this view controller. If the original
-// presentation controller has adapted, this returns the adaptive presentation controller. If this
-// view controller has not yet been presented, this property returns nil."
+// The header says the property gives the presentation controller managing this view controller. When the original
+// presentation controller has adapted, the adaptive presentation controller is returned, and until presentation happens the property is nil.
 //
 // The port keeps one presentation controller per presented view controller: charon_set_presentation_controller
 // stores it when a presentation starts and CharonCustomTransition.h reads it back through

@@ -8,8 +8,8 @@
 //
 // The two class properties answer the capability honestly. +preferredTapAction is the action to perform
 // when the user taps the side of the pencil; with no pencil there is no tap and so no action, which is
-// what UIPencilPreferredActionIgnore says in the SDK's own words ("No action, or the user has disabled
-// pencil interactions in Accessibility settings"). It is not read from a preference: iOS 6 has no
+// what UIPencilPreferredActionIgnore says in the SDK, namely that there is no action, or that pencil interactions
+// are disabled in the accessibility settings. It is not read from a preference: iOS 6 has no
 // Settings pane for it, so there is nothing to read and Ignore is the only answer that is true.
 // +prefersPencilOnlyDrawing is NO, which is what the host's own UIKit answers
 // (facts/UIKit/UIPencilInteraction12.md).

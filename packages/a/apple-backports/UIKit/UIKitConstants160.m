@@ -61,9 +61,9 @@ void UIGuidedAccessConfigureAccessibilityFeatures(UIGuidedAccessAccessibilityFea
 {
     if (!completion)
         return;
-    // "The application is not authorized to perform the requested action. For example, it may have
-    // requested a configuration change but is not locked into Single App Mode via a configuration
-    // profile" (SDK 26.2, UIGuidedAccess.h:17-19, UIGuidedAccessErrorPermissionDenied) - which is
+    // The header says a caller without rights for an action gets this error, for example when it has
+    // asked for a configuration change without being locked into Single App Mode by a managed profile (SDK 26.2,
+    // UIGuidedAccess.h:17-19, UIGuidedAccessErrorPermissionDenied) - which is
     // this case exactly: the function changes what a Single App Mode session allows, there is no
     // such session here, and the request is answered on the next turn of the main queue, as the
     // release's own completion is not called from inside the request.

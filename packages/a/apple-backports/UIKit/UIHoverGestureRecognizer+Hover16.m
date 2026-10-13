@@ -2,10 +2,9 @@
 // and 16.4.
 //
 // Apple's own header says what each one answers for a device that cannot hover, and this release
-// cannot: "Will always return 0 for devices that don't support z offset" (zOffset, 16.1), "0 is
-// returned for devices that don't support azimuth" (azimuthAngleInView:, 16.4), "An empty vector is
-// returned for devices that don't support azimuth" (azimuthUnitVectorInView:, 16.4) and "0 is
-// returned for devices that don't support altitude" (altitudeAngle, 16.4). iOS 6 has no pointing
+// cannot: zOffset answers 0 for a device without z offset support (16.1), azimuthAngleInView: answers 0
+// for one without azimuth support (16.4), azimuthUnitVectorInView: gives an empty vector in that case (16.4), and
+// altitudeAngle answers 0 for one without altitude support (16.4). iOS 6 has no pointing
 // device at all - no trackpad, no mouse, no hover - which is why UIHoverGestureRecognizer.m, the
 // 13.0 object, says so once in the log and fails the recogniser at the first touch it is offered.
 //
@@ -24,7 +23,7 @@
 
 - (CGFloat)zOffset
 {
-    // UIHoverGestureRecognizer.h:27 - "Will always return 0 for devices that don't support z offset".
+    // UIHoverGestureRecognizer.h:27 - the header says the answer is always 0 for devices without z offset support.
     return 0;
 }
 
@@ -42,7 +41,7 @@
 
 - (CGVector)azimuthUnitVectorInView:(UIView *)view
 {
-    // UIHoverGestureRecognizer.h:35 - "An empty vector is returned for devices that don't support azimuth".
+    // UIHoverGestureRecognizer.h:35 - the header says the empty vector is given for devices without azimuth support.
     return CGVectorMake(0, 0);
 }
 

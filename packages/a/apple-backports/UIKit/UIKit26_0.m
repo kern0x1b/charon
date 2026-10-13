@@ -374,7 +374,7 @@ static char CharonTextViewSelectedRangesKey;
 @implementation NSTextList (CharonUIKit26)
 
 // NSTextList.h:65 of the 26.2 SDK declares `@property (readonly, class) BOOL includesTextListMarkers` and
-// documents it: "When YES, TextKit includes text list marker in the contents. It is NO by default."
+// documents it: when YES, TextKit includes the text list marker in the contents, and the default is NO.
 //
 // The accessor is a CLASS method and there is no setter, and both halves are measured rather than read off
 // the header. Apple's own class: the arm64e shared cache of iOS 18.0 carries `includesTextListMarkers` in

@@ -4,8 +4,8 @@
 // UICommand's selected image, iOS 17.
 //
 // UIMenuLeaf.h:27 of the 26.2 SDK declares `@property (nullable, nonatomic, copy) UIImage *selectedImage
-// API_AVAILABLE(ios(17.0))`, "Image that can appear next to this action when the `state` is
-// `UIMenuElementStateOn`", and Apple's own classes answer it on BOTH conformers of that protocol: read out of
+// API_AVAILABLE(ios(17.0))`, and the header describes it as the image shown beside this action while the `state` is
+// `UIMenuElementStateOn`, and Apple's own classes answer it on BOTH conformers of that protocol: read out of
 // the arm64e shared cache of iOS 18.0 with modules/apple/objc.lua's inventory, the own instance lists of
 // UIAction and of UICommand each carry -selectedImage and -setSelectedImage:. The port answers it on UIAction
 // (UIAction.m) and on no other class, so a command in a menu drew no selected image.
