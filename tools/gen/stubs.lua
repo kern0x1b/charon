@@ -169,7 +169,7 @@ local function consider_method(r, fact, params, env, found, skipped, seen)
         end
     end
     add_member(found, cls, {api = r.api, kind = "method", sign = string.sub(r.api, 1, 1), selector = selector, type_text = ret,
-                            zero = zero, params = params, error_arg = error_arg})
+                            zero = zero, params = params, error_arg = error_arg, availability = fact.availability})
 end
 
 -- One spec row: the stub it gets, or the reason it is left out.

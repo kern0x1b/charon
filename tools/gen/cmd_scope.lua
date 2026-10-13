@@ -184,6 +184,9 @@ local function member_state(kind, api, ctx)
     if reason == nil then
         return "generable stub"
     end
+    if reason == nsobject.unavailable_reason() then
+        return nsobject.unavailable_state()
+    end
     if starts_with(reason, "type not declared for iOS") then
         return "not declared for iOS"
     end

@@ -34,6 +34,12 @@ NSInteger FKCountThings(NSInteger count, NSError **error);
 @interface FKWidget : NSObject
 @property (nonatomic, readwrite) NSInteger count;
 - (BOOL)refreshWithError:(NSError **)error;
+- (instancetype)init;
+@end
+
+// an init the headers declare unavailable (AV_INIT_UNAVAILABLE in the class body): the trace layer leaves it out, so NSObject's answers
+@interface FKRetired : NSObject
+- (instancetype)init;
 @end
 ]==]
 
@@ -48,6 +54,9 @@ local MEMBERS = {
     {"FKThing", "method", "-[FKThing reset]", "void", "-", "-"},
     {"FKWidget", "property", "-[FKWidget count]", "NSInteger", "-", "nonatomic"},
     {"FKWidget", "method", "-[FKWidget refreshWithError:]", "BOOL", "NSError * _Nullable * error", "-"},
+    -- the 7th column is the shard's availability text: an init the headers flag unavailable on every platform, or none
+    {"FKWidget", "method", "-[FKWidget init]", "instancetype", "-", "-", "-"},
+    {"FKRetired", "method", "-[FKRetired init]", "instancetype", "-", "-", "*unavailable ios=-/-/-/1"},
 }
 
 -- The C function the fixture declares: its type text ("RET (PARAMS)") and its params, as the shard's function row gives them.
@@ -59,12 +68,13 @@ local LEDGER = {
     {"property", "FKThing.scope"}, {"property", "FKThing.enabled"}, {"property", "FKThing.name"},
     {"method", "-[FKThing setLevel:error:]"}, {"method", "-[FKThing items]"}, {"method", "-[FKThing reset]"},
     {"class", "FKWidget"}, {"property", "FKWidget.count"}, {"method", "-[FKWidget refreshWithError:]"},
+    {"method", "-[FKWidget init]"}, {"method", "-[FKRetired init]"},
 }
 
 -- The lines the program must log, each once, and nothing else.
 local EXPECTED_LOG = {
     "unimplemented: FixtureKit -[FKWidget count]", "unimplemented: FixtureKit -[FKWidget setCount:]",
-    "unimplemented: FixtureKit -[FKWidget refreshWithError:]",
+    "unimplemented: FixtureKit -[FKWidget refreshWithError:]", "unimplemented: FixtureKit -[FKWidget init]",
     "unimplemented: FixtureKit -[FKThing setScope:]", "unimplemented: FixtureKit -[FKThing scope]",
     "unimplemented: FixtureKit -[FKThing isEnabled]", "unimplemented: FixtureKit -[FKThing setEnabled:]",
     "unimplemented: FixtureKit -[FKThing setLevel:error:]", "unimplemented: FixtureKit -[FKThing items]",
@@ -107,7 +117,9 @@ int main(void) {
         [thing reset];
         CHECK([thing name] == nil, "readonly object property returns nil");
         NSError *countError = nil;
-        FKWidget *widget = [[FKWidget alloc] init];
+        // init is a stub and returns nil, the safe default for an object: the instance is kept from alloc, and init is called for its log line
+        FKWidget *widget = [FKWidget alloc];
+        (void)[widget init];
         CHECK([widget count] == 0, "class object: integer property returns 0");
         [widget setCount:2];
         NSError *widgetError = nil;
@@ -331,13 +343,14 @@ local function write_fixture(root)
     headers.use(function(fw, sdk_dir)
         local members = {}
         for _, m in ipairs(MEMBERS) do
-            table.insert(members, {cls = m[1], kind = m[2], api = m[3], type = m[4], params = m[5], attrs = m[6]})
+            table.insert(members, {cls = m[1], kind = m[2], api = m[3], type = m[4], params = m[5], attrs = m[6],
+                                   availability = m[7] or "-"})
         end
         -- the base types the members spell are declared by the SDK's own shards (ObjectiveC, Foundation), so the fixture declares them too
-        return {members = members, declared = {FKThing = true, FKWidget = true, NSObject = true, BOOL = true, NSInteger = true,
-                NSError = true, NSArray = true, NSString = true},
+        return {members = members, declared = {FKThing = true, FKWidget = true, FKRetired = true, NSObject = true, BOOL = true,
+                NSInteger = true, NSError = true, NSArray = true, NSString = true},
                 typedefs = {NSInteger = "long", NSUInteger = "unsigned long", BOOL = "signed char"},
-                superclasses = {FKThing = "NSObject", FKWidget = "NSObject"},
+                superclasses = {FKThing = "NSObject", FKWidget = "NSObject", FKRetired = "NSObject"},
                 functions = {FKCountThings = {type = FUNCTION_TYPE, params = FUNCTION_PARAMS}}}
     end)
     return tree, sdk, corpus
@@ -382,6 +395,7 @@ end
 
 local function test_trace_run(check, root)
     local trace = import("gen.cmd_trace", {rootdir = TOOLS, anonymous = true})
+    local nsobject = import("gen.nsobject", {rootdir = TOOLS, anonymous = true})
     local tsv = import("gen.tsv", {rootdir = TOOLS, anonymous = true})
     local files = import("gen.files", {rootdir = TOOLS, anonymous = true})
     local trace_files = import("gen.trace_files", {rootdir = TOOLS, anonymous = true})
@@ -423,6 +437,15 @@ local function test_trace_run(check, root)
         decided[row.class] = row.generated
     end
     check(decided.FKWidget == "yes", "FKWidget is a generated class object: " .. tostring(decided.FKWidget))
+    local skipped = {}
+    for _, row in ipairs(tsv.records(files.read_text(trace_files.skipped_file(tree, FRAMEWORK)))) do
+        skipped[row.api] = row.reason
+    end
+    check(skipped["-[FKRetired init]"] == nsobject.unavailable_reason(),
+          "the init the headers declare unavailable is left out with its reason: " .. tostring(skipped["-[FKRetired init]"]))
+    check(skipped["-[FKWidget init]"] == nil, "the init the surface lists and the headers declare available is kept")
+    check(nsobject.declared_unavailable("*unavailable ios=-/-/-/1") and not nsobject.declared_unavailable("ios=11.0/100000/-/0"),
+          "the availability flag is read from the flag column only")
     check(ran == 0, "the program reported no failures (exit " .. tostring(ran) .. ")")
 end
 
