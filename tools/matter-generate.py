@@ -1771,9 +1771,8 @@ def host_refusals(path):
     Keyed by params class, as a list of (member, kind, domain, code, description). A class with no rows is absent.
     """
     found = {}
-    if not path:
-        return found
-    # A missing file is an error, not an empty table: an empty table emits no refusal guard at all, and nothing says so.
+    # A missing file is an error, not an empty table, and so is an empty path, which names no file: an empty table
+    # emits no refusal guard at all, and nothing says so.
     with open(path) as handle:
         for line in handle:
             if line.startswith("#") or not line.strip():
