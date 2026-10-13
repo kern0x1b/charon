@@ -131,8 +131,21 @@ def selector_of(stmt):
     return "".join(k + ":" for k in re.findall(r"([A-Za-z_]\w*)\s*:", s))
 
 
+def interface_avail(text, pos):
+    """The availability macros written before the @interface at pos, back to the end of the previous declaration (a ';', a '}'
+    or an @end). A member with no availability macro of its own has this availability: the SDK's rule (ARDepthData.h:25 is the
+    API_AVAILABLE(ios(14.0)) before the @interface at :27, and the property at :38 has none)."""
+    start = 0
+    for mark in (";", "}", "@end"):
+        found = text.rfind(mark, 0, pos)
+        if found >= 0:
+            start = max(start, found + len(mark))
+    return " ".join(AVAIL.findall(text[start:pos]))
+
+
 def members_of(text):
-    """(class, statement kind, api, statement) for each property and method of each @interface in the header text."""
+    """(class, statement kind, api, statement, availability) for each property and method of each @interface in the header text.
+    The availability is the member's own macro, or else its @interface's (interface_avail)."""
     text = re.sub(r"/\*.*?\*/", " ", text, flags=re.S)
     text = re.sub(r"//[^\n]*", " ", text)
     text = re.sub(r"(?m)^\s*#[^\n]*", " ", text)
@@ -156,6 +169,7 @@ def members_of(text):
                     body = body[i + 1:]
                     break
         cls = match.group(1)
+        head = interface_avail(text, match.start())
         for stmt in split_statements(body):
             stmt = re.sub(r"^\s*@(?:optional|required)\s*", "", stmt)
             # a macro with no semicolon before a declaration (AV_INIT_UNAVAILABLE, then the next @property) joins that statement:
@@ -168,13 +182,13 @@ def members_of(text):
                 named = re.search(r"\(\s*\^\s*(\w+)\s*\)", core)
                 name = [named.group(1)] if named else re.findall(r"([A-Za-z_]\w*)\s*$", core)
                 if name:
-                    out.append((cls, "property", "-[%s %s]" % (cls, name[-1]), "%s.%s" % (cls, name[-1]), clean, avail))
+                    out.append((cls, "property", "-[%s %s]" % (cls, name[-1]), "%s.%s" % (cls, name[-1]), clean, avail or head))
             elif stmt[:1] in "-+":
                 clean, avail = strip_macros(stmt)
                 sel = selector_of(without_trailing_macros(clean))
                 if sel:
                     api = "%s[%s %s]" % (stmt[0], cls, sel)
-                    out.append((cls, "method", api, api, clean, avail))
+                    out.append((cls, "method", api, api, clean, avail or head))
     return out
 
 
