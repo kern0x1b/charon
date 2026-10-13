@@ -216,7 +216,7 @@ static NSString *CharonTypeNameForType(OSType type)
     return NO;
 }
 
-// The header: "returns YES if the AudioComponent supports the input/output channel configuration".
+// The header (AVAudioUnitComponent.h:166-167) says YES means the component supports a given input/output channel setup.
 // That is asked of a real instance of the component rather than read off its type: a stream format
 // of the requested channel count is offered to the unit's input and output scope, and the unit's own
 // answer decides. A unit that refuses the format does not support that configuration.
