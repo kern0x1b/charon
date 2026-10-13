@@ -20,7 +20,7 @@
 //  and read and written under the object's lock, so two threads on one object are not a race.
 //  Every command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
-//  read from. A cached read completes with no value and the no-node error (NO_NODE_ERROR);
+//  read from. A cached read completes with no value and the error of charon_port_no_node_error();
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
 //  queue, never calls its established handler, and leaves the stored value alone.
 //
@@ -53,25 +53,38 @@ static NSMutableDictionary *charon_port_values(NSMutableDictionary * __strong *v
     return *values;
 }
 
-// The answer an error carries: the domain, the code and the description the framework gives for the case,
-// a member it has no node to reach for or a params member it refuses before it looks for a node. Each answer
-// the object gives is one constant below, so a call names it by address.
-typedef struct {
-    NSString *domain;
-    NSInteger code;
-    NSString *description;
-} charon_port_answer;
-
-static const charon_port_answer charon_port_answer_error_invalidstate = {@"MTRErrorDomain", MTRErrorCodeInvalidState,
-    @"Invalid object state."};
-static const charon_port_answer charon_port_answer_interactionerror_135 = {@"MTRInteractionErrorDomain", 135,
-    @"Out of range error or set to a reserved value."};
-
-// The error for an answer: built on each call, as a request answers once.
-static NSError *charon_port_error(const charon_port_answer *answer)
+// The error a member that would need a node answers, on a release with no Matter
+// hardware: there is no controller to ask and no node to read from. It is the framework's
+// own answer to a cached read on a container with no cache and to any request on a
+// controller that has been shut down, measured on the host by
+// tests/backports/host/matterdifferential/behaviour.m: MTRErrorDomain, MTRErrorCodeInvalidState,
+// "Invalid object state.". The domain is written as the string the constant holds: the
+// constant is defined by the framework's own build (packages/m/matter), not by this library.
+// Built once: every caller gets the same object, and it is made on first use.
+static NSError *charon_port_no_node_error(void)
 {
-    return [NSError errorWithDomain:answer->domain code:answer->code
-                           userInfo:@{NSLocalizedDescriptionKey: answer->description}];
+    static NSError *error;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        error = [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
+                                userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
+    });
+    return error;
+}
+
+// The error a request answers when the framework refuses a field of its params before it looks for a
+// node: a field it reads as out of range, or a reserved value. Which field, and for which value, is in
+// tools/matter-host-refusals.tsv, measured by tests/backports/host/matterdifferential/probe-params-modes.m.
+// Built once, as charon_port_no_node_error() is.
+static NSError *charon_port_constraint_error(void)
+{
+    static NSError *error;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        error = [NSError errorWithDomain:@"MTRInteractionErrorDomain" code:135
+                                userInfo:@{NSLocalizedDescriptionKey: @"Out of range error or set to a reserved value."}];
+    });
+    return error;
 }
 
 @implementation MTRClusterJointFabricDatastore
@@ -287,7 +300,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -298,7 +311,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -309,7 +322,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -320,12 +333,12 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     (void)expectedValueIntervalMs;
     if ([[params valueForKeyPath:@"groupPermission"] unsignedLongLongValue] == 0) {
         if (completion) {
-            completion(charon_port_error(&charon_port_answer_interactionerror_135));
+            completion(charon_port_constraint_error());
         }
         return;
     }
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -336,12 +349,12 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     (void)expectedValueIntervalMs;
     if (([params valueForKeyPath:@"groupPermission"] != nil && [[params valueForKeyPath:@"groupPermission"] unsignedLongLongValue] == 0)) {
         if (completion) {
-            completion(charon_port_error(&charon_port_answer_interactionerror_135));
+            completion(charon_port_constraint_error());
         }
         return;
     }
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -352,7 +365,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -363,7 +376,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -374,7 +387,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -385,7 +398,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -396,7 +409,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -407,7 +420,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -418,7 +431,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -429,7 +442,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -440,7 +453,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -451,7 +464,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -462,7 +475,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -473,7 +486,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -484,7 +497,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -495,12 +508,12 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     (void)expectedValueIntervalMs;
     if ([params valueForKeyPath:@"aclEntry"] == nil || ([params valueForKeyPath:@"aclEntry.privilege"] != nil && [[params valueForKeyPath:@"aclEntry.privilege"] unsignedLongLongValue] == 0) || ([params valueForKeyPath:@"aclEntry.authMode"] != nil && [[params valueForKeyPath:@"aclEntry.authMode"] unsignedLongLongValue] == 0)) {
         if (completion) {
-            completion(charon_port_error(&charon_port_answer_interactionerror_135));
+            completion(charon_port_constraint_error());
         }
         return;
     }
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -511,7 +524,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 

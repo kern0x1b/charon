@@ -187,28 +187,26 @@ EMITTED = []
 # (member, kind, domain, code, description). Read once from tools/matter-host-refusals.tsv by host_refusals(), and used by
 # refusal_guards().
 REFUSALS = {}
-# The answers the emitted errors carry, by the name of the constant each is emitted under: (domain, code, description) as C
-# expressions. An answer is one constant per object that uses it, so a call site is an address and not three arguments.
-ANSWERS = {}
+# The refusal helpers the emitted objects use, by name: (domain, code, description), read from the table's answer columns.
+# A refusal answer that is MTRInteractionErrorDomain/135 keeps the name charon_port_constraint_error; any other answer is
+# charon_port_refusal_<domain>_<code>. Each object gets one static helper per name it calls.
+REFUSAL_HELPERS = {}
 
 
-def answer_name(domain, code, description):
-    """The constant's name for an answer, read from its domain and code, and the answer registered under it.
-
-    domain is the framework's name (MTRErrorDomain), code a C expression (135 or MTRErrorCodeInvalidState) and description
-    the text the framework gives. Two answers with one domain and code and different text would share a name; none do.
-    """
-    domain_key = re.sub(r"^MTR|Domain$", "", domain).lower()
-    code_key = re.sub(r"^MTRErrorCode", "", code).lower()
-    name = "charon_port_answer_%s_%s" % (domain_key, code_key)
-    ANSWERS[name] = ('@"%s"' % domain, code, '@"%s"' % description)
+def refusal_helper(domain, code, described):
+    """The helper's name for a refusal answer, registered with its domain, code and description."""
+    if domain == "MTRInteractionErrorDomain" and code == "135":
+        name = "charon_port_constraint_error"
+    else:
+        domain_key = re.sub(r"^MTR|Domain$", "", domain).lower()
+        name = "charon_port_refusal_%s_%s" % (domain_key, code)
+    REFUSAL_HELPERS[name] = (domain, code, described)
     return name
 
 
 # The error a member that would need a node answers with, on a controller with no node: the framework's own answer,
-# measured on the host (tests/backports/host/matterdifferential/behaviour.m). Emitted through charon_port_error().
-NO_NODE_ERROR = "charon_port_error(&%s)" % answer_name("MTRErrorDomain", "MTRErrorCodeInvalidState",
-                                                     "Invalid object state.")
+# measured on the host (tests/backports/host/matterdifferential/behaviour.m). Emitted through charon_port_no_node_error().
+NO_NODE_ERROR = "charon_port_no_node_error()"
 PARAMS_MISSING = []
 EMITTED_FILES = {}
 FORWARDED = []
@@ -943,7 +941,7 @@ PREAMBLE = '''//
 //  and read and written under the object's lock, so two threads on one object are not a race.
 //  Every command answers through its completion. Nothing here reaches a fabric: the {cache} cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
-//  read from. A cached read completes with no value and the no-node error (NO_NODE_ERROR);
+//  read from. A cached read completes with no value and the error of charon_port_no_node_error();
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
 //  queue, never calls its established handler, and leaves the stored value alone.
 //
@@ -1824,7 +1822,7 @@ def refusal_guards(shape, completion):
         answers.setdefault((domain, code, described), []).append(test)
     text = ""
     for (domain, code, described), tests in answers.items():
-        error = "charon_port_error(&%s)" % answer_name(domain, str(code), described)
+        error = "%s()" % refusal_helper(domain, str(code), described)
         text += ("    if (%s) {\n        if (%s) {\n            %s;\n        }\n        return;\n    }\n"
                  % (" || ".join(tests), completion, completion_call(shape, completion, error=error)))
     return params, text
@@ -3637,26 +3635,38 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                        "        *values = [NSMutableDictionary dictionary];\n"
                        "    }\n"
                        "    return *values;\n}\n\n")
-    # One error helper for every answer this object gives, each answer a constant of its own: the domain, the code and the
-    # description the framework gives. The answers are measured on the host by tests/backports/host/matterdifferential/.
-    used = sorted(set(re.findall(r"charon_port_error\(&(charon_port_answer_\w+)\)", "".join(body))))
-    if used:
-        lines = ["// The answer an error carries: the domain, the code and the description the framework gives for the case,\n"
-                 "// a member it has no node to reach for or a params member it refuses before it looks for a node. Each answer\n"
-                 "// the object gives is one constant below, so a call names it by address.\n"
-                 "typedef struct {\n"
-                 "    NSString *domain;\n"
-                 "    NSInteger code;\n"
-                 "    NSString *description;\n"
-                 "} charon_port_answer;\n\n"]
-        for name in used:
-            domain, code, description = ANSWERS[name]
-            lines.append("static const charon_port_answer %s = {%s, %s,\n    %s};\n" % (name, domain, code, description))
-        lines.append("\n// The error for an answer: built on each call, as a request answers once.\n"
-                     "static NSError *charon_port_error(const charon_port_answer *answer)\n{\n"
-                     "    return [NSError errorWithDomain:answer->domain code:answer->code\n"
-                     "                           userInfo:@{NSLocalizedDescriptionKey: answer->description}];\n}\n\n")
-        helpers.append("".join(lines))
+    if any("charon_port_no_node_error()" in each for each in body):
+        helpers.append("// The error a member that would need a node answers, on a release with no Matter\n"
+                       "// hardware: there is no controller to ask and no node to read from. It is the framework's\n"
+                       "// own answer to a cached read on a container with no cache and to any request on a\n"
+                       "// controller that has been shut down, measured on the host by\n"
+                       "// tests/backports/host/matterdifferential/behaviour.m: MTRErrorDomain, MTRErrorCodeInvalidState,\n"
+                       "// \"Invalid object state.\". The domain is written as the string the constant holds: the\n"
+                       "// constant is defined by the framework's own build (packages/m/matter), not by this library.\n"
+                       "// Built once: every caller gets the same object, and it is made on first use.\n"
+                       "static NSError *charon_port_no_node_error(void)\n{\n"
+                       "    static NSError *error;\n"
+                       "    static dispatch_once_t once;\n"
+                       "    dispatch_once(&once, ^{\n"
+                       "        error = [NSError errorWithDomain:@\"MTRErrorDomain\" code:MTRErrorCodeInvalidState\n"
+                       "                                userInfo:@{NSLocalizedDescriptionKey: @\"Invalid object state.\"}];\n"
+                       "    });\n"
+                       "    return error;\n}\n\n")
+    # One refusal helper per answer the object's guards call, its domain, code and description read from the table.
+    for name in sorted(set(re.findall(r"(charon_port_(?:constraint|refusal)_\w*)\(\)", "".join(body)))):
+        domain, code, described = REFUSAL_HELPERS[name]
+        helpers.append("// The error a request answers when the framework refuses a field of its params before it looks for a\n"
+                       "// node: a field it reads as out of range, or a reserved value. Which field, and for which value, is in\n"
+                       "// tools/matter-host-refusals.tsv, measured by tests/backports/host/matterdifferential/probe-params-modes.m.\n"
+                       "// Built once, as charon_port_no_node_error() is.\n"
+                       "static NSError *%s(void)\n{\n"
+                       "    static NSError *error;\n"
+                       "    static dispatch_once_t once;\n"
+                       "    dispatch_once(&once, ^{\n"
+                       "        error = [NSError errorWithDomain:@\"%s\" code:%s\n"
+                       "                                userInfo:@{NSLocalizedDescriptionKey: @\"%s\"}];\n"
+                       "    });\n"
+                       "    return error;\n}\n\n" % (name, domain, code, described))
     body[helpers_at:helpers_at] = helpers
     body.append("@end\n")
     text = "".join(body)

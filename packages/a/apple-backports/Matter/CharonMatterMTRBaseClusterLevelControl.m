@@ -20,7 +20,7 @@
 //  and read and written under the object's lock, so two threads on one object are not a race.
 //  Every command answers through its completion. Nothing here reaches a fabric: the 19 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
-//  read from. A cached read completes with no value and the no-node error (NO_NODE_ERROR);
+//  read from. A cached read completes with no value and the error of charon_port_no_node_error();
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
 //  queue, never calls its established handler, and leaves the stored value alone.
 //
@@ -62,23 +62,23 @@ static NSMutableDictionary *charon_port_values(NSMutableDictionary * __strong *v
     return *values;
 }
 
-// The answer an error carries: the domain, the code and the description the framework gives for the case,
-// a member it has no node to reach for or a params member it refuses before it looks for a node. Each answer
-// the object gives is one constant below, so a call names it by address.
-typedef struct {
-    NSString *domain;
-    NSInteger code;
-    NSString *description;
-} charon_port_answer;
-
-static const charon_port_answer charon_port_answer_error_invalidstate = {@"MTRErrorDomain", MTRErrorCodeInvalidState,
-    @"Invalid object state."};
-
-// The error for an answer: built on each call, as a request answers once.
-static NSError *charon_port_error(const charon_port_answer *answer)
+// The error a member that would need a node answers, on a release with no Matter
+// hardware: there is no controller to ask and no node to read from. It is the framework's
+// own answer to a cached read on a container with no cache and to any request on a
+// controller that has been shut down, measured on the host by
+// tests/backports/host/matterdifferential/behaviour.m: MTRErrorDomain, MTRErrorCodeInvalidState,
+// "Invalid object state.". The domain is written as the string the constant holds: the
+// constant is defined by the framework's own build (packages/m/matter), not by this library.
+// Built once: every caller gets the same object, and it is made on first use.
+static NSError *charon_port_no_node_error(void)
 {
-    return [NSError errorWithDomain:answer->domain code:answer->code
-                           userInfo:@{NSLocalizedDescriptionKey: answer->description}];
+    static NSError *error;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        error = [NSError errorWithDomain:@"MTRErrorDomain" code:MTRErrorCodeInvalidState
+                                userInfo:@{NSLocalizedDescriptionKey: @"Invalid object state."}];
+    });
+    return error;
 }
 
 @implementation MTRBaseClusterLevelControl
@@ -122,7 +122,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (written) {
         completion(written, nil);
     } else {
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -140,7 +140,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -157,7 +157,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -175,7 +175,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (written) {
         completion(written, nil);
     } else {
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -193,7 +193,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -210,7 +210,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -228,7 +228,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (written) {
         completion(written, nil);
     } else {
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -246,7 +246,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -263,7 +263,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -281,7 +281,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (written) {
         completion(written, nil);
     } else {
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -299,7 +299,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -316,7 +316,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -334,7 +334,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (written) {
         completion(written, nil);
     } else {
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -352,7 +352,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -369,7 +369,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -387,7 +387,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (written) {
         completion(written, nil);
     } else {
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -405,7 +405,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -422,7 +422,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -440,7 +440,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (written) {
         completion(written, nil);
     } else {
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -458,7 +458,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -475,7 +475,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -493,7 +493,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (written) {
         completion(written, nil);
     } else {
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -541,7 +541,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -558,7 +558,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -576,7 +576,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (written) {
         completion(written, nil);
     } else {
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -624,7 +624,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -641,7 +641,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -659,7 +659,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (written) {
         completion(written, nil);
     } else {
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -707,7 +707,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -724,7 +724,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -742,7 +742,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (written) {
         completion(written, nil);
     } else {
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -790,7 +790,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -807,7 +807,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -825,7 +825,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (written) {
         completion(written, nil);
     } else {
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -873,7 +873,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -890,7 +890,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -908,7 +908,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (written) {
         completion(written, nil);
     } else {
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -956,7 +956,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -973,7 +973,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -991,7 +991,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (written) {
         completion(written, nil);
     } else {
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -1039,7 +1039,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1056,7 +1056,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1074,7 +1074,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (written) {
         completion(written, nil);
     } else {
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -1092,7 +1092,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1109,7 +1109,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1127,7 +1127,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (written) {
         completion(written, nil);
     } else {
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -1145,7 +1145,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1162,7 +1162,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1180,7 +1180,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (written) {
         completion(written, nil);
     } else {
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -1198,7 +1198,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1215,7 +1215,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1233,7 +1233,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (written) {
         completion(written, nil);
     } else {
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -1251,7 +1251,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1268,7 +1268,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1286,7 +1286,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (written) {
         completion(written, nil);
     } else {
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     }
 }
 
@@ -1304,7 +1304,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1321,7 +1321,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     if (reportHandler) {
         dispatch_async(_charon_queue
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            reportHandler(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+            reportHandler(nil, charon_port_no_node_error());
         });
     }
 }
@@ -1336,7 +1336,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     }
     dispatch_async(queue
                    ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     });
 }
 
@@ -1350,7 +1350,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     }
     dispatch_async(queue
                    ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     });
 }
 
@@ -1364,7 +1364,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     }
     dispatch_async(queue
                    ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     });
 }
 
@@ -1378,7 +1378,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     }
     dispatch_async(queue
                    ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     });
 }
 
@@ -1392,7 +1392,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     }
     dispatch_async(queue
                    ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     });
 }
 
@@ -1406,7 +1406,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     }
     dispatch_async(queue
                    ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     });
 }
 
@@ -1420,7 +1420,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     }
     dispatch_async(queue
                    ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     });
 }
 
@@ -1434,7 +1434,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     }
     dispatch_async(queue
                    ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     });
 }
 
@@ -1448,7 +1448,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     }
     dispatch_async(queue
                    ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     });
 }
 
@@ -1462,7 +1462,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     }
     dispatch_async(queue
                    ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     });
 }
 
@@ -1476,7 +1476,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     }
     dispatch_async(queue
                    ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     });
 }
 
@@ -1490,7 +1490,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     }
     dispatch_async(queue
                    ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     });
 }
 
@@ -1504,7 +1504,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     }
     dispatch_async(queue
                    ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     });
 }
 
@@ -1518,7 +1518,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     }
     dispatch_async(queue
                    ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     });
 }
 
@@ -1532,7 +1532,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     }
     dispatch_async(queue
                    ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     });
 }
 
@@ -1546,7 +1546,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     }
     dispatch_async(queue
                    ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     });
 }
 
@@ -1560,7 +1560,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     }
     dispatch_async(queue
                    ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     });
 }
 
@@ -1574,7 +1574,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     }
     dispatch_async(queue
                    ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     });
 }
 
@@ -1588,7 +1588,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
     }
     dispatch_async(queue
                    ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        completion(nil, charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(nil, charon_port_no_node_error());
     });
 }
 
@@ -1597,7 +1597,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
 {
     (void)params;
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -1606,7 +1606,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(charon_port_error(&charon_port_answer_error_invalidstate));
+        completionHandler(charon_port_no_node_error());
     }
 }
 
@@ -1615,7 +1615,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
 {
     (void)params;
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -1624,7 +1624,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(charon_port_error(&charon_port_answer_error_invalidstate));
+        completionHandler(charon_port_no_node_error());
     }
 }
 
@@ -1633,7 +1633,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
 {
     (void)params;
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -1642,7 +1642,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(charon_port_error(&charon_port_answer_error_invalidstate));
+        completionHandler(charon_port_no_node_error());
     }
 }
 
@@ -1651,7 +1651,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
 {
     (void)params;
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -1660,7 +1660,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(charon_port_error(&charon_port_answer_error_invalidstate));
+        completionHandler(charon_port_no_node_error());
     }
 }
 
@@ -1669,7 +1669,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
 {
     (void)params;
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -1678,7 +1678,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(charon_port_error(&charon_port_answer_error_invalidstate));
+        completionHandler(charon_port_no_node_error());
     }
 }
 
@@ -1687,7 +1687,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
 {
     (void)params;
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -1696,7 +1696,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(charon_port_error(&charon_port_answer_error_invalidstate));
+        completionHandler(charon_port_no_node_error());
     }
 }
 
@@ -1705,7 +1705,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
 {
     (void)params;
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -1714,7 +1714,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(charon_port_error(&charon_port_answer_error_invalidstate));
+        completionHandler(charon_port_no_node_error());
     }
 }
 
@@ -1723,7 +1723,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
 {
     (void)params;
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -1732,7 +1732,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(charon_port_error(&charon_port_answer_error_invalidstate));
+        completionHandler(charon_port_no_node_error());
     }
 }
 
@@ -1741,7 +1741,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
 {
     (void)params;
     if (completion) {
-        completion(charon_port_error(&charon_port_answer_error_invalidstate));
+        completion(charon_port_no_node_error());
     }
 }
 
@@ -1750,7 +1750,7 @@ static NSError *charon_port_error(const charon_port_answer *answer)
 {
     (void)params;
     if (completionHandler) {
-        completionHandler(charon_port_error(&charon_port_answer_error_invalidstate));
+        completionHandler(charon_port_no_node_error());
     }
 }
 
