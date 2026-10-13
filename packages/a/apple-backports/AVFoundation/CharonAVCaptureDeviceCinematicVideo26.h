@@ -48,7 +48,7 @@ typedef NSString *AVCaptureSceneMonitoringStatus NS_TYPED_ENUM API_AVAILABLE(ios
 @property(nonatomic, readonly) NSSet<AVCaptureSceneMonitoringStatus> *cinematicVideoCaptureSceneMonitoringStatuses API_AVAILABLE(ios(26.0));
 
 // The three focus methods of the same category 26.2 declares (AVCaptureDevice.h:1310-1328). Each one names a
-// point of interest in the device's own normalized coordinate space and a focus mode, and Apple's own refusal
+// location in the device's own normalized coordinate space and a focus mode, and Apple's own refusal
 // for all three names the format member they need. They are one line each because the 26.2 declarations are:
 // a reader comparing the two headers line by line should find the same lines.
 - (void)setCinematicVideoTrackingFocusWithDetectedObjectID:(NSInteger)detectedObjectID focusMode:(AVCaptureCinematicVideoFocusMode)focusMode API_AVAILABLE(ios(26.0));
