@@ -188,18 +188,15 @@ EMITTED = []
 # refusal_guards().
 REFUSALS = {}
 # The refusal helpers the emitted objects use, by name: (domain, code, description), read from the table's answer columns.
-# A refusal answer that is MTRInteractionErrorDomain/135 keeps the name charon_port_constraint_error; any other answer is
-# charon_port_refusal_<domain>_<code>. Each object gets one static helper per name it calls.
+# Each answer's helper is charon_port_refusal_<domain>_<code>, the domain with its MTR prefix and Domain suffix removed and
+# lower-cased. Each object gets one static helper per name it calls.
 REFUSAL_HELPERS = {}
 
 
 def refusal_helper(domain, code, described):
     """The helper's name for a refusal answer, registered with its domain, code and description."""
-    if domain == "MTRInteractionErrorDomain" and code == "135":
-        name = "charon_port_constraint_error"
-    else:
-        domain_key = re.sub(r"^MTR|Domain$", "", domain).lower()
-        name = "charon_port_refusal_%s_%s" % (domain_key, code)
+    domain_key = re.sub(r"^MTR|Domain$", "", domain).lower()
+    name = "charon_port_refusal_%s_%s" % (domain_key, code)
     REFUSAL_HELPERS[name] = (domain, code, described)
     return name
 
@@ -3653,7 +3650,7 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                        "    });\n"
                        "    return error;\n}\n\n")
     # One refusal helper per answer the object's guards call, its domain, code and description read from the table.
-    for name in sorted(set(re.findall(r"(charon_port_(?:constraint|refusal)_\w*)\(\)", "".join(body)))):
+    for name in sorted(set(re.findall(r"(charon_port_refusal_\w*)\(\)", "".join(body)))):
         domain, code, described = REFUSAL_HELPERS[name]
         helpers.append("// The error a request answers when the framework refuses a field of its params before it looks for a\n"
                        "// node: a field it reads as out of range, or a reserved value. Which field, and for which value, is in\n"
