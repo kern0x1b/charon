@@ -81,6 +81,21 @@ static NSError *charon_port_no_node_error(void)
     return error;
 }
 
+// The error a request answers when the framework refuses a field of its params before it looks for a
+// node: a field it reads as out of range, or a reserved value. Which field, and for which value, is in
+// tools/matter-host-refusals.tsv, measured by tests/backports/host/matterdifferential/probe-params-modes.m.
+// Built once, as charon_port_no_node_error() is.
+static NSError *charon_port_constraint_error(void)
+{
+    static NSError *error;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        error = [NSError errorWithDomain:@"MTRInteractionErrorDomain" code:135
+                                userInfo:@{NSLocalizedDescriptionKey: @"Out of range error or set to a reserved value."}];
+    });
+    return error;
+}
+
 @implementation MTRClusterIdentify
 
 // - (instancetype)initWithDevice:(MTRDevice *)device
@@ -214,9 +229,14 @@ static NSError *charon_port_no_node_error(void)
 // triggerEffect. It answers: there is nothing to reach on a release with no fabric.
 - (void)triggerEffectWithParams:(MTRIdentifyClusterTriggerEffectParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
-    (void)params;
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
+    if ([[params valueForKeyPath:@"effectVariant"] unsignedLongLongValue] == 1) {
+        if (completion) {
+            completion(charon_port_constraint_error());
+        }
+        return;
+    }
     if (completion) {
         completion(charon_port_no_node_error());
     }
@@ -225,9 +245,14 @@ static NSError *charon_port_no_node_error(void)
 // triggerEffect. It answers: there is nothing to reach on a release with no fabric.
 - (void)triggerEffectWithParams:(MTRIdentifyClusterTriggerEffectParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(MTRStatusCompletion)completionHandler
 {
-    (void)params;
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
+    if ([[params valueForKeyPath:@"effectVariant"] unsignedLongLongValue] == 1) {
+        if (completionHandler) {
+            completionHandler(charon_port_constraint_error());
+        }
+        return;
+    }
     if (completionHandler) {
         completionHandler(charon_port_no_node_error());
     }

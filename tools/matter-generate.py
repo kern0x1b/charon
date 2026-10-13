@@ -183,6 +183,9 @@ def load_excluded(path=EXCLUDED_FILE):
 EXCLUDED = load_excluded()
 NAME_ERRORS = []
 EMITTED = []
+# What the host framework refuses of a params object before it looks for a node: keyed by params class, a list of
+# (member, kind). Read once from tools/matter-host-refusals.tsv by host_refusals(), and used by refusal_expression().
+REFUSALS = {}
 PARAMS_MISSING = []
 EMITTED_FILES = {}
 FORWARDED = []
@@ -1728,6 +1731,64 @@ def host_measurements(path):
                         measured = field.split("=", 1)[1]
                 entry["aliases"][fields[2]] = {"declared": declared, "measured": measured}
     return found
+
+
+def host_refusals(path):
+    """What the host framework refuses before it looks for a node, read out of a committed data file.
+
+    The file is MEASURED, not derived from a header: one row per member the framework refuses, written from the
+    nil:, zero: and one: modes of tests/backports/host/matterdifferential/probe-params-modes.m. A header says a field
+    is nonnull; it does not say the framework answers MTRInteractionErrorDomain/135 for a nil or a zero there, and
+    the framework does not answer the same for every command that takes the field. Each row names the params class,
+    the member as a key path ("credential.credentialType" is a field of a struct), and the kind of value refused:
+
+      nil          the member is absent (a struct member that is nil)
+      nil-or-zero  the member is absent or zero: an NSNumber the framework reads as zero
+      zero         the member is present and zero; an absent member is accepted
+      one          the member is present and one, a value the framework reserves
+
+    Keyed by params class, as a list of (member, kind). A class with no rows is absent.
+    """
+    found = {}
+    if not path or not os.path.exists(path):
+        return found
+    with open(path) as handle:
+        for line in handle:
+            if line.startswith("#") or not line.strip():
+                continue
+            fields = line.rstrip("\n").split("\t")
+            if len(fields) < 3:
+                continue
+            found.setdefault(fields[0], []).append((fields[1], fields[2]))
+    return found
+
+
+def refusal_expression(shape):
+    """(condition, params name) for the framework's refusal of this command's params, or (None, None) for none.
+
+    The class is read off the shape's own params argument, and the argument's name is the one the shape gives it.
+    Each member is read with valueForKeyPath:, so a nil struct on the way reads as nil, and a nil NSNumber reads as
+    zero through unsignedLongLongValue - which is how the framework reads them, and what the host measured.
+    """
+    match = re.search(r"\((MTR\w+Params)\s*\*[^)]*\)\s*(\w+)", shape)
+    if not match or match.group(1) not in REFUSALS:
+        return None, None
+    params = match.group(2)
+    tests = []
+    for member, kind in REFUSALS[match.group(1)]:
+        value = '[%s valueForKeyPath:@"%s"]' % (params, member)
+        number = "[%s unsignedLongLongValue]" % value
+        if kind == "nil":
+            tests.append("%s == nil" % value)
+        elif kind == "nil-or-zero":
+            tests.append("%s == 0" % number)
+        elif kind == "zero":
+            tests.append("(%s != nil && %s == 0)" % (value, number))
+        elif kind == "one":
+            tests.append("%s == 1" % number)
+        else:
+            raise ValueError("no refusal kind %r for %r of %r" % (kind, member, match.group(1)))
+    return " || ".join(tests), params
 
 
 def init_defaults(path):
@@ -3486,8 +3547,8 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                     # The framework's answer to a command on a controller with no node, measured on the host for each of
                     # the four selector families: the completion runs once with MTRErrorDomain/MTRErrorCodeInvalidState.
                     # No command has a node to reach, so no command succeeds. tests/backports/host/matterdifferential/
-                    # commands.m compares every selector; the ones it still reports as different (the framework answers
-                    # MTRInteractionErrorDomain/135 for them) are not matched by this body.
+                    # commands.m compares every selector. A command that takes params is answered by the loop below,
+                    # which checks the refusals of its params first (tools/matter-host-refusals.tsv).
                     body.append("%s\n{\n%s"
                                 "    if (%s) {\n        %s;\n    }\n}\n\n"
                                 % (shape, unused, completion,
@@ -3510,10 +3571,19 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                 OFFENDERS.append((cluster, verb, "command", shape))
                 continue
             EMITTED_DECLARED.append((cluster, selector_of(shape)))
-            unused = "".join("    (void)%s;\n" % each for each in names if each != completion)
-            body.append("%s\n{\n%s"
+            # The framework refuses some params before it looks for a node, with MTRInteractionErrorDomain/135, so the
+            # refusal is answered first; the rule and the measurement are in host_refusals().
+            refused, params = refusal_expression(shape)
+            unused = "".join("    (void)%s;\n" % each for each in names
+                             if each != completion and not (refused and each == params))
+            guard = ""
+            if refused:
+                guard = ("    if (%s) {\n        if (%s) {\n            %s;\n        }\n        return;\n    }\n"
+                         % (refused, completion,
+                            completion_call(shape, completion, error="charon_port_constraint_error()")))
+            body.append("%s\n{\n%s%s"
                         "    if (%s) {\n        %s;\n    }\n}\n\n"
-                        % (shape, unused, completion,
+                        % (shape, unused, guard, completion,
                            completion_call(shape, completion, error="charon_port_no_node_error()")))
     # The static helpers, written where the @implementation starts and only when a body above calls them.
     # The values table is the object's own, made on first use - an object built through a superclass's
@@ -3548,6 +3618,19 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                        "    dispatch_once(&once, ^{\n"
                        "        error = [NSError errorWithDomain:@\"MTRErrorDomain\" code:MTRErrorCodeInvalidState\n"
                        "                                userInfo:@{NSLocalizedDescriptionKey: @\"Invalid object state.\"}];\n"
+                       "    });\n"
+                       "    return error;\n}\n\n")
+    if any("charon_port_constraint_error()" in each for each in body):
+        helpers.append("// The error a request answers when the framework refuses a field of its params before it looks for a\n"
+                       "// node: a field it reads as out of range, or a reserved value. Which field, and for which value, is in\n"
+                       "// tools/matter-host-refusals.tsv, measured by tests/backports/host/matterdifferential/probe-params-modes.m.\n"
+                       "// Built once, as charon_port_no_node_error() is.\n"
+                       "static NSError *charon_port_constraint_error(void)\n{\n"
+                       "    static NSError *error;\n"
+                       "    static dispatch_once_t once;\n"
+                       "    dispatch_once(&once, ^{\n"
+                       "        error = [NSError errorWithDomain:@\"MTRInteractionErrorDomain\" code:135\n"
+                       "                                userInfo:@{NSLocalizedDescriptionKey: @\"Out of range error or set to a reserved value.\"}];\n"
                        "    });\n"
                        "    return error;\n}\n\n")
     body[helpers_at:helpers_at] = helpers
@@ -3724,6 +3807,12 @@ def main():
                         help="the committed data file tests/backports/host/matter/params-probe.m wrote, and the "
                              "generator's input for two things the header cannot say: which classes override "
                              "-description, and which member a deprecated alias shares storage with")
+    parser.add_argument("--host-refusals",
+                        default=os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                             "matter-host-refusals.tsv"),
+                        help="the committed data file the host framework's refusals of a params object were "
+                             "measured into, by the nil:, zero: and one: modes of "
+                             "tests/backports/host/matterdifferential/probe-params-modes.m")
     parser.add_argument("--init-defaults",
                         default=os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                              "matter-init-defaults.tsv"),
@@ -3742,6 +3831,7 @@ def main():
     parser.add_argument("--params-from", help="a file of plain data class names to emit instead of all of them")
     parser.add_argument("--self-test", action="store_true", help="parse three declarations and stop")
     arguments = parser.parse_args()
+    REFUSALS.update(host_refusals(arguments.host_refusals))
 
     if arguments.self_test:
         return 0 if self_test() else 1

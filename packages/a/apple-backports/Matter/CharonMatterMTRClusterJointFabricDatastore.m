@@ -72,6 +72,21 @@ static NSError *charon_port_no_node_error(void)
     return error;
 }
 
+// The error a request answers when the framework refuses a field of its params before it looks for a
+// node: a field it reads as out of range, or a reserved value. Which field, and for which value, is in
+// tools/matter-host-refusals.tsv, measured by tests/backports/host/matterdifferential/probe-params-modes.m.
+// Built once, as charon_port_no_node_error() is.
+static NSError *charon_port_constraint_error(void)
+{
+    static NSError *error;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        error = [NSError errorWithDomain:@"MTRInteractionErrorDomain" code:135
+                                userInfo:@{NSLocalizedDescriptionKey: @"Out of range error or set to a reserved value."}];
+    });
+    return error;
+}
+
 @implementation MTRClusterJointFabricDatastore
 
 @synthesize AcceptedCommandListValues = _AcceptedCommandListValues;
@@ -314,9 +329,14 @@ static NSError *charon_port_no_node_error(void)
 // addGroup. It answers: there is nothing to reach on a release with no fabric.
 - (void)addGroupWithParams:(MTRJointFabricDatastoreClusterAddGroupParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
-    (void)params;
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
+    if ([[params valueForKeyPath:@"groupPermission"] unsignedLongLongValue] == 0) {
+        if (completion) {
+            completion(charon_port_constraint_error());
+        }
+        return;
+    }
     if (completion) {
         completion(charon_port_no_node_error());
     }
@@ -325,9 +345,14 @@ static NSError *charon_port_no_node_error(void)
 // updateGroup. It answers: there is nothing to reach on a release with no fabric.
 - (void)updateGroupWithParams:(MTRJointFabricDatastoreClusterUpdateGroupParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
-    (void)params;
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
+    if (([params valueForKeyPath:@"groupPermission"] != nil && [[params valueForKeyPath:@"groupPermission"] unsignedLongLongValue] == 0)) {
+        if (completion) {
+            completion(charon_port_constraint_error());
+        }
+        return;
+    }
     if (completion) {
         completion(charon_port_no_node_error());
     }
@@ -479,9 +504,14 @@ static NSError *charon_port_no_node_error(void)
 // addACLToNode. It answers: there is nothing to reach on a release with no fabric.
 - (void)addACLToNodeWithParams:(MTRJointFabricDatastoreClusterAddACLToNodeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion
 {
-    (void)params;
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
+    if ([params valueForKeyPath:@"aclEntry"] == nil || ([params valueForKeyPath:@"aclEntry.privilege"] != nil && [[params valueForKeyPath:@"aclEntry.privilege"] unsignedLongLongValue] == 0) || ([params valueForKeyPath:@"aclEntry.authMode"] != nil && [[params valueForKeyPath:@"aclEntry.authMode"] unsignedLongLongValue] == 0)) {
+        if (completion) {
+            completion(charon_port_constraint_error());
+        }
+        return;
+    }
     if (completion) {
         completion(charon_port_no_node_error());
     }

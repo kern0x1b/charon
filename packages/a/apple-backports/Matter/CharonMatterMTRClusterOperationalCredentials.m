@@ -81,6 +81,21 @@ static NSError *charon_port_no_node_error(void)
     return error;
 }
 
+// The error a request answers when the framework refuses a field of its params before it looks for a
+// node: a field it reads as out of range, or a reserved value. Which field, and for which value, is in
+// tools/matter-host-refusals.tsv, measured by tests/backports/host/matterdifferential/probe-params-modes.m.
+// Built once, as charon_port_no_node_error() is.
+static NSError *charon_port_constraint_error(void)
+{
+    static NSError *error;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        error = [NSError errorWithDomain:@"MTRInteractionErrorDomain" code:135
+                                userInfo:@{NSLocalizedDescriptionKey: @"Out of range error or set to a reserved value."}];
+    });
+    return error;
+}
+
 @implementation MTRClusterOperationalCredentials
 
 // - (instancetype)initWithDevice:(MTRDevice *)device
@@ -233,9 +248,14 @@ static NSError *charon_port_no_node_error(void)
 // certificateChainRequest. It answers: there is nothing to reach on a release with no fabric.
 - (void)certificateChainRequestWithParams:(MTROperationalCredentialsClusterCertificateChainRequestParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTROperationalCredentialsClusterCertificateChainResponseParams * data, NSError * error))completion
 {
-    (void)params;
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
+    if ([[params valueForKeyPath:@"certificateType"] unsignedLongLongValue] == 0) {
+        if (completion) {
+            completion(nil, charon_port_constraint_error());
+        }
+        return;
+    }
     if (completion) {
         completion(nil, charon_port_no_node_error());
     }
@@ -244,9 +264,14 @@ static NSError *charon_port_no_node_error(void)
 // certificateChainRequest. It answers: there is nothing to reach on a release with no fabric.
 - (void)certificateChainRequestWithParams:(MTROperationalCredentialsClusterCertificateChainRequestParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completionHandler:(void (^)(MTROperationalCredentialsClusterCertificateChainResponseParams * data, NSError * error))completionHandler
 {
-    (void)params;
     (void)expectedDataValueDictionaries;
     (void)expectedValueIntervalMs;
+    if ([[params valueForKeyPath:@"certificateType"] unsignedLongLongValue] == 0) {
+        if (completionHandler) {
+            completionHandler(nil, charon_port_constraint_error());
+        }
+        return;
+    }
     if (completionHandler) {
         completionHandler(nil, charon_port_no_node_error());
     }

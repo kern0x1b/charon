@@ -81,6 +81,21 @@ static NSError *charon_port_no_node_error(void)
     return error;
 }
 
+// The error a request answers when the framework refuses a field of its params before it looks for a
+// node: a field it reads as out of range, or a reserved value. Which field, and for which value, is in
+// tools/matter-host-refusals.tsv, measured by tests/backports/host/matterdifferential/probe-params-modes.m.
+// Built once, as charon_port_no_node_error() is.
+static NSError *charon_port_constraint_error(void)
+{
+    static NSError *error;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        error = [NSError errorWithDomain:@"MTRInteractionErrorDomain" code:135
+                                userInfo:@{NSLocalizedDescriptionKey: @"Out of range error or set to a reserved value."}];
+    });
+    return error;
+}
+
 @implementation MTRBaseClusterColorControl
 
 // - (instancetype)initWithDevice:(MTRBaseDevice *)device
@@ -4280,7 +4295,12 @@ static NSError *charon_port_no_node_error(void)
 // stepHue. It answers: there is nothing to reach on a release with no fabric.
 - (void)stepHueWithParams:(MTRColorControlClusterStepHueParams *)params completion:(MTRStatusCompletion)completion
 {
-    (void)params;
+    if ([[params valueForKeyPath:@"stepMode"] unsignedLongLongValue] == 0) {
+        if (completion) {
+            completion(charon_port_constraint_error());
+        }
+        return;
+    }
     if (completion) {
         completion(charon_port_no_node_error());
     }
@@ -4289,7 +4309,12 @@ static NSError *charon_port_no_node_error(void)
 // stepHue. It answers: there is nothing to reach on a release with no fabric.
 - (void)stepHueWithParams:(MTRColorControlClusterStepHueParams *)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    (void)params;
+    if ([[params valueForKeyPath:@"stepMode"] unsignedLongLongValue] == 0) {
+        if (completionHandler) {
+            completionHandler(charon_port_constraint_error());
+        }
+        return;
+    }
     if (completionHandler) {
         completionHandler(charon_port_no_node_error());
     }
@@ -4334,7 +4359,12 @@ static NSError *charon_port_no_node_error(void)
 // stepSaturation. It answers: there is nothing to reach on a release with no fabric.
 - (void)stepSaturationWithParams:(MTRColorControlClusterStepSaturationParams *)params completion:(MTRStatusCompletion)completion
 {
-    (void)params;
+    if ([[params valueForKeyPath:@"stepMode"] unsignedLongLongValue] == 0) {
+        if (completion) {
+            completion(charon_port_constraint_error());
+        }
+        return;
+    }
     if (completion) {
         completion(charon_port_no_node_error());
     }
@@ -4343,7 +4373,12 @@ static NSError *charon_port_no_node_error(void)
 // stepSaturation. It answers: there is nothing to reach on a release with no fabric.
 - (void)stepSaturationWithParams:(MTRColorControlClusterStepSaturationParams *)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    (void)params;
+    if ([[params valueForKeyPath:@"stepMode"] unsignedLongLongValue] == 0) {
+        if (completionHandler) {
+            completionHandler(charon_port_constraint_error());
+        }
+        return;
+    }
     if (completionHandler) {
         completionHandler(charon_port_no_node_error());
     }
@@ -4478,7 +4513,12 @@ static NSError *charon_port_no_node_error(void)
 // enhancedStepHue. It answers: there is nothing to reach on a release with no fabric.
 - (void)enhancedStepHueWithParams:(MTRColorControlClusterEnhancedStepHueParams *)params completion:(MTRStatusCompletion)completion
 {
-    (void)params;
+    if ([[params valueForKeyPath:@"stepMode"] unsignedLongLongValue] == 0) {
+        if (completion) {
+            completion(charon_port_constraint_error());
+        }
+        return;
+    }
     if (completion) {
         completion(charon_port_no_node_error());
     }
@@ -4487,7 +4527,12 @@ static NSError *charon_port_no_node_error(void)
 // enhancedStepHue. It answers: there is nothing to reach on a release with no fabric.
 - (void)enhancedStepHueWithParams:(MTRColorControlClusterEnhancedStepHueParams *)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    (void)params;
+    if ([[params valueForKeyPath:@"stepMode"] unsignedLongLongValue] == 0) {
+        if (completionHandler) {
+            completionHandler(charon_port_constraint_error());
+        }
+        return;
+    }
     if (completionHandler) {
         completionHandler(charon_port_no_node_error());
     }
@@ -4568,7 +4613,12 @@ static NSError *charon_port_no_node_error(void)
 // stepColorTemperature. It answers: there is nothing to reach on a release with no fabric.
 - (void)stepColorTemperatureWithParams:(MTRColorControlClusterStepColorTemperatureParams *)params completion:(MTRStatusCompletion)completion
 {
-    (void)params;
+    if ([[params valueForKeyPath:@"stepMode"] unsignedLongLongValue] == 0) {
+        if (completion) {
+            completion(charon_port_constraint_error());
+        }
+        return;
+    }
     if (completion) {
         completion(charon_port_no_node_error());
     }
@@ -4577,7 +4627,12 @@ static NSError *charon_port_no_node_error(void)
 // stepColorTemperature. It answers: there is nothing to reach on a release with no fabric.
 - (void)stepColorTemperatureWithParams:(MTRColorControlClusterStepColorTemperatureParams *)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    (void)params;
+    if ([[params valueForKeyPath:@"stepMode"] unsignedLongLongValue] == 0) {
+        if (completionHandler) {
+            completionHandler(charon_port_constraint_error());
+        }
+        return;
+    }
     if (completionHandler) {
         completionHandler(charon_port_no_node_error());
     }
