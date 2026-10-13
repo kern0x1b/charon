@@ -236,7 +236,7 @@ static NSArray<NSString *> *charon_user_preferred_history(void)
     // type is one the header says raises, and a reaction with canPerformReactionEffects NO is ignored.
     if (![[self availableReactionTypes] containsObject:reactionType]) {
         [NSException raise:NSInvalidArgumentException
-                    format:@"-%@ is not one of the reaction types this device can perform (availableReactionTypes "
+                    format:@"-%@ is not one of the reaction types this AVCaptureDevice can perform (availableReactionTypes "
                            @"is empty: this camera has no reaction effects), and -performEffectForReaction: throws "
                            @"for any other type", NSStringFromSelector(_cmd)];
     }

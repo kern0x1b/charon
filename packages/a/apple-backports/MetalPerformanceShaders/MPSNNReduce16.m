@@ -163,7 +163,7 @@
 // The weight. The SDK declares it on MPSNNReduceFeatureChannelsSum alone (MPSNNReduce.h:413-420, default
 // 1.0, which this file starts from). Its note scales each channel's value before the combining step, so the
 // port multiplies each feature-channel value by the weight in the two operations that combine by sum or by
-// mean (the switch in encodeToCommandBuffer): the sum result is the weight times the sum, and the mean result
+// mean (the if at :348-349 in encodeToCommandBuffer): the sum result is the weight times the sum, and the mean result
 // is the weight times the mean. A minimum or a maximum is never scaled. No SDK declares the weight on the
 // mean class, and nothing here sets it there, so the mean path stays at 1.0 through every public route.
 //

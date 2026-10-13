@@ -13,10 +13,10 @@
 // WHAT IS COMPUTED, from the headers' own wording, one kernel at a time:
 //
 //   MPSImageIntegral / MPSImageIntegralOfSquares  MPSImageIntegral.h:17-21 and :38-42 give the sum
-//     rectangle exactly: "sumRect.origin = MPSUnaryImageKernel.offset" and "sumRect.size =
-//     dest_position - MPSUnaryImageKernel.clipRect.origin". The value at a destination position is the
-//     sum of the source over that rectangle, and the OfSquares variant sums the squares
-//     (MPSImageIntegral.h:38 "the sum of squared pixels"). That is arithmetic this port does exactly.
+//     rectangle exactly: its origin is the kernel's offset, and its size is the destination position
+//     less the clip rectangle's origin. The value at a destination position is the sum of the source
+//     over that rectangle, and the OfSquares variant sums the squares of the pixels (MPSImageIntegral.h:38).
+//     That is arithmetic this port does exactly.
 //
 //   MPSImageSobel    the grey level the filter runs on is a weighted sum of a pixel's three channels, with the
 //     weights 0.299, 0.587 and 0.114 (BT.601/JPEG; the default transform at MPSImageConvolution.h:294, the
@@ -283,7 +283,7 @@ static double CharonMPSIntegral(const CharonMPSImageWindow *window, NSInteger x,
 - (instancetype)initWithDevice:(id<MTLDevice>)device
 {
     // MPSImageConvolution.h:311 declares the transform nonnull, and this convenience initializer is
-    // the header's own "using the default color transform" (:293-300). Passing the default's three
+    // the header's default transform, which this initializer takes (:293-300). Passing the default's three
     // values is the same answer as the header's default and keeps the nonnull contract, rather than
     // passing NULL to a parameter the header says cannot be null.
     static const float kDefault[3] = { 0.299f, 0.587f, 0.114f };   // :294, BT.601/JPEG
