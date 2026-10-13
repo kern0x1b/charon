@@ -137,7 +137,7 @@ static void CharonMPSMorphologyRegion(MPSImage *source, MPSImage *destination, M
 
 - (instancetype)initWithDevice:(id<MTLDevice>)device
 {
-    CharonMPSRefuse(@"MPSImageAreaMax: -initWithDevice: is NS_UNAVAILABLE, MPSImageMorphology.h:60 - the"
+    CharonMPSRefuse(@"MPSImageAreaMax: -initWithDevice: is NS_UNAVAILABLE - the"
                     @" window is what makes the filter, so no object was made");
     return nil;
 }
@@ -195,8 +195,8 @@ static void CharonMPSMorphologyRegion(MPSImage *source, MPSImage *destination, M
 {
     if ((self = [super initWithDevice:device])) {
         if (!kernelWidth || !kernelHeight || !(kernelWidth % 2) || !(kernelHeight % 2)) {
-            CharonMPSRefuse(@"MPSImageDilate: a %lux%lu window is refused - MPSImageMorphology.h:117-119 says"
-                            @" both must be odd, so no object was made", (unsigned long)kernelWidth,
+            CharonMPSRefuse(@"MPSImageDilate: a %lux%lu window is refused - the width and the height have to be odd,"
+                            @" so no object was made", (unsigned long)kernelWidth,
                             (unsigned long)kernelHeight);
             return nil;
         }
@@ -221,7 +221,7 @@ static void CharonMPSMorphologyRegion(MPSImage *source, MPSImage *destination, M
 
 - (instancetype)initWithDevice:(id<MTLDevice>)device
 {
-    CharonMPSRefuse(@"MPSImageDilate: -initWithDevice: is NS_UNAVAILABLE, MPSImageMorphology.h:132 - the"
+    CharonMPSRefuse(@"MPSImageDilate: -initWithDevice: is NS_UNAVAILABLE - the"
                     @" window and the probe are what make the filter, so no object was made");
     return nil;
 }

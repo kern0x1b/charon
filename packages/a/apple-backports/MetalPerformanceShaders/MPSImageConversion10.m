@@ -62,7 +62,7 @@
         CharonMPSRefuse(@"MPSImageConversion: a colour space conversion was asked for and this port cannot"
                         @" perform it - CoreGraphics declares no accessor that reads the source and the"
                         @" destination space back out of a CGColorConversionInfoRef, so there is nothing"
-                        @" to convert between. Pass NULL, which MPSImageConversion.h:56 says means no colour"
+                        @" to convert between. Pass NULL, which means no colour"
                         @" space conversion is needed, and the alpha conversion is carried");
         return nil;
     }

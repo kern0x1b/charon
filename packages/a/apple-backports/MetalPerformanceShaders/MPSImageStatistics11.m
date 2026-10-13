@@ -85,8 +85,8 @@
     // >= 1, because the min goes to (0,0) and the max to (1,0). Refused by name, with the shape.
     if (destinationImage.width < 2 || destinationImage.height < 1) {
         CharonMPSRefuse(@"MPSImageStatisticsMinAndMax: the destination is %lux%lu, and this kernel "
-                        @"writes the minimum at (0,0) and the maximum at (1,0) - MPSImageStatistics.h:35-36 "
-                        @"requires a destination at least 2 wide and 1 high, so nothing was written",
+                        @"writes the minimum at (0,0) and the maximum at (1,0); a destination at least 2 wide and 1 high is "
+                        @"required, so nothing was written",
                         (unsigned long)destinationImage.width, (unsigned long)destinationImage.height);
         return;
     }

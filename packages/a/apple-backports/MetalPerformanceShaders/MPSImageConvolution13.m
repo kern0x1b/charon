@@ -244,8 +244,8 @@ static void CharonMPSConvolveRegion(MPSImage *source, MPSImage *destination, MTL
 {
     if ((self = [super initWithDevice:device])) {
         if (!kernelWidth || !kernelHeight || !(kernelWidth % 2) || !(kernelHeight % 2)) {
-            CharonMPSRefuse(@"MPSImageBox: a %lux%lu window is refused - MPSImageConvolution.h:164-168 says"
-                            @" both must be odd, so no object was made", (unsigned long)kernelWidth,
+            CharonMPSRefuse(@"MPSImageBox: a %lux%lu window is refused - the width and the height have to be odd,"
+                            @" so no object was made", (unsigned long)kernelWidth,
                             (unsigned long)kernelHeight);
             return nil;
         }
@@ -268,7 +268,7 @@ static void CharonMPSConvolveRegion(MPSImage *source, MPSImage *destination, MTL
 
 - (instancetype)initWithDevice:(id<MTLDevice>)device
 {
-    CharonMPSRefuse(@"MPSImageBox: -initWithDevice: is NS_UNAVAILABLE, MPSImageConvolution.h:185 - the"
+    CharonMPSRefuse(@"MPSImageBox: -initWithDevice: is NS_UNAVAILABLE - the"
                     @" window size is what makes a box, so no object was made");
     return nil;
 }

@@ -116,8 +116,8 @@ static double CharonMPSPyramidInterpolated(const float *source, NSUInteger width
     if (!CharonMPSPyramidPixelShape(sourceTexture.pixelFormat, &channels, &elementSize) ||
         !CharonMPSPyramidPixelShape(destinationTexture.pixelFormat, &destinationChannels, &destinationElementSize) ||
         channels != destinationChannels || elementSize != destinationElementSize) {
-        CharonMPSRefuse(@"%@: the source is pixel format %d and the destination %d; MPSImageConvolution.h:657"
-                        @" says their channels, bit depth and resolution have to match, so no level was written",
+        CharonMPSRefuse(@"%@: the source is pixel format %d and the destination %d; their channels, bit depth"
+                        @" and resolution have to match, so no level was written",
                         what, (int)sourceTexture.pixelFormat, (int)destinationTexture.pixelFormat);
         return;
     }
@@ -125,8 +125,8 @@ static double CharonMPSPyramidInterpolated(const float *source, NSUInteger width
     // :654-655 is that in-place is not supported, which is the plain two-texture form used here.
     NSUInteger levels = sourceTexture.mipmapLevelCount;
     if (destinationTexture.mipmapLevelCount < levels) {
-        CharonMPSRefuse(@"%@: the destination has %lu mip level(s) and the source %lu; MPSImageConvolution.h:695"
-                        @" says the destination needs at least one fewer than the source, so no level was written",
+        CharonMPSRefuse(@"%@: the destination has %lu mip level(s) and the source %lu; the destination needs at"
+                        @" least one fewer than the source, so no level was written",
                         what, (unsigned long)destinationTexture.mipmapLevelCount, (unsigned long)levels);
         return;
     }
@@ -223,15 +223,15 @@ static double CharonMPSPyramidInterpolated(const float *source, NSUInteger width
     if (!CharonMPSPyramidPixelShape(sourceTexture.pixelFormat, &channels, &elementSize) ||
         !CharonMPSPyramidPixelShape(destinationTexture.pixelFormat, &destinationChannels, &destinationElementSize) ||
         channels != destinationChannels || elementSize != destinationElementSize) {
-        CharonMPSRefuse(@"%@: the source is pixel format %d and the destination %d; MPSImageConvolution.h:657"
-                        @" says their channels, bit depth and resolution have to match, so no level was written",
+        CharonMPSRefuse(@"%@: the source is pixel format %d and the destination %d; their channels, bit depth"
+                        @" and resolution have to match, so no level was written",
                         what, (int)sourceTexture.pixelFormat, (int)destinationTexture.pixelFormat);
         return;
     }
     NSUInteger levels = sourceTexture.mipmapLevelCount;
     if (destinationTexture.mipmapLevelCount < levels) {
-        CharonMPSRefuse(@"%@: the destination has %lu mip level(s) and the source %lu; MPSImageConvolution.h:695"
-                        @" says the destination needs at least one fewer than the source, so no level was written",
+        CharonMPSRefuse(@"%@: the destination has %lu mip level(s) and the source %lu; the destination needs at"
+                        @" least one fewer than the source, so no level was written",
                         what, (unsigned long)destinationTexture.mipmapLevelCount, (unsigned long)levels);
         return;
     }

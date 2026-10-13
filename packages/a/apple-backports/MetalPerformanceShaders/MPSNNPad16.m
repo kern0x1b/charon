@@ -142,7 +142,7 @@
         perChannel = (NSUInteger)([_fillValueArray length] / sizeof(float));
     if (fill && perChannel < wantChannels) {
         CharonMPSRefuse(@"%@: the fill array holds %lu value(s) and the destination has %lu feature channels,"
-                        @" which MPSNNReshape.h:286-287 calls undefined behavior, so nothing was written", what,
+                        @" which is undefined behavior, so nothing was written", what,
                         (unsigned long)perChannel, (unsigned long)wantChannels);
         return;
     }

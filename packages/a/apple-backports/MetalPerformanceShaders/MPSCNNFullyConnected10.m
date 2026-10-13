@@ -54,7 +54,7 @@
 - (instancetype)initWithDevice:(id<MTLDevice>)device
 {
     CharonMPSRefuse(@"MPSCNNFullyConnected: -initWithDevice: names neither a descriptor nor weights, and"
-                    @" MPSCNNConvolution.h:1402 marks it unavailable; use"
+                    @" it is unavailable; use"
                     @" -initWithDevice:convolutionDescriptor:kernelWeights:biasTerms:flags:");
     return nil;
 }

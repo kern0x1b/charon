@@ -278,8 +278,7 @@ static BOOL CharonMPSOptimizerVectors(MPSVector *const *vectors, NSUInteger coun
 // MPSImageReduceUnary16.m:86-105 give for their own bases.
 - (instancetype)initWithDevice:(id<MTLDevice>)device
 {
-    CharonMPSRefuse(@"MPSNNOptimizer: -initWithDevice: is unavailable on the abstract base, which"
-                    @" MPSNNOptimizers.h:247-249 says must not be instantiated - use"
+    CharonMPSRefuse(@"MPSNNOptimizer: -initWithDevice: is unavailable on the abstract base - use"
                     @" MPSNNOptimizerStochasticGradientDescent, MPSNNOptimizerRMSProp or"
                     @" MPSNNOptimizerAdam");
     return nil;

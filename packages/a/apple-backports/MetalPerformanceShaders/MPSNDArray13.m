@@ -838,8 +838,7 @@ static void MPSNDArrayViewLayout(MPSNDArrayDescriptor *view, MPSNDArrayDescripto
 - (void)setReadCount:(NSUInteger)readCount
 {
     if (_readCount == 0) {
-        CharonMPSRefuse(@"MPSTemporaryNDArray: the read count is already 0 and the header says it may not be changed back "
-                        @"(MPSCore/MPSNDArray.h:446-448)");
+        CharonMPSRefuse(@"MPSTemporaryNDArray: the read count is already 0 and it may not be changed back");
         return;
     }
     _readCount = readCount;

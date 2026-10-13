@@ -94,8 +94,7 @@
     // and the run stops there. This port refuses by name and returns nil instead: the observable
     // behaviour a caller depends on is the same - there is no usable object - and refusing is what the
     // rest of this package does everywhere rather than aborting a caller that got the class wrong.
-    CharonMPSRefuse(@"MPSImageReduceUnary: -initWithDevice: is unavailable on the abstract base, which"
-                    @" MPSImageReduce.h:44-47 says must not be instantiated - use MPSImageReduceRowMin,"
+    CharonMPSRefuse(@"MPSImageReduceUnary: -initWithDevice: is unavailable on the abstract base - use MPSImageReduceRowMin,"
                     @" MPSImageReduceColumnMin, MPSImageReduceRowMax, MPSImageReduceColumnMax,"
                     @" MPSImageReduceRowMean, MPSImageReduceColumnMean, MPSImageReduceRowSum or"
                     @" MPSImageReduceColumnSum");
@@ -138,8 +137,8 @@
     MTLRegion write = CharonMPSImageResolvedRegion(destinationImage, self.clipRect);
     if (!CharonMPSImageRegionIsEmpty(self.clipRect)) {
         if (self.clipRect.size.width < 2 || self.clipRect.size.height < 1) {
-            CharonMPSRefuse(@"%@: the destination clip rectangle is %lux%lu and MPSImageReduce.h:38-40 says"
-                            @" its width must be >=2 and its height must be >=1, so nothing was written",
+            CharonMPSRefuse(@"%@: the destination clip rectangle is %lux%lu and its width must be >=2"
+                            @" and its height must be >=1, so nothing was written",
                             what, (unsigned long)self.clipRect.size.width,
                             (unsigned long)self.clipRect.size.height);
             return;

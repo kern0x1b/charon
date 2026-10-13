@@ -124,7 +124,7 @@ static CharonMPSPyramidFilter *CharonMPSPyramidFilterOf(id pyramid)
     if (!kernelWidth || !kernelHeight || !kernelWeights ||
         (kernelWidth % 2) == 0 || (kernelHeight % 2) == 0) {
         CharonMPSRefuse(@"MPSImagePyramid: a %lu by %lu kernel with weights %s is refused;"
-                        @" MPSImageConvolution.h:562-569 says the width and the height must be odd",
+                        @" the width and the height must be odd",
                         (unsigned long)kernelWidth, (unsigned long)kernelHeight,
                         kernelWeights ? "given" : "not given");
         return nil;

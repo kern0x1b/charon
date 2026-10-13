@@ -143,8 +143,7 @@
     // there is nothing to reduce. The release asserts and takes the process with it; this port refuses
     // by name and returns nil, which is what the rest of this package does rather than aborting a
     // caller that got the class wrong.
-    CharonMPSRefuse(@"MPSNNReduceUnary: -initWithDevice: is unavailable on the abstract base, which"
-                    @" MPSNNReduce.h:44-47 says must not be instantiated - use one of the twelve"
+    CharonMPSRefuse(@"MPSNNReduceUnary: -initWithDevice: is unavailable on the abstract base - use one of the twelve"
                     @" concrete classes");
     return nil;
 }

@@ -125,7 +125,7 @@ static BOOL CharonMPSIsSingleChannel(MPSImage *image)
     // a multi channel image needs is not implemented - see the comment on this file's transform - so the
     // encode refuses it by name rather than answering something the header does not say.
     if (!CharonMPSIsSingleChannel(sourceImage)) {
-        CharonMPSRefuse(@"%@: the image has %lu feature channels. MPSImageThreshold.h:18-19 converts a "
+        CharonMPSRefuse(@"%@: the image has %lu feature channels. The filter converts a "
                         "multi channel image to ONE scalar luminance with the linearGrayColorTransform "
                         "and then thresholds that, which this port does not implement, so nothing was "
                         "written. The path is owed; a one channel image is answered.",
