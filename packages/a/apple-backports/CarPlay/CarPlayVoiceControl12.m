@@ -1,8 +1,8 @@
 // CarPlay's voice control on iOS 6: the state a program declares and the template that shows it.
 //
 // Neither of these needs a car, and that is measured rather than assumed. CPVoiceControlTemplate.h
-// says "Your app may initialize the voice control template with one or more states, and you may
-// call activateVoiceControlState: to switch between states you've defined" -- the states are the
+// says that an app may initialize the template with one or more states, and that it may
+// call activateVoiceControlState: to switch between states the app has defined -- the states are the
 // program's own, the switch is the program's own call, and the only thing a car adds is a screen to
 // show the result on. `tests/backports/host/carplay/headunit-probe.m` asks Apple's own CarPlay on
 // this machine with no head unit attached and gets back, for a template built the same way:
@@ -20,8 +20,8 @@
 //   * the header's warning that activation "will have no effect" before the template is presented
 //     through a CPInterfaceController is about what a CAR then shows. Apple's own object switches its
 //     active state with no car and no presentation, so this one does too;
-//   * the header's rate limit -- "the template will ignore voice control state changes that occur too
-//     rapidly" -- is likewise about the presentation: twelve activations in a tight loop all take,
+//   * the header's rate limit means the template may ignore state changes that come too fast: that is likewise about the
+//     presentation: twelve activations in a tight loop all take,
 //     so there is no interval in the object and none is invented here;
 //   * an identifier no state carries still becomes the active one, because Apple's object does not
 //     check. Drawing then has no state to draw, and nothing is drawn rather than something invented.
@@ -38,9 +38,8 @@
 - (UIViewController *)charon_viewControllerForInterfaceController:(CPInterfaceController *)controller;
 @end
 
-// The header's own bounds on a state image: "Voice Control state images may be a maximum of 150 by
-// 150 points", and "The system enforces a minimum cycle duration of 0.3 seconds and a maximum cycle
-// duration of 5 seconds". Apple's numbers, from the header's own text, and both are enforced here
+// The header's own bounds on a state image: a state image may be at most 150 by 150 points, and the system enforces
+// a cycle of at least 0.3 seconds and at most 5 seconds. Apple's numbers, from the header's own text, and both are enforced here
 // rather than documented: an image over 150 points a side is scaled down, and an animated image's
 // cycle is held inside those two seconds. Charon's own, so no API.
 static const CGFloat CharonVoiceMaximumImagePoints = 150.0;
@@ -191,8 +190,8 @@ static CGSize CharonAspectFitInSize(CGSize size, CGSize box)
     return MIN(MAX((double)frames / 30.0, CharonVoiceMinimumCycle), CharonVoiceMaximumCycle);
 }
 
-// The state's own title, chosen the header's way: "The Voice Control template will select the
-// longest variant that fits your specified content." So the variants are tried longest first and the
+// The state's own title, chosen the header's way: the template selects the longest variant that fits the specified content.
+// So the variants are tried longest first and the
 // first that fits is the one drawn. When none fits -- a template narrower than its shortest variant,
 // which the header does not say anything about -- the shortest is drawn and the label truncates it,
 // which is an answer rather than an empty label.
@@ -318,8 +317,8 @@ static CGSize CharonAspectFitInSize(CGSize size, CGSize box)
 @synthesize voiceControlStates = _voiceControlStates;
 @synthesize activeStateIdentifier = _activeStateIdentifier;
 
-// The header's own initialiser, and the header's own limit: "You may specify a maximum of 5 voice
-// control states. If you specify more than 5, only the first 5 will be available." Measured on
+// The header's own initialiser, and the header's own limit: a caller may specify at most 5 voice
+// states, and any beyond the first 5 are not available. Measured on
 // Apple's own object: six in, five held. A nil array answers nil and an empty array answers an empty
 // array, which is what Apple's object does and what a `?: @[]` would not do.
 - (instancetype)initWithVoiceControlStates:(NSArray<CPVoiceControlState *> *)voiceControlStates
@@ -332,7 +331,7 @@ static CGSize CharonAspectFitInSize(CGSize size, CGSize box)
         } else {
             NSUInteger kept = MIN((NSUInteger)5, (NSUInteger)voiceControlStates.count);
             _voiceControlStates = [voiceControlStates subarrayWithRange:NSMakeRange(0, kept)];
-            // "By default, the Voice Control template will begin on the first state specified."
+            // By default, the header says the template begins on the first state given.
             _activeStateIdentifier = [_voiceControlStates.firstObject identifier];
         }
     }

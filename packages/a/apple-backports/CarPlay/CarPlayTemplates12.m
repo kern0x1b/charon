@@ -904,8 +904,8 @@ _duration = newDuration;
                              duration:(NSTimeInterval)duration
 {
     // The image set is kept as given and the standalone image stays nil, which is the header's own
-    // reading of the deprecation: "If an animated image is provided, only the first image from each
-    // image set will be used" (CPNavigationAlert.h:46-47), so a set and an image are two ways of saying
+    // reading of the deprecation: when an animated image is provided, the header says only the first image of each
+    // set is used (CPNavigationAlert.h:46-47), so a set and an image are two ways of saying
     // the same picture and this one says it with the set. The title and subtitle variants are copied and
     // a nil in becomes empty, as the header's own `copy` properties would.
     self = [super init];
@@ -945,8 +945,8 @@ _duration = newDuration;
     return self;
 }
 
-// CPNavigationAlert.h:81-82, the header's own update of the two variant arrays. "Updating an alert that
-// has been already been dismissed has no effect" (:74) is the template's business - the port has no
+// CPNavigationAlert.h:81-82, the header's own update of the two variant arrays. Updating an alert that was dismissed
+// earlier has no effect (:74), which is the template's business - the port has no
 // dismissal state on an alert - and what a caller can observe here is the two arrays it just gave.
 - (void)updateTitleVariants:(NSArray<NSString *> *)newTitleVariants
            subtitleVariants:(NSArray<NSString *> *)newSubtitleVariants

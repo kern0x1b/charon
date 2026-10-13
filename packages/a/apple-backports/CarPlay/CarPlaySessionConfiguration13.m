@@ -9,7 +9,7 @@
 // 17.4 members are CarPlayNavigationSession174.m.
 //
 // WHAT THE VALUE IS, and why this row is `inert` and not `absent` and not `implemented`. The header's
-// own comment at :35-36 is "The current content style SUGGESTED BY THE CONNECTED CarPlay system", and it
+// own comment at :35-36 gives the current content style as suggested by the connected CarPlay system, and it
 // is `readonly` with no public setter. Per class on the 16.0 arm64e cache (tools/corpus/objc-inventory.lua)
 // CPSessionConfiguration conforms to the private protocol CARSessionObserving and carries
 // -setContentStyle: as the only writer of this value, alongside the connection lifecycle
