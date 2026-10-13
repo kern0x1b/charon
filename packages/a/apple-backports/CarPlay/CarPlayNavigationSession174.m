@@ -47,18 +47,17 @@
 // CarPlayNavigationSession12.m, behind Charon accessors, and this file carries only the 17.4 selectors.
 //
 // What the header says each one does, and what this follows:
-//   :83-86 -addManeuvers: "add CPManeuvers in chronological order ... All maneuvers set in
-//           upcomingManeuvers must be first added using this method" -- so it appends to an ordered
+//   :83-86 -addManeuvers: adds CPManeuvers in chronological order, and every maneuver set in
+//           upcomingManeuvers has to be added first through this method -- so it appends to an ordered
 //           list and tells the template, because the guidance card is what shows them.
-//   :90-91 -addLaneGuidances: "add CPLaneGuidances in chronological order ... added as soon as they
-//           are available" -- the same accumulation for lane guidance.
-//   :78    currentLaneGuidance "Must be set to nil if there is no current lane guidance.
-//           CPLaneGuidances set here must first be added to the session using addLaneGuidances:" -- so
-//           the value is nil until it is given and nil is a real answer, not a missing one.
-//   :96-97 currentRoadNameVariants "variants of the current road name. From most to least verbose."
-//   :101-102 maneuverState "the current maneuver state based on how close the maneuver is."
-//   :54-57 -resumeTripWithUpdatedRouteInformation: "Resume the current trip with updated route
-//           information" -- the information replaces what the session holds for the current route.
+//   :90-91 -addLaneGuidances: adds CPLaneGuidances in chronological order, each as soon as it
+//           is available -- the same accumulation for lane guidance.
+//   :78    currentLaneGuidance is nil until a guidance is given; the header says a guidance set on it has to be added first with addLaneGuidances:,
+//           so the value is nil until it is given and nil is a real answer, not a missing one.
+//   :96-97 currentRoadNameVariants holds the variants of the current road name, from the wordiest to the least.
+//   :101-102 maneuverState is a reading of how close the maneuver is.
+//   :54-57 -resumeTripWithUpdatedRouteInformation: resumes the current trip with updated route
+//           information, so the information replaces what the session holds for the current route.
 //
 // The class's own rule about which release owns what is the reason this file exists separately and
 // carries one release: an object may hold API of exactly one release (modules/apple/backports.lua's
@@ -103,22 +102,22 @@
 //     -[charonHost_CPNavigationSession currentRoadNameVariants]: unrecognized selector
 // so the fix is the getter, not the @dynamic.
 
-// :80 `@property (nullable, nonatomic, readwrite, copy) CPLaneGuidance *currentLaneGuidance`, with :78's
-// "Must be set to nil if there is no current lane guidance" -- so nil is an answer here too, and it is
+// :80 `@property (nullable, nonatomic, readwrite, copy) CPLaneGuidance *currentLaneGuidance`, with :78's requirement
+// that nil is set when there is no current lane guidance -- so nil is an answer here too, and it is
 // the value the setter stored rather than a defaulted one.
 - (CPLaneGuidance *)currentLaneGuidance
 {
     return [self charon_currentLaneGuidance];
 }
 
-// :96-97 "variants of the current road name. From most to least verbose." The array is copied on the way
+// :96-97 gives currentRoadNameVariants as the variants of the current road name, ordered from the wordiest to the least wordy. The array is copied on the way
 // in, so the getter hands back the session's own copy.
 - (NSArray<NSString *> *)currentRoadNameVariants
 {
     return [self charon_currentRoadNameVariants];
 }
 
-// :101-102 "the current maneuver state based on how close the maneuver is." A plain value, and 0 is what
+// :101-102 gives maneuverState as a reading of how close the maneuver is. A plain value, and 0 is what
 // a session with nothing set answers -- measured on Apple's own object.
 - (CPManeuverState)maneuverState
 {

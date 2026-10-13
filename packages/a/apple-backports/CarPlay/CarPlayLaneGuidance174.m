@@ -1,4 +1,4 @@
-// CPLaneGuidance: guidance to give the user which lane or lanes are preferred.
+// CPLaneGuidance: guidance on which lane or lanes the user should be given as preferred.
 //
 // CPLaneGuidance.h:16-17 `API_AVAILABLE(ios(17.4))`, `NSObject <NSCopying, NSSecureCoding>`. The port
 // carries it because `CPNavigationSession`'s 17.4 members need it: currentLaneGuidance's value is one
@@ -50,10 +50,10 @@
     _lanes = [lanes copy];
 }
 
-// :28 `instructionVariants` is `copy` and is "an array of NSString representing the instruction for this
-// lane guidance, arranged from most to least preferred. You must provide at least one variant." The
-// order is the program's and is kept as given, because "most to least preferred" is a statement about
-// which one a driver should read first. The header says "must provide at least one", and that is the
+// :28 `instructionVariants` is `copy` and is an array of NSString values giving the instruction for this
+// lane guidance, ordered from the most preferred to the least, with at least one variant required. The
+// order is the program's and is kept as given, since the ordering says which one a driver should read first.
+// The header requires one variant at least, and that is the
 // program's obligation to the guidance it builds: this object does not invent a variant for an empty
 // one, and it does not reject an empty one either -- a caller that sets none has said what it said.
 - (NSArray<NSString *> *)instructionVariants

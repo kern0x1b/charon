@@ -9,10 +9,9 @@
 // (modules/apple/backports.lua's releases_in, read by tools/release-split.lua), and this one holds 16.0.
 //
 // The header's own words are what this answers, and they are why it is not the same call as the 12.0
-// initialiser: "The system will automatically determine if the provided color meets contrast
-// requirements. If the provided color does not meet contrast requirements, the system default will be
-// used. Font color will automatically be adjusted by the system to correspond with this color. Alpha
-// values will be ignored." So the style is not an argument here - the action is the default one, and
+// initialiser. The header says the system decides whether the provided color meets contrast requirements,
+// and falls back to its default when it does not. Font color is adjusted by the system to match this color, and
+// alpha values are ignored. So the style is not an argument here - the action is the default one, and
 // CPAlertAction.h:12 numbers CPAlertActionStyleDefault = 0, which is the value this passes.
 
 #import <CarPlay/CarPlay.h>

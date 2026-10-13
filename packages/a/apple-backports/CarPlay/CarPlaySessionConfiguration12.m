@@ -4,9 +4,8 @@
 // CPSessionConfiguration.h:25-40 is five rows in one header and they are not the same kind of thing.
 // :26 gives the class, :28 the designated initialiser, :38 a readwrite weak `delegate` whose own comment
 // says the system will use it "to configure the system UI" -- that is the application's half and it is
-// carried here. :33 declares `limitedUserInterfaces` readonly and says only "A bitmask of what type of
-// user interfaces are limited"; :36 declares `contentStyle` readonly and says "The current content style
-// SUGGESTED BY THE CONNECTED CarPlay system". Those two are the connected system's, and they are
+// :33 declares `limitedUserInterfaces` readonly, described only as a bitmask of the limited interface types; :36 declares
+// `contentStyle` readonly, described as the content style the connected CarPlay system suggests. Those two are the connected system's, and they are
 // `inert` -- the symbol loads and nothing applies it -- and `contentStyle` is 13.0 so it is an object of
 // its own.
 //

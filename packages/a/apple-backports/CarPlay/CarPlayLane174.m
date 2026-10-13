@@ -137,8 +137,8 @@
 }
 
 // The body both 18.0 initialisers share. `CPLane.h:41` is the rule that decides what happens when there
-// is no highlighted angle: "highlightedAngle must not be set if status is CPLaneStatusNotGood", and
-// :42 "If highlightedAngle is present it can not be included in secondaryAngles" is the same sentence
+// is no highlighted angle: the header forbids setting highlightedAngle when the status is CPLaneStatusNotGood, and
+// :42 forbids including a present highlightedAngle in secondaryAngles, which is the same rule
 // for the 17.4 property. So a preferred or good lane keeps the angle it was given and a NotGood lane
 // does not keep one, and the angles list never contains the highlighted angle twice.
 - (instancetype)initCharonWithAngles:(NSArray<NSMeasurement<NSUnitAngle *> *> *)angles

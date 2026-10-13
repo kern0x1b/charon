@@ -51,9 +51,8 @@ static const NSUInteger CharonMapMaximumPreviews = 12;
 
 #pragma mark - the navigation alert
 
-// CPMapTemplate.h:159-169. The header's own @warning is the first thing this does: "If a navigation
-// alert is already visible, this method has no effect. You must dismiss the currently-visible
-// navigation alert before presenting a new alert." So a second presentation is not a replacement.
+// CPMapTemplate.h:159-169. The header's own @warning is the first thing this does: while a navigation alert is already showing,
+// the method has no effect, and the currently visible alert must be dismissed before a new one is presented. So a second presentation is not a replacement.
 - (void)presentNavigationAlert:(CPNavigationAlert *)navigationAlert animated:(BOOL)animated
 {
     if (navigationAlert == nil || self.charon_navigationAlert != nil) {
@@ -71,9 +70,8 @@ static const NSUInteger CharonMapMaximumPreviews = 12;
     }
 }
 
-// CPMapTemplate.h:171-178. The header says what the BOOL means, in its own words: "indicates whether
-// any visible alert was dismissed (YES) or if no action was taken because there was no alert to dismiss
-// (NO)". So the answer is whether there was one, which is a question about the state before the call
+// CPMapTemplate.h:171-178. The header says what the BOOL means: YES when a visible alert was dismissed, and NO when
+// nothing happened because no alert was there to dismiss. So the answer is whether there was one, which is a question about the state before the call
 // and not about anything this method did.
 - (void)dismissNavigationAlertAnimated:(BOOL)animated completion:(void (^)(BOOL dismissed))completion
 {
@@ -93,10 +91,9 @@ static const NSUInteger CharonMapMaximumPreviews = 12;
 
 #pragma mark - the panning interface
 
-// CPMapTemplate.h:129-138. The header's own rule: "When showing the panning interface, a maximum of
-// two mapButtons will be visible. If more than two mapButtons are visible when the template transitions
-// to panning mode, the system will hide one or more map buttons beginning from the end of the
-// mapButtons array."
+// CPMapTemplate.h:129-138. The header's own rule: while the panning interface is showing, at most two mapButtons are visible.
+// If more than two are visible when the template moves into panning mode, the system hides one or more map buttons, starting from the end of the
+// mapButtons array.
 - (void)showPanningInterfaceAnimated:(BOOL)animated
 {
     if (self.charon_panningInterfaceVisible) {
@@ -118,9 +115,8 @@ static const NSUInteger CharonMapMaximumPreviews = 12;
     }
 }
 
-// CPMapTemplate.h:140-144: "Dismisses the panning interface on the map interface if it is visible. @note
-// When dismissing the panning interface, mapButtons previously hidden by the system will no longer be
-// hidden."
+// CPMapTemplate.h:140-144: the header says dismissing the panning interface happens only if it is visible. A note there says
+// that mapButtons hidden by the system before the dismissal are no longer hidden afterward.
 - (void)dismissPanningInterfaceAnimated:(BOOL)animated
 {
     if (!self.charon_panningInterfaceVisible) {
@@ -143,8 +139,8 @@ static const NSUInteger CharonMapMaximumPreviews = 12;
 
 #pragma mark - the trip previews
 
-// CPMapTemplate.h:74-78: "Display a preview for a trip. Used to provide an overview for the upcoming
-// trip or can show multiple trip options ... Number of trips will be limited to 12."
+// CPMapTemplate.h:74-78: the header says a preview for a trip gives an overview of the coming trip, and it may show several
+// trip options; the number of trips is limited to 12.
 - (void)showTripPreviews:(NSArray<CPTrip *> *)trips textConfiguration:(CPTripPreviewTextConfiguration *)textConfiguration
 {
     if (trips == nil) {
@@ -155,8 +151,8 @@ static const NSUInteger CharonMapMaximumPreviews = 12;
     [self charon_drawTripPreviews];
 }
 
-// CPMapTemplate.h:86-90: "Display the route choices for a single trip. Trip previews can appear over an
-// active navigation session."
+// CPMapTemplate.h:86-90: the header says the route choices for one trip are displayed, and trip previews may be shown
+// on top of a running navigation session.
 - (void)showRouteChoicesPreviewForTrip:(CPTrip *)trip textConfiguration:(CPTripPreviewTextConfiguration *)textConfiguration
 {
     if (trip == nil) {
@@ -180,8 +176,8 @@ static const NSUInteger CharonMapMaximumPreviews = 12;
 
 #pragma mark - the travel estimates
 
-// CPMapTemplate.h:98-100: "Updates the arrival time, time remaining and distance remaining estimates
-// for a trip preview or actively navigating trip with the default color for time remaining."
+// CPMapTemplate.h:98-100: the header says the template refreshes the figures for a trip preview or an active
+// navigation trip, with the default color for time remaining.
 - (void)updateTravelEstimates:(CPTravelEstimates *)estimates forTrip:(CPTrip *)trip
 {
     // "with the default color for time remaining" is CPMapTemplate.h:37 - CPTimeRemainingColorDefault,
@@ -189,8 +185,8 @@ static const NSUInteger CharonMapMaximumPreviews = 12;
     [self updateTravelEstimates:estimates forTrip:trip withTimeRemainingColor:CPTimeRemainingColorDefault];
 }
 
-// CPMapTemplate.h:102-105: "Updates the arrival time, time remaining and distance remaining estimates
-// ... with a specified color for time remaining."
+// CPMapTemplate.h:102-105: the header says the template refreshes the arrival, remaining-time and remaining-distance figures,
+// with a specified color for time remaining.
 - (void)updateTravelEstimates:(CPTravelEstimates *)estimates
                       forTrip:(CPTrip *)trip
          withTimeRemainingColor:(CPTimeRemainingColor)timeRemainingColor

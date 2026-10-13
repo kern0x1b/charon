@@ -23,9 +23,8 @@
 // the Charon accessors declared there. Every one of those names is Charon-prefixed and carries no API.
 //
 // The rule that decides what a lane keeps, from the header's own sentences: :41-42 says
-// "highlightedAngle must not be set if status is CPLaneStatusNotGood" and "If highlightedAngle is
-// present it can not be included in secondaryAngles", and :42 adds "If highlightedAngle is present it
-// can not be included in angles". So the highlighted angle is never both the highlighted one and one of
+// highlightedAngle must not be set when the status is CPLaneStatusNotGood, a present highlightedAngle is not to be included in
+// secondaryAngles, and :42 says the same for angles, so the highlighted angle is never both the highlighted one and one of
 // the remaining ones.
 #import <Foundation/Foundation.h>
 #import "CharonCarPlay174.h"
@@ -55,16 +54,16 @@
     return [self initCharonWithAngles:angles highlightedAngle:highlightedAngle isPreferred:preferred];
 }
 
-// :43 highlightedAngle is "the angle that should be highlighted ... @c highlightedAngle must not be set
-// if status is @c CPLaneStatusNotGood" and is `readonly`, so this answers the stored angle and answers
+// :43 highlightedAngle is the angle that should be highlighted, and it is never set for a NotGood status:
+// it is `readonly`, so this answers the stored angle and answers
 // nil for a NotGood lane rather than a zero-degree measurement that the program never gave.
 - (NSMeasurement<NSUnitAngle *> *)highlightedAngle
 {
     return [self charon_highlightedAngle];
 }
 
-// :53 angles is "a list of the remaining angles of this lane guidance ... If @c highlightedAngle is set,
-// that angle must not be included in @c angles", and is `readonly, copy`.
+// :53 gives angles as the remaining angles of this lane guidance, leaving out the highlighted one whenever one is set,
+// and the property is `readonly, copy`.
 - (NSArray<NSMeasurement<NSUnitAngle *> *> *)angles
 {
     return [self charon_angles];

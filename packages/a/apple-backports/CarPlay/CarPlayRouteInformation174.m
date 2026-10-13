@@ -63,39 +63,38 @@
     return self;
 }
 
-// :30 "maneuvers is an array of CPManeuver objects, each describes a single maneuver."
+// :30 says maneuvers holds CPManeuver objects, one per single maneuver.
 - (NSArray<CPManeuver *> *)maneuvers
 {
     return _maneuvers;
 }
 
-// :35 "laneGuidances is an array of CPLaneGuidance objects, each describes a single lane guidance."
+// :35 says laneGuidances holds CPLaneGuidance objects, one per single lane guidance.
 - (NSArray<CPLaneGuidance *> *)laneGuidances
 {
     return _laneGuidances;
 }
 
-// :40 "currentManeuvers is an array of CPManeuver objects, describing the current maneuvers."
+// :40 says currentManeuvers holds CPManeuver objects for the current maneuvers.
 - (NSArray<CPManeuver *> *)currentManeuvers
 {
     return _currentManeuvers;
 }
 
-// :45 "currentLaneGuidance is a CPLaneGuidance object, describing the current lane guidance."
+// :45 says currentLaneGuidance holds a CPLaneGuidance object, for the current lane guidance.
 - (CPLaneGuidance *)currentLaneGuidance
 {
     return _currentLaneGuidance;
 }
 
-// :50 "tripTravelEstimates is a CPTravelEstimates object, describing the travel estimates for the
-// current trip."
+// :50 says tripTravelEstimates holds a CPTravelEstimates object, for the travel estimates of the current trip.
 - (CPTravelEstimates *)tripTravelEstimates
 {
     return _tripTravelEstimates;
 }
 
-// :53-55 "maneuverTravelEstimates ... describing the travel estimates for the first maneuver in the list
-// of current maneuvers." The object does not check that the estimates belong to that first maneuver --
+// :53-55 gives maneuverTravelEstimates as the travel estimates for the first maneuver of the current ones.
+// The object does not check that the estimates belong to that first maneuver --
 // it is a value the program built, and the header describes what a caller is expected to pass rather
 // than what the object refuses.
 - (CPTravelEstimates *)maneuverTravelEstimates

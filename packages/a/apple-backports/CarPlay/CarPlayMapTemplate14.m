@@ -16,9 +16,8 @@
 
 @implementation CPMapTemplate (CharonMapTemplate14)
 
-// CPMapTemplate.h:117-121: "Display a preview for a trip. Used to provide an overview for the upcoming
-// trip or can show multiple trip options ... Optionally provide a selectedTrip to have it highlighted in
-// the previews."
+// CPMapTemplate.h:117-121: the header says a preview for a trip gives an overview of the coming trip, or can show several trip
+// options, and an optional selectedTrip is highlighted among the previews.
 - (void)showTripPreviews:(NSArray<CPTrip *> *)trips
              selectedTrip:(CPTrip *)selectedTrip
         textConfiguration:(CPTripPreviewTextConfiguration *)textConfiguration

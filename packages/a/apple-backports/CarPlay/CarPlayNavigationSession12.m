@@ -1,8 +1,7 @@
 // The navigation session a map template begins, and the guidance it feeds back into that template.
 //
 // The 26.2 header is where this comes from, and it is what makes the session an object rather than a
-// wall: CPNavigationSession.h:26-27 says "A CPNavigationSession will be created for you when calling
-// startNavigationSessionForTrip: on CPMapTemplate", and CPMapTemplate.h:118 says to keep a reference to
+// rule: CPNavigationSession.h:26-27 says a CPNavigationSession is created for the app when startNavigationSessionForTrip: is called on the CPMapTemplate, and CPMapTemplate.h:118 says to keep a reference to
 // it to perform guidance updates. The 16.0 arm64e cache agrees about who makes one: the class's only
 // initialiser is the private -initWithTrip:mapTemplate:, and the private protocol
 // CPNavigationSessionProviding declares -hostStartNavigationSessionForTrip:reply:. The 12.0 cache,
@@ -211,8 +210,7 @@
 // the header's, and where the header is silent the measured answer from Apple's own object is followed
 // rather than a value invented -- see facts/CarPlay/NavigationSession174.md.
 
-// :83-86 "add CPManeuvers in chronological order ... The application must provide as many maneuvers as
-// possible, as soon as they are available." So each call APPENDS and the order is the order the
+// :83-86 says to add CPManeuvers in chronological order and to supply them early, as soon as they are known. So each call APPENDS and the order is the order the
 // program called in, which is what "chronological" means for a program feeding guidance as it computes
 // it. The list is what the card reads for its guidance text, so an addition shows at once.
 - (void)charon_addManeuvers:(NSArray<CPManeuver *> *)maneuvers
@@ -242,7 +240,7 @@
     [self charon_tellTemplate];
 }
 
-// :78 "Must be set to nil if there is no current lane guidance." So nil is stored and answered as nil,
+// :78 requires nil when there is no current lane guidance. So nil is stored and answered as nil,
 // and the value is kept as it was given rather than copied: the header says `copy`, and a
 // CPLaneGuidance is itself an NSCopying value (:17 of its own header), so the copy is the same value.
 - (void)charon_setCurrentLaneGuidance:(CPLaneGuidance *)currentLaneGuidance
@@ -251,7 +249,7 @@
     [self charon_tellTemplate];
 }
 
-// :96-97 "variants of the current road name. From most to least verbose." The header says `copy` and
+// :96-97 gives currentRoadNameVariants as the variants of the current road name, ordered from the wordiest to the least wordy. The header says `copy` and
 // the order is the program's, so the array is copied and kept as given -- first is the most verbose,
 // and the guidance text asks for the first one it can use.
 - (void)charon_setCurrentRoadNameVariants:(NSArray<NSString *> *)currentRoadNameVariants
@@ -260,7 +258,7 @@
     [self charon_tellTemplate];
 }
 
-// :101-102 "the current maneuver state based on how close the maneuver is." A plain value kept as given;
+// :101-102 gives maneuverState as a reading of how close the maneuver is. A plain value kept as given;
 // 0 is `CPManeuverStateContinue` in this SDK's enumeration and is what a session with nothing set
 // answers, measured on Apple's own object above.
 - (void)charon_setManeuverState:(CPManeuverState)maneuverState
@@ -269,9 +267,8 @@
     [self charon_tellTemplate];
 }
 
-// :54-57 "Resume the current trip with updated route information." The information is the program's own
-// object (CPRouteInformation.h:14 "information pertaining to a route that is necessary for
-// rerouting"), every one of its properties is `copy` (:30-55), and each is copied once here. The
+// :54-57 says the method resumes the current trip with updated route information. The information is the program's own
+// object (CPRouteInformation.h:14 names it as the data a route needs for rerouting), every one of its properties is `copy` (:30-55), and each is copied once here. The
 // maneuvers it carries become what the session's guidance draws, because a resumed trip's maneuvers are
 // the new route's, and the trip is no longer paused -- this is a resume, which is what the header says
 // the method is, and leaving the session showing a pause card after a resume would be a second answer.
@@ -344,9 +341,8 @@
 // own, so the card does not reach into the session's storage.
 - (CPTravelEstimates *)charon_latestEstimates
 {
-    // The route information a 17.4 resume carried answers for the maneuver being performed first:
-    // CPRouteInformation.h:53-55 calls maneuverTravelEstimates the estimates "for the first maneuver
-    // in the list of current maneuvers", which is the one a driver is arriving at.
+    // CPRouteInformation.h:53-55 gives maneuverTravelEstimates as the estimates for the first maneuver of those current
+    // maneuvers, which is the one a driver is arriving at.
     for (CPManeuver *maneuver in _charonRouteCurrentManeuvers) {
         CPTravelEstimates *estimates = _estimatesByManeuver[[self charon_keyForManeuver:maneuver]];
         if (estimates != nil) {
@@ -401,9 +397,8 @@
     if (estimates == nil) {
         return nil;
     }
-    // The header's own rule for an estimate it cannot show: "A distance value less than 0 or a time
-    // remaining value less than 0 will render as "--" ... Values less than 0 are distinguished from
-    // distance or time values equal to 0". So a negative time is a dash and a zero is a zero.
+    // The header's own rule for an estimate it cannot show: a distance or time remaining below 0 is rendered as a dash, and values below 0
+    // are kept apart from a distance or time of 0. So a negative time is a dash and a zero is a zero.
     NSTimeInterval remaining = estimates.timeRemaining;
     if (remaining < 0.0) {
         return @"--";
@@ -487,8 +482,7 @@
     label.textAlignment = NSTextAlignmentCenter;
     [card addSubview:label];
     // The lane guidance a 17.4 program added, drawn as one plate per lane under the estimates -- which
-    // is what CPLaneGuidance.h:14 says it is ("guidance to give the user which lane or lanes are
-    // preferred") and what :22's "each describes a single lane" says a CPLane is. A lane is drawn from
+    // is what CPLaneGuidance.h:14 describes as guidance on which lane or lanes the user should prefer, and what :22 says each lane is: a single lane. A lane is drawn from
     // its own status (CPLane.h:10-15: NotGood, Good, Preferred), so a program that marks one preferred
     // sees the difference, and the plate is the card's own touch target so a tap reaches the program
     // through the session rather than being swallowed here.
@@ -503,7 +497,7 @@
                 : [UIColor whiteColor];
             plate.layer.cornerRadius = 3.0;
             // The lane guidance the session says is current is the one whose plates the card outlines,
-            // because :78's "Must be set to nil if there is no current lane guidance" makes nil a real
+            // because the header at :78 makes nil the answer when there is no current lane guidance, so nil is a real
             // answer and an outlined plate is how a caller sees which of them it is. The border goes on
             // the PLATE the card drew, never on the lane's own layer: a lane is the program's value and
             // the port does not restyle what a program built.

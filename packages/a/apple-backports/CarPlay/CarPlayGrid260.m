@@ -57,8 +57,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation CPListTemplate (CharonGrid260)
 
-// CPListTemplate.h:255-265: "Assigning to this property will dynamically update the List Template and show
-// the new header." The value is kept and copied, per the header's own `nullable, copy`, and a nil in is a
+// CPListTemplate.h:255-265: assigning to this property updates the List Template at once and shows
+// the new header. The value is kept and copied, per the header's own `nullable, copy`, and a nil in is a
 // nil out. What a caller can observe is the array: this release's list template is a UITableViewController
 // that no head unit shows, and a CPGridButton is not a CPBarButton, so there is no bar of this port's own
 // that these buttons would go into - which is what the row's effect says as well.
@@ -114,8 +114,8 @@ NS_ASSUME_NONNULL_BEGIN
     return [self charon_messageConfiguration];
 }
 
-// CPGridButton.h:86-87. The header says "The system will select a title from your list of provided variants
-// that fits the available space", and the selection is the system's: what this answers is the list the
+// CPGridButton.h:86-87. The header says that the system selects a title from the list of variants supplied,
+// fitting the available space, and the selection is the system's: what this answers is the list the
 // caller gave, copied, and the variant this port draws is still the first, which is the rule the 12.0
 // object's own -charon_drawInRect: already uses.
 - (void)updateTitleVariants:(NSArray<NSString *> *)titleVariants
