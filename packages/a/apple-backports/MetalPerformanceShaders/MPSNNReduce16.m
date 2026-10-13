@@ -47,10 +47,10 @@
 //     :93, :119, and the class declarations at :173-410). So a ROW reduction answers one value per source
 //     row, a COLUMN one per source column, and a FEATURE-CHANNEL one per source pixel. That count is set by
 //     the class, not by this file's arithmetic.
-//   - The read window: the clipRectSource property (MPSNNReduce.h:31-42) names the part of the source that
+//   - The read window: the clipRectSource property (MPSNNReduce.h:39-47) names the part of the source that
 //     is read, cut to the bounds of the image, and defaults to the whole source. The MPSCNNKernel offset is
 //     not used by this filter (the same property note). The base initializer is marked unavailable
-//     (:44-47), so the concrete sub-classes are the ones to create.
+//     (:59), so the concrete sub-classes are the ones to create.
 //   - One value the caller sets: the weight of MPSNNReduceFeatureChannelsSum, default 1.0 (MPSNNReduce.h:413-420).
 //     This file takes that default. The weight scales the value of each feature channel before the sum or
 //     mean across channels is taken.
@@ -78,7 +78,7 @@
 
 // One scoped suppression, recorded in coordination/crutches.md with the reason, and the reason is the
 // release's own shape rather than this file's convenience. The SDK marks the base's -initWithDevice:
-// NS_UNAVAILABLE (:44-47) and each concrete class's -initWithDevice: NS_DESIGNATED_INITIALIZER, so
+// NS_UNAVAILABLE (:59) and each concrete class's -initWithDevice: NS_DESIGNATED_INITIALIZER, so
 // clang requires the concrete initializer to call a designated initializer of the base while the base's
 // only designated initializer is -initWithCoder:device:, which cannot know which of the twelve
 // operations to build and takes a nonnull coder this path has no use for. MPSImageReduceUnary16.m
@@ -102,15 +102,14 @@
     BOOL _byFeatureChannel;
     CharonMPSReduceOperation _operation;
     // The weight, in an ivar whose name is the base's own and not the one @synthesize would pick. The
-    // SDK declares `weight` on the two concrete feature-channel classes, so each of those
-    // autosynthesizes its OWN _weight and a base ivar called _weight is the collision clang reports
+    // SDK declares `weight` on the one concrete class MPSNNReduceFeatureChannelsSum, which autosynthesizes
+    // its OWN _weight, and a base ivar called _weight is the collision clang reports
     // ("property 'weight' attempting to use instance variable '_weight' declared in super class"). The
     // base's storage is therefore named for the base, and the accessors below - which the base's own
     // @interface does not declare, so nothing is synthesized for them here - read and write it. The
-    // concrete classes' own synthesized accessors still work: they shadow the base's for the two
-    // classes that declare the property, and the walk reads the base's, so setWeight: on those two has
-    // to reach the base's storage. That is what the accessors below are for, and why they are declared
-    // in a category on the two concrete classes rather than only in the base.
+    // concrete class's own synthesized accessors still work: they shadow the base's for that class, and
+    // the walk reads the base's storage, so setWeight: on that class has to reach it. That is what the
+    // accessors below are for.
     float _charonWeight;
 }
 
@@ -129,9 +128,9 @@
         made->_byFeatureChannel = byFeatureChannel;
         made->_operation = operation;
         // MPSNNReduce.h:418 gives the default value as 1.0; this file does not choose the number.
-        // It is read only by the two feature-channel classes that declare `weight`,
-        // and the release's own cache confirms which those are: MPSNNReduceFeatureChannelsSum lists
-        // -weight and -setWeight: and no other concrete class lists either.
+        // It is read only by the feature-channel classes (the walk scales sum and mean there). The SDK declares
+        // `weight` on MPSNNReduceFeatureChannelsSum alone (MPSNNReduce.h:413-420), and the release's own cache
+        // agrees: it lists -weight and -setWeight: for that class and no other concrete class.
         made->_charonWeight = 1.0f;
     }
     return made;
@@ -139,13 +138,13 @@
 
 - (instancetype)initWithDevice:(id<MTLDevice>)device
 {
-    // MPSNNReduce.h:44-47 marks this NS_UNAVAILABLE on the abstract base: "You must use one of the
-    // sub-classes of MPSNNReduceUnary." A caller that reached it named no axis and no operation, so
+    // MPSNNReduce.h:59 marks this NS_UNAVAILABLE on the abstract base, and the note above it (:56-58) names
+    // the concrete sub-classes to use. A caller that reached it named no axis and no operation, so
     // there is nothing to reduce. The release asserts and takes the process with it; this port refuses
     // by name and returns nil, which is what the rest of this package does rather than aborting a
     // caller that got the class wrong.
     CharonMPSRefuse(@"MPSNNReduceUnary: -initWithDevice: is unavailable on the abstract base, which"
-                    @" MPSNNReduce.h:44-47 says must not be instantiated - use one of the twelve"
+                    @" MPSNNReduce.h:56-59 says must not be instantiated - use one of the twelve"
                     @" concrete classes");
     return nil;
 }
@@ -162,16 +161,18 @@
     return self;
 }
 
-// The weight. ONE class declares it: MPSNNReduce.h:413-420, on MPSNNReduceFeatureChannelsSum. That
-// header gives its default as 1.0, and this file starts from that default. The scaling is per value,
-// applied before the combining step, so it changes every value a feature-channel run combines and
-// not the run's result.
+// The weight. The SDK declares it on MPSNNReduceFeatureChannelsSum alone (MPSNNReduce.h:413-420, default
+// 1.0, which this file starts from). Its note scales each channel's value before the combining step, so the
+// port multiplies each feature-channel value by the weight in the two operations that combine by sum or by
+// mean (the switch in encodeToCommandBuffer): the sum result is the weight times the sum, and the mean result
+// is the weight times the mean. A minimum or a maximum is never scaled. No SDK declares the weight on the
+// mean class, and nothing here sets it there, so the mean path stays at 1.0 through every public route.
 //
-// The accessors are here and not @synthesize'd, because the SDK declares `weight` on the two CONCRETE
-// classes and not on the base, so the base cannot synthesize for it: clang rejects a @synthesize whose
-// property the class's own @interface does not declare, and an autosynthesized `weight` in the base
-// collides with the concrete classes' own declaration of it. Declaring the accessors by hand is the
-// same shape MPSImage9.m:281 uses (`@synthesize colorTransform = _charonTransform;` for a property the
+// The accessors are here and not @synthesize'd, because the SDK declares `weight` on one CONCRETE class,
+// MPSNNReduceFeatureChannelsSum, and not on the base, so the base cannot synthesize for it: clang rejects a
+// @synthesize whose property the class's own @interface does not declare, and an autosynthesized `weight`
+// in the base collides with that class's own declaration of it. Declaring the accessors by hand is the
+// same shape MPSImage9.m:279 uses (`@synthesize colorTransform = _charonTransform;` for a property the
 // SDK spells differently), and the release's own cache confirms which classes declare it: only
 // MPSNNReduceFeatureChannelsSum lists -weight and -setWeight: among the twelve.
 - (float)charon_nnReduceWeight { return _charonWeight; }
@@ -283,7 +284,7 @@
 
     // One region read of the window, then one reduction per run. The values move out of the source and
     // into the destination's own buffer; nothing is reinterpreted and nothing is scaled, except by the
-    // weight the two feature-channel classes carry.
+    // weight (the weight note above says which operations it reaches).
     CharonMPSImageLayout slice = in;
     slice.count = winCols * winRows * in.channels;
     void *from = CharonMPSImageReadRegion(sourceImage, &slice,
@@ -340,11 +341,11 @@
             if (at >= winCols * winRows || which >= channels)
                 continue;
             double value = CharonMPSImageLoad(from, &slice, CharonMPSImageIndex(&slice, at, which));
-            // MPSNNReduce.h:413-420 applies the weight to the sum and the mean, so the port scales those two
-            // and no other operation. A minimum or a maximum is not scaled: a negative weight would change
-            // which value is extremal. A weight of 0.5, which every feature-channel case sets, leaves a min
-            // and a max where they were, so the differential holds the port to that division of the
-            // operations rather than to a uniform scale.
+            // The weight multiplies each channel's value in the sum and in the mean (the weight note above), so
+            // the port scales those two and no other operation. A minimum or a maximum is not scaled: a negative
+            // weight would change which value is extremal. The differential's weight-scope case sets the weight
+            // on the sum class and asks the minimum and the maximum what they answer, so a port that scaled them
+            // would fail there. Its twelve cases set 0.5 on the sum class alone; the others reduce the source's own values.
             if (_byFeatureChannel && (_operation == CharonMPSReduceSum || _operation == CharonMPSReduceMean))
                 value *= (double)_charonWeight;
             if (s == 0 || value < smallest) smallest = value;
