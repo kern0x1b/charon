@@ -54,8 +54,8 @@
 // pointer into a dead object always does. A second reason it was wrong: nothing read it.
 //
 // So this accepts the callback, stores nothing, and answers noErr, and here is precisely what a caller gets
-// that the host's caller would not. The 26.2 header says of the installed callback: "When installed,
-// outputMultiImageCallback will also be used when DecodeFrame operations fail and return a nonzero status."
+// The 26.2 header says of the installed callback that once it is installed, outputMultiImageCallback is also used when
+// DecodeFrame operations fail and hand back a nonzero status.
 // On the host that is true. **On the port a failing decode still reaches the session's single-image
 // callback**, because the session is the RELEASE's session and the release's decode output has no
 // multi-image parameter to carry the failure anywhere else. A caller that installed the callback to watch
@@ -87,8 +87,8 @@ OSStatus VTDecompressionSessionSetMultiImageCallback(
 // So the host REFUSES with kVTParameterErr (-12902), does not call the handler, and does not write
 // infoFlagsOut - the word handed in came back as 0x5a5a5a5a. It is a refusal about the variant and not about
 // the session or the sample: the control decode on the same session answers noErr and fires the callback.
-// Its own header says "If the VTDecompressionSessionDecodeFrameWithMultiImageCapableOutputHandler call
-// returns an error, the block will not be called", so refusing is the documented shape of the answer.
+// Its own header says that when the VTDecompressionSessionDecodeFrameWithMultiImageCapableOutputHandler call reports
+// an error the block is not run, so refusing is the documented shape of the answer.
 OSStatus VTDecompressionSessionDecodeFrameWithMultiImageCapableOutputHandler(
     VTDecompressionSessionRef CM_NONNULL session,
     CMSampleBufferRef CM_NONNULL sampleBuffer,

@@ -4,8 +4,8 @@
 #include <VideoToolbox/VTCompressionSession.h>
 #include <VideoToolbox/VTErrors.h>
 
-// VTCopySupportedPropertyDictionaryForEncoder: "Builds a list of supported properties and encoder ID for an
-// encoder", and the caller must release both. SDK 26.2 declares it at 11.0 (VTVideoEncoderList.h:55-64) and
+// VTCopySupportedPropertyDictionaryForEncoder builds a dictionary of the supported properties and the encoder ID for an
+// encoder, and the caller must release both. SDK 26.2 declares it at 11.0 (VTVideoEncoderList.h:55-64) and
 // no release this port builds exports it (_VTCopySupportedPropertyDictionaryForEncoder is absent from the 4.3
 // and the 6.1.3 armv7 caches), so the port exports it.
 //
@@ -44,8 +44,8 @@
 // dictionary belongs to the encoder the release would actually choose, which is not necessarily a hardware
 // one, and forcing the requirement first would answer a different question.
 
-// VTCopySupportedPropertyDictionaryForEncoder: "Builds a list of supported properties and encoder ID for an
-// encoder", and the caller must release both. Everything it returns is the RELEASE's own, asked for:
+// VTCopySupportedPropertyDictionaryForEncoder builds a dictionary of the supported properties and the encoder ID for an
+// encoder, and the caller must release both. Everything it returns is the RELEASE's own, asked for:
 //
 //   - the encoder ID is the compression session's kVTCompressionPropertyKey_EncoderID, read back through
 //     the release's VTSessionCopyProperty;

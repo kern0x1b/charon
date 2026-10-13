@@ -69,8 +69,8 @@ CHARON_DOUBLE_PROPERTY(float, scaleFactor)
 + (NSArray<NSNumber *> *)supportedScaleFactorsForFrameWidth:(NSInteger)frameWidth
                                                  frameHeight:(NSInteger)frameHeight
 {
-    // SDK 26.2 says it in one sentence: "Returns an array of supported scale factors values, OR AN EMPTY
-    // LIST if the processor doesn't support the dimensions." There is no low-latency super-resolution
+    // SDK 26.2 says it in one sentence: it returns the supported scale factors, or an empty list when the processor
+    // does not support the dimensions. There is no low-latency super-resolution
     // scaler on this release - +isSupported above is NO for the measured reason given there - so no
     // dimensions are supported and the documented answer is the empty list. The dimensions are not
     // examined, because no pair of them is supported and a list that depended on the pair would be

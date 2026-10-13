@@ -13,10 +13,9 @@
 // rather than a refusal of the idea:
 //
 //   - VTCompressionSession.h on VTCompressionSessionEncodeFrameWithOutputHandler, and
-//     VTDecompressionSession.h on VTDecompressionSessionDecodeFrameWithOutputHandler, both say the
-//     method "Cannot be called with a session created with a VTCompressionOutputCallback" / "...a
-//     VTDecompressionOutputCallbackRecord". So the caller creates the session with a NULL callback and
-//     passes a block per call instead.
+//     VTDecompressionSession.h on VTDecompressionSessionDecodeFrameWithOutputHandler, both say the methods are
+//     refused on sessions made with a VTCompressionOutputCallback or a VTDecompressionOutputCallbackRecord. So the caller
+//     creates the session with a NULL callback and passes a block per call instead.
 //
 //   - The callback is fixed at VTCompressionSessionCreate / VTDecompressionSessionCreate time and NO API
 //     CHANGES IT AFTERWARDS. Measured over the release's own symbol table, from

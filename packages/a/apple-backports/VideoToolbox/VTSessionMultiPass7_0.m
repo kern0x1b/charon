@@ -9,8 +9,8 @@
 
 // The multi-pass trio of VideoToolbox's session entry points, and what each honestly answers on a
 // release whose sessions are the 6.1.3 ones. Their answer is read out of the session rather than
-// assumed. VTCompressionSession.h says of each: "It is an error to call this function when multi-pass
-// encoding has not been enabled by setting kVTCompressionPropertyKey_MultiPassStorage." Multi-pass
+// assumed. VTCompressionSession.h says of each that calling it before multi-pass encoding is enabled, through the
+// kVTCompressionPropertyKey_MultiPassStorage property, is an error. Multi-pass
 // arrived with iOS 9.0 and the 6.1.3 encoder has no such property, so every one of the three is being
 // called in the case the header calls an error - but "the port cannot support multi-pass" is a claim
 // about the release, and the release can be ASKED: VTSessionCopyProperty with
@@ -20,9 +20,9 @@
 // The two output-handler variants cannot be made to work at all, and the cause is a measured absence of
 // API rather than a difficulty:
 //
-//   VTCompressionSessionEncodeFrameWithOutputHandler "Cannot be called with a session created with a
-//   VTCompressionOutputCallback", and VTDecompressionSessionDecodeFrameWithOutputHandler "Cannot be
-//   called with a session created with a VTDecompressionOutputCallbackRecord". Both say the caller
+//   VTCompressionSessionEncodeFrameWithOutputHandler is forbidden on a session made with a VTCompressionOutputCallback, and
+//   the decode counterpart, VTDecompressionSessionDecodeFrameWithOutputHandler, is forbidden on one made with a
+//   VTDecompressionOutputCallbackRecord. Both say the caller
 //   therefore creates the session with a NULL callback and passes a block per call. But the callback is
 //   fixed at VTCompressionSessionCreate / VTDecompressionSessionCreate time and NO API CHANGES IT
 //   AFTERWARDS: there is no VTCompressionSessionSetOutputCallback and no

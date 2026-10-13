@@ -93,8 +93,8 @@ CHARON_DOUBLE_PROPERTY(float, configurationModelPercentageAvailable)
 
 + (NSArray<NSNumber*> *)supportedScaleFactors
 {
-    // SDK 26.2: "the set of supported scale factors to use when initializing a super-resolution scaler
-    // configuration". There is no scaler to initialize on this release, so the set is empty - which is
+    // SDK 26.2 gives the scale factors a super-resolution scaler may be initialized with, as a set
+    // for its configuration. There is no scaler to initialize on this release, so the set is empty - which is
     // an answer and not a default: -initWithFrameWidth:frameHeight:scaleFactor:inputType:... above takes
     // the scale factor the caller wants and the same empty set is what says which values are allowed.
     return @[];
@@ -102,15 +102,15 @@ CHARON_DOUBLE_PROPERTY(float, configurationModelPercentageAvailable)
 
 - (void)downloadConfigurationModelWithCompletionHandler:(void (^)(NSError * _Nullable error))completionHandler
 {
-    // SDK 26.2 on this method: "downloads model assets required for the current configuration in the
-    // background ... If the download fails, the completion handler is invoked with an NSError, and the
-    // configurationModelStatus goes back to DownloadRequired."
+    // SDK 26.2 on this method says it downloads the model assets the current configuration needs, in the background.
+    // A failed download invokes the completion handler with an NSError, and the
+    // configurationModelStatus goes back to DownloadRequired.
     //
     // No request is made, and that is the whole of the behaviour rather than half of it: the port has
     // no VideoToolbox to download from (objc-inventory.lua over the armv7 6.1.3 cache finds no
     // VTFrameProcessor class and no VTFrameProcessor* symbol) and no processor whose model would be
     // needed. The completion RUNS, once, with VTFrameProcessorAssetDownloadFailed - the code SDK 26.2
-    // defines as "returned if download of a required model asset for the processor failed" - which
+    // defines for the case where a required model asset cannot be fetched, which
     // leaves -configurationModelStatus at the DownloadRequired the header's own enumeration starts at,
     // so the two agree, and a caller that waits on the completion is never left waiting.
     if (completionHandler)

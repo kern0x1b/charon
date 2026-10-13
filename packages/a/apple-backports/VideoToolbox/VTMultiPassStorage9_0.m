@@ -13,28 +13,27 @@
 // the port exports all three.
 //
 // WHAT THE HEADER ASKS FOR, and what each line below is for. VTMultiPassStorage.h says the object is
-// created "using a temporary file", that fileURL "specifies where to put the backing file" and that
-// passing NULL means "the video toolbox will pick a unique temporary file name", and the whole of the
+// created using a temporary file, that fileURL says where to put the backing file, and that
+// passing NULL leaves the framework to pick a unique temporary file name, and the whole of the
 // options dictionary is one key:
 //
-//     kVTMultiPassStorageCreationOption_DoNotDelete: "If the file did not exist when the storage was
-//     created, the file will be deleted when the VTMultiPassStorage object is finalized, unless you set
-//     the kVTMultiPassStorageCreationOption_DoNotDelete option to kCFBooleanTrue"
+//     kVTMultiPassStorageCreationOption_DoNotDelete: a file the storage created is deleted when the object is finalized,
+//     unless this option is set to kCFBooleanTrue, which the header describes as the way to keep it.
 //
 // So the file's lifecycle has three cases, and all three are implemented rather than described:
 //   - the caller named a file that does not exist: this object creates it, owns it, and deletes it on
 //     finalize unless the caller asked it not to;
 //   - the caller named a file that ALREADY EXISTS: Apple's own Create REFUSES it. Measured on this host's
 //     VideoToolbox, 2026-10-03: with a path whose file was written beforehand, Create returns
-//     kVTMultiPassStorageInvalidErr (-12214) and no session. So the header's "if the file did not exist
-//     when the storage was created" describes a case that cannot arise - the object refuses the other one -
+//     kVTMultiPassStorageInvalidErr (-12214) and no session. So the header's wording about a file that is missing at creation
+//     describes a case that cannot arise - the object refuses the other one -
 //     and this port answers the same way rather than inventing a case the release does not have;
 //   - the caller passed NULL: a unique name is chosen here, the file is created, and the first case
 //     applies. Measured: status 0 and a session.
 //
 // One thing this object does NOT do, stated here rather than left to be found: it writes no private header
-// into the file. Apple's writes 20 bytes at Create (measured), and the header says "The data stored in the
-// VTMultiPassStorage is private to the video encoder" - so a file this port writes is not readable by a
+// Apple's writes 20 bytes at Create (measured), and the header says what it stores is reserved to the video encoder, so a file
+// this port writes is not readable by a
 // real encoder, because the format is Apple's and private. Nothing in this port reads the file either: the
 // 6.1.3 encoder never sees a multi-pass storage, because kVTCompressionPropertyKey_MultiPassStorage
 // arrived with iOS 9. The file's LIFECYCLE is what this implements, because that is what the header
@@ -172,7 +171,7 @@ OSStatus VTMultiPassStorageCreate(
             return kVTParameterErr;
         }
     } else {
-        // "If you pass NULL for fileURL, the video toolbox will pick a unique temporary file name." A UUID
+        // When fileURL is NULL the header leaves the choice of a unique temporary file name to the framework. A UUID
         // in the process's temporary directory is unique in the way the header asks for, and this port has
         // no other source of one: the session's own name generator is the release's, and there is none.
         NSString *unique = [NSTemporaryDirectory()
@@ -235,7 +234,7 @@ OSStatus VTMultiPassStorageClose(VTMultiPassStorageRef multiPassStorage)
     CharonVTMultiPassStorage *storage = charon_to(multiPassStorage);
     if (!storage)
         return kVTMultiPassStorageInvalidErr;
-    // "After this function is called, all methods on the multipass storage object will fail." Closing twice
+    // Once this function has been called, every method on the multipass storage object fails, as the header says. Closing twice
     // is one of those methods, so it fails - and the code is MEASURED, not chosen: Apple's own Close answers
     // -12214 on a second call, which is kVTMultiPassStorageInvalidErr, the release's own code for exactly
     // this object being invalid. kVTInvalidSessionErr (-12903) is what this file answered before the host

@@ -59,9 +59,9 @@ OSStatus VTDecompressionSessionDecodeFrameWithOptions(
 // variant and not about the options - the five lines are identical - and not about the session, since the
 // control decode on the same session answers noErr.
 //
-// The block is not called, which its own header sanctions: "If the
-// VTDecompressionSessionDecodeFrameWithOptionsAndOutputHandler call returns an error, the block will not be
-// called." The block is also not retained: there is nowhere to retain it that the release would read, and the
+// The block is not called, which the header sanctions: when the
+// VTDecompressionSessionDecodeFrameWithOptionsAndOutputHandler call reports an error, the block is never run.
+// The block is also not retained: there is nowhere to retain it that the release would read, and the
 // release's own handler form of the decode does not exist at any band the port builds
 // (_VTDecompressionSessionDecodeFrameWithOutputHandler 4.3=0, 6.1.3=0).
 OSStatus VTDecompressionSessionDecodeFrameWithOptionsAndOutputHandler(
