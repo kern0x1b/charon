@@ -154,8 +154,8 @@ static inline long CharonMPSNNReadSize(long destinationSize, long stride, long f
 // The offset in one dimension, MPSNeuralNetworkTypes.h:411-431 verbatim in structure: the correction
 // from the window's left edge to its centre, the destination size that correction is measured against,
 // the extent a walk must read to fill that destination, how much of that extent the source does not
-// have, and how much of the shortfall lands on the left. The header's own centeringPolicy is 0 - "When
-// kernelSize is even: 0 pad bottom right. 1 pad top left" (:388) - which is the plain division by two
+// have, and how much of the shortfall lands on the left. The header's own centeringPolicy is 0, which
+// pads the bottom right when the kernel size is even (:388), and that is the plain division by two
 // below with no rounding correction.
 static inline long CharonMPSNNOffset(long sourceSize, long stride, long filterWindowSize, MPSNNPaddingMethod method)
 {

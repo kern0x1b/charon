@@ -6,30 +6,24 @@
 //
 // WHAT THE HEADER SAYS, and it is the whole contract for these two:
 //
-//   MPSImageHistogramInfo - numberOfHistogramEntries ("the number of histogram entries, or 'bins'"),
-//   histogramForAlpha, minPixelValue, maxPixelValue. minPixelValue: "Any pixel value less t[han]" and
-//   maxPixelValue: "Any pixel value greate[r than]" - so the range is half-open at the bottom and closed at
-//   the top, and a value outside it is not binned at all.
+//   MPSImageHistogramInfo holds numberOfHistogramEntries (the bin count), histogramForAlpha, minPixelValue
+//   and maxPixelValue. The header's wording on the two bounds gives the range as half-open at the bottom
+//   and closed at the top, and a value outside that range is not binned at all.
 //   :42  clipRectSource - which part of the source to read, intersected with the image, default
 //        MPSRectNoClip. Same rule the reduction family has, from the same wording.
-//   :49  zeroHistogram - "Indicates that the memory region in which the histogram results are to be written
-//        in the histogram buffer are to be zero-initialized or not. Default: YES." So a caller that sets NO
-//        is asking for the buffer's existing contents to be ADDED to, and a kernel that zeroed anyway would
-//        silently destroy the accumulation it was asked to do.
-//   :59  minPixelThresholdValue - "The histogram entries will be incremented only if pixel value is >=
-//        minPixelThresholdValue." A per-channel vector_float4, so the threshold is per channel.
-//   :206-215 the layout of the result, verbatim: "histogram results for the R channel for all bins followed
-//        by - histogram results for the G channel for all bins followed by - histogram results for the B
-//        channel for all bins followed by - histogram results for the A channel for all bins", and :208 "If
-//        histogramInfo.histogramForAlpha is false and the source image is RGBA then only histogram results
-//        for RGB channels are stored". So the buffer is CHANNEL-MAJOR, not bin-major, and the channel count
-//        depends on the source and on histogramForAlpha. Getting that wrong writes a plausible-looking
-//        array in the wrong order.
+//   :49  zeroHistogram - when YES (the default) the result memory is zero-initialized first, and when NO it is
+//        left as it was. So a caller that sets NO is asking for the buffer's existing contents to be ADDED to,
+//        and a kernel that zeroed anyway would silently destroy the accumulation it was asked to do.
+//   :59  minPixelThresholdValue - an entry is incremented only when the pixel value reaches this threshold.
+//        It is a per-channel vector_float4, so the threshold is per channel.
+//   :206-215 the result layout: all R-channel bins come first, then G, then B, then A, each channel's bins
+//        in order. :208 adds that with histogramForAlpha off on an RGBA source only the RGB channels are stored.
+//        So the buffer is CHANNEL-MAJOR, not bin-major, and the channel count depends on the source and on
+//        histogramForAlpha. Getting that wrong writes a plausible-looking array in the wrong order.
 //   :115 the encode takes a texture, a buffer and a byte offset - not an MPSImage - because the histogram
-//        is written to memory the caller owns, not to another image.
-//   :131 histogramSizeForSourceFormat: is "The number of bytes needed to store the result histograms", so
-//        it is the bins times the channels times the entry size, and it is what tells a caller how big to
-//        make the buffer.
+//   is written to memory the caller owns, not to another image.
+//   :131 histogramSizeForSourceFormat: gives the byte count the result histograms need, so it is the bins
+//        times the channels times the entry size, and it is what tells a caller how big to make the buffer.
 //
 // EXACT. A histogram COUNTS: it selects a bin and adds one to it. Nothing is averaged, nothing is scaled,
 // nothing is stored as a float that was computed, so the counts are integers and are compared for
@@ -87,7 +81,7 @@
 
 - (size_t)histogramSizeForSourceFormat:(MTLPixelFormat)sourceFormat
 {
-    // :131 - "The number of bytes needed to store the result histograms", and :208 says the channel count
+    // :131 gives the byte count the result histograms need, and :208 says the channel count
     // follows the source unless histogramForAlpha trims it. The entry is a 32-bit count, which is the
     // width the buffer description and histogramSizeForSourceFormat: together imply.
     // Only the formats this surface actually names are answered. There is no MTLPixelFormatRGB8Unorm on
@@ -143,9 +137,9 @@
 // OWED, and named here so the gap is in the file rather than only in the registry:
 //
 //   MPSImageHistogramEqualization (:268) and MPSImageHistogramSpecification (:340). Neither is a walk over
-//   an image. Both build a TRANSFORM - :249 "image transform (i.e. a cumulative distribution function of
-//   the histogram)" for the equalization, and :358 a transform from a "desiredHistogram" for the
-//   specification - and their only encode is :425 encodeTransformToCommandBuffer:, which takes an
+//   an image. Both build a TRANSFORM - :249 describes it as the cumulative distribution of the histogram,
+//   for the equalization, and :358 builds one from a desired histogram for the specification. Their only
+//   encode is :425 encodeTransformToCommandBuffer:, which takes an
 //   MTLComputeCommandEncoder. That is the one thing this host cannot do at all: its AGX family lacks
 //   computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with an
 //   unrecognized selector. So there is no oracle for them here and no way to check an answer, and an

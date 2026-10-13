@@ -21,9 +21,9 @@
 //   :48/:145/:218/:290 MPSImageGaussianPyramid, MPSImagePyramid, MPSImageLaplacianPyramid,
 //   MPSImageLaplacianPyramidAdd, MPSImageLaplacianPyramidSubtract - OWED
 //
-// THE ONE THING TO GET RIGHT. MPSImageConvolution.h:62-72 on bias: "The bias is a value to be added to
-// convolved pixel before it is converted back to the storage format." So the order is sum, then add the
-// bias, then store. Adding the bias after the store would be a different kernel, and one whose answer
+// THE ONE THING TO GET RIGHT. MPSImageConvolution.h:62-72 on bias: the bias is added to the convolved
+// value first, and only then is the sum written out. So the order is sum, then add the bias, then store.
+// Adding the bias after the store would be a different kernel, and one whose answer
 // differs in the last ulp on every pixel.
 //
 // The edge rule is inherited rather than this header's: MPSUnaryImageKernel's edgeMode, whose default
@@ -49,8 +49,8 @@
 #pragma clang diagnostic ignored "-Wobjc-designated-initializers"
 
 // One weighted sum of the source window, which is all the base and its three fixed-weight subclasses do.
-// `weights` is row-major over kernelWidth, per :87: "A pointer to an array of kernelWidth * kernelHeight
-// values to be used as the kernel."
+// `weights` is row-major over kernelWidth, per :87, which describes it as a pointer to kernelWidth times
+// kernelHeight values that form the kernel.
 static void CharonMPSConvolveRegion(MPSImage *source, MPSImage *destination, MTLRegion read,
                                     NSUInteger kernelWidth, NSUInteger kernelHeight, const float *weights,
                                     double bias, NSString *what)

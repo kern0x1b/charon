@@ -469,8 +469,8 @@ static inline double CharonMPSNeuronA(const CharonMPSNeuron *neuron, NSUInteger 
 //
 // MPSTemporaryImage is in this list, and it is here rather than in each kernel so that no kernel has to
 // remember which temporaries this framework has. MPSImage.h:1030-1036 is the header's own statement
-// that it belongs: "each time a MPSTemporaryImage is read by a MPSCNNKernel -encode... method, its
-// readCount is automatically decremented". The class carries the count - MPSImage.h:1051 declares
+// that it belongs: a CNN kernel's encode, when it reads one, lowers that temporary's read count by one
+// without the kernel doing anything. The class carries the count - MPSImage.h:1051 declares
 // @property (readwrite, nonatomic) NSUInteger readCount on MPSTemporaryImage and on no other image -
 // and MPSImageElements10.m answers -readCount and -setReadCount:, so a kernel that read one and left
 // the count alone would leave the count describing a use that has already happened.

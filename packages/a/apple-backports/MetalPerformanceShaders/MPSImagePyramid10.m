@@ -137,8 +137,7 @@ static double CharonMPSPyramidFiltered(const float *source, NSUInteger width, NS
                             (unsigned long)(level - 1));
             return NO;
         }
-        // Downsample: this level's pixel (x, y) is the filtered level above at (2x, 2y) - "Downsample()
-        // removes odd rows and columns from the input image" (MPSImageConvolution.h:582-583).
+        // Downsample: this level's pixel (x, y) is the filtered level above at (2x, 2y), which is the header's Downsample() dropping the odd rows and columns of its input (MPSImageConvolution.h:582-583).
         for (NSUInteger y = 0; y < height; y++) {
             for (NSUInteger x = 0; x < width; x++) {
                 NSUInteger at = 2 * x, over = 2 * y;

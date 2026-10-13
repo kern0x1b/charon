@@ -268,8 +268,8 @@ static double CharonMPSCnnWindowSum(const CharonMPSCnnInterleaved *view, size_t 
     return self;
 }
 
-// MPSCNNNeuron.h:195: "-initWithDevice: device NS_UNAVAILABLE", with the comment at :193-194 "You
-// must use initWithDevice:neuronDescriptor or use one of the sub-classes of MPSCNNNeuron instead."
+// MPSCNNNeuron.h:195 marks the plain -initWithDevice: as unavailable (NS_UNAVAILABLE), and the comment at
+// :193-194 directs a caller to the neuron-descriptor initializer or to one of the subclasses instead.
 // At 10.0 neither of those is available - the descriptor is 11.3 - so the base has no way in of its
 // own and says so, rather than becoming a class a caller can build that answers as something else.
 - (instancetype)initWithDevice:(id<MTLDevice>)device
@@ -410,11 +410,10 @@ static double CharonMPSCnnWindowSum(const CharonMPSCnnInterleaved *view, size_t 
 }
 @end
 
-// The two softmaxes, and the one rule the measurement settles: both walk across FEATURE CHANNELS at
-// one pixel. MPSCNNSoftMax.h:34-37 says "applied across feature channels and in a convolutional
-// manner at all spatial locations", and for the logarithmic form :101-104 gives
-// pixel(x,y,k) - ln{sum(exp(pixel(x,y,0)) ... exp(pixel(x,y,N-1)))} - both over the channel index at
-// one pixel, which is what the measured answers show.
+// The two softmaxes, and the one rule the measurement settles: both walk over FEATURE CHANNELS at one
+// pixel. MPSCNNSoftMax.h:34-37 places the walk over the channels at every spatial location, and for the
+// logarithmic form :101-104 gives pixel(x,y,k) - ln{sum(exp(pixel(x,y,0)) ... exp(pixel(x,y,N-1)))}, the sum
+// being over the channel index at one pixel, which is what the measured answers show.
 // The walk both softmaxes run, and the reason it is a static function of this file rather than a
 // method on one of them: MPSCNNSoftMax.h:34 and :96 make them SIBLINGS over MPSCNNKernel - neither
 // inherits from the other - so an encode written in one of them is not inherited by the other, and a
@@ -474,11 +473,10 @@ static void CharonMPSCnnSoftMaxWalk(MPSCNNKernel *owner, id<MTLCommandBuffer> co
     (void)owner;
 }
 
-// The two softmaxes, and the one rule the measurement settles: both walk across FEATURE CHANNELS at
-// one pixel. MPSCNNSoftMax.h:34-37 says "applied across feature channels and in a convolutional
-// manner at all spatial locations", and for the logarithmic form :101-104 gives
-// pixel(x,y,k) - ln{sum(exp(pixel(x,y,0)) ... exp(pixel(x,y,N-1)))} - both over the channel index at
-// one pixel, which is what the measured answers show.
+// The two softmaxes, and the one rule the measurement settles: both walk over FEATURE CHANNELS at one
+// pixel. MPSCNNSoftMax.h:34-37 places the walk over the channels at every spatial location, and for the
+// logarithmic form :101-104 gives pixel(x,y,k) - ln{sum(exp(pixel(x,y,0)) ... exp(pixel(x,y,N-1)))}, the sum
+// being over the channel index at one pixel, which is what the measured answers show.
 //
 // Whether this class's walk takes the logarithmic branch is a class method OVERRIDDEN by
 // MPSCNNLogSoftMax rather than an instance flag the subclass sets, and the reason is measured: the
@@ -504,11 +502,10 @@ static void CharonMPSCnnSoftMaxWalk(MPSCNNKernel *owner, id<MTLCommandBuffer> co
 @end
 
 @implementation MPSCNNLogSoftMax
-// The whole class, per MPSCNNSoftMax.h:107-110: the logarithmic form "can be achieved by taking the
-// natural logarithm of the result of the softMax filter", so it is the same walk with the
-// subtraction instead of the division, and nothing else of its own. The one thing it answers is
-// which of the two branches its walk takes - see MPSCNNSoftMax's class method for why that is a
-// method and not an instance flag.
+// The whole class, per MPSCNNSoftMax.h:107-110: the logarithmic form is the natural log of the plain
+// softmax result, so it is the same walk with the subtraction instead of the division, and nothing else
+// of its own. The one thing it answers is which of the two branches its walk takes; see the class
+// method on MPSCNNSoftMax for why that is a method and not an instance flag.
 + (BOOL)charon_mps_isLogarithmic
 {
     return YES;

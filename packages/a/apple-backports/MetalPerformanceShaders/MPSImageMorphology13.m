@@ -4,19 +4,18 @@
 // Four classes, and all four are the same thing with two choices in it: the maximum or the minimum over a
 // window centred on each pixel.
 //
-//   :17-18 MPSImageAreaMax : MPSUnaryImageKernel - "finds the maximum pixel value in a rectangular region
-//        centered around each pixel in the source image. If there are multiple channels in the source
-//        image, each channel is processed in..." - so the window is rectangular and centred, and each
-//        channel is reduced on its own.
+//   :17-18 MPSImageAreaMax : MPSUnaryImageKernel takes the maximum pixel value over a rectangular region
+//        centred on each pixel of the source. With several channels, each one is processed on its own, so the
+//        window is rectangular and centred, and each channel is reduced separately.
 //   :72 MPSImageAreaMin : MPSImageAreaMax - the minimum over the same window.
 //   :94 MPSImageDilate : MPSUnaryImageKernel - the maximum over the same window, but with the caller's probe:
-//        :129 -initWithDevice:kernelHeight:kernelWidth:values: takes "values The set of values to use as
-//        the dilate probe", and :116 "Each dilate shape probe defines a 3D surface of values", so the probe
-//        is a height per tap and the result is the maximum of source plus probe.
+//        :129 -initWithDevice:kernelHeight:kernelWidth:values: takes the values that make up the dilate probe,
+//        and :116 says each probe describes a 3D surface of values, so the probe is a height per tap and the
+//        result is the maximum of source plus probe.
 //   :174 MPSImageErode : MPSImageDilate - the minimum over the same probe.
 //
 // THE EDGE IS CLAMPED HERE, and that is the one fact that makes this family unlike the convolution's:
-// :69 and :93 both say "The edgeMode property is assumed to always be MPSImageEdgeModeClamp for this filter."
+// :69 and :93 both state the edgeMode is fixed to clamp for this filter.
 // So a window reaching off the edge REPLICATES the border rather than reading zero, and this file clamps
 // rather than multiplying by zero. Getting that wrong would be invisible on an interior pixel and wrong on
 // every edge pixel, which is why the case runs a window wider than the image on purpose.
@@ -81,8 +80,7 @@ static void CharonMPSMorphologyRegion(MPSImage *source, MPSImage *destination, M
                     for (NSUInteger kx = 0; kx < kernelWidth; kx++) {
                         long sy = (long)(read.origin.y + y + ky) - (long)halfH;
                         long sx = (long)(read.origin.x + x + kx) - (long)halfW;
-                        // MPSImageMorphology.h:69 and :93 - the edgeMode is assumed to always be
-                        // MPSImageEdgeModeClamp for this filter, so an off-edge tap takes the nearest edge
+                        // MPSImageMorphology.h:69 and :93 - the edge mode is fixed at clamp for this filter, so an off-edge tap takes the nearest edge
                         // value rather than zero. This is the difference from the convolution family.
                         if (sy < 0) sy = 0;
                         if (sx < 0) sx = 0;
@@ -185,8 +183,8 @@ static void CharonMPSMorphologyRegion(MPSImage *source, MPSImage *destination, M
 @synthesize kernelWidth = _kernelWidth;
 @synthesize kernelHeight = _kernelHeight;
 
-// :129 - initWithDevice:kernelHeight:kernelWidth:values: is the designated initializer. The probe is
-// "The set of values to use as the dilate probe" and :116 says each probe "defines a 3D surface of values",
+// :129 - initWithDevice:kernelHeight:kernelWidth:values: is the designated initializer. Its values argument is
+// the set of values the dilate probe is built from, and :116 says each probe describes a 3D surface of values,
 // so it is one height per tap, row-major over kernelWidth like the convolution family's weights.
 - (instancetype)initWithDevice:(id<MTLDevice>)device
                   kernelHeight:(NSUInteger)kernelHeight

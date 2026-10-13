@@ -44,9 +44,8 @@ static inline BOOL CharonMPSMatrixToImageIsRowMajor(MPSDataLayout layout)
 {
     if ((self = [super initWithDevice:device])) {
         _dataLayout = dataLayout;
-        // The header's own defaults, MPSImageCopy.h: "The origin, relative to [0, 0] in the source
-        // matrix ... defaults to [0, 0] at initialization time", and "The index of the source matrix
-        // in the batch ... defaults to 0 at initialization time".
+        // The header's own defaults, MPSImageCopy.h: the origin, measured from [0, 0] in the source
+        // matrix, starts at [0, 0] when the kernel is created, and the batch slot read from the source starts at zero.
         _sourceMatrixOrigin = MTLOriginMake(0, 0, 0);
         _sourceMatrixBatchIndex = 0;
         _device = device;

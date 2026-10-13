@@ -10,18 +10,16 @@
 //
 // TWO RULES HERE ARE NOT LIKE EVERY OTHER UNARY KERNEL IN THIS PACKAGE, and both come from the header:
 //
-//  1. clipRectSource (:31-42) - "The source rectangle to use when reading data. If the clipRectSource does
-//     not lie completely within the source image, the intersection of the image bounds and clipRectSource
-//     will be used. The clipRectSource replaces the MPSUnaryImageKernel offset parameter for this filter.
-//     The latter is ignored. Default: MPSRectNoClip, use the entire source texture."
-//     So `offset` does not enter this kernel at all, and the window is an INTERSECTION with the image
+//  1. clipRectSource (:31-42): the source rectangle that is read from. If it does not lie wholly inside the source
+//     image, only the overlap with the image is used. It takes the place of the offset parameter of
+//     MPSUnaryImageKernel, which this filter ignores; with no clip set, the whole source texture is used.
+//     That makes `offset` irrelevant here, and the window is an INTERSECTION with the image
 //     rather than a rectangle applied on its own. That intersection is done here with the same resolved
 //     region the walk uses, so the MPSRectNoClip sentinel is resolved against the image before any
 //     texture sees it - a NoClip rectangle has size {-1,-1,0} and to a texture its xoffset + width is -2,
 //     where the framework asserts.
-//  2. clipRect is NOT the read window (:38-40) - "The clipRect specified in MPSUnaryImageKernel is used to
-//     control the origin in the destination texture where the min, max values are written. The
-//     clipRect.width must be >=2. The clipRect.height must be >= 1." So clipRect says where the result
+//  2. clipRect is NOT the read window (:38-40): it fixes the place in the destination where the min and max
+//     values are written, and its width must be at least 2 with a height of at least 1. So clipRect says where the result
 //     lands in the destination, and those two lower bounds are preconditions. A clip that fails them is
 //     refused by name and writes nothing, rather than being quietly widened or clipped away.
 //

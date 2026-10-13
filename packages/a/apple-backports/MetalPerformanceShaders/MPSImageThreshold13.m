@@ -26,7 +26,7 @@
 // The transform is the header's array of THREE floats, and its default is BT.601/JPEG, which
 // MPSImageThreshold.h states five times, once per subclass:
 //
-//   @param transform  This matrix is an array of 3 floats. The default if no transform is specifed is
+//   @param transform  Three floats giving the matrix; when none is given the default is
 //                     BT.601/JPEG: {0.299f, 0.587f, 0.114f};
 //
 // A kernel of this family walks a one-channel image - MPSImage13.m refuses an image whose feature channel
@@ -87,8 +87,8 @@ static void CharonMPSFillTransform(float *out, const float *transform)
 // The transform is NOT applied, and this file does not apply it.
 //
 // MPSImageThreshold.h states the rule once for all five, at :18-19 and again at :78-79, :138-139,
-// :198-199 and :258-259: "If the input image is not a single channel image, convert the input image to a
-// single channel luminance image using the linearGrayColorTransform and then apply the threshold."
+// :198-199 and :258-259: a multi-channel input is first turned into a single luminance channel with the
+// linear gray color transform, and only then is the threshold applied.
 // That is ONE SCALAR LUMINANCE PER PIXEL - 0.299*r + 0.587*g + 0.114*b at the default - computed from
 // the three channels and then thresholded ONCE.
 //

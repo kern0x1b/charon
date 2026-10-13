@@ -28,8 +28,7 @@
 //     3   2   1  -5        -4   0   0  -9        -8   0   0 -13       -29 -18 -19 -37
 //
 // and with -bias set to 1 every one of those is exactly one larger. That settles the ORDER of
-// MPSImageConvolution.h:62-72 ("added to convolved pixel before it is converted back to the storage
-// format") by measurement rather than by reading: sum, then bias, then store.
+// MPSImageConvolution.h:62-72 (the bias is added to the convolved value and only then stored) by measurement rather than by reading: sum, then bias, then store.
 //
 // The off-image value is ZERO and not the nearest value. A clamped border would answer 2 at (0,0)
 // rather than 3, because the clamped left and top neighbours would both be the corner's own value.
@@ -160,12 +159,12 @@ static const float kCharonMPSImageLaplacianWeights[9] = { 0.0f, 1.0f, 0.0f,
 }
 
 // MPSImage.h:938-947: +temporaryImageWithCommandBuffer:imageDescriptor:. The header says the object
-// "will be released when the command buffer is committed", and its texture "will become invalid
-// before this time due to the action of the readCount property" - so what this port builds is an
-// ordinary MPSImage over the descriptor, tagged so the read count is decremented by the kernel that
-// reads it. The storage cannot be recycled behind the caller's back the way the release's private
-// texture is, because every MPS kernel in this package walks an MPSImage's values on the CPU
-// (MPSImage13.m holds them in a texture it reads), so a private, GPU-only texture would be a texture
+// MPSImage.h:938-947: +temporaryImageWithCommandBuffer:imageDescriptor:. The header ties the object's
+// lifetime to the command buffer it is committed on, and says its texture is invalidated earlier, by the
+// read count property - so what this port builds is an ordinary MPSImage over the descriptor, tagged so
+// that the kernel which reads it lowers the count. The storage cannot be recycled behind the caller's back
+// the way the release's private texture is, because every MPS kernel in this package walks an MPSImage's
+// values on the CPU (MPSImage13.m holds them in a texture it reads), so a private, GPU-only texture would be a texture
 // nothing here can read. That is stated rather than hidden: the read count is honoured, the recycling
 // it guards is the port's own whole-image lifetime, and MPSImage9.m's -initWithTexture: is what puts a
 // texture the caller chose into an image.

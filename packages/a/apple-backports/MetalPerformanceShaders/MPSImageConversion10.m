@@ -20,14 +20,13 @@
 // instead as color * alpha", so multiplying is the way into that and dividing the way out of it. The
 // nine cells are the switch below, because that is the table the header prints.
 //
-// The background colour is the other half of the composite cell. MPSImageConversion.h:49-53: "An array
-// of CGFloats giving the background color to use when flattening an image. The color is in the source
-// colorspace. The length of the array is the number of color channels in the src colorspace. If NULL,
-// use {0}." So a NULL background is black and a flattening cell with no colour is a composite over
-// black, which is what the header's own default means.
+// The background colour is the other half of the composite cell. MPSImageConversion.h:49-53 describes it
+// as an array of CGFloats, in the source colour space, with one entry per colour channel of that space.
+// When the array is NULL the header's default applies: black. So a flattening cell with no colour is a
+// composite over black, which is what that default means.
 //
 // OWED, refused by name rather than answered wrongly: the COLOUR SPACE conversion. The header's
-// conversionInfo argument "May be NULL, indicating no color space conversions need to be done"
+// The header's conversionInfo argument may be NULL, meaning no colour-space conversion is needed
 // (MPSImageConversion.h:56-57), and a non-NULL CGColorConversionInfoRef is opaque - CoreGraphics
 // declares no accessor that reads the two spaces back out of one - so a converter built from it alone
 // has no source space and no destination space to convert between, and CGColorConvert needs both. The

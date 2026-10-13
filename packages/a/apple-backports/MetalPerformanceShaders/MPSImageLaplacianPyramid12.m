@@ -14,12 +14,12 @@
 //
 // THE LAPLACIAN PYRAMID (:612-660) is the difference against an interpolated half-resolution level:
 //     LaplacianMipLevel[l] := GaussianMipLevel[l] - Interpolate(GaussianMipLevel[l+1])
-// where Interpolate is "the classical 2x signal interpolation procedure" (:619-620), which the header
-// then spells out as exactly two steps (:622-633): zero-stuffing, "dst.at(x, y) := src.at(x, y) if
-// even(x) and even(y) else 0", and then filtering with this class's inherited kernel. So the
-// interpolation here is a five-by-five filter over the zero-stuffed source, and a tap that lands on an odd
-// position reads the zero of the zero-stuffing - which is also what settles the border, and it is why no
-// edge mode is read here and none is asked for.
+// where Interpolate is the classical 2x signal interpolation (:619-620), which the header spells out
+// as exactly two steps (:622-633): zero-stuffing, which keeps the source value at each position where x
+// and y are both even and puts zero at the rest, and then filtering with this class's inherited kernel.
+// So the interpolation here is a five-by-five filter over the zero-stuffed source, and a tap that lands
+// on an odd position reads the zero of the zero-stuffing - which is also what settles the border, and it
+// is why no edge mode is read here and none is asked for.
 //
 // The result is then mapped pointwise (:645-649): LaplacianRangeScale(pixel, bias, scale) =
 // bias + pixel * scale, defaults bias 0.0 and scale 1.0. The subtract kernel (:683-704) writes it into
@@ -109,8 +109,7 @@ static double CharonMPSPyramidInterpolated(const float *source, NSUInteger width
         CharonMPSRefuse(@"%@: no source or no destination texture, so no level was written", what);
         return;
     }
-    // Limitation 2 of :655-658: "The number of channels, bit depth and resolution of the source and
-    // destination textures need to match."
+    // Limitation 2 of :655-658: source and destination must agree in channel count, bit depth and resolution.
     NSUInteger channels = 0, destinationChannels = 0;
     size_t elementSize = 0, destinationElementSize = 0;
     if (!CharonMPSPyramidPixelShape(sourceTexture.pixelFormat, &channels, &elementSize) ||

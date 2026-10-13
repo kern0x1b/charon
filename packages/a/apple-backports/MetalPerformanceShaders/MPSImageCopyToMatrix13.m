@@ -3,10 +3,9 @@
 // object per release: the band machinery keeps an object whole or drops it whole, so a file here carries
 // the API of exactly one release.
 //
-// The header, at :19-24: "The MPSImageCopyToMatrix copies image data to a MPSMatrix. The image data is
-// stored in a row of a matrix. The dataLayout specifies the order in which the feature channels in the
-// MPSImage get stored in the matrix. If MPSImage stores a batch of images, the images are copied into
-// multiple rows, one row per image."
+// The header, at :19-24, says the kernel copies image data into a matrix, one image's data per row. The
+// data layout sets the order in which the feature channels are placed in the matrix, and a batch of images
+// occupies several rows, one for each image.
 //
 // So one image becomes one row of the destination matrix, and dataLayout is what decides the order
 // inside that row. MPSImage.h:300-303 gives the two orders, as the surface's own comments:
@@ -15,16 +14,14 @@
 // header's default, at MPSImageCopy.h:37, is MPSDataLayoutFeatureChannelsxHeightxWidth, and that is what
 // -initWithDevice: is given when the caller does not say.
 //
-// Two things bound the copy, and both are the header's:
-//   - :23-24 "The origin, relative to [0, 0] in the destination matrix, at which to start writing
-//     results", defaulting to [0, 0], with "The z value must be 0". The origin's x is the row the first
-//     image is written to and its y the column that row starts at, which is how :89 reads it for the
-//     batch form: "Each image will be copied to its own row in the matrix, starting with row
-//     destinationMatrixOrigin.x".
-//   - :26-29 "The number of elements in a row in the matrix must be >= image width * image height *
-//     number of featureChannels in the image." That is a requirement on the caller, and a kernel in
-//     this port does not walk off the end of a buffer to find out: CharonMPSMatrixHolds asks it first and
-//     the kernel says so in the log and writes nothing.
+// Two things bound the copy, and both come from the header:
+//   - :23-24 the origin, measured from [0, 0] in the destination matrix, is where writing starts; it
+//     defaults to [0, 0], and its z must be 0. The origin's x is the row the first image goes into and its
+//     y the column that row starts at, which is how :89 reads it for the batch form, where each image gets
+//     its own row beginning at destinationMatrixOrigin.x.
+//   - :26-29 a row of the matrix must hold at least image width times image height times the feature
+//     channel count. That is a requirement on the caller, and a kernel in this port does not walk off the
+//     end of a buffer to find out: CharonMPSMatrixHolds asks it first and the kernel says so in the log and writes nothing.
 //
 // The data type: MPSImageCopy.h:70 and :91 both say the destination matrix's dataType "must match the
 // feature channel data type in sourceImage". A copy moves the bits, so a mismatch is refused rather than
@@ -61,8 +58,8 @@
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder device:(id<MTLDevice>)device
 {
-    // MPSImageCopy.h:50-61 says the standard coder initializers "should work, since the file can't know
-    // which device your data is allocated on, we have to guess and may guess incorrectly", and sends a
+    // MPSImageCopy.h:50-61 says the standard coder initializers may guess the wrong device, since a file
+    // cannot know where its data lives, and sends a caller to this one instead. The kernel's own state is not read back, for the reason MPSKernel's own
     // caller to this one instead. The kernel's own state is not read back, for the reason MPSKernel's own
     // -initWithCoder:device: gives and this family follows: the release's key for the layout is in no
     // header, and an invented key would read an archive the release never wrote. So the layout is the
@@ -168,9 +165,9 @@ static inline NSUInteger CharonMPSImageCopyToMatrixElement(MPSDataLayout layout,
         return;
     }
 
-    // MPSImageCopy.h:19-24: the image data is stored in a row of the matrix, and if the image holds a
-    // batch, one image per row. The origin's x is that first row and its y the column the row starts at,
-    // which is how :89 reads it.
+    // MPSImageCopy.h:19-24: each image's data goes into one row of the matrix, and if the image holds a
+    // batch, the images take one row each. The origin's x is that first row and its y the column the row
+    // starts at, which is how :89 reads it.
     NSUInteger images = sourceImage.numberOfImages ? sourceImage.numberOfImages : 1;
     NSUInteger elements = in.width * in.height * in.channels;
 

@@ -16,11 +16,11 @@
 // sliced array is a VIEW, recorded rather than performed (MPSCore/MPSNDArray.h's class discussion),
 // so its elements are not adjacent in memory and there is no single pointer to walk.
 //
-// The class discussion is also what fixes the ORDER every walk below uses: the major row, "the
-// dimension in which successive elements appear adjacent to one another in memory", is the 0th, and
-// the dimensions after it are a densely packed array of rows. So a packed host buffer is indexed
-// with dim 0 the fastest running, and MPSNDArray.h's own initialisers agree - the dimensionSizes
-// array "goes from fastest moving to slowest moving dimension".
+// The class discussion also fixes the ORDER every walk below uses: the major row, the dimension whose
+// neighbouring elements sit next to each other in memory, is the 0th, and the dimensions after it are a
+// densely packed array of rows. So a packed host buffer is indexed with dim 0 the fastest running, and
+// MPSNDArray.h's own initialisers agree - the dimensionSizes array runs from the dimension moving fastest
+// down to the one moving slowest.
 
 #import "CharonMPS.h"
 
@@ -78,10 +78,9 @@ static inline BOOL CharonMPSNDArrayUsable(MPSNDArray *_Nullable array, NSString 
 }
 
 // The bytes one row of the major row occupies: `elements` values of `elementSize` bytes, rounded up
-// to a multiple of 16. The rounding is the header's own recommendation, from the class discussion of
-// MPSCore/MPSNDArray.h: "Generally, it should be at least a multiple of 16 bytes", and it is why
-// dimension 0's stride is this and not the element's own width: a row that starts at a half line is
-// what the recommendation is about.
+// to a multiple of 16. The rounding is the header's own advice, from the class discussion of
+// MPSCore/MPSNDArray.h, which wants each row kept on a 16-byte boundary, and it is why dimension 0's
+// stride is this and not the element's own width: a row that starts mid-line is what the advice is about.
 static inline size_t MPSNDArrayRoundedRowBytes(NSUInteger elements, size_t elementSize)
 {
     size_t bytes = elements * elementSize;
@@ -202,10 +201,10 @@ static inline void CharonMPSNDArrayIndexOf(const CharonMPSNDArrayLayout *layout,
 }
 
 // The four-index form a 4-D matrix multiplication addresses with: a (row, column) pair inside a
-// matrix, and the matrix's two batch coordinates. A dimension of 1 is a BROADCAST, which the header
-// defines as the single element's own data being used "as appropriate to the remaining input's 3rd
-// or 4th dimension" (MPSNDArrayMatrixMultiplication.h:36-37) - so a coordinate past that dimension's
-// own length is its zero, and no loop is run at all.
+// matrix, and the matrix's two batch coordinates. A dimension of 1 is a BROADCAST: the header defines it
+// as the one element's data being reused for whatever index the other input has in that dimension
+// (MPSNDArrayMatrixMultiplication.h:36-37), so a coordinate past that dimension's own length is its zero,
+// and no loop is run at all.
 static inline void CharonMPSBatchIndex(const CharonMPSNDArrayLayout *layout, NSUInteger batch,
                                        NSUInteger matrices, NSUInteger first, NSUInteger second,
                                        NSUInteger *index)

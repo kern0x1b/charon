@@ -4,14 +4,13 @@
 // One object for one release: the class's own annotation above its @interface is ios(10.0)
 // (MPSCNNConvolution.h:1319) and nothing else is in this file.
 //
-// WHAT THE CLASS IS FOR, in the header's own words, and why this file is short. A fully connected layer
-// is "a convolution with a kernel that spans the whole of the input" (:1316-1324): the class exists so
-// that a caller can name the layer it means, and the header says the arithmetic is a convolution -
-// "The optimized convolution filter used by MPSImageLaplacian can also be used by creating a
-// MPSImageConvolution object" says the same thing about MPSImageConvolution (MPSImageConvolution.h:
-// :115-117), and MPSCNNFullyConnected's own discussion says a convolution with kernelWidth and
-// kernelHeight of the input's own shape does the same work "However, using the MPSCNNFullyConnected for
-// this is better for performance as it lets us choose the most [efficient kernel]" (:1338).
+// WHAT THE CLASS IS FOR, in the header's own terms, and why this file is short. A fully connected layer
+// is a convolution whose kernel covers the full extent of the input (:1316-1324): the class exists so that
+// a caller can name the layer it means, and the header says the arithmetic is a convolution. Likewise,
+// MPSImageLaplacian's fast convolution kernel can be expressed as an MPSImageConvolution object, which
+// says the same of MPSImageConvolution (MPSImageConvolution.h:115-117). MPSCNNFullyConnected's own
+// discussion says that a convolution with kernel width and height matching the input does the same work,
+// while the dedicated class is preferable for speed, since it lets the library pick the most suitable kernel (:1338).
 //
 // So the walk is MPSCNNConvolution's, which MPSCNNConvolution10.m carries and which is this class's
 // superclass - there is no second convolution in this file, and a second one would be a second answer

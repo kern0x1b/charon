@@ -25,25 +25,23 @@
 //
 // What the header fixes, and what it does not:
 //
-//   - What each class computes. MPSImageStatistics.h:18 "computes the minimum and maximum pixel values
-//     for a given region of an image", :66 "computes the mean and variance", :114 "computes the mean".
+//   - What each class computes. MPSImageStatistics.h:18 names the lowest and highest pixel values in a region
+//     of an image, :66 has the mean and variance, and :114 has the mean alone.
 //     A minimum and a maximum SELECT values the source already holds, so they are exact and the
 //     differential compares them for EQUALITY - a copy that moved a bit is a copy that moved a bit.
-//   - WHERE the answers go, which is the header's own sentence and not this file's arithmetic:
-//     MPSImageStatistics.h:19-21 "min value is written at pixel location (0, 0)" and "max value is
-//     written at pixel location (1, 0)". The mean and the variance have no such sentence here and are
-//     written along the destination's first row in that order, which is the shape a caller reading two
-//     values out of one kernel expects and is recorded in the rows below as this file's choice.
-//   - The read window: MPSImageStatistics.h:28-33 clipRectSource, "If the clipRectSource does not lie
-//     completely within the source image, the intersection of the image bounds and clipRectSource will be
-//     used", and "The clipRectSource replaces the MPSUnaryImageKernel offset parameter for this filter.
-//     The latter is ignored. Default: MPSRectNoClip, use the entire source texture." So offset does not
-//     enter these three kernels, and the window is an INTERSECTION with the image.
+//   - WHERE the answers go, which is the header's own placement and not this file's arithmetic:
+//     MPSImageStatistics.h:19-21 puts the minimum at pixel (0, 0) and the maximum at pixel (1, 0). The mean
+//     and the variance have no placement given there, so they are written along the destination's first row in
+//     that order, which is the shape a caller reading two values out of one kernel expects and is recorded in
+//     the rows below as this file's choice.
+//   - The read window: MPSImageStatistics.h:28-33 clipRectSource, which is the source rectangle read. If it
+//     does not lie wholly inside the source image, only the overlap with the image is used. It replaces the
+//     offset parameter of MPSUnaryImageKernel, which these kernels ignore; with no clip set, the whole source texture is used.
+//     So offset does not enter these three kernels, and the window is an INTERSECTION with the image.
 //   - What the destination's clipRect means, which is DIFFERENT from the source's and is stated:
-//     MPSImageStatistics.h:35-36 "The clipRect specified in MPSUnaryImageKernel is used to control the
-//     origin in the destination texture where the min, max values are written. The clipRect.width must
-//     be >=2. The clipRect.height must be >= 1." A destination narrower than two pixels cannot hold the
-//     min and the max at (0,0) and (1,0), and this file refuses that BY NAME with the shape in the
+//     MPSImageStatistics.h:35-36 says clipRect sets the origin in the destination where the min and max
+//     are written, and its width must be at least 2 with a height of at least 1. A destination narrower than
+//     two pixels cannot hold the min and the max at (0,0) and (1,0), and this file refuses that BY NAME with the shape in the
 //     message rather than writing the second value past the edge.
 //
 // Arithmetic: the sum is taken in double and divided ONCE, which leaves a mean and a variance within one

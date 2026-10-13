@@ -26,8 +26,8 @@
 //
 // -primarySourceRegionForDestinationSize: and -secondarySourceRegionForDestinationSize: are answered,
 // because each is arithmetic on the offset it names and the clip rectangle, and the header says exactly
-// which it consults: "The function will consult the MPSBinaryImageKernel primaryOffset and clipRect
-// parameters" (:1), and the same for the secondary.
+// which values it consults: the primary offset and clip rectangle of the binary kernel (:1), and the
+// secondary's are the same.
 //
 // OWED, refused by name rather than answered wrongly: the texture-path encodes and both in-place forms,
 // which need a GPU kernel this port does not have and MPSCopyAllocator semantics. The MPSImage path is

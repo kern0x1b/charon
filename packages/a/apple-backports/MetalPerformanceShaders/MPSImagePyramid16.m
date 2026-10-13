@@ -57,10 +57,10 @@
 //     band of this machine reaches 16.0: the armv7 ladder ends at 9.3.6 and armv7s at 10.3.4.
 //
 // THE FILTER, which every pyramid here uses and which the header gives three ways.
-//   the default (MPSImageConvolution.h:505-506)  "The filter kernel is the outer product of
-//     w = [ 1/16,  1/4,  3/8,  1/4,  1/16 ]^T, with itself"
-//   by a centre weight (:527-528)  "the outer product ww^T, where
-//     w = [ (1/4 - a/2),  1/4,  a,  1/4,  (1/4 - a/2) ]^T"
+//   the default (MPSImageConvolution.h:505-506): the outer product of w with itself, where
+//     w = the binomial weights 1, 4, 6, 4 and 1, each divided by 16, as a column
+//   by a centre weight (:527-528): the outer product of w with its own transpose, where
+//     w = [ (0.25 - a/2),  0.25,  a,  0.25,  (0.25 - a/2) ]^T
 //   or the caller's own (:548-552, row major, kernelWidth * kernelHeight values)
 // The kernel must be odd in both directions (:562-569), and that is refused by name rather than
 // answered with a filter the header does not describe.

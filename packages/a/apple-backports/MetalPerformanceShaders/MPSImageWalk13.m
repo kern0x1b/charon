@@ -399,8 +399,8 @@ BOOL CharonMPSImageMapBinary(MPSImage *primaryImage, MPSImage *secondaryImage, M
 }
 
 // Lay one image's channels into another's at a feature channel offset, the two sides in SEPARATE
-// buffers. MPSNNGraphNodes.h:2443-2446 is the rule: "As all images are padded out to a multiple of four
-// feature channels, M, N and O here are also multiples of four, even when the MPSImages are not", and the
+// buffers. MPSNNGraphNodes.h:2443-2446 is the rule: every image is padded up to whole groups of four feature channels, so the sizes M, N and O
+// here come out as multiples of four too, even if the MPSImage objects themselves do not, and the
 // channels of one source land in one block of the destination. So this reads a source row of
 // `source->channels` elements and writes them at `offset .. offset + source->channels` of a destination
 // row of `destination->channels` elements, at each side's own element width.
