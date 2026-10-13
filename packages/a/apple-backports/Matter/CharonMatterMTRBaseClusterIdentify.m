@@ -85,7 +85,7 @@ static NSError *charon_port_no_node_error(void)
 // node: a field it reads as out of range, or a reserved value. Which field, and for which value, is in
 // tools/matter-host-refusals.tsv, measured by tests/backports/host/matterdifferential/probe-params-modes.m.
 // Built once, as charon_port_no_node_error() is.
-static NSError *charon_port_constraint_error(void)
+static NSError *charon_port_refusal_interactionerror_135(void)
 {
     static NSError *error;
     static dispatch_once_t once;
@@ -646,7 +646,7 @@ static NSError *charon_port_constraint_error(void)
 {
     if ([[params valueForKeyPath:@"effectVariant"] unsignedLongLongValue] == 1) {
         if (completion) {
-            completion(charon_port_constraint_error());
+            completion(charon_port_refusal_interactionerror_135());
         }
         return;
     }
@@ -660,7 +660,7 @@ static NSError *charon_port_constraint_error(void)
 {
     if ([[params valueForKeyPath:@"effectVariant"] unsignedLongLongValue] == 1) {
         if (completionHandler) {
-            completionHandler(charon_port_constraint_error());
+            completionHandler(charon_port_refusal_interactionerror_135());
         }
         return;
     }
