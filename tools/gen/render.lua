@@ -8,6 +8,7 @@ local sources = import("sources", {anonymous = true})
 local protocols = import("protocols", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
 local order = import("order", {anonymous = true})
+local surface = import("surface", {anonymous = true})
 
 local function sorted_by_key(list, field)
     local tagged = {}
@@ -128,6 +129,9 @@ function render(tree, fw, corpus)
     local index = snapshot.index(spec)
     local pins = snapshot.pins(tree, fw)
     local overrides, override_order = snapshot.overrides(tree, fw)
+    -- a constant the registry names as implemented is defined by hand: the generator emits no definition or row for it (the registry row
+    -- is the fact; the hand-written file is the definition)
+    local implemented = surface.implemented_constants(tree, fw)
     local files = {}
 
     local lines = {layout.constants().MARK, "// Framework: " .. fw .. ". Spec: " .. layout.constants().SDK_ID .. ".",
@@ -140,7 +144,7 @@ function render(tree, fw, corpus)
 
     local by_release, release_list = {}, {}
     for _, r in ipairs(spec) do
-        if r.kind == "constant" and r.value_status == "found" and r.owned == "-" and r.tbd == "exported" then
+        if r.kind == "constant" and r.value_status == "found" and r.owned == "-" and r.tbd == "exported" and not implemented[r.api] then
             local release = release_of(r)
             if by_release[release] == nil then
                 by_release[release] = {}

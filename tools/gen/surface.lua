@@ -173,10 +173,9 @@ function oracle_defaults(corpus, fw)
     return out
 end
 
--- The registry rows of a framework, whatever their status: canonical key -> {registry = path, entry = row}, the first row of a
--- key winning over the files sorted by name.
-function registry_entries(tree, fw)
-    local found = {}
+-- Every row of a framework's registry files, whatever its status, in the files' order (sorted by name): {registry = path, entry = row}.
+function registry_rows(tree, fw)
+    local out = {}
     local single = path.join(tree, layout.constants().REGISTRY, fw .. ".json")
     local candidates = files.glob(path.join(tree, layout.registry_dir(fw), "*.json"))
     if os.isfile(single) then
@@ -191,11 +190,34 @@ function registry_entries(tree, fw)
             relative = path.join(layout.constants().REGISTRY, fw .. ".json")
         end
         for _, entry in ipairs(entries) do
-            local canonical = canonical_member(entry.api, entry.kind or "method")
-            if found[canonical] == nil then
-                found[canonical] = {registry = relative, entry = entry}
-            end
+            table.insert(out, {registry = relative, entry = entry})
+        end
+    end
+    return out
+end
+
+-- The registry rows of a framework, whatever their status: canonical key -> {registry = path, entry = row}, the first row of a
+-- key winning over the files sorted by name.
+function registry_entries(tree, fw)
+    local found = {}
+    for _, row in ipairs(registry_rows(tree, fw)) do
+        local canonical = canonical_member(row.entry.api, row.entry.kind or "method")
+        if found[canonical] == nil then
+            found[canonical] = row
         end
     end
     return found
+end
+
+-- The constants the registry names as implemented, by name: a row of any registry file, of kind constant, status implemented, whose
+-- owner is not the generator. The generator does not emit these (a hand-written file defines them; the registry row is the fact).
+function implemented_constants(tree, fw)
+    local names = {}
+    for _, row in ipairs(registry_rows(tree, fw)) do
+        local entry = row.entry
+        if entry.kind == "constant" and entry.status == "implemented" and string.sub(entry.owner or "", 1, 10) ~= "generator:" then
+            names[entry.api] = true
+        end
+    end
+    return names
 end
