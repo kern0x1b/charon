@@ -1,10 +1,10 @@
 #include <compression.h>
-#include <lz4.h>
-#include <lzfse.h>
+#include <lz4/lz4.h>
+#include <lzfse/lzfse.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include <zlib.h>
+#include <zlib/zlib.h>
 
 // The buffer API of the Compression framework over the codecs of this package: LZFSE over lzfse, ZLIB as raw deflate
 // over zlib, LZ4_RAW as one LZ4 block over lz4, and LZ4 as the framed blocks Apple writes around LZ4 blocks. The
