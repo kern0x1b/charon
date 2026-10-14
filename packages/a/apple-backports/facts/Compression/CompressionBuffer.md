@@ -126,6 +126,14 @@ with 0 bytes (the stream checks, seeds 1 and 2). It is not a format defect.
   allowance is 0 for LZ4 and LZMA (their thresholds are the codec's own: the same block, the same header), and 65536 for ZLIB
   and LZFSE (one 64 KiB block: the format leaves the host's block ends open). A host that writes nothing before FINALIZE
   (zeros with ZLIB or LZFSE) holds the layer to nothing.
+- The decode count before FINALIZE (rule, measured, v-int-c10; differential: stream_checks, "as much output before FINALIZE"):
+  for every codec and chunking, port_before >= host_before - allowance, where the allowance is the one above (0 for LZ4 and
+  LZMA, 65536 for ZLIB and LZFSE), and the final bytes and the status are equal. The reason: the API lets a decoder write
+  output into the caller's buffer as soon as it has it, so a port that writes more before FINALIZE than the host has given
+  its bytes earlier, within the bound of its own memory; a port that writes less is the defect. Measured with the whole
+  input in one call (the host's own stream): the host writes 131072 bytes before FINALIZE for 300000 zeros, 196608 for
+  words, 253227 for runs (ZLIB), and the port writes all it can (300000); with 1-byte and 7-byte chunks the two agree. LZFSE,
+  LZMA and LZ4 agree with the host within the rule at every chunking measured (seeds 1 and 2, failures=0).
 - The layer's own thresholds, which the check measures: LZ4 writes each 64 KiB block when it is complete (T = 65536). LZMA's
   stream encoder and decoder run under LZMA_RUN, so the first byte gives the header. ZLIB runs deflate and inflate with
   Z_NO_FLUSH, so its output comes where zlib's own deflate writes it. LZFSE encodes 32 KiB blocks: the host's first output

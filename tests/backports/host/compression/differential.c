@@ -222,12 +222,11 @@ static void stream_checks(compression_algorithm algorithm, int content, const ui
             size_t dgap = dfirst_p > dfirst_h ? dfirst_p - dfirst_h : dfirst_h - dfirst_p;
             check(dfirst_h == NO_OUTPUT || (dfirst_p != NO_OUTPUT && dgap <= dslack),
                   "port decodes the host's stream: output before FINALIZE within the allowance of the host's", (int)dfirst_p, (int)dfirst_h);
-            // ZLIB's count is not compared yet: with the input in one call the host gives 131072 to 253227 bytes before FINALIZE
-            // and the port gives all it can (measured: facts Streams, the open part of the entry in crutches.md)
-            if (algorithm != COMPRESSION_ZLIB) {
-                check(dbefore_p == dbefore_h, "port decodes the host's stream: as much output before FINALIZE as the host",
-                      (int)dbefore_p, (int)dbefore_h);
-            }
+            // the port writes at least as much before FINALIZE as the host, less the codec's allowance: a port that writes more
+            // has given its bytes earlier into the caller's buffer, which the API permits (facts Streams, the progress rule)
+            size_t allow = progress_allowance(algorithm);
+            check(dbefore_p + allow >= dbefore_h, "port decodes the host's stream: at least as much output before FINALIZE as the host, within the allowance",
+                  (int)dbefore_p, (int)dbefore_h);
         }
     }
     snprintf(where, sizeof where, "%s n=%zu content=%d stream pieces=7", name_of(algorithm), n, content);
