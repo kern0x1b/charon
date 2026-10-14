@@ -46,18 +46,6 @@ local function digest(text)
     return string.format("%08x", h)
 end
 
--- Byte order, never the locale's.
-local function bytes_lt(a, b)
-    local n = math.min(#a, #b)
-    for k = 1, n do
-        local x, y = a:byte(k), b:byte(k)
-        if x ~= y then
-            return x < y
-        end
-    end
-    return #a < #b
-end
-
 local function cells_of(line)
     local out = {}
     for cell in (line .. "\t"):gmatch("([^\t]*)\t") do
@@ -67,6 +55,7 @@ local function cells_of(line)
 end
 
 function failures(opt)
+    local byteorder = import("byteorder", {rootdir = opt.modules})
     local root = path.join(opt.modules, "..")
     local apple = path.join(root, "packages", "a", "apple-backports")
     local facts = path.join(apple, "facts", "Matter")
@@ -114,7 +103,7 @@ function failures(opt)
         local cells = cells_of(lines[index])
         local name, real_col, closure_col, reason, emit_col = cells[1], cells[2], cells[3], cells[4], cells[5]
         rows = rows + 1
-        if prev and not bytes_lt(prev, name) then
+        if prev and not byteorder.less(prev, name) then
             out[#out + 1] = "row " .. index .. " (" .. tostring(name) .. ") is not in byte order after " .. prev
         end
         prev = name

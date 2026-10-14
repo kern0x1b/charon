@@ -24,7 +24,9 @@
 -- and the rows; the corpus and the headers are outside the repository, so re-run this tool to check those.
 --
 -- Usage: xmake l tools/matter-closure.lua <Matter/Headers dir> <class-overlap.tsv> <corpus.tsv> <out.tsv>
--- Order is byte order everywhere (a table sort on strings follows the locale's collation, so the comparator is explicit).
+-- Order is byte order everywhere: the strings are sorted with byteorder.less, never with Lua's locale-following `<`.
+
+import("byteorder", {rootdir = path.join(os.scriptdir(), "..", "modules")})
 
 local UNAVAILABLE_MARKS = {"MTR_PROVISIONALLY_AVAILABLE", "MTR_UNSTABLE_API", "NS_UNAVAILABLE", "API_UNAVAILABLE"}
 local UNAVAILABLE = {}
@@ -255,18 +257,6 @@ local function parse(file, text)
     return blocks, typedefs
 end
 
--- Byte order, never the locale's: Lua's own string '<' follows strcoll.
-local function bytes_lt(a, b)
-    local n = math.min(#a, #b)
-    for k = 1, n do
-        local x, y = a:byte(k), b:byte(k)
-        if x ~= y then
-            return x < y
-        end
-    end
-    return #a < #b
-end
-
 -- A pure-Lua digest for the staleness line: FNV-like over the bytes, enough to notice a changed input.
 local function digest(text)
     local h = 0
@@ -304,7 +294,7 @@ local function load_headers(dir)
         for name in pairs(tds) do
             names[#names + 1] = name
         end
-        table.sort(names, bytes_lt)
+        table.sort(names, byteorder.less)
         for _, name in ipairs(names) do
             typedefs[name] = typedefs[name] or tds[name]
         end
@@ -369,7 +359,7 @@ function main(headers, overlap_path, corpus_path, outfile)
             real[cells[1]] = cells[2]
         end
     end
-    table.sort(input, bytes_lt)
+    table.sort(input, byteorder.less)
 
     -- the roots: the corpus's Matter class rows that the headers define and do not mark unavailable
     local roots, corpus_rows, not_in_headers, provisional = {}, 0, 0, 0
@@ -388,7 +378,7 @@ function main(headers, overlap_path, corpus_path, outfile)
             end
         end
     end
-    table.sort(roots, bytes_lt)
+    table.sort(roots, byteorder.less)
 
     -- the closure, breadth first over the sorted roots; the reason is the edge that first reached a class
     local reason = {}
@@ -414,7 +404,7 @@ function main(headers, overlap_path, corpus_path, outfile)
             m.api = member_api(owner, m)
             table.insert(members, m)
         end
-        table.sort(members, function(a, b) return bytes_lt(a.api, b.api) end)
+        table.sort(members, function(a, b) return byteorder.less(a.api, b.api) end)
         for _, m in ipairs(members) do
             if not (m.mark or m.blockmark) then
                 local targets = classes_in(m.toks, classes, typedefs, {}, {})
@@ -424,7 +414,7 @@ function main(headers, overlap_path, corpus_path, outfile)
                         names[#names + 1] = name
                     end
                 end
-                table.sort(names, bytes_lt)
+                table.sort(names, byteorder.less)
                 for _, name in ipairs(names) do
                     if not reason[name] then
                         reason[name] = owner .. " -> " .. m.api .. " -> " .. name
@@ -441,7 +431,7 @@ function main(headers, overlap_path, corpus_path, outfile)
     for _, file in ipairs(os.files(path.join(headers, "*.h"))) do
         texts[#texts + 1] = path.filename(file) .. "\0" .. io.readfile(file)
     end
-    table.sort(texts, bytes_lt)
+    table.sort(texts, byteorder.less)
     local corpus_text = io.readfile(corpus_path)
     local stamp = "# inputs: class-overlap.tsv " .. digest(overlap_text) .. "; corpus " .. digest(corpus_text)
         .. "; headers " .. digest(table.concat(texts))
