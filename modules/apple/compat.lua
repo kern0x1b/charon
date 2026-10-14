@@ -40,6 +40,7 @@ ARRIVED = {
     objc_opt_self = {iOS = "11.0", Macos = "10.13", tvOS = "11.0", watchOS = "4.0"},
     voucher_adopt = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},
     voucher_copy = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},
+    os_release = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},
     qos_class_self = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},
     dispatch_block_create = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},
     dispatch_block_create_with_qos_class = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},

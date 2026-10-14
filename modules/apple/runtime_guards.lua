@@ -96,10 +96,6 @@ GUARDS = {
         ["_UIContentSizeCategoryCompareToCategory"] = "stdlib/public/Darwin/UIKit/UIKit.swift:371 @ swiftlang/swift 71d85a7c28eed8f46241649a723ddf23989139c6 (swift-5.2.5-RELEASE)",
         ["_UIContentSizeCategoryIsAccessibilityCategory"] = "stdlib/public/Darwin/UIKit/UIKit.swift:366 @ swiftlang/swift 71d85a7c28eed8f46241649a723ddf23989139c6 (swift-5.2.5-RELEASE)",
     },
-    ["libswift_Concurrency.dylib"] = {
-        ["_memset_s"] = "patch packages/s/swift-runtime/patches/guard-the-runtime-s-one-memset-s-call.patch (if (memset_s) in front of the call in Runtimes/Core/runtime/StackAllocator.h, with the header's own fallback behind it). The SDK declares memset_s from iOS 7.0 (usr/include/string.h, behind __STDC_WANT_LIB_EXT1__), so the import is weak at any older deployment target, and neither iOS 6.1.3 nor 4.3 exports it - read out of this machine's caches of both through apple.dyld, which is why the call needs the test",
-        ["_os_release"] = "include/swift/Runtime/VoucherShims.h:70 @ swiftlang/swift b8189d766d86ad7fc8106787d6ce9e402f38dd72",
-    },
 }
 
 -- found: what dyld.unexported_weak_imports answers for the installed libraries. opt: what this build is, so that a row

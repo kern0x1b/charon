@@ -724,7 +724,7 @@ script takes the flags from
 `import("@addon.charon.apple.compat").force_includes(package:dep("apple-compat"), {"clock_gettime"})`.
 
 What the Swift runtime calls and an old release lacks is there as well:
-`memset_s` and `objc_allocWithZone` (iOS 7), `voucher_copy`, `voucher_adopt` and
+`memset_s` and `objc_allocWithZone` (iOS 7), `voucher_copy`, `voucher_adopt`, `os_release` and
 `qos_class_self` and `dispatch_block_*` (8), `clock_getres`, `dispatch_activate` and
 `dispatch_assert_queue$V2` (10), and `os_unfair_lock_*` (10) and
 `os_unfair_recursive_lock_*` (12). A release that has one of them is asked for

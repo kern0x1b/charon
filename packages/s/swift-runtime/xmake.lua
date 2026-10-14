@@ -40,8 +40,10 @@ package("swift-runtime")
     end
 
     -- What every image of the runtime and of the port renames, because the release the port is built for either does not
-    -- have the call or gives it a narrower meaning.
-    local renamed = {"clock_gettime", "clock_getres", "dispatch_get_global_queue", "os_system_version_get_current_version"}
+    -- have the call or gives it a narrower meaning. memset_s is the runtime's one call of it, in clearMetadata() of the task
+    -- allocator's slabs: the SDK declares it from iOS 7, so the call imports it weakly below that, and the shim is the call
+    -- apple-compat provides instead (a guard in front of the call leaves the weak import in the image).
+    local renamed = {"clock_gettime", "clock_getres", "dispatch_get_global_queue", "memset_s", "os_system_version_get_current_version"}
 
     -- With the backports, the files of Foundation's overlay whose iOS 7 marks stay: what they mark the backports do not
     -- carry. Found by building without the marks and reading what the compiler refused: Progress has no entry in the
