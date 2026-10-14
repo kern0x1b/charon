@@ -17,6 +17,7 @@ ARRIVED = {
     clock_gettime = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
     os_system_version_get_current_version = {iOS = "10.0"},
     fdopendir = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},
+    fstatat = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},
     posix_memalign = {iOS = "3.0", Macos = "10.6"},
     openat = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},
     fchmodat = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},

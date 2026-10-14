@@ -3,10 +3,20 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <sys/param.h>
+#include <sys/stat.h>
 
 __attribute__((visibility("hidden")))
 int charon_resolve_at(int directory, const char *path, char *resolved)
 {
+    if (path[0] == '\0') {
+        struct stat info;
+        if (directory != AT_FDCWD && fstat(directory, &info) == 0 && !S_ISDIR(info.st_mode)) {
+            errno = ENOTDIR;
+            return -1;
+        }
+        errno = ENOENT;
+        return -1;
+    }
     if (path[0] == '/' || directory == AT_FDCWD) {
         if (snprintf(resolved, MAXPATHLEN, "%s", path) >= MAXPATHLEN) {
             errno = ENAMETOOLONG;
