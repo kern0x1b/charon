@@ -19,6 +19,8 @@ package("matter")
     add_deps("charon@apple-compat", {alias = "apple-compat"})
     -- The backports the process carries are a project decision (includes/apple-ios/xmake.lua's apple_backports):
     -- this package needs network, and swift-runtime's lift needs coredata, and one package has one set of configs.
+    -- The port's apple_backports must name security and commoncrypto too: xmake refuses two dependents whose configs differ
+    -- ("conflict version dependencies" on apple-backports), and swift-runtime's dependency takes the port's set, not this one.
     -- security: SecKeyCopyExternalRepresentation (MTRP256KeypairBridge.mm), which iOS 6.1.3's Security lacks. commoncrypto:
     -- CCRandomGenerateBytes, which BoringSSL's iOS random source calls without a guard (third_party/boringssl/repo/src/crypto/
     -- rand_extra/ios.c:25), so it must bind to the backport and not to a null weak import on 6.1.3.
