@@ -1,5 +1,5 @@
 # What lift() leaves alone against iPhoneOS26.2.sdk (the archive the iphoneos-sdk package installs for 26.2): one full lift of the registry of this series
-# (v-matter8: CBAdvertisementDataIsConnectable, declared by the iOS 26.2 CoreBluetooth at ios 7.0, is carried by CoreBluetoothBackports (ba9b453319)), none dropped: 3638 lines.
+# (v-matter8: CBAdvertisementDataIsConnectable, declared by the iOS 26.2 CoreBluetooth at ios 7.0, is carried by CoreBluetoothBackports), none dropped: 3638 lines.
 # Each is a name the lift did not reach, and each was looked for in every header of the SDK (usr/include and the frameworks) and found declared nowhere,
 # but for the ones told here:
 #  - class (17): a class no header declares (a stub exports some, some are private, some a later SDK's).
