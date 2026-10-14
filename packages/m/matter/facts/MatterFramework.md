@@ -311,7 +311,7 @@ of the framework's own xcconfig, which I had not read yet.
   the package, so the reference is not null when the backport loads. Accepted by the coordinator as it stands; the
   BoringSSL reference (`third_party/boringssl/repo/src/crypto/rand_extra/ios.c:25`) is not changed by this package.
   `_os_unfair_lock_lock` and `_os_unfair_lock_unlock` are non-weak and bound to the packaged `libc++abi.1.dylib`
-  (`/usr/lib/charon/org.charon.libcxx-6b5ca29e/`, the packaged build of this release, `~/.xmake/packages/l/libcxx/23.1.1/6b5ca29e…`; the digest moved after 5be4d2bce2 and the v-matter7 install name e07f9ca7 is not the one this install links)`). The apple-compat archive (`libapple-compat.a`,
+  (`/usr/lib/charon/org.charon.libcxx-6b5ca29e/`, the packaged build of this release, `~/.xmake/packages/l/libcxx/23.1.1/6b5ca29e...`; the digest moved after 5be4d2bce2 and the v-matter7 install name e07f9ca7 is not the one this install links)`). The apple-compat archive (`libapple-compat.a`,
   in 18 of the 21 installs under `~/.xmake/packages/a/apple-compat/latest`, each read with `nm -gU`) exports only `_os_unfair_lock_assert_owner` and `_os_unfair_lock_assert_not_owner` in
   the `os_unfair_lock` family, so the archive defines neither lock nor unlock and the link carries no second definition
   of either. Measured on the installed dylib: `nm -gU` reports neither as a defined symbol.
