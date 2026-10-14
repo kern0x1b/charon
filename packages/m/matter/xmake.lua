@@ -261,7 +261,7 @@ package("matter")
         local libcxx = package:dep("libcxx"):installdir("lib")
         -- The framework's device browser asks Network for a connection (MTRDeviceConnectivityMonitor.mm), and iOS 6
         -- has no Network.framework, so the nw_* calls come from the backport that carries them over BSD sockets.
-        local backports = package:dep("backports"):installdir("lib")
+        local backports = package:dep("apple-backports"):installdir("lib")
         local output = path.join(package:installdir("lib"), "libMatterBackports.dylib")
         -- No -Wl,-no_implicit_dylibs. It was here to get past ld64 956.6 asserting in
         -- OutputFile::dylibToOrdinal - "it != _dylibToOrdinal.end()" - while encoding this symbol
