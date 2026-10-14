@@ -113,7 +113,9 @@ package("swift-system")
         os.cp(lib, package:installdir("lib"))
 
         os.cp(path.join(os.scriptdir(), "tests", "differential"), package:installdir("share"))
-        -- What a program that imports SystemPackage compiles against: the module folder (rules/swift adds its -I).
-        package:setenv("CHARON_SWIFT_MODULES", path.join(package:installdir("lib"), "swift", "iphoneos"))
+        -- What a program that imports SystemPackage compiles against: the module folder, and the folder of CSystem's module map
+        -- (SystemPackage imports CSystem; measured: without it a consumer fails with "missing required module 'CSystem'").
+        -- The map is the one the module was built with: its headers are guarded per platform.
+        package:setenv("CHARON_SWIFT_MODULES", path.join(package:installdir("lib"), "swift", "iphoneos"), path.join(tree, "Sources", "CSystem", "include"))
         print("%s: %s installed; libswiftSystem.dylib is in %s", package:name(), package:version_str(), package:installdir("lib"))
     end)
