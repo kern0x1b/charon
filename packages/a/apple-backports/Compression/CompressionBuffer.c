@@ -1,6 +1,7 @@
 #include <compression.h>
 #include <lz4/lz4.h>
 #include <lzfse/lzfse.h>
+#include <lzfse/lzfse_internal.h>
 #include <lzma/lzma.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -406,11 +407,12 @@ COMPRESSION_EXPORT size_t compression_decode_buffer(uint8_t *__restrict dst_buff
 // (zlib's and liblzma's streams, and the LZ4 and LZFSE blocks of this layer), and a block's output is written as soon as
 // the block is complete, which is where the host writes it (measured: facts/Compression/CompressionBuffer.md, Streams).
 // The output is handed out from one buffer, so memory is bounded by a block of input, a block of output and the 64 KiB
-// dictionary of LZ4 decoding. The exception is LZFSE decoding, which buffers its input to FINALIZE and writes nothing
-// before it: the host writes its blocks as they complete (the open difference named in coordination/crutches.md).
-// LZ4_RAW has no stream on the host (init fails), and the layer refuses it too.
+// dictionary of LZ4 decoding. LZFSE decoding goes block by block as well: a block is decoded when it is whole, after the
+// window of output before it (LZFSE_ENCODE_MAX_D_VALUE bytes at most, the farthest a match reaches back), so its memory is
+// that window, one block of input and one block of output (see step_lzfse_decode). LZ4_RAW has no stream on the host
+// (init fails), and the layer refuses it too.
 enum { kStreamBlock = 0x10000, kLZFSEBlock = 0x8000, kOutputCapacity = 2 * 0x10000 + 8192, kPendingCapacity = 2 * 0x10000 + 16 };
-enum { kChunkMax = 1 << 30 };
+enum { kChunkMax = 1 << 30, kLZFSEWindow = LZFSE_ENCODE_MAX_D_VALUE };
 static const uint8_t kLZFSEEndOfStream[4] = {'b', 'v', 'x', '$'};
 #define NO_OUTPUT ((size_t)-1)
 
@@ -419,22 +421,27 @@ struct layer_stream {
     compression_algorithm algorithm;
     z_stream z;                 // ZLIB, raw deflate or inflate
     lzma_stream lz;             // LZMA, the stream encoder or the stream decoder
-    void *work;                 // LZFSE encoder scratch
+    void *work;                 // LZFSE encoder or decoder scratch
     uint8_t *pending;           // input not yet coded: one block (LZ4 and LZFSE encode), or the LZ4 blocks being read
     size_t pending_size;
-    uint8_t *history;           // LZ4 decoding: the last 64 KiB written, the dictionary of the next block
-    size_t history_size;
+    uint8_t *history;           // the last output written, the dictionary of the next block: 64 KiB (LZ4 decoding), or the
+    size_t history_size;        // LZFSE window (LZFSE decoding)
+    size_t history_capacity;
     uint8_t *out;               // output not yet handed out: out_size bytes, from out_done
-    size_t out_size, out_done;
+    size_t out_size, out_done, out_capacity;
     size_t blocks;              // LZFSE encoding: the blocks written so far
-    uint8_t *input;             // LZFSE decoding: the whole input, until FINALIZE
+    uint8_t *input;             // LZFSE decoding: the bytes of the block being read, the whole block and no more
     size_t input_size, input_capacity;
+    size_t stored_left;         // LZFSE decoding: the raw bytes of a stored block still to come, handed out as they come
+    uint8_t *frame;            // LZFSE decoding: the window, the block and the end marker, as the codec reads them
+    size_t frame_capacity;
+    uint8_t *block;             // LZFSE decoding: the window, then the block's output
+    size_t block_capacity;
     int ended, failed;
 };
 
-static void lz4_history_append(struct layer_stream *st, const uint8_t *data, size_t n);
+static void history_append(struct layer_stream *st, const uint8_t *data, size_t n);
 static int stream_append_input(struct layer_stream *st, const uint8_t *src, size_t size);
-static int stream_decode_all(struct layer_stream *st);
 
 // Takes as much of the caller's input as the pending bytes have room for, up to limit. Returns the bytes taken.
 static size_t take_input(struct layer_stream *st, compression_stream *s, size_t limit)
@@ -514,17 +521,169 @@ static int step_lzfse_encode(struct layer_stream *st, compression_stream *s, int
     return 1;
 }
 
-// LZFSE decoding waits for FINALIZE: its blocks are not framed in this layer, so the whole input is decoded then.
+// What the bytes at the start of an LZFSE stream say about the next block (the layout is the decoder's, lzfse_decode_base.c,
+// and its headers are lzfse_internal.h's). kBlockMore: the block is not whole; *size is the number of bytes it needs
+// from its start (the header's, until the header tells the total). kBlockReady: the block is whole in size bytes, of
+// n_raw bytes of output. kBlockEnd: the end marker. kBlockBad: the bytes are no block.
+enum block_walk { kBlockBad, kBlockMore, kBlockReady, kBlockEnd };
+
+// The packed fields of a compressed block's header (lzfse_internal.h, the table above lzfse_compressed_block_header_v2):
+// field values are the bits [offset, offset + bits) of the 64-bit word.
+static uint32_t packed_field(uint64_t word, int offset, int bits)
+{
+    return (uint32_t)((word >> offset) & ((UINT64_C(1) << bits) - 1));
+}
+
+static enum block_walk lzfse_block_walk(const uint8_t *src, size_t avail, size_t *size, size_t *n_raw)
+{
+    if (avail < 4) {
+        *size = 4;
+        return kBlockMore;
+    }
+    uint32_t magic = get32(src);
+    if (magic == LZFSE_ENDOFSTREAM_BLOCK_MAGIC) {
+        *size = 4;
+        return kBlockEnd;
+    }
+    if (magic == LZFSE_UNCOMPRESSED_BLOCK_MAGIC) {
+        if (avail < sizeof(uncompressed_block_header)) {
+            *size = sizeof(uncompressed_block_header);
+            return kBlockMore;
+        }
+        *n_raw = get32(src + offsetof(uncompressed_block_header, n_raw_bytes));
+        *size = sizeof(uncompressed_block_header) + *n_raw;
+    } else if (magic == LZFSE_COMPRESSEDLZVN_BLOCK_MAGIC) {
+        if (avail < sizeof(lzvn_compressed_block_header)) {
+            *size = sizeof(lzvn_compressed_block_header);
+            return kBlockMore;
+        }
+        *n_raw = get32(src + offsetof(lzvn_compressed_block_header, n_raw_bytes));
+        *size = sizeof(lzvn_compressed_block_header) + get32(src + offsetof(lzvn_compressed_block_header, n_payload_bytes));
+    } else if (magic == LZFSE_COMPRESSEDV1_BLOCK_MAGIC) {
+        if (avail < sizeof(lzfse_compressed_block_header_v1)) {
+            *size = sizeof(lzfse_compressed_block_header_v1);
+            return kBlockMore;
+        }
+        lzfse_compressed_block_header_v1 h1;
+        memcpy(&h1, src, sizeof h1);
+        *n_raw = h1.n_raw_bytes;
+        *size = sizeof h1 + h1.n_literal_payload_bytes + h1.n_lmd_payload_bytes;
+    } else if (magic == LZFSE_COMPRESSEDV2_BLOCK_MAGIC) {
+        // the fixed part first: its packed fields give the header's size, and the payload sizes
+        if (avail < offsetof(lzfse_compressed_block_header_v2, freq)) {
+            *size = offsetof(lzfse_compressed_block_header_v2, freq);
+            return kBlockMore;
+        }
+        lzfse_compressed_block_header_v2 h2;
+        memcpy(&h2, src, offsetof(lzfse_compressed_block_header_v2, freq));
+        size_t header = packed_field(h2.packed_fields[2], 0, 32);
+        if (avail < header) {
+            *size = header;
+            return kBlockMore;
+        }
+        *n_raw = get32(src + offsetof(lzfse_compressed_block_header_v2, n_raw_bytes));
+        size_t literal_payload = packed_field(h2.packed_fields[0], 20, 20), lmd_payload = packed_field(h2.packed_fields[1], 40, 20);
+        *size = header + literal_payload + lmd_payload;
+    } else {
+        return kBlockBad;
+    }
+    if (avail < *size) return kBlockMore;
+    return kBlockReady;
+}
+
+// The block's bytes, taken from the caller as they come and never past the block: *size is what the block needs (see
+// lzfse_block_walk), so the input that follows the block stays with the caller.
+static int take_block_input(struct layer_stream *st, compression_stream *s, size_t size)
+{
+    size_t want = size - st->input_size;
+    size_t n = s->src_size < want ? s->src_size : want;
+    if (!n) return 0;
+    if (!stream_append_input(st, s->src_ptr, n)) return -1;
+    s->src_ptr += n;
+    s->src_size -= n;
+    return 1;
+}
+
+// Grows a buffer to at least need bytes, keeping its contents. Returns 0 when it cannot.
+static int reserve(uint8_t **buf, size_t *capacity, size_t need)
+{
+    if (*capacity >= need) return 1;
+    uint8_t *grown = realloc(*buf, need);
+    if (!grown) return 0;
+    *buf = grown;
+    *capacity = need;
+    return 1;
+}
+
+// LZFSE decoding, block by block. A block is decoded when it is whole, and its output is handed out then, which is where
+// the host writes it (facts/Compression/CompressionBuffer.md, Streams). The codec reads a block's matches from the bytes it
+// writes in the same call, so the block is decoded after the window of output before it: the window goes in front of the
+// block as a stored block, the block follows, and the end marker closes the frame. The output of the call is the bytes
+// after the window. Returns as the other steps do.
 static int step_lzfse_decode(struct layer_stream *st, compression_stream *s, int finalize)
 {
-    if (s->src_size) {
-        if (!stream_append_input(st, s->src_ptr, s->src_size)) return -1;
-        s->src_ptr += s->src_size;
-        s->src_size = 0;
+    // a stored block's raw bytes are its output, and the host hands them out as they come, not when the block is whole
+    // (measured: facts/Compression/CompressionBuffer.md, Streams); its header is the 8 bytes read here
+    if (st->stored_left) {
+        size_t n = s->src_size < st->stored_left ? s->src_size : st->stored_left;
+        if (n > kOutputCapacity) n = kOutputCapacity;
+        if (!n) return finalize ? -1 : 0;
+        memcpy(st->out, s->src_ptr, n);
+        st->out_size = n;
+        st->out_done = 0;
+        history_append(st, st->out, n);
+        s->src_ptr += n;
+        s->src_size -= n;
+        st->stored_left -= n;
+        return 1;
     }
-    if (!finalize) return 0;
-    if (!stream_decode_all(st)) return -1;
-    st->ended = 1;
+    if (st->input_size >= 8 && get32(st->input) == LZFSE_UNCOMPRESSED_BLOCK_MAGIC) {
+        st->stored_left = get32(st->input + 4);
+        st->input_size = 0;
+        return 1;
+    }
+    size_t size = 0, n_raw = 0;
+    enum block_walk walk = lzfse_block_walk(st->input, st->input_size, &size, &n_raw);
+    if (walk == kBlockBad) return -1;
+    if (walk == kBlockEnd) {
+        st->ended = 1;
+        return 1;
+    }
+    if (walk == kBlockMore) {
+        int took = take_block_input(st, s, size);
+        if (took < 0) return -1;
+        if (!took) return finalize ? -1 : 0;
+        return 1;
+    }
+    // a whole block: its frame is the window (as a stored block), the block and the end marker
+    size_t w = st->history_size;
+    size_t frame_size = (w ? 8 + w : 0) + size + 4;
+    if (!reserve(&st->frame, &st->frame_capacity, frame_size)) return -1;
+    size_t p = 0;
+    if (w) {
+        put32(st->frame, LZFSE_UNCOMPRESSED_BLOCK_MAGIC);
+        put32(st->frame + 4, (uint32_t)w);
+        memcpy(st->frame + 8, st->history, w);
+        p = 8 + w;
+    }
+    memcpy(st->frame + p, st->input, size);
+    put32(st->frame + p + size, LZFSE_ENDOFSTREAM_BLOCK_MAGIC);
+    // one byte more than the window and the block: a codec that fills its destination has read past the block
+    size_t cap = w + n_raw + 1;
+    if (!reserve(&st->block, &st->block_capacity, cap)) return -1;
+    size_t got = lzfse_decode_buffer(st->block, cap, st->frame, frame_size, st->work);
+    // an answer of 0 is a valid block only when it holds no bytes (the stored block of 0 bytes, as lzfse_holds_no_bytes reads it)
+    if (w + n_raw == 0) {
+        if (got != 0 || !lzfse_holds_no_bytes(st->frame, frame_size)) return -1;
+    } else if (got != w + n_raw) {
+        return -1;
+    }
+    if (!reserve(&st->out, &st->out_capacity, n_raw ? n_raw : 1)) return -1;
+    memcpy(st->out, st->block + w, n_raw);
+    st->out_size = n_raw;
+    st->out_done = 0;
+    history_append(st, st->block + w, n_raw);
+    st->input_size = 0;
     return 1;
 }
 
@@ -559,7 +718,7 @@ static int step_lz4_decode(struct layer_stream *st, compression_stream *s, int f
     }
     st->out_size = raw;
     st->out_done = 0;
-    lz4_history_append(st, st->out, raw);
+    history_append(st, st->out, raw);
     memmove(p, p + need, have - need);
     st->pending_size = have - need;
     return 1;
@@ -631,15 +790,16 @@ static int step(struct layer_stream *st, compression_stream *s, int finalize)
     }
 }
 
-// The stream's history after a block: the last 64 KiB written, so the next block can refer back into it.
-static void lz4_history_append(struct layer_stream *st, const uint8_t *data, size_t n)
+// The stream's history after a block: the last history_capacity bytes written, so the next block can refer back into it.
+static void history_append(struct layer_stream *st, const uint8_t *data, size_t n)
 {
-    if (n >= kStreamBlock) {
-        memcpy(st->history, data + n - kStreamBlock, kStreamBlock);
-        st->history_size = kStreamBlock;
+    size_t cap = st->history_capacity;
+    if (n >= cap) {
+        memcpy(st->history, data + n - cap, cap);
+        st->history_size = cap;
         return;
     }
-    size_t keep = st->history_size < kStreamBlock - n ? st->history_size : kStreamBlock - n;
+    size_t keep = st->history_size < cap - n ? st->history_size : cap - n;
     memmove(st->history, st->history + st->history_size - keep, keep);
     memcpy(st->history + keep, data, n);
     st->history_size = keep + n;
@@ -664,30 +824,6 @@ static int stream_append_input(struct layer_stream *st, const uint8_t *src, size
     return 1;
 }
 
-// The whole LZFSE input decoded, into a destination that doubles until the stream ends in it: the status says which of the
-// two happened, so a valid empty stream (ends with 0 bytes) and a corrupt one (fails) are told apart.
-static int stream_decode_all(struct layer_stream *st)
-{
-    size_t capacity = 4 * st->input_size + 65536;
-    for (;;) {
-        uint8_t *out = malloc(capacity);
-        if (!out) return 0;
-        size_t n = 0;
-        enum decode_status status = decode_codec(out, capacity, st->input, st->input_size, NULL, st->algorithm, &n);
-        if (status == kDecodeDone) {
-            free(st->out);
-            st->out = out;
-            st->out_size = n;
-            st->out_done = 0;
-            return 1;
-        }
-        free(out);
-        if (status == kDecodeFailed) return 0;
-        if (capacity > SIZE_MAX / 2) return 0;
-        capacity *= 2;
-    }
-}
-
 COMPRESSION_EXPORT compression_status compression_stream_init(compression_stream *stream, compression_stream_operation operation,
                                                              compression_algorithm algorithm)
 {
@@ -708,10 +844,13 @@ COMPRESSION_EXPORT compression_status compression_stream_init(compression_stream
     st->algorithm = algorithm;
     st->pending = malloc(kPendingCapacity);
     st->out = malloc(kOutputCapacity);
-    st->history = malloc(kStreamBlock);
+    st->out_capacity = kOutputCapacity;
+    st->history_capacity = algorithm == COMPRESSION_LZFSE && operation == COMPRESSION_STREAM_DECODE ? kLZFSEWindow : kStreamBlock;
+    st->history = malloc(st->history_capacity);
     int ok = st->pending && st->out && st->history;
-    if (ok && algorithm == COMPRESSION_LZFSE && operation == COMPRESSION_STREAM_ENCODE) {
-        st->work = malloc(lzfse_encode_scratch_size());
+    if (ok && algorithm == COMPRESSION_LZFSE) {
+        // the codec's scratch for this stream's direction
+        st->work = malloc(operation == COMPRESSION_STREAM_ENCODE ? lzfse_encode_scratch_size() : lzfse_decode_scratch_size());
         ok = st->work != NULL;
     }
     if (ok && algorithm == COMPRESSION_ZLIB) {
@@ -785,6 +924,8 @@ COMPRESSION_EXPORT compression_status compression_stream_destroy(compression_str
     free(st->out);
     free(st->history);
     free(st->input);
+    free(st->frame);
+    free(st->block);
     free(st);
     stream->state = NULL;
     return COMPRESSION_STATUS_OK;

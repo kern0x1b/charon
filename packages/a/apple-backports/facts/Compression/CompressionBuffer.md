@@ -163,13 +163,19 @@ with 0 bytes (the stream checks, seeds 1 and 2). It is not a format defect.
   history (words 4 of 5, random 5 of 8, runs 3 of 4); it does not for block 0 of each content.
 - Memory: the stream holds one block of pending input (up to 128 KiB for LZ4 decoding, which must hold a whole block), one
   block of output (up to 128 KiB), the 64 KiB LZ4 dictionary, and the codec's own state (zlib's and liblzma's windows). It does
-  not hold the whole input or output, except for LZFSE decoding (below).
-- LZFSE decoding is not incremental: the layer buffers its whole input to FINALIZE and decodes it then, so it writes nothing
-  before FINALIZE, and its memory is the input's. The host's LZFSE decoder writes output before FINALIZE; the layer's does not.
-  This is the open difference named in coordination/crutches.md (`charon: compression_stream output before FINALIZE`). The
-  LZFSE blocks are not framed in the layer: a block's length is in its header's packed fields, and reading them is the step
-  that is not done. Decoding of ZLIB, LZMA and LZ4 is incremental and its progress is not compared with the host's yet (the
-  differential checks the encode side's progress, and every decode's final bytes and status).
+  not hold the whole input or output, except one LZFSE block (below).
+- LZFSE decoding is block by block. The layer reads each block's size from its header, with the codec's own header types
+  (lzfse_internal.h, installed by packages/l/lzfse) and the packed fields as lzfse_decode_base.c reads them, and decodes a
+  block when it is whole. The block is decoded after the window of output before it: the window goes in front of the block
+  as a stored block, so the codec reads the block's matches from it (up to LZFSE_ENCODE_MAX_D_VALUE, 262139 bytes).
+  A stored block's bytes come out as they arrive, as the host's do (measured with 1-byte chunks: the first output at byte 9
+  of a stream whose first block is stored, 8 header bytes and one byte). The host also writes an LZVN block's bytes before
+  the block ends (measured on 15-byte inputs: first output at byte 16 of a 26-byte block); the layer writes them at the
+  block's end. So LZFSE decoding's first output is within the allowance of the host's, not at its byte, and a block's
+  output is written where the host writes the block's last byte. The differential checks this for every chunking.
+  Memory: the window, one block of input, one block of output, and the window's copy in the frame: at most three windows
+  and two blocks. Decoding of ZLIB, LZMA and LZ4 is incremental and its progress is not compared with the host's (the
+  differential checks the LZFSE decode progress, and every decode's final bytes and status).
 - The bytes of the stream: LZFSE is written as one block after another, each without its end marker, and `bvx$` is written
   once at FINALIZE; the empty stream of LZFSE is the codec's own (12 bytes). LZ4 writes its framed blocks and `bv4$` once.
 - Stream bytes do not depend on the input chunking or the output pieces, in the layer (checked against its own one-piece

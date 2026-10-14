@@ -38,7 +38,7 @@ done
 # headers are laid out as each package installs them
 mkdir -p "$build/include/lz4" "$build/include/lzfse" "$build/include/zlib" "$build/include/lzma"
 cp "$src/lz4/lib/lz4.h" "$build/include/lz4/"
-cp "$src/lzfse/src/lzfse.h" "$build/include/lzfse/"
+cp "$src/lzfse/src/lzfse.h" "$src/lzfse/src/lzfse_internal.h" "$src/lzfse/src/lzfse_fse.h" "$src/lzfse/src/lzfse_tunables.h" "$build/include/lzfse/"
 cp "$src/zlib/zlib.h" "$src/zlib/zconf.h" "$build/include/zlib/"
 cp "$xz/api/lzma.h" "$build/include/lzma/"
 cp -R "$xz/api/lzma" "$build/include/lzma/"

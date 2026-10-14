@@ -211,6 +211,20 @@ static void stream_checks(compression_algorithm algorithm, int content, const ui
         back_n = stream_run(&kPortStream, COMPRESSION_STREAM_DECODE, algorithm, host_out, host_n, chunk, 0, back, cap, &ignored, &ignored, &st_p);
         check(st_p == COMPRESSION_STATUS_END && back_n == n && (n == 0 || memcmp(back, input, n) == 0),
               "port stream decodes the host's stream", (int)back_n, (int)n);
+        // LZFSE decoding is incremental: decoding the host's own stream, the port writes output before FINALIZE where the host
+        // does, within the codec's allowance of the host's first output (the stream is the host's, so the blocks are the same;
+        // the host writes a block's bytes earlier than its end where the block is LZVN, see facts Streams)
+        if (algorithm == COMPRESSION_LZFSE) {
+            size_t dbefore_h = 0, dbefore_p = 0, dfirst_h = NO_OUTPUT, dfirst_p = NO_OUTPUT;
+            stream_run(&kHostStream, COMPRESSION_STREAM_DECODE, algorithm, host_out, host_n, chunk, 0, back, cap, &dbefore_h, &dfirst_h, &st_h);
+            stream_run(&kPortStream, COMPRESSION_STREAM_DECODE, algorithm, host_out, host_n, chunk, 0, back, cap, &dbefore_p, &dfirst_p, &st_p);
+            size_t dslack = (progress_allowance(algorithm) + chunk - 1) / chunk * chunk;
+            size_t dgap = dfirst_p > dfirst_h ? dfirst_p - dfirst_h : dfirst_h - dfirst_p;
+            check(dfirst_h == NO_OUTPUT || (dfirst_p != NO_OUTPUT && dgap <= dslack),
+                  "port decodes the host's LZFSE stream: output before FINALIZE within the allowance of the host's", (int)dfirst_p, (int)dfirst_h);
+            check(dbefore_p == dbefore_h, "port decodes the host's LZFSE stream: as much output before FINALIZE as the host",
+                  (int)dbefore_p, (int)dbefore_h);
+        }
     }
     snprintf(where, sizeof where, "%s n=%zu content=%d stream pieces=7", name_of(algorithm), n, content);
     port_n = stream_run(&kPortStream, COMPRESSION_STREAM_ENCODE, algorithm, input, n, all, 7, port_out, cap, &before_p, &first_p, &st_p);

@@ -17,7 +17,7 @@
       "introduced": "9.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "consumes the source and writes the output, block by block, into the destinations the caller gives, answering END on the FINALIZE call that writes the last byte; the bytes equal the host's for LZMA and are the same format for the other codecs, checked by cross-decoding; a corrupt stream answers the host's ERROR; LZFSE decoding writes its output at FINALIZE, the one difference from the host (facts/Compression/CompressionBuffer.md, Streams)",
+      "effect": "consumes the source and writes the output, block by block, into the destinations the caller gives, answering END on the FINALIZE call that writes the last byte; the bytes equal the host's for LZMA and are the same format for the other codecs, checked by cross-decoding; a corrupt stream answers the host's ERROR; LZFSE decoding writes each block's output when the block is whole, or as a stored block's bytes arrive, within the allowance of the host's first output (facts/Compression/CompressionBuffer.md, Streams)",
       "source": "the declaration of the Compression header of the SDK (the name and the signature); the output of the host's compression_stream_* measured on macOS in tests/backports/host/compression",
       "facts": "facts/Compression/CompressionBuffer.md"
     },
