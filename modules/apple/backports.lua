@@ -46,6 +46,8 @@ LIBRARIES = {
     -- tests/addon/archive_language_test.lua failing on exactly that. The same shape charon-coding and
     -- monocypher use, for the same reason.
     {name = "SecurityBackports", folder = "Security", frameworks = {"Security", "Foundation"}, libraries = {"FoundationBackports"}, archives = {"micro-ecc"}, c_archives = {"micro-ecc"}},
+    {name = "CommonCryptoBackports", folder = "CommonCrypto", frameworks = {"Security"}, libraries = {}},
+    {name = "SecurityBackports", folder = "Security", frameworks = {"Security", "Foundation"}, libraries = {"FoundationBackports"}, archives = {"micro-ecc"}, c_archives = {"micro-ecc"}},
     -- suitesparse-ordering is AMD and COLAMD, the two sparse orderings, as a static archive: the Sparse*
     -- solve family needs an ordering and this stack's own rows must not export one. The archive is not
     -- API of the image, and the archive ITSELF is not a proof of that: AMD and COLAMD mark their entry
