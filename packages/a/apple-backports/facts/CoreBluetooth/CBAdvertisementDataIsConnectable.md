@@ -19,7 +19,8 @@ declared by CoreBluetooth of iOS 7.0 on. It lives in `libCoreBluetoothBackports.
 - The host's shared cache (macOS 27.0.1, `/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e.07`)
   holds the string, NUL-terminated, exactly `kCBAdvDataIsConnectable`
   (`grep -a -o -E '.{0,8}kCBAdvDataIsConnectable.{0,8}'` returns it between NULs).
-- The SDK declares the constant with `API_AVAILABLE(ios(7.0))`, so the lift sets of swift-runtime change with it (see the
+- The iOS 26.2 SDK declares it at CoreBluetooth.framework/Headers/CBAdvertisementData.h:83 with `NS_AVAILABLE(10_9, 7_0)`, so the
+  lift sets of swift-runtime change with it (see the
   lift re-measure in the series).
 
 ## Behaviour
