@@ -284,6 +284,9 @@ package("matter")
         for _, directory in ipairs(search) do
             table.insert(cxxflags, "-I" .. directory)
         end
+        -- The framework's CHIP directory last: it carries app/PluginApplicationCallbacks.h, which util.cpp includes as
+        -- <app/...>, and every other <app/...> is the source tree's own, found first.
+        table.insert(cxxflags, "-I" .. framework)
         local cxx = assert(toolchain:tool("cxx"), "the apple-ios toolchain names no C++ compiler for %s", package:arch())
         for _, rel in ipairs(appsources) do
             local object = path.absolute(path.join("framework", rel .. ".o"))
