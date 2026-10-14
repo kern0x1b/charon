@@ -33,6 +33,7 @@ package("swift-system")
     on_load("iphoneos", function (package)
         package:add("deps", "charon@swift-runtime", {alias = "swift-runtime"})
         package:add("deps", "charon@apple-compat", {alias = "apple-compat"})
+        package:add("deps", "charon@ld64", {alias = "ld64"})
     end)
 
     -- Installs upstream's tree with this recipe's patches applied, the module compiled from it as objects with -c against the
@@ -97,8 +98,11 @@ package("swift-system")
         os.vrunv(swiftc, argv)
 
         local lib = path.join(objects, "libswiftSystem.dylib")
-        os.vrunv(toolchain:tool("ld"), table.join({"-target", triple, "-isysroot", sdk, "-miphoneos-version-min=" .. minimum,
-                 "-dynamiclib", "-install_name", "@rpath/libswiftSystem.dylib", "-o", lib}, os.files(path.join(objects, "*.o")),
+        -- Linked through the clang driver with charon@ld64 as its linker, the way packages/m/matter links (-fuse-ld): the host ld
+        -- rejects libswiftCore's immortal refcount layout ("vmOffset too large", revision 2 and the revision-4 install log).
+        local ld64 = path.join(package:dep("ld64"):installdir("bin"), "ld")
+        os.vrunv(toolchain:tool("cc"), table.join({"-target", triple, "-isysroot", sdk, "-miphoneos-version-min=" .. minimum,
+                 "-fuse-ld=" .. ld64, "-dynamiclib", "-install_name", "@rpath/libswiftSystem.dylib", "-o", lib}, os.files(path.join(objects, "*.o")),
                  {"-L", path.join(resources, "iphoneos"), "-lswiftCore", "-lswiftDarwin", "-lswiftObjectiveC", "-lswiftDispatch",
                   "-lswift_Concurrency"}))
         os.cp(lib, package:installdir("lib"))
