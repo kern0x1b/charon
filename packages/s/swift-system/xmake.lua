@@ -119,3 +119,27 @@ package("swift-system")
         package:setenv("CHARON_SWIFT_MODULES", path.join(package:installdir("lib"), "swift", "iphoneos"), path.join(tree, "Sources", "CSystem", "include"))
         print("%s: %s installed; libswiftSystem.dylib is in %s", package:name(), package:version_str(), package:installdir("lib"))
     end)
+
+    -- The library's weak imports and the rows apple.runtime_guards declares for it are one set, both ways: a weak import no row
+    -- names is refused in a program that carries the library, and a row the build does not import records a guard it does not
+    -- have. Read the way swift-runtime's on_test reads its own table, against the runtime it is linked with.
+    on_test(function (package)
+        local modules = path.join(package:scriptdir(), "..", "..", "..", "modules")
+        local dyld = import("apple.dyld", {rootdir = modules, anonymous = true})
+        local toolchain = assert(package:toolchains(), "swift-system is built with the apple-ios toolchain")[1]
+        toolchain:load()
+        local runtime = assert(package:dep("swift-runtime"), "swift-system is compiled against charon@swift-runtime")
+        local installed = path.join(package:installdir("lib"), "libswiftSystem.dylib")
+        local read = dyld.image_imports({installed}, os.files(path.join(runtime:installdir("lib"), "swift", "iphoneos", "*.dylib")), package:arch())
+        local names = {}
+        for symbol, weak in pairs(read.imports["libswiftSystem.dylib"]) do
+            if weak and not read.exported[symbol] then
+                names[symbol] = true
+            end
+        end
+        local found = {["libswiftSystem.dylib"] = table.orderkeys(names)}
+        local minimum = toolchain:config("deployment")
+        local differs = import("apple.runtime_guards", {rootdir = modules, anonymous = true}).compare(found, {
+            imports = read.imports, exported = read.exported, minimum = minimum, backports = true, exact = true})
+        assert(#differs == 0, "libswiftSystem.dylib's weak imports and its guard rows differ at " .. minimum .. " with the backports:\n  " .. table.concat(differs, "\n  "))
+    end)
