@@ -973,3 +973,34 @@ Every row of the removed classes is either homed in `packages/m/matter/registry`
 - The emulator app `tests/backports/emulate/matter/app/main.m` names three removed classes: `MTRBaseClusterIdentify`,
   `MTRBaseClusterOnOff`, `MTRBaseClusterTestCluster`. They are SDK classes; the real stack provides them when the
   Matter framework is present.
+
+## The emit rule and its closure (v-matter12)
+
+`tools/matter-closure.lua` (Lua, `xmake l`) computes the rule the generator must follow. A generated class is emitted
+only when both hold: (1) `class-overlap.tsv` says the real stack does not carry it, and (2) it is in the closure of the
+app-usable SDK 26.2 Matter API. The closure starts from the 985 class rows of the SDK 26.2 corpus whose `@interface` the
+shipped headers do not mark unavailable, and adds every Matter class an available member of a class in the closure names
+(a parameter, return or property type, a collection element, through a typedef a member uses), and every superclass.
+The output is `emit-closure.tsv`, one row per generator input class (1208), with the reason. The light guard is
+`tests/addon/matter_closure_test.lua`.
+
+Measured on the SDK 26.2 headers:
+
+- The headers define 1330 classes. The 985 corpus rows are all unmarked, so all 985 are roots.
+- The closure adds no class: no available member of a root names a class outside the roots (0 edges). The 345 defined
+  classes outside the corpus are all marked `MTR_PROVISIONALLY_AVAILABLE` (344 are generator inputs, one is not), and no
+  available member names one of them. No protocol body names any of the 344 generator-only classes.
+- Of the 1208 generator inputs: the real stack carries 1188 and not 20. 864 are in the closure (all corpus classes, all
+  carried by the real stack); 344 are not (324 carried by the real stack, 20 not).
+- **Emitted under the rule: 0 classes.** The 20 generator-only classes (real stack `no`) are unavailable in SDK 26.2 and
+  reached by nothing: not public API. The three base classes (`MTRCluster`, `MTRGenericCluster`, `MTRGenericBaseCluster`)
+  are roots, so they are in the closure by (2), but the real stack carries them, so condition (1) says no.
+
+The rule therefore retires the whole committed family. Six of the 20 are cluster classes that subclass the bases
+(three from `MTRGenericBaseCluster`, three from `MTRGenericCluster`); the other 14 are NSObject-rooted structs, events and
+params. Once the 20 go, no committed class subclasses the three bases. Keeping the three needs an exception to condition
+(1), which v-matter11 made for the 6.1.3 link and which this rule does not allow. The coordinator rules (see the report). Until then
+`tests/addon/matter_closure_test.lua` pins the 23 committed objects as pending; the list only shrinks.
+
+`tools/matter-generate.py` is not ported in this band. Its acceptance, byte-for-byte on the emit-yes classes, is empty
+under the rule as it stands, so a port needs the rule's decision first, and the port itself is about 4415 lines.
