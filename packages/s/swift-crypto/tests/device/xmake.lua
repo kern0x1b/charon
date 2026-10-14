@@ -32,7 +32,5 @@ target("cryptoprobe")
     add_packages("swift-crypto", "swift-runtime", "libcxx", "apple-backports", "apple-compat")
     set_values("charon.version", "1.0")
     set_values("charon.control", "control")
-    -- The program carries the libraries it links; the runtime copy of Concurrency weakly imports _memset_s, which 6.1.3 lacks,
-    -- and the waiver names the measured reason (the probe imports no task or actor symbol).
+    -- The program carries the libraries it links.
     set_values("charon.libraries", "swift-crypto", "apple-backports")
-    set_values("charon.waive.weak-imports", "measurement probe, not a released image: the Swift runtime copy it carries weakly imports _memset_s and _os_release; the probe's own binary imports no swift_task or actor symbol, so Concurrency is not reached from it")
