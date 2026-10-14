@@ -1,5 +1,0 @@
-# matterdifferential/not-built-generic.txt - the generic (non-base) clusters commands.sh cannot build against the host's Matter,
-# and why. The same two clusters as not-built.txt, in their MTRCluster form: the macOS Matter headers do not declare the
-# classes, so there is no system class to call. A listed cluster that builds is stale and fails the run.
-MTRClusterTimer          the macOS Matter headers declare no MTRClusterTimer (the iOS 26.2 SDK declares it): the port's class has no system class to call
-MTRClusterGroupcast      the macOS Matter headers declare no MTRGroupcastClusterExpireGracePeriodParams, which expireGracePeriodWithParams:expectedValues:expectedValueInterval:completion: names: "expected a type"

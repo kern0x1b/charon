@@ -1026,12 +1026,24 @@ gone no generated class needs them. No exception to condition (1) is made.
   (MTRBaseClusterIdentify, MTRBaseClusterOnOff, MTRBaseClusterTestCluster) had already gone in v-matter11.
 - The generator and the tables only it read: `tools/matter-generate.py`, `tools/matter-init-defaults.tsv`,
   `tools/matter-alias-accessors.tsv`, and `tools/matter-registry.py`, which loaded the generator by path.
+- The writer of those two tables, `tools/matter-init-source.py`, by the coordinator's ruling (no Python stays for a retired path).
+- The host harnesses of the generated family, which called the generator or compared the port's generated classes with the
+  host framework: `tests/backports/host/matter/` `contracts/`, `excluded.txt`, `host-measurements.tsv`, `params-diff.sh`,
+  `params-init.m`, `params-init.sh`, `params-probe.m`, `plants.sh`, `predict.py`; and all of `tests/backports/host/matterdifferential/`
+  (behaviour, cases, commands, not-built lists, params-fill, probe programs, run.sh, shutdown-controller).
+- `tests/addon/matter_skip_test.lua`, whose subject (the differential's skip list) is gone, and the two cluster lists it read
+  (`Matter/clusters-emitted.txt`, `Matter/generic-clusters-emitted.txt`), which had no other reader.
+- `tools/matter-host-refusals.tsv`, read only by the generator and the removed differential.
 
 **Kept, and why.** `tools/matter-closure.lua` and `facts/Matter/emit-closure.tsv` are the proof that nothing is generated.
-`Matter/clusters-emitted.txt` and `generic-clusters-emitted.txt` have readers outside the generator: `matter_skip_test`
-(light suite) and the host differential harnesses. `tests/backports/host/matter/excluded.txt`, `host-measurements.tsv` and
-`tools/matter-host-refusals.tsv` have readers outside the generator too. `tools/matter-init-source.py` writes the two deleted
-tables; it is not run, and is kept as their provenance until the coordinator rules on it.
+The real stack's host-side harness stays: `tests/backports/host/matter/run.sh`, `members.m` (the host's own surface, read from a
+live process) and `pure.m` (one program held against the host framework), with `tools/matter-host-diff.lua` and
+`tools/matter-pure-diff.lua`, which compare them with the real stack's `libMatterBackports.dylib` (`packages/m/matter/facts/MatterFramework.md`).
+Those files test only charon@matter's surface and read nothing of the removed family.
+
+**The matter option (ruling, coordinator).** Its removal is accepted. The real stack's route is charon@matter: its
+`libMatterBackports.dylib` is built and installed by `packages/m/matter`, which depends on apple-backports, so no
+apple-backports option can deliver it.
 
 **Guards.** `tests/addon/matter_closure_test.lua` has no pending list: it fails on any committed `Matter/CharonMatter*.m`.
 `tests/addon/matter_objects_test.lua` pins 0 and no longer excepts the base classes. Each fails on one added class object
