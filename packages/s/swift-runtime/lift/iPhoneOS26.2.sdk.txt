@@ -1,5 +1,5 @@
 # What lift() leaves alone against iPhoneOS26.2.sdk (the archive the iphoneos-sdk package installs for 26.2): one full lift of the registry of this series
-# (v-matter11: the 1188 generated Matter classes and their registry rows are removed; the Matter registry they were lifted against is the real stack's), none dropped: 543 lines.
+# (v-matter11: the three base classes of the generated-only Matter classes stay, with their registry rows; the other 1185 generated classes are removed), none dropped: 543 lines.
 # Each is a name the lift did not reach, and each was looked for in every header of the SDK (usr/include and the frameworks) and found declared nowhere,
 # but for the ones told here:
 #  - class (17): a class no header declares (a stub exports some, some are private, some a later SDK's).
