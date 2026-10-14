@@ -726,7 +726,14 @@ package("swift-runtime")
                           {"-lswiftDarwin", "-lswiftObjectiveC", "-lswiftDispatch", "-lswiftCoreFoundation", "-lswiftCoreGraphics",
                            "-framework", "Foundation", "-framework", "CoreFoundation"}, foundation_objects,
                           -- URLSession has async calls, which want the concurrency library the runtime already carries.
-                          {concurrency = true, backports = {"FoundationBackports"}})
+                          -- Data's span accessors (bytes, span, mutableBytes, mutableSpan) are declared as the SDK's Foundation interface
+                          -- declares them (foundation patch "declares-data-span-accessors"). They return RawSpan and Span, which take
+                          -- @_lifetime (Lifetimes, the umbrella that covers the inout and mutable-accessor forms too); Data is
+                          -- @_addressableForDependencies (AddressableTypes), so Builtin.addressOfBorrow names Data's own bytes for inline
+                          -- data (BuiltinModule). The SDK's interface enables the same features in its header. Only this overlay gets them.
+                          {concurrency = true, backports = {"FoundationBackports"},
+                           extra_flags = {"-enable-experimental-feature", "Lifetimes", "-enable-experimental-feature", "AddressableTypes",
+                                          "-enable-experimental-feature", "BuiltinModule"}})
 
             -- QuartzCore and UIKit, from the release that last had them: CATransform3D and UIKit's structures cross to NSValue,
             -- UIKit's structures compare and are Codable, and its alert and action sheet take their buttons as variadic
