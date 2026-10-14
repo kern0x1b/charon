@@ -144,12 +144,94 @@ static void charon_method(const struct charon_list *list, uint32_t index, const 
     *implementation = (IMP)entry[2];
 }
 
-// class_getInstanceMethod searches cls and each superclass for an instance method of the
-// selector: the question this used to ask with a copy of each class's list, made once per
-// selector and per superclass. The copies were the launch's cost, and the answer needs none.
+// The question is whether cls or a superclass implements a selector, asked for every category
+// method (charon_collect) and every proxy method (charon_adopt_methods). The old answer copied
+// each class's method list and scanned the copy, once per question: most of the launch cost.
+// class_getInstanceMethod is not used for it: a selector the class lacks goes to
+// +resolveInstanceMethod: (and +resolveClassMethod: for a metaclass), a message this constructor
+// would send to application classes, possibly before their +initialize, and a resolver that
+// installs the selector would make the backport skip it.
+// So each class walked is copied once, its selectors are kept sorted, and the walk answers from
+// those copies: the lists are the ones the old loop read (none changes before the additions,
+// which come after every question), the chain is class_getSuperclass as before, and no message
+// is sent. The copies are freed at the end of the constructor.
+struct charon_snapshot {
+    Class cls;
+    SEL *selectors;
+    unsigned count;
+};
+
+static struct charon_snapshot *charon_snapshots;
+static size_t charon_snapshot_slots, charon_snapshot_used;
+
+static int charon_sel_order(const void *left, const void *right)
+{
+    uintptr_t a = (uintptr_t)*(SEL const *)left, b = (uintptr_t)*(SEL const *)right;
+    return (a > b) - (a < b);
+}
+
+static size_t charon_snapshot_slot(Class cls, size_t slots)
+{
+    return ((uintptr_t)cls >> 4) & (slots - 1);
+}
+
+static void charon_grow_snapshots(void)
+{
+    size_t slots = charon_snapshot_slots ? charon_snapshot_slots * 2 : 256;
+    struct charon_snapshot *old = charon_snapshots;
+    size_t old_slots = charon_snapshot_slots;
+    charon_snapshots = calloc(slots, sizeof *charon_snapshots);
+    charon_snapshot_slots = slots;
+    for (size_t index = 0; index < old_slots; index++) {
+        if (!old[index].cls)
+            continue;
+        size_t slot = charon_snapshot_slot(old[index].cls, slots);
+        while (charon_snapshots[slot].cls)
+            slot = (slot + 1) & (slots - 1);
+        charon_snapshots[slot] = old[index];
+    }
+    free(old);
+}
+
+static const struct charon_snapshot *charon_snapshot_of(Class cls)
+{
+    if (!charon_snapshot_slots || charon_snapshot_used * 2 >= charon_snapshot_slots)
+        charon_grow_snapshots();
+    size_t slot = charon_snapshot_slot(cls, charon_snapshot_slots);
+    while (charon_snapshots[slot].cls) {
+        if (charon_snapshots[slot].cls == cls)
+            return &charon_snapshots[slot];
+        slot = (slot + 1) & (charon_snapshot_slots - 1);
+    }
+    unsigned count = 0;
+    Method *methods = class_copyMethodList(cls, &count);
+    SEL *selectors = calloc(count ? count : 1, sizeof *selectors);
+    for (unsigned index = 0; index < count; index++)
+        selectors[index] = method_getName(methods[index]);
+    free(methods);
+    qsort(selectors, count, sizeof *selectors, charon_sel_order);
+    charon_snapshots[slot] = (struct charon_snapshot){cls, selectors, count};
+    charon_snapshot_used++;
+    return &charon_snapshots[slot];
+}
+
+static void charon_free_snapshots(void)
+{
+    for (size_t index = 0; index < charon_snapshot_slots; index++)
+        free(charon_snapshots[index].selectors);
+    free(charon_snapshots);
+    charon_snapshots = NULL;
+    charon_snapshot_slots = charon_snapshot_used = 0;
+}
+
 static int charon_implements(Class cls, SEL selector)
 {
-    return class_getInstanceMethod(cls, selector) != NULL;
+    for (Class current = cls; current; current = class_getSuperclass(current)) {
+        const struct charon_snapshot *snapshot = charon_snapshot_of(current);
+        if (snapshot->count && bsearch(&selector, snapshot->selectors, snapshot->count, sizeof selector, charon_sel_order))
+            return 1;
+    }
+    return 0;
 }
 
 static size_t charon_collect(Class cls, const struct charon_list *list, struct charon_pending *pending, size_t used)
@@ -340,4 +422,5 @@ __attribute__((constructor)) static void charon_backports_attach(void)
         charon_add_properties(cls, category->instance_properties);
     }
     free(classes);
+    charon_free_snapshots();
 }
