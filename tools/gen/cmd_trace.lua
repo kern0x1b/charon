@@ -172,6 +172,7 @@ local function rule_env(tree, fw, facts, overridden, release_missing)
         declared = headers.declared_names(tree, fw),
         overridden = overridden,
         hand = hand.implementations(tree),
+        hand_functions = hand.functions(tree),
         release_missing = release_missing,
     }
 end

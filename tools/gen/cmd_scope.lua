@@ -144,14 +144,22 @@ local function class_state(api, ctx)
     return "class object: not generated (a member uncovered, or the superclass is not in the release)"
 end
 
--- The state of a C function (the functions snapshot, and the trace layer's generable status for it).
+-- The state of a C function (the functions snapshot, and the trace layer's generable status for it). A generable function the trace layer
+-- left out reports the reason it recorded, as a method does (member_state).
 local function function_state(api, ctx)
     local record = ctx.functions[api]
     if record == nil then
         return "C function: not in the functions snapshot"
     end
     if record.status == GENERABLE then
-        return "C function: generable stub (trace layer)"
+        local reason = ctx.stub_reason_of(api)
+        if reason == nil then
+            return "C function: generable stub (trace layer)"
+        end
+        if starts_with(reason, "override or hand implementation") then
+            return "hand implementation (no registry row)"
+        end
+        return "C function: not stubbed: " .. reason
     end
     return "C function: " .. record.reasons
 end

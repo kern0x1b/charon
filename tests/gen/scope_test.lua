@@ -153,6 +153,23 @@ end
 
 -- A member the trace layer left out reports the reason it recorded. A class property is recorded by its class accessor (+[Cls name]) and
 -- the surface names it by its dotted name, which keys as the instance form (-[Cls name]): the recorded reason is reported under both.
+-- A generable C function reports the reason the trace layer recorded for it: a hand implementation, or another reason.
+local function test_function_reasons(check)
+    local ctx = empty_context()
+    local recorded = {["CFHand()"] = "override or hand implementation", ["CFBad()"] = "type not resolved: kern_return_t"}
+    ctx.stub_reason_of = function(key) return recorded[key] end
+    for _, api in ipairs({"CFHand()", "CFBad()", "CFStub()"}) do
+        ctx.led6[surface.key("function", api)] = "missing"
+        ctx.functions[api] = {status = "generable", reasons = ""}
+    end
+    check(scope.row_state("function", "CFHand()", "objc", ctx) == "hand implementation (no registry row)",
+          "a generable C function the port defines by hand reports that")
+    check(scope.row_state("function", "CFBad()", "objc", ctx) == "C function: not stubbed: type not resolved: kern_return_t",
+          "a generable C function the trace layer left out reports its recorded reason")
+    check(scope.row_state("function", "CFStub()", "objc", ctx) == "C function: generable stub (trace layer)",
+          "a generable C function with no recorded reason is a stub of the trace layer")
+end
+
 local function test_recorded_reasons(check)
     local facts = {members = {{kind = "property", api = "+[SCNNode simdLocalFront]", alias = "SCNNode.simdLocalFront"}}}
     local recorded = {["+[SCNNode simdLocalFront]"] = "type not resolved: simd_float3", ["-[SCNNode simdLocalUp]"] = "override or hand implementation"}
@@ -176,6 +193,7 @@ function main()
     test_escapes(check)
     test_coverage(check)
     test_recorded_reasons(check)
+    test_function_reasons(check)
     print("scope test: " .. (failures() == 0 and "OK" or ("FAIL " .. failures())))
     if failures() > 0 then
         os.exit(1)

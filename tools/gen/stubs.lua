@@ -219,21 +219,26 @@ function members(spec, env)
 end
 
 -- The stubs of the C functions the snapshot marks generable (rows: each with its api, from functions.lua), from the typed fields of
--- env.functions (name -> {type, params}). Returns the members, and appends the functions left out to skipped.
+-- env.functions (name -> {type, params}). A function the registry covers, whatever its status, or the hand sources define gets no stub:
+-- the rule consider_method applies to a method. Returns the members, and appends the functions left out to skipped (keyed "name()", the
+-- key of the stub and of the registry row).
 function functions(rows, env, skipped)
     local out = {}
     for _, row in ipairs(rows) do
+        local key = row.api .. "()"
         local fact = env.functions[row.api]
-        if fact == nil then
-            leave_out(skipped, row.api, "no typed fact in the shard")
+        if env.overridden[key] or env.hand_functions[row.api] then
+            leave_out(skipped, key, "override or hand implementation")
+        elseif fact == nil then
+            leave_out(skipped, key, "no typed fact in the shard")
         else
             local ret = decl.function_return(fact.type, env.index)
             if ret == nil then
-                leave_out(skipped, row.api, "no return type in the shard")
+                leave_out(skipped, key, "no return type in the shard")
             elseif string.find(ret, "^", 1, true) then
-                leave_out(skipped, row.api, "returns a block")
+                leave_out(skipped, key, "returns a block")
             elseif decl.kind_of(ret, env.index) == nil then
-                leave_out(skipped, row.api, "type not resolved: " .. ret)
+                leave_out(skipped, key, "type not resolved: " .. ret)
             else
                 local params = decl.parse_params(fact.params, env.index)
                 local error_arg = nil

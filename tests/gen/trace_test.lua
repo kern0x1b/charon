@@ -63,6 +63,53 @@ local MEMBERS = {
 local FUNCTION_TYPE = "NSInteger (NSInteger, NSError * _Nullable *)"
 local FUNCTION_PARAMS = "NSInteger count | NSError * _Nullable * error"
 
+-- More C functions of the fixture, each a generable row of the snapshot with its typed fact: {name, type text, params, declaration}. The
+-- hand sources (HAND_SOURCE) define FKHandMade and FKMultiLine, so no stub; FKOwed has an owed registry row and no definition, so no stub
+-- either; FKStatic is static and FKProto a prototype only, so the trace layer stubs both.
+local EXTRA_FUNCTIONS = {
+    {"FKHandMade", "NSInteger (void)", "-", "NSInteger FKHandMade(void)"},
+    {"FKMultiLine", "NSInteger (NSInteger, NSInteger)", "NSInteger a | NSInteger b", "NSInteger FKMultiLine(NSInteger a, NSInteger b)"},
+    {"FKOwed", "NSInteger (void)", "-", "NSInteger FKOwed(void)"},
+    {"FKStatic", "NSInteger (void)", "-", "NSInteger FKStatic(void)"},
+    {"FKProto", "NSInteger (void)", "-", "NSInteger FKProto(void)"},
+}
+
+local HAND_SOURCE = [==[#import <Foundation/Foundation.h>
+
+// the port's own definitions: a brace on the line after the parameter list, and a signature over two lines
+NSInteger FKHandMade(void)
+{
+    return 0;
+}
+
+NSInteger FKMultiLine(NSInteger a,
+                      NSInteger b)
+{
+    return a + b;
+}
+
+// a static definition is no public function
+static NSInteger FKStatic(void)
+{
+    return 0;
+}
+
+// a prototype is no definition
+NSInteger FKProto(void);
+]==]
+
+local OWED_REGISTRY = [==[{"framework": "FixtureKit", "entries": [
+  {"api": "FKOwed()", "kind": "function", "introduced": "16.0", "status": "owed", "reason": "fixture: the port defines none",
+   "effect": "fixture", "facts": "-", "source": "fixture"}
+]}
+]==]
+
+-- The typed function facts the headers give: the fixture's declared function and each of EXTRA_FUNCTIONS.
+local FUNCTIONS = {FKCountThings = {type = FUNCTION_TYPE, params = FUNCTION_PARAMS}}
+for _, f in ipairs(EXTRA_FUNCTIONS) do
+    FUNCTIONS[f[1]] = {type = f[2], params = f[3]}
+end
+
 -- The ledger rows of the release that lacks every member: the class and each member, by the api the ledger spells.
 local LEDGER = {
     {"property", "FKThing.scope"}, {"property", "FKThing.enabled"}, {"property", "FKThing.name"},
@@ -339,10 +386,14 @@ local function write_fixture(root)
         table.insert(rows, row)
     end
     emit.file(layout.spec_path(tree, FRAMEWORK), tsv.table_text(layout.constants().SPEC_COLUMNS, rows))
-    emit.file(path.join(layout.snap_dir(tree, FRAMEWORK), "functions.tsv"), tsv.table_text(FUNCTION_COLUMNS, {
-        {"FKCountThings", "-", "generable", "", "NSInteger", "NSInteger count; NSError **error",
-         "NSInteger FKCountThings(NSInteger count, NSError **error)"},
-    }))
+    local function_rows = {{"FKCountThings", "-", "generable", "", "NSInteger", "NSInteger count; NSError **error",
+                            "NSInteger FKCountThings(NSInteger count, NSError **error)"}}
+    for _, f in ipairs(EXTRA_FUNCTIONS) do
+        table.insert(function_rows, {f[1], "-", "generable", "", "NSInteger", f[3], f[4]})
+    end
+    emit.file(path.join(layout.snap_dir(tree, FRAMEWORK), "functions.tsv"), tsv.table_text(FUNCTION_COLUMNS, function_rows))
+    emit.file(path.join(tree, layout.constants().SOURCES_ROOT, FRAMEWORK, "FixtureHand.m"), HAND_SOURCE)
+    emit.file(path.join(tree, layout.registry_dir(FRAMEWORK), "ios16.json"), OWED_REGISTRY)
     local corpus = path.join(root, "corpus")
     local ledger, surface = {}, {}
     for _, row in ipairs(LEDGER) do
@@ -362,7 +413,7 @@ local function write_fixture(root)
                 NSInteger = true, NSError = true, NSArray = true, NSString = true},
                 typedefs = {NSInteger = "long", NSUInteger = "unsigned long", BOOL = "signed char"},
                 superclasses = {FKThing = "NSObject", FKWidget = "NSObject", FKRetired = "NSObject"},
-                functions = {FKCountThings = {type = FUNCTION_TYPE, params = FUNCTION_PARAMS}}}
+                functions = FUNCTIONS}
     end)
     return tree, sdk, corpus
 end
@@ -457,6 +508,22 @@ local function test_trace_run(check, root)
     check(skipped["-[FKWidget init]"] == nil, "the init the surface lists and the headers declare available is kept")
     check(nsobject.declared_unavailable("*unavailable ios=-/-/-/1") and not nsobject.declared_unavailable("ios=11.0/100000/-/0"),
           "the availability flag is read from the flag column only")
+    local hand = import("gen.hand", {rootdir = TOOLS, anonymous = true})
+    local defined = hand.functions(tree)
+    check(defined.FKHandMade and defined.FKMultiLine and not defined.FKStatic and not defined.FKProto and not defined.FKOwed,
+          "the hand sources define the public functions with a body, and no static one, prototype, or owed one")
+    local stubbed = {}
+    for _, row in ipairs(tsv.records(files.read_text(trace_files.stubs_file(tree, FRAMEWORK)))) do
+        stubbed[row.api] = row.kind
+    end
+    for _, name in ipairs({"FKHandMade", "FKMultiLine", "FKOwed"}) do
+        check(stubbed[name .. "()"] == nil, "a C function the port defines or the registry owes gets no stub: " .. name)
+        check(skipped[name .. "()"] == "override or hand implementation",
+              "... and is left out with its reason: " .. tostring(skipped[name .. "()"]))
+    end
+    for _, name in ipairs({"FKCountThings", "FKStatic", "FKProto"}) do
+        check(stubbed[name .. "()"] == "function", "a C function the port does not define publicly is stubbed: " .. name)
+    end
     check(ran == 0, "the program reported no failures (exit " .. tostring(ran) .. ")")
 end
 
