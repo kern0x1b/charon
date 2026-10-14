@@ -782,3 +782,70 @@ port does not define either, and both are answered at run time by NSObject's own
 than absent; whether a ledger row whose selector is inherited counts as `implemented` or wants `decide` is a
 question about the ledger, not about this family, and it is left open here rather than answered by editing a
 row.
+
+## The 20 generated-only classes (proposal; no change to them)
+
+The 20 classes this tree defines and the real stack does not (`class-overlap.tsv`, `no`). Row counts are the SDK 26.2
+surface rows the registry in this package holds for each class (`registry/Matter/ios16.json`, owner read from the
+class name of each row). The core column is the pinned connectedhomeip v1.6.1.0 source (commit 3bcdd56b, the
+`matter` package's `v1.6.1.0` source tree): `ClusterId.h` of the cluster by its name under
+`zzz_generated/app-common/clusters/`, and `zzz_generated/app-common/app-common/zap-generated/ids/Clusters.h`.
+
+| class | class rows | property rows | method rows | pinned core cluster |
+| --- | --- | --- | --- | --- |
+| MTRBaseClusterAppleDeviceInformation | 1 | 7 | 22 | no cluster ID in the core |
+| MTRBaseClusterAppleLockCluster | 1 | 6 | 21 | no cluster ID in the core |
+| MTRBaseClusterTimer | 1 | 8 | 30 | no cluster ID in the core |
+| MTRClusterAppleDeviceInformation | 1 | 7 | 8 | no cluster ID in the core |
+| MTRClusterAppleLockCluster | 1 | 6 | 9 | no cluster ID in the core |
+| MTRClusterTimer | 1 | 8 | 14 | no cluster ID in the core |
+| MTRDoorLockClusterAppleAliroCredentialStruct | 1 | 3 | 3 | cluster 0x0101 present |
+| MTRDoorLockClusterAppleAliroLockOperationErrorEvent | 1 | 6 | 3 | cluster 0x0101 present |
+| MTRDoorLockClusterAppleAliroLockOperationEvent | 1 | 5 | 3 | cluster 0x0101 present |
+| MTRDoorLockClusterAppleAliroLockUserChangeEvent | 1 | 8 | 3 | cluster 0x0101 present |
+| MTRDoorLockClusterAppleClearAliroCredentialParams | 1 | 4 | 3 | cluster 0x0101 present |
+| MTRDoorLockClusterAppleClearAliroReaderConfigParams | 1 | 3 | 3 | cluster 0x0101 present |
+| MTRDoorLockClusterAppleGetAliroCredentialStatusParams | 1 | 4 | 3 | cluster 0x0101 present |
+| MTRDoorLockClusterAppleSetAliroCredentialParams | 1 | 7 | 3 | cluster 0x0101 present |
+| MTRDoorLockClusterAppleSetAliroReaderConfigParams | 1 | 7 | 3 | cluster 0x0101 present |
+| MTRGroupcastClusterExpireGracePeriodParams | 1 | 3 | 2 | cluster 0x0065 present |
+| MTRTimerClusterAddTimeParams | 1 | 3 | 2 | no cluster ID in the core |
+| MTRTimerClusterReduceTimeParams | 1 | 3 | 2 | no cluster ID in the core |
+| MTRTimerClusterResetTimerParams | 1 | 2 | 2 | no cluster ID in the core |
+| MTRTimerClusterSetTimerParams | 1 | 3 | 2 | no cluster ID in the core |
+
+- `Timer` (four `...Params` classes and the `Timer` cluster classes) and `AppleDeviceInformation` and `AppleLockCluster`:
+  the core has no cluster directory and no ID for them in `Clusters.h`. Nothing in the pinned core can serve them over
+  the real transport; they stay an honest generated answer, or are dropped in a later round by a decision of the owner.
+- The nine `DoorLockClusterApple...` classes: the core's DoorLock cluster (0x0101) is present with its Aliro reader
+  configuration (`SetAliroReaderConfig`, `ClearAliroReaderConfig`) and Aliro attributes, but no Aliro credential command
+  (`SetAliroCredential`, `GetAliroCredentialStatus`, `ClearAliroCredential`) appears in `CommandIds.h`. The Apple
+  spelling is Apple's own, so the core answers the cluster and not these names.
+- `MTRGroupcastClusterExpireGracePeriodParams`: the core's Groupcast cluster (0x0065) is present, and the core has no
+  `ExpireGracePeriod` command in its generated sources.
+
+## What the real stack's registry lacks, measured (v-matter9)
+
+The removal rule "the real stack carries it, so the generated object goes" needs the real stack's registry to hold the
+rows the object carries, or the rows go with it. It does not, for most of the 1188:
+
+| the 1188 generated classes' rows in this package's registry | rows | in `packages/m/matter/registry` by kind and name |
+| --- | --- | --- |
+| class rows of the 854 the real registry has a class row for | 854 | 854 |
+| property rows of those 854 | 3927 | 2197 |
+| method rows of those 854 | 11605 | 8419 |
+| class rows of the 334 the real registry has no class row for | 334 | 0 |
+| property and method rows of those 334 | 1872 and 2394 | 0 and 0 |
+
+So 9516 rows (4916 of the 854's, and 4600 of the 334's) are held by no registry in the tree. Removing the 1188
+objects outright would leave those rows with no object behind them, and the registry check holds a row no build
+answers as red; deleting the rows would lose them. The registry is written by `tools/matter-registry.lua` from the
+SDK 26.2 surface corpus, and no corpus file is on the machine this section was measured on, so these rows cannot be
+written into `packages/m/matter/registry` here. The decision (extend the corpus, keep the objects for the rows the
+real stack's registry does not carry, or accept the loss) belongs to the coordinator.
+
+## Open
+
+- Port `tools/matter-generate.py` to Lua with the exclusion: the generator writes every class of the SDK's headers,
+  so until it is ported a re-run re-emits the classes the real stack carries; the regression guard in
+  `tests/addon/matter_objects_test.lua` is what catches that.
