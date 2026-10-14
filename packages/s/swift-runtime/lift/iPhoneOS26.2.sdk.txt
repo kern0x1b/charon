@@ -1,5 +1,5 @@
 # What lift() leaves alone against iPhoneOS26.2.sdk (the archive the iphoneos-sdk package installs for 26.2): one full lift of the registry of this series
-# (main 81bc69e7e8: the compression_stream rows since the re-measure on eb8122f9a3), none dropped: 3638 lines.
+# (v-found2: the Data overlay's iOS 7 marks lowered and Data declared Sendable), none dropped: 3638 lines.
 # Each is a name the lift did not reach, and each was looked for in every header of the SDK (usr/include and the frameworks) and found declared nowhere,
 # but for the ones told here:
 #  - class (17): a class no header declares (a stub exports some, some are private, some a later SDK's).
