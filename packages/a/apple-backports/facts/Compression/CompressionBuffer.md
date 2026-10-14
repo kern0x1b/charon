@@ -12,10 +12,17 @@ checks them is `tests/backports/host/compression/run.sh` (seed as argument; it p
   for a stored block (raw size, then the bytes), `bv4$` for the end. A block carries up to 65536 raw bytes and depends
   on the 64 KiB before it: a block after the first does not decode without that dictionary.
 - LZ4_RAW: one bare LZ4 block, no header.
+- LZMA: the xz container (it starts `fd 37 7a 58 5a 00`), no integrity check (the stream flags are `00 00`), at liblzma's
+  preset 6. Measured on the host: the layer's output is identical to the host's for 1000 bytes of `a` (72 bytes) and for
+  300000 bytes of words (226012 bytes). Every other preset differs on the 300000-byte input (preset 5 also matches on
+  the 1000 bytes; a one-off survey,
+  not kept; the differential requires the bytes of every LZMA case: `LZMA encodes the host's bytes`). The codec is xz 5.8.4
+  (packages/x/xz), built from its own sources and a configuration header of this repository (packages/x/xz/config.h).
 
 ## Empty input (measured)
 
-LZFSE 12 bytes; ZLIB 2 bytes; LZ4 4 bytes (`bv4$`); LZ4_RAW 0 bytes (0 is also the error answer).
+LZFSE 12 bytes; ZLIB 2 bytes; LZ4 4 bytes (`bv4$`); LZ4_RAW 0 bytes (0 is also the error answer); LZMA 32 bytes (the
+xz stream header, an empty block-less stream, and its index and footer).
 
 ## Destinations (measured)
 
@@ -24,8 +31,9 @@ LZFSE 12 bytes; ZLIB 2 bytes; LZ4 4 bytes (`bv4$`); LZ4_RAW 0 bytes (0 is also t
   buffer that always fits and copies out when the result fits, so the answer does not depend on the destination.
   Encode into a destination that is too small answers 0.
 - Decode into a destination too small for the content: the host writes the first `dst` bytes and answers `dst` (LZFSE,
-  ZLIB, LZ4, LZ4_RAW). LZMA answers 0 (not yet carried).
-- Corrupt input (a fixed random 64-byte pattern, and every codec's bad frame): answers 0 on all four algorithms.
+  ZLIB, LZ4, LZ4_RAW). LZMA answers 0 (measured: the host answers 0 too, for every size and destination the
+  differential tries).
+- Corrupt input (a fixed random 64-byte pattern, and every codec's bad frame): answers 0 on all five algorithms.
 - A NULL scratch buffer is allowed on encode and decode for every algorithm, and answers the same as with one (measured
   with 1000 bytes of `a`: LZFSE 38, ZLIB 11, LZ4 149, LZ4_RAW 133 bytes). The layer allocates its own when it is NULL.
 
@@ -59,6 +67,7 @@ failing inputs come from its own seeded generator, which this probe does not rep
 The layer's `compression_encode_scratch_buffer_size` and `compression_decode_scratch_buffer_size` answer the codec's own
 sizes, which differ from the host's (seed 2 run): LZFSE encode 684384 (host 684288), LZFSE decode 47368 (host 47376);
 ZLIB answers 0 for both (host 270336 encode, 131072 decode); LZ4 answers 0 for both (host 32768 encode, 0 decode);
-LZ4_RAW answers 0 for both (host 32768 encode, 0 decode). The layer uses its own state for ZLIB and LZ4 and ignores the
+LZ4_RAW answers 0 for both (host 32768 encode, 0 decode); LZMA answers 0 for both (host 0 encode, 30080 decode; seeds 1
+and 2 run). The layer uses its own state for ZLIB and LZ4 and ignores the
 scratch. The LZFSE encode size is larger than the host's by 96 bytes, so an app that hard-codes the host's number would
 hand the codec too little; an app that allocates the size our function gives it is right. Not a contract with the host.

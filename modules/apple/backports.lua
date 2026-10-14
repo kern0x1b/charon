@@ -49,7 +49,7 @@ LIBRARIES = {
     {name = "CommonCryptoBackports", folder = "CommonCrypto", frameworks = {"Security"}, libraries = {}},
     -- The codecs are C, with no Objective-C++ object in the band, so they are c_archives (see the note on SecurityBackports above);
     -- the Compression framework itself is none of the release's, so no framework is linked.
-    {name = "CompressionBackports", folder = "Compression", frameworks = {}, libraries = {}, archives = {"lzfse", "zlib", "lz4"}, c_archives = {"lzfse", "zlib", "lz4"}},
+    {name = "CompressionBackports", folder = "Compression", frameworks = {}, libraries = {}, archives = {"lzfse", "zlib", "lz4", "xz"}, c_archives = {"lzfse", "zlib", "lz4", "xz"}},
     -- suitesparse-ordering is AMD and COLAMD, the two sparse orderings, as a static archive: the Sparse*
     -- solve family needs an ordering and this stack's own rows must not export one. The archive is not
     -- API of the image, and the archive ITSELF is not a proof of that: AMD and COLAMD mark their entry

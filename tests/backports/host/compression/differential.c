@@ -14,8 +14,8 @@ size_t charon_host_compression_decode_buffer(uint8_t *, size_t, const uint8_t *,
 size_t charon_host_compression_encode_scratch_buffer_size(compression_algorithm);
 size_t charon_host_compression_decode_scratch_buffer_size(compression_algorithm);
 
-static const compression_algorithm kAlgorithms[] = {COMPRESSION_LZFSE, COMPRESSION_ZLIB, COMPRESSION_LZ4, COMPRESSION_LZ4_RAW};
-static const char *kNames[] = {"LZFSE", "ZLIB", "LZ4", "LZ4_RAW"};
+static const compression_algorithm kAlgorithms[] = {COMPRESSION_LZFSE, COMPRESSION_ZLIB, COMPRESSION_LZ4, COMPRESSION_LZ4_RAW, COMPRESSION_LZMA};
+static const char *kNames[] = {"LZFSE", "ZLIB", "LZ4", "LZ4_RAW", "LZMA"};
 static const size_t kSizes[] = {0, 1, 2, 3, 4, 5, 15, 16, 17, 255, 256, 4095, 4096, 65535, 65536, 65537, 300000};
 static const int kClasses = 4;
 
@@ -120,6 +120,10 @@ int main(int argc, char **argv)
                     check(port_n == 0, "port answers 0 where the host does", (int)port_n, 0);
                 }
                 if (port_n && host_n && port_n == host_n && memcmp(ours, packed, port_n) == 0) equal_bytes++;
+                // LZMA's bytes are required, not reported: the xz container at preset 6 is measured identical to the host's
+                if (algorithm == COMPRESSION_LZMA && host_n) {
+                    check(port_n == host_n && memcmp(ours, packed, host_n) == 0, "LZMA encodes the host's bytes", (int)port_n, (int)host_n);
+                }
                 // a NULL scratch buffer is allowed on both sides (measured on the host for every algorithm): the port
                 // answers as the host does, and decodes the host's output with no scratch as well
                 size_t null_host = compression_encode_buffer(nulls, cap, input, n, NULL, algorithm);

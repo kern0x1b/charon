@@ -24,10 +24,11 @@ package("apple-backports")
     -- this package made itself over the archive, and every name it needs begins with Charon.
     add_deps("charon@micro-ecc", {alias = "micro-ecc"})
     -- The codecs of the Compression backport, each a pinned upstream built as one static archive with its symbols
-    -- hidden (the recipes name the commit they fetch): LZFSE and LZVN, zlib's raw deflate, and LZ4's block codec.
+    -- hidden (the recipes name the commit they fetch): LZFSE and LZVN, zlib's raw deflate, LZ4's block codec, and the liblzma subset of xz for LZMA.
     add_deps("charon@lzfse lzfse-1.0", {alias = "lzfse"})
     add_deps("charon@zlib v1.3.2", {alias = "zlib"})
     add_deps("charon@lz4 v1.9.2", {alias = "lz4"})
+    add_deps("charon@xz v5.8.4", {alias = "xz"})
 
     local add_configs = add_configs
     local modules = path.join(os.scriptdir(), "..", "..", "..", "modules")
@@ -61,7 +62,7 @@ package("apple-backports")
     add_configs("coredata", {description = "Build libCoreDataBackports.dylib, for a port that keeps its data with Core Data; it loads CoreData into the process.", default = false, type = "boolean"})
     add_configs("security", {description = "Build libSecurityBackports.dylib, for a port that evaluates a trust with SecTrustEvaluateWithError; it loads Security into the process.", default = false, type = "boolean"})
     add_configs("commoncrypto", {description = "Build libCommonCryptoBackports.dylib, for an application that draws random bytes through CCRandomGenerateBytes, which iOS 6.1.3 does not export; it is filled from SecRandomCopyBytes.", default = false, type = "boolean"})
-    add_configs("compression", {description = "Build libCompressionBackports.dylib, for an application that encodes and decodes buffers with compression_encode_buffer and compression_decode_buffer (LZFSE, zlib's raw deflate, LZ4 and LZ4_RAW, each as the codec the release's Compression framework uses); the codecs are pinned upstreams linked into it.", default = false, type = "boolean"})
+    add_configs("compression", {description = "Build libCompressionBackports.dylib, for an application that encodes and decodes buffers with compression_encode_buffer and compression_decode_buffer (LZFSE, zlib's raw deflate, LZ4, LZ4_RAW and LZMA, each as the codec the release's Compression framework uses); the codecs are pinned upstreams linked into it.", default = false, type = "boolean"})
 
     add_configs("avfaudio", {description = "Build libAVFAudioBackports.dylib, for an application that looks for audio components, builds an AVAudioTime, an AVAudioChannelLayout, an AVParameterEvent or asks for the record permission through AVAudioApplication; the component discovery, the AudioComponent/AudioUnit C API and the clock it converts through are the release's own, so it builds on the carried AVAudioEngine, AVAudioFormat and AVAudioUnit and so brings libAVFoundationBackports.dylib with it, loading AVFAudio, AVFoundation, AudioToolbox and CoreAudio into the process.", default = false, type = "boolean"})
 

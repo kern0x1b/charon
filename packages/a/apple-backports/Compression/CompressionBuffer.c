@@ -1,13 +1,15 @@
 #include <compression.h>
 #include <lz4/lz4.h>
 #include <lzfse/lzfse.h>
+#include <lzma/lzma.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <zlib/zlib.h>
 
 // The buffer API of the Compression framework over the codecs of this package: LZFSE over lzfse, ZLIB as raw deflate
-// over zlib, LZ4_RAW as one LZ4 block over lz4, and LZ4 as the framed blocks Apple writes around LZ4 blocks. The
+// over zlib, LZ4_RAW as one LZ4 block over lz4, LZ4 as the framed blocks Apple writes around LZ4 blocks, and LZMA as
+// the xz container of liblzma at its default preset with no check. The
 // formats and the answers for an empty input, a short output buffer and corrupt input are the ones measured on the
 // host's own libcompression (facts/Compression/CompressionBuffer.md); the differential test is
 // tests/backports/host/compression/run.sh.
@@ -213,6 +215,35 @@ static size_t decode_lz4_raw(uint8_t *dst, size_t dst_size, const uint8_t *src, 
     }
 }
 
+// The xz container at preset 6 with no integrity check: the bytes the host's LZMA writes (measured: identical to the host's
+// output for 1000 bytes of 'a' and for 300000 bytes of words, against the presets 0 to 9). The stream is written to a
+// bound-sized buffer and copied out when it fits, so the answer does not depend on the destination.
+static size_t encode_lzma(uint8_t *dst, size_t dst_size, const uint8_t *src, size_t src_size)
+{
+    enum { kPreset = 6 };
+    size_t bound = lzma_stream_buffer_bound(src_size);
+    uint8_t *stream = malloc(bound);
+    size_t out = 0;
+    if (stream) {
+        size_t pos = 0;
+        if (lzma_easy_buffer_encode(kPreset, LZMA_CHECK_NONE, NULL, src, src_size, stream, &pos, bound) == LZMA_OK && pos <= dst_size) {
+            memcpy(dst, stream, pos);
+            out = pos;
+        }
+        free(stream);
+    }
+    return out;
+}
+
+static size_t decode_lzma(uint8_t *dst, size_t dst_size, const uint8_t *src, size_t src_size)
+{
+    uint64_t memlimit = UINT64_MAX;
+    size_t in = 0, out = 0;
+    lzma_ret status = lzma_stream_buffer_decode(&memlimit, 0, NULL, src, &in, src_size, dst, &out, dst_size);
+    if (status == LZMA_OK) return out;
+    return 0;
+}
+
 COMPRESSION_EXPORT size_t compression_encode_scratch_buffer_size(compression_algorithm algorithm)
 {
     switch (algorithm) {
@@ -258,6 +289,8 @@ COMPRESSION_EXPORT size_t compression_encode_buffer(uint8_t *__restrict dst_buff
         return encode_zlib(dst_buffer, dst_size, src_buffer, src_size);
     case COMPRESSION_LZ4:
         return encode_lz4_frame(dst_buffer, dst_size, src_buffer, src_size);
+    case COMPRESSION_LZMA:
+        return encode_lzma(dst_buffer, dst_size, src_buffer, src_size);
     case COMPRESSION_LZ4_RAW:
         if (!src_size) return 0;
         // written to a bound-sized buffer and copied out when it fits: the codec refuses an exact fit (measured)
@@ -299,6 +332,8 @@ COMPRESSION_EXPORT size_t compression_decode_buffer(uint8_t *__restrict dst_buff
         return decode_lz4_frame(dst_buffer, dst_size, src_buffer, src_size);
     case COMPRESSION_LZ4_RAW:
         return decode_lz4_raw(dst_buffer, dst_size, src_buffer, src_size);
+    case COMPRESSION_LZMA:
+        return decode_lzma(dst_buffer, dst_size, src_buffer, src_size);
     default:
         return 0;
     }
