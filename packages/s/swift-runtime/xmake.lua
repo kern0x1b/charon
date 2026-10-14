@@ -45,9 +45,11 @@ package("swift-runtime")
 
     -- With the backports, the files of Foundation's overlay whose iOS 7 marks stay: what they mark the backports do not
     -- carry. Found by building without the marks and reading what the compiler refused: Progress has no entry in the
-    -- registry, and the options of NSCalendar and of NSData's base64 are types the headers alone declare, which the
-    -- registry does not name yet.
-    local still_ios7 = {["Progress.swift"] = true, ["Calendar.swift"] = true, ["Data.swift"] = true}
+    -- registry, and Calendar.swift uses seven options of NSCalendar that the lifted NSCalendar.h marks ios(7.0) and the
+    -- registry does not name (matchNextTime, matchNextTimePreservingSmallerUnits, matchPreviousTimePreservingSmallerUnits,
+    -- matchStrictly, matchFirst, matchLast, searchBackwards). Data.swift is not here: the lifted NSData.h marks its base64
+    -- options and methods ios(6.1.3), and the compiler accepts them at the floor without the marks.
+    local still_ios7 = {["Progress.swift"] = true, ["Calendar.swift"] = true}
 
     -- With the backports, the files of Foundation's overlay whose own marks of iOS 7 to 11 come down to the port's release:
     -- their Swift wraps classes the backports implement. The overlay is compiled against the lifted headers, so a mark
