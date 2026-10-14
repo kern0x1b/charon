@@ -222,6 +222,35 @@ function failures(opt)
     -- to be satisfied by something the process carries, and a row the build does not import at all is not a
     -- difference for a configuration that compiles its guard's code out.
     local guards = import("apple.runtime_guards", {rootdir = opt.modules, anonymous = true})
+    -- A package's own library carried beside the program (libswiftSystem.dylib, which swift-system declares rows for): the rows
+    -- the package declares are the guard table the check reads for that copy, so a weak import one of them records is reported,
+    -- and a weak import none of them records is refused as the program's own. The rows are read from the merged table, and the
+    -- fixture stands for the library by its file name, the key the check looks the rows up by.
+    local declared = guards.guards()
+    local mach = {"_mach_port_destruct", "_mach_port_guard", "_mach_port_unguard"}
+    for _, symbol in ipairs(mach) do
+        if not declared["libswiftSystem.dylib"] or not declared["libswiftSystem.dylib"][symbol] then
+            table.insert(found, "apple.runtime_guards must declare " .. symbol .. " for libswiftSystem.dylib, which swift-system carries")
+        end
+    end
+    if not guards.declares("swift-system") then
+        table.insert(found, "apple.runtime_guards must say the swift-system package declares rows of its own")
+    end
+    local own = fixtures.link(folder, opt.ld64, "libswiftSystem.dylib", "armv7-apple-ios6.0", "weak.c", {"-dynamiclib"})
+    local recorded_own = {["libswiftSystem.dylib"] = {_arrived = "weak.c's own test of the pointer"}}
+    local own_refused = fixtures.refusal(function () dyld.check(armv7, {own}, nil, {release = true, runtime = {own}, guards = recorded_own}) end)
+    if own_refused then
+        table.insert(found, "a weak import a package's rows record must be reported, not refused: " .. own_refused)
+    else
+        local own_warned = table.concat(dyld.check(armv7, {own}, nil, {release = true, runtime = {own}, guards = recorded_own}) or {}, "\n")
+        if not own_warned:find("libswiftSystem.dylib", 1, true) or not own_warned:find("guard table records", 1, true) then
+            table.insert(found, "a recorded weak import of a package's own library must be named in a warning: " .. own_warned)
+        end
+    end
+    local own_unrecorded = fixtures.refusal(function () dyld.check(armv7, {own}, nil, {release = true, runtime = {own}, guards = declared}) end) or ""
+    if not own_unrecorded:find("_arrived", 1, true) or not own_unrecorded:find("records no guard", 1, true) then
+        table.insert(found, "a weak import a package's rows do not record must be refused as the program's own: " .. own_unrecorded)
+    end
     local problems = table.concat(guards.compare({["libswiftCore.dylib"] = {"__availability_version_check", "_charon_never_recorded"}},
         {imports = {["libswiftCore.dylib"] = {__availability_version_check = true, _charon_never_recorded = true}}, exported = {},
          minimum = "6.1.3", backports = true}), "\n")

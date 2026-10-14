@@ -1158,9 +1158,10 @@ function check(cachefile, binaries, folder, opt)
     for _, binary in ipairs(opt.exempt or {}) do
         exempt[folder and path.relative(binary, folder) or binary] = true
     end
-    -- A copy of a runtime's library that the program carries is that runtime's image: a weak import the runtime's guard table
-    -- (opt.guards, by file name, then symbol) records is guarded in the runtime's own source and is reported; any other is the
-    -- program's to answer for, as an import of its own image is.
+    -- A copy of a runtime's library that the program carries is that runtime's image, and so is a copy of a package's library
+    -- whose package declares guard rows for it: a weak import the guard table (opt.guards, by file name, then symbol) records
+    -- is guarded in the source of the library's own build and is reported; any other is the program's to answer for, as an
+    -- import of its own image is.
     local runtime = {}
     for _, binary in ipairs(opt.runtime or {}) do
         runtime[folder and path.relative(binary, folder) or binary] = (opt.guards or {})[path.filename(binary)] or {}

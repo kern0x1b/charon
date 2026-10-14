@@ -21,8 +21,8 @@ end
 
 -- The libraries other packages provide (the backports, a shared runtime) are checked with the program, and a weak import in
 -- one of them is that package's to answer for when it is built, not a reason to refuse this program.
--- runtime: the copies the program carries of the runtime's libraries, whose weak imports are the runtime's to answer for where
--- its guard table records them (apple.runtime_guards).
+-- runtime: the copies the program carries of the runtime's libraries and of the packages that declare guard rows, whose weak
+-- imports are that library's to answer for where its guard table records them (apple.runtime_guards).
 function import_options(target, provided, runtime)
     return {release = os.getenv("CHARON_RELEASE") ~= nil, waived = waivers(target)["weak-imports"], exempt = provided,
             runtime = runtime, guards = runtime_guards.guards()}
@@ -352,6 +352,12 @@ local function carries_runtime(library)
     return library.package ~= nil and table.contains(SHARED, library.package)
 end
 
+-- The copies a program carries whose weak imports the guard table answers for: the runtime's, and a package's own libraries
+-- that the package declares rows for (apple.runtime_guards' PACKAGES). Only the runtime's are shared, so only they are held.
+local function carries_guarded(library)
+    return carries_runtime(library) or (library.package ~= nil and runtime_guards.declares(library.package))
+end
+
 -- The libraries of `offered` (a list of {name, source}) the images in `roots` load, directly or through one another: what a
 -- program carries of a package is what it links, and not every library the package holds.
 function reached(offered, roots)
@@ -390,7 +396,7 @@ function place_carried(target, root, binary)
         os.vcp(library.source, destination)
         identities[destination] = folder .. "/" .. library.name
         table.insert(binaries, destination)
-        if carries_runtime(library) then
+        if carries_guarded(library) then
             table.insert(runtime, destination)
         end
     end
@@ -556,7 +562,7 @@ function application(target)
         os.vcp(library.source, destination)
         identities[destination] = "@executable_path/Frameworks/" .. library.name
         table.insert(binaries, destination)
-        if carries_runtime(library) then
+        if carries_guarded(library) then
             table.insert(runtime, destination)
         end
     end
