@@ -48,16 +48,40 @@ function constant_base(decl)
     return "NSString"
 end
 
--- The definition of one constant, in the canonical type of its shape: the variable is const where the header's is. A typedef
--- of NSString defines as NSString *, which is the same type to the compiler and needs no SDK typedef that a build SDK may
--- lack; a CFStringRef typedef defines as CFStringRef through a bridging cast from the literal.
+-- Whether a declaration's words hold const.
+local function has_const(text)
+    return string.find(text, "%f[%w_]const%f[^%w_]") ~= nil
+end
+
+-- The two const qualifiers of a declared type, read from where the const stands relative to the pointer's star (the last one): a
+-- const before it qualifies the string (`const NSString *`, the SDK's `NSString const *`), a const after it qualifies the variable
+-- (`NSString *const`). A type with no star is a typedef of a pointer (`NSErrorDomain const`), so its const is the variable's.
+function constant_qualifiers(decl)
+    local before, after = string.match(decl, "^(.*)%*(.*)$")
+    if before == nil then
+        return false, has_const(decl)
+    end
+    return has_const(before), has_const(after)
+end
+
+-- The type of an NSString constant as its declaration spells it: NSString *, with the string's const in front of it and the
+-- variable's after the star (constant_qualifiers). `NSString const *` is `const NSString *`, the same type to the compiler.
+function ns_type(decl)
+    local pointee, variable = constant_qualifiers(decl)
+    return (pointee and "const " or "") .. "NSString *" .. (variable and "const" or "")
+end
+
+-- The definition of one constant, in the canonical type of its shape: the qualifiers are the declaration's. A typedef of NSString
+-- defines as NSString *, which is the same type to the compiler and needs no SDK typedef that a build SDK may lack; a CFStringRef
+-- typedef defines as CFStringRef through a bridging cast from the literal, and its pointee const is already in the typedef, so only
+-- the variable's const is written.
 function constant_definition(r)
-    local const = string.find(r.type or "-", "%f[%w_]const%f[^%w_]") ~= nil
     local literal = '@"' .. r.value .. '"'
     if r.shape == "cf" then
-        return string.format("%sCFStringRef %s = (__bridge CFStringRef)%s;", const and "const " or "", r.api, literal)
+        local _, variable = constant_qualifiers(r.type or "-")
+        return string.format("%sCFStringRef %s = (__bridge CFStringRef)%s;", variable and "const " or "", r.api, literal)
     end
-    return string.format("%s %s = %s;", const and "NSString *const" or "NSString *", r.api, literal)
+    return string.format("%s %s = %s;", ns_type(r.type or "-"), r.api, literal)
 end
 
 -- The README of a framework's build directory: what the generated files are, their counts, and the sources the generator reads.

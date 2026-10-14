@@ -10,6 +10,7 @@ local host = import("host", {anonymous = true})
 local strings = import("strings", {anonymous = true})
 local probes = import("probe", {anonymous = true})
 local files = import("files", {anonymous = true})
+local render = import("render", {anonymous = true})
 
 -- Python's repr of a text of ASCII and UTF-8 bytes: quoted with ' unless it holds ' and no ", the backslash and the quote escaped,
 -- tab, newline and carriage return as escapes, other control characters as \xNN.
@@ -42,15 +43,15 @@ function repr(text)
     return table.concat(out)
 end
 
--- The reference program for the names: each declared with the type macOS declares it with (CFStringRef or NSString), and printed
--- as name, a tab, and the UTF-8 text of its value, one line per name.
-local function reference_source(names, shape)
+-- The reference program for the names: each declared with the type the spec declares it with (CFStringRef or NSString, the qualifiers
+-- where the declaration has them), and printed as name, a tab, and the UTF-8 text of its value, one line per name.
+local function reference_source(names, shape, types)
     local body = {"#import <Foundation/Foundation.h>", "#import <stdio.h>"}
     for _, name in ipairs(names) do
         if shape[name] == "cf" then
             table.insert(body, "extern const CFStringRef " .. name .. ";")
         else
-            table.insert(body, "extern NSString *const " .. name .. ";")
+            table.insert(body, "extern " .. render.ns_type(types[name] or "-") .. " " .. name .. ";")
         end
     end
     table.insert(body, "int main(void) {")
@@ -84,9 +85,10 @@ function run(args)
         return 0
     end
     local spec = snapshot.load(tree, fw)
-    local shape, ios_value = {}, {}
+    local shape, types, ios_value = {}, {}, {}
     for _, r in ipairs(spec) do
         shape[r.api] = r.shape
+        types[r.api] = r.type
         if r.value_source == "ios-26.2-cache" then
             ios_value[r.api] = r.value
         end
@@ -104,7 +106,7 @@ function run(args)
     -- A name macOS does not export cannot be read on the host: it is named, not compared, and the link is retried without it.
     local absent = {}
     while true do
-        local _, changed = host.write_generated("reference.m", reference_source(names, shape))
+        local _, changed = host.write_generated("reference.m", reference_source(names, shape, types))
         local built, err = host.build("reference", changed)
         if built then
             break
