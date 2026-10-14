@@ -201,6 +201,14 @@ package("matter")
             os.mkdir(path.directory(here))
             os.cp(flat[path.filename(here)], here)
         end
+        -- The framework's Matter.xcodeproj writes git_commit_sha.h in a run-script phase before it compiles, and its
+        -- Sources phase compiles MTRFrameworkDiagnostics.mm, which includes it. The header is the phase's own text, with
+        -- the SHA the phase takes from `git rev-parse --short HEAD` in the checkout (the pinned commit, 3bcdd56b). It goes
+        -- beside the sources, where a quoted include finds it, and is not a public header, so the install does not carry
+        -- it. A failing git stops the build: a made-up SHA would be reported as the framework's own.
+        local sha = os.iorunv("git", {"-C", os.curdir(), "rev-parse", "--short", "HEAD"}):trim()
+        io.writefile(path.join(staged, "git_commit_sha.h"),
+                     string.format("#ifndef GIT_COMMIT_SHA_H\n#define GIT_COMMIT_SHA_H\n\n#define GIT_COMMIT_SHA \"%s\"\n\n#endif /* GIT_COMMIT_SHA_H */\n", sha))
 
         local search = {path.join(out, "framework"), path.join(out, "gen", "include"),
                         path.join(os.curdir(), "src"), path.join(os.curdir(), "src", "include"),
