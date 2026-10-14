@@ -1,0 +1,38 @@
+{
+  "framework": "Compression",
+  "entries": [
+    {
+      "api": "compression_stream_init()",
+      "kind": "function",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "effect": "the stream interface of the release, which the port has not written yet: the call is not answered, and the symbol is not in the built library",
+      "reason": "the port's own debt: the release carries the name from iOS 9.0 and the buffer API is carried first; the stream layer is the next step of the Compression series",
+      "source": "the declaration of the Compression header of the SDK (the name only)",
+      "facts": "facts/Compression/CompressionBuffer.md"
+    },
+    {
+      "api": "compression_stream_process()",
+      "kind": "function",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "effect": "the stream interface of the release, which the port has not written yet: the call is not answered, and the symbol is not in the built library",
+      "reason": "the port's own debt: the release carries the name from iOS 9.0 and the buffer API is carried first; the stream layer is the next step of the Compression series",
+      "source": "the declaration of the Compression header of the SDK (the name only)",
+      "facts": "facts/Compression/CompressionBuffer.md"
+    },
+    {
+      "api": "compression_stream_destroy()",
+      "kind": "function",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "effect": "the stream interface of the release, which the port has not written yet: the call is not answered, and the symbol is not in the built library",
+      "reason": "the port's own debt: the release carries the name from iOS 9.0 and the buffer API is carried first; the stream layer is the next step of the Compression series",
+      "source": "the declaration of the Compression header of the SDK (the name only)",
+      "facts": "facts/Compression/CompressionBuffer.md"
+    }
+  ]
+}

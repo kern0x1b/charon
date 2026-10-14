@@ -14,7 +14,9 @@ package("lzfse")
     add_configs("recipe", {description = "The digest of this recipe, so a changed flag is a different library.", default = hash.strhash128(table.concat(digest, ";")), type = "string", readonly = true})
 
     -- Hidden, so the codec is never API of the image that links it in: the Compression backport exports compression_* and nothing of lzfse.
-    local FLAGS = {"-Os", "-fvisibility=hidden", "-fno-strict-aliasing"}
+    -- LZFSE_API defined empty: lzfse.h marks its entry points visibility("default") unless it is already defined, and
+    -- that would export lzfse_* from every image that links the codec (measured: 4 lzfse_* names in the built dylib).
+    local FLAGS = {"-Os", "-fvisibility=hidden", "-fno-strict-aliasing", "-DLZFSE_API="}
     -- The codec's own sources: the command-line tool (lzfse_main.c) is not part of the library.
     local SOURCES = {"src/lzfse_decode.c", "src/lzfse_decode_base.c", "src/lzfse_encode.c", "src/lzfse_encode_base.c",
                      "src/lzfse_fse.c", "src/lzvn_decode_base.c", "src/lzvn_encode_base.c"}

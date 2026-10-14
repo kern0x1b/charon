@@ -11,7 +11,9 @@ package("lz4")
     local digest = {hash.sha256(path.join(os.scriptdir(), "xmake.lua"))}
     add_configs("recipe", {description = "The digest of this recipe, so a changed flag is a different library.", default = hash.strhash128(table.concat(digest, ";")), type = "string", readonly = true})
 
-    local FLAGS = {"-Os", "-fvisibility=hidden", "-fno-strict-aliasing"}
+    -- LZ4LIB_VISIBILITY defined empty: lz4.h marks its entry points visibility("default") unless it is already defined,
+    -- and that would export LZ4_* from every image that links the codec (measured: 41 LZ4_* names in the built dylib).
+    local FLAGS = {"-Os", "-fvisibility=hidden", "-fno-strict-aliasing", "-DLZ4LIB_VISIBILITY="}
 
     on_install("iphoneos", function (package)
         local toolchain = assert(package:toolchains(), "lz4 is built with the apple-ios toolchain")[1]

@@ -20,6 +20,10 @@ static const uint8_t kEndOfStream[4] = {'b', 'v', '4', '$'};
 // The largest raw size of one framed block this layer writes.
 enum { kLZ4BlockSize = 0x10000 };
 
+// The C sources of a backport are compiled -fvisibility=hidden, so the entry points of the API are marked here, and
+// nothing else of this file is.
+#define COMPRESSION_EXPORT __attribute__((visibility("default")))
+
 static void put32(uint8_t *at, uint32_t value)
 {
     at[0] = (uint8_t)value;
@@ -209,7 +213,7 @@ static size_t decode_lz4_raw(uint8_t *dst, size_t dst_size, const uint8_t *src, 
     }
 }
 
-size_t compression_encode_scratch_buffer_size(compression_algorithm algorithm)
+COMPRESSION_EXPORT size_t compression_encode_scratch_buffer_size(compression_algorithm algorithm)
 {
     switch (algorithm) {
     case COMPRESSION_LZFSE: return lzfse_encode_scratch_size();
@@ -217,7 +221,7 @@ size_t compression_encode_scratch_buffer_size(compression_algorithm algorithm)
     }
 }
 
-size_t compression_decode_scratch_buffer_size(compression_algorithm algorithm)
+COMPRESSION_EXPORT size_t compression_decode_scratch_buffer_size(compression_algorithm algorithm)
 {
     switch (algorithm) {
     case COMPRESSION_LZFSE: return lzfse_decode_scratch_size();
@@ -225,7 +229,7 @@ size_t compression_decode_scratch_buffer_size(compression_algorithm algorithm)
     }
 }
 
-size_t compression_encode_buffer(uint8_t *__restrict dst_buffer, size_t dst_size, const uint8_t *__restrict src_buffer,
+COMPRESSION_EXPORT size_t compression_encode_buffer(uint8_t *__restrict dst_buffer, size_t dst_size, const uint8_t *__restrict src_buffer,
                                  size_t src_size, void *__nullable scratch_buffer, compression_algorithm algorithm)
 {
     if (!dst_buffer || !src_buffer && src_size) return 0;
@@ -277,7 +281,7 @@ size_t compression_encode_buffer(uint8_t *__restrict dst_buffer, size_t dst_size
     }
 }
 
-size_t compression_decode_buffer(uint8_t *__restrict dst_buffer, size_t dst_size, const uint8_t *__restrict src_buffer,
+COMPRESSION_EXPORT size_t compression_decode_buffer(uint8_t *__restrict dst_buffer, size_t dst_size, const uint8_t *__restrict src_buffer,
                                  size_t src_size, void *__nullable scratch_buffer, compression_algorithm algorithm)
 {
     if (!dst_buffer || !src_buffer) return 0;
