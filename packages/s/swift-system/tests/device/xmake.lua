@@ -11,11 +11,11 @@ add_repositories("charon " .. root)
 add_addons("charon v0.8.16")
 add_requires("charon@swift-system", {alias = "swift-system"})
 add_requires("charon@swift-runtime", {alias = "swift-runtime", configs = {backports = true}})
-add_requires("charon@apple-backports", {alias = "apple-backports", configs = {coredata = true, commoncrypto = true}})
+add_requires("charon@apple-backports", {alias = "apple-backports", configs = {coredata = true}})
 add_requires("charon@libcxx", {alias = "libcxx"})
 add_requires("charon@apple-compat", {alias = "apple-compat"})
 set_config("apple_minimum", "6.1.3")
-set_config("apple_backports", "coredata,commoncrypto")
+set_config("apple_backports", "coredata")
 includes("@addon/charon/apple-ios")
 includes("@addon/charon/emulate")
 set_allowedplats("iphoneos")
@@ -31,3 +31,7 @@ target("systemprobe")
     set_values("charon.control", "control")
     -- The program carries the libraries it links.
     set_values("charon.libraries", "swift-system", "apple-backports")
+    -- The Swift runtime's copy of Concurrency weakly imports _memset_s and _os_release, which 6.1.3 lacks. The waiver names the
+    -- measured reason: the probe's binary has no undefined symbol from Concurrency (no swift_task, job or continuation import;
+    -- measured with nm -u on build/iphoneos/armv7/release/systemprobe: 126 undefined symbols, none of them there).
+    set_values("charon.waive.weak-imports", "measurement probe, not a released image: the Swift runtime copy it carries weakly imports _memset_s and _os_release; the probe's binary imports no swift_task, job or continuation symbol, so Concurrency is not reached from it")
