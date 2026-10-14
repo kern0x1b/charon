@@ -71,10 +71,11 @@ local function function_parameter(p)
 end
 
 -- The selector of a method with its parameters: each word of the api's selector with its colon, then its parameter. The words are the
--- api's; the types and the names are the parameters' (the count of the two is checked before a member is kept).
+-- api's; the types and the names are the parameters' (the count of the two is checked before a member is kept). A word may be empty
+-- (an empty keyword, as in size::format:): its piece is the bare colon, and it takes its parameter all the same.
 local function method_selector(selector, params)
     local pieces = {}
-    for piece in string.gmatch(selector, "[^:]+:") do
+    for piece in string.gmatch(selector, "[^:]*:") do
         table.insert(pieces, piece .. method_parameter(params[#pieces + 1]))
     end
     if #pieces == 0 then

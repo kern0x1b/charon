@@ -172,53 +172,55 @@ function member_name(api)
     return string.match(trimmed, "(%S+)%s*$")
 end
 
--- The text with each innermost parenthesised group (no parenthesis inside it) replaced by fill, scanning left to right once:
--- re.sub(r"\([^()]*\)", fill, text).
-local function remove_groups(text, fill)
-    local out, copied, pos = {}, 1, 1
-    while true do
-        local open = string.find(text, "(", pos, true)
-        if open == nil then
-            break
-        end
-        local nextparen = string.find(text, "[()]", open + 1)
-        if nextparen ~= nil and string.sub(text, nextparen, nextparen) == ")" then
-            table.insert(out, string.sub(text, copied, open - 1))
-            table.insert(out, fill)
-            copied = nextparen + 1
-            pos = copied
-        else
-            pos = open + 1
+-- The index just past the parenthesised group that opens at text[i] (nested groups counted), or nil when the group does not close.
+local function group_end(text, i)
+    local depth = 0
+    for j = i, #text do
+        local c = string.sub(text, j, j)
+        if c == "(" then
+            depth = depth + 1
+        elseif c == ")" then
+            depth = depth - 1
+            if depth == 0 then
+                return j + 1
+            end
         end
     end
-    table.insert(out, string.sub(text, copied))
-    return table.concat(out)
+    return nil
 end
 
--- The selector a statement names: the words before each colon, each with its colon, or the last word of a selector with none.
--- Parenthesised groups (the types and the parameter names) go first; nil or "" when the statement names none. The hand sources'
--- method signatures are read through it (hand.lua).
+-- The selector a statement names: each parameter's keyword with its colon, or the last word of a selector with no colon. A parameter is
+-- its keyword (possibly empty), its colon, its type (a group) and its name (the word after the group). The name is read as a name, so the
+-- colon after it is the next parameter's, and an empty keyword stays: size:(size_t)width :(size_t)height format:(int)f names size::format:.
+-- The statement's return type (its first group) is skipped. nil or "" when the statement names none. The hand sources' method signatures
+-- are read through it (hand.lua).
 function selector_of(statement)
     local s = strings.strip((string.gsub(statement, "^[%-%+ ]+", "")))
-    local done = false
-    while not done do
-        local nxt = remove_groups(s, " ")
-        done = nxt == s
-        s = nxt
+    local pos = 1
+    if string.sub(s, 1, 1) == "(" then
+        pos = group_end(s, 1) or (#s + 1)
     end
-    if string.find(s, ":", 1, true) == nil then
+    local rest = string.sub(s, pos)
+    if string.find(rest, ":", 1, true) == nil then
         local word = nil
-        for run in string.gmatch(s, "[%w_]+") do
+        for run in string.gmatch(rest, "[%w_]+") do
             word = string.match(run, "[%a_][%w_]*") or word
         end
         return word
     end
     local parts = {}
-    for run, stop in string.gmatch(s, "([%w_]+)()") do
-        local word = string.match(run, "[%a_][%w_]*")
-        if word and string.match(s, "^%s*:", stop) then
-            table.insert(parts, word .. ":")
+    local i = pos
+    local colon = string.find(s, ":", i, true)
+    while colon ~= nil do
+        local keyword = string.match(string.sub(s, i, colon - 1), "([%a_][%w_]*)%s*$") or ""
+        table.insert(parts, keyword .. ":")
+        local after = colon + 1
+        local open = string.match(s, "^%s*()%(", after)
+        if open ~= nil then
+            after = group_end(s, open) or (#s + 1)
         end
+        i = string.match(s, "^%s*[%a_][%w_]*()", after) or after
+        colon = string.find(s, ":", i, true)
     end
     return table.concat(parts)
 end

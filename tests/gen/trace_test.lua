@@ -144,6 +144,11 @@ local STUB_CASES = {
                zero = "scalar", params = {{type = "NSInteger", name = "level"}, {type = "NSError **", name = "error"}}, error_arg = "error"},
      text = '- (BOOL)setLevel:(NSInteger)level error:(NSError **)error { ' .. log_of("-[FKThing setLevel:error:]")
             .. " " .. string.format(ERROR, "-[FKThing setLevel:error:]") .. "return 0; }"},
+    -- an empty keyword (the header's ":(NSInteger)h" after "resizeTo:(NSInteger)w"): the selector keeps the empty word, and each
+    -- parameter stays with its own word
+    {member = {api = "-[FKThing resizeTo::scale:]", kind = "method", sign = "-", selector = "resizeTo::scale:", type_text = "BOOL",
+               zero = "scalar", params = {{type = "NSInteger", name = "w"}, {type = "NSInteger", name = "h"}, {type = "NSInteger", name = "s"}}},
+     text = "- (BOOL)resizeTo:(NSInteger)w :(NSInteger)h scale:(NSInteger)s { " .. log_of("-[FKThing resizeTo::scale:]") .. " return 0; }"},
     {member = {api = "-[FKThing items]", kind = "method", sign = "-", selector = "items", type_text = "NSArray *", zero = "object",
                params = {}},
      text = "- (NSArray *)items { " .. log_of("-[FKThing items]") .. " return nil; }"},
@@ -265,6 +270,12 @@ local function test_selectors(check)
         {"- (NSString *)nameWithNullable:(nullable NSString *)s", "nameWithNullable:"},
         {"- (void)9abc:(int)q", "abc:"},
         {"- (int)x3 y_z:(int)q", "y_z:"},
+        -- an empty keyword: the name before it is the previous parameter's, not a keyword
+        {"+ (CIImage *)imageWithImageProvider:(id)provider size:(size_t)width :(size_t)height format:(CIFormat)format",
+         "imageWithImageProvider:size::format:"},
+        {"- (void)resizeTo:(int)w :(int)h scale:(int)s", "resizeTo::scale:"},
+        {"- (void)size:(int)w\n :(int)h", "size::"},
+        {"- (void)setA:(int)a :(int)b :(int)c", "setA:::"},
     }
     for _, case in ipairs(selectors) do
         same("selector_of " .. case[1], decl.selector_of(case[1]), case[2])
