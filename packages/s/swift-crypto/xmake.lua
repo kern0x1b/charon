@@ -150,8 +150,10 @@ package("swift-crypto")
         os.cp(path.join(swiftmods, "CryptoBoringWrapper.swiftmodule"), path.join(module, "CryptoBoringWrapper.swiftmodule"))
         os.cp(path.join(objects, "Crypto.o"), path.join(package:installdir("lib"), "Crypto.o"))
         -- What a program that imports Crypto compiles against: its module folder, and apple-compat's CharonCompat module, which
-        -- Crypto.swiftmodule imports (rules/swift adds the -I of every dependency's CHARON_SWIFT_MODULES).
-        package:setenv("CHARON_SWIFT_MODULES", module, path.join(compat:installdir("include"), "CharonCompat"))
+        -- Crypto.swiftmodule imports (rules/swift adds the -I of every dependency's CHARON_SWIFT_MODULES). CharonCompat's
+        -- shims.h includes <charon/...> headers, so apple-compat's include root is on the path as well: without it a consumer
+        -- fails in the module build with 'charon/aligned_alloc.h' file not found.
+        package:setenv("CHARON_SWIFT_MODULES", module, path.join(compat:installdir("include"), "CharonCompat"), compat:installdir("include"))
 
         print("%s: %s installed; libswiftCrypto.dylib is in %s", package:name(), package:version_str(), package:installdir("lib"))
     end)

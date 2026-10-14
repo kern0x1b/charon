@@ -3,11 +3,12 @@ set_version("0.0.1")
 -- The armv7 probe of swift-crypto: libswiftCrypto.dylib run on the iOS 6.1.3 emulator, against the same source built for the host
 -- against CryptoKit (main.swift: `swiftc -module-alias Crypto=CryptoKit`). Run from this folder:
 --   xmake f -p iphoneos -a armv7 -y && xmake build -y cryptoprobe && xmake emulate -d iPhone4,1 -r 6.1.3 install
---   xmake emulate -d iPhone4,1 -r 6.1.3 run /usr/libexec/cryptoprobe rows 20261014 nohmac
--- Without `nohmac` the run stops at the first HMAC row: upstream Crypto refuses 32-bit iOS in HMAC.init (and in ECDSA DER and
--- DH HKDF) with fatalError("Unsupported architecture") under `#if os(iOS) && (arch(arm) || arch(i386))`. The package keeps
--- that refusal; lifting it is a coordinator ruling, so the probe skips the HMAC and HKDF rows on both sides instead.
--- The package exports its module folder and its dylib link, and apple-compat CharonCompat (the Crypto module imports it).
+--   xmake emulate -d iPhone4,1 -r 6.1.3 run /usr/libexec/cryptoprobe rows 20261014
+-- The package's patch lift-the-32-bit-refusal.patch removes upstream's 32-bit iOS refusal at its eight sites (HMAC.init, DH's
+-- hkdfDerivedSymmetricKey, ECDSA's DER init and encoding for P-256/384/521), so the HMAC, HKDF, DH-HKDF, ECDSA DER and HPKE rows
+-- run here. `nohmac` (rows) skips the HMAC, HKDF and DH-HKDF rows on both sides, as before the lift.
+-- The package exports its module folder and its dylib link, and apple-compat's include root and CharonCompat (the Crypto module
+-- imports CharonCompat, whose shims include <charon/...>).
 local root = path.join(os.scriptdir(), "../../../../..")
 add_repositories("charon " .. root)
 add_addons("charon v0.8.16")

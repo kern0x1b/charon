@@ -4,11 +4,14 @@
 //
 // Modes (every output line starts with "P| " so a log is filtered with grep):
 //   rows [seed] [negative] [nohmac]  deterministic rows, full bytes: digests, MACs, KDF, AEAD with fixed keys and nonces,
-//                                    key agreement from fixed keys, ML-KEM public key from a fixed seed. With `negative`, the
-//                                    SHA256 input of length 1 is flipped on this side: exactly one row must differ from the host.
-//                                    With `nohmac`, the HMAC and HKDF rows are skipped on both sides (same draws skipped).
+//                                    key agreement from fixed keys, ML-KEM public key from a fixed seed, ECDSA DER encode and
+//                                    round trip (the decoder and encoder of P-256/384/521), DH-HKDF from the agreed secrets.
+//                                    With `negative`, the SHA256 input of length 1 is flipped on this side: exactly one row must
+//                                    differ from the host. With `nohmac`, the HMAC, HKDF and DH-HKDF rows are skipped on both sides
+//                                    (same draws skipped).
 //   make                             randomized outputs made from random keys (on the device: the keys come from BoringSSL's
-//                                    RNG), one record per line: "rec name|field|...", every field in hex.
+//                                    RNG), one record per line: "rec name|field|...", every field in hex. ECDSA appears twice,
+//                                    raw ("ecdsa-pNNN") and DER ("ecdsa-pNNN-der").
 //   make-hpke                        the HPKE record of `make`, separately: HPKE derives its keys with HKDF, which is HMAC.
 //   verify <hex>                     the records of a `make` run, passed as the hex of their text: each is checked on this side.
 //   entropy                          one random P-256 private key, printed: two runs must print different keys.
@@ -158,6 +161,38 @@ func rowsMode(seed: UInt64, negative: Bool, macs: Bool) {
 
     let kemSeed = rng.bytes(64)
     row("MLKEM768 public from seed", attempt { try Crypto.MLKEM768.PrivateKey(seedRepresentation: kemSeed, publicKey: nil).publicKey.rawRepresentation })
+
+    // ECDSA's DER encoder and decoder (the refused sites of P256, P384 and P521 in ECDSA.swift): a drawn raw signature is
+    // encoded, and its DER decoded back to raw, on each side. The raw values are not signatures; both sides encode the same bytes.
+    let raw256 = rng.bytes(64)
+    row("P256 DER encode", attempt { try Crypto.P256.Signing.ECDSASignature(rawRepresentation: raw256).derRepresentation })
+    row("P256 DER round trip", attempt {
+        try Crypto.P256.Signing.ECDSASignature(derRepresentation: Crypto.P256.Signing.ECDSASignature(rawRepresentation: raw256).derRepresentation).rawRepresentation
+    })
+    let raw384 = rng.bytes(96)
+    row("P384 DER encode", attempt { try Crypto.P384.Signing.ECDSASignature(rawRepresentation: raw384).derRepresentation })
+    row("P384 DER round trip", attempt {
+        try Crypto.P384.Signing.ECDSASignature(derRepresentation: Crypto.P384.Signing.ECDSASignature(rawRepresentation: raw384).derRepresentation).rawRepresentation
+    })
+    let raw521 = rng.bytes(132)
+    row("P521 DER encode", attempt { try Crypto.P521.Signing.ECDSASignature(rawRepresentation: raw521).derRepresentation })
+    row("P521 DER round trip", attempt {
+        try Crypto.P521.Signing.ECDSASignature(derRepresentation: Crypto.P521.Signing.ECDSASignature(rawRepresentation: raw521).derRepresentation).rawRepresentation
+    })
+
+    // DH's hkdfDerivedSymmetricKey (the refused site in DH.swift): the X25519 and P-256 shared secrets above, through HKDF.
+    // HKDF is HMAC, so the rows run only with the HMAC rows.
+    if macs {
+        let dhSalt = Data(repeating: 0x5a, count: 16)
+        let dhInfo = rng.bytes(13)
+        let x25519 = try! Crypto.Curve25519.KeyAgreement.PrivateKey(rawRepresentation: mine).sharedSecretFromKeyAgreement(
+            with: Crypto.Curve25519.KeyAgreement.PrivateKey(rawRepresentation: peer).publicKey)
+        let p256 = try! Crypto.P256.KeyAgreement.PrivateKey(rawRepresentation: p256Mine).sharedSecretFromKeyAgreement(
+            with: Crypto.P256.KeyAgreement.PrivateKey(rawRepresentation: p256Peer).publicKey)
+        row("DH-HKDF SHA256 X25519", x25519.hkdfDerivedSymmetricKey(using: Crypto.SHA256.self, salt: dhSalt, sharedInfo: dhInfo, outputByteCount: 32).withUnsafeBytes { Data($0) })
+        row("DH-HKDF SHA512 X25519", x25519.hkdfDerivedSymmetricKey(using: Crypto.SHA512.self, salt: Data(), sharedInfo: dhInfo, outputByteCount: 64).withUnsafeBytes { Data($0) })
+        row("DH-HKDF SHA384 P256", p256.hkdfDerivedSymmetricKey(using: Crypto.SHA384.self, salt: dhSalt, sharedInfo: Data(), outputByteCount: 48).withUnsafeBytes { Data($0) })
+    }
 }
 
 // MARK: make and verify
@@ -170,12 +205,19 @@ func makeMode() {
     emit("rec ed25519|\(hex(ed.publicKey.rawRepresentation))|\(hex(message))|\(hex(try! ed.signature(for: message)))")
 
     let ecMessage = rng.bytes(120)
+    // Each ECDSA signature is emitted twice: raw, and DER (the decoder of the other side reads the DER one).
     let p256 = Crypto.P256.Signing.PrivateKey()
-    emit("rec ecdsa-p256|\(hex(p256.publicKey.rawRepresentation))|\(hex(ecMessage))|\(hex(try! p256.signature(for: ecMessage).rawRepresentation))")
+    let p256Signature = try! p256.signature(for: ecMessage)
+    emit("rec ecdsa-p256|\(hex(p256.publicKey.rawRepresentation))|\(hex(ecMessage))|\(hex(p256Signature.rawRepresentation))")
+    emit("rec ecdsa-p256-der|\(hex(p256.publicKey.rawRepresentation))|\(hex(ecMessage))|\(hex(p256Signature.derRepresentation))")
     let p384 = Crypto.P384.Signing.PrivateKey()
-    emit("rec ecdsa-p384|\(hex(p384.publicKey.rawRepresentation))|\(hex(ecMessage))|\(hex(try! p384.signature(for: ecMessage).rawRepresentation))")
+    let p384Signature = try! p384.signature(for: ecMessage)
+    emit("rec ecdsa-p384|\(hex(p384.publicKey.rawRepresentation))|\(hex(ecMessage))|\(hex(p384Signature.rawRepresentation))")
+    emit("rec ecdsa-p384-der|\(hex(p384.publicKey.rawRepresentation))|\(hex(ecMessage))|\(hex(p384Signature.derRepresentation))")
     let p521 = Crypto.P521.Signing.PrivateKey()
-    emit("rec ecdsa-p521|\(hex(p521.publicKey.rawRepresentation))|\(hex(ecMessage))|\(hex(try! p521.signature(for: ecMessage).rawRepresentation))")
+    let p521Signature = try! p521.signature(for: ecMessage)
+    emit("rec ecdsa-p521|\(hex(p521.publicKey.rawRepresentation))|\(hex(ecMessage))|\(hex(p521Signature.rawRepresentation))")
+    emit("rec ecdsa-p521-der|\(hex(p521.publicKey.rawRepresentation))|\(hex(ecMessage))|\(hex(p521Signature.derRepresentation))")
 
     let plain = rng.bytes(100)
     let aad = rng.bytes(9)
@@ -226,6 +268,15 @@ func verifyMode(_ text: String) {
             verdict(name, ok)
         case "ecdsa-p521":
             let ok = (try? Crypto.P521.Signing.PublicKey(rawRepresentation: f[0]).isValidSignature(Crypto.P521.Signing.ECDSASignature(rawRepresentation: f[2]), for: f[1])) ?? false
+            verdict(name, ok)
+        case "ecdsa-p256-der":
+            let ok = (try? Crypto.P256.Signing.PublicKey(rawRepresentation: f[0]).isValidSignature(Crypto.P256.Signing.ECDSASignature(derRepresentation: f[2]), for: f[1])) ?? false
+            verdict(name, ok)
+        case "ecdsa-p384-der":
+            let ok = (try? Crypto.P384.Signing.PublicKey(rawRepresentation: f[0]).isValidSignature(Crypto.P384.Signing.ECDSASignature(derRepresentation: f[2]), for: f[1])) ?? false
+            verdict(name, ok)
+        case "ecdsa-p521-der":
+            let ok = (try? Crypto.P521.Signing.PublicKey(rawRepresentation: f[0]).isValidSignature(Crypto.P521.Signing.ECDSASignature(derRepresentation: f[2]), for: f[1])) ?? false
             verdict(name, ok)
         case "aesgcm-256":
             let key = Crypto.SymmetricKey(data: f[0])
