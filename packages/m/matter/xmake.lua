@@ -15,14 +15,20 @@ package("matter")
     add_deps("charon@apple-compat", {alias = "apple-compat"})
     -- The backports the process carries are a project decision (includes/apple-ios/xmake.lua's apple_backports):
     -- this package needs network, and swift-runtime's lift needs coredata, and one package has one set of configs.
-    add_deps("charon@apple-backports", {alias = "backports", configs = {network = true}})
+    -- security: SecKeyCopyExternalRepresentation (MTRP256KeypairBridge.mm), which iOS 6.1.3's Security lacks. commoncrypto:
+    -- CCRandomGenerateBytes, which BoringSSL's iOS random source calls without a guard (third_party/boringssl/repo/src/crypto/
+    -- rand_extra/ios.c:25), so it must bind to the backport and not to a null weak import on 6.1.3.
+    add_deps("charon@apple-backports", {alias = "backports", configs = {network = true, security = true, commoncrypto = true}})
     -- The lifted headers, from the one lift the workspace builds: what the backports implement of later releases is
     -- available from this release's own, which is what a port compiles against. The framework's Darwin platform asks
     -- os_signpost_* of iOS 12, which apple-compat now provides, and without the lift its declaration is still marked
     -- unavailable at this release and clang refuses the call.
     add_deps("charon@swift-runtime", {alias = "swift-runtime", configs = {backports = true}})
     add_deps("charon@ld64", {alias = "ld64"})
-    add_deps("charon@libcxx", {alias = "libcxx"})
+    -- packaged: the libc++ this link names carries its install name under /usr/lib/charon/org.charon.libcxx-<hash>/, which is
+    -- where the device has it (swift-runtime takes it the same way). Unpackaged, the dylib names the build host's own path,
+    -- which is the rpath this link used to carry and a device does not have.
+    add_deps("charon@libcxx", {alias = "libcxx", configs = {packaged = true}})
     add_deps("gn 20211117", {alias = "gn"})
 
     -- The submodules //src/lib:lib reads, at the commits the tag pins (read from the tag's own git objects, with
@@ -325,12 +331,16 @@ package("matter")
                  table.join(flags, {"-fuse-ld=" .. path.join(package:dep("ld64"):installdir("bin"), "ld"),
                                     "-dynamiclib", "-install_name", "/usr/lib/charon/org.charon.apple-backports/libMatterBackports.dylib",
                                     "-o", output, path.join(out, "lib", "libCHIP.a")}, objects,
-                           {"-L" .. backports, "-lNetworkBackports", "-lFoundationBackports",
+                           -- The backports come before the frameworks, so a symbol the release lacks binds to the backport and not to the
+                           -- framework's absence: SecKeyCopyExternalRepresentation (Security), CCRandomGenerateBytes (CommonCrypto), nw_*.
+                           -- os_unfair_lock_lock and _unlock: libc++abi's dylib below is the process-wide provider (libcxx's
+                           -- process-wide-compat.patch), and it is named before libapple-compat.a, so the archive's copy is not pulled.
+                           {"-L" .. backports, "-lNetworkBackports", "-lFoundationBackports", "-lSecurityBackports", "-lCommonCryptoBackports",
                             "-L" .. libcxx, "-lc++abi", "-lc++",
                             path.join(package:dep("apple-compat"):installdir("lib"), "libapple-compat.a"),
                             "-framework", "Foundation", "-framework", "Security", "-framework", "CoreData",
                             "-framework", "CoreBluetooth",
-                            "-Wl,-rpath," .. libcxx, "-Wl,-rpath,@loader_path"}))
+                            "-Wl,-rpath,@loader_path"}))
 
         package:add("links", "Matter")
     end)
