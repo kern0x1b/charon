@@ -5,6 +5,23 @@ framework to shadow: a client that links one and asks a cluster a question reach
 instead. The clusters are therefore generated from the SDK's own headers rather than written by hand,
 because a class has too many members for a hand transcription to be right and the header is the contract.
 
+## The generated family against the real stack (v-matter9)
+
+The real stack is charon@matter's `libMatterBackports.dylib` (v1.6.1.0, armv7). Its Objective-C classes, read with
+`modules/apple/objc.lua`'s `binary_inventory` (the reader `tools/matter-registry.lua` uses), are 1508. Of the 1208
+classes the committed generated objects define, the real stack defines **1188** and **20** it does not.
+
+- The generated side is the name of the `@implementation` of each of the 1208 committed `Matter/*.m` objects. The
+  built `libMatterClusterBackports.dylib` of the same tree (the `matter` config's install) defines the same 1208 names,
+  read with the same reader, so the object set and the binary agree.
+- `class-overlap.tsv` (this directory) is the measurement, one row per generated class: `yes` when the real stack
+  defines it, `no` when it does not. 1188 yes, 20 no. The 20 are listed in the table under "The 20 generated-only
+  classes" below.
+- The real stack's registry (`packages/m/matter/registry`) carries 854 of the 1188 class names as class rows. The
+  other 334 are classes the real stack defines and its registry has no class row for: the registry is written from the
+  SDK 26.2 surface corpus, and those 334 are not in that corpus (for example `MTRBaseClusterChime`,
+  `MTRUnitTestingClusterGlobalEchoRequestParams`).
+
 ## What is carried
 
 **1,208 objects, one class each, all emitted by `tools/matter-generate.py` from the SDK's own declarations.**
