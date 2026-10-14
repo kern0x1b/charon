@@ -31,9 +31,13 @@ package("swift-system")
 
     -- The module is compiled against the runtime a port carries, and against apple-compat's headers for the calls 6.1.3 lacks.
     on_load("iphoneos", function (package)
-        package:add("deps", "charon@swift-runtime", {alias = "swift-runtime"})
+        -- The runtime with backports, the configuration of the runtime a program carries (a program links one build of it).
+        package:add("deps", "charon@swift-runtime", {alias = "swift-runtime", configs = {backports = true}})
         package:add("deps", "charon@apple-compat", {alias = "apple-compat"})
         package:add("deps", "charon@ld64", {alias = "ld64"})
+        -- What a consumer links: the dylib, found in the package's lib folder.
+        package:add("links", "swiftSystem")
+        package:add("linkdirs", "lib")
     end)
 
     -- Installs upstream's tree with this recipe's patches applied, the module compiled from it as objects with -c against the
@@ -85,16 +89,17 @@ package("swift-system")
             end
         end
         table.sort(sources)
-        local module = path.join(package:installdir("lib"), "swift", "iphoneos", "System.swiftmodule")
+        -- The module carries upstream's target name, SystemPackage, which is what a consumer imports (Apple's System is the host's).
+        local module = path.join(package:installdir("lib"), "swift", "iphoneos", "SystemPackage.swiftmodule")
         os.mkdir(module)
         local argv = swift.runtime_flags({architecture = package:arch(), deployment = minimum, sdk = sdk, resources = resources,
-                                          module = "System"})
+                                          module = "SystemPackage"})
         table.join2(argv, {"-swift-version", "6", "-enable-experimental-feature", "Lifetimes", "-D", "SYSTEM_PACKAGE_DARWIN",
                            "-D", "SYSTEM_PACKAGE", "-I", path.join(csystem, "include"), "-I", path.join(compat, "include"),
                            "-Xfrontend", "-disable-autolinking-runtime-compatibility-concurrency",
                            "-Xfrontend", "-disable-autolinking-runtime-compatibility-dynamic-replacements"}, availability,
                            {"-emit-module", "-emit-module-path", path.join(module, package:arch() .. "-apple-ios.swiftmodule"), "-c"},
-                           sources, {"-o", path.join(objects, "System.o")})
+                           sources, {"-o", path.join(objects, "SystemPackage.o")})
         os.vrunv(swiftc, argv)
 
         local lib = path.join(objects, "libswiftSystem.dylib")
@@ -108,5 +113,7 @@ package("swift-system")
         os.cp(lib, package:installdir("lib"))
 
         os.cp(path.join(os.scriptdir(), "tests", "differential"), package:installdir("share"))
+        -- What a program that imports SystemPackage compiles against: the module folder (rules/swift adds its -I).
+        package:setenv("CHARON_SWIFT_MODULES", path.join(package:installdir("lib"), "swift", "iphoneos"))
         print("%s: %s installed; libswiftSystem.dylib is in %s", package:name(), package:version_str(), package:installdir("lib"))
     end)
