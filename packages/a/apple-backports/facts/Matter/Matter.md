@@ -1004,3 +1004,45 @@ params. Once the 20 go, no committed class subclasses the three bases. Keeping t
 
 `tools/matter-generate.py` is not ported in this band. Its acceptance, byte-for-byte on the emit-yes classes, is empty
 under the rule as it stands, so a port needs the rule's decision first, and the port itself is about 4415 lines.
+
+## The retirement (v-matter13)
+
+**Ruling (coordinator, option a, the owner's rule as written).** The emit rule (v-matter12) emits none of the 1208
+generator inputs, so nothing is generated for Matter. The 20 real-stack-`no` classes are unavailable in the SDK 26.2
+headers (`MTR_PROVISIONALLY_AVAILABLE`) and reached by nothing an app can call. The three base classes (MTRCluster,
+MTRGenericCluster, MTRGenericBaseCluster) are carried by the real stack, which is condition (1) of the rule, and with the 20
+gone no generated class needs them. No exception to condition (1) is made.
+
+**Measured counts, before the removal (the v-matter12 tip this series builds on).** 1208 generator inputs; 0 emitted (column 5 of
+`emit-closure.tsv`); 23 committed `Matter/CharonMatter*.m` objects (the three base classes and the 20); 268 registry rows in
+`registry/Matter/ios16.json`, all owned by the 23 classes (every row's class name is one of them); 1 `.unannotated` sidecar.
+
+**Removed.**
+- The 23 objects, `Matter/CharonMatterTypes.h` and `Matter/CharonMatterQueueStorage.h` (the two headers only they included).
+- `registry/Matter/ios16.json` and `registry/Matter/ios16.json.unannotated`. The folder is gone.
+- The library `MatterClusterBackports`: its entry in `modules/apple/backports.lua`, the `matter` config and its library
+  line in `packages/a/apple-backports/xmake.lua`. Nothing else in the tree named it (grep over the tree).
+- `tests/backports/emulate/matter`, the emulator app that loaded that library by name. Its three classes
+  (MTRBaseClusterIdentify, MTRBaseClusterOnOff, MTRBaseClusterTestCluster) had already gone in v-matter11.
+- The generator and the tables only it read: `tools/matter-generate.py`, `tools/matter-init-defaults.tsv`,
+  `tools/matter-alias-accessors.tsv`, and `tools/matter-registry.py`, which loaded the generator by path.
+
+**Kept, and why.** `tools/matter-closure.lua` and `facts/Matter/emit-closure.tsv` are the proof that nothing is generated.
+`Matter/clusters-emitted.txt` and `generic-clusters-emitted.txt` have readers outside the generator: `matter_skip_test`
+(light suite) and the host differential harnesses. `tests/backports/host/matter/excluded.txt`, `host-measurements.tsv` and
+`tools/matter-host-refusals.tsv` have readers outside the generator too. `tools/matter-init-source.py` writes the two deleted
+tables; it is not run, and is kept as their provenance until the coordinator rules on it.
+
+**Guards.** `tests/addon/matter_closure_test.lua` has no pending list: it fails on any committed `Matter/CharonMatter*.m`.
+`tests/addon/matter_objects_test.lua` pins 0 and no longer excepts the base classes. Each fails on one added class object
+(a mutant defining MTRBaseClusterOnOff: four failures, then removed; see the report).
+
+**What an application gets for Matter now.**
+- From apple-backports: nothing. No file in this package defines or installs a Matter cluster class.
+- From charon@matter: the real stack's `libMatterBackports.dylib` (v1.6.1.0, armv7), installed under
+  `/usr/lib/charon/org.charon.apple-backports/libMatterBackports.dylib` (`packages/m/matter/xmake.lua:339`). That package
+  depends on apple-backports (`packages/m/matter/xmake.lua:28`), so apple-backports cannot deliver it: the dependency would be
+  a cycle. The owner's acceptance "the matter option still delivers the real stack's libMatterBackports" cannot hold from this
+  package; the option is removed instead.
+- The 1185 generated classes that are no longer built: each row is carried by the real stack's registry
+  (`packages/m/matter/registry`), unavailable in the SDK 26.2 headers, or declared nowhere in them (`absent-proof.tsv`, v-matter11).
