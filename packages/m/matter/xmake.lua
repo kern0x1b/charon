@@ -247,6 +247,51 @@ package("matter")
             table.insert(objects, object)
         end
 
+        -- The framework's own target also compiles the app layer its server endpoint needs, as C++ of the project's own: the
+        -- twenty-three names of its Sources phase that are not MTR* (Matter.xcodeproj, PBXNativeTarget "Matter"; the list is
+        -- the one tools/matter-framework.sh reads). The wrapper calls emberAfSetDynamicEndpoint, emberAfEndpointFromIndex,
+        -- MatterDescriptorClusterInitCallback and CodegenDataModelProviderInstance, and libCHIP.a does not define them: the
+        -- link failed on exactly those (runs/matter-613/build.log). They are compiled as C++, without ARC or the wrapper's
+        -- Objective-C++ switches, with the same target, sysroot and libc++.
+        local appsources = {
+            "src/app/server-cluster/AttributeListBuilder.cpp",
+            "src/app/server-cluster/DefaultServerCluster.cpp",
+            "src/app/server-cluster/ServerClusterInterface.cpp",
+            "src/app/server-cluster/ServerClusterInterfaceRegistry.cpp",
+            "src/app/server-cluster/SingleEndpointServerClusterRegistry.cpp",
+            "src/app/persistence/AttributePersistenceProviderInstance.cpp",
+            "src/app/persistence/DefaultAttributePersistenceProvider.cpp",
+            "src/data-model-providers/codegen/ClusterIntegration.cpp",
+            "src/data-model-providers/codegen/CodegenDataModelProvider.cpp",
+            "src/data-model-providers/codegen/CodegenDataModelProvider_Read.cpp",
+            "src/data-model-providers/codegen/CodegenDataModelProvider_Write.cpp",
+            "src/data-model-providers/codegen/EmberAttributeDataBuffer.cpp",
+            "src/data-model-providers/codegen/Instance.cpp",
+            "src/app/clusters/descriptor/CodegenIntegration.cpp",
+            "src/app/clusters/descriptor/DescriptorCluster.cpp",
+            "src/app/clusters/ota-provider/OTAProviderCluster.cpp",
+            "src/app/util/DataModelHandler.cpp",
+            "src/app/util/attribute-storage.cpp",
+            "src/app/util/ember-io-storage.cpp",
+            "src/app/util/generic-callback-stubs.cpp",
+            "src/app/util/util.cpp",
+            "src/app/reporting/reporting.cpp",
+            "zzz_generated/app-common/app-common/zap-generated/cluster-objects.cpp"
+        }
+        local cxxflags = table.join(compiled, {"-Os", "-nostdinc++", "-isystem", path.join(package:dep("libcxx"):installdir("include"), "c++", "v1"),
+                                              "-DCHIP_HAVE_CONFIG_H=1", "-DCHIP_CONFIG_SKIP_APP_SPECIFIC_GENERATED_HEADER_INCLUDES=1",
+                                              "-DCHIP_CONFIG_GLOBALS_NO_DESTRUCT=1", "-I" .. staged})
+        for _, directory in ipairs(search) do
+            table.insert(cxxflags, "-I" .. directory)
+        end
+        local cxx = assert(toolchain:tool("cxx"), "the apple-ios toolchain names no C++ compiler for %s", package:arch())
+        for _, rel in ipairs(appsources) do
+            local object = path.absolute(path.join("framework", rel .. ".o"))
+            os.mkdir(path.directory(object))
+            os.vrunv(cxx, table.join(cxxflags, {"-c", path.join(os.curdir(), rel), "-o", object}))
+            table.insert(objects, object)
+        end
+
         -- The install carries the framework's headers, flattened as <Matter/...> names them.
         local installed = path.join(package:installdir("include"), "Matter")
         os.mkdir(installed)
