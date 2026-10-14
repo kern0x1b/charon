@@ -1,8 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "CharonMethodProem.h"
 #import <objc/runtime.h>
-#import <dlfcn.h>
-#include <string.h>
 
 /* NSBundleResourceRequest (iOS 9.0) over the port's release.
 
@@ -302,9 +300,4 @@ __attribute__((constructor)) static void CharonInstallOnNSBundle(void)
         return;
     }
     CharonInstallNSBundleAdditions(bundle);
-    Dl_info where;
-    memset(&where, 0, sizeof(where));
-    dladdr((__bridge const void *)bundle, &where);
-    fprintf(stderr, "charon: NSBundle is %p, in %s\n", (__bridge void *)bundle,
-            where.dli_fname ? where.dli_fname : "(nowhere)");
 }
