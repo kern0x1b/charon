@@ -55,7 +55,7 @@ package("swift-system")
         local objects = path.absolute("objects")
         os.mkdir(objects)
 
-        os.cp(os.curdir(), tree)
+        os.cp(path.join(os.curdir(), "*"), tree)
         for _, patch in ipairs(os.files(path.join(os.scriptdir(), "patches", "*.patch"))) do
             os.vrunv("patch", {"-d", tree, "-p1", "-s", "-i", patch})
         end
