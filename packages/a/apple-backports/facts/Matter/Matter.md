@@ -953,9 +953,9 @@ with `Apple` (for example `+[MTRBaseClusterDoorLock readAttributeAppleAliroBLEAd
 compiled them; both are deleted (coordinator's decision 6), and the Aliro rows leave with the generated classes. No
 app can call them: the SDK declares them unavailable.
 
-**The removal.** The 1188 generated classes' object files are removed: 1188 tracked files, the 20 generated-only classes'
-files stay (20 `CharonMatter*.m`). `registry/Matter/ios16.json` goes from 21250 entries to 264 (the 20986 rows owned by
-the 1188 are dropped; the 264 owned by the 20 stay, the same bytes in the same order). `registry/Matter/ios16.json.unannotated`
+**The removal.** The 1185 generated classes' object files are removed (1185 tracked files). The 20 generated-only classes and the three base classes they subclass stay (23 `CharonMatter*.m`): MTRCluster, MTRGenericCluster and MTRGenericBaseCluster are the superclasses of the 20, and the release has no Matter framework, so the library is the only provider of them. The first removal dropped those three and the 6.1.3 gate failed to link the 20 (undefined `_OBJC_CLASS_$_MTRGenericBaseCluster` and `_OBJC_CLASS_$_MTRGenericCluster`).
+`registry/Matter/ios16.json` goes from 21250 entries to 268 (the 20982 rows owned by
+the 1185 are dropped; the 268 owned by the 23 stay, the same bytes in the same order). `registry/Matter/ios16.json.unannotated`
 goes from 10334 lines to 264, by the same owner rule. The `matter` option's description no longer names 1208 objects.
 Every row of the removed classes is either homed in `packages/m/matter/registry` (11512 rows, by kind and name: 864 classes,
 8408 methods, 2240 properties), unavailable in the corpus (48), absent from the corpus and proved above (9426).
@@ -966,9 +966,9 @@ Every row of the removed classes is either homed in `packages/m/matter/registry`
   their classes as c rows. They are the root's members, not Matter's. Say if they must stay as a registry row of their
   own, or be homed on `NSObject`; the proof does not decide that.
 - The guard `tests/addon/matter_objects_test.lua` (`failures`, pure Lua): fails when a committed `Matter/CharonMatter*.m`
-  implements a class of `class-overlap.tsv` `yes`, or a class the real registry carries, and pins the count at 20. The
+  implements a class of `class-overlap.tsv` `yes`, or a class the real registry carries (the three base classes exempt), and pins the count at 23. The
   coordinator adds its suite name `matter_objects_test` to `coordination/run_light_tests.lua`.
-- `tools/matter-generate.py` still writes the 1188 classes. It is Python and was not run; a re-run would re-emit them, and
+- `tools/matter-generate.py` still writes the 1185 classes. It is Python and was not run; a re-run would re-emit them, and
   the guard catches that.
 - The emulator app `tests/backports/emulate/matter/app/main.m` names three removed classes: `MTRBaseClusterIdentify`,
   `MTRBaseClusterOnOff`, `MTRBaseClusterTestCluster`. They are SDK classes; the real stack provides them when the
