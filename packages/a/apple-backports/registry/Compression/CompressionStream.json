@@ -6,10 +6,9 @@
       "kind": "function",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "owed",
-      "effect": "the stream interface of the release, which the port has not written yet: the call is not answered, and the symbol is not in the built library",
-      "reason": "the port's own debt: the release carries the name from iOS 9.0 and the buffer API is carried first; the stream layer is the next step of the Compression series",
-      "source": "the declaration of the Compression header of the SDK (the name only)",
+      "status": "implemented",
+      "effect": "starts a stream of the operation over LZFSE, ZLIB, LZ4 or LZMA, answering OK; LZ4_RAW is refused with ERROR, as the host refuses it at init; the stream buffers its input until FINALIZE and writes no output before it (a difference from the host, named in facts/Compression/CompressionBuffer.md, Streams)",
+      "source": "the declaration of the Compression header of the SDK (the name and the signature); the output of the host's compression_stream_* for LZFSE, ZLIB, LZ4 and LZMA, measured on macOS in tests/backports/host/compression",
       "facts": "facts/Compression/CompressionBuffer.md"
     },
     {
@@ -17,10 +16,9 @@
       "kind": "function",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "owed",
-      "effect": "the stream interface of the release, which the port has not written yet: the call is not answered, and the symbol is not in the built library",
-      "reason": "the port's own debt: the release carries the name from iOS 9.0 and the buffer API is carried first; the stream layer is the next step of the Compression series",
-      "source": "the declaration of the Compression header of the SDK (the name only)",
+      "status": "implemented",
+      "effect": "consumes the source and, with FINALIZE, encodes or decodes all of its input and writes the output into the destinations the caller gives, answering END on the call that writes the last byte; the bytes after FINALIZE equal the host's for LZMA and are the same format for the other codecs, checked by cross-decoding; a corrupt stream answers the host's ERROR",
+      "source": "the declaration of the Compression header of the SDK (the name and the signature); the output of the host's compression_stream_* measured on macOS in tests/backports/host/compression",
       "facts": "facts/Compression/CompressionBuffer.md"
     },
     {
@@ -28,10 +26,9 @@
       "kind": "function",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "owed",
-      "effect": "the stream interface of the release, which the port has not written yet: the call is not answered, and the symbol is not in the built library",
-      "reason": "the port's own debt: the release carries the name from iOS 9.0 and the buffer API is carried first; the stream layer is the next step of the Compression series",
-      "source": "the declaration of the Compression header of the SDK (the name only)",
+      "status": "implemented",
+      "effect": "releases the stream's state and its buffered input and output, answering OK",
+      "source": "the declaration of the Compression header of the SDK (the name and the signature); the host's compression_stream_destroy measured on macOS in tests/backports/host/compression",
       "facts": "facts/Compression/CompressionBuffer.md"
     }
   ]
