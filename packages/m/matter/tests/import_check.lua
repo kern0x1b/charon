@@ -10,8 +10,9 @@ function main(checkout, cachefile, dylib, backports, libcxx)
     local dyld = import("apple.dyld", {rootdir = path.join(checkout, "modules"), anonymous = true})
     local providers = {}
     -- The backports the dylib links (packages/m/matter/xmake.lua, the -l list of its link): the network and foundation ones, and the
-    -- security and commoncrypto ones that carry SecKeyCopyExternalRepresentation and CCRandomGenerateBytes on 6.1.3.
-    for _, name in ipairs({"libNetworkBackports.dylib", "libFoundationBackports.dylib", "libSecurityBackports.dylib", "libCommonCryptoBackports.dylib"}) do
+    -- security, commoncrypto and corebluetooth ones that carry SecKeyCopyExternalRepresentation, CCRandomGenerateBytes and
+    -- CBAdvertisementDataIsConnectable on 6.1.3.
+    for _, name in ipairs({"libNetworkBackports.dylib", "libFoundationBackports.dylib", "libSecurityBackports.dylib", "libCommonCryptoBackports.dylib", "libCoreBluetoothBackports.dylib"}) do
         table.insert(providers, path.join(backports, name))
     end
     -- The C++ runtime the link names by its packaged install name; libc++abi also provides os_unfair_lock_* (process-wide).

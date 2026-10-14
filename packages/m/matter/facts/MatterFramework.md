@@ -301,6 +301,20 @@ of the framework's own xcconfig, which I had not read yet.
   section for that, and the Matter core spec's BLE commissioning section has not been read in this tree. A connect that
   then fails is not reported by this file, which has no `didFailToConnectPeripheral`. The constant itself is not yet a
   CoreBluetooth backport: the key's weak import stays null on 6.1.3 until one exists (open, see the report).
+  - Status (v-matter8, 2026-10-14): the constant is now carried by `libCoreBluetoothBackports.dylib` (apple-backports
+    `corebluetooth`, `facts/CoreBluetooth/CBAdvertisementDataIsConnectable.md`), linked before `-framework CoreBluetooth`.
+    The import binds to the backport's string, `kCBAdvDataIsConnectable`, on 6.1.3 and is never null there. The absent-key
+    branch of the patch now answers only for a release whose CoreBluetooth never sends the key (6.1.3 measured; the host
+    sends it). Import check: see `packages/m/matter/tests/import_check.lua` and the v-matter8 report.
+- **Weak and bound imports, measured (v-matter8).** `_CCRandomGenerateBytes` is a weak reference bound to
+  `libCommonCryptoBackports.dylib` (`nm -m` reads "weak external ... from libCommonCryptoBackports"): the symbol exists in
+  the package, so the reference is not null when the backport loads. Accepted by the coordinator as it stands; the
+  BoringSSL reference (`third_party/boringssl/repo/src/crypto/rand_extra/ios.c:25`) is not changed by this package.
+  `_os_unfair_lock_lock` and `_os_unfair_lock_unlock` are non-weak and bound to the packaged `libc++abi.1.dylib`
+  (`/usr/lib/charon/org.charon.libcxx-e07f9ca7/`). The apple-compat archive (`libapple-compat.a`,
+  in 18 of the 21 installs under `~/.xmake/packages/a/apple-compat/latest`, each read with `nm -gU`) exports only `_os_unfair_lock_assert_owner` and `_os_unfair_lock_assert_not_owner` in
+  the `os_unfair_lock` family, so the archive defines neither lock nor unlock and the link carries no second definition
+  of either.
 - **No Xcode, no pigweed.** GN's own `build/toolchain/custom` takes `target_cc`, `target_cxx` and `target_ar`, which
   bypasses `BUILDCONFIG.gn`'s os/cpu selection entirely; the compiler, the archiver and the flags are the toolchain's
   own, the same values `modules/apple/cmake.lua` derives for a CMake build. `//build_overrides/pigweed_environment.gni`
