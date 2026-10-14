@@ -98,9 +98,51 @@ with 0 bytes (the stream checks, seeds 1 and 2). It is not a format defect.
 
 ## Streams (measured)
 
-- Input and output: the stream buffers its input until FINALIZE and encodes or decodes once there. The host writes some
-  output before FINALIZE (measured in the probes of the step 2 session: LZFSE 242239 of 247702 bytes; LZMA 184358 of
-  226008); the layer writes none. That difference is the crutch entry `charon: compression_stream output before FINALIZE`, counted per check.
+- Progress (measured on the host, probe in runs/v-int-c8/probe/progress.c, 300000 bytes, the four contents, chunks of 1, 7,
+  4096, 65536 and all bytes). T is the input offset at which output first appears with 1-byte chunks; "before" is the
+  output written before FINALIZE with 1-byte chunks; "events" is the number of chunks that wrote output.
+
+  | algorithm | zeros | words | random | runs |
+  |-----------|-------|-------|--------|------|
+  | LZFSE  T | none | 60666 | 41248 | 81653 |
+  | LZFSE  before / events | 0 / 0 | 96894 / 4 | 281006 / 7 | 130964 / 3 |
+  | ZLIB   T | none | 74778 | 16645 | 32153 |
+  | ZLIB   before / events | 0 / 0 | 90278 / 3 | 295326 / 18 | 156228 / 9 |
+  | LZ4    T | 65536 | 65536 | 65536 | 65536 |
+  | LZ4    before / events | 1592 / 4 | 180843 / 4 | 262176 / 4 | 149759 / 4 |
+  | LZMA   T | 1 | 1 | 1 | 1 |
+  | LZMA   before / events | 24 / 1 | 61469 / 2 | 242453 / 5 | 122914 / 3 |
+
+  The rule the table supports: the first output comes at the first chunk boundary at or after T, that is
+  ceil(T / chunk) * chunk, for every content and chunk measured (for example LZFSE words: 60669 at chunk 7, 61440 at 4096, 65536
+  at 65536). Only the threshold T belongs to the codec and the content; the chunking only rounds it up. LZ4's threshold is
+  its 64 KiB block; LZMA's is its first input byte, where the xz header is written; ZLIB's and LZFSE's are where the host's own
+  encoder ends a deflate block or an LZFSE block, which the format leaves open (measured at 16645 to 81653 for non-zero content).
+  Zeros give ZLIB and LZFSE no output before FINALIZE at any chunking. The host's LZFSE output for zeros depends on the
+  chunking in its bytes (322 bytes at the whole input, 1184 at 1-byte chunks), so those bytes are reported, not required;
+  ZLIB's zeros are 307 bytes at every chunking.
+- The allowance, per codec (the differential's progress check, required): for each chunking, the layer writes output before
+  FINALIZE whenever the host does, and its first output is within the allowance of the host's, rounded up to the chunk. The
+  allowance is 0 for LZ4 and LZMA (their thresholds are the codec's own: the same block, the same header), and 65536 for ZLIB
+  and LZFSE (one 64 KiB block: the format leaves the host's block ends open). A host that writes nothing before FINALIZE
+  (zeros with ZLIB or LZFSE) holds the layer to nothing.
+- The layer's own thresholds, which the check measures: LZ4 writes each 64 KiB block when it is complete (T = 65536). LZMA's
+  stream encoder and decoder run under LZMA_RUN, so the first byte gives the header. ZLIB runs deflate and inflate with
+  Z_NO_FLUSH, so its output comes where zlib's own deflate writes it. LZFSE encodes 32 KiB blocks: the host's first output
+  is at 41248 bytes or more (measured above), so a block of 64 KiB would write nothing before FINALIZE for inputs under 64 KiB
+  where the host does (the first run of the differential failed 8 checks that way, at 65535 bytes); a 32 KiB block writes
+  before the host does in every measured case, within 65536.
+- Memory: the stream holds one block of pending input (up to 128 KiB for LZ4 decoding, which must hold a whole block), one
+  block of output (up to 128 KiB), the 64 KiB LZ4 dictionary, and the codec's own state (zlib's and liblzma's windows). It does
+  not hold the whole input or output, except for LZFSE decoding (below).
+- LZFSE decoding is not incremental: the layer buffers its whole input to FINALIZE and decodes it then, so it writes nothing
+  before FINALIZE, and its memory is the input's. The host's LZFSE decoder writes output before FINALIZE; the layer's does not.
+  This is the open difference named in coordination/crutches.md (`charon: compression_stream output before FINALIZE`). The
+  LZFSE blocks are not framed in the layer: a block's length is in its header's packed fields, and reading them is the step
+  that is not done. Decoding of ZLIB, LZMA and LZ4 is incremental and its progress is not compared with the host's yet (the
+  differential checks the encode side's progress, and every decode's final bytes and status).
+- The bytes of the stream: LZFSE is written as one block after another, each without its end marker, and `bvx$` is written
+  once at FINALIZE; the empty stream of LZFSE is the codec's own (12 bytes). LZ4 writes its framed blocks and `bv4$` once.
 - Stream bytes do not depend on the input chunking or the output pieces, in the layer (checked against its own one-piece
   output) and in the host (measured for LZFSE, ZLIB, LZ4 and LZMA: 1, 7, 4096 and all bytes at a time).
 - The empty stream, buffer API: LZFSE 12 bytes (the stored block of 0 bytes, then `bvx$`); LZ4 12 bytes on the host, 4 in

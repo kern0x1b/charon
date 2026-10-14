@@ -7,7 +7,7 @@
       "introduced": "9.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "starts a stream of the operation over LZFSE, ZLIB, LZ4 or LZMA, answering OK; LZ4_RAW is refused with ERROR, as the host refuses it at init; the stream buffers its input until FINALIZE and writes no output before it (a difference from the host, named in facts/Compression/CompressionBuffer.md, Streams)",
+      "effect": "starts a stream of the operation over LZFSE, ZLIB, LZ4 or LZMA, answering OK; LZ4_RAW is refused with ERROR, as the host refuses it at init; the stream codes its input as the host's stream does, each block as it completes, so output comes before FINALIZE where the host's does, within the allowance named in facts/Compression/CompressionBuffer.md, Streams",
       "source": "the declaration of the Compression header of the SDK (the name and the signature); the output of the host's compression_stream_* for LZFSE, ZLIB, LZ4 and LZMA, measured on macOS in tests/backports/host/compression",
       "facts": "facts/Compression/CompressionBuffer.md"
     },
@@ -17,7 +17,7 @@
       "introduced": "9.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "consumes the source and, with FINALIZE, encodes or decodes all of its input and writes the output into the destinations the caller gives, answering END on the call that writes the last byte; the bytes after FINALIZE equal the host's for LZMA and are the same format for the other codecs, checked by cross-decoding; a corrupt stream answers the host's ERROR",
+      "effect": "consumes the source and writes the output, block by block, into the destinations the caller gives, answering END on the FINALIZE call that writes the last byte; the bytes equal the host's for LZMA and are the same format for the other codecs, checked by cross-decoding; a corrupt stream answers the host's ERROR; LZFSE decoding writes its output at FINALIZE, the one difference from the host (facts/Compression/CompressionBuffer.md, Streams)",
       "source": "the declaration of the Compression header of the SDK (the name and the signature); the output of the host's compression_stream_* measured on macOS in tests/backports/host/compression",
       "facts": "facts/Compression/CompressionBuffer.md"
     },
