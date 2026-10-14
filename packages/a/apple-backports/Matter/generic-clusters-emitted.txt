@@ -10,9 +10,7 @@ MTRClusterApplicationBasic
 MTRClusterApplicationLauncher
 MTRClusterAudioOutput
 MTRClusterBallastConfiguration
-MTRClusterBarrierControl
 MTRClusterBasicInformation
-MTRClusterBinaryInputBasic
 MTRClusterBinding
 MTRClusterBooleanState
 MTRClusterBooleanStateConfiguration
@@ -43,7 +41,6 @@ MTRClusterDoorLock
 MTRClusterEcosystemInformation
 MTRClusterElectricalEnergyMeasurement
 MTRClusterElectricalGridConditions
-MTRClusterElectricalMeasurement
 MTRClusterElectricalPowerMeasurement
 MTRClusterEnergyEVSE
 MTRClusterEnergyEVSEMode
@@ -84,7 +81,6 @@ MTRClusterOTASoftwareUpdateProvider
 MTRClusterOTASoftwareUpdateRequestor
 MTRClusterOccupancySensing
 MTRClusterOnOff
-MTRClusterOnOffSwitchConfiguration
 MTRClusterOperationalCredentials
 MTRClusterOperationalState
 MTRClusterOvenCavityOperationalState
