@@ -1,11 +1,9 @@
--- The generated Matter objects must not come back (v-matter11). The 1185 classes the generator wrote are removed:
--- each row of theirs is homed in packages/m/matter/registry, unavailable in the SDK 26.2 headers, or declared nowhere in
--- them (packages/a/apple-backports/facts/Matter/absent-proof.tsv, facts/Matter/Matter.md). What stays is the 20
--- generated-only classes, and the three base classes they subclass (MTRCluster, MTRGenericCluster, MTRGenericBaseCluster): the
--- release has no Matter framework, so on it the library is the only provider of those three. Pinned here. Pure Lua: it reads
--- committed files and runs no clang.
-local pinned = 23
-local base = {MTRCluster = true, MTRGenericCluster = true, MTRGenericBaseCluster = true}
+-- No generated Matter object is committed (v-matter11, v-matter13). The generator's classes are not built at all: the emit
+-- rule emits none of the 1208 inputs (facts/Matter/Matter.md, "The retirement (v-matter13)"), and every row the registry
+-- held for them is homed in packages/m/matter/registry, unavailable in the SDK 26.2 headers, or declared nowhere in them
+-- (packages/a/apple-backports/facts/Matter/absent-proof.tsv). Pinned at 0: any Matter/CharonMatter*.m object is a failure.
+-- Pure Lua: it reads committed files and runs no clang.
+local pinned = 0
 
 function failures(opt)
     local root = path.join(opt.modules, "..")
@@ -52,10 +50,10 @@ function failures(opt)
         if not impl then
             table.insert(out, shown .. " defines no class")
         else
-            if generated[impl] and not base[impl] then
+            if generated[impl] then
                 table.insert(out, shown .. " defines " .. impl .. ", a generated class (class-overlap.tsv yes): removed in v-matter11")
             end
-            if real_class[impl] and not base[impl] then
+            if real_class[impl] then
                 table.insert(out, shown .. " defines " .. impl .. ", which the real registry carries as a class")
             end
         end

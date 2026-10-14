@@ -2,38 +2,10 @@
 -- tools/matter-closure.lua: a generated class is emitted only when the real stack does not carry it (class-overlap.tsv
 -- says no) and it is in the closure of the app-usable SDK 26.2 Matter API. facts/Matter/emit-closure.tsv is that rule's
 -- output, one row per generator input class. This suite fails when the file is stale against class-overlap.tsv (its
--- digest), when a row disagrees with class-overlap or with the rule, and when a committed Matter/CharonMatter*.m implements
--- a class the rule does not emit and that is not pending. The 23 pending classes are the committed objects the rule says
--- must not exist; the coordinator rules on them, and this list only shrinks. Pure Lua: it reads committed files and runs
--- no clang. The corpus and the SDK headers are outside the repository: re-run tools/matter-closure.lua to check them.
-
--- The committed objects the emit rule does not emit yet: three base classes the real stack carries (the 20 subclass
--- them) and the 20 generator-only classes that are unavailable in SDK 26.2. The coordinator rules on each (v-matter12 report).
-local pending = {
-    MTRBaseClusterAppleDeviceInformation = true,
-    MTRBaseClusterAppleLockCluster = true,
-    MTRBaseClusterTimer = true,
-    MTRCluster = true,
-    MTRClusterAppleDeviceInformation = true,
-    MTRClusterAppleLockCluster = true,
-    MTRClusterTimer = true,
-    MTRDoorLockClusterAppleAliroCredentialStruct = true,
-    MTRDoorLockClusterAppleAliroLockOperationErrorEvent = true,
-    MTRDoorLockClusterAppleAliroLockOperationEvent = true,
-    MTRDoorLockClusterAppleAliroLockUserChangeEvent = true,
-    MTRDoorLockClusterAppleClearAliroCredentialParams = true,
-    MTRDoorLockClusterAppleClearAliroReaderConfigParams = true,
-    MTRDoorLockClusterAppleGetAliroCredentialStatusParams = true,
-    MTRDoorLockClusterAppleSetAliroCredentialParams = true,
-    MTRDoorLockClusterAppleSetAliroReaderConfigParams = true,
-    MTRGenericBaseCluster = true,
-    MTRGenericCluster = true,
-    MTRGroupcastClusterExpireGracePeriodParams = true,
-    MTRTimerClusterAddTimeParams = true,
-    MTRTimerClusterReduceTimeParams = true,
-    MTRTimerClusterResetTimerParams = true,
-    MTRTimerClusterSetTimerParams = true,
-}
+-- digest), when a row disagrees with class-overlap or with the rule, and when any committed Matter/CharonMatter*.m exists:
+-- the rule emits none of the inputs and the generator is retired (v-matter13), so no object may be committed. There is no
+-- pending list. Pure Lua: it reads committed files and runs no clang. The corpus and the SDK headers are outside the
+-- repository: re-run tools/matter-closure.lua to check them.
 
 -- The same digest as tools/matter-closure.lua (32-bit, over the bytes in order).
 local function digest(text)
@@ -127,8 +99,8 @@ function failures(opt)
         out[#out + 1] = "emit-closure.tsv has " .. rows .. " rows for " .. input .. " generator input classes"
     end
 
-    -- the committed objects: a class the rule does not emit must be pending
-    local seen = {}
+    -- the committed objects: the generator is retired (v-matter13) and the rule emits none of its inputs, so no
+    -- Matter/CharonMatter*.m may be committed. A class the rule emits would be the generator's to write, and it has none.
     for _, file in ipairs(os.files(path.join(objects, "CharonMatter*.m"))) do
         local impl = io.readfile(file):match("@implementation%s+([%w_]+)")
         local shown = path.filename(file)
@@ -137,18 +109,7 @@ function failures(opt)
         elseif emit[impl] == nil then
             out[#out + 1] = shown .. " defines " .. impl .. ", which is not a generator input"
         else
-            seen[impl] = true
-            if emit[impl] == "no" and not pending[impl] then
-                out[#out + 1] = shown .. " defines " .. impl .. ", which the emit rule does not emit (emit-closure.tsv no)"
-            end
-        end
-    end
-    -- and the pending list only shrinks: every pending class is still committed and still not emitted
-    for name in pairs(pending) do
-        if not seen[name] then
-            out[#out + 1] = "pending " .. name .. " has no committed object: drop it from the pending list"
-        elseif emit[name] ~= "no" then
-            out[#out + 1] = "pending " .. name .. " is emit " .. tostring(emit[name]) .. ": drop it from the pending list"
+            out[#out + 1] = shown .. " defines " .. impl .. " (emit-closure.tsv " .. emit[impl] .. "): no Matter object is committed since v-matter13"
         end
     end
     return out
