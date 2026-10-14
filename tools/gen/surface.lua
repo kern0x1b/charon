@@ -209,13 +209,14 @@ function registry_entries(tree, fw)
     return found
 end
 
--- The constants the registry names as implemented, by name: a row of any registry file, of kind constant, status implemented, whose
--- owner is not the generator. The generator does not emit these (a hand-written file defines them; the registry row is the fact).
-function implemented_constants(tree, fw)
+-- The constants the registry names, by name, in any status: a row of any registry file, of kind constant, whose owner is not the
+-- generator. The generator does not emit these: a name the registry holds is either defined by hand (an inert or implemented row
+-- says so) or refused by the registry check, which names a generated row twice (registry() in modules/apple/backports.lua).
+function registry_constants(tree, fw)
     local names = {}
     for _, row in ipairs(registry_rows(tree, fw)) do
         local entry = row.entry
-        if entry.kind == "constant" and entry.status == "implemented" and string.sub(entry.owner or "", 1, 10) ~= "generator:" then
+        if entry.kind == "constant" and string.sub(entry.owner or "", 1, 10) ~= "generator:" then
             names[entry.api] = true
         end
     end

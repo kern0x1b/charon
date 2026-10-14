@@ -39,11 +39,12 @@ function release_of(r)
 end
 
 -- The constants a framework's constant files hold, grouped by the release each is placed at (release_of, the same key release-split
--- checks a file's symbols by), and the sorted list of those releases. `implemented` names the constants the registry defines by hand.
-function constant_groups(spec, implemented)
+-- checks a file's symbols by), and the sorted list of those releases. `named` holds the constants the registry names in any
+-- status (surface.registry_constants).
+function constant_groups(spec, named)
     local by_release, release_list = {}, {}
     for _, r in ipairs(spec) do
-        if r.kind == "constant" and r.value_status == "found" and r.owned == "-" and r.tbd == "exported" and not implemented[r.api] then
+        if r.kind == "constant" and r.value_status == "found" and r.owned == "-" and r.tbd == "exported" and not named[r.api] then
             local release = release_of(r)
             if by_release[release] == nil then
                 by_release[release] = {}
@@ -170,9 +171,9 @@ function render(tree, fw, corpus)
     local index = snapshot.index(spec)
     local pins = snapshot.pins(tree, fw)
     local overrides, override_order = snapshot.overrides(tree, fw)
-    -- a constant the registry names as implemented is defined by hand: the generator emits no definition or row for it (the registry row
-    -- is the fact; the hand-written file is the definition)
-    local implemented = surface.implemented_constants(tree, fw)
+    -- a constant the registry names, in any status, is defined by hand or refused by the registry check: the generator emits no
+    -- definition or row for it (the registry row is the fact; the hand-written file is the definition)
+    local named = surface.registry_constants(tree, fw)
     local files = {}
 
     local lines = {layout.constants().MARK, "// Framework: " .. fw .. ". Spec: " .. layout.constants().SDK_ID .. ".",
@@ -183,7 +184,7 @@ function render(tree, fw, corpus)
     table.insert(lines, "#endif")
     files["spec.h"] = table.concat(lines, "\n") .. "\n"
 
-    local by_release, release_list = constant_groups(spec, implemented)
+    local by_release, release_list = constant_groups(spec, named)
     for _, release in ipairs(release_list) do
         local body = {layout.constants().MARK, "#import <" .. fw .. "/" .. fw .. ".h>", ""}
         for _, r in ipairs(by_release[release]) do

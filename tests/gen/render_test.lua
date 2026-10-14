@@ -78,6 +78,24 @@ function main()
     check(render.constant_groups(spec, {SCNSceneSourceConvertToYUpKey = true})["8.0"] == nil,
         "a constant the registry defines by hand is not filed")
 
+    -- a name the registry holds in any status is not generated, not only an implemented one: the twelve Security names below are
+    -- inert rows (registry/Security/ios17.json, ios18.json) that the hand files define (Security/SecurityNames170.m, SecurityNames180.m),
+    -- and the generator emitted a row for each, so the registry check named each one twice. Checked on the real tree: the rows the
+    -- generator writes (rows.tsv) must not name any of them.
+    local tree = path.absolute(path.join(os.scriptdir(), "..", ".."))
+    local rows = render.render(tree, "Security")["rows.tsv"] or ""
+    check(rows ~= "", "the Security framework renders a rows.tsv")
+    for _, api in ipairs({"kSecImportToMemoryOnly",
+                          "kSecKeyAlgorithmECDSASignatureDigestRFC4754", "kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA1",
+                          "kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA224", "kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA256",
+                          "kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA384", "kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA512",
+                          "kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA1", "kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA224",
+                          "kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA256", "kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA384",
+                          "kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA512"}) do
+        check(rows:find("\tconstant\t" .. api .. "\t", 1, true) == nil,
+            api .. " is an inert registry row defined by hand, so the generator must not emit a row for it")
+    end
+
     print("render test: " .. (failures == 0 and "OK" or ("FAIL " .. failures)))
     if failures > 0 then
         os.exit(1)
