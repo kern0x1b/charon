@@ -55,13 +55,13 @@ func pathObs(_ p: FilePath) -> [String] {
    "components=\(p.components.map { $0.string })", p.string]
 }
 
-let rowAlphabet = ["a", "b", ".", "/", "..", " ", "é", "x.y", "//", "name.ext", "c"]
+let rowAlphabet = ["a", "b", ".", "/", "..", " ", "\u{E9}", "x.y", "//", "name.ext", "c"]
 func rowPath() -> String {
   var s = rowRng.below(3) == 0 ? "/" : ""
   for _ in 0..<(1 + rowRng.below(6)) { s += rowAlphabet[rowRng.below(rowAlphabet.count)] }
   return s
 }
-func rowName() -> String { ["a", "bc", "x.y", "é", "name.ext"][rowRng.below(5)] }
+func rowName() -> String { ["a", "bc", "x.y", "\u{E9}", "name.ext"][rowRng.below(5)] }
 
 func rowFile(_ tag: String) -> String { "\(rowRunDir)/row-\(tag).bin" }
 

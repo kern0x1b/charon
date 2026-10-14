@@ -25,7 +25,7 @@ let runDir = args[1]
 print("seed: \(seed)")
 
 // FilePath: generated strings over an alphabet that includes separators, dots and a non-ASCII letter.
-let alphabet = ["a", "b", ".", "/", "..", " ", "é", "x.y", "//", "name.ext"]
+let alphabet = ["a", "b", ".", "/", "..", " ", "\u{E9}", "x.y", "//", "name.ext"]
 func randomPath() -> String {
   var s = rng.below(3) == 0 ? "/" : ""
   for _ in 0..<(1 + rng.below(6)) { s += alphabet[rng.below(alphabet.count)] }
