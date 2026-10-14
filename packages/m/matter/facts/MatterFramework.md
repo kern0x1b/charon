@@ -305,16 +305,16 @@ of the framework's own xcconfig, which I had not read yet.
     `corebluetooth`, `facts/CoreBluetooth/CBAdvertisementDataIsConnectable.md`), linked before `-framework CoreBluetooth`.
     The import binds to the backport's string, `kCBAdvDataIsConnectable`, on 6.1.3 and is never null there. The absent-key
     branch of the patch now answers only for a release whose CoreBluetooth never sends the key (6.1.3 measured; the host
-    sends it). Import check: see `packages/m/matter/tests/import_check.lua` and the v-matter8 report.
+    sends it). Measured on the installed dylib (v-matter8): `nm -m` reads `(undefined) external _CBAdvertisementDataIsConnectable (from libCoreBluetoothBackports)`, and `xmake l packages/m/matter/tests/import_check.lua` answers "every non-weak import of the armv7 slices of 8 binaries resolves against 158520 exports", with no weak import it does not export.
 - **Weak and bound imports, measured (v-matter8).** `_CCRandomGenerateBytes` is a weak reference bound to
   `libCommonCryptoBackports.dylib` (`nm -m` reads "weak external ... from libCommonCryptoBackports"): the symbol exists in
   the package, so the reference is not null when the backport loads. Accepted by the coordinator as it stands; the
   BoringSSL reference (`third_party/boringssl/repo/src/crypto/rand_extra/ios.c:25`) is not changed by this package.
   `_os_unfair_lock_lock` and `_os_unfair_lock_unlock` are non-weak and bound to the packaged `libc++abi.1.dylib`
-  (`/usr/lib/charon/org.charon.libcxx-e07f9ca7/`). The apple-compat archive (`libapple-compat.a`,
+  (`/usr/lib/charon/org.charon.libcxx-6b5ca29e/`, the packaged build of this release, `~/.xmake/packages/l/libcxx/23.1.1/6b5ca29e…`; the digest moved after 5be4d2bce2 and the v-matter7 install name e07f9ca7 is not the one this install links)`). The apple-compat archive (`libapple-compat.a`,
   in 18 of the 21 installs under `~/.xmake/packages/a/apple-compat/latest`, each read with `nm -gU`) exports only `_os_unfair_lock_assert_owner` and `_os_unfair_lock_assert_not_owner` in
   the `os_unfair_lock` family, so the archive defines neither lock nor unlock and the link carries no second definition
-  of either.
+  of either. Measured on the installed dylib: `nm -gU` reports neither as a defined symbol.
 - **No Xcode, no pigweed.** GN's own `build/toolchain/custom` takes `target_cc`, `target_cxx` and `target_ar`, which
   bypasses `BUILDCONFIG.gn`'s os/cpu selection entirely; the compiler, the archiver and the flags are the toolchain's
   own, the same values `modules/apple/cmake.lua` derives for a CMake build. `//build_overrides/pigweed_environment.gni`
