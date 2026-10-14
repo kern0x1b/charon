@@ -38,6 +38,7 @@ local LC_VERSION_MIN_IPHONEOS = 0x25
 local LC_ENCRYPTION_INFO_64 = 0x2C
 local LC_BUILD_VERSION = 0x32
 local LC_FUNCTION_STARTS = 0x26
+local LC_MAIN = 0x80000028
 
 local LIBRARY_COMMANDS = {
     [LC_LOAD_DYLIB] = true, [LC_LOAD_WEAK_DYLIB] = true, [LC_REEXPORT_DYLIB] = true,
@@ -129,6 +130,10 @@ function image(data, base)
             found.indirect = {string.unpack("<I4I4", data, at + 57)}
         elseif command == LC_FUNCTION_STARTS then
             found.function_starts = {string.unpack("<I4I4", data, at + 9)}
+        elseif command == LC_MAIN then
+            -- The entry as an offset from the header, and where that 8-byte field sits in the file.
+            found.entryoff = string.unpack("<I8", data, at + 9)
+            found.entryoff_at = at + 8
         elseif command == LC_SUB_FRAMEWORK then
             found.umbrella = cstring(data, at + string.unpack("<I4", data, at + 9))
         elseif command == LC_SUB_UMBRELLA or command == LC_SUB_LIBRARY then
@@ -565,6 +570,36 @@ function pagezero_problems(binary)
     return problems
 end
 
+-- dyld calls the LC_MAIN entry exactly as the command gives it (dyldMain.cpp adds nothing), so a Thumb entry has to carry
+-- bit 0 in the command. Without it dyld calls the first halfword in ARM state, where a Thumb instruction is undefined.
+-- ld64 keeps the bit; a linker that drops it writes this shape.
+function entry_problems(binary)
+    local problems = {}
+    local data = read(binary)
+    for _, found in ipairs(images(data)) do
+        if found.entryoff and found.cputype == ARM then
+            local text
+            for _, segment in ipairs(found.segments) do
+                if segment.name == "__TEXT" then
+                    text = segment
+                end
+            end
+            -- Without __TEXT there is no header address to add the entry to; pagezero_problems names that.
+            local entry = text and text.vmaddr - text.fileoff + found.entryoff
+            local named, thumb, arm = nil, false, false
+            for _, symbol in ipairs(entry and code_symbols(data, found)[entry & ~1] or {}) do
+                named = named or symbol.name
+                thumb = thumb or symbol.thumb
+                arm = arm or not symbol.thumb
+            end
+            if thumb and not arm and entry & 1 == 0 then
+                table.insert(problems, string.format("the LC_MAIN entry %#x lands on Thumb function %s without bit 0, so dyld calls it in ARM state, where its first halfword is undefined; the linker dropped the Thumb bit", entry, named))
+            end
+        end
+    end
+    return problems
+end
+
 local LOADED = {[6] = true, [8] = true}
 
 function encrypted(binary)
@@ -688,6 +723,7 @@ function verify(binary, opt)
     else
         table.join2(problems, pagezero_problems(binary))
     end
+    table.join2(problems, entry_problems(binary))
     if encrypted(binary) then
         table.insert(problems, "a linker stamped LC_ENCRYPTION_INFO on a 32-bit ARM library, and only an executable carries that command: ld64 makes a library or a bundle encryptable from iOS 7.0 on (rdar://16293398, ld64/src/ld/Options.cpp), so link it with -Wl,-no_encryption")
     end

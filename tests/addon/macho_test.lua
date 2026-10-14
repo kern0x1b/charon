@@ -221,6 +221,33 @@ local function linker_option_failures(macho, folder)
     return found
 end
 
+-- A Thumb main linked by charon's ld64 keeps bit 0 in LC_MAIN. The same binary with the bit cleared is the shape Apple's
+-- ld writes for it; the check refuses it, and only that shape.
+local function entry_failures(macho, folder, ld64)
+    local found = {}
+    io.writefile(path.join(folder, "libSystem.tbd"), fixtures.system_stub())
+    io.writefile(path.join(folder, "thumbmain.c"), "__attribute__((target(\"thumb\"))) int main(void) { return 0; }\n")
+    local good = fixtures.link(folder, ld64, "thumbmain", "armv7-apple-ios6.0", "thumbmain.c")
+    local at = macho.images(macho.read(good))[1].entryoff_at
+    local entry = fixtures.slot(good, at)
+    if entry & 1 == 0 then
+        table.insert(found, string.format("ld64 must keep the Thumb bit in LC_MAIN for a Thumb main, got %#x", entry))
+    end
+    local cleared = fixtures.edited(good, path.join(folder, "thumbmain-nobit"), at, entry & ~1)
+    if fixtures.refusal(function () macho.verify(good) end) then
+        table.insert(found, "a Thumb main with the Thumb bit in LC_MAIN must pass verify")
+    end
+    local problems = macho.entry_problems(cleared)
+    if #problems ~= 1 or not problems[1]:find("without bit 0", 1, true) then
+        table.insert(found, "a Thumb main without the bit in LC_MAIN must be refused, got " .. table.concat(problems, "; "))
+    end
+    local refused = fixtures.refusal(function () macho.verify(cleared) end)
+    if not refused or not refused:find("the LC_MAIN entry", 1, true) then
+        table.insert(found, "verify must refuse the same binary by name, got " .. tostring(refused))
+    end
+    return found
+end
+
 function failures(opt)
     local macho = import("apple.macho", {rootdir = opt.modules, anonymous = true})
     local compat = import("apple.compat", {rootdir = opt.modules, anonymous = true})
@@ -234,6 +261,7 @@ function failures(opt)
     table.join2(found, weak_import_failures(macho, compat, folder, opt.ld64))
     table.join2(found, input_minimum_failures(macho, folder))
     table.join2(found, linker_option_failures(macho, folder))
+    table.join2(found, entry_failures(macho, folder, opt.ld64))
     os.tryrm(folder)
     return found
 end
