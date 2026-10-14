@@ -38,6 +38,23 @@ function release_of(r)
     return r.introduced
 end
 
+-- The constants a framework's constant files hold, grouped by the release each is placed at (release_of, the same key release-split
+-- checks a file's symbols by), and the sorted list of those releases. `implemented` names the constants the registry defines by hand.
+function constant_groups(spec, implemented)
+    local by_release, release_list = {}, {}
+    for _, r in ipairs(spec) do
+        if r.kind == "constant" and r.value_status == "found" and r.owned == "-" and r.tbd == "exported" and not implemented[r.api] then
+            local release = release_of(r)
+            if by_release[release] == nil then
+                by_release[release] = {}
+                table.insert(release_list, release)
+            end
+            table.insert(by_release[release], r)
+        end
+    end
+    return by_release, releases.sorted(release_list)
+end
+
 -- The first identifier of a declaration, skipping const and volatile: the type of the constant.
 function constant_base(decl)
     for word in string.gmatch(decl, "[%a_][%w_]*") do
@@ -166,18 +183,7 @@ function render(tree, fw, corpus)
     table.insert(lines, "#endif")
     files["spec.h"] = table.concat(lines, "\n") .. "\n"
 
-    local by_release, release_list = {}, {}
-    for _, r in ipairs(spec) do
-        if r.kind == "constant" and r.value_status == "found" and r.owned == "-" and r.tbd == "exported" and not implemented[r.api] then
-            local release = release_of(r)
-            if by_release[release] == nil then
-                by_release[release] = {}
-                table.insert(release_list, release)
-            end
-            table.insert(by_release[release], r)
-        end
-    end
-    release_list = releases.sorted(release_list)
+    local by_release, release_list = constant_groups(spec, implemented)
     for _, release in ipairs(release_list) do
         local body = {layout.constants().MARK, "#import <" .. fw .. "/" .. fw .. ".h>", ""}
         for _, r in ipairs(by_release[release]) do

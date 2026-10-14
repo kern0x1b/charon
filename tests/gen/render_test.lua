@@ -50,6 +50,34 @@ function main()
     check(definition("kCFBar", "const CFStringRef", "cf") == 'const CFStringRef kCFBar = (__bridge CFStringRef)@"Value";',
         "a const CFStringRef constant is a const variable")
 
+    -- placement (tools/gen/render.lua constant_groups): a constant is filed under the release it is measured in, and a row with no
+    -- measurement ("-", or "none") under its introduced release. The rows are the NetworkExtension case of round 21 (introduced 11.0,
+    -- measured 16.0 by the held caches, so a file of 11.0 holding it fails release-split) and the SceneKit case (introduced 10.0,
+    -- measured 8.0). The introduced-only placement files all four under their introduced release and fails the first two checks.
+    local function constant(api, introduced, measured)
+        return {kind = "constant", api = api, introduced = introduced, measured = measured, value_status = "found", owned = "-", tbd = "exported"}
+    end
+    local spec = {
+        constant("NEHotspotConfigurationErrorDomain", "11.0", "16.0"),
+        constant("NEDNSProxyErrorDomain", "11.0", "-"),
+        constant("SCNSceneSourceConvertToYUpKey", "10.0", "8.0"),
+        constant("NEUnmeasured", "11.0", "none"),
+    }
+    local by_release, release_list = render.constant_groups(spec, {})
+    local function names(release)
+        local out = {}
+        for _, r in ipairs(by_release[release] or {}) do
+            table.insert(out, r.api)
+        end
+        return table.concat(out, " ")
+    end
+    check(names("16.0") == "NEHotspotConfigurationErrorDomain", "a constant measured at 16.0 is filed under 16.0, not its introduced 11.0")
+    check(names("11.0") == "NEDNSProxyErrorDomain NEUnmeasured", "a row with no measurement (- or none) is filed under its introduced release")
+    check(names("8.0") == "SCNSceneSourceConvertToYUpKey", "a constant measured below its introduced release is filed under the measured one")
+    check(table.concat(release_list, " ") == "8.0 11.0 16.0", "the releases are listed in release order, each once")
+    check(render.constant_groups(spec, {SCNSceneSourceConvertToYUpKey = true})["8.0"] == nil,
+        "a constant the registry defines by hand is not filed")
+
     print("render test: " .. (failures == 0 and "OK" or ("FAIL " .. failures)))
     if failures > 0 then
         os.exit(1)
