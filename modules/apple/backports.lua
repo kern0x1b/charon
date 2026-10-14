@@ -47,6 +47,8 @@ LIBRARIES = {
     -- monocypher use, for the same reason.
     {name = "SecurityBackports", folder = "Security", frameworks = {"Security", "Foundation"}, libraries = {"FoundationBackports"}, archives = {"micro-ecc"}, c_archives = {"micro-ecc"}},
     {name = "CommonCryptoBackports", folder = "CommonCrypto", frameworks = {"Security"}, libraries = {}},
+    -- The constant only: CBAdvertisementDataIsConnectable is a string, so the library links no CoreBluetooth (the central is dlopen'd).
+    {name = "CoreBluetoothBackports", folder = "CoreBluetooth", frameworks = {"Foundation"}, libraries = {}},
     -- The codecs are C, with no Objective-C++ object in the band, so they are c_archives (see the note on SecurityBackports above);
     -- the Compression framework itself is none of the release's, so no framework is linked.
     {name = "CompressionBackports", folder = "Compression", frameworks = {}, libraries = {}, archives = {"lzfse", "zlib", "lz4", "xz"}, c_archives = {"lzfse", "zlib", "lz4", "xz"}},
