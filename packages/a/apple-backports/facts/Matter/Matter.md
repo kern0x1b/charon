@@ -844,8 +844,47 @@ SDK 26.2 surface corpus, and no corpus file is on the machine this section was m
 written into `packages/m/matter/registry` here. The decision (extend the corpus, keep the objects for the rows the
 real stack's registry does not carry, or accept the loss) belongs to the coordinator.
 
+## The real stack's registry after the corpus rerun (v-matter10)
+
+`tools/matter-registry.lua` was rerun on `libMatterBackports.dylib` (v1.6.1.0, armv7) with
+`coordination/corpus/sdk-26.2-surface.tsv` (24647 Matter rows). The corpus is on the machine now, so the 334 classes
+above are answered by the corpus, not by a gap. The rerun carries 17061 of the 24647 rows.
+
+- Two families whose names differ only in case wrote one file on the case-insensitive file system: the SDK spells the
+  OTA cluster both ways (`MTROTA...` from 16.4, `MTROta...` from 16.1 to 16.4), and the later family overwrote the
+  earlier one's rows. The committed registry therefore held no `MTROta...` row. The tool now merges families by their
+  lowercase name into one file (the spelling that sorts first); the file `OtaSoftwareUpdateProvider.json` is now
+  `OTASoftwareUpdateProvider.json`.
+- Against the committed registry, by kind and name: 66 rows added (11 class, 1 constant, 8 method, 46 property): the
+  `MTROta...` rows, and `MTROtaSoftwareUpdateProvider...Params` and `ClusterWakeOnLAN` among the classes.
+- 19 rows dropped: the Apple-spelled Aliro methods of `MTRBaseClusterDoorLock` and `MTRClusterDoorLock`
+  (`appleClearAliroReaderConfigWith...`, `readAttributeAppleAliro...`, `readAttributeAppleNumberOfAliro...`). The corpus
+  marks all 48 `Apple...Aliro` rows `unavailable` (yes). The dylib defines none of them (`strings` finds
+  `clearAliroReaderConfig` and `AppleAliro` nowhere): the unprefixed Aliro selectors are the ones it carries. The
+  `Charon/MTRBaseClusterDoorLock.mm` and `Charon/MTRClusterDoorLock.mm` forwards that were meant to add them are not in
+  the matter package's build (`packages/m/matter/xmake.lua` names no `Charon` directory), so they are not compiled.
+- The other 29 of the 48 were never in the committed registry and stay out (unavailable).
+
+The 1188 generated classes' rows against the new real registry (by kind and name; the 20 are not in this set):
+
+| the 1188 generated classes' rows, owned by the class | rows | by kind (class / method / property) | in the real registry |
+| --- | --- | --- | --- |
+| homed: the same kind and name is in the real registry | 11512 | 864 / 8408 / 2240 | yes |
+| unavailable: not in the real registry; the corpus marks it unavailable | 48 | 0 / 48 / 0 | no |
+| absent: not in the corpus | 9426 | 324 / 5543 / 3559 | no |
+| in the corpus, available, not in the real registry | 0 | 0 / 0 / 0 | no |
+
+Of the 9426 absent rows, 2386 methods and 1829 properties belong to the 324 absent classes, and 3157 methods and
+1730 properties belong to 864 classes the corpus does carry (for example `MTRBaseClusterTestCluster`, 1354 rows, and
+the `...Params` and `...Struct` classes' `init` and `copyWithZone:`). 185 of the 1188 classes have only homed and
+unavailable rows; the other 1003 have absent rows. Whether each absent row is declared in the SDK headers with a
+provisional or unavailable mark is not measured yet (the per-row proof is open): the removal waits for it.
+
 ## Open
 
+- Prove each absent row of the 1188 (9426): the declaring `@interface` of its owner and the mark of that declaration;
+  list the rows that are declared with neither mark (the brief's "neither" list).
+- Decide the 48 unavailable Apple-spelled Aliro rows' sources: the `Charon/` forwards are dead (not in the build).
 - Port `tools/matter-generate.py` to Lua with the exclusion: the generator writes every class of the SDK's headers,
   so until it is ported a re-run re-emits the classes the real stack carries; the regression guard in
   `tests/addon/matter_objects_test.lua` is what catches that.

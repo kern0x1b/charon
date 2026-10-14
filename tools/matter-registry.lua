@@ -260,11 +260,27 @@ function main(binary, corpus, outdir, facts, architecture)
 
     os.tryrm(outdir)
     os.mkdir(outdir)
-    local counts = {}
+    -- Two families whose names differ only in case are one file on the case-insensitive file system the registry is
+    -- written and read on: the SDK spells the OTA cluster both ways (MTROTA... from 16.4, MTROta... from 16.1), and
+    -- writing one family after the other overwrote the other's rows. So families are merged by their lowercase name,
+    -- and the file takes the spelling that sorts first, which is the same whatever order the families were found in.
+    local files = {}
     for family, entries in pairs(families) do
-        table.sort(entries, function (left, right) return byteorder.less(left.api, right.api) end)
-        io.writefile(path.join(outdir, family .. ".json"), json.encode({framework = FRAMEWORK, entries = entries}))
-        counts[family] = #entries
+        local key = family:lower()
+        if not files[key] then
+            files[key] = {name = family, entries = {}}
+        elseif byteorder.less(family, files[key].name) then
+            files[key].name = family
+        end
+        for _, entry in ipairs(entries) do
+            table.insert(files[key].entries, entry)
+        end
+    end
+    local counts = {}
+    for _, file in pairs(files) do
+        table.sort(file.entries, function (left, right) return byteorder.less(left.api, right.api) end)
+        io.writefile(path.join(outdir, file.name .. ".json"), json.encode({framework = FRAMEWORK, entries = file.entries}))
+        counts[file.name] = #file.entries
     end
     local names = table.orderkeys(counts)
     io.writefile(path.join(outdir, "index.json"), json.encode({
