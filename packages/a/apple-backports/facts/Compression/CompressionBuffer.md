@@ -71,3 +71,44 @@ LZ4_RAW answers 0 for both (host 32768 encode, 0 decode); LZMA answers 0 for bot
 and 2 run). The layer uses its own state for ZLIB and LZ4 and ignores the
 scratch. The LZFSE encode size is larger than the host's by 96 bytes, so an app that hard-codes the host's number would
 hand the codec too little; an app that allocates the size our function gives it is right. Not a contract with the host.
+
+## Encoded bytes: what is required (decided, measured)
+
+The bytes the layer encodes are required to equal the host's for LZMA only. For LZFSE, ZLIB, LZ4 and LZ4_RAW the contract is
+cross-decoding, for every size, content, chunking and seed: what the layer encodes, the host decodes to the input, and what
+the host encodes, the layer decodes to the input. Apple's API promises a stream in the algorithm's format, not Apple's
+encoder's bytes, and the layer's encoders for those four are not Apple's.
+
+Measured (seed 1 and seed 2, 340 encode cases each: 5 algorithms x 17 sizes x 4 contents), the layer's bytes equal the
+host's in:
+
+| algorithm | seed 1 | seed 2 |
+|-----------|--------|--------|
+| LZFSE     | 65 of 68 | 66 of 68 |
+| ZLIB      | 56 of 68 | 56 of 68 |
+| LZ4       | 38 of 68 | 39 of 68 |
+| LZ4_RAW   | 33 of 68 | 34 of 68 |
+| LZMA      | 68 of 68 (required) | 68 of 68 (required) |
+
+Seed 1 total for the four reported algorithms: 192 of 272 (260 of 340 with LZMA). The counts are reported by the
+differential, not required. The empty input is the one case where the bytes are shown to differ in format: the host's LZ4
+stream of nothing is 12 bytes (`bv4-` with raw size 0, then `bv4$`), the layer's is 4 bytes (`bv4$`). The rule holds for
+it: the host's stream API decodes the layer's 4 bytes to END with 0 bytes, and the layer decodes the host's 12 bytes to END
+with 0 bytes (the stream checks, seeds 1 and 2). It is not a format defect.
+
+## Streams (measured)
+
+- Input and output: the stream buffers its input until FINALIZE and encodes or decodes once there. The host writes some
+  output before FINALIZE (measured in the probes of the step 2 session: LZFSE 242239 of 247702 bytes; LZMA 184358 of
+  226008); the layer writes none. That difference is the crutch entry `charon: compression_stream output before FINALIZE`, counted per check.
+- Stream bytes do not depend on the input chunking or the output pieces, in the layer (checked against its own one-piece
+  output) and in the host (measured for LZFSE, ZLIB, LZ4 and LZMA: 1, 7, 4096 and all bytes at a time).
+- The empty stream, buffer API: LZFSE 12 bytes (the stored block of 0 bytes, then `bvx$`); LZ4 12 bytes on the host, 4 in
+  the layer (above); LZMA 32 bytes. ZLIB 2 bytes. A decode of a valid empty stream answers END with 0 bytes through the
+  stream API, and ERROR for a corrupt one; the buffer API answers 0 for both, as the host does.
+- Status of a decode (the layer's rule, one per codec): done with n bytes, full (the destination filled before the stream
+  ended), or failed. LZFSE answers 0 for both an empty stream and a corrupt one, so a 0 answer is done only when the block
+  headers of the input are empty stored blocks ending in `bvx$`. LZMA uses liblzma's stream decoder, because its buffer
+  decoder answers LZMA_BUF_ERROR for both a full destination and a cut stream. Measured before that rule: the stream API
+  failed 300000 zeros (a stream of a few hundred bytes) in its first destination of 66 KiB; the differential's content
+  class for that case is `content=0`.

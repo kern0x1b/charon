@@ -42,7 +42,7 @@ cp "$src/lzfse/src/lzfse.h" "$build/include/lzfse/"
 cp "$src/zlib/zlib.h" "$src/zlib/zconf.h" "$build/include/zlib/"
 cp "$xz/api/lzma.h" "$build/include/lzma/"
 cp -R "$xz/api/lzma" "$build/include/lzma/"
-renames="-Dcompression_encode_buffer=charon_host_compression_encode_buffer -Dcompression_decode_buffer=charon_host_compression_decode_buffer -Dcompression_encode_scratch_buffer_size=charon_host_compression_encode_scratch_buffer_size -Dcompression_decode_scratch_buffer_size=charon_host_compression_decode_scratch_buffer_size"
+renames="-Dcompression_encode_buffer=charon_host_compression_encode_buffer -Dcompression_decode_buffer=charon_host_compression_decode_buffer -Dcompression_encode_scratch_buffer_size=charon_host_compression_encode_scratch_buffer_size -Dcompression_decode_scratch_buffer_size=charon_host_compression_decode_scratch_buffer_size -Dcompression_stream_init=charon_host_compression_stream_init -Dcompression_stream_process=charon_host_compression_stream_process -Dcompression_stream_destroy=charon_host_compression_stream_destroy"
 xcrun clang -O2 -w $renames -I"$build/include" -c "$root/packages/a/apple-backports/Compression/CompressionBuffer.c" -o "$build/port.o"
 xcrun clang -O2 -w "$here/differential.c" "$build"/*.o -lcompression -o "$build/differential"
 status=0
