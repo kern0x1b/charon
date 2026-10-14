@@ -82,3 +82,6 @@ for i in 0..<64 {
   print("perm[\(i)] raw=\(raw) rawValue=\(perm.rawValue) ownerRead=\(perm.contains(.ownerRead)) groupWrite=\(perm.contains(.groupWrite)) otherExecute=\(perm.contains(.otherExecute)) union=\(perm.union(.ownerExecute).rawValue) minus=\(perm.subtracting(.ownerRead).rawValue)")
 }
 print("done")
+
+// One line per carried row (rows.swift, constants.swift).
+runRows(seed: seed, runDir: runDir)
