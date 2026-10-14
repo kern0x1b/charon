@@ -880,11 +880,96 @@ the `...Params` and `...Struct` classes' `init` and `copyWithZone:`). 185 of the
 unavailable rows; the other 1003 have absent rows. Whether each absent row is declared in the SDK headers with a
 provisional or unavailable mark is not measured yet (the per-row proof is open): the removal waits for it.
 
+## The absent rows, proved against the SDK 26.2 headers, and the removal (v-matter11)
+
+`tools/matter-absent-proof.lua` (Lua, `xmake l`) classifies each row of the 1188 generated classes that the SDK 26.2
+corpus does not carry at all: 9426 rows (324 class, 5543 method, 3559 property). Each row's owner is read from the
+Matter headers as its own `@interface` block and its categories, the block only; a member that block does not declare is
+looked for in the superclass chain, never in another block of the same name. The output is `absent-proof.tsv` next to
+`class-overlap.tsv`: one row per absent row, with category, kind, api, owner, the header line of the declaration, and
+the detail.
+
+The categories:
+
+- **a, unavailable.** The declaration, or the `@interface` that encloses it, carries `MTR_PROVISIONALLY_AVAILABLE`. That
+  macro expands to `_MTR_UNAVAILABLE` (`NS_UNAVAILABLE`) unless `MTR_ENABLE_PROVISIONAL` is set; it is not set, and its
+  default is 0 (`MTRDefines.h:36-37`), with the expansions at `MTRDefines.h:94-96`. `MTR_UNSTABLE_API` (`:99-102`) and
+  the explicit `NS_UNAVAILABLE` and `API_UNAVAILABLE` also count; none of them is in the absent rows.
+- **p, accessor.** A getter `-[Class name]`, a setter `-[Class setName:]`, or a custom getter (`getter=name` in the
+  property) of a property the owner declares available. The corpus spells that surface as the property row `Class.name`,
+  which is available, and the real registry carries it. The accessor row is not a surface of its own.
+- **b, inherited and available.** Declared available by a superclass, and homed there in the real registry; the row is
+  counted against the superclass. b-homeless would stop the removal.
+- **c, declared nowhere.** No block of the owner, its categories, or its superclass chain declares the member in the
+  Matter headers.
+- **x, neither.** Declared available by the owner and absent from the corpus. It stops the removal.
+
+| category | class | method | property | rows |
+| --- | --- | --- | --- | --- |
+| a (unavailable) | 324 | 1570 | 975 | 2869 |
+| p (accessor of an available property) | 0 | 83 | 0 | 83 |
+| c (declared nowhere) | 0 | 3890 | 2584 | 6474 |
+| b, b-homeless, x | 0 | 0 | 0 | 0 |
+| total | 324 | 5543 | 3559 | 9426 |
+
+Every a row is `MTR_PROVISIONALLY_AVAILABLE`: 2869 of 2869, and no other mark. Three examples, from the header:
+
+- class `MTRBaseClusterChime`: `MTRBaseClusters.h:15546`, the `@interface` line, with the mark on the line before it
+  (`MTRBaseClusters.h:15545`).
+- method `-[MTRBaseClusterChime playChimeSoundWithCompletion:]`: `MTRBaseClusters.h:15554`, the mark on the declaration.
+- property `MTRCameraAVSettingsUserLevelManagementClusterDPTZRelativeMoveParams.deltaX`:
+  `MTRCommandPayloadsObjc.h:12213`, the mark on the declaration.
+
+The 83 p rows are accessors of properties that the corpus carries available, for example `MTRSubscribeParams`
+`keepPreviousSubscriptions` (getter and setter), and `MTRSwitchClusterMultiPressCompleteEvent` `newPosition`, whose getter is
+`getNewPosition` (`MTRStructsObjc.h:783`, a custom getter, `MTR_DEPRECATED` and available).
+
+The 6474 c rows, in three groups, measured:
+
+- **3380 NSObject-rooted.** 2536 methods (`init`, `new`, `copyWithZone:`, `description`) and 844 `.description`
+  properties of struct, event and parameter classes. The walk reaches `NSObject`, and no Matter block declares these for
+  the owner: they are the members the root (NSObject, and the NSCopying protocol) gives every object. The committed
+  registry has 858 `init`, 855 `copyWithZone:` and 849 `description` rows, and none for a `MTRBaseCluster...` class. Their
+  removal with the classes is a decision for the coordinator (see Open); the rule that a homeless available row stops the
+  removal would stop it here, because NSObject is not a Matter registry row.
+- **1354 MTRBaseClusterTestCluster methods, selectors the SDK never declares.** For example
+  `writeAttributeIdentifyTimeWithValue:completionHandler:`: the SDK declares `writeAttributeIdentifyTimeWithValue:completion:`
+  (`MTRBaseClusters.h:47`), and `subscribeAttributeIdentifyTimeWithMinInterval:maxInterval:params:...`, where the SDK has
+  `subscribeAttributeIdentifyTimeWithParams:...`. `MTRBaseClusterTestCluster` is an empty deprecated `@interface`
+  (`MTRBaseClusters.h:17913`) over `MTRBaseClusterUnitTesting`, which declares the SDK's spellings.
+- **1740 properties of other classes, names no header declares.** For example `MTRClusterZoneManagement.ZonesValues`;
+  `AbsMaxPowerValues`, `ExpressedStateValues`, `NightVisionValues` and `SupportedMapsValues` have no mention in the 62
+  headers.
+
+Of the 6474 c rows, 2201 are c rows whose exact member another class declares: the generator put it on the wrong owner.
+The rest are declared nowhere in the headers.
+
+**The 48 Aliro rows, and the DoorLock forwards.** The 48 generated rows that the real registry does not carry and the
+corpus marks unavailable are all Aliro methods of `MTRBaseClusterDoorLock` (33) and `MTRClusterDoorLock` (15): 36 spelled
+with `Apple` (for example `+[MTRBaseClusterDoorLock readAttributeAppleAliroBLEAdvertisingVersionWithClusterStateCache:endpoint:queue:completion:]`,
+`16.1`, `unavailable` yes, `container`) and 12 unprefixed. The corpus carries all 36 Apple-spelled rows as unavailable
+(`yes`). The dylib defines none of the Apple-spelled selectors. The `Charon/MTRBaseClusterDoorLock.mm` and
+`Charon/MTRClusterDoorLock.mm` forwards that would have added them are not in `packages/m/matter/xmake.lua`, so nothing
+compiled them; both are deleted (coordinator's decision 6), and the Aliro rows leave with the generated classes. No
+app can call them: the SDK declares them unavailable.
+
+**The removal.** The 1188 generated classes' object files are removed: 1188 tracked files, the 20 generated-only classes'
+files stay (20 `CharonMatter*.m`). `registry/Matter/ios16.json` goes from 21250 entries to 264 (the 20986 rows owned by
+the 1188 are dropped; the 264 owned by the 20 stay, the same bytes in the same order). `registry/Matter/ios16.json.unannotated`
+goes from 10334 lines to 264, by the same owner rule. The `matter` option's description no longer names 1208 objects.
+Every row of the removed classes is either homed in `packages/m/matter/registry` (11512 rows, by kind and name: 864 classes,
+8408 methods, 2240 properties), unavailable in the corpus (48), absent from the corpus and proved above (9426).
+
 ## Open
 
-- Prove each absent row of the 1188 (9426): the declaring `@interface` of its owner and the mark of that declaration;
-  list the rows that are declared with neither mark (the brief's "neither" list).
-- Decide the 48 unavailable Apple-spelled Aliro rows' sources: the `Charon/` forwards are dead (not in the build).
-- Port `tools/matter-generate.py` to Lua with the exclusion: the generator writes every class of the SDK's headers,
-  so until it is ported a re-run re-emits the classes the real stack carries; the regression guard in
-  `tests/addon/matter_objects_test.lua` is what catches that.
+- Coordinator, decision: the 3380 NSObject-rooted rows (`init`, `new`, `copyWithZone:`, `description`) were removed with
+  their classes as c rows. They are the root's members, not Matter's. Say if they must stay as a registry row of their
+  own, or be homed on `NSObject`; the proof does not decide that.
+- The guard `tests/addon/matter_objects_test.lua` (`failures`, pure Lua): fails when a committed `Matter/CharonMatter*.m`
+  implements a class of `class-overlap.tsv` `yes`, or a class the real registry carries, and pins the count at 20. The
+  coordinator adds its suite name `matter_objects_test` to `coordination/run_light_tests.lua`.
+- `tools/matter-generate.py` still writes the 1188 classes. It is Python and was not run; a re-run would re-emit them, and
+  the guard catches that.
+- The emulator app `tests/backports/emulate/matter/app/main.m` names three removed classes: `MTRBaseClusterIdentify`,
+  `MTRBaseClusterOnOff`, `MTRBaseClusterTestCluster`. They are SDK classes; the real stack provides them when the
+  Matter framework is present.
