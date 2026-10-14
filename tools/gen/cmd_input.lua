@@ -346,13 +346,11 @@ local function write_framework(args, fw)
     for name in pairs(security_cf) do
         cf_typedefs[name] = true
     end
+    -- A constant is "exported" when the framework's own arm64 .tbd exports it. Merging Foundation's exports into every other framework
+    -- was measured to change no record: no constant row of spec/*/constants.tsv is exported only through Foundation.tbd, on the
+    -- iPhoneOS 26.2 SDK the records came from (1177 rows, 73 frameworks) and on the 16.4 SDK the port compiles against (1160 rows,
+    -- 67 frameworks). The script is charon/.agent-work/runs/v-gen9/item2/flip.lua, outside the tree.
     local symbols = tbd.exports(sdk, fw)
-    if fw ~= "Foundation" then
-        local foundation_symbols = tbd.exports(sdk, "Foundation")
-        for name in pairs(foundation_symbols) do
-            symbols[name] = true
-        end
-    end
     local owned = owned_constants(tree, fw)
     -- An enumerator the shard holds is declared, and its value is the one clang evaluates: the shard's value column (round 16, the
     -- owner's rule; gen.py's cmd_input reads the same column). The first row a name has wins, as in the oracle.
