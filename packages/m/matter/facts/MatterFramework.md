@@ -290,6 +290,17 @@ of the framework's own xcconfig, which I had not read yet.
   `sizeof(struct { char c; uint64_t v; })` is 12 there, 16 on arm64. A doubleword atomic on ARM has to be eight-byte
   aligned to be defined at all, so the member is aligned (`patches/clock-alignment.patch`) rather than the warning
   turned off.
+- **BLE advertisement connectability.** `BleConnectionDelegateImpl.mm` (pinned 3bcdd56b, lines 411-414) reads
+  `CBAdvertisementDataIsConnectable` and returns when `[nil boolValue] == NO`, so an advertisement with no key is
+  dropped. Measured: iOS 6.1.3's CoreBluetooth has no such key at all (no `kCBAdvDataIsConnectable` string in its
+  cache; its advertisement keys are LocalName, ManufacturerData, ServiceData, ServiceUUIDs, HashedServiceUUIDs and
+  TxPowerLevel; its exports have no `_CBAdvertisementDataIsConnectable`), so connectability is never reported there.
+  The key's string on the releases that have it is `kCBAdvDataIsConnectable`, measured in the host's dyld shared cache
+  (`dyld_shared_cache_arm64e.07`). The port answers for the datum the OS lacks: an absent key counts as connectable
+  (`patches/ble-connectable.patch`), since a commissionable device must be connectable; the pinned source cites no spec
+  section for that, and the Matter core spec's BLE commissioning section has not been read in this tree. A connect that
+  then fails is not reported by this file, which has no `didFailToConnectPeripheral`. The constant itself is not yet a
+  CoreBluetooth backport: the key's weak import stays null on 6.1.3 until one exists (open, see the report).
 - **No Xcode, no pigweed.** GN's own `build/toolchain/custom` takes `target_cc`, `target_cxx` and `target_ar`, which
   bypasses `BUILDCONFIG.gn`'s os/cpu selection entirely; the compiler, the archiver and the flags are the toolchain's
   own, the same values `modules/apple/cmake.lua` derives for a CMake build. `//build_overrides/pigweed_environment.gni`
