@@ -172,6 +172,13 @@ static size_t progress_allowance(compression_algorithm algorithm)
     return algorithm == COMPRESSION_ZLIB || algorithm == COMPRESSION_LZFSE ? 65536 : 0;
 }
 
+// The allowance of decoding the host's own stream: LZFSE's is 0, because the port decodes each block as the host does, and
+// an LZVN block as its bytes come (facts Streams). Other codecs keep their allowance.
+static size_t decode_allowance(compression_algorithm algorithm)
+{
+    return algorithm == COMPRESSION_LZFSE ? 0 : progress_allowance(algorithm);
+}
+
 // The stream checks for one algorithm and one input. The host decodes every stream the port writes to the input, and the port
 // decodes every stream the host writes to it, for each chunking of the input and for an output in pieces of 7 bytes. The port's
 // stream bytes do not depend on how the input or the output was split: they are compared with the port's own one-piece output
@@ -218,13 +225,13 @@ static void stream_checks(compression_algorithm algorithm, int content, const ui
             size_t dbefore_h = 0, dbefore_p = 0, dfirst_h = NO_OUTPUT, dfirst_p = NO_OUTPUT;
             stream_run(&kHostStream, COMPRESSION_STREAM_DECODE, algorithm, host_out, host_n, chunk, 0, back, cap, &dbefore_h, &dfirst_h, &st_h);
             stream_run(&kPortStream, COMPRESSION_STREAM_DECODE, algorithm, host_out, host_n, chunk, 0, back, cap, &dbefore_p, &dfirst_p, &st_p);
-            size_t dslack = (progress_allowance(algorithm) + chunk - 1) / chunk * chunk;
+            size_t dslack = (decode_allowance(algorithm) + chunk - 1) / chunk * chunk;
             size_t dgap = dfirst_p > dfirst_h ? dfirst_p - dfirst_h : dfirst_h - dfirst_p;
             check(dfirst_h == NO_OUTPUT || (dfirst_p != NO_OUTPUT && dgap <= dslack),
                   "port decodes the host's stream: output before FINALIZE within the allowance of the host's", (int)dfirst_p, (int)dfirst_h);
             // the port writes at least as much before FINALIZE as the host, less the codec's allowance: a port that writes more
             // has given its bytes earlier into the caller's buffer, which the API permits (facts Streams, the progress rule)
-            size_t allow = progress_allowance(algorithm);
+            size_t allow = decode_allowance(algorithm);
             check(dbefore_p + allow >= dbefore_h, "port decodes the host's stream: at least as much output before FINALIZE as the host, within the allowance",
                   (int)dbefore_p, (int)dbefore_h);
         }

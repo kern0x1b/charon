@@ -36,8 +36,9 @@ package("lzfse")
         os.vrunv("xcrun", table.join({"libtool", "-static", "-o", path.join(package:installdir("lib"), "liblzfse.a")}, objects))
         os.mkdir(package:installdir("include", "lzfse"))
         -- The block headers and their sizes are the codec's own (lzfse_internal.h, with the fse and tunables headers it
-        -- includes): the Compression layer walks a stream's blocks with them, as the decoder reads them.
-        for _, header in ipairs({"src/lzfse.h", "src/lzfse_internal.h", "src/lzfse_fse.h", "src/lzfse_tunables.h"}) do
+        -- includes): the Compression layer walks a stream's blocks with them, as the decoder reads them. The LZVN decoder's
+        -- state (lzvn_decode_base.h) is the codec's own too: the layer drives it across calls to decode an LZVN block as its bytes come.
+        for _, header in ipairs({"src/lzfse.h", "src/lzfse_internal.h", "src/lzfse_fse.h", "src/lzfse_tunables.h", "src/lzvn_decode_base.h"}) do
             os.vcp(header, package:installdir("include", "lzfse"))
         end
         os.vcp("LICENSE", package:installdir("licenses"))

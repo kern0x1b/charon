@@ -2,6 +2,7 @@
 #include <lz4/lz4.h>
 #include <lzfse/lzfse.h>
 #include <lzfse/lzfse_internal.h>
+#include <lzfse/lzvn_decode_base.h>
 #include <lzma/lzma.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -437,6 +438,10 @@ struct layer_stream {
     size_t frame_capacity;
     uint8_t *block;             // LZFSE decoding: the window, then the block's output
     size_t block_capacity;
+    lzvn_decoder_state lzvn;    // LZFSE decoding of an LZVN block: the codec's own state, carried from one call to the next
+    size_t lzvn_w, lzvn_n_raw;  // the window's size and the LZVN block's raw size (its output follows the window in block)
+    size_t lzvn_left;           // the LZVN block's payload bytes not yet taken from the caller
+    int lzvn_active;
     int ended, failed;
 };
 
@@ -615,6 +620,75 @@ static int reserve(uint8_t **buf, size_t *capacity, size_t need)
     return 1;
 }
 
+// An LZVN block with raw bytes is decoded as its bytes come, by the codec's own resumable state (lzvn_decode_base.h): the
+// host writes an LZVN block's output before the block ends (facts Streams), and so does this layer. The window goes in
+// front of the block's output in st->block, as in the whole-block path, so the codec's matches reach it. The header is
+// the 12 bytes in st->input, and the payload is taken from the caller by step_lzvn.
+static int lzvn_start(struct layer_stream *st, uint32_t n_raw, uint32_t n_payload)
+{
+    size_t w = st->history_size;
+    if ((size_t)n_raw > SIZE_MAX - w - 1) return -1;
+    // one byte more than the window and the block: with no room left the codec does not read the end-of-stream opcode that
+    // follows the last raw byte, so step_lzvn gives it that byte and refuses a block that writes it
+    if (!reserve(&st->block, &st->block_capacity, w + n_raw + 1)) return -1;
+    memcpy(st->block, st->history, w);
+    memset(&st->lzvn, 0, sizeof st->lzvn);
+    st->lzvn.dst_begin = st->block;
+    st->lzvn.dst = st->block + w;
+    st->lzvn_w = w;
+    st->lzvn_n_raw = n_raw;
+    st->lzvn_left = n_payload;
+    st->input_size = 0;
+    st->lzvn_active = 1;
+    return 1;
+}
+
+// One call of an LZVN block: the caller's payload bytes are taken (never past the payload), the codec decodes what they
+// complete, and the bytes it wrote are handed out. Returns as the other steps do: 1 for progress, 0 for a call that needs
+// more input, -1 for a corrupt block or a stream cut short at FINALIZE.
+static int step_lzvn(struct layer_stream *st, compression_stream *s, int finalize)
+{
+    size_t n = s->src_size < st->lzvn_left ? s->src_size : st->lzvn_left;
+    if (n && !stream_append_input(st, s->src_ptr, n)) return -1;
+    s->src_ptr += n;
+    s->src_size -= n;
+    st->lzvn_left -= n;
+    lzvn_decoder_state *d = &st->lzvn;
+    uint8_t *end = st->block + st->lzvn_w + st->lzvn_n_raw;
+    // the codec reads the bytes it has from the start of st->input; an instruction it cannot finish waits for the next call,
+    // and the output of one call is at most kOutputCapacity
+    size_t room = (size_t)(end + 1 - d->dst);
+    if (room > kOutputCapacity) room = kOutputCapacity;
+    d->src = st->input;
+    d->src_end = st->input + st->input_size;
+    d->dst_end = d->dst + room;
+    uint8_t *from = d->dst;
+    lzvn_decode(d);
+    if (d->dst > end) return -1;  // more raw bytes than the block holds
+    size_t produced = (size_t)(d->dst - from);
+    size_t used = (size_t)(d->src - st->input);
+    if (used) {
+        memmove(st->input, st->input + used, st->input_size - used);
+        st->input_size -= used;
+    }
+    memcpy(st->out, from, produced);
+    st->out_size = produced;
+    st->out_done = 0;
+    if (d->end_of_stream) {
+        // the end-of-stream opcode comes after the block's last raw byte and its last payload byte, and nothing follows it
+        if (d->dst != end || st->lzvn_left || st->input_size) return -1;
+        history_append(st, st->block + st->lzvn_w, st->lzvn_n_raw);
+        st->lzvn_active = 0;
+        return 1;
+    }
+    if (!n && !produced) {
+        // nothing came and nothing went out: a payload that is all here cannot finish; one still coming waits for the caller
+        if (!st->lzvn_left) return -1;
+        return finalize ? -1 : 0;
+    }
+    return 1;
+}
+
 // LZFSE decoding, block by block. A block is decoded when it is whole, and its output is handed out then, which is where
 // the host writes it (facts/Compression/CompressionBuffer.md, Streams). The codec reads a block's matches from the bytes it
 // writes in the same call, so the block is decoded after the window of output before it: the window goes in front of the
@@ -622,6 +696,7 @@ static int reserve(uint8_t **buf, size_t *capacity, size_t need)
 // after the window. Returns as the other steps do.
 static int step_lzfse_decode(struct layer_stream *st, compression_stream *s, int finalize)
 {
+    if (st->lzvn_active) return step_lzvn(st, s, finalize);
     // a stored block's raw bytes are its output, and the host hands them out as they come, not when the block is whole
     // (measured: facts/Compression/CompressionBuffer.md, Streams); its header is the 8 bytes read here
     if (st->stored_left) {
@@ -641,6 +716,11 @@ static int step_lzfse_decode(struct layer_stream *st, compression_stream *s, int
         st->stored_left = get32(st->input + 4);
         st->input_size = 0;
         return 1;
+    }
+    // an LZVN block's header is whole: its payload is decoded as it comes (lzvn_start), unless it has no raw bytes
+    if (st->input_size >= sizeof(lzvn_compressed_block_header) && get32(st->input) == LZFSE_COMPRESSEDLZVN_BLOCK_MAGIC) {
+        uint32_t n_raw = get32(st->input + offsetof(lzvn_compressed_block_header, n_raw_bytes));
+        if (n_raw) return lzvn_start(st, n_raw, get32(st->input + offsetof(lzvn_compressed_block_header, n_payload_bytes)));
     }
     size_t size = 0, n_raw = 0;
     enum block_walk walk = lzfse_block_walk(st->input, st->input_size, &size, &n_raw);
