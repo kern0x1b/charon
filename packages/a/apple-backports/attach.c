@@ -144,19 +144,12 @@ static void charon_method(const struct charon_list *list, uint32_t index, const 
     *implementation = (IMP)entry[2];
 }
 
+// class_getInstanceMethod searches cls and each superclass for an instance method of the
+// selector: the question this used to ask with a copy of each class's list, made once per
+// selector and per superclass. The copies were the launch's cost, and the answer needs none.
 static int charon_implements(Class cls, SEL selector)
 {
-    for (Class current = cls; current; current = class_getSuperclass(current)) {
-        unsigned count;
-        Method *methods = class_copyMethodList(current, &count);
-        int found = 0;
-        for (unsigned index = 0; index < count && !found; index++)
-            found = method_getName(methods[index]) == selector;
-        free(methods);
-        if (found)
-            return 1;
-    }
-    return 0;
+    return class_getInstanceMethod(cls, selector) != NULL;
 }
 
 static size_t charon_collect(Class cls, const struct charon_list *list, struct charon_pending *pending, size_t used)
