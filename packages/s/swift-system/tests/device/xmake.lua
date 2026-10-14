@@ -31,3 +31,8 @@ target("systemprobe")
     set_values("charon.control", "control")
     -- The program carries the libraries it links.
     set_values("charon.libraries", "swift-system", "apple-backports")
+    -- libswiftSystem.dylib weakly imports _mach_port_destruct, _mach_port_guard and _mach_port_unguard, which 6.1.3 lacks.
+    -- Each is reached only through csystem_mach_port_* in csystem_port.c (the patch route-the-libc-calls-through-csystem),
+    -- which tests the weak address against NULL before the call. Not the Swift runtime's Concurrency copy: that one imports
+    -- neither _memset_s nor _os_release any more.
+    set_values("charon.waive.weak-imports", "measurement probe, not a released image: libswiftSystem.dylib weakly imports _mach_port_destruct, _mach_port_guard and _mach_port_unguard, each called only through a csystem_ wrapper that tests the address against NULL first")
