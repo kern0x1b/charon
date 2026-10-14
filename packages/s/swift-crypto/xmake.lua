@@ -35,6 +35,9 @@ package("swift-crypto")
         package:add("deps", "charon@apple-compat", {alias = "apple-compat"})
         package:add("deps", "charon@apple-backports", {alias = "apple-backports", configs = {commoncrypto = true}})
         package:add("deps", "charon@ld64", {alias = "ld64"})
+        -- What a consumer links: the dylib, found in the package's lib folder.
+        package:add("links", "swiftCrypto")
+        package:add("linkdirs", "lib")
     end)
 
     -- Installs upstream's tree with this recipe's patches applied. BoringSSL (243 .cc, the upstream C path: no armv7 asm for
@@ -146,6 +149,9 @@ package("swift-crypto")
         os.cp(path.join(swiftmods, "Crypto.swiftmodule"), path.join(module, "Crypto.swiftmodule"))
         os.cp(path.join(swiftmods, "CryptoBoringWrapper.swiftmodule"), path.join(module, "CryptoBoringWrapper.swiftmodule"))
         os.cp(path.join(objects, "Crypto.o"), path.join(package:installdir("lib"), "Crypto.o"))
+        -- What a program that imports Crypto compiles against: its module folder, and apple-compat's CharonCompat module, which
+        -- Crypto.swiftmodule imports (rules/swift adds the -I of every dependency's CHARON_SWIFT_MODULES).
+        package:setenv("CHARON_SWIFT_MODULES", module, path.join(compat:installdir("include"), "CharonCompat"))
 
         print("%s: %s installed; libswiftCrypto.dylib is in %s", package:name(), package:version_str(), package:installdir("lib"))
     end)
