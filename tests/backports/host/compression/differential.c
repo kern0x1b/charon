@@ -34,8 +34,8 @@ static unsigned long long state;
 // The KNOWN-DIFF list: each row is one open difference, named by its entry in coordination/crutches.md. A check that
 // fails is counted under its row only when its predicate holds for it; any other failure is a failure. The predicate
 // is the explicit rule of the difference (measured in facts/Compression/CompressionBuffer.md), not a skip.
-enum { kKnownZLIBTruncation, kKnownLZ4RAWShortDestination, kKnownRows };
-static const char *kKnownNames[kKnownRows] = {"charon: ZLIB truncated streams", "charon: LZ4_RAW short destination overflow"};
+enum { kKnownZLIBTruncation, kKnownRows };
+static const char *kKnownNames[kKnownRows] = {"charon: ZLIB truncated streams"};
 static int known[kKnownRows];
 
 static unsigned next_random(void)
@@ -277,6 +277,108 @@ static void stream_all(uint8_t *input, uint8_t *host_out, uint8_t *port_out, uin
 }
 
 
+// The LZ4_RAW short destinations of cut and corrupt blocks (facts, "Short destination for LZ4_RAW": the host's order inside a
+// sequence, measured by byte edits of its own blocks). The block is the host's encoding of the input; each variant is the block
+// as it is, or edited or cut at one of its last sequences, and each is decoded into the destinations at that sequence's
+// boundaries and around them. The port must answer the host's answer for each.
+struct lz4_seq { size_t tok, lit, lit_in, off_in, match, out_start, out_lit, out_end; int last; };
+
+// the sequences of a block (the last one is literals only); returns their count. q holds len / 2 + 2 sequences at most.
+static size_t lz4_parse(const uint8_t *s, size_t len, struct lz4_seq *q)
+{
+    size_t in = 0, out = 0, k = 0;
+    while (in < len) {
+        struct lz4_seq *x = &q[k++];
+        x->tok = in;
+        x->out_start = out;
+        uint8_t token = s[in++];
+        size_t lit = token >> 4;
+        if (lit == 15) {
+            uint8_t b;
+            do { b = s[in++]; lit += b; } while (b == 255);
+        }
+        x->lit = lit;
+        x->lit_in = in;
+        in += lit;
+        out += lit;
+        x->out_lit = out;
+        x->off_in = in;
+        x->match = 0;
+        x->last = in == len;
+        if (x->last) {
+            x->out_end = out;
+            break;
+        }
+        in += 2;
+        size_t match = (token & 15) + 4;
+        if ((token & 15) == 15) {
+            uint8_t b;
+            do { b = s[in++]; match += b; } while (b == 255);
+        }
+        x->match = match;
+        out += match;
+        x->out_end = out;
+    }
+    return k;
+}
+
+// one short decode of block (len bytes) into dst, against the host's answer
+static void lz4_short(const uint8_t *block, size_t len, size_t n, size_t dst, uint8_t *back, void *host_work, void *port_work,
+                      const char *what)
+{
+    size_t host_n = compression_decode_buffer(back, dst, block, len, host_work, COMPRESSION_LZ4_RAW);
+    size_t port_n = charon_host_compression_decode_buffer(back, dst, block, len, port_work, COMPRESSION_LZ4_RAW);
+    snprintf(where, sizeof where, "LZ4_RAW %s, n=%zu dst=%zu", what, n, dst);
+    check(port_n == host_n, "a short decode destination of a cut or corrupt block", (int)port_n, (int)host_n);
+}
+
+static void lz4raw_cut_and_corrupt(const uint8_t *input, size_t n, size_t cap, void *encode_work, void *host_work, void *port_work,
+                                   uint8_t *back)
+{
+    static const char *kEdits[] = {"as written", "offset 0", "offset beyond the output", "cut inside the literals",
+                                   "cut inside the offset", "cut after the offset", "cut after the literals"};
+    uint8_t *block = malloc(cap), *v = malloc(cap);
+    size_t len = compression_encode_buffer(block, cap, input, n, encode_work, COMPRESSION_LZ4_RAW);
+    struct lz4_seq *q = malloc(sizeof *q * (len / 2 + 2));
+    size_t nseq = lz4_parse(block, len, q);
+    size_t pick[4] = {0, nseq / 2, nseq >= 2 ? nseq - 2 : 0, nseq - 1};
+    for (size_t p = 0; p < 4; p++) {
+        struct lz4_seq *x = &q[pick[p]];
+        for (int e = 0; e < 7; e++) {
+            // the offset edits and the cut after the offset need a match, and the cut inside the literals needs two of them
+            if (x->last && e != 0 && e != 3 && e != 6) continue;
+            if (e == 3 && x->lit < 2) continue;
+            size_t vlen = len;
+            memcpy(v, block, len);
+            switch (e) {
+            case 1: v[x->off_in] = 0; v[x->off_in + 1] = 0; break;
+            case 2: {
+                size_t bad = x->out_lit + 1;
+                v[x->off_in] = (uint8_t)bad;
+                v[x->off_in + 1] = (uint8_t)(bad >> 8);
+                break;
+            }
+            case 3: vlen = x->lit_in + x->lit / 2; break;
+            case 4: vlen = x->off_in + 1; break;
+            case 5: vlen = x->off_in + 2; break;
+            case 6: vlen = x->lit_in + x->lit; break;
+            default: break;
+            }
+            // the destinations: the sequence's boundaries, its literals' middle, and their neighbours, and the end
+            size_t cand[] = {x->out_start - (x->out_start > 0), x->out_start, x->out_start + 1, x->out_start + x->lit / 2,
+                             x->out_lit - (x->out_lit > 0), x->out_lit, x->out_lit + 1, x->out_end - (x->out_end > 0),
+                             x->out_end, x->out_end + 1, n - 1, n};
+            char label[64];
+            snprintf(label, sizeof label, "sequence %zu of %zu, %s", pick[p], nseq, kEdits[e]);
+            for (size_t c = 0; c < sizeof cand / sizeof *cand; c++) {
+                if (cand[c] > n) continue;
+                lz4_short(v, vlen, n, cand[c], back, host_work, port_work, label);
+            }
+        }
+    }
+    free(block); free(v); free(q);
+}
+
 int main(int argc, char **argv)
 {
     unsigned long long seed = argc > 1 ? strtoull(argv[1], NULL, 10) : 1;
@@ -362,11 +464,12 @@ int main(int argc, char **argv)
                     for (size_t d = 0; d < sizeof dsts / sizeof *dsts; d++) {
                         size_t small_host = compression_decode_buffer(back, dsts[d], packed, host_n, host_work_d, algorithm);
                         size_t small_port = charon_host_compression_decode_buffer(back, dsts[d], packed, host_n, work_d, algorithm);
-                        check_known(small_port == small_host, kKnownLZ4RAWShortDestination,
-                                    algorithm == COMPRESSION_LZ4_RAW && content == 3 && n > 65535 && dsts[d] == n - 1 &&
-                                    small_host == 0 && small_port == dsts[d],
-                                    "a short decode destination", (int)small_port, (int)small_host);
+                        check(small_port == small_host, "a short decode destination", (int)small_port, (int)small_host);
                     }
+                }
+                // LZ4_RAW blocks cut or edited inside their last sequences, at short destinations (content 3, sizes from 4096)
+                if (algorithm == COMPRESSION_LZ4_RAW && content == 3 && n >= 4096 && host_n) {
+                    lz4raw_cut_and_corrupt(input, n, cap, host_work_e, host_work_d, work_d, back);
                 }
             }
         }

@@ -49,18 +49,47 @@ xz stream header, an empty block-less stream, and its index and footer).
   One measured attempt at the rule (seed 1): answer the bytes decoded so far on any Z_BUF_ERROR, as an eager decoder
   would. It is worse: 10234 truncation failures (the host answers 0 inside a dynamic block, so an eager answer is wrong
   there), against 9135 for the layer's rule. The layer's rule is kept.
+- ZLIB, a rule tested and not the host's (v-int-c13; probe runs/v-int-c13/probe/zlib_status.c, black box). The tested rule:
+  the buffer answer is the output count of the host's stream decoder run to FINALIZE on the same prefix when the stream ends
+  OK or END, and 0 when it ends in ERROR. Measured per prefix on zeros 2, 3, 255, words 4095, random 4095 and mix 4095, with
+  the stream run to FINALIZE in four shapes (all input at once, and chunks of 1, 7 and 4096 bytes, each followed by FINALIZE
+  calls): words 4095 and mix 4095 agree at every prefix; random 4095 (one stored block) disagrees at 4094 of its 4100
+  prefixes (the buffer answers the stored bytes present, the stream answers ERROR with the same count); zeros 2, 3 and 255
+  disagree at len - 1 (the buffer answers the whole output, 2, 3 and 255 bytes, where the stream answers ERROR with 0 bytes).
+  The probe's function check finds one prefix pair with the same stream answer (ERROR, 0) and different buffer answers, so
+  the buffer answer is not a function of the stream's status and count. A single FINALIZE call on the prefix (not run to
+  FINALIZE) answers OK with output where the buffer answers 0 (1969 prefixes of words 4095), so it is not the stream's end
+  state either. The layer's rule is kept; the entry stays open.
 
-## Short destination for LZ4_RAW (measured, not settled)
+## Short destination for LZ4_RAW (measured)
 
-Measured failures are all the same shape: content 3 (random runs), a decode into a destination one byte short of the
-content (dst = n - 1), with n above 65535. Seed 1: n = 65536 and n = 300000. Seed 2: n = 65537. The host answers 0 there
-and the layer answers dst. The other short destinations of the same inputs (literal overflow and match overflow at n = 2
-and n = 65537, seed 1) answer dst on both sides. The rule is not understood. Known difference, reported as KNOWN-DIFF by
-name with the crutch entry `charon: LZ4_RAW short destination overflow`.
-One measured attempt (a probe with the host's own encoder, content 3, n = 65536, 65537, 70000, 300000, destinations
-n-1, n-2, n-100, n-4096, n-65536, n/2, random bytes from another generator): the host answers the full dst on every
-one of them. So the failing case depends on the content of the input, not on n and dst alone; the differential's
-failing inputs come from its own seeded generator, which this probe does not reproduce. Not settled.
+The answer for a destination shorter than the content follows the host's order inside a sequence: the token, the literal
+length, the literal run, the 2-byte offset, the match length, the match. Measured on the host's own block of 65536 bytes
+(content 3, the differential's seed 1 input) with byte edits and cuts at sequences 0, 440, 883 and the last literal run
+(probe runs/v-int-c13/probe/lz4raw_matrix.c, output lz4raw.matrix.65536.out; black box):
+- a literal run the input does not hold (a cut inside it) answers 0 for every destination that reaches its sequence, the
+  destination equal to the sequence's start included; below the sequence's start the answer is the destination;
+- a destination that fills inside a literal run the input holds answers its size: the offset is not read yet;
+- at the end of the literal run the offset is read: an offset of 0, or beyond the output so far, answers 0 for that
+  destination and every larger one; a cut inside the offset does the same;
+- valid blocks answer their size for every destination (the match is copied up to the destination).
+
+The layer follows this order in `decode_lz4_raw`: the literal run is checked against the input before it is copied into the
+room of the destination. Before, the room was checked first, so a destination that filled inside a run the input does not
+hold answered its size where the host answers 0.
+
+The measured failures of the differential were this case. Its "host encode one byte short" writes a different stream into
+the same buffer before the destination sweep (run.sh), and the sweep decodes that buffer. The stream then holds a sequence
+whose literal run is cut by the input: seed 1, n = 65536, the sequence at output 65494 (its literal bytes start at input 37342,
+117 of them, and the stream is 37415 bytes); seed 2, n = 65537, the sequence at output 65389 (input 37302, 241 bytes, stream
+37452 bytes). The host answers 0 for every destination from that output to n, and the destination below it. The seed 1
+n = 300000 case has the same shape (answers 0 from output 299961 to n). The differential now checks these shapes as well
+(`lz4raw_cut_and_corrupt`: the cuts and edits above at the last sequences, for content 3 at sizes from 4096): with the
+pre-fix order, 32 of them fail at seed 1 (the control run), and with this order none does.
+
+An earlier probe (v-int-c3, measured) used the host's own encoder with other random bytes and destinations n-1 to n/2, and
+the host answered the full destination every time. It did not reproduce the differential's inputs (their generator order)
+or the short encode that leaves the cut run in the buffer, which is why it found no rule.
 
 ## Scratch sizes (measured, not compared)
 

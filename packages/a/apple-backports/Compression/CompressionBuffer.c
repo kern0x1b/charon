@@ -190,7 +190,10 @@ static enum decode_status decode_zlib(uint8_t *dst, size_t dst_size, const uint8
 // One LZ4 block (LZ4_RAW), walked sequence by sequence here, not by the library's partial decoder. A prefix is answered
 // when it ends exactly at the end of a sequence (after its literals, or after its match), with the bytes decoded so
 // far; a cut inside a sequence answers 0 (measured on every prefix of host blocks). A destination that fills answers its
-// size; an offset before the start of the output is corrupt and answers 0.
+// size; an offset before the start of the output is corrupt and answers 0. The order inside a sequence is the host's
+// (measured with byte edits of its blocks, facts Short destination for LZ4_RAW): a literal run cut by the input answers 0
+// for every destination that reaches its sequence; a destination that fills inside a complete literal run answers its size
+// before the offset is read; an offset that is zero or beyond the output answers 0 once the literals are complete.
 static enum decode_status decode_lz4_raw(uint8_t *dst, size_t dst_size, const uint8_t *src, size_t src_size, size_t *n)
 {
     size_t in = 0, out = 0;
@@ -206,14 +209,15 @@ static enum decode_status decode_lz4_raw(uint8_t *dst, size_t dst_size, const ui
                 literals += more;
             } while (more == 255);
         }
-        size_t available = src_size - in < literals ? src_size - in : literals;
+        // a literal run the input does not hold is corrupt whatever the destination (measured: the host answers 0 where the
+        // destination would fill inside the run, so the check comes before the copy)
+        if (src_size - in < literals) return decoded(n, 0, kDecodeFailed);
         size_t room = dst_size - out;
-        size_t copied = available < room ? available : room;
+        size_t copied = literals < room ? literals : room;
         memcpy(dst + out, src + in, copied);
         out += copied;
         in += copied;
-        if (copied < available) return decoded(n, dst_size, kDecodeFull);
-        if (available < literals) return decoded(n, 0, kDecodeFailed);
+        if (copied < literals) return decoded(n, dst_size, kDecodeFull);
         if (in == src_size) return decoded(n, out, kDecodeDone);
         if (in + 2 > src_size) return decoded(n, 0, kDecodeFailed);
         size_t offset = (size_t)src[in] | (size_t)src[in + 1] << 8;
