@@ -10,11 +10,11 @@ package("matter")
     -- commits the tag pins.
     add_urls("https://github.com/project-chip/connectedhomeip.git", {submodules = false})
     add_versions("v1.6.1.0", "3bcdd56ba54fb88b2afb4bfef575014671df7aa7")
-    add_patches("v1.6.1.0", "patches/clock-alignment.patch")
+    add_patches("v1.6.1.0", "patches/clock-alignment.patch", "2f0b8e3e0672cd2ebe2a4e4343f11ac550c0aec89f97d85367ecb60da30e902a")
     -- BleConnectionDelegateImpl.mm reads CBAdvertisementDataIsConnectable and drops an advertisement whose key is nil; iOS 6.1.3's
     -- CoreBluetooth never sends the key, so every commissionable advertisement would be dropped there. An absent key counts as
     -- connectable (the patch's own comment; facts/MatterFramework.md has the measurement).
-    add_patches("v1.6.1.0", "patches/ble-connectable.patch")
+    add_patches("v1.6.1.0", "patches/ble-connectable.patch", "2ca2a6a7b2e6aa493fe6151ebf3ce63c41954776bc4bea0dee3dbbdb633a3325")
 
     add_deps("charon@apple-compat", {alias = "apple-compat"})
     -- The backports the process carries are a project decision (includes/apple-ios/xmake.lua's apple_backports):
