@@ -132,6 +132,35 @@ with 0 bytes (the stream checks, seeds 1 and 2). It is not a format defect.
   is at 41248 bytes or more (measured above), so a block of 64 KiB would write nothing before FINALIZE for inputs under 64 KiB
   where the host does (the first run of the differential failed 8 checks that way, at 65535 bytes); a 32 KiB block writes
   before the host does in every measured case, within 65536.
+- LZFSE decoding progress of the host (measured, probe runs/v-int-c9/probe/decode_progress.c, the host decoding its own
+  stream: T is the first output at 1-byte chunks, the next column the first output at 7, 4096, 65536 and all bytes, and
+  "events" the chunks that wrote output at 1 byte). The host writes each block's output as the block completes, so the
+  first output is at the first chunk boundary at or after T, capped at the stream's length (for example 300000 words at
+  4096: T 25117, boundary 28672; 65535 words at 4096: T 25117, the stream is 27382 bytes long, so 27382).
+
+  | input | content | T | 7, 4096, 65536, all | events |
+  |-------|---------|---|---------------------|--------|
+  | 300000 | zeros  | 318   | 322, 322, 322, 322           | 1 |
+  | 300000 | words  | 25117 | 25123, 28672, 65536, 120307  | 5 |
+  | 300000 | random | 40300 | 40306, 40960, 65536, 303089  | 8 |
+  | 300000 | runs   | 43371 | 43372, 45056, 65536, 160160  | 4 |
+  | 65535  | zeros  | 180   | 182, 184, 184, 184           | 1 |
+  | 65535  | words  | 25117 | 25123, 27382, 27382, 27382   | 2 |
+  | 65535  | random | 40300 | 40306, 40960, 65536, 66290   | 2 |
+  | 65535  | runs   | 35049 | 35049, 35053, 35053, 35053   | 1 |
+
+- LZFSE blocks and the window (measured, probes runs/v-int-c9/probe/blocks.c and window.c, 300000 bytes): the host's stream
+  is a run of blocks, and a block decodes alone only when its matches reach nothing before it. Blocks by content, raw bytes
+  (the block's output) and the least history the block needs (the bytes before it, found by handing the decoder those bytes
+  as a stored block in front of the block):
+  - zeros: 1 block of 300000 raw bytes (318 stream bytes), history 0;
+  - words: 5 blocks of 58902 to 60308 raw bytes, history 0 for block 0, then 40281 to 55951;
+  - random: 8 blocks of 21733 to 39901 raw bytes, history 0 for blocks 0, 2 and 6, then 12004 to 94193;
+  - runs: 4 blocks of 54505 to 82140 raw bytes, history 70412, 148927 and 194910 for blocks 1 to 3.
+  The largest history measured is 194910 bytes, and the encoder never writes a match farther back than
+  LZFSE_ENCODE_MAX_D_VALUE (262139, lzfse_internal.h). So a block decoder keeps a window of the last 262139 output bytes,
+  not the input, and a block's output is its raw size. Standalone decoding of the blocks fails for the blocks that need
+  history (words 4 of 5, random 5 of 8, runs 3 of 4); it does not for block 0 of each content.
 - Memory: the stream holds one block of pending input (up to 128 KiB for LZ4 decoding, which must hold a whole block), one
   block of output (up to 128 KiB), the 64 KiB LZ4 dictionary, and the codec's own state (zlib's and liblzma's windows). It does
   not hold the whole input or output, except for LZFSE decoding (below).
