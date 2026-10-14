@@ -1,0 +1,125 @@
+{
+ "entries": [
+  {
+   "api": "kSecKeyAlgorithmECDSASignatureDigestRFC4754",
+   "effect": "the CFString the host's own Security.framework returns for this name, read by dlsym and compared as a string; no operation of this port takes it (grep of the port sources)",
+   "facts": "facts/Security/RFC4754Constants.md",
+   "introduced": "17.0",
+   "kind": "constant",
+   "minimum": "6.0",
+   "reason": "the algorithm arrived in iOS 17; on this release the name is carried so a program that names it links, and the RFC 4754 signature it would ask for is not produced anywhere in the port",
+   "source": "the host's Security.framework by dlsym in tests/backports/host/commoncrypto/differential-constants.c; the 6.1.3 Security image exports no name containing RFC4754 (tools/image-exports.lua, 660 exports); the SDK 26.2 declaration of the name, SecKey.h",
+   "status": "inert"
+  },
+  {
+   "api": "kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA1",
+   "effect": "the CFString the host's own Security.framework returns for this name, read by dlsym and compared as a string; no operation of this port takes it (grep of the port sources)",
+   "facts": "facts/Security/RFC4754Constants.md",
+   "introduced": "17.0",
+   "kind": "constant",
+   "minimum": "6.0",
+   "reason": "the algorithm arrived in iOS 17; on this release the name is carried so a program that names it links, and the RFC 4754 signature it would ask for is not produced anywhere in the port",
+   "source": "the host's Security.framework by dlsym in tests/backports/host/commoncrypto/differential-constants.c; the 6.1.3 Security image exports no name containing RFC4754 (tools/image-exports.lua, 660 exports); the SDK 26.2 declaration of the name, SecKey.h",
+   "status": "inert"
+  },
+  {
+   "api": "kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA224",
+   "effect": "the CFString the host's own Security.framework returns for this name, read by dlsym and compared as a string; no operation of this port takes it (grep of the port sources)",
+   "facts": "facts/Security/RFC4754Constants.md",
+   "introduced": "17.0",
+   "kind": "constant",
+   "minimum": "6.0",
+   "reason": "the algorithm arrived in iOS 17; on this release the name is carried so a program that names it links, and the RFC 4754 signature it would ask for is not produced anywhere in the port",
+   "source": "the host's Security.framework by dlsym in tests/backports/host/commoncrypto/differential-constants.c; the 6.1.3 Security image exports no name containing RFC4754 (tools/image-exports.lua, 660 exports); the SDK 26.2 declaration of the name, SecKey.h",
+   "status": "inert"
+  },
+  {
+   "api": "kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA256",
+   "effect": "the CFString the host's own Security.framework returns for this name, read by dlsym and compared as a string; no operation of this port takes it (grep of the port sources)",
+   "facts": "facts/Security/RFC4754Constants.md",
+   "introduced": "17.0",
+   "kind": "constant",
+   "minimum": "6.0",
+   "reason": "the algorithm arrived in iOS 17; on this release the name is carried so a program that names it links, and the RFC 4754 signature it would ask for is not produced anywhere in the port",
+   "source": "the host's Security.framework by dlsym in tests/backports/host/commoncrypto/differential-constants.c; the 6.1.3 Security image exports no name containing RFC4754 (tools/image-exports.lua, 660 exports); the SDK 26.2 declaration of the name, SecKey.h",
+   "status": "inert"
+  },
+  {
+   "api": "kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA384",
+   "effect": "the CFString the host's own Security.framework returns for this name, read by dlsym and compared as a string; no operation of this port takes it (grep of the port sources)",
+   "facts": "facts/Security/RFC4754Constants.md",
+   "introduced": "17.0",
+   "kind": "constant",
+   "minimum": "6.0",
+   "reason": "the algorithm arrived in iOS 17; on this release the name is carried so a program that names it links, and the RFC 4754 signature it would ask for is not produced anywhere in the port",
+   "source": "the host's Security.framework by dlsym in tests/backports/host/commoncrypto/differential-constants.c; the 6.1.3 Security image exports no name containing RFC4754 (tools/image-exports.lua, 660 exports); the SDK 26.2 declaration of the name, SecKey.h",
+   "status": "inert"
+  },
+  {
+   "api": "kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA512",
+   "effect": "the CFString the host's own Security.framework returns for this name, read by dlsym and compared as a string; no operation of this port takes it (grep of the port sources)",
+   "facts": "facts/Security/RFC4754Constants.md",
+   "introduced": "17.0",
+   "kind": "constant",
+   "minimum": "6.0",
+   "reason": "the algorithm arrived in iOS 17; on this release the name is carried so a program that names it links, and the RFC 4754 signature it would ask for is not produced anywhere in the port",
+   "source": "the host's Security.framework by dlsym in tests/backports/host/commoncrypto/differential-constants.c; the 6.1.3 Security image exports no name containing RFC4754 (tools/image-exports.lua, 660 exports); the SDK 26.2 declaration of the name, SecKey.h",
+   "status": "inert"
+  },
+  {
+   "api": "kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA1",
+   "effect": "the CFString the host's own Security.framework returns for this name, read by dlsym and compared as a string; no operation of this port takes it (grep of the port sources)",
+   "facts": "facts/Security/RFC4754Constants.md",
+   "introduced": "17.0",
+   "kind": "constant",
+   "minimum": "6.0",
+   "reason": "the algorithm arrived in iOS 17; on this release the name is carried so a program that names it links, and the RFC 4754 signature it would ask for is not produced anywhere in the port",
+   "source": "the host's Security.framework by dlsym in tests/backports/host/commoncrypto/differential-constants.c; the 6.1.3 Security image exports no name containing RFC4754 (tools/image-exports.lua, 660 exports); the SDK 26.2 declaration of the name, SecKey.h",
+   "status": "inert"
+  },
+  {
+   "api": "kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA224",
+   "effect": "the CFString the host's own Security.framework returns for this name, read by dlsym and compared as a string; no operation of this port takes it (grep of the port sources)",
+   "facts": "facts/Security/RFC4754Constants.md",
+   "introduced": "17.0",
+   "kind": "constant",
+   "minimum": "6.0",
+   "reason": "the algorithm arrived in iOS 17; on this release the name is carried so a program that names it links, and the RFC 4754 signature it would ask for is not produced anywhere in the port",
+   "source": "the host's Security.framework by dlsym in tests/backports/host/commoncrypto/differential-constants.c; the 6.1.3 Security image exports no name containing RFC4754 (tools/image-exports.lua, 660 exports); the SDK 26.2 declaration of the name, SecKey.h",
+   "status": "inert"
+  },
+  {
+   "api": "kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA256",
+   "effect": "the CFString the host's own Security.framework returns for this name, read by dlsym and compared as a string; no operation of this port takes it (grep of the port sources)",
+   "facts": "facts/Security/RFC4754Constants.md",
+   "introduced": "17.0",
+   "kind": "constant",
+   "minimum": "6.0",
+   "reason": "the algorithm arrived in iOS 17; on this release the name is carried so a program that names it links, and the RFC 4754 signature it would ask for is not produced anywhere in the port",
+   "source": "the host's Security.framework by dlsym in tests/backports/host/commoncrypto/differential-constants.c; the 6.1.3 Security image exports no name containing RFC4754 (tools/image-exports.lua, 660 exports); the SDK 26.2 declaration of the name, SecKey.h",
+   "status": "inert"
+  },
+  {
+   "api": "kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA384",
+   "effect": "the CFString the host's own Security.framework returns for this name, read by dlsym and compared as a string; no operation of this port takes it (grep of the port sources)",
+   "facts": "facts/Security/RFC4754Constants.md",
+   "introduced": "17.0",
+   "kind": "constant",
+   "minimum": "6.0",
+   "reason": "the algorithm arrived in iOS 17; on this release the name is carried so a program that names it links, and the RFC 4754 signature it would ask for is not produced anywhere in the port",
+   "source": "the host's Security.framework by dlsym in tests/backports/host/commoncrypto/differential-constants.c; the 6.1.3 Security image exports no name containing RFC4754 (tools/image-exports.lua, 660 exports); the SDK 26.2 declaration of the name, SecKey.h",
+   "status": "inert"
+  },
+  {
+   "api": "kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA512",
+   "effect": "the CFString the host's own Security.framework returns for this name, read by dlsym and compared as a string; no operation of this port takes it (grep of the port sources)",
+   "facts": "facts/Security/RFC4754Constants.md",
+   "introduced": "17.0",
+   "kind": "constant",
+   "minimum": "6.0",
+   "reason": "the algorithm arrived in iOS 17; on this release the name is carried so a program that names it links, and the RFC 4754 signature it would ask for is not produced anywhere in the port",
+   "source": "the host's Security.framework by dlsym in tests/backports/host/commoncrypto/differential-constants.c; the 6.1.3 Security image exports no name containing RFC4754 (tools/image-exports.lua, 660 exports); the SDK 26.2 declaration of the name, SecKey.h",
+   "status": "inert"
+  }
+ ]
+}

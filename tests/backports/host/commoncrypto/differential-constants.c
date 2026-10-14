@@ -86,7 +86,19 @@
     X(kSecKeyAlgorithmRSASignatureMessagePSSSHA512) \
     X(kSecKeyAlgorithmRSASignatureRaw) \
     X(kSecKeyKeyExchangeParameterRequestedSize) \
-    X(kSecKeyKeyExchangeParameterSharedInfo)
+    X(kSecKeyKeyExchangeParameterSharedInfo) \
+    X(kSecKeyAlgorithmECDSASignatureDigestRFC4754) \
+    X(kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA1) \
+    X(kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA224) \
+    X(kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA256) \
+    X(kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA384) \
+    X(kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA512) \
+    X(kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA1) \
+    X(kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA224) \
+    X(kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA256) \
+    X(kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA384) \
+    X(kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA512) \
+    X(kSecImportToMemoryOnly)
 
 #define DECLARE(name) extern const CFStringRef name;
 CONSTANTS(DECLARE)
