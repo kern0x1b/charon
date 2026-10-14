@@ -34,9 +34,8 @@ static unsigned long long state;
 // The KNOWN-DIFF list: each row is one open difference, named by its entry in coordination/crutches.md. A check that
 // fails is counted under its row only when its predicate holds for it; any other failure is a failure. The predicate
 // is the explicit rule of the difference (measured in facts/Compression/CompressionBuffer.md), not a skip.
-enum { kKnownZLIBTruncation, kKnownLZ4RAWShortDestination, kKnownStreamBeforeFinalize, kKnownRows };
-static const char *kKnownNames[kKnownRows] = {"charon: ZLIB truncated streams", "charon: LZ4_RAW short destination overflow",
-                                              "charon: compression_stream output before FINALIZE"};
+enum { kKnownZLIBTruncation, kKnownLZ4RAWShortDestination, kKnownRows };
+static const char *kKnownNames[kKnownRows] = {"charon: ZLIB truncated streams", "charon: LZ4_RAW short destination overflow"};
 static int known[kKnownRows];
 
 static unsigned next_random(void)
@@ -103,15 +102,21 @@ static const stream_api kHostStream = {compression_stream_init, compression_stre
 static const stream_api kPortStream = {charon_host_compression_stream_init, charon_host_compression_stream_process,
                                        charon_host_compression_stream_destroy};
 
+// The progress of a stream: the input offset after which output first appears, NO_OUTPUT when none appears before FINALIZE.
+#define NO_OUTPUT ((size_t)-1)
+
 // One stream run. The input goes in pieces of chunk bytes, each piece in process calls until it is consumed; then FINALIZE
 // comes on an empty piece, and the output goes in pieces of piece bytes (0: as much as fits). Returns the bytes written to
-// out; *before is the count written before FINALIZE; *status is the status of the last call (ERROR when init refuses).
+// out; *before is the count written before FINALIZE, *first the input offset (the end of the chunk) at which output first
+// appeared; *status is the status of the last call (ERROR when init refuses).
 static size_t stream_run(const stream_api *api, compression_stream_operation op, compression_algorithm alg, const uint8_t *in,
-                         size_t n, size_t chunk, size_t piece, uint8_t *out, size_t cap, size_t *before, compression_status *status)
+                         size_t n, size_t chunk, size_t piece, uint8_t *out, size_t cap, size_t *before, size_t *first,
+                         compression_status *status)
 {
     compression_stream s;
     memset(&s, 0, sizeof s);
     *before = 0;
+    *first = NO_OUTPUT;
     *status = COMPRESSION_STATUS_ERROR;
     if (api->init(&s, op, alg) != COMPRESSION_STATUS_OK) return 0;
     *status = COMPRESSION_STATUS_OK;
@@ -128,6 +133,7 @@ static size_t stream_run(const stream_api *api, compression_stream_operation op,
             written = (size_t)(s.dst_ptr - out);
         }
         off += c;
+        if (*first == NO_OUTPUT && written) *first = off;
     }
     *before = written;
     s.src_ptr = in + n;
@@ -157,19 +163,34 @@ static const char *name_of(compression_algorithm algorithm)
 // stream bytes do not depend on how the input or the output was split: they are compared with the port's own one-piece output
 // (ref), not with the host's, so the bytes are judged by the cross-decode above. The host writes some output before FINALIZE
 // and the port writes none: a KNOWN-DIFF row, counted only where that is the whole difference.
+// The progress allowance of a codec, in input bytes. The output of LZ4 comes at each 64 KiB block of input, and LZMA's at its
+// first input byte (the header), in the host's offsets and the layer's alike, so their allowance is 0. ZLIB's deflate block
+// and LZFSE's block end where the host's encoder ends them, which the format leaves open, so each may come one 64 KiB block
+// earlier or later than the host's (facts/Compression/CompressionBuffer.md, Streams).
+static size_t progress_allowance(compression_algorithm algorithm)
+{
+    return algorithm == COMPRESSION_ZLIB || algorithm == COMPRESSION_LZFSE ? 65536 : 0;
+}
+
+// The stream checks for one algorithm and one input. The host decodes every stream the port writes to the input, and the port
+// decodes every stream the host writes to it, for each chunking of the input and for an output in pieces of 7 bytes. The port's
+// stream bytes do not depend on how the input or the output was split: they are compared with the port's own one-piece output
+// (the reference). Output before FINALIZE is required to come where the host's does: for each chunking, the port writes output
+// before FINALIZE whenever the host does, and within the codec's allowance of the host's first output (rounded up to the chunk,
+// since output is seen only after a chunk). A host that writes nothing before FINALIZE holds the port to nothing.
 static void stream_checks(compression_algorithm algorithm, int content, const uint8_t *input, size_t n, uint8_t *host_out,
                           uint8_t *port_out, uint8_t *ref, uint8_t *back, size_t cap)
 {
     static const size_t kChunks[] = {0, 1, 7, 4096};
-    size_t before_h = 0, before_p = 0, ignored = 0, host_n, ref_n = 0, port_n, back_n;
+    size_t before_h = 0, before_p = 0, first_h = NO_OUTPUT, first_p = NO_OUTPUT, ignored = 0, host_n, ref_n = 0, port_n, back_n;
     compression_status st_h = COMPRESSION_STATUS_ERROR, st_p = COMPRESSION_STATUS_ERROR;
     size_t all = n ? n : 1;
-    host_n = stream_run(&kHostStream, COMPRESSION_STREAM_ENCODE, algorithm, input, n, all, 0, host_out, cap, &before_h, &st_h);
+    host_n = stream_run(&kHostStream, COMPRESSION_STREAM_ENCODE, algorithm, input, n, all, 0, host_out, cap, &before_h, &first_h, &st_h);
     check(st_h == COMPRESSION_STATUS_END, "host stream encode ends at FINALIZE", (int)st_h, COMPRESSION_STATUS_END);
     for (size_t k = 0; k < sizeof kChunks / sizeof *kChunks; k++) {
         size_t chunk = kChunks[k] ? kChunks[k] : all;
         snprintf(where, sizeof where, "%s n=%zu content=%d stream chunk=%zu", name_of(algorithm), n, content, chunk);
-        port_n = stream_run(&kPortStream, COMPRESSION_STREAM_ENCODE, algorithm, input, n, chunk, 0, port_out, cap, &before_p, &st_p);
+        port_n = stream_run(&kPortStream, COMPRESSION_STREAM_ENCODE, algorithm, input, n, chunk, 0, port_out, cap, &before_p, &first_p, &st_p);
         check(st_p == COMPRESSION_STATUS_END, "port stream encode ends at FINALIZE", (int)st_p, COMPRESSION_STATUS_END);
         // the input in one piece is the reference: every other chunking must give the same bytes
         if (k == 0) {
@@ -178,23 +199,27 @@ static void stream_checks(compression_algorithm algorithm, int content, const ui
         }
         check(port_n == ref_n && memcmp(port_out, ref, ref_n) == 0, "port stream bytes do not depend on the input chunking",
               (int)port_n, (int)ref_n);
-        check_known(before_p == before_h, kKnownStreamBeforeFinalize, before_p == 0 && before_h > 0,
-                    "stream output before FINALIZE", (int)before_p, (int)before_h);
-        back_n = stream_run(&kHostStream, COMPRESSION_STREAM_DECODE, algorithm, port_out, port_n, chunk, 0, back, cap, &ignored, &st_h);
+        // the host's output for this chunking (into back, which the decodes below overwrite)
+        stream_run(&kHostStream, COMPRESSION_STREAM_ENCODE, algorithm, input, n, chunk, 0, back, cap, &before_h, &first_h, &st_h);
+        size_t slack = (progress_allowance(algorithm) + chunk - 1) / chunk * chunk;
+        size_t gap = first_p > first_h ? first_p - first_h : first_h - first_p;
+        check(first_h == NO_OUTPUT || (first_p != NO_OUTPUT && gap <= slack),
+              "port writes output before FINALIZE where the host does, within the allowance", (int)first_p, (int)first_h);
+        back_n = stream_run(&kHostStream, COMPRESSION_STREAM_DECODE, algorithm, port_out, port_n, chunk, 0, back, cap, &ignored, &ignored, &st_h);
         check(st_h == COMPRESSION_STATUS_END && back_n == n && (n == 0 || memcmp(back, input, n) == 0),
               "host decodes the port's stream", (int)back_n, (int)n);
-        back_n = stream_run(&kPortStream, COMPRESSION_STREAM_DECODE, algorithm, host_out, host_n, chunk, 0, back, cap, &ignored, &st_p);
+        back_n = stream_run(&kPortStream, COMPRESSION_STREAM_DECODE, algorithm, host_out, host_n, chunk, 0, back, cap, &ignored, &ignored, &st_p);
         check(st_p == COMPRESSION_STATUS_END && back_n == n && (n == 0 || memcmp(back, input, n) == 0),
               "port stream decodes the host's stream", (int)back_n, (int)n);
     }
     snprintf(where, sizeof where, "%s n=%zu content=%d stream pieces=7", name_of(algorithm), n, content);
-    port_n = stream_run(&kPortStream, COMPRESSION_STREAM_ENCODE, algorithm, input, n, all, 7, port_out, cap, &before_p, &st_p);
+    port_n = stream_run(&kPortStream, COMPRESSION_STREAM_ENCODE, algorithm, input, n, all, 7, port_out, cap, &before_p, &first_p, &st_p);
     check(st_p == COMPRESSION_STATUS_END && port_n == ref_n && memcmp(port_out, ref, ref_n) == 0,
           "port stream output in 7-byte pieces equals its one-piece output and ends at FINALIZE", (int)port_n, (int)ref_n);
-    back_n = stream_run(&kHostStream, COMPRESSION_STREAM_DECODE, algorithm, port_out, port_n, all, 7, back, cap, &ignored, &st_h);
+    back_n = stream_run(&kHostStream, COMPRESSION_STREAM_DECODE, algorithm, port_out, port_n, all, 7, back, cap, &ignored, &ignored, &st_h);
     check(st_h == COMPRESSION_STATUS_END && back_n == n && (n == 0 || memcmp(back, input, n) == 0),
           "host decodes the port's stream in 7-byte pieces", (int)back_n, (int)n);
-    back_n = stream_run(&kPortStream, COMPRESSION_STREAM_DECODE, algorithm, host_out, host_n, all, 7, back, cap, &ignored, &st_p);
+    back_n = stream_run(&kPortStream, COMPRESSION_STREAM_DECODE, algorithm, host_out, host_n, all, 7, back, cap, &ignored, &ignored, &st_p);
     check(st_p == COMPRESSION_STATUS_END && back_n == n && (n == 0 || memcmp(back, input, n) == 0),
           "port stream decodes the host's stream in 7-byte pieces", (int)back_n, (int)n);
 }
@@ -213,10 +238,10 @@ static void stream_all(uint8_t *input, uint8_t *host_out, uint8_t *port_out, uin
         }
         uint8_t junk[64];
         for (int i = 0; i < 64; i++) junk[i] = (uint8_t)next_random();
-        size_t before_h, before_p;
+        size_t before_h, before_p, first_h, first_p;
         compression_status st_h, st_p;
-        stream_run(&kHostStream, COMPRESSION_STREAM_DECODE, kStreamAlgorithms[a], junk, sizeof junk, sizeof junk, 0, back, cap, &before_h, &st_h);
-        stream_run(&kPortStream, COMPRESSION_STREAM_DECODE, kStreamAlgorithms[a], junk, sizeof junk, sizeof junk, 0, back, cap, &before_p, &st_p);
+        stream_run(&kHostStream, COMPRESSION_STREAM_DECODE, kStreamAlgorithms[a], junk, sizeof junk, sizeof junk, 0, back, cap, &before_h, &first_h, &st_h);
+        stream_run(&kPortStream, COMPRESSION_STREAM_DECODE, kStreamAlgorithms[a], junk, sizeof junk, sizeof junk, 0, back, cap, &before_p, &first_p, &st_p);
         snprintf(where, sizeof where, "%s corrupt stream", name_of(kStreamAlgorithms[a]));
         check(st_p == st_h, "corrupt stream: the port answers the host's status", (int)st_p, (int)st_h);
     }

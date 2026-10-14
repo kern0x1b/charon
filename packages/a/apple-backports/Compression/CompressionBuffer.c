@@ -53,32 +53,40 @@ static uint32_t get32(const uint8_t *at)
 // The host writes a block compressed when the compressed form and the end marker still fit in the room that is left,
 // and stored whole otherwise (measured: the size of the output depends on the destination). The answer is 0 when even
 // the stored form does not fit. A block that does not shrink is stored, so the codec is asked for raw - 1 bytes at most.
-static size_t encode_lz4_frame(uint8_t *dst, size_t dst_size, const uint8_t *src, size_t src_size)
+// One framed block of raw bytes (raw > 0, at most kLZ4BlockSize). The room is what the block may take, end marker
+// included: the caller reserves the marker's four bytes in it. Returns the bytes written, or 0 when even the stored
+// form does not fit.
+static size_t encode_lz4_block(uint8_t *dst, size_t room, const uint8_t *src, size_t raw)
 {
     enum { kEndSize = 4, kCompressedHeader = 12, kStoredHeader = 8 };
+    // the most the compressed block may take: what is left after its header and the end marker, and less than raw
+    size_t limit = room > kCompressedHeader + kEndSize ? room - kCompressedHeader - kEndSize : 0;
+    if (limit > raw - 1) limit = raw - 1;
+    // the codec is given one byte more than the limit: it refuses a block that exactly fills the capacity it is
+    // given (measured), and an exact fit must still be written compressed. Its output is checked against the limit.
+    int packed = limit ? LZ4_compress_default((const char *)src, (char *)dst + kCompressedHeader, (int)raw, (int)limit + 1) : 0;
+    if (packed > 0 && (size_t)packed <= limit) {
+        memcpy(dst, kCompressedBlock, 4);
+        put32(dst + 4, (uint32_t)raw);
+        put32(dst + 8, (uint32_t)packed);
+        return kCompressedHeader + (size_t)packed;
+    }
+    if (kStoredHeader + raw + kEndSize > room) return 0;
+    memcpy(dst, kStoredBlock, 4);
+    put32(dst + 4, (uint32_t)raw);
+    memcpy(dst + kStoredHeader, src, raw);
+    return kStoredHeader + raw;
+}
+
+static size_t encode_lz4_frame(uint8_t *dst, size_t dst_size, const uint8_t *src, size_t src_size)
+{
+    enum { kEndSize = 4 };
     size_t out = 0, done = 0;
     while (done < src_size) {
         size_t raw = src_size - done < kLZ4BlockSize ? src_size - done : kLZ4BlockSize;
-        size_t room = dst_size - out;
-        // the most the compressed block may take: what is left after its header and the end marker, and less than raw
-        size_t limit = room > kCompressedHeader + kEndSize ? room - kCompressedHeader - kEndSize : 0;
-        if (limit > raw - 1) limit = raw - 1;
-        // the codec is given one byte more than the limit: it refuses a block that exactly fills the capacity it is
-        // given (measured), and an exact fit must still be written compressed. Its output is checked against the limit.
-        int packed = limit ? LZ4_compress_default((const char *)src + done, (char *)dst + out + kCompressedHeader,
-                                                  (int)raw, (int)limit + 1) : 0;
-        if (packed > 0 && (size_t)packed <= limit) {
-            memcpy(dst + out, kCompressedBlock, 4);
-            put32(dst + out + 4, (uint32_t)raw);
-            put32(dst + out + 8, (uint32_t)packed);
-            out += kCompressedHeader + (size_t)packed;
-        } else {
-            if (out + kStoredHeader + raw + kEndSize > dst_size) return 0;
-            memcpy(dst + out, kStoredBlock, 4);
-            put32(dst + out + 4, (uint32_t)raw);
-            memcpy(dst + out + kStoredHeader, src + done, raw);
-            out += kStoredHeader + raw;
-        }
+        size_t written = encode_lz4_block(dst + out, dst_size - out, src + done, raw);
+        if (!written) return 0;
+        out += written;
         done += raw;
     }
     if (out + kEndSize > dst_size) return 0;
@@ -394,37 +402,250 @@ COMPRESSION_EXPORT size_t compression_decode_buffer(uint8_t *__restrict dst_buff
     return n;
 }
 
-// The stream interface (compression_stream_*) over the buffer layer. The stream buffers its input until FINALIZE, then
-// encodes or decodes all of it in one call, and hands the output out in the destinations the caller gives, so the bytes
-// after FINALIZE do not depend on how the input or the output was split. The host writes some output before FINALIZE;
-// this layer writes none (facts/Compression/CompressionBuffer.md, Streams). LZ4_RAW has no stream on the host (init fails).
+// The stream interface (compression_stream_*) over the codecs, incremental per codec. Each codec runs over its own state
+// (zlib's and liblzma's streams, and the LZ4 and LZFSE blocks of this layer), and a block's output is written as soon as
+// the block is complete, which is where the host writes it (measured: facts/Compression/CompressionBuffer.md, Streams).
+// The output is handed out from one buffer, so memory is bounded by a block of input, a block of output and the 64 KiB
+// dictionary of LZ4 decoding. The exception is LZFSE decoding, which buffers its input to FINALIZE and writes nothing
+// before it: the host writes its blocks as they complete (the open difference named in coordination/crutches.md).
+// LZ4_RAW has no stream on the host (init fails), and the layer refuses it too.
+enum { kStreamBlock = 0x10000, kLZFSEBlock = 0x8000, kOutputCapacity = 2 * 0x10000 + 8192, kPendingCapacity = 2 * 0x10000 + 16 };
+enum { kChunkMax = 1 << 30 };
+static const uint8_t kLZFSEEndOfStream[4] = {'b', 'v', 'x', '$'};
+#define NO_OUTPUT ((size_t)-1)
+
 struct layer_stream {
     compression_stream_operation operation;
     compression_algorithm algorithm;
-    uint8_t *input;
+    z_stream z;                 // ZLIB, raw deflate or inflate
+    lzma_stream lz;             // LZMA, the stream encoder or the stream decoder
+    void *work;                 // LZFSE encoder scratch
+    uint8_t *pending;           // input not yet coded: one block (LZ4 and LZFSE encode), or the LZ4 blocks being read
+    size_t pending_size;
+    uint8_t *history;           // LZ4 decoding: the last 64 KiB written, the dictionary of the next block
+    size_t history_size;
+    uint8_t *out;               // output not yet handed out: out_size bytes, from out_done
+    size_t out_size, out_done;
+    size_t blocks;              // LZFSE encoding: the blocks written so far
+    uint8_t *input;             // LZFSE decoding: the whole input, until FINALIZE
     size_t input_size, input_capacity;
-    uint8_t *output;
-    size_t output_size, output_done;
-    int finalized, failed;
+    int ended, failed;
 };
 
-// The LZMA stream is liblzma's stream encoder, not the buffer API: the host's stream bytes are the stream encoder's (226008
-// bytes for 300000 bytes of words, against 226012 for the buffer API; measured).
-static size_t encode_lzma_stream(uint8_t *dst, size_t dst_size, const uint8_t *src, size_t src_size)
+static void lz4_history_append(struct layer_stream *st, const uint8_t *data, size_t n);
+static int stream_append_input(struct layer_stream *st, const uint8_t *src, size_t size);
+static int stream_decode_all(struct layer_stream *st);
+
+// Takes as much of the caller's input as the pending bytes have room for, up to limit. Returns the bytes taken.
+static size_t take_input(struct layer_stream *st, compression_stream *s, size_t limit)
 {
-    lzma_stream s = LZMA_STREAM_INIT;
-    if (lzma_easy_encoder(&s, kLZMAPreset, LZMA_CHECK_NONE) != LZMA_OK) return 0;
-    s.next_in = src;
-    s.avail_in = src_size;
-    s.next_out = dst;
-    s.avail_out = dst_size;
-    lzma_ret status = lzma_code(&s, LZMA_FINISH);
-    size_t out = dst_size - s.avail_out;
-    lzma_end(&s);
-    return status == LZMA_STREAM_END ? out : 0;
+    size_t room = limit - st->pending_size;
+    size_t n = s->src_size < room ? s->src_size : room;
+    if (n) {
+        memcpy(st->pending + st->pending_size, s->src_ptr, n);
+        st->pending_size += n;
+        s->src_ptr += n;
+        s->src_size -= n;
+    }
+    return n;
 }
 
-static int stream_append(struct layer_stream *st, const uint8_t *src, size_t size)
+// One LZFSE block of the pending input. The codec writes it as a whole stream, and its end marker is taken off: the stream
+// has one marker, written at the end (the blocks of an LZFSE stream follow one another, each with its own tables).
+static int lzfse_block(struct layer_stream *st)
+{
+    size_t n = lzfse_encode_buffer(st->out, kOutputCapacity, st->pending, st->pending_size, st->work);
+    if (n < 4 || memcmp(st->out + n - 4, kLZFSEEndOfStream, 4) != 0) return 0;
+    st->out_size = n - 4;
+    st->out_done = 0;
+    st->pending_size = 0;
+    st->blocks++;
+    return 1;
+}
+
+// A block of LZ4 input is written when it is complete, or at FINALIZE when it is the last one. Returns 1 when output or
+// input moved, 0 when the call needs more input, -1 on failure.
+static int step_lz4_encode(struct layer_stream *st, compression_stream *s, int finalize)
+{
+    size_t taken = take_input(st, s, kStreamBlock);
+    if (st->pending_size == kStreamBlock) {
+        size_t n = encode_lz4_block(st->out, kOutputCapacity, st->pending, kStreamBlock);
+        if (!n) return -1;
+        st->out_size = n;
+        st->out_done = 0;
+        st->pending_size = 0;
+        return 1;
+    }
+    if (taken) return 1;
+    if (!finalize) return 0;
+    if (st->pending_size) {
+        size_t n = encode_lz4_block(st->out, kOutputCapacity, st->pending, st->pending_size);
+        if (!n) return -1;
+        st->out_size = n;
+        st->out_done = 0;
+        st->pending_size = 0;
+    }
+    memcpy(st->out + st->out_size, kEndOfStream, 4);
+    st->out_size += 4;
+    st->ended = 1;
+    return 1;
+}
+
+// The same shape as LZ4, with LZFSE's blocks of 32 KiB: the host's first output comes at 41 KiB of input or more (measured on
+// 300000 bytes, 41248 to 81653), so a smaller block writes output before FINALIZE wherever the host does. A stream of no
+// bytes at all is the codec's own empty stream (measured).
+static int step_lzfse_encode(struct layer_stream *st, compression_stream *s, int finalize)
+{
+    size_t taken = take_input(st, s, kLZFSEBlock);
+    if (st->pending_size == kLZFSEBlock) return lzfse_block(st) ? 1 : -1;
+    if (taken) return 1;
+    if (!finalize) return 0;
+    if (st->pending_size == 0 && st->blocks == 0) {
+        size_t n = lzfse_encode_buffer(st->out, kOutputCapacity, st->pending, 0, st->work);
+        if (!n) return -1;
+        st->out_size = n;
+        st->out_done = 0;
+    } else {
+        if (st->pending_size && !lzfse_block(st)) return -1;
+        memcpy(st->out + st->out_size, kLZFSEEndOfStream, 4);
+        st->out_size += 4;
+    }
+    st->ended = 1;
+    return 1;
+}
+
+// LZFSE decoding waits for FINALIZE: its blocks are not framed in this layer, so the whole input is decoded then.
+static int step_lzfse_decode(struct layer_stream *st, compression_stream *s, int finalize)
+{
+    if (s->src_size) {
+        if (!stream_append_input(st, s->src_ptr, s->src_size)) return -1;
+        s->src_ptr += s->src_size;
+        s->src_size = 0;
+    }
+    if (!finalize) return 0;
+    if (!stream_decode_all(st)) return -1;
+    st->ended = 1;
+    return 1;
+}
+
+// The LZ4 blocks of a decode, read from the pending bytes: a block is decoded when it is complete, with the 64 KiB before
+// it as its dictionary (the measured frame rule of decode_lz4_frame). A block larger than a valid one is corrupt, so the
+// pending bytes never have to hold more than one block. Returns as step_lz4_encode does.
+static int step_lz4_decode(struct layer_stream *st, compression_stream *s, int finalize)
+{
+    take_input(st, s, kPendingCapacity);
+    uint8_t *p = st->pending;
+    size_t have = st->pending_size;
+    if (have >= 4 && memcmp(p, kEndOfStream, 4) == 0) {
+        st->ended = 1;
+        st->pending_size = 0;
+        return 1;
+    }
+    if (have < 8) return finalize ? -1 : 0;
+    uint32_t raw = get32(p + 4);
+    if (raw > kStreamBlock) return -1;
+    int stored = memcmp(p, kStoredBlock, 4) == 0;
+    if (!stored && memcmp(p, kCompressedBlock, 4) != 0) return -1;
+    // the bytes this block takes: its header, and its payload when it is compressed
+    size_t need = stored ? 8 + (size_t)raw : 12;
+    if (!stored && have >= 12) need = 12 + (size_t)get32(p + 8);
+    if (need > 12 + (size_t)kStreamBlock) return -1;
+    if (have < need) return finalize ? -1 : 0;
+    if (stored) {
+        memcpy(st->out, p + 8, raw);
+    } else if (LZ4_decompress_safe_usingDict((const char *)p + 12, (char *)st->out, (int)get32(p + 8), (int)raw,
+                                             (const char *)st->history, (int)st->history_size) != (int)raw) {
+        return -1;
+    }
+    st->out_size = raw;
+    st->out_done = 0;
+    lz4_history_append(st, st->out, raw);
+    memmove(p, p + need, have - need);
+    st->pending_size = have - need;
+    return 1;
+}
+
+// The zlib stream: raw deflate or inflate, with Z_NO_FLUSH until FINALIZE, when the encoder finishes with Z_FINISH.
+static int step_zlib(struct layer_stream *st, compression_stream *s, int finalize)
+{
+    z_stream *z = &st->z;
+    uInt take = s->src_size > kChunkMax ? kChunkMax : (uInt)s->src_size;
+    z->next_in = (Bytef *)s->src_ptr;
+    z->avail_in = take;
+    z->next_out = st->out;
+    z->avail_out = kOutputCapacity;
+    int r = st->operation == COMPRESSION_STREAM_ENCODE ? deflate(z, finalize ? Z_FINISH : Z_NO_FLUSH)
+                                                       : inflate(z, Z_NO_FLUSH);
+    size_t used = take - z->avail_in;
+    if (used) {
+        s->src_ptr += used;
+        s->src_size -= used;
+    }
+    st->out_size = kOutputCapacity - z->avail_out;
+    st->out_done = 0;
+    if (r == Z_STREAM_END) {
+        st->ended = 1;
+        return 1;
+    }
+    if (r != Z_OK && r != Z_BUF_ERROR) return -1;
+    return used || st->out_size ? 1 : 0;
+}
+
+// liblzma's stream coder, the same call in both directions: LZMA_RUN until FINALIZE, then LZMA_FINISH. Its first call writes
+// the stream header, so the first output is at the first input byte (measured).
+static int step_lzma(struct layer_stream *st, compression_stream *s, int finalize)
+{
+    st->lz.next_in = s->src_ptr;
+    st->lz.avail_in = s->src_size;
+    st->lz.next_out = st->out;
+    st->lz.avail_out = kOutputCapacity;
+    lzma_ret r = lzma_code(&st->lz, finalize ? LZMA_FINISH : LZMA_RUN);
+    size_t used = s->src_size - st->lz.avail_in;
+    if (used) {
+        s->src_ptr += used;
+        s->src_size -= used;
+    }
+    st->out_size = kOutputCapacity - st->lz.avail_out;
+    st->out_done = 0;
+    if (r == LZMA_STREAM_END) {
+        st->ended = 1;
+        return 1;
+    }
+    if (r == LZMA_BUF_ERROR) return 0;
+    if (r != LZMA_OK) return -1;
+    return used || st->out_size ? 1 : 0;
+}
+
+// One step of the codec: it takes input, and leaves its output in out (empty on entry). 1: input or output moved; 0: it
+// needs more input; -1: the stream failed (corrupt, or cut short at FINALIZE, which process turns into a failure).
+static int step(struct layer_stream *st, compression_stream *s, int finalize)
+{
+    switch (st->algorithm) {
+    case COMPRESSION_LZFSE:
+        return st->operation == COMPRESSION_STREAM_ENCODE ? step_lzfse_encode(st, s, finalize) : step_lzfse_decode(st, s, finalize);
+    case COMPRESSION_ZLIB: return step_zlib(st, s, finalize);
+    case COMPRESSION_LZ4:
+        return st->operation == COMPRESSION_STREAM_ENCODE ? step_lz4_encode(st, s, finalize) : step_lz4_decode(st, s, finalize);
+    case COMPRESSION_LZMA: return step_lzma(st, s, finalize);
+    default: return -1;
+    }
+}
+
+// The stream's history after a block: the last 64 KiB written, so the next block can refer back into it.
+static void lz4_history_append(struct layer_stream *st, const uint8_t *data, size_t n)
+{
+    if (n >= kStreamBlock) {
+        memcpy(st->history, data + n - kStreamBlock, kStreamBlock);
+        st->history_size = kStreamBlock;
+        return;
+    }
+    size_t keep = st->history_size < kStreamBlock - n ? st->history_size : kStreamBlock - n;
+    memmove(st->history, st->history + st->history_size - keep, keep);
+    memcpy(st->history + keep, data, n);
+    st->history_size = keep + n;
+}
+
+static int stream_append_input(struct layer_stream *st, const uint8_t *src, size_t size)
 {
     if (size > SIZE_MAX - st->input_size) return 0;
     if (st->input_size + size > st->input_capacity) {
@@ -438,30 +659,13 @@ static int stream_append(struct layer_stream *st, const uint8_t *src, size_t siz
         st->input = grown;
         st->input_capacity = capacity;
     }
-    if (size) memcpy(st->input + st->input_size, src, size);
+    memcpy(st->input + st->input_size, src, size);
     st->input_size += size;
     return 1;
 }
 
-// The whole input encoded, into a destination that always fits (the bound of every codec here is below 2 * size + 65536).
-static int stream_encode_all(struct layer_stream *st)
-{
-    size_t capacity = 2 * st->input_size + 65536;
-    uint8_t *out = malloc(capacity);
-    if (!out) return 0;
-    size_t n = st->algorithm == COMPRESSION_LZMA ? encode_lzma_stream(out, capacity, st->input, st->input_size)
-                                                 : compression_encode_buffer(out, capacity, st->input, st->input_size, NULL, st->algorithm);
-    if (n == 0) {
-        free(out);
-        return 0;
-    }
-    st->output = out;
-    st->output_size = n;
-    return 1;
-}
-
-// The whole input decoded. A destination that fills is doubled and the input decoded again, until the stream ends in it: the
-// status says which of the two happened, so a valid empty stream (ends with 0 bytes) and a corrupt one (fails) are told apart.
+// The whole LZFSE input decoded, into a destination that doubles until the stream ends in it: the status says which of the
+// two happened, so a valid empty stream (ends with 0 bytes) and a corrupt one (fails) are told apart.
 static int stream_decode_all(struct layer_stream *st)
 {
     size_t capacity = 4 * st->input_size + 65536;
@@ -471,8 +675,10 @@ static int stream_decode_all(struct layer_stream *st)
         size_t n = 0;
         enum decode_status status = decode_codec(out, capacity, st->input, st->input_size, NULL, st->algorithm, &n);
         if (status == kDecodeDone) {
-            st->output = out;
-            st->output_size = n;
+            free(st->out);
+            st->out = out;
+            st->out_size = n;
+            st->out_done = 0;
             return 1;
         }
         free(out);
@@ -498,15 +704,34 @@ COMPRESSION_EXPORT compression_status compression_stream_init(compression_stream
     }
     struct layer_stream *st = calloc(1, sizeof *st);
     if (!st) return COMPRESSION_STATUS_ERROR;
-    // the input starts with a block, so an empty stream still has a source pointer for the codecs (NULL is refused by LZFSE)
-    st->input = malloc(65536);
-    if (!st->input) {
+    st->operation = operation;
+    st->algorithm = algorithm;
+    st->pending = malloc(kPendingCapacity);
+    st->out = malloc(kOutputCapacity);
+    st->history = malloc(kStreamBlock);
+    int ok = st->pending && st->out && st->history;
+    if (ok && algorithm == COMPRESSION_LZFSE && operation == COMPRESSION_STREAM_ENCODE) {
+        st->work = malloc(lzfse_encode_scratch_size());
+        ok = st->work != NULL;
+    }
+    if (ok && algorithm == COMPRESSION_ZLIB) {
+        // a negative window size is raw deflate or inflate: no zlib header and no checksum, as in the buffer API
+        ok = (operation == COMPRESSION_STREAM_ENCODE
+                  ? deflateInit2(&st->z, Z_DEFAULT_COMPRESSION, Z_DEFLATED, -15, 8, Z_DEFAULT_STRATEGY)
+                  : inflateInit2(&st->z, -15)) == Z_OK;
+    }
+    if (ok && algorithm == COMPRESSION_LZMA) {
+        ok = (operation == COMPRESSION_STREAM_ENCODE ? lzma_easy_encoder(&st->lz, kLZMAPreset, LZMA_CHECK_NONE)
+                                                     : lzma_stream_decoder(&st->lz, UINT64_MAX, 0)) == LZMA_OK;
+    }
+    if (!ok) {
+        free(st->work);
+        free(st->pending);
+        free(st->out);
+        free(st->history);
         free(st);
         return COMPRESSION_STATUS_ERROR;
     }
-    st->input_capacity = 65536;
-    st->operation = operation;
-    st->algorithm = algorithm;
     stream->dst_ptr = NULL;
     stream->dst_size = 0;
     stream->src_ptr = NULL;
@@ -521,37 +746,45 @@ COMPRESSION_EXPORT compression_status compression_stream_process(compression_str
     if (!st || st->failed || (stream->src_size && !stream->src_ptr) || (stream->dst_size && !stream->dst_ptr)) {
         return COMPRESSION_STATUS_ERROR;
     }
-    if (!st->finalized) {
-        if (!stream_append(st, stream->src_ptr, stream->src_size)) {
+    int finalize = (flags & COMPRESSION_STREAM_FINALIZE) != 0;
+    for (;;) {
+        // hand out what the last step wrote; the call ends when the destination is full
+        size_t left = st->out_size - st->out_done;
+        if (left) {
+            size_t n = left < stream->dst_size ? left : stream->dst_size;
+            if (n) {
+                memcpy(stream->dst_ptr, st->out + st->out_done, n);
+                stream->dst_ptr += n;
+                stream->dst_size -= n;
+                st->out_done += n;
+            }
+            if (st->out_done < st->out_size) return COMPRESSION_STATUS_OK;
+        }
+        if (st->ended) return finalize ? COMPRESSION_STATUS_END : COMPRESSION_STATUS_OK;
+        int r = step(st, stream, finalize);
+        // a step that moves nothing at FINALIZE is a stream that was cut short
+        if (r < 0 || (r == 0 && finalize)) {
             st->failed = 1;
             return COMPRESSION_STATUS_ERROR;
         }
-        stream->src_ptr += stream->src_size;
-        stream->src_size = 0;
-        if (!(flags & COMPRESSION_STREAM_FINALIZE)) return COMPRESSION_STATUS_OK;
-        int done = st->operation == COMPRESSION_STREAM_ENCODE ? stream_encode_all(st) : stream_decode_all(st);
-        if (!done) {
-            st->failed = 1;
-            return COMPRESSION_STATUS_ERROR;
-        }
-        st->finalized = 1;
+        if (r == 0) return COMPRESSION_STATUS_OK;
     }
-    size_t left = st->output_size - st->output_done;
-    size_t n = left < stream->dst_size ? left : stream->dst_size;
-    if (n) memcpy(stream->dst_ptr, st->output + st->output_done, n);
-    stream->dst_ptr += n;
-    stream->dst_size -= n;
-    st->output_done += n;
-    if (st->output_done < st->output_size || !(flags & COMPRESSION_STREAM_FINALIZE)) return COMPRESSION_STATUS_OK;
-    return COMPRESSION_STATUS_END;
 }
 
 COMPRESSION_EXPORT compression_status compression_stream_destroy(compression_stream *stream)
 {
     struct layer_stream *st = stream ? stream->state : NULL;
     if (!st) return COMPRESSION_STATUS_ERROR;
+    if (st->algorithm == COMPRESSION_ZLIB) {
+        if (st->operation == COMPRESSION_STREAM_ENCODE) deflateEnd(&st->z);
+        else inflateEnd(&st->z);
+    }
+    if (st->algorithm == COMPRESSION_LZMA) lzma_end(&st->lz);
+    free(st->work);
+    free(st->pending);
+    free(st->out);
+    free(st->history);
     free(st->input);
-    free(st->output);
     free(st);
     stream->state = NULL;
     return COMPRESSION_STATUS_OK;
