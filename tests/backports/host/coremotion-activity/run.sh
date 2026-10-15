@@ -1,13 +1,14 @@
 #!/bin/sh
-# run.sh - the port's CoreMotion activity classes against the host's own CoreMotion, case by case, in two processes.
+# run.sh - the port's CoreMotion classes (activity and pedometer) against the host's own CoreMotion, case by case, in
+# two processes.
 #
 #   1. differential.m is COMPILED against the host's CoreMotion (Catalyst, the macOS 27.0 SDK) and run once per case
-#   2. the same source is COMPILED against the port's CMMotionActivity.m and CMMotionActivityManager.m, with the test-only
-#      CMLogItem stub, and run once per case
+#   2. the same source is COMPILED against the port's CoreMotion sources, with the test-only CMLogItem stub, and run once per
+#      case
 #   3. the two outputs of each case are compared; a case where the host dies on a signal is named as such and is not
 #      counted as agreement
-#   4. two plants on a scratch copy of the port's manager - an availability answer flipped, and an authorization flipped -
-#      each must turn case 0 red
+#   4. a plant on a scratch copy of the port's sources - one answer changed, each in the case that measures it - must turn
+#      that case red
 #
 # Two processes, not one, because both sides define the same classes.
 set -eu
@@ -17,13 +18,20 @@ build=${BUILD:-$here/../../../../.agent-work/runs/coremotion-activity}
 mkdir -p "$build"
 sdk=$(xcrun --sdk macosx --show-sdk-path)
 target=arm64-apple-ios17.0-macabi
-cases="0 1 2 3 4 5 6 7"
+cases="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18"
+
+# The port's sources, every class of the three families in the directory given, and the test-only superclass stub.
+port_build() {
+    # port_build <source-dir> <output>
+    xcrun clang -fobjc-arc -w -target "$target" -isysroot "$sdk" -DPORT -framework Foundation \
+        "$here/differential.m" "$1/CMMotionActivity.m" "$1/CMMotionActivityManager.m" \
+        "$1/CMPedometer.m" "$1/CMPedometerData.m" "$1/CMPedometerEvent.m" \
+        "$here/cmlogitem-stub.m" -o "$2"
+}
 
 xcrun clang -fobjc-arc -w -target "$target" -isysroot "$sdk" -framework Foundation -framework CoreMotion \
     "$here/differential.m" -o "$build/host"
-xcrun clang -fobjc-arc -w -target "$target" -isysroot "$sdk" -DPORT -framework Foundation \
-    "$here/differential.m" "$appledir/CoreMotion/CMMotionActivity.m" "$appledir/CoreMotion/CMMotionActivityManager.m" \
-    "$here/cmlogitem-stub.m" -o "$build/port"
+port_build "$appledir/CoreMotion" "$build/port"
 
 differs=0
 crashed=0
@@ -58,24 +66,25 @@ compare() {
 echo "--- the clean run"
 compare clean "$build/port" $cases
 
-# A plant is a copy of the port's manager with one change; each must make case 0 differ. Each is written into its own
-# directory so a harness that copied only one file would fail to build rather than measure nothing.
+# A plant is a copy of the port's sources with one line changed, and the case that measures that line must differ. The copy
+# is a directory of its own holding every file, so a harness that copied only the changed one would fail to build rather
+# than measure nothing.
 plant() {
-    label=$1; expr=$2
+    # plant <case> <file> <sed-expression> <label>
+    n=$1; file=$2; expr=$3; label=$4
     rm -rf "$build/mutant"; mkdir -p "$build/mutant"
-    sed "$expr" "$appledir/CoreMotion/CMMotionActivityManager.m" > "$build/mutant/CMMotionActivityManager.m"
-    if cmp -s "$appledir/CoreMotion/CMMotionActivityManager.m" "$build/mutant/CMMotionActivityManager.m"; then
+    cp "$appledir/CoreMotion/"*.m "$build/mutant/"
+    sed "$expr" "$appledir/CoreMotion/$file" > "$build/mutant/$file"
+    if cmp -s "$appledir/CoreMotion/$file" "$build/mutant/$file"; then
         echo "MUTATION DID NOT APPLY: $label"
         differs=$((differs + 1000))
         return
     fi
-    xcrun clang -fobjc-arc -w -target "$target" -isysroot "$sdk" -DPORT -framework Foundation \
-        "$here/differential.m" "$appledir/CoreMotion/CMMotionActivity.m" "$build/mutant/CMMotionActivityManager.m" \
-        "$here/cmlogitem-stub.m" -o "$build/port-mutant"
+    port_build "$build/mutant" "$build/port-mutant"
     set +e
-    "$build/port-mutant" 0 > "$build/port-mutant.0.out" 2>/dev/null
+    "$build/port-mutant" "$n" > "$build/port-mutant.$n.out" 2>/dev/null
     set -e
-    if cmp -s "$build/host.0.out" "$build/port-mutant.0.out"; then
+    if cmp -s "$build/host.$n.out" "$build/port-mutant.$n.out"; then
         echo "MUTANT SURVIVED: $label"
         differs=$((differs + 1000))
     else
@@ -84,8 +93,11 @@ plant() {
 }
 
 echo "--- the plants"
-plant "availability NO flipped to YES" 's/    return NO;/    return YES;/'
-plant "authorization NotDetermined flipped to Denied" 's/CMAuthorizationStatusNotDetermined;/CMAuthorizationStatusDenied;/'
+plant 0 CMMotionActivityManager.m 's/    return NO;/    return YES;/' "activity availability NO flipped to YES"
+plant 0 CMMotionActivityManager.m 's/CMAuthorizationStatusNotDetermined;/CMAuthorizationStatusDenied;/' "activity authorization NotDetermined flipped to Denied"
+plant 8 CMPedometer.m 's/    return NO;/    return YES;/' "pedometer availability NO flipped to YES"
+plant 8 CMPedometer.m 's/CMAuthorizationStatusNotDetermined;/CMAuthorizationStatusDenied;/' "pedometer authorization NotDetermined flipped to Denied"
+plant 17 CMPedometerEvent.m 's/    copy->_type = _type;/    copy->_type = 1;/' "pedometer event copy loses the type"
 
 echo "--- verdict: $differs difference(s) among comparable cases, $crashed host crash(es) not comparable"
 [ "$differs" -eq 0 ]

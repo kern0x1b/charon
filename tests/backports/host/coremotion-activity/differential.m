@@ -19,6 +19,22 @@ static NSString *queueKind(NSOperationQueue *passed)
     return @"other-thread";
 }
 
+// The pedometer hands its handlers no queue of its own: the thread that runs a handler is the thing to compare for it.
+static NSString *threadKind(void)
+{
+    return [NSThread isMainThread] ? @"main-thread" : @"other-thread";
+}
+
+static NSString *show(id value)
+{
+    return value ? [NSString stringWithFormat:@"%@", value] : @"nil";
+}
+
+static NSString *errorText(NSError *e)
+{
+    return e ? [NSString stringWithFormat:@"%@/%ld", e.domain, (long)e.code] : @"none";
+}
+
 int main(int argc, char **argv)
 {
     setvbuf(stdout, NULL, _IOLBF, 0);
@@ -88,6 +104,108 @@ int main(int argc, char **argv)
         CMMotionActivity *decoded = [NSKeyedUnarchiver unarchivedObjectOfClass:[CMMotionActivity class] fromData:data error:&e];
         printf("round trip class=%s unknown=%d confidence=%ld\n", decoded ? class_getName([decoded class]) : "nil",
                decoded.unknown, (long)decoded.confidence);
+        break;
+    }
+    case 8:
+        printf("isStepCountingAvailable=%d\n", [CMPedometer isStepCountingAvailable]);
+        printf("isDistanceAvailable=%d\n", [CMPedometer isDistanceAvailable]);
+        printf("isFloorCountingAvailable=%d\n", [CMPedometer isFloorCountingAvailable]);
+        printf("isPaceAvailable=%d\n", [CMPedometer isPaceAvailable]);
+        printf("isCadenceAvailable=%d\n", [CMPedometer isCadenceAvailable]);
+        printf("isPedometerEventTrackingAvailable=%d\n", [CMPedometer isPedometerEventTrackingAvailable]);
+        printf("authorizationStatus=%ld\n", (long)[CMPedometer authorizationStatus]);
+        break;
+    case 9: {
+        CMPedometer *pedometer = [[CMPedometer alloc] init];
+        [pedometer queryPedometerDataFromDate:[NSDate dateWithTimeIntervalSinceNow:-3600] toDate:[NSDate date]
+            withHandler:^(CMPedometerData *data, NSError *e) {
+                calls++;
+                error = e;
+                kind = threadKind();
+            }];
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:4.0]];
+        printf("queryPedometer: calls=%d thread=%s error=%s\n", calls, [kind UTF8String], [errorText(error) UTF8String]);
+        break;
+    }
+    case 10: {
+        CMPedometer *pedometer = [[CMPedometer alloc] init];
+        [pedometer startPedometerUpdatesFromDate:[NSDate dateWithTimeIntervalSinceNow:-3600]
+            withHandler:^(CMPedometerData *data, NSError *e) {
+                calls++;
+                error = e;
+                kind = threadKind();
+            }];
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:4.0]];
+        [pedometer stopPedometerUpdates];
+        printf("startPedometerUpdates: calls=%d thread=%s error=%s\n", calls, [kind UTF8String], [errorText(error) UTF8String]);
+        break;
+    }
+    case 11: {
+        CMPedometer *pedometer = [[CMPedometer alloc] init];
+        [pedometer startPedometerEventUpdatesWithHandler:^(CMPedometerEvent *event, NSError *e) {
+            calls++;
+            error = e;
+            kind = threadKind();
+        }];
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:4.0]];
+        [pedometer stopPedometerEventUpdates];
+        printf("startPedometerEventUpdates: calls=%d thread=%s error=%s\n", calls, [kind UTF8String], [errorText(error) UTF8String]);
+        break;
+    }
+    case 12: {
+        CMPedometer *pedometer = [[CMPedometer alloc] init];
+        [pedometer stopPedometerUpdates];
+        [pedometer stopPedometerEventUpdates];
+        printf("stopPedometer: returned\n");
+        break;
+    }
+    case 13: {
+        CMPedometerData *data = [[CMPedometerData alloc] init];
+        printf("supportsSecureCoding=%d\n", [CMPedometerData supportsSecureCoding]);
+        printf("startDate=%s endDate=%s numberOfSteps=%s\n", [show(data.startDate) UTF8String],
+               [show(data.endDate) UTF8String], [show(data.numberOfSteps) UTF8String]);
+        printf("distance=%s floorsAscended=%s floorsDescended=%s\n", [show(data.distance) UTF8String],
+               [show(data.floorsAscended) UTF8String], [show(data.floorsDescended) UTF8String]);
+        printf("currentPace=%s currentCadence=%s averageActivePace=%s\n", [show(data.currentPace) UTF8String],
+               [show(data.currentCadence) UTF8String], [show(data.averageActivePace) UTF8String]);
+        break;
+    }
+    case 14: {
+        CMPedometerData *data = [[CMPedometerData alloc] init];
+        CMPedometerData *copy = [data copy];
+        printf("copy class=%s numberOfSteps=%s\n", class_getName([copy class]), [show(copy.numberOfSteps) UTF8String]);
+        break;
+    }
+    case 15: {
+        CMPedometerData *data = [[CMPedometerData alloc] init];
+        NSError *e = nil;
+        NSData *archive = [NSKeyedArchiver archivedDataWithRootObject:data requiringSecureCoding:YES error:&e];
+        CMPedometerData *decoded = [NSKeyedUnarchiver unarchivedObjectOfClass:[CMPedometerData class] fromData:archive error:&e];
+        printf("round trip archive=%s class=%s numberOfSteps=%s error=%s\n", archive ? "ok" : "failed",
+               decoded ? class_getName([decoded class]) : "nil", [show(decoded.numberOfSteps) UTF8String],
+               [errorText(e) UTF8String]);
+        break;
+    }
+    case 16: {
+        CMPedometerEvent *event = [[CMPedometerEvent alloc] init];
+        printf("supportsSecureCoding=%d\n", [CMPedometerEvent supportsSecureCoding]);
+        printf("date=%s type=%ld\n", [show(event.date) UTF8String], (long)event.type);
+        break;
+    }
+    case 17: {
+        CMPedometerEvent *event = [[CMPedometerEvent alloc] init];
+        CMPedometerEvent *copy = [event copy];
+        printf("copy class=%s date=%s type=%ld\n", class_getName([copy class]), [show(copy.date) UTF8String], (long)copy.type);
+        break;
+    }
+    case 18: {
+        CMPedometerEvent *event = [[CMPedometerEvent alloc] init];
+        NSError *e = nil;
+        NSData *archive = [NSKeyedArchiver archivedDataWithRootObject:event requiringSecureCoding:YES error:&e];
+        CMPedometerEvent *decoded = [NSKeyedUnarchiver unarchivedObjectOfClass:[CMPedometerEvent class] fromData:archive error:&e];
+        printf("round trip archive=%s class=%s date=%s type=%ld error=%s\n", archive ? "ok" : "failed",
+               decoded ? class_getName([decoded class]) : "nil", [show(decoded.date) UTF8String], (long)decoded.type,
+               [errorText(e) UTF8String]);
         break;
     }
     default:
