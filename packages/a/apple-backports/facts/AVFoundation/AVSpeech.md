@@ -130,3 +130,78 @@ engine (`AVSpeechSynthesizer`). The 6.1.3 selectors of `VSSpeechSynthesizer` for
 the delegate protocol `VSSpeechSynthesizerDelegate` is there too (`speechSynthesizer:didFinishSpeaking:withError:`,
 `speechSynthesizer:willSpeakRangeOfSpeechString:`, the start, pause and continue callbacks): the delegate order and
 the no-voice behaviour are not measured yet.
+
+## AVSpeechSynthesizer (slice 2, measured on the host and in the 6.1.3 guest)
+
+The synthesizer is carried by driving the release's private `VSSpeechSynthesizer` (VoiceServices, loaded by path, found
+by name as the voice class does). Its selectors, from `tools/corpus/objc-inventory.lua` on the 6.1.3 cache and the
+guest's own `class_copyMethodList` dump (`tests/backports/host/avf-speech/speak/probe.m`, run 2 of v-avspeech4):
+
+- used: `-startSpeakingString:` (id), `-stopSpeakingAtNextBoundary:` (int), `-pauseSpeakingAtNextBoundary:` (int),
+  `-continueSpeaking`, `-isSpeaking` (BOOL), `-setRate:` / `-rate` (float), `-minimumRate`, `-maximumRate`,
+  `-setPitch:` / `-pitch` (float), `-setVolume:` / `-volume` (float), `-setVoice:` / `-voice` (id), `-setDelegate:` (id).
+- the synchronous forms `-stopSpeakingAtNextBoundary:synchronously:` and `-pauseSpeakingAtNextBoundary:synchronously:`
+  (int, BOOL) exist; the port does not use them (see the order below).
+- not used: `-startSpeakingString:withLanguageCode:`, `-startSpeakingString:toURL:...`, the attributed forms, `-setMaintainPersistentConnection:`,
+  and the four `_handle...` selectors (the synthesizer's own callbacks to itself).
+- Delegate calls the guest made (the image's protocol `VSSpeechSynthesizerDelegate` is not registered at run time, so
+  `objc_getProtocol` finds nothing; the names are the ones the calls arrived with): `speechSynthesizerDidStartSpeaking:`,
+  `speechSynthesizerDidPauseSpeaking:`, `speechSynthesizerDidContinueSpeaking:`, `speechSynthesizer:willSpeakRangeOfSpeechString:`,
+  `speechSynthesizer:didFinishSpeaking:phonemesSpoken:withError:`. The three-argument `didFinishSpeaking:withError:` was never called.
+
+Measured in the guest (run 2; times are guest seconds, and the guest runs slower than its clock under load, so only the
+order and the flags are read from them):
+
+- **No queue.** A `startSpeakingString:` while another string speaks replaces it silently: the first string gets no
+  callback at all, its last word callback is its last event, and the second gets didStart again. The port queues itself
+  and sends one string at a time.
+- **Start.** `isSpeaking` is 1 at once after the start call; didStart follows later (about 2 s of guest time).
+- **Finish.** didFinish with `finished=1`, error nil, and `isSpeaking=0` at the callback.
+- **Stop at the immediate boundary (0), asynchronous.** The call returns nil. `isSpeaking` is still 1 at return, and
+  didFinish with `finished=0`, error nil arrives about 0.14 s later (`isSpeaking=0` at the callback).
+- **Stop at the word boundary (1), asynchronous.** The same callback, arriving at the next word boundary (about 1.1 s later).
+- **Stop with a queued second string (VS holds one).** didFinish `finished=0` with error `VSErrorDomain -4005`. Nothing
+  for the queued string: it is gone. Stop while idle returns an NSError `VSErrorDomain -4003` ("not currently speaking"),
+  so VS's return is nil on success and an error otherwise; the port answers YES or NO from its own state.
+- **Synchronous stop (0, synchronously:YES).** The callback comes before the call returns, and `isSpeaking` is 0 at return.
+  The port does not use this form: the host returns first (speaking still 1) and then calls didCancel, so the port's
+  asynchronous form gives the host's order.
+- **Pause at the immediate boundary (0), asynchronous.** didPause about 0.2 s after the call. VS's own `isSpeaking` is 0 at
+  the callback; the port keeps its own speaking flag (the host keeps speaking=1 while paused).
+- **Pause, synchronous form.** didPause before the call returns (not used, as for stop).
+- **Continue.** didContinue about 0.05 s after the call; the speech goes on and ends with didFinish `finished=1`.
+- **Pause at the word boundary (1), asynchronous (run 3).** The call returns at once; the next word callbacks come
+  (one, then another), and didPause follows one or two words after the call (`isSpeaking` 0 at the callback, as for
+  the immediate form). The host pauses at the next word after the call (measured in the host section below). The two
+  differ by a word or so; the guest timing is noisy, so the order (word callbacks, then didPause) is what is kept.
+- **Voice.** `-setVoice:` takes the voice's name and stores it as given (`setVoice:NoSuchVoice` reads back
+  `NoSuchVoice`, and speaking it still finishes with `finished=1`). With no voice set, the reading is `Samantha`
+  under the guest's en-US. The port names the voice from `AVSpeechSynthesisVoice` (the current language's voice when
+  the utterance has none).
+- **Rate.** The image's range is `minimumRate` 0.5, default `rate` 1, `maximumRate` 4. Start to finish of "Hi there, this is
+  the test." on the guest: rate 0.5 4.54 s, rate 1 4.20 s, rate 4 0.98 s. Only the maximum is clearly faster; 0.5 and 1 are
+  within the guest's noise. The host's rate 0 / 0.5 / 1 gives 3.73 s / 2.21 s / 0.78 s for the same sentence.
+- **Pitch and volume.** The image's defaults are pitch 0.5 and volume 0.8. `setVolume:0.3` and `setPitch:1.0` read back as 0.3 and 1 (run 3), so both are stored as given. Neither has a timing or a callback effect that
+  either the host or the guest can show (no audio on the emulator; the host's timing does not move with them). The
+  port's mapping for both is a rule, not a measurement (see the report).
+- **Delays.** No selector of VSSpeechSynthesizer takes a delay. On the host, `preUtteranceDelay` and `postUtteranceDelay` of
+  3 s move no callback and no finish time (`delays` runs in the run folder), so the port ignores them.
+
+Host (macOS 27.0.1, `.agent-work/runs/v-avspeech4/host/`, not committed), the order the port matches:
+
+- One short utterance: `speakUtterance:` returns with `speaking=0`; didStart follows about 0.02 s later with `speaking=1`;
+  the willSpeakRange callbacks come; didFinish comes with `speaking` 1 or 0, and which one varies from run to run (not
+  explained: measure.m and delay.m read both). The transcript in synth-checks.m leaves the flag
+  out of didFinish for that reason; the other callbacks' flags are fixed on the host and are checked.
+- Stop (immediate or word) on a speaking utterance: `stopSpeakingAtBoundary:` returns YES with `speaking=1`; then didCancel
+  (immediate about 1 ms after, word at the next word boundary), with `speaking=0`. Stop while idle returns NO.
+- Pause (immediate): returns YES with `paused=0`; didPause follows at once with `paused=1`. Pause at the word boundary
+  does the same at the next word. Continue returns YES; didContinue follows with `paused=0`. Continue or pause when
+  not in that state return NO.
+- Queue: a second `speakUtterance:` while one speaks is queued, not raised; the second's didStart follows the first's
+  didFinish, and `speaking` stays 1 across the change. The same object enqueued twice plays twice (no exception,
+  although the header says it raises).
+- Stop with a queue: one stop cancels every utterance, the current one and the queued ones, in queue order, with
+  `speaking=0` at each didCancel; the queue is empty afterwards.
+- Pause, then stop: didCancel for both, `paused=0` afterwards.
+- Rate: 0 / 0.5 / 1 gives 3.73 s / 2.21 s / 0.78 s to didFinish; pitch 2 and volume 0 change no timing.

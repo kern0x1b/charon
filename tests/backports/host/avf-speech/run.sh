@@ -92,6 +92,34 @@ for log in "$build"/voice-*.log; do
     grep -q '^checks=' "$log" || { echo "FAIL: $log printed no checks= line, so nothing was checked"; exit 1; }
 done
 echo "voice-logs=$build/voice-*.log"
+
+# AVSpeechSynthesizer (synth-checks.m): the port's queue, flags and delegate order, driven through a stub
+# VSSpeechSynthesizer in the binary, against the host's own class. The port's synthesizer is compiled with its names
+# renamed, beside the utterance and the voice objects it links (both renamed above).
+cp "$avf/AVSpeechSynthesizer7.m" "$build/src/"
+smutant=${AVSPEECH_SYNTH_MUTANT:-0}
+if [ "$smutant" = cancel ]; then
+    sed -i '' 's/for (AVSpeechUtterance \*utterance in cancelled) {/for (AVSpeechUtterance *utterance in [cancelled subarrayWithRange:NSMakeRange(0, 1)]) {/' "$build/src/AVSpeechSynthesizer7.m"
+    [ "$(grep -c 'subarrayWithRange' "$build/src/AVSpeechSynthesizer7.m")" -eq 1 ] || { echo "FAIL: the planted cancel did not apply"; exit 1; }
+    echo "planted: a stop cancels only the head in the copy (control: must go red)"
+fi
+# shellcheck disable=SC2086
+xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations $renames \
+    -DAVSpeechSynthesisVoice=charon_host_AVSpeechSynthesisVoice -DAVSpeechSynthesizer=charon_host_AVSpeechSynthesizer \
+    -I"$avf" -c "$build/src/AVSpeechSynthesizer7.m" -o "$build/AVSpeechSynthesizer7.o" 2> "$build/synth.err" || {
+        echo "FAIL compiling the port's AVSpeechSynthesizer7.m"; head -6 "$build/synth.err"; exit 1; }
+xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations "$here/synth-checks.m" \
+    "$build/AVSpeechUtterance7.o" "$build/AVSpeechConstants7.o" "$build/AVSpeechSynthesisVoice7.o" "$build/AVSpeechSynthesizer7.o" \
+    -framework Foundation -framework AVFAudio -o "$build/avf-speech-synth" 2> "$build/synth-link.err" || {
+        echo "FAIL linking the synthesizer differential"; head -10 "$build/synth-link.err"; exit 1; }
+set +e
+"$build/avf-speech-synth" > "$build/synth.log" 2>&1; sresult=$?
+set -e
+grep -v '^ok ' "$build/synth.log" || true
+grep -q '^checks=' "$build/synth.log" || { echo "FAIL: the synthesizer run printed no checks= line, so nothing was checked"; exit 1; }
+echo "synth-log=$build/synth.log"
+
 [ "$result" -eq 0 ] || exit "$result"
+[ "$sresult" -eq 0 ] || exit "$sresult"
 [ "$v1$v2$v3$v4" = 0000 ] || { echo "FAIL: a voice variant went red"; exit 1; }
 exit 0

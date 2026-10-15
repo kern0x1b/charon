@@ -19,6 +19,11 @@
 
 @protocol AVMetricEventStreamSubscriber;
 
+// The 16.4 SDK declares this one in AVFAudio, which the umbrella header above does not import; the synthesizer's
+// source (AVSpeechSynthesizer7.m) names it, and the iOS 7 protocol row (registry/AVFoundation/ios7avspeech.json) is
+// the one that needs it declared here.
+@protocol AVSpeechSynthesizerDelegate;
+
 // Below this one the tool's own output, character for character: `python3 tools/transcribe-protocols.py@52253c0650
 // <sdk26> <sdk16> <worktree> <out> AVCaptureDataOutputSynchronizerDelegate:AVFoundation:11.0
 // AVQueuedSampleBufferRendering:AVFoundation:11.0 AVMetricEventStreamSubscriber:AVFoundation:18.0
