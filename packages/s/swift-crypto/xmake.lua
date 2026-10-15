@@ -7,12 +7,18 @@ package("swift-crypto")
     -- The release tarball of the tag 5.0.1 (BoringSSL 0226f30467f540a3f62ef48d453f93927da199b6, vendored), pinned by its sha256.
     add_urls("https://github.com/apple/swift-crypto/archive/refs/tags/$(version).tar.gz")
     add_versions("5.0.1", "3df66e7942a2ed67ef472e9a8a6a1356a80156c4e21406b2b3b1ca5183956378")
+    -- CryptoExtras depends on SwiftASN1 from swift-asn1 (upstream's `from: "1.2.0"`); the release 1.7.3 is pinned by its sha256.
+    add_resources("5.0.1", "swift-asn1", "https://github.com/apple/swift-asn1/archive/refs/tags/1.7.3.tar.gz",
+                  "77add3684fd75a586529893288af51ed092c565ec0c154d2b4eedb3a6bdc294c")
 
     -- The identity of this recipe: a changed recipe, patch or shim is a different package. The apple-compat and apple-backports
     -- inputs it builds against are part of it.
     local digests = {}
     local inputs = {os.scriptdir() .. "/xmake.lua"}
     for _, patch in ipairs(os.files(os.scriptdir() .. "/patches/*.patch")) do
+        table.insert(inputs, patch)
+    end
+    for _, patch in ipairs(os.files(os.scriptdir() .. "/patches/swift-asn1/*.patch")) do
         table.insert(inputs, patch)
     end
     local compat = path.join(os.scriptdir(), "..", "..", "a", "apple-compat")
@@ -132,6 +138,45 @@ package("swift-crypto")
                             path.join(swiftmods, "Crypto.swiftmodule")}, crypto, {"-o", path.join(objects, "Crypto.o")})
         os.vrunv(swiftc, cargv)
 
+        -- CryptoExtras and the SwiftASN1 it imports, built into the same dylib: the module files are exported with Crypto's,
+        -- and _CryptoExtras is the re-export module a program imports. SwiftASN1 is the upstream tree of swift-asn1 (a resource,
+        -- pinned above), with its patch for the 6.1.3 base64 API. The module's Swift settings are upstream's
+        -- (MemberImportVisibility, ExistentialAny, swift-version 6, its own package name).
+        local asn1 = assert(os.dirs(path.join(package:resourcedir("swift-asn1"), "swift-asn1-*"))[1], "swift-asn1 is not fetched")
+        local asn1tree = package:installdir("swift-asn1")
+        os.cp(path.join(asn1, "*"), asn1tree)
+        for _, patch in ipairs(os.files(path.join(package:scriptdir(), "patches", "swift-asn1", "*.patch"))) do
+            os.vrunv("patch", {"-d", asn1tree, "-p1", "-s", "-i", patch})
+        end
+        local function swiftfiles(dir)
+            local files = {}
+            for _, file in ipairs(os.files(path.join(dir, "**.swift"))) do
+                table.insert(files, file)
+            end
+            table.sort(files)
+            return files
+        end
+        local asn1flags = {"-enable-upcoming-feature", "MemberImportVisibility", "-enable-upcoming-feature", "ExistentialAny",
+                           "-package-name", "swift-asn1", "-swift-version", "6"}
+        local asn1argv = swift.runtime_flags({architecture = package:arch(), deployment = minimum, sdk = sdk, resources = resources,
+                                              module = "SwiftASN1"})
+        table.join2(asn1argv, asn1flags, {"-c", "-module-name", "SwiftASN1", "-emit-module", "-emit-module-path",
+                    path.join(swiftmods, "SwiftASN1.swiftmodule")}, swiftfiles(path.join(asn1tree, "Sources", "SwiftASN1")),
+                    {"-o", path.join(objects, "SwiftASN1.o")})
+        os.vrunv(swiftc, asn1argv)
+
+        -- CryptoExtras imports Crypto, CryptoBoringWrapper, SwiftASN1 and CCryptoBoringSSL: the flags above name their folders.
+        -- _CryptoExtras is one file that re-exports CryptoExtras and Crypto.
+        for _, module in ipairs({"CryptoExtras", "_CryptoExtras"}) do
+            local argv = swift.runtime_flags({architecture = package:arch(), deployment = minimum, sdk = sdk, resources = resources,
+                                              module = module})
+            table.join2(argv, swiftflags)
+            table.join2(argv, {"-module-name", module, "-I", swiftmods, "-emit-module", "-emit-module-path",
+                               path.join(swiftmods, module .. ".swiftmodule")},
+                        swiftfiles(path.join(sources, module)), {"-o", path.join(objects, module .. ".o")})
+            os.vrunv(swiftc, argv)
+        end
+
         -- Linked through the clang driver with charon@ld64 as its linker, as swift-system is (the host ld rejects libswiftCore's
         -- immortal refcount layout). The objects of CCryptoBoringSSL, CXKCP, memset_s and objc_opt_self are in the dylib; the module's imports
         -- are the runtime's libraries, Foundation and libCommonCryptoBackports (entropy).
@@ -143,11 +188,15 @@ package("swift-crypto")
                   "-lswiftCore", "-lswiftDarwin", "-lswiftObjectiveC", "-lswiftDispatch", "-lswift_Concurrency",
                   "-lswiftFoundation", "-lCommonCryptoBackports"}))
         os.cp(lib, package:installdir("lib"))
-        -- The module files a consumer imports: Crypto and CryptoBoringWrapper (Crypto imports it, not implementation-only).
+        -- The module files a consumer imports: Crypto and CryptoBoringWrapper (Crypto imports it, not implementation-only), and
+        -- CryptoExtras, _CryptoExtras and SwiftASN1 (the module CryptoExtras' public API reaches).
         local module = path.join(package:installdir("lib"), "swift", "iphoneos")
         os.mkdir(module)
         os.cp(path.join(swiftmods, "Crypto.swiftmodule"), path.join(module, "Crypto.swiftmodule"))
         os.cp(path.join(swiftmods, "CryptoBoringWrapper.swiftmodule"), path.join(module, "CryptoBoringWrapper.swiftmodule"))
+        for _, name in ipairs({"SwiftASN1", "CryptoExtras", "_CryptoExtras"}) do
+            os.cp(path.join(swiftmods, name .. ".swiftmodule"), path.join(module, name .. ".swiftmodule"))
+        end
         os.cp(path.join(objects, "Crypto.o"), path.join(package:installdir("lib"), "Crypto.o"))
         -- What a program that imports Crypto compiles against: its module folder, and apple-compat's CharonCompat module, which
         -- Crypto.swiftmodule imports (rules/swift adds the -I of every dependency's CHARON_SWIFT_MODULES). CharonCompat's
