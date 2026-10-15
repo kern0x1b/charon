@@ -1,0 +1,6 @@
+framework	kind	usr	container	name	side	type	params	availability	message	declhash
+QuartzCore	swift-struct	c:@S@CAFrameRateRange	-	CAFrameRateRange	-	-	-	ios=15.0	-	6d95c85a92daabf6
+QuartzCore	swift-method	s:So16CAFrameRateRangeV10QuartzCoreE7minimum7maximum9preferredABSf_S2fSgtcfc	CAFrameRateRange	init(minimum:maximum:preferred:)	-	-	QuartzCore.CAFrameRateRange | Swift.Float | Swift.Float | Swift.Float?	-	-	e3570ab2cacb9c78
+QuartzCore	swift-property	s:So16CAFrameRateRangeV10QuartzCoreE9preferredSfSgvp	CAFrameRateRange	preferred	-	Swift.Float?	-	-	-	70bdd0f2e19c667e
+QuartzCore	swift-method	s:So16CAFrameRateRangeV10QuartzCoreE2eeoiySbAB_ABtFZ	CAFrameRateRange	==(_:_:)	+	Swift.Bool	QuartzCore.CAFrameRateRange | QuartzCore.CAFrameRateRange	-	-	fdf6e7f211a1fc77
+QuartzCore	swift-struct	c:@S@CATransform3D	-	CATransform3D	-	-	-	ios=2.0	-	a98e59332b1414fa

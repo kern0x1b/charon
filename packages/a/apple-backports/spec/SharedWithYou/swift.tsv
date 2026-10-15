@@ -1,0 +1,9 @@
+framework	kind	usr	container	name	side	type	params	availability	message	declhash
+SharedWithYou	swift-class	c:objc(cs)SWCollaborationMetadata	-	SWCollaborationMetadata	-	-	-	ios=16.0	-	7d84571f06f53e05
+SharedWithYou	swift-property	s:So23SWCollaborationMetadataC13SharedWithYouE22transferRepresentationQrvpZ	SWCollaborationMetadata	transferRepresentation	+	some CoreTransferable.TransferRepresentation	-	-	-	e36e3394decd7722
+SharedWithYou	swift-typealias	s:So23SWCollaborationMetadataC13SharedWithYouE14Representationa	SWCollaborationMetadata	Representation	-	-	-	ios=16.0	-	8b4dadf00239ea77
+SharedWithYou	swift-class	c:objc(cs)SWHighlightCenter	-	SWHighlightCenter	-	-	-	ios=16.0	-	091908f33e37c647
+SharedWithYou	swift-method	s:So17SWHighlightCenterC13SharedWithYouE22collaborationHighlight13forIdentifierSo015SWCollaborationG0CSS_tKF	SWHighlightCenter	collaborationHighlight(forIdentifier:)	-	SharedWithYou.SWCollaborationHighlight	Swift.String	-	-	d984cd02639c9f3c
+SharedWithYou	swift-class	c:objc(cs)SWCollaborationView	-	SWCollaborationView	-	-	-	ios=16.0	-	2240eb1852b95710
+SharedWithYou	swift-method	s:So19SWCollaborationViewC13SharedWithYouE09setDetailB11ListContentyyx7SwiftUI0B0RzlF	SWCollaborationView	setDetailViewListContent(_:)	-	()	ListContent	-	-	815b35b92917a98f
+SharedWithYou	swift-method	s:So19SWCollaborationViewC13SharedWithYouE09setDetailB11ListContentyyxyXE7SwiftUI0B0RzlF	SWCollaborationView	setDetailViewListContent(_:)	-	()	() -> ListContent	-	-	2452d750e5dcbbb2

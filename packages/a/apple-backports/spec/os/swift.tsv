@@ -1,0 +1,271 @@
+framework	kind	usr	container	name	side	type	params	availability	message	declhash
+os	swift-function	s:2os0A4_log_3dso0B0__ySo0a1_B7_type_ta_SVSo03OS_a1_B0Cs12StaticStringVs7CVarArg_pdtF	-	os_log(_:dso:log:_:_:)	-	()	os.OSLogType | Swift.UnsafeRawPointer | os.OSLog | Swift.StaticString | any Swift.CVarArg...	ios=12.0,macos=10.14,tvos=12.0,watchos=5.0	-	68ccf8ceb58be19e
+os	swift-function	s:2os0A4_log_3dso0B04type_ys12StaticStringV_SVSgSo03OS_a1_B0CSo0a1_b1_D2_tas7CVarArg_pdtF	-	os_log(_:dso:log:type:_:)	-	()	Swift.StaticString | Swift.UnsafeRawPointer? | os.OSLog | os.OSLogType | any Swift.CVarArg...	ios=10.0,macos=10.12,tvos=10.0,watchos=3.0	-	ebb4ad0c17052766
+os	swift-function	s:2os0A9_signpost_3dso3log4name0B2IDySo0a1_B7_type_ta_SVSo03OS_a1_D0Cs12StaticStringVAA010OSSignpostF0VtF	-	os_signpost(_:dso:log:name:signpostID:)	-	()	os.OSSignpostType | Swift.UnsafeRawPointer | os.OSLog | Swift.StaticString | os.OSSignpostID	ios=12.0,macos=10.14,tvos=12.0,watchos=5.0	-	1fab57383ad9ce8d
+os	swift-function	s:2os0A9_signpost_3dso3log4name0B2ID__ySo0a1_B7_type_ta_SVSo03OS_a1_D0Cs12StaticStringVAA010OSSignpostF0VALs7CVarArg_pdtF	-	os_signpost(_:dso:log:name:signpostID:_:_:)	-	()	os.OSSignpostType | Swift.UnsafeRawPointer | os.OSLog | Swift.StaticString | os.OSSignpostID | Swift.StaticString | any Swift.CVarArg...	ios=12.0,macos=10.14,tvos=12.0,watchos=5.0	-	88f13a75f9f927e2
+os	swift-enum	s:2os21AnimationFormatStringO	-	AnimationFormatString	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	6e3e5d64490d44c3
+os	swift-struct	s:2os21AnimationFormatStringO12OSLogMessageV	AnimationFormatString	OSLogMessage	-	-	-	-	-	8a16c193cdb827c3
+os	swift-method	s:2os21AnimationFormatStringO12OSLogMessageV13stringLiteralAESS_tcfc	AnimationFormatString.OSLogMessage	init(stringLiteral:)	-	-	os.AnimationFormatString.OSLogMessage | Swift.String	-	-	e86d9b6ad36fa58f
+os	swift-typealias	s:2os21AnimationFormatStringO12OSLogMessageV34ExtendedGraphemeClusterLiteralTypea	AnimationFormatString.OSLogMessage	ExtendedGraphemeClusterLiteralType	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	963d24f906c17e56
+os	swift-typealias	s:2os21AnimationFormatStringO12OSLogMessageV0D11LiteralTypea	AnimationFormatString.OSLogMessage	StringLiteralType	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	8ae076b0ccbe96ad
+os	swift-typealias	s:2os21AnimationFormatStringO12OSLogMessageV24UnicodeScalarLiteralTypea	AnimationFormatString.OSLogMessage	UnicodeScalarLiteralType	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	7e13c4066351d479
+os	swift-enum	s:2os24OSSignpostAnimationBeginO	-	OSSignpostAnimationBegin	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	58936acadcc64be8
+os	swift-property	s:2os24OSSignpostAnimationBeginO09animationD0yA2CmF	OSSignpostAnimationBegin	animationBegin	-	-	-	-	-	8e5a0070a212a780
+os	swift-method	s:2os24OSSignpostAnimationBeginO2eeoiySbAC_ACtFZ	OSSignpostAnimationBegin	==(_:_:)	+	Swift.Bool	os.OSSignpostAnimationBegin | os.OSSignpostAnimationBegin	-	-	3c3426ba19d42ea1
+os	swift-method	s:2os24OSSignpostAnimationBeginO4hash4intoys6HasherVz_tF	OSSignpostAnimationBegin	hash(into:)	-	()	Swift.Hasher	-	-	5991c4dc9d9607f7
+os	swift-property	s:2os24OSSignpostAnimationBeginO9hashValueSivp	OSSignpostAnimationBegin	hashValue	-	Swift.Int	-	-	-	690836dfbac79d74
+os	swift-function	s:2os0A9_signpost_3dso3log4name0B2ID__yAA24OSSignpostAnimationBeginO_SVSo03OS_a1_D0Cs12StaticStringVAA0gF0VAA0h6FormatL0O12OSLogMessageVs7CVarArg_pdtF	-	os_signpost(_:dso:log:name:signpostID:_:_:)	-	()	os.OSSignpostAnimationBegin | Swift.UnsafeRawPointer | os.OSLog | Swift.StaticString | os.OSSignpostID | os.AnimationFormatString.OSLogMessage | any Swift.CVarArg...	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	dab05ad5cf940df0
+os	swift-function	s:2os0A9_signpost_3dso3log4name0B2IDyAA24OSSignpostAnimationBeginO_SVSo03OS_a1_D0Cs12StaticStringVAA0gF0VtF	-	os_signpost(_:dso:log:name:signpostID:)	-	()	os.OSSignpostAnimationBegin | Swift.UnsafeRawPointer | os.OSLog | Swift.StaticString | os.OSSignpostID	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	f2bfbe6fc6207a8f
+os	swift-struct	s:2os12OSSignpostIDV	-	OSSignpostID	-	-	-	ios=12.0,macos=10.14,tvos=12.0,watchos=5.0	-	40661f061385260a
+os	swift-property	s:2os12OSSignpostIDV8rawValues6UInt64Vvp	OSSignpostID	rawValue	-	os.os_signpost_id_t	-	-	-	367e681afa1b2a7c
+os	swift-property	s:2os12OSSignpostIDV9exclusiveACvpZ	OSSignpostID	exclusive	+	os.OSSignpostID	-	-	-	8ccf60339065efd4
+os	swift-property	s:2os12OSSignpostIDV7invalidACvpZ	OSSignpostID	invalid	+	os.OSSignpostID	-	-	-	9edcca3f918c491e
+os	swift-property	s:2os12OSSignpostIDV4nullACvpZ	OSSignpostID	null	+	os.OSSignpostID	-	-	-	37134144ddc143b8
+os	swift-method	s:2os12OSSignpostIDV3logACSo03OS_a1_D0C_tcfc	OSSignpostID	init(log:)	-	-	os.OSSignpostID | os.OSLog	-	-	2e957d986c0a2d55
+os	swift-method	s:2os12OSSignpostIDV3log6objectACSo03OS_a1_D0C_yXltcfc	OSSignpostID	init(log:object:)	-	-	os.OSSignpostID | os.OSLog | Swift.AnyObject	-	-	116e051a66eef3c4
+os	swift-method	s:2os12OSSignpostIDVyACs6UInt64Vcfc	OSSignpostID	init(_:)	-	-	os.OSSignpostID | Swift.UInt64	-	-	e24b9d21e57ca167
+os	swift-method	s:2os12OSSignpostIDV1loiySbAC_ACtFZ	OSSignpostID	<(_:_:)	+	Swift.Bool	os.OSSignpostID | os.OSSignpostID	-	-	df9f3ea6958932e1
+os	swift-method	s:2os12OSSignpostIDV2eeoiySbAC_ACtFZ	OSSignpostID	==(_:_:)	+	Swift.Bool	os.OSSignpostID | os.OSSignpostID	-	-	43a7ad77a1ac3f34
+os	swift-struct	s:2os20OSLogFloatFormattingV	-	OSLogFloatFormatting	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	c7ce117f4e4ad43b
+os	swift-property	s:2os20OSLogFloatFormattingV5fixedACvpZ	OSLogFloatFormatting	fixed	+	os.OSLogFloatFormatting	-	-	-	b062598e3891812a
+os	swift-method	s:2os20OSLogFloatFormattingV5fixed9precision20explicitPositiveSign9uppercaseACSiyXA_S2btFZ	OSLogFloatFormatting	fixed(precision:explicitPositiveSign:uppercase:)	+	os.OSLogFloatFormatting	() -> Swift.Int | Swift.Bool | Swift.Bool	-	-	0cb61c9cb67d9187
+os	swift-method	s:2os20OSLogFloatFormattingV5fixed20explicitPositiveSign9uppercaseACSb_SbtFZ	OSLogFloatFormatting	fixed(explicitPositiveSign:uppercase:)	+	os.OSLogFloatFormatting	Swift.Bool | Swift.Bool	-	-	f4e1394ba5b6480a
+os	swift-property	s:2os20OSLogFloatFormattingV3hexACvpZ	OSLogFloatFormatting	hex	+	os.OSLogFloatFormatting	-	-	-	e41734ec26babf20
+os	swift-method	s:2os20OSLogFloatFormattingV3hex20explicitPositiveSign9uppercaseACSb_SbtFZ	OSLogFloatFormatting	hex(explicitPositiveSign:uppercase:)	+	os.OSLogFloatFormatting	Swift.Bool | Swift.Bool	-	-	f56a727a328c9b83
+os	swift-property	s:2os20OSLogFloatFormattingV11exponentialACvpZ	OSLogFloatFormatting	exponential	+	os.OSLogFloatFormatting	-	-	-	9550d5dfea6233e5
+os	swift-method	s:2os20OSLogFloatFormattingV11exponential9precision20explicitPositiveSign9uppercaseACSiyXA_S2btFZ	OSLogFloatFormatting	exponential(precision:explicitPositiveSign:uppercase:)	+	os.OSLogFloatFormatting	() -> Swift.Int | Swift.Bool | Swift.Bool	-	-	cf2a55a4514c2a9a
+os	swift-method	s:2os20OSLogFloatFormattingV11exponential20explicitPositiveSign9uppercaseACSb_SbtFZ	OSLogFloatFormatting	exponential(explicitPositiveSign:uppercase:)	+	os.OSLogFloatFormatting	Swift.Bool | Swift.Bool	-	-	131894e19b6bc6d8
+os	swift-property	s:2os20OSLogFloatFormattingV6hybridACvpZ	OSLogFloatFormatting	hybrid	+	os.OSLogFloatFormatting	-	-	-	dc83f3f5e80013cf
+os	swift-method	s:2os20OSLogFloatFormattingV6hybrid9precision20explicitPositiveSign9uppercaseACSiyXA_S2btFZ	OSLogFloatFormatting	hybrid(precision:explicitPositiveSign:uppercase:)	+	os.OSLogFloatFormatting	() -> Swift.Int | Swift.Bool | Swift.Bool	-	-	21a19a6f8a09ac35
+os	swift-method	s:2os20OSLogFloatFormattingV6hybrid20explicitPositiveSign9uppercaseACSb_SbtFZ	OSLogFloatFormatting	hybrid(explicitPositiveSign:uppercase:)	+	os.OSLogFloatFormatting	Swift.Bool | Swift.Bool	-	-	c46d941f62df974f
+os	swift-struct	s:2os22OSLogIntegerFormattingV	-	OSLogIntegerFormatting	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	e1a76b95c81e74a5
+os	swift-method	s:2os22OSLogIntegerFormattingV7decimal20explicitPositiveSign9minDigitsACSb_SiyXAtFZ	OSLogIntegerFormatting	decimal(explicitPositiveSign:minDigits:)	+	os.OSLogIntegerFormatting	Swift.Bool | () -> Swift.Int	-	-	7af3d46ff7308674
+os	swift-method	s:2os22OSLogIntegerFormattingV7decimal20explicitPositiveSignACSb_tFZ	OSLogIntegerFormatting	decimal(explicitPositiveSign:)	+	os.OSLogIntegerFormatting	Swift.Bool	-	-	a92cab5cfb9cbe42
+os	swift-property	s:2os22OSLogIntegerFormattingV7decimalACvpZ	OSLogIntegerFormatting	decimal	+	os.OSLogIntegerFormatting	-	-	-	25019efb47bd7926
+os	swift-method	s:2os22OSLogIntegerFormattingV3hex20explicitPositiveSign13includePrefix9uppercase9minDigitsACSb_S2bSiyXAtFZ	OSLogIntegerFormatting	hex(explicitPositiveSign:includePrefix:uppercase:minDigits:)	+	os.OSLogIntegerFormatting	Swift.Bool | Swift.Bool | Swift.Bool | () -> Swift.Int	-	-	a0e1ed31b4f035cb
+os	swift-method	s:2os22OSLogIntegerFormattingV3hex20explicitPositiveSign13includePrefix9uppercaseACSb_S2btFZ	OSLogIntegerFormatting	hex(explicitPositiveSign:includePrefix:uppercase:)	+	os.OSLogIntegerFormatting	Swift.Bool | Swift.Bool | Swift.Bool	-	-	b590c434e51fee49
+os	swift-property	s:2os22OSLogIntegerFormattingV3hexACvpZ	OSLogIntegerFormatting	hex	+	os.OSLogIntegerFormatting	-	-	-	9620fd9e91812318
+os	swift-method	s:2os22OSLogIntegerFormattingV5octal20explicitPositiveSign13includePrefix9uppercase9minDigitsACSb_S2bSiyXAtFZ	OSLogIntegerFormatting	octal(explicitPositiveSign:includePrefix:uppercase:minDigits:)	+	os.OSLogIntegerFormatting	Swift.Bool | Swift.Bool | Swift.Bool | () -> Swift.Int	-	-	3b144f22a80dac43
+os	swift-method	s:2os22OSLogIntegerFormattingV5octal20explicitPositiveSign13includePrefix9uppercaseACSb_S2btFZ	OSLogIntegerFormatting	octal(explicitPositiveSign:includePrefix:uppercase:)	+	os.OSLogIntegerFormatting	Swift.Bool | Swift.Bool | Swift.Bool	-	-	19ae34294c84df36
+os	swift-property	s:2os22OSLogIntegerFormattingV5octalACvpZ	OSLogIntegerFormatting	octal	+	os.OSLogIntegerFormatting	-	-	-	7c9f8f55132eb3c9
+os	swift-constant	s:2os21maxOSLogArgumentCounts5UInt8Vvp	-	maxOSLogArgumentCount	-	Swift.UInt8	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	51774393a9bd2c4d
+os	swift-struct	s:2os18OSLogInterpolationV	-	OSLogInterpolation	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	b91e89f7c3223968
+os	swift-method	s:2os18OSLogInterpolationV15literalCapacity18interpolationCountACSi_Sitcfc	OSLogInterpolation	init(literalCapacity:interpolationCount:)	-	-	os.OSLogInterpolation | Swift.Int | Swift.Int	-	-	bd29bffb07d92c65
+os	swift-method	s:2os18OSLogInterpolationV13appendLiteralyySSF	OSLogInterpolation	appendLiteral(_:)	-	()	Swift.String	-	-	ae345b801fee705d
+os	swift-typealias	s:2os18OSLogInterpolationV17StringLiteralTypea	OSLogInterpolation	StringLiteralType	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	ed41ffc734e17abc
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_7privacy10attributesys5Error_pyXA_AA0B7PrivacyVSStF	OSLogInterpolation	appendInterpolation(_:privacy:attributes:)	-	()	() -> any Swift.Error | os.OSLogPrivacy | Swift.String	-	-	bed0970164bed989
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_7privacy10attributesys5Error_pSgyXA_AA0B7PrivacyVSStF	OSLogInterpolation	appendInterpolation(_:privacy:attributes:)	-	()	() -> (any Swift.Error)? | os.OSLogPrivacy | Swift.String	-	-	9dcdd3919f151e10
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_6format5align7privacyySfyXA_AA0B15FloatFormattingVAA0B15StringAlignmentVAA0B7PrivacyVtF	OSLogInterpolation	appendInterpolation(_:format:align:privacy:)	-	()	() -> Swift.Float | os.OSLogFloatFormatting | os.OSLogStringAlignment | os.OSLogPrivacy	-	-	c21cba7d71085349
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_6format5align7privacy10attributesySfyXA_AA0B15FloatFormattingVAA0B15StringAlignmentVAA0B7PrivacyVSStF	OSLogInterpolation	appendInterpolation(_:format:align:privacy:attributes:)	-	()	() -> Swift.Float | os.OSLogFloatFormatting | os.OSLogStringAlignment | os.OSLogPrivacy | Swift.String	-	-	742f5c4217d1f4e2
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_6format5align7privacyySdyXA_AA0B15FloatFormattingVAA0B15StringAlignmentVAA0B7PrivacyVtF	OSLogInterpolation	appendInterpolation(_:format:align:privacy:)	-	()	() -> Swift.Double | os.OSLogFloatFormatting | os.OSLogStringAlignment | os.OSLogPrivacy	-	-	4448292707ecf0a8
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_6format5align7privacy10attributesySdyXA_AA0B15FloatFormattingVAA0B15StringAlignmentVAA0B7PrivacyVSStF	OSLogInterpolation	appendInterpolation(_:format:align:privacy:attributes:)	-	()	() -> Swift.Double | os.OSLogFloatFormatting | os.OSLogStringAlignment | os.OSLogPrivacy | Swift.String	-	-	bb4c9e396a63c041
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_6format5align7privacyySiyXA_AA0B17IntegerFormattingVAA0B15StringAlignmentVAA0B7PrivacyVtF	OSLogInterpolation	appendInterpolation(_:format:align:privacy:)	-	()	() -> Swift.Int | os.OSLogIntegerFormatting | os.OSLogStringAlignment | os.OSLogPrivacy	-	-	b8063ab4bcfe6ca8
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_6format5align7privacyys4Int8VyXA_AA0B17IntegerFormattingVAA0B15StringAlignmentVAA0B7PrivacyVtF	OSLogInterpolation	appendInterpolation(_:format:align:privacy:)	-	()	() -> Swift.Int8 | os.OSLogIntegerFormatting | os.OSLogStringAlignment | os.OSLogPrivacy	-	-	f1c4715198ac2771
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_6format5align7privacyys5Int16VyXA_AA0B17IntegerFormattingVAA0B15StringAlignmentVAA0B7PrivacyVtF	OSLogInterpolation	appendInterpolation(_:format:align:privacy:)	-	()	() -> Swift.Int16 | os.OSLogIntegerFormatting | os.OSLogStringAlignment | os.OSLogPrivacy	-	-	1fd60c93974b24ef
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_6format5align7privacyys5Int32VyXA_AA0B17IntegerFormattingVAA0B15StringAlignmentVAA0B7PrivacyVtF	OSLogInterpolation	appendInterpolation(_:format:align:privacy:)	-	()	() -> Swift.Int32 | os.OSLogIntegerFormatting | os.OSLogStringAlignment | os.OSLogPrivacy	-	-	d77be4bb9f8849af
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_6format5align7privacyys5Int64VyXA_AA0B17IntegerFormattingVAA0B15StringAlignmentVAA0B7PrivacyVtF	OSLogInterpolation	appendInterpolation(_:format:align:privacy:)	-	()	() -> Swift.Int64 | os.OSLogIntegerFormatting | os.OSLogStringAlignment | os.OSLogPrivacy	-	-	b50977291010aeac
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_6format5align7privacyySuyXA_AA0B17IntegerFormattingVAA0B15StringAlignmentVAA0B7PrivacyVtF	OSLogInterpolation	appendInterpolation(_:format:align:privacy:)	-	()	() -> Swift.UInt | os.OSLogIntegerFormatting | os.OSLogStringAlignment | os.OSLogPrivacy	-	-	9b8cd0d015fc3444
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_6format5align7privacyys5UInt8VyXA_AA0B17IntegerFormattingVAA0B15StringAlignmentVAA0B7PrivacyVtF	OSLogInterpolation	appendInterpolation(_:format:align:privacy:)	-	()	() -> Swift.UInt8 | os.OSLogIntegerFormatting | os.OSLogStringAlignment | os.OSLogPrivacy	-	-	1cf2d004d78a00fa
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_6format5align7privacyys6UInt16VyXA_AA0B17IntegerFormattingVAA0B15StringAlignmentVAA0B7PrivacyVtF	OSLogInterpolation	appendInterpolation(_:format:align:privacy:)	-	()	() -> Swift.UInt16 | os.OSLogIntegerFormatting | os.OSLogStringAlignment | os.OSLogPrivacy	-	-	2c75060d3b9ce698
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_6format5align7privacyys6UInt32VyXA_AA0B17IntegerFormattingVAA0B15StringAlignmentVAA0B7PrivacyVtF	OSLogInterpolation	appendInterpolation(_:format:align:privacy:)	-	()	() -> Swift.UInt32 | os.OSLogIntegerFormatting | os.OSLogStringAlignment | os.OSLogPrivacy	-	-	7ba8dffeb2f77b26
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_6format5align7privacyys6UInt64VyXA_AA0B17IntegerFormattingVAA0B15StringAlignmentVAA0B7PrivacyVtF	OSLogInterpolation	appendInterpolation(_:format:align:privacy:)	-	()	() -> Swift.UInt64 | os.OSLogIntegerFormatting | os.OSLogStringAlignment | os.OSLogPrivacy	-	-	bbb38d49b5013ad2
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_6format5align7privacy10attributesyxyXA_AA0B17IntegerFormattingVAA0B15StringAlignmentVAA0B7PrivacyVSSts010FixedWidthI0RzlF	OSLogInterpolation	appendInterpolation(_:format:align:privacy:attributes:)	-	()	() -> T | os.OSLogIntegerFormatting | os.OSLogStringAlignment | os.OSLogPrivacy | Swift.String	-	-	2e7d9ccade8c6a90
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_7privacyySo8NSObjectCyXA_AA0B7PrivacyVtF	OSLogInterpolation	appendInterpolation(_:privacy:)	-	()	() -> ObjectiveC.NSObject | os.OSLogPrivacy	-	-	9de85558ec50def0
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_7privacy10attributesySo8NSObjectCyXA_AA0B7PrivacyVSStF	OSLogInterpolation	appendInterpolation(_:privacy:attributes:)	-	()	() -> ObjectiveC.NSObject | os.OSLogPrivacy | Swift.String	-	-	2771ec78f938f673
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_7privacy10attributesySo8NSObjectCSgyXA_AA0B7PrivacyVSStF	OSLogInterpolation	appendInterpolation(_:privacy:attributes:)	-	()	() -> ObjectiveC.NSObject? | os.OSLogPrivacy | Swift.String	-	-	6e6dfbe245bc1d3c
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_6format7privacyySWyXA_AA0B13PointerFormatOAA0B7PrivacyVtF	OSLogInterpolation	appendInterpolation(_:format:privacy:)	-	()	() -> Swift.UnsafeRawBufferPointer | os.OSLogPointerFormat | os.OSLogPrivacy	-	-	44074c02e1d0bfc3
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_6format7privacy10attributesySWyXA_AA0B13PointerFormatOAA0B7PrivacyVSStF	OSLogInterpolation	appendInterpolation(_:format:privacy:attributes:)	-	()	() -> Swift.UnsafeRawBufferPointer | os.OSLogPointerFormat | os.OSLogPrivacy | Swift.String	-	-	1e681627ec7e7892
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_5bytes6format7privacyySVyXA_SiyXAAA0B13PointerFormatOAA0B7PrivacyVtF	OSLogInterpolation	appendInterpolation(_:bytes:format:privacy:)	-	()	() -> Swift.UnsafeRawPointer | () -> Swift.Int | os.OSLogPointerFormat | os.OSLogPrivacy	-	-	b15760d6952da31b
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_5bytes6format7privacy10attributesySVyXA_SiyXAAA0B13PointerFormatOAA0B7PrivacyVSStF	OSLogInterpolation	appendInterpolation(_:bytes:format:privacy:attributes:)	-	()	() -> Swift.UnsafeRawPointer | () -> Swift.Int | os.OSLogPointerFormat | os.OSLogPrivacy | Swift.String	-	-	58780d9b22e0ddfc
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_6format7privacyys5Int32VyXA_AA0bG14ExtendedFormatOAA0B7PrivacyVtF	OSLogInterpolation	appendInterpolation(_:format:privacy:)	-	()	() -> Swift.Int32 | os.OSLogInt32ExtendedFormat | os.OSLogPrivacy	-	-	f605fa8c1af54711
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_6format7privacy10attributesys5Int32VyXA_AA0bH14ExtendedFormatOAA0B7PrivacyVSStF	OSLogInterpolation	appendInterpolation(_:format:privacy:attributes:)	-	()	() -> Swift.Int32 | os.OSLogInt32ExtendedFormat | os.OSLogPrivacy | Swift.String	-	-	4416db03a231b4f5
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_6format7privacyySbyXA_AA0B10BoolFormatOAA0B7PrivacyVtF	OSLogInterpolation	appendInterpolation(_:format:privacy:)	-	()	() -> Swift.Bool | os.OSLogBoolFormat | os.OSLogPrivacy	-	-	12f3b9f01d91f9b5
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_6format7privacy10attributesySiyXA_AA0B17IntExtendedFormatOAA0B7PrivacyVSStF	OSLogInterpolation	appendInterpolation(_:format:privacy:attributes:)	-	()	() -> Swift.Int | os.OSLogIntExtendedFormat | os.OSLogPrivacy | Swift.String	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	4232eb7ee800e901
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_5align7privacyySSyXA_AA0B15StringAlignmentVAA0B7PrivacyVtF	OSLogInterpolation	appendInterpolation(_:align:privacy:)	-	()	() -> Swift.String | os.OSLogStringAlignment | os.OSLogPrivacy	-	-	9e2407b2543d2410
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_5align7privacy10attributesySSyXA_AA0B15StringAlignmentVAA0B7PrivacyVSStF	OSLogInterpolation	appendInterpolation(_:align:privacy:attributes:)	-	()	() -> Swift.String | os.OSLogStringAlignment | os.OSLogPrivacy | Swift.String	-	-	ac4097dcdd2bff06
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_5align7privacyyxyXA_AA0B15StringAlignmentVAA0B7PrivacyVts06CustomG11ConvertibleRzlF	OSLogInterpolation	appendInterpolation(_:align:privacy:)	-	()	() -> T | os.OSLogStringAlignment | os.OSLogPrivacy	-	-	1b36f04e3eef2e81
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_5align7privacy10attributesyxyXA_AA0B15StringAlignmentVAA0B7PrivacyVSSts06CustomH11ConvertibleRzlF	OSLogInterpolation	appendInterpolation(_:align:privacy:attributes:)	-	()	() -> T | os.OSLogStringAlignment | os.OSLogPrivacy | Swift.String	-	-	595453aa3a6af461
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_5align7privacyyypXpyXA_AA0B15StringAlignmentVAA0B7PrivacyVtF	OSLogInterpolation	appendInterpolation(_:align:privacy:)	-	()	() -> any Any.Type | os.OSLogStringAlignment | os.OSLogPrivacy	-	-	a31ba7a0fb70a5bb
+os	swift-method	s:2os18OSLogInterpolationV06appendC0_5align7privacy10attributesyypXpyXA_AA0B15StringAlignmentVAA0B7PrivacyVSStF	OSLogInterpolation	appendInterpolation(_:align:privacy:attributes:)	-	()	() -> any Any.Type | os.OSLogStringAlignment | os.OSLogPrivacy | Swift.String	-	-	2467a3b2aa2030da
+os	swift-struct	s:2os12OSLogMessageV	-	OSLogMessage	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	f14f47ec2ac3df70
+os	swift-property	s:2os12OSLogMessageV13interpolationAA0B13InterpolationVvp	OSLogMessage	interpolation	-	os.OSLogInterpolation	-	-	-	bf6e2a44237dbd38
+os	swift-method	s:2os12OSLogMessageV19stringInterpolationAcA0bE0V_tcfc	OSLogMessage	init(stringInterpolation:)	-	-	os.OSLogMessage | os.OSLogInterpolation	-	-	8c16c95378d20a56
+os	swift-method	s:2os12OSLogMessageV13stringLiteralACSS_tcfc	OSLogMessage	init(stringLiteral:)	-	-	os.OSLogMessage | Swift.String	-	-	efcb5a349bd442ae
+os	swift-property	s:2os12OSLogMessageV10bufferSizeSivp	OSLogMessage	bufferSize	-	Swift.Int	-	-	-	a38cbd208c7ffc66
+os	swift-typealias	s:2os12OSLogMessageV34ExtendedGraphemeClusterLiteralTypea	OSLogMessage	ExtendedGraphemeClusterLiteralType	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	03409cde577b208b
+os	swift-typealias	s:2os12OSLogMessageV19StringInterpolationa	OSLogMessage	StringInterpolation	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	bf8473c2b2c18d4b
+os	swift-typealias	s:2os12OSLogMessageV17StringLiteralTypea	OSLogMessage	StringLiteralType	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	6a990c56566cc61c
+os	swift-typealias	s:2os12OSLogMessageV24UnicodeScalarLiteralTypea	OSLogMessage	UnicodeScalarLiteralType	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	3692bb965e54cc73
+os	swift-enum	s:2os18OSLogPointerFormatO	-	OSLogPointerFormat	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	bd5358c83fbd82fc
+os	swift-property	s:2os18OSLogPointerFormatO11ipv6AddressyA2CmF	OSLogPointerFormat	ipv6Address	-	-	-	-	-	ddccc3e3b583d5b8
+os	swift-property	s:2os18OSLogPointerFormatO7timevalyA2CmF	OSLogPointerFormat	timeval	-	-	-	-	-	93d5423c3b144a99
+os	swift-property	s:2os18OSLogPointerFormatO8timespecyA2CmF	OSLogPointerFormat	timespec	-	-	-	-	-	514e8479928ea12c
+os	swift-property	s:2os18OSLogPointerFormatO4uuidyA2CmF	OSLogPointerFormat	uuid	-	-	-	-	-	a2d0441dcc1e790b
+os	swift-property	s:2os18OSLogPointerFormatO8sockaddryA2CmF	OSLogPointerFormat	sockaddr	-	-	-	-	-	03a7ef19e67b2697
+os	swift-property	s:2os18OSLogPointerFormatO4noneyA2CmF	OSLogPointerFormat	none	-	-	-	-	-	1371b0eaf8ab2080
+os	swift-method	s:2os18OSLogPointerFormatO2eeoiySbAC_ACtFZ	OSLogPointerFormat	==(_:_:)	+	Swift.Bool	os.OSLogPointerFormat | os.OSLogPointerFormat	-	-	6099286429bbbf5f
+os	swift-method	s:2os18OSLogPointerFormatO4hash4intoys6HasherVz_tF	OSLogPointerFormat	hash(into:)	-	()	Swift.Hasher	-	-	12ff870a4e4d02a5
+os	swift-property	s:2os18OSLogPointerFormatO9hashValueSivp	OSLogPointerFormat	hashValue	-	Swift.Int	-	-	-	3ae071d7f2472b9a
+os	swift-struct	s:2os12OSLogPrivacyV	-	OSLogPrivacy	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	3e4cc0626e209ddf
+os	swift-enum	s:2os12OSLogPrivacyV4MaskO	OSLogPrivacy	Mask	-	-	-	-	-	5e17d679798fd7bb
+os	swift-property	s:2os12OSLogPrivacyV4MaskO4hashyA2EmF	OSLogPrivacy.Mask	hash	-	-	-	-	-	0bf7a6cc8943a330
+os	swift-property	s:2os12OSLogPrivacyV4MaskO4noneyA2EmF	OSLogPrivacy.Mask	none	-	-	-	-	-	804f4b3ffbafcaf7
+os	swift-method	s:2os12OSLogPrivacyV4MaskO2eeoiySbAE_AEtFZ	OSLogPrivacy.Mask	==(_:_:)	+	Swift.Bool	os.OSLogPrivacy.Mask | os.OSLogPrivacy.Mask	-	-	9800c3c5d0b81d5f
+os	swift-method	s:2os12OSLogPrivacyV4MaskO4hash4intoys6HasherVz_tF	OSLogPrivacy.Mask	hash(into:)	-	()	Swift.Hasher	-	-	3485ed568d5d1bb4
+os	swift-property	s:2os12OSLogPrivacyV4MaskO9hashValueSivp	OSLogPrivacy.Mask	hashValue	-	Swift.Int	-	-	-	aed6c8da62e3e7fb
+os	swift-property	s:2os12OSLogPrivacyV6publicACvpZ	OSLogPrivacy	public	+	os.OSLogPrivacy	-	-	-	4360ca1ef757eb47
+os	swift-property	s:2os12OSLogPrivacyV7privateACvpZ	OSLogPrivacy	private	+	os.OSLogPrivacy	-	-	-	14910125b0cff222
+os	swift-method	s:2os12OSLogPrivacyV7private4maskA2C4MaskO_tFZ	OSLogPrivacy	private(mask:)	+	os.OSLogPrivacy	os.OSLogPrivacy.Mask	-	-	5d59c530f4da89dc
+os	swift-property	s:2os12OSLogPrivacyV9sensitiveACvpZ	OSLogPrivacy	sensitive	+	os.OSLogPrivacy	-	-	-	608b8f2a3aded213
+os	swift-method	s:2os12OSLogPrivacyV9sensitive4maskA2C4MaskO_tFZ	OSLogPrivacy	sensitive(mask:)	+	os.OSLogPrivacy	os.OSLogPrivacy.Mask	-	-	fa5c18657cf61e20
+os	swift-property	s:2os12OSLogPrivacyV4autoACvpZ	OSLogPrivacy	auto	+	os.OSLogPrivacy	-	-	-	8388ec12487ccf1a
+os	swift-method	s:2os12OSLogPrivacyV4auto4maskA2C4MaskO_tFZ	OSLogPrivacy	auto(mask:)	+	os.OSLogPrivacy	os.OSLogPrivacy.Mask	-	-	31ab119d07eca97c
+os	swift-enum	s:2os15OSLogBoolFormatO	-	OSLogBoolFormat	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	b7da9344b11c60af
+os	swift-property	s:2os15OSLogBoolFormatO5truthyA2CmF	OSLogBoolFormat	truth	-	-	-	-	-	b11a4be6e71d3ec3
+os	swift-property	s:2os15OSLogBoolFormatO6answeryA2CmF	OSLogBoolFormat	answer	-	-	-	-	-	86c686f3f8985ca5
+os	swift-method	s:2os15OSLogBoolFormatO2eeoiySbAC_ACtFZ	OSLogBoolFormat	==(_:_:)	+	Swift.Bool	os.OSLogBoolFormat | os.OSLogBoolFormat	-	-	46f16065f5a82aaa
+os	swift-method	s:2os15OSLogBoolFormatO4hash4intoys6HasherVz_tF	OSLogBoolFormat	hash(into:)	-	()	Swift.Hasher	-	-	3549b14850814c18
+os	swift-property	s:2os15OSLogBoolFormatO9hashValueSivp	OSLogBoolFormat	hashValue	-	Swift.Int	-	-	-	15ac007d81078e44
+os	swift-enum	s:2os24OSLogInt32ExtendedFormatO	-	OSLogInt32ExtendedFormat	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	68a35338184e9b67
+os	swift-property	s:2os24OSLogInt32ExtendedFormatO11ipv4AddressyA2CmF	OSLogInt32ExtendedFormat	ipv4Address	-	-	-	-	-	7362227b2ada9de0
+os	swift-property	s:2os24OSLogInt32ExtendedFormatO16secondsSince1970yA2CmF	OSLogInt32ExtendedFormat	secondsSince1970	-	-	-	-	-	9f55868de5b258b5
+os	swift-property	s:2os24OSLogInt32ExtendedFormatO11darwinErrnoyA2CmF	OSLogInt32ExtendedFormat	darwinErrno	-	-	-	-	-	376e269a85576ed1
+os	swift-property	s:2os24OSLogInt32ExtendedFormatO10darwinModeyA2CmF	OSLogInt32ExtendedFormat	darwinMode	-	-	-	-	-	63cdb77325f38415
+os	swift-property	s:2os24OSLogInt32ExtendedFormatO12darwinSignalyA2CmF	OSLogInt32ExtendedFormat	darwinSignal	-	-	-	-	-	7f298f24fb327aab
+os	swift-property	s:2os24OSLogInt32ExtendedFormatO9machErrnoyA2CmF	OSLogInt32ExtendedFormat	machErrno	-	-	-	-	-	8947a1b1f17d40c2
+os	swift-property	s:2os24OSLogInt32ExtendedFormatO7bitrateyA2CmF	OSLogInt32ExtendedFormat	bitrate	-	-	-	-	-	b30148c647c190bf
+os	swift-property	s:2os24OSLogInt32ExtendedFormatO10bitrateIECyA2CmF	OSLogInt32ExtendedFormat	bitrateIEC	-	-	-	-	-	2e7c5930c565f272
+os	swift-property	s:2os24OSLogInt32ExtendedFormatO9byteCountyA2CmF	OSLogInt32ExtendedFormat	byteCount	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	658499eec90203c2
+os	swift-property	s:2os24OSLogInt32ExtendedFormatO12byteCountIECyA2CmF	OSLogInt32ExtendedFormat	byteCountIEC	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	1aea4751331742d1
+os	swift-property	s:2os24OSLogInt32ExtendedFormatO5truthyA2CmF	OSLogInt32ExtendedFormat	truth	-	-	-	-	-	ae3c7d8bf37b040e
+os	swift-property	s:2os24OSLogInt32ExtendedFormatO6answeryA2CmF	OSLogInt32ExtendedFormat	answer	-	-	-	-	-	0b662465055bd909
+os	swift-method	s:2os24OSLogInt32ExtendedFormatO2eeoiySbAC_ACtFZ	OSLogInt32ExtendedFormat	==(_:_:)	+	Swift.Bool	os.OSLogInt32ExtendedFormat | os.OSLogInt32ExtendedFormat	-	-	5d54bb05899f5a69
+os	swift-method	s:2os24OSLogInt32ExtendedFormatO4hash4intoys6HasherVz_tF	OSLogInt32ExtendedFormat	hash(into:)	-	()	Swift.Hasher	-	-	5e0073f418846ece
+os	swift-property	s:2os24OSLogInt32ExtendedFormatO9hashValueSivp	OSLogInt32ExtendedFormat	hashValue	-	Swift.Int	-	-	-	b53b612a5d8b61c3
+os	swift-enum	s:2os22OSLogIntExtendedFormatO	-	OSLogIntExtendedFormat	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	3d34e010194db610
+os	swift-property	s:2os22OSLogIntExtendedFormatO7bitrateyA2CmF	OSLogIntExtendedFormat	bitrate	-	-	-	-	-	ed5f548032f30b19
+os	swift-property	s:2os22OSLogIntExtendedFormatO10bitrateIECyA2CmF	OSLogIntExtendedFormat	bitrateIEC	-	-	-	-	-	6fb9a06e9d349282
+os	swift-property	s:2os22OSLogIntExtendedFormatO9byteCountyA2CmF	OSLogIntExtendedFormat	byteCount	-	-	-	-	-	5cfe2b9d9157973d
+os	swift-property	s:2os22OSLogIntExtendedFormatO12byteCountIECyA2CmF	OSLogIntExtendedFormat	byteCountIEC	-	-	-	-	-	065984e39f445221
+os	swift-property	s:2os22OSLogIntExtendedFormatO16secondsSince1970yA2CmF	OSLogIntExtendedFormat	secondsSince1970	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	9d855775564e9195
+os	swift-method	s:2os22OSLogIntExtendedFormatO2eeoiySbAC_ACtFZ	OSLogIntExtendedFormat	==(_:_:)	+	Swift.Bool	os.OSLogIntExtendedFormat | os.OSLogIntExtendedFormat	-	-	50b1c02151e1da59
+os	swift-method	s:2os22OSLogIntExtendedFormatO4hash4intoys6HasherVz_tF	OSLogIntExtendedFormat	hash(into:)	-	()	Swift.Hasher	-	-	efaa17b4703d299c
+os	swift-property	s:2os22OSLogIntExtendedFormatO9hashValueSivp	OSLogIntExtendedFormat	hashValue	-	Swift.Int	-	-	-	34741ad92966062a
+os	swift-struct	s:2os20OSLogStringAlignmentV	-	OSLogStringAlignment	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	cc0cb634d147e36e
+os	swift-property	s:2os20OSLogStringAlignmentV4noneACvpZ	OSLogStringAlignment	none	+	os.OSLogStringAlignment	-	-	-	7b9b0aa9b7b2c6c5
+os	swift-method	s:2os20OSLogStringAlignmentV5right7columnsACSiyXA_tFZ	OSLogStringAlignment	right(columns:)	+	os.OSLogStringAlignment	() -> Swift.Int	-	-	bd7649a90a311404
+os	swift-method	s:2os20OSLogStringAlignmentV4left7columnsACSiyXA_tFZ	OSLogStringAlignment	left(columns:)	+	os.OSLogStringAlignment	() -> Swift.Int	-	-	d3ca44175024c769
+os	swift-struct	s:2os6LoggerV	-	Logger	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	878b895815c271cc
+os	swift-method	s:2os6LoggerV9subsystem8categoryACSS_SStcfc	Logger	init(subsystem:category:)	-	-	os.Logger | Swift.String | Swift.String	-	-	9d37191f6b09bec1
+os	swift-method	s:2os6LoggerVACycfc	Logger	init()	-	-	os.Logger	-	-	74eee8fa7ffadeef
+os	swift-method	s:2os6LoggerVyACSo03OS_A4_logCcfc	Logger	init(_:)	-	-	os.Logger | os.OSLog	-	-	3bf4d6797bc3312e
+os	swift-method	s:2os6LoggerV3logyyAA12OSLogMessageVF	Logger	log(_:)	-	()	os.OSLogMessage	-	-	1eecfb92498380cb
+os	swift-method	s:2os6LoggerV3log5level_ySo0a1_C7_type_ta_AA12OSLogMessageVtF	Logger	log(level:_:)	-	()	os.OSLogType | os.OSLogMessage	-	-	8f8054359df98734
+os	swift-method	s:2os6LoggerV5traceyyAA12OSLogMessageVF	Logger	trace(_:)	-	()	os.OSLogMessage	-	-	4ef9946335937445
+os	swift-method	s:2os6LoggerV5debugyyAA12OSLogMessageVF	Logger	debug(_:)	-	()	os.OSLogMessage	-	-	a634a76dd24c1630
+os	swift-method	s:2os6LoggerV4infoyyAA12OSLogMessageVF	Logger	info(_:)	-	()	os.OSLogMessage	-	-	874e03e2ac3cd7e4
+os	swift-method	s:2os6LoggerV6noticeyyAA12OSLogMessageVF	Logger	notice(_:)	-	()	os.OSLogMessage	-	-	4ea5cb16eae982c8
+os	swift-method	s:2os6LoggerV7warningyyAA12OSLogMessageVF	Logger	warning(_:)	-	()	os.OSLogMessage	-	-	57ee7be5f7e55123
+os	swift-method	s:2os6LoggerV5erroryyAA12OSLogMessageVF	Logger	error(_:)	-	()	os.OSLogMessage	-	-	2abe7c74bd9e4cc8
+os	swift-method	s:2os6LoggerV8criticalyyAA12OSLogMessageVF	Logger	critical(_:)	-	()	os.OSLogMessage	-	-	6f4081bf51b6f44c
+os	swift-method	s:2os6LoggerV5faultyyAA12OSLogMessageVF	Logger	fault(_:)	-	()	os.OSLogMessage	-	-	03972a1dffee5ea7
+os	swift-function	s:2os0A4_logyyAA12OSLogMessageVF	-	os_log(_:)	-	()	os.OSLogMessage	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	faa751cda1456e09
+os	swift-function	s:2os0A4_log_0B0_ySo0a1_B7_type_ta_So03OS_a1_B0CAA12OSLogMessageVtF	-	os_log(_:log:_:)	-	()	os.OSLogType | os.OSLog | os.OSLogMessage	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	b2419f24213732ed
+os	swift-typealias	s:2os16SignpostMetadataa	-	SignpostMetadata	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	49ace1b860d45d34
+os	swift-struct	s:2os12OSSignposterV	-	OSSignposter	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	8294b69ce0a1b0d9
+os	swift-property	s:2os12OSSignposterV9isEnabledSbvp	OSSignposter	isEnabled	-	Swift.Bool	-	-	-	21aafbaeb4e77d84
+os	swift-property	s:2os12OSSignposterV8disabledACvpZ	OSSignposter	disabled	+	os.OSSignposter	-	-	-	c591ae99a66f1f46
+os	swift-method	s:2os12OSSignposterV9subsystem8categoryACSS_SStcfc	OSSignposter	init(subsystem:category:)	-	-	os.OSSignposter | Swift.String | Swift.String	-	-	02436228584f17b1
+os	swift-method	s:2os12OSSignposterV9subsystem8categoryACSS_So03OS_A4_logCAAE8CategoryVtcfc	OSSignposter	init(subsystem:category:)	-	-	os.OSSignposter | Swift.String | os.OSLog.Category	-	-	16f97e17ef84b8ba
+os	swift-method	s:2os12OSSignposterVACycfc	OSSignposter	init()	-	-	os.OSSignposter	-	-	8cbfb6836d3f7f5a
+os	swift-method	s:2os12OSSignposterV9logHandleACSo03OS_a1_C0C_tcfc	OSSignposter	init(logHandle:)	-	-	os.OSSignposter | os.OSLog	-	-	2e2960c774cd56f7
+os	swift-method	s:2os12OSSignposterV6loggerAcA6LoggerV_tcfc	OSSignposter	init(logger:)	-	-	os.OSSignposter | os.Logger	-	-	0641a6af285c9bd5
+os	swift-method	s:2os12OSSignposterV9emitEvent_2id_ys12StaticStringV_AA12OSSignpostIDVAA12OSLogMessageVtF	OSSignposter	emitEvent(_:id:_:)	-	()	Swift.StaticString | os.OSSignpostID | os.SignpostMetadata	-	-	8f5fcb317f668651
+os	swift-method	s:2os12OSSignposterV9emitEvent_2idys12StaticStringV_AA12OSSignpostIDVtF	OSSignposter	emitEvent(_:id:)	-	()	Swift.StaticString | os.OSSignpostID	-	-	2ba9cb0fdb56cacd
+os	swift-method	s:2os12OSSignposterV13beginInterval_2id_AA010OSSignpostD5StateCs12StaticStringV_AA0F2IDVAA12OSLogMessageVtF	OSSignposter	beginInterval(_:id:_:)	-	os.OSSignpostIntervalState	Swift.StaticString | os.OSSignpostID | os.SignpostMetadata	-	-	c89eeb679d3b8892
+os	swift-method	s:2os12OSSignposterV13beginInterval_2idAA010OSSignpostD5StateCs12StaticStringV_AA0F2IDVtF	OSSignposter	beginInterval(_:id:)	-	os.OSSignpostIntervalState	Swift.StaticString | os.OSSignpostID	-	-	b7748936becae2f7
+os	swift-method	s:2os12OSSignposterV22beginAnimationInterval_2idAA010OSSignpostE5StateCs12StaticStringV_AA0G2IDVtF	OSSignposter	beginAnimationInterval(_:id:)	-	os.OSSignpostIntervalState	Swift.StaticString | os.OSSignpostID	-	-	4776cc98cea7a53a
+os	swift-method	s:2os12OSSignposterV22beginAnimationInterval_2id_AA010OSSignpostE5StateCs12StaticStringV_AA0G2IDVAA12OSLogMessageVtF	OSSignposter	beginAnimationInterval(_:id:_:)	-	os.OSSignpostIntervalState	Swift.StaticString | os.OSSignpostID | os.SignpostMetadata	-	-	886df4d57e28bccd
+os	swift-method	s:2os12OSSignposterV11endIntervalyys12StaticStringV_AA010OSSignpostD5StateCAA12OSLogMessageVtF	OSSignposter	endInterval(_:_:_:)	-	()	Swift.StaticString | os.OSSignpostIntervalState | os.SignpostMetadata	-	-	16d28c41b73f5e80
+os	swift-method	s:2os12OSSignposterV11endIntervalyys12StaticStringV_AA010OSSignpostD5StateCtF	OSSignposter	endInterval(_:_:)	-	()	Swift.StaticString | os.OSSignpostIntervalState	-	-	b9f4b28ad8723b2c
+os	swift-method	s:2os12OSSignposterV20withIntervalSignpost_2id_6aroundxs12StaticStringV_AA12OSSignpostIDVAA12OSLogMessageVxyKXEtKlF	OSSignposter	withIntervalSignpost(_:id:_:around:)	-	T	Swift.StaticString | os.OSSignpostID | os.SignpostMetadata | () throws -> T	-	-	387167feaadd695f
+os	swift-method	s:2os12OSSignposterV20withIntervalSignpost_2id6aroundxs12StaticStringV_AA12OSSignpostIDVxyKXEtKlF	OSSignposter	withIntervalSignpost(_:id:around:)	-	T	Swift.StaticString | os.OSSignpostID | () throws -> T	-	-	e00b28de88137431
+os	swift-method	s:2os12OSSignposterV14makeSignpostIDAA010OSSignpostE0VyF	OSSignposter	makeSignpostID()	-	os.OSSignpostID	-	-	-	995d23e10704d8e4
+os	swift-method	s:2os12OSSignposterV14makeSignpostID4fromAA010OSSignpostE0VyXl_tF	OSSignposter	makeSignpostID(from:)	-	os.OSSignpostID	Swift.AnyObject	-	-	5e1fca556b230e30
+os	swift-class	s:2os23OSSignpostIntervalStateC	-	OSSignpostIntervalState	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	58e6f8acfd962097
+os	swift-method	s:2os23OSSignpostIntervalStateC05beginD02idAcA0B2IDV_tFZ	OSSignpostIntervalState	beginState(id:)	+	os.OSSignpostIntervalState	os.OSSignpostID	-	-	2c96faa638e55d60
+os	swift-method	s:2os23OSSignpostIntervalStateC4fromACs7Decoder_p_tKcfc	OSSignpostIntervalState	init(from:)	-	-	os.OSSignpostIntervalState | any Swift.Decoder	-	-	542654582f280a06
+os	swift-method	s:2os23OSSignpostIntervalStateC6encode2toys7Encoder_p_tKF	OSSignpostIntervalState	encode(to:)	-	()	any Swift.Encoder	-	-	cb7a5ebd092a1b37
+os	swift-struct	s:2os26OSAllocatedUnfairLockFlagsV	-	OSAllocatedUnfairLockFlags	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	ad1d351b2a729d00
+os	swift-property	s:2os26OSAllocatedUnfairLockFlagsV8rawValues6UInt32Vvp	OSAllocatedUnfairLockFlags	rawValue	-	Swift.UInt32	-	-	-	bfd3eb61afbfe878
+os	swift-method	s:2os26OSAllocatedUnfairLockFlagsV8rawValueACs6UInt32V_tcfc	OSAllocatedUnfairLockFlags	init(rawValue:)	-	-	os.OSAllocatedUnfairLockFlags | Swift.UInt32	-	-	48a770d890a65928
+os	swift-property	s:2os26OSAllocatedUnfairLockFlagsV12adaptiveSpinACvpZ	OSAllocatedUnfairLockFlags	adaptiveSpin	+	os.OSAllocatedUnfairLockFlags	-	-	-	7b61b2896b9dbfe1
+os	swift-typealias	s:2os26OSAllocatedUnfairLockFlagsV19ArrayLiteralElementa	OSAllocatedUnfairLockFlags	ArrayLiteralElement	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	e65046e3dbbb6820
+os	swift-typealias	s:2os26OSAllocatedUnfairLockFlagsV7Elementa	OSAllocatedUnfairLockFlags	Element	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	3fb10f10b86a0a77
+os	swift-typealias	s:2os26OSAllocatedUnfairLockFlagsV8RawValuea	OSAllocatedUnfairLockFlags	RawValue	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	7d8e35732f69e31a
+os	swift-struct	s:2os21OSAllocatedUnfairLockV	-	OSAllocatedUnfairLock	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	275e4561e32ecaa3
+os	swift-method	s:2os21OSAllocatedUnfairLockV14uncheckedStateACyxGx_tcfc	OSAllocatedUnfairLock	init(uncheckedState:)	-	-	os.OSAllocatedUnfairLock<State> | State	-	-	52db8c40fc83c40c
+os	swift-method	s:2os21OSAllocatedUnfairLockV04withD9Uncheckedyqd__qd__xzKXEKlF	OSAllocatedUnfairLock	withLockUnchecked(_:)	-	R	(inout State) throws -> R	-	-	f772812e5d17e729
+os	swift-method	s:2os21OSAllocatedUnfairLockV04withD9Unchecked5flags_qd__AA0bcD5FlagsV_qd__xzKXEtKlF	OSAllocatedUnfairLock	withLockUnchecked(flags:_:)	-	R	os.OSAllocatedUnfairLockFlags | (inout State) throws -> R	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	aa8df573fb170e11
+os	swift-method	s:2os21OSAllocatedUnfairLockV04withD0yqd__qd__xzYbKXEKs8SendableRd__lF	OSAllocatedUnfairLock	withLock(_:)	-	R	(inout State) throws -> R	-	-	f2c85ad2ba8674e1
+os	swift-method	s:2os21OSAllocatedUnfairLockV04withD05flags_qd__AA0bcD5FlagsV_qd__xzYbKXEtKs8SendableRd__lF	OSAllocatedUnfairLock	withLock(flags:_:)	-	R	os.OSAllocatedUnfairLockFlags | (inout State) throws -> R	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	157d5693ce153383
+os	swift-method	s:2os21OSAllocatedUnfairLockV04withD20IfAvailableUncheckedyqd__Sgqd__xzKXEKlF	OSAllocatedUnfairLock	withLockIfAvailableUnchecked(_:)	-	R?	(inout State) throws -> R	-	-	8061d1408e3f1b4d
+os	swift-method	s:2os21OSAllocatedUnfairLockV04withD11IfAvailableyqd__Sgqd__xzYbKXEKs8SendableRd__lF	OSAllocatedUnfairLock	withLockIfAvailable(_:)	-	R?	(inout State) throws -> R	-	-	9e934146031caecf
+os	swift-enum	s:2os21OSAllocatedUnfairLockV9OwnershipO	OSAllocatedUnfairLock	Ownership	-	-	-	-	-	eb8627c19bfe4d16
+os	swift-property	s:2os21OSAllocatedUnfairLockV9OwnershipO5owneryAEyx_GAGmlF	OSAllocatedUnfairLock.Ownership	owner	-	-	-	-	-	8dcac5f4fad9b09f
+os	swift-property	s:2os21OSAllocatedUnfairLockV9OwnershipO8notOwneryAEyx_GAGmlF	OSAllocatedUnfairLock.Ownership	notOwner	-	-	-	-	-	fb132825b76ac632
+os	swift-method	s:2os21OSAllocatedUnfairLockV9OwnershipO2eeoiySbAEyx_G_AGtFZ	OSAllocatedUnfairLock.Ownership	==(_:_:)	+	Swift.Bool	os.OSAllocatedUnfairLock<State>.Ownership | os.OSAllocatedUnfairLock<State>.Ownership	-	-	256d0b754f3bf08c
+os	swift-method	s:2os21OSAllocatedUnfairLockV9OwnershipO4hash4intoys6HasherVz_tF	OSAllocatedUnfairLock.Ownership	hash(into:)	-	()	Swift.Hasher	-	-	53823066b8ee55c5
+os	swift-property	s:2os21OSAllocatedUnfairLockV9OwnershipO9hashValueSivp	OSAllocatedUnfairLock.Ownership	hashValue	-	Swift.Int	-	-	-	aa6ace7a93c09d6e
+os	swift-method	s:2os21OSAllocatedUnfairLockV12preconditionyyAC9OwnershipOyx_GF	OSAllocatedUnfairLock	precondition(_:)	-	()	os.OSAllocatedUnfairLock<State>.Ownership	-	-	641b4022808ee6dd
+os	swift-method	s:2os21OSAllocatedUnfairLockVAAytRszlEACyytGycfc	OSAllocatedUnfairLock	init()	-	-	os.OSAllocatedUnfairLock<State>	-	-	22b408c10a627985
+os	swift-method	s:2os21OSAllocatedUnfairLockVAAytRszlE04withD9Uncheckedyqd__qd__yKXEKlF	OSAllocatedUnfairLock	withLockUnchecked(_:)	-	R	() throws -> R	-	-	eb7be00c2acdf7b7
+os	swift-method	s:2os21OSAllocatedUnfairLockVAAytRszlE04withD9Unchecked5flags_qd__AA0bcD5FlagsV_qd__yKXEtKlF	OSAllocatedUnfairLock	withLockUnchecked(flags:_:)	-	R	os.OSAllocatedUnfairLockFlags | () throws -> R	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	f4cb8b4f00148b63
+os	swift-method	s:2os21OSAllocatedUnfairLockVAAytRszlE04withD0yqd__qd__yYbKXEKs8SendableRd__lF	OSAllocatedUnfairLock	withLock(_:)	-	R	() throws -> R	-	-	d0a0ab709f72407a
+os	swift-method	s:2os21OSAllocatedUnfairLockVAAytRszlE04withD05flags_qd__AA0bcD5FlagsV_qd__yYbKXEtKs8SendableRd__lF	OSAllocatedUnfairLock	withLock(flags:_:)	-	R	os.OSAllocatedUnfairLockFlags | () throws -> R	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	63ba25c85df9939f
+os	swift-method	s:2os21OSAllocatedUnfairLockVAAytRszlE04withD20IfAvailableUncheckedyqd__Sgqd__yKXEKlF	OSAllocatedUnfairLock	withLockIfAvailableUnchecked(_:)	-	R?	() throws -> R	-	-	222d39c3e6c929c6
+os	swift-method	s:2os21OSAllocatedUnfairLockVAAytRszlE04withD11IfAvailableyqd__Sgqd__yYbKXEKs8SendableRd__lF	OSAllocatedUnfairLock	withLockIfAvailable(_:)	-	R?	() throws -> R	-	-	c57e2ead48c9205d
+os	swift-method	s:2os21OSAllocatedUnfairLockVAAytRszlE4lockyyF	OSAllocatedUnfairLock	lock()	-	()	-	-	-	5550c2edd393c9be
+os	swift-method	s:2os21OSAllocatedUnfairLockVAAytRszlE4lock5flagsyAA0bcD5FlagsV_tF	OSAllocatedUnfairLock	lock(flags:)	-	()	os.OSAllocatedUnfairLockFlags	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	62697698af609a9a
+os	swift-method	s:2os21OSAllocatedUnfairLockVAAytRszlE6unlockyyF	OSAllocatedUnfairLock	unlock()	-	()	-	-	-	41678ed774b16ee7
+os	swift-method	s:2os21OSAllocatedUnfairLockVAAytRszlE15lockIfAvailableSbyF	OSAllocatedUnfairLock	lockIfAvailable()	-	Swift.Bool	-	-	-	647970e77d1aa242
+os	swift-method	s:2os21OSAllocatedUnfairLockVAAs8SendableRzlE12initialStateACyxGx_tcfc	OSAllocatedUnfairLock	init(initialState:)	-	-	os.OSAllocatedUnfairLock<State> | State	-	-	e1ac601af9016d91
+os	swift-struct	c:@EA@os_log_type_t	-	OSLogType	-	-	-	-	-	6663a7f68c56ffc6
+os	swift-property	s:So13os_log_type_ta0A0E7defaultABvpZ	OSLogType	default	+	os.OSLogType	-	ios=10.0,macos=10.12,tvos=10.0,watchos=3.0	-	42ac7208af7000cc
+os	swift-property	s:So13os_log_type_ta0A0E4infoABvpZ	OSLogType	info	+	os.OSLogType	-	ios=10.0,macos=10.12,tvos=10.0,watchos=3.0	-	f30716e97aaf076e
+os	swift-property	s:So13os_log_type_ta0A0E5debugABvpZ	OSLogType	debug	+	os.OSLogType	-	ios=10.0,macos=10.12,tvos=10.0,watchos=3.0	-	f5a296f953de071e
+os	swift-property	s:So13os_log_type_ta0A0E5errorABvpZ	OSLogType	error	+	os.OSLogType	-	ios=10.0,macos=10.12,tvos=10.0,watchos=3.0	-	b172acca426cf2b7
+os	swift-property	s:So13os_log_type_ta0A0E5faultABvpZ	OSLogType	fault	+	os.OSLogType	-	ios=10.0,macos=10.12,tvos=10.0,watchos=3.0	-	21fa1891f688393f
+os	swift-class	c:objc(cs)OS_os_log	-	OSLog	-	-	-	-	-	b9a6fdf22ec39e65
+os	swift-property	s:So9OS_os_logC0B0E8disabledABvpZ	OSLog	disabled	+	os.OSLog	-	ios=10.0,macos=10.12,tvos=10.0,watchos=3.0	-	e15e7a31ecf96940
+os	swift-property	s:So9OS_os_logC0B0E7defaultABvpZ	OSLog	default	+	os.OSLog	-	ios=10.0,macos=10.12,tvos=10.0,watchos=3.0	-	e346db01d70cd90a
+os	swift-method	s:So9OS_os_logC0B0E9subsystem8categoryABSS_SStcfc	OSLog	init(subsystem:category:)	-	-	os.OSLog | Swift.String | Swift.String	ios=10.0,macos=10.12,tvos=10.0,watchos=3.0	-	3f4e81a251885907
+os	swift-struct	s:So9OS_os_logC0B0E8CategoryV	OSLog	Category	-	-	-	-	-	cf2e2411c31e4baa
+os	swift-property	s:So9OS_os_logC0B0E8CategoryV8rawValueSSvp	OSLog.Category	rawValue	-	Swift.String	-	-	-	811731d562c52bb1
+os	swift-property	s:So9OS_os_logC0B0E8CategoryV16pointsOfInterestAEvpZ	OSLog.Category	pointsOfInterest	+	os.OSLog.Category	-	-	-	6f245347d0d6bda2
+os	swift-property	s:So9OS_os_logC0B0E8CategoryV14dynamicTracingAEvpZ	OSLog.Category	dynamicTracing	+	os.OSLog.Category	-	-	-	d5e27f69a3d87ac2
+os	swift-property	s:So9OS_os_logC0B0E8CategoryV19dynamicStackTracingAEvpZ	OSLog.Category	dynamicStackTracing	+	os.OSLog.Category	-	-	-	712b24f6fd82738f
+os	swift-method	s:So9OS_os_logC0B0E9subsystem8categoryABSS_AbCE8CategoryVtcfc	OSLog	init(subsystem:category:)	-	-	os.OSLog | Swift.String | os.OSLog.Category	-	-	f6db04646bde8d46
+os	swift-property	s:So9OS_os_logC0B0E16signpostsEnabledSbvp	OSLog	signpostsEnabled	-	Swift.Bool	-	-	-	c04f670a982c012c
+os	swift-struct	c:@EA@os_signpost_type_t	-	OSSignpostType	-	-	-	-	-	645d83b2225ac410
+os	swift-property	s:So18os_signpost_type_ta0A0E5eventABvpZ	OSSignpostType	event	+	os.OSSignpostType	-	-	-	78f8dcb3920d4e51
+os	swift-property	s:So18os_signpost_type_ta0A0E5beginABvpZ	OSSignpostType	begin	+	os.OSSignpostType	-	-	-	d73bac425f46b7d9
+os	swift-property	s:So18os_signpost_type_ta0A0E3endABvpZ	OSSignpostType	end	+	os.OSSignpostType	-	-	-	f0bf5b82b9101eb9
+os	swift-class	c:objc(cs)OS_os_workgroup	-	WorkGroup	-	-	-	-	-	2919f95bb863d175
+os	swift-method	s:So15OS_os_workgroupC0B0E8copyPorts6UInt32VyF	WorkGroup	copyPort()	-	_DarwinFoundation2.mach_port_t	-	macos=11.0	-	6371785123826a64
+os	swift-method	s:So15OS_os_workgroupC0B0E4port4nameABSgs6UInt32V_SSSgtcfc	WorkGroup	init(port:name:)	-	-	os_workgroup.WorkGroup? | _DarwinFoundation2.mach_port_t | Swift.String?	macos=11.0	-	ea550e4b758da4c8
+os	swift-method	s:So15OS_os_workgroupC0B0E4copy4nameABSgSSSg_tF	WorkGroup	copy(name:)	-	os_workgroup.WorkGroup?	Swift.String?	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	09f911d3018069fc
+os	swift-struct	s:So15OS_os_workgroupC0B0E9JoinTokenV	WorkGroup	JoinToken	-	-	-	-	-	04d61d307f840e52
+os	swift-method	s:So15OS_os_workgroupC0B0E4joinAbCE9JoinTokenVyF	WorkGroup	join()	-	os_workgroup.WorkGroup.JoinToken	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	4d31513b23c6d63b
+os	swift-method	s:So15OS_os_workgroupC0B0E5leave5tokenyAbCE9JoinTokenV_tF	WorkGroup	leave(token:)	-	()	os_workgroup.WorkGroup.JoinToken	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	adce52518a9dfeb5
+os	swift-method	s:So15OS_os_workgroupC0B0E6cancelyyF	WorkGroup	cancel()	-	()	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	92f56ea408f56c01
+os	swift-property	s:So15OS_os_workgroupC0B0E11isCancelledSbvp	WorkGroup	isCancelled	-	Swift.Bool	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	7462d0381cdec01d
+os	swift-property	s:So15OS_os_workgroupC0B0E18maxParallelThreadsSivp	WorkGroup	maxParallelThreads	-	Swift.Int	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	c2a3789ff50ca2ac
+os	swift-method	s:So15OS_os_workgroupC0B0E15setWorkingArena5arena11max_workers8destructySvSg_s6UInt32VyAHXCtF	WorkGroup	setWorkingArena(arena:max_workers:destruct:)	-	()	Swift.UnsafeMutableRawPointer? | Swift.UInt32 | (Swift.UnsafeMutableRawPointer?) -> Swift.Void	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	7b23cf5510d24bf4
+os	swift-typealias	s:So15OS_os_workgroupC0B0E5Indexa	WorkGroup	Index	-	-	-	-	-	e7c990a3bb3bd02f
+os	swift-property	s:So15OS_os_workgroupC0B0E12workingArenaSvSg_s6UInt32Vtvp	WorkGroup	workingArena	-	(Swift.UnsafeMutableRawPointer?, os_workgroup.WorkGroup.Index)	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	e635a738afb0844b
+os	swift-method	s:So15OS_os_workgroupC0B0E5start2at8deadlineys6UInt64V_AHtF	WorkGroup	start(at:deadline:)	-	()	Swift.UInt64 | Swift.UInt64	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	d48e43c3147f5920
+os	swift-method	s:So15OS_os_workgroupC0B0E14updateDeadline8deadlineys6UInt64V_tF	WorkGroup	updateDeadline(deadline:)	-	()	Swift.UInt64	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	4a3a94804817cbd0
+os	swift-method	s:So15OS_os_workgroupC0B0E6finishyyF	WorkGroup	finish()	-	()	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	fb55d8ffe7410cd2
+os	swift-class	c:objc(cs)OS_os_workgroup_parallel	-	WorkGroupParallel	-	-	-	-	-	2fff9c028e5f3ebe
+os	swift-method	s:So24OS_os_workgroup_parallelC0B0E4nameABSgSSSg_tcfc	WorkGroupParallel	init(name:)	-	-	os_workgroup.WorkGroupParallel? | Swift.String?	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	f9e399583ec4c963
