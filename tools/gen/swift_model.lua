@@ -31,7 +31,7 @@ local PLATFORM_NAMES = {macosx = "macos"}
 local MODEL_COLUMNS = {"framework", "kind", "usr", "container", "name", "side", "type", "params", "availability", "message",
                        "declhash", "mangled", "generic_sig", "conformances", "superclass", "throwing", "async", "mutating",
                        "attributes", "accessors", "storage", "is_let", "is_open", "requirement", "in_extension", "owner_module",
-                       "raw", "implicit"}
+                       "raw", "alias", "overriding", "init_kind", "implicit"}
 
 -- The model's columns, in order.
 function columns()
@@ -207,6 +207,15 @@ local function owner_module(node, framework)
     return module
 end
 
+-- The type a typealias aliases, from its single child; "-" otherwise.
+local function alias_of(node, decl)
+    if decl ~= "TypeAlias" then
+        return NO_VALUE
+    end
+    local child = (node.children or {})[1]
+    return child and (child.printedName or child.name) or NO_VALUE
+end
+
 -- The row of one declaration, a record keyed by MODEL_COLUMNS. decl is the digester's declKind.
 local function row_of(framework, decl, node, container, kind, name, async)
     local usr = node.usr or NO_VALUE
@@ -226,7 +235,8 @@ local function row_of(framework, decl, node, container, kind, name, async)
         is_open = node.isOpen and "yes" or NO_VALUE, requirement = node.protocolReq and "yes" or NO_VALUE,
         in_extension = node.isFromExtension and "yes" or NO_VALUE,
         owner_module = foreign and NO_VALUE or owner_module(node, framework),
-        raw = dash(node.enumRawTypeName), implicit = node.implicit and "yes" or NO_VALUE,
+        raw = dash(node.enumRawTypeName), alias = alias_of(node, decl), overriding = node.overriding and "yes" or NO_VALUE,
+        init_kind = dash(node.init_kind), implicit = node.implicit and "yes" or NO_VALUE,
     }
 end
 

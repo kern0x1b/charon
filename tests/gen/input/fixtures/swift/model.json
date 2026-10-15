@@ -26,6 +26,17 @@
       {
         "kind": "TypeAlias",
         "declKind": "TypeAlias",
+        "name": "Opaque",
+        "printedName": "Opaque",
+        "usr": "s:7Fixture6OpaqueaD",
+        "moduleName": "Fixture",
+        "children": [
+          { "kind": "TypeNominal", "name": "Sendable", "printedName": "some Swift.Sendable", "usr": "s:s8SendableP" }
+        ]
+      },
+      {
+        "kind": "TypeAlias",
+        "declKind": "TypeAlias",
         "name": "__Float16x4_t",
         "printedName": "__Float16x4_t",
         "usr": "s:7Fixture13__Float16x4_ta",
@@ -82,12 +93,44 @@
       {
         "kind": "Class",
         "declKind": "Class",
+        "name": "Base",
+        "printedName": "Base",
+        "usr": "s:7Fixture4BaseC",
+        "moduleName": "Fixture",
+        "children": [
+          {
+            "kind": "Func",
+            "declKind": "Func",
+            "name": "describe",
+            "printedName": "describe()",
+            "usr": "s:7Fixture4BaseC8describeSSyF",
+            "moduleName": "Fixture",
+            "children": [
+              { "kind": "TypeNominal", "name": "String", "printedName": "Swift.String", "usr": "s:SS" }
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Constructor",
+            "declKind": "Constructor",
+            "name": "init",
+            "printedName": "init()",
+            "usr": "s:7Fixture4BaseCyACcfc",
+            "moduleName": "Fixture",
+            "declAttributes": ["Required"],
+            "init_kind": "Designated"
+          }
+        ]
+      },
+      {
+        "kind": "Class",
+        "declKind": "Class",
         "name": "Box",
         "printedName": "Box",
         "usr": "s:7Fixture3BoxC",
         "moduleName": "Fixture",
-        "superclassNames": ["Fixture.Point"],
-        "superclassUsr": "s:7Fixture5PointV",
+        "superclassNames": ["Fixture.Base"],
+        "superclassUsr": "s:7Fixture4BaseC",
         "conformances": [{ "printedName": "Swift.Sendable" }],
         "declAttributes": ["Final"],
         "isOpen": true,
@@ -105,8 +148,40 @@
             ],
             "init_kind": "Designated",
             "throwing": true
+          },
+          {
+            "kind": "Func",
+            "declKind": "Func",
+            "name": "describe",
+            "printedName": "describe()",
+            "usr": "s:7Fixture3BoxC8describeSSyF",
+            "moduleName": "Fixture",
+            "children": [
+              { "kind": "TypeNominal", "name": "String", "printedName": "Swift.String", "usr": "s:SS" }
+            ],
+            "overriding": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Constructor",
+            "declKind": "Constructor",
+            "name": "init",
+            "printedName": "init()",
+            "usr": "s:7Fixture3BoxCACyKcfc",
+            "moduleName": "Fixture",
+            "init_kind": "Convenience"
           }
         ]
+      },
+      {
+        "kind": "Class",
+        "declKind": "Class",
+        "name": "Worker",
+        "printedName": "Worker",
+        "usr": "s:7Fixture6WorkerC",
+        "moduleName": "Fixture",
+        "conformances": [{ "printedName": "_Concurrency.Actor" }],
+        "children": []
       },
       {
         "kind": "Enum",
@@ -167,9 +242,9 @@
       {
         "kind": "Struct",
         "declKind": "Struct",
-        "name": "External",
-        "printedName": "External",
-        "usr": "s:10Foundation8ExternalV",
+        "name": "URL",
+        "printedName": "URL",
+        "usr": "s:10Foundation3URLV",
         "moduleName": "Foundation",
         "isFromExtension": true,
         "children": [
@@ -178,7 +253,7 @@
             "declKind": "Var",
             "name": "tag",
             "printedName": "tag",
-            "usr": "s:10Foundation8ExternalV6FixtureE3tagSSvp",
+            "usr": "s:10Foundation3URLV6FixtureE3tagSSvp",
             "moduleName": "Foundation",
             "isFromExtension": true,
             "children": [

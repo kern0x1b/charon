@@ -53,7 +53,7 @@ function main()
           "a method carries its result and parameter types, as the shard does")
     check(r["swift-method moved(dx:)"].throwing == "yes", "a throwing method is marked throwing")
 
-    check(r["swift-class Box"].superclass == "Fixture.Point", "a class carries its superclass")
+    check(r["swift-class Box"].superclass == "Fixture.Base", "a class carries its superclass")
     check(r["swift-class Box"].is_open == "yes" and r["swift-class Box"].attributes == "Final", "a class carries isOpen and its attributes")
     check(r["swift-method init(value:)"].params == "Fixture.Box | Swift.Int", "a constructor's children are its parameters, as the shard does")
     check(r["swift-method init(value:)"].throwing == "yes", "a throwing constructor is marked throwing")
@@ -66,10 +66,28 @@ function main()
           "an associated type is a requirement of its protocol")
     check(r["swift-method render(_:)"].requirement == "yes", "a protocol requirement is marked a requirement")
 
-    check(r["swift-struct External"].owner_module == "Foundation", "a type of another module names its owner")
+    check(r["swift-struct URL"].owner_module == "Foundation", "a type of another module names its owner")
     check(r["swift-property tag"].in_extension == "yes" and r["swift-property tag"].owner_module == "Foundation",
           "an extension member names its owner and its extension state")
     check(r["swift-property tag"].is_let == "yes", "a stored let is marked let")
+
+    -- Members of the same name in two types share a key in r, so these are found by their container.
+    local function member(container, name)
+        for _, row in ipairs(rows) do
+            if row.container == container and row.name == name then
+                return row
+            end
+        end
+    end
+    check(member("Base", "describe()").overriding == "-" and member("Box", "describe()").overriding == "yes",
+          "an overriding member is marked overriding, its base member is not")
+    check(member("Base", "init()").attributes == "Required" and member("Base", "init()").init_kind == "Designated",
+          "a required designated initializer carries its attribute and its init kind")
+    check(member("Box", "init()").init_kind == "Convenience", "a convenience initializer carries its init kind")
+    check(r["swift-class Worker"] ~= nil and r["swift-class Worker"].conformances == "_Concurrency.Actor",
+          "an actor is a class row that carries its Actor conformance")
+    check(r["swift-typealias Opaque"] ~= nil and r["swift-typealias Opaque"].alias == "some Swift.Sendable",
+          "a typealias carries the type it aliases")
 
     -- Every row carries every column: a walker that drops a field leaves a nil cell and is caught here.
     local missing = 0
