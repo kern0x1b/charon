@@ -64,8 +64,11 @@ package("swift-crypto")
         local sdk = toolchain:config("sdkdir")
         local resources = path.join(runtime:installdir(), "lib", "swift")
         local tree = package:installdir("src")
-        local objects = path.absolute("objects")
+        -- The objects are kept in the install, in a folder of their own, with the SDK they were compiled against beside that
+        -- folder (objects/sdkdir, the record tools/release-split.lua reads): the release check runs on this build's own objects.
+        local objects = package:installdir("objects", "swift-crypto")
         os.mkdir(objects)
+        io.writefile(path.join(package:installdir("objects"), "sdkdir"), sdk)
 
         os.cp(path.join(os.curdir(), "*"), tree)
         for _, patch in ipairs(os.files(path.join(os.scriptdir(), "patches", "*.patch"))) do
@@ -162,8 +165,17 @@ package("swift-crypto")
                                               module = "SwiftASN1"})
         table.join2(asn1argv, asn1flags, {"-c", "-module-name", "SwiftASN1", "-emit-module", "-emit-module-path",
                     path.join(swiftmods, "SwiftASN1.swiftmodule")}, swiftfiles(path.join(asn1tree, "Sources", "SwiftASN1")),
-                    {"-o", path.join(objects, "SwiftASN1.o")})
+                    {"-o", path.join(swiftmods, "SwiftASN1.raw.o")})
         os.vrunv(swiftc, asn1argv)
+        -- SwiftASN1 is not API of CryptoExtras (its files import it implementation-only, so no public declaration names it, and
+        -- its module is not shipped), so none of its symbols is exported: a relocatable link makes every external definition a
+        -- private external, which other objects of this link still bind. The object then carries no exported symbol, and
+        -- release-split reads none of them as the API of the release that carries them.
+        local ld64 = path.join(package:dep("ld64"):installdir("bin"), "ld")
+        local hidden = path.join(swiftmods, "SwiftASN1.hidden")
+        io.writefile(hidden, "*SwiftASN1*\n")
+        os.vrunv(ld64, {"-r", "-keep_private_externs", "-unexported_symbols_list", hidden,
+                        "-o", path.join(objects, "SwiftASN1.o"), path.join(swiftmods, "SwiftASN1.raw.o")})
 
         -- CryptoExtras imports Crypto, CryptoBoringWrapper, SwiftASN1 and CCryptoBoringSSL: the flags above name their folders.
         -- _CryptoExtras is one file that re-exports CryptoExtras and Crypto.
@@ -181,7 +193,6 @@ package("swift-crypto")
         -- immortal refcount layout). The objects of CCryptoBoringSSL, CXKCP, memset_s and objc_opt_self are in the dylib; the module's imports
         -- are the runtime's libraries, Foundation and libCommonCryptoBackports (entropy).
         local lib = path.join(objects, "libswiftCrypto.dylib")
-        local ld64 = path.join(package:dep("ld64"):installdir("bin"), "ld")
         os.vrunv(toolchain:tool("cc"), table.join(common, {"-fuse-ld=" .. ld64, "-dynamiclib", "-install_name", "@rpath/libswiftCrypto.dylib",
                  "-o", lib}, os.files(path.join(objects, "*.o")),
                  {"-L", path.join(resources, "iphoneos"), "-L", path.join(backports:installdir("lib")),
@@ -189,12 +200,12 @@ package("swift-crypto")
                   "-lswiftFoundation", "-lCommonCryptoBackports"}))
         os.cp(lib, package:installdir("lib"))
         -- The module files a consumer imports: Crypto and CryptoBoringWrapper (Crypto imports it, not implementation-only), and
-        -- CryptoExtras, _CryptoExtras and SwiftASN1 (the module CryptoExtras' public API reaches).
+        -- CryptoExtras and _CryptoExtras. SwiftASN1's module is not shipped: CryptoExtras imports it implementation-only.
         local module = path.join(package:installdir("lib"), "swift", "iphoneos")
         os.mkdir(module)
         os.cp(path.join(swiftmods, "Crypto.swiftmodule"), path.join(module, "Crypto.swiftmodule"))
         os.cp(path.join(swiftmods, "CryptoBoringWrapper.swiftmodule"), path.join(module, "CryptoBoringWrapper.swiftmodule"))
-        for _, name in ipairs({"SwiftASN1", "CryptoExtras", "_CryptoExtras"}) do
+        for _, name in ipairs({"CryptoExtras", "_CryptoExtras"}) do
             os.cp(path.join(swiftmods, name .. ".swiftmodule"), path.join(module, name .. ".swiftmodule"))
         end
         os.cp(path.join(objects, "Crypto.o"), path.join(package:installdir("lib"), "Crypto.o"))
