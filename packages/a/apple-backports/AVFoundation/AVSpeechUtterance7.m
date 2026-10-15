@@ -22,6 +22,13 @@
     NSTimeInterval _postUtteranceDelay;
 }
 
+// The SDK header also declares two later properties on this class, and clang synthesises an ivar and
+// accessors for any declared property this implementation leaves out: without these lines the port would
+// answer nil and NO for them silently. @dynamic says the port does not carry them, so the selectors are
+// unrecognized, as they are on a release that lacks them (checks.m asserts this).
+@dynamic attributedSpeechString;             // iOS 10
+@dynamic prefersAssistiveTechnologySettings; // iOS 14
+
 + (instancetype)speechUtteranceWithString:(NSString *)string
 {
     return [[self alloc] initWithString:string];

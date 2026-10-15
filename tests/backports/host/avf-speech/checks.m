@@ -77,6 +77,16 @@ int main(void)
         compare_state("factory", h, p);
         verdict("factory default rate is the default constant", h.rate == AVSpeechUtteranceDefaultSpeechRate);
 
+        // Later-release properties the port does not carry: the port must not answer them. The host does (it is a
+        // later system), so these are port-only assertions; a silent getter here would be a fake.
+        verdict("port does not answer attributedSpeechString (iOS 10)",
+                ![charon_host_AVSpeechUtterance instancesRespondToSelector:@selector(attributedSpeechString)]);
+        verdict("port does not answer prefersAssistiveTechnologySettings (iOS 14)",
+                ![charon_host_AVSpeechUtterance instancesRespondToSelector:@selector(prefersAssistiveTechnologySettings)] &&
+                ![charon_host_AVSpeechUtterance instancesRespondToSelector:@selector(setPrefersAssistiveTechnologySettings:)]);
+        verdict("host answers attributedSpeechString (control for the port-only check above)",
+                [AVSpeechUtterance instancesRespondToSelector:@selector(attributedSpeechString)]);
+
         // A plain -init leaves every number at zero, on both.
         AVSpeechUtterance *hi = [[AVSpeechUtterance alloc] init];
         charon_host_AVSpeechUtterance *pi = [[charon_host_AVSpeechUtterance alloc] init];
