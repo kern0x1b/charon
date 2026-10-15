@@ -45,6 +45,23 @@ answers, and the 6.1.3 release is not run here (see the open items).
 - **Fresh QR feature** (`[[CIQRCodeFeature alloc] init]`): zero bounds and corners; `messageString` raises
   NSInvalidArgumentException on the host; `symbolDescriptor` answers nil.
 
+## Measured answers (the iOS 6.1.3 release, emulated)
+
+`tests/backports/emulate/ciqr-detector/` is the probe: it calls the release's own `+[CIDetector detectorOfType:context:options:]`
+with `nil` context and `nil` options, once per type, and prints the class answered, `nil`, or the exception raised. The types
+are the strings the host's constants hold (`CIDetectorTypeQRCode` and `CIDetectorTypeRectangle` in `Graphics/CIConstants80.m`,
+`CIDetectorTypeText` in `Graphics/CIConstants90.m`), named directly, so the probe does not depend on whether the release exports
+the constants (that export is not measured here; see the open items). The run:
+`xmake emulate -d iPhone4,1 -r 6.1.3 run /usr/libexec/ciqrdetector` on the emulator's 6.1.3 (10B329) image, measured 2026-10-15.
+
+    ciqr-detector: CIDetectorTypeFace -> CIFaceCoreDetector     (control: the release's face detector)
+    ciqr-detector: CIDetectorTypeQRCode -> nil
+    ciqr-detector: CIDetectorTypeRectangle -> nil
+    ciqr-detector: CIDetectorTypeText -> nil
+
+So the release answers nil for the three types, and an application that asks for one gets no detector at all. No exception is raised for any of the three. The face answer is the release's own and is not changed by the port. This
+is one run of one probe on the emulator (Shade), not a device run.
+
 ## The four known differences (pinned, not compared)
 
 `run.sh` compares every line that is not a known difference as a plain equality. The four known differences are the lines
