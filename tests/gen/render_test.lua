@@ -83,7 +83,7 @@ function main()
     -- and the generator emitted a row for each, so the registry check named each one twice. Checked on the real tree: the rows the
     -- generator writes (rows.tsv) must not name any of them.
     local tree = path.absolute(path.join(os.scriptdir(), "..", ".."))
-    local rows = render.render(tree, "Security")["rows.tsv"] or ""
+    local rows = render.render(tree, "Security", nil, "26.2")["rows.tsv"] or ""
     check(rows ~= "", "the Security framework renders a rows.tsv")
     for _, api in ipairs({"kSecImportToMemoryOnly",
                           "kSecKeyAlgorithmECDSASignatureDigestRFC4754", "kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA1",

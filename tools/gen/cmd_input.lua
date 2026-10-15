@@ -27,6 +27,7 @@ local stream = import("stream", {anonymous = true})
 local surface = import("surface", {anonymous = true})
 local order = import("order", {anonymous = true})
 local strings = import("strings", {anonymous = true})
+local sdk_info = import("sdk", {anonymous = true})
 local json = import("core.base.json")
 
 -- The record's columns, in the order the file holds them.
@@ -35,8 +36,7 @@ local COLUMNS = {"kind", "api", "cls", "key", "introduced", "type", "availabilit
 local STRING_TYPES = {NSString = true, CFStringRef = true}
 local LINKAGE = {extern = true}
 local NULLABILITY = {_Nonnull = true, __nonnull = true, _Nullable = true, __nullable = true}
-local IOS_TABLE = "cache-26.2/constants-26.2.tsv.gz"
-local IOS_CACHE = {}  -- the table's values, read once per process: name -> value, and the names it holds with conflicting values
+local IOS_CACHE = {}  -- the table's values, read once per table path: name -> value, and the names it holds with conflicting values
 
 -- The name as the key of the record: its non-alphanumeric runs as one underscore, without the ones at the ends (the spec's key).
 local function key_of(api)
@@ -220,8 +220,8 @@ end
 -- The iOS 26.2 cache's constants table: name -> value for every cfstring row, the first value a name has; names with two values are
 -- in conflicts. Read through gzip's pipe, once per process.
 local function ios_constants(path)
-    if IOS_CACHE.values ~= nil then
-        return IOS_CACHE.values, IOS_CACHE.conflicts
+    if IOS_CACHE[path] ~= nil then
+        return IOS_CACHE[path].values, IOS_CACHE[path].conflicts
     end
     local values, conflicts, header = {}, {}, nil
     local status, err = stream.lines("gzip", {"-dc", path}, function (line)
@@ -244,7 +244,7 @@ local function ios_constants(path)
         end
     end)
     assert(status == 0, "gzip failed on " .. path .. ": " .. tostring(err))
-    IOS_CACHE.values, IOS_CACHE.conflicts = values, conflicts
+    IOS_CACHE[path] = {values = values, conflicts = conflicts}
     return values, conflicts
 end
 
@@ -335,8 +335,9 @@ local function typedefs_of(tree, fws)
 end
 
 -- Writes the record of one framework (and measured.held-caches.tsv when measured is given). Returns the counts for the summary.
-local function write_framework(args, fw)
+local function write_framework(args, fw, sdk_release)
     local tree, sdk = args.tree, args.sdk
+    local names = sdk_info.names(sdk_release)
     local ledger = ledger_constants(args.coordination, fw)
     -- a framework the extractor does not list has no declarations to read: its constants would all come out "undeclared", so it fails
     local docs, reason = doc_text.rows(tree, fw, sdk)
@@ -361,7 +362,9 @@ local function write_framework(args, fw)
             enum_values[name] = r.value
         end
     end
-    local ios, ios_conflicts = ios_constants(path.join(args.coordination, IOS_TABLE))
+    local ios_path = path.join(args.coordination, names.ios_table)
+    assert(os.isfile(ios_path), "input: the corpus has no iOS constants table for SDK release " .. sdk_release .. ": " .. ios_path)
+    local ios, ios_conflicts = ios_constants(ios_path)
     local conflicting = 0
     for _ in pairs(ios_conflicts) do
         conflicting = conflicting + 1
@@ -419,13 +422,13 @@ local function write_framework(args, fw)
             host_value, source = "-", "sdk-enum-value"
         end
         if status == "found" and ios[api] ~= nil then
-            value, source = objc_escape(ios[api]), "ios-26.2-cache"
+            value, source = objc_escape(ios[api]), names.ios_value
             if value ~= host_value then
                 table.insert(differences, {api, host_value, value})
             end
         elseif status ~= "found" and owned[api] == nil and ios[api] ~= nil and d.decl ~= "" and is_string(d.decl, typedefs) then
             -- the host does not carry the framework (AddressBookUI is iOS-only): the iOS cache is the only oracle, and it is the expectation
-            status, value, host_value, source = "found", objc_escape(ios[api]), "-", "ios-26.2-cache (no host value)"
+            status, value, host_value, source = "found", objc_escape(ios[api]), "-", names.ios_value .. " (no host value)"
         end
         if status ~= "found" then
             value, host_value = "-", "-"
@@ -473,7 +476,8 @@ function run(args)
     -- the committed skip ledger (spec/input-skips.tsv): a skip it names stays named; a skip it does not name fails the run. Only the
     -- names decide: a reason is a note, with the SDK folder written as <sdk>.
     local known_skips = args.all and surface.skip_ledger(args.tree) or {}
-    local targets = args.all and surface.surface_frameworks(args.coordination) or {args.framework}
+    local sdk_release = sdk_info.discover(args.sdk).version
+    local targets = args.all and surface.surface_frameworks(args.coordination, sdk_release) or {args.framework}
     local written, without_ledger = 0, 0
     -- a framework the inputs cannot read is named and skipped under --all (the oracle's cmd_input_all: "a framework the inputs
     -- cannot read is named in the scope, not hidden"); a single --framework run fails with the error. A skip the ledger does not
@@ -486,7 +490,7 @@ function run(args)
                 local failure = nil
                 try {
                     function()
-                        rows, differences, conflicting = write_framework(args, fw)
+                        rows, differences, conflicting = write_framework(args, fw, sdk_release)
                     end,
                     catch {
                         function(e)
@@ -504,7 +508,7 @@ function run(args)
                     goto continue
                 end
             else
-                rows, differences, conflicting = write_framework(args, fw)
+                rows, differences, conflicting = write_framework(args, fw, sdk_release)
             end
             written = written + 1
             print(string.format("input %s: %d constants, %d differ from the host (the iOS value wins), %d cache symbols with conflicting values",

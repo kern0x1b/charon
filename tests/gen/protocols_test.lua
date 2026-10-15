@@ -84,26 +84,26 @@ function main()
     -- The registry names FKRegistered: the rule gives FKProto, and the record names it.
     local tree, corpus = write_fixture(path.join(root, "with"), true)
     write_record(tree, {"FKProto"})
-    check(names_of(protocols.rule_set(tree, FRAMEWORK, corpus)) == "FKProto",
+    check(names_of(protocols.rule_set(tree, FRAMEWORK, corpus, "26.2")) == "FKProto",
           "with its registry row, the rule does not generate FKRegistered")
-    local set = protocols.generation_set(tree, FRAMEWORK, corpus)
+    local set = protocols.generation_set(tree, FRAMEWORK, corpus, "26.2")
     check(names_of(set) == "FKProto", "with the corpus, the set is the rule, which equals the record (got " .. names_of(set) .. ")")
-    local files = protocols.protocol_files(tree, FRAMEWORK, corpus)
+    local files = protocols.protocol_files(tree, FRAMEWORK, corpus, "26.2")
     local objects = files["FixtureKitProtocols70.m"] or ""
     check(string.find(objects, "@protocol(FKProto),", 1, true) ~= nil, "the objects file names the generated protocol")
     check(string.find(objects, "FKRegistered", 1, true) == nil and string.find(objects, "FKHeaderOK", 1, true) == nil,
           "the objects file names no registered and no header-ok protocol")
     -- The build (no corpus) reads the same set from the record.
-    check(names_of(protocols.generation_set(tree, FRAMEWORK, nil)) == "FKProto", "without the corpus, the set is the record")
+    check(names_of(protocols.generation_set(tree, FRAMEWORK, nil, "26.2")) == "FKProto", "without the corpus, the set is the record")
 
     -- The registry row of FKRegistered is removed: the rule generates it, and the record names it too: its object is emitted.
     tree, corpus = write_fixture(path.join(root, "without"), false)
     write_record(tree, {"FKProto", "FKRegistered"})
-    check(names_of(protocols.rule_set(tree, FRAMEWORK, corpus)) == "FKProto,FKRegistered",
+    check(names_of(protocols.rule_set(tree, FRAMEWORK, corpus, "26.2")) == "FKProto,FKRegistered",
           "without its registry row, the rule generates FKRegistered")
-    set = protocols.generation_set(tree, FRAMEWORK, corpus)
+    set = protocols.generation_set(tree, FRAMEWORK, corpus, "26.2")
     check(names_of(set) == "FKProto,FKRegistered", "without its registry row, FKRegistered is in the set (got " .. names_of(set) .. ")")
-    files = protocols.protocol_files(tree, FRAMEWORK, corpus)
+    files = protocols.protocol_files(tree, FRAMEWORK, corpus, "26.2")
     objects = files["FixtureKitProtocols70.m"] or ""
     check(string.find(objects, "@protocol(FKRegistered),", 1, true) ~= nil,
           "the port emits the object of the protocol whose registry row was removed")
@@ -113,7 +113,7 @@ function main()
     write_record(mismatch_tree, {"FKRegistered"})
     local raised, message = false, ""
     try {
-        function() protocols.generation_set(mismatch_tree, FRAMEWORK, mismatch_corpus) end,
+        function() protocols.generation_set(mismatch_tree, FRAMEWORK, mismatch_corpus, "26.2") end,
         catch {
             function(e)
                 raised = true
@@ -129,7 +129,7 @@ function main()
     write_record(transcribed_tree, {"FKProto"})
     raised, message = false, ""
     try {
-        function() protocols.protocol_files(transcribed_tree, FRAMEWORK, transcribed_corpus) end,
+        function() protocols.protocol_files(transcribed_tree, FRAMEWORK, transcribed_corpus, "26.2") end,
         catch {
             function(e)
                 raised = true

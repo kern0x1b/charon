@@ -188,10 +188,12 @@ local function test_pages(check)
     local root = path.join(os.scriptdir(), "..", "..", ".agent-work", "runs", "charon-doc-test-" .. tostring(os.time()))
     local tree, corpus = path.join(root, "tree"), path.join(root, "corpus")
     local out, out_marked = path.join(root, "out"), path.join(root, "out-marked")
+    local release_fixture = import("release_fixture", {rootdir = os.scriptdir(), anonymous = true})
+    local sdk = release_fixture.write(root, {FIXTURE})
     local cmd_doc = import("gen.cmd_doc", {rootdir = TOOLS, anonymous = true})
     write_fixture(tree, corpus)
     headers.use(fixture_headers)
-    cmd_doc.use_objc(function(_, frameworks, fn) fixture_rows(FIXTURE, fn) end)
+    cmd_doc.use_objc(function(_, _, frameworks, fn) fixture_rows(FIXTURE, fn) end)
 
     -- the decoding of the escaped cells: the literal row's comment is its tab, line feed and backslash
     local fixture_rows_list = fixture_doc_rows(FIXTURE)
@@ -218,7 +220,7 @@ local function test_pages(check)
           "a class property is keyed with the sign of a class member, as the shard reader gives it")
     check(rows_usr["-"] == nil, "a row with no USR is not kept")
 
-    check(cmd_doc.run({tree = tree, framework = FIXTURE, sdk = "/nonexistent", coordination = corpus, out = out}) == 0,
+    check(cmd_doc.run({tree = tree, framework = FIXTURE, sdk = sdk, coordination = corpus, out = out}) == 0,
           "doc --all on the fixture succeeds")
 
     local dir = path.join(out, FIXTURE)
@@ -298,12 +300,12 @@ local function test_pages(check)
 
     -- a second run on the unchanged output writes nothing: the pages are compared before they are written
     local before = emit.count()
-    check(cmd_doc.run({tree = tree, framework = FIXTURE, sdk = "/nonexistent", coordination = corpus, out = out}) == 0
+    check(cmd_doc.run({tree = tree, framework = FIXTURE, sdk = sdk, coordination = corpus, out = out}) == 0
           and emit.count() == before, "a second doc run on the same output writes no file")
 
     -- a framework the extractor gives no rows for keeps the marked text
     doc_text.use(function() return nil end)
-    check(cmd_doc.run({tree = tree, framework = FIXTURE, sdk = "/nonexistent", coordination = corpus, out = out_marked}) == 0,
+    check(cmd_doc.run({tree = tree, framework = FIXTURE, sdk = sdk, coordination = corpus, out = out_marked}) == 0,
           "doc --all with no doc rows succeeds")
     local marked = page_of(path.join(out_marked, FIXTURE), "FKThing.md")
     check(has(marked, "| method | `not derived: decl (ruling D8)` | API_AVAILABLE(ios(12.0)) | missing |"),

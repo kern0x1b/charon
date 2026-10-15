@@ -3,6 +3,7 @@
 -- coordination folder's corpus/ directory, passed in by the command (--coordination); nothing here names a host path.
 
 local layout = import("layout", {anonymous = true})
+local sdk = import("sdk", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
 local files = import("files", {anonymous = true})
 local order = import("order", {anonymous = true})
@@ -79,13 +80,14 @@ end
 -- The surface table, read once: framework -> (kind, api) key -> the surface row (demand, impl-lead, deprecation), and framework -> the
 -- keys in the order the table first names them. A key that the table names again keeps its first place and takes the later row, as
 -- a Python dict does. Read a line at a time from the file, so the 16 MB table is never held as one string.
-local function surface(corpus)
-    if surface_memo[corpus] then
-        return surface_memo[corpus]
+local function surface(corpus, release)
+    local memo = corpus .. "\n" .. release
+    if surface_memo[memo] then
+        return surface_memo[memo]
     end
     local rows, order, sequence = {}, {}, {}
     local header = nil
-    for line in io.lines(path.join(corpus, "sdk-26.2-surface.tsv")) do
+    for line in io.lines(path.join(corpus, sdk.names(release).surface)) do
         local cells = tsv.fields(line)
         if header == nil then
             header = cells
@@ -106,19 +108,19 @@ local function surface(corpus)
             rows[row.framework][k] = row
         end
     end
-    surface_memo[corpus] = {rows = rows, order = order, sequence = sequence}
-    return surface_memo[corpus]
+    surface_memo[memo] = {rows = rows, order = order, sequence = sequence}
+    return surface_memo[memo]
 end
 
 -- (kind, api) -> the surface row for one framework.
-function surface_rows(corpus, fw)
-    return surface(corpus).rows[fw] or {}
+function surface_rows(corpus, release, fw)
+    return surface(corpus, release).rows[fw] or {}
 end
 
 -- The surface rows of one framework as a list, in the order the table first names each (kind, api); each is the row the table
 -- gives that key last. The bucket of bucket.tsv is written in this order.
-function ordered_rows(corpus, fw)
-    local data = surface(corpus)
+function ordered_rows(corpus, release, fw)
+    local data = surface(corpus, release)
     local out = {}
     for _, k in ipairs(data.sequence[fw] or {}) do
         table.insert(out, data.rows[fw][k])
@@ -127,18 +129,18 @@ function ordered_rows(corpus, fw)
 end
 
 -- Every framework the surface table names, in the table's order.
-function surface_frameworks(corpus)
-    local known = surface(corpus).order
+function surface_frameworks(corpus, release)
+    local known = surface(corpus, release).order
     return table.move(known, 1, #known, 1, {})
 end
 
 -- Every row of the surface table, a row the table names twice included: {rows = fw -> the framework's rows in the table's order, order =
 -- the frameworks in the order the table first names them}. The scope counts each row, so it cannot use the map of surface_rows, which
 -- keeps one row per key. Read a line at a time, and the empty lines skipped, as csv.DictReader skips them.
-function all_rows(corpus)
+function all_rows(corpus, release)
     local rows, order = {}, {}
     local header = nil
-    for line in io.lines(path.join(corpus, "sdk-26.2-surface.tsv")) do
+    for line in io.lines(path.join(corpus, sdk.names(release).surface)) do
         local cells = tsv.fields(line)
         if header == nil then
             header = cells
@@ -158,9 +160,9 @@ function all_rows(corpus)
 end
 
 -- class -> the list of {item, value_kind, value, build} from the host oracle capture, for one framework.
-function oracle_defaults(corpus, fw)
+function oracle_defaults(corpus, release, fw)
     local out = {}
-    local text = files.read_text(path.join(corpus, "cache-26.2", "oracle-defaults.tsv"))
+    local text = files.read_text(path.join(corpus, sdk.names(release).oracle_defaults))
     if not text then
         return out
     end

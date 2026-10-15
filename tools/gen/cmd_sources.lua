@@ -2,6 +2,7 @@
 -- (the README of each framework takes the same rows from tools/gen/sources.lua).
 
 local sources = import("sources", {anonymous = true})
+local sdk = import("sdk", {anonymous = true})
 
 -- Prints rows as a table: every cell padded to the widest cell of its column, the columns joined by " | ".
 local function print_table(rows, columns)
@@ -23,8 +24,9 @@ end
 
 -- Returns the exit status.
 function run(args)
+    assert(args.sdk, "sources needs --sdk: the iPhoneOS SDK whose release names the rows")
     local rows = {{"source", "kind", "licence", "loader", "status", "adds"}}
-    for _, row in ipairs(sources.sources()) do
+    for _, row in ipairs(sources.sources(sdk.discover(args.sdk).version)) do
         table.insert(rows, row)
     end
     print_table(rows, 6)

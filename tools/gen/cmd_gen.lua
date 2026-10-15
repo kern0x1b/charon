@@ -12,8 +12,8 @@ local digest = import("digest", {anonymous = true})
 local files = import("files", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
 local order = import("order", {anonymous = true})
+local sdk = import("sdk", {anonymous = true})
 
-local SPEC_NAME = "spec." .. layout.constants().SDK_ID .. ".tsv"
 local MEMBERS_NAME = "members.tsv"
 local MANIFEST_NAME = "manifest.tsv"
 
@@ -46,22 +46,29 @@ local function members_text(rows)
     return tsv.table_text({"api", "hash"}, out)
 end
 
+-- The spec file of an SDK release: the spec table of the layout, named with the release's headers id.
+local function spec_name(sdk_release)
+    return "spec." .. sdk.names(sdk_release).sdk_id .. ".tsv"
+end
+
 -- Every file of a framework's build directory that check compares: what the generator emits (render), the spec table built in memory
--- from the shard and the constant record, and the members listing. Nothing is written here. sdk (optional) gives the members' tbd column.
-function derived(tree, fw, corpus, sdk)
-    local emitted = render.render(tree, fw, corpus)
-    local spec = snapshot.load(tree, fw, sdk)
-    emitted[SPEC_NAME] = snapshot.table_text(spec)
+-- from the shard and the constant record, and the members listing. Nothing is written here. sdk_release is the SDK's version (sdk.discover),
+-- which names the release's corpus and the spec file. The members' tbd column is not read from the SDK here: it is "-" as it was before
+-- the release was taken from --sdk, and the tbd of a member is filled by no consumer (members.lua).
+function derived(tree, fw, corpus, sdk_release)
+    local emitted = render.render(tree, fw, corpus, sdk_release)
+    local spec = snapshot.load(tree, fw)
+    emitted[spec_name(sdk_release)] = snapshot.table_text(spec)
     emitted[MEMBERS_NAME] = members_text(spec)
     return emitted
 end
 
 -- The manifest: the SHA-256 of each rendered file (the files render emits, not the spec or the listing). gen writes it; no command
 -- compares it, so check does not hash.
-local function manifest_text(emitted)
+local function manifest_text(emitted, sdk_release)
     local manifest = {}
     for _, name in ipairs(order.keys(emitted)) do
-        if name ~= SPEC_NAME and name ~= MEMBERS_NAME then
+        if name ~= spec_name(sdk_release) and name ~= MEMBERS_NAME then
             table.insert(manifest, {name, digest.digest_of(emitted[name])})
         end
     end
@@ -87,9 +94,9 @@ local function rerecord(tree, fw, refused)
 end
 
 -- Writes one framework's derived files into its build directory.
-local function write_framework(args, fw)
-    local emitted = derived(args.tree, fw, args.coordination, args.sdk)
-    emitted[MANIFEST_NAME] = manifest_text(emitted)
+local function write_framework(args, fw, sdk_release)
+    local emitted = derived(args.tree, fw, args.coordination, sdk_release)
+    emitted[MANIFEST_NAME] = manifest_text(emitted, sdk_release)
     local base = layout.gen_dir(args.tree, fw)
     for _, name in ipairs(stale_constants(base, fw, emitted)) do
         os.rm(path.join(base, name))
@@ -112,6 +119,8 @@ end
 -- is written for a framework: a refused framework writes nothing, and a run over every framework (--all) goes on to the others and then
 -- names every refused framework, so a single change does not stop the others from being written.
 function run(args)
+    assert(args.sdk, "gen needs --sdk: the iPhoneOS SDK whose release names the corpus and the spec file")
+    local sdk_release = sdk.discover(args.sdk).version
     snapshot.forget()
     local targets = args.all and frameworks(args.tree) or {args.framework}
     local refused_frameworks = {}
@@ -128,7 +137,7 @@ function run(args)
                 rerecord(args.tree, fw, refused)
                 print(string.format("gen %s: re-recorded %d pin(s) as repin", fw, #refused))
             end
-            write_framework(args, fw)
+            write_framework(args, fw, sdk_release)
         end
     end
     if #refused_frameworks > 0 then

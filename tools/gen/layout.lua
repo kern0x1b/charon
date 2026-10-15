@@ -1,8 +1,9 @@
 local VERSION = "2"
 
+local sdk = import("sdk", {anonymous = true})
+
 local LAYOUT = {
     VERSION = VERSION,
-    SDK_ID = "sdk-26.2-headers",
     SOURCES_ROOT = "packages/a/apple-backports",
     SNAP_ROOT = "packages/a/apple-backports/spec",
     OUT_ROOT = "packages/a/apple-backports/.gen",
@@ -44,9 +45,10 @@ function gen_dir(tree, fw)
     return path.join(tree, LAYOUT.OUT_ROOT, fw)
 end
 
--- The spec table the generator builds in memory from the shard and the constant record, written under gen_dir.
-function spec_path(tree, fw)
-    return path.join(gen_dir(tree, fw), "spec." .. LAYOUT.SDK_ID .. ".tsv")
+-- The spec table the generator builds in memory from the shard and the constant record, written under gen_dir. sdk_release is the
+-- SDK's version (sdk.discover), which names the file (sdk.names).
+function spec_path(tree, fw, sdk_release)
+    return path.join(gen_dir(tree, fw), "spec." .. sdk.names(sdk_release).sdk_id .. ".tsv")
 end
 
 -- The pin sidecar of a framework: the declaration hash each override-backed member was reviewed against (committed).

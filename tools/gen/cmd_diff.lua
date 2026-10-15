@@ -11,6 +11,7 @@ local strings = import("strings", {anonymous = true})
 local probes = import("probe", {anonymous = true})
 local files = import("files", {anonymous = true})
 local render = import("render", {anonymous = true})
+local sdk_info = import("sdk", {anonymous = true})
 
 -- Python's repr of a text of ASCII and UTF-8 bytes: quoted with ' unless it holds ' and no ", the backslash and the quote escaped,
 -- tab, newline and carriage return as escapes, other control characters as \xNN.
@@ -77,8 +78,10 @@ end
 
 -- Returns the exit status.
 function run(args)
+    assert(args.sdk, "diff needs --sdk: the iPhoneOS SDK whose release names the iOS cache value source")
     local fw = args.framework
     local tree = path.absolute(args.tree)
+    local ios_source = sdk_info.names(sdk_info.discover(args.sdk).version).ios_value
     local _, carried = host.framework_binary(fw)
     if not carried then
         print("differential " .. fw .. ": not on macOS, so no host differential; the iOS 26.2 cache is the only expectation")
@@ -89,7 +92,7 @@ function run(args)
     for _, r in ipairs(spec) do
         shape[r.api] = r.shape
         types[r.api] = r.type
-        if r.value_source == "ios-26.2-cache" then
+        if r.value_source == ios_source then
             ios_value[r.api] = r.value
         end
     end

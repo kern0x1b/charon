@@ -87,11 +87,31 @@ end
 
 -- A path that is not an SDK is refused with the path in the message: no SDKSettings.plist at its root, or no folder for the framework.
 -- Without this check a wrong --sdk reads as a framework with no exports, and that answer is wrong without a sign of it.
+-- The folder of a framework of the SDK. A nested framework (the surface's name "Outer/Inner", as Accelerate/vImage) lives in its outer
+-- framework's Frameworks folder: Outer.framework/Frameworks/Inner.framework.
+local function framework_dir(sdk, fw)
+    local dir = path.join(sdk, "System", "Library", "Frameworks")
+    local names = string.split(fw, "/")
+    for i, name in ipairs(names) do
+        dir = path.join(dir, name .. ".framework")
+        if i < #names then
+            dir = path.join(dir, "Frameworks")
+        end
+    end
+    return dir
+end
+
+-- The export list of a framework: its own .tbd, named by its last name (vImage for Accelerate/vImage).
+local function tbd_file(sdk, fw)
+    local names = string.split(fw, "/")
+    return path.join(framework_dir(sdk, fw), names[#names] .. ".tbd")
+end
+
 local function check_sdk(sdk, fw)
     if not os.isfile(path.join(sdk, "SDKSettings.plist")) then
         raise("--sdk %s is not an SDK: it has no SDKSettings.plist", sdk)
     end
-    local framework = path.join(sdk, "System", "Library", "Frameworks", fw .. ".framework")
+    local framework = framework_dir(sdk, fw)
     if not os.isdir(framework) then
         raise("--sdk %s has no framework %s: %s is missing", sdk, fw, framework)
     end
@@ -128,7 +148,7 @@ function exports(sdk, fw)
     end
     check_sdk(sdk, fw)
     local symbols, classes = {}, {}
-    local text = files.read_text(path.join(sdk, "System", "Library", "Frameworks", fw .. ".framework", fw .. ".tbd"))
+    local text = files.read_text(tbd_file(sdk, fw))
     if text == nil then
         return symbols, classes
     end
@@ -150,7 +170,7 @@ end
 function class_exports(sdk, fw)
     check_sdk(sdk, fw)
     local classes, done = {}, {}
-    local todo = {path.join(sdk, "System", "Library", "Frameworks", fw .. ".framework", fw .. ".tbd")}
+    local todo = {tbd_file(sdk, fw)}
     while #todo > 0 do
         local tbd_path = table.remove(todo)
         if not done[tbd_path] then

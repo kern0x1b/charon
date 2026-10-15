@@ -17,6 +17,7 @@ local emit = import("emit", {anonymous = true})
 local transcribe = import("transcribe", {anonymous = true})
 local snapshot_pins = import("snapshot_pins", {anonymous = true})
 local project = import("project", {anonymous = true})
+local sdk_info = import("sdk", {anonymous = true})
 
 local PROTOCOL_COLUMNS = {"protocol", "introduced", "status", "reasons", "bases", "section", "kind", "instance", "selector", "decl", "in16"}
 -- The one em dash the transcriber writes (its UTF-8 bytes), written as a hyphen in the snapshot.
@@ -107,16 +108,16 @@ end
 
 -- The objc protocols that the surface's member rows name as their owner, which the declaration shard does not carry as a class, and the
 -- 26.2 headers define with a body: name -> the earliest introduced release of its member rows.
-local function protocol_owners(tree, fw, corpus, sdk)
+local function protocol_owners(tree, fw, corpus, sdk, sdk_release)
     local classes = {}
-    local spec = files.read_text(layout.spec_path(tree, fw))
+    local spec = files.read_text(layout.spec_path(tree, fw, sdk_release))
     if spec then
         for _, row in ipairs(tsv.records(spec)) do
             classes[row.cls] = true
         end
     end
     local introduced = {}
-    for _, row in pairs(surface.surface_rows(corpus, fw)) do
+    for _, row in pairs(surface.surface_rows(corpus, sdk_release, fw)) do
         if (row.kind == "method" or row.kind == "property") and row.lang == "objc" then
             local owner = string.match(row.api, "^[-+]%[(%w+)") or string.match(row.api, "^(%w+)%.")
             if owner and not classes[owner] then
@@ -146,14 +147,14 @@ end
 
 -- The wanted protocols of a framework: the surface's objc protocol rows, then the owners it has no row for, as a list of
 -- {name, introduced} sorted by name (protocol_wanted in tools/gen.py@52253c0650).
-local function protocol_wanted(tree, fw, corpus, sdk)
+local function protocol_wanted(tree, fw, corpus, sdk, sdk_release)
     local wanted = {}
-    for _, row in pairs(surface.surface_rows(corpus, fw)) do
+    for _, row in pairs(surface.surface_rows(corpus, sdk_release, fw)) do
         if row.kind == "protocol" and row.lang == "objc" then
             wanted[row.api] = row.introduced
         end
     end
-    for name, intro in pairs(protocol_owners(tree, fw, corpus, sdk)) do
+    for name, intro in pairs(protocol_owners(tree, fw, corpus, sdk, sdk_release)) do
         if wanted[name] == nil then
             wanted[name] = intro
         end
@@ -208,10 +209,10 @@ local function ascii_text(body)
 end
 
 -- Writes one framework: returns false when its transcriber stopped (the message is printed).
-local function one(args, fw, sdk, sdk16)
+local function one(args, fw, sdk, sdk16, sdk_release)
     local snap = layout.snap_dir(args.tree, fw)
-    local wanted = protocol_wanted(args.tree, fw, args.coordination, sdk)
-    if not os.isfile(layout.spec_path(args.tree, fw)) then
+    local wanted = protocol_wanted(args.tree, fw, args.coordination, sdk, sdk_release)
+    if not os.isfile(layout.spec_path(args.tree, fw, sdk_release)) then
         if #wanted > 0 then
             print(string.format("protocols %s: %d wanted, no snapshot: not transcribed", fw, #wanted))
         end
@@ -274,10 +275,11 @@ function run(args)
     assert(args.sdk, "protocols needs --sdk: the iPhoneOS SDK the declarations are read from")
     local sdk = args.sdk
     local sdk16 = project.sdk16(args)
-    local targets = args.all and surface.surface_frameworks(args.coordination) or {args.framework}
+    local sdk_release = sdk_info.discover(sdk).version
+    local targets = args.all and surface.surface_frameworks(args.coordination, sdk_release) or {args.framework}
     local failed = 0
     for _, fw in ipairs(targets) do
-        if not one(args, fw, sdk, sdk16) then
+        if not one(args, fw, sdk, sdk16, sdk_release) then
             failed = failed + 1
         end
     end

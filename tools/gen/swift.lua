@@ -9,8 +9,8 @@ local order = import("order", {anonymous = true})
 local strings = import("strings", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
 local files = import("files", {anonymous = true})
+local sdk = import("sdk", {anonymous = true})
 
-local INTERFACE_FILE = "cache-26.2/swiftinterface-26.2.tsv"
 local LEDGER_RELEASE = surface.ledger_6_1_3()
 local BUCKET_FILE = "swift/bucket.tsv"
 local SWIFT_LANG = "swift"
@@ -41,13 +41,13 @@ end
 -- The bucket candidates, in the oracle's order: the frameworks sorted by bytes, and within each the surface rows in the order the
 -- table first names them. A candidate is a method, property or constant row that is Swift, that the ledger lists with a status other
 -- than header-ok, and whose api no registry row names.
-local function bucket_candidates(tree, corpus)
+local function bucket_candidates(tree, corpus, release)
     local out = {}
-    for _, fw in ipairs(order.strings(surface.surface_frameworks(corpus))) do
+    for _, fw in ipairs(order.strings(surface.surface_frameworks(corpus, release))) do
         if surface.has_ledger(corpus, LEDGER_RELEASE, fw) then
             local led6 = surface.ledger_status(corpus, fw, LEDGER_RELEASE)
             local registry = nil
-            for _, row in ipairs(surface.ordered_rows(corpus, fw)) do
+            for _, row in ipairs(surface.ordered_rows(corpus, release, fw)) do
                 local status = BUCKET_KINDS[row.kind] and row.lang == SWIFT_LANG and led6[surface.key(row.kind, row.api)]
                 if status and status ~= HEADER_OK then
                     if registry == nil then
@@ -64,10 +64,10 @@ local function bucket_candidates(tree, corpus)
 end
 
 -- The first row of each (module, api) the Swift interface table holds, for the keys wanted (a set of "module\tapi").
-local function table_matches(corpus, wanted)
+local function table_matches(corpus, release, wanted)
     local matched = {}
     local index = nil
-    for line in io.lines(path.join(corpus, INTERFACE_FILE)) do
+    for line in io.lines(path.join(corpus, sdk.names(release).swift_interface)) do
         if line ~= "" then
             local cells = tsv.fields(line)
             if index == nil then
@@ -85,14 +85,15 @@ local function table_matches(corpus, wanted)
 end
 
 -- The bucket: rows (each a list of the cells COLUMNS names), the number of rows the interface table matched, and the number of
--- frameworks the rows are in. tree is the package tree (the registry is read from it); corpus is the corpus folder.
-function bucket(tree, corpus)
-    local candidates = bucket_candidates(tree, corpus)
+-- frameworks the rows are in. tree is the package tree (the registry is read from it); corpus is the corpus folder; release is the SDK's
+-- version (sdk.discover), which names the interface table.
+function bucket(tree, corpus, release)
+    local candidates = bucket_candidates(tree, corpus, release)
     local wanted = {}
     for _, row in ipairs(candidates) do
         wanted[row.framework .. "\t" .. row.api] = true
     end
-    local matched = table_matches(corpus, wanted)
+    local matched = table_matches(corpus, release, wanted)
     local rows, matches, frameworks = {}, 0, {}
     for _, row in ipairs(candidates) do
         local match = matched[row.framework .. "\t" .. row.api]

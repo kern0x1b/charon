@@ -371,7 +371,8 @@ local function write_fixture(root)
     local layout = import("gen.layout", {rootdir = TOOLS, anonymous = true})
     local tsv = import("gen.tsv", {rootdir = TOOLS, anonymous = true})
     local headers = import("gen.headers", {rootdir = TOOLS, anonymous = true})
-    local sdk = path.join(root, "sdk")
+    local release_fixture = import("release_fixture", {rootdir = os.scriptdir(), anonymous = true})
+    local sdk = release_fixture.write(root, {FRAMEWORK})
     emit.file(path.join(sdk, "System", "Library", "Frameworks", FRAMEWORK .. ".framework", "Headers", FRAMEWORK .. ".h"), HEADER)
     local tree = path.join(root, "tree")
     local rows = {}
@@ -389,7 +390,7 @@ local function write_fixture(root)
         end
         table.insert(rows, row)
     end
-    emit.file(layout.spec_path(tree, FRAMEWORK), tsv.table_text(layout.constants().SPEC_COLUMNS, rows))
+    emit.file(layout.spec_path(tree, FRAMEWORK, "26.2"), tsv.table_text(layout.constants().SPEC_COLUMNS, rows))
     local function_rows = {{"FKCountThings", "-", "generable", "", "NSInteger", "NSInteger count; NSError **error",
                             "NSInteger FKCountThings(NSInteger count, NSError **error)"}}
     for _, f in ipairs(EXTRA_FUNCTIONS) do

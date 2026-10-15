@@ -9,6 +9,7 @@ local protocols = import("protocols", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
 local order = import("order", {anonymous = true})
 local surface = import("surface", {anonymous = true})
+local sdk = import("sdk", {anonymous = true})
 
 local function sorted_by_key(list, field)
     local tagged = {}
@@ -103,7 +104,8 @@ function constant_definition(r)
 end
 
 -- The README of a framework's build directory: what the generated files are, their counts, and the sources the generator reads.
-local function readme(fw, spec, pins, stale, removed, new, by_release, release_list)
+local function readme(fw, spec, pins, stale, removed, new, by_release, release_list, sdk_release)
+    local sdk_id = sdk.names(sdk_release).sdk_id
     local counts, kinds = {}, {}
     for _, r in ipairs(spec) do
         if counts[r.kind] == nil then
@@ -126,7 +128,7 @@ local function readme(fw, spec, pins, stale, removed, new, by_release, release_l
         "# gen/" .. fw,
         "",
         string.format("Spec: `spec.%s.tsv` (%s). Contract layer: `spec.h` (one hash per member), %d constant definitions in %d objects"
-            .. " (%s), `verify.c` (one assertion per pinned override).", layout.constants().SDK_ID, table.concat(count_text, ", "), constants,
+            .. " (%s), `verify.c` (one assertion per pinned override).", sdk_id, table.concat(count_text, ", "), constants,
             #release_list, table.concat(release_list, ", ")),
         string.format("Overrides: %d pins in `overrides/hashes/%s.tsv`; stale %d; removed %d; members without an override %d (new.tsv).",
             #pins, fw, #stale, #removed, #new),
@@ -139,7 +141,7 @@ local function readme(fw, spec, pins, stale, removed, new, by_release, release_l
         "| source | kind | licence | loader | status | adds |",
         "| --- | --- | --- | --- | --- | --- |",
     }
-    for _, row in ipairs(sources.sources()) do
+    for _, row in ipairs(sources.sources(sdk_release)) do
         table.insert(out, "| " .. table.concat(row, " | ") .. " |")
     end
     table.insert(out, "")
@@ -166,7 +168,8 @@ end
 
 -- The files the generator emits for a framework: name -> text. corpus is the coordination corpus when the command has it (nil in the
 -- build): the protocol set is then checked against the rule (protocols.generation_set).
-function render(tree, fw, corpus)
+function render(tree, fw, corpus, sdk_release)
+    local sdk_id = sdk.names(sdk_release).sdk_id
     local spec = snapshot.load(tree, fw)
     local index = snapshot.index(spec)
     local pins = snapshot.pins(tree, fw)
@@ -176,7 +179,7 @@ function render(tree, fw, corpus)
     local named = surface.registry_constants(tree, fw)
     local files = {}
 
-    local lines = {layout.constants().MARK, "// Framework: " .. fw .. ". Spec: " .. layout.constants().SDK_ID .. ".",
+    local lines = {layout.constants().MARK, "// Framework: " .. fw .. ". Spec: " .. sdk_id .. ".",
                    "#ifndef CHARON_" .. string.upper(fw) .. "_SPEC_H", "#define CHARON_" .. string.upper(fw) .. "_SPEC_H"}
     for _, r in ipairs(spec) do
         table.insert(lines, "#define CHARON_SPEC_HASH_" .. r.key .. " 0x" .. r.hash .. "ULL")
@@ -234,7 +237,7 @@ function render(tree, fw, corpus)
     files["new.tsv"] = tsv.table_text({"class", "kind", "api", "hash"}, new)
     files["stale.tsv"] = tsv.table_text({"api", "key", "pinned", "spec", "registry"}, stale)
     files["removed.tsv"] = tsv.table_text({"api", "reason", "registry"}, removed)
-    files["README.md"] = readme(fw, spec, pins, stale, removed, new, by_release, release_list)
+    files["README.md"] = readme(fw, spec, pins, stale, removed, new, by_release, release_list, sdk_release)
 
     -- The per-row index the registry check reads (registry() in modules/apple/backports.lua): the fields of a registry row.
     -- Paths are relative to the package root, where registry/ and gen/ both live.
@@ -249,7 +252,7 @@ function render(tree, fw, corpus)
     files["rows.tsv"] = tsv.table_text({"framework", "kind", "api", "introduced", "minimum", "maximum", "status", "effect", "facts",
                                         "source", "owner", "declhash"}, index_rows)
 
-    for name, text in pairs(protocols.protocol_files(tree, fw, corpus)) do
+    for name, text in pairs(protocols.protocol_files(tree, fw, corpus, sdk_release)) do
         files[name] = text
     end
     return files

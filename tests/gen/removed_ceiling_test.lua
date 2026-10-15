@@ -27,7 +27,7 @@ function main()
         ceiling_total = ceiling_total + tonumber(r.removed)
     end
 
-    local counts, total = cmd.removed_counts(ROOT)
+    local counts, total = cmd.removed_counts(ROOT, "26.2")
     if total > ceiling_total then
         local names = {}
         for fw in pairs(counts) do

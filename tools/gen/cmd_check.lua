@@ -22,6 +22,7 @@ local protocols = import("protocols", {anonymous = true})
 local target_checks = import("targets", {anonymous = true})
 local gen = import("cmd_gen", {anonymous = true})
 local snapshot_pins = import("snapshot_pins", {anonymous = true})
+local sdk_info = import("sdk", {anonymous = true})
 
 -- The data lines of a table's text: every line after the header that is not empty.
 local function data_lines(text)
@@ -60,8 +61,8 @@ function record_conflicts(tree, fw)
 end
 
 -- The problems and warnings of one framework, in the order the report prints them.
-local function diagnose(tree, fw, corpus, sdk)
-    local emitted = gen.derived(tree, fw, corpus, sdk)
+local function diagnose(tree, fw, corpus, sdk_release)
+    local emitted = gen.derived(tree, fw, corpus, sdk_release)
     local base = layout.gen_dir(tree, fw)
     local names = order.keys(emitted)
     local problems, warnings = {}, {}
@@ -106,11 +107,11 @@ end
 
 -- The removed-override count of each framework that has one (framework -> count), and their total, with no output: the numbers the
 -- light guard holds to the committed ceiling.
-function removed_counts(tree)
+function removed_counts(tree, sdk_release)
     snapshot.forget()
     local counts, total = {}, 0
     for _, fw in ipairs(snapshot.frameworks(tree)) do
-        local _, _, removed = diagnose(tree, fw, nil)
+        local _, _, removed = diagnose(tree, fw, nil, sdk_release)
         if removed > 0 then
             counts[fw] = removed
             total = total + removed
@@ -121,6 +122,8 @@ end
 
 -- Returns the exit status: 1 when any framework has a problem, or when there is no framework to check.
 function run(args)
+    assert(args.sdk, "check needs --sdk: the iPhoneOS SDK whose release names the spec file")
+    local sdk_release = sdk_info.discover(args.sdk).version
     snapshot.forget()
     local targets = args.all and snapshot.frameworks(args.tree) or {args.framework}
     if #targets == 0 then
@@ -129,7 +132,7 @@ function run(args)
     end
     local failed, removed_total, removed_in = 0, 0, 0
     for _, fw in ipairs(targets) do
-        local problems, warnings, removed, new = diagnose(args.tree, fw, args.coordination, args.sdk)
+        local problems, warnings, removed, new = diagnose(args.tree, fw, args.coordination, sdk_release)
         for _, line in ipairs(problems) do
             print("CHECK " .. fw .. ": " .. line)
         end

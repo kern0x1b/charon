@@ -6,13 +6,14 @@
 local behaviour = import("behaviour", {anonymous = true})
 local order = import("order", {anonymous = true})
 local emit = import("emit", {anonymous = true})
+local sdk_info = import("sdk", {anonymous = true})
 
 -- The methods to run: the framework's, filtered by --selector, and the first --limit of them.
-local function chosen_methods(args, corpus, fw)
+local function chosen_methods(args, corpus, sdk_release, fw)
     local limit = args.limit and tonumber(args.limit) or behaviour.default_limit()
     assert(limit, "--limit needs a number")
     local out = {}
-    for _, m in ipairs(behaviour.methods(corpus, fw)) do
+    for _, m in ipairs(behaviour.methods(corpus, sdk_release, fw)) do
         if (args.selector == nil or m.selector == args.selector) and #out < limit then
             table.insert(out, m)
         end
@@ -27,8 +28,10 @@ function run(args)
     local cache = args.ipsw_cache
     assert(corpus, "--coordination (the corpus folder) is required")
     assert(cache, "--ipsw-cache (the on-disk iOS 26.2 cache) is required")
+    assert(args.sdk, "behaviour needs --sdk: the iPhoneOS SDK whose release names the corpus tables")
+    local sdk_release = sdk_info.discover(args.sdk).version
     local heavy = behaviour.heavy_path(corpus)
-    local methods = chosen_methods(args, corpus, fw)
+    local methods = chosen_methods(args, corpus, sdk_release, fw)
     local pages, done, failed = {}, 0, 0
     for _, m in ipairs(methods) do
         local state = behaviour.new_summary()
@@ -48,7 +51,7 @@ function run(args)
             end
         end
     end
-    local files = behaviour.page_files(corpus, fw)
+    local files = behaviour.page_files(corpus, sdk_release, fw)
     local names = {}
     for cls in pairs(pages) do
         table.insert(names, cls)

@@ -47,9 +47,9 @@ end
 
 -- The file names of the summary pages of every class of a framework that has a method with an address, not of the classes of one
 -- run: a class keeps its page name whatever --selector and --limit select. The folder holds nothing but these pages.
-function page_files(corpus, fw)
+function page_files(corpus, sdk_release, fw)
     local seen, entries = {}, {}
-    for _, m in ipairs(methods(corpus, fw)) do
+    for _, m in ipairs(methods(corpus, sdk_release, fw)) do
         if not seen[m.cls] then
             seen[m.cls] = true
             table.insert(entries, {kind = "class", name = m.cls})
@@ -60,9 +60,9 @@ end
 
 -- The methods of a framework that the 26.2 table gives an address: {cls, section, selector, address}, sorted by class, section and
 -- selector (bytes).
-function methods(corpus, fw)
+function methods(corpus, sdk_release, fw)
     local out = {}
-    for _, row in ipairs(objc.facts(corpus, fw).list) do
+    for _, row in ipairs(objc.facts(corpus, sdk_release, fw).list) do
         if row.entity == "method" and row.address ~= "" and row.address ~= "-" then
             table.insert(out, {cls = row.owner, section = row.section, selector = row.name, address = row.address})
         end

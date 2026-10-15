@@ -20,6 +20,7 @@ local nsobject = import("nsobject", {anonymous = true})
 local order = import("order", {anonymous = true})
 local gen = import("cmd_gen", {anonymous = true})
 local targets = import("targets", {anonymous = true})
+local sdk_info = import("sdk", {anonymous = true})
 
 -- The release whose ledger lists the members the 6.1.3 release lacks.
 local LEDGER_RELEASE = surface.ledger_6_1_3()
@@ -263,7 +264,7 @@ local function with_class_keys(rows, facts)
 end
 
 -- Writes the trace layer of one framework.
-local function trace_one(args, fw)
+local function trace_one(args, fw, sdk_release)
     local tree, corpus = args.tree, args.coordination
     local spec = snapshot.load(tree, fw)
     local facts = headers.shard_facts(tree, fw)
@@ -277,7 +278,7 @@ local function trace_one(args, fw)
     for _, s in ipairs(skipped) do
         skip_reasons[s.api] = s.reason
     end
-    local rows = with_class_keys(surface.surface_rows(corpus, fw), facts)
+    local rows = with_class_keys(surface.surface_rows(corpus, sdk_release, fw), facts)
     local surface_methods = {}
     for _, row in pairs(rows) do
         if row.kind == "method" then
@@ -326,9 +327,11 @@ end
 -- Returns the exit status.
 function run(args)
     assert(args.coordination, "trace needs --coordination: the corpus folder")
+    assert(args.sdk, "trace needs --sdk: the iPhoneOS SDK whose release names the surface table")
+    local sdk_release = sdk_info.discover(args.sdk).version
     local targets = args.all and gen.frameworks(args.tree) or {args.framework}
     for _, fw in ipairs(targets) do
-        trace_one(args, fw)
+        trace_one(args, fw, sdk_release)
     end
     return 0
 end

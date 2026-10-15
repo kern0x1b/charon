@@ -21,6 +21,7 @@ local files = import("files", {anonymous = true})
 local order = import("order", {anonymous = true})
 local pages = import("pages", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
+local sdk_info = import("sdk", {anonymous = true})
 
 -- The ObjC rows are read through this function: objc.each by default, replaced by tests with a fixture.
 local objc_each = objc.each
@@ -320,13 +321,13 @@ end
 -- One pass over the ObjC table for every framework of the run: per framework, the first row of each member key the spec names
 -- (objc.facts keeps the first row of a key) and the last class row of each owner the spec names (the oracle's dict keeps the last
 -- class key of an owner, in the table's order). Returns framework -> {index, meta}.
-local function read_objc(corpus, needs)
+local function read_objc(corpus, sdk_release, needs)
     local frameworks, state = {}, {}
     for fw, need in pairs(needs) do
         frameworks[fw] = true
         state[fw] = {keys = need.keys, owners = need.owners, index = {}, meta = {}, classes_seen = {}}
     end
-    objc_each(corpus, frameworks, function(fw, row)
+    objc_each(corpus, sdk_release, frameworks, function(fw, row)
         local s = state[fw]
         local key = objc.key_of(row)
         if row.entity == "class" then
@@ -472,7 +473,7 @@ end
 
 -- Writes the pages of one framework. Returns the number of class pages.
 local function write_framework(ctx, fw, objc_state)
-    local tree, corpus = ctx.tree, ctx.corpus
+    local tree, corpus, sdk_release = ctx.tree, ctx.corpus, ctx.sdk_release
     local spec = snapshot.load(tree, fw)
     local parsed = headers.shard_facts(tree, fw)
     local members_by_class, class_names, constant_rows = {}, {}, {}
@@ -505,10 +506,10 @@ local function write_framework(ctx, fw, objc_state)
     local ctx_fw = {
         led = surface.ledger_status(corpus, fw, LEDGER_6_1_3),
         led43 = surface.ledger_status(corpus, fw, LEDGER_4_3),
-        surf = surface.surface_rows(corpus, fw),
+        surf = surface.surface_rows(corpus, sdk_release, fw),
         regs = surface.registry_entries(tree, fw),
         pins = pins,
-        oracle = surface.oracle_defaults(corpus, fw),
+        oracle = surface.oracle_defaults(corpus, sdk_release, fw),
         stubs_skipped = skipped,
         meta_of = objc_state.meta,
         objc_index = objc_state.index,
@@ -629,8 +630,9 @@ function run(args)
     for _, fw in ipairs(targets) do
         needs[fw] = needs_of(tree, fw)
     end
-    local objc_states = read_objc(args.coordination, needs)
-    local ctx = {tree = tree, corpus = args.coordination, sdk = args.sdk, out_root = out_root}
+    local sdk_release = sdk_info.discover(args.sdk).version
+    local objc_states = read_objc(args.coordination, sdk_release, needs)
+    local ctx = {tree = tree, corpus = args.coordination, sdk = args.sdk, sdk_release = sdk_release, out_root = out_root}
     for _, fw in ipairs(targets) do
         write_framework(ctx, fw, objc_states[fw])
     end

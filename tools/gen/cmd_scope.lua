@@ -19,6 +19,7 @@ local swift_shard = import("swift_shard", {anonymous = true})
 local emit = import("emit", {anonymous = true})
 local order = import("order", {anonymous = true})
 local targets = import("targets", {anonymous = true})
+local sdk_info = import("sdk", {anonymous = true})
 
 -- The ledgers the scope counts against: the 6.1.3 release (the members it lacks are the work) and the 4.3 release.
 local LEDGER_6_1_3 = surface.ledger_6_1_3()
@@ -622,7 +623,7 @@ function run(args)
     assert(args.sdk, "scope needs --sdk: the iOS SDK directory (the scope reads the headers)")
     assert(args.coordination, "scope needs --coordination: the corpus folder (the surface table and the ledgers)")
     assert(args.out, "scope needs --out: the folder the four files are written to")
-    local all = surface.all_rows(args.coordination)
+    local all = surface.all_rows(args.coordination, sdk_info.discover(args.sdk).version)
     local tally = new_tally()
     tally.skipped = coverage.skipped(args.tree)
     for _, fw in ipairs(all.order) do

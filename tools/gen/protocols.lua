@@ -18,11 +18,11 @@ local LEDGER_RELEASE = surface.ledger_6_1_3()
 -- The rule of generation_set in tools/gen.py@52253c0650: the objc protocols missing at 6.1.3 (a row the ledger lists with a status other than
 -- header-ok, which the lift covers) and named by no registry row of the framework. It reads the coordination corpus (the surface
 -- table and the ledgers), which lives outside the repository.
-function rule_set(tree, fw, corpus)
+function rule_set(tree, fw, corpus, sdk_release)
     local led6 = surface.ledger_status(corpus, fw, LEDGER_RELEASE)
     local registry = surface.registry_entries(tree, fw)
     local out = {}
-    for _, row in pairs(surface.surface_rows(corpus, fw)) do
+    for _, row in pairs(surface.surface_rows(corpus, sdk_release, fw)) do
         if row.kind == "protocol" and row.lang == "objc" and registry[surface.canonical_member(row.api, "protocol")] == nil then
             local status = led6[surface.key("protocol", row.api)]
             if status ~= nil and status ~= "header-ok" then
@@ -49,12 +49,12 @@ end
 -- The objc protocols whose objects this generator emits. Without the coordination corpus (corpus nil: the build, a clean checkout)
 -- the set is the reviewed record. With it, the rule is worked out from the corpus and must equal the record: a difference names the
 -- protocols on each side, so a change of the rule or of the corpus is reviewed through the record, never silently emitted.
-function generation_set(tree, fw, corpus)
+function generation_set(tree, fw, corpus, sdk_release)
     local recorded = recorded_set(tree, fw)
     if corpus == nil then
         return recorded
     end
-    local computed = rule_set(tree, fw, corpus)
+    local computed = rule_set(tree, fw, corpus, sdk_release)
     local only_rule, only_record = {}, {}
     for name in pairs(computed) do
         if not recorded[name] then table.insert(only_rule, name) end
@@ -95,9 +95,9 @@ end
 
 -- The generated protocol files of a framework: name -> text. One source per release a protocol arrived in: each source names
 -- every protocol of its release, so clang emits its protocol object there.
-function protocol_files(tree, fw, corpus)
+function protocol_files(tree, fw, corpus, sdk_release)
     local protocols = records(tree, fw)
-    local wanted = generation_set(tree, fw, corpus)
+    local wanted = generation_set(tree, fw, corpus, sdk_release)
     local generated, by_release, release_list = {}, {}, {}
     for name, record in pairs(protocols) do
         if GENERATED_STATUS[record.status] and wanted[name] then

@@ -125,6 +125,7 @@ end
 -- checkout that holds a generated .gen would make registry_test depend on which suite ran first (a second run failed on it).
 local function test_zero_writes(check)
     local gen = import("gen.cmd_gen", {rootdir = TOOLS, anonymous = true})
+    local release_fixture = import("release_fixture", {rootdir = os.scriptdir(), anonymous = true})
     local emit = import("gen.emit", {rootdir = TOOLS, anonymous = true})
     local root = path.absolute(path.join(os.scriptdir(), "..", ".."))
     local tree = path.join(root, ".agent-work", "runs", "gen-zero-writes-" .. tostring(os.time()) .. "-" .. tostring(math.random(1000000)))
@@ -136,7 +137,7 @@ local function test_zero_writes(check)
     if os.isdir(path.join(tree, package, ".gen")) then
         os.rm(path.join(tree, package, ".gen"))
     end
-    local args = {tree = tree, all = true}
+    local args = {tree = tree, all = true, sdk = release_fixture.write(tree, gen.frameworks(tree))}
     gen.run(args)
     local before = emit.count()
     check(gen.run(args) == 0, "gen --all on a copy of the tree succeeds")

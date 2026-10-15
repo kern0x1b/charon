@@ -25,3 +25,20 @@ function discover(sdk)
         triple = "arm64e-apple-ios" .. settings.DefaultDeploymentTarget,
     }
 end
+
+-- The names of the corpus files and of the outputs that carry the release, built from the release (the version discover reads). The
+-- corpus of one release is the folder cache-<release> and the files named with it; a release the corpus has no files for is an error
+-- where the file is read, naming the file.
+function names(release)
+    local cache = "cache-" .. release
+    return {
+        cache_dir = cache,
+        surface = "sdk-" .. release .. "-surface.tsv",
+        oracle_defaults = cache .. "/oracle-defaults.tsv",
+        objc_parts = {"objc-" .. release .. "-part1.tsv.gz", "objc-" .. release .. "-part2.tsv.gz", "objc-" .. release .. "-part3.tsv.gz"},
+        swift_interface = cache .. "/swiftinterface-" .. release .. ".tsv",
+        ios_table = cache .. "/constants-" .. release .. ".tsv.gz",
+        sdk_id = "sdk-" .. release .. "-headers",
+        ios_value = "ios-" .. release .. "-cache",
+    }
+end

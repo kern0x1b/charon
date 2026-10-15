@@ -13,6 +13,7 @@ local order = import("order", {anonymous = true})
 local surface = import("surface", {anonymous = true})
 local emit = import("emit", {anonymous = true})
 local tbd = import("tbd", {anonymous = true})
+local sdk_info = import("sdk", {anonymous = true})
 local snapshot_pins = import("snapshot_pins", {anonymous = true})
 local targets = import("targets", {anonymous = true})
 local headers = import("headers", {anonymous = true})
@@ -776,11 +777,11 @@ end
 
 -- The objc C functions the 6.1.3 ledger lists as missing (not header-ok) and no registry row names: {api, introduced}, sorted
 -- (gen.py@52253c0650 function_wanted).
-local function function_wanted(tree, fw, corpus)
+local function function_wanted(tree, fw, corpus, sdk_release)
     local led6 = surface.ledger_status(corpus, fw, surface.ledger_6_1_3())
     local registry = surface.registry_entries(tree, fw)
     local out = {}
-    for _, row in pairs(surface.surface_rows(corpus, fw)) do
+    for _, row in pairs(surface.surface_rows(corpus, sdk_release, fw)) do
         local k = surface.key(row.kind, row.api)
         if row.kind == "function" and row.lang == "objc" and registry[row.api] == nil and led6[k] ~= nil and led6[k] ~= "header-ok" then
             table.insert(out, {api = row.api, introduced = row.introduced})
@@ -842,7 +843,7 @@ function declaring_text(nested, umbrella_text, name)
 end
 
 -- Writes one framework's snapshot. Returns nothing; prints the summary line.
-local function one(args, fw, sdk)
+local function one(args, fw, sdk, sdk_release)
     local snap = layout.snap_dir(args.tree, fw)
     -- input builds every surface framework the skip ledger does not name, and the framework's build table is what the oracle's gate
     -- reads (gen.py cmd_functions): a skipped framework has no functions to read. The Lua reads the ledger, since its gen writes no
@@ -851,7 +852,7 @@ local function one(args, fw, sdk)
         return
     end
     local target = path.join(snap, "functions.tsv")
-    local wanted = function_wanted(args.tree, fw, args.coordination)
+    local wanted = function_wanted(args.tree, fw, args.coordination, sdk_release)
     if #wanted == 0 then
         if os.isfile(target) then
             os.rm(target)
@@ -929,9 +930,10 @@ function run(args)
     assert(args.coordination, "functions needs --coordination: the corpus folder (the surface table and the ledgers)")
     assert(args.sdk, "functions needs --sdk: the iPhoneOS SDK the declarations are read from")
     local sdk = args.sdk
-    local targets = args.all and surface.surface_frameworks(args.coordination) or {args.framework}
+    local sdk_release = sdk_info.discover(sdk).version
+    local targets = args.all and surface.surface_frameworks(args.coordination, sdk_release) or {args.framework}
     for _, fw in ipairs(targets) do
-        one(args, fw, sdk)
+        one(args, fw, sdk, sdk_release)
     end
     return 0
 end

@@ -5,10 +5,8 @@
 
 local stream = import("stream", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
+local sdk = import("sdk", {anonymous = true})
 
--- The parts in the order they are read: a fact's first row wins, so the order is the table's.
-local PARTS = {"objc-26.2-part1.tsv.gz", "objc-26.2-part2.tsv.gz", "objc-26.2-part3.tsv.gz"}
-local TABLE_DIR = "cache-26.2"
 local ENTITIES = {class = true, method = true, property = true}
 local FRAMEWORK_SUFFIX = ".framework"
 -- The columns a fact carries, by the name the table's header gives them.
@@ -30,14 +28,16 @@ function key_of(row)
 end
 
 -- Calls fn(framework, row) for every fact of the wanted frameworks, in the table's order: every row, repeats included (a consumer
--- keeps the first row of a key). wanted is a set of framework names, or nil for every framework.
-function each(corpus, wanted, fn)
+-- keeps the first row of a key). wanted is a set of framework names, or nil for every framework. The parts are read in the order the
+-- release's names give them: a fact's first row wins, so the order is the table's. release is the SDK's version (sdk.discover).
+function each(corpus, release, wanted, fn)
+    local names = sdk.names(release)
     local columns = nil
     local header = nil
     local count = 0
     local memo = {}
-    for _, part in ipairs(PARTS) do
-        local file = path.join(corpus, TABLE_DIR, part)
+    for _, part in ipairs(names.objc_parts) do
+        local file = path.join(corpus, names.cache_dir, part)
         assert(os.isfile(file), "no objc table part: " .. file)
         local first = true
         local number = 0
@@ -94,9 +94,9 @@ function each(corpus, wanted, fn)
 end
 
 -- The facts of one framework: list (the rows in the table's order, the first row of each key only) and index (key -> row).
-function facts(corpus, fw)
+function facts(corpus, release, fw)
     local list, index = {}, {}
-    each(corpus, {[fw] = true}, function(_, row)
+    each(corpus, release, {[fw] = true}, function(_, row)
         local k = key_of(row)
         if index[k] == nil then
             index[k] = row
