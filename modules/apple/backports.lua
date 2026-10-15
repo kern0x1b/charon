@@ -137,6 +137,9 @@ LIBRARIES = {
     {name = "CoreGraphicsBackports", folder = "CoreGraphics", frameworks = {"CoreGraphics", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "AddressBookUIBackports", folder = "AddressBookUI", frameworks = {"AddressBookUI", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "CoreVideoBackports", folder = "CoreVideo", frameworks = {"CoreVideo", "Foundation"}, libraries = {"FoundationBackports"}},
+    -- CoreMotion's activity classes arrived in iOS 7 and the device has no motion coprocessor to measure them, so the library
+    -- carries the classes and answers as the host answers on hardware without one. CoreMotion itself is the release's own.
+    {name = "CoreMotionBackports", folder = "CoreMotion", frameworks = {"CoreMotion", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "CarPlayBackports", folder = "CarPlay", frameworks = {"CarPlay", "MapKit", "UIKit", "CoreGraphics", "CoreTelephony", "Foundation"}, libraries = {"FoundationBackports"}},
     -- FileProvider arrived in iOS 11.0 and the release has none of it: no framework, and no
     -- extension host to load a provider. The manager, the domain and the requests are the port's
