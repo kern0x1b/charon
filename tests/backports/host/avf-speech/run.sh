@@ -1,14 +1,19 @@
 #!/bin/sh
-# run.sh -- AVSpeechUtterance and its three rate constants, the port against the host, in one binary.
+# run.sh -- AVSpeechUtterance and its three rate constants, the port against the host, in one binary; then
+# AVSpeechSynthesisVoice (voice-checks.m) in a second binary, in four locale variants.
 #
-# The port's two objects (AVFoundation/AVSpeechUtterance7.m, AVFoundation/AVSpeechConstants7.m) are compiled
-# with every name they define renamed to a charon_host_ spelling, and linked beside checks.m, which asks the
-# host's own AVSpeechUtterance and the port's the same questions and prints both answers in one process.
+# The port's objects (AVFoundation/AVSpeechUtterance7.m, AVFoundation/AVSpeechConstants7.m, and for the voice
+# AVFoundation/AVSpeechSynthesisVoice7.m) are compiled with every name they define renamed to a charon_host_ spelling,
+# and linked beside the checks, which ask the host's own class and the port's the same questions in one process.
 #
-# Two controls keep the check honest:
+# Controls keep the checks honest:
 #   * checks.m's first line asks the host for its default rate; a probe that is not reading the host fails there;
 #   * AVSPEECH_MUTANT=pitch plants a wrong floor for pitchMultiplier in a COPY of the port source and the run
 #     must go red. A plant that goes green means the check cannot see the thing it claims to see.
+#   * voice-checks.m's first lines ask the host for its current language, which run.sh sets per variant;
+#   * AVSPEECH_VOICE_MUTANT=identifier plants a wrong identifier for one voice in a COPY, and the voice run must go red.
+# The host has no VoiceServices framework, so the voice's listing is a stub in voice-checks.m; run.sh checks the stub
+# against the 6.1.3 probe's listing (voices/listing-6.1.3.txt) before it builds anything.
 #
 # Run directly, not through heavy.sh: two small compiles and one run.
 set -eu
@@ -51,4 +56,42 @@ set -e
 grep -v '^ok ' "$build/log" || true
 grep -q '^checks=' "$build/log" || { echo "FAIL: the run printed no checks= line, so nothing was checked"; exit 1; }
 echo "log=$build/log"
-exit "$result"
+
+# AVSpeechSynthesisVoice (voice-checks.m). The host has no VoiceServices, so the port's listing source is the stub in
+# voice-checks.m; that stub must hold the 6.1.3 probe's listing (voices/listing-6.1.3.txt) pair for pair.
+voices=$here/voices
+awk '/^probe: code /{code=$3; getline; n=$0; gsub(/[ "]/,"",n); print code, n}' "$voices/listing-6.1.3.txt" | sort > "$build/listing-pairs"
+grep -oE '@"[a-z]{2}-[A-Z]{2}": @"[^"]+"' "$here/voice-checks.m" | sed -E 's/@"([^"]+)": @"([^"]+)"/\1 \2/' | sort > "$build/stub-pairs"
+[ "$(wc -l < "$build/listing-pairs")" -eq 36 ] || { echo "FAIL: the 6.1.3 listing file does not hold 36 code lines"; exit 1; }
+cmp -s "$build/listing-pairs" "$build/stub-pairs" || { echo "FAIL: the stub in voice-checks.m is not the 6.1.3 listing"; diff "$build/listing-pairs" "$build/stub-pairs" | head -6; exit 1; }
+
+cp "$avf/AVSpeechSynthesisVoice7.m" "$build/src/"
+vmutant=${AVSPEECH_VOICE_MUTANT:-0}
+if [ "$vmutant" = identifier ]; then
+    sed -i '' 's/@"com.apple.voice.compact.en-US.Samantha"/@"com.apple.voice.super-compact.en-US.Samantha"/' "$build/src/AVSpeechSynthesisVoice7.m"
+    [ "$(grep -c 'super-compact.en-US.Samantha' "$build/src/AVSpeechSynthesisVoice7.m")" -eq 1 ] || { echo "FAIL: the planted identifier did not apply"; exit 1; }
+    echo "planted: Samantha's identifier in the copy is the super-compact one (control: must go red)"
+fi
+xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations -DAVSpeechSynthesisVoice=charon_host_AVSpeechSynthesisVoice \
+    -I"$avf" -c "$build/src/AVSpeechSynthesisVoice7.m" -o "$build/AVSpeechSynthesisVoice7.o" 2> "$build/voice.err" || {
+        echo "FAIL compiling the port's AVSpeechSynthesisVoice7.m"; head -6 "$build/voice.err"; exit 1; }
+xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations "$here/voice-checks.m" "$build/AVSpeechSynthesisVoice7.o" \
+    -framework Foundation -framework AVFAudio -o "$build/avf-speech-voices" 2> "$build/voice-link.err" || {
+        echo "FAIL linking the voice differential"; head -10 "$build/voice-link.err"; exit 1; }
+
+# One run per locale variant: argv[1] is the host's current language code for that variant, the rest are the
+# preferred-language arguments the host reads at start-up (the setting is the variant's, not the machine's).
+set +e
+"$build/avf-speech-voices" en-US > "$build/voice-en-US.log" 2>&1; v1=$?
+"$build/avf-speech-voices" fr-FR -AppleLanguages "(fr-FR)" > "$build/voice-fr-FR.log" 2>&1; v2=$?
+"$build/avf-speech-voices" cmn-CN -AppleLanguages "(zh-Hans-CN)" > "$build/voice-zh-Hans-CN.log" 2>&1; v3=$?
+"$build/avf-speech-voices" ar-001 -AppleLanguages "(ar-SA)" > "$build/voice-ar-SA.log" 2>&1; v4=$?
+set -e
+for log in "$build"/voice-*.log; do
+    grep -v '^ok ' "$log" || true
+    grep -q '^checks=' "$log" || { echo "FAIL: $log printed no checks= line, so nothing was checked"; exit 1; }
+done
+echo "voice-logs=$build/voice-*.log"
+[ "$result" -eq 0 ] || exit "$result"
+[ "$v1$v2$v3$v4" = 0000 ] || { echo "FAIL: a voice variant went red"; exit 1; }
+exit 0
