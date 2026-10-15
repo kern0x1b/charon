@@ -294,3 +294,8 @@ enum	c:@E@NLTaggerAssetsResult	-			NSInteger	-	-	-	-	ba6346ffb1c17e31	-
 enumconst	c:@E@NLTaggerAssetsResult@NLTaggerAssetsResultAvailable	NLTaggerAssetsResult			-	-	-	-	-	8e1776f9f2ceed72	0
 enumconst	c:@E@NLTaggerAssetsResult@NLTaggerAssetsResultNotAvailable	NLTaggerAssetsResult			-	-	-	-	-	cd91e5e26b40f712	1
 enumconst	c:@E@NLTaggerAssetsResult@NLTaggerAssetsResultError	NLTaggerAssetsResult			-	-	-	-	-	4874593b5367c651	2
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSRange	-			struct _NSRange	-	-	-	-	d109726d1ae61321	-
+typedef	c:@T@NSRangePointer	-			NSRange *	-	-	-	-	dd56cac47cbf2485	-

@@ -308,3 +308,11 @@ method	c:objc(cs)AXBrailleTranslator(im)translatePrintText:	-			AXBrailleTransla
 method	c:objc(cs)AXBrailleTranslator(im)backTranslateBraille:	-			AXBrailleTranslationResult *	NSString * braille	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	9eefa1e347b2201a	-
 method	c:objc(cs)AXBrailleTranslator(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	6af7e5f63d185c71	-
 method	c:objc(cs)AXBrailleTranslator(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	8684bcc3c7d2709c	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-
+typedef	c:@T@CGSize	-			struct CGSize	-	-	-	-	288bede4212325f3	-
+typedef	c:@T@CGPoint	-			struct CGPoint	-	-	-	-	5506c4b038700426	-
+typedef	c:@T@CGImageRef	-			struct CGImage *	-	-	-	-	61e7c30be1f5f379	-
+typedef	c:@T@CGColorRef	-			struct CGColor *	-	-	-	-	6d1707fde3455599	-
+typedef	c:@T@NSErrorDomain	-			NSString *	-	-	-	-	a2ef9b8d14cb4ca2	-

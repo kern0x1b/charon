@@ -32310,3 +32310,17 @@ conforms	-	MTRXPCServerProtocol	NSObject		-	-	-	-	-	7f729b56d17d7461	-
 conforms	-	MTRXPCServerProtocol	MTRXPCServerProtocol_MTRDevice		-	-	-	-	-	f3154d8f6b004bd4	-
 conforms	-	MTRXPCServerProtocol	MTRXPCServerProtocol_MTRDeviceController		-	-	-	-	-	971ae4ac56e73a53	-
 method	c:objc(pl)MTRXPCServerProtocol(im)deviceController:checkInWithContext:	-			void	NSUUID * controller | NSDictionary * context	optional	ios=18.3/-/-/0,macos=15.3/-/-/0,tvos=18.3/-/-/0,watchos=11.3/-/-/0	-	5e5f3198a991edd1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@dispatch_queue_t	-			NSObject<OS_dispatch_queue> *	-	-	-	-	b6bdd422edd29fce	-
+typedef	c:@T@dispatch_block_t	-			void ((^))(void)	-	-	swift=-/-/-/1	-	802eb6965171e2dc	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@uint16_t	-			unsigned short	-	-	-	-	a080788dde55e4dc	-
+typedef	c:@T@SecKeyRef	-			struct __SecKey *	-	-	-	-	565e2f6b334adb53	-
+typedef	c:@T@uint64_t	-			unsigned long long	-	-	-	-	e7c1cd95ea4ec29b	-
+typedef	c:@T@uint32_t	-			unsigned int	-	-	-	-	d99005f72e0ec68e	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@NSErrorDomain	-			NSString *	-	-	-	-	a2ef9b8d14cb4ca2	-
+typedef	c:@T@int32_t	-			int	-	-	-	-	cd31f577d25bebf5	-
+typedef	c:@T@size_t	-			__darwin_size_t	-	-	-	-	8ce79a13e58a1844	-
+typedef	c:@T@__darwin_size_t	-			unsigned long	-	-	-	-	0cd38a3df2217524	-

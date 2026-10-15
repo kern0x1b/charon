@@ -822,3 +822,17 @@ category	c:objc(cy)NSUserActivity@MediaPlayerAdditions	-			-	-	-	ios=8.0/-/-/0,m
 property	c:objc(cs)NSUserActivity(py)externalMediaContentIdentifier	MediaPlayerAdditions			NSString *	-	copy,nonatomic	ios=10.1/-/-/0,macos=-/-/-/1,tvos=10.0.1/-/-/0,watchos=-/-/-/1	-	3d9ee462ab11bb57	-
 category	c:objc(cy)AVPlayerItem@MPAdditions	-			-	-	-	macos=-/-/-/1,watchos=-/-/-/1	-	b20c6c7f79ac3df1	-
 property	c:objc(cs)AVPlayerItem(py)nowPlayingInfo	MPAdditions			NSDictionary<NSString *,id> *	-	copy,nonatomic	ios=16.0/-/-/0,macos=-/-/-/1,tvos=16.0/-/-/0,watchos=-/-/-/1	-	47a31bb577f34366	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@uint64_t	-			unsigned long long	-	-	-	-	e7c1cd95ea4ec29b	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@CGSize	-			struct CGSize	-	-	-	-	288bede4212325f3	-
+typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-
+typedef	c:@T@NSRange	-			struct _NSRange	-	-	-	-	d109726d1ae61321	-
+typedef	c:@T@NSStringEncoding	-			NSUInteger	-	-	-	-	7b301d41b44ff889	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@int64_t	-			long long	-	-	-	-	85f1e0b43a934ce7	-
+typedef	c:@T@NSNotificationName	-			NSString *	-	-	-	-	12329f5939199c65	-
+typedef	c:@T@CMTimeRange	-			struct CMTimeRange	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	86e58de4593d57eb	-
+typedef	c:@T@UIControlState	-			enum UIControlState	-	-	-	-	a73da3831b02bacd	-

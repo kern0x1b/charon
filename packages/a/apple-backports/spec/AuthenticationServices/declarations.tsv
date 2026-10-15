@@ -871,3 +871,10 @@ property	c:objc(cs)ASGeneratedPassword(py)value	-			NSString *	-	readonly,nonato
 method	c:objc(cs)ASGeneratedPassword(im)init	-			instancetype	-	-	*unavailable ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	4f0446287cc80850	-
 method	c:objc(cs)ASGeneratedPassword(cm)new	-			instancetype	-	-	*unavailable ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	a6c50d51711a351e	-
 method	c:objc(cs)ASGeneratedPassword(im)initWithKind:value:	-			instancetype	ASGeneratedPasswordKind kind | NSString * value	-	ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	651ea5a6584c2324	-
+typedef	c:@T@NSErrorDomain	-			NSString *	-	-	-	-	a2ef9b8d14cb4ca2	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSErrorUserInfoKey	-			NSString *	-	-	-	-	9ecf47ef2fc2387a	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@NSNotificationName	-			NSString *	-	-	-	-	12329f5939199c65	-
+typedef	c:@T@CGFloat	-			double	-	-	-	-	29e11a71cfda882e	-

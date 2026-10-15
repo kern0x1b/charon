@@ -256,3 +256,8 @@ method	c:objc(pl)MTL4FXTemporalDenoisedScaler(im)encodeToCommandBuffer:	-			void
 protocol	c:objc(pl)MTL4FXFrameInterpolator	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	635df3aca8398907	-
 conforms	-	MTL4FXFrameInterpolator	MTLFXFrameInterpolatorBase		-	-	-	-	-	401146dd00d84f48	-
 method	c:objc(pl)MTL4FXFrameInterpolator(im)encodeToCommandBuffer:	-			void	id<MTL4CommandBuffer> commandBuffer	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	34ab61422d30bf2a	-
+typedef	c:@T@MTLPixelFormat	-			enum MTLPixelFormat	-	-	-	-	40f56ebf564ac2ed	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@MTLTextureUsage	-			enum MTLTextureUsage	-	-	-	-	736694021e0b9993	-
+typedef	c:@T@simd_float4x4	-			struct simd_float4x4	-	-	-	-	23bb586ffbc899fb	-

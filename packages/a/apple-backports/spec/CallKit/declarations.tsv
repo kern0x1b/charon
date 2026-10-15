@@ -265,3 +265,9 @@ method	c:objc(cs)CXCallDirectoryExtensionContext(im)removeIdentificationEntryWit
 method	c:objc(cs)CXCallDirectoryExtensionContext(im)removeAllIdentificationEntries	-			void	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	cb9df2fd2f8b1d08	-
 method	c:objc(cs)CXCallDirectoryExtensionContext(im)completeRequestWithCompletionHandler:	-			void	void (^)(BOOL) completion	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f268773ecd1b5241	-
 method	c:objc(cs)CXCallDirectoryExtensionContext(im)completeRequestReturningItems:completionHandler:	-			void	NSArray * items | void (^)(BOOL) completionHandler	-	*unavailable ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ada06758ba27aad6	-
+typedef	c:@T@NSErrorDomain	-			NSString *	-	-	-	-	a2ef9b8d14cb4ca2	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@dispatch_queue_t	-			NSObject<OS_dispatch_queue> *	-	-	-	-	b6bdd422edd29fce	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@int64_t	-			long long	-	-	-	-	85f1e0b43a934ce7	-

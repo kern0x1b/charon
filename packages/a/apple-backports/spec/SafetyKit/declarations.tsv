@@ -46,3 +46,5 @@ enumconst	c:@E@SAErrorCode@SAErrorNotAuthorized	SAErrorCode			-	-	-	ios=16.0/-/-
 enumconst	c:@E@SAErrorCode@SAErrorNotAllowed	SAErrorCode			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=10.1/-/-/0	-	aabb6aa4b54aa67e	2
 enumconst	c:@E@SAErrorCode@SAErrorInvalidArgument	SAErrorCode			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=10.1/-/-/0	-	7bd52879de3c289f	3
 enumconst	c:@E@SAErrorCode@SAErrorOperationFailed	SAErrorCode			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=10.1/-/-/0	-	3d6eda35e5ecc736	4
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-

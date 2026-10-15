@@ -79,3 +79,5 @@ enumconst	c:@E@ACErrorCode@ACErrorMissingTransportMessageID	ACErrorCode			-	-	-	
 enumconst	c:@E@ACErrorCode@ACErrorCredentialItemNotFound	ACErrorCode			-	-	-	-	-	62822e9c754f7a31	22
 enumconst	c:@E@ACErrorCode@ACErrorCredentialItemNotExpired	ACErrorCode			-	-	-	-	-	ffb269cda606d6ec	23
 typedef	c:@T@ACErrorCode	-			enum ACErrorCode	-	-	-	-	6dbe7bf38e9069ed	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-

@@ -1010,3 +1010,38 @@ method	c:objc(cs)MDLVoxelArray(im)meshUsingAllocator:	-			MDLMesh *	id<MDLMeshBu
 interface	c:objc(cs)MDLUtility	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0	-	771b9048efe0cb80	-
 super	-	MDLUtility	NSObject		-	-	-	-	-	14b0e5f56b4abcf8	-
 method	c:objc(cs)MDLUtility(cm)convertToUSDZ:writeToURL:	-			void	NSURL * inputURL | NSURL * outputURL	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0	-	1aed3558d677321e	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@vector_float3	-			simd_float3	-	-	-	-	7bbe17e377973398	-
+typedef	c:@T@simd_float3	-			float __attribute__((ext_vector_type(3)))	-	-	-	-	0fce24b6ffb4ccd2	-
+typedef	c:@T@matrix_float4x4	-			simd_float4x4	-	-	-	-	6fb55312c43daa5f	-
+typedef	c:@T@simd_float4x4	-			struct simd_float4x4	-	-	-	-	23bb586ffbc899fb	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@vector_float4	-			simd_float4	-	-	-	-	cf7d3a842c448cc6	-
+typedef	c:@T@simd_float4	-			float __attribute__((ext_vector_type(4)))	-	-	-	-	0025db7fec7cd0cf	-
+typedef	c:@T@matrix_double4x4	-			simd_double4x4	-	-	-	-	5960fdee1a33b383	-
+typedef	c:@T@simd_double4x4	-			struct simd_double4x4	-	-	-	-	bb2dbe3a51d88540	-
+typedef	c:@T@vector_double3	-			simd_double3	-	-	-	-	a28bebbc1b6a0e21	-
+typedef	c:@T@simd_double3	-			double __attribute__((ext_vector_type(3)))	-	-	-	-	14a9cfb3c3d4cb6b	-
+typedef	c:@T@simd_quatf	-			struct simd_quatf	-	-	-	-	6f7e5a385ce21003	-
+typedef	c:@T@simd_quatd	-			struct simd_quatd	-	-	-	-	e49e6bafef700b78	-
+typedef	c:@T@vector_float2	-			simd_float2	-	-	-	-	912882ff81a65378	-
+typedef	c:@T@simd_float2	-			float __attribute__((ext_vector_type(2)))	-	-	-	-	4a78b2800bdae091	-
+typedef	c:@T@vector_double2	-			simd_double2	-	-	-	-	105aa1e45a522dc2	-
+typedef	c:@T@simd_double2	-			double __attribute__((ext_vector_type(2)))	-	-	-	-	99822a9fba6409c0	-
+typedef	c:@T@vector_double4	-			simd_double4	-	-	-	-	963142d1dba5592b	-
+typedef	c:@T@simd_double4	-			double __attribute__((ext_vector_type(4)))	-	-	-	-	e301d328aec8a7b8	-
+typedef	c:@T@vector_int2	-			simd_int2	-	-	-	-	c969531d72d9d185	-
+typedef	c:@T@simd_int2	-			int __attribute__((ext_vector_type(2)))	-	-	-	-	6ff9e5d3795ec09b	-
+typedef	c:@T@CGColorRef	-			struct CGColor *	-	-	-	-	6d1707fde3455599	-
+typedef	c:@T@CGColorSpaceRef	-			struct CGColorSpace *	-	-	-	-	046fe86c4865065b	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@vector_uint3	-			simd_uint3	-	-	-	-	0a833da8a9361354	-
+typedef	c:@T@simd_uint3	-			unsigned int __attribute__((ext_vector_type(3)))	-	-	-	-	48488fd5ae9a2950	-
+typedef	c:@T@vector_uint2	-			simd_uint2	-	-	-	-	b5bea0bbddcf36d2	-
+typedef	c:@T@simd_uint2	-			unsigned int __attribute__((ext_vector_type(2)))	-	-	-	-	eda525197cd5c123	-
+typedef	c:@T@CFStringRef	-			const struct __CFString *	-	-	-	-	e422c620371887ac	-
+typedef	c:@T@CGImageRef	-			struct CGImage *	-	-	-	-	61e7c30be1f5f379	-
+typedef	c:@T@vector_int4	-			simd_int4	-	-	-	-	a57a7b6955354f99	-
+typedef	c:@T@simd_int4	-			int __attribute__((ext_vector_type(4)))	-	-	-	-	5f286e1a9b9a8eb2	-

@@ -37,3 +37,5 @@ method	c:objc(pl)CNContactViewControllerDelegate(im)contactViewController:should
 method	c:objc(pl)CNContactViewControllerDelegate(im)contactViewController:didCompleteWithContact:	-			void	CNContactViewController * viewController | CNContact * contact	optional	ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	4d4b94f03655d176	-
 category	c:objc(cy)UIApplicationShortcutIcon@ContactsUI	-			-	-	-	ios=9.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1	-	ea8cc636febc2c67	-
 method	c:objc(cs)UIApplicationShortcutIcon(cm)iconWithContact:	ContactsUI			instancetype	CNContact * contact	-	ios=9.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1	-	274441538fa7eef8	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-

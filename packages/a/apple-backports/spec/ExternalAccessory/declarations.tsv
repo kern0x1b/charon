@@ -81,3 +81,7 @@ property	c:objc(cs)EAWiFiUnconfiguredAccessory(py)model	-			NSString *	-	readonl
 property	c:objc(cs)EAWiFiUnconfiguredAccessory(py)ssid	-			NSString *	-	readonly,copy,nonatomic	ios=8.0/-/-/0	-	155697efd00c684e	-
 property	c:objc(cs)EAWiFiUnconfiguredAccessory(py)macAddress	-			NSString *	-	readonly,copy,nonatomic	ios=8.0/-/-/0	-	8e667a6bdab470a7	-
 property	c:objc(cs)EAWiFiUnconfiguredAccessory(py)properties	-			EAWiFiUnconfiguredAccessoryProperties	-	readonly,nonatomic	ios=8.0/-/-/0	-	317b23bd432ef337	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@dispatch_queue_t	-			NSObject<OS_dispatch_queue> *	-	-	-	-	b6bdd422edd29fce	-

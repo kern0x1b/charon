@@ -145,3 +145,12 @@ method	c:objc(pl)NISessionDelegate(im)session:didGenerateShareableConfigurationD
 method	c:objc(pl)NISessionDelegate(im)session:didUpdateAlgorithmConvergence:forObject:	-			void	NISession * session | NIAlgorithmConvergence * convergence | NINearbyObject * object	optional	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	744c0db7c2317b6a	-
 method	c:objc(pl)NISessionDelegate(im)session:didUpdateDLTDOAMeasurements:	-			void	NISession * session | NSArray<__kindof NIDLTDOAMeasurement *> * measurements	optional	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e638c5001492e659	-
 method	c:objc(pl)NISessionDelegate(im)sessionDidStartRunning:	-			void	NISession * session	optional	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	f50f83a2db6091ac	-
+typedef	c:@T@NSErrorDomain	-			NSString *	-	-	-	-	a2ef9b8d14cb4ca2	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@simd_float3	-			float __attribute__((ext_vector_type(3)))	-	-	-	-	0fce24b6ffb4ccd2	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@simd_double3	-			double __attribute__((ext_vector_type(3)))	-	-	-	-	14a9cfb3c3d4cb6b	-
+typedef	c:@T@simd_float4x4	-			struct simd_float4x4	-	-	-	-	23bb586ffbc899fb	-
+typedef	c:@T@dispatch_queue_t	-			NSObject<OS_dispatch_queue> *	-	-	-	-	b6bdd422edd29fce	-

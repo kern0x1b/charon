@@ -21,3 +21,4 @@ property	c:objc(cs)CLLocationButton(py)icon	-			CLLocationButtonIcon	-	nonatomic
 property	c:objc(cs)CLLocationButton(py)label	-			CLLocationButtonLabel	-	nonatomic	ios=15.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	b9b44d3ee0a9eb25	-
 property	c:objc(cs)CLLocationButton(py)fontSize	-			CGFloat	-	nonatomic	ios=15.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	72dc58a07a24b96b	-
 property	c:objc(cs)CLLocationButton(py)cornerRadius	-			CGFloat	-	nonatomic	ios=15.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	2c67639dd70c62a8	-
+typedef	c:@T@CGFloat	-			double	-	-	-	-	29e11a71cfda882e	-

@@ -501,3 +501,18 @@ function	c:@F@glProgramUniformMatrix2x4fvEXT	-			GLvoid (GLuint, GLint, GLsizei,
 function	c:@F@glProgramUniformMatrix4x2fvEXT	-			GLvoid (GLuint, GLint, GLsizei, GLboolean, const GLfloat *)	GLuint program | GLint location | GLsizei count | GLboolean transpose | const GLfloat * value	-	ios=7.0/12.0/-/0,tvos=9.0/12.0/-/0	-	6e3bd4dd27d07315	-
 function	c:@F@glProgramUniformMatrix3x4fvEXT	-			GLvoid (GLuint, GLint, GLsizei, GLboolean, const GLfloat *)	GLuint program | GLint location | GLsizei count | GLboolean transpose | const GLfloat * value	-	ios=7.0/12.0/-/0,tvos=9.0/12.0/-/0	-	ab99b50f49cef4f1	-
 function	c:@F@glProgramUniformMatrix4x3fvEXT	-			GLvoid (GLuint, GLint, GLsizei, GLboolean, const GLfloat *)	GLuint program | GLint location | GLsizei count | GLboolean transpose | const GLfloat * value	-	ios=7.0/12.0/-/0,tvos=9.0/12.0/-/0	-	85938a6eeba06c5e	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@CFTimeInterval	-			double	-	-	-	-	11d627848397cf44	-
+typedef	c:@T@IOSurfaceRef	-			struct __IOSurface *	-	-	-	-	b3d7dabcf5bf59d2	-
+typedef	c:@T@uint32_t	-			unsigned int	-	-	-	-	d99005f72e0ec68e	-
+typedef	c:@T@uint8_t	-			unsigned char	-	-	-	-	3a61fa5c975bd3b3	-
+typedef	c:@T@int8_t	-			signed char	-	-	-	-	e405b6a7be656ab1	-
+typedef	c:@T@int32_t	-			int	-	-	-	-	cd31f577d25bebf5	-
+typedef	c:@T@int16_t	-			short	-	-	-	-	a957af8a2c7c6b0a	-
+typedef	c:@T@uint16_t	-			unsigned short	-	-	-	-	a080788dde55e4dc	-
+typedef	c:@T@int64_t	-			long long	-	-	-	-	85f1e0b43a934ce7	-
+typedef	c:@T@uint64_t	-			unsigned long long	-	-	-	-	e7c1cd95ea4ec29b	-
+typedef	c:@T@intptr_t	-			__darwin_intptr_t	-	-	-	-	fdac1ab2f2a027a6	-
+typedef	c:@T@__darwin_intptr_t	-			long	-	-	-	-	e10930324992848e	-

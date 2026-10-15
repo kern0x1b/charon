@@ -103,3 +103,12 @@ method	c:objc(cs)OSLogStore(im)entriesEnumeratorAndReturnError:	-			OSLogEnumera
 method	c:objc(cs)OSLogStore(im)positionWithDate:	-			OSLogPosition *	NSDate * date	-	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	fd491325b51b279a	-
 method	c:objc(cs)OSLogStore(im)positionWithTimeIntervalSinceEnd:	-			OSLogPosition *	NSTimeInterval seconds	-	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	1b1d3152ad6cb0c7	-
 method	c:objc(cs)OSLogStore(im)positionWithTimeIntervalSinceLatestBoot:	-			OSLogPosition *	NSTimeInterval seconds	-	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	3bd53cd372250599	-
+typedef	c:@T@os_activity_id_t	-			uint64_t	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	ecd8b1e43696b5b1	-
+typedef	c:@T@uint64_t	-			unsigned long long	-	-	-	-	e7c1cd95ea4ec29b	-
+typedef	c:@T@pid_t	-			__darwin_pid_t	-	-	-	-	bf2c1907ad5396d7	-
+typedef	c:@T@__darwin_pid_t	-			__int32_t	-	-	-	-	cb5c92904c281d82	-
+typedef	c:@T@__int32_t	-			int	-	-	-	-	71b73741152fe871	-
+typedef	c:@T@os_signpost_id_t	-			uint64_t	-	-	-	-	ba8ae1412d96fa34	-
+typedef	c:@T@int64_t	-			long long	-	-	-	-	85f1e0b43a934ce7	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-

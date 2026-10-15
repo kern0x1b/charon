@@ -532,3 +532,16 @@ method	c:objc(cs)MLComputePlanDeviceUsage(im)init	-			instancetype	-	-	*unavaila
 method	c:objc(cs)MLComputePlanDeviceUsage(cm)new	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	34f948632cc52e86	-
 property	c:objc(cs)MLComputePlanDeviceUsage(py)supportedComputeDevices	-			NSArray<id<MLComputeDeviceProtocol>> *	-	readonly,copy,nonatomic	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	fb119f4d7d2287f1	-
 property	c:objc(cs)MLComputePlanDeviceUsage(py)preferredComputeDevice	-			id<MLComputeDeviceProtocol>	-	readonly,strong,nonatomic	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	bf6734c9a27d94c5	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@CVPixelBufferRef	-			CVImageBufferRef	-	-	-	-	2bcb62a122d941bf	-
+typedef	c:@T@CVImageBufferRef	-			CVBufferRef	-	-	-	-	04d1786654c45588	-
+typedef	c:@T@CVBufferRef	-			struct __CVBuffer *	-	-	-	-	42f0de1ee06186fb	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@int64_t	-			long long	-	-	-	-	85f1e0b43a934ce7	-
+typedef	c:@T@NSRange	-			struct _NSRange	-	-	-	-	d109726d1ae61321	-
+typedef	c:@T@OSType	-			FourCharCode	-	-	-	-	01d4dcaaf78349ee	-
+typedef	c:@T@FourCharCode	-			UInt32	-	-	-	-	a0f4e71a4dbfcb9b	-
+typedef	c:@T@UInt32	-			unsigned int	-	-	-	-	9c97778bf2686a2b	-
+typedef	c:@T@CGImageRef	-			struct CGImage *	-	-	-	-	61e7c30be1f5f379	-
+typedef	c:@T@CGImagePropertyOrientation	-			enum CGImagePropertyOrientation	-	-	-	-	7ec899c12b8313d6	-

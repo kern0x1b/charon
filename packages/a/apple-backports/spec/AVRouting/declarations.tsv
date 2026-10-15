@@ -46,3 +46,5 @@ property	c:objc(cs)AVRoutingPlaybackArbiter(py)preferredParticipantForExternalPl
 method	c:objc(cs)AVRoutingPlaybackArbiter(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	4d2d8fe45ef1d546	-
 method	c:objc(cs)AVRoutingPlaybackArbiter(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	21fe333893638ffb	-
 protocol	c:objc(pl)AVRoutingPlaybackParticipant	-			-	-	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	420f4721efcf0e15	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-

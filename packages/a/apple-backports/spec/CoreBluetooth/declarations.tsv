@@ -329,3 +329,11 @@ property	c:objc(cs)CBATTRequest(py)central	-			CBCentral *	-	readonly,nonatomic	
 property	c:objc(cs)CBATTRequest(py)characteristic	-			CBCharacteristic *	-	readonly,nonatomic	ios=6.0/-/-/0	-	a484e6d1c2b860d8	-
 property	c:objc(cs)CBATTRequest(py)offset	-			NSUInteger	-	readonly,nonatomic	ios=6.0/-/-/0	-	eb06df4ecc05c0aa	-
 property	c:objc(cs)CBATTRequest(py)value	-			NSData *	-	copy	ios=6.0/-/-/0	-	945361e8be9d5aa5	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@dispatch_queue_t	-			NSObject<OS_dispatch_queue> *	-	-	-	-	b6bdd422edd29fce	-
+typedef	c:@T@CFAbsoluteTime	-			CFTimeInterval	-	-	-	-	28db4ad74a7edc7f	-
+typedef	c:@T@CFTimeInterval	-			double	-	-	-	-	11d627848397cf44	-
+typedef	c:@T@uint16_t	-			unsigned short	-	-	-	-	a080788dde55e4dc	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@CFUUIDRef	-			const struct __CFUUID *	-	-	-	-	4bfe0d61060a2df4	-

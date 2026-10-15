@@ -810,3 +810,16 @@ typedef	c:@T@nw_ws_client_request_handler_t	-			nw_ws_response_t ((^))(nw_ws_req
 function	c:@F@nw_ws_options_set_client_request_handler	-			void (nw_protocol_options_t, dispatch_queue_t, nw_ws_client_request_handler_t)	nw_protocol_options_t options | dispatch_queue_t client_queue | nw_ws_client_request_handler_t handler	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	5ba708e76c496227	-
 category	c:objc(cy)NSURLSessionConfiguration@Network	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	cf5ce76310cf4181	-
 property	c:objc(cs)NSURLSessionConfiguration(py)proxyConfigurations	Network			NSArray<nw_proxy_config_t> *	-	copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	b73499ee9637517c	-
+typedef	c:@T@uint8_t	-			unsigned char	-	-	-	-	3a61fa5c975bd3b3	-
+typedef	c:@T@size_t	-			__darwin_size_t	-	-	-	-	8ce79a13e58a1844	-
+typedef	c:@T@__darwin_size_t	-			unsigned long	-	-	-	-	0cd38a3df2217524	-
+typedef	c:@T@uint32_t	-			unsigned int	-	-	-	-	d99005f72e0ec68e	-
+typedef	c:@T@uint16_t	-			unsigned short	-	-	-	-	a080788dde55e4dc	-
+typedef	c:@T@uint64_t	-			unsigned long long	-	-	-	-	e7c1cd95ea4ec29b	-
+typedef	c:@T@CFStringRef	-			const struct __CFString *	-	-	-	-	e422c620371887ac	-
+typedef	c:@T@CFErrorRef	-			struct __CFError *	-	-	-	-	7e66b8cb53b22edb	-
+typedef	c:@T@dispatch_queue_t	-			NSObject<OS_dispatch_queue> *	-	-	-	-	b6bdd422edd29fce	-
+typedef	c:@T@dispatch_data_t	-			NSObject<OS_dispatch_data> *	-	-	-	-	b1e775f000ec6171	-
+typedef	c:@T@dispatch_block_t	-			void ((^))(void)	-	-	swift=-/-/-/1	-	802eb6965171e2dc	-
+typedef	c:@T@sec_protocol_options_t	-			NSObject<OS_sec_protocol_options> *	-	-	-	-	3f53658766b30c47	-
+typedef	c:@T@sec_protocol_metadata_t	-			NSObject<OS_sec_protocol_metadata> *	-	-	-	-	ba65619f6fa8c09a	-

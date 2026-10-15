@@ -1007,3 +1007,15 @@ method	c:objc(cs)CPVoiceControlTemplate(im)initWithVoiceControlStates:	-			insta
 property	c:objc(cs)CPVoiceControlTemplate(py)voiceControlStates	-			NSArray<CPVoiceControlState *> *	-	readonly,copy,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	07d47b82d7d3a3ec	-
 method	c:objc(cs)CPVoiceControlTemplate(im)activateVoiceControlStateWithIdentifier:	-			void	NSString * identifier	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4a86f2beb21ac1bd	-
 property	c:objc(cs)CPVoiceControlTemplate(py)activeStateIdentifier	-			NSString *	-	readonly,copy,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e76bffa8a7dc61d1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@UITabBarSystemItem	-			enum UITabBarSystemItem	-	-	-	-	bda2d5552cfab7a3	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@CGSize	-			struct CGSize	-	-	-	-	288bede4212325f3	-
+typedef	c:@T@dispatch_block_t	-			void ((^))(void)	-	-	swift=-/-/-/1	-	802eb6965171e2dc	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@CGFloat	-			double	-	-	-	-	29e11a71cfda882e	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@CGPoint	-			struct CGPoint	-	-	-	-	5506c4b038700426	-
+typedef	c:@T@MKCoordinateRegion	-			struct MKCoordinateRegion	-	-	-	-	0c6e1513ca3b4259	-
+typedef	c:@T@UIUserInterfaceStyle	-			enum UIUserInterfaceStyle	-	-	-	-	843b89c3ae888eab	-

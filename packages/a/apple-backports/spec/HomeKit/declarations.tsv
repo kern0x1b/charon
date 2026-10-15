@@ -1284,3 +1284,7 @@ property	c:objc(cs)HMAccessory(py)vendorAccessory	-			BOOL	-	readonly,nonatomic,
 property	c:objc(cs)HMAccessory(py)HAPInstanceID	-			NSNumber *	-	readonly,copy,nonatomic	ios=26.1/-/-/0,macos=-/-/-/1,tvos=26.1/-/-/0,watchos=26.1/-/-/0	-	1f6bfee8d13a337c	-
 category	c:objc(cy)HMHomeManager@Vendor	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	8db43da08a5e91c8	-
 method	c:objc(cs)HMHomeManager(im)findVendorAccessoryWithHAPPublicKey:completionHandler:	Vendor			void	NSData * hapPublicKey | void (^)(HMAccessory * _Nullable_result, NSError * _Nullable) completion	-	ios=26.1/-/-/0,macos=-/-/-/1,tvos=26.1/-/-/0,watchos=26.1/-/-/0	-	f25527ac28be5596	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@NSPredicateOperatorType	-			enum NSPredicateOperatorType	-	-	-	-	486d2c6873908d63	-

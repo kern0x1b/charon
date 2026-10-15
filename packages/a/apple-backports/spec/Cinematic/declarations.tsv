@@ -238,3 +238,19 @@ method	c:objc(cs)CNObjectTracker(im)finishDetectionTrack	-			CNDetectionTrack *	
 method	c:objc(cs)CNObjectTracker(im)resetDetectionTrack	-			void	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	0522ac8058616723	-
 method	c:objc(cs)CNObjectTracker(im)init	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	d114b6eaaebc4a33	-
 method	c:objc(cs)CNObjectTracker(cm)new	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	80304799bd2b0885	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@CMTimeRange	-			struct CMTimeRange	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	86e58de4593d57eb	-
+typedef	c:@T@CGSize	-			struct CGSize	-	-	-	-	288bede4212325f3	-
+typedef	c:@T@CGAffineTransform	-			struct CGAffineTransform	-	-	-	-	6d275be46c010b99	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@CMTime	-			struct CMTime	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	8a8b73c9a6144fc8	-
+typedef	c:@T@CMPersistentTrackID	-			int32_t	-	-	-	-	20178fee38bc39e7	-
+typedef	c:@T@int32_t	-			int	-	-	-	-	cd31f577d25bebf5	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@CMSampleBufferRef	-			struct opaqueCMSampleBuffer *	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	0c39c3fa33d37428	-
+typedef	c:@T@CVPixelBufferRef	-			CVImageBufferRef	-	-	-	-	2bcb62a122d941bf	-
+typedef	c:@T@CVImageBufferRef	-			CVBufferRef	-	-	-	-	04d1786654c45588	-
+typedef	c:@T@CVBufferRef	-			struct __CVBuffer *	-	-	-	-	42f0de1ee06186fb	-
+typedef	c:@T@int64_t	-			long long	-	-	-	-	85f1e0b43a934ce7	-
+typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-
+typedef	c:@T@CGPoint	-			struct CGPoint	-	-	-	-	5506c4b038700426	-

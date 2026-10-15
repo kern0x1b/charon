@@ -385,3 +385,9 @@ method	c:objc(cs)CSUserQuery(im)userEngagedWithItem:visibleItems:userInteraction
 method	c:objc(cs)CSUserQuery(im)userEngagedWithSuggestion:visibleSuggestions:userInteractionType:	-			void	CSSuggestion * suggestion | NSArray<CSSuggestion *> * visibleSuggestions | CSUserInteraction userInteractionType	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	3dde7945c4a911b4	-
 method	c:objc(cs)CSUserQuery(im)start	-			void	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	6c81a1de31ec8df0	-
 method	c:objc(cs)CSUserQuery(im)cancel	-			void	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	d15ea286b97d649c	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSComparisonResult	-			enum NSComparisonResult	-	-	-	-	98996b4daed97d3d	-
+typedef	c:@T@NSFileProtectionType	-			NSString *	-	-	-	-	74b0c9336506f842	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-

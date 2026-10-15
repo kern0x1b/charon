@@ -36,3 +36,10 @@ category	c:objc(cy)SCSensitivityAnalysis@VideoStreamAnalysis	-			-	-	-	ios=26.0/
 property	c:objc(cs)SCSensitivityAnalysis(py)shouldInterruptVideo	VideoStreamAnalysis			BOOL	-	readonly	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	770243f0811fe123	-
 property	c:objc(cs)SCSensitivityAnalysis(py)shouldIndicateSensitivity	VideoStreamAnalysis			BOOL	-	readonly	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	a57e0b6f97a6e85a	-
 property	c:objc(cs)SCSensitivityAnalysis(py)shouldMuteAudio	VideoStreamAnalysis			BOOL	-	readonly	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	f254bd11e4e8aad0	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@CGImageRef	-			struct CGImage *	-	-	-	-	61e7c30be1f5f379	-
+typedef	c:@T@CVPixelBufferRef	-			CVImageBufferRef	-	-	-	-	2bcb62a122d941bf	-
+typedef	c:@T@CVImageBufferRef	-			CVBufferRef	-	-	-	-	04d1786654c45588	-
+typedef	c:@T@CVBufferRef	-			struct __CVBuffer *	-	-	-	-	42f0de1ee06186fb	-
+typedef	c:@T@VTDecompressionSessionRef	-			struct OpaqueVTDecompressionSession *	-	-	-	-	febf7ac2e43aafb0	-

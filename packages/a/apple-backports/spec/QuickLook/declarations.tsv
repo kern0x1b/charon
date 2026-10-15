@@ -74,3 +74,11 @@ interface	c:objc(cs)QLPreviewSceneActivationConfiguration	-			-	-	-	ios=15.0/-/-
 super	-	QLPreviewSceneActivationConfiguration	UIWindowSceneActivationConfiguration		-	-	-	-	-	6dc0f0b322ab464e	-
 method	c:objc(cs)QLPreviewSceneActivationConfiguration(im)initWithItemsAtURLs:options:	-			instancetype	NSArray<NSURL *> * urls | QLPreviewSceneOptions * options	-	ios=15.0/-/-/0,xros=-/-/-/1	-	6bc58d205beef1fb	-
 method	c:objc(cs)QLPreviewSceneActivationConfiguration(im)initWithUserActivity:	-			instancetype	NSUserActivity * userActivity	-	*unavailable ios=15.0/-/-/0,xros=-/-/-/1	-	5724e13fcf472d9c	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@NSStringEncoding	-			NSUInteger	-	-	-	-	7b301d41b44ff889	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@CGSize	-			struct CGSize	-	-	-	-	288bede4212325f3	-
+typedef	c:@T@CGContextRef	-			struct CGContext *	-	-	-	-	38108536e4326699	-

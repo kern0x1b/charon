@@ -409,3 +409,15 @@ method	c:objc(cs)CLServiceSession(cm)sessionRequiringAuthorization:queue:handler
 method	c:objc(cs)CLServiceSession(cm)sessionRequiringAuthorization:fullAccuracyPurposeKey:	-			CLServiceSession *	CLServiceSessionAuthorizationRequirement authorizationRequirement | NSString * purposeKey	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	6e9b0bf900f95b1f	-
 method	c:objc(cs)CLServiceSession(cm)sessionRequiringAuthorization:fullAccuracyPurposeKey:queue:handler:	-			CLServiceSession *	CLServiceSessionAuthorizationRequirement authorizationRequirement | NSString * purposeKey | dispatch_queue_t queue | void (^)(CLServiceSessionDiagnostic * _Nonnull) handler	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	23b2aefb83bfca27	-
 method	c:objc(cs)CLServiceSession(im)invalidate	-			void	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	f80189a7dc600df8	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@CLLocationCoordinate2D	-			struct CLLocationCoordinate2D	-	-	-	-	9d11eb66555ff740	-
+typedef	c:@T@CLLocationDistance	-			double	-	-	-	-	e6b55a169d2f4b70	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@uint16_t	-			unsigned short	-	-	-	-	a080788dde55e4dc	-
+typedef	c:@T@CLLocationAccuracy	-			double	-	-	-	-	3bc8a490e8501ff0	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@CLLocationDegrees	-			double	-	-	-	-	cb440e63fae31da0	-
+typedef	c:@T@CLLocationDirection	-			double	-	-	-	-	6793469c05475b02	-
+typedef	c:@T@dispatch_queue_t	-			NSObject<OS_dispatch_queue> *	-	-	-	-	b6bdd422edd29fce	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@NSErrorDomain	-			NSString *	-	-	-	-	a2ef9b8d14cb4ca2	-

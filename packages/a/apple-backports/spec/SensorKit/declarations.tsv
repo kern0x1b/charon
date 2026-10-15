@@ -647,3 +647,14 @@ method	c:objc(cs)SRSleepSession(cm)new	-			instancetype	-	-	*unavailable ios=26.
 property	c:objc(cs)SRSleepSession(py)startDate	-			NSDate *	-	readonly,strong,nonatomic	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	70416066ef4d9491	-
 property	c:objc(cs)SRSleepSession(py)duration	-			NSTimeInterval	-	readonly,assign,nonatomic	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	2511635cdffcfcb6	-
 property	c:objc(cs)SRSleepSession(py)identifier	-			NSString *	-	readonly,copy,nonatomic	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	e6e3e74a7a1600fa	-
+typedef	c:@T@CFTimeInterval	-			double	-	-	-	-	11d627848397cf44	-
+typedef	c:@T@uint64_t	-			unsigned long long	-	-	-	-	e7c1cd95ea4ec29b	-
+typedef	c:@T@CFAbsoluteTime	-			CFTimeInterval	-	-	-	-	28db4ad74a7edc7f	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@Float32	-			float	-	-	-	-	a7e06278f3a06d05	-
+typedef	c:@T@CLLocationDistance	-			double	-	-	-	-	e6b55a169d2f4b70	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@CMTimeRange	-			struct CMTimeRange	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	86e58de4593d57eb	-
+typedef	c:@T@int64_t	-			long long	-	-	-	-	85f1e0b43a934ce7	-

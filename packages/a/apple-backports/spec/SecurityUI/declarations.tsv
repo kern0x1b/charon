@@ -10,3 +10,5 @@ property	c:objc(cs)SFCertificatePresentation(py)trust	-			SecTrustRef	-	readonly
 property	c:objc(cs)SFCertificatePresentation(py)title	-			NSString *	-	copy,nonatomic	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	12ddf5c31c5f7b88	-
 property	c:objc(cs)SFCertificatePresentation(py)message	-			NSString *	-	copy,nonatomic	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	e1f7f092d7ac03cd	-
 property	c:objc(cs)SFCertificatePresentation(py)helpURL	-			NSURL *	-	copy,nonatomic	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=-/-/-/1,xros=2.4/-/-/0	-	cc1187a2c261f6a7	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@SecTrustRef	-			struct __SecTrust *	-	-	-	-	793d9b19f5106e82	-

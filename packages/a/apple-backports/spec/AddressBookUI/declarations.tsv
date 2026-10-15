@@ -75,3 +75,10 @@ conforms	-	ABUnknownPersonViewControllerDelegate	NSObject		-	-	-	-	-	43c624b3ca8
 method	c:objc(pl)ABUnknownPersonViewControllerDelegate(im)unknownPersonViewController:didResolveToPerson:	-			void	ABUnknownPersonViewController * unknownCardViewController | ABRecordRef person	-	-	-	c3dab032acc47cc9	-
 method	c:objc(pl)ABUnknownPersonViewControllerDelegate(im)unknownPersonViewController:shouldPerformDefaultActionForPerson:property:identifier:	-			BOOL	ABUnknownPersonViewController * personViewController | ABRecordRef person | ABPropertyID property | ABMultiValueIdentifier identifier	optional	ios=3.0/-/-/0	-	467ab225dde7bda8	-
 function	c:@F@ABCreateStringWithAddressDictionary	-			NSString * (NSDictionary *, BOOL)	NSDictionary * address | BOOL addCountryName	-	ios=2.0/9.0/-/0	-	1ea6449934b89a6f	-
+typedef	c:@T@ABAddressBookRef	-			CFTypeRef	-	-	ios=2.0/9.0/-/0	-	e3c5508ecd595536	-
+typedef	c:@T@CFTypeRef	-			const void *	-	-	-	-	bfc2940caeb1f461	-
+typedef	c:@T@ABRecordRef	-			CFTypeRef	-	-	ios=2.0/9.0/-/0	-	4aad0ec3b8eb5112	-
+typedef	c:@T@ABPropertyID	-			int32_t	-	-	ios=2.0/9.0/-/0	-	fd83e6bf924b0da9	-
+typedef	c:@T@int32_t	-			int	-	-	-	-	cd31f577d25bebf5	-
+typedef	c:@T@ABMultiValueIdentifier	-			int32_t	-	-	ios=2.0/9.0/-/0	-	5400995cf6ca1fae	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-

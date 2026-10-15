@@ -590,3 +590,13 @@ enumconst	c:@E@AVAudioSessionErrorCode@AVAudioSessionErrorCodeExpiredSession	AVA
 enumconst	c:@E@AVAudioSessionErrorCode@AVAudioSessionErrorCodeSessionNotActive	AVAudioSessionErrorCode			-	-	-	-	-	378585974da280ff	1768841571
 enum	c:@Ea@AVAudioSessionErrorInsufficientPriority	-	-		unsigned int	-	-	-	deprecated: Use AVAudioSessionErrorCodeInsufficientPriority instead	70594c2303e04dc1	-
 enumconst	c:@Ea@AVAudioSessionErrorInsufficientPriority@AVAudioSessionErrorInsufficientPriority	-			-	-	-	ios=7.0/12.0/-/0,macos=-/-/-/1	deprecated: Use AVAudioSessionErrorCodeInsufficientPriority instead	557f9a9cc0f803dd	561017449
+typedef	c:@T@Float64	-			double	-	-	-	-	9076708dddf40870	-
+typedef	c:@T@UInt32	-			unsigned int	-	-	-	-	9c97778bf2686a2b	-
+typedef	c:@T@SInt16	-			short	-	-	-	-	3eec647098d9543c	-
+typedef	c:@T@SInt32	-			int	-	-	-	-	fea52187db3d8de0	-
+typedef	c:@T@SInt64	-			long long	-	-	-	-	4a13131456fbd4c5	-
+typedef	c:@T@UInt64	-			unsigned long long	-	-	-	-	b41c42eb5e2605ba	-
+typedef	c:@T@OSType	-			FourCharCode	-	-	-	-	01d4dcaaf78349ee	-
+typedef	c:@T@FourCharCode	-			UInt32	-	-	-	-	a0f4e71a4dbfcb9b	-
+typedef	c:@T@Float32	-			float	-	-	-	-	a7e06278f3a06d05	-
+typedef	c:@T@uint32_t	-			unsigned int	-	-	-	-	d99005f72e0ec68e	-

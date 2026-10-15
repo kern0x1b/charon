@@ -75,3 +75,9 @@ property	c:objc(cs)SNClassificationResult(py)timeRange	-			CMTimeRange	-	readonl
 method	c:objc(cs)SNClassificationResult(im)init	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	4e83ca2f7c8eb310	-
 method	c:objc(cs)SNClassificationResult(cm)new	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	65c84f1fa5050875	-
 method	c:objc(cs)SNClassificationResult(im)classificationForIdentifier:	-			SNClassification *	NSString * identifier	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	f24dfed3251259e7	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@AVAudioFramePosition	-			int64_t	-	-	-	-	314bb8f50ba75f9b	-
+typedef	c:@T@int64_t	-			long long	-	-	-	-	85f1e0b43a934ce7	-
+typedef	c:@T@CMTimeRange	-			struct CMTimeRange	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	86e58de4593d57eb	-
+typedef	c:@T@CMTime	-			struct CMTime	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	8a8b73c9a6144fc8	-

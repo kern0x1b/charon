@@ -149,3 +149,10 @@ method	c:objc(cs)MPSMatrixRandomPhilox(im)initWithDevice:	-			instancetype	id<MT
 method	c:objc(cs)MPSMatrixRandomPhilox(im)initWithDevice:destinationDataType:seed:distributionDescriptor:	-			instancetype	id<MTLDevice> device | MPSDataType destinationDataType | NSUInteger seed | MPSMatrixRandomDistributionDescriptor * distributionDescriptor	-	ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	ef560b55defb7f5c	-
 method	c:objc(cs)MPSMatrixRandomPhilox(im)initWithDevice:destinationDataType:seed:	-			instancetype	id<MTLDevice> device | MPSDataType destinationDataType | NSUInteger seed	-	ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	fa872c68350ab059	-
 method	c:objc(cs)MPSMatrixRandomPhilox(im)initWithCoder:device:	-			instancetype	NSCoder * aDecoder | id<MTLDevice> device	-	ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	59bcf4e14b2042d5	-
+typedef	c:@T@MTLOrigin	-			struct MTLOrigin	-	-	-	-	178361b39c91a4fd	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@uint32_t	-			unsigned int	-	-	-	-	d99005f72e0ec68e	-
+typedef	c:@T@NSZone	-			struct _NSZone	-	-	-	-	a6dc1e3b1b8b2ac5	-
+typedef	c:MPSCoreTypes.h@T@MPSDataType	-			enum MPSDataType	-	-	-	-	99a17108960411fb	-

@@ -126,3 +126,5 @@ method	c:objc(cs)SFSafariExtensionManager(cm)getStateOfExtensionWithIdentifier:c
 interface	c:objc(cs)SFSafariExtensionState	-			-	-	-	ios=26.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	fa3e92df8092c2b3	-
 super	-	SFSafariExtensionState	NSObject		-	-	-	-	-	5dd4452ab071c037	-
 property	c:objc(cs)SFSafariExtensionState(py)enabled	-			BOOL	-	readonly,nonatomic,getter=isEnabled	ios=26.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	430308c182ce3afe	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-

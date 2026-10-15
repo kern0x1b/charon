@@ -314,3 +314,14 @@ property	c:objc(cs)TCTouchControllerDescriptor(py)stencilAttachmentPixelFormat	-
 property	c:objc(cs)TCTouchControllerDescriptor(py)sampleCount	-			NSUInteger	-	assign,nonatomic	ios=26.0/-/-/0,maccatalyst=-/-/-/1,xros=-/-/-/1	-	0e173b4fd75e9bc5	-
 method	c:objc(cs)TCTouchControllerDescriptor(im)init	-			instancetype	-	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,xros=-/-/-/1	-	e0c576213e8952dd	-
 method	c:objc(cs)TCTouchControllerDescriptor(im)initWithMTKView:	-			instancetype	MTKView * mtkView	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,xros=-/-/-/1	-	b523db86aad8dc50	-
+typedef	c:@T@CGPoint	-			struct CGPoint	-	-	-	-	5506c4b038700426	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@CGSize	-			struct CGSize	-	-	-	-	288bede4212325f3	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@CGColorRef	-			struct CGColor *	-	-	-	-	6d1707fde3455599	-
+typedef	c:@T@CGImageRef	-			struct CGImage *	-	-	-	-	61e7c30be1f5f379	-
+typedef	c:@T@CGFloat	-			double	-	-	-	-	29e11a71cfda882e	-
+typedef	c:@T@MTLPixelFormat	-			enum MTLPixelFormat	-	-	-	-	40f56ebf564ac2ed	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-

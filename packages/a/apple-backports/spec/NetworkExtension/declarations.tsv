@@ -1131,3 +1131,19 @@ interface	c:objc(cs)NEURLFilter	-			-	-	-	-	-	c7d7eff150567c99	-
 super	-	NEURLFilter	NSObject		-	-	-	-	-	f7324946ffdcdd72	-
 method	c:objc(cs)NEURLFilter(cm)verdictForURL:completionHandler:	-			void	NSURL * url | void (^)(NEURLFilterVerdict) completionHandler	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2f2cdee7ae6fda84	-
 method	c:objc(cs)NEURLFilter(im)init	-			instancetype	-	-	*unavailable	-	de89dfc1807dd399	-
+typedef	c:@T@nw_endpoint_t	-			NSObject<OS_nw_endpoint> *	-	-	-	-	e3c79389d3a8da31	-
+typedef	c:@T@nw_parameters_t	-			NSObject<OS_nw_parameters> *	-	-	-	-	3e44c8ba053d5005	-
+typedef	c:@T@nw_interface_t	-			NSObject<OS_nw_interface> *	-	-	-	-	2f1c34a83187ba8c	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@size_t	-			__darwin_size_t	-	-	-	-	8ce79a13e58a1844	-
+typedef	c:@T@__darwin_size_t	-			unsigned long	-	-	-	-	0cd38a3df2217524	-
+typedef	c:@T@dispatch_queue_t	-			NSObject<OS_dispatch_queue> *	-	-	-	-	b6bdd422edd29fce	-
+typedef	c:@T@SecIdentityRef	-			struct __SecIdentity *	-	-	-	-	67e0fd928ac99a30	-
+typedef	c:@T@sa_family_t	-			__uint8_t	-	-	-	-	98191706cc738f70	-
+typedef	c:@T@__uint8_t	-			unsigned char	-	-	-	-	21c4a3e51470361c	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@int32_t	-			int	-	-	-	-	cd31f577d25bebf5	-
+typedef	c:@T@SecTrustRef	-			struct __SecTrust *	-	-	-	-	793d9b19f5106e82	-

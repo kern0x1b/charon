@@ -129,3 +129,7 @@ method	c:objc(cs)SHMediaLibrary(cm)new	-			instancetype	-	-	*unavailable ios=15.
 category	c:objc(cy)UTType@SHShazamAdditions	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	9cef406b18d7f822	-
 property	c:objc(cs)UTType(cpy)SHSignatureContentType	SHShazamAdditions			UTType *	-	readonly,strong,nonatomic,class	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	fcb7d4cec235061d	-
 property	c:objc(cs)UTType(cpy)SHCustomCatalogContentType	SHShazamAdditions			UTType *	-	readonly,strong,nonatomic,class	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	daf2981ed70b40a3	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSErrorDomain	-			NSString *	-	-	-	-	a2ef9b8d14cb4ca2	-

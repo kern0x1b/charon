@@ -14,3 +14,4 @@ interface	c:objc(cs)BCChatButton	-			-	-	-	ios=11.3/16.1/-/0,macos=10.13.4/13.0/
 super	-	BCChatButton	UIControl		-	-	-	-	-	f6f88baa62e7042c	-
 method	c:objc(cs)BCChatButton(im)initWithStyle:	-			instancetype	BCChatButtonStyle style	-	ios=11.3/16.1/-/0,macos=10.13.4/13.0/-/0	-	2e116290f2035f01	-
 method	c:objc(cs)BCChatButton(im)initWithCoder:	-			instancetype	NSCoder * coder	-	ios=11.3/16.1/-/0,macos=10.13.4/13.0/-/0	-	cf67dde8ccc29c60	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-

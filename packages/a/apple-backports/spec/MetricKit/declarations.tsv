@@ -270,3 +270,11 @@ enumconst	c:@E@MXErrorCode@MXErrorLaunchTaskPastDeadline	MXErrorCode			-	-	-	ios
 enumconst	c:@E@MXErrorCode@MXErrorLaunchTaskDuplicated	MXErrorCode			-	-	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	80c50e3fc72070c6	3
 enumconst	c:@E@MXErrorCode@MXErrorLaunchTaskUnknown	MXErrorCode			-	-	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f54d2bb12892cafd	4
 enumconst	c:@E@MXErrorCode@MXErrorLaunchTaskInternalFailure	MXErrorCode			-	-	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	10af44d572311258	5
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@pid_t	-			__darwin_pid_t	-	-	-	-	bf2c1907ad5396d7	-
+typedef	c:@T@__darwin_pid_t	-			__int32_t	-	-	-	-	cb5c92904c281d82	-
+typedef	c:@T@__int32_t	-			int	-	-	-	-	71b73741152fe871	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@os_log_t	-			NSObject<OS_os_log> *	-	-	-	-	05283e72d8a81eca	-
+typedef	c:@T@NSErrorDomain	-			NSString *	-	-	-	-	a2ef9b8d14cb4ca2	-

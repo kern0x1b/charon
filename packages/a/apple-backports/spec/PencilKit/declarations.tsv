@@ -254,3 +254,15 @@ method	c:objc(cs)PKInk(im)initWithInkType:color:	-			instancetype	PKInkType type
 property	c:objc(cs)PKInk(py)inkType	-			PKInkType	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	2c2d53115459a482	-
 property	c:objc(cs)PKInk(py)color	-			UIColor *	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	ce70755675691a72	-
 property	c:objc(cs)PKInk(py)requiredContentVersion	-			PKContentVersion	-	readonly,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0	-	27d88bc8036e4f6a	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-
+typedef	c:@T@UIUserInterfaceStyle	-			enum UIUserInterfaceStyle	-	-	-	-	843b89c3ae888eab	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@CGFloat	-			double	-	-	-	-	29e11a71cfda882e	-
+typedef	c:@T@CFStringRef	-			const struct __CFString *	-	-	-	-	e422c620371887ac	-
+typedef	c:@T@CGAffineTransform	-			struct CGAffineTransform	-	-	-	-	6d275be46c010b99	-
+typedef	c:@T@uint32_t	-			unsigned int	-	-	-	-	d99005f72e0ec68e	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@CGPoint	-			struct CGPoint	-	-	-	-	5506c4b038700426	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@CGSize	-			struct CGSize	-	-	-	-	288bede4212325f3	-

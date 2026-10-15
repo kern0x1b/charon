@@ -13,3 +13,4 @@ method	c:objc(cs)ATTrackingManager(cm)new	-			instancetype	-	-	*unavailable ios=
 method	c:objc(cs)ATTrackingManager(im)init	-			instancetype	-	-	*unavailable ios=14/-/-/0,macos=11.0/-/-/0,tvos=14/-/-/0	-	e11e9ddf0d56aa17	-
 var	c:@AppTrackingTransparencyVersionNumber	-			double	-	-	-	-	f76c9601d9379c30	-
 var	c:@AppTrackingTransparencyVersionString	-			const unsigned char[]	-	-	-	-	79e10da884564ff2	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-

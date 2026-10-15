@@ -1013,6 +1013,134 @@ CXChildVisitResult visit(CXCursor c, CXCursor parent, CXClientData data) {
   }
 }
 
+// The typedefs the framework's declarations reference that another SDK header declares: the vector types of simd/, the types of
+// sys/ and mach/. decls keeps only the declarations written under Headers/, so none of these has a row, and the generator's typedef
+// index cannot resolve a name a declaration spells. Each one a declaration reaches (through its parameters, result, fields and
+// properties, and the typedef chain it names) is written as a typedef row of the framework's shard, the row a framework's own typedef
+// gets (main runs the walk outside the doc mode, which writes declarations only).
+struct Referenced {
+  Context* ctx;
+  std::set<std::string> written;  // the USRs written, so each typedef is one row
+};
+
+void referenced_type(Referenced& ref, CXType t);
+
+// A typedef another SDK header declares, as a typedef row (simple_row's form, with the file it is written in as the header).
+void write_foreign_typedef(Referenced& ref, CXCursor d, CXType underlying) {
+  Context& ctx = *ref.ctx;
+  CXSourceLocation loc = clang_getCursorLocation(d);
+  CXFile file = nullptr;
+  unsigned line = 0, column = 0, offset = 0;
+  clang_getExpansionLocation(loc, &file, &line, &column, &offset);
+  Row r;
+  r.kind = "typedef";
+  r.usr = text(clang_getCursorUSR(d));
+  r.container = "-";
+  r.name = declared_name(d);
+  r.side = "-";
+  r.header = file ? text(clang_getFileName(file)) : "-";
+  r.line = std::to_string(line);
+  r.avail = availability(d);
+  r.nullab = nullability(underlying);
+  r.params = "-";
+  r.type = declared_underlying_type(underlying);
+  r.attrs = "-";
+  r.value = "-";
+  r.message = message_of(ctx.tu, d);
+  r.decl = decl_text(ctx.tu, ctx.macro_at, d);
+  record(ctx, d, r, true, false, introduced_ios(d));
+}
+
+// The typedefs a type reaches. A typedef the framework declares is its own row, so it is not followed here (its own declaration is
+// visited, and its underlying type with it).
+void referenced_type(Referenced& ref, CXType t) {
+  switch (t.kind) {
+    case CXType_Typedef: {
+      CXCursor d = clang_getTypeDeclaration(t);
+      std::string file;
+      unsigned line = 0;
+      if (in_framework(d, *ref.ctx, &file, &line)) return;
+      if (!ref.written.insert(text(clang_getCursorUSR(d))).second) return;
+      CXType underlying = clang_getTypedefDeclUnderlyingType(d);
+      write_foreign_typedef(ref, d, underlying);
+      referenced_type(ref, underlying);
+      return;
+    }
+    case CXType_Attributed:
+      referenced_type(ref, clang_Type_getModifiedType(t));
+      return;
+    case CXType_Elaborated:
+      referenced_type(ref, clang_Type_getNamedType(t));
+      return;
+    case CXType_Pointer:
+    case CXType_BlockPointer:
+    case CXType_ObjCObjectPointer:
+    case CXType_LValueReference:
+      referenced_type(ref, clang_getPointeeType(t));
+      return;
+    case CXType_ConstantArray:
+    case CXType_IncompleteArray:
+    case CXType_VariableArray:
+    case CXType_DependentSizedArray:
+      referenced_type(ref, clang_getArrayElementType(t));
+      return;
+    case CXType_Vector:
+    case CXType_ExtVector:
+    case CXType_Complex:
+      referenced_type(ref, clang_getElementType(t));
+      return;
+    case CXType_FunctionProto:
+    case CXType_FunctionNoProto: {
+      referenced_type(ref, clang_getResultType(t));
+      int n = clang_getNumArgTypes(t);
+      for (int i = 0; i < n; ++i) referenced_type(ref, clang_getArgType(t, (unsigned)i));
+      return;
+    }
+    default:
+      return;
+  }
+}
+
+// Walks the framework's own declarations: the types of a function, a method, a variable, a field, a property, a parameter and a typedef,
+// and the members of a class, a protocol, a category, a struct or a union (the containers the walk descends into).
+CXChildVisitResult referenced_visit(CXCursor c, CXCursor parent, CXClientData data) {
+  (void)parent;
+  Referenced& ref = *static_cast<Referenced*>(data);
+  std::string file;
+  unsigned line = 0;
+  if (!in_framework(c, *ref.ctx, &file, &line)) return CXChildVisit_Continue;
+  bool container = false;
+  switch (clang_getCursorKind(c)) {
+    case CXCursor_FunctionDecl:
+    case CXCursor_ObjCInstanceMethodDecl:
+    case CXCursor_ObjCClassMethodDecl: {
+      referenced_type(ref, clang_getCursorResultType(c));
+      int n = clang_Cursor_getNumArguments(c);
+      for (int i = 0; i < n; ++i) referenced_type(ref, clang_getCursorType(clang_Cursor_getArgument(c, i)));
+      break;
+    }
+    case CXCursor_TypedefDecl:
+      referenced_type(ref, clang_getTypedefDeclUnderlyingType(c));
+      break;
+    case CXCursor_VarDecl:
+    case CXCursor_FieldDecl:
+    case CXCursor_ObjCPropertyDecl:
+      referenced_type(ref, clang_getCursorType(c));
+      break;
+    case CXCursor_ObjCInterfaceDecl:
+    case CXCursor_ObjCCategoryDecl:
+    case CXCursor_ObjCProtocolDecl:
+    case CXCursor_StructDecl:
+    case CXCursor_UnionDecl:
+      container = true;
+      break;
+    default:
+      break;
+  }
+  if (container) clang_visitChildren(c, referenced_visit, data);
+  return CXChildVisit_Continue;
+}
+
 // The census of the translation unit: the declarations of the kinds the extractor reads, counted by where they are written: the
 // framework's own, and those of other SDK headers the translation unit reaches. One census row per parsed framework; the gaps mode of
 // ir.lua classifies the frameworks that have no declaration of their own with it.
@@ -1697,6 +1825,10 @@ int main(int argc, char** argv) {
     clang_visitChildren(clang_getTranslationUnitCursor(tu), collect_macro_uses, &ctx);
     Nest root{&ctx, "-", "", false, true};
     clang_visitChildren(clang_getTranslationUnitCursor(tu), visit, &root);
+    if (!doc) {
+      Referenced referenced{&ctx, {}};
+      clang_visitChildren(clang_getTranslationUnitCursor(tu), referenced_visit, &referenced);
+    }
     resolve(ctx);
     if (!doc) census_row(ctx, sdk.c_str(), tu);
     std::fwrite(ctx.out.data(), 1, ctx.out.size(), stdout);

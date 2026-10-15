@@ -120,3 +120,6 @@ property	c:objc(cs)SWUpdateCollaborationParticipantsAction(py)addedIdentities	-	
 property	c:objc(cs)SWUpdateCollaborationParticipantsAction(py)removedIdentities	-			NSArray<SWPersonIdentity *> *	-	readonly,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	5f1632fe14057600	-
 method	c:objc(cs)SWUpdateCollaborationParticipantsAction(im)init	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	c8c3c15d97a1177c	-
 method	c:objc(cs)SWUpdateCollaborationParticipantsAction(cm)new	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	0d15192c40efc2c8	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-

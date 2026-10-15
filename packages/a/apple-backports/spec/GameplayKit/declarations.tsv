@@ -566,3 +566,25 @@ category	c:objc(cy)SCNNode@GameplayKit	-			-	-	-	-	-	c18d895cd74de8c1	-
 property	c:objc(cs)SCNNode(py)entity	GameplayKit			GKEntity *	-	weak,nonatomic	ios=11.0/-/-/0	-	fad3081a9bc17e8b	-
 category	c:objc(cy)SCNScene@GameplayKit	-			-	-	-	-	-	0a7bc5c536aa3dfe	-
 conforms	-	SCNScene	GKSceneRootNodeType		-	-	-	-	-	ef7dbcfe76592faa	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@vector_float2	-			simd_float2	-	-	-	-	912882ff81a65378	-
+typedef	c:@T@simd_float2	-			float __attribute__((ext_vector_type(2)))	-	-	-	-	4a78b2800bdae091	-
+typedef	c:@T@size_t	-			__darwin_size_t	-	-	-	-	8ce79a13e58a1844	-
+typedef	c:@T@__darwin_size_t	-			unsigned long	-	-	-	-	0cd38a3df2217524	-
+typedef	c:@T@vector_float3	-			simd_float3	-	-	-	-	7bbe17e377973398	-
+typedef	c:@T@simd_float3	-			float __attribute__((ext_vector_type(3)))	-	-	-	-	0fce24b6ffb4ccd2	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@matrix_float3x3	-			simd_float3x3	-	-	-	-	1bfa7e3f02d14205	-
+typedef	c:@T@simd_float3x3	-			struct simd_float3x3	-	-	-	-	7443d30546b7f1b8	-
+typedef	c:@T@vector_int2	-			simd_int2	-	-	-	-	c969531d72d9d185	-
+typedef	c:@T@simd_int2	-			int __attribute__((ext_vector_type(2)))	-	-	-	-	6ff9e5d3795ec09b	-
+typedef	c:@T@uint64_t	-			unsigned long long	-	-	-	-	e7c1cd95ea4ec29b	-
+typedef	c:@T@int32_t	-			int	-	-	-	-	cd31f577d25bebf5	-
+typedef	c:@T@vector_double3	-			simd_double3	-	-	-	-	a28bebbc1b6a0e21	-
+typedef	c:@T@simd_double3	-			double __attribute__((ext_vector_type(3)))	-	-	-	-	14a9cfb3c3d4cb6b	-
+typedef	c:@T@vector_double2	-			simd_double2	-	-	-	-	105aa1e45a522dc2	-
+typedef	c:@T@simd_double2	-			double __attribute__((ext_vector_type(2)))	-	-	-	-	99822a9fba6409c0	-
+typedef	c:@T@CGSize	-			struct CGSize	-	-	-	-	288bede4212325f3	-

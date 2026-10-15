@@ -395,3 +395,11 @@ interface	c:objc(cs)SKStoreReviewController	-			-	-	-	ios=10.3/18.0/-/0,macos=10
 super	-	SKStoreReviewController	NSObject		-	-	-	-	-	5cd0f0456c041466	-
 method	c:objc(cs)SKStoreReviewController(cm)requestReview	-			void	-	-	ios=10.3/14.0/-/0,macos=10.14/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use -[SKStoreReviewController requestReviewInScene:].	1258c91ec7898374	-
 method	c:objc(cs)SKStoreReviewController(cm)requestReviewInScene:	-			void	UIWindowScene * windowScene	-	ios=14.0/18.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use AppStore.requestReview(in:).	73484cf3e64795bb	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@uint32_t	-			unsigned int	-	-	-	-	d99005f72e0ec68e	-
+typedef	c:@T@uint64_t	-			unsigned long long	-	-	-	-	e7c1cd95ea4ec29b	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-

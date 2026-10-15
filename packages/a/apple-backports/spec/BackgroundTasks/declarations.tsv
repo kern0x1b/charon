@@ -69,3 +69,8 @@ conforms	-	BGContinuedProcessingTask	NSProgressReporting		-	-	-	-	-	526d56e60b7e
 property	c:objc(cs)BGContinuedProcessingTask(py)title	-			NSString *	-	readonly,copy	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	40574318e87e52bf	-
 property	c:objc(cs)BGContinuedProcessingTask(py)subtitle	-			NSString *	-	readonly,copy	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d734feeda9e717fc	-
 method	c:objc(cs)BGContinuedProcessingTask(im)updateTitle:subtitle:	-			void	NSString * title | NSString * subtitle	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	868a3301923cb130	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSFileProtectionType	-			NSString *	-	-	-	-	74b0c9336506f842	-
+typedef	c:@T@NSErrorDomain	-			NSString *	-	-	-	-	a2ef9b8d14cb4ca2	-
+typedef	c:@T@dispatch_queue_t	-			NSObject<OS_dispatch_queue> *	-	-	-	-	b6bdd422edd29fce	-

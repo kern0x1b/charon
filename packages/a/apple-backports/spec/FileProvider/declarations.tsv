@@ -473,3 +473,19 @@ method	c:objc(cs)NSFileProviderManager(im)releaseKnownFolders:localizedReason:co
 protocol	c:objc(pl)NSFileProviderKnownFolderSupporting	-			-	-	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	597f1c1a241e4236	-
 conforms	-	NSFileProviderKnownFolderSupporting	NSObject		-	-	-	-	-	fe3f6b89ef9fe632	-
 method	c:objc(pl)NSFileProviderKnownFolderSupporting(im)getKnownFolderLocations:completionHandler:	-			void	NSFileProviderKnownFolders knownFolders | void (^)(NSFileProviderKnownFolderLocations * _Nullable, NSError * _Nullable) completionHandler	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	748b9cff10051927	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@OSType	-			FourCharCode	-	-	-	-	01d4dcaaf78349ee	-
+typedef	c:@T@FourCharCode	-			UInt32	-	-	-	-	a0f4e71a4dbfcb9b	-
+typedef	c:@T@UInt32	-			unsigned int	-	-	-	-	9c97778bf2686a2b	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSComparisonResult	-			enum NSComparisonResult	-	-	-	-	98996b4daed97d3d	-
+typedef	c:@T@NSNotificationName	-			NSString *	-	-	-	-	12329f5939199c65	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@NSErrorDomain	-			NSString *	-	-	-	-	a2ef9b8d14cb4ca2	-
+typedef	c:@T@NSErrorUserInfoKey	-			NSString *	-	-	-	-	9ecf47ef2fc2387a	-
+typedef	c:@T@NSProgressFileOperationKind	-			NSString *	-	-	-	-	27b959892db69572	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@NSRange	-			struct _NSRange	-	-	-	-	d109726d1ae61321	-
+typedef	c:@T@NSFileProviderServiceName	-			NSString *	-	-	-	-	28af13207bddded1	-
+typedef	c:@T@CGSize	-			struct CGSize	-	-	-	-	288bede4212325f3	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-

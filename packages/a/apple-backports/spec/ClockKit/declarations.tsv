@@ -661,3 +661,7 @@ method	c:objc(cs)CLKComplicationStaticWidgetMigrationConfiguration(im)initWithKi
 method	c:objc(cs)CLKComplicationStaticWidgetMigrationConfiguration(cm)staticWidgetMigrationConfigurationWithKind:extensionBundleIdentifier:	-			instancetype	NSString * kind | NSString * extensionBundleIdentifier	-	ios=-/-/-/1,watchos=9.0/-/-/0	-	9e4b9cb521275cd5	-
 method	c:objc(cs)CLKComplicationStaticWidgetMigrationConfiguration(im)init	-			instancetype	-	-	*unavailable ios=-/-/-/1,watchos=9.0/-/-/0	-	e43d8be683272f2a	-
 method	c:objc(cs)CLKComplicationStaticWidgetMigrationConfiguration(cm)new	-			instancetype	-	-	*unavailable ios=-/-/-/1,watchos=9.0/-/-/0	-	201a48d4c8b91a59	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSCalendarUnit	-			enum NSCalendarUnit	-	-	-	-	c5ee7bc7a73e186d	-

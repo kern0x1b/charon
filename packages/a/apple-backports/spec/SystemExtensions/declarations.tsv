@@ -71,3 +71,7 @@ property	c:objc(cs)OSSystemExtensionsWorkspace(cpy)sharedWorkspace	-			OSSystemE
 method	c:objc(cs)OSSystemExtensionsWorkspace(im)addObserver:error:	-			BOOL	id<OSSystemExtensionsWorkspaceObserver> observer | NSError * _Nullable * error	-	ios=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a81cc08853bad81a	-
 method	c:objc(cs)OSSystemExtensionsWorkspace(im)removeObserver:	-			void	id<OSSystemExtensionsWorkspaceObserver> observer	-	ios=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d0ad167fc569d754	-
 method	c:objc(cs)OSSystemExtensionsWorkspace(im)systemExtensionsForApplicationWithBundleID:error:	-			NSSet<OSSystemExtensionProperties *> *	NSString * bundleID | NSError * _Nullable * out_error	-	ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	903239805ece2778	-
+typedef	c:@T@NSErrorDomain	-			NSString *	-	-	-	-	a2ef9b8d14cb4ca2	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@dispatch_queue_t	-			NSObject<OS_dispatch_queue> *	-	-	-	-	b6bdd422edd29fce	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-

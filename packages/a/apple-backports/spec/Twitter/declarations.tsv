@@ -29,3 +29,8 @@ method	c:objc(cs)TWTweetComposeViewController(im)removeAllImages	-			BOOL	-	-	io
 method	c:objc(cs)TWTweetComposeViewController(im)addURL:	-			BOOL	NSURL * url	-	ios=5.0/6.0/-/0	-	3d1a07366d2ab6da	-
 method	c:objc(cs)TWTweetComposeViewController(im)removeAllURLs	-			BOOL	-	-	ios=5.0/6.0/-/0	-	16a3b6de6f0ecc07	-
 property	c:objc(cs)TWTweetComposeViewController(py)completionHandler	-			TWTweetComposeViewControllerCompletionHandler	-	copy,nonatomic	ios=5.0/6.0/-/0	-	094330b4bef2fea8	-
+typedef	c:@T@SLRequestMethod	-			enum SLRequestMethod	-	-	-	-	08dffbdfcc92052b	-
+typedef	c:@T@SLRequestHandler	-			void ((^))(NSData *, NSHTTPURLResponse *, NSError *)	-	-	-	-	d4ea6f697a33b123	-
+typedef	c:@T@SLComposeViewControllerResult	-			enum SLComposeViewControllerResult	-	-	-	-	c5bf331fa8ee1795	-
+typedef	c:@T@SLComposeViewControllerCompletionHandler	-			void ((^))(SLComposeViewControllerResult)	-	-	-	-	733a5049fb7cde90	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-

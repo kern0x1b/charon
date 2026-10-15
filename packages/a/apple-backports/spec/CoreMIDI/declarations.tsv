@@ -978,3 +978,32 @@ method	c:objc(cs)MIDICIResponder(im)notifyProfile:onChannel:isEnabled:	-			BOOL	
 method	c:objc(cs)MIDICIResponder(im)sendProfile:onChannel:profileData:	-			BOOL	MIDICIProfile * aProfile | MIDIChannelNumber channel | NSData * profileSpecificData	-	ios=14.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c68c727ea275584f	-
 method	c:objc(cs)MIDICIResponder(im)start	-			BOOL	-	-	ios=14.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	139c197dccf2a77c	-
 method	c:objc(cs)MIDICIResponder(im)stop	-			void	-	-	ios=14.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	220bb6281a2add51	-
+typedef	c:@T@UInt32	-			unsigned int	-	-	-	-	9c97778bf2686a2b	-
+typedef	c:@T@UInt64	-			unsigned long long	-	-	-	-	b41c42eb5e2605ba	-
+typedef	c:@T@SInt32	-			int	-	-	-	-	fea52187db3d8de0	-
+typedef	c:@T@UInt16	-			unsigned short	-	-	-	-	89acd83db7a94864	-
+typedef	c:@T@Byte	-			UInt8	-	-	-	-	44100adc069c5789	-
+typedef	c:@T@UInt8	-			unsigned char	-	-	-	-	a9ef2eddf94d7e81	-
+typedef	c:@T@Boolean	-			unsigned char	-	-	-	-	693cf733304c39d9	-
+typedef	c:@T@CFStringRef	-			const struct __CFString *	-	-	-	-	e422c620371887ac	-
+typedef	c:@T@OSStatus	-			SInt32	-	-	-	-	c9d4cae3c2778a27	-
+typedef	c:@T@ItemCount	-			unsigned long	-	-	-	-	13c8ece98084342d	-
+typedef	c:@T@CFDataRef	-			const struct __CFData *	-	-	-	-	d9fe21afe938f144	-
+typedef	c:@T@CFDictionaryRef	-			const struct __CFDictionary *	-	-	-	-	95ab67be7d9fad28	-
+typedef	c:@T@CFPropertyListRef	-			CFTypeRef	-	-	-	-	7031d97fa222dccd	-
+typedef	c:@T@CFTypeRef	-			const void *	-	-	-	-	bfc2940caeb1f461	-
+typedef	c:@T@ByteCount	-			unsigned long	-	-	-	-	92f839e17ecc01e5	-
+typedef	c:@T@CFArrayRef	-			const struct __CFArray *	-	-	-	-	d3655b482ae0664e	-
+typedef	c:@T@SInt16	-			short	-	-	-	-	3eec647098d9543c	-
+typedef	c:@T@size_t	-			__darwin_size_t	-	-	-	-	8ce79a13e58a1844	-
+typedef	c:@T@__darwin_size_t	-			unsigned long	-	-	-	-	0cd38a3df2217524	-
+typedef	c:@T@HRESULT	-			SInt32	-	-	-	-	76e62a357413c999	-
+typedef	c:@T@REFIID	-			CFUUIDBytes	-	-	-	-	4e6d68f67f60bf62	-
+typedef	c:@T@CFUUIDBytes	-			struct CFUUIDBytes	-	-	-	-	191c987cbeb2b6d6	-
+typedef	c:@T@LPVOID	-			void *	-	-	-	-	0c7ed4b1a4a01875	-
+typedef	c:@T@ULONG	-			UInt32	-	-	-	-	42b7c756f9cbd672	-
+typedef	c:@T@CFRunLoopRef	-			struct __CFRunLoop *	-	-	-	-	2c9d9bba83d0f9bf	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@uint8_t	-			unsigned char	-	-	-	-	3a61fa5c975bd3b3	-

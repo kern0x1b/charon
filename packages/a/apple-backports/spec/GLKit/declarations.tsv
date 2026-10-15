@@ -592,3 +592,27 @@ method	c:objc(cs)GLKTextureLoader(im)textureWithCGImage:options:queue:completion
 method	c:objc(cs)GLKTextureLoader(im)cubeMapWithContentsOfFiles:options:queue:completionHandler:	-			void	NSArray<id> * paths | NSDictionary<NSString *,NSNumber *> * options | dispatch_queue_t queue | GLKTextureLoaderCallback block	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	61ac19ffd80b7483	-
 method	c:objc(cs)GLKTextureLoader(im)cubeMapWithContentsOfFile:options:queue:completionHandler:	-			void	NSString * path | NSDictionary<NSString *,NSNumber *> * options | dispatch_queue_t queue | GLKTextureLoaderCallback block	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	5decab947e43d833	-
 method	c:objc(cs)GLKTextureLoader(im)cubeMapWithContentsOfURL:options:queue:completionHandler:	-			void	NSURL * url | NSDictionary<NSString *,NSNumber *> * options | dispatch_queue_t queue | GLKTextureLoaderCallback block	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	9efad866146f8720	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@GLuint	-			uint32_t	-	-	-	-	7ac5e2a2dd4b7fe0	-
+typedef	c:@T@uint32_t	-			unsigned int	-	-	-	-	d99005f72e0ec68e	-
+typedef	c:@T@MDLMeshBufferType	-			enum MDLMeshBufferType	-	-	-	-	c0f20e0c2d1e798f	-
+typedef	c:@T@GLenum	-			uint32_t	-	-	-	-	ec8bdacac6d03c02	-
+typedef	c:@T@GLsizei	-			int32_t	-	-	-	-	9845ae702d50297b	-
+typedef	c:@T@int32_t	-			int	-	-	-	-	cd31f577d25bebf5	-
+typedef	c:@T@GLint	-			int32_t	-	-	-	-	35d739b6c34610f0	-
+typedef	c:@T@GLboolean	-			uint8_t	-	-	-	-	c502d8d1bfdf2be5	-
+typedef	c:@T@uint8_t	-			unsigned char	-	-	-	-	3a61fa5c975bd3b3	-
+typedef	c:@T@MDLVertexFormat	-			enum MDLVertexFormat	-	-	-	-	5ea8b3c177d1e86c	-
+typedef	c:@T@size_t	-			__darwin_size_t	-	-	-	-	8ce79a13e58a1844	-
+typedef	c:@T@__darwin_size_t	-			unsigned long	-	-	-	-	0cd38a3df2217524	-
+typedef	c:@T@CFAllocatorRef	-			const struct __CFAllocator *	-	-	-	-	d153ce1dfad01936	-
+typedef	c:@T@CFTypeID	-			unsigned long	-	-	-	-	1a1b10310e893e1f	-
+typedef	c:@T@GLfloat	-			float	-	-	-	-	d0751d8635be7ec9	-
+typedef	c:@T@CGFloat	-			double	-	-	-	-	29e11a71cfda882e	-
+typedef	c:@T@CGImageRef	-			struct CGImage *	-	-	-	-	61e7c30be1f5f379	-
+typedef	c:@T@dispatch_queue_t	-			NSObject<OS_dispatch_queue> *	-	-	-	-	b6bdd422edd29fce	-

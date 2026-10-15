@@ -20,3 +20,5 @@ enumconst	c:@E@UIAxis@UIAxisNeither	UIAxis			-	-	-	ios=13.4/-/-/0,tvos=13.4/-/-/
 enumconst	c:@E@UIAxis@UIAxisHorizontal	UIAxis			-	-	-	ios=13.4/-/-/0,tvos=13.4/-/-/0,watchos=6.2/-/-/0	-	3d16349c078fd827	1
 enumconst	c:@E@UIAxis@UIAxisVertical	UIAxis			-	-	-	ios=13.4/-/-/0,tvos=13.4/-/-/0,watchos=6.2/-/-/0	-	7fbc660736e6a349	2
 enumconst	c:@E@UIAxis@UIAxisBoth	UIAxis			-	-	-	ios=13.4/-/-/0,tvos=13.4/-/-/0,watchos=6.2/-/-/0	-	b2efac86f92f0488	3
+typedef	c:@T@CGPoint	-			struct CGPoint	-	-	-	-	5506c4b038700426	-
+typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-

@@ -948,3 +948,15 @@ property	c:objc(cs)WKWindowFeatures(py)x	-			NSNumber *	-	readonly,nonatomic	ios
 property	c:objc(cs)WKWindowFeatures(py)y	-			NSNumber *	-	readonly,nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0	-	d8edb7b8bc515c92	-
 property	c:objc(cs)WKWindowFeatures(py)width	-			NSNumber *	-	readonly,nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0	-	bcaf48bd9c763fd6	-
 property	c:objc(cs)WKWindowFeatures(py)height	-			NSNumber *	-	readonly,nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0	-	6567ef995f6166cc	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-
+typedef	c:@T@SecTrustRef	-			struct __SecTrust *	-	-	-	-	793d9b19f5106e82	-
+typedef	c:@T@CGFloat	-			double	-	-	-	-	29e11a71cfda882e	-
+typedef	c:@T@UIEdgeInsets	-			struct UIEdgeInsets	-	-	-	-	dd3bc2433c254675	-
+typedef	c:@T@UIKeyModifierFlags	-			enum UIKeyModifierFlags	-	-	-	-	67b11e725fdebe94	-
+typedef	c:@T@UIEventButtonMask	-			enum UIEventButtonMask	-	-	-	-	f78349f3ba9fc16c	-
+typedef	c:@T@CGSize	-			struct CGSize	-	-	-	-	288bede4212325f3	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@UIWritingToolsBehavior	-			enum UIWritingToolsBehavior	-	-	-	-	3588b4c0e79bbcd0	-

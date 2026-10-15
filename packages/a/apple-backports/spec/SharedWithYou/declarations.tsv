@@ -139,3 +139,8 @@ super	-	SWRemoveParticipantAlertController	UIViewController		-	-	-	-	-	620c5dfbd
 method	c:objc(cs)SWRemoveParticipantAlertController(cm)alertControllerWithParticipant:highlight:	-			instancetype	SWPerson * participant | SWCollaborationHighlight * highlight	-	ios=16.0/-/-/0	-	2b5b0820704587af	-
 method	c:objc(cs)SWRemoveParticipantAlertController(im)init	-			instancetype	-	-	*unavailable ios=16.0/-/-/0	-	65f2d0d8f3497fc7	-
 method	c:objc(cs)SWRemoveParticipantAlertController(cm)new	-			instancetype	-	-	*unavailable ios=16.0/-/-/0	-	f311a21f0d89e068	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@SWCollaborationIdentifier	-			NSString *	-	-	-	-	1d47ed0010c52555	-
+typedef	c:@T@CGFloat	-			double	-	-	-	-	29e11a71cfda882e	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-

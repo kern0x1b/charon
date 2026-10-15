@@ -147,3 +147,13 @@ enumconst	c:@EA@os_signpost_type_t@OS_SIGNPOST_INTERVAL_BEGIN	os_signpost_type_t
 enumconst	c:@EA@os_signpost_type_t@OS_SIGNPOST_INTERVAL_END	os_signpost_type_t			-	-	-	-	-	5e1207839b581415	2
 typedef	c:@T@os_signpost_type_t	-			enum os_signpost_type_t	-	-	-	-	470884964213569d	-
 function	c:@F@_os_signpost_emit_with_name_impl	-			void (void *, os_log_t, os_signpost_type_t, os_signpost_id_t, const char *, const char *, uint8_t *, uint32_t)	void * dso | os_log_t log | os_signpost_type_t type | os_signpost_id_t spid | const char * name | const char * format | uint8_t * buf | uint32_t size	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	f9feeefa4adc3a15	-
+typedef	c:@T@uint32_t	-			unsigned int	-	-	-	-	d99005f72e0ec68e	-
+typedef	c:@T@size_t	-			unsigned long	-	-	-	-	90a4ad5785adb724	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@mach_port_t	-			__darwin_mach_port_t	-	-	-	-	d879e9c90b7054f5	-
+typedef	c:@T@__darwin_mach_port_t	-			__darwin_mach_port_name_t	-	-	-	-	fac676185e9ebfd4	-
+typedef	c:@T@__darwin_mach_port_name_t	-			__darwin_natural_t	-	-	-	-	27fc59fe218c8642	-
+typedef	c:@T@__darwin_natural_t	-			unsigned int	-	-	-	-	a1798ee04c7e4456	-
+typedef	c:@T@uint64_t	-			unsigned long long	-	-	-	-	e7c1cd95ea4ec29b	-
+typedef	c:@T@xpc_object_t	-			NSObject<OS_xpc_object> *	-	-	-	-	fda4d9d35a3bcdbf	-
+typedef	c:@T@uint8_t	-			unsigned char	-	-	-	-	3a61fa5c975bd3b3	-

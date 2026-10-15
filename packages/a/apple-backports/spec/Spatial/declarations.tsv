@@ -878,3 +878,17 @@ function	c:@F@SPProjectiveTransform3DFloatMake#$@SA@SPProjectiveTransform3D#	-	S
 function	c:@F@SPProjectiveTransform3DMake#$@SA@SPProjectiveTransform3DFloat#	-	SPProjectiveTransform3DMake		SPProjectiveTransform3D (SPProjectiveTransform3DFloat)	SPProjectiveTransform3DFloat transform	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	4c1cf7c79e267a7b	-
 function	c:@F@SPSphericalCoordinates3DFloatMake#$@UA@SPSphericalCoordinates3D#	-	SPSphericalCoordinates3DFloatMake		SPSphericalCoordinates3DFloat (SPSphericalCoordinates3D)	SPSphericalCoordinates3D coords	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	68d17f287ced46a7	-
 function	c:@F@SPSphericalCoordinates3DMake#$@UA@SPSphericalCoordinates3DFloat#	-	SPSphericalCoordinates3DMake		SPSphericalCoordinates3D (SPSphericalCoordinates3DFloat)	SPSphericalCoordinates3DFloat coords	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	0c88cec675c9705d	-
+typedef	c:@T@simd_double3	-			double __attribute__((ext_vector_type(3)))	-	-	-	-	14a9cfb3c3d4cb6b	-
+typedef	c:@T@simd_double4	-			double __attribute__((ext_vector_type(4)))	-	-	-	-	e301d328aec8a7b8	-
+typedef	c:@T@simd_quatd	-			struct simd_quatd	-	-	-	-	e49e6bafef700b78	-
+typedef	c:@T@simd_double4x3	-			struct simd_double4x3	-	-	-	-	e9a8a91b0faff4fc	-
+typedef	c:@T@simd_double4x4	-			struct simd_double4x4	-	-	-	-	bb2dbe3a51d88540	-
+typedef	c:@T@simd_float3	-			float __attribute__((ext_vector_type(3)))	-	-	-	-	0fce24b6ffb4ccd2	-
+typedef	c:@T@simd_float4	-			float __attribute__((ext_vector_type(4)))	-	-	-	-	0025db7fec7cd0cf	-
+typedef	c:@T@simd_quatf	-			struct simd_quatf	-	-	-	-	6f7e5a385ce21003	-
+typedef	c:@T@simd_float4x3	-			struct simd_float4x3	-	-	-	-	688618e20b7e17bf	-
+typedef	c:@T@simd_float4x4	-			struct simd_float4x4	-	-	-	-	23bb586ffbc899fb	-
+typedef	c:@T@simd_packed_float4	-			float __attribute__((ext_vector_type(4)))	-	-	-	-	dd670fc8fe1da6c6	-
+typedef	c:@T@simd_packed_double4	-			double __attribute__((ext_vector_type(4)))	-	-	-	-	a4f2a75eed0a051d	-
+typedef	c:@T@simd_double3x3	-			struct simd_double3x3	-	-	-	-	bc862dfa4e1f709f	-
+typedef	c:@T@simd_float3x3	-			struct simd_float3x3	-	-	-	-	7443d30546b7f1b8	-

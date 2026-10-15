@@ -137,3 +137,5 @@ method	c:objc(cs)NSSymbolReplaceContentTransition(cm)magicTransitionWithFallback
 interface	c:objc(cs)NSSymbolAutomaticContentTransition	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0,xros=1.0/-/-/0	-	b04022becdd676e4	-
 super	-	NSSymbolAutomaticContentTransition	NSSymbolContentTransition		-	-	-	-	-	58e69e5d1fad3b76	-
 method	c:objc(cs)NSSymbolAutomaticContentTransition(cm)transition	-			instancetype	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0,xros=1.0/-/-/0	-	bfca4631d63d8a39	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-

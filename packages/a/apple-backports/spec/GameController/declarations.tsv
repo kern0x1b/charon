@@ -1052,3 +1052,14 @@ property	c:objc(cs)GCVirtualController(py)controller	-			GCController *	-	readon
 method	c:objc(cs)GCVirtualController(im)updateConfigurationForElement:configuration:	-			void	NSString * element | GCVirtualControllerElementConfiguration * _Nonnull (^)(GCVirtualControllerElementConfiguration * _Nonnull) config	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	cf2be38cc714448e	-
 method	c:objc(cs)GCVirtualController(im)setValue:forButtonElement:	-			void	CGFloat value | NSString * element	-	ios=17.0/-/-/0	-	07fc8e5489267a6f	-
 method	c:objc(cs)GCVirtualController(im)setPosition:forDirectionPadElement:	-			void	CGPoint position | NSString * element	-	ios=17.0/-/-/0	-	e1e1f601a1d04d74	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@dispatch_queue_t	-			NSObject<OS_dispatch_queue> *	-	-	-	-	b6bdd422edd29fce	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@NSRange	-			struct _NSRange	-	-	-	-	d109726d1ae61321	-
+typedef	c:@T@uint16_t	-			unsigned short	-	-	-	-	a080788dde55e4dc	-
+typedef	c:@T@CFIndex	-			long	-	-	-	-	9f50caf8b7c4f278	-
+typedef	c:@T@CGFloat	-			double	-	-	-	-	29e11a71cfda882e	-
+typedef	c:@T@CGPoint	-			struct CGPoint	-	-	-	-	5506c4b038700426	-

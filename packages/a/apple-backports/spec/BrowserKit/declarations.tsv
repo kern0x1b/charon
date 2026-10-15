@@ -5,3 +5,4 @@ enumconst	c:@E@BEEligibilityContext@BEEligibilityContextWebBrowser	BEEligibility
 interface	c:objc(cs)BEAvailability	-			-	-	-	ios=18.4/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cc6b32a7df5673e4	-
 super	-	BEAvailability	NSObject		-	-	-	-	-	917acefb8aa15397	-
 method	c:objc(cs)BEAvailability(cm)isEligibleForContext:completionHandler:	-			void	BEEligibilityContext context | void (^)(BOOL, NSError * _Nullable) completionHandler	-	ios=18.4/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cef0e9316deaae41	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-

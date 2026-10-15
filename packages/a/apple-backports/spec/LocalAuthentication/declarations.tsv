@@ -200,3 +200,10 @@ super	-	LASecret	NSObject		-	-	-	-	-	3177c654f1fbf905	-
 method	c:objc(cs)LASecret(im)loadDataWithCompletion:	-			void	void (^)(NSData * _Nullable, NSError * _Nullable) handler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fd0e76f244389d3e	-
 method	c:objc(cs)LASecret(cm)new	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	60e363d403e829d4	-
 method	c:objc(cs)LASecret(im)init	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f77eb9169e1810f2	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@SecAccessControlRef	-			struct __SecAccessControl *	-	-	-	-	1d34a9b23bf60510	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@SecKeyAlgorithm	-			CFStringRef	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	b999b4356bcec665	-
+typedef	c:@T@CFStringRef	-			const struct __CFString *	-	-	-	-	e422c620371887ac	-

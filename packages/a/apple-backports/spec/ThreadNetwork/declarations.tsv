@@ -26,3 +26,6 @@ method	c:objc(cs)THClient(im)retrievePreferredCredentials:	-			void	void (^)(THC
 method	c:objc(cs)THClient(im)retrieveCredentialsForExtendedPANID:completion:	-			void	NSData * extendedPANID | void (^)(THCredentials * _Nullable, NSError * _Nullable) completion	-	ios=15.0/-/-/0	-	d0e5af41fab90707	-
 method	c:objc(cs)THClient(im)checkPreferredNetworkForActiveOperationalDataset:completion:	-			void	NSData * activeOperationalDataSet | void (^)(BOOL) completion	-	ios=15.5/-/-/0	-	4544ae5b811aa96b	-
 method	c:objc(cs)THClient(im)isPreferredNetworkAvailableWithCompletion:	-			void	void (^)(BOOL) completion	-	ios=16.4/-/-/0	-	1e6276b860aae34b	-
+typedef	c:@T@uint8_t	-			unsigned char	-	-	-	-	3a61fa5c975bd3b3	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-

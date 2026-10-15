@@ -523,3 +523,28 @@ method	c:objc(cs)MPSTemporaryNDArray(cm)defaultAllocator	-			id<MPSNDArrayAlloca
 method	c:objc(cs)MPSTemporaryNDArray(cm)temporaryNDArrayWithCommandBuffer:descriptor:	-			instancetype	id<MTLCommandBuffer> commandBuffer | MPSNDArrayDescriptor * descriptor	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	fa55083bb746984b	-
 method	c:objc(cs)MPSTemporaryNDArray(im)initWithDevice:descriptor:	-			instancetype	id<MTLDevice> device | MPSNDArrayDescriptor * descriptor	-	*unavailable ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	b11c7f3dd29b5071	-
 property	c:objc(cs)MPSTemporaryNDArray(py)readCount	-			NSUInteger	-	nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	34ae41538a81391f	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@MTLRegion	-			struct MTLRegion	-	-	-	-	26e1bf56daefd9f6	-
+typedef	c:@T@size_t	-			__darwin_size_t	-	-	-	-	8ce79a13e58a1844	-
+typedef	c:@T@__darwin_size_t	-			unsigned long	-	-	-	-	0cd38a3df2217524	-
+typedef	c:@T@MTLPixelFormat	-			enum MTLPixelFormat	-	-	-	-	40f56ebf564ac2ed	-
+typedef	c:@T@MTLCPUCacheMode	-			enum MTLCPUCacheMode	-	-	-	-	706df9afe62ef7fb	-
+typedef	c:@T@MTLStorageMode	-			enum MTLStorageMode	-	-	-	-	c00b57d0e67328ac	-
+typedef	c:@T@MTLTextureUsage	-			enum MTLTextureUsage	-	-	-	-	736694021e0b9993	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@NSZone	-			struct _NSZone	-	-	-	-	a6dc1e3b1b8b2ac5	-
+typedef	c:@T@MTLTextureType	-			enum MTLTextureType	-	-	-	-	623237bab933c921	-
+typedef	c:@T@NSRange	-			struct _NSRange	-	-	-	-	d109726d1ae61321	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@uint32_t	-			unsigned int	-	-	-	-	d99005f72e0ec68e	-
+typedef	c:@T@uint16_t	-			unsigned short	-	-	-	-	a080788dde55e4dc	-
+typedef	c:@T@vector_short2	-			simd_short2	-	-	-	-	92d19f8a04e857f9	-
+typedef	c:@T@simd_short2	-			short __attribute__((ext_vector_type(2)))	-	-	-	-	479e1fe3c0a1d925	-
+typedef	c:@T@vector_ushort2	-			simd_ushort2	-	-	-	-	f3708afe835f9b19	-
+typedef	c:@T@simd_ushort2	-			unsigned short __attribute__((ext_vector_type(2)))	-	-	-	-	8639aa927eb55b15	-
+typedef	c:@T@vector_ushort4	-			simd_ushort4	-	-	-	-	6b30db93d5424705	-
+typedef	c:@T@simd_ushort4	-			unsigned short __attribute__((ext_vector_type(4)))	-	-	-	-	a85f2c2affef39ec	-
+typedef	c:@T@int64_t	-			long long	-	-	-	-	85f1e0b43a934ce7	-
+typedef	c:@T@vector_uchar16	-			simd_uchar16	-	-	-	-	5d2a88f61e3430d6	-
+typedef	c:@T@simd_uchar16	-			unsigned char __attribute__((ext_vector_type(16)))	-	-	-	-	30d8a8762535ec99	-

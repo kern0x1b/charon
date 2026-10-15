@@ -600,3 +600,20 @@ conforms	-	PDFPageOverlayViewProvider	NSObject		-	-	-	-	-	ae1522f69975a308	-
 method	c:objc(pl)PDFPageOverlayViewProvider(im)pdfView:overlayViewForPage:	-			UIView *	PDFView * view | PDFPage * page	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	5dabb08e08940284	-
 method	c:objc(pl)PDFPageOverlayViewProvider(im)pdfView:willDisplayOverlayView:forPage:	-			void	PDFView * pdfView | UIView * overlayView | PDFPage * page	optional	ios=16.0/-/-/0,macos=13.0/-/-/0	-	94c941cd2099f7bf	-
 method	c:objc(pl)PDFPageOverlayViewProvider(im)pdfView:willEndDisplayingOverlayView:forPage:	-			void	PDFView * pdfView | UIView * overlayView | PDFPage * page	optional	ios=16.0/-/-/0,macos=13.0/-/-/0	-	aaf0bd34c25364a1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@CGPoint	-			struct CGPoint	-	-	-	-	5506c4b038700426	-
+typedef	c:@T@CGPDFPageRef	-			struct CGPDFPage *	-	-	-	-	7b3a55ed6e0bf958	-
+typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@CGAffineTransform	-			struct CGAffineTransform	-	-	-	-	6d275be46c010b99	-
+typedef	c:@T@CGContextRef	-			struct CGContext *	-	-	-	-	38108536e4326699	-
+typedef	c:@T@CGSize	-			struct CGSize	-	-	-	-	288bede4212325f3	-
+typedef	c:@T@NSRange	-			struct _NSRange	-	-	-	-	d109726d1ae61321	-
+typedef	c:@T@NSTextAlignment	-			enum NSTextAlignment	-	-	-	-	a9bffb37f3bf9123	-
+typedef	c:@T@CGFloat	-			double	-	-	-	-	29e11a71cfda882e	-
+typedef	c:@T@NSComparisonResult	-			enum NSComparisonResult	-	-	-	-	98996b4daed97d3d	-
+typedef	c:@T@CGPDFDocumentRef	-			struct CGPDFDocument *	-	-	-	-	a2ba4bf76ccb2209	-
+typedef	c:@T@NSStringCompareOptions	-			enum NSStringCompareOptions	-	-	-	-	3aaa8a207e13d7b1	-
+typedef	c:@T@UIEdgeInsets	-			struct UIEdgeInsets	-	-	-	-	dd3bc2433c254675	-

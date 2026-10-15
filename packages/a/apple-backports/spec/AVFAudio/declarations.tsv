@@ -1468,3 +1468,41 @@ property	c:objc(cs)AVAudioApplication(py)recordPermission	-			AVAudioApplication
 method	c:objc(cs)AVAudioApplication(cm)requestRecordPermissionWithCompletionHandler:	-			void	void (^)(BOOL) response	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	796da20cc63c067f	-
 property	c:objc(cs)AVAudioApplication(py)microphoneInjectionPermission	-			AVAudioApplicationMicrophoneInjectionPermission	-	readonly	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.2/-/-/0	-	e54f6b700306a4d4	-
 method	c:objc(cs)AVAudioApplication(cm)requestMicrophoneInjectionPermissionWithCompletionHandler:	-			void	void (^)(AVAudioApplicationMicrophoneInjectionPermission) response	-	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.2/-/-/0	-	620a9c6bca954bbe	-
+typedef	c:@T@int64_t	-			long long	-	-	-	-	85f1e0b43a934ce7	-
+typedef	c:@T@uint32_t	-			unsigned int	-	-	-	-	d99005f72e0ec68e	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@AudioBufferList	-			struct AudioBufferList	-	-	-	-	07faf9bcbab5aaf3	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@int16_t	-			short	-	-	-	-	a957af8a2c7c6b0a	-
+typedef	c:@T@int32_t	-			int	-	-	-	-	cd31f577d25bebf5	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@AudioStreamPacketDescription	-			struct AudioStreamPacketDescription	-	-	-	-	185ee407d1f74107	-
+typedef	c:@T@AudioChannelLayoutTag	-			UInt32	-	-	-	-	d951289446be5f8f	-
+typedef	c:@T@UInt32	-			unsigned int	-	-	-	-	9c97778bf2686a2b	-
+typedef	c:@T@AudioChannelLayout	-			struct AudioChannelLayout	-	-	-	-	ae00376d08019401	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@AudioStreamBasicDescription	-			struct AudioStreamBasicDescription	-	-	-	-	830421b7fd18d7b1	-
+typedef	c:@T@CMAudioFormatDescriptionRef	-			CMFormatDescriptionRef	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	0835d6ae18a0e667	-
+typedef	c:@T@CMFormatDescriptionRef	-			const struct opaqueCMFormatDescription *	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	aac6be3c269097b1	-
+typedef	c:@T@AudioTimeStamp	-			struct AudioTimeStamp	-	-	-	-	569ed97d1f95f524	-
+typedef	c:@T@uint64_t	-			unsigned long long	-	-	-	-	e7c1cd95ea4ec29b	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@AudioUnit	-			AudioComponentInstance	-	-	-	-	07e9e89ebd61e6fa	-
+typedef	c:@T@AudioComponentInstance	-			struct OpaqueAudioComponentInstance *	-	-	-	-	4789ed7affd50261	-
+typedef	c:@T@OSStatus	-			SInt32	-	-	-	-	c9d4cae3c2778a27	-
+typedef	c:@T@SInt32	-			int	-	-	-	-	fea52187db3d8de0	-
+typedef	c:@T@MusicSequence	-			struct OpaqueMusicSequence *	-	-	-	-	87d75ee8a46cf51f	-
+typedef	c:@T@AUMIDIOutputEventBlock	-			OSStatus ((^))(AUEventSampleTime, uint8_t, NSInteger, const uint8_t *)	-	-	-	-	15cc7b24d071faee	-
+typedef	c:@T@AUEventSampleTime	-			int64_t	-	-	-	-	c063000bfd9c02e1	-
+typedef	c:@T@uint8_t	-			unsigned char	-	-	-	-	3a61fa5c975bd3b3	-
+typedef	c:@T@AUMIDIEventListBlock	-			OSStatus ((^))(AUEventSampleTime, uint8_t, const struct MIDIEventList *)	-	-	-	-	6379f93437672059	-
+typedef	c:@T@AudioComponentDescription	-			struct AudioComponentDescription	-	-	-	-	d7f3401c7d17248b	-
+typedef	c:@T@AudioComponentInstantiationOptions	-			enum AudioComponentInstantiationOptions	-	-	-	-	f7d4f2d32b34bd3e	-
+typedef	c:@T@NSNotificationName	-			NSString *	-	-	-	-	12329f5939199c65	-
+typedef	c:@T@AudioChannelLabel	-			UInt32	-	-	-	-	f3694ba588b1d4c6	-
+typedef	c:@T@UInt64	-			unsigned long long	-	-	-	-	b41c42eb5e2605ba	-
+typedef	c:@T@MIDIEndpointRef	-			MIDIObjectRef	-	-	-	-	17958cf20513daff	-
+typedef	c:@T@MIDIObjectRef	-			UInt32	-	-	-	-	80870b190f69680c	-
+typedef	c:@T@AudioComponent	-			struct OpaqueAudioComponent *	-	-	-	-	6f427317c346bfe6	-
+typedef	c:@T@uint16_t	-			unsigned short	-	-	-	-	a080788dde55e4dc	-
+typedef	c:@T@NSRange	-			struct _NSRange	-	-	-	-	d109726d1ae61321	-

@@ -210,3 +210,19 @@ function	c:@F@dispatch_workloop_create	-			dispatch_workloop_t (const char *)	co
 function	c:@F@dispatch_workloop_create_inactive	-			dispatch_workloop_t (const char *)	const char * label	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	61373070d1528fd8	-
 function	c:@F@dispatch_workloop_set_autorelease_frequency	-			void (dispatch_workloop_t, dispatch_autorelease_frequency_t)	dispatch_workloop_t workloop | dispatch_autorelease_frequency_t frequency	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	40913a1af534b0d1	-
 function	c:@F@dispatch_workloop_set_os_workgroup	-			void (dispatch_workloop_t, os_workgroup_t)	dispatch_workloop_t workloop | os_workgroup_t workgroup	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	042d7f12acfd6eb4	-
+typedef	c:@T@uint64_t	-			unsigned long long	-	-	-	-	e7c1cd95ea4ec29b	-
+typedef	c:@T@int64_t	-			long long	-	-	-	-	85f1e0b43a934ce7	-
+typedef	c:@T@qos_class_t	-			enum qos_class_t	-	-	-	-	2497899fa59592bb	-
+typedef	c:@T@intptr_t	-			__darwin_intptr_t	-	-	-	-	fdac1ab2f2a027a6	-
+typedef	c:@T@__darwin_intptr_t	-			long	-	-	-	-	e10930324992848e	-
+typedef	c:@T@va_list	-			__builtin_va_list	-	-	-	-	88519b6121af0d9d	-
+typedef	c:@T@__builtin_va_list	-			char *	-	-	-	-	954c872416ff897e	-
+typedef	c:@T@size_t	-			unsigned long	-	-	-	-	90a4ad5785adb724	-
+typedef	c:@T@uintptr_t	-			unsigned long	-	-	-	-	d45bca13aaee37a2	-
+typedef	c:@T@mode_t	-			__darwin_mode_t	-	-	-	-	b9c9618428808f69	-
+typedef	c:@T@__darwin_mode_t	-			__uint16_t	-	-	-	-	27c48f037b9167b4	-
+typedef	c:@T@__uint16_t	-			unsigned short	-	-	-	-	a7bc1cb528a5deea	-
+typedef	c:@T@off_t	-			__darwin_off_t	-	-	-	-	52c669a355a69d7e	-
+typedef	c:@T@__darwin_off_t	-			__int64_t	-	-	-	-	2b9dfb96e9b9fb63	-
+typedef	c:@T@__int64_t	-			long long	-	-	-	-	4db1dfd2e9c35e7a	-
+typedef	c:@T@os_workgroup_t	-			OS_os_workgroup *	-	-	-	-	ef59d9ddac6f3736	-

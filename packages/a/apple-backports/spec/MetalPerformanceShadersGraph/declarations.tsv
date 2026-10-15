@@ -876,3 +876,13 @@ method	c:objc(cs)MPSGraph(im)bottomKWithGradientTensor:source:axis:k:name:	MPSGr
 method	c:objc(cs)MPSGraph(im)topKWithGradientTensor:source:kTensor:name:	MPSGraphTopKGradientOps			MPSGraphTensor *	MPSGraphTensor * gradient | MPSGraphTensor * source | MPSGraphTensor * kTensor | NSString * name	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	02c7c8c971104aa1	-
 method	c:objc(cs)MPSGraph(im)topKWithGradientTensor:source:axisTensor:kTensor:name:	MPSGraphTopKGradientOps			MPSGraphTensor *	MPSGraphTensor * gradient | MPSGraphTensor * source | MPSGraphTensor * axisTensor | MPSGraphTensor * kTensor | NSString * name	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	3538f949e64aab3e	-
 method	c:objc(cs)MPSGraph(im)bottomKWithGradientTensor:source:axisTensor:kTensor:name:	MPSGraphTopKGradientOps			MPSGraphTensor *	MPSGraphTensor * gradient | MPSGraphTensor * source | MPSGraphTensor * axisTensor | MPSGraphTensor * kTensor | NSString * name	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	72a45c657e9a3aaa	-
+typedef	c:@T@MPSShape	-			NSArray<NSNumber *>	-	-	-	-	5eb60c466586ab1f	-
+typedef	c:@T@MPSDataType	-			enum MPSDataType	-	-	-	-	12db892d1be96eea	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@MPSImageBatch	-			NSArray<MPSImage *>	-	-	-	-	0b5bc56f58a84994	-
+typedef	c:@T@dispatch_queue_t	-			NSObject<OS_dispatch_queue> *	-	-	-	-	b6bdd422edd29fce	-
+typedef	c:@T@uint64_t	-			unsigned long long	-	-	-	-	e7c1cd95ea4ec29b	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@uint32_t	-			unsigned int	-	-	-	-	d99005f72e0ec68e	-

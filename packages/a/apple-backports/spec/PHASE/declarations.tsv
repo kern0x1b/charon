@@ -616,3 +616,18 @@ method	c:objc(cs)PHASESpatialPipeline(cm)new	-			instancetype	-	-	*unavailable i
 method	c:objc(cs)PHASESpatialPipeline(im)initWithFlags:	-			instancetype	PHASESpatialPipelineFlags flags	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	0806dfeb452bb5a5	-
 property	c:objc(cs)PHASESpatialPipeline(py)flags	-			PHASESpatialPipelineFlags	-	readonly,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	f9fb399f106b0373	-
 property	c:objc(cs)PHASESpatialPipeline(py)entries	-			NSDictionary<PHASESpatialCategory,PHASESpatialPipelineEntry *> *	-	readonly,copy	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	20317f19eb1de179	-
+typedef	c:@T@NSErrorDomain	-			NSString *	-	-	-	-	a2ef9b8d14cb4ca2	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@simd_double2	-			double __attribute__((ext_vector_type(2)))	-	-	-	-	99822a9fba6409c0	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@simd_quatf	-			struct simd_quatf	-	-	-	-	6f7e5a385ce21003	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@OSStatus	-			SInt32	-	-	-	-	c9d4cae3c2778a27	-
+typedef	c:@T@SInt32	-			int	-	-	-	-	fea52187db3d8de0	-
+typedef	c:@T@AudioTimeStamp	-			struct AudioTimeStamp	-	-	-	-	569ed97d1f95f524	-
+typedef	c:@T@AVAudioFrameCount	-			uint32_t	-	-	-	-	2bfc456a841f49a8	-
+typedef	c:@T@uint32_t	-			unsigned int	-	-	-	-	d99005f72e0ec68e	-
+typedef	c:@T@AudioBufferList	-			struct AudioBufferList	-	-	-	-	07faf9bcbab5aaf3	-
+typedef	c:@T@simd_float3	-			float __attribute__((ext_vector_type(3)))	-	-	-	-	0fce24b6ffb4ccd2	-
+typedef	c:@T@simd_float4x4	-			struct simd_float4x4	-	-	-	-	23bb586ffbc899fb	-

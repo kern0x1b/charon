@@ -19,3 +19,5 @@ enumconst	c:@E@DCError@DCErrorFeatureUnsupported	DCError			-	-	-	ios=11.0/-/-/0,
 enumconst	c:@E@DCError@DCErrorInvalidInput	DCError			-	-	-	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=11.0/-/-/0,watchos=9.0/-/-/0	-	329a4925f977685d	2
 enumconst	c:@E@DCError@DCErrorInvalidKey	DCError			-	-	-	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=11.0/-/-/0,watchos=9.0/-/-/0	-	25e6812bf7daa74d	3
 enumconst	c:@E@DCError@DCErrorServerUnavailable	DCError			-	-	-	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=11.0/-/-/0,watchos=9.0/-/-/0	-	882e89251b520863	4
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSErrorDomain	-			NSString *	-	-	-	-	a2ef9b8d14cb4ca2	-

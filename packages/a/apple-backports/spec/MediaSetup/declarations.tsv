@@ -25,3 +25,5 @@ method	c:objc(cs)MSSetupSession(im)initWithServiceAccount:	-			instancetype	MSSe
 method	c:objc(cs)MSSetupSession(im)startWithError:	-			BOOL	NSError * _Nullable * error	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ac2c558a06ef25da	-
 property	c:objc(cs)MSSetupSession(py)presentationContext	-			id<MSAuthenticationPresentationContext>	-	weak,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c2d7c04d3f50ce83	-
 property	c:objc(cs)MSSetupSession(py)account	-			MSServiceAccount *	-	readonly,strong,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	51858f6a6d87fed4	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-

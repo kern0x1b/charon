@@ -40,3 +40,5 @@ interface	c:objc(cs)DDMatchMoneyAmount	-			-	-	-	ios=15.0/-/-/0	-	b0b3136be70589
 super	-	DDMatchMoneyAmount	DDMatch		-	-	-	-	-	5c1a314ce75c1262	-
 property	c:objc(cs)DDMatchMoneyAmount(py)currency	-			NSString *	-	readonly,nonatomic	ios=15.0/-/-/0	-	49718a327499d348	-
 property	c:objc(cs)DDMatchMoneyAmount(py)amount	-			double	-	readonly,nonatomic	ios=15.0/-/-/0	-	2ba6fd6ee99513a7	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-

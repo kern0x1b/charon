@@ -12,3 +12,5 @@ function	c:@F@be_memory_inline_jit_restrict_rwx_to_rw_with_witness	-			void (voi
 function	c:@F@be_memory_inline_jit_restrict_rwx_to_rx_with_witness	-			void (void)	-	-	driverkit=-/-/-/1,ios=17.4/-/-/0,maccatalyst=-/-/-/1,macos=14.3/-/-/0,swift=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	02045c1368312df1	-
 function	c:@F@be_kevent	-			int (int, const struct kevent *, int, struct kevent *, int, unsigned int)	int kq | const struct kevent * changelist | int nchanges | struct kevent * eventlist | int nevents | unsigned int be_flags	-	driverkit=-/-/-/1,ios=18.4/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	476158a46c0319f7	-
 function	c:@F@be_kevent64	-			int (int, const struct kevent64_s *, int, struct kevent64_s *, int, unsigned int)	int kq | const struct kevent64_s * changelist | int nchanges | struct kevent64_s * eventlist | int nevents | unsigned int flags	-	driverkit=-/-/-/1,ios=18.4/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	037c16f134a9dbd0	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-

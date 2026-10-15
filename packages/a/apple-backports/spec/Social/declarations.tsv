@@ -64,3 +64,5 @@ property	c:objc(cs)SLComposeSheetConfigurationItem(py)title	-			NSString *	-	cop
 property	c:objc(cs)SLComposeSheetConfigurationItem(py)value	-			NSString *	-	copy,nonatomic	ios=8.0/-/-/0	-	b162aef054112a59	-
 property	c:objc(cs)SLComposeSheetConfigurationItem(py)valuePending	-			BOOL	-	assign,nonatomic	ios=8.0/-/-/0	-	296b1cde51034f62	-
 property	c:objc(cs)SLComposeSheetConfigurationItem(py)tapHandler	-			SLComposeSheetConfigurationItemTapHandler	-	copy,nonatomic	ios=8.0/-/-/0	-	b75972d1d0712b3f	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-

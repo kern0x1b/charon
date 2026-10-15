@@ -40,3 +40,8 @@ typedef	c:@T@AUViewColor	-			UIColor	-	-	-	-	4bf08cd6b2507825	-
 interface	c:objc(cs)AUGenericViewController	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	54a60de77a52f879	-
 super	-	AUGenericViewController	UIViewController		-	-	-	-	-	36508045887fd375	-
 property	c:objc(cs)AUGenericViewController(py)auAudioUnit	-			AUAudioUnit *	-	strong,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	59f41360c2216643	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@AudioUnit	-			AudioComponentInstance	-	-	-	-	07e9e89ebd61e6fa	-
+typedef	c:@T@AudioComponentInstance	-			struct OpaqueAudioComponentInstance *	-	-	-	-	4789ed7affd50261	-
+typedef	c:@T@CGFloat	-			double	-	-	-	-	29e11a71cfda882e	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-

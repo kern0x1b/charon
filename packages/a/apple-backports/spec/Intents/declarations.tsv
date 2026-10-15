@@ -4121,3 +4121,13 @@ method	c:objc(cs)INCallRecord(im)initWithIdentifier:dateCreated:caller:callRecor
 property	c:objc(cs)INCallRecord(py)caller	Deprecated			INPerson *	-	readonly,copy,nonatomic	ios=11.0/14.5/-/0,macos=12.0/12.0/-/0,watchos=4.0/7.3/-/0	-	0371c7b6edb922f4	-
 category	c:objc(cy)INSendMessageIntentResponse@Deprecated	-			-	-	-	ios=10.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=3.2/-/-/0	deprecated: Use sentMessages instead	cd1ba0c946190e6c	-
 property	c:objc(cs)INSendMessageIntentResponse(py)sentMessage	Deprecated			INMessage *	-	copy,nonatomic	ios=10.3/16.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=3.2/9.0/-/0	-	206c62b90c8b0f0f	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@CGColorRef	-			struct CGColor *	-	-	-	-	6d1707fde3455599	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@NSRange	-			struct _NSRange	-	-	-	-	d109726d1ae61321	-
+typedef	c:@T@va_list	-			__darwin_va_list	-	-	-	-	705f5d1001cea9a6	-
+typedef	c:@T@__darwin_va_list	-			__builtin_va_list	-	-	-	-	5713cec43b791203	-
+typedef	c:@T@__builtin_va_list	-			char *	-	-	-	-	954c872416ff897e	-

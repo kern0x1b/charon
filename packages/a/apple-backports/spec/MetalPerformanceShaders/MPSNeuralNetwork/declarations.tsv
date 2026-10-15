@@ -2174,3 +2174,25 @@ method	c:objc(cs)MPSNNGraph(im)encodeBatchToCommandBuffer:sourceImages:sourceSta
 method	c:objc(cs)MPSNNGraph(im)executeAsyncWithSourceImages:completionHandler:	-			MPSImage *	NSArray<MPSImage *> * sourceImages | MPSNNGraphCompletionHandler handler	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	956057b762078be9	-
 method	c:objc(cs)MPSNNGraph(im)readCountForSourceImageAtIndex:	-			NSUInteger	NSUInteger index	-	ios=12.1/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14.1/-/-/0,tvos=12.1/-/-/0	-	d65e232aa4914db1	-
 method	c:objc(cs)MPSNNGraph(im)readCountForSourceStateAtIndex:	-			NSUInteger	NSUInteger index	-	ios=12.1/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14.1/-/-/0,tvos=12.1/-/-/0	-	ae7ca69f196611b2	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@MPSOffset	-			struct MPSOffset	-	-	-	-	2397d7bfe3668be7	-
+typedef	c:@T@MTLRegion	-			struct MTLRegion	-	-	-	-	26e1bf56daefd9f6	-
+typedef	c:MPSCoreTypes.h@T@MPSImageEdgeMode	-			enum MPSImageEdgeMode	-	-	-	-	f1d9d5c7250d7dd2	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:MPSImage.h@T@MPSImageBatch	-			NSArray<MPSImage *>	-	-	-	-	f6dc56e5940505a8	-
+typedef	c:MPSState.h@T@MPSStateBatch	-			NSArray<MPSState *>	-	-	-	-	da42432d50042f25	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:MPSCoreTypes.h@T@MPSDataType	-			enum MPSDataType	-	-	-	-	99a17108960411fb	-
+typedef	c:@T@vector_float2	-			simd_float2	-	-	-	-	912882ff81a65378	-
+typedef	c:@T@simd_float2	-			float __attribute__((ext_vector_type(2)))	-	-	-	-	4a78b2800bdae091	-
+typedef	c:@T@NSZone	-			struct _NSZone	-	-	-	-	a6dc1e3b1b8b2ac5	-
+typedef	c:@T@MTLSize	-			struct MTLSize	-	-	-	-	b54fa7b9ccfe4a80	-
+typedef	c:MPSImage.h@T@MPSDataLayout	-			enum MPSDataLayout	-	-	-	-	fda3d71b72aea067	-
+typedef	c:@T@size_t	-			__darwin_size_t	-	-	-	-	8ce79a13e58a1844	-
+typedef	c:@T@__darwin_size_t	-			unsigned long	-	-	-	-	0cd38a3df2217524	-
+typedef	c:@T@MTLOrigin	-			struct MTLOrigin	-	-	-	-	178361b39c91a4fd	-
+typedef	c:MPSCoreTypes.h@T@MPSImageCoordinate	-			struct MPSImageCoordinate	-	-	-	-	ddf93eaca1e18699	-
+typedef	c:MPSCoreTypes.h@T@MPSRegion	-			struct MPSRegion	-	-	-	-	195d6580d6b85781	-
+typedef	c:MPSCoreTypes.h@T@MPSImageFeatureChannelFormat	-			enum MPSImageFeatureChannelFormat	-	-	-	-	ab3a1c7f9d014444	-
+typedef	c:MPSCoreTypes.h@T@MPSScaleTransform	-			struct MPSScaleTransform	-	-	-	-	773b2ac57b633903	-

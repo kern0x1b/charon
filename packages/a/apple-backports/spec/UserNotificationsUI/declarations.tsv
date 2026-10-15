@@ -24,3 +24,4 @@ method	c:objc(cs)NSExtensionContext(im)performNotificationDefaultAction	UNNotifi
 method	c:objc(cs)NSExtensionContext(im)dismissNotificationContentExtension	UNNotificationContentExtension			void	-	-	ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	89d27279df9b0238	-
 method	c:objc(cs)NSExtensionContext(im)mediaPlayingStarted	UNNotificationContentExtension			void	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	00a1da6434e2b155	-
 method	c:objc(cs)NSExtensionContext(im)mediaPlayingPaused	UNNotificationContentExtension			void	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	06f77f8826ee4493	-
+typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-

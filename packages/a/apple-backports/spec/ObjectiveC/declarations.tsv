@@ -289,3 +289,8 @@ function	c:@F@objc_sync_exit	-			int (id)	id obj	-	ios=2.0/-/-/0,macos=10.3/-/-/
 enum	c:@Ea@OBJC_SYNC_SUCCESS	-	-		int	-	-	-	-	4565e7fe932a0a8d	-
 enumconst	c:@Ea@OBJC_SYNC_SUCCESS@OBJC_SYNC_SUCCESS	-			-	-	-	-	-	11191c1b3893a1a6	0
 enumconst	c:@Ea@OBJC_SYNC_SUCCESS@OBJC_SYNC_NOT_OWNING_THREAD_ERROR	-			-	-	-	-	-	8853de556ddcbcc6	-1
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@size_t	-			unsigned long	-	-	-	-	90a4ad5785adb724	-
+typedef	c:@T@uint8_t	-			unsigned char	-	-	-	-	3a61fa5c975bd3b3	-
+typedef	c:@T@ptrdiff_t	-			long	-	-	-	-	cbb87dabc6faece5	-
+typedef	c:@T@uintptr_t	-			unsigned long	-	-	-	-	d45bca13aaee37a2	-

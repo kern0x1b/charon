@@ -143,3 +143,7 @@ enumconst	c:@E@RPRecordingErrorCode@RPRecordingErrorInvalidParameter	RPRecording
 enumconst	c:@E@RPRecordingErrorCode@RPRecordingErrorFilePermissions	RPRecordingErrorCode			-	-	-	-	-	3b0f6a770fde4707	-5835
 enumconst	c:@E@RPRecordingErrorCode@RPRecordingErrorExportClipToURLInProgress	RPRecordingErrorCode			-	-	-	-	-	55859ec22d7df345	-5836
 enumconst	c:@E@RPRecordingErrorCode@RPRecordingErrorCodeSuccessful	RPRecordingErrorCode			-	-	-	-	-	11552c9a656dbc63	0
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@CMSampleBufferRef	-			struct opaqueCMSampleBuffer *	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	0c39c3fa33d37428	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-

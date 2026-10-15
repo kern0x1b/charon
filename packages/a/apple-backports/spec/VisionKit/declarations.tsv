@@ -17,3 +17,6 @@ method	c:objc(cs)VNDocumentCameraScan(im)imageOfPageAtIndex:	-			UIImage *	NSUIn
 property	c:objc(cs)VNDocumentCameraScan(py)title	-			NSString *	-	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	349d10efc96a5091	-
 method	c:objc(cs)VNDocumentCameraScan(cm)new	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	714042071e90d7ef	-
 method	c:objc(cs)VNDocumentCameraScan(im)init	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2a5ccfe0e75504df	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-

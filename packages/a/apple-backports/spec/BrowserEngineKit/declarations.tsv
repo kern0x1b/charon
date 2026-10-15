@@ -466,3 +466,32 @@ property	c:objc(cs)BEDownloadMonitor(py)identifier	-			NSUUID *	-	readonly	ios=1
 property	c:objc(cs)BEDownloadMonitor(py)sourceURL	-			NSURL *	-	readonly	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c0a367dd76ef8633	-
 property	c:objc(cs)BEDownloadMonitor(py)destinationURL	-			NSURL *	-	readonly	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	327c447d16a94fcb	-
 method	c:objc(cs)BEDownloadMonitor(cm)createAccessToken	-			NSData *	-	-	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1ef55b33eaf05ae5	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@xpc_object_t	-			NSObject<OS_xpc_object> *	-	-	-	-	fda4d9d35a3bcdbf	-
+typedef	c:@T@mach_port_t	-			__darwin_mach_port_t	-	-	-	-	d879e9c90b7054f5	-
+typedef	c:@T@__darwin_mach_port_t	-			__darwin_mach_port_name_t	-	-	-	-	fac676185e9ebfd4	-
+typedef	c:@T@__darwin_mach_port_name_t	-			__darwin_natural_t	-	-	-	-	27fc59fe218c8642	-
+typedef	c:@T@__darwin_natural_t	-			unsigned int	-	-	-	-	a1798ee04c7e4456	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@UIContextMenuContentPreviewProvider	-			UIViewController * ((^))(void)	-	-	watchos=-/-/-/1	-	437caec3c633dc7c	-
+typedef	c:@T@UIContextMenuActionProvider	-			UIMenu * ((^))(NSArray<UIMenuElement *> *)	-	-	watchos=-/-/-/1	-	79431dc571ce82d5	-
+typedef	c:@T@CGPoint	-			struct CGPoint	-	-	-	-	5506c4b038700426	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@xpc_connection_t	-			xpc_object_t	-	-	-	-	f7cfcd90c10b04a4	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@UITextLayoutDirection	-			enum UITextLayoutDirection	-	-	-	-	0ada575dc6e1edc6	-
+typedef	c:@T@UITextStorageDirection	-			enum UITextStorageDirection	-	-	-	-	e467910cf8d81bc5	-
+typedef	c:@T@UITextGranularity	-			enum UITextGranularity	-	-	-	-	c66869a4fc8600ae	-
+typedef	c:@T@NSWritingDirection	-			enum NSWritingDirection	-	-	-	-	d31d0ebb5488bca4	-
+typedef	c:@T@UIEditMenuArrowDirection	-			enum UIEditMenuArrowDirection	-	-	-	-	07984d90dbbc5595	-
+typedef	c:@T@UIGestureRecognizerState	-			enum UIGestureRecognizerState	-	-	-	-	afc13623d0562659	-
+typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-
+typedef	c:@T@NSRange	-			struct _NSRange	-	-	-	-	d109726d1ae61321	-
+typedef	c:@T@CGSize	-			struct CGSize	-	-	-	-	288bede4212325f3	-
+typedef	c:@T@UIAccessibilityTraits	-			uint64_t	-	-	watchos=2.0/-/-/0	-	3ba5406a2ff8feef	-
+typedef	c:@T@uint64_t	-			unsigned long long	-	-	-	-	e7c1cd95ea4ec29b	-
+typedef	c:@T@UIAccessibilityNotifications	-			uint32_t	-	-	watchos=2.0/-/-/0	-	1778e529535b5610	-
+typedef	c:@T@uint32_t	-			unsigned int	-	-	-	-	d99005f72e0ec68e	-
+typedef	c:@T@pid_t	-			__darwin_pid_t	-	-	-	-	bf2c1907ad5396d7	-
+typedef	c:@T@__darwin_pid_t	-			__int32_t	-	-	-	-	cb5c92904c281d82	-
+typedef	c:@T@__int32_t	-			int	-	-	-	-	71b73741152fe871	-

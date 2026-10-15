@@ -252,7 +252,8 @@ local function test_typed_rules(check)
     local index = {FKFlags = "enum FKFlags", FKBox = "struct FKBoxS", FKAlias = "FKOther", FKOther = "long", FKCount = "unsigned int",
                    FKTypedefObj = "NSString *", CFStringRef = "const struct __CFString *", CGRect = "struct CGRect",
                    CBLAS_TRANSPOSE = "enum CBLAS_TRANSPOSE", A = "B", B = "C", C = "D", D = "E", E = "F", F = "G", G = "long",
-                   LOOP_A = "LOOP_B", LOOP_B = "LOOP_A", SELF = "SELF"}
+                   LOOP_A = "LOOP_B", LOOP_B = "LOOP_A", SELF = "SELF",
+                   FKVector3 = "float __attribute__((ext_vector_type(3)))", FKVectorAlias = "FKVector3", FKKernel = "int"}
     same("canonical drops nullability", decl.canonical("NSString * _Nullable", index), "NSString *")
     same("canonical joins the stars of a nullable out-error", decl.canonical("NSError * _Nullable * _Nullable", index), "NSError **")
     same("canonical attached nullability", decl.canonical("NSString *_Nullable", index), "NSString *")
@@ -273,6 +274,9 @@ local function test_typed_rules(check)
         {"const NSInteger", "scalar"}, {"NSArray<NSString *> *", "object"}, {"BOOL", "scalar"}, {"_Bool", "scalar"},
         {"char *", "object"}, {"enum Thing", "scalar"}, {"struct Thing", "struct"}, {"void (^)(int)", "object"},
         {"NoSuchType", nil}, {"CFStringRef", "object"},
+        -- a vector typedef (simd's float3, and a typedef of it) is a value a compound literal zeroes as a struct is; a chain to int is a scalar
+        {"FKVector3", "struct"}, {"FKVectorAlias", "struct"}, {"float __attribute__((ext_vector_type(3)))", "struct"},
+        {"FKKernel", "scalar"},
     }
     for _, case in ipairs(kinds) do
         same("kind_of " .. case[1], decl.kind_of(case[1], index), case[2])

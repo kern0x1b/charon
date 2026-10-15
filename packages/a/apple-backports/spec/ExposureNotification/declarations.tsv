@@ -200,3 +200,12 @@ method	c:objc(cs)ENManager(im)getTestDiagnosisKeysWithCompletionHandler:	-			voi
 property	c:objc(cs)ENManager(py)diagnosisKeysAvailableHandler	-			ENDiagnosisKeysAvailableHandler	-	copy,nonatomic	ios=14.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ca228b9ebbc6013f	-
 method	c:objc(cs)ENManager(im)preAuthorizeDiagnosisKeysWithCompletionHandler:	-			void	ENErrorHandler completionHandler	-	ios=14.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ecb04850c0f1bba0	-
 method	c:objc(cs)ENManager(im)requestPreAuthorizedDiagnosisKeysWithCompletionHandler:	-			void	ENErrorHandler completionHandler	-	ios=14.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4875d92e2497fe62	-
+typedef	c:@T@NSErrorDomain	-			NSString *	-	-	-	-	a2ef9b8d14cb4ca2	-
+typedef	c:@T@uint8_t	-			unsigned char	-	-	-	-	3a61fa5c975bd3b3	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@uint32_t	-			unsigned int	-	-	-	-	d99005f72e0ec68e	-
+typedef	c:@T@uint64_t	-			unsigned long long	-	-	-	-	e7c1cd95ea4ec29b	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@dispatch_queue_t	-			NSObject<OS_dispatch_queue> *	-	-	-	-	b6bdd422edd29fce	-
+typedef	c:@T@dispatch_block_t	-			void ((^))(void)	-	-	swift=-/-/-/1	-	802eb6965171e2dc	-

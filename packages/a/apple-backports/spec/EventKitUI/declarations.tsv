@@ -52,3 +52,5 @@ conforms	-	EKCalendarChooserDelegate	NSObject		-	-	-	-	-	6ceba9d905209263	-
 method	c:objc(pl)EKCalendarChooserDelegate(im)calendarChooserSelectionDidChange:	-			void	EKCalendarChooser * calendarChooser	optional	-	-	12404b138ee275f2	-
 method	c:objc(pl)EKCalendarChooserDelegate(im)calendarChooserDidFinish:	-			void	EKCalendarChooser * calendarChooser	optional	-	-	3512bf870d52449c	-
 method	c:objc(pl)EKCalendarChooserDelegate(im)calendarChooserDidCancel:	-			void	EKCalendarChooser * calendarChooser	optional	-	-	836da6b67a77b7c7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@EKEntityType	-			enum EKEntityType	-	-	-	-	8de3d8c21f49bc10	-

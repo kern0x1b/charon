@@ -2138,3 +2138,43 @@ var	c:@kCFUserNotificationAlertAccessibilityIdentifierKey	-			const CFStringRef	
 var	c:@kCFUserNotificationDefaultButtonAccessibilityIdentifierKey	-			const CFStringRef	-	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3a23c40b49f3fcef	-
 var	c:@kCFUserNotificationAlternateButtonAccessibilityIdentifierKey	-			const CFStringRef	-	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	663363092bb99608	-
 var	c:@kCFUserNotificationOtherButtonAccessibilityIdentifierKey	-			const CFStringRef	-	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3df43cd6b6cba174	-
+typedef	c:@T@Boolean	-			unsigned char	-	-	-	-	693cf733304c39d9	-
+typedef	c:@T@UInt8	-			unsigned char	-	-	-	-	a9ef2eddf94d7e81	-
+typedef	c:@T@UniChar	-			UInt16	-	-	-	-	2b0687e238bdd241	-
+typedef	c:@T@UInt16	-			unsigned short	-	-	-	-	89acd83db7a94864	-
+typedef	c:@T@UTF32Char	-			UInt32	-	-	-	-	abbc698dd840f1c4	-
+typedef	c:@T@UInt32	-			unsigned int	-	-	-	-	9c97778bf2686a2b	-
+typedef	c:@T@LangCode	-			SInt16	-	-	-	-	a8cd6a062e1a2f2e	-
+typedef	c:@T@SInt16	-			short	-	-	-	-	3eec647098d9543c	-
+typedef	c:@T@RegionCode	-			SInt16	-	-	-	-	ae31dc30786d413c	-
+typedef	c:@T@uint32_t	-			unsigned int	-	-	-	-	d99005f72e0ec68e	-
+typedef	c:@T@ConstStr255Param	-			const unsigned char *	-	-	-	-	164eda4689626ba7	-
+typedef	c:@T@va_list	-			__builtin_va_list	-	-	-	-	88519b6121af0d9d	-
+typedef	c:@T@__builtin_va_list	-			char *	-	-	-	-	954c872416ff897e	-
+typedef	c:@T@StringPtr	-			unsigned char *	-	-	-	-	bf38975115449fdc	-
+typedef	c:@T@ConstStringPtr	-			const unsigned char *	-	-	-	-	55d9f10e0e71dec3	-
+typedef	c:@T@SInt32	-			int	-	-	-	-	fea52187db3d8de0	-
+typedef	c:@T@cpu_type_t	-			integer_t	-	-	-	-	2cbd61896e5ebc9d	-
+typedef	c:@T@integer_t	-			int	-	-	-	-	5338138e8400902d	-
+typedef	c:@T@uint16_t	-			unsigned short	-	-	-	-	a080788dde55e4dc	-
+typedef	c:@T@uint64_t	-			unsigned long long	-	-	-	-	e7c1cd95ea4ec29b	-
+typedef	c:@T@Float32	-			float	-	-	-	-	a7e06278f3a06d05	-
+typedef	c:@T@Float64	-			double	-	-	-	-	9076708dddf40870	-
+typedef	c:@T@SInt8	-			signed char	-	-	-	-	d4686dd34cd8283f	-
+typedef	c:@T@int32_t	-			int	-	-	-	-	cd31f577d25bebf5	-
+typedef	c:@T@mach_port_t	-			__darwin_mach_port_t	-	-	-	-	d879e9c90b7054f5	-
+typedef	c:@T@__darwin_mach_port_t	-			__darwin_mach_port_name_t	-	-	-	-	fac676185e9ebfd4	-
+typedef	c:@T@__darwin_mach_port_name_t	-			__darwin_natural_t	-	-	-	-	27fc59fe218c8642	-
+typedef	c:@T@__darwin_natural_t	-			unsigned int	-	-	-	-	a1798ee04c7e4456	-
+typedef	c:@T@dispatch_queue_t	-			NSObject<OS_dispatch_queue> *	-	-	-	-	b6bdd422edd29fce	-
+typedef	c:@T@int8_t	-			signed char	-	-	-	-	e405b6a7be656ab1	-
+typedef	c:@T@uint8_t	-			unsigned char	-	-	-	-	3a61fa5c975bd3b3	-
+typedef	c:@T@acl_t	-			struct _acl *	-	-	-	-	5226a9b82687d1c5	-
+typedef	c:@T@uid_t	-			__darwin_uid_t	-	-	-	-	6084ffa514638080	-
+typedef	c:@T@__darwin_uid_t	-			__uint32_t	-	-	-	-	073c04a7a5ce4f9c	-
+typedef	c:@T@__uint32_t	-			unsigned int	-	-	-	-	c165177149766f1f	-
+typedef	c:@T@gid_t	-			__darwin_gid_t	-	-	-	-	a7ab6a243ada7837	-
+typedef	c:@T@__darwin_gid_t	-			__uint32_t	-	-	-	-	0bd5f511332b23bd	-
+typedef	c:@T@mode_t	-			__darwin_mode_t	-	-	-	-	b9c9618428808f69	-
+typedef	c:@T@__darwin_mode_t	-			__uint16_t	-	-	-	-	27c48f037b9167b4	-
+typedef	c:@T@__uint16_t	-			unsigned short	-	-	-	-	a7bc1cb528a5deea	-

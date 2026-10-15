@@ -95,3 +95,5 @@ property	c:objc(cs)DDDeviceEvent(py)eventType	-			DDEventType	-	readonly,assign,
 interface	c:objc(cs)DDDiscoverySession	-			-	-	-	-	-	0ac2bf41933603e8	-
 super	-	DDDiscoverySession	NSObject		-	-	-	-	-	cc071b9fbe92fae4	-
 method	c:objc(cs)DDDiscoverySession(im)reportEvent:	-			void	DDDeviceEvent * inEvent	-	-	-	dc6ba170fdb50196	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-

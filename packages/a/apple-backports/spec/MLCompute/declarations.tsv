@@ -839,3 +839,8 @@ property	c:objc(cs)MLCRMSPropOptimizer(py)epsilon	-			float	-	readonly,nonatomic
 property	c:objc(cs)MLCRMSPropOptimizer(py)isCentered	-			BOOL	-	readonly,nonatomic	macos=11.0/100000/-/0	-	e32a37f370dca753	-
 method	c:objc(cs)MLCRMSPropOptimizer(cm)optimizerWithDescriptor:	-			instancetype	MLCOptimizerDescriptor * optimizerDescriptor	-	macos=11.0/100000/-/0	-	b5194d333c2e2f4e	-
 method	c:objc(cs)MLCRMSPropOptimizer(cm)optimizerWithDescriptor:momentumScale:alpha:epsilon:isCentered:	-			instancetype	MLCOptimizerDescriptor * optimizerDescriptor | float momentumScale | float alpha | float epsilon | BOOL isCentered	-	macos=11.0/100000/-/0	-	aff35184bb0235c5	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-

@@ -121,3 +121,21 @@ function	c:@F@MTKMetalVertexDescriptorFromModelIO	-			MTLVertexDescriptor * (MDL
 function	c:@F@MTKMetalVertexDescriptorFromModelIOWithError	-			MTLVertexDescriptor * (MDLVertexDescriptor *, NSError * _Nullable *)	MDLVertexDescriptor * modelIODescriptor | NSError * _Nullable * error	-	ios=10.0/-/-/0	-	06129f66e6aec488	-
 function	c:@F@MTKModelIOVertexFormatFromMetal	-			MDLVertexFormat (MTLVertexFormat)	MTLVertexFormat vertexFormat	-	ios=9.0/-/-/0	-	954bbab7bf7da1b2	-
 function	c:@F@MTKMetalVertexFormatFromModelIO	-			MTLVertexFormat (MDLVertexFormat)	MDLVertexFormat vertexFormat	-	ios=9.0/-/-/0	-	1db75beb09dd79ea	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@MTLTextureUsage	-			enum MTLTextureUsage	-	-	-	-	736694021e0b9993	-
+typedef	c:@T@MTLPixelFormat	-			enum MTLPixelFormat	-	-	-	-	40f56ebf564ac2ed	-
+typedef	c:@T@MTLStorageMode	-			enum MTLStorageMode	-	-	-	-	c00b57d0e67328ac	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@MTLClearColor	-			struct MTLClearColor	-	-	-	-	b9627096d19769c8	-
+typedef	c:@T@uint32_t	-			unsigned int	-	-	-	-	d99005f72e0ec68e	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@CGSize	-			struct CGSize	-	-	-	-	288bede4212325f3	-
+typedef	c:@T@CGFloat	-			double	-	-	-	-	29e11a71cfda882e	-
+typedef	c:@T@CGImageRef	-			struct CGImage *	-	-	-	-	61e7c30be1f5f379	-
+typedef	c:@T@MDLMeshBufferType	-			enum MDLMeshBufferType	-	-	-	-	c0f20e0c2d1e798f	-
+typedef	c:@T@MTLPrimitiveType	-			enum MTLPrimitiveType	-	-	-	-	e11053f98c1ee700	-
+typedef	c:@T@MTLIndexType	-			enum MTLIndexType	-	-	-	-	e5810218de3b006d	-
+typedef	c:@T@MDLVertexFormat	-			enum MDLVertexFormat	-	-	-	-	5ea8b3c177d1e86c	-
+typedef	c:@T@MTLVertexFormat	-			enum MTLVertexFormat	-	-	-	-	fc053f5ab90a486c	-

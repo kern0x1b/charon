@@ -32,3 +32,7 @@ method	c:objc(cs)LPMetadataProvider(im)startFetchingMetadataForRequest:completio
 method	c:objc(cs)LPMetadataProvider(im)cancel	-			void	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=18.0/-/-/0,watchos=9.0/-/-/0	-	ed800ed0f21ac473	-
 property	c:objc(cs)LPMetadataProvider(py)shouldFetchSubresources	-			BOOL	-	nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=18.0/-/-/0,watchos=9.0/-/-/0	-	5454357882817ad4	-
 property	c:objc(cs)LPMetadataProvider(py)timeout	-			NSTimeInterval	-	nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=18.0/-/-/0,watchos=9.0/-/-/0	-	d28458147343d402	-
+typedef	c:@T@NSErrorDomain	-			NSString *	-	-	-	-	a2ef9b8d14cb4ca2	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-

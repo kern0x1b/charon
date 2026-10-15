@@ -1004,3 +1004,14 @@ method	c:objc(cs)NSPersistentCloudKitContainer(im)fetchParticipantsMatchingLooku
 method	c:objc(cs)NSPersistentCloudKitContainer(im)fetchSharesMatchingObjectIDs:error:	Sharing			NSDictionary<NSManagedObjectID *,CKShare *> *	NSArray<NSManagedObjectID *> * objectIDs | NSError * _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	2b532617f5ffc20b	-
 method	c:objc(cs)NSPersistentCloudKitContainer(im)fetchSharesInPersistentStore:error:	Sharing			NSArray<CKShare *> *	NSPersistentStore * persistentStore | NSError * _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	4e078f0a6ce5c62d	-
 method	c:objc(cs)NSPersistentCloudKitContainer(im)shareManagedObjects:toShare:completion:	Sharing			void	NSArray<NSManagedObject *> * managedObjects | CKShare * share | void (^)(NSSet<NSManagedObjectID *> * _Nullable, CKShare * _Nullable, CKContainer * _Nullable, NSError * _Nullable) completion	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	eca038e4d74acd78	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@NSKeyValueSetMutationKind	-			enum NSKeyValueSetMutationKind	-	-	-	-	cff9099a07a242ce	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@NSExpressionType	-			enum NSExpressionType	-	-	-	-	03e3bb74d7ccd3bb	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@uint64_t	-			unsigned long long	-	-	-	-	e7c1cd95ea4ec29b	-
+typedef	c:@T@int64_t	-			long long	-	-	-	-	85f1e0b43a934ce7	-
+typedef	c:@T@CKDatabaseScope	-			enum CKDatabaseScope	-	-	-	-	59e1c0ead2eb6ecc	-
+typedef	c:@T@NSNotificationName	-			NSString *	-	-	-	-	12329f5939199c65	-

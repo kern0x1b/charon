@@ -8,3 +8,4 @@ enumconst	c:@E@SALRegistrationError@SALRegistrationErrorNotEligible	SALRegistrat
 enumconst	c:@E@SALRegistrationError@SALRegistrationErrorFailed	SALRegistrationError			-	-	-	-	-	2451a5821f811729	1
 var	c:@ServicesAccountLinkingVersionNumber	-			double	-	-	-	-	eb698acc1c205e8f	-
 var	c:@ServicesAccountLinkingVersionString	-			const unsigned char[]	-	-	-	-	aea7e0d44886fe1f	-
+typedef	c:@T@NSErrorDomain	-			NSString *	-	-	-	-	a2ef9b8d14cb4ca2	-

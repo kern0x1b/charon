@@ -38,3 +38,5 @@ method	c:objc(cs)GSSyncedDirectory(im)init	-			instancetype	-	-	*unavailable	-	5
 method	c:objc(cs)GSSyncedDirectory(im)new	-			instancetype	-	-	*unavailable	-	afc62690da0dc25d	-
 var	c:@GameSaveVersionNumber	-			double	-	-	-	-	3a6a06490eb7368d	-
 var	c:@GameSaveVersionString	-			const unsigned char[]	-	-	-	-	8b7f9b9869f7414d	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-

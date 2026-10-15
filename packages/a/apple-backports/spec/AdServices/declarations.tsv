@@ -8,3 +8,4 @@ enumconst	c:@E@AAAttributionErrorCode@AAAttributionErrorCodePlatformNotSupported
 interface	c:objc(cs)AAAttribution	-			-	-	-	ios=14.3/-/-/0,macos=11.1/-/-/0,tvos=14.3/-/-/0	-	45c4c5b4215fcf0c	-
 super	-	AAAttribution	NSObject		-	-	-	-	-	70009c59966aa01a	-
 method	c:objc(cs)AAAttribution(cm)attributionTokenWithError:	-			NSString *	NSError * _Nullable * error	-	ios=14.3/-/-/0,macos=11.1/-/-/0,tvos=14.3/-/-/0	-	68c37921e19a0560	-
+typedef	c:@T@NSErrorDomain	-			NSString *	-	-	-	-	a2ef9b8d14cb4ca2	-

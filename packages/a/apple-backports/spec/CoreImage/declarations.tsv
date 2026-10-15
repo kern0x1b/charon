@@ -2169,3 +2169,31 @@ property	c:objc(cs)CIFilterGenerator(py)classAttributes	-			NSDictionary *	-	ret
 method	c:objc(cs)CIFilterGenerator(im)filter	-			CIFilter *	-	-	ios=-/-/-/1	-	7724620a8f4894dd	-
 method	c:objc(cs)CIFilterGenerator(im)registerFilterName:	-			void	NSString * name	-	ios=-/-/-/1	-	22f94e030635b1dd	-
 method	c:objc(cs)CIFilterGenerator(im)writeToURL:atomically:	-			BOOL	NSURL * aURL | BOOL flag	-	ios=-/-/-/1	-	2296261f994fc1bf	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-
+typedef	c:@T@CGPoint	-			struct CGPoint	-	-	-	-	5506c4b038700426	-
+typedef	c:@T@CGColorSpaceRef	-			struct CGColorSpace *	-	-	-	-	046fe86c4865065b	-
+typedef	c:@T@CGAffineTransform	-			struct CGAffineTransform	-	-	-	-	6d275be46c010b99	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@CGFloat	-			double	-	-	-	-	29e11a71cfda882e	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@size_t	-			__darwin_size_t	-	-	-	-	8ce79a13e58a1844	-
+typedef	c:@T@__darwin_size_t	-			unsigned long	-	-	-	-	0cd38a3df2217524	-
+typedef	c:@T@CGColorRef	-			struct CGColor *	-	-	-	-	6d1707fde3455599	-
+typedef	c:@T@CGImageRef	-			struct CGImage *	-	-	-	-	61e7c30be1f5f379	-
+typedef	c:@T@CGImageSourceRef	-			struct CGImageSource *	-	-	-	-	017ea2205bf54955	-
+typedef	c:@T@CGLayerRef	-			struct CGLayer *	-	-	-	-	5dc9c7990ed4aad7	-
+typedef	c:@T@CGSize	-			struct CGSize	-	-	-	-	288bede4212325f3	-
+typedef	c:@T@CVImageBufferRef	-			CVBufferRef	-	-	-	-	04d1786654c45588	-
+typedef	c:@T@CVBufferRef	-			struct __CVBuffer *	-	-	-	-	42f0de1ee06186fb	-
+typedef	c:@T@CVPixelBufferRef	-			CVImageBufferRef	-	-	-	-	2bcb62a122d941bf	-
+typedef	c:@T@IOSurfaceRef	-			struct __IOSurface *	-	-	-	-	b3d7dabcf5bf59d2	-
+typedef	c:@T@CGImagePropertyOrientation	-			enum CGImagePropertyOrientation	-	-	-	-	7ec899c12b8313d6	-
+typedef	c:@T@CGContextRef	-			struct CGContext *	-	-	-	-	38108536e4326699	-
+typedef	c:@T@CFDictionaryRef	-			const struct __CFDictionary *	-	-	-	-	95ab67be7d9fad28	-
+typedef	c:@T@ptrdiff_t	-			long	-	-	-	-	cbb87dabc6faece5	-
+typedef	c:@T@uint64_t	-			unsigned long long	-	-	-	-	e7c1cd95ea4ec29b	-
+typedef	c:@T@MTLPixelFormat	-			enum MTLPixelFormat	-	-	-	-	40f56ebf564ac2ed	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@uint8_t	-			unsigned char	-	-	-	-	3a61fa5c975bd3b3	-

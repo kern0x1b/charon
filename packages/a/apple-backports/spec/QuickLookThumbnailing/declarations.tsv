@@ -63,3 +63,11 @@ method	c:objc(cs)QLThumbnailGenerator(im)generateRepresentationsForRequest:updat
 method	c:objc(cs)QLThumbnailGenerator(im)cancelRequest:	-			void	QLThumbnailGenerationRequest * request	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	892869137d64ba77	-
 method	c:objc(cs)QLThumbnailGenerator(im)saveBestRepresentationForRequest:toFileAtURL:asContentType:completionHandler:	-			void	QLThumbnailGenerationRequest * request | NSURL * fileURL | UTType * contentType | void (^)(NSError * _Nullable) completionHandler	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9ca442ebdede31ee	-
 method	c:objc(cs)QLThumbnailGenerator(im)saveBestRepresentationForRequest:toFileAtURL:withContentType:completionHandler:	-			void	QLThumbnailGenerationRequest * request | NSURL * fileURL | NSString * contentType | void (^)(NSError * _Nullable) completionHandler	-	ios=14.0/18.0/-/0,macos=11.0/15.0/-/0	deprecated: Use saveBestRepresentationForRequest:toFileAtURL:asContentType:completionHandler: instead	68a069a6c9099264	-
+typedef	c:@T@CGImageRef	-			struct CGImage *	-	-	-	-	61e7c30be1f5f379	-
+typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@CGSize	-			struct CGSize	-	-	-	-	288bede4212325f3	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@CGContextRef	-			struct CGContext *	-	-	-	-	38108536e4326699	-
+typedef	c:@T@CGFloat	-			double	-	-	-	-	29e11a71cfda882e	-
+typedef	c:@T@NSErrorDomain	-			NSString *	-	-	-	-	a2ef9b8d14cb4ca2	-

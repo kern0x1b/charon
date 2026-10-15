@@ -153,3 +153,5 @@ enumconst	c:@E@VSErrorCode@VSErrorCodeProviderRejected	VSErrorCode			-	-	-	ios=1
 enumconst	c:@E@VSErrorCode@VSErrorCodeInvalidVerificationToken	VSErrorCode			-	-	-	ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	324379f2fe27d98a	5
 enumconst	c:@E@VSErrorCode@VSErrorCodeRejected	VSErrorCode			-	-	-	ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	2dbc5960ee03967e	6
 enumconst	c:@E@VSErrorCode@VSErrorCodeUnsupported	VSErrorCode			-	-	-	ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	fa08354774e1071f	7
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-

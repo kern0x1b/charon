@@ -44,6 +44,7 @@ enum	c:@E@FXMask	-			unsigned int	-	-	-	-	74cbbb0359a70e17	-
 enumconst	c:@E@FXMask@FXMaskClass	FXMask			-	-	-	-	-	05b8949bf79a4ca7	4026531840
 enum	c:@E@FXSigned	-			int	-	-	-	-	2770f3e2f649e75c	-
 enumconst	c:@E@FXSigned@FXSignedBelow	FXSigned			-	-	-	-	-	b270b617551eb67f	-1
+function	c:@F@FXMove	-			void (fx_vector3, fx_family)	fx_vector3 at | fx_family family	-	-	-	46824690068e785f	-
 protocol	c:objc(pl)FXSource	-			-	-	-	-	-	5dd124b557c4904c	-
 method	c:objc(pl)FXSource(im)valueForKey:	-			id	id key	optional	-	-	e4095b7c1d8f3d61	-
 interface	c:objc(cs)FXWidget	-			-	-	-	-	-	00774d9345f1e0fe	-
@@ -61,3 +62,8 @@ method	c:objc(cs)FXLegacy(im)tweak	-			void	-	-	ios=14.0/-/-/0	-	9bd075e036e7bd5
 category	c:objc(ext)FXLegacy	-	-		-	-	-	ios=14.0/-/-/0	-	988f1eaceef9e3b9	-
 function	c:@F@FXOld	-			void (void)	-	-	ios=2.0/9.0/-/0	deprecated: Use newWay	067690961a858a55	-
 function	c:@F@FXGone	-			void (void)	-	-	*unavailable	unavailable: removed in 2.0	8fa92eb3a8eba839	-
+typedef	c:@T@fx_vector3	-			fx_float3	-	-	-	-	be174807d9005ce0	-
+typedef	c:@T@fx_float3	-			float __attribute__((ext_vector_type(3)))	-	-	-	-	a48f30a1a7308738	-
+typedef	c:@T@fx_family	-			fx_byte	-	-	-	-	a6c746f6e3d7d9ce	-
+typedef	c:@T@fx_byte	-			unsigned char	-	-	-	-	130b861891e96d90	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-

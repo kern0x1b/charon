@@ -819,3 +819,30 @@ conforms	-	ARCoachingOverlayViewDelegate	NSObject		-	-	-	-	-	d617b86ad59bf815	-
 method	c:objc(pl)ARCoachingOverlayViewDelegate(im)coachingOverlayViewDidRequestSessionReset:	-			void	ARCoachingOverlayView * coachingOverlayView	optional	ios=13.0/-/-/0	-	122bd4138be86752	-
 method	c:objc(pl)ARCoachingOverlayViewDelegate(im)coachingOverlayViewWillActivate:	-			void	ARCoachingOverlayView * coachingOverlayView	optional	ios=13.0/-/-/0	-	1defb6fc77c5482a	-
 method	c:objc(pl)ARCoachingOverlayViewDelegate(im)coachingOverlayViewDidDeactivate:	-			void	ARCoachingOverlayView * coachingOverlayView	optional	ios=13.0/-/-/0	-	750ebc8c9f1284d4	-
+typedef	c:@T@CVPixelBufferRef	-			CVImageBufferRef	-	-	-	-	2bcb62a122d941bf	-
+typedef	c:@T@CVImageBufferRef	-			CVBufferRef	-	-	-	-	04d1786654c45588	-
+typedef	c:@T@CVBufferRef	-			struct __CVBuffer *	-	-	-	-	42f0de1ee06186fb	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@simd_float4x4	-			struct simd_float4x4	-	-	-	-	23bb586ffbc899fb	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@simd_float2	-			float __attribute__((ext_vector_type(2)))	-	-	-	-	4a78b2800bdae091	-
+typedef	c:@T@VNRecognizedPointKey	-			NSString *	-	-	-	-	3a5887168200db50	-
+typedef	c:@T@CGFloat	-			double	-	-	-	-	29e11a71cfda882e	-
+typedef	c:@T@simd_float3	-			float __attribute__((ext_vector_type(3)))	-	-	-	-	0fce24b6ffb4ccd2	-
+typedef	c:@T@simd_float3x3	-			struct simd_float3x3	-	-	-	-	7443d30546b7f1b8	-
+typedef	c:@T@CGSize	-			struct CGSize	-	-	-	-	288bede4212325f3	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@CGPoint	-			struct CGPoint	-	-	-	-	5506c4b038700426	-
+typedef	c:@T@CLLocationCoordinate2D	-			struct CLLocationCoordinate2D	-	-	-	-	9d11eb66555ff740	-
+typedef	c:@T@dispatch_queue_t	-			NSObject<OS_dispatch_queue> *	-	-	-	-	b6bdd422edd29fce	-
+typedef	c:@T@CLLocationDistance	-			double	-	-	-	-	e6b55a169d2f4b70	-
+typedef	c:@T@CMSampleBufferRef	-			struct opaqueCMSampleBuffer *	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	0c39c3fa33d37428	-
+typedef	c:@T@CGAffineTransform	-			struct CGAffineTransform	-	-	-	-	6d275be46c010b99	-
+typedef	c:@T@MTLVertexFormat	-			enum MTLVertexFormat	-	-	-	-	fc053f5ab90a486c	-
+typedef	c:@T@CGImageRef	-			struct CGImage *	-	-	-	-	61e7c30be1f5f379	-
+typedef	c:@T@CGImagePropertyOrientation	-			enum CGImagePropertyOrientation	-	-	-	-	7ec899c12b8313d6	-
+typedef	c:@T@AVCaptureDevicePosition	-			enum AVCaptureDevicePosition	-	-	-	-	fecdf4f38f96cfb3	-
+typedef	c:@T@AVCaptureColorSpace	-			enum AVCaptureColorSpace	-	-	-	-	854954f941036632	-
+typedef	c:@T@SCNDebugOptions	-			enum SCNDebugOptions	-	-	-	-	adffd44851874c03	-

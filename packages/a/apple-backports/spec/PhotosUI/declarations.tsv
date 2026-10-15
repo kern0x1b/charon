@@ -122,3 +122,9 @@ property	c:objc(pl)PHContentEditingController(py)shouldShowCancelConfirmation	-	
 category	c:objc(cy)PHPhotoLibrary@PhotosUISupport	-			-	-	-	ios=14/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6aded581d4871e90	-
 method	c:objc(cs)PHPhotoLibrary(im)presentLimitedLibraryPickerFromViewController:	PhotosUISupport			void	UIViewController * controller	-	ios=14/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5a95fc7eda31da23	-
 method	c:objc(cs)PHPhotoLibrary(im)presentLimitedLibraryPickerFromViewController:completionHandler:	PhotosUISupport			void	UIViewController * controller | void (^)(NSArray<NSString *> * _Nonnull) completionHandler	-	ios=15/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	45b91bfa828834ea	-
+typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@NSDirectionalRectEdge	-			enum NSDirectionalRectEdge	-	-	-	-	e26c104f44fd22c2	-

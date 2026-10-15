@@ -320,3 +320,13 @@ property	c:objc(cs)TKSmartCardTokenRegistrationManager(py)registeredSmartCardTok
 method	c:objc(cs)TKSmartCardTokenRegistrationManager(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	5e0c5f3336485925	-
 method	c:objc(cs)TKSmartCardTokenRegistrationManager(im)registerSmartCardWithTokenID:promptMessage:error:	-			BOOL	NSString * tokenID | NSString * promptMessage | NSError * _Nullable * error	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	78ff2efbfdefa7bb	-
 method	c:objc(cs)TKSmartCardTokenRegistrationManager(im)unregisterSmartCardWithTokenID:error:	-			BOOL	NSString * tokenID | NSError * _Nullable * error	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	91bcaf77b9286a83	-
+typedef	c:@T@UInt64	-			unsigned long long	-	-	-	-	b41c42eb5e2605ba	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@UInt8	-			unsigned char	-	-	-	-	a9ef2eddf94d7e81	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@UInt16	-			unsigned short	-	-	-	-	89acd83db7a94864	-
+typedef	c:@T@SecKeyAlgorithm	-			CFStringRef	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	b999b4356bcec665	-
+typedef	c:@T@CFStringRef	-			const struct __CFString *	-	-	-	-	e422c620371887ac	-
+typedef	c:@T@SecCertificateRef	-			struct __SecCertificate *	-	-	-	-	8cee4190d5517141	-

@@ -272,6 +272,14 @@ expect(find(function (r) return r.usr == "c:Fixture.h@T@FXOpaque" end)[1].type =
 local widget_named = find(function (r) return r.usr == "c:objc(cs)FXWidget(cm)widgetNamed:" end)[1]
 expect(widget_named.type == "instancetype", "a method keeps its return type")
 expect(find(function (r) return r.usr == "c:@F@FXRun" end)[1].params == "int total", "a function keeps its parameter types and names")
+-- the foreign typedefs a declaration reaches (fixture_types.h, outside Headers/): one typedef row each, with the chain each one names
+count(function (r) return r.usr == "c:@T@fx_float3" end, 1, "fx_float3, a typedef of another header, is one row")
+expect(find(function (r) return r.usr == "c:@T@fx_float3" end)[1].type == "float __attribute__((ext_vector_type(3)))",
+       "a foreign vector typedef keeps its spelled type")
+expect(find(function (r) return r.usr == "c:@T@fx_vector3" end)[1].type == "fx_float3", "a foreign typedef keeps the name its chain gives")
+expect(find(function (r) return r.usr == "c:@T@fx_family" end)[1].type == "fx_byte"
+       and find(function (r) return r.usr == "c:@T@fx_byte" end)[1].type == "unsigned char", "a chain of foreign typedefs ends at its scalar")
+expect(find(function (r) return r.usr == "c:@F@FXMove" end)[1].params == "fx_vector3 at | fx_family family", "a function's parameters name the foreign typedefs")
 -- the type of a declared variable (ruling of 2026-10-10, the const fix): the top-level const of the declared type is in it, a pointer's
 -- const follows the star, and an attribute macro in front of the type is not part of it
 local function type_of_var(usr)

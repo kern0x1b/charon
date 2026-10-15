@@ -74,6 +74,11 @@ function kind_of(type_text, index, visited)
     if string.sub(bare, 1, 7) == "struct " or string.sub(bare, 1, 6) == "union " then
         return "struct"
     end
+    -- a vector type (simd's float3 and the like, spelled "float __attribute__((ext_vector_type(3)))") is a value a compound literal
+    -- zeroes as a struct is, so it is a struct here
+    if string.find(bare, "__attribute__((ext_vector_type(", 1, true) then
+        return "struct"
+    end
     if index[bare] ~= nil and not visited[bare] then
         visited[bare] = true
         return kind_of(index[bare], index, visited)

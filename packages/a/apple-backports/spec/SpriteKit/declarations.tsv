@@ -1061,3 +1061,40 @@ method	c:objc(cs)SKPhysicsWorld(im)bodyAlongRayStart:end:	-			SKPhysicsBody *	CG
 method	c:objc(cs)SKPhysicsWorld(im)enumerateBodiesAtPoint:usingBlock:	-			void	CGPoint point | void (^)(SKPhysicsBody * _Nonnull, BOOL * _Nonnull) block	-	-	-	1a6e71910843be1f	-
 method	c:objc(cs)SKPhysicsWorld(im)enumerateBodiesInRect:usingBlock:	-			void	CGRect rect | void (^)(SKPhysicsBody * _Nonnull, BOOL * _Nonnull) block	-	-	-	2c7d882c8d1a3f5a	-
 method	c:objc(cs)SKPhysicsWorld(im)enumerateBodiesAlongRayStart:end:usingBlock:	-			void	CGPoint start | CGPoint end | void (^)(SKPhysicsBody * _Nonnull, CGPoint, CGVector, BOOL * _Nonnull) block	-	-	-	5ac44ffcf8460a16	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-
+typedef	c:@T@CGPoint	-			struct CGPoint	-	-	-	-	5506c4b038700426	-
+typedef	c:@T@CGFloat	-			double	-	-	-	-	29e11a71cfda882e	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@CGVector	-			struct CGVector	-	-	-	-	43b5119ffc247e97	-
+typedef	c:@T@CGSize	-			struct CGSize	-	-	-	-	288bede4212325f3	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@CGPathRef	-			const struct CGPath *	-	-	-	-	fd70a7b984d6b7cd	-
+typedef	c:@T@dispatch_block_t	-			void ((^))(void)	-	-	swift=-/-/-/1	-	802eb6965171e2dc	-
+typedef	c:@T@dispatch_queue_t	-			NSObject<OS_dispatch_queue> *	-	-	-	-	b6bdd422edd29fce	-
+typedef	c:@T@vector_float2	-			simd_float2	-	-	-	-	912882ff81a65378	-
+typedef	c:@T@simd_float2	-			float __attribute__((ext_vector_type(2)))	-	-	-	-	4a78b2800bdae091	-
+typedef	c:@T@uint32_t	-			unsigned int	-	-	-	-	d99005f72e0ec68e	-
+typedef	c:@T@size_t	-			unsigned long	-	-	-	-	90a4ad5785adb724	-
+typedef	c:@T@CGLineCap	-			enum CGLineCap	-	-	-	-	3d9aee125b5eae18	-
+typedef	c:@T@CGLineJoin	-			enum CGLineJoin	-	-	-	-	260b108f5f5c8a4e	-
+typedef	c:@T@simd_float3	-			float __attribute__((ext_vector_type(3)))	-	-	-	-	0fce24b6ffb4ccd2	-
+typedef	c:@T@NSLineBreakMode	-			enum NSLineBreakMode	-	-	-	-	2196e24f88555a14	-
+typedef	c:@T@matrix_float3x3	-			simd_float3x3	-	-	-	-	1bfa7e3f02d14205	-
+typedef	c:@T@simd_float3x3	-			struct simd_float3x3	-	-	-	-	7443d30546b7f1b8	-
+typedef	c:@T@simd_quatf	-			struct simd_quatf	-	-	-	-	6f7e5a385ce21003	-
+typedef	c:@T@CGImageRef	-			struct CGImage *	-	-	-	-	61e7c30be1f5f379	-
+typedef	c:@T@vector_float4	-			simd_float4	-	-	-	-	cf7d3a842c448cc6	-
+typedef	c:@T@simd_float4	-			float __attribute__((ext_vector_type(4)))	-	-	-	-	0025db7fec7cd0cf	-
+typedef	c:@T@matrix_float2x2	-			simd_float2x2	-	-	-	-	69d40301d348efe1	-
+typedef	c:@T@simd_float2x2	-			struct simd_float2x2	-	-	-	-	e411073159c0adc4	-
+typedef	c:@T@matrix_float4x4	-			simd_float4x4	-	-	-	-	6fb55312c43daa5f	-
+typedef	c:@T@simd_float4x4	-			struct simd_float4x4	-	-	-	-	23bb586ffbc899fb	-
+typedef	c:@T@GLKVector2	-			union _GLKVector2	-	-	-	-	5642570a53faee61	-
+typedef	c:@T@GLKVector3	-			union _GLKVector3	-	-	-	-	a998a16d63500863	-
+typedef	c:@T@GLKVector4	-			union _GLKVector4	-	-	-	-	020ac5c164ca02f4	-
+typedef	c:@T@GLKMatrix2	-			union _GLKMatrix2	-	-	-	-	63343a02b45a9d0c	-
+typedef	c:@T@GLKMatrix3	-			union _GLKMatrix3	-	-	-	-	d81861a1e2c2062f	-
+typedef	c:@T@GLKMatrix4	-			union _GLKMatrix4	-	-	-	-	94dfcf10763fa1c5	-

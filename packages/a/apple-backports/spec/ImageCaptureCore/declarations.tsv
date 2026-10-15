@@ -649,3 +649,17 @@ method	c:objc(cs)ICScannerDevice(im)requestSelectFunctionalUnit:	-			void	ICScan
 method	c:objc(cs)ICScannerDevice(im)requestOverviewScan	-			void	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	c989b00b85d355a6	-
 method	c:objc(cs)ICScannerDevice(im)requestScan	-			void	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	14c139a85811d5c1	-
 method	c:objc(cs)ICScannerDevice(im)cancelScan	-			void	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	f82ea8bda1ded5aa	-
+typedef	c:@T@CGImageRef	-			struct CGImage *	-	-	-	-	61e7c30be1f5f379	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSErrorDomain	-			NSString *	-	-	-	-	a2ef9b8d14cb4ca2	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@off_t	-			__darwin_off_t	-	-	-	-	52c669a355a69d7e	-
+typedef	c:@T@__darwin_off_t	-			__int64_t	-	-	-	-	2b9dfb96e9b9fb63	-
+typedef	c:@T@__int64_t	-			long long	-	-	-	-	4db1dfd2e9c35e7a	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@CGFloat	-			double	-	-	-	-	29e11a71cfda882e	-
+typedef	c:@T@CGSize	-			struct CGSize	-	-	-	-	288bede4212325f3	-
+typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-
+typedef	c:@T@UInt32	-			unsigned int	-	-	-	-	9c97778bf2686a2b	-

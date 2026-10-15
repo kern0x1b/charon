@@ -120,3 +120,10 @@ method	c:objc(cs)ALAssetRepresentation(im)metadata	-			NSDictionary *	-	-	ios=4/
 method	c:objc(cs)ALAssetRepresentation(im)orientation	-			ALAssetOrientation	-	-	ios=4/9/26.0/0,macos=-/-/-/1	-	a85043fc5addf482	-
 method	c:objc(cs)ALAssetRepresentation(im)scale	-			float	-	-	ios=4/9/26.0/0,macos=-/-/-/1	-	608123e3f3814f62	-
 method	c:objc(cs)ALAssetRepresentation(im)filename	-			NSString *	-	-	ios=5/9/26.0/0,macos=-/-/-/1	-	1b8ffcebc2621274	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@CGImageRef	-			struct CGImage *	-	-	-	-	61e7c30be1f5f379	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@NSEnumerationOptions	-			enum NSEnumerationOptions	-	-	-	-	3949db790379ffe3	-
+typedef	c:@T@CGSize	-			struct CGSize	-	-	-	-	288bede4212325f3	-
+typedef	c:@T@uint8_t	-			unsigned char	-	-	-	-	3a61fa5c975bd3b3	-

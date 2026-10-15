@@ -87,3 +87,6 @@ property	c:objc(cs)WCSessionUserInfoTransfer(py)currentComplicationInfo	-			BOOL
 property	c:objc(cs)WCSessionUserInfoTransfer(py)userInfo	-			NSDictionary<NSString *,id> *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	93003c3033f62f2b	-
 property	c:objc(cs)WCSessionUserInfoTransfer(py)transferring	-			BOOL	-	readonly,nonatomic,getter=isTransferring	ios=9.0/-/-/0	-	f0f19873c7872254	-
 method	c:objc(cs)WCSessionUserInfoTransfer(im)cancel	-			void	-	-	ios=9.0/-/-/0	-	af10cb36e31ff7e8	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-

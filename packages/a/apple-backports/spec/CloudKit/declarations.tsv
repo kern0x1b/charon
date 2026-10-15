@@ -1047,3 +1047,8 @@ method	c:objc(cs)CKSyncEngineFailedZoneSave(im)init	-			instancetype	-	-	*unavai
 method	c:objc(cs)CKSyncEngineFailedZoneSave(cm)new	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	f7b0f9eb49f481b1	-
 property	c:objc(cs)CKSyncEngineFailedZoneSave(py)recordZone	-			CKRecordZone *	-	readonly,strong,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	1699b8bcbf0b52b1	-
 property	c:objc(cs)CKSyncEngineFailedZoneSave(py)error	-			NSError *	-	readonly,strong,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	86afc5dc3ab050e9	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSQualityOfService	-			enum NSQualityOfService	-	-	-	-	3cc8a5f574198267	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-

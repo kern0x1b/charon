@@ -154,3 +154,11 @@ super	-	MPSNDArrayAffineInt4Dequantize	MPSNDArrayMultiaryKernel		-	-	-	-	-	4511b
 method	c:objc(cs)MPSNDArrayAffineInt4Dequantize(im)initWithDevice:	-			instancetype	id<MTLDevice> device	-	*unavailable ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	ac146e935ac21397	-
 method	c:objc(cs)MPSNDArrayAffineInt4Dequantize(im)initWithDevice:quantizationDescriptor:	-			instancetype	id<MTLDevice> device | MPSNDArrayAffineQuantizationDescriptor * quantizationDescriptor	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	23947b65be69072a	-
 method	c:objc(cs)MPSNDArrayAffineInt4Dequantize(im)initWithDevice:sourceCount:	-			instancetype	id<MTLDevice> device | NSUInteger sourceCount	-	*unavailable ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	5a640b613e63d732	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:MPSCoreTypes.h@T@MPSImageEdgeMode	-			enum MPSImageEdgeMode	-	-	-	-	f1d9d5c7250d7dd2	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@NSZone	-			struct _NSZone	-	-	-	-	a6dc1e3b1b8b2ac5	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:MPSCoreTypes.h@T@MPSShape	-			NSArray<NSNumber *>	-	-	-	-	1b1807870552e404	-
+typedef	c:MPSCoreTypes.h@T@MPSDataType	-			enum MPSDataType	-	-	-	-	99a17108960411fb	-

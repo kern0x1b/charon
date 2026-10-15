@@ -1706,3 +1706,29 @@ category	c:objc(cy)SCNRenderer@SCNDeprecated	-			-	-	-	watchos=-/-/-/1	deprecate
 method	c:objc(cs)SCNRenderer(im)render	SCNDeprecated			void	-	-	ios=8.0/9.0/-/0,maccatalyst=-/-/-/1,macos=10.8/10.11/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use -renderAtTime:withEncoder:pass:commandQueue: instead	7e5c3a93d91277f9	-
 category	c:objc(cy)SCNMaterialProperty@SCNDeprecated	-			-	-	-	-	deprecated: Deprecated	5ab7d0eb82938b28	-
 property	c:objc(cs)SCNMaterialProperty(py)borderColor	SCNDeprecated			id	-	retain,nonatomic	ios=8.0/10.0/-/0,maccatalyst=-/-/-/1,macos=10.8/10.12/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	dc9b4dc3b3ec4017	-
+typedef	c:@T@GLKVector3	-			union _GLKVector3	-	-	-	-	a998a16d63500863	-
+typedef	c:@T@GLKVector4	-			union _GLKVector4	-	-	-	-	020ac5c164ca02f4	-
+typedef	c:@T@GLKMatrix4	-			union _GLKMatrix4	-	-	-	-	94dfcf10763fa1c5	-
+typedef	c:@T@simd_float3	-			float __attribute__((ext_vector_type(3)))	-	-	-	-	0fce24b6ffb4ccd2	-
+typedef	c:@T@simd_float4	-			float __attribute__((ext_vector_type(4)))	-	-	-	-	0025db7fec7cd0cf	-
+typedef	c:@T@simd_float4x4	-			struct simd_float4x4	-	-	-	-	23bb586ffbc899fb	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@CGFloat	-			double	-	-	-	-	29e11a71cfda882e	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@dispatch_queue_t	-			NSObject<OS_dispatch_queue> *	-	-	-	-	b6bdd422edd29fce	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@simd_quatf	-			struct simd_quatf	-	-	-	-	6f7e5a385ce21003	-
+typedef	c:@T@CGSize	-			struct CGSize	-	-	-	-	288bede4212325f3	-
+typedef	c:@T@CGPoint	-			struct CGPoint	-	-	-	-	5506c4b038700426	-
+typedef	c:@T@MTLVertexFormat	-			enum MTLVertexFormat	-	-	-	-	fc053f5ab90a486c	-
+typedef	c:@T@NSRange	-			struct _NSRange	-	-	-	-	d109726d1ae61321	-
+typedef	c:@T@MTLTessellationPartitionMode	-			enum MTLTessellationPartitionMode	-	-	-	-	6808772b7624cece	-
+typedef	c:@T@CGColorSpaceRef	-			struct CGColorSpace *	-	-	-	-	046fe86c4865065b	-
+typedef	c:@T@MTLPixelFormat	-			enum MTLPixelFormat	-	-	-	-	40f56ebf564ac2ed	-
+typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-
+typedef	c:@T@CFTimeInterval	-			double	-	-	-	-	11d627848397cf44	-
+typedef	c:@T@size_t	-			__darwin_size_t	-	-	-	-	8ce79a13e58a1844	-
+typedef	c:@T@__darwin_size_t	-			unsigned long	-	-	-	-	0cd38a3df2217524	-
+typedef	c:@T@uint32_t	-			unsigned int	-	-	-	-	d99005f72e0ec68e	-

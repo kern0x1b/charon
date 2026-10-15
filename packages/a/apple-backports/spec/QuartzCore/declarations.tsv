@@ -666,3 +666,27 @@ var	c:@kCAValueFunctionTranslate	-			const CAValueFunctionName	-	-	ios=3.0/-/-/0
 var	c:@kCAValueFunctionTranslateX	-			const CAValueFunctionName	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	d08203303122c62f	-
 var	c:@kCAValueFunctionTranslateY	-			const CAValueFunctionName	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	9b6a1acdd54aaa27	-
 var	c:@kCAValueFunctionTranslateZ	-			const CAValueFunctionName	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	c2f1c2353c72f4e5	-
+typedef	c:@T@CFTimeInterval	-			double	-	-	-	-	11d627848397cf44	-
+typedef	c:@T@CGFloat	-			double	-	-	-	-	29e11a71cfda882e	-
+typedef	c:@T@CGAffineTransform	-			struct CGAffineTransform	-	-	-	-	6d275be46c010b99	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-
+typedef	c:@T@CGPoint	-			struct CGPoint	-	-	-	-	5506c4b038700426	-
+typedef	c:@T@CGContextRef	-			struct CGContext *	-	-	-	-	38108536e4326699	-
+typedef	c:@T@CGColorRef	-			struct CGColor *	-	-	-	-	6d1707fde3455599	-
+typedef	c:@T@CGSize	-			struct CGSize	-	-	-	-	288bede4212325f3	-
+typedef	c:@T@CGPathRef	-			const struct CGPath *	-	-	-	-	fd70a7b984d6b7cd	-
+typedef	c:@T@NSRunLoopMode	-			NSString *	-	-	-	-	f7fd0d1c0f082ab6	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@MTLPixelFormat	-			enum MTLPixelFormat	-	-	-	-	40f56ebf564ac2ed	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@CGColorSpaceRef	-			struct CGColorSpace *	-	-	-	-	046fe86c4865065b	-
+typedef	c:@T@size_t	-			unsigned long	-	-	-	-	90a4ad5785adb724	-
+typedef	c:@T@mach_port_t	-			__darwin_mach_port_t	-	-	-	-	d879e9c90b7054f5	-
+typedef	c:@T@__darwin_mach_port_t	-			__darwin_mach_port_name_t	-	-	-	-	fac676185e9ebfd4	-
+typedef	c:@T@__darwin_mach_port_name_t	-			__darwin_natural_t	-	-	-	-	27fc59fe218c8642	-
+typedef	c:@T@__darwin_natural_t	-			unsigned int	-	-	-	-	a1798ee04c7e4456	-
+typedef	c:@T@uint32_t	-			unsigned int	-	-	-	-	d99005f72e0ec68e	-
+typedef	c:@T@CVTimeStamp	-			struct CVTimeStamp	-	-	-	-	5ba23d643ee4b4a8	-
+typedef	c:@T@CFTypeRef	-			const void *	-	-	-	-	bfc2940caeb1f461	-

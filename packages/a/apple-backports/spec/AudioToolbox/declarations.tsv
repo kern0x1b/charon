@@ -2873,3 +2873,57 @@ function	c:@F@MusicSequenceSaveSMFData	-			OSStatus (MusicSequence, CFDataRef  _
 function	c:@F@NewMusicTrackFrom	-			OSStatus (MusicTrack, MusicTimeStamp, MusicTimeStamp, MusicTrack  _Nullable *)	MusicTrack inSourceTrack | MusicTimeStamp inSourceStartTime | MusicTimeStamp inSourceEndTime | MusicTrack  _Nullable * outNewTrack	-	ios=-/-/-/1,macos=10.0/10.6/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: no longer supported	706299b86cde257a	-
 function	c:@F@CopyNameFromSoundBank	-			OSStatus (CFURLRef, CFStringRef  _Nullable *)	CFURLRef inURL | CFStringRef  _Nullable * outName	-	ios=7.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	635f9f46f3cfa57b	-
 function	c:@F@CopyInstrumentInfoFromSoundBank	-			OSStatus (CFURLRef, CFArrayRef  _Nullable *)	CFURLRef inURL | CFArrayRef  _Nullable * outInstrumentInfo	-	ios=7.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	119a1f821ce23700	-
+typedef	c:@T@OSType	-			FourCharCode	-	-	-	-	01d4dcaaf78349ee	-
+typedef	c:@T@FourCharCode	-			UInt32	-	-	-	-	a0f4e71a4dbfcb9b	-
+typedef	c:@T@UInt32	-			unsigned int	-	-	-	-	9c97778bf2686a2b	-
+typedef	c:@T@OSStatus	-			SInt32	-	-	-	-	c9d4cae3c2778a27	-
+typedef	c:@T@SInt32	-			int	-	-	-	-	fea52187db3d8de0	-
+typedef	c:@T@SInt16	-			short	-	-	-	-	3eec647098d9543c	-
+typedef	c:@T@CFStringRef	-			const struct __CFString *	-	-	-	-	e422c620371887ac	-
+typedef	c:@T@Boolean	-			unsigned char	-	-	-	-	693cf733304c39d9	-
+typedef	c:@T@CFDictionaryRef	-			const struct __CFDictionary *	-	-	-	-	95ab67be7d9fad28	-
+typedef	c:@T@AudioStreamBasicDescription	-			struct AudioStreamBasicDescription	-	-	-	-	830421b7fd18d7b1	-
+typedef	c:@T@AudioStreamPacketDescription	-			struct AudioStreamPacketDescription	-	-	-	-	185ee407d1f74107	-
+typedef	c:@T@AudioBufferList	-			struct AudioBufferList	-	-	-	-	07faf9bcbab5aaf3	-
+typedef	c:@T@Float32	-			float	-	-	-	-	a7e06278f3a06d05	-
+typedef	c:@T@AudioTimeStamp	-			struct AudioTimeStamp	-	-	-	-	569ed97d1f95f524	-
+typedef	c:@T@Float64	-			double	-	-	-	-	9076708dddf40870	-
+typedef	c:@T@CFAbsoluteTime	-			CFTimeInterval	-	-	-	-	28db4ad74a7edc7f	-
+typedef	c:@T@CFTimeInterval	-			double	-	-	-	-	11d627848397cf44	-
+typedef	c:@T@CFArrayRef	-			const struct __CFArray *	-	-	-	-	d3655b482ae0664e	-
+typedef	c:@T@Byte	-			UInt8	-	-	-	-	44100adc069c5789	-
+typedef	c:@T@UInt8	-			unsigned char	-	-	-	-	a9ef2eddf94d7e81	-
+typedef	c:@T@os_workgroup_t	-			OS_os_workgroup *	-	-	-	-	ef59d9ddac6f3736	-
+typedef	c:@T@uint32_t	-			unsigned int	-	-	-	-	d99005f72e0ec68e	-
+typedef	c:@T@int64_t	-			long long	-	-	-	-	85f1e0b43a934ce7	-
+typedef	c:@T@uint8_t	-			unsigned char	-	-	-	-	3a61fa5c975bd3b3	-
+typedef	c:@T@SInt64	-			long long	-	-	-	-	4a13131456fbd4c5	-
+typedef	c:@T@CFURLRef	-			const struct __CFURL *	-	-	-	-	0ca832288ff2133f	-
+typedef	c:@T@uint64_t	-			unsigned long long	-	-	-	-	e7c1cd95ea4ec29b	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@MIDIProtocolID	-			enum MIDIProtocolID	-	-	-	-	011f1e07732445e1	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@NSKeyValueObservingOptions	-			enum NSKeyValueObservingOptions	-	-	-	-	5f80eb8bceff2047	-
+typedef	c:@T@uint16_t	-			unsigned short	-	-	-	-	a080788dde55e4dc	-
+typedef	c:@T@AudioClassDescription	-			struct AudioClassDescription	-	-	-	-	cc729fd383e13ee5	-
+typedef	c:@T@AudioStreamPacketDependencyDescription	-			struct AudioStreamPacketDependencyDescription	-	-	-	-	3b5b1ceeb26cd5f9	-
+typedef	c:@T@SInt8	-			signed char	-	-	-	-	d4686dd34cd8283f	-
+typedef	c:@T@UInt16	-			unsigned short	-	-	-	-	89acd83db7a94864	-
+typedef	c:@T@size_t	-			unsigned long	-	-	-	-	90a4ad5785adb724	-
+typedef	c:@T@UInt64	-			unsigned long long	-	-	-	-	b41c42eb5e2605ba	-
+typedef	c:@T@AudioChannelLayout	-			struct AudioChannelLayout	-	-	-	-	ae00376d08019401	-
+typedef	c:@T@CFRunLoopRef	-			struct __CFRunLoop *	-	-	-	-	2c9d9bba83d0f9bf	-
+typedef	c:@T@dispatch_queue_t	-			NSObject<OS_dispatch_queue> *	-	-	-	-	b6bdd422edd29fce	-
+typedef	c:@T@os_workgroup_interval_t	-			OS_os_workgroup<OS_os_workgroup_interval> *	-	-	-	-	83660923ca8d8360	-
+typedef	c:@T@os_clockid_t	-			enum os_clockid_t	-	-	-	-	f68d0accf7de6c82	-
+typedef	c:@T@os_workgroup_attr_t	-			struct os_workgroup_attr_opaque_s *	-	-	-	-	48fc4b2481689539	-
+typedef	c:@T@FILE	-			struct __sFILE	-	-	-	-	997bcb6f4ecdba4d	-
+typedef	c:@T@CFPropertyListRef	-			CFTypeRef	-	-	-	-	7031d97fa222dccd	-
+typedef	c:@T@CFTypeRef	-			const void *	-	-	-	-	bfc2940caeb1f461	-
+typedef	c:@T@MIDIEndpointRef	-			MIDIObjectRef	-	-	-	-	17958cf20513daff	-
+typedef	c:@T@MIDIObjectRef	-			UInt32	-	-	-	-	80870b190f69680c	-
+typedef	c:@T@CFDataRef	-			const struct __CFData *	-	-	-	-	d9fe21afe938f144	-
+typedef	c:@T@SignedByte	-			SInt8	-	-	-	-	cc006a49968807ed	-

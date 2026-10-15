@@ -74,3 +74,5 @@ enumconst	c:@E@AEAssessmentErrorCode@AEAssessmentErrorConfigurationUpdatesNotSup
 enumconst	c:@E@AEAssessmentErrorCode@AEAssessmentErrorRequiredParticipantsNotAvailable	AEAssessmentErrorCode			-	-	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0	-	6eb3fbd2c11a0027	5
 var	c:@AENotInstalledParticipantsKey	-			NSString *	-	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,xros=-/-/-/1	-	c7a7b00e989e91a6	-
 var	c:@AERestrictedSystemParticipantsKey	-			NSString *	-	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,xros=-/-/-/1	-	aeb80edac6fb3c38	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-

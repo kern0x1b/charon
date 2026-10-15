@@ -451,3 +451,12 @@ method	c:objc(cs)CMHeadphoneActivityManager(im)startActivityUpdatesToQueue:withH
 method	c:objc(cs)CMHeadphoneActivityManager(im)stopActivityUpdates	-			void	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=-/-/-/1	-	cc61f6661a732d4a	-
 method	c:objc(cs)CMHeadphoneActivityManager(im)startStatusUpdatesToQueue:withHandler:	-			void	NSOperationQueue * queue | CMHeadphoneActivityStatusHandler handler	-	ios=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=-/-/-/1	-	89483a1d726f5230	-
 method	c:objc(cs)CMHeadphoneActivityManager(im)stopStatusUpdates	-			void	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,watchos=11.0/-/-/0,xros=-/-/-/1	-	2859b20b7da1bd89	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@uint64_t	-			unsigned long long	-	-	-	-	e7c1cd95ea4ec29b	-
+typedef	c:@T@CLLocationDistance	-			double	-	-	-	-	e6b55a169d2f4b70	-
+typedef	c:@T@CLLocationAccuracy	-			double	-	-	-	-	3bc8a490e8501ff0	-
+typedef	c:@T@CLLocationSpeed	-			double	-	-	-	-	78851780c58c56ab	-
+typedef	c:@T@CLLocationSpeedAccuracy	-			double	-	-	-	-	a55e4a3fdade9d6f	-

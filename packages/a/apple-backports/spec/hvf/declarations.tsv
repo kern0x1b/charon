@@ -75,3 +75,6 @@ function	c:@F@HVF_set_axis_value	-			int (HVFPartRenderer *, int, HVFAxisValue)	
 function	c:@F@HVF_render_current_part	-			int (HVFPartRenderer *, HVFRenderContext, void *)	HVFPartRenderer * renderer | HVFRenderContext context | void * caller_data	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0,xros=2.4/-/-/0	-	5c473d133c21acb5	-
 function	c:@F@HVF_clear_part_cache	-			int (HVFPartRenderer *)	HVFPartRenderer * renderer	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0,xros=2.4/-/-/0	-	2837b39f441214bf	-
 function	c:@F@HVF_close_part_renderer	-			int (HVFPartRenderer *)	HVFPartRenderer * renderer	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0,xros=2.4/-/-/0	-	733085d6e63bb0a5	-
+typedef	c:@T@size_t	-			unsigned long	-	-	-	-	90a4ad5785adb724	-
+typedef	c:@T@uint16_t	-			unsigned short	-	-	-	-	a080788dde55e4dc	-
+typedef	c:@T@uint32_t	-			unsigned int	-	-	-	-	d99005f72e0ec68e	-

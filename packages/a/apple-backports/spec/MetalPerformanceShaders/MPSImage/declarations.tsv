@@ -343,3 +343,24 @@ property	c:objc(cs)MPSImageThresholdToZeroInverse(py)thresholdValue	-			float	-	
 property	c:objc(cs)MPSImageThresholdToZeroInverse(py)transform	-			const float *	-	readonly,nonatomic	ios=9.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=9.0/-/-/0	-	f3e7411aca75fd62	-
 interface	c:objc(cs)MPSImageTranspose	-			-	-	-	ios=9.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=9.0/-/-/0	-	b35530f83c3492b0	-
 super	-	MPSImageTranspose	MPSUnaryImageKernel		-	-	-	-	-	d2a991fcfd8ea063	-
+typedef	c:@T@MPSOffset	-			struct MPSOffset	-	-	-	-	2397d7bfe3668be7	-
+typedef	c:@T@MTLRegion	-			struct MTLRegion	-	-	-	-	26e1bf56daefd9f6	-
+typedef	c:MPSCoreTypes.h@T@MPSImageEdgeMode	-			enum MPSImageEdgeMode	-	-	-	-	f1d9d5c7250d7dd2	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:MPSCoreTypes.h@T@MPSRegion	-			struct MPSRegion	-	-	-	-	195d6580d6b85781	-
+typedef	c:@T@MTLSize	-			struct MTLSize	-	-	-	-	b54fa7b9ccfe4a80	-
+typedef	c:@T@CGFloat	-			double	-	-	-	-	29e11a71cfda882e	-
+typedef	c:@T@CGColorConversionInfoRef	-			const struct CGColorConversionInfo *	-	-	-	-	566162d0bccbae98	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@MTLOrigin	-			struct MTLOrigin	-	-	-	-	178361b39c91a4fd	-
+typedef	c:MPSImage.h@T@MPSDataLayout	-			enum MPSDataLayout	-	-	-	-	fda3d71b72aea067	-
+typedef	c:MPSImage.h@T@MPSImageBatch	-			NSArray<MPSImage *>	-	-	-	-	f6dc56e5940505a8	-
+typedef	c:@T@vector_ushort2	-			simd_ushort2	-	-	-	-	f3708afe835f9b19	-
+typedef	c:@T@simd_ushort2	-			unsigned short __attribute__((ext_vector_type(2)))	-	-	-	-	8639aa927eb55b15	-
+typedef	c:@T@vector_float4	-			simd_float4	-	-	-	-	cf7d3a842c448cc6	-
+typedef	c:@T@simd_float4	-			float __attribute__((ext_vector_type(4)))	-	-	-	-	0025db7fec7cd0cf	-
+typedef	c:@T@size_t	-			__darwin_size_t	-	-	-	-	8ce79a13e58a1844	-
+typedef	c:@T@__darwin_size_t	-			unsigned long	-	-	-	-	0cd38a3df2217524	-
+typedef	c:@T@MTLPixelFormat	-			enum MTLPixelFormat	-	-	-	-	40f56ebf564ac2ed	-
+typedef	c:MPSCoreTypes.h@T@MPSScaleTransform	-			struct MPSScaleTransform	-	-	-	-	773b2ac57b633903	-

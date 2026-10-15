@@ -72,3 +72,9 @@ conforms	-	INUIHostedViewSiriProviding	NSObject		-	-	-	-	-	c282c628a613387c	-
 property	c:objc(pl)INUIHostedViewSiriProviding(py)displaysMap	-			BOOL	-	readonly,assign,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	65a369117548c0ab	-
 property	c:objc(pl)INUIHostedViewSiriProviding(py)displaysMessage	-			BOOL	-	readonly,assign,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	585b14ace3412be1	-
 property	c:objc(pl)INUIHostedViewSiriProviding(py)displaysPaymentTransaction	-			BOOL	-	readonly,assign,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6cc932aa5cefa45b	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@CGImageRef	-			struct CGImage *	-	-	-	-	61e7c30be1f5f379	-
+typedef	c:@T@CGSize	-			struct CGSize	-	-	-	-	288bede4212325f3	-
+typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-
+typedef	c:@T@CGFloat	-			double	-	-	-	-	29e11a71cfda882e	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-

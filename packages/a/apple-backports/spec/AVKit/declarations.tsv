@@ -258,3 +258,10 @@ method	c:objc(cs)AVPlaybackSpeed(im)initWithRate:localizedName:	-			instancetype
 property	c:objc(cs)AVPlaybackSpeed(py)rate	-			float	-	readonly,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	b1917d370667fc34	-
 property	c:objc(cs)AVPlaybackSpeed(py)localizedName	-			NSString *	-	readonly,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	d4c8d95d6dba507c	-
 property	c:objc(cs)AVPlaybackSpeed(py)localizedNumericName	-			NSString *	-	readonly,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	9b027c5ad5204fba	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@CMTimeRange	-			struct CMTimeRange	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	86e58de4593d57eb	-
+typedef	c:@T@CMVideoDimensions	-			struct CMVideoDimensions	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	367166e5046db245	-
+typedef	c:@T@CMTime	-			struct CMTime	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	8a8b73c9a6144fc8	-
+typedef	c:@T@AVLayerVideoGravity	-			NSString *	-	-	-	-	7669ca7d4224a190	-
+typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-

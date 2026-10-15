@@ -27,3 +27,8 @@ interface	c:objc(cs)NCWidgetController	-			-	-	-	ios=8.0/14.0/-/0	-	625e62b47e2c
 super	-	NCWidgetController	NSObject		-	-	-	-	-	ad2fe7f81f9df119	-
 method	c:objc(cs)NCWidgetController(cm)widgetController	-			instancetype	-	-	ios=8.0/14.0/-/0	-	1f5c911141542a18	-
 method	c:objc(cs)NCWidgetController(im)setHasContent:forWidgetWithBundleIdentifier:	-			void	BOOL flag | NSString * bundleID	-	ios=8.0/14.0/-/0	-	89abdc7af8c75ceb	-
+typedef	c:@T@CGSize	-			struct CGSize	-	-	-	-	288bede4212325f3	-
+typedef	c:@T@UIEdgeInsets	-			struct UIEdgeInsets	-	-	-	-	dd3bc2433c254675	-
+typedef	c:@T@UIVibrancyEffectStyle	-			enum UIVibrancyEffectStyle	-	-	-	-	496221db1d657271	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-

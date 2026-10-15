@@ -155,3 +155,10 @@ super	-	ASPickerDisplaySettings	NSObject		-	-	-	-	-	c3b8d76c6bf85808	-
 property	c:objc(cs)ASPickerDisplaySettings(cpy)defaultSettings	-			ASPickerDisplaySettings *	-	readonly,nonatomic,class	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	602b0a4d152a6a14	-
 property	c:objc(cs)ASPickerDisplaySettings(py)discoveryTimeout	-			ASPickerDisplaySettingsDiscoveryTimeout	-	assign,nonatomic	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	62729862e1517753	-
 property	c:objc(cs)ASPickerDisplaySettings(py)options	-			ASPickerDisplaySettingsOptions	-	assign,nonatomic	ios=26.1/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	34a1650700713679	-
+typedef	c:@T@uint16_t	-			unsigned short	-	-	-	-	a080788dde55e4dc	-
+typedef	c:@T@NSStringCompareOptions	-			enum NSStringCompareOptions	-	-	-	-	3aaa8a207e13d7b1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@NSErrorDomain	-			NSString *	-	-	-	-	a2ef9b8d14cb4ca2	-
+typedef	c:@T@uint64_t	-			unsigned long long	-	-	-	-	e7c1cd95ea4ec29b	-
+typedef	c:@T@dispatch_queue_t	-			NSObject<OS_dispatch_queue> *	-	-	-	-	b6bdd422edd29fce	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-

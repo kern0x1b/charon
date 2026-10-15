@@ -387,3 +387,11 @@ super	-	EKVirtualConferenceProvider	NSObject		-	-	-	-	-	0c18869c58627589	-
 conforms	-	EKVirtualConferenceProvider	NSExtensionRequestHandling		-	-	-	-	-	3e2d2a0023a9e784	-
 method	c:objc(cs)EKVirtualConferenceProvider(im)fetchAvailableRoomTypesWithCompletionHandler:	-			void	void (^)(NSArray<EKVirtualConferenceRoomTypeDescriptor *> * _Nullable, NSError * _Nullable) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	034902e9d9106e6d	-
 method	c:objc(cs)EKVirtualConferenceProvider(im)fetchVirtualConferenceForIdentifier:completionHandler:	-			void	EKVirtualConferenceRoomTypeIdentifier identifier | void (^)(EKVirtualConferenceDescriptor * _Nullable, NSError * _Nullable) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	d962e4409b80e70b	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@CGColorRef	-			struct CGColor *	-	-	-	-	6d1707fde3455599	-
+typedef	c:@T@NSComparisonResult	-			enum NSComparisonResult	-	-	-	-	98996b4daed97d3d	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@CFTypeRef	-			const void *	-	-	-	-	bfc2940caeb1f461	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-

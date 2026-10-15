@@ -609,3 +609,30 @@ var	c:@kCFErrorDomainSystemConfiguration	-			const CFStringRef	-	-	ios=2.0/-/-/0
 function	c:@F@SCCopyLastError	-			CFErrorRef (void)	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0	-	133ece3a72eb634a	-
 function	c:@F@SCError	-			int (void)	-	-	ios=2.0/-/-/0,macos=10.1/-/-/0	-	1ff24d3558ea25c7	-
 function	c:@F@SCErrorString	-			const char * (int)	int status	-	ios=2.0/-/-/0,macos=10.1/-/-/0	-	9e47d371f9e3a065	-
+typedef	c:@T@Boolean	-			unsigned char	-	-	-	-	693cf733304c39d9	-
+typedef	c:@T@CFArrayRef	-			const struct __CFArray *	-	-	-	-	d3655b482ae0664e	-
+typedef	c:@T@CFStringRef	-			const struct __CFString *	-	-	-	-	e422c620371887ac	-
+typedef	c:@T@CFDictionaryRef	-			const struct __CFDictionary *	-	-	-	-	95ab67be7d9fad28	-
+typedef	c:@T@UInt8	-			unsigned char	-	-	-	-	a9ef2eddf94d7e81	-
+typedef	c:@T@CFIndex	-			long	-	-	-	-	9f50caf8b7c4f278	-
+typedef	c:@T@CFTypeID	-			unsigned long	-	-	-	-	1a1b10310e893e1f	-
+typedef	c:@T@CFAllocatorRef	-			const struct __CFAllocator *	-	-	-	-	d153ce1dfad01936	-
+typedef	c:@T@CFRunLoopSourceRef	-			struct __CFRunLoopSource *	-	-	-	-	f19746b14d2401e8	-
+typedef	c:@T@dispatch_queue_t	-			NSObject<OS_dispatch_queue> *	-	-	-	-	b6bdd422edd29fce	-
+typedef	c:@T@CFPropertyListRef	-			CFTypeRef	-	-	-	-	7031d97fa222dccd	-
+typedef	c:@T@CFTypeRef	-			const void *	-	-	-	-	bfc2940caeb1f461	-
+typedef	c:@T@CFDataRef	-			const struct __CFData *	-	-	-	-	d9fe21afe938f144	-
+typedef	c:@T@CFDateRef	-			const struct __CFDate *	-	-	-	-	49644d654a7fc91f	-
+typedef	c:@T@CFStringEncoding	-			UInt32	-	-	-	-	2c032f4edcfade6b	-
+typedef	c:@T@UInt32	-			unsigned int	-	-	-	-	9c97778bf2686a2b	-
+typedef	c:@T@uid_t	-			__darwin_uid_t	-	-	-	-	6084ffa514638080	-
+typedef	c:@T@__darwin_uid_t	-			__uint32_t	-	-	-	-	073c04a7a5ce4f9c	-
+typedef	c:@T@__uint32_t	-			unsigned int	-	-	-	-	c165177149766f1f	-
+typedef	c:@T@gid_t	-			__darwin_gid_t	-	-	-	-	a7ab6a243ada7837	-
+typedef	c:@T@__darwin_gid_t	-			__uint32_t	-	-	-	-	0bd5f511332b23bd	-
+typedef	c:@T@CFRunLoopRef	-			struct __CFRunLoop *	-	-	-	-	2c9d9bba83d0f9bf	-
+typedef	c:@T@CFNumberRef	-			const struct __CFNumber *	-	-	-	-	e5a9dc7bbfadfeaa	-
+typedef	c:@T@uint32_t	-			unsigned int	-	-	-	-	d99005f72e0ec68e	-
+typedef	c:@T@socklen_t	-			__darwin_socklen_t	-	-	-	-	12f3cceace7875ce	-
+typedef	c:@T@__darwin_socklen_t	-			__uint32_t	-	-	-	-	489426511b4dc173	-
+typedef	c:@T@CFErrorRef	-			struct __CFError *	-	-	-	-	7e66b8cb53b22edb	-

@@ -4,3 +4,4 @@ super	-	ASIdentifierManager	NSObject		-	-	-	-	-	f7523dcdf496b67c	-
 method	c:objc(cs)ASIdentifierManager(cm)sharedManager	-			ASIdentifierManager *	-	-	ios=6/-/-/0,macos=10.14/-/-/0,tvos=6/-/-/0	-	8493df4cb9086f0b	-
 property	c:objc(cs)ASIdentifierManager(py)advertisingIdentifier	-			NSUUID *	-	readonly,nonatomic	ios=6/-/-/0,macos=10.14/-/-/0,tvos=6/-/-/0	-	9b09df0f976d1165	-
 property	c:objc(cs)ASIdentifierManager(py)advertisingTrackingEnabled	-			BOOL	-	readonly,nonatomic,getter=isAdvertisingTrackingEnabled	ios=6/14/-/0,macos=10.14/11.0/-/0,tvos=6/14/-/0	-	59a237fc3c8470dd	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-

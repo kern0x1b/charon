@@ -360,3 +360,14 @@ method	c:objc(cs)NFCVASReaderSession(im)initWithVASCommandConfigurations:delegat
 interface	c:objc(cs)NFCPaymentTagReaderSession	-			-	-	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6de491dfbfe3d9a6	-
 super	-	NFCPaymentTagReaderSession	NFCTagReaderSession		-	-	-	-	-	4d9412019e1427df	-
 method	c:objc(cs)NFCPaymentTagReaderSession(im)initWithDelegate:queue:	-			instancetype	id<NFCTagReaderSessionDelegate> delegate | dispatch_queue_t queue	-	ios=26.0/-/-/0,ios_app_extension=-/-/-/1,macos=-/-/-/1,macos_app_extension=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f31f34defe8c379c	-
+typedef	c:@T@NSErrorDomain	-			NSString *	-	-	-	-	a2ef9b8d14cb4ca2	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@dispatch_queue_t	-			NSObject<OS_dispatch_queue> *	-	-	-	-	b6bdd422edd29fce	-
+typedef	c:@T@NSRange	-			struct _NSRange	-	-	-	-	d109726d1ae61321	-
+typedef	c:@T@uint8_t	-			unsigned char	-	-	-	-	3a61fa5c975bd3b3	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@size_t	-			__darwin_size_t	-	-	-	-	8ce79a13e58a1844	-
+typedef	c:@T@__darwin_size_t	-			unsigned long	-	-	-	-	0cd38a3df2217524	-

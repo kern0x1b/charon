@@ -265,3 +265,27 @@ function	c:@F@xpc_main	-			void (xpc_connection_handler_t)	xpc_connection_handle
 function	c:@F@xpc_transaction_begin	-			void (void)	-	-	ios=-/-/-/1,macos=10.7/-/-/0	-	ff8f7f5974359fd3	-
 function	c:@F@xpc_transaction_end	-			void (void)	-	-	ios=-/-/-/1,macos=10.7/-/-/0	-	307d510814b22627	-
 function	c:@F@xpc_set_event_stream_handler	-			void (const char *, dispatch_queue_t, xpc_handler_t)	const char * stream | dispatch_queue_t targetq | xpc_handler_t handler	-	ios=-/-/-/1,macos=10.7/-/-/0	-	13bbce47a4c70ea5	-
+typedef	c:@T@int64_t	-			long long	-	-	-	-	85f1e0b43a934ce7	-
+typedef	c:@T@dispatch_queue_t	-			NSObject<OS_dispatch_queue> *	-	-	-	-	b6bdd422edd29fce	-
+typedef	c:@T@uint64_t	-			unsigned long long	-	-	-	-	e7c1cd95ea4ec29b	-
+typedef	c:@T@dispatch_block_t	-			void ((^))(void)	-	-	swift=-/-/-/1	-	802eb6965171e2dc	-
+typedef	c:@T@uid_t	-			__darwin_uid_t	-	-	-	-	6084ffa514638080	-
+typedef	c:@T@__darwin_uid_t	-			__uint32_t	-	-	-	-	073c04a7a5ce4f9c	-
+typedef	c:@T@__uint32_t	-			unsigned int	-	-	-	-	c165177149766f1f	-
+typedef	c:@T@gid_t	-			__darwin_gid_t	-	-	-	-	a7ab6a243ada7837	-
+typedef	c:@T@__darwin_gid_t	-			__uint32_t	-	-	-	-	0bd5f511332b23bd	-
+typedef	c:@T@pid_t	-			__darwin_pid_t	-	-	-	-	bf2c1907ad5396d7	-
+typedef	c:@T@__darwin_pid_t	-			__int32_t	-	-	-	-	cb5c92904c281d82	-
+typedef	c:@T@__int32_t	-			int	-	-	-	-	71b73741152fe871	-
+typedef	c:@T@au_asid_t	-			pid_t	-	-	-	-	53cc1ed22edbbb3e	-
+typedef	c:@T@size_t	-			unsigned long	-	-	-	-	90a4ad5785adb724	-
+typedef	c:@T@dispatch_data_t	-			NSObject<OS_dispatch_data> *	-	-	-	-	b1e775f000ec6171	-
+typedef	c:@T@va_list	-			__builtin_va_list	-	-	-	-	88519b6121af0d9d	-
+typedef	c:@T@__builtin_va_list	-			char *	-	-	-	-	954c872416ff897e	-
+typedef	c:@T@uuid_t	-			__darwin_uuid_t	-	-	-	-	9f32779f176ee30f	-
+typedef	c:@T@__darwin_uuid_t	-			unsigned char[16]	-	-	-	-	8e41facc8ea29412	-
+typedef	c:@T@uint8_t	-			unsigned char	-	-	-	-	3a61fa5c975bd3b3	-
+typedef	c:@T@mach_port_t	-			__darwin_mach_port_t	-	-	-	-	d879e9c90b7054f5	-
+typedef	c:@T@__darwin_mach_port_t	-			__darwin_mach_port_name_t	-	-	-	-	fac676185e9ebfd4	-
+typedef	c:@T@__darwin_mach_port_name_t	-			__darwin_natural_t	-	-	-	-	27fc59fe218c8642	-
+typedef	c:@T@__darwin_natural_t	-			unsigned int	-	-	-	-	a1798ee04c7e4456	-

@@ -1,6 +1,7 @@
 // Fixture: one declaration of each kind the extractor emits, and the branches it must choose.
 #import "Sub.h"
 #import "Repeat.h"
+#import <fixture_types.h>
 
 typedef int FXCount;
 extern const double FXScale;
@@ -16,6 +17,7 @@ enum FXWide : unsigned long long { FXWideTop = 1ULL << 63 };
 enum FXMask { FXMaskClass = 15U << 28 };
 enum FXSigned : int { FXSignedBelow = -1 };
 void FXRun(int count);
+void FXMove(fx_vector3 at, fx_family family);
 
 #define FX_NO_INIT - (instancetype)init __attribute__((unavailable))
 

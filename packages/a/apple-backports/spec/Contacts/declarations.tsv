@@ -712,3 +712,7 @@ var	c:@CNErrorUserInfoAffectedRecordsKey	-			NSString *const	-	-	ios=9.0/-/-/0,m
 var	c:@CNErrorUserInfoAffectedRecordIdentifiersKey	-			NSString *const	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	19dadbf2bb53439d	-
 var	c:@CNErrorUserInfoValidationErrorsKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	cfe499ffb426aaf9	-
 var	c:@CNErrorUserInfoKeyPathsKey	-			NSString *const	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	a6c5c953dd1f7bef	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSComparator	-			NSComparisonResult ((^))(id, id)	-	-	-	-	f072575acbc56a92	-
+typedef	c:@T@NSComparisonResult	-			enum NSComparisonResult	-	-	-	-	98996b4daed97d3d	-

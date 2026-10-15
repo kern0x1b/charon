@@ -190,3 +190,6 @@ property	c:objc(cs)NSItemProvider(py)registeredContentTypesForOpenInPlace	UTType
 method	c:objc(cs)NSItemProvider(im)registeredContentTypesConformingToContentType:	UTType			NSArray<UTType *> *	UTType * contentType	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	6446a9397e63ed96	-
 method	c:objc(cs)NSItemProvider(im)loadDataRepresentationForContentType:completionHandler:	UTType			NSProgress *	UTType * contentType | void (^)(NSData * _Nullable, NSError * _Nullable) completionHandler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	02123e35cf7b0175	-
 method	c:objc(cs)NSItemProvider(im)loadFileRepresentationForContentType:openInPlace:completionHandler:	UTType			NSProgress *	UTType * contentType | BOOL openInPlace | void (^)(NSURL * _Nullable, BOOL, NSError * _Nullable) completionHandler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	90fa615acf3b8c41	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSItemProviderRepresentationVisibility	-			enum NSItemProviderRepresentationVisibility	-	-	-	-	df3e4e58d55cd4fb	-

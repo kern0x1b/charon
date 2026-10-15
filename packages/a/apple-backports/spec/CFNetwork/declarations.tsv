@@ -413,3 +413,27 @@ var	c:@kCFNetworkProxiesProxyAutoConfigEnable	-			const CFStringRef	-	-	ios=2.0/
 var	c:@kCFNetworkProxiesProxyAutoConfigURLString	-			const CFStringRef	-	-	ios=2.0/-/-/0	-	ef6ac85645bbed6a	-
 var	c:@kCFNetworkProxiesProxyAutoConfigJavaScript	-			const CFStringRef	-	-	ios=3.0/-/-/0	-	3e6fea86c14dec02	-
 var	c:@kCFNetworkProxiesProxyAutoDiscoveryEnable	-			const CFStringRef	-	-	ios=-/-/-/1	-	108e6e77e4bac855	-
+typedef	c:@T@SInt32	-			int	-	-	-	-	fea52187db3d8de0	-
+typedef	c:@T@CFIndex	-			long	-	-	-	-	9f50caf8b7c4f278	-
+typedef	c:@T@CFAllocatorRetainCallBack	-			const void *(*)(const void *)	-	-	-	-	6ae89f2f00cd3da2	-
+typedef	c:@T@CFAllocatorReleaseCallBack	-			void (*)(const void *)	-	-	-	-	3ff12e333f225b04	-
+typedef	c:@T@CFAllocatorCopyDescriptionCallBack	-			CFStringRef (*)(const void *)	-	-	-	-	1fe84b4de5b2ea25	-
+typedef	c:@T@CFStringRef	-			const struct __CFString *	-	-	-	-	e422c620371887ac	-
+typedef	c:@T@CFStreamError	-			struct CFStreamError	-	-	-	-	f7c0462cc2e30946	-
+typedef	c:@T@CFTypeID	-			unsigned long	-	-	-	-	1a1b10310e893e1f	-
+typedef	c:@T@CFAllocatorRef	-			const struct __CFAllocator *	-	-	-	-	d153ce1dfad01936	-
+typedef	c:@T@CFDataRef	-			const struct __CFData *	-	-	-	-	d9fe21afe938f144	-
+typedef	c:@T@Boolean	-			unsigned char	-	-	-	-	693cf733304c39d9	-
+typedef	c:@T@CFArrayRef	-			const struct __CFArray *	-	-	-	-	d3655b482ae0664e	-
+typedef	c:@T@CFRunLoopRef	-			struct __CFRunLoop *	-	-	-	-	2c9d9bba83d0f9bf	-
+typedef	c:@T@CFOptionFlags	-			unsigned long	-	-	-	-	e34ec2b1f3701ad3	-
+typedef	c:@T@CFTypeRef	-			const void *	-	-	-	-	bfc2940caeb1f461	-
+typedef	c:@T@CFTimeInterval	-			double	-	-	-	-	11d627848397cf44	-
+typedef	c:@T@CFDictionaryRef	-			const struct __CFDictionary *	-	-	-	-	95ab67be7d9fad28	-
+typedef	c:@T@CFReadStreamRef	-			struct __CFReadStream *	-	-	-	-	69d06731ebe1f912	-
+typedef	c:@T@CFWriteStreamRef	-			struct __CFWriteStream *	-	-	-	-	a521416af72482e7	-
+typedef	c:@T@CFURLRef	-			const struct __CFURL *	-	-	-	-	0ca832288ff2133f	-
+typedef	c:@T@UInt8	-			unsigned char	-	-	-	-	a9ef2eddf94d7e81	-
+typedef	c:@T@CFErrorRef	-			struct __CFError *	-	-	-	-	7e66b8cb53b22edb	-
+typedef	c:@T@CFRunLoopSourceRef	-			struct __CFRunLoopSource *	-	-	-	-	f19746b14d2401e8	-
+typedef	c:@T@CFStreamClientContext	-			struct CFStreamClientContext	-	-	-	-	ecb35969210f8ec4	-

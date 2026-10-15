@@ -310,3 +310,14 @@ method	c:objc(cs)MPSRayIntersector(im)encodeIntersectionToCommandBuffer:intersec
 method	c:objc(cs)MPSRayIntersector(im)encodeIntersectionToCommandBuffer:intersectionType:rayBuffer:rayBufferOffset:rayIndexBuffer:rayIndexBufferOffset:intersectionBuffer:intersectionBufferOffset:rayIndexCount:accelerationStructure:	-			void	id<MTLCommandBuffer> commandBuffer | MPSIntersectionType intersectionType | id<MTLBuffer> rayBuffer | NSUInteger rayBufferOffset | id<MTLBuffer> rayIndexBuffer | NSUInteger rayIndexBufferOffset | id<MTLBuffer> intersectionBuffer | NSUInteger intersectionBufferOffset | NSUInteger rayIndexCount | MPSAccelerationStructure * accelerationStructure	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	f2858bb3687c1dc3	-
 method	c:objc(cs)MPSRayIntersector(im)encodeIntersectionToCommandBuffer:intersectionType:rayBuffer:rayBufferOffset:rayIndexBuffer:rayIndexBufferOffset:intersectionBuffer:intersectionBufferOffset:rayIndexCountBuffer:rayIndexCountBufferOffset:accelerationStructure:	-			void	id<MTLCommandBuffer> commandBuffer | MPSIntersectionType intersectionType | id<MTLBuffer> rayBuffer | NSUInteger rayBufferOffset | id<MTLBuffer> rayIndexBuffer | NSUInteger rayIndexBufferOffset | id<MTLBuffer> intersectionBuffer | NSUInteger intersectionBufferOffset | id<MTLBuffer> rayIndexCountBuffer | NSUInteger rayIndexCountBufferOffset | MPSAccelerationStructure * accelerationStructure	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	645274410bdb2033	-
 method	c:objc(cs)MPSRayIntersector(im)encodeIntersectionToCommandBuffer:intersectionType:rayTexture:intersectionTexture:accelerationStructure:	-			void	id<MTLCommandBuffer> commandBuffer | MPSIntersectionType intersectionType | id<MTLTexture> rayTexture | id<MTLTexture> intersectionTexture | MPSAccelerationStructure * accelerationStructure	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	9a7ca3bbd8024f81	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@vector_float3	-			simd_float3	-	-	-	-	7bbe17e377973398	-
+typedef	c:@T@simd_float3	-			float __attribute__((ext_vector_type(3)))	-	-	-	-	0fce24b6ffb4ccd2	-
+typedef	c:@T@vector_float2	-			simd_float2	-	-	-	-	912882ff81a65378	-
+typedef	c:@T@simd_float2	-			float __attribute__((ext_vector_type(2)))	-	-	-	-	4a78b2800bdae091	-
+typedef	c:@T@NSZone	-			struct _NSZone	-	-	-	-	a6dc1e3b1b8b2ac5	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:MPSCoreTypes.h@T@MPSDataType	-			enum MPSDataType	-	-	-	-	99a17108960411fb	-
+typedef	c:@T@MTLPixelFormat	-			enum MTLPixelFormat	-	-	-	-	40f56ebf564ac2ed	-
+typedef	c:@T@MTLCullMode	-			enum MTLCullMode	-	-	-	-	58f00466663afb45	-
+typedef	c:@T@MTLWinding	-			enum MTLWinding	-	-	-	-	014c12e6e324292c	-

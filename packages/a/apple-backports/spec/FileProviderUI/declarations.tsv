@@ -16,3 +16,5 @@ super	-	FPUIActionExtensionViewController	UIViewController		-	-	-	-	-	e4f7ecf1aa
 property	c:objc(cs)FPUIActionExtensionViewController(py)extensionContext	-			FPUIActionExtensionContext *	-	readonly,strong,nonatomic	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=10.15/-/-/0	-	cd4606701e7e16c3	-
 method	c:objc(cs)FPUIActionExtensionViewController(im)prepareForError:	-			void	NSError * error	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=10.15/-/-/0	-	3221a5c273436593	-
 method	c:objc(cs)FPUIActionExtensionViewController(im)prepareForActionWithIdentifier:itemIdentifiers:	-			void	NSString * actionIdentifier | NSArray<NSFileProviderItemIdentifier> * itemIdentifiers	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=10.15/-/-/0	-	f32b95240df455c6	-
+typedef	c:@T@NSFileProviderDomainIdentifier	-			NSString *	-	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5382bf8027f63c73	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-

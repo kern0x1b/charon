@@ -5,3 +5,4 @@ property	c:objc(cs)HKActivityRingView(py)activitySummary	-			HKActivitySummary *
 method	c:objc(cs)HKActivityRingView(im)setActivitySummary:animated:	-			void	HKActivitySummary * activitySummary | BOOL animated	-	ios=9.3/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=-/-/-/1	-	022e565600be8bb1	-
 category	c:objc(cy)HKHealthStore@UIKit	-			-	-	-	ios=8.0/-/-/0,maccatalyst=13.0/-/-/0,macos=13.0/-/-/0,watchos=2.0/-/-/0	-	462e11d6bae90dbf	-
 property	c:objc(cs)HKHealthStore(py)authorizationViewControllerPresenter	UIKit			UIViewController *	-	weak,nonatomic	ios=17.0/-/-/0,watchos=-/-/-/1	-	6e6b8e71b1d04866	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-

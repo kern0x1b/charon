@@ -12201,3 +12201,42 @@ property	c:objc(cs)UIPrinterDestination(py)txtRecord	-			NSData *	-	copy	ios=14.
 interface	c:objc(cs)UIPrintServiceExtension	-			-	-	-	ios=14.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	eac4687a8624bdf4	-
 super	-	UIPrintServiceExtension	NSObject		-	-	-	-	-	72bc2788560fdd07	-
 method	c:objc(cs)UIPrintServiceExtension(im)printerDestinationsForPrintInfo:	-			NSArray<UIPrinterDestination *> *	UIPrintInfo * printInfo	-	ios=14.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ad64ac534b05cc68	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@CGPoint	-			struct CGPoint	-	-	-	-	5506c4b038700426	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@CGFloat	-			double	-	-	-	-	29e11a71cfda882e	-
+typedef	c:@T@CGColorRef	-			struct CGColor *	-	-	-	-	6d1707fde3455599	-
+typedef	c:@T@CGAffineTransform	-			struct CGAffineTransform	-	-	-	-	6d275be46c010b99	-
+typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-
+typedef	c:@T@CGVector	-			struct CGVector	-	-	-	-	43b5119ffc247e97	-
+typedef	c:@T@CGSize	-			struct CGSize	-	-	-	-	288bede4212325f3	-
+typedef	c:@T@NSNotificationName	-			NSString *	-	-	-	-	12329f5939199c65	-
+typedef	c:@T@NSComparisonResult	-			enum NSComparisonResult	-	-	-	-	98996b4daed97d3d	-
+typedef	c:@T@NSErrorDomain	-			NSString *	-	-	-	-	a2ef9b8d14cb4ca2	-
+typedef	c:@T@CALayerCornerCurve	-			NSString *	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	0966ae323594ac35	-
+typedef	c:@T@CATransform3D	-			struct CATransform3D	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	5dc0f55635bd3915	-
+typedef	c:@T@CGContextRef	-			struct CGContext *	-	-	-	-	38108536e4326699	-
+typedef	c:@T@CGBlendMode	-			enum CGBlendMode	-	-	-	-	d1dc090a4e814bcd	-
+typedef	c:@T@uint64_t	-			unsigned long long	-	-	-	-	e7c1cd95ea4ec29b	-
+typedef	c:@T@uint32_t	-			unsigned int	-	-	-	-	d99005f72e0ec68e	-
+typedef	c:@T@NSAttributedStringKey	-			NSString *	-	-	-	-	3dc7799f436f9fe8	-
+typedef	c:@T@CGPathRef	-			const struct CGPath *	-	-	-	-	fd70a7b984d6b7cd	-
+typedef	c:@T@CGLineCap	-			enum CGLineCap	-	-	-	-	3d9aee125b5eae18	-
+typedef	c:@T@CGLineJoin	-			enum CGLineJoin	-	-	-	-	260b108f5f5c8a4e	-
+typedef	c:@T@CGImageRef	-			struct CGImage *	-	-	-	-	61e7c30be1f5f379	-
+typedef	c:@T@NSCalendarUnit	-			enum NSCalendarUnit	-	-	-	-	c5ee7bc7a73e186d	-
+typedef	c:@T@NSRange	-			struct _NSRange	-	-	-	-	d109726d1ae61321	-
+typedef	c:@T@CTTextAlignment	-			enum CTTextAlignment	-	-	-	-	375c19ba1859f6eb	-
+typedef	c:@T@UIAxis	-			enum UIAxis	-	-	-	-	5a196968e5484c8c	-
+typedef	c:@T@UIRectEdge	-			enum UIRectEdge	-	-	-	-	1f9ee35123f14515	-
+typedef	c:@T@CFTimeInterval	-			double	-	-	-	-	11d627848397cf44	-
+typedef	c:@T@NSStringCompareOptions	-			enum NSStringCompareOptions	-	-	-	-	3aaa8a207e13d7b1	-
+typedef	c:@T@NSRangePointer	-			NSRange *	-	-	-	-	dd56cac47cbf2485	-
+typedef	c:@T@CGGlyph	-			CGFontIndex	-	-	-	-	b8ec13d4bde56728	-
+typedef	c:@T@CGFontIndex	-			unsigned short	-	-	-	-	bbd8bd7e597e362a	-
+typedef	c:@T@uint8_t	-			unsigned char	-	-	-	-	3a61fa5c975bd3b3	-
+typedef	c:@T@CAFrameRateRange	-			struct CAFrameRateRange	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1	-	e2b3a49474efdba0	-
+typedef	c:@T@NSStringEnumerationOptions	-			enum NSStringEnumerationOptions	-	-	-	-	0374d76e725930b2	-

@@ -137,3 +137,12 @@ enumconst	c:@E@MSMessageErrorCode@MSMessageErrorCodeURLExceedsMaxSize	MSMessageE
 enumconst	c:@E@MSMessageErrorCode@MSMessageErrorCodeSendWithoutRecentInteraction	MSMessageErrorCode			-	-	-	ios=11.0/-/-/0	-	2968462b5a1a56e2	9
 enumconst	c:@E@MSMessageErrorCode@MSMessageErrorCodeSendWhileNotVisible	MSMessageErrorCode			-	-	-	ios=11.0/-/-/0	-	180fc33b9b798d50	10
 enumconst	c:@E@MSMessageErrorCode@MSMessageErrorCodeAPIUnavailableInPresentationContext	MSMessageErrorCode			-	-	-	ios=12.0/-/-/0	-	79e708bbea236752	11
+typedef	c:@T@CGSize	-			struct CGSize	-	-	-	-	288bede4212325f3	-
+typedef	c:@T@CGFloat	-			double	-	-	-	-	29e11a71cfda882e	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-
+typedef	c:@T@CGPoint	-			struct CGPoint	-	-	-	-	5506c4b038700426	-
+typedef	c:@T@UIEdgeInsets	-			struct UIEdgeInsets	-	-	-	-	dd3bc2433c254675	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-

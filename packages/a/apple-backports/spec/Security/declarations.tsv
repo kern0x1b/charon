@@ -1375,3 +1375,27 @@ var	c:@kSecSharedPassword	-			const CFStringRef	-	-	ios=8.0/-/-/0,maccatalyst=14
 function	c:@F@SecAddSharedWebCredential	-			void (CFStringRef, CFStringRef, CFStringRef, void (^)(CFErrorRef _Nullable))	CFStringRef fqdn | CFStringRef account | CFStringRef password | void (^)(CFErrorRef _Nullable) completionHandler	-	ios=8.0/26.2/-/0,maccatalyst=14.0/26.2/-/0,macos=11.0/26.2/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use ASCredentialDataManager.save(password:for:title:anchor:)  (AuthenticationServices framework)	58775d6da9354619	-
 function	c:@F@SecRequestSharedWebCredential	-			void (CFStringRef, CFStringRef, void (^)(CFArrayRef _Nullable, CFErrorRef _Nullable))	CFStringRef fqdn | CFStringRef account | void (^)(CFArrayRef _Nullable, CFErrorRef _Nullable) completionHandler	-	ios=8.0/14.0/-/0,maccatalyst=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use ASAuthorizationController to make an ASAuthorizationPasswordRequest (AuthenticationServices framework)	83710abf6835c1db	-
 function	c:@F@SecCreateSharedWebCredentialPassword	-			CFStringRef (void)	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e4b338970860e422	-
+typedef	c:@T@uint16_t	-			unsigned short	-	-	-	-	a080788dde55e4dc	-
+typedef	c:@T@OSType	-			FourCharCode	-	-	-	-	01d4dcaaf78349ee	-
+typedef	c:@T@FourCharCode	-			UInt32	-	-	-	-	a0f4e71a4dbfcb9b	-
+typedef	c:@T@UInt32	-			unsigned int	-	-	-	-	9c97778bf2686a2b	-
+typedef	c:@T@CFStringRef	-			const struct __CFString *	-	-	-	-	e422c620371887ac	-
+typedef	c:@T@OSStatus	-			SInt32	-	-	-	-	c9d4cae3c2778a27	-
+typedef	c:@T@SInt32	-			int	-	-	-	-	fea52187db3d8de0	-
+typedef	c:@T@CFTypeID	-			unsigned long	-	-	-	-	1a1b10310e893e1f	-
+typedef	c:@T@CFTypeRef	-			const void *	-	-	-	-	bfc2940caeb1f461	-
+typedef	c:@T@Boolean	-			unsigned char	-	-	-	-	693cf733304c39d9	-
+typedef	c:@T@CFArrayRef	-			const struct __CFArray *	-	-	-	-	d3655b482ae0664e	-
+typedef	c:@T@CFDateRef	-			const struct __CFDate *	-	-	-	-	49644d654a7fc91f	-
+typedef	c:@T@CFAbsoluteTime	-			CFTimeInterval	-	-	-	-	28db4ad74a7edc7f	-
+typedef	c:@T@CFTimeInterval	-			double	-	-	-	-	11d627848397cf44	-
+typedef	c:@T@dispatch_queue_t	-			NSObject<OS_dispatch_queue> *	-	-	-	-	b6bdd422edd29fce	-
+typedef	c:@T@CFErrorRef	-			struct __CFError *	-	-	-	-	7e66b8cb53b22edb	-
+typedef	c:@T@CFIndex	-			long	-	-	-	-	9f50caf8b7c4f278	-
+typedef	c:@T@CFDataRef	-			const struct __CFData *	-	-	-	-	d9fe21afe938f144	-
+typedef	c:@T@CFDictionaryRef	-			const struct __CFDictionary *	-	-	-	-	95ab67be7d9fad28	-
+typedef	c:@T@CFAllocatorRef	-			const struct __CFAllocator *	-	-	-	-	d153ce1dfad01936	-
+typedef	c:@T@dispatch_data_t	-			NSObject<OS_dispatch_data> *	-	-	-	-	b1e775f000ec6171	-
+typedef	c:@T@size_t	-			unsigned long	-	-	-	-	90a4ad5785adb724	-
+typedef	c:@T@uint8_t	-			unsigned char	-	-	-	-	3a61fa5c975bd3b3	-
+typedef	c:@T@CFOptionFlags	-			unsigned long	-	-	-	-	e34ec2b1f3701ad3	-

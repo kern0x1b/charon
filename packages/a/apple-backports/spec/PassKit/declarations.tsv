@@ -1002,3 +1002,14 @@ property	c:objc(cs)PKPassRelevantDate(py)date	-			NSDate *	-	readonly,copy,nonat
 category	c:objc(ext)PKPassRelevantDate	-	-		-	-	-	-	-	9e2f846b59667843	-
 method	c:objc(cs)PKPassRelevantDate(cm)new	-			instancetype	-	-	*unavailable	-	d0e177cfcbb55728	-
 method	c:objc(cs)PKPassRelevantDate(im)init	-			instancetype	-	-	*unavailable	-	ec3f52dcf9eb8dbe	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@NSCalendarUnit	-			enum NSCalendarUnit	-	-	-	-	c5ee7bc7a73e186d	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@SInt16	-			short	-	-	-	-	3eec647098d9543c	-
+typedef	c:@T@ABRecordRef	-			CFTypeRef	-	-	ios=2.0/9.0/-/0	-	4aad0ec3b8eb5112	-
+typedef	c:@T@CFTypeRef	-			const void *	-	-	-	-	bfc2940caeb1f461	-
+typedef	c:@T@CGFloat	-			double	-	-	-	-	29e11a71cfda882e	-
+typedef	c:@T@CGImageRef	-			struct CGImage *	-	-	-	-	61e7c30be1f5f379	-
+typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-

@@ -148,3 +148,9 @@ property	c:objc(cs)SFVoiceAnalytics(py)jitter	-			SFAcousticFeature *	-	readonly
 property	c:objc(cs)SFVoiceAnalytics(py)shimmer	-			SFAcousticFeature *	-	readonly,copy,nonatomic	ios=13/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	586fbb379d7ab508	-
 property	c:objc(cs)SFVoiceAnalytics(py)pitch	-			SFAcousticFeature *	-	readonly,copy,nonatomic	ios=13/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	5ef32d8ccc264e92	-
 property	c:objc(cs)SFVoiceAnalytics(py)voicing	-			SFAcousticFeature *	-	readonly,copy,nonatomic	ios=13/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	3b4b9036af4f2244	-
+typedef	c:@T@NSErrorDomain	-			NSString *	-	-	-	-	a2ef9b8d14cb4ca2	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
+typedef	c:@T@CMSampleBufferRef	-			struct opaqueCMSampleBuffer *	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	0c39c3fa33d37428	-
+typedef	c:@T@NSRange	-			struct _NSRange	-	-	-	-	d109726d1ae61321	-

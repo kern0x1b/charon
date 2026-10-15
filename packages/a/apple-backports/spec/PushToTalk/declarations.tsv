@@ -100,3 +100,7 @@ enumconst	c:@E@PTChannelError@PTChannelErrorAppNotForeground	PTChannelError			-	
 enumconst	c:@E@PTChannelError@PTChannelErrorDeviceManagementRestriction	PTChannelError			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c3a180b2ebbc0c7c	7
 enumconst	c:@E@PTChannelError@PTChannelErrorScreenTimeRestriction	PTChannelError			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8509e9298ace8529	8
 enumconst	c:@E@PTChannelError@PTChannelErrorTransmissionNotAllowed	PTChannelError			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	82daf5d5369e1aae	9
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@NSErrorDomain	-			NSString *	-	-	-	-	a2ef9b8d14cb4ca2	-

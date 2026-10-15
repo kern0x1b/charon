@@ -151,3 +151,10 @@ typedef	c:@T@BAManagedErrorCode	-			enum BAManagedErrorCode	-	-	-	-	3e22970851cc
 enum	c:@E@BAManagedErrorCode	-			NSInteger	-	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	fff62db294452707	-
 enumconst	c:@E@BAManagedErrorCode@BAManagedErrorCodeAssetPackNotFound	BAManagedErrorCode			-	-	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	577c6a5907606943	0
 enumconst	c:@E@BAManagedErrorCode@BAManagedErrorCodeFileNotFound	BAManagedErrorCode			-	-	-	ios=26/-/-/0,macos=26/-/-/0,tvos=26/-/-/0,watchos=-/-/-/1,xros=26/-/-/0	-	56852cea47453def	1
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@NSURLSessionAuthChallengeDisposition	-			enum NSURLSessionAuthChallengeDisposition	-	-	-	-	b0bcc7f39121c0c9	-
+typedef	c:@T@int64_t	-			long long	-	-	-	-	85f1e0b43a934ce7	-
+typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
+typedef	c:@T@NSDataReadingOptions	-			enum NSDataReadingOptions	-	-	-	-	570a3dde493e0229	-

@@ -7,3 +7,4 @@ super	-	ILClassificationUIExtensionViewController	UIViewController		-	-	-	-	-	67
 property	c:objc(cs)ILClassificationUIExtensionViewController(py)extensionContext	-			ILClassificationUIExtensionContext *	-	readonly,strong,nonatomic	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d3982c3c33513334	-
 method	c:objc(cs)ILClassificationUIExtensionViewController(im)prepareForClassificationRequest:	-			void	__kindof ILClassificationRequest * request	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0edcb3c8df923102	-
 method	c:objc(cs)ILClassificationUIExtensionViewController(im)classificationResponseForRequest:	-			ILClassificationResponse *	__kindof ILClassificationRequest * request	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	63a7a6cfd813aede	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-

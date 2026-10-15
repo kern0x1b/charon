@@ -112,3 +112,5 @@ super	-	ILCallClassificationRequest	ILClassificationRequest		-	-	-	-	-	ef9bf61e1
 conforms	-	ILCallClassificationRequest	NSSecureCoding		-	-	-	-	-	a5e80faad8c231e5	-
 property	c:objc(cs)ILCallClassificationRequest(py)callCommunications	-			NSArray<ILCallCommunication *> *	-	readonly,copy,nonatomic	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	12deb0f4396b1acc	-
 method	c:objc(cs)ILCallClassificationRequest(im)init	-			instancetype	-	-	*unavailable ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1c72554ab3122802	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-

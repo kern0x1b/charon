@@ -171,3 +171,9 @@ property	c:objc(cs)NSUserActivity(py)isClassKitDeepLink	CLSDeepLinks			BOOL	-	re
 property	c:objc(cs)NSUserActivity(py)contextIdentifierPath	CLSDeepLinks			NSArray<NSString *> *	-	readonly,strong,nonatomic	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9dc4d1be1f66a996	-
 protocol	c:objc(pl)CLSContextProvider	-			-	-	-	ios=12.2/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f03acec64fb3312b	-
 method	c:objc(pl)CLSContextProvider(im)updateDescendantsOfContext:completion:	-			void	CLSContext * context | void (^)(NSError * _Nullable) completion	-	ios=12.2/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7df94ffbbccd923c	-
+typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
+typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
+typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
+typedef	c:@T@NSRange	-			struct _NSRange	-	-	-	-	d109726d1ae61321	-
+typedef	c:@T@CGImageRef	-			struct CGImage *	-	-	-	-	61e7c30be1f5f379	-
+typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
