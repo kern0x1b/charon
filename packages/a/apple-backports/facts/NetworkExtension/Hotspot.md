@@ -11,18 +11,21 @@ host's answers and drive no join, and the join route they leave undriven.
 - `NetworkExtension/CharonNEHotspot.h`: the declarations, from the iOS 26.2 SDK's `NEHotspotNetwork.h`,
   `NEHotspotConfigurationManager.h`, `NEHotspotHelper.h` and the `(HotspotHelper)` category of `NEHotspotHelper.h`.
 - `NetworkExtension/NEHotspotNetwork.m`: the state object, and `+fetchCurrentWithCompletionHandler:`.
-- `NetworkExtension/NEHotspotConfiguration.m`: the four initializers, the properties, `-copy` and the keyed archive.
+- `NetworkExtension/NEHotspotConfiguration.m`: the four initializers and the two that take settings, the properties,
+  `-copy` and the keyed archive.
+- `NetworkExtension/NEHotspotEAPSettings.m` and `NetworkExtension/NEHotspotHS20Settings.m`: the two settings classes,
+  their properties, `-copy` and the keyed archive.
 - `NetworkExtension/NEHotspotConfigurationManager.m`: the shared manager and its four methods.
 - `NetworkExtension/NEHotspotHelper.m`: the helper's three class methods, and the NSMutableURLRequest category.
 - `NetworkExtension/NEHotspotHelperCommand.m` and `NEHotspotHelperResponse.m`: the command and the response.
 - `registry/NetworkExtension/hotspot9.json`: one entry per name, with its introduced, minimum and maximum release.
 - `tests/backports/host/netext-hotspot/`: the differential, with one planted control per comparison group.
 
-Not carried: NEHotspotEAPSettings and NEHotspotHS20Settings, and the two initializers that take them (absent
-in the registry, so they answer NO to respondsToSelector:). NEHotspotEAPSettings is a class of the family the
-corpus does not strong-import yet, but the family is not complete while it is missing. Also absent: the iOS 18
-`interface` property of NEHotspotHelperCommand (its type is Network's nw_interface_t) and the two
-`joinAccessoryHotspot` methods of the manager (they take an ASAccessory).
+Carried in this slice: NEHotspotEAPSettings and NEHotspotHS20Settings, their enumerations, and the two initializers
+of NEHotspotConfiguration that take them (measured in "The enterprise and Hotspot 2.0 settings" below). Not carried:
+the iOS 18 `interface` property of NEHotspotHelperCommand (its type is Network's nw_interface_t) and the two
+`joinAccessoryHotspot` methods of the manager (they take an ASAccessory); those stay absent in the registry, so they
+answer NO to respondsToSelector:.
 
 ## What the host answers, measured
 
@@ -163,3 +166,45 @@ The response's deliver sends nothing for the same reason.
 
 NEHotspotConfigurationErrorDomain is the generated constant (`.gen/NetworkExtension/NetworkExtensionConstants160.m`,
 written by `tools/gen.lua`), not a hand-written one. The differential needs that generated file, so `run.sh` names it.
+
+### The enterprise and Hotspot 2.0 settings
+
+Measured on the host with the probe's ops `eap`, `hs20` and `wiring` (run.sh compares each line with the port):
+
+```
+NEHotspotEAPSettings, a fresh object: every list and string nil, ttlsInnerAuthenticationType 0, tlsClientCertificateRequired NO,
+  preferredTLSVersion 0
+setters: supportedEAPTypes, username, password, outerIdentity and trustedServerNames are copied (a later change to
+  the caller's mutable array or string does not show); the enumerations and the Boolean are values
+setIdentity:nil and setTrustedServerCertificates: nil and @[] all return NO
+copy: another object with the same values
+NSKeyedArchiver round trip: all eight values decode back; the archive holds the password in the clear
+```
+
+The identity and certificate answers for a non-nil value are not measured: a SecIdentity needs a keychain item and a
+certificate needs a certificate the test does not import (the test imports no certificate or key). The port answers NO
+for them and keeps nothing; that is the one row whose port answer is not the host's measured answer.
+
+```
+NEHotspotHS20Settings, initWithDomainName:roamingEnabled:: domainName kept, roamingEnabled kept; the lists nil
+-init (no domain): domainName nil, roamingEnabled NO
+the lists are copied on set; copy has the same values; the archive round trip restores all five values
+```
+
+NEHotspotConfiguration with the two initializers that take settings:
+
+```
+initWithSSID:eapSettings:       SSID kept, SSIDPrefix nil (not empty, unlike initWithSSID:), joinOnce NO
+initWithHS20Settings:eapSettings: SSID "" (the empty string), SSIDPrefix nil, joinOnce NO
+the configuration holds a COPY of the EAP settings (held == the caller's object: NO; the copy's username is the
+  value at init: a later change to the caller's object does not show in the held copy or the archive)
+the configuration holds a copy of the HS20 settings (its domainName is the one given)
+the archive holds the EAP class and the SSID, and a round trip restores the SSID and the EAP username
+copy: the copy holds the EAP username and the HS20 domain
+the archive of an HS20 configuration holds the HS20 class, and a round trip restores its SSID and domain
+```
+
+The configuration's instance variables (`class_copyIvarList`, read by the probe's `wiring` op) are the host's own
+layout and are printed but not compared: they differ from the port's by design (the port carries `_isWEP` and
+`_passphrase`, the host keeps `_securityType`, `_useSSIDPrefix` and `_isAccessory`). The port names its two held
+objects `_eapSettings` and `_hs20Settings`, as the host does, and the held-object lines are compared by value.

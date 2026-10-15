@@ -7,7 +7,9 @@
    (facts/NetworkExtension/Hotspot.md) - and tests/backports/host/netext-hotspot/ compares them name by name.
 
    The passphrase is kept for the join, which is not carried yet, and it is not archived: a password does not
-   go into a file the object writes. */
+   go into a file the object writes. The EAP and HS20 objects of the two initializers that take them are kept as
+   copies, so a later change to the caller's object does not reach the configuration (the probe's wiring op), and
+   they are archived. The EAP object's password goes into the archive, as the host's archive holds it. */
 @implementation NEHotspotConfiguration {
     NSString *_SSID;
     NSString *_SSIDPrefix;
@@ -16,6 +18,8 @@
     BOOL _joinOnce;
     NSNumber *_lifeTimeInDays;
     BOOL _hidden;
+    NEHotspotEAPSettings *_eapSettings;
+    NEHotspotHS20Settings *_hs20Settings;
 }
 
 - (instancetype)initWithSSID:(NSString *)SSID
@@ -54,6 +58,27 @@
     if (self) {
         _passphrase = [passphrase copy];
         _isWEP = isWEP;
+    }
+    return self;
+}
+
+- (instancetype)initWithSSID:(NSString *)SSID eapSettings:(NEHotspotEAPSettings *)eapSettings
+{
+    self = [super init];
+    if (self) {
+        _SSID = [SSID copy];
+        _eapSettings = [eapSettings copy];
+    }
+    return self;
+}
+
+- (instancetype)initWithHS20Settings:(NEHotspotHS20Settings *)hs20Settings eapSettings:(NEHotspotEAPSettings *)eapSettings
+{
+    self = [super init];
+    if (self) {
+        _SSID = @"";
+        _hs20Settings = [hs20Settings copy];
+        _eapSettings = [eapSettings copy];
     }
     return self;
 }
@@ -108,6 +133,8 @@
     copy->_joinOnce = _joinOnce;
     copy->_lifeTimeInDays = [_lifeTimeInDays copy];
     copy->_hidden = _hidden;
+    copy->_eapSettings = [_eapSettings copy];
+    copy->_hs20Settings = [_hs20Settings copy];
     return copy;
 }
 
@@ -120,6 +147,8 @@
         _joinOnce = [coder decodeBoolForKey:@"joinOnce"];
         _lifeTimeInDays = [[coder decodeObjectOfClass:[NSNumber class] forKey:@"lifeTimeInDays"] copy];
         _hidden = [coder decodeBoolForKey:@"hidden"];
+        _eapSettings = [coder decodeObjectOfClass:[NEHotspotEAPSettings class] forKey:@"eapSettings"];
+        _hs20Settings = [coder decodeObjectOfClass:[NEHotspotHS20Settings class] forKey:@"hs20Settings"];
     }
     return self;
 }
@@ -131,6 +160,8 @@
     [coder encodeBool:_joinOnce forKey:@"joinOnce"];
     [coder encodeObject:_lifeTimeInDays forKey:@"lifeTimeInDays"];
     [coder encodeBool:_hidden forKey:@"hidden"];
+    [coder encodeObject:_eapSettings forKey:@"eapSettings"];
+    [coder encodeObject:_hs20Settings forKey:@"hs20Settings"];
 }
 
 + (BOOL)supportsSecureCoding

@@ -1,5 +1,6 @@
 #!/bin/sh
-# run.sh - NEHotspotNetwork, NEHotspotConfiguration, the manager and the helper, measured two ways, with a mutant
+# run.sh - NEHotspotNetwork, NEHotspotConfiguration, the manager and the helper, and the EAP and HS20 settings,
+# measured two ways, with a mutant
 # per comparison group.
 #
 #     sh tests/backports/host/netext-hotspot/run.sh [--mutation]
@@ -36,8 +37,9 @@ compared=0
 
 sdk=$(xcrun --show-sdk-path --sdk macosx)
 catalyst="-target arm64-apple-ios15.0-macabi -isysroot $sdk -fobjc-arc -O0 -Wall -Wno-unguarded-availability-new -Wno-unguarded-availability -I$S/NetworkExtension"
-# The port's sources: the four classes of the manager and the helper, and the generated constants they name.
-port_srcs="$S/NetworkExtension/NEHotspotNetwork.m $S/NetworkExtension/NEHotspotConfiguration.m $S/NetworkExtension/NEHotspotConfigurationManager.m $S/NetworkExtension/NEHotspotHelper.m $S/NetworkExtension/NEHotspotHelperCommand.m $S/NetworkExtension/NEHotspotHelperResponse.m $S/.gen/NetworkExtension/NetworkExtensionConstants160.m"
+# The port's sources: the manager and the helper, the configuration and the two settings classes it takes, and the
+# generated constants they name.
+port_srcs="$S/NetworkExtension/NEHotspotNetwork.m $S/NetworkExtension/NEHotspotConfiguration.m $S/NetworkExtension/NEHotspotConfigurationManager.m $S/NetworkExtension/NEHotspotHelper.m $S/NetworkExtension/NEHotspotHelperCommand.m $S/NetworkExtension/NEHotspotHelperResponse.m $S/NetworkExtension/NEHotspotEAPSettings.m $S/NetworkExtension/NEHotspotHS20Settings.m $S/.gen/NetworkExtension/NetworkExtensionConstants160.m"
 
 # replace_once <source> <target> <was> <now>: writes <target> with the one occurrence of <was> replaced.
 # Exits non-zero, saying how many occurrences there were, unless <was> occurs exactly once.
@@ -61,7 +63,7 @@ clang -target arm64-apple-ios15.0-macabi -isysroot "$sdk" -fobjc-arc -O0 -Wall -
 "$W/host" network > "$W/host-network.txt" 2>&1 || echo "note  host network op exited $? (the SSID read; expected)"
 "$W/host" config > "$W/host-config.txt" 2>&1 || echo "note  host config op exited $?"
 "$W/host" fetch > "$W/host-fetch.txt" 2>&1 || echo "note  host fetch op exited $?"
-for op in apply configured helper remove command response bind; do
+for op in apply configured helper remove command response bind eap hs20 wiring; do
     "$W/host" $op > "$W/host-$op.txt" 2>&1 || echo "note  host $op op exited $?"
 done
 
@@ -69,7 +71,7 @@ echo "=== port: the port's own answers, Apple's framework not linked at all"
 # shellcheck disable=SC2086
 clang $catalyst "$here/probe.m" $port_srcs \
     -framework Foundation -framework SystemConfiguration -o "$W/port" || { echo "FAIL  port does not build"; exit 1; }
-for op in network config fetch apply configured helper remove command response bind; do
+for op in network config fetch apply configured helper remove command response bind eap hs20 wiring; do
     "$W/port" $op > "$W/port-$op.txt" 2>&1 || echo "FAIL  port $op op exited $?"
 done
 
@@ -172,6 +174,46 @@ for name in bind.before bind.after; do
     compare "$name" "$W/host-bind.txt" "$W/port-bind.txt"
 done
 
+echo "=== NEHotspotEAPSettings: defaults, setters, identity and certificates, copy and the keyed archive"
+for name in eap.class eap.supportedEAPTypes eap.username eap.outerIdentity eap.ttlsInnerAuthenticationType \
+            eap.password eap.trustedServerNames eap.tlsClientCertificateRequired eap.preferredTLSVersion \
+            set.supportedEAPTypes.count set.username set.trustedServerNames.count set.password set.outerIdentity \
+            set.ttlsInnerAuthenticationType set.tlsClientCertificateRequired set.preferredTLSVersion \
+            identity.nil certs.nil certs.empty copy.isSameObject copy.class copy.supportedEAPTypes copy.username \
+            copy.password copy.outerIdentity copy.trustedServerNames copy.ttlsInnerAuthenticationType \
+            copy.tlsClientCertificateRequired copy.preferredTLSVersion archive.hasData archive.error \
+            archive.holdsPassword roundTrip.class roundTrip.supportedEAPTypes roundTrip.username roundTrip.password \
+            roundTrip.outerIdentity roundTrip.trustedServerNames roundTrip.ttlsInnerAuthenticationType \
+            roundTrip.tlsClientCertificateRequired roundTrip.preferredTLSVersion; do
+    compare "$name" "$W/host-eap.txt" "$W/port-eap.txt"
+done
+dladdr_is setIdentity NetworkExtension "$W/host-eap.txt"
+dladdr_is setIdentity port "$W/port-eap.txt"
+dladdr_is setTrustedServerCertificates NetworkExtension "$W/host-eap.txt"
+dladdr_is setTrustedServerCertificates port "$W/port-eap.txt"
+
+echo "=== NEHotspotHS20Settings: the initializer, the setters, copy and the keyed archive"
+for name in hs20.domainName hs20.roamingEnabled hs20.roamingConsortiumOIs hs20.naiRealmNames hs20.MCCAndMNCs \
+            hs20.init.domainName hs20.init.roamingEnabled hs20.init.roamingConsortiumOIs \
+            set.roamingConsortiumOIs.count set.naiRealmNames set.MCCAndMNCs copy.isSameObject copy.class \
+            copy.domainName copy.roamingEnabled copy.roamingConsortiumOIs copy.naiRealmNames copy.MCCAndMNCs \
+            archive.hasData archive.error roundTrip.class roundTrip.domainName roundTrip.roamingEnabled \
+            roundTrip.roamingConsortiumOIs roundTrip.naiRealmNames roundTrip.MCCAndMNCs; do
+    compare "$name" "$W/host-hs20.txt" "$W/port-hs20.txt"
+done
+dladdr_is initWithDomainName NetworkExtension "$W/host-hs20.txt"
+dladdr_is initWithDomainName port "$W/port-hs20.txt"
+
+echo "=== NEHotspotConfiguration with EAP or HS20 settings: the initializers, the held copies, copy and the archive"
+for name in eapinit.SSID eapinit.SSIDPrefix eapinit.joinOnce hs20init.SSID hs20init.SSIDPrefix hs20init.joinOnce \
+            held._eapSettings held.c1.eap.username held.c1.eap.same held.c2.eap.username held.c2.eap.same \
+            held.c2.hs20.domainName held.c2.hs20.same archive.hasData archive.error archive.holdsEAPClass \
+            archive.holdsUsername archive.holdsSSID roundTrip.class roundTrip.SSID roundTrip.eap.username \
+            copy.hs20.domainName copy.eap.username archive.hs20.holdsHS20Class roundTrip.hs20.SSID \
+            roundTrip.hs20.domainName; do
+    compare "$name" "$W/host-wiring.txt" "$W/port-wiring.txt"
+done
+
 echo "compared=$compared failed=$failed"
 [ "$failed" -eq 0 ] || exit 1
 
@@ -194,7 +236,11 @@ if [ "${1:-}" = "--mutation" ]; then
       "register.returned|NEHotspotHelper.m|return NO; /* registerWithOptions:|return YES; /* registerWithOptions:" \
       "command.commandType|NEHotspotHelperCommand.m|return kNEHotspotHelperCommandTypeNone;|return kNEHotspotHelperCommandTypeLogoff;" \
       "response.setNetworkList|NEHotspotHelperResponse.m|_networkList = [networkList copy];|_networkList = [networkList copy]; abort();" \
-      "bind.after|NEHotspotHelper.m|/* binds nothing */|[self setAllHTTPHeaderFields:@{@\"X-Charon\": @\"1\"}];"
+      "bind.after|NEHotspotHelper.m|/* binds nothing */|[self setAllHTTPHeaderFields:@{@\"X-Charon\": @\"1\"}];" \
+      "eap.copy.username|NEHotspotEAPSettings.m|    copy.username = _username;|    copy.username = nil;" \
+      "eap.identity|NEHotspotEAPSettings.m|- (BOOL)setIdentity:(SecIdentityRef)identity|- (BOOL)setIdentity:(SecIdentityRef)identity { return YES; }\n- (BOOL)unusedIdentity:(SecIdentityRef)identity" \
+      "eap.roundTrip.tls|NEHotspotEAPSettings.m|_tlsClientCertificateRequired = [coder decodeBoolForKey:@\"tlsClientCertificateRequired\"];|_tlsClientCertificateRequired = NO;" \
+      "hs20init.SSID|NEHotspotConfiguration.m|_hs20Settings = [hs20Settings copy];|_hs20Settings = [hs20Settings copy]; _SSID = nil;"
     for mutation in "$@"; do
         name=$(printf '%s' "$mutation" | cut -d'|' -f1)
         file=$(printf '%s' "$mutation" | cut -d'|' -f2)
@@ -217,7 +263,7 @@ if [ "${1:-}" = "--mutation" ]; then
             continue
         fi
         noticed_by=""
-        for op in network config fetch apply configured helper remove command response bind; do
+        for op in network config fetch apply configured helper remove command response bind eap hs20 wiring; do
             "$mdir/port" $op > "$mdir/$op.txt" 2>&1 || echo "note  mutant $op op exited $? (its output is compared)"
             if ! cmp -s "$mdir/$op.txt" "$W/port-$op.txt" && [ -z "$noticed_by" ]; then
                 noticed_by="$op: $(diff "$W/port-$op.txt" "$mdir/$op.txt" | grep '^[<>]' | head -1 | cut -c1-90)"
