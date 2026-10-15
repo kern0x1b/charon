@@ -105,3 +105,58 @@ guest, not the host - against the freshly built canon: `checks=35 failures=0`.
 
 Not carried: `AVAudioCompressedBuffer` (a sibling subclass for compressed formats; nothing in
 this port's corpus references it) and `-initWithPCMFormat:bufferListNoCopy:deallocator:` (iOS 15).
+
+## AVAudioFile
+
+`AVAudioFile` opens, creates, reads and writes a file through the release's own **ExtAudioFile**
+(`AudioToolbox`, iOS 2.1 and later). ExtAudioFile opens and creates every container and codec
+AudioToolbox knows and converts between the file's format and the client format a caller sets, so
+the port maps the AVFAudio vocabulary onto it and decodes or encodes nothing itself. The
+`AVAudioFormat` and `AVAudioPCMBuffer` objects it hands out are this port's own, built above.
+
+**The processing format** is the standard format (Float32, deinterleaved, the file's rate and
+channel count) unless the init names a common format; a named common format is built at the file's
+rate and channel count, interleaved or not. It is set as the client format, and ExtAudioFile does
+every conversion between it and the file.
+
+**Writing** takes its container from the path's extension: the first file type AudioToolbox lists
+for it (`AudioFileGetGlobalInfo(kAudioFileGlobalInfo_TypesForExtension)`). Linear PCM settings are
+read by `AVAudioFormat`'s own `initWithSettings:`; a channel count of zero makes a mono file, as the
+host does (measured). A missing channel key reads as zero here, which the host was not measured on. Any other format names its ID, rate
+and channel count, and ExtAudioFile fills in the rest of the compressed description. A bit rate
+under `AVEncoderBitRateKey` is set on the encoder's converter once the client format is set. Other
+settings keys are not read.
+
+**The end of the file is an error, not an empty buffer**, as on the host: `readIntoBuffer:` returns
+NO with `NSOSStatusErrorDomain` -39 (`eofErr`) once no frame is left. A read into a buffer of
+another format returns NO with `com.apple.coreaudio.avfaudio` -50 (`paramErr`). A request for more
+frames than the buffer holds raises the exception the host raises:
+`com.apple.coreaudio.avfaudio`, reason `required condition is false: frames <= buffer.frameCapacity`.
+
+**Errors** carry the host's domain and code: a missing file is `com.apple.coreaudio.avfaudio`
+2003334207 (`'wht?'`, the code ExtAudioFileOpenURL gives); a format that cannot be written is 1718449215
+(`'fmt?'`, `kAudioFileUnsupportedDataFormatError`), as with an unknown format ID.
+
+**Measured against the host, not just built.** `tests/backports/host/avfaudio-file/` builds one
+program (`probe.m`) against Apple's AVFAudio and against the port's classes in the same binary, and
+diffs what each prints: a sine written to CAF (PCM 16-bit, mono) and read back through both read forms
+(field values, frame counts, a checksum of the PCM frames) and a seek; a sine written to M4A (AAC),
+where only the shape is printed, since decoders differ (frame count and length); the errors above. The
+two outputs are equal (41 lines), and a planted seek one frame late goes red.
+
+**Not carried:** `-init` (deprecated, iOS 8; the 16.4 header does not declare it, so NSObject's `init`
+answers, giving an object with no file: its `length` is 0, its `url` nil, and a read fails with
+`paramErr`), `-close` and `isOpen` (both iOS 18; the 16.4 header declares neither, so no method is added
+for them), `NSSecureCoding`, `processingFormat` for
+a file of more than two channels (`AVAudioFormat` refuses that without a layout), and the write-side
+refusal of a buffer of another format, which uses the read side's code and is not measured.
+**Open, measured, not explained: the AAC bit rate.** A bit rate under `AVEncoderBitRateKey` reaches the
+encoder: the AAC payload of the same 0.25 s sine is 921 bytes at the default and 64 kbps on both
+sides, and 566 bytes on the host but 578 bytes on the port at 32 kbps (`AudioFileGetProperty` with
+`kAudioFilePropertyAudioDataByteCount`, stable across runs). The payload is not compared byte for byte
+in the differential, since the brief compares AAC by count and length only; the cause of the 12-byte gap
+at 32 kbps is not identified. Container file sizes are not a usable measure:
+the M4A metadata carries a time and moves by a few bytes between runs.
+
+Container and codec support is what ExtAudioFile on the release provides; nothing here is measured
+on the device.
