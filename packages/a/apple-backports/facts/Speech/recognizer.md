@@ -28,9 +28,10 @@ not as agreement, and the state, error, finish and cancel rows are not in any ca
 ## What the port answers
 
 - `+supportedLocales`: an empty set. No locale is one this device can recognize.
-- `+authorizationStatus`: NotDetermined, the host's answer for an application with no usage description.
-- `+requestAuthorization:`: keeps the status and never calls the handler. The host never calls it either, but it ends the
-  process instead of returning silently to the application (case 12). See the decision below.
+- `+authorizationStatus`: NotDetermined, the host's answer for an application with no usage description (case 8), until
+  the application asks; Restricted after it.
+- `+requestAuthorization:`: calls the handler once, on a global queue, with Restricted, after the call returns. The host
+  never calls it: it ends the process (case 12). See the decision below.
 - `-init` and `-initWithLocale:`: nil. A recognizer for a locale the port does not support is not made, which is the
   host's answer for a locale it does not support (case 10).
 - `SFSpeechRecognitionTask`: a fresh task is not finishing and not cancelled (case 13). No task is ever started.
@@ -47,9 +48,8 @@ not as agreement, and the state, error, finish and cancel rows are not in any ca
 - **`-init` with the device locale.** The host makes a recognizer for en-US; the port makes none, for the same reason as
   `supportedLocales`.
 - **`+requestAuthorization:` on an application with no usage description.** The host ends the process; the port returns
-  and never calls the handler. An application that waits for the handler waits forever. The coordinator decides whether
-  the port should call the handler once with Restricted instead; Restricted is not a host measurement, so it is not chosen
-  here.
+  and calls the handler once with Restricted, and the status reads Restricted from then on. Restricted is not a host
+  measurement: it is the coordinator's decision, below.
 
 ## Not carried in this library
 
@@ -73,8 +73,12 @@ not as agreement, and the state, error, finish and cancel rows are not in any ca
 - `isAvailable` and `supportsOnDeviceRecognition` for a recognizer that is not available: the host's only reachable
   recognizer is available.
 
-## Decision for the coordinator
+## Decision of the coordinator
 
-- `+requestAuthorization:` never calls its handler on this device. The alternative is one call with
-  `SFSpeechRecognizerAuthorizationStatusRestricted`, which is not measured on the host. Chosen: never, so the port makes no
-  answer the host did not give.
+- `+requestAuthorization:` calls its handler once, on a global queue, with `SFSpeechRecognizerAuthorizationStatusRestricted`,
+  and `+authorizationStatus` reads Restricted from then on. The band left the handler uncalled, so that the port gave no
+  answer the host did not give; the coordinator overruled it on 2026-10-15. Ending the process, the host's reaction, is not
+  an answer an application can act on, and a handler never called leaves an application waiting forever. The header
+  documents Restricted as the status of a device that keeps the application from recognizing speech, which is what this device
+  does: it has no recognizer. The header does not promise the main queue for this handler. Before the request the status
+  stays NotDetermined, which is the host's measured answer (case 8).

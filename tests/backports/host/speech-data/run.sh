@@ -6,6 +6,7 @@
 #   2. the same source is COMPILED against the port's Speech sources and run once per case
 #   3. the two outputs of each case are compared; a case where the host dies on a signal is named as such and is not
 #      counted as agreement
+#   3a. case 12, where the host always dies, is checked on the port side against the coordinator's decision instead
 #   4. a plant on a scratch copy of the port's sources - one answer changed, each in the case that measures it - must turn
 #      that case red
 #
@@ -61,6 +62,22 @@ compare() {
 echo "--- the clean run"
 compare clean "$build/port" $cases
 
+# Case 12 has no host answer: the host ends the process. The port's lines are checked against the coordinator's decision
+# (facts/Speech/recognizer.md): the handler runs once, off the main thread, with Restricted (2), and the status reads
+# Restricted after the request.
+decision12() {
+    # decision12 <label> <output>
+    printf 'returned from requestAuthorization\nhandler calls=1 status=2 main=0\nstatus after=2\n' > "$build/decision.12.out"
+    if cmp -s "$build/decision.12.out" "$2"; then
+        echo "case 12: port answers the decision ($1)"
+        return 0
+    fi
+    echo "case 12: port DIFFERS from the decision ($1)"
+    diff "$build/decision.12.out" "$2" | sed 's/^/    /' || true
+    return 1
+}
+decision12 clean "$build/port.12.out" || differs=$((differs + 1))
+
 # A plant is a copy of the port's sources with one line changed, and the case that measures that line must differ. The copy
 # is a directory of its own holding every file, so a harness that copied only the changed one would fail to build rather
 # than measure nothing.
@@ -79,7 +96,9 @@ plant() {
     set +e
     "$build/port-mutant" "$n" > "$build/port-mutant.$n.out" 2>/dev/null
     set -e
-    if cmp -s "$build/host.$n.out" "$build/port-mutant.$n.out"; then
+    # Case 12 is measured against the decision, the host having no answer there.
+    ref="$build/host.$n.out"; [ "$n" = 12 ] && ref="$build/decision.12.out"
+    if cmp -s "$ref" "$build/port-mutant.$n.out"; then
         echo "MUTANT SURVIVED: $label"
         differs=$((differs + 1000))
     else
@@ -94,6 +113,8 @@ plant 6 SFTranscriptionSegment.m 's/    copy->_confidence = _confidence;/    cop
 plant 8 SFSpeechRecognizer.m 's/    return SFSpeechRecognizerAuthorizationStatusNotDetermined;/    return SFSpeechRecognizerAuthorizationStatusAuthorized;/' "authorization status NotDetermined flipped to Authorized"
 plant 10 SFSpeechRecognizer.m 's/    return nil;/    return self;/' "recognizer for an unsupported locale made instead of nil"
 plant 13 SFSpeechRecognitionTask.m '/isCancelled/,/^}/ s/return NO;/return YES;/' "fresh task reported cancelled"
+plant 12 SFSpeechRecognizer.m 's/        handler(SFSpeechRecognizerAuthorizationStatusRestricted);/        handler(SFSpeechRecognizerAuthorizationStatusAuthorized);/' \
+    "authorization handler answers Authorized instead of Restricted"
 
 echo "--- verdict: $differs difference(s) among comparable cases, $crashed host crash(es) not comparable"
 [ "$differs" -eq 0 ]

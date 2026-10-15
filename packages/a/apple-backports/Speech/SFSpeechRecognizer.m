@@ -5,9 +5,14 @@
 // (tests/backports/host/speech-data, case 10). Nothing here opens the microphone or sends audio anywhere.
 //
 // The host answers an authorization status of NotDetermined for an application with no usage description, and it ends
-// the process when that application asks for authorization, before the handler runs (case 12). The port keeps the status and
-// never calls the handler, so the request is answered by nothing: the coordinator decides whether a Restricted answer is
-// better (facts/Speech/recognizer.md).
+// the process when that application asks for authorization, before the handler runs (case 12). Ending the process is not
+// an answer an application can act on, and a handler never called leaves it waiting forever. The port answers the request
+// once, on a global queue (the header does not promise the main queue), with Restricted: the header's word
+// for a device that does not let the application recognize speech. The status reads Restricted from then on, and
+// NotDetermined before it, which is the host's answer (case 8). Restricted is the coordinator's decision, not a host
+// measurement (facts/Speech/recognizer.md).
+static int requested;
+
 @implementation SFSpeechRecognizer
 
 // The instance properties are declared in the header but not carried: no recognizer instance exists on this device, so
@@ -22,11 +27,19 @@
 
 + (SFSpeechRecognizerAuthorizationStatus)authorizationStatus
 {
+    if (__atomic_load_n(&requested, __ATOMIC_ACQUIRE))
+        return SFSpeechRecognizerAuthorizationStatusRestricted;
     return SFSpeechRecognizerAuthorizationStatusNotDetermined;
 }
 
 + (void)requestAuthorization:(void (^)(SFSpeechRecognizerAuthorizationStatus status))handler
 {
+    __atomic_store_n(&requested, 1, __ATOMIC_RELEASE);
+    if (!handler)
+        return;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        handler(SFSpeechRecognizerAuthorizationStatusRestricted);
+    });
 }
 
 - (nullable instancetype)init

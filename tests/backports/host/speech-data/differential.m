@@ -105,12 +105,19 @@ int main(int argc, char **argv)
     }
     case 12: {
         // The host ends this process before the handler runs (no usage description), so run.sh names the case as a host
-        // crash. The port returns and never calls the handler, which is the answer it carries.
+        // crash. The port answers once with Restricted, the coordinator's decision (facts/Speech/recognizer.md), and run.sh
+        // checks the port's lines against that decision, not against the host.
+        __block int calls = 0, onMain = 0;
+        __block long seen = -1;
         [SFSpeechRecognizer requestAuthorization:^(SFSpeechRecognizerAuthorizationStatus status) {
-            printf("handler status=%ld\n", (long)status);
+            __atomic_fetch_add(&calls, 1, __ATOMIC_SEQ_CST);
+            seen = (long)status;
+            onMain = [NSThread isMainThread];
         }];
         printf("returned from requestAuthorization\n");
         sleep(2);
+        printf("handler calls=%d status=%ld main=%d\n", __atomic_load_n(&calls, __ATOMIC_SEQ_CST), seen, onMain);
+        printf("status after=%ld\n", (long)[SFSpeechRecognizer authorizationStatus]);
         break;
     }
     case 13: {
