@@ -4,11 +4,13 @@
 -- params, attrs, value, declhash, availhash). The declaration as written (17) and the messages (18) are never read, and no comment
 -- and no SDK header text is: the text is ours, from the typed cells only.
 --
--- defs_of(all_rows) indexes the whole IR by the names it defines (an import is resolved from it). render(framework, rows, defs,
--- has_map, has_sdk_headers, usr_dirs) returns { files = {path under the framework's folder -> text}, counts = {...} }, the paths
+-- defs_of(all_rows) indexes the whole IR by the names it defines (an import is resolved from it) and returns the arity of each generic
+-- class the IR uses. render(framework, rows, defs, arities, has_map, has_sdk_headers, usr_dirs) returns
+-- { files = {path under the framework's folder -> text}, counts = {...} }, the paths
 -- being Headers/<header> and Modules/module.modulemap (the module map only when has_map: the SDK's framework has one). has_sdk_headers
 -- says the SDK's folder holds headers: a framework with no module map and no declaration then keeps one empty header, so decls can
--- read the folder when the fallback list names it. usr_dirs maps each usr/include module to its import prefix. compare(ir_rows,
+-- read the folder when the fallback list names it. usr_dirs is cmd_headers' usr_dirs_of: the import prefix of each usr/include module
+-- (prefix) and the umbrella header of a folder that has one (umbrella). compare(ir_rows,
 -- decl_rows) matches the IR's rows with the rows decls prints for the same framework, by the key (kind, usr, container, name,
 -- side), and groups each difference by its cause.
 
@@ -18,7 +20,8 @@ local COL = {framework = 1, kind = 2, usr = 3, container = 4, name = 5, side = 6
 -- Nullability letters of column 10 (n nonnull, l nullable, L nullable result, u unspecified, - none): the declarator keyword, and the
 -- property attribute.
 local DECLARATOR = {n = "_Nonnull", l = "_Nullable", L = "_Nullable", u = "_Null_unspecified"}
-local ATTRIBUTE = {n = "nonnull", l = "nullable", L = "nullable", u = "null_unspecified"}
+-- r is not an IR letter: a property the render marks null_resettable (see render's getters).
+local ATTRIBUTE = {n = "nonnull", l = "nullable", L = "nullable", u = "null_unspecified", r = "null_resettable"}
 
 -- Every generated header is a system header, as the SDK's framework headers are (they are read through the sysroot). clang gives a
 -- typedef in a header that is not a system header a USR with the file's name (c:File.h@T@Name), where the SDK's is c:@T@Name, and
@@ -33,7 +36,7 @@ local BOOKKEEPING = {census = true, unparsed = true, meta = true}
 local KEYWORDS = {void = true, char = true, int = true, long = true, short = true, unsigned = true, signed = true, float = true,
                   double = true, const = true, volatile = true, _Bool = true, bool = true, id = true, Class = true, SEL = true,
                   instancetype = true, struct = true, union = true, enum = true, _Nullable = true, _Nonnull = true,
-                  _Null_unspecified = true}
+                  _Null_unspecified = true, _Nullable_result = true, __kindof = true}
 
 -- The first n cells of a line. The cells after them are not split, so the declaration and the message are never read.
 local function split_cells(line, n)
@@ -90,27 +93,6 @@ local function parameters_of(params, nullability)
     return out
 end
 
--- A declarator: the type with its name and nullability. A keyword follows a pointer or a typedef name ("NSURL * _Nonnull name"),
--- and sits inside a block's declarator ("void (^ _Nullable name)(...)"). A name of "" is the bare type of a parameter or a result.
-local function declare(ty, name, nullability)
-    local keyword = DECLARATOR[nullability]
-    if string.find(ty, "(^)", 1, true) then
-        local inner = (keyword and (" " .. keyword) or "") .. name
-        return (string.gsub(ty, "%(%^%)", "(^" .. inner .. ")", 1))
-    end
-    local out = ty
-    if keyword then out = out .. " " .. keyword end
-    if name ~= "" then out = out .. " " .. name end
-    return out
-end
-
--- A method's result. instancetype carries its nullability as a prefix: "nonnull instancetype".
-local function result_of(ty, nullability)
-    if ty == "instancetype" and ATTRIBUTE[nullability] then return ATTRIBUTE[nullability] .. " instancetype" end
-    return declare(ty, "", nullability)
-end
-
--- A function's type is "RESULT (ARGUMENT TYPES)": the result, and the argument list (the text of the last balanced parentheses).
 local function split_suffix(ty)
     if string.sub(ty, -1) ~= ")" then return ty, "" end
     local depth = 0
@@ -126,6 +108,45 @@ local function split_suffix(ty)
     return ty, ""
 end
 
+-- A declarator: the type with its name and nullability. A keyword follows a pointer or a typedef name ("NSURL * _Nonnull name"),
+-- and sits inside a block's declarator ("void (^ _Nullable name)(...)"). A name of "" is the bare type of a parameter or a result.
+local function declare(ty, name, nullability)
+    local keyword = DECLARATOR[nullability]
+    -- a block (^) or a function pointer (*) puts the name, and its nullability, inside the declarator: void (^ _Nullable name)(...).
+    -- The IR's type may already carry the keyword in there (void (^ _Nullable)(BOOL)): then it is kept, not added again.
+    local s, e, mark, existing = string.find(ty, "%(([%^%*])%s*([_%a]*)%s*%)")
+    -- a block inside a generic's arguments (NSArray<void (^)(void)> *) is not the declarator: the name follows the pointer
+    local _, opened = string.gsub(string.sub(ty, 1, (s or 1) - 1), "<", "")
+    local _, closed = string.gsub(string.sub(ty, 1, (s or 1) - 1), ">", "")
+    if s and opened == closed then
+        local kw = existing ~= "" and existing or keyword
+        local inner = (kw and (" " .. kw) or "") .. (name ~= "" and ((kw and " " or "") .. name) or "")
+        return string.sub(ty, 1, s) .. mark .. inner .. string.sub(ty, e)
+    end
+    -- a function type (a typedef's: typedef void Name(NSException * _Nonnull)) has its name before the parameter list
+    local result, parameters = split_suffix(ty)
+    if parameters ~= "" and name ~= "" then return result .. " " .. name .. parameters end
+    -- an array's dimensions follow the name: unsigned long name[5]
+    -- (the nullability of an array parameter is its size's: id _Nullable [_Nonnull] buffer)
+    local dims = string.find(ty, "[", 1, true)
+    if dims then
+        local sized = string.sub(ty, dims)
+        if keyword and sized == "[]" then sized = "[" .. keyword .. "]" end
+        return trim(string.sub(ty, 1, dims - 1)) .. " " .. name .. sized
+    end
+    local out = ty
+    if keyword then out = out .. " " .. keyword end
+    if name ~= "" then out = out .. " " .. name end
+    return out
+end
+
+-- A method's result. instancetype carries its nullability as a prefix: "nonnull instancetype".
+local function result_of(ty, nullability)
+    if ty == "instancetype" and ATTRIBUTE[nullability] then return ATTRIBUTE[nullability] .. " instancetype" end
+    return declare(ty, "", nullability)
+end
+
+-- A function's type is "RESULT (ARGUMENT TYPES)": the result, and the argument list (the text of the last balanced parentheses).
 -- The availability of column 9 as attributes. *unavailable and *deprecated are for every platform; a platform token is
 -- platform=introduced/deprecated/obsoleted/unavailable, - when absent, and 1 for an unavailable platform. Attributes come in the
 -- order of the column.
@@ -157,20 +178,60 @@ end
 
 -- The names a type text uses, into out: name -> "def" (its definition is needed: a typedef, a tag, a non-pointer use), "class" (a
 -- word followed by *: a forward declaration is enough), or "protocol" (a word inside <...>).
-local function type_names(text, out)
+-- The number of type arguments of a generic class's use (NSArray<A, B *> has two): the commas at the top level of the <...> at open.
+local function arity_of(text, open)
+    local depth, count = 0, 1
+    for i = open, #text do
+        local c = string.sub(text, i, i)
+        if c == "<" then
+            depth = depth + 1
+        elseif c == ">" then
+            depth = depth - 1
+            if depth == 0 then return count end
+        elseif c == "," and depth == 1 then
+            count = count + 1
+        end
+    end
+    return count
+end
+
+-- Whether the IR defines the name as a kind (protocol, class, ...).
+local function defined_as(defs, name, kind)
+    for _, def in ipairs(defs[name] or {}) do
+        if def.kind == kind then return true end
+    end
+    return false
+end
+
+-- The names a type text uses, with how each is used (see note). defs is the IR's definitions: a name in <...> after a class is a
+-- protocol when the IR defines it as one (UIResponder<UITextInput> *, a class qualified by protocols), else a type argument.
+local function type_names(text, out, defs)
     for start, word in string.gmatch(text, "()([%a_][%w_]*)") do
         if not KEYWORDS[word] then
             local before = string.match(string.sub(text, 1, start - 1), "(%S+)%s*$") or ""
             local after = string.match(text, "^%s*(.)", start + #word) or ""
-            -- inside <...>: a protocol list (id<P>) names a protocol, a generic argument (NSArray<C *> *) a class, as a pointer does
-            local inside_angles = string.match(string.sub(text, 1, start - 1), "<[^>]*$") ~= nil
+            -- the word that owns the <...> this name is in (id for a protocol list, NSArray for NSArray<NSString *>)
+            local owner = string.match(string.sub(text, 1, start - 1), "([%w_]+)%s*<[^<>]*$")
             local kind
             if before == "struct" or before == "union" or before == "enum" then
                 kind = "def"
+            elseif after == "<" then
+                local open = string.find(text, "<", start + #word, true)
+                local first = string.match(text, "^<%s*([%a_][%w_]*)", open)
+                if first and defined_as(defs, first, "protocol") then
+                    -- a class qualified by protocols (UIResponder<UITextInput> *): a forward declaration of the class is enough
+                    kind = "class"
+                else
+                    -- a generic class: a forward declaration with its arity (@class NSArray<T1>;) is enough for a use as a pointer,
+                    -- and an import would make the class's header and its users include each other
+                    kind = "generic:" .. arity_of(text, open)
+                end
             elseif after == "*" then
                 kind = "class"
-            elseif inside_angles then
-                kind = "protocol"
+            elseif owner ~= nil then
+                -- inside <...>: a protocol list (id<P>, or P of a class qualified by it) names a protocol; any other bare name there is
+                -- a type argument, a type parameter of the class (never a declaration of its own), or a value name of the IR
+                kind = (owner == "id" or defined_as(defs, word, "protocol")) and "protocol" or "def"
             else
                 kind = "def"
             end
@@ -180,7 +241,9 @@ local function type_names(text, out)
     return out
 end
 
--- The names of the whole IR: name -> the rows that define it (framework and header), in IR order.
+-- The names of the whole IR: name -> the rows that define it (framework and header), in IR order. And the arity of each generic class
+-- the IR uses (name -> its number of type arguments, from the largest use): a class's own members may not show its parameters (the
+-- uses do: NSDirectoryEnumerator<NSString *>), and every header that names the class must declare the same number.
 function defs_of(rows)
     local defs = {}
     for _, row in ipairs(rows) do
@@ -191,7 +254,20 @@ function defs_of(rows)
             defs[name] = list
         end
     end
-    return defs
+    local arities = {}
+    local function scan(text)
+        for name, use in pairs(type_names(text, {}, defs)) do
+            local n = tonumber(string.match(use, "^generic:(%d+)$"))
+            if n then arities[name] = math.max(arities[name] or 0, n) end
+        end
+    end
+    for _, row in ipairs(rows) do
+        if row[COL.type] ~= "-" then scan(row[COL.type]) end
+        if row[COL.kind] == "method" and row[COL.params] ~= "-" then
+            for _, p in ipairs(parameters_of(row[COL.params], "-")) do scan(p.type) end
+        end
+    end
+    return defs, arities
 end
 
 -- The definition a name is imported from: the framework's own when it has one, else the first one of another framework.
@@ -212,13 +288,13 @@ end
 -- Headers/ folder (<Name>/<header>, the innermost framework of a nested path) or usr/include (<header>). This framework's own header
 -- is quoted, another framework's is <Name/header>.
 local function import_of(def, framework, header, usr_dirs)
-    local dir = usr_dirs[def.framework]
+    local dir = usr_dirs.prefix[def.framework]
     if dir then return "#import <" .. dir .. "/" .. def.header .. ">" end
     if string.sub(def.header, 1, 1) == "/" then
         local name, rest = string.match(def.header, "([^/]+)%.framework/Headers/(.+)$")
         if name then return "#import <" .. name .. "/" .. rest .. ">" end
         rest = string.match(def.header, "/usr/include/(.+)$")
-        if rest then return "#import <" .. rest .. ">" end
+        if rest then return "#import <" .. (usr_dirs.umbrella[string.match(rest, "^([^/]+)/") or ""] or rest) .. ">" end
         return nil
     end
     if def.framework == framework then
@@ -310,25 +386,49 @@ local function note(deps, name, use)
     local entry = deps[name] or {}
     if use == "def" then
         entry.def = true
-    else
-        entry.forward = entry.forward or use
+    elseif entry.forward == nil or string.sub(use, 1, 8) == "generic:" then
+        -- a generic use's arity wins over a plain forward: @class NSArray; then NSArray<T> * would not be the same class
+        entry.forward = use
     end
     deps[name] = entry
 end
 
-local function note_type(deps, text)
-    for name, use in pairs(type_names(text, {})) do note(deps, name, use) end
+local function note_type(deps, defs, text)
+    for name, use in pairs(type_names(text, {}, defs)) do note(deps, name, use) end
 end
 
 -- The names a method or a property uses: its result or type, and its parameters' types.
-local function note_member(deps, row)
-    note_type(deps, row[COL.type])
+local function note_member(deps, defs, row)
+    note_type(deps, defs, row[COL.type])
     if row[COL.kind] == "method" and row[COL.params] ~= "-" then
-        for _, p in ipairs(parameters_of(row[COL.params], "-")) do note_type(deps, p.type) end
+        for _, p in ipairs(parameters_of(row[COL.params], "-")) do note_type(deps, defs, p.type) end
     end
 end
 
-function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
+-- The type parameters of a generic class (@interface NSEnumerator<ObjectType>). No column records them: a name the IR defines nowhere,
+-- used bare (not as a pointer) in the types of the class's members, is one of them. The order is the order of first use.
+local function type_parameters(member_rows, defs)
+    local out, seen = {}, {}
+    local function scan(text)
+        for start, word in string.gmatch(text, "()([%a_][%w_]*)") do
+            if not KEYWORDS[word] and not seen[word] and defs[word] == nil and string.sub(word, 1, 2) ~= "__" then
+                if (string.match(text, "^%s*(.)", start + #word) or "") ~= "*" then
+                    seen[word] = true
+                    out[#out + 1] = word
+                end
+            end
+        end
+    end
+    for _, row in ipairs(member_rows) do
+        scan(row[COL.type])
+        if row[COL.kind] == "method" and row[COL.params] ~= "-" then
+            for _, p in ipairs(parameters_of(row[COL.params], "-")) do scan(p.type) end
+        end
+    end
+    return out
+end
+
+function render(framework, rows, defs, arities, has_map, has_sdk_headers, usr_dirs)
     local counts = {declarations = {}, skipped = {}}
     local function count(kind, n)
         counts.declarations[kind] = (counts.declarations[kind] or 0) + (n or 1)
@@ -337,18 +437,42 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
         counts.skipped[reason] = (counts.skipped[reason] or 0) + 1
     end
 
+    -- the getters' nullability (the result part of an accessor's column 10, by its USR): a property the IR gives unspecified whose getter
+    -- is nonnull is null_resettable (its getter nonnull, its setter nullable), which no column of the property records
+    -- The same goes for optional: an optional property of a protocol is in its accessors' attrs (optional), not in the property's own.
+    local getters, optional_getters = {}, {}
+    for _, row in ipairs(rows) do
+        if row[COL.kind] == "accessor" then
+            getters[row[COL.usr]] = string.match(row[COL.nullability], "^([^|]*)")
+            if string.find(row[COL.attrs], "optional", 1, true) then optional_getters[row[COL.usr]] = true end
+        end
+    end
+
     -- sort the rows: the ones a top-level declaration owns, and the ones its block takes
-    local enumconsts, fields, supers, conforms, members, cat_members, tops = {}, {}, {}, {}, {}, {}, {}
+    local enumconsts, anonymous_consts, fields, supers, conforms, members, cat_members, tops = {}, {}, {}, {}, {}, {}, {}, {}
     for _, row in ipairs(rows) do
         local kind = row[COL.kind]
+        if kind == "property" then
+            local getter = string.gsub(row[COL.usr], "%(py%)", "(im)")
+            local resettable = row[COL.nullability] == "u" and getters[getter] == "n"
+            local optional = optional_getters[getter] and not is_optional(row)
+            if resettable or optional then
+                row = {table.unpack(row, 1, 16)}
+                if resettable then row[COL.nullability] = "r" end
+                if optional then row[COL.attrs] = row[COL.attrs] == "-" and "optional" or (row[COL.attrs] .. ",optional") end
+            end
+        end
         if BOOKKEEPING[kind] then
             if kind ~= "meta" then skip(kind) end
         elseif kind == "accessor" then
             skip("accessor (synthesised by clang)")
         elseif kind == "enumconst" then
-            local list = enumconsts[row[COL.container]] or {}
+            -- a constant of an anonymous enum has no container: its USR is its enum's USR and its own name (c:@Ea@FIRST@NAME)
+            local by, key = enumconsts, row[COL.container]
+            if key == "-" then by, key = anonymous_consts, string.match(row[COL.usr], "^(.*)@[^@]+$") end
+            local list = by[key] or {}
             list[#list + 1] = row
-            enumconsts[row[COL.container]] = list
+            by[key] = list
         elseif kind == "field" then
             local list = fields[row[COL.container]] or {}
             list[#list + 1] = row
@@ -385,22 +509,31 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
         end
     end
 
-    -- the blocks of each header, in IR order: text, the names it needs, and the names it defines
+    -- the blocks of each header, in IR order: text, the names it needs, and the names it defines. The value types (typedef, enum,
+    -- struct, union) come first in a header (early), so a declaration that uses one of them after it in the IR still sees it
     local blocks, header_order = {}, {}
+    local VALUE_KINDS = {typedef = true, enum = true, struct = true, union = true}
     local function block_of(header)
         if blocks[header] == nil then
-            blocks[header] = {text = {}, deps = {}, defined = {}}
+            blocks[header] = {text = {}, early = {}, deps = {}, defined = {}}
             header_order[#header_order + 1] = header
         end
         return blocks[header]
     end
 
     -- the tags this framework defines (enum, struct, union), with the header of each; a typedef of one waits for it (see typedef)
-    local tags, emitted_tags, pending = {}, {}, {}
+    -- the tags this framework defines (enum, struct, union), with the header of each; a typedef of one waits for it (see typedef). And
+    -- the anonymous structs and unions a typedef names (typedef struct { ... } NAME; has USR c:@SA@NAME): they are written with that
+    -- typedef, so the typedef row (type struct NAME) is left out
+    local tags, emitted_tags, pending, anonymous_named = {}, {}, {}, {}
     for _, row in ipairs(tops) do
         local kind = row[COL.kind]
-        if (kind == "enum" or kind == "struct" or kind == "union") and row[COL.name] ~= "-" then
+        if kind == "enum" and row[COL.name] ~= "-" then
             tags[row[COL.name]] = row[COL.header]
+        end
+        if (kind == "struct" or kind == "union") and row[COL.name] ~= "-"
+                and string.find(row[COL.usr], "@" .. string.upper(string.sub(kind, 1, 1)) .. "A@", 1, true) then
+            anonymous_named[row[COL.name]] = true
         end
     end
 
@@ -412,27 +545,32 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
         local prefix = avail ~= "" and (avail .. "\n") or ""
         local text
         if kind == "enum" then
-            if name == "-" then
-                skip("anonymous enum")
+            -- a named enum takes its constants by name, an anonymous one by its USR (c:@Ea@FIRST, its constants c:@Ea@FIRST@NAME)
+            local consts = name == "-" and (anonymous_consts[row[COL.usr]] or {}) or (enumconsts[name] or {})
+            if name == "-" and #consts == 0 then
+                skip("anonymous enum without constants")
             else
                 local base = row[COL.type]
-                local lines = {prefix .. "enum " .. name .. (base ~= "-" and (" : " .. base) or "") .. " {"}
-                if base ~= "-" then note_type(block.deps, base) end
-                for _, c in ipairs(enumconsts[name] or {}) do
+                local head = name == "-" and "enum" or ("enum " .. name)
+                local lines = {prefix .. head .. (base ~= "-" and (" : " .. base) or "") .. " {"}
+                if base ~= "-" then note_type(block.deps, defs, base) end
+                for _, c in ipairs(consts) do
                     local attr = availability(c[COL.avail])
                     local value = c[COL.value] ~= "-" and (" = " .. c[COL.value]) or ""
                     lines[#lines + 1] = "  " .. c[COL.name] .. (attr ~= "" and (" " .. attr) or "") .. value .. ","
                 end
                 lines[#lines + 1] = "};"
                 text = table.concat(lines, "\n")
-                count("enumconst", #(enumconsts[name] or {}))
+                count("enumconst", #consts)
             end
         elseif kind == "typedef" then
-            if string.find(row[COL.type], "unnamed", 1, true) then
+            if anonymous_named[name] and (row[COL.type] == "struct " .. name or row[COL.type] == "union " .. name) then
+                skip("typedef written with its anonymous tag")
+            elseif string.find(row[COL.type], "unnamed", 1, true) then
                 skip("typedef of an anonymous tag")
             else
                 text = "typedef " .. declare(row[COL.type], name, row[COL.nullability]) .. suffix_of(avail) .. ";"
-                note_type(block.deps, row[COL.type])
+                note_type(block.deps, defs, row[COL.type])
                 -- a typedef of a tag the same header defines comes after the tag's definition (clang reads a typedef of an enum
                 -- before its definition as a fixed-type enum otherwise), so it waits for the definition
                 local tag = string.match(row[COL.type], "^%a+ (%S+)$")
@@ -445,14 +583,15 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
             if name == "-" then
                 skip("anonymous " .. kind)
             else
-                local lines = {prefix .. kind .. " " .. name .. " {"}
+                local anonymous = anonymous_named[name]
+                local lines = {prefix .. (anonymous and ("typedef " .. kind .. " {") or (kind .. " " .. name .. " {"))}
                 for _, f in ipairs(fields[name] or {}) do
                     local attr = availability(f[COL.avail])
                     lines[#lines + 1] = "  " .. declare(f[COL.type], f[COL.name], f[COL.nullability])
                         .. (attr ~= "" and (" " .. attr) or "") .. ";"
-                    note_type(block.deps, f[COL.type])
+                    note_type(block.deps, defs, f[COL.type])
                 end
-                lines[#lines + 1] = "};"
+                lines[#lines + 1] = anonymous and ("} " .. name .. ";") or "};"
                 text = table.concat(lines, "\n")
                 count("field", #(fields[name] or {}))
             end
@@ -463,15 +602,15 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
             local decls = {}
             for i, a in ipairs(args) do
                 decls[i] = declare(a.type, a.name, a.nullability)
-                note_type(block.deps, a.type)
+                note_type(block.deps, defs, a.type)
             end
             if string.find(row[COL.attrs], "variadic", 1, true) then decls[#decls + 1] = "..." end
-            note_type(block.deps, result)
+            note_type(block.deps, defs, result)
             text = "extern " .. declare(result, "", result_nullability) .. " " .. name
                 .. "(" .. (#decls > 0 and table.concat(decls, ", ") or "void") .. ")" .. suffix_of(avail) .. ";"
         elseif kind == "var" then
             text = "extern " .. declare(row[COL.type], name, row[COL.nullability]) .. suffix_of(avail) .. ";"
-            note_type(block.deps, row[COL.type])
+            note_type(block.deps, defs, row[COL.type])
         elseif kind == "interface" then
             local super = supers[name]
             local protocols, seen = {}, {}
@@ -479,17 +618,20 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
                 if not seen[p] then
                     seen[p] = true
                     protocols[#protocols + 1] = p
-                    note(block.deps, p, "def")
+                    note(block.deps, p, "protocol")
                 end
             end
             local head = prefix
             if super == nil then head = head .. "__attribute__((objc_root_class))\n" end
-            head = head .. "@interface " .. name .. (super and (" : " .. super) or "")
+            local parameters = type_parameters(members["cs:" .. name] or {}, defs)
+            for i = #parameters + 1, arities[name] or 0 do parameters[i] = "T" .. i end
+            head = head .. "@interface " .. name .. (#parameters > 0 and ("<" .. table.concat(parameters, ", ") .. ">") or "")
+                .. (super and (" : " .. super) or "")
             if #protocols > 0 then head = head .. " <" .. table.concat(protocols, ", ") .. ">" end
             if super then note(block.deps, super, "def") end
             local lines = {head}
             for _, line in ipairs(members_text(members["cs:" .. name])) do lines[#lines + 1] = line end
-            for _, m in ipairs(members["cs:" .. name] or {}) do note_member(block.deps, m) end
+            for _, m in ipairs(members["cs:" .. name] or {}) do note_member(block.deps, defs, m) end
             count("member", #(members["cs:" .. name] or {}))
             lines[#lines + 1] = "@end"
             text = table.concat(lines, "\n")
@@ -497,27 +639,37 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
             local protocols = {}
             for _, p in ipairs(conforms[name] or {}) do
                 protocols[#protocols + 1] = p
-                note(block.deps, p, "def")
+                note(block.deps, p, "protocol")
             end
             local head = prefix .. "@protocol " .. name
             if #protocols > 0 then head = head .. " <" .. table.concat(protocols, ", ") .. ">" end
             local lines = {head}
             for _, line in ipairs(members_text(members["pl:" .. name])) do lines[#lines + 1] = line end
-            for _, m in ipairs(members["pl:" .. name] or {}) do note_member(block.deps, m) end
+            for _, m in ipairs(members["pl:" .. name] or {}) do note_member(block.deps, defs, m) end
             count("member", #(members["pl:" .. name] or {}))
             lines[#lines + 1] = "@end"
             text = table.concat(lines, "\n")
         elseif kind == "category" and name == "-" then
-            -- a class extension (c:objc(ext)Class): its members are rows of the class's own (cs) owner, so the class block takes them
-            skip("class extension (its members are the class's)")
+            -- a class extension (c:objc(ext)Class): an empty @interface Class () here, which decls reads as the extension. Its members are
+            -- rows of the class's own (cs) owner, so the class block takes them
+            local class = string.match(row[COL.usr], "%(ext%)(.+)$")
+            assert(class, "extension USR without a class: " .. row[COL.usr])
+            note(block.deps, class, "def")
+            text = prefix .. "@interface " .. class .. " ()\n@end"
         elseif kind == "category" then
             local class = string.match(row[COL.usr], "%(cy%)([^@]+)@")
             assert(class, "category USR without a class: " .. row[COL.usr])
             note(block.deps, class, "def")
             local key = class .. "@" .. name
-            local lines = {prefix .. "@interface " .. class .. " (" .. name .. ")"}
+            -- a category of a generic class declares as many type parameters as the class has (the names may differ: the SDK's
+            -- NSDictionary category is <K, V>). The names are the ones its members use; a parameter they leave out gets a name of its own.
+            local arity = math.max(arities[class] or 0, #type_parameters(members["cs:" .. class] or {}, defs))
+            local parameters = type_parameters(cat_members[key] or {}, defs)
+            for i = #parameters + 1, arity do parameters[i] = "T" .. i end
+            local lines = {prefix .. "@interface " .. class .. (#parameters > 0 and ("<" .. table.concat(parameters, ", ") .. ">") or "")
+                .. " (" .. name .. ")"}
             for _, line in ipairs(members_text(cat_members[key])) do lines[#lines + 1] = line end
-            for _, m in ipairs(cat_members[key] or {}) do note_member(block.deps, m) end
+            for _, m in ipairs(cat_members[key] or {}) do note_member(block.deps, defs, m) end
             count("member", #(cat_members[key] or {}))
             lines[#lines + 1] = "@end"
             text = table.concat(lines, "\n")
@@ -525,15 +677,16 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
             skip("unknown kind " .. kind)
         end
         if text then
-            block.text[#block.text + 1] = text
+            local list = VALUE_KINDS[kind] and block.early or block.text
+            list[#list + 1] = text
             count(kind)
             if DEFINING[kind] or kind == "function" or kind == "var" then
                 block.defined[name] = true
             end
-            if (kind == "enum" or kind == "struct" or kind == "union") and name ~= "-" then
+            if kind == "enum" and name ~= "-" then
                 emitted_tags[name] = true
                 if pending[name] then
-                    block.text[#block.text + 1] = pending[name]
+                    block.early[#block.early + 1] = pending[name]
                     pending[name] = nil
                     count("typedef")
                 end
@@ -560,16 +713,26 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
         local imports, forwards = {}, {}
         for _, name in ipairs(names) do
             local entry = block.deps[name]
-            if entry.def and not block.defined[name] then
+            -- a name the IR defines as a typedef, enum, struct or union is a value name, whatever its use ("Byte *" is a pointer to a
+            -- typedef, not a class): it is imported, never forward-declared
+            local value_name = false
+            for _, def in ipairs(defs[name] or {}) do
+                if def.kind ~= "interface" and def.kind ~= "protocol" then value_name = true end
+            end
+            if (entry.def or value_name) and not block.defined[name] then
                 local def = pick(defs[name], framework)
                 local line = def and import_of(def, framework, header, usr_dirs)
                 if line then imports[#imports + 1] = line end
             end
             -- a class or protocol is forward-declared even when this header defines it, since a use may come before the definition
-            if entry.forward == "class" then
+            if entry.forward == "class" and not value_name then
                 forwards[#forwards + 1] = "@class " .. name .. ";"
-            elseif entry.forward == "protocol" then
+            elseif entry.forward == "protocol" and not value_name then
                 forwards[#forwards + 1] = "@protocol " .. name .. ";"
+            elseif entry.forward and string.sub(entry.forward, 1, 8) == "generic:" and not value_name then
+                local params = {}
+                for i = 1, tonumber(string.sub(entry.forward, 9)) do params[i] = "T" .. i end
+                forwards[#forwards + 1] = "@class " .. name .. "<" .. table.concat(params, ", ") .. ">;"
             end
         end
         local head, seen = {}, {}
@@ -583,7 +746,10 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
         for _, line in ipairs(forwards) do head[#head + 1] = line end
         local parts = {}
         if #head > 0 then parts[#parts + 1] = table.concat(head, "\n") end
-        parts[#parts + 1] = table.concat(block.text, "\n\n")
+        local bodies = {}
+        for _, text in ipairs(block.early) do bodies[#bodies + 1] = text end
+        for _, text in ipairs(block.text) do bodies[#bodies + 1] = text end
+        parts[#parts + 1] = table.concat(bodies, "\n\n")
         files["Headers/" .. header] = SYSTEM_HEADER .. "\n" .. table.concat(parts, "\n\n") .. "\n"
     end
 

@@ -54,10 +54,12 @@ local function sdk_folder(dir, framework)
     return base
 end
 
--- The import prefix of each usr/include module: the umbrella folder its top-level module map line names (ObjectiveC's is objc, so its
--- NSObject.h is imported as <objc/NSObject.h>). Read from the module maps' layout, not from any header.
+-- Two tables read from the usr/include module maps, not from any header. prefix: the import prefix of each module, the umbrella folder
+-- its top-level module map line names (ObjectiveC's is objc, so its NSObject.h is imported as <objc/NSObject.h>). umbrella: the
+-- folder's own umbrella header, where a module lists it (Dispatch lists dispatch/dispatch.h, and its other headers refuse a direct
+-- import: "Please #include <dispatch/dispatch.h> instead of this file directly").
 local function usr_dirs_of(sdk)
-    local dirs = {}
+    local dirs, umbrellas = {}, {}
     for _, file in ipairs(os.files(path.join(sdk, "usr", "include", "*.modulemap"))) do
         local module = nil
         for line in io.lines(file) do
@@ -65,9 +67,11 @@ local function usr_dirs_of(sdk)
             if name then module = name end
             local umbrella = string.match(line, '^%s*umbrella%s+"([^"]+)"')
             if module and umbrella and dirs[module] == nil then dirs[module] = umbrella end
+            local folder, base = string.match(line, '^%s*header%s+"([^"/]+)/([^"/]+)"')
+            if folder and base == folder .. ".h" then umbrellas[folder] = folder .. "/" .. base end
         end
     end
-    return dirs
+    return {prefix = dirs, umbrella = umbrellas}
 end
 
 -- The tree folder a framework is written to: <folder>/<top>.framework, nested frameworks under their outer one's Frameworks/.
@@ -115,7 +119,7 @@ local function write_mode(args, rows, by_framework)
         print("headers: writing needs --out and --sdk")
         return 2
     end
-    local defs = render.defs_of(rows)
+    local defs, arities = render.defs_of(rows)
     local usr_dirs = usr_dirs_of(sdk)
     local names = {}
     if args.framework then
@@ -133,7 +137,7 @@ local function write_mode(args, rows, by_framework)
         else
             local has_map = os.isfile(path.join(sdk_folder(dir, framework), "Modules", "module.modulemap"))
             local has_sdk_headers = #os.files(path.join(dir, "Headers", "*.h")) > 0
-            local result = render.render(framework, by_framework[framework] or {}, defs, has_map, has_sdk_headers, usr_dirs)
+            local result = render.render(framework, by_framework[framework] or {}, defs, arities, has_map, has_sdk_headers, usr_dirs)
             write_all(out, folder, framework, result)
             totals.frameworks = totals.frameworks + 1
             totals.files = totals.files + result.counts.files
