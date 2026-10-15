@@ -387,61 +387,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/AVFoundation/AVSpeech.md",
-      "source": "SDK 16.4, AVFAudio; the iOS 7 members below. willSpeakMarker (iOS 17) is not carried"
-    },
-    {
-      "api": "-[AVSpeechSynthesizerDelegate speechSynthesizer:didStartSpeechUtterance:]",
-      "kind": "method",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/AVFoundation/AVSpeech.md",
-      "source": "SDK 16.4, AVFAudio; tests/backports/host/avf-speech/synth-checks.m"
-    },
-    {
-      "api": "-[AVSpeechSynthesizerDelegate speechSynthesizer:didFinishSpeechUtterance:]",
-      "kind": "method",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/AVFoundation/AVSpeech.md",
-      "source": "SDK 16.4, AVFAudio; tests/backports/host/avf-speech/synth-checks.m"
-    },
-    {
-      "api": "-[AVSpeechSynthesizerDelegate speechSynthesizer:didPauseSpeechUtterance:]",
-      "kind": "method",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/AVFoundation/AVSpeech.md",
-      "source": "SDK 16.4, AVFAudio; tests/backports/host/avf-speech/synth-checks.m"
-    },
-    {
-      "api": "-[AVSpeechSynthesizerDelegate speechSynthesizer:didContinueSpeechUtterance:]",
-      "kind": "method",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/AVFoundation/AVSpeech.md",
-      "source": "SDK 16.4, AVFAudio; tests/backports/host/avf-speech/synth-checks.m"
-    },
-    {
-      "api": "-[AVSpeechSynthesizerDelegate speechSynthesizer:didCancelSpeechUtterance:]",
-      "kind": "method",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/AVFoundation/AVSpeech.md",
-      "source": "SDK 16.4, AVFAudio; tests/backports/host/avf-speech/synth-checks.m"
-    },
-    {
-      "api": "-[AVSpeechSynthesizerDelegate speechSynthesizer:willSpeakRangeOfSpeechString:utterance:]",
-      "kind": "method",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/AVFoundation/AVSpeech.md",
-      "source": "SDK 16.4, AVFAudio; tests/backports/host/avf-speech/synth-checks.m"
+      "source": "SDK 16.4, AVFAudio; the members are the protocol's own, carried as for AVCaptureSessionControlsDelegate (no member rows); willSpeakMarker (iOS 17) is not carried"
     }
   ]
 }
