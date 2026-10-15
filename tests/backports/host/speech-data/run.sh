@@ -15,7 +15,7 @@ here=$(cd "$(dirname "$0")" && pwd)
 appledir=${APPLEDIR:-$here/../../../../packages/a/apple-backports}
 build=${BUILD:-$here/../../../../.agent-work/runs/speech-data}
 mkdir -p "$build"
-cases="1 2 3 4 5 6 7"
+cases="1 2 3 4 5 6 7 8 9 10 12 13 14"
 
 # The port's sources, every class of the folder given, and nothing of the host's Speech: the port side does not link it.
 port_build() {
@@ -91,6 +91,9 @@ echo "--- the plants"
 plant 1 SFSpeechRecognitionRequest.m 's/        _shouldReportPartialResults = YES;/        _shouldReportPartialResults = NO;/' "request default shouldReportPartialResults YES flipped to NO"
 plant 2 SFSpeechAudioBufferRecognitionRequest.m 's/AVAudioPCMFormatInt16/AVAudioPCMFormatFloat32/' "buffer request native format Int16 flipped to Float32"
 plant 6 SFTranscriptionSegment.m 's/    copy->_confidence = _confidence;/    copy->_confidence = 1;/' "segment copy loses the confidence"
+plant 8 SFSpeechRecognizer.m 's/    return SFSpeechRecognizerAuthorizationStatusNotDetermined;/    return SFSpeechRecognizerAuthorizationStatusAuthorized;/' "authorization status NotDetermined flipped to Authorized"
+plant 10 SFSpeechRecognizer.m 's/    return nil;/    return self;/' "recognizer for an unsupported locale made instead of nil"
+plant 13 SFSpeechRecognitionTask.m '/isCancelled/,/^}/ s/return NO;/return YES;/' "fresh task reported cancelled"
 
 echo "--- verdict: $differs difference(s) among comparable cases, $crashed host crash(es) not comparable"
 [ "$differs" -eq 0 ]

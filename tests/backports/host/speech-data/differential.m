@@ -86,6 +86,43 @@ int main(int argc, char **argv)
         printf("bestTranscription=%s\n", show(result.bestTranscription).UTF8String);
         break;
     }
+    case 8: {
+        // The status for an application with no usage description: the host answers NotDetermined, and asks for nothing.
+        printf("authorizationStatus=%ld\n", (long)[SFSpeechRecognizer authorizationStatus]);
+        break;
+    }
+    case 9: {
+        // Only the locale the host does not support is named: the host supports many locales, and the port none, which is
+        // the port's design and is recorded in facts/Speech/recognizer.md rather than compared.
+        NSSet *identifiers = [[SFSpeechRecognizer supportedLocales] valueForKey:@"localeIdentifier"];
+        printf("tlh-US supported=%d\n", [identifiers containsObject:@"tlh-US"]);
+        break;
+    }
+    case 10: {
+        SFSpeechRecognizer *recognizer = [[SFSpeechRecognizer alloc] initWithLocale:[NSLocale localeWithLocaleIdentifier:@"tlh_US"]];
+        printf("tlh-US recognizer=%s\n", recognizer ? "non-nil" : "nil");
+        break;
+    }
+    case 12: {
+        // The host ends this process before the handler runs (no usage description), so run.sh names the case as a host
+        // crash. The port returns and never calls the handler, which is the answer it carries.
+        [SFSpeechRecognizer requestAuthorization:^(SFSpeechRecognizerAuthorizationStatus status) {
+            printf("handler status=%ld\n", (long)status);
+        }];
+        printf("returned from requestAuthorization\n");
+        sleep(2);
+        break;
+    }
+    case 13: {
+        SFSpeechRecognitionTask *task = [[SFSpeechRecognitionTask alloc] init];
+        printf("class=%s\n", class_getName([task class]));
+        printf("finishing=%d cancelled=%d\n", task.finishing, task.cancelled);
+        break;
+    }
+    case 14: {
+        printf("SFSpeechErrorDomain=%s\n", show(SFSpeechErrorDomain).UTF8String);
+        break;
+    }
     }
     return 0;
 }
